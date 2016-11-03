@@ -1,0 +1,400 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{748E5DED-39B7-4A3A-AB0E-92B30F17B2F0}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <StartupObject>BasicPawn.My.MyApplication</StartupObject>
+    <RootNamespace>BasicPawn</RootNamespace>
+    <AssemblyName>BasicPawn</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <MyType>WindowsForms</MyType>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DocumentationFile>BasicPawn.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>BasicPawn.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionExplicit>On</OptionExplicit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionCompare>Binary</OptionCompare>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionStrict>Off</OptionStrict>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionInfer>On</OptionInfer>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>BasicPawnIcon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DocumentationFile>BasicPawn.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DocumentationFile>BasicPawn.xml</DocumentationFile>
+    <Optimize>true</Optimize>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DocumentationFile>BasicPawn.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DocumentationFile>BasicPawn.xml</DocumentationFile>
+    <Optimize>true</Optimize>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ICSharpCode.TextEditor, Version=3.0.0.3437, Culture=neutral, PublicKeyToken=4d61825e8dd49f1a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Downloads\SharpDevelop-5.0.0\src\AddIns\Misc\PackageManagement\Packages\ICSharpCode.TextEditor\lib\Net20\ICSharpCode.TextEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Drawing" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Windows.Forms" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Xml.Linq" />
+    <Import Include="System.Threading.Tasks" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Classes\ClassTextboxWatermark.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Classes\ClassExceptionLogManagement.vb" />
+    <Compile Include="Classes\ClassIniFile.vb" />
+    <Compile Include="Classes\ClassPanelQuality.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Classes\ClassPictureBoxQuality.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls and Forms\FormBreakpointSetValue.Designer.vb">
+      <DependentUpon>FormBreakpointSetValue.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controls and Forms\FormBreakpointSetValue.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls and Forms\FormDebugger.Designer.vb">
+      <DependentUpon>FormDebugger.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controls and Forms\FormDebugger.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls and Forms\FormDebuggerCriticalPopup.Designer.vb">
+      <DependentUpon>FormDebuggerCriticalPopup.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controls and Forms\FormDebuggerCriticalPopup.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls and Forms\FormDebuggerException.Designer.vb">
+      <DependentUpon>FormDebuggerException.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controls and Forms\FormDebuggerException.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls and Forms\FormDebuggerStop.Designer.vb">
+      <DependentUpon>FormDebuggerStop.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controls and Forms\FormDebuggerStop.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls and Forms\UCAutocomplete.Designer.vb">
+      <DependentUpon>UCAutocomplete.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controls and Forms\UCAutocomplete.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls and Forms\FormMain.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls and Forms\FormMain.Designer.vb">
+      <DependentUpon>FormMain.vb</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls and Forms\UCInformationList.Designer.vb">
+      <DependentUpon>UCInformationList.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controls and Forms\UCInformationList.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls and Forms\UCObjectBrowser.Designer.vb">
+      <DependentUpon>UCObjectBrowser.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controls and Forms\UCObjectBrowser.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls and Forms\UCToolTip.Designer.vb">
+      <DependentUpon>UCToolTip.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controls and Forms\UCToolTip.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Controls and Forms\FormSearch.Designer.vb">
+      <DependentUpon>FormSearch.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controls and Forms\FormSearch.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Classes\ClassSettings.vb" />
+    <Compile Include="Controls and Forms\FormSettings.Designer.vb">
+      <DependentUpon>FormSettings.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controls and Forms\FormSettings.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Classes\ClassTextEditorEx.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Classes\ClassTools.vb" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Controls and Forms\FormBreakpointSetValue.resx">
+      <DependentUpon>FormBreakpointSetValue.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls and Forms\FormDebugger.resx">
+      <DependentUpon>FormDebugger.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls and Forms\FormDebuggerCriticalPopup.resx">
+      <DependentUpon>FormDebuggerCriticalPopup.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls and Forms\FormDebuggerException.resx">
+      <DependentUpon>FormDebuggerException.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls and Forms\FormDebuggerStop.resx">
+      <DependentUpon>FormDebuggerStop.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls and Forms\UCAutocomplete.resx">
+      <DependentUpon>UCAutocomplete.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls and Forms\FormMain.resx">
+      <DependentUpon>FormMain.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls and Forms\UCInformationList.resx">
+      <DependentUpon>UCInformationList.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls and Forms\UCObjectBrowser.resx">
+      <DependentUpon>UCObjectBrowser.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls and Forms\UCToolTip.resx">
+      <DependentUpon>UCToolTip.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls and Forms\FormSearch.resx">
+      <DependentUpon>FormSearch.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls and Forms\FormSettings.resx">
+      <DependentUpon>FormSettings.vb</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="My Project\app.manifest" />
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\SourcePawn_Syntrax.xml">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5.2 %28x86 und x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\imageres_5306_16x16-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\imageres_5301_16x16-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\imageres_5338_16x16-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\imageres_5303_16x16-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\imageres_5337_16x16-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\imageres_5364_16x16-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\imageres_5333_16x16-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\imageres_5348_16x16-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\imageres_5341_16x16-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\imageres_5342_16x16-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\imageres_5351_16x16-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\imageres_5315_16x16-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\imageres_5311_16x16-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\imageres_5313_16x16-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\imageres_5314_16x16-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\imageres_5367_16x16-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\imageres_5350_16x16-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\imageres_5356_16x16-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="BasicPawnIcon.ico" />
+    <None Include="Resources\Debugger_WatcherModuleNew.txt" />
+    <None Include="Resources\Debugger_BreakpointModuleNew.txt" />
+    <None Include="Resources\Debugger_WatcherModuleOld.txt" />
+    <None Include="Resources\BasicPawnRedTop.jpg" />
+    <None Include="Resources\263.png" />
+    <None Include="Resources\Debugger_CommandRunnerEngine.txt" />
+    <None Include="Resources\Debugger_BreakpointModuleOld.txt" />
+    <None Include="Resources\imageres_5343_16x16-32.png" />
+    <None Include="Resources\imageres_5316_16x16-32.png" />
+    <None Include="Resources\imageres_5332_16x16-32.png" />
+    <None Include="Resources\imageres_5368_16x16-32.png" />
+    <None Include="Resources\imageres_5372_16x16-32.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

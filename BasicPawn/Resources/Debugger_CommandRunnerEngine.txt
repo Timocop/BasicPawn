@@ -1,0 +1,100 @@
+#pragma semicolon 1
+
+#include <sourcemod>
+
+#define ENTITY_FULL_UPDATE_TIME 60.0
+#define MAXENTITIES 2048
+
+public Plugin:myinfo = 
+{
+	name = "BasicPawn Debugger Module Runner",
+	author = "Timocop",
+	description = "BasicPawn debugger module which communicates with the debugger.",
+	version = "1.0",
+	url = ""
+};
+
+enum EntityDebuggerAction 
+{
+	Action_Update,
+	Action_Remove,
+}
+
+public OnGameFrame()
+{
+	for(; /* Execute debugger commands */ ;)
+	{
+		if(!FileExists("{IndentifierGUID}.cmd.bpdebug"))
+			break;
+		
+		new Handle:hFile = OpenFile("{IndentifierGUID}.cmd.bpdebug", "r");
+		if(hFile == INVALID_HANDLE)
+			break;
+	
+		decl String:sCmd[1024];
+		while(ReadFileLine(hFile, sCmd, sizeof(sCmd)))
+			ServerCommand(sCmd);
+	
+		CloseHandle(hFile);
+	
+		DeleteFile("{IndentifierGUID}.cmd.bpdebug");
+		break;
+	}
+	
+	for(; /* Tell the debugger all entities */ ;)
+	{
+		static iEntityRef[MAXENTITIES+1];
+		static Float:fLastNow;
+		static String:sClassname[PLATFORM_MAX_PATH];
+		static String:sBuffer[2048];
+		
+		new Float:fNow = GetEngineTime();
+		new bool:bForceUpdate = ((fLastNow + ENTITY_FULL_UPDATE_TIME) < fNow);
+		new Handle:hEntStack = CreateStack(sizeof(sBuffer)); 
+		
+		if(bForceUpdate)
+			fLastNow = fNow;
+		
+		for(new i = 0; i < MAXENTITIES; i++)
+		{
+			if(!bForceUpdate 
+					&& iEntityRef[i] != INVALID_ENT_REFERENCE 
+					&& IsValidEntity(iEntityRef[i]))
+			{
+				continue;
+			}
+			else if(IsValidEntity(i))
+			{
+				iEntityRef[i] = EntIndexToEntRef(i);
+
+				GetEntityClassname(i, sClassname, sizeof(sClassname));
+				
+				FormatEx(sBuffer, sizeof(sBuffer), "%d:%d:%d:%s", i, iEntityRef[i], Action_Update, sClassname);
+				PushStackString(hEntStack, sBuffer);
+			}
+			else if(iEntityRef[i] != INVALID_ENT_REFERENCE)
+			{
+				iEntityRef[i] = INVALID_ENT_REFERENCE; 
+				
+				FormatEx(sBuffer, sizeof(sBuffer), "%d:%d:%d:%s", i, iEntityRef[i], Action_Remove, "");
+				PushStackString(hEntStack, sBuffer);
+			}
+		}
+		
+		if(!IsStackEmpty(hEntStack)) {
+			new Handle:hEntFile = OpenFile("{IndentifierGUID}.entities.bpdebug", "w");
+
+			while(hEntFile != INVALID_HANDLE && !IsStackEmpty(hEntStack)) {
+				PopStackString(hEntStack, sBuffer, sizeof(sBuffer));
+				WriteFileLine(hEntFile, sBuffer);
+			}
+			
+			if(hEntFile != INVALID_HANDLE)
+				CloseHandle(hEntFile);
+		}
+		
+		CloseHandle(hEntStack);
+		
+		break;
+	}
+}

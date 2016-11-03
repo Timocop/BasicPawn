@@ -1,0 +1,53 @@
+stock any:{FunctionName}(any:val=0)
+{
+	if(FileExists("{IndentifierGUID}.ignore.bpdebug"))
+	{
+		return val;
+	}
+	
+	new Handle:hTriggerFile = OpenFile("{IndentifierGUID}.trigger.bpdebug", "w");
+	if(hTriggerFile == INVALID_HANDLE)
+		return val;
+
+	WriteFileLine(hTriggerFile, "i:%d", val);
+	WriteFileLine(hTriggerFile, "f:%f", val);
+	FlushFile(hTriggerFile);
+	CloseHandle(hTriggerFile);
+	
+	for(;;)
+	{
+		if(FileExists("{IndentifierGUID}.continue.bpdebug"))
+		{
+			DeleteFile("{IndentifierGUID}.continue.bpdebug");
+			break;
+		}
+		
+		if(FileExists("{IndentifierGUID}.continuev.bpdebug"))
+		{
+			new Handle:hVarFile = OpenFile("{IndentifierGUID}.continuev.bpdebug", "r");
+			if(hVarFile == INVALID_HANDLE)
+				SetFailState("Invalid file handle");
+			
+			decl String:sFileText[64];
+			if(!ReadFileLine(hVarFile, sFileText, sizeof(sFileText)))
+				SetFailState("Could not read line");
+			
+			decl String:sVar[2][64];
+			if(ExplodeString(sFileText, ":", sVar, sizeof(sVar), sizeof(sVar[])) != 2)
+				SetFailState("Invalid var number");
+			
+			switch(sVar[0][0])
+			{
+				case 'f': val = StringToFloat(sVar[1]); 
+				default: val = StringToInt(sVar[1]);
+			}
+			
+			CloseHandle(hVarFile);
+			DeleteFile("{IndentifierGUID}.continuev.bpdebug");
+			
+			break;
+		}
+	}
+	
+	return val;
+}
