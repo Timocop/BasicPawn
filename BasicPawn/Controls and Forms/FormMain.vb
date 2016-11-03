@@ -2113,6 +2113,7 @@ Public Class FormMain
                                                     SB.AppendLine("")
                                                     Continue While
                                                 End If
+
                                             Case ENUM_SYNTRAX_UPDATE_TYPE.HIGHLIGHT_WORD
                                                 If (i = ENUM_SYNTRAX_FILES.MAIN_TEXTEDITOR AndAlso
                                                             sLine.Contains(sSyntrax_HighlightWordMarker)) Then
@@ -2128,6 +2129,7 @@ Public Class FormMain
                                                     SB.AppendLine("")
                                                     Continue While
                                                 End If
+
                                             Case ENUM_SYNTRAX_UPDATE_TYPE.AUTOCOMPLETE
                                                 If (sLine.Contains(sSyntrax_HighlightDefineMarker)) Then
                                                     SB.Append(sSyntrax_HighlightDefineMarker)
@@ -2245,6 +2247,7 @@ Public Class FormMain
 
                             g_mFormMain.g_mUCToolTip.TextEditorControl_ToolTip.SetHighlighting(g_SyntraxFiles(i).sDefinition)
                             g_mFormMain.g_mUCToolTip.TextEditorControl_ToolTip.Font = New Font(g_mFormMain.TextEditorControl1.Font.FontFamily, 8, FontStyle.Regular)
+
                         Case ENUM_SYNTRAX_FILES.DEBUGGER_TEXTEDITOR
                             If (g_mFormMain.g_mFormDebugger IsNot Nothing AndAlso Not g_mFormMain.g_mFormDebugger.IsDisposed) Then
                                 g_mFormMain.g_mFormDebugger.TextEditorControlEx_DebuggerSource.SetHighlighting(g_SyntraxFiles(i).sDefinition)
@@ -5326,8 +5329,8 @@ Public Class FormMain
 
                 sSource = SB.ToString
             End Sub
-        End Class 'ClassWatchers
-    End Class 'ClassDebuggerParser
+        End Class
+    End Class
 
 
 
@@ -5378,7 +5381,7 @@ Public Class FormMain
 
     'Private Sub ToolStripMenuItem_CheckUpdate_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_CheckUpdate.Click
     '    Try
-    '        Process.Start("http://downloadtzz.spdns.de/")
+    '        Process.Start("http://*.de/")
     '    Catch ex As Exception
     '        MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
     '    End Try
