@@ -20,7 +20,7 @@ Imports System.Text.RegularExpressions
 
 Public Class FormDebugger
     Private g_mFormMain As FormMain
-    Public g_ClassDebuggerParser As New FormMain.ClassDebuggerParser
+    Public g_ClassDebuggerParser As New FormMain.ClassDebuggerParser(g_mFormMain)
     Public g_ClassDebuggerRunnerEngine As New FormMain.ClassDebuggerParser.ClassRunnerEngine
     Public g_ClassDebuggerRunner As New ClassDebuggerRunner(Me)
     Public g_ClassDebuggerSettings As New ClassDebuggerSettings(Me)
@@ -76,7 +76,7 @@ Public Class FormDebugger
 
             'Create DIASM code
             Dim sAsmLstSource As String = sLstSource
-            With New FormMain.ClassDebuggerParser
+            With New FormMain.ClassDebuggerParser(g_mFormMain)
                 .CleanupDebugPlaceholder(sAsmLstSource)
             End With
             Dim sAsmSource As String = g_mFormMain.g_ClassTextEditorTools.GetCompilerAssemblyCode(True, sAsmLstSource, Nothing)
@@ -696,13 +696,13 @@ Public Class FormDebugger
                     g_sLatestDebuggerPlugin = sOutput
 
                     g_mFormDebugger.g_ClassDebuggerParser.UpdateBreakpoints(sSource, True)
-                    With New FormMain.ClassDebuggerParser.ClassBreakpoints()
+                    With New FormMain.ClassDebuggerParser.ClassBreakpoints(g_mFormDebugger.g_mFormMain)
                         .CompilerReady(sSource, g_mFormDebugger.g_ClassDebuggerParser)
                     End With
                     g_mFormDebugger.g_ClassDebuggerParser.UpdateBreakpoints(g_mFormDebugger.TextEditorControlEx_DebuggerSource.Document.TextContent, True)
 
                     g_mFormDebugger.g_ClassDebuggerParser.UpdateWatchers(sSource, True)
-                    With New FormMain.ClassDebuggerParser.ClassWatchers()
+                    With New FormMain.ClassDebuggerParser.ClassWatchers(g_mFormDebugger.g_mFormMain)
                         .CompilerReady(sSource, g_mFormDebugger.g_ClassDebuggerParser)
                     End With
                     g_mFormDebugger.g_ClassDebuggerParser.UpdateWatchers(g_mFormDebugger.TextEditorControlEx_DebuggerSource.Document.TextContent, True)

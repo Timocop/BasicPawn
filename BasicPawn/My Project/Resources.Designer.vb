@@ -81,7 +81,7 @@ Namespace My.Resources
         End Property
         
         '''<summary>
-        '''  Sucht eine lokalisierte Zeichenfolge, die stock any {FunctionName}(any val = 0)
+        '''  Sucht eine lokalisierte Zeichenfolge, die stock any {FunctionName}(any val=0)
         '''{
         '''	if(FileExists(&quot;{IndentifierGUID}.ignore.bpdebug&quot;))
         '''	{
@@ -101,7 +101,7 @@ Namespace My.Resources
         '''	{
         '''		if(FileExists(&quot;{IndentifierGUID}.continue.bpdebug&quot;))
         '''		{
-        '''			DeleteFile(&quot;{IndentifierGUID}.contin [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
+        '''			DeleteFile(&quot;{IndentifierGUID}.continue [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
         '''</summary>
         Friend ReadOnly Property Debugger_BreakpointModuleNew() As String
             Get

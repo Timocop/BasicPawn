@@ -2156,6 +2156,7 @@ Public Class FormMain
                                                         Select Case (True)
                                                             Case struc.sType = "define" OrElse struc.sType = "publicvar"
                                                                 SB.Append("<Key word=""" & struc.sFunctionName & """/>")
+
                                                         End Select
                                                     Next
                                                     SB.Append("</KeyWords>")
@@ -2181,6 +2182,7 @@ Public Class FormMain
 
                                                                     SB.Append("<Key word=""" & sEnumName(1) & """/>")
                                                                 End If
+
                                                             Case struc.sType = "methodmap"
                                                                 If (Not lExistList.Contains(struc.sFunctionName)) Then
                                                                     lExistList.Add(struc.sFunctionName)
@@ -2353,23 +2355,28 @@ Public Class FormMain
                             If (Not sourceAnalysis.InNonCode(i)) Then
                                 iBracedCount -= 1
                             End If
+
                         Case ")"c
                             If (Not sourceAnalysis.InNonCode(i)) Then
                                 iBracedCount += 1
                             End If
+
                         Case "{"c
                             If (Not sourceAnalysis.InNonCode(i)) Then
                                 iBraceCount -= 1
                             End If
+
                         Case "}"c
                             If (Not sourceAnalysis.InNonCode(i)) Then
                                 iBraceCount += 1
                             End If
+
                         Case vbLf
                             'If (Not sourceAnalysis.InNonCode(i)) Then
                             sSource = sSource.Insert(i + 1, New String(vbTab, sourceAnalysis.GetBraceLevel(i + 1 + iBraceCount) + If(iBracedCount > 0, iBracedCount + 1, 0)))
                             'End If
                             iBraceCount = 0
+
                     End Select
                 Catch ex As Exception
                     ' Ignore random errors
@@ -2410,10 +2417,18 @@ Public Class FormMain
         End Function
 
 
-
-
-
         Public Class ClassSyntraxSourceAnalysis
+            Enum ENUM_STATE_TYPES
+                PARENTHESIS_LEVEL
+                BRACKET_LEVEL
+                BRACE_LEVEL
+                IN_SINGLE_COMMENT
+                IN_MULTI_COMMENT
+                IN_STRING
+                IN_CHAR
+                IN_PREPROCESSOR
+            End Enum
+
             Private iStateArray As Integer(,)
             Private iMaxLenght As Integer = 0
             Private sCacheText As String = ""
@@ -2435,7 +2450,7 @@ Public Class FormMain
             ''' <returns></returns>
             Public ReadOnly Property InSingleComment(i As Integer) As Boolean
                 Get
-                    Return iStateArray(i, 3)
+                    Return iStateArray(i, ENUM_STATE_TYPES.IN_SINGLE_COMMENT)
                 End Get
             End Property
 
@@ -2446,7 +2461,7 @@ Public Class FormMain
             ''' <returns></returns>
             Public ReadOnly Property InMultiComment(i As Integer) As Boolean
                 Get
-                    Return iStateArray(i, 4)
+                    Return iStateArray(i, ENUM_STATE_TYPES.IN_MULTI_COMMENT)
                 End Get
             End Property
 
@@ -2457,7 +2472,7 @@ Public Class FormMain
             ''' <returns></returns>
             Public ReadOnly Property InString(i As Integer) As Boolean
                 Get
-                    Return iStateArray(i, 5)
+                    Return iStateArray(i, ENUM_STATE_TYPES.IN_STRING)
                 End Get
             End Property
 
@@ -2468,7 +2483,7 @@ Public Class FormMain
             ''' <returns></returns>
             Public ReadOnly Property InChar(i As Integer) As Boolean
                 Get
-                    Return iStateArray(i, 6)
+                    Return iStateArray(i, ENUM_STATE_TYPES.IN_CHAR)
                 End Get
             End Property
 
@@ -2479,7 +2494,7 @@ Public Class FormMain
             ''' <returns></returns>
             Public ReadOnly Property InPreprocessor(i As Integer) As Boolean
                 Get
-                    Return iStateArray(i, 7)
+                    Return iStateArray(i, ENUM_STATE_TYPES.IN_PREPROCESSOR)
                 End Get
             End Property
 
@@ -2490,7 +2505,7 @@ Public Class FormMain
             ''' <returns></returns>
             Public ReadOnly Property GetParenthesisLevel(i As Integer) As Integer
                 Get
-                    Return iStateArray(i, 0)
+                    Return iStateArray(i, ENUM_STATE_TYPES.PARENTHESIS_LEVEL)
                 End Get
             End Property
 
@@ -2501,7 +2516,7 @@ Public Class FormMain
             ''' <returns></returns>
             Public ReadOnly Property GetBracketLevel(i As Integer) As Integer
                 Get
-                    Return iStateArray(i, 1)
+                    Return iStateArray(i, ENUM_STATE_TYPES.BRACKET_LEVEL)
                 End Get
             End Property
 
@@ -2512,7 +2527,7 @@ Public Class FormMain
             ''' <returns></returns>
             Public ReadOnly Property GetBraceLevel(i As Integer) As Integer
                 Get
-                    Return iStateArray(i, 2)
+                    Return iStateArray(i, ENUM_STATE_TYPES.BRACE_LEVEL)
                 End Get
             End Property
 
@@ -2523,7 +2538,10 @@ Public Class FormMain
             ''' <returns></returns>
             Public ReadOnly Property InNonCode(i As Integer) As Boolean
                 Get
-                    Return (iStateArray(i, 3) OrElse iStateArray(i, 4) OrElse iStateArray(i, 5) OrElse iStateArray(i, 6))
+                    Return (iStateArray(i, ENUM_STATE_TYPES.IN_SINGLE_COMMENT) OrElse
+                                iStateArray(i, ENUM_STATE_TYPES.IN_MULTI_COMMENT) OrElse
+                                iStateArray(i, ENUM_STATE_TYPES.IN_STRING) OrElse
+                                iStateArray(i, ENUM_STATE_TYPES.IN_CHAR))
                 End Get
             End Property
 
@@ -2547,11 +2565,12 @@ Public Class FormMain
                 Return -1
             End Function
 
+
             Public Sub New(ByRef sText As String, Optional bIgnorePreprocessor As Boolean = True)
                 sCacheText = sText
                 iMaxLenght = sText.Length
 
-                iStateArray = New Integer(sText.Length - 1, 8) {}
+                iStateArray = New Integer(sText.Length - 1, [Enum].GetNames(GetType(ENUM_STATE_TYPES)).Length - 1) {}
 
                 Dim iParenthesisLevel As Integer = 0 '()
                 Dim iBracketLevel As Integer = 0 '[]
@@ -2563,14 +2582,14 @@ Public Class FormMain
                 Dim bInPreprocessor As Boolean = False
 
                 For i = 0 To sText.Length - 1
-                    iStateArray(i, 0) = iParenthesisLevel
-                    iStateArray(i, 1) = iBracketLevel
-                    iStateArray(i, 2) = iBraceLevel
-                    iStateArray(i, 3) = bInSingleComment
-                    iStateArray(i, 4) = bInMultiComment
-                    iStateArray(i, 5) = bInString
-                    iStateArray(i, 6) = bInChar
-                    iStateArray(i, 7) = bInPreprocessor
+                    iStateArray(i, ENUM_STATE_TYPES.PARENTHESIS_LEVEL) = iParenthesisLevel '0
+                    iStateArray(i, ENUM_STATE_TYPES.BRACKET_LEVEL) = iBracketLevel '1
+                    iStateArray(i, ENUM_STATE_TYPES.BRACE_LEVEL) = iBraceLevel '2
+                    iStateArray(i, ENUM_STATE_TYPES.IN_SINGLE_COMMENT) = bInSingleComment '3
+                    iStateArray(i, ENUM_STATE_TYPES.IN_MULTI_COMMENT) = bInMultiComment '4
+                    iStateArray(i, ENUM_STATE_TYPES.IN_STRING) = bInString '5
+                    iStateArray(i, ENUM_STATE_TYPES.IN_CHAR) = bInChar '6
+                    iStateArray(i, ENUM_STATE_TYPES.IN_PREPROCESSOR) = bInPreprocessor '7
 
                     Select Case (sText(i))
                         Case "#"c
@@ -2580,7 +2599,7 @@ Public Class FormMain
 
                             '/*
                             bInPreprocessor = True
-                            iStateArray(i, 7) = True
+                            iStateArray(i, ENUM_STATE_TYPES.IN_PREPROCESSOR) = True
                         Case "*"c
                             If (bInSingleComment OrElse bInString OrElse bInChar) Then
                                 Continue For
@@ -2590,8 +2609,8 @@ Public Class FormMain
                             If (i > 0) Then
                                 If (sText(i - 1) = "/"c AndAlso Not bInMultiComment) Then
                                     bInMultiComment = True
-                                    iStateArray(i, 4) = True
-                                    iStateArray(i - 1, 4) = True
+                                    iStateArray(i, ENUM_STATE_TYPES.IN_MULTI_COMMENT) = True
+                                    iStateArray(i - 1, ENUM_STATE_TYPES.IN_MULTI_COMMENT) = True
                                     Continue For
                                 End If
                             End If
@@ -2599,8 +2618,8 @@ Public Class FormMain
                             If (i + 1 < sText.Length - 1) Then
                                 If (sText(i + 1) = "/"c AndAlso bInMultiComment) Then
                                     bInMultiComment = False
-                                    iStateArray(i, 4) = True
-                                    iStateArray(i + 1, 4) = True
+                                    iStateArray(i, ENUM_STATE_TYPES.IN_MULTI_COMMENT) = True
+                                    iStateArray(i + 1, ENUM_STATE_TYPES.IN_MULTI_COMMENT) = True
 
                                     i += 1
                                     Continue For
@@ -2615,7 +2634,7 @@ Public Class FormMain
                             If (i + 1 < sText.Length - 1) Then
                                 If (sText(i + 1) = "/"c AndAlso Not bInSingleComment) Then
                                     bInSingleComment = True
-                                    iStateArray(i, 3) = bInSingleComment
+                                    iStateArray(i, ENUM_STATE_TYPES.IN_SINGLE_COMMENT) = bInSingleComment
                                 End If
                             End If
                         Case "("c
@@ -2628,7 +2647,7 @@ Public Class FormMain
                             End If
 
                             iParenthesisLevel += 1
-                            iStateArray(i, 0) = iParenthesisLevel
+                            iStateArray(i, ENUM_STATE_TYPES.PARENTHESIS_LEVEL) = iParenthesisLevel
                         Case ")"c
                             If (Not bIgnorePreprocessor AndAlso bInPreprocessor) Then
                                 Continue For
@@ -2639,7 +2658,7 @@ Public Class FormMain
                             End If
 
                             iParenthesisLevel -= 1
-                            iStateArray(i, 0) = iParenthesisLevel
+                            iStateArray(i, ENUM_STATE_TYPES.PARENTHESIS_LEVEL) = iParenthesisLevel
                         Case "["c
                             If (Not bIgnorePreprocessor AndAlso bInPreprocessor) Then
                                 Continue For
@@ -2650,7 +2669,7 @@ Public Class FormMain
                             End If
 
                             iBracketLevel += 1
-                            iStateArray(i, 1) = iBracketLevel
+                            iStateArray(i, ENUM_STATE_TYPES.BRACKET_LEVEL) = iBracketLevel
                         Case "]"c
                             If (Not bIgnorePreprocessor AndAlso bInPreprocessor) Then
                                 Continue For
@@ -2661,7 +2680,7 @@ Public Class FormMain
                             End If
 
                             iBracketLevel -= 1
-                            iStateArray(i, 1) = iBracketLevel
+                            iStateArray(i, ENUM_STATE_TYPES.BRACKET_LEVEL) = iBracketLevel
                         Case "{"c
                             If (Not bIgnorePreprocessor AndAlso bInPreprocessor) Then
                                 Continue For
@@ -2672,7 +2691,7 @@ Public Class FormMain
                             End If
 
                             iBraceLevel += 1
-                            iStateArray(i, 2) = iBraceLevel
+                            iStateArray(i, ENUM_STATE_TYPES.BRACE_LEVEL) = iBraceLevel
                         Case "}"c
                             If (Not bIgnorePreprocessor AndAlso bInPreprocessor) Then
                                 Continue For
@@ -2683,7 +2702,7 @@ Public Class FormMain
                             End If
 
                             iBraceLevel -= 1
-                            iStateArray(i, 2) = iBraceLevel
+                            iStateArray(i, ENUM_STATE_TYPES.BRACE_LEVEL) = iBraceLevel
                         Case "'"c
                             If (Not bIgnorePreprocessor AndAlso bInPreprocessor) Then
                                 Continue For
@@ -2696,10 +2715,10 @@ Public Class FormMain
                             'ignore \'
                             If (i > 1 AndAlso sText(i - 1) <> "\"c) Then
                                 bInChar = Not bInChar
-                                iStateArray(i, 6) = True
+                                iStateArray(i, ENUM_STATE_TYPES.IN_CHAR) = True
                             ElseIf (i > 2 AndAlso sText(i - 1) = "\"c AndAlso sText(i - 2) = "\"c) Then
                                 bInChar = Not bInChar
-                                iStateArray(i, 6) = True
+                                iStateArray(i, ENUM_STATE_TYPES.IN_CHAR) = True
                             End If
                         Case """"c
                             If (Not bIgnorePreprocessor AndAlso bInPreprocessor) Then
@@ -2713,30 +2732,30 @@ Public Class FormMain
                             'ignore \"
                             If (i > 1 AndAlso sText(i - 1) <> "\"c) Then
                                 bInString = Not bInString
-                                iStateArray(i, 5) = True
+                                iStateArray(i, ENUM_STATE_TYPES.IN_STRING) = True
                             ElseIf (i > 2 AndAlso sText(i - 1) = "\"c AndAlso sText(i - 2) = "\"c) Then
                                 bInString = Not bInString
-                                iStateArray(i, 5) = True
+                                iStateArray(i, ENUM_STATE_TYPES.IN_STRING) = True
                             End If
                         Case vbLf
                             If (bInSingleComment) Then
                                 bInSingleComment = False
-                                iStateArray(i, 3) = bInSingleComment
+                                iStateArray(i, ENUM_STATE_TYPES.IN_SINGLE_COMMENT) = bInSingleComment
                             End If
 
                             If (bInPreprocessor) Then
                                 bInPreprocessor = False
-                                iStateArray(i, 7) = bInPreprocessor
+                                iStateArray(i, ENUM_STATE_TYPES.IN_PREPROCESSOR) = bInPreprocessor
                             End If
                         Case Else
-                            iStateArray(i, 0) = iParenthesisLevel
-                            iStateArray(i, 1) = iBracketLevel
-                            iStateArray(i, 2) = iBraceLevel
-                            iStateArray(i, 3) = bInSingleComment
-                            iStateArray(i, 4) = bInMultiComment
-                            iStateArray(i, 5) = bInString
-                            iStateArray(i, 6) = bInChar
-                            iStateArray(i, 7) = bInPreprocessor
+                            iStateArray(i, ENUM_STATE_TYPES.PARENTHESIS_LEVEL) = iParenthesisLevel
+                            iStateArray(i, ENUM_STATE_TYPES.BRACKET_LEVEL) = iBracketLevel
+                            iStateArray(i, ENUM_STATE_TYPES.BRACE_LEVEL) = iBraceLevel
+                            iStateArray(i, ENUM_STATE_TYPES.IN_SINGLE_COMMENT) = bInSingleComment
+                            iStateArray(i, ENUM_STATE_TYPES.IN_MULTI_COMMENT) = bInMultiComment
+                            iStateArray(i, ENUM_STATE_TYPES.IN_STRING) = bInString
+                            iStateArray(i, ENUM_STATE_TYPES.IN_CHAR) = bInChar
+                            iStateArray(i, ENUM_STATE_TYPES.IN_PREPROCESSOR) = bInPreprocessor
                     End Select
                 Next
             End Sub
@@ -5111,7 +5130,7 @@ Public Class FormMain
                 Dim SB As New StringBuilder(sSource)
                 Dim SBModules As New StringBuilder()
 
-                Dim bForceNewSyntrax As Boolean = g_mFormMain.g_ClassSyntraxTools.HasNewDeclsPragma(sSource)
+                Dim bForceNewSyntrax As Boolean = (g_mFormMain.g_ClassSyntraxTools.HasNewDeclsPragma(sSource) <> -1)
 
                 For i = debuggerParser.g_lBreakpointList.Count - 1 To 0 Step -1
                     Dim iIndex As Integer = debuggerParser.g_lBreakpointList(i).iOffset
@@ -5375,7 +5394,7 @@ Public Class FormMain
                 Dim SB As New StringBuilder(sSource)
                 Dim SBModules As New StringBuilder()
 
-                Dim bForceNewSyntrax As Boolean = g_mFormMain.g_ClassSyntraxTools.HasNewDeclsPragma(sSource)
+                Dim bForceNewSyntrax As Boolean = (g_mFormMain.g_ClassSyntraxTools.HasNewDeclsPragma(sSource) <> -1)
 
                 For i = debuggerParser.g_lWatcherList.Count - 1 To 0 Step -1
                     Dim iIndex As Integer = debuggerParser.g_lWatcherList(i).iOffset
