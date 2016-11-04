@@ -39,7 +39,7 @@ Public Class UCInformationList
             Return
         End If
 
-        Dim reMatch As Match = Regex.Match(ListBox1.SelectedItems(0), "\b" & Regex.Escape(ClassSettings.g_sConfigOpenSourcePawnFile) & "\b\((?<Line>[0-9]+)\)\s\:", RegexOptions.IgnoreCase)
+        Dim reMatch As Match = Regex.Match(ListBox1.SelectedItems(0), String.Format("\b{0}\b\((?<Line>[0-9]+)\)\s\:", Regex.Escape(ClassSettings.g_sConfigOpenSourcePawnFile)), RegexOptions.IgnoreCase)
         If (reMatch.Success) Then
             Dim iLineNum As Integer = CInt(reMatch.Groups("Line").Value) - 1
             If (iLineNum < 0 OrElse iLineNum > g_mFormMain.TextEditorControl1.Document.TotalNumberOfLines - 1) Then

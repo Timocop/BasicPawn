@@ -143,11 +143,11 @@ Public Class ClassIniFile
         ' Sort items and write to file
         Dim SB As New StringBuilder
         For Each sSectionListItem In lSectionsList
-            SB.AppendLine("[" & sSectionListItem & "]")
+            SB.AppendLine(String.Format("[{0}]", sSectionListItem))
 
             For Each iContentListItem In lIniContentList
                 If (iContentListItem.sSection = sSectionListItem) Then
-                    SB.AppendLine(iContentListItem.sKey & "=" & iContentListItem.sValue)
+                    SB.AppendLine(String.Format("{0}={1}", iContentListItem.sKey, iContentListItem.sValue))
                 End If
             Next
         Next

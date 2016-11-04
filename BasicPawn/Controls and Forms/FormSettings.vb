@@ -19,7 +19,7 @@ Imports System.Text.RegularExpressions
 
 Public Class FormSettings
     Public g_fFormMain As FormMain = Nothing
-    Private g_sConfigFolder As String = Application.StartupPath & "\configs"
+    Private g_sConfigFolder As String = IO.Path.Combine(Application.StartupPath, "configs")
     Private g_sConfigFileExt As String = ".ini"
 
     Public Sub New()
@@ -383,7 +383,7 @@ Public Class FormSettings
 
         Dim iCounter As Integer = 1
         While True
-            Dim sFileName As String = sCurrentConfigName & "(" & iCounter & ")"
+            Dim sFileName As String = String.Format("{0}({1})", sCurrentConfigName, iCounter)
             Dim sNewFileConfig As String = IO.Path.Combine(g_sConfigFolder, sFileName & g_sConfigFileExt)
 
             If (IO.File.Exists(sNewFileConfig)) Then

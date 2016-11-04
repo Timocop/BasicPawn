@@ -67,7 +67,10 @@ Public Class FormDebugger
 
             g_ClassDebuggerRunner.FixPreProcessFiles(sLstSource)
             'Replace the temp source file with the currently opened one
-            sLstSource = Regex.Replace(sLstSource, "^\s*\#file """ & Regex.Escape(g_sLastPreProcessSourceFile) & """\s*$", "#file """ & g_ClassDebuggerRunner.m_sCurrentSourceFile & """", RegexOptions.IgnoreCase Or RegexOptions.Multiline)
+            sLstSource = Regex.Replace(sLstSource,
+                                       String.Format("^\s*\#file ""{0}""\s*$", Regex.Escape(g_sLastPreProcessSourceFile)),
+                                       String.Format("#file ""{0}""", g_ClassDebuggerRunner.m_sCurrentSourceFile),
+                                       RegexOptions.IgnoreCase Or RegexOptions.Multiline)
 
             g_ClassDebuggerRunner.AnalysisSourceLines(sLstSource)
             g_ClassDebuggerParser.UpdateBreakpoints(sLstSource, False)
@@ -500,6 +503,9 @@ Public Class FormDebugger
                         g_mFormDebugger.ListView_Breakpoints.Items(i).Selected = True
                         g_mFormDebugger.ListView_Breakpoints.Items(i).Selected = False
 
+                        'ListView_Breakpoints.Select()
+                        g_mFormDebugger.TabControl1.SelectTab(0)
+
                         If (g_mActiveBreakpointValue.bReturnCustomValue) Then
                             g_mFormDebugger.ListView_Breakpoints.Items(i).SubItems(2).Text = String.Format("i:{0} | f:{1}", g_mActiveBreakpointValue.sIntegerValue, g_mActiveBreakpointValue.sFloatValue.Replace(",", "."))
                         Else
@@ -527,10 +533,10 @@ Public Class FormDebugger
 
                 If (fileMatches(i).Groups("IsNewline").Success) Then
                     sSource = sSource.Remove(fileMatches(i).Index, fileMatches(i).Value.Length)
-                    sSource = sSource.Insert(fileMatches(i).Index, "#file """ & sPath & """")
+                    sSource = sSource.Insert(fileMatches(i).Index, String.Format("#file ""{0}""", sPath))
                 Else
                     sSource = sSource.Remove(fileMatches(i).Index, fileMatches(i).Value.Length)
-                    sSource = sSource.Insert(fileMatches(i).Index, Environment.NewLine & "#file """ & sPath & """")
+                    sSource = sSource.Insert(fileMatches(i).Index, String.Format("{0}#file ""{1}""", Environment.NewLine, sPath))
                 End If
             Next
         End Sub
@@ -618,7 +624,7 @@ Public Class FormDebugger
                 End While
             End Using
 
-            sourceFinished.AppendLine("#file """ & m_sPluginIdentity & """")
+            sourceFinished.AppendLine(String.Format("#file ""{0}""", m_sPluginIdentity))
 
             sSource = sourceFinished.ToString
         End Sub
@@ -681,7 +687,7 @@ Public Class FormDebugger
                 'Export debugger cmd runner engine
                 If (True) Then
                     Dim sSource As String = g_mFormDebugger.g_ClassDebuggerRunnerEngine.GenerateRunnerEngine(False)
-                    Dim sOutput As String = IO.Path.Combine(m_sSourceModFolder, "plugins\BasicPawnDebugCmdRunEngine-" & Guid.NewGuid.ToString & ".smx")
+                    Dim sOutput As String = IO.Path.Combine(m_sSourceModFolder, String.Format("plugins\BasicPawnDebugCmdRunEngine-{0}.smx", Guid.NewGuid.ToString))
                     g_sLatestDebuggerRunnerPlugin = sOutput
 
                     If (Not g_mFormDebugger.g_mFormMain.g_ClassTextEditorTools.CompileSource(False, sSource, sOutput)) Then
@@ -692,7 +698,7 @@ Public Class FormDebugger
                 'Export main plugin source
                 If (True) Then
                     Dim sSource As String = g_mFormDebugger.TextEditorControlEx_DebuggerSource.Document.TextContent
-                    Dim sOutput As String = IO.Path.Combine(m_sSourceModFolder, "plugins\BasicPawnDebug-" & Guid.NewGuid.ToString & ".smx")
+                    Dim sOutput As String = IO.Path.Combine(m_sSourceModFolder, String.Format("plugins\BasicPawnDebug-{0}.smx", Guid.NewGuid.ToString))
                     g_sLatestDebuggerPlugin = sOutput
 
                     g_mFormDebugger.g_ClassDebuggerParser.UpdateBreakpoints(sSource, True)
@@ -1923,10 +1929,10 @@ Public Class FormDebugger
                 End If
             End If
 
-            ToolStripStatusLabel_EditorDebugLing.Text = "DL: " & iDebugLine + 1
-            ToolStripStatusLabel_EditorLine.Text = "L: " & iRealLine & " (" & sFile & ")"
-            ToolStripStatusLabel_EditorCollum.Text = "C: " & TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.TextArea.Caret.Column
-            ToolStripStatusLabel_EditorSelected.Text = "S: " & TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.TextArea.SelectionManager.SelectedText.Length
+            ToolStripStatusLabel_EditorDebugLing.Text = String.Format("DL: {0}", iDebugLine + 1)
+            ToolStripStatusLabel_EditorLine.Text = String.Format("L: {0} ({1})", iRealLine, sFile)
+            ToolStripStatusLabel_EditorCollum.Text = String.Format("C: {0}", TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.TextArea.Caret.Column)
+            ToolStripStatusLabel_EditorSelected.Text = String.Format("S: {0}", TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.TextArea.SelectionManager.SelectedText.Length)
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try

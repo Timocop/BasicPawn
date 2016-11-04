@@ -84,7 +84,11 @@ Public Class FormMain
     End Sub
 
     Public Sub ChangeTitle()
-        Me.Text = Application.ProductName & " (" & If(String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourcePawnFile), "Unnamed", IO.Path.GetFileName(ClassSettings.g_sConfigOpenSourcePawnFile)) & ")" & If(g_bCodeChanged, "*"c, "")
+        If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourcePawnFile)) Then
+            Me.Text = String.Format("{0} ({1}){2}", Application.ProductName, "Unnamed", If(g_bCodeChanged, "*"c, ""))
+        Else
+            Me.Text = String.Format("{0} ({1}){2}", Application.ProductName, IO.Path.GetFileName(ClassSettings.g_sConfigOpenSourcePawnFile), If(g_bCodeChanged, "*"c, ""))
+        End If
 
         ToolStripStatusLabel_CurrentConfig.Text = "Config: " & If(String.IsNullOrEmpty(ClassSettings.g_sConfigName), "Default", ClassSettings.g_sConfigName)
     End Sub
@@ -98,7 +102,7 @@ Public Class FormMain
                       If (bClear) Then
                           g_mUCInformationList.ListBox1.Items.Clear()
                       End If
-                      g_mUCInformationList.ListBox1.Items.Insert(0, sType & " (" & Now.ToString & ") " & sMessage)
+                      g_mUCInformationList.ListBox1.Items.Insert(0, String.Format("{0} ({1}) {2}", sType, Now.ToString, sMessage))
                       ToolStripStatusLabel_LastInformation.Text = sMessage
 
                       If (bShowInformationTab) Then
@@ -440,7 +444,9 @@ Public Class FormMain
 
                         Case Regex.IsMatch(struc.sType, "\b(methodmap)\b")
                             If (struc.sFunctionName.IndexOf("."c) > -1 AndAlso sFunctionName.IndexOf("."c) > -1 AndAlso Not sFunctionName.StartsWith(struc.sFunctionName)) Then
-                                Dim sNewInput As String = sFunctionName.Remove(sFunctionName.LastIndexOf("."c), sFunctionName.Length - sFunctionName.LastIndexOf("."c)) & "."c & struc.sFunctionName.Remove(0, struc.sFunctionName.IndexOf("."c) + 1)
+                                Dim sNewInput As String = String.Format("{0}.{1}",
+                                                                        sFunctionName.Remove(sFunctionName.LastIndexOf("."c), sFunctionName.Length - sFunctionName.LastIndexOf("."c)),
+                                                                        struc.sFunctionName.Remove(0, struc.sFunctionName.IndexOf("."c) + 1))
                                 TextEditorControl1.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, sNewInput)
 
                                 iPosition = TextEditorControl1.ActiveTextAreaControl.TextArea.Caret.Position.Column
@@ -462,7 +468,7 @@ Public Class FormMain
                                 TextEditorControl1.ActiveTextAreaControl.Caret.Column = iPosition + sNewInput.Length
                             Else
                                 Dim sNewInput As String = struc.sFunctionName.Remove(0, Regex.Match(struc.sFunctionName, "^(?<Useless>.*?)\b[a-zA-Z0-9_]+\b\s*\(").Groups("Useless").Length)
-                                TextEditorControl1.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, sNewInput & "()")
+                                TextEditorControl1.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, String.Format("{0}()", sNewInput))
 
                                 iPosition = TextEditorControl1.ActiveTextAreaControl.TextArea.Caret.Position.Column
                                 TextEditorControl1.ActiveTextAreaControl.Caret.Column = iPosition + sNewInput.Length + 1
@@ -703,7 +709,7 @@ Public Class FormMain
     End Sub
 
     Private Sub ToolStripMenuItem_FileSaveAsTemp_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileSaveAsTemp.Click
-        Dim sTempFile As String = IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString) & ".sp"
+        Dim sTempFile As String = String.Format("{0}.sp", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
 
         ClassSettings.g_sConfigOpenSourcePawnFile = sTempFile
 
@@ -865,7 +871,7 @@ Public Class FormMain
 #Region "MenuStrip_Help"
     Private Sub ToolStripMenuItem_HelpAbout_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_HelpAbout.Click
         Dim SB As New StringBuilder
-        SB.AppendLine(Application.ProductName & " v." & Application.ProductVersion)
+        SB.AppendLine(String.Format("{0} v.{1}", Application.ProductName, Application.ProductVersion))
         SB.AppendLine("Created by Externet (aka Timocop)")
         SB.AppendLine()
         'SB.AppendLine("Website:")
@@ -966,7 +972,7 @@ Public Class FormMain
             End If
 
             If (Not String.IsNullOrEmpty(g_mFormMain.g_ClassSyntraxTools.g_sCaretWord) AndAlso
-                        Regex.Matches(g_mFormMain.TextEditorControl1.Document.TextContent, "\b" & Regex.Escape(g_mFormMain.g_ClassSyntraxTools.g_sCaretWord) & "\b", RegexOptions.Multiline).Count < 2) Then
+                        Regex.Matches(g_mFormMain.TextEditorControl1.Document.TextContent, String.Format("\b{0}\b", Regex.Escape(g_mFormMain.g_ClassSyntraxTools.g_sCaretWord)), RegexOptions.Multiline).Count < 2) Then
                 Return
             End If
 
@@ -1015,7 +1021,7 @@ Public Class FormMain
 
                             iLineCount += 1
 
-                            If (sLine.Contains(sWord) AndAlso Regex.IsMatch(sLine, "\b" & Regex.Escape(sWord) & "\b")) Then
+                            If (sLine.Contains(sWord) AndAlso Regex.IsMatch(sLine, String.Format("\b{0}\b", Regex.Escape(sWord)))) Then
                                 lRefList.Add(vbTab & String.Format("Reference found: {0}({1}) : {2}", sFile, iLineCount, sLine.Trim))
                             End If
                         End While
@@ -1031,7 +1037,7 @@ Public Class FormMain
 
                             iLineCount += 1
 
-                            If (sLine.Contains(sWord) AndAlso Regex.IsMatch(sLine, "\b" & Regex.Escape(sWord) & "\b")) Then
+                            If (sLine.Contains(sWord) AndAlso Regex.IsMatch(sLine, String.Format("\b{0}\b", Regex.Escape(sWord)))) Then
                                 lRefList.Add(vbTab & String.Format("Reference found: {0}({1}) : {2}", sFile, iLineCount, sLine.Trim))
                             End If
                         End While
@@ -1237,7 +1243,7 @@ Public Class FormMain
 
                 'Check compiler
                 If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    sCompilerPath = IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourcePawnFile) & "\spcomp.exe"
+                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourcePawnFile), "spcomp.exe")
                     If (Not IO.File.Exists(sCompilerPath)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! SourcePawn Compiler can not be found!")
                         Return
@@ -1252,7 +1258,8 @@ Public Class FormMain
 
                 'Check include path
                 If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    sIncludePath = IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourcePawnFile) & "\include"
+                    sIncludePath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourcePawnFile), "include")
+
                     If (Not IO.Directory.Exists(sIncludePath)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!")
                         Return
@@ -1267,22 +1274,23 @@ Public Class FormMain
 
                 'Set output path
                 If (bTesting) Then
-                    sOutputFile = IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString) & ".smx"
+                    sOutputFile = String.Format("{0}.smx", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
                 Else
                     If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                        sOutputFile = IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourcePawnFile) & "\compiled\" & IO.Path.GetFileNameWithoutExtension(ClassSettings.g_sConfigOpenSourcePawnFile) & ".smx"
+                        sOutputFile = String.Format("{0}\compiled\{1}.smx", IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourcePawnFile).TrimEnd("\"c), IO.Path.GetFileNameWithoutExtension(ClassSettings.g_sConfigOpenSourcePawnFile))
                     Else
                         If (Not IO.Directory.Exists(ClassSettings.g_sConfigPluginOutputFolder)) Then
                             g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Invalid output directory!")
                             Return
                         End If
-                        sOutputFile = ClassSettings.g_sConfigPluginOutputFolder & "\" & IO.Path.GetFileNameWithoutExtension(ClassSettings.g_sConfigOpenSourcePawnFile) & ".smx"
+                        sOutputFile = String.Format("{0}\{1}.smx", ClassSettings.g_sConfigPluginOutputFolder.TrimEnd("\"c), IO.Path.GetFileNameWithoutExtension(ClassSettings.g_sConfigOpenSourcePawnFile))
                     End If
                 End If
 
                 IO.File.Delete(sOutputFile)
 
-                ClassTools.ExecuteProgram(sCompilerPath, """" & ClassSettings.g_sConfigOpenSourcePawnFile & """ -i""" & sIncludePath & """ -o""" & sOutputFile & """", iExitCode, sOutput)
+                Dim sArguments As String = String.Format("""{0}"" -i""{1}"" -o""{2}""", ClassSettings.g_sConfigOpenSourcePawnFile, sIncludePath, sOutputFile)
+                ClassTools.ExecuteProgram(sCompilerPath, sArguments, iExitCode, sOutput)
 
                 Dim sLines As String() = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
                 For i = sLines.Length - 1 To 0 Step -1
@@ -1297,7 +1305,7 @@ Public Class FormMain
                 End If
 
                 If (Not bTesting) Then
-                    g_mFormMain.PrintInformation("[INFO]", vbTab & "Saved compiled Sourcepawn Source: " & sOutputFile)
+                    g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Saved compiled Sourcepawn Source: {0}", sOutputFile))
                 End If
                 g_mFormMain.PrintInformation("[INFO]", "Compiling SourcePawn Source finished!")
             Catch ex As Exception
@@ -1334,7 +1342,7 @@ Public Class FormMain
                             Return False
                         End If
 
-                        sCompilerPath = IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourcePawnFile) & "\spcomp.exe"
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourcePawnFile), "spcomp.exe")
                         If (Not IO.File.Exists(sCompilerPath)) Then
                             g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! SourcePawn Compiler can not be found!")
                             Return False
@@ -1361,7 +1369,7 @@ Public Class FormMain
                             Return False
                         End If
 
-                        sIncludePath = IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourcePawnFile) & "\include"
+                        sIncludePath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourcePawnFile), "include")
                         If (Not IO.Directory.Exists(sIncludePath)) Then
                             g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!")
                             Return False
@@ -1382,15 +1390,16 @@ Public Class FormMain
 
                 'Set output path
                 If (bTesting) Then
-                    sOutputFile = IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString) & ".smx"
+                    sOutputFile = String.Format("{0}.smx", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
                 End If
 
                 IO.File.Delete(sOutputFile)
 
-                Dim TmpSourceFile As String = IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString) & ".sp"
+                Dim TmpSourceFile As String = String.Format("{0}.sp", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
                 IO.File.WriteAllText(TmpSourceFile, sSource)
 
-                ClassTools.ExecuteProgram(sCompilerPath, """" & TmpSourceFile & """ -i""" & sIncludePath & """ -o""" & sOutputFile & """", iExitCode, sOutput)
+                Dim sArguments As String = String.Format("""{0}"" -i""{1}"" -o""{2}""", TmpSourceFile, sIncludePath, sOutputFile)
+                ClassTools.ExecuteProgram(sCompilerPath, sArguments, iExitCode, sOutput)
 
                 IO.File.Delete(TmpSourceFile)
 
@@ -1407,7 +1416,7 @@ Public Class FormMain
                 End If
 
                 If (Not bTesting) Then
-                    g_mFormMain.PrintInformation("[INFO]", vbTab & "Saved compiled Sourcepawn Source: " & sOutputFile)
+                    g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Saved compiled Sourcepawn Source: {0}", sOutputFile))
                 End If
                 g_mFormMain.PrintInformation("[INFO]", "Compiling SourcePawn Source finished!")
 
@@ -1456,7 +1465,7 @@ Public Class FormMain
 
                 'Check compiler
                 If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    sCompilerPath = IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourcePawnFile) & "\spcomp.exe"
+                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourcePawnFile), "spcomp.exe")
                     If (Not IO.File.Exists(sCompilerPath)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! SourcePawn Compiler can not be found!")
                         Return Nothing
@@ -1471,7 +1480,7 @@ Public Class FormMain
 
                 'Check include path
                 If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    sIncludePath = IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourcePawnFile) & "\include"
+                    sIncludePath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourcePawnFile), "include")
                     If (Not IO.Directory.Exists(sIncludePath)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!")
                         Return Nothing
@@ -1486,7 +1495,7 @@ Public Class FormMain
 
 
                 Dim sTmpSource As String = IO.File.ReadAllText(ClassSettings.g_sConfigOpenSourcePawnFile)
-                Dim sTmpSourcePath As String = IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString & ".sp")
+                Dim sTmpSourcePath As String = String.Format("{0}.sp", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
 
                 sTempOutputFile = sTmpSourcePath
 
@@ -1502,9 +1511,10 @@ Public Class FormMain
 
                 IO.File.WriteAllText(sTmpSourcePath, sTmpSource)
 
-                sOutputFile = IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString) & ".lst"
+                sOutputFile = String.Format("{0}.lst", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
 
-                ClassTools.ExecuteProgram(sCompilerPath, """" & sTmpSourcePath & """ -l -i""" & sIncludePath & """ -o""" & sOutputFile & """", iExitCode, sOutput)
+                Dim sArguments As String = String.Format("""{0}"" -l -i""{1}"" -o""{2}""", sTmpSourcePath, sIncludePath, sOutputFile)
+                ClassTools.ExecuteProgram(sCompilerPath, sArguments, iExitCode, sOutput)
 
                 IO.File.Delete(sTmpSourcePath)
 
@@ -1615,7 +1625,7 @@ Public Class FormMain
 
                 'Check compiler
                 If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    sCompilerPath = IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourcePawnFile) & "\spcomp.exe"
+                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourcePawnFile), "spcomp.exe")
                     If (Not IO.File.Exists(sCompilerPath)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! SourcePawn Compiler can not be found!")
                         Return Nothing
@@ -1630,7 +1640,7 @@ Public Class FormMain
 
                 'Check include path
                 If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    sIncludePath = IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourcePawnFile) & "\include"
+                    sIncludePath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourcePawnFile), "include")
                     If (Not IO.Directory.Exists(sIncludePath)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Include path can not be found!")
                         Return Nothing
@@ -1645,13 +1655,14 @@ Public Class FormMain
 
 
                 Dim sTmpSource As String = IO.File.ReadAllText(ClassSettings.g_sConfigOpenSourcePawnFile)
-                Dim sTmpSourcePath As String = IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString & ".sp")
+                Dim sTmpSourcePath As String = String.Format("{0}.sp", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
 
                 IO.File.WriteAllText(sTmpSourcePath, sTmpSource)
 
-                sOutputFile = IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString) & ".asm"
+                sOutputFile = String.Format("{0}.asm", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
 
-                ClassTools.ExecuteProgram(sCompilerPath, """" & sTmpSourcePath & """ -a -i""" & sIncludePath & """ -o""" & sOutputFile & """", iExitCode, sOutput)
+                Dim sArguments As String = String.Format("""{0}"" -a -i""{1}"" -o""{2}""", sTmpSourcePath, sIncludePath, sOutputFile)
+                ClassTools.ExecuteProgram(sCompilerPath, sArguments, iExitCode, sOutput)
 
                 IO.File.Delete(sTmpSourcePath)
 
@@ -1709,7 +1720,7 @@ Public Class FormMain
                             Return Nothing
                         End If
 
-                        sCompilerPath = IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourcePawnFile) & "\spcomp.exe"
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourcePawnFile), "spcomp.exe")
                         If (Not IO.File.Exists(sCompilerPath)) Then
                             g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! SourcePawn Compiler can not be found!")
                             Return Nothing
@@ -1736,7 +1747,7 @@ Public Class FormMain
                             Return Nothing
                         End If
 
-                        sIncludePath = IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourcePawnFile) & "\include"
+                        sIncludePath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourcePawnFile), "include")
                         If (Not IO.Directory.Exists(sIncludePath)) Then
                             g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Include path can not be found!")
                             Return Nothing
@@ -1757,13 +1768,14 @@ Public Class FormMain
 
                 'Set output path
                 If (bTesting) Then
-                    sOutputFile = IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString) & ".asm"
+                    sOutputFile = String.Format("{0}.asm", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
                 End If
 
-                Dim TmpSourceFile As String = IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString) & ".sp"
+                Dim TmpSourceFile As String = String.Format("{0}.sp", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
                 IO.File.WriteAllText(TmpSourceFile, sSource)
 
-                ClassTools.ExecuteProgram(sCompilerPath, """" & TmpSourceFile & """ -a -i""" & sIncludePath & """ -o""" & sOutputFile & """", iExitCode, sOutput)
+                Dim sArguments As String = String.Format("""{0}"" -a -i""{1}"" -o""{2}""", TmpSourceFile, sIncludePath, sOutputFile)
+                ClassTools.ExecuteProgram(sCompilerPath, sArguments, iExitCode, sOutput)
 
                 Dim sLines As String() = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
                 For i = sLines.Length - 1 To 0 Step -1
@@ -1779,7 +1791,7 @@ Public Class FormMain
                 End If
 
                 If (Not bTesting) Then
-                    g_mFormMain.PrintInformation("[INFO]", vbTab & "Saved DIASM Sourcepawn Source: " & sOutputFile)
+                    g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Saved DIASM Sourcepawn Source: {0}", sOutputFile))
                 End If
                 g_mFormMain.PrintInformation("[INFO]", "DIASM SourcePawn Source finished!")
 
@@ -1985,12 +1997,12 @@ Public Class FormMain
             Dim sSyntraxWorkingDir As String = IO.Path.Combine(My.Computer.FileSystem.SpecialDirectories.Temp, Guid.NewGuid.ToString)
 
             g_SyntraxFiles(ENUM_SYNTRAX_FILES.MAIN_TEXTEDITOR) = New STRUC_SYNTRAX_FILES_ITEM() With {
-                                                                        .sFile = IO.Path.Combine(sSyntraxWorkingDir, Guid.NewGuid.ToString & ".xshd"),
+                                                                        .sFile = String.Format("{0}.xshd", IO.Path.Combine(sSyntraxWorkingDir, Guid.NewGuid.ToString)),
                                                                         .sFolder = sSyntraxWorkingDir,
                                                                         .sDefinition = "SourcePawn-MainTextEditor-" & Guid.NewGuid.ToString}
 
             g_SyntraxFiles(ENUM_SYNTRAX_FILES.DEBUGGER_TEXTEDITOR) = New STRUC_SYNTRAX_FILES_ITEM() With {
-                                                                        .sFile = IO.Path.Combine(sSyntraxWorkingDir, Guid.NewGuid.ToString & ".xshd"),
+                                                                        .sFile = String.Format("{0}.xshd", IO.Path.Combine(sSyntraxWorkingDir, Guid.NewGuid.ToString)),
                                                                         .sFolder = sSyntraxWorkingDir,
                                                                         .sDefinition = "SourcePawn-DebugTextEditor-" & Guid.NewGuid.ToString}
 
@@ -2123,7 +2135,7 @@ Public Class FormMain
 
                                                     If (Not String.IsNullOrEmpty(g_sCaretWord) AndAlso ClassSettings.g_iSettingsAutoMark) Then
                                                         SB.Append("<KeyWords name=""CaretWords"" color=""Black"" bgcolor=""LightBlue"">")
-                                                        SB.Append("<Key word=""" & g_sCaretWord & """/>")
+                                                        SB.Append(String.Format("<Key word=""{0}""/>", g_sCaretWord))
                                                         SB.Append("</KeyWords>")
                                                     End If
 
@@ -2139,7 +2151,7 @@ Public Class FormMain
 
                                                     If (Not String.IsNullOrEmpty(g_sHighlightWord)) Then
                                                         SB.Append("<KeyWords name=""HighlightWords"" color=""Black"" bgcolor=""LightGreen"">")
-                                                        SB.Append("<Key word=""" & g_sHighlightWord & """/>")
+                                                        SB.Append(String.Format("<Key word=""{0}""/>", g_sHighlightWord))
                                                         SB.Append("</KeyWords>")
                                                     End If
 
@@ -2155,7 +2167,7 @@ Public Class FormMain
                                                     For Each struc In lAutocompleteList
                                                         Select Case (True)
                                                             Case struc.sType = "define" OrElse struc.sType = "publicvar"
-                                                                SB.Append("<Key word=""" & struc.sFunctionName & """/>")
+                                                                SB.Append(String.Format("<Key word=""{0}""/>", struc.sFunctionName))
 
                                                         End Select
                                                     Next
@@ -2180,7 +2192,7 @@ Public Class FormMain
                                                                         lExistList.Add(sEnumName(0))
                                                                     End If
 
-                                                                    SB.Append("<Key word=""" & sEnumName(1) & """/>")
+                                                                    SB.Append(String.Format("<Key word=""{0}""/>", sEnumName(1)))
                                                                 End If
 
                                                             Case struc.sType = "methodmap"
@@ -2193,7 +2205,7 @@ Public Class FormMain
 
                                                     SB.Append("<KeyWords name=""Enum2Words"" bold=""true"" italic=""false"" color=""DarkCyan"">")
                                                     For Each s In lExistList
-                                                        SB.Append("<Key word=""" & s & """/>")
+                                                        SB.Append(String.Format("<Key word=""{0}""/>", s))
                                                     Next
                                                     SB.Append("</KeyWords>")
 
@@ -2824,7 +2836,7 @@ Public Class FormMain
                 Next
 
 
-                Dim sRegExEnum As String = "(\b" & String.Join("\b|\b", GetEnumNames(lTmpAutocompleteList)) & "\b)"
+                Dim sRegExEnum As String = String.Format("(\b{0}\b)", String.Join("\b|\b", GetEnumNames(lTmpAutocompleteList)))
                 For i = 0 To sSourceList.Count - 1
                     ParseAutocomplete_Post(sSourceList(i)(0), sRegExEnum, sSourceList(i)(1), lTmpAutocompleteList)
                 Next
@@ -2905,7 +2917,7 @@ Public Class FormMain
                         Dim iNewStruc As STRUC_AUTOCOMPLETE
                         iNewStruc.sFile = iStruc2.sFile
                         iNewStruc.sFullFunctionname = iStruc2.sFullFunctionname
-                        iNewStruc.sFunctionName = Regex.Replace(iStruc2.sFunctionName, "^\b[a-zA-Z0-9_]+\b\.", sName & "."c)
+                        iNewStruc.sFunctionName = Regex.Replace(iStruc2.sFunctionName, "^\b[a-zA-Z0-9_]+\b\.", String.Format("{0}.", sName))
                         iNewStruc.sInfo = iStruc2.sInfo
                         iNewStruc.sType = iStruc2.sType
 
@@ -2986,7 +2998,7 @@ Public Class FormMain
 
             If (True) Then
                 Dim sTypes As String() = {"enum", "funcenum", "functag", "stock", "static", "const", "public", "native", "forward", "typeset", "methodmap", "typedef"}
-                Dim mRegMatchCol As MatchCollection = Regex.Matches(sSource, "^\s*(\b" & String.Join("\b|\b", sTypes) & "\b)(?<Space>\s*\n\s*)", RegexOptions.Multiline)
+                Dim mRegMatchCol As MatchCollection = Regex.Matches(sSource, String.Format("^\s*(\b{0}\b)(?<Space>\s*\n\s*)", String.Join("\b|\b", sTypes)), RegexOptions.Multiline)
                 For i = mRegMatchCol.Count - 1 To 0 Step -1
                     Dim mRegMatch As Match = mRegMatchCol(i)
                     If (Not mRegMatch.Groups("Space").Success) Then
@@ -3271,7 +3283,7 @@ Public Class FormMain
 
                     sEnumName = mRegMatch.Groups("Name").Value
                     If (String.IsNullOrEmpty(sEnumName.Trim)) Then
-                        g_mFormMain.PrintInformation("[ERRO]", vbTab & "Failed to read name from enum because it has no name: Renamed to 'Enum' (" & IO.Path.GetFileName(sFile) & ")")
+                        g_mFormMain.PrintInformation("[ERRO]", vbTab & String.Format("Failed to read name from enum because it has no name: Renamed to 'Enum' ({0})", IO.Path.GetFileName(sFile)))
                         sEnumName = "Enum"
                     End If
 
@@ -3336,7 +3348,7 @@ Public Class FormMain
                     For ii = 0 To sEnumSourceLines.Length - 1
                         iTargetEnumSplitListIndex = -1
                         For iii = 0 To lEnumSplitList.Count - 1
-                            If (sEnumSourceLines(ii).Contains(lEnumSplitList(iii)) AndAlso Regex.IsMatch(sEnumSourceLines(ii), "\b" & Regex.Escape(lEnumSplitList(iii)) & "\b")) Then
+                            If (sEnumSourceLines(ii).Contains(lEnumSplitList(iii)) AndAlso Regex.IsMatch(sEnumSourceLines(ii), String.Format("\b{0}\b", Regex.Escape(lEnumSplitList(iii))))) Then
                                 iTargetEnumSplitListIndex = iii
                                 Exit For
                             End If
@@ -3383,7 +3395,7 @@ Public Class FormMain
 
                         regMatch = Regex.Match(sEnumFull, "^\s*(?<Tag>\b[a-zA-Z0-9_]+\b:)*(?<Name>\b[a-zA-Z0-9_]+\b)")
                         If (Not regMatch.Groups("Name").Success) Then
-                            g_mFormMain.PrintInformation("[ERRO]", vbTab & "Failed to resolve type 'Enum': enum " & sEnumName & " " & sEnumFull)
+                            g_mFormMain.PrintInformation("[ERRO]", vbTab & String.Format("Failed to resolve type 'Enum': enum {0} {1}", sEnumName, sEnumFull))
                             Continue For
                         End If
 
@@ -3391,8 +3403,8 @@ Public Class FormMain
 
                         Dim struc As STRUC_AUTOCOMPLETE
                         struc.sFile = IO.Path.GetFileName(sFile)
-                        struc.sFullFunctionname = "enum " & sEnumName & " " & sEnumFull '& " " & sEnumComment
-                        struc.sFunctionName = sEnumName & "." & sEnumVarName
+                        struc.sFullFunctionname = String.Format("enum {0} {1}", sEnumName, sEnumFull)
+                        struc.sFunctionName = String.Format("{0}.{1}", sEnumName, sEnumVarName)
                         struc.sInfo = sEnumComment
                         struc.sType = "enum"
 
@@ -3450,10 +3462,10 @@ Public Class FormMain
 
                             sBraceText = sLine.Substring(iBraceList(0)(0) + 1, iBraceList(0)(1) - iBraceList(0)(0))
 
-                            sFullDefine = Regex.Match(sLine, Regex.Escape(mRegMatch.Value) & Regex.Escape(sBraceText) & "(.*?)$").Value
+                            sFullDefine = Regex.Match(sLine, String.Format("{0}{1}(.*?)$", Regex.Escape(mRegMatch.Value), Regex.Escape(sBraceText))).Value
                             sFullName = sFullDefine
                         Else
-                            sFullDefine = Regex.Match(sLine, Regex.Escape(mRegMatch.Value) & "(.*?)$").Value
+                            sFullDefine = Regex.Match(sLine, String.Format("{0}(.*?)$", Regex.Escape(mRegMatch.Value))).Value
                             sFullName = sFullDefine
                         End If
 
@@ -3506,17 +3518,17 @@ Public Class FormMain
                     End If
 
                     'SP 1.7 +Tags
-                    mRegMatch = Regex.Match(sLines(i), "^\s*(?<Types>public(\b[a-zA-Z0-9_ ]+\b)*)\s+(?<Tag>\b" & sRegExEnum & "\b(\[\s*\])*\s)\s*(?<Name>\b[a-zA-Z0-9_]+\b)(?<Other>(.*?))$")
+                    mRegMatch = Regex.Match(sLines(i), String.Format("^\s*(?<Types>public(\b[a-zA-Z0-9_ ]+\b)*)\s+(?<Tag>\b{0}\b(\[\s*\])*\s)\s*(?<Name>\b[a-zA-Z0-9_]+\b)(?<Other>(.*?))$", sRegExEnum))
                     If (Not mRegMatch.Success) Then
                         If (ClassSettings.g_iSettingsAutocompleteSyntrax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTRAX.SP_1_7) Then
                             Continue For
                         End If
 
                         'SP 1.6 +Tags
-                        mRegMatch = Regex.Match(sLines(i), "^\s*(?<Types>public(\b[a-zA-Z0-9_ ]+\b)*)\s+(?<Tag>\b" & sRegExEnum & "\b\:)(?<Name>\b[a-zA-Z0-9_]+\b)(?<Other>(.*?))$")
+                        mRegMatch = Regex.Match(sLines(i), String.Format("^\s*(?<Types>public(\b[a-zA-Z0-9_ ]+\b)*)\s+(?<Tag>\b{0}\b\:)(?<Name>\b[a-zA-Z0-9_]+\b)(?<Other>(.*?))$", sRegExEnum))
                         If (Not mRegMatch.Success) Then
                             'SP 1.6 -Tags
-                            mRegMatch = Regex.Match(sLines(i), "^\s*(?<Types>public(\b[a-zA-Z0-9_ ]+\b)*)\s+(?<!<Tag>\b" & sRegExEnum & "\b\:)(?<Name>\b[a-zA-Z0-9_]+\b)(?<Other>(.*?))$")
+                            mRegMatch = Regex.Match(sLines(i), String.Format("^\s*(?<Types>public(\b[a-zA-Z0-9_ ]+\b)*)\s+(?<!<Tag>\b{0}\b\:)(?<Name>\b[a-zA-Z0-9_]+\b)(?<Other>(.*?))$", sRegExEnum))
                             If (Not mRegMatch.Success) Then
                                 Continue For
                             End If
@@ -3527,12 +3539,12 @@ Public Class FormMain
                         End If
                     End If
 
-                    sType = "publicvar" 'mRegMatch.Groups("Types").Value
+                    sType = "publicvar"
                     sFullName = ""
                     sName = mRegMatch.Groups("Name").Value
                     sComment = Regex.Match(mRegMatch.Groups("Other").Value, "/\*(.*?)\*/\s*$").Value
 
-                    sFullName = mRegMatch.Groups("Types").Value & " " & mRegMatch.Groups("Tag").Value & mRegMatch.Groups("Name").Value & mRegMatch.Groups("Other").Value
+                    sFullName = String.Format("{0} {1}{2}{3}", mRegMatch.Groups("Types").Value, mRegMatch.Groups("Tag").Value, mRegMatch.Groups("Name").Value, mRegMatch.Groups("Other").Value)
                     sFullName = sFullName.Replace(vbTab, " "c)
                     If (Not String.IsNullOrEmpty(sComment)) Then
                         sFullName = sFullName.Replace(sComment, "")
@@ -3574,7 +3586,7 @@ Public Class FormMain
                 If (sourceAnalysis.GetMaxLenght - 1 > 0) Then
                     Dim iLastBraceLevel As Integer = sourceAnalysis.GetBraceLevel(sourceAnalysis.GetMaxLenght - 1)
                     If (iLastBraceLevel > 0) Then
-                        g_mFormMain.PrintInformation("[ERRO]", vbTab & "Uneven brace level! May lead to syntrax parser failures! [LV:" & iLastBraceLevel & "] (" & IO.Path.GetFileName(sFile) & ")")
+                        g_mFormMain.PrintInformation("[ERRO]", vbTab & String.Format("Uneven brace level! May lead to syntrax parser failures! [LV:{0}] ({1})", iLastBraceLevel, IO.Path.GetFileName(sFile)))
                     End If
                 End If
 
@@ -3596,17 +3608,17 @@ Public Class FormMain
                     sBraceText = sLines(i).Substring(iBraceList(0)(0), iBraceList(0)(1) - iBraceList(0)(0) + 1)
 
                     'SP 1.7 +Tags
-                    mRegMatch = Regex.Match(sLines(i), "^\s*(?<Types>[a-zA-Z0-9_ ]*)(?<Tag>\b" & sRegExEnum & "\b\s)\s*(?<Name>\b[a-zA-Z0-9_]+\b)\s*" & Regex.Escape(sBraceText) & "(?<IsFunc>\s*;){0,1}")
+                    mRegMatch = Regex.Match(sLines(i), String.Format("^\s*(?<Types>[a-zA-Z0-9_ ]*)(?<Tag>\b{0}\b\s)\s*(?<Name>\b[a-zA-Z0-9_]+\b)\s*{1}(?<IsFunc>\s*;){2}", sRegExEnum, Regex.Escape(sBraceText), "{0,1}"))
                     If (Not mRegMatch.Success) Then
                         If (ClassSettings.g_iSettingsAutocompleteSyntrax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTRAX.SP_1_7) Then
                             Continue For
                         End If
 
                         'SP 1.6 +Tags
-                        mRegMatch = Regex.Match(sLines(i), "^\s*(?<Types>[a-zA-Z0-9_ ]*)(?<Tag>\b" & sRegExEnum & "\b\:)(?<Name>\b[a-zA-Z0-9_]+\b)\s*" & Regex.Escape(sBraceText) & "(?<IsFunc>\s*;){0,1}")
+                        mRegMatch = Regex.Match(sLines(i), String.Format("^\s*(?<Types>[a-zA-Z0-9_ ]*)(?<Tag>\b{0}\b\:)(?<Name>\b[a-zA-Z0-9_]+\b)\s*{1}(?<IsFunc>\s*;){2}", sRegExEnum, Regex.Escape(sBraceText), "{0,1}"))
                         If (Not mRegMatch.Success) Then
                             'SP 1.6 -Tags
-                            mRegMatch = Regex.Match(sLines(i), "^\s*(?<Types>[a-zA-Z0-9_ ]*)(?<!<Tag>\b" & sRegExEnum & "\b\:)(?<Name>\b[a-zA-Z0-9_]+\b)\s*" & Regex.Escape(sBraceText) & "(?<IsFunc>\s*;){0,1}")
+                            mRegMatch = Regex.Match(sLines(i), String.Format("^\s*(?<Types>[a-zA-Z0-9_ ]*)(?<!<Tag>\b{0}\b\:)(?<Name>\b[a-zA-Z0-9_]+\b)\s*{1}(?<IsFunc>\s*;){2}", sRegExEnum, Regex.Escape(sBraceText), "{0,1}"))
                             If (Not mRegMatch.Success) Then
                                 Continue For
                             End If
@@ -3623,7 +3635,7 @@ Public Class FormMain
                     sFull = mRegMatch.Groups("Types").Value & sTag & sName & sBraceText
                     sComment = ""
 
-                    If (Regex.IsMatch(sName, "(\b" & String.Join("\b|\b", g_mFormMain.g_ClassSyntraxTools.g_sStatementsArray) & "\b)")) Then
+                    If (Regex.IsMatch(sName, String.Format("(\b{0}\b)", String.Join("\b|\b", g_mFormMain.g_ClassSyntraxTools.g_sStatementsArray)))) Then
                         Continue For
                     End If
 
@@ -3851,7 +3863,7 @@ Public Class FormMain
 
                         Dim regMatch As Match = Regex.Match(sEnumFull, "^\s*(?<Tag>\b[a-zA-Z0-9_]+\b:)*(?<Name>\b[a-zA-Z0-9_]+\b)")
                         If (Not regMatch.Groups("Name").Success) Then
-                            g_mFormMain.PrintInformation("[ERRO]", vbTab & "Failed to resolve type 'Enum': enum " & sEnumName & " " & sEnumFull)
+                            g_mFormMain.PrintInformation("[ERRO]", vbTab & String.Format("Failed to resolve type 'Enum': enum {0} {1}", sEnumName, sEnumFull))
                             Continue For
                         End If
 
@@ -3859,7 +3871,7 @@ Public Class FormMain
 
                         Dim struc As STRUC_AUTOCOMPLETE
                         struc.sFile = IO.Path.GetFileName(sFile)
-                        struc.sFullFunctionname = "funcenum " & sEnumName & " " & sEnumFull
+                        struc.sFullFunctionname = String.Format("funcenum {0} {1}", sEnumName, sEnumFull)
                         struc.sFunctionName = "public " & (New Regex("\b(public)\b").Replace(sEnumFull, sEnumName, 1)) 'sEnumFull.Replace("public(", sEnumName & "(" )
                         struc.sInfo = sEnumComment
                         struc.sType = "funcenum"
@@ -3930,7 +3942,9 @@ Public Class FormMain
                     Dim sourceAnalysis As New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sMethodmapSource)
                     Dim iMethodmapBraceList As Integer()() = g_mFormMain.g_ClassSyntraxTools.GetExpressionBetweenBraces(sMethodmapSource, "("c, ")"c, 1, True)
 
-                    Dim mMethodMatches As MatchCollection = Regex.Matches(sMethodmapSource, "^\s*(?<Type>\b(property|public\s+(static\s+){0,1}native|public)\b)\s+((?<Tag>\b(" & sRegExEnum & ")\b\s)\s*(?<Name>\b[a-zA-Z0-9_]+\b)|(?<Constructor>\b" & sMethodMapName & "\b)|(?<Name>\b[a-zA-Z0-9_]+\b))\s*(?<BraceStart>\(){0,1}", RegexOptions.Multiline)
+                    Dim mMethodMatches As MatchCollection = Regex.Matches(sMethodmapSource,
+                                                                          String.Format("^\s*(?<Type>\b(property|public\s+(static\s+){2}native|public)\b)\s+((?<Tag>\b({0})\b\s)\s*(?<Name>\b[a-zA-Z0-9_]+\b)|(?<Constructor>\b{1}\b)|(?<Name>\b[a-zA-Z0-9_]+\b))\s*(?<BraceStart>\(){3}", sRegExEnum, sMethodMapName, "{0,1}", "{0,1}"),
+                                                                          RegexOptions.Multiline)
 
                     Dim SB As StringBuilder
 
@@ -3963,8 +3977,8 @@ Public Class FormMain
                         If (sType = "property") Then
                             Dim struc As STRUC_AUTOCOMPLETE
                             struc.sFile = IO.Path.GetFileName(sFile)
-                            struc.sFullFunctionname = "methodmap " & sMethodMapName & sMethodMapParentingName & If(sMethodMapHasParent, " < " & sMethodMapParentName, "") & " " & sTag & " " & sMethodMapName
-                            struc.sFunctionName = sMethodMapName & "." & sName
+                            struc.sFullFunctionname = String.Format("methodmap {0}{1}{2} {3} {4}", sMethodMapName, sMethodMapParentingName, If(sMethodMapHasParent, " < " & sMethodMapParentName, ""), sTag, sMethodMapName)
+                            struc.sFunctionName = String.Format("{0}.{1}", sMethodMapName, sName)
                             struc.sInfo = sComment
                             struc.sType = "methodmap " & sType
 
@@ -3990,8 +4004,8 @@ Public Class FormMain
                             If (bIsConstructor) Then
                                 Dim struc As STRUC_AUTOCOMPLETE
                                 struc.sFile = IO.Path.GetFileName(sFile)
-                                struc.sFullFunctionname = "methodmap " & sMethodMapName & If(sMethodMapHasParent, " < " & sMethodMapParentName, "") & " " & sMethodMapName & sBraceString
-                                struc.sFunctionName = sMethodMapName & "." & sMethodMapName
+                                struc.sFullFunctionname = String.Format("methodmap {0}{1} {2}{3}", sMethodMapName, If(sMethodMapHasParent, " < " & sMethodMapParentName, ""), sMethodMapName, sBraceString)
+                                struc.sFunctionName = String.Format("{0}.{1}", sMethodMapName, sMethodMapName)
                                 struc.sInfo = sComment
                                 struc.sType = "methodmap " & sType
 
@@ -4001,8 +4015,8 @@ Public Class FormMain
                             Else
                                 Dim struc As STRUC_AUTOCOMPLETE
                                 struc.sFile = IO.Path.GetFileName(sFile)
-                                struc.sFullFunctionname = "methodmap " & sType & " " & sTag & " " & sMethodMapName & If(sMethodMapHasParent, " < " & sMethodMapParentName, "") & " " & sName & sBraceString
-                                struc.sFunctionName = sMethodMapName & "." & sName
+                                struc.sFullFunctionname = String.Format("methodmap {0} {1} {2}{3} {4}{5}", sType, sTag, sMethodMapName, If(sMethodMapHasParent, " < " & sMethodMapParentName, ""), sName, sBraceString)
+                                struc.sFunctionName = String.Format("{0}.{1}", sMethodMapName, sName)
                                 struc.sInfo = sComment
                                 struc.sType = "methodmap " & sType
 
@@ -4066,7 +4080,7 @@ Public Class FormMain
                     Dim sourceAnalysis As New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sMethodmapSource)
                     Dim iMethodmapBraceList As Integer()() = g_mFormMain.g_ClassSyntraxTools.GetExpressionBetweenBraces(sMethodmapSource, "("c, ")"c, 1, True)
 
-                    Dim mMethodMatches As MatchCollection = Regex.Matches(sMethodmapSource, "^\s*(?<Type>\b(function)\b)\s+(?<Tag>\b(" & sRegExEnum & ")\b)\s*(?<BraceStart>\()", RegexOptions.Multiline)
+                    Dim mMethodMatches As MatchCollection = Regex.Matches(sMethodmapSource, String.Format("^\s*(?<Type>\b(function)\b)\s+(?<Tag>\b({0})\b)\s*(?<BraceStart>\()", sRegExEnum), RegexOptions.Multiline)
 
                     Dim SB As StringBuilder
 
@@ -4110,8 +4124,8 @@ Public Class FormMain
 
                         Dim struc As STRUC_AUTOCOMPLETE
                         struc.sFile = IO.Path.GetFileName(sFile)
-                        struc.sFullFunctionname = "typeset " & sMethodMapName & " " & sType & " " & sTag & sBraceString
-                        struc.sFunctionName = "public " & sTag & " " & sMethodMapName & sBraceString
+                        struc.sFullFunctionname = String.Format("typeset {0} {1} {2}{3}", sMethodMapName, sType, sTag, sBraceString)
+                        struc.sFunctionName = String.Format("public {0} {1}{2}", sTag, sMethodMapName, sBraceString)
                         struc.sInfo = sComment
                         struc.sType = "typeset " & sType
 
@@ -4123,7 +4137,7 @@ Public Class FormMain
             End If
 
             If ((ClassSettings.g_iSettingsAutocompleteSyntrax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTRAX.SP_1_7 OrElse ClassSettings.g_iSettingsAutocompleteSyntrax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTRAX.SP_MIX) AndAlso sSource.Contains("typedef")) Then
-                Dim mPossibleMethodmapMatches As MatchCollection = Regex.Matches(sSource, "^\s*\b(typedef)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)\s+=\s+\b(function)\b\s+(?<Tag>\b(" & sRegExEnum & ")\b)\s*(?<BraceStart>\()", RegexOptions.Multiline)
+                Dim mPossibleMethodmapMatches As MatchCollection = Regex.Matches(sSource, String.Format("^\s*\b(typedef)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)\s+=\s+\b(function)\b\s+(?<Tag>\b({0})\b)\s*(?<BraceStart>\()", sRegExEnum), RegexOptions.Multiline)
                 Dim iBraceList As Integer()() = g_mFormMain.g_ClassSyntraxTools.GetExpressionBetweenBraces(sSource, "("c, ")"c, 1, True)
 
                 Dim sourceAnalysis As New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sSource)
@@ -4182,8 +4196,8 @@ Public Class FormMain
 
                     Dim struc As STRUC_AUTOCOMPLETE
                     struc.sFile = IO.Path.GetFileName(sFile)
-                    struc.sFullFunctionname = "typedef " & sName & " = function " & sTag & " (" & sBraceString & ")"
-                    struc.sFunctionName = "public " & sTag & " " & sName & "(" & sBraceString & ")"
+                    struc.sFullFunctionname = String.Format("typedef {0} = function {1} ({2})", sName, sTag, sBraceString)
+                    struc.sFunctionName = String.Format("public {0} {1}({2})", sTag, sName, sBraceString)
                     struc.sInfo = sComment
                     struc.sType = "typedef"
 
@@ -4218,7 +4232,7 @@ Public Class FormMain
                 sSource = g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl1.Document.TextContent)
             Else
                 If (Not IO.File.Exists(sPath)) Then
-                    g_mFormMain.PrintInformation("[ERRO]", vbTab & "Could not read include: " & IO.Path.GetFileName(sPath))
+                    g_mFormMain.PrintInformation("[ERRO]", vbTab & String.Format("Could not read include: {0}", IO.Path.GetFileName(sPath)))
                     Return
                 End If
 
@@ -4259,7 +4273,7 @@ Public Class FormMain
                             g_mFormMain.PrintInformation("[ERRO]", vbTab & "Could not read includes! Could not get current SourcePawn Source file!")
                             Exit While
                         End If
-                        sIncludeDir = IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourcePawnFile) & "\include"
+                        sIncludeDir = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourcePawnFile), "include")
                     End If
 
                     Select Case (True)
@@ -4269,12 +4283,12 @@ Public Class FormMain
                             Select Case (True)
                                 Case IO.File.Exists(IO.Path.Combine(sIncludeDir, sMatchValue))
                                     sCorrectPath = IO.Path.Combine(sIncludeDir, sMatchValue)
-                                Case IO.File.Exists(IO.Path.Combine(sIncludeDir, sMatchValue & ".sp"))
-                                    sCorrectPath = IO.Path.Combine(sIncludeDir, sMatchValue & ".sp")
-                                Case IO.File.Exists(IO.Path.Combine(sIncludeDir, sMatchValue & ".inc"))
-                                    sCorrectPath = IO.Path.Combine(sIncludeDir, sMatchValue & ".inc")
+                                Case IO.File.Exists(String.Format("{0}.sp", IO.Path.Combine(sIncludeDir, sMatchValue)))
+                                    sCorrectPath = String.Format("{0}.sp", IO.Path.Combine(sIncludeDir, sMatchValue))
+                                Case IO.File.Exists(String.Format("{0}.inc", IO.Path.Combine(sIncludeDir, sMatchValue)))
+                                    sCorrectPath = String.Format("{0}.inc", IO.Path.Combine(sIncludeDir, sMatchValue))
                                 Case Else
-                                    g_mFormMain.PrintInformation("[ERRO]", vbTab & "Could not read include: " & sMatchValue)
+                                    g_mFormMain.PrintInformation("[ERRO]", vbTab & String.Format("Could not read include: {0}", sMatchValue))
                                     Continue While
                             End Select
 
@@ -4286,18 +4300,18 @@ Public Class FormMain
                                     sCorrectPath = sMatchValue
                                 Case IO.File.Exists(IO.Path.Combine(sCurrentDir, sMatchValue))
                                     sCorrectPath = IO.Path.Combine(sCurrentDir, sMatchValue)
-                                Case IO.File.Exists(IO.Path.Combine(sCurrentDir, sMatchValue & ".sp"))
-                                    sCorrectPath = IO.Path.Combine(sCurrentDir, sMatchValue & ".sp")
-                                Case IO.File.Exists(IO.Path.Combine(sCurrentDir, sMatchValue & ".inc"))
-                                    sCorrectPath = IO.Path.Combine(sCurrentDir, sMatchValue & ".inc")
+                                Case IO.File.Exists(String.Format("{0}.sp", IO.Path.Combine(sCurrentDir, sMatchValue)))
+                                    sCorrectPath = String.Format("{0}.sp", IO.Path.Combine(sCurrentDir, sMatchValue))
+                                Case IO.File.Exists(String.Format("{0}.inc", IO.Path.Combine(sCurrentDir, sMatchValue)))
+                                    sCorrectPath = String.Format("{0}.inc", IO.Path.Combine(sCurrentDir, sMatchValue))
                                 Case IO.File.Exists(IO.Path.Combine(sIncludeDir, sMatchValue))
                                     sCorrectPath = IO.Path.Combine(sIncludeDir, sMatchValue)
-                                Case IO.File.Exists(IO.Path.Combine(sIncludeDir, sMatchValue & ".sp"))
-                                    sCorrectPath = IO.Path.Combine(sIncludeDir, sMatchValue & ".sp")
-                                Case IO.File.Exists(IO.Path.Combine(sIncludeDir, sMatchValue & ".inc"))
-                                    sCorrectPath = IO.Path.Combine(sIncludeDir, sMatchValue & ".inc")
+                                Case IO.File.Exists(String.Format("{0}.sp", IO.Path.Combine(sIncludeDir, sMatchValue)))
+                                    sCorrectPath = String.Format("{0}.sp", IO.Path.Combine(sIncludeDir, sMatchValue))
+                                Case IO.File.Exists(String.Format("{0}.inc", IO.Path.Combine(sIncludeDir, sMatchValue)))
+                                    sCorrectPath = String.Format("{0}.inc", IO.Path.Combine(sIncludeDir, sMatchValue))
                                 Case Else
-                                    g_mFormMain.PrintInformation("[ERRO]", vbTab & "Could not read include: " & sMatchValue)
+                                    g_mFormMain.PrintInformation("[ERRO]", vbTab & String.Format("Could not read include: {0}", sMatchValue))
                                     Continue While
                             End Select
 
@@ -4370,7 +4384,7 @@ Public Class FormMain
             End If
 
             Dim iListIndex As Integer = 0
-            For Each m As Match In Regex.Matches(sSource, "\b" & g_sBreakpointName & "\b\s*(?<Lenght>)(?<Arguments>\(){0,1}")
+            For Each m As Match In Regex.Matches(sSource, String.Format("\b{0}\b\s*(?<Lenght>)(?<Arguments>\(){1}", g_sBreakpointName, "{0,1}"))
                 Dim iIndex As Integer = m.Index
                 Dim bHasArgument As Boolean = m.Groups("Arguments").Success
 
@@ -4463,7 +4477,7 @@ Public Class FormMain
             End If
 
             Dim iListIndex As Integer = 0
-            For Each m As Match In Regex.Matches(sSource, "\b" & g_sWatcherName & "\b\s*(?<Lenght>)(?<Arguments>\(){0,1}")
+            For Each m As Match In Regex.Matches(sSource, String.Format("\b{0}\b\s*(?<Lenght>)(?<Arguments>\(){1}", g_sWatcherName, "{0,1}"))
                 Dim iIndex As Integer = m.Index
                 Dim bHasArgument As Boolean = m.Groups("Arguments").Success
 
@@ -4559,7 +4573,7 @@ Public Class FormMain
             autocompleteInfo.AppendLine("*/")
             autocompleteList.Add(New STRUC_AUTOCOMPLETE With {
                                  .sFile = "BasicPawn.exe",
-                                 .sFullFunctionname = "any:" & g_sBreakpointName & "(any:val=0)",
+                                 .sFullFunctionname = String.Format("any:{0}(any:val=0)", g_sBreakpointName),
                                  .sFunctionName = g_sBreakpointName,
                                  .sInfo = autocompleteInfo.ToString,
                                  .sType = "debug"})
@@ -4570,7 +4584,7 @@ Public Class FormMain
             autocompleteInfo.AppendLine("*/")
             autocompleteList.Add(New STRUC_AUTOCOMPLETE With {
                                  .sFile = "BasicPawn.exe",
-                                 .sFullFunctionname = "any:" & g_sWatcherName & "(any:val=0)",
+                                 .sFullFunctionname = String.Format("any:{0}(any:val=0)", g_sWatcherName),
                                  .sFunctionName = g_sWatcherName,
                                  .sInfo = autocompleteInfo.ToString,
                                  .sType = "debug"})
@@ -4839,7 +4853,7 @@ Public Class FormMain
 
         Public Function HasDebugPlaceholder(sSource As String) As Boolean
             For Each sName As String In GetDebugPlaceholderNames()
-                If (Regex.IsMatch(sSource, "\b" & Regex.Escape(sName) & "\b\s*\(")) Then
+                If (Regex.IsMatch(sSource, String.Format("\b{0}\b\s*\(", Regex.Escape(sName)))) Then
                     Return True
                 End If
             Next
@@ -4905,18 +4919,18 @@ Public Class FormMain
 
                     g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
                     g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.Insert(iOffset + iLenght, ")")
-                    g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.Insert(iOffset, ClassDebuggerParser.g_sBreakpointName & "(")
+                    g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.Insert(iOffset, String.Format("{0}(", ClassDebuggerParser.g_sBreakpointName))
                     g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
                 Else
                     Dim sCaretWord As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True)
 
                     If (String.IsNullOrEmpty(sCaretWord)) Then
                         Dim iOffset As Integer = g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Caret.Offset
-                        g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.Insert(iOffset, ClassDebuggerParser.g_sBreakpointName & "();")
+                        g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.Insert(iOffset, String.Format("{0}();", ClassDebuggerParser.g_sBreakpointName))
                     Else
                         Dim iOffset As Integer = g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Caret.Offset
 
-                        For Each m As Match In Regex.Matches(g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.TextContent, "(?<Word>\b" & Regex.Escape(sCaretWord) & "\b)(?<Function>\s*\(){0,1}")
+                        For Each m As Match In Regex.Matches(g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.TextContent, String.Format("(?<Word>\b{0}\b)(?<Function>\s*\(){1}", Regex.Escape(sCaretWord), "{0,1}"))
                             Dim iStartOffset As Integer = m.Groups("Word").Index
                             Dim iStartLen As Integer = m.Groups("Word").Value.Length
                             Dim iFunctionIndex As Boolean = m.Groups("Function").Index
@@ -4942,12 +4956,12 @@ Public Class FormMain
 
                                 g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
                                 g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.Insert(iStartOffset + iFullLenght, ")")
-                                g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.Insert(iStartOffset, ClassDebuggerParser.g_sBreakpointName & "(")
+                                g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.Insert(iStartOffset, String.Format("{0}(", ClassDebuggerParser.g_sBreakpointName))
                                 g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
                             Else
                                 g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
                                 g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.Insert(iStartOffset + iStartLen, ")")
-                                g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.Insert(iStartOffset, ClassDebuggerParser.g_sBreakpointName & "(")
+                                g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.Insert(iStartOffset, String.Format("{0}(", ClassDebuggerParser.g_sBreakpointName))
                                 g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
                             End If
                         Next
@@ -4992,7 +5006,7 @@ Public Class FormMain
                         g_mFormMain.TextEditorControl1.Document.Remove(iIndex, 1)
                     End If
 
-                    g_mFormMain.PrintInformation("[INFO]", vbTab & "Breakpoint removed at line: " & iLine)
+                    g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Breakpoint removed at line: {0}", iLine))
 
                     Exit For
                 Next
@@ -5026,7 +5040,7 @@ Public Class FormMain
                             g_mFormMain.TextEditorControl1.Document.Remove(iIndex, 1)
                         End If
 
-                        g_mFormMain.PrintInformation("[INFO]", vbTab & "Breakpoint removed at line: " & iLine)
+                        g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Breakpoint removed at line: {0}", iLine))
 
                         Dim bDoRebuild As Boolean = False
                         For j = debuggerParser.g_lBreakpointList.Count - 1 To 0 Step -1
@@ -5168,18 +5182,18 @@ Public Class FormMain
 
                     g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
                     g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.Insert(iOffset + iLenght, ")")
-                    g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.Insert(iOffset, ClassDebuggerParser.g_sWatcherName & "(")
+                    g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.Insert(iOffset, String.Format("{0}(", ClassDebuggerParser.g_sWatcherName))
                     g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
                 Else
                     Dim sCaretWord As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True)
 
                     If (String.IsNullOrEmpty(sCaretWord)) Then
                         Dim iOffset As Integer = g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Caret.Offset
-                        g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.Insert(iOffset, ClassDebuggerParser.g_sWatcherName & "();")
+                        g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.Insert(iOffset, String.Format("{0}();", ClassDebuggerParser.g_sWatcherName))
                     Else
                         Dim iOffset As Integer = g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Caret.Offset
 
-                        For Each m As Match In Regex.Matches(g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.TextContent, "(?<Word>\b" & Regex.Escape(sCaretWord) & "\b)(?<Function>\s*\(){0,1}")
+                        For Each m As Match In Regex.Matches(g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.TextContent, String.Format("(?<Word>\b{0}\b)(?<Function>\s*\(){1}", Regex.Escape(sCaretWord), "{0,1}"))
                             Dim iStartOffset As Integer = m.Groups("Word").Index
                             Dim iStartLen As Integer = m.Groups("Word").Value.Length
                             Dim iFunctionIndex As Boolean = m.Groups("Function").Index
@@ -5205,12 +5219,12 @@ Public Class FormMain
 
                                 g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
                                 g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.Insert(iStartOffset + iFullLenght, ")")
-                                g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.Insert(iStartOffset, ClassDebuggerParser.g_sWatcherName & "(")
+                                g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.Insert(iStartOffset, String.Format("{0}(", ClassDebuggerParser.g_sWatcherName))
                                 g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
                             Else
                                 g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
                                 g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.Insert(iStartOffset + iStartLen, ")")
-                                g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.Insert(iStartOffset, ClassDebuggerParser.g_sWatcherName & "(")
+                                g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.Insert(iStartOffset, String.Format("{0}(", ClassDebuggerParser.g_sWatcherName))
                                 g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
                             End If
                         Next
@@ -5255,7 +5269,7 @@ Public Class FormMain
                         g_mFormMain.TextEditorControl1.Document.Remove(iIndex, 1)
                     End If
 
-                    g_mFormMain.PrintInformation("[INFO]", vbTab & "Watcher removed at line: " & iLine)
+                    g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Watcher removed at line: {0}", iLine))
 
                     Exit For
                 Next
@@ -5290,7 +5304,7 @@ Public Class FormMain
                             g_mFormMain.TextEditorControl1.Document.Remove(iIndex, 1)
                         End If
 
-                        g_mFormMain.PrintInformation("[INFO]", vbTab & "Watcher removed at line: " & iLine)
+                        g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Watcher removed at line: {0}", iLine))
 
                         Dim bDoRebuild As Boolean = False
                         For j = debuggerParser.g_lWatcherList.Count - 1 To 0 Step -1

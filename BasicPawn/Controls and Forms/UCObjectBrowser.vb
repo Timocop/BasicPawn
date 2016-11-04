@@ -56,8 +56,8 @@ Public Class UCObjectBrowser
                 Dim treeNodeType As TreeNode
                 Dim treeNodeName As TreeNode
                 Dim sFileKey As String = iItem.sFile.ToLower
-                Dim sTypeKey As String = iItem.sFile.ToLower & "|" & iItem.sType.ToLower
-                Dim sNameKey As String = iItem.sFile.ToLower & "|" & iItem.sType.ToLower & "|" & iItem.sFunctionName.ToLower
+                Dim sTypeKey As String = String.Format("{0}|{1}", iItem.sFile.ToLower, iItem.sType.ToLower)
+                Dim sNameKey As String = String.Format("{0}|{1}|{2}", iItem.sFile.ToLower, iItem.sType.ToLower, iItem.sFunctionName.ToLower)
 
                 ' Add file if not exist
                 treeNodesFiles = TreeView1.Nodes.Find(sFileKey, False)
@@ -161,7 +161,7 @@ Public Class UCObjectBrowser
                 If (TreeView1.SelectedNode IsNot Nothing) Then
                     For Each sPath As String In g_mFormMain.g_ClassAutocompleteUpdater.GetIncludeFiles(ClassSettings.g_sConfigOpenSourcePawnFile)
                         If (IO.Path.GetFileName(sPath).ToLower = TreeView1.SelectedNode.Text.ToLower) Then
-                            Process.Start(Application.ExecutablePath, """" & sPath & """")
+                            Process.Start(Application.ExecutablePath, String.Format("""{0}""", sPath))
                         End If
                     Next
                 End If

@@ -100,7 +100,7 @@ Public Class FormSearch
             Return
         End If
 
-        ToolStripStatusLabel1.Text = iStrucArray.Length & " Items found!"
+        ToolStripStatusLabel1.Text = String.Format("{0} Items found!", iStrucArray.Length)
 
         If (iStrucArray.Length < 1) Then
             Return
@@ -134,7 +134,7 @@ Public Class FormSearch
             Return
         End If
 
-        ToolStripStatusLabel1.Text = iStrucArray.Length & " Items found!"
+        ToolStripStatusLabel1.Text = String.Format("{0} Items found!", iStrucArray.Length)
 
         If (iStrucArray.Length < 1) Then
             Return
@@ -172,7 +172,7 @@ Public Class FormSearch
             Return
         End If
 
-        ToolStripStatusLabel1.Text = iStrucArray.Length & " Items replaced!"
+        ToolStripStatusLabel1.Text = String.Format("{0} Items replaced!", iStrucArray.Length)
 
         If (iStrucArray.Length < 1) Then
             Return
