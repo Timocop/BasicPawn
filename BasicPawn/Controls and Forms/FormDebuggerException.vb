@@ -96,7 +96,7 @@ Public Class FormDebuggerException
                 i.ShowDialog()
             End Using
         Catch ex As Exception
-            ClassExceptionLogManagement.WriteToLogMessageBox(ex)
+            ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
     End Sub
 

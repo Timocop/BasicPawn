@@ -72,7 +72,7 @@ Public Class FormSearch
                     iRegEx = New Regex(TextBox_Search.Text, If(CheckBox_CaseSensitive.Checked, RegexOptions.None, RegexOptions.IgnoreCase) Or If(CheckBox_Multiline.Checked, RegexOptions.Multiline, RegexOptions.None))
             End Select
         Catch ex As Exception
-            ClassExceptionLogManagement.WriteToLogMessageBox(ex)
+            ClassExceptionLog.WriteToLogMessageBox(ex)
             ToolStripStatusLabel1.Text = "Search Error!"
             Return Nothing
         End Try

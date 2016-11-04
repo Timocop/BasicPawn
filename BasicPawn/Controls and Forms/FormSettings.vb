@@ -142,7 +142,7 @@ Public Class FormSettings
             TextBox_GameFolder.Text = iniFile.ReadKeyValue("Config", "DebugGameDirectory", "")
             TextBox_SourceModFolder.Text = iniFile.ReadKeyValue("Config", "DebugSourceModDirectory", "")
         Catch ex As Exception
-            ClassExceptionLogManagement.WriteToLogMessageBox(ex)
+            ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
     End Sub
 
@@ -237,7 +237,7 @@ Public Class FormSettings
 
             MessageBox.Show("Config saved!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information)
         Catch ex As Exception
-            ClassExceptionLogManagement.WriteToLogMessageBox(ex)
+            ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
 
 
@@ -460,7 +460,7 @@ Public Class FormSettings
 
             MessageBox.Show(SB.ToString, "Information", MessageBoxButtons.OK)
         Catch ex As Exception
-            ClassExceptionLogManagement.WriteToLogMessageBox(ex)
+            ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
     End Sub
 End Class

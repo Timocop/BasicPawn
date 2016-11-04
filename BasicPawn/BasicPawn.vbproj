@@ -172,7 +172,7 @@
     <Compile Include="Classes\ClassTextboxWatermark.vb">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Classes\ClassExceptionLogManagement.vb" />
+    <Compile Include="Classes\ClassExceptionLog.vb" />
     <Compile Include="Classes\ClassIniFile.vb" />
     <Compile Include="Classes\ClassPanelQuality.vb">
       <SubType>Component</SubType>
@@ -180,10 +180,10 @@
     <Compile Include="Classes\ClassPictureBoxQuality.vb">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls and Forms\FormBreakpointSetValue.Designer.vb">
-      <DependentUpon>FormBreakpointSetValue.vb</DependentUpon>
+    <Compile Include="Controls and Forms\FormDebuggerBreakpointSetValue.Designer.vb">
+      <DependentUpon>FormDebuggerBreakpointSetValue.vb</DependentUpon>
     </Compile>
-    <Compile Include="Controls and Forms\FormBreakpointSetValue.vb">
+    <Compile Include="Controls and Forms\FormDebuggerBreakpointSetValue.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Controls and Forms\FormDebugger.Designer.vb">
@@ -275,8 +275,8 @@
     <Compile Include="Classes\ClassTools.vb" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Controls and Forms\FormBreakpointSetValue.resx">
-      <DependentUpon>FormBreakpointSetValue.vb</DependentUpon>
+    <EmbeddedResource Include="Controls and Forms\FormDebuggerBreakpointSetValue.resx">
+      <DependentUpon>FormDebuggerBreakpointSetValue.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls and Forms\FormDebugger.resx">
       <DependentUpon>FormDebugger.vb</DependentUpon>

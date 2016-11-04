@@ -126,7 +126,7 @@ Public Class FormDebugger
             Next
             ListView_Entities.EndUpdate()
         Catch ex As Exception
-            ClassExceptionLogManagement.WriteToLogMessageBox(ex)
+            ClassExceptionLog.WriteToLogMessageBox(ex)
             Me.Dispose()
         End Try
     End Sub
@@ -161,7 +161,7 @@ Public Class FormDebugger
 
             CleanupDebuggerTempFiles(True, False)
         Catch ex As Exception
-            ClassExceptionLogManagement.WriteToLogMessageBox(ex)
+            ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
     End Sub
 
@@ -214,7 +214,7 @@ Public Class FormDebugger
                 Exit For
             Next
         Catch ex As Exception
-            ClassExceptionLogManagement.WriteToLogMessageBox(ex)
+            ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
     End Sub
 
@@ -247,7 +247,7 @@ Public Class FormDebugger
                 Exit For
             Next
         Catch ex As Exception
-            ClassExceptionLogManagement.WriteToLogMessageBox(ex)
+            ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
     End Sub
 
@@ -304,7 +304,7 @@ Public Class FormDebugger
                         Try
                             IO.File.Delete(sFile)
                         Catch ex As Exception
-                            ClassExceptionLogManagement.WriteToLogMessageBox(ex)
+                            ClassExceptionLog.WriteToLogMessageBox(ex)
                         End Try
                     Next
                 ElseIf (Not bNoErrorPrompt) Then
@@ -725,7 +725,7 @@ Public Class FormDebugger
                     m_SuspendGame = False
                 End SyncLock
             Catch ex As Exception
-                ClassExceptionLogManagement.WriteToLogMessageBox(ex)
+                ClassExceptionLog.WriteToLogMessageBox(ex)
 
                 g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Error!" & ex.Message
                 g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Red
@@ -839,7 +839,7 @@ Public Class FormDebugger
                 g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Red
 
             Catch ex As Exception
-                ClassExceptionLogManagement.WriteToLogMessageBox(ex)
+                ClassExceptionLog.WriteToLogMessageBox(ex)
 
                 g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Error!" & ex.Message
                 g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Red
@@ -901,7 +901,7 @@ Public Class FormDebugger
                 g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Debugger running!"
                 g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Green
             Catch ex As Exception
-                ClassExceptionLogManagement.WriteToLogMessageBox(ex)
+                ClassExceptionLog.WriteToLogMessageBox(ex)
 
                 g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Error!" & ex.Message
                 g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Red
@@ -929,7 +929,7 @@ Public Class FormDebugger
                 g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Debugger awaiting input..."
                 g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Orange
             Catch ex As Exception
-                ClassExceptionLogManagement.WriteToLogMessageBox(ex)
+                ClassExceptionLog.WriteToLogMessageBox(ex)
 
                 g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Error!" & ex.Message
                 g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Red
@@ -1121,7 +1121,7 @@ Public Class FormDebugger
             Catch ex As ObjectDisposedException
                 'Filter unexpected disposes
             Catch ex As Exception
-                ClassExceptionLogManagement.WriteToLogMessageBox(ex)
+                ClassExceptionLog.WriteToLogMessageBox(ex)
             End Try
         End Sub
 
@@ -1203,7 +1203,7 @@ Public Class FormDebugger
             Catch ex As ObjectDisposedException
                 'Filter unexpected disposes
             Catch ex As Exception
-                ClassExceptionLogManagement.WriteToLogMessageBox(ex)
+                ClassExceptionLog.WriteToLogMessageBox(ex)
             End Try
         End Sub
 
@@ -1339,7 +1339,7 @@ Public Class FormDebugger
             Catch ex As ObjectDisposedException
                 'Filter unexpected disposes
             Catch ex As Exception
-                ClassExceptionLogManagement.WriteToLogMessageBox(ex)
+                ClassExceptionLog.WriteToLogMessageBox(ex)
             End Try
         End Sub
 
@@ -1371,7 +1371,7 @@ Public Class FormDebugger
             Catch ex As Threading.ThreadAbortException
                 Throw
             Catch ex As Exception
-                ClassExceptionLogManagement.WriteToLogMessageBox(ex)
+                ClassExceptionLog.WriteToLogMessageBox(ex)
             End Try
         End Sub
 
@@ -1560,7 +1560,7 @@ Public Class FormDebugger
             Catch ex As ObjectDisposedException
                 'Filter unexpected disposes
             Catch ex As Exception
-                ClassExceptionLogManagement.WriteToLogMessageBox(ex)
+                ClassExceptionLog.WriteToLogMessageBox(ex)
             End Try
         End Sub
 
@@ -1670,7 +1670,7 @@ Public Class FormDebugger
             Catch ex As ObjectDisposedException
                 'Filter unexpected disposes
             Catch ex As Exception
-                ClassExceptionLogManagement.WriteToLogMessageBox(ex)
+                ClassExceptionLog.WriteToLogMessageBox(ex)
             End Try
         End Sub
 
@@ -1832,7 +1832,7 @@ Public Class FormDebugger
                 Return
             End If
 
-            Using i As New FormBreakpointSetValue
+            Using i As New FormDebuggerBreakpointSetValue
                 If (g_ClassDebuggerRunner.g_mActiveBreakpointValue.bReturnCustomValue) Then
                     Select Case (g_ClassDebuggerRunner.g_mActiveBreakpointValue.mValueType)
                         Case ClassDebuggerRunner.ENUM_BREAKPOINT_VALUE_TYPE.INTEGER
@@ -1904,7 +1904,7 @@ Public Class FormDebugger
         Catch ex As Exception
             'TODO: Add better handle read support.
             '      For some reason saving a handle as float, it becomes massive. The int doesnt.
-            ClassExceptionLogManagement.WriteToLogMessageBox(ex)
+            ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
     End Sub
 
@@ -1928,7 +1928,7 @@ Public Class FormDebugger
             ToolStripStatusLabel_EditorCollum.Text = "C: " & TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.TextArea.Caret.Column
             ToolStripStatusLabel_EditorSelected.Text = "S: " & TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.TextArea.SelectionManager.SelectedText.Length
         Catch ex As Exception
-            ClassExceptionLogManagement.WriteToLogMessageBox(ex)
+            ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
     End Sub
 

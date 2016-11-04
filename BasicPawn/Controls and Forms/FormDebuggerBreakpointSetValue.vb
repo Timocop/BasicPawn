@@ -15,7 +15,7 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 
-Public Class FormBreakpointSetValue
+Public Class FormDebuggerBreakpointSetValue
     Public Sub New()
 
         ' This call is required by the designer.

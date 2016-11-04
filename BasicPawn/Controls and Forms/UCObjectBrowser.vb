@@ -167,7 +167,7 @@ Public Class UCObjectBrowser
                 End If
             End If
         Catch ex As Exception
-            ClassExceptionLogManagement.WriteToLogMessageBox(ex)
+            ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
     End Sub
 
@@ -179,7 +179,7 @@ Public Class UCObjectBrowser
                 End If
             End If
         Catch ex As Exception
-            ClassExceptionLogManagement.WriteToLogMessageBox(ex)
+            ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
     End Sub
 
@@ -191,7 +191,7 @@ Public Class UCObjectBrowser
                 End If
             End If
         Catch ex As Exception
-            ClassExceptionLogManagement.WriteToLogMessageBox(ex)
+            ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
     End Sub
 End Class

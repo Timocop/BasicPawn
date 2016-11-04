@@ -749,7 +749,7 @@ Public Class FormMain
             TextEditorControl1.Document.UndoStack.EndUndoGroup()
             TextEditorControl1.Refresh()
         Catch ex As Exception
-            ClassExceptionLogManagement.WriteToLogMessageBox(ex)
+            ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
     End Sub
 
@@ -857,7 +857,7 @@ Public Class FormMain
                 MessageBox.Show(ex.Message & Environment.NewLine & Environment.NewLine & sShell, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         Catch ex As Exception
-            ClassExceptionLogManagement.WriteToLogMessageBox(ex)
+            ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
     End Sub
 #End Region
@@ -1301,7 +1301,7 @@ Public Class FormMain
                 End If
                 g_mFormMain.PrintInformation("[INFO]", "Compiling SourcePawn Source finished!")
             Catch ex As Exception
-                ClassExceptionLogManagement.WriteToLogMessageBox(ex)
+                ClassExceptionLog.WriteToLogMessageBox(ex)
             End Try
         End Sub
 
@@ -1413,7 +1413,7 @@ Public Class FormMain
 
                 Return True
             Catch ex As Exception
-                ClassExceptionLogManagement.WriteToLogMessageBox(ex)
+                ClassExceptionLog.WriteToLogMessageBox(ex)
             End Try
 
             Return False
@@ -1577,7 +1577,7 @@ Public Class FormMain
 
                 Return sNewSource
             Catch ex As Exception
-                ClassExceptionLogManagement.WriteToLogMessageBox(ex)
+                ClassExceptionLog.WriteToLogMessageBox(ex)
             End Try
 
             Return Nothing
@@ -1674,7 +1674,7 @@ Public Class FormMain
 
                 Return sOutputSource
             Catch ex As Exception
-                ClassExceptionLogManagement.WriteToLogMessageBox(ex)
+                ClassExceptionLog.WriteToLogMessageBox(ex)
             End Try
 
             Return Nothing
@@ -1785,7 +1785,7 @@ Public Class FormMain
 
                 Return sAssemblySource
             Catch ex As Exception
-                ClassExceptionLogManagement.WriteToLogMessageBox(ex)
+                ClassExceptionLog.WriteToLogMessageBox(ex)
             End Try
 
             Return Nothing
@@ -1933,7 +1933,7 @@ Public Class FormMain
                 Catch ex As Threading.ThreadAbortException
                     Throw
                 Catch ex As Exception
-                    ClassExceptionLogManagement.WriteToLogMessageBox(ex)
+                    ClassExceptionLog.WriteToLogMessageBox(ex)
                     Threading.Thread.Sleep(5000)
                 End Try
             End While
@@ -2081,7 +2081,7 @@ Public Class FormMain
                     Dim sModSyntraxXML As String = g_SyntraxXML.Replace(sSyntrax_SourcePawnMarker, g_SyntraxFiles(i).sDefinition)
                     IO.File.WriteAllText(g_SyntraxFiles(i).sFile, sModSyntraxXML)
                 Catch ex As Exception
-                    ClassExceptionLogManagement.WriteToLogMessageBox(ex)
+                    ClassExceptionLog.WriteToLogMessageBox(ex)
                 End Try
             End SyncLock
         End Sub
@@ -2241,7 +2241,7 @@ Public Class FormMain
                         End Select
                     Next
                 Catch ex As Exception
-                    ClassExceptionLogManagement.WriteToLogMessageBox(ex)
+                    ClassExceptionLog.WriteToLogMessageBox(ex)
                 End Try
             End SyncLock
         End Sub
@@ -2276,7 +2276,7 @@ Public Class FormMain
                 Next
 
             Catch ex As Exception
-                ClassExceptionLogManagement.WriteToLogMessageBox(ex)
+                ClassExceptionLog.WriteToLogMessageBox(ex)
             End Try
         End Sub
 
@@ -2845,7 +2845,7 @@ Public Class FormMain
                 Throw
             Catch ex As Exception
                 g_mFormMain.PrintInformation("[ERRO]", "Autocomplete update failed! " & ex.Message)
-                ClassExceptionLogManagement.WriteToLog(ex)
+                ClassExceptionLog.WriteToLog(ex)
             End Try
         End Sub
 

@@ -129,7 +129,7 @@ Public Class ClassSettings
             g_iSettingsDebuggerEntitiesEnableColoring = (initFile.ReadKeyValue("Debugger", "EntitiesColoring", "1") <> "0")
             g_iSettingsDebuggerEntitiesEnableAutoScroll = (initFile.ReadKeyValue("Debugger", "EntitiesAutoScroll", "1") <> "0")
         Catch ex As Exception
-            ClassExceptionLogManagement.WriteToLogMessageBox(ex)
+            ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
     End Sub
 
