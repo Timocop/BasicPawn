@@ -180,9 +180,9 @@ Public Class UCAutocomplete
                             Dim sNewlineDistance As Integer = sNameToolTip.IndexOf("("c)
 
                             If (sNewlineDistance > -1) Then
-                                Dim iSynCR As New FormMain.ClassSyntraxTools.ClassSyntraxCharReader(sNameToolTip)
+                                Dim sourceAnalysis As New FormMain.ClassSyntraxTools.ClassSyntraxSourceAnalysis(sNameToolTip)
                                 For ii = sNameToolTip.Length - 1 To 0 Step -1
-                                    If (sNameToolTip(ii) <> ","c OrElse iSynCR.InNonCode(ii)) Then
+                                    If (sNameToolTip(ii) <> ","c OrElse sourceAnalysis.InNonCode(ii)) Then
                                         Continue For
                                     End If
 
@@ -221,9 +221,9 @@ Public Class UCAutocomplete
                     Dim sNewlineDistance As Integer = sNameToolTip.IndexOf("("c)
 
                     If (sNewlineDistance > -1) Then
-                        Dim iSynCR As New FormMain.ClassSyntraxTools.ClassSyntraxCharReader(sNameToolTip)
+                        Dim sourceAnalysis As New FormMain.ClassSyntraxTools.ClassSyntraxSourceAnalysis(sNameToolTip)
                         For ii = sNameToolTip.Length - 1 To 0 Step -1
-                            If (sNameToolTip(ii) <> ","c OrElse iSynCR.InNonCode(ii)) Then
+                            If (sNameToolTip(ii) <> ","c OrElse sourceAnalysis.InNonCode(ii)) Then
                                 Continue For
                             End If
 

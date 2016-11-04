@@ -37,7 +37,7 @@ Public Class FormMain
     Public g_ClassAutocompleteUpdater As New ClassAutocompleteUpdater(Me)
     Public g_ClassTextEditorTools As New ClassTextEditorTools(Me)
 
-    Public g_mSourceSyntraxCharReader As ClassSyntraxTools.ClassSyntraxCharReader
+    Public g_mSourceSyntraxSourceAnalysis As ClassSyntraxTools.ClassSyntraxSourceAnalysis
 
     Public g_mUCAutocomplete As UCAutocomplete
     Public g_mUCInformationList As UCInformationList
@@ -132,7 +132,7 @@ Public Class FormMain
             '    Return list
             'End If
 
-            'Dim iSynCR As New SyntraxCharReader(document.TextContent)
+            'Dim sourceAnalysis As New SyntraxCharReader(document.TextContent)
 
             Dim iMaxLevels As Integer = 0
             Dim i As Integer = 0
@@ -153,11 +153,11 @@ Public Class FormMain
             Dim iCurrentLevel As Integer = 0
 
             For i = 0 To document.TextContent.Length - 1
-                'If (iSynCR.InNonCode(i)) Then
+                'If (sourceAnalysis.InNonCode(i)) Then
                 '    Continue For
                 'End If
 
-                'Dim iCurrentLevel As Integer = iSynCR.GetBraceLevel(i)
+                'Dim iCurrentLevel As Integer = sourceAnalysis.GetBraceLevel(i)
 
                 Select Case (document.TextContent(i))
                     Case "{"c
@@ -550,16 +550,16 @@ Public Class FormMain
     Private Function ParseMethodAutocomplete(Optional bForceUpdate As Boolean = False) As Boolean
         If (bForceUpdate) Then
             Dim sTextContent As String = Me.Invoke(Function() TextEditorControl1.Document.TextContent)
-            g_mSourceSyntraxCharReader = New ClassSyntraxTools.ClassSyntraxCharReader(sTextContent)
+            g_mSourceSyntraxSourceAnalysis = New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sTextContent)
         End If
 
-        If (g_mSourceSyntraxCharReader IsNot Nothing) Then
+        If (g_mSourceSyntraxSourceAnalysis IsNot Nothing) Then
             Dim iCaretOffset As Integer = Me.Invoke(Function() TextEditorControl1.ActiveTextAreaControl.TextArea.Caret.Offset)
-            If (iCaretOffset > 1 AndAlso g_mSourceSyntraxCharReader.GetMaxLenght() > iCaretOffset AndAlso Not g_mSourceSyntraxCharReader.InMultiComment(iCaretOffset) AndAlso Not g_mSourceSyntraxCharReader.InSingleComment(iCaretOffset)) Then
+            If (iCaretOffset > 1 AndAlso g_mSourceSyntraxSourceAnalysis.GetMaxLenght() > iCaretOffset AndAlso Not g_mSourceSyntraxSourceAnalysis.InMultiComment(iCaretOffset) AndAlso Not g_mSourceSyntraxSourceAnalysis.InSingleComment(iCaretOffset)) Then
                 Dim iValidOffset As Integer = -1
-                Dim iCaretBrace As Integer = g_mSourceSyntraxCharReader.GetParenthesisLevel(iCaretOffset - 1)
+                Dim iCaretBrace As Integer = g_mSourceSyntraxSourceAnalysis.GetParenthesisLevel(iCaretOffset - 1)
                 For i = iCaretOffset - 1 To 0 Step -1
-                    If (g_mSourceSyntraxCharReader.GetParenthesisLevel(i) < iCaretBrace) Then
+                    If (g_mSourceSyntraxSourceAnalysis.GetParenthesisLevel(i) < iCaretBrace) Then
                         iValidOffset = i
                         Exit For
                     End If
@@ -797,7 +797,7 @@ Public Class FormMain
 
 #Region "MenuStrip_Build"
     Private Sub ToolStripMenuItem_Build_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Build.Click
-        With New ClassDebuggerParser()
+        With New ClassDebuggerParser(Me)
             If (.HasDebugPlaceholder(TextEditorControl1.Document.TextContent)) Then
                 Select Case (MessageBox.Show("All BasicPawn Debugger placeholders need to be removed before compiling the source. Remove all placeholder?", "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation))
                     Case DialogResult.OK
@@ -814,7 +814,7 @@ Public Class FormMain
 
 #Region "MenuStrip_Test"
     Private Sub ToolStripMenuItem_Test_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Test.Click
-        With New ClassDebuggerParser()
+        With New ClassDebuggerParser(Me)
             If (.HasDebugPlaceholder(TextEditorControl1.Document.TextContent)) Then
                 Select Case (MessageBox.Show("All BasicPawn Debugger placeholders need to be removed before compiling the source. Remove all placeholder?", "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation))
                     Case DialogResult.OK
@@ -1844,7 +1844,7 @@ Public Class FormMain
                         g_mLastMethodAutocompleteUpdate = Now + New TimeSpan(0, 0, 1)
 
                         Dim sTextContent As String = g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl1.Document.TextContent)
-                        g_mFormMain.g_mSourceSyntraxCharReader = New ClassSyntraxTools.ClassSyntraxCharReader(sTextContent)
+                        g_mFormMain.g_mSourceSyntraxSourceAnalysis = New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sTextContent)
                     End If
 
                     'Update Foldings
@@ -2285,14 +2285,14 @@ Public Class FormMain
 
             Dim iStartLoc As Integer = 0
 
-            Dim iSynCR As ClassSyntraxCharReader = Nothing
+            Dim sourceAnalysis As ClassSyntraxSourceAnalysis = Nothing
             If (bInvalidCodeCheck) Then
-                iSynCR = New ClassSyntraxCharReader(sExpression)
+                sourceAnalysis = New ClassSyntraxSourceAnalysis(sExpression)
             End If
 
             For i = 0 To sExpression.Length - 1
-                If (iSynCR IsNot Nothing AndAlso bInvalidCodeCheck) Then
-                    If (iSynCR.InNonCode(i)) Then
+                If (sourceAnalysis IsNot Nothing AndAlso bInvalidCodeCheck) Then
+                    If (sourceAnalysis.InNonCode(i)) Then
                         Continue For
                     End If
                 End If
@@ -2341,7 +2341,7 @@ Public Class FormMain
             End Using
             sSource = SB.ToString
 
-            Dim iSynCR As New ClassSyntraxTools.ClassSyntraxCharReader(sSource)
+            Dim sourceAnalysis As New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sSource)
 
             Dim iBraceCount As Integer = 0
             Dim iBracedCount As Integer = 0
@@ -2350,24 +2350,24 @@ Public Class FormMain
                 Try
                     Select Case (sSource(i))
                         Case "("c
-                            If (Not iSynCR.InNonCode(i)) Then
+                            If (Not sourceAnalysis.InNonCode(i)) Then
                                 iBracedCount -= 1
                             End If
                         Case ")"c
-                            If (Not iSynCR.InNonCode(i)) Then
+                            If (Not sourceAnalysis.InNonCode(i)) Then
                                 iBracedCount += 1
                             End If
                         Case "{"c
-                            If (Not iSynCR.InNonCode(i)) Then
+                            If (Not sourceAnalysis.InNonCode(i)) Then
                                 iBraceCount -= 1
                             End If
                         Case "}"c
-                            If (Not iSynCR.InNonCode(i)) Then
+                            If (Not sourceAnalysis.InNonCode(i)) Then
                                 iBraceCount += 1
                             End If
                         Case vbLf
-                            'If (Not iSynCR.InNonCode(i)) Then
-                            sSource = sSource.Insert(i + 1, New String(vbTab, iSynCR.GetBraceLevel(i + 1 + iBraceCount) + If(iBracedCount > 0, iBracedCount + 1, 0)))
+                            'If (Not sourceAnalysis.InNonCode(i)) Then
+                            sSource = sSource.Insert(i + 1, New String(vbTab, sourceAnalysis.GetBraceLevel(i + 1 + iBraceCount) + If(iBracedCount > 0, iBracedCount + 1, 0)))
                             'End If
                             iBraceCount = 0
                     End Select
@@ -2379,11 +2379,41 @@ Public Class FormMain
             Return sSource
         End Function
 
+        ''' <summary>
+        ''' Checks if the source requires new decls and returns the offset.
+        ''' NOTE: High false positive rate.
+        ''' Returns -1 if not found.
+        ''' </summary>
+        ''' <param name="sSource"></param>
+        ''' <param name="bIgnoreChecks"></param>
+        ''' <returns>The offset in the source, -1 if not found.</returns>
+        Public Function HasNewDeclsPragma(sSource As String, Optional bIgnoreChecks As Boolean = True) As Integer
+            'TODO: Add better check
+            Dim sRegexPattern As String = "\#\b(pragma)\b(\s+|\s*(\\*)\s*)\b(newdecls)\b(\s+|\s*(\\*)\s*)\b(required)\b"
+
+            If (bIgnoreChecks) Then
+                For Each match As Match In Regex.Matches(sSource, sRegexPattern, RegexOptions.Multiline)
+                    Return match.Index
+                Next
+            Else
+                Dim sourceAnalysis As New ClassSyntraxSourceAnalysis(sSource)
+                For Each match As Match In Regex.Matches(sSource, sRegexPattern, RegexOptions.Multiline)
+                    If (sourceAnalysis.InNonCode(match.Index)) Then
+                        Continue For
+                    End If
+
+                    Return match.Index
+                Next
+            End If
+
+            Return -1
+        End Function
 
 
 
 
-        Public Class ClassSyntraxCharReader
+
+        Public Class ClassSyntraxSourceAnalysis
             Private iStateArray As Integer(,)
             Private iMaxLenght As Integer = 0
             Private sCacheText As String = ""
@@ -2761,9 +2791,9 @@ Public Class FormMain
                     Return
                 End If
 
-                Dim tmp_lAutocompleteList As New List(Of STRUC_AUTOCOMPLETE)
+                Dim lTmpAutocompleteList As New List(Of STRUC_AUTOCOMPLETE)
 
-                tmp_lAutocompleteList.AddRange((New ClassDebuggerParser).GetDebuggerAutocomplete)
+                lTmpAutocompleteList.AddRange((New ClassDebuggerParser(g_mFormMain)).GetDebuggerAutocomplete)
 
 
                 Dim sSourceList As New List(Of String())
@@ -2771,18 +2801,18 @@ Public Class FormMain
 
 
                 For i = 0 To sFiles.Length - 1
-                    ParseAutocomplete_Pre(sFiles(i), sSourceList, tmp_lAutocompleteList)
+                    ParseAutocomplete_Pre(sFiles(i), sSourceList, lTmpAutocompleteList)
                 Next
 
 
-                Dim sRegExEnum As String = "(\b" & String.Join("\b|\b", GetEnumNames(tmp_lAutocompleteList)) & "\b)"
+                Dim sRegExEnum As String = "(\b" & String.Join("\b|\b", GetEnumNames(lTmpAutocompleteList)) & "\b)"
                 For i = 0 To sSourceList.Count - 1
-                    ParseAutocomplete_Post(sSourceList(i)(0), sRegExEnum, sSourceList(i)(1), tmp_lAutocompleteList)
+                    ParseAutocomplete_Post(sSourceList(i)(0), sRegExEnum, sSourceList(i)(1), lTmpAutocompleteList)
                 Next
 
-                ParseAutocompleteMethodmap(tmp_lAutocompleteList)
+                ParseAutocompleteMethodmap(lTmpAutocompleteList)
 
-                g_mFormMain.g_ClassSyntraxTools.lAutocompleteList = tmp_lAutocompleteList
+                g_mFormMain.g_ClassSyntraxTools.lAutocompleteList = lTmpAutocompleteList
 
 
                 g_mFormMain.g_ClassSyntraxTools.UpdateSyntraxFile(ClassSyntraxTools.ENUM_SYNTRAX_UPDATE_TYPE.AUTOCOMPLETE)
@@ -2923,7 +2953,7 @@ Public Class FormMain
             Return lList.ToArray
         End Function
 
-        Private Sub ParseAutocomplete_Pre(sFile As String, ByRef sSourceList As List(Of String()), lTmpAutoList As List(Of STRUC_AUTOCOMPLETE))
+        Private Sub ParseAutocomplete_Pre(sFile As String, ByRef sSourceList As List(Of String()), lTmpAutocompleteList As List(Of STRUC_AUTOCOMPLETE))
 
             Dim sSource As String
             If (ClassSettings.g_sConfigOpenSourcePawnFile.ToLower = sFile.ToLower) Then
@@ -2950,17 +2980,17 @@ Public Class FormMain
             End If
 
             If (True) Then
-                Dim iSynCR As New ClassSyntraxTools.ClassSyntraxCharReader(sSource)
+                Dim sourceAnalysis As New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sSource)
 
                 'Filter new lines  
                 For i = 0 To sSource.Length - 1
                     Select Case (sSource(i))
                         Case vbLf
-                            If (iSynCR.InNonCode(i)) Then
+                            If (sourceAnalysis.InNonCode(i)) Then
                                 Exit Select
                             End If
 
-                            If (iSynCR.GetParenthesisLevel(i) > 0) Then
+                            If (sourceAnalysis.GetParenthesisLevel(i) > 0) Then
                                 Select Case (True)
                                     Case i > 1 AndAlso sSource(i - 1) = vbCr
                                         sSource = sSource.Remove(i - 1, 2)
@@ -2979,7 +3009,7 @@ Public Class FormMain
 
             If (True) Then
                 'Filter new spaces 
-                Dim iSynCR As New ClassSyntraxTools.ClassSyntraxCharReader(sSource)
+                Dim sourceAnalysis As New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sSource)
 
                 Dim iBraceLevel As Integer = 0
                 Dim iStringStart As Integer = 0
@@ -2988,7 +3018,7 @@ Public Class FormMain
                 For i = 0 To sSource.Length - 1
                     Select Case (sSource(i))
                         Case "("c
-                            If (iSynCR.InNonCode(i)) Then
+                            If (sourceAnalysis.InNonCode(i)) Then
                                 Continue For
                             End If
 
@@ -2997,7 +3027,7 @@ Public Class FormMain
                             End If
                             iBraceLevel += 1
                         Case ")"c
-                            If (iSynCR.InNonCode(i)) Then
+                            If (sourceAnalysis.InNonCode(i)) Then
                                 Continue For
                             End If
 
@@ -3069,10 +3099,10 @@ Public Class FormMain
                 Dim SB_Source As New StringBuilder(sSource.Length)
 
                 If (True) Then
-                    Dim iSynCR_Source As New ClassSyntraxTools.ClassSyntraxCharReader(sSource)
+                    Dim sourceAnalysis As New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sSource)
 
                     For i = 0 To sSource.Length - 1
-                        SB_Source.Append(If(iSynCR_Source.InNonCode(i), " "c, sSource(i)))
+                        SB_Source.Append(If(sourceAnalysis.InNonCode(i), " "c, sSource(i)))
                     Next
                 End If
 
@@ -3096,8 +3126,8 @@ Public Class FormMain
                     struc.sInfo = ""
                     struc.sType = "enum"
 
-                    If (Not lTmpAutoList.Exists(Function(struc2 As STRUC_AUTOCOMPLETE) struc2.sType = struc.sType AndAlso struc2.sFunctionName = struc.sFunctionName)) Then 'Not lTmpAutoList.Contains(struc)
-                        lTmpAutoList.Add(struc)
+                    If (Not lTmpAutocompleteList.Exists(Function(struc2 As STRUC_AUTOCOMPLETE) struc2.sType = struc.sType AndAlso struc2.sFunctionName = struc.sFunctionName)) Then 'Not lTmpAutoList.Contains(struc)
+                        lTmpAutocompleteList.Add(struc)
                     End If
                 Next
             End If
@@ -3108,10 +3138,10 @@ Public Class FormMain
                 Dim SB_Source As New StringBuilder(sSource.Length)
 
                 If (True) Then
-                    Dim iSynCR_Source As New ClassSyntraxTools.ClassSyntraxCharReader(sSource)
+                    Dim sourceAnalysis As New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sSource)
 
                     For i = 0 To sSource.Length - 1
-                        SB_Source.Append(If(iSynCR_Source.InNonCode(i), " "c, sSource(i)))
+                        SB_Source.Append(If(sourceAnalysis.InNonCode(i), " "c, sSource(i)))
                     Next
                 End If
 
@@ -3135,8 +3165,8 @@ Public Class FormMain
                     struc.sInfo = ""
                     struc.sType = "enum"
 
-                    If (Not lTmpAutoList.Exists(Function(struc2 As STRUC_AUTOCOMPLETE) struc2.sType = struc.sType AndAlso struc2.sFunctionName = struc.sFunctionName)) Then 'Not lTmpAutoList.Contains(struc)
-                        lTmpAutoList.Add(struc)
+                    If (Not lTmpAutocompleteList.Exists(Function(struc2 As STRUC_AUTOCOMPLETE) struc2.sType = struc.sType AndAlso struc2.sFunctionName = struc.sFunctionName)) Then 'Not lTmpAutoList.Contains(struc)
+                        lTmpAutocompleteList.Add(struc)
                     End If
                 Next
             End If
@@ -3184,10 +3214,10 @@ Public Class FormMain
                 Dim SB_Source As New StringBuilder(sSource.Length)
 
                 If (True) Then
-                    Dim iSynCR_Source As New ClassSyntraxTools.ClassSyntraxCharReader(sSource)
+                    Dim sourceAnalysis2 As New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sSource)
 
                     For i = 0 To sSource.Length - 1
-                        SB_Source.Append(If(iSynCR_Source.InNonCode(i), " "c, sSource(i)))
+                        SB_Source.Append(If(sourceAnalysis2.InNonCode(i), " "c, sSource(i)))
                     Next
                 End If
 
@@ -3203,7 +3233,7 @@ Public Class FormMain
                 Dim sEnumSource As String
                 Dim iBraceIndex As Integer
 
-                Dim iSynCR As ClassSyntraxTools.ClassSyntraxCharReader
+                Dim sourceAnalysis As ClassSyntraxTools.ClassSyntraxSourceAnalysis
 
                 Dim SB As StringBuilder
                 Dim lEnumSplitList As List(Of String)
@@ -3240,7 +3270,7 @@ Public Class FormMain
                         Continue For
                     End If
 
-                    iSynCR = New ClassSyntraxTools.ClassSyntraxCharReader(sEnumSource)
+                    sourceAnalysis = New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sEnumSource)
 
                     SB = New StringBuilder
                     lEnumSplitList = New List(Of String)
@@ -3248,7 +3278,7 @@ Public Class FormMain
                     For ii = 0 To sEnumSource.Length - 1
                         Select Case (sEnumSource(ii))
                             Case ","c
-                                If (iSynCR.GetParenthesisLevel(ii) > 0 OrElse iSynCR.GetBracketLevel(ii) > 0 OrElse iSynCR.GetBraceLevel(ii) > 0 OrElse iSynCR.InNonCode(ii)) Then
+                                If (sourceAnalysis.GetParenthesisLevel(ii) > 0 OrElse sourceAnalysis.GetBracketLevel(ii) > 0 OrElse sourceAnalysis.GetBraceLevel(ii) > 0 OrElse sourceAnalysis.InNonCode(ii)) Then
                                     Exit Select
                                 End If
 
@@ -3262,7 +3292,7 @@ Public Class FormMain
                                 lEnumSplitList.Add(sLine)
                                 SB.Length = 0
                             Case Else
-                                If (iSynCR.InNonCode(ii)) Then
+                                If (sourceAnalysis.InNonCode(ii)) Then
                                     Exit Select
                                 End If
 
@@ -3323,8 +3353,8 @@ Public Class FormMain
                         struc.sInfo = ""
                         struc.sType = "enum"
 
-                        If (Not lTmpAutoList.Exists(Function(struc2 As STRUC_AUTOCOMPLETE) struc2.sType = struc.sType AndAlso struc2.sFunctionName = struc.sFunctionName)) Then 'Not lTmpAutoList.Contains(struc)
-                            lTmpAutoList.Add(struc)
+                        If (Not lTmpAutocompleteList.Exists(Function(struc2 As STRUC_AUTOCOMPLETE) struc2.sType = struc.sType AndAlso struc2.sFunctionName = struc.sFunctionName)) Then 'Not lTmpAutoList.Contains(struc)
+                            lTmpAutocompleteList.Add(struc)
                         End If
                     End If
 
@@ -3347,8 +3377,8 @@ Public Class FormMain
                         struc.sInfo = sEnumComment
                         struc.sType = "enum"
 
-                        If (Not lTmpAutoList.Exists(Function(struc2 As STRUC_AUTOCOMPLETE) struc2.sType = struc.sType AndAlso struc2.sFunctionName = struc.sFunctionName)) Then 'Not lTmpAutoList.Contains(struc)
-                            lTmpAutoList.Add(struc)
+                        If (Not lTmpAutocompleteList.Exists(Function(struc2 As STRUC_AUTOCOMPLETE) struc2.sType = struc.sType AndAlso struc2.sFunctionName = struc.sFunctionName)) Then 'Not lTmpAutoList.Contains(struc)
+                            lTmpAutocompleteList.Add(struc)
                         End If
                     Next
                 Next
@@ -3357,7 +3387,7 @@ Public Class FormMain
             sSourceList.Add(New String() {sFile, sSource})
         End Sub
 
-        Private Sub ParseAutocomplete_Post(ByRef sFile As String, ByRef sRegExEnum As String, ByRef sSource As String, lTmpAutoList As List(Of STRUC_AUTOCOMPLETE))
+        Private Sub ParseAutocomplete_Post(ByRef sFile As String, ByRef sRegExEnum As String, ByRef sSource As String, lTmpAutocompleteList As List(Of STRUC_AUTOCOMPLETE))
             'Get Defines
             If (sSource.Contains("#define")) Then
                 Dim sLine As String
@@ -3417,8 +3447,8 @@ Public Class FormMain
                         struc.sInfo = ""
                         struc.sType = sType
 
-                        If (Not lTmpAutoList.Exists(Function(struc2 As STRUC_AUTOCOMPLETE) struc2.sType = struc.sType AndAlso struc2.sFunctionName = struc.sFunctionName)) Then 'Not lTmpAutoList.Contains(struc)
-                            lTmpAutoList.Add(struc)
+                        If (Not lTmpAutocompleteList.Exists(Function(struc2 As STRUC_AUTOCOMPLETE) struc2.sType = struc.sType AndAlso struc2.sFunctionName = struc.sFunctionName)) Then 'Not lTmpAutoList.Contains(struc)
+                            lTmpAutocompleteList.Add(struc)
                         End If
                     End While
                 End Using
@@ -3445,14 +3475,14 @@ Public Class FormMain
                 Dim sComment As String
 
                 Dim sLines As String() = sSource.Split(New String() {vbNewLine, vbLf}, 0)
-                Dim iSynCR As New ClassSyntraxTools.ClassSyntraxCharReader(sSource)
+                Dim sourceAnalysis As New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sSource)
                 For i = 0 To sLines.Length - 1
                     If (Not sLines(i).Contains("public") OrElse Not sLines(i).Contains(";"c)) Then
                         Continue For
                     End If
 
-                    Dim iIndex = iSynCR.GetIndexFromLine(i)
-                    If (iIndex < 0 OrElse iSynCR.GetBraceLevel(iIndex) > 0 OrElse iSynCR.InNonCode(iIndex)) Then
+                    Dim iIndex = sourceAnalysis.GetIndexFromLine(i)
+                    If (iIndex < 0 OrElse sourceAnalysis.GetBraceLevel(iIndex) > 0 OrElse sourceAnalysis.InNonCode(iIndex)) Then
                         Continue For
                     End If
 
@@ -3496,8 +3526,8 @@ Public Class FormMain
                     struc.sInfo = sComment
                     struc.sType = sType
 
-                    If (Not lTmpAutoList.Exists(Function(struc2 As STRUC_AUTOCOMPLETE) struc2.sType = struc.sType AndAlso struc2.sFunctionName = struc.sFunctionName)) Then 'Not lTmpAutoList.Contains(struc)
-                        lTmpAutoList.Add(struc)
+                    If (Not lTmpAutocompleteList.Exists(Function(struc2 As STRUC_AUTOCOMPLETE) struc2.sType = struc.sType AndAlso struc2.sFunctionName = struc.sFunctionName)) Then 'Not lTmpAutoList.Contains(struc)
+                        lTmpAutocompleteList.Add(struc)
                     End If
                 Next
             End If
@@ -3519,11 +3549,11 @@ Public Class FormMain
                 Dim bCommentStart As Boolean
                 Dim mRegMatch2 As Match
 
-                Dim iSynCR As New ClassSyntraxTools.ClassSyntraxCharReader(sSource)
+                Dim sourceAnalysis As New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sSource)
                 Dim sLines As String() = sSource.Split(New String() {vbNewLine, vbLf}, 0)
 
-                If (iSynCR.GetMaxLenght - 1 > 0) Then
-                    Dim iLastBraceLevel As Integer = iSynCR.GetBraceLevel(iSynCR.GetMaxLenght - 1)
+                If (sourceAnalysis.GetMaxLenght - 1 > 0) Then
+                    Dim iLastBraceLevel As Integer = sourceAnalysis.GetBraceLevel(sourceAnalysis.GetMaxLenght - 1)
                     If (iLastBraceLevel > 0) Then
                         g_mFormMain.PrintInformation("[ERRO]", vbTab & "Uneven brace level! May lead to syntrax parser failures! [LV:" & iLastBraceLevel & "] (" & IO.Path.GetFileName(sFile) & ")")
                     End If
@@ -3534,8 +3564,8 @@ Public Class FormMain
                         Continue For
                     End If
 
-                    Dim iIndex = iSynCR.GetIndexFromLine(i)
-                    If (iIndex < 0 OrElse iSynCR.GetBraceLevel(iIndex) > 0 OrElse iSynCR.InNonCode(iIndex)) Then
+                    Dim iIndex = sourceAnalysis.GetIndexFromLine(i)
+                    If (iIndex < 0 OrElse sourceAnalysis.GetBraceLevel(iIndex) > 0 OrElse sourceAnalysis.InNonCode(iIndex)) Then
                         Continue For
                     End If
 
@@ -3640,8 +3670,8 @@ Public Class FormMain
                     struc.sInfo = sComment
                     struc.sType = String.Join(" & ", sTypes)
 
-                    If (Not lTmpAutoList.Exists(Function(struc2 As STRUC_AUTOCOMPLETE) struc2.sType = struc.sType AndAlso struc2.sFunctionName = struc.sFunctionName)) Then 'Not lTmpAutoList.Contains(struc)
-                        lTmpAutoList.Add(struc)
+                    If (Not lTmpAutocompleteList.Exists(Function(struc2 As STRUC_AUTOCOMPLETE) struc2.sType = struc.sType AndAlso struc2.sFunctionName = struc.sFunctionName)) Then 'Not lTmpAutoList.Contains(struc)
+                        lTmpAutocompleteList.Add(struc)
                     End If
                 Next
             End If
@@ -3662,7 +3692,7 @@ Public Class FormMain
                 Dim SB As StringBuilder
                 Dim lEnumSplitList As List(Of String)
 
-                Dim iSynCR As ClassSyntraxTools.ClassSyntraxCharReader
+                Dim sourceAnalysis As ClassSyntraxTools.ClassSyntraxSourceAnalysis
 
                 Dim sLine As String
                 Dim iInvalidLen As Integer
@@ -3700,12 +3730,12 @@ Public Class FormMain
                     SB = New StringBuilder
                     lEnumSplitList = New List(Of String)
 
-                    iSynCR = New ClassSyntraxTools.ClassSyntraxCharReader(sEnumSource)
+                    sourceAnalysis = New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sEnumSource)
 
                     For ii = 0 To sEnumSource.Length - 1
                         Select Case (sEnumSource(ii))
                             Case ","c
-                                If (iSynCR.GetParenthesisLevel(ii) > 0 OrElse iSynCR.GetBracketLevel(ii) > 0 OrElse iSynCR.GetBraceLevel(ii) > 0 OrElse iSynCR.InNonCode(ii)) Then
+                                If (sourceAnalysis.GetParenthesisLevel(ii) > 0 OrElse sourceAnalysis.GetBracketLevel(ii) > 0 OrElse sourceAnalysis.GetBraceLevel(ii) > 0 OrElse sourceAnalysis.InNonCode(ii)) Then
                                     Exit Select
                                 End If
 
@@ -3725,7 +3755,7 @@ Public Class FormMain
                                 SB.Length = 0
                         End Select
 
-                        If (Not iSynCR.InSingleComment(ii) AndAlso Not iSynCR.InMultiComment(ii)) Then
+                        If (Not sourceAnalysis.InSingleComment(ii) AndAlso Not sourceAnalysis.InMultiComment(ii)) Then
                             SB.Append(sEnumSource(ii))
                         End If
                     Next
@@ -3815,8 +3845,8 @@ Public Class FormMain
                         struc.sInfo = sEnumComment
                         struc.sType = "funcenum"
 
-                        If (Not lTmpAutoList.Exists(Function(struc2 As STRUC_AUTOCOMPLETE) struc2.sType = struc.sType AndAlso struc2.sFunctionName = struc.sFunctionName)) Then 'Not lTmpAutoList.Contains(struc)
-                            lTmpAutoList.Add(struc)
+                        If (Not lTmpAutocompleteList.Exists(Function(struc2 As STRUC_AUTOCOMPLETE) struc2.sType = struc.sType AndAlso struc2.sFunctionName = struc.sFunctionName)) Then 'Not lTmpAutoList.Contains(struc)
+                            lTmpAutocompleteList.Add(struc)
                         End If
                     Next
                 Next
@@ -3873,12 +3903,12 @@ Public Class FormMain
                         struc.sInfo = ""
                         struc.sType = "methodmap"
 
-                        If (Not lTmpAutoList.Exists(Function(struc2 As STRUC_AUTOCOMPLETE) struc2.sType = struc.sType AndAlso struc2.sFunctionName = struc.sFunctionName)) Then 'Not lTmpAutoList.Contains(struc)
-                            lTmpAutoList.Add(struc)
+                        If (Not lTmpAutocompleteList.Exists(Function(struc2 As STRUC_AUTOCOMPLETE) struc2.sType = struc.sType AndAlso struc2.sFunctionName = struc.sFunctionName)) Then 'Not lTmpAutoList.Contains(struc)
+                            lTmpAutocompleteList.Add(struc)
                         End If
                     End If
 
-                    Dim iSynCR As New ClassSyntraxTools.ClassSyntraxCharReader(sMethodmapSource)
+                    Dim sourceAnalysis As New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sMethodmapSource)
                     Dim iMethodmapBraceList As Integer()() = g_mFormMain.g_ClassSyntraxTools.GetExpressionBetweenBraces(sMethodmapSource, "("c, ")"c, 1, True)
 
                     Dim mMethodMatches As MatchCollection = Regex.Matches(sMethodmapSource, "^\s*(?<Type>\b(property|public\s+(static\s+){0,1}native|public)\b)\s+((?<Tag>\b(" & sRegExEnum & ")\b\s)\s*(?<Name>\b[a-zA-Z0-9_]+\b)|(?<Constructor>\b" & sMethodMapName & "\b)|(?<Name>\b[a-zA-Z0-9_]+\b))\s*(?<BraceStart>\(){0,1}", RegexOptions.Multiline)
@@ -3886,7 +3916,7 @@ Public Class FormMain
                     Dim SB As StringBuilder
 
                     For ii = 0 To mMethodMatches.Count - 1
-                        If (iSynCR.InNonCode(mMethodMatches(ii).Groups("Type").Index)) Then
+                        If (sourceAnalysis.InNonCode(mMethodMatches(ii).Groups("Type").Index)) Then
                             Continue For
                         End If
 
@@ -3896,7 +3926,7 @@ Public Class FormMain
                                 Case " "c, vbTab, vbLf, vbCr
                                     SB.Append(sMethodmapSource(iii))
                                 Case Else
-                                    If (Not iSynCR.InMultiComment(iii) AndAlso Not iSynCR.InSingleComment(iii) AndAlso Not iSynCR.InPreprocessor(iii)) Then
+                                    If (Not sourceAnalysis.InMultiComment(iii) AndAlso Not sourceAnalysis.InSingleComment(iii) AndAlso Not sourceAnalysis.InPreprocessor(iii)) Then
                                         Exit For
                                     End If
 
@@ -3919,8 +3949,8 @@ Public Class FormMain
                             struc.sInfo = sComment
                             struc.sType = "methodmap " & sType
 
-                            If (Not lTmpAutoList.Exists(Function(struc2 As STRUC_AUTOCOMPLETE) struc2.sType = struc.sType AndAlso struc2.sFunctionName = struc.sFunctionName)) Then 'Not lTmpAutoList.Contains(struc)
-                                lTmpAutoList.Add(struc)
+                            If (Not lTmpAutocompleteList.Exists(Function(struc2 As STRUC_AUTOCOMPLETE) struc2.sType = struc.sType AndAlso struc2.sFunctionName = struc.sFunctionName)) Then 'Not lTmpAutoList.Contains(struc)
+                                lTmpAutocompleteList.Add(struc)
                             End If
                         Else
                             Dim bIsConstructor As Boolean = mMethodMatches(ii).Groups("Constructor").Success
@@ -3946,8 +3976,8 @@ Public Class FormMain
                                 struc.sInfo = sComment
                                 struc.sType = "methodmap " & sType
 
-                                If (Not lTmpAutoList.Exists(Function(struc2 As STRUC_AUTOCOMPLETE) struc2.sType = struc.sType AndAlso struc2.sFunctionName = struc.sFunctionName)) Then 'Not lTmpAutoList.Contains(struc)
-                                    lTmpAutoList.Add(struc)
+                                If (Not lTmpAutocompleteList.Exists(Function(struc2 As STRUC_AUTOCOMPLETE) struc2.sType = struc.sType AndAlso struc2.sFunctionName = struc.sFunctionName)) Then 'Not lTmpAutoList.Contains(struc)
+                                    lTmpAutocompleteList.Add(struc)
                                 End If
                             Else
                                 Dim struc As STRUC_AUTOCOMPLETE
@@ -3957,8 +3987,8 @@ Public Class FormMain
                                 struc.sInfo = sComment
                                 struc.sType = "methodmap " & sType
 
-                                If (Not lTmpAutoList.Exists(Function(struc2 As STRUC_AUTOCOMPLETE) struc2.sType = struc.sType AndAlso struc2.sFunctionName = struc.sFunctionName)) Then 'Not lTmpAutoList.Contains(struc)
-                                    lTmpAutoList.Add(struc)
+                                If (Not lTmpAutocompleteList.Exists(Function(struc2 As STRUC_AUTOCOMPLETE) struc2.sType = struc.sType AndAlso struc2.sFunctionName = struc.sFunctionName)) Then 'Not lTmpAutoList.Contains(struc)
+                                    lTmpAutocompleteList.Add(struc)
                                 End If
                             End If
                         End If
@@ -4009,12 +4039,12 @@ Public Class FormMain
                         struc.sInfo = ""
                         struc.sType = "enum"
 
-                        If (Not lTmpAutoList.Exists(Function(struc2 As STRUC_AUTOCOMPLETE) struc2.sType = struc.sType AndAlso struc2.sFunctionName = struc.sFunctionName)) Then 'Not lTmpAutoList.Contains(struc)
-                            lTmpAutoList.Add(struc)
+                        If (Not lTmpAutocompleteList.Exists(Function(struc2 As STRUC_AUTOCOMPLETE) struc2.sType = struc.sType AndAlso struc2.sFunctionName = struc.sFunctionName)) Then 'Not lTmpAutoList.Contains(struc)
+                            lTmpAutocompleteList.Add(struc)
                         End If
                     End If
 
-                    Dim iSynCR As New ClassSyntraxTools.ClassSyntraxCharReader(sMethodmapSource)
+                    Dim sourceAnalysis As New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sMethodmapSource)
                     Dim iMethodmapBraceList As Integer()() = g_mFormMain.g_ClassSyntraxTools.GetExpressionBetweenBraces(sMethodmapSource, "("c, ")"c, 1, True)
 
                     Dim mMethodMatches As MatchCollection = Regex.Matches(sMethodmapSource, "^\s*(?<Type>\b(function)\b)\s+(?<Tag>\b(" & sRegExEnum & ")\b)\s*(?<BraceStart>\()", RegexOptions.Multiline)
@@ -4022,7 +4052,7 @@ Public Class FormMain
                     Dim SB As StringBuilder
 
                     For ii = 0 To mMethodMatches.Count - 1
-                        If (iSynCR.InNonCode(mMethodMatches(ii).Groups("Type").Index)) Then
+                        If (sourceAnalysis.InNonCode(mMethodMatches(ii).Groups("Type").Index)) Then
                             Continue For
                         End If
 
@@ -4032,7 +4062,7 @@ Public Class FormMain
                                 Case " "c, vbTab, vbLf, vbCr
                                     SB.Append(sMethodmapSource(iii))
                                 Case Else
-                                    If (Not iSynCR.InMultiComment(iii) AndAlso Not iSynCR.InSingleComment(iii) AndAlso Not iSynCR.InPreprocessor(iii)) Then
+                                    If (Not sourceAnalysis.InMultiComment(iii) AndAlso Not sourceAnalysis.InSingleComment(iii) AndAlso Not sourceAnalysis.InPreprocessor(iii)) Then
                                         Exit For
                                     End If
 
@@ -4066,8 +4096,8 @@ Public Class FormMain
                         struc.sInfo = sComment
                         struc.sType = "typeset " & sType
 
-                        If (Not lTmpAutoList.Exists(Function(struc2 As STRUC_AUTOCOMPLETE) struc2.sType = struc.sType AndAlso struc2.sFunctionName = struc.sFunctionName)) Then 'Not lTmpAutoList.Contains(struc)
-                            lTmpAutoList.Add(struc)
+                        If (Not lTmpAutocompleteList.Exists(Function(struc2 As STRUC_AUTOCOMPLETE) struc2.sType = struc.sType AndAlso struc2.sFunctionName = struc.sFunctionName)) Then 'Not lTmpAutoList.Contains(struc)
+                            lTmpAutocompleteList.Add(struc)
                         End If
                     Next
                 Next
@@ -4077,7 +4107,7 @@ Public Class FormMain
                 Dim mPossibleMethodmapMatches As MatchCollection = Regex.Matches(sSource, "^\s*\b(typedef)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)\s+=\s+\b(function)\b\s+(?<Tag>\b(" & sRegExEnum & ")\b)\s*(?<BraceStart>\()", RegexOptions.Multiline)
                 Dim iBraceList As Integer()() = g_mFormMain.g_ClassSyntraxTools.GetExpressionBetweenBraces(sSource, "("c, ")"c, 1, True)
 
-                Dim iSynCR As New ClassSyntraxTools.ClassSyntraxCharReader(sSource)
+                Dim sourceAnalysis As New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sSource)
 
                 For i = 0 To mPossibleMethodmapMatches.Count - 1
                     Dim mRegMatch As Match = mPossibleMethodmapMatches(i)
@@ -4085,7 +4115,7 @@ Public Class FormMain
                         Continue For
                     End If
 
-                    If (iSynCR.InNonCode(mRegMatch.Index)) Then
+                    If (sourceAnalysis.InNonCode(mRegMatch.Index)) Then
                         Continue For
                     End If
 
@@ -4118,7 +4148,7 @@ Public Class FormMain
                             Case " "c, vbTab, vbLf, vbCr
                                 SB.Append(sSource(iii))
                             Case Else
-                                If (Not iSynCR.InMultiComment(iii) AndAlso Not iSynCR.InSingleComment(iii) AndAlso Not iSynCR.InPreprocessor(iii)) Then
+                                If (Not sourceAnalysis.InMultiComment(iii) AndAlso Not sourceAnalysis.InSingleComment(iii) AndAlso Not sourceAnalysis.InPreprocessor(iii)) Then
                                     Exit For
                                 End If
 
@@ -4138,8 +4168,8 @@ Public Class FormMain
                     struc.sInfo = sComment
                     struc.sType = "typedef"
 
-                    If (Not lTmpAutoList.Exists(Function(struc2 As STRUC_AUTOCOMPLETE) struc2.sType = struc.sType AndAlso struc2.sFunctionName = struc.sFunctionName)) Then 'Not lTmpAutoList.Contains(struc)
-                        lTmpAutoList.Add(struc)
+                    If (Not lTmpAutocompleteList.Exists(Function(struc2 As STRUC_AUTOCOMPLETE) struc2.sType = struc.sType AndAlso struc2.sFunctionName = struc.sFunctionName)) Then 'Not lTmpAutoList.Contains(struc)
+                        lTmpAutocompleteList.Add(struc)
                     End If
                 Next
             End If
@@ -4275,6 +4305,8 @@ Public Class FormMain
     End Class
 
     Public Class ClassDebuggerParser
+        Private g_mFormMain As FormMain
+
         Public Shared g_sDebuggerFilesExt As String = ".bpdebug"
 
         Public Shared g_sBreakpointName As String = "BPDBreakpoint"
@@ -4303,12 +4335,16 @@ Public Class FormMain
         Public g_lBreakpointList As New List(Of STRUC_DEBUGGER_ITEM)
         Public g_lWatcherList As New List(Of STRUC_DEBUGGER_ITEM)
 
+        Public Sub New(f As FormMain)
+            g_mFormMain = f
+        End Sub
+
         ''' <summary>
         ''' Updates the breakpoint list.
         ''' </summary>
         ''' <param name="sSource"></param>
         Public Sub UpdateBreakpoints(sSource As String, bKeepIdentity As Boolean)
-            Dim iSynCR As New ClassSyntraxTools.ClassSyntraxCharReader(sSource)
+            Dim sourceAnalysis As New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sSource)
 
             If (Not bKeepIdentity) Then
                 g_lBreakpointList.Clear()
@@ -4319,7 +4355,7 @@ Public Class FormMain
                 Dim iIndex As Integer = m.Index
                 Dim bHasArgument As Boolean = m.Groups("Arguments").Success
 
-                If (iSynCR.InNonCode(iIndex) OrElse Not bHasArgument) Then
+                If (sourceAnalysis.InNonCode(iIndex) OrElse Not bHasArgument) Then
                     Continue For
                 End If
 
@@ -4341,14 +4377,14 @@ Public Class FormMain
                 Dim sArguments As New StringBuilder()
                 Dim sTotalFunction As New StringBuilder
 
-                Dim iStartLevel As Integer = iSynCR.GetParenthesisLevel(iIndex)
+                Dim iStartLevel As Integer = sourceAnalysis.GetParenthesisLevel(iIndex)
                 Dim bGetArguments As Boolean = False
                 For i = iIndex To sSource.Length - 1
                     iTotalLenght += 1
 
                     sTotalFunction.Append(sSource(i))
 
-                    If (sSource(i) = ")" AndAlso iStartLevel = iSynCR.GetParenthesisLevel(i)) Then
+                    If (sSource(i) = ")" AndAlso iStartLevel = sourceAnalysis.GetParenthesisLevel(i)) Then
                         bGetArguments = False
                         Exit For
                     End If
@@ -4401,7 +4437,7 @@ Public Class FormMain
         ''' </summary>
         ''' <param name="sSource"></param>
         Public Sub UpdateWatchers(sSource As String, bKeepIdentity As Boolean)
-            Dim iSynCR As New ClassSyntraxTools.ClassSyntraxCharReader(sSource)
+            Dim sourceAnalysis As New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sSource)
 
             If (Not bKeepIdentity) Then
                 g_lWatcherList.Clear()
@@ -4412,7 +4448,7 @@ Public Class FormMain
                 Dim iIndex As Integer = m.Index
                 Dim bHasArgument As Boolean = m.Groups("Arguments").Success
 
-                If (iSynCR.InNonCode(iIndex) OrElse Not bHasArgument) Then
+                If (sourceAnalysis.InNonCode(iIndex) OrElse Not bHasArgument) Then
                     Continue For
                 End If
 
@@ -4434,14 +4470,14 @@ Public Class FormMain
                 Dim sArguments As New StringBuilder()
                 Dim sTotalFunction As New StringBuilder
 
-                Dim iStartLevel As Integer = iSynCR.GetParenthesisLevel(iIndex)
+                Dim iStartLevel As Integer = sourceAnalysis.GetParenthesisLevel(iIndex)
                 Dim bGetArguments As Boolean = False
                 For i = iIndex To sSource.Length - 1
                     iTotalLenght += 1
 
                     sTotalFunction.Append(sSource(i))
 
-                    If (sSource(i) = ")" AndAlso iStartLevel = iSynCR.GetParenthesisLevel(i)) Then
+                    If (sSource(i) = ")" AndAlso iStartLevel = sourceAnalysis.GetParenthesisLevel(i)) Then
                         bGetArguments = False
                         Exit For
                     End If
@@ -4754,21 +4790,21 @@ Public Class FormMain
 
         Public Sub CleanupDebugPlaceholder(ByRef sSource As String)
             'TODO: Add more debug placeholder
-            With New ClassBreakpoints()
+            With New ClassBreakpoints(g_mFormMain)
                 .RemoveAllBreakpoints(sSource)
             End With
-            With New ClassWatchers()
+            With New ClassWatchers(g_mFormMain)
                 .RemoveAllWatchers(sSource)
             End With
         End Sub
 
         Public Sub CleanupDebugPlaceholder(mFormMain As FormMain)
             'TODO: Add more debug placeholder
-            With New ClassBreakpoints()
-                .TextEditorRemoveAllBreakpoints(mFormMain)
+            With New ClassBreakpoints(g_mFormMain)
+                .TextEditorRemoveAllBreakpoints()
             End With
-            With New ClassWatchers()
-                .TextEditorRemoveAllWatchers(mFormMain)
+            With New ClassWatchers(g_mFormMain)
+                .TextEditorRemoveAllWatchers()
             End With
         End Sub
 
@@ -4783,7 +4819,7 @@ Public Class FormMain
         End Function
 
         Public Function HasDebugPlaceholder(sSource As String) As Boolean
-            For Each sName As String In GetDebugPlaceholdernames()
+            For Each sName As String In GetDebugPlaceholderNames()
                 If (Regex.IsMatch(sSource, "\b" & Regex.Escape(sName) & "\b\s*\(")) Then
                     Return True
                 End If
@@ -4833,10 +4869,17 @@ Public Class FormMain
         End Class
 
         Class ClassBreakpoints
+            Private g_mFormMain As FormMain
+
+            Public Sub New(f As FormMain)
+                g_mFormMain = f
+            End Sub
+
+
             ''' <summary>
             ''' Inserts one breakpoint using the caret position in the text editor
             ''' </summary>
-            Public Sub TextEditorInsertBreakpointAtCaret(g_mFormMain As FormMain)
+            Public Sub TextEditorInsertBreakpointAtCaret()
                 If (g_mFormMain.TextEditorControl1.ActiveTextAreaControl.SelectionManager.HasSomethingSelected AndAlso g_mFormMain.TextEditorControl1.ActiveTextAreaControl.SelectionManager.SelectionCollection.Count > 0) Then
                     Dim iOffset As Integer = g_mFormMain.TextEditorControl1.ActiveTextAreaControl.SelectionManager.SelectionCollection(0).Offset
                     Dim iLenght As Integer = g_mFormMain.TextEditorControl1.ActiveTextAreaControl.SelectionManager.SelectionCollection(0).Length
@@ -4866,14 +4909,14 @@ Public Class FormMain
 
                             If (bIsFunction) Then
                                 Dim sSource As String = g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.TextContent
-                                Dim iSynCR As New ClassSyntraxTools.ClassSyntraxCharReader(sSource)
+                                Dim sourceAnalysis As New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sSource)
 
                                 Dim iFullLenght As Integer = 0
-                                Dim iStartLevel As Integer = iSynCR.GetParenthesisLevel(iStartOffset)
+                                Dim iStartLevel As Integer = sourceAnalysis.GetParenthesisLevel(iStartOffset)
                                 For i = iStartOffset To sSource.Length - 1
                                     iFullLenght += 1
 
-                                    If (sSource(i) = ")" AndAlso iStartLevel = iSynCR.GetParenthesisLevel(i)) Then
+                                    If (sSource(i) = ")" AndAlso iStartLevel = sourceAnalysis.GetParenthesisLevel(i)) Then
                                         Exit For
                                     End If
                                 Next
@@ -4899,7 +4942,7 @@ Public Class FormMain
             ''' <summary>
             ''' Removes one breakpoint using the caret position in the text editor
             ''' </summary>
-            Public Sub TextEditorRemoveBreakpointAtCaret(g_mFormMain As FormMain)
+            Public Sub TextEditorRemoveBreakpointAtCaret()
                 Dim sCaretWord As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True)
 
                 If (sCaretWord <> ClassDebuggerParser.g_sBreakpointName) Then
@@ -4911,7 +4954,7 @@ Public Class FormMain
 
                 g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
 
-                Dim debuggerParser As New ClassDebuggerParser
+                Dim debuggerParser As New ClassDebuggerParser(g_mFormMain)
                 debuggerParser.UpdateBreakpoints(g_mFormMain.TextEditorControl1.Document.TextContent, False)
 
                 For i = debuggerParser.g_lBreakpointList.Count - 1 To 0 Step -1
@@ -4943,13 +4986,12 @@ Public Class FormMain
             ''' <summary>
             ''' Removes all available breakpoints in the text editor
             ''' </summary>
-            Public Sub TextEditorRemoveAllBreakpoints(g_mFormMain As FormMain)
+            Public Sub TextEditorRemoveAllBreakpoints()
                 g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
-
 
                 g_mFormMain.PrintInformation("[INFO]", "Removing all debugger breakpoints...")
 
-                Dim debuggerParser As New ClassDebuggerParser
+                Dim debuggerParser As New ClassDebuggerParser(g_mFormMain)
                 While True
                     debuggerParser.UpdateBreakpoints(g_mFormMain.TextEditorControl1.Document.TextContent, False)
 
@@ -5006,7 +5048,7 @@ Public Class FormMain
             Public Sub RemoveAllBreakpoints(ByRef sSource As String)
                 Dim SB As New StringBuilder(sSource)
 
-                Dim debuggerParser As New ClassDebuggerParser
+                Dim debuggerParser As New ClassDebuggerParser(g_mFormMain)
                 While True
                     debuggerParser.UpdateBreakpoints(SB.ToString, False)
 
@@ -5069,7 +5111,7 @@ Public Class FormMain
                 Dim SB As New StringBuilder(sSource)
                 Dim SBModules As New StringBuilder()
 
-                Dim bForceNewSyntrax As Boolean = Regex.IsMatch(sSource, "^\s*\#\b(pragma)\b\s+\b(newdecls)\b\s+\b(required)\b", RegexOptions.Multiline)
+                Dim bForceNewSyntrax As Boolean = g_mFormMain.g_ClassSyntraxTools.HasNewDeclsPragma(sSource)
 
                 For i = debuggerParser.g_lBreakpointList.Count - 1 To 0 Step -1
                     Dim iIndex As Integer = debuggerParser.g_lBreakpointList(i).iOffset
@@ -5091,10 +5133,16 @@ Public Class FormMain
         End Class
 
         Class ClassWatchers
+            Private g_mFormMain As FormMain
+
+            Public Sub New(f As FormMain)
+                g_mFormMain = f
+            End Sub
+
             ''' <summary>
             ''' Inserts one watcher using the caret position in the text editor
             ''' </summary>
-            Public Sub TextEditorInsertWatcherAtCaret(g_mFormMain As FormMain)
+            Public Sub TextEditorInsertWatcherAtCaret()
                 If (g_mFormMain.TextEditorControl1.ActiveTextAreaControl.SelectionManager.HasSomethingSelected AndAlso g_mFormMain.TextEditorControl1.ActiveTextAreaControl.SelectionManager.SelectionCollection.Count > 0) Then
                     Dim iOffset As Integer = g_mFormMain.TextEditorControl1.ActiveTextAreaControl.SelectionManager.SelectionCollection(0).Offset
                     Dim iLenght As Integer = g_mFormMain.TextEditorControl1.ActiveTextAreaControl.SelectionManager.SelectionCollection(0).Length
@@ -5124,14 +5172,14 @@ Public Class FormMain
 
                             If (bIsFunction) Then
                                 Dim sSource As String = g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.TextContent
-                                Dim iSynCR As New ClassSyntraxTools.ClassSyntraxCharReader(sSource)
+                                Dim sourceAnalysis As New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sSource)
 
                                 Dim iFullLenght As Integer = 0
-                                Dim iStartLevel As Integer = iSynCR.GetParenthesisLevel(iStartOffset)
+                                Dim iStartLevel As Integer = sourceAnalysis.GetParenthesisLevel(iStartOffset)
                                 For i = iStartOffset To sSource.Length - 1
                                     iFullLenght += 1
 
-                                    If (sSource(i) = ")" AndAlso iStartLevel = iSynCR.GetParenthesisLevel(i)) Then
+                                    If (sSource(i) = ")" AndAlso iStartLevel = sourceAnalysis.GetParenthesisLevel(i)) Then
                                         Exit For
                                     End If
                                 Next
@@ -5157,7 +5205,7 @@ Public Class FormMain
             ''' <summary>
             ''' Removes one watcher using the caret position in the text editor
             ''' </summary>
-            Public Sub TextEditorRemoveWatcherAtCaret(g_mFormMain As FormMain)
+            Public Sub TextEditorRemoveWatcherAtCaret()
                 Dim sCaretWord As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True)
 
                 If (sCaretWord <> ClassDebuggerParser.g_sWatcherName) Then
@@ -5169,7 +5217,7 @@ Public Class FormMain
 
                 g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
 
-                Dim debuggerParser As New ClassDebuggerParser
+                Dim debuggerParser As New ClassDebuggerParser(g_mFormMain)
                 debuggerParser.UpdateWatchers(g_mFormMain.TextEditorControl1.Document.TextContent, False)
 
                 For i = debuggerParser.g_lWatcherList.Count - 1 To 0 Step -1
@@ -5201,13 +5249,13 @@ Public Class FormMain
             ''' <summary>
             ''' Removes all available watchers in the text editor
             ''' </summary>
-            Public Sub TextEditorRemoveAllWatchers(g_mFormMain As FormMain)
+            Public Sub TextEditorRemoveAllWatchers()
                 g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
 
 
                 g_mFormMain.PrintInformation("[INFO]", "Removing all debugger watcher...")
 
-                Dim debuggerParser As New ClassDebuggerParser
+                Dim debuggerParser As New ClassDebuggerParser(g_mFormMain)
                 While True
                     debuggerParser.UpdateWatchers(g_mFormMain.TextEditorControl1.Document.TextContent, False)
 
@@ -5264,7 +5312,7 @@ Public Class FormMain
             Public Sub RemoveAllWatchers(ByRef sSource As String)
                 Dim SB As New StringBuilder(sSource)
 
-                Dim debuggerParser As New ClassDebuggerParser
+                Dim debuggerParser As New ClassDebuggerParser(g_mFormMain)
                 While True
                     debuggerParser.UpdateWatchers(SB.ToString, False)
 
@@ -5327,7 +5375,7 @@ Public Class FormMain
                 Dim SB As New StringBuilder(sSource)
                 Dim SBModules As New StringBuilder()
 
-                Dim bForceNewSyntrax As Boolean = Regex.IsMatch(sSource, "^\s*\#\b(pragma)\b\s+\b(newdecls)\b\s+\b(required)\b", RegexOptions.Multiline)
+                Dim bForceNewSyntrax As Boolean = g_mFormMain.g_ClassSyntraxTools.HasNewDeclsPragma(sSource)
 
                 For i = debuggerParser.g_lWatcherList.Count - 1 To 0 Step -1
                     Dim iIndex As Integer = debuggerParser.g_lWatcherList(i).iOffset
@@ -5352,55 +5400,54 @@ Public Class FormMain
 
 
     Private Sub ToolStripMenuItem_DebuggerBreakpointInsert_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_DebuggerBreakpointInsert.Click
-        With New ClassDebuggerParser.ClassBreakpoints()
-            .TextEditorInsertBreakpointAtCaret(Me)
+        With New ClassDebuggerParser.ClassBreakpoints(Me)
+            .TextEditorInsertBreakpointAtCaret()
         End With
     End Sub
 
     Private Sub ToolStripMenuItem_DebuggerBreakpointRemove_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_DebuggerBreakpointRemove.Click
-        With New ClassDebuggerParser.ClassBreakpoints()
-            .TextEditorRemoveBreakpointAtCaret(Me)
+        With New ClassDebuggerParser.ClassBreakpoints(Me)
+            .TextEditorRemoveBreakpointAtCaret()
         End With
     End Sub
 
     Private Sub ToolStripMenuItem_DebuggerBreakpointRemoveAll_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_DebuggerBreakpointRemoveAll.Click
-        With New ClassDebuggerParser.ClassBreakpoints()
-            .TextEditorRemoveAllBreakpoints(Me)
+        With New ClassDebuggerParser.ClassBreakpoints(Me)
+            .TextEditorRemoveAllBreakpoints()
         End With
     End Sub
 
     Private Sub ToolStripMenuItem_DebuggerWatcherInsert_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_DebuggerWatcherInsert.Click
-        With New ClassDebuggerParser.ClassWatchers()
-            .TextEditorInsertWatcherAtCaret(Me)
+        With New ClassDebuggerParser.ClassWatchers(Me)
+            .TextEditorInsertWatcherAtCaret()
         End With
     End Sub
 
     Private Sub ToolStripMenuItem_DebuggerWatcherRemove_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_DebuggerWatcherRemove.Click
-        With New ClassDebuggerParser.ClassWatchers()
-            .TextEditorRemoveWatcherAtCaret(Me)
+        With New ClassDebuggerParser.ClassWatchers(Me)
+            .TextEditorRemoveWatcherAtCaret()
         End With
     End Sub
 
     Private Sub ToolStripMenuItem_DebuggerWatcherRemoveAll_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_DebuggerWatcherRemoveAll.Click
-        With New ClassDebuggerParser.ClassWatchers()
-            .TextEditorRemoveAllWatchers(Me)
+        With New ClassDebuggerParser.ClassWatchers(Me)
+            .TextEditorRemoveAllWatchers()
         End With
     End Sub
 
 
     Private Sub FormMain_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
         If (g_mFormDebugger IsNot Nothing AndAlso Not g_mFormDebugger.IsDisposed) Then
-            MessageBox.Show("Can't close BasicPawn while debugging!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("You can't close BasicPawn while debugging!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             e.Cancel = True
         End If
     End Sub
 
-
-    'Private Sub ToolStripMenuItem_CheckUpdate_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_CheckUpdate.Click
-    '    Try
-    '        Process.Start("http://*.de/")
-    '    Catch ex As Exception
-    '        MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-    '    End Try
-    'End Sub
+    Private Sub ToolStripMenuItem_CheckUpdate_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_CheckUpdate.Click
+        Try
+            Process.Start("https://github.com/Timocop/BasicPawn/releases")
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
 End Class

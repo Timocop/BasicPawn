@@ -98,6 +98,7 @@ Partial Class FormMain
         Me.ToolStripMenuItem_FileOpen = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_FileSave = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_FileSaveAs = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_FileSaveAsTemp = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_FileExit = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Tools = New System.Windows.Forms.ToolStripMenuItem()
@@ -146,7 +147,6 @@ Partial Class FormMain
         Me.ToolStripStatusLabel_CurrentConfig = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ToolStripStatusLabel_LastInformation = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ToolStripStatusLabel_AppVersion = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.ToolStripMenuItem_FileSaveAsTemp = New System.Windows.Forms.ToolStripMenuItem()
         Me.ContextMenuStrip_RightClick.SuspendLayout()
         Me.MenuStrip_BasicPawn.SuspendLayout()
         Me.SplitContainer1.Panel1.SuspendLayout()
@@ -315,6 +315,13 @@ Partial Class FormMain
         Me.ToolStripMenuItem_FileSaveAs.Name = "ToolStripMenuItem_FileSaveAs"
         Me.ToolStripMenuItem_FileSaveAs.Size = New System.Drawing.Size(170, 22)
         Me.ToolStripMenuItem_FileSaveAs.Text = "Save &as..."
+        '
+        'ToolStripMenuItem_FileSaveAsTemp
+        '
+        Me.ToolStripMenuItem_FileSaveAsTemp.Image = Global.BasicPawn.My.Resources.Resources.imageres_5303_16x16_32
+        Me.ToolStripMenuItem_FileSaveAsTemp.Name = "ToolStripMenuItem_FileSaveAsTemp"
+        Me.ToolStripMenuItem_FileSaveAsTemp.Size = New System.Drawing.Size(170, 22)
+        Me.ToolStripMenuItem_FileSaveAsTemp.Text = "Save as &temporary"
         '
         'ToolStripSeparator2
         '
@@ -530,7 +537,6 @@ Partial Class FormMain
         Me.ToolStripMenuItem_CheckUpdate.Name = "ToolStripMenuItem_CheckUpdate"
         Me.ToolStripMenuItem_CheckUpdate.Size = New System.Drawing.Size(127, 20)
         Me.ToolStripMenuItem_CheckUpdate.Text = "Check for Update"
-        Me.ToolStripMenuItem_CheckUpdate.Visible = False
         '
         'SplitContainer1
         '
@@ -698,13 +704,6 @@ Partial Class FormMain
         Me.ToolStripStatusLabel_AppVersion.Name = "ToolStripStatusLabel_AppVersion"
         Me.ToolStripStatusLabel_AppVersion.Size = New System.Drawing.Size(31, 17)
         Me.ToolStripStatusLabel_AppVersion.Text = "v.0.0"
-        '
-        'ToolStripMenuItem_FileSaveAsTemp
-        '
-        Me.ToolStripMenuItem_FileSaveAsTemp.Image = Global.BasicPawn.My.Resources.Resources.imageres_5303_16x16_32
-        Me.ToolStripMenuItem_FileSaveAsTemp.Name = "ToolStripMenuItem_FileSaveAsTemp"
-        Me.ToolStripMenuItem_FileSaveAsTemp.Size = New System.Drawing.Size(170, 22)
-        Me.ToolStripMenuItem_FileSaveAsTemp.Text = "Save as &temporary"
         '
         'FormMain
         '
