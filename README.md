@@ -5,6 +5,8 @@ BasicPawn is currently in alpha state, new features are planed!
 
 **See [AlliedModders BasicPawn thread](https://forums.alliedmods.net/showthread.php?t=289127) for more information.**
 
+##[Third Party Legal Notices](https://github.com/Timocop/BasicPawn/blob/master/Third%20Party%20Legal%20Notices.txt)
+
 ##Requirements
 [**.NET Framework 2.0**](https://www.microsoft.com/en-us/download/details.aspx?id=21)
 
