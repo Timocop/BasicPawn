@@ -60,15 +60,15 @@ Public Class UCObjectBrowser
                 Dim sNameKey As String = String.Format("{0}|{1}|{2}", iItem.sFile.ToLower, iItem.sType.ToLower, iItem.sFunctionName.ToLower)
 
                 ' Add file if not exist
-                treeNodesFiles = TreeView1.Nodes.Find(sFileKey, False)
+                treeNodesFiles = TreeView_ObjectBrowser.Nodes.Find(sFileKey, False)
                 If (treeNodesFiles.Length > 0) Then
                     treeNodeFile = treeNodesFiles(0)
                 Else
                     ' Add SP to top
                     If (iItem.sFile.ToLower.EndsWith(".sp")) Then
-                        treeNodeFile = TreeView1.Nodes.Insert(0, sFileKey, iItem.sFile.ToLower)
+                        treeNodeFile = TreeView_ObjectBrowser.Nodes.Insert(0, sFileKey, iItem.sFile.ToLower)
                     Else
-                        treeNodeFile = TreeView1.Nodes.Add(sFileKey, iItem.sFile.ToLower)
+                        treeNodeFile = TreeView_ObjectBrowser.Nodes.Add(sFileKey, iItem.sFile.ToLower)
                     End If
                 End If
 
@@ -90,11 +90,11 @@ Public Class UCObjectBrowser
                     treeNodeName = treeNodeType.Nodes.Add(sNameKey, iItem.sFunctionName)
 
                     ' Make SP files normal, others italic for better view
-                    If (iItem.sFile.ToLower.EndsWith(".sp".ToLower)) Then
-                        treeNodeFile.NodeFont = New Font(TreeView1.Font, FontStyle.Regular)
+                    If (iItem.sFile.ToLower.EndsWith(".sp".ToLower) OrElse iItem.sFile.ToLower = "BasicPawn.exe".ToLower) Then
+                        treeNodeFile.NodeFont = New Font(TreeView_ObjectBrowser.Font, FontStyle.Regular)
                         treeNodeFile.ExpandAll()
                     Else
-                        treeNodeFile.NodeFont = New Font(TreeView1.Font, FontStyle.Italic)
+                        treeNodeFile.NodeFont = New Font(TreeView_ObjectBrowser.Font, FontStyle.Italic)
                     End If
 
                 End If
@@ -106,8 +106,8 @@ Public Class UCObjectBrowser
         g_lObjectsItems.RemoveAll(Function(iItem As STRUC_OBJECTS_ITEM)
                                       Dim itemKey As String = lExitObjectsKeys.Find(Function(sKey As String) sKey = iItem.g_sNodeKey)
                                       If (itemKey Is Nothing) Then
-                                          For Each treeNode As TreeNode In TreeView1.Nodes.Find(iItem.g_sNodeKey, True)
-                                              TreeView1.Nodes.Remove(treeNode)
+                                          For Each treeNode As TreeNode In TreeView_ObjectBrowser.Nodes.Find(iItem.g_sNodeKey, True)
+                                              TreeView_ObjectBrowser.Nodes.Remove(treeNode)
                                           Next
 
                                           Return True
@@ -117,55 +117,64 @@ Public Class UCObjectBrowser
                                   End Function)
 
         ' Cleanup unused tree view nodes
-        Dim firstNodes As TreeNodeCollection = TreeView1.Nodes
+        Dim firstNodes As TreeNodeCollection = TreeView_ObjectBrowser.Nodes
         For i = firstNodes.Count - 1 To 0 Step -1
             Dim secondNodes As TreeNodeCollection = firstNodes(i).Nodes
             For j = secondNodes.Count - 1 To 0 Step -1
                 If (secondNodes(j).Nodes.Count < 1) Then
-                    TreeView1.Nodes.Remove(secondNodes(j))
+                    TreeView_ObjectBrowser.Nodes.Remove(secondNodes(j))
                 End If
             Next
 
             If (firstNodes(i).Nodes.Count < 1) Then
-                TreeView1.Nodes.Remove(firstNodes(i))
+                TreeView_ObjectBrowser.Nodes.Remove(firstNodes(i))
             End If
         Next
     End Sub
 
     Private Sub TextboxWatermark_Search_PreviewKeyDown(sender As Object, e As PreviewKeyDownEventArgs) Handles TextboxWatermark_Search.PreviewKeyDown
-        If (e.KeyCode = Keys.Enter) Then
-            Dim sSearchText As String = TextboxWatermark_Search.Text
-
-            Dim objectItem = g_lObjectsItems.Find(Function(objectsItem As STRUC_OBJECTS_ITEM) objectsItem.g_sFile.ToLower.Contains(sSearchText.ToLower) OrElse objectsItem.g_sName.ToLower.Contains(sSearchText.ToLower))
-            If (objectItem IsNot Nothing) Then
-                Dim treeNode As TreeNode() = TreeView1.Nodes.Find(objectItem.g_sNodeKey, True)
-                If (treeNode.Length > 0) Then
-                    TreeView1.SelectedNode = treeNode(0)
-                    TreeView1.SelectedNode.EnsureVisible()
-                End If
-            End If
+        If (e.KeyCode <> Keys.Enter) Then
+            Return
         End If
+
+        Dim sSearchText As String = TextboxWatermark_Search.Text
+        Dim objectItem = g_lObjectsItems.Find(Function(objectsItem As STRUC_OBJECTS_ITEM) objectsItem.g_sFile.ToLower.Contains(sSearchText.ToLower) OrElse objectsItem.g_sName.ToLower.Contains(sSearchText.ToLower))
+        If (objectItem Is Nothing) Then
+            Return
+        End If
+
+        Dim treeNode As TreeNode() = TreeView_ObjectBrowser.Nodes.Find(objectItem.g_sNodeKey, True)
+        If (Not treeNode.Length > 0) Then
+            Return
+        End If
+
+        TreeView_ObjectBrowser.SelectedNode = treeNode(0)
+        TreeView_ObjectBrowser.SelectedNode.EnsureVisible()
     End Sub
 
     Private Sub ContextMenuStrip_ObjectBrowser_Opening(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles ContextMenuStrip_ObjectBrowser.Opening
-        If (TreeView1.SelectedNode IsNot Nothing) Then
-            ToolStripMenuItem_OpenFile.Enabled = (TreeView1.SelectedNode.Level = 0)
-            ToolStripMenuItem_ListReferences.Enabled = (TreeView1.SelectedNode.Level = 2 AndAlso System.Text.RegularExpressions.Regex.IsMatch(TreeView1.SelectedNode.Text, "^[a-zA-Z0-9_]+$"))
-            ToolStripMenuItem_Copy.Enabled = (TreeView1.SelectedNode.Level = 2 OrElse TreeView1.SelectedNode.Level = 0)
+        If (TreeView_ObjectBrowser.SelectedNode Is Nothing) Then
+            Return
         End If
+
+        ToolStripMenuItem_OpenFile.Enabled = (TreeView_ObjectBrowser.SelectedNode.Level = 0)
+        ToolStripMenuItem_ListReferences.Enabled = (TreeView_ObjectBrowser.SelectedNode.Level = 2 AndAlso System.Text.RegularExpressions.Regex.IsMatch(TreeView_ObjectBrowser.SelectedNode.Text, "^[a-zA-Z0-9_]+$"))
+        ToolStripMenuItem_Copy.Enabled = (TreeView_ObjectBrowser.SelectedNode.Level = 2 OrElse TreeView_ObjectBrowser.SelectedNode.Level = 0)
     End Sub
 
     Private Sub ToolStripMenuItem_OpenFile_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_OpenFile.Click
         Try
-            If (TreeView1.SelectedNode.Level = 0) Then
-                If (TreeView1.SelectedNode IsNot Nothing) Then
-                    For Each sPath As String In g_mFormMain.g_ClassAutocompleteUpdater.GetIncludeFiles(ClassSettings.g_sConfigOpenSourcePawnFile)
-                        If (IO.Path.GetFileName(sPath).ToLower = TreeView1.SelectedNode.Text.ToLower) Then
-                            Process.Start(Application.ExecutablePath, String.Format("""{0}""", sPath))
-                        End If
-                    Next
-                End If
+            If (TreeView_ObjectBrowser.SelectedNode Is Nothing OrElse TreeView_ObjectBrowser.SelectedNode.Level <> 0) Then
+                Return
             End If
+
+            For Each sPath As String In g_mFormMain.g_ClassAutocompleteUpdater.GetIncludeFiles(ClassSettings.g_sConfigOpenSourcePawnFile)
+                If (IO.Path.GetFileName(sPath).ToLower <> TreeView_ObjectBrowser.SelectedNode.Text.ToLower) Then
+                    Continue For
+                End If
+
+                Process.Start(Application.ExecutablePath, String.Format("""{0}""", sPath))
+            Next
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
@@ -173,11 +182,11 @@ Public Class UCObjectBrowser
 
     Private Sub ToolStripMenuItem_ListReferences_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ListReferences.Click
         Try
-            If (TreeView1.SelectedNode.Level = 2) Then
-                If (TreeView1.SelectedNode IsNot Nothing) Then
-                    g_mFormMain.g_ClassTextEditorTools.ListReferences(TreeView1.SelectedNode.Text)
-                End If
+            If (TreeView_ObjectBrowser.SelectedNode Is Nothing OrElse TreeView_ObjectBrowser.SelectedNode.Level <> 2) Then
+                Return
             End If
+
+            g_mFormMain.g_ClassTextEditorTools.ListReferences(TreeView_ObjectBrowser.SelectedNode.Text)
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
@@ -185,11 +194,27 @@ Public Class UCObjectBrowser
 
     Private Sub ToolStripMenuItem_Copy_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Copy.Click
         Try
-            If (TreeView1.SelectedNode.Level = 2 OrElse TreeView1.SelectedNode.Level = 0) Then
-                If (TreeView1.SelectedNode IsNot Nothing) Then
-                    My.Computer.Clipboard.SetText(TreeView1.SelectedNode.Text)
-                End If
+            If (TreeView_ObjectBrowser.SelectedNode Is Nothing) Then
+                Return
             End If
+
+            If (TreeView_ObjectBrowser.SelectedNode.Level <> 2 AndAlso TreeView_ObjectBrowser.SelectedNode.Level <> 0) Then
+                Return
+            End If
+
+            My.Computer.Clipboard.SetText(TreeView_ObjectBrowser.SelectedNode.Text)
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
+    Private Sub TreeView_ObjectBrowser_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles TreeView_ObjectBrowser.MouseDoubleClick
+        Try
+            If (TreeView_ObjectBrowser.SelectedNode Is Nothing OrElse TreeView_ObjectBrowser.SelectedNode.Level <> 2) Then
+                Return
+            End If
+
+            g_mFormMain.g_ClassTextEditorTools.ListReferences(TreeView_ObjectBrowser.SelectedNode.Text)
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try

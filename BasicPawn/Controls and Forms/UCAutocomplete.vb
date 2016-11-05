@@ -37,8 +37,8 @@ Public Class UCAutocomplete
         End If
 
         If (sText.Length < 3 OrElse String.IsNullOrEmpty(sText) OrElse Regex.IsMatch(sText, "^[0-9]+$")) Then
-            ListView1.Items.Clear()
-            ListView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize)
+            ListView_AutocompleteList.Items.Clear()
+            ListView_AutocompleteList.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize)
             Return 0
         End If
 
@@ -90,27 +90,27 @@ Public Class UCAutocomplete
             End If
         Next
 
-        ListView1.Items.Clear()
-        ListView1.Items.AddRange(lListViewItemsList.ToArray)
+        ListView_AutocompleteList.Items.Clear()
+        ListView_AutocompleteList.Items.AddRange(lListViewItemsList.ToArray)
 
-        If (ListView1.Items.Count > 0) Then
-            ListView1.Items(0).Selected = True
-            ListView1.Items(0).EnsureVisible()
+        If (ListView_AutocompleteList.Items.Count > 0) Then
+            ListView_AutocompleteList.Items(0).Selected = True
+            ListView_AutocompleteList.Items(0).EnsureVisible()
 
-            ListView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent)
+            ListView_AutocompleteList.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent)
         Else
-            ListView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize)
+            ListView_AutocompleteList.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize)
         End If
 
-        Return ListView1.Items.Count
+        Return ListView_AutocompleteList.Items.Count
     End Function
 
     Public Function GetSelectedItem() As FormMain.STRUC_AUTOCOMPLETE
-        If (ListView1.SelectedItems.Count < 1) Then
+        If (ListView_AutocompleteList.SelectedItems.Count < 1) Then
             Return Nothing
         End If
 
-        Dim mSelectedItem As ListViewItem = ListView1.SelectedItems(0)
+        Dim mSelectedItem As ListViewItem = ListView_AutocompleteList.SelectedItems(0)
 
         Dim struc As FormMain.STRUC_AUTOCOMPLETE
         struc.sFile = mSelectedItem.SubItems(0).Text
@@ -121,7 +121,7 @@ Public Class UCAutocomplete
         Return struc
     End Function
 
-    Private Sub ListView1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListView1.SelectedIndexChanged
+    Private Sub ListView1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListView_AutocompleteList.SelectedIndexChanged
         g_ClassToolTip.UpdateToolTip()
     End Sub
 
@@ -209,8 +209,8 @@ Public Class UCAutocomplete
 
 
 
-            If (g_AutocompleteUC.ListView1.SelectedItems.Count > 0) Then
-                Dim mSelectedItem As ListViewItem = g_AutocompleteUC.ListView1.SelectedItems(0)
+            If (g_AutocompleteUC.ListView_AutocompleteList.SelectedItems.Count > 0) Then
+                Dim mSelectedItem As ListViewItem = g_AutocompleteUC.ListView_AutocompleteList.SelectedItems(0)
                 If (ClassSettings.g_iSettingsUseWindowsToolTip) Then
                     SB_TipText_AutocompleteToolTip.AppendLine("Autocomplete:")
                 End If

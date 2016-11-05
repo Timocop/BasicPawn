@@ -23,7 +23,7 @@ Partial Class UCObjectBrowser
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Me.TreeView1 = New System.Windows.Forms.TreeView()
+        Me.TreeView_ObjectBrowser = New System.Windows.Forms.TreeView()
         Me.ContextMenuStrip_ObjectBrowser = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.ToolStripMenuItem_OpenFile = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Copy = New System.Windows.Forms.ToolStripMenuItem()
@@ -33,18 +33,18 @@ Partial Class UCObjectBrowser
         Me.ContextMenuStrip_ObjectBrowser.SuspendLayout()
         Me.SuspendLayout()
         '
-        'TreeView1
+        'TreeView_ObjectBrowser
         '
-        Me.TreeView1.BackColor = System.Drawing.Color.White
-        Me.TreeView1.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.TreeView1.ContextMenuStrip = Me.ContextMenuStrip_ObjectBrowser
-        Me.TreeView1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TreeView1.ForeColor = System.Drawing.Color.Black
-        Me.TreeView1.HideSelection = False
-        Me.TreeView1.Location = New System.Drawing.Point(0, 22)
-        Me.TreeView1.Name = "TreeView1"
-        Me.TreeView1.Size = New System.Drawing.Size(269, 634)
-        Me.TreeView1.TabIndex = 1
+        Me.TreeView_ObjectBrowser.BackColor = System.Drawing.Color.White
+        Me.TreeView_ObjectBrowser.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.TreeView_ObjectBrowser.ContextMenuStrip = Me.ContextMenuStrip_ObjectBrowser
+        Me.TreeView_ObjectBrowser.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TreeView_ObjectBrowser.ForeColor = System.Drawing.Color.Black
+        Me.TreeView_ObjectBrowser.HideSelection = False
+        Me.TreeView_ObjectBrowser.Location = New System.Drawing.Point(0, 22)
+        Me.TreeView_ObjectBrowser.Name = "TreeView_ObjectBrowser"
+        Me.TreeView_ObjectBrowser.Size = New System.Drawing.Size(269, 634)
+        Me.TreeView_ObjectBrowser.TabIndex = 1
         '
         'ContextMenuStrip_ObjectBrowser
         '
@@ -91,7 +91,7 @@ Partial Class UCObjectBrowser
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.BackColor = System.Drawing.Color.White
-        Me.Controls.Add(Me.TreeView1)
+        Me.Controls.Add(Me.TreeView_ObjectBrowser)
         Me.Controls.Add(Me.TextboxWatermark_Search)
         Me.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Name = "UCObjectBrowser"
@@ -101,7 +101,7 @@ Partial Class UCObjectBrowser
         Me.PerformLayout()
 
     End Sub
-    Friend WithEvents TreeView1 As TreeView
+    Friend WithEvents TreeView_ObjectBrowser As TreeView
     Friend WithEvents TextboxWatermark_Search As ClassTextboxWatermark
     Friend WithEvents ContextMenuStrip_ObjectBrowser As ContextMenuStrip
     Friend WithEvents ToolStripMenuItem_OpenFile As ToolStripMenuItem

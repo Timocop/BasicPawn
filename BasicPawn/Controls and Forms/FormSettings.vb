@@ -163,6 +163,7 @@ Public Class FormSettings
             Else
                 i.SelectedPath = TextBox_OutputFolder.Text
             End If
+
             If (i.ShowDialog = DialogResult.OK) Then
                 TextBox_OutputFolder.Text = i.SelectedPath
             End If

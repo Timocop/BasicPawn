@@ -22,32 +22,32 @@ Partial Class UCInformationList
     'Das Bearbeiten mit dem Code-Editor ist nicht möglich.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.ListBox1 = New System.Windows.Forms.ListBox()
+        Me.ListBox_Information = New System.Windows.Forms.ListBox()
         Me.SuspendLayout()
         '
-        'ListBox1
+        'ListBox_Information
         '
-        Me.ListBox1.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.ListBox1.Cursor = System.Windows.Forms.Cursors.Hand
-        Me.ListBox1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ListBox1.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.ListBox1.FormattingEnabled = True
-        Me.ListBox1.HorizontalScrollbar = True
-        Me.ListBox1.Location = New System.Drawing.Point(0, 0)
-        Me.ListBox1.Name = "ListBox1"
-        Me.ListBox1.Size = New System.Drawing.Size(532, 178)
-        Me.ListBox1.TabIndex = 0
+        Me.ListBox_Information.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.ListBox_Information.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.ListBox_Information.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ListBox_Information.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.ListBox_Information.FormattingEnabled = True
+        Me.ListBox_Information.HorizontalScrollbar = True
+        Me.ListBox_Information.Location = New System.Drawing.Point(0, 0)
+        Me.ListBox_Information.Name = "ListBox_Information"
+        Me.ListBox_Information.Size = New System.Drawing.Size(532, 178)
+        Me.ListBox_Information.TabIndex = 0
         '
-        'InformationListUC
+        'UCInformationList
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
-        Me.Controls.Add(Me.ListBox1)
-        Me.Name = "InformationListUC"
+        Me.Controls.Add(Me.ListBox_Information)
+        Me.Name = "UCInformationList"
         Me.Size = New System.Drawing.Size(532, 178)
         Me.ResumeLayout(False)
 
     End Sub
 
-    Friend WithEvents ListBox1 As ListBox
+    Friend WithEvents ListBox_Information As ListBox
 End Class

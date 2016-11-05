@@ -100,9 +100,9 @@ Public Class FormMain
                       End If
 
                       If (bClear) Then
-                          g_mUCInformationList.ListBox1.Items.Clear()
+                          g_mUCInformationList.ListBox_Information.Items.Clear()
                       End If
-                      g_mUCInformationList.ListBox1.Items.Insert(0, String.Format("{0} ({1}) {2}", sType, Now.ToString, sMessage))
+                      g_mUCInformationList.ListBox_Information.Items.Insert(0, String.Format("{0} ({1}) {2}", sType, Now.ToString, sMessage))
                       ToolStripStatusLabel_LastInformation.Text = sMessage
 
                       If (bShowInformationTab) Then
@@ -478,34 +478,34 @@ Public Class FormMain
 
             'Autocomplete up
             Case Keys.Control Or Keys.Up
-                If (g_mUCAutocomplete.ListView1.SelectedItems.Count < 1) Then
+                If (g_mUCAutocomplete.ListView_AutocompleteList.SelectedItems.Count < 1) Then
                     Return
                 End If
 
-                Dim iListViewCount As Integer = g_mUCAutocomplete.ListView1.Items.Count
+                Dim iListViewCount As Integer = g_mUCAutocomplete.ListView_AutocompleteList.Items.Count
 
-                Dim iNewIndex As Integer = g_mUCAutocomplete.ListView1.SelectedItems(0).Index - 1
+                Dim iNewIndex As Integer = g_mUCAutocomplete.ListView_AutocompleteList.SelectedItems(0).Index - 1
 
                 If (iNewIndex > -1 AndAlso iNewIndex < iListViewCount) Then
-                    g_mUCAutocomplete.ListView1.Items(iNewIndex).Selected = True
-                    g_mUCAutocomplete.ListView1.Items(iNewIndex).EnsureVisible()
+                    g_mUCAutocomplete.ListView_AutocompleteList.Items(iNewIndex).Selected = True
+                    g_mUCAutocomplete.ListView_AutocompleteList.Items(iNewIndex).EnsureVisible()
                 End If
 
                 bBlock = True
 
             'Autocomplete Down
             Case Keys.Control Or Keys.Down
-                If (g_mUCAutocomplete.ListView1.SelectedItems.Count < 1) Then
+                If (g_mUCAutocomplete.ListView_AutocompleteList.SelectedItems.Count < 1) Then
                     Return
                 End If
 
-                Dim iListViewCount As Integer = g_mUCAutocomplete.ListView1.Items.Count
+                Dim iListViewCount As Integer = g_mUCAutocomplete.ListView_AutocompleteList.Items.Count
 
-                Dim iNewIndex As Integer = g_mUCAutocomplete.ListView1.SelectedItems(0).Index + 1
+                Dim iNewIndex As Integer = g_mUCAutocomplete.ListView_AutocompleteList.SelectedItems(0).Index + 1
 
                 If (iNewIndex > -1 AndAlso iNewIndex < iListViewCount) Then
-                    g_mUCAutocomplete.ListView1.Items(iNewIndex).Selected = True
-                    g_mUCAutocomplete.ListView1.Items(iNewIndex).EnsureVisible()
+                    g_mUCAutocomplete.ListView_AutocompleteList.Items(iNewIndex).Selected = True
+                    g_mUCAutocomplete.ListView_AutocompleteList.Items(iNewIndex).EnsureVisible()
                 End If
 
                 bBlock = True
@@ -2039,7 +2039,7 @@ Public Class FormMain
             lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.TextEditorControl1, Color.White, g_mFormMain.g_cDarkFormBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
             lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.MenuStrip_BasicPawn, Color.White, g_mFormMain.g_cDarkFormMenuBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
             lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-            lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.ListView1, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
+            lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.ListView_AutocompleteList, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
             lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.Panel1, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
             lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.Panel2, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
             lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.Label_Autocomplete, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, Color.RoyalBlue, InvertColor(Color.RoyalBlue)))
@@ -2047,9 +2047,9 @@ Public Class FormMain
             lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.RichTextBox_Autocomplete, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
             lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.RichTextBox_IntelliSense, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
             lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCInformationList, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-            lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCInformationList.ListBox1, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
+            lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCInformationList.ListBox_Information, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
             lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCObjectBrowser, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-            lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCObjectBrowser.TreeView1, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
+            lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCObjectBrowser.TreeView_ObjectBrowser, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
             lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCObjectBrowser.TextboxWatermark_Search, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
             lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.TabControl_Details, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
             lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.TabControl_Toolbox, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))

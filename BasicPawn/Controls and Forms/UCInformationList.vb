@@ -30,8 +30,8 @@ Public Class UCInformationList
         g_mFormMain = f
     End Sub
 
-    Private Sub ListBox1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListBox1.SelectedIndexChanged
-        If (ListBox1.SelectedItems.Count < 1) Then
+    Private Sub ListBox1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListBox_Information.SelectedIndexChanged
+        If (ListBox_Information.SelectedItems.Count < 1) Then
             Return
         End If
 
@@ -39,7 +39,7 @@ Public Class UCInformationList
             Return
         End If
 
-        Dim reMatch As Match = Regex.Match(ListBox1.SelectedItems(0), String.Format("\b{0}\b\((?<Line>[0-9]+)\)\s\:", Regex.Escape(ClassSettings.g_sConfigOpenSourcePawnFile)), RegexOptions.IgnoreCase)
+        Dim reMatch As Match = Regex.Match(ListBox_Information.SelectedItems(0), String.Format("\b{0}\b\((?<Line>[0-9]+)\)\s\:", Regex.Escape(ClassSettings.g_sConfigOpenSourcePawnFile)), RegexOptions.IgnoreCase)
         If (reMatch.Success) Then
             Dim iLineNum As Integer = CInt(reMatch.Groups("Line").Value) - 1
             If (iLineNum < 0 OrElse iLineNum > g_mFormMain.TextEditorControl1.Document.TotalNumberOfLines - 1) Then
