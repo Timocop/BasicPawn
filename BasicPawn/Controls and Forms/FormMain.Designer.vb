@@ -52,7 +52,11 @@ Partial Class FormMain
                     End If
 
                     If (Not String.IsNullOrEmpty(g_ClassSyntraxTools.g_SyntraxFiles(i).sFolder) AndAlso IO.Directory.Exists(g_ClassSyntraxTools.g_SyntraxFiles(i).sFolder)) Then
-                        IO.Directory.Delete(g_ClassSyntraxTools.g_SyntraxFiles(i).sFolder, True)
+                        Try
+                            'Still errors...
+                            IO.Directory.Delete(g_ClassSyntraxTools.g_SyntraxFiles(i).sFolder, True)
+                        Catch ex As Exception
+                        End Try
                     End If
                 Next
             End If

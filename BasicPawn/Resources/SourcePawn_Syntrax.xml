@@ -65,8 +65,10 @@
       <MarkPrevious bold="true" italic="false" color="MidnightBlue">(</MarkPrevious>
       <MarkPrevious bold="true" italic="false" color="DarkCyan">:</MarkPrevious>
 
-      <!-- [DO NOT EDIT | HIGHLIGHT CARET MARKER] -->
-
+      <KeyWords name="CaretWords" color="MidnightBlue" bgcolor="LightBlue">
+        <!-- [DO NOT EDIT | HIGHLIGHT CARET MARKER] -->
+      </KeyWords>
+      
       <KeyWords name="Punctuation" bold="false" italic="false" color="MidnightBlue">
         <Key word="?"/>
         <Key word=","/>
@@ -221,11 +223,21 @@
 			  <Key word="BPDWatcher"/>
 			</KeyWords>
 
-      <!-- [DO NOT EDIT | DEFINE MARKER] -->
+      <KeyWords name="DefineWords" bold="true" italic="false" color="MediumPurple">
+        <!-- [DO NOT EDIT | DEFINE MARKER] -->
+      </KeyWords>
 
-      <!-- [DO NOT EDIT | ENUM MARKER] -->
+      <KeyWords name="Enum1Words" bold="false" italic="false" color="MediumPurple">
+        <!-- [DO NOT EDIT | ENUM MARKER] -->
+      </KeyWords>
 
-      <!-- [DO NOT EDIT | HIGHLIGHT WORD MARKER] -->
+      <KeyWords name="Enum2Words" bold="true" italic="false" color="DarkCyan">
+        <!-- [DO NOT EDIT | ENUM2 MARKER] -->
+      </KeyWords>
+
+      <KeyWords name="HighlightWords" color="Black" bgcolor="LightGreen">
+        <!-- [DO NOT EDIT | HIGHLIGHT WORD MARKER] -->
+      </KeyWords>
     </RuleSet>
 		
 		<RuleSet name="CommentMarkerSet" ignorecase="false">
@@ -289,7 +301,9 @@
 				<Key word="tryinclude"/>
 			</KeyWords>
 
-      <!-- [DO NOT EDIT | HIGHLIGHT WORD MARKER] -->
+      <KeyWords name="HighlightWords" color="Black" bgcolor="LightGreen">
+        <!-- [DO NOT EDIT | HIGHLIGHT WORD MARKER] -->
+      </KeyWords>
     </RuleSet>
 		
 		<RuleSet name="XmlDocSet" ignorecase="false">
@@ -305,7 +319,7 @@
 				<Key word="/"/>
 				<Key word="|"/>
 				<Key word="="/>
-		  	</KeyWords>
+		  </KeyWords>
 		  	
 		 	<KeyWords name="SpecialComment" bold="true" italic="false" color="Gray">
 				<Key word="c"/>

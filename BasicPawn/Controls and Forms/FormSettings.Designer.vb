@@ -57,6 +57,10 @@ Partial Class FormSettings
         Me.Button_ConfigCopy = New System.Windows.Forms.Button()
         Me.GroupBox_ConfigSettings = New System.Windows.Forms.GroupBox()
         Me.Panel11 = New System.Windows.Forms.Panel()
+        Me.LinkLabel_SyntraxDefault = New System.Windows.Forms.LinkLabel()
+        Me.Button_SyntraxPath = New System.Windows.Forms.Button()
+        Me.TextBox_SyntraxPath = New System.Windows.Forms.TextBox()
+        Me.Label15 = New System.Windows.Forms.Label()
         Me.Panel13 = New System.Windows.Forms.Panel()
         Me.Label13 = New System.Windows.Forms.Label()
         Me.Label10 = New System.Windows.Forms.Label()
@@ -502,13 +506,17 @@ Partial Class FormSettings
         Me.GroupBox_ConfigSettings.Controls.Add(Me.Button_SaveConfig)
         Me.GroupBox_ConfigSettings.Location = New System.Drawing.Point(220, 79)
         Me.GroupBox_ConfigSettings.Name = "GroupBox_ConfigSettings"
-        Me.GroupBox_ConfigSettings.Size = New System.Drawing.Size(376, 529)
+        Me.GroupBox_ConfigSettings.Size = New System.Drawing.Size(376, 555)
         Me.GroupBox_ConfigSettings.TabIndex = 7
         Me.GroupBox_ConfigSettings.TabStop = False
         Me.GroupBox_ConfigSettings.Text = "Config Settings"
         '
         'Panel11
         '
+        Me.Panel11.Controls.Add(Me.LinkLabel_SyntraxDefault)
+        Me.Panel11.Controls.Add(Me.Button_SyntraxPath)
+        Me.Panel11.Controls.Add(Me.TextBox_SyntraxPath)
+        Me.Panel11.Controls.Add(Me.Label15)
         Me.Panel11.Controls.Add(Me.Panel13)
         Me.Panel11.Controls.Add(Me.Label13)
         Me.Panel11.Controls.Add(Me.Label10)
@@ -517,8 +525,49 @@ Partial Class FormSettings
         Me.Panel11.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel11.Location = New System.Drawing.Point(3, 360)
         Me.Panel11.Name = "Panel11"
-        Me.Panel11.Size = New System.Drawing.Size(370, 87)
+        Me.Panel11.Size = New System.Drawing.Size(370, 160)
         Me.Panel11.TabIndex = 30
+        '
+        'LinkLabel_SyntraxDefault
+        '
+        Me.LinkLabel_SyntraxDefault.AutoSize = True
+        Me.LinkLabel_SyntraxDefault.Location = New System.Drawing.Point(3, 126)
+        Me.LinkLabel_SyntraxDefault.Margin = New System.Windows.Forms.Padding(3, 0, 3, 6)
+        Me.LinkLabel_SyntraxDefault.Name = "LinkLabel_SyntraxDefault"
+        Me.LinkLabel_SyntraxDefault.Size = New System.Drawing.Size(152, 13)
+        Me.LinkLabel_SyntraxDefault.TabIndex = 31
+        Me.LinkLabel_SyntraxDefault.TabStop = True
+        Me.LinkLabel_SyntraxDefault.Text = "Default syntrax highlighting"
+        '
+        'Button_SyntraxPath
+        '
+        Me.Button_SyntraxPath.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Button_SyntraxPath.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.Button_SyntraxPath.Location = New System.Drawing.Point(336, 98)
+        Me.Button_SyntraxPath.Name = "Button_SyntraxPath"
+        Me.Button_SyntraxPath.Size = New System.Drawing.Size(31, 24)
+        Me.Button_SyntraxPath.TabIndex = 28
+        Me.Button_SyntraxPath.Text = "..."
+        Me.Button_SyntraxPath.UseVisualStyleBackColor = True
+        '
+        'TextBox_SyntraxPath
+        '
+        Me.TextBox_SyntraxPath.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.TextBox_SyntraxPath.BackColor = System.Drawing.Color.White
+        Me.TextBox_SyntraxPath.Location = New System.Drawing.Point(3, 101)
+        Me.TextBox_SyntraxPath.Name = "TextBox_SyntraxPath"
+        Me.TextBox_SyntraxPath.Size = New System.Drawing.Size(327, 22)
+        Me.TextBox_SyntraxPath.TabIndex = 30
+        '
+        'Label15
+        '
+        Me.Label15.AutoSize = True
+        Me.Label15.Location = New System.Drawing.Point(3, 85)
+        Me.Label15.Name = "Label15"
+        Me.Label15.Size = New System.Drawing.Size(166, 13)
+        Me.Label15.TabIndex = 29
+        Me.Label15.Text = "Custom syntrax highlight path:"
         '
         'Panel13
         '
@@ -563,6 +612,7 @@ Partial Class FormSettings
         '
         Me.LinkLabel_ShowShellArguments.AutoSize = True
         Me.LinkLabel_ShowShellArguments.Location = New System.Drawing.Point(3, 66)
+        Me.LinkLabel_ShowShellArguments.Margin = New System.Windows.Forms.Padding(3, 0, 3, 6)
         Me.LinkLabel_ShowShellArguments.Name = "LinkLabel_ShowShellArguments"
         Me.LinkLabel_ShowShellArguments.Size = New System.Drawing.Size(136, 13)
         Me.LinkLabel_ShowShellArguments.TabIndex = 18
@@ -629,7 +679,7 @@ Partial Class FormSettings
         '
         Me.Button_SourceModFolder.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_SourceModFolder.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_SourceModFolder.Location = New System.Drawing.Point(336, 85)
+        Me.Button_SourceModFolder.Location = New System.Drawing.Point(336, 82)
         Me.Button_SourceModFolder.Name = "Button_SourceModFolder"
         Me.Button_SourceModFolder.Size = New System.Drawing.Size(31, 24)
         Me.Button_SourceModFolder.TabIndex = 26
@@ -640,7 +690,7 @@ Partial Class FormSettings
         '
         Me.Button_GameFolder.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_GameFolder.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_GameFolder.Location = New System.Drawing.Point(336, 44)
+        Me.Button_GameFolder.Location = New System.Drawing.Point(336, 41)
         Me.Button_GameFolder.Name = "Button_GameFolder"
         Me.Button_GameFolder.Size = New System.Drawing.Size(31, 24)
         Me.Button_GameFolder.TabIndex = 21
@@ -778,7 +828,7 @@ Partial Class FormSettings
         '
         Me.Button_Compiler.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_Compiler.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_Compiler.Location = New System.Drawing.Point(336, 114)
+        Me.Button_Compiler.Location = New System.Drawing.Point(336, 113)
         Me.Button_Compiler.Name = "Button_Compiler"
         Me.Button_Compiler.Size = New System.Drawing.Size(31, 24)
         Me.Button_Compiler.TabIndex = 8
@@ -789,7 +839,7 @@ Partial Class FormSettings
         '
         Me.Button_IncludeFolder.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_IncludeFolder.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_IncludeFolder.Location = New System.Drawing.Point(336, 153)
+        Me.Button_IncludeFolder.Location = New System.Drawing.Point(336, 152)
         Me.Button_IncludeFolder.Name = "Button_IncludeFolder"
         Me.Button_IncludeFolder.Size = New System.Drawing.Size(31, 24)
         Me.Button_IncludeFolder.TabIndex = 11
@@ -820,7 +870,7 @@ Partial Class FormSettings
         '
         Me.Button_OutputFolder.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_OutputFolder.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_OutputFolder.Location = New System.Drawing.Point(336, 192)
+        Me.Button_OutputFolder.Location = New System.Drawing.Point(336, 191)
         Me.Button_OutputFolder.Name = "Button_OutputFolder"
         Me.Button_OutputFolder.Size = New System.Drawing.Size(31, 24)
         Me.Button_OutputFolder.TabIndex = 15
@@ -831,7 +881,7 @@ Partial Class FormSettings
         '
         Me.Button_SaveConfig.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_SaveConfig.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_SaveConfig.Location = New System.Drawing.Point(284, 500)
+        Me.Button_SaveConfig.Location = New System.Drawing.Point(284, 526)
         Me.Button_SaveConfig.Name = "Button_SaveConfig"
         Me.Button_SaveConfig.Size = New System.Drawing.Size(86, 23)
         Me.Button_SaveConfig.TabIndex = 12
@@ -1035,4 +1085,8 @@ Partial Class FormSettings
     Friend WithEvents Panel1 As Panel
     Friend WithEvents Panel13 As Panel
     Friend WithEvents Panel12 As Panel
+    Friend WithEvents Button_SyntraxPath As Button
+    Friend WithEvents TextBox_SyntraxPath As TextBox
+    Friend WithEvents Label15 As Label
+    Friend WithEvents LinkLabel_SyntraxDefault As LinkLabel
 End Class

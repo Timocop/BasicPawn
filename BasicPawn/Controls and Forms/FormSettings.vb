@@ -138,9 +138,12 @@ Public Class FormSettings
             TextBox_CompilerPath.Text = iniFile.ReadKeyValue("Config", "CompilerPath", "")
             TextBox_IncludeFolder.Text = iniFile.ReadKeyValue("Config", "IncludeDirectory", "")
             TextBox_OutputFolder.Text = iniFile.ReadKeyValue("Config", "OutputDirectory", "")
-            TextBox_Shell.Text = iniFile.ReadKeyValue("Config", "ExecuteShell", "")
+            'Debugging
             TextBox_GameFolder.Text = iniFile.ReadKeyValue("Config", "DebugGameDirectory", "")
             TextBox_SourceModFolder.Text = iniFile.ReadKeyValue("Config", "DebugSourceModDirectory", "")
+            'Misc
+            TextBox_Shell.Text = iniFile.ReadKeyValue("Config", "ExecuteShell", "")
+            TextBox_SyntraxPath.Text = iniFile.ReadKeyValue("Config", "SyntraxPath", "")
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
@@ -150,6 +153,7 @@ Public Class FormSettings
         Using i As New OpenFileDialog
             i.Filter = "SourcePawn Compiler|spcomp.exe|Executables|*.exe"
             i.FileName = TextBox_CompilerPath.Text
+
             If (i.ShowDialog = DialogResult.OK) Then
                 TextBox_CompilerPath.Text = i.FileName
             End If
@@ -177,6 +181,7 @@ Public Class FormSettings
             Else
                 i.SelectedPath = TextBox_IncludeFolder.Text
             End If
+
             If (i.ShowDialog = DialogResult.OK) Then
                 TextBox_IncludeFolder.Text = i.SelectedPath
             End If
@@ -232,9 +237,12 @@ Public Class FormSettings
             iniFile.WriteKeyValue("Config", "CompilerPath", TextBox_CompilerPath.Text)
             iniFile.WriteKeyValue("Config", "IncludeDirectory", TextBox_IncludeFolder.Text)
             iniFile.WriteKeyValue("Config", "OutputDirectory", TextBox_OutputFolder.Text)
-            iniFile.WriteKeyValue("Config", "ExecuteShell", TextBox_Shell.Text)
+            'Debugging
             iniFile.WriteKeyValue("Config", "DebugGameDirectory", TextBox_GameFolder.Text)
             iniFile.WriteKeyValue("Config", "DebugSourceModDirectory", TextBox_SourceModFolder.Text)
+            'Misc
+            iniFile.WriteKeyValue("Config", "ExecuteShell", TextBox_Shell.Text)
+            iniFile.WriteKeyValue("Config", "SyntraxPath", TextBox_SyntraxPath.Text)
 
             MessageBox.Show("Config saved!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information)
         Catch ex As Exception
@@ -332,8 +340,11 @@ Public Class FormSettings
                 ClassSettings.g_sConfigOpenSourcePawnIncludeFolder = TextBox_IncludeFolder.Text
                 ClassSettings.g_sConfigPluginOutputFolder = TextBox_OutputFolder.Text
                 ClassSettings.g_sConfigExecuteShell = TextBox_Shell.Text
+                'Debugging
                 ClassSettings.g_sConfigDebugGameFolder = TextBox_GameFolder.Text
                 ClassSettings.g_sConfigDebugSourceModFolder = TextBox_SourceModFolder.Text
+                'Misc
+                ClassSettings.g_sConfigSyntraxHighlightingPath = TextBox_SyntraxPath.Text
             End If
         End If
 
@@ -443,6 +454,7 @@ Public Class FormSettings
     Private Sub Button_Font_Click(sender As Object, e As EventArgs) Handles Button_Font.Click
         Using i As New FontDialog()
             i.Font = New FontConverter().ConvertFromInvariantString(Label_Font.Text)
+
             If (i.ShowDialog = DialogResult.OK) Then
                 Label_Font.Text = New FontConverter().ConvertToInvariantString(i.Font)
             End If
@@ -463,5 +475,20 @@ Public Class FormSettings
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
+    End Sub
+
+    Private Sub Button_SyntraxPath_Click(sender As Object, e As EventArgs) Handles Button_SyntraxPath.Click
+        Using i As New OpenFileDialog
+            i.Filter = "Syntrax highlighting XSHD file|*.xml"
+            i.FileName = TextBox_SyntraxPath.Text
+
+            If (i.ShowDialog = DialogResult.OK) Then
+                TextBox_SyntraxPath.Text = i.FileName
+            End If
+        End Using
+    End Sub
+
+    Private Sub LinkLabel_SyntraxDefault_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_SyntraxDefault.LinkClicked
+        TextBox_SyntraxPath.Text = ""
     End Sub
 End Class

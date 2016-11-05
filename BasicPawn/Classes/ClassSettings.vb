@@ -27,6 +27,8 @@ Public Class ClassSettings
     'Debugging
     Public Shared g_sConfigDebugGameFolder As String = ""
     Public Shared g_sConfigDebugSourceModFolder As String = ""
+    'Misc
+    Public Shared g_sConfigSyntraxHighlightingPath As String = ""
 
     Public Shared g_sConfigName As String = ""
 #End Region

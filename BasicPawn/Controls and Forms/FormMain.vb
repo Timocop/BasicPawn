@@ -1976,6 +1976,7 @@ Public Class FormMain
         Public sSyntrax_HighlightWordMarker As String = "<!-- [DO NOT EDIT | HIGHLIGHT WORD MARKER] -->"
         Public sSyntrax_HighlightDefineMarker As String = "<!-- [DO NOT EDIT | DEFINE MARKER] -->"
         Public sSyntrax_HighlightEnumMarker As String = "<!-- [DO NOT EDIT | ENUM MARKER] -->"
+        Public sSyntrax_HighlightEnum2Marker As String = "<!-- [DO NOT EDIT | ENUM2 MARKER] -->"
         Public sSyntrax_SourcePawnMarker As String = "SourcePawn-04e3632f-5472-42c5-929a-c3e0c2b35324"
 
         Public lAutocompleteList As New List(Of STRUC_AUTOCOMPLETE)
@@ -2088,7 +2089,16 @@ Public Class FormMain
                 Try
                     IO.Directory.CreateDirectory(g_SyntraxFiles(i).sFolder)
 
-                    Dim sModSyntraxXML As String = g_SyntraxXML.Replace(sSyntrax_SourcePawnMarker, g_SyntraxFiles(i).sDefinition)
+                    Dim sModSyntraxXML As String
+                    If (Not String.IsNullOrEmpty(ClassSettings.g_sConfigSyntraxHighlightingPath) AndAlso
+                                IO.File.Exists(ClassSettings.g_sConfigSyntraxHighlightingPath) AndAlso
+                                IO.Path.GetExtension(ClassSettings.g_sConfigSyntraxHighlightingPath).ToLower = ".xml") Then
+                        Dim sFileText As String = IO.File.ReadAllText(ClassSettings.g_sConfigSyntraxHighlightingPath)
+                        sModSyntraxXML = sFileText.Replace(sSyntrax_SourcePawnMarker, g_SyntraxFiles(i).sDefinition)
+                    Else
+                        sModSyntraxXML = g_SyntraxXML.Replace(sSyntrax_SourcePawnMarker, g_SyntraxFiles(i).sDefinition)
+                    End If
+
                     IO.File.WriteAllText(g_SyntraxFiles(i).sFile, sModSyntraxXML)
                 Catch ex As Exception
                     ClassExceptionLog.WriteToLogMessageBox(ex)
@@ -2132,12 +2142,10 @@ Public Class FormMain
                                                     SB.Append(sSyntrax_HighlightCaretMarker)
 
                                                     If (Not String.IsNullOrEmpty(g_sCaretWord) AndAlso ClassSettings.g_iSettingsAutoMark) Then
-                                                        SB.Append("<KeyWords name=""CaretWords"" color=""Black"" bgcolor=""LightBlue"">")
                                                         SB.Append(String.Format("<Key word=""{0}""/>", g_sCaretWord))
-                                                        SB.Append("</KeyWords>")
                                                     End If
 
-                                                    SB.AppendLine("")
+                                                    SB.AppendLine()
                                                     Continue While
                                                 End If
 
@@ -2148,12 +2156,10 @@ Public Class FormMain
                                                     SB.Append(sSyntrax_HighlightWordMarker)
 
                                                     If (Not String.IsNullOrEmpty(g_sHighlightWord)) Then
-                                                        SB.Append("<KeyWords name=""HighlightWords"" color=""Black"" bgcolor=""LightGreen"">")
                                                         SB.Append(String.Format("<Key word=""{0}""/>", g_sHighlightWord))
-                                                        SB.Append("</KeyWords>")
                                                     End If
 
-                                                    SB.AppendLine("")
+                                                    SB.AppendLine()
                                                     Continue While
                                                 End If
 
@@ -2161,7 +2167,6 @@ Public Class FormMain
                                                 If (sLine.Contains(sSyntrax_HighlightDefineMarker)) Then
                                                     SB.Append(sSyntrax_HighlightDefineMarker)
 
-                                                    SB.Append("<KeyWords name=""DefineWords"" bold=""true"" italic=""false"" color=""MediumPurple"">")
                                                     For Each struc In lAutocompleteList
                                                         Select Case (True)
                                                             Case struc.sType = "define" OrElse struc.sType = "publicvar"
@@ -2169,16 +2174,14 @@ Public Class FormMain
 
                                                         End Select
                                                     Next
-                                                    SB.Append("</KeyWords>")
 
-                                                    SB.AppendLine("")
+                                                    SB.AppendLine()
                                                     Continue While
                                                 End If
 
                                                 If (sLine.Contains(sSyntrax_HighlightEnumMarker)) Then
                                                     SB.Append(sSyntrax_HighlightEnumMarker)
 
-                                                    SB.Append("<KeyWords name=""Enum1Words"" bold=""false"" italic=""false"" color=""MediumPurple"">")
                                                     Dim lExistList As New List(Of String)
 
                                                     For Each struc In lAutocompleteList
@@ -2199,15 +2202,38 @@ Public Class FormMain
                                                                 End If
                                                         End Select
                                                     Next
-                                                    SB.Append("</KeyWords>")
 
-                                                    SB.Append("<KeyWords name=""Enum2Words"" bold=""true"" italic=""false"" color=""DarkCyan"">")
+                                                    SB.AppendLine()
+                                                    Continue While
+                                                End If
+
+                                                If (sLine.Contains(sSyntrax_HighlightEnum2Marker)) Then
+                                                    SB.Append(sSyntrax_HighlightEnum2Marker)
+
+                                                    Dim lExistList As New List(Of String)
+
+                                                    For Each struc In lAutocompleteList
+                                                        Select Case (True)
+                                                            Case struc.sType = "enum"
+                                                                Dim sEnumName As String() = struc.sFunctionName.Split("."c)
+                                                                If (sEnumName.Length = 2) Then
+                                                                    If (Not lExistList.Contains(sEnumName(0))) Then
+                                                                        lExistList.Add(sEnumName(0))
+                                                                    End If
+                                                                End If
+
+                                                            Case struc.sType = "methodmap"
+                                                                If (Not lExistList.Contains(struc.sFunctionName)) Then
+                                                                    lExistList.Add(struc.sFunctionName)
+                                                                End If
+                                                        End Select
+                                                    Next
+
                                                     For Each s In lExistList
                                                         SB.Append(String.Format("<Key word=""{0}""/>", s))
                                                     Next
-                                                    SB.Append("</KeyWords>")
 
-                                                    SB.AppendLine("")
+                                                    SB.AppendLine()
                                                     Continue While
                                                 End If
                                         End Select
@@ -2220,7 +2246,13 @@ Public Class FormMain
 
                                 Dim sFormatedString As String = SB.ToString
 
-                                If (ClassSettings.g_iSettingsInvertColors) Then
+                                While (ClassSettings.g_iSettingsInvertColors)
+                                    If (Not String.IsNullOrEmpty(ClassSettings.g_sConfigSyntraxHighlightingPath) AndAlso
+                                                IO.File.Exists(ClassSettings.g_sConfigSyntraxHighlightingPath) AndAlso
+                                                IO.Path.GetExtension(ClassSettings.g_sConfigSyntraxHighlightingPath).ToLower = ".xml") Then
+                                        Exit While
+                                    End If
+
                                     Dim mMatchColl As MatchCollection = Regex.Matches(sFormatedString, "\b(color|bgcolor)\b\s*=\s*""(?<Color>[a-zA-Z]+)""")
                                     For j = mMatchColl.Count - 1 To 0 Step -1
                                         Dim mMatch As Match = mMatchColl(j)
@@ -2245,7 +2277,9 @@ Public Class FormMain
                                             sFormatedString = sFormatedString.Insert(iColorNameIndex, sInvColor)
                                         Catch : End Try
                                     Next
-                                End If
+
+                                    Exit While
+                                End While
 
                                 IO.File.WriteAllText(g_SyntraxFiles(i).sFile, sFormatedString)
                         End Select
