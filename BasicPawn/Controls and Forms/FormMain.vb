@@ -269,8 +269,6 @@ Public Class FormMain
 
         'Load SourcePawn files via Arguments
         Dim sArgs As String() = Environment.GetCommandLineArgs
-
-        Dim bAlreadyOpen As Boolean = False
         For i = 1 To sArgs.Length - 1
             If (g_ClassTextEditorTools.OpenFile(sArgs(i), True)) Then
                 Exit For

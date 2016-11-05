@@ -75,11 +75,11 @@ Public Class ClassTools
     ''' <param name="sText"></param>
     ''' <returns></returns>
     Public Shared Function IsWord(sText As String) As Boolean
-        Return Regex.IsMatch(sText, " ^[a-zA-Z0-9_]+$")
+        Return Regex.IsMatch(sText, "^[a-zA-Z0-9_]+$")
     End Function
 
     Public Shared Function WordCount(sText As String, sSearch As String) As Integer
-#If Not USE_REGEX Then
+#If USE_REGEX Then
         Dim iCount As Integer = 0
         Dim i As Integer = 0
         While True
@@ -142,6 +142,7 @@ Public Class ClassTools
                         If (SR.BaseStream.Position < SR.BaseStream.Length) Then
                             SR.BaseStream.Position += 1
                         End If
+
                         Exit While
                     End If
                 End If
