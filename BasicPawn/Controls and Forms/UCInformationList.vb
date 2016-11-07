@@ -42,19 +42,19 @@ Public Class UCInformationList
         Dim reMatch As Match = Regex.Match(ListBox_Information.SelectedItems(0), String.Format("\b{0}\b\((?<Line>[0-9]+)\)\s\:", Regex.Escape(ClassSettings.g_sConfigOpenSourcePawnFile)), RegexOptions.IgnoreCase)
         If (reMatch.Success) Then
             Dim iLineNum As Integer = CInt(reMatch.Groups("Line").Value) - 1
-            If (iLineNum < 0 OrElse iLineNum > g_mFormMain.TextEditorControl1.Document.TotalNumberOfLines - 1) Then
+            If (iLineNum < 0 OrElse iLineNum > g_mFormMain.TextEditorControl_Source.Document.TotalNumberOfLines - 1) Then
                 Return
             End If
 
-            g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Caret.Line = iLineNum
-            g_mFormMain.TextEditorControl1.ActiveTextAreaControl.SelectionManager.ClearSelection()
+            g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Caret.Line = iLineNum
+            g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.SelectionManager.ClearSelection()
 
-            Dim iLineLen As Integer = g_mFormMain.TextEditorControl1.Document.GetLineSegment(iLineNum).Length
+            Dim iLineLen As Integer = g_mFormMain.TextEditorControl_Source.Document.GetLineSegment(iLineNum).Length
 
             Dim iStart As New TextLocation(0, iLineNum)
             Dim iEnd As New TextLocation(iLineLen, iLineNum)
 
-            g_mFormMain.TextEditorControl1.ActiveTextAreaControl.SelectionManager.SetSelection(iStart, iEnd)
+            g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.SelectionManager.SetSelection(iStart, iEnd)
         End If
     End Sub
 End Class

@@ -31,10 +31,10 @@ Partial Class UCAutocomplete
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
         Me.SplitContainer1 = New System.Windows.Forms.SplitContainer()
         Me.SplitContainer2 = New System.Windows.Forms.SplitContainer()
-        Me.Panel2 = New System.Windows.Forms.Panel()
+        Me.Panel_IntelliSense = New System.Windows.Forms.Panel()
         Me.RichTextBox_IntelliSense = New System.Windows.Forms.RichTextBox()
         Me.Label_IntelliSense = New System.Windows.Forms.Label()
-        Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.Panel_Autocomplete = New System.Windows.Forms.Panel()
         Me.RichTextBox_Autocomplete = New System.Windows.Forms.RichTextBox()
         Me.Label_Autocomplete = New System.Windows.Forms.Label()
         Me.SplitContainer1.Panel1.SuspendLayout()
@@ -43,8 +43,8 @@ Partial Class UCAutocomplete
         Me.SplitContainer2.Panel1.SuspendLayout()
         Me.SplitContainer2.Panel2.SuspendLayout()
         Me.SplitContainer2.SuspendLayout()
-        Me.Panel2.SuspendLayout()
-        Me.Panel1.SuspendLayout()
+        Me.Panel_IntelliSense.SuspendLayout()
+        Me.Panel_Autocomplete.SuspendLayout()
         Me.SuspendLayout()
         '
         'ListView_AutocompleteList
@@ -120,26 +120,26 @@ Partial Class UCAutocomplete
         '
         'SplitContainer2.Panel1
         '
-        Me.SplitContainer2.Panel1.Controls.Add(Me.Panel2)
+        Me.SplitContainer2.Panel1.Controls.Add(Me.Panel_IntelliSense)
         Me.SplitContainer2.Panel1.RightToLeft = System.Windows.Forms.RightToLeft.No
         '
         'SplitContainer2.Panel2
         '
-        Me.SplitContainer2.Panel2.Controls.Add(Me.Panel1)
+        Me.SplitContainer2.Panel2.Controls.Add(Me.Panel_Autocomplete)
         Me.SplitContainer2.Panel2.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.SplitContainer2.Size = New System.Drawing.Size(419, 161)
         Me.SplitContainer2.SplitterDistance = 77
         Me.SplitContainer2.TabIndex = 1
         '
-        'Panel2
+        'Panel_IntelliSense
         '
-        Me.Panel2.Controls.Add(Me.RichTextBox_IntelliSense)
-        Me.Panel2.Controls.Add(Me.Label_IntelliSense)
-        Me.Panel2.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Panel2.Location = New System.Drawing.Point(0, 0)
-        Me.Panel2.Name = "Panel2"
-        Me.Panel2.Size = New System.Drawing.Size(419, 77)
-        Me.Panel2.TabIndex = 3
+        Me.Panel_IntelliSense.Controls.Add(Me.RichTextBox_IntelliSense)
+        Me.Panel_IntelliSense.Controls.Add(Me.Label_IntelliSense)
+        Me.Panel_IntelliSense.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Panel_IntelliSense.Location = New System.Drawing.Point(0, 0)
+        Me.Panel_IntelliSense.Name = "Panel_IntelliSense"
+        Me.Panel_IntelliSense.Size = New System.Drawing.Size(419, 77)
+        Me.Panel_IntelliSense.TabIndex = 3
         '
         'RichTextBox_IntelliSense
         '
@@ -166,15 +166,15 @@ Partial Class UCAutocomplete
         Me.Label_IntelliSense.TabIndex = 2
         Me.Label_IntelliSense.Text = "IntelliSense"
         '
-        'Panel1
+        'Panel_Autocomplete
         '
-        Me.Panel1.Controls.Add(Me.RichTextBox_Autocomplete)
-        Me.Panel1.Controls.Add(Me.Label_Autocomplete)
-        Me.Panel1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Panel1.Location = New System.Drawing.Point(0, 0)
-        Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(419, 80)
-        Me.Panel1.TabIndex = 4
+        Me.Panel_Autocomplete.Controls.Add(Me.RichTextBox_Autocomplete)
+        Me.Panel_Autocomplete.Controls.Add(Me.Label_Autocomplete)
+        Me.Panel_Autocomplete.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Panel_Autocomplete.Location = New System.Drawing.Point(0, 0)
+        Me.Panel_Autocomplete.Name = "Panel_Autocomplete"
+        Me.Panel_Autocomplete.Size = New System.Drawing.Size(419, 80)
+        Me.Panel_Autocomplete.TabIndex = 4
         '
         'RichTextBox_Autocomplete
         '
@@ -206,7 +206,6 @@ Partial Class UCAutocomplete
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.Controls.Add(Me.SplitContainer1)
-        Me.DoubleBuffered = True
         Me.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.MinimumSize = New System.Drawing.Size(2, 100)
         Me.Name = "UCAutocomplete"
@@ -217,10 +216,10 @@ Partial Class UCAutocomplete
         Me.SplitContainer2.Panel1.ResumeLayout(False)
         Me.SplitContainer2.Panel2.ResumeLayout(False)
         Me.SplitContainer2.ResumeLayout(False)
-        Me.Panel2.ResumeLayout(False)
-        Me.Panel2.PerformLayout()
-        Me.Panel1.ResumeLayout(False)
-        Me.Panel1.PerformLayout()
+        Me.Panel_IntelliSense.ResumeLayout(False)
+        Me.Panel_IntelliSense.PerformLayout()
+        Me.Panel_Autocomplete.ResumeLayout(False)
+        Me.Panel_Autocomplete.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
@@ -233,10 +232,10 @@ Partial Class UCAutocomplete
     Friend WithEvents ToolTip1 As ToolTip
     Friend WithEvents SplitContainer1 As SplitContainer
     Friend WithEvents SplitContainer2 As SplitContainer
-    Friend WithEvents Panel2 As Panel
+    Friend WithEvents Panel_IntelliSense As Panel
     Friend WithEvents RichTextBox_IntelliSense As RichTextBox
     Friend WithEvents Label_IntelliSense As Label
-    Friend WithEvents Panel1 As Panel
+    Friend WithEvents Panel_Autocomplete As Panel
     Friend WithEvents RichTextBox_Autocomplete As RichTextBox
     Friend WithEvents Label_Autocomplete As Label
 End Class

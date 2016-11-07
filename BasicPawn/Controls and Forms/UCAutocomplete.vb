@@ -29,6 +29,10 @@ Public Class UCAutocomplete
 
         ' Add any initialization after the InitializeComponent() call.
         g_mFormMain = f
+
+        'Set double buffering to avoid annonying flickers when collapsing/showing SplitContainer panels
+        ClassTools.ClassForms.SetDoubleBufferingAllChilds(Me, True)
+        ClassTools.ClassForms.SetDoubleBufferingUnmanagedAllChilds(Me, True)
     End Sub
 
     Public Function UpdateAutocomplete(sText As String) As Integer
@@ -44,7 +48,7 @@ Public Class UCAutocomplete
 
         Dim sMethodMapArray As String() = sText.Split("."c)
 
-        Dim bSelectedWord As Boolean = g_mFormMain.TextEditorControl1.ActiveTextAreaControl.TextArea.SelectionManager.HasSomethingSelected
+        Dim bSelectedWord As Boolean = g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.TextArea.SelectionManager.HasSomethingSelected
 
         Dim lListViewItemsList As New List(Of ListViewItem)
 
@@ -249,9 +253,9 @@ Public Class UCAutocomplete
                 Dim iXSpace As Integer = 0
                 Dim iYSpace As Integer = 0
 
-                Dim iX As Integer = g_AutocompleteUC.g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Caret.ScreenPosition.X + iXSpace
-                Dim iY As Integer = g_AutocompleteUC.g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Caret.ScreenPosition.Y + iYSpace
-                Dim iFontH As Integer = g_AutocompleteUC.g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Font.GetHeight
+                Dim iX As Integer = g_AutocompleteUC.g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Caret.ScreenPosition.X + iXSpace
+                Dim iY As Integer = g_AutocompleteUC.g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Caret.ScreenPosition.Y + iYSpace
+                Dim iFontH As Integer = g_AutocompleteUC.g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Font.GetHeight
                 'Dim iFontH As Integer = (g_AutocompleteUC.g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Font.GetHeight * 2) + g_AutocompleteUC.g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Font.GetHeight
 
                 If (SB_TipText_IntelliSenseToolTip.Length + SB_TipText_AutocompleteToolTip.Length > 0) Then

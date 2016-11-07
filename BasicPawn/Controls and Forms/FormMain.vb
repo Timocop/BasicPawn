@@ -18,6 +18,7 @@
 Imports System.ComponentModel
 Imports System.Text
 Imports System.Text.RegularExpressions
+Imports ICSharpCode.TextEditor
 Imports ICSharpCode.TextEditor.Document
 
 
@@ -36,6 +37,7 @@ Public Class FormMain
     Public g_ClassSyntraxTools As New ClassSyntraxTools(Me)
     Public g_ClassAutocompleteUpdater As New ClassAutocompleteUpdater(Me)
     Public g_ClassTextEditorTools As New ClassTextEditorTools(Me)
+    Public g_ClassLineState As New ClassTextEditorTools.ClassLineState(Me)
 
     Public g_mSourceSyntraxSourceAnalysis As ClassSyntraxTools.ClassSyntraxSourceAnalysis
 
@@ -76,7 +78,7 @@ Public Class FormMain
         g_mUCObjectBrowser.Show()
 
         g_mUCToolTip = New UCToolTip(Me)
-        g_mUCToolTip.Parent = TextEditorControl1
+        g_mUCToolTip.Parent = TextEditorControl_Source
         g_mUCToolTip.BringToFront()
         g_mUCToolTip.Hide()
 
@@ -234,38 +236,41 @@ Public Class FormMain
         g_ClassSyntraxTools.UpdateTextEditorSyntrax()
 
         'Add Events
-        AddHandler TextEditorControl1.g_eProcessCmdKey, AddressOf TextEditorControl1_ProcessCmdKey
+        AddHandler TextEditorControl_Source.g_eProcessCmdKey, AddressOf TextEditorControl_Source_ProcessCmdKey
 
-        AddHandler TextEditorControl1.MouseDoubleClick, AddressOf TextEditorControl1_DoubleClickMarkWord
-        AddHandler TextEditorControl1.ActiveTextAreaControl.MouseDoubleClick, AddressOf TextEditorControl1_DoubleClickMarkWord
-        AddHandler TextEditorControl1.ActiveTextAreaControl.TextArea.MouseDoubleClick, AddressOf TextEditorControl1_DoubleClickMarkWord
+        AddHandler TextEditorControl_Source.MouseDoubleClick, AddressOf TextEditorControl_Source_DoubleClickMarkWord
+        AddHandler TextEditorControl_Source.ActiveTextAreaControl.MouseDoubleClick, AddressOf TextEditorControl_Source_DoubleClickMarkWord
+        AddHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.MouseDoubleClick, AddressOf TextEditorControl_Source_DoubleClickMarkWord
 
-        AddHandler TextEditorControl1.MouseClick, AddressOf TextEditorControl1_UpdateAutocomplete
-        AddHandler TextEditorControl1.ActiveTextAreaControl.MouseClick, AddressOf TextEditorControl1_UpdateAutocomplete
-        AddHandler TextEditorControl1.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl1_UpdateAutocomplete
+        AddHandler TextEditorControl_Source.MouseClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
+        AddHandler TextEditorControl_Source.ActiveTextAreaControl.MouseClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
+        AddHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
 
-        AddHandler TextEditorControl1.MouseUp, AddressOf TextEditorControl1_UpdateAutocomplete
-        AddHandler TextEditorControl1.ActiveTextAreaControl.MouseUp, AddressOf TextEditorControl1_UpdateAutocomplete
-        AddHandler TextEditorControl1.ActiveTextAreaControl.TextArea.MouseUp, AddressOf TextEditorControl1_UpdateAutocomplete
+        AddHandler TextEditorControl_Source.MouseUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
+        AddHandler TextEditorControl_Source.ActiveTextAreaControl.MouseUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
+        AddHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.MouseUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
 
-        AddHandler TextEditorControl1.MouseDoubleClick, AddressOf TextEditorControl1_UpdateAutocomplete
-        AddHandler TextEditorControl1.ActiveTextAreaControl.MouseDoubleClick, AddressOf TextEditorControl1_UpdateAutocomplete
-        AddHandler TextEditorControl1.ActiveTextAreaControl.TextArea.MouseDoubleClick, AddressOf TextEditorControl1_UpdateAutocomplete
+        AddHandler TextEditorControl_Source.MouseDoubleClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
+        AddHandler TextEditorControl_Source.ActiveTextAreaControl.MouseDoubleClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
+        AddHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.MouseDoubleClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
 
-        AddHandler TextEditorControl1.KeyUp, AddressOf TextEditorControl1_UpdateAutocomplete
-        AddHandler TextEditorControl1.ActiveTextAreaControl.KeyUp, AddressOf TextEditorControl1_UpdateAutocomplete
-        AddHandler TextEditorControl1.ActiveTextAreaControl.TextArea.KeyUp, AddressOf TextEditorControl1_UpdateAutocomplete
+        AddHandler TextEditorControl_Source.KeyUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
+        AddHandler TextEditorControl_Source.ActiveTextAreaControl.KeyUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
+        AddHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.KeyUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
 
-        AddHandler TextEditorControl1.KeyDown, AddressOf TextEditorControl1_KeyDown
-        AddHandler TextEditorControl1.ActiveTextAreaControl.KeyDown, AddressOf TextEditorControl1_KeyDown
-        AddHandler TextEditorControl1.ActiveTextAreaControl.TextArea.KeyDown, AddressOf TextEditorControl1_KeyDown
+        AddHandler TextEditorControl_Source.KeyDown, AddressOf TextEditorControl_Source_KeyDown
+        AddHandler TextEditorControl_Source.ActiveTextAreaControl.KeyDown, AddressOf TextEditorControl_Source_KeyDown
+        AddHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.KeyDown, AddressOf TextEditorControl_Source_KeyDown
 
-        AddHandler TextEditorControl1.TextChanged, AddressOf TextEditorControl1_TextChanged
-        AddHandler TextEditorControl1.ActiveTextAreaControl.TextChanged, AddressOf TextEditorControl1_TextChanged
-        AddHandler TextEditorControl1.ActiveTextAreaControl.TextArea.TextChanged, AddressOf TextEditorControl1_TextChanged
+        AddHandler TextEditorControl_Source.TextChanged, AddressOf TextEditorControl_Source_TextChanged
+        AddHandler TextEditorControl_Source.ActiveTextAreaControl.TextChanged, AddressOf TextEditorControl_Source_TextChanged
+        AddHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.TextChanged, AddressOf TextEditorControl_Source_TextChanged
 
-        AddHandler TextEditorControl1.ActiveTextAreaControl.TextArea.SelectionManager.SelectionChanged, AddressOf TextEditorControl1_Caret_PositionChanged
-        AddHandler TextEditorControl1.ActiveTextAreaControl.TextArea.Caret.PositionChanged, AddressOf TextEditorControl1_Caret_PositionChanged
+        AddHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.SelectionManager.SelectionChanged, AddressOf TextEditorControl_Source_UpdateInfo
+        AddHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.PositionChanged, AddressOf TextEditorControl_Source_UpdateInfo
+
+        AddHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.Document.LineLengthChanged, AddressOf TextEditorControl_DetectLineLenghtChange
+        AddHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.Document.LineCountChanged, AddressOf TextEditorControl_DetectLineCountChange
 
         'Load SourcePawn files via Arguments
         Dim sArgs As String() = Environment.GetCommandLineArgs
@@ -279,15 +284,15 @@ Public Class FormMain
         g_ClassAutocompleteUpdater.StartUpdate()
 
         'Update Folding
-        TextEditorControl1.Document.FoldingManager.FoldingStrategy = New VariXFolding()
-        TextEditorControl1.Document.FoldingManager.UpdateFoldings(Nothing, Nothing)
+        TextEditorControl_Source.Document.FoldingManager.FoldingStrategy = New VariXFolding()
+        TextEditorControl_Source.Document.FoldingManager.UpdateFoldings(Nothing, Nothing)
 
         'UpdateTextEditorControl1Colors()
         g_ClassSyntraxTools.UpdateFormColors()
 
         'Update Text Editor Settings
-        TextEditorControl1.ActiveTextAreaControl.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
-        TextEditorControl1.Refresh()
+        TextEditorControl_Source.ActiveTextAreaControl.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
+        TextEditorControl_Source.Refresh()
 
         g_ClassSyntraxUpdater.StartThread()
     End Sub
@@ -295,46 +300,46 @@ Public Class FormMain
 #End Region
 
 #Region "TextEditor Controls"
-    Private Sub TextEditorControl1_ProcessCmdKey(ByRef bBlock As Boolean, ByRef iMsg As Message, iKeys As Keys)
+    Private Sub TextEditorControl_Source_ProcessCmdKey(ByRef bBlock As Boolean, ByRef iMsg As Message, iKeys As Keys)
         Select Case (iKeys)
 
             'Duplicate Line/Word
             Case Keys.Control Or Keys.D
                 bBlock = True
 
-                If (TextEditorControl1.ActiveTextAreaControl.SelectionManager.HasSomethingSelected) Then
-                    Dim sText As String = TextEditorControl1.ActiveTextAreaControl.SelectionManager.SelectedText
-                    Dim iCaretOffset As Integer = TextEditorControl1.ActiveTextAreaControl.TextArea.Caret.Offset
+                If (TextEditorControl_Source.ActiveTextAreaControl.SelectionManager.HasSomethingSelected) Then
+                    Dim sText As String = TextEditorControl_Source.ActiveTextAreaControl.SelectionManager.SelectedText
+                    Dim iCaretOffset As Integer = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Offset
 
-                    TextEditorControl1.ActiveTextAreaControl.Document.Insert(iCaretOffset, sText)
+                    TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iCaretOffset, sText)
                 Else
-                    Dim iCaretOffset As Integer = TextEditorControl1.ActiveTextAreaControl.TextArea.Caret.Offset
-                    Dim iLineOffset As Integer = TextEditorControl1.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iCaretOffset).Offset
-                    Dim iLineLen As Integer = TextEditorControl1.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iCaretOffset).Length
+                    Dim iCaretOffset As Integer = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Offset
+                    Dim iLineOffset As Integer = TextEditorControl_Source.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iCaretOffset).Offset
+                    Dim iLineLen As Integer = TextEditorControl_Source.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iCaretOffset).Length
 
-                    TextEditorControl1.ActiveTextAreaControl.Document.Insert(iLineOffset, TextEditorControl1.ActiveTextAreaControl.Document.GetText(iLineOffset, iLineLen) & Environment.NewLine)
+                    TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iLineOffset, TextEditorControl_Source.ActiveTextAreaControl.Document.GetText(iLineOffset, iLineLen) & Environment.NewLine)
                 End If
 
-                TextEditorControl1.Refresh()
+                TextEditorControl_Source.Refresh()
 
             'Paste Autocomplete
             Case Keys.Control Or Keys.Enter
                 bBlock = True
 
-                Dim iOffset As Integer = TextEditorControl1.ActiveTextAreaControl.TextArea.Caret.Offset
-                Dim iPosition As Integer = TextEditorControl1.ActiveTextAreaControl.TextArea.Caret.Position.Column
-                Dim iLineOffset As Integer = TextEditorControl1.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iOffset).Offset
-                Dim iLineLen As Integer = TextEditorControl1.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iOffset).Length
-                Dim iLineNum As Integer = TextEditorControl1.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iOffset).LineNumber
+                Dim iOffset As Integer = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Offset
+                Dim iPosition As Integer = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Column
+                Dim iLineOffset As Integer = TextEditorControl_Source.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iOffset).Offset
+                Dim iLineLen As Integer = TextEditorControl_Source.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iOffset).Length
+                Dim iLineNum As Integer = TextEditorControl_Source.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iOffset).LineNumber
 
-                Dim sFunctionName As String = Regex.Match(TextEditorControl1.ActiveTextAreaControl.Document.GetText(iLineOffset, iPosition), "(\b[a-zA-Z0-9_]+\b(\.|\:){0,1}(\b[a-zA-Z0-9_]+\b){0,1})$").Value
+                Dim sFunctionName As String = Regex.Match(TextEditorControl_Source.ActiveTextAreaControl.Document.GetText(iLineOffset, iPosition), "(\b[a-zA-Z0-9_]+\b(\.|\:){0,1}(\b[a-zA-Z0-9_]+\b){0,1})$").Value
 
-                TextEditorControl1.ActiveTextAreaControl.Caret.Column = iPosition - sFunctionName.Length
-                TextEditorControl1.ActiveTextAreaControl.Document.Remove(iOffset - sFunctionName.Length, sFunctionName.Length)
+                TextEditorControl_Source.ActiveTextAreaControl.Caret.Column = iPosition - sFunctionName.Length
+                TextEditorControl_Source.ActiveTextAreaControl.Document.Remove(iOffset - sFunctionName.Length, sFunctionName.Length)
 
-                iPosition = TextEditorControl1.ActiveTextAreaControl.TextArea.Caret.Position.Column
+                iPosition = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Column
 
-                Dim bIsEmpty = Regex.IsMatch(TextEditorControl1.ActiveTextAreaControl.Document.GetText(iLineOffset, iLineLen - sFunctionName.Length), "^\s*$")
+                Dim bIsEmpty = Regex.IsMatch(TextEditorControl_Source.ActiveTextAreaControl.Document.GetText(iLineOffset, iLineLen - sFunctionName.Length), "^\s*$")
 
                 Dim struc As STRUC_AUTOCOMPLETE = g_mUCAutocomplete.GetSelectedItem()
 
@@ -342,9 +347,9 @@ Public Class FormMain
                     Select Case (True)
                         Case Regex.IsMatch(struc.sType, "\b(forward)\b")
                             If (bIsEmpty) Then
-                                Dim iLineOffsetNum As Integer = TextEditorControl1.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Offset
-                                Dim iLineLenNum As Integer = TextEditorControl1.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Length
-                                TextEditorControl1.ActiveTextAreaControl.Document.Remove(iLineOffsetNum, iLineLenNum)
+                                Dim iLineOffsetNum As Integer = TextEditorControl_Source.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Offset
+                                Dim iLineLenNum As Integer = TextEditorControl_Source.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Length
+                                TextEditorControl_Source.ActiveTextAreaControl.Document.Remove(iLineOffsetNum, iLineLenNum)
 
                                 Dim sNewInputFirst As String = "public" & struc.sFullFunctionname.Remove(0, "forward".Length) & Environment.NewLine &
                                                                    "{" & Environment.NewLine &
@@ -352,25 +357,25 @@ Public Class FormMain
                                 Dim sNewInputLast As String = Environment.NewLine &
                                                                    "}"
 
-                                TextEditorControl1.ActiveTextAreaControl.Document.Insert(iLineOffsetNum, sNewInputFirst & sNewInputLast)
+                                TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iLineOffsetNum, sNewInputFirst & sNewInputLast)
 
-                                iPosition = TextEditorControl1.ActiveTextAreaControl.TextArea.Caret.Position.Column
-                                TextEditorControl1.ActiveTextAreaControl.Caret.Line = iLineNum + 2
-                                TextEditorControl1.ActiveTextAreaControl.Caret.Column = 1
+                                iPosition = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Column
+                                TextEditorControl_Source.ActiveTextAreaControl.Caret.Line = iLineNum + 2
+                                TextEditorControl_Source.ActiveTextAreaControl.Caret.Column = 1
                             Else
-                                TextEditorControl1.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, struc.sFunctionName)
+                                TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, struc.sFunctionName)
 
-                                iPosition = TextEditorControl1.ActiveTextAreaControl.TextArea.Caret.Position.Column
-                                TextEditorControl1.ActiveTextAreaControl.Caret.Column = iPosition + struc.sFunctionName.Length
+                                iPosition = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Column
+                                TextEditorControl_Source.ActiveTextAreaControl.Caret.Column = iPosition + struc.sFunctionName.Length
                             End If
 
-                            TextEditorControl1.Refresh()
+                            TextEditorControl_Source.Refresh()
 
                         Case Regex.IsMatch(struc.sType, "\b(functag)\b")
                             If (bIsEmpty) Then
-                                Dim iLineOffsetNum As Integer = TextEditorControl1.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Offset
-                                Dim iLineLenNum As Integer = TextEditorControl1.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Length
-                                TextEditorControl1.ActiveTextAreaControl.Document.Remove(iLineOffsetNum, iLineLenNum)
+                                Dim iLineOffsetNum As Integer = TextEditorControl_Source.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Offset
+                                Dim iLineLenNum As Integer = TextEditorControl_Source.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Length
+                                TextEditorControl_Source.ActiveTextAreaControl.Document.Remove(iLineOffsetNum, iLineLenNum)
 
                                 Dim sNewInputFirst As String = "public" & struc.sFullFunctionname.Remove(0, "functag".Length) & Environment.NewLine &
                                                                    "{" & Environment.NewLine &
@@ -378,25 +383,25 @@ Public Class FormMain
                                 Dim sNewInputLast As String = Environment.NewLine &
                                                                    "}"
 
-                                TextEditorControl1.ActiveTextAreaControl.Document.Insert(iLineOffsetNum, sNewInputFirst & sNewInputLast)
+                                TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iLineOffsetNum, sNewInputFirst & sNewInputLast)
 
-                                iPosition = TextEditorControl1.ActiveTextAreaControl.TextArea.Caret.Position.Column
-                                TextEditorControl1.ActiveTextAreaControl.Caret.Line = iLineNum + 2
-                                TextEditorControl1.ActiveTextAreaControl.Caret.Column = 1
+                                iPosition = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Column
+                                TextEditorControl_Source.ActiveTextAreaControl.Caret.Line = iLineNum + 2
+                                TextEditorControl_Source.ActiveTextAreaControl.Caret.Column = 1
                             Else
-                                TextEditorControl1.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, struc.sFunctionName)
+                                TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, struc.sFunctionName)
 
-                                iPosition = TextEditorControl1.ActiveTextAreaControl.TextArea.Caret.Position.Column
-                                TextEditorControl1.ActiveTextAreaControl.Caret.Column = iPosition + struc.sFunctionName.Length
+                                iPosition = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Column
+                                TextEditorControl_Source.ActiveTextAreaControl.Caret.Column = iPosition + struc.sFunctionName.Length
                             End If
 
-                            TextEditorControl1.Refresh()
+                            TextEditorControl_Source.Refresh()
 
                         Case Regex.IsMatch(struc.sType, "\b(funcenum)\b") OrElse Regex.IsMatch(struc.sType, "\b(typeset)\b") OrElse Regex.IsMatch(struc.sType, "\b(typedef)\b")
                             If (bIsEmpty) Then
-                                Dim iLineOffsetNum As Integer = TextEditorControl1.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Offset
-                                Dim iLineLenNum As Integer = TextEditorControl1.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Length
-                                TextEditorControl1.ActiveTextAreaControl.Document.Remove(iLineOffsetNum, iLineLenNum)
+                                Dim iLineOffsetNum As Integer = TextEditorControl_Source.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Offset
+                                Dim iLineLenNum As Integer = TextEditorControl_Source.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Length
+                                TextEditorControl_Source.ActiveTextAreaControl.Document.Remove(iLineOffsetNum, iLineLenNum)
 
                                 Dim sNewInputFirst As String = struc.sFunctionName & Environment.NewLine &
                                                                    "{" & Environment.NewLine &
@@ -404,75 +409,75 @@ Public Class FormMain
                                 Dim sNewInputLast As String = Environment.NewLine &
                                                                    "}"
 
-                                TextEditorControl1.ActiveTextAreaControl.Document.Insert(iLineOffsetNum, sNewInputFirst & sNewInputLast)
+                                TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iLineOffsetNum, sNewInputFirst & sNewInputLast)
 
-                                iPosition = TextEditorControl1.ActiveTextAreaControl.TextArea.Caret.Position.Column
-                                TextEditorControl1.ActiveTextAreaControl.Caret.Line = iLineNum + 2
-                                TextEditorControl1.ActiveTextAreaControl.Caret.Column = 1
+                                iPosition = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Column
+                                TextEditorControl_Source.ActiveTextAreaControl.Caret.Line = iLineNum + 2
+                                TextEditorControl_Source.ActiveTextAreaControl.Caret.Column = 1
                             Else
-                                TextEditorControl1.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, struc.sFunctionName)
+                                TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, struc.sFunctionName)
 
-                                iPosition = TextEditorControl1.ActiveTextAreaControl.TextArea.Caret.Position.Column
-                                TextEditorControl1.ActiveTextAreaControl.Caret.Column = iPosition + struc.sFunctionName.Length
+                                iPosition = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Column
+                                TextEditorControl_Source.ActiveTextAreaControl.Caret.Column = iPosition + struc.sFunctionName.Length
                             End If
 
-                            TextEditorControl1.Refresh()
+                            TextEditorControl_Source.Refresh()
 
                         Case Regex.IsMatch(struc.sType, "\b(define)\b") OrElse Regex.IsMatch(struc.sType, "\b(publicvar)\b")
-                            TextEditorControl1.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, struc.sFunctionName)
+                            TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, struc.sFunctionName)
 
-                            iPosition = TextEditorControl1.ActiveTextAreaControl.TextArea.Caret.Position.Column
-                            TextEditorControl1.ActiveTextAreaControl.Caret.Column = iPosition + struc.sFunctionName.Length
+                            iPosition = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Column
+                            TextEditorControl_Source.ActiveTextAreaControl.Caret.Column = iPosition + struc.sFunctionName.Length
 
-                            TextEditorControl1.Refresh()
+                            TextEditorControl_Source.Refresh()
 
                         Case Regex.IsMatch(struc.sType, "\b(enum)\b")
                             If (ClassSettings.g_iSettingsFullEnumAutocomplete OrElse struc.sFunctionName.IndexOf("."c) < 0) Then
-                                TextEditorControl1.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, struc.sFunctionName.Replace("."c, ":"c))
+                                TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, struc.sFunctionName.Replace("."c, ":"c))
 
-                                iPosition = TextEditorControl1.ActiveTextAreaControl.TextArea.Caret.Position.Column
-                                TextEditorControl1.ActiveTextAreaControl.Caret.Column = iPosition + struc.sFunctionName.Length
+                                iPosition = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Column
+                                TextEditorControl_Source.ActiveTextAreaControl.Caret.Column = iPosition + struc.sFunctionName.Length
                             Else
-                                TextEditorControl1.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, struc.sFunctionName.Remove(0, struc.sFunctionName.IndexOf("."c) + 1))
+                                TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, struc.sFunctionName.Remove(0, struc.sFunctionName.IndexOf("."c) + 1))
 
-                                iPosition = TextEditorControl1.ActiveTextAreaControl.TextArea.Caret.Position.Column
-                                TextEditorControl1.ActiveTextAreaControl.Caret.Column = iPosition + struc.sFunctionName.Remove(0, struc.sFunctionName.IndexOf("."c) + 1).Length
+                                iPosition = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Column
+                                TextEditorControl_Source.ActiveTextAreaControl.Caret.Column = iPosition + struc.sFunctionName.Remove(0, struc.sFunctionName.IndexOf("."c) + 1).Length
                             End If
-                            TextEditorControl1.Refresh()
+                            TextEditorControl_Source.Refresh()
 
                         Case Regex.IsMatch(struc.sType, "\b(methodmap)\b")
                             If (struc.sFunctionName.IndexOf("."c) > -1 AndAlso sFunctionName.IndexOf("."c) > -1 AndAlso Not sFunctionName.StartsWith(struc.sFunctionName)) Then
                                 Dim sNewInput As String = String.Format("{0}.{1}",
                                                                         sFunctionName.Remove(sFunctionName.LastIndexOf("."c), sFunctionName.Length - sFunctionName.LastIndexOf("."c)),
                                                                         struc.sFunctionName.Remove(0, struc.sFunctionName.IndexOf("."c) + 1))
-                                TextEditorControl1.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, sNewInput)
+                                TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, sNewInput)
 
-                                iPosition = TextEditorControl1.ActiveTextAreaControl.TextArea.Caret.Position.Column
-                                TextEditorControl1.ActiveTextAreaControl.Caret.Column = iPosition + sNewInput.Length
+                                iPosition = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Column
+                                TextEditorControl_Source.ActiveTextAreaControl.Caret.Column = iPosition + sNewInput.Length
                             Else
-                                TextEditorControl1.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, struc.sFunctionName.Remove(0, struc.sFunctionName.IndexOf("."c) + 1))
+                                TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, struc.sFunctionName.Remove(0, struc.sFunctionName.IndexOf("."c) + 1))
 
-                                iPosition = TextEditorControl1.ActiveTextAreaControl.TextArea.Caret.Position.Column
-                                TextEditorControl1.ActiveTextAreaControl.Caret.Column = iPosition + struc.sFunctionName.Remove(0, struc.sFunctionName.IndexOf("."c) + 1).Length
+                                iPosition = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Column
+                                TextEditorControl_Source.ActiveTextAreaControl.Caret.Column = iPosition + struc.sFunctionName.Remove(0, struc.sFunctionName.IndexOf("."c) + 1).Length
                             End If
-                            TextEditorControl1.Refresh()
+                            TextEditorControl_Source.Refresh()
 
                         Case Else
                             If (ClassSettings.g_iSettingsFullMethodAutocomplete) Then
                                 Dim sNewInput As String = struc.sFullFunctionname.Remove(0, Regex.Match(struc.sFullFunctionname, "^(?<Useless>.*?)\b[a-zA-Z0-9_]+\b\s*\(").Groups("Useless").Length)
-                                TextEditorControl1.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, sNewInput)
+                                TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, sNewInput)
 
-                                iPosition = TextEditorControl1.ActiveTextAreaControl.TextArea.Caret.Position.Column
-                                TextEditorControl1.ActiveTextAreaControl.Caret.Column = iPosition + sNewInput.Length
+                                iPosition = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Column
+                                TextEditorControl_Source.ActiveTextAreaControl.Caret.Column = iPosition + sNewInput.Length
                             Else
                                 Dim sNewInput As String = struc.sFunctionName.Remove(0, Regex.Match(struc.sFunctionName, "^(?<Useless>.*?)\b[a-zA-Z0-9_]+\b\s*\(").Groups("Useless").Length)
-                                TextEditorControl1.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, String.Format("{0}()", sNewInput))
+                                TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, String.Format("{0}()", sNewInput))
 
-                                iPosition = TextEditorControl1.ActiveTextAreaControl.TextArea.Caret.Position.Column
-                                TextEditorControl1.ActiveTextAreaControl.Caret.Column = iPosition + sNewInput.Length + 1
+                                iPosition = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Column
+                                TextEditorControl_Source.ActiveTextAreaControl.Caret.Column = iPosition + sNewInput.Length + 1
                             End If
 
-                            TextEditorControl1.Refresh()
+                            TextEditorControl_Source.Refresh()
                     End Select
                 End If
 
@@ -518,16 +523,44 @@ Public Class FormMain
         End Select
     End Sub
 
-    Private Sub TextEditorControl1_Caret_PositionChanged(sender As Object, e As EventArgs)
-        ToolStripStatusLabel_EditorLine.Text = "L: " & TextEditorControl1.ActiveTextAreaControl.TextArea.Caret.Position.Line + 1
-        ToolStripStatusLabel_EditorCollum.Text = "C: " & TextEditorControl1.ActiveTextAreaControl.TextArea.Caret.Column
-        ToolStripStatusLabel_EditorSelectedCount.Text = "S: " & TextEditorControl1.ActiveTextAreaControl.TextArea.SelectionManager.SelectedText.Length
+    Private Sub TextEditorControl_Source_UpdateInfo(sender As Object, e As EventArgs)
+        ToolStripStatusLabel_EditorLine.Text = "L: " & TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Line + 1
+        ToolStripStatusLabel_EditorCollum.Text = "C: " & TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Column
+        ToolStripStatusLabel_EditorSelectedCount.Text = "S: " & TextEditorControl_Source.ActiveTextAreaControl.TextArea.SelectionManager.SelectedText.Length
     End Sub
 
-    Private Sub TextEditorControl1_UpdateAutocomplete(sender As Object, e As Object)
+    Private Sub TextEditorControl_DetectLineLenghtChange(sender As Object, e As LineLengthChangeEventArgs)
+        Dim iTotalLines As Integer = TextEditorControl_Source.Document.TotalNumberOfLines
+
+        If (e.LineSegment.IsDeleted OrElse e.LineSegment.Length < 0) Then
+            Return
+        End If
+
+        If (e.LineSegment.LineNumber > iTotalLines) Then
+            Return
+        End If
+
+        g_ClassLineState.m_LineState(e.LineSegment.LineNumber) = ClassTextEditorTools.ClassLineState.LineStateBookmark.ENUM_BOOKMARK_TYPE.CHANGED
+    End Sub
+
+    Private Sub TextEditorControl_DetectLineCountChange(sender As Object, e As LineCountChangeEventArgs)
+        Dim iTotalLines As Integer = TextEditorControl_Source.Document.TotalNumberOfLines
+
+        If (e.LinesMoved > -1) Then
+            For i = 0 To e.LinesMoved
+                If (e.LineStart + i > iTotalLines) Then
+                    Return
+                End If
+
+                g_ClassLineState.m_LineState(e.LineStart + i) = ClassTextEditorTools.ClassLineState.LineStateBookmark.ENUM_BOOKMARK_TYPE.CHANGED
+            Next
+        End If
+    End Sub
+
+    Private Sub TextEditorControl_Source_UpdateAutocomplete(sender As Object, e As Object)
         Static iOldCaretPos As Integer = 0
 
-        Dim iOffset As Integer = TextEditorControl1.ActiveTextAreaControl.TextArea.Caret.Offset
+        Dim iOffset As Integer = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Offset
 
         If (iOldCaretPos = iOffset) Then
             Return
@@ -546,19 +579,19 @@ Public Class FormMain
         End If
     End Sub
 
-    Private Sub TextEditorControl1_TextChanged(sender As Object, e As EventArgs)
+    Private Sub TextEditorControl_Source_TextChanged(sender As Object, e As EventArgs)
         g_bCodeChanged = True
         ChangeTitle()
     End Sub
 
     Private Function ParseMethodAutocomplete(Optional bForceUpdate As Boolean = False) As Boolean
         If (bForceUpdate) Then
-            Dim sTextContent As String = Me.Invoke(Function() TextEditorControl1.Document.TextContent)
+            Dim sTextContent As String = Me.Invoke(Function() TextEditorControl_Source.Document.TextContent)
             g_mSourceSyntraxSourceAnalysis = New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sTextContent)
         End If
 
         If (g_mSourceSyntraxSourceAnalysis IsNot Nothing) Then
-            Dim iCaretOffset As Integer = Me.Invoke(Function() TextEditorControl1.ActiveTextAreaControl.TextArea.Caret.Offset)
+            Dim iCaretOffset As Integer = Me.Invoke(Function() TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Offset)
             If (iCaretOffset > 1 AndAlso g_mSourceSyntraxSourceAnalysis.GetMaxLenght() > iCaretOffset AndAlso Not g_mSourceSyntraxSourceAnalysis.InMultiComment(iCaretOffset) AndAlso Not g_mSourceSyntraxSourceAnalysis.InSingleComment(iCaretOffset)) Then
                 Dim iValidOffset As Integer = -1
                 Dim iCaretBrace As Integer = g_mSourceSyntraxSourceAnalysis.GetParenthesisLevel(iCaretOffset - 1)
@@ -577,7 +610,7 @@ Public Class FormMain
                             Exit For
                         End If
 
-                        SB.Append(Me.Invoke(Function(a) TextEditorControl1.ActiveTextAreaControl.Document.GetCharAt(a), i))
+                        SB.Append(Me.Invoke(Function(a) TextEditorControl_Source.ActiveTextAreaControl.Document.GetCharAt(a), i))
                     Next
 
                     Dim sFuncStart As String = StrReverse(SB.ToString)
@@ -595,7 +628,7 @@ Public Class FormMain
         Return False
     End Function
 
-    Private Sub TextEditorControl1_DoubleClickMarkWord(sender As Object, e As MouseEventArgs)
+    Private Sub TextEditorControl_Source_DoubleClickMarkWord(sender As Object, e As MouseEventArgs)
         If (Not ClassSettings.g_iSettingsDoubleClickMark) Then
             Return
         End If
@@ -607,7 +640,7 @@ Public Class FormMain
 
 #Region "Open/Save/Dialog SourcePawn"
 
-    Private Sub TextEditorControl1_KeyDown(sender As Object, e As KeyEventArgs)
+    Private Sub TextEditorControl_Source_KeyDown(sender As Object, e As KeyEventArgs)
         If (e.KeyCode = Keys.S AndAlso e.Modifiers = Keys.Control) Then
             e.Handled = True
             g_ClassTextEditorTools.SaveFile()
@@ -616,8 +649,8 @@ Public Class FormMain
             e.Handled = True
 
 
-            If (TextEditorControl1.ActiveTextAreaControl.SelectionManager.HasSomethingSelected) Then
-                g_ClassTextEditorTools.ShowSearchAndReplace(TextEditorControl1.ActiveTextAreaControl.SelectionManager.SelectedText)
+            If (TextEditorControl_Source.ActiveTextAreaControl.SelectionManager.HasSomethingSelected) Then
+                g_ClassTextEditorTools.ShowSearchAndReplace(TextEditorControl_Source.ActiveTextAreaControl.SelectionManager.SelectedText)
             Else
                 g_ClassTextEditorTools.ShowSearchAndReplace("")
             End If
@@ -643,15 +676,15 @@ Public Class FormMain
     End Sub
 
     Private Sub ToolStripMenuItem_Cut_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Cut.Click
-        TextEditorControl1.ActiveTextAreaControl.TextArea.ClipboardHandler.Cut(sender, e)
+        TextEditorControl_Source.ActiveTextAreaControl.TextArea.ClipboardHandler.Cut(sender, e)
     End Sub
 
     Private Sub ToolStripMenuItem_Copy_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Copy.Click
-        TextEditorControl1.ActiveTextAreaControl.TextArea.ClipboardHandler.Copy(sender, e)
+        TextEditorControl_Source.ActiveTextAreaControl.TextArea.ClipboardHandler.Copy(sender, e)
     End Sub
 
     Private Sub ToolStripMenuItem_Paste_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Paste.Click
-        TextEditorControl1.ActiveTextAreaControl.TextArea.ClipboardHandler.Paste(sender, e)
+        TextEditorControl_Source.ActiveTextAreaControl.TextArea.ClipboardHandler.Paste(sender, e)
     End Sub
 #End Region
 
@@ -664,11 +697,12 @@ Public Class FormMain
         End If
 
         ClassSettings.g_sConfigOpenSourcePawnFile = ""
-        TextEditorControl1.Document.TextContent = ""
-        TextEditorControl1.Refresh()
+        TextEditorControl_Source.Document.TextContent = ""
+        TextEditorControl_Source.Refresh()
 
         g_bCodeChanged = False
         ChangeTitle()
+        g_ClassLineState.ClearStates()
 
         g_ClassAutocompleteUpdater.StartUpdate()
 
@@ -699,9 +733,10 @@ Public Class FormMain
 
                 g_bCodeChanged = False
                 ChangeTitle()
+                g_ClassLineState.SaveStates()
 
                 PrintInformation("[INFO]", "User saved file to: " & ClassSettings.g_sConfigOpenSourcePawnFile)
-                IO.File.WriteAllText(ClassSettings.g_sConfigOpenSourcePawnFile, TextEditorControl1.Document.TextContent)
+                IO.File.WriteAllText(ClassSettings.g_sConfigOpenSourcePawnFile, TextEditorControl_Source.Document.TextContent)
             End If
         End Using
     End Sub
@@ -713,9 +748,10 @@ Public Class FormMain
 
         g_bCodeChanged = False
         ChangeTitle()
+        g_ClassLineState.SaveStates()
 
         PrintInformation("[INFO]", "User saved file to: " & ClassSettings.g_sConfigOpenSourcePawnFile)
-        IO.File.WriteAllText(ClassSettings.g_sConfigOpenSourcePawnFile, TextEditorControl1.Document.TextContent)
+        IO.File.WriteAllText(ClassSettings.g_sConfigOpenSourcePawnFile, TextEditorControl_Source.Document.TextContent)
     End Sub
 
 
@@ -733,8 +769,8 @@ Public Class FormMain
 
                 g_ClassAutocompleteUpdater.StartUpdate()
 
-                TextEditorControl1.ActiveTextAreaControl.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
-                TextEditorControl1.Refresh()
+                TextEditorControl_Source.ActiveTextAreaControl.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
+                TextEditorControl_Source.Refresh()
 
                 g_ClassSyntraxTools.UpdateFormColors()
             End If
@@ -743,15 +779,15 @@ Public Class FormMain
 
     Private Sub ToolStripMenuItem_ToolsFormatCode_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsFormatCode.Click
         Try
-            Dim sSource As String = TextEditorControl1.Document.TextContent
+            Dim sSource As String = TextEditorControl_Source.Document.TextContent
 
             sSource = g_ClassSyntraxTools.FormatCode(sSource)
 
-            TextEditorControl1.Document.UndoStack.StartUndoGroup()
-            TextEditorControl1.Document.Remove(0, TextEditorControl1.Document.TextLength)
-            TextEditorControl1.Document.Insert(0, sSource)
-            TextEditorControl1.Document.UndoStack.EndUndoGroup()
-            TextEditorControl1.Refresh()
+            TextEditorControl_Source.Document.UndoStack.StartUndoGroup()
+            TextEditorControl_Source.Document.Remove(0, TextEditorControl_Source.Document.TextLength)
+            TextEditorControl_Source.Document.Insert(0, sSource)
+            TextEditorControl_Source.Document.UndoStack.EndUndoGroup()
+            TextEditorControl_Source.Refresh()
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
@@ -802,7 +838,7 @@ Public Class FormMain
 #Region "MenuStrip_Build"
     Private Sub ToolStripMenuItem_Build_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Build.Click
         With New ClassDebuggerParser(Me)
-            If (.HasDebugPlaceholder(TextEditorControl1.Document.TextContent)) Then
+            If (.HasDebugPlaceholder(TextEditorControl_Source.Document.TextContent)) Then
                 Select Case (MessageBox.Show("All BasicPawn Debugger placeholders need to be removed before compiling the source. Remove all placeholder?", "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation))
                     Case DialogResult.OK
                         .CleanupDebugPlaceholder(Me)
@@ -819,7 +855,7 @@ Public Class FormMain
 #Region "MenuStrip_Test"
     Private Sub ToolStripMenuItem_Test_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Test.Click
         With New ClassDebuggerParser(Me)
-            If (.HasDebugPlaceholder(TextEditorControl1.Document.TextContent)) Then
+            If (.HasDebugPlaceholder(TextEditorControl_Source.Document.TextContent)) Then
                 Select Case (MessageBox.Show("All BasicPawn Debugger placeholders need to be removed before compiling the source. Remove all placeholder?", "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation))
                     Case DialogResult.OK
                         .CleanupDebugPlaceholder(Me)
@@ -887,13 +923,13 @@ Public Class FormMain
 
 #Region "MenuStrip_Undo"
     Private Sub ToolStripMenuItem_Undo_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Undo.Click
-        TextEditorControl1.Undo()
+        TextEditorControl_Source.Undo()
     End Sub
 #End Region
 
 #Region "MenuStrip_Redo"
     Private Sub ToolStripMenuItem_Redo_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Redo.Click
-        TextEditorControl1.Redo()
+        TextEditorControl_Source.Redo()
     End Sub
 #End Region
 
@@ -907,8 +943,8 @@ Public Class FormMain
 
                 g_ClassAutocompleteUpdater.StartUpdate()
 
-                TextEditorControl1.ActiveTextAreaControl.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
-                TextEditorControl1.Refresh()
+                TextEditorControl_Source.ActiveTextAreaControl.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
+                TextEditorControl_Source.Refresh()
 
                 g_ClassSyntraxTools.UpdateFormColors()
             End If
@@ -934,8 +970,8 @@ Public Class FormMain
             Dim sLastWord As String = g_mFormMain.g_ClassSyntraxTools.g_sHighlightWord
             g_mFormMain.g_ClassSyntraxTools.g_sHighlightWord = ""
 
-            If (g_mFormMain.TextEditorControl1.ActiveTextAreaControl.SelectionManager.HasSomethingSelected) Then
-                Dim m_CurrentSelection As ISelection = g_mFormMain.TextEditorControl1.ActiveTextAreaControl.SelectionManager.SelectionCollection(0)
+            If (g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.SelectionManager.HasSomethingSelected) Then
+                Dim m_CurrentSelection As ISelection = g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.SelectionManager.SelectionCollection(0)
 
                 If (Regex.IsMatch(m_CurrentSelection.SelectedText, "^[a-zA-Z0-9_]+$")) Then
                     g_mFormMain.g_ClassSyntraxTools.g_sHighlightWord = m_CurrentSelection.SelectedText
@@ -957,7 +993,7 @@ Public Class FormMain
             Dim sLastWord As String = g_mFormMain.g_ClassSyntraxTools.g_sCaretWord
             g_mFormMain.g_ClassSyntraxTools.g_sCaretWord = ""
 
-            If (Not g_mFormMain.TextEditorControl1.ActiveTextAreaControl.SelectionManager.HasSomethingSelected) Then
+            If (Not g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.SelectionManager.HasSomethingSelected) Then
                 Dim sWord As String = GetCaretWord(False)
 
                 If (Not String.IsNullOrEmpty(sWord)) Then
@@ -970,7 +1006,7 @@ Public Class FormMain
             End If
 
             If (Not String.IsNullOrEmpty(g_mFormMain.g_ClassSyntraxTools.g_sCaretWord) AndAlso
-                        Regex.Matches(g_mFormMain.TextEditorControl1.Document.TextContent, String.Format("\b{0}\b", Regex.Escape(g_mFormMain.g_ClassSyntraxTools.g_sCaretWord)), RegexOptions.Multiline).Count < 2) Then
+                        Regex.Matches(g_mFormMain.TextEditorControl_Source.Document.TextContent, String.Format("\b{0}\b", Regex.Escape(g_mFormMain.g_ClassSyntraxTools.g_sCaretWord)), RegexOptions.Multiline).Count < 2) Then
                 Return
             End If
 
@@ -1010,7 +1046,7 @@ Public Class FormMain
 
                 If (sFile.ToLower = ClassSettings.g_sConfigOpenSourcePawnFile.ToLower) Then
                     Dim iLineCount As Integer = 0
-                    Using SR As New IO.StringReader(g_mFormMain.TextEditorControl1.Document.TextContent)
+                    Using SR As New IO.StringReader(g_mFormMain.TextEditorControl_Source.Document.TextContent)
                         While True
                             Dim sLine As String = SR.ReadLine
                             If (sLine Is Nothing) Then
@@ -1079,21 +1115,21 @@ Public Class FormMain
         ''' <param name="bIncludeDot">If true, includes dots (e.g ThisWord.ThatWord)</param>
         ''' <returns></returns>
         Public Function GetCaretWord(bIncludeDot As Boolean) As String
-            Dim iOffset As Integer = g_mFormMain.TextEditorControl1.ActiveTextAreaControl.TextArea.Caret.Offset
-            Dim iPosition As Integer = g_mFormMain.TextEditorControl1.ActiveTextAreaControl.TextArea.Caret.Position.Column
-            Dim iLineOffset As Integer = g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iOffset).Offset
-            Dim iLineLen As Integer = g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iOffset).Length
+            Dim iOffset As Integer = g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Offset
+            Dim iPosition As Integer = g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Column
+            Dim iLineOffset As Integer = g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iOffset).Offset
+            Dim iLineLen As Integer = g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iOffset).Length
 
             Dim sFuncStart As String
             Dim sFuncEnd As String
             Dim sFunctionName As String
 
             If (bIncludeDot) Then
-                sFuncStart = Regex.Match(g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.GetText(iLineOffset, iPosition), "(\b[a-zA-Z0-9_]+\b(\.){0,1}(\b[a-zA-Z0-9_]+\b){0,1})$").Value
-                sFuncEnd = Regex.Match(g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.GetText(iLineOffset + iPosition, iLineLen - iPosition), "^(\b[a-zA-Z0-9_]+\b(\.){0,1}(\b[a-zA-Z0-9_]+\b){0,1})").Value
+                sFuncStart = Regex.Match(g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.GetText(iLineOffset, iPosition), "(\b[a-zA-Z0-9_]+\b(\.){0,1}(\b[a-zA-Z0-9_]+\b){0,1})$").Value
+                sFuncEnd = Regex.Match(g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.GetText(iLineOffset + iPosition, iLineLen - iPosition), "^(\b[a-zA-Z0-9_]+\b(\.){0,1}(\b[a-zA-Z0-9_]+\b){0,1})").Value
             Else
-                sFuncStart = Regex.Match(g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.GetText(iLineOffset, iPosition), "(\b[a-zA-Z0-9_]+\b)$").Value
-                sFuncEnd = Regex.Match(g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.GetText(iLineOffset + iPosition, iLineLen - iPosition), "^(\b[a-zA-Z0-9_]+\b)").Value
+                sFuncStart = Regex.Match(g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.GetText(iLineOffset, iPosition), "(\b[a-zA-Z0-9_]+\b)$").Value
+                sFuncEnd = Regex.Match(g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.GetText(iLineOffset + iPosition, iLineLen - iPosition), "^(\b[a-zA-Z0-9_]+\b)").Value
             End If
 
             sFunctionName = (sFuncStart & sFuncEnd)
@@ -1114,8 +1150,8 @@ Public Class FormMain
 
             If (String.IsNullOrEmpty(sPath) OrElse Not IO.File.Exists(sPath)) Then
                 ClassSettings.g_sConfigOpenSourcePawnFile = ""
-                g_mFormMain.TextEditorControl1.Document.TextContent = ""
-                g_mFormMain.TextEditorControl1.Refresh()
+                g_mFormMain.TextEditorControl_Source.Document.TextContent = ""
+                g_mFormMain.TextEditorControl_Source.Refresh()
 
                 g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate()
 
@@ -1123,12 +1159,16 @@ Public Class FormMain
                 Return False
             End If
 
+            g_mFormMain.g_ClassLineState.m_IgnoreUpdates = True
+
             ClassSettings.g_sConfigOpenSourcePawnFile = sPath
-            g_mFormMain.TextEditorControl1.Document.TextContent = IO.File.ReadAllText(sPath)
-            g_mFormMain.TextEditorControl1.Refresh()
+            g_mFormMain.TextEditorControl_Source.Document.TextContent = IO.File.ReadAllText(sPath)
+            g_mFormMain.TextEditorControl_Source.Refresh()
 
             g_mFormMain.g_bCodeChanged = False
             g_mFormMain.ChangeTitle()
+            g_mFormMain.g_ClassLineState.ClearStates()
+            g_mFormMain.g_ClassLineState.m_IgnoreUpdates = False
 
             g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate()
 
@@ -1150,17 +1190,19 @@ Public Class FormMain
 
                         g_mFormMain.g_bCodeChanged = False
                         g_mFormMain.ChangeTitle()
+                        g_mFormMain.g_ClassLineState.SaveStates()
 
                         g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & ClassSettings.g_sConfigOpenSourcePawnFile)
-                        IO.File.WriteAllText(ClassSettings.g_sConfigOpenSourcePawnFile, g_mFormMain.TextEditorControl1.Document.TextContent)
+                        IO.File.WriteAllText(ClassSettings.g_sConfigOpenSourcePawnFile, g_mFormMain.TextEditorControl_Source.Document.TextContent)
                     End If
                 End Using
             Else
                 g_mFormMain.g_bCodeChanged = False
                 g_mFormMain.ChangeTitle()
+                g_mFormMain.g_ClassLineState.SaveStates()
 
                 g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & ClassSettings.g_sConfigOpenSourcePawnFile)
-                IO.File.WriteAllText(ClassSettings.g_sConfigOpenSourcePawnFile, g_mFormMain.TextEditorControl1.Document.TextContent)
+                IO.File.WriteAllText(ClassSettings.g_sConfigOpenSourcePawnFile, g_mFormMain.TextEditorControl_Source.Document.TextContent)
             End If
         End Sub
 
@@ -1186,9 +1228,11 @@ Public Class FormMain
 
                                 g_mFormMain.g_bCodeChanged = False
                                 g_mFormMain.ChangeTitle()
+                                g_mFormMain.g_ClassLineState.SaveStates()
 
                                 g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & ClassSettings.g_sConfigOpenSourcePawnFile)
-                                IO.File.WriteAllText(ClassSettings.g_sConfigOpenSourcePawnFile, g_mFormMain.TextEditorControl1.Document.TextContent)
+                                IO.File.WriteAllText(ClassSettings.g_sConfigOpenSourcePawnFile, g_mFormMain.TextEditorControl_Source.Document.TextContent)
+
                                 Return False
                             Else
                                 Return True
@@ -1197,9 +1241,11 @@ Public Class FormMain
                     Else
                         g_mFormMain.g_bCodeChanged = False
                         g_mFormMain.ChangeTitle()
+                        g_mFormMain.g_ClassLineState.SaveStates()
 
                         g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & ClassSettings.g_sConfigOpenSourcePawnFile)
-                        IO.File.WriteAllText(ClassSettings.g_sConfigOpenSourcePawnFile, g_mFormMain.TextEditorControl1.Document.TextContent)
+                        IO.File.WriteAllText(ClassSettings.g_sConfigOpenSourcePawnFile, g_mFormMain.TextEditorControl_Source.Document.TextContent)
+
                         Return False
                     End If
                 Case DialogResult.No
@@ -1288,7 +1334,7 @@ Public Class FormMain
                 IO.File.Delete(sOutputFile)
 
                 Dim sArguments As String = String.Format("""{0}"" -i""{1}"" -o""{2}""", ClassSettings.g_sConfigOpenSourcePawnFile, sIncludePath, sOutputFile)
-                ClassTools.ExecuteProgram(sCompilerPath, sArguments, iExitCode, sOutput)
+                ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, sArguments, iExitCode, sOutput)
 
                 Dim sLines As String() = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
                 For i = sLines.Length - 1 To 0 Step -1
@@ -1397,7 +1443,7 @@ Public Class FormMain
                 IO.File.WriteAllText(TmpSourceFile, sSource)
 
                 Dim sArguments As String = String.Format("""{0}"" -i""{1}"" -o""{2}""", TmpSourceFile, sIncludePath, sOutputFile)
-                ClassTools.ExecuteProgram(sCompilerPath, sArguments, iExitCode, sOutput)
+                ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, sArguments, iExitCode, sOutput)
 
                 IO.File.Delete(TmpSourceFile)
 
@@ -1512,7 +1558,7 @@ Public Class FormMain
                 sOutputFile = String.Format("{0}.lst", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
 
                 Dim sArguments As String = String.Format("""{0}"" -l -i""{1}"" -o""{2}""", sTmpSourcePath, sIncludePath, sOutputFile)
-                ClassTools.ExecuteProgram(sCompilerPath, sArguments, iExitCode, sOutput)
+                ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, sArguments, iExitCode, sOutput)
 
                 IO.File.Delete(sTmpSourcePath)
 
@@ -1660,7 +1706,7 @@ Public Class FormMain
                 sOutputFile = String.Format("{0}.asm", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
 
                 Dim sArguments As String = String.Format("""{0}"" -a -i""{1}"" -o""{2}""", sTmpSourcePath, sIncludePath, sOutputFile)
-                ClassTools.ExecuteProgram(sCompilerPath, sArguments, iExitCode, sOutput)
+                ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, sArguments, iExitCode, sOutput)
 
                 IO.File.Delete(sTmpSourcePath)
 
@@ -1773,7 +1819,7 @@ Public Class FormMain
                 IO.File.WriteAllText(TmpSourceFile, sSource)
 
                 Dim sArguments As String = String.Format("""{0}"" -a -i""{1}"" -o""{2}""", TmpSourceFile, sIncludePath, sOutputFile)
-                ClassTools.ExecuteProgram(sCompilerPath, sArguments, iExitCode, sOutput)
+                ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, sArguments, iExitCode, sOutput)
 
                 Dim sLines As String() = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
                 For i = sLines.Length - 1 To 0 Step -1
@@ -1801,6 +1847,141 @@ Public Class FormMain
             Return Nothing
         End Function
 
+        Class ClassLineState
+            Private g_mFormMain As FormMain
+
+            Public Sub New(f As FormMain)
+                g_mFormMain = f
+            End Sub
+
+            Property m_IgnoreUpdates As Boolean
+
+            Property m_LineState(iIndex As Integer) As LineStateBookmark.ENUM_BOOKMARK_TYPE
+                Get
+                    For Each item In g_mFormMain.TextEditorControl_Source.Document.BookmarkManager.Marks
+                        Dim lineStateBookmark As LineStateBookmark = TryCast(item, LineStateBookmark)
+                        If (lineStateBookmark Is Nothing) Then
+                            Continue For
+                        End If
+
+                        If (lineStateBookmark.LineNumber <> iIndex) Then
+                            Continue For
+                        End If
+
+                        Return lineStateBookmark.m_iType
+                    Next
+
+                    Return -1
+                End Get
+                Set(value As LineStateBookmark.ENUM_BOOKMARK_TYPE)
+                    If (m_IgnoreUpdates) Then
+                        g_mFormMain.TextEditorControl_Source.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, iIndex))
+                        g_mFormMain.TextEditorControl_Source.Document.CommitUpdate()
+                        Return
+                    End If
+
+                    For Each item In g_mFormMain.TextEditorControl_Source.Document.BookmarkManager.Marks
+                        Dim lineStateBookmark As LineStateBookmark = TryCast(item, LineStateBookmark)
+                        If (lineStateBookmark Is Nothing) Then
+                            Continue For
+                        End If
+
+                        If (lineStateBookmark.LineNumber <> iIndex) Then
+                            Continue For
+                        End If
+
+                        lineStateBookmark.m_iType = value
+                        Return
+                    Next
+
+                    Dim mBookmark As New LineStateBookmark(g_mFormMain.TextEditorControl_Source.Document, New TextLocation(0, iIndex), True, LineStateBookmark.ENUM_BOOKMARK_TYPE.CHANGED)
+                    g_mFormMain.TextEditorControl_Source.Document.BookmarkManager.AddMark(mBookmark)
+
+                    g_mFormMain.TextEditorControl_Source.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, iIndex))
+                    g_mFormMain.TextEditorControl_Source.Document.CommitUpdate()
+                End Set
+            End Property
+
+            ''' <summary>
+            ''' Change all 'changed' states to 'saved'.
+            ''' </summary>
+            Public Sub SaveStates()
+                For Each item In g_mFormMain.TextEditorControl_Source.Document.BookmarkManager.Marks
+                    Dim lineStateBookmark As LineStateBookmark = TryCast(item, LineStateBookmark)
+                    If (lineStateBookmark Is Nothing) Then
+                        Continue For
+                    End If
+
+                    If (lineStateBookmark.m_iType = LineStateBookmark.ENUM_BOOKMARK_TYPE.CHANGED) Then
+                        lineStateBookmark.m_iType = LineStateBookmark.ENUM_BOOKMARK_TYPE.SAVED
+
+                        g_mFormMain.TextEditorControl_Source.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, lineStateBookmark.LineNumber))
+                    End If
+                Next
+
+                g_mFormMain.TextEditorControl_Source.Document.CommitUpdate()
+            End Sub
+
+            ''' <summary>
+            ''' Clear all line states. Like on loading or new source.
+            ''' </summary>
+            Public Sub ClearStates()
+                g_mFormMain.TextEditorControl_Source.Document.BookmarkManager.Clear()
+            End Sub
+
+            Public Class LineStateBookmark
+                Inherits Bookmark
+
+                Enum ENUM_BOOKMARK_TYPE
+                    CHANGED
+                    SAVED
+                End Enum
+
+                Private g_sIdentifier As String = Guid.NewGuid.ToString
+
+                Property m_iType As ENUM_BOOKMARK_TYPE
+
+                Public Sub New(iDocument As IDocument, textLocation As TextLocation, bEnabled As Boolean, iType As ENUM_BOOKMARK_TYPE)
+                    MyBase.New(iDocument, textLocation, bEnabled)
+                    m_iType = iType
+                End Sub
+
+                Public Overrides ReadOnly Property CanToggle As Boolean
+                    Get
+                        Return False
+                        'Return MyBase.CanToggle
+                    End Get
+                End Property
+
+                Protected Overrides Sub OnIsEnabledChanged(e As EventArgs)
+                    IsEnabled = True
+                    'MyBase.OnIsEnabledChanged(e)
+                End Sub
+
+                ''' <summary>
+                ''' Lets override the bookmarks drawing, so we can show our custom coloring!
+                ''' The bookmark is the only real icon we can change.
+                ''' </summary>
+                ''' <param name="iconBarMargin"></param>
+                ''' <param name="iGraphics"></param>
+                ''' <param name="iPoint"></param>
+                Public Overrides Sub Draw(iconBarMargin As IconBarMargin, iGraphics As Graphics, iPoint As Point)
+                    'Dim num As Integer = margin.TextArea.TextView.FontHeight / 8
+                    'Dim r As Rectangle = New Rectangle(1, p.Y + num, margin.DrawingPosition.Width - 4, margin.TextArea.TextView.FontHeight - num * 2)
+                    Dim calcFontHeight As Integer = iconBarMargin.TextArea.TextView.FontHeight / 32
+                    Dim r As New Rectangle(iconBarMargin.DrawingPosition.Width / 1.25,
+                                            iPoint.Y + calcFontHeight,
+                                            iconBarMargin.DrawingPosition.Width - 4,
+                                            iconBarMargin.TextArea.TextView.FontHeight - calcFontHeight * 2)
+
+                    Dim iColor As Color = If(m_iType = ENUM_BOOKMARK_TYPE.CHANGED, Color.Orange, Color.Green)
+
+                    Using mBrush As New Drawing2D.LinearGradientBrush(New Point(r.Left, r.Top), New Point(r.Right, r.Bottom), iColor, iColor)
+                        iGraphics.FillRectangle(mBrush, r)
+                    End Using
+                End Sub
+            End Class
+        End Class
     End Class
 
     Public Class ClassSyntraxUpdater
@@ -1853,7 +2034,7 @@ Public Class FormMain
                     If (g_mLastMethodAutocompleteUpdate < Now) Then
                         g_mLastMethodAutocompleteUpdate = Now + New TimeSpan(0, 0, 1)
 
-                        Dim sTextContent As String = g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl1.Document.TextContent)
+                        Dim sTextContent As String = g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.Document.TextContent)
                         g_mFormMain.g_mSourceSyntraxSourceAnalysis = New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sTextContent)
                     End If
 
@@ -1862,13 +2043,13 @@ Public Class FormMain
                         g_mLastFoldingUpdate = Now + New TimeSpan(0, 0, 5)
 
                         'If ((Tools.WordCount(Me.Invoke(Function() TextEditorControl1.Document.TextContent), "{") + Tools.WordCount(Me.Invoke(Function() TextEditorControl1.Document.TextContent), "}")) Mod 2 = 0) Then
-                        g_mFormMain.BeginInvoke(Sub() g_mFormMain.TextEditorControl1.Document.FoldingManager.UpdateFoldings(Nothing, Nothing))
+                        g_mFormMain.BeginInvoke(Sub() g_mFormMain.TextEditorControl_Source.Document.FoldingManager.UpdateFoldings(Nothing, Nothing))
                         'End If
                     End If
 
 
-                    Dim iCaretOffset As Integer = g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl1.ActiveTextAreaControl.TextArea.Caret.Offset)
-                    Dim iCaretPos As Integer = g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl1.ActiveTextAreaControl.TextArea.Caret.ScreenPosition.X + g_mFormMain.TextEditorControl1.ActiveTextAreaControl.TextArea.Caret.ScreenPosition.Y)
+                    Dim iCaretOffset As Integer = g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Offset)
+                    Dim iCaretPos As Integer = g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.ScreenPosition.X + g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.ScreenPosition.Y)
 
                     'Update Method Autoupdate 
                     Static iLastMethodAutoupdateCaretOffset As Integer = -1
@@ -1906,10 +2087,10 @@ Public Class FormMain
                         iLastAutoupdateCaretOffset2 = iCaretOffset
 
 
-                        If (iCaretOffset > -1 AndAlso iCaretOffset < g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.TextLength) Then
-                            Dim iPosition As Integer = g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl1.ActiveTextAreaControl.TextArea.Caret.Position.Column)
-                            Dim iLineOffset As Integer = g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iCaretOffset).Offset)
-                            Dim iLineLen As Integer = g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iCaretOffset).Length)
+                        If (iCaretOffset > -1 AndAlso iCaretOffset < g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.TextLength) Then
+                            Dim iPosition As Integer = g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Column)
+                            Dim iLineOffset As Integer = g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iCaretOffset).Offset)
+                            Dim iLineLen As Integer = g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iCaretOffset).Length)
 
                             If ((iLineLen - iPosition) > 0) Then
                                 Dim sFunctionName As String = g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True))
@@ -2037,26 +2218,36 @@ Public Class FormMain
         Public Sub UpdateFormColors()
             Dim lControlList As New List(Of STRUC_FORM_COLORS_ITEM)
             lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain, Color.White, g_mFormMain.g_cDarkFormBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-            lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.TextEditorControl1, Color.White, g_mFormMain.g_cDarkFormBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
+            lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.TextEditorControl_Source, Color.White, g_mFormMain.g_cDarkFormBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
             lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.MenuStrip_BasicPawn, Color.White, g_mFormMain.g_cDarkFormMenuBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
+
             lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
             lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.ListView_AutocompleteList, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-            lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.Panel1, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-            lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.Panel2, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
+            lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.Panel_Autocomplete, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
+            lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.Panel_IntelliSense, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
             lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.Label_Autocomplete, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, Color.RoyalBlue, InvertColor(Color.RoyalBlue)))
             lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.Label_IntelliSense, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, Color.RoyalBlue, InvertColor(Color.RoyalBlue)))
             lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.RichTextBox_Autocomplete, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
             lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.RichTextBox_IntelliSense, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
+            lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.SplitContainer1.Panel1, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
+            lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.SplitContainer1.Panel2, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
+            lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.SplitContainer2.Panel1, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
+            lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.SplitContainer2.Panel2, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
+
             lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCInformationList, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
             lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCInformationList.ListBox_Information, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
+
             lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCObjectBrowser, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
             lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCObjectBrowser.TreeView_ObjectBrowser, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
             lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCObjectBrowser.TextboxWatermark_Search, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
+
             lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.TabControl_Details, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
             lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.TabControl_Toolbox, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
+
             lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.TabPage_ObjectBrowser, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
             lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.TabPage_Autocomplete, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
             lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.TabPage_Information, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
+
             lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCToolTip, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
             lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCToolTip.TextEditorControl_ToolTip, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
 
@@ -2306,10 +2497,10 @@ Public Class FormMain
                 For i = 0 To g_SyntraxFiles.Length - 1
                     Select Case (i)
                         Case ENUM_SYNTRAX_FILES.MAIN_TEXTEDITOR
-                            g_mFormMain.TextEditorControl1.SetHighlighting(g_SyntraxFiles(i).sDefinition)
+                            g_mFormMain.TextEditorControl_Source.SetHighlighting(g_SyntraxFiles(i).sDefinition)
 
                             g_mFormMain.g_mUCToolTip.TextEditorControl_ToolTip.SetHighlighting(g_SyntraxFiles(i).sDefinition)
-                            g_mFormMain.g_mUCToolTip.TextEditorControl_ToolTip.Font = New Font(g_mFormMain.TextEditorControl1.Font.FontFamily, 8, FontStyle.Regular)
+                            g_mFormMain.g_mUCToolTip.TextEditorControl_ToolTip.Font = New Font(g_mFormMain.TextEditorControl_Source.Font.FontFamily, 8, FontStyle.Regular)
 
                         Case ENUM_SYNTRAX_FILES.DEBUGGER_TEXTEDITOR
                             If (g_mFormMain.g_mFormDebugger IsNot Nothing AndAlso Not g_mFormMain.g_mFormDebugger.IsDisposed) Then
@@ -3020,7 +3211,7 @@ Public Class FormMain
 
             Dim sSource As String
             If (ClassSettings.g_sConfigOpenSourcePawnFile.ToLower = sFile.ToLower) Then
-                sSource = g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl1.Document.TextContent)
+                sSource = g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.Document.TextContent)
             Else
                 sSource = IO.File.ReadAllText(sFile)
             End If
@@ -3623,7 +3814,7 @@ Public Class FormMain
                 End If
 
                 For i = 0 To sLines.Length - 1
-                    If ((ClassTools.WordCount(sLines(i), "("c) + ClassTools.WordCount(sLines(i), ")"c)) Mod 2 <> 0) Then
+                    If ((ClassTools.ClassStrings.WordCount(sLines(i), "("c) + ClassTools.ClassStrings.WordCount(sLines(i), ")"c)) Mod 2 <> 0) Then
                         Continue For
                     End If
 
@@ -4261,7 +4452,7 @@ Public Class FormMain
 
                 lList.Add(sPath)
 
-                sSource = g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl1.Document.TextContent)
+                sSource = g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.Document.TextContent)
             Else
                 If (Not IO.File.Exists(sPath)) Then
                     g_mFormMain.PrintInformation("[ERRO]", vbTab & String.Format("Could not read include: {0}", IO.Path.GetFileName(sPath)))
@@ -4945,24 +5136,24 @@ Public Class FormMain
             ''' Inserts one breakpoint using the caret position in the text editor
             ''' </summary>
             Public Sub TextEditorInsertBreakpointAtCaret()
-                If (g_mFormMain.TextEditorControl1.ActiveTextAreaControl.SelectionManager.HasSomethingSelected AndAlso g_mFormMain.TextEditorControl1.ActiveTextAreaControl.SelectionManager.SelectionCollection.Count > 0) Then
-                    Dim iOffset As Integer = g_mFormMain.TextEditorControl1.ActiveTextAreaControl.SelectionManager.SelectionCollection(0).Offset
-                    Dim iLenght As Integer = g_mFormMain.TextEditorControl1.ActiveTextAreaControl.SelectionManager.SelectionCollection(0).Length
+                If (g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.SelectionManager.HasSomethingSelected AndAlso g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.SelectionManager.SelectionCollection.Count > 0) Then
+                    Dim iOffset As Integer = g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.SelectionManager.SelectionCollection(0).Offset
+                    Dim iLenght As Integer = g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.SelectionManager.SelectionCollection(0).Length
 
-                    g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
-                    g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.Insert(iOffset + iLenght, ")")
-                    g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.Insert(iOffset, String.Format("{0}(", ClassDebuggerParser.g_sBreakpointName))
-                    g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
+                    g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
+                    g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iOffset + iLenght, ")")
+                    g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iOffset, String.Format("{0}(", ClassDebuggerParser.g_sBreakpointName))
+                    g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
                 Else
                     Dim sCaretWord As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True)
 
                     If (String.IsNullOrEmpty(sCaretWord)) Then
-                        Dim iOffset As Integer = g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Caret.Offset
-                        g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.Insert(iOffset, String.Format("{0}();", ClassDebuggerParser.g_sBreakpointName))
+                        Dim iOffset As Integer = g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Caret.Offset
+                        g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iOffset, String.Format("{0}();", ClassDebuggerParser.g_sBreakpointName))
                     Else
-                        Dim iOffset As Integer = g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Caret.Offset
+                        Dim iOffset As Integer = g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Caret.Offset
 
-                        For Each m As Match In Regex.Matches(g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.TextContent, String.Format("(?<Word>\b{0}\b)(?<Function>\s*\(){1}", Regex.Escape(sCaretWord), "{0,1}"))
+                        For Each m As Match In Regex.Matches(g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.TextContent, String.Format("(?<Word>\b{0}\b)(?<Function>\s*\(){1}", Regex.Escape(sCaretWord), "{0,1}"))
                             Dim iStartOffset As Integer = m.Groups("Word").Index
                             Dim iStartLen As Integer = m.Groups("Word").Value.Length
                             Dim iFunctionIndex As Boolean = m.Groups("Function").Index
@@ -4973,7 +5164,7 @@ Public Class FormMain
                             End If
 
                             If (bIsFunction) Then
-                                Dim sSource As String = g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.TextContent
+                                Dim sSource As String = g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.TextContent
                                 Dim sourceAnalysis As New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sSource)
 
                                 Dim iFullLenght As Integer = 0
@@ -4986,21 +5177,21 @@ Public Class FormMain
                                     End If
                                 Next
 
-                                g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
-                                g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.Insert(iStartOffset + iFullLenght, ")")
-                                g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.Insert(iStartOffset, String.Format("{0}(", ClassDebuggerParser.g_sBreakpointName))
-                                g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
+                                g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
+                                g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iStartOffset + iFullLenght, ")")
+                                g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iStartOffset, String.Format("{0}(", ClassDebuggerParser.g_sBreakpointName))
+                                g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
                             Else
-                                g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
-                                g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.Insert(iStartOffset + iStartLen, ")")
-                                g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.Insert(iStartOffset, String.Format("{0}(", ClassDebuggerParser.g_sBreakpointName))
-                                g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
+                                g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
+                                g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iStartOffset + iStartLen, ")")
+                                g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iStartOffset, String.Format("{0}(", ClassDebuggerParser.g_sBreakpointName))
+                                g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
                             End If
                         Next
                     End If
                 End If
 
-                g_mFormMain.TextEditorControl1.Refresh()
+                g_mFormMain.TextEditorControl_Source.Refresh()
                 g_mFormMain.PrintInformation("[INFO]", "A Breakpoint has been added!")
             End Sub
 
@@ -5015,12 +5206,12 @@ Public Class FormMain
                     Return
                 End If
 
-                Dim iCaretOffset As Integer = g_mFormMain.TextEditorControl1.ActiveTextAreaControl.TextArea.Caret.Offset
+                Dim iCaretOffset As Integer = g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Offset
 
-                g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
+                g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
 
                 Dim debuggerParser As New ClassDebuggerParser(g_mFormMain)
-                debuggerParser.UpdateBreakpoints(g_mFormMain.TextEditorControl1.Document.TextContent, False)
+                debuggerParser.UpdateBreakpoints(g_mFormMain.TextEditorControl_Source.Document.TextContent, False)
 
                 For i = debuggerParser.g_lBreakpointList.Count - 1 To 0 Step -1
                     Dim iIndex As Integer = debuggerParser.g_lBreakpointList(i).iOffset
@@ -5033,9 +5224,9 @@ Public Class FormMain
                         Continue For
                     End If
 
-                    g_mFormMain.TextEditorControl1.Document.Replace(iIndex, iTotalLenght, sFullFunction)
-                    If (g_mFormMain.TextEditorControl1.Document.TextLength > iIndex AndAlso g_mFormMain.TextEditorControl1.Document.TextContent(iIndex) = ";"c) Then
-                        g_mFormMain.TextEditorControl1.Document.Remove(iIndex, 1)
+                    g_mFormMain.TextEditorControl_Source.Document.Replace(iIndex, iTotalLenght, sFullFunction)
+                    If (g_mFormMain.TextEditorControl_Source.Document.TextLength > iIndex AndAlso g_mFormMain.TextEditorControl_Source.Document.TextContent(iIndex) = ";"c) Then
+                        g_mFormMain.TextEditorControl_Source.Document.Remove(iIndex, 1)
                     End If
 
                     g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Breakpoint removed at line: {0}", iLine))
@@ -5043,22 +5234,22 @@ Public Class FormMain
                     Exit For
                 Next
 
-                g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
+                g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
 
-                g_mFormMain.TextEditorControl1.Refresh()
+                g_mFormMain.TextEditorControl_Source.Refresh()
             End Sub
 
             ''' <summary>
             ''' Removes all available breakpoints in the text editor
             ''' </summary>
             Public Sub TextEditorRemoveAllBreakpoints()
-                g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
+                g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
 
                 g_mFormMain.PrintInformation("[INFO]", "Removing all debugger breakpoints...")
 
                 Dim debuggerParser As New ClassDebuggerParser(g_mFormMain)
                 While True
-                    debuggerParser.UpdateBreakpoints(g_mFormMain.TextEditorControl1.Document.TextContent, False)
+                    debuggerParser.UpdateBreakpoints(g_mFormMain.TextEditorControl_Source.Document.TextContent, False)
 
                     For i = debuggerParser.g_lBreakpointList.Count - 1 To 0 Step -1
                         Dim iIndex As Integer = debuggerParser.g_lBreakpointList(i).iOffset
@@ -5067,9 +5258,9 @@ Public Class FormMain
                         Dim iLine As Integer = debuggerParser.g_lBreakpointList(i).iLine
                         Dim sFullFunction As String = debuggerParser.g_lBreakpointList(i).sArguments
 
-                        g_mFormMain.TextEditorControl1.Document.Replace(iIndex, iTotalLenght, sFullFunction)
-                        If (g_mFormMain.TextEditorControl1.Document.TextLength > iIndex AndAlso g_mFormMain.TextEditorControl1.Document.TextContent(iIndex) = ";"c) Then
-                            g_mFormMain.TextEditorControl1.Document.Remove(iIndex, 1)
+                        g_mFormMain.TextEditorControl_Source.Document.Replace(iIndex, iTotalLenght, sFullFunction)
+                        If (g_mFormMain.TextEditorControl_Source.Document.TextLength > iIndex AndAlso g_mFormMain.TextEditorControl_Source.Document.TextContent(iIndex) = ";"c) Then
+                            g_mFormMain.TextEditorControl_Source.Document.Remove(iIndex, 1)
                         End If
 
                         g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Breakpoint removed at line: {0}", iLine))
@@ -5100,9 +5291,9 @@ Public Class FormMain
                     Exit While
                 End While
 
-                g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
+                g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
 
-                g_mFormMain.TextEditorControl1.Refresh()
+                g_mFormMain.TextEditorControl_Source.Refresh()
                 g_mFormMain.PrintInformation("[INFO]", "All debugger breakpoints removed!")
             End Sub
 
@@ -5208,24 +5399,24 @@ Public Class FormMain
             ''' Inserts one watcher using the caret position in the text editor
             ''' </summary>
             Public Sub TextEditorInsertWatcherAtCaret()
-                If (g_mFormMain.TextEditorControl1.ActiveTextAreaControl.SelectionManager.HasSomethingSelected AndAlso g_mFormMain.TextEditorControl1.ActiveTextAreaControl.SelectionManager.SelectionCollection.Count > 0) Then
-                    Dim iOffset As Integer = g_mFormMain.TextEditorControl1.ActiveTextAreaControl.SelectionManager.SelectionCollection(0).Offset
-                    Dim iLenght As Integer = g_mFormMain.TextEditorControl1.ActiveTextAreaControl.SelectionManager.SelectionCollection(0).Length
+                If (g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.SelectionManager.HasSomethingSelected AndAlso g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.SelectionManager.SelectionCollection.Count > 0) Then
+                    Dim iOffset As Integer = g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.SelectionManager.SelectionCollection(0).Offset
+                    Dim iLenght As Integer = g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.SelectionManager.SelectionCollection(0).Length
 
-                    g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
-                    g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.Insert(iOffset + iLenght, ")")
-                    g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.Insert(iOffset, String.Format("{0}(", ClassDebuggerParser.g_sWatcherName))
-                    g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
+                    g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
+                    g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iOffset + iLenght, ")")
+                    g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iOffset, String.Format("{0}(", ClassDebuggerParser.g_sWatcherName))
+                    g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
                 Else
                     Dim sCaretWord As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True)
 
                     If (String.IsNullOrEmpty(sCaretWord)) Then
-                        Dim iOffset As Integer = g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Caret.Offset
-                        g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.Insert(iOffset, String.Format("{0}();", ClassDebuggerParser.g_sWatcherName))
+                        Dim iOffset As Integer = g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Caret.Offset
+                        g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iOffset, String.Format("{0}();", ClassDebuggerParser.g_sWatcherName))
                     Else
-                        Dim iOffset As Integer = g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Caret.Offset
+                        Dim iOffset As Integer = g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Caret.Offset
 
-                        For Each m As Match In Regex.Matches(g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.TextContent, String.Format("(?<Word>\b{0}\b)(?<Function>\s*\(){1}", Regex.Escape(sCaretWord), "{0,1}"))
+                        For Each m As Match In Regex.Matches(g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.TextContent, String.Format("(?<Word>\b{0}\b)(?<Function>\s*\(){1}", Regex.Escape(sCaretWord), "{0,1}"))
                             Dim iStartOffset As Integer = m.Groups("Word").Index
                             Dim iStartLen As Integer = m.Groups("Word").Value.Length
                             Dim iFunctionIndex As Boolean = m.Groups("Function").Index
@@ -5236,7 +5427,7 @@ Public Class FormMain
                             End If
 
                             If (bIsFunction) Then
-                                Dim sSource As String = g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.TextContent
+                                Dim sSource As String = g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.TextContent
                                 Dim sourceAnalysis As New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sSource)
 
                                 Dim iFullLenght As Integer = 0
@@ -5249,21 +5440,21 @@ Public Class FormMain
                                     End If
                                 Next
 
-                                g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
-                                g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.Insert(iStartOffset + iFullLenght, ")")
-                                g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.Insert(iStartOffset, String.Format("{0}(", ClassDebuggerParser.g_sWatcherName))
-                                g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
+                                g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
+                                g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iStartOffset + iFullLenght, ")")
+                                g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iStartOffset, String.Format("{0}(", ClassDebuggerParser.g_sWatcherName))
+                                g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
                             Else
-                                g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
-                                g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.Insert(iStartOffset + iStartLen, ")")
-                                g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.Insert(iStartOffset, String.Format("{0}(", ClassDebuggerParser.g_sWatcherName))
-                                g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
+                                g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
+                                g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iStartOffset + iStartLen, ")")
+                                g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iStartOffset, String.Format("{0}(", ClassDebuggerParser.g_sWatcherName))
+                                g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
                             End If
                         Next
                     End If
                 End If
 
-                g_mFormMain.TextEditorControl1.Refresh()
+                g_mFormMain.TextEditorControl_Source.Refresh()
                 g_mFormMain.PrintInformation("[INFO]", "A Watcher has been added!")
             End Sub
 
@@ -5278,12 +5469,12 @@ Public Class FormMain
                     Return
                 End If
 
-                Dim iCaretOffset As Integer = g_mFormMain.TextEditorControl1.ActiveTextAreaControl.TextArea.Caret.Offset
+                Dim iCaretOffset As Integer = g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Offset
 
-                g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
+                g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
 
                 Dim debuggerParser As New ClassDebuggerParser(g_mFormMain)
-                debuggerParser.UpdateWatchers(g_mFormMain.TextEditorControl1.Document.TextContent, False)
+                debuggerParser.UpdateWatchers(g_mFormMain.TextEditorControl_Source.Document.TextContent, False)
 
                 For i = debuggerParser.g_lWatcherList.Count - 1 To 0 Step -1
                     Dim iIndex As Integer = debuggerParser.g_lWatcherList(i).iOffset
@@ -5296,9 +5487,9 @@ Public Class FormMain
                         Continue For
                     End If
 
-                    g_mFormMain.TextEditorControl1.Document.Replace(iIndex, iTotalLenght, sFullFunction)
-                    If (g_mFormMain.TextEditorControl1.Document.TextLength > iIndex AndAlso g_mFormMain.TextEditorControl1.Document.TextContent(iIndex) = ";"c) Then
-                        g_mFormMain.TextEditorControl1.Document.Remove(iIndex, 1)
+                    g_mFormMain.TextEditorControl_Source.Document.Replace(iIndex, iTotalLenght, sFullFunction)
+                    If (g_mFormMain.TextEditorControl_Source.Document.TextLength > iIndex AndAlso g_mFormMain.TextEditorControl_Source.Document.TextContent(iIndex) = ";"c) Then
+                        g_mFormMain.TextEditorControl_Source.Document.Remove(iIndex, 1)
                     End If
 
                     g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Watcher removed at line: {0}", iLine))
@@ -5306,23 +5497,23 @@ Public Class FormMain
                     Exit For
                 Next
 
-                g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
+                g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
 
-                g_mFormMain.TextEditorControl1.Refresh()
+                g_mFormMain.TextEditorControl_Source.Refresh()
             End Sub
 
             ''' <summary>
             ''' Removes all available watchers in the text editor
             ''' </summary>
             Public Sub TextEditorRemoveAllWatchers()
-                g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
+                g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
 
 
                 g_mFormMain.PrintInformation("[INFO]", "Removing all debugger watcher...")
 
                 Dim debuggerParser As New ClassDebuggerParser(g_mFormMain)
                 While True
-                    debuggerParser.UpdateWatchers(g_mFormMain.TextEditorControl1.Document.TextContent, False)
+                    debuggerParser.UpdateWatchers(g_mFormMain.TextEditorControl_Source.Document.TextContent, False)
 
                     For i = debuggerParser.g_lWatcherList.Count - 1 To 0 Step -1
                         Dim iIndex As Integer = debuggerParser.g_lWatcherList(i).iOffset
@@ -5331,9 +5522,9 @@ Public Class FormMain
                         Dim iLine As Integer = debuggerParser.g_lWatcherList(i).iLine
                         Dim sFullFunction As String = debuggerParser.g_lWatcherList(i).sArguments
 
-                        g_mFormMain.TextEditorControl1.Document.Replace(iIndex, iTotalLenght, sFullFunction)
-                        If (g_mFormMain.TextEditorControl1.Document.TextLength > iIndex AndAlso g_mFormMain.TextEditorControl1.Document.TextContent(iIndex) = ";"c) Then
-                            g_mFormMain.TextEditorControl1.Document.Remove(iIndex, 1)
+                        g_mFormMain.TextEditorControl_Source.Document.Replace(iIndex, iTotalLenght, sFullFunction)
+                        If (g_mFormMain.TextEditorControl_Source.Document.TextLength > iIndex AndAlso g_mFormMain.TextEditorControl_Source.Document.TextContent(iIndex) = ";"c) Then
+                            g_mFormMain.TextEditorControl_Source.Document.Remove(iIndex, 1)
                         End If
 
                         g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Watcher removed at line: {0}", iLine))
@@ -5364,9 +5555,9 @@ Public Class FormMain
                     Exit While
                 End While
 
-                g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
+                g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
 
-                g_mFormMain.TextEditorControl1.Refresh()
+                g_mFormMain.TextEditorControl_Source.Refresh()
                 g_mFormMain.PrintInformation("[INFO]", "All debugger watchers removed!")
             End Sub
 

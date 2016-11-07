@@ -90,7 +90,7 @@ Public Class FormDebuggerException
 
     Private Sub Button_ViewLog_Click(sender As Object, e As EventArgs) Handles Button_ViewLog.Click
         Try
-            Dim sLines As String() = ClassTools.StringReadLinesEnd(g_sLogFile, MAX_LINES_TO_LIST)
+            Dim sLines As String() = ClassTools.ClassStrings.StringReadLinesEnd(g_sLogFile, MAX_LINES_TO_LIST)
 
             Using i As New FormDebuggerCriticalPopup(g_mFormDebugger, "SourceMod Exception Log", "Latest exceptions from the SourceMod log", String.Join(Environment.NewLine, sLines))
                 i.ShowDialog()

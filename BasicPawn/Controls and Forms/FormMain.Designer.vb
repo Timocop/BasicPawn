@@ -13,38 +13,41 @@ Partial Class FormMain
                 g_ClassSyntraxUpdater.StopThread()
 
                 'Remove events
-                RemoveHandler TextEditorControl1.g_eProcessCmdKey, AddressOf TextEditorControl1_ProcessCmdKey
+                RemoveHandler TextEditorControl_Source.g_eProcessCmdKey, AddressOf TextEditorControl_Source_ProcessCmdKey
 
-                RemoveHandler TextEditorControl1.MouseDoubleClick, AddressOf TextEditorControl1_DoubleClickMarkWord
-                RemoveHandler TextEditorControl1.ActiveTextAreaControl.MouseDoubleClick, AddressOf TextEditorControl1_DoubleClickMarkWord
-                RemoveHandler TextEditorControl1.ActiveTextAreaControl.TextArea.MouseDoubleClick, AddressOf TextEditorControl1_DoubleClickMarkWord
+                RemoveHandler TextEditorControl_Source.MouseDoubleClick, AddressOf TextEditorControl_Source_DoubleClickMarkWord
+                RemoveHandler TextEditorControl_Source.ActiveTextAreaControl.MouseDoubleClick, AddressOf TextEditorControl_Source_DoubleClickMarkWord
+                RemoveHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.MouseDoubleClick, AddressOf TextEditorControl_Source_DoubleClickMarkWord
 
-                RemoveHandler TextEditorControl1.MouseClick, AddressOf TextEditorControl1_UpdateAutocomplete
-                RemoveHandler TextEditorControl1.ActiveTextAreaControl.MouseClick, AddressOf TextEditorControl1_UpdateAutocomplete
-                RemoveHandler TextEditorControl1.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl1_UpdateAutocomplete
+                RemoveHandler TextEditorControl_Source.MouseClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
+                RemoveHandler TextEditorControl_Source.ActiveTextAreaControl.MouseClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
+                RemoveHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
 
-                RemoveHandler TextEditorControl1.MouseUp, AddressOf TextEditorControl1_UpdateAutocomplete
-                RemoveHandler TextEditorControl1.ActiveTextAreaControl.MouseUp, AddressOf TextEditorControl1_UpdateAutocomplete
-                RemoveHandler TextEditorControl1.ActiveTextAreaControl.TextArea.MouseUp, AddressOf TextEditorControl1_UpdateAutocomplete
+                RemoveHandler TextEditorControl_Source.MouseUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
+                RemoveHandler TextEditorControl_Source.ActiveTextAreaControl.MouseUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
+                RemoveHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.MouseUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
 
-                RemoveHandler TextEditorControl1.MouseDoubleClick, AddressOf TextEditorControl1_UpdateAutocomplete
-                RemoveHandler TextEditorControl1.ActiveTextAreaControl.MouseDoubleClick, AddressOf TextEditorControl1_UpdateAutocomplete
-                RemoveHandler TextEditorControl1.ActiveTextAreaControl.TextArea.MouseDoubleClick, AddressOf TextEditorControl1_UpdateAutocomplete
+                RemoveHandler TextEditorControl_Source.MouseDoubleClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
+                RemoveHandler TextEditorControl_Source.ActiveTextAreaControl.MouseDoubleClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
+                RemoveHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.MouseDoubleClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
 
-                RemoveHandler TextEditorControl1.KeyUp, AddressOf TextEditorControl1_UpdateAutocomplete
-                RemoveHandler TextEditorControl1.ActiveTextAreaControl.KeyUp, AddressOf TextEditorControl1_UpdateAutocomplete
-                RemoveHandler TextEditorControl1.ActiveTextAreaControl.TextArea.KeyUp, AddressOf TextEditorControl1_UpdateAutocomplete
+                RemoveHandler TextEditorControl_Source.KeyUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
+                RemoveHandler TextEditorControl_Source.ActiveTextAreaControl.KeyUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
+                RemoveHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.KeyUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
 
-                RemoveHandler TextEditorControl1.KeyDown, AddressOf TextEditorControl1_KeyDown
-                RemoveHandler TextEditorControl1.ActiveTextAreaControl.KeyDown, AddressOf TextEditorControl1_KeyDown
-                RemoveHandler TextEditorControl1.ActiveTextAreaControl.TextArea.KeyDown, AddressOf TextEditorControl1_KeyDown
+                RemoveHandler TextEditorControl_Source.KeyDown, AddressOf TextEditorControl_Source_KeyDown
+                RemoveHandler TextEditorControl_Source.ActiveTextAreaControl.KeyDown, AddressOf TextEditorControl_Source_KeyDown
+                RemoveHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.KeyDown, AddressOf TextEditorControl_Source_KeyDown
 
-                RemoveHandler TextEditorControl1.TextChanged, AddressOf TextEditorControl1_TextChanged
-                RemoveHandler TextEditorControl1.ActiveTextAreaControl.TextChanged, AddressOf TextEditorControl1_TextChanged
-                RemoveHandler TextEditorControl1.ActiveTextAreaControl.TextArea.TextChanged, AddressOf TextEditorControl1_TextChanged
+                RemoveHandler TextEditorControl_Source.TextChanged, AddressOf TextEditorControl_Source_TextChanged
+                RemoveHandler TextEditorControl_Source.ActiveTextAreaControl.TextChanged, AddressOf TextEditorControl_Source_TextChanged
+                RemoveHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.TextChanged, AddressOf TextEditorControl_Source_TextChanged
 
-                RemoveHandler TextEditorControl1.ActiveTextAreaControl.TextArea.SelectionManager.SelectionChanged, AddressOf TextEditorControl1_Caret_PositionChanged
-                RemoveHandler TextEditorControl1.ActiveTextAreaControl.TextArea.Caret.PositionChanged, AddressOf TextEditorControl1_Caret_PositionChanged
+                RemoveHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.SelectionManager.SelectionChanged, AddressOf TextEditorControl_Source_UpdateInfo
+                RemoveHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.PositionChanged, AddressOf TextEditorControl_Source_UpdateInfo
+
+                RemoveHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.Document.LineLengthChanged, AddressOf TextEditorControl_DetectLineLenghtChange
+                RemoveHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.Document.LineCountChanged, AddressOf TextEditorControl_DetectLineCountChange
 
                 For i = 0 To g_ClassSyntraxTools.g_SyntraxFiles.Length - 1
                     If (Not String.IsNullOrEmpty(g_ClassSyntraxTools.g_SyntraxFiles(i).sFile) AndAlso IO.File.Exists(g_ClassSyntraxTools.g_SyntraxFiles(i).sFile)) Then
@@ -139,7 +142,6 @@ Partial Class FormMain
         Me.SplitContainer2 = New System.Windows.Forms.SplitContainer()
         Me.TabControl_Toolbox = New System.Windows.Forms.TabControl()
         Me.TabPage_ObjectBrowser = New System.Windows.Forms.TabPage()
-        Me.TextEditorControl1 = New BasicPawn.TextEditorControlEx()
         Me.TabControl_Details = New System.Windows.Forms.TabControl()
         Me.TabPage_Autocomplete = New System.Windows.Forms.TabPage()
         Me.TabPage_Information = New System.Windows.Forms.TabPage()
@@ -151,6 +153,7 @@ Partial Class FormMain
         Me.ToolStripStatusLabel_CurrentConfig = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ToolStripStatusLabel_LastInformation = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ToolStripStatusLabel_AppVersion = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.TextEditorControl_Source = New BasicPawn.TextEditorControlEx()
         Me.ContextMenuStrip_RightClick.SuspendLayout()
         Me.MenuStrip_BasicPawn.SuspendLayout()
         Me.SplitContainer1.Panel1.SuspendLayout()
@@ -575,7 +578,7 @@ Partial Class FormMain
         '
         'SplitContainer2.Panel2
         '
-        Me.SplitContainer2.Panel2.Controls.Add(Me.TextEditorControl1)
+        Me.SplitContainer2.Panel2.Controls.Add(Me.TextEditorControl_Source)
         Me.SplitContainer2.Size = New System.Drawing.Size(1008, 500)
         Me.SplitContainer2.SplitterDistance = 189
         Me.SplitContainer2.TabIndex = 1
@@ -601,20 +604,6 @@ Partial Class FormMain
         Me.TabPage_ObjectBrowser.TabIndex = 0
         Me.TabPage_ObjectBrowser.Text = "Object Browser"
         Me.TabPage_ObjectBrowser.UseVisualStyleBackColor = True
-        '
-        'TextEditorControl1
-        '
-        Me.TextEditorControl1.ContextMenuStrip = Me.ContextMenuStrip_RightClick
-        Me.TextEditorControl1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TextEditorControl1.HideMouseCursor = True
-        Me.TextEditorControl1.IsReadOnly = False
-        Me.TextEditorControl1.Location = New System.Drawing.Point(0, 0)
-        Me.TextEditorControl1.Name = "TextEditorControl1"
-        Me.TextEditorControl1.ShowTabs = True
-        Me.TextEditorControl1.ShowVRuler = False
-        Me.TextEditorControl1.Size = New System.Drawing.Size(815, 500)
-        Me.TextEditorControl1.TabIndex = 0
-        Me.TextEditorControl1.Text = resources.GetString("TextEditorControl1.Text")
         '
         'TabControl_Details
         '
@@ -709,6 +698,21 @@ Partial Class FormMain
         Me.ToolStripStatusLabel_AppVersion.Size = New System.Drawing.Size(31, 17)
         Me.ToolStripStatusLabel_AppVersion.Text = "v.0.0"
         '
+        'TextEditorControl_Source
+        '
+        Me.TextEditorControl_Source.ContextMenuStrip = Me.ContextMenuStrip_RightClick
+        Me.TextEditorControl_Source.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TextEditorControl_Source.HideMouseCursor = True
+        Me.TextEditorControl_Source.IsIconBarVisible = True
+        Me.TextEditorControl_Source.IsReadOnly = False
+        Me.TextEditorControl_Source.Location = New System.Drawing.Point(0, 0)
+        Me.TextEditorControl_Source.Name = "TextEditorControl_Source"
+        Me.TextEditorControl_Source.ShowTabs = True
+        Me.TextEditorControl_Source.ShowVRuler = False
+        Me.TextEditorControl_Source.Size = New System.Drawing.Size(815, 500)
+        Me.TextEditorControl_Source.TabIndex = 0
+        Me.TextEditorControl_Source.Text = resources.GetString("TextEditorControl_Source.Text")
+        '
         'FormMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -741,7 +745,7 @@ Partial Class FormMain
 
     End Sub
 
-    Friend WithEvents TextEditorControl1 As TextEditorControlEx
+    Friend WithEvents TextEditorControl_Source As TextEditorControlEx
     Friend WithEvents ContextMenuStrip_RightClick As ContextMenuStrip
     Friend WithEvents ToolStripMenuItem_Mark As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator1 As ToolStripSeparator

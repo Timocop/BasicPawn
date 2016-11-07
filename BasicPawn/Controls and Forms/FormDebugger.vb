@@ -1430,7 +1430,7 @@ Public Class FormDebugger
 
                             'Make sure we suspend the game process first, otherwise we risk that SourceMod disables its logging because we used the file first
                             m_SuspendGame = True
-                            sLines = ClassTools.StringReadLinesEnd(sFile, MAX_SM_LOG_READ_LINES)
+                            sLines = ClassTools.ClassStrings.StringReadLinesEnd(sFile, MAX_SM_LOG_READ_LINES)
                             m_SuspendGame = bWasSuspended
 
                             Exit While
@@ -1616,7 +1616,7 @@ Public Class FormDebugger
 
                             'Make sure we suspend the game process first, otherwise we risk that SourceMod disables its logging because we used the file first
                             m_SuspendGame = True
-                            sLines = ClassTools.StringReadLinesEnd(sFile, MAX_SM_LOG_READ_LINES)
+                            sLines = ClassTools.ClassStrings.StringReadLinesEnd(sFile, MAX_SM_LOG_READ_LINES)
                             m_SuspendGame = bWasSuspended
 
                             Exit While
