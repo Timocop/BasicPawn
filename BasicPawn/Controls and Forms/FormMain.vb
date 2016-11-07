@@ -1926,7 +1926,7 @@ Public Class FormMain
             ''' Clear all line states. Like on loading or new source.
             ''' </summary>
             Public Sub ClearStates()
-                g_mFormMain.TextEditorControl_Source.Document.BookmarkManager.Clear()
+                g_mFormMain.TextEditorControl_Source.Document.BookmarkManager.RemoveMarks(Function(mBookmark As Bookmark) TryCast(mBookmark, LineStateBookmark) IsNot Nothing)
             End Sub
 
             Public Class LineStateBookmark
