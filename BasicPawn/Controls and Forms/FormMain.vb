@@ -33,11 +33,11 @@ Public Class FormMain
 
 
 
-    Public g_ClassSyntaxUpdater As New ClassSyntaxUpdater(Me)
-    Public g_ClassSyntaxTools As New ClassSyntaxTools(Me)
-    Public g_ClassAutocompleteUpdater As New ClassAutocompleteUpdater(Me)
-    Public g_ClassTextEditorTools As New ClassTextEditorTools(Me)
-    Public g_ClassLineState As New ClassTextEditorTools.ClassLineState(Me)
+    Public g_ClassSyntaxUpdater As ClassSyntaxUpdater
+    Public g_ClassSyntaxTools As ClassSyntaxTools
+    Public g_ClassAutocompleteUpdater As ClassAutocompleteUpdater
+    Public g_ClassTextEditorTools As ClassTextEditorTools
+    Public g_ClassLineState As ClassTextEditorTools.ClassLineState
 
     Public g_mSourceSyntaxSourceAnalysis As ClassSyntaxTools.ClassSyntaxSourceAnalysis
 
@@ -60,6 +60,11 @@ Public Class FormMain
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call.
+        g_ClassSyntaxUpdater = New ClassSyntaxUpdater(Me)
+        g_ClassSyntaxTools = New ClassSyntaxTools(Me)
+        g_ClassAutocompleteUpdater = New ClassAutocompleteUpdater(Me)
+        g_ClassTextEditorTools = New ClassTextEditorTools(Me)
+        g_ClassLineState = New ClassTextEditorTools.ClassLineState(Me)
 
         ' Load other Forms/Controls
         g_mUCAutocomplete = New UCAutocomplete(Me)

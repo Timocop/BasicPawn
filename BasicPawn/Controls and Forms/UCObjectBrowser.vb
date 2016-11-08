@@ -19,12 +19,11 @@ Public Class UCObjectBrowser
     Private g_mFormMain As FormMain
 
     Public Sub New(f As FormMain)
-        g_mFormMain = f
-
         ' This call is required by the designer.
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call. 
+        g_mFormMain = f
     End Sub
 
     Private g_lObjectsItems As New List(Of STRUC_OBJECTS_ITEM)

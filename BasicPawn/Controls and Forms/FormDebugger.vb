@@ -20,10 +20,10 @@ Imports System.Text.RegularExpressions
 
 Public Class FormDebugger
     Private g_mFormMain As FormMain
-    Public g_ClassDebuggerParser As New FormMain.ClassDebuggerParser(g_mFormMain)
-    Public g_ClassDebuggerRunnerEngine As New FormMain.ClassDebuggerParser.ClassRunnerEngine
-    Public g_ClassDebuggerRunner As New ClassDebuggerRunner(Me)
-    Public g_ClassDebuggerSettings As New ClassDebuggerSettings(Me)
+    Public g_ClassDebuggerParser As FormMain.ClassDebuggerParser
+    Public g_ClassDebuggerRunnerEngine As FormMain.ClassDebuggerParser.ClassRunnerEngine
+    Public g_ClassDebuggerRunner As ClassDebuggerRunner
+    Public g_ClassDebuggerSettings As ClassDebuggerSettings
 
     Public g_sLastPreProcessSourceFile As String = ""
 
@@ -39,6 +39,11 @@ Public Class FormDebugger
 
         ' Add any initialization after the InitializeComponent() call.
         g_mFormMain = f
+
+        g_ClassDebuggerParser = New FormMain.ClassDebuggerParser(g_mFormMain)
+        g_ClassDebuggerRunnerEngine = New FormMain.ClassDebuggerParser.ClassRunnerEngine
+        g_ClassDebuggerRunner = New ClassDebuggerRunner(Me)
+        g_ClassDebuggerSettings = New ClassDebuggerSettings(Me)
 
         TextEditorControlEx_DebuggerSource.IsReadOnly = True
         TextEditorControlEx_DebuggerDiasm.IsReadOnly = True

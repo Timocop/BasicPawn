@@ -20,7 +20,7 @@ Imports System.Text.RegularExpressions
 Public Class UCAutocomplete
     Private g_mFormMain As FormMain
 
-    Public g_ClassToolTip As New ClassToolTip(Me)
+    Public g_ClassToolTip As ClassToolTip
 
     Public Sub New(f As FormMain)
 
@@ -29,6 +29,8 @@ Public Class UCAutocomplete
 
         ' Add any initialization after the InitializeComponent() call.
         g_mFormMain = f
+
+        g_ClassToolTip = New ClassToolTip(Me)
 
         'Set double buffering to avoid annonying flickers when collapsing/showing SplitContainer panels
         ClassTools.ClassForms.SetDoubleBufferingAllChilds(Me, True)
