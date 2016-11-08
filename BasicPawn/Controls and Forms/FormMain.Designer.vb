@@ -10,7 +10,7 @@ Partial Class FormMain
 
                 g_ClassAutocompleteUpdater.StopUpdate()
 
-                g_ClassSyntraxUpdater.StopThread()
+                g_ClassSyntaxUpdater.StopThread()
 
                 'Remove events
                 RemoveHandler TextEditorControl_Source.g_eProcessCmdKey, AddressOf TextEditorControl_Source_ProcessCmdKey
@@ -49,15 +49,15 @@ Partial Class FormMain
                 RemoveHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.Document.LineLengthChanged, AddressOf TextEditorControl_DetectLineLenghtChange
                 RemoveHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.Document.LineCountChanged, AddressOf TextEditorControl_DetectLineCountChange
 
-                For i = 0 To g_ClassSyntraxTools.g_SyntraxFiles.Length - 1
-                    If (Not String.IsNullOrEmpty(g_ClassSyntraxTools.g_SyntraxFiles(i).sFile) AndAlso IO.File.Exists(g_ClassSyntraxTools.g_SyntraxFiles(i).sFile)) Then
-                        IO.File.Delete(g_ClassSyntraxTools.g_SyntraxFiles(i).sFile)
+                For i = 0 To g_ClassSyntaxTools.g_SyntaxFiles.Length - 1
+                    If (Not String.IsNullOrEmpty(g_ClassSyntaxTools.g_SyntaxFiles(i).sFile) AndAlso IO.File.Exists(g_ClassSyntaxTools.g_SyntaxFiles(i).sFile)) Then
+                        IO.File.Delete(g_ClassSyntaxTools.g_SyntaxFiles(i).sFile)
                     End If
 
-                    If (Not String.IsNullOrEmpty(g_ClassSyntraxTools.g_SyntraxFiles(i).sFolder) AndAlso IO.Directory.Exists(g_ClassSyntraxTools.g_SyntraxFiles(i).sFolder)) Then
+                    If (Not String.IsNullOrEmpty(g_ClassSyntaxTools.g_SyntaxFiles(i).sFolder) AndAlso IO.Directory.Exists(g_ClassSyntaxTools.g_SyntaxFiles(i).sFolder)) Then
                         Try
                             'Still errors...
-                            IO.Directory.Delete(g_ClassSyntraxTools.g_SyntraxFiles(i).sFolder, True)
+                            IO.Directory.Delete(g_ClassSyntaxTools.g_SyntaxFiles(i).sFolder, True)
                         Catch ex As Exception
                         End Try
                     End If
@@ -115,7 +115,7 @@ Partial Class FormMain
         Me.ToolStripMenuItem_ToolsSearchReplace = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_ToolsAutocomplete = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_ToolsAutocompleteUpdate = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripComboBox_ToolsAutocompleteSyntrax = New System.Windows.Forms.ToolStripComboBox()
+        Me.ToolStripComboBox_ToolsAutocompleteSyntax = New System.Windows.Forms.ToolStripComboBox()
         Me.ToolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_ToolsAutocompleteShowAutocomplete = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator4 = New System.Windows.Forms.ToolStripSeparator()
@@ -142,6 +142,7 @@ Partial Class FormMain
         Me.SplitContainer2 = New System.Windows.Forms.SplitContainer()
         Me.TabControl_Toolbox = New System.Windows.Forms.TabControl()
         Me.TabPage_ObjectBrowser = New System.Windows.Forms.TabPage()
+        Me.TextEditorControl_Source = New BasicPawn.TextEditorControlEx()
         Me.TabControl_Details = New System.Windows.Forms.TabControl()
         Me.TabPage_Autocomplete = New System.Windows.Forms.TabPage()
         Me.TabPage_Information = New System.Windows.Forms.TabPage()
@@ -153,7 +154,6 @@ Partial Class FormMain
         Me.ToolStripStatusLabel_CurrentConfig = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ToolStripStatusLabel_LastInformation = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ToolStripStatusLabel_AppVersion = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.TextEditorControl_Source = New BasicPawn.TextEditorControlEx()
         Me.ContextMenuStrip_RightClick.SuspendLayout()
         Me.MenuStrip_BasicPawn.SuspendLayout()
         Me.SplitContainer1.Panel1.SuspendLayout()
@@ -378,7 +378,7 @@ Partial Class FormMain
         '
         'ToolStripMenuItem_ToolsAutocomplete
         '
-        Me.ToolStripMenuItem_ToolsAutocomplete.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_ToolsAutocompleteUpdate, Me.ToolStripComboBox_ToolsAutocompleteSyntrax, Me.ToolStripSeparator5, Me.ToolStripMenuItem_ToolsAutocompleteShowAutocomplete})
+        Me.ToolStripMenuItem_ToolsAutocomplete.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_ToolsAutocompleteUpdate, Me.ToolStripComboBox_ToolsAutocompleteSyntax, Me.ToolStripSeparator5, Me.ToolStripMenuItem_ToolsAutocompleteShowAutocomplete})
         Me.ToolStripMenuItem_ToolsAutocomplete.Image = CType(resources.GetObject("ToolStripMenuItem_ToolsAutocomplete.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_ToolsAutocomplete.Name = "ToolStripMenuItem_ToolsAutocomplete"
         Me.ToolStripMenuItem_ToolsAutocomplete.Size = New System.Drawing.Size(225, 22)
@@ -391,14 +391,14 @@ Partial Class FormMain
         Me.ToolStripMenuItem_ToolsAutocompleteUpdate.Size = New System.Drawing.Size(260, 22)
         Me.ToolStripMenuItem_ToolsAutocompleteUpdate.Text = "Update (F5)"
         '
-        'ToolStripComboBox_ToolsAutocompleteSyntrax
+        'ToolStripComboBox_ToolsAutocompleteSyntax
         '
-        Me.ToolStripComboBox_ToolsAutocompleteSyntrax.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.ToolStripComboBox_ToolsAutocompleteSyntrax.DropDownWidth = 200
-        Me.ToolStripComboBox_ToolsAutocompleteSyntrax.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.ToolStripComboBox_ToolsAutocompleteSyntrax.Items.AddRange(New Object() {"Parse SourcePawn Mix Syntrax", "Parse SourcePawn <1.6 Syntrax", "Parse SourcePawn >1.7 Syntrax"})
-        Me.ToolStripComboBox_ToolsAutocompleteSyntrax.Name = "ToolStripComboBox_ToolsAutocompleteSyntrax"
-        Me.ToolStripComboBox_ToolsAutocompleteSyntrax.Size = New System.Drawing.Size(200, 23)
+        Me.ToolStripComboBox_ToolsAutocompleteSyntax.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.ToolStripComboBox_ToolsAutocompleteSyntax.DropDownWidth = 200
+        Me.ToolStripComboBox_ToolsAutocompleteSyntax.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.ToolStripComboBox_ToolsAutocompleteSyntax.Items.AddRange(New Object() {"Parse SourcePawn Mix Syntax", "Parse SourcePawn <1.6 Syntax", "Parse SourcePawn >1.7 Syntax"})
+        Me.ToolStripComboBox_ToolsAutocompleteSyntax.Name = "ToolStripComboBox_ToolsAutocompleteSyntax"
+        Me.ToolStripComboBox_ToolsAutocompleteSyntax.Size = New System.Drawing.Size(200, 23)
         '
         'ToolStripSeparator5
         '
@@ -605,6 +605,21 @@ Partial Class FormMain
         Me.TabPage_ObjectBrowser.Text = "Object Browser"
         Me.TabPage_ObjectBrowser.UseVisualStyleBackColor = True
         '
+        'TextEditorControl_Source
+        '
+        Me.TextEditorControl_Source.ContextMenuStrip = Me.ContextMenuStrip_RightClick
+        Me.TextEditorControl_Source.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TextEditorControl_Source.HideMouseCursor = True
+        Me.TextEditorControl_Source.IsIconBarVisible = True
+        Me.TextEditorControl_Source.IsReadOnly = False
+        Me.TextEditorControl_Source.Location = New System.Drawing.Point(0, 0)
+        Me.TextEditorControl_Source.Name = "TextEditorControl_Source"
+        Me.TextEditorControl_Source.ShowTabs = True
+        Me.TextEditorControl_Source.ShowVRuler = False
+        Me.TextEditorControl_Source.Size = New System.Drawing.Size(815, 500)
+        Me.TextEditorControl_Source.TabIndex = 0
+        Me.TextEditorControl_Source.Text = resources.GetString("TextEditorControl_Source.Text")
+        '
         'TabControl_Details
         '
         Me.TabControl_Details.Controls.Add(Me.TabPage_Autocomplete)
@@ -698,21 +713,6 @@ Partial Class FormMain
         Me.ToolStripStatusLabel_AppVersion.Size = New System.Drawing.Size(31, 17)
         Me.ToolStripStatusLabel_AppVersion.Text = "v.0.0"
         '
-        'TextEditorControl_Source
-        '
-        Me.TextEditorControl_Source.ContextMenuStrip = Me.ContextMenuStrip_RightClick
-        Me.TextEditorControl_Source.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TextEditorControl_Source.HideMouseCursor = True
-        Me.TextEditorControl_Source.IsIconBarVisible = True
-        Me.TextEditorControl_Source.IsReadOnly = False
-        Me.TextEditorControl_Source.Location = New System.Drawing.Point(0, 0)
-        Me.TextEditorControl_Source.Name = "TextEditorControl_Source"
-        Me.TextEditorControl_Source.ShowTabs = True
-        Me.TextEditorControl_Source.ShowVRuler = False
-        Me.TextEditorControl_Source.Size = New System.Drawing.Size(815, 500)
-        Me.TextEditorControl_Source.TabIndex = 0
-        Me.TextEditorControl_Source.Text = resources.GetString("TextEditorControl_Source.Text")
-        '
         'FormMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -788,7 +788,7 @@ Partial Class FormMain
     Friend WithEvents ToolStripMenuItem_HelpSpecialControlsMoveSelected As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_HelpSpecialControlsCopySelected As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_HelpAbout As ToolStripMenuItem
-    Friend WithEvents ToolStripComboBox_ToolsAutocompleteSyntrax As ToolStripComboBox
+    Friend WithEvents ToolStripComboBox_ToolsAutocompleteSyntax As ToolStripComboBox
     Friend WithEvents ToolStripMenuItem_HelpSpecialControlsSearchAndReplace As ToolStripMenuItem
     Friend WithEvents ToolStripStatusLabel_LastInformation As ToolStripStatusLabel
     Friend WithEvents ToolStripStatusLabel_EditorSelectedCount As ToolStripStatusLabel

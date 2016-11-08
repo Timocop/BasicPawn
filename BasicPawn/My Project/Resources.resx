@@ -208,7 +208,7 @@
   <data name="Debugger_WatcherModuleNew" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Debugger_WatcherModuleNew.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-  <data name="SourcePawn_Syntrax" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\SourcePawn_Syntrax.xml;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  <data name="SourcePawn_Syntax" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SourcePawn_Syntax.xml;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
 </root>

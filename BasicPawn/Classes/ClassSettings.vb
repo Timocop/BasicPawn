@@ -28,19 +28,19 @@ Public Class ClassSettings
     Public Shared g_sConfigDebugGameFolder As String = ""
     Public Shared g_sConfigDebugSourceModFolder As String = ""
     'Misc
-    Public Shared g_sConfigSyntraxHighlightingPath As String = ""
+    Public Shared g_sConfigSyntaxHighlightingPath As String = ""
 
     Public Shared g_sConfigName As String = ""
 #End Region
 
 #Region "Settings"
-    Enum ENUM_AUTOCOMPLETE_SYNTRAX
+    Enum ENUM_AUTOCOMPLETE_SYNTAX
         SP_MIX
         SP_1_6
         SP_1_7
     End Enum
 
-    Public Shared g_iSettingsAutocompleteSyntrax As ENUM_AUTOCOMPLETE_SYNTRAX = ENUM_AUTOCOMPLETE_SYNTRAX.SP_MIX
+    Public Shared g_iSettingsAutocompleteSyntax As ENUM_AUTOCOMPLETE_SYNTAX = ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX
     Public Shared g_iSettingsDefaultEditorFont As Font = New Font("Consolas", 9, FontStyle.Regular)
     Public Shared g_sSettingsDefaultEditorFont As String = New FontConverter().ConvertToInvariantString(g_iSettingsDefaultEditorFont)
 
@@ -57,7 +57,7 @@ Public Class ClassSettings
     Public Shared g_iSettingsDetectMethodmapInNames As Boolean = True
     Public Shared g_iSettingsAutocompleteCaseSensitive As Boolean = True
 
-    'Syntrax Highligting
+    'Syntax Highligting
     Public Shared g_iSettingsDoubleClickMark As Boolean = True
     Public Shared g_iSettingsAutoMark As Boolean = True
 

@@ -98,7 +98,7 @@ Public Class FormDebugger
             TextEditorControlEx_DebuggerSource.Refresh()
             TextEditorControlEx_DebuggerDiasm.Refresh()
 
-            g_mFormMain.g_ClassSyntraxTools.UpdateTextEditorSyntrax()
+            g_mFormMain.g_ClassSyntaxTools.UpdateTextEditorSyntax()
 
             'Add breakpoints
             ListView_Breakpoints.BeginUpdate()

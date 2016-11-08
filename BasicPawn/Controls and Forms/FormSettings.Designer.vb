@@ -57,9 +57,9 @@ Partial Class FormSettings
         Me.Button_ConfigCopy = New System.Windows.Forms.Button()
         Me.GroupBox_ConfigSettings = New System.Windows.Forms.GroupBox()
         Me.Panel11 = New System.Windows.Forms.Panel()
-        Me.LinkLabel_SyntraxDefault = New System.Windows.Forms.LinkLabel()
-        Me.Button_SyntraxPath = New System.Windows.Forms.Button()
-        Me.TextBox_SyntraxPath = New System.Windows.Forms.TextBox()
+        Me.LinkLabel_SyntaxDefault = New System.Windows.Forms.LinkLabel()
+        Me.Button_SyntaxPath = New System.Windows.Forms.Button()
+        Me.TextBox_SyntaxPath = New System.Windows.Forms.TextBox()
         Me.Label15 = New System.Windows.Forms.Label()
         Me.Panel13 = New System.Windows.Forms.Panel()
         Me.Label13 = New System.Windows.Forms.Label()
@@ -302,9 +302,9 @@ Partial Class FormSettings
         Me.Label7.Location = New System.Drawing.Point(6, 6)
         Me.Label7.Margin = New System.Windows.Forms.Padding(6, 3, 3, 0)
         Me.Label7.Name = "Label7"
-        Me.Label7.Size = New System.Drawing.Size(115, 13)
+        Me.Label7.Size = New System.Drawing.Size(111, 13)
         Me.Label7.TabIndex = 4
-        Me.Label7.Text = "Syntrax Highlighting"
+        Me.Label7.Text = "Syntax Highlighting"
         '
         'CheckBox_DoubleClickMark
         '
@@ -413,9 +413,9 @@ Partial Class FormSettings
         Me.CheckBox_FullAutocompleteReTagging.Location = New System.Drawing.Point(6, 139)
         Me.CheckBox_FullAutocompleteReTagging.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_FullAutocompleteReTagging.Name = "CheckBox_FullAutocompleteReTagging"
-        Me.CheckBox_FullAutocompleteReTagging.Size = New System.Drawing.Size(419, 18)
+        Me.CheckBox_FullAutocompleteReTagging.Size = New System.Drawing.Size(415, 18)
         Me.CheckBox_FullAutocompleteReTagging.TabIndex = 8
-        Me.CheckBox_FullAutocompleteReTagging.Text = "Full autocompletion for enums using re-tagging (SourcePawn <1.6 Syntrax)"
+        Me.CheckBox_FullAutocompleteReTagging.Text = "Full autocompletion for enums using re-tagging (SourcePawn <1.6 Syntax)"
         Me.CheckBox_FullAutocompleteReTagging.UseVisualStyleBackColor = True
         '
         'CheckBox_DetectMethodmapVariables
@@ -513,9 +513,9 @@ Partial Class FormSettings
         '
         'Panel11
         '
-        Me.Panel11.Controls.Add(Me.LinkLabel_SyntraxDefault)
-        Me.Panel11.Controls.Add(Me.Button_SyntraxPath)
-        Me.Panel11.Controls.Add(Me.TextBox_SyntraxPath)
+        Me.Panel11.Controls.Add(Me.LinkLabel_SyntaxDefault)
+        Me.Panel11.Controls.Add(Me.Button_SyntaxPath)
+        Me.Panel11.Controls.Add(Me.TextBox_SyntaxPath)
         Me.Panel11.Controls.Add(Me.Label15)
         Me.Panel11.Controls.Add(Me.Panel13)
         Me.Panel11.Controls.Add(Me.Label13)
@@ -528,46 +528,46 @@ Partial Class FormSettings
         Me.Panel11.Size = New System.Drawing.Size(370, 160)
         Me.Panel11.TabIndex = 30
         '
-        'LinkLabel_SyntraxDefault
+        'LinkLabel_SyntaxDefault
         '
-        Me.LinkLabel_SyntraxDefault.AutoSize = True
-        Me.LinkLabel_SyntraxDefault.Location = New System.Drawing.Point(3, 126)
-        Me.LinkLabel_SyntraxDefault.Margin = New System.Windows.Forms.Padding(3, 0, 3, 6)
-        Me.LinkLabel_SyntraxDefault.Name = "LinkLabel_SyntraxDefault"
-        Me.LinkLabel_SyntraxDefault.Size = New System.Drawing.Size(152, 13)
-        Me.LinkLabel_SyntraxDefault.TabIndex = 31
-        Me.LinkLabel_SyntraxDefault.TabStop = True
-        Me.LinkLabel_SyntraxDefault.Text = "Default syntrax highlighting"
+        Me.LinkLabel_SyntaxDefault.AutoSize = True
+        Me.LinkLabel_SyntaxDefault.Location = New System.Drawing.Point(3, 126)
+        Me.LinkLabel_SyntaxDefault.Margin = New System.Windows.Forms.Padding(3, 0, 3, 6)
+        Me.LinkLabel_SyntaxDefault.Name = "LinkLabel_SyntaxDefault"
+        Me.LinkLabel_SyntaxDefault.Size = New System.Drawing.Size(148, 13)
+        Me.LinkLabel_SyntaxDefault.TabIndex = 31
+        Me.LinkLabel_SyntaxDefault.TabStop = True
+        Me.LinkLabel_SyntaxDefault.Text = "Default syntax highlighting"
         '
-        'Button_SyntraxPath
+        'Button_SyntaxPath
         '
-        Me.Button_SyntraxPath.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button_SyntraxPath.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_SyntraxPath.Location = New System.Drawing.Point(336, 98)
-        Me.Button_SyntraxPath.Name = "Button_SyntraxPath"
-        Me.Button_SyntraxPath.Size = New System.Drawing.Size(31, 24)
-        Me.Button_SyntraxPath.TabIndex = 28
-        Me.Button_SyntraxPath.Text = "..."
-        Me.Button_SyntraxPath.UseVisualStyleBackColor = True
+        Me.Button_SyntaxPath.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Button_SyntaxPath.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.Button_SyntaxPath.Location = New System.Drawing.Point(336, 98)
+        Me.Button_SyntaxPath.Name = "Button_SyntaxPath"
+        Me.Button_SyntaxPath.Size = New System.Drawing.Size(31, 24)
+        Me.Button_SyntaxPath.TabIndex = 28
+        Me.Button_SyntaxPath.Text = "..."
+        Me.Button_SyntaxPath.UseVisualStyleBackColor = True
         '
-        'TextBox_SyntraxPath
+        'TextBox_SyntaxPath
         '
-        Me.TextBox_SyntraxPath.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.TextBox_SyntaxPath.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TextBox_SyntraxPath.BackColor = System.Drawing.Color.White
-        Me.TextBox_SyntraxPath.Location = New System.Drawing.Point(3, 101)
-        Me.TextBox_SyntraxPath.Name = "TextBox_SyntraxPath"
-        Me.TextBox_SyntraxPath.Size = New System.Drawing.Size(327, 22)
-        Me.TextBox_SyntraxPath.TabIndex = 30
+        Me.TextBox_SyntaxPath.BackColor = System.Drawing.Color.White
+        Me.TextBox_SyntaxPath.Location = New System.Drawing.Point(3, 101)
+        Me.TextBox_SyntaxPath.Name = "TextBox_SyntaxPath"
+        Me.TextBox_SyntaxPath.Size = New System.Drawing.Size(327, 22)
+        Me.TextBox_SyntaxPath.TabIndex = 30
         '
         'Label15
         '
         Me.Label15.AutoSize = True
         Me.Label15.Location = New System.Drawing.Point(3, 85)
         Me.Label15.Name = "Label15"
-        Me.Label15.Size = New System.Drawing.Size(166, 13)
+        Me.Label15.Size = New System.Drawing.Size(162, 13)
         Me.Label15.TabIndex = 29
-        Me.Label15.Text = "Custom syntrax highlight path:"
+        Me.Label15.Text = "Custom syntax highlight path:"
         '
         'Panel13
         '
@@ -1085,8 +1085,8 @@ Partial Class FormSettings
     Friend WithEvents Panel1 As Panel
     Friend WithEvents Panel13 As Panel
     Friend WithEvents Panel12 As Panel
-    Friend WithEvents Button_SyntraxPath As Button
-    Friend WithEvents TextBox_SyntraxPath As TextBox
+    Friend WithEvents Button_SyntaxPath As Button
+    Friend WithEvents TextBox_SyntaxPath As TextBox
     Friend WithEvents Label15 As Label
-    Friend WithEvents LinkLabel_SyntraxDefault As LinkLabel
+    Friend WithEvents LinkLabel_SyntaxDefault As LinkLabel
 End Class

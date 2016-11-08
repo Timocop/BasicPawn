@@ -145,7 +145,7 @@ Public Class FormSettings
             TextBox_SourceModFolder.Text = iniFile.ReadKeyValue("Config", "DebugSourceModDirectory", "")
             'Misc
             TextBox_Shell.Text = iniFile.ReadKeyValue("Config", "ExecuteShell", "")
-            TextBox_SyntraxPath.Text = iniFile.ReadKeyValue("Config", "SyntraxPath", "")
+            TextBox_SyntaxPath.Text = iniFile.ReadKeyValue("Config", "SyntaxPath", "")
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
@@ -244,7 +244,7 @@ Public Class FormSettings
             iniFile.WriteKeyValue("Config", "DebugSourceModDirectory", TextBox_SourceModFolder.Text)
             'Misc
             iniFile.WriteKeyValue("Config", "ExecuteShell", TextBox_Shell.Text)
-            iniFile.WriteKeyValue("Config", "SyntraxPath", TextBox_SyntraxPath.Text)
+            iniFile.WriteKeyValue("Config", "SyntaxPath", TextBox_SyntaxPath.Text)
 
             MessageBox.Show("Config saved!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information)
         Catch ex As Exception
@@ -346,7 +346,7 @@ Public Class FormSettings
                 ClassSettings.g_sConfigDebugGameFolder = TextBox_GameFolder.Text
                 ClassSettings.g_sConfigDebugSourceModFolder = TextBox_SourceModFolder.Text
                 'Misc
-                ClassSettings.g_sConfigSyntraxHighlightingPath = TextBox_SyntraxPath.Text
+                ClassSettings.g_sConfigSyntaxHighlightingPath = TextBox_SyntaxPath.Text
             End If
         End If
 
@@ -479,18 +479,18 @@ Public Class FormSettings
         End Try
     End Sub
 
-    Private Sub Button_SyntraxPath_Click(sender As Object, e As EventArgs) Handles Button_SyntraxPath.Click
+    Private Sub Button_SyntaxPath_Click(sender As Object, e As EventArgs) Handles Button_SyntaxPath.Click
         Using i As New OpenFileDialog
-            i.Filter = "Syntrax highlighting XSHD file|*.xml"
-            i.FileName = TextBox_SyntraxPath.Text
+            i.Filter = "Syntax highlighting XSHD file|*.xml"
+            i.FileName = TextBox_SyntaxPath.Text
 
             If (i.ShowDialog = DialogResult.OK) Then
-                TextBox_SyntraxPath.Text = i.FileName
+                TextBox_SyntaxPath.Text = i.FileName
             End If
         End Using
     End Sub
 
-    Private Sub LinkLabel_SyntraxDefault_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_SyntraxDefault.LinkClicked
-        TextBox_SyntraxPath.Text = ""
+    Private Sub LinkLabel_SyntaxDefault_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_SyntaxDefault.LinkClicked
+        TextBox_SyntaxPath.Text = ""
     End Sub
 End Class

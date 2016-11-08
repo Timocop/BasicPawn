@@ -405,7 +405,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="BasicPawnIcon.ico" />
-    <None Include="Resources\SourcePawn_Syntrax.xml" />
+    <None Include="Resources\SourcePawn_Syntax.xml" />
     <None Include="Resources\Debugger_WatcherModuleNew.txt" />
     <None Include="Resources\Debugger_BreakpointModuleNew.txt" />
     <None Include="Resources\Debugger_WatcherModuleOld.txt" />

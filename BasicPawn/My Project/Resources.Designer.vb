@@ -466,9 +466,9 @@ Namespace My.Resources
         '''    &lt;FoldMarker color=&quot;DarkGray&quot; bgcolor=&quot;White&quot;/&gt;
         '''    &lt;SelectedFoldLine co [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
         '''</summary>
-        Friend ReadOnly Property SourcePawn_Syntrax() As String
+        Friend ReadOnly Property SourcePawn_Syntax() As String
             Get
-                Return ResourceManager.GetString("SourcePawn_Syntrax", resourceCulture)
+                Return ResourceManager.GetString("SourcePawn_Syntax", resourceCulture)
             End Get
         End Property
     End Module

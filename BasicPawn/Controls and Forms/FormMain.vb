@@ -33,13 +33,13 @@ Public Class FormMain
 
 
 
-    Public g_ClassSyntraxUpdater As New ClassSyntraxUpdater(Me)
-    Public g_ClassSyntraxTools As New ClassSyntraxTools(Me)
+    Public g_ClassSyntaxUpdater As New ClassSyntaxUpdater(Me)
+    Public g_ClassSyntaxTools As New ClassSyntaxTools(Me)
     Public g_ClassAutocompleteUpdater As New ClassAutocompleteUpdater(Me)
     Public g_ClassTextEditorTools As New ClassTextEditorTools(Me)
     Public g_ClassLineState As New ClassTextEditorTools.ClassLineState(Me)
 
-    Public g_mSourceSyntraxSourceAnalysis As ClassSyntraxTools.ClassSyntraxSourceAnalysis
+    Public g_mSourceSyntaxSourceAnalysis As ClassSyntaxTools.ClassSyntaxSourceAnalysis
 
     Public g_mUCAutocomplete As UCAutocomplete
     Public g_mUCInformationList As UCInformationList
@@ -138,7 +138,7 @@ Public Class FormMain
             '    Return list
             'End If
 
-            'Dim sourceAnalysis As New SyntraxCharReader(document.TextContent)
+            'Dim sourceAnalysis As New SyntaxCharReader(document.TextContent)
 
             Dim iMaxLevels As Integer = 0
             Dim i As Integer = 0
@@ -220,20 +220,20 @@ Public Class FormMain
     End Class
 #End Region
 
-#Region "Syntrax Stuff"
+#Region "Syntax Stuff"
 
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ToolStripStatusLabel_AppVersion.Text = String.Format("v.{0}", Application.ProductVersion)
 
         'Some control init
-        ToolStripComboBox_ToolsAutocompleteSyntrax.SelectedIndex = 0
+        ToolStripComboBox_ToolsAutocompleteSyntax.SelectedIndex = 0
 
         'Load Settings 
         ClassSettings.LoadSettings()
 
-        'Load Syntrax 
-        g_ClassSyntraxTools.UpdateTextEditorSyntrax()
+        'Load Syntax 
+        g_ClassSyntaxTools.UpdateTextEditorSyntax()
 
         'Add Events
         AddHandler TextEditorControl_Source.g_eProcessCmdKey, AddressOf TextEditorControl_Source_ProcessCmdKey
@@ -288,13 +288,13 @@ Public Class FormMain
         TextEditorControl_Source.Document.FoldingManager.UpdateFoldings(Nothing, Nothing)
 
         'UpdateTextEditorControl1Colors()
-        g_ClassSyntraxTools.UpdateFormColors()
+        g_ClassSyntaxTools.UpdateFormColors()
 
         'Update Text Editor Settings
         TextEditorControl_Source.ActiveTextAreaControl.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
         TextEditorControl_Source.Refresh()
 
-        g_ClassSyntraxUpdater.StartThread()
+        g_ClassSyntaxUpdater.StartThread()
     End Sub
 
 #End Region
@@ -587,16 +587,16 @@ Public Class FormMain
     Private Function ParseMethodAutocomplete(Optional bForceUpdate As Boolean = False) As Boolean
         If (bForceUpdate) Then
             Dim sTextContent As String = Me.Invoke(Function() TextEditorControl_Source.Document.TextContent)
-            g_mSourceSyntraxSourceAnalysis = New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sTextContent)
+            g_mSourceSyntaxSourceAnalysis = New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sTextContent)
         End If
 
-        If (g_mSourceSyntraxSourceAnalysis IsNot Nothing) Then
+        If (g_mSourceSyntaxSourceAnalysis IsNot Nothing) Then
             Dim iCaretOffset As Integer = Me.Invoke(Function() TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Offset)
-            If (iCaretOffset > 1 AndAlso g_mSourceSyntraxSourceAnalysis.GetMaxLenght() > iCaretOffset AndAlso Not g_mSourceSyntraxSourceAnalysis.InMultiComment(iCaretOffset) AndAlso Not g_mSourceSyntraxSourceAnalysis.InSingleComment(iCaretOffset)) Then
+            If (iCaretOffset > 1 AndAlso g_mSourceSyntaxSourceAnalysis.GetMaxLenght() > iCaretOffset AndAlso Not g_mSourceSyntaxSourceAnalysis.InMultiComment(iCaretOffset) AndAlso Not g_mSourceSyntaxSourceAnalysis.InSingleComment(iCaretOffset)) Then
                 Dim iValidOffset As Integer = -1
-                Dim iCaretBrace As Integer = g_mSourceSyntraxSourceAnalysis.GetParenthesisLevel(iCaretOffset - 1)
+                Dim iCaretBrace As Integer = g_mSourceSyntaxSourceAnalysis.GetParenthesisLevel(iCaretOffset - 1)
                 For i = iCaretOffset - 1 To 0 Step -1
-                    If (g_mSourceSyntraxSourceAnalysis.GetParenthesisLevel(i) < iCaretBrace) Then
+                    If (g_mSourceSyntaxSourceAnalysis.GetParenthesisLevel(i) < iCaretBrace) Then
                         iValidOffset = i
                         Exit For
                     End If
@@ -772,7 +772,7 @@ Public Class FormMain
                 TextEditorControl_Source.ActiveTextAreaControl.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
                 TextEditorControl_Source.Refresh()
 
-                g_ClassSyntraxTools.UpdateFormColors()
+                g_ClassSyntaxTools.UpdateFormColors()
             End If
         End Using
     End Sub
@@ -781,7 +781,7 @@ Public Class FormMain
         Try
             Dim sSource As String = TextEditorControl_Source.Document.TextContent
 
-            sSource = g_ClassSyntraxTools.FormatCode(sSource)
+            sSource = g_ClassSyntaxTools.FormatCode(sSource)
 
             TextEditorControl_Source.Document.UndoStack.StartUndoGroup()
             TextEditorControl_Source.Document.Remove(0, TextEditorControl_Source.Document.TextLength)
@@ -811,14 +811,14 @@ Public Class FormMain
         g_ClassAutocompleteUpdater.StartUpdate()
     End Sub
 
-    Private Sub ToolStripComboBox_ToolsAutocompleteSyntrax_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ToolStripComboBox_ToolsAutocompleteSyntrax.SelectedIndexChanged
-        Select Case (ToolStripComboBox_ToolsAutocompleteSyntrax.SelectedIndex)
+    Private Sub ToolStripComboBox_ToolsAutocompleteSyntax_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ToolStripComboBox_ToolsAutocompleteSyntax.SelectedIndexChanged
+        Select Case (ToolStripComboBox_ToolsAutocompleteSyntax.SelectedIndex)
             Case 0
-                ClassSettings.g_iSettingsAutocompleteSyntrax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTRAX.SP_MIX
+                ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX
             Case 1
-                ClassSettings.g_iSettingsAutocompleteSyntrax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTRAX.SP_1_6
+                ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_6
             Case 2
-                ClassSettings.g_iSettingsAutocompleteSyntrax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTRAX.SP_1_7
+                ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7
         End Select
 
         g_ClassAutocompleteUpdater.StartUpdate()
@@ -946,7 +946,7 @@ Public Class FormMain
                 TextEditorControl_Source.ActiveTextAreaControl.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
                 TextEditorControl_Source.Refresh()
 
-                g_ClassSyntraxTools.UpdateFormColors()
+                g_ClassSyntaxTools.UpdateFormColors()
             End If
         End Using
     End Sub
@@ -967,51 +967,51 @@ Public Class FormMain
         ''' Marks a selected word in the text editor
         ''' </summary>
         Public Sub MarkSelectedWord()
-            Dim sLastWord As String = g_mFormMain.g_ClassSyntraxTools.g_sHighlightWord
-            g_mFormMain.g_ClassSyntraxTools.g_sHighlightWord = ""
+            Dim sLastWord As String = g_mFormMain.g_ClassSyntaxTools.g_sHighlightWord
+            g_mFormMain.g_ClassSyntaxTools.g_sHighlightWord = ""
 
             If (g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.SelectionManager.HasSomethingSelected) Then
                 Dim m_CurrentSelection As ISelection = g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.SelectionManager.SelectionCollection(0)
 
                 If (Regex.IsMatch(m_CurrentSelection.SelectedText, "^[a-zA-Z0-9_]+$")) Then
-                    g_mFormMain.g_ClassSyntraxTools.g_sHighlightWord = m_CurrentSelection.SelectedText
+                    g_mFormMain.g_ClassSyntaxTools.g_sHighlightWord = m_CurrentSelection.SelectedText
                 End If
             End If
 
-            If (g_mFormMain.g_ClassSyntraxTools.g_sHighlightWord = sLastWord) Then
+            If (g_mFormMain.g_ClassSyntaxTools.g_sHighlightWord = sLastWord) Then
                 Return
             End If
 
-            g_mFormMain.g_ClassSyntraxTools.UpdateSyntraxFile(ClassSyntraxTools.ENUM_SYNTRAX_UPDATE_TYPE.HIGHLIGHT_WORD)
-            g_mFormMain.g_ClassSyntraxTools.UpdateTextEditorSyntrax()
+            g_mFormMain.g_ClassSyntaxTools.UpdateSyntaxFile(ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE.HIGHLIGHT_WORD)
+            g_mFormMain.g_ClassSyntaxTools.UpdateTextEditorSyntax()
         End Sub
 
         ''' <summary>
         ''' Marks a selected word in the text editor
         ''' </summary>
         Public Sub MarkCaretWord()
-            Dim sLastWord As String = g_mFormMain.g_ClassSyntraxTools.g_sCaretWord
-            g_mFormMain.g_ClassSyntraxTools.g_sCaretWord = ""
+            Dim sLastWord As String = g_mFormMain.g_ClassSyntaxTools.g_sCaretWord
+            g_mFormMain.g_ClassSyntaxTools.g_sCaretWord = ""
 
             If (Not g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.SelectionManager.HasSomethingSelected) Then
                 Dim sWord As String = GetCaretWord(False)
 
                 If (Not String.IsNullOrEmpty(sWord)) Then
-                    g_mFormMain.g_ClassSyntraxTools.g_sCaretWord = sWord
+                    g_mFormMain.g_ClassSyntaxTools.g_sCaretWord = sWord
                 End If
             End If
 
-            If (g_mFormMain.g_ClassSyntraxTools.g_sCaretWord = sLastWord) Then
+            If (g_mFormMain.g_ClassSyntaxTools.g_sCaretWord = sLastWord) Then
                 Return
             End If
 
-            If (Not String.IsNullOrEmpty(g_mFormMain.g_ClassSyntraxTools.g_sCaretWord) AndAlso
-                        Regex.Matches(g_mFormMain.TextEditorControl_Source.Document.TextContent, String.Format("\b{0}\b", Regex.Escape(g_mFormMain.g_ClassSyntraxTools.g_sCaretWord)), RegexOptions.Multiline).Count < 2) Then
+            If (Not String.IsNullOrEmpty(g_mFormMain.g_ClassSyntaxTools.g_sCaretWord) AndAlso
+                        Regex.Matches(g_mFormMain.TextEditorControl_Source.Document.TextContent, String.Format("\b{0}\b", Regex.Escape(g_mFormMain.g_ClassSyntaxTools.g_sCaretWord)), RegexOptions.Multiline).Count < 2) Then
                 Return
             End If
 
-            g_mFormMain.g_ClassSyntraxTools.UpdateSyntraxFile(ClassSyntraxTools.ENUM_SYNTRAX_UPDATE_TYPE.CARET_WORD)
-            g_mFormMain.g_ClassSyntraxTools.UpdateTextEditorSyntrax()
+            g_mFormMain.g_ClassSyntaxTools.UpdateSyntaxFile(ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE.CARET_WORD)
+            g_mFormMain.g_ClassSyntaxTools.UpdateTextEditorSyntax()
         End Sub
 
         Public Sub ListReferences(Optional sText As String = Nothing)
@@ -1984,9 +1984,9 @@ Public Class FormMain
         End Class
     End Class
 
-    Public Class ClassSyntraxUpdater
+    Public Class ClassSyntaxUpdater
         Private g_mFormMain As FormMain
-        Private g_mSourceSyntraxUpdaterThread As Threading.Thread
+        Private g_mSourceSyntaxUpdaterThread As Threading.Thread
 
         Public Sub New(f As FormMain)
             g_mFormMain = f
@@ -1996,10 +1996,10 @@ Public Class FormMain
         ''' Starts the updater thread
         ''' </summary>
         Public Sub StartThread()
-            If (g_mSourceSyntraxUpdaterThread Is Nothing OrElse Not g_mSourceSyntraxUpdaterThread.IsAlive) Then
-                g_mSourceSyntraxUpdaterThread = New Threading.Thread(AddressOf SourceSyntraxUpdater_Thread)
-                g_mSourceSyntraxUpdaterThread.IsBackground = True
-                g_mSourceSyntraxUpdaterThread.Start()
+            If (g_mSourceSyntaxUpdaterThread Is Nothing OrElse Not g_mSourceSyntaxUpdaterThread.IsAlive) Then
+                g_mSourceSyntaxUpdaterThread = New Threading.Thread(AddressOf SourceSyntaxUpdater_Thread)
+                g_mSourceSyntaxUpdaterThread.IsBackground = True
+                g_mSourceSyntaxUpdaterThread.Start()
             End If
         End Sub
 
@@ -2007,14 +2007,14 @@ Public Class FormMain
         ''' Stops the updater thread
         ''' </summary>
         Public Sub StopThread()
-            If (g_mSourceSyntraxUpdaterThread IsNot Nothing AndAlso g_mSourceSyntraxUpdaterThread.IsAlive) Then
-                g_mSourceSyntraxUpdaterThread.Abort()
-                g_mSourceSyntraxUpdaterThread.Join()
-                g_mSourceSyntraxUpdaterThread = Nothing
+            If (g_mSourceSyntaxUpdaterThread IsNot Nothing AndAlso g_mSourceSyntaxUpdaterThread.IsAlive) Then
+                g_mSourceSyntaxUpdaterThread.Abort()
+                g_mSourceSyntaxUpdaterThread.Join()
+                g_mSourceSyntaxUpdaterThread = Nothing
             End If
         End Sub
 
-        Private Sub SourceSyntraxUpdater_Thread()
+        Private Sub SourceSyntaxUpdater_Thread()
             Static g_mLastAutocompleteUpdate As Date = Now
             Static g_mLastMethodAutocompleteUpdate As Date = Now
             Static g_mLastFoldingUpdate As Date = Now
@@ -2035,7 +2035,7 @@ Public Class FormMain
                         g_mLastMethodAutocompleteUpdate = Now + New TimeSpan(0, 0, 1)
 
                         Dim sTextContent As String = g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.Document.TextContent)
-                        g_mFormMain.g_mSourceSyntraxSourceAnalysis = New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sTextContent)
+                        g_mFormMain.g_mSourceSyntaxSourceAnalysis = New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sTextContent)
                     End If
 
                     'Update Foldings
@@ -2132,7 +2132,7 @@ Public Class FormMain
 
     End Class
 
-    Public Class ClassSyntraxTools
+    Public Class ClassSyntaxTools
         Private g_mFormMain As FormMain
 
         Public g_sStatementsArray As String() = {"if", "else", "for", "while", "do", "switch"}
@@ -2140,31 +2140,31 @@ Public Class FormMain
         Public g_sHighlightWord As String = ""
         Public g_sCaretWord As String = ""
 
-        Enum ENUM_SYNTRAX_FILES
+        Enum ENUM_SYNTAX_FILES
             MAIN_TEXTEDITOR
             DEBUGGER_TEXTEDITOR
         End Enum
-        Structure STRUC_SYNTRAX_FILES_ITEM
+        Structure STRUC_SYNTAX_FILES_ITEM
             Dim sFile As String
             Dim sFolder As String
             Dim sDefinition As String
         End Structure
-        Public g_SyntraxFiles([Enum].GetNames(GetType(ENUM_SYNTRAX_FILES)).Length - 1) As STRUC_SYNTRAX_FILES_ITEM
+        Public g_SyntaxFiles([Enum].GetNames(GetType(ENUM_SYNTAX_FILES)).Length - 1) As STRUC_SYNTAX_FILES_ITEM
 
-        Public g_SyntraxXML As String = My.Resources.SourcePawn_Syntrax
+        Public g_SyntaxXML As String = My.Resources.SourcePawn_Syntax
 
-        Public sSyntrax_HighlightCaretMarker As String = "<!-- [DO NOT EDIT | HIGHLIGHT CARET MARKER] -->"
-        Public sSyntrax_HighlightWordMarker As String = "<!-- [DO NOT EDIT | HIGHLIGHT WORD MARKER] -->"
-        Public sSyntrax_HighlightDefineMarker As String = "<!-- [DO NOT EDIT | DEFINE MARKER] -->"
-        Public sSyntrax_HighlightEnumMarker As String = "<!-- [DO NOT EDIT | ENUM MARKER] -->"
-        Public sSyntrax_HighlightEnum2Marker As String = "<!-- [DO NOT EDIT | ENUM2 MARKER] -->"
-        Public sSyntrax_SourcePawnMarker As String = "SourcePawn-04e3632f-5472-42c5-929a-c3e0c2b35324"
+        Public sSyntax_HighlightCaretMarker As String = "<!-- [DO NOT EDIT | HIGHLIGHT CARET MARKER] -->"
+        Public sSyntax_HighlightWordMarker As String = "<!-- [DO NOT EDIT | HIGHLIGHT WORD MARKER] -->"
+        Public sSyntax_HighlightDefineMarker As String = "<!-- [DO NOT EDIT | DEFINE MARKER] -->"
+        Public sSyntax_HighlightEnumMarker As String = "<!-- [DO NOT EDIT | ENUM MARKER] -->"
+        Public sSyntax_HighlightEnum2Marker As String = "<!-- [DO NOT EDIT | ENUM2 MARKER] -->"
+        Public sSyntax_SourcePawnMarker As String = "SourcePawn-04e3632f-5472-42c5-929a-c3e0c2b35324"
 
         Public lAutocompleteList As New List(Of STRUC_AUTOCOMPLETE)
 
         Private _lock As Object = New Object()
 
-        Public Enum ENUM_SYNTRAX_UPDATE_TYPE
+        Public Enum ENUM_SYNTAX_UPDATE_TYPE
             CARET_WORD
             HIGHLIGHT_WORD
             AUTOCOMPLETE
@@ -2173,24 +2173,24 @@ Public Class FormMain
         Public Sub New(f As FormMain)
             g_mFormMain = f
 
-            'Add Syntrax Files for TextEditor
-            Dim sSyntraxWorkingDir As String = IO.Path.Combine(My.Computer.FileSystem.SpecialDirectories.Temp, Guid.NewGuid.ToString)
+            'Add syntax Files for TextEditor
+            Dim sSyntaxWorkingDir As String = IO.Path.Combine(My.Computer.FileSystem.SpecialDirectories.Temp, Guid.NewGuid.ToString)
 
-            g_SyntraxFiles(ENUM_SYNTRAX_FILES.MAIN_TEXTEDITOR) = New STRUC_SYNTRAX_FILES_ITEM() With {
-                                                                        .sFile = String.Format("{0}.xshd", IO.Path.Combine(sSyntraxWorkingDir, Guid.NewGuid.ToString)),
-                                                                        .sFolder = sSyntraxWorkingDir,
+            g_SyntaxFiles(ENUM_SYNTAX_FILES.MAIN_TEXTEDITOR) = New STRUC_SYNTAX_FILES_ITEM() With {
+                                                                        .sFile = String.Format("{0}.xshd", IO.Path.Combine(sSyntaxWorkingDir, Guid.NewGuid.ToString)),
+                                                                        .sFolder = sSyntaxWorkingDir,
                                                                         .sDefinition = "SourcePawn-MainTextEditor-" & Guid.NewGuid.ToString}
 
-            g_SyntraxFiles(ENUM_SYNTRAX_FILES.DEBUGGER_TEXTEDITOR) = New STRUC_SYNTRAX_FILES_ITEM() With {
-                                                                        .sFile = String.Format("{0}.xshd", IO.Path.Combine(sSyntraxWorkingDir, Guid.NewGuid.ToString)),
-                                                                        .sFolder = sSyntraxWorkingDir,
+            g_SyntaxFiles(ENUM_SYNTAX_FILES.DEBUGGER_TEXTEDITOR) = New STRUC_SYNTAX_FILES_ITEM() With {
+                                                                        .sFile = String.Format("{0}.xshd", IO.Path.Combine(sSyntaxWorkingDir, Guid.NewGuid.ToString)),
+                                                                        .sFolder = sSyntaxWorkingDir,
                                                                         .sDefinition = "SourcePawn-DebugTextEditor-" & Guid.NewGuid.ToString}
 
-            'Add all syntrax files to the provider, only once
-            For i = 0 To g_SyntraxFiles.Length - 1
-                CreateSyntraxFile(i)
+            'Add all syntax files to the provider, only once
+            For i = 0 To g_SyntaxFiles.Length - 1
+                CreateSyntaxFile(i)
 
-                Dim synraxProvider As New FileSyntaxModeProvider(g_SyntraxFiles(i).sFolder)
+                Dim synraxProvider As New FileSyntaxModeProvider(g_SyntaxFiles(i).sFolder)
                 HighlightingManager.Manager.AddSyntaxModeFileProvider(synraxProvider)
             Next
         End Sub
@@ -2256,10 +2256,10 @@ Public Class FormMain
                 iItem.g_cControl.ForeColor = If(ClassSettings.g_iSettingsInvertColors, iItem.g_cForeColorInv, iItem.g_cForeColorOrg)
             Next
 
-            UpdateSyntraxFile(ENUM_SYNTRAX_UPDATE_TYPE.AUTOCOMPLETE, True)
-            UpdateSyntraxFile(ENUM_SYNTRAX_UPDATE_TYPE.HIGHLIGHT_WORD, True)
-            UpdateSyntraxFile(ENUM_SYNTRAX_UPDATE_TYPE.CARET_WORD, True)
-            UpdateTextEditorSyntrax()
+            UpdateSyntaxFile(ENUM_SYNTAX_UPDATE_TYPE.AUTOCOMPLETE, True)
+            UpdateSyntaxFile(ENUM_SYNTAX_UPDATE_TYPE.HIGHLIGHT_WORD, True)
+            UpdateSyntaxFile(ENUM_SYNTAX_UPDATE_TYPE.CARET_WORD, True)
+            UpdateTextEditorSyntax()
         End Sub
 
         ''' <summary>
@@ -2273,24 +2273,24 @@ Public Class FormMain
         End Function
 
         ''' <summary>
-        ''' Checks if the syntrax files exist. If not, they will be created.
+        ''' Checks if the syntax files exist. If not, they will be created.
         ''' </summary>
-        Public Sub CreateSyntraxFile(i As ENUM_SYNTRAX_FILES)
+        Public Sub CreateSyntaxFile(i As ENUM_SYNTAX_FILES)
             SyncLock _lock
                 Try
-                    IO.Directory.CreateDirectory(g_SyntraxFiles(i).sFolder)
+                    IO.Directory.CreateDirectory(g_SyntaxFiles(i).sFolder)
 
-                    Dim sModSyntraxXML As String
-                    If (Not String.IsNullOrEmpty(ClassSettings.g_sConfigSyntraxHighlightingPath) AndAlso
-                                IO.File.Exists(ClassSettings.g_sConfigSyntraxHighlightingPath) AndAlso
-                                IO.Path.GetExtension(ClassSettings.g_sConfigSyntraxHighlightingPath).ToLower = ".xml") Then
-                        Dim sFileText As String = IO.File.ReadAllText(ClassSettings.g_sConfigSyntraxHighlightingPath)
-                        sModSyntraxXML = sFileText.Replace(sSyntrax_SourcePawnMarker, g_SyntraxFiles(i).sDefinition)
+                    Dim sModSyntaxXML As String
+                    If (Not String.IsNullOrEmpty(ClassSettings.g_sConfigSyntaxHighlightingPath) AndAlso
+                                IO.File.Exists(ClassSettings.g_sConfigSyntaxHighlightingPath) AndAlso
+                                IO.Path.GetExtension(ClassSettings.g_sConfigSyntaxHighlightingPath).ToLower = ".xml") Then
+                        Dim sFileText As String = IO.File.ReadAllText(ClassSettings.g_sConfigSyntaxHighlightingPath)
+                        sModSyntaxXML = sFileText.Replace(sSyntax_SourcePawnMarker, g_SyntaxFiles(i).sDefinition)
                     Else
-                        sModSyntraxXML = g_SyntraxXML.Replace(sSyntrax_SourcePawnMarker, g_SyntraxFiles(i).sDefinition)
+                        sModSyntaxXML = g_SyntaxXML.Replace(sSyntax_SourcePawnMarker, g_SyntaxFiles(i).sDefinition)
                     End If
 
-                    IO.File.WriteAllText(g_SyntraxFiles(i).sFile, sModSyntraxXML)
+                    IO.File.WriteAllText(g_SyntaxFiles(i).sFile, sModSyntaxXML)
                 Catch ex As Exception
                     ClassExceptionLog.WriteToLogMessageBox(ex)
                 End Try
@@ -2298,25 +2298,25 @@ Public Class FormMain
         End Sub
 
         ''' <summary>
-        ''' Updates the syntrax file with new information (e.g highlights, defines, enums etc. from the includes and source).
-        ''' This only changes the syntrax file.
+        ''' Updates the syntax file with new information (e.g highlights, defines, enums etc. from the includes and source).
+        ''' This only changes the syntax file.
         ''' </summary>
         ''' <param name="iType"></param>
-        ''' <param name="bForceFromMemory">If true, overwrites the syntrax file from memory cache (factory new)</param>
-        Public Sub UpdateSyntraxFile(iType As ENUM_SYNTRAX_UPDATE_TYPE, Optional bForceFromMemory As Boolean = False)
+        ''' <param name="bForceFromMemory">If true, overwrites the syntax file from memory cache (factory new)</param>
+        Public Sub UpdateSyntaxFile(iType As ENUM_SYNTAX_UPDATE_TYPE, Optional bForceFromMemory As Boolean = False)
             SyncLock _lock
                 Try
-                    For i = 0 To g_SyntraxFiles.Length - 1
-                        If (Not IO.File.Exists(g_SyntraxFiles(i).sFile) OrElse bForceFromMemory) Then
-                            CreateSyntraxFile(i)
+                    For i = 0 To g_SyntaxFiles.Length - 1
+                        If (Not IO.File.Exists(g_SyntaxFiles(i).sFile) OrElse bForceFromMemory) Then
+                            CreateSyntaxFile(i)
                         End If
 
                         Select Case (i)
-                            Case ENUM_SYNTRAX_FILES.MAIN_TEXTEDITOR,
-                                        ENUM_SYNTRAX_FILES.DEBUGGER_TEXTEDITOR
+                            Case ENUM_SYNTAX_FILES.MAIN_TEXTEDITOR,
+                                        ENUM_SYNTAX_FILES.DEBUGGER_TEXTEDITOR
                                 Dim SB As New StringBuilder
 
-                                Using SR As New IO.StreamReader(g_SyntraxFiles(i).sFile)
+                                Using SR As New IO.StreamReader(g_SyntaxFiles(i).sFile)
                                     Dim sLine As String
 
                                     While True
@@ -2326,11 +2326,11 @@ Public Class FormMain
                                         End If
 
                                         Select Case (iType)
-                                            Case ENUM_SYNTRAX_UPDATE_TYPE.CARET_WORD
-                                                If (i = ENUM_SYNTRAX_FILES.MAIN_TEXTEDITOR AndAlso
-                                                            sLine.Contains(sSyntrax_HighlightCaretMarker)) Then
+                                            Case ENUM_SYNTAX_UPDATE_TYPE.CARET_WORD
+                                                If (i = ENUM_SYNTAX_FILES.MAIN_TEXTEDITOR AndAlso
+                                                            sLine.Contains(sSyntax_HighlightCaretMarker)) Then
 
-                                                    SB.Append(sSyntrax_HighlightCaretMarker)
+                                                    SB.Append(sSyntax_HighlightCaretMarker)
 
                                                     If (Not String.IsNullOrEmpty(g_sCaretWord) AndAlso ClassSettings.g_iSettingsAutoMark) Then
                                                         SB.Append(String.Format("<Key word=""{0}""/>", g_sCaretWord))
@@ -2340,11 +2340,11 @@ Public Class FormMain
                                                     Continue While
                                                 End If
 
-                                            Case ENUM_SYNTRAX_UPDATE_TYPE.HIGHLIGHT_WORD
-                                                If (i = ENUM_SYNTRAX_FILES.MAIN_TEXTEDITOR AndAlso
-                                                            sLine.Contains(sSyntrax_HighlightWordMarker)) Then
+                                            Case ENUM_SYNTAX_UPDATE_TYPE.HIGHLIGHT_WORD
+                                                If (i = ENUM_SYNTAX_FILES.MAIN_TEXTEDITOR AndAlso
+                                                            sLine.Contains(sSyntax_HighlightWordMarker)) Then
 
-                                                    SB.Append(sSyntrax_HighlightWordMarker)
+                                                    SB.Append(sSyntax_HighlightWordMarker)
 
                                                     If (Not String.IsNullOrEmpty(g_sHighlightWord)) Then
                                                         SB.Append(String.Format("<Key word=""{0}""/>", g_sHighlightWord))
@@ -2354,9 +2354,9 @@ Public Class FormMain
                                                     Continue While
                                                 End If
 
-                                            Case ENUM_SYNTRAX_UPDATE_TYPE.AUTOCOMPLETE
-                                                If (sLine.Contains(sSyntrax_HighlightDefineMarker)) Then
-                                                    SB.Append(sSyntrax_HighlightDefineMarker)
+                                            Case ENUM_SYNTAX_UPDATE_TYPE.AUTOCOMPLETE
+                                                If (sLine.Contains(sSyntax_HighlightDefineMarker)) Then
+                                                    SB.Append(sSyntax_HighlightDefineMarker)
 
                                                     For Each struc In lAutocompleteList
                                                         Select Case (True)
@@ -2370,8 +2370,8 @@ Public Class FormMain
                                                     Continue While
                                                 End If
 
-                                                If (sLine.Contains(sSyntrax_HighlightEnumMarker)) Then
-                                                    SB.Append(sSyntrax_HighlightEnumMarker)
+                                                If (sLine.Contains(sSyntax_HighlightEnumMarker)) Then
+                                                    SB.Append(sSyntax_HighlightEnumMarker)
 
                                                     Dim lExistList As New List(Of String)
 
@@ -2398,8 +2398,8 @@ Public Class FormMain
                                                     Continue While
                                                 End If
 
-                                                If (sLine.Contains(sSyntrax_HighlightEnum2Marker)) Then
-                                                    SB.Append(sSyntrax_HighlightEnum2Marker)
+                                                If (sLine.Contains(sSyntax_HighlightEnum2Marker)) Then
+                                                    SB.Append(sSyntax_HighlightEnum2Marker)
 
                                                     Dim lExistList As New List(Of String)
 
@@ -2438,9 +2438,9 @@ Public Class FormMain
                                 Dim sFormatedString As String = SB.ToString
 
                                 While (ClassSettings.g_iSettingsInvertColors)
-                                    If (Not String.IsNullOrEmpty(ClassSettings.g_sConfigSyntraxHighlightingPath) AndAlso
-                                                IO.File.Exists(ClassSettings.g_sConfigSyntraxHighlightingPath) AndAlso
-                                                IO.Path.GetExtension(ClassSettings.g_sConfigSyntraxHighlightingPath).ToLower = ".xml") Then
+                                    If (Not String.IsNullOrEmpty(ClassSettings.g_sConfigSyntaxHighlightingPath) AndAlso
+                                                IO.File.Exists(ClassSettings.g_sConfigSyntaxHighlightingPath) AndAlso
+                                                IO.Path.GetExtension(ClassSettings.g_sConfigSyntaxHighlightingPath).ToLower = ".xml") Then
                                         Exit While
                                     End If
 
@@ -2472,7 +2472,7 @@ Public Class FormMain
                                     Exit While
                                 End While
 
-                                IO.File.WriteAllText(g_SyntraxFiles(i).sFile, sFormatedString)
+                                IO.File.WriteAllText(g_SyntaxFiles(i).sFile, sFormatedString)
                         End Select
                     Next
                 Catch ex As Exception
@@ -2482,30 +2482,30 @@ Public Class FormMain
         End Sub
 
         ''' <summary>
-        ''' Updates the text editor syntrax. Should be used after changing the syntrax file.
+        ''' Updates the text editor syntax. Should be used after changing the syntax file.
         ''' </summary>
-        Public Sub UpdateTextEditorSyntrax()
+        Public Sub UpdateTextEditorSyntax()
             Try
-                For i = 0 To g_SyntraxFiles.Length - 1
-                    If (Not IO.File.Exists(g_SyntraxFiles(i).sFile)) Then
-                        CreateSyntraxFile(i)
+                For i = 0 To g_SyntaxFiles.Length - 1
+                    If (Not IO.File.Exists(g_SyntaxFiles(i).sFile)) Then
+                        CreateSyntaxFile(i)
                     End If
                 Next
 
                 HighlightingManager.Manager.ReloadSyntaxModes()
 
-                For i = 0 To g_SyntraxFiles.Length - 1
+                For i = 0 To g_SyntaxFiles.Length - 1
                     Select Case (i)
-                        Case ENUM_SYNTRAX_FILES.MAIN_TEXTEDITOR
-                            g_mFormMain.TextEditorControl_Source.SetHighlighting(g_SyntraxFiles(i).sDefinition)
+                        Case ENUM_SYNTAX_FILES.MAIN_TEXTEDITOR
+                            g_mFormMain.TextEditorControl_Source.SetHighlighting(g_SyntaxFiles(i).sDefinition)
 
-                            g_mFormMain.g_mUCToolTip.TextEditorControl_ToolTip.SetHighlighting(g_SyntraxFiles(i).sDefinition)
+                            g_mFormMain.g_mUCToolTip.TextEditorControl_ToolTip.SetHighlighting(g_SyntaxFiles(i).sDefinition)
                             g_mFormMain.g_mUCToolTip.TextEditorControl_ToolTip.Font = New Font(g_mFormMain.TextEditorControl_Source.Font.FontFamily, 8, FontStyle.Regular)
 
-                        Case ENUM_SYNTRAX_FILES.DEBUGGER_TEXTEDITOR
+                        Case ENUM_SYNTAX_FILES.DEBUGGER_TEXTEDITOR
                             If (g_mFormMain.g_mFormDebugger IsNot Nothing AndAlso Not g_mFormMain.g_mFormDebugger.IsDisposed) Then
-                                g_mFormMain.g_mFormDebugger.TextEditorControlEx_DebuggerSource.SetHighlighting(g_SyntraxFiles(i).sDefinition)
-                                g_mFormMain.g_mFormDebugger.TextEditorControlEx_DebuggerDiasm.SetHighlighting(g_SyntraxFiles(i).sDefinition)
+                                g_mFormMain.g_mFormDebugger.TextEditorControlEx_DebuggerSource.SetHighlighting(g_SyntaxFiles(i).sDefinition)
+                                g_mFormMain.g_mFormDebugger.TextEditorControlEx_DebuggerDiasm.SetHighlighting(g_SyntaxFiles(i).sDefinition)
                             End If
                     End Select
                 Next
@@ -2522,9 +2522,9 @@ Public Class FormMain
 
             Dim iStartLoc As Integer = 0
 
-            Dim sourceAnalysis As ClassSyntraxSourceAnalysis = Nothing
+            Dim sourceAnalysis As ClassSyntaxSourceAnalysis = Nothing
             If (bInvalidCodeCheck) Then
-                sourceAnalysis = New ClassSyntraxSourceAnalysis(sExpression)
+                sourceAnalysis = New ClassSyntaxSourceAnalysis(sExpression)
             End If
 
             For i = 0 To sExpression.Length - 1
@@ -2578,7 +2578,7 @@ Public Class FormMain
             End Using
             sSource = SB.ToString
 
-            Dim sourceAnalysis As New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sSource)
+            Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
 
             Dim iBraceCount As Integer = 0
             Dim iBracedCount As Integer = 0
@@ -2638,7 +2638,7 @@ Public Class FormMain
                     Return match.Index
                 Next
             Else
-                Dim sourceAnalysis As New ClassSyntraxSourceAnalysis(sSource)
+                Dim sourceAnalysis As New ClassSyntaxSourceAnalysis(sSource)
                 For Each match As Match In Regex.Matches(sSource, sRegexPattern, RegexOptions.Multiline)
                     If (sourceAnalysis.InNonCode(match.Index)) Then
                         Continue For
@@ -2652,7 +2652,7 @@ Public Class FormMain
         End Function
 
 
-        Public Class ClassSyntraxSourceAnalysis
+        Public Class ClassSyntaxSourceAnalysis
             Enum ENUM_STATE_TYPES
                 PARENTHESIS_LEVEL
                 BRACKET_LEVEL
@@ -3066,12 +3066,12 @@ Public Class FormMain
 
                 ParseAutocompleteMethodmap(lTmpAutocompleteList)
 
-                g_mFormMain.g_ClassSyntraxTools.lAutocompleteList = lTmpAutocompleteList
+                g_mFormMain.g_ClassSyntaxTools.lAutocompleteList = lTmpAutocompleteList
 
 
-                g_mFormMain.g_ClassSyntraxTools.UpdateSyntraxFile(ClassSyntraxTools.ENUM_SYNTRAX_UPDATE_TYPE.AUTOCOMPLETE)
+                g_mFormMain.g_ClassSyntaxTools.UpdateSyntaxFile(ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE.AUTOCOMPLETE)
                 g_mFormMain.BeginInvoke(Sub()
-                                            g_mFormMain.g_ClassSyntraxTools.UpdateTextEditorSyntrax()
+                                            g_mFormMain.g_ClassSyntaxTools.UpdateTextEditorSyntax()
                                             g_mFormMain.g_mUCObjectBrowser.UpdateTreeView()
                                         End Sub)
 
@@ -3234,7 +3234,7 @@ Public Class FormMain
             End If
 
             If (True) Then
-                Dim sourceAnalysis As New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sSource)
+                Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
 
                 'Filter new lines  
                 For i = 0 To sSource.Length - 1
@@ -3263,7 +3263,7 @@ Public Class FormMain
 
             If (True) Then
                 'Filter new spaces 
-                Dim sourceAnalysis As New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sSource)
+                Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
 
                 Dim iBraceLevel As Integer = 0
                 Dim iStringStart As Integer = 0
@@ -3349,11 +3349,11 @@ Public Class FormMain
 
 
             'Get methodmap enums
-            If ((ClassSettings.g_iSettingsAutocompleteSyntrax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTRAX.SP_1_7 OrElse ClassSettings.g_iSettingsAutocompleteSyntrax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTRAX.SP_MIX) AndAlso sSource.Contains("methodmap")) Then
+            If ((ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7 OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX) AndAlso sSource.Contains("methodmap")) Then
                 Dim SB_Source As New StringBuilder(sSource.Length)
 
                 If (True) Then
-                    Dim sourceAnalysis As New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sSource)
+                    Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
 
                     For i = 0 To sSource.Length - 1
                         SB_Source.Append(If(sourceAnalysis.InNonCode(i), " "c, sSource(i)))
@@ -3388,11 +3388,11 @@ Public Class FormMain
 
 
             'Get typeset enums
-            If ((ClassSettings.g_iSettingsAutocompleteSyntrax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTRAX.SP_1_7 OrElse ClassSettings.g_iSettingsAutocompleteSyntrax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTRAX.SP_MIX) AndAlso sSource.Contains("typeset")) Then
+            If ((ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7 OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX) AndAlso sSource.Contains("typeset")) Then
                 Dim SB_Source As New StringBuilder(sSource.Length)
 
                 If (True) Then
-                    Dim sourceAnalysis As New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sSource)
+                    Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
 
                     For i = 0 To sSource.Length - 1
                         SB_Source.Append(If(sourceAnalysis.InNonCode(i), " "c, sSource(i)))
@@ -3426,11 +3426,11 @@ Public Class FormMain
             End If
 
             'Get typedef enums
-            'If ((SettingsClass.g_CurrentAutocompleteSyntrax = SettingsClass.ENUM_AUTOCOMPLETE_SYNTRAX.SP_1_7 OrElse SettingsClass.g_CurrentAutocompleteSyntrax = SettingsClass.ENUM_AUTOCOMPLETE_SYNTRAX.SP_MIX) AndAlso sSource.Contains("typedef")) Then
+            'If ((SettingsClass.g_CurrentAutocompleteSyntax = SettingsClass.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7 OrElse SettingsClass.g_CurrentAutocompleteSyntax = SettingsClass.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX) AndAlso sSource.Contains("typedef")) Then
             '    Dim SB_Source As New StringBuilder(sSource.Length)
 
             '    If (True) Then
-            '        Dim iSynCR_Source As New ClassSyntraxTools.ClassSyntraxCharReader(sSource)
+            '        Dim iSynCR_Source As New ClassSyntaxTools.ClassSyntaxCharReader(sSource)
 
             '        For i = 0 To sSource.Length - 1
             '            SB_Source.Append(If(iSynCR_Source.InNonCode(i), " "c, sSource(i)))
@@ -3468,7 +3468,7 @@ Public Class FormMain
                 Dim SB_Source As New StringBuilder(sSource.Length)
 
                 If (True) Then
-                    Dim sourceAnalysis2 As New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sSource)
+                    Dim sourceAnalysis2 As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
 
                     For i = 0 To sSource.Length - 1
                         SB_Source.Append(If(sourceAnalysis2.InNonCode(i), " "c, sSource(i)))
@@ -3476,7 +3476,7 @@ Public Class FormMain
                 End If
 
                 Dim mPossibleEnumMatches As MatchCollection = Regex.Matches(SB_Source.ToString, "^\s*\b(enum)\b\s+((?<Name>\b[a-zA-Z0-9_]+\b)|\(.*?\)|)(\:){0,1}\s*(?<BraceStart>\{)", RegexOptions.Multiline) '^\s*\b(enum)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)\s*(?<BraceStart>\{)
-                Dim iBraceList As Integer()() = g_mFormMain.g_ClassSyntraxTools.GetExpressionBetweenBraces(SB_Source.ToString, "{"c, "}"c, 1, True)
+                Dim iBraceList As Integer()() = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenBraces(SB_Source.ToString, "{"c, "}"c, 1, True)
 
 
                 Dim mRegMatch As Match
@@ -3487,7 +3487,7 @@ Public Class FormMain
                 Dim sEnumSource As String
                 Dim iBraceIndex As Integer
 
-                Dim sourceAnalysis As ClassSyntraxTools.ClassSyntraxSourceAnalysis
+                Dim sourceAnalysis As ClassSyntaxTools.ClassSyntaxSourceAnalysis
 
                 Dim SB As StringBuilder
                 Dim lEnumSplitList As List(Of String)
@@ -3524,7 +3524,7 @@ Public Class FormMain
                         Continue For
                     End If
 
-                    sourceAnalysis = New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sEnumSource)
+                    sourceAnalysis = New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sEnumSource)
 
                     SB = New StringBuilder
                     lEnumSplitList = New List(Of String)
@@ -3678,7 +3678,7 @@ Public Class FormMain
                         sName = mRegMatch.Groups("Name").Value
 
                         If (mRegMatch.Groups("Arguments").Success) Then
-                            iBraceList = g_mFormMain.g_ClassSyntraxTools.GetExpressionBetweenBraces(sLine, "("c, ")"c, 1, True)
+                            iBraceList = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenBraces(sLine, "("c, ")"c, 1, True)
                             If (iBraceList.Length < 1) Then
                                 Continue While
                             End If
@@ -3713,7 +3713,7 @@ Public Class FormMain
                 'Dim SB_Source As New StringBuilder(sSource.Length)
 
                 'If (True) Then
-                '    Dim iSynCR_Source As New ClassSyntraxTools.ClassSyntraxCharReader(sSource)
+                '    Dim iSynCR_Source As New ClassSyntaxTools.ClassSyntaxCharReader(sSource)
 
                 '    For i = 0 To sSource.Length - 1
                 '        SB_Source.Append(If(iSynCR_Source.InNonCode(i), " "c, sSource(i)))
@@ -3729,7 +3729,7 @@ Public Class FormMain
                 Dim sComment As String
 
                 Dim sLines As String() = sSource.Split(New String() {vbNewLine, vbLf}, 0)
-                Dim sourceAnalysis As New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sSource)
+                Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
                 For i = 0 To sLines.Length - 1
                     If (Not sLines(i).Contains("public") OrElse Not sLines(i).Contains(";"c)) Then
                         Continue For
@@ -3743,7 +3743,7 @@ Public Class FormMain
                     'SP 1.7 +Tags
                     mRegMatch = Regex.Match(sLines(i), String.Format("^\s*(?<Types>public(\b[a-zA-Z0-9_ ]+\b)*)\s+(?<Tag>\b{0}\b(\[\s*\])*\s)\s*(?<Name>\b[a-zA-Z0-9_]+\b)(?<Other>(.*?))$", sRegExEnum))
                     If (Not mRegMatch.Success) Then
-                        If (ClassSettings.g_iSettingsAutocompleteSyntrax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTRAX.SP_1_7) Then
+                        If (ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7) Then
                             Continue For
                         End If
 
@@ -3757,7 +3757,7 @@ Public Class FormMain
                             End If
                         End If
                     Else
-                        If (ClassSettings.g_iSettingsAutocompleteSyntrax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTRAX.SP_1_6) Then
+                        If (ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_6) Then
                             Continue For
                         End If
                     End If
@@ -3803,13 +3803,13 @@ Public Class FormMain
                 Dim bCommentStart As Boolean
                 Dim mRegMatch2 As Match
 
-                Dim sourceAnalysis As New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sSource)
+                Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
                 Dim sLines As String() = sSource.Split(New String() {vbNewLine, vbLf}, 0)
 
                 If (sourceAnalysis.GetMaxLenght - 1 > 0) Then
                     Dim iLastBraceLevel As Integer = sourceAnalysis.GetBraceLevel(sourceAnalysis.GetMaxLenght - 1)
                     If (iLastBraceLevel > 0) Then
-                        g_mFormMain.PrintInformation("[ERRO]", vbTab & String.Format("Uneven brace level! May lead to syntrax parser failures! [LV:{0}] ({1})", iLastBraceLevel, IO.Path.GetFileName(sFile)))
+                        g_mFormMain.PrintInformation("[ERRO]", vbTab & String.Format("Uneven brace level! May lead to syntax parser failures! [LV:{0}] ({1})", iLastBraceLevel, IO.Path.GetFileName(sFile)))
                     End If
                 End If
 
@@ -3823,7 +3823,7 @@ Public Class FormMain
                         Continue For
                     End If
 
-                    iBraceList = g_mFormMain.g_ClassSyntraxTools.GetExpressionBetweenBraces(sLines(i), "("c, ")"c, 1, True)
+                    iBraceList = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenBraces(sLines(i), "("c, ")"c, 1, True)
                     If (iBraceList.Length < 1) Then
                         Continue For
                     End If
@@ -3833,7 +3833,7 @@ Public Class FormMain
                     'SP 1.7 +Tags
                     mRegMatch = Regex.Match(sLines(i), String.Format("^\s*(?<Types>[a-zA-Z0-9_ ]*)(?<Tag>\b{0}\b\s)\s*(?<Name>\b[a-zA-Z0-9_]+\b)\s*{1}(?<IsFunc>\s*;){2}", sRegExEnum, Regex.Escape(sBraceText), "{0,1}"))
                     If (Not mRegMatch.Success) Then
-                        If (ClassSettings.g_iSettingsAutocompleteSyntrax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTRAX.SP_1_7) Then
+                        If (ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7) Then
                             Continue For
                         End If
 
@@ -3847,7 +3847,7 @@ Public Class FormMain
                             End If
                         End If
                     Else
-                        If (ClassSettings.g_iSettingsAutocompleteSyntrax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTRAX.SP_1_6) Then
+                        If (ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_6) Then
                             Continue For
                         End If
                     End If
@@ -3858,7 +3858,7 @@ Public Class FormMain
                     sFull = mRegMatch.Groups("Types").Value & sTag & sName & sBraceText
                     sComment = ""
 
-                    If (Regex.IsMatch(sName, String.Format("(\b{0}\b)", String.Join("\b|\b", g_mFormMain.g_ClassSyntraxTools.g_sStatementsArray)))) Then
+                    If (Regex.IsMatch(sName, String.Format("(\b{0}\b)", String.Join("\b|\b", g_mFormMain.g_ClassSyntaxTools.g_sStatementsArray)))) Then
                         Continue For
                     End If
 
@@ -3931,9 +3931,9 @@ Public Class FormMain
             End If
 
             'Get funcenums
-            If ((ClassSettings.g_iSettingsAutocompleteSyntrax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTRAX.SP_1_6 OrElse ClassSettings.g_iSettingsAutocompleteSyntrax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTRAX.SP_MIX) AndAlso sSource.Contains("funcenum")) Then
+            If ((ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_6 OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX) AndAlso sSource.Contains("funcenum")) Then
                 Dim mPossibleEnumMatches As MatchCollection = Regex.Matches(sSource, "^\s*\b(funcenum)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)\s*(?<BraceStart>\{)", RegexOptions.Multiline)
-                Dim iBraceList As Integer()() = g_mFormMain.g_ClassSyntraxTools.GetExpressionBetweenBraces(sSource, "{"c, "}"c, 1, True)
+                Dim iBraceList As Integer()() = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenBraces(sSource, "{"c, "}"c, 1, True)
 
                 Dim mRegMatch As Match
 
@@ -3946,7 +3946,7 @@ Public Class FormMain
                 Dim SB As StringBuilder
                 Dim lEnumSplitList As List(Of String)
 
-                Dim sourceAnalysis As ClassSyntraxTools.ClassSyntraxSourceAnalysis
+                Dim sourceAnalysis As ClassSyntaxTools.ClassSyntaxSourceAnalysis
 
                 Dim sLine As String
                 Dim iInvalidLen As Integer
@@ -3984,7 +3984,7 @@ Public Class FormMain
                     SB = New StringBuilder
                     lEnumSplitList = New List(Of String)
 
-                    sourceAnalysis = New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sEnumSource)
+                    sourceAnalysis = New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sEnumSource)
 
                     For ii = 0 To sEnumSource.Length - 1
                         Select Case (sEnumSource(ii))
@@ -4107,9 +4107,9 @@ Public Class FormMain
             End If
 
             'Get methodmaps
-            If ((ClassSettings.g_iSettingsAutocompleteSyntrax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTRAX.SP_1_7 OrElse ClassSettings.g_iSettingsAutocompleteSyntrax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTRAX.SP_MIX) AndAlso sSource.Contains("methodmap")) Then
+            If ((ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7 OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX) AndAlso sSource.Contains("methodmap")) Then
                 Dim mPossibleMethodmapMatches As MatchCollection = Regex.Matches(sSource, "^\s*\b(methodmap)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)(?<ParentingName>\s+\b[a-zA-Z0-9_]+\b){0,1}(?<FullParent>\s*\<\s*(?<Parent>\b[a-zA-Z0-9_]+\b)){0,1}\s*(?<BraceStart>\{)", RegexOptions.Multiline)
-                Dim iBraceList As Integer()() = g_mFormMain.g_ClassSyntraxTools.GetExpressionBetweenBraces(sSource, "{"c, "}"c, 1, True)
+                Dim iBraceList As Integer()() = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenBraces(sSource, "{"c, "}"c, 1, True)
 
                 Dim mRegMatch As Match
 
@@ -4162,8 +4162,8 @@ Public Class FormMain
                         End If
                     End If
 
-                    Dim sourceAnalysis As New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sMethodmapSource)
-                    Dim iMethodmapBraceList As Integer()() = g_mFormMain.g_ClassSyntraxTools.GetExpressionBetweenBraces(sMethodmapSource, "("c, ")"c, 1, True)
+                    Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sMethodmapSource)
+                    Dim iMethodmapBraceList As Integer()() = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenBraces(sMethodmapSource, "("c, ")"c, 1, True)
 
                     Dim mMethodMatches As MatchCollection = Regex.Matches(sMethodmapSource,
                                                                           String.Format("^\s*(?<Type>\b(property|public\s+(static\s+){2}native|public)\b)\s+((?<Tag>\b({0})\b\s)\s*(?<Name>\b[a-zA-Z0-9_]+\b)|(?<Constructor>\b{1}\b)|(?<Name>\b[a-zA-Z0-9_]+\b))\s*(?<BraceStart>\(){3}", sRegExEnum, sMethodMapName, "{0,1}", "{0,1}"),
@@ -4253,9 +4253,9 @@ Public Class FormMain
             End If
 
             'Get typesets
-            If ((ClassSettings.g_iSettingsAutocompleteSyntrax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTRAX.SP_1_7 OrElse ClassSettings.g_iSettingsAutocompleteSyntrax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTRAX.SP_MIX) AndAlso sSource.Contains("typeset")) Then
+            If ((ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7 OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX) AndAlso sSource.Contains("typeset")) Then
                 Dim mPossibleMethodmapMatches As MatchCollection = Regex.Matches(sSource, "^\s*\b(typeset)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)\s*(?<BraceStart>\{)", RegexOptions.Multiline)
-                Dim iBraceList As Integer()() = g_mFormMain.g_ClassSyntraxTools.GetExpressionBetweenBraces(sSource, "{"c, "}"c, 1, True)
+                Dim iBraceList As Integer()() = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenBraces(sSource, "{"c, "}"c, 1, True)
 
                 Dim mRegMatch As Match
 
@@ -4300,8 +4300,8 @@ Public Class FormMain
                         End If
                     End If
 
-                    Dim sourceAnalysis As New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sMethodmapSource)
-                    Dim iMethodmapBraceList As Integer()() = g_mFormMain.g_ClassSyntraxTools.GetExpressionBetweenBraces(sMethodmapSource, "("c, ")"c, 1, True)
+                    Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sMethodmapSource)
+                    Dim iMethodmapBraceList As Integer()() = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenBraces(sMethodmapSource, "("c, ")"c, 1, True)
 
                     Dim mMethodMatches As MatchCollection = Regex.Matches(sMethodmapSource, String.Format("^\s*(?<Type>\b(function)\b)\s+(?<Tag>\b({0})\b)\s*(?<BraceStart>\()", sRegExEnum), RegexOptions.Multiline)
 
@@ -4359,11 +4359,11 @@ Public Class FormMain
                 Next
             End If
 
-            If ((ClassSettings.g_iSettingsAutocompleteSyntrax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTRAX.SP_1_7 OrElse ClassSettings.g_iSettingsAutocompleteSyntrax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTRAX.SP_MIX) AndAlso sSource.Contains("typedef")) Then
+            If ((ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7 OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX) AndAlso sSource.Contains("typedef")) Then
                 Dim mPossibleMethodmapMatches As MatchCollection = Regex.Matches(sSource, String.Format("^\s*\b(typedef)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)\s+=\s+\b(function)\b\s+(?<Tag>\b({0})\b)\s*(?<BraceStart>\()", sRegExEnum), RegexOptions.Multiline)
-                Dim iBraceList As Integer()() = g_mFormMain.g_ClassSyntraxTools.GetExpressionBetweenBraces(sSource, "("c, ")"c, 1, True)
+                Dim iBraceList As Integer()() = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenBraces(sSource, "("c, ")"c, 1, True)
 
-                Dim sourceAnalysis As New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sSource)
+                Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
 
                 For i = 0 To mPossibleMethodmapMatches.Count - 1
                     Dim mRegMatch As Match = mPossibleMethodmapMatches(i)
@@ -4600,7 +4600,7 @@ Public Class FormMain
         ''' </summary>
         ''' <param name="sSource"></param>
         Public Sub UpdateBreakpoints(sSource As String, bKeepIdentity As Boolean)
-            Dim sourceAnalysis As New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sSource)
+            Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
 
             If (Not bKeepIdentity) Then
                 g_lBreakpointList.Clear()
@@ -4693,7 +4693,7 @@ Public Class FormMain
         ''' </summary>
         ''' <param name="sSource"></param>
         Public Sub UpdateWatchers(sSource As String, bKeepIdentity As Boolean)
-            Dim sourceAnalysis As New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sSource)
+            Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
 
             If (Not bKeepIdentity) Then
                 g_lWatcherList.Clear()
@@ -5095,13 +5095,13 @@ Public Class FormMain
             ''' <summary>
             ''' Generates a engine source which can be used to accept commands, when its running.
             ''' </summary>
-            ''' <param name="bNewSyntrax"></param>
+            ''' <param name="bNewSyntax"></param>
             ''' <returns></returns>
-            Public Function GenerateRunnerEngine(bNewSyntrax As Boolean) As String
+            Public Function GenerateRunnerEngine(bNewSyntax As Boolean) As String
                 Dim SB As New StringBuilder
 
-                If (bNewSyntrax) Then
-                    'TODO: Add new syntrax engine
+                If (bNewSyntax) Then
+                    'TODO: Add new synrax engine
                     SB.AppendLine(My.Resources.Debugger_CommandRunnerEngineOld)
                 Else
                     SB.AppendLine(My.Resources.Debugger_CommandRunnerEngineOld)
@@ -5165,7 +5165,7 @@ Public Class FormMain
 
                             If (bIsFunction) Then
                                 Dim sSource As String = g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.TextContent
-                                Dim sourceAnalysis As New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sSource)
+                                Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
 
                                 Dim iFullLenght As Integer = 0
                                 Dim iStartLevel As Integer = sourceAnalysis.GetParenthesisLevel(iStartOffset)
@@ -5348,10 +5348,10 @@ Public Class FormMain
                 sSource = SB.ToString
             End Sub
 
-            Public Function GenerateModuleCode(sFunctionName As String, sIndentifierGUID As String, bNewSyntrax As Boolean) As String
+            Public Function GenerateModuleCode(sFunctionName As String, sIndentifierGUID As String, bNewSyntax As Boolean) As String
                 Dim SB As New StringBuilder
 
-                If (bNewSyntrax) Then
+                If (bNewSyntax) Then
                     SB.AppendLine(My.Resources.Debugger_BreakpointModuleNew)
                 Else
                     SB.AppendLine(My.Resources.Debugger_BreakpointModuleOld)
@@ -5367,7 +5367,7 @@ Public Class FormMain
                 Dim SB As New StringBuilder(sSource)
                 Dim SBModules As New StringBuilder()
 
-                Dim bForceNewSyntrax As Boolean = (g_mFormMain.g_ClassSyntraxTools.HasNewDeclsPragma(sSource) <> -1)
+                Dim bForceNewSyntax As Boolean = (g_mFormMain.g_ClassSyntaxTools.HasNewDeclsPragma(sSource) <> -1)
 
                 For i = debuggerParser.g_lBreakpointList.Count - 1 To 0 Step -1
                     Dim iIndex As Integer = debuggerParser.g_lBreakpointList(i).iOffset
@@ -5378,7 +5378,7 @@ Public Class FormMain
                     SB.Remove(iIndex, iLenght)
                     SB.Insert(iIndex, sNewName)
 
-                    SBModules.AppendLine(GenerateModuleCode(sNewName, sGUID, bForceNewSyntrax))
+                    SBModules.AppendLine(GenerateModuleCode(sNewName, sGUID, bForceNewSyntax))
                 Next
 
                 SB.AppendLine()
@@ -5428,7 +5428,7 @@ Public Class FormMain
 
                             If (bIsFunction) Then
                                 Dim sSource As String = g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.TextContent
-                                Dim sourceAnalysis As New ClassSyntraxTools.ClassSyntraxSourceAnalysis(sSource)
+                                Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
 
                                 Dim iFullLenght As Integer = 0
                                 Dim iStartLevel As Integer = sourceAnalysis.GetParenthesisLevel(iStartOffset)
@@ -5612,10 +5612,10 @@ Public Class FormMain
                 sSource = SB.ToString
             End Sub
 
-            Public Function GenerateModuleCode(sFunctionName As String, sIndentifierGUID As String, bNewSyntrax As Boolean) As String
+            Public Function GenerateModuleCode(sFunctionName As String, sIndentifierGUID As String, bNewSyntax As Boolean) As String
                 Dim SB As New StringBuilder
 
-                If (bNewSyntrax) Then
+                If (bNewSyntax) Then
                     SB.AppendLine(My.Resources.Debugger_WatcherModuleNew)
                 Else
                     SB.AppendLine(My.Resources.Debugger_WatcherModuleOld)
@@ -5631,7 +5631,7 @@ Public Class FormMain
                 Dim SB As New StringBuilder(sSource)
                 Dim SBModules As New StringBuilder()
 
-                Dim bForceNewSyntrax As Boolean = (g_mFormMain.g_ClassSyntraxTools.HasNewDeclsPragma(sSource) <> -1)
+                Dim bForceNewSyntax As Boolean = (g_mFormMain.g_ClassSyntaxTools.HasNewDeclsPragma(sSource) <> -1)
 
                 For i = debuggerParser.g_lWatcherList.Count - 1 To 0 Step -1
                     Dim iIndex As Integer = debuggerParser.g_lWatcherList(i).iOffset
@@ -5642,7 +5642,7 @@ Public Class FormMain
                     SB.Remove(iIndex, iLenght)
                     SB.Insert(iIndex, sNewName)
 
-                    SBModules.AppendLine(GenerateModuleCode(sNewName, sGUID, bForceNewSyntrax))
+                    SBModules.AppendLine(GenerateModuleCode(sNewName, sGUID, bForceNewSyntax))
                 Next
 
                 SB.AppendLine()

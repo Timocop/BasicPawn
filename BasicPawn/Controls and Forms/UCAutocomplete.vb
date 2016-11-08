@@ -52,7 +52,7 @@ Public Class UCAutocomplete
 
         Dim lListViewItemsList As New List(Of ListViewItem)
 
-        Dim sAutocompleteArray As FormMain.STRUC_AUTOCOMPLETE() = g_mFormMain.g_ClassSyntraxTools.lAutocompleteList.ToArray
+        Dim sAutocompleteArray As FormMain.STRUC_AUTOCOMPLETE() = g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.ToArray
         For i = 0 To sAutocompleteArray.Length - 1
             If (bSelectedWord) Then
                 If (sAutocompleteArray(i).sFunctionName.Equals(sText)) Then
@@ -170,7 +170,7 @@ Public Class UCAutocomplete
                 End If
 
                 Dim bPrintedInfo As Boolean = False
-                Dim sAutocompleteArray As FormMain.STRUC_AUTOCOMPLETE() = g_AutocompleteUC.g_mFormMain.g_ClassSyntraxTools.lAutocompleteList.ToArray
+                Dim sAutocompleteArray As FormMain.STRUC_AUTOCOMPLETE() = g_AutocompleteUC.g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.ToArray
                 For i = 0 To sAutocompleteArray.Length - 1
                     If (sAutocompleteArray(i).sFunctionName.Contains(sCurrentMethodName) AndAlso Regex.IsMatch(sAutocompleteArray(i).sFunctionName, String.Format("{0}\b{1}\b", If(bIsMethodMap, "(\.)", ""), Regex.Escape(sCurrentMethodName)))) Then
                         If (ClassSettings.g_iSettingsUseWindowsToolTip AndAlso Not bPrintedInfo) Then
@@ -184,7 +184,7 @@ Public Class UCAutocomplete
                             Dim sNewlineDistance As Integer = sNameToolTip.IndexOf("("c)
 
                             If (sNewlineDistance > -1) Then
-                                Dim sourceAnalysis As New FormMain.ClassSyntraxTools.ClassSyntraxSourceAnalysis(sNameToolTip)
+                                Dim sourceAnalysis As New FormMain.ClassSyntaxTools.ClassSyntaxSourceAnalysis(sNameToolTip)
                                 For ii = sNameToolTip.Length - 1 To 0 Step -1
                                     If (sNameToolTip(ii) <> ","c OrElse sourceAnalysis.InNonCode(ii)) Then
                                         Continue For
@@ -225,7 +225,7 @@ Public Class UCAutocomplete
                     Dim sNewlineDistance As Integer = sNameToolTip.IndexOf("("c)
 
                     If (sNewlineDistance > -1) Then
-                        Dim sourceAnalysis As New FormMain.ClassSyntraxTools.ClassSyntraxSourceAnalysis(sNameToolTip)
+                        Dim sourceAnalysis As New FormMain.ClassSyntaxTools.ClassSyntaxSourceAnalysis(sNameToolTip)
                         For ii = sNameToolTip.Length - 1 To 0 Step -1
                             If (sNameToolTip(ii) <> ","c OrElse sourceAnalysis.InNonCode(ii)) Then
                                 Continue For

@@ -47,7 +47,7 @@ Public Class UCObjectBrowser
         Dim lExitObjectsKeys As New List(Of String)
 
         ' Add tree view nodes
-        g_mFormMain.g_ClassSyntraxTools.lAutocompleteList.ForEach(
+        g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.ForEach(
             Sub(iItem As FormMain.STRUC_AUTOCOMPLETE)
                 Dim treeNodesFiles As TreeNode()
                 Dim treeNodesTypes As TreeNode()
