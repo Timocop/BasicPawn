@@ -15,7 +15,6 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 
-Imports System.Text.RegularExpressions
 
 Public Class FormSettings
     Public g_fFormMain As FormMain = Nothing
@@ -29,6 +28,9 @@ Public Class FormSettings
 
         ' Add any initialization after the InitializeComponent() call.
         Me.Size = New Size(0, 0)
+
+        ClassTools.ClassForms.SetDoubleBufferingAllChilds(Me, True)
+        ClassTools.ClassForms.SetDoubleBufferingUnmanagedAllChilds(Me, True)
     End Sub
 
     Private Sub Button_ConfigAdd_Click(sender As Object, e As EventArgs) Handles Button_ConfigAdd.Click
