@@ -1125,8 +1125,8 @@ Public Class FormMain
             Dim sFunctionName As String
 
             If (bIncludeDot) Then
-                sFuncStart = Regex.Match(g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.GetText(iLineOffset, iPosition), "(\b[a-zA-Z0-9_]+\b(\.){0,1}(\b[a-zA-Z0-9_]+\b){0,1})$").Value
-                sFuncEnd = Regex.Match(g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.GetText(iLineOffset + iPosition, iLineLen - iPosition), "^(\b[a-zA-Z0-9_]+\b(\.){0,1}(\b[a-zA-Z0-9_]+\b){0,1})").Value
+                sFuncStart = Regex.Match(g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.GetText(iLineOffset, iPosition), "((\b[a-zA-Z0-9_]+\b)(\.){0,1}(\b[a-zA-Z0-9_]+\b){0,1})$").Value
+                sFuncEnd = Regex.Match(g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.GetText(iLineOffset + iPosition, iLineLen - iPosition), "^((\b[a-zA-Z0-9_]+\b){0,1}(\.){0,1}(\b[a-zA-Z0-9_]+\b))").Value
             Else
                 sFuncStart = Regex.Match(g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.GetText(iLineOffset, iPosition), "(\b[a-zA-Z0-9_]+\b)$").Value
                 sFuncEnd = Regex.Match(g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.GetText(iLineOffset + iPosition, iLineLen - iPosition), "^(\b[a-zA-Z0-9_]+\b)").Value
