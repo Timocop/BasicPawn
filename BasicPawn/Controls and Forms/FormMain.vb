@@ -2684,7 +2684,7 @@ Public Class FormMain
                 lBadList.Add("while")
                 lBadList.Add("do")
                 lBadList.Add("enum")
-                sRegexBadName = "^(" & String.Join("|", lBadList.ToArray) & ")$"
+                sRegexBadName = String.Format("^({0})$", String.Join("|", lBadList.ToArray))
             End If
 
             Return Regex.IsMatch(sName, sRegexBadName)
@@ -4603,7 +4603,7 @@ Public Class FormMain
 
             'Parse variables
             If (True) Then
-                Dim sInitTypesPattern As String = "\b(new|decl|static|const)\b"
+                Dim sInitTypesPattern As String = "\b(new|decl|static|const)\b" '"public" is already taken care off
                 Dim sOldStyleVarPattern As String = String.Format("(?<Init>{0})\s+((?<Tag>{1})\:(?<Var>\b[a-zA-Z0-9_]+\b)|(?<Var>\b[a-zA-Z0-9_]+\b))($|\W)", sInitTypesPattern, sRegExEnumPattern)
                 Dim sNewStyleVarPattern As String = String.Format("(?<Tag>{0})\s+(?<Var>\b[a-zA-Z0-9_]+\b)($|\W)", sRegExEnumPattern)
 
@@ -4682,7 +4682,7 @@ Public Class FormMain
                                 Exit Select
                             End If
 
-                            If (lTmpAutocompleteList.Exists(Function(j As STRUC_AUTOCOMPLETE) j.sType <> "variable" AndAlso Regex.IsMatch(j.sFunctionName, "\b" & Regex.Escape(sVar) & "\b"))) Then
+                            If (lTmpAutocompleteList.Exists(Function(j As STRUC_AUTOCOMPLETE) j.sType <> "variable" AndAlso Regex.IsMatch(j.sFunctionName, String.Format("\b{0}\b", Regex.Escape(sVar))))) Then
                                 Exit Select
                             End If
 
@@ -4691,14 +4691,14 @@ Public Class FormMain
                             If (autoItem Is Nothing) Then
                                 autoItem = New STRUC_AUTOCOMPLETE
                                 autoItem.sFile = tmpFile.ToLower
-                                autoItem.sFullFunctionName = sVar & " > " & sTag
+                                autoItem.sFullFunctionName = String.Format("{0} > {1}", sVar, sTag)
                                 autoItem.sFunctionName = sVar
                                 autoItem.sInfo = ""
                                 autoItem.sType = "variable"
                                 lTmpVarAutocompleteList.Add(autoItem)
                             Else
-                                If (Not Regex.IsMatch(autoItem.sFullFunctionName, "\b" & Regex.Escape(sTag) & "\b")) Then
-                                    autoItem.sFullFunctionName = autoItem.sFullFunctionName & "|" & sTag
+                                If (Not Regex.IsMatch(autoItem.sFullFunctionName, String.Format("\b{0}\b", Regex.Escape(sTag)))) Then
+                                    autoItem.sFullFunctionName = String.Format("{0}|{1}", autoItem.sFullFunctionName, sTag)
                                 End If
                             End If
 
@@ -4719,7 +4719,7 @@ Public Class FormMain
                                 Exit Select
                             End If
 
-                            If (lTmpAutocompleteList.Exists(Function(j As STRUC_AUTOCOMPLETE) j.sType <> "variable" AndAlso Regex.IsMatch(j.sFunctionName, "\b" & Regex.Escape(sVar) & "\b"))) Then
+                            If (lTmpAutocompleteList.Exists(Function(j As STRUC_AUTOCOMPLETE) j.sType <> "variable" AndAlso Regex.IsMatch(j.sFunctionName, String.Format("\b{0}\b", Regex.Escape(sVar))))) Then
                                 Exit Select
                             End If
 
@@ -4728,14 +4728,14 @@ Public Class FormMain
                             If (autoItem Is Nothing) Then
                                 autoItem = New STRUC_AUTOCOMPLETE
                                 autoItem.sFile = tmpFile.ToLower
-                                autoItem.sFullFunctionName = sVar & " > " & sTag
+                                autoItem.sFullFunctionName = String.Format("{0} > {1}", sVar, sTag)
                                 autoItem.sFunctionName = sVar
                                 autoItem.sInfo = ""
                                 autoItem.sType = "variable"
                                 lTmpVarAutocompleteList.Add(autoItem)
                             Else
-                                If (Not Regex.IsMatch(autoItem.sFullFunctionName, "\b" & Regex.Escape(sTag) & "\b")) Then
-                                    autoItem.sFullFunctionName = autoItem.sFullFunctionName & "|" & sTag
+                                If (Not Regex.IsMatch(autoItem.sFullFunctionName, String.Format("\b{0}\b", Regex.Escape(sTag)))) Then
+                                    autoItem.sFullFunctionName = String.Format("{0}|{1}", autoItem.sFullFunctionName, sTag)
                                 End If
                             End If
                     End Select
@@ -4756,7 +4756,7 @@ Public Class FormMain
                                 Continue For
                             End If
 
-                            If (lTmpAutocompleteList.Exists(Function(j As STRUC_AUTOCOMPLETE) j.sType <> "variable" AndAlso Regex.IsMatch(j.sFunctionName, "\b" & Regex.Escape(sVar) & "\b"))) Then
+                            If (lTmpAutocompleteList.Exists(Function(j As STRUC_AUTOCOMPLETE) j.sType <> "variable" AndAlso Regex.IsMatch(j.sFunctionName, String.Format("\b{0}\b", Regex.Escape(sVar))))) Then
                                 Continue For
                             End If
 
@@ -4765,14 +4765,14 @@ Public Class FormMain
                             If (autoItem Is Nothing) Then
                                 autoItem = New STRUC_AUTOCOMPLETE
                                 autoItem.sFile = tmpFile.ToLower
-                                autoItem.sFullFunctionName = sVar & " > " & sTag
+                                autoItem.sFullFunctionName = String.Format("{0} > {1}", sVar, sTag)
                                 autoItem.sFunctionName = sVar
                                 autoItem.sInfo = ""
                                 autoItem.sType = "variable"
                                 lTmpVarAutocompleteList.Add(autoItem)
                             Else
-                                If (Not Regex.IsMatch(autoItem.sFullFunctionName, "\b" & Regex.Escape(sTag) & "\b")) Then
-                                    autoItem.sFullFunctionName = autoItem.sFullFunctionName & "|" & sTag
+                                If (Not Regex.IsMatch(autoItem.sFullFunctionName, String.Format("\b{0}\b", Regex.Escape(sTag)))) Then
+                                    autoItem.sFullFunctionName = String.Format("{0}|{1}", autoItem.sFullFunctionName, sTag)
                                 End If
                             End If
                         Next
@@ -4794,7 +4794,7 @@ Public Class FormMain
                                 Continue For
                             End If
 
-                            If (lTmpAutocompleteList.Exists(Function(j As STRUC_AUTOCOMPLETE) j.sType <> "variable" AndAlso Regex.IsMatch(j.sFunctionName, "\b" & Regex.Escape(sVar) & "\b"))) Then
+                            If (lTmpAutocompleteList.Exists(Function(j As STRUC_AUTOCOMPLETE) j.sType <> "variable" AndAlso Regex.IsMatch(j.sFunctionName, String.Format("\b{0}\b", Regex.Escape(sVar))))) Then
                                 Continue For
                             End If
 
@@ -4803,14 +4803,14 @@ Public Class FormMain
                             If (autoItem Is Nothing) Then
                                 autoItem = New STRUC_AUTOCOMPLETE
                                 autoItem.sFile = tmpFile.ToLower
-                                autoItem.sFullFunctionName = sVar & " > " & sTag
+                                autoItem.sFullFunctionName = String.Format("{0} > {1}", sVar, sTag)
                                 autoItem.sFunctionName = sVar
                                 autoItem.sInfo = ""
                                 autoItem.sType = "variable"
                                 lTmpVarAutocompleteList.Add(autoItem)
                             Else
-                                If (Not Regex.IsMatch(autoItem.sFullFunctionName, "\b" & Regex.Escape(sTag) & "\b")) Then
-                                    autoItem.sFullFunctionName = autoItem.sFullFunctionName & "|" & sTag
+                                If (Not Regex.IsMatch(autoItem.sFullFunctionName, String.Format("\b{0}\b", Regex.Escape(sTag)))) Then
+                                    autoItem.sFullFunctionName = String.Format("{0}|{1}", autoItem.sFullFunctionName, sTag)
                                 End If
                             End If
                         Next
@@ -4916,14 +4916,14 @@ Public Class FormMain
                             If (autoItem Is Nothing) Then
                                 autoItem = New STRUC_AUTOCOMPLETE
                                 autoItem.sFile = tmpFile.ToLower
-                                autoItem.sFullFunctionName = sVar & " > " & sTag
+                                autoItem.sFullFunctionName = String.Format("{0} > {1}", sVar, sTag)
                                 autoItem.sFunctionName = sVar
                                 autoItem.sInfo = ""
                                 autoItem.sType = "variable"
                                 lTmpVarAutocompleteList.Add(autoItem)
                             Else
-                                If (Not Regex.IsMatch(autoItem.sFullFunctionName, "\b" & Regex.Escape(sTag) & "\b")) Then
-                                    autoItem.sFullFunctionName = autoItem.sFullFunctionName & "|" & sTag
+                                If (Not Regex.IsMatch(autoItem.sFullFunctionName, String.Format("\b{0}\b", Regex.Escape(sTag)))) Then
+                                    autoItem.sFullFunctionName = String.Format("{0}|{1}", autoItem.sFullFunctionName, sTag)
                                 End If
                             End If
                         End If
@@ -4941,14 +4941,14 @@ Public Class FormMain
                             If (autoItem Is Nothing) Then
                                 autoItem = New STRUC_AUTOCOMPLETE
                                 autoItem.sFile = tmpFile.ToLower
-                                autoItem.sFullFunctionName = sVar & " > " & sTag
+                                autoItem.sFullFunctionName = String.Format("{0} > {1}", sVar, sTag)
                                 autoItem.sFunctionName = sVar
                                 autoItem.sInfo = ""
                                 autoItem.sType = "variable"
                                 lTmpVarAutocompleteList.Add(autoItem)
                             Else
-                                If (Not Regex.IsMatch(autoItem.sFullFunctionName, "\b" & Regex.Escape(sTag) & "\b")) Then
-                                    autoItem.sFullFunctionName = autoItem.sFullFunctionName & "|" & sTag
+                                If (Not Regex.IsMatch(autoItem.sFullFunctionName, String.Format("\b{0}\b", Regex.Escape(sTag)))) Then
+                                    autoItem.sFullFunctionName = String.Format("{0}|{1}", autoItem.sFullFunctionName, sTag)
                                 End If
                             End If
                         End If
@@ -4982,14 +4982,14 @@ Public Class FormMain
                         '    Continue For
                         'End If
 
-                        If (Not Regex.IsMatch(item.sFullFunctionName, "\b" & Regex.Escape(sMethodmapName) & "\b")) Then
+                        If (Not Regex.IsMatch(item.sFullFunctionName, String.Format("\b{0}\b", Regex.Escape(sMethodmapName)))) Then
                             Continue For
                         End If
 
                         Dim autoItem As New STRUC_AUTOCOMPLETE
                         autoItem.sFile = IO.Path.GetFileName(item.sFile).ToLower
-                        autoItem.sFullFunctionName = sMethodmapName & "." & sMethodmapMethod
-                        autoItem.sFunctionName = item.sFunctionName & "." & sMethodmapMethod
+                        autoItem.sFullFunctionName = String.Format("{0}.{1}", sMethodmapName, sMethodmapMethod)
+                        autoItem.sFunctionName = String.Format("{0}.{1}", item.sFunctionName, sMethodmapMethod)
                         autoItem.sInfo = item2.sInfo
                         autoItem.sType = "variable"
                         lVarMethodmapList.Add(autoItem)
