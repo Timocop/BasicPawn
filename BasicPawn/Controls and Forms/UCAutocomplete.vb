@@ -175,7 +175,7 @@ Public Class UCAutocomplete
                 Dim sAutocompleteArray As FormMain.STRUC_AUTOCOMPLETE() = g_AutocompleteUC.g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.ToArray
                 For i = 0 To sAutocompleteArray.Length - 1
                     If (sAutocompleteArray(i).sFunctionName.Contains(sCurrentMethodName) AndAlso
-                                sAutocompleteArray(i).sType <> "variable" AndAlso
+                                Not Regex.IsMatch(sAutocompleteArray(i).sType, "\b(variable)\b") AndAlso
                                 Regex.IsMatch(sAutocompleteArray(i).sFunctionName, String.Format("{0}\b{1}\b", If(bIsMethodMap, "(\.)", ""), Regex.Escape(sCurrentMethodName)))) Then
 
                         If (ClassSettings.g_iSettingsUseWindowsToolTip AndAlso Not bPrintedInfo) Then

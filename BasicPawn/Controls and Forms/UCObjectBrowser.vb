@@ -15,6 +15,8 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 
+Imports System.Text.RegularExpressions
+
 Public Class UCObjectBrowser
     Private g_mFormMain As FormMain
 
@@ -50,7 +52,7 @@ Public Class UCObjectBrowser
         ' Add tree view nodes
         g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.ForEach(
             Sub(iItem As FormMain.STRUC_AUTOCOMPLETE)
-                If (iItem.sType = "variable") Then
+                If (Regex.IsMatch(iItem.sType, "\b(variable)\b")) Then
                     Return
                 End If
 
