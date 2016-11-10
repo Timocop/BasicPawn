@@ -2032,7 +2032,7 @@ Public Class FormMain
                 Try
                     'Update Autocomplete
                     If (g_mLastFullAutocompleteUpdate < Now OrElse g_mFormMain.g_ClassAutocompleteUpdater.g_bForceFullAutocompleteUpdate) Then
-                        g_mLastFullAutocompleteUpdate = (Now + New TimeSpan(0, 0, 1, 0, 0)) 'WARN: .NET BUG! New TimeSpan(0d, 0h, 1m) actually returns 1s.
+                        g_mLastFullAutocompleteUpdate = (Now + New TimeSpan(0, 0, 1, 0, 0))
 
                         g_mFormMain.BeginInvoke(Sub() g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL))
                     End If
