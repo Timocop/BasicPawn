@@ -4991,7 +4991,7 @@ Public Class FormMain
                         autoItem.sFullFunctionName = String.Format("{0}.{1}", sMethodmapName, sMethodmapMethod)
                         autoItem.sFunctionName = String.Format("{0}.{1}", item.sFunctionName, sMethodmapMethod)
                         autoItem.sInfo = item2.sInfo
-                        autoItem.sType = "variable"
+                        autoItem.sType = String.Format("variable {0}", Regex.Replace(item2.sType, "\b(methodmap)\b", ""))
                         lVarMethodmapList.Add(autoItem)
                     Next
                 Next
