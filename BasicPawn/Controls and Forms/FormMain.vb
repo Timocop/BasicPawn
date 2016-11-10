@@ -3139,7 +3139,7 @@ Public Class FormMain
                 End If
 
                 'Save everything and update syntax
-                g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.RemoveAll(Function(j As STRUC_AUTOCOMPLETE) j.sType <> "variable")
+                g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.RemoveAll(Function(j As STRUC_AUTOCOMPLETE) Not Regex.IsMatch(j.sType, "\b(variable)\b"))
                 g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.AddRange(lTmpAutocompleteList)
 
                 g_mFormMain.g_ClassSyntaxTools.UpdateSyntaxFile(ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE.AUTOCOMPLETE)
@@ -4529,7 +4529,7 @@ Public Class FormMain
                     ParseVariables_Post(sRegExEnumPattern, lTmpVarAutocompleteList, g_mFormMain.g_ClassSyntaxTools.lAutocompleteList)
                 End If
 
-                g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.RemoveAll(Function(j As STRUC_AUTOCOMPLETE) j.sType = "variable")
+                g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.RemoveAll(Function(j As STRUC_AUTOCOMPLETE) Regex.IsMatch(j.sType, "\b(variable)\b"))
                 g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.AddRange(lTmpVarAutocompleteList.ToArray)
 
                 'g_mFormMain.PrintInformation("[INFO]", "Variable autocomplete update finished!")
@@ -4677,7 +4677,7 @@ Public Class FormMain
                                 Exit Select
                             End If
 
-                            If (lTmpAutocompleteList.Exists(Function(j As STRUC_AUTOCOMPLETE) j.sType <> "variable" AndAlso Regex.IsMatch(j.sFunctionName, String.Format("\b{0}\b", Regex.Escape(sVar))))) Then
+                            If (lTmpAutocompleteList.Exists(Function(j As STRUC_AUTOCOMPLETE) Not Regex.IsMatch(j.sType, "\b(variable)\b") AndAlso Regex.IsMatch(j.sFunctionName, String.Format("\b{0}\b", Regex.Escape(sVar))))) Then
                                 Exit Select
                             End If
 
@@ -4714,7 +4714,7 @@ Public Class FormMain
                                 Exit Select
                             End If
 
-                            If (lTmpAutocompleteList.Exists(Function(j As STRUC_AUTOCOMPLETE) j.sType <> "variable" AndAlso Regex.IsMatch(j.sFunctionName, String.Format("\b{0}\b", Regex.Escape(sVar))))) Then
+                            If (lTmpAutocompleteList.Exists(Function(j As STRUC_AUTOCOMPLETE) Not Regex.IsMatch(j.sType, "\b(variable)\b") AndAlso Regex.IsMatch(j.sFunctionName, String.Format("\b{0}\b", Regex.Escape(sVar))))) Then
                                 Exit Select
                             End If
 
@@ -4751,7 +4751,7 @@ Public Class FormMain
                                 Continue For
                             End If
 
-                            If (lTmpAutocompleteList.Exists(Function(j As STRUC_AUTOCOMPLETE) j.sType <> "variable" AndAlso Regex.IsMatch(j.sFunctionName, String.Format("\b{0}\b", Regex.Escape(sVar))))) Then
+                            If (lTmpAutocompleteList.Exists(Function(j As STRUC_AUTOCOMPLETE) Not Regex.IsMatch(j.sType, "\b(variable)\b") AndAlso Regex.IsMatch(j.sFunctionName, String.Format("\b{0}\b", Regex.Escape(sVar))))) Then
                                 Continue For
                             End If
 
@@ -4789,7 +4789,7 @@ Public Class FormMain
                                 Continue For
                             End If
 
-                            If (lTmpAutocompleteList.Exists(Function(j As STRUC_AUTOCOMPLETE) j.sType <> "variable" AndAlso Regex.IsMatch(j.sFunctionName, String.Format("\b{0}\b", Regex.Escape(sVar))))) Then
+                            If (lTmpAutocompleteList.Exists(Function(j As STRUC_AUTOCOMPLETE) Not Regex.IsMatch(j.sType, "\b(variable)\b") AndAlso Regex.IsMatch(j.sFunctionName, String.Format("\b{0}\b", Regex.Escape(sVar))))) Then
                                 Continue For
                             End If
 
@@ -4907,7 +4907,7 @@ Public Class FormMain
 
                         If (mMatch.Success AndAlso mMatch.Groups("Var").Success AndAlso Not g_mFormMain.g_ClassSyntaxTools.IsForbiddenVariableName(sVar)) Then
                             Dim tmpFile As String = IO.Path.GetFileName(sArg.sFile)
-                            Dim autoItem As STRUC_AUTOCOMPLETE = lTmpVarAutocompleteList.Find(Function(j As STRUC_AUTOCOMPLETE) j.sFile.ToLower = tmpFile.ToLower AndAlso j.sFunctionName = sVar AndAlso j.sType = "variable")
+                            Dim autoItem As STRUC_AUTOCOMPLETE = lTmpVarAutocompleteList.Find(Function(j As STRUC_AUTOCOMPLETE) j.sFile.ToLower = tmpFile.ToLower AndAlso j.sFunctionName = sVar AndAlso Regex.IsMatch(j.sType, "\b(variable)\b"))
                             If (autoItem Is Nothing) Then
                                 autoItem = New STRUC_AUTOCOMPLETE
                                 autoItem.sFile = tmpFile.ToLower
@@ -4932,7 +4932,7 @@ Public Class FormMain
 
                         If (mMatch.Success AndAlso mMatch.Groups("Var").Success AndAlso Not g_mFormMain.g_ClassSyntaxTools.IsForbiddenVariableName(sVar)) Then
                             Dim tmpFile As String = IO.Path.GetFileName(sArg.sFile)
-                            Dim autoItem As STRUC_AUTOCOMPLETE = lTmpVarAutocompleteList.Find(Function(j As STRUC_AUTOCOMPLETE) j.sFile.ToLower = tmpFile.ToLower AndAlso j.sFunctionName = sVar AndAlso j.sType = "variable")
+                            Dim autoItem As STRUC_AUTOCOMPLETE = lTmpVarAutocompleteList.Find(Function(j As STRUC_AUTOCOMPLETE) j.sFile.ToLower = tmpFile.ToLower AndAlso j.sFunctionName = sVar AndAlso Regex.IsMatch(j.sType, "\b(variable)\b"))
                             If (autoItem Is Nothing) Then
                                 autoItem = New STRUC_AUTOCOMPLETE
                                 autoItem.sFile = tmpFile.ToLower
@@ -4956,7 +4956,7 @@ Public Class FormMain
                 Dim lVarMethodmapList As New List(Of STRUC_AUTOCOMPLETE)
 
                 For Each item In lTmpVarAutocompleteList
-                    If (item.sType <> "variable") Then
+                    If (Not Regex.IsMatch(item.sType, "\b(variable)\b")) Then
                         Continue For
                     End If
 
@@ -4986,7 +4986,7 @@ Public Class FormMain
                         autoItem.sFullFunctionName = String.Format("{0}.{1}", sMethodmapName, sMethodmapMethod)
                         autoItem.sFunctionName = String.Format("{0}.{1}", item.sFunctionName, sMethodmapMethod)
                         autoItem.sInfo = item2.sInfo
-                        autoItem.sType = String.Format("variable {0}", Regex.Replace(item2.sType, "\b(methodmap)\b", ""))
+                        autoItem.sType = String.Format("variable {0}", Regex.Replace(item2.sType, "\b(methodmap)\b", "").Trim)
                         lVarMethodmapList.Add(autoItem)
                     Next
                 Next
