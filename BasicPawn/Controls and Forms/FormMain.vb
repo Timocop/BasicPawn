@@ -4518,7 +4518,7 @@ Public Class FormMain
 
                 Dim lTmpVarAutocompleteList As New ClassSyncList(Of STRUC_AUTOCOMPLETE)
 
-                'Parse everything. Methods etc.
+                'Parse variables and create methodmaps for variables
                 If (True) Then
                     Dim sRegExEnumPattern As String = String.Format("(\b{0}\b)", String.Join("\b|\b", GetEnumNames(g_mFormMain.g_ClassSyntaxTools.lAutocompleteList)))
 
@@ -4541,7 +4541,7 @@ Public Class FormMain
             Catch ex As Threading.ThreadAbortException
                 Throw
             Catch ex As Exception
-                g_mFormMain.PrintInformation("[ERRO]", "Variable autocomplete failed! " & ex.Message)
+                g_mFormMain.PrintInformation("[ERRO]", "Variable autocomplete update failed! " & ex.Message)
                 ClassExceptionLog.WriteToLog(ex)
             End Try
         End Sub
