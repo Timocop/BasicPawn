@@ -134,6 +134,29 @@ Public Class ClassTools
                 Return SR.ReadToEnd.Split(New String() {Environment.NewLine, vbLf}, 0)
             End Using
         End Function
+
+        Public Shared Sub ReadStringPart(sText As String, iIndex As Integer, iBackReadLen As Integer, iForwardReadLen As Integer, ByRef sBackText As String, ByRef sForwardText As String)
+            sBackText = Nothing
+            sForwardText = Nothing
+
+            If (iBackReadLen > 0) Then
+                Dim iMin As Integer = iIndex - iBackReadLen
+                If (iMin < 0) Then
+                    sBackText = sText.Substring(0, iBackReadLen - Math.Abs(iMin))
+                Else
+                    sBackText = sText.Substring(iMin, iBackReadLen)
+                End If
+            End If
+
+            If (iForwardReadLen > 0) Then
+                Dim iMax As Integer = iIndex + iForwardReadLen
+                If (iMax > sText.Length - 1) Then
+                    sForwardText = sText.Substring(iIndex, (Math.Abs(iMax) - iForwardReadLen) + 2)
+                Else
+                    sForwardText = sText.Substring(iIndex, iForwardReadLen)
+                End If
+            End If
+        End Sub
     End Class
 
     Class ClassForms

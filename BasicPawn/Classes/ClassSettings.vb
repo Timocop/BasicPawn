@@ -56,6 +56,7 @@ Public Class ClassSettings
     Public Shared g_iSettingsFullEnumAutocomplete As Boolean = False
     Public Shared g_iSettingsDetectMethodmapInNames As Boolean = True
     Public Shared g_iSettingsAutocompleteCaseSensitive As Boolean = True
+    Public Shared g_iSettingsVarAutocompleteCurrentSourceOnly As Boolean = True
 
     'Syntax Highligting
     Public Shared g_iSettingsDoubleClickMark As Boolean = True
@@ -93,6 +94,7 @@ Public Class ClassSettings
         initFile.WriteKeyValue("Editor", "AutocompleteCaseSensitive", If(g_iSettingsAutocompleteCaseSensitive, "1", "0"))
         initFile.WriteKeyValue("Editor", "UseWindowsToolTip", If(g_iSettingsUseWindowsToolTip, "1", "0"))
         initFile.WriteKeyValue("Editor", "AutoMark", If(g_iSettingsAutoMark, "1", "0"))
+        initFile.WriteKeyValue("Editor", "VarAutocompleteCurrentSourceOnly", If(g_iSettingsVarAutocompleteCurrentSourceOnly, "1", "0"))
 
         'Debugger
         initFile.WriteKeyValue("Debugger", "CatchExceptions", If(g_iSettingsDebuggerCatchExceptions, "1", "0"))
@@ -125,6 +127,7 @@ Public Class ClassSettings
             g_iSettingsAutocompleteCaseSensitive = (initFile.ReadKeyValue("Editor", "AutocompleteCaseSensitive", "1") <> "0")
             g_iSettingsUseWindowsToolTip = (initFile.ReadKeyValue("Editor", "UseWindowsToolTip", "0") <> "0")
             g_iSettingsAutoMark = (initFile.ReadKeyValue("Editor", "AutoMark", "1") <> "0")
+            g_iSettingsDebuggerEntitiesEnableAutoScroll = (initFile.ReadKeyValue("Editor", "VarAutocompleteCurrentSourceOnly", "1") <> "0")
 
             'Debugger
             g_iSettingsDebuggerCatchExceptions = (initFile.ReadKeyValue("Debugger", "CatchExceptions", "1") <> "0")

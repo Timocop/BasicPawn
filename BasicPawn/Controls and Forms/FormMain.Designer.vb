@@ -7,9 +7,7 @@ Partial Class FormMain
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If (disposing) Then
-
                 g_ClassAutocompleteUpdater.StopUpdate()
-
                 g_ClassSyntaxUpdater.StopThread()
 
                 'Remove events

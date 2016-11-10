@@ -43,6 +43,7 @@ Partial Class FormSettings
         Me.CheckBox_DoubleClickMark = New System.Windows.Forms.CheckBox()
         Me.CheckBox_AutoMark = New System.Windows.Forms.CheckBox()
         Me.Panel5 = New System.Windows.Forms.Panel()
+        Me.CheckBox_CurrentSourceVarAutocomplete = New System.Windows.Forms.CheckBox()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.CheckBox_OnScreenIntelliSense = New System.Windows.Forms.CheckBox()
         Me.CheckBox_FullAutcompleteMethods = New System.Windows.Forms.CheckBox()
@@ -147,7 +148,7 @@ Partial Class FormSettings
         Me.Panel8.Controls.Add(Me.CheckBox_EntitiesEnableColor)
         Me.Panel8.Controls.Add(Me.CheckBox_EntitiesEnableShowNewEnts)
         Me.Panel8.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel8.Location = New System.Drawing.Point(3, 353)
+        Me.Panel8.Location = New System.Drawing.Point(3, 381)
         Me.Panel8.Name = "Panel8"
         Me.Panel8.Size = New System.Drawing.Size(596, 95)
         Me.Panel8.TabIndex = 25
@@ -216,7 +217,7 @@ Partial Class FormSettings
         Me.Panel7.Controls.Add(Me.Label_Font)
         Me.Panel7.Controls.Add(Me.CheckBox_InvertedColors)
         Me.Panel7.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel7.Location = New System.Drawing.Point(3, 281)
+        Me.Panel7.Location = New System.Drawing.Point(3, 309)
         Me.Panel7.Name = "Panel7"
         Me.Panel7.Size = New System.Drawing.Size(596, 72)
         Me.Panel7.TabIndex = 24
@@ -281,7 +282,7 @@ Partial Class FormSettings
         Me.Panel6.Controls.Add(Me.CheckBox_DoubleClickMark)
         Me.Panel6.Controls.Add(Me.CheckBox_AutoMark)
         Me.Panel6.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel6.Location = New System.Drawing.Point(3, 211)
+        Me.Panel6.Location = New System.Drawing.Point(3, 239)
         Me.Panel6.Name = "Panel6"
         Me.Panel6.Size = New System.Drawing.Size(596, 70)
         Me.Panel6.TabIndex = 23
@@ -332,6 +333,7 @@ Partial Class FormSettings
         '
         'Panel5
         '
+        Me.Panel5.Controls.Add(Me.CheckBox_CurrentSourceVarAutocomplete)
         Me.Panel5.Controls.Add(Me.Label1)
         Me.Panel5.Controls.Add(Me.CheckBox_OnScreenIntelliSense)
         Me.Panel5.Controls.Add(Me.CheckBox_FullAutcompleteMethods)
@@ -344,8 +346,21 @@ Partial Class FormSettings
         Me.Panel5.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel5.Location = New System.Drawing.Point(3, 3)
         Me.Panel5.Name = "Panel5"
-        Me.Panel5.Size = New System.Drawing.Size(596, 208)
+        Me.Panel5.Size = New System.Drawing.Size(596, 236)
         Me.Panel5.TabIndex = 22
+        '
+        'CheckBox_CurrentSourceVarAutocomplete
+        '
+        Me.CheckBox_CurrentSourceVarAutocomplete.AutoSize = True
+        Me.CheckBox_CurrentSourceVarAutocomplete.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_CurrentSourceVarAutocomplete.Location = New System.Drawing.Point(6, 211)
+        Me.CheckBox_CurrentSourceVarAutocomplete.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_CurrentSourceVarAutocomplete.Name = "CheckBox_CurrentSourceVarAutocomplete"
+        Me.CheckBox_CurrentSourceVarAutocomplete.Size = New System.Drawing.Size(504, 18)
+        Me.CheckBox_CurrentSourceVarAutocomplete.TabIndex = 17
+        Me.CheckBox_CurrentSourceVarAutocomplete.Text = "Only search in the current opened source file for variables used for variable aut" &
+    "ocompletion"
+        Me.CheckBox_CurrentSourceVarAutocomplete.UseVisualStyleBackColor = True
         '
         'Label1
         '
@@ -1089,4 +1104,5 @@ Partial Class FormSettings
     Friend WithEvents TextBox_SyntaxPath As TextBox
     Friend WithEvents Label15 As Label
     Friend WithEvents LinkLabel_SyntaxDefault As LinkLabel
+    Friend WithEvents CheckBox_CurrentSourceVarAutocomplete As CheckBox
 End Class

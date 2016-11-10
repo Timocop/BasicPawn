@@ -45,9 +45,15 @@ Public Class UCObjectBrowser
     Public Sub UpdateTreeView()
         Dim lExitObjectsKeys As New List(Of String)
 
+        TreeView_ObjectBrowser.BeginUpdate()
+
         ' Add tree view nodes
         g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.ForEach(
             Sub(iItem As FormMain.STRUC_AUTOCOMPLETE)
+                If (iItem.sType = "variable") Then
+                    Return
+                End If
+
                 Dim treeNodesFiles As TreeNode()
                 Dim treeNodesTypes As TreeNode()
                 Dim treeNodesNames As TreeNode()
@@ -129,6 +135,8 @@ Public Class UCObjectBrowser
                 TreeView_ObjectBrowser.Nodes.Remove(firstNodes(i))
             End If
         Next
+
+        TreeView_ObjectBrowser.EndUpdate()
     End Sub
 
     Private Sub TextboxWatermark_Search_PreviewKeyDown(sender As Object, e As PreviewKeyDownEventArgs) Handles TextboxWatermark_Search.PreviewKeyDown

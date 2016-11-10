@@ -61,7 +61,7 @@ Public Class UCAutocomplete
                     lListViewItemsList.Add(New ListViewItem(New String() {sAutocompleteArray(i).sFile,
                                                                             sAutocompleteArray(i).sType,
                                                                             sAutocompleteArray(i).sFunctionName,
-                                                                            sAutocompleteArray(i).sFullFunctionname,
+                                                                            sAutocompleteArray(i).sFullFunctionName,
                                                                             sAutocompleteArray(i).sInfo}))
                 End If
             Else
@@ -70,7 +70,7 @@ Public Class UCAutocomplete
                     lListViewItemsList.Add(New ListViewItem(New String() {sAutocompleteArray(i).sFile,
                                                                             sAutocompleteArray(i).sType,
                                                                             sAutocompleteArray(i).sFunctionName,
-                                                                            sAutocompleteArray(i).sFullFunctionname,
+                                                                            sAutocompleteArray(i).sFullFunctionName,
                                                                             sAutocompleteArray(i).sInfo}))
                 ElseIf (sMethodMapArray.Length = 2 AndAlso sAutocompleteArray(i).sType.Contains("methodmap") AndAlso sAutocompleteArray(i).sFunctionName.Split("."c).Length = 2) Then
                     Dim sMethodMapNames As String() = sAutocompleteArray(i).sFunctionName.Split("."c)
@@ -79,7 +79,7 @@ Public Class UCAutocomplete
                             lListViewItemsList.Add(New ListViewItem(New String() {sAutocompleteArray(i).sFile,
                                                                                     sAutocompleteArray(i).sType,
                                                                                     sAutocompleteArray(i).sFunctionName,
-                                                                                    sAutocompleteArray(i).sFullFunctionname,
+                                                                                    sAutocompleteArray(i).sFullFunctionName,
                                                                                     sAutocompleteArray(i).sInfo}))
                         End If
                     Else
@@ -88,7 +88,7 @@ Public Class UCAutocomplete
                             lListViewItemsList.Add(New ListViewItem(New String() {sAutocompleteArray(i).sFile,
                                                                                     sAutocompleteArray(i).sType,
                                                                                     sAutocompleteArray(i).sFunctionName,
-                                                                                    sAutocompleteArray(i).sFullFunctionname,
+                                                                                    sAutocompleteArray(i).sFullFunctionName,
                                                                                     sAutocompleteArray(i).sInfo}))
                         End If
                     End If
@@ -118,11 +118,11 @@ Public Class UCAutocomplete
 
         Dim mSelectedItem As ListViewItem = ListView_AutocompleteList.SelectedItems(0)
 
-        Dim struc As FormMain.STRUC_AUTOCOMPLETE
+        Dim struc As New FormMain.STRUC_AUTOCOMPLETE
         struc.sFile = mSelectedItem.SubItems(0).Text
         struc.sType = mSelectedItem.SubItems(1).Text
         struc.sFunctionName = mSelectedItem.SubItems(2).Text
-        struc.sFullFunctionname = mSelectedItem.SubItems(3).Text
+        struc.sFullFunctionName = mSelectedItem.SubItems(3).Text
         struc.sInfo = mSelectedItem.SubItems(4).Text
         Return struc
     End Function
@@ -174,14 +174,17 @@ Public Class UCAutocomplete
                 Dim bPrintedInfo As Boolean = False
                 Dim sAutocompleteArray As FormMain.STRUC_AUTOCOMPLETE() = g_AutocompleteUC.g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.ToArray
                 For i = 0 To sAutocompleteArray.Length - 1
-                    If (sAutocompleteArray(i).sFunctionName.Contains(sCurrentMethodName) AndAlso Regex.IsMatch(sAutocompleteArray(i).sFunctionName, String.Format("{0}\b{1}\b", If(bIsMethodMap, "(\.)", ""), Regex.Escape(sCurrentMethodName)))) Then
+                    If (sAutocompleteArray(i).sFunctionName.Contains(sCurrentMethodName) AndAlso
+                                sAutocompleteArray(i).sType <> "variable" AndAlso
+                                Regex.IsMatch(sAutocompleteArray(i).sFunctionName, String.Format("{0}\b{1}\b", If(bIsMethodMap, "(\.)", ""), Regex.Escape(sCurrentMethodName)))) Then
+
                         If (ClassSettings.g_iSettingsUseWindowsToolTip AndAlso Not bPrintedInfo) Then
                             bPrintedInfo = True
                             SB_TipText_IntelliSenseToolTip.AppendLine("IntelliSense:")
                         End If
 
-                        Dim sName As String = Regex.Replace(sAutocompleteArray(i).sFullFunctionname.Trim, vbTab, New String(" "c, iTabSize))
-                        Dim sNameToolTip As String = Regex.Replace(sAutocompleteArray(i).sFullFunctionname.Trim, vbTab, New String(" "c, iTabSize))
+                        Dim sName As String = Regex.Replace(sAutocompleteArray(i).sFullFunctionName.Trim, vbTab, New String(" "c, iTabSize))
+                        Dim sNameToolTip As String = Regex.Replace(sAutocompleteArray(i).sFullFunctionName.Trim, vbTab, New String(" "c, iTabSize))
                         If (ClassSettings.g_iSettingsUseWindowsToolTip) Then
                             Dim sNewlineDistance As Integer = sNameToolTip.IndexOf("("c)
 
