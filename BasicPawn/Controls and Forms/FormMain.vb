@@ -332,6 +332,8 @@ Public Class FormMain
             Case Keys.Control Or Keys.Enter
                 bBlock = True
 
+                TextEditorControl_Source.Document.UndoStack.StartUndoGroup()
+
                 Dim iOffset As Integer = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Offset
                 Dim iPosition As Integer = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Column
                 Dim iLineOffset As Integer = TextEditorControl_Source.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iOffset).Offset
@@ -349,7 +351,7 @@ Public Class FormMain
 
                 Dim struc As STRUC_AUTOCOMPLETE = g_mUCAutocomplete.GetSelectedItem()
 
-                If (struc.sType IsNot Nothing) Then
+                If (struc IsNot Nothing) Then
                     Select Case (True)
                         Case Regex.IsMatch(struc.sType, "\b(forward)\b")
                             If (bIsEmpty) Then
@@ -375,8 +377,6 @@ Public Class FormMain
                                 TextEditorControl_Source.ActiveTextAreaControl.Caret.Column = iPosition + struc.sFunctionName.Length
                             End If
 
-                            TextEditorControl_Source.Refresh()
-
                         Case Regex.IsMatch(struc.sType, "\b(functag)\b")
                             If (bIsEmpty) Then
                                 Dim iLineOffsetNum As Integer = TextEditorControl_Source.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Offset
@@ -400,8 +400,6 @@ Public Class FormMain
                                 iPosition = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Column
                                 TextEditorControl_Source.ActiveTextAreaControl.Caret.Column = iPosition + struc.sFunctionName.Length
                             End If
-
-                            TextEditorControl_Source.Refresh()
 
                         Case Regex.IsMatch(struc.sType, "\b(funcenum)\b") OrElse Regex.IsMatch(struc.sType, "\b(typeset)\b") OrElse Regex.IsMatch(struc.sType, "\b(typedef)\b")
                             If (bIsEmpty) Then
@@ -427,15 +425,12 @@ Public Class FormMain
                                 TextEditorControl_Source.ActiveTextAreaControl.Caret.Column = iPosition + struc.sFunctionName.Length
                             End If
 
-                            TextEditorControl_Source.Refresh()
 
                         Case Regex.IsMatch(struc.sType, "\b(define)\b") OrElse Regex.IsMatch(struc.sType, "\b(publicvar)\b")
                             TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, struc.sFunctionName)
 
                             iPosition = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Column
                             TextEditorControl_Source.ActiveTextAreaControl.Caret.Column = iPosition + struc.sFunctionName.Length
-
-                            TextEditorControl_Source.Refresh()
 
                         Case Regex.IsMatch(struc.sType, "\b(enum)\b")
                             If (ClassSettings.g_iSettingsFullEnumAutocomplete OrElse struc.sFunctionName.IndexOf("."c) < 0) Then
@@ -449,7 +444,6 @@ Public Class FormMain
                                 iPosition = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Column
                                 TextEditorControl_Source.ActiveTextAreaControl.Caret.Column = iPosition + struc.sFunctionName.Remove(0, struc.sFunctionName.IndexOf("."c) + 1).Length
                             End If
-                            TextEditorControl_Source.Refresh()
 
                         Case Regex.IsMatch(struc.sType, "\b(methodmap)\b") OrElse Regex.IsMatch(struc.sType, "\b(variable)\b")
                             If (struc.sFunctionName.IndexOf("."c) > -1 AndAlso sFunctionName.IndexOf("."c) > -1 AndAlso Not sFunctionName.StartsWith(struc.sFunctionName)) Then
@@ -466,7 +460,6 @@ Public Class FormMain
                                 iPosition = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Column
                                 TextEditorControl_Source.ActiveTextAreaControl.Caret.Column = iPosition + struc.sFunctionName.Remove(0, struc.sFunctionName.IndexOf("."c) + 1).Length
                             End If
-                            TextEditorControl_Source.Refresh()
 
                         Case Else
                             If (ClassSettings.g_iSettingsFullMethodAutocomplete) Then
@@ -483,9 +476,11 @@ Public Class FormMain
                                 TextEditorControl_Source.ActiveTextAreaControl.Caret.Column = iPosition + sNewInput.Length + 1
                             End If
 
-                            TextEditorControl_Source.Refresh()
                     End Select
                 End If
+
+                TextEditorControl_Source.Document.UndoStack.EndUndoGroup()
+                TextEditorControl_Source.Refresh()
 
             'Autocomplete up
             Case Keys.Control Or Keys.Up
