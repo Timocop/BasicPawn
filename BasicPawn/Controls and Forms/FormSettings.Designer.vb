@@ -50,7 +50,6 @@ Partial Class FormSettings
         Me.CheckBox_CommentsMethodIntelliSense = New System.Windows.Forms.CheckBox()
         Me.CheckBox_CommentsAutocompleteIntelliSense = New System.Windows.Forms.CheckBox()
         Me.CheckBox_FullAutocompleteReTagging = New System.Windows.Forms.CheckBox()
-        Me.CheckBox_DetectMethodmapVariables = New System.Windows.Forms.CheckBox()
         Me.CheckBox_WindowsToolTipPopup = New System.Windows.Forms.CheckBox()
         Me.CheckBox_CaseSensitive = New System.Windows.Forms.CheckBox()
         Me.TabPage2 = New System.Windows.Forms.TabPage()
@@ -148,7 +147,7 @@ Partial Class FormSettings
         Me.Panel8.Controls.Add(Me.CheckBox_EntitiesEnableColor)
         Me.Panel8.Controls.Add(Me.CheckBox_EntitiesEnableShowNewEnts)
         Me.Panel8.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel8.Location = New System.Drawing.Point(3, 381)
+        Me.Panel8.Location = New System.Drawing.Point(3, 354)
         Me.Panel8.Name = "Panel8"
         Me.Panel8.Size = New System.Drawing.Size(596, 95)
         Me.Panel8.TabIndex = 25
@@ -217,7 +216,7 @@ Partial Class FormSettings
         Me.Panel7.Controls.Add(Me.Label_Font)
         Me.Panel7.Controls.Add(Me.CheckBox_InvertedColors)
         Me.Panel7.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel7.Location = New System.Drawing.Point(3, 309)
+        Me.Panel7.Location = New System.Drawing.Point(3, 282)
         Me.Panel7.Name = "Panel7"
         Me.Panel7.Size = New System.Drawing.Size(596, 72)
         Me.Panel7.TabIndex = 24
@@ -282,7 +281,7 @@ Partial Class FormSettings
         Me.Panel6.Controls.Add(Me.CheckBox_DoubleClickMark)
         Me.Panel6.Controls.Add(Me.CheckBox_AutoMark)
         Me.Panel6.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel6.Location = New System.Drawing.Point(3, 239)
+        Me.Panel6.Location = New System.Drawing.Point(3, 212)
         Me.Panel6.Name = "Panel6"
         Me.Panel6.Size = New System.Drawing.Size(596, 70)
         Me.Panel6.TabIndex = 23
@@ -340,20 +339,19 @@ Partial Class FormSettings
         Me.Panel5.Controls.Add(Me.CheckBox_CommentsMethodIntelliSense)
         Me.Panel5.Controls.Add(Me.CheckBox_CommentsAutocompleteIntelliSense)
         Me.Panel5.Controls.Add(Me.CheckBox_FullAutocompleteReTagging)
-        Me.Panel5.Controls.Add(Me.CheckBox_DetectMethodmapVariables)
         Me.Panel5.Controls.Add(Me.CheckBox_WindowsToolTipPopup)
         Me.Panel5.Controls.Add(Me.CheckBox_CaseSensitive)
         Me.Panel5.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel5.Location = New System.Drawing.Point(3, 3)
         Me.Panel5.Name = "Panel5"
-        Me.Panel5.Size = New System.Drawing.Size(596, 236)
+        Me.Panel5.Size = New System.Drawing.Size(596, 209)
         Me.Panel5.TabIndex = 22
         '
         'CheckBox_CurrentSourceVarAutocomplete
         '
         Me.CheckBox_CurrentSourceVarAutocomplete.AutoSize = True
         Me.CheckBox_CurrentSourceVarAutocomplete.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_CurrentSourceVarAutocomplete.Location = New System.Drawing.Point(6, 211)
+        Me.CheckBox_CurrentSourceVarAutocomplete.Location = New System.Drawing.Point(6, 187)
         Me.CheckBox_CurrentSourceVarAutocomplete.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_CurrentSourceVarAutocomplete.Name = "CheckBox_CurrentSourceVarAutocomplete"
         Me.CheckBox_CurrentSourceVarAutocomplete.Size = New System.Drawing.Size(504, 18)
@@ -433,18 +431,6 @@ Partial Class FormSettings
         Me.CheckBox_FullAutocompleteReTagging.Text = "Full autocompletion for enums using re-tagging (SourcePawn <1.6 Syntax)"
         Me.CheckBox_FullAutocompleteReTagging.UseVisualStyleBackColor = True
         '
-        'CheckBox_DetectMethodmapVariables
-        '
-        Me.CheckBox_DetectMethodmapVariables.AutoSize = True
-        Me.CheckBox_DetectMethodmapVariables.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_DetectMethodmapVariables.Location = New System.Drawing.Point(6, 163)
-        Me.CheckBox_DetectMethodmapVariables.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_DetectMethodmapVariables.Name = "CheckBox_DetectMethodmapVariables"
-        Me.CheckBox_DetectMethodmapVariables.Size = New System.Drawing.Size(227, 18)
-        Me.CheckBox_DetectMethodmapVariables.TabIndex = 14
-        Me.CheckBox_DetectMethodmapVariables.Text = "Detect methodmap names in variables"
-        Me.CheckBox_DetectMethodmapVariables.UseVisualStyleBackColor = True
-        '
         'CheckBox_WindowsToolTipPopup
         '
         Me.CheckBox_WindowsToolTipPopup.AutoSize = True
@@ -461,7 +447,7 @@ Partial Class FormSettings
         '
         Me.CheckBox_CaseSensitive.AutoSize = True
         Me.CheckBox_CaseSensitive.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_CaseSensitive.Location = New System.Drawing.Point(6, 187)
+        Me.CheckBox_CaseSensitive.Location = New System.Drawing.Point(6, 163)
         Me.CheckBox_CaseSensitive.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_CaseSensitive.Name = "CheckBox_CaseSensitive"
         Me.CheckBox_CaseSensitive.Size = New System.Drawing.Size(103, 18)
@@ -1069,7 +1055,6 @@ Partial Class FormSettings
     Friend WithEvents Label8 As Label
     Friend WithEvents CheckBox_InvertedColors As CheckBox
     Friend WithEvents CheckBox_CaseSensitive As CheckBox
-    Friend WithEvents CheckBox_DetectMethodmapVariables As CheckBox
     Friend WithEvents CheckBox_WindowsToolTipPopup As CheckBox
     Friend WithEvents TextBox_Shell As TextBox
     Friend WithEvents Label10 As Label
