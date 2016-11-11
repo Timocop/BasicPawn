@@ -48,10 +48,7 @@ Public Class UCAutocomplete
             Return 0
         End If
 
-        'Dim sMethodMapArray As String() = sText.Split("."c)
-
         Dim bSelectedWord As Boolean = g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.TextArea.SelectionManager.HasSomethingSelected
-
         Dim lListViewItemsList As New List(Of ListViewItem)
 
         Dim sAutocompleteArray As FormMain.STRUC_AUTOCOMPLETE() = g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.ToArray
@@ -72,26 +69,6 @@ Public Class UCAutocomplete
                                                                             sAutocompleteArray(i).sFunctionName,
                                                                             sAutocompleteArray(i).sFullFunctionName,
                                                                             sAutocompleteArray(i).sInfo}))
-                    'ElseIf (sMethodMapArray.Length = 2 AndAlso sAutocompleteArray(i).sType.Contains("methodmap") AndAlso sAutocompleteArray(i).sFunctionName.Split("."c).Length = 2) Then
-                    '    Dim sMethodMapNames As String() = sAutocompleteArray(i).sFunctionName.Split("."c)
-                    '    If (String.IsNullOrEmpty(sMethodMapArray(1))) Then
-                    '        If (sMethodMapArray(0).IndexOf(sMethodMapNames(0)) > -1) Then
-                    '            lListViewItemsList.Add(New ListViewItem(New String() {sAutocompleteArray(i).sFile,
-                    '                                                                    sAutocompleteArray(i).sType,
-                    '                                                                    sAutocompleteArray(i).sFunctionName,
-                    '                                                                    sAutocompleteArray(i).sFullFunctionName,
-                    '                                                                    sAutocompleteArray(i).sInfo}))
-                    '        End If
-                    '    Else
-                    '        If (sMethodMapArray(0).IndexOf(sMethodMapNames(0)) > -1 AndAlso
-                    '            sMethodMapNames(1).IndexOf(sMethodMapArray(1), If(ClassSettings.g_iSettingsAutocompleteCaseSensitive, StringComparison.Ordinal, StringComparison.OrdinalIgnoreCase)) > -1) Then
-                    '            lListViewItemsList.Add(New ListViewItem(New String() {sAutocompleteArray(i).sFile,
-                    '                                                                    sAutocompleteArray(i).sType,
-                    '                                                                    sAutocompleteArray(i).sFunctionName,
-                    '                                                                    sAutocompleteArray(i).sFullFunctionName,
-                    '                                                                    sAutocompleteArray(i).sInfo}))
-                    '        End If
-                    '    End If
                 End If
             End If
         Next

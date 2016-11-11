@@ -54,7 +54,6 @@ Public Class ClassSettings
     Public Shared g_iSettingsUseWindowsToolTip As Boolean = False
     Public Shared g_iSettingsFullMethodAutocomplete As Boolean = False
     Public Shared g_iSettingsFullEnumAutocomplete As Boolean = False
-    'Public Shared g_iSettingsDetectMethodmapInNames As Boolean = True
     Public Shared g_iSettingsAutocompleteCaseSensitive As Boolean = True
     Public Shared g_iSettingsVarAutocompleteCurrentSourceOnly As Boolean = True
 
@@ -90,7 +89,6 @@ Public Class ClassSettings
         initFile.WriteKeyValue("Editor", "FullEnumAutocomplete", If(g_iSettingsFullEnumAutocomplete, "1", "0"))
         initFile.WriteKeyValue("Editor", "TextEditorFont", New FontConverter().ConvertToInvariantString(g_iSettingsTextEditorFont))
         initFile.WriteKeyValue("Editor", "TextEditorInvertColors", If(g_iSettingsInvertColors, "1", "0"))
-        'initFile.WriteKeyValue("Editor", "DetectMethodmapInNames", If(g_iSettingsDetectMethodmapInNames, "1", "0"))
         initFile.WriteKeyValue("Editor", "AutocompleteCaseSensitive", If(g_iSettingsAutocompleteCaseSensitive, "1", "0"))
         initFile.WriteKeyValue("Editor", "UseWindowsToolTip", If(g_iSettingsUseWindowsToolTip, "1", "0"))
         initFile.WriteKeyValue("Editor", "AutoMark", If(g_iSettingsAutoMark, "1", "0"))
@@ -123,7 +121,6 @@ Public Class ClassSettings
             End If
 
             g_iSettingsInvertColors = (initFile.ReadKeyValue("Editor", "TextEditorInvertColors", "0") <> "0")
-            'g_iSettingsDetectMethodmapInNames = (initFile.ReadKeyValue("Editor", "DetectMethodmapInNames", "0") <> "0")
             g_iSettingsAutocompleteCaseSensitive = (initFile.ReadKeyValue("Editor", "AutocompleteCaseSensitive", "1") <> "0")
             g_iSettingsUseWindowsToolTip = (initFile.ReadKeyValue("Editor", "UseWindowsToolTip", "0") <> "0")
             g_iSettingsAutoMark = (initFile.ReadKeyValue("Editor", "AutoMark", "1") <> "0")
