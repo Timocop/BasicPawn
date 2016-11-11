@@ -4599,7 +4599,7 @@ Public Class FormMain
             'Parse variables
             If (True) Then
                 Dim sInitTypesPattern As String = "\b(new|decl|static|const)\b" '"public" is already taken care off
-                Dim sOldStyleVarPattern As String = String.Format("(?<Init>{0})\s+((?<Tag>{1})\:(?<Var>\b[a-zA-Z0-9_]+\b)|(?<Var>\b[a-zA-Z0-9_]+\b))($|\W)", sInitTypesPattern, sRegExEnumPattern)
+                Dim sOldStyleVarPattern As String = String.Format("(?<Init>{0})\s+((?<Tag>{1})\:\s*(?<Var>\b[a-zA-Z0-9_]+\b)|(?<Var>\b[a-zA-Z0-9_]+\b))($|\W)", sInitTypesPattern, sRegExEnumPattern)
                 Dim sNewStyleVarPattern As String = String.Format("(?<Tag>{0})\s+(?<Var>\b[a-zA-Z0-9_]+\b)($|\W)", sRegExEnumPattern)
 
                 Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
@@ -4665,7 +4665,7 @@ Public Class FormMain
                                 Exit Select
                             End If
 
-                            Dim mMatch As Match = Regex.Match(sLine, String.Format("^((?<Tag>{0})\:)*(?<Var>\b[a-zA-Z_][a-zA-Z0-9_]*\b)((?<End>$)|(?<Func>\()|(?<More>\W))", sRegExEnumPattern))
+                            Dim mMatch As Match = Regex.Match(sLine, String.Format("^((?<Tag>{0})\:\s*)*(?<Var>\b[a-zA-Z_][a-zA-Z0-9_]*\b)((?<End>$)|(?<Func>\()|(?<More>\W))", sRegExEnumPattern))
                             Dim sTag As String = If(String.IsNullOrEmpty(mMatch.Groups("Tag").Value), "int", mMatch.Groups("Tag").Value).Trim
                             Dim sVar As String = mMatch.Groups("Var").Value.Trim
 
@@ -4901,7 +4901,7 @@ Public Class FormMain
                 For Each sArg As STRUC_PARSE_ARGUMENT_ITEM In lArgList
                     'Old style
                     If (ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_6) Then
-                        Dim mMatch As Match = Regex.Match(sArg.sArgument, String.Format("((?<Tag>\b{0}\b)\:)*(?<Var>\b[a-zA-Z_][a-zA-Z0-9_]*\b)$", sRegExEnumPattern))
+                        Dim mMatch As Match = Regex.Match(sArg.sArgument, String.Format("((?<Tag>\b{0}\b)\:\s*)*(?<Var>\b[a-zA-Z_][a-zA-Z0-9_]*\b)$", sRegExEnumPattern))
                         Dim sTag As String = If(String.IsNullOrEmpty(mMatch.Groups("Tag").Value), "int", mMatch.Groups("Tag").Value).Trim
                         Dim sVar As String = mMatch.Groups("Var").Value.Trim
 
