@@ -52,7 +52,7 @@ Public Class UCObjectBrowser
         ' Add tree view nodes
         g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.ForEach(
             Sub(iItem As FormMain.STRUC_AUTOCOMPLETE)
-                If (Regex.IsMatch(iItem.sType, "\b(variable)\b")) Then
+                If (iItem.mType And FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) Then
                     Return
                 End If
 
@@ -63,8 +63,8 @@ Public Class UCObjectBrowser
                 Dim treeNodeType As TreeNode
                 Dim treeNodeName As TreeNode
                 Dim sFileKey As String = iItem.sFile.ToLower
-                Dim sTypeKey As String = String.Format("{0}|{1}", iItem.sFile.ToLower, iItem.sType.ToLower)
-                Dim sNameKey As String = String.Format("{0}|{1}|{2}", iItem.sFile.ToLower, iItem.sType.ToLower, iItem.sFunctionName.ToLower)
+                Dim sTypeKey As String = String.Format("{0}|{1}", iItem.sFile.ToLower, iItem.GetTypeFullNames.ToLower)
+                Dim sNameKey As String = String.Format("{0}|{1}|{2}", iItem.sFile.ToLower, iItem.GetTypeFullNames.ToLower, iItem.sFunctionName.ToLower)
 
                 ' Add file if not exist
                 treeNodesFiles = TreeView_ObjectBrowser.Nodes.Find(sFileKey, False)
@@ -84,7 +84,7 @@ Public Class UCObjectBrowser
                 If (treeNodesTypes.Length > 0) Then
                     treeNodeType = treeNodesTypes(0)
                 Else
-                    treeNodeType = treeNodeFile.Nodes.Add(sTypeKey, If(String.IsNullOrEmpty(iItem.sType), "private", iItem.sType.ToLower))
+                    treeNodeType = treeNodeFile.Nodes.Add(sTypeKey, If(String.IsNullOrEmpty(iItem.GetTypeFullNames), "private", iItem.GetTypeFullNames.ToLower))
                 End If
 
                 ' Add name if not exist
@@ -92,7 +92,7 @@ Public Class UCObjectBrowser
                 If (treeNodesNames.Length > 0) Then
                     treeNodeName = treeNodesNames(0)
                 Else
-                    g_lObjectsItems.Add(New STRUC_OBJECTS_ITEM(iItem.sFile, iItem.sType, iItem.sFunctionName, sNameKey))
+                    g_lObjectsItems.Add(New STRUC_OBJECTS_ITEM(iItem.sFile, iItem.GetTypeFullNames, iItem.sFunctionName, sNameKey))
 
                     treeNodeName = treeNodeType.Nodes.Add(sNameKey, iItem.sFunctionName)
 

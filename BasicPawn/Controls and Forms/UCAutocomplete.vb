@@ -56,7 +56,7 @@ Public Class UCAutocomplete
             If (bSelectedWord) Then
                 If (sAutocompleteArray(i).sFunctionName.Equals(sText)) Then
                     lListViewItemsList.Add(New ListViewItem(New String() {sAutocompleteArray(i).sFile,
-                                                                            sAutocompleteArray(i).sType,
+                                                                            sAutocompleteArray(i).GetTypeFullNames,
                                                                             sAutocompleteArray(i).sFunctionName,
                                                                             sAutocompleteArray(i).sFullFunctionName,
                                                                             sAutocompleteArray(i).sInfo}))
@@ -65,7 +65,7 @@ Public Class UCAutocomplete
                 If (sAutocompleteArray(i).sFile.Equals(sText, If(ClassSettings.g_iSettingsAutocompleteCaseSensitive, StringComparison.Ordinal, StringComparison.OrdinalIgnoreCase)) OrElse
                             sAutocompleteArray(i).sFunctionName.IndexOf(sText, If(ClassSettings.g_iSettingsAutocompleteCaseSensitive, StringComparison.Ordinal, StringComparison.OrdinalIgnoreCase)) > -1) Then
                     lListViewItemsList.Add(New ListViewItem(New String() {sAutocompleteArray(i).sFile,
-                                                                            sAutocompleteArray(i).sType,
+                                                                            sAutocompleteArray(i).GetTypeFullNames,
                                                                             sAutocompleteArray(i).sFunctionName,
                                                                             sAutocompleteArray(i).sFullFunctionName,
                                                                             sAutocompleteArray(i).sInfo}))
@@ -97,7 +97,7 @@ Public Class UCAutocomplete
 
         Dim struc As New FormMain.STRUC_AUTOCOMPLETE
         struc.sFile = mSelectedItem.SubItems(0).Text
-        struc.sType = mSelectedItem.SubItems(1).Text
+        struc.mType = struc.ParseTypeFullNames(mSelectedItem.SubItems(1).Text)
         struc.sFunctionName = mSelectedItem.SubItems(2).Text
         struc.sFullFunctionName = mSelectedItem.SubItems(3).Text
         struc.sInfo = mSelectedItem.SubItems(4).Text
@@ -152,7 +152,7 @@ Public Class UCAutocomplete
                 Dim sAutocompleteArray As FormMain.STRUC_AUTOCOMPLETE() = g_AutocompleteUC.g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.ToArray
                 For i = 0 To sAutocompleteArray.Length - 1
                     If (sAutocompleteArray(i).sFunctionName.Contains(sCurrentMethodName) AndAlso
-                                Not Regex.IsMatch(sAutocompleteArray(i).sType, "\b(variable)\b") AndAlso
+                                (sAutocompleteArray(i).mType And FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE AndAlso
                                 Regex.IsMatch(sAutocompleteArray(i).sFunctionName, String.Format("{0}\b{1}\b", If(bIsMethodMap, "(\.)", ""), Regex.Escape(sCurrentMethodName)))) Then
 
                         If (ClassSettings.g_iSettingsUseWindowsToolTip AndAlso Not bPrintedInfo) Then
