@@ -364,7 +364,7 @@ Public Class FormMain
         AddHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.Document.LineLengthChanged, AddressOf TextEditorControl_DetectLineLenghtChange
         AddHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.Document.LineCountChanged, AddressOf TextEditorControl_DetectLineCountChange
 
-        'Load SourcePawn files via Arguments
+        'Load source files via Arguments
         Dim sArgs As String() = Environment.GetCommandLineArgs
         For i = 1 To sArgs.Length - 1
             If (g_ClassTextEditorTools.OpenFile(sArgs(i), True)) Then
@@ -730,7 +730,7 @@ Public Class FormMain
 
 #End Region
 
-#Region "Open/Save/Dialog SourcePawn"
+#Region "Open/Save/Dialog"
 
     Private Sub TextEditorControl_Source_KeyDown(sender As Object, e As KeyEventArgs)
         If (e.KeyCode = Keys.S AndAlso e.Modifiers = Keys.Control) Then
@@ -798,12 +798,12 @@ Public Class FormMain
 
         g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
 
-        PrintInformation("[INFO]", "User created a new SourcePawn Source")
+        PrintInformation("[INFO]", "User created a new source file")
     End Sub
 
     Private Sub ToolStripMenuItem_FileOpen_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileOpen.Click
         Using i As New OpenFileDialog
-            i.Filter = "All supported files|*.sp;*.inc;*.pwn;*.sma|SourcePawn|*.sp|Include|*.inc|Pawn|*.pwn|AMX|*.sma|All files|*.*"
+            i.Filter = "All supported files|*.sp;*.inc;*.sma|SourcePawn|*.sp|Include|*.inc|Pawn (Not fully supported)|*.pwn;*.p|AMX Mod X|*.sma|All files|*.*"
             i.FileName = ClassSettings.g_sConfigOpenSourceFile
             If (i.ShowDialog = DialogResult.OK) Then
                 g_ClassTextEditorTools.OpenFile(i.FileName)
@@ -817,7 +817,7 @@ Public Class FormMain
 
     Private Sub ToolStripMenuItem_FileSaveAs_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileSaveAs.Click
         Using i As New SaveFileDialog
-            i.Filter = "All supported files|*.sp;*.inc;*.pwn;*.sma|SourcePawn|*.sp|Include|*.inc|Pawn|*.pwn|AMX|*.sma|All files|*.*"
+            i.Filter = "All supported files|*.sp;*.inc;*.sma|SourcePawn|*.sp|Include|*.inc|Pawn (Not fully supported)|*.pwn;*.p|AMX Mod X|*.sma|All files|*.*"
             i.FileName = ClassSettings.g_sConfigOpenSourceFile
 
             If (i.ShowDialog = DialogResult.OK) Then
@@ -834,7 +834,7 @@ Public Class FormMain
     End Sub
 
     Private Sub ToolStripMenuItem_FileSaveAsTemp_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileSaveAsTemp.Click
-        Dim sTempFile As String = String.Format("{0}.sp", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
+        Dim sTempFile As String = String.Format("{0}.src", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
 
         ClassSettings.g_sConfigOpenSourceFile = sTempFile
 
@@ -1125,7 +1125,7 @@ Public Class FormMain
             End If
 
             If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
-                g_mFormMain.PrintInformation("[ERRO]", "Can't check references! Could not get current SourcePawn Source file!", False, True)
+                g_mFormMain.PrintInformation("[ERRO]", "Can't check references! Could not get current source file!", False, True)
                 Return
             End If
 
@@ -1251,7 +1251,7 @@ Public Class FormMain
 
                 g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
 
-                g_mFormMain.PrintInformation("[INFO]", "User created a new SourcePawn Source")
+                g_mFormMain.PrintInformation("[INFO]", "User created a new source file")
                 Return False
             End If
 
@@ -1279,7 +1279,7 @@ Public Class FormMain
         Public Sub SaveFile(Optional bSaveAs As Boolean = False)
             If (bSaveAs OrElse String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
                 Using i As New SaveFileDialog
-                    i.Filter = "All supported files|*.sp;*.inc;*.pwn;*.sma|SourcePawn|*.sp|Include|*.inc|Pawn|*.pwn|AMX|*.sma|All files|*.*"
+                    i.Filter = "All supported files|*.sp;*.inc;*.sma|SourcePawn|*.sp|Include|*.inc|Pawn (Not fully supported)|*.pwn;*.p|AMX Mod X|*.sma|All files|*.*"
                     i.FileName = ClassSettings.g_sConfigOpenSourceFile
                     If (i.ShowDialog = DialogResult.OK) Then
                         ClassSettings.g_sConfigOpenSourceFile = i.FileName
@@ -1317,7 +1317,7 @@ Public Class FormMain
                 Case DialogResult.Yes
                     If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
                         Using i As New SaveFileDialog
-                            i.Filter = "All supported files|*.sp;*.inc;*.pwn;*.sma|SourcePawn|*.sp|Include|*.inc|Pawn|*.pwn|AMX|*.sma|All files|*.*"
+                            i.Filter = "All supported files|*.sp;*.inc;*.sma|SourcePawn|*.sp|Include|*.inc|Pawn (Not fully supported)|*.pwn;*.p|AMX Mod X|*.sma|All files|*.*"
                             i.FileName = ClassSettings.g_sConfigOpenSourceFile
                             If (i.ShowDialog = DialogResult.OK) Then
                                 ClassSettings.g_sConfigOpenSourceFile = i.FileName
@@ -1351,6 +1351,13 @@ Public Class FormMain
             End Select
         End Function
 
+        Enum ENUM_COMPILER_TYPE
+            UNKNOWN
+            SOURCEPAWN
+            AMXX
+            AMX
+        End Enum
+
         ''' <summary>
         ''' Compiles the source in the text editor
         ''' </summary>
@@ -1367,7 +1374,7 @@ Public Class FormMain
                 End If
                 g_mFormMain.TabControl_Details.SelectTab(1)
 
-                g_mFormMain.PrintInformation("[INFO]", "Compiling SourcePawn Source started!")
+                g_mFormMain.PrintInformation("[INFO]", "Compiling source started!")
 
                 Dim sCompilerPath As String = ""
                 Dim sIncludePath As String = ""
@@ -1377,21 +1384,44 @@ Public Class FormMain
                 Dim sOutput As String = ""
 
                 If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
-                    g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Could not get current SourcePawn Source file!")
+                    g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Could not get current source file!")
                     Return
                 End If
 
                 'Check compiler
                 If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "spcomp.exe")
-                    If (Not IO.File.Exists(sCompilerPath)) Then
-                        g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! SourcePawn Compiler can not be found!")
+                    While True
+                        'SourcePawn
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "spcomp.exe")
+                        If (IO.File.Exists(sCompilerPath)) Then
+                            Exit While
+                        End If
+
+                        'AMX Mod X
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "amxxpc.exe")
+                        If (IO.File.Exists(sCompilerPath)) Then
+                            Exit While
+                        End If
+
+                        'Small
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "sc.exe")
+                        If (IO.File.Exists(sCompilerPath)) Then
+                            Exit While
+                        End If
+
+                        'Pawn
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "pawncc.exe")
+                        If (IO.File.Exists(sCompilerPath)) Then
+                            Exit While
+                        End If
+
+                        g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Compiler can not be found!")
                         Return
-                    End If
+                    End While
                 Else
                     sCompilerPath = ClassSettings.g_sConfigCompilerPath
                     If (Not IO.File.Exists(sCompilerPath)) Then
-                        g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! SourcePawn Compiler can not be found!")
+                        g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Compiler can not be found!")
                         Return
                     End If
                 End If
@@ -1405,7 +1435,7 @@ Public Class FormMain
                         Return
                     End If
                 Else
-                    sIncludePath = ClassSettings.g_sConfigOpenSourcePawnIncludeFolder
+                    sIncludePath = ClassSettings.g_sConfigOpenIncludeFolder
                     If (Not IO.Directory.Exists(sIncludePath)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!")
                         Return
@@ -1414,16 +1444,16 @@ Public Class FormMain
 
                 'Set output path
                 If (bTesting) Then
-                    sOutputFile = String.Format("{0}.smx", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
+                    sOutputFile = String.Format("{0}.unk", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
                 Else
                     If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                        sOutputFile = String.Format("{0}\compiled\{1}.smx", IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile).TrimEnd("\"c), IO.Path.GetFileNameWithoutExtension(ClassSettings.g_sConfigOpenSourceFile))
+                        sOutputFile = String.Format("{0}\compiled\{1}.unk", IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile).TrimEnd("\"c), IO.Path.GetFileNameWithoutExtension(ClassSettings.g_sConfigOpenSourceFile))
                     Else
                         If (Not IO.Directory.Exists(ClassSettings.g_sConfigPluginOutputFolder)) Then
                             g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Invalid output directory!")
                             Return
                         End If
-                        sOutputFile = String.Format("{0}\{1}.smx", ClassSettings.g_sConfigPluginOutputFolder.TrimEnd("\"c), IO.Path.GetFileNameWithoutExtension(ClassSettings.g_sConfigOpenSourceFile))
+                        sOutputFile = String.Format("{0}\{1}.unk", ClassSettings.g_sConfigPluginOutputFolder.TrimEnd("\"c), IO.Path.GetFileNameWithoutExtension(ClassSettings.g_sConfigOpenSourceFile))
                     End If
                 End If
 
@@ -1432,10 +1462,44 @@ Public Class FormMain
                 Dim sArguments As String = String.Format("""{0}"" -i""{1}"" -o""{2}""", ClassSettings.g_sConfigOpenSourceFile, sIncludePath, sOutputFile)
                 ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, sArguments, iExitCode, sOutput)
 
+                Dim compilerType As ENUM_COMPILER_TYPE = ENUM_COMPILER_TYPE.UNKNOWN
+
                 Dim sLines As String() = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
                 For i = sLines.Length - 1 To 0 Step -1
+                    If (i = 0) Then
+                        Select Case (True)
+                            Case Regex.IsMatch(sLines(i), "\b(SourcePawn)\b \b(Compiler)\b", RegexOptions.IgnoreCase)
+                                compilerType = ENUM_COMPILER_TYPE.SOURCEPAWN
+
+                            Case Regex.IsMatch(sLines(i), "\b(AMX)\b \b(Mod)\b \b(X)\b", RegexOptions.IgnoreCase)
+                                compilerType = ENUM_COMPILER_TYPE.AMXX
+
+                            'Old AMX Mod still uses Small compiler
+                            Case Regex.IsMatch(sLines(i), "\b(Pawn)\b \b(compiler)\b", RegexOptions.IgnoreCase), Regex.IsMatch(sLines(i), "\b(Small)\b \b(compiler)\b", RegexOptions.IgnoreCase)
+                                compilerType = ENUM_COMPILER_TYPE.AMX
+
+                        End Select
+                    End If
+
                     g_mFormMain.PrintInformation("[INFO]", vbTab & sLines(i))
                 Next
+
+                If (IO.File.Exists(sOutputFile)) Then
+                    Select Case (compilerType)
+                        Case ENUM_COMPILER_TYPE.SOURCEPAWN
+                            IO.File.Move(sOutputFile, IO.Path.ChangeExtension(sOutputFile, ".smx"))
+                            sOutputFile = IO.Path.ChangeExtension(sOutputFile, ".smx")
+
+                        Case ENUM_COMPILER_TYPE.AMXX
+                            IO.File.Move(sOutputFile, IO.Path.ChangeExtension(sOutputFile, ".amxx"))
+                            sOutputFile = IO.Path.ChangeExtension(sOutputFile, ".amxx")
+
+                        Case ENUM_COMPILER_TYPE.AMX
+                            IO.File.Move(sOutputFile, IO.Path.ChangeExtension(sOutputFile, ".amx"))
+                            sOutputFile = IO.Path.ChangeExtension(sOutputFile, ".amx")
+
+                    End Select
+                End If
 
                 If (bTesting) Then
                     IO.File.Delete(sOutputFile)
@@ -1445,9 +1509,9 @@ Public Class FormMain
                 End If
 
                 If (Not bTesting) Then
-                    g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Saved compiled Sourcepawn Source: {0}", sOutputFile))
+                    g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Saved compiled source: {0}", sOutputFile))
                 End If
-                g_mFormMain.PrintInformation("[INFO]", "Compiling SourcePawn Source finished!")
+                g_mFormMain.PrintInformation("[INFO]", "Compiling source finished!")
             Catch ex As Exception
                 ClassExceptionLog.WriteToLogMessageBox(ex)
             End Try
@@ -1469,7 +1533,7 @@ Public Class FormMain
                 End If
                 g_mFormMain.TabControl_Details.SelectTab(1)
 
-                g_mFormMain.PrintInformation("[INFO]", "Compiling SourcePawn Source started!")
+                g_mFormMain.PrintInformation("[INFO]", "Compiling source started!")
 
                 Dim iExitCode As Integer = 0
                 Dim sOutput As String = ""
@@ -1478,25 +1542,48 @@ Public Class FormMain
                 If (sCompilerPath Is Nothing) Then
                     If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                         If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
-                            g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Could not get current SourcePawn Source file!")
+                            g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Could not get current source file!")
                             Return False
                         End If
 
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "spcomp.exe")
-                        If (Not IO.File.Exists(sCompilerPath)) Then
-                            g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! SourcePawn Compiler can not be found!")
+                        While True
+                            'SourcePawn
+                            sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "spcomp.exe")
+                            If (IO.File.Exists(sCompilerPath)) Then
+                                Exit While
+                            End If
+
+                            'AMX Mod X
+                            sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "amxxpc.exe")
+                            If (IO.File.Exists(sCompilerPath)) Then
+                                Exit While
+                            End If
+
+                            'Small
+                            sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "sc.exe")
+                            If (IO.File.Exists(sCompilerPath)) Then
+                                Exit While
+                            End If
+
+                            'Pawn
+                            sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "pawncc.exe")
+                            If (IO.File.Exists(sCompilerPath)) Then
+                                Exit While
+                            End If
+
+                            g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Compiler can not be found!")
                             Return False
-                        End If
+                        End While
                     Else
                         sCompilerPath = ClassSettings.g_sConfigCompilerPath
                         If (Not IO.File.Exists(sCompilerPath)) Then
-                            g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! SourcePawn Compiler can not be found!")
+                            g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Compiler can not be found!")
                             Return False
                         End If
                     End If
                 Else
                     If (Not IO.File.Exists(sCompilerPath)) Then
-                        g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! SourcePawn Compiler can not be found!")
+                        g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Compiler can not be found!")
                         Return False
                     End If
                 End If
@@ -1505,7 +1592,7 @@ Public Class FormMain
                 If (sIncludePath Is Nothing) Then
                     If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                         If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
-                            g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Could not get current SourcePawn Source file!")
+                            g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Could not get current source file!")
                             Return False
                         End If
 
@@ -1515,7 +1602,7 @@ Public Class FormMain
                             Return False
                         End If
                     Else
-                        sIncludePath = ClassSettings.g_sConfigOpenSourcePawnIncludeFolder
+                        sIncludePath = ClassSettings.g_sConfigOpenIncludeFolder
                         If (Not IO.Directory.Exists(sIncludePath)) Then
                             g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!")
                             Return False
@@ -1530,12 +1617,12 @@ Public Class FormMain
 
                 'Set output path
                 If (bTesting) Then
-                    sOutputFile = String.Format("{0}.smx", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
+                    sOutputFile = String.Format("{0}.unk", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
                 End If
 
                 IO.File.Delete(sOutputFile)
 
-                Dim TmpSourceFile As String = String.Format("{0}.sp", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
+                Dim TmpSourceFile As String = String.Format("{0}.src", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
                 IO.File.WriteAllText(TmpSourceFile, sSource)
 
                 Dim sArguments As String = String.Format("""{0}"" -i""{1}"" -o""{2}""", TmpSourceFile, sIncludePath, sOutputFile)
@@ -1543,10 +1630,44 @@ Public Class FormMain
 
                 IO.File.Delete(TmpSourceFile)
 
+                Dim compilerType As ENUM_COMPILER_TYPE = ENUM_COMPILER_TYPE.UNKNOWN
+
                 Dim sLines As String() = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
                 For i = sLines.Length - 1 To 0 Step -1
+                    If (i = 0) Then
+                        Select Case (True)
+                            Case Regex.IsMatch(sLines(i), "\b(SourcePawn)\b \b(Compiler)\b", RegexOptions.IgnoreCase)
+                                compilerType = ENUM_COMPILER_TYPE.SOURCEPAWN
+
+                            Case Regex.IsMatch(sLines(i), "\b(AMX)\b \b(Mod)\b \b(X)\b", RegexOptions.IgnoreCase)
+                                compilerType = ENUM_COMPILER_TYPE.AMXX
+
+                            'Old AMX Mod still uses Small compiler
+                            Case Regex.IsMatch(sLines(i), "\b(Pawn)\b \b(compiler)\b", RegexOptions.IgnoreCase), Regex.IsMatch(sLines(i), "\b(Small)\b \b(compiler)\b", RegexOptions.IgnoreCase)
+                                compilerType = ENUM_COMPILER_TYPE.AMX
+
+                        End Select
+                    End If
+
                     g_mFormMain.PrintInformation("[INFO]", vbTab & sLines(i))
                 Next
+
+                If (IO.File.Exists(sOutputFile)) Then
+                    Select Case (compilerType)
+                        Case ENUM_COMPILER_TYPE.SOURCEPAWN
+                            IO.File.Move(sOutputFile, IO.Path.ChangeExtension(sOutputFile, ".smx"))
+                            sOutputFile = IO.Path.ChangeExtension(sOutputFile, ".smx")
+
+                        Case ENUM_COMPILER_TYPE.AMXX
+                            IO.File.Move(sOutputFile, IO.Path.ChangeExtension(sOutputFile, ".amxx"))
+                            sOutputFile = IO.Path.ChangeExtension(sOutputFile, ".amxx")
+
+                        Case ENUM_COMPILER_TYPE.AMX
+                            IO.File.Move(sOutputFile, IO.Path.ChangeExtension(sOutputFile, ".amx"))
+                            sOutputFile = IO.Path.ChangeExtension(sOutputFile, ".amx")
+
+                    End Select
+                End If
 
                 If (bTesting) Then
                     IO.File.Delete(sOutputFile)
@@ -1556,9 +1677,9 @@ Public Class FormMain
                 End If
 
                 If (Not bTesting) Then
-                    g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Saved compiled Sourcepawn Source: {0}", sOutputFile))
+                    g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Saved compiled source: {0}", sOutputFile))
                 End If
-                g_mFormMain.PrintInformation("[INFO]", "Compiling SourcePawn Source finished!")
+                g_mFormMain.PrintInformation("[INFO]", "Compiling source finished!")
 
                 Return True
             Catch ex As Exception
@@ -1586,7 +1707,7 @@ Public Class FormMain
                 End If
                 g_mFormMain.TabControl_Details.SelectTab(1)
 
-                g_mFormMain.PrintInformation("[INFO]", "Pre-Processing SourcePawn Source started!")
+                g_mFormMain.PrintInformation("[INFO]", "Pre-Processing source started!")
 
                 Dim sMarkStart As String = Guid.NewGuid.ToString
                 Dim sMarkEnd As String = Guid.NewGuid.ToString
@@ -1599,21 +1720,44 @@ Public Class FormMain
                 Dim sOutput As String = ""
 
                 If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
-                    g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Could not get current SourcePawn Source file!")
+                    g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Could not get current source file!")
                     Return Nothing
                 End If
 
                 'Check compiler
                 If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "spcomp.exe")
-                    If (Not IO.File.Exists(sCompilerPath)) Then
-                        g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! SourcePawn Compiler can not be found!")
+                    While True
+                        'SourcePawn
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "spcomp.exe")
+                        If (IO.File.Exists(sCompilerPath)) Then
+                            Exit While
+                        End If
+
+                        'AMX Mod X
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "amxxpc.exe")
+                        If (IO.File.Exists(sCompilerPath)) Then
+                            Exit While
+                        End If
+
+                        'Small
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "sc.exe")
+                        If (IO.File.Exists(sCompilerPath)) Then
+                            Exit While
+                        End If
+
+                        'Pawn
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "pawncc.exe")
+                        If (IO.File.Exists(sCompilerPath)) Then
+                            Exit While
+                        End If
+
+                        g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Compiler can not be found!")
                         Return Nothing
-                    End If
+                    End While
                 Else
                     sCompilerPath = ClassSettings.g_sConfigCompilerPath
                     If (Not IO.File.Exists(sCompilerPath)) Then
-                        g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! SourcePawn Compiler can not be found!")
+                        g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Compiler can not be found!")
                         Return Nothing
                     End If
                 End If
@@ -1626,7 +1770,7 @@ Public Class FormMain
                         Return Nothing
                     End If
                 Else
-                    sIncludePath = ClassSettings.g_sConfigOpenSourcePawnIncludeFolder
+                    sIncludePath = ClassSettings.g_sConfigOpenIncludeFolder
                     If (Not IO.Directory.Exists(sIncludePath)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!")
                         Return Nothing
@@ -1635,7 +1779,7 @@ Public Class FormMain
 
 
                 Dim sTmpSource As String = IO.File.ReadAllText(ClassSettings.g_sConfigOpenSourceFile)
-                Dim sTmpSourcePath As String = String.Format("{0}.sp", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
+                Dim sTmpSourcePath As String = String.Format("{0}.src", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
 
                 sTempOutputFile = sTmpSourcePath
 
@@ -1664,7 +1808,7 @@ Public Class FormMain
                 Next
 
                 If (String.IsNullOrEmpty(sOutputFile) OrElse Not IO.File.Exists(sOutputFile)) Then
-                    g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Could not get Pre-Processed SourcePawn Source file!")
+                    g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Could not get Pre-Processed source file!")
                     Return Nothing
                 End If
 
@@ -1719,11 +1863,11 @@ Public Class FormMain
                 Dim sNewSource = String.Join(Environment.NewLine, sList.ToArray)
 
                 If (bCleanupForCompile) Then
-                    sNewSource = Regex.Replace(sNewSource, "^\s+#\b(endinput)\b", "", RegexOptions.Multiline)
+                    sNewSource = Regex.Replace(sNewSource, "^\s*#\b(endinput)\b", "", RegexOptions.Multiline)
                 End If
 
 
-                g_mFormMain.PrintInformation("[INFO]", "Pre-Processing SourcePawn Source finished!")
+                g_mFormMain.PrintInformation("[INFO]", "Pre-Processing source finished!")
 
                 Return sNewSource
             Catch ex As Exception
@@ -1749,7 +1893,7 @@ Public Class FormMain
                 End If
                 g_mFormMain.TabControl_Details.SelectTab(1)
 
-                g_mFormMain.PrintInformation("[INFO]", "DIASM SourcePawn Source started!")
+                g_mFormMain.PrintInformation("[INFO]", "DIASM source started!")
 
                 Dim sCompilerPath As String = ""
                 Dim sIncludePath As String = ""
@@ -1759,21 +1903,44 @@ Public Class FormMain
                 Dim sOutput As String = ""
 
                 If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
-                    g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get current SourcePawn Source file!")
+                    g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get current source file!")
                     Return Nothing
                 End If
 
                 'Check compiler
                 If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "spcomp.exe")
-                    If (Not IO.File.Exists(sCompilerPath)) Then
-                        g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! SourcePawn Compiler can not be found!")
+                    While True
+                        'SourcePawn
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "spcomp.exe")
+                        If (IO.File.Exists(sCompilerPath)) Then
+                            Exit While
+                        End If
+
+                        'AMX Mod X
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "amxxpc.exe")
+                        If (IO.File.Exists(sCompilerPath)) Then
+                            Exit While
+                        End If
+
+                        'Small
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "sc.exe")
+                        If (IO.File.Exists(sCompilerPath)) Then
+                            Exit While
+                        End If
+
+                        'Pawn
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "pawncc.exe")
+                        If (IO.File.Exists(sCompilerPath)) Then
+                            Exit While
+                        End If
+
+                        g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Compiler can not be found!")
                         Return Nothing
-                    End If
+                    End While
                 Else
                     sCompilerPath = ClassSettings.g_sConfigCompilerPath
                     If (Not IO.File.Exists(sCompilerPath)) Then
-                        g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! SourcePawn Compiler can not be found!")
+                        g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Compiler can not be found!")
                         Return Nothing
                     End If
                 End If
@@ -1786,7 +1953,7 @@ Public Class FormMain
                         Return Nothing
                     End If
                 Else
-                    sIncludePath = ClassSettings.g_sConfigOpenSourcePawnIncludeFolder
+                    sIncludePath = ClassSettings.g_sConfigOpenIncludeFolder
                     If (Not IO.Directory.Exists(sIncludePath)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Include path can not be found!")
                         Return Nothing
@@ -1795,7 +1962,7 @@ Public Class FormMain
 
 
                 Dim sTmpSource As String = IO.File.ReadAllText(ClassSettings.g_sConfigOpenSourceFile)
-                Dim sTmpSourcePath As String = String.Format("{0}.sp", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
+                Dim sTmpSourcePath As String = String.Format("{0}.src", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
 
                 IO.File.WriteAllText(sTmpSourcePath, sTmpSource)
 
@@ -1812,7 +1979,7 @@ Public Class FormMain
                 Next
 
                 If (String.IsNullOrEmpty(sOutputFile) OrElse Not IO.File.Exists(sOutputFile)) Then
-                    g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get Pre-Processed SourcePawn Source file!")
+                    g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get Pre-Processed source file!")
                     Return Nothing
                 End If
 
@@ -1821,7 +1988,7 @@ Public Class FormMain
                 IO.File.Delete(sOutputFile)
 
 
-                g_mFormMain.PrintInformation("[INFO]", "DIASM SourcePawn Source finished!")
+                g_mFormMain.PrintInformation("[INFO]", "DIASM source finished!")
 
                 Return sOutputSource
             Catch ex As Exception
@@ -1847,7 +2014,7 @@ Public Class FormMain
                 End If
                 g_mFormMain.TabControl_Details.SelectTab(1)
 
-                g_mFormMain.PrintInformation("[INFO]", "DIASM SourcePawn Source started!")
+                g_mFormMain.PrintInformation("[INFO]", "DIASM source started!")
 
                 Dim iExitCode As Integer = 0
                 Dim sOutput As String = ""
@@ -1856,25 +2023,48 @@ Public Class FormMain
                 If (sCompilerPath Is Nothing) Then
                     If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                         If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
-                            g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get current SourcePawn Source file!")
+                            g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get current source file!")
                             Return Nothing
                         End If
 
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "spcomp.exe")
-                        If (Not IO.File.Exists(sCompilerPath)) Then
-                            g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! SourcePawn Compiler can not be found!")
+                        While True
+                            'SourcePawn
+                            sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "spcomp.exe")
+                            If (IO.File.Exists(sCompilerPath)) Then
+                                Exit While
+                            End If
+
+                            'AMX Mod X
+                            sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "amxxpc.exe")
+                            If (IO.File.Exists(sCompilerPath)) Then
+                                Exit While
+                            End If
+
+                            'Small
+                            sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "sc.exe")
+                            If (IO.File.Exists(sCompilerPath)) Then
+                                Exit While
+                            End If
+
+                            'Pawn
+                            sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "pawncc.exe")
+                            If (IO.File.Exists(sCompilerPath)) Then
+                                Exit While
+                            End If
+
+                            g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Compiler can not be found!")
                             Return Nothing
-                        End If
+                        End While
                     Else
                         sCompilerPath = ClassSettings.g_sConfigCompilerPath
                         If (Not IO.File.Exists(sCompilerPath)) Then
-                            g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! SourcePawn Compiler can not be found!")
+                            g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Compiler can not be found!")
                             Return Nothing
                         End If
                     End If
                 Else
                     If (Not IO.File.Exists(sCompilerPath)) Then
-                        g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! SourcePawn Compiler can not be found!")
+                        g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Compiler can not be found!")
                         Return Nothing
                     End If
                 End If
@@ -1883,7 +2073,7 @@ Public Class FormMain
                 If (sIncludePath Is Nothing) Then
                     If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                         If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
-                            g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get current SourcePawn Source file!")
+                            g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get current source file!")
                             Return Nothing
                         End If
 
@@ -1893,7 +2083,7 @@ Public Class FormMain
                             Return Nothing
                         End If
                     Else
-                        sIncludePath = ClassSettings.g_sConfigOpenSourcePawnIncludeFolder
+                        sIncludePath = ClassSettings.g_sConfigOpenIncludeFolder
                         If (Not IO.Directory.Exists(sIncludePath)) Then
                             g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Include path can not be found!")
                             Return Nothing
@@ -1911,7 +2101,7 @@ Public Class FormMain
                     sOutputFile = String.Format("{0}.asm", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
                 End If
 
-                Dim TmpSourceFile As String = String.Format("{0}.sp", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
+                Dim TmpSourceFile As String = String.Format("{0}.src", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
                 IO.File.WriteAllText(TmpSourceFile, sSource)
 
                 Dim sArguments As String = String.Format("""{0}"" -a -i""{1}"" -o""{2}""", TmpSourceFile, sIncludePath, sOutputFile)
@@ -1931,9 +2121,9 @@ Public Class FormMain
                 End If
 
                 If (Not bTesting) Then
-                    g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Saved DIASM Sourcepawn Source: {0}", sOutputFile))
+                    g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Saved DIASM source: {0}", sOutputFile))
                 End If
-                g_mFormMain.PrintInformation("[INFO]", "DIASM SourcePawn Source finished!")
+                g_mFormMain.PrintInformation("[INFO]", "DIASM source finished!")
 
                 Return sAssemblySource
             Catch ex As Exception
@@ -3433,7 +3623,7 @@ Public Class FormMain
                 'g_mFormMain.PrintInformation("[INFO]", "Autocomplete update started...")
 
                 If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
-                    g_mFormMain.PrintInformation("[ERRO]", "Autocomplete update failed! Could not get current SourcePawn Source file!")
+                    g_mFormMain.PrintInformation("[ERRO]", "Autocomplete update failed! Could not get current source file!")
                     Return
                 End If
 
@@ -4833,7 +5023,7 @@ Public Class FormMain
             Try
                 'g_mFormMain.PrintInformation("[INFO]", "Variable autocomplete update started...")
                 If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
-                    'g_mFormMain.PrintInformation("[ERRO]", "Variable autocomplete update failed! Could not get current SourcePawn Source file!")
+                    'g_mFormMain.PrintInformation("[ERRO]", "Variable autocomplete update failed! Could not get current source file!")
                     Return
                 End If
 
@@ -5346,10 +5536,10 @@ Public Class FormMain
                     Dim sCorrectPath As String
                     Dim sMatchValue As String
 
-                    Dim sIncludeDir As String = ClassSettings.g_sConfigOpenSourcePawnIncludeFolder
+                    Dim sIncludeDir As String = ClassSettings.g_sConfigOpenIncludeFolder
                     If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                         If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
-                            g_mFormMain.PrintInformation("[ERRO]", "Could not read includes! Could not get current SourcePawn Source file!")
+                            g_mFormMain.PrintInformation("[ERRO]", "Could not read includes! Could not get current source file!")
                             Exit While
                         End If
                         sIncludeDir = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "include")
@@ -5364,6 +5554,12 @@ Public Class FormMain
                                     sCorrectPath = IO.Path.Combine(sIncludeDir, sMatchValue)
                                 Case IO.File.Exists(String.Format("{0}.sp", IO.Path.Combine(sIncludeDir, sMatchValue)))
                                     sCorrectPath = String.Format("{0}.sp", IO.Path.Combine(sIncludeDir, sMatchValue))
+                                Case IO.File.Exists(String.Format("{0}.sma", IO.Path.Combine(sIncludeDir, sMatchValue)))
+                                    sCorrectPath = String.Format("{0}.sma", IO.Path.Combine(sIncludeDir, sMatchValue))
+                                Case IO.File.Exists(String.Format("{0}.p", IO.Path.Combine(sIncludeDir, sMatchValue)))
+                                    sCorrectPath = String.Format("{0}.p", IO.Path.Combine(sIncludeDir, sMatchValue))
+                                Case IO.File.Exists(String.Format("{0}.pwn", IO.Path.Combine(sIncludeDir, sMatchValue)))
+                                    sCorrectPath = String.Format("{0}.pwn", IO.Path.Combine(sIncludeDir, sMatchValue))
                                 Case IO.File.Exists(String.Format("{0}.inc", IO.Path.Combine(sIncludeDir, sMatchValue)))
                                     sCorrectPath = String.Format("{0}.inc", IO.Path.Combine(sIncludeDir, sMatchValue))
                                 Case Else
@@ -5381,12 +5577,25 @@ Public Class FormMain
                                     sCorrectPath = IO.Path.Combine(sCurrentDir, sMatchValue)
                                 Case IO.File.Exists(String.Format("{0}.sp", IO.Path.Combine(sCurrentDir, sMatchValue)))
                                     sCorrectPath = String.Format("{0}.sp", IO.Path.Combine(sCurrentDir, sMatchValue))
+                                Case IO.File.Exists(String.Format("{0}.sma", IO.Path.Combine(sCurrentDir, sMatchValue)))
+                                    sCorrectPath = String.Format("{0}.sma", IO.Path.Combine(sCurrentDir, sMatchValue))
+                                Case IO.File.Exists(String.Format("{0}.p", IO.Path.Combine(sCurrentDir, sMatchValue)))
+                                    sCorrectPath = String.Format("{0}.p", IO.Path.Combine(sCurrentDir, sMatchValue))
+                                Case IO.File.Exists(String.Format("{0}.pwn", IO.Path.Combine(sCurrentDir, sMatchValue)))
+                                    sCorrectPath = String.Format("{0}.pwn", IO.Path.Combine(sCurrentDir, sMatchValue))
                                 Case IO.File.Exists(String.Format("{0}.inc", IO.Path.Combine(sCurrentDir, sMatchValue)))
                                     sCorrectPath = String.Format("{0}.inc", IO.Path.Combine(sCurrentDir, sMatchValue))
+
                                 Case IO.File.Exists(IO.Path.Combine(sIncludeDir, sMatchValue))
                                     sCorrectPath = IO.Path.Combine(sIncludeDir, sMatchValue)
                                 Case IO.File.Exists(String.Format("{0}.sp", IO.Path.Combine(sIncludeDir, sMatchValue)))
                                     sCorrectPath = String.Format("{0}.sp", IO.Path.Combine(sIncludeDir, sMatchValue))
+                                Case IO.File.Exists(String.Format("{0}.sma", IO.Path.Combine(sIncludeDir, sMatchValue)))
+                                    sCorrectPath = String.Format("{0}.sma", IO.Path.Combine(sIncludeDir, sMatchValue))
+                                Case IO.File.Exists(String.Format("{0}.p", IO.Path.Combine(sIncludeDir, sMatchValue)))
+                                    sCorrectPath = String.Format("{0}.p", IO.Path.Combine(sIncludeDir, sMatchValue))
+                                Case IO.File.Exists(String.Format("{0}.pwn", IO.Path.Combine(sIncludeDir, sMatchValue)))
+                                    sCorrectPath = String.Format("{0}.pwn", IO.Path.Combine(sIncludeDir, sMatchValue))
                                 Case IO.File.Exists(String.Format("{0}.inc", IO.Path.Combine(sIncludeDir, sMatchValue)))
                                     sCorrectPath = String.Format("{0}.inc", IO.Path.Combine(sIncludeDir, sMatchValue))
                                 Case Else

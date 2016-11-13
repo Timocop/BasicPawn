@@ -20,7 +20,7 @@ Public Class ClassSettings
 
 #Region "Config"
     Public Shared g_iConfigCompilingType As ENUM_COMPILING_TYPE = ENUM_COMPILING_TYPE.AUTOMATIC
-    Public Shared g_sConfigOpenSourcePawnIncludeFolder As String = ""
+    Public Shared g_sConfigOpenIncludeFolder As String = ""
     Public Shared g_sConfigCompilerPath As String = ""
     Public Shared g_sConfigPluginOutputFolder As String = ""
     Public Shared g_sConfigExecuteShell As String = ""
@@ -158,7 +158,7 @@ Public Class ClassSettings
         sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%input%", "Current opened source file", g_sConfigOpenSourceFile))
         sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%inputfilename%", "Current opened source filename", If(String.IsNullOrEmpty(g_sConfigOpenSourceFile), "", IO.Path.GetFileNameWithoutExtension(g_sConfigOpenSourceFile))))
         sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%inputfolder%", "Current opened source file folder", If(String.IsNullOrEmpty(g_sConfigOpenSourceFile), "", IO.Path.GetDirectoryName(g_sConfigOpenSourceFile))))
-        sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%includes%", "Include folder", g_sConfigOpenSourcePawnIncludeFolder))
+        sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%includes%", "Include folder", g_sConfigOpenIncludeFolder))
         sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%compiler%", "Compiler path", g_sConfigCompilerPath))
         sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%output%", "Output folder", g_sConfigPluginOutputFolder))
         sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%currentdir%", "BasicPawn statup folder", Application.StartupPath))

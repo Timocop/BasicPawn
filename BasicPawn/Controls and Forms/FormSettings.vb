@@ -153,7 +153,7 @@ Public Class FormSettings
 
     Private Sub Button_Compiler_Click(sender As Object, e As EventArgs) Handles Button_Compiler.Click
         Using i As New OpenFileDialog
-            i.Filter = "SourcePawn Compiler|spcomp.exe|Executables|*.exe"
+            i.Filter = "SourcePawn Compiler|spcomp.exe|AMX Mod X Compiler|amxxpc.exe|Small Compiler|*.sc|Pawn Compiler|*.pawncc|Executables|*.exe"
             i.FileName = TextBox_CompilerPath.Text
 
             If (i.ShowDialog = DialogResult.OK) Then
@@ -339,7 +339,7 @@ Public Class FormSettings
                 ClassSettings.g_iConfigCompilingType = If(RadioButton_ConfigSettingAutomatic.Checked, ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC, ClassSettings.ENUM_COMPILING_TYPE.CONFIG)
                 ClassSettings.g_sConfigName = sCurrentConfigName
                 ClassSettings.g_sConfigCompilerPath = TextBox_CompilerPath.Text
-                ClassSettings.g_sConfigOpenSourcePawnIncludeFolder = TextBox_IncludeFolder.Text
+                ClassSettings.g_sConfigOpenIncludeFolder = TextBox_IncludeFolder.Text
                 ClassSettings.g_sConfigPluginOutputFolder = TextBox_OutputFolder.Text
                 ClassSettings.g_sConfigExecuteShell = TextBox_Shell.Text
                 'Debugging

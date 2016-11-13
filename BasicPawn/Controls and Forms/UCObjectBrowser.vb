@@ -30,6 +30,8 @@ Public Class UCObjectBrowser
 
     Private g_lObjectsItems As New List(Of STRUC_OBJECTS_ITEM)
 
+    Private g_sSourceMainFileExt As String() = {".sp", ".sma", ".pwn", ".p", "BasicPawn.exe"}
+
     Class STRUC_OBJECTS_ITEM
         Public g_sFile As String
         Public g_sType As String
@@ -72,7 +74,7 @@ Public Class UCObjectBrowser
                     treeNodeFile = treeNodesFiles(0)
                 Else
                     ' Add SP to top
-                    If (iItem.sFile.ToLower.EndsWith(".sp")) Then
+                    If (Array.Exists(g_sSourceMainFileExt, Function(j As String) iItem.sFile.ToLower.EndsWith(j.ToLower))) Then
                         treeNodeFile = TreeView_ObjectBrowser.Nodes.Insert(0, sFileKey, iItem.sFile.ToLower)
                     Else
                         treeNodeFile = TreeView_ObjectBrowser.Nodes.Add(sFileKey, iItem.sFile.ToLower)
@@ -97,7 +99,7 @@ Public Class UCObjectBrowser
                     treeNodeName = treeNodeType.Nodes.Add(sNameKey, iItem.sFunctionName)
 
                     ' Make SP files normal, others italic for better view
-                    If (iItem.sFile.ToLower.EndsWith(".sp".ToLower) OrElse iItem.sFile.ToLower = "BasicPawn.exe".ToLower) Then
+                    If (Array.Exists(g_sSourceMainFileExt, Function(j As String) iItem.sFile.ToLower.EndsWith(j.ToLower))) Then
                         treeNodeFile.NodeFont = New Font(TreeView_ObjectBrowser.Font, FontStyle.Regular)
                         treeNodeFile.ExpandAll()
                     Else

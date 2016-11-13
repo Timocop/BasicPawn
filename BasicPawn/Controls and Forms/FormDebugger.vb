@@ -522,7 +522,7 @@ Public Class FormDebugger
         End Sub
 
         ''' <summary>
-        ''' Fixes some of the #file errors made by the SourcePawn compiler.
+        ''' Fixes some of the #file errors made by the compiler.
         ''' WARN: Pre-Process source only!
         ''' 
         '''         MyFunc()#file "MySource.sp"
@@ -660,6 +660,7 @@ Public Class FormDebugger
                     Throw New ArgumentException("Invalid SourceMod directory")
                 End If
 
+                'TODO: May add AMX Mod X support?
                 Dim sGameConfig As String = IO.Path.Combine(sGameDir, "gameinfo.txt")
                 Dim sSourceModBin As String = IO.Path.Combine(sSMDir, "bin\sourcemod_mm.dll")
                 If (Not IO.File.Exists(sGameConfig)) Then

@@ -98,6 +98,7 @@ Partial Class FormMain
         Me.ToolStripMenuItem_DebuggerWatcherInsert = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_DebuggerWatcherRemove = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_DebuggerWatcherRemoveAll = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_HightlightCustom = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator6 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_Cut = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Copy = New System.Windows.Forms.ToolStripMenuItem()
@@ -157,7 +158,6 @@ Partial Class FormMain
         Me.ToolStripStatusLabel_CurrentConfig = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ToolStripStatusLabel_LastInformation = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ToolStripStatusLabel_AppVersion = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.ToolStripMenuItem_HightlightCustom = New System.Windows.Forms.ToolStripMenuItem()
         Me.ContextMenuStrip_RightClick.SuspendLayout()
         Me.MenuStrip_BasicPawn.SuspendLayout()
         Me.SplitContainer1.Panel1.SuspendLayout()
@@ -176,7 +176,7 @@ Partial Class FormMain
         Me.ContextMenuStrip_RightClick.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_Mark, Me.ToolStripMenuItem_ListReferences, Me.ToolStripSeparator1, Me.ToolStripMenuItem_Debugger, Me.ToolStripMenuItem_HightlightCustom, Me.ToolStripSeparator6, Me.ToolStripMenuItem_Cut, Me.ToolStripMenuItem_Copy, Me.ToolStripMenuItem_Paste})
         Me.ContextMenuStrip_RightClick.Name = "ContextMenuStrip1"
         Me.ContextMenuStrip_RightClick.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
-        Me.ContextMenuStrip_RightClick.Size = New System.Drawing.Size(157, 192)
+        Me.ContextMenuStrip_RightClick.Size = New System.Drawing.Size(157, 170)
         '
         'ToolStripMenuItem_Mark
         '
@@ -254,6 +254,13 @@ Partial Class FormMain
         Me.ToolStripMenuItem_DebuggerWatcherRemoveAll.Name = "ToolStripMenuItem_DebuggerWatcherRemoveAll"
         Me.ToolStripMenuItem_DebuggerWatcherRemoveAll.Size = New System.Drawing.Size(182, 22)
         Me.ToolStripMenuItem_DebuggerWatcherRemoveAll.Text = "Remove all watchers"
+        '
+        'ToolStripMenuItem_HightlightCustom
+        '
+        Me.ToolStripMenuItem_HightlightCustom.Image = Global.BasicPawn.My.Resources.Resources.imageres_5313_16x16_32
+        Me.ToolStripMenuItem_HightlightCustom.Name = "ToolStripMenuItem_HightlightCustom"
+        Me.ToolStripMenuItem_HightlightCustom.Size = New System.Drawing.Size(156, 22)
+        Me.ToolStripMenuItem_HightlightCustom.Text = "Highlight Color"
         '
         'ToolStripSeparator6
         '
@@ -392,7 +399,7 @@ Partial Class FormMain
         '
         Me.ToolStripMenuItem_ToolsAutocompleteUpdate.Image = CType(resources.GetObject("ToolStripMenuItem_ToolsAutocompleteUpdate.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_ToolsAutocompleteUpdate.Name = "ToolStripMenuItem_ToolsAutocompleteUpdate"
-        Me.ToolStripMenuItem_ToolsAutocompleteUpdate.Size = New System.Drawing.Size(260, 22)
+        Me.ToolStripMenuItem_ToolsAutocompleteUpdate.Size = New System.Drawing.Size(360, 22)
         Me.ToolStripMenuItem_ToolsAutocompleteUpdate.Text = "Update (F5)"
         '
         'ToolStripComboBox_ToolsAutocompleteSyntax
@@ -400,20 +407,20 @@ Partial Class FormMain
         Me.ToolStripComboBox_ToolsAutocompleteSyntax.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.ToolStripComboBox_ToolsAutocompleteSyntax.DropDownWidth = 200
         Me.ToolStripComboBox_ToolsAutocompleteSyntax.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.ToolStripComboBox_ToolsAutocompleteSyntax.Items.AddRange(New Object() {"Parse SourcePawn Mix Syntax", "Parse SourcePawn <1.6 Syntax", "Parse SourcePawn >1.7 Syntax"})
+        Me.ToolStripComboBox_ToolsAutocompleteSyntax.Items.AddRange(New Object() {"Parse mixed syntax", "Parse SourcePawn <1.6, AMX Mod X and Pawn syntax", "Parse SourcePawn >1.7 syntax only"})
         Me.ToolStripComboBox_ToolsAutocompleteSyntax.Name = "ToolStripComboBox_ToolsAutocompleteSyntax"
-        Me.ToolStripComboBox_ToolsAutocompleteSyntax.Size = New System.Drawing.Size(200, 23)
+        Me.ToolStripComboBox_ToolsAutocompleteSyntax.Size = New System.Drawing.Size(300, 23)
         '
         'ToolStripSeparator5
         '
         Me.ToolStripSeparator5.Name = "ToolStripSeparator5"
-        Me.ToolStripSeparator5.Size = New System.Drawing.Size(257, 6)
+        Me.ToolStripSeparator5.Size = New System.Drawing.Size(357, 6)
         '
         'ToolStripMenuItem_ToolsAutocompleteShowAutocomplete
         '
         Me.ToolStripMenuItem_ToolsAutocompleteShowAutocomplete.Image = CType(resources.GetObject("ToolStripMenuItem_ToolsAutocompleteShowAutocomplete.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_ToolsAutocompleteShowAutocomplete.Name = "ToolStripMenuItem_ToolsAutocompleteShowAutocomplete"
-        Me.ToolStripMenuItem_ToolsAutocompleteShowAutocomplete.Size = New System.Drawing.Size(260, 22)
+        Me.ToolStripMenuItem_ToolsAutocompleteShowAutocomplete.Size = New System.Drawing.Size(360, 22)
         Me.ToolStripMenuItem_ToolsAutocompleteShowAutocomplete.Text = "Show Autocomplete && IntelliSense"
         '
         'ToolStripSeparator4
@@ -716,13 +723,6 @@ Partial Class FormMain
         Me.ToolStripStatusLabel_AppVersion.Name = "ToolStripStatusLabel_AppVersion"
         Me.ToolStripStatusLabel_AppVersion.Size = New System.Drawing.Size(31, 17)
         Me.ToolStripStatusLabel_AppVersion.Text = "v.0.0"
-        '
-        'ToolStripMenuItem_HightlightCustom
-        '
-        Me.ToolStripMenuItem_HightlightCustom.Image = Global.BasicPawn.My.Resources.Resources.imageres_5313_16x16_32
-        Me.ToolStripMenuItem_HightlightCustom.Name = "ToolStripMenuItem_HightlightCustom"
-        Me.ToolStripMenuItem_HightlightCustom.Size = New System.Drawing.Size(156, 22)
-        Me.ToolStripMenuItem_HightlightCustom.Text = "Highlight Color"
         '
         'FormMain
         '
