@@ -177,10 +177,10 @@ Public Class FormMain
     End Sub
 
     Public Sub ChangeTitle()
-        If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourcePawnFile)) Then
+        If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile)) Then
             Me.Text = String.Format("{0} ({1}){2}", Application.ProductName, "Unnamed", If(g_bCodeChanged, "*"c, ""))
         Else
-            Me.Text = String.Format("{0} ({1}){2}", Application.ProductName, IO.Path.GetFileName(ClassSettings.g_sConfigOpenSourcePawnFile), If(g_bCodeChanged, "*"c, ""))
+            Me.Text = String.Format("{0} ({1}){2}", Application.ProductName, IO.Path.GetFileName(ClassSettings.g_sConfigOpenSourceFile), If(g_bCodeChanged, "*"c, ""))
         End If
 
         ToolStripStatusLabel_CurrentConfig.Text = "Config: " & If(String.IsNullOrEmpty(ClassSettings.g_sConfigName), "Default", ClassSettings.g_sConfigName)
@@ -788,7 +788,7 @@ Public Class FormMain
             Return
         End If
 
-        ClassSettings.g_sConfigOpenSourcePawnFile = ""
+        ClassSettings.g_sConfigOpenSourceFile = ""
         TextEditorControl_Source.Document.TextContent = ""
         TextEditorControl_Source.Refresh()
 
@@ -803,8 +803,8 @@ Public Class FormMain
 
     Private Sub ToolStripMenuItem_FileOpen_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileOpen.Click
         Using i As New OpenFileDialog
-            i.Filter = "SourcePawn Source|*.sp|SourcePawn Include|*.inc"
-            i.FileName = ClassSettings.g_sConfigOpenSourcePawnFile
+            i.Filter = "All supported files|*.sp;*.inc;*.pwn;*.sma|SourcePawn|*.sp|Include|*.inc|Pawn|*.pwn|AMX|*.sma|All files|*.*"
+            i.FileName = ClassSettings.g_sConfigOpenSourceFile
             If (i.ShowDialog = DialogResult.OK) Then
                 g_ClassTextEditorTools.OpenFile(i.FileName)
             End If
@@ -817,18 +817,18 @@ Public Class FormMain
 
     Private Sub ToolStripMenuItem_FileSaveAs_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileSaveAs.Click
         Using i As New SaveFileDialog
-            i.Filter = "SourcePawn Source|*.sp|SourcePawn Include|*.inc"
-            i.FileName = ClassSettings.g_sConfigOpenSourcePawnFile
+            i.Filter = "All supported files|*.sp;*.inc;*.pwn;*.sma|SourcePawn|*.sp|Include|*.inc|Pawn|*.pwn|AMX|*.sma|All files|*.*"
+            i.FileName = ClassSettings.g_sConfigOpenSourceFile
 
             If (i.ShowDialog = DialogResult.OK) Then
-                ClassSettings.g_sConfigOpenSourcePawnFile = i.FileName
+                ClassSettings.g_sConfigOpenSourceFile = i.FileName
 
                 g_bCodeChanged = False
                 ChangeTitle()
                 g_ClassLineState.SaveStates()
 
-                PrintInformation("[INFO]", "User saved file to: " & ClassSettings.g_sConfigOpenSourcePawnFile)
-                IO.File.WriteAllText(ClassSettings.g_sConfigOpenSourcePawnFile, TextEditorControl_Source.Document.TextContent)
+                PrintInformation("[INFO]", "User saved file to: " & ClassSettings.g_sConfigOpenSourceFile)
+                IO.File.WriteAllText(ClassSettings.g_sConfigOpenSourceFile, TextEditorControl_Source.Document.TextContent)
             End If
         End Using
     End Sub
@@ -836,14 +836,14 @@ Public Class FormMain
     Private Sub ToolStripMenuItem_FileSaveAsTemp_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileSaveAsTemp.Click
         Dim sTempFile As String = String.Format("{0}.sp", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
 
-        ClassSettings.g_sConfigOpenSourcePawnFile = sTempFile
+        ClassSettings.g_sConfigOpenSourceFile = sTempFile
 
         g_bCodeChanged = False
         ChangeTitle()
         g_ClassLineState.SaveStates()
 
-        PrintInformation("[INFO]", "User saved file to: " & ClassSettings.g_sConfigOpenSourcePawnFile)
-        IO.File.WriteAllText(ClassSettings.g_sConfigOpenSourcePawnFile, TextEditorControl_Source.Document.TextContent)
+        PrintInformation("[INFO]", "User saved file to: " & ClassSettings.g_sConfigOpenSourceFile)
+        IO.File.WriteAllText(ClassSettings.g_sConfigOpenSourceFile, TextEditorControl_Source.Document.TextContent)
     End Sub
 
 
@@ -1106,6 +1106,10 @@ Public Class FormMain
             g_mFormMain.g_ClassSyntaxTools.UpdateTextEditorSyntax()
         End Sub
 
+        ''' <summary>
+        ''' Lists all references of a word from current opeened source and all include files.
+        ''' </summary>
+        ''' <param name="sText">Word to search, otherwise it will get the word under the caret</param>
         Public Sub ListReferences(Optional sText As String = Nothing)
             Dim sWord As String
 
@@ -1120,14 +1124,14 @@ Public Class FormMain
                 Return
             End If
 
-            If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourcePawnFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourcePawnFile)) Then
+            If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
                 g_mFormMain.PrintInformation("[ERRO]", "Can't check references! Could not get current SourcePawn Source file!", False, True)
                 Return
             End If
 
             g_mFormMain.PrintInformation("[INFO]", String.Format("Listing references of: {0}", sWord), False, True)
 
-            Dim sIncludeFiles As String() = g_mFormMain.g_ClassAutocompleteUpdater.GetIncludeFiles(ClassSettings.g_sConfigOpenSourcePawnFile)
+            Dim sIncludeFiles As String() = g_mFormMain.g_ClassAutocompleteUpdater.GetIncludeFiles(ClassSettings.g_sConfigOpenSourceFile)
 
             Dim lRefList As New List(Of String)
 
@@ -1136,7 +1140,7 @@ Public Class FormMain
                     Continue For
                 End If
 
-                If (sFile.ToLower = ClassSettings.g_sConfigOpenSourcePawnFile.ToLower) Then
+                If (sFile.ToLower = ClassSettings.g_sConfigOpenSourceFile.ToLower) Then
                     Dim iLineCount As Integer = 0
                     Using SR As New IO.StringReader(g_mFormMain.TextEditorControl_Source.Document.TextContent)
                         While True
@@ -1241,7 +1245,7 @@ Public Class FormMain
             End If
 
             If (String.IsNullOrEmpty(sPath) OrElse Not IO.File.Exists(sPath)) Then
-                ClassSettings.g_sConfigOpenSourcePawnFile = ""
+                ClassSettings.g_sConfigOpenSourceFile = ""
                 g_mFormMain.TextEditorControl_Source.Document.TextContent = ""
                 g_mFormMain.TextEditorControl_Source.Refresh()
 
@@ -1253,7 +1257,7 @@ Public Class FormMain
 
             g_mFormMain.g_ClassLineState.m_IgnoreUpdates = True
 
-            ClassSettings.g_sConfigOpenSourcePawnFile = sPath
+            ClassSettings.g_sConfigOpenSourceFile = sPath
             g_mFormMain.TextEditorControl_Source.Document.TextContent = IO.File.ReadAllText(sPath)
             g_mFormMain.TextEditorControl_Source.Refresh()
 
@@ -1273,19 +1277,19 @@ Public Class FormMain
         ''' </summary>
         ''' <param name="bSaveAs">Force to use a new file using SaveFileDialog</param>
         Public Sub SaveFile(Optional bSaveAs As Boolean = False)
-            If (bSaveAs OrElse String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourcePawnFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourcePawnFile)) Then
+            If (bSaveAs OrElse String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
                 Using i As New SaveFileDialog
-                    i.Filter = "SourcePawn Source|*.sp|SourcePawn Include|*.inc"
-                    i.FileName = ClassSettings.g_sConfigOpenSourcePawnFile
+                    i.Filter = "All supported files|*.sp;*.inc;*.pwn;*.sma|SourcePawn|*.sp|Include|*.inc|Pawn|*.pwn|AMX|*.sma|All files|*.*"
+                    i.FileName = ClassSettings.g_sConfigOpenSourceFile
                     If (i.ShowDialog = DialogResult.OK) Then
-                        ClassSettings.g_sConfigOpenSourcePawnFile = i.FileName
+                        ClassSettings.g_sConfigOpenSourceFile = i.FileName
 
                         g_mFormMain.g_bCodeChanged = False
                         g_mFormMain.ChangeTitle()
                         g_mFormMain.g_ClassLineState.SaveStates()
 
-                        g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & ClassSettings.g_sConfigOpenSourcePawnFile)
-                        IO.File.WriteAllText(ClassSettings.g_sConfigOpenSourcePawnFile, g_mFormMain.TextEditorControl_Source.Document.TextContent)
+                        g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & ClassSettings.g_sConfigOpenSourceFile)
+                        IO.File.WriteAllText(ClassSettings.g_sConfigOpenSourceFile, g_mFormMain.TextEditorControl_Source.Document.TextContent)
                     End If
                 End Using
             Else
@@ -1293,8 +1297,8 @@ Public Class FormMain
                 g_mFormMain.ChangeTitle()
                 g_mFormMain.g_ClassLineState.SaveStates()
 
-                g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & ClassSettings.g_sConfigOpenSourcePawnFile)
-                IO.File.WriteAllText(ClassSettings.g_sConfigOpenSourcePawnFile, g_mFormMain.TextEditorControl_Source.Document.TextContent)
+                g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & ClassSettings.g_sConfigOpenSourceFile)
+                IO.File.WriteAllText(ClassSettings.g_sConfigOpenSourceFile, g_mFormMain.TextEditorControl_Source.Document.TextContent)
             End If
         End Sub
 
@@ -1311,19 +1315,19 @@ Public Class FormMain
 
             Select Case (If(bAlwaysYes, DialogResult.Yes, MessageBox.Show("Do you want to save your work?", "Information", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question)))
                 Case DialogResult.Yes
-                    If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourcePawnFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourcePawnFile)) Then
+                    If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
                         Using i As New SaveFileDialog
-                            i.Filter = "SourcePawn Source|*.sp|SourcePawn Include|*.inc"
-                            i.FileName = ClassSettings.g_sConfigOpenSourcePawnFile
+                            i.Filter = "All supported files|*.sp;*.inc;*.pwn;*.sma|SourcePawn|*.sp|Include|*.inc|Pawn|*.pwn|AMX|*.sma|All files|*.*"
+                            i.FileName = ClassSettings.g_sConfigOpenSourceFile
                             If (i.ShowDialog = DialogResult.OK) Then
-                                ClassSettings.g_sConfigOpenSourcePawnFile = i.FileName
+                                ClassSettings.g_sConfigOpenSourceFile = i.FileName
 
                                 g_mFormMain.g_bCodeChanged = False
                                 g_mFormMain.ChangeTitle()
                                 g_mFormMain.g_ClassLineState.SaveStates()
 
-                                g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & ClassSettings.g_sConfigOpenSourcePawnFile)
-                                IO.File.WriteAllText(ClassSettings.g_sConfigOpenSourcePawnFile, g_mFormMain.TextEditorControl_Source.Document.TextContent)
+                                g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & ClassSettings.g_sConfigOpenSourceFile)
+                                IO.File.WriteAllText(ClassSettings.g_sConfigOpenSourceFile, g_mFormMain.TextEditorControl_Source.Document.TextContent)
 
                                 Return False
                             Else
@@ -1335,8 +1339,8 @@ Public Class FormMain
                         g_mFormMain.ChangeTitle()
                         g_mFormMain.g_ClassLineState.SaveStates()
 
-                        g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & ClassSettings.g_sConfigOpenSourcePawnFile)
-                        IO.File.WriteAllText(ClassSettings.g_sConfigOpenSourcePawnFile, g_mFormMain.TextEditorControl_Source.Document.TextContent)
+                        g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & ClassSettings.g_sConfigOpenSourceFile)
+                        IO.File.WriteAllText(ClassSettings.g_sConfigOpenSourceFile, g_mFormMain.TextEditorControl_Source.Document.TextContent)
 
                         Return False
                     End If
@@ -1372,14 +1376,14 @@ Public Class FormMain
                 Dim iExitCode As Integer = 0
                 Dim sOutput As String = ""
 
-                If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourcePawnFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourcePawnFile)) Then
+                If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
                     g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Could not get current SourcePawn Source file!")
                     Return
                 End If
 
                 'Check compiler
                 If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourcePawnFile), "spcomp.exe")
+                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "spcomp.exe")
                     If (Not IO.File.Exists(sCompilerPath)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! SourcePawn Compiler can not be found!")
                         Return
@@ -1394,7 +1398,7 @@ Public Class FormMain
 
                 'Check include path
                 If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    sIncludePath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourcePawnFile), "include")
+                    sIncludePath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "include")
 
                     If (Not IO.Directory.Exists(sIncludePath)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!")
@@ -1413,19 +1417,19 @@ Public Class FormMain
                     sOutputFile = String.Format("{0}.smx", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
                 Else
                     If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                        sOutputFile = String.Format("{0}\compiled\{1}.smx", IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourcePawnFile).TrimEnd("\"c), IO.Path.GetFileNameWithoutExtension(ClassSettings.g_sConfigOpenSourcePawnFile))
+                        sOutputFile = String.Format("{0}\compiled\{1}.smx", IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile).TrimEnd("\"c), IO.Path.GetFileNameWithoutExtension(ClassSettings.g_sConfigOpenSourceFile))
                     Else
                         If (Not IO.Directory.Exists(ClassSettings.g_sConfigPluginOutputFolder)) Then
                             g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Invalid output directory!")
                             Return
                         End If
-                        sOutputFile = String.Format("{0}\{1}.smx", ClassSettings.g_sConfigPluginOutputFolder.TrimEnd("\"c), IO.Path.GetFileNameWithoutExtension(ClassSettings.g_sConfigOpenSourcePawnFile))
+                        sOutputFile = String.Format("{0}\{1}.smx", ClassSettings.g_sConfigPluginOutputFolder.TrimEnd("\"c), IO.Path.GetFileNameWithoutExtension(ClassSettings.g_sConfigOpenSourceFile))
                     End If
                 End If
 
                 IO.File.Delete(sOutputFile)
 
-                Dim sArguments As String = String.Format("""{0}"" -i""{1}"" -o""{2}""", ClassSettings.g_sConfigOpenSourcePawnFile, sIncludePath, sOutputFile)
+                Dim sArguments As String = String.Format("""{0}"" -i""{1}"" -o""{2}""", ClassSettings.g_sConfigOpenSourceFile, sIncludePath, sOutputFile)
                 ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, sArguments, iExitCode, sOutput)
 
                 Dim sLines As String() = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
@@ -1473,12 +1477,12 @@ Public Class FormMain
                 'Check compiler
                 If (sCompilerPath Is Nothing) Then
                     If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                        If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourcePawnFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourcePawnFile)) Then
+                        If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
                             g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Could not get current SourcePawn Source file!")
                             Return False
                         End If
 
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourcePawnFile), "spcomp.exe")
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "spcomp.exe")
                         If (Not IO.File.Exists(sCompilerPath)) Then
                             g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! SourcePawn Compiler can not be found!")
                             Return False
@@ -1500,12 +1504,12 @@ Public Class FormMain
                 'Check include path
                 If (sIncludePath Is Nothing) Then
                     If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                        If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourcePawnFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourcePawnFile)) Then
+                        If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
                             g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Could not get current SourcePawn Source file!")
                             Return False
                         End If
 
-                        sIncludePath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourcePawnFile), "include")
+                        sIncludePath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "include")
                         If (Not IO.Directory.Exists(sIncludePath)) Then
                             g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!")
                             Return False
@@ -1594,14 +1598,14 @@ Public Class FormMain
                 Dim iExitCode As Integer = 0
                 Dim sOutput As String = ""
 
-                If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourcePawnFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourcePawnFile)) Then
+                If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
                     g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Could not get current SourcePawn Source file!")
                     Return Nothing
                 End If
 
                 'Check compiler
                 If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourcePawnFile), "spcomp.exe")
+                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "spcomp.exe")
                     If (Not IO.File.Exists(sCompilerPath)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! SourcePawn Compiler can not be found!")
                         Return Nothing
@@ -1616,7 +1620,7 @@ Public Class FormMain
 
                 'Check include path
                 If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    sIncludePath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourcePawnFile), "include")
+                    sIncludePath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "include")
                     If (Not IO.Directory.Exists(sIncludePath)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!")
                         Return Nothing
@@ -1630,7 +1634,7 @@ Public Class FormMain
                 End If
 
 
-                Dim sTmpSource As String = IO.File.ReadAllText(ClassSettings.g_sConfigOpenSourcePawnFile)
+                Dim sTmpSource As String = IO.File.ReadAllText(ClassSettings.g_sConfigOpenSourceFile)
                 Dim sTmpSourcePath As String = String.Format("{0}.sp", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
 
                 sTempOutputFile = sTmpSourcePath
@@ -1754,14 +1758,14 @@ Public Class FormMain
                 Dim iExitCode As Integer = 0
                 Dim sOutput As String = ""
 
-                If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourcePawnFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourcePawnFile)) Then
+                If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
                     g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get current SourcePawn Source file!")
                     Return Nothing
                 End If
 
                 'Check compiler
                 If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourcePawnFile), "spcomp.exe")
+                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "spcomp.exe")
                     If (Not IO.File.Exists(sCompilerPath)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! SourcePawn Compiler can not be found!")
                         Return Nothing
@@ -1776,7 +1780,7 @@ Public Class FormMain
 
                 'Check include path
                 If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    sIncludePath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourcePawnFile), "include")
+                    sIncludePath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "include")
                     If (Not IO.Directory.Exists(sIncludePath)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Include path can not be found!")
                         Return Nothing
@@ -1790,7 +1794,7 @@ Public Class FormMain
                 End If
 
 
-                Dim sTmpSource As String = IO.File.ReadAllText(ClassSettings.g_sConfigOpenSourcePawnFile)
+                Dim sTmpSource As String = IO.File.ReadAllText(ClassSettings.g_sConfigOpenSourceFile)
                 Dim sTmpSourcePath As String = String.Format("{0}.sp", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
 
                 IO.File.WriteAllText(sTmpSourcePath, sTmpSource)
@@ -1851,12 +1855,12 @@ Public Class FormMain
                 'Check compiler
                 If (sCompilerPath Is Nothing) Then
                     If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                        If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourcePawnFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourcePawnFile)) Then
+                        If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
                             g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get current SourcePawn Source file!")
                             Return Nothing
                         End If
 
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourcePawnFile), "spcomp.exe")
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "spcomp.exe")
                         If (Not IO.File.Exists(sCompilerPath)) Then
                             g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! SourcePawn Compiler can not be found!")
                             Return Nothing
@@ -1878,12 +1882,12 @@ Public Class FormMain
                 'Check include path
                 If (sIncludePath Is Nothing) Then
                     If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                        If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourcePawnFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourcePawnFile)) Then
+                        If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
                             g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get current SourcePawn Source file!")
                             Return Nothing
                         End If
 
-                        sIncludePath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourcePawnFile), "include")
+                        sIncludePath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "include")
                         If (Not IO.Directory.Exists(sIncludePath)) Then
                             g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Include path can not be found!")
                             Return Nothing
@@ -1939,7 +1943,9 @@ Public Class FormMain
             Return Nothing
         End Function
 
-
+        ''' <summary>
+        ''' Class for custom color highlighting.
+        ''' </summary>
         Public Class ClassCustomHighlighting
             Implements IDisposable
 
@@ -1964,6 +1970,11 @@ Public Class FormMain
                 g_mFormMain = f
             End Sub
 
+            ''' <summary>
+            ''' Adds a highlight item. If exist, it will be ignored.
+            ''' The highlight list will automatically allocated.
+            ''' </summary>
+            ''' <param name="iIndex"></param>
             Public Sub Add(iIndex As Integer)
                 AllocateList(iIndex)
 
@@ -1988,6 +1999,9 @@ Public Class FormMain
                 g_lHighlightItemList(iIndex) = highlightItem
             End Sub
 
+            ''' <summary>
+            ''' Cleans the highlight list, events and disposes all ToolStrip controls.
+            ''' </summary>
             Public Sub Clear()
                 For i = 0 To g_lHighlightItemList.Count - 1
                     If (g_lHighlightItemList(i) Is Nothing) Then
@@ -2109,7 +2123,9 @@ Public Class FormMain
 #End Region
         End Class
 
-
+        ''' <summary>
+        ''' Class for custom text editor iconbar icons if a line has been changed/saved.
+        ''' </summary>
         Class ClassLineState
             Private g_mFormMain As FormMain
 
@@ -2192,6 +2208,9 @@ Public Class FormMain
                 g_mFormMain.TextEditorControl_Source.Document.BookmarkManager.RemoveMarks(Function(mBookmark As Bookmark) TryCast(mBookmark, LineStateBookmark) IsNot Nothing)
             End Sub
 
+            ''' <summary>
+            ''' Custom bookmark to display custom icons in the iconbar.
+            ''' </summary>
             Public Class LineStateBookmark
                 Inherits Bookmark
 
@@ -2278,6 +2297,9 @@ Public Class FormMain
             End If
         End Sub
 
+        ''' <summary>
+        ''' The main thread to update all kinds of stuff.
+        ''' </summary>
         Private Sub SourceSyntaxUpdater_Thread()
             Static g_mLastFullAutocompleteUpdate As Date = Now
             Static g_mLastVarAutocompleteUpdate As Date = Now
@@ -2731,12 +2753,11 @@ Public Class FormMain
                                             SB.AppendLine(sLine.Trim)
                                         End If
                                     End While
-
-                                    'g_mFormMain.g_ClassCustomHighlighting.FinalSize(iHighlightCustomCount)
                                 End Using
 
                                 Dim sFormatedString As String = SB.ToString
 
+                                'Invert colors of the syntax file. But only for the default syntax file.
                                 While (ClassSettings.g_iSettingsInvertColors)
                                     If (Not String.IsNullOrEmpty(ClassSettings.g_sConfigSyntaxHighlightingPath) AndAlso
                                             IO.File.Exists(ClassSettings.g_sConfigSyntaxHighlightingPath) AndAlso
@@ -2815,7 +2836,16 @@ Public Class FormMain
             End Try
         End Sub
 
-        Public Function GetExpressionBetweenBraces(sExpression As String, sBraceOpen As Char, sBraceClose As Char, iTargetEndBraceLevel As Integer, Optional bInvalidCodeCheck As Boolean = False) As Integer()()
+        ''' <summary>
+        ''' Gets the expression between characters e.g if "()": MyFunc(MyArgs) => MyArgs
+        ''' </summary>
+        ''' <param name="sExpression"></param>
+        ''' <param name="sCharOpen"></param>
+        ''' <param name="sCharClose"></param>
+        ''' <param name="iTargetEndScopeLevel"></param>
+        ''' <param name="bInvalidCodeCheck">If true, it will ignore all Non-Code stuff like strings, comments etc.</param>
+        ''' <returns></returns>
+        Public Function GetExpressionBetweenCharacters(sExpression As String, sCharOpen As Char, sCharClose As Char, iTargetEndScopeLevel As Integer, Optional bInvalidCodeCheck As Boolean = False) As Integer()()
             Dim iCurrentLevel As Integer = 0
             Dim sExpressionsList As New List(Of Integer())
             Dim bWasOpen As Boolean = False
@@ -2834,23 +2864,23 @@ Public Class FormMain
                     End If
                 End If
 
-                If (sExpression(i) = sBraceOpen) Then
+                If (sExpression(i) = sCharOpen) Then
                     iCurrentLevel += 1
                 End If
 
-                If (Not bWasOpen AndAlso iCurrentLevel >= iTargetEndBraceLevel) Then
+                If (Not bWasOpen AndAlso iCurrentLevel >= iTargetEndScopeLevel) Then
                     iStartLoc = i
                     bWasOpen = True
                 End If
 
-                If (sExpression(i) = sBraceClose) Then
+                If (sExpression(i) = sCharClose) Then
                     iCurrentLevel -= 1
                     If (iCurrentLevel <= 0) Then
                         iCurrentLevel = 0
                     End If
                 End If
 
-                If (bWasOpen AndAlso iCurrentLevel < iTargetEndBraceLevel) Then
+                If (bWasOpen AndAlso iCurrentLevel < iTargetEndScopeLevel) Then
                     sExpressionsList.Add({iStartLoc, i})
                     bWasOpen = False
                 End If
@@ -2951,6 +2981,11 @@ Public Class FormMain
             Return -1
         End Function
 
+        ''' <summary>
+        ''' Checks if the name is a forbidden name.
+        ''' </summary>
+        ''' <param name="sName"></param>
+        ''' <returns></returns>
         Public Function IsForbiddenVariableName(sName As String) As Boolean
             Static sRegexBadName As String = Nothing
             If (sRegexBadName = Nothing) Then
@@ -3335,8 +3370,8 @@ Public Class FormMain
 
         Enum ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS
             ALL = 0
-            FULL_AUTOCOMPLETE = (1 << 1)
-            VARIABLES_AUTOCOMPLETE = (2 << 1)
+            FULL_AUTOCOMPLETE = (1 << 0)
+            VARIABLES_AUTOCOMPLETE = (1 << 1)
         End Enum
 
         ''' <summary>
@@ -3397,7 +3432,7 @@ Public Class FormMain
             Try
                 'g_mFormMain.PrintInformation("[INFO]", "Autocomplete update started...")
 
-                If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourcePawnFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourcePawnFile)) Then
+                If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
                     g_mFormMain.PrintInformation("[ERRO]", "Autocomplete update failed! Could not get current SourcePawn Source file!")
                     Return
                 End If
@@ -3411,7 +3446,7 @@ Public Class FormMain
                 'Parse everything. Methods etc.
                 If (True) Then
                     Dim sSourceList As New ClassSyncList(Of String())
-                    Dim sFiles As String() = GetIncludeFiles(ClassSettings.g_sConfigOpenSourcePawnFile)
+                    Dim sFiles As String() = GetIncludeFiles(ClassSettings.g_sConfigOpenSourceFile)
 
                     For i = 0 To sFiles.Length - 1
                         ParseAutocomplete_Pre(sFiles(i), sSourceList, lTmpAutocompleteList)
@@ -3564,18 +3599,18 @@ Public Class FormMain
             Return lList.ToArray
         End Function
 
-        Private Sub ParseAutocomplete_Pre(sFile As String, ByRef sSourceList As ClassSyncList(Of String()), ByRef lTmpAutocompleteList As ClassSyncList(Of STRUC_AUTOCOMPLETE))
-            Dim sSource As String
-            If (ClassSettings.g_sConfigOpenSourcePawnFile.ToLower = sFile.ToLower) Then
-                sSource = CStr(g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.Document.TextContent))
-            Else
-                sSource = IO.File.ReadAllText(sFile)
-            End If
-
-            'Remove new lines
+        Public Sub CleanUpNewLinesSource(ByRef sSource As String)
+            'Remove new lines e.g: MyStuff \
+            '                      MyStuff2
             sSource = Regex.Replace(sSource, "\\\s*\n\s*", "")
 
             If (True) Then
+                'From:
+                '   public
+                '       static
+                '           bla()
+                'To:
+                '   public static bla()
                 Dim sTypes As String() = {"enum", "funcenum", "functag", "stock", "static", "const", "public", "native", "forward", "typeset", "methodmap", "typedef"}
                 Dim mRegMatchCol As MatchCollection = Regex.Matches(sSource, String.Format("^\s*(\b{0}\b)(?<Space>\s*\n\s*)", String.Join("\b|\b", sTypes)), RegexOptions.Multiline)
                 For i = mRegMatchCol.Count - 1 To 0 Step -1
@@ -3586,13 +3621,13 @@ Public Class FormMain
                     sSource = sSource.Remove(mRegMatch.Groups("Space").Index, mRegMatch.Groups("Space").Length)
                     sSource = sSource.Insert(mRegMatch.Groups("Space").Index, " "c)
                 Next
-
             End If
 
             If (True) Then
                 Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
 
-                'Filter new lines  
+                'Filter new lines in statements with parenthesis e.g: MyStuff(MyArg1,
+                '                                                               MyArg2)
                 For i = 0 To sSource.Length - 1
                     Select Case (sSource(i))
                         Case vbLf(0)
@@ -3613,6 +3648,17 @@ Public Class FormMain
                     End Select
                 Next
             End If
+        End Sub
+
+        Private Sub ParseAutocomplete_Pre(sFile As String, ByRef sSourceList As ClassSyncList(Of String()), ByRef lTmpAutocompleteList As ClassSyncList(Of STRUC_AUTOCOMPLETE))
+            Dim sSource As String
+            If (ClassSettings.g_sConfigOpenSourceFile.ToLower = sFile.ToLower) Then
+                sSource = CStr(g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.Document.TextContent))
+            Else
+                sSource = IO.File.ReadAllText(sFile)
+            End If
+
+            CleanUpNewLinesSource(sSource)
 
             Dim lStringLocList As New List(Of Integer())
             Dim lBraceLocList As New List(Of Integer())
@@ -3832,7 +3878,7 @@ Public Class FormMain
                 End If
 
                 Dim mPossibleEnumMatches As MatchCollection = Regex.Matches(SB_Source.ToString, "^\s*\b(enum)\b\s+((?<Name>\b[a-zA-Z0-9_]+\b)|\(.*?\)|)(\:){0,1}\s*(?<BraceStart>\{)", RegexOptions.Multiline) '^\s*\b(enum)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)\s*(?<BraceStart>\{)
-                Dim iBraceList As Integer()() = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenBraces(SB_Source.ToString, "{"c, "}"c, 1, True)
+                Dim iBraceList As Integer()() = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(SB_Source.ToString, "{"c, "}"c, 1, True)
 
 
                 Dim mRegMatch As Match
@@ -4032,7 +4078,7 @@ Public Class FormMain
                         sName = mRegMatch.Groups("Name").Value
 
                         If (mRegMatch.Groups("Arguments").Success) Then
-                            iBraceList = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenBraces(sLine, "("c, ")"c, 1, True)
+                            iBraceList = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(sLine, "("c, ")"c, 1, True)
                             If (iBraceList.Length < 1) Then
                                 Continue While
                             End If
@@ -4175,7 +4221,7 @@ Public Class FormMain
                         Continue For
                     End If
 
-                    iBraceList = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenBraces(sLines(i), "("c, ")"c, 1, True)
+                    iBraceList = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(sLines(i), "("c, ")"c, 1, True)
                     If (iBraceList.Length < 1) Then
                         Continue For
                     End If
@@ -4285,7 +4331,7 @@ Public Class FormMain
             'Get funcenums
             If ((ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_6 OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX) AndAlso sSource.Contains("funcenum")) Then
                 Dim mPossibleEnumMatches As MatchCollection = Regex.Matches(sSource, "^\s*\b(funcenum)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)\s*(?<BraceStart>\{)", RegexOptions.Multiline)
-                Dim iBraceList As Integer()() = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenBraces(sSource, "{"c, "}"c, 1, True)
+                Dim iBraceList As Integer()() = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(sSource, "{"c, "}"c, 1, True)
 
                 Dim mRegMatch As Match
 
@@ -4461,7 +4507,7 @@ Public Class FormMain
             'Get methodmaps
             If ((ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7 OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX) AndAlso sSource.Contains("methodmap")) Then
                 Dim mPossibleMethodmapMatches As MatchCollection = Regex.Matches(sSource, "^\s*\b(methodmap)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)(?<ParentingName>\s+\b[a-zA-Z0-9_]+\b){0,1}(?<FullParent>\s*\<\s*(?<Parent>\b[a-zA-Z0-9_]+\b)){0,1}\s*(?<BraceStart>\{)", RegexOptions.Multiline)
-                Dim iBraceList As Integer()() = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenBraces(sSource, "{"c, "}"c, 1, True)
+                Dim iBraceList As Integer()() = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(sSource, "{"c, "}"c, 1, True)
 
                 Dim mRegMatch As Match
 
@@ -4515,7 +4561,7 @@ Public Class FormMain
                     End If
 
                     Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sMethodmapSource)
-                    Dim iMethodmapBraceList As Integer()() = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenBraces(sMethodmapSource, "("c, ")"c, 1, True)
+                    Dim iMethodmapBraceList As Integer()() = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(sMethodmapSource, "("c, ")"c, 1, True)
 
                     Dim mMethodMatches As MatchCollection = Regex.Matches(sMethodmapSource,
                                                                           String.Format("^\s*(?<Type>\b(property|public\s+(static\s+){2}native|public)\b)\s+((?<Tag>\b({0})\b\s)\s*(?<Name>\b[a-zA-Z0-9_]+\b)|(?<Constructor>\b{1}\b)|(?<Name>\b[a-zA-Z0-9_]+\b))\s*(?<BraceStart>\(){3}", sRegExEnum, sMethodMapName, "{0,1}", "{0,1}"),
@@ -4607,7 +4653,7 @@ Public Class FormMain
             'Get typesets
             If ((ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7 OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX) AndAlso sSource.Contains("typeset")) Then
                 Dim mPossibleMethodmapMatches As MatchCollection = Regex.Matches(sSource, "^\s*\b(typeset)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)\s*(?<BraceStart>\{)", RegexOptions.Multiline)
-                Dim iBraceList As Integer()() = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenBraces(sSource, "{"c, "}"c, 1, True)
+                Dim iBraceList As Integer()() = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(sSource, "{"c, "}"c, 1, True)
 
                 Dim mRegMatch As Match
 
@@ -4653,7 +4699,7 @@ Public Class FormMain
                     End If
 
                     Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sMethodmapSource)
-                    Dim iMethodmapBraceList As Integer()() = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenBraces(sMethodmapSource, "("c, ")"c, 1, True)
+                    Dim iMethodmapBraceList As Integer()() = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(sMethodmapSource, "("c, ")"c, 1, True)
 
                     Dim mMethodMatches As MatchCollection = Regex.Matches(sMethodmapSource, String.Format("^\s*(?<Type>\b(function)\b)\s+(?<Tag>\b({0})\b)\s*(?<BraceStart>\()", sRegExEnum), RegexOptions.Multiline)
 
@@ -4713,7 +4759,7 @@ Public Class FormMain
 
             If ((ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7 OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX) AndAlso sSource.Contains("typedef")) Then
                 Dim mPossibleMethodmapMatches As MatchCollection = Regex.Matches(sSource, String.Format("^\s*\b(typedef)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)\s+=\s+\b(function)\b\s+(?<Tag>\b({0})\b)\s*(?<BraceStart>\()", sRegExEnum), RegexOptions.Multiline)
-                Dim iBraceList As Integer()() = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenBraces(sSource, "("c, ")"c, 1, True)
+                Dim iBraceList As Integer()() = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(sSource, "("c, ")"c, 1, True)
 
                 Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
 
@@ -4786,7 +4832,7 @@ Public Class FormMain
         Private Sub VariableAutocompleteUpdate_Thread()
             Try
                 'g_mFormMain.PrintInformation("[INFO]", "Variable autocomplete update started...")
-                If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourcePawnFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourcePawnFile)) Then
+                If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
                     'g_mFormMain.PrintInformation("[ERRO]", "Variable autocomplete update failed! Could not get current SourcePawn Source file!")
                     Return
                 End If
@@ -4804,9 +4850,9 @@ Public Class FormMain
                     Dim sRegExEnumPattern As String = String.Format("(\b{0}\b)", String.Join("\b|\b", GetEnumNames(g_mFormMain.g_ClassSyntaxTools.lAutocompleteList)))
 
                     If (ClassSettings.g_iSettingsVarAutocompleteCurrentSourceOnly) Then
-                        ParseVariables_Pre(ClassSettings.g_sConfigOpenSourcePawnFile, sRegExEnumPattern, lTmpVarAutocompleteList, g_mFormMain.g_ClassSyntaxTools.lAutocompleteList)
+                        ParseVariables_Pre(ClassSettings.g_sConfigOpenSourceFile, sRegExEnumPattern, lTmpVarAutocompleteList, g_mFormMain.g_ClassSyntaxTools.lAutocompleteList)
                     Else
-                        Dim sFiles As String() = GetIncludeFiles(ClassSettings.g_sConfigOpenSourcePawnFile)
+                        Dim sFiles As String() = GetIncludeFiles(ClassSettings.g_sConfigOpenSourceFile)
                         For i = 0 To sFiles.Length - 1
                             ParseVariables_Pre(sFiles(i), sRegExEnumPattern, lTmpVarAutocompleteList, g_mFormMain.g_ClassSyntaxTools.lAutocompleteList)
                         Next
@@ -4834,53 +4880,13 @@ Public Class FormMain
 
         Private Sub ParseVariables_Pre(ByRef sFile As String, ByRef sRegExEnumPattern As String, ByRef lTmpVarAutocompleteList As ClassSyncList(Of STRUC_AUTOCOMPLETE), ByRef lTmpAutocompleteList As ClassSyncList(Of STRUC_AUTOCOMPLETE))
             Dim sSource As String
-            If (ClassSettings.g_sConfigOpenSourcePawnFile.ToLower = sFile.ToLower) Then
+            If (ClassSettings.g_sConfigOpenSourceFile.ToLower = sFile.ToLower) Then
                 sSource = CStr(g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.Document.TextContent))
             Else
                 sSource = IO.File.ReadAllText(sFile)
             End If
 
-            'Remove new lines
-            sSource = Regex.Replace(sSource, "\\\s*\n\s*", "")
-
-            If (True) Then
-                Dim sTypes As String() = {"enum", "funcenum", "functag", "stock", "static", "const", "public", "native", "forward", "typeset", "methodmap", "typedef"}
-                Dim mRegMatchCol As MatchCollection = Regex.Matches(sSource, String.Format("^\s*(\b{0}\b)(?<Space>\s*\n\s*)", String.Join("\b|\b", sTypes)), RegexOptions.Multiline)
-                For i = mRegMatchCol.Count - 1 To 0 Step -1
-                    Dim mRegMatch As Match = mRegMatchCol(i)
-                    If (Not mRegMatch.Groups("Space").Success) Then
-                        Continue For
-                    End If
-                    sSource = sSource.Remove(mRegMatch.Groups("Space").Index, mRegMatch.Groups("Space").Length)
-                    sSource = sSource.Insert(mRegMatch.Groups("Space").Index, " "c)
-                Next
-
-            End If
-
-            If (True) Then
-                Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
-
-                'Filter new lines  
-                For i = 0 To sSource.Length - 1
-                    Select Case (sSource(i))
-                        Case vbLf(0)
-                            If (sourceAnalysis.InNonCode(i)) Then
-                                Exit Select
-                            End If
-
-                            If (sourceAnalysis.GetParenthesisLevel(i) > 0) Then
-                                Select Case (True)
-                                    Case i > 1 AndAlso sSource(i - 1) = vbCr
-                                        sSource = sSource.Remove(i - 1, 2)
-                                        sSource = sSource.Insert(i - 1, New String(" "c, 2))
-                                    Case Else
-                                        sSource = sSource.Remove(i, 1)
-                                        sSource = sSource.Insert(i, New String(" "c, 1))
-                                End Select
-                            End If
-                    End Select
-                Next
-            End If
+            CleanUpNewLinesSource(sSource)
 
             'Parse variables
             If (True) Then
@@ -5109,7 +5115,7 @@ Public Class FormMain
 
                 For Each autoItem In lTmpAutocompleteList
                     If (ClassSettings.g_iSettingsVarAutocompleteCurrentSourceOnly) Then
-                        If (Not String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourcePawnFile) AndAlso IO.Path.GetFileName(ClassSettings.g_sConfigOpenSourcePawnFile).ToLower <> autoItem.sFile.ToLower) Then
+                        If (Not String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) AndAlso IO.Path.GetFileName(ClassSettings.g_sConfigOpenSourceFile).ToLower <> autoItem.sFile.ToLower) Then
                             Continue For
                         End If
                     End If
@@ -5295,7 +5301,7 @@ Public Class FormMain
 
         Private Sub GetIncludeFilesRecursive(sPath As String, ByRef lList As List(Of String))
             Dim sSource As String
-            If (ClassSettings.g_sConfigOpenSourcePawnFile.ToLower = sPath.ToLower) Then
+            If (ClassSettings.g_sConfigOpenSourceFile.ToLower = sPath.ToLower) Then
                 If (lList.Contains(sPath)) Then
                     Return
                 End If
@@ -5342,11 +5348,11 @@ Public Class FormMain
 
                     Dim sIncludeDir As String = ClassSettings.g_sConfigOpenSourcePawnIncludeFolder
                     If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                        If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourcePawnFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourcePawnFile)) Then
+                        If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
                             g_mFormMain.PrintInformation("[ERRO]", "Could not read includes! Could not get current SourcePawn Source file!")
                             Exit While
                         End If
-                        sIncludeDir = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourcePawnFile), "include")
+                        sIncludeDir = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "include")
                     End If
 
                     Select Case (True)

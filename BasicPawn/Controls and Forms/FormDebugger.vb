@@ -358,7 +358,7 @@ Public Class FormDebugger
 
         Public g_sGameFolder As String = ClassSettings.g_sConfigDebugGameFolder
         Public g_sSourceModFolder As String = ClassSettings.g_sConfigDebugSourceModFolder
-        Public g_sCurrentSourceFile As String = ClassSettings.g_sConfigOpenSourcePawnFile
+        Public g_sCurrentSourceFile As String = ClassSettings.g_sConfigOpenSourceFile
 
         Structure STURC_SOURCE_LINES_INFO_ITEM
             Dim iRealLine As Integer
