@@ -1487,16 +1487,22 @@ Public Class FormMain
                 If (IO.File.Exists(sOutputFile)) Then
                     Select Case (compilerType)
                         Case ENUM_COMPILER_TYPE.SOURCEPAWN
-                            IO.File.Move(sOutputFile, IO.Path.ChangeExtension(sOutputFile, ".smx"))
-                            sOutputFile = IO.Path.ChangeExtension(sOutputFile, ".smx")
+                            Dim sNewOutputFile As String = IO.Path.ChangeExtension(sOutputFile, ".smx")
+                            IO.File.Delete(sNewOutputFile)
+                            IO.File.Move(sOutputFile, sNewOutputFile)
+                            sOutputFile = sNewOutputFile
 
                         Case ENUM_COMPILER_TYPE.AMXX
-                            IO.File.Move(sOutputFile, IO.Path.ChangeExtension(sOutputFile, ".amxx"))
-                            sOutputFile = IO.Path.ChangeExtension(sOutputFile, ".amxx")
+                            Dim sNewOutputFile As String = IO.Path.ChangeExtension(sOutputFile, ".amxx")
+                            IO.File.Delete(sNewOutputFile)
+                            IO.File.Move(sOutputFile, sNewOutputFile)
+                            sOutputFile = sNewOutputFile
 
                         Case ENUM_COMPILER_TYPE.AMX
-                            IO.File.Move(sOutputFile, IO.Path.ChangeExtension(sOutputFile, ".amx"))
-                            sOutputFile = IO.Path.ChangeExtension(sOutputFile, ".amx")
+                            Dim sNewOutputFile As String = IO.Path.ChangeExtension(sOutputFile, ".amx")
+                            IO.File.Delete(sNewOutputFile)
+                            IO.File.Move(sOutputFile, sNewOutputFile)
+                            sOutputFile = sNewOutputFile
 
                     End Select
                 End If
@@ -1655,16 +1661,22 @@ Public Class FormMain
                 If (IO.File.Exists(sOutputFile)) Then
                     Select Case (compilerType)
                         Case ENUM_COMPILER_TYPE.SOURCEPAWN
-                            IO.File.Move(sOutputFile, IO.Path.ChangeExtension(sOutputFile, ".smx"))
-                            sOutputFile = IO.Path.ChangeExtension(sOutputFile, ".smx")
+                            Dim sNewOutputFile As String = IO.Path.ChangeExtension(sOutputFile, ".smx")
+                            IO.File.Delete(sNewOutputFile)
+                            IO.File.Move(sOutputFile, sNewOutputFile)
+                            sOutputFile = sNewOutputFile
 
                         Case ENUM_COMPILER_TYPE.AMXX
-                            IO.File.Move(sOutputFile, IO.Path.ChangeExtension(sOutputFile, ".amxx"))
-                            sOutputFile = IO.Path.ChangeExtension(sOutputFile, ".amxx")
+                            Dim sNewOutputFile As String = IO.Path.ChangeExtension(sOutputFile, ".amxx")
+                            IO.File.Delete(sNewOutputFile)
+                            IO.File.Move(sOutputFile, sNewOutputFile)
+                            sOutputFile = sNewOutputFile
 
                         Case ENUM_COMPILER_TYPE.AMX
-                            IO.File.Move(sOutputFile, IO.Path.ChangeExtension(sOutputFile, ".amx"))
-                            sOutputFile = IO.Path.ChangeExtension(sOutputFile, ".amx")
+                            Dim sNewOutputFile As String = IO.Path.ChangeExtension(sOutputFile, ".amx")
+                            IO.File.Delete(sNewOutputFile)
+                            IO.File.Move(sOutputFile, sNewOutputFile)
+                            sOutputFile = sNewOutputFile
 
                     End Select
                 End If
