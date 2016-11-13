@@ -3498,10 +3498,10 @@ Public Class FormMain
 
                             'ignore \'
                             If (i > 1 AndAlso sText(i - 1) <> "\"c) Then
-                                bInChar = Not bInChar
+                                bInChar = If(bInChar > 0, 0, 1)
                                 iStateArray(i, ENUM_STATE_TYPES.IN_CHAR) = 1
                             ElseIf (i > 2 AndAlso sText(i - 1) = "\"c AndAlso sText(i - 2) = "\"c) Then
-                                bInChar = Not bInChar
+                                bInChar = If(bInChar > 0, 0, 1)
                                 iStateArray(i, ENUM_STATE_TYPES.IN_CHAR) = 1
                             End If
                         Case """"c
@@ -3515,10 +3515,10 @@ Public Class FormMain
 
                             'ignore \"
                             If (i > 1 AndAlso sText(i - 1) <> "\"c) Then
-                                bInString = Not bInString
+                                bInString = If(bInString > 0, 0, 1)
                                 iStateArray(i, ENUM_STATE_TYPES.IN_STRING) = 1
                             ElseIf (i > 2 AndAlso sText(i - 1) = "\"c AndAlso sText(i - 2) = "\"c) Then
-                                bInString = Not bInString
+                                bInString = If(bInString > 0, 0, 1)
                                 iStateArray(i, ENUM_STATE_TYPES.IN_STRING) = 1
                             End If
                         Case vbLf(0)
