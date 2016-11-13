@@ -23,6 +23,26 @@ Imports ICSharpCode.TextEditor.Document
 
 
 Public Class FormMain
+    Public g_ClassSyntaxUpdater As ClassSyntaxUpdater
+    Public g_ClassSyntaxTools As ClassSyntaxTools
+    Public g_ClassAutocompleteUpdater As ClassAutocompleteUpdater
+    Public g_ClassTextEditorTools As ClassTextEditorTools
+    Public g_ClassLineState As ClassTextEditorTools.ClassLineState
+    Public g_ClassCustomHighlighting As ClassTextEditorTools.ClassCustomHighlighting
+
+    Public g_mSourceSyntaxSourceAnalysis As ClassSyntaxTools.ClassSyntaxSourceAnalysis
+
+    Public g_mUCAutocomplete As UCAutocomplete
+    Public g_mUCInformationList As UCInformationList
+    Public g_mUCObjectBrowser As UCObjectBrowser
+    Public g_mUCToolTip As UCToolTip
+    Public g_mFormDebugger As FormDebugger
+
+    Private g_cDarkTextEditorBackgroundColor As Color = Color.FromArgb(255, 26, 26, 26)
+    Private g_cDarkFormDetailsBackgroundColor As Color = Color.FromArgb(255, 24, 24, 24)
+    Private g_cDarkFormBackgroundColor As Color = Color.FromArgb(255, 48, 48, 48)
+    Private g_cDarkFormMenuBackgroundColor As Color = Color.FromArgb(255, 64, 64, 64)
+
     Public Class STRUC_AUTOCOMPLETE
         Public sInfo As String
         Public sFile As String
@@ -117,25 +137,6 @@ Public Class FormMain
 
 
 
-    Public g_ClassSyntaxUpdater As ClassSyntaxUpdater
-    Public g_ClassSyntaxTools As ClassSyntaxTools
-    Public g_ClassAutocompleteUpdater As ClassAutocompleteUpdater
-    Public g_ClassTextEditorTools As ClassTextEditorTools
-    Public g_ClassLineState As ClassTextEditorTools.ClassLineState
-
-    Public g_mSourceSyntaxSourceAnalysis As ClassSyntaxTools.ClassSyntaxSourceAnalysis
-
-    Public g_mUCAutocomplete As UCAutocomplete
-    Public g_mUCInformationList As UCInformationList
-    Public g_mUCObjectBrowser As UCObjectBrowser
-    Public g_mUCToolTip As UCToolTip
-    Public g_mFormDebugger As FormDebugger
-
-    Private g_cDarkTextEditorBackgroundColor As Color = Color.FromArgb(255, 26, 26, 26)
-    Private g_cDarkFormDetailsBackgroundColor As Color = Color.FromArgb(255, 24, 24, 24)
-    Private g_cDarkFormBackgroundColor As Color = Color.FromArgb(255, 48, 48, 48)
-    Private g_cDarkFormMenuBackgroundColor As Color = Color.FromArgb(255, 64, 64, 64)
-
 #Region "GUI Stuff"
     Private g_bCodeChanged As Boolean = False
 
@@ -149,6 +150,7 @@ Public Class FormMain
         g_ClassAutocompleteUpdater = New ClassAutocompleteUpdater(Me)
         g_ClassTextEditorTools = New ClassTextEditorTools(Me)
         g_ClassLineState = New ClassTextEditorTools.ClassLineState(Me)
+        g_ClassCustomHighlighting = New ClassTextEditorTools.ClassCustomHighlighting(Me)
 
         ' Load other Forms/Controls
         g_mUCAutocomplete = New UCAutocomplete(Me)
@@ -1937,6 +1939,177 @@ Public Class FormMain
             Return Nothing
         End Function
 
+
+        Public Class ClassCustomHighlighting
+            Implements IDisposable
+
+            Private g_mFormMain As FormMain
+            Private Const g_sColorTextName As String = "Highlighting"
+
+            Class STRUC_HIGHLIGHT_ITEM
+                Public sIdentifier As String
+                Public sWord As String
+                Public mToolStripItem As ToolStripMenuItem
+            End Class
+
+            Private g_lHighlightItemList As New List(Of STRUC_HIGHLIGHT_ITEM)
+
+            ReadOnly Property m_HightlightItems As STRUC_HIGHLIGHT_ITEM()
+                Get
+                    Return g_lHighlightItemList.ToArray
+                End Get
+            End Property
+
+            Public Sub New(f As FormMain)
+                g_mFormMain = f
+            End Sub
+
+            Public Sub Add(iIndex As Integer)
+                AllocateList(iIndex)
+
+                If (g_lHighlightItemList(iIndex) IsNot Nothing) Then
+                    Return
+                End If
+
+                Dim sIdentifier = Guid.NewGuid.ToString
+
+                Dim dropItem As ToolStripMenuItem = CType(g_mFormMain.Invoke(Function() g_mFormMain.ToolStripMenuItem_HightlightCustom.DropDownItems.Add(String.Format("{0} {1}", g_sColorTextName, iIndex))), ToolStripMenuItem)
+                dropItem.Name = sIdentifier
+                dropItem.BackColor = Color.White
+
+                RemoveHandler dropItem.Click, AddressOf OnClick
+                AddHandler dropItem.Click, AddressOf OnClick
+
+                Dim highlightItem As New STRUC_HIGHLIGHT_ITEM
+                highlightItem.sIdentifier = sIdentifier
+                highlightItem.sWord = ""
+                highlightItem.mToolStripItem = dropItem
+
+                g_lHighlightItemList(iIndex) = highlightItem
+            End Sub
+
+            Public Sub Clear()
+                For i = 0 To g_lHighlightItemList.Count - 1
+                    If (g_lHighlightItemList(i) Is Nothing) Then
+                        Continue For
+                    End If
+
+                    RemoveHandler g_lHighlightItemList(i).mToolStripItem.Click, AddressOf OnClick
+
+                    g_lHighlightItemList(i).mToolStripItem.Dispose()
+                    g_lHighlightItemList(i).mToolStripItem = Nothing
+                Next
+
+                g_lHighlightItemList.Clear()
+            End Sub
+
+            Public Function AllocateList(iSize As Integer) As Boolean
+                Dim bAllocated As Boolean = False
+
+                While (iSize > g_lHighlightItemList.Count - 1)
+                    bAllocated = True
+                    g_lHighlightItemList.Add(Nothing)
+                End While
+
+                Return bAllocated
+            End Function
+
+            Private Sub OnClick(sender As Object, e As EventArgs)
+                Try
+                    Dim toolStripItem As ToolStripMenuItem = TryCast(sender, ToolStripMenuItem)
+                    If (toolStripItem Is Nothing) Then
+                        Throw New ArgumentException("Invalid ToolStripMenuItem")
+                    End If
+
+                    Dim sIdentifier As String = toolStripItem.Name
+                    If (String.IsNullOrEmpty(sIdentifier)) Then
+                        Throw New ArgumentException("Invalid ToolStripMenuItem name")
+                    End If
+
+                    Dim iIndex As Integer = -1
+                    Dim highlightItem As STRUC_HIGHLIGHT_ITEM = Nothing
+
+                    For i = 0 To g_lHighlightItemList.Count - 1
+                        If (g_lHighlightItemList(i) Is Nothing) Then
+                            Continue For
+                        End If
+
+                        If (g_lHighlightItemList(i).sIdentifier <> sIdentifier) Then
+                            Continue For
+                        End If
+
+                        iIndex = i
+                        highlightItem = g_lHighlightItemList(i)
+                    Next
+
+                    If (highlightItem Is Nothing OrElse iIndex < 0) Then
+                        Throw New ArgumentException("No matching ToolStripMenuItem found")
+                    End If
+
+                    highlightItem.sWord = ""
+
+                    If (g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.SelectionManager.HasSomethingSelected) Then
+                        Dim m_CurrentSelection As ISelection = g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.SelectionManager.SelectionCollection(0)
+
+                        If (Regex.IsMatch(m_CurrentSelection.SelectedText, "^[a-zA-Z0-9_]+$")) Then
+                            highlightItem.sWord = m_CurrentSelection.SelectedText
+                        End If
+                    Else
+                        Dim sWord As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(False)
+
+                        If (Not String.IsNullOrEmpty(sWord)) Then
+                            highlightItem.sWord = sWord
+                        End If
+                    End If
+
+                    If (String.IsNullOrEmpty(highlightItem.sWord)) Then
+                        toolStripItem.Text = String.Format("{0} {1}", g_sColorTextName, iIndex)
+                    Else
+                        toolStripItem.Text = String.Format("{0} {1} {2}", g_sColorTextName, iIndex, "(Visible)")
+                    End If
+
+                    g_mFormMain.g_ClassSyntaxTools.UpdateSyntaxFile(ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE.HIGHLIGHT_WORD_CUSTOM)
+                    g_mFormMain.g_ClassSyntaxTools.UpdateTextEditorSyntax()
+                Catch ex As Exception
+                    ClassExceptionLog.WriteToLogMessageBox(ex)
+                End Try
+            End Sub
+
+#Region "IDisposable Support"
+            Private disposedValue As Boolean ' To detect redundant calls
+
+            ' IDisposable
+            Protected Overridable Sub Dispose(disposing As Boolean)
+                If Not Me.disposedValue Then
+                    If disposing Then
+                        ' TODO: dispose managed state (managed objects).
+                        Clear()
+                    End If
+
+                    ' TODO: free unmanaged resources (unmanaged objects) and override Finalize() below.
+                    ' TODO: set large fields to null.
+                End If
+                Me.disposedValue = True
+            End Sub
+
+            ' TODO: override Finalize() only if Dispose(disposing As Boolean) above has code to free unmanaged resources.
+            'Protected Overrides Sub Finalize()
+            '    ' Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
+            '    Dispose(False)
+            '    MyBase.Finalize()
+            'End Sub
+
+            ' This code added by Visual Basic to correctly implement the disposable pattern.
+            Public Sub Dispose() Implements IDisposable.Dispose
+                ' Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
+                Dispose(True)
+                ' TODO: uncomment the following line if Finalize() is overridden above.
+                ' GC.SuppressFinalize(Me)
+            End Sub
+#End Region
+        End Class
+
+
         Class ClassLineState
             Private g_mFormMain As FormMain
 
@@ -2254,6 +2427,7 @@ Public Class FormMain
 
         Public sSyntax_HighlightCaretMarker As String = "<!-- [DO NOT EDIT | HIGHLIGHT CARET MARKER] -->"
         Public sSyntax_HighlightWordMarker As String = "<!-- [DO NOT EDIT | HIGHLIGHT WORD MARKER] -->"
+        Public sSyntax_HighlightWordCustomMarker As String = "<!-- [DO NOT EDIT | HIGHLIGHT WORD CUSTOM MARKER] -->"
         Public sSyntax_HighlightDefineMarker As String = "<!-- [DO NOT EDIT | DEFINE MARKER] -->"
         Public sSyntax_HighlightEnumMarker As String = "<!-- [DO NOT EDIT | ENUM MARKER] -->"
         Public sSyntax_HighlightEnum2Marker As String = "<!-- [DO NOT EDIT | ENUM2 MARKER] -->"
@@ -2264,8 +2438,10 @@ Public Class FormMain
         Private _lock As Object = New Object()
 
         Public Enum ENUM_SYNTAX_UPDATE_TYPE
+            NONE
             CARET_WORD
             HIGHLIGHT_WORD
+            HIGHLIGHT_WORD_CUSTOM
             AUTOCOMPLETE
         End Enum
 
@@ -2355,9 +2531,11 @@ Public Class FormMain
                 iItem.g_cControl.ForeColor = If(ClassSettings.g_iSettingsInvertColors, iItem.g_cForeColorInv, iItem.g_cForeColorOrg)
             Next
 
-            UpdateSyntaxFile(ENUM_SYNTAX_UPDATE_TYPE.AUTOCOMPLETE, True)
-            UpdateSyntaxFile(ENUM_SYNTAX_UPDATE_TYPE.HIGHLIGHT_WORD, True)
-            UpdateSyntaxFile(ENUM_SYNTAX_UPDATE_TYPE.CARET_WORD, True)
+            UpdateSyntaxFile(ENUM_SYNTAX_UPDATE_TYPE.NONE, True) 'Just generate new files once, we dont need to create new files every type.
+            UpdateSyntaxFile(ENUM_SYNTAX_UPDATE_TYPE.AUTOCOMPLETE)
+            UpdateSyntaxFile(ENUM_SYNTAX_UPDATE_TYPE.HIGHLIGHT_WORD)
+            UpdateSyntaxFile(ENUM_SYNTAX_UPDATE_TYPE.HIGHLIGHT_WORD_CUSTOM)
+            UpdateSyntaxFile(ENUM_SYNTAX_UPDATE_TYPE.CARET_WORD)
             UpdateTextEditorSyntax()
         End Sub
 
@@ -2415,6 +2593,8 @@ Public Class FormMain
                                     ENUM_SYNTAX_FILES.DEBUGGER_TEXTEDITOR
                                 Dim SB As New StringBuilder
 
+                                Dim iHighlightCustomCount As Integer = 0
+
                                 Using SR As New IO.StreamReader(g_SyntaxFiles(i).sFile)
                                     Dim sLine As String
 
@@ -2450,6 +2630,24 @@ Public Class FormMain
                                                     End If
 
                                                     SB.AppendLine()
+                                                    Continue While
+                                                End If
+
+                                            Case ENUM_SYNTAX_UPDATE_TYPE.HIGHLIGHT_WORD_CUSTOM
+                                                If (i = ENUM_SYNTAX_FILES.MAIN_TEXTEDITOR AndAlso
+                                                        sLine.Contains(sSyntax_HighlightWordCustomMarker)) Then
+
+                                                    SB.Append(sSyntax_HighlightWordCustomMarker)
+
+                                                    g_mFormMain.g_ClassCustomHighlighting.Add(iHighlightCustomCount)
+                                                    Dim menuItem = g_mFormMain.g_ClassCustomHighlighting.m_HightlightItems()
+
+                                                    If (menuItem(iHighlightCustomCount) IsNot Nothing AndAlso Not String.IsNullOrEmpty(menuItem(iHighlightCustomCount).sWord)) Then
+                                                        SB.Append(String.Format("<Key word=""{0}""/>", menuItem(iHighlightCustomCount).sWord))
+                                                    End If
+
+                                                    SB.AppendLine()
+                                                    iHighlightCustomCount += 1
                                                     Continue While
                                                 End If
 
@@ -2533,6 +2731,8 @@ Public Class FormMain
                                             SB.AppendLine(sLine.Trim)
                                         End If
                                     End While
+
+                                    'g_mFormMain.g_ClassCustomHighlighting.FinalSize(iHighlightCustomCount)
                                 End Using
 
                                 Dim sFormatedString As String = SB.ToString
@@ -2775,7 +2975,6 @@ Public Class FormMain
 
             Return Regex.IsMatch(sName, sRegexBadName)
         End Function
-
 
         Public Class ClassSyntaxSourceAnalysis
             Enum ENUM_STATE_TYPES

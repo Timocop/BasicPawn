@@ -238,6 +238,19 @@
       <KeyWords name="HighlightWords" color="Black" bgcolor="LightGreen">
         <!-- [DO NOT EDIT | HIGHLIGHT WORD MARKER] -->
       </KeyWords>
+
+      <!-- Put as many as you want -->
+        <KeyWords name="HighlightWordsCustom_Green" color="White" bgcolor="Green">
+          <!-- [DO NOT EDIT | HIGHLIGHT WORD CUSTOM MARKER] -->
+        </KeyWords>
+      
+        <KeyWords name="HighlightWordsCustom_Red" color="White" bgcolor="Red">
+          <!-- [DO NOT EDIT | HIGHLIGHT WORD CUSTOM MARKER] -->
+        </KeyWords>
+      
+        <KeyWords name="HighlightWordsCustom_Blue" color="White" bgcolor="Blue">
+          <!-- [DO NOT EDIT | HIGHLIGHT WORD CUSTOM MARKER] -->
+        </KeyWords>
     </RuleSet>
 		
 		<RuleSet name="CommentMarkerSet" ignorecase="false">

@@ -60,6 +60,11 @@ Partial Class FormMain
                         End Try
                     End If
                 Next
+
+                If (g_ClassCustomHighlighting IsNot Nothing) Then
+                    g_ClassCustomHighlighting.Dispose()
+                    g_ClassCustomHighlighting = Nothing
+                End If
             End If
 
             If disposing AndAlso components IsNot Nothing Then
@@ -152,6 +157,7 @@ Partial Class FormMain
         Me.ToolStripStatusLabel_CurrentConfig = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ToolStripStatusLabel_LastInformation = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ToolStripStatusLabel_AppVersion = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.ToolStripMenuItem_HightlightCustom = New System.Windows.Forms.ToolStripMenuItem()
         Me.ContextMenuStrip_RightClick.SuspendLayout()
         Me.MenuStrip_BasicPawn.SuspendLayout()
         Me.SplitContainer1.Panel1.SuspendLayout()
@@ -167,36 +173,36 @@ Partial Class FormMain
         '
         'ContextMenuStrip_RightClick
         '
-        Me.ContextMenuStrip_RightClick.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_Mark, Me.ToolStripMenuItem_ListReferences, Me.ToolStripSeparator1, Me.ToolStripMenuItem_Debugger, Me.ToolStripSeparator6, Me.ToolStripMenuItem_Cut, Me.ToolStripMenuItem_Copy, Me.ToolStripMenuItem_Paste})
+        Me.ContextMenuStrip_RightClick.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_Mark, Me.ToolStripMenuItem_ListReferences, Me.ToolStripSeparator1, Me.ToolStripMenuItem_Debugger, Me.ToolStripMenuItem_HightlightCustom, Me.ToolStripSeparator6, Me.ToolStripMenuItem_Cut, Me.ToolStripMenuItem_Copy, Me.ToolStripMenuItem_Paste})
         Me.ContextMenuStrip_RightClick.Name = "ContextMenuStrip1"
         Me.ContextMenuStrip_RightClick.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
-        Me.ContextMenuStrip_RightClick.Size = New System.Drawing.Size(150, 148)
+        Me.ContextMenuStrip_RightClick.Size = New System.Drawing.Size(157, 192)
         '
         'ToolStripMenuItem_Mark
         '
         Me.ToolStripMenuItem_Mark.Image = CType(resources.GetObject("ToolStripMenuItem_Mark.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_Mark.Name = "ToolStripMenuItem_Mark"
-        Me.ToolStripMenuItem_Mark.Size = New System.Drawing.Size(149, 22)
+        Me.ToolStripMenuItem_Mark.Size = New System.Drawing.Size(156, 22)
         Me.ToolStripMenuItem_Mark.Text = "Mark"
         '
         'ToolStripMenuItem_ListReferences
         '
         Me.ToolStripMenuItem_ListReferences.Image = CType(resources.GetObject("ToolStripMenuItem_ListReferences.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_ListReferences.Name = "ToolStripMenuItem_ListReferences"
-        Me.ToolStripMenuItem_ListReferences.Size = New System.Drawing.Size(149, 22)
+        Me.ToolStripMenuItem_ListReferences.Size = New System.Drawing.Size(156, 22)
         Me.ToolStripMenuItem_ListReferences.Text = "List references"
         '
         'ToolStripSeparator1
         '
         Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
-        Me.ToolStripSeparator1.Size = New System.Drawing.Size(146, 6)
+        Me.ToolStripSeparator1.Size = New System.Drawing.Size(153, 6)
         '
         'ToolStripMenuItem_Debugger
         '
         Me.ToolStripMenuItem_Debugger.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_DebuggerBreakpoints, Me.ToolStripMenuItem_DebuggerWatchers})
         Me.ToolStripMenuItem_Debugger.Image = CType(resources.GetObject("ToolStripMenuItem_Debugger.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_Debugger.Name = "ToolStripMenuItem_Debugger"
-        Me.ToolStripMenuItem_Debugger.Size = New System.Drawing.Size(149, 22)
+        Me.ToolStripMenuItem_Debugger.Size = New System.Drawing.Size(156, 22)
         Me.ToolStripMenuItem_Debugger.Text = "Debugging"
         '
         'ToolStripMenuItem_DebuggerBreakpoints
@@ -252,27 +258,27 @@ Partial Class FormMain
         'ToolStripSeparator6
         '
         Me.ToolStripSeparator6.Name = "ToolStripSeparator6"
-        Me.ToolStripSeparator6.Size = New System.Drawing.Size(146, 6)
+        Me.ToolStripSeparator6.Size = New System.Drawing.Size(153, 6)
         '
         'ToolStripMenuItem_Cut
         '
         Me.ToolStripMenuItem_Cut.Image = CType(resources.GetObject("ToolStripMenuItem_Cut.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_Cut.Name = "ToolStripMenuItem_Cut"
-        Me.ToolStripMenuItem_Cut.Size = New System.Drawing.Size(149, 22)
+        Me.ToolStripMenuItem_Cut.Size = New System.Drawing.Size(156, 22)
         Me.ToolStripMenuItem_Cut.Text = "Cut"
         '
         'ToolStripMenuItem_Copy
         '
         Me.ToolStripMenuItem_Copy.Image = CType(resources.GetObject("ToolStripMenuItem_Copy.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_Copy.Name = "ToolStripMenuItem_Copy"
-        Me.ToolStripMenuItem_Copy.Size = New System.Drawing.Size(149, 22)
+        Me.ToolStripMenuItem_Copy.Size = New System.Drawing.Size(156, 22)
         Me.ToolStripMenuItem_Copy.Text = "Copy"
         '
         'ToolStripMenuItem_Paste
         '
         Me.ToolStripMenuItem_Paste.Image = CType(resources.GetObject("ToolStripMenuItem_Paste.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_Paste.Name = "ToolStripMenuItem_Paste"
-        Me.ToolStripMenuItem_Paste.Size = New System.Drawing.Size(149, 22)
+        Me.ToolStripMenuItem_Paste.Size = New System.Drawing.Size(156, 22)
         Me.ToolStripMenuItem_Paste.Text = "Paste"
         '
         'MenuStrip_BasicPawn
@@ -711,6 +717,13 @@ Partial Class FormMain
         Me.ToolStripStatusLabel_AppVersion.Size = New System.Drawing.Size(31, 17)
         Me.ToolStripStatusLabel_AppVersion.Text = "v.0.0"
         '
+        'ToolStripMenuItem_HightlightCustom
+        '
+        Me.ToolStripMenuItem_HightlightCustom.Image = Global.BasicPawn.My.Resources.Resources.imageres_5313_16x16_32
+        Me.ToolStripMenuItem_HightlightCustom.Name = "ToolStripMenuItem_HightlightCustom"
+        Me.ToolStripMenuItem_HightlightCustom.Size = New System.Drawing.Size(156, 22)
+        Me.ToolStripMenuItem_HightlightCustom.Text = "Highlight Color"
+        '
         'FormMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -815,4 +828,5 @@ Partial Class FormMain
     Friend WithEvents ToolStripMenuItem_DebuggerWatcherRemove As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_DebuggerWatcherRemoveAll As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_FileSaveAsTemp As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_HightlightCustom As ToolStripMenuItem
 End Class
