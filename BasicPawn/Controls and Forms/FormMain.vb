@@ -675,12 +675,12 @@ Public Class FormMain
 
     Private Function ParseMethodAutocomplete(Optional bForceUpdate As Boolean = False) As Boolean
         If (bForceUpdate) Then
-            Dim sTextContent As String = Me.Invoke(Function() TextEditorControl_Source.Document.TextContent)
+            Dim sTextContent As String = CStr(Me.Invoke(Function() TextEditorControl_Source.Document.TextContent))
             g_mSourceSyntaxSourceAnalysis = New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sTextContent)
         End If
 
         If (g_mSourceSyntaxSourceAnalysis IsNot Nothing) Then
-            Dim iCaretOffset As Integer = Me.Invoke(Function() TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Offset)
+            Dim iCaretOffset As Integer = CInt(Me.Invoke(Function() TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Offset))
             If (iCaretOffset > 1 AndAlso g_mSourceSyntaxSourceAnalysis.GetMaxLenght() > iCaretOffset AndAlso Not g_mSourceSyntaxSourceAnalysis.InMultiComment(iCaretOffset) AndAlso Not g_mSourceSyntaxSourceAnalysis.InSingleComment(iCaretOffset)) Then
                 Dim iValidOffset As Integer = -1
                 Dim iCaretBrace As Integer = g_mSourceSyntaxSourceAnalysis.GetParenthesisLevel(iCaretOffset - 1)
@@ -694,12 +694,13 @@ Public Class FormMain
                 If (iValidOffset > -1) Then
                     Dim SB As New StringBuilder
 
+                    Dim i As Integer
                     For i = iValidOffset To iValidOffset - 64 Step -1
                         If (i < 0) Then
                             Exit For
                         End If
 
-                        SB.Append(Me.Invoke(Function(a) TextEditorControl_Source.ActiveTextAreaControl.Document.GetCharAt(a), i))
+                        SB.Append(Me.Invoke(Function() TextEditorControl_Source.ActiveTextAreaControl.Document.GetCharAt(i)))
                     Next
 
                     Dim sFuncStart As String = StrReverse(SB.ToString)
@@ -1868,7 +1869,7 @@ Public Class FormMain
                 Else
                     If (Not IO.File.Exists(sCompilerPath)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! SourcePawn Compiler can not be found!")
-                        Return False
+                        Return Nothing
                     End If
                 End If
 
@@ -1960,7 +1961,7 @@ Public Class FormMain
                         Return lineStateBookmark.m_iType
                     Next
 
-                    Return -1
+                    Return LineStateBookmark.ENUM_BOOKMARK_TYPE.NONE
                 End Get
                 Set(value As LineStateBookmark.ENUM_BOOKMARK_TYPE)
                     If (m_IgnoreUpdates) Then
@@ -2022,6 +2023,7 @@ Public Class FormMain
                 Inherits Bookmark
 
                 Enum ENUM_BOOKMARK_TYPE
+                    NONE
                     CHANGED
                     SAVED
                 End Enum
@@ -2057,8 +2059,8 @@ Public Class FormMain
                 Public Overrides Sub Draw(iconBarMargin As IconBarMargin, iGraphics As Graphics, iPoint As Point)
                     'Dim num As Integer = margin.TextArea.TextView.FontHeight / 8
                     'Dim r As Rectangle = New Rectangle(1, p.Y + num, margin.DrawingPosition.Width - 4, margin.TextArea.TextView.FontHeight - num * 2)
-                    Dim calcFontHeight As Integer = iconBarMargin.TextArea.TextView.FontHeight / 32
-                    Dim r As New Rectangle(iconBarMargin.DrawingPosition.Width / 1.25,
+                    Dim calcFontHeight As Integer = CInt(iconBarMargin.TextArea.TextView.FontHeight / 32)
+                    Dim r As New Rectangle(CInt(iconBarMargin.DrawingPosition.Width / 1.25),
                                             iPoint.Y + calcFontHeight,
                                             iconBarMargin.DrawingPosition.Width - 4,
                                             iconBarMargin.TextArea.TextView.FontHeight - calcFontHeight * 2)
@@ -2131,7 +2133,7 @@ Public Class FormMain
                     If (g_mLastMethodAutocompleteUpdate < Now) Then
                         g_mLastMethodAutocompleteUpdate = (Now + New TimeSpan(0, 0, 0, 10, 0))
 
-                        Dim sTextContent As String = g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.Document.TextContent)
+                        Dim sTextContent As String = CStr(g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.Document.TextContent))
                         g_mFormMain.g_mSourceSyntaxSourceAnalysis = New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sTextContent)
                     End If
 
@@ -2145,8 +2147,8 @@ Public Class FormMain
                     End If
 
 
-                    Dim iCaretOffset As Integer = g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Offset)
-                    Dim iCaretPos As Integer = g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.ScreenPosition.X + g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.ScreenPosition.Y)
+                    Dim iCaretOffset As Integer = CInt(g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Offset))
+                    Dim iCaretPos As Integer = CInt(g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.ScreenPosition.X + g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.ScreenPosition.Y))
 
                     'Update Method Autoupdate 
                     Static iLastMethodAutoupdateCaretOffset As Integer = -1
@@ -2185,15 +2187,15 @@ Public Class FormMain
 
 
                         If (iCaretOffset > -1 AndAlso iCaretOffset < g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.TextLength) Then
-                            Dim iPosition As Integer = g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Column)
-                            Dim iLineOffset As Integer = g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iCaretOffset).Offset)
-                            Dim iLineLen As Integer = g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iCaretOffset).Length)
+                            Dim iPosition As Integer = CInt(g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Column))
+                            Dim iLineOffset As Integer = CInt(g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iCaretOffset).Offset))
+                            Dim iLineLen As Integer = CInt(g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iCaretOffset).Length))
 
                             If ((iLineLen - iPosition) > 0) Then
-                                Dim sFunctionName As String = g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True))
+                                Dim sFunctionName As String = CType(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True)), String)
 
-                                If (g_mFormMain.Invoke(Function() g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete(sFunctionName)) < 1) Then
-                                    sFunctionName = g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTextEditorTools.GetCaretWord(False))
+                                If (CInt(g_mFormMain.Invoke(Function() g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete(sFunctionName))) < 1) Then
+                                    sFunctionName = CStr(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTextEditorTools.GetCaretWord(False)))
 
                                     g_mFormMain.Invoke(Sub() g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete(sFunctionName))
                                     g_mFormMain.Invoke(Sub() g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip())
@@ -2285,7 +2287,7 @@ Public Class FormMain
 
             'Add all syntax files to the provider, only once
             For i = 0 To g_SyntaxFiles.Length - 1
-                CreateSyntaxFile(i)
+                CreateSyntaxFile(CType(i, ENUM_SYNTAX_FILES))
 
                 Dim synraxProvider As New FileSyntaxModeProvider(g_SyntaxFiles(i).sFolder)
                 HighlightingManager.Manager.AddSyntaxModeFileProvider(synraxProvider)
@@ -2405,7 +2407,7 @@ Public Class FormMain
                 SyncLock _lock
                     For i = 0 To g_SyntaxFiles.Length - 1
                         If (Not IO.File.Exists(g_SyntaxFiles(i).sFile) OrElse bForceFromMemory) Then
-                            CreateSyntaxFile(i)
+                            CreateSyntaxFile(CType(i, ENUM_SYNTAX_FILES))
                         End If
 
                         Select Case (i)
@@ -2551,7 +2553,7 @@ Public Class FormMain
 
                                         Try
                                             Dim sColorName As String = mMatch.Groups("Color").Value
-                                            Dim iColorNameIndex As String = mMatch.Groups("Color").Index
+                                            Dim iColorNameIndex As Integer = mMatch.Groups("Color").Index
                                             Dim cConv As Color = ColorTranslator.FromHtml(sColorName)
 
                                             Dim cInvColor As Color = InvertColor(cConv)
@@ -2586,7 +2588,7 @@ Public Class FormMain
             Try
                 For i = 0 To g_SyntaxFiles.Length - 1
                     If (Not IO.File.Exists(g_SyntaxFiles(i).sFile)) Then
-                        CreateSyntaxFile(i)
+                        CreateSyntaxFile(CType(i, ENUM_SYNTAX_FILES))
                     End If
                 Next
 
@@ -2704,9 +2706,9 @@ Public Class FormMain
                                 iBraceCount += 1
                             End If
 
-                        Case vbLf
+                        Case vbLf(0)
                             'If (Not sourceAnalysis.InNonCode(i)) Then
-                            sSource = sSource.Insert(i + 1, New String(vbTab, sourceAnalysis.GetBraceLevel(i + 1 + iBraceCount) + If(iBracedCount > 0, iBracedCount + 1, 0)))
+                            sSource = sSource.Insert(i + 1, New String(vbTab(0), sourceAnalysis.GetBraceLevel(i + 1 + iBraceCount) + If(iBracedCount > 0, iBracedCount + 1, 0)))
                             'End If
                             iBraceCount = 0
 
@@ -2808,7 +2810,7 @@ Public Class FormMain
             ''' <returns></returns>
             Public ReadOnly Property InSingleComment(i As Integer) As Boolean
                 Get
-                    Return iStateArray(i, ENUM_STATE_TYPES.IN_SINGLE_COMMENT)
+                    Return iStateArray(i, ENUM_STATE_TYPES.IN_SINGLE_COMMENT) > 0
                 End Get
             End Property
 
@@ -2819,7 +2821,7 @@ Public Class FormMain
             ''' <returns></returns>
             Public ReadOnly Property InMultiComment(i As Integer) As Boolean
                 Get
-                    Return iStateArray(i, ENUM_STATE_TYPES.IN_MULTI_COMMENT)
+                    Return iStateArray(i, ENUM_STATE_TYPES.IN_MULTI_COMMENT) > 0
                 End Get
             End Property
 
@@ -2830,7 +2832,7 @@ Public Class FormMain
             ''' <returns></returns>
             Public ReadOnly Property InString(i As Integer) As Boolean
                 Get
-                    Return iStateArray(i, ENUM_STATE_TYPES.IN_STRING)
+                    Return iStateArray(i, ENUM_STATE_TYPES.IN_STRING) > 0
                 End Get
             End Property
 
@@ -2841,7 +2843,7 @@ Public Class FormMain
             ''' <returns></returns>
             Public ReadOnly Property InChar(i As Integer) As Boolean
                 Get
-                    Return iStateArray(i, ENUM_STATE_TYPES.IN_CHAR)
+                    Return iStateArray(i, ENUM_STATE_TYPES.IN_CHAR) > 0
                 End Get
             End Property
 
@@ -2852,7 +2854,7 @@ Public Class FormMain
             ''' <returns></returns>
             Public ReadOnly Property InPreprocessor(i As Integer) As Boolean
                 Get
-                    Return iStateArray(i, ENUM_STATE_TYPES.IN_PREPROCESSOR)
+                    Return iStateArray(i, ENUM_STATE_TYPES.IN_PREPROCESSOR) > 0
                 End Get
             End Property
 
@@ -2896,14 +2898,14 @@ Public Class FormMain
             ''' <returns></returns>
             Public ReadOnly Property InNonCode(i As Integer) As Boolean
                 Get
-                    Return (iStateArray(i, ENUM_STATE_TYPES.IN_SINGLE_COMMENT) OrElse
-                                iStateArray(i, ENUM_STATE_TYPES.IN_MULTI_COMMENT) OrElse
-                                iStateArray(i, ENUM_STATE_TYPES.IN_STRING) OrElse
-                                iStateArray(i, ENUM_STATE_TYPES.IN_CHAR))
+                    Return (iStateArray(i, ENUM_STATE_TYPES.IN_SINGLE_COMMENT) > 0 OrElse
+                                iStateArray(i, ENUM_STATE_TYPES.IN_MULTI_COMMENT) > 0 OrElse
+                                iStateArray(i, ENUM_STATE_TYPES.IN_STRING) > 0 OrElse
+                                iStateArray(i, ENUM_STATE_TYPES.IN_CHAR) > 0)
                 End Get
             End Property
 
-            Public Function GetIndexFromLine(iLine) As Integer
+            Public Function GetIndexFromLine(iLine As Integer) As Integer
                 If (iLine = 0) Then
                     Return 0
                 End If
@@ -2911,7 +2913,7 @@ Public Class FormMain
                 Dim iLineCount As Integer = 0
                 For i = 0 To sCacheText.Length - 1
                     Select Case (sCacheText(i))
-                        Case vbLf
+                        Case vbLf(0)
                             iLineCount += 1
 
                             If (iLineCount >= iLine) Then
@@ -2933,11 +2935,11 @@ Public Class FormMain
                 Dim iParenthesisLevel As Integer = 0 '()
                 Dim iBracketLevel As Integer = 0 '[]
                 Dim iBraceLevel As Integer = 0 '{}
-                Dim bInSingleComment As Boolean = False
-                Dim bInMultiComment As Boolean = False
-                Dim bInString As Boolean = False
-                Dim bInChar As Boolean = False
-                Dim bInPreprocessor As Boolean = False
+                Dim bInSingleComment As Integer = 0
+                Dim bInMultiComment As Integer = 0
+                Dim bInString As Integer = 0
+                Dim bInChar As Integer = 0
+                Dim bInPreprocessor As Integer = 0
 
                 For i = 0 To sText.Length - 1
                     iStateArray(i, ENUM_STATE_TYPES.PARENTHESIS_LEVEL) = iParenthesisLevel '0
@@ -2951,158 +2953,158 @@ Public Class FormMain
 
                     Select Case (sText(i))
                         Case "#"c
-                            If (iParenthesisLevel > 0 OrElse iBracketLevel > 0 OrElse iBraceLevel > 0 OrElse bInSingleComment OrElse bInMultiComment OrElse bInString OrElse bInChar) Then
+                            If (iParenthesisLevel > 0 OrElse iBracketLevel > 0 OrElse iBraceLevel > 0 OrElse bInSingleComment > 0 OrElse bInMultiComment > 0 OrElse bInString > 0 OrElse bInChar > 0) Then
                                 Continue For
                             End If
 
                             '/*
-                            bInPreprocessor = True
-                            iStateArray(i, ENUM_STATE_TYPES.IN_PREPROCESSOR) = True
+                            bInPreprocessor = 1
+                            iStateArray(i, ENUM_STATE_TYPES.IN_PREPROCESSOR) = 1
                         Case "*"c
-                            If (bInSingleComment OrElse bInString OrElse bInChar) Then
+                            If (bInSingleComment > 0 OrElse bInString > 0 OrElse bInChar > 0) Then
                                 Continue For
                             End If
 
                             '/*
                             If (i > 0) Then
-                                If (sText(i - 1) = "/"c AndAlso Not bInMultiComment) Then
-                                    bInMultiComment = True
-                                    iStateArray(i, ENUM_STATE_TYPES.IN_MULTI_COMMENT) = True
-                                    iStateArray(i - 1, ENUM_STATE_TYPES.IN_MULTI_COMMENT) = True
+                                If (sText(i - 1) = "/"c AndAlso bInMultiComment < 1) Then
+                                    bInMultiComment = 1
+                                    iStateArray(i, ENUM_STATE_TYPES.IN_MULTI_COMMENT) = 1
+                                    iStateArray(i - 1, ENUM_STATE_TYPES.IN_MULTI_COMMENT) = 1
                                     Continue For
                                 End If
                             End If
 
                             If (i + 1 < sText.Length - 1) Then
-                                If (sText(i + 1) = "/"c AndAlso bInMultiComment) Then
-                                    bInMultiComment = False
-                                    iStateArray(i, ENUM_STATE_TYPES.IN_MULTI_COMMENT) = True
-                                    iStateArray(i + 1, ENUM_STATE_TYPES.IN_MULTI_COMMENT) = True
+                                If (sText(i + 1) = "/"c AndAlso bInMultiComment > 0) Then
+                                    bInMultiComment = 0
+                                    iStateArray(i, ENUM_STATE_TYPES.IN_MULTI_COMMENT) = 1
+                                    iStateArray(i + 1, ENUM_STATE_TYPES.IN_MULTI_COMMENT) = 1
 
                                     i += 1
                                     Continue For
                                 End If
                             End If
                         Case "/"c
-                            If (bInMultiComment OrElse bInString OrElse bInChar) Then
+                            If (bInMultiComment > 0 OrElse bInString > 0 OrElse bInChar > 0) Then
                                 Continue For
                             End If
 
                             '//
                             If (i + 1 < sText.Length - 1) Then
-                                If (sText(i + 1) = "/"c AndAlso Not bInSingleComment) Then
-                                    bInSingleComment = True
+                                If (sText(i + 1) = "/"c AndAlso bInSingleComment < 1) Then
+                                    bInSingleComment = 1
                                     iStateArray(i, ENUM_STATE_TYPES.IN_SINGLE_COMMENT) = bInSingleComment
                                 End If
                             End If
                         Case "("c
-                            If (Not bIgnorePreprocessor AndAlso bInPreprocessor) Then
+                            If (Not bIgnorePreprocessor AndAlso bInPreprocessor > 0) Then
                                 Continue For
                             End If
 
-                            If (bInSingleComment OrElse bInMultiComment OrElse bInString OrElse bInChar) Then
+                            If (bInSingleComment > 0 OrElse bInMultiComment > 0 OrElse bInString > 0 OrElse bInChar > 0) Then
                                 Continue For
                             End If
 
                             iParenthesisLevel += 1
                             iStateArray(i, ENUM_STATE_TYPES.PARENTHESIS_LEVEL) = iParenthesisLevel
                         Case ")"c
-                            If (Not bIgnorePreprocessor AndAlso bInPreprocessor) Then
+                            If (Not bIgnorePreprocessor AndAlso bInPreprocessor > 0) Then
                                 Continue For
                             End If
 
-                            If (bInSingleComment OrElse bInMultiComment OrElse bInString OrElse bInChar) Then
+                            If (bInSingleComment > 0 OrElse bInMultiComment > 0 OrElse bInString > 0 OrElse bInChar > 0) Then
                                 Continue For
                             End If
 
                             iParenthesisLevel -= 1
                             iStateArray(i, ENUM_STATE_TYPES.PARENTHESIS_LEVEL) = iParenthesisLevel
                         Case "["c
-                            If (Not bIgnorePreprocessor AndAlso bInPreprocessor) Then
+                            If (Not bIgnorePreprocessor AndAlso bInPreprocessor > 0) Then
                                 Continue For
                             End If
 
-                            If (bInSingleComment OrElse bInMultiComment OrElse bInString OrElse bInChar) Then
+                            If (bInSingleComment > 0 OrElse bInMultiComment > 0 OrElse bInString > 0 OrElse bInChar > 0) Then
                                 Continue For
                             End If
 
                             iBracketLevel += 1
                             iStateArray(i, ENUM_STATE_TYPES.BRACKET_LEVEL) = iBracketLevel
                         Case "]"c
-                            If (Not bIgnorePreprocessor AndAlso bInPreprocessor) Then
+                            If (Not bIgnorePreprocessor AndAlso bInPreprocessor > 0) Then
                                 Continue For
                             End If
 
-                            If (bInSingleComment OrElse bInMultiComment OrElse bInString OrElse bInChar) Then
+                            If (bInSingleComment > 0 OrElse bInMultiComment > 0 OrElse bInString > 0 OrElse bInChar > 0) Then
                                 Continue For
                             End If
 
                             iBracketLevel -= 1
                             iStateArray(i, ENUM_STATE_TYPES.BRACKET_LEVEL) = iBracketLevel
                         Case "{"c
-                            If (Not bIgnorePreprocessor AndAlso bInPreprocessor) Then
+                            If (Not bIgnorePreprocessor AndAlso bInPreprocessor > 0) Then
                                 Continue For
                             End If
 
-                            If (bInSingleComment OrElse bInMultiComment OrElse bInString OrElse bInChar) Then
+                            If (bInSingleComment > 0 OrElse bInMultiComment > 0 OrElse bInString > 0 OrElse bInChar > 0) Then
                                 Continue For
                             End If
 
                             iBraceLevel += 1
                             iStateArray(i, ENUM_STATE_TYPES.BRACE_LEVEL) = iBraceLevel
                         Case "}"c
-                            If (Not bIgnorePreprocessor AndAlso bInPreprocessor) Then
+                            If (Not bIgnorePreprocessor AndAlso bInPreprocessor > 0) Then
                                 Continue For
                             End If
 
-                            If (bInSingleComment OrElse bInMultiComment OrElse bInString OrElse bInChar) Then
+                            If (bInSingleComment > 0 OrElse bInMultiComment > 0 OrElse bInString > 0 OrElse bInChar > 0) Then
                                 Continue For
                             End If
 
                             iBraceLevel -= 1
                             iStateArray(i, ENUM_STATE_TYPES.BRACE_LEVEL) = iBraceLevel
                         Case "'"c
-                            If (Not bIgnorePreprocessor AndAlso bInPreprocessor) Then
+                            If (Not bIgnorePreprocessor AndAlso bInPreprocessor > 0) Then
                                 Continue For
                             End If
 
-                            If (bInSingleComment OrElse bInMultiComment OrElse bInString) Then
+                            If (bInSingleComment > 0 OrElse bInMultiComment > 0 OrElse bInString > 0) Then
                                 Continue For
                             End If
 
                             'ignore \'
                             If (i > 1 AndAlso sText(i - 1) <> "\"c) Then
                                 bInChar = Not bInChar
-                                iStateArray(i, ENUM_STATE_TYPES.IN_CHAR) = True
+                                iStateArray(i, ENUM_STATE_TYPES.IN_CHAR) = 1
                             ElseIf (i > 2 AndAlso sText(i - 1) = "\"c AndAlso sText(i - 2) = "\"c) Then
                                 bInChar = Not bInChar
-                                iStateArray(i, ENUM_STATE_TYPES.IN_CHAR) = True
+                                iStateArray(i, ENUM_STATE_TYPES.IN_CHAR) = 1
                             End If
                         Case """"c
-                            If (Not bIgnorePreprocessor AndAlso bInPreprocessor) Then
+                            If (Not bIgnorePreprocessor AndAlso bInPreprocessor > 0) Then
                                 Continue For
                             End If
 
-                            If (bInSingleComment OrElse bInMultiComment OrElse bInChar) Then
+                            If (bInSingleComment > 0 OrElse bInMultiComment > 0 OrElse bInChar > 0) Then
                                 Continue For
                             End If
 
                             'ignore \"
                             If (i > 1 AndAlso sText(i - 1) <> "\"c) Then
                                 bInString = Not bInString
-                                iStateArray(i, ENUM_STATE_TYPES.IN_STRING) = True
+                                iStateArray(i, ENUM_STATE_TYPES.IN_STRING) = 1
                             ElseIf (i > 2 AndAlso sText(i - 1) = "\"c AndAlso sText(i - 2) = "\"c) Then
                                 bInString = Not bInString
-                                iStateArray(i, ENUM_STATE_TYPES.IN_STRING) = True
+                                iStateArray(i, ENUM_STATE_TYPES.IN_STRING) = 1
                             End If
-                        Case vbLf
-                            If (bInSingleComment) Then
-                                bInSingleComment = False
+                        Case vbLf(0)
+                            If (bInSingleComment > 0) Then
+                                bInSingleComment = 0
                                 iStateArray(i, ENUM_STATE_TYPES.IN_SINGLE_COMMENT) = bInSingleComment
                             End If
 
-                            If (bInPreprocessor) Then
-                                bInPreprocessor = False
+                            If (bInPreprocessor > 0) Then
+                                bInPreprocessor = 0
                                 iStateArray(i, ENUM_STATE_TYPES.IN_PREPROCESSOR) = bInPreprocessor
                             End If
                         Case Else
@@ -3125,7 +3127,7 @@ Public Class FormMain
         Private g_mFormMain As FormMain
         Private g_mAutocompleteUpdaterThread As Threading.Thread
 
-        Public g_bForceFullAutocompleteUpdate As ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS = False
+        Public g_bForceFullAutocompleteUpdate As Boolean = False
         Public _lock As New Object
 
         Public Sub New(f As FormMain)
@@ -3146,12 +3148,12 @@ Public Class FormMain
                 g_mAutocompleteUpdaterThread = New Threading.Thread(Sub()
                                                                         SyncLock _lock
                                                                             If (iUpdateType = ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL OrElse
-                                                                                        iUpdateType And ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) Then
+                                                                                        (iUpdateType And ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) = ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) Then
                                                                                 FullAutocompleteUpdate_Thread()
                                                                             End If
 
                                                                             If (iUpdateType = ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL OrElse
-                                                                                        iUpdateType And ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.VARIABLES_AUTOCOMPLETE) Then
+                                                                                        (iUpdateType And ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.VARIABLES_AUTOCOMPLETE) = ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.VARIABLES_AUTOCOMPLETE) Then
                                                                                 VariableAutocompleteUpdate_Thread()
                                                                             End If
                                                                         End SyncLock
@@ -3160,7 +3162,7 @@ Public Class FormMain
                 g_mAutocompleteUpdaterThread.Start()
 
                 If (iUpdateType = ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL OrElse
-                            iUpdateType And ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) Then
+                            (iUpdateType And ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) = ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) Then
                     g_bForceFullAutocompleteUpdate = False
                 End If
 
@@ -3171,7 +3173,7 @@ Public Class FormMain
                 End If
 
                 If (iUpdateType = ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL OrElse
-                            iUpdateType And ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) Then
+                            (iUpdateType And ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) = ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) Then
                     g_bForceFullAutocompleteUpdate = True
                 End If
 
@@ -3366,7 +3368,7 @@ Public Class FormMain
         Private Sub ParseAutocomplete_Pre(sFile As String, ByRef sSourceList As ClassSyncList(Of String()), ByRef lTmpAutocompleteList As ClassSyncList(Of STRUC_AUTOCOMPLETE))
             Dim sSource As String
             If (ClassSettings.g_sConfigOpenSourcePawnFile.ToLower = sFile.ToLower) Then
-                sSource = g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.Document.TextContent)
+                sSource = CStr(g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.Document.TextContent))
             Else
                 sSource = IO.File.ReadAllText(sFile)
             End If
@@ -3394,7 +3396,7 @@ Public Class FormMain
                 'Filter new lines  
                 For i = 0 To sSource.Length - 1
                     Select Case (sSource(i))
-                        Case vbLf
+                        Case vbLf(0)
                             If (sourceAnalysis.InNonCode(i)) Then
                                 Exit Select
                             End If
@@ -4330,7 +4332,7 @@ Public Class FormMain
                         SB = New StringBuilder
                         For iii = mMethodMatches(ii).Groups("Type").Index - 1 To 0 Step -1
                             Select Case (sMethodmapSource(iii))
-                                Case " "c, vbTab, vbLf, vbCr
+                                Case " "c, vbTab(0), vbLf(0), vbCr(0)
                                     SB.Append(sMethodmapSource(iii))
                                 Case Else
                                     If (Not sourceAnalysis.InMultiComment(iii) AndAlso Not sourceAnalysis.InSingleComment(iii) AndAlso Not sourceAnalysis.InPreprocessor(iii)) Then
@@ -4466,7 +4468,7 @@ Public Class FormMain
                         SB = New StringBuilder
                         For iii = mMethodMatches(ii).Groups("Type").Index - 1 To 0 Step -1
                             Select Case (sMethodmapSource(iii))
-                                Case " "c, vbTab, vbLf, vbCr
+                                Case " "c, vbTab(0), vbLf(0), vbCr(0)
                                     SB.Append(sMethodmapSource(iii))
                                 Case Else
                                     If (Not sourceAnalysis.InMultiComment(iii) AndAlso Not sourceAnalysis.InSingleComment(iii) AndAlso Not sourceAnalysis.InPreprocessor(iii)) Then
@@ -4552,7 +4554,7 @@ Public Class FormMain
                     Dim SB As New StringBuilder
                     For iii = mRegMatch.Index - 1 To 0 Step -1
                         Select Case (sSource(iii))
-                            Case " "c, vbTab, vbLf, vbCr
+                            Case " "c, vbTab(0), vbLf(0), vbCr(0)
                                 SB.Append(sSource(iii))
                             Case Else
                                 If (Not sourceAnalysis.InMultiComment(iii) AndAlso Not sourceAnalysis.InSingleComment(iii) AndAlso Not sourceAnalysis.InPreprocessor(iii)) Then
@@ -4614,7 +4616,7 @@ Public Class FormMain
                     ParseVariables_Post(sRegExEnumPattern, lTmpVarAutocompleteList, g_mFormMain.g_ClassSyntaxTools.lAutocompleteList)
                 End If
 
-                g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.RemoveAll(Function(j As STRUC_AUTOCOMPLETE) j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
+                g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.RemoveAll(Function(j As STRUC_AUTOCOMPLETE) (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
                 g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.AddRange(lTmpVarAutocompleteList.ToArray)
 
                 'g_mFormMain.PrintInformation("[INFO]", "Variable autocomplete update finished!")
@@ -4634,7 +4636,7 @@ Public Class FormMain
         Private Sub ParseVariables_Pre(ByRef sFile As String, ByRef sRegExEnumPattern As String, ByRef lTmpVarAutocompleteList As ClassSyncList(Of STRUC_AUTOCOMPLETE), ByRef lTmpAutocompleteList As ClassSyncList(Of STRUC_AUTOCOMPLETE))
             Dim sSource As String
             If (ClassSettings.g_sConfigOpenSourcePawnFile.ToLower = sFile.ToLower) Then
-                sSource = g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.Document.TextContent)
+                sSource = CStr(g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.Document.TextContent))
             Else
                 sSource = IO.File.ReadAllText(sFile)
             End If
@@ -4662,7 +4664,7 @@ Public Class FormMain
                 'Filter new lines  
                 For i = 0 To sSource.Length - 1
                     Select Case (sSource(i))
-                        Case vbLf
+                        Case vbLf(0)
                             If (sourceAnalysis.InNonCode(i)) Then
                                 Exit Select
                             End If
@@ -4767,7 +4769,7 @@ Public Class FormMain
                             End If
 
                             Dim tmpFile As String = IO.Path.GetFileName(sFile)
-                            Dim autoItem As STRUC_AUTOCOMPLETE = lTmpVarAutocompleteList.Find(Function(j As STRUC_AUTOCOMPLETE) j.sFile.ToLower = tmpFile.ToLower AndAlso j.sFunctionName = sVar AndAlso j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
+                            Dim autoItem As STRUC_AUTOCOMPLETE = lTmpVarAutocompleteList.Find(Function(j As STRUC_AUTOCOMPLETE) j.sFile.ToLower = tmpFile.ToLower AndAlso j.sFunctionName = sVar AndAlso (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
                             If (autoItem Is Nothing) Then
                                 autoItem = New STRUC_AUTOCOMPLETE
                                 autoItem.sFile = tmpFile.ToLower
@@ -4804,7 +4806,7 @@ Public Class FormMain
                             End If
 
                             Dim tmpFile As String = IO.Path.GetFileName(sFile)
-                            Dim autoItem As STRUC_AUTOCOMPLETE = lTmpVarAutocompleteList.Find(Function(j As STRUC_AUTOCOMPLETE) j.sFile.ToLower = tmpFile.ToLower AndAlso j.sFunctionName = sVar AndAlso j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
+                            Dim autoItem As STRUC_AUTOCOMPLETE = lTmpVarAutocompleteList.Find(Function(j As STRUC_AUTOCOMPLETE) j.sFile.ToLower = tmpFile.ToLower AndAlso j.sFunctionName = sVar AndAlso (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
                             If (autoItem Is Nothing) Then
                                 autoItem = New STRUC_AUTOCOMPLETE
                                 autoItem.sFile = tmpFile.ToLower
@@ -4841,7 +4843,7 @@ Public Class FormMain
                             End If
 
                             Dim tmpFile As String = IO.Path.GetFileName(sFile)
-                            Dim autoItem As STRUC_AUTOCOMPLETE = lTmpVarAutocompleteList.Find(Function(j As STRUC_AUTOCOMPLETE) j.sFile.ToLower = tmpFile.ToLower AndAlso j.sFunctionName = sVar AndAlso j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
+                            Dim autoItem As STRUC_AUTOCOMPLETE = lTmpVarAutocompleteList.Find(Function(j As STRUC_AUTOCOMPLETE) j.sFile.ToLower = tmpFile.ToLower AndAlso j.sFunctionName = sVar AndAlso (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
                             If (autoItem Is Nothing) Then
                                 autoItem = New STRUC_AUTOCOMPLETE
                                 autoItem.sFile = tmpFile.ToLower
@@ -4879,7 +4881,7 @@ Public Class FormMain
                             End If
 
                             Dim tmpFile As String = IO.Path.GetFileName(sFile)
-                            Dim autoItem As STRUC_AUTOCOMPLETE = lTmpVarAutocompleteList.Find(Function(j As STRUC_AUTOCOMPLETE) j.sFile.ToLower = tmpFile.ToLower AndAlso j.sFunctionName = sVar AndAlso j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
+                            Dim autoItem As STRUC_AUTOCOMPLETE = lTmpVarAutocompleteList.Find(Function(j As STRUC_AUTOCOMPLETE) j.sFile.ToLower = tmpFile.ToLower AndAlso j.sFunctionName = sVar AndAlso (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
                             If (autoItem Is Nothing) Then
                                 autoItem = New STRUC_AUTOCOMPLETE
                                 autoItem.sFile = tmpFile.ToLower
@@ -4992,7 +4994,7 @@ Public Class FormMain
 
                         If (mMatch.Success AndAlso mMatch.Groups("Var").Success AndAlso Not g_mFormMain.g_ClassSyntaxTools.IsForbiddenVariableName(sVar)) Then
                             Dim tmpFile As String = IO.Path.GetFileName(sArg.sFile)
-                            Dim autoItem As STRUC_AUTOCOMPLETE = lTmpVarAutocompleteList.Find(Function(j As STRUC_AUTOCOMPLETE) j.sFile.ToLower = tmpFile.ToLower AndAlso j.sFunctionName = sVar AndAlso j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
+                            Dim autoItem As STRUC_AUTOCOMPLETE = lTmpVarAutocompleteList.Find(Function(j As STRUC_AUTOCOMPLETE) j.sFile.ToLower = tmpFile.ToLower AndAlso j.sFunctionName = sVar AndAlso (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
                             If (autoItem Is Nothing) Then
                                 autoItem = New STRUC_AUTOCOMPLETE
                                 autoItem.sFile = tmpFile.ToLower
@@ -5017,7 +5019,7 @@ Public Class FormMain
 
                         If (mMatch.Success AndAlso mMatch.Groups("Var").Success AndAlso Not g_mFormMain.g_ClassSyntaxTools.IsForbiddenVariableName(sVar)) Then
                             Dim tmpFile As String = IO.Path.GetFileName(sArg.sFile)
-                            Dim autoItem As STRUC_AUTOCOMPLETE = lTmpVarAutocompleteList.Find(Function(j As STRUC_AUTOCOMPLETE) j.sFile.ToLower = tmpFile.ToLower AndAlso j.sFunctionName = sVar AndAlso j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
+                            Dim autoItem As STRUC_AUTOCOMPLETE = lTmpVarAutocompleteList.Find(Function(j As STRUC_AUTOCOMPLETE) j.sFile.ToLower = tmpFile.ToLower AndAlso j.sFunctionName = sVar AndAlso (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
                             If (autoItem Is Nothing) Then
                                 autoItem = New STRUC_AUTOCOMPLETE
                                 autoItem.sFile = tmpFile.ToLower
@@ -5041,12 +5043,12 @@ Public Class FormMain
                 Dim lVarMethodmapList As New List(Of STRUC_AUTOCOMPLETE)
 
                 For Each item In lTmpVarAutocompleteList
-                    If (Not item.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) Then
+                    If ((item.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) Then
                         Continue For
                     End If
 
                     For Each item2 In lTmpAutocompleteList
-                        If (Not item2.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP OrElse Not item2.sFunctionName.Contains("."c)) Then
+                        If ((item2.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) <> STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP OrElse Not item2.sFunctionName.Contains("."c)) Then
                             Continue For
                         End If
 
@@ -5101,7 +5103,7 @@ Public Class FormMain
 
                 lList.Add(sPath)
 
-                sSource = g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.Document.TextContent)
+                sSource = CStr(g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.Document.TextContent))
             Else
                 If (Not IO.File.Exists(sPath)) Then
                     g_mFormMain.PrintInformation("[ERRO]", String.Format("Could not read include: {0}", IO.Path.GetFileName(sPath)))
@@ -5465,7 +5467,7 @@ Public Class FormMain
         End Function
 
         Structure STRUC_SM_EXCEPTION_STACK_TRACE
-            Dim iLine As String
+            Dim iLine As Integer
             Dim sFileName As String
             Dim sFunctionName As String
             Dim bNativeFault As Boolean
@@ -5805,7 +5807,6 @@ Public Class FormMain
                         For Each m As Match In Regex.Matches(g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.TextContent, String.Format("(?<Word>\b{0}\b)(?<Function>\s*\(){1}", Regex.Escape(sCaretWord), "{0,1}"))
                             Dim iStartOffset As Integer = m.Groups("Word").Index
                             Dim iStartLen As Integer = m.Groups("Word").Value.Length
-                            Dim iFunctionIndex As Boolean = m.Groups("Function").Index
                             Dim bIsFunction As Boolean = m.Groups("Function").Success
 
                             If (iOffset < iStartOffset OrElse iOffset > (iStartOffset + iStartLen)) Then
@@ -6068,7 +6069,6 @@ Public Class FormMain
                         For Each m As Match In Regex.Matches(g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.TextContent, String.Format("(?<Word>\b{0}\b)(?<Function>\s*\(){1}", Regex.Escape(sCaretWord), "{0,1}"))
                             Dim iStartOffset As Integer = m.Groups("Word").Index
                             Dim iStartLen As Integer = m.Groups("Word").Value.Length
-                            Dim iFunctionIndex As Boolean = m.Groups("Function").Index
                             Dim bIsFunction As Boolean = m.Groups("Function").Success
 
                             If (iOffset < iStartOffset OrElse iOffset > (iStartOffset + iStartLen)) Then

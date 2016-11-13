@@ -52,7 +52,7 @@ Public Class UCObjectBrowser
         ' Add tree view nodes
         g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.ForEach(
             Sub(iItem As FormMain.STRUC_AUTOCOMPLETE)
-                If (iItem.mType And FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) Then
+                If ((iItem.mType And FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) Then
                     Return
                 End If
 

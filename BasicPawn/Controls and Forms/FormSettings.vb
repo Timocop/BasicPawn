@@ -102,7 +102,7 @@ Public Class FormSettings
             Return
         End If
 
-        Dim sCurrentConfigName As String = ListBox_Configs.SelectedItems(0)
+        Dim sCurrentConfigName As String = ListBox_Configs.SelectedItems(0).ToString
 
         If (sCurrentConfigName = "Default") Then
             GroupBox_ConfigSettings.Enabled = False
@@ -226,7 +226,7 @@ Public Class FormSettings
                 Return
             End If
 
-            Dim sCurrentConfigName As String = ListBox_Configs.SelectedItems(0)
+            Dim sCurrentConfigName As String = ListBox_Configs.SelectedItems(0).ToString
 
             If (String.IsNullOrEmpty(sCurrentConfigName) OrElse sCurrentConfigName = "Default") Then
                 Return
@@ -330,7 +330,7 @@ Public Class FormSettings
 
     Private Sub Button_Apply_Click(sender As Object, e As EventArgs) Handles Button_Apply.Click
         If (ListBox_Configs.SelectedItems.Count > 0) Then
-            Dim sCurrentConfigName As String = ListBox_Configs.SelectedItems(0)
+            Dim sCurrentConfigName As String = ListBox_Configs.SelectedItems(0).ToString
 
             If (String.IsNullOrEmpty(sCurrentConfigName) OrElse sCurrentConfigName = "Default") Then
                 ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC
@@ -364,7 +364,7 @@ Public Class FormSettings
         ClassSettings.g_iSettingsDoubleClickMark = CheckBox_DoubleClickMark.Checked
         ClassSettings.g_iSettingsAutoMark = CheckBox_AutoMark.Checked
 
-        ClassSettings.g_iSettingsTextEditorFont = New FontConverter().ConvertFromInvariantString(Label_Font.Text)
+        ClassSettings.g_iSettingsTextEditorFont = CType(New FontConverter().ConvertFromInvariantString(Label_Font.Text), Font)
         ClassSettings.g_iSettingsInvertColors = CheckBox_InvertedColors.Checked
 
         ClassSettings.g_iSettingsDebuggerCatchExceptions = CheckBox_CatchExceptions.Checked
@@ -387,7 +387,7 @@ Public Class FormSettings
             Return
         End If
 
-        Dim sCurrentConfigName As String = ListBox_Configs.SelectedItems(0)
+        Dim sCurrentConfigName As String = ListBox_Configs.SelectedItems(0).ToString
 
         If (String.IsNullOrEmpty(sCurrentConfigName) OrElse sCurrentConfigName = "Default") Then
             Return
@@ -421,7 +421,7 @@ Public Class FormSettings
             Return
         End If
 
-        Dim sCurrentConfigName As String = ListBox_Configs.SelectedItems(0)
+        Dim sCurrentConfigName As String = ListBox_Configs.SelectedItems(0).ToString
 
         If (String.IsNullOrEmpty(sCurrentConfigName) OrElse sCurrentConfigName = "Default") Then
             Return
@@ -455,7 +455,7 @@ Public Class FormSettings
 
     Private Sub Button_Font_Click(sender As Object, e As EventArgs) Handles Button_Font.Click
         Using i As New FontDialog()
-            i.Font = New FontConverter().ConvertFromInvariantString(Label_Font.Text)
+            i.Font = CType(New FontConverter().ConvertFromInvariantString(Label_Font.Text), Font)
 
             If (i.ShowDialog = DialogResult.OK) Then
                 Label_Font.Text = New FontConverter().ConvertToInvariantString(i.Font)

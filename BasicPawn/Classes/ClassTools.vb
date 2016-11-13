@@ -165,7 +165,7 @@ Public Class ClassTools
         ''' </summary>
         ''' <param name="fForm"></param>
         ''' <returns></returns>
-        Public Shared Function IsFormOpen(fForm As Form)
+        Public Shared Function IsFormOpen(fForm As Form) As Boolean
             For Each f As Form In Application.OpenForms
                 If (f Is fForm) Then
                     Return True

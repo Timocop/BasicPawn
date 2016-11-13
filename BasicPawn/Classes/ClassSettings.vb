@@ -113,7 +113,7 @@ Public Class ClassSettings
             g_iSettingsToolTipAutocompleteComments = (initFile.ReadKeyValue("Editor", "ToolTipAutocompleteComments", "1") <> "0")
             g_iSettingsFullEnumAutocomplete = (initFile.ReadKeyValue("Editor", "FullEnumAutocomplete", "0") <> "0")
 
-            Dim editorFont As Font = New FontConverter().ConvertFromInvariantString(initFile.ReadKeyValue("Editor", "TextEditorFont", g_sSettingsDefaultEditorFont))
+            Dim editorFont As Font = CType(New FontConverter().ConvertFromInvariantString(initFile.ReadKeyValue("Editor", "TextEditorFont", g_sSettingsDefaultEditorFont)), Font)
             If (editorFont IsNot Nothing AndAlso editorFont.Size < 256) Then
                 g_iSettingsTextEditorFont = editorFont
             Else

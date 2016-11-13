@@ -237,7 +237,7 @@ Public Class UCAutocomplete
 
                 Dim iX As Integer = g_AutocompleteUC.g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Caret.ScreenPosition.X + iXSpace
                 Dim iY As Integer = g_AutocompleteUC.g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Caret.ScreenPosition.Y + iYSpace
-                Dim iFontH As Integer = g_AutocompleteUC.g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Font.GetHeight
+                Dim iFontH As Integer = CInt(g_AutocompleteUC.g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Font.GetHeight)
                 'Dim iFontH As Integer = (g_AutocompleteUC.g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Font.GetHeight * 2) + g_AutocompleteUC.g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Font.GetHeight
 
                 If (SB_TipText_IntelliSenseToolTip.Length + SB_TipText_AutocompleteToolTip.Length > 0) Then
@@ -273,9 +273,9 @@ Public Class UCAutocomplete
 
                 If (SB_TipText_IntelliSense.Length <> 0 OrElse SB_TipText_Autocomplete.Length <> 0) Then
                     If (g_AutocompleteUC.SplitContainer2.Orientation = Orientation.Horizontal) Then
-                        g_AutocompleteUC.SplitContainer2.SplitterDistance = g_AutocompleteUC.SplitContainer2.Height / 2
+                        g_AutocompleteUC.SplitContainer2.SplitterDistance = CInt(g_AutocompleteUC.SplitContainer2.Height / 2)
                     Else
-                        g_AutocompleteUC.SplitContainer2.SplitterDistance = g_AutocompleteUC.SplitContainer2.Width / 2
+                        g_AutocompleteUC.SplitContainer2.SplitterDistance = CInt(g_AutocompleteUC.SplitContainer2.Width / 2)
                     End If
 
                     g_AutocompleteUC.SplitContainer1.Panel2Collapsed = False

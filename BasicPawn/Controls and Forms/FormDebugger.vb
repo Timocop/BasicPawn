@@ -108,7 +108,7 @@ Public Class FormDebugger
             'Add breakpoints
             ListView_Breakpoints.BeginUpdate()
             For Each breakpointItem In g_ClassDebuggerParser.g_lBreakpointList
-                With ListView_Breakpoints.Items.Add(New ListViewItem(New String() {breakpointItem.iLine, breakpointItem.sArguments, "", breakpointItem.sGUID}))
+                With ListView_Breakpoints.Items.Add(New ListViewItem(New String() {breakpointItem.iLine.ToString, breakpointItem.sArguments, "", breakpointItem.sGUID}))
                     .Checked = True
                 End With
 
@@ -120,7 +120,7 @@ Public Class FormDebugger
             'Add watchers
             ListView_Watchers.BeginUpdate()
             For Each breakpointItem In g_ClassDebuggerParser.g_lWatcherList
-                ListView_Watchers.Items.Add(New ListViewItem(New String() {breakpointItem.iLine, breakpointItem.sArguments, "", 0, breakpointItem.sGUID}))
+                ListView_Watchers.Items.Add(New ListViewItem(New String() {breakpointItem.iLine.ToString, breakpointItem.sArguments, "", "0", breakpointItem.sGUID}))
 
                 Dim marker As New ICSharpCode.TextEditor.Document.TextMarker(breakpointItem.iOffset, breakpointItem.iTotalLenght, ICSharpCode.TextEditor.Document.TextMarkerType.Underlined, Color.DarkOrange)
                 TextEditorControlEx_DebuggerSource.Document.MarkerStrategy.AddMarker(marker)
@@ -130,7 +130,7 @@ Public Class FormDebugger
             'Add entities
             ListView_Entities.BeginUpdate()
             For i = 0 To 2048 - 1
-                ListView_Entities.Items.Add(New ListViewItem(New String() {i, "", "", ""}))
+                ListView_Entities.Items.Add(New ListViewItem(New String() {i.ToString, "", "", ""}))
             Next
             ListView_Entities.EndUpdate()
         Catch ex As Exception
@@ -954,7 +954,7 @@ Public Class FormDebugger
         Private Sub CreateFileSystemWatcher(sGameDir As String)
             RemoveFileSystemWatcher()
 
-            For i As ENUM_FILESYSTEMWATCHER_TYPES = 0 To g_mFileSystemWatcherArray.Length - 1
+            For i As ENUM_FILESYSTEMWATCHER_TYPES = 0 To CType(g_mFileSystemWatcherArray.Length - 1, ENUM_FILESYSTEMWATCHER_TYPES)
                 g_mFileSystemWatcherArray(i) = New IO.FileSystemWatcher
                 g_mFileSystemWatcherArray(i).BeginInit()
                 g_mFileSystemWatcherArray(i).Path = sGameDir
@@ -1000,7 +1000,7 @@ Public Class FormDebugger
         ''' Remove all FileSystemWatchers so we dont receive any messages from SourceMod and plugins.
         ''' </summary>
         Private Sub RemoveFileSystemWatcher()
-            For i As ENUM_FILESYSTEMWATCHER_TYPES = 0 To g_mFileSystemWatcherArray.Length - 1
+            For i As ENUM_FILESYSTEMWATCHER_TYPES = 0 To CType(g_mFileSystemWatcherArray.Length - 1, ENUM_FILESYSTEMWATCHER_TYPES)
                 If (g_mFileSystemWatcherArray(i) Is Nothing) Then
                     Continue For
                 End If
@@ -1205,7 +1205,7 @@ Public Class FormDebugger
                                                 For i = 0 To g_mFormDebugger.ListView_Watchers.Items.Count - 1
                                                     If (g_mFormDebugger.ListView_Watchers.Items(i).SubItems(4).Text = sGUID) Then
                                                         g_mFormDebugger.ListView_Watchers.Items(i).SubItems(2).Text = String.Format("i:{0} | f:{1}", sInteger, sFloat)
-                                                        g_mFormDebugger.ListView_Watchers.Items(i).SubItems(3).Text = CInt(g_mFormDebugger.ListView_Watchers.Items(i).SubItems(3).Text) + 1
+                                                        g_mFormDebugger.ListView_Watchers.Items(i).SubItems(3).Text = CStr(CInt(g_mFormDebugger.ListView_Watchers.Items(i).SubItems(3).Text) + 1)
                                                     End If
                                                 Next
                                             End Sub)
@@ -1283,9 +1283,9 @@ Public Class FormDebugger
                         Continue For
                     End If
 
-                    Dim iIndex As Integer = mMatch.Groups("Index").Value
-                    Dim iEntRef As Integer = mMatch.Groups("EntRef").Value
-                    Dim iAction As ENUM_ENTITY_ACTION = mMatch.Groups("Action").Value
+                    Dim iIndex As Integer = CInt(mMatch.Groups("Index").Value)
+                    Dim iEntRef As Integer = CInt(mMatch.Groups("EntRef").Value)
+                    Dim iAction As ENUM_ENTITY_ACTION = CType(mMatch.Groups("Action").Value, ENUM_ENTITY_ACTION)
                     Dim sClassname As String = mMatch.Groups("Classname").Value
                     Dim iDateTicks As Long = Date.Now.Ticks
 
@@ -1304,9 +1304,9 @@ Public Class FormDebugger
                                                                 End If
 
                                                                 If (bIsNewEnt) Then
-                                                                    g_mFormDebugger.ListView_Entities.Items(iIndex).SubItems(1).Text = iEntRef
+                                                                    g_mFormDebugger.ListView_Entities.Items(iIndex).SubItems(1).Text = iEntRef.ToString
                                                                     g_mFormDebugger.ListView_Entities.Items(iIndex).SubItems(2).Text = sClassname
-                                                                    g_mFormDebugger.ListView_Entities.Items(iIndex).SubItems(3).Text = iDateTicks
+                                                                    g_mFormDebugger.ListView_Entities.Items(iIndex).SubItems(3).Text = iDateTicks.ToString
 
                                                                     If (ClassSettings.g_iSettingsDebuggerEntitiesEnableColoring) Then
                                                                         g_mFormDebugger.ListView_Entities.Items(iIndex).BackColor = Color.Green
@@ -1333,7 +1333,7 @@ Public Class FormDebugger
                                                                 If (bIsNewEnt) Then
                                                                     g_mFormDebugger.ListView_Entities.Items(iIndex).SubItems(1).Text = "-1"
                                                                     g_mFormDebugger.ListView_Entities.Items(iIndex).SubItems(2).Text = "-"
-                                                                    g_mFormDebugger.ListView_Entities.Items(iIndex).SubItems(3).Text = iDateTicks
+                                                                    g_mFormDebugger.ListView_Entities.Items(iIndex).SubItems(3).Text = iDateTicks.ToString
 
                                                                     If (ClassSettings.g_iSettingsDebuggerEntitiesEnableColoring) Then
                                                                         g_mFormDebugger.ListView_Entities.Items(iIndex).BackColor = Color.Red
@@ -1872,7 +1872,7 @@ Public Class FormDebugger
                         iOrgInt = 0
                     End If
                     If (Not Decimal.TryParse(g_ClassDebuggerRunner.g_mActiveBreakpointValue.sOrginalFloatValue.Replace(".", ","), iOrgFloat)) Then
-                        iOrgFloat = 0.0
+                        iOrgFloat = 0.0D
                     End If
 
                     If (iOrgInt <> 0 AndAlso iOrgFloat = 0.0) Then
