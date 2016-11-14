@@ -1359,9 +1359,10 @@ Public Class FormMain
         End Enum
 
         ''' <summary>
-        ''' Compiles the source in the text editor
+        ''' Compiles the source in the text editor.
+        ''' It uses the config compiler and include path.
         ''' </summary>
-        ''' <param name="bTesting">If true, compiles the source and removes the compiled binary file again</param>
+        ''' <param name="bTesting">Just creates a temporary file and removes it after compile.</param>
         Public Sub CompileSource(bTesting As Boolean)
             Try
                 If (PromptSave(False, True)) Then
@@ -1487,18 +1488,30 @@ Public Class FormMain
                 If (IO.File.Exists(sOutputFile)) Then
                     Select Case (compilerType)
                         Case ENUM_COMPILER_TYPE.SOURCEPAWN
+                            If (IO.Path.GetExtension(sOutputFile).ToLower = ".smx") Then
+                                Exit Select
+                            End If
+
                             Dim sNewOutputFile As String = IO.Path.ChangeExtension(sOutputFile, ".smx")
                             IO.File.Delete(sNewOutputFile)
                             IO.File.Move(sOutputFile, sNewOutputFile)
                             sOutputFile = sNewOutputFile
 
                         Case ENUM_COMPILER_TYPE.AMXX
+                            If (IO.Path.GetExtension(sOutputFile).ToLower = ".amxx") Then
+                                Exit Select
+                            End If
+
                             Dim sNewOutputFile As String = IO.Path.ChangeExtension(sOutputFile, ".amxx")
                             IO.File.Delete(sNewOutputFile)
                             IO.File.Move(sOutputFile, sNewOutputFile)
                             sOutputFile = sNewOutputFile
 
                         Case ENUM_COMPILER_TYPE.AMX
+                            If (IO.Path.GetExtension(sOutputFile).ToLower = ".amx") Then
+                                Exit Select
+                            End If
+
                             Dim sNewOutputFile As String = IO.Path.ChangeExtension(sOutputFile, ".amx")
                             IO.File.Delete(sNewOutputFile)
                             IO.File.Move(sOutputFile, sNewOutputFile)
@@ -1524,10 +1537,15 @@ Public Class FormMain
         End Sub
 
         ''' <summary>
-        ''' Compiles the source in the text editor
+        ''' Compiles the source.
         ''' </summary>
-        ''' <param name="bTesting">If true, compiles the source and removes the compiled binary file again</param>
-        Public Function CompileSource(bTesting As Boolean, sSource As String, sOutputFile As String, Optional sCompilerPath As String = Nothing, Optional sIncludePath As String = Nothing) As Boolean
+        ''' <param name="bTesting">Just creates a temporary file and removes it after compile.</param>
+        ''' <param name="sSource">The source to compile.</param>
+        ''' <param name="sOutputFile">The output file. This may change the extenstion if you using different compilers (e.g *.smx, *.amx, *.amxx). And extension is still required!</param>
+        ''' <param name="sCompilerPath">(Optional) The compiler path. If Nothing, it will use the global config compiler path.</param>
+        ''' <param name="sIncludePath">(Optional) The include path. If Nothing, it will use the global config include path.</param>
+        ''' <returns>True on success, false otherwise.</returns>
+        Public Function CompileSource(bTesting As Boolean, sSource As String, ByRef sOutputFile As String, Optional sCompilerPath As String = Nothing, Optional sIncludePath As String = Nothing) As Boolean
             Try
                 If (PromptSave(False, True)) Then
                     Return False
@@ -1661,18 +1679,30 @@ Public Class FormMain
                 If (IO.File.Exists(sOutputFile)) Then
                     Select Case (compilerType)
                         Case ENUM_COMPILER_TYPE.SOURCEPAWN
+                            If (IO.Path.GetExtension(sOutputFile).ToLower = ".smx") Then
+                                Exit Select
+                            End If
+
                             Dim sNewOutputFile As String = IO.Path.ChangeExtension(sOutputFile, ".smx")
                             IO.File.Delete(sNewOutputFile)
                             IO.File.Move(sOutputFile, sNewOutputFile)
                             sOutputFile = sNewOutputFile
 
                         Case ENUM_COMPILER_TYPE.AMXX
+                            If (IO.Path.GetExtension(sOutputFile).ToLower = ".amxx") Then
+                                Exit Select
+                            End If
+
                             Dim sNewOutputFile As String = IO.Path.ChangeExtension(sOutputFile, ".amxx")
                             IO.File.Delete(sNewOutputFile)
                             IO.File.Move(sOutputFile, sNewOutputFile)
                             sOutputFile = sNewOutputFile
 
                         Case ENUM_COMPILER_TYPE.AMX
+                            If (IO.Path.GetExtension(sOutputFile).ToLower = ".amx") Then
+                                Exit Select
+                            End If
+
                             Dim sNewOutputFile As String = IO.Path.ChangeExtension(sOutputFile, ".amx")
                             IO.File.Delete(sNewOutputFile)
                             IO.File.Move(sOutputFile, sNewOutputFile)
@@ -1704,8 +1734,9 @@ Public Class FormMain
         ''' <summary>
         ''' Gets the pre-process source from the compiler. Its cleaned up, defines resolved etc.
         ''' </summary>
-        ''' <param name="bCleanUpSourcemodDuplicate">Removed duplicated sourcemod includes, includes from the compiler</param>
-        ''' <param name="bCleanupForCompile"></param>
+        ''' <param name="bCleanUpSourcemodDuplicate">Removed duplicated sourcemod includes, includes from the compiler.</param>
+        ''' <param name="bCleanupForCompile">Removes pre-processor entries which hinders compiling.</param>
+        ''' <param name="sTempOutputFile">The last used temporary file. Note: This is only the path, the file will be removed!</param>
         ''' <returns></returns>
         Public Function GetCompilerPreProcessCode(bCleanUpSourcemodDuplicate As Boolean, bCleanupForCompile As Boolean, ByRef sTempOutputFile As String) As String
             Try
@@ -2012,9 +2043,14 @@ Public Class FormMain
 
         ''' <summary>
         ''' Gets the assembly from the code. Throws exceptions on compile error.
-        ''' </summary> 
+        ''' </summary>
+        ''' <param name="bTesting">Just creates a temporary file and removes it after compile.</param>
+        ''' <param name="sSource">The source to compile.</param>
+        ''' <param name="sOutputFile">The output file. An extension is still required! (default is *.asm)</param>
+        ''' <param name="sCompilerPath">(Optional) The compiler path. If Nothing, it will use the global config compiler path.</param>
+        ''' <param name="sIncludePath">(Optional) The include path. If Nothing, it will use the global config include path.</param>
         ''' <returns></returns>
-        Public Function GetCompilerAssemblyCode(bTesting As Boolean, sSource As String, sOutputFile As String, Optional sCompilerPath As String = Nothing, Optional sIncludePath As String = Nothing) As String
+        Public Function GetCompilerAssemblyCode(bTesting As Boolean, sSource As String, ByRef sOutputFile As String, Optional sCompilerPath As String = Nothing, Optional sIncludePath As String = Nothing) As String
             Try
                 If (PromptSave(False, True)) Then
                     Return Nothing

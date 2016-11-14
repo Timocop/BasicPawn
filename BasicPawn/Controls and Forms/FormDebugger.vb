@@ -693,18 +693,20 @@ Public Class FormDebugger
                 'Export debugger cmd runner engine
                 If (True) Then
                     Dim sSource As String = g_mFormDebugger.g_ClassDebuggerRunnerEngine.GenerateRunnerEngine(False)
-                    Dim sOutput As String = IO.Path.Combine(m_sSourceModFolder, String.Format("plugins\BasicPawnDebugCmdRunEngine-{0}.smx", Guid.NewGuid.ToString))
+                    Dim sOutput As String = IO.Path.Combine(m_sSourceModFolder, String.Format("plugins\BasicPawnDebugCmdRunEngine-{0}.unk", Guid.NewGuid.ToString))
                     g_sLatestDebuggerRunnerPlugin = sOutput
 
                     If (Not g_mFormDebugger.g_mFormMain.g_ClassTextEditorTools.CompileSource(False, sSource, sOutput)) Then
                         Throw New ArgumentException("Compiler failure! See information tab for more information. (BasicPawn Debug Cmd Runner Engine)")
                     End If
+
+                    g_sLatestDebuggerRunnerPlugin = sOutput
                 End If
 
                 'Export main plugin source
                 If (True) Then
                     Dim sSource As String = g_mFormDebugger.TextEditorControlEx_DebuggerSource.Document.TextContent
-                    Dim sOutput As String = IO.Path.Combine(m_sSourceModFolder, String.Format("plugins\BasicPawnDebug-{0}.smx", Guid.NewGuid.ToString))
+                    Dim sOutput As String = IO.Path.Combine(m_sSourceModFolder, String.Format("plugins\BasicPawnDebug-{0}.unk", Guid.NewGuid.ToString))
                     g_sLatestDebuggerPlugin = sOutput
 
                     g_mFormDebugger.g_ClassDebuggerParser.UpdateBreakpoints(sSource, True)
@@ -724,6 +726,8 @@ Public Class FormDebugger
                     If (Not g_mFormDebugger.g_mFormMain.g_ClassTextEditorTools.CompileSource(False, sSource, sOutput)) Then
                         Throw New ArgumentException("Compiler failure! See information tab for more information. (BasicPawn Debug Main Plugin)")
                     End If
+
+                    g_sLatestDebuggerPlugin = sOutput
                 End If
 
 
@@ -738,7 +742,6 @@ Public Class FormDebugger
                 End SyncLock
             Catch ex As Exception
                 ClassExceptionLog.WriteToLogMessageBox(ex)
-
                 g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Error!" & ex.Message
                 g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Red
 
@@ -821,14 +824,14 @@ Public Class FormDebugger
                 End If
 
                 'Remove plugin
-                If (Not String.IsNullOrEmpty(g_sLatestDebuggerPlugin) AndAlso IO.File.Exists(g_sLatestDebuggerPlugin) AndAlso g_sLatestDebuggerPlugin.ToLower.EndsWith(".smx")) Then
+                If (Not String.IsNullOrEmpty(g_sLatestDebuggerPlugin) AndAlso IO.File.Exists(g_sLatestDebuggerPlugin)) Then
                     IO.File.Delete(g_sLatestDebuggerPlugin)
                 ElseIf (Not String.IsNullOrEmpty(g_sLatestDebuggerPlugin)) Then
                     MessageBox.Show(String.Format("Can't find '{0}'. Please remove it manualy!", g_sLatestDebuggerPlugin))
                 End If
 
                 'Remove cmd runner plugin
-                If (Not String.IsNullOrEmpty(g_sLatestDebuggerRunnerPlugin) AndAlso IO.File.Exists(g_sLatestDebuggerRunnerPlugin) AndAlso g_sLatestDebuggerRunnerPlugin.ToLower.EndsWith(".smx")) Then
+                If (Not String.IsNullOrEmpty(g_sLatestDebuggerRunnerPlugin) AndAlso IO.File.Exists(g_sLatestDebuggerRunnerPlugin)) Then
                     IO.File.Delete(g_sLatestDebuggerRunnerPlugin)
                 ElseIf (Not String.IsNullOrEmpty(g_sLatestDebuggerRunnerPlugin)) Then
                     MessageBox.Show(String.Format("Can't find '{0}'. Please remove it manualy!", g_sLatestDebuggerRunnerPlugin))
