@@ -17,17 +17,19 @@
 
 
 Public Class FormSettings
-    Public g_fFormMain As FormMain = Nothing
+    Private g_fFormMain As FormMain
     Private g_sConfigFolder As String = IO.Path.Combine(Application.StartupPath, "configs")
     Private g_sConfigFileExt As String = ".ini"
 
-    Public Sub New()
+    Public Sub New(f As FormMain)
 
         ' This call is required by the designer.
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call.
-        Me.Size = New Size(0, 0)
+        g_fFormMain = f
+
+        Me.Size = Me.MinimumSize
 
         ClassTools.ClassForms.SetDoubleBufferingAllChilds(Me, True)
         ClassTools.ClassForms.SetDoubleBufferingUnmanagedAllChilds(Me, True)
@@ -50,6 +52,8 @@ Public Class FormSettings
 
         ListBox_Configs.Items.Add(sCurrentConfigName)
         IO.File.WriteAllText(sConfigFile, "")
+
+        g_fFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnConfigChanged())
     End Sub
 
     Private Sub Button_ConfigRemove_Click(sender As Object, e As EventArgs) Handles Button_ConfigRemove.Click
@@ -68,6 +72,8 @@ Public Class FormSettings
 
         ListBox_Configs.Items.Remove(sCurrentConfigName)
         IO.File.Delete(sConfigFile)
+
+        g_fFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnConfigChanged())
     End Sub
 
     ''' <summary>
@@ -247,11 +253,11 @@ Public Class FormSettings
             iniFile.WriteKeyValue("Config", "SyntaxPath", TextBox_SyntaxPath.Text)
 
             MessageBox.Show("Config saved!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information)
+
+            g_fFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnConfigChanged())
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
-
-
     End Sub
 
     Private Sub Button_Cancel_Click(sender As Object, e As EventArgs) Handles Button_Cancel.Click
@@ -273,10 +279,6 @@ Public Class FormSettings
 
 #Region "Load/Save"
     Private Sub SettingsForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        If (g_fFormMain IsNot FormMain) Then
-            Return
-        End If
-
         'List all configs
         UpdateList()
 
@@ -326,6 +328,22 @@ Public Class FormSettings
             End If
         End If
 
+
+        'List plugins
+        Dim lListViewItems As New List(Of ListViewItem)
+        For Each pluginInfo In g_fFormMain.g_ClassPluginController.m_Plugins
+            lListViewItems.Add(New ListViewItem(New String() {
+                                                    IO.Path.GetFileName(pluginInfo.sFile),
+                                                    pluginInfo.mPluginInformation.sName,
+                                                    pluginInfo.mPluginInformation.sAuthor,
+                                                    pluginInfo.mPluginInformation.sDescription,
+                                                    pluginInfo.mPluginInformation.sVersion,
+                                                    pluginInfo.mPluginInformation.sURL
+                                                }))
+        Next
+        ListView_Plugins.Items.Clear()
+        ListView_Plugins.Items.AddRange(lListViewItems.ToArray)
+        ListView_Plugins.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent)
     End Sub
 
     Private Sub Button_Apply_Click(sender As Object, e As EventArgs) Handles Button_Apply.Click
@@ -374,6 +392,10 @@ Public Class FormSettings
 
 
         ClassSettings.SaveSettings()
+
+        g_fFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnSettingsChanged())
+        g_fFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnConfigChanged())
+
         Me.Close()
     End Sub
 #End Region
@@ -414,6 +436,8 @@ Public Class FormSettings
             End If
             Exit While
         End While
+
+        g_fFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnConfigChanged())
     End Sub
 
     Private Sub Button_ConfigRename_Click(sender As Object, e As EventArgs) Handles Button_ConfigRename.Click
@@ -451,6 +475,8 @@ Public Class FormSettings
         If (i > -1) Then
             ListBox_Configs.SetSelected(i, True)
         End If
+
+        g_fFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnConfigChanged())
     End Sub
 
     Private Sub Button_Font_Click(sender As Object, e As EventArgs) Handles Button_Font.Click

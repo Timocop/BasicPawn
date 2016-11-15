@@ -29,6 +29,7 @@ Public Class FormMain
     Public g_ClassTextEditorTools As ClassTextEditorTools
     Public g_ClassLineState As ClassTextEditorTools.ClassLineState
     Public g_ClassCustomHighlighting As ClassTextEditorTools.ClassCustomHighlighting
+    Public g_ClassPluginController As ClassPluginController
 
     Public g_mSourceSyntaxSourceAnalysis As ClassSyntaxTools.ClassSyntaxSourceAnalysis
 
@@ -151,6 +152,7 @@ Public Class FormMain
         g_ClassTextEditorTools = New ClassTextEditorTools(Me)
         g_ClassLineState = New ClassTextEditorTools.ClassLineState(Me)
         g_ClassCustomHighlighting = New ClassTextEditorTools.ClassCustomHighlighting(Me)
+        g_ClassPluginController = New ClassPluginController(Me)
 
         ' Load other Forms/Controls
         g_mUCAutocomplete = New UCAutocomplete(Me)
@@ -387,6 +389,9 @@ Public Class FormMain
         TextEditorControl_Source.Refresh()
 
         g_ClassSyntaxUpdater.StartThread()
+
+        g_ClassPluginController.LoadPlugins(IO.Path.Combine(Application.StartupPath, "plugins"))
+        g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnPluginStart(Me))
     End Sub
 
 #End Region
@@ -750,6 +755,12 @@ Public Class FormMain
     End Sub
 
     Private Sub Form1_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
+        g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface)
+                                                   If (Not j.OnPluginEnd()) Then
+                                                       e.Cancel = True
+                                                   End If
+                                               End Sub)
+
         If (g_ClassTextEditorTools.PromptSave()) Then
             e.Cancel = True
         End If
@@ -854,8 +865,7 @@ Public Class FormMain
 
 #Region "MenuStrip_Tools"
     Private Sub ToolStripMenuItem_ToolsSettingsAndConfigs_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsSettingsAndConfigs.Click
-        Using i As New FormSettings
-            i.g_fFormMain = Me
+        Using i As New FormSettings(Me)
             If (i.ShowDialog() = DialogResult.OK) Then
                 ChangeTitle()
 
@@ -1027,8 +1037,7 @@ Public Class FormMain
 
 
     Private Sub ToolStripStatusLabel_CurrentConfig_Click(sender As Object, e As EventArgs) Handles ToolStripStatusLabel_CurrentConfig.Click
-        Using i As New FormSettings
-            i.g_fFormMain = Me
+        Using i As New FormSettings(Me)
             i.TabControl1.SelectTab(1)
             If (i.ShowDialog() = DialogResult.OK) Then
                 ChangeTitle()

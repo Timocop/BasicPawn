@@ -26,7 +26,7 @@ Namespace My.Resources
      Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
      Global.System.Runtime.CompilerServices.CompilerGeneratedAttribute(),  _
      Global.Microsoft.VisualBasic.HideModuleNameAttribute()>  _
-    Friend Module Resources
+    Public Module Resources
         
         Private resourceMan As Global.System.Resources.ResourceManager
         
@@ -36,7 +36,7 @@ Namespace My.Resources
         '''  Gibt die zwischengespeicherte ResourceManager-Instanz zurück, die von dieser Klasse verwendet wird.
         '''</summary>
         <Global.System.ComponentModel.EditorBrowsableAttribute(Global.System.ComponentModel.EditorBrowsableState.Advanced)>  _
-        Friend ReadOnly Property ResourceManager() As Global.System.Resources.ResourceManager
+        Public ReadOnly Property ResourceManager() As Global.System.Resources.ResourceManager
             Get
                 If Object.ReferenceEquals(resourceMan, Nothing) Then
                     Dim temp As Global.System.Resources.ResourceManager = New Global.System.Resources.ResourceManager("BasicPawn.Resources", GetType(Resources).Assembly)
@@ -51,7 +51,7 @@ Namespace My.Resources
         '''  Ressourcenzuordnungen, die diese stark typisierte Ressourcenklasse verwenden.
         '''</summary>
         <Global.System.ComponentModel.EditorBrowsableAttribute(Global.System.ComponentModel.EditorBrowsableState.Advanced)>  _
-        Friend Property Culture() As Global.System.Globalization.CultureInfo
+        Public Property Culture() As Global.System.Globalization.CultureInfo
             Get
                 Return resourceCulture
             End Get
@@ -63,7 +63,7 @@ Namespace My.Resources
         '''<summary>
         '''  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         '''</summary>
-        Friend ReadOnly Property BasicPawnRedTop() As System.Drawing.Bitmap
+        Public ReadOnly Property BasicPawnRedTop() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("BasicPawnRedTop", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
@@ -73,7 +73,7 @@ Namespace My.Resources
         '''<summary>
         '''  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         '''</summary>
-        Friend ReadOnly Property Bmp_Stop() As System.Drawing.Bitmap
+        Public ReadOnly Property Bmp_Stop() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("Bmp_Stop", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
@@ -103,7 +103,7 @@ Namespace My.Resources
         '''		{
         '''			DeleteFile(&quot;{IndentifierGUID}.continue [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
         '''</summary>
-        Friend ReadOnly Property Debugger_BreakpointModuleNew() As String
+        Public ReadOnly Property Debugger_BreakpointModuleNew() As String
             Get
                 Return ResourceManager.GetString("Debugger_BreakpointModuleNew", resourceCulture)
             End Get
@@ -132,7 +132,7 @@ Namespace My.Resources
         '''		{
         '''			DeleteFile(&quot;{IndentifierGUID}.cont [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
         '''</summary>
-        Friend ReadOnly Property Debugger_BreakpointModuleOld() As String
+        Public ReadOnly Property Debugger_BreakpointModuleOld() As String
             Get
                 Return ResourceManager.GetString("Debugger_BreakpointModuleOld", resourceCulture)
             End Get
@@ -167,7 +167,7 @@ Namespace My.Resources
         '''	{
         '''		if(!FileExists(&quot;{IndentifierGUID}.cmd.bpd [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
         '''</summary>
-        Friend ReadOnly Property Debugger_CommandRunnerEngineOld() As String
+        Public ReadOnly Property Debugger_CommandRunnerEngineOld() As String
             Get
                 Return ResourceManager.GetString("Debugger_CommandRunnerEngineOld", resourceCulture)
             End Get
@@ -191,7 +191,7 @@ Namespace My.Resources
         '''	return val;
         '''} ähnelt.
         '''</summary>
-        Friend ReadOnly Property Debugger_WatcherModuleNew() As String
+        Public ReadOnly Property Debugger_WatcherModuleNew() As String
             Get
                 Return ResourceManager.GetString("Debugger_WatcherModuleNew", resourceCulture)
             End Get
@@ -215,7 +215,7 @@ Namespace My.Resources
         '''	return val;
         '''} ähnelt.
         '''</summary>
-        Friend ReadOnly Property Debugger_WatcherModuleOld() As String
+        Public ReadOnly Property Debugger_WatcherModuleOld() As String
             Get
                 Return ResourceManager.GetString("Debugger_WatcherModuleOld", resourceCulture)
             End Get
@@ -224,7 +224,7 @@ Namespace My.Resources
         '''<summary>
         '''  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         '''</summary>
-        Friend ReadOnly Property imageres_5301_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5301_16x16_32() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("imageres_5301_16x16-32", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
@@ -234,7 +234,7 @@ Namespace My.Resources
         '''<summary>
         '''  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         '''</summary>
-        Friend ReadOnly Property imageres_5303_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5303_16x16_32() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("imageres_5303_16x16-32", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
@@ -244,7 +244,7 @@ Namespace My.Resources
         '''<summary>
         '''  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         '''</summary>
-        Friend ReadOnly Property imageres_5306_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5306_16x16_32() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("imageres_5306_16x16-32", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
@@ -254,7 +254,7 @@ Namespace My.Resources
         '''<summary>
         '''  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         '''</summary>
-        Friend ReadOnly Property imageres_5311_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5311_16x16_32() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("imageres_5311_16x16-32", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
@@ -264,7 +264,7 @@ Namespace My.Resources
         '''<summary>
         '''  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         '''</summary>
-        Friend ReadOnly Property imageres_5313_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5313_16x16_32() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("imageres_5313_16x16-32", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
@@ -274,7 +274,7 @@ Namespace My.Resources
         '''<summary>
         '''  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         '''</summary>
-        Friend ReadOnly Property imageres_5314_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5314_16x16_32() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("imageres_5314_16x16-32", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
@@ -284,7 +284,7 @@ Namespace My.Resources
         '''<summary>
         '''  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         '''</summary>
-        Friend ReadOnly Property imageres_5315_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5315_16x16_32() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("imageres_5315_16x16-32", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
@@ -294,7 +294,7 @@ Namespace My.Resources
         '''<summary>
         '''  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         '''</summary>
-        Friend ReadOnly Property imageres_5316_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5316_16x16_32() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("imageres_5316_16x16-32", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
@@ -304,7 +304,7 @@ Namespace My.Resources
         '''<summary>
         '''  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         '''</summary>
-        Friend ReadOnly Property imageres_5332_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5332_16x16_32() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("imageres_5332_16x16-32", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
@@ -314,7 +314,7 @@ Namespace My.Resources
         '''<summary>
         '''  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         '''</summary>
-        Friend ReadOnly Property imageres_5333_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5333_16x16_32() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("imageres_5333_16x16-32", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
@@ -324,7 +324,7 @@ Namespace My.Resources
         '''<summary>
         '''  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         '''</summary>
-        Friend ReadOnly Property imageres_5337_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5337_16x16_32() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("imageres_5337_16x16-32", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
@@ -334,7 +334,7 @@ Namespace My.Resources
         '''<summary>
         '''  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         '''</summary>
-        Friend ReadOnly Property imageres_5338_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5338_16x16_32() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("imageres_5338_16x16-32", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
@@ -344,7 +344,7 @@ Namespace My.Resources
         '''<summary>
         '''  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         '''</summary>
-        Friend ReadOnly Property imageres_5341_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5341_16x16_32() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("imageres_5341_16x16-32", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
@@ -354,7 +354,7 @@ Namespace My.Resources
         '''<summary>
         '''  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         '''</summary>
-        Friend ReadOnly Property imageres_5342_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5342_16x16_32() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("imageres_5342_16x16-32", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
@@ -364,7 +364,7 @@ Namespace My.Resources
         '''<summary>
         '''  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         '''</summary>
-        Friend ReadOnly Property imageres_5343_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5343_16x16_32() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("imageres_5343_16x16-32", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
@@ -374,7 +374,7 @@ Namespace My.Resources
         '''<summary>
         '''  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         '''</summary>
-        Friend ReadOnly Property imageres_5348_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5348_16x16_32() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("imageres_5348_16x16-32", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
@@ -384,7 +384,7 @@ Namespace My.Resources
         '''<summary>
         '''  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         '''</summary>
-        Friend ReadOnly Property imageres_5350_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5350_16x16_32() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("imageres_5350_16x16-32", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
@@ -394,7 +394,7 @@ Namespace My.Resources
         '''<summary>
         '''  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         '''</summary>
-        Friend ReadOnly Property imageres_5351_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5351_16x16_32() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("imageres_5351_16x16-32", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
@@ -404,7 +404,7 @@ Namespace My.Resources
         '''<summary>
         '''  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         '''</summary>
-        Friend ReadOnly Property imageres_5356_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5356_16x16_32() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("imageres_5356_16x16-32", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
@@ -414,7 +414,7 @@ Namespace My.Resources
         '''<summary>
         '''  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         '''</summary>
-        Friend ReadOnly Property imageres_5364_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5364_16x16_32() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("imageres_5364_16x16-32", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
@@ -424,7 +424,7 @@ Namespace My.Resources
         '''<summary>
         '''  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         '''</summary>
-        Friend ReadOnly Property imageres_5367_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5367_16x16_32() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("imageres_5367_16x16-32", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
@@ -434,7 +434,7 @@ Namespace My.Resources
         '''<summary>
         '''  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         '''</summary>
-        Friend ReadOnly Property imageres_5368_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5368_16x16_32() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("imageres_5368_16x16-32", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
@@ -444,7 +444,7 @@ Namespace My.Resources
         '''<summary>
         '''  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         '''</summary>
-        Friend ReadOnly Property imageres_5372_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5372_16x16_32() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("imageres_5372_16x16-32", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
@@ -466,7 +466,7 @@ Namespace My.Resources
         '''    &lt;FoldMarker color=&quot;DarkGray&quot; bgcolor=&quot;White&quot;/&gt;
         '''    &lt;SelectedFoldLine co [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
         '''</summary>
-        Friend ReadOnly Property SourcePawn_Syntax() As String
+        Public ReadOnly Property SourcePawn_Syntax() As String
             Get
                 Return ResourceManager.GetString("SourcePawn_Syntax", resourceCulture)
             End Get

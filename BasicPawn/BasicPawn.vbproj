@@ -159,6 +159,9 @@
     <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BasicPawnPluginInterface">
+      <HintPath>..\BasicPawnPluginInterface\bin\Debug\BasicPawnPluginInterface.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.TextEditor">
       <HintPath>..\Third Party Binaries\ICSharpCode.TextEditor.dll</HintPath>
     </Reference>
@@ -199,6 +202,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Classes\ClassSyncList.vb" />
+    <Compile Include="Controls and Forms\FormMain\ClassPluginController.vb" />
     <Compile Include="Controls and Forms\FormDebuggerBreakpointSetValue.Designer.vb">
       <DependentUpon>FormDebuggerBreakpointSetValue.vb</DependentUpon>
     </Compile>
@@ -235,10 +239,10 @@
     <Compile Include="Controls and Forms\UCAutocomplete.vb">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls and Forms\FormMain.vb">
+    <Compile Include="Controls and Forms\FormMain\FormMain.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Controls and Forms\FormMain.Designer.vb">
+    <Compile Include="Controls and Forms\FormMain\FormMain.Designer.vb">
       <DependentUpon>FormMain.vb</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
@@ -312,7 +316,7 @@
     <EmbeddedResource Include="Controls and Forms\UCAutocomplete.resx">
       <DependentUpon>UCAutocomplete.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls and Forms\FormMain.resx">
+    <EmbeddedResource Include="Controls and Forms\FormMain\FormMain.resx">
       <DependentUpon>FormMain.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -326,7 +330,7 @@
       <DependentUpon>UCToolTip.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
-      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <Generator>PublicVbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>

@@ -7,6 +7,8 @@ Partial Class FormMain
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If (disposing) Then
+                g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnPluginEndPost())
+
                 g_ClassAutocompleteUpdater.StopUpdate()
                 g_ClassSyntaxUpdater.StopThread()
 
@@ -714,7 +716,7 @@ Partial Class FormMain
         'ToolStripStatusLabel_LastInformation
         '
         Me.ToolStripStatusLabel_LastInformation.Name = "ToolStripStatusLabel_LastInformation"
-        Me.ToolStripStatusLabel_LastInformation.Size = New System.Drawing.Size(798, 17)
+        Me.ToolStripStatusLabel_LastInformation.Size = New System.Drawing.Size(767, 17)
         Me.ToolStripStatusLabel_LastInformation.Spring = True
         Me.ToolStripStatusLabel_LastInformation.Text = "Last Info: No information"
         '
@@ -755,15 +757,12 @@ Partial Class FormMain
         Me.PerformLayout()
 
     End Sub
-
-    Friend WithEvents TextEditorControl_Source As TextEditorControlEx
     Friend WithEvents ContextMenuStrip_RightClick As ContextMenuStrip
     Friend WithEvents ToolStripMenuItem_Mark As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator1 As ToolStripSeparator
     Friend WithEvents ToolStripMenuItem_Paste As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_Copy As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_Cut As ToolStripMenuItem
-    Friend WithEvents MenuStrip_BasicPawn As MenuStrip
     Friend WithEvents ToolStripMenuItem_File As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_Tools As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_Build As ToolStripMenuItem
@@ -778,11 +777,9 @@ Partial Class FormMain
     Friend WithEvents ToolStripMenuItem_ToolsAutocompleteUpdate As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_ToolsAutocompleteShowAutocomplete As ToolStripMenuItem
     Friend WithEvents SplitContainer1 As SplitContainer
-    Friend WithEvents TabControl_Details As TabControl
     Friend WithEvents TabPage_Autocomplete As TabPage
     Friend WithEvents TabPage_Information As TabPage
     Friend WithEvents ToolStripMenuItem_ToolsShowInformation As ToolStripMenuItem
-    Friend WithEvents StatusStrip_BasicPawn As StatusStrip
     Friend WithEvents ToolStripStatusLabel_EditorLine As ToolStripStatusLabel
     Friend WithEvents ToolStripStatusLabel_EditorCollum As ToolStripStatusLabel
     Friend WithEvents ToolStripMenuItem_Undo As ToolStripMenuItem
@@ -808,7 +805,6 @@ Partial Class FormMain
     Friend WithEvents ToolStripMenuItem_ToolsClearInformationLog As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_Shell As ToolStripMenuItem
     Friend WithEvents SplitContainer2 As SplitContainer
-    Friend WithEvents TabControl_Toolbox As TabControl
     Friend WithEvents TabPage_ObjectBrowser As TabPage
     Friend WithEvents ToolStripMenuItem_ToolsSearchReplace As ToolStripMenuItem
     Friend WithEvents CTRLDToolStripMenuItem As ToolStripMenuItem
@@ -829,4 +825,9 @@ Partial Class FormMain
     Friend WithEvents ToolStripMenuItem_DebuggerWatcherRemoveAll As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_FileSaveAsTemp As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_HightlightCustom As ToolStripMenuItem
+    Public WithEvents TabControl_Toolbox As TabControl
+    Public WithEvents TextEditorControl_Source As TextEditorControlEx
+    Public WithEvents MenuStrip_BasicPawn As MenuStrip
+    Public WithEvents TabControl_Details As TabControl
+    Public WithEvents StatusStrip_BasicPawn As StatusStrip
 End Class
