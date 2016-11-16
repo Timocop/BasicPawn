@@ -17,16 +17,18 @@
 
 
 Public Class FormSettings
-    Public g_fFormMain As FormMain = Nothing
+    Private g_fFormMain As FormMain
     Private g_sConfigFolder As String = IO.Path.Combine(Application.StartupPath, "configs")
     Private g_sConfigFileExt As String = ".ini"
 
-    Public Sub New()
+    Public Sub New(f As FormMain)
 
         ' This call is required by the designer.
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call.
+        g_fFormMain = f
+
         Me.Size = New Size(0, 0)
 
         ClassTools.ClassForms.SetDoubleBufferingAllChilds(Me, True)
@@ -273,10 +275,6 @@ Public Class FormSettings
 
 #Region "Load/Save"
     Private Sub SettingsForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        If (g_fFormMain IsNot FormMain) Then
-            Return
-        End If
-
         'List all configs
         UpdateList()
 

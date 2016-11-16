@@ -146,7 +146,6 @@ Partial Class FormMain
         Me.SplitContainer2 = New System.Windows.Forms.SplitContainer()
         Me.TabControl_Toolbox = New System.Windows.Forms.TabControl()
         Me.TabPage_ObjectBrowser = New System.Windows.Forms.TabPage()
-        Me.TextEditorControl_Source = New BasicPawn.TextEditorControlEx()
         Me.TabControl_Details = New System.Windows.Forms.TabControl()
         Me.TabPage_Autocomplete = New System.Windows.Forms.TabPage()
         Me.TabPage_Information = New System.Windows.Forms.TabPage()
@@ -158,6 +157,7 @@ Partial Class FormMain
         Me.ToolStripStatusLabel_CurrentConfig = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ToolStripStatusLabel_LastInformation = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ToolStripStatusLabel_AppVersion = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.TextEditorControl_Source = New BasicPawn.TextEditorControlEx()
         Me.ContextMenuStrip_RightClick.SuspendLayout()
         Me.MenuStrip_BasicPawn.SuspendLayout()
         Me.SplitContainer1.Panel1.SuspendLayout()
@@ -616,21 +616,6 @@ Partial Class FormMain
         Me.TabPage_ObjectBrowser.Text = "Object Browser"
         Me.TabPage_ObjectBrowser.UseVisualStyleBackColor = True
         '
-        'TextEditorControl_Source
-        '
-        Me.TextEditorControl_Source.ContextMenuStrip = Me.ContextMenuStrip_RightClick
-        Me.TextEditorControl_Source.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TextEditorControl_Source.HideMouseCursor = True
-        Me.TextEditorControl_Source.IsIconBarVisible = True
-        Me.TextEditorControl_Source.IsReadOnly = False
-        Me.TextEditorControl_Source.Location = New System.Drawing.Point(0, 0)
-        Me.TextEditorControl_Source.Name = "TextEditorControl_Source"
-        Me.TextEditorControl_Source.ShowTabs = True
-        Me.TextEditorControl_Source.ShowVRuler = False
-        Me.TextEditorControl_Source.Size = New System.Drawing.Size(815, 500)
-        Me.TextEditorControl_Source.TabIndex = 0
-        Me.TextEditorControl_Source.Text = resources.GetString("TextEditorControl_Source.Text")
-        '
         'TabControl_Details
         '
         Me.TabControl_Details.Controls.Add(Me.TabPage_Autocomplete)
@@ -723,6 +708,21 @@ Partial Class FormMain
         Me.ToolStripStatusLabel_AppVersion.Name = "ToolStripStatusLabel_AppVersion"
         Me.ToolStripStatusLabel_AppVersion.Size = New System.Drawing.Size(31, 17)
         Me.ToolStripStatusLabel_AppVersion.Text = "v.0.0"
+        '
+        'TextEditorControl_Source
+        '
+        Me.TextEditorControl_Source.ContextMenuStrip = Me.ContextMenuStrip_RightClick
+        Me.TextEditorControl_Source.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TextEditorControl_Source.HideMouseCursor = True
+        Me.TextEditorControl_Source.IsIconBarVisible = True
+        Me.TextEditorControl_Source.IsReadOnly = False
+        Me.TextEditorControl_Source.Location = New System.Drawing.Point(0, 0)
+        Me.TextEditorControl_Source.Name = "TextEditorControl_Source"
+        Me.TextEditorControl_Source.ShowTabs = True
+        Me.TextEditorControl_Source.ShowVRuler = False
+        Me.TextEditorControl_Source.Size = New System.Drawing.Size(815, 500)
+        Me.TextEditorControl_Source.TabIndex = 0
+        Me.TextEditorControl_Source.Text = resources.GetString("TextEditorControl_Source.Text")
         '
         'FormMain
         '
