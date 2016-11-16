@@ -202,6 +202,12 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Classes\ClassSyncList.vb" />
+    <Compile Include="Classes\FormDebugger\ClassDebuggerRunner.vb" />
+    <Compile Include="Classes\FormMain\ClassAutocompleteUpdater.vb" />
+    <Compile Include="Classes\FormMain\ClassDebuggerParser.vb" />
+    <Compile Include="Classes\FormMain\ClassSyntaxTools.vb" />
+    <Compile Include="Classes\FormMain\ClassSyntaxUpdater.vb" />
+    <Compile Include="Classes\FormMain\ClassTextEditorTools.vb" />
     <Compile Include="Controls and Forms\FormMain\ClassPluginController.vb" />
     <Compile Include="Controls and Forms\FormDebuggerBreakpointSetValue.Designer.vb">
       <DependentUpon>FormDebuggerBreakpointSetValue.vb</DependentUpon>
@@ -442,6 +448,7 @@
     <None Include="Resources\imageres_5368_16x16-32.png" />
     <None Include="Resources\imageres_5372_16x16-32.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

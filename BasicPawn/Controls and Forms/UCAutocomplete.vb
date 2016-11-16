@@ -15,6 +15,7 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 
+Imports System.Text
 Imports System.Text.RegularExpressions
 
 Public Class UCAutocomplete
@@ -36,6 +37,61 @@ Public Class UCAutocomplete
         ClassTools.ClassForms.SetDoubleBufferingAllChilds(Me, True)
         ClassTools.ClassForms.SetDoubleBufferingUnmanagedAllChilds(Me, True)
     End Sub
+
+
+    Public Function ParseMethodAutocomplete(Optional bForceUpdate As Boolean = False) As Boolean
+        If (bForceUpdate) Then
+            Dim sTextContent As String = CStr(Me.Invoke(Function() g_mFormMain.TextEditorControl_Source.Document.TextContent))
+            g_mFormMain.g_mSourceSyntaxSourceAnalysis = New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sTextContent)
+        End If
+
+        If (g_mFormMain.g_mSourceSyntaxSourceAnalysis Is Nothing) Then
+            Return False
+        End If
+
+        Dim iCaretOffset As Integer = CInt(Me.Invoke(Function() g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Offset))
+
+        If (iCaretOffset <= 1 OrElse
+                        iCaretOffset >= g_mFormMain.g_mSourceSyntaxSourceAnalysis.GetMaxLenght() OrElse
+                        g_mFormMain.g_mSourceSyntaxSourceAnalysis.InMultiComment(iCaretOffset) OrElse
+                        g_mFormMain.g_mSourceSyntaxSourceAnalysis.InSingleComment(iCaretOffset)) Then
+            Return False
+        End If
+
+        Dim iValidOffset As Integer = -1
+        Dim iCaretBrace As Integer = g_mFormMain.g_mSourceSyntaxSourceAnalysis.GetParenthesisLevel(iCaretOffset - 1)
+        Dim i As Integer
+        For i = iCaretOffset - 1 To 0 Step -1
+            If (g_mFormMain.g_mSourceSyntaxSourceAnalysis.GetParenthesisLevel(i) < iCaretBrace) Then
+                iValidOffset = i
+                Exit For
+            End If
+        Next
+
+        If (iValidOffset < 0) Then
+            Return False
+        End If
+
+        Dim SB As New StringBuilder
+
+        For i = iValidOffset To iValidOffset - 64 Step -1
+            If (i < 0) Then
+                Exit For
+            End If
+
+            SB.Append(Me.Invoke(Function() g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.GetCharAt(i)))
+        Next
+
+        Dim sFuncStart As String = StrReverse(SB.ToString)
+        sFuncStart = Regex.Match(sFuncStart, "(\.){0,1}(\b[a-zA-Z0-9_]+\b)$").Value
+
+        Me.BeginInvoke(Sub()
+                           g_ClassToolTip.CurrentMethod = sFuncStart
+                           g_ClassToolTip.UpdateToolTip()
+                       End Sub)
+        Return True
+    End Function
+
 
     Public Function UpdateAutocomplete(sText As String) As Integer
         If (g_mFormMain Is Nothing) Then
@@ -166,7 +222,7 @@ Public Class UCAutocomplete
                             Dim sNewlineDistance As Integer = sNameToolTip.IndexOf("("c)
 
                             If (sNewlineDistance > -1) Then
-                                Dim sourceAnalysis As New FormMain.ClassSyntaxTools.ClassSyntaxSourceAnalysis(sNameToolTip)
+                                Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sNameToolTip)
                                 For ii = sNameToolTip.Length - 1 To 0 Step -1
                                     If (sNameToolTip(ii) <> ","c OrElse sourceAnalysis.InNonCode(ii)) Then
                                         Continue For
@@ -207,7 +263,7 @@ Public Class UCAutocomplete
                     Dim sNewlineDistance As Integer = sNameToolTip.IndexOf("("c)
 
                     If (sNewlineDistance > -1) Then
-                        Dim sourceAnalysis As New FormMain.ClassSyntaxTools.ClassSyntaxSourceAnalysis(sNameToolTip)
+                        Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sNameToolTip)
                         For ii = sNameToolTip.Length - 1 To 0 Step -1
                             If (sNameToolTip(ii) <> ","c OrElse sourceAnalysis.InNonCode(ii)) Then
                                 Continue For
