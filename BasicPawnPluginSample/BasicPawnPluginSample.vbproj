@@ -47,11 +47,13 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BasicPawn">
-      <HintPath>..\BasicPawn\bin\Debug\BasicPawn.exe</HintPath>
+    <Reference Include="BasicPawn, Version=0.662.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Required Plugin References\BasicPawn.exe</HintPath>
     </Reference>
-    <Reference Include="BasicPawnPluginInterface">
-      <HintPath>..\BasicPawnPluginInterface\bin\Debug\BasicPawnPluginInterface.dll</HintPath>
+    <Reference Include="BasicPawnPluginInterface, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Required Plugin References\BasicPawnPluginInterface.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

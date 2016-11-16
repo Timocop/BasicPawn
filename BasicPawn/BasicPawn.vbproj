@@ -159,8 +159,9 @@
     <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BasicPawnPluginInterface">
-      <HintPath>..\BasicPawnPluginInterface\bin\Debug\BasicPawnPluginInterface.dll</HintPath>
+    <Reference Include="BasicPawnPluginInterface, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Required Plugin References\BasicPawnPluginInterface.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.TextEditor">
       <HintPath>..\Third Party Binaries\ICSharpCode.TextEditor.dll</HintPath>
@@ -450,6 +451,9 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy /y "$(TargetPath)"  "$(SolutionDir)Required Plugin References"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
