@@ -24,6 +24,9 @@ Public Class ClassDebuggerRunner
     Const MAX_SM_LOG_READ_LINES = 100
 
     Public g_mFormDebugger As FormDebugger
+
+    Public g_ClassPreProcess As ClassPreProcess
+
     Private g_mFormDebuggerException As FormDebuggerException
     Private g_mFormDebuggerCriticalPopupException As FormDebuggerCriticalPopup
     Private g_mFormDebuggerCriticalPopupFatalException As FormDebuggerCriticalPopup
@@ -55,9 +58,9 @@ Public Class ClassDebuggerRunner
     Private g_sLatestDebuggerPlugin As String = ""
     Private g_sLatestDebuggerRunnerPlugin As String = ""
 
-    Public g_sGameFolder As String = ClassSettings.g_sConfigDebugGameFolder
-    Public g_sSourceModFolder As String = ClassSettings.g_sConfigDebugSourceModFolder
-    Public g_sCurrentSourceFile As String = ClassSettings.g_sConfigOpenSourceFile
+    Private g_sGameFolder As String = ClassSettings.g_sConfigDebugGameFolder
+    Private g_sSourceModFolder As String = ClassSettings.g_sConfigDebugSourceModFolder
+    Private g_sCurrentSourceFile As String = ClassSettings.g_sConfigOpenSourceFile
 
     Structure STURC_SOURCE_LINES_INFO_ITEM
         Dim iRealLine As Integer
@@ -83,6 +86,8 @@ Public Class ClassDebuggerRunner
 
     Public Sub New(f As FormDebugger)
         g_mFormDebugger = f
+
+        g_ClassPreProcess = New ClassPreProcess(Me)
     End Sub
 
     Public ReadOnly Property m_sGameFolder As String
@@ -220,118 +225,126 @@ Public Class ClassDebuggerRunner
         End If
     End Sub
 
-    ''' <summary>
-    ''' Fixes some of the #file errors made by the compiler.
-    ''' WARN: Pre-Process source only!
-    ''' 
-    '''         MyFunc()#file "MySource.sp"
-    '''     should be
-    '''         MyFunc()
-    '''         #file "MySource.sp"
-    ''' </summary>
-    ''' <param name="sSource"></param>
-    Public Sub FixPreProcessFiles(ByRef sSource As String)
-        Dim fileMatches As MatchCollection = Regex.Matches(sSource, "(?<IsNewline>^\s*){0,1}#file\s+(?<Path>.*?)$", RegexOptions.Multiline)
-        For i = fileMatches.Count - 1 To 0 Step -1
-            Dim sPath As String = fileMatches(i).Groups("Path").Value.Trim
+    Public Class ClassPreProcess
+        Private g_ClassDebuggerRunner As ClassDebuggerRunner
 
-            If (fileMatches(i).Groups("IsNewline").Success) Then
-                sSource = sSource.Remove(fileMatches(i).Index, fileMatches(i).Value.Length)
-                sSource = sSource.Insert(fileMatches(i).Index, String.Format("#file ""{0}""", sPath))
-            Else
-                sSource = sSource.Remove(fileMatches(i).Index, fileMatches(i).Value.Length)
-                sSource = sSource.Insert(fileMatches(i).Index, String.Format("{0}#file ""{1}""", Environment.NewLine, sPath))
+        Public Sub New(c As ClassDebuggerRunner)
+            g_ClassDebuggerRunner = c
+        End Sub
+
+        ''' <summary>
+        ''' Fixes some of the #file errors made by the compiler.
+        ''' WARN: Pre-Process source only!
+        ''' 
+        '''         MyFunc()#file "MySource.sp"
+        '''     should be
+        '''         MyFunc()
+        '''         #file "MySource.sp"
+        ''' </summary>
+        ''' <param name="sSource"></param>
+        Public Sub FixPreProcessFiles(ByRef sSource As String)
+            Dim fileMatches As MatchCollection = Regex.Matches(sSource, "(?<IsNewline>^\s*){0,1}#file\s+(?<Path>.*?)$", RegexOptions.Multiline)
+            For i = fileMatches.Count - 1 To 0 Step -1
+                Dim sPath As String = fileMatches(i).Groups("Path").Value.Trim
+
+                If (fileMatches(i).Groups("IsNewline").Success) Then
+                    sSource = sSource.Remove(fileMatches(i).Index, fileMatches(i).Value.Length)
+                    sSource = sSource.Insert(fileMatches(i).Index, String.Format("#file ""{0}""", sPath))
+                Else
+                    sSource = sSource.Remove(fileMatches(i).Index, fileMatches(i).Value.Length)
+                    sSource = sSource.Insert(fileMatches(i).Index, String.Format("{0}#file ""{1}""", Environment.NewLine, sPath))
+                End If
+            Next
+        End Sub
+
+        ''' <summary>
+        ''' Analysis the source code to get all real lines and files.
+        ''' WARN: Pre-Process source only!
+        ''' </summary>
+        ''' <param name="sSource"></param>
+        Public Sub AnalysisSourceLines(sSource As String)
+            Dim lineInfo As New List(Of STURC_SOURCE_LINES_INFO_ITEM)
+
+            Dim iCurrentFakeLine As Integer = 0
+
+            Dim iCurrentLine As Integer = 0
+            Dim sCurrentFile As String = ""
+
+            Dim sLine As String = ""
+            Using SR As New IO.StringReader(sSource)
+                While True
+                    iCurrentFakeLine += 1
+                    iCurrentLine += 1
+
+                    sLine = SR.ReadLine
+                    If (sLine Is Nothing) Then
+                        lineInfo.Add(New STURC_SOURCE_LINES_INFO_ITEM() With {.iRealLine = iCurrentLine, .sFile = sCurrentFile})
+                        Exit While
+                    End If
+
+                    Dim mLine As Match = Regex.Match(sLine, "#line\s+(?<Line>[0-9]+)")
+                    If (mLine.Success) Then
+                        iCurrentLine = CInt(mLine.Groups("Line").Value) - 1
+
+                        lineInfo.Add(New STURC_SOURCE_LINES_INFO_ITEM() With {.iRealLine = iCurrentLine, .sFile = sCurrentFile})
+                        Continue While
+                    End If
+
+                    Dim mFile As Match = Regex.Match(sLine, "#file\s+(?<Path>.*?)$")
+                    If (mFile.Success) Then
+                        sCurrentFile = mFile.Groups("Path").Value.Trim(" "c, """"c)
+                        iCurrentLine -= 1
+
+                        lineInfo.Add(New STURC_SOURCE_LINES_INFO_ITEM() With {.iRealLine = iCurrentLine, .sFile = sCurrentFile})
+                        Continue While
+                    End If
+
+                    lineInfo.Add(New STURC_SOURCE_LINES_INFO_ITEM() With {.iRealLine = iCurrentLine, .sFile = sCurrentFile})
+                End While
+            End Using
+
+            g_ClassDebuggerRunner.g_mSourceLinesInfo = lineInfo.ToArray
+        End Sub
+
+        ''' <summary>
+        ''' Makes the Pre-Process source ready for compiling.
+        ''' WARN: Pre-Process source only!
+        ''' </summary>
+        ''' <param name="sSource"></param>
+        Public Sub FinishSource(ByRef sSource As String)
+            If (String.IsNullOrEmpty(g_ClassDebuggerRunner.m_sPluginIdentity)) Then
+                Throw New ArgumentException("Plugin identity invalid")
             End If
-        Next
-    End Sub
 
-    ''' <summary>
-    ''' Analysis the source code to get all real lines and files.
-    ''' WARN: Pre-Process source only!
-    ''' </summary>
-    ''' <param name="sSource"></param>
-    Public Sub AnalysisSourceLines(sSource As String)
-        Dim lineInfo As New List(Of STURC_SOURCE_LINES_INFO_ITEM)
+            Dim sourceFinished As New Text.StringBuilder
 
-        Dim iCurrentFakeLine As Integer = 0
+            Dim sLine As String = ""
+            Using SR As New IO.StringReader(sSource)
+                While True
+                    sLine = SR.ReadLine
+                    If (sLine Is Nothing) Then
+                        Exit While
+                    End If
 
-        Dim iCurrentLine As Integer = 0
-        Dim sCurrentFile As String = ""
+                    If (Regex.IsMatch(sLine, "#line\s+(?<Line>[0-9]+)")) Then
+                        sourceFinished.AppendLine("")
+                        Continue While
+                    End If
 
-        Dim sLine As String = ""
-        Using SR As New IO.StringReader(sSource)
-            While True
-                iCurrentFakeLine += 1
-                iCurrentLine += 1
+                    If (Regex.IsMatch(sLine, "#file\s+(?<Path>.*?)$")) Then
+                        sourceFinished.AppendLine("")
+                        Continue While
+                    End If
 
-                sLine = SR.ReadLine
-                If (sLine Is Nothing) Then
-                    lineInfo.Add(New STURC_SOURCE_LINES_INFO_ITEM() With {.iRealLine = iCurrentLine, .sFile = sCurrentFile})
-                    Exit While
-                End If
+                    sourceFinished.AppendLine(sLine)
+                End While
+            End Using
 
-                Dim mLine As Match = Regex.Match(sLine, "#line\s+(?<Line>[0-9]+)")
-                If (mLine.Success) Then
-                    iCurrentLine = CInt(mLine.Groups("Line").Value) - 1
+            sourceFinished.AppendLine(String.Format("#file ""{0}""", g_ClassDebuggerRunner.m_sPluginIdentity))
 
-                    lineInfo.Add(New STURC_SOURCE_LINES_INFO_ITEM() With {.iRealLine = iCurrentLine, .sFile = sCurrentFile})
-                    Continue While
-                End If
-
-                Dim mFile As Match = Regex.Match(sLine, "#file\s+(?<Path>.*?)$")
-                If (mFile.Success) Then
-                    sCurrentFile = mFile.Groups("Path").Value.Trim(" "c, """"c)
-                    iCurrentLine -= 1
-
-                    lineInfo.Add(New STURC_SOURCE_LINES_INFO_ITEM() With {.iRealLine = iCurrentLine, .sFile = sCurrentFile})
-                    Continue While
-                End If
-
-                lineInfo.Add(New STURC_SOURCE_LINES_INFO_ITEM() With {.iRealLine = iCurrentLine, .sFile = sCurrentFile})
-            End While
-        End Using
-
-        g_mSourceLinesInfo = lineInfo.ToArray
-    End Sub
-
-    ''' <summary>
-    ''' Makes the Pre-Process source ready for compiling.
-    ''' WARN: Pre-Process source only!
-    ''' </summary>
-    ''' <param name="sSource"></param>
-    Private Sub FinishSource(ByRef sSource As String)
-        If (String.IsNullOrEmpty(m_sPluginIdentity)) Then
-            Throw New ArgumentException("Plugin identity invalid")
-        End If
-
-        Dim sourceFinished As New Text.StringBuilder
-
-        Dim sLine As String = ""
-        Using SR As New IO.StringReader(sSource)
-            While True
-                sLine = SR.ReadLine
-                If (sLine Is Nothing) Then
-                    Exit While
-                End If
-
-                If (Regex.IsMatch(sLine, "#line\s+(?<Line>[0-9]+)")) Then
-                    sourceFinished.AppendLine("")
-                    Continue While
-                End If
-
-                If (Regex.IsMatch(sLine, "#file\s+(?<Path>.*?)$")) Then
-                    sourceFinished.AppendLine("")
-                    Continue While
-                End If
-
-                sourceFinished.AppendLine(sLine)
-            End While
-        End Using
-
-        sourceFinished.AppendLine(String.Format("#file ""{0}""", m_sPluginIdentity))
-
-        sSource = sourceFinished.ToString
-    End Sub
+            sSource = sourceFinished.ToString
+        End Sub
+    End Class
 
     ''' <summary>
     ''' Start the debugger.
@@ -420,7 +433,7 @@ Public Class ClassDebuggerRunner
                 End With
                 g_mFormDebugger.g_ClassDebuggerParser.UpdateWatchers(g_mFormDebugger.TextEditorControlEx_DebuggerSource.Document.TextContent, True)
 
-                FinishSource(sSource)
+                g_ClassPreProcess.FinishSource(sSource)
 
                 If (Not g_mFormDebugger.g_mFormMain.g_ClassTextEditorTools.CompileSource(False, sSource, sOutput)) Then
                     Throw New ArgumentException("Compiler failure! See information tab for more information. (BasicPawn Debug Main Plugin)")

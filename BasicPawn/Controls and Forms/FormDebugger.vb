@@ -67,14 +67,14 @@ Public Class FormDebugger
             End If
 
 
-            g_ClassDebuggerRunner.FixPreProcessFiles(sLstSource)
+            g_ClassDebuggerRunner.g_ClassPreProcess.FixPreProcessFiles(sLstSource)
             'Replace the temp source file with the currently opened one
             sLstSource = Regex.Replace(sLstSource,
                                        String.Format("^\s*\#file ""{0}""\s*$", Regex.Escape(g_sLastPreProcessSourceFile)),
                                        String.Format("#file ""{0}""", g_ClassDebuggerRunner.m_sCurrentSourceFile),
                                        RegexOptions.IgnoreCase Or RegexOptions.Multiline)
 
-            g_ClassDebuggerRunner.AnalysisSourceLines(sLstSource)
+            g_ClassDebuggerRunner.g_ClassPreProcess.AnalysisSourceLines(sLstSource)
             g_ClassDebuggerParser.UpdateBreakpoints(sLstSource, False)
             g_ClassDebuggerParser.UpdateWatchers(sLstSource, False)
 
@@ -431,7 +431,7 @@ Public Class FormDebugger
                 sFile = IO.Path.GetFileName(info.sFile)
 
                 If (String.IsNullOrEmpty(sFile)) Then
-                    sFile = IO.Path.GetFileName(g_ClassDebuggerRunner.g_sCurrentSourceFile)
+                    sFile = IO.Path.GetFileName(g_ClassDebuggerRunner.m_sCurrentSourceFile)
                 End If
             End If
 
