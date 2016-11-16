@@ -209,7 +209,7 @@
     <Compile Include="Classes\FormMain\ClassSyntaxTools.vb" />
     <Compile Include="Classes\FormMain\ClassSyntaxUpdater.vb" />
     <Compile Include="Classes\FormMain\ClassTextEditorTools.vb" />
-    <Compile Include="Controls and Forms\FormMain\ClassPluginController.vb" />
+    <Compile Include="Classes\FormMain\ClassPluginController.vb" />
     <Compile Include="Controls and Forms\FormDebuggerBreakpointSetValue.Designer.vb">
       <DependentUpon>FormDebuggerBreakpointSetValue.vb</DependentUpon>
     </Compile>
@@ -246,10 +246,10 @@
     <Compile Include="Controls and Forms\UCAutocomplete.vb">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls and Forms\FormMain\FormMain.vb">
+    <Compile Include="Controls and Forms\FormMain.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Controls and Forms\FormMain\FormMain.Designer.vb">
+    <Compile Include="Controls and Forms\FormMain.Designer.vb">
       <DependentUpon>FormMain.vb</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
@@ -323,7 +323,7 @@
     <EmbeddedResource Include="Controls and Forms\UCAutocomplete.resx">
       <DependentUpon>UCAutocomplete.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls and Forms\FormMain\FormMain.resx">
+    <EmbeddedResource Include="Controls and Forms\FormMain.resx">
       <DependentUpon>FormMain.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
