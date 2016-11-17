@@ -324,6 +324,7 @@ Public Class FormSettings
             End If
         End If
 
+        ClassControlStyle.UpdateControls(Me)
     End Sub
 
     Private Sub Button_Apply_Click(sender As Object, e As EventArgs) Handles Button_Apply.Click

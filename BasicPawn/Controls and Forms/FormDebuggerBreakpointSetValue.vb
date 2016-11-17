@@ -37,4 +37,8 @@ Public Class FormDebuggerBreakpointSetValue
         'Make Float
         NumericUpDown_BreakpointValue.DecimalPlaces = 5
     End Sub
+
+    Private Sub FormDebuggerBreakpointSetValue_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ClassControlStyle.UpdateControls(Me)
+    End Sub
 End Class

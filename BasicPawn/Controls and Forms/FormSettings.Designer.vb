@@ -133,7 +133,6 @@ Partial Class FormSettings
         Me.TabPage1.Controls.Add(Me.Panel5)
         Me.TabPage1.Location = New System.Drawing.Point(4, 22)
         Me.TabPage1.Name = "TabPage1"
-        Me.TabPage1.Padding = New System.Windows.Forms.Padding(3)
         Me.TabPage1.Size = New System.Drawing.Size(602, 647)
         Me.TabPage1.TabIndex = 0
         Me.TabPage1.Text = "Settings"
@@ -469,7 +468,6 @@ Partial Class FormSettings
         Me.TabPage2.Controls.Add(Me.ListBox_Configs)
         Me.TabPage2.Location = New System.Drawing.Point(4, 22)
         Me.TabPage2.Name = "TabPage2"
-        Me.TabPage2.Padding = New System.Windows.Forms.Padding(3)
         Me.TabPage2.Size = New System.Drawing.Size(602, 647)
         Me.TabPage2.TabIndex = 1
         Me.TabPage2.Text = "Configs"

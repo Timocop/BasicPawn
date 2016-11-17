@@ -108,4 +108,8 @@ Public Class FormDebuggerException
         g_mFormDebugger.g_ClassDebuggerRunner.ContinueDebugging()
         Me.Close()
     End Sub
+
+    Private Sub FormDebuggerException_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ClassControlStyle.UpdateControls(Me)
+    End Sub
 End Class

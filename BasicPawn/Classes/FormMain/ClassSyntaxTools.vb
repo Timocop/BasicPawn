@@ -107,44 +107,48 @@ Public Class ClassSyntaxTools
     ''' Updates the form colors and syntax.
     ''' </summary>
     Public Sub UpdateFormColors()
-        Dim lControlList As New List(Of STRUC_FORM_COLORS_ITEM)
-        lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain, Color.White, g_mFormMain.g_cDarkFormBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-        lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.TextEditorControl_Source, Color.White, g_mFormMain.g_cDarkFormBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-        lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.MenuStrip_BasicPawn, Color.White, g_mFormMain.g_cDarkFormMenuBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
+        'Dim lControlList As New List(Of STRUC_FORM_COLORS_ITEM)
+        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain, Color.White, g_mFormMain.g_cDarkFormBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
+        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.TextEditorControl_Source, Color.White, g_mFormMain.g_cDarkFormBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
+        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.MenuStrip_BasicPawn, Color.White, g_mFormMain.g_cDarkFormMenuBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
 
-        lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-        lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.ListView_AutocompleteList, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-        lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.Panel_Autocomplete, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-        lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.Panel_IntelliSense, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-        lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.Label_Autocomplete, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, Color.RoyalBlue, InvertColor(Color.RoyalBlue)))
-        lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.Label_IntelliSense, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, Color.RoyalBlue, InvertColor(Color.RoyalBlue)))
-        lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.RichTextBox_Autocomplete, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-        lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.RichTextBox_IntelliSense, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-        lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.SplitContainer1.Panel1, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-        lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.SplitContainer1.Panel2, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-        lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.SplitContainer2.Panel1, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-        lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.SplitContainer2.Panel2, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
+        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
+        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.ListView_AutocompleteList, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
+        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.Panel_Autocomplete, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
+        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.Panel_IntelliSense, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
+        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.Label_Autocomplete, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, Color.RoyalBlue, InvertColor(Color.RoyalBlue)))
+        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.Label_IntelliSense, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, Color.RoyalBlue, InvertColor(Color.RoyalBlue)))
+        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.RichTextBox_Autocomplete, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
+        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.RichTextBox_IntelliSense, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
+        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.SplitContainer1.Panel1, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
+        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.SplitContainer1.Panel2, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
+        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.SplitContainer2.Panel1, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
+        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.SplitContainer2.Panel2, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
 
-        lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCInformationList, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-        lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCInformationList.ListBox_Information, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
+        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCInformationList, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
+        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCInformationList.ListBox_Information, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
 
-        lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCObjectBrowser, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-        lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCObjectBrowser.TreeView_ObjectBrowser, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-        lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCObjectBrowser.TextboxWatermark_Search, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
+        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCObjectBrowser, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
+        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCObjectBrowser.TreeView_ObjectBrowser, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
+        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCObjectBrowser.TextboxWatermark_Search, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
 
-        lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.TabControl_Details, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-        lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.TabControl_Toolbox, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
+        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.TabControl_Details, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
+        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.TabControl_Toolbox, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
 
-        lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.TabPage_ObjectBrowser, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-        lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.TabPage_Autocomplete, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-        lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.TabPage_Information, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
+        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.TabPage_ObjectBrowser, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
+        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.TabPage_Autocomplete, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
+        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.TabPage_Information, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
 
-        lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCToolTip, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-        lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCToolTip.TextEditorControl_ToolTip, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
+        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCToolTip, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
+        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCToolTip.TextEditorControl_ToolTip, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
 
-        For Each iItem In lControlList
-            iItem.g_cControl.BackColor = If(ClassSettings.g_iSettingsInvertColors, iItem.g_cBackColorInv, iItem.g_cBackColorOrg)
-            iItem.g_cControl.ForeColor = If(ClassSettings.g_iSettingsInvertColors, iItem.g_cForeColorInv, iItem.g_cForeColorOrg)
+        'For Each iItem In lControlList
+        '    iItem.g_cControl.BackColor = If(ClassSettings.g_iSettingsInvertColors, iItem.g_cBackColorInv, iItem.g_cBackColorOrg)
+        '    iItem.g_cControl.ForeColor = If(ClassSettings.g_iSettingsInvertColors, iItem.g_cForeColorInv, iItem.g_cForeColorOrg)
+        'Next
+
+        For Each c As Form In Application.OpenForms
+            ClassControlStyle.UpdateControls(c)
         Next
 
         UpdateSyntaxFile(ENUM_SYNTAX_UPDATE_TYPE.NONE, True) 'Just generate new files once, we dont need to create new files every type.
@@ -154,16 +158,6 @@ Public Class ClassSyntaxTools
         UpdateSyntaxFile(ENUM_SYNTAX_UPDATE_TYPE.CARET_WORD)
         UpdateTextEditorSyntax()
     End Sub
-
-    ''' <summary>
-    ''' Invert the color
-    ''' </summary>
-    ''' <param name="cColor"></param>
-    ''' <returns></returns>
-    Public Function InvertColor(cColor As Color) As Color
-        Dim cNewColor As Color = Color.FromArgb(cColor.ToArgb Xor -1) '&HFFFFFF 
-        Return Color.FromArgb(cColor.A, cNewColor.R, cNewColor.G, cNewColor.B)
-    End Function
 
     ''' <summary>
     ''' Checks if the syntax files exist. If not, they will be created.
@@ -371,7 +365,7 @@ Public Class ClassSyntaxTools
                                         Dim iColorNameIndex As Integer = mMatch.Groups("Color").Index
                                         Dim cConv As Color = ColorTranslator.FromHtml(sColorName)
 
-                                        Dim cInvColor As Color = InvertColor(cConv)
+                                        Dim cInvColor As Color = ClassControlStyle.InvertColor(cConv)
 
                                         If (cInvColor.R = 0 AndAlso cInvColor.G = 0 AndAlso cInvColor.B = 0) Then
                                             cInvColor = g_mFormMain.g_cDarkTextEditorBackgroundColor

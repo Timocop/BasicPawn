@@ -23,28 +23,28 @@ Partial Class FormDebuggerCriticalPopup
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormDebuggerCriticalPopup))
-        Me.Panel2 = New System.Windows.Forms.Panel()
+        Me.Panel_FooterControl = New System.Windows.Forms.Panel()
         Me.Button_Continue = New System.Windows.Forms.Button()
-        Me.Panel3 = New System.Windows.Forms.Panel()
+        Me.Panel_FooterDarkControl = New System.Windows.Forms.Panel()
         Me.Button_Close = New System.Windows.Forms.Button()
         Me.Class_PanelQuality1 = New BasicPawn.ClassPanelQuality()
         Me.Label_Title = New System.Windows.Forms.Label()
         Me.TextBox_Text = New System.Windows.Forms.TextBox()
-        Me.Panel2.SuspendLayout()
+        Me.Panel_FooterControl.SuspendLayout()
         Me.Class_PanelQuality1.SuspendLayout()
         Me.SuspendLayout()
         '
-        'Panel2
+        'Panel_FooterControl
         '
-        Me.Panel2.BackColor = System.Drawing.SystemColors.Control
-        Me.Panel2.Controls.Add(Me.Button_Continue)
-        Me.Panel2.Controls.Add(Me.Panel3)
-        Me.Panel2.Controls.Add(Me.Button_Close)
-        Me.Panel2.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.Panel2.Location = New System.Drawing.Point(0, 513)
-        Me.Panel2.Name = "Panel2"
-        Me.Panel2.Size = New System.Drawing.Size(784, 48)
-        Me.Panel2.TabIndex = 6
+        Me.Panel_FooterControl.BackColor = System.Drawing.SystemColors.Control
+        Me.Panel_FooterControl.Controls.Add(Me.Button_Continue)
+        Me.Panel_FooterControl.Controls.Add(Me.Panel_FooterDarkControl)
+        Me.Panel_FooterControl.Controls.Add(Me.Button_Close)
+        Me.Panel_FooterControl.Dock = System.Windows.Forms.DockStyle.Bottom
+        Me.Panel_FooterControl.Location = New System.Drawing.Point(0, 513)
+        Me.Panel_FooterControl.Name = "Panel_FooterControl"
+        Me.Panel_FooterControl.Size = New System.Drawing.Size(784, 48)
+        Me.Panel_FooterControl.TabIndex = 6
         '
         'Button_Continue
         '
@@ -57,14 +57,14 @@ Partial Class FormDebuggerCriticalPopup
         Me.Button_Continue.Text = "Continue"
         Me.Button_Continue.UseVisualStyleBackColor = True
         '
-        'Panel3
+        'Panel_FooterDarkControl
         '
-        Me.Panel3.BackColor = System.Drawing.SystemColors.ControlDark
-        Me.Panel3.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel3.Location = New System.Drawing.Point(0, 0)
-        Me.Panel3.Name = "Panel3"
-        Me.Panel3.Size = New System.Drawing.Size(784, 1)
-        Me.Panel3.TabIndex = 2
+        Me.Panel_FooterDarkControl.BackColor = System.Drawing.SystemColors.ControlDark
+        Me.Panel_FooterDarkControl.Dock = System.Windows.Forms.DockStyle.Top
+        Me.Panel_FooterDarkControl.Location = New System.Drawing.Point(0, 0)
+        Me.Panel_FooterDarkControl.Name = "Panel_FooterDarkControl"
+        Me.Panel_FooterDarkControl.Size = New System.Drawing.Size(784, 1)
+        Me.Panel_FooterDarkControl.TabIndex = 2
         '
         'Button_Close
         '
@@ -125,7 +125,7 @@ Partial Class FormDebuggerCriticalPopup
         Me.BackColor = System.Drawing.Color.White
         Me.ClientSize = New System.Drawing.Size(784, 561)
         Me.Controls.Add(Me.TextBox_Text)
-        Me.Controls.Add(Me.Panel2)
+        Me.Controls.Add(Me.Panel_FooterControl)
         Me.Controls.Add(Me.Class_PanelQuality1)
         Me.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
@@ -135,7 +135,7 @@ Partial Class FormDebuggerCriticalPopup
         Me.Name = "FormDebuggerCriticalPopup"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Title"
-        Me.Panel2.ResumeLayout(False)
+        Me.Panel_FooterControl.ResumeLayout(False)
         Me.Class_PanelQuality1.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
@@ -143,9 +143,9 @@ Partial Class FormDebuggerCriticalPopup
     End Sub
     Friend WithEvents Class_PanelQuality1 As ClassPanelQuality
     Friend WithEvents Label_Title As Label
-    Friend WithEvents Panel2 As Panel
+    Friend WithEvents Panel_FooterControl As Panel
     Friend WithEvents Button_Close As Button
-    Friend WithEvents Panel3 As Panel
+    Friend WithEvents Panel_FooterDarkControl As Panel
     Friend WithEvents TextBox_Text As TextBox
     Friend WithEvents Button_Continue As Button
 End Class
