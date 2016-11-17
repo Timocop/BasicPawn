@@ -130,6 +130,8 @@ Public Class FormDebugger
                 ListView_Entities.Items.Add(New ListViewItem(New String() {i.ToString, "", "", ""}))
             Next
             ListView_Entities.EndUpdate()
+
+            ClassControlStyle.UpdateControls(Me)
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
             Me.Dispose()

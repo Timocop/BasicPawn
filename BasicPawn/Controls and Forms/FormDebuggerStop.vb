@@ -47,4 +47,8 @@ Public Class FormDebuggerStop
     Private Sub RadioButton4_CheckedChanged(sender As Object, e As EventArgs) Handles RadioButton4.CheckedChanged
         g_mDialogResult = ENUM_DIALOG_RESULT.UNLOAD_PLUGIN
     End Sub
+
+    Private Sub FormDebuggerStop_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ClassControlStyle.UpdateControls(Me)
+    End Sub
 End Class

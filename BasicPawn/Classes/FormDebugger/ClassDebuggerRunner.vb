@@ -202,7 +202,12 @@ Public Class ClassDebuggerRunner
     Public Sub UpdateBreakpointListView()
         If (String.IsNullOrEmpty(g_mActiveBreakpointValue.sGUID)) Then
             For i = 0 To g_mFormDebugger.ListView_Breakpoints.Items.Count - 1
-                g_mFormDebugger.ListView_Breakpoints.Items(i).BackColor = Color.White
+                If (ClassControlStyle.m_InvertColor) Then
+                    g_mFormDebugger.ListView_Breakpoints.Items(i).BackColor = ClassControlStyle.g_cDarkControlColor.mDarkBackground
+                Else
+                    g_mFormDebugger.ListView_Breakpoints.Items(i).BackColor = ClassControlStyle.g_cDarkControlColor.mLightBackground
+                End If
+
                 g_mFormDebugger.ListView_Breakpoints.Items(i).SubItems(2).Text = ""
             Next
         Else
@@ -1089,7 +1094,12 @@ Public Class ClassDebuggerRunner
                                                     Dim timeSpan As TimeSpan = New TimeSpan(CLng(sTicks))
 
                                                     If ((timeSpan + New TimeSpan(0, 0, 0, 0, g_iListViewEntitesUpdaterTime)).Ticks < Date.Now.Ticks) Then
-                                                        g_mFormDebugger.ListView_Entities.Items(i).BackColor = Color.White
+                                                        If (ClassControlStyle.m_InvertColor) Then
+                                                            g_mFormDebugger.ListView_Entities.Items(i).BackColor = ClassControlStyle.g_cDarkControlColor.mDarkBackground
+                                                        Else
+                                                            g_mFormDebugger.ListView_Entities.Items(i).BackColor = ClassControlStyle.g_cDarkControlColor.mLightBackground
+                                                        End If
+
                                                         g_mFormDebugger.ListView_Entities.Items(i).SubItems(3).Text = ""
                                                     End If
                                                 Next

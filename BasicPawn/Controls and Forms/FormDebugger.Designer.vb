@@ -56,9 +56,9 @@ Partial Class FormDebugger
         Me.ToolStripMenuItem_DebugStop = New System.Windows.Forms.ToolStripMenuItem()
         Me.SplitContainer1 = New System.Windows.Forms.SplitContainer()
         Me.TabControl2 = New System.Windows.Forms.TabControl()
-        Me.TabPage3 = New System.Windows.Forms.TabPage()
+        Me.TabPage_Source = New System.Windows.Forms.TabPage()
         Me.TextEditorControlEx_DebuggerSource = New BasicPawn.TextEditorControlEx()
-        Me.TabPage4 = New System.Windows.Forms.TabPage()
+        Me.TabPage_Diasm = New System.Windows.Forms.TabPage()
         Me.TextEditorControlEx_DebuggerDiasm = New BasicPawn.TextEditorControlEx()
         Me.TabControl1 = New System.Windows.Forms.TabControl()
         Me.TabPage_Breakpoints = New System.Windows.Forms.TabPage()
@@ -88,8 +88,8 @@ Partial Class FormDebugger
         Me.SplitContainer1.Panel2.SuspendLayout()
         Me.SplitContainer1.SuspendLayout()
         Me.TabControl2.SuspendLayout()
-        Me.TabPage3.SuspendLayout()
-        Me.TabPage4.SuspendLayout()
+        Me.TabPage_Source.SuspendLayout()
+        Me.TabPage_Diasm.SuspendLayout()
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Breakpoints.SuspendLayout()
         Me.ContextMenuStrip_Breakpoints.SuspendLayout()
@@ -262,8 +262,8 @@ Partial Class FormDebugger
         '
         'TabControl2
         '
-        Me.TabControl2.Controls.Add(Me.TabPage3)
-        Me.TabControl2.Controls.Add(Me.TabPage4)
+        Me.TabControl2.Controls.Add(Me.TabPage_Source)
+        Me.TabControl2.Controls.Add(Me.TabPage_Diasm)
         Me.TabControl2.Dock = System.Windows.Forms.DockStyle.Fill
         Me.TabControl2.Location = New System.Drawing.Point(0, 0)
         Me.TabControl2.Name = "TabControl2"
@@ -271,52 +271,48 @@ Partial Class FormDebugger
         Me.TabControl2.Size = New System.Drawing.Size(715, 683)
         Me.TabControl2.TabIndex = 1
         '
-        'TabPage3
+        'TabPage_Source
         '
-        Me.TabPage3.Controls.Add(Me.TextEditorControlEx_DebuggerSource)
-        Me.TabPage3.Location = New System.Drawing.Point(4, 22)
-        Me.TabPage3.Name = "TabPage3"
-        Me.TabPage3.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage3.Size = New System.Drawing.Size(707, 657)
-        Me.TabPage3.TabIndex = 0
-        Me.TabPage3.Text = "Source"
-        Me.TabPage3.UseVisualStyleBackColor = True
+        Me.TabPage_Source.Controls.Add(Me.TextEditorControlEx_DebuggerSource)
+        Me.TabPage_Source.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage_Source.Name = "TabPage_Source"
+        Me.TabPage_Source.Size = New System.Drawing.Size(707, 657)
+        Me.TabPage_Source.TabIndex = 0
+        Me.TabPage_Source.Text = "Source"
         '
         'TextEditorControlEx_DebuggerSource
         '
         Me.TextEditorControlEx_DebuggerSource.Dock = System.Windows.Forms.DockStyle.Fill
         Me.TextEditorControlEx_DebuggerSource.IsReadOnly = False
         Me.TextEditorControlEx_DebuggerSource.LineViewerStyle = ICSharpCode.TextEditor.Document.LineViewerStyle.FullRow
-        Me.TextEditorControlEx_DebuggerSource.Location = New System.Drawing.Point(3, 3)
+        Me.TextEditorControlEx_DebuggerSource.Location = New System.Drawing.Point(0, 0)
         Me.TextEditorControlEx_DebuggerSource.Name = "TextEditorControlEx_DebuggerSource"
         Me.TextEditorControlEx_DebuggerSource.ShowMatchingBracket = False
         Me.TextEditorControlEx_DebuggerSource.ShowTabs = True
         Me.TextEditorControlEx_DebuggerSource.ShowVRuler = False
-        Me.TextEditorControlEx_DebuggerSource.Size = New System.Drawing.Size(701, 651)
+        Me.TextEditorControlEx_DebuggerSource.Size = New System.Drawing.Size(707, 657)
         Me.TextEditorControlEx_DebuggerSource.TabIndex = 0
         Me.TextEditorControlEx_DebuggerSource.Text = "Packed Source"
         '
-        'TabPage4
+        'TabPage_Diasm
         '
-        Me.TabPage4.Controls.Add(Me.TextEditorControlEx_DebuggerDiasm)
-        Me.TabPage4.Location = New System.Drawing.Point(4, 22)
-        Me.TabPage4.Name = "TabPage4"
-        Me.TabPage4.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage4.Size = New System.Drawing.Size(707, 657)
-        Me.TabPage4.TabIndex = 1
-        Me.TabPage4.Text = "DIASM"
-        Me.TabPage4.UseVisualStyleBackColor = True
+        Me.TabPage_Diasm.Controls.Add(Me.TextEditorControlEx_DebuggerDiasm)
+        Me.TabPage_Diasm.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage_Diasm.Name = "TabPage_Diasm"
+        Me.TabPage_Diasm.Size = New System.Drawing.Size(707, 657)
+        Me.TabPage_Diasm.TabIndex = 1
+        Me.TabPage_Diasm.Text = "DIASM"
         '
         'TextEditorControlEx_DebuggerDiasm
         '
         Me.TextEditorControlEx_DebuggerDiasm.Dock = System.Windows.Forms.DockStyle.Fill
         Me.TextEditorControlEx_DebuggerDiasm.IsReadOnly = False
         Me.TextEditorControlEx_DebuggerDiasm.LineViewerStyle = ICSharpCode.TextEditor.Document.LineViewerStyle.FullRow
-        Me.TextEditorControlEx_DebuggerDiasm.Location = New System.Drawing.Point(3, 3)
+        Me.TextEditorControlEx_DebuggerDiasm.Location = New System.Drawing.Point(0, 0)
         Me.TextEditorControlEx_DebuggerDiasm.Name = "TextEditorControlEx_DebuggerDiasm"
         Me.TextEditorControlEx_DebuggerDiasm.ShowMatchingBracket = False
         Me.TextEditorControlEx_DebuggerDiasm.ShowVRuler = False
-        Me.TextEditorControlEx_DebuggerDiasm.Size = New System.Drawing.Size(701, 651)
+        Me.TextEditorControlEx_DebuggerDiasm.Size = New System.Drawing.Size(707, 657)
         Me.TextEditorControlEx_DebuggerDiasm.TabIndex = 1
         Me.TextEditorControlEx_DebuggerDiasm.Text = "/*" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "* Only available while debugging!" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "*/"
         '
@@ -337,11 +333,9 @@ Partial Class FormDebugger
         Me.TabPage_Breakpoints.Controls.Add(Me.ListView_Breakpoints)
         Me.TabPage_Breakpoints.Location = New System.Drawing.Point(4, 22)
         Me.TabPage_Breakpoints.Name = "TabPage_Breakpoints"
-        Me.TabPage_Breakpoints.Padding = New System.Windows.Forms.Padding(3)
         Me.TabPage_Breakpoints.Size = New System.Drawing.Size(281, 657)
         Me.TabPage_Breakpoints.TabIndex = 0
         Me.TabPage_Breakpoints.Text = "Breakpoints"
-        Me.TabPage_Breakpoints.UseVisualStyleBackColor = True
         '
         'ListView_Breakpoints
         '
@@ -350,12 +344,11 @@ Partial Class FormDebugger
         Me.ListView_Breakpoints.ContextMenuStrip = Me.ContextMenuStrip_Breakpoints
         Me.ListView_Breakpoints.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ListView_Breakpoints.FullRowSelect = True
-        Me.ListView_Breakpoints.GridLines = True
         Me.ListView_Breakpoints.HideSelection = False
-        Me.ListView_Breakpoints.Location = New System.Drawing.Point(3, 3)
+        Me.ListView_Breakpoints.Location = New System.Drawing.Point(0, 0)
         Me.ListView_Breakpoints.MultiSelect = False
         Me.ListView_Breakpoints.Name = "ListView_Breakpoints"
-        Me.ListView_Breakpoints.Size = New System.Drawing.Size(275, 651)
+        Me.ListView_Breakpoints.Size = New System.Drawing.Size(281, 657)
         Me.ListView_Breakpoints.TabIndex = 0
         Me.ListView_Breakpoints.UseCompatibleStateImageBehavior = False
         Me.ListView_Breakpoints.View = System.Windows.Forms.View.Details
@@ -380,29 +373,30 @@ Partial Class FormDebugger
         Me.ContextMenuStrip_Breakpoints.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_BreakpointsEnableAll, Me.ToolStripMenuItem_BreakpointsDisableAll, Me.ToolStripSeparator1, Me.ToolStripMenuItem_BreakpointsSetValues})
         Me.ContextMenuStrip_Breakpoints.Name = "ContextMenuStrip_Breakpoints"
         Me.ContextMenuStrip_Breakpoints.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
-        Me.ContextMenuStrip_Breakpoints.Size = New System.Drawing.Size(225, 76)
+        Me.ContextMenuStrip_Breakpoints.ShowImageMargin = False
+        Me.ContextMenuStrip_Breakpoints.Size = New System.Drawing.Size(200, 76)
         '
         'ToolStripMenuItem_BreakpointsEnableAll
         '
         Me.ToolStripMenuItem_BreakpointsEnableAll.Name = "ToolStripMenuItem_BreakpointsEnableAll"
-        Me.ToolStripMenuItem_BreakpointsEnableAll.Size = New System.Drawing.Size(224, 22)
+        Me.ToolStripMenuItem_BreakpointsEnableAll.Size = New System.Drawing.Size(199, 22)
         Me.ToolStripMenuItem_BreakpointsEnableAll.Text = "Enable all breakpoints"
         '
         'ToolStripMenuItem_BreakpointsDisableAll
         '
         Me.ToolStripMenuItem_BreakpointsDisableAll.Name = "ToolStripMenuItem_BreakpointsDisableAll"
-        Me.ToolStripMenuItem_BreakpointsDisableAll.Size = New System.Drawing.Size(224, 22)
+        Me.ToolStripMenuItem_BreakpointsDisableAll.Size = New System.Drawing.Size(199, 22)
         Me.ToolStripMenuItem_BreakpointsDisableAll.Text = "Disable all breakpoints"
         '
         'ToolStripSeparator1
         '
         Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
-        Me.ToolStripSeparator1.Size = New System.Drawing.Size(221, 6)
+        Me.ToolStripSeparator1.Size = New System.Drawing.Size(196, 6)
         '
         'ToolStripMenuItem_BreakpointsSetValues
         '
         Me.ToolStripMenuItem_BreakpointsSetValues.Name = "ToolStripMenuItem_BreakpointsSetValues"
-        Me.ToolStripMenuItem_BreakpointsSetValues.Size = New System.Drawing.Size(224, 22)
+        Me.ToolStripMenuItem_BreakpointsSetValues.Size = New System.Drawing.Size(199, 22)
         Me.ToolStripMenuItem_BreakpointsSetValues.Text = "Set active breakpoint value..."
         '
         'TabPage_Watchers
@@ -410,23 +404,20 @@ Partial Class FormDebugger
         Me.TabPage_Watchers.Controls.Add(Me.ListView_Watchers)
         Me.TabPage_Watchers.Location = New System.Drawing.Point(4, 22)
         Me.TabPage_Watchers.Name = "TabPage_Watchers"
-        Me.TabPage_Watchers.Padding = New System.Windows.Forms.Padding(3)
         Me.TabPage_Watchers.Size = New System.Drawing.Size(281, 657)
         Me.TabPage_Watchers.TabIndex = 1
         Me.TabPage_Watchers.Text = "Watcher"
-        Me.TabPage_Watchers.UseVisualStyleBackColor = True
         '
         'ListView_Watchers
         '
         Me.ListView_Watchers.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader3, Me.ColumnHeader5, Me.ColumnHeader6, Me.ColumnHeader7})
         Me.ListView_Watchers.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ListView_Watchers.FullRowSelect = True
-        Me.ListView_Watchers.GridLines = True
         Me.ListView_Watchers.HideSelection = False
-        Me.ListView_Watchers.Location = New System.Drawing.Point(3, 3)
+        Me.ListView_Watchers.Location = New System.Drawing.Point(0, 0)
         Me.ListView_Watchers.MultiSelect = False
         Me.ListView_Watchers.Name = "ListView_Watchers"
-        Me.ListView_Watchers.Size = New System.Drawing.Size(275, 651)
+        Me.ListView_Watchers.Size = New System.Drawing.Size(281, 657)
         Me.ListView_Watchers.TabIndex = 0
         Me.ListView_Watchers.UseCompatibleStateImageBehavior = False
         Me.ListView_Watchers.View = System.Windows.Forms.View.Details
@@ -459,14 +450,12 @@ Partial Class FormDebugger
         Me.TabPage_Entities.Size = New System.Drawing.Size(281, 657)
         Me.TabPage_Entities.TabIndex = 2
         Me.TabPage_Entities.Text = "Entities"
-        Me.TabPage_Entities.UseVisualStyleBackColor = True
         '
         'ListView_Entities
         '
         Me.ListView_Entities.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader8, Me.ColumnHeader9, Me.ColumnHeader10})
         Me.ListView_Entities.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ListView_Entities.FullRowSelect = True
-        Me.ListView_Entities.GridLines = True
         Me.ListView_Entities.Location = New System.Drawing.Point(0, 0)
         Me.ListView_Entities.MultiSelect = False
         Me.ListView_Entities.Name = "ListView_Entities"
@@ -512,8 +501,8 @@ Partial Class FormDebugger
         Me.SplitContainer1.Panel2.ResumeLayout(False)
         Me.SplitContainer1.ResumeLayout(False)
         Me.TabControl2.ResumeLayout(False)
-        Me.TabPage3.ResumeLayout(False)
-        Me.TabPage4.ResumeLayout(False)
+        Me.TabPage_Source.ResumeLayout(False)
+        Me.TabPage_Diasm.ResumeLayout(False)
         Me.TabControl1.ResumeLayout(False)
         Me.TabPage_Breakpoints.ResumeLayout(False)
         Me.ContextMenuStrip_Breakpoints.ResumeLayout(False)
@@ -537,8 +526,8 @@ Partial Class FormDebugger
     Friend WithEvents ListView_Breakpoints As ListView
     Friend WithEvents ColumnHeader1 As ColumnHeader
     Friend WithEvents TabControl2 As TabControl
-    Friend WithEvents TabPage3 As TabPage
-    Friend WithEvents TabPage4 As TabPage
+    Friend WithEvents TabPage_Source As TabPage
+    Friend WithEvents TabPage_Diasm As TabPage
     Friend WithEvents TextEditorControlEx_DebuggerDiasm As TextEditorControlEx
     Friend WithEvents ToolStripMenuItem_DebugStart As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_DebugStop As ToolStripMenuItem

@@ -191,6 +191,7 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\ClassControlStyle.vb" />
     <Compile Include="Classes\ClassTextboxWatermark.vb">
       <SubType>Component</SubType>
     </Compile>
@@ -350,6 +351,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
     <None Include="My Project\app.manifest" />
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>

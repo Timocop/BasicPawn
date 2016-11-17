@@ -26,10 +26,10 @@ Partial Class FormDebuggerException
         Me.Label2 = New System.Windows.Forms.Label()
         Me.Panel1 = New System.Windows.Forms.Panel()
         Me.Label_ExceptionInfo = New System.Windows.Forms.Label()
-        Me.Panel2 = New System.Windows.Forms.Panel()
+        Me.Panel_FooterControl = New System.Windows.Forms.Panel()
         Me.Button_Continue = New System.Windows.Forms.Button()
         Me.Button_ViewLog = New System.Windows.Forms.Button()
-        Me.Panel3 = New System.Windows.Forms.Panel()
+        Me.Panel_FooterDarkControl = New System.Windows.Forms.Panel()
         Me.Button_Close = New System.Windows.Forms.Button()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.ListView_StackTrace = New System.Windows.Forms.ListView()
@@ -42,8 +42,8 @@ Partial Class FormDebuggerException
         Me.Panel4 = New System.Windows.Forms.Panel()
         Me.Class_PictureBoxQuality2 = New BasicPawn.ClassPictureBoxQuality()
         Me.Class_PanelQuality1 = New BasicPawn.ClassPanelQuality()
-        Me.Label1 = New System.Windows.Forms.Label()
-        Me.Panel2.SuspendLayout()
+        Me.Label_Title = New System.Windows.Forms.Label()
+        Me.Panel_FooterControl.SuspendLayout()
         CType(Me.Class_PictureBoxQuality2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Class_PanelQuality1.SuspendLayout()
         Me.SuspendLayout()
@@ -80,18 +80,18 @@ Partial Class FormDebuggerException
         Me.Label_ExceptionInfo.TabIndex = 5
         Me.Label_ExceptionInfo.Text = "Exception: Unknown"
         '
-        'Panel2
+        'Panel_FooterControl
         '
-        Me.Panel2.BackColor = System.Drawing.SystemColors.Control
-        Me.Panel2.Controls.Add(Me.Button_Continue)
-        Me.Panel2.Controls.Add(Me.Button_ViewLog)
-        Me.Panel2.Controls.Add(Me.Panel3)
-        Me.Panel2.Controls.Add(Me.Button_Close)
-        Me.Panel2.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.Panel2.Location = New System.Drawing.Point(0, 313)
-        Me.Panel2.Name = "Panel2"
-        Me.Panel2.Size = New System.Drawing.Size(534, 48)
-        Me.Panel2.TabIndex = 6
+        Me.Panel_FooterControl.BackColor = System.Drawing.SystemColors.Control
+        Me.Panel_FooterControl.Controls.Add(Me.Button_Continue)
+        Me.Panel_FooterControl.Controls.Add(Me.Button_ViewLog)
+        Me.Panel_FooterControl.Controls.Add(Me.Panel_FooterDarkControl)
+        Me.Panel_FooterControl.Controls.Add(Me.Button_Close)
+        Me.Panel_FooterControl.Dock = System.Windows.Forms.DockStyle.Bottom
+        Me.Panel_FooterControl.Location = New System.Drawing.Point(0, 313)
+        Me.Panel_FooterControl.Name = "Panel_FooterControl"
+        Me.Panel_FooterControl.Size = New System.Drawing.Size(534, 48)
+        Me.Panel_FooterControl.TabIndex = 6
         '
         'Button_Continue
         '
@@ -115,14 +115,14 @@ Partial Class FormDebuggerException
         Me.Button_ViewLog.Text = "View Log"
         Me.Button_ViewLog.UseVisualStyleBackColor = True
         '
-        'Panel3
+        'Panel_FooterDarkControl
         '
-        Me.Panel3.BackColor = System.Drawing.SystemColors.ControlDark
-        Me.Panel3.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel3.Location = New System.Drawing.Point(0, 0)
-        Me.Panel3.Name = "Panel3"
-        Me.Panel3.Size = New System.Drawing.Size(534, 1)
-        Me.Panel3.TabIndex = 2
+        Me.Panel_FooterDarkControl.BackColor = System.Drawing.SystemColors.ControlDark
+        Me.Panel_FooterDarkControl.Dock = System.Windows.Forms.DockStyle.Top
+        Me.Panel_FooterDarkControl.Location = New System.Drawing.Point(0, 0)
+        Me.Panel_FooterDarkControl.Name = "Panel_FooterDarkControl"
+        Me.Panel_FooterDarkControl.Size = New System.Drawing.Size(534, 1)
+        Me.Panel_FooterDarkControl.TabIndex = 2
         '
         'Button_Close
         '
@@ -152,7 +152,6 @@ Partial Class FormDebuggerException
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ListView_StackTrace.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader5, Me.ColumnHeader1, Me.ColumnHeader2, Me.ColumnHeader3, Me.ColumnHeader4})
         Me.ListView_StackTrace.FullRowSelect = True
-        Me.ListView_StackTrace.GridLines = True
         Me.ListView_StackTrace.Location = New System.Drawing.Point(12, 187)
         Me.ListView_StackTrace.Margin = New System.Windows.Forms.Padding(3, 9, 3, 3)
         Me.ListView_StackTrace.Name = "ListView_StackTrace"
@@ -224,7 +223,7 @@ Partial Class FormDebuggerException
         '
         Me.Class_PanelQuality1.BackgroundImage = Global.BasicPawn.My.Resources.Resources.BasicPawnRedTop
         Me.Class_PanelQuality1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.Class_PanelQuality1.Controls.Add(Me.Label1)
+        Me.Class_PanelQuality1.Controls.Add(Me.Label_Title)
         Me.Class_PanelQuality1.Dock = System.Windows.Forms.DockStyle.Top
         Me.Class_PanelQuality1.HighQuality = False
         Me.Class_PanelQuality1.Location = New System.Drawing.Point(0, 0)
@@ -232,19 +231,19 @@ Partial Class FormDebuggerException
         Me.Class_PanelQuality1.Size = New System.Drawing.Size(534, 48)
         Me.Class_PanelQuality1.TabIndex = 2
         '
-        'Label1
+        'Label_Title
         '
-        Me.Label1.BackColor = System.Drawing.Color.Transparent
-        Me.Label1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Label1.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label1.ForeColor = System.Drawing.Color.Black
-        Me.Label1.Location = New System.Drawing.Point(0, 0)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Padding = New System.Windows.Forms.Padding(12, 0, 0, 0)
-        Me.Label1.Size = New System.Drawing.Size(534, 48)
-        Me.Label1.TabIndex = 2
-        Me.Label1.Text = "The debugger caught an exception!"
-        Me.Label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.Label_Title.BackColor = System.Drawing.Color.Transparent
+        Me.Label_Title.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Label_Title.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label_Title.ForeColor = System.Drawing.Color.Black
+        Me.Label_Title.Location = New System.Drawing.Point(0, 0)
+        Me.Label_Title.Name = "Label_Title"
+        Me.Label_Title.Padding = New System.Windows.Forms.Padding(12, 0, 0, 0)
+        Me.Label_Title.Size = New System.Drawing.Size(534, 48)
+        Me.Label_Title.TabIndex = 2
+        Me.Label_Title.Text = "The debugger caught an exception!"
+        Me.Label_Title.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'FormDebuggerException
         '
@@ -256,7 +255,7 @@ Partial Class FormDebuggerException
         Me.Controls.Add(Me.Class_PictureBoxQuality2)
         Me.Controls.Add(Me.ListView_StackTrace)
         Me.Controls.Add(Me.Label3)
-        Me.Controls.Add(Me.Panel2)
+        Me.Controls.Add(Me.Panel_FooterControl)
         Me.Controls.Add(Me.Label_ExceptionInfo)
         Me.Controls.Add(Me.Panel1)
         Me.Controls.Add(Me.Panel4)
@@ -270,7 +269,7 @@ Partial Class FormDebuggerException
         Me.Name = "FormDebuggerException"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Plugin Exception"
-        Me.Panel2.ResumeLayout(False)
+        Me.Panel_FooterControl.ResumeLayout(False)
         CType(Me.Class_PictureBoxQuality2, System.ComponentModel.ISupportInitialize).EndInit()
         Me.Class_PanelQuality1.ResumeLayout(False)
         Me.ResumeLayout(False)
@@ -279,17 +278,17 @@ Partial Class FormDebuggerException
     End Sub
     Friend WithEvents Class_PictureBoxQuality2 As ClassPictureBoxQuality
     Friend WithEvents Class_PanelQuality1 As ClassPanelQuality
-    Friend WithEvents Label1 As Label
+    Friend WithEvents Label_Title As Label
     Friend WithEvents Label2 As Label
     Friend WithEvents Panel1 As Panel
     Friend WithEvents Label_ExceptionInfo As Label
-    Friend WithEvents Panel2 As Panel
+    Friend WithEvents Panel_FooterControl As Panel
     Friend WithEvents Button_Close As Button
     Friend WithEvents Label3 As Label
     Friend WithEvents ListView_StackTrace As ListView
     Friend WithEvents ColumnHeader1 As ColumnHeader
     Friend WithEvents ColumnHeader2 As ColumnHeader
-    Friend WithEvents Panel3 As Panel
+    Friend WithEvents Panel_FooterDarkControl As Panel
     Friend WithEvents Label_Date As Label
     Friend WithEvents Panel4 As Panel
     Friend WithEvents ColumnHeader3 As ColumnHeader

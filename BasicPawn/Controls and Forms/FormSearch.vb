@@ -92,6 +92,8 @@ Public Class FormSearch
 
     Private Sub SearchForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         TextBox_Search.Text = g_sSearchText
+
+        ClassControlStyle.UpdateControls(Me)
     End Sub
 
     Private Sub Button_Search_Click(sender As Object, e As EventArgs) Handles Button_Search.Click

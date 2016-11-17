@@ -24,10 +24,10 @@ Partial Class FormDebuggerStop
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormDebuggerStop))
-        Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.Panel_FooterControl = New System.Windows.Forms.Panel()
         Me.Button_OK = New System.Windows.Forms.Button()
         Me.Button_Cancel = New System.Windows.Forms.Button()
-        Me.Panel2 = New System.Windows.Forms.Panel()
+        Me.Panel_FooterDarkControl = New System.Windows.Forms.Panel()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.RadioButton1 = New System.Windows.Forms.RadioButton()
         Me.RadioButton2 = New System.Windows.Forms.RadioButton()
@@ -36,21 +36,21 @@ Partial Class FormDebuggerStop
         Me.Label2 = New System.Windows.Forms.Label()
         Me.ToolTip_ResultOptions = New System.Windows.Forms.ToolTip(Me.components)
         Me.Class_PictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
-        Me.Panel1.SuspendLayout()
+        Me.Panel_FooterControl.SuspendLayout()
         CType(Me.Class_PictureBoxQuality1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
-        'Panel1
+        'Panel_FooterControl
         '
-        Me.Panel1.BackColor = System.Drawing.SystemColors.Control
-        Me.Panel1.Controls.Add(Me.Button_OK)
-        Me.Panel1.Controls.Add(Me.Button_Cancel)
-        Me.Panel1.Controls.Add(Me.Panel2)
-        Me.Panel1.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.Panel1.Location = New System.Drawing.Point(0, 213)
-        Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(334, 48)
-        Me.Panel1.TabIndex = 0
+        Me.Panel_FooterControl.BackColor = System.Drawing.SystemColors.Control
+        Me.Panel_FooterControl.Controls.Add(Me.Button_OK)
+        Me.Panel_FooterControl.Controls.Add(Me.Button_Cancel)
+        Me.Panel_FooterControl.Controls.Add(Me.Panel_FooterDarkControl)
+        Me.Panel_FooterControl.Dock = System.Windows.Forms.DockStyle.Bottom
+        Me.Panel_FooterControl.Location = New System.Drawing.Point(0, 213)
+        Me.Panel_FooterControl.Name = "Panel_FooterControl"
+        Me.Panel_FooterControl.Size = New System.Drawing.Size(334, 48)
+        Me.Panel_FooterControl.TabIndex = 0
         '
         'Button_OK
         '
@@ -76,14 +76,14 @@ Partial Class FormDebuggerStop
         Me.Button_Cancel.Text = "Cancel"
         Me.Button_Cancel.UseVisualStyleBackColor = True
         '
-        'Panel2
+        'Panel_FooterDarkControl
         '
-        Me.Panel2.BackColor = System.Drawing.SystemColors.ControlDark
-        Me.Panel2.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel2.Location = New System.Drawing.Point(0, 0)
-        Me.Panel2.Name = "Panel2"
-        Me.Panel2.Size = New System.Drawing.Size(334, 1)
-        Me.Panel2.TabIndex = 0
+        Me.Panel_FooterDarkControl.BackColor = System.Drawing.SystemColors.ControlDark
+        Me.Panel_FooterDarkControl.Dock = System.Windows.Forms.DockStyle.Top
+        Me.Panel_FooterDarkControl.Location = New System.Drawing.Point(0, 0)
+        Me.Panel_FooterDarkControl.Name = "Panel_FooterDarkControl"
+        Me.Panel_FooterDarkControl.Size = New System.Drawing.Size(334, 1)
+        Me.Panel_FooterDarkControl.TabIndex = 0
         '
         'Label1
         '
@@ -189,7 +189,7 @@ Partial Class FormDebuggerStop
         Me.Controls.Add(Me.RadioButton1)
         Me.Controls.Add(Me.Class_PictureBoxQuality1)
         Me.Controls.Add(Me.Label1)
-        Me.Controls.Add(Me.Panel1)
+        Me.Controls.Add(Me.Panel_FooterControl)
         Me.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
@@ -198,17 +198,17 @@ Partial Class FormDebuggerStop
         Me.Name = "FormDebuggerStop"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Stopping Debugger"
-        Me.Panel1.ResumeLayout(False)
+        Me.Panel_FooterControl.ResumeLayout(False)
         CType(Me.Class_PictureBoxQuality1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
     End Sub
 
-    Friend WithEvents Panel1 As Panel
+    Friend WithEvents Panel_FooterControl As Panel
     Friend WithEvents Button_OK As Button
     Friend WithEvents Button_Cancel As Button
-    Friend WithEvents Panel2 As Panel
+    Friend WithEvents Panel_FooterDarkControl As Panel
     Friend WithEvents Label1 As Label
     Friend WithEvents Class_PictureBoxQuality1 As ClassPictureBoxQuality
     Friend WithEvents RadioButton1 As RadioButton

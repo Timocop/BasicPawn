@@ -24,8 +24,8 @@ Partial Class FormDebuggerBreakpointSetValue
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormDebuggerBreakpointSetValue))
         Me.Label1 = New System.Windows.Forms.Label()
-        Me.Panel1 = New System.Windows.Forms.Panel()
-        Me.Panel2 = New System.Windows.Forms.Panel()
+        Me.Panel_FooterControl = New System.Windows.Forms.Panel()
+        Me.Panel_FooterDarkControl = New System.Windows.Forms.Panel()
         Me.Button2 = New System.Windows.Forms.Button()
         Me.Button1 = New System.Windows.Forms.Button()
         Me.NumericUpDown_BreakpointValue = New System.Windows.Forms.NumericUpDown()
@@ -33,7 +33,7 @@ Partial Class FormDebuggerBreakpointSetValue
         Me.RadioButton_TypeInteger = New System.Windows.Forms.RadioButton()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.RadioButton_TypeFloatingPoint = New System.Windows.Forms.RadioButton()
-        Me.Panel1.SuspendLayout()
+        Me.Panel_FooterControl.SuspendLayout()
         CType(Me.NumericUpDown_BreakpointValue, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox1.SuspendLayout()
         Me.SuspendLayout()
@@ -47,26 +47,26 @@ Partial Class FormDebuggerBreakpointSetValue
         Me.Label1.TabIndex = 0
         Me.Label1.Text = "Set the return value of the active breakpoint:"
         '
-        'Panel1
+        'Panel_FooterControl
         '
-        Me.Panel1.BackColor = System.Drawing.SystemColors.Control
-        Me.Panel1.Controls.Add(Me.Panel2)
-        Me.Panel1.Controls.Add(Me.Button2)
-        Me.Panel1.Controls.Add(Me.Button1)
-        Me.Panel1.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.Panel1.Location = New System.Drawing.Point(0, 163)
-        Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(284, 48)
-        Me.Panel1.TabIndex = 1
+        Me.Panel_FooterControl.BackColor = System.Drawing.SystemColors.Control
+        Me.Panel_FooterControl.Controls.Add(Me.Panel_FooterDarkControl)
+        Me.Panel_FooterControl.Controls.Add(Me.Button2)
+        Me.Panel_FooterControl.Controls.Add(Me.Button1)
+        Me.Panel_FooterControl.Dock = System.Windows.Forms.DockStyle.Bottom
+        Me.Panel_FooterControl.Location = New System.Drawing.Point(0, 163)
+        Me.Panel_FooterControl.Name = "Panel_FooterControl"
+        Me.Panel_FooterControl.Size = New System.Drawing.Size(284, 48)
+        Me.Panel_FooterControl.TabIndex = 1
         '
-        'Panel2
+        'Panel_FooterDarkControl
         '
-        Me.Panel2.BackColor = System.Drawing.SystemColors.ControlDark
-        Me.Panel2.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel2.Location = New System.Drawing.Point(0, 0)
-        Me.Panel2.Name = "Panel2"
-        Me.Panel2.Size = New System.Drawing.Size(284, 1)
-        Me.Panel2.TabIndex = 3
+        Me.Panel_FooterDarkControl.BackColor = System.Drawing.SystemColors.ControlDark
+        Me.Panel_FooterDarkControl.Dock = System.Windows.Forms.DockStyle.Top
+        Me.Panel_FooterDarkControl.Location = New System.Drawing.Point(0, 0)
+        Me.Panel_FooterDarkControl.Name = "Panel_FooterDarkControl"
+        Me.Panel_FooterDarkControl.Size = New System.Drawing.Size(284, 1)
+        Me.Panel_FooterDarkControl.TabIndex = 3
         '
         'Button2
         '
@@ -147,7 +147,7 @@ Partial Class FormDebuggerBreakpointSetValue
         Me.RadioButton_TypeFloatingPoint.Text = "Floating-point"
         Me.RadioButton_TypeFloatingPoint.UseVisualStyleBackColor = True
         '
-        'FormBreakpointSetValue
+        'FormDebuggerBreakpointSetValue
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
@@ -156,7 +156,7 @@ Partial Class FormDebuggerBreakpointSetValue
         Me.Controls.Add(Me.GroupBox1)
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.NumericUpDown_BreakpointValue)
-        Me.Controls.Add(Me.Panel1)
+        Me.Controls.Add(Me.Panel_FooterControl)
         Me.Controls.Add(Me.Label1)
         Me.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
@@ -164,10 +164,10 @@ Partial Class FormDebuggerBreakpointSetValue
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.MinimumSize = New System.Drawing.Size(300, 250)
-        Me.Name = "FormBreakpointSetValue"
+        Me.Name = "FormDebuggerBreakpointSetValue"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Set Value..."
-        Me.Panel1.ResumeLayout(False)
+        Me.Panel_FooterControl.ResumeLayout(False)
         CType(Me.NumericUpDown_BreakpointValue, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupBox1.ResumeLayout(False)
         Me.GroupBox1.PerformLayout()
@@ -177,7 +177,7 @@ Partial Class FormDebuggerBreakpointSetValue
     End Sub
 
     Friend WithEvents Label1 As Label
-    Friend WithEvents Panel1 As Panel
+    Friend WithEvents Panel_FooterControl As Panel
     Friend WithEvents Button2 As Button
     Friend WithEvents Button1 As Button
     Friend WithEvents NumericUpDown_BreakpointValue As NumericUpDown
@@ -185,5 +185,5 @@ Partial Class FormDebuggerBreakpointSetValue
     Friend WithEvents RadioButton_TypeInteger As RadioButton
     Friend WithEvents GroupBox1 As GroupBox
     Friend WithEvents RadioButton_TypeFloatingPoint As RadioButton
-    Friend WithEvents Panel2 As Panel
+    Friend WithEvents Panel_FooterDarkControl As Panel
 End Class
