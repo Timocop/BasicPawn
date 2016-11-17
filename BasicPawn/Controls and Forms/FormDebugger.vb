@@ -15,6 +15,7 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 
+Imports System.ComponentModel
 Imports System.Text.RegularExpressions
 
 Public Class FormDebugger
@@ -132,6 +133,8 @@ Public Class FormDebugger
             ListView_Entities.EndUpdate()
 
             ClassControlStyle.UpdateControls(Me)
+
+            g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnDebuggerStart(Me))
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
             Me.Dispose()
@@ -568,6 +571,14 @@ Public Class FormDebugger
 
     Private Sub ToolStripMenuItem_Tools_DropDownOpened(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Tools.DropDownOpened
         g_ClassDebuggerSettings.LoadSettings()
+    End Sub
+
+    Private Sub FormDebugger_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
+        g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface)
+                                                               If (Not j.OnDebuggerEnd(Me)) Then
+                                                                   e.Cancel = True
+                                                               End If
+                                                           End Sub)
     End Sub
 #End Region
 End Class

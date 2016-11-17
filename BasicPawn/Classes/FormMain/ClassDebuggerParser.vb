@@ -22,6 +22,9 @@ Imports BasicPawn.FormMain
 Public Class ClassDebuggerParser
     Private g_mFormMain As FormMain
 
+    Public Event OnBreakpointsUpdate()
+    Public Event OnWatchersUpdate()
+
     Public Shared g_sDebuggerFilesExt As String = ".bpdebug"
 
     Public Shared g_sBreakpointName As String = "BPDBreakpoint"
@@ -145,6 +148,8 @@ Public Class ClassDebuggerParser
 
             iListIndex += 1
         Next
+
+        RaiseEvent OnBreakpointsUpdate()
     End Sub
 
     ''' <summary>
@@ -238,6 +243,8 @@ Public Class ClassDebuggerParser
 
             iListIndex += 1
         Next
+
+        RaiseEvent OnWatchersUpdate()
     End Sub
 
     ''' <summary>

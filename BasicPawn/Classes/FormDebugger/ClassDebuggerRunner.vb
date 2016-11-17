@@ -457,6 +457,8 @@ Public Class ClassDebuggerRunner
                 m_DebuggingState = ENUM_DEBUGGING_STATE.STARTED
                 m_SuspendGame = False
             End SyncLock
+
+            g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnDebuggerDebugStart())
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
             g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Error!" & ex.Message
@@ -570,6 +572,7 @@ Public Class ClassDebuggerRunner
             g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Debugger stopped!"
             g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Red
 
+            g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnDebuggerDebugStop())
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
 
@@ -632,6 +635,8 @@ Public Class ClassDebuggerRunner
 
             g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Debugger running!"
             g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Green
+
+            g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnDebuggerDebugStart())
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
 
@@ -660,6 +665,8 @@ Public Class ClassDebuggerRunner
 
             g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Debugger awaiting input..."
             g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Orange
+
+            g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnDebuggerDebugPause())
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
 
@@ -846,6 +853,8 @@ Public Class ClassDebuggerRunner
 
                                                 g_mFormDebugger.TopMost = True
                                                 g_mFormDebugger.TopMost = False
+
+                                                g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnDebuggerDebugPause())
                                             End Sub)
             End SyncLock
         Catch ex As Threading.ThreadAbortException
@@ -1178,6 +1187,7 @@ Public Class ClassDebuggerRunner
                 Dim sSMXFileName As String = IO.Path.GetFileName(g_sLatestDebuggerPlugin)
 
                 Dim smExceptions = g_mFormDebugger.g_ClassDebuggerParser.ReadSourceModLogExceptions(sLines)
+                Dim i As Integer
                 For i = smExceptions.Length - 1 To 0 Step -1
                     Dim sBlameFile As String = smExceptions(i).sBlamingFile
 
@@ -1200,7 +1210,6 @@ Public Class ClassDebuggerRunner
                         m_SuspendGame = True
                         m_DebuggingState = ENUM_DEBUGGING_STATE.PAUSED
 
-                        Dim j = i
                         'INFO: Dont use 'Invoke' it deadlocks on FileSystemWatcher.Dispose, use async 'BeginInvoke' instead.
                         g_mFormDebugger.BeginInvoke(Sub()
                                                         If (g_mFormDebuggerException IsNot Nothing AndAlso Not g_mFormDebuggerException.IsDisposed) Then
@@ -1223,7 +1232,7 @@ Public Class ClassDebuggerRunner
                                                         g_mFormDebugger.TopMost = True
                                                         g_mFormDebugger.TopMost = False
 
-                                                        g_mFormDebuggerException = New FormDebuggerException(g_mFormDebugger, sFile, smExceptions(j))
+                                                        g_mFormDebuggerException = New FormDebuggerException(g_mFormDebugger, sFile, smExceptions(i))
                                                         g_mFormDebuggerException.Show()
 
                                                         If (g_mFormDebuggerException.WindowState = FormWindowState.Minimized) Then
@@ -1232,6 +1241,8 @@ Public Class ClassDebuggerRunner
 
                                                         g_mFormDebuggerException.TopMost = True
                                                         g_mFormDebuggerException.TopMost = False
+
+                                                        g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnDebuggerDebugPause())
                                                     End Sub)
 
                     End SyncLock
@@ -1288,6 +1299,8 @@ Public Class ClassDebuggerRunner
 
                                                         g_mFormDebuggerCriticalPopupException.TopMost = True
                                                         g_mFormDebuggerCriticalPopupException.TopMost = False
+
+                                                        g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnDebuggerDebugPause())
                                                     End Sub)
                     End SyncLock
                 End If
@@ -1399,6 +1412,8 @@ Public Class ClassDebuggerRunner
 
                                                     g_mFormDebuggerCriticalPopupFatalException.TopMost = True
                                                     g_mFormDebuggerCriticalPopupFatalException.TopMost = False
+
+                                                    g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnDebuggerDebugPause())
                                                 End Sub)
                 End SyncLock
             End If

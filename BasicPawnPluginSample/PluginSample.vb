@@ -65,10 +65,49 @@ Public Class PluginSample
         Throw New NotImplementedException()
     End Sub
 
+    Public Sub OnEditorSyntaxUpdate() Implements PluginInterface.OnEditorSyntaxUpdate
+        Throw New NotImplementedException()
+    End Sub
 
+    Public Sub OnEditorSyntaxUpdateEnd() Implements PluginInterface.OnEditorSyntaxUpdateEnd
+        Throw New NotImplementedException()
+    End Sub
 
+    Public Sub OnSyntaxUpdate(iType As ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE, bForceFromMemory As Boolean) Implements PluginInterface.OnSyntaxUpdate
+        Throw New NotImplementedException()
+    End Sub
 
+    Public Sub OnSyntaxUpdateEnd(iType As ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE, bForceFromMemory As Boolean) Implements PluginInterface.OnSyntaxUpdateEnd
+        Throw New NotImplementedException()
+    End Sub
 
+    Public Sub OnFormColorUpdate() Implements PluginInterface.OnFormColorUpdate
+        Throw New NotImplementedException()
+    End Sub
+
+    Public Sub OnDebuggerStart(mFormDebugger As FormDebugger) Implements PluginInterface.OnDebuggerStart
+        Throw New NotImplementedException()
+    End Sub
+
+    Public Function OnDebuggerEnd(mFormDebugger As FormDebugger) As Boolean Implements PluginInterface.OnDebuggerEnd
+        Throw New NotImplementedException()
+    End Function
+
+    Public Sub OnDebuggerEndPost(mFormDebugger As FormDebugger) Implements PluginInterface.OnDebuggerEndPost
+        Throw New NotImplementedException()
+    End Sub
+
+    Public Sub OnDebuggerDebugStart() Implements PluginInterface.OnDebuggerDebugStart
+        Throw New NotImplementedException()
+    End Sub
+
+    Public Sub OnDebuggerDebugPause() Implements PluginInterface.OnDebuggerDebugPause
+        Throw New NotImplementedException()
+    End Sub
+
+    Public Sub OnDebuggerDebugStop() Implements PluginInterface.OnDebuggerDebugStop
+        Throw New NotImplementedException()
+    End Sub
 
     Class ClassTestToolbox
         Implements IDisposable

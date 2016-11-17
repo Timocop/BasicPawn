@@ -157,6 +157,8 @@ Public Class ClassSyntaxTools
         UpdateSyntaxFile(ENUM_SYNTAX_UPDATE_TYPE.HIGHLIGHT_WORD_CUSTOM)
         UpdateSyntaxFile(ENUM_SYNTAX_UPDATE_TYPE.CARET_WORD)
         UpdateTextEditorSyntax()
+
+        g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnFormColorUpdate())
     End Sub
 
     ''' <summary>
@@ -192,6 +194,8 @@ Public Class ClassSyntaxTools
     ''' <param name="bForceFromMemory">If true, overwrites the syntax file from memory cache (factory new)</param>
     Public Sub UpdateSyntaxFile(iType As ENUM_SYNTAX_UPDATE_TYPE, Optional bForceFromMemory As Boolean = False)
         Try
+            g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnSyntaxUpdate(iType, bForceFromMemory))
+
             SyncLock _lock
                 For i = 0 To g_SyntaxFiles.Length - 1
                     If (Not IO.File.Exists(g_SyntaxFiles(i).sFile) OrElse bForceFromMemory) Then
@@ -385,6 +389,8 @@ Public Class ClassSyntaxTools
                     End Select
                 Next
             End SyncLock
+
+            g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnSyntaxUpdateEnd(iType, bForceFromMemory))
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
@@ -395,6 +401,8 @@ Public Class ClassSyntaxTools
     ''' </summary>
     Public Sub UpdateTextEditorSyntax()
         Try
+            g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnEditorSyntaxUpdate())
+
             For i = 0 To g_SyntaxFiles.Length - 1
                 If (Not IO.File.Exists(g_SyntaxFiles(i).sFile)) Then
                     CreateSyntaxFile(CType(i, ENUM_SYNTAX_FILES))
@@ -419,6 +427,7 @@ Public Class ClassSyntaxTools
                 End Select
             Next
 
+            g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnEditorSyntaxUpdateEnd())
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try

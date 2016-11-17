@@ -24,7 +24,11 @@ Public Class ClassAutocompleteUpdater
     Private g_mAutocompleteUpdaterThread As Threading.Thread
 
     Public g_bForceFullAutocompleteUpdate As Boolean = False
-    Public _lock As New Object
+    Private _lock As New Object
+
+    Public Event OnAutocompleteUpdateStarted(iUpdateType As ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS)
+    Public Event OnAutocompleteUpdateEnd()
+    Public Event OnAutocompleteUpdateAbort()
 
     Public Sub New(f As FormMain)
         g_mFormMain = f
@@ -45,14 +49,18 @@ Public Class ClassAutocompleteUpdater
                                                                     SyncLock _lock
                                                                         If (iUpdateType = ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL OrElse
                                                                                     (iUpdateType And ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) = ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) Then
+                                                                            RaiseEvent OnAutocompleteUpdateStarted(iUpdateType)
                                                                             FullAutocompleteUpdate_Thread()
                                                                         End If
 
                                                                         If (iUpdateType = ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL OrElse
                                                                                     (iUpdateType And ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.VARIABLES_AUTOCOMPLETE) = ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.VARIABLES_AUTOCOMPLETE) Then
+                                                                            RaiseEvent OnAutocompleteUpdateStarted(iUpdateType)
                                                                             VariableAutocompleteUpdate_Thread()
                                                                         End If
                                                                     End SyncLock
+
+                                                                    RaiseEvent OnAutocompleteUpdateEnd()
                                                                 End Sub)
             g_mAutocompleteUpdaterThread.IsBackground = True
             g_mAutocompleteUpdaterThread.Start()
@@ -81,6 +89,8 @@ Public Class ClassAutocompleteUpdater
     ''' Stops the autocomplete update thread
     ''' </summary>
     Public Sub StopUpdate()
+        RaiseEvent OnAutocompleteUpdateAbort
+
         If (g_mAutocompleteUpdaterThread IsNot Nothing AndAlso g_mAutocompleteUpdaterThread.IsAlive) Then
             'g_mFormMain.PrintInformation("[WARN]", "Autocomplete update canceled!")
 

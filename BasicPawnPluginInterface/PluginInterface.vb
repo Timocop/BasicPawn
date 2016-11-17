@@ -43,6 +43,8 @@ Public Interface PluginInterface
     ''' <returns></returns>
     ReadOnly Property m_PluginInformation As STRUC_PLUGIN_INFORMATION
 
+
+#Region "Main"
     ''' <summary>
     ''' Fires when the plugin is loaded.
     ''' </summary>
@@ -76,4 +78,59 @@ Public Interface PluginInterface
     ''' </summary>
     Sub OnConfigChanged()
 
+    ''' <summary>
+    ''' Fires when the main text editor syntax file was updated.
+    ''' </summary>
+    Sub OnEditorSyntaxUpdate()
+    Sub OnEditorSyntaxUpdateEnd()
+
+    ''' <summary>
+    ''' Fires when the updater thread is running. Autocomplete etc.
+    ''' </summary>
+    ''' <param name="iType"></param>
+    ''' <param name="bForceFromMemory"></param>
+    Sub OnSyntaxUpdate(iType As BasicPawn.ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE, bForceFromMemory As Boolean)
+    Sub OnSyntaxUpdateEnd(iType As BasicPawn.ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE, bForceFromMemory As Boolean)
+
+    ''' <summary>
+    ''' Fires when the form colors are being updated.
+    ''' </summary>
+    Sub OnFormColorUpdate()
+#End Region
+
+#Region "Debugger"
+    ''' <summary>
+    ''' Fires when debugger form has finished loading.
+    ''' </summary>
+    ''' <param name="mFormDebugger"></param>
+    Sub OnDebuggerStart(mFormDebugger As BasicPawn.FormDebugger)
+
+    ''' <summary>
+    ''' Fires when the debugger form is closing.
+    ''' </summary>
+    ''' <param name="mFormDebugger"></param>
+    ''' <returns>False to block closing the main form, true otherwise.</returns>
+    Function OnDebuggerEnd(mFormDebugger As BasicPawn.FormDebugger) As Boolean
+
+    ''' <summary>
+    ''' Fires when the Debugger is being disposed.
+    ''' </summary>
+    ''' <param name="mFormDebugger"></param>
+    Sub OnDebuggerEndPost(mFormDebugger As BasicPawn.FormDebugger)
+
+    ''' <summary>
+    ''' The Debugger started it's debugging.
+    ''' </summary>
+    Sub OnDebuggerDebugStart()
+
+    ''' <summary>
+    ''' The Debugger paused it's debugging.
+    ''' </summary>
+    Sub OnDebuggerDebugPause()
+
+    ''' <summary>
+    ''' The Debugger stopped it's debugging.
+    ''' </summary>
+    Sub OnDebuggerDebugStop()
+#End Region
 End Interface
