@@ -1634,6 +1634,10 @@ Public Class ClassAutocompleteUpdater
                             Exit Select
                         End If
 
+                        If (Regex.IsMatch(sVar, sRegExEnumPattern)) Then
+                            Continue For
+                        End If
+
                         If (lTmpAutocompleteList.Exists(Function(j As STRUC_AUTOCOMPLETE) (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE AndAlso Regex.IsMatch(j.sFunctionName, String.Format("\b{0}\b", Regex.Escape(sVar))))) Then
                             Exit Select
                         End If
@@ -1787,6 +1791,10 @@ Public Class ClassAutocompleteUpdater
                         End If
 
                         If (g_mFormMain.g_ClassSyntaxTools.IsForbiddenVariableName(sVar)) Then
+                            Continue For
+                        End If
+
+                        If (Regex.IsMatch(sVar, sRegExEnumPattern)) Then
                             Continue For
                         End If
 
