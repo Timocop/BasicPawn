@@ -1555,8 +1555,8 @@ Public Class ClassAutocompleteUpdater
         'Parse variables
         If (True) Then
             Dim sInitTypesPattern As String = "\b(new|decl|static|const)\b" '"public" is already taken care off
-            Dim sOldStyleVarPattern As String = String.Format("(?<Init>{0})\s+((?<Tag>{1})\:\s*(?<Var>\b[a-zA-Z0-9_]+\b)|(?<Var>\b[a-zA-Z0-9_]+\b))($|\W)", sInitTypesPattern, sRegExEnumPattern)
-            Dim sNewStyleVarPattern As String = String.Format("(?<Tag>{0})\s+(?<Var>\b[a-zA-Z0-9_]+\b)($|\W)", sRegExEnumPattern)
+            Dim sOldStyleVarPattern As String = String.Format("(?<Init>{0}\s+)(?<IsConst>\b(const)\b\s+){2}((?<Tag>{1})\:\s*(?<Var>\b[a-zA-Z0-9_]+\b)|(?<Var>\b[a-zA-Z0-9_]+\b))($|\W)", sInitTypesPattern, sRegExEnumPattern, "{0,1}")
+            Dim sNewStyleVarPattern As String = String.Format("(?<IsConst>\b(const)\b\s+){1}(?<Tag>{0})\s+(?<Var>\b[a-zA-Z0-9_]+\b)($|\W)", sRegExEnumPattern, "{0,1}")
 
             Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
             Dim lCommaLinesList As New List(Of String)
@@ -1675,6 +1675,10 @@ Public Class ClassAutocompleteUpdater
                             Exit Select
                         End If
 
+                        If (Regex.IsMatch(sVar, sRegExEnumPattern)) Then
+                            Continue For
+                        End If
+
                         If (lTmpAutocompleteList.Exists(Function(j As STRUC_AUTOCOMPLETE) (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE AndAlso Regex.IsMatch(j.sFunctionName, String.Format("\b{0}\b", Regex.Escape(sVar))))) Then
                             Exit Select
                         End If
@@ -1717,6 +1721,7 @@ Public Class ClassAutocompleteUpdater
                         Dim sInit As String = mMatch.Groups("Init").Value.Trim
                         Dim sTag As String = mMatch.Groups("Tag").Value.Trim
                         Dim sVar As String = mMatch.Groups("Var").Value.Trim
+                        Dim bIsConst As Boolean = mMatch.Groups("IsConst").Success
 
                         If (iLastInitIndex < iIndex) Then
                             iLastInitIndex = iIndex
@@ -1726,6 +1731,10 @@ Public Class ClassAutocompleteUpdater
                         sLastTag = Nothing
 
                         If (g_mFormMain.g_ClassSyntaxTools.IsForbiddenVariableName(sVar)) Then
+                            Continue For
+                        End If
+
+                        If (Regex.IsMatch(sVar, sRegExEnumPattern)) Then
                             Continue For
                         End If
 
@@ -1742,7 +1751,7 @@ Public Class ClassAutocompleteUpdater
                         If (autoItem Is Nothing) Then
                             autoItem = New STRUC_AUTOCOMPLETE
                             autoItem.sFile = tmpFile.ToLower
-                            autoItem.sFullFunctionName = String.Format("{0} > {1}", sVar, sTag)
+                            autoItem.sFullFunctionName = String.Format("{0} > {1}", sVar, If(bIsConst, "const:", "") & sTag)
                             autoItem.sFunctionName = sVar
                             autoItem.sInfo = ""
                             autoItem.mType = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE
@@ -1750,6 +1759,9 @@ Public Class ClassAutocompleteUpdater
                         Else
                             If (Not Regex.IsMatch(autoItem.sFullFunctionName, String.Format("\b{0}\b", Regex.Escape(sTag)))) Then
                                 autoItem.sFullFunctionName = String.Format("{0}|{1}", autoItem.sFullFunctionName, sTag)
+                            End If
+                            If (bIsConst AndAlso Not Regex.IsMatch(autoItem.sFullFunctionName, String.Format("\b{0}\b", "const"))) Then
+                                autoItem.sFullFunctionName = String.Format("{0}:{1}", "const", autoItem.sFullFunctionName)
                             End If
                         End If
                     Next
@@ -1761,6 +1773,7 @@ Public Class ClassAutocompleteUpdater
                         Dim sInit As String = mMatch.Groups("Init").Value.Trim
                         Dim sTag As String = mMatch.Groups("Tag").Value.Trim
                         Dim sVar As String = mMatch.Groups("Var").Value.Trim
+                        Dim bIsConst As Boolean = mMatch.Groups("IsConst").Success
 
                         If (iLastInitIndex < iIndex) Then
                             iLastInitIndex = iIndex
@@ -1788,7 +1801,7 @@ Public Class ClassAutocompleteUpdater
                         If (autoItem Is Nothing) Then
                             autoItem = New STRUC_AUTOCOMPLETE
                             autoItem.sFile = tmpFile.ToLower
-                            autoItem.sFullFunctionName = String.Format("{0} > {1}", sVar, sTag)
+                            autoItem.sFullFunctionName = String.Format("{0} > {1}", sVar, If(bIsConst, "const:", "") & sTag)
                             autoItem.sFunctionName = sVar
                             autoItem.sInfo = ""
                             autoItem.mType = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE
@@ -1796,6 +1809,9 @@ Public Class ClassAutocompleteUpdater
                         Else
                             If (Not Regex.IsMatch(autoItem.sFullFunctionName, String.Format("\b{0}\b", Regex.Escape(sTag)))) Then
                                 autoItem.sFullFunctionName = String.Format("{0}|{1}", autoItem.sFullFunctionName, sTag)
+                            End If
+                            If (bIsConst AndAlso Not Regex.IsMatch(autoItem.sFullFunctionName, String.Format("\b{0}\b", "const"))) Then
+                                autoItem.sFullFunctionName = String.Format("{0}:{1}", "const", autoItem.sFullFunctionName)
                             End If
                         End If
                     Next
