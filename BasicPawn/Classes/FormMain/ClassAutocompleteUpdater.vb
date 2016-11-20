@@ -293,6 +293,7 @@ Public Class ClassAutocompleteUpdater
             'Filter new lines in statements with parenthesis e.g: MyStuff(MyArg1,
             '                                                               MyArg2)
             For i = 0 To sSource.Length - 1
+
                 Select Case (sSource(i))
                     Case vbLf(0)
                         If (sourceAnalysis.InNonCode(i)) Then
@@ -309,6 +310,20 @@ Public Class ClassAutocompleteUpdater
                                     sSource = sSource.Insert(i, New String(" "c, 1))
                             End Select
                         End If
+
+                    Case Else
+                        'If we collapse statements etc., we need to remove single line comments!
+                        'if(
+                        '       //This my cause problems!
+                        '   )
+                        'Results in:
+                        'if(//This my cause problems!)
+                        'Just remove the comments
+                        If (sourceAnalysis.GetParenthesisLevel(i) > 0 AndAlso sourceAnalysis.InSingleComment(i)) Then
+                            sSource = sSource.Remove(i, 1)
+                            sSource = sSource.Insert(i, " "c)
+                        End If
+
                 End Select
             Next
         End If
@@ -1635,7 +1650,7 @@ Public Class ClassAutocompleteUpdater
                         End If
 
                         If (Regex.IsMatch(sVar, sRegExEnumPattern)) Then
-                            Continue For
+                            Exit Select
                         End If
 
                         If (lTmpAutocompleteList.Exists(Function(j As STRUC_AUTOCOMPLETE) (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE AndAlso Regex.IsMatch(j.sFunctionName, String.Format("\b{0}\b", Regex.Escape(sVar))))) Then
@@ -1680,7 +1695,7 @@ Public Class ClassAutocompleteUpdater
                         End If
 
                         If (Regex.IsMatch(sVar, sRegExEnumPattern)) Then
-                            Continue For
+                            Exit Select
                         End If
 
                         If (lTmpAutocompleteList.Exists(Function(j As STRUC_AUTOCOMPLETE) (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE AndAlso Regex.IsMatch(j.sFunctionName, String.Format("\b{0}\b", Regex.Escape(sVar))))) Then
