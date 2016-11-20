@@ -94,7 +94,7 @@ Public Class ClassAutocompleteUpdater
         Try
             'g_mFormMain.PrintInformation("[INFO]", "Autocomplete update started...")
 
-            If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
+            If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenedSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenedSourceFile)) Then
                 g_mFormMain.PrintInformation("[ERRO]", "Autocomplete update failed! Could not get current source file!")
                 Return
             End If
@@ -108,7 +108,7 @@ Public Class ClassAutocompleteUpdater
             'Parse everything. Methods etc.
             If (True) Then
                 Dim sSourceList As New ClassSyncList(Of String())
-                Dim sFiles As String() = GetIncludeFiles(ClassSettings.g_sConfigOpenSourceFile)
+                Dim sFiles As String() = GetIncludeFiles(ClassSettings.g_sConfigOpenedSourceFile)
 
                 For i = 0 To sFiles.Length - 1
                     ParseAutocomplete_Pre(sFiles(i), sSourceList, lTmpAutocompleteList)
@@ -316,7 +316,7 @@ Public Class ClassAutocompleteUpdater
 
     Private Sub ParseAutocomplete_Pre(sFile As String, ByRef sSourceList As ClassSyncList(Of String()), ByRef lTmpAutocompleteList As ClassSyncList(Of STRUC_AUTOCOMPLETE))
         Dim sSource As String
-        If (ClassSettings.g_sConfigOpenSourceFile.ToLower = sFile.ToLower) Then
+        If (ClassSettings.g_sConfigOpenedSourceFile.ToLower = sFile.ToLower) Then
             sSource = CStr(g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.Document.TextContent))
         Else
             sSource = IO.File.ReadAllText(sFile)
@@ -1496,7 +1496,7 @@ Public Class ClassAutocompleteUpdater
     Private Sub VariableAutocompleteUpdate_Thread()
         Try
             'g_mFormMain.PrintInformation("[INFO]", "Variable autocomplete update started...")
-            If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
+            If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenedSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenedSourceFile)) Then
                 'g_mFormMain.PrintInformation("[ERRO]", "Variable autocomplete update failed! Could not get current source file!")
                 Return
             End If
@@ -1514,9 +1514,9 @@ Public Class ClassAutocompleteUpdater
                 Dim sRegExEnumPattern As String = String.Format("(\b{0}\b)", String.Join("\b|\b", GetEnumNames(g_mFormMain.g_ClassSyntaxTools.lAutocompleteList)))
 
                 If (ClassSettings.g_iSettingsVarAutocompleteCurrentSourceOnly) Then
-                    ParseVariables_Pre(ClassSettings.g_sConfigOpenSourceFile, sRegExEnumPattern, lTmpVarAutocompleteList, g_mFormMain.g_ClassSyntaxTools.lAutocompleteList)
+                    ParseVariables_Pre(ClassSettings.g_sConfigOpenedSourceFile, sRegExEnumPattern, lTmpVarAutocompleteList, g_mFormMain.g_ClassSyntaxTools.lAutocompleteList)
                 Else
-                    Dim sFiles As String() = GetIncludeFiles(ClassSettings.g_sConfigOpenSourceFile)
+                    Dim sFiles As String() = GetIncludeFiles(ClassSettings.g_sConfigOpenedSourceFile)
                     For i = 0 To sFiles.Length - 1
                         ParseVariables_Pre(sFiles(i), sRegExEnumPattern, lTmpVarAutocompleteList, g_mFormMain.g_ClassSyntaxTools.lAutocompleteList)
                     Next
@@ -1544,7 +1544,7 @@ Public Class ClassAutocompleteUpdater
 
     Private Sub ParseVariables_Pre(ByRef sFile As String, ByRef sRegExEnumPattern As String, ByRef lTmpVarAutocompleteList As ClassSyncList(Of STRUC_AUTOCOMPLETE), ByRef lTmpAutocompleteList As ClassSyncList(Of STRUC_AUTOCOMPLETE))
         Dim sSource As String
-        If (ClassSettings.g_sConfigOpenSourceFile.ToLower = sFile.ToLower) Then
+        If (ClassSettings.g_sConfigOpenedSourceFile.ToLower = sFile.ToLower) Then
             sSource = CStr(g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.Document.TextContent))
         Else
             sSource = IO.File.ReadAllText(sFile)
@@ -1837,7 +1837,7 @@ Public Class ClassAutocompleteUpdater
 
             For Each autoItem In lTmpAutocompleteList
                 If (ClassSettings.g_iSettingsVarAutocompleteCurrentSourceOnly) Then
-                    If (Not String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) AndAlso IO.Path.GetFileName(ClassSettings.g_sConfigOpenSourceFile).ToLower <> autoItem.sFile.ToLower) Then
+                    If (Not String.IsNullOrEmpty(ClassSettings.g_sConfigOpenedSourceFile) AndAlso IO.Path.GetFileName(ClassSettings.g_sConfigOpenedSourceFile).ToLower <> autoItem.sFile.ToLower) Then
                         Continue For
                     End If
                 End If
@@ -2023,7 +2023,7 @@ Public Class ClassAutocompleteUpdater
 
     Private Sub GetIncludeFilesRecursive(sPath As String, ByRef lList As List(Of String))
         Dim sSource As String
-        If (ClassSettings.g_sConfigOpenSourceFile.ToLower = sPath.ToLower) Then
+        If (ClassSettings.g_sConfigOpenedSourceFile.ToLower = sPath.ToLower) Then
             If (lList.Contains(sPath)) Then
                 Return
             End If
@@ -2070,11 +2070,11 @@ Public Class ClassAutocompleteUpdater
 
                 Dim sIncludeDir As String = ClassSettings.g_sConfigOpenIncludeFolder
                 If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
+                    If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenedSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenedSourceFile)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "Could not read includes! Could not get current source file!")
                         Exit While
                     End If
-                    sIncludeDir = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "include")
+                    sIncludeDir = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenedSourceFile), "include")
                 End If
 
                 Select Case (True)

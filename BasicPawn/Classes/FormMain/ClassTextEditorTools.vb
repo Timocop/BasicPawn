@@ -99,14 +99,14 @@ Public Class ClassTextEditorTools
             Return
         End If
 
-        If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
+        If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenedSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenedSourceFile)) Then
             g_mFormMain.PrintInformation("[ERRO]", "Can't check references! Could not get current source file!", False, True)
             Return
         End If
 
         g_mFormMain.PrintInformation("[INFO]", String.Format("Listing references of: {0}", sWord), False, True)
 
-        Dim sIncludeFiles As String() = g_mFormMain.g_ClassAutocompleteUpdater.GetIncludeFiles(ClassSettings.g_sConfigOpenSourceFile)
+        Dim sIncludeFiles As String() = g_mFormMain.g_ClassAutocompleteUpdater.GetIncludeFiles(ClassSettings.g_sConfigOpenedSourceFile)
 
         Dim lRefList As New List(Of String)
 
@@ -115,7 +115,7 @@ Public Class ClassTextEditorTools
                 Continue For
             End If
 
-            If (sFile.ToLower = ClassSettings.g_sConfigOpenSourceFile.ToLower) Then
+            If (sFile.ToLower = ClassSettings.g_sConfigOpenedSourceFile.ToLower) Then
                 Dim iLineCount As Integer = 0
                 Using SR As New IO.StringReader(g_mFormMain.TextEditorControl_Source.Document.TextContent)
                     While True
@@ -220,7 +220,7 @@ Public Class ClassTextEditorTools
         End If
 
         If (String.IsNullOrEmpty(sPath) OrElse Not IO.File.Exists(sPath)) Then
-            ClassSettings.g_sConfigOpenSourceFile = ""
+            ClassSettings.g_sConfigOpenedSourceFile = ""
             g_mFormMain.TextEditorControl_Source.Document.TextContent = ""
             g_mFormMain.TextEditorControl_Source.Refresh()
 
@@ -232,7 +232,7 @@ Public Class ClassTextEditorTools
 
         g_mFormMain.g_ClassLineState.m_IgnoreUpdates = True
 
-        ClassSettings.g_sConfigOpenSourceFile = sPath
+        ClassSettings.g_sConfigOpenedSourceFile = sPath
         g_mFormMain.TextEditorControl_Source.Document.TextContent = IO.File.ReadAllText(sPath)
         g_mFormMain.TextEditorControl_Source.Refresh()
 
@@ -251,26 +251,26 @@ Public Class ClassTextEditorTools
     ''' </summary>
     ''' <param name="bSaveAs">Force to use a new file using SaveFileDialog</param>
     Public Sub SaveFile(Optional bSaveAs As Boolean = False)
-        If (bSaveAs OrElse String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
+        If (bSaveAs OrElse String.IsNullOrEmpty(ClassSettings.g_sConfigOpenedSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenedSourceFile)) Then
             Using i As New SaveFileDialog
                 i.Filter = "All supported files|*.sp;*.inc;*.sma|SourcePawn|*.sp|Include|*.inc|Pawn (Not fully supported)|*.pwn;*.p|AMX Mod X|*.sma|All files|*.*"
-                i.FileName = ClassSettings.g_sConfigOpenSourceFile
+                i.FileName = ClassSettings.g_sConfigOpenedSourceFile
                 If (i.ShowDialog = DialogResult.OK) Then
-                    ClassSettings.g_sConfigOpenSourceFile = i.FileName
+                    ClassSettings.g_sConfigOpenedSourceFile = i.FileName
 
                     g_mFormMain.m_CodeChanged = False
                     g_mFormMain.g_ClassLineState.SaveStates()
 
-                    g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & ClassSettings.g_sConfigOpenSourceFile)
-                    IO.File.WriteAllText(ClassSettings.g_sConfigOpenSourceFile, g_mFormMain.TextEditorControl_Source.Document.TextContent)
+                    g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & ClassSettings.g_sConfigOpenedSourceFile)
+                    IO.File.WriteAllText(ClassSettings.g_sConfigOpenedSourceFile, g_mFormMain.TextEditorControl_Source.Document.TextContent)
                 End If
             End Using
         Else
             g_mFormMain.m_CodeChanged = False
             g_mFormMain.g_ClassLineState.SaveStates()
 
-            g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & ClassSettings.g_sConfigOpenSourceFile)
-            IO.File.WriteAllText(ClassSettings.g_sConfigOpenSourceFile, g_mFormMain.TextEditorControl_Source.Document.TextContent)
+            g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & ClassSettings.g_sConfigOpenedSourceFile)
+            IO.File.WriteAllText(ClassSettings.g_sConfigOpenedSourceFile, g_mFormMain.TextEditorControl_Source.Document.TextContent)
         End If
     End Sub
 
@@ -287,18 +287,18 @@ Public Class ClassTextEditorTools
 
         Select Case (If(bAlwaysYes, DialogResult.Yes, MessageBox.Show("Do you want to save your work?", "Information", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question)))
             Case DialogResult.Yes
-                If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
+                If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenedSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenedSourceFile)) Then
                     Using i As New SaveFileDialog
                         i.Filter = "All supported files|*.sp;*.inc;*.sma|SourcePawn|*.sp|Include|*.inc|Pawn (Not fully supported)|*.pwn;*.p|AMX Mod X|*.sma|All files|*.*"
-                        i.FileName = ClassSettings.g_sConfigOpenSourceFile
+                        i.FileName = ClassSettings.g_sConfigOpenedSourceFile
                         If (i.ShowDialog = DialogResult.OK) Then
-                            ClassSettings.g_sConfigOpenSourceFile = i.FileName
+                            ClassSettings.g_sConfigOpenedSourceFile = i.FileName
 
                             g_mFormMain.m_CodeChanged = False
                             g_mFormMain.g_ClassLineState.SaveStates()
 
-                            g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & ClassSettings.g_sConfigOpenSourceFile)
-                            IO.File.WriteAllText(ClassSettings.g_sConfigOpenSourceFile, g_mFormMain.TextEditorControl_Source.Document.TextContent)
+                            g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & ClassSettings.g_sConfigOpenedSourceFile)
+                            IO.File.WriteAllText(ClassSettings.g_sConfigOpenedSourceFile, g_mFormMain.TextEditorControl_Source.Document.TextContent)
 
                             Return False
                         Else
@@ -309,8 +309,8 @@ Public Class ClassTextEditorTools
                     g_mFormMain.m_CodeChanged = False
                     g_mFormMain.g_ClassLineState.SaveStates()
 
-                    g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & ClassSettings.g_sConfigOpenSourceFile)
-                    IO.File.WriteAllText(ClassSettings.g_sConfigOpenSourceFile, g_mFormMain.TextEditorControl_Source.Document.TextContent)
+                    g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & ClassSettings.g_sConfigOpenedSourceFile)
+                    IO.File.WriteAllText(ClassSettings.g_sConfigOpenedSourceFile, g_mFormMain.TextEditorControl_Source.Document.TextContent)
 
                     Return False
                 End If
@@ -354,7 +354,7 @@ Public Class ClassTextEditorTools
             Dim iExitCode As Integer = 0
             Dim sOutput As String = ""
 
-            If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
+            If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenedSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenedSourceFile)) Then
                 g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Could not get current source file!")
                 Return
             End If
@@ -363,25 +363,25 @@ Public Class ClassTextEditorTools
             If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                 While True
                     'SourcePawn
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "spcomp.exe")
+                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenedSourceFile), "spcomp.exe")
                     If (IO.File.Exists(sCompilerPath)) Then
                         Exit While
                     End If
 
                     'AMX Mod X
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "amxxpc.exe")
+                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenedSourceFile), "amxxpc.exe")
                     If (IO.File.Exists(sCompilerPath)) Then
                         Exit While
                     End If
 
                     'Small
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "sc.exe")
+                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenedSourceFile), "sc.exe")
                     If (IO.File.Exists(sCompilerPath)) Then
                         Exit While
                     End If
 
                     'Pawn
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "pawncc.exe")
+                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenedSourceFile), "pawncc.exe")
                     If (IO.File.Exists(sCompilerPath)) Then
                         Exit While
                     End If
@@ -399,7 +399,7 @@ Public Class ClassTextEditorTools
 
             'Check include path
             If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                sIncludePath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "include")
+                sIncludePath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenedSourceFile), "include")
 
                 If (Not IO.Directory.Exists(sIncludePath)) Then
                     g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!")
@@ -418,19 +418,19 @@ Public Class ClassTextEditorTools
                 sOutputFile = String.Format("{0}.unk", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
             Else
                 If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    sOutputFile = String.Format("{0}\compiled\{1}.unk", IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile).TrimEnd("\"c), IO.Path.GetFileNameWithoutExtension(ClassSettings.g_sConfigOpenSourceFile))
+                    sOutputFile = String.Format("{0}\compiled\{1}.unk", IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenedSourceFile).TrimEnd("\"c), IO.Path.GetFileNameWithoutExtension(ClassSettings.g_sConfigOpenedSourceFile))
                 Else
                     If (Not IO.Directory.Exists(ClassSettings.g_sConfigPluginOutputFolder)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Invalid output directory!")
                         Return
                     End If
-                    sOutputFile = String.Format("{0}\{1}.unk", ClassSettings.g_sConfigPluginOutputFolder.TrimEnd("\"c), IO.Path.GetFileNameWithoutExtension(ClassSettings.g_sConfigOpenSourceFile))
+                    sOutputFile = String.Format("{0}\{1}.unk", ClassSettings.g_sConfigPluginOutputFolder.TrimEnd("\"c), IO.Path.GetFileNameWithoutExtension(ClassSettings.g_sConfigOpenedSourceFile))
                 End If
             End If
 
             IO.File.Delete(sOutputFile)
 
-            Dim sArguments As String = String.Format("""{0}"" -i""{1}"" -o""{2}""", ClassSettings.g_sConfigOpenSourceFile, sIncludePath, sOutputFile)
+            Dim sArguments As String = String.Format("""{0}"" -i""{1}"" -o""{2}""", ClassSettings.g_sConfigOpenedSourceFile, sIncludePath, sOutputFile)
             ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, sArguments, iExitCode, sOutput)
 
             Dim compilerType As ENUM_COMPILER_TYPE = ENUM_COMPILER_TYPE.UNKNOWN
@@ -535,32 +535,32 @@ Public Class ClassTextEditorTools
             'Check compiler
             If (sCompilerPath Is Nothing) Then
                 If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
+                    If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenedSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenedSourceFile)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Could not get current source file!")
                         Return False
                     End If
 
                     While True
                         'SourcePawn
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "spcomp.exe")
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenedSourceFile), "spcomp.exe")
                         If (IO.File.Exists(sCompilerPath)) Then
                             Exit While
                         End If
 
                         'AMX Mod X
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "amxxpc.exe")
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenedSourceFile), "amxxpc.exe")
                         If (IO.File.Exists(sCompilerPath)) Then
                             Exit While
                         End If
 
                         'Small
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "sc.exe")
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenedSourceFile), "sc.exe")
                         If (IO.File.Exists(sCompilerPath)) Then
                             Exit While
                         End If
 
                         'Pawn
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "pawncc.exe")
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenedSourceFile), "pawncc.exe")
                         If (IO.File.Exists(sCompilerPath)) Then
                             Exit While
                         End If
@@ -585,12 +585,12 @@ Public Class ClassTextEditorTools
             'Check include path
             If (sIncludePath Is Nothing) Then
                 If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
+                    If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenedSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenedSourceFile)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Could not get current source file!")
                         Return False
                     End If
 
-                    sIncludePath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "include")
+                    sIncludePath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenedSourceFile), "include")
                     If (Not IO.Directory.Exists(sIncludePath)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!")
                         Return False
@@ -732,7 +732,7 @@ Public Class ClassTextEditorTools
             Dim iExitCode As Integer = 0
             Dim sOutput As String = ""
 
-            If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
+            If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenedSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenedSourceFile)) Then
                 g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Could not get current source file!")
                 Return Nothing
             End If
@@ -741,25 +741,25 @@ Public Class ClassTextEditorTools
             If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                 While True
                     'SourcePawn
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "spcomp.exe")
+                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenedSourceFile), "spcomp.exe")
                     If (IO.File.Exists(sCompilerPath)) Then
                         Exit While
                     End If
 
                     'AMX Mod X
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "amxxpc.exe")
+                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenedSourceFile), "amxxpc.exe")
                     If (IO.File.Exists(sCompilerPath)) Then
                         Exit While
                     End If
 
                     'Small
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "sc.exe")
+                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenedSourceFile), "sc.exe")
                     If (IO.File.Exists(sCompilerPath)) Then
                         Exit While
                     End If
 
                     'Pawn
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "pawncc.exe")
+                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenedSourceFile), "pawncc.exe")
                     If (IO.File.Exists(sCompilerPath)) Then
                         Exit While
                     End If
@@ -777,7 +777,7 @@ Public Class ClassTextEditorTools
 
             'Check include path
             If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                sIncludePath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "include")
+                sIncludePath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenedSourceFile), "include")
                 If (Not IO.Directory.Exists(sIncludePath)) Then
                     g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!")
                     Return Nothing
@@ -791,7 +791,7 @@ Public Class ClassTextEditorTools
             End If
 
 
-            Dim sTmpSource As String = IO.File.ReadAllText(ClassSettings.g_sConfigOpenSourceFile)
+            Dim sTmpSource As String = IO.File.ReadAllText(ClassSettings.g_sConfigOpenedSourceFile)
             Dim sTmpSourcePath As String = String.Format("{0}.src", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
 
             sTempOutputFile = sTmpSourcePath
@@ -915,7 +915,7 @@ Public Class ClassTextEditorTools
             Dim iExitCode As Integer = 0
             Dim sOutput As String = ""
 
-            If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
+            If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenedSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenedSourceFile)) Then
                 g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get current source file!")
                 Return Nothing
             End If
@@ -924,25 +924,25 @@ Public Class ClassTextEditorTools
             If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                 While True
                     'SourcePawn
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "spcomp.exe")
+                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenedSourceFile), "spcomp.exe")
                     If (IO.File.Exists(sCompilerPath)) Then
                         Exit While
                     End If
 
                     'AMX Mod X
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "amxxpc.exe")
+                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenedSourceFile), "amxxpc.exe")
                     If (IO.File.Exists(sCompilerPath)) Then
                         Exit While
                     End If
 
                     'Small
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "sc.exe")
+                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenedSourceFile), "sc.exe")
                     If (IO.File.Exists(sCompilerPath)) Then
                         Exit While
                     End If
 
                     'Pawn
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "pawncc.exe")
+                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenedSourceFile), "pawncc.exe")
                     If (IO.File.Exists(sCompilerPath)) Then
                         Exit While
                     End If
@@ -960,7 +960,7 @@ Public Class ClassTextEditorTools
 
             'Check include path
             If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                sIncludePath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "include")
+                sIncludePath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenedSourceFile), "include")
                 If (Not IO.Directory.Exists(sIncludePath)) Then
                     g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Include path can not be found!")
                     Return Nothing
@@ -974,7 +974,7 @@ Public Class ClassTextEditorTools
             End If
 
 
-            Dim sTmpSource As String = IO.File.ReadAllText(ClassSettings.g_sConfigOpenSourceFile)
+            Dim sTmpSource As String = IO.File.ReadAllText(ClassSettings.g_sConfigOpenedSourceFile)
             Dim sTmpSourcePath As String = String.Format("{0}.src", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
 
             IO.File.WriteAllText(sTmpSourcePath, sTmpSource)
@@ -1040,32 +1040,32 @@ Public Class ClassTextEditorTools
             'Check compiler
             If (sCompilerPath Is Nothing) Then
                 If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
+                    If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenedSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenedSourceFile)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get current source file!")
                         Return Nothing
                     End If
 
                     While True
                         'SourcePawn
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "spcomp.exe")
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenedSourceFile), "spcomp.exe")
                         If (IO.File.Exists(sCompilerPath)) Then
                             Exit While
                         End If
 
                         'AMX Mod X
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "amxxpc.exe")
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenedSourceFile), "amxxpc.exe")
                         If (IO.File.Exists(sCompilerPath)) Then
                             Exit While
                         End If
 
                         'Small
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "sc.exe")
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenedSourceFile), "sc.exe")
                         If (IO.File.Exists(sCompilerPath)) Then
                             Exit While
                         End If
 
                         'Pawn
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "pawncc.exe")
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenedSourceFile), "pawncc.exe")
                         If (IO.File.Exists(sCompilerPath)) Then
                             Exit While
                         End If
@@ -1090,12 +1090,12 @@ Public Class ClassTextEditorTools
             'Check include path
             If (sIncludePath Is Nothing) Then
                 If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
+                    If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenedSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenedSourceFile)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get current source file!")
                         Return Nothing
                     End If
 
-                    sIncludePath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "include")
+                    sIncludePath = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenedSourceFile), "include")
                     If (Not IO.Directory.Exists(sIncludePath)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Include path can not be found!")
                         Return Nothing

@@ -187,10 +187,10 @@ Public Class FormMain
     End Property
 
     Public Sub UpdateFormTitle()
-        If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile)) Then
+        If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenedSourceFile)) Then
             Me.Text = String.Format("{0} ({1}){2}", Application.ProductName, "Unnamed", If(g_bCodeChanged, "*"c, ""))
         Else
-            Me.Text = String.Format("{0} ({1}){2}", Application.ProductName, IO.Path.GetFileName(ClassSettings.g_sConfigOpenSourceFile), If(g_bCodeChanged, "*"c, ""))
+            Me.Text = String.Format("{0} ({1}){2}", Application.ProductName, IO.Path.GetFileName(ClassSettings.g_sConfigOpenedSourceFile), If(g_bCodeChanged, "*"c, ""))
         End If
 
         ToolStripStatusLabel_CurrentConfig.Text = "Config: " & If(String.IsNullOrEmpty(ClassSettings.g_sConfigName), "Default", ClassSettings.g_sConfigName)
@@ -753,7 +753,7 @@ Public Class FormMain
             Return
         End If
 
-        ClassSettings.g_sConfigOpenSourceFile = ""
+        ClassSettings.g_sConfigOpenedSourceFile = ""
         TextEditorControl_Source.Document.TextContent = ""
         TextEditorControl_Source.Refresh()
 
@@ -769,7 +769,7 @@ Public Class FormMain
     Private Sub ToolStripMenuItem_FileOpen_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileOpen.Click
         Using i As New OpenFileDialog
             i.Filter = "All supported files|*.sp;*.inc;*.sma|SourcePawn|*.sp|Include|*.inc|Pawn (Not fully supported)|*.pwn;*.p|AMX Mod X|*.sma|All files|*.*"
-            i.FileName = ClassSettings.g_sConfigOpenSourceFile
+            i.FileName = ClassSettings.g_sConfigOpenedSourceFile
             If (i.ShowDialog = DialogResult.OK) Then
                 g_ClassTextEditorTools.OpenFile(i.FileName)
             End If
@@ -783,17 +783,17 @@ Public Class FormMain
     Private Sub ToolStripMenuItem_FileSaveAs_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileSaveAs.Click
         Using i As New SaveFileDialog
             i.Filter = "All supported files|*.sp;*.inc;*.sma|SourcePawn|*.sp|Include|*.inc|Pawn (Not fully supported)|*.pwn;*.p|AMX Mod X|*.sma|All files|*.*"
-            i.FileName = ClassSettings.g_sConfigOpenSourceFile
+            i.FileName = ClassSettings.g_sConfigOpenedSourceFile
 
             If (i.ShowDialog = DialogResult.OK) Then
-                ClassSettings.g_sConfigOpenSourceFile = i.FileName
+                ClassSettings.g_sConfigOpenedSourceFile = i.FileName
 
                 g_bCodeChanged = False
                 UpdateFormTitle()
                 g_ClassLineState.SaveStates()
 
-                PrintInformation("[INFO]", "User saved file to: " & ClassSettings.g_sConfigOpenSourceFile)
-                IO.File.WriteAllText(ClassSettings.g_sConfigOpenSourceFile, TextEditorControl_Source.Document.TextContent)
+                PrintInformation("[INFO]", "User saved file to: " & ClassSettings.g_sConfigOpenedSourceFile)
+                IO.File.WriteAllText(ClassSettings.g_sConfigOpenedSourceFile, TextEditorControl_Source.Document.TextContent)
             End If
         End Using
     End Sub
@@ -801,14 +801,14 @@ Public Class FormMain
     Private Sub ToolStripMenuItem_FileSaveAsTemp_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileSaveAsTemp.Click
         Dim sTempFile As String = String.Format("{0}.src", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
 
-        ClassSettings.g_sConfigOpenSourceFile = sTempFile
+        ClassSettings.g_sConfigOpenedSourceFile = sTempFile
 
         g_bCodeChanged = False
         UpdateFormTitle()
         g_ClassLineState.SaveStates()
 
-        PrintInformation("[INFO]", "User saved file to: " & ClassSettings.g_sConfigOpenSourceFile)
-        IO.File.WriteAllText(ClassSettings.g_sConfigOpenSourceFile, TextEditorControl_Source.Document.TextContent)
+        PrintInformation("[INFO]", "User saved file to: " & ClassSettings.g_sConfigOpenedSourceFile)
+        IO.File.WriteAllText(ClassSettings.g_sConfigOpenedSourceFile, TextEditorControl_Source.Document.TextContent)
     End Sub
 
 
@@ -1058,6 +1058,19 @@ Public Class FormMain
             Process.Start("https://github.com/Timocop/BasicPawn/releases")
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+    Private Sub ToolStripMenuItem_FileOpenFolder_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileOpenFolder.Click
+        Try
+            If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenedSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenedSourceFile)) Then
+                MessageBox.Show("Can't open current folder. Source file can't be found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Return
+            End If
+
+            Process.Start("explorer.exe", "/select,""" & ClassSettings.g_sConfigOpenedSourceFile & """")
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
     End Sub
 End Class

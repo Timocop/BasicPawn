@@ -110,6 +110,7 @@ Partial Class FormMain
         Me.ToolStripMenuItem_FileSave = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_FileSaveAs = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_FileSaveAsTemp = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_FileOpenFolder = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_FileExit = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Tools = New System.Windows.Forms.ToolStripMenuItem()
@@ -176,7 +177,7 @@ Partial Class FormMain
         Me.ContextMenuStrip_RightClick.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_Mark, Me.ToolStripMenuItem_ListReferences, Me.ToolStripSeparator1, Me.ToolStripMenuItem_Debugger, Me.ToolStripMenuItem_HightlightCustom, Me.ToolStripSeparator6, Me.ToolStripMenuItem_Cut, Me.ToolStripMenuItem_Copy, Me.ToolStripMenuItem_Paste})
         Me.ContextMenuStrip_RightClick.Name = "ContextMenuStrip1"
         Me.ContextMenuStrip_RightClick.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
-        Me.ContextMenuStrip_RightClick.Size = New System.Drawing.Size(157, 192)
+        Me.ContextMenuStrip_RightClick.Size = New System.Drawing.Size(157, 170)
         '
         'ToolStripMenuItem_Mark
         '
@@ -300,7 +301,7 @@ Partial Class FormMain
         '
         'ToolStripMenuItem_File
         '
-        Me.ToolStripMenuItem_File.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_FileNew, Me.ToolStripMenuItem_FileOpen, Me.ToolStripMenuItem_FileSave, Me.ToolStripMenuItem_FileSaveAs, Me.ToolStripMenuItem_FileSaveAsTemp, Me.ToolStripSeparator2, Me.ToolStripMenuItem_FileExit})
+        Me.ToolStripMenuItem_File.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_FileNew, Me.ToolStripMenuItem_FileOpen, Me.ToolStripMenuItem_FileSave, Me.ToolStripMenuItem_FileSaveAs, Me.ToolStripMenuItem_FileSaveAsTemp, Me.ToolStripMenuItem_FileOpenFolder, Me.ToolStripSeparator2, Me.ToolStripMenuItem_FileExit})
         Me.ToolStripMenuItem_File.Image = CType(resources.GetObject("ToolStripMenuItem_File.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_File.Name = "ToolStripMenuItem_File"
         Me.ToolStripMenuItem_File.Size = New System.Drawing.Size(53, 20)
@@ -310,47 +311,54 @@ Partial Class FormMain
         '
         Me.ToolStripMenuItem_FileNew.Image = CType(resources.GetObject("ToolStripMenuItem_FileNew.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_FileNew.Name = "ToolStripMenuItem_FileNew"
-        Me.ToolStripMenuItem_FileNew.Size = New System.Drawing.Size(170, 22)
+        Me.ToolStripMenuItem_FileNew.Size = New System.Drawing.Size(178, 22)
         Me.ToolStripMenuItem_FileNew.Text = "&New"
         '
         'ToolStripMenuItem_FileOpen
         '
         Me.ToolStripMenuItem_FileOpen.Image = CType(resources.GetObject("ToolStripMenuItem_FileOpen.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_FileOpen.Name = "ToolStripMenuItem_FileOpen"
-        Me.ToolStripMenuItem_FileOpen.Size = New System.Drawing.Size(170, 22)
+        Me.ToolStripMenuItem_FileOpen.Size = New System.Drawing.Size(178, 22)
         Me.ToolStripMenuItem_FileOpen.Text = "&Open"
         '
         'ToolStripMenuItem_FileSave
         '
         Me.ToolStripMenuItem_FileSave.Image = CType(resources.GetObject("ToolStripMenuItem_FileSave.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_FileSave.Name = "ToolStripMenuItem_FileSave"
-        Me.ToolStripMenuItem_FileSave.Size = New System.Drawing.Size(170, 22)
+        Me.ToolStripMenuItem_FileSave.Size = New System.Drawing.Size(178, 22)
         Me.ToolStripMenuItem_FileSave.Text = "&Save"
         '
         'ToolStripMenuItem_FileSaveAs
         '
         Me.ToolStripMenuItem_FileSaveAs.Image = CType(resources.GetObject("ToolStripMenuItem_FileSaveAs.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_FileSaveAs.Name = "ToolStripMenuItem_FileSaveAs"
-        Me.ToolStripMenuItem_FileSaveAs.Size = New System.Drawing.Size(170, 22)
+        Me.ToolStripMenuItem_FileSaveAs.Size = New System.Drawing.Size(178, 22)
         Me.ToolStripMenuItem_FileSaveAs.Text = "Save &as..."
         '
         'ToolStripMenuItem_FileSaveAsTemp
         '
         Me.ToolStripMenuItem_FileSaveAsTemp.Image = Global.BasicPawn.My.Resources.Resources.imageres_5303_16x16_32
         Me.ToolStripMenuItem_FileSaveAsTemp.Name = "ToolStripMenuItem_FileSaveAsTemp"
-        Me.ToolStripMenuItem_FileSaveAsTemp.Size = New System.Drawing.Size(170, 22)
+        Me.ToolStripMenuItem_FileSaveAsTemp.Size = New System.Drawing.Size(178, 22)
         Me.ToolStripMenuItem_FileSaveAsTemp.Text = "Save as &temporary"
+        '
+        'ToolStripMenuItem_FileOpenFolder
+        '
+        Me.ToolStripMenuItem_FileOpenFolder.Image = Global.BasicPawn.My.Resources.Resources.imageres_5304_16x16_32
+        Me.ToolStripMenuItem_FileOpenFolder.Name = "ToolStripMenuItem_FileOpenFolder"
+        Me.ToolStripMenuItem_FileOpenFolder.Size = New System.Drawing.Size(178, 22)
+        Me.ToolStripMenuItem_FileOpenFolder.Text = "Open current folder"
         '
         'ToolStripSeparator2
         '
         Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
-        Me.ToolStripSeparator2.Size = New System.Drawing.Size(167, 6)
+        Me.ToolStripSeparator2.Size = New System.Drawing.Size(175, 6)
         '
         'ToolStripMenuItem_FileExit
         '
         Me.ToolStripMenuItem_FileExit.Image = CType(resources.GetObject("ToolStripMenuItem_FileExit.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_FileExit.Name = "ToolStripMenuItem_FileExit"
-        Me.ToolStripMenuItem_FileExit.Size = New System.Drawing.Size(170, 22)
+        Me.ToolStripMenuItem_FileExit.Size = New System.Drawing.Size(178, 22)
         Me.ToolStripMenuItem_FileExit.Text = "Exit"
         '
         'ToolStripMenuItem_Tools
@@ -829,4 +837,5 @@ Partial Class FormMain
     Friend WithEvents ToolStripMenuItem_DebuggerWatcherRemoveAll As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_FileSaveAsTemp As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_HightlightCustom As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_FileOpenFolder As ToolStripMenuItem
 End Class

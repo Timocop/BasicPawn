@@ -35,11 +35,11 @@ Public Class UCInformationList
             Return
         End If
 
-        If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
+        If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenedSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenedSourceFile)) Then
             Return
         End If
 
-        Dim reMatch As Match = Regex.Match(ListBox_Information.SelectedItems(0).ToString, String.Format("\b{0}\b\((?<Line>[0-9]+)\)\s\:", Regex.Escape(ClassSettings.g_sConfigOpenSourceFile)), RegexOptions.IgnoreCase)
+        Dim reMatch As Match = Regex.Match(ListBox_Information.SelectedItems(0).ToString, String.Format("\b{0}\b\((?<Line>[0-9]+)\)\s\:", Regex.Escape(ClassSettings.g_sConfigOpenedSourceFile)), RegexOptions.IgnoreCase)
         If (reMatch.Success) Then
             Dim iLineNum As Integer = CInt(reMatch.Groups("Line").Value) - 1
             If (iLineNum < 0 OrElse iLineNum > g_mFormMain.TextEditorControl_Source.Document.TotalNumberOfLines - 1) Then

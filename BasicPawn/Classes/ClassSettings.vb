@@ -16,7 +16,7 @@
 
 
 Public Class ClassSettings
-    Public Shared g_sConfigOpenSourceFile As String = ""
+    Public Shared g_sConfigOpenedSourceFile As String = ""
 
 #Region "Config"
     Public Shared g_iConfigCompilingType As ENUM_COMPILING_TYPE = ENUM_COMPILING_TYPE.AUTOMATIC
@@ -155,9 +155,9 @@ Public Class ClassSettings
         'TODO: Add more shell arguments
         Dim sShellList As New List(Of STRUC_SHELL_ARGUMENT_ITEM)
 
-        sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%input%", "Current opened source file", g_sConfigOpenSourceFile))
-        sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%inputfilename%", "Current opened source filename", If(String.IsNullOrEmpty(g_sConfigOpenSourceFile), "", IO.Path.GetFileNameWithoutExtension(g_sConfigOpenSourceFile))))
-        sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%inputfolder%", "Current opened source file folder", If(String.IsNullOrEmpty(g_sConfigOpenSourceFile), "", IO.Path.GetDirectoryName(g_sConfigOpenSourceFile))))
+        sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%input%", "Current opened source file", g_sConfigOpenedSourceFile))
+        sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%inputfilename%", "Current opened source filename", If(String.IsNullOrEmpty(g_sConfigOpenedSourceFile), "", IO.Path.GetFileNameWithoutExtension(g_sConfigOpenedSourceFile))))
+        sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%inputfolder%", "Current opened source file folder", If(String.IsNullOrEmpty(g_sConfigOpenedSourceFile), "", IO.Path.GetDirectoryName(g_sConfigOpenedSourceFile))))
         sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%includes%", "Include folder", g_sConfigOpenIncludeFolder))
         sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%compiler%", "Compiler path", g_sConfigCompilerPath))
         sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%output%", "Output folder", g_sConfigPluginOutputFolder))

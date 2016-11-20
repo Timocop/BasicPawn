@@ -60,7 +60,7 @@ Public Class ClassDebuggerRunner
 
     Private g_sGameFolder As String = ClassSettings.g_sConfigDebugGameFolder
     Private g_sSourceModFolder As String = ClassSettings.g_sConfigDebugSourceModFolder
-    Private g_sCurrentSourceFile As String = ClassSettings.g_sConfigOpenSourceFile
+    Private g_sCurrentSourceFile As String = ClassSettings.g_sConfigOpenedSourceFile
 
     Structure STURC_SOURCE_LINES_INFO_ITEM
         Dim iRealLine As Integer
