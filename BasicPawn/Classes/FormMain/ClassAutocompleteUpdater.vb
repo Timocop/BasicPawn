@@ -65,7 +65,7 @@ Public Class ClassAutocompleteUpdater
             Return True
         Else
             If (Not g_bForceFullAutocompleteUpdate) Then
-                g_mFormMain.PrintInformation("[INFO]", "Could not start autocomplete update thread, it's already running!")
+                g_mFormMain.PrintInformation("[INFO]", "Could not start autocomplete update thread, it's already running!", False, False, 15)
             End If
 
             If (iUpdateType = ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL OrElse
@@ -95,7 +95,7 @@ Public Class ClassAutocompleteUpdater
             'g_mFormMain.PrintInformation("[INFO]", "Autocomplete update started...")
 
             If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenedSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenedSourceFile)) Then
-                g_mFormMain.PrintInformation("[ERRO]", "Autocomplete update failed! Could not get current source file!")
+                g_mFormMain.PrintInformation("[ERRO]", "Autocomplete update failed! Could not get current source file!", False, False, 1)
                 Return
             End If
 
@@ -139,7 +139,7 @@ Public Class ClassAutocompleteUpdater
         Catch ex As Threading.ThreadAbortException
             Throw
         Catch ex As Exception
-            g_mFormMain.PrintInformation("[ERRO]", "Autocomplete update failed! " & ex.Message)
+            g_mFormMain.PrintInformation("[ERRO]", "Autocomplete update failed! " & ex.Message, False, False, 1)
             ClassExceptionLog.WriteToLog(ex)
         End Try
     End Sub
@@ -587,7 +587,7 @@ Public Class ClassAutocompleteUpdater
 
                 sEnumName = mRegMatch.Groups("Name").Value
                 If (String.IsNullOrEmpty(sEnumName.Trim)) Then
-                    g_mFormMain.PrintInformation("[ERRO]", String.Format("Failed to read name from enum because it has no name: Renamed to 'Enum' ({0})", IO.Path.GetFileName(sFile)))
+                    g_mFormMain.PrintInformation("[ERRO]", String.Format("Failed to read name from enum because it has no name: Renamed to 'Enum' ({0})", IO.Path.GetFileName(sFile)), False, False, 15)
                     sEnumName = "Enum"
                 End If
 
@@ -699,7 +699,7 @@ Public Class ClassAutocompleteUpdater
 
                     regMatch = Regex.Match(sEnumFull, "^\s*(?<Tag>\b[a-zA-Z0-9_]+\b:)*(?<Name>\b[a-zA-Z0-9_]+\b)")
                     If (Not regMatch.Groups("Name").Success) Then
-                        g_mFormMain.PrintInformation("[ERRO]", String.Format("Failed to resolve type 'Enum': enum {0} {1}", sEnumName, sEnumFull))
+                        g_mFormMain.PrintInformation("[ERRO]", String.Format("Failed to resolve type 'Enum': enum {0} {1}", sEnumName, sEnumFull), False, False, 15)
                         Continue For
                     End If
 
@@ -886,7 +886,7 @@ Public Class ClassAutocompleteUpdater
             If (sourceAnalysis.GetMaxLenght - 1 > 0) Then
                 Dim iLastBraceLevel As Integer = sourceAnalysis.GetBraceLevel(sourceAnalysis.GetMaxLenght - 1)
                 If (iLastBraceLevel > 0) Then
-                    g_mFormMain.PrintInformation("[ERRO]", String.Format("Uneven brace level! May lead to syntax parser failures! [LV:{0}] ({1})", iLastBraceLevel, IO.Path.GetFileName(sFile)))
+                    g_mFormMain.PrintInformation("[ERRO]", String.Format("Uneven brace level! May lead to syntax parser failures! [LV:{0}] ({1})", iLastBraceLevel, IO.Path.GetFileName(sFile)), False, False, 1)
                 End If
             End If
 
@@ -1163,7 +1163,7 @@ Public Class ClassAutocompleteUpdater
 
                     Dim regMatch As Match = Regex.Match(sEnumFull, "^\s*(?<Tag>\b[a-zA-Z0-9_]+\b:)*(?<Name>\b[a-zA-Z0-9_]+\b)")
                     If (Not regMatch.Groups("Name").Success) Then
-                        g_mFormMain.PrintInformation("[ERRO]", String.Format("Failed to resolve type 'Enum': enum {0} {1}", sEnumName, sEnumFull))
+                        g_mFormMain.PrintInformation("[ERRO]", String.Format("Failed to resolve type 'Enum': enum {0} {1}", sEnumName, sEnumFull), False, False, 15)
                         Continue For
                     End If
 
@@ -1547,7 +1547,7 @@ Public Class ClassAutocompleteUpdater
         Catch ex As Threading.ThreadAbortException
             Throw
         Catch ex As Exception
-            g_mFormMain.PrintInformation("[ERRO]", "Variable autocomplete update failed! " & ex.Message)
+            g_mFormMain.PrintInformation("[ERRO]", "Variable autocomplete update failed! " & ex.Message, False, False, 1)
             ClassExceptionLog.WriteToLog(ex)
         End Try
     End Sub
@@ -2048,7 +2048,7 @@ Public Class ClassAutocompleteUpdater
             sSource = CStr(g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.Document.TextContent))
         Else
             If (Not IO.File.Exists(sPath)) Then
-                g_mFormMain.PrintInformation("[ERRO]", String.Format("Could not read include: {0}", IO.Path.GetFileName(sPath)))
+                g_mFormMain.PrintInformation("[ERRO]", String.Format("Could not read include: {0}", IO.Path.GetFileName(sPath)), False, False, 15)
                 Return
             End If
 
@@ -2086,7 +2086,7 @@ Public Class ClassAutocompleteUpdater
                 Dim sIncludeDir As String = ClassSettings.g_sConfigOpenIncludeFolder
                 If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                     If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenedSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenedSourceFile)) Then
-                        g_mFormMain.PrintInformation("[ERRO]", "Could not read includes! Could not get current source file!")
+                        g_mFormMain.PrintInformation("[ERRO]", "Could not read includes! Could not get current source file!", False, False, 1)
                         Exit While
                     End If
                     sIncludeDir = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenedSourceFile), "include")
@@ -2110,7 +2110,7 @@ Public Class ClassAutocompleteUpdater
                             Case IO.File.Exists(String.Format("{0}.inc", IO.Path.Combine(sIncludeDir, sMatchValue)))
                                 sCorrectPath = String.Format("{0}.inc", IO.Path.Combine(sIncludeDir, sMatchValue))
                             Case Else
-                                g_mFormMain.PrintInformation("[ERRO]", String.Format("Could not read include: {0}", sMatchValue))
+                                g_mFormMain.PrintInformation("[ERRO]", String.Format("Could not read include: {0}", sMatchValue), False, False, 15)
                                 Continue While
                         End Select
 
@@ -2146,7 +2146,7 @@ Public Class ClassAutocompleteUpdater
                             Case IO.File.Exists(String.Format("{0}.inc", IO.Path.Combine(sIncludeDir, sMatchValue)))
                                 sCorrectPath = String.Format("{0}.inc", IO.Path.Combine(sIncludeDir, sMatchValue))
                             Case Else
-                                g_mFormMain.PrintInformation("[ERRO]", String.Format("Could not read include: {0}", sMatchValue))
+                                g_mFormMain.PrintInformation("[ERRO]", String.Format("Could not read include: {0}", sMatchValue), False, False, 15)
                                 Continue While
                         End Select
 

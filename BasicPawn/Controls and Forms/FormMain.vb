@@ -196,17 +196,38 @@ Public Class FormMain
         ToolStripStatusLabel_CurrentConfig.Text = "Config: " & If(String.IsNullOrEmpty(ClassSettings.g_sConfigName), "Default", ClassSettings.g_sConfigName)
     End Sub
 
-    Public Sub PrintInformation(sType As String, sMessage As String, Optional bClear As Boolean = False, Optional bShowInformationTab As Boolean = False)
+    Public Sub PrintInformation(sType As String, sMessage As String, Optional bClear As Boolean = False, Optional bShowInformationTab As Boolean = False, Optional iLatestNoDuplicateLines As Integer = 0)
         Me.BeginInvoke(
             Sub()
                 If (g_mUCInformationList Is Nothing) Then
                     Return
                 End If
 
+                Dim bExist As Boolean = False
+
+                If (iLatestNoDuplicateLines > 0) Then
+                    For Each item As String In g_mUCInformationList.ListBox_Information.Items
+                        If (iLatestNoDuplicateLines < 1) Then
+                            Exit For
+                        End If
+
+                        If (item.StartsWith(sType) AndAlso item.EndsWith(sMessage)) Then
+                            bExist = True
+                            Exit For
+                        End If
+
+                        iLatestNoDuplicateLines -= 1
+                    Next
+                End If
+
                 If (bClear) Then
                     g_mUCInformationList.ListBox_Information.Items.Clear()
                 End If
-                g_mUCInformationList.ListBox_Information.Items.Insert(0, String.Format("{0} ({1}) {2}", sType, Now.ToString, sMessage))
+
+                If (Not bExist) Then
+                    g_mUCInformationList.ListBox_Information.Items.Insert(0, String.Format("{0} ({1}) {2}", sType, Now.ToString, sMessage))
+                End If
+
                 ToolStripStatusLabel_LastInformation.Text = sMessage
 
                 If (bShowInformationTab) Then
