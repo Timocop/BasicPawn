@@ -21,7 +21,8 @@ Imports System.Text.RegularExpressions
 Public Class UCAutocomplete
     Private g_mFormMain As FormMain
 
-    Public g_ClassToolTip As ClassToolTip
+    Public g_ClassToolTip As ClassToolTip 
+    Public g_sLastAutocompleteText As String = ""
 
     Public Sub New(f As FormMain)
 
@@ -36,7 +37,45 @@ Public Class UCAutocomplete
         'Set double buffering to avoid annonying flickers when collapsing/showing SplitContainer panels
         ClassTools.ClassForms.SetDoubleBufferingAllChilds(Me, True)
         ClassTools.ClassForms.SetDoubleBufferingUnmanagedAllChilds(Me, True)
+
+        ListView_AutocompleteList.ListViewItemSorter = New ListViewItemComparer(Me, 2)
+        ListView_AutocompleteList.Sorting = SortOrder.Ascending
     End Sub
+
+    Class ListViewItemComparer
+        Implements IComparer
+
+        Private g_mUCAutocomplete As UCAutocomplete
+        Private g_Collum As Integer
+
+        Public Sub New(c As UCAutocomplete)
+            g_mUCAutocomplete = c
+            g_Collum = 0
+        End Sub
+
+        Public Sub New(c As UCAutocomplete, mCollum As Integer)
+            g_mUCAutocomplete = c
+            g_Collum = mCollum
+        End Sub
+
+        Private Function IComparer_Compare(x As Object, y As Object) As Integer Implements IComparer.Compare
+            If (g_mUCAutocomplete.g_sLastAutocompleteText.Length > 0) Then
+                Dim lvX As ListViewItem = DirectCast(x, ListViewItem)
+                Dim lvY As ListViewItem = DirectCast(y, ListViewItem)
+
+                Dim lvXIndex As Integer = lvX.SubItems(g_Collum).Text.IndexOf(g_mUCAutocomplete.g_sLastAutocompleteText)
+                Dim lvYIndex As Integer = lvY.SubItems(g_Collum).Text.IndexOf(g_mUCAutocomplete.g_sLastAutocompleteText)
+
+                Return lvXIndex.CompareTo(lvYIndex)
+            Else
+                Dim lvX As ListViewItem = DirectCast(x, ListViewItem)
+                Dim lvY As ListViewItem = DirectCast(y, ListViewItem)
+
+                Return String.Compare(lvX.SubItems(g_Collum).Text, lvY.SubItems(g_Collum).Text)
+            End If
+
+        End Function
+    End Class
 
 
     Public Function ParseMethodAutocomplete(Optional bForceUpdate As Boolean = False) As Boolean
@@ -101,6 +140,7 @@ Public Class UCAutocomplete
         If (sText.Length < 3 OrElse String.IsNullOrEmpty(sText) OrElse Regex.IsMatch(sText, "^[0-9]+$")) Then
             ListView_AutocompleteList.Items.Clear()
             ListView_AutocompleteList.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize)
+            g_sLastAutocompleteText = ""
             Return 0
         End If
 
@@ -131,6 +171,13 @@ Public Class UCAutocomplete
 
         ListView_AutocompleteList.Items.Clear()
         ListView_AutocompleteList.Items.AddRange(lListViewItemsList.ToArray)
+
+        'Sort ascending first then match the closest one.
+        g_sLastAutocompleteText = ""
+        ListView_AutocompleteList.Sort()
+        g_sLastAutocompleteText = sText
+        ListView_AutocompleteList.Sort()
+
 
         If (ListView_AutocompleteList.Items.Count > 0) Then
             ListView_AutocompleteList.Items(0).Selected = True
