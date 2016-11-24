@@ -107,16 +107,16 @@ Public Class ClassSyntaxTools
     ''' Updates the form colors and syntax.
     ''' </summary>
     Public Sub UpdateFormColors()
-        For Each c As Form In Application.OpenForms
-            ClassControlStyle.UpdateControls(c)
-        Next
-
         UpdateSyntaxFile(ENUM_SYNTAX_UPDATE_TYPE.NONE, True) 'Just generate new files once, we dont need to create new files every type.
         UpdateSyntaxFile(ENUM_SYNTAX_UPDATE_TYPE.AUTOCOMPLETE)
         UpdateSyntaxFile(ENUM_SYNTAX_UPDATE_TYPE.HIGHLIGHT_WORD)
         UpdateSyntaxFile(ENUM_SYNTAX_UPDATE_TYPE.HIGHLIGHT_WORD_CUSTOM)
         UpdateSyntaxFile(ENUM_SYNTAX_UPDATE_TYPE.CARET_WORD)
         UpdateTextEditorSyntax()
+
+        For Each c As Form In Application.OpenForms
+            ClassControlStyle.UpdateControls(c)
+        Next
     End Sub
 
     ''' <summary>
