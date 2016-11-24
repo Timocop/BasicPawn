@@ -14,13 +14,8 @@ BasicPawn is currently in alpha state, new features are planed!
 
 [**.NET Framework (Linux Wine)**](https://appdb.winehq.org/objectManager.php?sClass=application&iId=2586)
 
-##Todo/Done (for v0.65)
-- [ ] ~~Force parsing new syntax on "#pragma newdecls required" (Only above all includes).~~
-- [x] Autocompletion for variables.
-- [x] \(Object Browser\) For even faster access, show references on double-click.
-- [x] Seperate styles each config.
-- [x] Highlight changed lines (saved/not saved).
-- [x] Multi-color marking.
+##Todo & Done (for v0.7)
+- [ ] (Optional) Tabs.
 
 ##Screenshots
 ![Default design](http://i.imgur.com/NtAXuQ2.png)
