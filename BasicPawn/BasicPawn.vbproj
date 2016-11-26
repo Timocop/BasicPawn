@@ -168,10 +168,6 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
     <Import Include="Microsoft.VisualBasic" />
@@ -182,8 +178,6 @@
     <Import Include="System.Drawing" />
     <Import Include="System.Diagnostics" />
     <Import Include="System.Windows.Forms" />
-    <Import Include="System.Linq" />
-    <Import Include="System.Xml.Linq" />
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
@@ -205,6 +199,7 @@
     <Compile Include="Classes\FormMain\ClassDebuggerParser.vb" />
     <Compile Include="Classes\FormMain\ClassSyntaxTools.vb" />
     <Compile Include="Classes\FormMain\ClassSyntaxUpdater.vb" />
+    <Compile Include="Classes\FormMain\ClassTabControl.vb" />
     <Compile Include="Classes\FormMain\ClassTextEditorTools.vb" />
     <Compile Include="Controls and Forms\FormDebuggerBreakpointSetValue.Designer.vb">
       <DependentUpon>FormDebuggerBreakpointSetValue.vb</DependentUpon>
@@ -431,6 +426,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="BasicPawnIcon.ico" />
+    <None Include="Resources\SourcePawnOldTemplate.txt" />
     <None Include="Resources\imageres_5304_16x16-32.png" />
     <None Include="Resources\SourcePawn_Syntax.xml" />
     <None Include="Resources\Debugger_WatcherModuleNew.txt" />

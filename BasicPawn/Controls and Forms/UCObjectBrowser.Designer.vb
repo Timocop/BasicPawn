@@ -51,29 +51,30 @@ Partial Class UCObjectBrowser
         Me.ContextMenuStrip_ObjectBrowser.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_OpenFile, Me.ToolStripMenuItem_Copy, Me.ToolStripSeparator1, Me.ToolStripMenuItem_ListReferences})
         Me.ContextMenuStrip_ObjectBrowser.Name = "ContextMenuStrip_ObjectBrowser"
         Me.ContextMenuStrip_ObjectBrowser.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
-        Me.ContextMenuStrip_ObjectBrowser.Size = New System.Drawing.Size(150, 76)
+        Me.ContextMenuStrip_ObjectBrowser.ShowImageMargin = False
+        Me.ContextMenuStrip_ObjectBrowser.Size = New System.Drawing.Size(128, 98)
         '
         'ToolStripMenuItem_OpenFile
         '
         Me.ToolStripMenuItem_OpenFile.Name = "ToolStripMenuItem_OpenFile"
-        Me.ToolStripMenuItem_OpenFile.Size = New System.Drawing.Size(149, 22)
+        Me.ToolStripMenuItem_OpenFile.Size = New System.Drawing.Size(127, 22)
         Me.ToolStripMenuItem_OpenFile.Text = "Open file"
         '
         'ToolStripMenuItem_Copy
         '
         Me.ToolStripMenuItem_Copy.Name = "ToolStripMenuItem_Copy"
-        Me.ToolStripMenuItem_Copy.Size = New System.Drawing.Size(149, 22)
+        Me.ToolStripMenuItem_Copy.Size = New System.Drawing.Size(127, 22)
         Me.ToolStripMenuItem_Copy.Text = "Copy"
         '
         'ToolStripSeparator1
         '
         Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
-        Me.ToolStripSeparator1.Size = New System.Drawing.Size(146, 6)
+        Me.ToolStripSeparator1.Size = New System.Drawing.Size(124, 6)
         '
         'ToolStripMenuItem_ListReferences
         '
         Me.ToolStripMenuItem_ListReferences.Name = "ToolStripMenuItem_ListReferences"
-        Me.ToolStripMenuItem_ListReferences.Size = New System.Drawing.Size(149, 22)
+        Me.ToolStripMenuItem_ListReferences.Size = New System.Drawing.Size(127, 22)
         Me.ToolStripMenuItem_ListReferences.Text = "List references"
         '
         'TextboxWatermark_Search

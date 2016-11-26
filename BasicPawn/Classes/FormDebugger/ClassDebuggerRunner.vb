@@ -58,9 +58,9 @@ Public Class ClassDebuggerRunner
     Private g_sLatestDebuggerPlugin As String = ""
     Private g_sLatestDebuggerRunnerPlugin As String = ""
 
-    Private g_sGameFolder As String = ClassSettings.g_sConfigDebugGameFolder
-    Private g_sSourceModFolder As String = ClassSettings.g_sConfigDebugSourceModFolder
-    Private g_sCurrentSourceFile As String = ClassSettings.g_sConfigOpenedSourceFile
+    Private g_sGameFolder As String = ""
+    Private g_sSourceModFolder As String = ""
+    Private g_sCurrentSourceFile As String = ""
 
     Structure STURC_SOURCE_LINES_INFO_ITEM
         Dim iRealLine As Integer
@@ -86,6 +86,11 @@ Public Class ClassDebuggerRunner
 
     Public Sub New(f As FormDebugger)
         g_mFormDebugger = f
+        g_sGameFolder = ClassSettings.g_sConfigDebugGameFolder
+        g_sSourceModFolder = ClassSettings.g_sConfigDebugSourceModFolder
+        g_sCurrentSourceFile = g_mFormDebugger.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File
+
+        g_mFormDebugger.Text &= String.Format(" ({0})", IO.Path.GetFileName(g_sCurrentSourceFile))
 
         g_ClassPreProcess = New ClassPreProcess(Me)
     End Sub

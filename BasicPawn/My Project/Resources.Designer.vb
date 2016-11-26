@@ -481,5 +481,33 @@ Namespace My.Resources
                 Return ResourceManager.GetString("SourcePawn_Syntax", resourceCulture)
             End Get
         End Property
+        
+        '''<summary>
+        '''  Sucht eine lokalisierte Zeichenfolge, die #pragma semicolon 1
+        '''
+        '''#define DEBUG
+        '''
+        '''#include &lt;sourcemod&gt;
+        '''#include &lt;sdktools&gt;
+        '''
+        '''public Plugin:myinfo = 
+        '''{
+        '''	name = &quot;&quot;,
+        '''	author = &quot;&quot;,
+        '''	description = &quot;&quot;,
+        '''	version = &quot;0.0&quot;,
+        '''	url = &quot;&quot;
+        '''};
+        '''
+        '''public OnPluginStart()
+        '''{
+        '''	
+        '''} ähnelt.
+        '''</summary>
+        Friend ReadOnly Property SourcePawnOldTemplate() As String
+            Get
+                Return ResourceManager.GetString("SourcePawnOldTemplate", resourceCulture)
+            End Get
+        End Property
     End Module
 End Namespace

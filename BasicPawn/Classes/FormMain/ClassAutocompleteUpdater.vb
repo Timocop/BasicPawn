@@ -94,7 +94,10 @@ Public Class ClassAutocompleteUpdater
         Try
             'g_mFormMain.PrintInformation("[INFO]", "Autocomplete update started...")
 
-            If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenedSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenedSourceFile)) Then
+            Dim sActiveSourceFile As String = CStr(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File))
+            Dim sActiveSource As String = CStr(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent))
+
+            If (String.IsNullOrEmpty(sActiveSourceFile) OrElse Not IO.File.Exists(sActiveSourceFile)) Then
                 g_mFormMain.PrintInformation("[ERRO]", "Autocomplete update failed! Could not get current source file!", False, False, 1)
                 Return
             End If
@@ -108,15 +111,15 @@ Public Class ClassAutocompleteUpdater
             'Parse everything. Methods etc.
             If (True) Then
                 Dim sSourceList As New ClassSyncList(Of String())
-                Dim sFiles As String() = GetIncludeFiles(ClassSettings.g_sConfigOpenedSourceFile)
+                Dim sFiles As String() = GetIncludeFiles(sActiveSource, sActiveSourceFile, sActiveSourceFile)
 
                 For i = 0 To sFiles.Length - 1
-                    ParseAutocomplete_Pre(sFiles(i), sSourceList, lTmpAutocompleteList)
+                    ParseAutocomplete_Pre(sActiveSource, sActiveSourceFile, sFiles(i), sSourceList, lTmpAutocompleteList)
                 Next
 
                 Dim sRegExEnum As String = String.Format("(\b{0}\b)", String.Join("\b|\b", GetEnumNames(lTmpAutocompleteList)))
                 For i = 0 To sSourceList.Count - 1
-                    ParseAutocomplete_Post(sSourceList(i)(0), sRegExEnum, sSourceList(i)(1), lTmpAutocompleteList)
+                    ParseAutocomplete_Post(sActiveSource, sActiveSourceFile, sSourceList(i)(0), sRegExEnum, sSourceList(i)(1), lTmpAutocompleteList)
                 Next
             End If
 
@@ -126,13 +129,17 @@ Public Class ClassAutocompleteUpdater
             End If
 
             'Save everything and update syntax
-            g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.RemoveAll(Function(j As STRUC_AUTOCOMPLETE) (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
-            g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.AddRange(lTmpAutocompleteList)
+            g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.DoSync(
+                Sub()
+                    g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.RemoveAll(Function(j As STRUC_AUTOCOMPLETE) (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
+                    g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.AddRange(lTmpAutocompleteList)
+                End Sub)
 
-            g_mFormMain.g_ClassSyntaxTools.UpdateSyntaxFile(ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE.AUTOCOMPLETE)
             g_mFormMain.BeginInvoke(Sub()
+                                        'Dont move this outside of invoke! Results in "File is already in use!" when aborting the thread... for some reason...
+                                        g_mFormMain.g_ClassSyntaxTools.UpdateSyntaxFile(ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE.AUTOCOMPLETE)
                                         g_mFormMain.g_ClassSyntaxTools.UpdateTextEditorSyntax()
-                                        g_mFormMain.g_mUCObjectBrowser.UpdateTreeView()
+                                        g_mFormMain.g_mUCObjectBrowser.StartUpdate()
                                     End Sub)
 
             'g_mFormMain.PrintInformation("[INFO]", "Autocomplete update finished!")
@@ -329,10 +336,10 @@ Public Class ClassAutocompleteUpdater
         End If
     End Sub
 
-    Private Sub ParseAutocomplete_Pre(sFile As String, ByRef sSourceList As ClassSyncList(Of String()), ByRef lTmpAutocompleteList As ClassSyncList(Of STRUC_AUTOCOMPLETE))
+    Private Sub ParseAutocomplete_Pre(sActiveSource As String, sActiveSourceFile As String, sFile As String, ByRef sSourceList As ClassSyncList(Of String()), ByRef lTmpAutocompleteList As ClassSyncList(Of STRUC_AUTOCOMPLETE))
         Dim sSource As String
-        If (ClassSettings.g_sConfigOpenedSourceFile.ToLower = sFile.ToLower) Then
-            sSource = CStr(g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.Document.TextContent))
+        If (sActiveSourceFile.ToLower = sFile.ToLower) Then
+            sSource = sActiveSource
         Else
             sSource = IO.File.ReadAllText(sFile)
         End If
@@ -722,7 +729,7 @@ Public Class ClassAutocompleteUpdater
         sSourceList.Add(New String() {sFile, sSource})
     End Sub
 
-    Private Sub ParseAutocomplete_Post(ByRef sFile As String, ByRef sRegExEnum As String, ByRef sSource As String, ByRef lTmpAutocompleteList As ClassSyncList(Of STRUC_AUTOCOMPLETE))
+    Private Sub ParseAutocomplete_Post(sActiveSource As String, sActiveSourceFile As String, ByRef sFile As String, ByRef sRegExEnum As String, ByRef sSource As String, ByRef lTmpAutocompleteList As ClassSyncList(Of STRUC_AUTOCOMPLETE))
         'Get Defines
         If (sSource.Contains("#define")) Then
             Dim sLine As String
@@ -1510,8 +1517,11 @@ Public Class ClassAutocompleteUpdater
 
     Private Sub VariableAutocompleteUpdate_Thread()
         Try
+            Dim sSourceFile As String = CStr(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File))
+            Dim sActiveSource As String = CStr(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent))
+
             'g_mFormMain.PrintInformation("[INFO]", "Variable autocomplete update started...")
-            If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenedSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenedSourceFile)) Then
+            If (String.IsNullOrEmpty(sSourceFile) OrElse Not IO.File.Exists(sSourceFile)) Then
                 'g_mFormMain.PrintInformation("[ERRO]", "Variable autocomplete update failed! Could not get current source file!")
                 Return
             End If
@@ -1529,19 +1539,22 @@ Public Class ClassAutocompleteUpdater
                 Dim sRegExEnumPattern As String = String.Format("(\b{0}\b)", String.Join("\b|\b", GetEnumNames(g_mFormMain.g_ClassSyntaxTools.lAutocompleteList)))
 
                 If (ClassSettings.g_iSettingsVarAutocompleteCurrentSourceOnly) Then
-                    ParseVariables_Pre(ClassSettings.g_sConfigOpenedSourceFile, sRegExEnumPattern, lTmpVarAutocompleteList, g_mFormMain.g_ClassSyntaxTools.lAutocompleteList)
+                    ParseVariables_Pre(sActiveSource, sSourceFile, sSourceFile, sRegExEnumPattern, lTmpVarAutocompleteList, g_mFormMain.g_ClassSyntaxTools.lAutocompleteList)
                 Else
-                    Dim sFiles As String() = GetIncludeFiles(ClassSettings.g_sConfigOpenedSourceFile)
+                    Dim sFiles As String() = GetIncludeFiles(sActiveSource, sSourceFile, sSourceFile)
                     For i = 0 To sFiles.Length - 1
-                        ParseVariables_Pre(sFiles(i), sRegExEnumPattern, lTmpVarAutocompleteList, g_mFormMain.g_ClassSyntaxTools.lAutocompleteList)
+                        ParseVariables_Pre(sActiveSource, sSourceFile, sFiles(i), sRegExEnumPattern, lTmpVarAutocompleteList, g_mFormMain.g_ClassSyntaxTools.lAutocompleteList)
                     Next
                 End If
 
-                ParseVariables_Post(sRegExEnumPattern, lTmpVarAutocompleteList, g_mFormMain.g_ClassSyntaxTools.lAutocompleteList)
+                ParseVariables_Post(sActiveSource, sSourceFile, sRegExEnumPattern, lTmpVarAutocompleteList, g_mFormMain.g_ClassSyntaxTools.lAutocompleteList)
             End If
 
-            g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.RemoveAll(Function(j As STRUC_AUTOCOMPLETE) (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
-            g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.AddRange(lTmpVarAutocompleteList.ToArray)
+            g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.DoSync(
+                Sub()
+                    g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.RemoveAll(Function(j As STRUC_AUTOCOMPLETE) (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
+                    g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.AddRange(lTmpVarAutocompleteList.ToArray)
+                End Sub)
 
             'g_mFormMain.PrintInformation("[INFO]", "Variable autocomplete update finished!")
         Catch ex As Threading.ThreadAbortException
@@ -1557,10 +1570,10 @@ Public Class ClassAutocompleteUpdater
         Dim sFile As String
     End Structure
 
-    Private Sub ParseVariables_Pre(ByRef sFile As String, ByRef sRegExEnumPattern As String, ByRef lTmpVarAutocompleteList As ClassSyncList(Of STRUC_AUTOCOMPLETE), ByRef lTmpAutocompleteList As ClassSyncList(Of STRUC_AUTOCOMPLETE))
+    Private Sub ParseVariables_Pre(sActiveSource As String, sActiveSourceFile As String, ByRef sFile As String, ByRef sRegExEnumPattern As String, ByRef lTmpVarAutocompleteList As ClassSyncList(Of STRUC_AUTOCOMPLETE), ByRef lTmpAutocompleteList As ClassSyncList(Of STRUC_AUTOCOMPLETE))
         Dim sSource As String
-        If (ClassSettings.g_sConfigOpenedSourceFile.ToLower = sFile.ToLower) Then
-            sSource = CStr(g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.Document.TextContent))
+        If (sActiveSourceFile.ToLower = sFile.ToLower) Then
+            sSource = sActiveSource
         Else
             sSource = IO.File.ReadAllText(sFile)
         End If
@@ -1844,7 +1857,7 @@ Public Class ClassAutocompleteUpdater
 
     End Sub
 
-    Private Sub ParseVariables_Post(ByRef sRegExEnumPattern As String, ByRef lTmpVarAutocompleteList As ClassSyncList(Of STRUC_AUTOCOMPLETE), ByRef lTmpAutocompleteList As ClassSyncList(Of STRUC_AUTOCOMPLETE))
+    Private Sub ParseVariables_Post(sActiveSource As String, sActiveSourceFile As String, ByRef sRegExEnumPattern As String, ByRef lTmpVarAutocompleteList As ClassSyncList(Of STRUC_AUTOCOMPLETE), ByRef lTmpAutocompleteList As ClassSyncList(Of STRUC_AUTOCOMPLETE))
         'Parse function argument variables
         If (True) Then
             Dim lArgList As New List(Of STRUC_PARSE_ARGUMENT_ITEM)
@@ -1852,7 +1865,7 @@ Public Class ClassAutocompleteUpdater
 
             For Each autoItem In lTmpAutocompleteList
                 If (ClassSettings.g_iSettingsVarAutocompleteCurrentSourceOnly) Then
-                    If (Not String.IsNullOrEmpty(ClassSettings.g_sConfigOpenedSourceFile) AndAlso IO.Path.GetFileName(ClassSettings.g_sConfigOpenedSourceFile).ToLower <> autoItem.sFile.ToLower) Then
+                    If (Not String.IsNullOrEmpty(sActiveSourceFile) AndAlso IO.Path.GetFileName(sActiveSourceFile).ToLower <> autoItem.sFile.ToLower) Then
                         Continue For
                     End If
                 End If
@@ -2029,23 +2042,23 @@ Public Class ClassAutocompleteUpdater
     ''' </summary>
     ''' <param name="sPath"></param>
     ''' <returns>Array if include file paths</returns>
-    Public Function GetIncludeFiles(sPath As String) As String()
+    Public Function GetIncludeFiles(sActiveSource As String, sActiveSourceFile As String, sPath As String) As String()
         Dim lList As New List(Of String)
-        GetIncludeFilesRecursive(sPath, lList)
+        GetIncludeFilesRecursive(sActiveSource, sActiveSourceFile, sPath, lList)
 
         Return lList.ToArray
     End Function
 
-    Private Sub GetIncludeFilesRecursive(sPath As String, ByRef lList As List(Of String))
+    Private Sub GetIncludeFilesRecursive(sActiveSource As String, sActiveSourceFile As String, sPath As String, ByRef lList As List(Of String))
         Dim sSource As String
-        If (ClassSettings.g_sConfigOpenedSourceFile.ToLower = sPath.ToLower) Then
+        If (sActiveSourceFile.ToLower = sPath.ToLower) Then
             If (lList.Contains(sPath)) Then
                 Return
             End If
 
             lList.Add(sPath)
 
-            sSource = CStr(g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.Document.TextContent))
+            sSource = sActiveSource
         Else
             If (Not IO.File.Exists(sPath)) Then
                 g_mFormMain.PrintInformation("[ERRO]", String.Format("Could not read include: {0}", IO.Path.GetFileName(sPath)), False, False, 15)
@@ -2085,11 +2098,11 @@ Public Class ClassAutocompleteUpdater
 
                 Dim sIncludeDir As String = ClassSettings.g_sConfigOpenIncludeFolder
                 If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenedSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenedSourceFile)) Then
+                    If (String.IsNullOrEmpty(sActiveSourceFile) OrElse Not IO.File.Exists(sActiveSourceFile)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "Could not read includes! Could not get current source file!", False, False, 1)
                         Exit While
                     End If
-                    sIncludeDir = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenedSourceFile), "include")
+                    sIncludeDir = IO.Path.Combine(IO.Path.GetDirectoryName(sActiveSourceFile), "include")
                 End If
 
                 Select Case (True)
@@ -2167,7 +2180,7 @@ Public Class ClassAutocompleteUpdater
         End Using
 
         For i = 0 To lPathList.Count - 1
-            GetIncludeFilesRecursive(lPathList(i), lList)
+            GetIncludeFilesRecursive(sActiveSource, sActiveSourceFile, lPathList(i), lList)
         Next
     End Sub
 End Class

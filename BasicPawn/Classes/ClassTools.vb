@@ -179,6 +179,7 @@ Public Class ClassTools
         Class NativeWinAPI
             Friend Shared ReadOnly GWL_EXSTYLE As Integer = -20
             Friend Shared ReadOnly WS_EX_COMPOSITED As Integer = &H2000000
+            Friend Shared ReadOnly WM_SETREDRAW As Integer = 11
 
             <DllImport("user32")>
             Friend Shared Function GetWindowLong(hWnd As IntPtr, nIndex As Integer) As Integer
@@ -186,6 +187,10 @@ Public Class ClassTools
 
             <DllImport("user32")>
             Friend Shared Function SetWindowLong(hWnd As IntPtr, nIndex As Integer, dwNewLong As Integer) As Integer
+            End Function
+
+            <DllImport("user32")>
+            Friend Shared Function SendMessage(hWnd As IntPtr, wMsg As Integer, wParam As Boolean, lParam As Integer) As Integer
             End Function
         End Class
 
@@ -240,6 +245,23 @@ Public Class ClassTools
             For Each c As Control In cControl.Controls
                 SetDoubleBufferingAllChilds(c, bEnable)
             Next
+        End Sub
+
+        ''' <summary>
+        ''' Suspends drawing of a control using unmanaged.
+        ''' </summary>
+        ''' <param name="cControl"></param>
+        Public Shared Sub SuspendDrawing(cControl As Control)
+            NativeWinAPI.SendMessage(cControl.Handle, NativeWinAPI.WM_SETREDRAW, False, 0)
+        End Sub
+
+        ''' <summary>
+        ''' Resumes drawing of a control using unmanaged.
+        ''' </summary>
+        ''' <param name="cControl"></param>
+        Public Shared Sub ResumeDrawing(cControl As Control)
+            NativeWinAPI.SendMessage(cControl.Handle, NativeWinAPI.WM_SETREDRAW, True, 0)
+            cControl.Refresh()
         End Sub
     End Class
 End Class

@@ -17,7 +17,7 @@
 
 
 Public Class FormSettings
-    Private g_fFormMain As FormMain
+    Private g_mFormMain As FormMain
     Private g_sConfigFolder As String = IO.Path.Combine(Application.StartupPath, "configs")
     Private g_sConfigFileExt As String = ".ini"
 
@@ -27,7 +27,7 @@ Public Class FormSettings
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call.
-        g_fFormMain = f
+        g_mFormMain = f
 
         Me.Size = New Size(0, 0)
 
@@ -468,7 +468,7 @@ Public Class FormSettings
             SB.AppendLine("All available shell arguments:")
             SB.AppendLine()
 
-            For Each iItem In ClassSettings.GetShellArguments
+            For Each iItem In ClassSettings.GetShellArguments(g_mFormMain)
                 SB.AppendLine(String.Format("{0} - {1}", iItem.g_sMarker, iItem.g_sArgumentName))
             Next
 

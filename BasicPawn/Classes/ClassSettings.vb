@@ -16,8 +16,6 @@
 
 
 Public Class ClassSettings
-    Public Shared g_sConfigOpenedSourceFile As String = ""
-
 #Region "Config"
     Public Shared g_iConfigCompilingType As ENUM_COMPILING_TYPE = ENUM_COMPILING_TYPE.AUTOMATIC
     Public Shared g_sConfigOpenIncludeFolder As String = ""
@@ -151,13 +149,15 @@ Public Class ClassSettings
     ''' Gets all available shell arguments
     ''' </summary>
     ''' <returns></returns>
-    Public Shared Function GetShellArguments() As STRUC_SHELL_ARGUMENT_ITEM()
+    Public Shared Function GetShellArguments(mFormMain As FormMain) As STRUC_SHELL_ARGUMENT_ITEM()
         'TODO: Add more shell arguments
         Dim sShellList As New List(Of STRUC_SHELL_ARGUMENT_ITEM)
 
-        sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%input%", "Current opened source file", g_sConfigOpenedSourceFile))
-        sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%inputfilename%", "Current opened source filename", If(String.IsNullOrEmpty(g_sConfigOpenedSourceFile), "", IO.Path.GetFileNameWithoutExtension(g_sConfigOpenedSourceFile))))
-        sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%inputfolder%", "Current opened source file folder", If(String.IsNullOrEmpty(g_sConfigOpenedSourceFile), "", IO.Path.GetDirectoryName(g_sConfigOpenedSourceFile))))
+        Dim sFile As String = mFormMain.g_ClassTabControl.m_ActiveTab.m_File
+
+        sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%input%", "Current opened source file", sFile))
+        sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%inputfilename%", "Current opened source filename", If(String.IsNullOrEmpty(sFile), "", IO.Path.GetFileNameWithoutExtension(sFile))))
+        sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%inputfolder%", "Current opened source file folder", If(String.IsNullOrEmpty(sFile), "", IO.Path.GetDirectoryName(sFile))))
         sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%includes%", "Include folder", g_sConfigOpenIncludeFolder))
         sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%compiler%", "Compiler path", g_sConfigCompilerPath))
         sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%output%", "Output folder", g_sConfigPluginOutputFolder))

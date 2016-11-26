@@ -125,12 +125,15 @@ Public Class ClassSyntaxTools
     Public Sub CreateSyntaxFile(i As ENUM_SYNTAX_FILES)
         Try
             SyncLock _lock
-                IO.Directory.CreateDirectory(g_SyntaxFiles(i).sFolder)
+                If (Not IO.Directory.Exists(g_SyntaxFiles(i).sFolder)) Then
+                    IO.Directory.CreateDirectory(g_SyntaxFiles(i).sFolder)
+                End If
 
                 Dim sModSyntaxXML As String
                 If (Not String.IsNullOrEmpty(ClassSettings.g_sConfigSyntaxHighlightingPath) AndAlso
                         IO.File.Exists(ClassSettings.g_sConfigSyntaxHighlightingPath) AndAlso
                         IO.Path.GetExtension(ClassSettings.g_sConfigSyntaxHighlightingPath).ToLower = ".xml") Then
+
                     Dim sFileText As String = IO.File.ReadAllText(ClassSettings.g_sConfigSyntaxHighlightingPath)
                     sModSyntaxXML = sFileText.Replace(sSyntax_SourcePawnMarker, g_SyntaxFiles(i).sDefinition)
                 Else
@@ -315,14 +318,13 @@ Public Class ClassSyntaxTools
 
                                 Dim mMatchColl As MatchCollection = Regex.Matches(sFormatedString, "\b(color|bgcolor)\b\s*=\s*""(?<Color>[a-zA-Z]+)""")
                                 For j = mMatchColl.Count - 1 To 0 Step -1
-                                    Dim mMatch As Match = mMatchColl(j)
-                                    If (Not mMatch.Success) Then
+                                    If (Not mMatchColl(j).Success) Then
                                         Continue For
                                     End If
 
                                     Try
-                                        Dim sColorName As String = mMatch.Groups("Color").Value
-                                        Dim iColorNameIndex As Integer = mMatch.Groups("Color").Index
+                                        Dim sColorName As String = mMatchColl(j).Groups("Color").Value
+                                        Dim iColorNameIndex As Integer = mMatchColl(j).Groups("Color").Index
                                         Dim cConv As Color = ColorTranslator.FromHtml(sColorName)
 
                                         Dim cInvColor As Color = ClassControlStyle.InvertColor(cConv)
@@ -345,6 +347,8 @@ Public Class ClassSyntaxTools
                     End Select
                 Next
             End SyncLock
+        Catch ex As Threading.ThreadAbortException
+            Throw
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
@@ -355,30 +359,33 @@ Public Class ClassSyntaxTools
     ''' </summary>
     Public Sub UpdateTextEditorSyntax()
         Try
-            For i = 0 To g_SyntaxFiles.Length - 1
-                If (Not IO.File.Exists(g_SyntaxFiles(i).sFile)) Then
-                    CreateSyntaxFile(CType(i, ENUM_SYNTAX_FILES))
-                End If
-            Next
+            SyncLock _lock
+                For i = 0 To g_SyntaxFiles.Length - 1
+                    If (Not IO.File.Exists(g_SyntaxFiles(i).sFile)) Then
+                        CreateSyntaxFile(CType(i, ENUM_SYNTAX_FILES))
+                    End If
+                Next
 
-            HighlightingManager.Manager.ReloadSyntaxModes()
+                HighlightingManager.Manager.ReloadSyntaxModes()
 
-            For i = 0 To g_SyntaxFiles.Length - 1
-                Select Case (i)
-                    Case ENUM_SYNTAX_FILES.MAIN_TEXTEDITOR
-                        g_mFormMain.TextEditorControl_Source.SetHighlighting(g_SyntaxFiles(i).sDefinition)
+                For i = 0 To g_SyntaxFiles.Length - 1
+                    Select Case (i)
+                        Case ENUM_SYNTAX_FILES.MAIN_TEXTEDITOR
+                            For j = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1
+                                g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.SetHighlighting(g_SyntaxFiles(i).sDefinition)
+                            Next
 
-                        g_mFormMain.g_mUCToolTip.TextEditorControl_ToolTip.SetHighlighting(g_SyntaxFiles(i).sDefinition)
-                        g_mFormMain.g_mUCToolTip.TextEditorControl_ToolTip.Font = New Font(g_mFormMain.TextEditorControl_Source.Font.FontFamily, 8, FontStyle.Regular)
+                            g_mFormMain.g_mUCToolTip.TextEditorControl_ToolTip.SetHighlighting(g_SyntaxFiles(i).sDefinition)
+                            g_mFormMain.g_mUCToolTip.TextEditorControl_ToolTip.Font = New Font(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Font.FontFamily, 8, FontStyle.Regular)
 
-                    Case ENUM_SYNTAX_FILES.DEBUGGER_TEXTEDITOR
-                        If (g_mFormMain.g_mFormDebugger IsNot Nothing AndAlso Not g_mFormMain.g_mFormDebugger.IsDisposed) Then
-                            g_mFormMain.g_mFormDebugger.TextEditorControlEx_DebuggerSource.SetHighlighting(g_SyntaxFiles(i).sDefinition)
-                            g_mFormMain.g_mFormDebugger.TextEditorControlEx_DebuggerDiasm.SetHighlighting(g_SyntaxFiles(i).sDefinition)
-                        End If
-                End Select
-            Next
-
+                        Case ENUM_SYNTAX_FILES.DEBUGGER_TEXTEDITOR
+                            If (g_mFormMain.g_mFormDebugger IsNot Nothing AndAlso Not g_mFormMain.g_mFormDebugger.IsDisposed) Then
+                                g_mFormMain.g_mFormDebugger.TextEditorControlEx_DebuggerSource.SetHighlighting(g_SyntaxFiles(i).sDefinition)
+                                g_mFormMain.g_mFormDebugger.TextEditorControlEx_DebuggerDiasm.SetHighlighting(g_SyntaxFiles(i).sDefinition)
+                            End If
+                    End Select
+                Next
+            End SyncLock
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
@@ -719,7 +726,7 @@ Public Class ClassSyntaxTools
             sCacheText = sText
             iMaxLenght = sText.Length
 
-            iStateArray = New Integer(sText.Length - 1, [Enum].GetNames(GetType(ENUM_STATE_TYPES)).Length - 1) {}
+            iStateArray = New Integer(sText.Length, [Enum].GetNames(GetType(ENUM_STATE_TYPES)).Length - 1) {}
 
             Dim iParenthesisLevel As Integer = 0 '()
             Dim iBracketLevel As Integer = 0 '[]
