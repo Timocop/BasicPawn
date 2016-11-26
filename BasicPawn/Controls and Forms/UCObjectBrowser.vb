@@ -254,7 +254,8 @@ Public Class UCObjectBrowser
                     Continue For
                 End If
 
-                Process.Start(Application.ExecutablePath, String.Format("""{0}""", sPath))
+                g_mFormMain.g_ClassTabControl.AddTab(True)
+                g_mFormMain.g_ClassTabControl.OpenFileTab(g_mFormMain.g_ClassTabControl.m_TabsCount - 1, sPath)
             Next
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
