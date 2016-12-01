@@ -238,12 +238,13 @@ Public Class FormMain
         'Load source files via Arguments
         Dim sArgs As String() = Environment.GetCommandLineArgs
         For i = 1 To sArgs.Length - 1
-            If (i = 1) Then
+            g_ClassTabControl.AddTab(False)
+            g_ClassTabControl.OpenFileTab(g_ClassTabControl.m_TabsCount - 1, sArgs(i), True)
+
+            If (i = 1 AndAlso g_ClassTabControl.m_TabsCount > 0) Then
                 g_ClassTabControl.RemoveTab(0, False)
             End If
 
-            g_ClassTabControl.AddTab(False)
-            g_ClassTabControl.OpenFileTab(g_ClassTabControl.m_TabsCount - 1, sArgs(i), True)
         Next
 
         'Update Autocomplete
@@ -296,7 +297,7 @@ Public Class FormMain
 
 #Region "MenuStrip_File"
     Private Sub ToolStripMenuItem_FileNew_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileNew.Click
-        g_ClassTabControl.AddTab(False, True, True)
+        g_ClassTabControl.AddTab(True, True, True)
 
         PrintInformation("[INFO]", "User created a new source file")
     End Sub
@@ -309,7 +310,7 @@ Public Class FormMain
 
             If (i.ShowDialog = DialogResult.OK) Then
                 For Each sFile As String In i.FileNames
-                    g_ClassTabControl.AddTab(False)
+                    g_ClassTabControl.AddTab(True)
                     g_ClassTabControl.OpenFileTab(g_ClassTabControl.m_TabsCount - 1, sFile)
                 Next
             End If
