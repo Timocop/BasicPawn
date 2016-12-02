@@ -267,10 +267,12 @@ Public Class FormMain
 
                 For Each pProcess As Process In pBasicPawnProc
                     Try
-                        If (iLastTick > Date.MinValue.Ticks) Then
-                            If (pProcess.Id = iCurrentPID OrElse pProcess.MainModule.FileName.ToLower <> Application.ExecutablePath.ToLower OrElse iLastTick < pProcess.StartTime.Ticks) Then
-                                Continue For
-                            End If
+                        If (pProcess.Id = iCurrentPID OrElse pProcess.MainModule.FileName.ToLower <> Application.ExecutablePath.ToLower) Then
+                            Continue For
+                        End If
+
+                        If (iLastTick > Date.MinValue.Ticks AndAlso iLastTick < pProcess.StartTime.Ticks) Then
+                            Continue For
                         End If
 
                         pLastProcess = pProcess
