@@ -260,7 +260,7 @@ Public Class FormMain
 
             'Open all files in the oldes BasicPawn instance
             Dim pBasicPawnProc As Process() = Process.GetProcessesByName(IO.Path.GetFileNameWithoutExtension(Application.ExecutablePath))
-            If (pBasicPawnProc.Length > 0 AndAlso MessageBox.Show("Open in a existing BasicPawn instance?", "Open files", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes) Then
+            If (pBasicPawnProc.Length > 0) Then
                 Dim iCurrentPID As Integer = Process.GetCurrentProcess.Id
                 Dim iLastTick As Long = Date.MinValue.Ticks
                 Dim pLastProcess As Process = Nothing
@@ -281,7 +281,7 @@ Public Class FormMain
                 Next
 
 
-                If (pLastProcess IsNot Nothing) Then
+                If (pLastProcess IsNot Nothing AndAlso MessageBox.Show("Open in a existing BasicPawn instance?", "Open files", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes) Then
                     Try
                         For i = 0 To lFileList.Count - 1
                             Dim mMsg As New ClassCrossAppComunication.ClassWindowMessageHook.ClassMessage(COMARG_OPEN_FILE_BY_PID, pLastProcess.Id.ToString, lFileList(i))
