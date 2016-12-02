@@ -27,6 +27,7 @@ Public Class FormMain
     Public g_ClassLineState As ClassTextEditorTools.ClassLineState
     Public g_ClassCustomHighlighting As ClassTextEditorTools.ClassCustomHighlighting
     Public g_ClassTabControl As ClassTabControl
+    Public WithEvents g_ClassWindowMessageHook As ClassCrossAppComunication.ClassWindowMessageHook
 
     Public g_mSourceSyntaxSourceAnalysis As ClassSyntaxTools.ClassSyntaxSourceAnalysis
 
@@ -40,6 +41,9 @@ Public Class FormMain
     Public g_cDarkFormDetailsBackgroundColor As Color = Color.FromArgb(255, 24, 24, 24)
     Public g_cDarkFormBackgroundColor As Color = Color.FromArgb(255, 48, 48, 48)
     Public g_cDarkFormMenuBackgroundColor As Color = Color.FromArgb(255, 64, 64, 64)
+
+    Public Const COMMSG_SERVERNAME As String = "BasicPawnComServer-04e3632f-5472-42c5-929a-c3e0c2b35324"
+    Public Const COMARG_OPEN_FILE_BY_PID As String = "BasicPawnComServer-OpenFileByPID-04e3632f-5472-42c5-929a-c3e0c2b35324"
 
     Public Class STRUC_AUTOCOMPLETE
         Public sInfo As String
@@ -148,6 +152,7 @@ Public Class FormMain
         g_ClassLineState = New ClassTextEditorTools.ClassLineState(Me)
         g_ClassCustomHighlighting = New ClassTextEditorTools.ClassCustomHighlighting(Me)
         g_ClassTabControl = New ClassTabControl(Me)
+        g_ClassWindowMessageHook = New ClassCrossAppComunication.ClassWindowMessageHook
 
         ' Load other Forms/Controls
         g_mUCAutocomplete = New UCAutocomplete(Me)
@@ -171,6 +176,7 @@ Public Class FormMain
         g_mUCToolTip.Hide()
 
         SplitContainer_ToolboxSourceAndDetails.SplitterDistance = SplitContainer_ToolboxSourceAndDetails.Height - 175
+        g_ClassWindowMessageHook.Hook(COMMSG_SERVERNAME)
     End Sub
 
     Public Sub UpdateFormConfigText()
@@ -237,15 +243,71 @@ Public Class FormMain
 
         'Load source files via Arguments
         Dim sArgs As String() = Environment.GetCommandLineArgs
-        For i = 1 To sArgs.Length - 1
-            g_ClassTabControl.AddTab(False)
-            g_ClassTabControl.OpenFileTab(g_ClassTabControl.m_TabsCount - 1, sArgs(i), True)
 
-            If (i = 1 AndAlso g_ClassTabControl.m_TabsCount > 0) Then
-                g_ClassTabControl.RemoveTab(0, False)
+        While (True)
+            Dim lFileList As New List(Of String)
+            For i = 1 To sArgs.Length - 1
+                If (IO.File.Exists(sArgs(i))) Then
+                    lFileList.Add(sArgs(i))
+                End If
+            Next
+
+            If (lFileList.Count < 1) Then
+                Exit While
             End If
 
-        Next
+
+
+            'Open all files in the oldes BasicPawn instance
+            Dim pBasicPawnProc As Process() = Process.GetProcessesByName(IO.Path.GetFileNameWithoutExtension(Application.ExecutablePath))
+            If (pBasicPawnProc.Length > 0 AndAlso MessageBox.Show("Open in a existing BasicPawn instance?", "Open files", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes) Then
+                Dim iCurrentPID As Integer = Process.GetCurrentProcess.Id
+                Dim iLastTick As Long = Date.MinValue.Ticks
+                Dim pLastProcess As Process = Nothing
+
+                For Each pProcess As Process In pBasicPawnProc
+                    Try
+                        If (iLastTick > Date.MinValue.Ticks) Then
+                            If (pProcess.Id = iCurrentPID OrElse pProcess.MainModule.FileName.ToLower <> Application.ExecutablePath.ToLower OrElse iLastTick < pProcess.StartTime.Ticks) Then
+                                Continue For
+                            End If
+                        End If
+
+                        pLastProcess = pProcess
+                        iLastTick = pProcess.StartTime.Ticks
+                    Catch ex As Exception
+                        'Ignore random exceptions
+                    End Try
+                Next
+
+
+                If (pLastProcess IsNot Nothing) Then
+                    Try
+                        For i = 0 To lFileList.Count - 1
+                            Dim mMsg As New ClassCrossAppComunication.ClassWindowMessageHook.ClassMessage(COMARG_OPEN_FILE_BY_PID, pLastProcess.Id.ToString, lFileList(i))
+                            g_ClassWindowMessageHook.SendMessage(mMsg)
+                        Next
+                    Catch ex As Exception
+                        ClassExceptionLog.WriteToLogMessageBox(ex)
+                    End Try
+
+                    Me.WindowState = FormWindowState.Minimized
+                    Me.ShowInTaskbar = False
+                    Application.Exit()
+                End If
+            End If
+
+            'Open all files here
+            For i = 0 To lFileList.Count - 1
+                g_ClassTabControl.AddTab(False)
+                g_ClassTabControl.OpenFileTab(g_ClassTabControl.m_TabsCount - 1, lFileList(i), True)
+
+                If (i = 0 AndAlso g_ClassTabControl.m_TabsCount > 0) Then
+                    g_ClassTabControl.RemoveTab(0, False)
+                End If
+            Next
+            Exit While
+        End While
 
         'Update Autocomplete
         g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
@@ -630,5 +692,26 @@ Public Class FormMain
         End If
 
         g_ClassTabControl.SwapTabs(iActiveIndex, iToIndex)
+    End Sub
+
+    Private Sub OnMessageReceive(mClassMessage As ClassCrossAppComunication.ClassWindowMessageHook.ClassMessage) Handles g_ClassWindowMessageHook.OnMessageReceive
+        Try
+            Select Case (mClassMessage.m_MessageName)
+                Case COMARG_OPEN_FILE_BY_PID
+                    Dim iPID As Integer = CInt(mClassMessage.m_Messages(0))
+                    Dim sFile As String = mClassMessage.m_Messages(1)
+
+                    If (iPID <> Process.GetCurrentProcess.Id) Then
+                        Return
+                    End If
+
+                    Me.Invoke(Sub()
+                                  g_ClassTabControl.AddTab(True)
+                                  g_ClassTabControl.OpenFileTab(g_ClassTabControl.m_TabsCount - 1, sFile)
+                              End Sub)
+            End Select
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
     End Sub
 End Class

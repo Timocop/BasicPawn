@@ -74,95 +74,93 @@ Public Class UCObjectBrowser
 
     Private Sub UpdateTreeViewThread()
         Try
-            Try
-                Me.Invoke(Sub() TreeView_ObjectBrowser.BeginUpdate())
+            Me.Invoke(Sub() TreeView_ObjectBrowser.BeginUpdate())
 
-                Dim lAutocompleteList As New List(Of FormMain.STRUC_AUTOCOMPLETE)
-                lAutocompleteList.AddRange(g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.ToArray)
+            Dim lAutocompleteList As New List(Of FormMain.STRUC_AUTOCOMPLETE)
+            lAutocompleteList.AddRange(g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.ToArray)
 
-                If (True) Then
-                    Dim i As Integer
-                    For i = 0 To lAutocompleteList.Count - 1
-                        If ((lAutocompleteList(i).mType And FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) Then
-                            Continue For
-                        End If
+            If (True) Then
+                Dim i As Integer
+                For i = 0 To lAutocompleteList.Count - 1
+                    If ((lAutocompleteList(i).mType And FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) Then
+                        Continue For
+                    End If
 
-                        'Add missing nodes
-                        Dim sFile As String = lAutocompleteList(i).sFile
-                        Dim bIsMainFile As Boolean = Array.Exists(g_sSourceMainFileExt, Function(s As String) sFile.ToLower.EndsWith(s.ToLower))
-                        If (Not CBool(Me.Invoke(Function() TreeView_ObjectBrowser.Nodes.ContainsKey(sFile)))) Then
-                            If (bIsMainFile) Then
-                                Me.Invoke(Sub()
-                                              Dim mTreeNode = TreeView_ObjectBrowser.Nodes.Insert(0, sFile, sFile)
-                                              mTreeNode.NodeFont = New Font(TreeView_ObjectBrowser.Font, FontStyle.Regular)
-                                          End Sub)
-                            Else
-                                Me.Invoke(Sub()
-                                              Dim mTreeNode = TreeView_ObjectBrowser.Nodes.Add(sFile, sFile)
-                                              mTreeNode.NodeFont = New Font(TreeView_ObjectBrowser.Font, FontStyle.Italic)
-                                          End Sub)
-                            End If
-                        End If
-
-                        Dim iTypes As Integer = lAutocompleteList(i).mType
-                        Dim sTypes As String = If(String.IsNullOrEmpty(lAutocompleteList(i).GetTypeFullNames), "private", lAutocompleteList(i).GetTypeFullNames.ToLower)
-                        If (Not CBool(Me.Invoke(Function() TreeView_ObjectBrowser.Nodes(sFile).Nodes.ContainsKey(sTypes)))) Then
-                            Me.Invoke(Sub() TreeView_ObjectBrowser.Nodes(sFile).Nodes.Add(sTypes, sTypes))
-                        End If
-
-                        Dim sName As String = lAutocompleteList(i).sFunctionName
-                        If (Not CBool(Me.Invoke(Function() TreeView_ObjectBrowser.Nodes(sFile).Nodes(sTypes).Nodes.ContainsKey(sName)))) Then
-                            Me.Invoke(Sub() TreeView_ObjectBrowser.Nodes(sFile).Nodes(sTypes).Nodes.Add(New ClassTreeNodeAutocomplete(sName, sName, sFile, iTypes, sName)))
-                        End If
-
+                    'Add missing nodes
+                    Dim sFile As String = lAutocompleteList(i).sFile
+                    Dim bIsMainFile As Boolean = Array.Exists(g_sSourceMainFileExt, Function(s As String) sFile.ToLower.EndsWith(s.ToLower))
+                    If (Not CBool(Me.Invoke(Function() TreeView_ObjectBrowser.Nodes.ContainsKey(sFile)))) Then
                         If (bIsMainFile) Then
                             Me.Invoke(Sub()
-                                          TreeView_ObjectBrowser.Nodes(sFile).ExpandAll()
+                                          Dim mTreeNode = TreeView_ObjectBrowser.Nodes.Insert(0, sFile, sFile)
+                                          mTreeNode.NodeFont = New Font(TreeView_ObjectBrowser.Font, FontStyle.Regular)
+                                      End Sub)
+                        Else
+                            Me.Invoke(Sub()
+                                          Dim mTreeNode = TreeView_ObjectBrowser.Nodes.Add(sFile, sFile)
+                                          mTreeNode.NodeFont = New Font(TreeView_ObjectBrowser.Font, FontStyle.Italic)
                                       End Sub)
                         End If
-                    Next
-                End If
+                    End If
+
+                    Dim iTypes As Integer = lAutocompleteList(i).mType
+                    Dim sTypes As String = If(String.IsNullOrEmpty(lAutocompleteList(i).GetTypeFullNames), "private", lAutocompleteList(i).GetTypeFullNames.ToLower)
+                    If (Not CBool(Me.Invoke(Function() TreeView_ObjectBrowser.Nodes(sFile).Nodes.ContainsKey(sTypes)))) Then
+                        Me.Invoke(Sub() TreeView_ObjectBrowser.Nodes(sFile).Nodes.Add(sTypes, sTypes))
+                    End If
+
+                    Dim sName As String = lAutocompleteList(i).sFunctionName
+                    If (Not CBool(Me.Invoke(Function() TreeView_ObjectBrowser.Nodes(sFile).Nodes(sTypes).Nodes.ContainsKey(sName)))) Then
+                        Me.Invoke(Sub() TreeView_ObjectBrowser.Nodes(sFile).Nodes(sTypes).Nodes.Add(New ClassTreeNodeAutocomplete(sName, sName, sFile, iTypes, sName)))
+                    End If
+
+                    If (bIsMainFile) Then
+                        Me.Invoke(Sub()
+                                      TreeView_ObjectBrowser.Nodes(sFile).ExpandAll()
+                                  End Sub)
+                    End If
+                Next
+            End If
 
 
-                'Remove invalid nodes 
-                If (True) Then
-                    Dim mFileNodes As TreeNodeCollection = CType(Me.Invoke(Function() TreeView_ObjectBrowser.Nodes), TreeNodeCollection)
-                    Dim mTypeNodes As TreeNodeCollection
-                    Dim mNameNodes As TreeNodeCollection
-                    Dim i As Integer
-                    For i = mFileNodes.Count - 1 To 0 Step -1
-                        mTypeNodes = mFileNodes(i).Nodes
+            'Remove invalid nodes 
+            If (True) Then
+                Dim mFileNodes As TreeNodeCollection = CType(Me.Invoke(Function() TreeView_ObjectBrowser.Nodes), TreeNodeCollection)
+                Dim mTypeNodes As TreeNodeCollection
+                Dim mNameNodes As TreeNodeCollection
+                Dim i As Integer
+                For i = mFileNodes.Count - 1 To 0 Step -1
+                    mTypeNodes = mFileNodes(i).Nodes
 
-                        Dim j As Integer
-                        For j = mTypeNodes.Count - 1 To 0 Step -1
-                            mNameNodes = mTypeNodes(j).Nodes
+                    Dim j As Integer
+                    For j = mTypeNodes.Count - 1 To 0 Step -1
+                        mNameNodes = mTypeNodes(j).Nodes
 
-                            Dim l As Integer
-                            For l = mNameNodes.Count - 1 To 0 Step -1
-                                Dim mTreeNodeAutocomplete As ClassTreeNodeAutocomplete = TryCast(mNameNodes(l), ClassTreeNodeAutocomplete)
-                                If (mTreeNodeAutocomplete Is Nothing) Then
-                                    Me.Invoke(Sub() mNameNodes(l).Remove())
-                                    Continue For
-                                End If
+                        Dim l As Integer
+                        For l = mNameNodes.Count - 1 To 0 Step -1
+                            Dim mTreeNodeAutocomplete As ClassTreeNodeAutocomplete = TryCast(mNameNodes(l), ClassTreeNodeAutocomplete)
+                            If (mTreeNodeAutocomplete Is Nothing) Then
+                                Me.Invoke(Sub() mNameNodes(l).Remove())
+                                Continue For
+                            End If
 
-                                If (Not lAutocompleteList.Exists(Function(m As FormMain.STRUC_AUTOCOMPLETE) m.sFile = mTreeNodeAutocomplete.g_sFile AndAlso m.mType = mTreeNodeAutocomplete.g_iType AndAlso m.sFunctionName = mTreeNodeAutocomplete.g_sFunction)) Then
-                                    Me.Invoke(Sub() mNameNodes(l).Remove())
-                                End If
-                            Next
-
-                            If (mTypeNodes(j).Nodes.Count < 1) Then
-                                Me.Invoke(Sub() mTypeNodes(j).Remove())
+                            If (Not lAutocompleteList.Exists(Function(m As FormMain.STRUC_AUTOCOMPLETE) m.sFile = mTreeNodeAutocomplete.g_sFile AndAlso m.mType = mTreeNodeAutocomplete.g_iType AndAlso m.sFunctionName = mTreeNodeAutocomplete.g_sFunction)) Then
+                                Me.Invoke(Sub() mNameNodes(l).Remove())
                             End If
                         Next
 
-                        If (mFileNodes(i).Nodes.Count < 1) Then
-                            Me.Invoke(Sub() mFileNodes(i).Remove())
+                        If (mTypeNodes(j).Nodes.Count < 1) Then
+                            Me.Invoke(Sub() mTypeNodes(j).Remove())
                         End If
                     Next
-                End If
-            Finally
-                Me.Invoke(Sub() TreeView_ObjectBrowser.EndUpdate())
-            End Try
+
+                    If (mFileNodes(i).Nodes.Count < 1) Then
+                        Me.Invoke(Sub() mFileNodes(i).Remove())
+                    End If
+                Next
+            End If
+
+            Me.Invoke(Sub() TreeView_ObjectBrowser.EndUpdate())
         Catch ex As Threading.ThreadAbortException
             Throw
         Catch ex As Exception

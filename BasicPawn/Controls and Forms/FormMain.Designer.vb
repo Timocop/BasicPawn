@@ -25,6 +25,11 @@ Partial Class FormMain
                     End If
                 Next
 
+                If (g_ClassWindowMessageHook IsNot Nothing) Then
+                    g_ClassWindowMessageHook.Dispose()
+                    g_ClassWindowMessageHook = Nothing
+                End If
+
                 If (g_ClassCustomHighlighting IsNot Nothing) Then
                     g_ClassCustomHighlighting.Dispose()
                     g_ClassCustomHighlighting = Nothing
