@@ -707,10 +707,10 @@ Public Class FormMain
                         Return
                     End If
 
-                    Me.Invoke(Sub()
-                                  g_ClassTabControl.AddTab(True)
-                                  g_ClassTabControl.OpenFileTab(g_ClassTabControl.m_TabsCount - 1, sFile)
-                              End Sub)
+                    Me.BeginInvoke(Sub()
+                                       g_ClassTabControl.AddTab(True)
+                                       g_ClassTabControl.OpenFileTab(g_ClassTabControl.m_TabsCount - 1, sFile)
+                                   End Sub)
             End Select
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
