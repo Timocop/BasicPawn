@@ -262,12 +262,17 @@ Public Class FormMain
             Dim pBasicPawnProc As Process() = Process.GetProcessesByName(IO.Path.GetFileNameWithoutExtension(Application.ExecutablePath))
             If (pBasicPawnProc.Length > 0) Then
                 Dim iCurrentPID As Integer = Process.GetCurrentProcess.Id
+                Dim iMyTick As Long = Process.GetCurrentProcess.StartTime.Ticks
                 Dim iLastTick As Long = Date.MinValue.Ticks
                 Dim pLastProcess As Process = Nothing
 
                 For Each pProcess As Process In pBasicPawnProc
                     Try
                         If (pProcess.Id = iCurrentPID OrElse pProcess.MainModule.FileName.ToLower <> Application.ExecutablePath.ToLower) Then
+                            Continue For
+                        End If
+
+                        If (iMyTick < pProcess.StartTime.Ticks) Then
                             Continue For
                         End If
 
@@ -283,7 +288,8 @@ Public Class FormMain
                 Next
 
 
-                If (pLastProcess IsNot Nothing AndAlso MessageBox.Show("Open in a existing BasicPawn instance?", "Open files", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes) Then
+                'If (pLastProcess IsNot Nothing AndAlso MessageBox.Show("Open in a existing BasicPawn instance?", "Open files", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes) Then
+                If (pLastProcess IsNot Nothing) Then
                     Try
                         For i = 0 To lFileList.Count - 1
                             Dim mMsg As New ClassCrossAppComunication.ClassWindowMessageHook.ClassMessage(COMARG_OPEN_FILE_BY_PID, pLastProcess.Id.ToString, lFileList(i))
