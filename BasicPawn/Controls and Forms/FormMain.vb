@@ -27,7 +27,7 @@ Public Class FormMain
     Public g_ClassLineState As ClassTextEditorTools.ClassLineState
     Public g_ClassCustomHighlighting As ClassTextEditorTools.ClassCustomHighlighting
     Public g_ClassTabControl As ClassTabControl
-    Public WithEvents g_ClassWindowMessageHook As ClassCrossAppComunication.ClassWindowMessageHook
+    Public WithEvents g_ClassWindowMessageHook As ClassCrossAppComunication
 
     Public g_mSourceSyntaxSourceAnalysis As ClassSyntaxTools.ClassSyntaxSourceAnalysis
 
@@ -152,7 +152,7 @@ Public Class FormMain
         g_ClassLineState = New ClassTextEditorTools.ClassLineState(Me)
         g_ClassCustomHighlighting = New ClassTextEditorTools.ClassCustomHighlighting(Me)
         g_ClassTabControl = New ClassTabControl(Me)
-        g_ClassWindowMessageHook = New ClassCrossAppComunication.ClassWindowMessageHook
+        g_ClassWindowMessageHook = New ClassCrossAppComunication
 
         ' Load other Forms/Controls
         g_mUCAutocomplete = New UCAutocomplete(Me)
@@ -292,7 +292,7 @@ Public Class FormMain
                 If (pLastProcess IsNot Nothing) Then
                     Try
                         For i = 0 To lFileList.Count - 1
-                            Dim mMsg As New ClassCrossAppComunication.ClassWindowMessageHook.ClassMessage(COMARG_OPEN_FILE_BY_PID, pLastProcess.Id.ToString, lFileList(i))
+                            Dim mMsg As New ClassCrossAppComunication.ClassMessage(COMARG_OPEN_FILE_BY_PID, pLastProcess.Id.ToString, lFileList(i))
                             g_ClassWindowMessageHook.SendMessage(mMsg)
                         Next
                     Catch ex As Exception
@@ -702,7 +702,7 @@ Public Class FormMain
         g_ClassTabControl.SwapTabs(iActiveIndex, iToIndex)
     End Sub
 
-    Private Sub OnMessageReceive(mClassMessage As ClassCrossAppComunication.ClassWindowMessageHook.ClassMessage) Handles g_ClassWindowMessageHook.OnMessageReceive
+    Private Sub OnMessageReceive(mClassMessage As ClassCrossAppComunication.ClassMessage) Handles g_ClassWindowMessageHook.OnMessageReceive
         Try
             Select Case (mClassMessage.m_MessageName)
                 Case COMARG_OPEN_FILE_BY_PID
