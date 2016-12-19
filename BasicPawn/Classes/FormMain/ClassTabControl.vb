@@ -35,7 +35,7 @@ Public Class ClassTabControl
 
     Public Sub Init()
         g_mFormMain.TabControl_SourceTabs.TabPages.Clear()
-        AddTab(True, True, True)
+        AddTab(True, True, False)
     End Sub
 
     ReadOnly Property m_IsLoadingEntries As Boolean
@@ -155,6 +155,7 @@ Public Class ClassTabControl
             SaveLoadTabEntries(iIndex, ENUM_TAB_CONFIG.LOAD)
             m_Tab(iIndex).m_HandlersEnabled = True
 
+            g_mFormMain.g_ClassSyntaxTools.UpdateTextEditorSyntax()
             g_mFormMain.TabControl_SourceTabs.SelectTab(iIndex)
         End If
     End Sub
