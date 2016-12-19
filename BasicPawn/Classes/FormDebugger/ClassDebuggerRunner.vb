@@ -523,8 +523,12 @@ Public Class ClassDebuggerRunner
 
                             If (Not String.IsNullOrEmpty(m_sGameFolder)) Then
                                 If (IO.Directory.Exists(m_sGameFolder)) Then
-                                    g_mFormDebugger.g_ClassDebuggerRunnerEngine.AcceptCommand(m_sGameFolder, String.Format("sm plugins unload {0}", IO.Path.GetFileName(g_sLatestDebuggerPlugin)))
-                                    g_mFormDebugger.g_ClassDebuggerRunnerEngine.AcceptCommand(m_sGameFolder, String.Format("sm plugins unload {0}", IO.Path.GetFileName(g_sLatestDebuggerRunnerPlugin)))
+                                    With New Text.StringBuilder
+                                        .AppendLine(String.Format("sm plugins unload {0}", IO.Path.GetFileName(g_sLatestDebuggerPlugin)))
+                                        .AppendLine(String.Format("sm plugins unload {0}", IO.Path.GetFileName(g_sLatestDebuggerRunnerPlugin)))
+
+                                        g_mFormDebugger.g_ClassDebuggerRunnerEngine.AcceptCommand(m_sGameFolder, .ToString)
+                                    End With
                                 Else
                                     MessageBox.Show("Can't send command! Game directory doesn't exist!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
                                 End If
