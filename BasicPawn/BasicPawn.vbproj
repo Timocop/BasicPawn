@@ -202,6 +202,9 @@
     <Compile Include="Classes\FormMain\ClassSyntaxUpdater.vb" />
     <Compile Include="Classes\FormMain\ClassTabControl.vb" />
     <Compile Include="Classes\FormMain\ClassTextEditorTools.vb" />
+    <Compile Include="Classes\ClassPanelAlpha.vb">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls and Forms\FormDebuggerBreakpointSetValue.Designer.vb">
       <DependentUpon>FormDebuggerBreakpointSetValue.vb</DependentUpon>
     </Compile>
@@ -230,6 +233,12 @@
       <DependentUpon>FormDebuggerStop.vb</DependentUpon>
     </Compile>
     <Compile Include="Controls and Forms\FormDebuggerStop.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls and Forms\FormOpenTabFromInstances.Designer.vb">
+      <DependentUpon>FormOpenTabFromInstances.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controls and Forms\FormOpenTabFromInstances.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Controls and Forms\UCAutocomplete.Designer.vb">
@@ -311,6 +320,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls and Forms\FormDebuggerStop.resx">
       <DependentUpon>FormDebuggerStop.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls and Forms\FormOpenTabFromInstances.resx">
+      <DependentUpon>FormOpenTabFromInstances.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls and Forms\UCAutocomplete.resx">
       <DependentUpon>UCAutocomplete.vb</DependentUpon>

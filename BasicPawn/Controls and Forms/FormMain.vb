@@ -27,7 +27,7 @@ Public Class FormMain
     Public g_ClassLineState As ClassTextEditorTools.ClassLineState
     Public g_ClassCustomHighlighting As ClassTextEditorTools.ClassCustomHighlighting
     Public g_ClassTabControl As ClassTabControl
-    Public WithEvents g_ClassWindowMessageHook As ClassCrossAppComunication
+    Public WithEvents g_ClassCrossAppComunication As ClassCrossAppComunication
 
     Public g_mSourceSyntaxSourceAnalysis As ClassSyntaxTools.ClassSyntaxSourceAnalysis
 
@@ -36,6 +36,7 @@ Public Class FormMain
     Public g_mUCObjectBrowser As UCObjectBrowser
     Public g_mUCToolTip As UCToolTip
     Public g_mFormDebugger As FormDebugger
+    Public g_mFormOpenTabFromInstances As FormOpenTabFromInstances
 
     Public g_cDarkTextEditorBackgroundColor As Color = Color.FromArgb(255, 26, 26, 26)
     Public g_cDarkFormDetailsBackgroundColor As Color = Color.FromArgb(255, 24, 24, 24)
@@ -44,6 +45,12 @@ Public Class FormMain
 
     Public Const COMMSG_SERVERNAME As String = "BasicPawnComServer-04e3632f-5472-42c5-929a-c3e0c2b35324"
     Public Const COMARG_OPEN_FILE_BY_PID As String = "BasicPawnComServer-OpenFileByPID-04e3632f-5472-42c5-929a-c3e0c2b35324"
+    Public Const COMARG_REQUEST_TABS As String = "BasicPawnComServer-RequestTabs-04e3632f-5472-42c5-929a-c3e0c2b35324"
+    Public Const COMARG_REQUEST_TABS_ANSWER As String = "BasicPawnComServer-RequestTabsAnswer-04e3632f-5472-42c5-929a-c3e0c2b35324"
+    Public Const COMARG_CLOSE_TAB As String = "BasicPawnComServer-CloseTab-04e3632f-5472-42c5-929a-c3e0c2b35324"
+    Public Const COMARG_SHOW_PING_FLASH As String = "BasicPawnComServer-ShowPingFlash-04e3632f-5472-42c5-929a-c3e0c2b35324"
+
+    Private g_mPingFlashPanel As ClassPanelAlpha
 
     Public Class STRUC_AUTOCOMPLETE
         Public sInfo As String
@@ -144,7 +151,8 @@ Public Class FormMain
         ' This call is required by the designer.
         InitializeComponent()
 
-        ' Add any initialization after the InitializeComponent() call.
+        ' Add any initialization after the InitializeComponent() call. 
+
         g_ClassSyntaxUpdater = New ClassSyntaxUpdater(Me)
         g_ClassSyntaxTools = New ClassSyntaxTools(Me)
         g_ClassAutocompleteUpdater = New ClassAutocompleteUpdater(Me)
@@ -152,7 +160,7 @@ Public Class FormMain
         g_ClassLineState = New ClassTextEditorTools.ClassLineState(Me)
         g_ClassCustomHighlighting = New ClassTextEditorTools.ClassCustomHighlighting(Me)
         g_ClassTabControl = New ClassTabControl(Me)
-        g_ClassWindowMessageHook = New ClassCrossAppComunication
+        g_ClassCrossAppComunication = New ClassCrossAppComunication
 
         ' Load other Forms/Controls
         g_mUCAutocomplete = New UCAutocomplete(Me)
@@ -176,7 +184,17 @@ Public Class FormMain
         g_mUCToolTip.Hide()
 
         SplitContainer_ToolboxSourceAndDetails.SplitterDistance = SplitContainer_ToolboxSourceAndDetails.Height - 175
-        g_ClassWindowMessageHook.Hook(COMMSG_SERVERNAME)
+        g_ClassCrossAppComunication.Hook(COMMSG_SERVERNAME)
+
+        g_mPingFlashPanel = New ClassPanelAlpha
+        Me.Controls.Add(g_mPingFlashPanel)
+        g_mPingFlashPanel.Name = "#Ignore"
+        g_mPingFlashPanel.Parent = Me
+        g_mPingFlashPanel.Dock = DockStyle.Fill
+        g_mPingFlashPanel.m_TransparentBackColor = Color.FromKnownColor(KnownColor.RoyalBlue)
+        g_mPingFlashPanel.m_Opacity = 0
+        g_mPingFlashPanel.BringToFront()
+        g_mPingFlashPanel.Visible = False
     End Sub
 
     Public Sub UpdateFormConfigText()
@@ -244,7 +262,7 @@ Public Class FormMain
         'Load source files via Arguments
         Dim sArgs As String() = Environment.GetCommandLineArgs
 
-        While (True)
+        While True
             Dim lFileList As New List(Of String)
             For i = 1 To sArgs.Length - 1
                 If (IO.File.Exists(sArgs(i))) Then
@@ -259,49 +277,51 @@ Public Class FormMain
 
 
             'Open all files in the oldes BasicPawn instance
-            Dim pBasicPawnProc As Process() = Process.GetProcessesByName(IO.Path.GetFileNameWithoutExtension(Application.ExecutablePath))
-            If (pBasicPawnProc.Length > 0) Then
-                Dim iCurrentPID As Integer = Process.GetCurrentProcess.Id
-                Dim iMyTick As Long = Process.GetCurrentProcess.StartTime.Ticks
-                Dim iLastTick As Long = Date.MinValue.Ticks
-                Dim pLastProcess As Process = Nothing
+            If (Array.IndexOf(sArgs, "-newinstance") = -1) Then
+                Dim pBasicPawnProc As Process() = Process.GetProcessesByName(IO.Path.GetFileNameWithoutExtension(Application.ExecutablePath))
+                If (pBasicPawnProc.Length > 0) Then
+                    Dim iCurrentPID As Integer = Process.GetCurrentProcess.Id
+                    Dim iMyTick As Long = Process.GetCurrentProcess.StartTime.Ticks
+                    Dim iLastTick As Long = Date.MinValue.Ticks
+                    Dim pLastProcess As Process = Nothing
 
-                For Each pProcess As Process In pBasicPawnProc
-                    Try
-                        If (pProcess.Id = iCurrentPID OrElse pProcess.MainModule.FileName.ToLower <> Application.ExecutablePath.ToLower) Then
-                            Continue For
-                        End If
+                    For Each pProcess As Process In pBasicPawnProc
+                        Try
+                            If (pProcess.Id = iCurrentPID OrElse pProcess.MainModule.FileName.ToLower <> Application.ExecutablePath.ToLower) Then
+                                Continue For
+                            End If
 
-                        If (iMyTick < pProcess.StartTime.Ticks) Then
-                            Continue For
-                        End If
+                            If (iMyTick < pProcess.StartTime.Ticks) Then
+                                Continue For
+                            End If
 
-                        If (iLastTick > Date.MinValue.Ticks AndAlso iLastTick < pProcess.StartTime.Ticks) Then
-                            Continue For
-                        End If
+                            If (iLastTick > Date.MinValue.Ticks AndAlso iLastTick < pProcess.StartTime.Ticks) Then
+                                Continue For
+                            End If
 
-                        pLastProcess = pProcess
-                        iLastTick = pProcess.StartTime.Ticks
-                    Catch ex As Exception
-                        'Ignore random exceptions
-                    End Try
-                Next
+                            pLastProcess = pProcess
+                            iLastTick = pProcess.StartTime.Ticks
+                        Catch ex As Exception
+                            'Ignore random exceptions
+                        End Try
+                    Next
 
 
-                'If (pLastProcess IsNot Nothing AndAlso MessageBox.Show("Open in a existing BasicPawn instance?", "Open files", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes) Then
-                If (pLastProcess IsNot Nothing) Then
-                    Try
-                        For i = 0 To lFileList.Count - 1
-                            Dim mMsg As New ClassCrossAppComunication.ClassMessage(COMARG_OPEN_FILE_BY_PID, pLastProcess.Id.ToString, lFileList(i))
-                            g_ClassWindowMessageHook.SendMessage(mMsg)
-                        Next
-                    Catch ex As Exception
-                        ClassExceptionLog.WriteToLogMessageBox(ex)
-                    End Try
+                    'If (pLastProcess IsNot Nothing AndAlso MessageBox.Show("Open in a existing BasicPawn instance?", "Open files", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes) Then
+                    If (pLastProcess IsNot Nothing) Then
+                        Try
+                            For i = 0 To lFileList.Count - 1
+                                Dim mMsg As New ClassCrossAppComunication.ClassMessage(COMARG_OPEN_FILE_BY_PID, CStr(pLastProcess.Id), lFileList(i))
+                                g_ClassCrossAppComunication.SendMessage(mMsg)
+                            Next
+                        Catch ex As Exception
+                            ClassExceptionLog.WriteToLogMessageBox(ex)
+                        End Try
 
-                    Me.WindowState = FormWindowState.Minimized
-                    Me.ShowInTaskbar = False
-                    Application.Exit()
+                        Me.WindowState = FormWindowState.Minimized
+                        Me.ShowInTaskbar = False
+                        Application.Exit()
+                    End If
                 End If
             End If
 
@@ -324,6 +344,9 @@ Public Class FormMain
         g_ClassSyntaxTools.UpdateFormColors()
 
         g_ClassSyntaxUpdater.StartThread()
+
+        ClassTools.ClassForms.SetDoubleBuffering(TabControl_SourceTabs, True)
+        ClassTools.ClassForms.SetDoubleBufferingUnmanaged(TabControl_SourceTabs, True)
     End Sub
 
 #End Region
@@ -409,6 +432,25 @@ Public Class FormMain
         g_ClassTabControl.SaveFileTab(g_ClassTabControl.m_ActiveTabIndex)
     End Sub
 
+    Private Sub ToolStripMenuItem_FileLoadTabs_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileLoadTabs.Click
+        If (g_mFormOpenTabFromInstances Is Nothing OrElse g_mFormOpenTabFromInstances.IsDisposed) Then
+            g_mFormOpenTabFromInstances = New FormOpenTabFromInstances(Me)
+            g_mFormOpenTabFromInstances.Show()
+        End If
+    End Sub
+
+    Private Sub ToolStripMenuItem_FileOpenFolder_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileOpenFolder.Click
+        Try
+            If (String.IsNullOrEmpty(g_ClassTabControl.m_ActiveTab.m_File) OrElse Not IO.File.Exists(g_ClassTabControl.m_ActiveTab.m_File)) Then
+                MessageBox.Show("Can't open current folder. Source file can't be found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Return
+            End If
+
+            Process.Start("explorer.exe", "/select,""" & g_ClassTabControl.m_ActiveTab.m_File & """")
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
 
     Private Sub ToolStripMenuItem_FileExit_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileExit.Click
         Me.Close()
@@ -663,19 +705,6 @@ Public Class FormMain
         End Try
     End Sub
 
-    Private Sub ToolStripMenuItem_FileOpenFolder_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileOpenFolder.Click
-        Try
-            If (String.IsNullOrEmpty(g_ClassTabControl.m_ActiveTab.m_File) OrElse Not IO.File.Exists(g_ClassTabControl.m_ActiveTab.m_File)) Then
-                MessageBox.Show("Can't open current folder. Source file can't be found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Return
-            End If
-
-            Process.Start("explorer.exe", "/select,""" & g_ClassTabControl.m_ActiveTab.m_File & """")
-        Catch ex As Exception
-            ClassExceptionLog.WriteToLogMessageBox(ex)
-        End Try
-    End Sub
-
     Private Sub ToolStripMenuItem_TabClose_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_TabClose.Click
         g_ClassTabControl.RemoveTab(g_ClassTabControl.m_ActiveTabIndex, True)
     End Sub
@@ -702,7 +731,14 @@ Public Class FormMain
         g_ClassTabControl.SwapTabs(iActiveIndex, iToIndex)
     End Sub
 
-    Private Sub OnMessageReceive(mClassMessage As ClassCrossAppComunication.ClassMessage) Handles g_ClassWindowMessageHook.OnMessageReceive
+    Private Sub ToolStripMenuItem_TabOpenInstance_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_TabOpenInstance.Click
+        If (g_mFormOpenTabFromInstances Is Nothing OrElse g_mFormOpenTabFromInstances.IsDisposed) Then
+            g_mFormOpenTabFromInstances = New FormOpenTabFromInstances(Me)
+            g_mFormOpenTabFromInstances.Show()
+        End If
+    End Sub
+
+    Private Sub OnMessageReceive(mClassMessage As ClassCrossAppComunication.ClassMessage) Handles g_ClassCrossAppComunication.OnMessageReceive
         Try
             Select Case (mClassMessage.m_MessageName)
                 Case COMARG_OPEN_FILE_BY_PID
@@ -717,9 +753,86 @@ Public Class FormMain
                                        g_ClassTabControl.AddTab(True)
                                        g_ClassTabControl.OpenFileTab(g_ClassTabControl.m_TabsCount - 1, sFile)
                                    End Sub)
+
+                Case COMARG_REQUEST_TABS
+                    Dim sIdentifier As String = mClassMessage.m_Messages(0)
+
+                    For i = 0 To g_ClassTabControl.m_TabsCount - 1
+                        Dim iTabIndex As Integer = i
+                        Dim sProcessName As String = Process.GetCurrentProcess.ProcessName
+                        Dim iPID As Integer = Process.GetCurrentProcess.Id
+                        Dim sFile As String = g_ClassTabControl.m_Tab(i).m_File
+
+                        g_ClassCrossAppComunication.SendMessage(New ClassCrossAppComunication.ClassMessage(COMARG_REQUEST_TABS_ANSWER, CStr(iTabIndex), sProcessName, CStr(iPID), sFile, sIdentifier), False)
+                    Next
+
+                Case COMARG_REQUEST_TABS_ANSWER
+                    Dim iTabIndex As Integer = CInt(mClassMessage.m_Messages(0))
+                    Dim sProcessName As String = mClassMessage.m_Messages(1)
+                    Dim iPID As Integer = CInt(mClassMessage.m_Messages(2))
+                    Dim sFile As String = mClassMessage.m_Messages(3)
+                    Dim sIdentifier As String = mClassMessage.m_Messages(4)
+
+                    If (g_mFormOpenTabFromInstances Is Nothing OrElse g_mFormOpenTabFromInstances.IsDisposed) Then
+                        Return
+                    End If
+
+                    If (g_mFormOpenTabFromInstances IsNot Nothing) Then
+                        g_mFormOpenTabFromInstances.AddListViewItem(iTabIndex, sProcessName, iPID, sFile, sIdentifier)
+                    End If
+
+                Case COMARG_CLOSE_TAB
+                    Dim iTabIndex As Integer = CInt(mClassMessage.m_Messages(0))
+                    Dim iPID As Integer = CInt(mClassMessage.m_Messages(1))
+                    Dim sFile As String = mClassMessage.m_Messages(2)
+
+                    If (iPID <> Process.GetCurrentProcess.Id) Then
+                        Return
+                    End If
+
+                    If (iTabIndex < 0 OrElse iTabIndex > g_ClassTabControl.m_TabsCount - 1) Then
+                        Return
+                    End If
+
+                    If (Not String.IsNullOrEmpty(sFile) AndAlso sFile <> g_ClassTabControl.m_Tab(iTabIndex).m_File) Then
+                        Return
+                    End If
+
+                    g_ClassTabControl.RemoveTab(iTabIndex, True)
+
+                Case COMARG_SHOW_PING_FLASH
+                    Dim iPID As Integer = CInt(mClassMessage.m_Messages(0))
+
+                    If (iPID <> Process.GetCurrentProcess.Id) Then
+                        Return
+                    End If
+
+                    ShowPingFlash()
             End Select
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
+    End Sub
+
+    Public Sub ShowPingFlash()
+        g_mPingFlashPanel.m_Opacity = 50
+        g_mPingFlashPanel.Visible = True
+
+        Timer_PingFlash.Start()
+    End Sub
+
+    Private Sub Timer_PingFlash_Tick(sender As Object, e As EventArgs) Handles Timer_PingFlash.Tick
+        If (g_mPingFlashPanel Is Nothing OrElse g_mPingFlashPanel.IsDisposed) Then
+            Return
+        End If
+
+        g_mPingFlashPanel.m_Opacity -= 10
+
+        If (g_mPingFlashPanel.m_Opacity > 0) Then
+            Return
+        End If
+
+        g_mPingFlashPanel.Visible = False
+        Timer_PingFlash.Stop()
     End Sub
 End Class

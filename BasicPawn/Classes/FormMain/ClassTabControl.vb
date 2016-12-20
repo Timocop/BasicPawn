@@ -26,6 +26,8 @@ Public Class ClassTabControl
     Private g_iOldActiveIndex As Integer = -1
     Private g_bIsLoadingEntries As Boolean = False
 
+    Private g_iFreezePaintCounter As Integer = 0
+
 
     Public Sub New(f As FormMain)
         g_mFormMain = f
@@ -71,7 +73,7 @@ Public Class ClassTabControl
 
     Public Sub AddTab(Optional bSelect As Boolean = False, Optional bIncludeTemplate As Boolean = False, Optional bChanged As Boolean = False)
         Try
-            ClassTools.ClassForms.SuspendDrawing(g_mFormMain.SplitContainer_ToolboxAndEditor)
+            FreezePaint(g_mFormMain.SplitContainer_ToolboxAndEditor)
 
             Dim mTabPage As New SourceTabPage(g_mFormMain)
             mTabPage.m_Changed = bChanged
@@ -81,20 +83,19 @@ Public Class ClassTabControl
             End If
 
             g_mFormMain.TabControl_SourceTabs.TabPages.Add(mTabPage)
-
             g_mFormMain.g_ClassSyntaxTools.UpdateTextEditorSyntax()
 
             If (bSelect OrElse m_TabsCount < 2) Then
                 SelectTab(m_TabsCount - 1)
             End If
         Finally
-            ClassTools.ClassForms.ResumeDrawing(g_mFormMain.SplitContainer_ToolboxAndEditor)
+            UnfreezePaint(g_mFormMain.SplitContainer_ToolboxAndEditor)
         End Try
     End Sub
 
     Public Function RemoveTab(iIndex As Integer, bPrompSave As Boolean) As Boolean
         Try
-            ClassTools.ClassForms.SuspendDrawing(g_mFormMain.SplitContainer_ToolboxAndEditor)
+            FreezePaint(g_mFormMain.SplitContainer_ToolboxAndEditor)
 
             If (bPrompSave AndAlso PromptSaveTab(iIndex)) Then
                 Return False
@@ -118,13 +119,13 @@ Public Class ClassTabControl
 
             Return True
         Finally
-            ClassTools.ClassForms.ResumeDrawing(g_mFormMain.SplitContainer_ToolboxAndEditor)
+            UnfreezePaint(g_mFormMain.SplitContainer_ToolboxAndEditor)
         End Try
     End Function
 
     Public Sub SwapTabs(iFromIndex As Integer, iToIndex As Integer)
         Try
-            ClassTools.ClassForms.SuspendDrawing(g_mFormMain.SplitContainer_ToolboxAndEditor)
+            FreezePaint(g_mFormMain.SplitContainer_ToolboxAndEditor)
 
             g_bIgnoreOnTabSelected = True
 
@@ -139,25 +140,31 @@ Public Class ClassTabControl
 
             SelectTab(iToIndex)
         Finally
-            ClassTools.ClassForms.ResumeDrawing(g_mFormMain.SplitContainer_ToolboxAndEditor)
+            UnfreezePaint(g_mFormMain.SplitContainer_ToolboxAndEditor)
         End Try
     End Sub
 
     Public Sub SelectTab(iIndex As Integer)
-        If (g_iOldActiveIndex > -1) Then
-            SaveLoadTabEntries(g_iOldActiveIndex, ENUM_TAB_CONFIG.SAVE)
-            m_Tab(g_iOldActiveIndex).m_HandlersEnabled = False
-        End If
+        Try
+            FreezePaint(g_mFormMain.SplitContainer_ToolboxAndEditor)
 
-        g_iOldActiveIndex = iIndex
+            If (g_iOldActiveIndex > -1) Then
+                SaveLoadTabEntries(g_iOldActiveIndex, ENUM_TAB_CONFIG.SAVE)
+                m_Tab(g_iOldActiveIndex).m_HandlersEnabled = False
+            End If
 
-        If (iIndex > -1) Then
-            SaveLoadTabEntries(iIndex, ENUM_TAB_CONFIG.LOAD)
-            m_Tab(iIndex).m_HandlersEnabled = True
+            g_iOldActiveIndex = iIndex
 
-            g_mFormMain.g_ClassSyntaxTools.UpdateTextEditorSyntax()
-            g_mFormMain.TabControl_SourceTabs.SelectTab(iIndex)
-        End If
+            If (iIndex > -1) Then
+                SaveLoadTabEntries(iIndex, ENUM_TAB_CONFIG.LOAD)
+                m_Tab(iIndex).m_HandlersEnabled = True
+
+                g_mFormMain.TabControl_SourceTabs.SelectTab(iIndex)
+                g_mFormMain.g_ClassSyntaxTools.UpdateTextEditorSyntax()
+            End If
+        Finally
+            UnfreezePaint(g_mFormMain.SplitContainer_ToolboxAndEditor)
+        End Try
     End Sub
 
 
@@ -228,6 +235,8 @@ Public Class ClassTabControl
 
                     g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & m_Tab(iIndex).m_File)
                     IO.File.WriteAllText(m_Tab(iIndex).m_File, m_Tab(iIndex).m_TextEditor.Document.TextContent)
+
+                    g_mFormMain.ShowPingFlash()
                 End If
             End Using
         Else
@@ -237,6 +246,8 @@ Public Class ClassTabControl
 
             g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & m_Tab(iIndex).m_File)
             IO.File.WriteAllText(m_Tab(iIndex).m_File, m_Tab(iIndex).m_TextEditor.Document.TextContent)
+
+            g_mFormMain.ShowPingFlash()
         End If
     End Sub
 
@@ -353,6 +364,23 @@ Public Class ClassTabControl
         g_bIgnoreOnTabSelected = True
         SelectTab(m_ActiveTabIndex)
         g_bIgnoreOnTabSelected = False
+    End Sub
+
+
+
+    Private Sub FreezePaint(c As Control)
+        g_iFreezePaintCounter += 1
+        ClassTools.ClassForms.SuspendDrawing(c)
+    End Sub
+
+    Private Sub UnfreezePaint(c As Control)
+        If (g_iFreezePaintCounter > 0) Then
+            g_iFreezePaintCounter -= 1
+
+            If (g_iFreezePaintCounter = 0) Then
+                ClassTools.ClassForms.ResumeDrawing(c)
+            End If
+        End If
     End Sub
 
     Public Class SourceTabPage
@@ -510,10 +538,8 @@ Public Class ClassTabControl
 
                 If (g_bEnabled) Then
                     AddHandlers()
-                    'ClassTools.ClassForms.ResumeDrawing(Me)
                 Else
                     RemoveHandlers()
-                    'ClassTools.ClassForms.SuspendDrawing(Me)
                 End If
             End Set
         End Property

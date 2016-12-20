@@ -196,9 +196,11 @@ Public Class ClassCrossAppComunication
 
     Public Class ClassMessage
         Private g_sMessageName As String = ""
+        Private g_iSenderPID As Integer = -1
         Private g_sMessages As String() = New String() {}
 
         Private g_sFormatedMessageName As String = ""
+        Private g_sFormatedSenderPID As String = ""
         Private g_sFormatedMessages As String() = New String() {}
 
         Private g_sMessageSeperator As Char = "|"c
@@ -210,6 +212,7 @@ Public Class ClassCrossAppComunication
         End Sub
         Public Sub New(sMessageName As String, ParamArray sMessages As String())
             m_MessageName = sMessageName
+            m_SenderPID = Process.GetCurrentProcess.Id
             m_Messages = sMessages
         End Sub
 
@@ -221,8 +224,19 @@ Public Class ClassCrossAppComunication
                 g_sMessageName = value
 
                 g_sFormatedMessageName = g_sMessageName
-
                 g_sFormatedMessageName = Convert.ToBase64String(Text.Encoding.Default.GetBytes(g_sFormatedMessageName))
+            End Set
+        End Property
+
+        Public Property m_SenderPID As Integer
+            Get
+                Return g_iSenderPID
+            End Get
+            Set(value As Integer)
+                g_iSenderPID = value
+
+                g_sFormatedSenderPID = CStr(g_iSenderPID)
+                g_sFormatedSenderPID = Convert.ToBase64String(Text.Encoding.Default.GetBytes(g_sFormatedSenderPID))
             End Set
         End Property
 
@@ -246,11 +260,20 @@ Public Class ClassCrossAppComunication
         ''' <returns></returns>
         Public Property m_FormatedMessage As String
             Get
-                Return String.Format("{0}{1}{2}", g_sFormatedMessageName, g_sMessageSeperator, String.Join(g_sMessageSeperator, g_sFormatedMessages))
+                With New Text.StringBuilder
+                    .Append(g_sFormatedMessageName)
+                    .Append(g_sMessageSeperator)
+                    .Append(g_sFormatedSenderPID)
+                    .Append(g_sMessageSeperator)
+                    .Append(String.Join(g_sMessageSeperator, g_sFormatedMessages))
+
+                    Return .ToString
+                End With
             End Get
             Set(value As String)
                 Try
                     m_MessageName = ""
+                    m_SenderPID = -1
                     m_Messages = New String() {}
 
                     Dim sSplitted As String() = value.Split(g_sMessageSeperator)
@@ -261,6 +284,8 @@ Public Class ClassCrossAppComunication
                         Select Case (i)
                             Case 0
                                 m_MessageName = Text.Encoding.Default.GetString(Convert.FromBase64String(sSplitted(i)))
+                            Case 1
+                                m_SenderPID = CInt(Text.Encoding.Default.GetString(Convert.FromBase64String(sSplitted(i))))
                             Case Else
                                 lMessagesList.Add(Text.Encoding.Default.GetString(Convert.FromBase64String(sSplitted(i))))
                         End Select
@@ -269,6 +294,7 @@ Public Class ClassCrossAppComunication
                     m_Messages = lMessagesList.ToArray
                 Catch ex As Exception
                     m_MessageName = ""
+                    m_SenderPID = -1
                     m_Messages = New String() {}
                 End Try
             End Set

@@ -116,6 +116,9 @@ Public Class ClassControlStyle
                             i.ForeColor = g_cDarkPanelColor.mLightForegound
                         End If
 
+                    Case "#Ignore"
+                        'Ignore
+
                     Case Else
                         If (m_InvertColor) Then
                             i.BackColor = g_cDarkPanelColor.mDarkBackground

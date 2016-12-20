@@ -281,8 +281,15 @@ Public Class FormSettings
         'Get all settings
         ClassSettings.LoadSettings()
 
-
-
+        'General
+        CheckBox_AlwaysNewInstance.Checked = ClassSettings.g_iSettingsAlwaysOpenNewInstance
+        'Text Editor
+        Label_Font.Text = New FontConverter().ConvertToInvariantString(ClassSettings.g_iSettingsTextEditorFont)
+        CheckBox_InvertedColors.Checked = ClassSettings.g_iSettingsInvertColors
+        'Syntax Highligting
+        CheckBox_DoubleClickMark.Checked = ClassSettings.g_iSettingsDoubleClickMark
+        CheckBox_AutoMark.Checked = ClassSettings.g_iSettingsAutoMark
+        'Autocomplete
         CheckBox_OnScreenIntelliSense.Checked = ClassSettings.g_iSettingsEnableToolTip
         CheckBox_CommentsMethodIntelliSense.Checked = ClassSettings.g_iSettingsToolTipMethodComments
         CheckBox_CommentsAutocompleteIntelliSense.Checked = ClassSettings.g_iSettingsToolTipAutocompleteComments
@@ -291,13 +298,7 @@ Public Class FormSettings
         CheckBox_FullAutocompleteReTagging.Checked = ClassSettings.g_iSettingsFullEnumAutocomplete
         CheckBox_CaseSensitive.Checked = ClassSettings.g_iSettingsAutocompleteCaseSensitive
         CheckBox_CurrentSourceVarAutocomplete.Checked = ClassSettings.g_iSettingsVarAutocompleteCurrentSourceOnly
-
-        CheckBox_DoubleClickMark.Checked = ClassSettings.g_iSettingsDoubleClickMark
-        CheckBox_AutoMark.Checked = ClassSettings.g_iSettingsAutoMark
-
-        Label_Font.Text = New FontConverter().ConvertToInvariantString(ClassSettings.g_iSettingsTextEditorFont)
-        CheckBox_InvertedColors.Checked = ClassSettings.g_iSettingsInvertColors
-
+        'Debugger
         CheckBox_CatchExceptions.Checked = ClassSettings.g_iSettingsDebuggerCatchExceptions
         CheckBox_EntitiesEnableColor.Checked = ClassSettings.g_iSettingsDebuggerEntitiesEnableAutoScroll
         CheckBox_EntitiesEnableShowNewEnts.Checked = ClassSettings.g_iSettingsDebuggerEntitiesEnableAutoScroll
@@ -349,8 +350,15 @@ Public Class FormSettings
             End If
         End If
 
-
-
+        'General
+        ClassSettings.g_iSettingsAlwaysOpenNewInstance = CheckBox_AlwaysNewInstance.Checked
+        'Text Editor
+        ClassSettings.g_iSettingsTextEditorFont = CType(New FontConverter().ConvertFromInvariantString(Label_Font.Text), Font)
+        ClassSettings.g_iSettingsInvertColors = CheckBox_InvertedColors.Checked
+        'Syntax Highligting
+        ClassSettings.g_iSettingsDoubleClickMark = CheckBox_DoubleClickMark.Checked
+        ClassSettings.g_iSettingsAutoMark = CheckBox_AutoMark.Checked
+        'Autocomplete
         ClassSettings.g_iSettingsEnableToolTip = CheckBox_OnScreenIntelliSense.Checked
         ClassSettings.g_iSettingsToolTipMethodComments = CheckBox_CommentsMethodIntelliSense.Checked
         ClassSettings.g_iSettingsToolTipAutocompleteComments = CheckBox_CommentsAutocompleteIntelliSense.Checked
@@ -359,13 +367,7 @@ Public Class FormSettings
         ClassSettings.g_iSettingsFullEnumAutocomplete = CheckBox_FullAutocompleteReTagging.Checked
         ClassSettings.g_iSettingsAutocompleteCaseSensitive = CheckBox_CaseSensitive.Checked
         ClassSettings.g_iSettingsVarAutocompleteCurrentSourceOnly = CheckBox_CurrentSourceVarAutocomplete.Checked
-
-        ClassSettings.g_iSettingsDoubleClickMark = CheckBox_DoubleClickMark.Checked
-        ClassSettings.g_iSettingsAutoMark = CheckBox_AutoMark.Checked
-
-        ClassSettings.g_iSettingsTextEditorFont = CType(New FontConverter().ConvertFromInvariantString(Label_Font.Text), Font)
-        ClassSettings.g_iSettingsInvertColors = CheckBox_InvertedColors.Checked
-
+        'Debugger
         ClassSettings.g_iSettingsDebuggerCatchExceptions = CheckBox_CatchExceptions.Checked
         ClassSettings.g_iSettingsDebuggerEntitiesEnableColoring = CheckBox_EntitiesEnableColor.Checked
         ClassSettings.g_iSettingsDebuggerEntitiesEnableAutoScroll = CheckBox_EntitiesEnableShowNewEnts.Checked

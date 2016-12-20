@@ -7,6 +7,12 @@ Partial Class FormMain
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If (disposing) Then
+                If (g_mFormOpenTabFromInstances IsNot Nothing AndAlso Not g_mFormOpenTabFromInstances.IsDisposed) Then
+                    g_mFormOpenTabFromInstances.Close()
+                    g_mFormOpenTabFromInstances.Dispose()
+                    g_mFormOpenTabFromInstances = Nothing
+                End If
+
                 g_ClassSyntaxUpdater.StopThread()
                 g_ClassAutocompleteUpdater.StopUpdate()
                 g_mUCObjectBrowser.StopUpdate()
@@ -25,9 +31,9 @@ Partial Class FormMain
                     End If
                 Next
 
-                If (g_ClassWindowMessageHook IsNot Nothing) Then
-                    g_ClassWindowMessageHook.Dispose()
-                    g_ClassWindowMessageHook = Nothing
+                If (g_ClassCrossAppComunication IsNot Nothing) Then
+                    g_ClassCrossAppComunication.Dispose()
+                    g_ClassCrossAppComunication = Nothing
                 End If
 
                 If (g_ClassCustomHighlighting IsNot Nothing) Then
@@ -80,10 +86,15 @@ Partial Class FormMain
         Me.MenuStrip_BasicPawn = New System.Windows.Forms.MenuStrip()
         Me.ToolStripMenuItem_File = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_FileNew = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator9 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_FileOpen = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_FileLoadTabs = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator7 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_FileSave = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_FileSaveAll = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_FileSaveAs = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_FileSaveAsTemp = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator8 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_FileOpenFolder = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_FileExit = New System.Windows.Forms.ToolStripMenuItem()
@@ -136,7 +147,8 @@ Partial Class FormMain
         Me.ToolStripStatusLabel_CurrentConfig = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ToolStripStatusLabel_LastInformation = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ToolStripStatusLabel_AppVersion = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.ToolStripMenuItem_FileSaveAll = New System.Windows.Forms.ToolStripMenuItem()
+        Me.Timer_PingFlash = New System.Windows.Forms.Timer(Me.components)
+        Me.ToolStripMenuItem_TabOpenInstance = New System.Windows.Forms.ToolStripMenuItem()
         Me.ContextMenuStrip_RightClick.SuspendLayout()
         Me.MenuStrip_BasicPawn.SuspendLayout()
         Me.SplitContainer_ToolboxSourceAndDetails.Panel1.SuspendLayout()
@@ -270,17 +282,18 @@ Partial Class FormMain
         '
         'MenuStrip_BasicPawn
         '
-        Me.MenuStrip_BasicPawn.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_File, Me.ToolStripMenuItem_Tools, Me.ToolStripMenuItem_Build, Me.ToolStripMenuItem_Test, Me.ToolStripMenuItem_Debug, Me.ToolStripMenuItem_Shell, Me.ToolStripMenuItem_Help, Me.ToolStripMenuItem_Undo, Me.ToolStripMenuItem_Redo, Me.ToolStripMenuItem_CheckUpdate, Me.ToolStripMenuItem_TabClose, Me.ToolStripMenuItem_TabMoveRight, Me.ToolStripMenuItem_TabMoveLeft})
+        Me.MenuStrip_BasicPawn.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_File, Me.ToolStripMenuItem_Tools, Me.ToolStripMenuItem_Build, Me.ToolStripMenuItem_Test, Me.ToolStripMenuItem_Debug, Me.ToolStripMenuItem_Shell, Me.ToolStripMenuItem_Help, Me.ToolStripMenuItem_Undo, Me.ToolStripMenuItem_Redo, Me.ToolStripMenuItem_CheckUpdate, Me.ToolStripMenuItem_TabClose, Me.ToolStripMenuItem_TabMoveRight, Me.ToolStripMenuItem_TabMoveLeft, Me.ToolStripMenuItem_TabOpenInstance})
         Me.MenuStrip_BasicPawn.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip_BasicPawn.Name = "MenuStrip_BasicPawn"
         Me.MenuStrip_BasicPawn.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
+        Me.MenuStrip_BasicPawn.ShowItemToolTips = True
         Me.MenuStrip_BasicPawn.Size = New System.Drawing.Size(1008, 24)
         Me.MenuStrip_BasicPawn.TabIndex = 2
         Me.MenuStrip_BasicPawn.Text = "MenuStrip1"
         '
         'ToolStripMenuItem_File
         '
-        Me.ToolStripMenuItem_File.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_FileNew, Me.ToolStripMenuItem_FileOpen, Me.ToolStripMenuItem_FileSave, Me.ToolStripMenuItem_FileSaveAll, Me.ToolStripMenuItem_FileSaveAs, Me.ToolStripMenuItem_FileSaveAsTemp, Me.ToolStripMenuItem_FileOpenFolder, Me.ToolStripSeparator2, Me.ToolStripMenuItem_FileExit})
+        Me.ToolStripMenuItem_File.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_FileNew, Me.ToolStripSeparator9, Me.ToolStripMenuItem_FileOpen, Me.ToolStripMenuItem_FileLoadTabs, Me.ToolStripSeparator7, Me.ToolStripMenuItem_FileSave, Me.ToolStripMenuItem_FileSaveAll, Me.ToolStripMenuItem_FileSaveAs, Me.ToolStripMenuItem_FileSaveAsTemp, Me.ToolStripSeparator8, Me.ToolStripMenuItem_FileOpenFolder, Me.ToolStripSeparator2, Me.ToolStripMenuItem_FileExit})
         Me.ToolStripMenuItem_File.Image = CType(resources.GetObject("ToolStripMenuItem_File.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_File.Name = "ToolStripMenuItem_File"
         Me.ToolStripMenuItem_File.Size = New System.Drawing.Size(53, 20)
@@ -291,24 +304,52 @@ Partial Class FormMain
         Me.ToolStripMenuItem_FileNew.Image = CType(resources.GetObject("ToolStripMenuItem_FileNew.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_FileNew.Name = "ToolStripMenuItem_FileNew"
         Me.ToolStripMenuItem_FileNew.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.N), System.Windows.Forms.Keys)
-        Me.ToolStripMenuItem_FileNew.Size = New System.Drawing.Size(238, 22)
+        Me.ToolStripMenuItem_FileNew.Size = New System.Drawing.Size(343, 22)
         Me.ToolStripMenuItem_FileNew.Text = "&New"
+        '
+        'ToolStripSeparator9
+        '
+        Me.ToolStripSeparator9.Name = "ToolStripSeparator9"
+        Me.ToolStripSeparator9.Size = New System.Drawing.Size(340, 6)
         '
         'ToolStripMenuItem_FileOpen
         '
         Me.ToolStripMenuItem_FileOpen.Image = CType(resources.GetObject("ToolStripMenuItem_FileOpen.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_FileOpen.Name = "ToolStripMenuItem_FileOpen"
         Me.ToolStripMenuItem_FileOpen.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.O), System.Windows.Forms.Keys)
-        Me.ToolStripMenuItem_FileOpen.Size = New System.Drawing.Size(238, 22)
+        Me.ToolStripMenuItem_FileOpen.Size = New System.Drawing.Size(343, 22)
         Me.ToolStripMenuItem_FileOpen.Text = "&Open"
+        '
+        'ToolStripMenuItem_FileLoadTabs
+        '
+        Me.ToolStripMenuItem_FileLoadTabs.Image = Global.BasicPawn.My.Resources.Resources.imageres_5333_16x16_32
+        Me.ToolStripMenuItem_FileLoadTabs.Name = "ToolStripMenuItem_FileLoadTabs"
+        Me.ToolStripMenuItem_FileLoadTabs.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
+            Or System.Windows.Forms.Keys.O), System.Windows.Forms.Keys)
+        Me.ToolStripMenuItem_FileLoadTabs.Size = New System.Drawing.Size(343, 22)
+        Me.ToolStripMenuItem_FileLoadTabs.Text = "Open from other instances"
+        '
+        'ToolStripSeparator7
+        '
+        Me.ToolStripSeparator7.Name = "ToolStripSeparator7"
+        Me.ToolStripSeparator7.Size = New System.Drawing.Size(340, 6)
         '
         'ToolStripMenuItem_FileSave
         '
         Me.ToolStripMenuItem_FileSave.Image = CType(resources.GetObject("ToolStripMenuItem_FileSave.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_FileSave.Name = "ToolStripMenuItem_FileSave"
         Me.ToolStripMenuItem_FileSave.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.S), System.Windows.Forms.Keys)
-        Me.ToolStripMenuItem_FileSave.Size = New System.Drawing.Size(238, 22)
+        Me.ToolStripMenuItem_FileSave.Size = New System.Drawing.Size(343, 22)
         Me.ToolStripMenuItem_FileSave.Text = "&Save"
+        '
+        'ToolStripMenuItem_FileSaveAll
+        '
+        Me.ToolStripMenuItem_FileSaveAll.Image = Global.BasicPawn.My.Resources.Resources.imageres_5303_16x16_32
+        Me.ToolStripMenuItem_FileSaveAll.Name = "ToolStripMenuItem_FileSaveAll"
+        Me.ToolStripMenuItem_FileSaveAll.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
+            Or System.Windows.Forms.Keys.S), System.Windows.Forms.Keys)
+        Me.ToolStripMenuItem_FileSaveAll.Size = New System.Drawing.Size(343, 22)
+        Me.ToolStripMenuItem_FileSaveAll.Text = "Save all"
         '
         'ToolStripMenuItem_FileSaveAs
         '
@@ -316,33 +357,38 @@ Partial Class FormMain
         Me.ToolStripMenuItem_FileSaveAs.Name = "ToolStripMenuItem_FileSaveAs"
         Me.ToolStripMenuItem_FileSaveAs.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Alt) _
             Or System.Windows.Forms.Keys.S), System.Windows.Forms.Keys)
-        Me.ToolStripMenuItem_FileSaveAs.Size = New System.Drawing.Size(238, 22)
+        Me.ToolStripMenuItem_FileSaveAs.Size = New System.Drawing.Size(343, 22)
         Me.ToolStripMenuItem_FileSaveAs.Text = "Save &as..."
         '
         'ToolStripMenuItem_FileSaveAsTemp
         '
         Me.ToolStripMenuItem_FileSaveAsTemp.Image = Global.BasicPawn.My.Resources.Resources.imageres_5303_16x16_32
         Me.ToolStripMenuItem_FileSaveAsTemp.Name = "ToolStripMenuItem_FileSaveAsTemp"
-        Me.ToolStripMenuItem_FileSaveAsTemp.Size = New System.Drawing.Size(238, 22)
+        Me.ToolStripMenuItem_FileSaveAsTemp.Size = New System.Drawing.Size(343, 22)
         Me.ToolStripMenuItem_FileSaveAsTemp.Text = "Save as &temporary"
+        '
+        'ToolStripSeparator8
+        '
+        Me.ToolStripSeparator8.Name = "ToolStripSeparator8"
+        Me.ToolStripSeparator8.Size = New System.Drawing.Size(340, 6)
         '
         'ToolStripMenuItem_FileOpenFolder
         '
         Me.ToolStripMenuItem_FileOpenFolder.Image = Global.BasicPawn.My.Resources.Resources.imageres_5304_16x16_32
         Me.ToolStripMenuItem_FileOpenFolder.Name = "ToolStripMenuItem_FileOpenFolder"
-        Me.ToolStripMenuItem_FileOpenFolder.Size = New System.Drawing.Size(238, 22)
+        Me.ToolStripMenuItem_FileOpenFolder.Size = New System.Drawing.Size(343, 22)
         Me.ToolStripMenuItem_FileOpenFolder.Text = "Open current folder"
         '
         'ToolStripSeparator2
         '
         Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
-        Me.ToolStripSeparator2.Size = New System.Drawing.Size(235, 6)
+        Me.ToolStripSeparator2.Size = New System.Drawing.Size(340, 6)
         '
         'ToolStripMenuItem_FileExit
         '
         Me.ToolStripMenuItem_FileExit.Image = CType(resources.GetObject("ToolStripMenuItem_FileExit.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_FileExit.Name = "ToolStripMenuItem_FileExit"
-        Me.ToolStripMenuItem_FileExit.Size = New System.Drawing.Size(238, 22)
+        Me.ToolStripMenuItem_FileExit.Size = New System.Drawing.Size(343, 22)
         Me.ToolStripMenuItem_FileExit.Text = "Exit"
         '
         'ToolStripMenuItem_Tools
@@ -551,6 +597,7 @@ Partial Class FormMain
         'ToolStripMenuItem_TabClose
         '
         Me.ToolStripMenuItem_TabClose.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
+        Me.ToolStripMenuItem_TabClose.AutoToolTip = True
         Me.ToolStripMenuItem_TabClose.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.ToolStripMenuItem_TabClose.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ToolStripMenuItem_TabClose.Name = "ToolStripMenuItem_TabClose"
@@ -559,26 +606,31 @@ Partial Class FormMain
         Me.ToolStripMenuItem_TabClose.ShowShortcutKeys = False
         Me.ToolStripMenuItem_TabClose.Size = New System.Drawing.Size(19, 20)
         Me.ToolStripMenuItem_TabClose.Text = "X"
+        Me.ToolStripMenuItem_TabClose.ToolTipText = "Close current tab"
         '
         'ToolStripMenuItem_TabMoveRight
         '
         Me.ToolStripMenuItem_TabMoveRight.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
+        Me.ToolStripMenuItem_TabMoveRight.AutoToolTip = True
         Me.ToolStripMenuItem_TabMoveRight.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.ToolStripMenuItem_TabMoveRight.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ToolStripMenuItem_TabMoveRight.Name = "ToolStripMenuItem_TabMoveRight"
         Me.ToolStripMenuItem_TabMoveRight.Padding = New System.Windows.Forms.Padding(0)
         Me.ToolStripMenuItem_TabMoveRight.Size = New System.Drawing.Size(19, 20)
         Me.ToolStripMenuItem_TabMoveRight.Text = ">"
+        Me.ToolStripMenuItem_TabMoveRight.ToolTipText = "Move current tab right"
         '
         'ToolStripMenuItem_TabMoveLeft
         '
         Me.ToolStripMenuItem_TabMoveLeft.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
+        Me.ToolStripMenuItem_TabMoveLeft.AutoToolTip = True
         Me.ToolStripMenuItem_TabMoveLeft.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.ToolStripMenuItem_TabMoveLeft.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ToolStripMenuItem_TabMoveLeft.Name = "ToolStripMenuItem_TabMoveLeft"
         Me.ToolStripMenuItem_TabMoveLeft.Padding = New System.Windows.Forms.Padding(0)
         Me.ToolStripMenuItem_TabMoveLeft.Size = New System.Drawing.Size(19, 20)
         Me.ToolStripMenuItem_TabMoveLeft.Text = "<"
+        Me.ToolStripMenuItem_TabMoveLeft.ToolTipText = "Move current tab left"
         '
         'SplitContainer_ToolboxSourceAndDetails
         '
@@ -755,14 +807,20 @@ Partial Class FormMain
         Me.ToolStripStatusLabel_AppVersion.Size = New System.Drawing.Size(31, 17)
         Me.ToolStripStatusLabel_AppVersion.Text = "v.0.0"
         '
-        'ToolStripMenuItem_FileSaveAll
+        'Timer_PingFlash
         '
-        Me.ToolStripMenuItem_FileSaveAll.Image = Global.BasicPawn.My.Resources.Resources.imageres_5303_16x16_32
-        Me.ToolStripMenuItem_FileSaveAll.Name = "ToolStripMenuItem_FileSaveAll"
-        Me.ToolStripMenuItem_FileSaveAll.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
-            Or System.Windows.Forms.Keys.S), System.Windows.Forms.Keys)
-        Me.ToolStripMenuItem_FileSaveAll.Size = New System.Drawing.Size(238, 22)
-        Me.ToolStripMenuItem_FileSaveAll.Text = "Save all"
+        '
+        'ToolStripMenuItem_TabOpenInstance
+        '
+        Me.ToolStripMenuItem_TabOpenInstance.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
+        Me.ToolStripMenuItem_TabOpenInstance.AutoToolTip = True
+        Me.ToolStripMenuItem_TabOpenInstance.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
+        Me.ToolStripMenuItem_TabOpenInstance.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.ToolStripMenuItem_TabOpenInstance.Name = "ToolStripMenuItem_TabOpenInstance"
+        Me.ToolStripMenuItem_TabOpenInstance.Padding = New System.Windows.Forms.Padding(0)
+        Me.ToolStripMenuItem_TabOpenInstance.Size = New System.Drawing.Size(18, 20)
+        Me.ToolStripMenuItem_TabOpenInstance.Text = "v"
+        Me.ToolStripMenuItem_TabOpenInstance.ToolTipText = "Open from Instances"
         '
         'FormMain
         '
@@ -874,4 +932,10 @@ Partial Class FormMain
     Friend WithEvents ToolStripMenuItem_TabMoveRight As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_TabMoveLeft As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_FileSaveAll As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator9 As ToolStripSeparator
+    Friend WithEvents ToolStripMenuItem_FileLoadTabs As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator7 As ToolStripSeparator
+    Friend WithEvents ToolStripSeparator8 As ToolStripSeparator
+    Friend WithEvents Timer_PingFlash As Timer
+    Friend WithEvents ToolStripMenuItem_TabOpenInstance As ToolStripMenuItem
 End Class
