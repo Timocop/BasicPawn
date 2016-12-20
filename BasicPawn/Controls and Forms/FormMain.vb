@@ -344,9 +344,6 @@ Public Class FormMain
         g_ClassSyntaxTools.UpdateFormColors()
 
         g_ClassSyntaxUpdater.StartThread()
-
-        ClassTools.ClassForms.SetDoubleBuffering(TabControl_SourceTabs, True)
-        ClassTools.ClassForms.SetDoubleBufferingUnmanaged(TabControl_SourceTabs, True)
     End Sub
 
 #End Region

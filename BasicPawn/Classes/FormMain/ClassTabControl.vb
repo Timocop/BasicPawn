@@ -552,7 +552,6 @@ Public Class ClassTabControl
                 g_sFile = value
 
                 m_Text = IO.Path.GetFileName(g_sFile)
-                Text = IO.Path.GetFileName(g_sFile)
             End Set
         End Property
 
@@ -584,8 +583,10 @@ Public Class ClassTabControl
                 Return g_bTextChanged
             End Get
             Set(value As Boolean)
-                g_bTextChanged = value
-                Text = g_sText
+                If (g_bTextChanged <> value) Then
+                    g_bTextChanged = value
+                    Text = g_sText
+                End If
             End Set
         End Property
 
@@ -594,8 +595,10 @@ Public Class ClassTabControl
                 Return g_sText
             End Get
             Set(value As String)
-                g_sText = value
-                Text = g_sText
+                If (g_sText <> value) Then
+                    g_sText = value
+                    Text = value
+                End If
             End Set
         End Property
 

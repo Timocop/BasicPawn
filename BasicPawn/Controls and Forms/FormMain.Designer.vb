@@ -130,6 +130,7 @@ Partial Class FormMain
         Me.ToolStripMenuItem_TabClose = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_TabMoveRight = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_TabMoveLeft = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_TabOpenInstance = New System.Windows.Forms.ToolStripMenuItem()
         Me.SplitContainer_ToolboxSourceAndDetails = New System.Windows.Forms.SplitContainer()
         Me.SplitContainer_ToolboxAndEditor = New System.Windows.Forms.SplitContainer()
         Me.TabControl_Toolbox = New System.Windows.Forms.TabControl()
@@ -148,7 +149,6 @@ Partial Class FormMain
         Me.ToolStripStatusLabel_LastInformation = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ToolStripStatusLabel_AppVersion = New System.Windows.Forms.ToolStripStatusLabel()
         Me.Timer_PingFlash = New System.Windows.Forms.Timer(Me.components)
-        Me.ToolStripMenuItem_TabOpenInstance = New System.Windows.Forms.ToolStripMenuItem()
         Me.ContextMenuStrip_RightClick.SuspendLayout()
         Me.MenuStrip_BasicPawn.SuspendLayout()
         Me.SplitContainer_ToolboxSourceAndDetails.Panel1.SuspendLayout()
@@ -632,6 +632,18 @@ Partial Class FormMain
         Me.ToolStripMenuItem_TabMoveLeft.Text = "<"
         Me.ToolStripMenuItem_TabMoveLeft.ToolTipText = "Move current tab left"
         '
+        'ToolStripMenuItem_TabOpenInstance
+        '
+        Me.ToolStripMenuItem_TabOpenInstance.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
+        Me.ToolStripMenuItem_TabOpenInstance.AutoToolTip = True
+        Me.ToolStripMenuItem_TabOpenInstance.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
+        Me.ToolStripMenuItem_TabOpenInstance.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.ToolStripMenuItem_TabOpenInstance.Name = "ToolStripMenuItem_TabOpenInstance"
+        Me.ToolStripMenuItem_TabOpenInstance.Padding = New System.Windows.Forms.Padding(0)
+        Me.ToolStripMenuItem_TabOpenInstance.Size = New System.Drawing.Size(18, 20)
+        Me.ToolStripMenuItem_TabOpenInstance.Text = "v"
+        Me.ToolStripMenuItem_TabOpenInstance.ToolTipText = "Open from Instances"
+        '
         'SplitContainer_ToolboxSourceAndDetails
         '
         Me.SplitContainer_ToolboxSourceAndDetails.Dock = System.Windows.Forms.DockStyle.Fill
@@ -810,18 +822,6 @@ Partial Class FormMain
         'Timer_PingFlash
         '
         '
-        'ToolStripMenuItem_TabOpenInstance
-        '
-        Me.ToolStripMenuItem_TabOpenInstance.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
-        Me.ToolStripMenuItem_TabOpenInstance.AutoToolTip = True
-        Me.ToolStripMenuItem_TabOpenInstance.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
-        Me.ToolStripMenuItem_TabOpenInstance.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.ToolStripMenuItem_TabOpenInstance.Name = "ToolStripMenuItem_TabOpenInstance"
-        Me.ToolStripMenuItem_TabOpenInstance.Padding = New System.Windows.Forms.Padding(0)
-        Me.ToolStripMenuItem_TabOpenInstance.Size = New System.Drawing.Size(18, 20)
-        Me.ToolStripMenuItem_TabOpenInstance.Text = "v"
-        Me.ToolStripMenuItem_TabOpenInstance.ToolTipText = "Open from Instances"
-        '
         'FormMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -926,7 +926,6 @@ Partial Class FormMain
     Friend WithEvents ToolStripMenuItem_FileSaveAsTemp As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_HightlightCustom As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_FileOpenFolder As ToolStripMenuItem
-    Friend WithEvents TabControl_SourceTabs As TabControl
     Friend WithEvents TabPage1 As TabPage
     Friend WithEvents ToolStripMenuItem_TabClose As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_TabMoveRight As ToolStripMenuItem
@@ -938,4 +937,5 @@ Partial Class FormMain
     Friend WithEvents ToolStripSeparator8 As ToolStripSeparator
     Friend WithEvents Timer_PingFlash As Timer
     Friend WithEvents ToolStripMenuItem_TabOpenInstance As ToolStripMenuItem
+    Friend WithEvents TabControl_SourceTabs As TabControl
 End Class
