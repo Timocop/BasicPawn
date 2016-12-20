@@ -277,7 +277,7 @@ Public Class FormMain
 
 
             'Open all files in the oldes BasicPawn instance
-            If (Array.IndexOf(sArgs, "-newinstance") = -1) Then
+            If (Not ClassSettings.g_iSettingsAlwaysOpenNewInstance AndAlso Array.IndexOf(sArgs, "-newinstance") = -1) Then
                 Dim pBasicPawnProc As Process() = Process.GetProcessesByName(IO.Path.GetFileNameWithoutExtension(Application.ExecutablePath))
                 If (pBasicPawnProc.Length > 0) Then
                     Dim iCurrentPID As Integer = Process.GetCurrentProcess.Id
