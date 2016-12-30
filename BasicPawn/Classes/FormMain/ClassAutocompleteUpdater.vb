@@ -73,7 +73,7 @@ Public Class ClassAutocompleteUpdater
             Return True
         Else
             If (Not g_bForceFullAutocompleteUpdate) Then
-                g_mFormMain.PrintInformation("[INFO]", "Could not start autocomplete update thread, it's already running!")
+                g_mFormMain.PrintInformation("[INFO]", "Could not start autocomplete update thread, it's already running!", False, False, 15)
             End If
 
             If (iUpdateType = ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL OrElse
@@ -104,8 +104,11 @@ Public Class ClassAutocompleteUpdater
         Try
             'g_mFormMain.PrintInformation("[INFO]", "Autocomplete update started...")
 
-            If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
-                g_mFormMain.PrintInformation("[ERRO]", "Autocomplete update failed! Could not get current source file!")
+            Dim sActiveSourceFile As String = CStr(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File))
+            Dim sActiveSource As String = CStr(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent))
+
+            If (String.IsNullOrEmpty(sActiveSourceFile) OrElse Not IO.File.Exists(sActiveSourceFile)) Then
+                g_mFormMain.PrintInformation("[ERRO]", "Autocomplete update failed! Could not get current source file!", False, False, 1)
                 Return
             End If
 
@@ -118,15 +121,15 @@ Public Class ClassAutocompleteUpdater
             'Parse everything. Methods etc.
             If (True) Then
                 Dim sSourceList As New ClassSyncList(Of String())
-                Dim sFiles As String() = GetIncludeFiles(ClassSettings.g_sConfigOpenSourceFile)
+                Dim sFiles As String() = GetIncludeFiles(sActiveSource, sActiveSourceFile, sActiveSourceFile)
 
                 For i = 0 To sFiles.Length - 1
-                    ParseAutocomplete_Pre(sFiles(i), sSourceList, lTmpAutocompleteList)
+                    ParseAutocomplete_Pre(sActiveSource, sActiveSourceFile, sFiles(i), sSourceList, lTmpAutocompleteList)
                 Next
 
                 Dim sRegExEnum As String = String.Format("(\b{0}\b)", String.Join("\b|\b", GetEnumNames(lTmpAutocompleteList)))
                 For i = 0 To sSourceList.Count - 1
-                    ParseAutocomplete_Post(sSourceList(i)(0), sRegExEnum, sSourceList(i)(1), lTmpAutocompleteList)
+                    ParseAutocomplete_Post(sActiveSource, sActiveSourceFile, sSourceList(i)(0), sRegExEnum, sSourceList(i)(1), lTmpAutocompleteList)
                 Next
             End If
 
@@ -136,20 +139,24 @@ Public Class ClassAutocompleteUpdater
             End If
 
             'Save everything and update syntax
-            g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.RemoveAll(Function(j As STRUC_AUTOCOMPLETE) (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
-            g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.AddRange(lTmpAutocompleteList)
+            g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.DoSync(
+                Sub()
+                    g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.RemoveAll(Function(j As STRUC_AUTOCOMPLETE) (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
+                    g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.AddRange(lTmpAutocompleteList)
+                End Sub)
 
-            g_mFormMain.g_ClassSyntaxTools.UpdateSyntaxFile(ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE.AUTOCOMPLETE)
             g_mFormMain.BeginInvoke(Sub()
+                                        'Dont move this outside of invoke! Results in "File is already in use!" when aborting the thread... for some reason...
+                                        g_mFormMain.g_ClassSyntaxTools.UpdateSyntaxFile(ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE.AUTOCOMPLETE)
                                         g_mFormMain.g_ClassSyntaxTools.UpdateTextEditorSyntax()
-                                        g_mFormMain.g_mUCObjectBrowser.UpdateTreeView()
+                                        g_mFormMain.g_mUCObjectBrowser.StartUpdate()
                                     End Sub)
 
             'g_mFormMain.PrintInformation("[INFO]", "Autocomplete update finished!")
         Catch ex As Threading.ThreadAbortException
             Throw
         Catch ex As Exception
-            g_mFormMain.PrintInformation("[ERRO]", "Autocomplete update failed! " & ex.Message)
+            g_mFormMain.PrintInformation("[ERRO]", "Autocomplete update failed! " & ex.Message, False, False, 1)
             ClassExceptionLog.WriteToLog(ex)
         End Try
     End Sub
@@ -303,6 +310,7 @@ Public Class ClassAutocompleteUpdater
             'Filter new lines in statements with parenthesis e.g: MyStuff(MyArg1,
             '                                                               MyArg2)
             For i = 0 To sSource.Length - 1
+
                 Select Case (sSource(i))
                     Case vbLf(0)
                         If (sourceAnalysis.InNonCode(i)) Then
@@ -319,15 +327,29 @@ Public Class ClassAutocompleteUpdater
                                     sSource = sSource.Insert(i, New String(" "c, 1))
                             End Select
                         End If
+
+                    Case Else
+                        'If we collapse statements etc., we need to remove single line comments!
+                        'if(
+                        '       //This my cause problems!
+                        '   )
+                        'Results in:
+                        'if(//This my cause problems!)
+                        'Just remove the comments
+                        If (sourceAnalysis.GetParenthesisLevel(i) > 0 AndAlso sourceAnalysis.InSingleComment(i)) Then
+                            sSource = sSource.Remove(i, 1)
+                            sSource = sSource.Insert(i, " "c)
+                        End If
+
                 End Select
             Next
         End If
     End Sub
 
-    Private Sub ParseAutocomplete_Pre(sFile As String, ByRef sSourceList As ClassSyncList(Of String()), ByRef lTmpAutocompleteList As ClassSyncList(Of STRUC_AUTOCOMPLETE))
+    Private Sub ParseAutocomplete_Pre(sActiveSource As String, sActiveSourceFile As String, sFile As String, ByRef sSourceList As ClassSyncList(Of String()), ByRef lTmpAutocompleteList As ClassSyncList(Of STRUC_AUTOCOMPLETE))
         Dim sSource As String
-        If (ClassSettings.g_sConfigOpenSourceFile.ToLower = sFile.ToLower) Then
-            sSource = CStr(g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.Document.TextContent))
+        If (sActiveSourceFile.ToLower = sFile.ToLower) Then
+            sSource = sActiveSource
         Else
             sSource = IO.File.ReadAllText(sFile)
         End If
@@ -582,7 +604,7 @@ Public Class ClassAutocompleteUpdater
 
                 sEnumName = mRegMatch.Groups("Name").Value
                 If (String.IsNullOrEmpty(sEnumName.Trim)) Then
-                    g_mFormMain.PrintInformation("[ERRO]", String.Format("Failed to read name from enum because it has no name: Renamed to 'Enum' ({0})", IO.Path.GetFileName(sFile)))
+                    g_mFormMain.PrintInformation("[ERRO]", String.Format("Failed to read name from enum because it has no name: Renamed to 'Enum' ({0})", IO.Path.GetFileName(sFile)), False, False, 15)
                     sEnumName = "Enum"
                 End If
 
@@ -694,7 +716,7 @@ Public Class ClassAutocompleteUpdater
 
                     regMatch = Regex.Match(sEnumFull, "^\s*(?<Tag>\b[a-zA-Z0-9_]+\b:)*(?<Name>\b[a-zA-Z0-9_]+\b)")
                     If (Not regMatch.Groups("Name").Success) Then
-                        g_mFormMain.PrintInformation("[ERRO]", String.Format("Failed to resolve type 'Enum': enum {0} {1}", sEnumName, sEnumFull))
+                        g_mFormMain.PrintInformation("[ERRO]", String.Format("Failed to resolve type 'Enum': enum {0} {1}", sEnumName, sEnumFull), False, False, 15)
                         Continue For
                     End If
 
@@ -717,7 +739,7 @@ Public Class ClassAutocompleteUpdater
         sSourceList.Add(New String() {sFile, sSource})
     End Sub
 
-    Private Sub ParseAutocomplete_Post(ByRef sFile As String, ByRef sRegExEnum As String, ByRef sSource As String, ByRef lTmpAutocompleteList As ClassSyncList(Of STRUC_AUTOCOMPLETE))
+    Private Sub ParseAutocomplete_Post(sActiveSource As String, sActiveSourceFile As String, ByRef sFile As String, ByRef sRegExEnum As String, ByRef sSource As String, ByRef lTmpAutocompleteList As ClassSyncList(Of STRUC_AUTOCOMPLETE))
         'Get Defines
         If (sSource.Contains("#define")) Then
             Dim sLine As String
@@ -881,7 +903,7 @@ Public Class ClassAutocompleteUpdater
             If (sourceAnalysis.GetMaxLenght - 1 > 0) Then
                 Dim iLastBraceLevel As Integer = sourceAnalysis.GetBraceLevel(sourceAnalysis.GetMaxLenght - 1)
                 If (iLastBraceLevel > 0) Then
-                    g_mFormMain.PrintInformation("[ERRO]", String.Format("Uneven brace level! May lead to syntax parser failures! [LV:{0}] ({1})", iLastBraceLevel, IO.Path.GetFileName(sFile)))
+                    g_mFormMain.PrintInformation("[ERRO]", String.Format("Uneven brace level! May lead to syntax parser failures! [LV:{0}] ({1})", iLastBraceLevel, IO.Path.GetFileName(sFile)), False, False, 1)
                 End If
             End If
 
@@ -1158,7 +1180,7 @@ Public Class ClassAutocompleteUpdater
 
                     Dim regMatch As Match = Regex.Match(sEnumFull, "^\s*(?<Tag>\b[a-zA-Z0-9_]+\b:)*(?<Name>\b[a-zA-Z0-9_]+\b)")
                     If (Not regMatch.Groups("Name").Success) Then
-                        g_mFormMain.PrintInformation("[ERRO]", String.Format("Failed to resolve type 'Enum': enum {0} {1}", sEnumName, sEnumFull))
+                        g_mFormMain.PrintInformation("[ERRO]", String.Format("Failed to resolve type 'Enum': enum {0} {1}", sEnumName, sEnumFull), False, False, 15)
                         Continue For
                     End If
 
@@ -1505,8 +1527,11 @@ Public Class ClassAutocompleteUpdater
 
     Private Sub VariableAutocompleteUpdate_Thread()
         Try
+            Dim sSourceFile As String = CStr(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File))
+            Dim sActiveSource As String = CStr(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent))
+
             'g_mFormMain.PrintInformation("[INFO]", "Variable autocomplete update started...")
-            If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
+            If (String.IsNullOrEmpty(sSourceFile) OrElse Not IO.File.Exists(sSourceFile)) Then
                 'g_mFormMain.PrintInformation("[ERRO]", "Variable autocomplete update failed! Could not get current source file!")
                 Return
             End If
@@ -1524,25 +1549,28 @@ Public Class ClassAutocompleteUpdater
                 Dim sRegExEnumPattern As String = String.Format("(\b{0}\b)", String.Join("\b|\b", GetEnumNames(g_mFormMain.g_ClassSyntaxTools.lAutocompleteList)))
 
                 If (ClassSettings.g_iSettingsVarAutocompleteCurrentSourceOnly) Then
-                    ParseVariables_Pre(ClassSettings.g_sConfigOpenSourceFile, sRegExEnumPattern, lTmpVarAutocompleteList, g_mFormMain.g_ClassSyntaxTools.lAutocompleteList)
+                    ParseVariables_Pre(sActiveSource, sSourceFile, sSourceFile, sRegExEnumPattern, lTmpVarAutocompleteList, g_mFormMain.g_ClassSyntaxTools.lAutocompleteList)
                 Else
-                    Dim sFiles As String() = GetIncludeFiles(ClassSettings.g_sConfigOpenSourceFile)
+                    Dim sFiles As String() = GetIncludeFiles(sActiveSource, sSourceFile, sSourceFile)
                     For i = 0 To sFiles.Length - 1
-                        ParseVariables_Pre(sFiles(i), sRegExEnumPattern, lTmpVarAutocompleteList, g_mFormMain.g_ClassSyntaxTools.lAutocompleteList)
+                        ParseVariables_Pre(sActiveSource, sSourceFile, sFiles(i), sRegExEnumPattern, lTmpVarAutocompleteList, g_mFormMain.g_ClassSyntaxTools.lAutocompleteList)
                     Next
                 End If
 
-                ParseVariables_Post(sRegExEnumPattern, lTmpVarAutocompleteList, g_mFormMain.g_ClassSyntaxTools.lAutocompleteList)
+                ParseVariables_Post(sActiveSource, sSourceFile, sRegExEnumPattern, lTmpVarAutocompleteList, g_mFormMain.g_ClassSyntaxTools.lAutocompleteList)
             End If
 
-            g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.RemoveAll(Function(j As STRUC_AUTOCOMPLETE) (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
-            g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.AddRange(lTmpVarAutocompleteList.ToArray)
+            g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.DoSync(
+                Sub()
+                    g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.RemoveAll(Function(j As STRUC_AUTOCOMPLETE) (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
+                    g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.AddRange(lTmpVarAutocompleteList.ToArray)
+                End Sub)
 
             'g_mFormMain.PrintInformation("[INFO]", "Variable autocomplete update finished!")
         Catch ex As Threading.ThreadAbortException
             Throw
         Catch ex As Exception
-            g_mFormMain.PrintInformation("[ERRO]", "Variable autocomplete update failed! " & ex.Message)
+            g_mFormMain.PrintInformation("[ERRO]", "Variable autocomplete update failed! " & ex.Message, False, False, 1)
             ClassExceptionLog.WriteToLog(ex)
         End Try
     End Sub
@@ -1552,10 +1580,10 @@ Public Class ClassAutocompleteUpdater
         Dim sFile As String
     End Structure
 
-    Private Sub ParseVariables_Pre(ByRef sFile As String, ByRef sRegExEnumPattern As String, ByRef lTmpVarAutocompleteList As ClassSyncList(Of STRUC_AUTOCOMPLETE), ByRef lTmpAutocompleteList As ClassSyncList(Of STRUC_AUTOCOMPLETE))
+    Private Sub ParseVariables_Pre(sActiveSource As String, sActiveSourceFile As String, ByRef sFile As String, ByRef sRegExEnumPattern As String, ByRef lTmpVarAutocompleteList As ClassSyncList(Of STRUC_AUTOCOMPLETE), ByRef lTmpAutocompleteList As ClassSyncList(Of STRUC_AUTOCOMPLETE))
         Dim sSource As String
-        If (ClassSettings.g_sConfigOpenSourceFile.ToLower = sFile.ToLower) Then
-            sSource = CStr(g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.Document.TextContent))
+        If (sActiveSourceFile.ToLower = sFile.ToLower) Then
+            sSource = sActiveSource
         Else
             sSource = IO.File.ReadAllText(sFile)
         End If
@@ -1565,8 +1593,8 @@ Public Class ClassAutocompleteUpdater
         'Parse variables
         If (True) Then
             Dim sInitTypesPattern As String = "\b(new|decl|static|const)\b" '"public" is already taken care off
-            Dim sOldStyleVarPattern As String = String.Format("(?<Init>{0})\s+((?<Tag>{1})\:\s*(?<Var>\b[a-zA-Z0-9_]+\b)|(?<Var>\b[a-zA-Z0-9_]+\b))($|\W)", sInitTypesPattern, sRegExEnumPattern)
-            Dim sNewStyleVarPattern As String = String.Format("(?<Tag>{0})\s+(?<Var>\b[a-zA-Z0-9_]+\b)($|\W)", sRegExEnumPattern)
+            Dim sOldStyleVarPattern As String = String.Format("(?<Init>{0}\s+)(?<IsConst>\b(const)\b\s+){2}((?<Tag>{1})\:\s*(?<Var>\b[a-zA-Z0-9_]+\b)|(?<Var>\b[a-zA-Z0-9_]+\b))($|\W)", sInitTypesPattern, sRegExEnumPattern, "{0,1}")
+            Dim sNewStyleVarPattern As String = String.Format("(?<IsConst>\b(const)\b\s+){1}(?<Tag>{0})\s+(?<Var>\b[a-zA-Z0-9_]+\b)($|\W)", sRegExEnumPattern, "{0,1}")
 
             Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
             Dim lCommaLinesList As New List(Of String)
@@ -1623,6 +1651,7 @@ Public Class ClassAutocompleteUpdater
             '2: New style
             Dim iLastInitStyle As Byte = 0
             Dim iLastInitIndex As Integer = 0
+            Dim sLastTag As String = Nothing
 
             For Each sLine As String In lCommaLinesList
                 Select Case (iLastInitStyle)
@@ -1631,11 +1660,11 @@ Public Class ClassAutocompleteUpdater
                             Exit Select
                         End If
 
-                        Dim mMatch As Match = Regex.Match(sLine, String.Format("^((?<Tag>{0})\:\s*)*(?<Var>\b[a-zA-Z_][a-zA-Z0-9_]*\b)((?<End>$)|(?<Func>\()|(?<More>\W))", sRegExEnumPattern))
-                        Dim sTag As String = If(String.IsNullOrEmpty(mMatch.Groups("Tag").Value), "int", mMatch.Groups("Tag").Value).Trim
+                        Dim mMatch As Match = Regex.Match(sLine, String.Format("^((?<Tag>{0})\:\s*)*(?<Var>\b[a-zA-Z_][a-zA-Z0-9_]*\b)((?<End>$)|(?<IsFunc>\()|(?<IsMethodmap>\.)|(?<IsTag>\:)|(?<More>\W))", sRegExEnumPattern))
+                        Dim sTag As String = mMatch.Groups("Tag").Value.Trim
                         Dim sVar As String = mMatch.Groups("Var").Value.Trim
 
-                        If (mMatch.Groups("Func").Success OrElse Not mMatch.Groups("Var").Success) Then
+                        If (mMatch.Groups("IsFunc").Success OrElse mMatch.Groups("IsMethodmap").Success OrElse mMatch.Groups("IsTag").Success OrElse Not mMatch.Groups("Var").Success) Then
                             Exit Select
                         End If
 
@@ -1643,8 +1672,27 @@ Public Class ClassAutocompleteUpdater
                             Exit Select
                         End If
 
-                        If (lTmpAutocompleteList.Exists(Function(j As STRUC_AUTOCOMPLETE) (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE AndAlso Regex.IsMatch(j.sFunctionName, String.Format("\b{0}\b", Regex.Escape(sVar))))) Then
+                        If (Regex.IsMatch(sVar, sRegExEnumPattern)) Then
                             Exit Select
+                        End If
+
+                        If (lTmpAutocompleteList.Exists(Function(j As STRUC_AUTOCOMPLETE)
+                                                            If ((j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE OrElse
+                                                                    (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD OrElse
+                                                                    (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM OrElse
+                                                                    (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG OrElse
+                                                                    (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF OrElse
+                                                                    (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) Then
+                                                                Return False
+                                                            End If
+
+                                                            Return Regex.IsMatch(j.sFunctionName, String.Format("\b{0}\b", Regex.Escape(sVar)))
+                                                        End Function)) Then
+                            Exit Select
+                        End If
+
+                        If (String.IsNullOrEmpty(sTag)) Then
+                            sTag = "int"
                         End If
 
                         Dim tmpFile As String = IO.Path.GetFileName(sFile)
@@ -1668,11 +1716,11 @@ Public Class ClassAutocompleteUpdater
                             Exit Select
                         End If
 
-                        Dim mMatch As Match = Regex.Match(sLine, String.Format("^(?<Tag>{0}\s+)*(?<Var>\b[a-zA-Z_][a-zA-Z0-9_]*\b)((?<End>$)|(?<Func>\()|(?<More>\W))", sRegExEnumPattern))
-                        Dim sTag As String = If(String.IsNullOrEmpty(mMatch.Groups("Tag").Value), "int", mMatch.Groups("Tag").Value).Trim
+                        Dim mMatch As Match = Regex.Match(sLine, String.Format("^(?<Tag>{0}\s+)*(?<Var>\b[a-zA-Z_][a-zA-Z0-9_]*\b)((?<End>$)|(?<IsFunc>\()|(?<IsMethodmap>\.)|(?<IsTag>\:)|(?<More>\W))", sRegExEnumPattern))
+                        Dim sTag As String = mMatch.Groups("Tag").Value.Trim
                         Dim sVar As String = mMatch.Groups("Var").Value.Trim
 
-                        If (mMatch.Groups("Func").Success OrElse Not mMatch.Groups("Var").Success) Then
+                        If (mMatch.Groups("IsFunc").Success OrElse mMatch.Groups("IsMethodmap").Success OrElse mMatch.Groups("IsTag").Success OrElse Not mMatch.Groups("Var").Success) Then
                             Exit Select
                         End If
 
@@ -1680,8 +1728,31 @@ Public Class ClassAutocompleteUpdater
                             Exit Select
                         End If
 
-                        If (lTmpAutocompleteList.Exists(Function(j As STRUC_AUTOCOMPLETE) (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE AndAlso Regex.IsMatch(j.sFunctionName, String.Format("\b{0}\b", Regex.Escape(sVar))))) Then
+                        If (Regex.IsMatch(sVar, sRegExEnumPattern)) Then
                             Exit Select
+                        End If
+
+                        If (lTmpAutocompleteList.Exists(Function(j As STRUC_AUTOCOMPLETE)
+                                                            If ((j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE OrElse
+                                                                    (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD OrElse
+                                                                    (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM OrElse
+                                                                    (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG OrElse
+                                                                    (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF OrElse
+                                                                    (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) Then
+                                                                Return False
+                                                            End If
+
+                                                            Return Regex.IsMatch(j.sFunctionName, String.Format("\b{0}\b", Regex.Escape(sVar)))
+                                                        End Function)) Then
+                            Exit Select
+                        End If
+
+                        If (String.IsNullOrEmpty(sTag)) Then
+                            If (String.IsNullOrEmpty(sLastTag)) Then
+                                sTag = "int"
+                            Else
+                                sTag = sLastTag
+                            End If
                         End If
 
                         Dim tmpFile As String = IO.Path.GetFileName(sFile)
@@ -1699,26 +1770,55 @@ Public Class ClassAutocompleteUpdater
                                 autoItem.sFullFunctionName = String.Format("{0}|{1}", autoItem.sFullFunctionName, sTag)
                             End If
                         End If
+
                 End Select
 
-                If (ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsAutocompleteSyntax <> ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_6) Then
+                iLastInitIndex = 0
+                If (sLine.Contains(";"c)) Then
+                    iLastInitStyle = 0
+                End If
+
+
+                If (ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_6) Then
                     For Each mMatch As Match In Regex.Matches(sLine, sOldStyleVarPattern)
                         Dim iIndex As Integer = mMatch.Groups("Var").Index
                         Dim sInit As String = mMatch.Groups("Init").Value.Trim
-                        Dim sTag As String = If(String.IsNullOrEmpty(mMatch.Groups("Tag").Value), "int", mMatch.Groups("Tag").Value).Trim
+                        Dim sTag As String = mMatch.Groups("Tag").Value.Trim
                         Dim sVar As String = mMatch.Groups("Var").Value.Trim
+                        Dim bIsConst As Boolean = mMatch.Groups("IsConst").Success
 
                         If (iLastInitIndex < iIndex) Then
                             iLastInitIndex = iIndex
                             iLastInitStyle = 1 'Old style
                         End If
 
+                        sLastTag = Nothing
+
                         If (g_mFormMain.g_ClassSyntaxTools.IsForbiddenVariableName(sVar)) Then
                             Continue For
                         End If
 
-                        If (lTmpAutocompleteList.Exists(Function(j As STRUC_AUTOCOMPLETE) (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE AndAlso Regex.IsMatch(j.sFunctionName, String.Format("\b{0}\b", Regex.Escape(sVar))))) Then
+                        If (Regex.IsMatch(sVar, sRegExEnumPattern)) Then
                             Continue For
+                        End If
+
+                        If (lTmpAutocompleteList.Exists(Function(j As STRUC_AUTOCOMPLETE)
+                                                            If ((j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE OrElse
+                                                                    (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD OrElse
+                                                                    (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM OrElse
+                                                                    (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG OrElse
+                                                                    (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF OrElse
+                                                                    (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) Then
+                                                                Return False
+                                                            End If
+
+                                                            Return Regex.IsMatch(j.sFunctionName, String.Format("\b{0}\b", Regex.Escape(sVar)))
+                                                        End Function)) Then
+                            Continue For
+                        End If
+
+                        If (String.IsNullOrEmpty(sTag)) Then
+                            sTag = "int"
                         End If
 
                         Dim tmpFile As String = IO.Path.GetFileName(sFile)
@@ -1726,7 +1826,7 @@ Public Class ClassAutocompleteUpdater
                         If (autoItem Is Nothing) Then
                             autoItem = New STRUC_AUTOCOMPLETE
                             autoItem.sFile = tmpFile.ToLower
-                            autoItem.sFullFunctionName = String.Format("{0} > {1}", sVar, sTag)
+                            autoItem.sFullFunctionName = String.Format("{0} > {1}", sVar, If(bIsConst, "const:", "") & sTag)
                             autoItem.sFunctionName = sVar
                             autoItem.sInfo = ""
                             autoItem.mType = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE
@@ -1735,36 +1835,63 @@ Public Class ClassAutocompleteUpdater
                             If (Not Regex.IsMatch(autoItem.sFullFunctionName, String.Format("\b{0}\b", Regex.Escape(sTag)))) Then
                                 autoItem.sFullFunctionName = String.Format("{0}|{1}", autoItem.sFullFunctionName, sTag)
                             End If
+                            If (bIsConst AndAlso Not Regex.IsMatch(autoItem.sFullFunctionName, String.Format("\b{0}\b", "const"))) Then
+                                autoItem.sFullFunctionName = String.Format("{0}:{1}", "const", autoItem.sFullFunctionName)
+                            End If
                         End If
                     Next
                 End If
 
-                If (ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsAutocompleteSyntax <> ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7) Then
+                If (ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7) Then
                     For Each mMatch As Match In Regex.Matches(sLine, sNewStyleVarPattern)
                         Dim iIndex As Integer = mMatch.Groups("Var").Index
                         Dim sInit As String = mMatch.Groups("Init").Value.Trim
-                        Dim sTag As String = If(String.IsNullOrEmpty(mMatch.Groups("Tag").Value), "_NONE_", mMatch.Groups("Tag").Value).Trim
+                        Dim sTag As String = mMatch.Groups("Tag").Value.Trim
                         Dim sVar As String = mMatch.Groups("Var").Value.Trim
+                        Dim bIsConst As Boolean = mMatch.Groups("IsConst").Success
 
                         If (iLastInitIndex < iIndex) Then
                             iLastInitIndex = iIndex
                             iLastInitStyle = 2 'New style
                         End If
 
+                        sLastTag = Nothing
+
+                        If (String.IsNullOrEmpty(sTag)) Then
+                            Continue For
+                        End If
+
                         If (g_mFormMain.g_ClassSyntaxTools.IsForbiddenVariableName(sVar)) Then
                             Continue For
                         End If
 
-                        If (lTmpAutocompleteList.Exists(Function(j As STRUC_AUTOCOMPLETE) (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE AndAlso Regex.IsMatch(j.sFunctionName, String.Format("\b{0}\b", Regex.Escape(sVar))))) Then
+                        If (Regex.IsMatch(sVar, sRegExEnumPattern)) Then
                             Continue For
                         End If
+
+                        If (lTmpAutocompleteList.Exists(Function(j As STRUC_AUTOCOMPLETE)
+                                                            If ((j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE OrElse
+                                                                    (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD OrElse
+                                                                    (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM OrElse
+                                                                    (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG OrElse
+                                                                    (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF OrElse
+                                                                    (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) Then
+                                                                Return False
+                                                            End If
+
+                                                            Return Regex.IsMatch(j.sFunctionName, String.Format("\b{0}\b", Regex.Escape(sVar)))
+                                                        End Function)) Then
+                            Continue For
+                        End If
+
+                        sLastTag = sTag
 
                         Dim tmpFile As String = IO.Path.GetFileName(sFile)
                         Dim autoItem As STRUC_AUTOCOMPLETE = lTmpVarAutocompleteList.Find(Function(j As STRUC_AUTOCOMPLETE) j.sFile.ToLower = tmpFile.ToLower AndAlso j.sFunctionName = sVar AndAlso (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
                         If (autoItem Is Nothing) Then
                             autoItem = New STRUC_AUTOCOMPLETE
                             autoItem.sFile = tmpFile.ToLower
-                            autoItem.sFullFunctionName = String.Format("{0} > {1}", sVar, sTag)
+                            autoItem.sFullFunctionName = String.Format("{0} > {1}", sVar, If(bIsConst, "const:", "") & sTag)
                             autoItem.sFunctionName = sVar
                             autoItem.sInfo = ""
                             autoItem.mType = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE
@@ -1772,6 +1899,9 @@ Public Class ClassAutocompleteUpdater
                         Else
                             If (Not Regex.IsMatch(autoItem.sFullFunctionName, String.Format("\b{0}\b", Regex.Escape(sTag)))) Then
                                 autoItem.sFullFunctionName = String.Format("{0}|{1}", autoItem.sFullFunctionName, sTag)
+                            End If
+                            If (bIsConst AndAlso Not Regex.IsMatch(autoItem.sFullFunctionName, String.Format("\b{0}\b", "const"))) Then
+                                autoItem.sFullFunctionName = String.Format("{0}:{1}", "const", autoItem.sFullFunctionName)
                             End If
                         End If
                     Next
@@ -1781,15 +1911,19 @@ Public Class ClassAutocompleteUpdater
 
     End Sub
 
-    Private Sub ParseVariables_Post(ByRef sRegExEnumPattern As String, ByRef lTmpVarAutocompleteList As ClassSyncList(Of STRUC_AUTOCOMPLETE), ByRef lTmpAutocompleteList As ClassSyncList(Of STRUC_AUTOCOMPLETE))
+    Private Sub ParseVariables_Post(sActiveSource As String, sActiveSourceFile As String, ByRef sRegExEnumPattern As String, ByRef lTmpVarAutocompleteList As ClassSyncList(Of STRUC_AUTOCOMPLETE), ByRef lTmpAutocompleteList As ClassSyncList(Of STRUC_AUTOCOMPLETE))
         'Parse function argument variables
         If (True) Then
             Dim lArgList As New List(Of STRUC_PARSE_ARGUMENT_ITEM)
             Dim codeBuilder As New StringBuilder
 
             For Each autoItem In lTmpAutocompleteList
+                If ((autoItem.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) Then
+                    Continue For
+                End If
+
                 If (ClassSettings.g_iSettingsVarAutocompleteCurrentSourceOnly) Then
-                    If (Not String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) AndAlso IO.Path.GetFileName(ClassSettings.g_sConfigOpenSourceFile).ToLower <> autoItem.sFile.ToLower) Then
+                    If (Not String.IsNullOrEmpty(sActiveSourceFile) AndAlso IO.Path.GetFileName(sActiveSourceFile).ToLower <> autoItem.sFile.ToLower) Then
                         Continue For
                     End If
                 End If
@@ -1867,11 +2001,12 @@ Public Class ClassAutocompleteUpdater
             For Each sArg As STRUC_PARSE_ARGUMENT_ITEM In lArgList
                 'Old style
                 If (ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_6) Then
-                    Dim mMatch As Match = Regex.Match(sArg.sArgument, String.Format("((?<Tag>\b{0}\b)\:\s*)*(?<Var>\b[a-zA-Z_][a-zA-Z0-9_]*\b)$", sRegExEnumPattern))
+                    Dim mMatch As Match = Regex.Match(sArg.sArgument, String.Format("(?<OneSevenTag>\b{0}\b\s+)*((?<Tag>\b{1}\b)\:\s*)*(?<Var>\b[a-zA-Z_][a-zA-Z0-9_]*\b)$", sRegExEnumPattern, sRegExEnumPattern))
                     Dim sTag As String = If(String.IsNullOrEmpty(mMatch.Groups("Tag").Value), "int", mMatch.Groups("Tag").Value).Trim
                     Dim sVar As String = mMatch.Groups("Var").Value.Trim
+                    Dim bIsOneSeven As Boolean = mMatch.Groups("OneSevenTag").Success
 
-                    If (mMatch.Success AndAlso mMatch.Groups("Var").Success AndAlso Not g_mFormMain.g_ClassSyntaxTools.IsForbiddenVariableName(sVar)) Then
+                    If (Not bIsOneSeven AndAlso mMatch.Success AndAlso mMatch.Groups("Var").Success AndAlso Not g_mFormMain.g_ClassSyntaxTools.IsForbiddenVariableName(sVar)) Then
                         Dim tmpFile As String = IO.Path.GetFileName(sArg.sFile)
                         Dim autoItem As STRUC_AUTOCOMPLETE = lTmpVarAutocompleteList.Find(Function(j As STRUC_AUTOCOMPLETE) j.sFile.ToLower = tmpFile.ToLower AndAlso j.sFunctionName = sVar AndAlso (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
                         If (autoItem Is Nothing) Then
@@ -1966,26 +2101,26 @@ Public Class ClassAutocompleteUpdater
     ''' </summary>
     ''' <param name="sPath"></param>
     ''' <returns>Array if include file paths</returns>
-    Public Function GetIncludeFiles(sPath As String) As String()
+    Public Function GetIncludeFiles(sActiveSource As String, sActiveSourceFile As String, sPath As String) As String()
         Dim lList As New List(Of String)
-        GetIncludeFilesRecursive(sPath, lList)
+        GetIncludeFilesRecursive(sActiveSource, sActiveSourceFile, sPath, lList)
 
         Return lList.ToArray
     End Function
 
-    Private Sub GetIncludeFilesRecursive(sPath As String, ByRef lList As List(Of String))
+    Private Sub GetIncludeFilesRecursive(sActiveSource As String, sActiveSourceFile As String, sPath As String, ByRef lList As List(Of String))
         Dim sSource As String
-        If (ClassSettings.g_sConfigOpenSourceFile.ToLower = sPath.ToLower) Then
+        If (sActiveSourceFile.ToLower = sPath.ToLower) Then
             If (lList.Contains(sPath)) Then
                 Return
             End If
 
             lList.Add(sPath)
 
-            sSource = CStr(g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.Document.TextContent))
+            sSource = sActiveSource
         Else
             If (Not IO.File.Exists(sPath)) Then
-                g_mFormMain.PrintInformation("[ERRO]", String.Format("Could not read include: {0}", IO.Path.GetFileName(sPath)))
+                g_mFormMain.PrintInformation("[ERRO]", String.Format("Could not read include: {0}", IO.Path.GetFileName(sPath)), False, False, 15)
                 Return
             End If
 
@@ -2022,11 +2157,11 @@ Public Class ClassAutocompleteUpdater
 
                 Dim sIncludeDir As String = ClassSettings.g_sConfigOpenIncludeFolder
                 If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
-                        g_mFormMain.PrintInformation("[ERRO]", "Could not read includes! Could not get current source file!")
+                    If (String.IsNullOrEmpty(sActiveSourceFile) OrElse Not IO.File.Exists(sActiveSourceFile)) Then
+                        g_mFormMain.PrintInformation("[ERRO]", "Could not read includes! Could not get current source file!", False, False, 1)
                         Exit While
                     End If
-                    sIncludeDir = IO.Path.Combine(IO.Path.GetDirectoryName(ClassSettings.g_sConfigOpenSourceFile), "include")
+                    sIncludeDir = IO.Path.Combine(IO.Path.GetDirectoryName(sActiveSourceFile), "include")
                 End If
 
                 Select Case (True)
@@ -2047,7 +2182,7 @@ Public Class ClassAutocompleteUpdater
                             Case IO.File.Exists(String.Format("{0}.inc", IO.Path.Combine(sIncludeDir, sMatchValue)))
                                 sCorrectPath = String.Format("{0}.inc", IO.Path.Combine(sIncludeDir, sMatchValue))
                             Case Else
-                                g_mFormMain.PrintInformation("[ERRO]", String.Format("Could not read include: {0}", sMatchValue))
+                                g_mFormMain.PrintInformation("[ERRO]", String.Format("Could not read include: {0}", sMatchValue), False, False, 15)
                                 Continue While
                         End Select
 
@@ -2083,7 +2218,7 @@ Public Class ClassAutocompleteUpdater
                             Case IO.File.Exists(String.Format("{0}.inc", IO.Path.Combine(sIncludeDir, sMatchValue)))
                                 sCorrectPath = String.Format("{0}.inc", IO.Path.Combine(sIncludeDir, sMatchValue))
                             Case Else
-                                g_mFormMain.PrintInformation("[ERRO]", String.Format("Could not read include: {0}", sMatchValue))
+                                g_mFormMain.PrintInformation("[ERRO]", String.Format("Could not read include: {0}", sMatchValue), False, False, 15)
                                 Continue While
                         End Select
 
@@ -2104,7 +2239,7 @@ Public Class ClassAutocompleteUpdater
         End Using
 
         For i = 0 To lPathList.Count - 1
-            GetIncludeFilesRecursive(lPathList(i), lList)
+            GetIncludeFilesRecursive(sActiveSource, sActiveSourceFile, lPathList(i), lList)
         Next
     End Sub
 End Class

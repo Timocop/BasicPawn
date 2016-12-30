@@ -16,8 +16,6 @@
 
 
 Public Class ClassSettings
-    Public Shared g_sConfigOpenSourceFile As String = ""
-
 #Region "Config"
     Public Shared g_iConfigCompilingType As ENUM_COMPILING_TYPE = ENUM_COMPILING_TYPE.AUTOMATIC
     Public Shared g_sConfigOpenIncludeFolder As String = ""
@@ -46,7 +44,14 @@ Public Class ClassSettings
 
     'Settings
     Public Shared g_sSettingsFile As String = IO.Path.Combine(Application.StartupPath, "settings.ini")
-
+    'General
+    Public Shared g_iSettingsAlwaysOpenNewInstance As Boolean = False
+    'Text Editor
+    Public Shared g_iSettingsTextEditorFont As Font = g_iSettingsDefaultEditorFont
+    Public Shared g_iSettingsInvertColors As Boolean = False
+    'Syntax Highligting
+    Public Shared g_iSettingsDoubleClickMark As Boolean = True
+    Public Shared g_iSettingsAutoMark As Boolean = True
     'Autocomplete
     Public Shared g_iSettingsEnableToolTip As Boolean = True
     Public Shared g_iSettingsToolTipMethodComments As Boolean = False
@@ -56,15 +61,7 @@ Public Class ClassSettings
     Public Shared g_iSettingsFullEnumAutocomplete As Boolean = False
     Public Shared g_iSettingsAutocompleteCaseSensitive As Boolean = True
     Public Shared g_iSettingsVarAutocompleteCurrentSourceOnly As Boolean = True
-
-    'Syntax Highligting
-    Public Shared g_iSettingsDoubleClickMark As Boolean = True
-    Public Shared g_iSettingsAutoMark As Boolean = True
-
-    'Text Editor
-    Public Shared g_iSettingsTextEditorFont As Font = g_iSettingsDefaultEditorFont
-    Public Shared g_iSettingsInvertColors As Boolean = False
-
+    Public Shared g_iSettingsVarAutocompleteShowObjectBrowser As Boolean = False
     'Debugger
     Public Shared g_iSettingsDebuggerCatchExceptions As Boolean = True
     Public Shared g_iSettingsDebuggerEntitiesEnableColoring As Boolean = True
@@ -80,20 +77,24 @@ Public Class ClassSettings
     Public Shared Sub SaveSettings()
         Dim initFile As New ClassIniFile(g_sSettingsFile)
 
-        'Editor
-        initFile.WriteKeyValue("Editor", "AutocompleteToolTip", If(g_iSettingsEnableToolTip, "1", "0"))
-        initFile.WriteKeyValue("Editor", "FullMethodAutocomplete", If(g_iSettingsFullMethodAutocomplete, "1", "0"))
-        initFile.WriteKeyValue("Editor", "DoubleClickMark", If(g_iSettingsDoubleClickMark, "1", "0"))
-        initFile.WriteKeyValue("Editor", "ToolTipMethodComments", If(g_iSettingsToolTipMethodComments, "1", "0"))
-        initFile.WriteKeyValue("Editor", "ToolTipAutocompleteComments", If(g_iSettingsToolTipAutocompleteComments, "1", "0"))
-        initFile.WriteKeyValue("Editor", "FullEnumAutocomplete", If(g_iSettingsFullEnumAutocomplete, "1", "0"))
+        'Settings
+        initFile.WriteKeyValue("Editor", "AlwaysOpenNewInstance", If(g_iSettingsAlwaysOpenNewInstance, "1", "0"))
+        'Text Editor
         initFile.WriteKeyValue("Editor", "TextEditorFont", New FontConverter().ConvertToInvariantString(g_iSettingsTextEditorFont))
         initFile.WriteKeyValue("Editor", "TextEditorInvertColors", If(g_iSettingsInvertColors, "1", "0"))
-        initFile.WriteKeyValue("Editor", "AutocompleteCaseSensitive", If(g_iSettingsAutocompleteCaseSensitive, "1", "0"))
-        initFile.WriteKeyValue("Editor", "UseWindowsToolTip", If(g_iSettingsUseWindowsToolTip, "1", "0"))
+        'Syntax Highligting
+        initFile.WriteKeyValue("Editor", "DoubleClickMark", If(g_iSettingsDoubleClickMark, "1", "0"))
         initFile.WriteKeyValue("Editor", "AutoMark", If(g_iSettingsAutoMark, "1", "0"))
+        'Autocomplete
+        initFile.WriteKeyValue("Editor", "AutocompleteToolTip", If(g_iSettingsEnableToolTip, "1", "0"))
+        initFile.WriteKeyValue("Editor", "ToolTipMethodComments", If(g_iSettingsToolTipMethodComments, "1", "0"))
+        initFile.WriteKeyValue("Editor", "ToolTipAutocompleteComments", If(g_iSettingsToolTipAutocompleteComments, "1", "0"))
+        initFile.WriteKeyValue("Editor", "UseWindowsToolTip", If(g_iSettingsUseWindowsToolTip, "1", "0"))
+        initFile.WriteKeyValue("Editor", "FullMethodAutocomplete", If(g_iSettingsFullMethodAutocomplete, "1", "0"))
+        initFile.WriteKeyValue("Editor", "FullEnumAutocomplete", If(g_iSettingsFullEnumAutocomplete, "1", "0"))
+        initFile.WriteKeyValue("Editor", "AutocompleteCaseSensitive", If(g_iSettingsAutocompleteCaseSensitive, "1", "0"))
         initFile.WriteKeyValue("Editor", "VarAutocompleteCurrentSourceOnly", If(g_iSettingsVarAutocompleteCurrentSourceOnly, "1", "0"))
-
+        initFile.WriteKeyValue("Editor", "VarAutocompleteShowObjectBrowser", If(g_iSettingsVarAutocompleteShowObjectBrowser, "1", "0"))
         'Debugger
         initFile.WriteKeyValue("Debugger", "CatchExceptions", If(g_iSettingsDebuggerCatchExceptions, "1", "0"))
         initFile.WriteKeyValue("Debugger", "EntitiesColoring", If(g_iSettingsDebuggerEntitiesEnableColoring, "1", "0"))
@@ -105,27 +106,29 @@ Public Class ClassSettings
         Try
             Dim initFile As New ClassIniFile(g_sSettingsFile)
 
-            'Editor
-            g_iSettingsEnableToolTip = (initFile.ReadKeyValue("Editor", "AutocompleteToolTip", "1") <> "0")
-            g_iSettingsFullMethodAutocomplete = (initFile.ReadKeyValue("Editor", "FullMethodAutocomplete", "0") <> "0")
-            g_iSettingsDoubleClickMark = (initFile.ReadKeyValue("Editor", "DoubleClickMark", "1") <> "0")
-            g_iSettingsToolTipMethodComments = (initFile.ReadKeyValue("Editor", "ToolTipMethodComments", "0") <> "0")
-            g_iSettingsToolTipAutocompleteComments = (initFile.ReadKeyValue("Editor", "ToolTipAutocompleteComments", "1") <> "0")
-            g_iSettingsFullEnumAutocomplete = (initFile.ReadKeyValue("Editor", "FullEnumAutocomplete", "0") <> "0")
-
+            'Settings
+            g_iSettingsAlwaysOpenNewInstance = (initFile.ReadKeyValue("Editor", "AlwaysOpenNewInstance", "0") <> "0")
+            'Text Editor
             Dim editorFont As Font = CType(New FontConverter().ConvertFromInvariantString(initFile.ReadKeyValue("Editor", "TextEditorFont", g_sSettingsDefaultEditorFont)), Font)
             If (editorFont IsNot Nothing AndAlso editorFont.Size < 256) Then
                 g_iSettingsTextEditorFont = editorFont
             Else
                 g_iSettingsTextEditorFont = g_iSettingsDefaultEditorFont
             End If
-
             g_iSettingsInvertColors = (initFile.ReadKeyValue("Editor", "TextEditorInvertColors", "0") <> "0")
-            g_iSettingsAutocompleteCaseSensitive = (initFile.ReadKeyValue("Editor", "AutocompleteCaseSensitive", "1") <> "0")
-            g_iSettingsUseWindowsToolTip = (initFile.ReadKeyValue("Editor", "UseWindowsToolTip", "0") <> "0")
+            'Syntax Highligting
+            g_iSettingsDoubleClickMark = (initFile.ReadKeyValue("Editor", "DoubleClickMark", "1") <> "0")
             g_iSettingsAutoMark = (initFile.ReadKeyValue("Editor", "AutoMark", "1") <> "0")
-            g_iSettingsDebuggerEntitiesEnableAutoScroll = (initFile.ReadKeyValue("Editor", "VarAutocompleteCurrentSourceOnly", "1") <> "0")
-
+            'Autocomplete
+            g_iSettingsEnableToolTip = (initFile.ReadKeyValue("Editor", "AutocompleteToolTip", "1") <> "0")
+            g_iSettingsToolTipMethodComments = (initFile.ReadKeyValue("Editor", "ToolTipMethodComments", "0") <> "0")
+            g_iSettingsToolTipAutocompleteComments = (initFile.ReadKeyValue("Editor", "ToolTipAutocompleteComments", "1") <> "0")
+            g_iSettingsUseWindowsToolTip = (initFile.ReadKeyValue("Editor", "UseWindowsToolTip", "0") <> "0")
+            g_iSettingsFullMethodAutocomplete = (initFile.ReadKeyValue("Editor", "FullMethodAutocomplete", "0") <> "0")
+            g_iSettingsFullEnumAutocomplete = (initFile.ReadKeyValue("Editor", "FullEnumAutocomplete", "0") <> "0")
+            g_iSettingsAutocompleteCaseSensitive = (initFile.ReadKeyValue("Editor", "AutocompleteCaseSensitive", "1") <> "0")
+            g_iSettingsVarAutocompleteCurrentSourceOnly = (initFile.ReadKeyValue("Editor", "VarAutocompleteCurrentSourceOnly", "1") <> "0")
+            g_iSettingsVarAutocompleteShowObjectBrowser = (initFile.ReadKeyValue("Editor", "VarAutocompleteShowObjectBrowser", "0") <> "0")
             'Debugger
             g_iSettingsDebuggerCatchExceptions = (initFile.ReadKeyValue("Debugger", "CatchExceptions", "1") <> "0")
             g_iSettingsDebuggerEntitiesEnableColoring = (initFile.ReadKeyValue("Debugger", "EntitiesColoring", "1") <> "0")
@@ -151,13 +154,15 @@ Public Class ClassSettings
     ''' Gets all available shell arguments
     ''' </summary>
     ''' <returns></returns>
-    Public Shared Function GetShellArguments() As STRUC_SHELL_ARGUMENT_ITEM()
+    Public Shared Function GetShellArguments(mFormMain As FormMain) As STRUC_SHELL_ARGUMENT_ITEM()
         'TODO: Add more shell arguments
         Dim sShellList As New List(Of STRUC_SHELL_ARGUMENT_ITEM)
 
-        sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%input%", "Current opened source file", g_sConfigOpenSourceFile))
-        sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%inputfilename%", "Current opened source filename", If(String.IsNullOrEmpty(g_sConfigOpenSourceFile), "", IO.Path.GetFileNameWithoutExtension(g_sConfigOpenSourceFile))))
-        sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%inputfolder%", "Current opened source file folder", If(String.IsNullOrEmpty(g_sConfigOpenSourceFile), "", IO.Path.GetDirectoryName(g_sConfigOpenSourceFile))))
+        Dim sFile As String = mFormMain.g_ClassTabControl.m_ActiveTab.m_File
+
+        sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%input%", "Current opened source file", sFile))
+        sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%inputfilename%", "Current opened source filename", If(String.IsNullOrEmpty(sFile), "", IO.Path.GetFileNameWithoutExtension(sFile))))
+        sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%inputfolder%", "Current opened source file folder", If(String.IsNullOrEmpty(sFile), "", IO.Path.GetDirectoryName(sFile))))
         sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%includes%", "Include folder", g_sConfigOpenIncludeFolder))
         sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%compiler%", "Compiler path", g_sConfigCompilerPath))
         sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%output%", "Output folder", g_sConfigPluginOutputFolder))

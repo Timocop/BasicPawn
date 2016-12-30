@@ -35,26 +35,26 @@ Public Class UCInformationList
             Return
         End If
 
-        If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile) OrElse Not IO.File.Exists(ClassSettings.g_sConfigOpenSourceFile)) Then
+        If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
             Return
         End If
 
-        Dim reMatch As Match = Regex.Match(ListBox_Information.SelectedItems(0).ToString, String.Format("\b{0}\b\((?<Line>[0-9]+)\)\s\:", Regex.Escape(ClassSettings.g_sConfigOpenSourceFile)), RegexOptions.IgnoreCase)
+        Dim reMatch As Match = Regex.Match(ListBox_Information.SelectedItems(0).ToString, String.Format("\b{0}\b\((?<Line>[0-9]+)\)\s\:", Regex.Escape(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)), RegexOptions.IgnoreCase)
         If (reMatch.Success) Then
             Dim iLineNum As Integer = CInt(reMatch.Groups("Line").Value) - 1
-            If (iLineNum < 0 OrElse iLineNum > g_mFormMain.TextEditorControl_Source.Document.TotalNumberOfLines - 1) Then
+            If (iLineNum < 0 OrElse iLineNum > g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TotalNumberOfLines - 1) Then
                 Return
             End If
 
-            g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Caret.Line = iLineNum
-            g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.SelectionManager.ClearSelection()
+            g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Caret.Line = iLineNum
+            g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.ClearSelection()
 
-            Dim iLineLen As Integer = g_mFormMain.TextEditorControl_Source.Document.GetLineSegment(iLineNum).Length
+            Dim iLineLen As Integer = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.GetLineSegment(iLineNum).Length
 
             Dim iStart As New TextLocation(0, iLineNum)
             Dim iEnd As New TextLocation(iLineLen, iLineNum)
 
-            g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.SelectionManager.SetSelection(iStart, iEnd)
+            g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.SetSelection(iStart, iEnd)
         End If
     End Sub
 End Class

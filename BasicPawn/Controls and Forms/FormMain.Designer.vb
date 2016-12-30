@@ -10,44 +10,15 @@ Partial Class FormMain
                 g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnPluginEndPost())
 
                 g_ClassAutocompleteUpdater.StopUpdate()
+                If (g_mFormOpenTabFromInstances IsNot Nothing AndAlso Not g_mFormOpenTabFromInstances.IsDisposed) Then
+                    g_mFormOpenTabFromInstances.Close()
+                    g_mFormOpenTabFromInstances.Dispose()
+                    g_mFormOpenTabFromInstances = Nothing
+                End If
+
                 g_ClassSyntaxUpdater.StopThread()
-
-                'Remove events
-                RemoveHandler TextEditorControl_Source.g_eProcessCmdKey, AddressOf TextEditorControl_Source_ProcessCmdKey
-
-                RemoveHandler TextEditorControl_Source.MouseDoubleClick, AddressOf TextEditorControl_Source_DoubleClickMarkWord
-                RemoveHandler TextEditorControl_Source.ActiveTextAreaControl.MouseDoubleClick, AddressOf TextEditorControl_Source_DoubleClickMarkWord
-                RemoveHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.MouseDoubleClick, AddressOf TextEditorControl_Source_DoubleClickMarkWord
-
-                RemoveHandler TextEditorControl_Source.MouseClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
-                RemoveHandler TextEditorControl_Source.ActiveTextAreaControl.MouseClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
-                RemoveHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
-
-                RemoveHandler TextEditorControl_Source.MouseUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
-                RemoveHandler TextEditorControl_Source.ActiveTextAreaControl.MouseUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
-                RemoveHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.MouseUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
-
-                RemoveHandler TextEditorControl_Source.MouseDoubleClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
-                RemoveHandler TextEditorControl_Source.ActiveTextAreaControl.MouseDoubleClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
-                RemoveHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.MouseDoubleClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
-
-                RemoveHandler TextEditorControl_Source.KeyUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
-                RemoveHandler TextEditorControl_Source.ActiveTextAreaControl.KeyUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
-                RemoveHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.KeyUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
-
-                RemoveHandler TextEditorControl_Source.KeyDown, AddressOf TextEditorControl_Source_KeyDown
-                RemoveHandler TextEditorControl_Source.ActiveTextAreaControl.KeyDown, AddressOf TextEditorControl_Source_KeyDown
-                RemoveHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.KeyDown, AddressOf TextEditorControl_Source_KeyDown
-
-                RemoveHandler TextEditorControl_Source.TextChanged, AddressOf TextEditorControl_Source_TextChanged
-                RemoveHandler TextEditorControl_Source.ActiveTextAreaControl.TextChanged, AddressOf TextEditorControl_Source_TextChanged
-                RemoveHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.TextChanged, AddressOf TextEditorControl_Source_TextChanged
-
-                RemoveHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.SelectionManager.SelectionChanged, AddressOf TextEditorControl_Source_UpdateInfo
-                RemoveHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.PositionChanged, AddressOf TextEditorControl_Source_UpdateInfo
-
-                RemoveHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.Document.LineLengthChanged, AddressOf TextEditorControl_DetectLineLenghtChange
-                RemoveHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.Document.LineCountChanged, AddressOf TextEditorControl_DetectLineCountChange
+                g_ClassAutocompleteUpdater.StopUpdate()
+                g_mUCObjectBrowser.StopUpdate()
 
                 For i = 0 To g_ClassSyntaxTools.g_SyntaxFiles.Length - 1
                     If (Not String.IsNullOrEmpty(g_ClassSyntaxTools.g_SyntaxFiles(i).sFile) AndAlso IO.File.Exists(g_ClassSyntaxTools.g_SyntaxFiles(i).sFile)) Then
@@ -63,9 +34,19 @@ Partial Class FormMain
                     End If
                 Next
 
+                If (g_ClassCrossAppComunication IsNot Nothing) Then
+                    g_ClassCrossAppComunication.Dispose()
+                    g_ClassCrossAppComunication = Nothing
+                End If
+
                 If (g_ClassCustomHighlighting IsNot Nothing) Then
                     g_ClassCustomHighlighting.Dispose()
                     g_ClassCustomHighlighting = Nothing
+                End If
+
+                If (g_ClassTabControl IsNot Nothing) Then
+                    g_ClassTabControl.Dispose()
+                    g_ClassTabControl = Nothing
                 End If
             End If
 
@@ -108,10 +89,16 @@ Partial Class FormMain
         Me.MenuStrip_BasicPawn = New System.Windows.Forms.MenuStrip()
         Me.ToolStripMenuItem_File = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_FileNew = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator9 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_FileOpen = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_FileLoadTabs = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator7 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_FileSave = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_FileSaveAll = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_FileSaveAs = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_FileSaveAsTemp = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator8 = New System.Windows.Forms.ToolStripSeparator()
+        Me.ToolStripMenuItem_FileOpenFolder = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_FileExit = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Tools = New System.Windows.Forms.ToolStripMenuItem()
@@ -138,17 +125,21 @@ Partial Class FormMain
         Me.ToolStripMenuItem_HelpSpecialControlsAutocompletePaste = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_HelpSpecialControlsMoveSelected = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_HelpSpecialControlsCopySelected = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripMenuItem_HelpSpecialControlsSearchAndReplace = New System.Windows.Forms.ToolStripMenuItem()
-        Me.CTRLDToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_HelpSpecialControlsDupLine = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_HelpAbout = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Undo = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Redo = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_CheckUpdate = New System.Windows.Forms.ToolStripMenuItem()
-        Me.SplitContainer1 = New System.Windows.Forms.SplitContainer()
-        Me.SplitContainer2 = New System.Windows.Forms.SplitContainer()
+        Me.ToolStripMenuItem_TabClose = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_TabMoveRight = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_TabMoveLeft = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_TabOpenInstance = New System.Windows.Forms.ToolStripMenuItem()
+        Me.SplitContainer_ToolboxSourceAndDetails = New System.Windows.Forms.SplitContainer()
+        Me.SplitContainer_ToolboxAndEditor = New System.Windows.Forms.SplitContainer()
         Me.TabControl_Toolbox = New System.Windows.Forms.TabControl()
         Me.TabPage_ObjectBrowser = New System.Windows.Forms.TabPage()
-        Me.TextEditorControl_Source = New BasicPawn.TextEditorControlEx()
+        Me.TabControl_SourceTabs = New System.Windows.Forms.TabControl()
+        Me.TabPage1 = New System.Windows.Forms.TabPage()
         Me.TabControl_Details = New System.Windows.Forms.TabControl()
         Me.TabPage_Autocomplete = New System.Windows.Forms.TabPage()
         Me.TabPage_Information = New System.Windows.Forms.TabPage()
@@ -160,15 +151,17 @@ Partial Class FormMain
         Me.ToolStripStatusLabel_CurrentConfig = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ToolStripStatusLabel_LastInformation = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ToolStripStatusLabel_AppVersion = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.Timer_PingFlash = New System.Windows.Forms.Timer(Me.components)
         Me.ContextMenuStrip_RightClick.SuspendLayout()
         Me.MenuStrip_BasicPawn.SuspendLayout()
-        Me.SplitContainer1.Panel1.SuspendLayout()
-        Me.SplitContainer1.Panel2.SuspendLayout()
-        Me.SplitContainer1.SuspendLayout()
-        Me.SplitContainer2.Panel1.SuspendLayout()
-        Me.SplitContainer2.Panel2.SuspendLayout()
-        Me.SplitContainer2.SuspendLayout()
+        Me.SplitContainer_ToolboxSourceAndDetails.Panel1.SuspendLayout()
+        Me.SplitContainer_ToolboxSourceAndDetails.Panel2.SuspendLayout()
+        Me.SplitContainer_ToolboxSourceAndDetails.SuspendLayout()
+        Me.SplitContainer_ToolboxAndEditor.Panel1.SuspendLayout()
+        Me.SplitContainer_ToolboxAndEditor.Panel2.SuspendLayout()
+        Me.SplitContainer_ToolboxAndEditor.SuspendLayout()
         Me.TabControl_Toolbox.SuspendLayout()
+        Me.TabControl_SourceTabs.SuspendLayout()
         Me.TabControl_Details.SuspendLayout()
         Me.StatusStrip_BasicPawn.SuspendLayout()
         Me.SuspendLayout()
@@ -178,7 +171,7 @@ Partial Class FormMain
         Me.ContextMenuStrip_RightClick.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_Mark, Me.ToolStripMenuItem_ListReferences, Me.ToolStripSeparator1, Me.ToolStripMenuItem_Debugger, Me.ToolStripMenuItem_HightlightCustom, Me.ToolStripSeparator6, Me.ToolStripMenuItem_Cut, Me.ToolStripMenuItem_Copy, Me.ToolStripMenuItem_Paste})
         Me.ContextMenuStrip_RightClick.Name = "ContextMenuStrip1"
         Me.ContextMenuStrip_RightClick.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
-        Me.ContextMenuStrip_RightClick.Size = New System.Drawing.Size(157, 192)
+        Me.ContextMenuStrip_RightClick.Size = New System.Drawing.Size(157, 170)
         '
         'ToolStripMenuItem_Mark
         '
@@ -292,17 +285,18 @@ Partial Class FormMain
         '
         'MenuStrip_BasicPawn
         '
-        Me.MenuStrip_BasicPawn.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_File, Me.ToolStripMenuItem_Tools, Me.ToolStripMenuItem_Build, Me.ToolStripMenuItem_Test, Me.ToolStripMenuItem_Debug, Me.ToolStripMenuItem_Shell, Me.ToolStripMenuItem_Help, Me.ToolStripMenuItem_Undo, Me.ToolStripMenuItem_Redo, Me.ToolStripMenuItem_CheckUpdate})
+        Me.MenuStrip_BasicPawn.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_File, Me.ToolStripMenuItem_Tools, Me.ToolStripMenuItem_Build, Me.ToolStripMenuItem_Test, Me.ToolStripMenuItem_Debug, Me.ToolStripMenuItem_Shell, Me.ToolStripMenuItem_Help, Me.ToolStripMenuItem_Undo, Me.ToolStripMenuItem_Redo, Me.ToolStripMenuItem_CheckUpdate, Me.ToolStripMenuItem_TabClose, Me.ToolStripMenuItem_TabMoveRight, Me.ToolStripMenuItem_TabMoveLeft, Me.ToolStripMenuItem_TabOpenInstance})
         Me.MenuStrip_BasicPawn.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip_BasicPawn.Name = "MenuStrip_BasicPawn"
         Me.MenuStrip_BasicPawn.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
+        Me.MenuStrip_BasicPawn.ShowItemToolTips = True
         Me.MenuStrip_BasicPawn.Size = New System.Drawing.Size(1008, 24)
         Me.MenuStrip_BasicPawn.TabIndex = 2
         Me.MenuStrip_BasicPawn.Text = "MenuStrip1"
         '
         'ToolStripMenuItem_File
         '
-        Me.ToolStripMenuItem_File.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_FileNew, Me.ToolStripMenuItem_FileOpen, Me.ToolStripMenuItem_FileSave, Me.ToolStripMenuItem_FileSaveAs, Me.ToolStripMenuItem_FileSaveAsTemp, Me.ToolStripSeparator2, Me.ToolStripMenuItem_FileExit})
+        Me.ToolStripMenuItem_File.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_FileNew, Me.ToolStripSeparator9, Me.ToolStripMenuItem_FileOpen, Me.ToolStripMenuItem_FileLoadTabs, Me.ToolStripSeparator7, Me.ToolStripMenuItem_FileSave, Me.ToolStripMenuItem_FileSaveAll, Me.ToolStripMenuItem_FileSaveAs, Me.ToolStripMenuItem_FileSaveAsTemp, Me.ToolStripSeparator8, Me.ToolStripMenuItem_FileOpenFolder, Me.ToolStripSeparator2, Me.ToolStripMenuItem_FileExit})
         Me.ToolStripMenuItem_File.Image = CType(resources.GetObject("ToolStripMenuItem_File.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_File.Name = "ToolStripMenuItem_File"
         Me.ToolStripMenuItem_File.Size = New System.Drawing.Size(53, 20)
@@ -312,47 +306,92 @@ Partial Class FormMain
         '
         Me.ToolStripMenuItem_FileNew.Image = CType(resources.GetObject("ToolStripMenuItem_FileNew.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_FileNew.Name = "ToolStripMenuItem_FileNew"
-        Me.ToolStripMenuItem_FileNew.Size = New System.Drawing.Size(170, 22)
+        Me.ToolStripMenuItem_FileNew.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.N), System.Windows.Forms.Keys)
+        Me.ToolStripMenuItem_FileNew.Size = New System.Drawing.Size(343, 22)
         Me.ToolStripMenuItem_FileNew.Text = "&New"
+        '
+        'ToolStripSeparator9
+        '
+        Me.ToolStripSeparator9.Name = "ToolStripSeparator9"
+        Me.ToolStripSeparator9.Size = New System.Drawing.Size(340, 6)
         '
         'ToolStripMenuItem_FileOpen
         '
         Me.ToolStripMenuItem_FileOpen.Image = CType(resources.GetObject("ToolStripMenuItem_FileOpen.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_FileOpen.Name = "ToolStripMenuItem_FileOpen"
-        Me.ToolStripMenuItem_FileOpen.Size = New System.Drawing.Size(170, 22)
+        Me.ToolStripMenuItem_FileOpen.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.O), System.Windows.Forms.Keys)
+        Me.ToolStripMenuItem_FileOpen.Size = New System.Drawing.Size(343, 22)
         Me.ToolStripMenuItem_FileOpen.Text = "&Open"
+        '
+        'ToolStripMenuItem_FileLoadTabs
+        '
+        Me.ToolStripMenuItem_FileLoadTabs.Image = Global.BasicPawn.My.Resources.Resources.imageres_5333_16x16_32
+        Me.ToolStripMenuItem_FileLoadTabs.Name = "ToolStripMenuItem_FileLoadTabs"
+        Me.ToolStripMenuItem_FileLoadTabs.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
+            Or System.Windows.Forms.Keys.O), System.Windows.Forms.Keys)
+        Me.ToolStripMenuItem_FileLoadTabs.Size = New System.Drawing.Size(343, 22)
+        Me.ToolStripMenuItem_FileLoadTabs.Text = "Open from other instances"
+        '
+        'ToolStripSeparator7
+        '
+        Me.ToolStripSeparator7.Name = "ToolStripSeparator7"
+        Me.ToolStripSeparator7.Size = New System.Drawing.Size(340, 6)
         '
         'ToolStripMenuItem_FileSave
         '
         Me.ToolStripMenuItem_FileSave.Image = CType(resources.GetObject("ToolStripMenuItem_FileSave.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_FileSave.Name = "ToolStripMenuItem_FileSave"
-        Me.ToolStripMenuItem_FileSave.Size = New System.Drawing.Size(170, 22)
+        Me.ToolStripMenuItem_FileSave.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.S), System.Windows.Forms.Keys)
+        Me.ToolStripMenuItem_FileSave.Size = New System.Drawing.Size(343, 22)
         Me.ToolStripMenuItem_FileSave.Text = "&Save"
+        '
+        'ToolStripMenuItem_FileSaveAll
+        '
+        Me.ToolStripMenuItem_FileSaveAll.Image = Global.BasicPawn.My.Resources.Resources.imageres_5303_16x16_32
+        Me.ToolStripMenuItem_FileSaveAll.Name = "ToolStripMenuItem_FileSaveAll"
+        Me.ToolStripMenuItem_FileSaveAll.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
+            Or System.Windows.Forms.Keys.S), System.Windows.Forms.Keys)
+        Me.ToolStripMenuItem_FileSaveAll.Size = New System.Drawing.Size(343, 22)
+        Me.ToolStripMenuItem_FileSaveAll.Text = "Save all"
         '
         'ToolStripMenuItem_FileSaveAs
         '
         Me.ToolStripMenuItem_FileSaveAs.Image = CType(resources.GetObject("ToolStripMenuItem_FileSaveAs.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_FileSaveAs.Name = "ToolStripMenuItem_FileSaveAs"
-        Me.ToolStripMenuItem_FileSaveAs.Size = New System.Drawing.Size(170, 22)
+        Me.ToolStripMenuItem_FileSaveAs.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Alt) _
+            Or System.Windows.Forms.Keys.S), System.Windows.Forms.Keys)
+        Me.ToolStripMenuItem_FileSaveAs.Size = New System.Drawing.Size(343, 22)
         Me.ToolStripMenuItem_FileSaveAs.Text = "Save &as..."
         '
         'ToolStripMenuItem_FileSaveAsTemp
         '
         Me.ToolStripMenuItem_FileSaveAsTemp.Image = Global.BasicPawn.My.Resources.Resources.imageres_5303_16x16_32
         Me.ToolStripMenuItem_FileSaveAsTemp.Name = "ToolStripMenuItem_FileSaveAsTemp"
-        Me.ToolStripMenuItem_FileSaveAsTemp.Size = New System.Drawing.Size(170, 22)
+        Me.ToolStripMenuItem_FileSaveAsTemp.Size = New System.Drawing.Size(343, 22)
         Me.ToolStripMenuItem_FileSaveAsTemp.Text = "Save as &temporary"
+        '
+        'ToolStripSeparator8
+        '
+        Me.ToolStripSeparator8.Name = "ToolStripSeparator8"
+        Me.ToolStripSeparator8.Size = New System.Drawing.Size(340, 6)
+        '
+        'ToolStripMenuItem_FileOpenFolder
+        '
+        Me.ToolStripMenuItem_FileOpenFolder.Image = Global.BasicPawn.My.Resources.Resources.imageres_5304_16x16_32
+        Me.ToolStripMenuItem_FileOpenFolder.Name = "ToolStripMenuItem_FileOpenFolder"
+        Me.ToolStripMenuItem_FileOpenFolder.Size = New System.Drawing.Size(343, 22)
+        Me.ToolStripMenuItem_FileOpenFolder.Text = "Open current folder"
         '
         'ToolStripSeparator2
         '
         Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
-        Me.ToolStripSeparator2.Size = New System.Drawing.Size(167, 6)
+        Me.ToolStripSeparator2.Size = New System.Drawing.Size(340, 6)
         '
         'ToolStripMenuItem_FileExit
         '
         Me.ToolStripMenuItem_FileExit.Image = CType(resources.GetObject("ToolStripMenuItem_FileExit.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_FileExit.Name = "ToolStripMenuItem_FileExit"
-        Me.ToolStripMenuItem_FileExit.Size = New System.Drawing.Size(170, 22)
+        Me.ToolStripMenuItem_FileExit.Size = New System.Drawing.Size(343, 22)
         Me.ToolStripMenuItem_FileExit.Text = "Exit"
         '
         'ToolStripMenuItem_Tools
@@ -386,6 +425,7 @@ Partial Class FormMain
         '
         Me.ToolStripMenuItem_ToolsSearchReplace.Image = CType(resources.GetObject("ToolStripMenuItem_ToolsSearchReplace.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_ToolsSearchReplace.Name = "ToolStripMenuItem_ToolsSearchReplace"
+        Me.ToolStripMenuItem_ToolsSearchReplace.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.F), System.Windows.Forms.Keys)
         Me.ToolStripMenuItem_ToolsSearchReplace.Size = New System.Drawing.Size(225, 22)
         Me.ToolStripMenuItem_ToolsSearchReplace.Text = "Search && Replace"
         '
@@ -401,8 +441,9 @@ Partial Class FormMain
         '
         Me.ToolStripMenuItem_ToolsAutocompleteUpdate.Image = CType(resources.GetObject("ToolStripMenuItem_ToolsAutocompleteUpdate.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_ToolsAutocompleteUpdate.Name = "ToolStripMenuItem_ToolsAutocompleteUpdate"
+        Me.ToolStripMenuItem_ToolsAutocompleteUpdate.ShortcutKeys = System.Windows.Forms.Keys.F5
         Me.ToolStripMenuItem_ToolsAutocompleteUpdate.Size = New System.Drawing.Size(360, 22)
-        Me.ToolStripMenuItem_ToolsAutocompleteUpdate.Text = "Update (F5)"
+        Me.ToolStripMenuItem_ToolsAutocompleteUpdate.Text = "Update"
         '
         'ToolStripComboBox_ToolsAutocompleteSyntax
         '
@@ -448,6 +489,7 @@ Partial Class FormMain
         '
         Me.ToolStripMenuItem_Build.Image = CType(resources.GetObject("ToolStripMenuItem_Build.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_Build.Name = "ToolStripMenuItem_Build"
+        Me.ToolStripMenuItem_Build.ShortcutKeys = System.Windows.Forms.Keys.F3
         Me.ToolStripMenuItem_Build.Size = New System.Drawing.Size(62, 20)
         Me.ToolStripMenuItem_Build.Text = "&Build"
         '
@@ -455,6 +497,7 @@ Partial Class FormMain
         '
         Me.ToolStripMenuItem_Test.Image = CType(resources.GetObject("ToolStripMenuItem_Test.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_Test.Name = "ToolStripMenuItem_Test"
+        Me.ToolStripMenuItem_Test.ShortcutKeys = System.Windows.Forms.Keys.F4
         Me.ToolStripMenuItem_Test.Size = New System.Drawing.Size(56, 20)
         Me.ToolStripMenuItem_Test.Text = "&Test"
         '
@@ -462,6 +505,7 @@ Partial Class FormMain
         '
         Me.ToolStripMenuItem_Debug.Image = CType(resources.GetObject("ToolStripMenuItem_Debug.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_Debug.Name = "ToolStripMenuItem_Debug"
+        Me.ToolStripMenuItem_Debug.ShortcutKeys = System.Windows.Forms.Keys.F6
         Me.ToolStripMenuItem_Debug.Size = New System.Drawing.Size(114, 20)
         Me.ToolStripMenuItem_Debug.Text = "Start &Debugger"
         '
@@ -469,6 +513,7 @@ Partial Class FormMain
         '
         Me.ToolStripMenuItem_Shell.Image = CType(resources.GetObject("ToolStripMenuItem_Shell.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_Shell.Name = "ToolStripMenuItem_Shell"
+        Me.ToolStripMenuItem_Shell.ShortcutKeys = System.Windows.Forms.Keys.F7
         Me.ToolStripMenuItem_Shell.Size = New System.Drawing.Size(60, 20)
         Me.ToolStripMenuItem_Shell.Text = "&Shell"
         '
@@ -482,7 +527,7 @@ Partial Class FormMain
         '
         'ToolStripMenuItem_HelpSpecialControls
         '
-        Me.ToolStripMenuItem_HelpSpecialControls.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_HelpSpecialControlsAutocompleteUp, Me.ToolStripMenuItem_HelpSpecialControlsAutocompleteDown, Me.ToolStripMenuItem_HelpSpecialControlsAutocompletePaste, Me.ToolStripMenuItem_HelpSpecialControlsMoveSelected, Me.ToolStripMenuItem_HelpSpecialControlsCopySelected, Me.ToolStripMenuItem_HelpSpecialControlsSearchAndReplace, Me.CTRLDToolStripMenuItem})
+        Me.ToolStripMenuItem_HelpSpecialControls.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_HelpSpecialControlsAutocompleteUp, Me.ToolStripMenuItem_HelpSpecialControlsAutocompleteDown, Me.ToolStripMenuItem_HelpSpecialControlsAutocompletePaste, Me.ToolStripMenuItem_HelpSpecialControlsMoveSelected, Me.ToolStripMenuItem_HelpSpecialControlsCopySelected, Me.ToolStripMenuItem_HelpSpecialControlsDupLine})
         Me.ToolStripMenuItem_HelpSpecialControls.Image = CType(resources.GetObject("ToolStripMenuItem_HelpSpecialControls.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_HelpSpecialControls.Name = "ToolStripMenuItem_HelpSpecialControls"
         Me.ToolStripMenuItem_HelpSpecialControls.Size = New System.Drawing.Size(159, 22)
@@ -518,17 +563,11 @@ Partial Class FormMain
         Me.ToolStripMenuItem_HelpSpecialControlsCopySelected.Size = New System.Drawing.Size(268, 22)
         Me.ToolStripMenuItem_HelpSpecialControlsCopySelected.Text = "CTRL+DRAG - Copy Selected"
         '
-        'ToolStripMenuItem_HelpSpecialControlsSearchAndReplace
+        'ToolStripMenuItem_HelpSpecialControlsDupLine
         '
-        Me.ToolStripMenuItem_HelpSpecialControlsSearchAndReplace.Name = "ToolStripMenuItem_HelpSpecialControlsSearchAndReplace"
-        Me.ToolStripMenuItem_HelpSpecialControlsSearchAndReplace.Size = New System.Drawing.Size(268, 22)
-        Me.ToolStripMenuItem_HelpSpecialControlsSearchAndReplace.Text = "CTRL+F - Search && Replace"
-        '
-        'CTRLDToolStripMenuItem
-        '
-        Me.CTRLDToolStripMenuItem.Name = "CTRLDToolStripMenuItem"
-        Me.CTRLDToolStripMenuItem.Size = New System.Drawing.Size(268, 22)
-        Me.CTRLDToolStripMenuItem.Text = "CTRL+D - Duplicate Line/Selected"
+        Me.ToolStripMenuItem_HelpSpecialControlsDupLine.Name = "ToolStripMenuItem_HelpSpecialControlsDupLine"
+        Me.ToolStripMenuItem_HelpSpecialControlsDupLine.Size = New System.Drawing.Size(268, 22)
+        Me.ToolStripMenuItem_HelpSpecialControlsDupLine.Text = "CTRL+D - Duplicate Line/Selected"
         '
         'ToolStripMenuItem_HelpAbout
         '
@@ -558,43 +597,93 @@ Partial Class FormMain
         Me.ToolStripMenuItem_CheckUpdate.Size = New System.Drawing.Size(127, 20)
         Me.ToolStripMenuItem_CheckUpdate.Text = "Check for Update"
         '
-        'SplitContainer1
+        'ToolStripMenuItem_TabClose
         '
-        Me.SplitContainer1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.SplitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel2
-        Me.SplitContainer1.Location = New System.Drawing.Point(0, 24)
-        Me.SplitContainer1.Name = "SplitContainer1"
-        Me.SplitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal
+        Me.ToolStripMenuItem_TabClose.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
+        Me.ToolStripMenuItem_TabClose.AutoToolTip = True
+        Me.ToolStripMenuItem_TabClose.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
+        Me.ToolStripMenuItem_TabClose.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.ToolStripMenuItem_TabClose.Name = "ToolStripMenuItem_TabClose"
+        Me.ToolStripMenuItem_TabClose.Padding = New System.Windows.Forms.Padding(0)
+        Me.ToolStripMenuItem_TabClose.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.W), System.Windows.Forms.Keys)
+        Me.ToolStripMenuItem_TabClose.ShowShortcutKeys = False
+        Me.ToolStripMenuItem_TabClose.Size = New System.Drawing.Size(19, 20)
+        Me.ToolStripMenuItem_TabClose.Text = "X"
+        Me.ToolStripMenuItem_TabClose.ToolTipText = "Close current tab"
         '
-        'SplitContainer1.Panel1
+        'ToolStripMenuItem_TabMoveRight
         '
-        Me.SplitContainer1.Panel1.Controls.Add(Me.SplitContainer2)
-        Me.SplitContainer1.Panel1MinSize = 16
+        Me.ToolStripMenuItem_TabMoveRight.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
+        Me.ToolStripMenuItem_TabMoveRight.AutoToolTip = True
+        Me.ToolStripMenuItem_TabMoveRight.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
+        Me.ToolStripMenuItem_TabMoveRight.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.ToolStripMenuItem_TabMoveRight.Name = "ToolStripMenuItem_TabMoveRight"
+        Me.ToolStripMenuItem_TabMoveRight.Padding = New System.Windows.Forms.Padding(0)
+        Me.ToolStripMenuItem_TabMoveRight.Size = New System.Drawing.Size(19, 20)
+        Me.ToolStripMenuItem_TabMoveRight.Text = ">"
+        Me.ToolStripMenuItem_TabMoveRight.ToolTipText = "Move current tab right"
         '
-        'SplitContainer1.Panel2
+        'ToolStripMenuItem_TabMoveLeft
         '
-        Me.SplitContainer1.Panel2.Controls.Add(Me.TabControl_Details)
-        Me.SplitContainer1.Panel2MinSize = 16
-        Me.SplitContainer1.Size = New System.Drawing.Size(1008, 683)
-        Me.SplitContainer1.SplitterDistance = 500
-        Me.SplitContainer1.TabIndex = 3
+        Me.ToolStripMenuItem_TabMoveLeft.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
+        Me.ToolStripMenuItem_TabMoveLeft.AutoToolTip = True
+        Me.ToolStripMenuItem_TabMoveLeft.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
+        Me.ToolStripMenuItem_TabMoveLeft.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.ToolStripMenuItem_TabMoveLeft.Name = "ToolStripMenuItem_TabMoveLeft"
+        Me.ToolStripMenuItem_TabMoveLeft.Padding = New System.Windows.Forms.Padding(0)
+        Me.ToolStripMenuItem_TabMoveLeft.Size = New System.Drawing.Size(19, 20)
+        Me.ToolStripMenuItem_TabMoveLeft.Text = "<"
+        Me.ToolStripMenuItem_TabMoveLeft.ToolTipText = "Move current tab left"
         '
-        'SplitContainer2
+        'ToolStripMenuItem_TabOpenInstance
         '
-        Me.SplitContainer2.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.SplitContainer2.Location = New System.Drawing.Point(0, 0)
-        Me.SplitContainer2.Name = "SplitContainer2"
+        Me.ToolStripMenuItem_TabOpenInstance.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
+        Me.ToolStripMenuItem_TabOpenInstance.AutoToolTip = True
+        Me.ToolStripMenuItem_TabOpenInstance.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
+        Me.ToolStripMenuItem_TabOpenInstance.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.ToolStripMenuItem_TabOpenInstance.Name = "ToolStripMenuItem_TabOpenInstance"
+        Me.ToolStripMenuItem_TabOpenInstance.Padding = New System.Windows.Forms.Padding(0)
+        Me.ToolStripMenuItem_TabOpenInstance.Size = New System.Drawing.Size(18, 20)
+        Me.ToolStripMenuItem_TabOpenInstance.Text = "v"
+        Me.ToolStripMenuItem_TabOpenInstance.ToolTipText = "Open from Instances"
         '
-        'SplitContainer2.Panel1
+        'SplitContainer_ToolboxSourceAndDetails
         '
-        Me.SplitContainer2.Panel1.Controls.Add(Me.TabControl_Toolbox)
+        Me.SplitContainer_ToolboxSourceAndDetails.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.SplitContainer_ToolboxSourceAndDetails.FixedPanel = System.Windows.Forms.FixedPanel.Panel2
+        Me.SplitContainer_ToolboxSourceAndDetails.Location = New System.Drawing.Point(0, 24)
+        Me.SplitContainer_ToolboxSourceAndDetails.Name = "SplitContainer_ToolboxSourceAndDetails"
+        Me.SplitContainer_ToolboxSourceAndDetails.Orientation = System.Windows.Forms.Orientation.Horizontal
         '
-        'SplitContainer2.Panel2
+        'SplitContainer_ToolboxSourceAndDetails.Panel1
         '
-        Me.SplitContainer2.Panel2.Controls.Add(Me.TextEditorControl_Source)
-        Me.SplitContainer2.Size = New System.Drawing.Size(1008, 500)
-        Me.SplitContainer2.SplitterDistance = 189
-        Me.SplitContainer2.TabIndex = 1
+        Me.SplitContainer_ToolboxSourceAndDetails.Panel1.Controls.Add(Me.SplitContainer_ToolboxAndEditor)
+        Me.SplitContainer_ToolboxSourceAndDetails.Panel1MinSize = 16
+        '
+        'SplitContainer_ToolboxSourceAndDetails.Panel2
+        '
+        Me.SplitContainer_ToolboxSourceAndDetails.Panel2.Controls.Add(Me.TabControl_Details)
+        Me.SplitContainer_ToolboxSourceAndDetails.Panel2MinSize = 16
+        Me.SplitContainer_ToolboxSourceAndDetails.Size = New System.Drawing.Size(1008, 683)
+        Me.SplitContainer_ToolboxSourceAndDetails.SplitterDistance = 500
+        Me.SplitContainer_ToolboxSourceAndDetails.TabIndex = 3
+        '
+        'SplitContainer_ToolboxAndEditor
+        '
+        Me.SplitContainer_ToolboxAndEditor.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.SplitContainer_ToolboxAndEditor.Location = New System.Drawing.Point(0, 0)
+        Me.SplitContainer_ToolboxAndEditor.Name = "SplitContainer_ToolboxAndEditor"
+        '
+        'SplitContainer_ToolboxAndEditor.Panel1
+        '
+        Me.SplitContainer_ToolboxAndEditor.Panel1.Controls.Add(Me.TabControl_Toolbox)
+        '
+        'SplitContainer_ToolboxAndEditor.Panel2
+        '
+        Me.SplitContainer_ToolboxAndEditor.Panel2.Controls.Add(Me.TabControl_SourceTabs)
+        Me.SplitContainer_ToolboxAndEditor.Size = New System.Drawing.Size(1008, 500)
+        Me.SplitContainer_ToolboxAndEditor.SplitterDistance = 189
+        Me.SplitContainer_ToolboxAndEditor.TabIndex = 1
         '
         'TabControl_Toolbox
         '
@@ -618,20 +707,27 @@ Partial Class FormMain
         Me.TabPage_ObjectBrowser.Text = "Object Browser"
         Me.TabPage_ObjectBrowser.UseVisualStyleBackColor = True
         '
-        'TextEditorControl_Source
+        'TabControl_SourceTabs
         '
-        Me.TextEditorControl_Source.ContextMenuStrip = Me.ContextMenuStrip_RightClick
-        Me.TextEditorControl_Source.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TextEditorControl_Source.HideMouseCursor = True
-        Me.TextEditorControl_Source.IsIconBarVisible = True
-        Me.TextEditorControl_Source.IsReadOnly = False
-        Me.TextEditorControl_Source.Location = New System.Drawing.Point(0, 0)
-        Me.TextEditorControl_Source.Name = "TextEditorControl_Source"
-        Me.TextEditorControl_Source.ShowTabs = True
-        Me.TextEditorControl_Source.ShowVRuler = False
-        Me.TextEditorControl_Source.Size = New System.Drawing.Size(815, 500)
-        Me.TextEditorControl_Source.TabIndex = 0
-        Me.TextEditorControl_Source.Text = resources.GetString("TextEditorControl_Source.Text")
+        Me.TabControl_SourceTabs.Controls.Add(Me.TabPage1)
+        Me.TabControl_SourceTabs.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TabControl_SourceTabs.Location = New System.Drawing.Point(0, 0)
+        Me.TabControl_SourceTabs.Margin = New System.Windows.Forms.Padding(0)
+        Me.TabControl_SourceTabs.Name = "TabControl_SourceTabs"
+        Me.TabControl_SourceTabs.Padding = New System.Drawing.Point(0, 0)
+        Me.TabControl_SourceTabs.SelectedIndex = 0
+        Me.TabControl_SourceTabs.Size = New System.Drawing.Size(815, 500)
+        Me.TabControl_SourceTabs.TabIndex = 1
+        '
+        'TabPage1
+        '
+        Me.TabPage1.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage1.Margin = New System.Windows.Forms.Padding(0)
+        Me.TabPage1.Name = "TabPage1"
+        Me.TabPage1.Size = New System.Drawing.Size(807, 474)
+        Me.TabPage1.TabIndex = 0
+        Me.TabPage1.Text = "New*"
+        Me.TabPage1.UseVisualStyleBackColor = True
         '
         'TabControl_Details
         '
@@ -726,12 +822,15 @@ Partial Class FormMain
         Me.ToolStripStatusLabel_AppVersion.Size = New System.Drawing.Size(31, 17)
         Me.ToolStripStatusLabel_AppVersion.Text = "v.0.0"
         '
+        'Timer_PingFlash
+        '
+        '
         'FormMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.ClientSize = New System.Drawing.Size(1008, 729)
-        Me.Controls.Add(Me.SplitContainer1)
+        Me.Controls.Add(Me.SplitContainer_ToolboxSourceAndDetails)
         Me.Controls.Add(Me.MenuStrip_BasicPawn)
         Me.Controls.Add(Me.StatusStrip_BasicPawn)
         Me.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -743,13 +842,14 @@ Partial Class FormMain
         Me.ContextMenuStrip_RightClick.ResumeLayout(False)
         Me.MenuStrip_BasicPawn.ResumeLayout(False)
         Me.MenuStrip_BasicPawn.PerformLayout()
-        Me.SplitContainer1.Panel1.ResumeLayout(False)
-        Me.SplitContainer1.Panel2.ResumeLayout(False)
-        Me.SplitContainer1.ResumeLayout(False)
-        Me.SplitContainer2.Panel1.ResumeLayout(False)
-        Me.SplitContainer2.Panel2.ResumeLayout(False)
-        Me.SplitContainer2.ResumeLayout(False)
+        Me.SplitContainer_ToolboxSourceAndDetails.Panel1.ResumeLayout(False)
+        Me.SplitContainer_ToolboxSourceAndDetails.Panel2.ResumeLayout(False)
+        Me.SplitContainer_ToolboxSourceAndDetails.ResumeLayout(False)
+        Me.SplitContainer_ToolboxAndEditor.Panel1.ResumeLayout(False)
+        Me.SplitContainer_ToolboxAndEditor.Panel2.ResumeLayout(False)
+        Me.SplitContainer_ToolboxAndEditor.ResumeLayout(False)
         Me.TabControl_Toolbox.ResumeLayout(False)
+        Me.TabControl_SourceTabs.ResumeLayout(False)
         Me.TabControl_Details.ResumeLayout(False)
         Me.StatusStrip_BasicPawn.ResumeLayout(False)
         Me.StatusStrip_BasicPawn.PerformLayout()
@@ -776,7 +876,8 @@ Partial Class FormMain
     Friend WithEvents ToolStripMenuItem_ToolsAutocomplete As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_ToolsAutocompleteUpdate As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_ToolsAutocompleteShowAutocomplete As ToolStripMenuItem
-    Friend WithEvents SplitContainer1 As SplitContainer
+    Friend WithEvents SplitContainer_ToolboxSourceAndDetails As SplitContainer
+    Friend WithEvents TabControl_Details As TabControl
     Friend WithEvents TabPage_Autocomplete As TabPage
     Friend WithEvents TabPage_Information As TabPage
     Friend WithEvents ToolStripMenuItem_ToolsShowInformation As ToolStripMenuItem
@@ -797,17 +898,17 @@ Partial Class FormMain
     Friend WithEvents ToolStripMenuItem_HelpSpecialControlsCopySelected As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_HelpAbout As ToolStripMenuItem
     Friend WithEvents ToolStripComboBox_ToolsAutocompleteSyntax As ToolStripComboBox
-    Friend WithEvents ToolStripMenuItem_HelpSpecialControlsSearchAndReplace As ToolStripMenuItem
     Friend WithEvents ToolStripStatusLabel_LastInformation As ToolStripStatusLabel
     Friend WithEvents ToolStripStatusLabel_EditorSelectedCount As ToolStripStatusLabel
     Friend WithEvents ToolStripMenuItem_ToolsFormatCode As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_ListReferences As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_ToolsClearInformationLog As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_Shell As ToolStripMenuItem
-    Friend WithEvents SplitContainer2 As SplitContainer
+    Friend WithEvents SplitContainer_ToolboxAndEditor As SplitContainer
+    Friend WithEvents TabControl_Toolbox As TabControl
     Friend WithEvents TabPage_ObjectBrowser As TabPage
     Friend WithEvents ToolStripMenuItem_ToolsSearchReplace As ToolStripMenuItem
-    Friend WithEvents CTRLDToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_HelpSpecialControlsDupLine As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator5 As ToolStripSeparator
     Friend WithEvents ToolStripSeparator4 As ToolStripSeparator
     Friend WithEvents ToolStripMenuItem_CheckUpdate As ToolStripMenuItem
@@ -825,6 +926,19 @@ Partial Class FormMain
     Friend WithEvents ToolStripMenuItem_DebuggerWatcherRemoveAll As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_FileSaveAsTemp As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_HightlightCustom As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_FileOpenFolder As ToolStripMenuItem
+    Friend WithEvents TabPage1 As TabPage
+    Friend WithEvents ToolStripMenuItem_TabClose As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_TabMoveRight As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_TabMoveLeft As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_FileSaveAll As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator9 As ToolStripSeparator
+    Friend WithEvents ToolStripMenuItem_FileLoadTabs As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator7 As ToolStripSeparator
+    Friend WithEvents ToolStripSeparator8 As ToolStripSeparator
+    Friend WithEvents Timer_PingFlash As Timer
+    Friend WithEvents ToolStripMenuItem_TabOpenInstance As ToolStripMenuItem
+    Friend WithEvents TabControl_SourceTabs As TabControl
     Public WithEvents TabControl_Toolbox As TabControl
     Public WithEvents TextEditorControl_Source As TextEditorControlEx
     Public WithEvents MenuStrip_BasicPawn As MenuStrip

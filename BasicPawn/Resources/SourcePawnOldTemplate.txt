@@ -1,0 +1,20 @@
+#pragma semicolon 1
+
+#define DEBUG
+
+#include <sourcemod>
+#include <sdktools>
+
+public Plugin:myinfo = 
+{
+	name = "",
+	author = "",
+	description = "",
+	version = "0.0",
+	url = ""
+};
+
+public OnPluginStart()
+{
+	
+}

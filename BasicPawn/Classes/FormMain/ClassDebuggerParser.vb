@@ -602,24 +602,26 @@ Public Class ClassDebuggerParser
         ''' Inserts one breakpoint using the caret position in the text editor
         ''' </summary>
         Public Sub TextEditorInsertBreakpointAtCaret()
-            If (g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.SelectionManager.HasSomethingSelected AndAlso g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.SelectionManager.SelectionCollection.Count > 0) Then
-                Dim iOffset As Integer = g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.SelectionManager.SelectionCollection(0).Offset
-                Dim iLenght As Integer = g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.SelectionManager.SelectionCollection(0).Length
+            Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
 
-                g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
-                g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iOffset + iLenght, ")")
-                g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iOffset, String.Format("{0}(", ClassDebuggerParser.g_sBreakpointName))
-                g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
+            If (mActiveTextEditor.ActiveTextAreaControl.SelectionManager.HasSomethingSelected AndAlso mActiveTextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection.Count > 0) Then
+                Dim iOffset As Integer = mActiveTextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection(0).Offset
+                Dim iLenght As Integer = mActiveTextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection(0).Length
+
+                mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
+                mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iOffset + iLenght, ")")
+                mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iOffset, String.Format("{0}(", ClassDebuggerParser.g_sBreakpointName))
+                mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
             Else
                 Dim sCaretWord As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True)
 
                 If (String.IsNullOrEmpty(sCaretWord)) Then
-                    Dim iOffset As Integer = g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Caret.Offset
-                    g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iOffset, String.Format("{0}();", ClassDebuggerParser.g_sBreakpointName))
+                    Dim iOffset As Integer = mActiveTextEditor.ActiveTextAreaControl.Caret.Offset
+                    mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iOffset, String.Format("{0}();", ClassDebuggerParser.g_sBreakpointName))
                 Else
-                    Dim iOffset As Integer = g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Caret.Offset
+                    Dim iOffset As Integer = mActiveTextEditor.ActiveTextAreaControl.Caret.Offset
 
-                    For Each m As Match In Regex.Matches(g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.TextContent, String.Format("(?<Word>\b{0}\b)(?<Function>\s*\(){1}", Regex.Escape(sCaretWord), "{0,1}"))
+                    For Each m As Match In Regex.Matches(mActiveTextEditor.ActiveTextAreaControl.Document.TextContent, String.Format("(?<Word>\b{0}\b)(?<Function>\s*\(){1}", Regex.Escape(sCaretWord), "{0,1}"))
                         Dim iStartOffset As Integer = m.Groups("Word").Index
                         Dim iStartLen As Integer = m.Groups("Word").Value.Length
                         Dim bIsFunction As Boolean = m.Groups("Function").Success
@@ -629,7 +631,7 @@ Public Class ClassDebuggerParser
                         End If
 
                         If (bIsFunction) Then
-                            Dim sSource As String = g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.TextContent
+                            Dim sSource As String = mActiveTextEditor.ActiveTextAreaControl.Document.TextContent
                             Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
 
                             Dim iFullLenght As Integer = 0
@@ -642,21 +644,21 @@ Public Class ClassDebuggerParser
                                 End If
                             Next
 
-                            g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
-                            g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iStartOffset + iFullLenght, ")")
-                            g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iStartOffset, String.Format("{0}(", ClassDebuggerParser.g_sBreakpointName))
-                            g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
+                            mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
+                            mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset + iFullLenght, ")")
+                            mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset, String.Format("{0}(", ClassDebuggerParser.g_sBreakpointName))
+                            mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
                         Else
-                            g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
-                            g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iStartOffset + iStartLen, ")")
-                            g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iStartOffset, String.Format("{0}(", ClassDebuggerParser.g_sBreakpointName))
-                            g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
+                            mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
+                            mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset + iStartLen, ")")
+                            mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset, String.Format("{0}(", ClassDebuggerParser.g_sBreakpointName))
+                            mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
                         End If
                     Next
                 End If
             End If
 
-            g_mFormMain.TextEditorControl_Source.Refresh()
+            mActiveTextEditor.Refresh()
             g_mFormMain.PrintInformation("[INFO]", "A Breakpoint has been added!")
         End Sub
 
@@ -664,6 +666,7 @@ Public Class ClassDebuggerParser
         ''' Removes one breakpoint using the caret position in the text editor
         ''' </summary>
         Public Sub TextEditorRemoveBreakpointAtCaret()
+            Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
             Dim sCaretWord As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True)
 
             If (sCaretWord <> ClassDebuggerParser.g_sBreakpointName) Then
@@ -671,12 +674,12 @@ Public Class ClassDebuggerParser
                 Return
             End If
 
-            Dim iCaretOffset As Integer = g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Offset
+            Dim iCaretOffset As Integer = mActiveTextEditor.ActiveTextAreaControl.TextArea.Caret.Offset
 
-            g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
+            mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
 
             Dim debuggerParser As New ClassDebuggerParser(g_mFormMain)
-            debuggerParser.UpdateBreakpoints(g_mFormMain.TextEditorControl_Source.Document.TextContent, False)
+            debuggerParser.UpdateBreakpoints(mActiveTextEditor.Document.TextContent, False)
 
             For i = debuggerParser.g_lBreakpointList.Count - 1 To 0 Step -1
                 Dim iIndex As Integer = debuggerParser.g_lBreakpointList(i).iOffset
@@ -689,9 +692,9 @@ Public Class ClassDebuggerParser
                     Continue For
                 End If
 
-                g_mFormMain.TextEditorControl_Source.Document.Replace(iIndex, iTotalLenght, sFullFunction)
-                If (g_mFormMain.TextEditorControl_Source.Document.TextLength > iIndex AndAlso g_mFormMain.TextEditorControl_Source.Document.TextContent(iIndex) = ";"c) Then
-                    g_mFormMain.TextEditorControl_Source.Document.Remove(iIndex, 1)
+                mActiveTextEditor.Document.Replace(iIndex, iTotalLenght, sFullFunction)
+                If (mActiveTextEditor.Document.TextLength > iIndex AndAlso mActiveTextEditor.Document.TextContent(iIndex) = ";"c) Then
+                    mActiveTextEditor.Document.Remove(iIndex, 1)
                 End If
 
                 g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Breakpoint removed at line: {0}", iLine))
@@ -699,22 +702,23 @@ Public Class ClassDebuggerParser
                 Exit For
             Next
 
-            g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
+            mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
 
-            g_mFormMain.TextEditorControl_Source.Refresh()
+            mActiveTextEditor.Refresh()
         End Sub
 
         ''' <summary>
         ''' Removes all available breakpoints in the text editor
         ''' </summary>
         Public Sub TextEditorRemoveAllBreakpoints()
-            g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
+            Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
+            mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
 
             g_mFormMain.PrintInformation("[INFO]", "Removing all debugger breakpoints...")
 
             Dim debuggerParser As New ClassDebuggerParser(g_mFormMain)
             While True
-                debuggerParser.UpdateBreakpoints(g_mFormMain.TextEditorControl_Source.Document.TextContent, False)
+                debuggerParser.UpdateBreakpoints(mActiveTextEditor.Document.TextContent, False)
 
                 For i = debuggerParser.g_lBreakpointList.Count - 1 To 0 Step -1
                     Dim iIndex As Integer = debuggerParser.g_lBreakpointList(i).iOffset
@@ -723,9 +727,9 @@ Public Class ClassDebuggerParser
                     Dim iLine As Integer = debuggerParser.g_lBreakpointList(i).iLine
                     Dim sFullFunction As String = debuggerParser.g_lBreakpointList(i).sArguments
 
-                    g_mFormMain.TextEditorControl_Source.Document.Replace(iIndex, iTotalLenght, sFullFunction)
-                    If (g_mFormMain.TextEditorControl_Source.Document.TextLength > iIndex AndAlso g_mFormMain.TextEditorControl_Source.Document.TextContent(iIndex) = ";"c) Then
-                        g_mFormMain.TextEditorControl_Source.Document.Remove(iIndex, 1)
+                    mActiveTextEditor.Document.Replace(iIndex, iTotalLenght, sFullFunction)
+                    If (mActiveTextEditor.Document.TextLength > iIndex AndAlso mActiveTextEditor.Document.TextContent(iIndex) = ";"c) Then
+                        mActiveTextEditor.Document.Remove(iIndex, 1)
                     End If
 
                     g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Breakpoint removed at line: {0}", iLine))
@@ -756,9 +760,9 @@ Public Class ClassDebuggerParser
                 Exit While
             End While
 
-            g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
+            mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
 
-            g_mFormMain.TextEditorControl_Source.Refresh()
+            mActiveTextEditor.Refresh()
             g_mFormMain.PrintInformation("[INFO]", "All debugger breakpoints removed!")
         End Sub
 
@@ -864,24 +868,26 @@ Public Class ClassDebuggerParser
         ''' Inserts one watcher using the caret position in the text editor
         ''' </summary>
         Public Sub TextEditorInsertWatcherAtCaret()
-            If (g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.SelectionManager.HasSomethingSelected AndAlso g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.SelectionManager.SelectionCollection.Count > 0) Then
-                Dim iOffset As Integer = g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.SelectionManager.SelectionCollection(0).Offset
-                Dim iLenght As Integer = g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.SelectionManager.SelectionCollection(0).Length
+            Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
 
-                g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
-                g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iOffset + iLenght, ")")
-                g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iOffset, String.Format("{0}(", ClassDebuggerParser.g_sWatcherName))
-                g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
+            If (mActiveTextEditor.ActiveTextAreaControl.SelectionManager.HasSomethingSelected AndAlso mActiveTextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection.Count > 0) Then
+                Dim iOffset As Integer = mActiveTextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection(0).Offset
+                Dim iLenght As Integer = mActiveTextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection(0).Length
+
+                mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
+                mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iOffset + iLenght, ")")
+                mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iOffset, String.Format("{0}(", ClassDebuggerParser.g_sWatcherName))
+                mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
             Else
                 Dim sCaretWord As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True)
 
                 If (String.IsNullOrEmpty(sCaretWord)) Then
-                    Dim iOffset As Integer = g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Caret.Offset
-                    g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iOffset, String.Format("{0}();", ClassDebuggerParser.g_sWatcherName))
+                    Dim iOffset As Integer = mActiveTextEditor.ActiveTextAreaControl.Caret.Offset
+                    mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iOffset, String.Format("{0}();", ClassDebuggerParser.g_sWatcherName))
                 Else
-                    Dim iOffset As Integer = g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Caret.Offset
+                    Dim iOffset As Integer = mActiveTextEditor.ActiveTextAreaControl.Caret.Offset
 
-                    For Each m As Match In Regex.Matches(g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.TextContent, String.Format("(?<Word>\b{0}\b)(?<Function>\s*\(){1}", Regex.Escape(sCaretWord), "{0,1}"))
+                    For Each m As Match In Regex.Matches(mActiveTextEditor.ActiveTextAreaControl.Document.TextContent, String.Format("(?<Word>\b{0}\b)(?<Function>\s*\(){1}", Regex.Escape(sCaretWord), "{0,1}"))
                         Dim iStartOffset As Integer = m.Groups("Word").Index
                         Dim iStartLen As Integer = m.Groups("Word").Value.Length
                         Dim bIsFunction As Boolean = m.Groups("Function").Success
@@ -891,7 +897,7 @@ Public Class ClassDebuggerParser
                         End If
 
                         If (bIsFunction) Then
-                            Dim sSource As String = g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.TextContent
+                            Dim sSource As String = mActiveTextEditor.ActiveTextAreaControl.Document.TextContent
                             Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
 
                             Dim iFullLenght As Integer = 0
@@ -904,21 +910,21 @@ Public Class ClassDebuggerParser
                                 End If
                             Next
 
-                            g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
-                            g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iStartOffset + iFullLenght, ")")
-                            g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iStartOffset, String.Format("{0}(", ClassDebuggerParser.g_sWatcherName))
-                            g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
+                            mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
+                            mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset + iFullLenght, ")")
+                            mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset, String.Format("{0}(", ClassDebuggerParser.g_sWatcherName))
+                            mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
                         Else
-                            g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
-                            g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iStartOffset + iStartLen, ")")
-                            g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iStartOffset, String.Format("{0}(", ClassDebuggerParser.g_sWatcherName))
-                            g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
+                            mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
+                            mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset + iStartLen, ")")
+                            mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset, String.Format("{0}(", ClassDebuggerParser.g_sWatcherName))
+                            mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
                         End If
                     Next
                 End If
             End If
 
-            g_mFormMain.TextEditorControl_Source.Refresh()
+            mActiveTextEditor.Refresh()
             g_mFormMain.PrintInformation("[INFO]", "A Watcher has been added!")
         End Sub
 
@@ -926,6 +932,7 @@ Public Class ClassDebuggerParser
         ''' Removes one watcher using the caret position in the text editor
         ''' </summary>
         Public Sub TextEditorRemoveWatcherAtCaret()
+            Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
             Dim sCaretWord As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True)
 
             If (sCaretWord <> ClassDebuggerParser.g_sWatcherName) Then
@@ -933,12 +940,12 @@ Public Class ClassDebuggerParser
                 Return
             End If
 
-            Dim iCaretOffset As Integer = g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Offset
+            Dim iCaretOffset As Integer = mActiveTextEditor.ActiveTextAreaControl.TextArea.Caret.Offset
 
-            g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
+            mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
 
             Dim debuggerParser As New ClassDebuggerParser(g_mFormMain)
-            debuggerParser.UpdateWatchers(g_mFormMain.TextEditorControl_Source.Document.TextContent, False)
+            debuggerParser.UpdateWatchers(mActiveTextEditor.Document.TextContent, False)
 
             For i = debuggerParser.g_lWatcherList.Count - 1 To 0 Step -1
                 Dim iIndex As Integer = debuggerParser.g_lWatcherList(i).iOffset
@@ -951,9 +958,9 @@ Public Class ClassDebuggerParser
                     Continue For
                 End If
 
-                g_mFormMain.TextEditorControl_Source.Document.Replace(iIndex, iTotalLenght, sFullFunction)
-                If (g_mFormMain.TextEditorControl_Source.Document.TextLength > iIndex AndAlso g_mFormMain.TextEditorControl_Source.Document.TextContent(iIndex) = ";"c) Then
-                    g_mFormMain.TextEditorControl_Source.Document.Remove(iIndex, 1)
+                mActiveTextEditor.Document.Replace(iIndex, iTotalLenght, sFullFunction)
+                If (mActiveTextEditor.Document.TextLength > iIndex AndAlso mActiveTextEditor.Document.TextContent(iIndex) = ";"c) Then
+                    mActiveTextEditor.Document.Remove(iIndex, 1)
                 End If
 
                 g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Watcher removed at line: {0}", iLine))
@@ -961,23 +968,23 @@ Public Class ClassDebuggerParser
                 Exit For
             Next
 
-            g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
+            mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
 
-            g_mFormMain.TextEditorControl_Source.Refresh()
+            mActiveTextEditor.Refresh()
         End Sub
 
         ''' <summary>
         ''' Removes all available watchers in the text editor
         ''' </summary>
         Public Sub TextEditorRemoveAllWatchers()
-            g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
-
+            Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
+            mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
 
             g_mFormMain.PrintInformation("[INFO]", "Removing all debugger watcher...")
 
             Dim debuggerParser As New ClassDebuggerParser(g_mFormMain)
             While True
-                debuggerParser.UpdateWatchers(g_mFormMain.TextEditorControl_Source.Document.TextContent, False)
+                debuggerParser.UpdateWatchers(mActiveTextEditor.Document.TextContent, False)
 
                 For i = debuggerParser.g_lWatcherList.Count - 1 To 0 Step -1
                     Dim iIndex As Integer = debuggerParser.g_lWatcherList(i).iOffset
@@ -986,9 +993,9 @@ Public Class ClassDebuggerParser
                     Dim iLine As Integer = debuggerParser.g_lWatcherList(i).iLine
                     Dim sFullFunction As String = debuggerParser.g_lWatcherList(i).sArguments
 
-                    g_mFormMain.TextEditorControl_Source.Document.Replace(iIndex, iTotalLenght, sFullFunction)
-                    If (g_mFormMain.TextEditorControl_Source.Document.TextLength > iIndex AndAlso g_mFormMain.TextEditorControl_Source.Document.TextContent(iIndex) = ";"c) Then
-                        g_mFormMain.TextEditorControl_Source.Document.Remove(iIndex, 1)
+                    mActiveTextEditor.Document.Replace(iIndex, iTotalLenght, sFullFunction)
+                    If (mActiveTextEditor.Document.TextLength > iIndex AndAlso mActiveTextEditor.Document.TextContent(iIndex) = ";"c) Then
+                        mActiveTextEditor.Document.Remove(iIndex, 1)
                     End If
 
                     g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Watcher removed at line: {0}", iLine))
@@ -1019,9 +1026,9 @@ Public Class ClassDebuggerParser
                 Exit While
             End While
 
-            g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
+            mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
 
-            g_mFormMain.TextEditorControl_Source.Refresh()
+            mActiveTextEditor.Refresh()
             g_mFormMain.PrintInformation("[INFO]", "All debugger watchers removed!")
         End Sub
 

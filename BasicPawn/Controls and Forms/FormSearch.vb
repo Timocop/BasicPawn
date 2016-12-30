@@ -38,24 +38,24 @@ Public Class FormSearch
     End Structure
 
     Private Function GetTextEditorText() As String
-        Return g_mFormMain.TextEditorControl_Source.Document.TextContent
+        Return g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
     End Function
 
     Private Function GetTextEditorCaretOffset() As Integer
-        Return g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Caret.Offset
+        Return g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Caret.Offset
     End Function
 
     Private Sub SetTextEditorSelection(iOffset As Integer, iLenght As Integer, bCaretBeginPos As Boolean)
-        Dim iLineLenStart As Integer = g_mFormMain.TextEditorControl_Source.Document.GetLineSegmentForOffset(iOffset).LineNumber
-        Dim iLineLenEnd As Integer = g_mFormMain.TextEditorControl_Source.Document.GetLineSegmentForOffset(iOffset + iLenght).LineNumber
-        Dim iLineColumStart As Integer = iOffset - g_mFormMain.TextEditorControl_Source.Document.GetLineSegmentForOffset(iOffset).Offset
-        Dim iLineColumEnd As Integer = iOffset + iLenght - g_mFormMain.TextEditorControl_Source.Document.GetLineSegmentForOffset(iOffset + iLenght).Offset
+        Dim iLineLenStart As Integer = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.GetLineSegmentForOffset(iOffset).LineNumber
+        Dim iLineLenEnd As Integer = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.GetLineSegmentForOffset(iOffset + iLenght).LineNumber
+        Dim iLineColumStart As Integer = iOffset - g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.GetLineSegmentForOffset(iOffset).Offset
+        Dim iLineColumEnd As Integer = iOffset + iLenght - g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.GetLineSegmentForOffset(iOffset + iLenght).Offset
 
         Dim iTLStart As New TextLocation(iLineColumStart, iLineLenStart)
         Dim iTLEnd As New TextLocation(iLineColumEnd, iLineLenEnd)
 
-        g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.SelectionManager.SetSelection(iTLStart, iTLEnd)
-        g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Caret.Position = If(bCaretBeginPos, iTLStart, iTLEnd)
+        g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.SetSelection(iTLStart, iTLEnd)
+        g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Caret.Position = If(bCaretBeginPos, iTLStart, iTLEnd)
     End Sub
 
     ''' <summary>
@@ -147,7 +147,7 @@ Public Class FormSearch
         If (RadioButton_DirectionUp.Checked) Then
             For i = iStrucArray.Length - 1 To 0 Step -1
                 If (iStrucArray(i).iLocation < iOffset - iStrucArray(i).iLenght) Then
-                    g_mFormMain.TextEditorControl_Source.Document.Replace(iStrucArray(i).iLocation, iStrucArray(i).iLenght, TextBox_Replace.Text)
+                    g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.Replace(iStrucArray(i).iLocation, iStrucArray(i).iLenght, TextBox_Replace.Text)
 
                     SetTextEditorSelection(iStrucArray(i).iLocation, TextBox_Replace.Text.Length, True)
                     Return
@@ -156,7 +156,7 @@ Public Class FormSearch
         Else
             For i = 0 To iStrucArray.Length - 1
                 If (iStrucArray(i).iLocation >= iOffset) Then
-                    g_mFormMain.TextEditorControl_Source.Document.Replace(iStrucArray(i).iLocation, iStrucArray(i).iLenght, TextBox_Replace.Text)
+                    g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.Replace(iStrucArray(i).iLocation, iStrucArray(i).iLenght, TextBox_Replace.Text)
 
                     SetTextEditorSelection(iStrucArray(i).iLocation, TextBox_Replace.Text.Length, False)
                     Return
@@ -182,27 +182,27 @@ Public Class FormSearch
 
         Dim iOffset As Integer = GetTextEditorCaretOffset()
 
-        g_mFormMain.TextEditorControl_Source.Document.UndoStack.StartUndoGroup()
+        g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.UndoStack.StartUndoGroup()
 
         For i = iStrucArray.Length - 1 To 0 Step -1
-            g_mFormMain.TextEditorControl_Source.Document.Replace(iStrucArray(i).iLocation, iStrucArray(i).iLenght, TextBox_Replace.Text)
+            g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.Replace(iStrucArray(i).iLocation, iStrucArray(i).iLenght, TextBox_Replace.Text)
         Next
 
-        g_mFormMain.TextEditorControl_Source.Document.UndoStack.EndUndoGroup()
+        g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.UndoStack.EndUndoGroup()
     End Sub
 
     Private Sub TextBox_Search_KeyUp(sender As Object, e As KeyEventArgs) Handles TextBox_Search.KeyUp
         Select Case (e.KeyCode)
             Case Keys.Up
+                e.Handled = True
+
                 RadioButton_DirectionUp.Checked = True
                 Button_Search.PerformClick()
 
-                e.Handled = True
             Case Keys.Down
+                e.Handled = True
                 RadioButton_DirectionDown.Checked = True
                 Button_Search.PerformClick()
-
-                e.Handled = True
         End Select
     End Sub
 End Class

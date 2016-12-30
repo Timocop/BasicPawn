@@ -107,56 +107,16 @@ Public Class ClassSyntaxTools
     ''' Updates the form colors and syntax.
     ''' </summary>
     Public Sub UpdateFormColors()
-        'Dim lControlList As New List(Of STRUC_FORM_COLORS_ITEM)
-        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain, Color.White, g_mFormMain.g_cDarkFormBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.TextEditorControl_Source, Color.White, g_mFormMain.g_cDarkFormBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.MenuStrip_BasicPawn, Color.White, g_mFormMain.g_cDarkFormMenuBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-
-        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.ListView_AutocompleteList, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.Panel_Autocomplete, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.Panel_IntelliSense, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.Label_Autocomplete, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, Color.RoyalBlue, InvertColor(Color.RoyalBlue)))
-        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.Label_IntelliSense, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, Color.RoyalBlue, InvertColor(Color.RoyalBlue)))
-        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.RichTextBox_Autocomplete, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.RichTextBox_IntelliSense, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.SplitContainer1.Panel1, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.SplitContainer1.Panel2, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.SplitContainer2.Panel1, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCAutocomplete.SplitContainer2.Panel2, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-
-        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCInformationList, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCInformationList.ListBox_Information, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-
-        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCObjectBrowser, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCObjectBrowser.TreeView_ObjectBrowser, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCObjectBrowser.TextboxWatermark_Search, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-
-        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.TabControl_Details, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.TabControl_Toolbox, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-
-        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.TabPage_ObjectBrowser, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.TabPage_Autocomplete, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.TabPage_Information, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-
-        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCToolTip, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-        'lControlList.Add(New STRUC_FORM_COLORS_ITEM(g_mFormMain.g_mUCToolTip.TextEditorControl_ToolTip, Color.White, g_mFormMain.g_cDarkFormDetailsBackgroundColor, InvertColor(Color.White), InvertColor(Color.Black)))
-
-        'For Each iItem In lControlList
-        '    iItem.g_cControl.BackColor = If(ClassSettings.g_iSettingsInvertColors, iItem.g_cBackColorInv, iItem.g_cBackColorOrg)
-        '    iItem.g_cControl.ForeColor = If(ClassSettings.g_iSettingsInvertColors, iItem.g_cForeColorInv, iItem.g_cForeColorOrg)
-        'Next
-
-        For Each c As Form In Application.OpenForms
-            ClassControlStyle.UpdateControls(c)
-        Next
-
         UpdateSyntaxFile(ENUM_SYNTAX_UPDATE_TYPE.NONE, True) 'Just generate new files once, we dont need to create new files every type.
         UpdateSyntaxFile(ENUM_SYNTAX_UPDATE_TYPE.AUTOCOMPLETE)
         UpdateSyntaxFile(ENUM_SYNTAX_UPDATE_TYPE.HIGHLIGHT_WORD)
         UpdateSyntaxFile(ENUM_SYNTAX_UPDATE_TYPE.HIGHLIGHT_WORD_CUSTOM)
         UpdateSyntaxFile(ENUM_SYNTAX_UPDATE_TYPE.CARET_WORD)
         UpdateTextEditorSyntax()
+
+        For Each c As Form In Application.OpenForms
+            ClassControlStyle.UpdateControls(c)
+        Next
 
         g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnFormColorUpdate())
     End Sub
@@ -167,12 +127,15 @@ Public Class ClassSyntaxTools
     Public Sub CreateSyntaxFile(i As ENUM_SYNTAX_FILES)
         Try
             SyncLock _lock
-                IO.Directory.CreateDirectory(g_SyntaxFiles(i).sFolder)
+                If (Not IO.Directory.Exists(g_SyntaxFiles(i).sFolder)) Then
+                    IO.Directory.CreateDirectory(g_SyntaxFiles(i).sFolder)
+                End If
 
                 Dim sModSyntaxXML As String
                 If (Not String.IsNullOrEmpty(ClassSettings.g_sConfigSyntaxHighlightingPath) AndAlso
                         IO.File.Exists(ClassSettings.g_sConfigSyntaxHighlightingPath) AndAlso
                         IO.Path.GetExtension(ClassSettings.g_sConfigSyntaxHighlightingPath).ToLower = ".xml") Then
+
                     Dim sFileText As String = IO.File.ReadAllText(ClassSettings.g_sConfigSyntaxHighlightingPath)
                     sModSyntaxXML = sFileText.Replace(sSyntax_SourcePawnMarker, g_SyntaxFiles(i).sDefinition)
                 Else
@@ -359,14 +322,13 @@ Public Class ClassSyntaxTools
 
                                 Dim mMatchColl As MatchCollection = Regex.Matches(sFormatedString, "\b(color|bgcolor)\b\s*=\s*""(?<Color>[a-zA-Z]+)""")
                                 For j = mMatchColl.Count - 1 To 0 Step -1
-                                    Dim mMatch As Match = mMatchColl(j)
-                                    If (Not mMatch.Success) Then
+                                    If (Not mMatchColl(j).Success) Then
                                         Continue For
                                     End If
 
                                     Try
-                                        Dim sColorName As String = mMatch.Groups("Color").Value
-                                        Dim iColorNameIndex As Integer = mMatch.Groups("Color").Index
+                                        Dim sColorName As String = mMatchColl(j).Groups("Color").Value
+                                        Dim iColorNameIndex As Integer = mMatchColl(j).Groups("Color").Index
                                         Dim cConv As Color = ColorTranslator.FromHtml(sColorName)
 
                                         Dim cInvColor As Color = ClassControlStyle.InvertColor(cConv)
@@ -391,6 +353,8 @@ Public Class ClassSyntaxTools
             End SyncLock
 
             g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnSyntaxUpdateEnd(iType, bForceFromMemory))
+        Catch ex As Threading.ThreadAbortException
+            Throw
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
@@ -401,33 +365,43 @@ Public Class ClassSyntaxTools
     ''' </summary>
     Public Sub UpdateTextEditorSyntax()
         Try
-            g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnEditorSyntaxUpdate())
+            SyncLock _lock
+                g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnEditorSyntaxUpdate())
 
-            For i = 0 To g_SyntaxFiles.Length - 1
-                If (Not IO.File.Exists(g_SyntaxFiles(i).sFile)) Then
-                    CreateSyntaxFile(CType(i, ENUM_SYNTAX_FILES))
-                End If
-            Next
+                For i = 0 To g_SyntaxFiles.Length - 1
+                    If (Not IO.File.Exists(g_SyntaxFiles(i).sFile)) Then
+                        CreateSyntaxFile(CType(i, ENUM_SYNTAX_FILES))
+                    End If
+                Next
 
-            HighlightingManager.Manager.ReloadSyntaxModes()
+                HighlightingManager.Manager.ReloadSyntaxModes()
 
             For i = 0 To g_SyntaxFiles.Length - 1
                 Select Case (i)
                     Case ENUM_SYNTAX_FILES.MAIN_TEXTEDITOR
-                        g_mFormMain.TextEditorControl_Source.SetHighlighting(g_SyntaxFiles(i).sDefinition)
+                        For j = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1
+                            If (j = g_mFormMain.g_ClassTabControl.m_ActiveTabIndex) Then
+                                If (g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.Document.HighlightingStrategy.Name <> g_SyntaxFiles(i).sDefinition) Then
+                                    g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.SetHighlighting(g_SyntaxFiles(i).sDefinition)
+                                End If
+                            Else
+                                If (g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.Document.HighlightingStrategy.Name <> "Default") Then
+                                    g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.SetHighlighting("Default")
+                                End If
+                            End If
+                        Next
 
                         g_mFormMain.g_mUCToolTip.TextEditorControl_ToolTip.SetHighlighting(g_SyntaxFiles(i).sDefinition)
-                        g_mFormMain.g_mUCToolTip.TextEditorControl_ToolTip.Font = New Font(g_mFormMain.TextEditorControl_Source.Font.FontFamily, 8, FontStyle.Regular)
+                        g_mFormMain.g_mUCToolTip.TextEditorControl_ToolTip.Font = New Font(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Font.FontFamily, 8, FontStyle.Regular)
 
-                    Case ENUM_SYNTAX_FILES.DEBUGGER_TEXTEDITOR
-                        If (g_mFormMain.g_mFormDebugger IsNot Nothing AndAlso Not g_mFormMain.g_mFormDebugger.IsDisposed) Then
-                            g_mFormMain.g_mFormDebugger.TextEditorControlEx_DebuggerSource.SetHighlighting(g_SyntaxFiles(i).sDefinition)
-                            g_mFormMain.g_mFormDebugger.TextEditorControlEx_DebuggerDiasm.SetHighlighting(g_SyntaxFiles(i).sDefinition)
-                        End If
-                End Select
-            Next
-
-            g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnEditorSyntaxUpdateEnd())
+                        Case ENUM_SYNTAX_FILES.DEBUGGER_TEXTEDITOR
+                            If (g_mFormMain.g_mFormDebugger IsNot Nothing AndAlso Not g_mFormMain.g_mFormDebugger.IsDisposed) Then
+                                g_mFormMain.g_mFormDebugger.TextEditorControlEx_DebuggerSource.SetHighlighting(g_SyntaxFiles(i).sDefinition)
+                                g_mFormMain.g_mFormDebugger.TextEditorControlEx_DebuggerDiasm.SetHighlighting(g_SyntaxFiles(i).sDefinition)
+                            End If
+                    End Select
+                Next
+            End SyncLock
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
@@ -588,20 +562,48 @@ Public Class ClassSyntaxTools
         If (sRegexBadName = Nothing) Then
             Dim lBadList As New List(Of String)
             lBadList.Add("const")
+            lBadList.Add("static")
             lBadList.Add("new")
             lBadList.Add("decl")
-            lBadList.Add("static")
-            lBadList.Add("stock")
-            lBadList.Add("public")
-            lBadList.Add("private")
             lBadList.Add("if")
             lBadList.Add("for")
             lBadList.Add("else")
             lBadList.Add("case")
             lBadList.Add("switch")
+            lBadList.Add("default")
             lBadList.Add("while")
             lBadList.Add("do")
             lBadList.Add("enum")
+
+            lBadList.Add("stock")
+            lBadList.Add("public")
+            lBadList.Add("private")
+            lBadList.Add("forward")
+            lBadList.Add("native")
+            lBadList.Add("funcenum")
+            lBadList.Add("functag")
+
+            lBadList.Add("methodmap")
+            lBadList.Add("property")
+            lBadList.Add("this")
+            lBadList.Add("typeset")
+            lBadList.Add("function")
+            lBadList.Add("typedef")
+
+            lBadList.Add("break")
+            lBadList.Add("continue")
+            lBadList.Add("goto")
+            lBadList.Add("return")
+
+            lBadList.Add("true")
+            lBadList.Add("false")
+            lBadList.Add("null")
+
+            lBadList.Add("delete")
+            lBadList.Add("sizeof")
+            lBadList.Add("typeof")
+            lBadList.Add("view_as")
+
             sRegexBadName = String.Format("^({0})$", String.Join("|", lBadList.ToArray))
         End If
 
@@ -761,7 +763,7 @@ Public Class ClassSyntaxTools
             sCacheText = sText
             iMaxLenght = sText.Length
 
-            iStateArray = New Integer(sText.Length - 1, [Enum].GetNames(GetType(ENUM_STATE_TYPES)).Length - 1) {}
+            iStateArray = New Integer(sText.Length, [Enum].GetNames(GetType(ENUM_STATE_TYPES)).Length - 1) {}
 
             Dim iParenthesisLevel As Integer = 0 '()
             Dim iBracketLevel As Integer = 0 '[]

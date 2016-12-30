@@ -186,6 +186,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\ClassControlStyle.vb" />
+    <Compile Include="Classes\ClassCrossAppComunication.vb" />
     <Compile Include="Classes\ClassTextboxWatermark.vb">
       <SubType>Component</SubType>
     </Compile>
@@ -203,8 +204,12 @@
     <Compile Include="Classes\FormMain\ClassDebuggerParser.vb" />
     <Compile Include="Classes\FormMain\ClassSyntaxTools.vb" />
     <Compile Include="Classes\FormMain\ClassSyntaxUpdater.vb" />
+    <Compile Include="Classes\FormMain\ClassTabControl.vb" />
     <Compile Include="Classes\FormMain\ClassTextEditorTools.vb" />
     <Compile Include="Classes\FormMain\ClassPluginController.vb" />
+    <Compile Include="Classes\ClassPanelAlpha.vb">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls and Forms\FormDebuggerBreakpointSetValue.Designer.vb">
       <DependentUpon>FormDebuggerBreakpointSetValue.vb</DependentUpon>
     </Compile>
@@ -233,6 +238,12 @@
       <DependentUpon>FormDebuggerStop.vb</DependentUpon>
     </Compile>
     <Compile Include="Controls and Forms\FormDebuggerStop.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls and Forms\FormOpenTabFromInstances.Designer.vb">
+      <DependentUpon>FormOpenTabFromInstances.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controls and Forms\FormOpenTabFromInstances.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Controls and Forms\UCAutocomplete.Designer.vb">
@@ -314,6 +325,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls and Forms\FormDebuggerStop.resx">
       <DependentUpon>FormDebuggerStop.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls and Forms\FormOpenTabFromInstances.resx">
+      <DependentUpon>FormOpenTabFromInstances.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls and Forms\UCAutocomplete.resx">
       <DependentUpon>UCAutocomplete.vb</DependentUpon>
@@ -430,6 +444,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="BasicPawnIcon.ico" />
+    <None Include="Resources\SourcePawnOldTemplate.txt" />
+    <None Include="Resources\imageres_5304_16x16-32.png" />
     <None Include="Resources\SourcePawn_Syntax.xml" />
     <None Include="Resources\Debugger_WatcherModuleNew.txt" />
     <None Include="Resources\Debugger_BreakpointModuleNew.txt" />

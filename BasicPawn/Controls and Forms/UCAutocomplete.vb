@@ -21,7 +21,8 @@ Imports System.Text.RegularExpressions
 Public Class UCAutocomplete
     Private g_mFormMain As FormMain
 
-    Public g_ClassToolTip As ClassToolTip
+    Public g_ClassToolTip As ClassToolTip 
+    Public g_sLastAutocompleteText As String = ""
 
     Public Sub New(f As FormMain)
 
@@ -36,12 +37,50 @@ Public Class UCAutocomplete
         'Set double buffering to avoid annonying flickers when collapsing/showing SplitContainer panels
         ClassTools.ClassForms.SetDoubleBufferingAllChilds(Me, True)
         ClassTools.ClassForms.SetDoubleBufferingUnmanagedAllChilds(Me, True)
+
+        ListView_AutocompleteList.ListViewItemSorter = New ListViewItemComparer(Me, 2)
+        ListView_AutocompleteList.Sorting = SortOrder.Ascending
     End Sub
+
+    Class ListViewItemComparer
+        Implements IComparer
+
+        Private g_mUCAutocomplete As UCAutocomplete
+        Private g_Collum As Integer
+
+        Public Sub New(c As UCAutocomplete)
+            g_mUCAutocomplete = c
+            g_Collum = 0
+        End Sub
+
+        Public Sub New(c As UCAutocomplete, mCollum As Integer)
+            g_mUCAutocomplete = c
+            g_Collum = mCollum
+        End Sub
+
+        Private Function IComparer_Compare(x As Object, y As Object) As Integer Implements IComparer.Compare
+            If (g_mUCAutocomplete.g_sLastAutocompleteText.Length > 0) Then
+                Dim lvX As ListViewItem = DirectCast(x, ListViewItem)
+                Dim lvY As ListViewItem = DirectCast(y, ListViewItem)
+
+                Dim lvXIndex As Integer = lvX.SubItems(g_Collum).Text.IndexOf(g_mUCAutocomplete.g_sLastAutocompleteText)
+                Dim lvYIndex As Integer = lvY.SubItems(g_Collum).Text.IndexOf(g_mUCAutocomplete.g_sLastAutocompleteText)
+
+                Return lvXIndex.CompareTo(lvYIndex)
+            Else
+                Dim lvX As ListViewItem = DirectCast(x, ListViewItem)
+                Dim lvY As ListViewItem = DirectCast(y, ListViewItem)
+
+                Return String.Compare(lvX.SubItems(g_Collum).Text, lvY.SubItems(g_Collum).Text)
+            End If
+
+        End Function
+    End Class
 
 
     Public Function ParseMethodAutocomplete(Optional bForceUpdate As Boolean = False) As Boolean
         If (bForceUpdate) Then
-            Dim sTextContent As String = CStr(Me.Invoke(Function() g_mFormMain.TextEditorControl_Source.Document.TextContent))
+            Dim sTextContent As String = CStr(Me.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent))
             g_mFormMain.g_mSourceSyntaxSourceAnalysis = New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sTextContent)
         End If
 
@@ -49,7 +88,7 @@ Public Class UCAutocomplete
             Return False
         End If
 
-        Dim iCaretOffset As Integer = CInt(Me.Invoke(Function() g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Offset))
+        Dim iCaretOffset As Integer = CInt(Me.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Offset))
 
         If (iCaretOffset <= 1 OrElse
                         iCaretOffset >= g_mFormMain.g_mSourceSyntaxSourceAnalysis.GetMaxLenght() OrElse
@@ -75,11 +114,11 @@ Public Class UCAutocomplete
         Dim SB As New StringBuilder
 
         For i = iValidOffset To iValidOffset - 64 Step -1
-            If (i < 0) Then
+            If (i < 0 OrElse i > CInt(Me.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.TextLength)) - 1) Then
                 Exit For
             End If
 
-            SB.Append(Me.Invoke(Function() g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.GetCharAt(i)))
+            SB.Append(Me.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.GetCharAt(i)))
         Next
 
         Dim sFuncStart As String = StrReverse(SB.ToString)
@@ -101,10 +140,11 @@ Public Class UCAutocomplete
         If (sText.Length < 3 OrElse String.IsNullOrEmpty(sText) OrElse Regex.IsMatch(sText, "^[0-9]+$")) Then
             ListView_AutocompleteList.Items.Clear()
             ListView_AutocompleteList.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize)
+            g_sLastAutocompleteText = ""
             Return 0
         End If
 
-        Dim bSelectedWord As Boolean = g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.TextArea.SelectionManager.HasSomethingSelected
+        Dim bSelectedWord As Boolean = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.SelectionManager.HasSomethingSelected
         Dim lListViewItemsList As New List(Of ListViewItem)
 
         Dim sAutocompleteArray As FormMain.STRUC_AUTOCOMPLETE() = g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.ToArray
@@ -131,6 +171,13 @@ Public Class UCAutocomplete
 
         ListView_AutocompleteList.Items.Clear()
         ListView_AutocompleteList.Items.AddRange(lListViewItemsList.ToArray)
+
+        'Sort ascending first then match the closest one.
+        g_sLastAutocompleteText = ""
+        ListView_AutocompleteList.Sort()
+        g_sLastAutocompleteText = sText
+        ListView_AutocompleteList.Sort()
+
 
         If (ListView_AutocompleteList.Items.Count > 0) Then
             ListView_AutocompleteList.Items(0).Selected = True
@@ -291,14 +338,18 @@ Public Class UCAutocomplete
                 Dim iXSpace As Integer = 0
                 Dim iYSpace As Integer = 0
 
-                Dim iX As Integer = g_AutocompleteUC.g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Caret.ScreenPosition.X + iXSpace
-                Dim iY As Integer = g_AutocompleteUC.g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Caret.ScreenPosition.Y + iYSpace
-                Dim iFontH As Integer = CInt(g_AutocompleteUC.g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Font.GetHeight)
+                Dim iX As Integer = g_AutocompleteUC.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Caret.ScreenPosition.X + iXSpace
+                Dim iY As Integer = g_AutocompleteUC.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Caret.ScreenPosition.Y + iYSpace
+                Dim iFontH As Integer = CInt(g_AutocompleteUC.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Font.GetHeight)
+
+                Dim iWTabSpace As Integer = 6
+                Dim iHTabSpace As Integer = g_AutocompleteUC.g_mFormMain.TabControl_SourceTabs.ItemSize.Height + 6
+
                 'Dim iFontH As Integer = (g_AutocompleteUC.g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Font.GetHeight * 2) + g_AutocompleteUC.g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Font.GetHeight
 
                 If (SB_TipText_IntelliSenseToolTip.Length + SB_TipText_AutocompleteToolTip.Length > 0) Then
                     g_AutocompleteUC.g_mFormMain.g_mUCToolTip.TextEditorControl_ToolTip.Document.TextContent = SB_TipText_IntelliSenseToolTip.ToString & SB_TipText_AutocompleteToolTip.ToString
-                    g_AutocompleteUC.g_mFormMain.g_mUCToolTip.Location = New Point(iX, iY + iFontH)
+                    g_AutocompleteUC.g_mFormMain.g_mUCToolTip.Location = New Point(iX + iWTabSpace, iY + iHTabSpace + iFontH)
                     g_AutocompleteUC.g_mFormMain.g_mUCToolTip.Show()
                     g_AutocompleteUC.g_mFormMain.g_mUCToolTip.TextEditorControl_ToolTip.Refresh()
                 Else

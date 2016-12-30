@@ -17,9 +17,6 @@
 
 Imports System.ComponentModel
 Imports System.Text
-Imports System.Text.RegularExpressions
-Imports ICSharpCode.TextEditor
-Imports ICSharpCode.TextEditor.Document
 
 
 Public Class FormMain
@@ -30,6 +27,8 @@ Public Class FormMain
     Public g_ClassLineState As ClassTextEditorTools.ClassLineState
     Public g_ClassCustomHighlighting As ClassTextEditorTools.ClassCustomHighlighting
     Public g_ClassPluginController As ClassPluginController
+    Public g_ClassTabControl As ClassTabControl
+    Public WithEvents g_ClassCrossAppComunication As ClassCrossAppComunication
 
     Public g_mSourceSyntaxSourceAnalysis As ClassSyntaxTools.ClassSyntaxSourceAnalysis
 
@@ -38,11 +37,21 @@ Public Class FormMain
     Public g_mUCObjectBrowser As UCObjectBrowser
     Public g_mUCToolTip As UCToolTip
     Public g_mFormDebugger As FormDebugger
+    Public g_mFormOpenTabFromInstances As FormOpenTabFromInstances
 
     Public g_cDarkTextEditorBackgroundColor As Color = Color.FromArgb(255, 26, 26, 26)
     Public g_cDarkFormDetailsBackgroundColor As Color = Color.FromArgb(255, 24, 24, 24)
     Public g_cDarkFormBackgroundColor As Color = Color.FromArgb(255, 48, 48, 48)
     Public g_cDarkFormMenuBackgroundColor As Color = Color.FromArgb(255, 64, 64, 64)
+
+    Public Const COMMSG_SERVERNAME As String = "BasicPawnComServer-04e3632f-5472-42c5-929a-c3e0c2b35324"
+    Public Const COMARG_OPEN_FILE_BY_PID As String = "BasicPawnComServer-OpenFileByPID-04e3632f-5472-42c5-929a-c3e0c2b35324"
+    Public Const COMARG_REQUEST_TABS As String = "BasicPawnComServer-RequestTabs-04e3632f-5472-42c5-929a-c3e0c2b35324"
+    Public Const COMARG_REQUEST_TABS_ANSWER As String = "BasicPawnComServer-RequestTabsAnswer-04e3632f-5472-42c5-929a-c3e0c2b35324"
+    Public Const COMARG_CLOSE_TAB As String = "BasicPawnComServer-CloseTab-04e3632f-5472-42c5-929a-c3e0c2b35324"
+    Public Const COMARG_SHOW_PING_FLASH As String = "BasicPawnComServer-ShowPingFlash-04e3632f-5472-42c5-929a-c3e0c2b35324"
+
+    Private g_mPingFlashPanel As ClassPanelAlpha
 
     Public Class STRUC_AUTOCOMPLETE
         Public sInfo As String
@@ -143,7 +152,8 @@ Public Class FormMain
         ' This call is required by the designer.
         InitializeComponent()
 
-        ' Add any initialization after the InitializeComponent() call.
+        ' Add any initialization after the InitializeComponent() call. 
+
         g_ClassSyntaxUpdater = New ClassSyntaxUpdater(Me)
         g_ClassSyntaxTools = New ClassSyntaxTools(Me)
         g_ClassAutocompleteUpdater = New ClassAutocompleteUpdater(Me)
@@ -151,6 +161,8 @@ Public Class FormMain
         g_ClassLineState = New ClassTextEditorTools.ClassLineState(Me)
         g_ClassCustomHighlighting = New ClassTextEditorTools.ClassCustomHighlighting(Me)
         g_ClassPluginController = New ClassPluginController(Me)
+        g_ClassTabControl = New ClassTabControl(Me)
+        g_ClassCrossAppComunication = New ClassCrossAppComunication
 
         ' Load other Forms/Controls
         g_mUCAutocomplete = New UCAutocomplete(Me)
@@ -169,159 +181,70 @@ Public Class FormMain
         g_mUCObjectBrowser.Show()
 
         g_mUCToolTip = New UCToolTip(Me)
-        g_mUCToolTip.Parent = TextEditorControl_Source
+        g_mUCToolTip.Parent = SplitContainer_ToolboxAndEditor.Panel2
         g_mUCToolTip.BringToFront()
         g_mUCToolTip.Hide()
 
-        SplitContainer1.SplitterDistance = SplitContainer1.Height - 175
+        SplitContainer_ToolboxSourceAndDetails.SplitterDistance = SplitContainer_ToolboxSourceAndDetails.Height - 175
+        g_ClassCrossAppComunication.Hook(COMMSG_SERVERNAME)
+
+        g_mPingFlashPanel = New ClassPanelAlpha
+        Me.Controls.Add(g_mPingFlashPanel)
+        g_mPingFlashPanel.Name = "#Ignore"
+        g_mPingFlashPanel.Parent = Me
+        g_mPingFlashPanel.Dock = DockStyle.Fill
+        g_mPingFlashPanel.m_TransparentBackColor = Color.FromKnownColor(KnownColor.RoyalBlue)
+        g_mPingFlashPanel.m_Opacity = 0
+        g_mPingFlashPanel.BringToFront()
+        g_mPingFlashPanel.Visible = False
     End Sub
 
-    Private g_bCodeChanged As Boolean = False
-
-    Public Property m_CodeChanged As Boolean
-        Get
-            Return g_bCodeChanged
-        End Get
-        Set(value As Boolean)
-            g_bCodeChanged = value
-            UpdateFormTitle()
-        End Set
-    End Property
-
-    Public Sub UpdateFormTitle()
-        If (String.IsNullOrEmpty(ClassSettings.g_sConfigOpenSourceFile)) Then
-            Me.Text = String.Format("{0} ({1}){2}", Application.ProductName, "Unnamed", If(g_bCodeChanged, "*"c, ""))
-        Else
-            Me.Text = String.Format("{0} ({1}){2}", Application.ProductName, IO.Path.GetFileName(ClassSettings.g_sConfigOpenSourceFile), If(g_bCodeChanged, "*"c, ""))
-        End If
-
+    Public Sub UpdateFormConfigText()
         ToolStripStatusLabel_CurrentConfig.Text = "Config: " & If(String.IsNullOrEmpty(ClassSettings.g_sConfigName), "Default", ClassSettings.g_sConfigName)
     End Sub
 
-    Public Sub PrintInformation(sType As String, sMessage As String, Optional bClear As Boolean = False, Optional bShowInformationTab As Boolean = False)
+    Public Sub PrintInformation(sType As String, sMessage As String, Optional bClear As Boolean = False, Optional bShowInformationTab As Boolean = False, Optional iLatestNoDuplicateLines As Integer = 0)
         Me.BeginInvoke(
             Sub()
                 If (g_mUCInformationList Is Nothing) Then
                     Return
                 End If
 
+                Dim bExist As Boolean = False
+
+                If (iLatestNoDuplicateLines > 0) Then
+                    For Each item As String In g_mUCInformationList.ListBox_Information.Items
+                        If (iLatestNoDuplicateLines < 1) Then
+                            Exit For
+                        End If
+
+                        If (item.StartsWith(sType) AndAlso item.EndsWith(sMessage)) Then
+                            bExist = True
+                            Exit For
+                        End If
+
+                        iLatestNoDuplicateLines -= 1
+                    Next
+                End If
+
                 If (bClear) Then
                     g_mUCInformationList.ListBox_Information.Items.Clear()
                 End If
-                g_mUCInformationList.ListBox_Information.Items.Insert(0, String.Format("{0} ({1}) {2}", sType, Now.ToString, sMessage))
+
+                If (Not bExist) Then
+                    g_mUCInformationList.ListBox_Information.Items.Insert(0, String.Format("{0} ({1}) {2}", sType, Now.ToString, sMessage))
+                End If
+
                 ToolStripStatusLabel_LastInformation.Text = sMessage
 
                 If (bShowInformationTab) Then
-                    SplitContainer1.Panel2Collapsed = False
-                    SplitContainer1.SplitterDistance = SplitContainer1.Height - 200
+                    SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed = False
+                    SplitContainer_ToolboxSourceAndDetails.SplitterDistance = SplitContainer_ToolboxSourceAndDetails.Height - 200
                     TabControl_Details.SelectTab(1)
                 End If
             End Sub)
     End Sub
 
-#End Region
-
-#Region "TextEditor Folding Code"
-
-    ''' <summary>
-    ''' The class to generate the foldings, it implements ICSharpCode.TextEditor.Document.IFoldingStrategy
-    ''' </summary>
-    Private Class VariXFolding
-        Implements IFoldingStrategy
-        ''' <summary>
-        ''' Generates the foldings for our document.
-        ''' </summary>
-        ''' <param name="document">The current document.</param>
-        ''' <param name="fileName">The filename of the document.</param>
-        ''' <param name="parseInformation">Extra parse information, not used in this sample.</param>
-        ''' <returns>A list of FoldMarkers.</returns>
-        Public Function GenerateFoldMarkers(document As IDocument, fileName As String, parseInformation As Object) As List(Of FoldMarker) Implements IFoldingStrategy.GenerateFoldMarkers
-            Dim list As New List(Of FoldMarker)()
-
-            'If ((Tools.WordCount(document.TextContent, "{") + Tools.WordCount(document.TextContent, "}")) Mod 2 <> 0) Then
-            '    Return list
-            'End If
-
-            'Dim sourceAnalysis As New SyntaxCharReader(document.TextContent)
-
-            Dim iMaxLevels As Integer = 0
-            Dim i As Integer = 0
-            While True
-                i = document.TextContent.IndexOf("{"c, i)
-                If (i < 0) Then
-                    Exit While
-                End If
-                i += 1
-                iMaxLevels += 1
-            End While
-
-            If (iMaxLevels < 1) Then
-                Return list
-            End If
-
-            Dim iLevels As Integer() = New Integer(iMaxLevels) {}
-            Dim iCurrentLevel As Integer = 0
-
-            For i = 0 To document.TextContent.Length - 1
-                'If (sourceAnalysis.InNonCode(i)) Then
-                '    Continue For
-                'End If
-
-                'Dim iCurrentLevel As Integer = sourceAnalysis.GetBraceLevel(i)
-
-                Select Case (document.TextContent(i))
-                    Case "{"c
-                        iCurrentLevel += 1
-                        If ((iCurrentLevel - 1) < 0) Then
-                            Continue For
-                        End If
-
-                        iLevels(iCurrentLevel - 1) = If(i > 0, i - 1, i)
-                    Case "}"c
-                        iCurrentLevel -= 1
-                        If (iCurrentLevel < 0) Then
-                            Continue For
-                        End If
-
-                        'Debug.WriteLine(document.TextContent.Substring(iLevels(iCurrentLevel), i - iLevels(iCurrentLevel)))
-
-                        Dim iLineStart = document.GetLineNumberForOffset(iLevels(iCurrentLevel))
-                        Dim iColumStart = document.GetLineSegment(iLineStart).Length
-                        Dim iLineEnd = document.GetLineNumberForOffset(i)
-                        Dim iColumEnd = document.GetLineSegment(iLineEnd).Length
-
-                        If (iLineStart = iLineEnd) Then
-                            Continue For
-                        End If
-
-                        list.Add(New FoldMarker(document, iLineStart, iColumStart, iLineEnd, iColumEnd))
-                End Select
-            Next
-
-            '' Create foldmarkers for the whole document, enumerate through every line.
-            'For i As Integer = 0 To document.TotalNumberOfLines - 1
-            '    ' Get the text of current line.
-            '    Dim text As String = document.GetText(document.GetLineSegment(i))
-
-            '    If text.StartsWith("def") Then
-            '        ' Look for method starts
-            '        start = i
-            '    End If
-            '    If text.StartsWith("enddef;") Then
-            '        ' Look for method endings
-            '        ' Add a new FoldMarker to the list.
-            '        ' document = the current document
-            '        ' start = the start line for the FoldMarker
-            '        ' document.GetLineSegment(start).Length = the ending of the current line = the start column of our foldmarker.
-            '        ' i = The current line = end line of the FoldMarker.
-            '        ' 7 = The end column
-            '        list.Add(New FoldMarker(document, start, document.GetLineSegment(start).Length, i, 7))
-            '    End If
-            'Next
-
-            Return list
-        End Function
-    End Class
 #End Region
 
 #Region "Syntax Stuff"
@@ -336,399 +259,111 @@ Public Class FormMain
         'Load Settings 
         ClassSettings.LoadSettings()
 
-        'Load Syntax 
-        g_ClassSyntaxTools.UpdateTextEditorSyntax()
-
-        'Add Events
-        AddHandler TextEditorControl_Source.g_eProcessCmdKey, AddressOf TextEditorControl_Source_ProcessCmdKey
-
-        AddHandler TextEditorControl_Source.MouseDoubleClick, AddressOf TextEditorControl_Source_DoubleClickMarkWord
-        AddHandler TextEditorControl_Source.ActiveTextAreaControl.MouseDoubleClick, AddressOf TextEditorControl_Source_DoubleClickMarkWord
-        AddHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.MouseDoubleClick, AddressOf TextEditorControl_Source_DoubleClickMarkWord
-
-        AddHandler TextEditorControl_Source.MouseClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
-        AddHandler TextEditorControl_Source.ActiveTextAreaControl.MouseClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
-        AddHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
-
-        AddHandler TextEditorControl_Source.MouseUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
-        AddHandler TextEditorControl_Source.ActiveTextAreaControl.MouseUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
-        AddHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.MouseUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
-
-        AddHandler TextEditorControl_Source.MouseDoubleClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
-        AddHandler TextEditorControl_Source.ActiveTextAreaControl.MouseDoubleClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
-        AddHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.MouseDoubleClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
-
-        AddHandler TextEditorControl_Source.KeyUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
-        AddHandler TextEditorControl_Source.ActiveTextAreaControl.KeyUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
-        AddHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.KeyUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
-
-        AddHandler TextEditorControl_Source.KeyDown, AddressOf TextEditorControl_Source_KeyDown
-        AddHandler TextEditorControl_Source.ActiveTextAreaControl.KeyDown, AddressOf TextEditorControl_Source_KeyDown
-        AddHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.KeyDown, AddressOf TextEditorControl_Source_KeyDown
-
-        AddHandler TextEditorControl_Source.TextChanged, AddressOf TextEditorControl_Source_TextChanged
-        AddHandler TextEditorControl_Source.ActiveTextAreaControl.TextChanged, AddressOf TextEditorControl_Source_TextChanged
-        AddHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.TextChanged, AddressOf TextEditorControl_Source_TextChanged
-
-        AddHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.SelectionManager.SelectionChanged, AddressOf TextEditorControl_Source_UpdateInfo
-        AddHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.PositionChanged, AddressOf TextEditorControl_Source_UpdateInfo
-
-        AddHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.Document.LineLengthChanged, AddressOf TextEditorControl_DetectLineLenghtChange
-        AddHandler TextEditorControl_Source.ActiveTextAreaControl.TextArea.Document.LineCountChanged, AddressOf TextEditorControl_DetectLineCountChange
+        g_ClassTabControl.Init()
 
         'Load source files via Arguments
         Dim sArgs As String() = Environment.GetCommandLineArgs
-        For i = 1 To sArgs.Length - 1
-            If (g_ClassTextEditorTools.OpenFile(sArgs(i), True)) Then
-                Exit For
+
+        While True
+            Dim lFileList As New List(Of String)
+            For i = 1 To sArgs.Length - 1
+                If (IO.File.Exists(sArgs(i))) Then
+                    lFileList.Add(sArgs(i))
+                End If
+            Next
+
+            If (lFileList.Count < 1) Then
+                Exit While
             End If
-        Next
 
-        'Update Autocomplete
-        g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
 
-        'Update Folding
-        TextEditorControl_Source.Document.FoldingManager.FoldingStrategy = New VariXFolding()
-        TextEditorControl_Source.Document.FoldingManager.UpdateFoldings(Nothing, Nothing)
 
-        'UpdateTextEditorControl1Colors()
-        g_ClassSyntaxTools.UpdateFormColors()
+            'Open all files in the oldes BasicPawn instance
+            If (Not ClassSettings.g_iSettingsAlwaysOpenNewInstance AndAlso Array.IndexOf(sArgs, "-newinstance") = -1) Then
+                    Dim pBasicPawnProc As Process() = Process.GetProcessesByName(IO.Path.GetFileNameWithoutExtension(Application.ExecutablePath))
+                    If (pBasicPawnProc.Length > 0) Then
+                        Dim iCurrentPID As Integer = Process.GetCurrentProcess.Id
+                        Dim iMyTick As Long = Process.GetCurrentProcess.StartTime.Ticks
+                        Dim iLastTick As Long = Date.MinValue.Ticks
+                        Dim pLastProcess As Process = Nothing
 
-        'Update Text Editor Settings
-        TextEditorControl_Source.ActiveTextAreaControl.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
-        TextEditorControl_Source.Refresh()
+                        For Each pProcess As Process In pBasicPawnProc
+                            Try
+                                If (pProcess.Id = iCurrentPID OrElse pProcess.MainModule.FileName.ToLower <> Application.ExecutablePath.ToLower) Then
+                                    Continue For
+                                End If
 
-        g_ClassSyntaxUpdater.StartThread()
+                                If (iMyTick < pProcess.StartTime.Ticks) Then
+                                    Continue For
+                                End If
 
-        g_ClassPluginController.LoadPlugins(IO.Path.Combine(Application.StartupPath, "plugins"))
-        g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnPluginStart(Me))
-    End Sub
+                                If (iLastTick > Date.MinValue.Ticks AndAlso iLastTick < pProcess.StartTime.Ticks) Then
+                                    Continue For
+                                End If
 
-#End Region
+                                pLastProcess = pProcess
+                                iLastTick = pProcess.StartTime.Ticks
+                            Catch ex As Exception
+                                'Ignore random exceptions
+                            End Try
+                        Next
 
-#Region "TextEditor Controls"
-    Private Sub TextEditorControl_Source_ProcessCmdKey(ByRef bBlock As Boolean, ByRef iMsg As Message, iKeys As Keys)
-        Select Case (iKeys)
 
-            'Duplicate Line/Word
-            Case Keys.Control Or Keys.D
-                bBlock = True
+                        'If (pLastProcess IsNot Nothing AndAlso MessageBox.Show("Open in a existing BasicPawn instance?", "Open files", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes) Then
+                        If (pLastProcess IsNot Nothing) Then
+                            Try
+                                For i = 0 To lFileList.Count - 1
+                                    Dim mMsg As New ClassCrossAppComunication.ClassMessage(COMARG_OPEN_FILE_BY_PID, CStr(pLastProcess.Id), lFileList(i))
+                                    g_ClassCrossAppComunication.SendMessage(mMsg)
+                                Next
+                            Catch ex As Exception
+                                ClassExceptionLog.WriteToLogMessageBox(ex)
+                            End Try
 
-                If (TextEditorControl_Source.ActiveTextAreaControl.SelectionManager.HasSomethingSelected) Then
-                    Dim sText As String = TextEditorControl_Source.ActiveTextAreaControl.SelectionManager.SelectedText
-                    Dim iCaretOffset As Integer = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Offset
-
-                    TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iCaretOffset, sText)
-                Else
-                    Dim iCaretOffset As Integer = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Offset
-                    Dim iLineOffset As Integer = TextEditorControl_Source.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iCaretOffset).Offset
-                    Dim iLineLen As Integer = TextEditorControl_Source.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iCaretOffset).Length
-
-                    TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iLineOffset, TextEditorControl_Source.ActiveTextAreaControl.Document.GetText(iLineOffset, iLineLen) & Environment.NewLine)
+                            Me.WindowState = FormWindowState.Minimized
+                            Me.ShowInTaskbar = False
+                            Application.Exit()
+                        End If
+                    End If
                 End If
 
-                TextEditorControl_Source.Refresh()
+                'Open all files here
+                For i = 0 To lFileList.Count - 1
+                    g_ClassTabControl.AddTab(False)
+                    g_ClassTabControl.OpenFileTab(g_ClassTabControl.m_TabsCount - 1, lFileList(i), True)
 
-            'Paste Autocomplete
-            Case Keys.Control Or Keys.Enter
-                bBlock = True
+                    If (i = 0 AndAlso g_ClassTabControl.m_TabsCount > 0) Then
+                        g_ClassTabControl.RemoveTab(0, False)
+                    End If
+                Next
+                Exit While
+                End While
 
-                TextEditorControl_Source.Document.UndoStack.StartUndoGroup()
-
-                Dim iOffset As Integer = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Offset
-                Dim iPosition As Integer = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Column
-                Dim iLineOffset As Integer = TextEditorControl_Source.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iOffset).Offset
-                Dim iLineLen As Integer = TextEditorControl_Source.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iOffset).Length
-                Dim iLineNum As Integer = TextEditorControl_Source.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iOffset).LineNumber
-
-                Dim sFunctionName As String = Regex.Match(TextEditorControl_Source.ActiveTextAreaControl.Document.GetText(iLineOffset, iPosition), "(\b[a-zA-Z0-9_]+\b(\.|\:){0,1}(\b[a-zA-Z0-9_]+\b){0,1})$").Value
-
-                TextEditorControl_Source.ActiveTextAreaControl.Caret.Column = iPosition - sFunctionName.Length
-                TextEditorControl_Source.ActiveTextAreaControl.Document.Remove(iOffset - sFunctionName.Length, sFunctionName.Length)
-
-                iPosition = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Column
-
-                Dim bIsEmpty = Regex.IsMatch(TextEditorControl_Source.ActiveTextAreaControl.Document.GetText(iLineOffset, iLineLen - sFunctionName.Length), "^\s*$")
-
-                Dim struc As STRUC_AUTOCOMPLETE = g_mUCAutocomplete.GetSelectedItem()
-
-                If (struc IsNot Nothing) Then
-                    Select Case (True)
-                        Case (struc.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD
-                            If (bIsEmpty) Then
-                                Dim iLineOffsetNum As Integer = TextEditorControl_Source.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Offset
-                                Dim iLineLenNum As Integer = TextEditorControl_Source.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Length
-                                TextEditorControl_Source.ActiveTextAreaControl.Document.Remove(iLineOffsetNum, iLineLenNum)
-
-                                Dim sNewInputFirst As String = "public" & struc.sFullFunctionName.Remove(0, "forward".Length) & Environment.NewLine &
-                                                                   "{" & Environment.NewLine &
-                                                                   vbTab
-                                Dim sNewInputLast As String = Environment.NewLine &
-                                                                   "}"
-
-                                TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iLineOffsetNum, sNewInputFirst & sNewInputLast)
-
-                                iPosition = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Column
-                                TextEditorControl_Source.ActiveTextAreaControl.Caret.Line = iLineNum + 2
-                                TextEditorControl_Source.ActiveTextAreaControl.Caret.Column = 1
-                            Else
-                                TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, struc.sFunctionName)
-
-                                iPosition = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Column
-                                TextEditorControl_Source.ActiveTextAreaControl.Caret.Column = iPosition + struc.sFunctionName.Length
-                            End If
-
-                        Case (struc.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG
-                            If (bIsEmpty) Then
-                                Dim iLineOffsetNum As Integer = TextEditorControl_Source.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Offset
-                                Dim iLineLenNum As Integer = TextEditorControl_Source.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Length
-                                TextEditorControl_Source.ActiveTextAreaControl.Document.Remove(iLineOffsetNum, iLineLenNum)
-
-                                Dim sNewInputFirst As String = "public" & struc.sFullFunctionName.Remove(0, "functag".Length) & Environment.NewLine &
-                                                                   "{" & Environment.NewLine &
-                                                                   vbTab
-                                Dim sNewInputLast As String = Environment.NewLine &
-                                                                   "}"
-
-                                TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iLineOffsetNum, sNewInputFirst & sNewInputLast)
-
-                                iPosition = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Column
-                                TextEditorControl_Source.ActiveTextAreaControl.Caret.Line = iLineNum + 2
-                                TextEditorControl_Source.ActiveTextAreaControl.Caret.Column = 1
-                            Else
-                                TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, struc.sFunctionName)
-
-                                iPosition = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Column
-                                TextEditorControl_Source.ActiveTextAreaControl.Caret.Column = iPosition + struc.sFunctionName.Length
-                            End If
-
-                        Case (struc.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM,
-                                     (struc.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET,
-                                     (struc.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF
-                            If (bIsEmpty) Then
-                                Dim iLineOffsetNum As Integer = TextEditorControl_Source.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Offset
-                                Dim iLineLenNum As Integer = TextEditorControl_Source.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Length
-                                TextEditorControl_Source.ActiveTextAreaControl.Document.Remove(iLineOffsetNum, iLineLenNum)
-
-                                Dim sNewInputFirst As String = struc.sFunctionName & Environment.NewLine &
-                                                                   "{" & Environment.NewLine &
-                                                                   vbTab
-                                Dim sNewInputLast As String = Environment.NewLine &
-                                                                   "}"
-
-                                TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iLineOffsetNum, sNewInputFirst & sNewInputLast)
-
-                                iPosition = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Column
-                                TextEditorControl_Source.ActiveTextAreaControl.Caret.Line = iLineNum + 2
-                                TextEditorControl_Source.ActiveTextAreaControl.Caret.Column = 1
-                            Else
-                                TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, struc.sFunctionName)
-
-                                iPosition = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Column
-                                TextEditorControl_Source.ActiveTextAreaControl.Caret.Column = iPosition + struc.sFunctionName.Length
-                            End If
-
-
-                        Case (struc.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEFINE) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEFINE,
-                                   (struc.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PUBLICVAR) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PUBLICVAR
-                            TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, struc.sFunctionName)
-
-                            iPosition = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Column
-                            TextEditorControl_Source.ActiveTextAreaControl.Caret.Column = iPosition + struc.sFunctionName.Length
-
-                        Case (struc.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM
-                            If (ClassSettings.g_iSettingsFullEnumAutocomplete OrElse struc.sFunctionName.IndexOf("."c) < 0) Then
-                                TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, struc.sFunctionName.Replace("."c, ":"c))
-
-                                iPosition = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Column
-                                TextEditorControl_Source.ActiveTextAreaControl.Caret.Column = iPosition + struc.sFunctionName.Length
-                            Else
-                                TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, struc.sFunctionName.Remove(0, struc.sFunctionName.IndexOf("."c) + 1))
-
-                                iPosition = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Column
-                                TextEditorControl_Source.ActiveTextAreaControl.Caret.Column = iPosition + struc.sFunctionName.Remove(0, struc.sFunctionName.IndexOf("."c) + 1).Length
-                            End If
-
-                        Case (struc.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP,
-                                   (struc.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE
-                            If (struc.sFunctionName.IndexOf("."c) > -1 AndAlso sFunctionName.IndexOf("."c) > -1 AndAlso Not sFunctionName.StartsWith(struc.sFunctionName)) Then
-                                Dim sNewInput As String = String.Format("{0}.{1}",
-                                                                        sFunctionName.Remove(sFunctionName.LastIndexOf("."c), sFunctionName.Length - sFunctionName.LastIndexOf("."c)),
-                                                                        struc.sFunctionName.Remove(0, struc.sFunctionName.IndexOf("."c) + 1))
-                                TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, sNewInput)
-
-                                iPosition = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Column
-                                TextEditorControl_Source.ActiveTextAreaControl.Caret.Column = iPosition + sNewInput.Length
-                            Else
-                                TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, struc.sFunctionName.Remove(0, struc.sFunctionName.IndexOf("."c) + 1))
-
-                                iPosition = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Column
-                                TextEditorControl_Source.ActiveTextAreaControl.Caret.Column = iPosition + struc.sFunctionName.Remove(0, struc.sFunctionName.IndexOf("."c) + 1).Length
-                            End If
-
-                        Case Else
-                            If (ClassSettings.g_iSettingsFullMethodAutocomplete) Then
-                                Dim sNewInput As String = struc.sFullFunctionName.Remove(0, Regex.Match(struc.sFullFunctionName, "^(?<Useless>.*?)\b[a-zA-Z0-9_]+\b\s*\(").Groups("Useless").Length)
-                                TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, sNewInput)
-
-                                iPosition = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Column
-                                TextEditorControl_Source.ActiveTextAreaControl.Caret.Column = iPosition + sNewInput.Length
-                            Else
-                                Dim sNewInput As String = struc.sFunctionName.Remove(0, Regex.Match(struc.sFunctionName, "^(?<Useless>.*?)\b[a-zA-Z0-9_]+\b\s*\(").Groups("Useless").Length)
-                                TextEditorControl_Source.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, String.Format("{0}()", sNewInput))
-
-                                iPosition = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Column
-                                TextEditorControl_Source.ActiveTextAreaControl.Caret.Column = iPosition + sNewInput.Length + 1
-                            End If
-
-                    End Select
-                End If
-
-                TextEditorControl_Source.Document.UndoStack.EndUndoGroup()
-                TextEditorControl_Source.Refresh()
-
-            'Autocomplete up
-            Case Keys.Control Or Keys.Up
-                If (g_mUCAutocomplete.ListView_AutocompleteList.SelectedItems.Count < 1) Then
-                    Return
-                End If
-
-                Dim iListViewCount As Integer = g_mUCAutocomplete.ListView_AutocompleteList.Items.Count
-
-                Dim iNewIndex As Integer = g_mUCAutocomplete.ListView_AutocompleteList.SelectedItems(0).Index - 1
-
-                If (iNewIndex > -1 AndAlso iNewIndex < iListViewCount) Then
-                    g_mUCAutocomplete.ListView_AutocompleteList.Items(iNewIndex).Selected = True
-                    g_mUCAutocomplete.ListView_AutocompleteList.Items(iNewIndex).EnsureVisible()
-                End If
-
-                bBlock = True
-
-            'Autocomplete Down
-            Case Keys.Control Or Keys.Down
-                If (g_mUCAutocomplete.ListView_AutocompleteList.SelectedItems.Count < 1) Then
-                    Return
-                End If
-
-                Dim iListViewCount As Integer = g_mUCAutocomplete.ListView_AutocompleteList.Items.Count
-
-                Dim iNewIndex As Integer = g_mUCAutocomplete.ListView_AutocompleteList.SelectedItems(0).Index + 1
-
-                If (iNewIndex > -1 AndAlso iNewIndex < iListViewCount) Then
-                    g_mUCAutocomplete.ListView_AutocompleteList.Items(iNewIndex).Selected = True
-                    g_mUCAutocomplete.ListView_AutocompleteList.Items(iNewIndex).EnsureVisible()
-                End If
-
-                bBlock = True
-
-            'Update Autocomplete
-            Case Keys.F5
+                'Update Autocomplete
                 g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
 
-                bBlock = True
-        End Select
-    End Sub
+                'UpdateTextEditorControl1Colors()
+                g_ClassSyntaxTools.UpdateFormColors()
 
-    Private Sub TextEditorControl_Source_UpdateInfo(sender As Object, e As EventArgs)
-        ToolStripStatusLabel_EditorLine.Text = "L: " & TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Line + 1
-        ToolStripStatusLabel_EditorCollum.Text = "C: " & TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Column
-        ToolStripStatusLabel_EditorSelectedCount.Text = "S: " & TextEditorControl_Source.ActiveTextAreaControl.TextArea.SelectionManager.SelectedText.Length
-    End Sub
-
-    Private Sub TextEditorControl_DetectLineLenghtChange(sender As Object, e As LineLengthChangeEventArgs)
-        Dim iTotalLines As Integer = TextEditorControl_Source.Document.TotalNumberOfLines
-
-        If (e.LineSegment.IsDeleted OrElse e.LineSegment.Length < 0) Then
-            Return
-        End If
-
-        If (e.LineSegment.LineNumber > iTotalLines) Then
-            Return
-        End If
-
-        g_ClassLineState.m_LineState(e.LineSegment.LineNumber) = ClassTextEditorTools.ClassLineState.LineStateBookmark.ENUM_BOOKMARK_TYPE.CHANGED
-    End Sub
-
-    Private Sub TextEditorControl_DetectLineCountChange(sender As Object, e As LineCountChangeEventArgs)
-        Dim iTotalLines As Integer = TextEditorControl_Source.Document.TotalNumberOfLines
-
-        If (e.LinesMoved > -1) Then
-            For i = 0 To e.LinesMoved
-                If (e.LineStart + i > iTotalLines) Then
-                    Return
-                End If
-
-                g_ClassLineState.m_LineState(e.LineStart + i) = ClassTextEditorTools.ClassLineState.LineStateBookmark.ENUM_BOOKMARK_TYPE.CHANGED
-            Next
-        End If
-    End Sub
-
-    Private Sub TextEditorControl_Source_UpdateAutocomplete(sender As Object, e As Object)
-        Static iOldCaretPos As Integer = 0
-
-        Dim iOffset As Integer = TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Offset
-
-        If (iOldCaretPos = iOffset) Then
-            Return
-        End If
-
-        iOldCaretPos = iOffset
-
-        Dim sFunctionName As String = g_ClassTextEditorTools.GetCaretWord(True)
-
-        If (g_mUCAutocomplete.UpdateAutocomplete(sFunctionName) < 1) Then
-            sFunctionName = g_ClassTextEditorTools.GetCaretWord(False)
-
-            g_mUCAutocomplete.UpdateAutocomplete(sFunctionName)
-        Else
-            g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip()
-        End If
-    End Sub
-
-    Private Sub TextEditorControl_Source_TextChanged(sender As Object, e As EventArgs)
-        g_bCodeChanged = True
-        UpdateFormTitle()
-    End Sub
-
-    Private Sub TextEditorControl_Source_DoubleClickMarkWord(sender As Object, e As MouseEventArgs)
-        If (Not ClassSettings.g_iSettingsDoubleClickMark) Then
-            Return
-        End If
-
-        g_ClassTextEditorTools.MarkSelectedWord()
+                g_ClassSyntaxUpdater.StartThread()
     End Sub
 
 #End Region
 
+
 #Region "Open/Save/Dialog"
-
-    Private Sub TextEditorControl_Source_KeyDown(sender As Object, e As KeyEventArgs)
-        If (e.KeyCode = Keys.S AndAlso e.Modifiers = Keys.Control) Then
-            e.Handled = True
-            g_ClassTextEditorTools.SaveFile()
-        End If
-        If (e.KeyCode = Keys.F AndAlso e.Modifiers = Keys.Control) Then
-            e.Handled = True
-
-
-            If (TextEditorControl_Source.ActiveTextAreaControl.SelectionManager.HasSomethingSelected) Then
-                g_ClassTextEditorTools.ShowSearchAndReplace(TextEditorControl_Source.ActiveTextAreaControl.SelectionManager.SelectedText)
-            Else
-                g_ClassTextEditorTools.ShowSearchAndReplace("")
-            End If
-        End If
-    End Sub
-
-    Private Sub Form1_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
+    Private Sub FormMain_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
         g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface)
                                                    If (Not j.OnPluginEnd()) Then
                                                        e.Cancel = True
                                                    End If
                                                End Sub)
 
-        If (g_ClassTextEditorTools.PromptSave()) Then
-            e.Cancel = True
-        End If
+        For i = 0 To g_ClassTabControl.m_TabsCount - 1
+            If (g_ClassTabControl.PromptSaveTab(i)) Then
+                e.Cancel = True
+            End If
+        Next
     End Sub
 
     Private Sub ContextMenuStrip1_Opening(sender As Object, e As CancelEventArgs) Handles ContextMenuStrip_RightClick.Opening
@@ -744,15 +379,15 @@ Public Class FormMain
     End Sub
 
     Private Sub ToolStripMenuItem_Cut_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Cut.Click
-        TextEditorControl_Source.ActiveTextAreaControl.TextArea.ClipboardHandler.Cut(sender, e)
+        g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.ClipboardHandler.Cut(sender, e)
     End Sub
 
     Private Sub ToolStripMenuItem_Copy_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Copy.Click
-        TextEditorControl_Source.ActiveTextAreaControl.TextArea.ClipboardHandler.Copy(sender, e)
+        g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.ClipboardHandler.Copy(sender, e)
     End Sub
 
     Private Sub ToolStripMenuItem_Paste_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Paste.Click
-        TextEditorControl_Source.ActiveTextAreaControl.TextArea.ClipboardHandler.Paste(sender, e)
+        g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.ClipboardHandler.Paste(sender, e)
     End Sub
 #End Region
 
@@ -760,19 +395,7 @@ Public Class FormMain
 
 #Region "MenuStrip_File"
     Private Sub ToolStripMenuItem_FileNew_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileNew.Click
-        If (g_ClassTextEditorTools.PromptSave()) Then
-            Return
-        End If
-
-        ClassSettings.g_sConfigOpenSourceFile = ""
-        TextEditorControl_Source.Document.TextContent = ""
-        TextEditorControl_Source.Refresh()
-
-        g_bCodeChanged = False
-        UpdateFormTitle()
-        g_ClassLineState.ClearStates()
-
-        g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
+        g_ClassTabControl.AddTab(True, True, False)
 
         PrintInformation("[INFO]", "User created a new source file")
     End Sub
@@ -780,48 +403,59 @@ Public Class FormMain
     Private Sub ToolStripMenuItem_FileOpen_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileOpen.Click
         Using i As New OpenFileDialog
             i.Filter = "All supported files|*.sp;*.inc;*.sma|SourcePawn|*.sp|Include|*.inc|Pawn (Not fully supported)|*.pwn;*.p|AMX Mod X|*.sma|All files|*.*"
-            i.FileName = ClassSettings.g_sConfigOpenSourceFile
+            i.FileName = g_ClassTabControl.m_ActiveTab.m_File
+            i.Multiselect = True
+
             If (i.ShowDialog = DialogResult.OK) Then
-                g_ClassTextEditorTools.OpenFile(i.FileName)
+                For Each sFile As String In i.FileNames
+                    g_ClassTabControl.AddTab(True)
+                    g_ClassTabControl.OpenFileTab(g_ClassTabControl.m_TabsCount - 1, sFile)
+                Next
             End If
         End Using
     End Sub
 
     Private Sub ToolStripMenuItem_FileSave_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileSave.Click
-        g_ClassTextEditorTools.PromptSave(False, True)
+        g_ClassTabControl.SaveFileTab(g_ClassTabControl.m_ActiveTabIndex)
+    End Sub
+
+    Private Sub ToolStripMenuItem_FileSaveAll_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileSaveAll.Click
+        For i = 0 To g_ClassTabControl.m_TabsCount - 1
+            g_ClassTabControl.SaveFileTab(i)
+        Next
     End Sub
 
     Private Sub ToolStripMenuItem_FileSaveAs_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileSaveAs.Click
-        Using i As New SaveFileDialog
-            i.Filter = "All supported files|*.sp;*.inc;*.sma|SourcePawn|*.sp|Include|*.inc|Pawn (Not fully supported)|*.pwn;*.p|AMX Mod X|*.sma|All files|*.*"
-            i.FileName = ClassSettings.g_sConfigOpenSourceFile
-
-            If (i.ShowDialog = DialogResult.OK) Then
-                ClassSettings.g_sConfigOpenSourceFile = i.FileName
-
-                g_bCodeChanged = False
-                UpdateFormTitle()
-                g_ClassLineState.SaveStates()
-
-                PrintInformation("[INFO]", "User saved file to: " & ClassSettings.g_sConfigOpenSourceFile)
-                IO.File.WriteAllText(ClassSettings.g_sConfigOpenSourceFile, TextEditorControl_Source.Document.TextContent)
-            End If
-        End Using
+        g_ClassTabControl.SaveFileTab(g_ClassTabControl.m_ActiveTabIndex, True)
     End Sub
 
     Private Sub ToolStripMenuItem_FileSaveAsTemp_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileSaveAsTemp.Click
         Dim sTempFile As String = String.Format("{0}.src", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
+        IO.File.WriteAllText(sTempFile, "")
 
-        ClassSettings.g_sConfigOpenSourceFile = sTempFile
-
-        g_bCodeChanged = False
-        UpdateFormTitle()
-        g_ClassLineState.SaveStates()
-
-        PrintInformation("[INFO]", "User saved file to: " & ClassSettings.g_sConfigOpenSourceFile)
-        IO.File.WriteAllText(ClassSettings.g_sConfigOpenSourceFile, TextEditorControl_Source.Document.TextContent)
+        g_ClassTabControl.m_ActiveTab.m_File = sTempFile
+        g_ClassTabControl.SaveFileTab(g_ClassTabControl.m_ActiveTabIndex)
     End Sub
 
+    Private Sub ToolStripMenuItem_FileLoadTabs_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileLoadTabs.Click
+        If (g_mFormOpenTabFromInstances Is Nothing OrElse g_mFormOpenTabFromInstances.IsDisposed) Then
+            g_mFormOpenTabFromInstances = New FormOpenTabFromInstances(Me)
+            g_mFormOpenTabFromInstances.Show()
+        End If
+    End Sub
+
+    Private Sub ToolStripMenuItem_FileOpenFolder_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileOpenFolder.Click
+        Try
+            If (String.IsNullOrEmpty(g_ClassTabControl.m_ActiveTab.m_File) OrElse Not IO.File.Exists(g_ClassTabControl.m_ActiveTab.m_File)) Then
+                MessageBox.Show("Can't open current folder. Source file can't be found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Return
+            End If
+
+            Process.Start("explorer.exe", "/select,""" & g_ClassTabControl.m_ActiveTab.m_File & """")
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
 
     Private Sub ToolStripMenuItem_FileExit_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileExit.Click
         Me.Close()
@@ -832,12 +466,12 @@ Public Class FormMain
     Private Sub ToolStripMenuItem_ToolsSettingsAndConfigs_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsSettingsAndConfigs.Click
         Using i As New FormSettings(Me)
             If (i.ShowDialog() = DialogResult.OK) Then
-                UpdateFormTitle()
+                UpdateFormConfigText()
 
                 g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
 
-                TextEditorControl_Source.ActiveTextAreaControl.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
-                TextEditorControl_Source.Refresh()
+                g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
+                g_ClassTabControl.m_ActiveTab.m_TextEditor.Refresh()
 
                 g_ClassSyntaxTools.UpdateFormColors()
             End If
@@ -846,27 +480,31 @@ Public Class FormMain
 
     Private Sub ToolStripMenuItem_ToolsFormatCode_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsFormatCode.Click
         Try
-            Dim sSource As String = TextEditorControl_Source.Document.TextContent
+            Dim sSource As String = g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
 
             sSource = g_ClassSyntaxTools.FormatCode(sSource)
 
-            TextEditorControl_Source.Document.UndoStack.StartUndoGroup()
-            TextEditorControl_Source.Document.Remove(0, TextEditorControl_Source.Document.TextLength)
-            TextEditorControl_Source.Document.Insert(0, sSource)
-            TextEditorControl_Source.Document.UndoStack.EndUndoGroup()
-            TextEditorControl_Source.Refresh()
+            g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.UndoStack.StartUndoGroup()
+            g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.Remove(0, g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextLength)
+            g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.Insert(0, sSource)
+            g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.UndoStack.EndUndoGroup()
+            g_ClassTabControl.m_ActiveTab.m_TextEditor.Refresh()
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
     End Sub
 
     Private Sub ToolStripMenuItem_ToolsSearchReplace_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsSearchReplace.Click
-        g_ClassTextEditorTools.ShowSearchAndReplace("")
+        If (g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.HasSomethingSelected) Then
+            g_ClassTextEditorTools.ShowSearchAndReplace(g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.SelectedText)
+        Else
+            g_ClassTextEditorTools.ShowSearchAndReplace("")
+        End If
     End Sub
 
     Private Sub ToolStripMenuItem_ToolsShowInformation_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsShowInformation.Click
-        SplitContainer1.Panel2Collapsed = False
-        SplitContainer1.SplitterDistance = SplitContainer1.Height - 200
+        SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed = False
+        SplitContainer_ToolboxSourceAndDetails.SplitterDistance = SplitContainer_ToolboxSourceAndDetails.Height - 200
         TabControl_Details.SelectTab(1)
     End Sub
 
@@ -892,8 +530,8 @@ Public Class FormMain
     End Sub
 
     Private Sub ToolStripMenuItem_ToolsAutocompleteShowAutocomplete_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsAutocompleteShowAutocomplete.Click
-        SplitContainer1.Panel2Collapsed = False
-        SplitContainer1.SplitterDistance = SplitContainer1.Height - 200
+        SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed = False
+        SplitContainer_ToolboxSourceAndDetails.SplitterDistance = SplitContainer_ToolboxSourceAndDetails.Height - 200
         TabControl_Details.SelectTab(0)
     End Sub
 
@@ -905,7 +543,7 @@ Public Class FormMain
 #Region "MenuStrip_Build"
     Private Sub ToolStripMenuItem_Build_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Build.Click
         With New ClassDebuggerParser(Me)
-            If (.HasDebugPlaceholder(TextEditorControl_Source.Document.TextContent)) Then
+            If (.HasDebugPlaceholder(g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent)) Then
                 Select Case (MessageBox.Show("All BasicPawn Debugger placeholders need to be removed before compiling the source. Remove all placeholder?", "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation))
                     Case DialogResult.OK
                         .CleanupDebugPlaceholder(Me)
@@ -922,7 +560,7 @@ Public Class FormMain
 #Region "MenuStrip_Test"
     Private Sub ToolStripMenuItem_Test_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Test.Click
         With New ClassDebuggerParser(Me)
-            If (.HasDebugPlaceholder(TextEditorControl_Source.Document.TextContent)) Then
+            If (.HasDebugPlaceholder(g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent)) Then
                 Select Case (MessageBox.Show("All BasicPawn Debugger placeholders need to be removed before compiling the source. Remove all placeholder?", "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation))
                     Case DialogResult.OK
                         .CleanupDebugPlaceholder(Me)
@@ -950,7 +588,7 @@ Public Class FormMain
         Try
             Dim sShell As String = ClassSettings.g_sConfigExecuteShell
 
-            For Each shellModule In ClassSettings.GetShellArguments
+            For Each shellModule In ClassSettings.GetShellArguments(Me)
                 sShell = sShell.Replace(shellModule.g_sMarker, shellModule.g_sArgument)
             Next
 
@@ -990,13 +628,13 @@ Public Class FormMain
 
 #Region "MenuStrip_Undo"
     Private Sub ToolStripMenuItem_Undo_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Undo.Click
-        TextEditorControl_Source.Undo()
+        g_ClassTabControl.m_ActiveTab.m_TextEditor.Undo()
     End Sub
 #End Region
 
 #Region "MenuStrip_Redo"
     Private Sub ToolStripMenuItem_Redo_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Redo.Click
-        TextEditorControl_Source.Redo()
+        g_ClassTabControl.m_ActiveTab.m_TextEditor.Redo()
     End Sub
 #End Region
 
@@ -1005,12 +643,12 @@ Public Class FormMain
         Using i As New FormSettings(Me)
             i.TabControl1.SelectTab(1)
             If (i.ShowDialog() = DialogResult.OK) Then
-                UpdateFormTitle()
+                UpdateFormConfigText()
 
                 g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
 
-                TextEditorControl_Source.ActiveTextAreaControl.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
-                TextEditorControl_Source.Refresh()
+                g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
+                g_ClassTabControl.m_ActiveTab.m_TextEditor.Refresh()
 
                 g_ClassSyntaxTools.UpdateFormColors()
             End If
@@ -1070,5 +708,136 @@ Public Class FormMain
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
+    End Sub
+
+    Private Sub ToolStripMenuItem_TabClose_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_TabClose.Click
+        g_ClassTabControl.RemoveTab(g_ClassTabControl.m_ActiveTabIndex, True)
+    End Sub
+
+    Private Sub ToolStripMenuItem_TabMoveRight_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_TabMoveRight.Click
+        Dim iActiveIndex As Integer = g_ClassTabControl.m_ActiveTabIndex
+        Dim iToIndex As Integer = iActiveIndex + 1
+
+        If (iToIndex > g_ClassTabControl.m_TabsCount - 1) Then
+            Return
+        End If
+
+        g_ClassTabControl.SwapTabs(iActiveIndex, iToIndex)
+    End Sub
+
+    Private Sub ToolStripMenuItem_TabMoveLeft_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_TabMoveLeft.Click
+        Dim iActiveIndex As Integer = g_ClassTabControl.m_ActiveTabIndex
+        Dim iToIndex As Integer = iActiveIndex - 1
+
+        If (iToIndex < 0) Then
+            Return
+        End If
+
+        g_ClassTabControl.SwapTabs(iActiveIndex, iToIndex)
+    End Sub
+
+    Private Sub ToolStripMenuItem_TabOpenInstance_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_TabOpenInstance.Click
+        If (g_mFormOpenTabFromInstances Is Nothing OrElse g_mFormOpenTabFromInstances.IsDisposed) Then
+            g_mFormOpenTabFromInstances = New FormOpenTabFromInstances(Me)
+            g_mFormOpenTabFromInstances.Show()
+        End If
+    End Sub
+
+    Private Sub OnMessageReceive(mClassMessage As ClassCrossAppComunication.ClassMessage) Handles g_ClassCrossAppComunication.OnMessageReceive
+        Try
+            Select Case (mClassMessage.m_MessageName)
+                Case COMARG_OPEN_FILE_BY_PID
+                    Dim iPID As Integer = CInt(mClassMessage.m_Messages(0))
+                    Dim sFile As String = mClassMessage.m_Messages(1)
+
+                    If (iPID <> Process.GetCurrentProcess.Id) Then
+                        Return
+                    End If
+
+                    Me.BeginInvoke(Sub()
+                                       g_ClassTabControl.AddTab(True)
+                                       g_ClassTabControl.OpenFileTab(g_ClassTabControl.m_TabsCount - 1, sFile)
+                                   End Sub)
+
+                Case COMARG_REQUEST_TABS
+                    Dim sIdentifier As String = mClassMessage.m_Messages(0)
+
+                    For i = 0 To g_ClassTabControl.m_TabsCount - 1
+                        Dim iTabIndex As Integer = i
+                        Dim sProcessName As String = Process.GetCurrentProcess.ProcessName
+                        Dim iPID As Integer = Process.GetCurrentProcess.Id
+                        Dim sFile As String = g_ClassTabControl.m_Tab(i).m_File
+
+                        g_ClassCrossAppComunication.SendMessage(New ClassCrossAppComunication.ClassMessage(COMARG_REQUEST_TABS_ANSWER, CStr(iTabIndex), sProcessName, CStr(iPID), sFile, sIdentifier), False)
+                    Next
+
+                Case COMARG_REQUEST_TABS_ANSWER
+                    Dim iTabIndex As Integer = CInt(mClassMessage.m_Messages(0))
+                    Dim sProcessName As String = mClassMessage.m_Messages(1)
+                    Dim iPID As Integer = CInt(mClassMessage.m_Messages(2))
+                    Dim sFile As String = mClassMessage.m_Messages(3)
+                    Dim sIdentifier As String = mClassMessage.m_Messages(4)
+
+                    If (g_mFormOpenTabFromInstances Is Nothing OrElse g_mFormOpenTabFromInstances.IsDisposed) Then
+                        Return
+                    End If
+
+                    If (g_mFormOpenTabFromInstances IsNot Nothing) Then
+                        g_mFormOpenTabFromInstances.AddListViewItem(iTabIndex, sProcessName, iPID, sFile, sIdentifier)
+                    End If
+
+                Case COMARG_CLOSE_TAB
+                    Dim iTabIndex As Integer = CInt(mClassMessage.m_Messages(0))
+                    Dim iPID As Integer = CInt(mClassMessage.m_Messages(1))
+                    Dim sFile As String = mClassMessage.m_Messages(2)
+
+                    If (iPID <> Process.GetCurrentProcess.Id) Then
+                        Return
+                    End If
+
+                    If (iTabIndex < 0 OrElse iTabIndex > g_ClassTabControl.m_TabsCount - 1) Then
+                        Return
+                    End If
+
+                    If (Not String.IsNullOrEmpty(sFile) AndAlso sFile <> g_ClassTabControl.m_Tab(iTabIndex).m_File) Then
+                        Return
+                    End If
+
+                    g_ClassTabControl.RemoveTab(iTabIndex, True)
+
+                Case COMARG_SHOW_PING_FLASH
+                    Dim iPID As Integer = CInt(mClassMessage.m_Messages(0))
+
+                    If (iPID <> Process.GetCurrentProcess.Id) Then
+                        Return
+                    End If
+
+                    ShowPingFlash()
+            End Select
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
+    Public Sub ShowPingFlash()
+        g_mPingFlashPanel.m_Opacity = 50
+        g_mPingFlashPanel.Visible = True
+
+        Timer_PingFlash.Start()
+    End Sub
+
+    Private Sub Timer_PingFlash_Tick(sender As Object, e As EventArgs) Handles Timer_PingFlash.Tick
+        If (g_mPingFlashPanel Is Nothing OrElse g_mPingFlashPanel.IsDisposed) Then
+            Return
+        End If
+
+        g_mPingFlashPanel.m_Opacity -= 10
+
+        If (g_mPingFlashPanel.m_Opacity > 0) Then
+            Return
+        End If
+
+        g_mPingFlashPanel.Visible = False
+        Timer_PingFlash.Stop()
     End Sub
 End Class

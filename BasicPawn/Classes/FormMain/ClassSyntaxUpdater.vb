@@ -49,49 +49,50 @@ Public Class ClassSyntaxUpdater
     ''' The main thread to update all kinds of stuff.
     ''' </summary>
     Private Sub SourceSyntaxUpdater_Thread()
-        Static g_mLastFullAutocompleteUpdate As Date = Now
-        Static g_mLastVarAutocompleteUpdate As Date = Now
-        Static g_mLastMethodAutocompleteUpdate As Date = Now
-        Static g_mLastFoldingUpdate As Date = Now
+        Dim dLastFullAutocompleteUpdate As Date = Now
+        Dim dLastVarAutocompleteUpdate As Date = Now
+        Dim dLastMethodAutocompleteUpdate As Date = Now
+        Dim dLastFoldingUpdate As Date = Now
 
         While True
             Threading.Thread.Sleep(500)
 
             Try
                 'Update Autocomplete
-                If (g_mLastFullAutocompleteUpdate < Now OrElse g_mFormMain.g_ClassAutocompleteUpdater.g_bForceFullAutocompleteUpdate) Then
-                    g_mLastFullAutocompleteUpdate = (Now + New TimeSpan(0, 0, 1, 0, 0))
+                If (dLastFullAutocompleteUpdate < Now OrElse g_mFormMain.g_ClassAutocompleteUpdater.g_bForceFullAutocompleteUpdate) Then
+                    dLastFullAutocompleteUpdate = (Now + New TimeSpan(0, 0, 1, 0, 0))
 
                     g_mFormMain.BeginInvoke(Sub() g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL))
                 End If
 
                 'Update Autocomplete
-                If (g_mLastVarAutocompleteUpdate < Now) Then
-                    g_mLastVarAutocompleteUpdate = (Now + New TimeSpan(0, 0, 0, 10, 0))
+                If (dLastVarAutocompleteUpdate < Now) Then
+                    dLastVarAutocompleteUpdate = (Now + New TimeSpan(0, 0, 0, 10, 0))
 
                     g_mFormMain.BeginInvoke(Sub() g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.VARIABLES_AUTOCOMPLETE))
                 End If
 
                 'Update method Autocomplete
-                If (g_mLastMethodAutocompleteUpdate < Now) Then
-                    g_mLastMethodAutocompleteUpdate = (Now + New TimeSpan(0, 0, 0, 10, 0))
+                If (dLastMethodAutocompleteUpdate < Now) Then
+                    dLastMethodAutocompleteUpdate = (Now + New TimeSpan(0, 0, 0, 10, 0))
 
-                    Dim sTextContent As String = CStr(g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.Document.TextContent))
+                    Dim sTextContent As String = CStr(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent))
                     g_mFormMain.g_mSourceSyntaxSourceAnalysis = New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sTextContent)
                 End If
 
                 'Update Foldings
-                If (g_mLastFoldingUpdate < Now) Then
-                    g_mLastFoldingUpdate = Now + New TimeSpan(0, 0, 5)
+                If (dLastFoldingUpdate < Now) Then
+                    dLastFoldingUpdate = Now + New TimeSpan(0, 0, 5)
 
                     'If ((Tools.WordCount(Me.Invoke(Function() TextEditorControl1.Document.TextContent), "{") + Tools.WordCount(Me.Invoke(Function() TextEditorControl1.Document.TextContent), "}")) Mod 2 = 0) Then
-                    g_mFormMain.BeginInvoke(Sub() g_mFormMain.TextEditorControl_Source.Document.FoldingManager.UpdateFoldings(Nothing, Nothing))
+                    g_mFormMain.BeginInvoke(Sub() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.FoldingManager.UpdateFoldings(Nothing, Nothing))
                     'End If
                 End If
 
 
-                Dim iCaretOffset As Integer = CInt(g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Offset))
-                Dim iCaretPos As Integer = CInt(g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.ScreenPosition.X + g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.ScreenPosition.Y))
+                Dim iCaretOffset As Integer = CInt(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Offset))
+                Dim iCaretPos As Integer = CInt(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.ScreenPosition.X +
+                                                                       g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.ScreenPosition.Y))
 
                 'Update Method Autoupdate 
                 Static iLastMethodAutoupdateCaretOffset As Integer = -1
@@ -129,10 +130,10 @@ Public Class ClassSyntaxUpdater
                     iLastAutoupdateCaretOffset2 = iCaretOffset
 
 
-                    If (iCaretOffset > -1 AndAlso iCaretOffset < g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.TextLength) Then
-                        Dim iPosition As Integer = CInt(g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.TextArea.Caret.Position.Column))
-                        Dim iLineOffset As Integer = CInt(g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iCaretOffset).Offset))
-                        Dim iLineLen As Integer = CInt(g_mFormMain.Invoke(Function() g_mFormMain.TextEditorControl_Source.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iCaretOffset).Length))
+                    If (iCaretOffset > -1 AndAlso iCaretOffset < CInt(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.TextLength))) Then
+                        Dim iPosition As Integer = CInt(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column))
+                        Dim iLineOffset As Integer = CInt(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iCaretOffset).Offset))
+                        Dim iLineLen As Integer = CInt(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iCaretOffset).Length))
 
                         If ((iLineLen - iPosition) > 0) Then
                             Dim sFunctionName As String = CType(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True)), String)
