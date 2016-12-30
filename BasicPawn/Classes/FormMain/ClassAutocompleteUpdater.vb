@@ -1666,7 +1666,18 @@ Public Class ClassAutocompleteUpdater
                             Exit Select
                         End If
 
-                        If (lTmpAutocompleteList.Exists(Function(j As STRUC_AUTOCOMPLETE) (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE AndAlso Regex.IsMatch(j.sFunctionName, String.Format("\b{0}\b", Regex.Escape(sVar))))) Then
+                        If (lTmpAutocompleteList.Exists(Function(j As STRUC_AUTOCOMPLETE)
+                                                            If ((j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE OrElse
+                                                                    (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD OrElse
+                                                                    (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM OrElse
+                                                                    (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG OrElse
+                                                                    (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF OrElse
+                                                                    (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) Then
+                                                                Return False
+                                                            End If
+
+                                                            Return Regex.IsMatch(j.sFunctionName, String.Format("\b{0}\b", Regex.Escape(sVar)))
+                                                        End Function)) Then
                             Exit Select
                         End If
 
@@ -1711,7 +1722,18 @@ Public Class ClassAutocompleteUpdater
                             Exit Select
                         End If
 
-                        If (lTmpAutocompleteList.Exists(Function(j As STRUC_AUTOCOMPLETE) (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE AndAlso Regex.IsMatch(j.sFunctionName, String.Format("\b{0}\b", Regex.Escape(sVar))))) Then
+                        If (lTmpAutocompleteList.Exists(Function(j As STRUC_AUTOCOMPLETE)
+                                                            If ((j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE OrElse
+                                                                    (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD OrElse
+                                                                    (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM OrElse
+                                                                    (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG OrElse
+                                                                    (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF OrElse
+                                                                    (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) Then
+                                                                Return False
+                                                            End If
+
+                                                            Return Regex.IsMatch(j.sFunctionName, String.Format("\b{0}\b", Regex.Escape(sVar)))
+                                                        End Function)) Then
                             Exit Select
                         End If
 
@@ -1770,7 +1792,18 @@ Public Class ClassAutocompleteUpdater
                             Continue For
                         End If
 
-                        If (lTmpAutocompleteList.Exists(Function(j As STRUC_AUTOCOMPLETE) (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE AndAlso Regex.IsMatch(j.sFunctionName, String.Format("\b{0}\b", Regex.Escape(sVar))))) Then
+                        If (lTmpAutocompleteList.Exists(Function(j As STRUC_AUTOCOMPLETE)
+                                                            If ((j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE OrElse
+                                                                    (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD OrElse
+                                                                    (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM OrElse
+                                                                    (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG OrElse
+                                                                    (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF OrElse
+                                                                    (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) Then
+                                                                Return False
+                                                            End If
+
+                                                            Return Regex.IsMatch(j.sFunctionName, String.Format("\b{0}\b", Regex.Escape(sVar)))
+                                                        End Function)) Then
                             Continue For
                         End If
 
@@ -1826,7 +1859,18 @@ Public Class ClassAutocompleteUpdater
                             Continue For
                         End If
 
-                        If (lTmpAutocompleteList.Exists(Function(j As STRUC_AUTOCOMPLETE) (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE AndAlso Regex.IsMatch(j.sFunctionName, String.Format("\b{0}\b", Regex.Escape(sVar))))) Then
+                        If (lTmpAutocompleteList.Exists(Function(j As STRUC_AUTOCOMPLETE)
+                                                            If ((j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE OrElse
+                                                                    (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD OrElse
+                                                                    (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM OrElse
+                                                                    (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG OrElse
+                                                                    (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF OrElse
+                                                                    (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) Then
+                                                                Return False
+                                                            End If
+
+                                                            Return Regex.IsMatch(j.sFunctionName, String.Format("\b{0}\b", Regex.Escape(sVar)))
+                                                        End Function)) Then
                             Continue For
                         End If
 
@@ -1864,6 +1908,10 @@ Public Class ClassAutocompleteUpdater
             Dim codeBuilder As New StringBuilder
 
             For Each autoItem In lTmpAutocompleteList
+                If ((autoItem.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) Then
+                    Continue For
+                End If
+
                 If (ClassSettings.g_iSettingsVarAutocompleteCurrentSourceOnly) Then
                     If (Not String.IsNullOrEmpty(sActiveSourceFile) AndAlso IO.Path.GetFileName(sActiveSourceFile).ToLower <> autoItem.sFile.ToLower) Then
                         Continue For
@@ -1943,11 +1991,12 @@ Public Class ClassAutocompleteUpdater
             For Each sArg As STRUC_PARSE_ARGUMENT_ITEM In lArgList
                 'Old style
                 If (ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_6) Then
-                    Dim mMatch As Match = Regex.Match(sArg.sArgument, String.Format("((?<Tag>\b{0}\b)\:\s*)*(?<Var>\b[a-zA-Z_][a-zA-Z0-9_]*\b)$", sRegExEnumPattern))
+                    Dim mMatch As Match = Regex.Match(sArg.sArgument, String.Format("(?<OneSevenTag>\b{0}\b\s+)*((?<Tag>\b{1}\b)\:\s*)*(?<Var>\b[a-zA-Z_][a-zA-Z0-9_]*\b)$", sRegExEnumPattern, sRegExEnumPattern))
                     Dim sTag As String = If(String.IsNullOrEmpty(mMatch.Groups("Tag").Value), "int", mMatch.Groups("Tag").Value).Trim
                     Dim sVar As String = mMatch.Groups("Var").Value.Trim
+                    Dim bIsOneSeven As Boolean = mMatch.Groups("OneSevenTag").Success
 
-                    If (mMatch.Success AndAlso mMatch.Groups("Var").Success AndAlso Not g_mFormMain.g_ClassSyntaxTools.IsForbiddenVariableName(sVar)) Then
+                    If (Not bIsOneSeven AndAlso mMatch.Success AndAlso mMatch.Groups("Var").Success AndAlso Not g_mFormMain.g_ClassSyntaxTools.IsForbiddenVariableName(sVar)) Then
                         Dim tmpFile As String = IO.Path.GetFileName(sArg.sFile)
                         Dim autoItem As STRUC_AUTOCOMPLETE = lTmpVarAutocompleteList.Find(Function(j As STRUC_AUTOCOMPLETE) j.sFile.ToLower = tmpFile.ToLower AndAlso j.sFunctionName = sVar AndAlso (j.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
                         If (autoItem Is Nothing) Then

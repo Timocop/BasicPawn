@@ -298,6 +298,7 @@ Public Class FormSettings
         CheckBox_FullAutocompleteReTagging.Checked = ClassSettings.g_iSettingsFullEnumAutocomplete
         CheckBox_CaseSensitive.Checked = ClassSettings.g_iSettingsAutocompleteCaseSensitive
         CheckBox_CurrentSourceVarAutocomplete.Checked = ClassSettings.g_iSettingsVarAutocompleteCurrentSourceOnly
+        CheckBox_VarAutocompleteShowObjectBrowser.Checked = ClassSettings.g_iSettingsVarAutocompleteShowObjectBrowser
         'Debugger
         CheckBox_CatchExceptions.Checked = ClassSettings.g_iSettingsDebuggerCatchExceptions
         CheckBox_EntitiesEnableColor.Checked = ClassSettings.g_iSettingsDebuggerEntitiesEnableAutoScroll
@@ -367,6 +368,7 @@ Public Class FormSettings
         ClassSettings.g_iSettingsFullEnumAutocomplete = CheckBox_FullAutocompleteReTagging.Checked
         ClassSettings.g_iSettingsAutocompleteCaseSensitive = CheckBox_CaseSensitive.Checked
         ClassSettings.g_iSettingsVarAutocompleteCurrentSourceOnly = CheckBox_CurrentSourceVarAutocomplete.Checked
+        ClassSettings.g_iSettingsVarAutocompleteShowObjectBrowser = CheckBox_VarAutocompleteShowObjectBrowser.Checked
         'Debugger
         ClassSettings.g_iSettingsDebuggerCatchExceptions = CheckBox_CatchExceptions.Checked
         ClassSettings.g_iSettingsDebuggerEntitiesEnableColoring = CheckBox_EntitiesEnableColor.Checked

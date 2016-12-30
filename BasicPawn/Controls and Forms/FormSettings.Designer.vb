@@ -31,17 +31,6 @@ Partial Class FormSettings
         Me.CheckBox_CatchExceptions = New System.Windows.Forms.CheckBox()
         Me.CheckBox_EntitiesEnableColor = New System.Windows.Forms.CheckBox()
         Me.CheckBox_EntitiesEnableShowNewEnts = New System.Windows.Forms.CheckBox()
-        Me.Panel7 = New System.Windows.Forms.Panel()
-        Me.Panel3 = New System.Windows.Forms.Panel()
-        Me.Label8 = New System.Windows.Forms.Label()
-        Me.Button_Font = New System.Windows.Forms.Button()
-        Me.Label_Font = New System.Windows.Forms.Label()
-        Me.CheckBox_InvertedColors = New System.Windows.Forms.CheckBox()
-        Me.Panel6 = New System.Windows.Forms.Panel()
-        Me.Panel1 = New System.Windows.Forms.Panel()
-        Me.Label7 = New System.Windows.Forms.Label()
-        Me.CheckBox_DoubleClickMark = New System.Windows.Forms.CheckBox()
-        Me.CheckBox_AutoMark = New System.Windows.Forms.CheckBox()
         Me.Panel5 = New System.Windows.Forms.Panel()
         Me.CheckBox_CurrentSourceVarAutocomplete = New System.Windows.Forms.CheckBox()
         Me.Label1 = New System.Windows.Forms.Label()
@@ -52,6 +41,21 @@ Partial Class FormSettings
         Me.CheckBox_FullAutocompleteReTagging = New System.Windows.Forms.CheckBox()
         Me.CheckBox_WindowsToolTipPopup = New System.Windows.Forms.CheckBox()
         Me.CheckBox_CaseSensitive = New System.Windows.Forms.CheckBox()
+        Me.Panel6 = New System.Windows.Forms.Panel()
+        Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.Label7 = New System.Windows.Forms.Label()
+        Me.CheckBox_DoubleClickMark = New System.Windows.Forms.CheckBox()
+        Me.CheckBox_AutoMark = New System.Windows.Forms.CheckBox()
+        Me.Panel7 = New System.Windows.Forms.Panel()
+        Me.Panel3 = New System.Windows.Forms.Panel()
+        Me.Label8 = New System.Windows.Forms.Label()
+        Me.Button_Font = New System.Windows.Forms.Button()
+        Me.Label_Font = New System.Windows.Forms.Label()
+        Me.CheckBox_InvertedColors = New System.Windows.Forms.CheckBox()
+        Me.Panel14 = New System.Windows.Forms.Panel()
+        Me.Panel15 = New System.Windows.Forms.Panel()
+        Me.Label16 = New System.Windows.Forms.Label()
+        Me.CheckBox_AlwaysNewInstance = New System.Windows.Forms.CheckBox()
         Me.TabPage2 = New System.Windows.Forms.TabPage()
         Me.Button_ConfigRename = New System.Windows.Forms.Button()
         Me.Button_ConfigCopy = New System.Windows.Forms.Button()
@@ -98,22 +102,19 @@ Partial Class FormSettings
         Me.ListBox_Configs = New System.Windows.Forms.ListBox()
         Me.Button_Cancel = New System.Windows.Forms.Button()
         Me.Button_Apply = New System.Windows.Forms.Button()
-        Me.Panel14 = New System.Windows.Forms.Panel()
-        Me.Panel15 = New System.Windows.Forms.Panel()
-        Me.Label16 = New System.Windows.Forms.Label()
-        Me.CheckBox_AlwaysNewInstance = New System.Windows.Forms.CheckBox()
+        Me.CheckBox_VarAutocompleteShowObjectBrowser = New System.Windows.Forms.CheckBox()
         Me.TabControl1.SuspendLayout()
         Me.TabPage1.SuspendLayout()
         Me.Panel8.SuspendLayout()
-        Me.Panel7.SuspendLayout()
-        Me.Panel6.SuspendLayout()
         Me.Panel5.SuspendLayout()
+        Me.Panel6.SuspendLayout()
+        Me.Panel7.SuspendLayout()
+        Me.Panel14.SuspendLayout()
         Me.TabPage2.SuspendLayout()
         Me.GroupBox_ConfigSettings.SuspendLayout()
         Me.Panel11.SuspendLayout()
         Me.Panel10.SuspendLayout()
         Me.Panel9.SuspendLayout()
-        Me.Panel14.SuspendLayout()
         Me.SuspendLayout()
         '
         'TabControl1
@@ -126,7 +127,7 @@ Partial Class FormSettings
         Me.TabControl1.Location = New System.Drawing.Point(12, 12)
         Me.TabControl1.Name = "TabControl1"
         Me.TabControl1.SelectedIndex = 0
-        Me.TabControl1.Size = New System.Drawing.Size(610, 673)
+        Me.TabControl1.Size = New System.Drawing.Size(610, 726)
         Me.TabControl1.TabIndex = 0
         '
         'TabPage1
@@ -139,7 +140,7 @@ Partial Class FormSettings
         Me.TabPage1.Controls.Add(Me.Panel14)
         Me.TabPage1.Location = New System.Drawing.Point(4, 22)
         Me.TabPage1.Name = "TabPage1"
-        Me.TabPage1.Size = New System.Drawing.Size(602, 647)
+        Me.TabPage1.Size = New System.Drawing.Size(602, 700)
         Me.TabPage1.TabIndex = 0
         Me.TabPage1.Text = "Settings"
         Me.TabPage1.UseVisualStyleBackColor = True
@@ -152,9 +153,9 @@ Partial Class FormSettings
         Me.Panel8.Controls.Add(Me.CheckBox_EntitiesEnableColor)
         Me.Panel8.Controls.Add(Me.CheckBox_EntitiesEnableShowNewEnts)
         Me.Panel8.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel8.Location = New System.Drawing.Point(0, 392)
+        Me.Panel8.Location = New System.Drawing.Point(0, 451)
         Me.Panel8.Name = "Panel8"
-        Me.Panel8.Size = New System.Drawing.Size(602, 95)
+        Me.Panel8.Size = New System.Drawing.Size(602, 101)
         Me.Panel8.TabIndex = 25
         '
         'Panel4
@@ -213,130 +214,9 @@ Partial Class FormSettings
         Me.CheckBox_EntitiesEnableShowNewEnts.Text = "Automatically scroll to new entities"
         Me.CheckBox_EntitiesEnableShowNewEnts.UseVisualStyleBackColor = True
         '
-        'Panel7
-        '
-        Me.Panel7.Controls.Add(Me.Panel3)
-        Me.Panel7.Controls.Add(Me.Label8)
-        Me.Panel7.Controls.Add(Me.Button_Font)
-        Me.Panel7.Controls.Add(Me.Label_Font)
-        Me.Panel7.Controls.Add(Me.CheckBox_InvertedColors)
-        Me.Panel7.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel7.Location = New System.Drawing.Point(0, 42)
-        Me.Panel7.Name = "Panel7"
-        Me.Panel7.Size = New System.Drawing.Size(602, 72)
-        Me.Panel7.TabIndex = 24
-        '
-        'Panel3
-        '
-        Me.Panel3.BackColor = System.Drawing.SystemColors.ControlDark
-        Me.Panel3.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel3.Location = New System.Drawing.Point(0, 0)
-        Me.Panel3.Name = "Panel3"
-        Me.Panel3.Size = New System.Drawing.Size(602, 1)
-        Me.Panel3.TabIndex = 9
-        '
-        'Label8
-        '
-        Me.Label8.AutoSize = True
-        Me.Label8.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label8.Location = New System.Drawing.Point(6, 6)
-        Me.Label8.Margin = New System.Windows.Forms.Padding(6, 3, 3, 0)
-        Me.Label8.Name = "Label8"
-        Me.Label8.Size = New System.Drawing.Size(62, 13)
-        Me.Label8.TabIndex = 10
-        Me.Label8.Text = "Text Editor"
-        '
-        'Button_Font
-        '
-        Me.Button_Font.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_Font.Location = New System.Drawing.Point(6, 22)
-        Me.Button_Font.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.Button_Font.Name = "Button_Font"
-        Me.Button_Font.Size = New System.Drawing.Size(75, 23)
-        Me.Button_Font.TabIndex = 11
-        Me.Button_Font.Text = "Font"
-        Me.Button_Font.UseVisualStyleBackColor = True
-        '
-        'Label_Font
-        '
-        Me.Label_Font.AutoSize = True
-        Me.Label_Font.Location = New System.Drawing.Point(90, 27)
-        Me.Label_Font.Margin = New System.Windows.Forms.Padding(6, 0, 3, 0)
-        Me.Label_Font.Name = "Label_Font"
-        Me.Label_Font.Size = New System.Drawing.Size(73, 13)
-        Me.Label_Font.TabIndex = 12
-        Me.Label_Font.Text = "Current Font"
-        '
-        'CheckBox_InvertedColors
-        '
-        Me.CheckBox_InvertedColors.AutoSize = True
-        Me.CheckBox_InvertedColors.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_InvertedColors.Location = New System.Drawing.Point(6, 51)
-        Me.CheckBox_InvertedColors.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_InvertedColors.Name = "CheckBox_InvertedColors"
-        Me.CheckBox_InvertedColors.Size = New System.Drawing.Size(108, 18)
-        Me.CheckBox_InvertedColors.TabIndex = 13
-        Me.CheckBox_InvertedColors.Text = "Inverted colors"
-        Me.CheckBox_InvertedColors.UseVisualStyleBackColor = True
-        '
-        'Panel6
-        '
-        Me.Panel6.Controls.Add(Me.Panel1)
-        Me.Panel6.Controls.Add(Me.Label7)
-        Me.Panel6.Controls.Add(Me.CheckBox_DoubleClickMark)
-        Me.Panel6.Controls.Add(Me.CheckBox_AutoMark)
-        Me.Panel6.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel6.Location = New System.Drawing.Point(0, 114)
-        Me.Panel6.Name = "Panel6"
-        Me.Panel6.Size = New System.Drawing.Size(602, 69)
-        Me.Panel6.TabIndex = 23
-        '
-        'Panel1
-        '
-        Me.Panel1.BackColor = System.Drawing.SystemColors.ControlDark
-        Me.Panel1.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel1.Location = New System.Drawing.Point(0, 0)
-        Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(602, 1)
-        Me.Panel1.TabIndex = 0
-        '
-        'Label7
-        '
-        Me.Label7.AutoSize = True
-        Me.Label7.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label7.Location = New System.Drawing.Point(6, 6)
-        Me.Label7.Margin = New System.Windows.Forms.Padding(6, 3, 3, 0)
-        Me.Label7.Name = "Label7"
-        Me.Label7.Size = New System.Drawing.Size(111, 13)
-        Me.Label7.TabIndex = 4
-        Me.Label7.Text = "Syntax Highlighting"
-        '
-        'CheckBox_DoubleClickMark
-        '
-        Me.CheckBox_DoubleClickMark.AutoSize = True
-        Me.CheckBox_DoubleClickMark.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_DoubleClickMark.Location = New System.Drawing.Point(6, 22)
-        Me.CheckBox_DoubleClickMark.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_DoubleClickMark.Name = "CheckBox_DoubleClickMark"
-        Me.CheckBox_DoubleClickMark.Size = New System.Drawing.Size(190, 18)
-        Me.CheckBox_DoubleClickMark.TabIndex = 5
-        Me.CheckBox_DoubleClickMark.Text = "Mark words using double click"
-        Me.CheckBox_DoubleClickMark.UseVisualStyleBackColor = True
-        '
-        'CheckBox_AutoMark
-        '
-        Me.CheckBox_AutoMark.AutoSize = True
-        Me.CheckBox_AutoMark.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_AutoMark.Location = New System.Drawing.Point(6, 46)
-        Me.CheckBox_AutoMark.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_AutoMark.Name = "CheckBox_AutoMark"
-        Me.CheckBox_AutoMark.Size = New System.Drawing.Size(164, 18)
-        Me.CheckBox_AutoMark.TabIndex = 17
-        Me.CheckBox_AutoMark.Text = "Automatically mark words"
-        Me.CheckBox_AutoMark.UseVisualStyleBackColor = True
-        '
         'Panel5
         '
+        Me.Panel5.Controls.Add(Me.CheckBox_VarAutocompleteShowObjectBrowser)
         Me.Panel5.Controls.Add(Me.CheckBox_CurrentSourceVarAutocomplete)
         Me.Panel5.Controls.Add(Me.Label1)
         Me.Panel5.Controls.Add(Me.CheckBox_OnScreenIntelliSense)
@@ -347,9 +227,9 @@ Partial Class FormSettings
         Me.Panel5.Controls.Add(Me.CheckBox_WindowsToolTipPopup)
         Me.Panel5.Controls.Add(Me.CheckBox_CaseSensitive)
         Me.Panel5.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel5.Location = New System.Drawing.Point(0, 183)
+        Me.Panel5.Location = New System.Drawing.Point(0, 209)
         Me.Panel5.Name = "Panel5"
-        Me.Panel5.Size = New System.Drawing.Size(602, 209)
+        Me.Panel5.Size = New System.Drawing.Size(602, 242)
         Me.Panel5.TabIndex = 22
         '
         'CheckBox_CurrentSourceVarAutocomplete
@@ -460,6 +340,171 @@ Partial Class FormSettings
         Me.CheckBox_CaseSensitive.Text = "Case sensitive"
         Me.CheckBox_CaseSensitive.UseVisualStyleBackColor = True
         '
+        'Panel6
+        '
+        Me.Panel6.Controls.Add(Me.Panel1)
+        Me.Panel6.Controls.Add(Me.Label7)
+        Me.Panel6.Controls.Add(Me.CheckBox_DoubleClickMark)
+        Me.Panel6.Controls.Add(Me.CheckBox_AutoMark)
+        Me.Panel6.Dock = System.Windows.Forms.DockStyle.Top
+        Me.Panel6.Location = New System.Drawing.Point(0, 133)
+        Me.Panel6.Name = "Panel6"
+        Me.Panel6.Size = New System.Drawing.Size(602, 76)
+        Me.Panel6.TabIndex = 23
+        '
+        'Panel1
+        '
+        Me.Panel1.BackColor = System.Drawing.SystemColors.ControlDark
+        Me.Panel1.Dock = System.Windows.Forms.DockStyle.Top
+        Me.Panel1.Location = New System.Drawing.Point(0, 0)
+        Me.Panel1.Name = "Panel1"
+        Me.Panel1.Size = New System.Drawing.Size(602, 1)
+        Me.Panel1.TabIndex = 0
+        '
+        'Label7
+        '
+        Me.Label7.AutoSize = True
+        Me.Label7.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label7.Location = New System.Drawing.Point(6, 6)
+        Me.Label7.Margin = New System.Windows.Forms.Padding(6, 3, 3, 0)
+        Me.Label7.Name = "Label7"
+        Me.Label7.Size = New System.Drawing.Size(111, 13)
+        Me.Label7.TabIndex = 4
+        Me.Label7.Text = "Syntax Highlighting"
+        '
+        'CheckBox_DoubleClickMark
+        '
+        Me.CheckBox_DoubleClickMark.AutoSize = True
+        Me.CheckBox_DoubleClickMark.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_DoubleClickMark.Location = New System.Drawing.Point(6, 22)
+        Me.CheckBox_DoubleClickMark.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_DoubleClickMark.Name = "CheckBox_DoubleClickMark"
+        Me.CheckBox_DoubleClickMark.Size = New System.Drawing.Size(190, 18)
+        Me.CheckBox_DoubleClickMark.TabIndex = 5
+        Me.CheckBox_DoubleClickMark.Text = "Mark words using double click"
+        Me.CheckBox_DoubleClickMark.UseVisualStyleBackColor = True
+        '
+        'CheckBox_AutoMark
+        '
+        Me.CheckBox_AutoMark.AutoSize = True
+        Me.CheckBox_AutoMark.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_AutoMark.Location = New System.Drawing.Point(6, 46)
+        Me.CheckBox_AutoMark.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_AutoMark.Name = "CheckBox_AutoMark"
+        Me.CheckBox_AutoMark.Size = New System.Drawing.Size(164, 18)
+        Me.CheckBox_AutoMark.TabIndex = 17
+        Me.CheckBox_AutoMark.Text = "Automatically mark words"
+        Me.CheckBox_AutoMark.UseVisualStyleBackColor = True
+        '
+        'Panel7
+        '
+        Me.Panel7.Controls.Add(Me.Panel3)
+        Me.Panel7.Controls.Add(Me.Label8)
+        Me.Panel7.Controls.Add(Me.Button_Font)
+        Me.Panel7.Controls.Add(Me.Label_Font)
+        Me.Panel7.Controls.Add(Me.CheckBox_InvertedColors)
+        Me.Panel7.Dock = System.Windows.Forms.DockStyle.Top
+        Me.Panel7.Location = New System.Drawing.Point(0, 52)
+        Me.Panel7.Name = "Panel7"
+        Me.Panel7.Size = New System.Drawing.Size(602, 81)
+        Me.Panel7.TabIndex = 24
+        '
+        'Panel3
+        '
+        Me.Panel3.BackColor = System.Drawing.SystemColors.ControlDark
+        Me.Panel3.Dock = System.Windows.Forms.DockStyle.Top
+        Me.Panel3.Location = New System.Drawing.Point(0, 0)
+        Me.Panel3.Name = "Panel3"
+        Me.Panel3.Size = New System.Drawing.Size(602, 1)
+        Me.Panel3.TabIndex = 9
+        '
+        'Label8
+        '
+        Me.Label8.AutoSize = True
+        Me.Label8.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label8.Location = New System.Drawing.Point(6, 6)
+        Me.Label8.Margin = New System.Windows.Forms.Padding(6, 3, 3, 0)
+        Me.Label8.Name = "Label8"
+        Me.Label8.Size = New System.Drawing.Size(62, 13)
+        Me.Label8.TabIndex = 10
+        Me.Label8.Text = "Text Editor"
+        '
+        'Button_Font
+        '
+        Me.Button_Font.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.Button_Font.Location = New System.Drawing.Point(6, 22)
+        Me.Button_Font.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.Button_Font.Name = "Button_Font"
+        Me.Button_Font.Size = New System.Drawing.Size(75, 23)
+        Me.Button_Font.TabIndex = 11
+        Me.Button_Font.Text = "Font"
+        Me.Button_Font.UseVisualStyleBackColor = True
+        '
+        'Label_Font
+        '
+        Me.Label_Font.AutoSize = True
+        Me.Label_Font.Location = New System.Drawing.Point(90, 27)
+        Me.Label_Font.Margin = New System.Windows.Forms.Padding(6, 0, 3, 0)
+        Me.Label_Font.Name = "Label_Font"
+        Me.Label_Font.Size = New System.Drawing.Size(73, 13)
+        Me.Label_Font.TabIndex = 12
+        Me.Label_Font.Text = "Current Font"
+        '
+        'CheckBox_InvertedColors
+        '
+        Me.CheckBox_InvertedColors.AutoSize = True
+        Me.CheckBox_InvertedColors.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_InvertedColors.Location = New System.Drawing.Point(6, 51)
+        Me.CheckBox_InvertedColors.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_InvertedColors.Name = "CheckBox_InvertedColors"
+        Me.CheckBox_InvertedColors.Size = New System.Drawing.Size(108, 18)
+        Me.CheckBox_InvertedColors.TabIndex = 13
+        Me.CheckBox_InvertedColors.Text = "Inverted colors"
+        Me.CheckBox_InvertedColors.UseVisualStyleBackColor = True
+        '
+        'Panel14
+        '
+        Me.Panel14.Controls.Add(Me.Panel15)
+        Me.Panel14.Controls.Add(Me.Label16)
+        Me.Panel14.Controls.Add(Me.CheckBox_AlwaysNewInstance)
+        Me.Panel14.Dock = System.Windows.Forms.DockStyle.Top
+        Me.Panel14.Location = New System.Drawing.Point(0, 0)
+        Me.Panel14.Name = "Panel14"
+        Me.Panel14.Size = New System.Drawing.Size(602, 52)
+        Me.Panel14.TabIndex = 26
+        '
+        'Panel15
+        '
+        Me.Panel15.BackColor = System.Drawing.SystemColors.ControlDark
+        Me.Panel15.Dock = System.Windows.Forms.DockStyle.Top
+        Me.Panel15.Location = New System.Drawing.Point(0, 0)
+        Me.Panel15.Name = "Panel15"
+        Me.Panel15.Size = New System.Drawing.Size(602, 1)
+        Me.Panel15.TabIndex = 10
+        '
+        'Label16
+        '
+        Me.Label16.AutoSize = True
+        Me.Label16.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label16.Location = New System.Drawing.Point(6, 6)
+        Me.Label16.Margin = New System.Windows.Forms.Padding(6, 3, 3, 0)
+        Me.Label16.Name = "Label16"
+        Me.Label16.Size = New System.Drawing.Size(47, 13)
+        Me.Label16.TabIndex = 18
+        Me.Label16.Text = "General"
+        '
+        'CheckBox_AlwaysNewInstance
+        '
+        Me.CheckBox_AlwaysNewInstance.AutoSize = True
+        Me.CheckBox_AlwaysNewInstance.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_AlwaysNewInstance.Location = New System.Drawing.Point(6, 22)
+        Me.CheckBox_AlwaysNewInstance.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_AlwaysNewInstance.Name = "CheckBox_AlwaysNewInstance"
+        Me.CheckBox_AlwaysNewInstance.Size = New System.Drawing.Size(248, 18)
+        Me.CheckBox_AlwaysNewInstance.TabIndex = 19
+        Me.CheckBox_AlwaysNewInstance.Text = "Always open new instance instead of tabs"
+        Me.CheckBox_AlwaysNewInstance.UseVisualStyleBackColor = True
+        '
         'TabPage2
         '
         Me.TabPage2.AutoScroll = True
@@ -474,7 +519,7 @@ Partial Class FormSettings
         Me.TabPage2.Controls.Add(Me.ListBox_Configs)
         Me.TabPage2.Location = New System.Drawing.Point(4, 22)
         Me.TabPage2.Name = "TabPage2"
-        Me.TabPage2.Size = New System.Drawing.Size(602, 647)
+        Me.TabPage2.Size = New System.Drawing.Size(602, 700)
         Me.TabPage2.TabIndex = 1
         Me.TabPage2.Text = "Configs"
         Me.TabPage2.UseVisualStyleBackColor = True
@@ -511,7 +556,7 @@ Partial Class FormSettings
         Me.GroupBox_ConfigSettings.Controls.Add(Me.Button_SaveConfig)
         Me.GroupBox_ConfigSettings.Location = New System.Drawing.Point(220, 79)
         Me.GroupBox_ConfigSettings.Name = "GroupBox_ConfigSettings"
-        Me.GroupBox_ConfigSettings.Size = New System.Drawing.Size(376, 555)
+        Me.GroupBox_ConfigSettings.Size = New System.Drawing.Size(376, 576)
         Me.GroupBox_ConfigSettings.TabIndex = 7
         Me.GroupBox_ConfigSettings.TabStop = False
         Me.GroupBox_ConfigSettings.Text = "Config Settings"
@@ -528,7 +573,7 @@ Partial Class FormSettings
         Me.Panel11.Controls.Add(Me.TextBox_Shell)
         Me.Panel11.Controls.Add(Me.LinkLabel_ShowShellArguments)
         Me.Panel11.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel11.Location = New System.Drawing.Point(3, 360)
+        Me.Panel11.Location = New System.Drawing.Point(3, 376)
         Me.Panel11.Name = "Panel11"
         Me.Panel11.Size = New System.Drawing.Size(370, 160)
         Me.Panel11.TabIndex = 30
@@ -635,9 +680,9 @@ Partial Class FormSettings
         Me.Panel10.Controls.Add(Me.TextBox_SourceModFolder)
         Me.Panel10.Controls.Add(Me.Label12)
         Me.Panel10.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel10.Location = New System.Drawing.Point(3, 242)
+        Me.Panel10.Location = New System.Drawing.Point(3, 249)
         Me.Panel10.Name = "Panel10"
-        Me.Panel10.Size = New System.Drawing.Size(370, 118)
+        Me.Panel10.Size = New System.Drawing.Size(370, 127)
         Me.Panel10.TabIndex = 29
         '
         'Panel12
@@ -740,7 +785,7 @@ Partial Class FormSettings
         Me.Panel9.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel9.Location = New System.Drawing.Point(3, 18)
         Me.Panel9.Name = "Panel9"
-        Me.Panel9.Size = New System.Drawing.Size(370, 224)
+        Me.Panel9.Size = New System.Drawing.Size(370, 231)
         Me.Panel9.TabIndex = 28
         '
         'Label11
@@ -886,7 +931,7 @@ Partial Class FormSettings
         '
         Me.Button_SaveConfig.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_SaveConfig.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_SaveConfig.Location = New System.Drawing.Point(284, 526)
+        Me.Button_SaveConfig.Location = New System.Drawing.Point(284, 547)
         Me.Button_SaveConfig.Name = "Button_SaveConfig"
         Me.Button_SaveConfig.Size = New System.Drawing.Size(86, 23)
         Me.Button_SaveConfig.TabIndex = 12
@@ -922,7 +967,7 @@ Partial Class FormSettings
         Me.Panel2.BackColor = System.Drawing.SystemColors.ControlDark
         Me.Panel2.Location = New System.Drawing.Point(213, 6)
         Me.Panel2.Name = "Panel2"
-        Me.Panel2.Size = New System.Drawing.Size(1, 638)
+        Me.Panel2.Size = New System.Drawing.Size(1, 691)
         Me.Panel2.TabIndex = 3
         '
         'TextBox_ConfigName
@@ -950,7 +995,7 @@ Partial Class FormSettings
         Me.ListBox_Configs.FormattingEnabled = True
         Me.ListBox_Configs.Location = New System.Drawing.Point(6, 6)
         Me.ListBox_Configs.Name = "ListBox_Configs"
-        Me.ListBox_Configs.Size = New System.Drawing.Size(201, 628)
+        Me.ListBox_Configs.Size = New System.Drawing.Size(201, 680)
         Me.ListBox_Configs.TabIndex = 0
         '
         'Button_Cancel
@@ -958,7 +1003,7 @@ Partial Class FormSettings
         Me.Button_Cancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.Button_Cancel.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_Cancel.Location = New System.Drawing.Point(536, 694)
+        Me.Button_Cancel.Location = New System.Drawing.Point(536, 747)
         Me.Button_Cancel.Name = "Button_Cancel"
         Me.Button_Cancel.Size = New System.Drawing.Size(86, 23)
         Me.Button_Cancel.TabIndex = 1
@@ -970,68 +1015,36 @@ Partial Class FormSettings
         Me.Button_Apply.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_Apply.DialogResult = System.Windows.Forms.DialogResult.OK
         Me.Button_Apply.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_Apply.Location = New System.Drawing.Point(444, 694)
+        Me.Button_Apply.Location = New System.Drawing.Point(444, 747)
         Me.Button_Apply.Name = "Button_Apply"
         Me.Button_Apply.Size = New System.Drawing.Size(86, 23)
         Me.Button_Apply.TabIndex = 2
         Me.Button_Apply.Text = "Apply"
         Me.Button_Apply.UseVisualStyleBackColor = True
         '
-        'Panel14
+        'CheckBox_VarAutocompleteShowObjectBrowser
         '
-        Me.Panel14.Controls.Add(Me.Panel15)
-        Me.Panel14.Controls.Add(Me.Label16)
-        Me.Panel14.Controls.Add(Me.CheckBox_AlwaysNewInstance)
-        Me.Panel14.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel14.Location = New System.Drawing.Point(0, 0)
-        Me.Panel14.Name = "Panel14"
-        Me.Panel14.Size = New System.Drawing.Size(602, 42)
-        Me.Panel14.TabIndex = 26
-        '
-        'Panel15
-        '
-        Me.Panel15.BackColor = System.Drawing.SystemColors.ControlDark
-        Me.Panel15.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel15.Location = New System.Drawing.Point(0, 0)
-        Me.Panel15.Name = "Panel15"
-        Me.Panel15.Size = New System.Drawing.Size(602, 1)
-        Me.Panel15.TabIndex = 10
-        '
-        'Label16
-        '
-        Me.Label16.AutoSize = True
-        Me.Label16.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label16.Location = New System.Drawing.Point(6, 6)
-        Me.Label16.Margin = New System.Windows.Forms.Padding(6, 3, 3, 0)
-        Me.Label16.Name = "Label16"
-        Me.Label16.Size = New System.Drawing.Size(47, 13)
-        Me.Label16.TabIndex = 18
-        Me.Label16.Text = "General"
-        '
-        'CheckBox_AlwaysNewInstance
-        '
-        Me.CheckBox_AlwaysNewInstance.AutoSize = True
-        Me.CheckBox_AlwaysNewInstance.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_AlwaysNewInstance.Location = New System.Drawing.Point(6, 22)
-        Me.CheckBox_AlwaysNewInstance.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_AlwaysNewInstance.Name = "CheckBox_AlwaysNewInstance"
-        Me.CheckBox_AlwaysNewInstance.Size = New System.Drawing.Size(248, 18)
-        Me.CheckBox_AlwaysNewInstance.TabIndex = 19
-        Me.CheckBox_AlwaysNewInstance.Text = "Always open new instance instead of tabs"
-        Me.CheckBox_AlwaysNewInstance.UseVisualStyleBackColor = True
+        Me.CheckBox_VarAutocompleteShowObjectBrowser.AutoSize = True
+        Me.CheckBox_VarAutocompleteShowObjectBrowser.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_VarAutocompleteShowObjectBrowser.Location = New System.Drawing.Point(6, 211)
+        Me.CheckBox_VarAutocompleteShowObjectBrowser.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_VarAutocompleteShowObjectBrowser.Name = "CheckBox_VarAutocompleteShowObjectBrowser"
+        Me.CheckBox_VarAutocompleteShowObjectBrowser.Size = New System.Drawing.Size(224, 18)
+        Me.CheckBox_VarAutocompleteShowObjectBrowser.TabIndex = 18
+        Me.CheckBox_VarAutocompleteShowObjectBrowser.Text = "Show variables in the Object Browser"
+        Me.CheckBox_VarAutocompleteShowObjectBrowser.UseVisualStyleBackColor = True
         '
         'FormSettings
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.CancelButton = Me.Button_Cancel
-        Me.ClientSize = New System.Drawing.Size(634, 729)
+        Me.ClientSize = New System.Drawing.Size(634, 782)
         Me.Controls.Add(Me.Button_Apply)
         Me.Controls.Add(Me.Button_Cancel)
         Me.Controls.Add(Me.TabControl1)
         Me.DoubleBuffered = True
         Me.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
@@ -1043,12 +1056,14 @@ Partial Class FormSettings
         Me.TabPage1.ResumeLayout(False)
         Me.Panel8.ResumeLayout(False)
         Me.Panel8.PerformLayout()
-        Me.Panel7.ResumeLayout(False)
-        Me.Panel7.PerformLayout()
-        Me.Panel6.ResumeLayout(False)
-        Me.Panel6.PerformLayout()
         Me.Panel5.ResumeLayout(False)
         Me.Panel5.PerformLayout()
+        Me.Panel6.ResumeLayout(False)
+        Me.Panel6.PerformLayout()
+        Me.Panel7.ResumeLayout(False)
+        Me.Panel7.PerformLayout()
+        Me.Panel14.ResumeLayout(False)
+        Me.Panel14.PerformLayout()
         Me.TabPage2.ResumeLayout(False)
         Me.TabPage2.PerformLayout()
         Me.GroupBox_ConfigSettings.ResumeLayout(False)
@@ -1058,8 +1073,6 @@ Partial Class FormSettings
         Me.Panel10.PerformLayout()
         Me.Panel9.ResumeLayout(False)
         Me.Panel9.PerformLayout()
-        Me.Panel14.ResumeLayout(False)
-        Me.Panel14.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
@@ -1143,4 +1156,5 @@ Partial Class FormSettings
     Friend WithEvents Panel15 As Panel
     Friend WithEvents Label16 As Label
     Friend WithEvents CheckBox_AlwaysNewInstance As CheckBox
+    Friend WithEvents CheckBox_VarAutocompleteShowObjectBrowser As CheckBox
 End Class

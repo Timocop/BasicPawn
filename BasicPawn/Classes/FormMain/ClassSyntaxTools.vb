@@ -554,20 +554,38 @@ Public Class ClassSyntaxTools
         If (sRegexBadName = Nothing) Then
             Dim lBadList As New List(Of String)
             lBadList.Add("const")
+            lBadList.Add("static")
             lBadList.Add("new")
             lBadList.Add("decl")
-            lBadList.Add("static")
-            lBadList.Add("stock")
-            lBadList.Add("public")
-            lBadList.Add("private")
             lBadList.Add("if")
             lBadList.Add("for")
             lBadList.Add("else")
             lBadList.Add("case")
             lBadList.Add("switch")
+            lBadList.Add("default")
             lBadList.Add("while")
             lBadList.Add("do")
             lBadList.Add("enum")
+
+            lBadList.Add("stock")
+            lBadList.Add("public")
+            lBadList.Add("private")
+            lBadList.Add("forward")
+            lBadList.Add("native")
+            lBadList.Add("funcenum")
+            lBadList.Add("functag")
+
+            lBadList.Add("methodmap")
+            lBadList.Add("property")
+            lBadList.Add("this")
+            lBadList.Add("typeset")
+            lBadList.Add("function")
+            lBadList.Add("typedef")
+
+            lBadList.Add("break")
+            lBadList.Add("continue")
+            lBadList.Add("goto")
+            lBadList.Add("return")
 
             lBadList.Add("true")
             lBadList.Add("false")
@@ -575,6 +593,9 @@ Public Class ClassSyntaxTools
 
             lBadList.Add("delete")
             lBadList.Add("sizeof")
+            lBadList.Add("typeof")
+            lBadList.Add("view_as")
+
             sRegexBadName = String.Format("^({0})$", String.Join("|", lBadList.ToArray))
         End If
 

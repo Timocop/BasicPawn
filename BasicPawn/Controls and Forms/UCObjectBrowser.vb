@@ -80,8 +80,10 @@ Public Class UCObjectBrowser
             If (True) Then
                 Dim i As Integer
                 For i = 0 To lAutocompleteList.Count - 1
-                    If ((lAutocompleteList(i).mType And FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) Then
-                        Continue For
+                    If (Not ClassSettings.g_iSettingsVarAutocompleteShowObjectBrowser) Then
+                        If ((lAutocompleteList(i).mType And FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) Then
+                            Continue For
+                        End If
                     End If
 
                     'Add missing nodes
