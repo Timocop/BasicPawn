@@ -14,8 +14,10 @@ BasicPawn is currently in alpha state, new features are planed!
 
 [**.NET Framework (Linux Wine)**](https://appdb.winehq.org/objectManager.php?sClass=application&iId=2586)
 
-##Todo & Done (for v0.7)
-- [x] \(Optional\) Tabs.
+##Todo & Done (for v0.8)
+- [ ] Better plugin control
+- [ ] \(Plugin\) SFTP/FTP Uploader
+- [ ] \(Plugin\) Automatic Error Reporting using FTP
 
 ##Screenshots
 ![Default design](http://i.imgur.com/NtAXuQ2.png)
