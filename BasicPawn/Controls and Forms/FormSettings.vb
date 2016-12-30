@@ -29,7 +29,7 @@ Public Class FormSettings
         ' Add any initialization after the InitializeComponent() call.
         g_mFormMain = f
 
-        Me.Size = New Size(0, 0)
+        Me.Size = Me.MinimumSize
 
         ClassTools.ClassForms.SetDoubleBufferingAllChilds(Me, True)
         ClassTools.ClassForms.SetDoubleBufferingUnmanagedAllChilds(Me, True)
