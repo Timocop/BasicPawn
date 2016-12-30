@@ -877,7 +877,6 @@ Partial Class FormMain
     Friend WithEvents ToolStripMenuItem_ToolsAutocompleteUpdate As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_ToolsAutocompleteShowAutocomplete As ToolStripMenuItem
     Friend WithEvents SplitContainer_ToolboxSourceAndDetails As SplitContainer
-    Friend WithEvents TabControl_Details As TabControl
     Friend WithEvents TabPage_Autocomplete As TabPage
     Friend WithEvents TabPage_Information As TabPage
     Friend WithEvents ToolStripMenuItem_ToolsShowInformation As ToolStripMenuItem
@@ -905,7 +904,6 @@ Partial Class FormMain
     Friend WithEvents ToolStripMenuItem_ToolsClearInformationLog As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_Shell As ToolStripMenuItem
     Friend WithEvents SplitContainer_ToolboxAndEditor As SplitContainer
-    Friend WithEvents TabControl_Toolbox As TabControl
     Friend WithEvents TabPage_ObjectBrowser As TabPage
     Friend WithEvents ToolStripMenuItem_ToolsSearchReplace As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_HelpSpecialControlsDupLine As ToolStripMenuItem
