@@ -280,72 +280,75 @@ Public Class FormMain
 
             'Open all files in the oldes BasicPawn instance
             If (Not ClassSettings.g_iSettingsAlwaysOpenNewInstance AndAlso Array.IndexOf(sArgs, "-newinstance") = -1) Then
-                    Dim pBasicPawnProc As Process() = Process.GetProcessesByName(IO.Path.GetFileNameWithoutExtension(Application.ExecutablePath))
-                    If (pBasicPawnProc.Length > 0) Then
-                        Dim iCurrentPID As Integer = Process.GetCurrentProcess.Id
-                        Dim iMyTick As Long = Process.GetCurrentProcess.StartTime.Ticks
-                        Dim iLastTick As Long = Date.MinValue.Ticks
-                        Dim pLastProcess As Process = Nothing
+                Dim pBasicPawnProc As Process() = Process.GetProcessesByName(IO.Path.GetFileNameWithoutExtension(Application.ExecutablePath))
+                If (pBasicPawnProc.Length > 0) Then
+                    Dim iCurrentPID As Integer = Process.GetCurrentProcess.Id
+                    Dim iMyTick As Long = Process.GetCurrentProcess.StartTime.Ticks
+                    Dim iLastTick As Long = Date.MinValue.Ticks
+                    Dim pLastProcess As Process = Nothing
 
-                        For Each pProcess As Process In pBasicPawnProc
-                            Try
-                                If (pProcess.Id = iCurrentPID OrElse pProcess.MainModule.FileName.ToLower <> Application.ExecutablePath.ToLower) Then
-                                    Continue For
-                                End If
+                    For Each pProcess As Process In pBasicPawnProc
+                        Try
+                            If (pProcess.Id = iCurrentPID OrElse pProcess.MainModule.FileName.ToLower <> Application.ExecutablePath.ToLower) Then
+                                Continue For
+                            End If
 
-                                If (iMyTick < pProcess.StartTime.Ticks) Then
-                                    Continue For
-                                End If
+                            If (iMyTick < pProcess.StartTime.Ticks) Then
+                                Continue For
+                            End If
 
-                                If (iLastTick > Date.MinValue.Ticks AndAlso iLastTick < pProcess.StartTime.Ticks) Then
-                                    Continue For
-                                End If
+                            If (iLastTick > Date.MinValue.Ticks AndAlso iLastTick < pProcess.StartTime.Ticks) Then
+                                Continue For
+                            End If
 
-                                pLastProcess = pProcess
-                                iLastTick = pProcess.StartTime.Ticks
-                            Catch ex As Exception
-                                'Ignore random exceptions
-                            End Try
-                        Next
+                            pLastProcess = pProcess
+                            iLastTick = pProcess.StartTime.Ticks
+                        Catch ex As Exception
+                            'Ignore random exceptions
+                        End Try
+                    Next
 
 
-                        'If (pLastProcess IsNot Nothing AndAlso MessageBox.Show("Open in a existing BasicPawn instance?", "Open files", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes) Then
-                        If (pLastProcess IsNot Nothing) Then
-                            Try
-                                For i = 0 To lFileList.Count - 1
-                                    Dim mMsg As New ClassCrossAppComunication.ClassMessage(COMARG_OPEN_FILE_BY_PID, CStr(pLastProcess.Id), lFileList(i))
-                                    g_ClassCrossAppComunication.SendMessage(mMsg)
-                                Next
-                            Catch ex As Exception
-                                ClassExceptionLog.WriteToLogMessageBox(ex)
-                            End Try
+                    'If (pLastProcess IsNot Nothing AndAlso MessageBox.Show("Open in a existing BasicPawn instance?", "Open files", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes) Then
+                    If (pLastProcess IsNot Nothing) Then
+                        Try
+                            For i = 0 To lFileList.Count - 1
+                                Dim mMsg As New ClassCrossAppComunication.ClassMessage(COMARG_OPEN_FILE_BY_PID, CStr(pLastProcess.Id), lFileList(i))
+                                g_ClassCrossAppComunication.SendMessage(mMsg)
+                            Next
+                        Catch ex As Exception
+                            ClassExceptionLog.WriteToLogMessageBox(ex)
+                        End Try
 
-                            Me.WindowState = FormWindowState.Minimized
-                            Me.ShowInTaskbar = False
-                            Application.Exit()
-                        End If
+                        Me.WindowState = FormWindowState.Minimized
+                        Me.ShowInTaskbar = False
+                        Application.Exit()
                     End If
                 End If
+            End If
 
-                'Open all files here
-                For i = 0 To lFileList.Count - 1
-                    g_ClassTabControl.AddTab(False)
-                    g_ClassTabControl.OpenFileTab(g_ClassTabControl.m_TabsCount - 1, lFileList(i), True)
+            'Open all files here
+            For i = 0 To lFileList.Count - 1
+                g_ClassTabControl.AddTab(False)
+                g_ClassTabControl.OpenFileTab(g_ClassTabControl.m_TabsCount - 1, lFileList(i), True)
 
-                    If (i = 0 AndAlso g_ClassTabControl.m_TabsCount > 0) Then
-                        g_ClassTabControl.RemoveTab(0, False)
-                    End If
-                Next
-                Exit While
-                End While
+                If (i = 0 AndAlso g_ClassTabControl.m_TabsCount > 0) Then
+                    g_ClassTabControl.RemoveTab(0, False)
+                End If
+            Next
+            Exit While
+        End While
 
-                'Update Autocomplete
-                g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
+        'Update Autocomplete
+        g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
 
-                'UpdateTextEditorControl1Colors()
-                g_ClassSyntaxTools.UpdateFormColors()
+        'UpdateTextEditorControl1Colors()
+        g_ClassSyntaxTools.UpdateFormColors()
 
-                g_ClassSyntaxUpdater.StartThread()
+        g_ClassSyntaxUpdater.StartThread()
+
+        g_ClassPluginController.LoadPlugins(IO.Path.Combine(Application.StartupPath, "plugins"))
+        g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnPluginStart(Me))
     End Sub
 
 #End Region
