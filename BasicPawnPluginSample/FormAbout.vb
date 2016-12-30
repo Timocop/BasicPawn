@@ -15,17 +15,21 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 
+Imports BasicPawn
+
 Public Class FormAbout
-    Private g_mPluginSamble As PluginSample
+    Private g_mPluginSample As PluginSample
 
     Public Sub New(c As PluginSample)
         ' This call is required by the designer.
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call.
-        g_mPluginSamble = c
+        g_mPluginSample = c
 
-        Label_About.Text = g_mPluginSamble.m_PluginInformation.ToString
+        Label_About.Text = g_mPluginSample.m_PluginInformation.ToString
+
+        ClassControlStyle.UpdateControls(Me)
     End Sub
 
     Private Sub Button_Close_Click(sender As Object, e As EventArgs) Handles Button_Close.Click
