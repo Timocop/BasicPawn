@@ -146,9 +146,10 @@ Public Class PluginSample
         End Sub
 
         Private Sub OnMenuItemClick(sender As Object, e As EventArgs)
-            With New FormAbout(g_mPluginSample)
-                .ShowDialog()
-            End With
+            Using i As New FormAbout(g_mPluginSample)
+                ClassControlStyle.UpdateControls(i)
+                i.ShowDialog()
+            End Using
         End Sub
 
 

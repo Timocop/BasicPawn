@@ -32,6 +32,7 @@ Partial Class FormSettings
         Me.CheckBox_EntitiesEnableColor = New System.Windows.Forms.CheckBox()
         Me.CheckBox_EntitiesEnableShowNewEnts = New System.Windows.Forms.CheckBox()
         Me.Panel5 = New System.Windows.Forms.Panel()
+        Me.CheckBox_VarAutocompleteShowObjectBrowser = New System.Windows.Forms.CheckBox()
         Me.CheckBox_CurrentSourceVarAutocomplete = New System.Windows.Forms.CheckBox()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.CheckBox_OnScreenIntelliSense = New System.Windows.Forms.CheckBox()
@@ -100,8 +101,6 @@ Partial Class FormSettings
         Me.TextBox_ConfigName = New System.Windows.Forms.TextBox()
         Me.Label_ConfigName = New System.Windows.Forms.Label()
         Me.ListBox_Configs = New System.Windows.Forms.ListBox()
-        Me.Button_Cancel = New System.Windows.Forms.Button()
-        Me.Button_Apply = New System.Windows.Forms.Button()
         Me.TabPage3 = New System.Windows.Forms.TabPage()
         Me.ListView_Plugins = New System.Windows.Forms.ListView()
         Me.ColumnHeader1 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
@@ -110,7 +109,8 @@ Partial Class FormSettings
         Me.ColumnHeader4 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader5 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader6 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.CheckBox_VarAutocompleteShowObjectBrowser = New System.Windows.Forms.CheckBox()
+        Me.Button_Cancel = New System.Windows.Forms.Button()
+        Me.Button_Apply = New System.Windows.Forms.Button()
         Me.TabControl1.SuspendLayout()
         Me.TabPage1.SuspendLayout()
         Me.Panel8.SuspendLayout()
@@ -226,6 +226,7 @@ Partial Class FormSettings
         '
         'Panel5
         '
+        Me.Panel5.Controls.Add(Me.Panel15)
         Me.Panel5.Controls.Add(Me.CheckBox_VarAutocompleteShowObjectBrowser)
         Me.Panel5.Controls.Add(Me.CheckBox_CurrentSourceVarAutocomplete)
         Me.Panel5.Controls.Add(Me.Label1)
@@ -241,6 +242,18 @@ Partial Class FormSettings
         Me.Panel5.Name = "Panel5"
         Me.Panel5.Size = New System.Drawing.Size(602, 242)
         Me.Panel5.TabIndex = 22
+        '
+        'CheckBox_VarAutocompleteShowObjectBrowser
+        '
+        Me.CheckBox_VarAutocompleteShowObjectBrowser.AutoSize = True
+        Me.CheckBox_VarAutocompleteShowObjectBrowser.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_VarAutocompleteShowObjectBrowser.Location = New System.Drawing.Point(6, 211)
+        Me.CheckBox_VarAutocompleteShowObjectBrowser.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_VarAutocompleteShowObjectBrowser.Name = "CheckBox_VarAutocompleteShowObjectBrowser"
+        Me.CheckBox_VarAutocompleteShowObjectBrowser.Size = New System.Drawing.Size(224, 18)
+        Me.CheckBox_VarAutocompleteShowObjectBrowser.TabIndex = 18
+        Me.CheckBox_VarAutocompleteShowObjectBrowser.Text = "Show variables in the Object Browser"
+        Me.CheckBox_VarAutocompleteShowObjectBrowser.UseVisualStyleBackColor = True
         '
         'CheckBox_CurrentSourceVarAutocomplete
         '
@@ -474,7 +487,6 @@ Partial Class FormSettings
         '
         'Panel14
         '
-        Me.Panel14.Controls.Add(Me.Panel15)
         Me.Panel14.Controls.Add(Me.Label16)
         Me.Panel14.Controls.Add(Me.CheckBox_AlwaysNewInstance)
         Me.Panel14.Dock = System.Windows.Forms.DockStyle.Top
@@ -1008,37 +1020,13 @@ Partial Class FormSettings
         Me.ListBox_Configs.Size = New System.Drawing.Size(201, 680)
         Me.ListBox_Configs.TabIndex = 0
         '
-        'Button_Cancel
-        '
-        Me.Button_Cancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button_Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.Button_Cancel.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_Cancel.Location = New System.Drawing.Point(536, 747)
-        Me.Button_Cancel.Name = "Button_Cancel"
-        Me.Button_Cancel.Size = New System.Drawing.Size(86, 23)
-        Me.Button_Cancel.TabIndex = 1
-        Me.Button_Cancel.Text = "Cancel"
-        Me.Button_Cancel.UseVisualStyleBackColor = True
-        '
-        'Button_Apply
-        '
-        Me.Button_Apply.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button_Apply.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.Button_Apply.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_Apply.Location = New System.Drawing.Point(444, 747)
-        Me.Button_Apply.Name = "Button_Apply"
-        Me.Button_Apply.Size = New System.Drawing.Size(86, 23)
-        Me.Button_Apply.TabIndex = 2
-        Me.Button_Apply.Text = "Apply"
-        Me.Button_Apply.UseVisualStyleBackColor = True
-        '
         'TabPage3
         '
         Me.TabPage3.Controls.Add(Me.ListView_Plugins)
         Me.TabPage3.Location = New System.Drawing.Point(4, 22)
         Me.TabPage3.Name = "TabPage3"
         Me.TabPage3.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage3.Size = New System.Drawing.Size(602, 647)
+        Me.TabPage3.Size = New System.Drawing.Size(602, 700)
         Me.TabPage3.TabIndex = 2
         Me.TabPage3.Text = "Plugins"
         Me.TabPage3.UseVisualStyleBackColor = True
@@ -1049,7 +1037,7 @@ Partial Class FormSettings
         Me.ListView_Plugins.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ListView_Plugins.Location = New System.Drawing.Point(3, 3)
         Me.ListView_Plugins.Name = "ListView_Plugins"
-        Me.ListView_Plugins.Size = New System.Drawing.Size(596, 641)
+        Me.ListView_Plugins.Size = New System.Drawing.Size(596, 694)
         Me.ListView_Plugins.TabIndex = 0
         Me.ListView_Plugins.UseCompatibleStateImageBehavior = False
         Me.ListView_Plugins.View = System.Windows.Forms.View.Details
@@ -1084,17 +1072,29 @@ Partial Class FormSettings
         Me.ColumnHeader6.Text = "URL"
         Me.ColumnHeader6.Width = 100
         '
-        'CheckBox_VarAutocompleteShowObjectBrowser
+        'Button_Cancel
         '
-        Me.CheckBox_VarAutocompleteShowObjectBrowser.AutoSize = True
-        Me.CheckBox_VarAutocompleteShowObjectBrowser.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_VarAutocompleteShowObjectBrowser.Location = New System.Drawing.Point(6, 211)
-        Me.CheckBox_VarAutocompleteShowObjectBrowser.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_VarAutocompleteShowObjectBrowser.Name = "CheckBox_VarAutocompleteShowObjectBrowser"
-        Me.CheckBox_VarAutocompleteShowObjectBrowser.Size = New System.Drawing.Size(224, 18)
-        Me.CheckBox_VarAutocompleteShowObjectBrowser.TabIndex = 18
-        Me.CheckBox_VarAutocompleteShowObjectBrowser.Text = "Show variables in the Object Browser"
-        Me.CheckBox_VarAutocompleteShowObjectBrowser.UseVisualStyleBackColor = True
+        Me.Button_Cancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Button_Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
+        Me.Button_Cancel.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.Button_Cancel.Location = New System.Drawing.Point(536, 747)
+        Me.Button_Cancel.Name = "Button_Cancel"
+        Me.Button_Cancel.Size = New System.Drawing.Size(86, 23)
+        Me.Button_Cancel.TabIndex = 1
+        Me.Button_Cancel.Text = "Cancel"
+        Me.Button_Cancel.UseVisualStyleBackColor = True
+        '
+        'Button_Apply
+        '
+        Me.Button_Apply.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Button_Apply.DialogResult = System.Windows.Forms.DialogResult.OK
+        Me.Button_Apply.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.Button_Apply.Location = New System.Drawing.Point(444, 747)
+        Me.Button_Apply.Name = "Button_Apply"
+        Me.Button_Apply.Size = New System.Drawing.Size(86, 23)
+        Me.Button_Apply.TabIndex = 2
+        Me.Button_Apply.Text = "Apply"
+        Me.Button_Apply.UseVisualStyleBackColor = True
         '
         'FormSettings
         '
