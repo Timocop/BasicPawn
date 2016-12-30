@@ -22,8 +22,13 @@ Partial Class UCToolTip
     'Das Bearbeiten mit dem Code-Editor ist nicht möglich.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
+        Me.Timer_Move = New System.Windows.Forms.Timer(Me.components)
         Me.TextEditorControl_ToolTip = New BasicPawn.TextEditorControlEx()
         Me.SuspendLayout()
+        '
+        'Timer_Move
+        '
         '
         'TextEditorControl_ToolTip
         '
@@ -53,4 +58,5 @@ Partial Class UCToolTip
     End Sub
 
     Friend WithEvents TextEditorControl_ToolTip As TextEditorControlEx
+    Friend WithEvents Timer_Move As Timer
 End Class

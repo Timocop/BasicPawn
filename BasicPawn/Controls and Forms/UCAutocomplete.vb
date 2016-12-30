@@ -349,7 +349,7 @@ Public Class UCAutocomplete
 
                 If (SB_TipText_IntelliSenseToolTip.Length + SB_TipText_AutocompleteToolTip.Length > 0) Then
                     g_AutocompleteUC.g_mFormMain.g_mUCToolTip.TextEditorControl_ToolTip.Document.TextContent = SB_TipText_IntelliSenseToolTip.ToString & SB_TipText_AutocompleteToolTip.ToString
-                    g_AutocompleteUC.g_mFormMain.g_mUCToolTip.Location = New Point(iX + iWTabSpace, iY + iHTabSpace + iFontH)
+                    g_AutocompleteUC.g_mFormMain.g_mUCToolTip.m_Location = New Point(iX + iWTabSpace, iY + iHTabSpace + iFontH)
                     g_AutocompleteUC.g_mFormMain.g_mUCToolTip.Show()
                     g_AutocompleteUC.g_mFormMain.g_mUCToolTip.TextEditorControl_ToolTip.Refresh()
                 Else
