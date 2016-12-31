@@ -80,6 +80,10 @@ Public Class ClassPluginController
     End Function
 
     Public Sub LoadPlugins(sPluginDirectory As String)
+        If (Not IO.Directory.Exists(sPluginDirectory)) Then
+            IO.Directory.CreateDirectory(sPluginDirectory)
+        End If
+
         For Each sPluginFile As String In IO.Directory.GetFiles(sPluginDirectory, "*.dll")
             Try
                 Dim mLoadedPLugin = LoadPlugin(sPluginFile)
