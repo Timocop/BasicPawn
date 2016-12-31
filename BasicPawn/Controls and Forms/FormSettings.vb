@@ -400,7 +400,6 @@ Public Class FormSettings
         ClassSettings.SaveSettings()
 
         g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnSettingsChanged())
-        g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnConfigChanged())
 
         Me.Close()
     End Sub
