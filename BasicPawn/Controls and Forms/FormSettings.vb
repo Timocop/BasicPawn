@@ -346,6 +346,8 @@ Public Class FormSettings
         ListView_Plugins.Items.Clear()
         ListView_Plugins.Items.AddRange(lListViewItems.ToArray)
         ListView_Plugins.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent)
+
+        ClassControlStyle.UpdateControls(Me)
     End Sub
 
     Private Sub Button_Apply_Click(sender As Object, e As EventArgs) Handles Button_Apply.Click
