@@ -2155,13 +2155,27 @@ Public Class ClassAutocompleteUpdater
                 Dim sCorrectPath As String
                 Dim sMatchValue As String
 
-                Dim sIncludeDir As String = ClassSettings.g_sConfigOpenIncludeFolder
+                Dim sIncludeDir As String = Nothing
                 If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                     If (String.IsNullOrEmpty(sActiveSourceFile) OrElse Not IO.File.Exists(sActiveSourceFile)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "Could not read includes! Could not get current source file!", False, False, 1)
                         Exit While
                     End If
                     sIncludeDir = IO.Path.Combine(IO.Path.GetDirectoryName(sActiveSourceFile), "include")
+                Else
+                    sIncludeDir = ClassSettings.g_sConfigOpenIncludeFolder
+                End If
+
+                'Check compiler
+                Dim sCompilerPath As String = Nothing
+                If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
+                    If (String.IsNullOrEmpty(sActiveSourceFile) OrElse Not IO.File.Exists(sActiveSourceFile)) Then
+                        g_mFormMain.PrintInformation("[ERRO]", "Could not read includes! Could not get current source file!", False, False, 1)
+                        Exit While
+                    End If
+                    sCompilerPath = IO.Path.GetDirectoryName(sActiveSourceFile)
+                ElseIf (Not String.IsNullOrEmpty(ClassSettings.g_sConfigCompilerPath) AndAlso IO.File.Exists(ClassSettings.g_sConfigCompilerPath)) Then
+                    sCompilerPath = IO.Path.GetDirectoryName(ClassSettings.g_sConfigCompilerPath)
                 End If
 
                 Select Case (True)
@@ -2171,6 +2185,9 @@ Public Class ClassAutocompleteUpdater
                         Select Case (True)
                             Case IO.File.Exists(IO.Path.Combine(sIncludeDir, sMatchValue))
                                 sCorrectPath = IO.Path.Combine(sIncludeDir, sMatchValue)
+                            Case sCompilerPath IsNot Nothing AndAlso
+                                        IO.File.Exists(IO.Path.Combine(sCompilerPath, sMatchValue))
+                                sCorrectPath = IO.Path.Combine(sCompilerPath, sMatchValue)
                             Case IO.File.Exists(String.Format("{0}.sp", IO.Path.Combine(sIncludeDir, sMatchValue)))
                                 sCorrectPath = String.Format("{0}.sp", IO.Path.Combine(sIncludeDir, sMatchValue))
                             Case IO.File.Exists(String.Format("{0}.sma", IO.Path.Combine(sIncludeDir, sMatchValue)))
@@ -2194,6 +2211,9 @@ Public Class ClassAutocompleteUpdater
                                 sCorrectPath = sMatchValue
                             Case IO.File.Exists(IO.Path.Combine(sCurrentDir, sMatchValue))
                                 sCorrectPath = IO.Path.Combine(sCurrentDir, sMatchValue)
+                            Case sCompilerPath IsNot Nothing AndAlso
+                                        IO.File.Exists(IO.Path.Combine(sCompilerPath, sMatchValue))
+                                sCorrectPath = IO.Path.Combine(sCompilerPath, sMatchValue)
                             Case IO.File.Exists(String.Format("{0}.sp", IO.Path.Combine(sCurrentDir, sMatchValue)))
                                 sCorrectPath = String.Format("{0}.sp", IO.Path.Combine(sCurrentDir, sMatchValue))
                             Case IO.File.Exists(String.Format("{0}.sma", IO.Path.Combine(sCurrentDir, sMatchValue)))
@@ -2207,6 +2227,9 @@ Public Class ClassAutocompleteUpdater
 
                             Case IO.File.Exists(IO.Path.Combine(sIncludeDir, sMatchValue))
                                 sCorrectPath = IO.Path.Combine(sIncludeDir, sMatchValue)
+                            Case sCompilerPath IsNot Nothing AndAlso
+                                        IO.File.Exists(IO.Path.Combine(sCompilerPath, sMatchValue))
+                                sCorrectPath = IO.Path.Combine(sCompilerPath, sMatchValue)
                             Case IO.File.Exists(String.Format("{0}.sp", IO.Path.Combine(sIncludeDir, sMatchValue)))
                                 sCorrectPath = String.Format("{0}.sp", IO.Path.Combine(sIncludeDir, sMatchValue))
                             Case IO.File.Exists(String.Format("{0}.sma", IO.Path.Combine(sIncludeDir, sMatchValue)))

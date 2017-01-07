@@ -66,6 +66,7 @@ Public Class ClassTools
                 i.StartInfo.UseShellExecute = False
                 i.StartInfo.FileName = sPath
                 i.StartInfo.Arguments = sArguments
+                i.StartInfo.WorkingDirectory = IO.Path.GetDirectoryName(sPath)
                 i.Start()
                 r_Output = i.StandardOutput.ReadToEnd
                 i.WaitForExit()
