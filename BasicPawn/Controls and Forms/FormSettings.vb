@@ -294,6 +294,7 @@ Public Class FormSettings
         CheckBox_DoubleClickMark.Checked = ClassSettings.g_iSettingsDoubleClickMark
         CheckBox_AutoMark.Checked = ClassSettings.g_iSettingsAutoMark
         'Autocomplete
+        CheckBox_AlwaysLoadDefaultIncludes.Checked = ClassSettings.g_iSettingsAlwaysLoadDefaultIncludes
         CheckBox_OnScreenIntelliSense.Checked = ClassSettings.g_iSettingsEnableToolTip
         CheckBox_CommentsMethodIntelliSense.Checked = ClassSettings.g_iSettingsToolTipMethodComments
         CheckBox_CommentsAutocompleteIntelliSense.Checked = ClassSettings.g_iSettingsToolTipAutocompleteComments
@@ -381,6 +382,7 @@ Public Class FormSettings
         ClassSettings.g_iSettingsDoubleClickMark = CheckBox_DoubleClickMark.Checked
         ClassSettings.g_iSettingsAutoMark = CheckBox_AutoMark.Checked
         'Autocomplete
+        ClassSettings.g_iSettingsAlwaysLoadDefaultIncludes = CheckBox_AlwaysLoadDefaultIncludes.Checked
         ClassSettings.g_iSettingsEnableToolTip = CheckBox_OnScreenIntelliSense.Checked
         ClassSettings.g_iSettingsToolTipMethodComments = CheckBox_CommentsMethodIntelliSense.Checked
         ClassSettings.g_iSettingsToolTipAutocompleteComments = CheckBox_CommentsAutocompleteIntelliSense.Checked

@@ -53,6 +53,7 @@ Public Class ClassSettings
     Public Shared g_iSettingsDoubleClickMark As Boolean = True
     Public Shared g_iSettingsAutoMark As Boolean = True
     'Autocomplete
+    Public Shared g_iSettingsAlwaysLoadDefaultIncludes As Boolean = True
     Public Shared g_iSettingsEnableToolTip As Boolean = True
     Public Shared g_iSettingsToolTipMethodComments As Boolean = False
     Public Shared g_iSettingsToolTipAutocompleteComments As Boolean = True
@@ -86,6 +87,7 @@ Public Class ClassSettings
         initFile.WriteKeyValue("Editor", "DoubleClickMark", If(g_iSettingsDoubleClickMark, "1", "0"))
         initFile.WriteKeyValue("Editor", "AutoMark", If(g_iSettingsAutoMark, "1", "0"))
         'Autocomplete
+        initFile.WriteKeyValue("Editor", "AlwaysLoadDefaultIncludes", If(g_iSettingsAlwaysLoadDefaultIncludes, "1", "0"))
         initFile.WriteKeyValue("Editor", "AutocompleteToolTip", If(g_iSettingsEnableToolTip, "1", "0"))
         initFile.WriteKeyValue("Editor", "ToolTipMethodComments", If(g_iSettingsToolTipMethodComments, "1", "0"))
         initFile.WriteKeyValue("Editor", "ToolTipAutocompleteComments", If(g_iSettingsToolTipAutocompleteComments, "1", "0"))
@@ -120,6 +122,7 @@ Public Class ClassSettings
             g_iSettingsDoubleClickMark = (initFile.ReadKeyValue("Editor", "DoubleClickMark", "1") <> "0")
             g_iSettingsAutoMark = (initFile.ReadKeyValue("Editor", "AutoMark", "1") <> "0")
             'Autocomplete
+            g_iSettingsAlwaysLoadDefaultIncludes = (initFile.ReadKeyValue("Editor", "AlwaysLoadDefaultIncludes", "1") <> "0")
             g_iSettingsEnableToolTip = (initFile.ReadKeyValue("Editor", "AutocompleteToolTip", "1") <> "0")
             g_iSettingsToolTipMethodComments = (initFile.ReadKeyValue("Editor", "ToolTipMethodComments", "0") <> "0")
             g_iSettingsToolTipAutocompleteComments = (initFile.ReadKeyValue("Editor", "ToolTipAutocompleteComments", "1") <> "0")
