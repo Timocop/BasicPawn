@@ -230,7 +230,7 @@ Public Class ClassTextEditorTools
     ''' <param name="bTesting">Just creates a temporary file and removes it after compile.</param>
     Public Sub CompileSource(bTesting As Boolean)
         Try
-            If (g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_TabsCount - 1, False, True)) Then
+            If (g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True)) Then
                 Return
             End If
 
@@ -412,7 +412,7 @@ Public Class ClassTextEditorTools
     ''' <returns>True on success, false otherwise.</returns>
     Public Function CompileSource(bTesting As Boolean, sSource As String, ByRef sOutputFile As String, Optional sCompilerPath As String = Nothing, Optional sIncludePath As String = Nothing) As Boolean
         Try
-            If (g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_TabsCount - 1, False, True)) Then
+            If (g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True)) Then
                 Return False
             End If
 
@@ -605,7 +605,7 @@ Public Class ClassTextEditorTools
     ''' <returns></returns>
     Public Function GetCompilerPreProcessCode(bCleanUpSourcemodDuplicate As Boolean, bCleanupForCompile As Boolean, ByRef sTempOutputFile As String) As String
         Try
-            If (g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_TabsCount - 1, False, True)) Then
+            If (g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True)) Then
                 Return Nothing
             End If
 
@@ -791,7 +791,7 @@ Public Class ClassTextEditorTools
     ''' <returns></returns>
     Public Function GetCompilerAssemblyCode() As String
         Try
-            If (g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_TabsCount - 1, False, True)) Then
+            If (g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True)) Then
                 Return Nothing
             End If
 
@@ -917,7 +917,7 @@ Public Class ClassTextEditorTools
     ''' <returns></returns>
     Public Function GetCompilerAssemblyCode(bTesting As Boolean, sSource As String, ByRef sOutputFile As String, Optional sCompilerPath As String = Nothing, Optional sIncludePath As String = Nothing) As String
         Try
-            If (g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_TabsCount - 1, False, True)) Then
+            If (g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True)) Then
                 Return Nothing
             End If
 
