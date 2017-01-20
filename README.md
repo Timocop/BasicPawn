@@ -20,11 +20,25 @@ BasicPawn is currently in alpha state, new features are planed!
 - [ ] \(Plugin\) Automatic Error Reporting using FTP
 
 ##Screenshots
-![Default design](http://i.imgur.com/NtAXuQ2.png)
-![Default design](http://i.imgur.com/s2zlB7S.png)
-![Inverted color](http://i.imgur.com/zUhUMVe.png)
-![Syntax highlighting](http://i.imgur.com/E4zgJcJ.png)
-![Semi methodmaps support](http://i.imgur.com/G2MReGP.png)
-![Autocomplete & IntelliSense](http://i.imgur.com/8OEWAhd.png)
-![Autocomplete & IntelliSense](http://i.imgur.com/RJsY478.png)
-![BasicPawn on Linux Ubuntu using Wine](http://i.imgur.com/y4HHUnz.png)
+![Default Colors](http://i.imgur.com/QigHItn.png)
+![Inverted Colors](http://i.imgur.com/BeHZYE9.png)
+![BasicPawn Debugger](http://i.imgur.com/KofZrsx.png)
+![Unlimited Custom Highlight Colors](http://i.imgur.com/XxhCMwU.png)
+
+(Older Versions)
+
+http://i.imgur.com/NtAXuQ2.png
+
+http://i.imgur.com/s2zlB7S.png
+
+http://i.imgur.com/zUhUMVe.png
+
+http://i.imgur.com/E4zgJcJ.png
+
+http://i.imgur.com/G2MReGP.png
+
+http://i.imgur.com/8OEWAhd.png
+
+http://i.imgur.com/RJsY478.png
+
+http://i.imgur.com/y4HHUnz.png
