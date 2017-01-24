@@ -2188,15 +2188,15 @@ Public Class ClassAutocompleteUpdater
 
                             Case Else
                                 g_mFormMain.PrintInformation("[ERRO]", String.Format("Could not read include: {0}", sDefaultInc), False, False, 15)
-                                Continue While
+                                Continue For
                         End Select
 
                         If (Not IO.File.Exists(sCorrectPath)) Then
-                            Continue While
+                            Continue For
                         End If
 
                         If (lPathList.Contains(sCorrectPath.ToLower)) Then
-                            Continue While
+                            Continue For
                         End If
 
                         lPathList.Add(sCorrectPath.ToLower)
