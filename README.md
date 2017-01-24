@@ -24,6 +24,7 @@ BasicPawn is currently in alpha state, new features are planed!
 ![Inverted Colors](http://i.imgur.com/BeHZYE9.png)
 ![BasicPawn Debugger](http://i.imgur.com/KofZrsx.png)
 ![Unlimited Custom Highlight Colors](http://i.imgur.com/XxhCMwU.png)
+![BasicPawn on Linux Ubuntu](http://i.imgur.com/4pMDRsS.png)
 
 (Older Versions)
 
