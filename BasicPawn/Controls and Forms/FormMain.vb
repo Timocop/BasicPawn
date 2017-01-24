@@ -473,8 +473,10 @@ Public Class FormMain
 
                 g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
 
-                g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
-                g_ClassTabControl.m_ActiveTab.m_TextEditor.Refresh()
+                For j = 0 To g_ClassTabControl.m_TabsCount - 1
+                    g_ClassTabControl.m_Tab(j).m_TextEditor.ActiveTextAreaControl.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
+                    g_ClassTabControl.m_Tab(j).m_TextEditor.Refresh()
+                Next
 
                 g_ClassSyntaxTools.UpdateFormColors()
             End If
@@ -650,8 +652,10 @@ Public Class FormMain
 
                 g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
 
-                g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
-                g_ClassTabControl.m_ActiveTab.m_TextEditor.Refresh()
+                For j = 0 To g_ClassTabControl.m_TabsCount - 1
+                    g_ClassTabControl.m_Tab(j).m_TextEditor.ActiveTextAreaControl.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
+                    g_ClassTabControl.m_Tab(j).m_TextEditor.Refresh()
+                Next
 
                 g_ClassSyntaxTools.UpdateFormColors()
             End If
