@@ -22,12 +22,18 @@ Partial Class UCInformationList
     'Das Bearbeiten mit dem Code-Editor ist nicht möglich.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
         Me.ListBox_Information = New System.Windows.Forms.ListBox()
+        Me.ContextMenuStrip_Information = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.OpenInNotepadToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.CopyAllToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ContextMenuStrip_Information.SuspendLayout()
         Me.SuspendLayout()
         '
         'ListBox_Information
         '
         Me.ListBox_Information.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.ListBox_Information.ContextMenuStrip = Me.ContextMenuStrip_Information
         Me.ListBox_Information.Cursor = System.Windows.Forms.Cursors.Hand
         Me.ListBox_Information.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ListBox_Information.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -38,6 +44,25 @@ Partial Class UCInformationList
         Me.ListBox_Information.Size = New System.Drawing.Size(532, 178)
         Me.ListBox_Information.TabIndex = 0
         '
+        'ContextMenuStrip_Information
+        '
+        Me.ContextMenuStrip_Information.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.OpenInNotepadToolStripMenuItem, Me.CopyAllToolStripMenuItem})
+        Me.ContextMenuStrip_Information.Name = "ContextMenuStrip_Information"
+        Me.ContextMenuStrip_Information.ShowImageMargin = False
+        Me.ContextMenuStrip_Information.Size = New System.Drawing.Size(141, 48)
+        '
+        'OpenInNotepadToolStripMenuItem
+        '
+        Me.OpenInNotepadToolStripMenuItem.Name = "OpenInNotepadToolStripMenuItem"
+        Me.OpenInNotepadToolStripMenuItem.Size = New System.Drawing.Size(165, 22)
+        Me.OpenInNotepadToolStripMenuItem.Text = "Open in Notepad"
+        '
+        'CopyAllToolStripMenuItem
+        '
+        Me.CopyAllToolStripMenuItem.Name = "CopyAllToolStripMenuItem"
+        Me.CopyAllToolStripMenuItem.Size = New System.Drawing.Size(165, 22)
+        Me.CopyAllToolStripMenuItem.Text = "Copy all"
+        '
         'UCInformationList
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -45,9 +70,13 @@ Partial Class UCInformationList
         Me.Controls.Add(Me.ListBox_Information)
         Me.Name = "UCInformationList"
         Me.Size = New System.Drawing.Size(532, 178)
+        Me.ContextMenuStrip_Information.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub
 
     Friend WithEvents ListBox_Information As ListBox
+    Friend WithEvents ContextMenuStrip_Information As ContextMenuStrip
+    Friend WithEvents OpenInNotepadToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents CopyAllToolStripMenuItem As ToolStripMenuItem
 End Class

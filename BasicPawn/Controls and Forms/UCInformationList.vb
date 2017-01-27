@@ -57,4 +57,35 @@ Public Class UCInformationList
             g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.SetSelection(iStart, iEnd)
         End If
     End Sub
+
+    Private Sub OpenInNotepadToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OpenInNotepadToolStripMenuItem.Click
+        Try
+            Dim lInfos As New List(Of String)
+
+            For Each sLine As String In ListBox_Information.Items
+                lInfos.Add(sLine)
+            Next
+
+            Dim sTempFile As String = IO.Path.GetTempFileName
+            IO.File.WriteAllLines(sTempFile, lInfos.ToArray)
+
+            Process.Start("notepad.exe", sTempFile)
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
+    Private Sub CopyAllToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CopyAllToolStripMenuItem.Click
+        Try
+            Dim sbInfos As New Text.StringBuilder
+
+            For Each sLine As String In ListBox_Information.Items
+                sbInfos.AppendLine(sLine)
+            Next
+
+            My.Computer.Clipboard.SetText(sbInfos.ToString, TextDataFormat.Text)
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
 End Class
