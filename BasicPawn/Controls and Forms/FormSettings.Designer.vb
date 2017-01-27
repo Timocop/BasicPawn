@@ -32,6 +32,7 @@ Partial Class FormSettings
         Me.CheckBox_EntitiesEnableColor = New System.Windows.Forms.CheckBox()
         Me.CheckBox_EntitiesEnableShowNewEnts = New System.Windows.Forms.CheckBox()
         Me.Panel5 = New System.Windows.Forms.Panel()
+        Me.CheckBox_AlwaysLoadDefaultIncludes = New System.Windows.Forms.CheckBox()
         Me.Panel15 = New System.Windows.Forms.Panel()
         Me.CheckBox_VarAutocompleteShowObjectBrowser = New System.Windows.Forms.CheckBox()
         Me.CheckBox_CurrentSourceVarAutocomplete = New System.Windows.Forms.CheckBox()
@@ -111,7 +112,6 @@ Partial Class FormSettings
         Me.ColumnHeader6 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.Button_Cancel = New System.Windows.Forms.Button()
         Me.Button_Apply = New System.Windows.Forms.Button()
-        Me.CheckBox_AlwaysLoadDefaultIncludes = New System.Windows.Forms.CheckBox()
         Me.TabControl1.SuspendLayout()
         Me.TabPage1.SuspendLayout()
         Me.Panel8.SuspendLayout()
@@ -244,6 +244,18 @@ Partial Class FormSettings
         Me.Panel5.Name = "Panel5"
         Me.Panel5.Size = New System.Drawing.Size(602, 263)
         Me.Panel5.TabIndex = 22
+        '
+        'CheckBox_AlwaysLoadDefaultIncludes
+        '
+        Me.CheckBox_AlwaysLoadDefaultIncludes.AutoSize = True
+        Me.CheckBox_AlwaysLoadDefaultIncludes.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_AlwaysLoadDefaultIncludes.Location = New System.Drawing.Point(6, 19)
+        Me.CheckBox_AlwaysLoadDefaultIncludes.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_AlwaysLoadDefaultIncludes.Name = "CheckBox_AlwaysLoadDefaultIncludes"
+        Me.CheckBox_AlwaysLoadDefaultIncludes.Size = New System.Drawing.Size(198, 18)
+        Me.CheckBox_AlwaysLoadDefaultIncludes.TabIndex = 19
+        Me.CheckBox_AlwaysLoadDefaultIncludes.Text = "Always load default include files"
+        Me.CheckBox_AlwaysLoadDefaultIncludes.UseVisualStyleBackColor = True
         '
         'Panel15
         '
@@ -1016,10 +1028,13 @@ Partial Class FormSettings
         '
         Me.ListBox_Configs.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.ListBox_Configs.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ListBox_Configs.FormattingEnabled = True
+        Me.ListBox_Configs.HorizontalScrollbar = True
+        Me.ListBox_Configs.ItemHeight = 21
         Me.ListBox_Configs.Location = New System.Drawing.Point(6, 6)
         Me.ListBox_Configs.Name = "ListBox_Configs"
-        Me.ListBox_Configs.Size = New System.Drawing.Size(201, 680)
+        Me.ListBox_Configs.Size = New System.Drawing.Size(201, 676)
         Me.ListBox_Configs.TabIndex = 0
         '
         'TabPage3
@@ -1098,18 +1113,6 @@ Partial Class FormSettings
         Me.Button_Apply.Text = "Apply"
         Me.Button_Apply.UseVisualStyleBackColor = True
         '
-        'CheckBox_AlwaysLoadDefaultIncludes
-        '
-        Me.CheckBox_AlwaysLoadDefaultIncludes.AutoSize = True
-        Me.CheckBox_AlwaysLoadDefaultIncludes.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_AlwaysLoadDefaultIncludes.Location = New System.Drawing.Point(6, 19)
-        Me.CheckBox_AlwaysLoadDefaultIncludes.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_AlwaysLoadDefaultIncludes.Name = "CheckBox_AlwaysLoadDefaultIncludes"
-        Me.CheckBox_AlwaysLoadDefaultIncludes.Size = New System.Drawing.Size(198, 18)
-        Me.CheckBox_AlwaysLoadDefaultIncludes.TabIndex = 19
-        Me.CheckBox_AlwaysLoadDefaultIncludes.Text = "Always load default include files"
-        Me.CheckBox_AlwaysLoadDefaultIncludes.UseVisualStyleBackColor = True
-        '
         'FormSettings
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -1122,7 +1125,6 @@ Partial Class FormSettings
         Me.DoubleBuffered = True
         Me.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
-        Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.MinimumSize = New System.Drawing.Size(650, 500)
         Me.Name = "FormSettings"
