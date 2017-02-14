@@ -376,23 +376,23 @@ Public Class ClassSyntaxTools
 
                 HighlightingManager.Manager.ReloadSyntaxModes()
 
-            For i = 0 To g_SyntaxFiles.Length - 1
-                Select Case (i)
-                    Case ENUM_SYNTAX_FILES.MAIN_TEXTEDITOR
-                        For j = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1
-                            If (j = g_mFormMain.g_ClassTabControl.m_ActiveTabIndex) Then
-                                If (g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.Document.HighlightingStrategy.Name <> g_SyntaxFiles(i).sDefinition) Then
-                                    g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.SetHighlighting(g_SyntaxFiles(i).sDefinition)
+                For i = 0 To g_SyntaxFiles.Length - 1
+                    Select Case (i)
+                        Case ENUM_SYNTAX_FILES.MAIN_TEXTEDITOR
+                            For j = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1
+                                If (j = g_mFormMain.g_ClassTabControl.m_ActiveTabIndex) Then
+                                    If (g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.Document.HighlightingStrategy.Name <> g_SyntaxFiles(i).sDefinition) Then
+                                        g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.SetHighlighting(g_SyntaxFiles(i).sDefinition)
+                                    End If
+                                Else
+                                    If (g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.Document.HighlightingStrategy.Name <> "Default") Then
+                                        g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.SetHighlighting("Default")
+                                    End If
                                 End If
-                            Else
-                                If (g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.Document.HighlightingStrategy.Name <> "Default") Then
-                                    g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.SetHighlighting("Default")
-                                End If
-                            End If
-                        Next
+                            Next
 
-                        g_mFormMain.g_mUCToolTip.TextEditorControl_ToolTip.SetHighlighting(g_SyntaxFiles(i).sDefinition)
-                        g_mFormMain.g_mUCToolTip.TextEditorControl_ToolTip.Font = New Font(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Font.FontFamily, 8, FontStyle.Regular)
+                            g_mFormMain.g_mUCToolTip.TextEditorControl_ToolTip.SetHighlighting(g_SyntaxFiles(i).sDefinition)
+                            g_mFormMain.g_mUCToolTip.TextEditorControl_ToolTip.Font = New Font(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Font.FontFamily, 8, FontStyle.Regular)
 
                         Case ENUM_SYNTAX_FILES.DEBUGGER_TEXTEDITOR
                             If (g_mFormMain.g_mFormDebugger IsNot Nothing AndAlso Not g_mFormMain.g_mFormDebugger.IsDisposed) Then

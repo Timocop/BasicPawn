@@ -1270,7 +1270,7 @@ Public Class ClassTextEditorTools
             Get
                 For Each item In mTextEditor.Document.BookmarkManager.Marks
                     Dim lineStateBookmark As LineStateBookmark = TryCast(item, LineStateBookmark)
-                    If (lineStateBookmark Is Nothing) Then
+                    If (lineStateBookmark Is Nothing OrElse lineStateBookmark.Anchor.IsDeleted) Then
                         Continue For
                     End If
 
@@ -1292,7 +1292,7 @@ Public Class ClassTextEditorTools
 
                 For Each item In mTextEditor.Document.BookmarkManager.Marks
                     Dim lineStateBookmark As LineStateBookmark = TryCast(item, LineStateBookmark)
-                    If (lineStateBookmark Is Nothing) Then
+                    If (lineStateBookmark Is Nothing OrElse lineStateBookmark.Anchor.IsDeleted) Then
                         Continue For
                     End If
 
