@@ -112,6 +112,7 @@ Partial Class FormSettings
         Me.ColumnHeader6 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.Button_Cancel = New System.Windows.Forms.Button()
         Me.Button_Apply = New System.Windows.Forms.Button()
+        Me.CheckBox_SwitchTabToAutocomplete = New System.Windows.Forms.CheckBox()
         Me.TabControl1.SuspendLayout()
         Me.TabPage1.SuspendLayout()
         Me.Panel8.SuspendLayout()
@@ -164,7 +165,7 @@ Partial Class FormSettings
         Me.Panel8.Controls.Add(Me.CheckBox_EntitiesEnableColor)
         Me.Panel8.Controls.Add(Me.CheckBox_EntitiesEnableShowNewEnts)
         Me.Panel8.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel8.Location = New System.Drawing.Point(0, 472)
+        Me.Panel8.Location = New System.Drawing.Point(0, 493)
         Me.Panel8.Name = "Panel8"
         Me.Panel8.Size = New System.Drawing.Size(602, 101)
         Me.Panel8.TabIndex = 25
@@ -227,6 +228,7 @@ Partial Class FormSettings
         '
         'Panel5
         '
+        Me.Panel5.Controls.Add(Me.CheckBox_SwitchTabToAutocomplete)
         Me.Panel5.Controls.Add(Me.CheckBox_AlwaysLoadDefaultIncludes)
         Me.Panel5.Controls.Add(Me.Panel15)
         Me.Panel5.Controls.Add(Me.CheckBox_VarAutocompleteShowObjectBrowser)
@@ -242,7 +244,7 @@ Partial Class FormSettings
         Me.Panel5.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel5.Location = New System.Drawing.Point(0, 209)
         Me.Panel5.Name = "Panel5"
-        Me.Panel5.Size = New System.Drawing.Size(602, 263)
+        Me.Panel5.Size = New System.Drawing.Size(602, 284)
         Me.Panel5.TabIndex = 22
         '
         'CheckBox_AlwaysLoadDefaultIncludes
@@ -1113,6 +1115,18 @@ Partial Class FormSettings
         Me.Button_Apply.Text = "Apply"
         Me.Button_Apply.UseVisualStyleBackColor = True
         '
+        'CheckBox_SwitchTabToAutocomplete
+        '
+        Me.CheckBox_SwitchTabToAutocomplete.AutoSize = True
+        Me.CheckBox_SwitchTabToAutocomplete.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_SwitchTabToAutocomplete.Location = New System.Drawing.Point(6, 259)
+        Me.CheckBox_SwitchTabToAutocomplete.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_SwitchTabToAutocomplete.Name = "CheckBox_SwitchTabToAutocomplete"
+        Me.CheckBox_SwitchTabToAutocomplete.Size = New System.Drawing.Size(326, 18)
+        Me.CheckBox_SwitchTabToAutocomplete.TabIndex = 20
+        Me.CheckBox_SwitchTabToAutocomplete.Text = "Automatically switch tab to 'Autocomplete && IntelliSense'"
+        Me.CheckBox_SwitchTabToAutocomplete.UseVisualStyleBackColor = True
+        '
         'FormSettings
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -1245,4 +1259,5 @@ Partial Class FormSettings
     Friend WithEvents CheckBox_AlwaysNewInstance As CheckBox
     Friend WithEvents CheckBox_VarAutocompleteShowObjectBrowser As CheckBox
     Friend WithEvents CheckBox_AlwaysLoadDefaultIncludes As CheckBox
+    Friend WithEvents CheckBox_SwitchTabToAutocomplete As CheckBox
 End Class

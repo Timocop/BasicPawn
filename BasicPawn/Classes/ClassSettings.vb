@@ -63,6 +63,7 @@ Public Class ClassSettings
     Public Shared g_iSettingsAutocompleteCaseSensitive As Boolean = True
     Public Shared g_iSettingsVarAutocompleteCurrentSourceOnly As Boolean = True
     Public Shared g_iSettingsVarAutocompleteShowObjectBrowser As Boolean = False
+    Public Shared g_iSettingsSwitchTabToAutocomplete As Boolean = True
     'Debugger
     Public Shared g_iSettingsDebuggerCatchExceptions As Boolean = True
     Public Shared g_iSettingsDebuggerEntitiesEnableColoring As Boolean = True
@@ -97,6 +98,7 @@ Public Class ClassSettings
         initFile.WriteKeyValue("Editor", "AutocompleteCaseSensitive", If(g_iSettingsAutocompleteCaseSensitive, "1", "0"))
         initFile.WriteKeyValue("Editor", "VarAutocompleteCurrentSourceOnly", If(g_iSettingsVarAutocompleteCurrentSourceOnly, "1", "0"))
         initFile.WriteKeyValue("Editor", "VarAutocompleteShowObjectBrowser", If(g_iSettingsVarAutocompleteShowObjectBrowser, "1", "0"))
+        initFile.WriteKeyValue("Editor", "SwitchTabToAutocomplete", If(g_iSettingsSwitchTabToAutocomplete, "1", "0"))
         'Debugger
         initFile.WriteKeyValue("Debugger", "CatchExceptions", If(g_iSettingsDebuggerCatchExceptions, "1", "0"))
         initFile.WriteKeyValue("Debugger", "EntitiesColoring", If(g_iSettingsDebuggerEntitiesEnableColoring, "1", "0"))
@@ -132,6 +134,7 @@ Public Class ClassSettings
             g_iSettingsAutocompleteCaseSensitive = (initFile.ReadKeyValue("Editor", "AutocompleteCaseSensitive", "1") <> "0")
             g_iSettingsVarAutocompleteCurrentSourceOnly = (initFile.ReadKeyValue("Editor", "VarAutocompleteCurrentSourceOnly", "1") <> "0")
             g_iSettingsVarAutocompleteShowObjectBrowser = (initFile.ReadKeyValue("Editor", "VarAutocompleteShowObjectBrowser", "0") <> "0")
+            g_iSettingsSwitchTabToAutocomplete = (initFile.ReadKeyValue("Editor", "SwitchTabToAutocomplete", "1") <> "0")
             'Debugger
             g_iSettingsDebuggerCatchExceptions = (initFile.ReadKeyValue("Debugger", "CatchExceptions", "1") <> "0")
             g_iSettingsDebuggerEntitiesEnableColoring = (initFile.ReadKeyValue("Debugger", "EntitiesColoring", "1") <> "0")
