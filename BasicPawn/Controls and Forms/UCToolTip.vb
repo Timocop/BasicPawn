@@ -34,6 +34,11 @@ Public Class UCToolTip
         g_mFormMain = f
 
         TextEditorControl_ToolTip.IsReadOnly = True
+        TextEditorControl_ToolTip.ActiveTextAreaControl.TextEditorProperties.IndentationSize = 0
+        TextEditorControl_ToolTip.ActiveTextAreaControl.AutoScroll = False
+        TextEditorControl_ToolTip.ActiveTextAreaControl.AutoSize = False
+        TextEditorControl_ToolTip.ActiveTextAreaControl.HScrollBar.Visible = False
+        TextEditorControl_ToolTip.ActiveTextAreaControl.VScrollBar.Visible = False
     End Sub
 
     Private Sub Timer_Move_Tick(sender As Object, e As EventArgs) Handles Timer_Move.Tick
@@ -79,4 +84,11 @@ Public Class UCToolTip
             g_mMoveLocation = New Point()
         End Set
     End Property
+
+    Private Sub TextEditorControl_ToolTip_TextChanged(sender As Object, e As EventArgs) Handles TextEditorControl_ToolTip.TextChanged
+        'TODO: Better DPI, Border detection, or size in general
+        Dim textSize = TextRenderer.MeasureText(TextEditorControl_ToolTip.Document.TextContent, TextEditorControl_ToolTip.ActiveTextAreaControl.Font)
+        Me.Width = CInt(textSize.Width * 1.25)
+        Me.Height = CInt(textSize.Height * 1.25)
+    End Sub
 End Class

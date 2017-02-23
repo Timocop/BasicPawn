@@ -40,7 +40,7 @@ Partial Class UCToolTip
         Me.TextEditorControl_ToolTip.ShowLineNumbers = False
         Me.TextEditorControl_ToolTip.ShowMatchingBracket = False
         Me.TextEditorControl_ToolTip.ShowVRuler = False
-        Me.TextEditorControl_ToolTip.Size = New System.Drawing.Size(498, 183)
+        Me.TextEditorControl_ToolTip.Size = New System.Drawing.Size(134, 94)
         Me.TextEditorControl_ToolTip.TabIndex = 0
         '
         'UCToolTip
@@ -52,7 +52,7 @@ Partial Class UCToolTip
         Me.Controls.Add(Me.TextEditorControl_ToolTip)
         Me.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Name = "UCToolTip"
-        Me.Size = New System.Drawing.Size(498, 183)
+        Me.Size = New System.Drawing.Size(134, 94)
         Me.ResumeLayout(False)
 
     End Sub
