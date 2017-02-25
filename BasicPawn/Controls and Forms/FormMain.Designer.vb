@@ -128,6 +128,7 @@ Partial Class FormMain
         Me.ToolStripMenuItem_HelpSpecialControlsMoveSelected = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_HelpSpecialControlsCopySelected = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_HelpSpecialControlsDupLine = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_HelpSpecialControlsCommentLines = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_HelpAbout = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Undo = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Redo = New System.Windows.Forms.ToolStripMenuItem()
@@ -154,7 +155,6 @@ Partial Class FormMain
         Me.ToolStripStatusLabel_LastInformation = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ToolStripStatusLabel_AppVersion = New System.Windows.Forms.ToolStripStatusLabel()
         Me.Timer_PingFlash = New System.Windows.Forms.Timer(Me.components)
-        Me.ToolStripMenuItem_HelpSpecialControlsCommentLines = New System.Windows.Forms.ToolStripMenuItem()
         Me.ContextMenuStrip_RightClick.SuspendLayout()
         Me.MenuStrip_BasicPawn.SuspendLayout()
         Me.SplitContainer_ToolboxSourceAndDetails.Panel1.SuspendLayout()
@@ -391,7 +391,7 @@ Partial Class FormMain
         Me.ToolStripMenuItem_FileSavePacked.Name = "ToolStripMenuItem_FileSavePacked"
         Me.ToolStripMenuItem_FileSavePacked.Size = New System.Drawing.Size(343, 22)
         Me.ToolStripMenuItem_FileSavePacked.Text = "&Export Packed"
-        Me.ToolStripMenuItem_FileSavePacked.ToolTipText = "Packs all includes into one file and resolving all defines"
+        Me.ToolStripMenuItem_FileSavePacked.ToolTipText = "Packs all includes into one file and resolves all defines"
         '
         'ToolStripSeparator8
         '
@@ -599,6 +599,13 @@ Partial Class FormMain
         Me.ToolStripMenuItem_HelpSpecialControlsDupLine.ShortcutKeyDisplayString = "CTRL+D"
         Me.ToolStripMenuItem_HelpSpecialControlsDupLine.Size = New System.Drawing.Size(274, 22)
         Me.ToolStripMenuItem_HelpSpecialControlsDupLine.Text = "Duplicate Line/Selected"
+        '
+        'ToolStripMenuItem_HelpSpecialControlsCommentLines
+        '
+        Me.ToolStripMenuItem_HelpSpecialControlsCommentLines.Name = "ToolStripMenuItem_HelpSpecialControlsCommentLines"
+        Me.ToolStripMenuItem_HelpSpecialControlsCommentLines.ShortcutKeyDisplayString = "CTRL+Num /"
+        Me.ToolStripMenuItem_HelpSpecialControlsCommentLines.Size = New System.Drawing.Size(274, 22)
+        Me.ToolStripMenuItem_HelpSpecialControlsCommentLines.Text = "Comment Lines In/Out"
         '
         'ToolStripMenuItem_HelpAbout
         '
@@ -855,13 +862,6 @@ Partial Class FormMain
         '
         'Timer_PingFlash
         '
-        '
-        'ToolStripMenuItem_HelpSpecialControlsCommentLines
-        '
-        Me.ToolStripMenuItem_HelpSpecialControlsCommentLines.Name = "ToolStripMenuItem_HelpSpecialControlsCommentLines"
-        Me.ToolStripMenuItem_HelpSpecialControlsCommentLines.ShortcutKeyDisplayString = "CTRL+Num /"
-        Me.ToolStripMenuItem_HelpSpecialControlsCommentLines.Size = New System.Drawing.Size(274, 22)
-        Me.ToolStripMenuItem_HelpSpecialControlsCommentLines.Text = "Comment Lines In/Out"
         '
         'FormMain
         '
