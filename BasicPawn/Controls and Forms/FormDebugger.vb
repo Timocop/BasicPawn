@@ -57,14 +57,14 @@ Public Class FormDebugger
             'Create Pre-Process source
             Dim sLstSource As String = g_mFormMain.g_ClassTextEditorTools.GetCompilerPreProcessCode(True, True, g_sLastPreProcessSourceFile)
             If (String.IsNullOrEmpty(sLstSource)) Then
-                MessageBox.Show("Could not open debugger. See information tab for more informations.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Could not open debugger. See information tab for more information.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Me.Close()
 
                 Return
             End If
 
             If (String.IsNullOrEmpty(g_sLastPreProcessSourceFile)) Then
-                Throw New ArgumentException("Last Pre-Process source invlaid")
+                Throw New ArgumentException("Last Pre-Process source invalid")
             End If
 
 
@@ -87,7 +87,7 @@ Public Class FormDebugger
             End With
             Dim sAsmSource As String = g_mFormMain.g_ClassTextEditorTools.GetCompilerAssemblyCode(True, sAsmLstSource, Nothing)
             If (String.IsNullOrEmpty(sAsmSource)) Then
-                MessageBox.Show("Could not open debugger. See information tab for more informations.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Could not open debugger. See information tab for more information.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Me.Close()
 
                 Return

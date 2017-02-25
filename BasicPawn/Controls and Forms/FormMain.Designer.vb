@@ -97,6 +97,8 @@ Partial Class FormMain
         Me.ToolStripMenuItem_FileSaveAll = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_FileSaveAs = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_FileSaveAsTemp = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator10 = New System.Windows.Forms.ToolStripSeparator()
+        Me.ToolStripMenuItem_FileSavePacked = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator8 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_FileOpenFolder = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
@@ -152,6 +154,7 @@ Partial Class FormMain
         Me.ToolStripStatusLabel_LastInformation = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ToolStripStatusLabel_AppVersion = New System.Windows.Forms.ToolStripStatusLabel()
         Me.Timer_PingFlash = New System.Windows.Forms.Timer(Me.components)
+        Me.ToolStripMenuItem_HelpSpecialControlsCommentLines = New System.Windows.Forms.ToolStripMenuItem()
         Me.ContextMenuStrip_RightClick.SuspendLayout()
         Me.MenuStrip_BasicPawn.SuspendLayout()
         Me.SplitContainer_ToolboxSourceAndDetails.Panel1.SuspendLayout()
@@ -296,7 +299,7 @@ Partial Class FormMain
         '
         'ToolStripMenuItem_File
         '
-        Me.ToolStripMenuItem_File.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_FileNew, Me.ToolStripSeparator9, Me.ToolStripMenuItem_FileOpen, Me.ToolStripMenuItem_FileLoadTabs, Me.ToolStripSeparator7, Me.ToolStripMenuItem_FileSave, Me.ToolStripMenuItem_FileSaveAll, Me.ToolStripMenuItem_FileSaveAs, Me.ToolStripMenuItem_FileSaveAsTemp, Me.ToolStripSeparator8, Me.ToolStripMenuItem_FileOpenFolder, Me.ToolStripSeparator2, Me.ToolStripMenuItem_FileExit})
+        Me.ToolStripMenuItem_File.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_FileNew, Me.ToolStripSeparator9, Me.ToolStripMenuItem_FileOpen, Me.ToolStripMenuItem_FileLoadTabs, Me.ToolStripSeparator7, Me.ToolStripMenuItem_FileSave, Me.ToolStripMenuItem_FileSaveAll, Me.ToolStripMenuItem_FileSaveAs, Me.ToolStripMenuItem_FileSaveAsTemp, Me.ToolStripSeparator10, Me.ToolStripMenuItem_FileSavePacked, Me.ToolStripSeparator8, Me.ToolStripMenuItem_FileOpenFolder, Me.ToolStripSeparator2, Me.ToolStripMenuItem_FileExit})
         Me.ToolStripMenuItem_File.Image = CType(resources.GetObject("ToolStripMenuItem_File.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_File.Name = "ToolStripMenuItem_File"
         Me.ToolStripMenuItem_File.Size = New System.Drawing.Size(53, 20)
@@ -309,6 +312,7 @@ Partial Class FormMain
         Me.ToolStripMenuItem_FileNew.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.N), System.Windows.Forms.Keys)
         Me.ToolStripMenuItem_FileNew.Size = New System.Drawing.Size(343, 22)
         Me.ToolStripMenuItem_FileNew.Text = "&New"
+        Me.ToolStripMenuItem_FileNew.ToolTipText = "Creates a new tab"
         '
         'ToolStripSeparator9
         '
@@ -322,6 +326,7 @@ Partial Class FormMain
         Me.ToolStripMenuItem_FileOpen.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.O), System.Windows.Forms.Keys)
         Me.ToolStripMenuItem_FileOpen.Size = New System.Drawing.Size(343, 22)
         Me.ToolStripMenuItem_FileOpen.Text = "&Open"
+        Me.ToolStripMenuItem_FileOpen.ToolTipText = "Open a existing file"
         '
         'ToolStripMenuItem_FileLoadTabs
         '
@@ -331,6 +336,7 @@ Partial Class FormMain
             Or System.Windows.Forms.Keys.O), System.Windows.Forms.Keys)
         Me.ToolStripMenuItem_FileLoadTabs.Size = New System.Drawing.Size(343, 22)
         Me.ToolStripMenuItem_FileLoadTabs.Text = "Open from other instances"
+        Me.ToolStripMenuItem_FileLoadTabs.ToolTipText = "Open files from other running BasicPawn instances"
         '
         'ToolStripSeparator7
         '
@@ -344,6 +350,7 @@ Partial Class FormMain
         Me.ToolStripMenuItem_FileSave.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.S), System.Windows.Forms.Keys)
         Me.ToolStripMenuItem_FileSave.Size = New System.Drawing.Size(343, 22)
         Me.ToolStripMenuItem_FileSave.Text = "&Save"
+        Me.ToolStripMenuItem_FileSave.ToolTipText = "Saves the current into a file"
         '
         'ToolStripMenuItem_FileSaveAll
         '
@@ -353,6 +360,7 @@ Partial Class FormMain
             Or System.Windows.Forms.Keys.S), System.Windows.Forms.Keys)
         Me.ToolStripMenuItem_FileSaveAll.Size = New System.Drawing.Size(343, 22)
         Me.ToolStripMenuItem_FileSaveAll.Text = "Save all"
+        Me.ToolStripMenuItem_FileSaveAll.ToolTipText = "Saves all open tabs into a file"
         '
         'ToolStripMenuItem_FileSaveAs
         '
@@ -362,6 +370,7 @@ Partial Class FormMain
             Or System.Windows.Forms.Keys.S), System.Windows.Forms.Keys)
         Me.ToolStripMenuItem_FileSaveAs.Size = New System.Drawing.Size(343, 22)
         Me.ToolStripMenuItem_FileSaveAs.Text = "Save &as..."
+        Me.ToolStripMenuItem_FileSaveAs.ToolTipText = "Saves the current into a file"
         '
         'ToolStripMenuItem_FileSaveAsTemp
         '
@@ -369,6 +378,20 @@ Partial Class FormMain
         Me.ToolStripMenuItem_FileSaveAsTemp.Name = "ToolStripMenuItem_FileSaveAsTemp"
         Me.ToolStripMenuItem_FileSaveAsTemp.Size = New System.Drawing.Size(343, 22)
         Me.ToolStripMenuItem_FileSaveAsTemp.Text = "Save as &temporary"
+        Me.ToolStripMenuItem_FileSaveAsTemp.ToolTipText = "Saves the current tab into the temporary folder"
+        '
+        'ToolStripSeparator10
+        '
+        Me.ToolStripSeparator10.Name = "ToolStripSeparator10"
+        Me.ToolStripSeparator10.Size = New System.Drawing.Size(340, 6)
+        '
+        'ToolStripMenuItem_FileSavePacked
+        '
+        Me.ToolStripMenuItem_FileSavePacked.Image = Global.BasicPawn.My.Resources.Resources.imageres_5303_16x16_32
+        Me.ToolStripMenuItem_FileSavePacked.Name = "ToolStripMenuItem_FileSavePacked"
+        Me.ToolStripMenuItem_FileSavePacked.Size = New System.Drawing.Size(343, 22)
+        Me.ToolStripMenuItem_FileSavePacked.Text = "&Export Packed"
+        Me.ToolStripMenuItem_FileSavePacked.ToolTipText = "Packs all includes into one file and resolving all defines"
         '
         'ToolStripSeparator8
         '
@@ -381,6 +404,7 @@ Partial Class FormMain
         Me.ToolStripMenuItem_FileOpenFolder.Name = "ToolStripMenuItem_FileOpenFolder"
         Me.ToolStripMenuItem_FileOpenFolder.Size = New System.Drawing.Size(343, 22)
         Me.ToolStripMenuItem_FileOpenFolder.Text = "Open current folder"
+        Me.ToolStripMenuItem_FileOpenFolder.ToolTipText = "Opens the current tabs folder"
         '
         'ToolStripSeparator2
         '
@@ -393,6 +417,7 @@ Partial Class FormMain
         Me.ToolStripMenuItem_FileExit.Name = "ToolStripMenuItem_FileExit"
         Me.ToolStripMenuItem_FileExit.Size = New System.Drawing.Size(343, 22)
         Me.ToolStripMenuItem_FileExit.Text = "Exit"
+        Me.ToolStripMenuItem_FileExit.ToolTipText = "Quits BasicPawn"
         '
         'ToolStripMenuItem_Tools
         '
@@ -527,7 +552,7 @@ Partial Class FormMain
         '
         'ToolStripMenuItem_HelpSpecialControls
         '
-        Me.ToolStripMenuItem_HelpSpecialControls.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_HelpSpecialControlsAutocompleteUp, Me.ToolStripMenuItem_HelpSpecialControlsAutocompleteDown, Me.ToolStripMenuItem_HelpSpecialControlsAutocompletePaste, Me.ToolStripMenuItem_HelpSpecialControlsMoveSelected, Me.ToolStripMenuItem_HelpSpecialControlsCopySelected, Me.ToolStripMenuItem_HelpSpecialControlsDupLine})
+        Me.ToolStripMenuItem_HelpSpecialControls.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_HelpSpecialControlsAutocompleteUp, Me.ToolStripMenuItem_HelpSpecialControlsAutocompleteDown, Me.ToolStripMenuItem_HelpSpecialControlsAutocompletePaste, Me.ToolStripMenuItem_HelpSpecialControlsMoveSelected, Me.ToolStripMenuItem_HelpSpecialControlsCopySelected, Me.ToolStripMenuItem_HelpSpecialControlsDupLine, Me.ToolStripMenuItem_HelpSpecialControlsCommentLines})
         Me.ToolStripMenuItem_HelpSpecialControls.Image = CType(resources.GetObject("ToolStripMenuItem_HelpSpecialControls.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_HelpSpecialControls.Name = "ToolStripMenuItem_HelpSpecialControls"
         Me.ToolStripMenuItem_HelpSpecialControls.Size = New System.Drawing.Size(159, 22)
@@ -536,38 +561,44 @@ Partial Class FormMain
         'ToolStripMenuItem_HelpSpecialControlsAutocompleteUp
         '
         Me.ToolStripMenuItem_HelpSpecialControlsAutocompleteUp.Name = "ToolStripMenuItem_HelpSpecialControlsAutocompleteUp"
-        Me.ToolStripMenuItem_HelpSpecialControlsAutocompleteUp.Size = New System.Drawing.Size(268, 22)
-        Me.ToolStripMenuItem_HelpSpecialControlsAutocompleteUp.Text = "CTRL+UP - Autocomplete Up"
+        Me.ToolStripMenuItem_HelpSpecialControlsAutocompleteUp.ShortcutKeyDisplayString = "CTRL+UP"
+        Me.ToolStripMenuItem_HelpSpecialControlsAutocompleteUp.Size = New System.Drawing.Size(274, 22)
+        Me.ToolStripMenuItem_HelpSpecialControlsAutocompleteUp.Text = "Autocomplete Up"
         '
         'ToolStripMenuItem_HelpSpecialControlsAutocompleteDown
         '
         Me.ToolStripMenuItem_HelpSpecialControlsAutocompleteDown.Name = "ToolStripMenuItem_HelpSpecialControlsAutocompleteDown"
-        Me.ToolStripMenuItem_HelpSpecialControlsAutocompleteDown.Size = New System.Drawing.Size(268, 22)
-        Me.ToolStripMenuItem_HelpSpecialControlsAutocompleteDown.Text = "CTRL+DOWN - Autocomplete Down"
+        Me.ToolStripMenuItem_HelpSpecialControlsAutocompleteDown.ShortcutKeyDisplayString = "CTRL+DOWN"
+        Me.ToolStripMenuItem_HelpSpecialControlsAutocompleteDown.Size = New System.Drawing.Size(274, 22)
+        Me.ToolStripMenuItem_HelpSpecialControlsAutocompleteDown.Text = "Autocomplete Down"
         '
         'ToolStripMenuItem_HelpSpecialControlsAutocompletePaste
         '
         Me.ToolStripMenuItem_HelpSpecialControlsAutocompletePaste.Name = "ToolStripMenuItem_HelpSpecialControlsAutocompletePaste"
-        Me.ToolStripMenuItem_HelpSpecialControlsAutocompletePaste.Size = New System.Drawing.Size(268, 22)
-        Me.ToolStripMenuItem_HelpSpecialControlsAutocompletePaste.Text = "CTRL+ENTER - Autocomplete Paste"
+        Me.ToolStripMenuItem_HelpSpecialControlsAutocompletePaste.ShortcutKeyDisplayString = "CTRL+ENTER"
+        Me.ToolStripMenuItem_HelpSpecialControlsAutocompletePaste.Size = New System.Drawing.Size(274, 22)
+        Me.ToolStripMenuItem_HelpSpecialControlsAutocompletePaste.Text = "Autocomplete Paste"
         '
         'ToolStripMenuItem_HelpSpecialControlsMoveSelected
         '
         Me.ToolStripMenuItem_HelpSpecialControlsMoveSelected.Name = "ToolStripMenuItem_HelpSpecialControlsMoveSelected"
-        Me.ToolStripMenuItem_HelpSpecialControlsMoveSelected.Size = New System.Drawing.Size(268, 22)
-        Me.ToolStripMenuItem_HelpSpecialControlsMoveSelected.Text = "DRAG - Move Selected"
+        Me.ToolStripMenuItem_HelpSpecialControlsMoveSelected.ShortcutKeyDisplayString = "DRAG"
+        Me.ToolStripMenuItem_HelpSpecialControlsMoveSelected.Size = New System.Drawing.Size(274, 22)
+        Me.ToolStripMenuItem_HelpSpecialControlsMoveSelected.Text = "Move Selected"
         '
         'ToolStripMenuItem_HelpSpecialControlsCopySelected
         '
         Me.ToolStripMenuItem_HelpSpecialControlsCopySelected.Name = "ToolStripMenuItem_HelpSpecialControlsCopySelected"
-        Me.ToolStripMenuItem_HelpSpecialControlsCopySelected.Size = New System.Drawing.Size(268, 22)
-        Me.ToolStripMenuItem_HelpSpecialControlsCopySelected.Text = "CTRL+DRAG - Copy Selected"
+        Me.ToolStripMenuItem_HelpSpecialControlsCopySelected.ShortcutKeyDisplayString = "CTRL+DRAG"
+        Me.ToolStripMenuItem_HelpSpecialControlsCopySelected.Size = New System.Drawing.Size(274, 22)
+        Me.ToolStripMenuItem_HelpSpecialControlsCopySelected.Text = "Copy Selected"
         '
         'ToolStripMenuItem_HelpSpecialControlsDupLine
         '
         Me.ToolStripMenuItem_HelpSpecialControlsDupLine.Name = "ToolStripMenuItem_HelpSpecialControlsDupLine"
-        Me.ToolStripMenuItem_HelpSpecialControlsDupLine.Size = New System.Drawing.Size(268, 22)
-        Me.ToolStripMenuItem_HelpSpecialControlsDupLine.Text = "CTRL+D - Duplicate Line/Selected"
+        Me.ToolStripMenuItem_HelpSpecialControlsDupLine.ShortcutKeyDisplayString = "CTRL+D"
+        Me.ToolStripMenuItem_HelpSpecialControlsDupLine.Size = New System.Drawing.Size(274, 22)
+        Me.ToolStripMenuItem_HelpSpecialControlsDupLine.Text = "Duplicate Line/Selected"
         '
         'ToolStripMenuItem_HelpAbout
         '
@@ -825,6 +856,13 @@ Partial Class FormMain
         'Timer_PingFlash
         '
         '
+        'ToolStripMenuItem_HelpSpecialControlsCommentLines
+        '
+        Me.ToolStripMenuItem_HelpSpecialControlsCommentLines.Name = "ToolStripMenuItem_HelpSpecialControlsCommentLines"
+        Me.ToolStripMenuItem_HelpSpecialControlsCommentLines.ShortcutKeyDisplayString = "CTRL+Num /"
+        Me.ToolStripMenuItem_HelpSpecialControlsCommentLines.Size = New System.Drawing.Size(274, 22)
+        Me.ToolStripMenuItem_HelpSpecialControlsCommentLines.Text = "Comment Lines In/Out"
+        '
         'FormMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -942,4 +980,7 @@ Partial Class FormMain
     Public WithEvents MenuStrip_BasicPawn As MenuStrip
     Public WithEvents TabControl_Details As TabControl
     Public WithEvents StatusStrip_BasicPawn As StatusStrip
+    Friend WithEvents ToolStripSeparator10 As ToolStripSeparator
+    Friend WithEvents ToolStripMenuItem_FileSavePacked As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_HelpSpecialControlsCommentLines As ToolStripMenuItem
 End Class

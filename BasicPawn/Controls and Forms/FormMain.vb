@@ -17,7 +17,7 @@
 
 Imports System.ComponentModel
 Imports System.Text
-
+Imports System.Text.RegularExpressions
 
 Public Class FormMain
     Public g_ClassSyntaxUpdater As ClassSyntaxUpdater
@@ -438,6 +438,43 @@ Public Class FormMain
 
         g_ClassTabControl.m_ActiveTab.m_File = sTempFile
         g_ClassTabControl.SaveFileTab(g_ClassTabControl.m_ActiveTabIndex)
+    End Sub
+
+    Private Sub ToolStripMenuItem_FileSavePacked_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileSavePacked.Click
+        Try
+            Dim sTempFile As String = ""
+            Dim sLstSource As String = g_ClassTextEditorTools.GetCompilerPreProcessCode(True, True, sTempFile)
+            If (String.IsNullOrEmpty(sLstSource)) Then
+                MessageBox.Show("Could not export packed source. See information tab for more information.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+
+                Return
+            End If
+
+            If (String.IsNullOrEmpty(sTempFile)) Then
+                Throw New ArgumentException("Last Pre-Process source invalid")
+            End If
+
+            With New ClassDebuggerRunner.ClassPreProcess(Nothing)
+                .FixPreProcessFiles(sLstSource)
+            End With
+
+            'Replace the temp source file with the currently opened one
+            sLstSource = Regex.Replace(sLstSource,
+                                       String.Format("^\s*\#file ""{0}""\s*$", Regex.Escape(sTempFile)),
+                                       String.Format("#file ""{0}""", g_ClassTabControl.m_ActiveTab.m_File),
+                                       RegexOptions.IgnoreCase Or RegexOptions.Multiline)
+
+            Using i As New SaveFileDialog
+                i.Filter = "All supported files|*.sp;*.inc;*.sma|SourcePawn|*.sp|Include|*.inc|Pawn (Not fully supported)|*.pwn;*.p|AMX Mod X|*.sma|All files|*.*"
+                i.FileName = IO.Path.Combine(IO.Path.GetDirectoryName(g_ClassTabControl.m_ActiveTab.m_File), IO.Path.GetFileNameWithoutExtension(g_ClassTabControl.m_ActiveTab.m_File) & ".packed" & IO.Path.GetExtension(g_ClassTabControl.m_ActiveTab.m_File))
+
+                If (i.ShowDialog = DialogResult.OK) Then
+                    IO.File.WriteAllText(i.FileName, sLstSource)
+                End If
+            End Using
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
     End Sub
 
     Private Sub ToolStripMenuItem_FileLoadTabs_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileLoadTabs.Click
