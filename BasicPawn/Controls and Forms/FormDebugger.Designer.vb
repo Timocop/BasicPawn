@@ -56,6 +56,7 @@ Partial Class FormDebugger
         Me.ToolStripMenuItem_DebugStart = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_DebugPause = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_DebugStop = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_DebugRefresh = New System.Windows.Forms.ToolStripMenuItem()
         Me.SplitContainer1 = New System.Windows.Forms.SplitContainer()
         Me.TabControl2 = New System.Windows.Forms.TabControl()
         Me.TabPage_Source = New System.Windows.Forms.TabPage()
@@ -84,7 +85,6 @@ Partial Class FormDebugger
         Me.ColumnHeader8 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader9 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader10 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.ToolStripMenuItem_DebugRefresh = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip_BPDebugger.SuspendLayout()
         Me.MenuStrip_BPDebugger.SuspendLayout()
         Me.SplitContainer1.Panel1.SuspendLayout()
@@ -226,7 +226,7 @@ Partial Class FormDebugger
         Me.ToolStripMenuItem_DebugStart.Image = Global.BasicPawn.My.Resources.Resources.imageres_5341_16x16_32
         Me.ToolStripMenuItem_DebugStart.Name = "ToolStripMenuItem_DebugStart"
         Me.ToolStripMenuItem_DebugStart.Size = New System.Drawing.Size(28, 20)
-        Me.ToolStripMenuItem_DebugStart.ToolTipText = "Start/Continue"
+        Me.ToolStripMenuItem_DebugStart.ToolTipText = "Start/Continue debugging"
         '
         'ToolStripMenuItem_DebugPause
         '
@@ -235,7 +235,7 @@ Partial Class FormDebugger
         Me.ToolStripMenuItem_DebugPause.Image = Global.BasicPawn.My.Resources.Resources.imageres_5313_16x16_32
         Me.ToolStripMenuItem_DebugPause.Name = "ToolStripMenuItem_DebugPause"
         Me.ToolStripMenuItem_DebugPause.Size = New System.Drawing.Size(28, 20)
-        Me.ToolStripMenuItem_DebugPause.ToolTipText = "Suspend"
+        Me.ToolStripMenuItem_DebugPause.ToolTipText = "Suspend target"
         '
         'ToolStripMenuItem_DebugStop
         '
@@ -243,7 +243,15 @@ Partial Class FormDebugger
         Me.ToolStripMenuItem_DebugStop.Image = Global.BasicPawn.My.Resources.Resources.imageres_5337_16x16_32
         Me.ToolStripMenuItem_DebugStop.Name = "ToolStripMenuItem_DebugStop"
         Me.ToolStripMenuItem_DebugStop.Size = New System.Drawing.Size(28, 20)
-        Me.ToolStripMenuItem_DebugStop.ToolTipText = "Stop"
+        Me.ToolStripMenuItem_DebugStop.ToolTipText = "Stop debugging"
+        '
+        'ToolStripMenuItem_DebugRefresh
+        '
+        Me.ToolStripMenuItem_DebugRefresh.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.ToolStripMenuItem_DebugRefresh.Image = Global.BasicPawn.My.Resources.Resources.imageres_5311_16x16_32
+        Me.ToolStripMenuItem_DebugRefresh.Name = "ToolStripMenuItem_DebugRefresh"
+        Me.ToolStripMenuItem_DebugRefresh.Size = New System.Drawing.Size(28, 20)
+        Me.ToolStripMenuItem_DebugRefresh.ToolTipText = "Refreshes the source and restarts the debugger when debugging is active"
         '
         'SplitContainer1
         '
@@ -481,14 +489,6 @@ Partial Class FormDebugger
         '
         Me.ColumnHeader10.Text = "Classname"
         Me.ColumnHeader10.Width = 175
-        '
-        'ToolStripMenuItem_DebugRefresh
-        '
-        Me.ToolStripMenuItem_DebugRefresh.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.ToolStripMenuItem_DebugRefresh.Image = Global.BasicPawn.My.Resources.Resources.imageres_5311_16x16_32
-        Me.ToolStripMenuItem_DebugRefresh.Name = "ToolStripMenuItem_DebugRefresh"
-        Me.ToolStripMenuItem_DebugRefresh.Size = New System.Drawing.Size(28, 20)
-        Me.ToolStripMenuItem_DebugRefresh.ToolTipText = "Refresh"
         '
         'FormDebugger
         '

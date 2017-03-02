@@ -29,6 +29,7 @@ Public Class ClassSyntaxUpdater
     Public Sub StartThread()
         If (g_mSourceSyntaxUpdaterThread Is Nothing OrElse Not g_mSourceSyntaxUpdaterThread.IsAlive) Then
             g_mSourceSyntaxUpdaterThread = New Threading.Thread(AddressOf SourceSyntaxUpdater_Thread)
+            g_mSourceSyntaxUpdaterThread.Priority = Threading.ThreadPriority.Lowest
             g_mSourceSyntaxUpdaterThread.IsBackground = True
             g_mSourceSyntaxUpdaterThread.Start()
         End If

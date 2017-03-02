@@ -57,6 +57,7 @@ Public Class UCObjectBrowser
     Public Sub StartUpdate()
         If (g_tUpdateThread Is Nothing OrElse Not g_tUpdateThread.IsAlive) Then
             g_tUpdateThread = New Threading.Thread(AddressOf UpdateTreeViewThread)
+            g_tUpdateThread.Priority = Threading.ThreadPriority.Lowest
             g_tUpdateThread.IsBackground = True
             g_tUpdateThread.Start()
         End If

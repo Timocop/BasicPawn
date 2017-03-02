@@ -62,6 +62,7 @@ Public Class ClassAutocompleteUpdater
 
                                                                     RaiseEvent OnAutocompleteUpdateEnd()
                                                                 End Sub)
+            g_mAutocompleteUpdaterThread.Priority = Threading.ThreadPriority.Lowest
             g_mAutocompleteUpdaterThread.IsBackground = True
             g_mAutocompleteUpdaterThread.Start()
 

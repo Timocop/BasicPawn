@@ -409,6 +409,7 @@ Public Class ClassDebuggerRunner
             End If
 
             g_tListViewEntitiesUpdaterThread = New Threading.Thread(AddressOf ListViewEntitiesUpdaterThread)
+            g_tListViewEntitiesUpdaterThread.Priority = Threading.ThreadPriority.Lowest
             g_tListViewEntitiesUpdaterThread.IsBackground = True
             g_tListViewEntitiesUpdaterThread.Start()
 
