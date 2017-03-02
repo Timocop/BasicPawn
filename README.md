@@ -3,6 +3,24 @@ BasicPawn is a very lightweight and basic SourcePawn Editor.
 Using Autocomplete and IntelliSense allows you to write faster and easier and also supports both old and new SourcePawn syntax.
 BasicPawn is currently in alpha state, new features are planed!
 
+Supported:
+- SourceMod
+- AMX Mod X (Debugger not supported yet)
+- Pawn (Not fully supported)
+
+Features:
+- Simple Windows Forms UI
+- Dynamic autocompletion (Methods, Variables, Methodmaps, Enums etc.)
+- IntelliSense
+- Simple Debugger
+- Plugin System
+- Customizable Syntax
+- Light/Dark Theme
+- Unlimited custom Highlight colors
+- Customizable configs
+- Supports old and new SourcePawn syntax
+- Runs on Wine as well
+
 **See [AlliedModders BasicPawn thread](https://forums.alliedmods.net/showthread.php?t=289127) for more information.**
 
 ##[Third Party Legal Notices](Third%20Party%20Legal%20Notices.txt)
