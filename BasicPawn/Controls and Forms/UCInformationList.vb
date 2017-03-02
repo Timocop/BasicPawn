@@ -30,7 +30,7 @@ Public Class UCInformationList
         g_mFormMain = f
     End Sub
 
-    Private Sub ListBox1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListBox_Information.SelectedIndexChanged
+    Private Sub ListBox_Information_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListBox_Information.SelectedIndexChanged
         If (ListBox_Information.SelectedItems.Count < 1) Then
             Return
         End If
