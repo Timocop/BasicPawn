@@ -109,6 +109,10 @@ Public Class PluginSample
         Throw New NotImplementedException()
     End Sub
 
+    Public Sub OnDebuggerRefresh(mFormDebugger As FormDebugger) Implements PluginInterface.OnDebuggerRefresh
+        Throw New NotImplementedException()
+    End Sub
+
     Class ClassTestToolbox
         Implements IDisposable
 
