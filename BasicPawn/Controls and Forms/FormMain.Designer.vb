@@ -709,6 +709,7 @@ Partial Class FormMain
         'SplitContainer_ToolboxAndEditor
         '
         Me.SplitContainer_ToolboxAndEditor.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.SplitContainer_ToolboxAndEditor.FixedPanel = System.Windows.Forms.FixedPanel.Panel1
         Me.SplitContainer_ToolboxAndEditor.Location = New System.Drawing.Point(0, 0)
         Me.SplitContainer_ToolboxAndEditor.Name = "SplitContainer_ToolboxAndEditor"
         '
@@ -754,6 +755,7 @@ Partial Class FormMain
         Me.TabControl_SourceTabs.Name = "TabControl_SourceTabs"
         Me.TabControl_SourceTabs.Padding = New System.Drawing.Point(0, 0)
         Me.TabControl_SourceTabs.SelectedIndex = 0
+        Me.TabControl_SourceTabs.ShowToolTips = True
         Me.TabControl_SourceTabs.Size = New System.Drawing.Size(815, 500)
         Me.TabControl_SourceTabs.TabIndex = 1
         '

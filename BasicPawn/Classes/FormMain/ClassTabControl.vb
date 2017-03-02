@@ -552,6 +552,7 @@ Public Class ClassTabControl
                 g_sFile = value
 
                 m_Text = IO.Path.GetFileName(g_sFile)
+                Me.ToolTipText = g_sFile
             End Set
         End Property
 
