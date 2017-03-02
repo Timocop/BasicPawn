@@ -84,6 +84,7 @@ Partial Class FormDebugger
         Me.ColumnHeader8 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader9 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader10 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.ToolStripMenuItem_DebugRefresh = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip_BPDebugger.SuspendLayout()
         Me.MenuStrip_BPDebugger.SuspendLayout()
         Me.SplitContainer1.Panel1.SuspendLayout()
@@ -141,7 +142,7 @@ Partial Class FormDebugger
         '
         'MenuStrip_BPDebugger
         '
-        Me.MenuStrip_BPDebugger.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_File, Me.ToolStripMenuItem_Tools, Me.ToolStripMenuItem_DebugStart, Me.ToolStripMenuItem_DebugPause, Me.ToolStripMenuItem_DebugStop})
+        Me.MenuStrip_BPDebugger.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_File, Me.ToolStripMenuItem_Tools, Me.ToolStripMenuItem_DebugStart, Me.ToolStripMenuItem_DebugPause, Me.ToolStripMenuItem_DebugStop, Me.ToolStripMenuItem_DebugRefresh})
         Me.MenuStrip_BPDebugger.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip_BPDebugger.Name = "MenuStrip_BPDebugger"
         Me.MenuStrip_BPDebugger.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
@@ -481,6 +482,14 @@ Partial Class FormDebugger
         Me.ColumnHeader10.Text = "Classname"
         Me.ColumnHeader10.Width = 175
         '
+        'ToolStripMenuItem_DebugRefresh
+        '
+        Me.ToolStripMenuItem_DebugRefresh.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.ToolStripMenuItem_DebugRefresh.Image = Global.BasicPawn.My.Resources.Resources.imageres_5311_16x16_32
+        Me.ToolStripMenuItem_DebugRefresh.Name = "ToolStripMenuItem_DebugRefresh"
+        Me.ToolStripMenuItem_DebugRefresh.Size = New System.Drawing.Size(28, 20)
+        Me.ToolStripMenuItem_DebugRefresh.ToolTipText = "Refresh"
+        '
         'FormDebugger
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -562,4 +571,5 @@ Partial Class FormDebugger
     Friend WithEvents ToolStripStatusLabel_EditorLine As ToolStripStatusLabel
     Friend WithEvents ToolStripStatusLabel_EditorCollum As ToolStripStatusLabel
     Friend WithEvents ToolStripStatusLabel_EditorSelected As ToolStripStatusLabel
+    Friend WithEvents ToolStripMenuItem_DebugRefresh As ToolStripMenuItem
 End Class

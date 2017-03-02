@@ -32,8 +32,17 @@ public OnGameFrame()
 			break;
 	
 		decl String:sCmd[1024];
-		while(ReadFileLine(hFile, sCmd, sizeof(sCmd)))
+		while(ReadFileLine(hFile, sCmd, sizeof(sCmd))) {
+			if(StrContains(sCmd, "@reloadmap") == 0) {
+				decl String:sMapname[PLATFORM_MAX_PATH];
+				GetCurrentMap(sMapname, sizeof(sMapname));
+				
+				ForceChangeLevel(sMapname, "BasicPawn - Debugger Command");
+				continue;
+			}
+
 			ServerCommand(sCmd);
+		}
 	
 		CloseHandle(hFile);
 	

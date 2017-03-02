@@ -53,14 +53,21 @@ Public Class FormDebugger
     End Sub
 
     Private Sub FormDebugger_Load(sender As Object, e As EventArgs) Handles Me.Load
+        If (Not RefreshSource()) Then
+            MessageBox.Show("Could not open debugger. See information tab for more information.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Me.Dispose()
+            Return
+        End If
+
+        g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnDebuggerStart(Me))
+    End Sub
+
+    Private Function RefreshSource() As Boolean
         Try
             'Create Pre-Process source
             Dim sLstSource As String = g_mFormMain.g_ClassTextEditorTools.GetCompilerPreProcessCode(True, True, g_sLastPreProcessSourceFile)
             If (String.IsNullOrEmpty(sLstSource)) Then
-                MessageBox.Show("Could not open debugger. See information tab for more information.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Me.Close()
-
-                Return
+                Return False
             End If
 
             If (String.IsNullOrEmpty(g_sLastPreProcessSourceFile)) Then
@@ -87,10 +94,7 @@ Public Class FormDebugger
             End With
             Dim sAsmSource As String = g_mFormMain.g_ClassTextEditorTools.GetCompilerAssemblyCode(True, sAsmLstSource, Nothing)
             If (String.IsNullOrEmpty(sAsmSource)) Then
-                MessageBox.Show("Could not open debugger. See information tab for more information.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Me.Close()
-
-                Return
+                Return False
             End If
 
 
@@ -103,8 +107,11 @@ Public Class FormDebugger
 
             g_mFormMain.g_ClassSyntaxTools.UpdateTextEditorSyntax()
 
+            TextEditorControlEx_DebuggerSource.Document.MarkerStrategy.RemoveAll(Function() True)
+
             'Add breakpoints
             ListView_Breakpoints.BeginUpdate()
+            ListView_Breakpoints.Items.Clear()
             For Each breakpointItem In g_ClassDebuggerParser.g_lBreakpointList
                 With ListView_Breakpoints.Items.Add(New ListViewItem(New String() {breakpointItem.iLine.ToString, breakpointItem.sArguments, "", breakpointItem.sGUID}))
                     .Checked = True
@@ -117,6 +124,7 @@ Public Class FormDebugger
 
             'Add watchers
             ListView_Watchers.BeginUpdate()
+            ListView_Watchers.Items.Clear()
             For Each breakpointItem In g_ClassDebuggerParser.g_lWatcherList
                 ListView_Watchers.Items.Add(New ListViewItem(New String() {breakpointItem.iLine.ToString, breakpointItem.sArguments, "", "0", breakpointItem.sGUID}))
 
@@ -127,6 +135,7 @@ Public Class FormDebugger
 
             'Add entities
             ListView_Entities.BeginUpdate()
+            ListView_Entities.Items.Clear()
             For i = 0 To 2048 - 1
                 ListView_Entities.Items.Add(New ListViewItem(New String() {i.ToString, "", "", ""}))
             Next
@@ -134,12 +143,14 @@ Public Class FormDebugger
 
             ClassControlStyle.UpdateControls(Me)
 
-            g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnDebuggerStart(Me))
+            g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnDebuggerRefresh(Me))
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
-            Me.Dispose()
+            Return False
         End Try
-    End Sub
+
+        Return True
+    End Function
 
     Private Sub ToolStripMenuItemFile_Exit_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItemFile_Exit.Click
         Me.Close()
@@ -160,6 +171,28 @@ Public Class FormDebugger
 
     Private Sub ToolStripMenuItem_DebugStop_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_DebugStop.Click
         g_ClassDebuggerRunner.StopDebugging()
+    End Sub
+
+    Private Sub ToolStripMenuItem_DebugRefresh_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_DebugRefresh.Click
+        Dim bWasRunning As Boolean = (g_ClassDebuggerRunner.m_DebuggingState <> ClassDebuggerRunner.ENUM_DEBUGGING_STATE.STOPPED)
+
+        If (bWasRunning) Then
+            If (Not g_ClassDebuggerRunner.StopDebugging) Then
+                Return
+            End If
+
+            g_ClassDebuggerRunner.m_SuspendGame = True
+        End If
+
+        If (Not RefreshSource()) Then
+            MessageBox.Show("Could not refresh source. See information tab for more information.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End If
+
+        If (bWasRunning) Then
+            If (Not g_ClassDebuggerRunner.StartDebugging()) Then
+                g_ClassDebuggerRunner.m_SuspendGame = False
+            End If
+        End If
     End Sub
 
     Private Sub ToolStripMenuItem_ToolsCleanupTemp_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsCleanupTemp.Click
@@ -262,8 +295,13 @@ Public Class FormDebugger
     End Sub
 
     Private Sub FormDebugger_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
-        If (g_ClassDebuggerRunner.m_DebuggingState <> ClassDebuggerRunner.ENUM_DEBUGGING_STATE.STOPPED) Then
-            MessageBox.Show("You need to stop the debugger first before closing!", "Debugger active!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface)
+                                                               If (Not j.OnDebuggerEnd(Me)) Then
+                                                                   e.Cancel = True
+                                                               End If
+                                                           End Sub)
+
+        If (Not g_ClassDebuggerRunner.StopDebugging()) Then
             e.Cancel = True
             Return
         End If
@@ -571,14 +609,6 @@ Public Class FormDebugger
 
     Private Sub ToolStripMenuItem_Tools_DropDownOpened(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Tools.DropDownOpened
         g_ClassDebuggerSettings.LoadSettings()
-    End Sub
-
-    Private Sub FormDebugger_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
-        g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface)
-                                                               If (Not j.OnDebuggerEnd(Me)) Then
-                                                                   e.Cancel = True
-                                                               End If
-                                                           End Sub)
     End Sub
 #End Region
 End Class

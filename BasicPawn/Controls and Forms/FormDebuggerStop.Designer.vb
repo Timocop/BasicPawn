@@ -36,6 +36,8 @@ Partial Class FormDebuggerStop
         Me.Label2 = New System.Windows.Forms.Label()
         Me.ToolTip_ResultOptions = New System.Windows.Forms.ToolTip(Me.components)
         Me.Class_PictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
+        Me.RadioButton5 = New System.Windows.Forms.RadioButton()
+        Me.CheckBox_RememberAction = New System.Windows.Forms.CheckBox()
         Me.Panel_FooterControl.SuspendLayout()
         CType(Me.Class_PictureBoxQuality1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -43,13 +45,14 @@ Partial Class FormDebuggerStop
         'Panel_FooterControl
         '
         Me.Panel_FooterControl.BackColor = System.Drawing.SystemColors.Control
+        Me.Panel_FooterControl.Controls.Add(Me.CheckBox_RememberAction)
         Me.Panel_FooterControl.Controls.Add(Me.Button_OK)
         Me.Panel_FooterControl.Controls.Add(Me.Button_Cancel)
         Me.Panel_FooterControl.Controls.Add(Me.Panel_FooterDarkControl)
         Me.Panel_FooterControl.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.Panel_FooterControl.Location = New System.Drawing.Point(0, 213)
+        Me.Panel_FooterControl.Location = New System.Drawing.Point(0, 233)
         Me.Panel_FooterControl.Name = "Panel_FooterControl"
-        Me.Panel_FooterControl.Size = New System.Drawing.Size(334, 48)
+        Me.Panel_FooterControl.Size = New System.Drawing.Size(344, 48)
         Me.Panel_FooterControl.TabIndex = 0
         '
         'Button_OK
@@ -57,7 +60,7 @@ Partial Class FormDebuggerStop
         Me.Button_OK.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_OK.DialogResult = System.Windows.Forms.DialogResult.OK
         Me.Button_OK.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_OK.Location = New System.Drawing.Point(144, 13)
+        Me.Button_OK.Location = New System.Drawing.Point(154, 13)
         Me.Button_OK.Name = "Button_OK"
         Me.Button_OK.Size = New System.Drawing.Size(86, 23)
         Me.Button_OK.TabIndex = 2
@@ -69,7 +72,7 @@ Partial Class FormDebuggerStop
         Me.Button_Cancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.Button_Cancel.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_Cancel.Location = New System.Drawing.Point(236, 13)
+        Me.Button_Cancel.Location = New System.Drawing.Point(246, 13)
         Me.Button_Cancel.Name = "Button_Cancel"
         Me.Button_Cancel.Size = New System.Drawing.Size(86, 23)
         Me.Button_Cancel.TabIndex = 1
@@ -82,7 +85,7 @@ Partial Class FormDebuggerStop
         Me.Panel_FooterDarkControl.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel_FooterDarkControl.Location = New System.Drawing.Point(0, 0)
         Me.Panel_FooterDarkControl.Name = "Panel_FooterDarkControl"
-        Me.Panel_FooterDarkControl.Size = New System.Drawing.Size(334, 1)
+        Me.Panel_FooterDarkControl.Size = New System.Drawing.Size(344, 1)
         Me.Panel_FooterDarkControl.TabIndex = 0
         '
         'Label1
@@ -91,7 +94,7 @@ Partial Class FormDebuggerStop
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Label1.Location = New System.Drawing.Point(66, 12)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(256, 48)
+        Me.Label1.Size = New System.Drawing.Size(266, 48)
         Me.Label1.TabIndex = 1
         Me.Label1.Text = "You are about to stop the debugger!" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "What do you want to do?"
         '
@@ -128,7 +131,7 @@ Partial Class FormDebuggerStop
         '
         Me.RadioButton3.AutoSize = True
         Me.RadioButton3.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.RadioButton3.Location = New System.Drawing.Point(73, 151)
+        Me.RadioButton3.Location = New System.Drawing.Point(73, 175)
         Me.RadioButton3.Margin = New System.Windows.Forms.Padding(64, 3, 3, 3)
         Me.RadioButton3.Name = "RadioButton3"
         Me.RadioButton3.Size = New System.Drawing.Size(98, 18)
@@ -143,7 +146,7 @@ Partial Class FormDebuggerStop
         '
         Me.RadioButton4.AutoSize = True
         Me.RadioButton4.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.RadioButton4.Location = New System.Drawing.Point(73, 174)
+        Me.RadioButton4.Location = New System.Drawing.Point(73, 198)
         Me.RadioButton4.Margin = New System.Windows.Forms.Padding(64, 3, 3, 3)
         Me.RadioButton4.Name = "RadioButton4"
         Me.RadioButton4.Size = New System.Drawing.Size(106, 18)
@@ -175,13 +178,40 @@ Partial Class FormDebuggerStop
         Me.Class_PictureBoxQuality1.TabIndex = 2
         Me.Class_PictureBoxQuality1.TabStop = False
         '
+        'RadioButton5
+        '
+        Me.RadioButton5.AutoSize = True
+        Me.RadioButton5.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.RadioButton5.Location = New System.Drawing.Point(73, 151)
+        Me.RadioButton5.Margin = New System.Windows.Forms.Padding(64, 3, 3, 3)
+        Me.RadioButton5.Name = "RadioButton5"
+        Me.RadioButton5.Size = New System.Drawing.Size(92, 18)
+        Me.RadioButton5.TabIndex = 8
+        Me.RadioButton5.Text = "Reload map"
+        Me.ToolTip_ResultOptions.SetToolTip(Me.RadioButton5, "Ends the debugging and reloads the current map." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Usefull when cleaning up maps, m" &
+        "emory or when no late-load function is present." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "(BasicPawn debugger runner is r" &
+        "equired for this to work)" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10))
+        Me.RadioButton5.UseVisualStyleBackColor = True
+        '
+        'CheckBox_RememberAction
+        '
+        Me.CheckBox_RememberAction.AutoSize = True
+        Me.CheckBox_RememberAction.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_RememberAction.Location = New System.Drawing.Point(12, 16)
+        Me.CheckBox_RememberAction.Name = "CheckBox_RememberAction"
+        Me.CheckBox_RememberAction.Size = New System.Drawing.Size(121, 18)
+        Me.CheckBox_RememberAction.TabIndex = 9
+        Me.CheckBox_RememberAction.Text = "Remember action"
+        Me.CheckBox_RememberAction.UseVisualStyleBackColor = True
+        '
         'FormDebuggerStop
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.BackColor = System.Drawing.Color.White
         Me.CancelButton = Me.Button_Cancel
-        Me.ClientSize = New System.Drawing.Size(334, 261)
+        Me.ClientSize = New System.Drawing.Size(344, 281)
+        Me.Controls.Add(Me.RadioButton5)
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.RadioButton4)
         Me.Controls.Add(Me.RadioButton3)
@@ -199,6 +229,7 @@ Partial Class FormDebuggerStop
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Stopping Debugger"
         Me.Panel_FooterControl.ResumeLayout(False)
+        Me.Panel_FooterControl.PerformLayout()
         CType(Me.Class_PictureBoxQuality1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
@@ -217,4 +248,6 @@ Partial Class FormDebuggerStop
     Friend WithEvents RadioButton4 As RadioButton
     Friend WithEvents Label2 As Label
     Friend WithEvents ToolTip_ResultOptions As ToolTip
+    Friend WithEvents RadioButton5 As RadioButton
+    Friend WithEvents CheckBox_RememberAction As CheckBox
 End Class

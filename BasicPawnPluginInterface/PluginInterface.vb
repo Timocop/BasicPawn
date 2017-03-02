@@ -106,6 +106,12 @@ Public Interface PluginInterface
     Sub OnDebuggerStart(mFormDebugger As BasicPawn.FormDebugger)
 
     ''' <summary>
+    ''' Fires when debugger refreshes its source.
+    ''' </summary>
+    ''' <param name="mFormDebugger"></param>
+    Sub OnDebuggerRefresh(mFormDebugger As BasicPawn.FormDebugger)
+
+    ''' <summary>
     ''' Fires when the debugger form is closing.
     ''' </summary>
     ''' <param name="mFormDebugger"></param>

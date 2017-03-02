@@ -19,15 +19,23 @@ Public Class FormDebuggerStop
     Enum ENUM_DIALOG_RESULT
         DO_NOTHING
         TERMINATE_GAME
+        RELOAD_MAP
         RESTART_GAME
         UNLOAD_PLUGIN
     End Enum
 
     Private g_mDialogResult As ENUM_DIALOG_RESULT = ENUM_DIALOG_RESULT.DO_NOTHING
+    Private g_bRememberAction As Boolean = False
 
     Public ReadOnly Property m_DialogResult As ENUM_DIALOG_RESULT
         Get
             Return g_mDialogResult
+        End Get
+    End Property
+
+    Public ReadOnly Property m_RememberAction As Boolean
+        Get
+            Return g_bRememberAction
         End Get
     End Property
 
@@ -40,6 +48,12 @@ Public Class FormDebuggerStop
         g_mDialogResult = ENUM_DIALOG_RESULT.TERMINATE_GAME
     End Sub
 
+
+
+    Private Sub RadioButton5_CheckedChanged(sender As Object, e As EventArgs) Handles RadioButton5.CheckedChanged
+        g_mDialogResult = ENUM_DIALOG_RESULT.RELOAD_MAP
+    End Sub
+
     Private Sub RadioButton3_CheckedChanged(sender As Object, e As EventArgs) Handles RadioButton3.CheckedChanged
         g_mDialogResult = ENUM_DIALOG_RESULT.RESTART_GAME
     End Sub
@@ -48,7 +62,13 @@ Public Class FormDebuggerStop
         g_mDialogResult = ENUM_DIALOG_RESULT.UNLOAD_PLUGIN
     End Sub
 
+
+
     Private Sub FormDebuggerStop_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ClassControlStyle.UpdateControls(Me)
+    End Sub
+
+    Private Sub CheckBox_RememberAction_CheckedChanged(sender As Object, e As EventArgs) Handles CheckBox_RememberAction.CheckedChanged
+        g_bRememberAction = CheckBox_RememberAction.Checked
     End Sub
 End Class
