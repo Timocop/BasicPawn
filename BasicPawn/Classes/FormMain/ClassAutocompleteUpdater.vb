@@ -2104,33 +2104,52 @@ Public Class ClassAutocompleteUpdater
     ''' <returns>Array if include file paths</returns>
     Public Function GetIncludeFiles(sActiveSource As String, sActiveSourceFile As String, sPath As String) As String()
         Dim lList As New List(Of String)
-        GetIncludeFilesRecursive(sActiveSource, sActiveSourceFile, sPath, lList)
+        Dim lLoadedIncludes As New Dictionary(Of String, Boolean)
+
+        GetIncludeFilesRecursive(sActiveSource, sActiveSourceFile, sPath, lList, lLoadedIncludes)
+
+        For Each i In lLoadedIncludes
+            If (i.Value) Then
+                Continue For
+            End If
+
+            g_mFormMain.PrintInformation("[ERRO]", String.Format("Could not read include: {0}", i.Key), False, False, 5)
+        Next
 
         Return lList.ToArray
     End Function
 
-    Private Sub GetIncludeFilesRecursive(sActiveSource As String, sActiveSourceFile As String, sPath As String, ByRef lList As List(Of String))
+    Private Sub GetIncludeFilesRecursive(sActiveSource As String, sActiveSourceFile As String, sPath As String, ByRef lList As List(Of String), lLoadedIncludes As Dictionary(Of String, Boolean))
         Dim sSource As String
+
+        Dim sFileName As String = IO.Path.GetFileNameWithoutExtension(sPath)
 
         If (sActiveSourceFile.ToLower = sPath.ToLower) Then
             If (lList.Contains(sPath.ToLower)) Then
+                lLoadedIncludes(sFileName.ToLower) = True
                 Return
             End If
 
             lList.Add(sPath.ToLower)
+            lLoadedIncludes(sFileName.ToLower) = True
 
             sSource = sActiveSource
         Else
             If (Not IO.File.Exists(sPath)) Then
-                g_mFormMain.PrintInformation("[ERRO]", String.Format("Could not read include: {0}", IO.Path.GetFileName(sPath)), False, False, 15)
+                If (Not lLoadedIncludes.ContainsKey(sFileName.ToLower)) Then
+                    lLoadedIncludes(sFileName.ToLower) = False
+                End If
+
                 Return
             End If
 
             If (lList.Contains(sPath.ToLower)) Then
+                lLoadedIncludes(sFileName.ToLower) = True
                 Return
             End If
 
             lList.Add(sPath.ToLower)
+            lLoadedIncludes(sFileName.ToLower) = True
 
             sSource = IO.File.ReadAllText(sPath)
         End If
@@ -2142,15 +2161,15 @@ Public Class ClassAutocompleteUpdater
         Dim sMatchValue As String
 
         While True
-            Dim sIncludeDir As String
+            Dim sIncludePaths As String
             If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                 If (String.IsNullOrEmpty(sActiveSourceFile) OrElse Not IO.File.Exists(sActiveSourceFile)) Then
                     g_mFormMain.PrintInformation("[ERRO]", "Could not read includes! Could not get current source file!", False, False, 1)
                     Exit While
                 End If
-                sIncludeDir = IO.Path.Combine(IO.Path.GetDirectoryName(sActiveSourceFile), "include")
+                sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(sActiveSourceFile), "include")
             Else
-                sIncludeDir = ClassSettings.g_sConfigOpenIncludeFolder
+                sIncludePaths = ClassSettings.g_sConfigOpenIncludeFolders
             End If
 
             'Check compiler
@@ -2167,170 +2186,178 @@ Public Class ClassAutocompleteUpdater
                 sCompilerPath = ""
             End If
 
-            If (ClassSettings.g_iSettingsAlwaysLoadDefaultIncludes) Then
-                If (sActiveSourceFile.ToLower = sPath.ToLower) Then
-                    For Each sDefaultInc As String In New String() {"sourcemod"}
+            For Each sInclude As String In sIncludePaths.Split(";"c)
+                If (ClassSettings.g_iSettingsAlwaysLoadDefaultIncludes) Then
+                    If (sActiveSourceFile.ToLower = sPath.ToLower) Then
+                        For Each sDefaultInc As String In New String() {"sourcemod"}
+                            Select Case (True)
+                                Case IO.File.Exists(IO.Path.Combine(sInclude, sDefaultInc))
+                                    sCorrectPath = IO.Path.GetFullPath(IO.Path.Combine(sInclude, sDefaultInc))
+                                Case IO.File.Exists(IO.Path.Combine(sCurrentDir, sDefaultInc))
+                                    sCorrectPath = IO.Path.GetFullPath(IO.Path.Combine(sCurrentDir, sDefaultInc))
+                                Case IO.File.Exists(IO.Path.Combine(sCompilerPath, sDefaultInc))
+                                    sCorrectPath = IO.Path.GetFullPath(IO.Path.Combine(sCompilerPath, sDefaultInc))
+
+                                Case IO.File.Exists(String.Format("{0}.inc", IO.Path.Combine(sInclude, sDefaultInc)))
+                                    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.inc", IO.Path.Combine(sInclude, sDefaultInc)))
+
+                                Case IO.File.Exists(String.Format("{0}.inc", IO.Path.Combine(sCurrentDir, sDefaultInc)))
+                                    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.inc", IO.Path.Combine(sCurrentDir, sDefaultInc)))
+
+                                Case IO.File.Exists(String.Format("{0}.inc", IO.Path.Combine(sCompilerPath, sDefaultInc)))
+                                    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.inc", IO.Path.Combine(sCompilerPath, sDefaultInc)))
+
+                                Case Else
+                                    If (Not lLoadedIncludes.ContainsKey(sDefaultInc.ToLower)) Then
+                                        lLoadedIncludes(sDefaultInc.ToLower) = False
+                                    End If
+                                    Continue For
+                            End Select
+
+                            If (Not IO.File.Exists(sCorrectPath)) Then
+                                Continue For
+                            End If
+
+                            If (lPathList.Contains(sCorrectPath.ToLower)) Then
+                                Continue For
+                            End If
+
+                            lPathList.Add(sCorrectPath.ToLower)
+                        Next
+                    End If
+                End If
+
+                Using SR As New IO.StringReader(sSource)
+                    While True
+                        Dim sLine As String = SR.ReadLine()
+                        If (sLine Is Nothing) Then
+                            Exit While
+                        End If
+
+                        If (Not sLine.Contains("#include") AndAlso Not sLine.Contains("#tryinclude")) Then
+                            Continue While
+                        End If
+
+                        Dim mRegMatch As Match = Regex.Match(sLine, "^\s*#(include|tryinclude)\s+(\<(?<PathInc>.*?)\>|""(?<PathFull>.*?)"")\s*$", RegexOptions.Compiled)
+                        If (Not mRegMatch.Success) Then
+                            Continue While
+                        End If
+
                         Select Case (True)
-                            Case IO.File.Exists(IO.Path.Combine(sIncludeDir, sDefaultInc))
-                                sCorrectPath = IO.Path.GetFullPath(IO.Path.Combine(sIncludeDir, sDefaultInc))
-                            Case IO.File.Exists(IO.Path.Combine(sCurrentDir, sDefaultInc))
-                                sCorrectPath = IO.Path.GetFullPath(IO.Path.Combine(sCurrentDir, sDefaultInc))
-                            Case IO.File.Exists(IO.Path.Combine(sCompilerPath, sDefaultInc))
-                                sCorrectPath = IO.Path.GetFullPath(IO.Path.Combine(sCompilerPath, sDefaultInc))
+                            Case mRegMatch.Groups("PathInc").Success
+                                sMatchValue = mRegMatch.Groups("PathInc").Value
 
-                            Case IO.File.Exists(String.Format("{0}.inc", IO.Path.Combine(sIncludeDir, sDefaultInc)))
-                                sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.inc", IO.Path.Combine(sIncludeDir, sDefaultInc)))
+                                Select Case (True)
+                                    Case IO.File.Exists(IO.Path.Combine(sInclude, sMatchValue))
+                                        sCorrectPath = IO.Path.GetFullPath(IO.Path.Combine(sInclude, sMatchValue))
+                                    Case IO.File.Exists(IO.Path.Combine(sCompilerPath, sMatchValue))
+                                        sCorrectPath = IO.Path.GetFullPath(IO.Path.Combine(sCompilerPath, sMatchValue))
 
-                            Case IO.File.Exists(String.Format("{0}.inc", IO.Path.Combine(sCurrentDir, sDefaultInc)))
-                                sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.inc", IO.Path.Combine(sCurrentDir, sDefaultInc)))
+                                    'Case IO.File.Exists(String.Format("{0}.sp", IO.Path.Combine(sInclude, sMatchValue)))
+                                    '    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.sp", IO.Path.Combine(sInclude, sMatchValue)))
+                                    'Case IO.File.Exists(String.Format("{0}.sma", IO.Path.Combine(sInclude, sMatchValue)))
+                                    '    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.sma", IO.Path.Combine(sInclude, sMatchValue)))
+                                    'Case IO.File.Exists(String.Format("{0}.p", IO.Path.Combine(sInclude, sMatchValue)))
+                                    '    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.p", IO.Path.Combine(sInclude, sMatchValue)))
+                                    'Case IO.File.Exists(String.Format("{0}.pwn", IO.Path.Combine(sInclude, sMatchValue)))
+                                    '    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.pwn", IO.Path.Combine(sInclude, sMatchValue)))
+                                    Case IO.File.Exists(String.Format("{0}.inc", IO.Path.Combine(sInclude, sMatchValue)))
+                                        sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.inc", IO.Path.Combine(sInclude, sMatchValue)))
 
-                            Case IO.File.Exists(String.Format("{0}.inc", IO.Path.Combine(sCompilerPath, sDefaultInc)))
-                                sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.inc", IO.Path.Combine(sCompilerPath, sDefaultInc)))
+                                    'Case IO.File.Exists(String.Format("{0}.sp", IO.Path.Combine(sCompilerPath, sMatchValue)))
+                                    '    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.sp", IO.Path.Combine(sCompilerPath, sMatchValue)))
+                                    'Case IO.File.Exists(String.Format("{0}.sma", IO.Path.Combine(sCompilerPath, sMatchValue)))
+                                    '    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.sma", IO.Path.Combine(sCompilerPath, sMatchValue)))
+                                    'Case IO.File.Exists(String.Format("{0}.p", IO.Path.Combine(sCompilerPath, sMatchValue)))
+                                    '    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.p", IO.Path.Combine(sCompilerPath, sMatchValue)))
+                                    'Case IO.File.Exists(String.Format("{0}.pwn", IO.Path.Combine(sCompilerPath, sMatchValue)))
+                                    '    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.pwn", IO.Path.Combine(sCompilerPath, sMatchValue)))
+                                    Case IO.File.Exists(String.Format("{0}.inc", IO.Path.Combine(sCompilerPath, sMatchValue)))
+                                        sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.inc", IO.Path.Combine(sCompilerPath, sMatchValue)))
+
+                                    Case Else
+                                        If (Not lLoadedIncludes.ContainsKey(sMatchValue.ToLower)) Then
+                                            lLoadedIncludes(sMatchValue.ToLower) = False
+                                        End If
+                                        Continue While
+                                End Select
+
+                            Case mRegMatch.Groups("PathFull").Success
+                                sMatchValue = mRegMatch.Groups("PathFull").Value
+
+                                Select Case (True)
+                                    Case sMatchValue.Length > 1 AndAlso sMatchValue(1) = ":"c AndAlso IO.File.Exists(sMatchValue)
+                                        sCorrectPath = IO.Path.GetFullPath(sMatchValue)
+
+                                    Case IO.File.Exists(IO.Path.Combine(sInclude, sMatchValue))
+                                        sCorrectPath = IO.Path.GetFullPath(IO.Path.Combine(sInclude, sMatchValue))
+                                    Case IO.File.Exists(IO.Path.Combine(sCurrentDir, sMatchValue))
+                                        sCorrectPath = IO.Path.GetFullPath(IO.Path.Combine(sCurrentDir, sMatchValue))
+                                    Case IO.File.Exists(IO.Path.Combine(sCompilerPath, sMatchValue))
+                                        sCorrectPath = IO.Path.GetFullPath(IO.Path.Combine(sCompilerPath, sMatchValue))
+
+                                    Case IO.File.Exists(String.Format("{0}.sp", IO.Path.Combine(sInclude, sMatchValue)))
+                                        sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.sp", IO.Path.Combine(sInclude, sMatchValue)))
+                                    Case IO.File.Exists(String.Format("{0}.sma", IO.Path.Combine(sInclude, sMatchValue)))
+                                        sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.sma", IO.Path.Combine(sInclude, sMatchValue)))
+                                    Case IO.File.Exists(String.Format("{0}.p", IO.Path.Combine(sInclude, sMatchValue)))
+                                        sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.p", IO.Path.Combine(sInclude, sMatchValue)))
+                                    Case IO.File.Exists(String.Format("{0}.pwn", IO.Path.Combine(sInclude, sMatchValue)))
+                                        sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.pwn", IO.Path.Combine(sInclude, sMatchValue)))
+                                    Case IO.File.Exists(String.Format("{0}.inc", IO.Path.Combine(sInclude, sMatchValue)))
+                                        sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.inc", IO.Path.Combine(sInclude, sMatchValue)))
+
+                                    Case IO.File.Exists(String.Format("{0}.sp", IO.Path.Combine(sCurrentDir, sMatchValue)))
+                                        sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.sp", IO.Path.Combine(sCurrentDir, sMatchValue)))
+                                    Case IO.File.Exists(String.Format("{0}.sma", IO.Path.Combine(sCurrentDir, sMatchValue)))
+                                        sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.sma", IO.Path.Combine(sCurrentDir, sMatchValue)))
+                                    Case IO.File.Exists(String.Format("{0}.p", IO.Path.Combine(sCurrentDir, sMatchValue)))
+                                        sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.p", IO.Path.Combine(sCurrentDir, sMatchValue)))
+                                    Case IO.File.Exists(String.Format("{0}.pwn", IO.Path.Combine(sCurrentDir, sMatchValue)))
+                                        sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.pwn", IO.Path.Combine(sCurrentDir, sMatchValue)))
+                                    Case IO.File.Exists(String.Format("{0}.inc", IO.Path.Combine(sCurrentDir, sMatchValue)))
+                                        sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.inc", IO.Path.Combine(sCurrentDir, sMatchValue)))
+
+                                    Case IO.File.Exists(String.Format("{0}.sp", IO.Path.Combine(sCompilerPath, sMatchValue)))
+                                        sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.sp", IO.Path.Combine(sCompilerPath, sMatchValue)))
+                                    Case IO.File.Exists(String.Format("{0}.sma", IO.Path.Combine(sCompilerPath, sMatchValue)))
+                                        sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.sma", IO.Path.Combine(sCompilerPath, sMatchValue)))
+                                    Case IO.File.Exists(String.Format("{0}.p", IO.Path.Combine(sCompilerPath, sMatchValue)))
+                                        sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.p", IO.Path.Combine(sCompilerPath, sMatchValue)))
+                                    Case IO.File.Exists(String.Format("{0}.pwn", IO.Path.Combine(sCompilerPath, sMatchValue)))
+                                        sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.pwn", IO.Path.Combine(sCompilerPath, sMatchValue)))
+                                    Case IO.File.Exists(String.Format("{0}.inc", IO.Path.Combine(sCompilerPath, sMatchValue)))
+                                        sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.inc", IO.Path.Combine(sCompilerPath, sMatchValue)))
+
+                                    Case Else
+                                        If (Not lLoadedIncludes.ContainsKey(sMatchValue.ToLower)) Then
+                                            lLoadedIncludes(sMatchValue.ToLower) = False
+                                        End If
+                                        Continue While
+                                End Select
 
                             Case Else
-                                g_mFormMain.PrintInformation("[ERRO]", String.Format("Could not read include: {0}", sDefaultInc), False, False, 15)
-                                Continue For
+                                Continue While
                         End Select
 
                         If (Not IO.File.Exists(sCorrectPath)) Then
-                            Continue For
+                            Continue While
                         End If
 
                         If (lPathList.Contains(sCorrectPath.ToLower)) Then
-                            Continue For
+                            Continue While
                         End If
 
                         lPathList.Add(sCorrectPath.ToLower)
-                    Next
-                End If
-            End If
-
-            Using SR As New IO.StringReader(sSource)
-                While True
-                    Dim sLine As String = SR.ReadLine()
-                    If (sLine Is Nothing) Then
-                        Exit While
-                    End If
-
-                    If (Not sLine.Contains("#include") AndAlso Not sLine.Contains("#tryinclude")) Then
-                        Continue While
-                    End If
-
-                    Dim mRegMatch As Match = Regex.Match(sLine, "^\s*#(include|tryinclude)\s+(\<(?<PathInc>.*?)\>|""(?<PathFull>.*?)"")\s*$", RegexOptions.Compiled)
-                    If (Not mRegMatch.Success) Then
-                        Continue While
-                    End If
-
-                    Select Case (True)
-                        Case mRegMatch.Groups("PathInc").Success
-                            sMatchValue = mRegMatch.Groups("PathInc").Value
-
-                            Select Case (True)
-                                Case IO.File.Exists(IO.Path.Combine(sIncludeDir, sMatchValue))
-                                    sCorrectPath = IO.Path.GetFullPath(IO.Path.Combine(sIncludeDir, sMatchValue))
-                                Case IO.File.Exists(IO.Path.Combine(sCompilerPath, sMatchValue))
-                                    sCorrectPath = IO.Path.GetFullPath(IO.Path.Combine(sCompilerPath, sMatchValue))
-
-                                Case IO.File.Exists(String.Format("{0}.sp", IO.Path.Combine(sIncludeDir, sMatchValue)))
-                                    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.sp", IO.Path.Combine(sIncludeDir, sMatchValue)))
-                                Case IO.File.Exists(String.Format("{0}.sma", IO.Path.Combine(sIncludeDir, sMatchValue)))
-                                    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.sma", IO.Path.Combine(sIncludeDir, sMatchValue)))
-                                Case IO.File.Exists(String.Format("{0}.p", IO.Path.Combine(sIncludeDir, sMatchValue)))
-                                    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.p", IO.Path.Combine(sIncludeDir, sMatchValue)))
-                                Case IO.File.Exists(String.Format("{0}.pwn", IO.Path.Combine(sIncludeDir, sMatchValue)))
-                                    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.pwn", IO.Path.Combine(sIncludeDir, sMatchValue)))
-                                Case IO.File.Exists(String.Format("{0}.inc", IO.Path.Combine(sIncludeDir, sMatchValue)))
-                                    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.inc", IO.Path.Combine(sIncludeDir, sMatchValue)))
-
-                                Case IO.File.Exists(String.Format("{0}.sp", IO.Path.Combine(sCompilerPath, sMatchValue)))
-                                    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.sp", IO.Path.Combine(sCompilerPath, sMatchValue)))
-                                Case IO.File.Exists(String.Format("{0}.sma", IO.Path.Combine(sCompilerPath, sMatchValue)))
-                                    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.sma", IO.Path.Combine(sCompilerPath, sMatchValue)))
-                                Case IO.File.Exists(String.Format("{0}.p", IO.Path.Combine(sCompilerPath, sMatchValue)))
-                                    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.p", IO.Path.Combine(sCompilerPath, sMatchValue)))
-                                Case IO.File.Exists(String.Format("{0}.pwn", IO.Path.Combine(sCompilerPath, sMatchValue)))
-                                    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.pwn", IO.Path.Combine(sCompilerPath, sMatchValue)))
-                                Case IO.File.Exists(String.Format("{0}.inc", IO.Path.Combine(sCompilerPath, sMatchValue)))
-                                    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.inc", IO.Path.Combine(sCompilerPath, sMatchValue)))
-
-                                Case Else
-                                    g_mFormMain.PrintInformation("[ERRO]", String.Format("Could not read include: {0}", sMatchValue), False, False, 15)
-                                    Continue While
-                            End Select
-
-                        Case mRegMatch.Groups("PathFull").Success
-                            sMatchValue = mRegMatch.Groups("PathFull").Value
-
-                            Select Case (True)
-                                Case sMatchValue(1) = ":"c AndAlso IO.File.Exists(sMatchValue)
-                                    sCorrectPath = IO.Path.GetFullPath(sMatchValue)
-
-                                Case IO.File.Exists(IO.Path.Combine(sIncludeDir, sMatchValue))
-                                    sCorrectPath = IO.Path.GetFullPath(IO.Path.Combine(sIncludeDir, sMatchValue))
-                                Case IO.File.Exists(IO.Path.Combine(sCurrentDir, sMatchValue))
-                                    sCorrectPath = IO.Path.GetFullPath(IO.Path.Combine(sCurrentDir, sMatchValue))
-                                Case IO.File.Exists(IO.Path.Combine(sCompilerPath, sMatchValue))
-                                    sCorrectPath = IO.Path.GetFullPath(IO.Path.Combine(sCompilerPath, sMatchValue))
-
-                                Case IO.File.Exists(String.Format("{0}.sp", IO.Path.Combine(sIncludeDir, sMatchValue)))
-                                    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.sp", IO.Path.Combine(sIncludeDir, sMatchValue)))
-                                Case IO.File.Exists(String.Format("{0}.sma", IO.Path.Combine(sIncludeDir, sMatchValue)))
-                                    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.sma", IO.Path.Combine(sIncludeDir, sMatchValue)))
-                                Case IO.File.Exists(String.Format("{0}.p", IO.Path.Combine(sIncludeDir, sMatchValue)))
-                                    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.p", IO.Path.Combine(sIncludeDir, sMatchValue)))
-                                Case IO.File.Exists(String.Format("{0}.pwn", IO.Path.Combine(sIncludeDir, sMatchValue)))
-                                    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.pwn", IO.Path.Combine(sIncludeDir, sMatchValue)))
-                                Case IO.File.Exists(String.Format("{0}.inc", IO.Path.Combine(sIncludeDir, sMatchValue)))
-                                    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.inc", IO.Path.Combine(sIncludeDir, sMatchValue)))
-
-                                Case IO.File.Exists(String.Format("{0}.sp", IO.Path.Combine(sCurrentDir, sMatchValue)))
-                                    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.sp", IO.Path.Combine(sCurrentDir, sMatchValue)))
-                                Case IO.File.Exists(String.Format("{0}.sma", IO.Path.Combine(sCurrentDir, sMatchValue)))
-                                    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.sma", IO.Path.Combine(sCurrentDir, sMatchValue)))
-                                Case IO.File.Exists(String.Format("{0}.p", IO.Path.Combine(sCurrentDir, sMatchValue)))
-                                    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.p", IO.Path.Combine(sCurrentDir, sMatchValue)))
-                                Case IO.File.Exists(String.Format("{0}.pwn", IO.Path.Combine(sCurrentDir, sMatchValue)))
-                                    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.pwn", IO.Path.Combine(sCurrentDir, sMatchValue)))
-                                Case IO.File.Exists(String.Format("{0}.inc", IO.Path.Combine(sCurrentDir, sMatchValue)))
-                                    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.inc", IO.Path.Combine(sCurrentDir, sMatchValue)))
-
-                                Case IO.File.Exists(String.Format("{0}.sp", IO.Path.Combine(sCompilerPath, sMatchValue)))
-                                    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.sp", IO.Path.Combine(sCompilerPath, sMatchValue)))
-                                Case IO.File.Exists(String.Format("{0}.sma", IO.Path.Combine(sCompilerPath, sMatchValue)))
-                                    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.sma", IO.Path.Combine(sCompilerPath, sMatchValue)))
-                                Case IO.File.Exists(String.Format("{0}.p", IO.Path.Combine(sCompilerPath, sMatchValue)))
-                                    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.p", IO.Path.Combine(sCompilerPath, sMatchValue)))
-                                Case IO.File.Exists(String.Format("{0}.pwn", IO.Path.Combine(sCompilerPath, sMatchValue)))
-                                    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.pwn", IO.Path.Combine(sCompilerPath, sMatchValue)))
-                                Case IO.File.Exists(String.Format("{0}.inc", IO.Path.Combine(sCompilerPath, sMatchValue)))
-                                    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.inc", IO.Path.Combine(sCompilerPath, sMatchValue)))
-
-                                Case Else
-                                    g_mFormMain.PrintInformation("[ERRO]", String.Format("Could not read include: {0}", sMatchValue), False, False, 15)
-                                    Continue While
-                            End Select
-
-                        Case Else
-                            Continue While
-                    End Select
-
-                    If (Not IO.File.Exists(sCorrectPath)) Then
-                        Continue While
-                    End If
-
-                    If (lPathList.Contains(sCorrectPath.ToLower)) Then
-                        Continue While
-                    End If
-
-                    lPathList.Add(sCorrectPath.ToLower)
-                End While
-            End Using
+                    End While
+                End Using
+            Next
 
             Exit While
         End While
 
         For i = 0 To lPathList.Count - 1
-            GetIncludeFilesRecursive(sActiveSource, sActiveSourceFile, lPathList(i), lList)
+            GetIncludeFilesRecursive(sActiveSource, sActiveSourceFile, lPathList(i), lList, lLoadedIncludes)
         Next
     End Sub
 End Class

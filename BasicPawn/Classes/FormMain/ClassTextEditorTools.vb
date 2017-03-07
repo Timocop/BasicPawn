@@ -243,7 +243,7 @@ Public Class ClassTextEditorTools
             g_mFormMain.PrintInformation("[INFO]", "Compiling source started!")
 
             Dim sCompilerPath As String = ""
-            Dim sIncludePath As String = ""
+            Dim sIncludePaths As String = ""
             Dim sOutputFile As String = ""
 
             Dim iExitCode As Integer = 0
@@ -294,18 +294,20 @@ Public Class ClassTextEditorTools
 
             'Check include path
             If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                sIncludePath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "include")
+                sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "include")
 
-                If (Not IO.Directory.Exists(sIncludePath)) Then
+                If (Not IO.Directory.Exists(sIncludePaths)) Then
                     g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!")
                     Return
                 End If
             Else
-                sIncludePath = ClassSettings.g_sConfigOpenIncludeFolder
-                If (Not IO.Directory.Exists(sIncludePath)) Then
-                    g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!")
-                    Return
-                End If
+                sIncludePaths = ClassSettings.g_sConfigOpenIncludeFolders
+                For Each sInclude As String In sIncludePaths.Split(";"c)
+                    If (Not IO.Directory.Exists(sInclude)) Then
+                        g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!")
+                        Return
+                    End If
+                Next
             End If
 
             'Set output path
@@ -325,7 +327,12 @@ Public Class ClassTextEditorTools
 
             IO.File.Delete(sOutputFile)
 
-            Dim sArguments As String = String.Format("""{0}"" -i""{1}"" -o""{2}""", g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File, sIncludePath, sOutputFile)
+            Dim lIncludeList As New List(Of String)
+            For Each sInclude As String In sIncludePaths.Split(";"c)
+                lIncludeList.Add("-i""" & sInclude & """")
+            Next
+
+            Dim sArguments As String = String.Format("""{0}"" {1} -o""{2}""", g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File, String.Join(" ", lIncludeList.ToArray), sOutputFile)
             ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, sArguments, iExitCode, sOutput)
 
             Dim compilerType As ENUM_COMPILER_TYPE = ENUM_COMPILER_TYPE.UNKNOWN
@@ -408,9 +415,9 @@ Public Class ClassTextEditorTools
     ''' <param name="sSource">The source to compile.</param>
     ''' <param name="sOutputFile">The output file. This may change the extenstion if you using different compilers (e.g *.smx, *.amx, *.amxx). And extension is still required!</param>
     ''' <param name="sCompilerPath">(Optional) The compiler path. If Nothing, it will use the global config compiler path.</param>
-    ''' <param name="sIncludePath">(Optional) The include path. If Nothing, it will use the global config include path.</param>
+    ''' <param name="sIncludePaths">(Optional) The include paths seperated by ';'. If Nothing, it will use the global config include path.</param>
     ''' <returns>True on success, false otherwise.</returns>
-    Public Function CompileSource(bTesting As Boolean, sSource As String, ByRef sOutputFile As String, Optional sCompilerPath As String = Nothing, Optional sIncludePath As String = Nothing) As Boolean
+    Public Function CompileSource(bTesting As Boolean, sSource As String, ByRef sOutputFile As String, Optional sCompilerPath As String = Nothing, Optional sIncludePaths As String = Nothing) As Boolean
         Try
             If (g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True)) Then
                 Return False
@@ -478,30 +485,34 @@ Public Class ClassTextEditorTools
             End If
 
             'Check include path
-            If (sIncludePath Is Nothing) Then
+            If (sIncludePaths Is Nothing) Then
                 If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                     If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Could not get current source file!")
                         Return False
                     End If
 
-                    sIncludePath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "include")
-                    If (Not IO.Directory.Exists(sIncludePath)) Then
+                    sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "include")
+                    If (Not IO.Directory.Exists(sIncludePaths)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!")
                         Return False
                     End If
                 Else
-                    sIncludePath = ClassSettings.g_sConfigOpenIncludeFolder
-                    If (Not IO.Directory.Exists(sIncludePath)) Then
+                    sIncludePaths = ClassSettings.g_sConfigOpenIncludeFolders
+                    For Each sInclude As String In sIncludePaths.Split(";"c)
+                        If (Not IO.Directory.Exists(sInclude)) Then
+                            g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!")
+                            Return False
+                        End If
+                    Next
+                End If
+            Else
+                For Each sInclude As String In sIncludePaths.Split(";"c)
+                    If (Not IO.Directory.Exists(sInclude)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!")
                         Return False
                     End If
-                End If
-            Else
-                If (Not IO.Directory.Exists(sIncludePath)) Then
-                    g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!")
-                    Return False
-                End If
+                Next
             End If
 
             'Set output path
@@ -514,7 +525,12 @@ Public Class ClassTextEditorTools
             Dim TmpSourceFile As String = String.Format("{0}.src", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
             IO.File.WriteAllText(TmpSourceFile, sSource)
 
-            Dim sArguments As String = String.Format("""{0}"" -i""{1}"" -o""{2}""", TmpSourceFile, sIncludePath, sOutputFile)
+            Dim lIncludeList As New List(Of String)
+            For Each sInclude As String In sIncludePaths.Split(";"c)
+                lIncludeList.Add("-i""" & sInclude & """")
+            Next
+
+            Dim sArguments As String = String.Format("""{0}"" {1} -o""{2}""", TmpSourceFile, String.Join(" ", lIncludeList.ToArray), sOutputFile)
             ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, sArguments, iExitCode, sOutput)
 
             IO.File.Delete(TmpSourceFile)
@@ -621,7 +637,7 @@ Public Class ClassTextEditorTools
             Dim sMarkEnd As String = Guid.NewGuid.ToString
 
             Dim sCompilerPath As String = ""
-            Dim sIncludePath As String = ""
+            Dim sIncludePaths As String = ""
             Dim sOutputFile As String = ""
 
             Dim iExitCode As Integer = 0
@@ -672,17 +688,19 @@ Public Class ClassTextEditorTools
 
             'Check include path
             If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                sIncludePath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "include")
-                If (Not IO.Directory.Exists(sIncludePath)) Then
+                sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "include")
+                If (Not IO.Directory.Exists(sIncludePaths)) Then
                     g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!")
                     Return Nothing
                 End If
             Else
-                sIncludePath = ClassSettings.g_sConfigOpenIncludeFolder
-                If (Not IO.Directory.Exists(sIncludePath)) Then
-                    g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!")
-                    Return Nothing
-                End If
+                sIncludePaths = ClassSettings.g_sConfigOpenIncludeFolders
+                For Each sInclude As String In sIncludePaths.Split(";"c)
+                    If (Not IO.Directory.Exists(sInclude)) Then
+                        g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!")
+                        Return Nothing
+                    End If
+                Next
             End If
 
 
@@ -705,7 +723,12 @@ Public Class ClassTextEditorTools
 
             sOutputFile = String.Format("{0}.lst", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
 
-            Dim sArguments As String = String.Format("""{0}"" -l -i""{1}"" -o""{2}""", sTmpSourcePath, sIncludePath, sOutputFile)
+            Dim lIncludeList As New List(Of String)
+            For Each sInclude As String In sIncludePaths.Split(";"c)
+                lIncludeList.Add("-i""" & sInclude & """")
+            Next
+
+            Dim sArguments As String = String.Format("""{0}"" -l {1} -o""{2}""", sTmpSourcePath, String.Join(" ", lIncludeList.ToArray), sOutputFile)
             ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, sArguments, iExitCode, sOutput)
 
             IO.File.Delete(sTmpSourcePath)
@@ -804,7 +827,7 @@ Public Class ClassTextEditorTools
             g_mFormMain.PrintInformation("[INFO]", "DIASM source started!")
 
             Dim sCompilerPath As String = ""
-            Dim sIncludePath As String = ""
+            Dim sIncludePaths As String = ""
             Dim sOutputFile As String = ""
 
             Dim iExitCode As Integer = 0
@@ -855,17 +878,20 @@ Public Class ClassTextEditorTools
 
             'Check include path
             If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                sIncludePath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "include")
-                If (Not IO.Directory.Exists(sIncludePath)) Then
+                sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "include")
+
+                If (Not IO.Directory.Exists(sIncludePaths)) Then
                     g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Include path can not be found!")
                     Return Nothing
                 End If
             Else
-                sIncludePath = ClassSettings.g_sConfigOpenIncludeFolder
-                If (Not IO.Directory.Exists(sIncludePath)) Then
-                    g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Include path can not be found!")
-                    Return Nothing
-                End If
+                sIncludePaths = ClassSettings.g_sConfigOpenIncludeFolders
+                For Each sInclude As String In sIncludePaths.Split(";"c)
+                    If (Not IO.Directory.Exists(sInclude)) Then
+                        g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Include path can not be found!")
+                        Return Nothing
+                    End If
+                Next
             End If
 
 
@@ -876,7 +902,12 @@ Public Class ClassTextEditorTools
 
             sOutputFile = String.Format("{0}.asm", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
 
-            Dim sArguments As String = String.Format("""{0}"" -a -i""{1}"" -o""{2}""", sTmpSourcePath, sIncludePath, sOutputFile)
+            Dim lIncludeList As New List(Of String)
+            For Each sInclude As String In sIncludePaths.Split(";"c)
+                lIncludeList.Add("-i""" & sInclude & """")
+            Next
+
+            Dim sArguments As String = String.Format("""{0}"" -a {1} -o""{2}""", sTmpSourcePath, String.Join(" ", lIncludeList.ToArray), sOutputFile)
             ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, sArguments, iExitCode, sOutput)
 
             IO.File.Delete(sTmpSourcePath)
@@ -913,9 +944,9 @@ Public Class ClassTextEditorTools
     ''' <param name="sSource">The source to compile.</param>
     ''' <param name="sOutputFile">The output file. An extension is still required! (default is *.asm)</param>
     ''' <param name="sCompilerPath">(Optional) The compiler path. If Nothing, it will use the global config compiler path.</param>
-    ''' <param name="sIncludePath">(Optional) The include path. If Nothing, it will use the global config include path.</param>
+    ''' <param name="sIncludePaths">(Optional) The include paths seperated by ';'. If Nothing, it will use the global config include path.</param>
     ''' <returns></returns>
-    Public Function GetCompilerAssemblyCode(bTesting As Boolean, sSource As String, ByRef sOutputFile As String, Optional sCompilerPath As String = Nothing, Optional sIncludePath As String = Nothing) As String
+    Public Function GetCompilerAssemblyCode(bTesting As Boolean, sSource As String, ByRef sOutputFile As String, Optional sCompilerPath As String = Nothing, Optional sIncludePaths As String = Nothing) As String
         Try
             If (g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True)) Then
                 Return Nothing
@@ -983,27 +1014,29 @@ Public Class ClassTextEditorTools
             End If
 
             'Check include path
-            If (sIncludePath Is Nothing) Then
+            If (sIncludePaths Is Nothing) Then
                 If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                     If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get current source file!")
                         Return Nothing
                     End If
 
-                    sIncludePath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "include")
-                    If (Not IO.Directory.Exists(sIncludePath)) Then
+                    sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "include")
+                    If (Not IO.Directory.Exists(sIncludePaths)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Include path can not be found!")
                         Return Nothing
                     End If
                 Else
-                    sIncludePath = ClassSettings.g_sConfigOpenIncludeFolder
-                    If (Not IO.Directory.Exists(sIncludePath)) Then
-                        g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Include path can not be found!")
-                        Return Nothing
-                    End If
+                    sIncludePaths = ClassSettings.g_sConfigOpenIncludeFolders
+                    For Each sInclude As String In sIncludePaths.Split(";"c)
+                        If (Not IO.Directory.Exists(sInclude)) Then
+                            g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Include path can not be found!")
+                            Return Nothing
+                        End If
+                    Next
                 End If
             Else
-                If (Not IO.Directory.Exists(sIncludePath)) Then
+                If (Not IO.Directory.Exists(sIncludePaths)) Then
                     g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Include path can not be found!")
                     Return Nothing
                 End If
@@ -1017,7 +1050,12 @@ Public Class ClassTextEditorTools
             Dim TmpSourceFile As String = String.Format("{0}.src", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
             IO.File.WriteAllText(TmpSourceFile, sSource)
 
-            Dim sArguments As String = String.Format("""{0}"" -a -i""{1}"" -o""{2}""", TmpSourceFile, sIncludePath, sOutputFile)
+            Dim lIncludeList As New List(Of String)
+            For Each sInclude As String In sIncludePaths.Split(";"c)
+                lIncludeList.Add("-i""" & sInclude & """")
+            Next
+
+            Dim sArguments As String = String.Format("""{0}"" -a {1} -o""{2}""", TmpSourceFile, String.Join(" ", lIncludeList.ToArray), sOutputFile)
             ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, sArguments, iExitCode, sOutput)
 
             Dim sLines As String() = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)

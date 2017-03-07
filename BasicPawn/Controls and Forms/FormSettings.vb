@@ -187,11 +187,20 @@ Public Class FormSettings
             If (String.IsNullOrEmpty(TextBox_IncludeFolder.Text) AndAlso Not String.IsNullOrEmpty(TextBox_CompilerPath.Text) AndAlso IO.File.Exists(TextBox_CompilerPath.Text)) Then
                 i.SelectedPath = IO.Path.GetDirectoryName(TextBox_CompilerPath.Text)
             Else
-                i.SelectedPath = TextBox_IncludeFolder.Text
+                i.SelectedPath = TextBox_IncludeFolder.Text.Split(";"c)(0)
             End If
 
             If (i.ShowDialog = DialogResult.OK) Then
-                TextBox_IncludeFolder.Text = i.SelectedPath
+                If (String.IsNullOrEmpty(TextBox_IncludeFolder.Text)) Then
+                    TextBox_IncludeFolder.Text = i.SelectedPath
+                Else
+                    Select Case MessageBox.Show("Replace already existing include paths with this one? Otherwise the selected path will be addded to other already existing include paths.", "Replace or add include paths", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                        Case DialogResult.Yes
+                            TextBox_IncludeFolder.Text = i.SelectedPath
+                        Case Else
+                            TextBox_IncludeFolder.Text &= ";"c & i.SelectedPath
+                    End Select
+                End If
             End If
         End Using
     End Sub
@@ -363,7 +372,7 @@ Public Class FormSettings
                 ClassSettings.g_iConfigCompilingType = If(RadioButton_ConfigSettingAutomatic.Checked, ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC, ClassSettings.ENUM_COMPILING_TYPE.CONFIG)
                 ClassSettings.g_sConfigName = sCurrentConfigName
                 ClassSettings.g_sConfigCompilerPath = TextBox_CompilerPath.Text
-                ClassSettings.g_sConfigOpenIncludeFolder = TextBox_IncludeFolder.Text
+                ClassSettings.g_sConfigOpenIncludeFolders = TextBox_IncludeFolder.Text
                 ClassSettings.g_sConfigPluginOutputFolder = TextBox_OutputFolder.Text
                 ClassSettings.g_sConfigExecuteShell = TextBox_Shell.Text
                 'Debugging
