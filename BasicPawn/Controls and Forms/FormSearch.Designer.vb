@@ -32,6 +32,7 @@ Partial Class FormSearch
         Me.CheckBox_WholeWord = New System.Windows.Forms.CheckBox()
         Me.CheckBox_CaseSensitive = New System.Windows.Forms.CheckBox()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
+        Me.CheckBox_LoopSearch = New System.Windows.Forms.CheckBox()
         Me.CheckBox_Multiline = New System.Windows.Forms.CheckBox()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
         Me.RadioButton_ModeRegEx = New System.Windows.Forms.RadioButton()
@@ -42,11 +43,18 @@ Partial Class FormSearch
         Me.RadioButton_DirectionUp = New System.Windows.Forms.RadioButton()
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
         Me.ToolStripStatusLabel1 = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.CheckBox_LoopSearch = New System.Windows.Forms.CheckBox()
+        Me.Button_ListAll = New System.Windows.Forms.Button()
+        Me.ListView_Output = New System.Windows.Forms.ListView()
+        Me.ColumnHeader1 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.ColumnHeader2 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
+        Me.Panel1 = New System.Windows.Forms.Panel()
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
+        Me.TableLayoutPanel1.SuspendLayout()
+        Me.Panel1.SuspendLayout()
         Me.SuspendLayout()
         '
         'Label1
@@ -64,22 +72,22 @@ Partial Class FormSearch
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.TextBox_Search.Location = New System.Drawing.Point(68, 12)
         Me.TextBox_Search.Name = "TextBox_Search"
-        Me.TextBox_Search.Size = New System.Drawing.Size(310, 22)
+        Me.TextBox_Search.Size = New System.Drawing.Size(331, 22)
         Me.TextBox_Search.TabIndex = 1
         '
         'TextBox_Replace
         '
         Me.TextBox_Replace.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TextBox_Replace.Location = New System.Drawing.Point(68, 42)
+        Me.TextBox_Replace.Location = New System.Drawing.Point(68, 40)
         Me.TextBox_Replace.Name = "TextBox_Replace"
-        Me.TextBox_Replace.Size = New System.Drawing.Size(310, 22)
+        Me.TextBox_Replace.Size = New System.Drawing.Size(331, 22)
         Me.TextBox_Replace.TabIndex = 3
         '
         'Label2
         '
         Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(12, 45)
+        Me.Label2.Location = New System.Drawing.Point(12, 43)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(50, 13)
         Me.Label2.TabIndex = 2
@@ -89,7 +97,7 @@ Partial Class FormSearch
         '
         Me.Button_Search.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_Search.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_Search.Location = New System.Drawing.Point(384, 12)
+        Me.Button_Search.Location = New System.Drawing.Point(405, 12)
         Me.Button_Search.Name = "Button_Search"
         Me.Button_Search.Size = New System.Drawing.Size(75, 23)
         Me.Button_Search.TabIndex = 4
@@ -100,7 +108,7 @@ Partial Class FormSearch
         '
         Me.Button_Replace.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_Replace.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_Replace.Location = New System.Drawing.Point(384, 41)
+        Me.Button_Replace.Location = New System.Drawing.Point(405, 41)
         Me.Button_Replace.Name = "Button_Replace"
         Me.Button_Replace.Size = New System.Drawing.Size(75, 23)
         Me.Button_Replace.TabIndex = 5
@@ -131,18 +139,27 @@ Partial Class FormSearch
         '
         'GroupBox1
         '
-        Me.GroupBox1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.GroupBox1.Controls.Add(Me.CheckBox_LoopSearch)
         Me.GroupBox1.Controls.Add(Me.CheckBox_Multiline)
         Me.GroupBox1.Controls.Add(Me.CheckBox_WholeWord)
         Me.GroupBox1.Controls.Add(Me.CheckBox_CaseSensitive)
         Me.GroupBox1.Location = New System.Drawing.Point(12, 68)
         Me.GroupBox1.Name = "GroupBox1"
-        Me.GroupBox1.Size = New System.Drawing.Size(136, 117)
+        Me.GroupBox1.Size = New System.Drawing.Size(136, 118)
         Me.GroupBox1.TabIndex = 8
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "Settings"
+        '
+        'CheckBox_LoopSearch
+        '
+        Me.CheckBox_LoopSearch.AutoSize = True
+        Me.CheckBox_LoopSearch.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_LoopSearch.Location = New System.Drawing.Point(6, 89)
+        Me.CheckBox_LoopSearch.Name = "CheckBox_LoopSearch"
+        Me.CheckBox_LoopSearch.Size = New System.Drawing.Size(95, 18)
+        Me.CheckBox_LoopSearch.TabIndex = 9
+        Me.CheckBox_LoopSearch.Text = "Loop Search"
+        Me.CheckBox_LoopSearch.UseVisualStyleBackColor = True
         '
         'CheckBox_Multiline
         '
@@ -157,13 +174,11 @@ Partial Class FormSearch
         '
         'GroupBox2
         '
-        Me.GroupBox2.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.GroupBox2.Controls.Add(Me.RadioButton_ModeRegEx)
         Me.GroupBox2.Controls.Add(Me.RadioButton_ModeNormal)
-        Me.GroupBox2.Location = New System.Drawing.Point(154, 68)
+        Me.GroupBox2.Location = New System.Drawing.Point(157, 68)
         Me.GroupBox2.Name = "GroupBox2"
-        Me.GroupBox2.Size = New System.Drawing.Size(134, 117)
+        Me.GroupBox2.Size = New System.Drawing.Size(134, 118)
         Me.GroupBox2.TabIndex = 9
         Me.GroupBox2.TabStop = False
         Me.GroupBox2.Text = "Mode"
@@ -196,7 +211,7 @@ Partial Class FormSearch
         '
         Me.Button_ReplaceAll.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_ReplaceAll.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_ReplaceAll.Location = New System.Drawing.Point(384, 70)
+        Me.Button_ReplaceAll.Location = New System.Drawing.Point(405, 70)
         Me.Button_ReplaceAll.Name = "Button_ReplaceAll"
         Me.Button_ReplaceAll.Size = New System.Drawing.Size(75, 23)
         Me.Button_ReplaceAll.TabIndex = 10
@@ -205,13 +220,11 @@ Partial Class FormSearch
         '
         'GroupBox3
         '
-        Me.GroupBox3.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.GroupBox3.Controls.Add(Me.RadioButton_DirectionDown)
         Me.GroupBox3.Controls.Add(Me.RadioButton_DirectionUp)
-        Me.GroupBox3.Location = New System.Drawing.Point(294, 68)
+        Me.GroupBox3.Location = New System.Drawing.Point(303, 68)
         Me.GroupBox3.Name = "GroupBox3"
-        Me.GroupBox3.Size = New System.Drawing.Size(84, 117)
+        Me.GroupBox3.Size = New System.Drawing.Size(84, 118)
         Me.GroupBox3.TabIndex = 11
         Me.GroupBox3.TabStop = False
         Me.GroupBox3.Text = "Direction"
@@ -244,9 +257,9 @@ Partial Class FormSearch
         'StatusStrip1
         '
         Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripStatusLabel1})
-        Me.StatusStrip1.Location = New System.Drawing.Point(0, 188)
+        Me.StatusStrip1.Location = New System.Drawing.Point(0, 389)
         Me.StatusStrip1.Name = "StatusStrip1"
-        Me.StatusStrip1.Size = New System.Drawing.Size(471, 22)
+        Me.StatusStrip1.Size = New System.Drawing.Size(492, 22)
         Me.StatusStrip1.SizingGrip = False
         Me.StatusStrip1.TabIndex = 12
         Me.StatusStrip1.Text = "StatusStrip1"
@@ -257,33 +270,88 @@ Partial Class FormSearch
         Me.ToolStripStatusLabel1.Size = New System.Drawing.Size(190, 17)
         Me.ToolStripStatusLabel1.Text = "Click the 'Search' button to search."
         '
-        'CheckBox_LoopSearch
+        'Button_ListAll
         '
-        Me.CheckBox_LoopSearch.AutoSize = True
-        Me.CheckBox_LoopSearch.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_LoopSearch.Location = New System.Drawing.Point(6, 89)
-        Me.CheckBox_LoopSearch.Name = "CheckBox_LoopSearch"
-        Me.CheckBox_LoopSearch.Size = New System.Drawing.Size(95, 18)
-        Me.CheckBox_LoopSearch.TabIndex = 9
-        Me.CheckBox_LoopSearch.Text = "Loop Search"
-        Me.CheckBox_LoopSearch.UseVisualStyleBackColor = True
+        Me.Button_ListAll.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Button_ListAll.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.Button_ListAll.Location = New System.Drawing.Point(405, 99)
+        Me.Button_ListAll.Name = "Button_ListAll"
+        Me.Button_ListAll.Size = New System.Drawing.Size(75, 23)
+        Me.Button_ListAll.TabIndex = 13
+        Me.Button_ListAll.Text = "List All"
+        Me.Button_ListAll.UseVisualStyleBackColor = True
+        '
+        'ListView_Output
+        '
+        Me.ListView_Output.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1, Me.ColumnHeader2})
+        Me.ListView_Output.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ListView_Output.FullRowSelect = True
+        Me.ListView_Output.HideSelection = False
+        Me.ListView_Output.Location = New System.Drawing.Point(3, 203)
+        Me.ListView_Output.MultiSelect = False
+        Me.ListView_Output.Name = "ListView_Output"
+        Me.ListView_Output.Size = New System.Drawing.Size(486, 183)
+        Me.ListView_Output.TabIndex = 14
+        Me.ListView_Output.UseCompatibleStateImageBehavior = False
+        Me.ListView_Output.View = System.Windows.Forms.View.Details
+        Me.ListView_Output.Visible = False
+        '
+        'ColumnHeader1
+        '
+        Me.ColumnHeader1.Text = "Line"
+        Me.ColumnHeader1.Width = 57
+        '
+        'ColumnHeader2
+        '
+        Me.ColumnHeader2.Text = "Text"
+        Me.ColumnHeader2.Width = 415
+        '
+        'TableLayoutPanel1
+        '
+        Me.TableLayoutPanel1.AutoSize = True
+        Me.TableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.TableLayoutPanel1.ColumnCount = 1
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.TableLayoutPanel1.Controls.Add(Me.Panel1, 0, 0)
+        Me.TableLayoutPanel1.Controls.Add(Me.ListView_Output, 0, 1)
+        Me.TableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TableLayoutPanel1.Location = New System.Drawing.Point(0, 0)
+        Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
+        Me.TableLayoutPanel1.RowCount = 2
+        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 200.0!))
+        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(492, 389)
+        Me.TableLayoutPanel1.TabIndex = 15
+        '
+        'Panel1
+        '
+        Me.Panel1.Controls.Add(Me.Label1)
+        Me.Panel1.Controls.Add(Me.TextBox_Search)
+        Me.Panel1.Controls.Add(Me.Button_ListAll)
+        Me.Panel1.Controls.Add(Me.Label2)
+        Me.Panel1.Controls.Add(Me.TextBox_Replace)
+        Me.Panel1.Controls.Add(Me.GroupBox3)
+        Me.Panel1.Controls.Add(Me.Button_Search)
+        Me.Panel1.Controls.Add(Me.Button_ReplaceAll)
+        Me.Panel1.Controls.Add(Me.Button_Replace)
+        Me.Panel1.Controls.Add(Me.GroupBox2)
+        Me.Panel1.Controls.Add(Me.GroupBox1)
+        Me.Panel1.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Panel1.Location = New System.Drawing.Point(0, 0)
+        Me.Panel1.Margin = New System.Windows.Forms.Padding(0)
+        Me.Panel1.Name = "Panel1"
+        Me.Panel1.Size = New System.Drawing.Size(492, 200)
+        Me.Panel1.TabIndex = 0
         '
         'FormSearch
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
-        Me.ClientSize = New System.Drawing.Size(471, 210)
+        Me.AutoSize = True
+        Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.ClientSize = New System.Drawing.Size(492, 411)
+        Me.Controls.Add(Me.TableLayoutPanel1)
         Me.Controls.Add(Me.StatusStrip1)
-        Me.Controls.Add(Me.GroupBox3)
-        Me.Controls.Add(Me.Button_ReplaceAll)
-        Me.Controls.Add(Me.GroupBox2)
-        Me.Controls.Add(Me.GroupBox1)
-        Me.Controls.Add(Me.Button_Replace)
-        Me.Controls.Add(Me.Button_Search)
-        Me.Controls.Add(Me.TextBox_Replace)
-        Me.Controls.Add(Me.Label2)
-        Me.Controls.Add(Me.TextBox_Search)
-        Me.Controls.Add(Me.Label1)
         Me.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
@@ -300,6 +368,9 @@ Partial Class FormSearch
         Me.GroupBox3.PerformLayout()
         Me.StatusStrip1.ResumeLayout(False)
         Me.StatusStrip1.PerformLayout()
+        Me.TableLayoutPanel1.ResumeLayout(False)
+        Me.Panel1.ResumeLayout(False)
+        Me.Panel1.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -325,4 +396,10 @@ Partial Class FormSearch
     Friend WithEvents StatusStrip1 As StatusStrip
     Friend WithEvents ToolStripStatusLabel1 As ToolStripStatusLabel
     Friend WithEvents CheckBox_LoopSearch As CheckBox
+    Friend WithEvents Button_ListAll As Button
+    Friend WithEvents ListView_Output As ListView
+    Friend WithEvents ColumnHeader1 As ColumnHeader
+    Friend WithEvents ColumnHeader2 As ColumnHeader
+    Friend WithEvents TableLayoutPanel1 As TableLayoutPanel
+    Friend WithEvents Panel1 As Panel
 End Class
