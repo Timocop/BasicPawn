@@ -14,6 +14,7 @@
 'You should have received a copy Of the GNU General Public License
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
+#Const SEARCH_EVERYWHERE = False
 
 Imports System.Text
 Imports System.Text.RegularExpressions
@@ -90,7 +91,7 @@ Public Class ClassAutocompleteUpdater
     ''' Stops the autocomplete update thread
     ''' </summary>
     Public Sub StopUpdate()
-        RaiseEvent OnAutocompleteUpdateAbort
+        RaiseEvent OnAutocompleteUpdateAbort()
 
         If (g_mAutocompleteUpdaterThread IsNot Nothing AndAlso g_mAutocompleteUpdaterThread.IsAlive) Then
             'g_mFormMain.PrintInformation("[WARN]", "Autocomplete update canceled!")
@@ -2110,10 +2111,12 @@ Public Class ClassAutocompleteUpdater
 
         If (bFindAll) Then
             While True
+#If SEARCH_EVERYWHERE Then
                 If (String.IsNullOrEmpty(sActiveSourceFile) OrElse Not IO.File.Exists(sActiveSourceFile)) Then
                     g_mFormMain.PrintInformation("[ERRO]", "Could not read includes! Could not get current source file!")
                     Exit While
                 End If
+#End If
 
                 'Check includes
                 Dim sIncludePaths As String
@@ -2127,6 +2130,7 @@ Public Class ClassAutocompleteUpdater
                     sIncludePaths = ClassSettings.g_sConfigOpenIncludeFolders
                 End If
 
+#If SEARCH_EVERYWHERE Then
                 'Check compiler
                 Dim sCompilerPath As String
                 If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
@@ -2140,8 +2144,11 @@ Public Class ClassAutocompleteUpdater
                 Else
                     sCompilerPath = ""
                 End If
+#End If
 
+#If SEARCH_EVERYWHERE Then
                 GetIncludeFilesRecursiveAll(IO.Path.GetDirectoryName(sActiveSourceFile), lList, lLoadedIncludes, iMaxDirectoryDepth)
+#End If
 
                 For Each sInclude As String In sIncludePaths.Split(";"c)
                     If (Not IO.Directory.Exists(sInclude)) Then
@@ -2151,7 +2158,9 @@ Public Class ClassAutocompleteUpdater
                     GetIncludeFilesRecursiveAll(sInclude, lList, lLoadedIncludes, iMaxDirectoryDepth)
                 Next
 
+#If SEARCH_EVERYWHERE Then
                 GetIncludeFilesRecursiveAll(sCompilerPath, lList, lLoadedIncludes, iMaxDirectoryDepth)
+#End If
 
                 Exit While
             End While
