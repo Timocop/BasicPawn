@@ -2102,11 +2102,60 @@ Public Class ClassAutocompleteUpdater
     ''' </summary>
     ''' <param name="sPath"></param>
     ''' <returns>Array if include file paths</returns>
-    Public Function GetIncludeFiles(sActiveSource As String, sActiveSourceFile As String, sPath As String) As String()
+    Public Function GetIncludeFiles(sActiveSource As String, sActiveSourceFile As String, sPath As String, Optional bFindAll As Boolean = False, Optional iMaxDirectoryDepth As Integer = 10) As String()
         Dim lList As New List(Of String)
         Dim lLoadedIncludes As New Dictionary(Of String, Boolean)
 
         GetIncludeFilesRecursive(sActiveSource, sActiveSourceFile, sPath, lList, lLoadedIncludes)
+
+        If (bFindAll) Then
+            While True
+                If (String.IsNullOrEmpty(sActiveSourceFile) OrElse Not IO.File.Exists(sActiveSourceFile)) Then
+                    g_mFormMain.PrintInformation("[ERRO]", "Could not read includes! Could not get current source file!")
+                    Exit While
+                End If
+
+                'Check includes
+                Dim sIncludePaths As String
+                If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
+                    If (String.IsNullOrEmpty(sActiveSourceFile) OrElse Not IO.File.Exists(sActiveSourceFile)) Then
+                        g_mFormMain.PrintInformation("[ERRO]", "Could not read includes! Could not get current source file!", False, False, 1)
+                        Exit While
+                    End If
+                    sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(sActiveSourceFile), "include")
+                Else
+                    sIncludePaths = ClassSettings.g_sConfigOpenIncludeFolders
+                End If
+
+                'Check compiler
+                Dim sCompilerPath As String
+                If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
+                    If (String.IsNullOrEmpty(sActiveSourceFile) OrElse Not IO.File.Exists(sActiveSourceFile)) Then
+                        g_mFormMain.PrintInformation("[ERRO]", "Could not read includes! Could not get current source file!", False, False, 1)
+                        Exit While
+                    End If
+                    sCompilerPath = IO.Path.GetDirectoryName(sActiveSourceFile)
+                ElseIf (Not String.IsNullOrEmpty(ClassSettings.g_sConfigCompilerPath) AndAlso IO.File.Exists(ClassSettings.g_sConfigCompilerPath)) Then
+                    sCompilerPath = IO.Path.GetDirectoryName(ClassSettings.g_sConfigCompilerPath)
+                Else
+                    sCompilerPath = ""
+                End If
+
+                GetIncludeFilesRecursiveAll(IO.Path.GetDirectoryName(sActiveSourceFile), lList, lLoadedIncludes, iMaxDirectoryDepth)
+
+                For Each sInclude As String In sIncludePaths.Split(";"c)
+                    If (Not IO.Directory.Exists(sInclude)) Then
+                        Continue For
+                    End If
+
+                    GetIncludeFilesRecursiveAll(sInclude, lList, lLoadedIncludes, iMaxDirectoryDepth)
+                Next
+
+                GetIncludeFilesRecursiveAll(sCompilerPath, lList, lLoadedIncludes, iMaxDirectoryDepth)
+
+                Exit While
+            End While
+        End If
 
         For Each i In lLoadedIncludes
             If (i.Value) Then
@@ -2118,6 +2167,42 @@ Public Class ClassAutocompleteUpdater
 
         Return lList.ToArray
     End Function
+
+    Private Sub GetIncludeFilesRecursiveAll(sInclude As String, ByRef lList As List(Of String), lLoadedIncludes As Dictionary(Of String, Boolean), iMaxDirectoryDepth As Integer)
+        Dim sFiles As String()
+        Dim sDirectories As String()
+
+        sFiles = IO.Directory.GetFiles(sInclude)
+        sDirectories = IO.Directory.GetDirectories(sInclude)
+
+        For Each i As String In sFiles
+            Dim sFileName As String = IO.Path.GetFileNameWithoutExtension(i)
+
+            If (Not IO.File.Exists(i)) Then
+                Continue For
+            End If
+
+            If (lList.Contains(i.ToLower)) Then
+                lLoadedIncludes(sFileName.ToLower) = True
+                Continue For
+            End If
+
+            Select Case (IO.Path.GetExtension(i).ToLower)
+                Case ".sp", ".sma", ".p", ".pwn", ".inc"
+                    lList.Add(i.ToLower)
+                    lLoadedIncludes(sFileName.ToLower) = True
+            End Select
+        Next
+
+        If (iMaxDirectoryDepth < 1) Then
+            g_mFormMain.PrintInformation("[ERRO]", "Max recursive directory search depth reached!", False, False, 5)
+            Return
+        End If
+
+        For Each i As String In sDirectories
+            GetIncludeFilesRecursiveAll(i, lList, lLoadedIncludes, iMaxDirectoryDepth - 1)
+        Next
+    End Sub
 
     Private Sub GetIncludeFilesRecursive(sActiveSource As String, sActiveSourceFile As String, sPath As String, ByRef lList As List(Of String), lLoadedIncludes As Dictionary(Of String, Boolean))
         Dim sSource As String
@@ -2161,6 +2246,7 @@ Public Class ClassAutocompleteUpdater
         Dim sMatchValue As String
 
         While True
+            'Check includes
             Dim sIncludePaths As String
             If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                 If (String.IsNullOrEmpty(sActiveSourceFile) OrElse Not IO.File.Exists(sActiveSourceFile)) Then
