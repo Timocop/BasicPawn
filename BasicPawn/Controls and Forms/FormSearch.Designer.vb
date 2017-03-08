@@ -42,6 +42,7 @@ Partial Class FormSearch
         Me.RadioButton_DirectionUp = New System.Windows.Forms.RadioButton()
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
         Me.ToolStripStatusLabel1 = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.CheckBox_LoopSearch = New System.Windows.Forms.CheckBox()
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
@@ -63,7 +64,7 @@ Partial Class FormSearch
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.TextBox_Search.Location = New System.Drawing.Point(68, 12)
         Me.TextBox_Search.Name = "TextBox_Search"
-        Me.TextBox_Search.Size = New System.Drawing.Size(310, 20)
+        Me.TextBox_Search.Size = New System.Drawing.Size(310, 22)
         Me.TextBox_Search.TabIndex = 1
         '
         'TextBox_Replace
@@ -72,7 +73,7 @@ Partial Class FormSearch
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.TextBox_Replace.Location = New System.Drawing.Point(68, 42)
         Me.TextBox_Replace.Name = "TextBox_Replace"
-        Me.TextBox_Replace.Size = New System.Drawing.Size(310, 20)
+        Me.TextBox_Replace.Size = New System.Drawing.Size(310, 22)
         Me.TextBox_Replace.TabIndex = 3
         '
         'Label2
@@ -112,7 +113,7 @@ Partial Class FormSearch
         Me.CheckBox_WholeWord.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.CheckBox_WholeWord.Location = New System.Drawing.Point(6, 19)
         Me.CheckBox_WholeWord.Name = "CheckBox_WholeWord"
-        Me.CheckBox_WholeWord.Size = New System.Drawing.Size(125, 18)
+        Me.CheckBox_WholeWord.Size = New System.Drawing.Size(133, 18)
         Me.CheckBox_WholeWord.TabIndex = 6
         Me.CheckBox_WholeWord.Text = "Match Whole Word"
         Me.CheckBox_WholeWord.UseVisualStyleBackColor = True
@@ -123,19 +124,22 @@ Partial Class FormSearch
         Me.CheckBox_CaseSensitive.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.CheckBox_CaseSensitive.Location = New System.Drawing.Point(6, 42)
         Me.CheckBox_CaseSensitive.Name = "CheckBox_CaseSensitive"
-        Me.CheckBox_CaseSensitive.Size = New System.Drawing.Size(102, 18)
+        Me.CheckBox_CaseSensitive.Size = New System.Drawing.Size(104, 18)
         Me.CheckBox_CaseSensitive.TabIndex = 7
         Me.CheckBox_CaseSensitive.Text = "Case Sensitive"
         Me.CheckBox_CaseSensitive.UseVisualStyleBackColor = True
         '
         'GroupBox1
         '
+        Me.GroupBox1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.GroupBox1.Controls.Add(Me.CheckBox_LoopSearch)
         Me.GroupBox1.Controls.Add(Me.CheckBox_Multiline)
         Me.GroupBox1.Controls.Add(Me.CheckBox_WholeWord)
         Me.GroupBox1.Controls.Add(Me.CheckBox_CaseSensitive)
         Me.GroupBox1.Location = New System.Drawing.Point(12, 68)
         Me.GroupBox1.Name = "GroupBox1"
-        Me.GroupBox1.Size = New System.Drawing.Size(136, 86)
+        Me.GroupBox1.Size = New System.Drawing.Size(136, 117)
         Me.GroupBox1.TabIndex = 8
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "Settings"
@@ -146,18 +150,20 @@ Partial Class FormSearch
         Me.CheckBox_Multiline.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.CheckBox_Multiline.Location = New System.Drawing.Point(6, 65)
         Me.CheckBox_Multiline.Name = "CheckBox_Multiline"
-        Me.CheckBox_Multiline.Size = New System.Drawing.Size(111, 18)
+        Me.CheckBox_Multiline.Size = New System.Drawing.Size(118, 18)
         Me.CheckBox_Multiline.TabIndex = 8
         Me.CheckBox_Multiline.Text = "Multiline (RegEx)"
         Me.CheckBox_Multiline.UseVisualStyleBackColor = True
         '
         'GroupBox2
         '
+        Me.GroupBox2.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.GroupBox2.Controls.Add(Me.RadioButton_ModeRegEx)
         Me.GroupBox2.Controls.Add(Me.RadioButton_ModeNormal)
         Me.GroupBox2.Location = New System.Drawing.Point(154, 68)
         Me.GroupBox2.Name = "GroupBox2"
-        Me.GroupBox2.Size = New System.Drawing.Size(134, 86)
+        Me.GroupBox2.Size = New System.Drawing.Size(134, 117)
         Me.GroupBox2.TabIndex = 9
         Me.GroupBox2.TabStop = False
         Me.GroupBox2.Text = "Mode"
@@ -168,7 +174,7 @@ Partial Class FormSearch
         Me.RadioButton_ModeRegEx.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.RadioButton_ModeRegEx.Location = New System.Drawing.Point(6, 42)
         Me.RadioButton_ModeRegEx.Name = "RadioButton_ModeRegEx"
-        Me.RadioButton_ModeRegEx.Size = New System.Drawing.Size(127, 18)
+        Me.RadioButton_ModeRegEx.Size = New System.Drawing.Size(134, 18)
         Me.RadioButton_ModeRegEx.TabIndex = 11
         Me.RadioButton_ModeRegEx.Text = "Regular Expressions"
         Me.RadioButton_ModeRegEx.UseVisualStyleBackColor = True
@@ -180,7 +186,7 @@ Partial Class FormSearch
         Me.RadioButton_ModeNormal.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.RadioButton_ModeNormal.Location = New System.Drawing.Point(6, 19)
         Me.RadioButton_ModeNormal.Name = "RadioButton_ModeNormal"
-        Me.RadioButton_ModeNormal.Size = New System.Drawing.Size(64, 18)
+        Me.RadioButton_ModeNormal.Size = New System.Drawing.Size(68, 18)
         Me.RadioButton_ModeNormal.TabIndex = 10
         Me.RadioButton_ModeNormal.TabStop = True
         Me.RadioButton_ModeNormal.Text = "Normal"
@@ -199,11 +205,13 @@ Partial Class FormSearch
         '
         'GroupBox3
         '
+        Me.GroupBox3.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.GroupBox3.Controls.Add(Me.RadioButton_DirectionDown)
         Me.GroupBox3.Controls.Add(Me.RadioButton_DirectionUp)
         Me.GroupBox3.Location = New System.Drawing.Point(294, 68)
         Me.GroupBox3.Name = "GroupBox3"
-        Me.GroupBox3.Size = New System.Drawing.Size(84, 86)
+        Me.GroupBox3.Size = New System.Drawing.Size(84, 117)
         Me.GroupBox3.TabIndex = 11
         Me.GroupBox3.TabStop = False
         Me.GroupBox3.Text = "Direction"
@@ -215,7 +223,7 @@ Partial Class FormSearch
         Me.RadioButton_DirectionDown.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.RadioButton_DirectionDown.Location = New System.Drawing.Point(6, 42)
         Me.RadioButton_DirectionDown.Name = "RadioButton_DirectionDown"
-        Me.RadioButton_DirectionDown.Size = New System.Drawing.Size(59, 18)
+        Me.RadioButton_DirectionDown.Size = New System.Drawing.Size(62, 18)
         Me.RadioButton_DirectionDown.TabIndex = 1
         Me.RadioButton_DirectionDown.TabStop = True
         Me.RadioButton_DirectionDown.Text = "Down"
@@ -227,7 +235,7 @@ Partial Class FormSearch
         Me.RadioButton_DirectionUp.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.RadioButton_DirectionUp.Location = New System.Drawing.Point(6, 19)
         Me.RadioButton_DirectionUp.Name = "RadioButton_DirectionUp"
-        Me.RadioButton_DirectionUp.Size = New System.Drawing.Size(45, 18)
+        Me.RadioButton_DirectionUp.Size = New System.Drawing.Size(46, 18)
         Me.RadioButton_DirectionUp.TabIndex = 0
         Me.RadioButton_DirectionUp.TabStop = True
         Me.RadioButton_DirectionUp.Text = "Up"
@@ -236,7 +244,7 @@ Partial Class FormSearch
         'StatusStrip1
         '
         Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripStatusLabel1})
-        Me.StatusStrip1.Location = New System.Drawing.Point(0, 162)
+        Me.StatusStrip1.Location = New System.Drawing.Point(0, 188)
         Me.StatusStrip1.Name = "StatusStrip1"
         Me.StatusStrip1.Size = New System.Drawing.Size(471, 22)
         Me.StatusStrip1.SizingGrip = False
@@ -249,11 +257,22 @@ Partial Class FormSearch
         Me.ToolStripStatusLabel1.Size = New System.Drawing.Size(190, 17)
         Me.ToolStripStatusLabel1.Text = "Click the 'Search' button to search."
         '
+        'CheckBox_LoopSearch
+        '
+        Me.CheckBox_LoopSearch.AutoSize = True
+        Me.CheckBox_LoopSearch.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_LoopSearch.Location = New System.Drawing.Point(6, 89)
+        Me.CheckBox_LoopSearch.Name = "CheckBox_LoopSearch"
+        Me.CheckBox_LoopSearch.Size = New System.Drawing.Size(95, 18)
+        Me.CheckBox_LoopSearch.TabIndex = 9
+        Me.CheckBox_LoopSearch.Text = "Loop Search"
+        Me.CheckBox_LoopSearch.UseVisualStyleBackColor = True
+        '
         'FormSearch
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
-        Me.ClientSize = New System.Drawing.Size(471, 184)
+        Me.ClientSize = New System.Drawing.Size(471, 210)
         Me.Controls.Add(Me.StatusStrip1)
         Me.Controls.Add(Me.GroupBox3)
         Me.Controls.Add(Me.Button_ReplaceAll)
@@ -265,6 +284,7 @@ Partial Class FormSearch
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.TextBox_Search)
         Me.Controls.Add(Me.Label1)
+        Me.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MaximizeBox = False
@@ -304,4 +324,5 @@ Partial Class FormSearch
     Friend WithEvents CheckBox_Multiline As CheckBox
     Friend WithEvents StatusStrip1 As StatusStrip
     Friend WithEvents ToolStripStatusLabel1 As ToolStripStatusLabel
+    Friend WithEvents CheckBox_LoopSearch As CheckBox
 End Class

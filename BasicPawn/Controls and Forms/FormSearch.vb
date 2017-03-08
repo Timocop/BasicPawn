@@ -117,6 +117,14 @@ Public Class FormSearch
                     Return
                 End If
             Next
+
+            If (CheckBox_LoopSearch.Checked) Then
+                SetTextEditorSelection(iStrucArray(iStrucArray.Length - 1).iLocation, iStrucArray(iStrucArray.Length - 1).iLenght, False)
+
+                ToolStripStatusLabel1.Text &= " Looped!"
+                My.Computer.Audio.PlaySystemSound(Media.SystemSounds.Exclamation)
+                Return
+            End If
         Else
             For i = 0 To iStrucArray.Length - 1
                 If (iStrucArray(i).iLocation >= iOffset) Then
@@ -124,6 +132,14 @@ Public Class FormSearch
                     Return
                 End If
             Next
+
+            If (CheckBox_LoopSearch.Checked) Then
+                SetTextEditorSelection(iStrucArray(0).iLocation, iStrucArray(0).iLenght, False)
+
+                ToolStripStatusLabel1.Text &= " Looped!"
+                My.Computer.Audio.PlaySystemSound(Media.SystemSounds.Exclamation)
+                Return
+            End If
         End If
 
         ToolStripStatusLabel1.Text &= " End reached!"
