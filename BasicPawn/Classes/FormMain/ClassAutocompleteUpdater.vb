@@ -605,7 +605,7 @@ Public Class ClassAutocompleteUpdater
 
                 sEnumName = mRegMatch.Groups("Name").Value
                 If (String.IsNullOrEmpty(sEnumName.Trim)) Then
-                    g_mFormMain.PrintInformation("[ERRO]", String.Format("Failed to read name from enum because it has no name: Renamed to 'Enum' ({0})", IO.Path.GetFileName(sFile)), False, False, 15)
+                    g_mFormMain.PrintInformation("[WARN]", String.Format("Failed to read name from enum because it has no name: Renamed to 'Enum' ({0})", IO.Path.GetFileName(sFile)), False, False, 15)
                     sEnumName = "Enum"
                 End If
 
@@ -717,7 +717,7 @@ Public Class ClassAutocompleteUpdater
 
                     regMatch = Regex.Match(sEnumFull, "^\s*(?<Tag>\b[a-zA-Z0-9_]+\b:)*(?<Name>\b[a-zA-Z0-9_]+\b)")
                     If (Not regMatch.Groups("Name").Success) Then
-                        g_mFormMain.PrintInformation("[ERRO]", String.Format("Failed to resolve type 'Enum': enum {0} {1}", sEnumName, sEnumFull), False, False, 15)
+                        g_mFormMain.PrintInformation("[WARN]", String.Format("Failed to resolve type 'Enum': enum {0} {1}", sEnumName, sEnumFull), False, False, 15)
                         Continue For
                     End If
 
@@ -1181,7 +1181,7 @@ Public Class ClassAutocompleteUpdater
 
                     Dim regMatch As Match = Regex.Match(sEnumFull, "^\s*(?<Tag>\b[a-zA-Z0-9_]+\b:)*(?<Name>\b[a-zA-Z0-9_]+\b)")
                     If (Not regMatch.Groups("Name").Success) Then
-                        g_mFormMain.PrintInformation("[ERRO]", String.Format("Failed to resolve type 'Enum': enum {0} {1}", sEnumName, sEnumFull), False, False, 15)
+                        g_mFormMain.PrintInformation("[WARN]", String.Format("Failed to resolve type 'Enum': enum {0} {1}", sEnumName, sEnumFull), False, False, 15)
                         Continue For
                     End If
 
@@ -2245,7 +2245,7 @@ Public Class ClassAutocompleteUpdater
 
                         Select Case (True)
                             Case mRegMatch.Groups("PathInc").Success
-                                sMatchValue = mRegMatch.Groups("PathInc").Value
+                                sMatchValue = mRegMatch.Groups("PathInc").Value.Replace("/"c, "\"c)
 
                                 Select Case (True)
                                     Case IO.File.Exists(IO.Path.Combine(sInclude, sMatchValue))
@@ -2283,7 +2283,7 @@ Public Class ClassAutocompleteUpdater
                                 End Select
 
                             Case mRegMatch.Groups("PathFull").Success
-                                sMatchValue = mRegMatch.Groups("PathFull").Value
+                                sMatchValue = mRegMatch.Groups("PathFull").Value.Replace("/"c, "\"c)
 
                                 Select Case (True)
                                     Case sMatchValue.Length > 1 AndAlso sMatchValue(1) = ":"c AndAlso IO.File.Exists(sMatchValue)

@@ -35,27 +35,84 @@ Public Class UCInformationList
             Return
         End If
 
-        If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
-            Return
-        End If
+        Try
+            Dim bForceEnd As Boolean = False
+            While True
+                For i = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1
+                    If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.m_Tab(i).m_File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_Tab(i).m_File)) Then
+                        Continue For
+                    End If
 
-        Dim reMatch As Match = Regex.Match(ListBox_Information.SelectedItems(0).ToString, String.Format("\b{0}\b\((?<Line>[0-9]+)\)\s\:", Regex.Escape(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)), RegexOptions.IgnoreCase)
-        If (reMatch.Success) Then
-            Dim iLineNum As Integer = CInt(reMatch.Groups("Line").Value) - 1
-            If (iLineNum < 0 OrElse iLineNum > g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TotalNumberOfLines - 1) Then
-                Return
-            End If
 
-            g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Caret.Line = iLineNum
-            g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.ClearSelection()
+                    Dim sRegexPath As String = g_mFormMain.g_ClassTabControl.m_Tab(i).m_File.Replace("/"c, "\"c)
 
-            Dim iLineLen As Integer = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.GetLineSegment(iLineNum).Length
+                    Dim lPathNames As New List(Of String)
+                    For Each sName As String In sRegexPath.Split("\"c)
+                        lPathNames.Add(Regex.Escape(sName))
+                    Next
 
-            Dim iStart As New TextLocation(0, iLineNum)
-            Dim iEnd As New TextLocation(iLineLen, iLineNum)
+                    sRegexPath = String.Join("[\/|\\]", lPathNames.ToArray)
 
-            g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.SetSelection(iStart, iEnd)
-        End If
+
+                    Dim regMatch As Match = Regex.Match(ListBox_Information.SelectedItems(0).ToString, String.Format("\b{0}\b\((?<Line>[0-9]+)\)\s\:", sRegexPath), RegexOptions.IgnoreCase)
+                    If (regMatch.Success) Then
+                        Dim iLineNum As Integer = CInt(regMatch.Groups("Line").Value) - 1
+                        If (iLineNum < 0 OrElse iLineNum > g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.Document.TotalNumberOfLines - 1) Then
+                            Return
+                        End If
+
+                        g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.Caret.Line = iLineNum
+                        g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.SelectionManager.ClearSelection()
+
+                        Dim iLineLen As Integer = g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.Document.GetLineSegment(iLineNum).Length
+
+                        Dim iStart As New TextLocation(0, iLineNum)
+                        Dim iEnd As New TextLocation(iLineLen, iLineNum)
+
+                        g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.SelectionManager.SetSelection(iStart, iEnd)
+
+                        g_mFormMain.g_ClassTabControl.SelectTab(i)
+                        Return
+                    End If
+                Next
+
+                If (bForceEnd) Then
+                    Exit While
+                End If
+
+                For Each sPath As String In g_mFormMain.g_ClassAutocompleteUpdater.GetIncludeFiles(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)
+                    If (String.IsNullOrEmpty(sPath) OrElse Not IO.File.Exists(sPath)) Then
+                        Continue For
+                    End If
+
+
+                    Dim sRegexPath As String = sPath.Replace("/"c, "\"c)
+
+                    Dim lPathNames As New List(Of String)
+                    For Each sName As String In sRegexPath.Split("\"c)
+                        lPathNames.Add(Regex.Escape(sName))
+                    Next
+
+                    sRegexPath = String.Join("[\/|\\]", lPathNames.ToArray)
+
+
+                    Dim regMatch As Match = Regex.Match(ListBox_Information.SelectedItems(0).ToString, String.Format("\b{0}\b\((?<Line>[0-9]+)\)\s\:", sRegexPath), RegexOptions.IgnoreCase)
+                    If (Not regMatch.Success) Then
+                        Continue For
+                    End If
+
+                    g_mFormMain.g_ClassTabControl.AddTab(True)
+                    g_mFormMain.g_ClassTabControl.OpenFileTab(g_mFormMain.g_ClassTabControl.m_TabsCount - 1, sPath)
+
+                    bForceEnd = True
+                    Continue While
+                Next
+
+                Exit While
+            End While
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
     End Sub
 
     Private Sub OpenInNotepadToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OpenInNotepadToolStripMenuItem.Click
