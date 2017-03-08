@@ -269,7 +269,9 @@ Public Class FormSearch
                     Continue For
                 End If
 
-                ListView_Output.Items.Add(New ListViewItem(New String() {CStr(i.iLocation), sTest, CStr(i.iLocation), CStr(i.iLenght)}))
+                Dim iLine As Integer = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.GetLineNumberForOffset(i.iLocation) + 1
+
+                ListView_Output.Items.Add(New ListViewItem(New String() {CStr(iLine), sTest, CStr(i.iLocation), CStr(i.iLenght)}))
             Next
 
             ListView_Output.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent)
