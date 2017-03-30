@@ -34,7 +34,7 @@ Public Class ClassTextEditorTools
     ''' Marks a selected word in the text editor
     ''' </summary>
     Public Sub MarkSelectedWord()
-        Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
+        Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor
 
         Dim sLastWord As String = g_mFormMain.g_ClassSyntaxTools.g_sHighlightWord
         g_mFormMain.g_ClassSyntaxTools.g_sHighlightWord = ""
@@ -59,7 +59,7 @@ Public Class ClassTextEditorTools
     ''' Marks a selected word in the text editor
     ''' </summary>
     Public Sub MarkCaretWord()
-        Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
+        Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor
 
         Dim sLastWord As String = g_mFormMain.g_ClassSyntaxTools.g_sCaretWord
         g_mFormMain.g_ClassSyntaxTools.g_sCaretWord = ""
@@ -90,7 +90,7 @@ Public Class ClassTextEditorTools
     ''' </summary>
     ''' <param name="sText">Word to search, otherwise it will get the word under the caret</param>
     Public Sub ListReferences(Optional sText As String = Nothing)
-        Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
+        Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor
 
         Dim sWord As String
 
@@ -105,14 +105,14 @@ Public Class ClassTextEditorTools
             Return
         End If
 
-        If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
+        If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.ActiveTab.File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.ActiveTab.File)) Then
             g_mFormMain.PrintInformation("[ERRO]", "Can't check references! Could not get current source file!", False, True)
             Return
         End If
 
         g_mFormMain.PrintInformation("[INFO]", String.Format("Listing references of: {0}", sWord), False, True)
 
-        Dim sIncludeFiles As String() = g_mFormMain.g_ClassAutocompleteUpdater.GetIncludeFiles(mActiveTextEditor.Document.TextContent, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)
+        Dim sIncludeFiles As String() = g_mFormMain.g_ClassAutocompleteUpdater.GetIncludeFiles(mActiveTextEditor.Document.TextContent, g_mFormMain.g_ClassTabControl.ActiveTab.File, g_mFormMain.g_ClassTabControl.ActiveTab.File)
 
         Dim lRefList As New List(Of String)
 
@@ -121,7 +121,7 @@ Public Class ClassTextEditorTools
                 Continue For
             End If
 
-            If (sFile.ToLower = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File.ToLower) Then
+            If (sFile.ToLower = g_mFormMain.g_ClassTabControl.ActiveTab.File.ToLower) Then
                 Dim iLineCount As Integer = 0
                 Using SR As New IO.StringReader(mActiveTextEditor.Document.TextContent)
                     While True
@@ -192,7 +192,7 @@ Public Class ClassTextEditorTools
     ''' <param name="bIncludeDot">If true, includes dots (e.g ThisWord.ThatWord)</param>
     ''' <returns></returns>
     Public Function GetCaretWord(bIncludeDot As Boolean) As String
-        Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
+        Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor
 
         Dim iOffset As Integer = mActiveTextEditor.ActiveTextAreaControl.TextArea.Caret.Offset
         Dim iPosition As Integer = mActiveTextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column
@@ -230,7 +230,7 @@ Public Class ClassTextEditorTools
     ''' <param name="bTesting">Just creates a temporary file and removes it after compile.</param>
     Public Sub CompileSource(bTesting As Boolean)
         Try
-            If (g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True)) Then
+            If (g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.ActiveTabIndex, False, True)) Then
                 Return
             End If
 
@@ -249,7 +249,7 @@ Public Class ClassTextEditorTools
             Dim iExitCode As Integer = 0
             Dim sOutput As String = ""
 
-            If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
+            If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.ActiveTab.File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.ActiveTab.File)) Then
                 g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Could not get current source file!")
                 Return
             End If
@@ -258,25 +258,25 @@ Public Class ClassTextEditorTools
             If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                 While True
                     'SourcePawn
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "spcomp.exe")
+                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.ActiveTab.File), "spcomp.exe")
                     If (IO.File.Exists(sCompilerPath)) Then
                         Exit While
                     End If
 
                     'AMX Mod X
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "amxxpc.exe")
+                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.ActiveTab.File), "amxxpc.exe")
                     If (IO.File.Exists(sCompilerPath)) Then
                         Exit While
                     End If
 
                     'Small
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "sc.exe")
+                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.ActiveTab.File), "sc.exe")
                     If (IO.File.Exists(sCompilerPath)) Then
                         Exit While
                     End If
 
                     'Pawn
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "pawncc.exe")
+                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.ActiveTab.File), "pawncc.exe")
                     If (IO.File.Exists(sCompilerPath)) Then
                         Exit While
                     End If
@@ -294,7 +294,7 @@ Public Class ClassTextEditorTools
 
             'Check include path
             If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "include")
+                sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.ActiveTab.File), "include")
 
                 If (Not IO.Directory.Exists(sIncludePaths)) Then
                     g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!")
@@ -315,13 +315,13 @@ Public Class ClassTextEditorTools
                 sOutputFile = String.Format("{0}.unk", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
             Else
                 If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    sOutputFile = String.Format("{0}\compiled\{1}.unk", IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File).TrimEnd("\"c), IO.Path.GetFileNameWithoutExtension(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File))
+                    sOutputFile = String.Format("{0}\compiled\{1}.unk", IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.ActiveTab.File).TrimEnd("\"c), IO.Path.GetFileNameWithoutExtension(g_mFormMain.g_ClassTabControl.ActiveTab.File))
                 Else
                     If (Not IO.Directory.Exists(ClassSettings.g_sConfigPluginOutputFolder)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Invalid output directory!")
                         Return
                     End If
-                    sOutputFile = String.Format("{0}\{1}.unk", ClassSettings.g_sConfigPluginOutputFolder.TrimEnd("\"c), IO.Path.GetFileNameWithoutExtension(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File))
+                    sOutputFile = String.Format("{0}\{1}.unk", ClassSettings.g_sConfigPluginOutputFolder.TrimEnd("\"c), IO.Path.GetFileNameWithoutExtension(g_mFormMain.g_ClassTabControl.ActiveTab.File))
                 End If
             End If
 
@@ -332,7 +332,7 @@ Public Class ClassTextEditorTools
                 lIncludeList.Add("-i""" & sInclude & """")
             Next
 
-            Dim sArguments As String = String.Format("""{0}"" {1} -o""{2}""", g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File, String.Join(" ", lIncludeList.ToArray), sOutputFile)
+            Dim sArguments As String = String.Format("""{0}"" {1} -o""{2}""", g_mFormMain.g_ClassTabControl.ActiveTab.File, String.Join(" ", lIncludeList.ToArray), sOutputFile)
             ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, sArguments, iExitCode, sOutput)
 
             Dim compilerType As ENUM_COMPILER_TYPE = ENUM_COMPILER_TYPE.UNKNOWN
@@ -419,7 +419,7 @@ Public Class ClassTextEditorTools
     ''' <returns>True on success, false otherwise.</returns>
     Public Function CompileSource(bTesting As Boolean, sSource As String, ByRef sOutputFile As String, Optional sCompilerPath As String = Nothing, Optional sIncludePaths As String = Nothing) As Boolean
         Try
-            If (g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True)) Then
+            If (g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.ActiveTabIndex, False, True)) Then
                 Return False
             End If
 
@@ -437,32 +437,32 @@ Public Class ClassTextEditorTools
             'Check compiler
             If (sCompilerPath Is Nothing) Then
                 If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
+                    If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.ActiveTab.File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.ActiveTab.File)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Could not get current source file!")
                         Return False
                     End If
 
                     While True
                         'SourcePawn
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "spcomp.exe")
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.ActiveTab.File), "spcomp.exe")
                         If (IO.File.Exists(sCompilerPath)) Then
                             Exit While
                         End If
 
                         'AMX Mod X
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "amxxpc.exe")
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.ActiveTab.File), "amxxpc.exe")
                         If (IO.File.Exists(sCompilerPath)) Then
                             Exit While
                         End If
 
                         'Small
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "sc.exe")
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.ActiveTab.File), "sc.exe")
                         If (IO.File.Exists(sCompilerPath)) Then
                             Exit While
                         End If
 
                         'Pawn
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "pawncc.exe")
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.ActiveTab.File), "pawncc.exe")
                         If (IO.File.Exists(sCompilerPath)) Then
                             Exit While
                         End If
@@ -487,12 +487,12 @@ Public Class ClassTextEditorTools
             'Check include path
             If (sIncludePaths Is Nothing) Then
                 If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
+                    If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.ActiveTab.File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.ActiveTab.File)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Could not get current source file!")
                         Return False
                     End If
 
-                    sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "include")
+                    sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.ActiveTab.File), "include")
                     If (Not IO.Directory.Exists(sIncludePaths)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!")
                         Return False
@@ -621,7 +621,7 @@ Public Class ClassTextEditorTools
     ''' <returns></returns>
     Public Function GetCompilerPreProcessCode(bCleanUpSourcemodDuplicate As Boolean, bCleanupForCompile As Boolean, ByRef sTempOutputFile As String) As String
         Try
-            If (g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True)) Then
+            If (g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.ActiveTabIndex, False, True)) Then
                 Return Nothing
             End If
 
@@ -643,7 +643,7 @@ Public Class ClassTextEditorTools
             Dim iExitCode As Integer = 0
             Dim sOutput As String = ""
 
-            If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
+            If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.ActiveTab.File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.ActiveTab.File)) Then
                 g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Could not get current source file!")
                 Return Nothing
             End If
@@ -652,25 +652,25 @@ Public Class ClassTextEditorTools
             If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                 While True
                     'SourcePawn
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "spcomp.exe")
+                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.ActiveTab.File), "spcomp.exe")
                     If (IO.File.Exists(sCompilerPath)) Then
                         Exit While
                     End If
 
                     'AMX Mod X
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "amxxpc.exe")
+                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.ActiveTab.File), "amxxpc.exe")
                     If (IO.File.Exists(sCompilerPath)) Then
                         Exit While
                     End If
 
                     'Small
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "sc.exe")
+                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.ActiveTab.File), "sc.exe")
                     If (IO.File.Exists(sCompilerPath)) Then
                         Exit While
                     End If
 
                     'Pawn
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "pawncc.exe")
+                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.ActiveTab.File), "pawncc.exe")
                     If (IO.File.Exists(sCompilerPath)) Then
                         Exit While
                     End If
@@ -688,7 +688,7 @@ Public Class ClassTextEditorTools
 
             'Check include path
             If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "include")
+                sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.ActiveTab.File), "include")
                 If (Not IO.Directory.Exists(sIncludePaths)) Then
                     g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!")
                     Return Nothing
@@ -704,7 +704,7 @@ Public Class ClassTextEditorTools
             End If
 
 
-            Dim sTmpSource As String = IO.File.ReadAllText(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)
+            Dim sTmpSource As String = IO.File.ReadAllText(g_mFormMain.g_ClassTabControl.ActiveTab.File)
             Dim sTmpSourcePath As String = String.Format("{0}.src", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
 
             sTempOutputFile = sTmpSourcePath
@@ -814,7 +814,7 @@ Public Class ClassTextEditorTools
     ''' <returns></returns>
     Public Function GetCompilerAssemblyCode() As String
         Try
-            If (g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True)) Then
+            If (g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.ActiveTabIndex, False, True)) Then
                 Return Nothing
             End If
 
@@ -833,7 +833,7 @@ Public Class ClassTextEditorTools
             Dim iExitCode As Integer = 0
             Dim sOutput As String = ""
 
-            If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
+            If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.ActiveTab.File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.ActiveTab.File)) Then
                 g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get current source file!")
                 Return Nothing
             End If
@@ -842,25 +842,25 @@ Public Class ClassTextEditorTools
             If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                 While True
                     'SourcePawn
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "spcomp.exe")
+                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.ActiveTab.File), "spcomp.exe")
                     If (IO.File.Exists(sCompilerPath)) Then
                         Exit While
                     End If
 
                     'AMX Mod X
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "amxxpc.exe")
+                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.ActiveTab.File), "amxxpc.exe")
                     If (IO.File.Exists(sCompilerPath)) Then
                         Exit While
                     End If
 
                     'Small
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "sc.exe")
+                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.ActiveTab.File), "sc.exe")
                     If (IO.File.Exists(sCompilerPath)) Then
                         Exit While
                     End If
 
                     'Pawn
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "pawncc.exe")
+                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.ActiveTab.File), "pawncc.exe")
                     If (IO.File.Exists(sCompilerPath)) Then
                         Exit While
                     End If
@@ -878,7 +878,7 @@ Public Class ClassTextEditorTools
 
             'Check include path
             If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "include")
+                sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.ActiveTab.File), "include")
 
                 If (Not IO.Directory.Exists(sIncludePaths)) Then
                     g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Include path can not be found!")
@@ -895,7 +895,7 @@ Public Class ClassTextEditorTools
             End If
 
 
-            Dim sTmpSource As String = IO.File.ReadAllText(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)
+            Dim sTmpSource As String = IO.File.ReadAllText(g_mFormMain.g_ClassTabControl.ActiveTab.File)
             Dim sTmpSourcePath As String = String.Format("{0}.src", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
 
             IO.File.WriteAllText(sTmpSourcePath, sTmpSource)
@@ -948,7 +948,7 @@ Public Class ClassTextEditorTools
     ''' <returns></returns>
     Public Function GetCompilerAssemblyCode(bTesting As Boolean, sSource As String, ByRef sOutputFile As String, Optional sCompilerPath As String = Nothing, Optional sIncludePaths As String = Nothing) As String
         Try
-            If (g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True)) Then
+            If (g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.ActiveTabIndex, False, True)) Then
                 Return Nothing
             End If
 
@@ -966,32 +966,32 @@ Public Class ClassTextEditorTools
             'Check compiler
             If (sCompilerPath Is Nothing) Then
                 If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
+                    If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.ActiveTab.File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.ActiveTab.File)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get current source file!")
                         Return Nothing
                     End If
 
                     While True
                         'SourcePawn
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "spcomp.exe")
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.ActiveTab.File), "spcomp.exe")
                         If (IO.File.Exists(sCompilerPath)) Then
                             Exit While
                         End If
 
                         'AMX Mod X
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "amxxpc.exe")
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.ActiveTab.File), "amxxpc.exe")
                         If (IO.File.Exists(sCompilerPath)) Then
                             Exit While
                         End If
 
                         'Small
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "sc.exe")
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.ActiveTab.File), "sc.exe")
                         If (IO.File.Exists(sCompilerPath)) Then
                             Exit While
                         End If
 
                         'Pawn
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "pawncc.exe")
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.ActiveTab.File), "pawncc.exe")
                         If (IO.File.Exists(sCompilerPath)) Then
                             Exit While
                         End If
@@ -1016,12 +1016,12 @@ Public Class ClassTextEditorTools
             'Check include path
             If (sIncludePaths Is Nothing) Then
                 If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
+                    If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.ActiveTab.File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.ActiveTab.File)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get current source file!")
                         Return Nothing
                     End If
 
-                    sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "include")
+                    sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.ActiveTab.File), "include")
                     If (Not IO.Directory.Exists(sIncludePaths)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Include path can not be found!")
                         Return Nothing
@@ -1101,7 +1101,7 @@ Public Class ClassTextEditorTools
 
         Private g_lHighlightItemList As New List(Of STRUC_HIGHLIGHT_ITEM)
 
-        ReadOnly Property m_HightlightItems As STRUC_HIGHLIGHT_ITEM()
+        ReadOnly Property HightlightItems As STRUC_HIGHLIGHT_ITEM()
             Get
                 Return g_lHighlightItemList.ToArray
             End Get
@@ -1132,12 +1132,12 @@ Public Class ClassTextEditorTools
             RemoveHandler dropItem.Click, AddressOf OnClick
             AddHandler dropItem.Click, AddressOf OnClick
 
-            Dim highlightItem As New STRUC_HIGHLIGHT_ITEM
-            highlightItem.sIdentifier = sIdentifier
-            highlightItem.sWord = ""
-            highlightItem.mToolStripItem = dropItem
+            g_lHighlightItemList(iIndex) = New STRUC_HIGHLIGHT_ITEM With {
+                .sIdentifier = sIdentifier,
+                .sWord = "",
+                .mToolStripItem = dropItem
+            }
 
-            g_lHighlightItemList(iIndex) = highlightItem
         End Sub
 
         ''' <summary>
@@ -1203,7 +1203,7 @@ Public Class ClassTextEditorTools
 
                 highlightItem.sWord = ""
 
-                Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
+                Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor
 
                 If (mActiveTextEditor.ActiveTextAreaControl.SelectionManager.HasSomethingSelected) Then
                     Dim m_CurrentSelection As ISelection = mActiveTextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection(0)
@@ -1276,9 +1276,9 @@ Public Class ClassTextEditorTools
             g_mFormMain = f
         End Sub
 
-        Property m_IgnoreUpdates As Boolean
+        Property IgnoreUpdates As Boolean
 
-        Property m_LineStateMarks(mTextEditor As TextEditorControlEx) As LineStateBookmark()
+        Property LineStateMarks(mTextEditor As TextEditorControlEx) As LineStateBookmark()
             Get
                 Dim lBookmarks As New List(Of LineStateBookmark)
 
@@ -1304,7 +1304,7 @@ Public Class ClassTextEditorTools
             End Set
         End Property
 
-        Property m_LineState(mTextEditor As TextEditorControlEx, iIndex As Integer) As LineStateBookmark.ENUM_BOOKMARK_TYPE
+        Property LineState(mTextEditor As TextEditorControlEx, iIndex As Integer) As LineStateBookmark.ENUM_BOOKMARK_TYPE
             Get
                 For Each item In mTextEditor.Document.BookmarkManager.Marks
                     Dim lineStateBookmark As LineStateBookmark = TryCast(item, LineStateBookmark)
@@ -1316,13 +1316,13 @@ Public Class ClassTextEditorTools
                         Continue For
                     End If
 
-                    Return lineStateBookmark.m_iType
+                    Return lineStateBookmark.Type
                 Next
 
                 Return LineStateBookmark.ENUM_BOOKMARK_TYPE.NONE
             End Get
             Set(value As LineStateBookmark.ENUM_BOOKMARK_TYPE)
-                If (m_IgnoreUpdates) Then
+                If (IgnoreUpdates) Then
                     mTextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, iIndex))
                     mTextEditor.Document.CommitUpdate()
                     Return
@@ -1338,7 +1338,7 @@ Public Class ClassTextEditorTools
                         Continue For
                     End If
 
-                    lineStateBookmark.m_iType = value
+                    lineStateBookmark.Type = value
                     Return
                 Next
 
@@ -1360,8 +1360,8 @@ Public Class ClassTextEditorTools
                     Continue For
                 End If
 
-                If (lineStateBookmark.m_iType = LineStateBookmark.ENUM_BOOKMARK_TYPE.CHANGED) Then
-                    lineStateBookmark.m_iType = LineStateBookmark.ENUM_BOOKMARK_TYPE.SAVED
+                If (lineStateBookmark.Type = LineStateBookmark.ENUM_BOOKMARK_TYPE.CHANGED) Then
+                    lineStateBookmark.Type = LineStateBookmark.ENUM_BOOKMARK_TYPE.SAVED
 
                     mTextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, lineStateBookmark.LineNumber))
                 End If
@@ -1379,8 +1379,8 @@ Public Class ClassTextEditorTools
             End If
 
             For i = 0 To arrStateBookmarks.Length - 1
-                If (arrStateBookmarks(i).m_iType = LineStateBookmark.ENUM_BOOKMARK_TYPE.CHANGED) Then
-                    arrStateBookmarks(i).m_iType = LineStateBookmark.ENUM_BOOKMARK_TYPE.SAVED
+                If (arrStateBookmarks(i).Type = LineStateBookmark.ENUM_BOOKMARK_TYPE.CHANGED) Then
+                    arrStateBookmarks(i).Type = LineStateBookmark.ENUM_BOOKMARK_TYPE.SAVED
                 End If
             Next
         End Sub
@@ -1406,11 +1406,11 @@ Public Class ClassTextEditorTools
 
             Private g_sIdentifier As String = Guid.NewGuid.ToString
 
-            Property m_iType As ENUM_BOOKMARK_TYPE
+            Property Type As ENUM_BOOKMARK_TYPE
 
             Public Sub New(iDocument As IDocument, textLocation As TextLocation, bEnabled As Boolean, iType As ENUM_BOOKMARK_TYPE)
                 MyBase.New(iDocument, textLocation, bEnabled)
-                m_iType = iType
+                Me.Type = iType
             End Sub
 
             Public Overrides ReadOnly Property CanToggle As Boolean
@@ -1441,7 +1441,7 @@ Public Class ClassTextEditorTools
                                         iconBarMargin.DrawingPosition.Width - 4,
                                         iconBarMargin.TextArea.TextView.FontHeight - calcFontHeight * 2)
 
-                Dim iColor As Color = If(m_iType = ENUM_BOOKMARK_TYPE.CHANGED, Color.Orange, Color.Green)
+                Dim iColor As Color = If(Type = ENUM_BOOKMARK_TYPE.CHANGED, Color.Orange, Color.Green)
 
                 Using mBrush As New Drawing2D.LinearGradientBrush(New Point(r.Left, r.Top), New Point(r.Right, r.Bottom), iColor, iColor)
                     iGraphics.FillRectangle(mBrush, r)

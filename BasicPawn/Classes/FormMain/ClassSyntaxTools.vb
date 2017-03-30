@@ -118,7 +118,7 @@ Public Class ClassSyntaxTools
             ClassControlStyle.UpdateControls(c)
         Next
 
-        g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnFormColorUpdate())
+        g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnFormColorUpdate())
     End Sub
 
     ''' <summary>
@@ -157,7 +157,7 @@ Public Class ClassSyntaxTools
     ''' <param name="bForceFromMemory">If true, overwrites the syntax file from memory cache (factory new)</param>
     Public Sub UpdateSyntaxFile(iType As ENUM_SYNTAX_UPDATE_TYPE, Optional bForceFromMemory As Boolean = False)
         Try
-            g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnSyntaxUpdate(iType, bForceFromMemory))
+            g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnSyntaxUpdate(iType, bForceFromMemory))
 
             SyncLock _lock
                 For i = 0 To g_SyntaxFiles.Length - 1
@@ -217,7 +217,7 @@ Public Class ClassSyntaxTools
                                                 SB.Append(sSyntax_HighlightWordCustomMarker)
 
                                                 g_mFormMain.g_ClassCustomHighlighting.Add(iHighlightCustomCount)
-                                                Dim menuItem = g_mFormMain.g_ClassCustomHighlighting.m_HightlightItems()
+                                                Dim menuItem = g_mFormMain.g_ClassCustomHighlighting.HightlightItems()
 
                                                 If (menuItem(iHighlightCustomCount) IsNot Nothing AndAlso Not String.IsNullOrEmpty(menuItem(iHighlightCustomCount).sWord)) Then
                                                     SB.Append(String.Format("<Key word=""{0}""/>", menuItem(iHighlightCustomCount).sWord))
@@ -352,7 +352,7 @@ Public Class ClassSyntaxTools
                 Next
             End SyncLock
 
-            g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnSyntaxUpdateEnd(iType, bForceFromMemory))
+            g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnSyntaxUpdateEnd(iType, bForceFromMemory))
         Catch ex As Threading.ThreadAbortException
             Throw
         Catch ex As Exception
@@ -366,7 +366,7 @@ Public Class ClassSyntaxTools
     Public Sub UpdateTextEditorSyntax()
         Try
             SyncLock _lock
-                g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnEditorSyntaxUpdate())
+                g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnEditorSyntaxUpdate())
 
                 For i = 0 To g_SyntaxFiles.Length - 1
                     If (Not IO.File.Exists(g_SyntaxFiles(i).sFile)) Then
@@ -379,20 +379,20 @@ Public Class ClassSyntaxTools
                 For i = 0 To g_SyntaxFiles.Length - 1
                     Select Case (i)
                         Case ENUM_SYNTAX_FILES.MAIN_TEXTEDITOR
-                            For j = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1
-                                If (j = g_mFormMain.g_ClassTabControl.m_ActiveTabIndex) Then
-                                    If (g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.Document.HighlightingStrategy.Name <> g_SyntaxFiles(i).sDefinition) Then
-                                        g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.SetHighlighting(g_SyntaxFiles(i).sDefinition)
+                            For j = 0 To g_mFormMain.g_ClassTabControl.TabsCount - 1
+                                If (j = g_mFormMain.g_ClassTabControl.ActiveTabIndex) Then
+                                    If (g_mFormMain.g_ClassTabControl.Tab(j).TextEditor.Document.HighlightingStrategy.Name <> g_SyntaxFiles(i).sDefinition) Then
+                                        g_mFormMain.g_ClassTabControl.Tab(j).TextEditor.SetHighlighting(g_SyntaxFiles(i).sDefinition)
                                     End If
                                 Else
-                                    If (g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.Document.HighlightingStrategy.Name <> "Default") Then
-                                        g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.SetHighlighting("Default")
+                                    If (g_mFormMain.g_ClassTabControl.Tab(j).TextEditor.Document.HighlightingStrategy.Name <> "Default") Then
+                                        g_mFormMain.g_ClassTabControl.Tab(j).TextEditor.SetHighlighting("Default")
                                     End If
                                 End If
                             Next
 
                             g_mFormMain.g_mUCToolTip.TextEditorControl_ToolTip.SetHighlighting(g_SyntaxFiles(i).sDefinition)
-                            g_mFormMain.g_mUCToolTip.TextEditorControl_ToolTip.Font = New Font(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Font.FontFamily, 8, FontStyle.Regular)
+                            g_mFormMain.g_mUCToolTip.TextEditorControl_ToolTip.Font = New Font(g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor.Font.FontFamily, 8, FontStyle.Regular)
 
                         Case ENUM_SYNTAX_FILES.DEBUGGER_TEXTEDITOR
                             If (g_mFormMain.g_mFormDebugger IsNot Nothing AndAlso Not g_mFormMain.g_mFormDebugger.IsDisposed) Then
@@ -558,56 +558,52 @@ Public Class ClassSyntaxTools
     ''' <param name="sName"></param>
     ''' <returns></returns>
     Public Function IsForbiddenVariableName(sName As String) As Boolean
-        Static sRegexBadName As String = Nothing
-        If (sRegexBadName = Nothing) Then
-            Dim lBadList As New List(Of String)
-            lBadList.Add("const")
-            lBadList.Add("static")
-            lBadList.Add("new")
-            lBadList.Add("decl")
-            lBadList.Add("if")
-            lBadList.Add("for")
-            lBadList.Add("else")
-            lBadList.Add("case")
-            lBadList.Add("switch")
-            lBadList.Add("default")
-            lBadList.Add("while")
-            lBadList.Add("do")
-            lBadList.Add("enum")
+        Static sBadNames As String() = New String() {
+                "const",
+                "static",
+                "new",
+                "decl",
+                "if",
+                "for",
+                "else",
+                "case",
+                "switch",
+                "default",
+                "while",
+                "do",
+                "enum",
+ _
+                "stock",
+                "public",
+                "private",
+                "forward",
+                "native",
+                "funcenum",
+                "functag",
+ _
+                "methodmap",
+                "property",
+                "this",
+                "typeset",
+                "function",
+                "typedef",
+ _
+                "break",
+                "continue",
+                "goto",
+                "return",
+ _
+                "true",
+                "false",
+                "null",
+ _
+                "delete",
+                "sizeof",
+                "typeof",
+                "view_as"
+            }
 
-            lBadList.Add("stock")
-            lBadList.Add("public")
-            lBadList.Add("private")
-            lBadList.Add("forward")
-            lBadList.Add("native")
-            lBadList.Add("funcenum")
-            lBadList.Add("functag")
-
-            lBadList.Add("methodmap")
-            lBadList.Add("property")
-            lBadList.Add("this")
-            lBadList.Add("typeset")
-            lBadList.Add("function")
-            lBadList.Add("typedef")
-
-            lBadList.Add("break")
-            lBadList.Add("continue")
-            lBadList.Add("goto")
-            lBadList.Add("return")
-
-            lBadList.Add("true")
-            lBadList.Add("false")
-            lBadList.Add("null")
-
-            lBadList.Add("delete")
-            lBadList.Add("sizeof")
-            lBadList.Add("typeof")
-            lBadList.Add("view_as")
-
-            sRegexBadName = String.Format("^({0})$", String.Join("|", lBadList.ToArray))
-        End If
-
-        Return Regex.IsMatch(sName, sRegexBadName)
+        Return Array.Exists(sBadNames, Function(s As String) s = sName)
     End Function
 
     Public Class ClassSyntaxSourceAnalysis

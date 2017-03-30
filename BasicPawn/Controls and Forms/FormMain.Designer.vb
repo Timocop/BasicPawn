@@ -7,7 +7,7 @@ Partial Class FormMain
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If (disposing) Then
-                g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnPluginEndPost())
+                g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnPluginEndPost())
 
                 g_ClassAutocompleteUpdater.StopUpdate()
                 If (g_mFormOpenTabFromInstances IsNot Nothing AndAlso Not g_mFormOpenTabFromInstances.IsDisposed) Then

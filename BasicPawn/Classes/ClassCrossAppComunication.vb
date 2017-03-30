@@ -148,7 +148,7 @@ Public Class ClassCrossAppComunication
     End Class
 
 
-    Public Property m_EncodeKeyBytes As Byte()
+    Public Property EncodeKeyBytes As Byte()
         Get
             Return g_iEncodeKeyBytes
         End Get
@@ -157,7 +157,7 @@ Public Class ClassCrossAppComunication
         End Set
     End Property
 
-    Public Property m_EnforceEncoding As Boolean
+    Public Property EnforceEncoding As Boolean
         Get
             Return g_bEnforceEncoding
         End Get
@@ -208,15 +208,15 @@ Public Class ClassCrossAppComunication
 
 
         Public Sub New(sFormatedMessage As String)
-            m_FormatedMessage = sFormatedMessage
+            FormatedMessage = sFormatedMessage
         End Sub
         Public Sub New(sMessageName As String, ParamArray sMessages As String())
-            m_MessageName = sMessageName
-            m_SenderPID = Process.GetCurrentProcess.Id
-            m_Messages = sMessages
+            MessageName = sMessageName
+            SenderPID = Process.GetCurrentProcess.Id
+            Messages = sMessages
         End Sub
 
-        Public Property m_MessageName As String
+        Public Property MessageName As String
             Get
                 Return g_sMessageName
             End Get
@@ -228,7 +228,7 @@ Public Class ClassCrossAppComunication
             End Set
         End Property
 
-        Public Property m_SenderPID As Integer
+        Public Property SenderPID As Integer
             Get
                 Return g_iSenderPID
             End Get
@@ -240,7 +240,7 @@ Public Class ClassCrossAppComunication
             End Set
         End Property
 
-        Public Property m_Messages As String()
+        Public Property Messages As String()
             Get
                 Return g_sMessages
             End Get
@@ -258,7 +258,7 @@ Public Class ClassCrossAppComunication
         ''' Gets or sets the encoded message. Everything empty on error.
         ''' </summary>
         ''' <returns></returns>
-        Public Property m_FormatedMessage As String
+        Public Property FormatedMessage As String
             Get
                 With New Text.StringBuilder
                     .Append(g_sFormatedMessageName)
@@ -272,9 +272,9 @@ Public Class ClassCrossAppComunication
             End Get
             Set(value As String)
                 Try
-                    m_MessageName = ""
-                    m_SenderPID = -1
-                    m_Messages = New String() {}
+                    MessageName = ""
+                    SenderPID = -1
+                    Messages = New String() {}
 
                     Dim sSplitted As String() = value.Split(g_sMessageSeperator)
 
@@ -283,19 +283,19 @@ Public Class ClassCrossAppComunication
                     For i = 0 To sSplitted.Length - 1
                         Select Case (i)
                             Case 0
-                                m_MessageName = Text.Encoding.Default.GetString(Convert.FromBase64String(sSplitted(i)))
+                                MessageName = Text.Encoding.Default.GetString(Convert.FromBase64String(sSplitted(i)))
                             Case 1
-                                m_SenderPID = CInt(Text.Encoding.Default.GetString(Convert.FromBase64String(sSplitted(i))))
+                                SenderPID = CInt(Text.Encoding.Default.GetString(Convert.FromBase64String(sSplitted(i))))
                             Case Else
                                 lMessagesList.Add(Text.Encoding.Default.GetString(Convert.FromBase64String(sSplitted(i))))
                         End Select
                     Next
 
-                    m_Messages = lMessagesList.ToArray
+                    Messages = lMessagesList.ToArray
                 Catch ex As Exception
-                    m_MessageName = ""
-                    m_SenderPID = -1
-                    m_Messages = New String() {}
+                    MessageName = ""
+                    SenderPID = -1
+                    Messages = New String() {}
                 End Try
             End Set
         End Property
@@ -316,7 +316,7 @@ Public Class ClassCrossAppComunication
                 Continue For
             End If
 
-            SendMessageEx(hWnd, mClassMessage.m_FormatedMessage)
+            SendMessageEx(hWnd, mClassMessage.FormatedMessage)
         Next
     End Sub
 
@@ -336,7 +336,7 @@ Public Class ClassCrossAppComunication
                 Continue For
             End If
 
-            SendMessageEx(hWnd, mClassMessage.m_FormatedMessage)
+            SendMessageEx(hWnd, mClassMessage.FormatedMessage)
         Next
     End Sub
 

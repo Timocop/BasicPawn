@@ -164,7 +164,7 @@ Public Class ClassSettings
         'TODO: Add more shell arguments
         Dim sShellList As New List(Of STRUC_SHELL_ARGUMENT_ITEM)
 
-        Dim sFile As String = mFormMain.g_ClassTabControl.m_ActiveTab.m_File
+        Dim sFile As String = mFormMain.g_ClassTabControl.ActiveTab.File
 
         sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%input%", "Current opened source file", sFile))
         sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%inputfilename%", "Current opened source filename", If(String.IsNullOrEmpty(sFile), "", IO.Path.GetFileNameWithoutExtension(sFile))))

@@ -73,12 +73,13 @@ Public Class FormOpenTabFromInstances
 
         Dim sHeaderName As String = String.Format("{0} ({1})", sProcessName, iProcessID)
 
-        Dim mItem As New STRUC_TABINFO_ITEM
-        mItem.iIndex = iTabIndex
-        mItem.iProcessID = iProcessID
-        mItem.sFile = sFile
-
-        ListView_Instances.Items.Add(New ClassListViewItem(New String() {CStr(iTabIndex), sFile}, FindOrCreateGroup(sHeaderName)) With {.mTabInfo = mItem})
+        ListView_Instances.Items.Add(New ClassListViewItem(New String() {CStr(iTabIndex), sFile}, FindOrCreateGroup(sHeaderName)) With {
+            .mTabInfo = New STRUC_TABINFO_ITEM With {
+                .iIndex = iTabIndex,
+                .iProcessID = iProcessID,
+                .sFile = sFile
+            }
+        })
         ListView_Instances.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent)
     End Sub
 
@@ -141,7 +142,7 @@ Public Class FormOpenTabFromInstances
                 lFiles.Add("""" & iItem.mTabInfo.Value.sFile & """")
             Else
                 g_mFormMain.g_ClassTabControl.AddTab(True)
-                g_mFormMain.g_ClassTabControl.OpenFileTab(g_mFormMain.g_ClassTabControl.m_TabsCount - 1, iItem.mTabInfo.Value.sFile)
+                g_mFormMain.g_ClassTabControl.OpenFileTab(g_mFormMain.g_ClassTabControl.TabsCount - 1, iItem.mTabInfo.Value.sFile)
             End If
 
             If (bCloseTabs) Then

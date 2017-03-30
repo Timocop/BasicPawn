@@ -91,32 +91,32 @@ Public Class ClassDebuggerRunner
         g_mFormDebugger = f
         g_sGameFolder = ClassSettings.g_sConfigDebugGameFolder
         g_sSourceModFolder = ClassSettings.g_sConfigDebugSourceModFolder
-        g_sCurrentSourceFile = g_mFormDebugger.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File
+        g_sCurrentSourceFile = g_mFormDebugger.g_mFormMain.g_ClassTabControl.ActiveTab.File
 
         g_mFormDebugger.Text &= String.Format(" ({0})", IO.Path.GetFileName(g_sCurrentSourceFile))
 
         g_ClassPreProcess = New ClassPreProcess(Me)
     End Sub
 
-    Public ReadOnly Property m_sGameFolder As String
+    Public ReadOnly Property GameFolder As String
         Get
             Return g_sGameFolder
         End Get
     End Property
 
-    Public ReadOnly Property m_sSourceModFolder As String
+    Public ReadOnly Property SourceModFolder As String
         Get
             Return g_sSourceModFolder
         End Get
     End Property
 
-    Public ReadOnly Property m_sCurrentSourceFile As String
+    Public ReadOnly Property CurrentSourceFile As String
         Get
             Return g_sCurrentSourceFile
         End Get
     End Property
 
-    Public Property m_sPluginIdentity As String
+    Public Property PluginIdentity As String
         Get
             Return g_sPluginIdentity
         End Get
@@ -125,7 +125,7 @@ Public Class ClassDebuggerRunner
         End Set
     End Property
 
-    Public Property m_DebuggingState As ENUM_DEBUGGING_STATE
+    Public Property DebuggingState As ENUM_DEBUGGING_STATE
         Get
             Return g_mDebuggingState
         End Get
@@ -134,7 +134,7 @@ Public Class ClassDebuggerRunner
         End Set
     End Property
 
-    Public Property m_SuspendGame As Boolean
+    Public Property SuspendGame As Boolean
         Get
             Return g_bSuspendGame
         End Get
@@ -154,7 +154,7 @@ Public Class ClassDebuggerRunner
                             Continue For
                         End If
 
-                        If (sFullPath.ToLower.StartsWith(m_sGameFolder.ToLower)) Then
+                        If (sFullPath.ToLower.StartsWith(GameFolder.ToLower)) Then
                             If (value) Then
                                 WinNative.SuspendProcess(proc)
                             Else
@@ -176,14 +176,14 @@ Public Class ClassDebuggerRunner
     ''' </summary>
     ''' <param name="sGUID"></param>
     ''' <returns></returns>
-    Public Property m_IgnoreBreakpointGUID(sGUID As String) As Boolean
+    Public Property IgnoreBreakpointGUID(sGUID As String) As Boolean
         Get
             If (String.IsNullOrEmpty(sGUID)) Then
                 Throw New ArgumentException("Guid empty")
             End If
 
             Dim sIgnoreExt As String = ClassDebuggerParser.g_sDebuggerBreakpointIgnoreExt
-            Dim sFile As String = IO.Path.Combine(m_sGameFolder, sGUID & sIgnoreExt)
+            Dim sFile As String = IO.Path.Combine(GameFolder, sGUID & sIgnoreExt)
 
             Return IO.File.Exists(sFile)
         End Get
@@ -193,7 +193,7 @@ Public Class ClassDebuggerRunner
             End If
 
             Dim sIgnoreExt As String = ClassDebuggerParser.g_sDebuggerBreakpointIgnoreExt
-            Dim sFile As String = IO.Path.Combine(m_sGameFolder, sGUID & sIgnoreExt)
+            Dim sFile As String = IO.Path.Combine(GameFolder, sGUID & sIgnoreExt)
 
             If (value) Then
                 IO.File.WriteAllText(sFile, "")
@@ -325,7 +325,7 @@ Public Class ClassDebuggerRunner
         ''' </summary>
         ''' <param name="sSource"></param>
         Public Sub FinishSource(ByRef sSource As String)
-            If (String.IsNullOrEmpty(g_ClassDebuggerRunner.m_sPluginIdentity)) Then
+            If (String.IsNullOrEmpty(g_ClassDebuggerRunner.PluginIdentity)) Then
                 Throw New ArgumentException("Plugin identity invalid")
             End If
 
@@ -353,7 +353,7 @@ Public Class ClassDebuggerRunner
                 End While
             End Using
 
-            sourceFinished.AppendLine(String.Format("#file ""{0}""", g_ClassDebuggerRunner.m_sPluginIdentity))
+            sourceFinished.AppendLine(String.Format("#file ""{0}""", g_ClassDebuggerRunner.PluginIdentity))
 
             sSource = sourceFinished.ToString
         End Sub
@@ -365,7 +365,7 @@ Public Class ClassDebuggerRunner
     ''' </summary>
     Public Function StartDebugging() As Boolean
         Try
-            If (m_DebuggingState <> ENUM_DEBUGGING_STATE.STOPPED) Then
+            If (DebuggingState <> ENUM_DEBUGGING_STATE.STOPPED) Then
                 Return True
             End If
 
@@ -373,11 +373,11 @@ Public Class ClassDebuggerRunner
             g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Orange
 
             'Set unique plugin identity
-            m_sPluginIdentity = Guid.NewGuid.ToString
+            PluginIdentity = Guid.NewGuid.ToString
 
             'Check game and sourcemod directorys 
-            Dim sGameDir As String = m_sGameFolder
-            Dim sSMDir As String = m_sSourceModFolder
+            Dim sGameDir As String = GameFolder
+            Dim sSMDir As String = SourceModFolder
             If (Not IO.Directory.Exists(sGameDir)) Then
                 Throw New ArgumentException("Invalid game directory")
             End If
@@ -408,9 +408,10 @@ Public Class ClassDebuggerRunner
                 g_tListViewEntitiesUpdaterThread = Nothing
             End If
 
-            g_tListViewEntitiesUpdaterThread = New Threading.Thread(AddressOf ListViewEntitiesUpdaterThread)
-            g_tListViewEntitiesUpdaterThread.Priority = Threading.ThreadPriority.Lowest
-            g_tListViewEntitiesUpdaterThread.IsBackground = True
+            g_tListViewEntitiesUpdaterThread = New Threading.Thread(AddressOf ListViewEntitiesUpdaterThread) With {
+                .Priority = Threading.ThreadPriority.Lowest,
+                .IsBackground = True
+            }
             g_tListViewEntitiesUpdaterThread.Start()
 
 
@@ -419,7 +420,7 @@ Public Class ClassDebuggerRunner
             'Export debugger cmd runner engine
             If (True) Then
                 Dim sSource As String = g_mFormDebugger.g_ClassDebuggerRunnerEngine.GenerateRunnerEngine(False)
-                Dim sOutput As String = IO.Path.Combine(m_sSourceModFolder, String.Format("plugins\BasicPawnDebugCmdRunEngine-{0}.unk", Guid.NewGuid.ToString))
+                Dim sOutput As String = IO.Path.Combine(SourceModFolder, String.Format("plugins\BasicPawnDebugCmdRunEngine-{0}.unk", Guid.NewGuid.ToString))
                 g_sLatestDebuggerRunnerPlugin = sOutput
 
                 If (Not g_mFormDebugger.g_mFormMain.g_ClassTextEditorTools.CompileSource(False, sSource, sOutput)) Then
@@ -432,7 +433,7 @@ Public Class ClassDebuggerRunner
             'Export main plugin source
             If (True) Then
                 Dim sSource As String = g_mFormDebugger.TextEditorControlEx_DebuggerSource.Document.TextContent
-                Dim sOutput As String = IO.Path.Combine(m_sSourceModFolder, String.Format("plugins\BasicPawnDebug-{0}.unk", Guid.NewGuid.ToString))
+                Dim sOutput As String = IO.Path.Combine(SourceModFolder, String.Format("plugins\BasicPawnDebug-{0}.unk", Guid.NewGuid.ToString))
                 g_sLatestDebuggerPlugin = sOutput
 
                 g_mFormDebugger.g_ClassDebuggerParser.UpdateBreakpoints(sSource, True)
@@ -463,11 +464,11 @@ Public Class ClassDebuggerRunner
             'Make sure other async threads doenst fuckup everthing
             SyncLock g_mFileSystemWatcherLock
                 g_mActiveBreakpointValue.sGUID = ""
-                m_DebuggingState = ENUM_DEBUGGING_STATE.STARTED
-                m_SuspendGame = False
+                DebuggingState = ENUM_DEBUGGING_STATE.STARTED
+                SuspendGame = False
             End SyncLock
 
-            g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnDebuggerDebugStart())
+            g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnDebuggerDebugStart())
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
             g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Error!" & ex.Message
@@ -487,7 +488,7 @@ Public Class ClassDebuggerRunner
     ''' </summary>
     Public Function StopDebugging() As Boolean
         Try
-            If (m_DebuggingState = ENUM_DEBUGGING_STATE.STOPPED) Then
+            If (DebuggingState = ENUM_DEBUGGING_STATE.STOPPED) Then
                 Return True
             End If
 
@@ -507,7 +508,7 @@ Public Class ClassDebuggerRunner
                                 'Do nothing? Yea lets do nothing here...
 
                 Case FormDebuggerStop.ENUM_DIALOG_RESULT.TERMINATE_GAME
-                    If (Not String.IsNullOrEmpty(m_sGameFolder) AndAlso IO.Directory.Exists(m_sGameFolder)) Then
+                    If (Not String.IsNullOrEmpty(GameFolder) AndAlso IO.Directory.Exists(GameFolder)) Then
                         For Each proc As Process In Process.GetProcesses
                             Try
                                 If (proc.Id = Process.GetCurrentProcess.Id) Then
@@ -520,7 +521,7 @@ Public Class ClassDebuggerRunner
                                     Continue For
                                 End If
 
-                                If (sFullPath.ToLower.StartsWith(m_sGameFolder.ToLower)) Then
+                                If (sFullPath.ToLower.StartsWith(GameFolder.ToLower)) Then
                                     proc.Kill()
                                 End If
                             Catch ex As Exception
@@ -530,26 +531,26 @@ Public Class ClassDebuggerRunner
                     End If
 
                 Case FormDebuggerStop.ENUM_DIALOG_RESULT.RELOAD_MAP
-                    If (Not String.IsNullOrEmpty(m_sGameFolder) AndAlso IO.Directory.Exists(m_sGameFolder)) Then
-                        g_mFormDebugger.g_ClassDebuggerRunnerEngine.AcceptCommand(m_sGameFolder, "@reloadmap")
+                    If (Not String.IsNullOrEmpty(GameFolder) AndAlso IO.Directory.Exists(GameFolder)) Then
+                        g_mFormDebugger.g_ClassDebuggerRunnerEngine.AcceptCommand(GameFolder, "@reloadmap")
                     Else
                         MessageBox.Show("Can't send command! Game directory doesn't exist!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     End If
 
                 Case FormDebuggerStop.ENUM_DIALOG_RESULT.RESTART_GAME
-                    If (Not String.IsNullOrEmpty(m_sGameFolder) AndAlso IO.Directory.Exists(m_sGameFolder)) Then
-                        g_mFormDebugger.g_ClassDebuggerRunnerEngine.AcceptCommand(m_sGameFolder, "_restart")
+                    If (Not String.IsNullOrEmpty(GameFolder) AndAlso IO.Directory.Exists(GameFolder)) Then
+                        g_mFormDebugger.g_ClassDebuggerRunnerEngine.AcceptCommand(GameFolder, "_restart")
                     Else
                         MessageBox.Show("Can't send command! Game directory doesn't exist!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     End If
 
                 Case FormDebuggerStop.ENUM_DIALOG_RESULT.UNLOAD_PLUGIN
-                    If (Not String.IsNullOrEmpty(m_sGameFolder) AndAlso IO.Directory.Exists(m_sGameFolder)) Then
+                    If (Not String.IsNullOrEmpty(GameFolder) AndAlso IO.Directory.Exists(GameFolder)) Then
                         With New Text.StringBuilder
                             .AppendLine(String.Format("sm plugins unload {0}", IO.Path.GetFileName(g_sLatestDebuggerPlugin)))
                             .AppendLine(String.Format("sm plugins unload {0}", IO.Path.GetFileName(g_sLatestDebuggerRunnerPlugin)))
 
-                            g_mFormDebugger.g_ClassDebuggerRunnerEngine.AcceptCommand(m_sGameFolder, .ToString)
+                            g_mFormDebugger.g_ClassDebuggerRunnerEngine.AcceptCommand(GameFolder, .ToString)
                         End With
                     Else
                         MessageBox.Show("Can't send command! Game directory doesn't exist!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -587,8 +588,8 @@ Public Class ClassDebuggerRunner
             'Make sure other async threads doenst fuckup everthing
             SyncLock g_mFileSystemWatcherLock
                 g_mActiveBreakpointValue.sGUID = ""
-                m_DebuggingState = ENUM_DEBUGGING_STATE.STOPPED
-                m_SuspendGame = False
+                DebuggingState = ENUM_DEBUGGING_STATE.STOPPED
+                SuspendGame = False
             End SyncLock
 
             UpdateBreakpointListView()
@@ -596,7 +597,7 @@ Public Class ClassDebuggerRunner
             g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Debugger stopped!"
             g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Red
 
-            g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnDebuggerDebugStop())
+            g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnDebuggerDebugStop())
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
 
@@ -612,12 +613,12 @@ Public Class ClassDebuggerRunner
     ''' </summary>
     Public Sub ContinueDebugging()
         Try
-            If (m_DebuggingState <> ENUM_DEBUGGING_STATE.PAUSED) Then
+            If (DebuggingState <> ENUM_DEBUGGING_STATE.PAUSED) Then
                 Return
             End If
 
             If (Not String.IsNullOrEmpty(g_mActiveBreakpointValue.sGUID)) Then
-                Dim sGameDir As String = m_sGameFolder
+                Dim sGameDir As String = GameFolder
                 Dim sContinueFile As String = IO.Path.Combine(sGameDir, g_mActiveBreakpointValue.sGUID & ClassDebuggerParser.g_sDebuggerBreakpointContinueExt.ToLower)
                 Dim sContinueVarFile As String = IO.Path.Combine(sGameDir, g_mActiveBreakpointValue.sGUID & ClassDebuggerParser.g_sDebuggerBreakpointContinueVarExt.ToLower)
 
@@ -653,8 +654,8 @@ Public Class ClassDebuggerRunner
             SyncLock g_mFileSystemWatcherLock
                 g_mActiveBreakpointValue.sGUID = ""
 
-                m_DebuggingState = ENUM_DEBUGGING_STATE.STARTED
-                m_SuspendGame = False
+                DebuggingState = ENUM_DEBUGGING_STATE.STARTED
+                SuspendGame = False
             End SyncLock
 
             UpdateBreakpointListView()
@@ -662,7 +663,7 @@ Public Class ClassDebuggerRunner
             g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Debugger running!"
             g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Green
 
-            g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnDebuggerDebugStart())
+            g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnDebuggerDebugStart())
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
 
@@ -677,14 +678,14 @@ Public Class ClassDebuggerRunner
     ''' </summary>
     Public Sub PauseDebugging()
         Try
-            If (m_DebuggingState <> ENUM_DEBUGGING_STATE.STARTED) Then
+            If (DebuggingState <> ENUM_DEBUGGING_STATE.STARTED) Then
                 Return
             End If
 
             'Make sure other async threads doenst fuckup everthing
             SyncLock g_mFileSystemWatcherLock
-                m_SuspendGame = True
-                m_DebuggingState = ENUM_DEBUGGING_STATE.PAUSED
+                SuspendGame = True
+                DebuggingState = ENUM_DEBUGGING_STATE.PAUSED
             End SyncLock
 
             UpdateBreakpointListView()
@@ -692,7 +693,7 @@ Public Class ClassDebuggerRunner
             g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Debugger awaiting input..."
             g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Orange
 
-            g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnDebuggerDebugPause())
+            g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnDebuggerDebugPause())
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
 
@@ -850,8 +851,8 @@ Public Class ClassDebuggerRunner
 
             'Make sure other async threads doenst fuckup everthing
             SyncLock g_mFileSystemWatcherLock
-                m_SuspendGame = True
-                m_DebuggingState = ENUM_DEBUGGING_STATE.PAUSED
+                SuspendGame = True
+                DebuggingState = ENUM_DEBUGGING_STATE.PAUSED
 
                 g_mActiveBreakpointValue.sGUID = sGUID
                 g_mActiveBreakpointValue.bReturnCustomValue = False
@@ -864,7 +865,7 @@ Public Class ClassDebuggerRunner
 
                 'INFO: Dont use 'Invoke' it deadlocks on FileSystemWatcher.Dispose, use async 'BeginInvoke' instead.
                 g_mFormDebugger.BeginInvoke(Sub()
-                                                If (m_DebuggingState <> ENUM_DEBUGGING_STATE.PAUSED) Then
+                                                If (DebuggingState <> ENUM_DEBUGGING_STATE.PAUSED) Then
                                                     Return
                                                 End If
 
@@ -880,7 +881,7 @@ Public Class ClassDebuggerRunner
                                                 g_mFormDebugger.TopMost = True
                                                 g_mFormDebugger.TopMost = False
 
-                                                g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnDebuggerDebugPause())
+                                                g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnDebuggerDebugPause())
                                             End Sub)
             End SyncLock
         Catch ex As Threading.ThreadAbortException
@@ -1176,7 +1177,7 @@ Public Class ClassDebuggerRunner
 
             'Make sure other async threads doenst fuckup everthing
             SyncLock g_mFileSystemWatcherLock
-                Dim bWasSuspended As Boolean = m_SuspendGame
+                Dim bWasSuspended As Boolean = SuspendGame
 
                 Dim SW As New Stopwatch
                 SW.Start()
@@ -1195,9 +1196,9 @@ Public Class ClassDebuggerRunner
                         End If
 
                         'Make sure we suspend the game process first, otherwise we risk that SourceMod disables its logging because we used the file first
-                        m_SuspendGame = True
+                        SuspendGame = True
                         sLines = ClassTools.ClassStrings.StringReadLinesEnd(sFile, MAX_SM_LOG_READ_LINES)
-                        m_SuspendGame = bWasSuspended
+                        SuspendGame = bWasSuspended
 
                         Exit While
                     Catch ex As IO.IOException
@@ -1233,8 +1234,8 @@ Public Class ClassDebuggerRunner
                     SyncLock g_mFileSystemWatcherLock
                         bFoundKnownExceptions = True
 
-                        m_SuspendGame = True
-                        m_DebuggingState = ENUM_DEBUGGING_STATE.PAUSED
+                        SuspendGame = True
+                        DebuggingState = ENUM_DEBUGGING_STATE.PAUSED
 
                         'INFO: Dont use 'Invoke' it deadlocks on FileSystemWatcher.Dispose, use async 'BeginInvoke' instead.
                         g_mFormDebugger.BeginInvoke(Sub()
@@ -1242,7 +1243,7 @@ Public Class ClassDebuggerRunner
                                                             Return
                                                         End If
 
-                                                        If (m_DebuggingState <> ENUM_DEBUGGING_STATE.PAUSED) Then
+                                                        If (DebuggingState <> ENUM_DEBUGGING_STATE.PAUSED) Then
                                                             Return
                                                         End If
 
@@ -1268,7 +1269,7 @@ Public Class ClassDebuggerRunner
                                                         g_mFormDebuggerException.TopMost = True
                                                         g_mFormDebuggerException.TopMost = False
 
-                                                        g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnDebuggerDebugPause())
+                                                        g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnDebuggerDebugPause())
                                                     End Sub)
 
                     End SyncLock
@@ -1287,8 +1288,8 @@ Public Class ClassDebuggerRunner
 
                     'Make sure other async threads doenst fuckup everthing 
                     SyncLock g_mFileSystemWatcherLock
-                        m_SuspendGame = True
-                        m_DebuggingState = ENUM_DEBUGGING_STATE.PAUSED
+                        SuspendGame = True
+                        DebuggingState = ENUM_DEBUGGING_STATE.PAUSED
 
                         'INFO: Dont use 'Invoke' it deadlocks on FileSystemWatcher.Dispose, use async 'BeginInvoke' instead.
                         g_mFormDebugger.BeginInvoke(Sub()
@@ -1300,7 +1301,7 @@ Public Class ClassDebuggerRunner
                                                             Return
                                                         End If
 
-                                                        If (m_DebuggingState <> ENUM_DEBUGGING_STATE.PAUSED) Then
+                                                        If (DebuggingState <> ENUM_DEBUGGING_STATE.PAUSED) Then
                                                             Return
                                                         End If
 
@@ -1326,7 +1327,7 @@ Public Class ClassDebuggerRunner
                                                         g_mFormDebuggerCriticalPopupException.TopMost = True
                                                         g_mFormDebuggerCriticalPopupException.TopMost = False
 
-                                                        g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnDebuggerDebugPause())
+                                                        g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnDebuggerDebugPause())
                                                     End Sub)
                     End SyncLock
                 End If
@@ -1366,7 +1367,7 @@ Public Class ClassDebuggerRunner
 
             'Make sure other async threads doenst fuckup everthing
             SyncLock g_mFileSystemWatcherLock
-                Dim bWasSuspended As Boolean = m_SuspendGame
+                Dim bWasSuspended As Boolean = SuspendGame
 
                 Dim SW As New Stopwatch
                 SW.Start()
@@ -1385,9 +1386,9 @@ Public Class ClassDebuggerRunner
                         End If
 
                         'Make sure we suspend the game process first, otherwise we risk that SourceMod disables its logging because we used the file first
-                        m_SuspendGame = True
+                        SuspendGame = True
                         sLines = ClassTools.ClassStrings.StringReadLinesEnd(sFile, MAX_SM_LOG_READ_LINES)
-                        m_SuspendGame = bWasSuspended
+                        SuspendGame = bWasSuspended
 
                         Exit While
                     Catch ex As IO.IOException
@@ -1404,8 +1405,8 @@ Public Class ClassDebuggerRunner
 
                 'Make sure other async threads doenst fuckup everthing 
                 SyncLock g_mFileSystemWatcherLock
-                    m_SuspendGame = True
-                    m_DebuggingState = ENUM_DEBUGGING_STATE.PAUSED
+                    SuspendGame = True
+                    DebuggingState = ENUM_DEBUGGING_STATE.PAUSED
 
                     'INFO: Dont use 'Invoke' it deadlocks on FileSystemWatcher.Dispose, use async 'BeginInvoke' instead.
                     g_mFormDebugger.BeginInvoke(Sub()
@@ -1413,7 +1414,7 @@ Public Class ClassDebuggerRunner
                                                         Return
                                                     End If
 
-                                                    If (m_DebuggingState <> ENUM_DEBUGGING_STATE.PAUSED) Then
+                                                    If (DebuggingState <> ENUM_DEBUGGING_STATE.PAUSED) Then
                                                         Return
                                                     End If
 
@@ -1439,7 +1440,7 @@ Public Class ClassDebuggerRunner
                                                     g_mFormDebuggerCriticalPopupFatalException.TopMost = True
                                                     g_mFormDebuggerCriticalPopupFatalException.TopMost = False
 
-                                                    g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.PluginInterface) j.OnDebuggerDebugPause())
+                                                    g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnDebuggerDebugPause())
                                                 End Sub)
                 End SyncLock
             End If

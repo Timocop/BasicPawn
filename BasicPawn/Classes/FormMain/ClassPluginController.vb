@@ -24,19 +24,19 @@ Public Class ClassPluginController
 
     Structure STRUC_PLUGIN_ITEM
         Dim sFile As String
-        Dim mPluginInformation As BasicPawnPluginInterface.PluginInterface.STRUC_PLUGIN_INFORMATION
-        Dim mPluginInterface As BasicPawnPluginInterface.PluginInterface
+        Dim mPluginInformation As BasicPawnPluginInterface.IPluginInterface.STRUC_PLUGIN_INFORMATION
+        Dim mPluginInterface As BasicPawnPluginInterface.IPluginInterface
     End Structure
     Private g_lPlugins As New List(Of STRUC_PLUGIN_ITEM)
 
-    ReadOnly Property m_Plugins As STRUC_PLUGIN_ITEM()
+    ReadOnly Property Plugins As STRUC_PLUGIN_ITEM()
         Get
             Return g_lPlugins.ToArray
         End Get
     End Property
 
-    Public Sub PluginsExecute(mAction As Action(Of BasicPawnPluginInterface.PluginInterface))
-        For Each mPlugin In m_Plugins
+    Public Sub PluginsExecute(mAction As Action(Of BasicPawnPluginInterface.IPluginInterface))
+        For Each mPlugin In Plugins
             Try
                 mAction(mPlugin.mPluginInterface)
             Catch ex As NotImplementedException
@@ -47,23 +47,23 @@ Public Class ClassPluginController
         Next
     End Sub
 
-    Public Function LoadPlugin(sFile As String) As BasicPawnPluginInterface.PluginInterface
+    Public Function LoadPlugin(sFile As String) As BasicPawnPluginInterface.IPluginInterface
         Try
             Dim loadedAssembly As Reflection.Assembly = Reflection.Assembly.LoadFile(sFile)
 
             For Each mType As Type In loadedAssembly.GetTypes
                 Try
                     Dim instanceObject As Object = loadedAssembly.CreateInstance(mType.FullName)
-                    Dim pluginInterface As BasicPawnPluginInterface.PluginInterface = TryCast(instanceObject, BasicPawnPluginInterface.PluginInterface)
+                    Dim pluginInterface As BasicPawnPluginInterface.IPluginInterface = TryCast(instanceObject, BasicPawnPluginInterface.IPluginInterface)
                     If (pluginInterface Is Nothing) Then
                         Continue For
                     End If
 
-                    Dim pluginInfo As New STRUC_PLUGIN_ITEM
-                    pluginInfo.mPluginInformation = pluginInterface.m_PluginInformation
-                    pluginInfo.mPluginInterface = pluginInterface
-                    pluginInfo.sFile = sFile
-                    g_lPlugins.Add(pluginInfo)
+                    g_lPlugins.Add(New STRUC_PLUGIN_ITEM With {
+                        .mPluginInformation = pluginInterface.m_PluginInformation,
+                        .mPluginInterface = pluginInterface,
+                        .sFile = sFile
+                    })
 
                     Return pluginInterface
                 Catch ex As MissingMethodException

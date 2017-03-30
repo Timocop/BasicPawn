@@ -15,8 +15,7 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 
-Public Interface PluginInterface
-
+Public Interface IPluginInterface
     Class STRUC_PLUGIN_INFORMATION
         Public sName As String
         Public sAuthor As String

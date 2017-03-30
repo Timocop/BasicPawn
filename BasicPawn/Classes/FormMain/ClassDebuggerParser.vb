@@ -121,29 +121,27 @@ Public Class ClassDebuggerParser
             End If
 
             If (bKeepIdentity) Then
-                Dim debuggerItem As New STRUC_DEBUGGER_ITEM
-                debuggerItem.sGUID = g_lBreakpointList(iListIndex).sGUID
-                debuggerItem.iLine = iLine
-                debuggerItem.iIndex = iLineIndex
-                debuggerItem.iLenght = iLenght
-                debuggerItem.iTotalLenght = iTotalLenght
-                debuggerItem.iOffset = iIndex
-                debuggerItem.sArguments = sArguments.ToString
-                debuggerItem.sTotalFunction = sTotalFunction.ToString
-
-                g_lBreakpointList(iListIndex) = debuggerItem
+                g_lBreakpointList(iListIndex) = New STRUC_DEBUGGER_ITEM With {
+                    .sGUID = g_lBreakpointList(iListIndex).sGUID,
+                    .iLine = iLine,
+                    .iIndex = iLineIndex,
+                    .iLenght = iLenght,
+                    .iTotalLenght = iTotalLenght,
+                    .iOffset = iIndex,
+                    .sArguments = sArguments.ToString,
+                    .sTotalFunction = sTotalFunction.ToString
+                }
             Else
-                Dim debuggerItem As New STRUC_DEBUGGER_ITEM
-                debuggerItem.sGUID = sGUID
-                debuggerItem.iLine = iLine
-                debuggerItem.iIndex = iLineIndex
-                debuggerItem.iLenght = iLenght
-                debuggerItem.iTotalLenght = iTotalLenght
-                debuggerItem.iOffset = iIndex
-                debuggerItem.sArguments = sArguments.ToString
-                debuggerItem.sTotalFunction = sTotalFunction.ToString
-
-                g_lBreakpointList.Add(debuggerItem)
+                g_lBreakpointList.Add(New STRUC_DEBUGGER_ITEM With {
+                    .sGUID = sGUID,
+                    .iLine = iLine,
+                    .iIndex = iLineIndex,
+                    .iLenght = iLenght,
+                    .iTotalLenght = iTotalLenght,
+                    .iOffset = iIndex,
+                    .sArguments = sArguments.ToString,
+                    .sTotalFunction = sTotalFunction.ToString
+                })
             End If
 
             iListIndex += 1
@@ -216,29 +214,27 @@ Public Class ClassDebuggerParser
             End If
 
             If (bKeepIdentity) Then
-                Dim breakpointItem As New STRUC_DEBUGGER_ITEM
-                breakpointItem.sGUID = g_lWatcherList(iListIndex).sGUID
-                breakpointItem.iLine = iLine
-                breakpointItem.iIndex = iLineIndex
-                breakpointItem.iLenght = iLenght
-                breakpointItem.iTotalLenght = iTotalLenght
-                breakpointItem.iOffset = iIndex
-                breakpointItem.sArguments = sArguments.ToString
-                breakpointItem.sTotalFunction = sTotalFunction.ToString
-
-                g_lWatcherList(iListIndex) = breakpointItem
+                g_lWatcherList(iListIndex) = New STRUC_DEBUGGER_ITEM With {
+                    .sGUID = g_lWatcherList(iListIndex).sGUID,
+                    .iLine = iLine,
+                    .iIndex = iLineIndex,
+                    .iLenght = iLenght,
+                    .iTotalLenght = iTotalLenght,
+                    .iOffset = iIndex,
+                    .sArguments = sArguments.ToString,
+                    .sTotalFunction = sTotalFunction.ToString
+                }
             Else
-                Dim breakpointItem As New STRUC_DEBUGGER_ITEM
-                breakpointItem.sGUID = sGUID
-                breakpointItem.iLine = iLine
-                breakpointItem.iIndex = iLineIndex
-                breakpointItem.iLenght = iLenght
-                breakpointItem.iTotalLenght = iTotalLenght
-                breakpointItem.iOffset = iIndex
-                breakpointItem.sArguments = sArguments.ToString
-                breakpointItem.sTotalFunction = sTotalFunction.ToString
-
-                g_lWatcherList.Add(breakpointItem)
+                g_lWatcherList.Add(New STRUC_DEBUGGER_ITEM With {
+                    .sGUID = sGUID,
+                    .iLine = iLine,
+                    .iIndex = iLineIndex,
+                    .iLenght = iLenght,
+                    .iTotalLenght = iTotalLenght,
+                    .iOffset = iIndex,
+                    .sArguments = sArguments.ToString,
+                    .sTotalFunction = sTotalFunction.ToString
+                })
             End If
 
             iListIndex += 1
@@ -255,7 +251,6 @@ Public Class ClassDebuggerParser
         Dim autocompleteList As New List(Of STRUC_AUTOCOMPLETE)
         Dim autocompleteInfo As New StringBuilder
 
-        autocompleteInfo.Length = 0
         autocompleteInfo.AppendLine("/**")
         autocompleteInfo.AppendLine("*  Pauses the plugin until manually resumed. Also shows the current position in the BasicPawn Debugger.")
         autocompleteInfo.AppendLine("*  Optionaly you can return a custom non-array value.")
@@ -532,12 +527,10 @@ Public Class ClassDebuggerParser
 
     Public Function GetDebugPlaceholderNames() As String()
         'TODO: Add more debug placeholder
-        Dim lNameList As New List(Of String)
-
-        lNameList.Add(g_sBreakpointName)
-        lNameList.Add(g_sWatcherName)
-
-        Return lNameList.ToArray
+        Return New List(Of String) From {
+            g_sBreakpointName,
+            g_sWatcherName
+        }.ToArray
     End Function
 
     Public Function HasDebugPlaceholder(sSource As String) As Boolean
@@ -602,7 +595,7 @@ Public Class ClassDebuggerParser
         ''' Inserts one breakpoint using the caret position in the text editor
         ''' </summary>
         Public Sub TextEditorInsertBreakpointAtCaret()
-            Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
+            Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor
 
             If (mActiveTextEditor.ActiveTextAreaControl.SelectionManager.HasSomethingSelected AndAlso mActiveTextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection.Count > 0) Then
                 Dim iOffset As Integer = mActiveTextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection(0).Offset
@@ -666,7 +659,7 @@ Public Class ClassDebuggerParser
         ''' Removes one breakpoint using the caret position in the text editor
         ''' </summary>
         Public Sub TextEditorRemoveBreakpointAtCaret()
-            Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
+            Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor
             Dim sCaretWord As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True)
 
             If (sCaretWord <> ClassDebuggerParser.g_sBreakpointName) Then
@@ -711,7 +704,7 @@ Public Class ClassDebuggerParser
         ''' Removes all available breakpoints in the text editor
         ''' </summary>
         Public Sub TextEditorRemoveAllBreakpoints()
-            Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
+            Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor
             mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
 
             g_mFormMain.PrintInformation("[INFO]", "Removing all debugger breakpoints...")
@@ -868,7 +861,7 @@ Public Class ClassDebuggerParser
         ''' Inserts one watcher using the caret position in the text editor
         ''' </summary>
         Public Sub TextEditorInsertWatcherAtCaret()
-            Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
+            Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor
 
             If (mActiveTextEditor.ActiveTextAreaControl.SelectionManager.HasSomethingSelected AndAlso mActiveTextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection.Count > 0) Then
                 Dim iOffset As Integer = mActiveTextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection(0).Offset
@@ -932,7 +925,7 @@ Public Class ClassDebuggerParser
         ''' Removes one watcher using the caret position in the text editor
         ''' </summary>
         Public Sub TextEditorRemoveWatcherAtCaret()
-            Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
+            Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor
             Dim sCaretWord As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True)
 
             If (sCaretWord <> ClassDebuggerParser.g_sWatcherName) Then
@@ -977,7 +970,7 @@ Public Class ClassDebuggerParser
         ''' Removes all available watchers in the text editor
         ''' </summary>
         Public Sub TextEditorRemoveAllWatchers()
-            Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
+            Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor
             mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
 
             g_mFormMain.PrintInformation("[INFO]", "Removing all debugger watcher...")

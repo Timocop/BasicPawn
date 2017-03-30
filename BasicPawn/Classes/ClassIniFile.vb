@@ -108,11 +108,11 @@ Public Class ClassIniFile
                         lIniContentList.RemoveAt(i)
                         Continue While
                     Else
-                        Dim iNewContent As New STRUC_INI_CONTENT
-                        iNewContent.sSection = sFromSection
-                        iNewContent.sKey = sFromKey
-                        iNewContent.sValue = sFromValue
-                        lIniContentList(i) = iNewContent
+                        lIniContentList(i) = New STRUC_INI_CONTENT With {
+                            .sSection = sFromSection,
+                            .sKey = sFromKey,
+                            .sValue = sFromValue
+                        }
 
                         bFoundContent = True
                     End If
@@ -123,11 +123,11 @@ Public Class ClassIniFile
         End While
 
         If (Not bFoundContent AndAlso sFromValue IsNot Nothing) Then
-            Dim iNewContent As New STRUC_INI_CONTENT
-            iNewContent.sSection = sFromSection
-            iNewContent.sKey = sFromKey
-            iNewContent.sValue = sFromValue
-            lIniContentList.Add(iNewContent)
+            lIniContentList.Add(New STRUC_INI_CONTENT With {
+                .sSection = sFromSection,
+                .sKey = sFromKey,
+                .sValue = sFromValue
+            })
         End If
 
         ' Process write to file

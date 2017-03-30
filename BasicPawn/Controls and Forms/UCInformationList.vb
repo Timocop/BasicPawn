@@ -38,13 +38,13 @@ Public Class UCInformationList
         Try
             Dim bForceEnd As Boolean = False
             While True
-                For i = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1
-                    If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.m_Tab(i).m_File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_Tab(i).m_File)) Then
+                For i = 0 To g_mFormMain.g_ClassTabControl.TabsCount - 1
+                    If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.Tab(i).File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.Tab(i).File)) Then
                         Continue For
                     End If
 
 
-                    Dim sRegexPath As String = g_mFormMain.g_ClassTabControl.m_Tab(i).m_File.Replace("/"c, "\"c)
+                    Dim sRegexPath As String = g_mFormMain.g_ClassTabControl.Tab(i).File.Replace("/"c, "\"c)
 
                     Dim lPathNames As New List(Of String)
                     For Each sName As String In sRegexPath.Split("\"c)
@@ -57,20 +57,20 @@ Public Class UCInformationList
                     Dim regMatch As Match = Regex.Match(ListBox_Information.SelectedItems(0).ToString, String.Format("\b{0}\b\((?<Line>[0-9]+)\)\s\:", sRegexPath), RegexOptions.IgnoreCase)
                     If (regMatch.Success) Then
                         Dim iLineNum As Integer = CInt(regMatch.Groups("Line").Value) - 1
-                        If (iLineNum < 0 OrElse iLineNum > g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.Document.TotalNumberOfLines - 1) Then
+                        If (iLineNum < 0 OrElse iLineNum > g_mFormMain.g_ClassTabControl.Tab(i).TextEditor.Document.TotalNumberOfLines - 1) Then
                             Return
                         End If
 
-                        g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.Caret.Line = iLineNum
-                        g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.Caret.Column = 0
-                        g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.SelectionManager.ClearSelection()
+                        g_mFormMain.g_ClassTabControl.Tab(i).TextEditor.ActiveTextAreaControl.Caret.Line = iLineNum
+                        g_mFormMain.g_ClassTabControl.Tab(i).TextEditor.ActiveTextAreaControl.Caret.Column = 0
+                        g_mFormMain.g_ClassTabControl.Tab(i).TextEditor.ActiveTextAreaControl.SelectionManager.ClearSelection()
 
-                        Dim iLineLen As Integer = g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.Document.GetLineSegment(iLineNum).Length
+                        Dim iLineLen As Integer = g_mFormMain.g_ClassTabControl.Tab(i).TextEditor.Document.GetLineSegment(iLineNum).Length
 
                         Dim iStart As New TextLocation(0, iLineNum)
                         Dim iEnd As New TextLocation(iLineLen, iLineNum)
 
-                        g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.SelectionManager.SetSelection(iStart, iEnd)
+                        g_mFormMain.g_ClassTabControl.Tab(i).TextEditor.ActiveTextAreaControl.SelectionManager.SetSelection(iStart, iEnd)
 
                         g_mFormMain.g_ClassTabControl.SelectTab(i)
                         Return
@@ -81,7 +81,7 @@ Public Class UCInformationList
                     Exit While
                 End If
 
-                For Each sPath As String In g_mFormMain.g_ClassAutocompleteUpdater.GetIncludeFiles(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File, True)
+                For Each sPath As String In g_mFormMain.g_ClassAutocompleteUpdater.GetIncludeFiles(g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor.Document.TextContent, g_mFormMain.g_ClassTabControl.ActiveTab.File, g_mFormMain.g_ClassTabControl.ActiveTab.File, True)
                     If (String.IsNullOrEmpty(sPath) OrElse Not IO.File.Exists(sPath)) Then
                         Continue For
                     End If
@@ -103,7 +103,7 @@ Public Class UCInformationList
                     End If
 
                     g_mFormMain.g_ClassTabControl.AddTab(True)
-                    g_mFormMain.g_ClassTabControl.OpenFileTab(g_mFormMain.g_ClassTabControl.m_TabsCount - 1, sPath)
+                    g_mFormMain.g_ClassTabControl.OpenFileTab(g_mFormMain.g_ClassTabControl.TabsCount - 1, sPath)
 
                     bForceEnd = True
                     Continue While

@@ -21,30 +21,30 @@ Imports System.Windows.Forms
 Imports System.Drawing
 
 Public Class PluginSample
-    Implements PluginInterface
+    Implements IPluginInterface
 
     Private g_mFormMain As FormMain
     Private g_ClassTestToolbox As ClassTestToolbox
 
 
-    Public ReadOnly Property m_PluginInformation As PluginInterface.STRUC_PLUGIN_INFORMATION Implements PluginInterface.m_PluginInformation
+    Public ReadOnly Property m_PluginInformation As IPluginInterface.STRUC_PLUGIN_INFORMATION Implements IPluginInterface.m_PluginInformation
         Get
-            Return New PluginInterface.STRUC_PLUGIN_INFORMATION("Sample Plugin", "Timocop", "A simple sample plugin", "0.0", Nothing)
+            Return New IPluginInterface.STRUC_PLUGIN_INFORMATION("Sample Plugin", "Timocop", "A simple sample plugin", "0.0", Nothing)
         End Get
     End Property
 
-    Public Sub OnPluginEndPost() Implements PluginInterface.OnPluginEndPost
+    Public Sub OnPluginEndPost() Implements IPluginInterface.OnPluginEndPost
         If (g_ClassTestToolbox IsNot Nothing) Then
             g_ClassTestToolbox.Dispose()
             g_ClassTestToolbox = Nothing
         End If
     End Sub
 
-    Public Sub OnPluginLoad(sDLLPath As String) Implements PluginInterface.OnPluginLoad
+    Public Sub OnPluginLoad(sDLLPath As String) Implements IPluginInterface.OnPluginLoad
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnPluginStart(mFormMain As FormMain) Implements PluginInterface.OnPluginStart
+    Public Sub OnPluginStart(mFormMain As FormMain) Implements IPluginInterface.OnPluginStart
         g_mFormMain = mFormMain
 
         g_ClassTestToolbox = New ClassTestToolbox(Me)
@@ -53,63 +53,63 @@ Public Class PluginSample
         g_ClassTestToolbox.BuildAboutMenu()
     End Sub
 
-    Public Function OnPluginEnd() As Boolean Implements PluginInterface.OnPluginEnd
+    Public Function OnPluginEnd() As Boolean Implements IPluginInterface.OnPluginEnd
         Throw New NotImplementedException()
     End Function
 
-    Public Sub OnSettingsChanged() Implements PluginInterface.OnSettingsChanged
+    Public Sub OnSettingsChanged() Implements IPluginInterface.OnSettingsChanged
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnConfigChanged() Implements PluginInterface.OnConfigChanged
+    Public Sub OnConfigChanged() Implements IPluginInterface.OnConfigChanged
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnEditorSyntaxUpdate() Implements PluginInterface.OnEditorSyntaxUpdate
+    Public Sub OnEditorSyntaxUpdate() Implements IPluginInterface.OnEditorSyntaxUpdate
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnEditorSyntaxUpdateEnd() Implements PluginInterface.OnEditorSyntaxUpdateEnd
+    Public Sub OnEditorSyntaxUpdateEnd() Implements IPluginInterface.OnEditorSyntaxUpdateEnd
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnSyntaxUpdate(iType As ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE, bForceFromMemory As Boolean) Implements PluginInterface.OnSyntaxUpdate
+    Public Sub OnSyntaxUpdate(iType As ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE, bForceFromMemory As Boolean) Implements IPluginInterface.OnSyntaxUpdate
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnSyntaxUpdateEnd(iType As ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE, bForceFromMemory As Boolean) Implements PluginInterface.OnSyntaxUpdateEnd
+    Public Sub OnSyntaxUpdateEnd(iType As ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE, bForceFromMemory As Boolean) Implements IPluginInterface.OnSyntaxUpdateEnd
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnFormColorUpdate() Implements PluginInterface.OnFormColorUpdate
+    Public Sub OnFormColorUpdate() Implements IPluginInterface.OnFormColorUpdate
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnDebuggerStart(mFormDebugger As FormDebugger) Implements PluginInterface.OnDebuggerStart
+    Public Sub OnDebuggerStart(mFormDebugger As FormDebugger) Implements IPluginInterface.OnDebuggerStart
         Throw New NotImplementedException()
     End Sub
 
-    Public Function OnDebuggerEnd(mFormDebugger As FormDebugger) As Boolean Implements PluginInterface.OnDebuggerEnd
+    Public Function OnDebuggerEnd(mFormDebugger As FormDebugger) As Boolean Implements IPluginInterface.OnDebuggerEnd
         Throw New NotImplementedException()
     End Function
 
-    Public Sub OnDebuggerEndPost(mFormDebugger As FormDebugger) Implements PluginInterface.OnDebuggerEndPost
+    Public Sub OnDebuggerEndPost(mFormDebugger As FormDebugger) Implements IPluginInterface.OnDebuggerEndPost
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnDebuggerDebugStart() Implements PluginInterface.OnDebuggerDebugStart
+    Public Sub OnDebuggerDebugStart() Implements IPluginInterface.OnDebuggerDebugStart
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnDebuggerDebugPause() Implements PluginInterface.OnDebuggerDebugPause
+    Public Sub OnDebuggerDebugPause() Implements IPluginInterface.OnDebuggerDebugPause
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnDebuggerDebugStop() Implements PluginInterface.OnDebuggerDebugStop
+    Public Sub OnDebuggerDebugStop() Implements IPluginInterface.OnDebuggerDebugStop
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnDebuggerRefresh(mFormDebugger As FormDebugger) Implements PluginInterface.OnDebuggerRefresh
+    Public Sub OnDebuggerRefresh(mFormDebugger As FormDebugger) Implements IPluginInterface.OnDebuggerRefresh
         Throw New NotImplementedException()
     End Sub
 
