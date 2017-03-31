@@ -144,6 +144,10 @@ Public Class ClassDebuggerRunner
 
                 For Each proc As Process In Process.GetProcesses
                     Try
+                        If (proc.HasExited) Then
+                            Continue For
+                        End If
+
                         If (proc.Id = Process.GetCurrentProcess.Id) Then
                             Continue For
                         End If
@@ -471,10 +475,11 @@ Public Class ClassDebuggerRunner
             g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnDebuggerDebugStart())
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
+
+            StopDebugging(True)
+
             g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Error!" & ex.Message
             g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Red
-
-            RemoveFileSystemWatcher()
 
             Return False
         End Try
@@ -486,76 +491,78 @@ Public Class ClassDebuggerRunner
     ''' Stops the debugger.
     ''' Remove all elements for the debugging here.
     ''' </summary>
-    Public Function StopDebugging() As Boolean
+    Public Function StopDebugging(Optional bForceStop As Boolean = False) As Boolean
         Try
-            If (DebuggingState = ENUM_DEBUGGING_STATE.STOPPED) Then
-                Return True
-            End If
+            If (Not bForceStop) Then
+                If (DebuggingState = ENUM_DEBUGGING_STATE.STOPPED) Then
+                    Return True
+                End If
 
-            If (Not g_bRememberAction) Then
-                Using i As New FormDebuggerStop
-                    If (i.ShowDialog = DialogResult.OK) Then
-                        g_mRememberAction = i.m_DialogResult
-                        g_bRememberAction = i.m_RememberAction
-                    Else
-                        Return False
-                    End If
-                End Using
-            End If
+                If (Not g_bRememberAction) Then
+                    Using i As New FormDebuggerStop
+                        If (i.ShowDialog = DialogResult.OK) Then
+                            g_mRememberAction = i.m_DialogResult
+                            g_bRememberAction = i.m_RememberAction
+                        Else
+                            Return False
+                        End If
+                    End Using
+                End If
 
-            Select Case (g_mRememberAction)
-                Case FormDebuggerStop.ENUM_DIALOG_RESULT.DO_NOTHING
+                Select Case (g_mRememberAction)
+                    Case FormDebuggerStop.ENUM_DIALOG_RESULT.DO_NOTHING
                                 'Do nothing? Yea lets do nothing here...
 
-                Case FormDebuggerStop.ENUM_DIALOG_RESULT.TERMINATE_GAME
-                    If (Not String.IsNullOrEmpty(GameFolder) AndAlso IO.Directory.Exists(GameFolder)) Then
-                        For Each proc As Process In Process.GetProcesses
-                            Try
-                                If (proc.Id = Process.GetCurrentProcess.Id) Then
-                                    Continue For
-                                End If
+                    Case FormDebuggerStop.ENUM_DIALOG_RESULT.TERMINATE_GAME
+                        If (Not String.IsNullOrEmpty(GameFolder) AndAlso IO.Directory.Exists(GameFolder)) Then
+                            For Each proc As Process In Process.GetProcesses
+                                Try
+                                    If (proc.Id = Process.GetCurrentProcess.Id) Then
+                                        Continue For
+                                    End If
 
-                                Dim sFullPath As String = IO.Path.GetFullPath(proc.MainModule.FileName)
+                                    Dim sFullPath As String = IO.Path.GetFullPath(proc.MainModule.FileName)
 
-                                If (sFullPath.ToLower = Application.ExecutablePath.ToLower) Then
-                                    Continue For
-                                End If
+                                    If (sFullPath.ToLower = Application.ExecutablePath.ToLower) Then
+                                        Continue For
+                                    End If
 
-                                If (sFullPath.ToLower.StartsWith(GameFolder.ToLower)) Then
-                                    proc.Kill()
-                                End If
-                            Catch ex As Exception
-                                'Ignore access denied
-                            End Try
-                        Next
-                    End If
+                                    If (sFullPath.ToLower.StartsWith(GameFolder.ToLower)) Then
+                                        proc.Kill()
+                                    End If
+                                Catch ex As Exception
+                                    'Ignore access denied
+                                End Try
+                            Next
+                        End If
 
-                Case FormDebuggerStop.ENUM_DIALOG_RESULT.RELOAD_MAP
-                    If (Not String.IsNullOrEmpty(GameFolder) AndAlso IO.Directory.Exists(GameFolder)) Then
-                        g_mFormDebugger.g_ClassDebuggerRunnerEngine.AcceptCommand(GameFolder, "@reloadmap")
-                    Else
-                        MessageBox.Show("Can't send command! Game directory doesn't exist!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    End If
+                    Case FormDebuggerStop.ENUM_DIALOG_RESULT.RELOAD_MAP
+                        If (Not String.IsNullOrEmpty(GameFolder) AndAlso IO.Directory.Exists(GameFolder)) Then
+                            g_mFormDebugger.g_ClassDebuggerRunnerEngine.AcceptCommand(GameFolder, "@reloadmap")
+                        Else
+                            MessageBox.Show("Can't send command! Game directory doesn't exist!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        End If
 
-                Case FormDebuggerStop.ENUM_DIALOG_RESULT.RESTART_GAME
-                    If (Not String.IsNullOrEmpty(GameFolder) AndAlso IO.Directory.Exists(GameFolder)) Then
-                        g_mFormDebugger.g_ClassDebuggerRunnerEngine.AcceptCommand(GameFolder, "_restart")
-                    Else
-                        MessageBox.Show("Can't send command! Game directory doesn't exist!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    End If
+                    Case FormDebuggerStop.ENUM_DIALOG_RESULT.RESTART_GAME
+                        If (Not String.IsNullOrEmpty(GameFolder) AndAlso IO.Directory.Exists(GameFolder)) Then
+                            g_mFormDebugger.g_ClassDebuggerRunnerEngine.AcceptCommand(GameFolder, "_restart")
+                        Else
+                            MessageBox.Show("Can't send command! Game directory doesn't exist!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        End If
 
-                Case FormDebuggerStop.ENUM_DIALOG_RESULT.UNLOAD_PLUGIN
-                    If (Not String.IsNullOrEmpty(GameFolder) AndAlso IO.Directory.Exists(GameFolder)) Then
-                        With New Text.StringBuilder
-                            .AppendLine(String.Format("sm plugins unload {0}", IO.Path.GetFileName(g_sLatestDebuggerPlugin)))
-                            .AppendLine(String.Format("sm plugins unload {0}", IO.Path.GetFileName(g_sLatestDebuggerRunnerPlugin)))
+                    Case FormDebuggerStop.ENUM_DIALOG_RESULT.UNLOAD_PLUGIN
+                        If (Not String.IsNullOrEmpty(GameFolder) AndAlso IO.Directory.Exists(GameFolder)) Then
+                            With New Text.StringBuilder
+                                .AppendLine(String.Format("sm plugins unload {0}", IO.Path.GetFileName(g_sLatestDebuggerPlugin)))
+                                .AppendLine(String.Format("sm plugins unload {0}", IO.Path.GetFileName(g_sLatestDebuggerRunnerPlugin)))
 
-                            g_mFormDebugger.g_ClassDebuggerRunnerEngine.AcceptCommand(GameFolder, .ToString)
-                        End With
-                    Else
-                        MessageBox.Show("Can't send command! Game directory doesn't exist!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    End If
-            End Select
+                                g_mFormDebugger.g_ClassDebuggerRunnerEngine.AcceptCommand(GameFolder, .ToString)
+                            End With
+                        Else
+                            MessageBox.Show("Can't send command! Game directory doesn't exist!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        End If
+                End Select
+            End If
 
             'Remove I/O events
             RemoveFileSystemWatcher()
@@ -570,15 +577,15 @@ Public Class ClassDebuggerRunner
             'Remove plugin
             If (Not String.IsNullOrEmpty(g_sLatestDebuggerPlugin) AndAlso IO.File.Exists(g_sLatestDebuggerPlugin)) Then
                 IO.File.Delete(g_sLatestDebuggerPlugin)
-            ElseIf (Not String.IsNullOrEmpty(g_sLatestDebuggerPlugin)) Then
-                MessageBox.Show(String.Format("Can't find '{0}'. Please remove it manualy!", g_sLatestDebuggerPlugin))
+                'ElseIf (Not String.IsNullOrEmpty(g_sLatestDebuggerPlugin)) Then
+                '    MessageBox.Show(String.Format("Can't find '{0}'. Please remove it manualy!", g_sLatestDebuggerPlugin))
             End If
 
             'Remove cmd runner plugin
             If (Not String.IsNullOrEmpty(g_sLatestDebuggerRunnerPlugin) AndAlso IO.File.Exists(g_sLatestDebuggerRunnerPlugin)) Then
                 IO.File.Delete(g_sLatestDebuggerRunnerPlugin)
-            ElseIf (Not String.IsNullOrEmpty(g_sLatestDebuggerRunnerPlugin)) Then
-                MessageBox.Show(String.Format("Can't find '{0}'. Please remove it manualy!", g_sLatestDebuggerRunnerPlugin))
+                'ElseIf (Not String.IsNullOrEmpty(g_sLatestDebuggerRunnerPlugin)) Then
+                '    MessageBox.Show(String.Format("Can't find '{0}'. Please remove it manualy!", g_sLatestDebuggerRunnerPlugin))
             End If
 
             g_sLatestDebuggerPlugin = ""
