@@ -607,18 +607,15 @@ Public Class FormMain
 
 #Region "MenuStrip_Test"
     Private Sub ToolStripMenuItem_Test_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Test.Click
+        Dim sSource As String = g_ClassTabControl.ActiveTab.TextEditor.Document.TextContent
         With New ClassDebuggerParser(Me)
-            If (.HasDebugPlaceholder(g_ClassTabControl.ActiveTab.TextEditor.Document.TextContent)) Then
-                Select Case (MessageBox.Show("All BasicPawn Debugger placeholders need to be removed before compiling the source. Remove all placeholder?", "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation))
-                    Case DialogResult.OK
-                        .CleanupDebugPlaceholder(Me)
-                    Case Else
-                        Return
-                End Select
+            If (.HasDebugPlaceholder(sSource)) Then
+                .CleanupDebugPlaceholder(sSource)
             End If
         End With
 
-        g_ClassTextEditorTools.CompileSource(True)
+        Dim sOutput As String = ""
+        g_ClassTextEditorTools.CompileSource(True, sSource, sOutput)
     End Sub
 #End Region
 
