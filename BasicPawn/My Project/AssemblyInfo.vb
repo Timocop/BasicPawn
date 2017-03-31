@@ -12,7 +12,7 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyDescription("A lightweight SourcePawn Editor")>
 <Assembly: AssemblyCompany("TheTimocop")>
 <Assembly: AssemblyProduct("BasicPawn")>
-<Assembly: AssemblyCopyright("Copyright © TheTimocop 2016")>
+<Assembly: AssemblyCopyright("Copyright © TheTimocop 2017")>
 <Assembly: AssemblyTrademark("BasicPawn")>
 
 <Assembly: ComVisible(False)>
@@ -31,5 +31,5 @@ Imports System.Runtime.InteropServices
 ' übernehmen, indem Sie "*" eingeben:
 ' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("0.713")>
-<Assembly: AssemblyFileVersion("0.713")>
+<Assembly: AssemblyVersion("0.714")>
+<Assembly: AssemblyFileVersion("0.714")>
