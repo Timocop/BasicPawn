@@ -60,7 +60,7 @@ Public Class ClassPluginController
                     End If
 
                     g_lPlugins.Add(New STRUC_PLUGIN_ITEM With {
-                        .mPluginInformation = pluginInterface.m_PluginInformation,
+                        .mPluginInformation = pluginInterface.PluginInformation,
                         .mPluginInterface = pluginInterface,
                         .sFile = sFile
                     })

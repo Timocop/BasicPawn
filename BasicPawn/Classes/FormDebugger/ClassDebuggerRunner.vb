@@ -214,7 +214,7 @@ Public Class ClassDebuggerRunner
     Public Sub UpdateBreakpointListView()
         If (String.IsNullOrEmpty(g_mActiveBreakpointValue.sGUID)) Then
             For i = 0 To g_mFormDebugger.ListView_Breakpoints.Items.Count - 1
-                If (ClassControlStyle.m_InvertColor) Then
+                If (ClassControlStyle.IsInvertedColors) Then
                     g_mFormDebugger.ListView_Breakpoints.Items(i).BackColor = ClassControlStyle.g_cDarkControlColor.mDarkBackground
                 Else
                     g_mFormDebugger.ListView_Breakpoints.Items(i).BackColor = ClassControlStyle.g_cDarkControlColor.mLightBackground
@@ -1137,7 +1137,7 @@ Public Class ClassDebuggerRunner
                                                     Dim timeSpan As TimeSpan = New TimeSpan(CLng(sTicks))
 
                                                     If ((timeSpan + New TimeSpan(0, 0, 0, 0, g_iListViewEntitesUpdaterTime)).Ticks < Date.Now.Ticks) Then
-                                                        If (ClassControlStyle.m_InvertColor) Then
+                                                        If (ClassControlStyle.IsInvertedColors) Then
                                                             g_mFormDebugger.ListView_Entities.Items(i).BackColor = ClassControlStyle.g_cDarkControlColor.mDarkBackground
                                                         Else
                                                             g_mFormDebugger.ListView_Entities.Items(i).BackColor = ClassControlStyle.g_cDarkControlColor.mLightBackground

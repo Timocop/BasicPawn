@@ -40,7 +40,7 @@ Public Interface IPluginInterface
     ''' All available plugin information such as name, author etc.
     ''' </summary>
     ''' <returns></returns>
-    ReadOnly Property m_PluginInformation As STRUC_PLUGIN_INFORMATION
+    ReadOnly Property PluginInformation As STRUC_PLUGIN_INFORMATION
 
 
 #Region "Main"

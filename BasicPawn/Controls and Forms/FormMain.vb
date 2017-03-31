@@ -199,8 +199,8 @@ Public Class FormMain
         g_mPingFlashPanel.Name = "#Ignore"
         g_mPingFlashPanel.Parent = Me
         g_mPingFlashPanel.Dock = DockStyle.Fill
-        g_mPingFlashPanel.m_TransparentBackColor = Color.FromKnownColor(KnownColor.RoyalBlue)
-        g_mPingFlashPanel.m_Opacity = 0
+        g_mPingFlashPanel.TransparentBackColor = Color.FromKnownColor(KnownColor.RoyalBlue)
+        g_mPingFlashPanel.Opacity = 0
         g_mPingFlashPanel.BringToFront()
         g_mPingFlashPanel.Visible = False
     End Sub
@@ -871,7 +871,7 @@ Public Class FormMain
     End Sub
 
     Public Sub ShowPingFlash()
-        g_mPingFlashPanel.m_Opacity = 50
+        g_mPingFlashPanel.Opacity = 50
         g_mPingFlashPanel.Visible = True
 
         Timer_PingFlash.Start()
@@ -882,9 +882,9 @@ Public Class FormMain
             Return
         End If
 
-        g_mPingFlashPanel.m_Opacity -= 10
+        g_mPingFlashPanel.Opacity -= 10
 
-        If (g_mPingFlashPanel.m_Opacity > 0) Then
+        If (g_mPingFlashPanel.Opacity > 0) Then
             Return
         End If
 
