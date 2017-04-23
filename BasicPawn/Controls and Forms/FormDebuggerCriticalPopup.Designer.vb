@@ -83,7 +83,7 @@ Partial Class FormDebuggerCriticalPopup
         Me.Class_PanelQuality1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
         Me.Class_PanelQuality1.Controls.Add(Me.Label_Title)
         Me.Class_PanelQuality1.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Class_PanelQuality1.HighQuality = False
+        Me.Class_PanelQuality1.m_HighQuality = False
         Me.Class_PanelQuality1.Location = New System.Drawing.Point(0, 0)
         Me.Class_PanelQuality1.Name = "Class_PanelQuality1"
         Me.Class_PanelQuality1.Size = New System.Drawing.Size(784, 48)

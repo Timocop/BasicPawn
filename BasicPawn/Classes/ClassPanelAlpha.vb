@@ -23,7 +23,7 @@ Public Class ClassPanelAlpha
 
     Public Sub New()
         g_mTransparentBackColor = Color.Red
-        Opacity = 50
+        m_Opacity = 50
         Me.BackColor = Color.Transparent
 
         ClassTools.ClassForms.SetDoubleBufferingAllChilds(Me, True)
@@ -31,7 +31,7 @@ Public Class ClassPanelAlpha
     End Sub
 
     Protected Overrides Sub OnPaint(e As PaintEventArgs)
-        If Me.Parent IsNot Nothing AndAlso Opacity > 0 Then
+        If Me.Parent IsNot Nothing AndAlso m_Opacity > 0 Then
             Dim lControls As New SortedList(Of Integer, Control)
 
             Using mBitmap = New Bitmap(Me.Parent.Width, Me.Parent.Height)
@@ -53,7 +53,7 @@ Public Class ClassPanelAlpha
         End If
     End Sub
 
-    Public Property Opacity As Integer
+    Public Property m_Opacity As Integer
         Get
             Return g_mOpacity
         End Get
@@ -66,7 +66,7 @@ Public Class ClassPanelAlpha
         End Set
     End Property
 
-    Public Property TransparentBackColor As Color
+    Public Property m_TransparentBackColor As Color
         Get
             Return g_mTransparentBackColor
         End Get

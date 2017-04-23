@@ -217,7 +217,7 @@ Public Class ClassSyntaxTools
                                                 SB.Append(sSyntax_HighlightWordCustomMarker)
 
                                                 g_mFormMain.g_ClassCustomHighlighting.Add(iHighlightCustomCount)
-                                                Dim menuItem = g_mFormMain.g_ClassCustomHighlighting.HightlightItems()
+                                                Dim menuItem = g_mFormMain.g_ClassCustomHighlighting.m_HightlightItems()
 
                                                 If (menuItem(iHighlightCustomCount) IsNot Nothing AndAlso Not String.IsNullOrEmpty(menuItem(iHighlightCustomCount).sWord)) Then
                                                     SB.Append(String.Format("<Key word=""{0}""/>", menuItem(iHighlightCustomCount).sWord))
@@ -379,20 +379,20 @@ Public Class ClassSyntaxTools
                 For i = 0 To g_SyntaxFiles.Length - 1
                     Select Case (i)
                         Case ENUM_SYNTAX_FILES.MAIN_TEXTEDITOR
-                            For j = 0 To g_mFormMain.g_ClassTabControl.TabsCount - 1
-                                If (j = g_mFormMain.g_ClassTabControl.ActiveTabIndex) Then
-                                    If (g_mFormMain.g_ClassTabControl.Tab(j).TextEditor.Document.HighlightingStrategy.Name <> g_SyntaxFiles(i).sDefinition) Then
-                                        g_mFormMain.g_ClassTabControl.Tab(j).TextEditor.SetHighlighting(g_SyntaxFiles(i).sDefinition)
+                            For j = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1
+                                If (j = g_mFormMain.g_ClassTabControl.m_ActiveTabIndex) Then
+                                    If (g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.Document.HighlightingStrategy.Name <> g_SyntaxFiles(i).sDefinition) Then
+                                        g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.SetHighlighting(g_SyntaxFiles(i).sDefinition)
                                     End If
                                 Else
-                                    If (g_mFormMain.g_ClassTabControl.Tab(j).TextEditor.Document.HighlightingStrategy.Name <> "Default") Then
-                                        g_mFormMain.g_ClassTabControl.Tab(j).TextEditor.SetHighlighting("Default")
+                                    If (g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.Document.HighlightingStrategy.Name <> "Default") Then
+                                        g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.SetHighlighting("Default")
                                     End If
                                 End If
                             Next
 
                             g_mFormMain.g_mUCToolTip.TextEditorControl_ToolTip.SetHighlighting(g_SyntaxFiles(i).sDefinition)
-                            g_mFormMain.g_mUCToolTip.TextEditorControl_ToolTip.Font = New Font(g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor.Font.FontFamily, 8, FontStyle.Regular)
+                            g_mFormMain.g_mUCToolTip.TextEditorControl_ToolTip.Font = New Font(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Font.FontFamily, 8, FontStyle.Regular)
 
                         Case ENUM_SYNTAX_FILES.DEBUGGER_TEXTEDITOR
                             If (g_mFormMain.g_mFormDebugger IsNot Nothing AndAlso Not g_mFormMain.g_mFormDebugger.IsDisposed) Then
@@ -430,7 +430,7 @@ Public Class ClassSyntaxTools
 
         For i = 0 To sExpression.Length - 1
             If (sourceAnalysis IsNot Nothing AndAlso bInvalidCodeCheck) Then
-                If (sourceAnalysis.InNonCode(i)) Then
+                If (sourceAnalysis.m_InNonCode(i)) Then
                     Continue For
                 End If
             End If
@@ -488,28 +488,28 @@ Public Class ClassSyntaxTools
             Try
                 Select Case (sSource(i))
                     Case "("c
-                        If (Not sourceAnalysis.InNonCode(i)) Then
+                        If (Not sourceAnalysis.m_InNonCode(i)) Then
                             iBracedCount -= 1
                         End If
 
                     Case ")"c
-                        If (Not sourceAnalysis.InNonCode(i)) Then
+                        If (Not sourceAnalysis.m_InNonCode(i)) Then
                             iBracedCount += 1
                         End If
 
                     Case "{"c
-                        If (Not sourceAnalysis.InNonCode(i)) Then
+                        If (Not sourceAnalysis.m_InNonCode(i)) Then
                             iBraceCount -= 1
                         End If
 
                     Case "}"c
-                        If (Not sourceAnalysis.InNonCode(i)) Then
+                        If (Not sourceAnalysis.m_InNonCode(i)) Then
                             iBraceCount += 1
                         End If
 
                     Case vbLf(0)
                         'If (Not sourceAnalysis.InNonCode(i)) Then
-                        sSource = sSource.Insert(i + 1, New String(vbTab(0), sourceAnalysis.GetBraceLevel(i + 1 + iBraceCount) + If(iBracedCount > 0, iBracedCount + 1, 0)))
+                        sSource = sSource.Insert(i + 1, New String(vbTab(0), sourceAnalysis.m_GetBraceLevel(i + 1 + iBraceCount) + If(iBracedCount > 0, iBracedCount + 1, 0)))
                         'End If
                         iBraceCount = 0
 
@@ -541,7 +541,7 @@ Public Class ClassSyntaxTools
         Else
             Dim sourceAnalysis As New ClassSyntaxSourceAnalysis(sSource)
             For Each match As Match In Regex.Matches(sSource, sRegexPattern, RegexOptions.Multiline)
-                If (sourceAnalysis.InNonCode(match.Index)) Then
+                If (sourceAnalysis.m_InNonCode(match.Index)) Then
                     Continue For
                 End If
 
@@ -626,7 +626,7 @@ Public Class ClassSyntaxTools
         ''' Gets the max lenght
         ''' </summary>
         ''' <returns></returns>
-        Public ReadOnly Property GetMaxLenght() As Integer
+        Public ReadOnly Property m_GetMaxLenght() As Integer
             Get
                 Return iMaxLenght
             End Get
@@ -637,7 +637,7 @@ Public Class ClassSyntaxTools
         ''' </summary>
         ''' <param name="i">The char index</param>
         ''' <returns></returns>
-        Public ReadOnly Property InSingleComment(i As Integer) As Boolean
+        Public ReadOnly Property m_InSingleComment(i As Integer) As Boolean
             Get
                 Return iStateArray(i, ENUM_STATE_TYPES.IN_SINGLE_COMMENT) > 0
             End Get
@@ -648,7 +648,7 @@ Public Class ClassSyntaxTools
         ''' </summary>
         ''' <param name="i">The char index</param>
         ''' <returns></returns>
-        Public ReadOnly Property InMultiComment(i As Integer) As Boolean
+        Public ReadOnly Property m_InMultiComment(i As Integer) As Boolean
             Get
                 Return iStateArray(i, ENUM_STATE_TYPES.IN_MULTI_COMMENT) > 0
             End Get
@@ -659,7 +659,7 @@ Public Class ClassSyntaxTools
         ''' </summary>
         ''' <param name="i">The char index</param>
         ''' <returns></returns>
-        Public ReadOnly Property InString(i As Integer) As Boolean
+        Public ReadOnly Property m_InString(i As Integer) As Boolean
             Get
                 Return iStateArray(i, ENUM_STATE_TYPES.IN_STRING) > 0
             End Get
@@ -670,7 +670,7 @@ Public Class ClassSyntaxTools
         ''' </summary>
         ''' <param name="i">The char index</param>
         ''' <returns></returns>
-        Public ReadOnly Property InChar(i As Integer) As Boolean
+        Public ReadOnly Property m_InChar(i As Integer) As Boolean
             Get
                 Return iStateArray(i, ENUM_STATE_TYPES.IN_CHAR) > 0
             End Get
@@ -681,7 +681,7 @@ Public Class ClassSyntaxTools
         ''' </summary>
         ''' <param name="i">The char index</param>
         ''' <returns></returns>
-        Public ReadOnly Property InPreprocessor(i As Integer) As Boolean
+        Public ReadOnly Property m_InPreprocessor(i As Integer) As Boolean
             Get
                 Return iStateArray(i, ENUM_STATE_TYPES.IN_PREPROCESSOR) > 0
             End Get
@@ -692,7 +692,7 @@ Public Class ClassSyntaxTools
         ''' </summary>
         ''' <param name="i">The char index</param>
         ''' <returns></returns>
-        Public ReadOnly Property GetParenthesisLevel(i As Integer) As Integer
+        Public ReadOnly Property m_GetParenthesisLevel(i As Integer) As Integer
             Get
                 Return iStateArray(i, ENUM_STATE_TYPES.PARENTHESIS_LEVEL)
             End Get
@@ -703,7 +703,7 @@ Public Class ClassSyntaxTools
         ''' </summary>
         ''' <param name="i">The char index</param>
         ''' <returns></returns>
-        Public ReadOnly Property GetBracketLevel(i As Integer) As Integer
+        Public ReadOnly Property m_GetBracketLevel(i As Integer) As Integer
             Get
                 Return iStateArray(i, ENUM_STATE_TYPES.BRACKET_LEVEL)
             End Get
@@ -714,7 +714,7 @@ Public Class ClassSyntaxTools
         ''' </summary>
         ''' <param name="i">The char index</param>
         ''' <returns></returns>
-        Public ReadOnly Property GetBraceLevel(i As Integer) As Integer
+        Public ReadOnly Property m_GetBraceLevel(i As Integer) As Integer
             Get
                 Return iStateArray(i, ENUM_STATE_TYPES.BRACE_LEVEL)
             End Get
@@ -725,7 +725,7 @@ Public Class ClassSyntaxTools
         ''' </summary>
         ''' <param name="i">The char index</param>
         ''' <returns></returns>
-        Public ReadOnly Property InNonCode(i As Integer) As Boolean
+        Public ReadOnly Property m_InNonCode(i As Integer) As Boolean
             Get
                 Return (iStateArray(i, ENUM_STATE_TYPES.IN_SINGLE_COMMENT) > 0 OrElse
                             iStateArray(i, ENUM_STATE_TYPES.IN_MULTI_COMMENT) > 0 OrElse

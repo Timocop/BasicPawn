@@ -199,8 +199,8 @@ Public Class FormMain
         g_mPingFlashPanel.Name = "#Ignore"
         g_mPingFlashPanel.Parent = Me
         g_mPingFlashPanel.Dock = DockStyle.Fill
-        g_mPingFlashPanel.TransparentBackColor = Color.FromKnownColor(KnownColor.RoyalBlue)
-        g_mPingFlashPanel.Opacity = 0
+        g_mPingFlashPanel.m_TransparentBackColor = Color.FromKnownColor(KnownColor.RoyalBlue)
+        g_mPingFlashPanel.m_Opacity = 0
         g_mPingFlashPanel.BringToFront()
         g_mPingFlashPanel.Visible = False
     End Sub
@@ -336,9 +336,9 @@ Public Class FormMain
             'Open all files here
             For i = 0 To lFileList.Count - 1
                 g_ClassTabControl.AddTab(False)
-                g_ClassTabControl.OpenFileTab(g_ClassTabControl.TabsCount - 1, lFileList(i), True)
+                g_ClassTabControl.OpenFileTab(g_ClassTabControl.m_TabsCount - 1, lFileList(i), True)
 
-                If (i = 0 AndAlso g_ClassTabControl.TabsCount > 0) Then
+                If (i = 0 AndAlso g_ClassTabControl.m_TabsCount > 0) Then
                     g_ClassTabControl.RemoveTab(0, False)
                 End If
             Next
@@ -368,7 +368,7 @@ Public Class FormMain
                                                    End If
                                                End Sub)
 
-        For i = 0 To g_ClassTabControl.TabsCount - 1
+        For i = 0 To g_ClassTabControl.m_TabsCount - 1
             If (g_ClassTabControl.PromptSaveTab(i)) Then
                 e.Cancel = True
             End If
@@ -377,7 +377,7 @@ Public Class FormMain
 
     Private Sub ContextMenuStrip1_Opening(sender As Object, e As CancelEventArgs) Handles ContextMenuStrip_RightClick.Opening
         g_mUCAutocomplete.UpdateAutocomplete("")
-        g_mUCAutocomplete.g_ClassToolTip.CurrentMethod = ""
+        g_mUCAutocomplete.g_ClassToolTip.m_CurrentMethod = ""
         g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip()
     End Sub
 #End Region
@@ -388,15 +388,15 @@ Public Class FormMain
     End Sub
 
     Private Sub ToolStripMenuItem_Cut_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Cut.Click
-        g_ClassTabControl.ActiveTab.TextEditor.ActiveTextAreaControl.TextArea.ClipboardHandler.Cut(sender, e)
+        g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.ClipboardHandler.Cut(sender, e)
     End Sub
 
     Private Sub ToolStripMenuItem_Copy_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Copy.Click
-        g_ClassTabControl.ActiveTab.TextEditor.ActiveTextAreaControl.TextArea.ClipboardHandler.Copy(sender, e)
+        g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.ClipboardHandler.Copy(sender, e)
     End Sub
 
     Private Sub ToolStripMenuItem_Paste_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Paste.Click
-        g_ClassTabControl.ActiveTab.TextEditor.ActiveTextAreaControl.TextArea.ClipboardHandler.Paste(sender, e)
+        g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.ClipboardHandler.Paste(sender, e)
     End Sub
 #End Region
 
@@ -412,38 +412,38 @@ Public Class FormMain
     Private Sub ToolStripMenuItem_FileOpen_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileOpen.Click
         Using i As New OpenFileDialog
             i.Filter = "All supported files|*.sp;*.inc;*.sma|SourcePawn|*.sp|Include|*.inc|Pawn (Not fully supported)|*.pwn;*.p|AMX Mod X|*.sma|All files|*.*"
-            i.FileName = g_ClassTabControl.ActiveTab.File
+            i.FileName = g_ClassTabControl.m_ActiveTab.m_File
             i.Multiselect = True
 
             If (i.ShowDialog = DialogResult.OK) Then
                 For Each sFile As String In i.FileNames
                     g_ClassTabControl.AddTab(True)
-                    g_ClassTabControl.OpenFileTab(g_ClassTabControl.TabsCount - 1, sFile)
+                    g_ClassTabControl.OpenFileTab(g_ClassTabControl.m_TabsCount - 1, sFile)
                 Next
             End If
         End Using
     End Sub
 
     Private Sub ToolStripMenuItem_FileSave_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileSave.Click
-        g_ClassTabControl.SaveFileTab(g_ClassTabControl.ActiveTabIndex)
+        g_ClassTabControl.SaveFileTab(g_ClassTabControl.m_ActiveTabIndex)
     End Sub
 
     Private Sub ToolStripMenuItem_FileSaveAll_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileSaveAll.Click
-        For i = 0 To g_ClassTabControl.TabsCount - 1
+        For i = 0 To g_ClassTabControl.m_TabsCount - 1
             g_ClassTabControl.SaveFileTab(i)
         Next
     End Sub
 
     Private Sub ToolStripMenuItem_FileSaveAs_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileSaveAs.Click
-        g_ClassTabControl.SaveFileTab(g_ClassTabControl.ActiveTabIndex, True)
+        g_ClassTabControl.SaveFileTab(g_ClassTabControl.m_ActiveTabIndex, True)
     End Sub
 
     Private Sub ToolStripMenuItem_FileSaveAsTemp_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileSaveAsTemp.Click
         Dim sTempFile As String = String.Format("{0}.src", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
         IO.File.WriteAllText(sTempFile, "")
 
-        g_ClassTabControl.ActiveTab.File = sTempFile
-        g_ClassTabControl.SaveFileTab(g_ClassTabControl.ActiveTabIndex)
+        g_ClassTabControl.m_ActiveTab.m_File = sTempFile
+        g_ClassTabControl.SaveFileTab(g_ClassTabControl.m_ActiveTabIndex)
     End Sub
 
     Private Sub ToolStripMenuItem_FileSavePacked_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileSavePacked.Click
@@ -467,12 +467,12 @@ Public Class FormMain
             'Replace the temp source file with the currently opened one
             sLstSource = Regex.Replace(sLstSource,
                                        String.Format("^\s*\#file ""{0}""\s*$", Regex.Escape(sTempFile)),
-                                       String.Format("#file ""{0}""", g_ClassTabControl.ActiveTab.File),
+                                       String.Format("#file ""{0}""", g_ClassTabControl.m_ActiveTab.m_File),
                                        RegexOptions.IgnoreCase Or RegexOptions.Multiline)
 
             Using i As New SaveFileDialog
                 i.Filter = "All supported files|*.sp;*.inc;*.sma|SourcePawn|*.sp|Include|*.inc|Pawn (Not fully supported)|*.pwn;*.p|AMX Mod X|*.sma|All files|*.*"
-                i.FileName = IO.Path.Combine(IO.Path.GetDirectoryName(g_ClassTabControl.ActiveTab.File), IO.Path.GetFileNameWithoutExtension(g_ClassTabControl.ActiveTab.File) & ".packed" & IO.Path.GetExtension(g_ClassTabControl.ActiveTab.File))
+                i.FileName = IO.Path.Combine(IO.Path.GetDirectoryName(g_ClassTabControl.m_ActiveTab.m_File), IO.Path.GetFileNameWithoutExtension(g_ClassTabControl.m_ActiveTab.m_File) & ".packed" & IO.Path.GetExtension(g_ClassTabControl.m_ActiveTab.m_File))
 
                 If (i.ShowDialog = DialogResult.OK) Then
                     IO.File.WriteAllText(i.FileName, sLstSource)
@@ -492,12 +492,12 @@ Public Class FormMain
 
     Private Sub ToolStripMenuItem_FileOpenFolder_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileOpenFolder.Click
         Try
-            If (String.IsNullOrEmpty(g_ClassTabControl.ActiveTab.File) OrElse Not IO.File.Exists(g_ClassTabControl.ActiveTab.File)) Then
+            If (String.IsNullOrEmpty(g_ClassTabControl.m_ActiveTab.m_File) OrElse Not IO.File.Exists(g_ClassTabControl.m_ActiveTab.m_File)) Then
                 MessageBox.Show("Can't open current folder. Source file can't be found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Return
             End If
 
-            Process.Start("explorer.exe", "/select,""" & g_ClassTabControl.ActiveTab.File & """")
+            Process.Start("explorer.exe", "/select,""" & g_ClassTabControl.m_ActiveTab.m_File & """")
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
@@ -516,9 +516,9 @@ Public Class FormMain
 
                 g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
 
-                For j = 0 To g_ClassTabControl.TabsCount - 1
-                    g_ClassTabControl.Tab(j).TextEditor.ActiveTextAreaControl.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
-                    g_ClassTabControl.Tab(j).TextEditor.Refresh()
+                For j = 0 To g_ClassTabControl.m_TabsCount - 1
+                    g_ClassTabControl.m_Tab(j).m_TextEditor.ActiveTextAreaControl.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
+                    g_ClassTabControl.m_Tab(j).m_TextEditor.Refresh()
                 Next
 
                 g_ClassSyntaxTools.UpdateFormColors()
@@ -528,23 +528,23 @@ Public Class FormMain
 
     Private Sub ToolStripMenuItem_ToolsFormatCode_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsFormatCode.Click
         Try
-            Dim sSource As String = g_ClassTabControl.ActiveTab.TextEditor.Document.TextContent
+            Dim sSource As String = g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
 
             sSource = g_ClassSyntaxTools.FormatCode(sSource)
 
-            g_ClassTabControl.ActiveTab.TextEditor.Document.UndoStack.StartUndoGroup()
-            g_ClassTabControl.ActiveTab.TextEditor.Document.Remove(0, g_ClassTabControl.ActiveTab.TextEditor.Document.TextLength)
-            g_ClassTabControl.ActiveTab.TextEditor.Document.Insert(0, sSource)
-            g_ClassTabControl.ActiveTab.TextEditor.Document.UndoStack.EndUndoGroup()
-            g_ClassTabControl.ActiveTab.TextEditor.Refresh()
+            g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.UndoStack.StartUndoGroup()
+            g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.Remove(0, g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextLength)
+            g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.Insert(0, sSource)
+            g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.UndoStack.EndUndoGroup()
+            g_ClassTabControl.m_ActiveTab.m_TextEditor.Refresh()
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
     End Sub
 
     Private Sub ToolStripMenuItem_ToolsSearchReplace_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsSearchReplace.Click
-        If (g_ClassTabControl.ActiveTab.TextEditor.ActiveTextAreaControl.SelectionManager.HasSomethingSelected) Then
-            g_ClassTextEditorTools.ShowSearchAndReplace(g_ClassTabControl.ActiveTab.TextEditor.ActiveTextAreaControl.SelectionManager.SelectedText)
+        If (g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.HasSomethingSelected) Then
+            g_ClassTextEditorTools.ShowSearchAndReplace(g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.SelectedText)
         Else
             g_ClassTextEditorTools.ShowSearchAndReplace("")
         End If
@@ -591,7 +591,7 @@ Public Class FormMain
 #Region "MenuStrip_Build"
     Private Sub ToolStripMenuItem_Build_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Build.Click
         With New ClassDebuggerParser(Me)
-            If (.HasDebugPlaceholder(g_ClassTabControl.ActiveTab.TextEditor.Document.TextContent)) Then
+            If (.HasDebugPlaceholder(g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent)) Then
                 Select Case (MessageBox.Show("All BasicPawn Debugger placeholders need to be removed before compiling the source. Remove all placeholder?", "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation))
                     Case DialogResult.OK
                         .CleanupDebugPlaceholder(Me)
@@ -607,7 +607,7 @@ Public Class FormMain
 
 #Region "MenuStrip_Test"
     Private Sub ToolStripMenuItem_Test_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Test.Click
-        Dim sSource As String = g_ClassTabControl.ActiveTab.TextEditor.Document.TextContent
+        Dim sSource As String = g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
         With New ClassDebuggerParser(Me)
             If (.HasDebugPlaceholder(sSource)) Then
                 .CleanupDebugPlaceholder(sSource)
@@ -675,13 +675,13 @@ Public Class FormMain
 
 #Region "MenuStrip_Undo"
     Private Sub ToolStripMenuItem_Undo_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Undo.Click
-        g_ClassTabControl.ActiveTab.TextEditor.Undo()
+        g_ClassTabControl.m_ActiveTab.m_TextEditor.Undo()
     End Sub
 #End Region
 
 #Region "MenuStrip_Redo"
     Private Sub ToolStripMenuItem_Redo_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Redo.Click
-        g_ClassTabControl.ActiveTab.TextEditor.Redo()
+        g_ClassTabControl.m_ActiveTab.m_TextEditor.Redo()
     End Sub
 #End Region
 
@@ -694,9 +694,9 @@ Public Class FormMain
 
                 g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
 
-                For j = 0 To g_ClassTabControl.TabsCount - 1
-                    g_ClassTabControl.Tab(j).TextEditor.ActiveTextAreaControl.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
-                    g_ClassTabControl.Tab(j).TextEditor.Refresh()
+                For j = 0 To g_ClassTabControl.m_TabsCount - 1
+                    g_ClassTabControl.m_Tab(j).m_TextEditor.ActiveTextAreaControl.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
+                    g_ClassTabControl.m_Tab(j).m_TextEditor.Refresh()
                 Next
 
                 g_ClassSyntaxTools.UpdateFormColors()
@@ -764,14 +764,14 @@ Public Class FormMain
     End Sub
 
     Private Sub ToolStripMenuItem_TabClose_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_TabClose.Click
-        g_ClassTabControl.RemoveTab(g_ClassTabControl.ActiveTabIndex, True)
+        g_ClassTabControl.RemoveTab(g_ClassTabControl.m_ActiveTabIndex, True)
     End Sub
 
     Private Sub ToolStripMenuItem_TabMoveRight_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_TabMoveRight.Click
-        Dim iActiveIndex As Integer = g_ClassTabControl.ActiveTabIndex
+        Dim iActiveIndex As Integer = g_ClassTabControl.m_ActiveTabIndex
         Dim iToIndex As Integer = iActiveIndex + 1
 
-        If (iToIndex > g_ClassTabControl.TabsCount - 1) Then
+        If (iToIndex > g_ClassTabControl.m_TabsCount - 1) Then
             Return
         End If
 
@@ -779,7 +779,7 @@ Public Class FormMain
     End Sub
 
     Private Sub ToolStripMenuItem_TabMoveLeft_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_TabMoveLeft.Click
-        Dim iActiveIndex As Integer = g_ClassTabControl.ActiveTabIndex
+        Dim iActiveIndex As Integer = g_ClassTabControl.m_ActiveTabIndex
         Dim iToIndex As Integer = iActiveIndex - 1
 
         If (iToIndex < 0) Then
@@ -798,10 +798,10 @@ Public Class FormMain
 
     Private Sub OnMessageReceive(mClassMessage As ClassCrossAppComunication.ClassMessage) Handles g_ClassCrossAppComunication.OnMessageReceive
         Try
-            Select Case (mClassMessage.MessageName)
+            Select Case (mClassMessage.m_MessageName)
                 Case COMARG_OPEN_FILE_BY_PID
-                    Dim iPID As Integer = CInt(mClassMessage.Messages(0))
-                    Dim sFile As String = mClassMessage.Messages(1)
+                    Dim iPID As Integer = CInt(mClassMessage.m_Messages(0))
+                    Dim sFile As String = mClassMessage.m_Messages(1)
 
                     If (iPID <> Process.GetCurrentProcess.Id) Then
                         Return
@@ -809,27 +809,27 @@ Public Class FormMain
 
                     Me.BeginInvoke(Sub()
                                        g_ClassTabControl.AddTab(True)
-                                       g_ClassTabControl.OpenFileTab(g_ClassTabControl.TabsCount - 1, sFile)
+                                       g_ClassTabControl.OpenFileTab(g_ClassTabControl.m_TabsCount - 1, sFile)
                                    End Sub)
 
                 Case COMARG_REQUEST_TABS
-                    Dim sIdentifier As String = mClassMessage.Messages(0)
+                    Dim sIdentifier As String = mClassMessage.m_Messages(0)
 
-                    For i = 0 To g_ClassTabControl.TabsCount - 1
+                    For i = 0 To g_ClassTabControl.m_TabsCount - 1
                         Dim iTabIndex As Integer = i
                         Dim sProcessName As String = Process.GetCurrentProcess.ProcessName
                         Dim iPID As Integer = Process.GetCurrentProcess.Id
-                        Dim sFile As String = g_ClassTabControl.Tab(i).File
+                        Dim sFile As String = g_ClassTabControl.m_Tab(i).m_File
 
                         g_ClassCrossAppComunication.SendMessage(New ClassCrossAppComunication.ClassMessage(COMARG_REQUEST_TABS_ANSWER, CStr(iTabIndex), sProcessName, CStr(iPID), sFile, sIdentifier), False)
                     Next
 
                 Case COMARG_REQUEST_TABS_ANSWER
-                    Dim iTabIndex As Integer = CInt(mClassMessage.Messages(0))
-                    Dim sProcessName As String = mClassMessage.Messages(1)
-                    Dim iPID As Integer = CInt(mClassMessage.Messages(2))
-                    Dim sFile As String = mClassMessage.Messages(3)
-                    Dim sIdentifier As String = mClassMessage.Messages(4)
+                    Dim iTabIndex As Integer = CInt(mClassMessage.m_Messages(0))
+                    Dim sProcessName As String = mClassMessage.m_Messages(1)
+                    Dim iPID As Integer = CInt(mClassMessage.m_Messages(2))
+                    Dim sFile As String = mClassMessage.m_Messages(3)
+                    Dim sIdentifier As String = mClassMessage.m_Messages(4)
 
                     If (g_mFormOpenTabFromInstances Is Nothing OrElse g_mFormOpenTabFromInstances.IsDisposed) Then
                         Return
@@ -840,26 +840,26 @@ Public Class FormMain
                     End If
 
                 Case COMARG_CLOSE_TAB
-                    Dim iTabIndex As Integer = CInt(mClassMessage.Messages(0))
-                    Dim iPID As Integer = CInt(mClassMessage.Messages(1))
-                    Dim sFile As String = mClassMessage.Messages(2)
+                    Dim iTabIndex As Integer = CInt(mClassMessage.m_Messages(0))
+                    Dim iPID As Integer = CInt(mClassMessage.m_Messages(1))
+                    Dim sFile As String = mClassMessage.m_Messages(2)
 
                     If (iPID <> Process.GetCurrentProcess.Id) Then
                         Return
                     End If
 
-                    If (iTabIndex < 0 OrElse iTabIndex > g_ClassTabControl.TabsCount - 1) Then
+                    If (iTabIndex < 0 OrElse iTabIndex > g_ClassTabControl.m_TabsCount - 1) Then
                         Return
                     End If
 
-                    If (Not String.IsNullOrEmpty(sFile) AndAlso sFile <> g_ClassTabControl.Tab(iTabIndex).File) Then
+                    If (Not String.IsNullOrEmpty(sFile) AndAlso sFile <> g_ClassTabControl.m_Tab(iTabIndex).m_File) Then
                         Return
                     End If
 
                     g_ClassTabControl.RemoveTab(iTabIndex, True)
 
                 Case COMARG_SHOW_PING_FLASH
-                    Dim iPID As Integer = CInt(mClassMessage.Messages(0))
+                    Dim iPID As Integer = CInt(mClassMessage.m_Messages(0))
 
                     If (iPID <> Process.GetCurrentProcess.Id) Then
                         Return
@@ -873,7 +873,7 @@ Public Class FormMain
     End Sub
 
     Public Sub ShowPingFlash()
-        g_mPingFlashPanel.Opacity = 50
+        g_mPingFlashPanel.m_Opacity = 50
         g_mPingFlashPanel.Visible = True
 
         Timer_PingFlash.Start()
@@ -884,9 +884,9 @@ Public Class FormMain
             Return
         End If
 
-        g_mPingFlashPanel.Opacity -= 10
+        g_mPingFlashPanel.m_Opacity -= 10
 
-        If (g_mPingFlashPanel.Opacity > 0) Then
+        If (g_mPingFlashPanel.m_Opacity > 0) Then
             Return
         End If
 

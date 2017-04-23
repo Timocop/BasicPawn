@@ -20,7 +20,7 @@ Public Class ClassPictureBoxQuality
 
     Private g_iHighQuality As Boolean = False
 
-    Public Property HighQuality() As Boolean
+    Public Property m_HighQuality() As Boolean
         Get
             Return g_iHighQuality
         End Get

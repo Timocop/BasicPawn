@@ -41,43 +41,43 @@ Public Class FormSearch
     End Structure
 
     Private Function GetTextEditorText() As String
-        Return g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor.Document.TextContent
+        Return g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
     End Function
 
     Private Function GetTextEditorCaretOffset() As Integer
-        Return g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor.ActiveTextAreaControl.Caret.Offset
+        Return g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Caret.Offset
     End Function
 
     Private Sub SetTextEditorSelection(iOffset As Integer, iLenght As Integer, bCaretBeginPos As Boolean)
-        If (iOffset + iLenght > g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor.Document.TextLength) Then
+        If (iOffset + iLenght > g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextLength) Then
             Return
         End If
 
-        Dim iLineLenStart As Integer = g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor.Document.GetLineSegmentForOffset(iOffset).LineNumber
-        Dim iLineLenEnd As Integer = g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor.Document.GetLineSegmentForOffset(iOffset + iLenght).LineNumber
-        Dim iLineColumStart As Integer = iOffset - g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor.Document.GetLineSegmentForOffset(iOffset).Offset
-        Dim iLineColumEnd As Integer = iOffset + iLenght - g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor.Document.GetLineSegmentForOffset(iOffset + iLenght).Offset
+        Dim iLineLenStart As Integer = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.GetLineSegmentForOffset(iOffset).LineNumber
+        Dim iLineLenEnd As Integer = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.GetLineSegmentForOffset(iOffset + iLenght).LineNumber
+        Dim iLineColumStart As Integer = iOffset - g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.GetLineSegmentForOffset(iOffset).Offset
+        Dim iLineColumEnd As Integer = iOffset + iLenght - g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.GetLineSegmentForOffset(iOffset + iLenght).Offset
 
         Dim iTLStart As New TextLocation(iLineColumStart, iLineLenStart)
         Dim iTLEnd As New TextLocation(iLineColumEnd, iLineLenEnd)
 
-        g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor.ActiveTextAreaControl.SelectionManager.SetSelection(iTLStart, iTLEnd)
-        g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor.ActiveTextAreaControl.Caret.Position = If(bCaretBeginPos, iTLStart, iTLEnd)
+        g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.SetSelection(iTLStart, iTLEnd)
+        g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Caret.Position = If(bCaretBeginPos, iTLStart, iTLEnd)
     End Sub
 
     Private Function GetFullLineByOffset(iOffset As Integer) As String
-        If (iOffset > g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor.Document.TextLength) Then
+        If (iOffset > g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextLength) Then
             Return Nothing
         End If
 
-        Dim iLineOffset As Integer = g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor.Document.GetLineSegmentForOffset(iOffset).Offset
-        Dim iLineLenght As Integer = g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor.Document.GetLineSegmentForOffset(iOffset).Length
+        Dim iLineOffset As Integer = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.GetLineSegmentForOffset(iOffset).Offset
+        Dim iLineLenght As Integer = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.GetLineSegmentForOffset(iOffset).Length
 
-        If (iLineOffset + iLineLenght > g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor.Document.TextLength) Then
+        If (iLineOffset + iLineLenght > g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextLength) Then
             Return Nothing
         End If
 
-        Return g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor.Document.GetText(iLineOffset, iLineLenght)
+        Return g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.GetText(iLineOffset, iLineLenght)
     End Function
 
     ''' <summary>
@@ -190,7 +190,7 @@ Public Class FormSearch
             If (RadioButton_DirectionUp.Checked) Then
                 For i = iStrucArray.Length - 1 To 0 Step -1
                     If (iStrucArray(i).iLocation < iOffset - iStrucArray(i).iLenght) Then
-                        g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor.Document.Replace(iStrucArray(i).iLocation, iStrucArray(i).iLenght, TextBox_Replace.Text)
+                        g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.Replace(iStrucArray(i).iLocation, iStrucArray(i).iLenght, TextBox_Replace.Text)
 
                         SetTextEditorSelection(iStrucArray(i).iLocation, TextBox_Replace.Text.Length, True)
                         Return
@@ -199,7 +199,7 @@ Public Class FormSearch
             Else
                 For i = 0 To iStrucArray.Length - 1
                     If (iStrucArray(i).iLocation >= iOffset) Then
-                        g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor.Document.Replace(iStrucArray(i).iLocation, iStrucArray(i).iLenght, TextBox_Replace.Text)
+                        g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.Replace(iStrucArray(i).iLocation, iStrucArray(i).iLenght, TextBox_Replace.Text)
 
                         SetTextEditorSelection(iStrucArray(i).iLocation, TextBox_Replace.Text.Length, False)
                         Return
@@ -229,13 +229,13 @@ Public Class FormSearch
         Try
             Dim iOffset As Integer = GetTextEditorCaretOffset()
 
-            g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor.Document.UndoStack.StartUndoGroup()
+            g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.UndoStack.StartUndoGroup()
 
             For i = iStrucArray.Length - 1 To 0 Step -1
-                g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor.Document.Replace(iStrucArray(i).iLocation, iStrucArray(i).iLenght, TextBox_Replace.Text)
+                g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.Replace(iStrucArray(i).iLocation, iStrucArray(i).iLenght, TextBox_Replace.Text)
             Next
 
-            g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor.Document.UndoStack.EndUndoGroup()
+            g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.UndoStack.EndUndoGroup()
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
@@ -260,7 +260,7 @@ Public Class FormSearch
             ListView_Output.Items.Clear()
             SetTextEditorSelection(iStrucArray(iStrucArray.Length - 1).iLocation, iStrucArray(iStrucArray.Length - 1).iLenght, False)
             For Each i In iStrucArray
-                If (i.iLocation + i.iLenght > g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor.Document.TextLength) Then
+                If (i.iLocation + i.iLenght > g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextLength) Then
                     Continue For
                 End If
 
@@ -269,7 +269,7 @@ Public Class FormSearch
                     Continue For
                 End If
 
-                Dim iLine As Integer = g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor.Document.GetLineNumberForOffset(i.iLocation) + 1
+                Dim iLine As Integer = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.GetLineNumberForOffset(i.iLocation) + 1
 
                 ListView_Output.Items.Add(New ListViewItem(New String() {CStr(iLine), sTest, CStr(i.iLocation), CStr(i.iLenght)}))
             Next

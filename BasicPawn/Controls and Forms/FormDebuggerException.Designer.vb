@@ -209,7 +209,7 @@ Partial Class FormDebuggerException
         'Class_PictureBoxQuality2
         '
         Me.Class_PictureBoxQuality2.BackColor = System.Drawing.Color.Transparent
-        Me.Class_PictureBoxQuality2.HighQuality = True
+        Me.Class_PictureBoxQuality2.m_HighQuality = True
         Me.Class_PictureBoxQuality2.Image = Global.BasicPawn.My.Resources.Resources.Bmp_Stop
         Me.Class_PictureBoxQuality2.Location = New System.Drawing.Point(34, 109)
         Me.Class_PictureBoxQuality2.Margin = New System.Windows.Forms.Padding(3, 12, 3, 3)
@@ -225,7 +225,7 @@ Partial Class FormDebuggerException
         Me.Class_PanelQuality1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
         Me.Class_PanelQuality1.Controls.Add(Me.Label_Title)
         Me.Class_PanelQuality1.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Class_PanelQuality1.HighQuality = False
+        Me.Class_PanelQuality1.m_HighQuality = False
         Me.Class_PanelQuality1.Location = New System.Drawing.Point(0, 0)
         Me.Class_PanelQuality1.Name = "Class_PanelQuality1"
         Me.Class_PanelQuality1.Size = New System.Drawing.Size(534, 48)

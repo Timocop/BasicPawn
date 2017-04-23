@@ -79,7 +79,7 @@ Public Class FormDebugger
             'Replace the temp source file with the currently opened one
             sLstSource = Regex.Replace(sLstSource,
                                        String.Format("^\s*\#file ""{0}""\s*$", Regex.Escape(g_sLastPreProcessSourceFile)),
-                                       String.Format("#file ""{0}""", g_ClassDebuggerRunner.CurrentSourceFile),
+                                       String.Format("#file ""{0}""", g_ClassDebuggerRunner.m_CurrentSourceFile),
                                        RegexOptions.IgnoreCase Or RegexOptions.Multiline)
 
             g_ClassDebuggerRunner.g_ClassPreProcess.AnalysisSourceLines(sLstSource)
@@ -157,7 +157,7 @@ Public Class FormDebugger
     End Sub
 
     Private Sub ToolStripMenuItem_DebugStart_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_DebugStart.Click
-        Select Case (g_ClassDebuggerRunner.DebuggingState)
+        Select Case (g_ClassDebuggerRunner.m_DebuggingState)
             Case ClassDebuggerRunner.ENUM_DEBUGGING_STATE.PAUSED
                 g_ClassDebuggerRunner.ContinueDebugging()
             Case Else
@@ -174,14 +174,14 @@ Public Class FormDebugger
     End Sub
 
     Private Sub ToolStripMenuItem_DebugRefresh_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_DebugRefresh.Click
-        Dim bWasRunning As Boolean = (g_ClassDebuggerRunner.DebuggingState <> ClassDebuggerRunner.ENUM_DEBUGGING_STATE.STOPPED)
+        Dim bWasRunning As Boolean = (g_ClassDebuggerRunner.m_DebuggingState <> ClassDebuggerRunner.ENUM_DEBUGGING_STATE.STOPPED)
 
         If (bWasRunning) Then
             If (Not g_ClassDebuggerRunner.StopDebugging) Then
                 Return
             End If
 
-            g_ClassDebuggerRunner.SuspendGame = True
+            g_ClassDebuggerRunner.m_SuspendGame = True
         End If
 
         If (Not RefreshSource()) Then
@@ -190,14 +190,14 @@ Public Class FormDebugger
 
         If (bWasRunning) Then
             If (Not g_ClassDebuggerRunner.StartDebugging()) Then
-                g_ClassDebuggerRunner.SuspendGame = False
+                g_ClassDebuggerRunner.m_SuspendGame = False
             End If
         End If
     End Sub
 
     Private Sub ToolStripMenuItem_ToolsCleanupTemp_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsCleanupTemp.Click
         Try
-            If (g_ClassDebuggerRunner.DebuggingState <> ClassDebuggerRunner.ENUM_DEBUGGING_STATE.STOPPED) Then
+            If (g_ClassDebuggerRunner.m_DebuggingState <> ClassDebuggerRunner.ENUM_DEBUGGING_STATE.STOPPED) Then
                 MessageBox.Show("You can't clean temporary debugger files while the debugger or multiple debuggers are running!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                 Return
             End If
@@ -316,9 +316,9 @@ Public Class FormDebugger
     ''' <param name="bNoErrorPrompt">If true, no error messagebox will be shown on error.</param>
     Public Sub CleanupDebuggerTempFiles(bNoPrompt As Boolean, bNoErrorPrompt As Boolean)
         'Make sure there are debugger files, otherwise dont cleanup
-        If (Not String.IsNullOrEmpty(g_ClassDebuggerRunner.GameFolder) AndAlso IO.Directory.Exists(g_ClassDebuggerRunner.GameFolder)) Then
+        If (Not String.IsNullOrEmpty(g_ClassDebuggerRunner.m_GameFolder) AndAlso IO.Directory.Exists(g_ClassDebuggerRunner.m_GameFolder)) Then
             While True
-                For Each sFile As String In IO.Directory.GetFiles(g_ClassDebuggerRunner.GameFolder)
+                For Each sFile As String In IO.Directory.GetFiles(g_ClassDebuggerRunner.m_GameFolder)
                     If (Not IO.File.Exists(sFile)) Then
                         Continue For
                     End If
@@ -339,8 +339,8 @@ Public Class FormDebugger
 
         Select Case (If(bNoPrompt, DialogResult.Yes, MessageBox.Show("Cleanup BasicPawn Debugger temporary files?", "Information", MessageBoxButtons.YesNo, MessageBoxIcon.Question)))
             Case DialogResult.Yes
-                If (Not String.IsNullOrEmpty(g_ClassDebuggerRunner.GameFolder) AndAlso IO.Directory.Exists(g_ClassDebuggerRunner.GameFolder)) Then
-                    For Each sFile As String In IO.Directory.GetFiles(g_ClassDebuggerRunner.GameFolder)
+                If (Not String.IsNullOrEmpty(g_ClassDebuggerRunner.m_GameFolder) AndAlso IO.Directory.Exists(g_ClassDebuggerRunner.m_GameFolder)) Then
+                    For Each sFile As String In IO.Directory.GetFiles(g_ClassDebuggerRunner.m_GameFolder)
                         If (Not IO.File.Exists(sFile)) Then
                             Continue For
                         End If
@@ -364,7 +364,7 @@ Public Class FormDebugger
 #Region "Enable/Disable Breakpoints"
     Private Sub ListView_Breakpoints_ItemChecked(sender As Object, e As ItemCheckedEventArgs) Handles ListView_Breakpoints.ItemChecked
         Dim sGUID As String = e.Item.SubItems(3).Text
-        g_ClassDebuggerRunner.IgnoreBreakpointGUID(sGUID) = Not e.Item.Checked
+        g_ClassDebuggerRunner.m_IgnoreBreakpointGUID(sGUID) = Not e.Item.Checked
     End Sub
 
     Private Sub ToolStripMenuItem_BreakpointsEnableAll_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_BreakpointsEnableAll.Click
@@ -474,7 +474,7 @@ Public Class FormDebugger
                 sFile = IO.Path.GetFileName(info.sFile)
 
                 If (String.IsNullOrEmpty(sFile)) Then
-                    sFile = IO.Path.GetFileName(g_ClassDebuggerRunner.CurrentSourceFile)
+                    sFile = IO.Path.GetFileName(g_ClassDebuggerRunner.m_CurrentSourceFile)
                 End If
             End If
 

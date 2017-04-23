@@ -27,7 +27,7 @@ Public Class FormAbout
         ' Add any initialization after the InitializeComponent() call.
         g_mPluginSample = c
 
-        Label_About.Text = g_mPluginSample.PluginInformation.ToString
+        Label_About.Text = g_mPluginSample.m_PluginInformation.ToString
 
         ClassControlStyle.UpdateControls(Me)
     End Sub

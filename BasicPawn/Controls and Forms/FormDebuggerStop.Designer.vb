@@ -169,7 +169,7 @@ Partial Class FormDebuggerStop
         '
         'Class_PictureBoxQuality1
         '
-        Me.Class_PictureBoxQuality1.HighQuality = True
+        Me.Class_PictureBoxQuality1.m_HighQuality = True
         Me.Class_PictureBoxQuality1.Image = Global.BasicPawn.My.Resources.Resources.Bmp_Stop
         Me.Class_PictureBoxQuality1.Location = New System.Drawing.Point(12, 12)
         Me.Class_PictureBoxQuality1.Name = "Class_PictureBoxQuality1"

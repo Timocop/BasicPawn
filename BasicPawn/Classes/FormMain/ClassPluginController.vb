@@ -29,14 +29,14 @@ Public Class ClassPluginController
     End Structure
     Private g_lPlugins As New List(Of STRUC_PLUGIN_ITEM)
 
-    ReadOnly Property Plugins As STRUC_PLUGIN_ITEM()
+    ReadOnly Property m_Plugins As STRUC_PLUGIN_ITEM()
         Get
             Return g_lPlugins.ToArray
         End Get
     End Property
 
     Public Sub PluginsExecute(mAction As Action(Of BasicPawnPluginInterface.IPluginInterface))
-        For Each mPlugin In Plugins
+        For Each mPlugin In m_Plugins
             Try
                 mAction(mPlugin.mPluginInterface)
             Catch ex As NotImplementedException
@@ -60,7 +60,7 @@ Public Class ClassPluginController
                     End If
 
                     g_lPlugins.Add(New STRUC_PLUGIN_ITEM With {
-                        .mPluginInformation = pluginInterface.PluginInformation,
+                        .mPluginInformation = pluginInterface.m_PluginInformation,
                         .mPluginInterface = pluginInterface,
                         .sFile = sFile
                     })

@@ -17,7 +17,7 @@
 
 Public Class ClassControlStyle
 
-    Public Shared ReadOnly Property IsInvertedColors As Boolean
+    Public Shared ReadOnly Property m_IsInvertedColors As Boolean
         Get
             Return ClassSettings.g_iSettingsInvertColors
         End Get
@@ -53,7 +53,7 @@ Public Class ClassControlStyle
         Select Case True
             Case TypeOf o Is Form
                 Dim i As Form = DirectCast(o, Form)
-                If (IsInvertedColors) Then
+                If (m_IsInvertedColors) Then
                     i.BackColor = g_cDarkFormColor.mDarkBackground
                     i.ForeColor = g_cDarkFormColor.mDarkForeground
                 Else
@@ -63,7 +63,7 @@ Public Class ClassControlStyle
 
             Case TypeOf o Is TabControl
                 Dim i As TabControl = DirectCast(o, TabControl)
-                If (IsInvertedColors) Then
+                If (m_IsInvertedColors) Then
                     i.BackColor = g_cDarkPanelColor.mDarkBackground
                     i.ForeColor = g_cDarkPanelColor.mDarkForeground
                 Else
@@ -77,7 +77,7 @@ Public Class ClassControlStyle
 
             Case TypeOf o Is TabPage
                 Dim i As TabPage = DirectCast(o, TabPage)
-                If (IsInvertedColors) Then
+                If (m_IsInvertedColors) Then
                     i.BackColor = g_cDarkPanelColor.mDarkBackground
                     i.ForeColor = g_cDarkPanelColor.mDarkForeground
                 Else
@@ -87,7 +87,7 @@ Public Class ClassControlStyle
 
             Case TypeOf o Is PictureBox
                 Dim i As PictureBox = DirectCast(o, PictureBox)
-                If (IsInvertedColors) Then
+                If (m_IsInvertedColors) Then
                     i.BackColor = Color.Transparent
                     i.ForeColor = g_cDarkPanelColor.mDarkForeground
                 Else
@@ -99,7 +99,7 @@ Public Class ClassControlStyle
                 Dim i As Panel = DirectCast(o, Panel)
                 Select Case (i.Name)
                     Case "Panel_FooterControl"
-                        If (IsInvertedColors) Then
+                        If (m_IsInvertedColors) Then
                             i.BackColor = g_cDarkPanelColor.mDarkBackground
                             i.ForeColor = g_cDarkPanelColor.mDarkForeground
                         Else
@@ -108,7 +108,7 @@ Public Class ClassControlStyle
                         End If
 
                     Case "Panel_FooterDarkControl"
-                        If (IsInvertedColors) Then
+                        If (m_IsInvertedColors) Then
                             i.BackColor = Color.Gray
                             i.ForeColor = g_cDarkPanelColor.mDarkForeground
                         Else
@@ -120,7 +120,7 @@ Public Class ClassControlStyle
                         'Ignore
 
                     Case Else
-                        If (IsInvertedColors) Then
+                        If (m_IsInvertedColors) Then
                             i.BackColor = g_cDarkPanelColor.mDarkBackground
                             i.ForeColor = g_cDarkPanelColor.mDarkForeground
                         Else
@@ -131,7 +131,7 @@ Public Class ClassControlStyle
 
             Case TypeOf o Is Button
                 Dim i As Button = DirectCast(o, Button)
-                If (IsInvertedColors) Then
+                If (m_IsInvertedColors) Then
                     i.UseVisualStyleBackColor = False
                     i.FlatStyle = FlatStyle.Flat
                     i.FlatAppearance.BorderSize = 1
@@ -147,7 +147,7 @@ Public Class ClassControlStyle
 
             Case TypeOf o Is CheckBox
                 Dim i As CheckBox = DirectCast(o, CheckBox)
-                If (IsInvertedColors) Then
+                If (m_IsInvertedColors) Then
                     i.UseVisualStyleBackColor = False
                     i.FlatStyle = FlatStyle.Standard
                     i.FlatAppearance.BorderSize = 0
@@ -163,7 +163,7 @@ Public Class ClassControlStyle
 
             Case TypeOf o Is RadioButton
                 Dim i As RadioButton = DirectCast(o, RadioButton)
-                If (IsInvertedColors) Then
+                If (m_IsInvertedColors) Then
                     i.UseVisualStyleBackColor = False
                     i.FlatStyle = FlatStyle.Standard
                     i.FlatAppearance.BorderSize = 0
@@ -179,7 +179,7 @@ Public Class ClassControlStyle
 
             Case TypeOf o Is ButtonBase
                 Dim i As ButtonBase = DirectCast(o, ButtonBase)
-                If (IsInvertedColors) Then
+                If (m_IsInvertedColors) Then
                     i.UseVisualStyleBackColor = False
                     i.FlatStyle = FlatStyle.Flat
                     i.FlatAppearance.BorderSize = 0
@@ -195,7 +195,7 @@ Public Class ClassControlStyle
 
             Case TypeOf o Is LinkLabel
                 Dim i As LinkLabel = DirectCast(o, LinkLabel)
-                If (IsInvertedColors) Then
+                If (m_IsInvertedColors) Then
                     i.LinkColor = Color.RoyalBlue
                     i.BackColor = Color.Transparent
                     i.ForeColor = g_cDarkControlColor.mDarkForeground
@@ -209,7 +209,7 @@ Public Class ClassControlStyle
                 Dim i As Label = DirectCast(o, Label)
                 Select Case (i.Name)
                     Case "Label_IntelliSense", "Label_Autocomplete"
-                        If (IsInvertedColors) Then
+                        If (m_IsInvertedColors) Then
                             i.BackColor = Color.Transparent
                             i.ForeColor = InvertColor(Color.RoyalBlue)
                         Else
@@ -218,7 +218,7 @@ Public Class ClassControlStyle
                         End If
 
                     Case "Label_Title"
-                        If (IsInvertedColors) Then
+                        If (m_IsInvertedColors) Then
                             i.BackColor = Color.Transparent
                             i.ForeColor = Color.Black
                         Else
@@ -227,7 +227,7 @@ Public Class ClassControlStyle
                         End If
 
                     Case Else
-                        If (IsInvertedColors) Then
+                        If (m_IsInvertedColors) Then
                             i.BackColor = Color.Transparent
                             i.ForeColor = g_cDarkFormColor.mDarkForeground
                         Else
@@ -240,14 +240,14 @@ Public Class ClassControlStyle
                 Dim i As ToolStripLabel = DirectCast(o, ToolStripLabel)
                 Select Case (i.Name)
                     Case "ToolStripStatusLabel_DebugState"
-                        If (IsInvertedColors) Then
+                        If (m_IsInvertedColors) Then
                             i.ForeColor = Color.Black
                         Else
                             i.ForeColor = g_cDarkFormColor.mLightForegound
                         End If
 
                     Case Else
-                        If (IsInvertedColors) Then
+                        If (m_IsInvertedColors) Then
                             i.BackColor = Color.Transparent
                             i.ForeColor = g_cDarkFormColor.mDarkForeground
                         Else
@@ -258,7 +258,7 @@ Public Class ClassControlStyle
 
             Case TypeOf o Is StatusStrip
                 Dim i As StatusStrip = DirectCast(o, StatusStrip)
-                If (IsInvertedColors) Then
+                If (m_IsInvertedColors) Then
                     i.RenderMode = ToolStripRenderMode.System
                     i.BackColor = g_cDarkMenuColor.mDarkBackground
                     i.ForeColor = g_cDarkMenuColor.mDarkForeground
@@ -292,7 +292,7 @@ Public Class ClassControlStyle
 
             Case TypeOf o Is ContextMenuStrip
                 Dim i As ContextMenuStrip = DirectCast(o, ContextMenuStrip)
-                If (IsInvertedColors) Then
+                If (m_IsInvertedColors) Then
                     i.RenderMode = ToolStripRenderMode.ManagerRenderMode
                     i.BackColor = g_cDarkMenuColor.mDarkBackground
                     i.ForeColor = g_cDarkMenuColor.mDarkForeground
@@ -308,7 +308,7 @@ Public Class ClassControlStyle
 
             Case TypeOf o Is ToolStripDropDownMenu
                 Dim i As ToolStripDropDownMenu = DirectCast(o, ToolStripDropDownMenu)
-                If (IsInvertedColors) Then
+                If (m_IsInvertedColors) Then
                     i.RenderMode = ToolStripRenderMode.ManagerRenderMode
                     i.BackColor = g_cDarkMenuColor.mDarkBackground
                     i.ForeColor = g_cDarkMenuColor.mDarkForeground
@@ -324,7 +324,7 @@ Public Class ClassControlStyle
 
             Case TypeOf o Is ToolStripDropDown
                 Dim i As ToolStripDropDown = DirectCast(o, ToolStripDropDown)
-                If (IsInvertedColors) Then
+                If (m_IsInvertedColors) Then
                     i.RenderMode = ToolStripRenderMode.ManagerRenderMode
                     i.BackColor = g_cDarkMenuColor.mDarkBackground
                     i.ForeColor = g_cDarkMenuColor.mDarkForeground
@@ -340,7 +340,7 @@ Public Class ClassControlStyle
 
             Case TypeOf o Is ToolStripDropDownItem
                 Dim i As ToolStripDropDownItem = DirectCast(o, ToolStripDropDownItem)
-                If (IsInvertedColors) Then
+                If (m_IsInvertedColors) Then
                     i.BackColor = g_cDarkMenuColor.mDarkBackground
                     i.ForeColor = g_cDarkMenuColor.mDarkForeground
                 Else
@@ -354,7 +354,7 @@ Public Class ClassControlStyle
 
             Case TypeOf o Is ToolStripMenuItem
                 Dim i As ToolStripMenuItem = DirectCast(o, ToolStripMenuItem)
-                If (IsInvertedColors) Then
+                If (m_IsInvertedColors) Then
                     i.BackColor = g_cDarkMenuColor.mDarkBackground
                     i.ForeColor = g_cDarkMenuColor.mDarkForeground
                 Else
@@ -368,7 +368,7 @@ Public Class ClassControlStyle
 
             Case TypeOf o Is ToolStripItem
                 Dim i As ToolStripItem = DirectCast(o, ToolStripItem)
-                If (IsInvertedColors) Then
+                If (m_IsInvertedColors) Then
                     i.BackColor = g_cDarkMenuColor.mDarkBackground
                     i.ForeColor = g_cDarkMenuColor.mDarkForeground
                 Else
@@ -378,7 +378,7 @@ Public Class ClassControlStyle
 
             Case TypeOf o Is ToolStrip
                 Dim i As ToolStrip = DirectCast(o, ToolStrip)
-                If (IsInvertedColors) Then
+                If (m_IsInvertedColors) Then
                     i.RenderMode = ToolStripRenderMode.ManagerRenderMode
                     i.BackColor = g_cDarkMenuColor.mDarkBackground
                     i.ForeColor = g_cDarkMenuColor.mDarkForeground
@@ -394,7 +394,7 @@ Public Class ClassControlStyle
 
             Case TypeOf o Is Control
                 Dim i As Control = DirectCast(o, Control)
-                If (IsInvertedColors) Then
+                If (m_IsInvertedColors) Then
                     i.BackColor = g_cDarkControlColor.mDarkBackground
                     i.ForeColor = g_cDarkControlColor.mDarkForeground
                 Else

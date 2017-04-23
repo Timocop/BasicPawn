@@ -73,7 +73,7 @@ Public Class ClassDebuggerParser
             Dim iIndex As Integer = m.Index
             Dim bHasArgument As Boolean = m.Groups("Arguments").Success
 
-            If (sourceAnalysis.InNonCode(iIndex) OrElse Not bHasArgument) Then
+            If (sourceAnalysis.m_InNonCode(iIndex) OrElse Not bHasArgument) Then
                 Continue For
             End If
 
@@ -95,14 +95,14 @@ Public Class ClassDebuggerParser
             Dim sArguments As New StringBuilder
             Dim sTotalFunction As New StringBuilder
 
-            Dim iStartLevel As Integer = sourceAnalysis.GetParenthesisLevel(iIndex)
+            Dim iStartLevel As Integer = sourceAnalysis.m_GetParenthesisLevel(iIndex)
             Dim bGetArguments As Boolean = False
             For i = iIndex To sSource.Length - 1
                 iTotalLenght += 1
 
                 sTotalFunction.Append(sSource(i))
 
-                If (sSource(i) = ")" AndAlso iStartLevel = sourceAnalysis.GetParenthesisLevel(i)) Then
+                If (sSource(i) = ")" AndAlso iStartLevel = sourceAnalysis.m_GetParenthesisLevel(i)) Then
                     bGetArguments = False
                     Exit For
                 End If
@@ -166,7 +166,7 @@ Public Class ClassDebuggerParser
             Dim iIndex As Integer = m.Index
             Dim bHasArgument As Boolean = m.Groups("Arguments").Success
 
-            If (sourceAnalysis.InNonCode(iIndex) OrElse Not bHasArgument) Then
+            If (sourceAnalysis.m_InNonCode(iIndex) OrElse Not bHasArgument) Then
                 Continue For
             End If
 
@@ -188,14 +188,14 @@ Public Class ClassDebuggerParser
             Dim sArguments As New StringBuilder()
             Dim sTotalFunction As New StringBuilder
 
-            Dim iStartLevel As Integer = sourceAnalysis.GetParenthesisLevel(iIndex)
+            Dim iStartLevel As Integer = sourceAnalysis.m_GetParenthesisLevel(iIndex)
             Dim bGetArguments As Boolean = False
             For i = iIndex To sSource.Length - 1
                 iTotalLenght += 1
 
                 sTotalFunction.Append(sSource(i))
 
-                If (sSource(i) = ")" AndAlso iStartLevel = sourceAnalysis.GetParenthesisLevel(i)) Then
+                If (sSource(i) = ")" AndAlso iStartLevel = sourceAnalysis.m_GetParenthesisLevel(i)) Then
                     bGetArguments = False
                     Exit For
                 End If
@@ -595,7 +595,7 @@ Public Class ClassDebuggerParser
         ''' Inserts one breakpoint using the caret position in the text editor
         ''' </summary>
         Public Sub TextEditorInsertBreakpointAtCaret()
-            Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor
+            Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
 
             If (mActiveTextEditor.ActiveTextAreaControl.SelectionManager.HasSomethingSelected AndAlso mActiveTextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection.Count > 0) Then
                 Dim iOffset As Integer = mActiveTextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection(0).Offset
@@ -628,11 +628,11 @@ Public Class ClassDebuggerParser
                             Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
 
                             Dim iFullLenght As Integer = 0
-                            Dim iStartLevel As Integer = sourceAnalysis.GetParenthesisLevel(iStartOffset)
+                            Dim iStartLevel As Integer = sourceAnalysis.m_GetParenthesisLevel(iStartOffset)
                             For i = iStartOffset To sSource.Length - 1
                                 iFullLenght += 1
 
-                                If (sSource(i) = ")" AndAlso iStartLevel = sourceAnalysis.GetParenthesisLevel(i)) Then
+                                If (sSource(i) = ")" AndAlso iStartLevel = sourceAnalysis.m_GetParenthesisLevel(i)) Then
                                     Exit For
                                 End If
                             Next
@@ -659,7 +659,7 @@ Public Class ClassDebuggerParser
         ''' Removes one breakpoint using the caret position in the text editor
         ''' </summary>
         Public Sub TextEditorRemoveBreakpointAtCaret()
-            Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor
+            Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
             Dim sCaretWord As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True)
 
             If (sCaretWord <> ClassDebuggerParser.g_sBreakpointName) Then
@@ -704,7 +704,7 @@ Public Class ClassDebuggerParser
         ''' Removes all available breakpoints in the text editor
         ''' </summary>
         Public Sub TextEditorRemoveAllBreakpoints()
-            Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor
+            Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
             mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
 
             g_mFormMain.PrintInformation("[INFO]", "Removing all debugger breakpoints...")
@@ -861,7 +861,7 @@ Public Class ClassDebuggerParser
         ''' Inserts one watcher using the caret position in the text editor
         ''' </summary>
         Public Sub TextEditorInsertWatcherAtCaret()
-            Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor
+            Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
 
             If (mActiveTextEditor.ActiveTextAreaControl.SelectionManager.HasSomethingSelected AndAlso mActiveTextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection.Count > 0) Then
                 Dim iOffset As Integer = mActiveTextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection(0).Offset
@@ -894,11 +894,11 @@ Public Class ClassDebuggerParser
                             Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
 
                             Dim iFullLenght As Integer = 0
-                            Dim iStartLevel As Integer = sourceAnalysis.GetParenthesisLevel(iStartOffset)
+                            Dim iStartLevel As Integer = sourceAnalysis.m_GetParenthesisLevel(iStartOffset)
                             For i = iStartOffset To sSource.Length - 1
                                 iFullLenght += 1
 
-                                If (sSource(i) = ")" AndAlso iStartLevel = sourceAnalysis.GetParenthesisLevel(i)) Then
+                                If (sSource(i) = ")" AndAlso iStartLevel = sourceAnalysis.m_GetParenthesisLevel(i)) Then
                                     Exit For
                                 End If
                             Next
@@ -925,7 +925,7 @@ Public Class ClassDebuggerParser
         ''' Removes one watcher using the caret position in the text editor
         ''' </summary>
         Public Sub TextEditorRemoveWatcherAtCaret()
-            Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor
+            Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
             Dim sCaretWord As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True)
 
             If (sCaretWord <> ClassDebuggerParser.g_sWatcherName) Then
@@ -970,7 +970,7 @@ Public Class ClassDebuggerParser
         ''' Removes all available watchers in the text editor
         ''' </summary>
         Public Sub TextEditorRemoveAllWatchers()
-            Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor
+            Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
             mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
 
             g_mFormMain.PrintInformation("[INFO]", "Removing all debugger watcher...")

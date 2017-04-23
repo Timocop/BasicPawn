@@ -107,8 +107,8 @@ Public Class ClassAutocompleteUpdater
         Try
             'g_mFormMain.PrintInformation("[INFO]", "Autocomplete update started...")
 
-            Dim sActiveSourceFile As String = CStr(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.ActiveTab.File))
-            Dim sActiveSource As String = CStr(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor.Document.TextContent))
+            Dim sActiveSourceFile As String = CStr(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File))
+            Dim sActiveSource As String = CStr(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent))
 
             If (String.IsNullOrEmpty(sActiveSourceFile) OrElse Not IO.File.Exists(sActiveSourceFile)) Then
                 g_mFormMain.PrintInformation("[ERRO]", "Autocomplete update failed! Could not get current source file!", False, False, 1)
@@ -300,11 +300,11 @@ Public Class ClassAutocompleteUpdater
 
                 Select Case (sSource(i))
                     Case vbLf(0)
-                        If (sourceAnalysis.InNonCode(i)) Then
+                        If (sourceAnalysis.m_InNonCode(i)) Then
                             Exit Select
                         End If
 
-                        If (sourceAnalysis.GetParenthesisLevel(i) > 0) Then
+                        If (sourceAnalysis.m_GetParenthesisLevel(i) > 0) Then
                             Select Case (True)
                                 Case i > 1 AndAlso sSource(i - 1) = vbCr
                                     sSource = sSource.Remove(i - 1, 2)
@@ -323,7 +323,7 @@ Public Class ClassAutocompleteUpdater
                         'Results in:
                         'if(//This my cause problems!)
                         'Just remove the comments
-                        If (sourceAnalysis.GetParenthesisLevel(i) > 0 AndAlso sourceAnalysis.InSingleComment(i)) Then
+                        If (sourceAnalysis.m_GetParenthesisLevel(i) > 0 AndAlso sourceAnalysis.m_InSingleComment(i)) Then
                             sSource = sSource.Remove(i, 1)
                             sSource = sSource.Insert(i, " "c)
                         End If
@@ -357,7 +357,7 @@ Public Class ClassAutocompleteUpdater
             For i = 0 To sSource.Length - 1
                 Select Case (sSource(i))
                     Case "("c
-                        If (sourceAnalysis.InNonCode(i)) Then
+                        If (sourceAnalysis.m_InNonCode(i)) Then
                             Continue For
                         End If
 
@@ -366,7 +366,7 @@ Public Class ClassAutocompleteUpdater
                         End If
                         iBraceLevel += 1
                     Case ")"c
-                        If (sourceAnalysis.InNonCode(i)) Then
+                        If (sourceAnalysis.m_InNonCode(i)) Then
                             Continue For
                         End If
 
@@ -441,7 +441,7 @@ Public Class ClassAutocompleteUpdater
                 Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
 
                 For i = 0 To sSource.Length - 1
-                    SB_Source.Append(If(sourceAnalysis.InNonCode(i), " "c, sSource(i)))
+                    SB_Source.Append(If(sourceAnalysis.m_InNonCode(i), " "c, sSource(i)))
                 Next
             End If
 
@@ -481,7 +481,7 @@ Public Class ClassAutocompleteUpdater
                 Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
 
                 For i = 0 To sSource.Length - 1
-                    SB_Source.Append(If(sourceAnalysis.InNonCode(i), " "c, sSource(i)))
+                    SB_Source.Append(If(sourceAnalysis.m_InNonCode(i), " "c, sSource(i)))
                 Next
             End If
 
@@ -558,7 +558,7 @@ Public Class ClassAutocompleteUpdater
                 Dim sourceAnalysis2 As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
 
                 For i = 0 To sSource.Length - 1
-                    SB_Source.Append(If(sourceAnalysis2.InNonCode(i), " "c, sSource(i)))
+                    SB_Source.Append(If(sourceAnalysis2.m_InNonCode(i), " "c, sSource(i)))
                 Next
             End If
 
@@ -619,7 +619,7 @@ Public Class ClassAutocompleteUpdater
                 For ii = 0 To sEnumSource.Length - 1
                     Select Case (sEnumSource(ii))
                         Case ","c
-                            If (sourceAnalysis.GetParenthesisLevel(ii) > 0 OrElse sourceAnalysis.GetBracketLevel(ii) > 0 OrElse sourceAnalysis.GetBraceLevel(ii) > 0 OrElse sourceAnalysis.InNonCode(ii)) Then
+                            If (sourceAnalysis.m_GetParenthesisLevel(ii) > 0 OrElse sourceAnalysis.m_GetBracketLevel(ii) > 0 OrElse sourceAnalysis.m_GetBraceLevel(ii) > 0 OrElse sourceAnalysis.m_InNonCode(ii)) Then
                                 Exit Select
                             End If
 
@@ -633,7 +633,7 @@ Public Class ClassAutocompleteUpdater
                             lEnumSplitList.Add(sLine)
                             SB.Length = 0
                         Case Else
-                            If (sourceAnalysis.InNonCode(ii)) Then
+                            If (sourceAnalysis.m_InNonCode(ii)) Then
                                 Exit Select
                             End If
 
@@ -823,7 +823,7 @@ Public Class ClassAutocompleteUpdater
                 End If
 
                 Dim iIndex = sourceAnalysis.GetIndexFromLine(i)
-                If (iIndex < 0 OrElse sourceAnalysis.GetBraceLevel(iIndex) > 0 OrElse sourceAnalysis.InNonCode(iIndex)) Then
+                If (iIndex < 0 OrElse sourceAnalysis.m_GetBraceLevel(iIndex) > 0 OrElse sourceAnalysis.m_InNonCode(iIndex)) Then
                     Continue For
                 End If
 
@@ -893,8 +893,8 @@ Public Class ClassAutocompleteUpdater
             Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
             Dim sLines As String() = sSource.Split(New String() {vbNewLine, vbLf}, 0)
 
-            If (sourceAnalysis.GetMaxLenght - 1 > 0) Then
-                Dim iLastBraceLevel As Integer = sourceAnalysis.GetBraceLevel(sourceAnalysis.GetMaxLenght - 1)
+            If (sourceAnalysis.m_GetMaxLenght - 1 > 0) Then
+                Dim iLastBraceLevel As Integer = sourceAnalysis.m_GetBraceLevel(sourceAnalysis.m_GetMaxLenght - 1)
                 If (iLastBraceLevel > 0) Then
                     g_mFormMain.PrintInformation("[ERRO]", String.Format("Uneven brace level! May lead to syntax parser failures! [LV:{0}] ({1})", iLastBraceLevel, IO.Path.GetFileName(sFile)), False, False, 1)
                 End If
@@ -906,7 +906,7 @@ Public Class ClassAutocompleteUpdater
                 End If
 
                 Dim iIndex = sourceAnalysis.GetIndexFromLine(i)
-                If (iIndex < 0 OrElse sourceAnalysis.GetBraceLevel(iIndex) > 0 OrElse sourceAnalysis.InNonCode(iIndex)) Then
+                If (iIndex < 0 OrElse sourceAnalysis.m_GetBraceLevel(iIndex) > 0 OrElse sourceAnalysis.m_InNonCode(iIndex)) Then
                     Continue For
                 End If
 
@@ -1077,7 +1077,7 @@ Public Class ClassAutocompleteUpdater
                 For ii = 0 To sEnumSource.Length - 1
                     Select Case (sEnumSource(ii))
                         Case ","c
-                            If (sourceAnalysis.GetParenthesisLevel(ii) > 0 OrElse sourceAnalysis.GetBracketLevel(ii) > 0 OrElse sourceAnalysis.GetBraceLevel(ii) > 0 OrElse sourceAnalysis.InNonCode(ii)) Then
+                            If (sourceAnalysis.m_GetParenthesisLevel(ii) > 0 OrElse sourceAnalysis.m_GetBracketLevel(ii) > 0 OrElse sourceAnalysis.m_GetBraceLevel(ii) > 0 OrElse sourceAnalysis.m_InNonCode(ii)) Then
                                 Exit Select
                             End If
 
@@ -1097,7 +1097,7 @@ Public Class ClassAutocompleteUpdater
                             SB.Length = 0
                     End Select
 
-                    If (Not sourceAnalysis.InSingleComment(ii) AndAlso Not sourceAnalysis.InMultiComment(ii)) Then
+                    If (Not sourceAnalysis.m_InSingleComment(ii) AndAlso Not sourceAnalysis.m_InMultiComment(ii)) Then
                         SB.Append(sEnumSource(ii))
                     End If
                 Next
@@ -1262,7 +1262,7 @@ Public Class ClassAutocompleteUpdater
                 Dim SB As StringBuilder
 
                 For ii = 0 To mMethodMatches.Count - 1
-                    If (sourceAnalysis.InNonCode(mMethodMatches(ii).Groups("Type").Index)) Then
+                    If (sourceAnalysis.m_InNonCode(mMethodMatches(ii).Groups("Type").Index)) Then
                         Continue For
                     End If
 
@@ -1272,7 +1272,7 @@ Public Class ClassAutocompleteUpdater
                             Case " "c, vbTab(0), vbLf(0), vbCr(0)
                                 SB.Append(sMethodmapSource(iii))
                             Case Else
-                                If (Not sourceAnalysis.InMultiComment(iii) AndAlso Not sourceAnalysis.InSingleComment(iii) AndAlso Not sourceAnalysis.InPreprocessor(iii)) Then
+                                If (Not sourceAnalysis.m_InMultiComment(iii) AndAlso Not sourceAnalysis.m_InSingleComment(iii) AndAlso Not sourceAnalysis.m_InPreprocessor(iii)) Then
                                     Exit For
                                 End If
 
@@ -1402,7 +1402,7 @@ Public Class ClassAutocompleteUpdater
                 Dim SB As StringBuilder
 
                 For ii = 0 To mMethodMatches.Count - 1
-                    If (sourceAnalysis.InNonCode(mMethodMatches(ii).Groups("Type").Index)) Then
+                    If (sourceAnalysis.m_InNonCode(mMethodMatches(ii).Groups("Type").Index)) Then
                         Continue For
                     End If
 
@@ -1412,7 +1412,7 @@ Public Class ClassAutocompleteUpdater
                             Case " "c, vbTab(0), vbLf(0), vbCr(0)
                                 SB.Append(sMethodmapSource(iii))
                             Case Else
-                                If (Not sourceAnalysis.InMultiComment(iii) AndAlso Not sourceAnalysis.InSingleComment(iii) AndAlso Not sourceAnalysis.InPreprocessor(iii)) Then
+                                If (Not sourceAnalysis.m_InMultiComment(iii) AndAlso Not sourceAnalysis.m_InSingleComment(iii) AndAlso Not sourceAnalysis.m_InPreprocessor(iii)) Then
                                     Exit For
                                 End If
 
@@ -1466,7 +1466,7 @@ Public Class ClassAutocompleteUpdater
                     Continue For
                 End If
 
-                If (sourceAnalysis.InNonCode(mRegMatch.Index)) Then
+                If (sourceAnalysis.m_InNonCode(mRegMatch.Index)) Then
                     Continue For
                 End If
 
@@ -1499,7 +1499,7 @@ Public Class ClassAutocompleteUpdater
                         Case " "c, vbTab(0), vbLf(0), vbCr(0)
                             SB.Append(sSource(iii))
                         Case Else
-                            If (Not sourceAnalysis.InMultiComment(iii) AndAlso Not sourceAnalysis.InSingleComment(iii) AndAlso Not sourceAnalysis.InPreprocessor(iii)) Then
+                            If (Not sourceAnalysis.m_InMultiComment(iii) AndAlso Not sourceAnalysis.m_InSingleComment(iii) AndAlso Not sourceAnalysis.m_InPreprocessor(iii)) Then
                                 Exit For
                             End If
 
@@ -1529,8 +1529,8 @@ Public Class ClassAutocompleteUpdater
 
     Private Sub VariableAutocompleteUpdate_Thread()
         Try
-            Dim sSourceFile As String = CStr(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.ActiveTab.File))
-            Dim sActiveSource As String = CStr(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor.Document.TextContent))
+            Dim sSourceFile As String = CStr(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File))
+            Dim sActiveSource As String = CStr(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent))
 
             'g_mFormMain.PrintInformation("[INFO]", "Variable autocomplete update started...")
             If (String.IsNullOrEmpty(sSourceFile) OrElse Not IO.File.Exists(sSourceFile)) Then
@@ -1607,11 +1607,11 @@ Public Class ClassAutocompleteUpdater
             'This is the easiest and yet stupiest idea to resolve multi-decls i've ever come up with...
             For i = 0 To sSource.Length - 1
                 If (i <> sSource.Length - 1) Then
-                    If (sourceAnalysis.InNonCode(i)) Then
+                    If (sourceAnalysis.m_InNonCode(i)) Then
                         Continue For
                     End If
 
-                    If (sourceAnalysis.GetBracketLevel(i) > 0) Then
+                    If (sourceAnalysis.m_GetBracketLevel(i) > 0) Then
                         If (Not bInvalidBracketLevel) Then
                             bInvalidBracketLevel = True
                         End If
@@ -1621,7 +1621,7 @@ Public Class ClassAutocompleteUpdater
                         Continue For
                     End If
 
-                    If (sourceAnalysis.GetParenthesisLevel(i) > 0) Then
+                    If (sourceAnalysis.m_GetParenthesisLevel(i) > 0) Then
                         If (Not bInvalidParentLevel) Then
                             bInvalidParentLevel = True
                             codeBuilder.Append("(")
@@ -1958,11 +1958,11 @@ Public Class ClassAutocompleteUpdater
                         codeBuilder.Length = 0
                     End If
 
-                    If (sourceAnalysis.InNonCode(i)) Then
+                    If (sourceAnalysis.m_InNonCode(i)) Then
                         Continue For
                     End If
 
-                    If (sourceAnalysis.GetBracketLevel(i) > 0) Then
+                    If (sourceAnalysis.m_GetBracketLevel(i) > 0) Then
                         If (Not bInvalidBracketLevel) Then
                             bInvalidBracketLevel = True
                         End If
@@ -1972,7 +1972,7 @@ Public Class ClassAutocompleteUpdater
                         Continue For
                     End If
 
-                    If (sourceAnalysis.GetBraceLevel(i) > 0) Then
+                    If (sourceAnalysis.m_GetBraceLevel(i) > 0) Then
                         If (Not bInvalidBraceLevel) Then
                             bInvalidBraceLevel = True
                         End If
@@ -1982,7 +1982,7 @@ Public Class ClassAutocompleteUpdater
                         Continue For
                     End If
 
-                    If (sourceAnalysis.GetParenthesisLevel(i) > 0) Then
+                    If (sourceAnalysis.m_GetParenthesisLevel(i) > 0) Then
                         If (bInvalidParentLevel) Then
                             If (autoItem.sFullFunctionName(i) = ","c) Then
                                 bNeedSave = True

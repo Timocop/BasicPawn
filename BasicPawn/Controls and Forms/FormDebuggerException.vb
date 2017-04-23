@@ -45,7 +45,7 @@ Public Class FormDebuggerException
                 sFile = info.sFile
             End If
 
-            If (stackTrace.sFileName = g_mFormDebugger.g_ClassDebuggerRunner.PluginIdentity) Then
+            If (stackTrace.sFileName = g_mFormDebugger.g_ClassDebuggerRunner.m_PluginIdentity) Then
                 ListView_StackTrace.Items.Add(New ListViewItem(New String() {iIndex.ToString, stackTrace.iLine.ToString, iRealLine.ToString, sFile, stackTrace.sFunctionName}))
             Else
                 ListView_StackTrace.Items.Add(New ListViewItem(New String() {iIndex.ToString, "-1", stackTrace.iLine.ToString, stackTrace.sFileName, stackTrace.sFunctionName}))

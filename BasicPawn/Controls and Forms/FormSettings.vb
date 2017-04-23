@@ -322,7 +322,7 @@ Public Class FormSettings
 
         'List plugins
         Dim lListViewItems As New List(Of ListViewItem)
-        For Each pluginInfo In g_mFormMain.g_ClassPluginController.Plugins
+        For Each pluginInfo In g_mFormMain.g_ClassPluginController.m_Plugins
             lListViewItems.Add(New ListViewItem(New String() {
                                                     IO.Path.GetFileName(pluginInfo.sFile),
                                                     pluginInfo.mPluginInformation.sName,

@@ -48,7 +48,7 @@ Public Class UCObjectBrowser
         End Sub
     End Class
 
-    ReadOnly Property IsUpdating As Boolean
+    ReadOnly Property m_IsUpdating As Boolean
         Get
             Return g_tUpdateThread IsNot Nothing AndAlso g_tUpdateThread.IsAlive
         End Get
@@ -249,13 +249,13 @@ Public Class UCObjectBrowser
                 Return
             End If
 
-            For Each sPath As String In g_mFormMain.g_ClassAutocompleteUpdater.GetIncludeFiles(g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor.Document.TextContent, g_mFormMain.g_ClassTabControl.ActiveTab.File, g_mFormMain.g_ClassTabControl.ActiveTab.File)
+            For Each sPath As String In g_mFormMain.g_ClassAutocompleteUpdater.GetIncludeFiles(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)
                 If (IO.Path.GetFileName(sPath).ToLower <> TreeView_ObjectBrowser.SelectedNode.Text.ToLower) Then
                     Continue For
                 End If
 
                 g_mFormMain.g_ClassTabControl.AddTab(True)
-                g_mFormMain.g_ClassTabControl.OpenFileTab(g_mFormMain.g_ClassTabControl.TabsCount - 1, sPath)
+                g_mFormMain.g_ClassTabControl.OpenFileTab(g_mFormMain.g_ClassTabControl.m_TabsCount - 1, sPath)
             Next
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)

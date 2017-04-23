@@ -142,7 +142,7 @@ Public Class FormOpenTabFromInstances
                 lFiles.Add("""" & iItem.mTabInfo.Value.sFile & """")
             Else
                 g_mFormMain.g_ClassTabControl.AddTab(True)
-                g_mFormMain.g_ClassTabControl.OpenFileTab(g_mFormMain.g_ClassTabControl.TabsCount - 1, iItem.mTabInfo.Value.sFile)
+                g_mFormMain.g_ClassTabControl.OpenFileTab(g_mFormMain.g_ClassTabControl.m_TabsCount - 1, iItem.mTabInfo.Value.sFile)
             End If
 
             If (bCloseTabs) Then

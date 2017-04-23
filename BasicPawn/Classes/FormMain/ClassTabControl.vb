@@ -40,32 +40,32 @@ Public Class ClassTabControl
         AddTab(True, True, False)
     End Sub
 
-    ReadOnly Property IsLoadingEntries As Boolean
+    ReadOnly Property m_IsLoadingEntries As Boolean
         Get
             Return g_bIsLoadingEntries
         End Get
     End Property
 
 
-    ReadOnly Property ActiveTab As SourceTabPage
+    ReadOnly Property m_ActiveTab As SourceTabPage
         Get
             Return DirectCast(g_mFormMain.TabControl_SourceTabs.SelectedTab, SourceTabPage)
         End Get
     End Property
 
-    ReadOnly Property ActiveTabIndex As Integer
+    ReadOnly Property m_ActiveTabIndex As Integer
         Get
             Return g_mFormMain.TabControl_SourceTabs.SelectedIndex
         End Get
     End Property
 
-    ReadOnly Property Tab(iIndex As Integer) As SourceTabPage
+    ReadOnly Property m_Tab(iIndex As Integer) As SourceTabPage
         Get
             Return DirectCast(g_mFormMain.TabControl_SourceTabs.TabPages(iIndex), SourceTabPage)
         End Get
     End Property
 
-    ReadOnly Property TabsCount As Integer
+    ReadOnly Property m_TabsCount As Integer
         Get
             Return g_mFormMain.TabControl_SourceTabs.TabCount
         End Get
@@ -76,18 +76,18 @@ Public Class ClassTabControl
             FreezePaint(g_mFormMain.SplitContainer_ToolboxAndEditor)
 
             Dim mTabPage As New SourceTabPage(g_mFormMain) With {
-                .Changed = bChanged
+                .m_Changed = bChanged
             }
 
             If (bIncludeTemplate) Then
-                mTabPage.TextEditor.Document.TextContent = My.Resources.SourcePawnOldTemplate
+                mTabPage.m_TextEditor.Document.TextContent = My.Resources.SourcePawnOldTemplate
             End If
 
             g_mFormMain.TabControl_SourceTabs.TabPages.Add(mTabPage)
             g_mFormMain.g_ClassSyntaxTools.UpdateTextEditorSyntax()
 
-            If (bSelect OrElse TabsCount < 2) Then
-                SelectTab(TabsCount - 1)
+            If (bSelect OrElse m_TabsCount < 2) Then
+                SelectTab(m_TabsCount - 1)
             End If
         Finally
             UnfreezePaint(g_mFormMain.SplitContainer_ToolboxAndEditor)
@@ -104,16 +104,16 @@ Public Class ClassTabControl
 
             g_iOldActiveIndex = -1
 
-            Dim mTabPage = Tab(iIndex)
+            Dim mTabPage = m_Tab(iIndex)
             mTabPage.Dispose()
             mTabPage = Nothing
 
-            If (TabsCount < 1) Then
+            If (m_TabsCount < 1) Then
                 AddTab(False)
             End If
 
-            If (iIndex > TabsCount - 1) Then
-                SelectTab(TabsCount - 1)
+            If (iIndex > m_TabsCount - 1) Then
+                SelectTab(m_TabsCount - 1)
             Else
                 SelectTab(iIndex)
             End If
@@ -133,7 +133,7 @@ Public Class ClassTabControl
             SaveLoadTabEntries(iFromIndex, ENUM_TAB_CONFIG.SAVE)
             SaveLoadTabEntries(iToIndex, ENUM_TAB_CONFIG.SAVE)
 
-            Dim mFrom As SourceTabPage = Tab(iFromIndex)
+            Dim mFrom As SourceTabPage = m_Tab(iFromIndex)
             g_mFormMain.TabControl_SourceTabs.TabPages.Remove(mFrom)
             g_mFormMain.TabControl_SourceTabs.TabPages.Insert(iToIndex, mFrom)
 
@@ -151,14 +151,14 @@ Public Class ClassTabControl
 
             If (g_iOldActiveIndex > -1) Then
                 SaveLoadTabEntries(g_iOldActiveIndex, ENUM_TAB_CONFIG.SAVE)
-                Tab(g_iOldActiveIndex).HandlersEnabled = False
+                m_Tab(g_iOldActiveIndex).m_HandlersEnabled = False
             End If
 
             g_iOldActiveIndex = iIndex
 
             If (iIndex > -1) Then
                 SaveLoadTabEntries(iIndex, ENUM_TAB_CONFIG.LOAD)
-                Tab(iIndex).HandlersEnabled = True
+                m_Tab(iIndex).m_HandlersEnabled = True
 
                 g_mFormMain.TabControl_SourceTabs.SelectTab(iIndex)
                 g_mFormMain.g_ClassSyntaxTools.UpdateTextEditorSyntax()
@@ -182,33 +182,33 @@ Public Class ClassTabControl
         End If
 
         If (String.IsNullOrEmpty(sPath) OrElse Not IO.File.Exists(sPath)) Then
-            Tab(iIndex).ClassLineState.IgnoreUpdates = True
-            Tab(iIndex).File = ""
-            Tab(iIndex).TextEditor.Document.TextContent = ""
+            m_Tab(iIndex).m_ClassLineState.m_IgnoreUpdates = True
+            m_Tab(iIndex).m_File = ""
+            m_Tab(iIndex).m_TextEditor.Document.TextContent = ""
 
-            Tab(iIndex).Changed = False
-            Tab(iIndex).AutocompleteItems = Nothing
+            m_Tab(iIndex).m_Changed = False
+            m_Tab(iIndex).m_AutocompleteItems = Nothing
 
             SaveLoadTabEntries(iIndex, ENUM_TAB_CONFIG.LOAD)
 
-            Tab(iIndex).ClassLineState.IgnoreUpdates = False
+            m_Tab(iIndex).m_ClassLineState.m_IgnoreUpdates = False
 
             g_mFormMain.PrintInformation("[INFO]", "User created a new source file")
             Return False
         End If
 
 
-        Tab(iIndex).ClassLineState.IgnoreUpdates = True
+        m_Tab(iIndex).m_ClassLineState.m_IgnoreUpdates = True
 
-        Tab(iIndex).File = sPath
-        Tab(iIndex).TextEditor.Document.TextContent = IO.File.ReadAllText(sPath)
+        m_Tab(iIndex).m_File = sPath
+        m_Tab(iIndex).m_TextEditor.Document.TextContent = IO.File.ReadAllText(sPath)
 
-        Tab(iIndex).Changed = False
-        Tab(iIndex).AutocompleteItems = Nothing
+        m_Tab(iIndex).m_Changed = False
+        m_Tab(iIndex).m_AutocompleteItems = Nothing
 
         SaveLoadTabEntries(iIndex, ENUM_TAB_CONFIG.LOAD)
 
-        Tab(iIndex).ClassLineState.IgnoreUpdates = False
+        m_Tab(iIndex).m_ClassLineState.m_IgnoreUpdates = False
 
         g_mFormMain.PrintInformation("[INFO]", "User opened a new file: " & sPath)
         Return True
@@ -222,31 +222,31 @@ Public Class ClassTabControl
     Public Sub SaveFileTab(iIndex As Integer, Optional bSaveAs As Boolean = False)
         SaveLoadTabEntries(iIndex, ENUM_TAB_CONFIG.SAVE)
 
-        If (bSaveAs OrElse String.IsNullOrEmpty(Tab(iIndex).File) OrElse Not IO.File.Exists(Tab(iIndex).File)) Then
+        If (bSaveAs OrElse String.IsNullOrEmpty(m_Tab(iIndex).m_File) OrElse Not IO.File.Exists(m_Tab(iIndex).m_File)) Then
             Using i As New SaveFileDialog
                 i.Filter = "All supported files|*.sp;*.inc;*.sma|SourcePawn|*.sp|Include|*.inc|Pawn (Not fully supported)|*.pwn;*.p|AMX Mod X|*.sma|All files|*.*"
-                i.FileName = Tab(iIndex).File
+                i.FileName = m_Tab(iIndex).m_File
 
                 If (i.ShowDialog = DialogResult.OK) Then
-                    Tab(iIndex).File = i.FileName
+                    m_Tab(iIndex).m_File = i.FileName
 
-                    Tab(iIndex).Changed = False
-                    Tab(iIndex).ClassLineState.SaveStates(Tab(iIndex).TextEditor)
-                    Tab(iIndex).TextEditor.Refresh()
+                    m_Tab(iIndex).m_Changed = False
+                    m_Tab(iIndex).m_ClassLineState.SaveStates(m_Tab(iIndex).m_TextEditor)
+                    m_Tab(iIndex).m_TextEditor.Refresh()
 
-                    g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & Tab(iIndex).File)
-                    IO.File.WriteAllText(Tab(iIndex).File, Tab(iIndex).TextEditor.Document.TextContent)
+                    g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & m_Tab(iIndex).m_File)
+                    IO.File.WriteAllText(m_Tab(iIndex).m_File, m_Tab(iIndex).m_TextEditor.Document.TextContent)
 
                     g_mFormMain.ShowPingFlash()
                 End If
             End Using
         Else
-            Tab(iIndex).Changed = False
-            Tab(iIndex).ClassLineState.SaveStates(Tab(iIndex).TextEditor)
-            Tab(iIndex).TextEditor.Refresh()
+            m_Tab(iIndex).m_Changed = False
+            m_Tab(iIndex).m_ClassLineState.SaveStates(m_Tab(iIndex).m_TextEditor)
+            m_Tab(iIndex).m_TextEditor.Refresh()
 
-            g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & Tab(iIndex).File)
-            IO.File.WriteAllText(Tab(iIndex).File, Tab(iIndex).TextEditor.Document.TextContent)
+            g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & m_Tab(iIndex).m_File)
+            IO.File.WriteAllText(m_Tab(iIndex).m_File, m_Tab(iIndex).m_TextEditor.Document.TextContent)
 
             g_mFormMain.ShowPingFlash()
         End If
@@ -262,31 +262,31 @@ Public Class ClassTabControl
     Public Function PromptSaveTab(iIndex As Integer, Optional bAlwaysPrompt As Boolean = False, Optional bAlwaysYes As Boolean = False) As Boolean
         SaveLoadTabEntries(iIndex, ENUM_TAB_CONFIG.SAVE)
 
-        If (Not bAlwaysPrompt AndAlso Not Tab(iIndex).Changed) Then
+        If (Not bAlwaysPrompt AndAlso Not m_Tab(iIndex).m_Changed) Then
             Return False
         End If
 
         Dim sFilename As String = ""
-        If (Not String.IsNullOrEmpty(Tab(iIndex).File) AndAlso IO.File.Exists(Tab(iIndex).File)) Then
-            sFilename = String.Format(" ({0})", IO.Path.GetFileName(Tab(iIndex).File))
+        If (Not String.IsNullOrEmpty(m_Tab(iIndex).m_File) AndAlso IO.File.Exists(m_Tab(iIndex).m_File)) Then
+            sFilename = String.Format(" ({0})", IO.Path.GetFileName(m_Tab(iIndex).m_File))
         End If
 
         Select Case (If(bAlwaysYes, DialogResult.Yes, MessageBox.Show(String.Format("Do you want to save your work?{0}", sFilename), "Information", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question)))
             Case DialogResult.Yes
-                If (String.IsNullOrEmpty(Tab(iIndex).File) OrElse Not IO.File.Exists(Tab(iIndex).File)) Then
+                If (String.IsNullOrEmpty(m_Tab(iIndex).m_File) OrElse Not IO.File.Exists(m_Tab(iIndex).m_File)) Then
                     Using i As New SaveFileDialog
                         i.Filter = "All supported files|*.sp;*.inc;*.sma|SourcePawn|*.sp|Include|*.inc|Pawn (Not fully supported)|*.pwn;*.p|AMX Mod X|*.sma|All files|*.*"
-                        i.FileName = Tab(iIndex).File
+                        i.FileName = m_Tab(iIndex).m_File
 
                         If (i.ShowDialog = DialogResult.OK) Then
-                            Tab(iIndex).File = i.FileName
+                            m_Tab(iIndex).m_File = i.FileName
 
-                            Tab(iIndex).Changed = False
-                            Tab(iIndex).ClassLineState.SaveStates(Tab(iIndex).TextEditor)
-                            Tab(iIndex).TextEditor.Refresh()
+                            m_Tab(iIndex).m_Changed = False
+                            m_Tab(iIndex).m_ClassLineState.SaveStates(m_Tab(iIndex).m_TextEditor)
+                            m_Tab(iIndex).m_TextEditor.Refresh()
 
-                            g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & Tab(iIndex).File)
-                            IO.File.WriteAllText(Tab(iIndex).File, Tab(iIndex).TextEditor.Document.TextContent)
+                            g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & m_Tab(iIndex).m_File)
+                            IO.File.WriteAllText(m_Tab(iIndex).m_File, m_Tab(iIndex).m_TextEditor.Document.TextContent)
 
                             Return False
                         Else
@@ -294,12 +294,12 @@ Public Class ClassTabControl
                         End If
                     End Using
                 Else
-                    Tab(iIndex).Changed = False
-                    Tab(iIndex).ClassLineState.SaveStates(Tab(iIndex).TextEditor)
-                    Tab(iIndex).TextEditor.Refresh()
+                    m_Tab(iIndex).m_Changed = False
+                    m_Tab(iIndex).m_ClassLineState.SaveStates(m_Tab(iIndex).m_TextEditor)
+                    m_Tab(iIndex).m_TextEditor.Refresh()
 
-                    g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & Tab(iIndex).File)
-                    IO.File.WriteAllText(Tab(iIndex).File, Tab(iIndex).TextEditor.Document.TextContent)
+                    g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & m_Tab(iIndex).m_File)
+                    IO.File.WriteAllText(m_Tab(iIndex).m_File, m_Tab(iIndex).m_TextEditor.Document.TextContent)
 
                     Return False
                 End If
@@ -323,7 +323,7 @@ Public Class ClassTabControl
     Private Sub SaveLoadTabEntries(iIndex As Integer, i As ENUM_TAB_CONFIG)
         Select Case (i)
             Case ENUM_TAB_CONFIG.SAVE
-                Tab(iIndex).AutocompleteItems = g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.ToArray
+                m_Tab(iIndex).m_AutocompleteItems = g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.ToArray
 
             Case Else
                 Try
@@ -339,13 +339,13 @@ Public Class ClassTabControl
                     g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.DoSync(
                             Sub()
                                 g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.Clear()
-                                If (Tab(iIndex).AutocompleteItems IsNot Nothing) Then
-                                    g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.AddRange(Tab(iIndex).AutocompleteItems)
+                                If (m_Tab(iIndex).m_AutocompleteItems IsNot Nothing) Then
+                                    g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.AddRange(m_Tab(iIndex).m_AutocompleteItems)
                                 End If
                             End Sub)
 
                     g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete("")
-                    g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.CurrentMethod = ""
+                    g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.m_CurrentMethod = ""
                     g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip()
                     g_mFormMain.g_mUCObjectBrowser.StartUpdate()
 
@@ -363,7 +363,7 @@ Public Class ClassTabControl
         End If
 
         g_bIgnoreOnTabSelected = True
-        SelectTab(ActiveTabIndex)
+        SelectTab(m_ActiveTabIndex)
         g_bIgnoreOnTabSelected = False
     End Sub
 
@@ -406,7 +406,7 @@ Public Class ClassTabControl
 
         Public Sub New(f As FormMain, sText As String)
             g_mFormMain = f
-            Title = sText
+            m_Title = sText
 
             CreateTextEditor()
 
@@ -415,8 +415,8 @@ Public Class ClassTabControl
 
         Public Sub New(f As FormMain, sText As String, bChanged As Boolean)
             g_mFormMain = f
-            Title = sText
-            Changed = bChanged
+            m_Title = sText
+            m_Changed = bChanged
 
             CreateTextEditor()
 
@@ -530,7 +530,7 @@ Public Class ClassTabControl
             End Try
         End Sub
 
-        Public Property HandlersEnabled As Boolean
+        Public Property m_HandlersEnabled As Boolean
             Get
                 Return g_bEnabled
             End Get
@@ -545,25 +545,25 @@ Public Class ClassTabControl
             End Set
         End Property
 
-        Public Property File As String
+        Public Property m_File As String
             Get
                 Return g_sFile
             End Get
             Set(value As String)
                 g_sFile = value
 
-                Title = IO.Path.GetFileName(g_sFile)
+                m_Title = IO.Path.GetFileName(g_sFile)
                 Me.ToolTipText = g_sFile
             End Set
         End Property
 
-        Public ReadOnly Property TextEditor As TextEditorControlEx
+        Public ReadOnly Property m_TextEditor As TextEditorControlEx
             Get
                 Return g_mSourceTextEditor
             End Get
         End Property
 
-        Public Property AutocompleteItems As FormMain.STRUC_AUTOCOMPLETE()
+        Public Property m_AutocompleteItems As FormMain.STRUC_AUTOCOMPLETE()
             Get
                 Return g_mAutocompleteItems
             End Get
@@ -572,7 +572,7 @@ Public Class ClassTabControl
             End Set
         End Property
 
-        Public ReadOnly Property ClassLineState As ClassTextEditorTools.ClassLineState
+        Public ReadOnly Property m_ClassLineState As ClassTextEditorTools.ClassLineState
             Get
                 Return g_mFormMain.g_ClassLineState
             End Get
@@ -580,7 +580,7 @@ Public Class ClassTabControl
 
 
 
-        Public Property Changed As Boolean
+        Public Property m_Changed As Boolean
             Get
                 Return g_bTextChanged
             End Get
@@ -592,7 +592,7 @@ Public Class ClassTabControl
             End Set
         End Property
 
-        Public Property Title As String
+        Public Property m_Title As String
             Get
                 Return g_sText
             End Get
@@ -850,7 +850,7 @@ Public Class ClassTabControl
                 Return
             End If
 
-            ClassLineState.LineState(g_mSourceTextEditor, e.LineSegment.LineNumber) = ClassTextEditorTools.ClassLineState.LineStateBookmark.ENUM_BOOKMARK_TYPE.CHANGED
+            m_ClassLineState.m_LineState(g_mSourceTextEditor, e.LineSegment.LineNumber) = ClassTextEditorTools.ClassLineState.LineStateBookmark.ENUM_BOOKMARK_TYPE.CHANGED
         End Sub
 
         Private Sub TextEditorControl_DetectLineCountChange(sender As Object, e As LineCountChangeEventArgs)
@@ -862,7 +862,7 @@ Public Class ClassTabControl
                         Return
                     End If
 
-                    ClassLineState.LineState(g_mSourceTextEditor, e.LineStart + i) = ClassTextEditorTools.ClassLineState.LineStateBookmark.ENUM_BOOKMARK_TYPE.CHANGED
+                    m_ClassLineState.m_LineState(g_mSourceTextEditor, e.LineStart + i) = ClassTextEditorTools.ClassLineState.LineStateBookmark.ENUM_BOOKMARK_TYPE.CHANGED
                 Next
             End If
         End Sub
@@ -890,8 +890,8 @@ Public Class ClassTabControl
         End Sub
 
         Private Sub TextEditorControl_Source_TextChanged(sender As Object, e As EventArgs)
-            If (Not g_mFormMain.g_ClassTabControl.IsLoadingEntries) Then
-                g_mFormMain.g_ClassTabControl.ActiveTab.Changed = True
+            If (Not g_mFormMain.g_ClassTabControl.m_IsLoadingEntries) Then
+                g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Changed = True
             End If
         End Sub
 

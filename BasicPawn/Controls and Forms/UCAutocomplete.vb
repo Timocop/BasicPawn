@@ -80,7 +80,7 @@ Public Class UCAutocomplete
 
     Public Function ParseMethodAutocomplete(Optional bForceUpdate As Boolean = False) As Boolean
         If (bForceUpdate) Then
-            Dim sTextContent As String = CStr(Me.Invoke(Function() g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor.Document.TextContent))
+            Dim sTextContent As String = CStr(Me.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent))
             g_mFormMain.g_mSourceSyntaxSourceAnalysis = New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sTextContent)
         End If
 
@@ -88,20 +88,20 @@ Public Class UCAutocomplete
             Return False
         End If
 
-        Dim iCaretOffset As Integer = CInt(Me.Invoke(Function() g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor.ActiveTextAreaControl.TextArea.Caret.Offset))
+        Dim iCaretOffset As Integer = CInt(Me.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Offset))
 
         If (iCaretOffset <= 1 OrElse
-                        iCaretOffset >= g_mFormMain.g_mSourceSyntaxSourceAnalysis.GetMaxLenght() OrElse
-                        g_mFormMain.g_mSourceSyntaxSourceAnalysis.InMultiComment(iCaretOffset) OrElse
-                        g_mFormMain.g_mSourceSyntaxSourceAnalysis.InSingleComment(iCaretOffset)) Then
+                        iCaretOffset >= g_mFormMain.g_mSourceSyntaxSourceAnalysis.m_GetMaxLenght() OrElse
+                        g_mFormMain.g_mSourceSyntaxSourceAnalysis.m_InMultiComment(iCaretOffset) OrElse
+                        g_mFormMain.g_mSourceSyntaxSourceAnalysis.m_InSingleComment(iCaretOffset)) Then
             Return False
         End If
 
         Dim iValidOffset As Integer = -1
-        Dim iCaretBrace As Integer = g_mFormMain.g_mSourceSyntaxSourceAnalysis.GetParenthesisLevel(iCaretOffset - 1)
+        Dim iCaretBrace As Integer = g_mFormMain.g_mSourceSyntaxSourceAnalysis.m_GetParenthesisLevel(iCaretOffset - 1)
         Dim i As Integer
         For i = iCaretOffset - 1 To 0 Step -1
-            If (g_mFormMain.g_mSourceSyntaxSourceAnalysis.GetParenthesisLevel(i) < iCaretBrace) Then
+            If (g_mFormMain.g_mSourceSyntaxSourceAnalysis.m_GetParenthesisLevel(i) < iCaretBrace) Then
                 iValidOffset = i
                 Exit For
             End If
@@ -114,18 +114,18 @@ Public Class UCAutocomplete
         Dim SB As New StringBuilder
 
         For i = iValidOffset To iValidOffset - 64 Step -1
-            If (i < 0 OrElse i > CInt(Me.Invoke(Function() g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor.ActiveTextAreaControl.Document.TextLength)) - 1) Then
+            If (i < 0 OrElse i > CInt(Me.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.TextLength)) - 1) Then
                 Exit For
             End If
 
-            SB.Append(Me.Invoke(Function() g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor.ActiveTextAreaControl.Document.GetCharAt(i)))
+            SB.Append(Me.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.GetCharAt(i)))
         Next
 
         Dim sFuncStart As String = StrReverse(SB.ToString)
         sFuncStart = Regex.Match(sFuncStart, "(\.){0,1}(\b[a-zA-Z0-9_]+\b)$").Value
 
         Me.BeginInvoke(Sub()
-                           g_ClassToolTip.CurrentMethod = sFuncStart
+                           g_ClassToolTip.m_CurrentMethod = sFuncStart
                            g_ClassToolTip.UpdateToolTip()
                        End Sub)
         Return True
@@ -144,7 +144,7 @@ Public Class UCAutocomplete
             Return 0
         End If
 
-        Dim bSelectedWord As Boolean = g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor.ActiveTextAreaControl.TextArea.SelectionManager.HasSomethingSelected
+        Dim bSelectedWord As Boolean = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.SelectionManager.HasSomethingSelected
         Dim lListViewItemsList As New List(Of ListViewItem)
 
         Dim sAutocompleteArray As FormMain.STRUC_AUTOCOMPLETE() = g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.ToArray
@@ -230,7 +230,7 @@ Public Class UCAutocomplete
             g_AutocompleteUC = c
         End Sub
 
-        Public Property CurrentMethod As String
+        Public Property m_CurrentMethod As String
             Get
                 Return g_sCurrentMethodName
             End Get
@@ -281,7 +281,7 @@ Public Class UCAutocomplete
                             If (sNewlineDistance > -1) Then
                                 Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sNameToolTip)
                                 For ii = sNameToolTip.Length - 1 To 0 Step -1
-                                    If (sNameToolTip(ii) <> ","c OrElse sourceAnalysis.InNonCode(ii)) Then
+                                    If (sNameToolTip(ii) <> ","c OrElse sourceAnalysis.m_InNonCode(ii)) Then
                                         Continue For
                                     End If
 
@@ -322,7 +322,7 @@ Public Class UCAutocomplete
                     If (sNewlineDistance > -1) Then
                         Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sNameToolTip)
                         For ii = sNameToolTip.Length - 1 To 0 Step -1
-                            If (sNameToolTip(ii) <> ","c OrElse sourceAnalysis.InNonCode(ii)) Then
+                            If (sNameToolTip(ii) <> ","c OrElse sourceAnalysis.m_InNonCode(ii)) Then
                                 Continue For
                             End If
 
@@ -348,9 +348,9 @@ Public Class UCAutocomplete
                 Dim iXSpace As Integer = 0
                 Dim iYSpace As Integer = 0
 
-                Dim iX As Integer = g_AutocompleteUC.g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor.ActiveTextAreaControl.Caret.ScreenPosition.X + iXSpace
-                Dim iY As Integer = g_AutocompleteUC.g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor.ActiveTextAreaControl.Caret.ScreenPosition.Y + iYSpace
-                Dim iFontH As Integer = CInt(g_AutocompleteUC.g_mFormMain.g_ClassTabControl.ActiveTab.TextEditor.ActiveTextAreaControl.Font.GetHeight)
+                Dim iX As Integer = g_AutocompleteUC.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Caret.ScreenPosition.X + iXSpace
+                Dim iY As Integer = g_AutocompleteUC.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Caret.ScreenPosition.Y + iYSpace
+                Dim iFontH As Integer = CInt(g_AutocompleteUC.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Font.GetHeight)
 
                 Dim iWTabSpace As Integer = 6
                 Dim iHTabSpace As Integer = g_AutocompleteUC.g_mFormMain.TabControl_SourceTabs.ItemSize.Height + 6

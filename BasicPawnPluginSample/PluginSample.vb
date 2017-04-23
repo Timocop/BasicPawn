@@ -27,7 +27,7 @@ Public Class PluginSample
     Private g_ClassTestToolbox As ClassTestToolbox
 
 
-    Public ReadOnly Property PluginInformation As IPluginInterface.STRUC_PLUGIN_INFORMATION Implements IPluginInterface.PluginInformation
+    Public ReadOnly Property m_PluginInformation As IPluginInterface.STRUC_PLUGIN_INFORMATION Implements IPluginInterface.m_PluginInformation
         Get
             Return New IPluginInterface.STRUC_PLUGIN_INFORMATION("Sample Plugin", "Timocop", "A simple sample plugin", "0.0", Nothing)
         End Get
