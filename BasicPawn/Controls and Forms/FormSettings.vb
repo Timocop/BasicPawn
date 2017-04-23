@@ -21,8 +21,10 @@ Public Class FormSettings
 
     Private g_lRestoreConfigs As New List(Of ClassConfigs.STRUC_CONFIG_ITEM)
     Private g_bRestoreConfigs As Boolean = False
+    Private g_bIgnoreChange As Boolean = False
 
     Public Sub New(f As FormMain)
+        g_bIgnoreChange = True
 
         ' This call is required by the designer.
         InitializeComponent()
@@ -34,6 +36,8 @@ Public Class FormSettings
 
         ClassTools.ClassForms.SetDoubleBufferingAllChilds(Me, True)
         ClassTools.ClassForms.SetDoubleBufferingUnmanagedAllChilds(Me, True)
+
+        g_bIgnoreChange = False
     End Sub
 
     Private Sub Button_ConfigAdd_Click(sender As Object, e As EventArgs) Handles Button_ConfigAdd.Click
@@ -53,6 +57,8 @@ Public Class FormSettings
         ListBox_Configs.Items.Add(sNewName)
         ClassConfigs.SaveConfig(New ClassConfigs.STRUC_CONFIG_ITEM(sNewName))
 
+        MarkChanged()
+
         g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnConfigChanged())
     End Sub
 
@@ -62,6 +68,8 @@ Public Class FormSettings
 
             If (ClassConfigs.RemoveConfig(sName)) Then
                 ListBox_Configs.Items.Remove(sName)
+
+                MarkChanged()
 
                 g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnConfigChanged())
             End If
@@ -94,30 +102,52 @@ Public Class FormSettings
             Dim sName As String = ListBox_Configs.SelectedItems(0).ToString
 
             If (sName = ClassConfigs.m_DefaultConfig.GetName) Then
+                g_bIgnoreChange = True
+
                 Button_SaveConfig.Enabled = False
                 GroupBox_ConfigSettings.Enabled = False
                 GroupBox_ConfigSettings.Visible = False
 
+                'General
                 TextBox_ConfigName.Text = sName
                 RadioButton_ConfigSettingAutomatic.Checked = True
                 TextBox_CompilerPath.Text = ""
                 TextBox_IncludeFolder.Text = ""
                 TextBox_OutputFolder.Text = ""
+                CheckBox_ConfigIsDefault.Checked = False
+                'Debugging
+                TextBox_GameFolder.Text = ""
+                TextBox_SourceModFolder.Text = ""
+                'Misc
                 TextBox_Shell.Text = ""
+                TextBox_SyntaxPath.Text = ""
 
+                g_bIgnoreChange = False
+
+                'ResetChanged()
                 Return
             End If
 
+            g_bIgnoreChange = True
             Button_SaveConfig.Enabled = True
             GroupBox_ConfigSettings.Enabled = True
             GroupBox_ConfigSettings.Visible = True
 
+            'General
             TextBox_ConfigName.Text = sName
             RadioButton_ConfigSettingAutomatic.Checked = True
             TextBox_CompilerPath.Text = ""
             TextBox_IncludeFolder.Text = ""
             TextBox_OutputFolder.Text = ""
+            CheckBox_ConfigIsDefault.Checked = False
+            'Debugging
+            TextBox_GameFolder.Text = ""
+            TextBox_SourceModFolder.Text = ""
+            'Misc
             TextBox_Shell.Text = ""
+            TextBox_SyntaxPath.Text = ""
+
+            g_bIgnoreChange = False
 
             Dim mConfig As ClassConfigs.STRUC_CONFIG_ITEM = ClassConfigs.LoadConfig(sName)
 
@@ -126,17 +156,23 @@ Public Class FormSettings
                 Return
             End If
 
+            g_bIgnoreChange = True
+            'General
             RadioButton_ConfigSettingAutomatic.Checked = True
             RadioButton_ConfigSettingManual.Checked = (mConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.CONFIG)
             TextBox_CompilerPath.Text = mConfig.g_sCompilerPath
             TextBox_IncludeFolder.Text = mConfig.g_sIncludeFolders
             TextBox_OutputFolder.Text = mConfig.g_sOutputFolder
+            CheckBox_ConfigIsDefault.Checked = mConfig.g_bAutoload
             'Debugging
             TextBox_GameFolder.Text = mConfig.g_sDebugGameFolder
             TextBox_SourceModFolder.Text = mConfig.g_sDebugSourceModFolder
             'Misc
             TextBox_Shell.Text = mConfig.g_sExecuteShell
             TextBox_SyntaxPath.Text = mConfig.g_sSyntaxHighlightingPath
+            g_bIgnoreChange = False
+
+            'ResetChanged()
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
@@ -234,12 +270,21 @@ Public Class FormSettings
                 Return
             End If
 
+            If (CheckBox_ConfigIsDefault.Checked) Then
+                For Each mTmpConfig As ClassConfigs.STRUC_CONFIG_ITEM In ClassConfigs.GetConfigs(False)
+                    If (mTmpConfig.g_bAutoload) Then
+                        mTmpConfig.g_bAutoload = False
+                        mTmpConfig.SaveConfig()
+                    End If
+                Next
+            End If
+
             ClassConfigs.SaveConfig(New ClassConfigs.STRUC_CONFIG_ITEM(sName,
                                                                         If(RadioButton_ConfigSettingManual.Checked, ClassSettings.ENUM_COMPILING_TYPE.CONFIG, ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC),
                                                                         TextBox_IncludeFolder.Text,
                                                                         TextBox_CompilerPath.Text,
                                                                         TextBox_OutputFolder.Text,
-                                                                        False,
+                                                                        CheckBox_ConfigIsDefault.Checked,
                                                                         TextBox_GameFolder.Text,
                                                                         TextBox_SourceModFolder.Text,
                                                                         TextBox_Shell.Text,
@@ -413,6 +458,8 @@ Public Class FormSettings
             ListBox_Configs.SetSelected(i, True)
         End If
 
+        MarkChanged()
+
         g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnConfigChanged())
     End Sub
 
@@ -455,6 +502,8 @@ Public Class FormSettings
         If (i > -1) Then
             ListBox_Configs.SetSelected(i, True)
         End If
+
+        MarkChanged()
 
         g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnConfigChanged())
     End Sub
@@ -512,5 +561,59 @@ Public Class FormSettings
         For Each mConfig As ClassConfigs.STRUC_CONFIG_ITEM In g_lRestoreConfigs
             mConfig.SaveConfig()
         Next
+    End Sub
+
+    Private Sub RadioButton_ConfigSettingAutomatic_CheckedChanged(sender As Object, e As EventArgs) Handles RadioButton_ConfigSettingAutomatic.CheckedChanged
+        MarkChanged()
+    End Sub
+
+    Private Sub RadioButton_ConfigSettingManual_CheckedChanged(sender As Object, e As EventArgs) Handles RadioButton_ConfigSettingManual.CheckedChanged
+        MarkChanged()
+    End Sub
+
+    Private Sub MarkChanged()
+        If (Not g_bIgnoreChange AndAlso Not TabPage2.Text.EndsWith("*"c)) Then
+            TabPage2.Text = TabPage2.Text & "*"
+            TabControl1.Refresh()
+        End If
+    End Sub
+
+    Private Sub ResetChanged()
+        If (TabPage2.Text.EndsWith("*"c)) Then
+            TabPage2.Text = TabPage2.Text.Trim("*"c)
+            TabControl1.Refresh()
+        End If
+    End Sub
+
+    Private Sub TextBox_CompilerPath_TextChanged(sender As Object, e As EventArgs) Handles TextBox_CompilerPath.TextChanged
+        MarkChanged()
+    End Sub
+
+    Private Sub TextBox_IncludeFolder_TextChanged(sender As Object, e As EventArgs) Handles TextBox_IncludeFolder.TextChanged
+        MarkChanged()
+    End Sub
+
+    Private Sub TextBox_OutputFolder_TextChanged(sender As Object, e As EventArgs) Handles TextBox_OutputFolder.TextChanged
+        MarkChanged()
+    End Sub
+
+    Private Sub CheckBox_ConfigIsDefault_CheckedChanged(sender As Object, e As EventArgs) Handles CheckBox_ConfigIsDefault.CheckedChanged
+        MarkChanged()
+    End Sub
+
+    Private Sub TextBox_GameFolder_TextChanged(sender As Object, e As EventArgs) Handles TextBox_GameFolder.TextChanged
+        MarkChanged()
+    End Sub
+
+    Private Sub TextBox_SourceModFolder_TextChanged(sender As Object, e As EventArgs) Handles TextBox_SourceModFolder.TextChanged
+        MarkChanged()
+    End Sub
+
+    Private Sub TextBox_Shell_TextChanged(sender As Object, e As EventArgs) Handles TextBox_Shell.TextChanged
+        MarkChanged()
+    End Sub
+
+    Private Sub TextBox_SyntaxPath_TextChanged(sender As Object, e As EventArgs) Handles TextBox_SyntaxPath.TextChanged
+        MarkChanged()
     End Sub
 End Class

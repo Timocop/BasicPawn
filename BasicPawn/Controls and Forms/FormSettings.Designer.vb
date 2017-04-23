@@ -117,6 +117,7 @@ Partial Class FormSettings
         Me.Button_Cancel = New System.Windows.Forms.Button()
         Me.Button_Apply = New System.Windows.Forms.Button()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
+        Me.CheckBox_ConfigIsDefault = New System.Windows.Forms.CheckBox()
         Me.TabControl1.SuspendLayout()
         Me.TabPage1.SuspendLayout()
         Me.Panel8.SuspendLayout()
@@ -606,7 +607,7 @@ Partial Class FormSettings
         Me.TableLayoutPanel2.Margin = New System.Windows.Forms.Padding(0)
         Me.TableLayoutPanel2.Name = "TableLayoutPanel2"
         Me.TableLayoutPanel2.RowCount = 2
-        Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 108.0!))
+        Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 100.0!))
         Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.TableLayoutPanel2.Size = New System.Drawing.Size(452, 724)
         Me.TableLayoutPanel2.TabIndex = 8
@@ -624,14 +625,14 @@ Partial Class FormSettings
         Me.Panel17.Location = New System.Drawing.Point(0, 0)
         Me.Panel17.Margin = New System.Windows.Forms.Padding(0)
         Me.Panel17.Name = "Panel17"
-        Me.Panel17.Size = New System.Drawing.Size(452, 108)
+        Me.Panel17.Size = New System.Drawing.Size(452, 100)
         Me.Panel17.TabIndex = 0
         '
         'Button_SaveConfig
         '
         Me.Button_SaveConfig.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_SaveConfig.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_SaveConfig.Location = New System.Drawing.Point(321, 82)
+        Me.Button_SaveConfig.Location = New System.Drawing.Point(321, 74)
         Me.Button_SaveConfig.Name = "Button_SaveConfig"
         Me.Button_SaveConfig.Size = New System.Drawing.Size(128, 23)
         Me.Button_SaveConfig.TabIndex = 12
@@ -705,10 +706,10 @@ Partial Class FormSettings
         Me.Panel2.AutoScroll = True
         Me.Panel2.Controls.Add(Me.GroupBox_ConfigSettings)
         Me.Panel2.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Panel2.Location = New System.Drawing.Point(0, 108)
+        Me.Panel2.Location = New System.Drawing.Point(0, 100)
         Me.Panel2.Margin = New System.Windows.Forms.Padding(0)
         Me.Panel2.Name = "Panel2"
-        Me.Panel2.Size = New System.Drawing.Size(452, 616)
+        Me.Panel2.Size = New System.Drawing.Size(452, 624)
         Me.Panel2.TabIndex = 1
         '
         'GroupBox_ConfigSettings
@@ -721,7 +722,7 @@ Partial Class FormSettings
         Me.GroupBox_ConfigSettings.Location = New System.Drawing.Point(0, 0)
         Me.GroupBox_ConfigSettings.Margin = New System.Windows.Forms.Padding(0)
         Me.GroupBox_ConfigSettings.Name = "GroupBox_ConfigSettings"
-        Me.GroupBox_ConfigSettings.Size = New System.Drawing.Size(452, 500)
+        Me.GroupBox_ConfigSettings.Size = New System.Drawing.Size(452, 524)
         Me.GroupBox_ConfigSettings.TabIndex = 7
         Me.GroupBox_ConfigSettings.TabStop = False
         Me.GroupBox_ConfigSettings.Text = "Config Settings"
@@ -729,17 +730,17 @@ Partial Class FormSettings
         'Panel11
         '
         Me.Panel11.AutoSize = True
-        Me.Panel11.Controls.Add(Me.LinkLabel_SyntaxDefault)
-        Me.Panel11.Controls.Add(Me.Button_SyntaxPath)
-        Me.Panel11.Controls.Add(Me.TextBox_SyntaxPath)
-        Me.Panel11.Controls.Add(Me.Label15)
         Me.Panel11.Controls.Add(Me.Panel13)
         Me.Panel11.Controls.Add(Me.Label13)
         Me.Panel11.Controls.Add(Me.Label10)
         Me.Panel11.Controls.Add(Me.TextBox_Shell)
         Me.Panel11.Controls.Add(Me.LinkLabel_ShowShellArguments)
+        Me.Panel11.Controls.Add(Me.Label15)
+        Me.Panel11.Controls.Add(Me.TextBox_SyntaxPath)
+        Me.Panel11.Controls.Add(Me.Button_SyntaxPath)
+        Me.Panel11.Controls.Add(Me.LinkLabel_SyntaxDefault)
         Me.Panel11.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel11.Location = New System.Drawing.Point(3, 352)
+        Me.Panel11.Location = New System.Drawing.Point(3, 376)
         Me.Panel11.Name = "Panel11"
         Me.Panel11.Size = New System.Drawing.Size(446, 145)
         Me.Panel11.TabIndex = 30
@@ -773,6 +774,7 @@ Partial Class FormSettings
         Me.TextBox_SyntaxPath.BackColor = System.Drawing.Color.White
         Me.TextBox_SyntaxPath.Location = New System.Drawing.Point(3, 101)
         Me.TextBox_SyntaxPath.Name = "TextBox_SyntaxPath"
+        Me.TextBox_SyntaxPath.ReadOnly = True
         Me.TextBox_SyntaxPath.Size = New System.Drawing.Size(403, 22)
         Me.TextBox_SyntaxPath.TabIndex = 30
         '
@@ -842,12 +844,12 @@ Partial Class FormSettings
         Me.Panel10.Controls.Add(Me.Label9)
         Me.Panel10.Controls.Add(Me.Label2)
         Me.Panel10.Controls.Add(Me.TextBox_GameFolder)
-        Me.Panel10.Controls.Add(Me.Button_SourceModFolder)
         Me.Panel10.Controls.Add(Me.Button_GameFolder)
         Me.Panel10.Controls.Add(Me.TextBox_SourceModFolder)
+        Me.Panel10.Controls.Add(Me.Button_SourceModFolder)
         Me.Panel10.Controls.Add(Me.Label12)
         Me.Panel10.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel10.Location = New System.Drawing.Point(3, 242)
+        Me.Panel10.Location = New System.Drawing.Point(3, 266)
         Me.Panel10.Name = "Panel10"
         Me.Panel10.Size = New System.Drawing.Size(446, 110)
         Me.Panel10.TabIndex = 29
@@ -938,14 +940,15 @@ Partial Class FormSettings
         '
         Me.Panel9.AutoSize = True
         Me.Panel9.Controls.Add(Me.Label11)
+        Me.Panel9.Controls.Add(Me.Label3)
         Me.Panel9.Controls.Add(Me.RadioButton_ConfigSettingAutomatic)
         Me.Panel9.Controls.Add(Me.RadioButton_ConfigSettingManual)
-        Me.Panel9.Controls.Add(Me.Label3)
+        Me.Panel9.Controls.Add(Me.CheckBox_ConfigIsDefault)
         Me.Panel9.Controls.Add(Me.GroupBox1)
         Me.Panel9.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel9.Location = New System.Drawing.Point(3, 18)
         Me.Panel9.Name = "Panel9"
-        Me.Panel9.Size = New System.Drawing.Size(446, 224)
+        Me.Panel9.Size = New System.Drawing.Size(446, 248)
         Me.Panel9.TabIndex = 28
         '
         'Label11
@@ -964,7 +967,8 @@ Partial Class FormSettings
         Me.RadioButton_ConfigSettingAutomatic.AutoSize = True
         Me.RadioButton_ConfigSettingAutomatic.Checked = True
         Me.RadioButton_ConfigSettingAutomatic.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.RadioButton_ConfigSettingAutomatic.Location = New System.Drawing.Point(3, 25)
+        Me.RadioButton_ConfigSettingAutomatic.Location = New System.Drawing.Point(6, 25)
+        Me.RadioButton_ConfigSettingAutomatic.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.RadioButton_ConfigSettingAutomatic.Name = "RadioButton_ConfigSettingAutomatic"
         Me.RadioButton_ConfigSettingAutomatic.Size = New System.Drawing.Size(83, 18)
         Me.RadioButton_ConfigSettingAutomatic.TabIndex = 0
@@ -976,20 +980,21 @@ Partial Class FormSettings
         '
         Me.RadioButton_ConfigSettingManual.AutoSize = True
         Me.RadioButton_ConfigSettingManual.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.RadioButton_ConfigSettingManual.Location = New System.Drawing.Point(3, 76)
+        Me.RadioButton_ConfigSettingManual.Location = New System.Drawing.Point(6, 77)
+        Me.RadioButton_ConfigSettingManual.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.RadioButton_ConfigSettingManual.Name = "RadioButton_ConfigSettingManual"
         Me.RadioButton_ConfigSettingManual.Size = New System.Drawing.Size(70, 18)
         Me.RadioButton_ConfigSettingManual.TabIndex = 1
         Me.RadioButton_ConfigSettingManual.Text = "Manual"
-        Me.RadioButton_ConfigSettingManual.UseVisualStyleBackColor = True
         '
         'Label3
         '
         Me.Label3.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Label3.Location = New System.Drawing.Point(3, 46)
+        Me.Label3.Location = New System.Drawing.Point(16, 46)
+        Me.Label3.Margin = New System.Windows.Forms.Padding(16, 0, 3, 0)
         Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(440, 28)
+        Me.Label3.Size = New System.Drawing.Size(427, 28)
         Me.Label3.TabIndex = 2
         Me.Label3.Text = "Automatically detect compiler path and include folder from currently opened sourc" &
     "e file."
@@ -1180,19 +1185,32 @@ Partial Class FormSettings
         Me.GroupBox1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.GroupBox1.Controls.Add(Me.Label4)
-        Me.GroupBox1.Controls.Add(Me.Button_OutputFolder)
-        Me.GroupBox1.Controls.Add(Me.TextBox_OutputFolder)
-        Me.GroupBox1.Controls.Add(Me.Label6)
-        Me.GroupBox1.Controls.Add(Me.Button_IncludeFolder)
         Me.GroupBox1.Controls.Add(Me.TextBox_CompilerPath)
         Me.GroupBox1.Controls.Add(Me.Button_Compiler)
         Me.GroupBox1.Controls.Add(Me.Label5)
         Me.GroupBox1.Controls.Add(Me.TextBox_IncludeFolder)
+        Me.GroupBox1.Controls.Add(Me.Button_IncludeFolder)
+        Me.GroupBox1.Controls.Add(Me.Label6)
+        Me.GroupBox1.Controls.Add(Me.TextBox_OutputFolder)
+        Me.GroupBox1.Controls.Add(Me.Button_OutputFolder)
         Me.GroupBox1.Location = New System.Drawing.Point(3, 77)
         Me.GroupBox1.Name = "GroupBox1"
         Me.GroupBox1.Size = New System.Drawing.Size(440, 144)
         Me.GroupBox1.TabIndex = 24
         Me.GroupBox1.TabStop = False
+        Me.GroupBox1.Text = "                    "
+        '
+        'CheckBox_ConfigIsDefault
+        '
+        Me.CheckBox_ConfigIsDefault.AutoSize = True
+        Me.CheckBox_ConfigIsDefault.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_ConfigIsDefault.Location = New System.Drawing.Point(6, 227)
+        Me.CheckBox_ConfigIsDefault.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_ConfigIsDefault.Name = "CheckBox_ConfigIsDefault"
+        Me.CheckBox_ConfigIsDefault.Size = New System.Drawing.Size(160, 18)
+        Me.CheckBox_ConfigIsDefault.TabIndex = 25
+        Me.CheckBox_ConfigIsDefault.Text = "Set this config as default"
+        Me.CheckBox_ConfigIsDefault.UseVisualStyleBackColor = True
         '
         'FormSettings
         '
@@ -1340,4 +1358,5 @@ Partial Class FormSettings
     Friend WithEvents Panel17 As Panel
     Friend WithEvents Panel2 As Panel
     Friend WithEvents GroupBox1 As GroupBox
+    Friend WithEvents CheckBox_ConfigIsDefault As CheckBox
 End Class

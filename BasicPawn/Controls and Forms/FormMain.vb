@@ -265,6 +265,16 @@ Public Class FormMain
         'Load Settings 
         ClassSettings.LoadSettings()
 
+        'Load default configs
+        For Each mConfig As ClassConfigs.STRUC_CONFIG_ITEM In ClassConfigs.GetConfigs(False)
+            If (mConfig.g_bAutoload) Then
+                ClassConfigs.m_ActiveConfig = mConfig
+                UpdateFormConfigText()
+                Exit For
+            End If
+        Next
+
+        'Clean tabs
         g_ClassTabControl.Init()
 
         'Load source files via Arguments
