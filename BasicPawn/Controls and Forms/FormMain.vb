@@ -206,7 +206,7 @@ Public Class FormMain
     End Sub
 
     Public Sub UpdateFormConfigText()
-        ToolStripStatusLabel_CurrentConfig.Text = "Config: " & If(String.IsNullOrEmpty(ClassSettings.g_sConfigName), "Default", ClassSettings.g_sConfigName)
+        ToolStripStatusLabel_CurrentConfig.Text = "Config: " & ClassConfigs.m_ActiveConfig.GetName
     End Sub
 
     Public Sub PrintInformation(sType As String, sMessage As String, Optional bClear As Boolean = False, Optional bShowInformationTab As Boolean = False, Optional iLatestNoDuplicateLines As Integer = 0)
@@ -631,7 +631,7 @@ Public Class FormMain
 #Region "MenuStrip_Shell"
     Private Sub ToolStripMenuItem_Shell_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Shell.Click
         Try
-            Dim sShell As String = ClassSettings.g_sConfigExecuteShell
+            Dim sShell As String = ClassConfigs.m_ActiveConfig.g_sExecuteShell
 
             For Each shellModule In ClassSettings.GetShellArguments(Me)
                 sShell = sShell.Replace(shellModule.g_sMarker, shellModule.g_sArgument)

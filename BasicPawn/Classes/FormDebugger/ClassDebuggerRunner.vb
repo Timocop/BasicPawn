@@ -89,8 +89,8 @@ Public Class ClassDebuggerRunner
 
     Public Sub New(f As FormDebugger)
         g_mFormDebugger = f
-        g_sGameFolder = ClassSettings.g_sConfigDebugGameFolder
-        g_sSourceModFolder = ClassSettings.g_sConfigDebugSourceModFolder
+        g_sGameFolder = ClassConfigs.m_ActiveConfig.g_sDebugGameFolder
+        g_sSourceModFolder = ClassConfigs.m_ActiveConfig.g_sDebugSourceModFolder
         g_sCurrentSourceFile = g_mFormDebugger.g_mFormMain.g_ClassTabControl.ActiveTab.File
 
         g_mFormDebugger.Text &= String.Format(" ({0})", IO.Path.GetFileName(g_sCurrentSourceFile))

@@ -255,7 +255,7 @@ Public Class ClassTextEditorTools
             End If
 
             'Check compiler
-            If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
+            If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                 While True
                     'SourcePawn
                     sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.ActiveTab.File), "spcomp.exe")
@@ -285,7 +285,7 @@ Public Class ClassTextEditorTools
                     Return
                 End While
             Else
-                sCompilerPath = ClassSettings.g_sConfigCompilerPath
+                sCompilerPath = ClassConfigs.m_ActiveConfig.g_sCompilerPath
                 If (Not IO.File.Exists(sCompilerPath)) Then
                     g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Compiler can not be found!")
                     Return
@@ -293,7 +293,7 @@ Public Class ClassTextEditorTools
             End If
 
             'Check include path
-            If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
+            If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                 sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.ActiveTab.File), "include")
 
                 If (Not IO.Directory.Exists(sIncludePaths)) Then
@@ -301,7 +301,7 @@ Public Class ClassTextEditorTools
                     Return
                 End If
             Else
-                sIncludePaths = ClassSettings.g_sConfigOpenIncludeFolders
+                sIncludePaths = ClassConfigs.m_ActiveConfig.g_sIncludeFolders
                 For Each sInclude As String In sIncludePaths.Split(";"c)
                     If (Not IO.Directory.Exists(sInclude)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!")
@@ -314,14 +314,14 @@ Public Class ClassTextEditorTools
             If (bTesting) Then
                 sOutputFile = String.Format("{0}.unk", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
             Else
-                If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
+                If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                     sOutputFile = String.Format("{0}\compiled\{1}.unk", IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.ActiveTab.File).TrimEnd("\"c), IO.Path.GetFileNameWithoutExtension(g_mFormMain.g_ClassTabControl.ActiveTab.File))
                 Else
-                    If (Not IO.Directory.Exists(ClassSettings.g_sConfigPluginOutputFolder)) Then
+                    If (Not IO.Directory.Exists(ClassConfigs.m_ActiveConfig.g_sOutputFolder)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Invalid output directory!")
                         Return
                     End If
-                    sOutputFile = String.Format("{0}\{1}.unk", ClassSettings.g_sConfigPluginOutputFolder.TrimEnd("\"c), IO.Path.GetFileNameWithoutExtension(g_mFormMain.g_ClassTabControl.ActiveTab.File))
+                    sOutputFile = String.Format("{0}\{1}.unk", ClassConfigs.m_ActiveConfig.g_sOutputFolder.TrimEnd("\"c), IO.Path.GetFileNameWithoutExtension(g_mFormMain.g_ClassTabControl.ActiveTab.File))
                 End If
             End If
 
@@ -436,7 +436,7 @@ Public Class ClassTextEditorTools
 
             'Check compiler
             If (sCompilerPath Is Nothing) Then
-                If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
+                If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                     If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.ActiveTab.File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.ActiveTab.File)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Could not get current source file!")
                         Return False
@@ -471,7 +471,7 @@ Public Class ClassTextEditorTools
                         Return False
                     End While
                 Else
-                    sCompilerPath = ClassSettings.g_sConfigCompilerPath
+                    sCompilerPath = ClassConfigs.m_ActiveConfig.g_sCompilerPath
                     If (Not IO.File.Exists(sCompilerPath)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Compiler can not be found!")
                         Return False
@@ -486,7 +486,7 @@ Public Class ClassTextEditorTools
 
             'Check include path
             If (sIncludePaths Is Nothing) Then
-                If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
+                If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                     If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.ActiveTab.File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.ActiveTab.File)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Could not get current source file!")
                         Return False
@@ -498,7 +498,7 @@ Public Class ClassTextEditorTools
                         Return False
                     End If
                 Else
-                    sIncludePaths = ClassSettings.g_sConfigOpenIncludeFolders
+                    sIncludePaths = ClassConfigs.m_ActiveConfig.g_sIncludeFolders
                     For Each sInclude As String In sIncludePaths.Split(";"c)
                         If (Not IO.Directory.Exists(sInclude)) Then
                             g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!")
@@ -649,7 +649,7 @@ Public Class ClassTextEditorTools
             End If
 
             'Check compiler
-            If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
+            If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                 While True
                     'SourcePawn
                     sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.ActiveTab.File), "spcomp.exe")
@@ -679,7 +679,7 @@ Public Class ClassTextEditorTools
                     Return Nothing
                 End While
             Else
-                sCompilerPath = ClassSettings.g_sConfigCompilerPath
+                sCompilerPath = ClassConfigs.m_ActiveConfig.g_sCompilerPath
                 If (Not IO.File.Exists(sCompilerPath)) Then
                     g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Compiler can not be found!")
                     Return Nothing
@@ -687,14 +687,14 @@ Public Class ClassTextEditorTools
             End If
 
             'Check include path
-            If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
+            If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                 sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.ActiveTab.File), "include")
                 If (Not IO.Directory.Exists(sIncludePaths)) Then
                     g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!")
                     Return Nothing
                 End If
             Else
-                sIncludePaths = ClassSettings.g_sConfigOpenIncludeFolders
+                sIncludePaths = ClassConfigs.m_ActiveConfig.g_sIncludeFolders
                 For Each sInclude As String In sIncludePaths.Split(";"c)
                     If (Not IO.Directory.Exists(sInclude)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!")
@@ -839,7 +839,7 @@ Public Class ClassTextEditorTools
             End If
 
             'Check compiler
-            If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
+            If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                 While True
                     'SourcePawn
                     sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.ActiveTab.File), "spcomp.exe")
@@ -869,7 +869,7 @@ Public Class ClassTextEditorTools
                     Return Nothing
                 End While
             Else
-                sCompilerPath = ClassSettings.g_sConfigCompilerPath
+                sCompilerPath = ClassConfigs.m_ActiveConfig.g_sCompilerPath
                 If (Not IO.File.Exists(sCompilerPath)) Then
                     g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Compiler can not be found!")
                     Return Nothing
@@ -877,7 +877,7 @@ Public Class ClassTextEditorTools
             End If
 
             'Check include path
-            If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
+            If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                 sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.ActiveTab.File), "include")
 
                 If (Not IO.Directory.Exists(sIncludePaths)) Then
@@ -885,7 +885,7 @@ Public Class ClassTextEditorTools
                     Return Nothing
                 End If
             Else
-                sIncludePaths = ClassSettings.g_sConfigOpenIncludeFolders
+                sIncludePaths = ClassConfigs.m_ActiveConfig.g_sIncludeFolders
                 For Each sInclude As String In sIncludePaths.Split(";"c)
                     If (Not IO.Directory.Exists(sInclude)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Include path can not be found!")
@@ -965,7 +965,7 @@ Public Class ClassTextEditorTools
 
             'Check compiler
             If (sCompilerPath Is Nothing) Then
-                If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
+                If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                     If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.ActiveTab.File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.ActiveTab.File)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get current source file!")
                         Return Nothing
@@ -1000,7 +1000,7 @@ Public Class ClassTextEditorTools
                         Return Nothing
                     End While
                 Else
-                    sCompilerPath = ClassSettings.g_sConfigCompilerPath
+                    sCompilerPath = ClassConfigs.m_ActiveConfig.g_sCompilerPath
                     If (Not IO.File.Exists(sCompilerPath)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Compiler can not be found!")
                         Return Nothing
@@ -1015,7 +1015,7 @@ Public Class ClassTextEditorTools
 
             'Check include path
             If (sIncludePaths Is Nothing) Then
-                If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
+                If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                     If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.ActiveTab.File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.ActiveTab.File)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get current source file!")
                         Return Nothing
@@ -1027,7 +1027,7 @@ Public Class ClassTextEditorTools
                         Return Nothing
                     End If
                 Else
-                    sIncludePaths = ClassSettings.g_sConfigOpenIncludeFolders
+                    sIncludePaths = ClassConfigs.m_ActiveConfig.g_sIncludeFolders
                     For Each sInclude As String In sIncludePaths.Split(";"c)
                         If (Not IO.Directory.Exists(sInclude)) Then
                             g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Include path can not be found!")

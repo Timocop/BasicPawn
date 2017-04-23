@@ -18,8 +18,9 @@
 
 Public Class FormSettings
     Private g_mFormMain As FormMain
-    Private g_sConfigFolder As String = IO.Path.Combine(Application.StartupPath, "configs")
-    Private g_sConfigFileExt As String = ".ini"
+
+    Private g_lRestoreConfigs As New List(Of ClassConfigs.STRUC_CONFIG_ITEM)
+    Private g_bRestoreConfigs As Boolean = False
 
     Public Sub New(f As FormMain)
 
@@ -36,122 +37,106 @@ Public Class FormSettings
     End Sub
 
     Private Sub Button_ConfigAdd_Click(sender As Object, e As EventArgs) Handles Button_ConfigAdd.Click
-        Dim sCurrentConfigName As String = TextBox_ConfigName.Text
+        Dim sNewName As String = TextBox_ConfigName.Text
 
-        If (String.IsNullOrEmpty(sCurrentConfigName) OrElse sCurrentConfigName.IndexOfAny(IO.Path.GetInvalidFileNameChars) > -1 OrElse sCurrentConfigName.IndexOfAny(IO.Path.GetInvalidPathChars) > -1) Then
-            MessageBox.Show("Invalid config name!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+        If (String.IsNullOrEmpty(sNewName) OrElse sNewName = ClassConfigs.m_DefaultConfig.GetName OrElse sNewName.IndexOfAny(IO.Path.GetInvalidFileNameChars) > -1 OrElse sNewName.IndexOfAny(IO.Path.GetInvalidPathChars) > -1) Then
+            MessageBox.Show("Invalid config name!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Return
         End If
 
-        Dim sConfigFile As String = IO.Path.Combine(g_sConfigFolder, sCurrentConfigName & g_sConfigFileExt)
-
-        If (ListBox_Configs.Items.Contains(sCurrentConfigName) OrElse IO.File.Exists(sConfigFile)) Then
+        If (ClassConfigs.LoadConfig(sNewName) IsNot Nothing) Then
             MessageBox.Show("This config name is already used!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
             Return
         End If
 
-        ListBox_Configs.Items.Add(sCurrentConfigName)
-        IO.File.WriteAllText(sConfigFile, "")
+        ListBox_Configs.Items.Remove(sNewName)
+        ListBox_Configs.Items.Add(sNewName)
+        ClassConfigs.SaveConfig(New ClassConfigs.STRUC_CONFIG_ITEM(sNewName))
 
         g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnConfigChanged())
     End Sub
 
     Private Sub Button_ConfigRemove_Click(sender As Object, e As EventArgs) Handles Button_ConfigRemove.Click
-        Dim sCurrentConfigName As String = TextBox_ConfigName.Text
+        Try
+            Dim sName As String = TextBox_ConfigName.Text
 
-        If (sCurrentConfigName = "Default") Then
-            Return
-        End If
+            If (ClassConfigs.RemoveConfig(sName)) Then
+                ListBox_Configs.Items.Remove(sName)
 
-        If (String.IsNullOrEmpty(sCurrentConfigName)) Then
-            MessageBox.Show("Invalid config name!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-            Return
-        End If
-
-        Dim sConfigFile As String = IO.Path.Combine(g_sConfigFolder, sCurrentConfigName & g_sConfigFileExt)
-
-        ListBox_Configs.Items.Remove(sCurrentConfigName)
-        IO.File.Delete(sConfigFile)
-
-        g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnConfigChanged())
+                g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnConfigChanged())
+            End If
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
     End Sub
 
     ''' <summary>
     ''' Updates the configs in the ListBox
     ''' </summary>
     Private Sub UpdateList()
+        ListBox_Configs.BeginUpdate()
         ListBox_Configs.Items.Clear()
-        ListBox_Configs.Items.Add("Default")
 
-        If (Not IO.Directory.Exists(g_sConfigFolder)) Then
-            IO.Directory.CreateDirectory(g_sConfigFolder)
-        End If
+        For Each mConfig As ClassConfigs.STRUC_CONFIG_ITEM In ClassConfigs.GetConfigs(True)
+            ListBox_Configs.Items.Add(mConfig.GetName)
+        Next
 
-        If (IO.Directory.Exists(g_sConfigFolder)) Then
-            For Each sFile As String In IO.Directory.GetFiles(g_sConfigFolder)
-                If (IO.Path.GetExtension(sFile) <> g_sConfigFileExt) Then
-                    Continue For
-                End If
-
-                If (IO.Path.GetFileNameWithoutExtension(sFile) = "Default") Then
-                    Continue For
-                End If
-
-                ListBox_Configs.Items.Add(IO.Path.GetFileNameWithoutExtension(sFile))
-            Next
-        End If
+        ListBox_Configs.EndUpdate()
     End Sub
 
     Private Sub ListBox_Configs_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListBox_Configs.SelectedIndexChanged
-        If (ListBox_Configs.SelectedItems.Count < 1) Then
-            GroupBox_ConfigSettings.Enabled = False
-            Return
-        End If
+        Try
+            If (ListBox_Configs.SelectedItems.Count < 1) Then
+                GroupBox_ConfigSettings.Enabled = False
+                Return
+            End If
 
-        Dim sCurrentConfigName As String = ListBox_Configs.SelectedItems(0).ToString
+            Dim sName As String = ListBox_Configs.SelectedItems(0).ToString
 
-        If (sCurrentConfigName = "Default") Then
-            GroupBox_ConfigSettings.Enabled = False
+            If (sName = ClassConfigs.m_DefaultConfig.GetName) Then
+                Button_SaveConfig.Enabled = False
+                GroupBox_ConfigSettings.Enabled = False
+                GroupBox_ConfigSettings.Visible = False
 
-            TextBox_ConfigName.Text = sCurrentConfigName
+                TextBox_ConfigName.Text = sName
+                RadioButton_ConfigSettingAutomatic.Checked = True
+                TextBox_CompilerPath.Text = ""
+                TextBox_IncludeFolder.Text = ""
+                TextBox_OutputFolder.Text = ""
+                TextBox_Shell.Text = ""
+
+                Return
+            End If
+
+            Button_SaveConfig.Enabled = True
+            GroupBox_ConfigSettings.Enabled = True
+            GroupBox_ConfigSettings.Visible = True
+
+            TextBox_ConfigName.Text = sName
             RadioButton_ConfigSettingAutomatic.Checked = True
             TextBox_CompilerPath.Text = ""
             TextBox_IncludeFolder.Text = ""
             TextBox_OutputFolder.Text = ""
             TextBox_Shell.Text = ""
 
-            Return
-        End If
+            Dim mConfig As ClassConfigs.STRUC_CONFIG_ITEM = ClassConfigs.LoadConfig(sName)
 
-        GroupBox_ConfigSettings.Enabled = True
+            If (mConfig Is Nothing) Then
+                MessageBox.Show("Current config not found!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                Return
+            End If
 
-        TextBox_ConfigName.Text = sCurrentConfigName
-        RadioButton_ConfigSettingAutomatic.Checked = True
-        TextBox_CompilerPath.Text = ""
-        TextBox_IncludeFolder.Text = ""
-        TextBox_OutputFolder.Text = ""
-        TextBox_Shell.Text = ""
-
-        Dim sConfigFile As String = IO.Path.Combine(g_sConfigFolder, sCurrentConfigName & g_sConfigFileExt)
-
-        If (Not IO.File.Exists(sConfigFile)) Then
-            MessageBox.Show("Current config not found!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-            Return
-        End If
-
-        Try
-            Dim iniFile As New ClassIniFile(sConfigFile)
             RadioButton_ConfigSettingAutomatic.Checked = True
-            RadioButton_ConfigSettingManual.Checked = (iniFile.ReadKeyValue("Config", "Type", "0") <> "0")
-            TextBox_CompilerPath.Text = iniFile.ReadKeyValue("Config", "CompilerPath", "")
-            TextBox_IncludeFolder.Text = iniFile.ReadKeyValue("Config", "IncludeDirectory", "")
-            TextBox_OutputFolder.Text = iniFile.ReadKeyValue("Config", "OutputDirectory", "")
+            RadioButton_ConfigSettingManual.Checked = (mConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.CONFIG)
+            TextBox_CompilerPath.Text = mConfig.g_sCompilerPath
+            TextBox_IncludeFolder.Text = mConfig.g_sIncludeFolders
+            TextBox_OutputFolder.Text = mConfig.g_sOutputFolder
             'Debugging
-            TextBox_GameFolder.Text = iniFile.ReadKeyValue("Config", "DebugGameDirectory", "")
-            TextBox_SourceModFolder.Text = iniFile.ReadKeyValue("Config", "DebugSourceModDirectory", "")
+            TextBox_GameFolder.Text = mConfig.g_sDebugGameFolder
+            TextBox_SourceModFolder.Text = mConfig.g_sDebugSourceModFolder
             'Misc
-            TextBox_Shell.Text = iniFile.ReadKeyValue("Config", "ExecuteShell", "")
-            TextBox_SyntaxPath.Text = iniFile.ReadKeyValue("Config", "SyntaxPath", "")
+            TextBox_Shell.Text = mConfig.g_sExecuteShell
+            TextBox_SyntaxPath.Text = mConfig.g_sSyntaxHighlightingPath
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
@@ -241,27 +226,24 @@ Public Class FormSettings
                 Return
             End If
 
-            Dim sCurrentConfigName As String = ListBox_Configs.SelectedItems(0).ToString
+            Dim sName As String = ListBox_Configs.SelectedItems(0).ToString
 
-            If (String.IsNullOrEmpty(sCurrentConfigName) OrElse sCurrentConfigName = "Default") Then
+            Dim mConfig As ClassConfigs.STRUC_CONFIG_ITEM = ClassConfigs.LoadConfig(sName)
+            If (mConfig Is Nothing) Then
+                MessageBox.Show("Current config not found or default config!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                 Return
             End If
 
-            Dim sConfigFile As String = IO.Path.Combine(g_sConfigFolder, sCurrentConfigName & g_sConfigFileExt)
-
-            Dim iniFile As New ClassIniFile(sConfigFile)
-            iniFile.WriteKeyValue("Config", "Type", If(RadioButton_ConfigSettingManual.Checked, "1", "0"))
-            iniFile.WriteKeyValue("Config", "CompilerPath", TextBox_CompilerPath.Text)
-            iniFile.WriteKeyValue("Config", "IncludeDirectory", TextBox_IncludeFolder.Text)
-            iniFile.WriteKeyValue("Config", "OutputDirectory", TextBox_OutputFolder.Text)
-            'Debugging
-            iniFile.WriteKeyValue("Config", "DebugGameDirectory", TextBox_GameFolder.Text)
-            iniFile.WriteKeyValue("Config", "DebugSourceModDirectory", TextBox_SourceModFolder.Text)
-            'Misc
-            iniFile.WriteKeyValue("Config", "ExecuteShell", TextBox_Shell.Text)
-            iniFile.WriteKeyValue("Config", "SyntaxPath", TextBox_SyntaxPath.Text)
-
-            MessageBox.Show("Config saved!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            ClassConfigs.SaveConfig(New ClassConfigs.STRUC_CONFIG_ITEM(sName,
+                                                                        If(RadioButton_ConfigSettingManual.Checked, ClassSettings.ENUM_COMPILING_TYPE.CONFIG, ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC),
+                                                                        TextBox_CompilerPath.Text,
+                                                                        TextBox_IncludeFolder.Text,
+                                                                        TextBox_OutputFolder.Text,
+                                                                        False,
+                                                                        TextBox_GameFolder.Text,
+                                                                        TextBox_SourceModFolder.Text,
+                                                                        TextBox_Shell.Text,
+                                                                        TextBox_SyntaxPath.Text))
 
             g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnConfigChanged())
         Catch ex As Exception
@@ -319,26 +301,22 @@ Public Class FormSettings
         CheckBox_EntitiesEnableColor.Checked = ClassSettings.g_iSettingsDebuggerEntitiesEnableAutoScroll
         CheckBox_EntitiesEnableShowNewEnts.Checked = ClassSettings.g_iSettingsDebuggerEntitiesEnableAutoScroll
 
+        'Get restore-point configs 
+        For Each mConfig As ClassConfigs.STRUC_CONFIG_ITEM In ClassConfigs.GetConfigs(False)
+            g_lRestoreConfigs.Add(mConfig)
+        Next
+        g_bRestoreConfigs = True
 
-        'Get current config
-        Dim sCurrentConfigName As String = ClassSettings.g_sConfigName
+        'Get current config 
+        TextBox_ConfigName.Text = ClassConfigs.m_ActiveConfig.GetName
 
-        If (String.IsNullOrEmpty(sCurrentConfigName)) Then
-            Dim i As Integer = ListBox_Configs.FindStringExact("Default")
-            If (i > -1) Then
-                ListBox_Configs.SetSelected(i, True)
-            End If
-        Else
-            If (Not IO.File.Exists(IO.Path.Combine(g_sConfigFolder, sCurrentConfigName & g_sConfigFileExt))) Then
-                MessageBox.Show("Current config not found!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-            Else
-                TextBox_ConfigName.Text = sCurrentConfigName
+        Dim i As Integer = ListBox_Configs.FindStringExact(ClassConfigs.m_ActiveConfig.GetName)
+        If (i > -1) Then
+            ListBox_Configs.SetSelected(i, True)
+        End If
 
-                Dim i As Integer = ListBox_Configs.FindStringExact(sCurrentConfigName)
-                If (i > -1) Then
-                    ListBox_Configs.SetSelected(i, True)
-                End If
-            End If
+        If (Not ClassConfigs.m_ActiveConfig.ConfigExist AndAlso Not ClassConfigs.m_ActiveConfig.IsDefault) Then
+            MessageBox.Show("Current config not found!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
         End If
 
 
@@ -362,25 +340,12 @@ Public Class FormSettings
     End Sub
 
     Private Sub Button_Apply_Click(sender As Object, e As EventArgs) Handles Button_Apply.Click
-        If (ListBox_Configs.SelectedItems.Count > 0) Then
-            Dim sCurrentConfigName As String = ListBox_Configs.SelectedItems(0).ToString
+        g_bRestoreConfigs = False
 
-            If (String.IsNullOrEmpty(sCurrentConfigName) OrElse sCurrentConfigName = "Default") Then
-                ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC
-                ClassSettings.g_sConfigName = ""
-            Else
-                ClassSettings.g_iConfigCompilingType = If(RadioButton_ConfigSettingAutomatic.Checked, ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC, ClassSettings.ENUM_COMPILING_TYPE.CONFIG)
-                ClassSettings.g_sConfigName = sCurrentConfigName
-                ClassSettings.g_sConfigCompilerPath = TextBox_CompilerPath.Text
-                ClassSettings.g_sConfigOpenIncludeFolders = TextBox_IncludeFolder.Text
-                ClassSettings.g_sConfigPluginOutputFolder = TextBox_OutputFolder.Text
-                ClassSettings.g_sConfigExecuteShell = TextBox_Shell.Text
-                'Debugging
-                ClassSettings.g_sConfigDebugGameFolder = TextBox_GameFolder.Text
-                ClassSettings.g_sConfigDebugSourceModFolder = TextBox_SourceModFolder.Text
-                'Misc
-                ClassSettings.g_sConfigSyntaxHighlightingPath = TextBox_SyntaxPath.Text
-            End If
+        If (ListBox_Configs.SelectedItems.Count > 0) Then
+            Dim sName As String = ListBox_Configs.SelectedItems(0).ToString
+
+            ClassConfigs.m_ActiveConfig = ClassConfigs.LoadConfig(sName)
         End If
 
         'General
@@ -408,9 +373,8 @@ Public Class FormSettings
         ClassSettings.g_iSettingsDebuggerEntitiesEnableColoring = CheckBox_EntitiesEnableColor.Checked
         ClassSettings.g_iSettingsDebuggerEntitiesEnableAutoScroll = CheckBox_EntitiesEnableShowNewEnts.Checked
 
-
-
         ClassSettings.SaveSettings()
+
 
         g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnSettingsChanged())
 
@@ -427,33 +391,27 @@ Public Class FormSettings
             Return
         End If
 
-        Dim sCurrentConfigName As String = ListBox_Configs.SelectedItems(0).ToString
+        Dim sName As String = ListBox_Configs.SelectedItems(0).ToString
 
-        If (String.IsNullOrEmpty(sCurrentConfigName) OrElse sCurrentConfigName = "Default") Then
+        Dim mConfig As ClassConfigs.STRUC_CONFIG_ITEM = ClassConfigs.LoadConfig(sName)
+        If (mConfig Is Nothing) Then
+            MessageBox.Show("Current config not found or default config!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
             Return
         End If
 
-        Dim sConfigFile As String = IO.Path.Combine(g_sConfigFolder, sCurrentConfigName & g_sConfigFileExt)
+        mConfig.SetName(String.Format("{0} {1}", mConfig.GetName, Guid.NewGuid.ToString))
 
-        Dim iCounter As Integer = 1
-        While True
-            Dim sFileName As String = String.Format("{0}({1})", sCurrentConfigName, iCounter)
-            Dim sNewFileConfig As String = IO.Path.Combine(g_sConfigFolder, sFileName & g_sConfigFileExt)
+        If (Not mConfig.SaveConfig) Then
+            MessageBox.Show("Failed to save copy!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Return
+        End If
 
-            If (IO.File.Exists(sNewFileConfig)) Then
-                iCounter += 1
-                Continue While
-            End If
+        ListBox_Configs.Items.Add(mConfig.GetName)
 
-            IO.File.Copy(sConfigFile, sNewFileConfig)
-            ListBox_Configs.Items.Add(sFileName)
-
-            Dim i As Integer = ListBox_Configs.FindStringExact(sFileName)
-            If (i > -1) Then
-                ListBox_Configs.SetSelected(i, True)
-            End If
-            Exit While
-        End While
+        Dim i As Integer = ListBox_Configs.FindStringExact(mConfig.GetName)
+        If (i > -1) Then
+            ListBox_Configs.SetSelected(i, True)
+        End If
 
         g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnConfigChanged())
     End Sub
@@ -463,33 +421,37 @@ Public Class FormSettings
             Return
         End If
 
-        Dim sCurrentConfigName As String = ListBox_Configs.SelectedItems(0).ToString
+        Dim sName As String = ListBox_Configs.SelectedItems(0).ToString
+        Dim sNewName As String = TextBox_ConfigName.Text
 
-        If (String.IsNullOrEmpty(sCurrentConfigName) OrElse sCurrentConfigName = "Default") Then
-            Return
-        End If
-
-        Dim sNewConfigName As String = TextBox_ConfigName.Text
-
-        If (String.IsNullOrEmpty(sNewConfigName) OrElse sNewConfigName = "Default" OrElse sNewConfigName.IndexOfAny(IO.Path.GetInvalidFileNameChars) > -1 OrElse sNewConfigName.IndexOfAny(IO.Path.GetInvalidPathChars) > -1) Then
+        If (String.IsNullOrEmpty(sNewName) OrElse ClassConfigs.m_DefaultConfig.GetName = sNewName OrElse sNewName.IndexOfAny(IO.Path.GetInvalidFileNameChars) > -1 OrElse sNewName.IndexOfAny(IO.Path.GetInvalidPathChars) > -1) Then
             MessageBox.Show("Invalid config name!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
             Return
         End If
 
-        Dim sConfigFile As String = IO.Path.Combine(g_sConfigFolder, sCurrentConfigName & g_sConfigFileExt)
-        Dim sNewConfigFile As String = IO.Path.Combine(g_sConfigFolder, sNewConfigName & g_sConfigFileExt)
-
-        If (ListBox_Configs.Items.Contains(sNewConfigName) OrElse IO.File.Exists(sNewConfigFile)) Then
-            MessageBox.Show("This config name is already used!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+        Dim mConfig As ClassConfigs.STRUC_CONFIG_ITEM = ClassConfigs.LoadConfig(sName)
+        If (mConfig Is Nothing) Then
+            MessageBox.Show("Current config not found or default config!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Return
         End If
 
-        ListBox_Configs.Items.Remove(sCurrentConfigName)
+        Dim mNewConfig As ClassConfigs.STRUC_CONFIG_ITEM = ClassConfigs.LoadConfig(sNewName)
+        If (mNewConfig IsNot Nothing) Then
+            Select Case (MessageBox.Show("This config name is already used! Overwrite config?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning))
+                Case DialogResult.No
+                    Return
+            End Select
+        End If
 
-        ListBox_Configs.Items.Add(sNewConfigName)
-        IO.File.Move(sConfigFile, sNewConfigFile)
+        mConfig.RemoveConfig()
+        mConfig.SetName(sNewName)
+        mConfig.SaveConfig()
 
-        Dim i As Integer = ListBox_Configs.FindStringExact(sNewConfigName)
+        ListBox_Configs.Items.Remove(sName)
+        ListBox_Configs.Items.Remove(sNewName)
+        ListBox_Configs.Items.Add(sNewName)
+
+        Dim i As Integer = ListBox_Configs.FindStringExact(sNewName)
         If (i > -1) Then
             ListBox_Configs.SetSelected(i, True)
         End If
@@ -536,5 +498,19 @@ Public Class FormSettings
 
     Private Sub LinkLabel_SyntaxDefault_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_SyntaxDefault.LinkClicked
         TextBox_SyntaxPath.Text = ""
+    End Sub
+
+    Private Sub FormSettings_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+        If (Not g_bRestoreConfigs) Then
+            Return
+        End If
+
+        For Each mConfig As ClassConfigs.STRUC_CONFIG_ITEM In ClassConfigs.GetConfigs(False)
+            mConfig.RemoveConfig()
+        Next
+
+        For Each mConfig As ClassConfigs.STRUC_CONFIG_ITEM In g_lRestoreConfigs
+            mConfig.SaveConfig()
+        Next
     End Sub
 End Class

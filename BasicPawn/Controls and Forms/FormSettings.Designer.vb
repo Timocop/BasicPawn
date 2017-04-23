@@ -32,6 +32,7 @@ Partial Class FormSettings
         Me.CheckBox_EntitiesEnableColor = New System.Windows.Forms.CheckBox()
         Me.CheckBox_EntitiesEnableShowNewEnts = New System.Windows.Forms.CheckBox()
         Me.Panel5 = New System.Windows.Forms.Panel()
+        Me.CheckBox_SwitchTabToAutocomplete = New System.Windows.Forms.CheckBox()
         Me.CheckBox_AlwaysLoadDefaultIncludes = New System.Windows.Forms.CheckBox()
         Me.Panel15 = New System.Windows.Forms.Panel()
         Me.CheckBox_VarAutocompleteShowObjectBrowser = New System.Windows.Forms.CheckBox()
@@ -59,8 +60,17 @@ Partial Class FormSettings
         Me.Label16 = New System.Windows.Forms.Label()
         Me.CheckBox_AlwaysNewInstance = New System.Windows.Forms.CheckBox()
         Me.TabPage2 = New System.Windows.Forms.TabPage()
+        Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
+        Me.ListBox_Configs = New System.Windows.Forms.ListBox()
+        Me.TableLayoutPanel2 = New System.Windows.Forms.TableLayoutPanel()
+        Me.Panel17 = New System.Windows.Forms.Panel()
+        Me.Label_ConfigName = New System.Windows.Forms.Label()
         Me.Button_ConfigRename = New System.Windows.Forms.Button()
+        Me.TextBox_ConfigName = New System.Windows.Forms.TextBox()
         Me.Button_ConfigCopy = New System.Windows.Forms.Button()
+        Me.Button_ConfigRemove = New System.Windows.Forms.Button()
+        Me.Button_ConfigAdd = New System.Windows.Forms.Button()
+        Me.Panel2 = New System.Windows.Forms.Panel()
         Me.GroupBox_ConfigSettings = New System.Windows.Forms.GroupBox()
         Me.Panel11 = New System.Windows.Forms.Panel()
         Me.LinkLabel_SyntaxDefault = New System.Windows.Forms.LinkLabel()
@@ -96,12 +106,6 @@ Partial Class FormSettings
         Me.TextBox_OutputFolder = New System.Windows.Forms.TextBox()
         Me.Button_OutputFolder = New System.Windows.Forms.Button()
         Me.Button_SaveConfig = New System.Windows.Forms.Button()
-        Me.Button_ConfigAdd = New System.Windows.Forms.Button()
-        Me.Button_ConfigRemove = New System.Windows.Forms.Button()
-        Me.Panel2 = New System.Windows.Forms.Panel()
-        Me.TextBox_ConfigName = New System.Windows.Forms.TextBox()
-        Me.Label_ConfigName = New System.Windows.Forms.Label()
-        Me.ListBox_Configs = New System.Windows.Forms.ListBox()
         Me.TabPage3 = New System.Windows.Forms.TabPage()
         Me.ListView_Plugins = New System.Windows.Forms.ListView()
         Me.ColumnHeader1 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
@@ -112,7 +116,6 @@ Partial Class FormSettings
         Me.ColumnHeader6 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.Button_Cancel = New System.Windows.Forms.Button()
         Me.Button_Apply = New System.Windows.Forms.Button()
-        Me.CheckBox_SwitchTabToAutocomplete = New System.Windows.Forms.CheckBox()
         Me.TabControl1.SuspendLayout()
         Me.TabPage1.SuspendLayout()
         Me.Panel8.SuspendLayout()
@@ -121,6 +124,10 @@ Partial Class FormSettings
         Me.Panel7.SuspendLayout()
         Me.Panel14.SuspendLayout()
         Me.TabPage2.SuspendLayout()
+        Me.TableLayoutPanel1.SuspendLayout()
+        Me.TableLayoutPanel2.SuspendLayout()
+        Me.Panel17.SuspendLayout()
+        Me.Panel2.SuspendLayout()
         Me.GroupBox_ConfigSettings.SuspendLayout()
         Me.Panel11.SuspendLayout()
         Me.Panel10.SuspendLayout()
@@ -139,7 +146,7 @@ Partial Class FormSettings
         Me.TabControl1.Location = New System.Drawing.Point(12, 12)
         Me.TabControl1.Name = "TabControl1"
         Me.TabControl1.SelectedIndex = 0
-        Me.TabControl1.Size = New System.Drawing.Size(610, 726)
+        Me.TabControl1.Size = New System.Drawing.Size(610, 750)
         Me.TabControl1.TabIndex = 0
         '
         'TabPage1
@@ -152,7 +159,7 @@ Partial Class FormSettings
         Me.TabPage1.Controls.Add(Me.Panel14)
         Me.TabPage1.Location = New System.Drawing.Point(4, 22)
         Me.TabPage1.Name = "TabPage1"
-        Me.TabPage1.Size = New System.Drawing.Size(602, 700)
+        Me.TabPage1.Size = New System.Drawing.Size(602, 692)
         Me.TabPage1.TabIndex = 0
         Me.TabPage1.Text = "Settings"
         Me.TabPage1.UseVisualStyleBackColor = True
@@ -246,6 +253,18 @@ Partial Class FormSettings
         Me.Panel5.Name = "Panel5"
         Me.Panel5.Size = New System.Drawing.Size(602, 284)
         Me.Panel5.TabIndex = 22
+        '
+        'CheckBox_SwitchTabToAutocomplete
+        '
+        Me.CheckBox_SwitchTabToAutocomplete.AutoSize = True
+        Me.CheckBox_SwitchTabToAutocomplete.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_SwitchTabToAutocomplete.Location = New System.Drawing.Point(6, 259)
+        Me.CheckBox_SwitchTabToAutocomplete.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_SwitchTabToAutocomplete.Name = "CheckBox_SwitchTabToAutocomplete"
+        Me.CheckBox_SwitchTabToAutocomplete.Size = New System.Drawing.Size(326, 18)
+        Me.CheckBox_SwitchTabToAutocomplete.TabIndex = 20
+        Me.CheckBox_SwitchTabToAutocomplete.Text = "Automatically switch tab to 'Autocomplete && IntelliSense'"
+        Me.CheckBox_SwitchTabToAutocomplete.UseVisualStyleBackColor = True
         '
         'CheckBox_AlwaysLoadDefaultIncludes
         '
@@ -545,56 +564,157 @@ Partial Class FormSettings
         '
         'TabPage2
         '
-        Me.TabPage2.AutoScroll = True
-        Me.TabPage2.Controls.Add(Me.Button_ConfigRename)
-        Me.TabPage2.Controls.Add(Me.Button_ConfigCopy)
-        Me.TabPage2.Controls.Add(Me.GroupBox_ConfigSettings)
-        Me.TabPage2.Controls.Add(Me.Button_ConfigAdd)
-        Me.TabPage2.Controls.Add(Me.Button_ConfigRemove)
-        Me.TabPage2.Controls.Add(Me.Panel2)
-        Me.TabPage2.Controls.Add(Me.TextBox_ConfigName)
-        Me.TabPage2.Controls.Add(Me.Label_ConfigName)
-        Me.TabPage2.Controls.Add(Me.ListBox_Configs)
+        Me.TabPage2.Controls.Add(Me.TableLayoutPanel1)
         Me.TabPage2.Location = New System.Drawing.Point(4, 22)
         Me.TabPage2.Name = "TabPage2"
-        Me.TabPage2.Size = New System.Drawing.Size(602, 700)
+        Me.TabPage2.Size = New System.Drawing.Size(602, 724)
         Me.TabPage2.TabIndex = 1
         Me.TabPage2.Text = "Configs"
         Me.TabPage2.UseVisualStyleBackColor = True
+        '
+        'TableLayoutPanel1
+        '
+        Me.TableLayoutPanel1.ColumnCount = 2
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150.0!))
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.TableLayoutPanel1.Controls.Add(Me.TableLayoutPanel2, 1, 0)
+        Me.TableLayoutPanel1.Controls.Add(Me.ListBox_Configs, 0, 0)
+        Me.TableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TableLayoutPanel1.Location = New System.Drawing.Point(0, 0)
+        Me.TableLayoutPanel1.Margin = New System.Windows.Forms.Padding(0)
+        Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
+        Me.TableLayoutPanel1.RowCount = 1
+        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(602, 724)
+        Me.TableLayoutPanel1.TabIndex = 10
+        '
+        'ListBox_Configs
+        '
+        Me.ListBox_Configs.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ListBox_Configs.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.ListBox_Configs.FormattingEnabled = True
+        Me.ListBox_Configs.HorizontalScrollbar = True
+        Me.ListBox_Configs.ItemHeight = 21
+        Me.ListBox_Configs.Location = New System.Drawing.Point(3, 3)
+        Me.ListBox_Configs.Name = "ListBox_Configs"
+        Me.ListBox_Configs.Size = New System.Drawing.Size(144, 718)
+        Me.ListBox_Configs.TabIndex = 0
+        '
+        'TableLayoutPanel2
+        '
+        Me.TableLayoutPanel2.ColumnCount = 1
+        Me.TableLayoutPanel2.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.TableLayoutPanel2.Controls.Add(Me.Panel17, 0, 0)
+        Me.TableLayoutPanel2.Controls.Add(Me.Panel2, 0, 1)
+        Me.TableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TableLayoutPanel2.Location = New System.Drawing.Point(150, 0)
+        Me.TableLayoutPanel2.Margin = New System.Windows.Forms.Padding(0)
+        Me.TableLayoutPanel2.Name = "TableLayoutPanel2"
+        Me.TableLayoutPanel2.RowCount = 2
+        Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 108.0!))
+        Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.TableLayoutPanel2.Size = New System.Drawing.Size(452, 724)
+        Me.TableLayoutPanel2.TabIndex = 8
+        '
+        'Panel17
+        '
+        Me.Panel17.Controls.Add(Me.Button_SaveConfig)
+        Me.Panel17.Controls.Add(Me.Label_ConfigName)
+        Me.Panel17.Controls.Add(Me.Button_ConfigRename)
+        Me.Panel17.Controls.Add(Me.TextBox_ConfigName)
+        Me.Panel17.Controls.Add(Me.Button_ConfigCopy)
+        Me.Panel17.Controls.Add(Me.Button_ConfigRemove)
+        Me.Panel17.Controls.Add(Me.Button_ConfigAdd)
+        Me.Panel17.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Panel17.Location = New System.Drawing.Point(0, 0)
+        Me.Panel17.Margin = New System.Windows.Forms.Padding(0)
+        Me.Panel17.Name = "Panel17"
+        Me.Panel17.Size = New System.Drawing.Size(452, 108)
+        Me.Panel17.TabIndex = 0
+        '
+        'Label_ConfigName
+        '
+        Me.Label_ConfigName.AutoSize = True
+        Me.Label_ConfigName.Location = New System.Drawing.Point(3, 0)
+        Me.Label_ConfigName.Name = "Label_ConfigName"
+        Me.Label_ConfigName.Size = New System.Drawing.Size(77, 13)
+        Me.Label_ConfigName.TabIndex = 1
+        Me.Label_ConfigName.Text = "Config Name:"
         '
         'Button_ConfigRename
         '
         Me.Button_ConfigRename.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_ConfigRename.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_ConfigRename.Location = New System.Drawing.Point(234, 50)
+        Me.Button_ConfigRename.Location = New System.Drawing.Point(87, 44)
         Me.Button_ConfigRename.Name = "Button_ConfigRename"
         Me.Button_ConfigRename.Size = New System.Drawing.Size(86, 23)
         Me.Button_ConfigRename.TabIndex = 9
         Me.Button_ConfigRename.Text = "Rename"
         Me.Button_ConfigRename.UseVisualStyleBackColor = True
         '
+        'TextBox_ConfigName
+        '
+        Me.TextBox_ConfigName.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.TextBox_ConfigName.Location = New System.Drawing.Point(3, 16)
+        Me.TextBox_ConfigName.Name = "TextBox_ConfigName"
+        Me.TextBox_ConfigName.Size = New System.Drawing.Size(446, 22)
+        Me.TextBox_ConfigName.TabIndex = 2
+        '
         'Button_ConfigCopy
         '
         Me.Button_ConfigCopy.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_ConfigCopy.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_ConfigCopy.Location = New System.Drawing.Point(326, 50)
+        Me.Button_ConfigCopy.Location = New System.Drawing.Point(179, 44)
         Me.Button_ConfigCopy.Name = "Button_ConfigCopy"
         Me.Button_ConfigCopy.Size = New System.Drawing.Size(86, 23)
         Me.Button_ConfigCopy.TabIndex = 8
         Me.Button_ConfigCopy.Text = "Copy"
         Me.Button_ConfigCopy.UseVisualStyleBackColor = True
         '
+        'Button_ConfigRemove
+        '
+        Me.Button_ConfigRemove.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Button_ConfigRemove.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.Button_ConfigRemove.Location = New System.Drawing.Point(363, 44)
+        Me.Button_ConfigRemove.Name = "Button_ConfigRemove"
+        Me.Button_ConfigRemove.Size = New System.Drawing.Size(86, 23)
+        Me.Button_ConfigRemove.TabIndex = 4
+        Me.Button_ConfigRemove.Text = "Remove"
+        Me.Button_ConfigRemove.UseVisualStyleBackColor = True
+        '
+        'Button_ConfigAdd
+        '
+        Me.Button_ConfigAdd.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Button_ConfigAdd.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.Button_ConfigAdd.Location = New System.Drawing.Point(271, 44)
+        Me.Button_ConfigAdd.Name = "Button_ConfigAdd"
+        Me.Button_ConfigAdd.Size = New System.Drawing.Size(86, 23)
+        Me.Button_ConfigAdd.TabIndex = 5
+        Me.Button_ConfigAdd.Text = "Add"
+        Me.Button_ConfigAdd.UseVisualStyleBackColor = True
+        '
+        'Panel2
+        '
+        Me.Panel2.AutoScroll = True
+        Me.Panel2.Controls.Add(Me.GroupBox_ConfigSettings)
+        Me.Panel2.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Panel2.Location = New System.Drawing.Point(0, 108)
+        Me.Panel2.Margin = New System.Windows.Forms.Padding(0)
+        Me.Panel2.Name = "Panel2"
+        Me.Panel2.Size = New System.Drawing.Size(452, 616)
+        Me.Panel2.TabIndex = 1
+        '
         'GroupBox_ConfigSettings
         '
-        Me.GroupBox_ConfigSettings.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.GroupBox_ConfigSettings.Controls.Add(Me.Panel11)
         Me.GroupBox_ConfigSettings.Controls.Add(Me.Panel10)
         Me.GroupBox_ConfigSettings.Controls.Add(Me.Panel9)
-        Me.GroupBox_ConfigSettings.Controls.Add(Me.Button_SaveConfig)
-        Me.GroupBox_ConfigSettings.Location = New System.Drawing.Point(220, 79)
+        Me.GroupBox_ConfigSettings.Dock = System.Windows.Forms.DockStyle.Top
+        Me.GroupBox_ConfigSettings.Location = New System.Drawing.Point(0, 0)
+        Me.GroupBox_ConfigSettings.Margin = New System.Windows.Forms.Padding(0)
         Me.GroupBox_ConfigSettings.Name = "GroupBox_ConfigSettings"
-        Me.GroupBox_ConfigSettings.Size = New System.Drawing.Size(376, 576)
+        Me.GroupBox_ConfigSettings.Size = New System.Drawing.Size(452, 546)
         Me.GroupBox_ConfigSettings.TabIndex = 7
         Me.GroupBox_ConfigSettings.TabStop = False
         Me.GroupBox_ConfigSettings.Text = "Config Settings"
@@ -613,7 +733,7 @@ Partial Class FormSettings
         Me.Panel11.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel11.Location = New System.Drawing.Point(3, 376)
         Me.Panel11.Name = "Panel11"
-        Me.Panel11.Size = New System.Drawing.Size(370, 160)
+        Me.Panel11.Size = New System.Drawing.Size(446, 160)
         Me.Panel11.TabIndex = 30
         '
         'LinkLabel_SyntaxDefault
@@ -631,7 +751,7 @@ Partial Class FormSettings
         '
         Me.Button_SyntaxPath.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_SyntaxPath.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_SyntaxPath.Location = New System.Drawing.Point(336, 98)
+        Me.Button_SyntaxPath.Location = New System.Drawing.Point(412, 98)
         Me.Button_SyntaxPath.Name = "Button_SyntaxPath"
         Me.Button_SyntaxPath.Size = New System.Drawing.Size(31, 24)
         Me.Button_SyntaxPath.TabIndex = 28
@@ -645,7 +765,7 @@ Partial Class FormSettings
         Me.TextBox_SyntaxPath.BackColor = System.Drawing.Color.White
         Me.TextBox_SyntaxPath.Location = New System.Drawing.Point(3, 101)
         Me.TextBox_SyntaxPath.Name = "TextBox_SyntaxPath"
-        Me.TextBox_SyntaxPath.Size = New System.Drawing.Size(327, 22)
+        Me.TextBox_SyntaxPath.Size = New System.Drawing.Size(403, 22)
         Me.TextBox_SyntaxPath.TabIndex = 30
         '
         'Label15
@@ -663,7 +783,7 @@ Partial Class FormSettings
         Me.Panel13.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel13.Location = New System.Drawing.Point(0, 0)
         Me.Panel13.Name = "Panel13"
-        Me.Panel13.Size = New System.Drawing.Size(370, 1)
+        Me.Panel13.Size = New System.Drawing.Size(446, 1)
         Me.Panel13.TabIndex = 28
         '
         'Label13
@@ -693,7 +813,7 @@ Partial Class FormSettings
         Me.TextBox_Shell.BackColor = System.Drawing.Color.White
         Me.TextBox_Shell.Location = New System.Drawing.Point(3, 41)
         Me.TextBox_Shell.Name = "TextBox_Shell"
-        Me.TextBox_Shell.Size = New System.Drawing.Size(364, 22)
+        Me.TextBox_Shell.Size = New System.Drawing.Size(440, 22)
         Me.TextBox_Shell.TabIndex = 17
         '
         'LinkLabel_ShowShellArguments
@@ -720,7 +840,7 @@ Partial Class FormSettings
         Me.Panel10.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel10.Location = New System.Drawing.Point(3, 249)
         Me.Panel10.Name = "Panel10"
-        Me.Panel10.Size = New System.Drawing.Size(370, 127)
+        Me.Panel10.Size = New System.Drawing.Size(446, 127)
         Me.Panel10.TabIndex = 29
         '
         'Panel12
@@ -729,7 +849,7 @@ Partial Class FormSettings
         Me.Panel12.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel12.Location = New System.Drawing.Point(0, 0)
         Me.Panel12.Name = "Panel12"
-        Me.Panel12.Size = New System.Drawing.Size(370, 1)
+        Me.Panel12.Size = New System.Drawing.Size(446, 1)
         Me.Panel12.TabIndex = 27
         '
         'Label9
@@ -760,14 +880,14 @@ Partial Class FormSettings
         Me.TextBox_GameFolder.Location = New System.Drawing.Point(3, 44)
         Me.TextBox_GameFolder.Name = "TextBox_GameFolder"
         Me.TextBox_GameFolder.ReadOnly = True
-        Me.TextBox_GameFolder.Size = New System.Drawing.Size(327, 22)
+        Me.TextBox_GameFolder.Size = New System.Drawing.Size(403, 22)
         Me.TextBox_GameFolder.TabIndex = 20
         '
         'Button_SourceModFolder
         '
         Me.Button_SourceModFolder.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_SourceModFolder.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_SourceModFolder.Location = New System.Drawing.Point(336, 82)
+        Me.Button_SourceModFolder.Location = New System.Drawing.Point(412, 82)
         Me.Button_SourceModFolder.Name = "Button_SourceModFolder"
         Me.Button_SourceModFolder.Size = New System.Drawing.Size(31, 24)
         Me.Button_SourceModFolder.TabIndex = 26
@@ -778,7 +898,7 @@ Partial Class FormSettings
         '
         Me.Button_GameFolder.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_GameFolder.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_GameFolder.Location = New System.Drawing.Point(336, 41)
+        Me.Button_GameFolder.Location = New System.Drawing.Point(412, 41)
         Me.Button_GameFolder.Name = "Button_GameFolder"
         Me.Button_GameFolder.Size = New System.Drawing.Size(31, 24)
         Me.Button_GameFolder.TabIndex = 21
@@ -793,7 +913,7 @@ Partial Class FormSettings
         Me.TextBox_SourceModFolder.Location = New System.Drawing.Point(3, 85)
         Me.TextBox_SourceModFolder.Name = "TextBox_SourceModFolder"
         Me.TextBox_SourceModFolder.ReadOnly = True
-        Me.TextBox_SourceModFolder.Size = New System.Drawing.Size(327, 22)
+        Me.TextBox_SourceModFolder.Size = New System.Drawing.Size(403, 22)
         Me.TextBox_SourceModFolder.TabIndex = 25
         '
         'Label12
@@ -823,7 +943,7 @@ Partial Class FormSettings
         Me.Panel9.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel9.Location = New System.Drawing.Point(3, 18)
         Me.Panel9.Name = "Panel9"
-        Me.Panel9.Size = New System.Drawing.Size(370, 231)
+        Me.Panel9.Size = New System.Drawing.Size(446, 231)
         Me.Panel9.TabIndex = 28
         '
         'Label11
@@ -867,7 +987,7 @@ Partial Class FormSettings
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Label3.Location = New System.Drawing.Point(3, 46)
         Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(364, 28)
+        Me.Label3.Size = New System.Drawing.Size(440, 28)
         Me.Label3.TabIndex = 2
         Me.Label3.Text = "Automatically detect compiler path and include folder from currently opened sourc" &
     "e file."
@@ -889,7 +1009,7 @@ Partial Class FormSettings
         Me.TextBox_CompilerPath.Location = New System.Drawing.Point(3, 116)
         Me.TextBox_CompilerPath.Name = "TextBox_CompilerPath"
         Me.TextBox_CompilerPath.ReadOnly = True
-        Me.TextBox_CompilerPath.Size = New System.Drawing.Size(327, 22)
+        Me.TextBox_CompilerPath.Size = New System.Drawing.Size(403, 22)
         Me.TextBox_CompilerPath.TabIndex = 8
         '
         'Label5
@@ -909,14 +1029,14 @@ Partial Class FormSettings
         Me.TextBox_IncludeFolder.Location = New System.Drawing.Point(3, 155)
         Me.TextBox_IncludeFolder.Name = "TextBox_IncludeFolder"
         Me.TextBox_IncludeFolder.ReadOnly = True
-        Me.TextBox_IncludeFolder.Size = New System.Drawing.Size(327, 22)
+        Me.TextBox_IncludeFolder.Size = New System.Drawing.Size(403, 22)
         Me.TextBox_IncludeFolder.TabIndex = 10
         '
         'Button_Compiler
         '
         Me.Button_Compiler.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_Compiler.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_Compiler.Location = New System.Drawing.Point(336, 113)
+        Me.Button_Compiler.Location = New System.Drawing.Point(412, 113)
         Me.Button_Compiler.Name = "Button_Compiler"
         Me.Button_Compiler.Size = New System.Drawing.Size(31, 24)
         Me.Button_Compiler.TabIndex = 8
@@ -927,7 +1047,7 @@ Partial Class FormSettings
         '
         Me.Button_IncludeFolder.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_IncludeFolder.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_IncludeFolder.Location = New System.Drawing.Point(336, 152)
+        Me.Button_IncludeFolder.Location = New System.Drawing.Point(412, 152)
         Me.Button_IncludeFolder.Name = "Button_IncludeFolder"
         Me.Button_IncludeFolder.Size = New System.Drawing.Size(31, 24)
         Me.Button_IncludeFolder.TabIndex = 11
@@ -951,14 +1071,14 @@ Partial Class FormSettings
         Me.TextBox_OutputFolder.Location = New System.Drawing.Point(3, 194)
         Me.TextBox_OutputFolder.Name = "TextBox_OutputFolder"
         Me.TextBox_OutputFolder.ReadOnly = True
-        Me.TextBox_OutputFolder.Size = New System.Drawing.Size(327, 22)
+        Me.TextBox_OutputFolder.Size = New System.Drawing.Size(403, 22)
         Me.TextBox_OutputFolder.TabIndex = 14
         '
         'Button_OutputFolder
         '
         Me.Button_OutputFolder.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_OutputFolder.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_OutputFolder.Location = New System.Drawing.Point(336, 191)
+        Me.Button_OutputFolder.Location = New System.Drawing.Point(412, 191)
         Me.Button_OutputFolder.Name = "Button_OutputFolder"
         Me.Button_OutputFolder.Size = New System.Drawing.Size(31, 24)
         Me.Button_OutputFolder.TabIndex = 15
@@ -969,75 +1089,12 @@ Partial Class FormSettings
         '
         Me.Button_SaveConfig.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_SaveConfig.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_SaveConfig.Location = New System.Drawing.Point(284, 547)
+        Me.Button_SaveConfig.Location = New System.Drawing.Point(321, 82)
         Me.Button_SaveConfig.Name = "Button_SaveConfig"
-        Me.Button_SaveConfig.Size = New System.Drawing.Size(86, 23)
+        Me.Button_SaveConfig.Size = New System.Drawing.Size(128, 23)
         Me.Button_SaveConfig.TabIndex = 12
-        Me.Button_SaveConfig.Text = "Save"
+        Me.Button_SaveConfig.Text = "Save Settings"
         Me.Button_SaveConfig.UseVisualStyleBackColor = True
-        '
-        'Button_ConfigAdd
-        '
-        Me.Button_ConfigAdd.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button_ConfigAdd.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_ConfigAdd.Location = New System.Drawing.Point(418, 50)
-        Me.Button_ConfigAdd.Name = "Button_ConfigAdd"
-        Me.Button_ConfigAdd.Size = New System.Drawing.Size(86, 23)
-        Me.Button_ConfigAdd.TabIndex = 5
-        Me.Button_ConfigAdd.Text = "Add"
-        Me.Button_ConfigAdd.UseVisualStyleBackColor = True
-        '
-        'Button_ConfigRemove
-        '
-        Me.Button_ConfigRemove.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button_ConfigRemove.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_ConfigRemove.Location = New System.Drawing.Point(510, 50)
-        Me.Button_ConfigRemove.Name = "Button_ConfigRemove"
-        Me.Button_ConfigRemove.Size = New System.Drawing.Size(86, 23)
-        Me.Button_ConfigRemove.TabIndex = 4
-        Me.Button_ConfigRemove.Text = "Remove"
-        Me.Button_ConfigRemove.UseVisualStyleBackColor = True
-        '
-        'Panel2
-        '
-        Me.Panel2.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.Panel2.BackColor = System.Drawing.SystemColors.ControlDark
-        Me.Panel2.Location = New System.Drawing.Point(213, 6)
-        Me.Panel2.Name = "Panel2"
-        Me.Panel2.Size = New System.Drawing.Size(1, 691)
-        Me.Panel2.TabIndex = 3
-        '
-        'TextBox_ConfigName
-        '
-        Me.TextBox_ConfigName.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TextBox_ConfigName.Location = New System.Drawing.Point(220, 22)
-        Me.TextBox_ConfigName.Name = "TextBox_ConfigName"
-        Me.TextBox_ConfigName.Size = New System.Drawing.Size(376, 22)
-        Me.TextBox_ConfigName.TabIndex = 2
-        '
-        'Label_ConfigName
-        '
-        Me.Label_ConfigName.AutoSize = True
-        Me.Label_ConfigName.Location = New System.Drawing.Point(220, 6)
-        Me.Label_ConfigName.Name = "Label_ConfigName"
-        Me.Label_ConfigName.Size = New System.Drawing.Size(77, 13)
-        Me.Label_ConfigName.TabIndex = 1
-        Me.Label_ConfigName.Text = "Config Name:"
-        '
-        'ListBox_Configs
-        '
-        Me.ListBox_Configs.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.ListBox_Configs.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.ListBox_Configs.FormattingEnabled = True
-        Me.ListBox_Configs.HorizontalScrollbar = True
-        Me.ListBox_Configs.ItemHeight = 21
-        Me.ListBox_Configs.Location = New System.Drawing.Point(6, 6)
-        Me.ListBox_Configs.Name = "ListBox_Configs"
-        Me.ListBox_Configs.Size = New System.Drawing.Size(201, 676)
-        Me.ListBox_Configs.TabIndex = 0
         '
         'TabPage3
         '
@@ -1045,7 +1102,7 @@ Partial Class FormSettings
         Me.TabPage3.Location = New System.Drawing.Point(4, 22)
         Me.TabPage3.Name = "TabPage3"
         Me.TabPage3.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage3.Size = New System.Drawing.Size(602, 700)
+        Me.TabPage3.Size = New System.Drawing.Size(602, 760)
         Me.TabPage3.TabIndex = 2
         Me.TabPage3.Text = "Plugins"
         Me.TabPage3.UseVisualStyleBackColor = True
@@ -1056,7 +1113,7 @@ Partial Class FormSettings
         Me.ListView_Plugins.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ListView_Plugins.Location = New System.Drawing.Point(3, 3)
         Me.ListView_Plugins.Name = "ListView_Plugins"
-        Me.ListView_Plugins.Size = New System.Drawing.Size(596, 694)
+        Me.ListView_Plugins.Size = New System.Drawing.Size(596, 754)
         Me.ListView_Plugins.TabIndex = 0
         Me.ListView_Plugins.UseCompatibleStateImageBehavior = False
         Me.ListView_Plugins.View = System.Windows.Forms.View.Details
@@ -1096,7 +1153,7 @@ Partial Class FormSettings
         Me.Button_Cancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.Button_Cancel.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_Cancel.Location = New System.Drawing.Point(536, 747)
+        Me.Button_Cancel.Location = New System.Drawing.Point(536, 768)
         Me.Button_Cancel.Name = "Button_Cancel"
         Me.Button_Cancel.Size = New System.Drawing.Size(86, 23)
         Me.Button_Cancel.TabIndex = 1
@@ -1108,31 +1165,19 @@ Partial Class FormSettings
         Me.Button_Apply.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_Apply.DialogResult = System.Windows.Forms.DialogResult.OK
         Me.Button_Apply.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_Apply.Location = New System.Drawing.Point(444, 747)
+        Me.Button_Apply.Location = New System.Drawing.Point(444, 768)
         Me.Button_Apply.Name = "Button_Apply"
         Me.Button_Apply.Size = New System.Drawing.Size(86, 23)
         Me.Button_Apply.TabIndex = 2
         Me.Button_Apply.Text = "Apply"
         Me.Button_Apply.UseVisualStyleBackColor = True
         '
-        'CheckBox_SwitchTabToAutocomplete
-        '
-        Me.CheckBox_SwitchTabToAutocomplete.AutoSize = True
-        Me.CheckBox_SwitchTabToAutocomplete.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_SwitchTabToAutocomplete.Location = New System.Drawing.Point(6, 259)
-        Me.CheckBox_SwitchTabToAutocomplete.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_SwitchTabToAutocomplete.Name = "CheckBox_SwitchTabToAutocomplete"
-        Me.CheckBox_SwitchTabToAutocomplete.Size = New System.Drawing.Size(326, 18)
-        Me.CheckBox_SwitchTabToAutocomplete.TabIndex = 20
-        Me.CheckBox_SwitchTabToAutocomplete.Text = "Automatically switch tab to 'Autocomplete && IntelliSense'"
-        Me.CheckBox_SwitchTabToAutocomplete.UseVisualStyleBackColor = True
-        '
         'FormSettings
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.CancelButton = Me.Button_Cancel
-        Me.ClientSize = New System.Drawing.Size(634, 782)
+        Me.ClientSize = New System.Drawing.Size(634, 803)
         Me.Controls.Add(Me.Button_Apply)
         Me.Controls.Add(Me.Button_Cancel)
         Me.Controls.Add(Me.TabControl1)
@@ -1157,7 +1202,11 @@ Partial Class FormSettings
         Me.Panel14.ResumeLayout(False)
         Me.Panel14.PerformLayout()
         Me.TabPage2.ResumeLayout(False)
-        Me.TabPage2.PerformLayout()
+        Me.TableLayoutPanel1.ResumeLayout(False)
+        Me.TableLayoutPanel2.ResumeLayout(False)
+        Me.Panel17.ResumeLayout(False)
+        Me.Panel17.PerformLayout()
+        Me.Panel2.ResumeLayout(False)
         Me.GroupBox_ConfigSettings.ResumeLayout(False)
         Me.Panel11.ResumeLayout(False)
         Me.Panel11.PerformLayout()
@@ -1179,7 +1228,6 @@ Partial Class FormSettings
     Friend WithEvents Button_Apply As Button
     Friend WithEvents Button_ConfigAdd As Button
     Friend WithEvents Button_ConfigRemove As Button
-    Friend WithEvents Panel2 As Panel
     Friend WithEvents TextBox_ConfigName As TextBox
     Friend WithEvents Label_ConfigName As Label
     Friend WithEvents ListBox_Configs As ListBox
@@ -1260,4 +1308,8 @@ Partial Class FormSettings
     Friend WithEvents CheckBox_VarAutocompleteShowObjectBrowser As CheckBox
     Friend WithEvents CheckBox_AlwaysLoadDefaultIncludes As CheckBox
     Friend WithEvents CheckBox_SwitchTabToAutocomplete As CheckBox
+    Friend WithEvents TableLayoutPanel1 As TableLayoutPanel
+    Friend WithEvents TableLayoutPanel2 As TableLayoutPanel
+    Friend WithEvents Panel17 As Panel
+    Friend WithEvents Panel2 As Panel
 End Class

@@ -132,11 +132,11 @@ Public Class ClassSyntaxTools
                 End If
 
                 Dim sModSyntaxXML As String
-                If (Not String.IsNullOrEmpty(ClassSettings.g_sConfigSyntaxHighlightingPath) AndAlso
-                        IO.File.Exists(ClassSettings.g_sConfigSyntaxHighlightingPath) AndAlso
-                        IO.Path.GetExtension(ClassSettings.g_sConfigSyntaxHighlightingPath).ToLower = ".xml") Then
+                If (Not String.IsNullOrEmpty(ClassConfigs.m_ActiveConfig.g_sSyntaxHighlightingPath) AndAlso
+                        IO.File.Exists(ClassConfigs.m_ActiveConfig.g_sSyntaxHighlightingPath) AndAlso
+                        IO.Path.GetExtension(ClassConfigs.m_ActiveConfig.g_sSyntaxHighlightingPath).ToLower = ".xml") Then
 
-                    Dim sFileText As String = IO.File.ReadAllText(ClassSettings.g_sConfigSyntaxHighlightingPath)
+                    Dim sFileText As String = IO.File.ReadAllText(ClassConfigs.m_ActiveConfig.g_sSyntaxHighlightingPath)
                     sModSyntaxXML = sFileText.Replace(sSyntax_SourcePawnMarker, g_SyntaxFiles(i).sDefinition)
                 Else
                     sModSyntaxXML = g_SyntaxXML.Replace(sSyntax_SourcePawnMarker, g_SyntaxFiles(i).sDefinition)
@@ -314,9 +314,9 @@ Public Class ClassSyntaxTools
 
                             'Invert colors of the syntax file. But only for the default syntax file.
                             While (ClassSettings.g_iSettingsInvertColors)
-                                If (Not String.IsNullOrEmpty(ClassSettings.g_sConfigSyntaxHighlightingPath) AndAlso
-                                        IO.File.Exists(ClassSettings.g_sConfigSyntaxHighlightingPath) AndAlso
-                                        IO.Path.GetExtension(ClassSettings.g_sConfigSyntaxHighlightingPath).ToLower = ".xml") Then
+                                If (Not String.IsNullOrEmpty(ClassConfigs.m_ActiveConfig.g_sSyntaxHighlightingPath) AndAlso
+                                        IO.File.Exists(ClassConfigs.m_ActiveConfig.g_sSyntaxHighlightingPath) AndAlso
+                                        IO.Path.GetExtension(ClassConfigs.m_ActiveConfig.g_sSyntaxHighlightingPath).ToLower = ".xml") Then
                                     Exit While
                                 End If
 

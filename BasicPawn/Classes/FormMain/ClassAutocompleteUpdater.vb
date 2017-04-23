@@ -2126,14 +2126,14 @@ Public Class ClassAutocompleteUpdater
 
                 'Check includes
                 Dim sIncludePaths As String
-                If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
+                If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                     If (String.IsNullOrEmpty(sActiveSourceFile) OrElse Not IO.File.Exists(sActiveSourceFile)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "Could not read includes! Could not get current source file!", False, False, 1)
                         Exit While
                     End If
                     sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(sActiveSourceFile), "include")
                 Else
-                    sIncludePaths = ClassSettings.g_sConfigOpenIncludeFolders
+                    sIncludePaths = ClassConfigs.m_ActiveConfig.g_sIncludeFolders
                 End If
 
 #If SEARCH_EVERYWHERE Then
@@ -2263,26 +2263,26 @@ Public Class ClassAutocompleteUpdater
         While True
             'Check includes
             Dim sIncludePaths As String
-            If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
+            If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                 If (String.IsNullOrEmpty(sActiveSourceFile) OrElse Not IO.File.Exists(sActiveSourceFile)) Then
                     g_mFormMain.PrintInformation("[ERRO]", "Could not read includes! Could not get current source file!", False, False, 1)
                     Exit While
                 End If
                 sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(sActiveSourceFile), "include")
             Else
-                sIncludePaths = ClassSettings.g_sConfigOpenIncludeFolders
+                sIncludePaths = ClassConfigs.m_ActiveConfig.g_sIncludeFolders
             End If
 
             'Check compiler
             Dim sCompilerPath As String
-            If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
+            If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                 If (String.IsNullOrEmpty(sActiveSourceFile) OrElse Not IO.File.Exists(sActiveSourceFile)) Then
                     g_mFormMain.PrintInformation("[ERRO]", "Could not read includes! Could not get current source file!", False, False, 1)
                     Exit While
                 End If
                 sCompilerPath = IO.Path.GetDirectoryName(sActiveSourceFile)
-            ElseIf (Not String.IsNullOrEmpty(ClassSettings.g_sConfigCompilerPath) AndAlso IO.File.Exists(ClassSettings.g_sConfigCompilerPath)) Then
-                sCompilerPath = IO.Path.GetDirectoryName(ClassSettings.g_sConfigCompilerPath)
+            ElseIf (Not String.IsNullOrEmpty(ClassConfigs.m_ActiveConfig.g_sCompilerPath) AndAlso IO.File.Exists(ClassConfigs.m_ActiveConfig.g_sCompilerPath)) Then
+                sCompilerPath = IO.Path.GetDirectoryName(ClassConfigs.m_ActiveConfig.g_sCompilerPath)
             Else
                 sCompilerPath = ""
             End If

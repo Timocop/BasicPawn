@@ -185,6 +185,7 @@
     <Import Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\ClassConfigs.vb" />
     <Compile Include="Classes\ClassControlStyle.vb" />
     <Compile Include="Classes\ClassCrossAppComunication.vb" />
     <Compile Include="Classes\ClassTextboxWatermark.vb">
