@@ -676,9 +676,15 @@ Public Class FormMain
         SB.AppendLine("Third-Party tools:")
         SB.AppendLine("     SharpDevelop - TextEditor (LGPL-2.1)")
         SB.AppendLine()
-        SB.AppendLine("     Authors:")
-        SB.AppendLine("     Daniel Grunwald and SharpDevelop Community")
-        SB.AppendLine("     https://github.com/icsharpcode/SharpDevelop")
+        SB.AppendLine("         Authors:")
+        SB.AppendLine("         Daniel Grunwald and SharpDevelop Community")
+        SB.AppendLine("         https://github.com/icsharpcode/SharpDevelop")
+        SB.AppendLine()
+        SB.AppendLine("     SSH.NET (MIT)")
+        SB.AppendLine()
+        SB.AppendLine("         Authors:")
+        SB.AppendLine("         Gert Driesen and Community")
+        SB.AppendLine("         https://github.com/sshnet/SSH.NET")
         MessageBox.Show(SB.ToString, "About", MessageBoxButtons.OK, MessageBoxIcon.Information)
     End Sub
 #End Region

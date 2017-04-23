@@ -166,6 +166,9 @@
     <Reference Include="ICSharpCode.TextEditor">
       <HintPath>..\Third Party Binaries\ICSharpCode.TextEditor.dll</HintPath>
     </Reference>
+    <Reference Include="Renci.SshNet">
+      <HintPath>..\Third Party Binaries\Renci.SshNet.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
