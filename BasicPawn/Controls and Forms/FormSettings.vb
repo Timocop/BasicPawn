@@ -236,8 +236,8 @@ Public Class FormSettings
 
             ClassConfigs.SaveConfig(New ClassConfigs.STRUC_CONFIG_ITEM(sName,
                                                                         If(RadioButton_ConfigSettingManual.Checked, ClassSettings.ENUM_COMPILING_TYPE.CONFIG, ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC),
-                                                                        TextBox_CompilerPath.Text,
                                                                         TextBox_IncludeFolder.Text,
+                                                                        TextBox_CompilerPath.Text,
                                                                         TextBox_OutputFolder.Text,
                                                                         False,
                                                                         TextBox_GameFolder.Text,

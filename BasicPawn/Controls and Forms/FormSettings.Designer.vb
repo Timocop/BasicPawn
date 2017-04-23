@@ -61,9 +61,9 @@ Partial Class FormSettings
         Me.CheckBox_AlwaysNewInstance = New System.Windows.Forms.CheckBox()
         Me.TabPage2 = New System.Windows.Forms.TabPage()
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
-        Me.ListBox_Configs = New System.Windows.Forms.ListBox()
         Me.TableLayoutPanel2 = New System.Windows.Forms.TableLayoutPanel()
         Me.Panel17 = New System.Windows.Forms.Panel()
+        Me.Button_SaveConfig = New System.Windows.Forms.Button()
         Me.Label_ConfigName = New System.Windows.Forms.Label()
         Me.Button_ConfigRename = New System.Windows.Forms.Button()
         Me.TextBox_ConfigName = New System.Windows.Forms.TextBox()
@@ -105,7 +105,7 @@ Partial Class FormSettings
         Me.Label6 = New System.Windows.Forms.Label()
         Me.TextBox_OutputFolder = New System.Windows.Forms.TextBox()
         Me.Button_OutputFolder = New System.Windows.Forms.Button()
-        Me.Button_SaveConfig = New System.Windows.Forms.Button()
+        Me.ListBox_Configs = New System.Windows.Forms.ListBox()
         Me.TabPage3 = New System.Windows.Forms.TabPage()
         Me.ListView_Plugins = New System.Windows.Forms.ListView()
         Me.ColumnHeader1 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
@@ -116,6 +116,7 @@ Partial Class FormSettings
         Me.ColumnHeader6 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.Button_Cancel = New System.Windows.Forms.Button()
         Me.Button_Apply = New System.Windows.Forms.Button()
+        Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.TabControl1.SuspendLayout()
         Me.TabPage1.SuspendLayout()
         Me.Panel8.SuspendLayout()
@@ -133,6 +134,7 @@ Partial Class FormSettings
         Me.Panel10.SuspendLayout()
         Me.Panel9.SuspendLayout()
         Me.TabPage3.SuspendLayout()
+        Me.GroupBox1.SuspendLayout()
         Me.SuspendLayout()
         '
         'TabControl1
@@ -159,22 +161,23 @@ Partial Class FormSettings
         Me.TabPage1.Controls.Add(Me.Panel14)
         Me.TabPage1.Location = New System.Drawing.Point(4, 22)
         Me.TabPage1.Name = "TabPage1"
-        Me.TabPage1.Size = New System.Drawing.Size(602, 692)
+        Me.TabPage1.Size = New System.Drawing.Size(602, 724)
         Me.TabPage1.TabIndex = 0
         Me.TabPage1.Text = "Settings"
         Me.TabPage1.UseVisualStyleBackColor = True
         '
         'Panel8
         '
+        Me.Panel8.AutoSize = True
         Me.Panel8.Controls.Add(Me.Panel4)
         Me.Panel8.Controls.Add(Me.Label14)
         Me.Panel8.Controls.Add(Me.CheckBox_CatchExceptions)
         Me.Panel8.Controls.Add(Me.CheckBox_EntitiesEnableColor)
         Me.Panel8.Controls.Add(Me.CheckBox_EntitiesEnableShowNewEnts)
         Me.Panel8.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel8.Location = New System.Drawing.Point(0, 493)
+        Me.Panel8.Location = New System.Drawing.Point(0, 462)
         Me.Panel8.Name = "Panel8"
-        Me.Panel8.Size = New System.Drawing.Size(602, 101)
+        Me.Panel8.Size = New System.Drawing.Size(602, 91)
         Me.Panel8.TabIndex = 25
         '
         'Panel4
@@ -235,6 +238,7 @@ Partial Class FormSettings
         '
         'Panel5
         '
+        Me.Panel5.AutoSize = True
         Me.Panel5.Controls.Add(Me.CheckBox_SwitchTabToAutocomplete)
         Me.Panel5.Controls.Add(Me.CheckBox_AlwaysLoadDefaultIncludes)
         Me.Panel5.Controls.Add(Me.Panel15)
@@ -249,9 +253,9 @@ Partial Class FormSettings
         Me.Panel5.Controls.Add(Me.CheckBox_WindowsToolTipPopup)
         Me.Panel5.Controls.Add(Me.CheckBox_CaseSensitive)
         Me.Panel5.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel5.Location = New System.Drawing.Point(0, 209)
+        Me.Panel5.Location = New System.Drawing.Point(0, 182)
         Me.Panel5.Name = "Panel5"
-        Me.Panel5.Size = New System.Drawing.Size(602, 284)
+        Me.Panel5.Size = New System.Drawing.Size(602, 280)
         Me.Panel5.TabIndex = 22
         '
         'CheckBox_SwitchTabToAutocomplete
@@ -409,14 +413,15 @@ Partial Class FormSettings
         '
         'Panel6
         '
+        Me.Panel6.AutoSize = True
         Me.Panel6.Controls.Add(Me.Panel1)
         Me.Panel6.Controls.Add(Me.Label7)
         Me.Panel6.Controls.Add(Me.CheckBox_DoubleClickMark)
         Me.Panel6.Controls.Add(Me.CheckBox_AutoMark)
         Me.Panel6.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel6.Location = New System.Drawing.Point(0, 133)
+        Me.Panel6.Location = New System.Drawing.Point(0, 115)
         Me.Panel6.Name = "Panel6"
-        Me.Panel6.Size = New System.Drawing.Size(602, 76)
+        Me.Panel6.Size = New System.Drawing.Size(602, 67)
         Me.Panel6.TabIndex = 23
         '
         'Panel1
@@ -465,15 +470,16 @@ Partial Class FormSettings
         '
         'Panel7
         '
+        Me.Panel7.AutoSize = True
         Me.Panel7.Controls.Add(Me.Panel3)
         Me.Panel7.Controls.Add(Me.Label8)
         Me.Panel7.Controls.Add(Me.Button_Font)
         Me.Panel7.Controls.Add(Me.Label_Font)
         Me.Panel7.Controls.Add(Me.CheckBox_InvertedColors)
         Me.Panel7.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel7.Location = New System.Drawing.Point(0, 52)
+        Me.Panel7.Location = New System.Drawing.Point(0, 43)
         Me.Panel7.Name = "Panel7"
-        Me.Panel7.Size = New System.Drawing.Size(602, 81)
+        Me.Panel7.Size = New System.Drawing.Size(602, 72)
         Me.Panel7.TabIndex = 24
         '
         'Panel3
@@ -531,12 +537,13 @@ Partial Class FormSettings
         '
         'Panel14
         '
+        Me.Panel14.AutoSize = True
         Me.Panel14.Controls.Add(Me.Label16)
         Me.Panel14.Controls.Add(Me.CheckBox_AlwaysNewInstance)
         Me.Panel14.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel14.Location = New System.Drawing.Point(0, 0)
         Me.Panel14.Name = "Panel14"
-        Me.Panel14.Size = New System.Drawing.Size(602, 52)
+        Me.Panel14.Size = New System.Drawing.Size(602, 43)
         Me.Panel14.TabIndex = 26
         '
         'Label16
@@ -588,18 +595,6 @@ Partial Class FormSettings
         Me.TableLayoutPanel1.Size = New System.Drawing.Size(602, 724)
         Me.TableLayoutPanel1.TabIndex = 10
         '
-        'ListBox_Configs
-        '
-        Me.ListBox_Configs.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ListBox_Configs.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.ListBox_Configs.FormattingEnabled = True
-        Me.ListBox_Configs.HorizontalScrollbar = True
-        Me.ListBox_Configs.ItemHeight = 21
-        Me.ListBox_Configs.Location = New System.Drawing.Point(3, 3)
-        Me.ListBox_Configs.Name = "ListBox_Configs"
-        Me.ListBox_Configs.Size = New System.Drawing.Size(144, 718)
-        Me.ListBox_Configs.TabIndex = 0
-        '
         'TableLayoutPanel2
         '
         Me.TableLayoutPanel2.ColumnCount = 1
@@ -631,6 +626,17 @@ Partial Class FormSettings
         Me.Panel17.Name = "Panel17"
         Me.Panel17.Size = New System.Drawing.Size(452, 108)
         Me.Panel17.TabIndex = 0
+        '
+        'Button_SaveConfig
+        '
+        Me.Button_SaveConfig.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Button_SaveConfig.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.Button_SaveConfig.Location = New System.Drawing.Point(321, 82)
+        Me.Button_SaveConfig.Name = "Button_SaveConfig"
+        Me.Button_SaveConfig.Size = New System.Drawing.Size(128, 23)
+        Me.Button_SaveConfig.TabIndex = 12
+        Me.Button_SaveConfig.Text = "Save Settings"
+        Me.Button_SaveConfig.UseVisualStyleBackColor = True
         '
         'Label_ConfigName
         '
@@ -707,6 +713,7 @@ Partial Class FormSettings
         '
         'GroupBox_ConfigSettings
         '
+        Me.GroupBox_ConfigSettings.AutoSize = True
         Me.GroupBox_ConfigSettings.Controls.Add(Me.Panel11)
         Me.GroupBox_ConfigSettings.Controls.Add(Me.Panel10)
         Me.GroupBox_ConfigSettings.Controls.Add(Me.Panel9)
@@ -714,13 +721,14 @@ Partial Class FormSettings
         Me.GroupBox_ConfigSettings.Location = New System.Drawing.Point(0, 0)
         Me.GroupBox_ConfigSettings.Margin = New System.Windows.Forms.Padding(0)
         Me.GroupBox_ConfigSettings.Name = "GroupBox_ConfigSettings"
-        Me.GroupBox_ConfigSettings.Size = New System.Drawing.Size(452, 546)
+        Me.GroupBox_ConfigSettings.Size = New System.Drawing.Size(452, 500)
         Me.GroupBox_ConfigSettings.TabIndex = 7
         Me.GroupBox_ConfigSettings.TabStop = False
         Me.GroupBox_ConfigSettings.Text = "Config Settings"
         '
         'Panel11
         '
+        Me.Panel11.AutoSize = True
         Me.Panel11.Controls.Add(Me.LinkLabel_SyntaxDefault)
         Me.Panel11.Controls.Add(Me.Button_SyntaxPath)
         Me.Panel11.Controls.Add(Me.TextBox_SyntaxPath)
@@ -731,9 +739,9 @@ Partial Class FormSettings
         Me.Panel11.Controls.Add(Me.TextBox_Shell)
         Me.Panel11.Controls.Add(Me.LinkLabel_ShowShellArguments)
         Me.Panel11.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel11.Location = New System.Drawing.Point(3, 376)
+        Me.Panel11.Location = New System.Drawing.Point(3, 352)
         Me.Panel11.Name = "Panel11"
-        Me.Panel11.Size = New System.Drawing.Size(446, 160)
+        Me.Panel11.Size = New System.Drawing.Size(446, 145)
         Me.Panel11.TabIndex = 30
         '
         'LinkLabel_SyntaxDefault
@@ -829,6 +837,7 @@ Partial Class FormSettings
         '
         'Panel10
         '
+        Me.Panel10.AutoSize = True
         Me.Panel10.Controls.Add(Me.Panel12)
         Me.Panel10.Controls.Add(Me.Label9)
         Me.Panel10.Controls.Add(Me.Label2)
@@ -838,9 +847,9 @@ Partial Class FormSettings
         Me.Panel10.Controls.Add(Me.TextBox_SourceModFolder)
         Me.Panel10.Controls.Add(Me.Label12)
         Me.Panel10.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel10.Location = New System.Drawing.Point(3, 249)
+        Me.Panel10.Location = New System.Drawing.Point(3, 242)
         Me.Panel10.Name = "Panel10"
-        Me.Panel10.Size = New System.Drawing.Size(446, 127)
+        Me.Panel10.Size = New System.Drawing.Size(446, 110)
         Me.Panel10.TabIndex = 29
         '
         'Panel12
@@ -927,23 +936,16 @@ Partial Class FormSettings
         '
         'Panel9
         '
+        Me.Panel9.AutoSize = True
         Me.Panel9.Controls.Add(Me.Label11)
         Me.Panel9.Controls.Add(Me.RadioButton_ConfigSettingAutomatic)
         Me.Panel9.Controls.Add(Me.RadioButton_ConfigSettingManual)
         Me.Panel9.Controls.Add(Me.Label3)
-        Me.Panel9.Controls.Add(Me.Label4)
-        Me.Panel9.Controls.Add(Me.TextBox_CompilerPath)
-        Me.Panel9.Controls.Add(Me.Label5)
-        Me.Panel9.Controls.Add(Me.TextBox_IncludeFolder)
-        Me.Panel9.Controls.Add(Me.Button_Compiler)
-        Me.Panel9.Controls.Add(Me.Button_IncludeFolder)
-        Me.Panel9.Controls.Add(Me.Label6)
-        Me.Panel9.Controls.Add(Me.TextBox_OutputFolder)
-        Me.Panel9.Controls.Add(Me.Button_OutputFolder)
+        Me.Panel9.Controls.Add(Me.GroupBox1)
         Me.Panel9.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel9.Location = New System.Drawing.Point(3, 18)
         Me.Panel9.Name = "Panel9"
-        Me.Panel9.Size = New System.Drawing.Size(446, 231)
+        Me.Panel9.Size = New System.Drawing.Size(446, 224)
         Me.Panel9.TabIndex = 28
         '
         'Label11
@@ -995,7 +997,7 @@ Partial Class FormSettings
         'Label4
         '
         Me.Label4.AutoSize = True
-        Me.Label4.Location = New System.Drawing.Point(3, 100)
+        Me.Label4.Location = New System.Drawing.Point(6, 20)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(83, 13)
         Me.Label4.TabIndex = 3
@@ -1006,16 +1008,16 @@ Partial Class FormSettings
         Me.TextBox_CompilerPath.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.TextBox_CompilerPath.BackColor = System.Drawing.Color.White
-        Me.TextBox_CompilerPath.Location = New System.Drawing.Point(3, 116)
+        Me.TextBox_CompilerPath.Location = New System.Drawing.Point(6, 36)
         Me.TextBox_CompilerPath.Name = "TextBox_CompilerPath"
         Me.TextBox_CompilerPath.ReadOnly = True
-        Me.TextBox_CompilerPath.Size = New System.Drawing.Size(403, 22)
+        Me.TextBox_CompilerPath.Size = New System.Drawing.Size(391, 22)
         Me.TextBox_CompilerPath.TabIndex = 8
         '
         'Label5
         '
         Me.Label5.AutoSize = True
-        Me.Label5.Location = New System.Drawing.Point(3, 139)
+        Me.Label5.Location = New System.Drawing.Point(6, 59)
         Me.Label5.Name = "Label5"
         Me.Label5.Size = New System.Drawing.Size(96, 13)
         Me.Label5.TabIndex = 9
@@ -1026,17 +1028,17 @@ Partial Class FormSettings
         Me.TextBox_IncludeFolder.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.TextBox_IncludeFolder.BackColor = System.Drawing.Color.White
-        Me.TextBox_IncludeFolder.Location = New System.Drawing.Point(3, 155)
+        Me.TextBox_IncludeFolder.Location = New System.Drawing.Point(6, 75)
         Me.TextBox_IncludeFolder.Name = "TextBox_IncludeFolder"
         Me.TextBox_IncludeFolder.ReadOnly = True
-        Me.TextBox_IncludeFolder.Size = New System.Drawing.Size(403, 22)
+        Me.TextBox_IncludeFolder.Size = New System.Drawing.Size(391, 22)
         Me.TextBox_IncludeFolder.TabIndex = 10
         '
         'Button_Compiler
         '
         Me.Button_Compiler.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_Compiler.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_Compiler.Location = New System.Drawing.Point(412, 113)
+        Me.Button_Compiler.Location = New System.Drawing.Point(403, 34)
         Me.Button_Compiler.Name = "Button_Compiler"
         Me.Button_Compiler.Size = New System.Drawing.Size(31, 24)
         Me.Button_Compiler.TabIndex = 8
@@ -1047,7 +1049,7 @@ Partial Class FormSettings
         '
         Me.Button_IncludeFolder.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_IncludeFolder.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_IncludeFolder.Location = New System.Drawing.Point(412, 152)
+        Me.Button_IncludeFolder.Location = New System.Drawing.Point(403, 73)
         Me.Button_IncludeFolder.Name = "Button_IncludeFolder"
         Me.Button_IncludeFolder.Size = New System.Drawing.Size(31, 24)
         Me.Button_IncludeFolder.TabIndex = 11
@@ -1057,7 +1059,7 @@ Partial Class FormSettings
         'Label6
         '
         Me.Label6.AutoSize = True
-        Me.Label6.Location = New System.Drawing.Point(3, 178)
+        Me.Label6.Location = New System.Drawing.Point(6, 98)
         Me.Label6.Name = "Label6"
         Me.Label6.Size = New System.Drawing.Size(96, 13)
         Me.Label6.TabIndex = 13
@@ -1068,33 +1070,34 @@ Partial Class FormSettings
         Me.TextBox_OutputFolder.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.TextBox_OutputFolder.BackColor = System.Drawing.Color.White
-        Me.TextBox_OutputFolder.Location = New System.Drawing.Point(3, 194)
+        Me.TextBox_OutputFolder.Location = New System.Drawing.Point(6, 114)
         Me.TextBox_OutputFolder.Name = "TextBox_OutputFolder"
         Me.TextBox_OutputFolder.ReadOnly = True
-        Me.TextBox_OutputFolder.Size = New System.Drawing.Size(403, 22)
+        Me.TextBox_OutputFolder.Size = New System.Drawing.Size(391, 22)
         Me.TextBox_OutputFolder.TabIndex = 14
         '
         'Button_OutputFolder
         '
         Me.Button_OutputFolder.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_OutputFolder.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_OutputFolder.Location = New System.Drawing.Point(412, 191)
+        Me.Button_OutputFolder.Location = New System.Drawing.Point(403, 112)
         Me.Button_OutputFolder.Name = "Button_OutputFolder"
         Me.Button_OutputFolder.Size = New System.Drawing.Size(31, 24)
         Me.Button_OutputFolder.TabIndex = 15
         Me.Button_OutputFolder.Text = "..."
         Me.Button_OutputFolder.UseVisualStyleBackColor = True
         '
-        'Button_SaveConfig
+        'ListBox_Configs
         '
-        Me.Button_SaveConfig.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button_SaveConfig.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_SaveConfig.Location = New System.Drawing.Point(321, 82)
-        Me.Button_SaveConfig.Name = "Button_SaveConfig"
-        Me.Button_SaveConfig.Size = New System.Drawing.Size(128, 23)
-        Me.Button_SaveConfig.TabIndex = 12
-        Me.Button_SaveConfig.Text = "Save Settings"
-        Me.Button_SaveConfig.UseVisualStyleBackColor = True
+        Me.ListBox_Configs.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ListBox_Configs.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.ListBox_Configs.FormattingEnabled = True
+        Me.ListBox_Configs.HorizontalScrollbar = True
+        Me.ListBox_Configs.ItemHeight = 21
+        Me.ListBox_Configs.Location = New System.Drawing.Point(3, 3)
+        Me.ListBox_Configs.Name = "ListBox_Configs"
+        Me.ListBox_Configs.Size = New System.Drawing.Size(144, 718)
+        Me.ListBox_Configs.TabIndex = 0
         '
         'TabPage3
         '
@@ -1102,7 +1105,7 @@ Partial Class FormSettings
         Me.TabPage3.Location = New System.Drawing.Point(4, 22)
         Me.TabPage3.Name = "TabPage3"
         Me.TabPage3.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage3.Size = New System.Drawing.Size(602, 760)
+        Me.TabPage3.Size = New System.Drawing.Size(602, 724)
         Me.TabPage3.TabIndex = 2
         Me.TabPage3.Text = "Plugins"
         Me.TabPage3.UseVisualStyleBackColor = True
@@ -1113,7 +1116,7 @@ Partial Class FormSettings
         Me.ListView_Plugins.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ListView_Plugins.Location = New System.Drawing.Point(3, 3)
         Me.ListView_Plugins.Name = "ListView_Plugins"
-        Me.ListView_Plugins.Size = New System.Drawing.Size(596, 754)
+        Me.ListView_Plugins.Size = New System.Drawing.Size(596, 718)
         Me.ListView_Plugins.TabIndex = 0
         Me.ListView_Plugins.UseCompatibleStateImageBehavior = False
         Me.ListView_Plugins.View = System.Windows.Forms.View.Details
@@ -1172,6 +1175,25 @@ Partial Class FormSettings
         Me.Button_Apply.Text = "Apply"
         Me.Button_Apply.UseVisualStyleBackColor = True
         '
+        'GroupBox1
+        '
+        Me.GroupBox1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.GroupBox1.Controls.Add(Me.Label4)
+        Me.GroupBox1.Controls.Add(Me.Button_OutputFolder)
+        Me.GroupBox1.Controls.Add(Me.TextBox_OutputFolder)
+        Me.GroupBox1.Controls.Add(Me.Label6)
+        Me.GroupBox1.Controls.Add(Me.Button_IncludeFolder)
+        Me.GroupBox1.Controls.Add(Me.TextBox_CompilerPath)
+        Me.GroupBox1.Controls.Add(Me.Button_Compiler)
+        Me.GroupBox1.Controls.Add(Me.Label5)
+        Me.GroupBox1.Controls.Add(Me.TextBox_IncludeFolder)
+        Me.GroupBox1.Location = New System.Drawing.Point(3, 77)
+        Me.GroupBox1.Name = "GroupBox1"
+        Me.GroupBox1.Size = New System.Drawing.Size(440, 144)
+        Me.GroupBox1.TabIndex = 24
+        Me.GroupBox1.TabStop = False
+        '
         'FormSettings
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -1191,6 +1213,7 @@ Partial Class FormSettings
         Me.Text = "Settings"
         Me.TabControl1.ResumeLayout(False)
         Me.TabPage1.ResumeLayout(False)
+        Me.TabPage1.PerformLayout()
         Me.Panel8.ResumeLayout(False)
         Me.Panel8.PerformLayout()
         Me.Panel5.ResumeLayout(False)
@@ -1207,7 +1230,9 @@ Partial Class FormSettings
         Me.Panel17.ResumeLayout(False)
         Me.Panel17.PerformLayout()
         Me.Panel2.ResumeLayout(False)
+        Me.Panel2.PerformLayout()
         Me.GroupBox_ConfigSettings.ResumeLayout(False)
+        Me.GroupBox_ConfigSettings.PerformLayout()
         Me.Panel11.ResumeLayout(False)
         Me.Panel11.PerformLayout()
         Me.Panel10.ResumeLayout(False)
@@ -1215,6 +1240,8 @@ Partial Class FormSettings
         Me.Panel9.ResumeLayout(False)
         Me.Panel9.PerformLayout()
         Me.TabPage3.ResumeLayout(False)
+        Me.GroupBox1.ResumeLayout(False)
+        Me.GroupBox1.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
@@ -1312,4 +1339,5 @@ Partial Class FormSettings
     Friend WithEvents TableLayoutPanel2 As TableLayoutPanel
     Friend WithEvents Panel17 As Panel
     Friend WithEvents Panel2 As Panel
+    Friend WithEvents GroupBox1 As GroupBox
 End Class
