@@ -624,6 +624,8 @@ Public Class FormMain
         If (g_mFormDebugger Is Nothing OrElse g_mFormDebugger.IsDisposed) Then
             g_mFormDebugger = New FormDebugger(Me)
             g_mFormDebugger.Show()
+        Else
+            g_mFormDebugger.BringToFront()
         End If
     End Sub
 #End Region
