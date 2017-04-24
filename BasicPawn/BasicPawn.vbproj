@@ -173,6 +173,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -191,18 +192,22 @@
     <Compile Include="Classes\ClassConfigs.vb" />
     <Compile Include="Classes\ClassControlStyle.vb" />
     <Compile Include="Classes\ClassCrossAppComunication.vb" />
-    <Compile Include="Classes\ClassTextboxWatermark.vb">
+    <Compile Include="Classes\ClassDatabase.vb" />
+    <Compile Include="Classes\ClassFTP.vb" />
+    <Compile Include="Classes\ClassSecureStorage.vb" />
+    <Compile Include="Classes\Controls\ClassTextboxWatermark.vb">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Classes\ClassExceptionLog.vb" />
     <Compile Include="Classes\ClassIniFile.vb" />
-    <Compile Include="Classes\ClassPanelQuality.vb">
+    <Compile Include="Classes\Controls\ClassPanelQuality.vb">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Classes\ClassPictureBoxQuality.vb">
+    <Compile Include="Classes\Controls\ClassPictureBoxQuality.vb">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Classes\ClassSyncList.vb" />
+    <Compile Include="Classes\ClassIniFileMem.vb" />
     <Compile Include="Classes\FormDebugger\ClassDebuggerRunner.vb" />
     <Compile Include="Classes\FormMain\ClassAutocompleteUpdater.vb" />
     <Compile Include="Classes\FormMain\ClassDebuggerParser.vb" />
@@ -211,7 +216,7 @@
     <Compile Include="Classes\FormMain\ClassTabControl.vb" />
     <Compile Include="Classes\FormMain\ClassTextEditorTools.vb" />
     <Compile Include="Classes\FormMain\ClassPluginController.vb" />
-    <Compile Include="Classes\ClassPanelAlpha.vb">
+    <Compile Include="Classes\Controls\ClassPanelAlpha.vb">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls and Forms\FormDebuggerBreakpointSetValue.Designer.vb">
@@ -309,7 +314,7 @@
     <Compile Include="Controls and Forms\FormSettings.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Classes\ClassTextEditorEx.vb">
+    <Compile Include="Classes\Controls\ClassTextEditorEx.vb">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Classes\ClassTools.vb" />
