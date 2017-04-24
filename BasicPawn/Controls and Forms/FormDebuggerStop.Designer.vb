@@ -25,6 +25,7 @@ Partial Class FormDebuggerStop
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormDebuggerStop))
         Me.Panel_FooterControl = New System.Windows.Forms.Panel()
+        Me.CheckBox_RememberAction = New System.Windows.Forms.CheckBox()
         Me.Button_OK = New System.Windows.Forms.Button()
         Me.Button_Cancel = New System.Windows.Forms.Button()
         Me.Panel_FooterDarkControl = New System.Windows.Forms.Panel()
@@ -35,9 +36,8 @@ Partial Class FormDebuggerStop
         Me.RadioButton4 = New System.Windows.Forms.RadioButton()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.ToolTip_ResultOptions = New System.Windows.Forms.ToolTip(Me.components)
-        Me.Class_PictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
         Me.RadioButton5 = New System.Windows.Forms.RadioButton()
-        Me.CheckBox_RememberAction = New System.Windows.Forms.CheckBox()
+        Me.Class_PictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
         Me.Panel_FooterControl.SuspendLayout()
         CType(Me.Class_PictureBoxQuality1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -54,6 +54,17 @@ Partial Class FormDebuggerStop
         Me.Panel_FooterControl.Name = "Panel_FooterControl"
         Me.Panel_FooterControl.Size = New System.Drawing.Size(344, 48)
         Me.Panel_FooterControl.TabIndex = 0
+        '
+        'CheckBox_RememberAction
+        '
+        Me.CheckBox_RememberAction.AutoSize = True
+        Me.CheckBox_RememberAction.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_RememberAction.Location = New System.Drawing.Point(12, 16)
+        Me.CheckBox_RememberAction.Name = "CheckBox_RememberAction"
+        Me.CheckBox_RememberAction.Size = New System.Drawing.Size(121, 18)
+        Me.CheckBox_RememberAction.TabIndex = 9
+        Me.CheckBox_RememberAction.Text = "Remember action"
+        Me.CheckBox_RememberAction.UseVisualStyleBackColor = True
         '
         'Button_OK
         '
@@ -167,17 +178,6 @@ Partial Class FormDebuggerStop
         Me.Label2.TabIndex = 7
         Me.Label2.Text = "BasicPawn debugger runner required:"
         '
-        'Class_PictureBoxQuality1
-        '
-        Me.Class_PictureBoxQuality1.m_HighQuality = True
-        Me.Class_PictureBoxQuality1.Image = Global.BasicPawn.My.Resources.Resources.Bmp_Stop
-        Me.Class_PictureBoxQuality1.Location = New System.Drawing.Point(12, 12)
-        Me.Class_PictureBoxQuality1.Name = "Class_PictureBoxQuality1"
-        Me.Class_PictureBoxQuality1.Size = New System.Drawing.Size(48, 48)
-        Me.Class_PictureBoxQuality1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
-        Me.Class_PictureBoxQuality1.TabIndex = 2
-        Me.Class_PictureBoxQuality1.TabStop = False
-        '
         'RadioButton5
         '
         Me.RadioButton5.AutoSize = True
@@ -193,16 +193,16 @@ Partial Class FormDebuggerStop
         "equired for this to work)" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10))
         Me.RadioButton5.UseVisualStyleBackColor = True
         '
-        'CheckBox_RememberAction
+        'Class_PictureBoxQuality1
         '
-        Me.CheckBox_RememberAction.AutoSize = True
-        Me.CheckBox_RememberAction.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_RememberAction.Location = New System.Drawing.Point(12, 16)
-        Me.CheckBox_RememberAction.Name = "CheckBox_RememberAction"
-        Me.CheckBox_RememberAction.Size = New System.Drawing.Size(121, 18)
-        Me.CheckBox_RememberAction.TabIndex = 9
-        Me.CheckBox_RememberAction.Text = "Remember action"
-        Me.CheckBox_RememberAction.UseVisualStyleBackColor = True
+        Me.Class_PictureBoxQuality1.Image = Global.BasicPawn.My.Resources.Resources.Bmp_Stop
+        Me.Class_PictureBoxQuality1.Location = New System.Drawing.Point(12, 12)
+        Me.Class_PictureBoxQuality1.m_HighQuality = True
+        Me.Class_PictureBoxQuality1.Name = "Class_PictureBoxQuality1"
+        Me.Class_PictureBoxQuality1.Size = New System.Drawing.Size(48, 48)
+        Me.Class_PictureBoxQuality1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
+        Me.Class_PictureBoxQuality1.TabIndex = 2
+        Me.Class_PictureBoxQuality1.TabStop = False
         '
         'FormDebuggerStop
         '

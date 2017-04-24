@@ -1,0 +1,1 @@
+SourcePawn_Syntax.xml is the default BasicPawn syntax style.

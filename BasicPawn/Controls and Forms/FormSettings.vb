@@ -381,6 +381,9 @@ Public Class FormSettings
         ListView_Plugins.Items.AddRange(lListViewItems.ToArray)
         ListView_Plugins.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent)
 
+        'Fill DatabaseViewer
+        DatabaseViewer.FillFromDatabase()
+
         ClassControlStyle.UpdateControls(Me)
     End Sub
 
@@ -571,16 +574,16 @@ Public Class FormSettings
         MarkChanged()
     End Sub
 
-    Private Sub MarkChanged()
-        If (Not g_bIgnoreChange AndAlso Not TabPage2.Text.EndsWith("*"c)) Then
-            TabPage2.Text = TabPage2.Text & "*"
+    Public Sub MarkChanged()
+        If (Not g_bIgnoreChange AndAlso Not TabPage_Configs.Text.EndsWith("*"c)) Then
+            TabPage_Configs.Text = TabPage_Configs.Text & "*"
             TabControl1.Refresh()
         End If
     End Sub
 
-    Private Sub ResetChanged()
-        If (TabPage2.Text.EndsWith("*"c)) Then
-            TabPage2.Text = TabPage2.Text.Trim("*"c)
+    Public Sub ResetChanged()
+        If (TabPage_Configs.Text.EndsWith("*"c)) Then
+            TabPage_Configs.Text = TabPage_Configs.Text.Trim("*"c)
             TabControl1.Refresh()
         End If
     End Sub
@@ -615,5 +618,20 @@ Public Class FormSettings
 
     Private Sub TextBox_SyntaxPath_TextChanged(sender As Object, e As EventArgs) Handles TextBox_SyntaxPath.TextChanged
         MarkChanged()
+    End Sub
+
+    Private Sub Button_AddDatabaseItem_Click(sender As Object, e As EventArgs) Handles Button_AddDatabaseItem.Click
+        Using i As New FormDatabaseInput()
+            If (i.ShowDialog = DialogResult.OK) Then
+                DatabaseViewer.AddItem(i.m_Name, i.m_Username)
+
+                Dim iItem As New ClassDatabase.STRUC_DATABASE_ITEM(i.m_Name, i.m_Username, i.m_Password)
+                iItem.Save()
+            End If
+        End Using
+    End Sub
+
+    Private Sub Button_Refresh_Click(sender As Object, e As EventArgs) Handles Button_Refresh.Click
+        DatabaseViewer.FillFromDatabase()
     End Sub
 End Class

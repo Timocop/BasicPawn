@@ -35,10 +35,10 @@ Public Class ClassFTP
     Public Property m_Host As String
         Get
             Dim i As Byte() = ClassSecureStorage.Decrypt(g_iHost)
-            Return Encoding.UTF8.GetString(i)
+            Return Encoding.Unicode.GetString(i)
         End Get
         Set(value As String)
-            Dim i As Byte() = Encoding.UTF8.GetBytes(value)
+            Dim i As Byte() = Encoding.Unicode.GetBytes(value)
             g_iHost = ClassSecureStorage.Encrypt(i)
         End Set
     End Property
@@ -46,10 +46,10 @@ Public Class ClassFTP
     Public Property m_User As String
         Get
             Dim i As Byte() = ClassSecureStorage.Decrypt(g_iUser)
-            Return Encoding.UTF8.GetString(i)
+            Return Encoding.Unicode.GetString(i)
         End Get
         Set(value As String)
-            Dim i As Byte() = Encoding.UTF8.GetBytes(value)
+            Dim i As Byte() = Encoding.Unicode.GetBytes(value)
             g_iUser = ClassSecureStorage.Encrypt(i)
         End Set
     End Property
@@ -57,10 +57,10 @@ Public Class ClassFTP
     Public Property m_Password As String
         Get
             Dim i As Byte() = ClassSecureStorage.Decrypt(g_iPassword)
-            Return Encoding.UTF8.GetString(i)
+            Return Encoding.Unicode.GetString(i)
         End Get
         Set(value As String)
-            Dim i As Byte() = Encoding.UTF8.GetBytes(value)
+            Dim i As Byte() = Encoding.Unicode.GetBytes(value)
             g_iPassword = ClassSecureStorage.Encrypt(i)
         End Set
     End Property

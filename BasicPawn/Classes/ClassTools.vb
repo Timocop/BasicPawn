@@ -275,23 +275,31 @@ Public Class ClassTools
                 BASE16 = 16
             End Enum
 
-            Public Shared Function ToBase(sText As String, iBase As ENUM_BASE) As String
-                Dim iBytes() As Byte = Text.Encoding.Default.GetBytes(sText)
+            Public Shared Function ToBase(sText As String, iBase As ENUM_BASE, i As Text.Encoding) As String
+                Dim iBytes() As Byte = i.GetBytes(sText)
 
                 Dim mStringBuilder As New Text.StringBuilder
-                For i As Integer = 0 To iBytes.Length - 1
-                    mStringBuilder.Append(Convert.ToString(iBytes(i), iBase))
+                For j As Integer = 0 To iBytes.Length - 1
+                    mStringBuilder.Append(Convert.ToString(iBytes(j), iBase))
                 Next
 
                 Return mStringBuilder.ToString
             End Function
 
-            Public Shared Function ToBase64(sText As String) As String
-                Return Convert.ToBase64String(Text.Encoding.Default.GetBytes(sText))
+            Public Shared Function ToBase64(sText As String, i As Text.Encoding) As String
+                Return Convert.ToBase64String(i.GetBytes(sText))
             End Function
 
-            Public Shared Function FromBase64(sText As String) As String
-                Return System.Text.Encoding.Default.GetString(Convert.FromBase64String(sText))
+            Public Shared Function ToBase64Ex(iData As Byte()) As String
+                Return Convert.ToBase64String(iData)
+            End Function
+
+            Public Shared Function FromBase64(sText As String, i As Text.Encoding) As String
+                Return i.GetString(Convert.FromBase64String(sText))
+            End Function
+
+            Public Shared Function FromBase64Ex(sText As String) As Byte()
+                Return Convert.FromBase64String(sText)
             End Function
         End Class
     End Class

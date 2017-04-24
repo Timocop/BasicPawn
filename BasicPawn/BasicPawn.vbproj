@@ -195,6 +195,9 @@
     <Compile Include="Classes\ClassDatabase.vb" />
     <Compile Include="Classes\ClassFTP.vb" />
     <Compile Include="Classes\ClassSecureStorage.vb" />
+    <Compile Include="Classes\Controls\ClassButtonSmallDelete.vb">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Classes\Controls\ClassTextboxWatermark.vb">
       <SubType>Component</SubType>
     </Compile>
@@ -218,6 +221,24 @@
     <Compile Include="Classes\FormMain\ClassPluginController.vb" />
     <Compile Include="Classes\Controls\ClassPanelAlpha.vb">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls and Forms\DatabaseViewer\ClassDatabaseViewer.Designer.vb">
+      <DependentUpon>ClassDatabaseViewer.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controls and Forms\DatabaseViewer\ClassDatabaseViewer.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls and Forms\DatabaseViewer\ClassDatabaseViewerItem.Designer.vb">
+      <DependentUpon>ClassDatabaseViewerItem.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controls and Forms\DatabaseViewer\ClassDatabaseViewerItem.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls and Forms\DatabaseViewer\FormDatabaseInput.Designer.vb">
+      <DependentUpon>FormDatabaseInput.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controls and Forms\DatabaseViewer\FormDatabaseInput.vb">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="Controls and Forms\FormDebuggerBreakpointSetValue.Designer.vb">
       <DependentUpon>FormDebuggerBreakpointSetValue.vb</DependentUpon>
@@ -320,6 +341,15 @@
     <Compile Include="Classes\ClassTools.vb" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Controls and Forms\DatabaseViewer\ClassDatabaseViewer.resx">
+      <DependentUpon>ClassDatabaseViewer.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls and Forms\DatabaseViewer\ClassDatabaseViewerItem.resx">
+      <DependentUpon>ClassDatabaseViewerItem.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls and Forms\DatabaseViewer\FormDatabaseInput.resx">
+      <DependentUpon>FormDatabaseInput.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls and Forms\FormDebuggerBreakpointSetValue.resx">
       <DependentUpon>FormDebuggerBreakpointSetValue.vb</DependentUpon>
     </EmbeddedResource>
@@ -453,6 +483,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="BasicPawnIcon.ico" />
+    <None Include="Resources\imageres_5381_64x64-32.png" />
+    <None Include="Resources\imageres_5360_16x16-32.png" />
+    <None Include="Resources\072.png" />
+    <None Include="Resources\ieframe_591.bmp" />
+    <None Include="Resources\ieframe_590.bmp" />
+    <None Include="Resources\ieframe_589.bmp" />
     <None Include="Resources\SourcePawnOldTemplate.txt" />
     <None Include="Resources\imageres_5304_16x16-32.png" />
     <None Include="Resources\SourcePawn_Syntax.xml" />
