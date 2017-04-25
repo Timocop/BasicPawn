@@ -22,6 +22,8 @@ Public Class UCObjectBrowser
     Private g_mFormMain As FormMain
     Private g_tUpdateThread As Threading.Thread
 
+    Public Shared g_bWndProcBug As Boolean = False
+
     Public Sub New(f As FormMain)
         ' This call is required by the designer.
         InitializeComponent()
@@ -74,7 +76,13 @@ Public Class UCObjectBrowser
 
     Private Sub UpdateTreeViewThread()
         Try
-            Me.Invoke(Sub() TreeView_ObjectBrowser.BeginUpdate())
+            Dim bWndProcBug As Boolean = g_bWndProcBug
+
+            If (bWndProcBug) Then
+                Me.Invoke(Sub() TreeView_ObjectBrowser.Visible = False)
+            Else
+                Me.Invoke(Sub() TreeView_ObjectBrowser.BeginUpdate())
+            End If
 
             Dim lAutocompleteList As New List(Of FormMain.STRUC_AUTOCOMPLETE)
             lAutocompleteList.AddRange(g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.ToArray)
@@ -162,7 +170,11 @@ Public Class UCObjectBrowser
                 Next
             End If
 
-            Me.Invoke(Sub() TreeView_ObjectBrowser.EndUpdate())
+            If (bWndProcBug) Then
+                Me.Invoke(Sub() TreeView_ObjectBrowser.Visible = True)
+            Else
+                Me.Invoke(Sub() TreeView_ObjectBrowser.EndUpdate())
+            End If
         Catch ex As Threading.ThreadAbortException
             Throw
         Catch ex As Exception
@@ -301,4 +313,23 @@ Public Class UCObjectBrowser
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
     End Sub
+
+    Class ClassTreeViewWine
+        Inherits TreeView
+
+        Protected Overrides Sub WndProc(ByRef m As Message)
+            If (ClassTools.ClassOperatingSystem.GetWineVersion() IsNot Nothing) Then
+                Try
+                    MyBase.WndProc(m)
+                Catch ex As Exception
+                    If (Not g_bWndProcBug) Then
+                        g_bWndProcBug = True
+                        ClassExceptionLog.WriteToLog(ex)
+                    End If
+                End Try
+            Else
+                MyBase.WndProc(m)
+            End If
+        End Sub
+    End Class
 End Class
