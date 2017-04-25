@@ -323,17 +323,28 @@ Public Class ClassTools
         ''' </summary>
         ''' <returns>Wine version on success, |Nothing| otherwise.</returns>
         Public Shared Function GetWineVersion() As String
+            Static sWineVersion As String = Nothing
+            Static iWineInstalled As Integer = -1
+            If (iWineInstalled > -1) Then
+                Return sWineVersion
+            End If
+
             Dim hModule As IntPtr = GetModuleHandle("ntdll.dll")
             If (hModule = IntPtr.Zero) Then
+                iWineInstalled = 0
                 Return Nothing
             End If
 
             Dim hAddress As IntPtr = GetProcAddress(hModule, "wine_get_version")
             If (hAddress = IntPtr.Zero) Then
+                iWineInstalled = 0
                 Return Nothing
             End If
 
-            Return wine_get_version()
+            iWineInstalled = 1
+            sWineVersion = wine_get_version()
+
+            Return sWineVersion
         End Function
     End Class
 End Class
