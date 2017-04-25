@@ -303,4 +303,37 @@ Public Class ClassTools
             End Function
         End Class
     End Class
+
+    Class ClassOperatingSystem
+        <DllImport("kernel32.dll", CharSet:=CharSet.Auto, SetLastError:=True)>
+        Public Shared Function GetModuleHandle(sModuleName As String) As IntPtr
+        End Function
+
+        <DllImport("kernel32.dll", CharSet:=CharSet.Ansi, SetLastError:=True)>
+        Private Shared Function GetProcAddress(hModule As IntPtr, sProcName As String) As IntPtr
+        End Function
+
+        <DllImport("ntdll.dll", CharSet:=CharSet.Ansi, SetLastError:=True)>
+        Private Shared Function wine_get_version() As String
+        End Function
+
+        ''' <summary>
+        ''' Gets the Wine version if its running on Wine, otherwise it returns |Nothing|.
+        ''' https://www.winehq.org/pipermail/wine-devel/2008-September/069387.html
+        ''' </summary>
+        ''' <returns>Wine version on success, |Nothing| otherwise.</returns>
+        Public Shared Function GetWineVersion() As String
+            Dim hModule As IntPtr = GetModuleHandle("ntdll.dll")
+            If (hModule = IntPtr.Zero) Then
+                Return Nothing
+            End If
+
+            Dim hAddress As IntPtr = GetProcAddress(hModule, "wine_get_version")
+            If (hAddress = IntPtr.Zero) Then
+                Return Nothing
+            End If
+
+            Return wine_get_version()
+        End Function
+    End Class
 End Class

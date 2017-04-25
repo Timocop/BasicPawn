@@ -257,7 +257,9 @@ Public Class FormMain
 
 
     Private Sub FormMain_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        ToolStripStatusLabel_AppVersion.Text = String.Format("v.{0}", Application.ProductVersion)
+        Dim sWineVersion As String = ClassTools.ClassOperatingSystem.GetWineVersion()
+
+        ToolStripStatusLabel_AppVersion.Text = String.Format("v.{0} {1}", Application.ProductVersion, If(sWineVersion Is Nothing, "", "| Running on Wine " & sWineVersion)).Trim
 
         'Some control init
         ToolStripComboBox_ToolsAutocompleteSyntax.SelectedIndex = 0
