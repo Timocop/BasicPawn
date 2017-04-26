@@ -53,8 +53,8 @@ Public Interface IPluginInterface
     ''' <summary>
     ''' Fires when main form has finished loading.
     ''' </summary>
-    ''' <param name="mFormMain"></param>
-    Sub OnPluginStart(mFormMain As BasicPawn.FormMain)
+    ''' <param name="mFormMain">BasicPawn.FormMain</param> 
+    Sub OnPluginStart(mFormMain As Object)
 
     ''' <summary>
     ''' Fires when the main form is closing.
@@ -86,10 +86,10 @@ Public Interface IPluginInterface
     ''' <summary>
     ''' Fires when the updater thread is running. Autocomplete etc.
     ''' </summary>
-    ''' <param name="iType"></param>
-    ''' <param name="bForceFromMemory"></param>
-    Sub OnSyntaxUpdate(iType As BasicPawn.ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE, bForceFromMemory As Boolean)
-    Sub OnSyntaxUpdateEnd(iType As BasicPawn.ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE, bForceFromMemory As Boolean)
+    ''' <param name="iType">BasicPawn.ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE</param>
+    ''' <param name="bForceFromMemory"></param> 
+    Sub OnSyntaxUpdate(iType As Integer, bForceFromMemory As Boolean)
+    Sub OnSyntaxUpdateEnd(iType As Integer, bForceFromMemory As Boolean)
 
     ''' <summary>
     ''' Fires when the form colors are being updated.
@@ -101,27 +101,27 @@ Public Interface IPluginInterface
     ''' <summary>
     ''' Fires when debugger form has finished loading.
     ''' </summary>
-    ''' <param name="mFormDebugger"></param>
-    Sub OnDebuggerStart(mFormDebugger As BasicPawn.FormDebugger)
+    ''' <param name="mFormDebugger">BasicPawn.FormDebugger</param>
+    Sub OnDebuggerStart(mFormDebugger As Object)
 
     ''' <summary>
     ''' Fires when debugger refreshes its source.
     ''' </summary>
-    ''' <param name="mFormDebugger"></param>
-    Sub OnDebuggerRefresh(mFormDebugger As BasicPawn.FormDebugger)
+    ''' <param name="mFormDebugger">BasicPawn.FormDebugger</param>
+    Sub OnDebuggerRefresh(mFormDebugger As Object)
 
     ''' <summary>
     ''' Fires when the debugger form is closing.
     ''' </summary>
-    ''' <param name="mFormDebugger"></param>
+    ''' <param name="mFormDebugger">BasicPawn.FormDebugger</param>
     ''' <returns>False to block closing the main form, true otherwise.</returns>
-    Function OnDebuggerEnd(mFormDebugger As BasicPawn.FormDebugger) As Boolean
+    Function OnDebuggerEnd(mFormDebugger As Object) As Boolean
 
     ''' <summary>
     ''' Fires when the Debugger is being disposed.
     ''' </summary>
-    ''' <param name="mFormDebugger"></param>
-    Sub OnDebuggerEndPost(mFormDebugger As BasicPawn.FormDebugger)
+    ''' <param name="mFormDebugger">BasicPawn.FormDebugger</param>
+    Sub OnDebuggerEndPost(mFormDebugger As Object)
 
     ''' <summary>
     ''' The Debugger started it's debugging.

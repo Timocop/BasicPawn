@@ -44,8 +44,8 @@ Public Class PluginSample
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnPluginStart(mFormMain As FormMain) Implements IPluginInterface.OnPluginStart
-        g_mFormMain = mFormMain
+    Public Sub OnPluginStart(mFormMain As Object) Implements IPluginInterface.OnPluginStart
+        g_mFormMain = DirectCast(mFormMain, FormMain)
 
         g_ClassTestToolbox = New ClassTestToolbox(Me)
 
@@ -73,11 +73,11 @@ Public Class PluginSample
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnSyntaxUpdate(iType As ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE, bForceFromMemory As Boolean) Implements IPluginInterface.OnSyntaxUpdate
+    Public Sub OnSyntaxUpdate(iType As Object, bForceFromMemory As Boolean) Implements IPluginInterface.OnSyntaxUpdate
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnSyntaxUpdateEnd(iType As ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE, bForceFromMemory As Boolean) Implements IPluginInterface.OnSyntaxUpdateEnd
+    Public Sub OnSyntaxUpdateEnd(iType As Object, bForceFromMemory As Boolean) Implements IPluginInterface.OnSyntaxUpdateEnd
         Throw New NotImplementedException()
     End Sub
 
@@ -85,15 +85,15 @@ Public Class PluginSample
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnDebuggerStart(mFormDebugger As FormDebugger) Implements IPluginInterface.OnDebuggerStart
+    Public Sub OnDebuggerStart(mFormDebugger As Object) Implements IPluginInterface.OnDebuggerStart
         Throw New NotImplementedException()
     End Sub
 
-    Public Function OnDebuggerEnd(mFormDebugger As FormDebugger) As Boolean Implements IPluginInterface.OnDebuggerEnd
+    Public Function OnDebuggerEnd(mFormDebugger As Object) As Boolean Implements IPluginInterface.OnDebuggerEnd
         Throw New NotImplementedException()
     End Function
 
-    Public Sub OnDebuggerEndPost(mFormDebugger As FormDebugger) Implements IPluginInterface.OnDebuggerEndPost
+    Public Sub OnDebuggerEndPost(mFormDebugger As Object) Implements IPluginInterface.OnDebuggerEndPost
         Throw New NotImplementedException()
     End Sub
 
@@ -109,7 +109,7 @@ Public Class PluginSample
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnDebuggerRefresh(mFormDebugger As FormDebugger) Implements IPluginInterface.OnDebuggerRefresh
+    Public Sub OnDebuggerRefresh(mFormDebugger As Object) Implements IPluginInterface.OnDebuggerRefresh
         Throw New NotImplementedException()
     End Sub
 
