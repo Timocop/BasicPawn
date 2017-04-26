@@ -478,7 +478,7 @@ Public Class ClassDebuggerRunner
 
             StopDebugging(True)
 
-            g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Error!" & ex.Message
+            g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Error! " & ex.Message
             g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Red
 
             Return False
@@ -608,7 +608,7 @@ Public Class ClassDebuggerRunner
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
 
-            g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Error!" & ex.Message
+            g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Error! " & ex.Message
             g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Red
         End Try
 
@@ -674,7 +674,7 @@ Public Class ClassDebuggerRunner
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
 
-            g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Error!" & ex.Message
+            g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Error! " & ex.Message
             g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Red
         End Try
     End Sub
@@ -704,7 +704,7 @@ Public Class ClassDebuggerRunner
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
 
-            g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Error!" & ex.Message
+            g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Error! " & ex.Message
             g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Red
         End Try
     End Sub
