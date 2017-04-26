@@ -73,11 +73,11 @@ Public Class PluginSample
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnSyntaxUpdate(iType As Object, bForceFromMemory As Boolean) Implements IPluginInterface.OnSyntaxUpdate
+    Public Sub OnSyntaxUpdate(iType As Integer, bForceFromMemory As Boolean) Implements IPluginInterface.OnSyntaxUpdate
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnSyntaxUpdateEnd(iType As Object, bForceFromMemory As Boolean) Implements IPluginInterface.OnSyntaxUpdateEnd
+    Public Sub OnSyntaxUpdateEnd(iType As Integer, bForceFromMemory As Boolean) Implements IPluginInterface.OnSyntaxUpdateEnd
         Throw New NotImplementedException()
     End Sub
 
