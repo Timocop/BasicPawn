@@ -72,7 +72,9 @@ Public Class UCInformationList
 
                         g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.SelectionManager.SetSelection(iStart, iEnd)
 
-                        g_mFormMain.g_ClassTabControl.SelectTab(i)
+                        If (g_mFormMain.g_ClassTabControl.m_ActiveTabIndex <> i) Then
+                            g_mFormMain.g_ClassTabControl.SelectTab(i)
+                        End If
                         Return
                     End If
                 Next
