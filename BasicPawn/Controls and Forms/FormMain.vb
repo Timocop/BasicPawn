@@ -626,8 +626,13 @@ Public Class FormMain
             End If
         End With
 
+        Dim sSourceFile As String = Nothing
+        If (Not String.IsNullOrEmpty(g_ClassTabControl.m_ActiveTab.m_File) AndAlso IO.File.Exists(g_ClassTabControl.m_ActiveTab.m_File)) Then
+            sSourceFile = g_ClassTabControl.m_ActiveTab.m_File
+        End If
+
         Dim sOutput As String = ""
-        g_ClassTextEditorTools.CompileSource(True, sSource, sOutput)
+        g_ClassTextEditorTools.CompileSource(True, sSource, sOutput, Nothing, Nothing, sSourceFile)
     End Sub
 #End Region
 

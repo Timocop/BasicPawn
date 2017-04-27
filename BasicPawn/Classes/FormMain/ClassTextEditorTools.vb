@@ -417,7 +417,7 @@ Public Class ClassTextEditorTools
     ''' <param name="sCompilerPath">(Optional) The compiler path. If Nothing, it will use the global config compiler path.</param>
     ''' <param name="sIncludePaths">(Optional) The include paths seperated by ';'. If Nothing, it will use the global config include path.</param>
     ''' <returns>True on success, false otherwise.</returns>
-    Public Function CompileSource(bTesting As Boolean, sSource As String, ByRef sOutputFile As String, Optional sCompilerPath As String = Nothing, Optional sIncludePaths As String = Nothing) As Boolean
+    Public Function CompileSource(bTesting As Boolean, sSource As String, ByRef sOutputFile As String, Optional sCompilerPath As String = Nothing, Optional sIncludePaths As String = Nothing, Optional sEmulateSourceFile As String = Nothing) As Boolean
         Try
             If (g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True)) Then
                 Return False
@@ -552,6 +552,10 @@ Public Class ClassTextEditorTools
                             compilerType = ENUM_COMPILER_TYPE.AMX
 
                     End Select
+                Else
+                    If (Not String.IsNullOrEmpty(sEmulateSourceFile) AndAlso sLines(i).Contains(TmpSourceFile)) Then
+                        sLines(i) = Regex.Replace(sLines(i), "^\b" & Regex.Escape(TmpSourceFile) & "\b", sEmulateSourceFile)
+                    End If
                 End If
 
                 g_mFormMain.PrintInformation("[INFO]", vbTab & sLines(i))
