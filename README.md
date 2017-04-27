@@ -26,9 +26,9 @@ Features:
 ## [Third Party Legal Notices](Third%20Party%20Legal%20Notices.txt)
 
 ## Requirements
-[**.NET Framework 2.0**](https://www.microsoft.com/en-us/download/details.aspx?id=21)
+[**.NET Framework 3.5**](https://www.microsoft.com/en-US/download/details.aspx?id=21)
 
-[**.NET Framework 2.0 (Linux Wine)**](https://appdb.winehq.org/objectManager.php?sClass=version&iId=3754)
+[**.NET Framework 3.5 (Linux Wine)**](https://appdb.winehq.org/objectManager.php?sClass=version&iId=10166)
 
 [**.NET Framework (Linux Wine)**](https://appdb.winehq.org/objectManager.php?sClass=application&iId=2586)
 
