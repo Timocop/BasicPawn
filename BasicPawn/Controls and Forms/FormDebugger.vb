@@ -92,7 +92,7 @@ Public Class FormDebugger
             With New ClassDebuggerParser(g_mFormMain)
                 .CleanupDebugPlaceholder(sAsmLstSource)
             End With
-            Dim sAsmSource As String = g_mFormMain.g_ClassTextEditorTools.GetCompilerAssemblyCode(True, sAsmLstSource, Nothing)
+            Dim sAsmSource As String = g_mFormMain.g_ClassTextEditorTools.GetCompilerAssemblyCode(True, sAsmLstSource, Nothing, IO.Path.GetDirectoryName(g_sLastPreProcessSourceFile))
             If (String.IsNullOrEmpty(sAsmSource)) Then
                 Return False
             End If

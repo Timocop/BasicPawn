@@ -73,6 +73,29 @@ Public Class ClassTools
                 r_ExitCode = i.ExitCode
             End Using
         End Sub
+
+        ''' <summary>
+        ''' Executes a program and receives exit code and output.
+        ''' </summary>
+        ''' <param name="sPath"></param>
+        ''' <param name="sArguments"></param>
+        ''' <param name="sWorkingDirectory"></param>
+        ''' <param name="r_ExitCode"></param>
+        ''' <param name="r_Output"></param>
+        Public Shared Sub ExecuteProgram(sPath As String, sArguments As String, sWorkingDirectory As String, ByRef r_ExitCode As Integer, ByRef r_Output As String)
+            Using i As New Process
+                i.StartInfo.CreateNoWindow = True
+                i.StartInfo.RedirectStandardOutput = True
+                i.StartInfo.UseShellExecute = False
+                i.StartInfo.FileName = sPath
+                i.StartInfo.Arguments = sArguments
+                i.StartInfo.WorkingDirectory = sWorkingDirectory
+                i.Start()
+                r_Output = i.StandardOutput.ReadToEnd
+                i.WaitForExit()
+                r_ExitCode = i.ExitCode
+            End Using
+        End Sub
     End Class
 
     Class ClassStrings

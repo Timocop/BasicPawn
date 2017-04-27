@@ -333,7 +333,7 @@ Public Class ClassTextEditorTools
             Next
 
             Dim sArguments As String = String.Format("""{0}"" {1} -o""{2}""", g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File, String.Join(" ", lIncludeList.ToArray), sOutputFile)
-            ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, sArguments, iExitCode, sOutput)
+            ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, sArguments, IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), iExitCode, sOutput)
 
             Dim compilerType As ENUM_COMPILER_TYPE = ENUM_COMPILER_TYPE.UNKNOWN
 
@@ -417,7 +417,7 @@ Public Class ClassTextEditorTools
     ''' <param name="sCompilerPath">(Optional) The compiler path. If Nothing, it will use the global config compiler path.</param>
     ''' <param name="sIncludePaths">(Optional) The include paths seperated by ';'. If Nothing, it will use the global config include path.</param>
     ''' <returns>True on success, false otherwise.</returns>
-    Public Function CompileSource(bTesting As Boolean, sSource As String, ByRef sOutputFile As String, Optional sCompilerPath As String = Nothing, Optional sIncludePaths As String = Nothing, Optional sEmulateSourceFile As String = Nothing) As Boolean
+    Public Function CompileSource(bTesting As Boolean, sSource As String, ByRef sOutputFile As String, Optional sWorkingDirectory As String = Nothing, Optional sCompilerPath As String = Nothing, Optional sIncludePaths As String = Nothing, Optional sEmulateSourceFile As String = Nothing) As Boolean
         Try
             If (g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True)) Then
                 Return False
@@ -531,7 +531,11 @@ Public Class ClassTextEditorTools
             Next
 
             Dim sArguments As String = String.Format("""{0}"" {1} -o""{2}""", TmpSourceFile, String.Join(" ", lIncludeList.ToArray), sOutputFile)
-            ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, sArguments, iExitCode, sOutput)
+            If (String.IsNullOrEmpty(sWorkingDirectory) OrElse Not IO.Directory.Exists(sWorkingDirectory)) Then
+                ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, sArguments, iExitCode, sOutput)
+            Else
+                ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, sArguments, sWorkingDirectory, iExitCode, sOutput)
+            End If
 
             IO.File.Delete(TmpSourceFile)
 
@@ -733,7 +737,7 @@ Public Class ClassTextEditorTools
             Next
 
             Dim sArguments As String = String.Format("""{0}"" -l {1} -o""{2}""", sTmpSourcePath, String.Join(" ", lIncludeList.ToArray), sOutputFile)
-            ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, sArguments, iExitCode, sOutput)
+            ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, sArguments, IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), iExitCode, sOutput)
 
             IO.File.Delete(sTmpSourcePath)
 
@@ -912,7 +916,7 @@ Public Class ClassTextEditorTools
             Next
 
             Dim sArguments As String = String.Format("""{0}"" -a {1} -o""{2}""", sTmpSourcePath, String.Join(" ", lIncludeList.ToArray), sOutputFile)
-            ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, sArguments, iExitCode, sOutput)
+            ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, sArguments, IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), iExitCode, sOutput)
 
             IO.File.Delete(sTmpSourcePath)
 
@@ -950,7 +954,7 @@ Public Class ClassTextEditorTools
     ''' <param name="sCompilerPath">(Optional) The compiler path. If Nothing, it will use the global config compiler path.</param>
     ''' <param name="sIncludePaths">(Optional) The include paths seperated by ';'. If Nothing, it will use the global config include path.</param>
     ''' <returns></returns>
-    Public Function GetCompilerAssemblyCode(bTesting As Boolean, sSource As String, ByRef sOutputFile As String, Optional sCompilerPath As String = Nothing, Optional sIncludePaths As String = Nothing) As String
+    Public Function GetCompilerAssemblyCode(bTesting As Boolean, sSource As String, ByRef sOutputFile As String, Optional sWorkingDirectory As String = Nothing, Optional sCompilerPath As String = Nothing, Optional sIncludePaths As String = Nothing, Optional sEmulateSourceFile As String = Nothing) As String
         Try
             If (g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True)) Then
                 Return Nothing
@@ -1060,10 +1064,17 @@ Public Class ClassTextEditorTools
             Next
 
             Dim sArguments As String = String.Format("""{0}"" -a {1} -o""{2}""", TmpSourceFile, String.Join(" ", lIncludeList.ToArray), sOutputFile)
-            ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, sArguments, iExitCode, sOutput)
+            If (String.IsNullOrEmpty(sWorkingDirectory) OrElse Not IO.Directory.Exists(sWorkingDirectory)) Then
+                ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, sArguments, iExitCode, sOutput)
+            Else
+                ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, sArguments, sWorkingDirectory, iExitCode, sOutput)
+            End If
 
             Dim sLines As String() = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
             For i = sLines.Length - 1 To 0 Step -1
+                If (Not String.IsNullOrEmpty(sEmulateSourceFile) AndAlso sLines(i).Contains(TmpSourceFile)) Then
+                    sLines(i) = Regex.Replace(sLines(i), "^\b" & Regex.Escape(TmpSourceFile) & "\b", sEmulateSourceFile)
+                End If
                 g_mFormMain.PrintInformation("[INFO]", vbTab & sLines(i))
             Next
 

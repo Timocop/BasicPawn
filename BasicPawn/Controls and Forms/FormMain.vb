@@ -632,7 +632,7 @@ Public Class FormMain
         End If
 
         Dim sOutput As String = ""
-        g_ClassTextEditorTools.CompileSource(True, sSource, sOutput, Nothing, Nothing, sSourceFile)
+        g_ClassTextEditorTools.CompileSource(True, sSource, sOutput, IO.Path.GetDirectoryName(sSourceFile), Nothing, Nothing, sSourceFile)
     End Sub
 #End Region
 
