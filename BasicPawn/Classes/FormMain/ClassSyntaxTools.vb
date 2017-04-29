@@ -479,7 +479,24 @@ Public Class ClassSyntaxTools
         End Using
         sSource = SB.ToString
 
+        'Get any valid statements ends and put them in a list
+        Dim lValidStateEnds As New List(Of Integer)
+        Dim iExpressions As Integer()() = GetExpressionBetweenCharacters(sSource, "("c, ")"c, 1, True)
+        For Each mMatch As Match In Regex.Matches(sSource, "\b(if|else|while|for)\b\s*(?<End>\()")
+            If (Not mMatch.Groups("End").Success) Then
+                Continue For
+            End If
+
+            Dim iEndIndex As Integer = mMatch.Groups("End").Index
+            For i = 0 To iExpressions.Length - 1
+                If (iEndIndex = iExpressions(i)(0)) Then
+                    lValidStateEnds.Add(iExpressions(i)(1))
+                End If
+            Next
+        Next
+
         Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
+
 
         Dim iBraceCount As Integer = 0
         Dim iBracedCount As Integer = 0
@@ -509,7 +526,40 @@ Public Class ClassSyntaxTools
 
                     Case vbLf(0)
                         'If (Not sourceAnalysis.InNonCode(i)) Then
-                        sSource = sSource.Insert(i + 1, New String(vbTab(0), sourceAnalysis.m_GetBraceLevel(i + 1 + iBraceCount) + If(iBracedCount > 0, iBracedCount + 1, 0)))
+
+
+                        Dim iStatementLevel As Integer = 0
+                        For j = i To sSource.Length - 1
+                            If (Not Regex.IsMatch(sSource(j), "\s")) Then
+                                If (sSource(j) = "{") Then
+                                    iStatementLevel = -1
+                                End If
+
+                                Exit For
+                            End If
+                        Next
+
+                        If (iStatementLevel > -1) Then
+                            For j = i - 1 To 0 Step -1
+                                If (sourceAnalysis.m_InNonCode(j)) Then
+                                    Continue For
+                                End If
+
+                                If (sSource(j) = ")"c) Then
+                                    If (lValidStateEnds.Contains(j)) Then
+                                        iStatementLevel = 1
+                                    End If
+
+                                    Exit For
+                                End If
+
+                                If (Not Regex.IsMatch(sSource(j), "[a-zA-Z0-9_\s]")) Then
+                                    Exit For
+                                End If
+                            Next
+                        End If
+
+                        sSource = sSource.Insert(i + 1, New String(vbTab(0), sourceAnalysis.m_GetBraceLevel(i + 1 + iBraceCount) + If(iBracedCount > 0, iBracedCount + 1, 0) + If(iStatementLevel > -1, iStatementLevel, 0)))
                         'End If
                         iBraceCount = 0
 
