@@ -91,7 +91,7 @@ Partial Class FormSearch
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(50, 13)
         Me.Label2.TabIndex = 2
-        Me.Label2.Text = "Repalce:"
+        Me.Label2.Text = "Replace:"
         '
         'Button_Search
         '
