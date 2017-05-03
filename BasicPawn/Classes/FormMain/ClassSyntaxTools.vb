@@ -482,7 +482,7 @@ Public Class ClassSyntaxTools
         'Get any valid statements ends and put them in a list
         Dim lValidStateEnds As New List(Of Integer)
         Dim iExpressions As Integer()() = GetExpressionBetweenCharacters(sSource, "("c, ")"c, 1, True)
-        For Each mMatch As Match In Regex.Matches(sSource, "(\b(if|while|for)\b\s*(?<End1>\()|\b(?<End2>else(?!\s+\b(if)\b))\b)")
+        For Each mMatch As Match In Regex.Matches(sSource, "(?<!\#)(\b(if|while|for)\b\s*(?<End1>\()|\b(?<End2>else(?!\s+\b(if)\b))\b)")
             If (mMatch.Groups("End1").Success) Then
                 Dim iEndIndex As Integer = mMatch.Groups("End1").Index
                 For i = 0 To iExpressions.Length - 1
