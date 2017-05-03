@@ -482,17 +482,18 @@ Public Class ClassSyntaxTools
         'Get any valid statements ends and put them in a list
         Dim lValidStateEnds As New List(Of Integer)
         Dim iExpressions As Integer()() = GetExpressionBetweenCharacters(sSource, "("c, ")"c, 1, True)
-        For Each mMatch As Match In Regex.Matches(sSource, "\b(if|else|while|for)\b\s*(?<End>\()")
-            If (Not mMatch.Groups("End").Success) Then
-                Continue For
+        For Each mMatch As Match In Regex.Matches(sSource, "(\b(if|while|for)\b\s*(?<End1>\()|\b(?<End2>else(?!\s+\b(if)\b))\b)")
+            If (mMatch.Groups("End1").Success) Then
+                Dim iEndIndex As Integer = mMatch.Groups("End1").Index
+                For i = 0 To iExpressions.Length - 1
+                    If (iEndIndex = iExpressions(i)(0)) Then
+                        lValidStateEnds.Add(iExpressions(i)(1))
+                    End If
+                Next
+            ElseIf (mMatch.Groups("End2").Success) Then
+                Dim iEndIndex As Integer = mMatch.Groups("End2").Index + mMatch.Groups("End2").Length - 1
+                lValidStateEnds.Add(iEndIndex)
             End If
-
-            Dim iEndIndex As Integer = mMatch.Groups("End").Index
-            For i = 0 To iExpressions.Length - 1
-                If (iEndIndex = iExpressions(i)(0)) Then
-                    lValidStateEnds.Add(iExpressions(i)(1))
-                End If
-            Next
         Next
 
         Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
@@ -525,9 +526,7 @@ Public Class ClassSyntaxTools
                         End If
 
                     Case vbLf(0)
-                        'If (Not sourceAnalysis.InNonCode(i)) Then
-
-
+                        'If (Not sourceAnalysis.InNonCode(i)) Then 
                         Dim iStatementLevel As Integer = 0
                         For j = i To sSource.Length - 1
                             If (Not Regex.IsMatch(sSource(j), "\s")) Then
@@ -545,7 +544,7 @@ Public Class ClassSyntaxTools
                                     Continue For
                                 End If
 
-                                If (sSource(j) = ")"c) Then
+                                If (Not Regex.IsMatch(sSource(j), "\s")) Then
                                     If (lValidStateEnds.Contains(j)) Then
                                         iStatementLevel = 1
                                     End If
