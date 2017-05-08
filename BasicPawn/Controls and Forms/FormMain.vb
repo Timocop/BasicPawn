@@ -545,6 +545,19 @@ Public Class FormMain
                 Return
             End If
 
+            Dim lRealSourceLines As New List(Of String)
+            Using mStringReader As New IO.StringReader(g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent)
+                Dim sLine As String
+                While True
+                    sLine = mStringReader.ReadLine
+                    If (sLine Is Nothing) Then
+                        Exit While
+                    End If
+
+                    lRealSourceLines.Add(sLine)
+                End While
+            End Using
+
             Dim sFormatedSource As String = g_ClassSyntaxTools.FormatCode(g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent)
             Dim lFormatedSourceLines As New List(Of String)
             Using mStringReader As New IO.StringReader(sFormatedSource)
@@ -559,7 +572,7 @@ Public Class FormMain
                 End While
             End Using
 
-            If (g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TotalNumberOfLines - 1 <> lFormatedSourceLines.Count) Then
+            If (lRealSourceLines.Count <> lFormatedSourceLines.Count) Then
                 Throw New ArgumentException("Formated number of lines are not equal with document number of lines!")
             End If
 
