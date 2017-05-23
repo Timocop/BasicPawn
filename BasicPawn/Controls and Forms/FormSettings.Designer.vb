@@ -57,6 +57,7 @@ Partial Class FormSettings
         Me.Label_Font = New System.Windows.Forms.Label()
         Me.CheckBox_InvertedColors = New System.Windows.Forms.CheckBox()
         Me.Panel14 = New System.Windows.Forms.Panel()
+        Me.CheckBox_AutoShowStartPage = New System.Windows.Forms.CheckBox()
         Me.Label16 = New System.Windows.Forms.Label()
         Me.CheckBox_AlwaysNewInstance = New System.Windows.Forms.CheckBox()
         Me.TabPage_Configs = New System.Windows.Forms.TabPage()
@@ -128,7 +129,6 @@ Partial Class FormSettings
         Me.Label17 = New System.Windows.Forms.Label()
         Me.Button_Cancel = New System.Windows.Forms.Button()
         Me.Button_Apply = New System.Windows.Forms.Button()
-        Me.CheckBox_AutoShowStartPage = New System.Windows.Forms.CheckBox()
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Settings.SuspendLayout()
         Me.Panel8.SuspendLayout()
@@ -572,6 +572,18 @@ Partial Class FormSettings
         Me.Panel14.Name = "Panel14"
         Me.Panel14.Size = New System.Drawing.Size(602, 67)
         Me.Panel14.TabIndex = 26
+        '
+        'CheckBox_AutoShowStartPage
+        '
+        Me.CheckBox_AutoShowStartPage.AutoSize = True
+        Me.CheckBox_AutoShowStartPage.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_AutoShowStartPage.Location = New System.Drawing.Point(6, 46)
+        Me.CheckBox_AutoShowStartPage.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_AutoShowStartPage.Name = "CheckBox_AutoShowStartPage"
+        Me.CheckBox_AutoShowStartPage.Size = New System.Drawing.Size(235, 18)
+        Me.CheckBox_AutoShowStartPage.TabIndex = 20
+        Me.CheckBox_AutoShowStartPage.Text = "Show StartPage when no file is opened"
+        Me.CheckBox_AutoShowStartPage.UseVisualStyleBackColor = True
         '
         'Label16
         '
@@ -1160,6 +1172,7 @@ Partial Class FormSettings
         '
         'ListBox_Configs
         '
+        Me.ListBox_Configs.Cursor = System.Windows.Forms.Cursors.Hand
         Me.ListBox_Configs.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ListBox_Configs.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ListBox_Configs.FormattingEnabled = True
@@ -1370,18 +1383,6 @@ Partial Class FormSettings
         Me.Button_Apply.TabIndex = 2
         Me.Button_Apply.Text = "Apply"
         Me.Button_Apply.UseVisualStyleBackColor = True
-        '
-        'CheckBox_AutoShowStartPage
-        '
-        Me.CheckBox_AutoShowStartPage.AutoSize = True
-        Me.CheckBox_AutoShowStartPage.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_AutoShowStartPage.Location = New System.Drawing.Point(6, 46)
-        Me.CheckBox_AutoShowStartPage.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_AutoShowStartPage.Name = "CheckBox_AutoShowStartPage"
-        Me.CheckBox_AutoShowStartPage.Size = New System.Drawing.Size(235, 18)
-        Me.CheckBox_AutoShowStartPage.TabIndex = 20
-        Me.CheckBox_AutoShowStartPage.Text = "Show StartPage when no file is opened"
-        Me.CheckBox_AutoShowStartPage.UseVisualStyleBackColor = True
         '
         'FormSettings
         '
