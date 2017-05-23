@@ -379,11 +379,7 @@ Public Class FormSettings
         Next
         ListView_Plugins.Items.Clear()
         ListView_Plugins.Items.AddRange(lListViewItems.ToArray)
-        If (ListView_Plugins.Items.Count < 1) Then
-            ListView_Plugins.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize)
-        Else
-            ListView_Plugins.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent)
-        End If
+        ListView_Plugins.AutoResizeColumns(If(ListView_Plugins.Items.Count > 0, ColumnHeaderAutoResizeStyle.ColumnContent, ColumnHeaderAutoResizeStyle.HeaderSize))
 
         'Fill DatabaseViewer
         DatabaseViewer.FillFromDatabase()
