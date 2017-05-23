@@ -27,6 +27,16 @@ Public Class FormDebuggerStop
     Private g_mDialogResult As ENUM_DIALOG_RESULT = ENUM_DIALOG_RESULT.DO_NOTHING
     Private g_bRememberAction As Boolean = False
 
+    Public Sub New()
+
+        ' This call is required by the designer.
+        InitializeComponent()
+
+        ' Add any initialization after the InitializeComponent() call. 
+        Panel_FooterControl.Name &= "@FooterControl"
+        Panel_FooterDarkControl.Name &= "@FooterDarkControl"
+    End Sub
+
     Public ReadOnly Property m_DialogResult As ENUM_DIALOG_RESULT
         Get
             Return g_mDialogResult

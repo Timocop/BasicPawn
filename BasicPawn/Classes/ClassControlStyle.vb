@@ -97,8 +97,8 @@ Public Class ClassControlStyle
 
             Case TypeOf o Is Panel
                 Dim i As Panel = DirectCast(o, Panel)
-                Select Case (i.Name)
-                    Case "Panel_FooterControl"
+                Select Case (True)
+                    Case i.Name.Contains("@FooterControl")
                         If (m_IsInvertedColors) Then
                             i.BackColor = g_cDarkPanelColor.mDarkBackground
                             i.ForeColor = g_cDarkPanelColor.mDarkForeground
@@ -107,7 +107,7 @@ Public Class ClassControlStyle
                             i.ForeColor = g_cDarkPanelColor.mLightForegound
                         End If
 
-                    Case "Panel_FooterDarkControl"
+                    Case i.Name.Contains("@FooterDarkControl")
                         If (m_IsInvertedColors) Then
                             i.BackColor = Color.Gray
                             i.ForeColor = g_cDarkPanelColor.mDarkForeground
@@ -116,7 +116,7 @@ Public Class ClassControlStyle
                             i.ForeColor = g_cDarkPanelColor.mLightForegound
                         End If
 
-                    Case "#Ignore"
+                    Case i.Name.Contains("@KeepForeBackColor")
                         'Ignore
 
                     Case Else

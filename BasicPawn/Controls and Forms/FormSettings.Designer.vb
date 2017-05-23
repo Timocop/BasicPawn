@@ -26,18 +26,18 @@ Partial Class FormSettings
         Me.TabControl1 = New System.Windows.Forms.TabControl()
         Me.TabPage_Settings = New System.Windows.Forms.TabPage()
         Me.Panel8 = New System.Windows.Forms.Panel()
-        Me.Panel4 = New System.Windows.Forms.Panel()
         Me.Label14 = New System.Windows.Forms.Label()
+        Me.Panel4 = New System.Windows.Forms.Panel()
         Me.CheckBox_CatchExceptions = New System.Windows.Forms.CheckBox()
         Me.CheckBox_EntitiesEnableColor = New System.Windows.Forms.CheckBox()
         Me.CheckBox_EntitiesEnableShowNewEnts = New System.Windows.Forms.CheckBox()
         Me.Panel5 = New System.Windows.Forms.Panel()
+        Me.Label1 = New System.Windows.Forms.Label()
         Me.CheckBox_SwitchTabToAutocomplete = New System.Windows.Forms.CheckBox()
         Me.CheckBox_AlwaysLoadDefaultIncludes = New System.Windows.Forms.CheckBox()
         Me.Panel15 = New System.Windows.Forms.Panel()
         Me.CheckBox_VarAutocompleteShowObjectBrowser = New System.Windows.Forms.CheckBox()
         Me.CheckBox_CurrentSourceVarAutocomplete = New System.Windows.Forms.CheckBox()
-        Me.Label1 = New System.Windows.Forms.Label()
         Me.CheckBox_OnScreenIntelliSense = New System.Windows.Forms.CheckBox()
         Me.CheckBox_FullAutcompleteMethods = New System.Windows.Forms.CheckBox()
         Me.CheckBox_CommentsMethodIntelliSense = New System.Windows.Forms.CheckBox()
@@ -46,13 +46,13 @@ Partial Class FormSettings
         Me.CheckBox_WindowsToolTipPopup = New System.Windows.Forms.CheckBox()
         Me.CheckBox_CaseSensitive = New System.Windows.Forms.CheckBox()
         Me.Panel6 = New System.Windows.Forms.Panel()
-        Me.Panel1 = New System.Windows.Forms.Panel()
         Me.Label7 = New System.Windows.Forms.Label()
+        Me.Panel1 = New System.Windows.Forms.Panel()
         Me.CheckBox_DoubleClickMark = New System.Windows.Forms.CheckBox()
         Me.CheckBox_AutoMark = New System.Windows.Forms.CheckBox()
         Me.Panel7 = New System.Windows.Forms.Panel()
-        Me.Panel3 = New System.Windows.Forms.Panel()
         Me.Label8 = New System.Windows.Forms.Label()
+        Me.Panel3 = New System.Windows.Forms.Panel()
         Me.Button_Font = New System.Windows.Forms.Button()
         Me.Label_Font = New System.Windows.Forms.Label()
         Me.CheckBox_InvertedColors = New System.Windows.Forms.CheckBox()
@@ -73,8 +73,8 @@ Partial Class FormSettings
         Me.Panel2 = New System.Windows.Forms.Panel()
         Me.GroupBox_ConfigSettings = New System.Windows.Forms.GroupBox()
         Me.Panel11 = New System.Windows.Forms.Panel()
-        Me.Panel13 = New System.Windows.Forms.Panel()
         Me.Label13 = New System.Windows.Forms.Label()
+        Me.Panel13 = New System.Windows.Forms.Panel()
         Me.Label10 = New System.Windows.Forms.Label()
         Me.TextBox_Shell = New System.Windows.Forms.TextBox()
         Me.LinkLabel_ShowShellArguments = New System.Windows.Forms.LinkLabel()
@@ -83,8 +83,8 @@ Partial Class FormSettings
         Me.Button_SyntaxPath = New System.Windows.Forms.Button()
         Me.LinkLabel_SyntaxDefault = New System.Windows.Forms.LinkLabel()
         Me.Panel10 = New System.Windows.Forms.Panel()
-        Me.Panel12 = New System.Windows.Forms.Panel()
         Me.Label9 = New System.Windows.Forms.Label()
+        Me.Panel12 = New System.Windows.Forms.Panel()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.TextBox_GameFolder = New System.Windows.Forms.TextBox()
         Me.Button_GameFolder = New System.Windows.Forms.Button()
@@ -117,6 +117,7 @@ Partial Class FormSettings
         Me.ColumnHeader5 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader6 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.TabPage_Database = New System.Windows.Forms.TabPage()
+        Me.Button_Refresh = New System.Windows.Forms.Button()
         Me.TableLayoutPanel4 = New System.Windows.Forms.TableLayoutPanel()
         Me.ClassPictureBoxQuality2 = New BasicPawn.ClassPictureBoxQuality()
         Me.Label18 = New System.Windows.Forms.Label()
@@ -127,7 +128,6 @@ Partial Class FormSettings
         Me.Label17 = New System.Windows.Forms.Label()
         Me.Button_Cancel = New System.Windows.Forms.Button()
         Me.Button_Apply = New System.Windows.Forms.Button()
-        Me.Button_Refresh = New System.Windows.Forms.Button()
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Settings.SuspendLayout()
         Me.Panel8.SuspendLayout()
@@ -186,16 +186,29 @@ Partial Class FormSettings
         'Panel8
         '
         Me.Panel8.AutoSize = True
-        Me.Panel8.Controls.Add(Me.Panel4)
         Me.Panel8.Controls.Add(Me.Label14)
+        Me.Panel8.Controls.Add(Me.Panel4)
         Me.Panel8.Controls.Add(Me.CheckBox_CatchExceptions)
         Me.Panel8.Controls.Add(Me.CheckBox_EntitiesEnableColor)
         Me.Panel8.Controls.Add(Me.CheckBox_EntitiesEnableShowNewEnts)
         Me.Panel8.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel8.Location = New System.Drawing.Point(0, 462)
+        Me.Panel8.Location = New System.Drawing.Point(0, 468)
         Me.Panel8.Name = "Panel8"
-        Me.Panel8.Size = New System.Drawing.Size(602, 91)
+        Me.Panel8.Size = New System.Drawing.Size(602, 92)
         Me.Panel8.TabIndex = 25
+        '
+        'Label14
+        '
+        Me.Label14.AutoSize = True
+        Me.Label14.Dock = System.Windows.Forms.DockStyle.Top
+        Me.Label14.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label14.Location = New System.Drawing.Point(0, 1)
+        Me.Label14.Margin = New System.Windows.Forms.Padding(3)
+        Me.Label14.Name = "Label14"
+        Me.Label14.Padding = New System.Windows.Forms.Padding(6, 3, 0, 0)
+        Me.Label14.Size = New System.Drawing.Size(65, 16)
+        Me.Label14.TabIndex = 18
+        Me.Label14.Text = "Debugger"
         '
         'Panel4
         '
@@ -206,22 +219,11 @@ Partial Class FormSettings
         Me.Panel4.Size = New System.Drawing.Size(602, 1)
         Me.Panel4.TabIndex = 10
         '
-        'Label14
-        '
-        Me.Label14.AutoSize = True
-        Me.Label14.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label14.Location = New System.Drawing.Point(6, 6)
-        Me.Label14.Margin = New System.Windows.Forms.Padding(6, 3, 3, 0)
-        Me.Label14.Name = "Label14"
-        Me.Label14.Size = New System.Drawing.Size(59, 13)
-        Me.Label14.TabIndex = 18
-        Me.Label14.Text = "Debugger"
-        '
         'CheckBox_CatchExceptions
         '
         Me.CheckBox_CatchExceptions.AutoSize = True
         Me.CheckBox_CatchExceptions.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_CatchExceptions.Location = New System.Drawing.Point(6, 22)
+        Me.CheckBox_CatchExceptions.Location = New System.Drawing.Point(6, 23)
         Me.CheckBox_CatchExceptions.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_CatchExceptions.Name = "CheckBox_CatchExceptions"
         Me.CheckBox_CatchExceptions.Size = New System.Drawing.Size(119, 18)
@@ -233,7 +235,7 @@ Partial Class FormSettings
         '
         Me.CheckBox_EntitiesEnableColor.AutoSize = True
         Me.CheckBox_EntitiesEnableColor.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_EntitiesEnableColor.Location = New System.Drawing.Point(6, 46)
+        Me.CheckBox_EntitiesEnableColor.Location = New System.Drawing.Point(6, 47)
         Me.CheckBox_EntitiesEnableColor.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_EntitiesEnableColor.Name = "CheckBox_EntitiesEnableColor"
         Me.CheckBox_EntitiesEnableColor.Size = New System.Drawing.Size(221, 18)
@@ -245,7 +247,7 @@ Partial Class FormSettings
         '
         Me.CheckBox_EntitiesEnableShowNewEnts.AutoSize = True
         Me.CheckBox_EntitiesEnableShowNewEnts.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_EntitiesEnableShowNewEnts.Location = New System.Drawing.Point(6, 70)
+        Me.CheckBox_EntitiesEnableShowNewEnts.Location = New System.Drawing.Point(6, 71)
         Me.CheckBox_EntitiesEnableShowNewEnts.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_EntitiesEnableShowNewEnts.Name = "CheckBox_EntitiesEnableShowNewEnts"
         Me.CheckBox_EntitiesEnableShowNewEnts.Size = New System.Drawing.Size(211, 18)
@@ -256,12 +258,12 @@ Partial Class FormSettings
         'Panel5
         '
         Me.Panel5.AutoSize = True
+        Me.Panel5.Controls.Add(Me.Label1)
         Me.Panel5.Controls.Add(Me.CheckBox_SwitchTabToAutocomplete)
         Me.Panel5.Controls.Add(Me.CheckBox_AlwaysLoadDefaultIncludes)
         Me.Panel5.Controls.Add(Me.Panel15)
         Me.Panel5.Controls.Add(Me.CheckBox_VarAutocompleteShowObjectBrowser)
         Me.Panel5.Controls.Add(Me.CheckBox_CurrentSourceVarAutocomplete)
-        Me.Panel5.Controls.Add(Me.Label1)
         Me.Panel5.Controls.Add(Me.CheckBox_OnScreenIntelliSense)
         Me.Panel5.Controls.Add(Me.CheckBox_FullAutcompleteMethods)
         Me.Panel5.Controls.Add(Me.CheckBox_CommentsMethodIntelliSense)
@@ -270,16 +272,29 @@ Partial Class FormSettings
         Me.Panel5.Controls.Add(Me.CheckBox_WindowsToolTipPopup)
         Me.Panel5.Controls.Add(Me.CheckBox_CaseSensitive)
         Me.Panel5.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel5.Location = New System.Drawing.Point(0, 182)
+        Me.Panel5.Location = New System.Drawing.Point(0, 184)
         Me.Panel5.Name = "Panel5"
-        Me.Panel5.Size = New System.Drawing.Size(602, 280)
+        Me.Panel5.Size = New System.Drawing.Size(602, 284)
         Me.Panel5.TabIndex = 22
+        '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Dock = System.Windows.Forms.DockStyle.Top
+        Me.Label1.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label1.Location = New System.Drawing.Point(0, 1)
+        Me.Label1.Margin = New System.Windows.Forms.Padding(3)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Padding = New System.Windows.Forms.Padding(6, 3, 0, 0)
+        Me.Label1.Size = New System.Drawing.Size(161, 16)
+        Me.Label1.TabIndex = 1
+        Me.Label1.Text = "Autocomplete && IntelliSense"
         '
         'CheckBox_SwitchTabToAutocomplete
         '
         Me.CheckBox_SwitchTabToAutocomplete.AutoSize = True
         Me.CheckBox_SwitchTabToAutocomplete.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_SwitchTabToAutocomplete.Location = New System.Drawing.Point(6, 259)
+        Me.CheckBox_SwitchTabToAutocomplete.Location = New System.Drawing.Point(6, 263)
         Me.CheckBox_SwitchTabToAutocomplete.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_SwitchTabToAutocomplete.Name = "CheckBox_SwitchTabToAutocomplete"
         Me.CheckBox_SwitchTabToAutocomplete.Size = New System.Drawing.Size(326, 18)
@@ -291,7 +306,7 @@ Partial Class FormSettings
         '
         Me.CheckBox_AlwaysLoadDefaultIncludes.AutoSize = True
         Me.CheckBox_AlwaysLoadDefaultIncludes.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_AlwaysLoadDefaultIncludes.Location = New System.Drawing.Point(6, 19)
+        Me.CheckBox_AlwaysLoadDefaultIncludes.Location = New System.Drawing.Point(6, 23)
         Me.CheckBox_AlwaysLoadDefaultIncludes.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_AlwaysLoadDefaultIncludes.Name = "CheckBox_AlwaysLoadDefaultIncludes"
         Me.CheckBox_AlwaysLoadDefaultIncludes.Size = New System.Drawing.Size(198, 18)
@@ -312,7 +327,7 @@ Partial Class FormSettings
         '
         Me.CheckBox_VarAutocompleteShowObjectBrowser.AutoSize = True
         Me.CheckBox_VarAutocompleteShowObjectBrowser.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_VarAutocompleteShowObjectBrowser.Location = New System.Drawing.Point(6, 235)
+        Me.CheckBox_VarAutocompleteShowObjectBrowser.Location = New System.Drawing.Point(6, 239)
         Me.CheckBox_VarAutocompleteShowObjectBrowser.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_VarAutocompleteShowObjectBrowser.Name = "CheckBox_VarAutocompleteShowObjectBrowser"
         Me.CheckBox_VarAutocompleteShowObjectBrowser.Size = New System.Drawing.Size(224, 18)
@@ -324,7 +339,7 @@ Partial Class FormSettings
         '
         Me.CheckBox_CurrentSourceVarAutocomplete.AutoSize = True
         Me.CheckBox_CurrentSourceVarAutocomplete.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_CurrentSourceVarAutocomplete.Location = New System.Drawing.Point(6, 211)
+        Me.CheckBox_CurrentSourceVarAutocomplete.Location = New System.Drawing.Point(6, 215)
         Me.CheckBox_CurrentSourceVarAutocomplete.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_CurrentSourceVarAutocomplete.Name = "CheckBox_CurrentSourceVarAutocomplete"
         Me.CheckBox_CurrentSourceVarAutocomplete.Size = New System.Drawing.Size(504, 18)
@@ -333,22 +348,11 @@ Partial Class FormSettings
     "ocompletion"
         Me.CheckBox_CurrentSourceVarAutocomplete.UseVisualStyleBackColor = True
         '
-        'Label1
-        '
-        Me.Label1.AutoSize = True
-        Me.Label1.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label1.Location = New System.Drawing.Point(6, 3)
-        Me.Label1.Margin = New System.Windows.Forms.Padding(6, 3, 3, 0)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(155, 13)
-        Me.Label1.TabIndex = 1
-        Me.Label1.Text = "Autocomplete && IntelliSense"
-        '
         'CheckBox_OnScreenIntelliSense
         '
         Me.CheckBox_OnScreenIntelliSense.AutoSize = True
         Me.CheckBox_OnScreenIntelliSense.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_OnScreenIntelliSense.Location = New System.Drawing.Point(6, 43)
+        Me.CheckBox_OnScreenIntelliSense.Location = New System.Drawing.Point(6, 47)
         Me.CheckBox_OnScreenIntelliSense.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_OnScreenIntelliSense.Name = "CheckBox_OnScreenIntelliSense"
         Me.CheckBox_OnScreenIntelliSense.Size = New System.Drawing.Size(129, 18)
@@ -360,7 +364,7 @@ Partial Class FormSettings
         '
         Me.CheckBox_FullAutcompleteMethods.AutoSize = True
         Me.CheckBox_FullAutcompleteMethods.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_FullAutcompleteMethods.Location = New System.Drawing.Point(6, 139)
+        Me.CheckBox_FullAutcompleteMethods.Location = New System.Drawing.Point(6, 143)
         Me.CheckBox_FullAutcompleteMethods.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_FullAutcompleteMethods.Name = "CheckBox_FullAutcompleteMethods"
         Me.CheckBox_FullAutcompleteMethods.Size = New System.Drawing.Size(202, 18)
@@ -372,7 +376,7 @@ Partial Class FormSettings
         '
         Me.CheckBox_CommentsMethodIntelliSense.AutoSize = True
         Me.CheckBox_CommentsMethodIntelliSense.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_CommentsMethodIntelliSense.Location = New System.Drawing.Point(32, 67)
+        Me.CheckBox_CommentsMethodIntelliSense.Location = New System.Drawing.Point(32, 71)
         Me.CheckBox_CommentsMethodIntelliSense.Margin = New System.Windows.Forms.Padding(32, 3, 3, 3)
         Me.CheckBox_CommentsMethodIntelliSense.Name = "CheckBox_CommentsMethodIntelliSense"
         Me.CheckBox_CommentsMethodIntelliSense.Size = New System.Drawing.Size(319, 18)
@@ -384,7 +388,7 @@ Partial Class FormSettings
         '
         Me.CheckBox_CommentsAutocompleteIntelliSense.AutoSize = True
         Me.CheckBox_CommentsAutocompleteIntelliSense.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_CommentsAutocompleteIntelliSense.Location = New System.Drawing.Point(32, 91)
+        Me.CheckBox_CommentsAutocompleteIntelliSense.Location = New System.Drawing.Point(32, 95)
         Me.CheckBox_CommentsAutocompleteIntelliSense.Margin = New System.Windows.Forms.Padding(32, 3, 3, 3)
         Me.CheckBox_CommentsAutocompleteIntelliSense.Name = "CheckBox_CommentsAutocompleteIntelliSense"
         Me.CheckBox_CommentsAutocompleteIntelliSense.Size = New System.Drawing.Size(356, 18)
@@ -396,7 +400,7 @@ Partial Class FormSettings
         '
         Me.CheckBox_FullAutocompleteReTagging.AutoSize = True
         Me.CheckBox_FullAutocompleteReTagging.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_FullAutocompleteReTagging.Location = New System.Drawing.Point(6, 163)
+        Me.CheckBox_FullAutocompleteReTagging.Location = New System.Drawing.Point(6, 167)
         Me.CheckBox_FullAutocompleteReTagging.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_FullAutocompleteReTagging.Name = "CheckBox_FullAutocompleteReTagging"
         Me.CheckBox_FullAutocompleteReTagging.Size = New System.Drawing.Size(415, 18)
@@ -408,7 +412,7 @@ Partial Class FormSettings
         '
         Me.CheckBox_WindowsToolTipPopup.AutoSize = True
         Me.CheckBox_WindowsToolTipPopup.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_WindowsToolTipPopup.Location = New System.Drawing.Point(32, 115)
+        Me.CheckBox_WindowsToolTipPopup.Location = New System.Drawing.Point(32, 119)
         Me.CheckBox_WindowsToolTipPopup.Margin = New System.Windows.Forms.Padding(32, 3, 3, 3)
         Me.CheckBox_WindowsToolTipPopup.Name = "CheckBox_WindowsToolTipPopup"
         Me.CheckBox_WindowsToolTipPopup.Size = New System.Drawing.Size(127, 18)
@@ -420,7 +424,7 @@ Partial Class FormSettings
         '
         Me.CheckBox_CaseSensitive.AutoSize = True
         Me.CheckBox_CaseSensitive.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_CaseSensitive.Location = New System.Drawing.Point(6, 187)
+        Me.CheckBox_CaseSensitive.Location = New System.Drawing.Point(6, 191)
         Me.CheckBox_CaseSensitive.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_CaseSensitive.Name = "CheckBox_CaseSensitive"
         Me.CheckBox_CaseSensitive.Size = New System.Drawing.Size(103, 18)
@@ -431,15 +435,28 @@ Partial Class FormSettings
         'Panel6
         '
         Me.Panel6.AutoSize = True
-        Me.Panel6.Controls.Add(Me.Panel1)
         Me.Panel6.Controls.Add(Me.Label7)
+        Me.Panel6.Controls.Add(Me.Panel1)
         Me.Panel6.Controls.Add(Me.CheckBox_DoubleClickMark)
         Me.Panel6.Controls.Add(Me.CheckBox_AutoMark)
         Me.Panel6.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel6.Location = New System.Drawing.Point(0, 115)
+        Me.Panel6.Location = New System.Drawing.Point(0, 116)
         Me.Panel6.Name = "Panel6"
-        Me.Panel6.Size = New System.Drawing.Size(602, 67)
+        Me.Panel6.Size = New System.Drawing.Size(602, 68)
         Me.Panel6.TabIndex = 23
+        '
+        'Label7
+        '
+        Me.Label7.AutoSize = True
+        Me.Label7.Dock = System.Windows.Forms.DockStyle.Top
+        Me.Label7.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label7.Location = New System.Drawing.Point(0, 1)
+        Me.Label7.Margin = New System.Windows.Forms.Padding(3)
+        Me.Label7.Name = "Label7"
+        Me.Label7.Padding = New System.Windows.Forms.Padding(6, 3, 0, 0)
+        Me.Label7.Size = New System.Drawing.Size(117, 16)
+        Me.Label7.TabIndex = 4
+        Me.Label7.Text = "Syntax Highlighting"
         '
         'Panel1
         '
@@ -450,22 +467,11 @@ Partial Class FormSettings
         Me.Panel1.Size = New System.Drawing.Size(602, 1)
         Me.Panel1.TabIndex = 0
         '
-        'Label7
-        '
-        Me.Label7.AutoSize = True
-        Me.Label7.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label7.Location = New System.Drawing.Point(6, 6)
-        Me.Label7.Margin = New System.Windows.Forms.Padding(6, 3, 3, 0)
-        Me.Label7.Name = "Label7"
-        Me.Label7.Size = New System.Drawing.Size(111, 13)
-        Me.Label7.TabIndex = 4
-        Me.Label7.Text = "Syntax Highlighting"
-        '
         'CheckBox_DoubleClickMark
         '
         Me.CheckBox_DoubleClickMark.AutoSize = True
         Me.CheckBox_DoubleClickMark.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_DoubleClickMark.Location = New System.Drawing.Point(6, 22)
+        Me.CheckBox_DoubleClickMark.Location = New System.Drawing.Point(6, 23)
         Me.CheckBox_DoubleClickMark.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_DoubleClickMark.Name = "CheckBox_DoubleClickMark"
         Me.CheckBox_DoubleClickMark.Size = New System.Drawing.Size(190, 18)
@@ -477,7 +483,7 @@ Partial Class FormSettings
         '
         Me.CheckBox_AutoMark.AutoSize = True
         Me.CheckBox_AutoMark.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_AutoMark.Location = New System.Drawing.Point(6, 46)
+        Me.CheckBox_AutoMark.Location = New System.Drawing.Point(6, 47)
         Me.CheckBox_AutoMark.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_AutoMark.Name = "CheckBox_AutoMark"
         Me.CheckBox_AutoMark.Size = New System.Drawing.Size(164, 18)
@@ -488,16 +494,29 @@ Partial Class FormSettings
         'Panel7
         '
         Me.Panel7.AutoSize = True
-        Me.Panel7.Controls.Add(Me.Panel3)
         Me.Panel7.Controls.Add(Me.Label8)
+        Me.Panel7.Controls.Add(Me.Panel3)
         Me.Panel7.Controls.Add(Me.Button_Font)
         Me.Panel7.Controls.Add(Me.Label_Font)
         Me.Panel7.Controls.Add(Me.CheckBox_InvertedColors)
         Me.Panel7.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel7.Location = New System.Drawing.Point(0, 43)
         Me.Panel7.Name = "Panel7"
-        Me.Panel7.Size = New System.Drawing.Size(602, 72)
+        Me.Panel7.Size = New System.Drawing.Size(602, 73)
         Me.Panel7.TabIndex = 24
+        '
+        'Label8
+        '
+        Me.Label8.AutoSize = True
+        Me.Label8.Dock = System.Windows.Forms.DockStyle.Top
+        Me.Label8.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label8.Location = New System.Drawing.Point(0, 1)
+        Me.Label8.Margin = New System.Windows.Forms.Padding(3)
+        Me.Label8.Name = "Label8"
+        Me.Label8.Padding = New System.Windows.Forms.Padding(6, 3, 0, 0)
+        Me.Label8.Size = New System.Drawing.Size(68, 16)
+        Me.Label8.TabIndex = 10
+        Me.Label8.Text = "Text Editor"
         '
         'Panel3
         '
@@ -508,21 +527,10 @@ Partial Class FormSettings
         Me.Panel3.Size = New System.Drawing.Size(602, 1)
         Me.Panel3.TabIndex = 9
         '
-        'Label8
-        '
-        Me.Label8.AutoSize = True
-        Me.Label8.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label8.Location = New System.Drawing.Point(6, 6)
-        Me.Label8.Margin = New System.Windows.Forms.Padding(6, 3, 3, 0)
-        Me.Label8.Name = "Label8"
-        Me.Label8.Size = New System.Drawing.Size(62, 13)
-        Me.Label8.TabIndex = 10
-        Me.Label8.Text = "Text Editor"
-        '
         'Button_Font
         '
         Me.Button_Font.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_Font.Location = New System.Drawing.Point(6, 22)
+        Me.Button_Font.Location = New System.Drawing.Point(6, 23)
         Me.Button_Font.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.Button_Font.Name = "Button_Font"
         Me.Button_Font.Size = New System.Drawing.Size(75, 23)
@@ -533,7 +541,7 @@ Partial Class FormSettings
         'Label_Font
         '
         Me.Label_Font.AutoSize = True
-        Me.Label_Font.Location = New System.Drawing.Point(90, 27)
+        Me.Label_Font.Location = New System.Drawing.Point(90, 28)
         Me.Label_Font.Margin = New System.Windows.Forms.Padding(6, 0, 3, 0)
         Me.Label_Font.Name = "Label_Font"
         Me.Label_Font.Size = New System.Drawing.Size(73, 13)
@@ -544,7 +552,7 @@ Partial Class FormSettings
         '
         Me.CheckBox_InvertedColors.AutoSize = True
         Me.CheckBox_InvertedColors.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_InvertedColors.Location = New System.Drawing.Point(6, 51)
+        Me.CheckBox_InvertedColors.Location = New System.Drawing.Point(6, 52)
         Me.CheckBox_InvertedColors.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_InvertedColors.Name = "CheckBox_InvertedColors"
         Me.CheckBox_InvertedColors.Size = New System.Drawing.Size(108, 18)
@@ -566,11 +574,13 @@ Partial Class FormSettings
         'Label16
         '
         Me.Label16.AutoSize = True
+        Me.Label16.Dock = System.Windows.Forms.DockStyle.Top
         Me.Label16.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label16.Location = New System.Drawing.Point(6, 6)
-        Me.Label16.Margin = New System.Windows.Forms.Padding(6, 3, 3, 0)
+        Me.Label16.Location = New System.Drawing.Point(0, 0)
+        Me.Label16.Margin = New System.Windows.Forms.Padding(3)
         Me.Label16.Name = "Label16"
-        Me.Label16.Size = New System.Drawing.Size(47, 13)
+        Me.Label16.Padding = New System.Windows.Forms.Padding(6, 3, 0, 0)
+        Me.Label16.Size = New System.Drawing.Size(53, 16)
         Me.Label16.TabIndex = 18
         Me.Label16.Text = "General"
         '
@@ -738,7 +748,7 @@ Partial Class FormSettings
         Me.GroupBox_ConfigSettings.Location = New System.Drawing.Point(0, 0)
         Me.GroupBox_ConfigSettings.Margin = New System.Windows.Forms.Padding(0)
         Me.GroupBox_ConfigSettings.Name = "GroupBox_ConfigSettings"
-        Me.GroupBox_ConfigSettings.Size = New System.Drawing.Size(452, 524)
+        Me.GroupBox_ConfigSettings.Size = New System.Drawing.Size(452, 508)
         Me.GroupBox_ConfigSettings.TabIndex = 7
         Me.GroupBox_ConfigSettings.TabStop = False
         Me.GroupBox_ConfigSettings.Text = "Config Settings"
@@ -746,8 +756,8 @@ Partial Class FormSettings
         'Panel11
         '
         Me.Panel11.AutoSize = True
-        Me.Panel11.Controls.Add(Me.Panel13)
         Me.Panel11.Controls.Add(Me.Label13)
+        Me.Panel11.Controls.Add(Me.Panel13)
         Me.Panel11.Controls.Add(Me.Label10)
         Me.Panel11.Controls.Add(Me.TextBox_Shell)
         Me.Panel11.Controls.Add(Me.LinkLabel_ShowShellArguments)
@@ -756,10 +766,23 @@ Partial Class FormSettings
         Me.Panel11.Controls.Add(Me.Button_SyntaxPath)
         Me.Panel11.Controls.Add(Me.LinkLabel_SyntaxDefault)
         Me.Panel11.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel11.Location = New System.Drawing.Point(3, 376)
+        Me.Panel11.Location = New System.Drawing.Point(3, 365)
         Me.Panel11.Name = "Panel11"
-        Me.Panel11.Size = New System.Drawing.Size(446, 145)
+        Me.Panel11.Size = New System.Drawing.Size(446, 140)
         Me.Panel11.TabIndex = 30
+        '
+        'Label13
+        '
+        Me.Label13.AutoSize = True
+        Me.Label13.Dock = System.Windows.Forms.DockStyle.Top
+        Me.Label13.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label13.Location = New System.Drawing.Point(0, 1)
+        Me.Label13.Margin = New System.Windows.Forms.Padding(3)
+        Me.Label13.Name = "Label13"
+        Me.Label13.Padding = New System.Windows.Forms.Padding(6, 3, 0, 0)
+        Me.Label13.Size = New System.Drawing.Size(37, 16)
+        Me.Label13.TabIndex = 27
+        Me.Label13.Text = "Misc"
         '
         'Panel13
         '
@@ -770,21 +793,10 @@ Partial Class FormSettings
         Me.Panel13.Size = New System.Drawing.Size(446, 1)
         Me.Panel13.TabIndex = 28
         '
-        'Label13
-        '
-        Me.Label13.AutoSize = True
-        Me.Label13.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label13.Location = New System.Drawing.Point(3, 6)
-        Me.Label13.Margin = New System.Windows.Forms.Padding(3, 3, 3, 6)
-        Me.Label13.Name = "Label13"
-        Me.Label13.Size = New System.Drawing.Size(31, 13)
-        Me.Label13.TabIndex = 27
-        Me.Label13.Text = "Misc"
-        '
         'Label10
         '
         Me.Label10.AutoSize = True
-        Me.Label10.Location = New System.Drawing.Point(3, 25)
+        Me.Label10.Location = New System.Drawing.Point(3, 20)
         Me.Label10.Name = "Label10"
         Me.Label10.Size = New System.Drawing.Size(77, 13)
         Me.Label10.TabIndex = 16
@@ -795,7 +807,7 @@ Partial Class FormSettings
         Me.TextBox_Shell.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.TextBox_Shell.BackColor = System.Drawing.Color.White
-        Me.TextBox_Shell.Location = New System.Drawing.Point(3, 41)
+        Me.TextBox_Shell.Location = New System.Drawing.Point(3, 36)
         Me.TextBox_Shell.Name = "TextBox_Shell"
         Me.TextBox_Shell.Size = New System.Drawing.Size(440, 22)
         Me.TextBox_Shell.TabIndex = 17
@@ -803,7 +815,7 @@ Partial Class FormSettings
         'LinkLabel_ShowShellArguments
         '
         Me.LinkLabel_ShowShellArguments.AutoSize = True
-        Me.LinkLabel_ShowShellArguments.Location = New System.Drawing.Point(3, 66)
+        Me.LinkLabel_ShowShellArguments.Location = New System.Drawing.Point(3, 61)
         Me.LinkLabel_ShowShellArguments.Margin = New System.Windows.Forms.Padding(3, 0, 3, 6)
         Me.LinkLabel_ShowShellArguments.Name = "LinkLabel_ShowShellArguments"
         Me.LinkLabel_ShowShellArguments.Size = New System.Drawing.Size(136, 13)
@@ -814,7 +826,7 @@ Partial Class FormSettings
         'Label15
         '
         Me.Label15.AutoSize = True
-        Me.Label15.Location = New System.Drawing.Point(3, 85)
+        Me.Label15.Location = New System.Drawing.Point(3, 80)
         Me.Label15.Name = "Label15"
         Me.Label15.Size = New System.Drawing.Size(162, 13)
         Me.Label15.TabIndex = 29
@@ -825,7 +837,7 @@ Partial Class FormSettings
         Me.TextBox_SyntaxPath.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.TextBox_SyntaxPath.BackColor = System.Drawing.Color.White
-        Me.TextBox_SyntaxPath.Location = New System.Drawing.Point(3, 101)
+        Me.TextBox_SyntaxPath.Location = New System.Drawing.Point(3, 96)
         Me.TextBox_SyntaxPath.Name = "TextBox_SyntaxPath"
         Me.TextBox_SyntaxPath.ReadOnly = True
         Me.TextBox_SyntaxPath.Size = New System.Drawing.Size(403, 22)
@@ -835,7 +847,7 @@ Partial Class FormSettings
         '
         Me.Button_SyntaxPath.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_SyntaxPath.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_SyntaxPath.Location = New System.Drawing.Point(412, 98)
+        Me.Button_SyntaxPath.Location = New System.Drawing.Point(412, 93)
         Me.Button_SyntaxPath.Name = "Button_SyntaxPath"
         Me.Button_SyntaxPath.Size = New System.Drawing.Size(31, 24)
         Me.Button_SyntaxPath.TabIndex = 28
@@ -845,7 +857,7 @@ Partial Class FormSettings
         'LinkLabel_SyntaxDefault
         '
         Me.LinkLabel_SyntaxDefault.AutoSize = True
-        Me.LinkLabel_SyntaxDefault.Location = New System.Drawing.Point(3, 126)
+        Me.LinkLabel_SyntaxDefault.Location = New System.Drawing.Point(3, 121)
         Me.LinkLabel_SyntaxDefault.Margin = New System.Windows.Forms.Padding(3, 0, 3, 6)
         Me.LinkLabel_SyntaxDefault.Name = "LinkLabel_SyntaxDefault"
         Me.LinkLabel_SyntaxDefault.Size = New System.Drawing.Size(148, 13)
@@ -856,8 +868,8 @@ Partial Class FormSettings
         'Panel10
         '
         Me.Panel10.AutoSize = True
-        Me.Panel10.Controls.Add(Me.Panel12)
         Me.Panel10.Controls.Add(Me.Label9)
+        Me.Panel10.Controls.Add(Me.Panel12)
         Me.Panel10.Controls.Add(Me.Label2)
         Me.Panel10.Controls.Add(Me.TextBox_GameFolder)
         Me.Panel10.Controls.Add(Me.Button_GameFolder)
@@ -865,10 +877,23 @@ Partial Class FormSettings
         Me.Panel10.Controls.Add(Me.Button_SourceModFolder)
         Me.Panel10.Controls.Add(Me.Label12)
         Me.Panel10.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel10.Location = New System.Drawing.Point(3, 266)
+        Me.Panel10.Location = New System.Drawing.Point(3, 263)
         Me.Panel10.Name = "Panel10"
-        Me.Panel10.Size = New System.Drawing.Size(446, 110)
+        Me.Panel10.Size = New System.Drawing.Size(446, 102)
         Me.Panel10.TabIndex = 29
+        '
+        'Label9
+        '
+        Me.Label9.AutoSize = True
+        Me.Label9.Dock = System.Windows.Forms.DockStyle.Top
+        Me.Label9.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label9.Location = New System.Drawing.Point(0, 1)
+        Me.Label9.Margin = New System.Windows.Forms.Padding(3)
+        Me.Label9.Name = "Label9"
+        Me.Label9.Padding = New System.Windows.Forms.Padding(6, 3, 0, 0)
+        Me.Label9.Size = New System.Drawing.Size(72, 16)
+        Me.Label9.TabIndex = 22
+        Me.Label9.Text = "Debugging"
         '
         'Panel12
         '
@@ -879,21 +904,10 @@ Partial Class FormSettings
         Me.Panel12.Size = New System.Drawing.Size(446, 1)
         Me.Panel12.TabIndex = 27
         '
-        'Label9
-        '
-        Me.Label9.AutoSize = True
-        Me.Label9.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label9.Location = New System.Drawing.Point(3, 6)
-        Me.Label9.Margin = New System.Windows.Forms.Padding(3, 3, 3, 6)
-        Me.Label9.Name = "Label9"
-        Me.Label9.Size = New System.Drawing.Size(66, 13)
-        Me.Label9.TabIndex = 22
-        Me.Label9.Text = "Debugging"
-        '
         'Label2
         '
         Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(3, 28)
+        Me.Label2.Location = New System.Drawing.Point(3, 20)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(87, 13)
         Me.Label2.TabIndex = 19
@@ -904,7 +918,7 @@ Partial Class FormSettings
         Me.TextBox_GameFolder.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.TextBox_GameFolder.BackColor = System.Drawing.Color.White
-        Me.TextBox_GameFolder.Location = New System.Drawing.Point(3, 44)
+        Me.TextBox_GameFolder.Location = New System.Drawing.Point(3, 36)
         Me.TextBox_GameFolder.Name = "TextBox_GameFolder"
         Me.TextBox_GameFolder.ReadOnly = True
         Me.TextBox_GameFolder.Size = New System.Drawing.Size(403, 22)
@@ -914,7 +928,7 @@ Partial Class FormSettings
         '
         Me.Button_GameFolder.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_GameFolder.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_GameFolder.Location = New System.Drawing.Point(412, 41)
+        Me.Button_GameFolder.Location = New System.Drawing.Point(412, 33)
         Me.Button_GameFolder.Name = "Button_GameFolder"
         Me.Button_GameFolder.Size = New System.Drawing.Size(31, 24)
         Me.Button_GameFolder.TabIndex = 21
@@ -926,7 +940,7 @@ Partial Class FormSettings
         Me.TextBox_SourceModFolder.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.TextBox_SourceModFolder.BackColor = System.Drawing.Color.White
-        Me.TextBox_SourceModFolder.Location = New System.Drawing.Point(3, 85)
+        Me.TextBox_SourceModFolder.Location = New System.Drawing.Point(3, 77)
         Me.TextBox_SourceModFolder.Name = "TextBox_SourceModFolder"
         Me.TextBox_SourceModFolder.ReadOnly = True
         Me.TextBox_SourceModFolder.Size = New System.Drawing.Size(403, 22)
@@ -936,7 +950,7 @@ Partial Class FormSettings
         '
         Me.Button_SourceModFolder.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_SourceModFolder.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_SourceModFolder.Location = New System.Drawing.Point(412, 82)
+        Me.Button_SourceModFolder.Location = New System.Drawing.Point(412, 74)
         Me.Button_SourceModFolder.Name = "Button_SourceModFolder"
         Me.Button_SourceModFolder.Size = New System.Drawing.Size(31, 24)
         Me.Button_SourceModFolder.TabIndex = 26
@@ -946,7 +960,7 @@ Partial Class FormSettings
         'Label12
         '
         Me.Label12.AutoSize = True
-        Me.Label12.Location = New System.Drawing.Point(3, 69)
+        Me.Label12.Location = New System.Drawing.Point(3, 61)
         Me.Label12.Name = "Label12"
         Me.Label12.Size = New System.Drawing.Size(117, 13)
         Me.Label12.TabIndex = 24
@@ -964,17 +978,19 @@ Partial Class FormSettings
         Me.Panel9.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel9.Location = New System.Drawing.Point(3, 18)
         Me.Panel9.Name = "Panel9"
-        Me.Panel9.Size = New System.Drawing.Size(446, 248)
+        Me.Panel9.Size = New System.Drawing.Size(446, 245)
         Me.Panel9.TabIndex = 28
         '
         'Label11
         '
         Me.Label11.AutoSize = True
+        Me.Label11.Dock = System.Windows.Forms.DockStyle.Top
         Me.Label11.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label11.Location = New System.Drawing.Point(3, 3)
-        Me.Label11.Margin = New System.Windows.Forms.Padding(3, 3, 3, 6)
+        Me.Label11.Location = New System.Drawing.Point(0, 0)
+        Me.Label11.Margin = New System.Windows.Forms.Padding(3)
         Me.Label11.Name = "Label11"
-        Me.Label11.Size = New System.Drawing.Size(47, 13)
+        Me.Label11.Padding = New System.Windows.Forms.Padding(6, 3, 0, 0)
+        Me.Label11.Size = New System.Drawing.Size(53, 16)
         Me.Label11.TabIndex = 23
         Me.Label11.Text = "General"
         '
@@ -982,7 +998,7 @@ Partial Class FormSettings
         '
         Me.Label3.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Label3.Location = New System.Drawing.Point(16, 46)
+        Me.Label3.Location = New System.Drawing.Point(16, 43)
         Me.Label3.Margin = New System.Windows.Forms.Padding(16, 0, 3, 0)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(427, 28)
@@ -995,7 +1011,7 @@ Partial Class FormSettings
         Me.RadioButton_ConfigSettingAutomatic.AutoSize = True
         Me.RadioButton_ConfigSettingAutomatic.Checked = True
         Me.RadioButton_ConfigSettingAutomatic.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.RadioButton_ConfigSettingAutomatic.Location = New System.Drawing.Point(6, 25)
+        Me.RadioButton_ConfigSettingAutomatic.Location = New System.Drawing.Point(6, 22)
         Me.RadioButton_ConfigSettingAutomatic.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.RadioButton_ConfigSettingAutomatic.Name = "RadioButton_ConfigSettingAutomatic"
         Me.RadioButton_ConfigSettingAutomatic.Size = New System.Drawing.Size(83, 18)
@@ -1008,7 +1024,7 @@ Partial Class FormSettings
         '
         Me.RadioButton_ConfigSettingManual.AutoSize = True
         Me.RadioButton_ConfigSettingManual.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.RadioButton_ConfigSettingManual.Location = New System.Drawing.Point(6, 77)
+        Me.RadioButton_ConfigSettingManual.Location = New System.Drawing.Point(6, 74)
         Me.RadioButton_ConfigSettingManual.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.RadioButton_ConfigSettingManual.Name = "RadioButton_ConfigSettingManual"
         Me.RadioButton_ConfigSettingManual.Size = New System.Drawing.Size(70, 18)
@@ -1019,7 +1035,7 @@ Partial Class FormSettings
         '
         Me.CheckBox_ConfigIsDefault.AutoSize = True
         Me.CheckBox_ConfigIsDefault.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_ConfigIsDefault.Location = New System.Drawing.Point(6, 227)
+        Me.CheckBox_ConfigIsDefault.Location = New System.Drawing.Point(6, 224)
         Me.CheckBox_ConfigIsDefault.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_ConfigIsDefault.Name = "CheckBox_ConfigIsDefault"
         Me.CheckBox_ConfigIsDefault.Size = New System.Drawing.Size(160, 18)
@@ -1040,7 +1056,7 @@ Partial Class FormSettings
         Me.GroupBox1.Controls.Add(Me.Label6)
         Me.GroupBox1.Controls.Add(Me.TextBox_OutputFolder)
         Me.GroupBox1.Controls.Add(Me.Button_OutputFolder)
-        Me.GroupBox1.Location = New System.Drawing.Point(3, 77)
+        Me.GroupBox1.Location = New System.Drawing.Point(3, 74)
         Me.GroupBox1.Name = "GroupBox1"
         Me.GroupBox1.Size = New System.Drawing.Size(440, 144)
         Me.GroupBox1.TabIndex = 24
@@ -1219,6 +1235,17 @@ Partial Class FormSettings
         Me.TabPage_Database.Text = "Database"
         Me.TabPage_Database.UseVisualStyleBackColor = True
         '
+        'Button_Refresh
+        '
+        Me.Button_Refresh.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Button_Refresh.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.Button_Refresh.Location = New System.Drawing.Point(496, 635)
+        Me.Button_Refresh.Name = "Button_Refresh"
+        Me.Button_Refresh.Size = New System.Drawing.Size(100, 23)
+        Me.Button_Refresh.TabIndex = 6
+        Me.Button_Refresh.Text = "Refresh"
+        Me.Button_Refresh.UseVisualStyleBackColor = True
+        '
         'TableLayoutPanel4
         '
         Me.TableLayoutPanel4.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
@@ -1341,17 +1368,6 @@ Partial Class FormSettings
         Me.Button_Apply.TabIndex = 2
         Me.Button_Apply.Text = "Apply"
         Me.Button_Apply.UseVisualStyleBackColor = True
-        '
-        'Button_Refresh
-        '
-        Me.Button_Refresh.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button_Refresh.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_Refresh.Location = New System.Drawing.Point(496, 635)
-        Me.Button_Refresh.Name = "Button_Refresh"
-        Me.Button_Refresh.Size = New System.Drawing.Size(100, 23)
-        Me.Button_Refresh.TabIndex = 6
-        Me.Button_Refresh.Text = "Refresh"
-        Me.Button_Refresh.UseVisualStyleBackColor = True
         '
         'FormSettings
         '

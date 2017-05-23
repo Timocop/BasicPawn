@@ -40,6 +40,7 @@ Public Class FormMain
     Public g_mUCToolTip As UCToolTip
     Public g_mFormDebugger As FormDebugger
     Public g_mFormOpenTabFromInstances As FormOpenTabFromInstances
+    Public g_mUCStartPage As UCStartPage
 
     Public g_cDarkTextEditorBackgroundColor As Color = Color.FromArgb(255, 26, 26, 26)
     Public g_cDarkFormDetailsBackgroundColor As Color = Color.FromArgb(255, 24, 24, 24)
@@ -191,12 +192,19 @@ Public Class FormMain
         g_mUCToolTip.BringToFront()
         g_mUCToolTip.Hide()
 
+        g_mUCStartPage = New UCStartPage(Me) With {
+            .Parent = Me,
+            .Dock = DockStyle.Fill
+        }
+        g_mUCStartPage.BringToFront()
+        g_mUCStartPage.Show()
+
         SplitContainer_ToolboxSourceAndDetails.SplitterDistance = SplitContainer_ToolboxSourceAndDetails.Height - 175
         g_ClassCrossAppComunication.Hook(COMMSG_SERVERNAME)
 
         g_mPingFlashPanel = New ClassPanelAlpha
         Me.Controls.Add(g_mPingFlashPanel)
-        g_mPingFlashPanel.Name = "#Ignore"
+        g_mPingFlashPanel.Name = "@KeepForeBackColor"
         g_mPingFlashPanel.Parent = Me
         g_mPingFlashPanel.Dock = DockStyle.Fill
         g_mPingFlashPanel.m_TransparentBackColor = Color.FromKnownColor(KnownColor.RoyalBlue)
@@ -294,8 +302,6 @@ Public Class FormMain
                 Exit While
             End If
 
-
-
             'Open all files in the oldes BasicPawn instance
             If (Not ClassSettings.g_iSettingsAlwaysOpenNewInstance AndAlso Array.IndexOf(sArgs, "-newinstance") = -1) Then
                 Dim pBasicPawnProc As Process() = Process.GetProcessesByName(IO.Path.GetFileNameWithoutExtension(Application.ExecutablePath))
@@ -354,6 +360,7 @@ Public Class FormMain
                     g_ClassTabControl.RemoveTab(0, False)
                 End If
             Next
+
             Exit While
         End While
 
@@ -500,6 +507,10 @@ Public Class FormMain
             g_mFormOpenTabFromInstances = New FormOpenTabFromInstances(Me)
             g_mFormOpenTabFromInstances.Show()
         End If
+    End Sub
+
+    Private Sub ToolStripMenuItem_FileStartPage_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileStartPage.Click
+        g_mUCStartPage.Show()
     End Sub
 
     Private Sub ToolStripMenuItem_FileOpenFolder_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileOpenFolder.Click

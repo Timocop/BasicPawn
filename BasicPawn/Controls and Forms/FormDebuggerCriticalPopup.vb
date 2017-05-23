@@ -24,6 +24,9 @@ Public Class FormDebuggerCriticalPopup
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call.
+        Panel_FooterControl.Name &= "@FooterControl"
+        Panel_FooterDarkControl.Name &= "@FooterDarkControl"
+
         g_mFormDebugger = mFormDebugger
 
         Me.Text = sTitle

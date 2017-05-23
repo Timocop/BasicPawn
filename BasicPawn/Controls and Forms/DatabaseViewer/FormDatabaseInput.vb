@@ -16,6 +16,16 @@
 
 
 Public Class FormDatabaseInput
+    Public Sub New()
+
+        ' This call is required by the designer.
+        InitializeComponent()
+
+        ' Add any initialization after the InitializeComponent() call.
+        Panel_FooterControl.Name &= "@FooterControl"
+        Panel_FooterDarkControl.Name &= "@FooterDarkControl"
+    End Sub
+
     Private Sub FormDatabaseInput_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ClassControlStyle.UpdateControls(Me)
     End Sub

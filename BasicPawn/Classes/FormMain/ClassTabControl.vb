@@ -89,6 +89,10 @@ Public Class ClassTabControl
             If (bSelect OrElse m_TabsCount < 2) Then
                 SelectTab(m_TabsCount - 1)
             End If
+
+            If (m_TabsCount > 1) Then
+                g_mFormMain.g_mUCStartPage.Hide()
+            End If
         Finally
             UnfreezePaint(g_mFormMain.SplitContainer_ToolboxAndEditor)
         End Try
@@ -116,6 +120,10 @@ Public Class ClassTabControl
                 SelectTab(m_TabsCount - 1)
             Else
                 SelectTab(iIndex)
+            End If
+
+            If (m_TabsCount > 1) Then
+                g_mFormMain.g_mUCStartPage.Hide()
             End If
 
             Return True
@@ -173,15 +181,15 @@ Public Class ClassTabControl
     ''' Opens a new source file
     ''' </summary>
     ''' <param name="iIndex"></param>
-    ''' <param name="sPath"></param>
+    ''' <param name="sFile"></param>
     ''' <param name="bIgnoreSavePrompt">If true, the new file will be opened without prompting to save the changed source</param>
     ''' <returns></returns>
-    Public Function OpenFileTab(iIndex As Integer, sPath As String, Optional bIgnoreSavePrompt As Boolean = False) As Boolean
+    Public Function OpenFileTab(iIndex As Integer, sFile As String, Optional bIgnoreSavePrompt As Boolean = False) As Boolean
         If (Not bIgnoreSavePrompt AndAlso PromptSaveTab(iIndex)) Then
             Return False
         End If
 
-        If (String.IsNullOrEmpty(sPath) OrElse Not IO.File.Exists(sPath)) Then
+        If (String.IsNullOrEmpty(sFile) OrElse Not IO.File.Exists(sFile)) Then
             m_Tab(iIndex).m_ClassLineState.m_IgnoreUpdates = True
             m_Tab(iIndex).m_File = ""
             m_Tab(iIndex).m_TextEditor.Document.TextContent = ""
@@ -193,15 +201,19 @@ Public Class ClassTabControl
 
             m_Tab(iIndex).m_ClassLineState.m_IgnoreUpdates = False
 
+            g_mFormMain.g_mUCStartPage.Hide()
+
             g_mFormMain.PrintInformation("[INFO]", "User created a new source file")
             Return False
         End If
 
 
+        Dim sFileText As String = IO.File.ReadAllText(sFile)
+
         m_Tab(iIndex).m_ClassLineState.m_IgnoreUpdates = True
 
-        m_Tab(iIndex).m_File = sPath
-        m_Tab(iIndex).m_TextEditor.Document.TextContent = IO.File.ReadAllText(sPath)
+        m_Tab(iIndex).m_File = sFile
+        m_Tab(iIndex).m_TextEditor.Document.TextContent = sFileText
 
         m_Tab(iIndex).m_Changed = False
         m_Tab(iIndex).m_AutocompleteItems = Nothing
@@ -210,7 +222,9 @@ Public Class ClassTabControl
 
         m_Tab(iIndex).m_ClassLineState.m_IgnoreUpdates = False
 
-        g_mFormMain.PrintInformation("[INFO]", "User opened a new file: " & sPath)
+        g_mFormMain.g_mUCStartPage.Hide()
+
+        g_mFormMain.PrintInformation("[INFO]", "User opened a new file: " & sFile)
         Return True
     End Function
 
@@ -237,6 +251,7 @@ Public Class ClassTabControl
                     g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & m_Tab(iIndex).m_File)
                     IO.File.WriteAllText(m_Tab(iIndex).m_File, m_Tab(iIndex).m_TextEditor.Document.TextContent)
 
+                    g_mFormMain.g_mUCStartPage.g_mClassRecentItems.AddRecent(m_Tab(iIndex).m_File)
                     g_mFormMain.ShowPingFlash()
                 End If
             End Using
@@ -248,6 +263,7 @@ Public Class ClassTabControl
             g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & m_Tab(iIndex).m_File)
             IO.File.WriteAllText(m_Tab(iIndex).m_File, m_Tab(iIndex).m_TextEditor.Document.TextContent)
 
+            g_mFormMain.g_mUCStartPage.g_mClassRecentItems.AddRecent(m_Tab(iIndex).m_File)
             g_mFormMain.ShowPingFlash()
         End If
     End Sub
@@ -288,6 +304,9 @@ Public Class ClassTabControl
                             g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & m_Tab(iIndex).m_File)
                             IO.File.WriteAllText(m_Tab(iIndex).m_File, m_Tab(iIndex).m_TextEditor.Document.TextContent)
 
+                            g_mFormMain.g_mUCStartPage.g_mClassRecentItems.AddRecent(m_Tab(iIndex).m_File)
+                            g_mFormMain.ShowPingFlash()
+
                             Return False
                         Else
                             Return True
@@ -300,6 +319,9 @@ Public Class ClassTabControl
 
                     g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & m_Tab(iIndex).m_File)
                     IO.File.WriteAllText(m_Tab(iIndex).m_File, m_Tab(iIndex).m_TextEditor.Document.TextContent)
+
+                    g_mFormMain.g_mUCStartPage.g_mClassRecentItems.AddRecent(m_Tab(iIndex).m_File)
+                    g_mFormMain.ShowPingFlash()
 
                     Return False
                 End If

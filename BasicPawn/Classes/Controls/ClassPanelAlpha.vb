@@ -42,6 +42,10 @@ Public Class ClassPanelAlpha
                 Next
 
                 For Each i In lControls
+                    If (Not i.Value.Visible) Then
+                        Continue For
+                    End If
+
                     i.Value.DrawToBitmap(mBitmap, i.Value.Bounds)
                 Next
 

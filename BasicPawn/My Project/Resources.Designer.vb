@@ -63,6 +63,16 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
+        Public ReadOnly Property BasicPawn_NoText_PNGx64() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("BasicPawn_NoText_PNGx64", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Drawing.Bitmap.
+        '''</summary>
         Public ReadOnly Property BasicPawnRedTop() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("BasicPawnRedTop", resourceCulture)
@@ -96,6 +106,16 @@ Namespace My.Resources
         Public ReadOnly Property Bmp_ButtonDeletePressed() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("Bmp_ButtonDeletePressed", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Drawing.Bitmap.
+        '''</summary>
+        Public ReadOnly Property Bmp_Design() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("Bmp_Design", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property

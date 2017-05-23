@@ -32,6 +32,9 @@ Public Class FormOpenTabFromInstances
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call.
+        Panel_FooterControl.Name &= "@FooterControl"
+        Panel_FooterDarkControl.Name &= "@FooterDarkControl"
+
         g_mFormMain = f
 
         ClassTools.ClassForms.SetDoubleBufferingAllChilds(Me, True)
