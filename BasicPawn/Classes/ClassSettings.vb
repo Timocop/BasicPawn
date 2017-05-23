@@ -31,6 +31,7 @@ Public Class ClassSettings
     Public Shared g_sSettingsFile As String = IO.Path.Combine(Application.StartupPath, "settings.ini")
     'General
     Public Shared g_iSettingsAlwaysOpenNewInstance As Boolean = False
+    Public Shared g_iSettingsAutoShowStartPage As Boolean = True
     'Text Editor
     Public Shared g_iSettingsTextEditorFont As Font = g_iSettingsDefaultEditorFont
     Public Shared g_iSettingsInvertColors As Boolean = False
@@ -66,6 +67,7 @@ Public Class ClassSettings
 
         'Settings
         initFile.WriteKeyValue("Editor", "AlwaysOpenNewInstance", If(g_iSettingsAlwaysOpenNewInstance, "1", "0"))
+        initFile.WriteKeyValue("Editor", "AutoShowStartPage", If(g_iSettingsAutoShowStartPage, "1", "0"))
         'Text Editor
         initFile.WriteKeyValue("Editor", "TextEditorFont", New FontConverter().ConvertToInvariantString(g_iSettingsTextEditorFont))
         initFile.WriteKeyValue("Editor", "TextEditorInvertColors", If(g_iSettingsInvertColors, "1", "0"))
@@ -97,6 +99,7 @@ Public Class ClassSettings
 
             'Settings
             g_iSettingsAlwaysOpenNewInstance = (initFile.ReadKeyValue("Editor", "AlwaysOpenNewInstance", "0") <> "0")
+            g_iSettingsAutoShowStartPage = (initFile.ReadKeyValue("Editor", "AutoShowStartPage", "1") <> "0")
             'Text Editor
             Dim editorFont As Font = CType(New FontConverter().ConvertFromInvariantString(initFile.ReadKeyValue("Editor", "TextEditorFont", g_sSettingsDefaultEditorFont)), Font)
             If (editorFont IsNot Nothing AndAlso editorFont.Size < 256) Then

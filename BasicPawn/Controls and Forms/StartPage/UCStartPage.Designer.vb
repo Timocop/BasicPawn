@@ -34,11 +34,11 @@ Partial Class UCStartPage
         Me.Label2 = New System.Windows.Forms.Label()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.Panel_RecentFiles = New System.Windows.Forms.Panel()
+        Me.Label_NoProjectsFound = New System.Windows.Forms.Label()
         Me.Panel_FooterDarkControl2 = New System.Windows.Forms.Panel()
         Me.Panel_FooterDarkControl3 = New System.Windows.Forms.Panel()
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
         Me.Timer_DelayUpdate = New System.Windows.Forms.Timer(Me.components)
-        Me.Label_NoProjectsFound = New System.Windows.Forms.Label()
         Me.TableLayoutPanel1.SuspendLayout()
         Me.Panel1.SuspendLayout()
         Me.TableLayoutPanel2.SuspendLayout()
@@ -182,6 +182,17 @@ Partial Class UCStartPage
         Me.Panel_RecentFiles.Size = New System.Drawing.Size(800, 364)
         Me.Panel_RecentFiles.TabIndex = 1
         '
+        'Label_NoProjectsFound
+        '
+        Me.Label_NoProjectsFound.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Label_NoProjectsFound.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label_NoProjectsFound.Location = New System.Drawing.Point(0, 0)
+        Me.Label_NoProjectsFound.Name = "Label_NoProjectsFound"
+        Me.Label_NoProjectsFound.Size = New System.Drawing.Size(800, 364)
+        Me.Label_NoProjectsFound.TabIndex = 0
+        Me.Label_NoProjectsFound.Text = "No recent projects found!"
+        Me.Label_NoProjectsFound.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
         'Panel_FooterDarkControl2
         '
         Me.Panel_FooterDarkControl2.BackColor = System.Drawing.SystemColors.ControlDark
@@ -204,18 +215,6 @@ Partial Class UCStartPage
         '
         'Timer_DelayUpdate
         '
-        Me.Timer_DelayUpdate.Interval = 1000
-        '
-        'Label_NoProjectsFound
-        '
-        Me.Label_NoProjectsFound.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Label_NoProjectsFound.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label_NoProjectsFound.Location = New System.Drawing.Point(0, 0)
-        Me.Label_NoProjectsFound.Name = "Label_NoProjectsFound"
-        Me.Label_NoProjectsFound.Size = New System.Drawing.Size(800, 364)
-        Me.Label_NoProjectsFound.TabIndex = 0
-        Me.Label_NoProjectsFound.Text = "No recent projects found!"
-        Me.Label_NoProjectsFound.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'UCStartPage
         '

@@ -323,6 +323,7 @@ Public Class FormSettings
 
         'General
         CheckBox_AlwaysNewInstance.Checked = ClassSettings.g_iSettingsAlwaysOpenNewInstance
+        CheckBox_AutoShowStartPage.Checked = ClassSettings.g_iSettingsAutoShowStartPage
         'Text Editor
         Label_Font.Text = New FontConverter().ConvertToInvariantString(ClassSettings.g_iSettingsTextEditorFont)
         CheckBox_InvertedColors.Checked = ClassSettings.g_iSettingsInvertColors
@@ -398,6 +399,7 @@ Public Class FormSettings
 
         'General
         ClassSettings.g_iSettingsAlwaysOpenNewInstance = CheckBox_AlwaysNewInstance.Checked
+        ClassSettings.g_iSettingsAutoShowStartPage = CheckBox_AutoShowStartPage.Checked
         'Text Editor
         ClassSettings.g_iSettingsTextEditorFont = CType(New FontConverter().ConvertFromInvariantString(Label_Font.Text), Font)
         ClassSettings.g_iSettingsInvertColors = CheckBox_InvertedColors.Checked

@@ -128,6 +128,7 @@ Partial Class FormSettings
         Me.Label17 = New System.Windows.Forms.Label()
         Me.Button_Cancel = New System.Windows.Forms.Button()
         Me.Button_Apply = New System.Windows.Forms.Button()
+        Me.CheckBox_AutoShowStartPage = New System.Windows.Forms.CheckBox()
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Settings.SuspendLayout()
         Me.Panel8.SuspendLayout()
@@ -192,7 +193,7 @@ Partial Class FormSettings
         Me.Panel8.Controls.Add(Me.CheckBox_EntitiesEnableColor)
         Me.Panel8.Controls.Add(Me.CheckBox_EntitiesEnableShowNewEnts)
         Me.Panel8.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel8.Location = New System.Drawing.Point(0, 468)
+        Me.Panel8.Location = New System.Drawing.Point(0, 492)
         Me.Panel8.Name = "Panel8"
         Me.Panel8.Size = New System.Drawing.Size(602, 92)
         Me.Panel8.TabIndex = 25
@@ -272,7 +273,7 @@ Partial Class FormSettings
         Me.Panel5.Controls.Add(Me.CheckBox_WindowsToolTipPopup)
         Me.Panel5.Controls.Add(Me.CheckBox_CaseSensitive)
         Me.Panel5.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel5.Location = New System.Drawing.Point(0, 184)
+        Me.Panel5.Location = New System.Drawing.Point(0, 208)
         Me.Panel5.Name = "Panel5"
         Me.Panel5.Size = New System.Drawing.Size(602, 284)
         Me.Panel5.TabIndex = 22
@@ -440,7 +441,7 @@ Partial Class FormSettings
         Me.Panel6.Controls.Add(Me.CheckBox_DoubleClickMark)
         Me.Panel6.Controls.Add(Me.CheckBox_AutoMark)
         Me.Panel6.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel6.Location = New System.Drawing.Point(0, 116)
+        Me.Panel6.Location = New System.Drawing.Point(0, 140)
         Me.Panel6.Name = "Panel6"
         Me.Panel6.Size = New System.Drawing.Size(602, 68)
         Me.Panel6.TabIndex = 23
@@ -500,7 +501,7 @@ Partial Class FormSettings
         Me.Panel7.Controls.Add(Me.Label_Font)
         Me.Panel7.Controls.Add(Me.CheckBox_InvertedColors)
         Me.Panel7.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel7.Location = New System.Drawing.Point(0, 43)
+        Me.Panel7.Location = New System.Drawing.Point(0, 67)
         Me.Panel7.Name = "Panel7"
         Me.Panel7.Size = New System.Drawing.Size(602, 73)
         Me.Panel7.TabIndex = 24
@@ -563,12 +564,13 @@ Partial Class FormSettings
         'Panel14
         '
         Me.Panel14.AutoSize = True
+        Me.Panel14.Controls.Add(Me.CheckBox_AutoShowStartPage)
         Me.Panel14.Controls.Add(Me.Label16)
         Me.Panel14.Controls.Add(Me.CheckBox_AlwaysNewInstance)
         Me.Panel14.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel14.Location = New System.Drawing.Point(0, 0)
         Me.Panel14.Name = "Panel14"
-        Me.Panel14.Size = New System.Drawing.Size(602, 43)
+        Me.Panel14.Size = New System.Drawing.Size(602, 67)
         Me.Panel14.TabIndex = 26
         '
         'Label16
@@ -1369,6 +1371,18 @@ Partial Class FormSettings
         Me.Button_Apply.Text = "Apply"
         Me.Button_Apply.UseVisualStyleBackColor = True
         '
+        'CheckBox_AutoShowStartPage
+        '
+        Me.CheckBox_AutoShowStartPage.AutoSize = True
+        Me.CheckBox_AutoShowStartPage.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_AutoShowStartPage.Location = New System.Drawing.Point(6, 46)
+        Me.CheckBox_AutoShowStartPage.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_AutoShowStartPage.Name = "CheckBox_AutoShowStartPage"
+        Me.CheckBox_AutoShowStartPage.Size = New System.Drawing.Size(235, 18)
+        Me.CheckBox_AutoShowStartPage.TabIndex = 20
+        Me.CheckBox_AutoShowStartPage.Text = "Show StartPage when no file is opened"
+        Me.CheckBox_AutoShowStartPage.UseVisualStyleBackColor = True
+        '
         'FormSettings
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -1533,4 +1547,5 @@ Partial Class FormSettings
     Friend WithEvents TableLayoutPanel4 As TableLayoutPanel
     Friend WithEvents Label18 As Label
     Friend WithEvents Button_Refresh As Button
+    Friend WithEvents CheckBox_AutoShowStartPage As CheckBox
 End Class

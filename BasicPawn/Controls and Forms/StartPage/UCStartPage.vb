@@ -58,6 +58,7 @@
 
     Private Sub LinkLabel_Open_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_Open.LinkClicked
         Dim mRecentItems = g_mClassRecentItems.GetRecentItems
+        Dim bSomethingSelected As Boolean = False
 
         For i = mRecentItems.Length - 1 To 0 Step -1
             Try
@@ -65,12 +66,18 @@
                     Continue For
                 End If
 
+                bSomethingSelected = True
+
                 g_mFormMain.g_ClassTabControl.AddTab(True)
                 g_mFormMain.g_ClassTabControl.OpenFileTab(g_mFormMain.g_ClassTabControl.m_TabsCount - 1, mRecentItems(i).m_RecentFile)
             Catch ex As Exception
                 ClassExceptionLog.WriteToLogMessageBox(ex)
             End Try
         Next
+
+        If (Not bSomethingSelected) Then
+            MessageBox.Show("No file selected to open!", "Could not open file", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        End If
     End Sub
 
 

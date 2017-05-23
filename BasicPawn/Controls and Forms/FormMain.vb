@@ -287,6 +287,11 @@ Public Class FormMain
         'Clean tabs
         g_ClassTabControl.Init()
 
+        'Hide StartPage when disabled in settings
+        If (Not ClassSettings.g_iSettingsAutoShowStartPage) Then
+            g_mUCStartPage.Hide()
+        End If
+
         'Load source files via Arguments
         Dim sArgs As String() = Environment.GetCommandLineArgs
 
