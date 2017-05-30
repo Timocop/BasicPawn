@@ -402,4 +402,24 @@ Public Class UCAutocomplete
             End If
         End Sub
     End Class
+
+    Private Sub RichTextBox_IntelliSense_TextChanged(sender As Object, e As EventArgs) Handles RichTextBox_IntelliSense.TextChanged
+        If (ClassTools.ClassOperatingSystem.GetWineVersion Is Nothing) Then
+            Return
+        End If
+
+        'WINE BUG: Text color keeps resetting when text changes. Re-apply color on text change.
+        RichTextBox_IntelliSense.BackColor = RichTextBox_IntelliSense.BackColor
+        RichTextBox_IntelliSense.ForeColor = RichTextBox_IntelliSense.ForeColor
+    End Sub
+
+    Private Sub RichTextBox_Autocomplete_TextChanged(sender As Object, e As EventArgs) Handles RichTextBox_Autocomplete.TextChanged
+        If (ClassTools.ClassOperatingSystem.GetWineVersion Is Nothing) Then
+            Return
+        End If
+
+        'WINE BUG: Text color keeps resetting when text changes. Re-apply color on text change.
+        RichTextBox_Autocomplete.BackColor = RichTextBox_Autocomplete.BackColor
+        RichTextBox_Autocomplete.ForeColor = RichTextBox_Autocomplete.ForeColor
+    End Sub
 End Class

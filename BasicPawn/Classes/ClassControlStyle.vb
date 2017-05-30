@@ -236,6 +236,26 @@ Public Class ClassControlStyle
                         End If
                 End Select
 
+            Case TypeOf o Is TextBox
+                Dim i As TextBox = DirectCast(o, TextBox)
+                If (m_IsInvertedColors) Then
+                    i.BackColor = g_cDarkControlColor.mDarkBackground
+                    i.ForeColor = g_cDarkControlColor.mDarkForeground
+                Else
+                    i.BackColor = g_cDarkControlColor.mLightBackground
+                    i.ForeColor = g_cDarkControlColor.mLightForegound
+                End If
+
+            Case TypeOf o Is RichTextBox
+                Dim i As RichTextBox = DirectCast(o, RichTextBox)
+                If (m_IsInvertedColors) Then
+                    i.BackColor = g_cDarkControlColor.mDarkBackground
+                    i.ForeColor = g_cDarkControlColor.mDarkForeground
+                Else
+                    i.BackColor = g_cDarkControlColor.mLightBackground
+                    i.ForeColor = g_cDarkControlColor.mLightForegound
+                End If
+
             Case TypeOf o Is ToolStripLabel
                 Dim i As ToolStripLabel = DirectCast(o, ToolStripLabel)
                 Select Case (i.Name)
