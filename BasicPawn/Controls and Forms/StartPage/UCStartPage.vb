@@ -56,6 +56,63 @@
         Me.Hide()
     End Sub
 
+    Private Sub LinkLabel_OpenNew_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_OpenNew.LinkClicked
+        Dim mRecentItems = g_mClassRecentItems.GetRecentItems
+        Dim bSomethingSelected As Boolean = False
+
+        'Close all tabs
+        While g_mFormMain.g_ClassTabControl.m_TabsCount > 0
+            Dim bLast As Boolean = (g_mFormMain.g_ClassTabControl.m_TabsCount = 1)
+
+            If (Not g_mFormMain.g_ClassTabControl.RemoveTab(0, True)) Then
+                Return
+            End If
+
+            If (bLast) Then
+                Exit While
+            End If
+        End While
+
+        For i = mRecentItems.Length - 1 To 0 Step -1
+            Try
+                If (Not mRecentItems(i).m_Open) Then
+                    Continue For
+                End If
+
+                bSomethingSelected = True
+
+                g_mFormMain.g_ClassTabControl.AddTab(True)
+                g_mFormMain.g_ClassTabControl.OpenFileTab(g_mFormMain.g_ClassTabControl.m_TabsCount - 1, mRecentItems(i).m_RecentFile)
+
+            Catch ex As Exception
+                ClassExceptionLog.WriteToLogMessageBox(ex)
+            End Try
+        Next
+
+        If (bSomethingSelected) Then
+            'Close new unsaved and unchanged tabs
+            While g_mFormMain.g_ClassTabControl.m_TabsCount > 0
+                If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.m_Tab(0).m_File) AndAlso Not g_mFormMain.g_ClassTabControl.m_Tab(0).m_Changed) Then
+                    Dim bLast As Boolean = (g_mFormMain.g_ClassTabControl.m_TabsCount = 1)
+
+                    If (Not g_mFormMain.g_ClassTabControl.RemoveTab(0, True)) Then
+                        Exit While
+                    End If
+
+                    If (bLast) Then
+                        Exit While
+                    End If
+                Else
+                    Exit While
+                End If
+            End While
+        End If
+
+        If (Not bSomethingSelected) Then
+            MessageBox.Show("No file selected to open!", "Could not open file", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        End If
+    End Sub
+
     Private Sub LinkLabel_Open_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_Open.LinkClicked
         Dim mRecentItems = g_mClassRecentItems.GetRecentItems
         Dim bSomethingSelected As Boolean = False
@@ -70,10 +127,30 @@
 
                 g_mFormMain.g_ClassTabControl.AddTab(True)
                 g_mFormMain.g_ClassTabControl.OpenFileTab(g_mFormMain.g_ClassTabControl.m_TabsCount - 1, mRecentItems(i).m_RecentFile)
+
             Catch ex As Exception
                 ClassExceptionLog.WriteToLogMessageBox(ex)
             End Try
         Next
+
+        If (bSomethingSelected) Then
+            'Close new unsaved and unchanged tabs
+            While g_mFormMain.g_ClassTabControl.m_TabsCount > 0
+                If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.m_Tab(0).m_File) AndAlso Not g_mFormMain.g_ClassTabControl.m_Tab(0).m_Changed) Then
+                    Dim bLast As Boolean = (g_mFormMain.g_ClassTabControl.m_TabsCount = 1)
+
+                    If (Not g_mFormMain.g_ClassTabControl.RemoveTab(0, True)) Then
+                        Exit While
+                    End If
+
+                    If (bLast) Then
+                        Exit While
+                    End If
+                Else
+                    Exit While
+                End If
+            End While
+        End If
 
         If (Not bSomethingSelected) Then
             MessageBox.Show("No file selected to open!", "Could not open file", MessageBoxButtons.OK, MessageBoxIcon.Information)

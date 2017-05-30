@@ -79,6 +79,24 @@
         Try
             g_mUCStartPage.g_mFormMain.g_ClassTabControl.AddTab(True)
             g_mUCStartPage.g_mFormMain.g_ClassTabControl.OpenFileTab(g_mUCStartPage.g_mFormMain.g_ClassTabControl.m_TabsCount - 1, m_RecentFile)
+
+            'Close new unsaved and unchanged tabs
+            While g_mUCStartPage.g_mFormMain.g_ClassTabControl.m_TabsCount > 0
+                If (String.IsNullOrEmpty(g_mUCStartPage.g_mFormMain.g_ClassTabControl.m_Tab(0).m_File) AndAlso Not g_mUCStartPage.g_mFormMain.g_ClassTabControl.m_Tab(0).m_Changed) Then
+                    Dim bLast As Boolean = (g_mUCStartPage.g_mFormMain.g_ClassTabControl.m_TabsCount = 1)
+
+                    If (Not g_mUCStartPage.g_mFormMain.g_ClassTabControl.RemoveTab(0, True)) Then
+                        Exit While
+                    End If
+
+                    If (bLast) Then
+                        Exit While
+                    End If
+                Else
+                    Exit While
+                End If
+            End While
+
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try

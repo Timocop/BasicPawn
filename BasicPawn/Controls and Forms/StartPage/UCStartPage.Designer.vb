@@ -27,6 +27,7 @@ Partial Class UCStartPage
         Me.Panel1 = New System.Windows.Forms.Panel()
         Me.TableLayoutPanel2 = New System.Windows.Forms.TableLayoutPanel()
         Me.Panel_BasicPawnTitle = New System.Windows.Forms.Panel()
+        Me.LinkLabel_OpenNew = New System.Windows.Forms.LinkLabel()
         Me.LinkLabel_Open = New System.Windows.Forms.LinkLabel()
         Me.LinkLabel_Close = New System.Windows.Forms.LinkLabel()
         Me.Panel_FooterDarkControl = New System.Windows.Forms.Panel()
@@ -95,6 +96,7 @@ Partial Class UCStartPage
         '
         'Panel_BasicPawnTitle
         '
+        Me.Panel_BasicPawnTitle.Controls.Add(Me.LinkLabel_OpenNew)
         Me.Panel_BasicPawnTitle.Controls.Add(Me.LinkLabel_Open)
         Me.Panel_BasicPawnTitle.Controls.Add(Me.LinkLabel_Close)
         Me.Panel_BasicPawnTitle.Controls.Add(Me.Panel_FooterDarkControl)
@@ -108,6 +110,18 @@ Partial Class UCStartPage
         Me.Panel_BasicPawnTitle.Size = New System.Drawing.Size(800, 64)
         Me.Panel_BasicPawnTitle.TabIndex = 0
         '
+        'LinkLabel_OpenNew
+        '
+        Me.LinkLabel_OpenNew.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.LinkLabel_OpenNew.AutoSize = True
+        Me.LinkLabel_OpenNew.Location = New System.Drawing.Point(600, 47)
+        Me.LinkLabel_OpenNew.Name = "LinkLabel_OpenNew"
+        Me.LinkLabel_OpenNew.Size = New System.Drawing.Size(62, 13)
+        Me.LinkLabel_OpenNew.TabIndex = 7
+        Me.LinkLabel_OpenNew.TabStop = True
+        Me.LinkLabel_OpenNew.Text = "Open New"
+        Me.ToolTip1.SetToolTip(Me.LinkLabel_OpenNew, "Closes all opened tabs and openes all selected projects")
+        '
         'LinkLabel_Open
         '
         Me.LinkLabel_Open.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
@@ -118,6 +132,7 @@ Partial Class UCStartPage
         Me.LinkLabel_Open.TabIndex = 6
         Me.LinkLabel_Open.TabStop = True
         Me.LinkLabel_Open.Text = "Open"
+        Me.ToolTip1.SetToolTip(Me.LinkLabel_Open, "Openes all selected projects")
         '
         'LinkLabel_Close
         '
@@ -129,6 +144,7 @@ Partial Class UCStartPage
         Me.LinkLabel_Close.TabIndex = 5
         Me.LinkLabel_Close.TabStop = True
         Me.LinkLabel_Close.Text = "Close StartPage"
+        Me.ToolTip1.SetToolTip(Me.LinkLabel_Close, "Closes the StartPage")
         '
         'Panel_FooterDarkControl
         '
@@ -253,4 +269,5 @@ Partial Class UCStartPage
     Friend WithEvents LinkLabel_Close As LinkLabel
     Friend WithEvents LinkLabel_Open As LinkLabel
     Friend WithEvents Label_NoProjectsFound As Label
+    Friend WithEvents LinkLabel_OpenNew As LinkLabel
 End Class
