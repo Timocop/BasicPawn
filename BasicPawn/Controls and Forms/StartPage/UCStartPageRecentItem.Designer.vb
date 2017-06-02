@@ -27,10 +27,13 @@ Partial Class UCStartPageRecentItem
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.ClassButtonSmallDelete_RemoveFromRecent = New BasicPawn.ClassButtonSmallDelete()
         Me.CheckBox_Open = New System.Windows.Forms.CheckBox()
-        Me.Label_DateAndFile = New System.Windows.Forms.Label()
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
+        Me.TableLayoutPanel2 = New System.Windows.Forms.TableLayoutPanel()
+        Me.Label_TitleName = New System.Windows.Forms.Label()
+        Me.Label_TitlePath = New System.Windows.Forms.Label()
         Me.TableLayoutPanel1.SuspendLayout()
         CType(Me.ClassButtonSmallDelete_RemoveFromRecent, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.TableLayoutPanel2.SuspendLayout()
         Me.SuspendLayout()
         '
         'TableLayoutPanel1
@@ -41,7 +44,7 @@ Partial Class UCStartPageRecentItem
         Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 32.0!))
         Me.TableLayoutPanel1.Controls.Add(Me.ClassButtonSmallDelete_RemoveFromRecent, 2, 0)
         Me.TableLayoutPanel1.Controls.Add(Me.CheckBox_Open, 0, 0)
-        Me.TableLayoutPanel1.Controls.Add(Me.Label_DateAndFile, 1, 0)
+        Me.TableLayoutPanel1.Controls.Add(Me.TableLayoutPanel2, 1, 0)
         Me.TableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.TableLayoutPanel1.Location = New System.Drawing.Point(0, 0)
         Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
@@ -75,18 +78,43 @@ Partial Class UCStartPageRecentItem
         Me.CheckBox_Open.TabIndex = 1
         Me.CheckBox_Open.UseVisualStyleBackColor = True
         '
-        'Label_DateAndFile
+        'TableLayoutPanel2
         '
-        Me.Label_DateAndFile.Cursor = System.Windows.Forms.Cursors.Hand
-        Me.Label_DateAndFile.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Label_DateAndFile.Font = New System.Drawing.Font("Segoe UI Semibold", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label_DateAndFile.Location = New System.Drawing.Point(32, 0)
-        Me.Label_DateAndFile.Margin = New System.Windows.Forms.Padding(0)
-        Me.Label_DateAndFile.Name = "Label_DateAndFile"
-        Me.Label_DateAndFile.Size = New System.Drawing.Size(690, 36)
-        Me.Label_DateAndFile.TabIndex = 2
-        Me.Label_DateAndFile.Text = "File.txt" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "C:\File.txt"
-        Me.Label_DateAndFile.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.TableLayoutPanel2.ColumnCount = 1
+        Me.TableLayoutPanel2.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.TableLayoutPanel2.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20.0!))
+        Me.TableLayoutPanel2.Controls.Add(Me.Label_TitleName, 0, 0)
+        Me.TableLayoutPanel2.Controls.Add(Me.Label_TitlePath, 0, 1)
+        Me.TableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TableLayoutPanel2.Location = New System.Drawing.Point(32, 0)
+        Me.TableLayoutPanel2.Margin = New System.Windows.Forms.Padding(0)
+        Me.TableLayoutPanel2.Name = "TableLayoutPanel2"
+        Me.TableLayoutPanel2.RowCount = 2
+        Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.TableLayoutPanel2.Size = New System.Drawing.Size(690, 36)
+        Me.TableLayoutPanel2.TabIndex = 2
+        '
+        'Label_TitleName
+        '
+        Me.Label_TitleName.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.Label_TitleName.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Label_TitleName.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label_TitleName.Location = New System.Drawing.Point(3, 0)
+        Me.Label_TitleName.Name = "Label_TitleName"
+        Me.Label_TitleName.Size = New System.Drawing.Size(684, 18)
+        Me.Label_TitleName.TabIndex = 0
+        Me.Label_TitleName.Text = "Title"
+        '
+        'Label_TitlePath
+        '
+        Me.Label_TitlePath.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.Label_TitlePath.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Label_TitlePath.Location = New System.Drawing.Point(3, 18)
+        Me.Label_TitlePath.Name = "Label_TitlePath"
+        Me.Label_TitlePath.Size = New System.Drawing.Size(684, 18)
+        Me.Label_TitlePath.TabIndex = 1
+        Me.Label_TitlePath.Text = "C:\Source.sp"
         '
         'UCStartPageRecentItem
         '
@@ -99,6 +127,7 @@ Partial Class UCStartPageRecentItem
         Me.Size = New System.Drawing.Size(754, 36)
         Me.TableLayoutPanel1.ResumeLayout(False)
         CType(Me.ClassButtonSmallDelete_RemoveFromRecent, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.TableLayoutPanel2.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub
@@ -106,6 +135,8 @@ Partial Class UCStartPageRecentItem
     Friend WithEvents TableLayoutPanel1 As TableLayoutPanel
     Friend WithEvents ClassButtonSmallDelete_RemoveFromRecent As ClassButtonSmallDelete
     Friend WithEvents CheckBox_Open As CheckBox
-    Friend WithEvents Label_DateAndFile As Label
     Friend WithEvents ToolTip1 As ToolTip
+    Friend WithEvents TableLayoutPanel2 As TableLayoutPanel
+    Friend WithEvents Label_TitleName As Label
+    Friend WithEvents Label_TitlePath As Label
 End Class

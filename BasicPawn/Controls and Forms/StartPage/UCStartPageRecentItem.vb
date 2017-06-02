@@ -27,7 +27,8 @@
         Set(value As String)
             g_sRecentFile = value
 
-            ToolTip1.SetToolTip(Label_DateAndFile, value)
+            ToolTip1.SetToolTip(Label_TitleName, value)
+            ToolTip1.SetToolTip(Label_TitlePath, value)
 
             UpdateInfoText()
         End Set
@@ -54,13 +55,8 @@
     End Property
 
     Private Sub UpdateInfoText()
-        With New Text.StringBuilder
-            '.AppendLine(m_RecentDate.ToString)
-            .AppendLine(String.Format("{0} - {1}", m_RecentDate.ToString, IO.Path.GetFileName(g_sRecentFile)))
-            .AppendLine(IO.Path.GetFullPath(g_sRecentFile))
-
-            Label_DateAndFile.Text = .ToString
-        End With
+        Label_TitleName.Text = String.Format("{0} - {1}", m_RecentDate.ToString, IO.Path.GetFileName(g_sRecentFile))
+        Label_TitlePath.Text = IO.Path.GetFullPath(g_sRecentFile)
     End Sub
 
     Private Sub ClassButtonSmallDelete_RemoveFromRecent_Click(sender As Object, e As EventArgs) Handles ClassButtonSmallDelete_RemoveFromRecent.Click
@@ -73,7 +69,15 @@
         Me.Dispose()
     End Sub
 
-    Private Sub Label_DateAndFile_Click(sender As Object, e As EventArgs) Handles Label_DateAndFile.Click
+    Private Sub Label_TitleName_Click(sender As Object, e As EventArgs) Handles Label_TitleName.Click
+        OpenRecent()
+    End Sub
+
+    Private Sub Label_TitlePath_Click(sender As Object, e As EventArgs) Handles Label_TitlePath.Click
+        OpenRecent()
+    End Sub
+
+    Private Sub OpenRecent()
         Try
             g_mUCStartPage.g_mFormMain.g_ClassTabControl.AddTab(True)
             g_mUCStartPage.g_mFormMain.g_ClassTabControl.OpenFileTab(g_mUCStartPage.g_mFormMain.g_ClassTabControl.m_TabsCount - 1, m_RecentFile)
