@@ -47,6 +47,8 @@
 
             g_mClassRecentItems.RefreshRecentItems()
             Label_NoProjectsFound.Visible = (g_mClassRecentItems.GetRecentFiles.Length < 1)
+
+            ClassControlStyle.UpdateControls(Me)
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
@@ -280,14 +282,20 @@
         End Function
 
         Public Sub ClearRecentItems()
+            g_mUCStartPage.Panel_RecentFiles.SuspendLayout()
+
             Dim mRecentItems = GetRecentItems()
             For i = mRecentItems.Length - 1 To 0 Step -1
                 mRecentItems(i).Dispose()
             Next
+
+            g_mUCStartPage.Panel_RecentFiles.ResumeLayout()
         End Sub
 
         Public Sub RefreshRecentItems()
             ClearRecentItems()
+
+            g_mUCStartPage.Panel_RecentFiles.SuspendLayout()
 
             Dim sRecentFiles As String() = GetRecentFiles()
             sRecentFiles = SortFilesByDate(sRecentFiles)
@@ -300,6 +308,8 @@
                     .Show()
                 End With
             Next
+
+            g_mUCStartPage.Panel_RecentFiles.ResumeLayout()
         End Sub
     End Class
 

@@ -18,8 +18,6 @@
             m_RecentDate = IO.File.GetLastWriteTime(sFile)
         Catch ex As Exception
         End Try
-
-        ClassControlStyle.UpdateControls(Me)
     End Sub
 
     Property m_RecentFile As String
