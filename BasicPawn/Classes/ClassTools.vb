@@ -216,6 +216,11 @@ Public Class ClassTools
             <DllImport("user32")>
             Friend Shared Function SendMessage(hWnd As IntPtr, wMsg As Integer, wParam As Boolean, lParam As Integer) As Integer
             End Function
+
+
+            <DllImport("uxtheme", CharSet:=CharSet.[Unicode], ExactSpelling:=False)>
+            Friend Shared Function SetWindowTheme(hWnd As IntPtr, textSubAppName As String, textSubIdList As String) As Integer
+            End Function
         End Class
 
         ''' <summary>
@@ -287,6 +292,32 @@ Public Class ClassTools
             NativeWinAPI.SendMessage(cControl.Handle, NativeWinAPI.WM_SETREDRAW, True, 0)
             cControl.Refresh()
         End Sub
+
+        ''' <summary>
+        ''' Enables explorer themes on controls
+        ''' </summary>
+        ''' <param name="c">Control</param>
+        Public Shared Sub EnableTheme(c As Control)
+            NativeWinAPI.SetWindowTheme(c.Handle, "explorer", Nothing)
+        End Sub
+
+        ''' <summary>
+        ''' Disables explorer themes on controls
+        ''' </summary>
+        ''' <param name="c">Control</param>
+        Public Shared Sub DisableTheme(c As Control)
+            NativeWinAPI.SetWindowTheme(c.Handle, "", "")
+        End Sub
+
+        ''' <summary>
+        ''' Calculates a value with DPI
+        ''' </summary>
+        ''' <param name="cCtrl">The control to read the DPI from</param>
+        ''' <param name="f"></param>
+        ''' <returns></returns>
+        Public Shared Function CalcDPI(cCtrl As Control, f As Single) As Single
+            Return f / (96.0F / cCtrl.CreateGraphics().DpiX)
+        End Function
     End Class
 
     Public Class ClassCrypto

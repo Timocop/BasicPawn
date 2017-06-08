@@ -23,7 +23,7 @@ Partial Class FormSettings
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormSettings))
-        Me.TabControl1 = New System.Windows.Forms.TabControl()
+        Me.TabControl1 = New ClassTabControlColor()
         Me.TabPage_Settings = New System.Windows.Forms.TabPage()
         Me.Panel8 = New System.Windows.Forms.Panel()
         Me.Label14 = New System.Windows.Forms.Label()
@@ -1443,7 +1443,7 @@ Partial Class FormSettings
 
     End Sub
 
-    Friend WithEvents TabControl1 As TabControl
+    Friend WithEvents TabControl1 As ClassTabControlColor
     Friend WithEvents TabPage_Settings As TabPage
     Friend WithEvents TabPage_Configs As TabPage
     Friend WithEvents CheckBox_OnScreenIntelliSense As CheckBox

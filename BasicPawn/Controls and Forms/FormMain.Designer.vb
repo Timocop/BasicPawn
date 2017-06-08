@@ -140,11 +140,11 @@ Partial Class FormMain
         Me.ToolStripMenuItem_TabOpenInstance = New System.Windows.Forms.ToolStripMenuItem()
         Me.SplitContainer_ToolboxSourceAndDetails = New System.Windows.Forms.SplitContainer()
         Me.SplitContainer_ToolboxAndEditor = New System.Windows.Forms.SplitContainer()
-        Me.TabControl_Toolbox = New System.Windows.Forms.TabControl()
+        Me.TabControl_Toolbox = New ClassTabControlColor()
         Me.TabPage_ObjectBrowser = New System.Windows.Forms.TabPage()
-        Me.TabControl_SourceTabs = New System.Windows.Forms.TabControl()
+        Me.TabControl_SourceTabs = New ClassTabControlColor()
         Me.TabPage1 = New System.Windows.Forms.TabPage()
-        Me.TabControl_Details = New System.Windows.Forms.TabControl()
+        Me.TabControl_Details = New ClassTabControlColor()
         Me.TabPage_Autocomplete = New System.Windows.Forms.TabPage()
         Me.TabPage_Information = New System.Windows.Forms.TabPage()
         Me.ImageList1 = New System.Windows.Forms.ImageList(Me.components)
@@ -985,11 +985,11 @@ Partial Class FormMain
     Friend WithEvents ToolStripSeparator8 As ToolStripSeparator
     Friend WithEvents Timer_PingFlash As Timer
     Friend WithEvents ToolStripMenuItem_TabOpenInstance As ToolStripMenuItem
-    Friend WithEvents TabControl_SourceTabs As TabControl
-    Public WithEvents TabControl_Toolbox As TabControl
+    Friend WithEvents TabControl_SourceTabs As ClassTabControlColor
+    Public WithEvents TabControl_Toolbox As ClassTabControlColor
     Public WithEvents TextEditorControl_Source As TextEditorControlEx
     Public WithEvents MenuStrip_BasicPawn As MenuStrip
-    Public WithEvents TabControl_Details As TabControl
+    Public WithEvents TabControl_Details As ClassTabControlColor
     Public WithEvents StatusStrip_BasicPawn As StatusStrip
     Friend WithEvents ToolStripSeparator10 As ToolStripSeparator
     Friend WithEvents ToolStripMenuItem_FileSavePacked As ToolStripMenuItem

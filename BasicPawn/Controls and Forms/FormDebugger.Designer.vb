@@ -58,12 +58,12 @@ Partial Class FormDebugger
         Me.ToolStripMenuItem_DebugStop = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_DebugRefresh = New System.Windows.Forms.ToolStripMenuItem()
         Me.SplitContainer1 = New System.Windows.Forms.SplitContainer()
-        Me.TabControl2 = New System.Windows.Forms.TabControl()
+        Me.TabControl2 = New ClassTabControlColor()
         Me.TabPage_Source = New System.Windows.Forms.TabPage()
         Me.TextEditorControlEx_DebuggerSource = New BasicPawn.TextEditorControlEx()
         Me.TabPage_Diasm = New System.Windows.Forms.TabPage()
         Me.TextEditorControlEx_DebuggerDiasm = New BasicPawn.TextEditorControlEx()
-        Me.TabControl1 = New System.Windows.Forms.TabControl()
+        Me.TabControl1 = New ClassTabControlColor()
         Me.TabPage_Breakpoints = New System.Windows.Forms.TabPage()
         Me.ListView_Breakpoints = New System.Windows.Forms.ListView()
         Me.ColumnHeader1 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
@@ -530,13 +530,13 @@ Partial Class FormDebugger
     Friend WithEvents ToolStripMenuItem_File As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItemFile_Exit As ToolStripMenuItem
     Friend WithEvents ToolStripStatusLabel_DebugState As ToolStripStatusLabel
-    Friend WithEvents TabControl1 As TabControl
+    Friend WithEvents TabControl1 As ClassTabControlColor
     Friend WithEvents TabPage_Breakpoints As TabPage
     Friend WithEvents TabPage_Watchers As TabPage
     Friend WithEvents TextEditorControlEx_DebuggerSource As TextEditorControlEx
     Friend WithEvents ListView_Breakpoints As ListView
     Friend WithEvents ColumnHeader1 As ColumnHeader
-    Friend WithEvents TabControl2 As TabControl
+    Friend WithEvents TabControl2 As ClassTabControlColor
     Friend WithEvents TabPage_Source As TabPage
     Friend WithEvents TabPage_Diasm As TabPage
     Friend WithEvents TextEditorControlEx_DebuggerDiasm As TextEditorControlEx

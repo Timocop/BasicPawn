@@ -66,12 +66,20 @@ Public Class ClassControlStyle
                 If (m_IsInvertedColors) Then
                     i.BackColor = g_cDarkPanelColor.mDarkBackground
                     i.ForeColor = g_cDarkPanelColor.mDarkForeground
+
+                    If (TypeOf i Is ClassTabControlColor) Then
+                        i.DrawMode = TabDrawMode.OwnerDrawFixed
+                    End If
                 Else
-                    i.BackColor = g_cDarkPanelColor.mLightBackground
+                        i.BackColor = g_cDarkPanelColor.mLightBackground
                     i.ForeColor = g_cDarkPanelColor.mLightForegound
+
+                    If (TypeOf i Is ClassTabControlColor) Then
+                        i.DrawMode = TabDrawMode.Normal
+                    End If
                 End If
 
-                For Each j As Object In i.TabPages
+                    For Each j As Object In i.TabPages
                     SetColor(j)
                 Next
 
