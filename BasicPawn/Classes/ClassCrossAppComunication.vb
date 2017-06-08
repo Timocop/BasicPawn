@@ -24,7 +24,7 @@ Public Class ClassCrossAppComunication
     Private g_mReceiveForm As New ClassReceiverForm
     Private g_sReceiveServerName As String = ""
     Private g_bEnforceEncoding As Boolean = True
-    Private g_iEncodeKeyBytes As Byte() = New Byte() {2, 4, 8, 16, 32, 64, 128}
+    Private g_iEncodeKeyBytes As Byte() = New Byte() {6, 54, 154, 156, 35, 175, 4}
 
     Public Event OnMessageReceive(mClassMessage As ClassMessage)
 
