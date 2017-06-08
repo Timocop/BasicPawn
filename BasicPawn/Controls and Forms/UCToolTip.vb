@@ -42,27 +42,8 @@ Public Class UCToolTip
     End Sub
 
     Private Sub Timer_Move_Tick(sender As Object, e As EventArgs) Handles Timer_Move.Tick
-        Dim mCursorPoint As Point = Cursor.Position
-
-        Dim mMePoint As Point = Me.PointToScreen(Point.Empty)
-
-        If (g_mMoveLocation.Y < 500 AndAlso
-            (mCursorPoint.X + g_iSizeSpace > mMePoint.X AndAlso mCursorPoint.Y + g_iSizeSpace > mMePoint.Y AndAlso
-            mCursorPoint.X < mMePoint.X + Me.Width + g_iSizeSpace AndAlso mCursorPoint.Y < mMePoint.Y + Me.Height + g_iSizeSpace)) Then
+        If (MoveWindow(False)) Then
             Timer_Move.Interval = g_iMoveSpeed
-
-            g_mMoveLocation.Y += g_iMoveStep
-            Me.Location = New Point(g_mLocation.X, g_mLocation.Y + g_mMoveLocation.Y)
-
-        ElseIf (g_mMoveLocation.Y > 0 AndAlso
-                    Not (mCursorPoint.X + g_iSizeSpace + g_iMoveStep > mMePoint.X AndAlso mCursorPoint.Y + g_iSizeSpace + g_iMoveStep > mMePoint.Y AndAlso
-                            mCursorPoint.X < mMePoint.X + Me.Width + g_iSizeSpace + g_iMoveStep AndAlso mCursorPoint.Y < mMePoint.Y + Me.Height + g_iSizeSpace + g_iMoveStep)) Then
-            Timer_Move.Interval = g_iMoveSpeed
-
-            g_mMoveLocation.Y -= g_iMoveStep
-            g_mMoveLocation.Y = Math.Max(g_mMoveLocation.Y, 0)
-            Me.Location = New Point(g_mLocation.X, g_mLocation.Y + g_mMoveLocation.Y)
-
         Else
             Timer_Move.Interval = g_iIdleSpeed
         End If
@@ -79,11 +60,53 @@ Public Class UCToolTip
             Return g_mLocation
         End Get
         Set(value As Point)
+            Dim bWasVisible = Me.Visible
+            Me.Visible = False
+
             g_mLocation = value
             Me.Location = value
             g_mMoveLocation = New Point()
+            MoveWindow(True)
+
+            Me.Visible = bWasVisible
         End Set
     End Property
+
+    Private Function MoveWindow(bInstant As Boolean) As Boolean
+        Dim bMoved As Boolean = False
+
+        While True
+            Dim mCursorPoint As Point = Cursor.Position
+
+            Dim mMePoint As Point = Me.PointToScreen(Point.Empty)
+
+            If (g_mMoveLocation.Y < 500 AndAlso
+                    (mCursorPoint.X + g_iSizeSpace > mMePoint.X AndAlso mCursorPoint.Y + g_iSizeSpace > mMePoint.Y AndAlso
+                        mCursorPoint.X < mMePoint.X + Me.Width + g_iSizeSpace AndAlso mCursorPoint.Y < mMePoint.Y + Me.Height + g_iSizeSpace)) Then
+                g_mMoveLocation.Y += g_iMoveStep
+                Me.Location = New Point(g_mLocation.X, g_mLocation.Y + g_mMoveLocation.Y)
+                bMoved = True
+                If (bInstant) Then
+                    Continue While
+                End If
+
+            ElseIf (g_mMoveLocation.Y > 0 AndAlso
+                        Not (mCursorPoint.X + g_iSizeSpace + g_iMoveStep > mMePoint.X AndAlso mCursorPoint.Y + g_iSizeSpace + g_iMoveStep > mMePoint.Y AndAlso
+                                mCursorPoint.X < mMePoint.X + Me.Width + g_iSizeSpace + g_iMoveStep AndAlso mCursorPoint.Y < mMePoint.Y + Me.Height + g_iSizeSpace + g_iMoveStep)) Then
+                g_mMoveLocation.Y -= g_iMoveStep
+                g_mMoveLocation.Y = Math.Max(g_mMoveLocation.Y, 0)
+                Me.Location = New Point(g_mLocation.X, g_mLocation.Y + g_mMoveLocation.Y)
+                bMoved = True
+                If (bInstant) Then
+                    Continue While
+                End If
+            End If
+
+            Exit While
+        End While
+
+        Return bMoved
+    End Function
 
     Private Sub TextEditorControl_ToolTip_TextChanged(sender As Object, e As EventArgs) Handles TextEditorControl_ToolTip.TextChanged
         'TODO: Better DPI, Border detection, or size in general
