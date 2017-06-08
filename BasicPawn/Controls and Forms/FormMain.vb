@@ -962,6 +962,11 @@ Public Class FormMain
     End Sub
 
     Public Sub ShowPingFlash()
+        'Wine doesnt support alpha rendering
+        If (ClassTools.ClassOperatingSystem.GetWineVersion() IsNot Nothing) Then
+            Return
+        End If
+
         g_mPingFlashPanel.m_Opacity = 50
         g_mPingFlashPanel.Visible = True
 
