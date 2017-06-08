@@ -39,7 +39,7 @@ Public Class ClassTabControlColor
         Dim mTabRec As Rectangle
 
         If e.Index = Me.SelectedIndex Then
-            mTabFont = New Font(e.Font, FontStyle.Bold)
+            mTabFont = e.Font 'New Font(e.Font, FontStyle.Bold)
             mTabBack = New Drawing2D.LinearGradientBrush(e.Bounds, ClassControlStyle.g_cDarkControlColor.mDarkBackground, ClassControlStyle.g_cDarkControlColor.mDarkBackground, Drawing2D.LinearGradientMode.BackwardDiagonal)
             mTabFore = Brushes.White
 
