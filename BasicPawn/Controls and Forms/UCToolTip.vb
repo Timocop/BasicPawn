@@ -26,19 +26,20 @@ Public Class UCToolTip
     Private g_iIdleSpeed As Integer = 100
 
     Public Sub New(f As FormMain)
+        g_mFormMain = f
 
         ' This call is required by the designer.
         InitializeComponent()
 
-        ' Add any initialization after the InitializeComponent() call.
-        g_mFormMain = f
-
+        ' Add any initialization after the InitializeComponent() call. 
         TextEditorControl_ToolTip.IsReadOnly = True
         TextEditorControl_ToolTip.ActiveTextAreaControl.TextEditorProperties.IndentationSize = 0
         TextEditorControl_ToolTip.ActiveTextAreaControl.AutoScroll = False
         TextEditorControl_ToolTip.ActiveTextAreaControl.AutoSize = False
         TextEditorControl_ToolTip.ActiveTextAreaControl.HScrollBar.Visible = False
         TextEditorControl_ToolTip.ActiveTextAreaControl.VScrollBar.Visible = False
+
+        ClassControlStyle.UpdateControls(Me)
     End Sub
 
     Private Sub Timer_Move_Tick(sender As Object, e As EventArgs) Handles Timer_Move.Tick
