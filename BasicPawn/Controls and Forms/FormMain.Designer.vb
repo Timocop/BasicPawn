@@ -156,6 +156,7 @@ Partial Class FormMain
         Me.ToolStripStatusLabel_LastInformation = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ToolStripStatusLabel_AppVersion = New System.Windows.Forms.ToolStripStatusLabel()
         Me.Timer_PingFlash = New System.Windows.Forms.Timer(Me.components)
+        Me.ToolStripProgressBar_Autocomplete = New System.Windows.Forms.ToolStripProgressBar()
         Me.ContextMenuStrip_RightClick.SuspendLayout()
         Me.MenuStrip_BasicPawn.SuspendLayout()
         Me.SplitContainer_ToolboxSourceAndDetails.Panel1.SuspendLayout()
@@ -820,7 +821,7 @@ Partial Class FormMain
         '
         'StatusStrip_BasicPawn
         '
-        Me.StatusStrip_BasicPawn.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripStatusLabel_EditorLine, Me.ToolStripStatusLabel_EditorCollum, Me.ToolStripStatusLabel_EditorSelectedCount, Me.ToolStripStatusLabel_CurrentConfig, Me.ToolStripStatusLabel_LastInformation, Me.ToolStripStatusLabel_AppVersion})
+        Me.StatusStrip_BasicPawn.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripStatusLabel_EditorLine, Me.ToolStripStatusLabel_EditorCollum, Me.ToolStripStatusLabel_EditorSelectedCount, Me.ToolStripStatusLabel_CurrentConfig, Me.ToolStripStatusLabel_LastInformation, Me.ToolStripProgressBar_Autocomplete, Me.ToolStripStatusLabel_AppVersion})
         Me.StatusStrip_BasicPawn.Location = New System.Drawing.Point(0, 707)
         Me.StatusStrip_BasicPawn.Name = "StatusStrip_BasicPawn"
         Me.StatusStrip_BasicPawn.Size = New System.Drawing.Size(1008, 22)
@@ -860,7 +861,7 @@ Partial Class FormMain
         'ToolStripStatusLabel_LastInformation
         '
         Me.ToolStripStatusLabel_LastInformation.Name = "ToolStripStatusLabel_LastInformation"
-        Me.ToolStripStatusLabel_LastInformation.Size = New System.Drawing.Size(798, 17)
+        Me.ToolStripStatusLabel_LastInformation.Size = New System.Drawing.Size(665, 17)
         Me.ToolStripStatusLabel_LastInformation.Spring = True
         Me.ToolStripStatusLabel_LastInformation.Text = "Last Info: No information"
         '
@@ -872,6 +873,11 @@ Partial Class FormMain
         '
         'Timer_PingFlash
         '
+        '
+        'ToolStripProgressBar_Autocomplete
+        '
+        Me.ToolStripProgressBar_Autocomplete.Name = "ToolStripProgressBar_Autocomplete"
+        Me.ToolStripProgressBar_Autocomplete.Size = New System.Drawing.Size(100, 16)
         '
         'FormMain
         '
@@ -995,4 +1001,5 @@ Partial Class FormMain
     Friend WithEvents ToolStripMenuItem_FileSavePacked As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_HelpSpecialControlsCommentLines As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_FileStartPage As ToolStripMenuItem
+    Friend WithEvents ToolStripProgressBar_Autocomplete As ToolStripProgressBar
 End Class

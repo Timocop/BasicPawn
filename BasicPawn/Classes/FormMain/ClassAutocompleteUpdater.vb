@@ -107,10 +107,20 @@ Public Class ClassAutocompleteUpdater
         Try
             'g_mFormMain.PrintInformation("[INFO]", "Autocomplete update started...")
 
+            g_mFormMain.Invoke(Sub()
+                                   g_mFormMain.ToolStripProgressBar_Autocomplete.Value = 0
+                                   g_mFormMain.ToolStripProgressBar_Autocomplete.Visible = True
+                               End Sub)
+
             Dim sActiveSourceFile As String = CStr(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File))
             Dim sActiveSource As String = CStr(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent))
 
             If (String.IsNullOrEmpty(sActiveSourceFile) OrElse Not IO.File.Exists(sActiveSourceFile)) Then
+                g_mFormMain.Invoke(Sub()
+                                       g_mFormMain.ToolStripProgressBar_Autocomplete.Value = 100
+                                       g_mFormMain.ToolStripProgressBar_Autocomplete.Visible = False
+                                   End Sub)
+
                 g_mFormMain.PrintInformation("[ERRO]", "Autocomplete update failed! Could not get current source file!", False, False, 1)
                 Return
             End If
@@ -126,13 +136,18 @@ Public Class ClassAutocompleteUpdater
                 Dim sSourceList As New ClassSyncList(Of String())
                 Dim sFiles As String() = GetIncludeFiles(sActiveSource, sActiveSourceFile, sActiveSourceFile)
 
+                Dim i As Integer
                 For i = 0 To sFiles.Length - 1
                     ParseAutocomplete_Pre(sActiveSource, sActiveSourceFile, sFiles(i), sSourceList, lTmpAutocompleteList)
+
+                    g_mFormMain.BeginInvoke(Sub() g_mFormMain.ToolStripProgressBar_Autocomplete.Value = Math.Min(CInt(Math.Floor((i / sFiles.Length) * 50)), 100))
                 Next
 
                 Dim sRegExEnum As String = String.Format("(\b{0}\b)", String.Join("\b|\b", GetEnumNames(lTmpAutocompleteList)))
                 For i = 0 To sSourceList.Count - 1
                     ParseAutocomplete_Post(sActiveSource, sActiveSourceFile, sSourceList(i)(0), sRegExEnum, sSourceList(i)(1), lTmpAutocompleteList)
+
+                    g_mFormMain.BeginInvoke(Sub() g_mFormMain.ToolStripProgressBar_Autocomplete.Value = Math.Min(CInt(Math.Floor((i / sSourceList.Count) * 50) + 50), 100))
                 Next
             End If
 
@@ -154,6 +169,11 @@ Public Class ClassAutocompleteUpdater
                                         g_mFormMain.g_ClassSyntaxTools.UpdateTextEditorSyntax()
                                         g_mFormMain.g_mUCObjectBrowser.StartUpdate()
                                     End Sub)
+
+            g_mFormMain.Invoke(Sub()
+                                   g_mFormMain.ToolStripProgressBar_Autocomplete.Value = 100
+                                   g_mFormMain.ToolStripProgressBar_Autocomplete.Visible = False
+                               End Sub)
 
             'g_mFormMain.PrintInformation("[INFO]", "Autocomplete update finished!")
         Catch ex As Threading.ThreadAbortException
