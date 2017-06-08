@@ -1,6 +1,13 @@
 ﻿Public Class ClassTabControlColor
     Inherits TabControl
 
+    Protected Overrides Sub OnInvalidated(e As InvalidateEventArgs)
+        MyBase.OnInvalidated(e)
+
+        ClassTools.ClassForms.SetDoubleBuffering(Me, True)
+        ClassTools.ClassForms.SetDoubleBufferingUnmanaged(Me, True)
+    End Sub
+
     Protected Overrides Sub OnDrawItem(e As DrawItemEventArgs)
         If (Me.DrawMode = TabDrawMode.Normal) Then
             MyBase.OnDrawItem(e)
