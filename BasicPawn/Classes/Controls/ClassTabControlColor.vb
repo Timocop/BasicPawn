@@ -18,12 +18,13 @@
 Public Class ClassTabControlColor
     Inherits TabControl
 
-    Protected Overrides Sub OnInvalidated(e As InvalidateEventArgs)
-        MyBase.OnInvalidated(e)
+    'TODO: Find better way to double buffer tabs without high CPU usage when tabs are drawn outside the window.
+    'Protected Overrides Sub OnInvalidated(e As InvalidateEventArgs)
+    '    MyBase.OnInvalidated(e)
 
-        ClassTools.ClassForms.SetDoubleBuffering(Me, True)
-        ClassTools.ClassForms.SetDoubleBufferingUnmanaged(Me, True)
-    End Sub
+    '    ClassTools.ClassForms.SetDoubleBuffering(Me, True)
+    '    ClassTools.ClassForms.SetDoubleBufferingUnmanaged(Me, True)
+    'End Sub
 
     Protected Overrides Sub OnDrawItem(e As DrawItemEventArgs)
         If (Me.DrawMode = TabDrawMode.Normal) Then
