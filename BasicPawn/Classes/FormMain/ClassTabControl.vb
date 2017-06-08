@@ -413,6 +413,7 @@ Public Class ClassTabControl
 
         Private g_sText As String = "Unnamed"
         Private g_bTextChanged As Boolean = False
+        Private g_sIdentifier As String = Guid.NewGuid.ToString
 
         Private g_sFile As String = ""
         Private g_mAutocompleteItems As FormMain.STRUC_AUTOCOMPLETE()
@@ -537,6 +538,10 @@ Public Class ClassTabControl
             g_mSourceTextEditor.Visible = True
         End Sub
 
+        Public Sub NewIndetifier()
+            g_sIdentifier = Guid.NewGuid.ToString
+        End Sub
+
         Protected Overrides Sub Dispose(disposing As Boolean)
             Try
                 If (disposing) Then
@@ -577,6 +582,12 @@ Public Class ClassTabControl
                 m_Title = IO.Path.GetFileName(g_sFile)
                 Me.ToolTipText = g_sFile
             End Set
+        End Property
+
+        Public ReadOnly Property m_Identifier As String
+            Get
+                Return g_sIdentifier
+            End Get
         End Property
 
         Public ReadOnly Property m_TextEditor As TextEditorControlEx
