@@ -908,24 +908,26 @@ Public Class FormMain
                         Dim iPID As Integer = Process.GetCurrentProcess.Id
                         Dim sProcessName As String = Process.GetCurrentProcess.ProcessName
                         Dim sTabIdentifier As String = g_ClassTabControl.m_Tab(i).m_Identifier
-                        Dim sFile As String = g_ClassTabControl.m_Tab(i).m_File
+                        Dim iTabIndex As Integer = g_ClassTabControl.m_Tab(i).TabIndex
+                        Dim sTabFile As String = g_ClassTabControl.m_Tab(i).m_File
 
-                        g_ClassCrossAppComunication.SendMessage(New ClassCrossAppComunication.ClassMessage(COMARG_REQUEST_TABS_ANSWER, CStr(iPID), sProcessName, sTabIdentifier, sFile, sCallerIdentifier), False)
+                        g_ClassCrossAppComunication.SendMessage(New ClassCrossAppComunication.ClassMessage(COMARG_REQUEST_TABS_ANSWER, CStr(iPID), sProcessName, sTabIdentifier, CStr(iTabIndex), sTabFile, sCallerIdentifier), False)
                     Next
 
                 Case COMARG_REQUEST_TABS_ANSWER
                     Dim iPID As Integer = CInt(mClassMessage.m_Messages(0))
                     Dim sProcessName As String = mClassMessage.m_Messages(1)
                     Dim sTabIdentifier As String = mClassMessage.m_Messages(2)
-                    Dim sFile As String = mClassMessage.m_Messages(3)
-                    Dim sCallerIdentifier As String = mClassMessage.m_Messages(4)
+                    Dim iTabIndex As Integer = CInt(mClassMessage.m_Messages(3))
+                    Dim sTabFile As String = mClassMessage.m_Messages(4)
+                    Dim sCallerIdentifier As String = mClassMessage.m_Messages(5)
 
                     If (g_mFormOpenTabFromInstances Is Nothing OrElse g_mFormOpenTabFromInstances.IsDisposed) Then
                         Return
                     End If
 
                     If (g_mFormOpenTabFromInstances IsNot Nothing) Then
-                        g_mFormOpenTabFromInstances.AddListViewItem(sTabIdentifier, sProcessName, iPID, sFile, sCallerIdentifier)
+                        g_mFormOpenTabFromInstances.AddListViewItem(sTabIdentifier, iTabIndex, sTabFile, sProcessName, iPID, sCallerIdentifier)
                     End If
 
                 Case COMARG_CLOSE_TAB
@@ -970,6 +972,12 @@ Public Class FormMain
                             End If
                         Next
                     End If
+
+                    If (Me.WindowState = FormWindowState.Minimized) Then
+                        Me.WindowState = FormWindowState.Normal
+                    End If
+                    Me.TopMost = Not Me.TopMost
+                    Me.TopMost = Not Me.TopMost
 
                     ShowPingFlash()
             End Select

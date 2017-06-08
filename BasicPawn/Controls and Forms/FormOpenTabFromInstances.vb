@@ -22,7 +22,8 @@ Public Class FormOpenTabFromInstances
 
     Structure STRUC_TABINFO_ITEM
         Dim sTabIndentifier As String
-        Dim sFile As String
+        Dim sTabIndex As Integer
+        Dim sTabFile As String
         Dim iProcessID As Integer
     End Structure
 
@@ -58,27 +59,23 @@ Public Class FormOpenTabFromInstances
         g_mFormMain.g_ClassCrossAppComunication.SendMessage(New ClassCrossAppComunication.ClassMessage(FormMain.COMARG_REQUEST_TABS, g_sCallerIdentifier), False)
     End Sub
 
-    Public Sub AddListViewItem(sTabIdentifier As String, sProcessName As String, iProcessID As Integer, sFile As String, Optional sCallerIdentifier As String = Nothing)
+    Public Sub AddListViewItem(sTabIdentifier As String, iTabIndex As Integer, sTabFile As String, sProcessName As String, iProcessID As Integer, Optional sCallerIdentifier As String = Nothing)
         If (sCallerIdentifier IsNot Nothing AndAlso sCallerIdentifier <> g_sCallerIdentifier) Then
             Return
         End If
 
-        If (String.IsNullOrEmpty(sFile) OrElse Not IO.File.Exists(sFile)) Then
-            Return
-        End If
-
-        Dim mTab As ClassTabControl.SourceTabPage = FindTabByIdentifier(sTabIdentifier)
-        If (mTab Is Nothing) Then
+        If (String.IsNullOrEmpty(sTabFile) OrElse Not IO.File.Exists(sTabFile)) Then
             Return
         End If
 
         Dim sHeaderName As String = String.Format("{0} ({1})", sProcessName, iProcessID)
 
-        ListView_Instances.Items.Add(New ClassListViewItem(New String() {CStr(mTab.TabIndex - 1), sFile}, FindOrCreateGroup(sHeaderName)) With {
+        ListView_Instances.Items.Add(New ClassListViewItem(New String() {CStr(iTabIndex - 1), sTabFile}, FindOrCreateGroup(sHeaderName)) With {
             .mTabInfo = New STRUC_TABINFO_ITEM With {
-                .sTabIndentifier = mTab.m_Identifier,
-                .iProcessID = iProcessID,
-                .sFile = sFile
+                .sTabIndentifier = sTabIdentifier,
+                .sTabIndex = iTabIndex,
+                .sTabFile = sTabFile,
+                .iProcessID = iProcessID
             }
         })
         ListView_Instances.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent)
@@ -119,32 +116,28 @@ Public Class FormOpenTabFromInstances
 
             Dim iItem = DirectCast(ListView_Instances.CheckedItems(i), ClassListViewItem)
 
-            Dim mTab As ClassTabControl.SourceTabPage = FindTabByIdentifier(iItem.mTabInfo.Value.sTabIndentifier)
-            If (mTab Is Nothing) Then
+
+            If (String.IsNullOrEmpty(iItem.mTabInfo.Value.sTabFile)) Then
+                MessageBox.Show(String.Format("Invalid file from process id {0} tab index {1}", iItem.mTabInfo.Value.iProcessID, iItem.mTabInfo.Value.sTabIndex - 1), "Invalid File", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Continue For
             End If
 
-            If (String.IsNullOrEmpty(iItem.mTabInfo.Value.sFile)) Then
-                MessageBox.Show(String.Format("Invalid file from process id {0} tab {1}", iItem.mTabInfo.Value.iProcessID, mTab.TabIndex - 1), "Invalid File", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Continue For
-            End If
-
-            If (Not IO.File.Exists(iItem.mTabInfo.Value.sFile)) Then
-                MessageBox.Show(String.Format("'{0}' does not exist!", iItem.mTabInfo.Value.sFile), "File does not exist", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            If (Not IO.File.Exists(iItem.mTabInfo.Value.sTabFile)) Then
+                MessageBox.Show(String.Format("'{0}' does not exist!", iItem.mTabInfo.Value.sTabFile), "File does not exist", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Continue For
             End If
 
             If (bOpenNew) Then
-                lFiles.Add("""" & iItem.mTabInfo.Value.sFile & """")
+                lFiles.Add("""" & iItem.mTabInfo.Value.sTabFile & """")
             Else
                 g_mFormMain.g_ClassTabControl.AddTab(True)
-                g_mFormMain.g_ClassTabControl.OpenFileTab(g_mFormMain.g_ClassTabControl.m_TabsCount - 1, iItem.mTabInfo.Value.sFile)
+                g_mFormMain.g_ClassTabControl.OpenFileTab(g_mFormMain.g_ClassTabControl.m_TabsCount - 1, iItem.mTabInfo.Value.sTabFile)
             End If
 
             If (bCloseTabs) Then
                 Dim iPID As Integer = iItem.mTabInfo.Value.iProcessID
                 Dim sTabIdentifier As String = iItem.mTabInfo.Value.sTabIndentifier
-                Dim sFile As String = iItem.mTabInfo.Value.sFile
+                Dim sFile As String = iItem.mTabInfo.Value.sTabFile
 
                 g_mFormMain.g_ClassCrossAppComunication.SendMessage(New ClassCrossAppComunication.ClassMessage(FormMain.COMARG_CLOSE_TAB, CStr(iPID), sTabIdentifier, sFile), False)
             End If
@@ -168,6 +161,11 @@ Public Class FormOpenTabFromInstances
         Dim sTabIndetifier As String = iItem.mTabInfo.Value.sTabIndentifier
 
         g_mFormMain.g_ClassCrossAppComunication.SendMessage(New ClassCrossAppComunication.ClassMessage(FormMain.COMARG_SHOW_PING_FLASH, CStr(iPID), sTabIndetifier), False)
+
+        If (Not Me.TopMost) Then
+            Me.TopMost = Not Me.TopMost
+            Me.TopMost = Not Me.TopMost
+        End If
     End Sub
 
     Private Sub ListView_Instances_ItemChecked(sender As Object, e As ItemCheckedEventArgs) Handles ListView_Instances.ItemChecked
@@ -181,6 +179,11 @@ Public Class FormOpenTabFromInstances
         Dim sTabIndetifier As String = iItem.mTabInfo.Value.sTabIndentifier
 
         g_mFormMain.g_ClassCrossAppComunication.SendMessage(New ClassCrossAppComunication.ClassMessage(FormMain.COMARG_SHOW_PING_FLASH, CStr(iPID), sTabIndetifier), False)
+
+        If (Not Me.TopMost) Then
+            Me.TopMost = Not Me.TopMost
+            Me.TopMost = Not Me.TopMost
+        End If
     End Sub
 
     Private Function FindTabByIdentifier(sIdentifier As String) As ClassTabControl.SourceTabPage
