@@ -468,6 +468,8 @@ Public Class FormMain
 
         g_ClassTabControl.m_ActiveTab.m_File = sTempFile
         g_ClassTabControl.SaveFileTab(g_ClassTabControl.m_ActiveTabIndex)
+
+        g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
     End Sub
 
     Private Sub ToolStripMenuItem_FileSavePacked_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileSavePacked.Click
