@@ -101,16 +101,16 @@ Public Class ClassTextEditorTools
         End If
 
         If (String.IsNullOrEmpty(sWord)) Then
-            g_mFormMain.PrintInformation("[ERRO]", "Can't check references! Nothing valid selected!", False, True)
+            g_mFormMain.PrintInformation("[ERRO]", "Can't check references! Nothing valid selected!", False, True, True)
             Return
         End If
 
         If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
-            g_mFormMain.PrintInformation("[ERRO]", "Can't check references! Could not get current source file!", False, True)
+            g_mFormMain.PrintInformation("[ERRO]", "Can't check references! Could not get current source file!", False, True, True)
             Return
         End If
 
-        g_mFormMain.PrintInformation("[INFO]", String.Format("Listing references of: {0}", sWord), False, True)
+        g_mFormMain.PrintInformation("[INFO]", String.Format("Listing references of: {0}", sWord), False, True, True)
 
         Dim sIncludeFiles As String() = g_mFormMain.g_ClassAutocompleteUpdater.GetIncludeFiles(mActiveTextEditor.Document.TextContent, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)
 
@@ -156,14 +156,12 @@ Public Class ClassTextEditorTools
             End If
         Next
 
-        lRefList.Reverse()
-
         For Each sRef As String In lRefList
-            g_mFormMain.PrintInformation("[INFO]", sRef, False, True)
+            g_mFormMain.PrintInformation("[INFO]", sRef, False)
         Next
 
 
-        g_mFormMain.PrintInformation("[INFO]", "All references listed!", False, True)
+        g_mFormMain.PrintInformation("[INFO]", "All references listed!", False, True, True)
     End Sub
 
     ''' <summary>
@@ -240,7 +238,7 @@ Public Class ClassTextEditorTools
             End If
             g_mFormMain.TabControl_Details.SelectTab(1)
 
-            g_mFormMain.PrintInformation("[INFO]", "Compiling source started!")
+            g_mFormMain.PrintInformation("[INFO]", "Compiling source started!", False, False, True)
 
             Dim sCompilerPath As String = ""
             Dim sIncludePaths As String = ""
@@ -250,7 +248,7 @@ Public Class ClassTextEditorTools
             Dim sOutput As String = ""
 
             If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
-                g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Could not get current source file!")
+                g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Could not get current source file!", False, False, True)
                 Return
             End If
 
@@ -281,13 +279,13 @@ Public Class ClassTextEditorTools
                         Exit While
                     End If
 
-                    g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Compiler can not be found!")
+                    g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Compiler can not be found!", False, False, True)
                     Return
                 End While
             Else
                 sCompilerPath = ClassConfigs.m_ActiveConfig.g_sCompilerPath
                 If (Not IO.File.Exists(sCompilerPath)) Then
-                    g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Compiler can not be found!")
+                    g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Compiler can not be found!", False, False, True)
                     Return
                 End If
             End If
@@ -297,14 +295,14 @@ Public Class ClassTextEditorTools
                 sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "include")
 
                 If (Not IO.Directory.Exists(sIncludePaths)) Then
-                    g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!")
+                    g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!", False, False, True)
                     Return
                 End If
             Else
                 sIncludePaths = ClassConfigs.m_ActiveConfig.g_sIncludeFolders
                 For Each sInclude As String In sIncludePaths.Split(";"c)
                     If (Not IO.Directory.Exists(sInclude)) Then
-                        g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!")
+                        g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!", False, False, True)
                         Return
                     End If
                 Next
@@ -318,7 +316,7 @@ Public Class ClassTextEditorTools
                     sOutputFile = String.Format("{0}\compiled\{1}.unk", IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File).TrimEnd("\"c), IO.Path.GetFileNameWithoutExtension(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File))
                 Else
                     If (Not IO.Directory.Exists(ClassConfigs.m_ActiveConfig.g_sOutputFolder)) Then
-                        g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Invalid output directory!")
+                        g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Invalid output directory!", False, False, True)
                         Return
                     End If
                     sOutputFile = String.Format("{0}\{1}.unk", ClassConfigs.m_ActiveConfig.g_sOutputFolder.TrimEnd("\"c), IO.Path.GetFileNameWithoutExtension(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File))
@@ -338,7 +336,7 @@ Public Class ClassTextEditorTools
             Dim compilerType As ENUM_COMPILER_TYPE = ENUM_COMPILER_TYPE.UNKNOWN
 
             Dim sLines As String() = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
-            For i = sLines.Length - 1 To 0 Step -1
+            For i = 0 To sLines.Length - 1
                 If (i = 0) Then
                     Select Case (True)
                         Case Regex.IsMatch(sLines(i), "\b(SourcePawn)\b \b(Compiler)\b", RegexOptions.IgnoreCase)
@@ -395,14 +393,14 @@ Public Class ClassTextEditorTools
             If (bTesting) Then
                 IO.File.Delete(sOutputFile)
             ElseIf (Not IO.File.Exists(sOutputFile)) Then
-                g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Source output can not be found!")
+                g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Source output can not be found!", False, False, True)
                 Return
             End If
 
             If (Not bTesting) Then
                 g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Saved compiled source: {0}", sOutputFile))
             End If
-            g_mFormMain.PrintInformation("[INFO]", "Compiling source finished!")
+            g_mFormMain.PrintInformation("[INFO]", "Compiling source finished!", False, False, True)
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
@@ -429,7 +427,7 @@ Public Class ClassTextEditorTools
             End If
             g_mFormMain.TabControl_Details.SelectTab(1)
 
-            g_mFormMain.PrintInformation("[INFO]", "Compiling source started!")
+            g_mFormMain.PrintInformation("[INFO]", "Compiling source started!", False, False, True)
 
             Dim iExitCode As Integer = 0
             Dim sOutput As String = ""
@@ -438,7 +436,7 @@ Public Class ClassTextEditorTools
             If (sCompilerPath Is Nothing) Then
                 If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                     If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
-                        g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Could not get current source file!")
+                        g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Could not get current source file!", False, False, True)
                         Return False
                     End If
 
@@ -467,19 +465,19 @@ Public Class ClassTextEditorTools
                             Exit While
                         End If
 
-                        g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Compiler can not be found!")
+                        g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Compiler can not be found!", False, False, True)
                         Return False
                     End While
                 Else
                     sCompilerPath = ClassConfigs.m_ActiveConfig.g_sCompilerPath
                     If (Not IO.File.Exists(sCompilerPath)) Then
-                        g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Compiler can not be found!")
+                        g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Compiler can not be found!", False, False, True)
                         Return False
                     End If
                 End If
             Else
                 If (Not IO.File.Exists(sCompilerPath)) Then
-                    g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Compiler can not be found!")
+                    g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Compiler can not be found!", False, False, True)
                     Return False
                 End If
             End If
@@ -488,20 +486,20 @@ Public Class ClassTextEditorTools
             If (sIncludePaths Is Nothing) Then
                 If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                     If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
-                        g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Could not get current source file!")
+                        g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Could not get current source file!", False, False, True)
                         Return False
                     End If
 
                     sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "include")
                     If (Not IO.Directory.Exists(sIncludePaths)) Then
-                        g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!")
+                        g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!", False, False, True)
                         Return False
                     End If
                 Else
                     sIncludePaths = ClassConfigs.m_ActiveConfig.g_sIncludeFolders
                     For Each sInclude As String In sIncludePaths.Split(";"c)
                         If (Not IO.Directory.Exists(sInclude)) Then
-                            g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!")
+                            g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!", False, False, True)
                             Return False
                         End If
                     Next
@@ -509,7 +507,7 @@ Public Class ClassTextEditorTools
             Else
                 For Each sInclude As String In sIncludePaths.Split(";"c)
                     If (Not IO.Directory.Exists(sInclude)) Then
-                        g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!")
+                        g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!", False, False, True)
                         Return False
                     End If
                 Next
@@ -542,7 +540,7 @@ Public Class ClassTextEditorTools
             Dim compilerType As ENUM_COMPILER_TYPE = ENUM_COMPILER_TYPE.UNKNOWN
 
             Dim sLines As String() = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
-            For i = sLines.Length - 1 To 0 Step -1
+            For i = 0 To sLines.Length - 1
                 If (i = 0) Then
                     Select Case (True)
                         Case Regex.IsMatch(sLines(i), "\b(SourcePawn)\b \b(Compiler)\b", RegexOptions.IgnoreCase)
@@ -603,14 +601,14 @@ Public Class ClassTextEditorTools
             If (bTesting) Then
                 IO.File.Delete(sOutputFile)
             ElseIf (Not IO.File.Exists(sOutputFile)) Then
-                g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Source output can not be found!")
+                g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Source output can not be found!", False, False, True)
                 Return False
             End If
 
             If (Not bTesting) Then
                 g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Saved compiled source: {0}", sOutputFile))
             End If
-            g_mFormMain.PrintInformation("[INFO]", "Compiling source finished!")
+            g_mFormMain.PrintInformation("[INFO]", "Compiling source finished!", False, False, True)
 
             Return True
         Catch ex As Exception
@@ -639,7 +637,7 @@ Public Class ClassTextEditorTools
             End If
             g_mFormMain.TabControl_Details.SelectTab(1)
 
-            g_mFormMain.PrintInformation("[INFO]", "Pre-Processing source started!")
+            g_mFormMain.PrintInformation("[INFO]", "Pre-Processing source started!", False, False, True)
 
             Dim sMarkStart As String = Guid.NewGuid.ToString
             Dim sMarkEnd As String = Guid.NewGuid.ToString
@@ -652,7 +650,7 @@ Public Class ClassTextEditorTools
             Dim sOutput As String = ""
 
             If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
-                g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Could not get current source file!")
+                g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Could not get current source file!", False, False, True)
                 Return Nothing
             End If
 
@@ -683,13 +681,13 @@ Public Class ClassTextEditorTools
                         Exit While
                     End If
 
-                    g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Compiler can not be found!")
+                    g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Compiler can not be found!", False, False, True)
                     Return Nothing
                 End While
             Else
                 sCompilerPath = ClassConfigs.m_ActiveConfig.g_sCompilerPath
                 If (Not IO.File.Exists(sCompilerPath)) Then
-                    g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Compiler can not be found!")
+                    g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Compiler can not be found!", False, False, True)
                     Return Nothing
                 End If
             End If
@@ -698,14 +696,14 @@ Public Class ClassTextEditorTools
             If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                 sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "include")
                 If (Not IO.Directory.Exists(sIncludePaths)) Then
-                    g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!")
+                    g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!", False, False, True)
                     Return Nothing
                 End If
             Else
                 sIncludePaths = ClassConfigs.m_ActiveConfig.g_sIncludeFolders
                 For Each sInclude As String In sIncludePaths.Split(";"c)
                     If (Not IO.Directory.Exists(sInclude)) Then
-                        g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!")
+                        g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!", False, False, True)
                         Return Nothing
                     End If
                 Next
@@ -742,12 +740,12 @@ Public Class ClassTextEditorTools
             IO.File.Delete(sTmpSourcePath)
 
             Dim sLines As String() = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
-            For i = sLines.Length - 1 To 0 Step -1
+            For i = 0 To sLines.Length - 1
                 g_mFormMain.PrintInformation("[INFO]", vbTab & sLines(i))
             Next
 
             If (String.IsNullOrEmpty(sOutputFile) OrElse Not IO.File.Exists(sOutputFile)) Then
-                g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Could not get Pre-Processed source file!")
+                g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Could not get Pre-Processed source file!", False, False, True)
                 Return Nothing
             End If
 
@@ -806,7 +804,7 @@ Public Class ClassTextEditorTools
             End If
 
 
-            g_mFormMain.PrintInformation("[INFO]", "Pre-Processing source finished!")
+            g_mFormMain.PrintInformation("[INFO]", "Pre-Processing source finished!", False, False, True)
 
             Return sNewSource
         Catch ex As Exception
@@ -842,7 +840,7 @@ Public Class ClassTextEditorTools
             Dim sOutput As String = ""
 
             If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
-                g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get current source file!")
+                g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get current source file!", False, False, True)
                 Return Nothing
             End If
 
@@ -873,13 +871,13 @@ Public Class ClassTextEditorTools
                         Exit While
                     End If
 
-                    g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Compiler can not be found!")
+                    g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Compiler can not be found!", False, False, True)
                     Return Nothing
                 End While
             Else
                 sCompilerPath = ClassConfigs.m_ActiveConfig.g_sCompilerPath
                 If (Not IO.File.Exists(sCompilerPath)) Then
-                    g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Compiler can not be found!")
+                    g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Compiler can not be found!", False, False, True)
                     Return Nothing
                 End If
             End If
@@ -889,14 +887,14 @@ Public Class ClassTextEditorTools
                 sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "include")
 
                 If (Not IO.Directory.Exists(sIncludePaths)) Then
-                    g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Include path can not be found!")
+                    g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Include path can not be found!", False, False, True)
                     Return Nothing
                 End If
             Else
                 sIncludePaths = ClassConfigs.m_ActiveConfig.g_sIncludeFolders
                 For Each sInclude As String In sIncludePaths.Split(";"c)
                     If (Not IO.Directory.Exists(sInclude)) Then
-                        g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Include path can not be found!")
+                        g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Include path can not be found!", False, False, True)
                         Return Nothing
                     End If
                 Next
@@ -921,12 +919,12 @@ Public Class ClassTextEditorTools
             IO.File.Delete(sTmpSourcePath)
 
             Dim sLines As String() = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
-            For i = sLines.Length - 1 To 0 Step -1
+            For i = 0 To sLines.Length - 1
                 g_mFormMain.PrintInformation("[INFO]", vbTab & sLines(i))
             Next
 
             If (String.IsNullOrEmpty(sOutputFile) OrElse Not IO.File.Exists(sOutputFile)) Then
-                g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get Pre-Processed source file!")
+                g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get Pre-Processed source file!", False, False, True)
                 Return Nothing
             End If
 
@@ -935,7 +933,7 @@ Public Class ClassTextEditorTools
             IO.File.Delete(sOutputFile)
 
 
-            g_mFormMain.PrintInformation("[INFO]", "DIASM source finished!")
+            g_mFormMain.PrintInformation("[INFO]", "DIASM source finished!", False, False, True)
 
             Return sOutputSource
         Catch ex As Exception
@@ -966,7 +964,7 @@ Public Class ClassTextEditorTools
             End If
             g_mFormMain.TabControl_Details.SelectTab(1)
 
-            g_mFormMain.PrintInformation("[INFO]", "DIASM source started!")
+            g_mFormMain.PrintInformation("[INFO]", "DIASM source started!", False, False, True)
 
             Dim iExitCode As Integer = 0
             Dim sOutput As String = ""
@@ -975,7 +973,7 @@ Public Class ClassTextEditorTools
             If (sCompilerPath Is Nothing) Then
                 If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                     If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
-                        g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get current source file!")
+                        g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get current source file!", False, False, True)
                         Return Nothing
                     End If
 
@@ -1004,19 +1002,19 @@ Public Class ClassTextEditorTools
                             Exit While
                         End If
 
-                        g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Compiler can not be found!")
+                        g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Compiler can not be found!", False, False, True)
                         Return Nothing
                     End While
                 Else
                     sCompilerPath = ClassConfigs.m_ActiveConfig.g_sCompilerPath
                     If (Not IO.File.Exists(sCompilerPath)) Then
-                        g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Compiler can not be found!")
+                        g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Compiler can not be found!", False, False, True)
                         Return Nothing
                     End If
                 End If
             Else
                 If (Not IO.File.Exists(sCompilerPath)) Then
-                    g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Compiler can not be found!")
+                    g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Compiler can not be found!", False, False, True)
                     Return Nothing
                 End If
             End If
@@ -1025,27 +1023,27 @@ Public Class ClassTextEditorTools
             If (sIncludePaths Is Nothing) Then
                 If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                     If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
-                        g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get current source file!")
+                        g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get current source file!", False, False, True)
                         Return Nothing
                     End If
 
                     sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "include")
                     If (Not IO.Directory.Exists(sIncludePaths)) Then
-                        g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Include path can not be found!")
+                        g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Include path can not be found!", False, False, True)
                         Return Nothing
                     End If
                 Else
                     sIncludePaths = ClassConfigs.m_ActiveConfig.g_sIncludeFolders
                     For Each sInclude As String In sIncludePaths.Split(";"c)
                         If (Not IO.Directory.Exists(sInclude)) Then
-                            g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Include path can not be found!")
+                            g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Include path can not be found!", False, False, True)
                             Return Nothing
                         End If
                     Next
                 End If
             Else
                 If (Not IO.Directory.Exists(sIncludePaths)) Then
-                    g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Include path can not be found!")
+                    g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Include path can not be found!", False, False, True)
                     Return Nothing
                 End If
             End If
@@ -1071,7 +1069,7 @@ Public Class ClassTextEditorTools
             End If
 
             Dim sLines As String() = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
-            For i = sLines.Length - 1 To 0 Step -1
+            For i = 0 To sLines.Length - 1
                 If (Not String.IsNullOrEmpty(sEmulateSourceFile) AndAlso sLines(i).Contains(TmpSourceFile)) Then
                     sLines(i) = Regex.Replace(sLines(i), "^\b" & Regex.Escape(TmpSourceFile) & "\b", sEmulateSourceFile)
                 End If
@@ -1089,7 +1087,7 @@ Public Class ClassTextEditorTools
             If (Not bTesting) Then
                 g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Saved DIASM source: {0}", sOutputFile))
             End If
-            g_mFormMain.PrintInformation("[INFO]", "DIASM source finished!")
+            g_mFormMain.PrintInformation("[INFO]", "DIASM source finished!", False, False, True)
 
             Return sAssemblySource
         Catch ex As Exception

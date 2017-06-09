@@ -217,46 +217,46 @@ Public Class FormMain
         ToolStripStatusLabel_CurrentConfig.Text = "Config: " & ClassConfigs.m_ActiveConfig.GetName
     End Sub
 
-    Public Sub PrintInformation(sType As String, sMessage As String, Optional bClear As Boolean = False, Optional bShowInformationTab As Boolean = False, Optional iLatestNoDuplicateLines As Integer = 0)
+    Public Sub PrintInformation(sType As String, sMessage As String, Optional bClear As Boolean = False, Optional bShowInformationTab As Boolean = False, Optional bEnsureVisible As Boolean = False)
         Me.BeginInvoke(
             Sub()
                 If (g_mUCInformationList Is Nothing) Then
                     Return
                 End If
 
-                Dim bExist As Boolean = False
+                'Dim bExist As Boolean = False
 
-                If (iLatestNoDuplicateLines > 0) Then
-                    For Each item As String In g_mUCInformationList.ListBox_Information.Items
-                        If (iLatestNoDuplicateLines < 1) Then
-                            Exit For
-                        End If
+                'If (iLatestNoDuplicateLines > 0) Then
+                '    For Each item As String In g_mUCInformationList.ListBox_Information.Items
+                '        If (iLatestNoDuplicateLines < 1) Then
+                '            Exit For
+                '        End If
 
-                        If (item.StartsWith(sType) AndAlso item.EndsWith(sMessage)) Then
-                            bExist = True
-                            Exit For
-                        End If
+                '        If (item.StartsWith(sType) AndAlso item.EndsWith(sMessage)) Then
+                '            bExist = True
+                '            Exit For
+                '        End If
 
-                        iLatestNoDuplicateLines -= 1
-                    Next
-                End If
+                '        iLatestNoDuplicateLines -= 1
+                '    Next
+                'End If
 
                 If (bClear) Then
                     g_mUCInformationList.ListBox_Information.Items.Clear()
                 End If
 
-                If (Not bExist) Then
-                    g_mUCInformationList.ListBox_Information.Items.Insert(0, String.Format("{0} ({1}) {2}", sType, Now.ToString, sMessage))
-                End If
+                Dim iIndex = g_mUCInformationList.ListBox_Information.Items.Add(String.Format("{0} ({1}) {2}", sType, Now.ToString, sMessage))
 
                 ToolStripStatusLabel_LastInformation.Text = sMessage
+
+                If (bEnsureVisible) Then
+                    'Scroll to item
+                    g_mUCInformationList.ListBox_Information.TopIndex = iIndex
+                End If
 
                 If (bShowInformationTab) Then
                     SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed = False
                     SplitContainer_ToolboxSourceAndDetails.SplitterDistance = SplitContainer_ToolboxSourceAndDetails.Height - 200
-
-                    'Scroll to top
-                    g_mUCInformationList.ListBox_Information.TopIndex = 0
 
                     TabControl_Details.SelectTab(1)
                 End If
@@ -641,7 +641,7 @@ Public Class FormMain
     End Sub
 
     Private Sub ToolStripMenuItem_ToolsClearInformationLog_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsClearInformationLog.Click
-        PrintInformation("[INFO]", "Information log cleaned!", True)
+        PrintInformation("[INFO]", "Information log cleaned!", True, True)
     End Sub
 
     Private Sub ToolStripMenuItem_ToolsAutocompleteUpdate_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsAutocompleteUpdate.Click

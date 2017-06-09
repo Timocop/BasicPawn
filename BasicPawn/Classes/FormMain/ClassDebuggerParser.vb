@@ -674,6 +674,8 @@ Public Class ClassDebuggerParser
             Dim debuggerParser As New ClassDebuggerParser(g_mFormMain)
             debuggerParser.UpdateBreakpoints(mActiveTextEditor.Document.TextContent, False)
 
+            Dim lRemovedBreakpoints As New List(Of Integer)
+
             For i = debuggerParser.g_lBreakpointList.Count - 1 To 0 Step -1
                 Dim iIndex As Integer = debuggerParser.g_lBreakpointList(i).iOffset
                 Dim iLenght As Integer = debuggerParser.g_lBreakpointList(i).iLenght
@@ -690,9 +692,15 @@ Public Class ClassDebuggerParser
                     mActiveTextEditor.Document.Remove(iIndex, 1)
                 End If
 
-                g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Breakpoint removed at line: {0}", iLine))
+                lRemovedBreakpoints.Add(iLine)
 
                 Exit For
+            Next
+
+            lRemovedBreakpoints.Reverse()
+            For Each i As Integer In lRemovedBreakpoints
+                g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Breakpoint removed at line: {0}", i))
+
             Next
 
             mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
@@ -708,6 +716,8 @@ Public Class ClassDebuggerParser
             mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
 
             g_mFormMain.PrintInformation("[INFO]", "Removing all debugger breakpoints...")
+
+            Dim lRemovedBreakpoints As New List(Of Integer)
 
             Dim debuggerParser As New ClassDebuggerParser(g_mFormMain)
             While True
@@ -725,7 +735,7 @@ Public Class ClassDebuggerParser
                         mActiveTextEditor.Document.Remove(iIndex, 1)
                     End If
 
-                    g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Breakpoint removed at line: {0}", iLine))
+                    lRemovedBreakpoints.Add(iLine)
 
                     Dim bDoRebuild As Boolean = False
                     For j = debuggerParser.g_lBreakpointList.Count - 1 To 0 Step -1
@@ -752,6 +762,11 @@ Public Class ClassDebuggerParser
 
                 Exit While
             End While
+
+            lRemovedBreakpoints.Reverse()
+            For Each i As Integer In lRemovedBreakpoints
+                g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Breakpoint removed at line: {0}", i))
+            Next
 
             mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
 
@@ -940,6 +955,8 @@ Public Class ClassDebuggerParser
             Dim debuggerParser As New ClassDebuggerParser(g_mFormMain)
             debuggerParser.UpdateWatchers(mActiveTextEditor.Document.TextContent, False)
 
+            Dim lRemovedWatchers As New List(Of Integer)
+
             For i = debuggerParser.g_lWatcherList.Count - 1 To 0 Step -1
                 Dim iIndex As Integer = debuggerParser.g_lWatcherList(i).iOffset
                 Dim iLenght As Integer = debuggerParser.g_lWatcherList(i).iLenght
@@ -956,9 +973,14 @@ Public Class ClassDebuggerParser
                     mActiveTextEditor.Document.Remove(iIndex, 1)
                 End If
 
-                g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Watcher removed at line: {0}", iLine))
+                lRemovedWatchers.Add(iLine)
 
                 Exit For
+            Next
+
+            lRemovedWatchers.Reverse()
+            For Each i As Integer In lRemovedWatchers
+                g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Watcher removed at line: {0}", i))
             Next
 
             mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
@@ -974,6 +996,8 @@ Public Class ClassDebuggerParser
             mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
 
             g_mFormMain.PrintInformation("[INFO]", "Removing all debugger watcher...")
+
+            Dim lRemovedWatchers As New List(Of Integer)
 
             Dim debuggerParser As New ClassDebuggerParser(g_mFormMain)
             While True
@@ -991,7 +1015,7 @@ Public Class ClassDebuggerParser
                         mActiveTextEditor.Document.Remove(iIndex, 1)
                     End If
 
-                    g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Watcher removed at line: {0}", iLine))
+                    lRemovedWatchers.add(iLine)
 
                     Dim bDoRebuild As Boolean = False
                     For j = debuggerParser.g_lWatcherList.Count - 1 To 0 Step -1
@@ -1018,6 +1042,11 @@ Public Class ClassDebuggerParser
 
                 Exit While
             End While
+
+            lRemovedWatchers.Reverse()
+            For Each i As Integer In lRemovedWatchers
+                g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Watcher removed at line: {0}", i))
+            Next
 
             mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
 
