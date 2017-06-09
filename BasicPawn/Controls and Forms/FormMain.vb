@@ -967,7 +967,10 @@ Public Class FormMain
                     If (Not String.IsNullOrEmpty(sTabIdentifier)) Then
                         For i = 0 To g_ClassTabControl.m_TabsCount - 1
                             If (g_ClassTabControl.m_Tab(i).m_Identifier = sTabIdentifier) Then
-                                g_ClassTabControl.SelectTab(i)
+                                If (g_ClassTabControl.m_ActiveTabIndex <> i) Then
+                                    g_ClassTabControl.SelectTab(i)
+                                End If
+
                                 Exit For
                             End If
                         Next
