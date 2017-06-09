@@ -44,6 +44,7 @@ Public Class ClassSettings
     Public Shared g_iSettingsToolTipMethodComments As Boolean = False
     Public Shared g_iSettingsToolTipAutocompleteComments As Boolean = True
     Public Shared g_iSettingsUseWindowsToolTip As Boolean = False
+    Public Shared g_iSettingsUseWindowsToolTipAnimations As Boolean = True
     Public Shared g_iSettingsFullMethodAutocomplete As Boolean = False
     Public Shared g_iSettingsFullEnumAutocomplete As Boolean = False
     Public Shared g_iSettingsAutocompleteCaseSensitive As Boolean = True
@@ -80,6 +81,7 @@ Public Class ClassSettings
         initFile.WriteKeyValue("Editor", "ToolTipMethodComments", If(g_iSettingsToolTipMethodComments, "1", "0"))
         initFile.WriteKeyValue("Editor", "ToolTipAutocompleteComments", If(g_iSettingsToolTipAutocompleteComments, "1", "0"))
         initFile.WriteKeyValue("Editor", "UseWindowsToolTip", If(g_iSettingsUseWindowsToolTip, "1", "0"))
+        initFile.WriteKeyValue("Editor", "UseWindowsToolTipAnimations", If(g_iSettingsUseWindowsToolTipAnimations, "1", "0"))
         initFile.WriteKeyValue("Editor", "FullMethodAutocomplete", If(g_iSettingsFullMethodAutocomplete, "1", "0"))
         initFile.WriteKeyValue("Editor", "FullEnumAutocomplete", If(g_iSettingsFullEnumAutocomplete, "1", "0"))
         initFile.WriteKeyValue("Editor", "AutocompleteCaseSensitive", If(g_iSettingsAutocompleteCaseSensitive, "1", "0"))
@@ -117,6 +119,7 @@ Public Class ClassSettings
             g_iSettingsToolTipMethodComments = (initFile.ReadKeyValue("Editor", "ToolTipMethodComments", "0") <> "0")
             g_iSettingsToolTipAutocompleteComments = (initFile.ReadKeyValue("Editor", "ToolTipAutocompleteComments", "1") <> "0")
             g_iSettingsUseWindowsToolTip = (initFile.ReadKeyValue("Editor", "UseWindowsToolTip", "0") <> "0")
+            g_iSettingsUseWindowsToolTipAnimations = (initFile.ReadKeyValue("Editor", "UseWindowsToolTipAnimations", "1") <> "0")
             g_iSettingsFullMethodAutocomplete = (initFile.ReadKeyValue("Editor", "FullMethodAutocomplete", "0") <> "0")
             g_iSettingsFullEnumAutocomplete = (initFile.ReadKeyValue("Editor", "FullEnumAutocomplete", "0") <> "0")
             g_iSettingsAutocompleteCaseSensitive = (initFile.ReadKeyValue("Editor", "AutocompleteCaseSensitive", "1") <> "0")

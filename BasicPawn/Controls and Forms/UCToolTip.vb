@@ -43,7 +43,7 @@ Public Class UCToolTip
     End Sub
 
     Private Sub Timer_Move_Tick(sender As Object, e As EventArgs) Handles Timer_Move.Tick
-        If (MoveWindow(False)) Then
+        If (MoveWindow(Not ClassSettings.g_iSettingsUseWindowsToolTipAnimations)) Then
             Timer_Move.Interval = g_iMoveSpeed
         Else
             Timer_Move.Interval = g_iIdleSpeed

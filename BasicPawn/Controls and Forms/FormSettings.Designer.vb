@@ -23,7 +23,7 @@ Partial Class FormSettings
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormSettings))
-        Me.TabControl1 = New ClassTabControlColor()
+        Me.TabControl1 = New BasicPawn.ClassTabControlColor()
         Me.TabPage_Settings = New System.Windows.Forms.TabPage()
         Me.Panel8 = New System.Windows.Forms.Panel()
         Me.Label14 = New System.Windows.Forms.Label()
@@ -129,6 +129,7 @@ Partial Class FormSettings
         Me.Label17 = New System.Windows.Forms.Label()
         Me.Button_Cancel = New System.Windows.Forms.Button()
         Me.Button_Apply = New System.Windows.Forms.Button()
+        Me.CheckBox_WindowsToolTipAnimations = New System.Windows.Forms.CheckBox()
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Settings.SuspendLayout()
         Me.Panel8.SuspendLayout()
@@ -193,7 +194,7 @@ Partial Class FormSettings
         Me.Panel8.Controls.Add(Me.CheckBox_EntitiesEnableColor)
         Me.Panel8.Controls.Add(Me.CheckBox_EntitiesEnableShowNewEnts)
         Me.Panel8.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel8.Location = New System.Drawing.Point(0, 492)
+        Me.Panel8.Location = New System.Drawing.Point(0, 516)
         Me.Panel8.Name = "Panel8"
         Me.Panel8.Size = New System.Drawing.Size(602, 92)
         Me.Panel8.TabIndex = 25
@@ -259,6 +260,7 @@ Partial Class FormSettings
         'Panel5
         '
         Me.Panel5.AutoSize = True
+        Me.Panel5.Controls.Add(Me.CheckBox_WindowsToolTipAnimations)
         Me.Panel5.Controls.Add(Me.Label1)
         Me.Panel5.Controls.Add(Me.CheckBox_SwitchTabToAutocomplete)
         Me.Panel5.Controls.Add(Me.CheckBox_AlwaysLoadDefaultIncludes)
@@ -275,7 +277,7 @@ Partial Class FormSettings
         Me.Panel5.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel5.Location = New System.Drawing.Point(0, 208)
         Me.Panel5.Name = "Panel5"
-        Me.Panel5.Size = New System.Drawing.Size(602, 284)
+        Me.Panel5.Size = New System.Drawing.Size(602, 308)
         Me.Panel5.TabIndex = 22
         '
         'Label1
@@ -295,7 +297,7 @@ Partial Class FormSettings
         '
         Me.CheckBox_SwitchTabToAutocomplete.AutoSize = True
         Me.CheckBox_SwitchTabToAutocomplete.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_SwitchTabToAutocomplete.Location = New System.Drawing.Point(6, 263)
+        Me.CheckBox_SwitchTabToAutocomplete.Location = New System.Drawing.Point(6, 287)
         Me.CheckBox_SwitchTabToAutocomplete.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_SwitchTabToAutocomplete.Name = "CheckBox_SwitchTabToAutocomplete"
         Me.CheckBox_SwitchTabToAutocomplete.Size = New System.Drawing.Size(326, 18)
@@ -328,7 +330,7 @@ Partial Class FormSettings
         '
         Me.CheckBox_VarAutocompleteShowObjectBrowser.AutoSize = True
         Me.CheckBox_VarAutocompleteShowObjectBrowser.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_VarAutocompleteShowObjectBrowser.Location = New System.Drawing.Point(6, 239)
+        Me.CheckBox_VarAutocompleteShowObjectBrowser.Location = New System.Drawing.Point(6, 263)
         Me.CheckBox_VarAutocompleteShowObjectBrowser.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_VarAutocompleteShowObjectBrowser.Name = "CheckBox_VarAutocompleteShowObjectBrowser"
         Me.CheckBox_VarAutocompleteShowObjectBrowser.Size = New System.Drawing.Size(224, 18)
@@ -340,7 +342,7 @@ Partial Class FormSettings
         '
         Me.CheckBox_CurrentSourceVarAutocomplete.AutoSize = True
         Me.CheckBox_CurrentSourceVarAutocomplete.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_CurrentSourceVarAutocomplete.Location = New System.Drawing.Point(6, 215)
+        Me.CheckBox_CurrentSourceVarAutocomplete.Location = New System.Drawing.Point(6, 239)
         Me.CheckBox_CurrentSourceVarAutocomplete.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_CurrentSourceVarAutocomplete.Name = "CheckBox_CurrentSourceVarAutocomplete"
         Me.CheckBox_CurrentSourceVarAutocomplete.Size = New System.Drawing.Size(504, 18)
@@ -365,7 +367,7 @@ Partial Class FormSettings
         '
         Me.CheckBox_FullAutcompleteMethods.AutoSize = True
         Me.CheckBox_FullAutcompleteMethods.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_FullAutcompleteMethods.Location = New System.Drawing.Point(6, 143)
+        Me.CheckBox_FullAutcompleteMethods.Location = New System.Drawing.Point(6, 167)
         Me.CheckBox_FullAutcompleteMethods.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_FullAutcompleteMethods.Name = "CheckBox_FullAutcompleteMethods"
         Me.CheckBox_FullAutcompleteMethods.Size = New System.Drawing.Size(202, 18)
@@ -401,7 +403,7 @@ Partial Class FormSettings
         '
         Me.CheckBox_FullAutocompleteReTagging.AutoSize = True
         Me.CheckBox_FullAutocompleteReTagging.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_FullAutocompleteReTagging.Location = New System.Drawing.Point(6, 167)
+        Me.CheckBox_FullAutocompleteReTagging.Location = New System.Drawing.Point(6, 191)
         Me.CheckBox_FullAutocompleteReTagging.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_FullAutocompleteReTagging.Name = "CheckBox_FullAutocompleteReTagging"
         Me.CheckBox_FullAutocompleteReTagging.Size = New System.Drawing.Size(415, 18)
@@ -425,7 +427,7 @@ Partial Class FormSettings
         '
         Me.CheckBox_CaseSensitive.AutoSize = True
         Me.CheckBox_CaseSensitive.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_CaseSensitive.Location = New System.Drawing.Point(6, 191)
+        Me.CheckBox_CaseSensitive.Location = New System.Drawing.Point(6, 215)
         Me.CheckBox_CaseSensitive.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_CaseSensitive.Name = "CheckBox_CaseSensitive"
         Me.CheckBox_CaseSensitive.Size = New System.Drawing.Size(103, 18)
@@ -1384,6 +1386,18 @@ Partial Class FormSettings
         Me.Button_Apply.Text = "Apply"
         Me.Button_Apply.UseVisualStyleBackColor = True
         '
+        'CheckBox_WindowsToolTipAnimations
+        '
+        Me.CheckBox_WindowsToolTipAnimations.AutoSize = True
+        Me.CheckBox_WindowsToolTipAnimations.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_WindowsToolTipAnimations.Location = New System.Drawing.Point(64, 143)
+        Me.CheckBox_WindowsToolTipAnimations.Margin = New System.Windows.Forms.Padding(64, 3, 3, 3)
+        Me.CheckBox_WindowsToolTipAnimations.Name = "CheckBox_WindowsToolTipAnimations"
+        Me.CheckBox_WindowsToolTipAnimations.Size = New System.Drawing.Size(204, 18)
+        Me.CheckBox_WindowsToolTipAnimations.TabIndex = 21
+        Me.CheckBox_WindowsToolTipAnimations.Text = "Smooth tooltip popup movement"
+        Me.CheckBox_WindowsToolTipAnimations.UseVisualStyleBackColor = True
+        '
         'FormSettings
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -1549,4 +1563,5 @@ Partial Class FormSettings
     Friend WithEvents Label18 As Label
     Friend WithEvents Button_Refresh As Button
     Friend WithEvents CheckBox_AutoShowStartPage As CheckBox
+    Friend WithEvents CheckBox_WindowsToolTipAnimations As CheckBox
 End Class
