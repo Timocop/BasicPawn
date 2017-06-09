@@ -254,6 +254,10 @@ Public Class FormMain
                 If (bShowInformationTab) Then
                     SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed = False
                     SplitContainer_ToolboxSourceAndDetails.SplitterDistance = SplitContainer_ToolboxSourceAndDetails.Height - 200
+
+                    'Scroll to top
+                    g_mUCInformationList.ListBox_Information.TopIndex = 0
+
                     TabControl_Details.SelectTab(1)
                 End If
             End Sub)
