@@ -182,7 +182,7 @@ Public Class ClassTextEditorTools
             MessageBox.Show("Too many 'Search & Replace' windows open!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
         Else
             Dim i As New FormSearch(g_mFormMain, sSearchText)
-            i.Show()
+            i.Show(g_mFormMain)
         End If
     End Sub
 

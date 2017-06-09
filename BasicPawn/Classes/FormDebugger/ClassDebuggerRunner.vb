@@ -1267,7 +1267,7 @@ Public Class ClassDebuggerRunner
                                                         g_mFormDebugger.TopMost = False
 
                                                         g_mFormDebuggerException = New FormDebuggerException(g_mFormDebugger, sFile, smExceptions(i))
-                                                        g_mFormDebuggerException.Show()
+                                                        g_mFormDebuggerException.Show(g_mFormDebugger)
 
                                                         If (g_mFormDebuggerException.WindowState = FormWindowState.Minimized) Then
                                                             g_mFormDebuggerException.WindowState = FormWindowState.Normal
@@ -1325,7 +1325,7 @@ Public Class ClassDebuggerRunner
                                                         g_mFormDebugger.TopMost = False
 
                                                         g_mFormDebuggerCriticalPopupException = New FormDebuggerCriticalPopup(g_mFormDebugger, "Unknown SourceMod Exception", "The debugger caught unknown exceptions!", String.Join(Environment.NewLine, sLines))
-                                                        g_mFormDebuggerCriticalPopupException.Show()
+                                                        g_mFormDebuggerCriticalPopupException.Show(g_mFormDebugger)
 
                                                         If (g_mFormDebuggerCriticalPopupException.WindowState = FormWindowState.Minimized) Then
                                                             g_mFormDebuggerCriticalPopupException.WindowState = FormWindowState.Normal
@@ -1438,7 +1438,7 @@ Public Class ClassDebuggerRunner
                                                     g_mFormDebugger.TopMost = False
 
                                                     g_mFormDebuggerCriticalPopupFatalException = New FormDebuggerCriticalPopup(g_mFormDebugger, "SourceMod Fatal Error", "The debugger caught fatal errors!", String.Join(Environment.NewLine, sLines))
-                                                    g_mFormDebuggerCriticalPopupFatalException.Show()
+                                                    g_mFormDebuggerCriticalPopupFatalException.Show(g_mFormDebugger)
 
                                                     If (g_mFormDebuggerCriticalPopupFatalException.WindowState = FormWindowState.Minimized) Then
                                                         g_mFormDebuggerCriticalPopupFatalException.WindowState = FormWindowState.Normal

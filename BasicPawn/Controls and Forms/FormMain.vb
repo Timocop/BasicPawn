@@ -510,7 +510,7 @@ Public Class FormMain
     Private Sub ToolStripMenuItem_FileLoadTabs_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileLoadTabs.Click
         If (g_mFormOpenTabFromInstances Is Nothing OrElse g_mFormOpenTabFromInstances.IsDisposed) Then
             g_mFormOpenTabFromInstances = New FormOpenTabFromInstances(Me)
-            g_mFormOpenTabFromInstances.Show()
+            g_mFormOpenTabFromInstances.Show(Me)
         End If
     End Sub
 
@@ -706,7 +706,7 @@ Public Class FormMain
     Private Sub ToolStripMenuItem_Debug_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Debug.Click
         If (g_mFormDebugger Is Nothing OrElse g_mFormDebugger.IsDisposed) Then
             g_mFormDebugger = New FormDebugger(Me)
-            g_mFormDebugger.Show()
+            g_mFormDebugger.Show(Me)
         Else
             g_mFormDebugger.BringToFront()
         End If
@@ -881,7 +881,7 @@ Public Class FormMain
     Private Sub ToolStripMenuItem_TabOpenInstance_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_TabOpenInstance.Click
         If (g_mFormOpenTabFromInstances Is Nothing OrElse g_mFormOpenTabFromInstances.IsDisposed) Then
             g_mFormOpenTabFromInstances = New FormOpenTabFromInstances(Me)
-            g_mFormOpenTabFromInstances.Show()
+            g_mFormOpenTabFromInstances.Show(Me)
         End If
     End Sub
 
