@@ -116,10 +116,12 @@
                 <Key word="bool"/>
                 <Key word="byte"/>
                 <Key word="char"/>
+                <Key word="String"/>
                 <Key word="decimal"/>
                 <Key word="double"/>
                 <Key word="enum"/>
                 <Key word="float"/>
+                <Key word="Float"/>
                 <Key word="int"/>
                 <Key word="long"/>
                 <Key word="sbyte"/>
