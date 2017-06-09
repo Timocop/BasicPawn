@@ -453,6 +453,46 @@ Public Class ClassAutocompleteUpdater
         End If
 
 
+        'Get strucs (names only)
+        If (sSource.Contains("struct")) Then
+            Dim SB_Source As New StringBuilder(sSource.Length)
+
+            If (True) Then
+                Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
+
+                For i = 0 To sSource.Length - 1
+                    SB_Source.Append(If(sourceAnalysis.m_InNonCode(i), " "c, sSource(i)))
+                Next
+            End If
+
+            Dim mPossibleStructMatches As MatchCollection = Regex.Matches(SB_Source.ToString, "^\s*\b(struct)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)", RegexOptions.Multiline)
+
+            Dim mRegMatch As Match
+
+            For i = 0 To mPossibleStructMatches.Count - 1
+                mRegMatch = mPossibleStructMatches(i)
+
+                If (Not mRegMatch.Success) Then
+                    Continue For
+                End If
+
+                Dim sStructName As String = mRegMatch.Groups("Name").Value
+
+                Dim struc As New STRUC_AUTOCOMPLETE With {
+                    .sFile = IO.Path.GetFileName(sFile),
+                    .sFullFunctionName = "struct " & sStructName,
+                    .sFunctionName = sStructName,
+                    .sInfo = "",
+                    .mType = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STRUCT
+                }
+
+                If (Not lTmpAutocompleteList.Exists(Function(struc2 As STRUC_AUTOCOMPLETE) struc2.mType = struc.mType AndAlso struc2.sFunctionName = struc.sFunctionName)) Then 'Not lTmpAutoList.Contains(struc)
+                    lTmpAutocompleteList.Add(struc)
+                End If
+            Next
+        End If
+
+
         'Get methodmap enums
         If ((ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7 OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX) AndAlso sSource.Contains("methodmap")) Then
             Dim SB_Source As New StringBuilder(sSource.Length)

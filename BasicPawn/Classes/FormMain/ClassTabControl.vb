@@ -781,7 +781,8 @@ Public Class ClassTabControl
                                 iPosition = g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column
                                 g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = iPosition + struc.sFunctionName.Length
 
-                            Case (struc.mType And FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM) = FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM
+                            Case (struc.mType And FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM) = FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM,
+                                    (struc.mType And FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STRUCT) = FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STRUCT
                                 If (ClassSettings.g_iSettingsFullEnumAutocomplete OrElse struc.sFunctionName.IndexOf("."c) < 0) Then
                                     g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, struc.sFunctionName.Replace("."c, ":"c))
 

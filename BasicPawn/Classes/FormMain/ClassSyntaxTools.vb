@@ -280,6 +280,11 @@ Public Class ClassSyntaxTools
 
                                                 For Each struc In lAutocompleteList
                                                     Select Case (True)
+                                                        Case (struc.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STRUCT) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STRUCT
+                                                            If (Not lExistList.Contains(struc.sFunctionName)) Then
+                                                                lExistList.Add(struc.sFunctionName)
+                                                            End If
+
                                                         Case (struc.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM
                                                             Dim sEnumName As String() = struc.sFunctionName.Split("."c)
                                                             If (sEnumName.Length = 2) Then

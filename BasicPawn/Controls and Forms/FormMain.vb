@@ -83,6 +83,7 @@ Public Class FormMain
             PUBLICVAR = (1 << 15)
             [PROPERTY] = (1 << 16)
             [FUNCTION] = (1 << 17)
+            STRUCT = (1 << 18)
         End Enum
 
         Public Function ParseTypeFullNames(sStr As String) As ENUM_TYPE_FLAGS
@@ -112,6 +113,7 @@ Public Class FormMain
                     Case "publicvar" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.PUBLICVAR)
                     Case "property" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.PROPERTY)
                     Case "function" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.FUNCTION)
+                    Case "struct" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.STRUCT)
                 End Select
             Next
 
@@ -139,6 +141,7 @@ Public Class FormMain
             If ((mType And ENUM_TYPE_FLAGS.PUBLICVAR) = ENUM_TYPE_FLAGS.PUBLICVAR) Then lNames.Add("publicvar")
             If ((mType And ENUM_TYPE_FLAGS.PROPERTY) = ENUM_TYPE_FLAGS.PROPERTY) Then lNames.Add("property")
             If ((mType And ENUM_TYPE_FLAGS.FUNCTION) = ENUM_TYPE_FLAGS.FUNCTION) Then lNames.Add("function")
+            If ((mType And ENUM_TYPE_FLAGS.STRUCT) = ENUM_TYPE_FLAGS.STRUCT) Then lNames.Add("struct")
 
             Return lNames.ToArray
         End Function
