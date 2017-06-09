@@ -131,6 +131,7 @@
                 <Key word="ulong"/>
                 <Key word="any"/>
                 <Key word="object"/>
+                <Key word="Function"/>
                 <Key word="null_t"/>
                 <Key word="nullfunc_t"/>
                 <Key word="__nullable__"/>
