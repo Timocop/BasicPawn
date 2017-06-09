@@ -50,7 +50,6 @@
                 <End>&apos;</End>
             </Span>
             <MarkPrevious bold="true" italic="false" color="#dcdcdc">(</MarkPrevious>
-            <MarkPrevious bold="true" italic="false" color="#4ec9b0">:</MarkPrevious>
             <KeyWords name="CaretWords" color="#adc0d3" bgcolor="#0e4583">
                 <!-- [DO NOT EDIT | HIGHLIGHT CARET MARKER] -->
             </KeyWords>
