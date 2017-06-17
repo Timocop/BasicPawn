@@ -355,6 +355,9 @@
     <Compile Include="Classes\ClassTools.vb" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Classes\Controls\ClassTextEditorEx.resx">
+      <DependentUpon>ClassTextEditorEx.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls and Forms\DatabaseViewer\ClassDatabaseViewer.resx">
       <DependentUpon>ClassDatabaseViewer.vb</DependentUpon>
     </EmbeddedResource>

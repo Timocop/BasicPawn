@@ -529,7 +529,9 @@ Public Class ClassTabControl
                 .Padding = New Padding(0)
             }
 
-            g_mSourceTextEditor.ActiveTextAreaControl.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
+            g_mSourceTextEditor.Document.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
+            g_mSourceTextEditor.Document.TextEditorProperties.IndentationSize = If(ClassSettings.g_iSettingsTabsToSpaces > 0, ClassSettings.g_iSettingsTabsToSpaces, 4)
+            g_mSourceTextEditor.Document.TextEditorProperties.ConvertTabsToSpaces = (ClassSettings.g_iSettingsTabsToSpaces > 0)
 
             g_mSourceTextEditor.Parent = Me
             g_mSourceTextEditor.Dock = DockStyle.Fill
@@ -707,7 +709,7 @@ Public Class ClassTabControl
 
                                     Dim sNewInputFirst As String = "public" & struc.sFullFunctionName.Remove(0, "forward".Length) & Environment.NewLine &
                                                                    "{" & Environment.NewLine &
-                                                                   vbTab
+                                                                   ClassSettings.ConvertSpaces(1)
                                     Dim sNewInputLast As String = Environment.NewLine &
                                                                    "}"
 
@@ -731,7 +733,7 @@ Public Class ClassTabControl
 
                                     Dim sNewInputFirst As String = "public" & struc.sFullFunctionName.Remove(0, "functag".Length) & Environment.NewLine &
                                                                    "{" & Environment.NewLine &
-                                                                   vbTab
+                                                                   ClassSettings.ConvertSpaces(1)
                                     Dim sNewInputLast As String = Environment.NewLine &
                                                                    "}"
 
@@ -757,7 +759,7 @@ Public Class ClassTabControl
 
                                     Dim sNewInputFirst As String = struc.sFunctionName & Environment.NewLine &
                                                                    "{" & Environment.NewLine &
-                                                                   vbTab
+                                                                   ClassSettings.ConvertSpaces(1)
                                     Dim sNewInputLast As String = Environment.NewLine &
                                                                    "}"
 

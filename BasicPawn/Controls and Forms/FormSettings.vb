@@ -327,6 +327,8 @@ Public Class FormSettings
         'Text Editor
         Label_Font.Text = New FontConverter().ConvertToInvariantString(ClassSettings.g_iSettingsTextEditorFont)
         CheckBox_InvertedColors.Checked = ClassSettings.g_iSettingsInvertColors
+        CheckBox_TabsToSpace.Checked = (ClassSettings.g_iSettingsTabsToSpaces > 0)
+        NumericUpDown_TabsToSpaces.Value = If(ClassSettings.g_iSettingsTabsToSpaces > 0, ClassSettings.g_iSettingsTabsToSpaces, 4)
         'Syntax Highligting
         CheckBox_DoubleClickMark.Checked = ClassSettings.g_iSettingsDoubleClickMark
         CheckBox_AutoMark.Checked = ClassSettings.g_iSettingsAutoMark
@@ -404,6 +406,7 @@ Public Class FormSettings
         'Text Editor
         ClassSettings.g_iSettingsTextEditorFont = CType(New FontConverter().ConvertFromInvariantString(Label_Font.Text), Font)
         ClassSettings.g_iSettingsInvertColors = CheckBox_InvertedColors.Checked
+        ClassSettings.g_iSettingsTabsToSpaces = CInt(If(CheckBox_TabsToSpace.Checked, NumericUpDown_TabsToSpaces.Value, 0))
         'Syntax Highligting
         ClassSettings.g_iSettingsDoubleClickMark = CheckBox_DoubleClickMark.Checked
         ClassSettings.g_iSettingsAutoMark = CheckBox_AutoMark.Checked

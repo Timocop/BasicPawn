@@ -32,6 +32,7 @@ Partial Class FormSettings
         Me.CheckBox_EntitiesEnableColor = New System.Windows.Forms.CheckBox()
         Me.CheckBox_EntitiesEnableShowNewEnts = New System.Windows.Forms.CheckBox()
         Me.Panel5 = New System.Windows.Forms.Panel()
+        Me.CheckBox_WindowsToolTipAnimations = New System.Windows.Forms.CheckBox()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.CheckBox_SwitchTabToAutocomplete = New System.Windows.Forms.CheckBox()
         Me.CheckBox_AlwaysLoadDefaultIncludes = New System.Windows.Forms.CheckBox()
@@ -129,7 +130,8 @@ Partial Class FormSettings
         Me.Label17 = New System.Windows.Forms.Label()
         Me.Button_Cancel = New System.Windows.Forms.Button()
         Me.Button_Apply = New System.Windows.Forms.Button()
-        Me.CheckBox_WindowsToolTipAnimations = New System.Windows.Forms.CheckBox()
+        Me.CheckBox_TabsToSpace = New System.Windows.Forms.CheckBox()
+        Me.NumericUpDown_TabsToSpaces = New System.Windows.Forms.NumericUpDown()
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Settings.SuspendLayout()
         Me.Panel8.SuspendLayout()
@@ -153,6 +155,7 @@ Partial Class FormSettings
         CType(Me.ClassPictureBoxQuality2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TableLayoutPanel3.SuspendLayout()
         CType(Me.ClassPictureBoxQuality1, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.NumericUpDown_TabsToSpaces, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'TabControl1
@@ -194,7 +197,7 @@ Partial Class FormSettings
         Me.Panel8.Controls.Add(Me.CheckBox_EntitiesEnableColor)
         Me.Panel8.Controls.Add(Me.CheckBox_EntitiesEnableShowNewEnts)
         Me.Panel8.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel8.Location = New System.Drawing.Point(0, 516)
+        Me.Panel8.Location = New System.Drawing.Point(0, 540)
         Me.Panel8.Name = "Panel8"
         Me.Panel8.Size = New System.Drawing.Size(602, 92)
         Me.Panel8.TabIndex = 25
@@ -275,10 +278,22 @@ Partial Class FormSettings
         Me.Panel5.Controls.Add(Me.CheckBox_WindowsToolTipPopup)
         Me.Panel5.Controls.Add(Me.CheckBox_CaseSensitive)
         Me.Panel5.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel5.Location = New System.Drawing.Point(0, 208)
+        Me.Panel5.Location = New System.Drawing.Point(0, 232)
         Me.Panel5.Name = "Panel5"
         Me.Panel5.Size = New System.Drawing.Size(602, 308)
         Me.Panel5.TabIndex = 22
+        '
+        'CheckBox_WindowsToolTipAnimations
+        '
+        Me.CheckBox_WindowsToolTipAnimations.AutoSize = True
+        Me.CheckBox_WindowsToolTipAnimations.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_WindowsToolTipAnimations.Location = New System.Drawing.Point(64, 143)
+        Me.CheckBox_WindowsToolTipAnimations.Margin = New System.Windows.Forms.Padding(64, 3, 3, 3)
+        Me.CheckBox_WindowsToolTipAnimations.Name = "CheckBox_WindowsToolTipAnimations"
+        Me.CheckBox_WindowsToolTipAnimations.Size = New System.Drawing.Size(204, 18)
+        Me.CheckBox_WindowsToolTipAnimations.TabIndex = 21
+        Me.CheckBox_WindowsToolTipAnimations.Text = "Smooth tooltip popup movement"
+        Me.CheckBox_WindowsToolTipAnimations.UseVisualStyleBackColor = True
         '
         'Label1
         '
@@ -443,7 +458,7 @@ Partial Class FormSettings
         Me.Panel6.Controls.Add(Me.CheckBox_DoubleClickMark)
         Me.Panel6.Controls.Add(Me.CheckBox_AutoMark)
         Me.Panel6.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel6.Location = New System.Drawing.Point(0, 140)
+        Me.Panel6.Location = New System.Drawing.Point(0, 164)
         Me.Panel6.Name = "Panel6"
         Me.Panel6.Size = New System.Drawing.Size(602, 68)
         Me.Panel6.TabIndex = 23
@@ -497,6 +512,8 @@ Partial Class FormSettings
         'Panel7
         '
         Me.Panel7.AutoSize = True
+        Me.Panel7.Controls.Add(Me.NumericUpDown_TabsToSpaces)
+        Me.Panel7.Controls.Add(Me.CheckBox_TabsToSpace)
         Me.Panel7.Controls.Add(Me.Label8)
         Me.Panel7.Controls.Add(Me.Panel3)
         Me.Panel7.Controls.Add(Me.Button_Font)
@@ -505,7 +522,7 @@ Partial Class FormSettings
         Me.Panel7.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel7.Location = New System.Drawing.Point(0, 67)
         Me.Panel7.Name = "Panel7"
-        Me.Panel7.Size = New System.Drawing.Size(602, 73)
+        Me.Panel7.Size = New System.Drawing.Size(602, 97)
         Me.Panel7.TabIndex = 24
         '
         'Label8
@@ -1386,17 +1403,26 @@ Partial Class FormSettings
         Me.Button_Apply.Text = "Apply"
         Me.Button_Apply.UseVisualStyleBackColor = True
         '
-        'CheckBox_WindowsToolTipAnimations
+        'CheckBox_TabsToSpace
         '
-        Me.CheckBox_WindowsToolTipAnimations.AutoSize = True
-        Me.CheckBox_WindowsToolTipAnimations.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_WindowsToolTipAnimations.Location = New System.Drawing.Point(64, 143)
-        Me.CheckBox_WindowsToolTipAnimations.Margin = New System.Windows.Forms.Padding(64, 3, 3, 3)
-        Me.CheckBox_WindowsToolTipAnimations.Name = "CheckBox_WindowsToolTipAnimations"
-        Me.CheckBox_WindowsToolTipAnimations.Size = New System.Drawing.Size(204, 18)
-        Me.CheckBox_WindowsToolTipAnimations.TabIndex = 21
-        Me.CheckBox_WindowsToolTipAnimations.Text = "Smooth tooltip popup movement"
-        Me.CheckBox_WindowsToolTipAnimations.UseVisualStyleBackColor = True
+        Me.CheckBox_TabsToSpace.AutoSize = True
+        Me.CheckBox_TabsToSpace.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_TabsToSpace.Location = New System.Drawing.Point(6, 76)
+        Me.CheckBox_TabsToSpace.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_TabsToSpace.Name = "CheckBox_TabsToSpace"
+        Me.CheckBox_TabsToSpace.Size = New System.Drawing.Size(151, 18)
+        Me.CheckBox_TabsToSpace.TabIndex = 14
+        Me.CheckBox_TabsToSpace.Text = "Convert tabs to spaces:"
+        Me.CheckBox_TabsToSpace.UseVisualStyleBackColor = True
+        '
+        'NumericUpDown_TabsToSpaces
+        '
+        Me.NumericUpDown_TabsToSpaces.Location = New System.Drawing.Point(163, 72)
+        Me.NumericUpDown_TabsToSpaces.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
+        Me.NumericUpDown_TabsToSpaces.Name = "NumericUpDown_TabsToSpaces"
+        Me.NumericUpDown_TabsToSpaces.Size = New System.Drawing.Size(42, 22)
+        Me.NumericUpDown_TabsToSpaces.TabIndex = 15
+        Me.NumericUpDown_TabsToSpaces.Value = New Decimal(New Integer() {4, 0, 0, 0})
         '
         'FormSettings
         '
@@ -1453,6 +1479,7 @@ Partial Class FormSettings
         Me.TableLayoutPanel3.ResumeLayout(False)
         Me.TableLayoutPanel3.PerformLayout()
         CType(Me.ClassPictureBoxQuality1, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.NumericUpDown_TabsToSpaces, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
     End Sub
@@ -1564,4 +1591,6 @@ Partial Class FormSettings
     Friend WithEvents Button_Refresh As Button
     Friend WithEvents CheckBox_AutoShowStartPage As CheckBox
     Friend WithEvents CheckBox_WindowsToolTipAnimations As CheckBox
+    Friend WithEvents NumericUpDown_TabsToSpaces As NumericUpDown
+    Friend WithEvents CheckBox_TabsToSpace As CheckBox
 End Class

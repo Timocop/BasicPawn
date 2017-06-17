@@ -563,7 +563,7 @@ Public Class ClassSyntaxTools
                             Next
                         End If
 
-                        sSource = sSource.Insert(i + 1, New String(vbTab(0), sourceAnalysis.m_GetBraceLevel(i + 1 + iBraceCount) + If(iBracedCount > 0, iBracedCount + 1, 0) + If(iStatementLevel > -1, iStatementLevel, 0)))
+                        sSource = sSource.Insert(i + 1, ClassSettings.ConvertSpaces(sourceAnalysis.m_GetBraceLevel(i + 1 + iBraceCount) + If(iBracedCount > 0, iBracedCount + 1, 0) + If(iStatementLevel > -1, iStatementLevel, 0)))
                         'End If
                         iBraceCount = 0
 

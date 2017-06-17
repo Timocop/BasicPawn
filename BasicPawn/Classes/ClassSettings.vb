@@ -35,6 +35,7 @@ Public Class ClassSettings
     'Text Editor
     Public Shared g_iSettingsTextEditorFont As Font = g_iSettingsDefaultEditorFont
     Public Shared g_iSettingsInvertColors As Boolean = False
+    Public Shared g_iSettingsTabsToSpaces As Integer = 0
     'Syntax Highligting
     Public Shared g_iSettingsDoubleClickMark As Boolean = True
     Public Shared g_iSettingsAutoMark As Boolean = True
@@ -72,6 +73,7 @@ Public Class ClassSettings
         'Text Editor
         initFile.WriteKeyValue("Editor", "TextEditorFont", New FontConverter().ConvertToInvariantString(g_iSettingsTextEditorFont))
         initFile.WriteKeyValue("Editor", "TextEditorInvertColors", If(g_iSettingsInvertColors, "1", "0"))
+        initFile.WriteKeyValue("Editor", "TextEditorTabsToSpaces", CStr(g_iSettingsTabsToSpaces))
         'Syntax Highligting
         initFile.WriteKeyValue("Editor", "DoubleClickMark", If(g_iSettingsDoubleClickMark, "1", "0"))
         initFile.WriteKeyValue("Editor", "AutoMark", If(g_iSettingsAutoMark, "1", "0"))
@@ -110,6 +112,12 @@ Public Class ClassSettings
                 g_iSettingsTextEditorFont = g_iSettingsDefaultEditorFont
             End If
             g_iSettingsInvertColors = (initFile.ReadKeyValue("Editor", "TextEditorInvertColors", "0") <> "0")
+            Dim iTabsToSpaces As Integer = 0
+            If (Integer.TryParse(initFile.ReadKeyValue("Editor", "TextEditorTabsToSpaces", "0"), iTabsToSpaces)) Then
+                iTabsToSpaces = If(iTabsToSpaces < 0, 0, iTabsToSpaces)
+                iTabsToSpaces = If(iTabsToSpaces > 100, 100, iTabsToSpaces)
+                g_iSettingsTabsToSpaces = iTabsToSpaces
+            End If
             'Syntax Highligting
             g_iSettingsDoubleClickMark = (initFile.ReadKeyValue("Editor", "DoubleClickMark", "1") <> "0")
             g_iSettingsAutoMark = (initFile.ReadKeyValue("Editor", "AutoMark", "1") <> "0")
@@ -146,6 +154,14 @@ Public Class ClassSettings
             g_sArgument = sArgument
         End Sub
     End Class
+
+    Public Shared Function ConvertSpaces(iLenght As Integer) As String
+        If (g_iSettingsTabsToSpaces > 0) Then
+            Return New Text.StringBuilder().Insert(0, New String(" "c, g_iSettingsTabsToSpaces), iLenght).ToString
+        Else
+            Return New Text.StringBuilder().Insert(0, vbTab, iLenght).ToString
+        End If
+    End Function
 
     ''' <summary>
     ''' Gets all available shell arguments

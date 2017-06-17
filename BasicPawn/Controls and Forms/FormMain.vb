@@ -554,7 +554,9 @@ Public Class FormMain
                 g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
 
                 For j = 0 To g_ClassTabControl.m_TabsCount - 1
-                    g_ClassTabControl.m_Tab(j).m_TextEditor.ActiveTextAreaControl.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
+                    g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
+                    g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.IndentationSize = If(ClassSettings.g_iSettingsTabsToSpaces > 0, ClassSettings.g_iSettingsTabsToSpaces, 4)
+                    g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.ConvertTabsToSpaces = (ClassSettings.g_iSettingsTabsToSpaces > 0)
                     g_ClassTabControl.m_Tab(j).m_TextEditor.Refresh()
                 Next
 
@@ -793,7 +795,9 @@ Public Class FormMain
                 g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
 
                 For j = 0 To g_ClassTabControl.m_TabsCount - 1
-                    g_ClassTabControl.m_Tab(j).m_TextEditor.ActiveTextAreaControl.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
+                    g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
+                    g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.IndentationSize = If(ClassSettings.g_iSettingsTabsToSpaces > 0, ClassSettings.g_iSettingsTabsToSpaces, 4)
+                    g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.ConvertTabsToSpaces = (ClassSettings.g_iSettingsTabsToSpaces > 0)
                     g_ClassTabControl.m_Tab(j).m_TextEditor.Refresh()
                 Next
 
