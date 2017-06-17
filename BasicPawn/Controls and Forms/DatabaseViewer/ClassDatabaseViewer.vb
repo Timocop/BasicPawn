@@ -27,6 +27,8 @@ Public Class ClassDatabaseViewer
     End Sub
 
     Public Sub AddItem(sName As String, sUsername As String)
+        Me.SuspendLayout()
+
         RemoveItemByName(sName)
 
         Dim mDatabaseViewerItem As New ClassDatabaseViewerItem(sName, sUsername) With {
@@ -35,14 +37,20 @@ Public Class ClassDatabaseViewer
         }
         mDatabaseViewerItem.BringToFront()
         mDatabaseViewerItem.Show()
+
+        Me.ResumeLayout()
     End Sub
 
     Public Sub RemoveItemByName(sName As String)
+        Me.SuspendLayout()
+
         For Each iItem In GetItems()
             If (iItem.m_Name = sName) Then
                 iItem.Dispose()
             End If
         Next
+
+        Me.ResumeLayout()
     End Sub
 
     Public Function GetItems() As ClassDatabaseViewerItem()
@@ -58,6 +66,8 @@ Public Class ClassDatabaseViewer
     End Function
 
     Public Sub FillFromDatabase()
+        Me.SuspendLayout()
+
         For Each iItem In GetItems()
             iItem.Dispose()
         Next
@@ -65,5 +75,7 @@ Public Class ClassDatabaseViewer
         For Each iItem In ClassDatabase.GetDatabaseItems
             AddItem(iItem.m_Name, iItem.m_Username)
         Next
+
+        Me.ResumeLayout()
     End Sub
 End Class

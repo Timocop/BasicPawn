@@ -293,9 +293,9 @@
         End Sub
 
         Public Sub RefreshRecentItems()
-            ClearRecentItems()
-
             g_mUCStartPage.Panel_RecentFiles.SuspendLayout()
+
+            ClearRecentItems()
 
             Dim sRecentFiles As String() = GetRecentFiles()
             sRecentFiles = SortFilesByDate(sRecentFiles)
