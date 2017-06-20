@@ -52,6 +52,8 @@ Partial Class FormSettings
         Me.CheckBox_DoubleClickMark = New System.Windows.Forms.CheckBox()
         Me.CheckBox_AutoMark = New System.Windows.Forms.CheckBox()
         Me.Panel7 = New System.Windows.Forms.Panel()
+        Me.NumericUpDown_TabsToSpaces = New System.Windows.Forms.NumericUpDown()
+        Me.CheckBox_TabsToSpace = New System.Windows.Forms.CheckBox()
         Me.Label8 = New System.Windows.Forms.Label()
         Me.Panel3 = New System.Windows.Forms.Panel()
         Me.Button_Font = New System.Windows.Forms.Button()
@@ -130,14 +132,13 @@ Partial Class FormSettings
         Me.Label17 = New System.Windows.Forms.Label()
         Me.Button_Cancel = New System.Windows.Forms.Button()
         Me.Button_Apply = New System.Windows.Forms.Button()
-        Me.CheckBox_TabsToSpace = New System.Windows.Forms.CheckBox()
-        Me.NumericUpDown_TabsToSpaces = New System.Windows.Forms.NumericUpDown()
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Settings.SuspendLayout()
         Me.Panel8.SuspendLayout()
         Me.Panel5.SuspendLayout()
         Me.Panel6.SuspendLayout()
         Me.Panel7.SuspendLayout()
+        CType(Me.NumericUpDown_TabsToSpaces, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel14.SuspendLayout()
         Me.TabPage_Configs.SuspendLayout()
         Me.TableLayoutPanel1.SuspendLayout()
@@ -155,7 +156,6 @@ Partial Class FormSettings
         CType(Me.ClassPictureBoxQuality2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TableLayoutPanel3.SuspendLayout()
         CType(Me.ClassPictureBoxQuality1, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.NumericUpDown_TabsToSpaces, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'TabControl1
@@ -525,6 +525,27 @@ Partial Class FormSettings
         Me.Panel7.Size = New System.Drawing.Size(602, 97)
         Me.Panel7.TabIndex = 24
         '
+        'NumericUpDown_TabsToSpaces
+        '
+        Me.NumericUpDown_TabsToSpaces.Location = New System.Drawing.Point(163, 72)
+        Me.NumericUpDown_TabsToSpaces.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
+        Me.NumericUpDown_TabsToSpaces.Name = "NumericUpDown_TabsToSpaces"
+        Me.NumericUpDown_TabsToSpaces.Size = New System.Drawing.Size(42, 22)
+        Me.NumericUpDown_TabsToSpaces.TabIndex = 15
+        Me.NumericUpDown_TabsToSpaces.Value = New Decimal(New Integer() {4, 0, 0, 0})
+        '
+        'CheckBox_TabsToSpace
+        '
+        Me.CheckBox_TabsToSpace.AutoSize = True
+        Me.CheckBox_TabsToSpace.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_TabsToSpace.Location = New System.Drawing.Point(6, 76)
+        Me.CheckBox_TabsToSpace.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_TabsToSpace.Name = "CheckBox_TabsToSpace"
+        Me.CheckBox_TabsToSpace.Size = New System.Drawing.Size(151, 18)
+        Me.CheckBox_TabsToSpace.TabIndex = 14
+        Me.CheckBox_TabsToSpace.Text = "Convert tabs to spaces:"
+        Me.CheckBox_TabsToSpace.UseVisualStyleBackColor = True
+        '
         'Label8
         '
         Me.Label8.AutoSize = True
@@ -872,7 +893,6 @@ Partial Class FormSettings
         Me.TextBox_SyntaxPath.BackColor = System.Drawing.Color.White
         Me.TextBox_SyntaxPath.Location = New System.Drawing.Point(3, 96)
         Me.TextBox_SyntaxPath.Name = "TextBox_SyntaxPath"
-        Me.TextBox_SyntaxPath.ReadOnly = True
         Me.TextBox_SyntaxPath.Size = New System.Drawing.Size(403, 22)
         Me.TextBox_SyntaxPath.TabIndex = 30
         '
@@ -953,7 +973,6 @@ Partial Class FormSettings
         Me.TextBox_GameFolder.BackColor = System.Drawing.Color.White
         Me.TextBox_GameFolder.Location = New System.Drawing.Point(3, 36)
         Me.TextBox_GameFolder.Name = "TextBox_GameFolder"
-        Me.TextBox_GameFolder.ReadOnly = True
         Me.TextBox_GameFolder.Size = New System.Drawing.Size(403, 22)
         Me.TextBox_GameFolder.TabIndex = 20
         '
@@ -975,7 +994,6 @@ Partial Class FormSettings
         Me.TextBox_SourceModFolder.BackColor = System.Drawing.Color.White
         Me.TextBox_SourceModFolder.Location = New System.Drawing.Point(3, 77)
         Me.TextBox_SourceModFolder.Name = "TextBox_SourceModFolder"
-        Me.TextBox_SourceModFolder.ReadOnly = True
         Me.TextBox_SourceModFolder.Size = New System.Drawing.Size(403, 22)
         Me.TextBox_SourceModFolder.TabIndex = 25
         '
@@ -1112,7 +1130,6 @@ Partial Class FormSettings
         Me.TextBox_CompilerPath.BackColor = System.Drawing.Color.White
         Me.TextBox_CompilerPath.Location = New System.Drawing.Point(6, 36)
         Me.TextBox_CompilerPath.Name = "TextBox_CompilerPath"
-        Me.TextBox_CompilerPath.ReadOnly = True
         Me.TextBox_CompilerPath.Size = New System.Drawing.Size(391, 22)
         Me.TextBox_CompilerPath.TabIndex = 8
         '
@@ -1143,7 +1160,6 @@ Partial Class FormSettings
         Me.TextBox_IncludeFolder.BackColor = System.Drawing.Color.White
         Me.TextBox_IncludeFolder.Location = New System.Drawing.Point(6, 75)
         Me.TextBox_IncludeFolder.Name = "TextBox_IncludeFolder"
-        Me.TextBox_IncludeFolder.ReadOnly = True
         Me.TextBox_IncludeFolder.Size = New System.Drawing.Size(391, 22)
         Me.TextBox_IncludeFolder.TabIndex = 10
         '
@@ -1174,7 +1190,6 @@ Partial Class FormSettings
         Me.TextBox_OutputFolder.BackColor = System.Drawing.Color.White
         Me.TextBox_OutputFolder.Location = New System.Drawing.Point(6, 114)
         Me.TextBox_OutputFolder.Name = "TextBox_OutputFolder"
-        Me.TextBox_OutputFolder.ReadOnly = True
         Me.TextBox_OutputFolder.Size = New System.Drawing.Size(391, 22)
         Me.TextBox_OutputFolder.TabIndex = 14
         '
@@ -1403,27 +1418,6 @@ Partial Class FormSettings
         Me.Button_Apply.Text = "Apply"
         Me.Button_Apply.UseVisualStyleBackColor = True
         '
-        'CheckBox_TabsToSpace
-        '
-        Me.CheckBox_TabsToSpace.AutoSize = True
-        Me.CheckBox_TabsToSpace.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_TabsToSpace.Location = New System.Drawing.Point(6, 76)
-        Me.CheckBox_TabsToSpace.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_TabsToSpace.Name = "CheckBox_TabsToSpace"
-        Me.CheckBox_TabsToSpace.Size = New System.Drawing.Size(151, 18)
-        Me.CheckBox_TabsToSpace.TabIndex = 14
-        Me.CheckBox_TabsToSpace.Text = "Convert tabs to spaces:"
-        Me.CheckBox_TabsToSpace.UseVisualStyleBackColor = True
-        '
-        'NumericUpDown_TabsToSpaces
-        '
-        Me.NumericUpDown_TabsToSpaces.Location = New System.Drawing.Point(163, 72)
-        Me.NumericUpDown_TabsToSpaces.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
-        Me.NumericUpDown_TabsToSpaces.Name = "NumericUpDown_TabsToSpaces"
-        Me.NumericUpDown_TabsToSpaces.Size = New System.Drawing.Size(42, 22)
-        Me.NumericUpDown_TabsToSpaces.TabIndex = 15
-        Me.NumericUpDown_TabsToSpaces.Value = New Decimal(New Integer() {4, 0, 0, 0})
-        '
         'FormSettings
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -1452,6 +1446,7 @@ Partial Class FormSettings
         Me.Panel6.PerformLayout()
         Me.Panel7.ResumeLayout(False)
         Me.Panel7.PerformLayout()
+        CType(Me.NumericUpDown_TabsToSpaces, System.ComponentModel.ISupportInitialize).EndInit()
         Me.Panel14.ResumeLayout(False)
         Me.Panel14.PerformLayout()
         Me.TabPage_Configs.ResumeLayout(False)
@@ -1479,7 +1474,6 @@ Partial Class FormSettings
         Me.TableLayoutPanel3.ResumeLayout(False)
         Me.TableLayoutPanel3.PerformLayout()
         CType(Me.ClassPictureBoxQuality1, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.NumericUpDown_TabsToSpaces, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
     End Sub
