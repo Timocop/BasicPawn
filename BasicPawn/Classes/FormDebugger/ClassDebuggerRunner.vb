@@ -964,12 +964,15 @@ Public Class ClassDebuggerRunner
 
             Dim sInteger As String
             Dim sFloat As String
-            If (sLines.Length < 2) Then
+            Dim sCount As String
+            If (sLines.Length < 3) Then
                 sInteger = "-1"
                 sFloat = "-1.0"
+                sCount = "-1"
             Else
                 sInteger = sLines(0).Remove(0, "i:".Length)
                 sFloat = sLines(1).Remove(0, "f:".Length)
+                sCount = sLines(2).Remove(0, "c:".Length)
             End If
 
             'INFO: Dont use 'Invoke' it deadlocks on FileSystemWatcher.Dispose, use async 'BeginInvoke' instead.
@@ -977,7 +980,7 @@ Public Class ClassDebuggerRunner
                                             For i = 0 To g_mFormDebugger.ListView_Watchers.Items.Count - 1
                                                 If (g_mFormDebugger.ListView_Watchers.Items(i).SubItems(4).Text = sGUID) Then
                                                     g_mFormDebugger.ListView_Watchers.Items(i).SubItems(2).Text = String.Format("i:{0} | f:{1}", sInteger, sFloat)
-                                                    g_mFormDebugger.ListView_Watchers.Items(i).SubItems(3).Text = CStr(CInt(g_mFormDebugger.ListView_Watchers.Items(i).SubItems(3).Text) + 1)
+                                                    g_mFormDebugger.ListView_Watchers.Items(i).SubItems(3).Text = sCount
                                                 End If
                                             Next
                                         End Sub)

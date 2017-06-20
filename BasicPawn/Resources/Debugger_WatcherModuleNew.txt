@@ -1,7 +1,7 @@
 stock any {FunctionName}(any val=0)
 {
-	//if(FileExists("{IndentifierGUID}.value.bpdebug"))
-	//	return val;
+	static int iCount;
+	iCount++;
 
 	Handle hValFile = OpenFile("{IndentifierGUID}.value.bpdebug", "w");
 	if(hValFile == INVALID_HANDLE)
@@ -9,6 +9,7 @@ stock any {FunctionName}(any val=0)
 	
 	WriteFileLine(hValFile, "i:%d", val);
 	WriteFileLine(hValFile, "f:%f", val);
+	WriteFileLine(hValFile, "c:%d", iCount);
 	FlushFile(hValFile);
 	CloseHandle(hValFile);
 	
