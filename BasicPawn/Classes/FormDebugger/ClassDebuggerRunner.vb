@@ -836,14 +836,18 @@ Public Class ClassDebuggerRunner
                     sLines = IO.File.ReadAllLines(sFile) 'Tools.StringReadLinesEnd(sFile, 3) 'IO.File.ReadAllLines(sFile)
 
                     Exit While
-                Catch ex As IO.IOException
+                Catch ex As Threading.ThreadAbortException
+                    Throw
+                Catch ex As Exception
                 End Try
             End While
             SW.Stop()
 
             Try
                 IO.File.Delete(sFile)
-            Catch ex As IO.IOException
+            Catch ex As Threading.ThreadAbortException
+                Throw
+            Catch ex As Exception
             End Try
 
             Dim sInteger As String
@@ -944,14 +948,18 @@ Public Class ClassDebuggerRunner
                     sLines = IO.File.ReadAllLines(sFile) 'Tools.StringReadLinesEnd(sFile, 3) 'IO.File.ReadAllLines(sFile)
 
                     Exit While
-                Catch ex As IO.IOException
+                Catch ex As Threading.ThreadAbortException
+                    Throw
+                Catch ex As Exception
                 End Try
             End While
             SW.Stop()
 
             Try
                 IO.File.Delete(sFile)
-            Catch ex As IO.IOException
+            Catch ex As Threading.ThreadAbortException
+                Throw
+            Catch ex As Exception
             End Try
 
             Dim sInteger As String
@@ -1031,14 +1039,18 @@ Public Class ClassDebuggerRunner
                     sLines = IO.File.ReadAllLines(sFile) 'Tools.StringReadLinesEnd(sFile, 3) 'IO.File.ReadAllLines(sFile)
 
                     Exit While
-                Catch ex As IO.IOException
+                Catch ex As Threading.ThreadAbortException
+                    Throw
+                Catch ex As Exception
                 End Try
             End While
             SW.Stop()
 
             Try
                 IO.File.Delete(sFile)
-            Catch ex As IO.IOException
+            Catch ex As Threading.ThreadAbortException
+                Throw
+            Catch ex As Exception
             End Try
 
             For i = 0 To sLines.Length - 1
@@ -1208,7 +1220,9 @@ Public Class ClassDebuggerRunner
                         m_SuspendGame = bWasSuspended
 
                         Exit While
-                    Catch ex As IO.IOException
+                    Catch ex As Threading.ThreadAbortException
+                        Throw
+                    Catch ex As Exception
                     End Try
                 End While
                 SW.Stop()
@@ -1398,7 +1412,9 @@ Public Class ClassDebuggerRunner
                         m_SuspendGame = bWasSuspended
 
                         Exit While
-                    Catch ex As IO.IOException
+                    Catch ex As Threading.ThreadAbortException
+                        Throw
+                    Catch ex As Exception
                     End Try
                 End While
                 SW.Stop()
