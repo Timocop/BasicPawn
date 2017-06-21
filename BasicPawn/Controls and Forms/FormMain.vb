@@ -429,6 +429,30 @@ Public Class FormMain
     Private Sub ToolStripMenuItem_Paste_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Paste.Click
         g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.ClipboardHandler.Paste(sender, e)
     End Sub
+
+    Private Sub ToolStripMenuItem_Delete_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Delete.Click
+        g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.ClipboardHandler.Delete(sender, e)
+    End Sub
+
+    Private Sub ToolStripMenuItem_SelectAll_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_SelectAll.Click
+        g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.ClipboardHandler.SelectAll(sender, e)
+    End Sub
+
+    Private Sub ToolStripMenuItemOutlineExpandAll_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItemOutlineExpandAll.Click
+        For Each iItem In g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.FoldingManager.FoldMarker
+            iItem.IsFolded = False
+        Next
+
+        g_ClassTabControl.m_ActiveTab.m_TextEditor.Refresh()
+    End Sub
+
+    Private Sub ToolStripMenuItemOutlineCollapseAll_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItemOutlineCollapseAll.Click
+        For Each iItem In g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.FoldingManager.FoldMarker
+            iItem.IsFolded = True
+        Next
+
+        g_ClassTabControl.m_ActiveTab.m_TextEditor.Refresh()
+    End Sub
 #End Region
 
 #Region "MenuStrip"
@@ -1028,4 +1052,5 @@ Public Class FormMain
         g_mPingFlashPanel.Visible = False
         Timer_PingFlash.Stop()
     End Sub
+
 End Class

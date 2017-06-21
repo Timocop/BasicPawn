@@ -236,8 +236,8 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized string similar to stock any {FunctionName}(any val=0)
         '''{
-        '''	//if(FileExists(&quot;{IndentifierGUID}.value.bpdebug&quot;))
-        '''	//	return val;
+        '''	static int iCount;
+        '''	iCount++;
         '''
         '''	Handle hValFile = OpenFile(&quot;{IndentifierGUID}.value.bpdebug&quot;, &quot;w&quot;);
         '''	if(hValFile == INVALID_HANDLE)
@@ -245,6 +245,7 @@ Namespace My.Resources
         '''	
         '''	WriteFileLine(hValFile, &quot;i:%d&quot;, val);
         '''	WriteFileLine(hValFile, &quot;f:%f&quot;, val);
+        '''	WriteFileLine(hValFile, &quot;c:%d&quot;, iCount);
         '''	FlushFile(hValFile);
         '''	CloseHandle(hValFile);
         '''	
@@ -260,8 +261,8 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized string similar to stock any:{FunctionName}(any:val=0)
         '''{
-        '''	//if(FileExists(&quot;{IndentifierGUID}.value.bpdebug&quot;))
-        '''	//	return val;
+        '''	static iCount;
+        '''	iCount++;
         '''
         '''	new Handle:hValFile = OpenFile(&quot;{IndentifierGUID}.value.bpdebug&quot;, &quot;w&quot;);
         '''	if(hValFile == INVALID_HANDLE)
@@ -269,6 +270,7 @@ Namespace My.Resources
         '''	
         '''	WriteFileLine(hValFile, &quot;i:%d&quot;, val);
         '''	WriteFileLine(hValFile, &quot;f:%f&quot;, val);
+        '''	WriteFileLine(hValFile, &quot;c:%d&quot;, iCount);
         '''	FlushFile(hValFile);
         '''	CloseHandle(hValFile);
         '''	
@@ -287,6 +289,16 @@ Namespace My.Resources
         Public ReadOnly Property imageres_5301_16x16_32() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("imageres_5301_16x16-32", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Drawing.Bitmap.
+        '''</summary>
+        Public ReadOnly Property imageres_5302_16x16_32() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("imageres_5302_16x16-32", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -327,6 +339,16 @@ Namespace My.Resources
         Public ReadOnly Property imageres_5311_16x16_32() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("imageres_5311_16x16-32", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Drawing.Bitmap.
+        '''</summary>
+        Public ReadOnly Property imageres_5312_16x16_32() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("imageres_5312_16x16-32", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -544,17 +566,15 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot;?&gt;
         '''&lt;SyntaxDefinition name=&quot;SourcePawn-04e3632f-5472-42c5-929a-c3e0c2b35324&quot; extensions=&quot;.sp&quot;&gt;
-        '''
-        '''  &lt;Environment&gt; 
-        '''    &lt;Default color=&quot;Black&quot; bgcolor=&quot;White&quot;/&gt;
-        '''    &lt;Selection color=&quot;White&quot; bgcolor=&quot;RoyalBlue&quot;/&gt;
-        '''    &lt;VRuler color=&quot;DarkGray&quot;/&gt;
-        '''    &lt;InvalidLines color=&quot;Red&quot;/&gt;
-        '''    &lt;CaretMarker color=&quot;LightCyan&quot;/&gt;
-        '''    &lt;LineNumbers color=&quot;Gray&quot; bgcolor=&quot;White&quot;/&gt;
-        '''    &lt;FoldLine color=&quot;LightGray&quot; bgcolor=&quot;White&quot;/&gt;
-        '''    &lt;FoldMarker color=&quot;DarkGray&quot; bgcolor=&quot;White&quot;/&gt;
-        '''    &lt;SelectedFoldLine co [rest of string was truncated]&quot;;.
+        '''    &lt;Environment&gt;
+        '''        &lt;Default color=&quot;Black&quot; bgcolor=&quot;White&quot;/&gt;
+        '''        &lt;Selection color=&quot;White&quot; bgcolor=&quot;RoyalBlue&quot;/&gt;
+        '''        &lt;VRuler color=&quot;DarkGray&quot;/&gt;
+        '''        &lt;InvalidLines color=&quot;Red&quot;/&gt;
+        '''        &lt;CaretMarker color=&quot;LightCyan&quot;/&gt;
+        '''        &lt;LineNumbers color=&quot;Gray&quot; bgcolor=&quot;White&quot;/&gt;
+        '''        &lt;FoldLine color=&quot;LightGray&quot; bgcolor=&quot;White&quot;/&gt;
+        '''        &lt;FoldMarker color=&quot;DarkGray&quot; bgcolor=&quot;Whi [rest of string was truncated]&quot;;.
         '''</summary>
         Public ReadOnly Property SourcePawn_Syntax() As String
             Get

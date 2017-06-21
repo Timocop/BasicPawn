@@ -69,6 +69,12 @@ Partial Class FormMain
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormMain))
         Me.ContextMenuStrip_RightClick = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.ToolStripMenuItem_Cut = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_Copy = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_Paste = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_Delete = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_SelectAll = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator6 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_Mark = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_ListReferences = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
@@ -82,10 +88,10 @@ Partial Class FormMain
         Me.ToolStripMenuItem_DebuggerWatcherRemove = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_DebuggerWatcherRemoveAll = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_HightlightCustom = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripSeparator6 = New System.Windows.Forms.ToolStripSeparator()
-        Me.ToolStripMenuItem_Cut = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripMenuItem_Copy = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripMenuItem_Paste = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator11 = New System.Windows.Forms.ToolStripSeparator()
+        Me.ToolStripMenuItem_Outline = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItemOutlineCollapseAll = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItemOutlineExpandAll = New System.Windows.Forms.ToolStripMenuItem()
         Me.MenuStrip_BasicPawn = New System.Windows.Forms.MenuStrip()
         Me.ToolStripMenuItem_File = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_FileNew = New System.Windows.Forms.ToolStripMenuItem()
@@ -154,9 +160,9 @@ Partial Class FormMain
         Me.ToolStripStatusLabel_EditorSelectedCount = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ToolStripStatusLabel_CurrentConfig = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ToolStripStatusLabel_LastInformation = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.ToolStripProgressBar_Autocomplete = New System.Windows.Forms.ToolStripProgressBar()
         Me.ToolStripStatusLabel_AppVersion = New System.Windows.Forms.ToolStripStatusLabel()
         Me.Timer_PingFlash = New System.Windows.Forms.Timer(Me.components)
-        Me.ToolStripProgressBar_Autocomplete = New System.Windows.Forms.ToolStripProgressBar()
         Me.ContextMenuStrip_RightClick.SuspendLayout()
         Me.MenuStrip_BasicPawn.SuspendLayout()
         Me.SplitContainer_ToolboxSourceAndDetails.Panel1.SuspendLayout()
@@ -173,10 +179,50 @@ Partial Class FormMain
         '
         'ContextMenuStrip_RightClick
         '
-        Me.ContextMenuStrip_RightClick.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_Mark, Me.ToolStripMenuItem_ListReferences, Me.ToolStripSeparator1, Me.ToolStripMenuItem_Debugger, Me.ToolStripMenuItem_HightlightCustom, Me.ToolStripSeparator6, Me.ToolStripMenuItem_Cut, Me.ToolStripMenuItem_Copy, Me.ToolStripMenuItem_Paste})
+        Me.ContextMenuStrip_RightClick.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_Cut, Me.ToolStripMenuItem_Copy, Me.ToolStripMenuItem_Paste, Me.ToolStripMenuItem_Delete, Me.ToolStripMenuItem_SelectAll, Me.ToolStripSeparator6, Me.ToolStripMenuItem_Mark, Me.ToolStripMenuItem_ListReferences, Me.ToolStripSeparator1, Me.ToolStripMenuItem_Debugger, Me.ToolStripMenuItem_HightlightCustom, Me.ToolStripSeparator11, Me.ToolStripMenuItem_Outline})
         Me.ContextMenuStrip_RightClick.Name = "ContextMenuStrip1"
         Me.ContextMenuStrip_RightClick.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
-        Me.ContextMenuStrip_RightClick.Size = New System.Drawing.Size(157, 170)
+        Me.ContextMenuStrip_RightClick.Size = New System.Drawing.Size(157, 264)
+        '
+        'ToolStripMenuItem_Cut
+        '
+        Me.ToolStripMenuItem_Cut.Image = CType(resources.GetObject("ToolStripMenuItem_Cut.Image"), System.Drawing.Image)
+        Me.ToolStripMenuItem_Cut.Name = "ToolStripMenuItem_Cut"
+        Me.ToolStripMenuItem_Cut.Size = New System.Drawing.Size(156, 22)
+        Me.ToolStripMenuItem_Cut.Text = "Cut"
+        '
+        'ToolStripMenuItem_Copy
+        '
+        Me.ToolStripMenuItem_Copy.Image = CType(resources.GetObject("ToolStripMenuItem_Copy.Image"), System.Drawing.Image)
+        Me.ToolStripMenuItem_Copy.Name = "ToolStripMenuItem_Copy"
+        Me.ToolStripMenuItem_Copy.Size = New System.Drawing.Size(156, 22)
+        Me.ToolStripMenuItem_Copy.Text = "Copy"
+        '
+        'ToolStripMenuItem_Paste
+        '
+        Me.ToolStripMenuItem_Paste.Image = CType(resources.GetObject("ToolStripMenuItem_Paste.Image"), System.Drawing.Image)
+        Me.ToolStripMenuItem_Paste.Name = "ToolStripMenuItem_Paste"
+        Me.ToolStripMenuItem_Paste.Size = New System.Drawing.Size(156, 22)
+        Me.ToolStripMenuItem_Paste.Text = "Paste"
+        '
+        'ToolStripMenuItem_Delete
+        '
+        Me.ToolStripMenuItem_Delete.Image = Global.BasicPawn.My.Resources.Resources.imageres_5337_16x16_32
+        Me.ToolStripMenuItem_Delete.Name = "ToolStripMenuItem_Delete"
+        Me.ToolStripMenuItem_Delete.Size = New System.Drawing.Size(156, 22)
+        Me.ToolStripMenuItem_Delete.Text = "Delete"
+        '
+        'ToolStripMenuItem_SelectAll
+        '
+        Me.ToolStripMenuItem_SelectAll.Image = Global.BasicPawn.My.Resources.Resources.imageres_5312_16x16_32
+        Me.ToolStripMenuItem_SelectAll.Name = "ToolStripMenuItem_SelectAll"
+        Me.ToolStripMenuItem_SelectAll.Size = New System.Drawing.Size(156, 22)
+        Me.ToolStripMenuItem_SelectAll.Text = "Select all"
+        '
+        'ToolStripSeparator6
+        '
+        Me.ToolStripSeparator6.Name = "ToolStripSeparator6"
+        Me.ToolStripSeparator6.Size = New System.Drawing.Size(153, 6)
         '
         'ToolStripMenuItem_Mark
         '
@@ -209,7 +255,7 @@ Partial Class FormMain
         '
         Me.ToolStripMenuItem_DebuggerBreakpoints.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_DebuggerBreakpointInsert, Me.ToolStripMenuItem_DebuggerBreakpointRemove, Me.ToolStripMenuItem_DebuggerBreakpointRemoveAll})
         Me.ToolStripMenuItem_DebuggerBreakpoints.Name = "ToolStripMenuItem_DebuggerBreakpoints"
-        Me.ToolStripMenuItem_DebuggerBreakpoints.Size = New System.Drawing.Size(136, 22)
+        Me.ToolStripMenuItem_DebuggerBreakpoints.Size = New System.Drawing.Size(152, 22)
         Me.ToolStripMenuItem_DebuggerBreakpoints.Text = "Breakpoints"
         '
         'ToolStripMenuItem_DebuggerBreakpointInsert
@@ -234,7 +280,7 @@ Partial Class FormMain
         '
         Me.ToolStripMenuItem_DebuggerWatchers.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_DebuggerWatcherInsert, Me.ToolStripMenuItem_DebuggerWatcherRemove, Me.ToolStripMenuItem_DebuggerWatcherRemoveAll})
         Me.ToolStripMenuItem_DebuggerWatchers.Name = "ToolStripMenuItem_DebuggerWatchers"
-        Me.ToolStripMenuItem_DebuggerWatchers.Size = New System.Drawing.Size(136, 22)
+        Me.ToolStripMenuItem_DebuggerWatchers.Size = New System.Drawing.Size(152, 22)
         Me.ToolStripMenuItem_DebuggerWatchers.Text = "Watchers"
         '
         'ToolStripMenuItem_DebuggerWatcherInsert
@@ -262,31 +308,30 @@ Partial Class FormMain
         Me.ToolStripMenuItem_HightlightCustom.Size = New System.Drawing.Size(156, 22)
         Me.ToolStripMenuItem_HightlightCustom.Text = "Highlight Color"
         '
-        'ToolStripSeparator6
+        'ToolStripSeparator11
         '
-        Me.ToolStripSeparator6.Name = "ToolStripSeparator6"
-        Me.ToolStripSeparator6.Size = New System.Drawing.Size(153, 6)
+        Me.ToolStripSeparator11.Name = "ToolStripSeparator11"
+        Me.ToolStripSeparator11.Size = New System.Drawing.Size(153, 6)
         '
-        'ToolStripMenuItem_Cut
+        'ToolStripMenuItem_Outline
         '
-        Me.ToolStripMenuItem_Cut.Image = CType(resources.GetObject("ToolStripMenuItem_Cut.Image"), System.Drawing.Image)
-        Me.ToolStripMenuItem_Cut.Name = "ToolStripMenuItem_Cut"
-        Me.ToolStripMenuItem_Cut.Size = New System.Drawing.Size(156, 22)
-        Me.ToolStripMenuItem_Cut.Text = "Cut"
+        Me.ToolStripMenuItem_Outline.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItemOutlineCollapseAll, Me.ToolStripMenuItemOutlineExpandAll})
+        Me.ToolStripMenuItem_Outline.Image = Global.BasicPawn.My.Resources.Resources.imageres_5302_16x16_32
+        Me.ToolStripMenuItem_Outline.Name = "ToolStripMenuItem_Outline"
+        Me.ToolStripMenuItem_Outline.Size = New System.Drawing.Size(156, 22)
+        Me.ToolStripMenuItem_Outline.Text = "Outlining"
         '
-        'ToolStripMenuItem_Copy
+        'ToolStripMenuItemOutlineCollapseAll
         '
-        Me.ToolStripMenuItem_Copy.Image = CType(resources.GetObject("ToolStripMenuItem_Copy.Image"), System.Drawing.Image)
-        Me.ToolStripMenuItem_Copy.Name = "ToolStripMenuItem_Copy"
-        Me.ToolStripMenuItem_Copy.Size = New System.Drawing.Size(156, 22)
-        Me.ToolStripMenuItem_Copy.Text = "Copy"
+        Me.ToolStripMenuItemOutlineCollapseAll.Name = "ToolStripMenuItemOutlineCollapseAll"
+        Me.ToolStripMenuItemOutlineCollapseAll.Size = New System.Drawing.Size(152, 22)
+        Me.ToolStripMenuItemOutlineCollapseAll.Text = "Collapse All"
         '
-        'ToolStripMenuItem_Paste
+        'ToolStripMenuItemOutlineExpandAll
         '
-        Me.ToolStripMenuItem_Paste.Image = CType(resources.GetObject("ToolStripMenuItem_Paste.Image"), System.Drawing.Image)
-        Me.ToolStripMenuItem_Paste.Name = "ToolStripMenuItem_Paste"
-        Me.ToolStripMenuItem_Paste.Size = New System.Drawing.Size(156, 22)
-        Me.ToolStripMenuItem_Paste.Text = "Paste"
+        Me.ToolStripMenuItemOutlineExpandAll.Name = "ToolStripMenuItemOutlineExpandAll"
+        Me.ToolStripMenuItemOutlineExpandAll.Size = New System.Drawing.Size(152, 22)
+        Me.ToolStripMenuItemOutlineExpandAll.Text = "Expand all"
         '
         'MenuStrip_BasicPawn
         '
@@ -861,9 +906,14 @@ Partial Class FormMain
         'ToolStripStatusLabel_LastInformation
         '
         Me.ToolStripStatusLabel_LastInformation.Name = "ToolStripStatusLabel_LastInformation"
-        Me.ToolStripStatusLabel_LastInformation.Size = New System.Drawing.Size(665, 17)
+        Me.ToolStripStatusLabel_LastInformation.Size = New System.Drawing.Size(696, 17)
         Me.ToolStripStatusLabel_LastInformation.Spring = True
         Me.ToolStripStatusLabel_LastInformation.Text = "Last Info: No information"
+        '
+        'ToolStripProgressBar_Autocomplete
+        '
+        Me.ToolStripProgressBar_Autocomplete.Name = "ToolStripProgressBar_Autocomplete"
+        Me.ToolStripProgressBar_Autocomplete.Size = New System.Drawing.Size(100, 16)
         '
         'ToolStripStatusLabel_AppVersion
         '
@@ -873,11 +923,6 @@ Partial Class FormMain
         '
         'Timer_PingFlash
         '
-        '
-        'ToolStripProgressBar_Autocomplete
-        '
-        Me.ToolStripProgressBar_Autocomplete.Name = "ToolStripProgressBar_Autocomplete"
-        Me.ToolStripProgressBar_Autocomplete.Size = New System.Drawing.Size(100, 16)
         '
         'FormMain
         '
@@ -1002,4 +1047,10 @@ Partial Class FormMain
     Friend WithEvents ToolStripMenuItem_HelpSpecialControlsCommentLines As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_FileStartPage As ToolStripMenuItem
     Friend WithEvents ToolStripProgressBar_Autocomplete As ToolStripProgressBar
+    Friend WithEvents ToolStripMenuItem_Delete As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_SelectAll As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator11 As ToolStripSeparator
+    Friend WithEvents ToolStripMenuItem_Outline As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItemOutlineCollapseAll As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItemOutlineExpandAll As ToolStripMenuItem
 End Class
