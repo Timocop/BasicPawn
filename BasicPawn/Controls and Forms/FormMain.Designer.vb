@@ -255,7 +255,7 @@ Partial Class FormMain
         '
         Me.ToolStripMenuItem_DebuggerBreakpoints.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_DebuggerBreakpointInsert, Me.ToolStripMenuItem_DebuggerBreakpointRemove, Me.ToolStripMenuItem_DebuggerBreakpointRemoveAll})
         Me.ToolStripMenuItem_DebuggerBreakpoints.Name = "ToolStripMenuItem_DebuggerBreakpoints"
-        Me.ToolStripMenuItem_DebuggerBreakpoints.Size = New System.Drawing.Size(152, 22)
+        Me.ToolStripMenuItem_DebuggerBreakpoints.Size = New System.Drawing.Size(136, 22)
         Me.ToolStripMenuItem_DebuggerBreakpoints.Text = "Breakpoints"
         '
         'ToolStripMenuItem_DebuggerBreakpointInsert
@@ -280,7 +280,7 @@ Partial Class FormMain
         '
         Me.ToolStripMenuItem_DebuggerWatchers.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_DebuggerWatcherInsert, Me.ToolStripMenuItem_DebuggerWatcherRemove, Me.ToolStripMenuItem_DebuggerWatcherRemoveAll})
         Me.ToolStripMenuItem_DebuggerWatchers.Name = "ToolStripMenuItem_DebuggerWatchers"
-        Me.ToolStripMenuItem_DebuggerWatchers.Size = New System.Drawing.Size(152, 22)
+        Me.ToolStripMenuItem_DebuggerWatchers.Size = New System.Drawing.Size(136, 22)
         Me.ToolStripMenuItem_DebuggerWatchers.Text = "Watchers"
         '
         'ToolStripMenuItem_DebuggerWatcherInsert
@@ -325,7 +325,7 @@ Partial Class FormMain
         '
         Me.ToolStripMenuItem_OutlineCollapseAll.Name = "ToolStripMenuItem_OutlineCollapseAll"
         Me.ToolStripMenuItem_OutlineCollapseAll.Size = New System.Drawing.Size(152, 22)
-        Me.ToolStripMenuItem_OutlineCollapseAll.Text = "Collapse All"
+        Me.ToolStripMenuItem_OutlineCollapseAll.Text = "Collapse all"
         '
         'ToolStripMenuItem_OutlineExpandAll
         '
