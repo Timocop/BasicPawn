@@ -438,7 +438,7 @@ Public Class FormMain
         g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.ClipboardHandler.SelectAll(sender, e)
     End Sub
 
-    Private Sub ToolStripMenuItemOutlineExpandAll_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItemOutlineExpandAll.Click
+    Private Sub ToolStripMenuItem_OutlineExpandAll_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_OutlineExpandAll.Click
         For Each iItem In g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.FoldingManager.FoldMarker
             iItem.IsFolded = False
         Next
@@ -446,7 +446,7 @@ Public Class FormMain
         g_ClassTabControl.m_ActiveTab.m_TextEditor.Refresh()
     End Sub
 
-    Private Sub ToolStripMenuItemOutlineCollapseAll_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItemOutlineCollapseAll.Click
+    Private Sub ToolStripMenuItem_OutlineCollapseAll_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_OutlineCollapseAll.Click
         For Each iItem In g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.FoldingManager.FoldMarker
             iItem.IsFolded = True
         Next

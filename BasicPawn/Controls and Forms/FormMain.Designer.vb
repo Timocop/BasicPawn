@@ -90,8 +90,8 @@ Partial Class FormMain
         Me.ToolStripMenuItem_HightlightCustom = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator11 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_Outline = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripMenuItemOutlineCollapseAll = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripMenuItemOutlineExpandAll = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_OutlineCollapseAll = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_OutlineExpandAll = New System.Windows.Forms.ToolStripMenuItem()
         Me.MenuStrip_BasicPawn = New System.Windows.Forms.MenuStrip()
         Me.ToolStripMenuItem_File = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_FileNew = New System.Windows.Forms.ToolStripMenuItem()
@@ -315,23 +315,23 @@ Partial Class FormMain
         '
         'ToolStripMenuItem_Outline
         '
-        Me.ToolStripMenuItem_Outline.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItemOutlineCollapseAll, Me.ToolStripMenuItemOutlineExpandAll})
+        Me.ToolStripMenuItem_Outline.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_OutlineCollapseAll, Me.ToolStripMenuItem_OutlineExpandAll})
         Me.ToolStripMenuItem_Outline.Image = Global.BasicPawn.My.Resources.Resources.imageres_5302_16x16_32
         Me.ToolStripMenuItem_Outline.Name = "ToolStripMenuItem_Outline"
         Me.ToolStripMenuItem_Outline.Size = New System.Drawing.Size(156, 22)
         Me.ToolStripMenuItem_Outline.Text = "Outlining"
         '
-        'ToolStripMenuItemOutlineCollapseAll
+        'ToolStripMenuItem_OutlineCollapseAll
         '
-        Me.ToolStripMenuItemOutlineCollapseAll.Name = "ToolStripMenuItemOutlineCollapseAll"
-        Me.ToolStripMenuItemOutlineCollapseAll.Size = New System.Drawing.Size(152, 22)
-        Me.ToolStripMenuItemOutlineCollapseAll.Text = "Collapse All"
+        Me.ToolStripMenuItem_OutlineCollapseAll.Name = "ToolStripMenuItem_OutlineCollapseAll"
+        Me.ToolStripMenuItem_OutlineCollapseAll.Size = New System.Drawing.Size(152, 22)
+        Me.ToolStripMenuItem_OutlineCollapseAll.Text = "Collapse All"
         '
-        'ToolStripMenuItemOutlineExpandAll
+        'ToolStripMenuItem_OutlineExpandAll
         '
-        Me.ToolStripMenuItemOutlineExpandAll.Name = "ToolStripMenuItemOutlineExpandAll"
-        Me.ToolStripMenuItemOutlineExpandAll.Size = New System.Drawing.Size(152, 22)
-        Me.ToolStripMenuItemOutlineExpandAll.Text = "Expand all"
+        Me.ToolStripMenuItem_OutlineExpandAll.Name = "ToolStripMenuItem_OutlineExpandAll"
+        Me.ToolStripMenuItem_OutlineExpandAll.Size = New System.Drawing.Size(152, 22)
+        Me.ToolStripMenuItem_OutlineExpandAll.Text = "Expand all"
         '
         'MenuStrip_BasicPawn
         '
@@ -1051,6 +1051,6 @@ Partial Class FormMain
     Friend WithEvents ToolStripMenuItem_SelectAll As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator11 As ToolStripSeparator
     Friend WithEvents ToolStripMenuItem_Outline As ToolStripMenuItem
-    Friend WithEvents ToolStripMenuItemOutlineCollapseAll As ToolStripMenuItem
-    Friend WithEvents ToolStripMenuItemOutlineExpandAll As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_OutlineCollapseAll As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_OutlineExpandAll As ToolStripMenuItem
 End Class
