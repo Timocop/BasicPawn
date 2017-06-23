@@ -484,7 +484,7 @@ Public Class FormMain
     End Sub
 
     Private Sub ToolStripMenuItem_FileSaveAll_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileSaveAll.Click
-        For i = 0 To g_ClassTabControl.m_TabsCount - 1
+        For i = g_ClassTabControl.m_TabsCount - 1 To 0 Step -1
             g_ClassTabControl.SaveFileTab(i)
         Next
     End Sub
