@@ -179,7 +179,7 @@ Partial Class FormMain
         '
         'ContextMenuStrip_RightClick
         '
-        Me.ContextMenuStrip_RightClick.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_Cut, Me.ToolStripMenuItem_Copy, Me.ToolStripMenuItem_Paste, Me.ToolStripMenuItem_Delete, Me.ToolStripMenuItem_SelectAll, Me.ToolStripSeparator6, Me.ToolStripMenuItem_Mark, Me.ToolStripMenuItem_ListReferences, Me.ToolStripSeparator1, Me.ToolStripMenuItem_Debugger, Me.ToolStripMenuItem_HightlightCustom, Me.ToolStripSeparator11, Me.ToolStripMenuItem_Outline})
+        Me.ContextMenuStrip_RightClick.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_Mark, Me.ToolStripMenuItem_ListReferences, Me.ToolStripSeparator6, Me.ToolStripMenuItem_Cut, Me.ToolStripMenuItem_Copy, Me.ToolStripMenuItem_Paste, Me.ToolStripMenuItem_Delete, Me.ToolStripMenuItem_SelectAll, Me.ToolStripSeparator1, Me.ToolStripMenuItem_Debugger, Me.ToolStripMenuItem_HightlightCustom, Me.ToolStripSeparator11, Me.ToolStripMenuItem_Outline})
         Me.ContextMenuStrip_RightClick.Name = "ContextMenuStrip1"
         Me.ContextMenuStrip_RightClick.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
         Me.ContextMenuStrip_RightClick.Size = New System.Drawing.Size(157, 264)
@@ -324,13 +324,13 @@ Partial Class FormMain
         'ToolStripMenuItem_OutlineCollapseAll
         '
         Me.ToolStripMenuItem_OutlineCollapseAll.Name = "ToolStripMenuItem_OutlineCollapseAll"
-        Me.ToolStripMenuItem_OutlineCollapseAll.Size = New System.Drawing.Size(152, 22)
+        Me.ToolStripMenuItem_OutlineCollapseAll.Size = New System.Drawing.Size(134, 22)
         Me.ToolStripMenuItem_OutlineCollapseAll.Text = "Collapse all"
         '
         'ToolStripMenuItem_OutlineExpandAll
         '
         Me.ToolStripMenuItem_OutlineExpandAll.Name = "ToolStripMenuItem_OutlineExpandAll"
-        Me.ToolStripMenuItem_OutlineExpandAll.Size = New System.Drawing.Size(152, 22)
+        Me.ToolStripMenuItem_OutlineExpandAll.Size = New System.Drawing.Size(134, 22)
         Me.ToolStripMenuItem_OutlineExpandAll.Text = "Expand all"
         '
         'MenuStrip_BasicPawn
