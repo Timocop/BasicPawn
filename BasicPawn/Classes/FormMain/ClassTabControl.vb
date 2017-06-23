@@ -236,7 +236,7 @@ Public Class ClassTabControl
     Public Sub SaveFileTab(iIndex As Integer, Optional bSaveAs As Boolean = False)
         SaveLoadTabEntries(iIndex, ENUM_TAB_CONFIG.SAVE)
 
-        If (bSaveAs OrElse String.IsNullOrEmpty(m_Tab(iIndex).m_File) OrElse Not IO.File.Exists(m_Tab(iIndex).m_File)) Then
+        If (bSaveAs OrElse m_Tab(iIndex).m_IsUnsaved OrElse Not IO.File.Exists(m_Tab(iIndex).m_File)) Then
             Using i As New SaveFileDialog
                 i.Filter = "All supported files|*.sp;*.inc;*.sma|SourcePawn|*.sp|Include|*.inc|Pawn (Not fully supported)|*.pwn;*.p|AMX Mod X|*.sma|All files|*.*"
                 i.FileName = m_Tab(iIndex).m_File
@@ -285,13 +285,13 @@ Public Class ClassTabControl
         End If
 
         Dim sFilename As String = ""
-        If (Not String.IsNullOrEmpty(m_Tab(iIndex).m_File) AndAlso IO.File.Exists(m_Tab(iIndex).m_File)) Then
+        If (Not m_Tab(iIndex).m_IsUnsaved AndAlso IO.File.Exists(m_Tab(iIndex).m_File)) Then
             sFilename = String.Format(" ({0})", IO.Path.GetFileName(m_Tab(iIndex).m_File))
         End If
 
         Select Case (If(bAlwaysYes, DialogResult.Yes, MessageBox.Show(String.Format("Do you want to save your work?{0}", sFilename), "Information", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question)))
             Case DialogResult.Yes
-                If (String.IsNullOrEmpty(m_Tab(iIndex).m_File) OrElse Not IO.File.Exists(m_Tab(iIndex).m_File)) Then
+                If (m_Tab(iIndex).m_IsUnsaved OrElse Not IO.File.Exists(m_Tab(iIndex).m_File)) Then
                     Using i As New SaveFileDialog
                         i.Filter = "All supported files|*.sp;*.inc;*.sma|SourcePawn|*.sp|Include|*.inc|Pawn (Not fully supported)|*.pwn;*.p|AMX Mod X|*.sma|All files|*.*"
                         i.FileName = m_Tab(iIndex).m_File
@@ -336,6 +336,44 @@ Public Class ClassTabControl
 
         End Select
     End Function
+
+    ''' <summary>
+    ''' Removes all unsaved tabs from left to right. Stops at first saved tab encounter.
+    ''' </summary>
+    Public Sub RemoveUnsavedTabsLeft()
+        While m_TabsCount > 0
+            If (m_Tab(0).m_IsUnsaved AndAlso Not m_Tab(0).m_Changed) Then
+                Dim bLast As Boolean = (m_TabsCount = 1)
+
+                If (Not RemoveTab(0, True)) Then
+                    Exit While
+                End If
+
+                If (bLast) Then
+                    Exit While
+                End If
+            Else
+                Exit While
+            End If
+        End While
+    End Sub
+
+    ''' <summary>
+    ''' Removes all tabs.
+    ''' </summary>
+    Public Sub RemoveAllTabs()
+        While m_TabsCount > 0
+            Dim bLast As Boolean = (m_TabsCount = 1)
+
+            If (Not RemoveTab(m_TabsCount - 1, True)) Then
+                Return
+            End If
+
+            If (bLast) Then
+                Exit While
+            End If
+        End While
+    End Sub
 
 
 
@@ -588,6 +626,12 @@ Public Class ClassTabControl
             End Set
         End Property
 
+        Public ReadOnly Property m_IsUnsaved As Boolean
+            Get
+                Return String.IsNullOrEmpty(g_sFile)
+            End Get
+        End Property
+
         Public ReadOnly Property m_Identifier As String
             Get
                 Return g_sIdentifier
@@ -651,7 +695,6 @@ Public Class ClassTabControl
                 MyBase.Text = value
             End Set
         End Property
-
 
 #Region "TextEditor Controls"
         Private Sub TextEditorControl_Source_ProcessCmdKey(ByRef bBlock As Boolean, ByRef iMsg As Message, iKeys As Keys)

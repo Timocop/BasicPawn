@@ -1,10 +1,27 @@
-﻿Public Class UCStartPage
+﻿'BasicPawn
+'Copyright(C) 2017 TheTimocop
+
+'This program Is free software: you can redistribute it And/Or modify
+'it under the terms Of the GNU General Public License As published by
+'the Free Software Foundation, either version 3 Of the License, Or
+'(at your option) any later version.
+
+'This program Is distributed In the hope that it will be useful,
+'but WITHOUT ANY WARRANTY; without even the implied warranty Of
+'MERCHANTABILITY Or FITNESS FOR A PARTICULAR PURPOSE.  See the
+'GNU General Public License For more details.
+
+'You should have received a copy Of the GNU General Public License
+'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
+
+
+Public Class UCStartPage
     Public g_mFormMain As FormMain
     Public g_mClassRecentItems As New ClassRecentItems(Me)
 
 
-    Public Sub New(mFormMain As FormMain)
-        g_mFormMain = mFormMain
+    Public Sub New(f As FormMain)
+        g_mFormMain = f
 
         ' This call is required by the designer.
         InitializeComponent()
@@ -61,19 +78,10 @@
     Private Sub LinkLabel_OpenNew_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_OpenNew.LinkClicked
         Dim mRecentItems = g_mClassRecentItems.GetRecentItems
         Dim bSomethingSelected As Boolean = False
+        Dim bAppendFiles As Boolean = False
 
-        'Close all tabs
-        While g_mFormMain.g_ClassTabControl.m_TabsCount > 0
-            Dim bLast As Boolean = (g_mFormMain.g_ClassTabControl.m_TabsCount = 1)
-
-            If (Not g_mFormMain.g_ClassTabControl.RemoveTab(0, True)) Then
-                Return
-            End If
-
-            If (bLast) Then
-                Exit While
-            End If
-        End While
+        'Close all
+        g_mFormMain.g_ClassTabControl.RemoveAllTabs()
 
         For i = mRecentItems.Length - 1 To 0 Step -1
             Try
@@ -83,41 +91,34 @@
 
                 bSomethingSelected = True
 
-                g_mFormMain.g_ClassTabControl.AddTab(True)
-                g_mFormMain.g_ClassTabControl.OpenFileTab(g_mFormMain.g_ClassTabControl.m_TabsCount - 1, mRecentItems(i).m_RecentFile)
-
+                If (mRecentItems(i).m_IsProjectFile) Then
+                    g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile = mRecentItems(i).m_RecentFile
+                    g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(bAppendFiles)
+                    bAppendFiles = True
+                Else
+                    g_mFormMain.g_ClassTabControl.AddTab(True)
+                    g_mFormMain.g_ClassTabControl.OpenFileTab(g_mFormMain.g_ClassTabControl.m_TabsCount - 1, mRecentItems(i).m_RecentFile)
+                End If
             Catch ex As Exception
                 ClassExceptionLog.WriteToLogMessageBox(ex)
             End Try
         Next
 
         If (bSomethingSelected) Then
-            'Close new unsaved and unchanged tabs
-            While g_mFormMain.g_ClassTabControl.m_TabsCount > 0
-                If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.m_Tab(0).m_File) AndAlso Not g_mFormMain.g_ClassTabControl.m_Tab(0).m_Changed) Then
-                    Dim bLast As Boolean = (g_mFormMain.g_ClassTabControl.m_TabsCount = 1)
-
-                    If (Not g_mFormMain.g_ClassTabControl.RemoveTab(0, True)) Then
-                        Exit While
-                    End If
-
-                    If (bLast) Then
-                        Exit While
-                    End If
-                Else
-                    Exit While
-                End If
-            End While
+            g_mFormMain.g_ClassTabControl.RemoveUnsavedTabsLeft()
         End If
 
         If (Not bSomethingSelected) Then
             MessageBox.Show("No file selected to open!", "Could not open file", MessageBoxButtons.OK, MessageBoxIcon.Information)
         End If
+
+        Me.Hide()
     End Sub
 
     Private Sub LinkLabel_Open_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_Open.LinkClicked
         Dim mRecentItems = g_mClassRecentItems.GetRecentItems
         Dim bSomethingSelected As Boolean = False
+        Dim bAppendFiles As Boolean = False
 
         For i = mRecentItems.Length - 1 To 0 Step -1
             Try
@@ -127,36 +128,28 @@
 
                 bSomethingSelected = True
 
-                g_mFormMain.g_ClassTabControl.AddTab(True)
-                g_mFormMain.g_ClassTabControl.OpenFileTab(g_mFormMain.g_ClassTabControl.m_TabsCount - 1, mRecentItems(i).m_RecentFile)
-
+                If (mRecentItems(i).m_IsProjectFile) Then
+                    g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile = mRecentItems(i).m_RecentFile
+                    g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(bAppendFiles)
+                    bAppendFiles = True
+                Else
+                    g_mFormMain.g_ClassTabControl.AddTab(True)
+                    g_mFormMain.g_ClassTabControl.OpenFileTab(g_mFormMain.g_ClassTabControl.m_TabsCount - 1, mRecentItems(i).m_RecentFile)
+                End If
             Catch ex As Exception
                 ClassExceptionLog.WriteToLogMessageBox(ex)
             End Try
         Next
 
         If (bSomethingSelected) Then
-            'Close new unsaved and unchanged tabs
-            While g_mFormMain.g_ClassTabControl.m_TabsCount > 0
-                If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.m_Tab(0).m_File) AndAlso Not g_mFormMain.g_ClassTabControl.m_Tab(0).m_Changed) Then
-                    Dim bLast As Boolean = (g_mFormMain.g_ClassTabControl.m_TabsCount = 1)
-
-                    If (Not g_mFormMain.g_ClassTabControl.RemoveTab(0, True)) Then
-                        Exit While
-                    End If
-
-                    If (bLast) Then
-                        Exit While
-                    End If
-                Else
-                    Exit While
-                End If
-            End While
+            g_mFormMain.g_ClassTabControl.RemoveUnsavedTabsLeft()
         End If
 
         If (Not bSomethingSelected) Then
             MessageBox.Show("No file selected to open!", "Could not open file", MessageBoxButtons.OK, MessageBoxIcon.Information)
         End If
+
+        Me.Hide()
     End Sub
 
 

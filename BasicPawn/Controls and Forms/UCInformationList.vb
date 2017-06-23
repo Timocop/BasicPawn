@@ -39,7 +39,7 @@ Public Class UCInformationList
             Dim bForceEnd As Boolean = False
             While True
                 For i = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1
-                    If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.m_Tab(i).m_File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_Tab(i).m_File)) Then
+                    If (g_mFormMain.g_ClassTabControl.m_Tab(i).m_IsUnsaved OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_Tab(i).m_File)) Then
                         Continue For
                     End If
 

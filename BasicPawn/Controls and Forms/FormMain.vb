@@ -37,6 +37,7 @@ Public Class FormMain
     Public g_mUCAutocomplete As UCAutocomplete
     Public g_mUCInformationList As UCInformationList
     Public g_mUCObjectBrowser As UCObjectBrowser
+    Public g_mUCProjectBrowser As UCProjectBrowser
     Public g_mUCToolTip As UCToolTip
     Public g_mFormDebugger As FormDebugger
     Public g_mFormOpenTabFromInstances As FormOpenTabFromInstances
@@ -189,6 +190,12 @@ Public Class FormMain
         }
         g_mUCObjectBrowser.Show()
 
+        g_mUCProjectBrowser = New UCProjectBrowser(Me) With {
+            .Parent = TabPage_ProjectBrowser,
+            .Dock = DockStyle.Fill
+        }
+        g_mUCProjectBrowser.Show()
+
         g_mUCToolTip = New UCToolTip(Me) With {
             .Parent = SplitContainer_ToolboxAndEditor.Panel2
         }
@@ -314,6 +321,16 @@ Public Class FormMain
                 Exit While
             End If
 
+            'Open all project files 
+            Dim bAppendFiles As Boolean = False
+            For i = 0 To lFileList.Count - 1
+                If (IO.Path.GetExtension(lFileList(i)).ToLower = UCProjectBrowser.ClassProjectControl.g_sProjectExtension) Then
+                    g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile = lFileList(i)
+                    g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(bAppendFiles)
+                    bAppendFiles = True
+                End If
+            Next
+
             'Open all files in the oldes BasicPawn instance
             If (Not ClassSettings.g_iSettingsAlwaysOpenNewInstance AndAlso Array.IndexOf(sArgs, "-newinstance") = -1) Then
                 Dim pBasicPawnProc As Process() = Process.GetProcessesByName(IO.Path.GetFileNameWithoutExtension(Application.ExecutablePath))
@@ -349,8 +366,10 @@ Public Class FormMain
                     If (pLastProcess IsNot Nothing) Then
                         Try
                             For i = 0 To lFileList.Count - 1
-                                Dim mMsg As New ClassCrossAppComunication.ClassMessage(COMARG_OPEN_FILE_BY_PID, CStr(pLastProcess.Id), lFileList(i))
-                                g_ClassCrossAppComunication.SendMessage(mMsg)
+                                If (IO.Path.GetExtension(lFileList(i)).ToLower <> UCProjectBrowser.ClassProjectControl.g_sProjectExtension) Then
+                                    Dim mMsg As New ClassCrossAppComunication.ClassMessage(COMARG_OPEN_FILE_BY_PID, CStr(pLastProcess.Id), lFileList(i))
+                                    g_ClassCrossAppComunication.SendMessage(mMsg)
+                                End If
                             Next
                         Catch ex As Exception
                             ClassExceptionLog.WriteToLogMessageBox(ex)
@@ -365,11 +384,13 @@ Public Class FormMain
 
             'Open all files here
             For i = 0 To lFileList.Count - 1
-                g_ClassTabControl.AddTab(False)
-                g_ClassTabControl.OpenFileTab(g_ClassTabControl.m_TabsCount - 1, lFileList(i), True)
+                If (IO.Path.GetExtension(lFileList(i)).ToLower <> UCProjectBrowser.ClassProjectControl.g_sProjectExtension) Then
+                    g_ClassTabControl.AddTab(False)
+                    g_ClassTabControl.OpenFileTab(g_ClassTabControl.m_TabsCount - 1, lFileList(i), True)
 
-                If (i = 0 AndAlso g_ClassTabControl.m_TabsCount > 0) Then
-                    g_ClassTabControl.RemoveTab(0, False)
+                    If (i = 0 AndAlso g_ClassTabControl.m_TabsCount > 0) Then
+                        g_ClassTabControl.RemoveTab(0, False)
+                    End If
                 End If
             Next
 
@@ -404,6 +425,10 @@ Public Class FormMain
                 e.Cancel = True
             End If
         Next
+
+        If (g_mUCProjectBrowser.g_ClassProjectControl.PrompSaveProject()) Then
+            e.Cancel = True
+        End If
     End Sub
 
     Private Sub ContextMenuStrip1_Opening(sender As Object, e As CancelEventArgs) Handles ContextMenuStrip_RightClick.Opening
@@ -464,19 +489,86 @@ Public Class FormMain
         PrintInformation("[INFO]", "User created a new source file")
     End Sub
 
-    Private Sub ToolStripMenuItem_FileOpen_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileOpen.Click
-        Using i As New OpenFileDialog
-            i.Filter = "All supported files|*.sp;*.inc;*.sma|SourcePawn|*.sp|Include|*.inc|Pawn (Not fully supported)|*.pwn;*.p|AMX Mod X|*.sma|All files|*.*"
-            i.FileName = g_ClassTabControl.m_ActiveTab.m_File
-            i.Multiselect = True
+    Private Sub ToolStripMenuItem_FileProjectSave_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileProjectSave.Click
+        Try
+            Using i As New SaveFileDialog
+                i.Filter = String.Format("BasicPawn Project|*{0}", UCProjectBrowser.ClassProjectControl.g_sProjectExtension)
+                i.FileName = g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile
 
-            If (i.ShowDialog = DialogResult.OK) Then
-                For Each sFile As String In i.FileNames
-                    g_ClassTabControl.AddTab(True)
-                    g_ClassTabControl.OpenFileTab(g_ClassTabControl.m_TabsCount - 1, sFile)
-                Next
-            End If
-        End Using
+                If (i.ShowDialog = DialogResult.OK) Then
+                    g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile = i.FileName
+                Else
+                    Return
+                End If
+            End Using
+
+            g_mUCProjectBrowser.g_ClassProjectControl.SaveProject()
+
+            g_mUCStartPage.g_mClassRecentItems.AddRecent(g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile)
+            ShowPingFlash()
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
+    Private Sub ToolStripMenuItem_FileProjectLoad_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileProjectLoad.Click
+        Try
+
+            Using i As New OpenFileDialog
+                i.Filter = String.Format("BasicPawn Project|*{0}", UCProjectBrowser.ClassProjectControl.g_sProjectExtension)
+                i.FileName = g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile
+                i.Multiselect = True
+
+                If (i.ShowDialog = DialogResult.OK) Then
+                    Dim bAppendFiles As Boolean = False
+
+                    g_ClassTabControl.RemoveAllTabs()
+
+                    For Each sProjectFile As String In i.FileNames
+                        g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile = sProjectFile
+                        g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(bAppendFiles)
+                        bAppendFiles = True
+                    Next
+                End If
+            End Using
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
+    Private Sub ToolStripMenuItem_FileProjectClose_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileProjectClose.Click
+        Try
+            g_mUCProjectBrowser.g_ClassProjectControl.CloseProject()
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
+    Private Sub ToolStripMenuItem_FileCloseAll_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileCloseAll.Click
+        Try
+            g_ClassTabControl.RemoveAllTabs()
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
+    Private Sub ToolStripMenuItem_FileOpen_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileOpen.Click
+        Try
+            Using i As New OpenFileDialog
+                i.Filter = "All supported files|*.sp;*.inc;*.sma|SourcePawn|*.sp|Include|*.inc|Pawn (Not fully supported)|*.pwn;*.p|AMX Mod X|*.sma|All files|*.*"
+                i.FileName = g_ClassTabControl.m_ActiveTab.m_File
+                i.Multiselect = True
+
+                If (i.ShowDialog = DialogResult.OK) Then
+                    For Each sFile As String In i.FileNames
+                        g_ClassTabControl.AddTab(True)
+                        g_ClassTabControl.OpenFileTab(g_ClassTabControl.m_TabsCount - 1, sFile)
+                    Next
+                End If
+            End Using
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
     End Sub
 
     Private Sub ToolStripMenuItem_FileSave_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileSave.Click
@@ -553,7 +645,7 @@ Public Class FormMain
 
     Private Sub ToolStripMenuItem_FileOpenFolder_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileOpenFolder.Click
         Try
-            If (String.IsNullOrEmpty(g_ClassTabControl.m_ActiveTab.m_File) OrElse Not IO.File.Exists(g_ClassTabControl.m_ActiveTab.m_File)) Then
+            If (g_ClassTabControl.m_ActiveTab.m_IsUnsaved OrElse Not IO.File.Exists(g_ClassTabControl.m_ActiveTab.m_File)) Then
                 MessageBox.Show("Can't open current folder. Source file can't be found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Return
             End If
@@ -728,7 +820,7 @@ Public Class FormMain
         End With
 
         Dim sSourceFile As String = Nothing
-        If (Not String.IsNullOrEmpty(g_ClassTabControl.m_ActiveTab.m_File) AndAlso IO.File.Exists(g_ClassTabControl.m_ActiveTab.m_File)) Then
+        If (Not g_ClassTabControl.m_ActiveTab.m_IsUnsaved AndAlso IO.File.Exists(g_ClassTabControl.m_ActiveTab.m_File)) Then
             sSourceFile = g_ClassTabControl.m_ActiveTab.m_File
         End If
 
@@ -1052,5 +1144,4 @@ Public Class FormMain
         g_mPingFlashPanel.Visible = False
         Timer_PingFlash.Stop()
     End Sub
-
 End Class

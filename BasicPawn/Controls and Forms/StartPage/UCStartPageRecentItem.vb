@@ -1,6 +1,22 @@
-﻿Public Class UCStartPageRecentItem
+﻿'BasicPawn
+'Copyright(C) 2017 TheTimocop
 
-    Private g_mUCStartPage As UCStartPage
+'This program Is free software: you can redistribute it And/Or modify
+'it under the terms Of the GNU General Public License As published by
+'the Free Software Foundation, either version 3 Of the License, Or
+'(at your option) any later version.
+
+'This program Is distributed In the hope that it will be useful,
+'but WITHOUT ANY WARRANTY; without even the implied warranty Of
+'MERCHANTABILITY Or FITNESS FOR A PARTICULAR PURPOSE.  See the
+'GNU General Public License For more details.
+
+'You should have received a copy Of the GNU General Public License
+'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
+
+
+Public Class UCStartPageRecentItem
+    Public g_mUCStartPage As UCStartPage
 
     Private g_sRecentFile As String = ""
     Private g_dRecentDate As Date = Date.MinValue
@@ -32,6 +48,12 @@
 
             UpdateInfoText()
         End Set
+    End Property
+
+    ReadOnly Property m_IsProjectFile As Boolean
+        Get
+            Return (IO.Path.GetExtension(g_sRecentFile).ToLower = ".bpproj")
+        End Get
     End Property
 
     Property m_RecentDate As Date
@@ -77,28 +99,19 @@
         OpenRecent()
     End Sub
 
-    Private Sub OpenRecent()
+    Public Sub OpenRecent()
         Try
-            g_mUCStartPage.g_mFormMain.g_ClassTabControl.AddTab(True)
-            g_mUCStartPage.g_mFormMain.g_ClassTabControl.OpenFileTab(g_mUCStartPage.g_mFormMain.g_ClassTabControl.m_TabsCount - 1, m_RecentFile)
+            If (m_IsProjectFile) Then
+                g_mUCStartPage.g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile = m_RecentFile
+                g_mUCStartPage.g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(False)
+            Else
+                g_mUCStartPage.g_mFormMain.g_ClassTabControl.AddTab(True)
+                g_mUCStartPage.g_mFormMain.g_ClassTabControl.OpenFileTab(g_mUCStartPage.g_mFormMain.g_ClassTabControl.m_TabsCount - 1, m_RecentFile)
+            End If
 
-            'Close new unsaved and unchanged tabs
-            While g_mUCStartPage.g_mFormMain.g_ClassTabControl.m_TabsCount > 0
-                If (String.IsNullOrEmpty(g_mUCStartPage.g_mFormMain.g_ClassTabControl.m_Tab(0).m_File) AndAlso Not g_mUCStartPage.g_mFormMain.g_ClassTabControl.m_Tab(0).m_Changed) Then
-                    Dim bLast As Boolean = (g_mUCStartPage.g_mFormMain.g_ClassTabControl.m_TabsCount = 1)
+            g_mUCStartPage.g_mFormMain.g_ClassTabControl.RemoveUnsavedTabsLeft()
 
-                    If (Not g_mUCStartPage.g_mFormMain.g_ClassTabControl.RemoveTab(0, True)) Then
-                        Exit While
-                    End If
-
-                    If (bLast) Then
-                        Exit While
-                    End If
-                Else
-                    Exit While
-                End If
-            End While
-
+            g_mUCStartPage.Hide()
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try

@@ -315,6 +315,12 @@
     <Compile Include="Controls and Forms\UCObjectBrowser.vb">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Controls and Forms\UCProjectBrowser.Designer.vb">
+      <DependentUpon>UCProjectBrowser.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controls and Forms\UCProjectBrowser.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Controls and Forms\UCToolTip.Designer.vb">
       <DependentUpon>UCToolTip.vb</DependentUpon>
     </Compile>
@@ -400,6 +406,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls and Forms\UCObjectBrowser.resx">
       <DependentUpon>UCObjectBrowser.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls and Forms\UCProjectBrowser.resx">
+      <DependentUpon>UCProjectBrowser.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls and Forms\UCToolTip.resx">
       <DependentUpon>UCToolTip.vb</DependentUpon>
@@ -503,6 +512,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="BasicPawnIcon.ico" />
+    <None Include="Resources\imageres_5320_16x16-32.png" />
+    <None Include="Resources\imageres_5318_16x16-32.png" />
+    <None Include="Resources\imageres_5339_16x16-32.png" />
     <None Include="Resources\imageres_5302_16x16-32.png" />
     <None Include="Resources\imageres_5312_16x16-32.png" />
     <None Include="Resources\BasicPawn_NoText_PNGx64.png" />

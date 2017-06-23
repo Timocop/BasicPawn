@@ -105,7 +105,7 @@ Public Class ClassTextEditorTools
             Return
         End If
 
-        If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
+        If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
             g_mFormMain.PrintInformation("[ERRO]", "Can't check references! Could not get current source file!", False, True, True)
             Return
         End If
@@ -247,7 +247,7 @@ Public Class ClassTextEditorTools
             Dim iExitCode As Integer = 0
             Dim sOutput As String = ""
 
-            If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
+            If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
                 g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Could not get current source file!", False, False, True)
                 Return
             End If
@@ -435,7 +435,7 @@ Public Class ClassTextEditorTools
             'Check compiler
             If (sCompilerPath Is Nothing) Then
                 If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
+                    If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Could not get current source file!", False, False, True)
                         Return False
                     End If
@@ -485,7 +485,7 @@ Public Class ClassTextEditorTools
             'Check include path
             If (sIncludePaths Is Nothing) Then
                 If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
+                    If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Could not get current source file!", False, False, True)
                         Return False
                     End If
@@ -649,7 +649,7 @@ Public Class ClassTextEditorTools
             Dim iExitCode As Integer = 0
             Dim sOutput As String = ""
 
-            If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
+            If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
                 g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Could not get current source file!", False, False, True)
                 Return Nothing
             End If
@@ -839,7 +839,7 @@ Public Class ClassTextEditorTools
             Dim iExitCode As Integer = 0
             Dim sOutput As String = ""
 
-            If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
+            If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
                 g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get current source file!", False, False, True)
                 Return Nothing
             End If
@@ -972,7 +972,7 @@ Public Class ClassTextEditorTools
             'Check compiler
             If (sCompilerPath Is Nothing) Then
                 If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
+                    If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get current source file!", False, False, True)
                         Return Nothing
                     End If
@@ -1022,7 +1022,7 @@ Public Class ClassTextEditorTools
             'Check include path
             If (sIncludePaths Is Nothing) Then
                 If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    If (String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File) OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
+                    If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get current source file!", False, False, True)
                         Return Nothing
                     End If
