@@ -642,7 +642,7 @@ Public Class FormMain
     Private Sub ToolStripMenuItem_FileOpenFolder_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileOpenFolder.Click
         Try
             If (g_ClassTabControl.m_ActiveTab.m_IsUnsaved OrElse Not IO.File.Exists(g_ClassTabControl.m_ActiveTab.m_File)) Then
-                MessageBox.Show("Can't open current folder. Source file can't be found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Could not open current folder. Source file does not exist!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Return
             End If
 
@@ -712,7 +712,7 @@ Public Class FormMain
             End Using
 
             If (lRealSourceLines.Count <> lFormatedSourceLines.Count) Then
-                Throw New ArgumentException("Formated number of lines are not equal with document number of lines!")
+                Throw New ArgumentException("Formated number of lines are not equal with document number of lines")
             End If
 
             Try
@@ -946,7 +946,7 @@ Public Class FormMain
     Private Sub ToolStripMenuItem_Tabs_OpenFolder_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Tabs_OpenFolder.Click
         Try
             If (g_ClassTabControl.m_ActiveTab.m_IsUnsaved OrElse Not IO.File.Exists(g_ClassTabControl.m_ActiveTab.m_File)) Then
-                MessageBox.Show("Could not open current folder. Source file can't be found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Could not open current folder. Source file does not exist!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Return
             End If
 
@@ -959,7 +959,7 @@ Public Class FormMain
     Private Sub ToolStripMenuItem_Tabs_Popout_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Tabs_Popout.Click
         Try
             If (g_ClassTabControl.m_ActiveTab.m_IsUnsaved OrElse Not IO.File.Exists(g_ClassTabControl.m_ActiveTab.m_File)) Then
-                MessageBox.Show("Could not popout tab. Source file can't be found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Could not popout tab. Source file does not exist!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Return
             End If
 
@@ -1017,7 +1017,7 @@ Public Class FormMain
         End If
 
         If (g_mFormDebugger IsNot Nothing AndAlso Not g_mFormDebugger.IsDisposed) Then
-            MessageBox.Show("You can't close BasicPawn while debugging!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("You can not close BasicPawn while debugging!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             e.Cancel = True
         End If
     End Sub

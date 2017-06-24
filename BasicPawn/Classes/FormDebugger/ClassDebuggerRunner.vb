@@ -540,14 +540,14 @@ Public Class ClassDebuggerRunner
                         If (Not String.IsNullOrEmpty(m_GameFolder) AndAlso IO.Directory.Exists(m_GameFolder)) Then
                             g_mFormDebugger.g_ClassDebuggerRunnerEngine.AcceptCommand(m_GameFolder, "@reloadmap")
                         Else
-                            MessageBox.Show("Can't send command! Game directory doesn't exist!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                            MessageBox.Show("Could not send command! Game directory does not exist!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         End If
 
                     Case FormDebuggerStop.ENUM_DIALOG_RESULT.RESTART_GAME
                         If (Not String.IsNullOrEmpty(m_GameFolder) AndAlso IO.Directory.Exists(m_GameFolder)) Then
                             g_mFormDebugger.g_ClassDebuggerRunnerEngine.AcceptCommand(m_GameFolder, "_restart")
                         Else
-                            MessageBox.Show("Can't send command! Game directory doesn't exist!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                            MessageBox.Show("Could not send command! Game directory does not exist!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         End If
 
                     Case FormDebuggerStop.ENUM_DIALOG_RESULT.UNLOAD_PLUGIN
@@ -559,7 +559,7 @@ Public Class ClassDebuggerRunner
                                 g_mFormDebugger.g_ClassDebuggerRunnerEngine.AcceptCommand(m_GameFolder, .ToString)
                             End With
                         Else
-                            MessageBox.Show("Can't send command! Game directory doesn't exist!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                            MessageBox.Show("Could not send command! Game directory does not exist!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         End If
                 End Select
             End If
@@ -578,14 +578,14 @@ Public Class ClassDebuggerRunner
             If (Not String.IsNullOrEmpty(g_sLatestDebuggerPlugin) AndAlso IO.File.Exists(g_sLatestDebuggerPlugin)) Then
                 IO.File.Delete(g_sLatestDebuggerPlugin)
                 'ElseIf (Not String.IsNullOrEmpty(g_sLatestDebuggerPlugin)) Then
-                '    MessageBox.Show(String.Format("Can't find '{0}'. Please remove it manualy!", g_sLatestDebuggerPlugin))
+                '    MessageBox.Show(String.Format("Could not find '{0}'. Please remove it manualy!", g_sLatestDebuggerPlugin))
             End If
 
             'Remove cmd runner plugin
             If (Not String.IsNullOrEmpty(g_sLatestDebuggerRunnerPlugin) AndAlso IO.File.Exists(g_sLatestDebuggerRunnerPlugin)) Then
                 IO.File.Delete(g_sLatestDebuggerRunnerPlugin)
                 'ElseIf (Not String.IsNullOrEmpty(g_sLatestDebuggerRunnerPlugin)) Then
-                '    MessageBox.Show(String.Format("Can't find '{0}'. Please remove it manualy!", g_sLatestDebuggerRunnerPlugin))
+                '    MessageBox.Show(String.Format("Could not find '{0}'. Please remove it manualy!", g_sLatestDebuggerRunnerPlugin))
             End If
 
             g_sLatestDebuggerPlugin = ""
