@@ -273,6 +273,11 @@ Public Class FormMain
             End Sub)
     End Sub
 
+    Private Sub ContextMenuStrip_RightClick_Opening(sender As Object, e As CancelEventArgs) Handles ContextMenuStrip_RightClick.Opening
+        g_mUCAutocomplete.UpdateAutocomplete("")
+        g_mUCAutocomplete.g_ClassToolTip.m_CurrentMethod = ""
+        g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip()
+    End Sub
 #End Region
 
 #Region "Syntax Stuff"
@@ -411,8 +416,6 @@ Public Class FormMain
 
 #End Region
 
-
-#Region "Open/Save/Dialog"
     Private Sub FormMain_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
         g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface)
                                                    If (Not j.OnPluginEnd()) Then
@@ -431,14 +434,7 @@ Public Class FormMain
         End If
     End Sub
 
-    Private Sub ContextMenuStrip1_Opening(sender As Object, e As CancelEventArgs) Handles ContextMenuStrip_RightClick.Opening
-        g_mUCAutocomplete.UpdateAutocomplete("")
-        g_mUCAutocomplete.g_ClassToolTip.m_CurrentMethod = ""
-        g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip()
-    End Sub
-#End Region
-
-#Region "ContextMenuStrip"
+#Region "ContextMenuStrip_RightClick"
     Private Sub ToolStripMenuItem_Mark_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Mark.Click
         g_ClassTextEditorTools.MarkSelectedWord()
     End Sub
@@ -480,7 +476,7 @@ Public Class FormMain
     End Sub
 #End Region
 
-#Region "MenuStrip"
+#Region "MenuStrip_BasicPawn"
 
 #Region "MenuStrip_File"
     Private Sub ToolStripMenuItem_FileNew_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileNew.Click
@@ -650,7 +646,7 @@ Public Class FormMain
                 Return
             End If
 
-            Process.Start("explorer.exe", "/select,""" & g_ClassTabControl.m_ActiveTab.m_File & """")
+            Process.Start("explorer.exe", String.Format("/select,""{0}""", g_ClassTabControl.m_ActiveTab.m_File))
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
@@ -924,6 +920,59 @@ Public Class FormMain
 
 #End Region
 
+#Region "ContextMenuStrip_Tabs"
+    Private Sub ToolStripMenuItem_Tabs_Close_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Tabs_Close.Click
+        g_ClassTabControl.RemoveTab(g_ClassTabControl.m_ActiveTabIndex, True)
+    End Sub
+
+    Private Sub ToolStripMenuItem_Tabs_CloseAllButThis_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Tabs_CloseAllButThis.Click
+        Dim iActiveIndex As Integer = g_ClassTabControl.m_ActiveTabIndex
+
+        For i = g_ClassTabControl.m_TabsCount - 1 To 0 Step -1
+            If (iActiveIndex = i) Then
+                Continue For
+            End If
+
+            If (Not g_ClassTabControl.RemoveTab(i, True)) Then
+                Return
+            End If
+        Next
+    End Sub
+
+    Private Sub ToolStripMenuItem_Tabs_CloseAll_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Tabs_CloseAll.Click
+        g_ClassTabControl.RemoveAllTabs()
+    End Sub
+
+    Private Sub ToolStripMenuItem_Tabs_OpenFolder_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Tabs_OpenFolder.Click
+        Try
+            If (g_ClassTabControl.m_ActiveTab.m_IsUnsaved OrElse Not IO.File.Exists(g_ClassTabControl.m_ActiveTab.m_File)) Then
+                MessageBox.Show("Could not open current folder. Source file can't be found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Return
+            End If
+
+            Process.Start("explorer.exe", String.Format("/select,""{0}""", g_ClassTabControl.m_ActiveTab.m_File))
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
+    Private Sub ToolStripMenuItem_Tabs_Popout_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Tabs_Popout.Click
+        Try
+            If (g_ClassTabControl.m_ActiveTab.m_IsUnsaved OrElse Not IO.File.Exists(g_ClassTabControl.m_ActiveTab.m_File)) Then
+                MessageBox.Show("Could not popout tab. Source file can't be found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Return
+            End If
+
+            Dim sFile As String = g_ClassTabControl.m_ActiveTab.m_File
+
+            If (g_ClassTabControl.RemoveTab(g_ClassTabControl.m_ActiveTabIndex, True)) Then
+                Process.Start(Application.ExecutablePath, String.Join(" ", {"-newinstance", String.Format("""{0}""", sFile)}))
+            End If
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+#End Region
 
     Private Sub ToolStripMenuItem_DebuggerBreakpointInsert_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_DebuggerBreakpointInsert.Click
         With New ClassDebuggerParser.ClassBreakpoints(Me)
@@ -1144,4 +1193,5 @@ Public Class FormMain
         g_mPingFlashPanel.Visible = False
         Timer_PingFlash.Stop()
     End Sub
+
 End Class

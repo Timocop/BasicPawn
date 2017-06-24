@@ -154,6 +154,13 @@ Partial Class FormMain
         Me.TabPage_ObjectBrowser = New System.Windows.Forms.TabPage()
         Me.TabPage_ProjectBrowser = New System.Windows.Forms.TabPage()
         Me.TabControl_SourceTabs = New BasicPawn.ClassTabControlColor()
+        Me.ContextMenuStrip_Tabs = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.ToolStripMenuItem_Tabs_Close = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_Tabs_CloseAllButThis = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_Tabs_CloseAll = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator12 = New System.Windows.Forms.ToolStripSeparator()
+        Me.ToolStripMenuItem_Tabs_OpenFolder = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_Tabs_Popout = New System.Windows.Forms.ToolStripMenuItem()
         Me.TabPage1 = New System.Windows.Forms.TabPage()
         Me.TabControl_Details = New BasicPawn.ClassTabControlColor()
         Me.TabPage_Autocomplete = New System.Windows.Forms.TabPage()
@@ -179,6 +186,7 @@ Partial Class FormMain
         Me.SplitContainer_ToolboxAndEditor.SuspendLayout()
         Me.TabControl_Toolbox.SuspendLayout()
         Me.TabControl_SourceTabs.SuspendLayout()
+        Me.ContextMenuStrip_Tabs.SuspendLayout()
         Me.TabControl_Details.SuspendLayout()
         Me.StatusStrip_BasicPawn.SuspendLayout()
         Me.SuspendLayout()
@@ -846,6 +854,7 @@ Partial Class FormMain
         '
         'TabControl_SourceTabs
         '
+        Me.TabControl_SourceTabs.ContextMenuStrip = Me.ContextMenuStrip_Tabs
         Me.TabControl_SourceTabs.Controls.Add(Me.TabPage1)
         Me.TabControl_SourceTabs.Dock = System.Windows.Forms.DockStyle.Fill
         Me.TabControl_SourceTabs.Location = New System.Drawing.Point(0, 0)
@@ -856,6 +865,51 @@ Partial Class FormMain
         Me.TabControl_SourceTabs.ShowToolTips = True
         Me.TabControl_SourceTabs.Size = New System.Drawing.Size(804, 500)
         Me.TabControl_SourceTabs.TabIndex = 1
+        '
+        'ContextMenuStrip_Tabs
+        '
+        Me.ContextMenuStrip_Tabs.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_Tabs_Close, Me.ToolStripMenuItem_Tabs_CloseAllButThis, Me.ToolStripMenuItem_Tabs_CloseAll, Me.ToolStripSeparator12, Me.ToolStripMenuItem_Tabs_OpenFolder, Me.ToolStripMenuItem_Tabs_Popout})
+        Me.ContextMenuStrip_Tabs.Name = "ContextMenuStrip_Tabs"
+        Me.ContextMenuStrip_Tabs.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
+        Me.ContextMenuStrip_Tabs.Size = New System.Drawing.Size(179, 120)
+        '
+        'ToolStripMenuItem_Tabs_Close
+        '
+        Me.ToolStripMenuItem_Tabs_Close.Image = Global.BasicPawn.My.Resources.Resources.imageres_5337_16x16_32
+        Me.ToolStripMenuItem_Tabs_Close.Name = "ToolStripMenuItem_Tabs_Close"
+        Me.ToolStripMenuItem_Tabs_Close.Size = New System.Drawing.Size(161, 22)
+        Me.ToolStripMenuItem_Tabs_Close.Text = "Close"
+        '
+        'ToolStripMenuItem_Tabs_CloseAllButThis
+        '
+        Me.ToolStripMenuItem_Tabs_CloseAllButThis.Name = "ToolStripMenuItem_Tabs_CloseAllButThis"
+        Me.ToolStripMenuItem_Tabs_CloseAllButThis.Size = New System.Drawing.Size(161, 22)
+        Me.ToolStripMenuItem_Tabs_CloseAllButThis.Text = "Close all but this"
+        '
+        'ToolStripMenuItem_Tabs_CloseAll
+        '
+        Me.ToolStripMenuItem_Tabs_CloseAll.Name = "ToolStripMenuItem_Tabs_CloseAll"
+        Me.ToolStripMenuItem_Tabs_CloseAll.Size = New System.Drawing.Size(161, 22)
+        Me.ToolStripMenuItem_Tabs_CloseAll.Text = "Close all"
+        '
+        'ToolStripSeparator12
+        '
+        Me.ToolStripSeparator12.Name = "ToolStripSeparator12"
+        Me.ToolStripSeparator12.Size = New System.Drawing.Size(158, 6)
+        '
+        'ToolStripMenuItem_Tabs_OpenFolder
+        '
+        Me.ToolStripMenuItem_Tabs_OpenFolder.Image = Global.BasicPawn.My.Resources.Resources.imageres_5304_16x16_32
+        Me.ToolStripMenuItem_Tabs_OpenFolder.Name = "ToolStripMenuItem_Tabs_OpenFolder"
+        Me.ToolStripMenuItem_Tabs_OpenFolder.Size = New System.Drawing.Size(178, 22)
+        Me.ToolStripMenuItem_Tabs_OpenFolder.Text = "Open current folder"
+        '
+        'ToolStripMenuItem_Tabs_Popout
+        '
+        Me.ToolStripMenuItem_Tabs_Popout.Image = Global.BasicPawn.My.Resources.Resources.imageres_5333_16x16_32
+        Me.ToolStripMenuItem_Tabs_Popout.Name = "ToolStripMenuItem_Tabs_Popout"
+        Me.ToolStripMenuItem_Tabs_Popout.Size = New System.Drawing.Size(161, 22)
+        Me.ToolStripMenuItem_Tabs_Popout.Text = "Popout"
         '
         'TabPage1
         '
@@ -1002,6 +1056,7 @@ Partial Class FormMain
         Me.SplitContainer_ToolboxAndEditor.ResumeLayout(False)
         Me.TabControl_Toolbox.ResumeLayout(False)
         Me.TabControl_SourceTabs.ResumeLayout(False)
+        Me.ContextMenuStrip_Tabs.ResumeLayout(False)
         Me.TabControl_Details.ResumeLayout(False)
         Me.StatusStrip_BasicPawn.ResumeLayout(False)
         Me.StatusStrip_BasicPawn.PerformLayout()
@@ -1111,4 +1166,11 @@ Partial Class FormMain
     Friend WithEvents ToolStripStatusLabel_Project As ToolStripStatusLabel
     Friend WithEvents TabPage_ProjectBrowser As TabPage
     Friend WithEvents ToolStripMenuItem_FileProjectClose As ToolStripMenuItem
+    Friend WithEvents ContextMenuStrip_Tabs As ContextMenuStrip
+    Friend WithEvents ToolStripMenuItem_Tabs_Close As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_Tabs_CloseAllButThis As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_Tabs_CloseAll As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator12 As ToolStripSeparator
+    Friend WithEvents ToolStripMenuItem_Tabs_OpenFolder As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_Tabs_Popout As ToolStripMenuItem
 End Class
