@@ -68,7 +68,7 @@ Public Class FormOpenTabFromInstances
             Return
         End If
 
-        Dim sHeaderName As String = String.Format("{0} ({1})", sProcessName, iProcessID)
+        Dim sHeaderName As String = String.Format("{0} ({1}){2}", sProcessName, iProcessID, If(iProcessID = Process.GetCurrentProcess.Id, " (Current)", ""))
 
         ListView_Instances.Items.Add(New ClassListViewItem(New String() {CStr(iTabIndex - 1), sTabFile}, FindOrCreateGroup(sHeaderName)) With {
             .mTabInfo = New STRUC_TABINFO_ITEM With {
