@@ -22,6 +22,7 @@ Public Class FormSettings
     Private g_lRestoreConfigs As New List(Of ClassConfigs.STRUC_CONFIG_ITEM)
     Private g_bRestoreConfigs As Boolean = False
     Private g_bIgnoreChange As Boolean = False
+    Private g_bConfigSettingsChanged As Boolean = False
 
     Public Sub New(f As FormMain)
         g_bIgnoreChange = True
@@ -38,7 +39,20 @@ Public Class FormSettings
         ClassTools.ClassForms.SetDoubleBufferingUnmanagedAllChilds(Me, True)
 
         g_bIgnoreChange = False
+        m_ConfigSettingsChanged = False
     End Sub
+
+    Private Property m_ConfigSettingsChanged As Boolean
+        Get
+            Return g_bConfigSettingsChanged
+        End Get
+        Set(value As Boolean)
+            g_bConfigSettingsChanged = value
+
+            GroupBox_ConfigSettings.Text = GroupBox_ConfigSettings.Text.TrimEnd("*"c) & If(g_bConfigSettingsChanged, "*"c, "")
+            Button_SaveConfig.Font = New Font(Button_SaveConfig.Font, If(g_bConfigSettingsChanged, FontStyle.Bold, FontStyle.Regular))
+        End Set
+    End Property
 
     Private Sub Button_ConfigAdd_Click(sender As Object, e As EventArgs) Handles Button_ConfigAdd.Click
         Dim sNewName As String = TextBox_ConfigName.Text
@@ -123,6 +137,7 @@ Public Class FormSettings
                 TextBox_SyntaxPath.Text = ""
 
                 g_bIgnoreChange = False
+                m_ConfigSettingsChanged = False
 
                 'ResetChanged()
                 Return
@@ -148,6 +163,7 @@ Public Class FormSettings
             TextBox_SyntaxPath.Text = ""
 
             g_bIgnoreChange = False
+            m_ConfigSettingsChanged = False
 
             Dim mConfig As ClassConfigs.STRUC_CONFIG_ITEM = ClassConfigs.LoadConfig(sName)
 
@@ -157,6 +173,7 @@ Public Class FormSettings
             End If
 
             g_bIgnoreChange = True
+
             'General
             RadioButton_ConfigSettingAutomatic.Checked = True
             RadioButton_ConfigSettingManual.Checked = (mConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.CONFIG)
@@ -170,7 +187,9 @@ Public Class FormSettings
             'Misc
             TextBox_Shell.Text = mConfig.g_sExecuteShell
             TextBox_SyntaxPath.Text = mConfig.g_sSyntaxHighlightingPath
+
             g_bIgnoreChange = False
+            m_ConfigSettingsChanged = False
 
             'ResetChanged()
         Catch ex As Exception
@@ -289,6 +308,8 @@ Public Class FormSettings
                                                                         TextBox_SourceModFolder.Text,
                                                                         TextBox_Shell.Text,
                                                                         TextBox_SyntaxPath.Text))
+
+            m_ConfigSettingsChanged = False
 
             g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnConfigChanged())
         Catch ex As Exception
@@ -574,10 +595,12 @@ Public Class FormSettings
     End Sub
 
     Private Sub RadioButton_ConfigSettingAutomatic_CheckedChanged(sender As Object, e As EventArgs) Handles RadioButton_ConfigSettingAutomatic.CheckedChanged
+        m_ConfigSettingsChanged = True
         MarkChanged()
     End Sub
 
     Private Sub RadioButton_ConfigSettingManual_CheckedChanged(sender As Object, e As EventArgs) Handles RadioButton_ConfigSettingManual.CheckedChanged
+        m_ConfigSettingsChanged = True
         MarkChanged()
     End Sub
 
@@ -590,40 +613,48 @@ Public Class FormSettings
 
     Public Sub ResetChanged()
         If (TabPage_Configs.Text.EndsWith("*"c)) Then
-            TabPage_Configs.Text = TabPage_Configs.Text.Trim("*"c)
+            TabPage_Configs.Text = TabPage_Configs.Text.TrimEnd("*"c)
             TabControl1.Refresh()
         End If
     End Sub
 
     Private Sub TextBox_CompilerPath_TextChanged(sender As Object, e As EventArgs) Handles TextBox_CompilerPath.TextChanged
+        m_ConfigSettingsChanged = True
         MarkChanged()
     End Sub
 
     Private Sub TextBox_IncludeFolder_TextChanged(sender As Object, e As EventArgs) Handles TextBox_IncludeFolder.TextChanged
+        m_ConfigSettingsChanged = True
         MarkChanged()
     End Sub
 
     Private Sub TextBox_OutputFolder_TextChanged(sender As Object, e As EventArgs) Handles TextBox_OutputFolder.TextChanged
+        m_ConfigSettingsChanged = True
         MarkChanged()
     End Sub
 
     Private Sub CheckBox_ConfigIsDefault_CheckedChanged(sender As Object, e As EventArgs) Handles CheckBox_ConfigIsDefault.CheckedChanged
+        m_ConfigSettingsChanged = True
         MarkChanged()
     End Sub
 
     Private Sub TextBox_GameFolder_TextChanged(sender As Object, e As EventArgs) Handles TextBox_GameFolder.TextChanged
+        m_ConfigSettingsChanged = True
         MarkChanged()
     End Sub
 
     Private Sub TextBox_SourceModFolder_TextChanged(sender As Object, e As EventArgs) Handles TextBox_SourceModFolder.TextChanged
+        m_ConfigSettingsChanged = True
         MarkChanged()
     End Sub
 
     Private Sub TextBox_Shell_TextChanged(sender As Object, e As EventArgs) Handles TextBox_Shell.TextChanged
+        m_ConfigSettingsChanged = True
         MarkChanged()
     End Sub
 
     Private Sub TextBox_SyntaxPath_TextChanged(sender As Object, e As EventArgs) Handles TextBox_SyntaxPath.TextChanged
+        m_ConfigSettingsChanged = True
         MarkChanged()
     End Sub
 
