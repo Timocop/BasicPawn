@@ -360,7 +360,7 @@ Partial Class FormMain
         '
         'ToolStripMenuItem_File
         '
-        Me.ToolStripMenuItem_File.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_FileNew, Me.ToolStripMenuItem_FileOpen, Me.ToolStripMenuItem_FileLoadTabs, Me.ToolStripMenuItem_FileCloseAll, Me.ToolStripSeparator9, Me.ToolStripMenuItem_FileSave, Me.ToolStripMenuItem_FileSaveAll, Me.ToolStripMenuItem_FileSaveAs, Me.ToolStripMenuItem_FileSaveAsTemp, Me.ToolStripSeparator7, Me.ToolStripMenuItem_FileProjectSave, Me.ToolStripMenuItem_FileProjectLoad, Me.ToolStripMenuItem_FileProjectClose, Me.ToolStripMenuItem_FileStartPage, Me.ToolStripSeparator10, Me.ToolStripMenuItem_FileSavePacked, Me.ToolStripSeparator8, Me.ToolStripMenuItem_FileOpenFolder, Me.ToolStripSeparator2, Me.ToolStripMenuItem_FileExit})
+        Me.ToolStripMenuItem_File.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_FileNew, Me.ToolStripMenuItem_FileOpen, Me.ToolStripMenuItem_FileLoadTabs, Me.ToolStripMenuItem_FileCloseAll, Me.ToolStripSeparator9, Me.ToolStripMenuItem_FileSave, Me.ToolStripMenuItem_FileSaveAll, Me.ToolStripMenuItem_FileSaveAs, Me.ToolStripMenuItem_FileSaveAsTemp, Me.ToolStripSeparator7, Me.ToolStripMenuItem_FileStartPage, Me.ToolStripMenuItem_FileProjectLoad, Me.ToolStripMenuItem_FileProjectSave, Me.ToolStripMenuItem_FileProjectClose, Me.ToolStripSeparator10, Me.ToolStripMenuItem_FileSavePacked, Me.ToolStripSeparator8, Me.ToolStripMenuItem_FileOpenFolder, Me.ToolStripSeparator2, Me.ToolStripMenuItem_FileExit})
         Me.ToolStripMenuItem_File.Image = CType(resources.GetObject("ToolStripMenuItem_File.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_File.Name = "ToolStripMenuItem_File"
         Me.ToolStripMenuItem_File.Size = New System.Drawing.Size(53, 20)
@@ -1012,7 +1012,7 @@ Partial Class FormMain
         'ToolStripStatusLabel_LastInformation
         '
         Me.ToolStripStatusLabel_LastInformation.Name = "ToolStripStatusLabel_LastInformation"
-        Me.ToolStripStatusLabel_LastInformation.Size = New System.Drawing.Size(586, 17)
+        Me.ToolStripStatusLabel_LastInformation.Size = New System.Drawing.Size(696, 17)
         Me.ToolStripStatusLabel_LastInformation.Spring = True
         Me.ToolStripStatusLabel_LastInformation.Text = "Last Info: No information"
         '
