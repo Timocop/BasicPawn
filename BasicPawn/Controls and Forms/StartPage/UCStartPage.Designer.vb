@@ -191,6 +191,7 @@ Partial Class UCStartPage
         '
         'TabPage_RecentFiles
         '
+        Me.TabPage_RecentFiles.AutoScroll = True
         Me.TabPage_RecentFiles.Location = New System.Drawing.Point(4, 22)
         Me.TabPage_RecentFiles.Name = "TabPage_RecentFiles"
         Me.TabPage_RecentFiles.Padding = New System.Windows.Forms.Padding(3)
@@ -201,6 +202,7 @@ Partial Class UCStartPage
         '
         'TabPage_RecentProjects
         '
+        Me.TabPage_RecentProjects.AutoScroll = True
         Me.TabPage_RecentProjects.Location = New System.Drawing.Point(4, 22)
         Me.TabPage_RecentProjects.Name = "TabPage_RecentProjects"
         Me.TabPage_RecentProjects.Padding = New System.Windows.Forms.Padding(3)
