@@ -132,6 +132,10 @@ Partial Class FormSettings
         Me.Label17 = New System.Windows.Forms.Label()
         Me.Button_Cancel = New System.Windows.Forms.Button()
         Me.Button_Apply = New System.Windows.Forms.Button()
+        Me.CheckBox_AssociateSourcePawn = New System.Windows.Forms.CheckBox()
+        Me.Label19 = New System.Windows.Forms.Label()
+        Me.CheckBox_AssociateIncludes = New System.Windows.Forms.CheckBox()
+        Me.CheckBox_AssociateBasicPawnProject = New System.Windows.Forms.CheckBox()
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Settings.SuspendLayout()
         Me.Panel8.SuspendLayout()
@@ -197,7 +201,7 @@ Partial Class FormSettings
         Me.Panel8.Controls.Add(Me.CheckBox_EntitiesEnableColor)
         Me.Panel8.Controls.Add(Me.CheckBox_EntitiesEnableShowNewEnts)
         Me.Panel8.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel8.Location = New System.Drawing.Point(0, 540)
+        Me.Panel8.Location = New System.Drawing.Point(0, 631)
         Me.Panel8.Name = "Panel8"
         Me.Panel8.Size = New System.Drawing.Size(602, 92)
         Me.Panel8.TabIndex = 25
@@ -278,7 +282,7 @@ Partial Class FormSettings
         Me.Panel5.Controls.Add(Me.CheckBox_WindowsToolTipPopup)
         Me.Panel5.Controls.Add(Me.CheckBox_CaseSensitive)
         Me.Panel5.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel5.Location = New System.Drawing.Point(0, 232)
+        Me.Panel5.Location = New System.Drawing.Point(0, 323)
         Me.Panel5.Name = "Panel5"
         Me.Panel5.Size = New System.Drawing.Size(602, 308)
         Me.Panel5.TabIndex = 22
@@ -458,7 +462,7 @@ Partial Class FormSettings
         Me.Panel6.Controls.Add(Me.CheckBox_DoubleClickMark)
         Me.Panel6.Controls.Add(Me.CheckBox_AutoMark)
         Me.Panel6.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel6.Location = New System.Drawing.Point(0, 164)
+        Me.Panel6.Location = New System.Drawing.Point(0, 255)
         Me.Panel6.Name = "Panel6"
         Me.Panel6.Size = New System.Drawing.Size(602, 68)
         Me.Panel6.TabIndex = 23
@@ -520,7 +524,7 @@ Partial Class FormSettings
         Me.Panel7.Controls.Add(Me.Label_Font)
         Me.Panel7.Controls.Add(Me.CheckBox_InvertedColors)
         Me.Panel7.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel7.Location = New System.Drawing.Point(0, 67)
+        Me.Panel7.Location = New System.Drawing.Point(0, 158)
         Me.Panel7.Name = "Panel7"
         Me.Panel7.Size = New System.Drawing.Size(602, 97)
         Me.Panel7.TabIndex = 24
@@ -604,13 +608,17 @@ Partial Class FormSettings
         'Panel14
         '
         Me.Panel14.AutoSize = True
+        Me.Panel14.Controls.Add(Me.CheckBox_AssociateBasicPawnProject)
+        Me.Panel14.Controls.Add(Me.CheckBox_AssociateIncludes)
+        Me.Panel14.Controls.Add(Me.Label19)
+        Me.Panel14.Controls.Add(Me.CheckBox_AssociateSourcePawn)
         Me.Panel14.Controls.Add(Me.CheckBox_AutoShowStartPage)
         Me.Panel14.Controls.Add(Me.Label16)
         Me.Panel14.Controls.Add(Me.CheckBox_AlwaysNewInstance)
         Me.Panel14.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel14.Location = New System.Drawing.Point(0, 0)
         Me.Panel14.Name = "Panel14"
-        Me.Panel14.Size = New System.Drawing.Size(602, 67)
+        Me.Panel14.Size = New System.Drawing.Size(602, 158)
         Me.Panel14.TabIndex = 26
         '
         'CheckBox_AutoShowStartPage
@@ -1418,6 +1426,55 @@ Partial Class FormSettings
         Me.Button_Apply.Text = "Apply"
         Me.Button_Apply.UseVisualStyleBackColor = True
         '
+        'CheckBox_AssociateSourcePawn
+        '
+        Me.CheckBox_AssociateSourcePawn.AutoSize = True
+        Me.CheckBox_AssociateSourcePawn.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_AssociateSourcePawn.Location = New System.Drawing.Point(32, 89)
+        Me.CheckBox_AssociateSourcePawn.Margin = New System.Windows.Forms.Padding(32, 3, 3, 3)
+        Me.CheckBox_AssociateSourcePawn.Name = "CheckBox_AssociateSourcePawn"
+        Me.CheckBox_AssociateSourcePawn.Size = New System.Drawing.Size(148, 18)
+        Me.CheckBox_AssociateSourcePawn.TabIndex = 21
+        Me.CheckBox_AssociateSourcePawn.Text = "SourcePawn files (*.sp)"
+        Me.CheckBox_AssociateSourcePawn.UseVisualStyleBackColor = True
+        '
+        'Label19
+        '
+        Me.Label19.AutoSize = True
+        Me.Label19.Location = New System.Drawing.Point(6, 70)
+        Me.Label19.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.Label19.Name = "Label19"
+        Me.Label19.Size = New System.Drawing.Size(141, 13)
+        Me.Label19.TabIndex = 22
+        Me.Label19.Text = "Associate BasicPawn with:"
+        '
+        'CheckBox_AssociateIncludes
+        '
+        Me.CheckBox_AssociateIncludes.AutoSize = True
+        Me.CheckBox_AssociateIncludes.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_AssociateIncludes.Location = New System.Drawing.Point(32, 113)
+        Me.CheckBox_AssociateIncludes.Margin = New System.Windows.Forms.Padding(32, 3, 3, 3)
+        Me.CheckBox_AssociateIncludes.Name = "CheckBox_AssociateIncludes"
+        Me.CheckBox_AssociateIncludes.Size = New System.Drawing.Size(126, 18)
+        Me.CheckBox_AssociateIncludes.TabIndex = 23
+        Me.CheckBox_AssociateIncludes.Text = "Include files (*.inc)"
+        Me.CheckBox_AssociateIncludes.UseVisualStyleBackColor = True
+        '
+        'CheckBox_AssociateBasicPawnProject
+        '
+        Me.CheckBox_AssociateBasicPawnProject.AutoSize = True
+        Me.CheckBox_AssociateBasicPawnProject.Checked = True
+        Me.CheckBox_AssociateBasicPawnProject.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.CheckBox_AssociateBasicPawnProject.Enabled = False
+        Me.CheckBox_AssociateBasicPawnProject.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_AssociateBasicPawnProject.Location = New System.Drawing.Point(32, 137)
+        Me.CheckBox_AssociateBasicPawnProject.Margin = New System.Windows.Forms.Padding(32, 3, 3, 3)
+        Me.CheckBox_AssociateBasicPawnProject.Name = "CheckBox_AssociateBasicPawnProject"
+        Me.CheckBox_AssociateBasicPawnProject.Size = New System.Drawing.Size(200, 18)
+        Me.CheckBox_AssociateBasicPawnProject.TabIndex = 24
+        Me.CheckBox_AssociateBasicPawnProject.Text = "BasicPawn Project files (*.bpproj)"
+        Me.CheckBox_AssociateBasicPawnProject.UseVisualStyleBackColor = True
+        '
         'FormSettings
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -1587,4 +1644,8 @@ Partial Class FormSettings
     Friend WithEvents CheckBox_WindowsToolTipAnimations As CheckBox
     Friend WithEvents NumericUpDown_TabsToSpaces As NumericUpDown
     Friend WithEvents CheckBox_TabsToSpace As CheckBox
+    Friend WithEvents Label19 As Label
+    Friend WithEvents CheckBox_AssociateSourcePawn As CheckBox
+    Friend WithEvents CheckBox_AssociateIncludes As CheckBox
+    Friend WithEvents CheckBox_AssociateBasicPawnProject As CheckBox
 End Class

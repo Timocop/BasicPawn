@@ -104,10 +104,10 @@ Partial Class FormMain
         Me.ToolStripMenuItem_FileSaveAs = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_FileSaveAsTemp = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator7 = New System.Windows.Forms.ToolStripSeparator()
-        Me.ToolStripMenuItem_FileProjectSave = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripMenuItem_FileProjectLoad = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripMenuItem_FileProjectClose = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_FileStartPage = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_FileProjectLoad = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_FileProjectSave = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_FileProjectClose = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator10 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_FileSavePacked = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator8 = New System.Windows.Forms.ToolStripSeparator()
@@ -448,12 +448,12 @@ Partial Class FormMain
         Me.ToolStripSeparator7.Name = "ToolStripSeparator7"
         Me.ToolStripSeparator7.Size = New System.Drawing.Size(287, 6)
         '
-        'ToolStripMenuItem_FileProjectSave
+        'ToolStripMenuItem_FileStartPage
         '
-        Me.ToolStripMenuItem_FileProjectSave.Image = Global.BasicPawn.My.Resources.Resources.imageres_5304_16x16_32
-        Me.ToolStripMenuItem_FileProjectSave.Name = "ToolStripMenuItem_FileProjectSave"
-        Me.ToolStripMenuItem_FileProjectSave.Size = New System.Drawing.Size(290, 22)
-        Me.ToolStripMenuItem_FileProjectSave.Text = "Save Project as..."
+        Me.ToolStripMenuItem_FileStartPage.Image = Global.BasicPawn.My.Resources.Resources.imageres_5364_16x16_32
+        Me.ToolStripMenuItem_FileStartPage.Name = "ToolStripMenuItem_FileStartPage"
+        Me.ToolStripMenuItem_FileStartPage.Size = New System.Drawing.Size(290, 22)
+        Me.ToolStripMenuItem_FileStartPage.Text = "StartPage"
         '
         'ToolStripMenuItem_FileProjectLoad
         '
@@ -462,19 +462,19 @@ Partial Class FormMain
         Me.ToolStripMenuItem_FileProjectLoad.Size = New System.Drawing.Size(290, 22)
         Me.ToolStripMenuItem_FileProjectLoad.Text = "Load Project"
         '
+        'ToolStripMenuItem_FileProjectSave
+        '
+        Me.ToolStripMenuItem_FileProjectSave.Image = Global.BasicPawn.My.Resources.Resources.imageres_5304_16x16_32
+        Me.ToolStripMenuItem_FileProjectSave.Name = "ToolStripMenuItem_FileProjectSave"
+        Me.ToolStripMenuItem_FileProjectSave.Size = New System.Drawing.Size(290, 22)
+        Me.ToolStripMenuItem_FileProjectSave.Text = "Save Project as..."
+        '
         'ToolStripMenuItem_FileProjectClose
         '
         Me.ToolStripMenuItem_FileProjectClose.Image = Global.BasicPawn.My.Resources.Resources.imageres_5320_16x16_32
         Me.ToolStripMenuItem_FileProjectClose.Name = "ToolStripMenuItem_FileProjectClose"
         Me.ToolStripMenuItem_FileProjectClose.Size = New System.Drawing.Size(290, 22)
         Me.ToolStripMenuItem_FileProjectClose.Text = "Close Project"
-        '
-        'ToolStripMenuItem_FileStartPage
-        '
-        Me.ToolStripMenuItem_FileStartPage.Image = Global.BasicPawn.My.Resources.Resources.imageres_5364_16x16_32
-        Me.ToolStripMenuItem_FileStartPage.Name = "ToolStripMenuItem_FileStartPage"
-        Me.ToolStripMenuItem_FileStartPage.Size = New System.Drawing.Size(290, 22)
-        Me.ToolStripMenuItem_FileStartPage.Text = "StartPage"
         '
         'ToolStripSeparator10
         '

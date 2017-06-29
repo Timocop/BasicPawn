@@ -17,6 +17,7 @@
 
 Imports System.Runtime.InteropServices
 Imports System.Text.RegularExpressions
+Imports Microsoft.Win32
 
 Public Class ClassTools
     Private Shared _RandomInt As New Random
@@ -400,5 +401,113 @@ Public Class ClassTools
 
             Return sWineVersion
         End Function
+    End Class
+
+    Class ClassRegistry
+        Public Shared Sub SetAssociation(sProgID As String, sExtension As String, sCommand As String, sIconFile As String, sDefaultIcon As String)
+            If (String.IsNullOrEmpty(sProgID)) Then
+                Throw New ArgumentException("ProgID invalid")
+            End If
+
+            If (String.IsNullOrEmpty(sExtension)) Then
+                Throw New ArgumentException("Extension invalid")
+            End If
+
+            Using mClassesKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\Classes", True)
+                If (mClassesKey Is Nothing) Then
+                    Return
+                End If
+
+                Using mExtKey = mClassesKey.CreateSubKey(sProgID)
+                    Using mShellKey = mExtKey.CreateSubKey("DefaultIcon")
+                        mShellKey.SetValue("", """" & sDefaultIcon & """,0")
+                    End Using
+
+                    Using mShellKey = mExtKey.CreateSubKey("Shell")
+                        Using mTextKey = mShellKey.CreateSubKey("Open")
+                            mTextKey.SetValue("Icon", """" & sIconFile & """")
+
+                            Using mCommandKey = mTextKey.CreateSubKey("command")
+                                mCommandKey.SetValue("", sCommand)
+                            End Using
+                        End Using
+                    End Using
+                End Using
+
+                Using mExtKey = mClassesKey.CreateSubKey(sExtension)
+                    mExtKey.SetValue("", sProgID)
+                End Using
+            End Using
+        End Sub
+
+        Public Shared Sub RemoveAssociation(sProgID As String)
+            If (String.IsNullOrEmpty(sProgID)) Then
+                Throw New ArgumentException("ProgID invalid")
+            End If
+
+            Using mClassesKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\Classes", True)
+                If (mClassesKey Is Nothing) Then
+                    Return
+                End If
+
+                Using mExtKey = mClassesKey.OpenSubKey(sProgID)
+                    If (mExtKey Is Nothing) Then
+                        Return
+                    End If
+                End Using
+
+                mClassesKey.DeleteSubKeyTree(sProgID)
+            End Using
+
+        End Sub
+
+
+        Public Shared Sub SetExplorerContextMenu(sExtension As String, sContextText As String, sCommand As String, sIconFile As String)
+            Using mClassesKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\Classes", True)
+                If (mClassesKey Is Nothing) Then
+                    Return
+                End If
+
+                Using mExtKey = mClassesKey.CreateSubKey(sExtension)
+                    Using mShellKey = mExtKey.CreateSubKey("Shell")
+                        Using mTextKey = mShellKey.CreateSubKey(sContextText)
+                            mTextKey.SetValue("Icon", """" & sIconFile & """")
+
+                            Using mCommandKey = mTextKey.CreateSubKey("command")
+                                mCommandKey.SetValue("", sCommand)
+                            End Using
+                        End Using
+                    End Using
+                End Using
+            End Using
+        End Sub
+
+        Public Shared Sub RemoveExplorerContextMenu(sExtension As String, sContextText As String)
+            Using mClassesKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\Classes", True)
+                If (mClassesKey Is Nothing) Then
+                    Return
+                End If
+
+                Using mExtKey = mClassesKey.OpenSubKey(sExtension, True)
+                    If (mExtKey Is Nothing) Then
+                        Return
+                    End If
+
+                    Using mShellKey = mExtKey.OpenSubKey("Shell", True)
+                        If (mShellKey Is Nothing) Then
+                            Return
+                        End If
+
+                        Using mContextKey = mShellKey.OpenSubKey(sContextText, True)
+                            If (mContextKey Is Nothing) Then
+                                Return
+                            End If
+                        End Using
+
+                        mShellKey.DeleteSubKeyTree(sContextText)
+                    End Using
+                End Using
+            End Using
+        End Sub
     End Class
 End Class

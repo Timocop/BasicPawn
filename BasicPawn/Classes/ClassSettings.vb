@@ -32,6 +32,8 @@ Public Class ClassSettings
     'General
     Public Shared g_iSettingsAlwaysOpenNewInstance As Boolean = False
     Public Shared g_iSettingsAutoShowStartPage As Boolean = True
+    Public Shared g_iSettingsAssociateSourcePawn As Boolean = True
+    Public Shared g_iSettingsAssociateIncludes As Boolean = True
     'Text Editor
     Public Shared g_iSettingsTextEditorFont As Font = g_iSettingsDefaultEditorFont
     Public Shared g_iSettingsInvertColors As Boolean = False
@@ -70,6 +72,8 @@ Public Class ClassSettings
         'Settings
         initFile.WriteKeyValue("Editor", "AlwaysOpenNewInstance", If(g_iSettingsAlwaysOpenNewInstance, "1", "0"))
         initFile.WriteKeyValue("Editor", "AutoShowStartPage", If(g_iSettingsAutoShowStartPage, "1", "0"))
+        initFile.WriteKeyValue("Editor", "AssociateSourcePawn", If(g_iSettingsAssociateSourcePawn, "1", "0"))
+        initFile.WriteKeyValue("Editor", "AssociateIncludes", If(g_iSettingsAssociateIncludes, "1", "0"))
         'Text Editor
         initFile.WriteKeyValue("Editor", "TextEditorFont", New FontConverter().ConvertToInvariantString(g_iSettingsTextEditorFont))
         initFile.WriteKeyValue("Editor", "TextEditorInvertColors", If(g_iSettingsInvertColors, "1", "0"))
@@ -95,6 +99,7 @@ Public Class ClassSettings
         initFile.WriteKeyValue("Debugger", "EntitiesColoring", If(g_iSettingsDebuggerEntitiesEnableColoring, "1", "0"))
         initFile.WriteKeyValue("Debugger", "EntitiesAutoScroll", If(g_iSettingsDebuggerEntitiesEnableAutoScroll, "1", "0"))
 
+        SetRegistryKeys()
     End Sub
 
     Public Shared Sub LoadSettings()
@@ -104,6 +109,8 @@ Public Class ClassSettings
             'Settings
             g_iSettingsAlwaysOpenNewInstance = (initFile.ReadKeyValue("Editor", "AlwaysOpenNewInstance", "0") <> "0")
             g_iSettingsAutoShowStartPage = (initFile.ReadKeyValue("Editor", "AutoShowStartPage", "1") <> "0")
+            g_iSettingsAssociateSourcePawn = (initFile.ReadKeyValue("Editor", "AssociateSourcePawn", "0") <> "0")
+            g_iSettingsAssociateIncludes = (initFile.ReadKeyValue("Editor", "AssociateIncludes", "0") <> "0")
             'Text Editor
             Dim editorFont As Font = CType(New FontConverter().ConvertFromInvariantString(initFile.ReadKeyValue("Editor", "TextEditorFont", g_sSettingsDefaultEditorFont)), Font)
             If (editorFont IsNot Nothing AndAlso editorFont.Size < 256) Then
@@ -138,9 +145,26 @@ Public Class ClassSettings
             g_iSettingsDebuggerCatchExceptions = (initFile.ReadKeyValue("Debugger", "CatchExceptions", "1") <> "0")
             g_iSettingsDebuggerEntitiesEnableColoring = (initFile.ReadKeyValue("Debugger", "EntitiesColoring", "1") <> "0")
             g_iSettingsDebuggerEntitiesEnableAutoScroll = (initFile.ReadKeyValue("Debugger", "EntitiesAutoScroll", "1") <> "0")
+
+            SetRegistryKeys()
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
+    End Sub
+
+    Private Shared Sub SetRegistryKeys()
+        If (g_iSettingsAssociateSourcePawn) Then
+            ClassTools.ClassRegistry.SetAssociation("BasicPawn.SourcePawn", ".sp", String.Format("""{0}"" ""%1""", Application.ExecutablePath), Application.ExecutablePath, Application.ExecutablePath)
+        Else
+            ClassTools.ClassRegistry.RemoveAssociation("BasicPawn.SourcePawn")
+        End If
+        If (g_iSettingsAssociateIncludes) Then
+            ClassTools.ClassRegistry.SetAssociation("BasicPawn.Includes", ".inc", String.Format("""{0}"" ""%1""", Application.ExecutablePath), Application.ExecutablePath, Application.ExecutablePath)
+        Else
+            ClassTools.ClassRegistry.RemoveAssociation("BasicPawn.Includes")
+        End If
+
+        ClassTools.ClassRegistry.SetAssociation("BasicPawn.Project", UCProjectBrowser.ClassProjectControl.g_sProjectExtension, String.Format("""{0}"" ""%1""", Application.ExecutablePath), Application.ExecutablePath, Application.ExecutablePath)
     End Sub
 
     Public Class STRUC_SHELL_ARGUMENT_ITEM

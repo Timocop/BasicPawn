@@ -340,7 +340,7 @@ Public Class UCStartPage
 
             For Each sFile As String In sRecentFilesSorted
                 Dim mDate As Date = IO.File.GetLastWriteTime(sFile)
-                Dim bProjectFile As Boolean = (IO.Path.GetExtension(sFile).ToLower = ".bpproj")
+                Dim bProjectFile As Boolean = (IO.Path.GetExtension(sFile).ToLower = UCProjectBrowser.ClassProjectControl.g_sProjectExtension)
 
                 Select Case (True)
                     Case ((Now - New TimeSpan(24, 0, 0)) < mDate)

@@ -285,7 +285,6 @@ Public Class FormMain
 
     Private Sub FormMain_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Dim sWineVersion As String = ClassTools.ClassOperatingSystem.GetWineVersion()
-
         ToolStripStatusLabel_AppVersion.Text = String.Format("v.{0} {1}", Application.ProductVersion, If(sWineVersion Is Nothing, "", "| Running on Wine " & sWineVersion)).Trim
 
         'Some control init
@@ -293,6 +292,77 @@ Public Class FormMain
 
         'Load Settings 
         ClassSettings.LoadSettings()
+
+        'Load source files via Arguments 
+        Dim lOpenFileList As New List(Of String)
+        For i = 1 To Environment.GetCommandLineArgs.Length - 1
+            If (IO.File.Exists(Environment.GetCommandLineArgs(i))) Then
+                lOpenFileList.Add(Environment.GetCommandLineArgs(i))
+            End If
+        Next
+
+        If (lOpenFileList.Count > 0) Then
+            'Open all project files 
+            Dim bOpenProject As Boolean = False
+            For i = 0 To lOpenFileList.Count - 1
+                If (IO.Path.GetExtension(lOpenFileList(i)).ToLower = UCProjectBrowser.ClassProjectControl.g_sProjectExtension) Then
+                    bOpenProject = True
+                    Exit For
+                End If
+            Next
+
+            If (Not bOpenProject) Then
+                'Open all files in the oldest BasicPawn instance
+                If (Not ClassSettings.g_iSettingsAlwaysOpenNewInstance AndAlso Array.IndexOf(Environment.GetCommandLineArgs, "-newinstance") = -1) Then
+                    Dim pBasicPawnProc As Process() = Process.GetProcessesByName(IO.Path.GetFileNameWithoutExtension(Application.ExecutablePath))
+                    If (pBasicPawnProc.Length > 0) Then
+                        Dim iCurrentPID As Integer = Process.GetCurrentProcess.Id
+                        Dim iMyTick As Long = Process.GetCurrentProcess.StartTime.Ticks
+                        Dim iLastTick As Long = Date.MinValue.Ticks
+                        Dim pLastProcess As Process = Nothing
+
+                        For Each pProcess As Process In pBasicPawnProc
+                            Try
+                                If (pProcess.Id = iCurrentPID OrElse pProcess.MainModule.FileName.ToLower <> Application.ExecutablePath.ToLower) Then
+                                    Continue For
+                                End If
+
+                                If (iMyTick < pProcess.StartTime.Ticks) Then
+                                    Continue For
+                                End If
+
+                                If (iLastTick > Date.MinValue.Ticks AndAlso iLastTick < pProcess.StartTime.Ticks) Then
+                                    Continue For
+                                End If
+
+                                pLastProcess = pProcess
+                                iLastTick = pProcess.StartTime.Ticks
+                            Catch ex As Exception
+                                'Ignore random exceptions
+                            End Try
+                        Next
+
+
+                        If (pLastProcess IsNot Nothing) Then
+                            Try
+                                For i = 0 To lOpenFileList.Count - 1
+                                    If (IO.Path.GetExtension(lOpenFileList(i)).ToLower <> UCProjectBrowser.ClassProjectControl.g_sProjectExtension) Then
+                                        Dim mMsg As New ClassCrossAppComunication.ClassMessage(COMARG_OPEN_FILE_BY_PID, CStr(pLastProcess.Id), lOpenFileList(i))
+                                        g_ClassCrossAppComunication.SendMessage(mMsg)
+                                    End If
+                                Next
+                            Catch ex As Exception
+                                ClassExceptionLog.WriteToLogMessageBox(ex)
+                            End Try
+
+                            Me.WindowState = FormWindowState.Minimized
+                            Me.ShowInTaskbar = False
+                            Application.Exit()
+                        End If
+                    End If
+                End If
+            End If
+        End If
 
         'Load default configs
         For Each mConfig As ClassConfigs.STRUC_CONFIG_ITEM In ClassConfigs.GetConfigs(False)
@@ -311,90 +381,25 @@ Public Class FormMain
             g_mUCStartPage.Hide()
         End If
 
-        'Load source files via Arguments
-        Dim sArgs As String() = Environment.GetCommandLineArgs
-
-        While True
-            Dim lFileList As New List(Of String)
-            For i = 1 To sArgs.Length - 1
-                If (IO.File.Exists(sArgs(i))) Then
-                    lFileList.Add(sArgs(i))
-                End If
-            Next
-
-            If (lFileList.Count < 1) Then
-                Exit While
-            End If
-
+        If (lOpenFileList.Count > 0) Then
             'Hide StartPage when files are going to be opened. Such as project and source files.
             g_mUCStartPage.Hide()
 
             'Open all project files 
             Dim bAppendFiles As Boolean = False
-            For i = 0 To lFileList.Count - 1
-                If (IO.Path.GetExtension(lFileList(i)).ToLower = UCProjectBrowser.ClassProjectControl.g_sProjectExtension) Then
-                    g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile = lFileList(i)
+            For i = 0 To lOpenFileList.Count - 1
+                If (IO.Path.GetExtension(lOpenFileList(i)).ToLower = UCProjectBrowser.ClassProjectControl.g_sProjectExtension) Then
+                    g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile = lOpenFileList(i)
                     g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(bAppendFiles)
                     bAppendFiles = True
                 End If
             Next
 
-            'Open all files in the oldes BasicPawn instance
-            If (Not ClassSettings.g_iSettingsAlwaysOpenNewInstance AndAlso Array.IndexOf(sArgs, "-newinstance") = -1) Then
-                Dim pBasicPawnProc As Process() = Process.GetProcessesByName(IO.Path.GetFileNameWithoutExtension(Application.ExecutablePath))
-                If (pBasicPawnProc.Length > 0) Then
-                    Dim iCurrentPID As Integer = Process.GetCurrentProcess.Id
-                    Dim iMyTick As Long = Process.GetCurrentProcess.StartTime.Ticks
-                    Dim iLastTick As Long = Date.MinValue.Ticks
-                    Dim pLastProcess As Process = Nothing
-
-                    For Each pProcess As Process In pBasicPawnProc
-                        Try
-                            If (pProcess.Id = iCurrentPID OrElse pProcess.MainModule.FileName.ToLower <> Application.ExecutablePath.ToLower) Then
-                                Continue For
-                            End If
-
-                            If (iMyTick < pProcess.StartTime.Ticks) Then
-                                Continue For
-                            End If
-
-                            If (iLastTick > Date.MinValue.Ticks AndAlso iLastTick < pProcess.StartTime.Ticks) Then
-                                Continue For
-                            End If
-
-                            pLastProcess = pProcess
-                            iLastTick = pProcess.StartTime.Ticks
-                        Catch ex As Exception
-                            'Ignore random exceptions
-                        End Try
-                    Next
-
-
-                    'If (pLastProcess IsNot Nothing AndAlso MessageBox.Show("Open in a existing BasicPawn instance?", "Open files", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes) Then
-                    If (pLastProcess IsNot Nothing) Then
-                        Try
-                            For i = 0 To lFileList.Count - 1
-                                If (IO.Path.GetExtension(lFileList(i)).ToLower <> UCProjectBrowser.ClassProjectControl.g_sProjectExtension) Then
-                                    Dim mMsg As New ClassCrossAppComunication.ClassMessage(COMARG_OPEN_FILE_BY_PID, CStr(pLastProcess.Id), lFileList(i))
-                                    g_ClassCrossAppComunication.SendMessage(mMsg)
-                                End If
-                            Next
-                        Catch ex As Exception
-                            ClassExceptionLog.WriteToLogMessageBox(ex)
-                        End Try
-
-                        Me.WindowState = FormWindowState.Minimized
-                        Me.ShowInTaskbar = False
-                        Application.Exit()
-                    End If
-                End If
-            End If
-
             'Open all files here
-            For i = 0 To lFileList.Count - 1
-                If (IO.Path.GetExtension(lFileList(i)).ToLower <> UCProjectBrowser.ClassProjectControl.g_sProjectExtension) Then
+            For i = 0 To lOpenFileList.Count - 1
+                If (IO.Path.GetExtension(lOpenFileList(i)).ToLower <> UCProjectBrowser.ClassProjectControl.g_sProjectExtension) Then
                     g_ClassTabControl.AddTab(False)
-                    g_ClassTabControl.OpenFileTab(g_ClassTabControl.m_TabsCount - 1, lFileList(i), True)
+                    g_ClassTabControl.OpenFileTab(g_ClassTabControl.m_TabsCount - 1, lOpenFileList(i), True)
 
                     If (i = 0 AndAlso g_ClassTabControl.m_TabsCount > 0) Then
                         g_ClassTabControl.RemoveTab(0, False)
@@ -402,8 +407,7 @@ Public Class FormMain
                 End If
             Next
 
-            Exit While
-        End While
+        End If
 
         'Update Autocomplete
         g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)

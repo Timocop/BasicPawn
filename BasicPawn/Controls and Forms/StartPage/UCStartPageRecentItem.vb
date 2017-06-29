@@ -52,7 +52,7 @@ Public Class UCStartPageRecentItem
 
     ReadOnly Property m_IsProjectFile As Boolean
         Get
-            Return (IO.Path.GetExtension(g_sRecentFile).ToLower = ".bpproj")
+            Return (IO.Path.GetExtension(g_sRecentFile).ToLower = UCProjectBrowser.ClassProjectControl.g_sProjectExtension)
         End Get
     End Property
 
