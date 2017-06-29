@@ -24,7 +24,7 @@ Public Class ClassCrossAppComunication
     Private g_mReceiveForm As New ClassReceiverForm
     Private g_sReceiveServerName As String = ""
     Private g_bEnforceEncoding As Boolean = True
-    Private g_iEncodeKeyBytes As Byte() = New Byte() {6, 54, 154, 156, 35, 175, 4}
+    Private g_iEncodeKeyBytes As Byte() = New Byte() {54, 57, 32, 178, 214, 84, 31}
 
     Public Event OnMessageReceive(mClassMessage As ClassMessage)
 
@@ -224,7 +224,7 @@ Public Class ClassCrossAppComunication
                 g_sMessageName = value
 
                 g_sFormatedMessageName = g_sMessageName
-                g_sFormatedMessageName = Convert.ToBase64String(Text.Encoding.Default.GetBytes(g_sFormatedMessageName))
+                g_sFormatedMessageName = Convert.ToBase64String(Text.Encoding.Unicode.GetBytes(g_sFormatedMessageName))
             End Set
         End Property
 
@@ -236,7 +236,7 @@ Public Class ClassCrossAppComunication
                 g_iSenderPID = value
 
                 g_sFormatedSenderPID = CStr(g_iSenderPID)
-                g_sFormatedSenderPID = Convert.ToBase64String(Text.Encoding.Default.GetBytes(g_sFormatedSenderPID))
+                g_sFormatedSenderPID = Convert.ToBase64String(Text.Encoding.Unicode.GetBytes(g_sFormatedSenderPID))
             End Set
         End Property
 
@@ -249,7 +249,7 @@ Public Class ClassCrossAppComunication
 
                 g_sFormatedMessages = CType(g_sMessages.Clone, String())
                 For i = 0 To g_sFormatedMessages.Length - 1
-                    g_sFormatedMessages(i) = Convert.ToBase64String(Text.Encoding.Default.GetBytes(g_sFormatedMessages(i)))
+                    g_sFormatedMessages(i) = Convert.ToBase64String(Text.Encoding.Unicode.GetBytes(g_sFormatedMessages(i)))
                 Next
             End Set
         End Property
@@ -283,11 +283,11 @@ Public Class ClassCrossAppComunication
                     For i = 0 To sSplitted.Length - 1
                         Select Case (i)
                             Case 0
-                                m_MessageName = Text.Encoding.Default.GetString(Convert.FromBase64String(sSplitted(i)))
+                                m_MessageName = Text.Encoding.Unicode.GetString(Convert.FromBase64String(sSplitted(i)))
                             Case 1
-                                m_SenderPID = CInt(Text.Encoding.Default.GetString(Convert.FromBase64String(sSplitted(i))))
+                                m_SenderPID = CInt(Text.Encoding.Unicode.GetString(Convert.FromBase64String(sSplitted(i))))
                             Case Else
-                                lMessagesList.Add(Text.Encoding.Default.GetString(Convert.FromBase64String(sSplitted(i))))
+                                lMessagesList.Add(Text.Encoding.Unicode.GetString(Convert.FromBase64String(sSplitted(i))))
                         End Select
                     Next
 
@@ -344,13 +344,16 @@ Public Class ClassCrossAppComunication
         Dim mCopyDataStruct As New ClassWin32.CopyDataStruct()
         Try
             Dim sFormatedMessage As String = sMessage
+
             If (g_bEnforceEncoding) Then
                 sFormatedMessage = XorDeEncrypt(sFormatedMessage, g_iEncodeKeyBytes)
             End If
 
+            sFormatedMessage = Convert.ToBase64String(Text.Encoding.Unicode.GetBytes(sFormatedMessage))
+
             mCopyDataStruct.cbData = (sFormatedMessage.Length + 1) * 2
             mCopyDataStruct.lpData = ClassWin32.LocalAlloc(&H40, mCopyDataStruct.cbData)
-            Marshal.Copy(sFormatedMessage.ToCharArray(), 0, mCopyDataStruct.lpData, sFormatedMessage.Length)
+            Marshal.Copy(sFormatedMessage.ToCharArray, 0, mCopyDataStruct.lpData, sFormatedMessage.Length)
             mCopyDataStruct.dwData = New IntPtr(1)
             ClassWin32.SendMessage(hTargetWinHndl, ClassWin32.WM_COPYDATA, IntPtr.Zero, mCopyDataStruct)
         Finally
@@ -364,6 +367,8 @@ Public Class ClassCrossAppComunication
                 Dim mCopyDataStruct As ClassWin32.CopyDataStruct = DirectCast(Marshal.PtrToStructure(m.LParam, GetType(ClassWin32.CopyDataStruct)), ClassWin32.CopyDataStruct)
                 Dim sFormatedMessage As String = Marshal.PtrToStringUni(mCopyDataStruct.lpData)
 
+                sFormatedMessage = Text.Encoding.Unicode.GetString(Convert.FromBase64String(sFormatedMessage))
+
                 If (g_bEnforceEncoding) Then
                     sFormatedMessage = XorDeEncrypt(sFormatedMessage, g_iEncodeKeyBytes)
                 End If
@@ -374,12 +379,14 @@ Public Class ClassCrossAppComunication
         End Select
     End Sub
 
-    Private Function XorDeEncrypt(ByRef sTest As String, ByRef iKey As Byte()) As String
-        Dim SB As New Text.StringBuilder
-        For i As Integer = 0 To sTest.Length - 1
-            SB.Append(ChrW(iKey(i Mod iKey.Length) Xor AscW(sTest.Substring(i, 1))))
-        Next
-        Return SB.ToString
+    Private Function XorDeEncrypt(sTest As String, iKey As Byte()) As String
+        With New Text.StringBuilder
+            For i As Integer = 0 To sTest.Length - 1
+                .Append(ChrW(iKey(i Mod iKey.Length) Xor AscW(sTest.Substring(i, 1))))
+            Next
+
+            Return .ToString
+        End With
     End Function
 
 #Region "IDisposable Support"
