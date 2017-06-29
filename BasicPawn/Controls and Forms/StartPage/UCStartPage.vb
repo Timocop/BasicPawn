@@ -54,8 +54,6 @@ Public Class UCStartPage
 
         ClassControlStyle.UpdateControls(Me)
 
-        Label_NoRecentFiles.Visible = False
-        Label_NoRecentProjects.Visible = False
         Timer_DelayUpdate.Start()
     End Sub
 
@@ -76,8 +74,31 @@ Public Class UCStartPage
                 End If
             Next
 
-            Label_NoRecentFiles.Visible = (Not bFilesFound)
-            Label_NoRecentProjects.Visible = (Not bProjectsFound)
+            If (Not bProjectsFound) Then
+                With New Label
+                    .Text = "No recent projects found!"
+                    .Font = New Font(Me.Font.FontFamily, 12, FontStyle.Regular)
+                    .AutoSize = False
+                    .TextAlign = ContentAlignment.MiddleCenter
+
+                    .Parent = TabPage_RecentProjects
+                    .Dock = DockStyle.Fill
+                    .Show()
+                End With
+            End If
+
+            If (Not bFilesFound) Then
+                With New Label
+                    .Text = "No recent files found!"
+                    .Font = New Font(Me.Font.FontFamily, 12, FontStyle.Regular)
+                    .AutoSize = False
+                    .TextAlign = ContentAlignment.MiddleCenter
+
+                    .Parent = TabPage_RecentFiles
+                    .Dock = DockStyle.Fill
+                    .Show()
+                End With
+            End If
 
             ClassControlStyle.UpdateControls(Me)
         Catch ex As Exception
