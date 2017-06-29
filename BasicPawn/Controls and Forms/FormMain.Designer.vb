@@ -877,25 +877,25 @@ Partial Class FormMain
         '
         Me.ToolStripMenuItem_Tabs_Close.Image = Global.BasicPawn.My.Resources.Resources.imageres_5337_16x16_32
         Me.ToolStripMenuItem_Tabs_Close.Name = "ToolStripMenuItem_Tabs_Close"
-        Me.ToolStripMenuItem_Tabs_Close.Size = New System.Drawing.Size(161, 22)
+        Me.ToolStripMenuItem_Tabs_Close.Size = New System.Drawing.Size(178, 22)
         Me.ToolStripMenuItem_Tabs_Close.Text = "Close"
         '
         'ToolStripMenuItem_Tabs_CloseAllButThis
         '
         Me.ToolStripMenuItem_Tabs_CloseAllButThis.Name = "ToolStripMenuItem_Tabs_CloseAllButThis"
-        Me.ToolStripMenuItem_Tabs_CloseAllButThis.Size = New System.Drawing.Size(161, 22)
+        Me.ToolStripMenuItem_Tabs_CloseAllButThis.Size = New System.Drawing.Size(178, 22)
         Me.ToolStripMenuItem_Tabs_CloseAllButThis.Text = "Close all but this"
         '
         'ToolStripMenuItem_Tabs_CloseAll
         '
         Me.ToolStripMenuItem_Tabs_CloseAll.Name = "ToolStripMenuItem_Tabs_CloseAll"
-        Me.ToolStripMenuItem_Tabs_CloseAll.Size = New System.Drawing.Size(161, 22)
+        Me.ToolStripMenuItem_Tabs_CloseAll.Size = New System.Drawing.Size(178, 22)
         Me.ToolStripMenuItem_Tabs_CloseAll.Text = "Close all"
         '
         'ToolStripSeparator12
         '
         Me.ToolStripSeparator12.Name = "ToolStripSeparator12"
-        Me.ToolStripSeparator12.Size = New System.Drawing.Size(158, 6)
+        Me.ToolStripSeparator12.Size = New System.Drawing.Size(175, 6)
         '
         'ToolStripMenuItem_Tabs_OpenFolder
         '
@@ -908,7 +908,7 @@ Partial Class FormMain
         '
         Me.ToolStripMenuItem_Tabs_Popout.Image = Global.BasicPawn.My.Resources.Resources.imageres_5333_16x16_32
         Me.ToolStripMenuItem_Tabs_Popout.Name = "ToolStripMenuItem_Tabs_Popout"
-        Me.ToolStripMenuItem_Tabs_Popout.Size = New System.Drawing.Size(161, 22)
+        Me.ToolStripMenuItem_Tabs_Popout.Size = New System.Drawing.Size(178, 22)
         Me.ToolStripMenuItem_Tabs_Popout.Text = "Popout"
         '
         'TabPage1
@@ -1012,7 +1012,7 @@ Partial Class FormMain
         'ToolStripStatusLabel_LastInformation
         '
         Me.ToolStripStatusLabel_LastInformation.Name = "ToolStripStatusLabel_LastInformation"
-        Me.ToolStripStatusLabel_LastInformation.Size = New System.Drawing.Size(696, 17)
+        Me.ToolStripStatusLabel_LastInformation.Size = New System.Drawing.Size(586, 17)
         Me.ToolStripStatusLabel_LastInformation.Spring = True
         Me.ToolStripStatusLabel_LastInformation.Text = "Last Info: No information"
         '

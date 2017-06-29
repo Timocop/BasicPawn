@@ -32,10 +32,12 @@ Partial Class UCStartPage
         Me.LinkLabel_Close = New System.Windows.Forms.LinkLabel()
         Me.Panel_FooterDarkControl = New System.Windows.Forms.Panel()
         Me.ClassPictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
-        Me.Label2 = New System.Windows.Forms.Label()
         Me.Label1 = New System.Windows.Forms.Label()
-        Me.Panel_RecentFiles = New System.Windows.Forms.Panel()
-        Me.Label_NoProjectsFound = New System.Windows.Forms.Label()
+        Me.TabControl_RecentProjects = New BasicPawn.ClassTabControlColor()
+        Me.TabPage_RecentFiles = New System.Windows.Forms.TabPage()
+        Me.Label_NoRecentFiles = New System.Windows.Forms.Label()
+        Me.TabPage_RecentProjects = New System.Windows.Forms.TabPage()
+        Me.Label_NoRecentProjects = New System.Windows.Forms.Label()
         Me.Panel_FooterDarkControl2 = New System.Windows.Forms.Panel()
         Me.Panel_FooterDarkControl3 = New System.Windows.Forms.Panel()
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
@@ -45,7 +47,9 @@ Partial Class UCStartPage
         Me.TableLayoutPanel2.SuspendLayout()
         Me.Panel_BasicPawnTitle.SuspendLayout()
         CType(Me.ClassPictureBoxQuality1, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.Panel_RecentFiles.SuspendLayout()
+        Me.TabControl_RecentProjects.SuspendLayout()
+        Me.TabPage_RecentFiles.SuspendLayout()
+        Me.TabPage_RecentProjects.SuspendLayout()
         Me.SuspendLayout()
         '
         'TableLayoutPanel1
@@ -84,13 +88,15 @@ Partial Class UCStartPage
         Me.TableLayoutPanel2.ColumnCount = 1
         Me.TableLayoutPanel2.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.TableLayoutPanel2.Controls.Add(Me.Panel_BasicPawnTitle, 0, 0)
-        Me.TableLayoutPanel2.Controls.Add(Me.Panel_RecentFiles, 0, 1)
+        Me.TableLayoutPanel2.Controls.Add(Me.TabControl_RecentProjects, 0, 1)
         Me.TableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill
         Me.TableLayoutPanel2.Location = New System.Drawing.Point(0, 0)
         Me.TableLayoutPanel2.Name = "TableLayoutPanel2"
         Me.TableLayoutPanel2.RowCount = 2
         Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 64.0!))
         Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20.0!))
+        Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20.0!))
         Me.TableLayoutPanel2.Size = New System.Drawing.Size(800, 428)
         Me.TableLayoutPanel2.TabIndex = 0
         '
@@ -101,7 +107,6 @@ Partial Class UCStartPage
         Me.Panel_BasicPawnTitle.Controls.Add(Me.LinkLabel_Close)
         Me.Panel_BasicPawnTitle.Controls.Add(Me.Panel_FooterDarkControl)
         Me.Panel_BasicPawnTitle.Controls.Add(Me.ClassPictureBoxQuality1)
-        Me.Panel_BasicPawnTitle.Controls.Add(Me.Label2)
         Me.Panel_BasicPawnTitle.Controls.Add(Me.Label1)
         Me.Panel_BasicPawnTitle.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Panel_BasicPawnTitle.Location = New System.Drawing.Point(0, 0)
@@ -166,17 +171,6 @@ Partial Class UCStartPage
         Me.ClassPictureBoxQuality1.TabIndex = 1
         Me.ClassPictureBoxQuality1.TabStop = False
         '
-        'Label2
-        '
-        Me.Label2.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(3, 48)
-        Me.Label2.Margin = New System.Windows.Forms.Padding(3)
-        Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(85, 13)
-        Me.Label2.TabIndex = 2
-        Me.Label2.Text = "Recent Projects"
-        '
         'Label1
         '
         Me.Label1.Font = New System.Drawing.Font("Segoe UI Semibold", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -187,27 +181,61 @@ Partial Class UCStartPage
         Me.Label1.Text = "BasicPawn - StartPage"
         Me.Label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
-        'Panel_RecentFiles
+        'TabControl_RecentProjects
         '
-        Me.Panel_RecentFiles.AutoScroll = True
-        Me.Panel_RecentFiles.Controls.Add(Me.Label_NoProjectsFound)
-        Me.Panel_RecentFiles.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Panel_RecentFiles.Location = New System.Drawing.Point(0, 64)
-        Me.Panel_RecentFiles.Margin = New System.Windows.Forms.Padding(0)
-        Me.Panel_RecentFiles.Name = "Panel_RecentFiles"
-        Me.Panel_RecentFiles.Size = New System.Drawing.Size(800, 364)
-        Me.Panel_RecentFiles.TabIndex = 1
+        Me.TabControl_RecentProjects.Controls.Add(Me.TabPage_RecentFiles)
+        Me.TabControl_RecentProjects.Controls.Add(Me.TabPage_RecentProjects)
+        Me.TabControl_RecentProjects.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TabControl_RecentProjects.Location = New System.Drawing.Point(0, 64)
+        Me.TabControl_RecentProjects.Margin = New System.Windows.Forms.Padding(0)
+        Me.TabControl_RecentProjects.Name = "TabControl_RecentProjects"
+        Me.TabControl_RecentProjects.SelectedIndex = 0
+        Me.TabControl_RecentProjects.Size = New System.Drawing.Size(800, 364)
+        Me.TabControl_RecentProjects.TabIndex = 1
         '
-        'Label_NoProjectsFound
+        'TabPage_RecentFiles
         '
-        Me.Label_NoProjectsFound.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Label_NoProjectsFound.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label_NoProjectsFound.Location = New System.Drawing.Point(0, 0)
-        Me.Label_NoProjectsFound.Name = "Label_NoProjectsFound"
-        Me.Label_NoProjectsFound.Size = New System.Drawing.Size(800, 364)
-        Me.Label_NoProjectsFound.TabIndex = 0
-        Me.Label_NoProjectsFound.Text = "No recent projects found!"
-        Me.Label_NoProjectsFound.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        Me.TabPage_RecentFiles.Controls.Add(Me.Label_NoRecentFiles)
+        Me.TabPage_RecentFiles.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage_RecentFiles.Name = "TabPage_RecentFiles"
+        Me.TabPage_RecentFiles.Padding = New System.Windows.Forms.Padding(3)
+        Me.TabPage_RecentFiles.Size = New System.Drawing.Size(792, 338)
+        Me.TabPage_RecentFiles.TabIndex = 0
+        Me.TabPage_RecentFiles.Text = "Recent Files"
+        Me.TabPage_RecentFiles.UseVisualStyleBackColor = True
+        '
+        'Label_NoRecentFiles
+        '
+        Me.Label_NoRecentFiles.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Label_NoRecentFiles.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label_NoRecentFiles.Location = New System.Drawing.Point(3, 3)
+        Me.Label_NoRecentFiles.Name = "Label_NoRecentFiles"
+        Me.Label_NoRecentFiles.Size = New System.Drawing.Size(786, 332)
+        Me.Label_NoRecentFiles.TabIndex = 0
+        Me.Label_NoRecentFiles.Text = "No recent files found!"
+        Me.Label_NoRecentFiles.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'TabPage_RecentProjects
+        '
+        Me.TabPage_RecentProjects.Controls.Add(Me.Label_NoRecentProjects)
+        Me.TabPage_RecentProjects.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage_RecentProjects.Name = "TabPage_RecentProjects"
+        Me.TabPage_RecentProjects.Padding = New System.Windows.Forms.Padding(3)
+        Me.TabPage_RecentProjects.Size = New System.Drawing.Size(792, 338)
+        Me.TabPage_RecentProjects.TabIndex = 1
+        Me.TabPage_RecentProjects.Text = "Recent Projects"
+        Me.TabPage_RecentProjects.UseVisualStyleBackColor = True
+        '
+        'Label_NoRecentProjects
+        '
+        Me.Label_NoRecentProjects.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Label_NoRecentProjects.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label_NoRecentProjects.Location = New System.Drawing.Point(3, 3)
+        Me.Label_NoRecentProjects.Name = "Label_NoRecentProjects"
+        Me.Label_NoRecentProjects.Size = New System.Drawing.Size(786, 332)
+        Me.Label_NoRecentProjects.TabIndex = 1
+        Me.Label_NoRecentProjects.Text = "No recent projects found!"
+        Me.Label_NoRecentProjects.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'Panel_FooterDarkControl2
         '
@@ -248,7 +276,9 @@ Partial Class UCStartPage
         Me.Panel_BasicPawnTitle.ResumeLayout(False)
         Me.Panel_BasicPawnTitle.PerformLayout()
         CType(Me.ClassPictureBoxQuality1, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.Panel_RecentFiles.ResumeLayout(False)
+        Me.TabControl_RecentProjects.ResumeLayout(False)
+        Me.TabPage_RecentFiles.ResumeLayout(False)
+        Me.TabPage_RecentProjects.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub
@@ -257,17 +287,19 @@ Partial Class UCStartPage
     Friend WithEvents Panel1 As Panel
     Friend WithEvents TableLayoutPanel2 As TableLayoutPanel
     Friend WithEvents Panel_BasicPawnTitle As Panel
-    Friend WithEvents Panel_RecentFiles As Panel
     Friend WithEvents ClassPictureBoxQuality1 As ClassPictureBoxQuality
     Friend WithEvents Label1 As Label
     Friend WithEvents Panel_FooterDarkControl As Panel
-    Friend WithEvents Label2 As Label
     Friend WithEvents ToolTip1 As ToolTip
     Friend WithEvents Panel_FooterDarkControl2 As Panel
     Friend WithEvents Panel_FooterDarkControl3 As Panel
     Friend WithEvents Timer_DelayUpdate As Timer
     Friend WithEvents LinkLabel_Close As LinkLabel
     Friend WithEvents LinkLabel_Open As LinkLabel
-    Friend WithEvents Label_NoProjectsFound As Label
     Friend WithEvents LinkLabel_OpenNew As LinkLabel
+    Friend WithEvents TabControl_RecentProjects As ClassTabControlColor
+    Friend WithEvents TabPage_RecentFiles As TabPage
+    Friend WithEvents TabPage_RecentProjects As TabPage
+    Friend WithEvents Label_NoRecentFiles As Label
+    Friend WithEvents Label_NoRecentProjects As Label
 End Class

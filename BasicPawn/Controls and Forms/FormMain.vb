@@ -326,6 +326,9 @@ Public Class FormMain
                 Exit While
             End If
 
+            'Hide StartPage when files are going to be opened. Such as project and source files.
+            g_mUCStartPage.Hide()
+
             'Open all project files 
             Dim bAppendFiles As Boolean = False
             For i = 0 To lFileList.Count - 1

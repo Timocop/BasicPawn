@@ -204,28 +204,28 @@ Public Class ClassControlStyle
             Case TypeOf o Is LinkLabel
                 Dim i As LinkLabel = DirectCast(o, LinkLabel)
                 If (m_IsInvertedColors) Then
-                    i.LinkColor = Color.RoyalBlue
+                    i.LinkColor = Color.DodgerBlue
                     i.BackColor = Color.Transparent
                     i.ForeColor = g_cDarkControlColor.mDarkForeground
                 Else
-                    i.LinkColor = Color.Blue
+                    i.LinkColor = Color.RoyalBlue
                     i.BackColor = g_cDarkControlColor.mLightBackground
                     i.ForeColor = g_cDarkControlColor.mLightForegound
                 End If
 
             Case TypeOf o Is Label
                 Dim i As Label = DirectCast(o, Label)
-                Select Case (i.Name)
-                    Case "Label_IntelliSense", "Label_Autocomplete"
+                Select Case (True)
+                    Case i.Name.Contains("@SetForeColorRoyalBlue")
                         If (m_IsInvertedColors) Then
                             i.BackColor = Color.Transparent
-                            i.ForeColor = InvertColor(Color.RoyalBlue)
+                            i.ForeColor = Color.DodgerBlue
                         Else
                             i.BackColor = g_cDarkFormColor.mLightBackground
                             i.ForeColor = Color.RoyalBlue
                         End If
 
-                    Case "Label_Title"
+                    Case i.Name = "Label_Title"
                         If (m_IsInvertedColors) Then
                             i.BackColor = Color.Transparent
                             i.ForeColor = Color.Black
@@ -276,11 +276,23 @@ Public Class ClassControlStyle
 
                     Case Else
                         If (m_IsInvertedColors) Then
-                            i.BackColor = Color.Transparent
-                            i.ForeColor = g_cDarkFormColor.mDarkForeground
+                            If (i.IsLink) Then
+                                i.LinkColor = Color.DodgerBlue
+                                i.BackColor = Color.Transparent
+                                i.ForeColor = g_cDarkFormColor.mDarkForeground
+                            Else
+                                i.BackColor = Color.Transparent
+                                i.ForeColor = g_cDarkFormColor.mDarkForeground
+                            End If
                         Else
-                            i.BackColor = g_cDarkFormColor.mLightBackground
-                            i.ForeColor = g_cDarkFormColor.mLightForegound
+                            If (i.IsLink) Then
+                                i.LinkColor = Color.RoyalBlue
+                                i.BackColor = Color.Transparent
+                                i.ForeColor = g_cDarkFormColor.mLightForegound
+                            Else
+                                i.BackColor = g_cDarkFormColor.mLightBackground
+                                i.ForeColor = g_cDarkFormColor.mLightForegound
+                            End If
                         End If
                 End Select
 

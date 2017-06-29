@@ -25,12 +25,14 @@ Public Class UCAutocomplete
     Public g_sLastAutocompleteText As String = ""
 
     Public Sub New(f As FormMain)
+        g_mFormMain = f
 
         ' This call is required by the designer.
         InitializeComponent()
 
-        ' Add any initialization after the InitializeComponent() call.
-        g_mFormMain = f
+        ' Add any initialization after the InitializeComponent() call. 
+        Label_IntelliSense.Name &= "@SetForeColorRoyalBlue"
+        Label_Autocomplete.Name &= "@SetForeColorRoyalBlue"
 
         g_ClassToolTip = New ClassToolTip(Me)
 
