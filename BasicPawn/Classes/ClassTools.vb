@@ -16,6 +16,8 @@
 
 
 Imports System.Runtime.InteropServices
+Imports System.Security.Cryptography
+Imports System.Text
 Imports System.Text.RegularExpressions
 Imports Microsoft.Win32
 
@@ -355,6 +357,49 @@ Public Class ClassTools
 
             Public Shared Function FromBase64Ex(sText As String) As Byte()
                 Return Convert.FromBase64String(sText)
+            End Function
+        End Class
+
+        Class ClassRSA
+            Public Shared Sub GenerateKeysXML(ByRef r_sPrivateKeyXML As String, ByRef r_sPublicKeyXML As String, Optional iKeySize As Integer = 2048)
+                Using mRSA As New RSACryptoServiceProvider(iKeySize)
+                    Try
+                        r_sPrivateKeyXML = mRSA.ToXmlString(True)
+                        r_sPublicKeyXML = mRSA.ToXmlString(False)
+                    Finally
+                        mRSA.PersistKeyInCsp = False
+                    End Try
+                End Using
+            End Sub
+
+            Public Shared Function Encrypt(sText As String, sKeyXML As String) As String
+                Using mRSA As New RSACryptoServiceProvider()
+                    Try
+                        mRSA.FromXmlString(sKeyXML)
+
+                        Dim iData = Encoding.Unicode.GetBytes(sText)
+                        Dim iEncryptedData = mRSA.Encrypt(iData, True)
+
+                        Return Convert.ToBase64String(iEncryptedData)
+                    Finally
+                        mRSA.PersistKeyInCsp = False
+                    End Try
+                End Using
+            End Function
+
+            Public Shared Function Decrypt(sTextBase64 As String, sKeyXML As String) As String
+                Using mRSA As New RSACryptoServiceProvider()
+                    Try
+                        mRSA.FromXmlString(sKeyXML)
+
+                        Dim iData = Convert.FromBase64String(sTextBase64)
+                        Dim iDecryptedData = mRSA.Decrypt(iData, True)
+
+                        Return Encoding.Unicode.GetString(iDecryptedData)
+                    Finally
+                        mRSA.PersistKeyInCsp = False
+                    End Try
+                End Using
             End Function
         End Class
     End Class
