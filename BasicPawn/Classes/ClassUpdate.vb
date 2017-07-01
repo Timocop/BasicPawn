@@ -20,9 +20,9 @@ Imports System.Text.RegularExpressions
 Public Class ClassUpdate
     Private Shared g_sRSAPublicKeyXML As String = "<RSAKeyValue><Modulus>vhkaxwuw08ufJcXdcCGvXjeF/UTpQzIvfjo+DqUDT6OyrCB5u86t536wSDJawFeMPR9JicrY7eiT8Jy9O7zsu0y3+aaR7nBNw9h7DIGFLsgASKHR5PD2uW1dh3ZilkLCk+eKwEER91MyYm5fEciudrwZbsHRhjsMsHRvuyu231U=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue>"
 
-    Private Shared g_sGithubVersionURL As String = ""
-    Private Shared g_sGithubHashURL As String = ""
-    Private Shared g_sGithubDataURL As String = ""
+    Private Shared g_sGithubVersionURL As String = "https://github.com/Timocop/BasicPawn/raw/master/Update%20Depot/CurrentVersion.txt"
+    Private Shared g_sGithubHashURL As String = "https://github.com/Timocop/BasicPawn/raw/master/Update%20Depot/DataHash.txt"
+    Private Shared g_sGithubDataURL As String = "https://github.com/Timocop/BasicPawn/raw/master/Update%20Depot/BasicPawnUpdateSFX.dat"
 
     Public Shared Sub InstallUpdate()
         If (String.IsNullOrEmpty(g_sGithubHashURL)) Then
@@ -90,8 +90,8 @@ Public Class ClassUpdate
     End Sub
 
     Public Shared Function CheckUpdateAvailable() As Boolean
-        Dim sNextVersion As String = Regex.Match(GetNextVersion(), "[0-9\.]").Value
-        Dim sCurrentVersion As String = Regex.Match(GetCurrentVerison(), "[0-9\.]").Value
+        Dim sNextVersion As String = Regex.Match(GetNextVersion(), "[0-9\.]+").Value
+        Dim sCurrentVersion As String = Regex.Match(GetCurrentVerison(), "[0-9\.]+").Value
 
         Return (New Version(sNextVersion) > New Version(sCurrentVersion))
     End Function
