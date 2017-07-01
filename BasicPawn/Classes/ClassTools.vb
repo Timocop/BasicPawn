@@ -324,7 +324,7 @@ Public Class ClassTools
     End Class
 
     Public Class ClassCrypto
-        Public Class Base
+        Class ClassBase
             Enum ENUM_BASE
                 BASE2 = 2
                 BASE8 = 8
@@ -360,8 +360,37 @@ Public Class ClassTools
             End Function
         End Class
 
+        Class ClassHash
+            Public Shared Function HashSHA256File(sFile As String) As String
+                Dim iHash As Byte()
+                With New StringBuilder
+                    Dim sTemp As String = ""
+
+                    Using mHash As New SHA256Managed()
+                        Using mFS As New IO.FileStream(sFile, IO.FileMode.Open, IO.FileAccess.Read)
+                            mHash.ComputeHash(mFS)
+                        End Using
+
+                        iHash = mHash.Hash
+
+                        For ii As Integer = 0 To iHash.Length - 1
+                            sTemp = Convert.ToString(iHash(ii), 16)
+                            If (sTemp.Length = 1) Then
+                                sTemp = "0" & sTemp
+                            End If
+                            .Append(sTemp)
+                        Next
+
+                        mHash.Clear()
+                    End Using
+
+                    Return .ToString
+                End With
+            End Function
+        End Class
+
         Class ClassRSA
-            Public Shared Sub GenerateKeysXML(ByRef r_sPrivateKeyXML As String, ByRef r_sPublicKeyXML As String, Optional iKeySize As Integer = 2048)
+            Public Shared Sub GenerateKeys(ByRef r_sPrivateKeyXML As String, ByRef r_sPublicKeyXML As String, Optional iKeySize As Integer = 2048)
                 Using mRSA As New RSACryptoServiceProvider(iKeySize)
                     Try
                         r_sPrivateKeyXML = mRSA.ToXmlString(True)
@@ -373,12 +402,29 @@ Public Class ClassTools
             End Sub
 
             Public Shared Function Encrypt(sText As String, sKeyXML As String) As String
+                Dim iData As Byte() = New UTF8Encoding(False).GetBytes(sText)
+
                 Using mRSA As New RSACryptoServiceProvider()
                     Try
                         mRSA.FromXmlString(sKeyXML)
 
-                        Dim iData = Encoding.Unicode.GetBytes(sText)
-                        Dim iEncryptedData = mRSA.Encrypt(iData, True)
+                        Dim iEncryptedData As Byte()
+
+                        If (mRSA.PublicOnly) Then
+                            Dim mRSAParm = mRSA.ExportParameters(False)
+
+                            Dim bigInteger As BigInteger = New BigInteger(iData)
+                            Dim bigInteger2 As BigInteger = bigInteger.modPow(New BigInteger(mRSAParm.Exponent), New BigInteger(mRSAParm.Modulus))
+
+                            iEncryptedData = bigInteger2.getBytes
+                        Else
+                            Dim mRSAParm = mRSA.ExportParameters(True)
+
+                            Dim bigInteger As BigInteger = New BigInteger(iData)
+                            Dim bigInteger2 As BigInteger = bigInteger.modPow(New BigInteger(mRSAParm.D), New BigInteger(mRSAParm.Modulus))
+
+                            iEncryptedData = bigInteger2.getBytes
+                        End If
 
                         Return Convert.ToBase64String(iEncryptedData)
                     Finally
@@ -388,14 +434,31 @@ Public Class ClassTools
             End Function
 
             Public Shared Function Decrypt(sTextBase64 As String, sKeyXML As String) As String
+                Dim iData As Byte() = Convert.FromBase64String(sTextBase64)
+
                 Using mRSA As New RSACryptoServiceProvider()
                     Try
                         mRSA.FromXmlString(sKeyXML)
 
-                        Dim iData = Convert.FromBase64String(sTextBase64)
-                        Dim iDecryptedData = mRSA.Decrypt(iData, True)
+                        Dim iDecryptedData As Byte()
 
-                        Return Encoding.Unicode.GetString(iDecryptedData)
+                        If (mRSA.PublicOnly) Then
+                            Dim mRSAParm = mRSA.ExportParameters(False)
+
+                            Dim bigInteger As BigInteger = New BigInteger(iData)
+                            Dim bigInteger2 As BigInteger = bigInteger.modPow(New BigInteger(mRSAParm.Exponent), New BigInteger(mRSAParm.Modulus))
+
+                            iDecryptedData = bigInteger2.getBytes
+                        Else
+                            Dim mRSAParm = mRSA.ExportParameters(True)
+
+                            Dim bigInteger As BigInteger = New BigInteger(iData)
+                            Dim bigInteger2 As BigInteger = bigInteger.modPow(New BigInteger(mRSAParm.D), New BigInteger(mRSAParm.Modulus))
+
+                            iDecryptedData = bigInteger2.getBytes
+                        End If
+
+                        Return New UTF8Encoding(False).GetString(iDecryptedData)
                     Finally
                         mRSA.PersistKeyInCsp = False
                     End Try

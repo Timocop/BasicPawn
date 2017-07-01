@@ -419,8 +419,26 @@ Public Class FormMain
 
         g_ClassPluginController.LoadPlugins(IO.Path.Combine(Application.StartupPath, "plugins"))
         g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnPluginStart(Me))
-    End Sub
 
+        Dim mCheckUpdasteThread As New Threading.Thread(Sub()
+                                                            Try
+#If DEBUG Then
+                                                                Me.BeginInvoke(Sub() ToolStripMenuItem_NewUpdate.Visible = True)
+#End If
+                                                                Threading.Thread.Sleep(10000)
+
+                                                                If (ClassUpdate.CheckUpdateAvailable()) Then
+                                                                    Me.BeginInvoke(Sub() ToolStripMenuItem_NewUpdate.Visible = True)
+                                                                End If
+                                                            Catch ex As Threading.ThreadAbortException
+                                                                Throw
+                                                            Catch ex As Exception
+                                                            End Try
+                                                        End Sub) With {
+            .IsBackground = True
+        }
+        mCheckUpdasteThread.Start()
+    End Sub
 #End Region
 
     Private Sub FormMain_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
@@ -888,7 +906,21 @@ Public Class FormMain
         SB.AppendLine("         Authors:")
         SB.AppendLine("         Gert Driesen and Community")
         SB.AppendLine("         https://github.com/sshnet/SSH.NET")
+        SB.AppendLine()
+        SB.AppendLine("     BigInteger (Copyright (c) 2002 Chew Keong TAN)")
+        SB.AppendLine()
+        SB.AppendLine("         Authors:")
+        SB.AppendLine("         Chew Keong TAN")
+        SB.AppendLine("         https://www.codeproject.com/Articles/2728/C-BigInteger-Class")
         MessageBox.Show(SB.ToString, "About", MessageBoxButtons.OK, MessageBoxIcon.Information)
+    End Sub
+
+    Private Sub ToolStripMenuItem_HelpGithub_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_HelpGithub.Click
+        Try
+            Process.Start("https://github.com/Timocop/BasicPawn")
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 #End Region
 
@@ -901,6 +933,15 @@ Public Class FormMain
 #Region "MenuStrip_Redo"
     Private Sub ToolStripMenuItem_Redo_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Redo.Click
         g_ClassTabControl.m_ActiveTab.m_TextEditor.Redo()
+    End Sub
+#End Region
+
+#Region "MenuStrip_NewUpdate"
+    Private Sub ToolStripMenuItem_NewUpdate_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_NewUpdate.Click
+        With New FormUpdate
+            .Show(Me)
+            .BringToFront()
+        End With
     End Sub
 #End Region
 
@@ -1027,14 +1068,6 @@ Public Class FormMain
             MessageBox.Show("You can not close BasicPawn while debugging!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             e.Cancel = True
         End If
-    End Sub
-
-    Private Sub ToolStripMenuItem_CheckUpdate_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_CheckUpdate.Click
-        Try
-            Process.Start("https://github.com/Timocop/BasicPawn/releases")
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End Try
     End Sub
 
     Private Sub ToolStripMenuItem_TabClose_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_TabClose.Click
@@ -1200,5 +1233,4 @@ Public Class FormMain
         g_mPingFlashPanel.Visible = False
         Timer_PingFlash.Stop()
     End Sub
-
 End Class

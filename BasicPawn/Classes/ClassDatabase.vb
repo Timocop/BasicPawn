@@ -93,8 +93,8 @@ Public Class ClassDatabase
             ClassSecureStorage.Decrypt(iCryptUsername)
             ClassSecureStorage.Decrypt(iCryptPassword)
 
-            sCryptUsername = ClassTools.ClassCrypto.Base.ToBase64Ex(iCryptUsername)
-            sCryptPassword = ClassTools.ClassCrypto.Base.ToBase64Ex(iCryptPassword)
+            sCryptUsername = ClassTools.ClassCrypto.ClassBase.ToBase64Ex(iCryptUsername)
+            sCryptPassword = ClassTools.ClassCrypto.ClassBase.ToBase64Ex(iCryptPassword)
 #Else
             Dim iCryptUsername As Byte() = Encoding.Unicode.GetBytes(m_Username)
             Dim iCryptPassword As Byte() = Encoding.Unicode.GetBytes(m_Password)
@@ -147,8 +147,8 @@ Public Class ClassDatabase
 
 
 #If ENCRYPT_DATABASE Then
-                Dim iCryptUsername As Byte() = ClassTools.ClassCrypto.Base.FromBase64Ex(sCryptUsername)
-                Dim iCryptPassword As Byte() = ClassTools.ClassCrypto.Base.FromBase64Ex(sCryptPassword)
+                Dim iCryptUsername As Byte() = ClassTools.ClassCrypto.ClassBase.FromBase64Ex(sCryptUsername)
+                Dim iCryptPassword As Byte() = ClassTools.ClassCrypto.ClassBase.FromBase64Ex(sCryptPassword)
 
                 iCryptUsername = ClassSecureStorage.Decrypt(iCryptUsername)
                 iCryptPassword = ClassSecureStorage.Decrypt(iCryptPassword)

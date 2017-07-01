@@ -163,6 +163,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Required Plugin References\BasicPawnPluginInterface.dll</HintPath>
     </Reference>
+    <Reference Include="BigInteger">
+      <HintPath>..\Third Party Binaries\BigInteger.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.TextEditor">
       <HintPath>..\Third Party Binaries\ICSharpCode.TextEditor.dll</HintPath>
     </Reference>
@@ -194,6 +197,7 @@
     <Compile Include="Classes\ClassDatabase.vb" />
     <Compile Include="Classes\ClassFTP.vb" />
     <Compile Include="Classes\ClassSecureStorage.vb" />
+    <Compile Include="Classes\ClassUpdate.vb" />
     <Compile Include="Classes\Controls\ClassButtonSmallDelete.vb">
       <SubType>Component</SubType>
     </Compile>
@@ -213,6 +217,9 @@
     </Compile>
     <Compile Include="Classes\ClassSyncList.vb" />
     <Compile Include="Classes\ClassIniFileMem.vb" />
+    <Compile Include="Classes\Controls\ClassWebClientEx.vb">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Classes\FormDebugger\ClassDebuggerRunner.vb" />
     <Compile Include="Classes\FormMain\ClassAutocompleteUpdater.vb" />
     <Compile Include="Classes\FormMain\ClassDebuggerParser.vb" />
@@ -276,6 +283,12 @@
       <DependentUpon>FormOpenTabFromInstances.vb</DependentUpon>
     </Compile>
     <Compile Include="Controls and Forms\FormOpenTabFromInstances.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls and Forms\FormUpdate.Designer.vb">
+      <DependentUpon>FormUpdate.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controls and Forms\FormUpdate.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Controls and Forms\StartPage\UCStartPage.Designer.vb">
@@ -387,6 +400,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls and Forms\FormOpenTabFromInstances.resx">
       <DependentUpon>FormOpenTabFromInstances.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls and Forms\FormUpdate.resx">
+      <DependentUpon>FormUpdate.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls and Forms\StartPage\UCStartPage.resx">
       <DependentUpon>UCStartPage.vb</DependentUpon>
@@ -512,6 +528,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="BasicPawnIcon.ico" />
+    <None Include="Resources\155.png" />
+    <None Include="Resources\098.png" />
     <None Include="Resources\imageres_5320_16x16-32.png" />
     <None Include="Resources\imageres_5318_16x16-32.png" />
     <None Include="Resources\imageres_5339_16x16-32.png" />
