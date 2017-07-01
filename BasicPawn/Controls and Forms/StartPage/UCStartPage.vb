@@ -364,7 +364,7 @@ Public Class UCStartPage
                 Dim bProjectFile As Boolean = (IO.Path.GetExtension(sFile).ToLower = UCProjectBrowser.ClassProjectControl.g_sProjectExtension)
 
                 Select Case (True)
-                    Case ((Now - New TimeSpan(24, 0, 0)) < mDate)
+                    Case ((Now - New TimeSpan(1, 0, 0, 0)) < mDate)
                         If (bProjectFile) Then
                             If (Not CBool(iLabelFlags And iLabelFlags_ProjectsToday)) Then
                                 iLabelFlags = (iLabelFlags Or iLabelFlags_ProjectsToday)
@@ -374,6 +374,19 @@ Public Class UCStartPage
                             If (Not CBool(iLabelFlags And iLabelFlags_FilesToday)) Then
                                 iLabelFlags = (iLabelFlags Or iLabelFlags_FilesToday)
                                 CreateLastModifiedLabel("Today", g_mUCStartPage.TabPage_RecentFiles)
+                            End If
+                        End If
+
+                    Case ((Now - New TimeSpan(2, 0, 0, 0)) < mDate)
+                        If (bProjectFile) Then
+                            If (Not CBool(iLabelFlags And iLabelFlags_ProjectsToday)) Then
+                                iLabelFlags = (iLabelFlags Or iLabelFlags_ProjectsToday)
+                                CreateLastModifiedLabel("Yesterday", g_mUCStartPage.TabPage_RecentProjects)
+                            End If
+                        Else
+                            If (Not CBool(iLabelFlags And iLabelFlags_FilesToday)) Then
+                                iLabelFlags = (iLabelFlags Or iLabelFlags_FilesToday)
+                                CreateLastModifiedLabel("Yesterday", g_mUCStartPage.TabPage_RecentFiles)
                             End If
                         End If
 
