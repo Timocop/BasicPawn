@@ -32,6 +32,7 @@ Partial Class FormUpdate
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormUpdate))
         Me.Button_Update = New System.Windows.Forms.Button()
         Me.Panel_FooterControl = New System.Windows.Forms.Panel()
+        Me.LinkLabel_ManualUpdate = New System.Windows.Forms.LinkLabel()
         Me.Panel_FooterDarkControl = New System.Windows.Forms.Panel()
         Me.Button_Close = New System.Windows.Forms.Button()
         Me.Label_Status = New System.Windows.Forms.Label()
@@ -40,7 +41,6 @@ Partial Class FormUpdate
         Me.ClassPictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.Label1 = New System.Windows.Forms.Label()
-        Me.LinkLabel_ManualUpdate = New System.Windows.Forms.LinkLabel()
         Me.Panel_FooterControl.SuspendLayout()
         CType(Me.ClassPictureBoxQuality2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.ClassPictureBoxQuality1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -49,6 +49,7 @@ Partial Class FormUpdate
         'Button_Update
         '
         Me.Button_Update.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Button_Update.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.Button_Update.Location = New System.Drawing.Point(152, 13)
         Me.Button_Update.Name = "Button_Update"
         Me.Button_Update.Size = New System.Drawing.Size(128, 23)
@@ -69,6 +70,18 @@ Partial Class FormUpdate
         Me.Panel_FooterControl.Name = "Panel_FooterControl"
         Me.Panel_FooterControl.Size = New System.Drawing.Size(384, 48)
         Me.Panel_FooterControl.TabIndex = 0
+        '
+        'LinkLabel_ManualUpdate
+        '
+        Me.LinkLabel_ManualUpdate.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.LinkLabel_ManualUpdate.AutoSize = True
+        Me.LinkLabel_ManualUpdate.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
+        Me.LinkLabel_ManualUpdate.Location = New System.Drawing.Point(12, 18)
+        Me.LinkLabel_ManualUpdate.Name = "LinkLabel_ManualUpdate"
+        Me.LinkLabel_ManualUpdate.Size = New System.Drawing.Size(83, 13)
+        Me.LinkLabel_ManualUpdate.TabIndex = 3
+        Me.LinkLabel_ManualUpdate.TabStop = True
+        Me.LinkLabel_ManualUpdate.Text = "Show Releases"
         '
         'Panel_FooterDarkControl
         '
@@ -91,21 +104,23 @@ Partial Class FormUpdate
         '
         'Label_Status
         '
-        Me.Label_Status.AutoSize = True
-        Me.Label_Status.Location = New System.Drawing.Point(87, 85)
+        Me.Label_Status.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Label_Status.Location = New System.Drawing.Point(82, 51)
         Me.Label_Status.Name = "Label_Status"
-        Me.Label_Status.Size = New System.Drawing.Size(96, 13)
+        Me.Label_Status.Size = New System.Drawing.Size(290, 47)
         Me.Label_Status.TabIndex = 6
         Me.Label_Status.Text = "Status: Unknown"
+        Me.Label_Status.TextAlign = System.Drawing.ContentAlignment.BottomLeft
         Me.Label_Status.Visible = False
         '
         'ProgressBar_Status
         '
         Me.ProgressBar_Status.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.ProgressBar_Status.Location = New System.Drawing.Point(90, 101)
+        Me.ProgressBar_Status.Location = New System.Drawing.Point(85, 101)
         Me.ProgressBar_Status.Name = "ProgressBar_Status"
-        Me.ProgressBar_Status.Size = New System.Drawing.Size(282, 10)
+        Me.ProgressBar_Status.Size = New System.Drawing.Size(287, 10)
         Me.ProgressBar_Status.Style = System.Windows.Forms.ProgressBarStyle.Marquee
         Me.ProgressBar_Status.TabIndex = 5
         Me.ProgressBar_Status.Visible = False
@@ -114,10 +129,10 @@ Partial Class FormUpdate
         '
         Me.ClassPictureBoxQuality2.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ClassPictureBoxQuality2.Image = Global.BasicPawn.My.Resources.Resources.Bmp_Warn
-        Me.ClassPictureBoxQuality2.Location = New System.Drawing.Point(90, 128)
+        Me.ClassPictureBoxQuality2.Location = New System.Drawing.Point(52, 128)
         Me.ClassPictureBoxQuality2.m_HighQuality = True
         Me.ClassPictureBoxQuality2.Name = "ClassPictureBoxQuality2"
-        Me.ClassPictureBoxQuality2.Size = New System.Drawing.Size(32, 32)
+        Me.ClassPictureBoxQuality2.Size = New System.Drawing.Size(24, 24)
         Me.ClassPictureBoxQuality2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
         Me.ClassPictureBoxQuality2.TabIndex = 3
         Me.ClassPictureBoxQuality2.TabStop = False
@@ -137,9 +152,9 @@ Partial Class FormUpdate
         '
         Me.Label2.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Label2.Location = New System.Drawing.Point(128, 128)
+        Me.Label2.Location = New System.Drawing.Point(82, 128)
         Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(244, 32)
+        Me.Label2.Size = New System.Drawing.Size(290, 32)
         Me.Label2.TabIndex = 1
         Me.Label2.Text = "All BasicPawn instances will be closed and all your unsaved work will be lost!"
         Me.Label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -148,22 +163,11 @@ Partial Class FormUpdate
         '
         Me.Label1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Label1.Location = New System.Drawing.Point(87, 12)
+        Me.Label1.Location = New System.Drawing.Point(82, 12)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(285, 64)
+        Me.Label1.Size = New System.Drawing.Size(290, 39)
         Me.Label1.TabIndex = 0
         Me.Label1.Text = "A new BasicPawn update is available!" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Do you want to update now?"
-        '
-        'LinkLabel_ManualUpdate
-        '
-        Me.LinkLabel_ManualUpdate.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.LinkLabel_ManualUpdate.AutoSize = True
-        Me.LinkLabel_ManualUpdate.Location = New System.Drawing.Point(12, 18)
-        Me.LinkLabel_ManualUpdate.Name = "LinkLabel_ManualUpdate"
-        Me.LinkLabel_ManualUpdate.Size = New System.Drawing.Size(83, 13)
-        Me.LinkLabel_ManualUpdate.TabIndex = 3
-        Me.LinkLabel_ManualUpdate.TabStop = True
-        Me.LinkLabel_ManualUpdate.Text = "Show Releases"
         '
         'FormUpdate
         '
@@ -192,7 +196,6 @@ Partial Class FormUpdate
         CType(Me.ClassPictureBoxQuality2, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.ClassPictureBoxQuality1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
-        Me.PerformLayout()
 
     End Sub
 
