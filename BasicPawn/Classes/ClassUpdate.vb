@@ -33,11 +33,18 @@ Public Class ClassUpdate
             Throw New ArgumentException("Data URL empty")
         End If
 
+#If Not DEBUG Then
         If (Not CheckUpdateAvailable()) Then
             Return
-        End If
+        End If 
+#End If
 
+#If DEBUG Then
+        IO.Directory.CreateDirectory(IO.Path.Combine(Application.StartupPath, "UpdateTest"))
+        Dim sDataPath As String = IO.Path.Combine(Application.StartupPath, "UpdateTest\BasicPawnUpdateSFX.exe")
+#Else
         Dim sDataPath As String = IO.Path.Combine(Application.StartupPath, "BasicPawnUpdateSFX.exe")
+#End If
         Dim sHashEncrypted As String = ""
         Dim sHash As String = ""
         Dim sDataHash As String = ""
@@ -68,6 +75,7 @@ Public Class ClassUpdate
             Throw New ArgumentException("Hash does not match")
         End If
 
+#If Not DEBUG Then
         For Each pProcess As Process In Process.GetProcessesByName("BasicPawn.exe")
             Try
                 If (pProcess.HasExited OrElse pProcess.Id = Process.GetCurrentProcess.Id) Then
@@ -83,10 +91,14 @@ Public Class ClassUpdate
             Catch ex As Exception
             End Try
         Next
+#End If
 
         Process.Start(sDataPath)
+
+#If Not DEBUG Then
         Process.GetCurrentProcess.Kill()
         End
+#End If
     End Sub
 
     Public Shared Function CheckUpdateAvailable() As Boolean
