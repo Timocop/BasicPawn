@@ -240,4 +240,6 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
-/Update Depot/RSAUpdateKeys.txt
+
+# Dont publish private key for update
+/Update Depot/RSA Update Private Key.txt
