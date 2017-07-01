@@ -349,12 +349,14 @@ Public Class UCStartPage
 
             Dim iLabelFlags_ProjectsToday As Integer = (1 << 0)
             Dim iLabelFlags_FilesToday As Integer = (1 << 1)
-            Dim iLabelFlags_ProjectsWeek As Integer = (1 << 2)
-            Dim iLabelFlags_FilesWeek As Integer = (1 << 3)
-            Dim iLabelFlags_ProjectsMonth As Integer = (1 << 4)
-            Dim iLabelFlags_FilesMonth As Integer = (1 << 5)
-            Dim iLabelFlags_ProjectsOther As Integer = (1 << 6)
-            Dim iLabelFlags_FilesOther As Integer = (1 << 7)
+            Dim iLabelFlags_ProjectsYesterday As Integer = (1 << 2)
+            Dim iLabelFlags_FilesYesterday As Integer = (1 << 3)
+            Dim iLabelFlags_ProjectsWeek As Integer = (1 << 4)
+            Dim iLabelFlags_FilesWeek As Integer = (1 << 5)
+            Dim iLabelFlags_ProjectsMonth As Integer = (1 << 6)
+            Dim iLabelFlags_FilesMonth As Integer = (1 << 7)
+            Dim iLabelFlags_ProjectsOther As Integer = (1 << 8)
+            Dim iLabelFlags_FilesOther As Integer = (1 << 9)
 
 
             Dim iLabelFlags As Integer = 0
@@ -379,13 +381,13 @@ Public Class UCStartPage
 
                     Case ((Now - New TimeSpan(2, 0, 0, 0)) < mDate)
                         If (bProjectFile) Then
-                            If (Not CBool(iLabelFlags And iLabelFlags_ProjectsToday)) Then
-                                iLabelFlags = (iLabelFlags Or iLabelFlags_ProjectsToday)
+                            If (Not CBool(iLabelFlags And iLabelFlags_ProjectsYesterday)) Then
+                                iLabelFlags = (iLabelFlags Or iLabelFlags_ProjectsYesterday)
                                 CreateLastModifiedLabel("Yesterday", g_mUCStartPage.TabPage_RecentProjects)
                             End If
                         Else
-                            If (Not CBool(iLabelFlags And iLabelFlags_FilesToday)) Then
-                                iLabelFlags = (iLabelFlags Or iLabelFlags_FilesToday)
+                            If (Not CBool(iLabelFlags And iLabelFlags_FilesYesterday)) Then
+                                iLabelFlags = (iLabelFlags Or iLabelFlags_FilesYesterday)
                                 CreateLastModifiedLabel("Yesterday", g_mUCStartPage.TabPage_RecentFiles)
                             End If
                         End If
