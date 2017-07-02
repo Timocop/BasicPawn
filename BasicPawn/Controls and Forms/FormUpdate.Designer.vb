@@ -7,6 +7,12 @@ Partial Class FormUpdate
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If (disposing) Then
+                If (g_mCheckUpdateThread IsNot Nothing AndAlso g_mCheckUpdateThread.IsAlive) Then
+                    g_mCheckUpdateThread.Abort()
+                    g_mCheckUpdateThread.Join()
+                    g_mCheckUpdateThread = Nothing
+                End If
+
                 If (g_mUpdateThread IsNot Nothing AndAlso g_mUpdateThread.IsAlive) Then
                     g_mUpdateThread.Abort()
                     g_mUpdateThread.Join()
@@ -37,18 +43,19 @@ Partial Class FormUpdate
         Me.Button_Close = New System.Windows.Forms.Button()
         Me.Label_Status = New System.Windows.Forms.Label()
         Me.ProgressBar_Status = New System.Windows.Forms.ProgressBar()
-        Me.ClassPictureBoxQuality2 = New BasicPawn.ClassPictureBoxQuality()
-        Me.ClassPictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
-        Me.Label2 = New System.Windows.Forms.Label()
-        Me.Label1 = New System.Windows.Forms.Label()
+        Me.ClassPictureBoxQuality_WarnIcon = New BasicPawn.ClassPictureBoxQuality()
+        Me.ClassPictureBoxQuality_TitleIcon = New BasicPawn.ClassPictureBoxQuality()
+        Me.Label_WarnText = New System.Windows.Forms.Label()
+        Me.Label_Title = New System.Windows.Forms.Label()
         Me.Panel_FooterControl.SuspendLayout()
-        CType(Me.ClassPictureBoxQuality2, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.ClassPictureBoxQuality1, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.ClassPictureBoxQuality_WarnIcon, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.ClassPictureBoxQuality_TitleIcon, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'Button_Update
         '
         Me.Button_Update.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Button_Update.Enabled = False
         Me.Button_Update.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.Button_Update.Location = New System.Drawing.Point(152, 13)
         Me.Button_Update.Name = "Button_Update"
@@ -125,49 +132,51 @@ Partial Class FormUpdate
         Me.ProgressBar_Status.TabIndex = 5
         Me.ProgressBar_Status.Visible = False
         '
-        'ClassPictureBoxQuality2
+        'ClassPictureBoxQuality_WarnIcon
         '
-        Me.ClassPictureBoxQuality2.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.ClassPictureBoxQuality2.Image = Global.BasicPawn.My.Resources.Resources.Bmp_Warn
-        Me.ClassPictureBoxQuality2.Location = New System.Drawing.Point(52, 128)
-        Me.ClassPictureBoxQuality2.m_HighQuality = True
-        Me.ClassPictureBoxQuality2.Name = "ClassPictureBoxQuality2"
-        Me.ClassPictureBoxQuality2.Size = New System.Drawing.Size(24, 24)
-        Me.ClassPictureBoxQuality2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
-        Me.ClassPictureBoxQuality2.TabIndex = 3
-        Me.ClassPictureBoxQuality2.TabStop = False
+        Me.ClassPictureBoxQuality_WarnIcon.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.ClassPictureBoxQuality_WarnIcon.Image = Global.BasicPawn.My.Resources.Resources.Bmp_Warn
+        Me.ClassPictureBoxQuality_WarnIcon.Location = New System.Drawing.Point(52, 128)
+        Me.ClassPictureBoxQuality_WarnIcon.m_HighQuality = True
+        Me.ClassPictureBoxQuality_WarnIcon.Name = "ClassPictureBoxQuality_WarnIcon"
+        Me.ClassPictureBoxQuality_WarnIcon.Size = New System.Drawing.Size(24, 24)
+        Me.ClassPictureBoxQuality_WarnIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
+        Me.ClassPictureBoxQuality_WarnIcon.TabIndex = 3
+        Me.ClassPictureBoxQuality_WarnIcon.TabStop = False
+        Me.ClassPictureBoxQuality_WarnIcon.Visible = False
         '
-        'ClassPictureBoxQuality1
+        'ClassPictureBoxQuality_TitleIcon
         '
-        Me.ClassPictureBoxQuality1.Image = Global.BasicPawn.My.Resources.Resources.Bmp_Network
-        Me.ClassPictureBoxQuality1.Location = New System.Drawing.Point(12, 12)
-        Me.ClassPictureBoxQuality1.m_HighQuality = True
-        Me.ClassPictureBoxQuality1.Name = "ClassPictureBoxQuality1"
-        Me.ClassPictureBoxQuality1.Size = New System.Drawing.Size(64, 64)
-        Me.ClassPictureBoxQuality1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
-        Me.ClassPictureBoxQuality1.TabIndex = 2
-        Me.ClassPictureBoxQuality1.TabStop = False
+        Me.ClassPictureBoxQuality_TitleIcon.Image = Global.BasicPawn.My.Resources.Resources.Bmp_Network
+        Me.ClassPictureBoxQuality_TitleIcon.Location = New System.Drawing.Point(12, 12)
+        Me.ClassPictureBoxQuality_TitleIcon.m_HighQuality = True
+        Me.ClassPictureBoxQuality_TitleIcon.Name = "ClassPictureBoxQuality_TitleIcon"
+        Me.ClassPictureBoxQuality_TitleIcon.Size = New System.Drawing.Size(64, 64)
+        Me.ClassPictureBoxQuality_TitleIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
+        Me.ClassPictureBoxQuality_TitleIcon.TabIndex = 2
+        Me.ClassPictureBoxQuality_TitleIcon.TabStop = False
         '
-        'Label2
+        'Label_WarnText
         '
-        Me.Label2.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.Label_WarnText.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Label2.Location = New System.Drawing.Point(82, 128)
-        Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(290, 32)
-        Me.Label2.TabIndex = 1
-        Me.Label2.Text = "All BasicPawn instances will be closed and all your unsaved work will be lost!"
-        Me.Label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.Label_WarnText.Location = New System.Drawing.Point(82, 128)
+        Me.Label_WarnText.Name = "Label_WarnText"
+        Me.Label_WarnText.Size = New System.Drawing.Size(290, 32)
+        Me.Label_WarnText.TabIndex = 1
+        Me.Label_WarnText.Text = "All BasicPawn instances will be closed and all your unsaved work will be lost!"
+        Me.Label_WarnText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.Label_WarnText.Visible = False
         '
-        'Label1
+        'Label_Title
         '
-        Me.Label1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.Label_Title.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Label1.Location = New System.Drawing.Point(82, 12)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(290, 39)
-        Me.Label1.TabIndex = 0
-        Me.Label1.Text = "A new BasicPawn update is available!" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Do you want to update now?"
+        Me.Label_Title.Location = New System.Drawing.Point(82, 12)
+        Me.Label_Title.Name = "Label_Title"
+        Me.Label_Title.Size = New System.Drawing.Size(290, 39)
+        Me.Label_Title.TabIndex = 0
+        Me.Label_Title.Text = "Checking..."
         '
         'FormUpdate
         '
@@ -178,10 +187,10 @@ Partial Class FormUpdate
         Me.Controls.Add(Me.Label_Status)
         Me.Controls.Add(Me.Panel_FooterControl)
         Me.Controls.Add(Me.ProgressBar_Status)
-        Me.Controls.Add(Me.ClassPictureBoxQuality2)
-        Me.Controls.Add(Me.ClassPictureBoxQuality1)
-        Me.Controls.Add(Me.Label1)
-        Me.Controls.Add(Me.Label2)
+        Me.Controls.Add(Me.ClassPictureBoxQuality_WarnIcon)
+        Me.Controls.Add(Me.ClassPictureBoxQuality_TitleIcon)
+        Me.Controls.Add(Me.Label_Title)
+        Me.Controls.Add(Me.Label_WarnText)
         Me.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
@@ -193,8 +202,8 @@ Partial Class FormUpdate
         Me.Text = "BasicPawn Update"
         Me.Panel_FooterControl.ResumeLayout(False)
         Me.Panel_FooterControl.PerformLayout()
-        CType(Me.ClassPictureBoxQuality2, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.ClassPictureBoxQuality1, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.ClassPictureBoxQuality_WarnIcon, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.ClassPictureBoxQuality_TitleIcon, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
     End Sub
@@ -203,10 +212,10 @@ Partial Class FormUpdate
     Friend WithEvents Panel_FooterControl As Panel
     Friend WithEvents Panel_FooterDarkControl As Panel
     Friend WithEvents Button_Close As Button
-    Friend WithEvents Label2 As Label
-    Friend WithEvents Label1 As Label
-    Friend WithEvents ClassPictureBoxQuality1 As ClassPictureBoxQuality
-    Friend WithEvents ClassPictureBoxQuality2 As ClassPictureBoxQuality
+    Friend WithEvents Label_WarnText As Label
+    Friend WithEvents Label_Title As Label
+    Friend WithEvents ClassPictureBoxQuality_TitleIcon As ClassPictureBoxQuality
+    Friend WithEvents ClassPictureBoxQuality_WarnIcon As ClassPictureBoxQuality
     Friend WithEvents ProgressBar_Status As ProgressBar
     Friend WithEvents Label_Status As Label
     Friend WithEvents LinkLabel_ManualUpdate As LinkLabel

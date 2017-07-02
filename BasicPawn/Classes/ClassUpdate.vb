@@ -102,8 +102,17 @@ Public Class ClassUpdate
     End Sub
 
     Public Shared Function CheckUpdateAvailable() As Boolean
+        Dim sNextVersion = ""
+        Dim sCurrentVersion = ""
+        Return CheckUpdateAvailable(sNextVersion, sCurrentVersion)
+    End Function
+
+    Public Shared Function CheckUpdateAvailable(ByRef r_sNextVersion As String, ByRef r_sCurrentVersion As String) As Boolean
         Dim sNextVersion As String = Regex.Match(GetNextVersion(), "[0-9\.]+").Value
         Dim sCurrentVersion As String = Regex.Match(GetCurrentVerison(), "[0-9\.]+").Value
+
+        r_sNextVersion = sNextVersion
+        r_sCurrentVersion = sCurrentVersion
 
         Return (New Version(sNextVersion) > New Version(sCurrentVersion))
     End Function

@@ -23,7 +23,7 @@ Partial Class UCObjectBrowser
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Me.TreeView_ObjectBrowser = New ClassTreeViewWine()
+        Me.TreeView_ObjectBrowser = New BasicPawn.UCObjectBrowser.ClassTreeViewWine()
         Me.ContextMenuStrip_ObjectBrowser = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.ToolStripMenuItem_OpenFile = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Copy = New System.Windows.Forms.ToolStripMenuItem()
@@ -52,29 +52,29 @@ Partial Class UCObjectBrowser
         Me.ContextMenuStrip_ObjectBrowser.Name = "ContextMenuStrip_ObjectBrowser"
         Me.ContextMenuStrip_ObjectBrowser.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
         Me.ContextMenuStrip_ObjectBrowser.ShowImageMargin = False
-        Me.ContextMenuStrip_ObjectBrowser.Size = New System.Drawing.Size(128, 98)
+        Me.ContextMenuStrip_ObjectBrowser.Size = New System.Drawing.Size(125, 76)
         '
         'ToolStripMenuItem_OpenFile
         '
         Me.ToolStripMenuItem_OpenFile.Name = "ToolStripMenuItem_OpenFile"
-        Me.ToolStripMenuItem_OpenFile.Size = New System.Drawing.Size(127, 22)
+        Me.ToolStripMenuItem_OpenFile.Size = New System.Drawing.Size(124, 22)
         Me.ToolStripMenuItem_OpenFile.Text = "Open file"
         '
         'ToolStripMenuItem_Copy
         '
         Me.ToolStripMenuItem_Copy.Name = "ToolStripMenuItem_Copy"
-        Me.ToolStripMenuItem_Copy.Size = New System.Drawing.Size(127, 22)
+        Me.ToolStripMenuItem_Copy.Size = New System.Drawing.Size(124, 22)
         Me.ToolStripMenuItem_Copy.Text = "Copy"
         '
         'ToolStripSeparator1
         '
         Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
-        Me.ToolStripSeparator1.Size = New System.Drawing.Size(124, 6)
+        Me.ToolStripSeparator1.Size = New System.Drawing.Size(121, 6)
         '
         'ToolStripMenuItem_ListReferences
         '
         Me.ToolStripMenuItem_ListReferences.Name = "ToolStripMenuItem_ListReferences"
-        Me.ToolStripMenuItem_ListReferences.Size = New System.Drawing.Size(127, 22)
+        Me.ToolStripMenuItem_ListReferences.Size = New System.Drawing.Size(124, 22)
         Me.ToolStripMenuItem_ListReferences.Text = "List references"
         '
         'TextboxWatermark_Search

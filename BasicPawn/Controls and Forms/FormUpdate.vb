@@ -17,6 +17,7 @@
 
 Public Class FormUpdate
     Private g_mUpdateThread As Threading.Thread
+    Private g_mCheckUpdateThread As Threading.Thread
 
     Public Sub New()
 
@@ -30,6 +31,13 @@ Public Class FormUpdate
 
     Private Sub FormUpdate_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ClassControlStyle.UpdateControls(Me)
+
+        If (g_mCheckUpdateThread Is Nothing OrElse Not g_mCheckUpdateThread.IsAlive) Then
+            g_mCheckUpdateThread = New Threading.Thread(AddressOf CheckUpdate) With {
+                .IsBackground = True
+            }
+            g_mCheckUpdateThread.Start()
+        End If
     End Sub
 
     Private Sub Button_Close_Click(sender As Object, e As EventArgs) Handles Button_Close.Click
@@ -47,6 +55,46 @@ Public Class FormUpdate
         g_mUpdateThread.Start()
     End Sub
 
+    Private Sub CheckUpdate()
+        Try
+            Dim sNextVersion As String = ""
+            Dim sCurrentVersion As String = ""
+            Dim bSkipCheck As Boolean = False
+
+#If DEBUG Then
+            bSkipCheck = True
+#End If
+
+            If (ClassUpdate.CheckUpdateAvailable(sNextVersion, sCurrentVersion) OrElse bSkipCheck) Then
+                Me.Invoke(Sub()
+                              Label_Title.Text = "A new BasicPawn update is available!" & Environment.NewLine & String.Format("Do you want to update from version {0} to version {1} now?", sCurrentVersion, sNextVersion)
+                              Button_Update.Enabled = True
+
+                              ClassPictureBoxQuality_WarnIcon.Visible = True
+                              Label_WarnText.Visible = True
+                          End Sub)
+            Else
+                Me.Invoke(Sub()
+                              Label_Title.Text = "There are no new updates available!"
+                          End Sub)
+            End If
+
+        Catch ex As Threading.ThreadAbortException
+            Throw
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLog(ex)
+
+            Me.BeginInvoke(Sub()
+                               Label_Title.Text = "Could not check for updates!"
+
+                               Label_Status.Text = "Error: " & ex.Message
+                               Label_Status.ForeColor = Color.Red
+                               Label_Status.Visible = True
+                               ProgressBar_Status.Visible = False
+                           End Sub)
+        End Try
+    End Sub
+
     Private Sub UpdateThread()
         Try
             Me.Invoke(Sub()
@@ -58,10 +106,9 @@ Public Class FormUpdate
 
             ClassUpdate.InstallUpdate()
 
-            'Should not reach... ever...
+            'Debug only
             Me.Invoke(Sub()
-                          Label_Status.Text = "Status: Could not install update for unknown reasons!"
-                          Label_Status.ForeColor = Color.Red
+                          Label_Status.Text = "Status: Downloaded update!"
                           Label_Status.Visible = True
                           ProgressBar_Status.Visible = False
                       End Sub)
