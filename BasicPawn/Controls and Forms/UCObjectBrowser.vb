@@ -208,6 +208,10 @@ Public Class UCObjectBrowser
         End If
 
         Dim sSearchText As String = TextboxWatermark_Search.Text
+        If (String.IsNullOrEmpty(sSearchText)) Then
+            Return
+        End If
+
         Dim mTreeNodes As TreeNode() = GetAllTreeViewNodes(TreeView_ObjectBrowser)
 
         Dim iSelectedIndex As Integer = -1

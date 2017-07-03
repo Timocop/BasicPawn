@@ -27,6 +27,7 @@ Partial Class UCProjectBrowser
         Me.ColumnHeader1 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ContextMenuStrip_ProjectFiles = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.ToolStripMenuItem_Open = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_ProjectSave = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_Cut = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Copy = New System.Windows.Forms.ToolStripMenuItem()
@@ -38,18 +39,20 @@ Partial Class UCProjectBrowser
         Me.ToolStripMenuItem_AddFiles = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_Exlcude = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripMenuItem_ProjectSave = New System.Windows.Forms.ToolStripMenuItem()
+        Me.TextboxWatermark_Search = New BasicPawn.ClassTextboxWatermark()
         Me.ContextMenuStrip_ProjectFiles.SuspendLayout()
         Me.SuspendLayout()
         '
         'ListView_ProjectFiles
         '
+        Me.ListView_ProjectFiles.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.ListView_ProjectFiles.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1})
         Me.ListView_ProjectFiles.ContextMenuStrip = Me.ContextMenuStrip_ProjectFiles
         Me.ListView_ProjectFiles.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ListView_ProjectFiles.Location = New System.Drawing.Point(0, 0)
+        Me.ListView_ProjectFiles.HideSelection = False
+        Me.ListView_ProjectFiles.Location = New System.Drawing.Point(0, 22)
         Me.ListView_ProjectFiles.Name = "ListView_ProjectFiles"
-        Me.ListView_ProjectFiles.Size = New System.Drawing.Size(276, 493)
+        Me.ListView_ProjectFiles.Size = New System.Drawing.Size(276, 471)
         Me.ListView_ProjectFiles.TabIndex = 0
         Me.ListView_ProjectFiles.UseCompatibleStateImageBehavior = False
         Me.ListView_ProjectFiles.View = System.Windows.Forms.View.Details
@@ -64,13 +67,19 @@ Partial Class UCProjectBrowser
         Me.ContextMenuStrip_ProjectFiles.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_Open, Me.ToolStripMenuItem_ProjectSave, Me.ToolStripSeparator1, Me.ToolStripMenuItem_Cut, Me.ToolStripMenuItem_Copy, Me.ToolStripMenuItem_Paste, Me.ToolStripSeparator3, Me.ToolStripMenuItem_AddTab, Me.ToolStripMenuItem_AddNewTabs, Me.ToolStripMenuItem_AddAllTabs, Me.ToolStripMenuItem_AddFiles, Me.ToolStripSeparator2, Me.ToolStripMenuItem_Exlcude})
         Me.ContextMenuStrip_ProjectFiles.Name = "ContextMenuStrip_ProjectFiles"
         Me.ContextMenuStrip_ProjectFiles.ShowImageMargin = False
-        Me.ContextMenuStrip_ProjectFiles.Size = New System.Drawing.Size(159, 264)
+        Me.ContextMenuStrip_ProjectFiles.Size = New System.Drawing.Size(159, 242)
         '
         'ToolStripMenuItem_Open
         '
         Me.ToolStripMenuItem_Open.Name = "ToolStripMenuItem_Open"
         Me.ToolStripMenuItem_Open.Size = New System.Drawing.Size(158, 22)
         Me.ToolStripMenuItem_Open.Text = "Open"
+        '
+        'ToolStripMenuItem_ProjectSave
+        '
+        Me.ToolStripMenuItem_ProjectSave.Name = "ToolStripMenuItem_ProjectSave"
+        Me.ToolStripMenuItem_ProjectSave.Size = New System.Drawing.Size(158, 22)
+        Me.ToolStripMenuItem_ProjectSave.Text = "Save Project"
         '
         'ToolStripSeparator1
         '
@@ -140,22 +149,28 @@ Partial Class UCProjectBrowser
         Me.ToolStripMenuItem_Exlcude.Text = "Exclude from project"
         Me.ToolStripMenuItem_Exlcude.ToolTipText = "Exclude files from the project."
         '
-        'ToolStripMenuItem_ProjectSave
+        'TextboxWatermark_Search
         '
-        Me.ToolStripMenuItem_ProjectSave.Name = "ToolStripMenuItem_ProjectSave"
-        Me.ToolStripMenuItem_ProjectSave.Size = New System.Drawing.Size(158, 22)
-        Me.ToolStripMenuItem_ProjectSave.Text = "Save Project"
+        Me.TextboxWatermark_Search.Dock = System.Windows.Forms.DockStyle.Top
+        Me.TextboxWatermark_Search.Location = New System.Drawing.Point(0, 0)
+        Me.TextboxWatermark_Search.m_sWatermarkText = "Search..."
+        Me.TextboxWatermark_Search.Name = "TextboxWatermark_Search"
+        Me.TextboxWatermark_Search.Size = New System.Drawing.Size(276, 22)
+        Me.TextboxWatermark_Search.TabIndex = 1
+        Me.TextboxWatermark_Search.Text = "Search..."
         '
         'UCProjectBrowser
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.Controls.Add(Me.ListView_ProjectFiles)
+        Me.Controls.Add(Me.TextboxWatermark_Search)
         Me.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Name = "UCProjectBrowser"
         Me.Size = New System.Drawing.Size(276, 493)
         Me.ContextMenuStrip_ProjectFiles.ResumeLayout(False)
         Me.ResumeLayout(False)
+        Me.PerformLayout()
 
     End Sub
 
@@ -175,4 +190,5 @@ Partial Class UCProjectBrowser
     Friend WithEvents ToolStripMenuItem_AddFiles As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_AddNewTabs As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_ProjectSave As ToolStripMenuItem
+    Friend WithEvents TextboxWatermark_Search As ClassTextboxWatermark
 End Class

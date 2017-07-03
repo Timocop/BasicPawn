@@ -479,4 +479,27 @@ Public Class UCProjectBrowser
 
         ToolStripMenuItem_Exlcude.Enabled = (ListView_ProjectFiles.SelectedItems.Count > 0)
     End Sub
+
+    Private Sub ClassTextboxWatermark1_PreviewKeyDown(sender As Object, e As PreviewKeyDownEventArgs) Handles TextboxWatermark_Search.PreviewKeyDown
+        If (e.KeyCode <> Keys.Enter) Then
+            Return
+        End If
+
+        Dim sSearchText As String = TextboxWatermark_Search.Text
+        If (String.IsNullOrEmpty(sSearchText)) Then
+            Return
+        End If
+
+        'Deselect everything
+        For i = 0 To ListView_ProjectFiles.Items.Count - 1
+            ListView_ProjectFiles.Items(i).Selected = False
+        Next
+
+        For i = 0 To ListView_ProjectFiles.Items.Count - 1
+            If (ListView_ProjectFiles.Items(i).SubItems(0).Text.ToLower.Contains(sSearchText.ToLower)) Then
+                ListView_ProjectFiles.Items(i).Selected = True
+                ListView_ProjectFiles.Items(i).EnsureVisible()
+            End If
+        Next
+    End Sub
 End Class
