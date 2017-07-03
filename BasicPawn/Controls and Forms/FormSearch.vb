@@ -246,12 +246,14 @@ Public Class FormSearch
 
         Dim iStrucArray As STRUC_SEARCH_RESULTS() = DoSearch()
         If (iStrucArray Is Nothing) Then
+            ListView_Output.Items.Clear()
             Return
         End If
 
         ToolStripStatusLabel1.Text = String.Format("{0} Items found!", iStrucArray.Length)
 
         If (iStrucArray.Length < 1) Then
+            ListView_Output.Items.Clear()
             Return
         End If
 
