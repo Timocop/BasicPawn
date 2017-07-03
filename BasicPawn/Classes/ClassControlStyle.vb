@@ -209,7 +209,7 @@ Public Class ClassControlStyle
                     i.ForeColor = g_cDarkControlColor.mDarkForeground
                 Else
                     i.LinkColor = Color.RoyalBlue
-                    i.BackColor = g_cDarkControlColor.mLightBackground
+                    i.BackColor = Color.Transparent
                     i.ForeColor = g_cDarkControlColor.mLightForegound
                 End If
 

@@ -46,7 +46,7 @@ Partial Class FormUpdate
         Me.ClassPictureBoxQuality_WarnIcon = New BasicPawn.ClassPictureBoxQuality()
         Me.ClassPictureBoxQuality_TitleIcon = New BasicPawn.ClassPictureBoxQuality()
         Me.Label_WarnText = New System.Windows.Forms.Label()
-        Me.Label_Title = New System.Windows.Forms.Label()
+        Me.Label_StatusTitle = New System.Windows.Forms.Label()
         Me.Panel_FooterControl.SuspendLayout()
         CType(Me.ClassPictureBoxQuality_WarnIcon, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.ClassPictureBoxQuality_TitleIcon, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -168,15 +168,15 @@ Partial Class FormUpdate
         Me.Label_WarnText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.Label_WarnText.Visible = False
         '
-        'Label_Title
+        'Label_StatusTitle
         '
-        Me.Label_Title.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.Label_StatusTitle.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Label_Title.Location = New System.Drawing.Point(82, 12)
-        Me.Label_Title.Name = "Label_Title"
-        Me.Label_Title.Size = New System.Drawing.Size(290, 39)
-        Me.Label_Title.TabIndex = 0
-        Me.Label_Title.Text = "Checking..."
+        Me.Label_StatusTitle.Location = New System.Drawing.Point(82, 12)
+        Me.Label_StatusTitle.Name = "Label_StatusTitle"
+        Me.Label_StatusTitle.Size = New System.Drawing.Size(290, 39)
+        Me.Label_StatusTitle.TabIndex = 0
+        Me.Label_StatusTitle.Text = "Checking..."
         '
         'FormUpdate
         '
@@ -189,7 +189,7 @@ Partial Class FormUpdate
         Me.Controls.Add(Me.ProgressBar_Status)
         Me.Controls.Add(Me.ClassPictureBoxQuality_WarnIcon)
         Me.Controls.Add(Me.ClassPictureBoxQuality_TitleIcon)
-        Me.Controls.Add(Me.Label_Title)
+        Me.Controls.Add(Me.Label_StatusTitle)
         Me.Controls.Add(Me.Label_WarnText)
         Me.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
@@ -213,7 +213,7 @@ Partial Class FormUpdate
     Friend WithEvents Panel_FooterDarkControl As Panel
     Friend WithEvents Button_Close As Button
     Friend WithEvents Label_WarnText As Label
-    Friend WithEvents Label_Title As Label
+    Friend WithEvents Label_StatusTitle As Label
     Friend WithEvents ClassPictureBoxQuality_TitleIcon As ClassPictureBoxQuality
     Friend WithEvents ClassPictureBoxQuality_WarnIcon As ClassPictureBoxQuality
     Friend WithEvents ProgressBar_Status As ProgressBar

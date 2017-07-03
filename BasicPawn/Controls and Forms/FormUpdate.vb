@@ -67,7 +67,7 @@ Public Class FormUpdate
 
             If (ClassUpdate.CheckUpdateAvailable(sNextVersion, sCurrentVersion) OrElse bSkipCheck) Then
                 Me.Invoke(Sub()
-                              Label_Title.Text = "A new BasicPawn update is available!" & Environment.NewLine & String.Format("Do you want to update from version {0} to version {1} now?", sCurrentVersion, sNextVersion)
+                              Label_StatusTitle.Text = "A new BasicPawn update is available!" & Environment.NewLine & String.Format("Do you want to update from version {0} to version {1} now?", sCurrentVersion, sNextVersion)
                               Button_Update.Enabled = True
 
                               ClassPictureBoxQuality_WarnIcon.Visible = True
@@ -75,7 +75,7 @@ Public Class FormUpdate
                           End Sub)
             Else
                 Me.Invoke(Sub()
-                              Label_Title.Text = "There are no new updates available!"
+                              Label_StatusTitle.Text = "There are no new updates available!"
                           End Sub)
             End If
 
@@ -85,7 +85,7 @@ Public Class FormUpdate
             ClassExceptionLog.WriteToLog(ex)
 
             Me.BeginInvoke(Sub()
-                               Label_Title.Text = "Could not check for updates!"
+                               Label_StatusTitle.Text = "Could not check for updates!"
 
                                Label_Status.Text = "Error: " & ex.Message
                                Label_Status.ForeColor = Color.Red
