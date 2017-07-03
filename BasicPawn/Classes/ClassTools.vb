@@ -309,18 +309,18 @@ Public Class ClassTools
         ''' Enables/Disables double buffering using unmanaged.
         ''' Only works on Windows Vista and higher!
         ''' </summary>
-        ''' <param name="cControl"></param>
-        Public Shared Sub SetDoubleBufferingUnmanaged(cControl As Control, bEnable As Boolean)
+        ''' <param name="c"></param>
+        Public Shared Sub SetDoubleBufferingUnmanaged(c As Control, bEnable As Boolean)
             If (Environment.OSVersion.Version.Major > 5) Then
-                Dim style As Integer = NativeWinAPI.GetWindowLong(cControl.Handle, NativeWinAPI.GWL_EXSTYLE)
+                Dim iStyle As Integer = NativeWinAPI.GetWindowLong(c.Handle, NativeWinAPI.GWL_EXSTYLE)
 
                 If (bEnable) Then
-                    style = style Or NativeWinAPI.WS_EX_COMPOSITED
+                    iStyle = iStyle Or NativeWinAPI.WS_EX_COMPOSITED
                 Else
-                    style = style And Not NativeWinAPI.WS_EX_COMPOSITED
+                    iStyle = iStyle And Not NativeWinAPI.WS_EX_COMPOSITED
                 End If
 
-                NativeWinAPI.SetWindowLong(cControl.Handle, NativeWinAPI.GWL_EXSTYLE, style)
+                NativeWinAPI.SetWindowLong(c.Handle, NativeWinAPI.GWL_EXSTYLE, iStyle)
             End If
         End Sub
 
@@ -328,51 +328,51 @@ Public Class ClassTools
         ''' Enables/Disables double buffering using unmanaged on all control childs.
         ''' Only works on Windows Vista and higher!
         ''' </summary>
-        ''' <param name="cControl"></param>
-        Public Shared Sub SetDoubleBufferingUnmanagedAllChilds(cControl As Control, bEnable As Boolean)
-            SetDoubleBufferingUnmanaged(cControl, bEnable)
-            For Each c As Control In cControl.Controls
-                SetDoubleBufferingUnmanagedAllChilds(c, bEnable)
+        ''' <param name="c"></param>
+        Public Shared Sub SetDoubleBufferingUnmanagedAllChilds(c As Control, bEnable As Boolean)
+            SetDoubleBufferingUnmanaged(c, bEnable)
+            For Each c2 As Control In c.Controls
+                SetDoubleBufferingUnmanagedAllChilds(c2, bEnable)
             Next
         End Sub
 
         ''' <summary>
         ''' Force double buffering using reflection.
         ''' </summary>
-        ''' <param name="cControl"></param>
+        ''' <param name="c"></param>
         ''' <param name="bEnable"></param>
-        Public Shared Sub SetDoubleBuffering(cControl As Control, bEnable As Boolean)
+        Public Shared Sub SetDoubleBuffering(c As Control, bEnable As Boolean)
             Dim controlProperty As Reflection.PropertyInfo = GetType(Control).GetProperty("DoubleBuffered", Reflection.BindingFlags.NonPublic Or Reflection.BindingFlags.Instance)
-            controlProperty.SetValue(cControl, bEnable, Nothing)
+            controlProperty.SetValue(c, bEnable, Nothing)
         End Sub
 
         ''' <summary>
         ''' Force double buffering using reflection on all control childs.
         ''' </summary>
-        ''' <param name="cControl"></param>
+        ''' <param name="c"></param>
         ''' <param name="bEnable"></param>
-        Public Shared Sub SetDoubleBufferingAllChilds(cControl As Control, bEnable As Boolean)
-            SetDoubleBuffering(cControl, bEnable)
-            For Each c As Control In cControl.Controls
-                SetDoubleBufferingAllChilds(c, bEnable)
+        Public Shared Sub SetDoubleBufferingAllChilds(c As Control, bEnable As Boolean)
+            SetDoubleBuffering(c, bEnable)
+            For Each c2 As Control In c.Controls
+                SetDoubleBufferingAllChilds(c2, bEnable)
             Next
         End Sub
 
         ''' <summary>
         ''' Suspends drawing of a control using unmanaged.
         ''' </summary>
-        ''' <param name="cControl"></param>
-        Public Shared Sub SuspendDrawing(cControl As Control)
-            NativeWinAPI.SendMessage(cControl.Handle, NativeWinAPI.WM_SETREDRAW, False, 0)
+        ''' <param name="c"></param>
+        Public Shared Sub SuspendDrawing(c As Control)
+            NativeWinAPI.SendMessage(c.Handle, NativeWinAPI.WM_SETREDRAW, False, 0)
         End Sub
 
         ''' <summary>
         ''' Resumes drawing of a control using unmanaged.
         ''' </summary>
-        ''' <param name="cControl"></param>
-        Public Shared Sub ResumeDrawing(cControl As Control)
-            NativeWinAPI.SendMessage(cControl.Handle, NativeWinAPI.WM_SETREDRAW, True, 0)
-            cControl.Refresh()
+        ''' <param name="c"></param>
+        Public Shared Sub ResumeDrawing(c As Control)
+            NativeWinAPI.SendMessage(c.Handle, NativeWinAPI.WM_SETREDRAW, True, 0)
+            c.Refresh()
         End Sub
 
         ''' <summary>
