@@ -76,13 +76,13 @@ Public Class ClassUpdate
         End If
 
 #If Not DEBUG Then
-        For Each pProcess As Process In Process.GetProcessesByName("BasicPawn.exe")
+        For Each pProcess As Process In Process.GetProcessesByName(IO.Path.GetFileNameWithoutExtension(Application.ExecutablePath))
             Try
                 If (pProcess.HasExited OrElse pProcess.Id = Process.GetCurrentProcess.Id) Then
                     Continue For
                 End If
 
-                If (Not IO.Path.GetFullPath(pProcess.MainModule.FileName).ToLower.StartsWith(Application.StartupPath.ToLower)) Then
+                If (IO.Path.GetFullPath(pProcess.MainModule.FileName).ToLower <> IO.Path.GetFullPath(Application.ExecutablePath).ToLower) Then
                     Continue For
                 End If
 
