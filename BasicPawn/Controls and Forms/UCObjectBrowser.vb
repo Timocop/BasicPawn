@@ -85,14 +85,14 @@ Public Class UCObjectBrowser
                 Me.Invoke(Sub() TreeView_ObjectBrowser.BeginUpdate())
             End If
 
-            Dim lAutocompleteList As New List(Of FormMain.STRUC_AUTOCOMPLETE)
+            Dim lAutocompleteList As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
             lAutocompleteList.AddRange(g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.ToArray)
 
             If (True) Then
                 Dim i As Integer
                 For i = 0 To lAutocompleteList.Count - 1
                     If (Not ClassSettings.g_iSettingsVarAutocompleteShowObjectBrowser) Then
-                        If ((lAutocompleteList(i).mType And FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) Then
+                        If ((lAutocompleteList(i).mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) Then
                             Continue For
                         End If
                     End If
@@ -155,7 +155,7 @@ Public Class UCObjectBrowser
                                 Continue For
                             End If
 
-                            If (Not lAutocompleteList.Exists(Function(m As FormMain.STRUC_AUTOCOMPLETE) m.sFile = mTreeNodeAutocomplete.g_sFile AndAlso m.mType = mTreeNodeAutocomplete.g_iType AndAlso m.sFunctionName = mTreeNodeAutocomplete.g_sFunction)) Then
+                            If (Not lAutocompleteList.Exists(Function(m As ClassSyntaxTools.STRUC_AUTOCOMPLETE) m.sFile = mTreeNodeAutocomplete.g_sFile AndAlso m.mType = mTreeNodeAutocomplete.g_iType AndAlso m.sFunctionName = mTreeNodeAutocomplete.g_sFunction)) Then
                                 Me.Invoke(Sub() mNameNodes(l).Remove())
                             End If
                         Next

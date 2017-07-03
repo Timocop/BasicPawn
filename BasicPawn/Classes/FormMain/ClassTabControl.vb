@@ -476,7 +476,7 @@ Public Class ClassTabControl
         Private g_sIdentifier As String = Guid.NewGuid.ToString
 
         Private g_sFile As String = ""
-        Private g_mAutocompleteItems As FormMain.STRUC_AUTOCOMPLETE()
+        Private g_mAutocompleteItems As ClassSyntaxTools.STRUC_AUTOCOMPLETE()
         Private g_mSourceTextEditor As TextEditorControlEx
         Private g_bEnabled As Boolean = True
 
@@ -664,11 +664,11 @@ Public Class ClassTabControl
             End Get
         End Property
 
-        Public Property m_AutocompleteItems As FormMain.STRUC_AUTOCOMPLETE()
+        Public Property m_AutocompleteItems As ClassSyntaxTools.STRUC_AUTOCOMPLETE()
             Get
                 Return g_mAutocompleteItems
             End Get
-            Set(value As FormMain.STRUC_AUTOCOMPLETE())
+            Set(value As ClassSyntaxTools.STRUC_AUTOCOMPLETE())
                 g_mAutocompleteItems = value
             End Set
         End Property
@@ -765,11 +765,11 @@ Public Class ClassTabControl
 
                     Dim bIsEmpty = Regex.IsMatch(g_mSourceTextEditor.ActiveTextAreaControl.Document.GetText(iLineOffset, iLineLen - sFunctionName.Length), "^\s*$")
 
-                    Dim mAutocomplete As FormMain.STRUC_AUTOCOMPLETE = g_mFormMain.g_mUCAutocomplete.GetSelectedItem()
+                    Dim mAutocomplete As ClassSyntaxTools.STRUC_AUTOCOMPLETE = g_mFormMain.g_mUCAutocomplete.GetSelectedItem()
 
                     If (mAutocomplete IsNot Nothing) Then
                         Select Case (True)
-                            Case (mAutocomplete.mType And FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD) = FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD
+                            Case (mAutocomplete.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD
                                 If (bIsEmpty) Then
                                     Dim iLineOffsetNum As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Offset
                                     Dim iLineLenNum As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Length
@@ -793,7 +793,7 @@ Public Class ClassTabControl
                                     g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = iPosition + mAutocomplete.sFunctionName.Length
                                 End If
 
-                            Case (mAutocomplete.mType And FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG) = FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG
+                            Case (mAutocomplete.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG
                                 If (bIsEmpty) Then
                                     Dim iLineOffsetNum As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Offset
                                     Dim iLineLenNum As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Length
@@ -817,9 +817,9 @@ Public Class ClassTabControl
                                     g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = iPosition + mAutocomplete.sFunctionName.Length
                                 End If
 
-                            Case (mAutocomplete.mType And FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM) = FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM,
-                                     (mAutocomplete.mType And FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) = FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET,
-                                     (mAutocomplete.mType And FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF) = FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF
+                            Case (mAutocomplete.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM,
+                                     (mAutocomplete.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET,
+                                     (mAutocomplete.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF
                                 If (bIsEmpty) Then
                                     Dim iLineOffsetNum As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Offset
                                     Dim iLineLenNum As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Length
@@ -844,15 +844,15 @@ Public Class ClassTabControl
                                 End If
 
 
-                            Case (mAutocomplete.mType And FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEFINE) = FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEFINE,
-                                   (mAutocomplete.mType And FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PUBLICVAR) = FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PUBLICVAR
+                            Case (mAutocomplete.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEFINE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEFINE,
+                                   (mAutocomplete.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PUBLICVAR) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PUBLICVAR
                                 g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, mAutocomplete.sFunctionName)
 
                                 iPosition = g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column
                                 g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = iPosition + mAutocomplete.sFunctionName.Length
 
-                            Case (mAutocomplete.mType And FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM) = FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM,
-                                    (mAutocomplete.mType And FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STRUCT) = FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STRUCT
+                            Case (mAutocomplete.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM,
+                                    (mAutocomplete.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STRUCT) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STRUCT
                                 If (ClassSettings.g_iSettingsFullEnumAutocomplete OrElse mAutocomplete.sFunctionName.IndexOf("."c) < 0) Then
                                     g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, mAutocomplete.sFunctionName.Replace("."c, ":"c))
 
@@ -865,8 +865,8 @@ Public Class ClassTabControl
                                     g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = iPosition + mAutocomplete.sFunctionName.Remove(0, mAutocomplete.sFunctionName.IndexOf("."c) + 1).Length
                                 End If
 
-                            Case (mAutocomplete.mType And FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) = FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP,
-                                   (mAutocomplete.mType And FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE
+                            Case (mAutocomplete.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP,
+                                   (mAutocomplete.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE
                                 If (mAutocomplete.sFunctionName.IndexOf("."c) > -1 AndAlso sFunctionName.IndexOf("."c) > -1 AndAlso Not sFunctionName.StartsWith(mAutocomplete.sFunctionName)) Then
                                     Dim sNewInput As String = String.Format("{0}.{1}",
                                                                         sFunctionName.Remove(sFunctionName.LastIndexOf("."c), sFunctionName.Length - sFunctionName.LastIndexOf("."c)),

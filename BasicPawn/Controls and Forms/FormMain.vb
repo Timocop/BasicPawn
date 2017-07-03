@@ -57,101 +57,6 @@ Public Class FormMain
 
     Private g_mPingFlashPanel As ClassPanelAlpha
 
-    Public Class STRUC_AUTOCOMPLETE
-        Public sInfo As String
-        Public sFile As String
-        Public mType As ENUM_TYPE_FLAGS
-        Public sFunctionName As String
-        Public sFullFunctionName As String
-
-        Enum ENUM_TYPE_FLAGS
-            NONE = 0
-            DEBUG = (1 << 0)
-            DEFINE = (1 << 1)
-            [ENUM] = (1 << 2)
-            FUNCENUM = (1 << 3)
-            FUNCTAG = (1 << 4)
-            STOCK = (1 << 5)
-            [STATIC] = (1 << 6)
-            [CONST] = (1 << 7)
-            [PUBLIC] = (1 << 8)
-            NATIVE = (1 << 9)
-            FORWARD = (1 << 10)
-            TYPESET = (1 << 11)
-            METHODMAP = (1 << 12)
-            TYPEDEF = (1 << 13)
-            VARIABLE = (1 << 14)
-            PUBLICVAR = (1 << 15)
-            [PROPERTY] = (1 << 16)
-            [FUNCTION] = (1 << 17)
-            STRUCT = (1 << 18)
-        End Enum
-
-        Public Function ParseTypeFullNames(sStr As String) As ENUM_TYPE_FLAGS
-            Return ParseTypeNames(sStr.Split(New String() {" "}, 0))
-        End Function
-
-        Public Function ParseTypeNames(sStr As String()) As ENUM_TYPE_FLAGS
-            Dim mTypes As ENUM_TYPE_FLAGS = ENUM_TYPE_FLAGS.NONE
-
-            For i = 0 To sStr.Length - 1
-                Select Case (sStr(i))
-                    Case "debug" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.DEBUG)
-                    Case "define" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.DEFINE)
-                    Case "enum" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.ENUM)
-                    Case "funcenum" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.FUNCENUM)
-                    Case "functag" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.FUNCTAG)
-                    Case "stock" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.STOCK)
-                    Case "static" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.STATIC)
-                    Case "const" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.CONST)
-                    Case "public" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.PUBLIC)
-                    Case "native" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.NATIVE)
-                    Case "forward" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.FORWARD)
-                    Case "typeset" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.TYPESET)
-                    Case "methodmap" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.METHODMAP)
-                    Case "typedef" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.TYPEDEF)
-                    Case "variable" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.VARIABLE)
-                    Case "publicvar" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.PUBLICVAR)
-                    Case "property" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.PROPERTY)
-                    Case "function" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.FUNCTION)
-                    Case "struct" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.STRUCT)
-                End Select
-            Next
-
-            Return mTypes
-        End Function
-
-        Public Function GetTypeNames() As String()
-            Dim lNames As New List(Of String)
-
-            If ((mType And ENUM_TYPE_FLAGS.DEBUG) = ENUM_TYPE_FLAGS.DEBUG) Then lNames.Add("debug")
-            If ((mType And ENUM_TYPE_FLAGS.DEFINE) = ENUM_TYPE_FLAGS.DEFINE) Then lNames.Add("define")
-            If ((mType And ENUM_TYPE_FLAGS.ENUM) = ENUM_TYPE_FLAGS.ENUM) Then lNames.Add("enum")
-            If ((mType And ENUM_TYPE_FLAGS.FUNCENUM) = ENUM_TYPE_FLAGS.FUNCENUM) Then lNames.Add("funcenum")
-            If ((mType And ENUM_TYPE_FLAGS.FUNCTAG) = ENUM_TYPE_FLAGS.FUNCTAG) Then lNames.Add("functag")
-            If ((mType And ENUM_TYPE_FLAGS.STOCK) = ENUM_TYPE_FLAGS.STOCK) Then lNames.Add("stock")
-            If ((mType And ENUM_TYPE_FLAGS.STATIC) = ENUM_TYPE_FLAGS.STATIC) Then lNames.Add("static")
-            If ((mType And ENUM_TYPE_FLAGS.CONST) = ENUM_TYPE_FLAGS.CONST) Then lNames.Add("const")
-            If ((mType And ENUM_TYPE_FLAGS.PUBLIC) = ENUM_TYPE_FLAGS.PUBLIC) Then lNames.Add("public")
-            If ((mType And ENUM_TYPE_FLAGS.NATIVE) = ENUM_TYPE_FLAGS.NATIVE) Then lNames.Add("native")
-            If ((mType And ENUM_TYPE_FLAGS.FORWARD) = ENUM_TYPE_FLAGS.FORWARD) Then lNames.Add("forward")
-            If ((mType And ENUM_TYPE_FLAGS.TYPESET) = ENUM_TYPE_FLAGS.TYPESET) Then lNames.Add("typeset")
-            If ((mType And ENUM_TYPE_FLAGS.METHODMAP) = ENUM_TYPE_FLAGS.METHODMAP) Then lNames.Add("methodmap")
-            If ((mType And ENUM_TYPE_FLAGS.TYPEDEF) = ENUM_TYPE_FLAGS.TYPEDEF) Then lNames.Add("typedef")
-            If ((mType And ENUM_TYPE_FLAGS.VARIABLE) = ENUM_TYPE_FLAGS.VARIABLE) Then lNames.Add("variable")
-            If ((mType And ENUM_TYPE_FLAGS.PUBLICVAR) = ENUM_TYPE_FLAGS.PUBLICVAR) Then lNames.Add("publicvar")
-            If ((mType And ENUM_TYPE_FLAGS.PROPERTY) = ENUM_TYPE_FLAGS.PROPERTY) Then lNames.Add("property")
-            If ((mType And ENUM_TYPE_FLAGS.FUNCTION) = ENUM_TYPE_FLAGS.FUNCTION) Then lNames.Add("function")
-            If ((mType And ENUM_TYPE_FLAGS.STRUCT) = ENUM_TYPE_FLAGS.STRUCT) Then lNames.Add("struct")
-
-            Return lNames.ToArray
-        End Function
-
-        Public Function GetTypeFullNames() As String
-            Return String.Join(" ", GetTypeNames())
-        End Function
-    End Class
-
 
 
 #Region "GUI Stuff"
@@ -234,23 +139,6 @@ Public Class FormMain
                     Return
                 End If
 
-                'Dim bExist As Boolean = False
-
-                'If (iLatestNoDuplicateLines > 0) Then
-                '    For Each item As String In g_mUCInformationList.ListBox_Information.Items
-                '        If (iLatestNoDuplicateLines < 1) Then
-                '            Exit For
-                '        End If
-
-                '        If (item.StartsWith(sType) AndAlso item.EndsWith(sMessage)) Then
-                '            bExist = True
-                '            Exit For
-                '        End If
-
-                '        iLatestNoDuplicateLines -= 1
-                '    Next
-                'End If
-
                 If (bClear) Then
                     g_mUCInformationList.ListBox_Information.Items.Clear()
                 End If
@@ -279,9 +167,6 @@ Public Class FormMain
         g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip()
     End Sub
 #End Region
-
-#Region "Syntax Stuff"
-
 
     Private Sub FormMain_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Dim sWineVersion As String = ClassTools.ClassOperatingSystem.GetWineVersion()
@@ -439,7 +324,6 @@ Public Class FormMain
         }
         mCheckUpdasteThread.Start()
     End Sub
-#End Region
 
     Private Sub FormMain_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
         g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface)

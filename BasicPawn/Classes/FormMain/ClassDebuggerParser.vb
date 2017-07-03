@@ -17,7 +17,6 @@
 
 Imports System.Text
 Imports System.Text.RegularExpressions
-Imports BasicPawn.FormMain
 
 Public Class ClassDebuggerParser
     Private g_mFormMain As FormMain
@@ -247,31 +246,31 @@ Public Class ClassDebuggerParser
     ''' Gets a list of usefull autocompletes
     ''' </summary>
     ''' <returns></returns>
-    Public Function GetDebuggerAutocomplete() As STRUC_AUTOCOMPLETE()
-        Dim lAutocomplete As New List(Of STRUC_AUTOCOMPLETE)
+    Public Function GetDebuggerAutocomplete() As ClassSyntaxTools.STRUC_AUTOCOMPLETE()
+        Dim lAutocomplete As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
         Dim mInfoBuilder As New StringBuilder
 
         mInfoBuilder.AppendLine("/**")
         mInfoBuilder.AppendLine("*  Pauses the plugin until manually resumed. Also shows the current position in the BasicPawn Debugger.")
         mInfoBuilder.AppendLine("*  Optionaly you can return a custom non-array value.")
         mInfoBuilder.AppendLine("*/")
-        lAutocomplete.Add(New STRUC_AUTOCOMPLETE With {
+        lAutocomplete.Add(New ClassSyntaxTools.STRUC_AUTOCOMPLETE With {
                              .sFile = "BasicPawn.exe",
                              .sFullFunctionName = String.Format("any:{0}(any:val=0)", g_sBreakpointName),
                              .sFunctionName = g_sBreakpointName,
                              .sInfo = mInfoBuilder.ToString,
-                             .mType = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEBUG})
+                             .mType = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEBUG})
 
         mInfoBuilder.Length = 0
         mInfoBuilder.AppendLine("/**")
         mInfoBuilder.AppendLine("*  Prints the passed value into the BasicPawn Debugger.")
         mInfoBuilder.AppendLine("*/")
-        lAutocomplete.Add(New STRUC_AUTOCOMPLETE With {
+        lAutocomplete.Add(New ClassSyntaxTools.STRUC_AUTOCOMPLETE With {
                              .sFile = "BasicPawn.exe",
                              .sFullFunctionName = String.Format("any:{0}(any:val=0)", g_sWatcherName),
                              .sFunctionName = g_sWatcherName,
                              .sInfo = mInfoBuilder.ToString,
-                             .mType = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEBUG})
+                             .mType = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEBUG})
 
         Return lAutocomplete.ToArray
     End Function

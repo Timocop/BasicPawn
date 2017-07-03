@@ -149,7 +149,7 @@ Public Class UCAutocomplete
         Dim bSelectedWord As Boolean = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.SelectionManager.HasSomethingSelected
         Dim lListViewItemsList As New List(Of ListViewItem)
 
-        Dim sAutocompleteArray As FormMain.STRUC_AUTOCOMPLETE() = g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.ToArray
+        Dim sAutocompleteArray As ClassSyntaxTools.STRUC_AUTOCOMPLETE() = g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.ToArray
         For i = 0 To sAutocompleteArray.Length - 1
             If (bSelectedWord) Then
                 If (sAutocompleteArray(i).sFunctionName.Equals(sText)) Then
@@ -201,14 +201,14 @@ Public Class UCAutocomplete
         Return ListView_AutocompleteList.Items.Count
     End Function
 
-    Public Function GetSelectedItem() As FormMain.STRUC_AUTOCOMPLETE
+    Public Function GetSelectedItem() As ClassSyntaxTools.STRUC_AUTOCOMPLETE
         If (ListView_AutocompleteList.SelectedItems.Count < 1) Then
             Return Nothing
         End If
 
         Dim mSelectedItem As ListViewItem = ListView_AutocompleteList.SelectedItems(0)
 
-        Dim mAutocomplete As New FormMain.STRUC_AUTOCOMPLETE With {
+        Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE With {
             .sFile = mSelectedItem.SubItems(0).Text,
             .sFunctionName = mSelectedItem.SubItems(2).Text,
             .sFullFunctionName = mSelectedItem.SubItems(3).Text,
@@ -264,10 +264,10 @@ Public Class UCAutocomplete
                 End If
 
                 Dim bPrintedInfo As Boolean = False
-                Dim sAutocompleteArray As FormMain.STRUC_AUTOCOMPLETE() = g_AutocompleteUC.g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.ToArray
+                Dim sAutocompleteArray As ClassSyntaxTools.STRUC_AUTOCOMPLETE() = g_AutocompleteUC.g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.ToArray
                 For i = 0 To sAutocompleteArray.Length - 1
                     If (sAutocompleteArray(i).sFunctionName.Contains(sCurrentMethodName) AndAlso
-                                (sAutocompleteArray(i).mType And FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> FormMain.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE AndAlso
+                                (sAutocompleteArray(i).mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE AndAlso
                                 Regex.IsMatch(sAutocompleteArray(i).sFunctionName, String.Format("{0}\b{1}\b", If(bIsMethodMap, "(\.)", ""), Regex.Escape(sCurrentMethodName)))) Then
 
                         If (ClassSettings.g_iSettingsUseWindowsToolTip AndAlso Not bPrintedInfo) Then
