@@ -56,124 +56,14 @@ Public Class FormMain
     Public Const COMARG_SHOW_PING_FLASH As String = "BasicPawnComServer-ShowPingFlash-04e3632f-5472-42c5-929a-c3e0c2b35324"
 
     Private g_mPingFlashPanel As ClassPanelAlpha
+    Private g_bFormPostLoad As Boolean = False
 
 
 
 #Region "GUI Stuff"
     Public Sub New()
-        ' This call is required by the designer.
-        InitializeComponent()
-
-        ' Add any initialization after the InitializeComponent() call. 
-
-        g_ClassSyntaxUpdater = New ClassSyntaxUpdater(Me)
-        g_ClassSyntaxTools = New ClassSyntaxTools(Me)
-        g_ClassAutocompleteUpdater = New ClassAutocompleteUpdater(Me)
-        g_ClassTextEditorTools = New ClassTextEditorTools(Me)
-        g_ClassLineState = New ClassTextEditorTools.ClassLineState(Me)
-        g_ClassCustomHighlighting = New ClassTextEditorTools.ClassCustomHighlighting(Me)
-        g_ClassPluginController = New ClassPluginController(Me)
-        g_ClassTabControl = New ClassTabControl(Me)
         g_ClassCrossAppComunication = New ClassCrossAppComunication
-
-        ' Load other Forms/Controls
-        g_mUCAutocomplete = New UCAutocomplete(Me) With {
-            .Parent = TabPage_Autocomplete,
-            .Dock = DockStyle.Fill
-        }
-        g_mUCAutocomplete.Show()
-
-        g_mUCInformationList = New UCInformationList(Me) With {
-            .Parent = TabPage_Information,
-            .Dock = DockStyle.Fill
-        }
-        g_mUCInformationList.Show()
-
-        g_mUCObjectBrowser = New UCObjectBrowser(Me) With {
-            .Parent = TabPage_ObjectBrowser,
-            .Dock = DockStyle.Fill
-        }
-        g_mUCObjectBrowser.Show()
-
-        g_mUCProjectBrowser = New UCProjectBrowser(Me) With {
-            .Parent = TabPage_ProjectBrowser,
-            .Dock = DockStyle.Fill
-        }
-        g_mUCProjectBrowser.Show()
-
-        g_mUCToolTip = New UCToolTip(Me) With {
-            .Parent = SplitContainer_ToolboxAndEditor.Panel2
-        }
-        g_mUCToolTip.BringToFront()
-        g_mUCToolTip.Hide()
-
-        g_mUCStartPage = New UCStartPage(Me) With {
-            .Parent = Me,
-            .Dock = DockStyle.Fill
-        }
-        g_mUCStartPage.BringToFront()
-        g_mUCStartPage.Show()
-
-        SplitContainer_ToolboxSourceAndDetails.SplitterDistance = SplitContainer_ToolboxSourceAndDetails.Height - 175
         g_ClassCrossAppComunication.Hook(COMMSG_SERVERNAME)
-
-        g_mPingFlashPanel = New ClassPanelAlpha
-        Me.Controls.Add(g_mPingFlashPanel)
-        g_mPingFlashPanel.Name = "@KeepForeBackColor"
-        g_mPingFlashPanel.Parent = Me
-        g_mPingFlashPanel.Dock = DockStyle.Fill
-        g_mPingFlashPanel.m_TransparentBackColor = Color.FromKnownColor(KnownColor.RoyalBlue)
-        g_mPingFlashPanel.m_Opacity = 0
-        g_mPingFlashPanel.BringToFront()
-        g_mPingFlashPanel.Visible = False
-    End Sub
-
-    Public Sub UpdateFormConfigText()
-        ToolStripStatusLabel_CurrentConfig.Text = "Config: " & ClassConfigs.m_ActiveConfig.GetName
-    End Sub
-
-    Public Sub PrintInformation(sType As String, sMessage As String, Optional bClear As Boolean = False, Optional bShowInformationTab As Boolean = False, Optional bEnsureVisible As Boolean = False)
-        Me.BeginInvoke(
-            Sub()
-                If (g_mUCInformationList Is Nothing) Then
-                    Return
-                End If
-
-                If (bClear) Then
-                    g_mUCInformationList.ListBox_Information.Items.Clear()
-                End If
-
-                Dim iIndex = g_mUCInformationList.ListBox_Information.Items.Add(String.Format("{0} ({1}) {2}", sType, Now.ToString, sMessage))
-
-                ToolStripStatusLabel_LastInformation.Text = sMessage
-
-                If (bEnsureVisible) Then
-                    'Scroll to item
-                    g_mUCInformationList.ListBox_Information.TopIndex = iIndex
-                End If
-
-                If (bShowInformationTab) Then
-                    SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed = False
-                    SplitContainer_ToolboxSourceAndDetails.SplitterDistance = SplitContainer_ToolboxSourceAndDetails.Height - 200
-
-                    TabControl_Details.SelectTab(1)
-                End If
-            End Sub)
-    End Sub
-
-    Private Sub ContextMenuStrip_RightClick_Opening(sender As Object, e As CancelEventArgs) Handles ContextMenuStrip_RightClick.Opening
-        g_mUCAutocomplete.UpdateAutocomplete("")
-        g_mUCAutocomplete.g_ClassToolTip.m_CurrentMethod = ""
-        g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip()
-    End Sub
-#End Region
-
-    Private Sub FormMain_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        Dim sWineVersion As String = ClassTools.ClassOperatingSystem.GetWineVersion()
-        ToolStripStatusLabel_AppVersion.Text = String.Format("v.{0} {1}", Application.ProductVersion, If(sWineVersion Is Nothing, "", "| Running on Wine " & sWineVersion)).Trim
-
-        'Some control init
-        ToolStripComboBox_ToolsAutocompleteSyntax.SelectedIndex = 0
 
         'Load Settings 
         ClassSettings.LoadSettings()
@@ -243,11 +133,128 @@ Public Class FormMain
                             Me.WindowState = FormWindowState.Minimized
                             Me.ShowInTaskbar = False
                             Application.Exit()
+                            End
                         End If
                     End If
                 End If
             End If
         End If
+
+
+
+        ' This call is required by the designer.
+        InitializeComponent()
+
+        ' Add any initialization after the InitializeComponent() call. 
+
+        g_ClassSyntaxUpdater = New ClassSyntaxUpdater(Me)
+        g_ClassSyntaxTools = New ClassSyntaxTools(Me)
+        g_ClassAutocompleteUpdater = New ClassAutocompleteUpdater(Me)
+        g_ClassTextEditorTools = New ClassTextEditorTools(Me)
+        g_ClassLineState = New ClassTextEditorTools.ClassLineState(Me)
+        g_ClassCustomHighlighting = New ClassTextEditorTools.ClassCustomHighlighting(Me)
+        g_ClassPluginController = New ClassPluginController(Me)
+        g_ClassTabControl = New ClassTabControl(Me)
+
+        ' Load other Forms/Controls
+        g_mUCAutocomplete = New UCAutocomplete(Me) With {
+            .Parent = TabPage_Autocomplete,
+            .Dock = DockStyle.Fill
+        }
+        g_mUCAutocomplete.Show()
+
+        g_mUCInformationList = New UCInformationList(Me) With {
+            .Parent = TabPage_Information,
+            .Dock = DockStyle.Fill
+        }
+        g_mUCInformationList.Show()
+
+        g_mUCObjectBrowser = New UCObjectBrowser(Me) With {
+            .Parent = TabPage_ObjectBrowser,
+            .Dock = DockStyle.Fill
+        }
+        g_mUCObjectBrowser.Show()
+
+        g_mUCProjectBrowser = New UCProjectBrowser(Me) With {
+            .Parent = TabPage_ProjectBrowser,
+            .Dock = DockStyle.Fill
+        }
+        g_mUCProjectBrowser.Show()
+
+        g_mUCToolTip = New UCToolTip(Me) With {
+            .Parent = SplitContainer_ToolboxAndEditor.Panel2
+        }
+        g_mUCToolTip.BringToFront()
+        g_mUCToolTip.Hide()
+
+        g_mUCStartPage = New UCStartPage(Me) With {
+            .Parent = Me,
+            .Dock = DockStyle.Fill
+        }
+        g_mUCStartPage.BringToFront()
+        g_mUCStartPage.Show()
+
+        SplitContainer_ToolboxSourceAndDetails.SplitterDistance = SplitContainer_ToolboxSourceAndDetails.Height - 175
+
+        g_mPingFlashPanel = New ClassPanelAlpha
+        Me.Controls.Add(g_mPingFlashPanel)
+        g_mPingFlashPanel.Name = "@KeepForeBackColor"
+        g_mPingFlashPanel.Parent = Me
+        g_mPingFlashPanel.Dock = DockStyle.Fill
+        g_mPingFlashPanel.m_TransparentBackColor = Color.FromKnownColor(KnownColor.RoyalBlue)
+        g_mPingFlashPanel.m_Opacity = 0
+        g_mPingFlashPanel.BringToFront()
+        g_mPingFlashPanel.Visible = False
+
+        g_bFormPostLoad = True
+    End Sub
+
+    Public Sub UpdateFormConfigText()
+        ToolStripStatusLabel_CurrentConfig.Text = "Config: " & ClassConfigs.m_ActiveConfig.GetName
+    End Sub
+
+    Public Sub PrintInformation(sType As String, sMessage As String, Optional bClear As Boolean = False, Optional bShowInformationTab As Boolean = False, Optional bEnsureVisible As Boolean = False)
+        Me.BeginInvoke(
+            Sub()
+                If (g_mUCInformationList Is Nothing) Then
+                    Return
+                End If
+
+                If (bClear) Then
+                    g_mUCInformationList.ListBox_Information.Items.Clear()
+                End If
+
+                Dim iIndex = g_mUCInformationList.ListBox_Information.Items.Add(String.Format("{0} ({1}) {2}", sType, Now.ToString, sMessage))
+
+                ToolStripStatusLabel_LastInformation.Text = sMessage
+
+                If (bEnsureVisible) Then
+                    'Scroll to item
+                    g_mUCInformationList.ListBox_Information.TopIndex = iIndex
+                End If
+
+                If (bShowInformationTab) Then
+                    SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed = False
+                    SplitContainer_ToolboxSourceAndDetails.SplitterDistance = SplitContainer_ToolboxSourceAndDetails.Height - 200
+
+                    TabControl_Details.SelectTab(1)
+                End If
+            End Sub)
+    End Sub
+
+    Private Sub ContextMenuStrip_RightClick_Opening(sender As Object, e As CancelEventArgs) Handles ContextMenuStrip_RightClick.Opening
+        g_mUCAutocomplete.UpdateAutocomplete("")
+        g_mUCAutocomplete.g_ClassToolTip.m_CurrentMethod = ""
+        g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip()
+    End Sub
+#End Region
+
+    Private Sub FormMain_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Dim sWineVersion As String = ClassTools.ClassOperatingSystem.GetWineVersion()
+        ToolStripStatusLabel_AppVersion.Text = String.Format("v.{0} {1}", Application.ProductVersion, If(sWineVersion Is Nothing, "", "| Running on Wine " & sWineVersion)).Trim
+
+        'Some control init
+        ToolStripComboBox_ToolsAutocompleteSyntax.SelectedIndex = 0
 
         'Load default configs
         For Each mConfig As ClassConfigs.STRUC_CONFIG_ITEM In ClassConfigs.GetConfigs(False)
@@ -265,6 +272,14 @@ Public Class FormMain
         If (Not ClassSettings.g_iSettingsAutoShowStartPage) Then
             g_mUCStartPage.Hide()
         End If
+
+        'Load source files via Arguments 
+        Dim lOpenFileList As New List(Of String)
+        For i = 1 To Environment.GetCommandLineArgs.Length - 1
+            If (IO.File.Exists(Environment.GetCommandLineArgs(i))) Then
+                lOpenFileList.Add(Environment.GetCommandLineArgs(i))
+            End If
+        Next
 
         If (lOpenFileList.Count > 0) Then
             'Hide StartPage when files are going to be opened. Such as project and source files.
@@ -989,6 +1004,11 @@ Public Class FormMain
 
     Private Sub OnMessageReceive(mClassMessage As ClassCrossAppComunication.ClassMessage) Handles g_ClassCrossAppComunication.OnMessageReceive
         Try
+            'Just in case we get a message before the controls have been created
+            If (Not g_bFormPostLoad) Then
+                Return
+            End If
+
             Select Case (mClassMessage.m_MessageName)
                 Case COMARG_OPEN_FILE_BY_PID
                     Dim iPID As Integer = CInt(mClassMessage.m_Messages(0))
