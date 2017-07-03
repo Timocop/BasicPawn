@@ -42,7 +42,7 @@ Partial Class FormSearch
         Me.RadioButton_DirectionDown = New System.Windows.Forms.RadioButton()
         Me.RadioButton_DirectionUp = New System.Windows.Forms.RadioButton()
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
-        Me.ToolStripStatusLabel1 = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.ToolStripStatusLabel_Status = New System.Windows.Forms.ToolStripStatusLabel()
         Me.Button_ListAll = New System.Windows.Forms.Button()
         Me.ListView_Output = New System.Windows.Forms.ListView()
         Me.ColumnHeader1 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
@@ -256,7 +256,7 @@ Partial Class FormSearch
         '
         'StatusStrip1
         '
-        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripStatusLabel1})
+        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripStatusLabel_Status})
         Me.StatusStrip1.Location = New System.Drawing.Point(0, 389)
         Me.StatusStrip1.Name = "StatusStrip1"
         Me.StatusStrip1.Size = New System.Drawing.Size(492, 22)
@@ -264,11 +264,11 @@ Partial Class FormSearch
         Me.StatusStrip1.TabIndex = 12
         Me.StatusStrip1.Text = "StatusStrip1"
         '
-        'ToolStripStatusLabel1
+        'ToolStripStatusLabel_Status
         '
-        Me.ToolStripStatusLabel1.Name = "ToolStripStatusLabel1"
-        Me.ToolStripStatusLabel1.Size = New System.Drawing.Size(190, 17)
-        Me.ToolStripStatusLabel1.Text = "Click the 'Search' button to search."
+        Me.ToolStripStatusLabel_Status.Name = "ToolStripStatusLabel_Status"
+        Me.ToolStripStatusLabel_Status.Size = New System.Drawing.Size(190, 17)
+        Me.ToolStripStatusLabel_Status.Text = "Click the 'Search' button to search."
         '
         'Button_ListAll
         '
@@ -393,7 +393,7 @@ Partial Class FormSearch
     Friend WithEvents RadioButton_DirectionUp As RadioButton
     Friend WithEvents CheckBox_Multiline As CheckBox
     Friend WithEvents StatusStrip1 As StatusStrip
-    Friend WithEvents ToolStripStatusLabel1 As ToolStripStatusLabel
+    Friend WithEvents ToolStripStatusLabel_Status As ToolStripStatusLabel
     Friend WithEvents CheckBox_LoopSearch As CheckBox
     Friend WithEvents Button_ListAll As Button
     Friend WithEvents ListView_Output As ListView

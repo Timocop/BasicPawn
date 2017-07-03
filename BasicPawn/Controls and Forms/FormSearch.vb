@@ -23,14 +23,13 @@ Public Class FormSearch
     Private g_sSearchText As String
 
     Public Sub New(f As FormMain, Optional sSearchText As String = "")
+        g_mFormMain = f
+        g_sSearchText = sSearchText
 
         ' This call is required by the designer.
         InitializeComponent()
 
-        ' Add any initialization after the InitializeComponent() call.
-        g_mFormMain = f
-        g_sSearchText = sSearchText
-
+        ' Add any initialization after the InitializeComponent() call. 
         ClassTools.ClassForms.SetDoubleBufferingAllChilds(Me, True)
         ClassTools.ClassForms.SetDoubleBufferingUnmanagedAllChilds(Me, True)
     End Sub
@@ -58,11 +57,11 @@ Public Class FormSearch
         Dim iLineColumStart As Integer = iOffset - g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.GetLineSegmentForOffset(iOffset).Offset
         Dim iLineColumEnd As Integer = iOffset + iLenght - g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.GetLineSegmentForOffset(iOffset + iLenght).Offset
 
-        Dim iTLStart As New TextLocation(iLineColumStart, iLineLenStart)
-        Dim iTLEnd As New TextLocation(iLineColumEnd, iLineLenEnd)
+        Dim mLocStart As New TextLocation(iLineColumStart, iLineLenStart)
+        Dim mLocEnd As New TextLocation(iLineColumEnd, iLineLenEnd)
 
-        g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.SetSelection(iTLStart, iTLEnd)
-        g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Caret.Position = If(bCaretBeginPos, iTLStart, iTLEnd)
+        g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.SetSelection(mLocStart, mLocEnd)
+        g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Caret.Position = If(bCaretBeginPos, mLocStart, mLocEnd)
     End Sub
 
     Private Function GetFullLineByOffset(iOffset As Integer) As String
@@ -85,31 +84,31 @@ Public Class FormSearch
     ''' </summary>
     ''' <returns></returns>
     Private Function DoSearch() As STRUC_SEARCH_RESULTS()
-        Dim iRegEx As Regex
+        Dim mRegex As Regex
         Try
             Select Case (RadioButton_ModeNormal.Checked)
                 Case True
-                    iRegEx = New Regex(If(CheckBox_WholeWord.Checked, "\b", "") & Regex.Escape(TextBox_Search.Text) & If(CheckBox_WholeWord.Checked, "\b", ""), If(CheckBox_CaseSensitive.Checked, RegexOptions.None, RegexOptions.IgnoreCase))
+                    mRegex = New Regex(If(CheckBox_WholeWord.Checked, "\b", "") & Regex.Escape(TextBox_Search.Text) & If(CheckBox_WholeWord.Checked, "\b", ""), If(CheckBox_CaseSensitive.Checked, RegexOptions.None, RegexOptions.IgnoreCase))
                 Case Else
-                    iRegEx = New Regex(TextBox_Search.Text, If(CheckBox_CaseSensitive.Checked, RegexOptions.None, RegexOptions.IgnoreCase) Or If(CheckBox_Multiline.Checked, RegexOptions.Multiline, RegexOptions.None))
+                    mRegex = New Regex(TextBox_Search.Text, If(CheckBox_CaseSensitive.Checked, RegexOptions.None, RegexOptions.IgnoreCase) Or If(CheckBox_Multiline.Checked, RegexOptions.Multiline, RegexOptions.None))
             End Select
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
-            ToolStripStatusLabel1.Text = "Search Error!"
+            ToolStripStatusLabel_Status.Text = "Search Error!"
             Return Nothing
         End Try
 
-        Dim lStrucList As New List(Of STRUC_SEARCH_RESULTS)
+        Dim lResults As New List(Of STRUC_SEARCH_RESULTS)
 
-        Dim iStruc As STRUC_SEARCH_RESULTS
-        For Each m As Match In iRegEx.Matches(GetTextEditorText)
-            iStruc.iLocation = m.Index
-            iStruc.iLenght = m.Length
+        Dim mResult As STRUC_SEARCH_RESULTS
+        For Each mMatch As Match In mRegex.Matches(GetTextEditorText)
+            mResult.iLocation = mMatch.Index
+            mResult.iLenght = mMatch.Length
 
-            lStrucList.Add(iStruc)
+            lResults.Add(mResult)
         Next
 
-        Return lStrucList.ToArray
+        Return lResults.ToArray
     End Function
 
     Private Sub SearchForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -119,14 +118,14 @@ Public Class FormSearch
     End Sub
 
     Private Sub Button_Search_Click(sender As Object, e As EventArgs) Handles Button_Search.Click
-        Dim iStrucArray As STRUC_SEARCH_RESULTS() = DoSearch()
-        If (iStrucArray Is Nothing) Then
+        Dim mResults As STRUC_SEARCH_RESULTS() = DoSearch()
+        If (mResults Is Nothing) Then
             Return
         End If
 
-        ToolStripStatusLabel1.Text = String.Format("{0} Items found!", iStrucArray.Length)
+        ToolStripStatusLabel_Status.Text = String.Format("{0} Items found!", mResults.Length)
 
-        If (iStrucArray.Length < 1) Then
+        If (mResults.Length < 1) Then
             Return
         End If
 
@@ -134,38 +133,38 @@ Public Class FormSearch
             Dim iOffset As Integer = GetTextEditorCaretOffset()
 
             If (RadioButton_DirectionUp.Checked) Then
-                For i = iStrucArray.Length - 1 To 0 Step -1
-                    If (iStrucArray(i).iLocation < iOffset) Then
-                        SetTextEditorSelection(iStrucArray(i).iLocation, iStrucArray(i).iLenght, True)
+                For i = mResults.Length - 1 To 0 Step -1
+                    If (mResults(i).iLocation < iOffset) Then
+                        SetTextEditorSelection(mResults(i).iLocation, mResults(i).iLenght, True)
                         Return
                     End If
                 Next
 
                 If (CheckBox_LoopSearch.Checked) Then
-                    SetTextEditorSelection(iStrucArray(iStrucArray.Length - 1).iLocation, iStrucArray(iStrucArray.Length - 1).iLenght, False)
+                    SetTextEditorSelection(mResults(mResults.Length - 1).iLocation, mResults(mResults.Length - 1).iLenght, False)
 
-                    ToolStripStatusLabel1.Text &= " Looped!"
+                    ToolStripStatusLabel_Status.Text &= " Looped!"
                     My.Computer.Audio.PlaySystemSound(Media.SystemSounds.Exclamation)
                     Return
                 End If
             Else
-                For i = 0 To iStrucArray.Length - 1
-                    If (iStrucArray(i).iLocation >= iOffset) Then
-                        SetTextEditorSelection(iStrucArray(i).iLocation, iStrucArray(i).iLenght, False)
+                For i = 0 To mResults.Length - 1
+                    If (mResults(i).iLocation >= iOffset) Then
+                        SetTextEditorSelection(mResults(i).iLocation, mResults(i).iLenght, False)
                         Return
                     End If
                 Next
 
                 If (CheckBox_LoopSearch.Checked) Then
-                    SetTextEditorSelection(iStrucArray(0).iLocation, iStrucArray(0).iLenght, False)
+                    SetTextEditorSelection(mResults(0).iLocation, mResults(0).iLenght, False)
 
-                    ToolStripStatusLabel1.Text &= " Looped!"
+                    ToolStripStatusLabel_Status.Text &= " Looped!"
                     My.Computer.Audio.PlaySystemSound(Media.SystemSounds.Exclamation)
                     Return
                 End If
             End If
 
-            ToolStripStatusLabel1.Text &= " End reached!"
+            ToolStripStatusLabel_Status.Text &= " End reached!"
             My.Computer.Audio.PlaySystemSound(Media.SystemSounds.Exclamation)
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
@@ -173,14 +172,14 @@ Public Class FormSearch
     End Sub
 
     Private Sub Button_Replace_Click(sender As Object, e As EventArgs) Handles Button_Replace.Click
-        Dim iStrucArray As STRUC_SEARCH_RESULTS() = DoSearch()
-        If (iStrucArray Is Nothing) Then
+        Dim mResults As STRUC_SEARCH_RESULTS() = DoSearch()
+        If (mResults Is Nothing) Then
             Return
         End If
 
-        ToolStripStatusLabel1.Text = String.Format("{0} Items found!", iStrucArray.Length)
+        ToolStripStatusLabel_Status.Text = String.Format("{0} Items found!", mResults.Length)
 
-        If (iStrucArray.Length < 1) Then
+        If (mResults.Length < 1) Then
             Return
         End If
 
@@ -188,26 +187,26 @@ Public Class FormSearch
             Dim iOffset As Integer = GetTextEditorCaretOffset()
 
             If (RadioButton_DirectionUp.Checked) Then
-                For i = iStrucArray.Length - 1 To 0 Step -1
-                    If (iStrucArray(i).iLocation < iOffset - iStrucArray(i).iLenght) Then
-                        g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.Replace(iStrucArray(i).iLocation, iStrucArray(i).iLenght, TextBox_Replace.Text)
+                For i = mResults.Length - 1 To 0 Step -1
+                    If (mResults(i).iLocation < iOffset - mResults(i).iLenght) Then
+                        g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.Replace(mResults(i).iLocation, mResults(i).iLenght, TextBox_Replace.Text)
 
-                        SetTextEditorSelection(iStrucArray(i).iLocation, TextBox_Replace.Text.Length, True)
+                        SetTextEditorSelection(mResults(i).iLocation, TextBox_Replace.Text.Length, True)
                         Return
                     End If
                 Next
             Else
-                For i = 0 To iStrucArray.Length - 1
-                    If (iStrucArray(i).iLocation >= iOffset) Then
-                        g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.Replace(iStrucArray(i).iLocation, iStrucArray(i).iLenght, TextBox_Replace.Text)
+                For i = 0 To mResults.Length - 1
+                    If (mResults(i).iLocation >= iOffset) Then
+                        g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.Replace(mResults(i).iLocation, mResults(i).iLenght, TextBox_Replace.Text)
 
-                        SetTextEditorSelection(iStrucArray(i).iLocation, TextBox_Replace.Text.Length, False)
+                        SetTextEditorSelection(mResults(i).iLocation, TextBox_Replace.Text.Length, False)
                         Return
                     End If
                 Next
             End If
 
-            ToolStripStatusLabel1.Text &= " End reached!"
+            ToolStripStatusLabel_Status.Text &= " End reached!"
             My.Computer.Audio.PlaySystemSound(Media.SystemSounds.Exclamation)
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
@@ -215,14 +214,14 @@ Public Class FormSearch
     End Sub
 
     Private Sub Button_ReplaceAll_Click(sender As Object, e As EventArgs) Handles Button_ReplaceAll.Click
-        Dim iStrucArray As STRUC_SEARCH_RESULTS() = DoSearch()
-        If (iStrucArray Is Nothing) Then
+        Dim mResults As STRUC_SEARCH_RESULTS() = DoSearch()
+        If (mResults Is Nothing) Then
             Return
         End If
 
-        ToolStripStatusLabel1.Text = String.Format("{0} Items replaced!", iStrucArray.Length)
+        ToolStripStatusLabel_Status.Text = String.Format("{0} Items replaced!", mResults.Length)
 
-        If (iStrucArray.Length < 1) Then
+        If (mResults.Length < 1) Then
             Return
         End If
 
@@ -231,8 +230,8 @@ Public Class FormSearch
 
             g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.UndoStack.StartUndoGroup()
 
-            For i = iStrucArray.Length - 1 To 0 Step -1
-                g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.Replace(iStrucArray(i).iLocation, iStrucArray(i).iLenght, TextBox_Replace.Text)
+            For i = mResults.Length - 1 To 0 Step -1
+                g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.Replace(mResults(i).iLocation, mResults(i).iLenght, TextBox_Replace.Text)
             Next
 
             g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.UndoStack.EndUndoGroup()
@@ -244,15 +243,15 @@ Public Class FormSearch
     Private Sub Button_ListAll_Click(sender As Object, e As EventArgs) Handles Button_ListAll.Click
         ListView_Output.Visible = True
 
-        Dim iStrucArray As STRUC_SEARCH_RESULTS() = DoSearch()
-        If (iStrucArray Is Nothing) Then
+        Dim mResults As STRUC_SEARCH_RESULTS() = DoSearch()
+        If (mResults Is Nothing) Then
             ListView_Output.Items.Clear()
             Return
         End If
 
-        ToolStripStatusLabel1.Text = String.Format("{0} Items found!", iStrucArray.Length)
+        ToolStripStatusLabel_Status.Text = String.Format("{0} Items found!", mResults.Length)
 
-        If (iStrucArray.Length < 1) Then
+        If (mResults.Length < 1) Then
             ListView_Output.Items.Clear()
             Return
         End If
@@ -260,20 +259,20 @@ Public Class FormSearch
         Try
             ListView_Output.BeginUpdate()
             ListView_Output.Items.Clear()
-            SetTextEditorSelection(iStrucArray(iStrucArray.Length - 1).iLocation, iStrucArray(iStrucArray.Length - 1).iLenght, False)
-            For Each i In iStrucArray
-                If (i.iLocation + i.iLenght > g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextLength) Then
+            SetTextEditorSelection(mResults(mResults.Length - 1).iLocation, mResults(mResults.Length - 1).iLenght, False)
+            For Each mItem In mResults
+                If (mItem.iLocation + mItem.iLenght > g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextLength) Then
                     Continue For
                 End If
 
-                Dim sTest As String = GetFullLineByOffset(i.iLocation)
+                Dim sTest As String = GetFullLineByOffset(mItem.iLocation)
                 If (String.IsNullOrEmpty(sTest)) Then
                     Continue For
                 End If
 
-                Dim iLine As Integer = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.GetLineNumberForOffset(i.iLocation) + 1
+                Dim iLine As Integer = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.GetLineNumberForOffset(mItem.iLocation) + 1
 
-                ListView_Output.Items.Add(New ListViewItem(New String() {CStr(iLine), sTest, CStr(i.iLocation), CStr(i.iLenght)}))
+                ListView_Output.Items.Add(New ListViewItem(New String() {CStr(iLine), sTest, CStr(mItem.iLocation), CStr(mItem.iLenght)}))
             Next
 
             ListView_Output.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent)
