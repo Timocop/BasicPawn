@@ -186,16 +186,6 @@ Public Class FormOpenTabFromInstances
         End If
     End Sub
 
-    Private Function FindTabByIdentifier(sIdentifier As String) As ClassTabControl.SourceTabPage
-        For i = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1
-            If (g_mFormMain.g_ClassTabControl.m_Tab(i).m_Identifier = sIdentifier) Then
-                Return g_mFormMain.g_ClassTabControl.m_Tab(i)
-            End If
-        Next
-
-        Return Nothing
-    End Function
-
     Class ClassListViewItem
         Inherits ListViewItem
 

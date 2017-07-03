@@ -1157,13 +1157,7 @@ Public Class FormMain
                         Return
                     End If
 
-                    Dim mTab As ClassTabControl.SourceTabPage = Nothing
-                    For i = 0 To g_ClassTabControl.m_TabsCount - 1
-                        If (g_ClassTabControl.m_Tab(i).m_Identifier = sTabIdentifier) Then
-                            mTab = g_ClassTabControl.m_Tab(i)
-                            Exit For
-                        End If
-                    Next
+                    Dim mTab = g_ClassTabControl.GetTabByIdentifier(sTabIdentifier)
                     If (mTab Is Nothing) Then
                         Return
                     End If
@@ -1183,15 +1177,12 @@ Public Class FormMain
                     End If
 
                     If (Not String.IsNullOrEmpty(sTabIdentifier)) Then
-                        For i = 0 To g_ClassTabControl.m_TabsCount - 1
-                            If (g_ClassTabControl.m_Tab(i).m_Identifier = sTabIdentifier) Then
-                                If (g_ClassTabControl.m_ActiveTabIndex <> i) Then
-                                    g_ClassTabControl.SelectTab(i)
-                                End If
-
-                                Exit For
+                        Dim iTabIndex = g_ClassTabControl.GetTabIndexByIdentifier(sTabIdentifier)
+                        If (iTabIndex > -1) Then
+                            If (g_ClassTabControl.m_ActiveTabIndex <> iTabIndex) Then
+                                g_ClassTabControl.SelectTab(iTabIndex)
                             End If
-                        Next
+                        End If
                     End If
 
                     If (Me.WindowState = FormWindowState.Minimized) Then

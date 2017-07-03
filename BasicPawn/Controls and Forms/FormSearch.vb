@@ -37,53 +37,47 @@ Public Class FormSearch
     Private Structure STRUC_SEARCH_RESULTS
         Dim iLocation As Integer
         Dim iLenght As Integer
+        Dim sFile As String
+        Dim sTabIdentifier As String
     End Structure
 
-    Private Function GetTextEditorText() As String
-        Return g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
-    End Function
-
-    Private Function GetTextEditorCaretOffset() As Integer
-        Return g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Caret.Offset
-    End Function
-
-    Private Sub SetTextEditorSelection(iOffset As Integer, iLenght As Integer, bCaretBeginPos As Boolean)
-        If (iOffset + iLenght > g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextLength) Then
+    Private Sub SetTextEditorSelection(mTab As ClassTabControl.SourceTabPage, iOffset As Integer, iLenght As Integer, bCaretBeginPos As Boolean)
+        If (iOffset + iLenght > mTab.m_TextEditor.Document.TextLength) Then
             Return
         End If
 
-        Dim iLineLenStart As Integer = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.GetLineSegmentForOffset(iOffset).LineNumber
-        Dim iLineLenEnd As Integer = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.GetLineSegmentForOffset(iOffset + iLenght).LineNumber
-        Dim iLineColumStart As Integer = iOffset - g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.GetLineSegmentForOffset(iOffset).Offset
-        Dim iLineColumEnd As Integer = iOffset + iLenght - g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.GetLineSegmentForOffset(iOffset + iLenght).Offset
+        Dim iLineLenStart As Integer = mTab.m_TextEditor.Document.GetLineSegmentForOffset(iOffset).LineNumber
+        Dim iLineLenEnd As Integer = mTab.m_TextEditor.Document.GetLineSegmentForOffset(iOffset + iLenght).LineNumber
+        Dim iLineColumStart As Integer = iOffset - mTab.m_TextEditor.Document.GetLineSegmentForOffset(iOffset).Offset
+        Dim iLineColumEnd As Integer = iOffset + iLenght - mTab.m_TextEditor.Document.GetLineSegmentForOffset(iOffset + iLenght).Offset
 
         Dim mLocStart As New TextLocation(iLineColumStart, iLineLenStart)
         Dim mLocEnd As New TextLocation(iLineColumEnd, iLineLenEnd)
 
-        g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.SetSelection(mLocStart, mLocEnd)
-        g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Caret.Position = If(bCaretBeginPos, mLocStart, mLocEnd)
+        mTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.SetSelection(mLocStart, mLocEnd)
+        mTab.m_TextEditor.ActiveTextAreaControl.Caret.Position = If(bCaretBeginPos, mLocStart, mLocEnd)
     End Sub
 
-    Private Function GetFullLineByOffset(iOffset As Integer) As String
-        If (iOffset > g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextLength) Then
+    Private Function GetFullLineByOffset(mTab As ClassTabControl.SourceTabPage, iOffset As Integer) As String
+        If (iOffset > mTab.m_TextEditor.Document.TextLength) Then
             Return Nothing
         End If
 
-        Dim iLineOffset As Integer = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.GetLineSegmentForOffset(iOffset).Offset
-        Dim iLineLenght As Integer = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.GetLineSegmentForOffset(iOffset).Length
+        Dim iLineOffset As Integer = mTab.m_TextEditor.Document.GetLineSegmentForOffset(iOffset).Offset
+        Dim iLineLenght As Integer = mTab.m_TextEditor.Document.GetLineSegmentForOffset(iOffset).Length
 
-        If (iLineOffset + iLineLenght > g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextLength) Then
+        If (iLineOffset + iLineLenght > mTab.m_TextEditor.Document.TextLength) Then
             Return Nothing
         End If
 
-        Return g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.GetText(iLineOffset, iLineLenght)
+        Return mTab.m_TextEditor.Document.GetText(iLineOffset, iLineLenght)
     End Function
 
     ''' <summary>
     ''' Does the search and gets all results.
     ''' </summary>
     ''' <returns></returns>
-    Private Function DoSearch() As STRUC_SEARCH_RESULTS()
+    Private Function DoSearch(bAllOpenTabs As Boolean) As STRUC_SEARCH_RESULTS()
         Dim mRegex As Regex
         Try
             Select Case (RadioButton_ModeNormal.Checked)
@@ -100,13 +94,27 @@ Public Class FormSearch
 
         Dim lResults As New List(Of STRUC_SEARCH_RESULTS)
 
-        Dim mResult As STRUC_SEARCH_RESULTS
-        For Each mMatch As Match In mRegex.Matches(GetTextEditorText)
-            mResult.iLocation = mMatch.Index
-            mResult.iLenght = mMatch.Length
-
-            lResults.Add(mResult)
-        Next
+        If (bAllOpenTabs) Then
+            For i = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1
+                For Each mMatch As Match In mRegex.Matches(g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.Document.TextContent)
+                    lResults.Add(New STRUC_SEARCH_RESULTS With {
+                        .iLocation = mMatch.Index,
+                        .iLenght = mMatch.Length,
+                        .sFile = g_mFormMain.g_ClassTabControl.m_Tab(i).m_File,
+                        .sTabIdentifier = g_mFormMain.g_ClassTabControl.m_Tab(i).m_Identifier
+                    })
+                Next
+            Next
+        Else
+            For Each mMatch As Match In mRegex.Matches(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent)
+                lResults.Add(New STRUC_SEARCH_RESULTS With {
+                    .iLocation = mMatch.Index,
+                    .iLenght = mMatch.Length,
+                    .sFile = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File,
+                    .sTabIdentifier = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Identifier
+                })
+            Next
+        End If
 
         Return lResults.ToArray
     End Function
@@ -118,7 +126,7 @@ Public Class FormSearch
     End Sub
 
     Private Sub Button_Search_Click(sender As Object, e As EventArgs) Handles Button_Search.Click
-        Dim mResults As STRUC_SEARCH_RESULTS() = DoSearch()
+        Dim mResults As STRUC_SEARCH_RESULTS() = DoSearch(False)
         If (mResults Is Nothing) Then
             Return
         End If
@@ -130,18 +138,18 @@ Public Class FormSearch
         End If
 
         Try
-            Dim iOffset As Integer = GetTextEditorCaretOffset()
+            Dim iOffset As Integer = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Caret.Offset
 
             If (RadioButton_DirectionUp.Checked) Then
                 For i = mResults.Length - 1 To 0 Step -1
                     If (mResults(i).iLocation < iOffset) Then
-                        SetTextEditorSelection(mResults(i).iLocation, mResults(i).iLenght, True)
+                        SetTextEditorSelection(g_mFormMain.g_ClassTabControl.m_ActiveTab, mResults(i).iLocation, mResults(i).iLenght, True)
                         Return
                     End If
                 Next
 
                 If (CheckBox_LoopSearch.Checked) Then
-                    SetTextEditorSelection(mResults(mResults.Length - 1).iLocation, mResults(mResults.Length - 1).iLenght, False)
+                    SetTextEditorSelection(g_mFormMain.g_ClassTabControl.m_ActiveTab, mResults(mResults.Length - 1).iLocation, mResults(mResults.Length - 1).iLenght, False)
 
                     ToolStripStatusLabel_Status.Text &= " Looped!"
                     My.Computer.Audio.PlaySystemSound(Media.SystemSounds.Exclamation)
@@ -150,13 +158,13 @@ Public Class FormSearch
             Else
                 For i = 0 To mResults.Length - 1
                     If (mResults(i).iLocation >= iOffset) Then
-                        SetTextEditorSelection(mResults(i).iLocation, mResults(i).iLenght, False)
+                        SetTextEditorSelection(g_mFormMain.g_ClassTabControl.m_ActiveTab, mResults(i).iLocation, mResults(i).iLenght, False)
                         Return
                     End If
                 Next
 
                 If (CheckBox_LoopSearch.Checked) Then
-                    SetTextEditorSelection(mResults(0).iLocation, mResults(0).iLenght, False)
+                    SetTextEditorSelection(g_mFormMain.g_ClassTabControl.m_ActiveTab, mResults(0).iLocation, mResults(0).iLenght, False)
 
                     ToolStripStatusLabel_Status.Text &= " Looped!"
                     My.Computer.Audio.PlaySystemSound(Media.SystemSounds.Exclamation)
@@ -172,7 +180,7 @@ Public Class FormSearch
     End Sub
 
     Private Sub Button_Replace_Click(sender As Object, e As EventArgs) Handles Button_Replace.Click
-        Dim mResults As STRUC_SEARCH_RESULTS() = DoSearch()
+        Dim mResults As STRUC_SEARCH_RESULTS() = DoSearch(False)
         If (mResults Is Nothing) Then
             Return
         End If
@@ -184,14 +192,14 @@ Public Class FormSearch
         End If
 
         Try
-            Dim iOffset As Integer = GetTextEditorCaretOffset()
+            Dim iOffset As Integer = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Caret.Offset
 
             If (RadioButton_DirectionUp.Checked) Then
                 For i = mResults.Length - 1 To 0 Step -1
                     If (mResults(i).iLocation < iOffset - mResults(i).iLenght) Then
                         g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.Replace(mResults(i).iLocation, mResults(i).iLenght, TextBox_Replace.Text)
 
-                        SetTextEditorSelection(mResults(i).iLocation, TextBox_Replace.Text.Length, True)
+                        SetTextEditorSelection(g_mFormMain.g_ClassTabControl.m_ActiveTab, mResults(i).iLocation, TextBox_Replace.Text.Length, True)
                         Return
                     End If
                 Next
@@ -200,7 +208,7 @@ Public Class FormSearch
                     If (mResults(i).iLocation >= iOffset) Then
                         g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.Replace(mResults(i).iLocation, mResults(i).iLenght, TextBox_Replace.Text)
 
-                        SetTextEditorSelection(mResults(i).iLocation, TextBox_Replace.Text.Length, False)
+                        SetTextEditorSelection(g_mFormMain.g_ClassTabControl.m_ActiveTab, mResults(i).iLocation, TextBox_Replace.Text.Length, False)
                         Return
                     End If
                 Next
@@ -214,7 +222,7 @@ Public Class FormSearch
     End Sub
 
     Private Sub Button_ReplaceAll_Click(sender As Object, e As EventArgs) Handles Button_ReplaceAll.Click
-        Dim mResults As STRUC_SEARCH_RESULTS() = DoSearch()
+        Dim mResults As STRUC_SEARCH_RESULTS() = DoSearch(False)
         If (mResults Is Nothing) Then
             Return
         End If
@@ -226,7 +234,7 @@ Public Class FormSearch
         End If
 
         Try
-            Dim iOffset As Integer = GetTextEditorCaretOffset()
+            Dim iOffset As Integer = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Caret.Offset
 
             g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.UndoStack.StartUndoGroup()
 
@@ -243,7 +251,7 @@ Public Class FormSearch
     Private Sub Button_ListAll_Click(sender As Object, e As EventArgs) Handles Button_ListAll.Click
         ListView_Output.Visible = True
 
-        Dim mResults As STRUC_SEARCH_RESULTS() = DoSearch()
+        Dim mResults As STRUC_SEARCH_RESULTS() = DoSearch(False)
         If (mResults Is Nothing) Then
             ListView_Output.Items.Clear()
             Return
@@ -259,20 +267,74 @@ Public Class FormSearch
         Try
             ListView_Output.BeginUpdate()
             ListView_Output.Items.Clear()
-            SetTextEditorSelection(mResults(mResults.Length - 1).iLocation, mResults(mResults.Length - 1).iLenght, False)
             For Each mItem In mResults
-                If (mItem.iLocation + mItem.iLenght > g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextLength) Then
+                Dim mTab = g_mFormMain.g_ClassTabControl.GetTabByIdentifier(mItem.sTabIdentifier)
+                If (mTab Is Nothing) Then
                     Continue For
                 End If
 
-                Dim sTest As String = GetFullLineByOffset(mItem.iLocation)
-                If (String.IsNullOrEmpty(sTest)) Then
+                SetTextEditorSelection(mTab, mResults(mResults.Length - 1).iLocation, mResults(mResults.Length - 1).iLenght, False)
+
+                If (mItem.iLocation + mItem.iLenght > mTab.m_TextEditor.Document.TextLength) Then
                     Continue For
                 End If
 
-                Dim iLine As Integer = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.GetLineNumberForOffset(mItem.iLocation) + 1
+                Dim sText As String = GetFullLineByOffset(mTab, mItem.iLocation)
+                If (String.IsNullOrEmpty(sText)) Then
+                    Continue For
+                End If
 
-                ListView_Output.Items.Add(New ListViewItem(New String() {CStr(iLine), sTest, CStr(mItem.iLocation), CStr(mItem.iLenght)}))
+                Dim iLine As Integer = mTab.m_TextEditor.Document.GetLineNumberForOffset(mItem.iLocation) + 1
+
+                ListView_Output.Items.Add(New ListViewItem(New String() {IO.Path.GetFileName(mItem.sFile), CStr(iLine), sText, mItem.sFile, CStr(mItem.iLocation), CStr(mItem.iLenght), mItem.sTabIdentifier}))
+            Next
+
+            ListView_Output.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent)
+            ListView_Output.EndUpdate()
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
+    Private Sub Button_ListAllOpenTabs_Click(sender As Object, e As EventArgs) Handles Button_ListAllOpenTabs.Click
+        ListView_Output.Visible = True
+
+        Dim mResults As STRUC_SEARCH_RESULTS() = DoSearch(True)
+        If (mResults Is Nothing) Then
+            ListView_Output.Items.Clear()
+            Return
+        End If
+
+        ToolStripStatusLabel_Status.Text = String.Format("{0} Items found!", mResults.Length)
+
+        If (mResults.Length < 1) Then
+            ListView_Output.Items.Clear()
+            Return
+        End If
+
+        Try
+            ListView_Output.BeginUpdate()
+            ListView_Output.Items.Clear()
+            For Each mItem In mResults
+                Dim mTab = g_mFormMain.g_ClassTabControl.GetTabByIdentifier(mItem.sTabIdentifier)
+                If (mTab Is Nothing) Then
+                    Continue For
+                End If
+
+                SetTextEditorSelection(mTab, mResults(mResults.Length - 1).iLocation, mResults(mResults.Length - 1).iLenght, False)
+
+                If (mItem.iLocation + mItem.iLenght > mTab.m_TextEditor.Document.TextLength) Then
+                    Continue For
+                End If
+
+                Dim sText As String = GetFullLineByOffset(mTab, mItem.iLocation)
+                If (String.IsNullOrEmpty(sText)) Then
+                    Continue For
+                End If
+
+                Dim iLine As Integer = mTab.m_TextEditor.Document.GetLineNumberForOffset(mItem.iLocation) + 1
+
+                ListView_Output.Items.Add(New ListViewItem(New String() {IO.Path.GetFileName(mItem.sFile), CStr(iLine), sText, mItem.sFile, CStr(mItem.iLocation), CStr(mItem.iLenght), mItem.sTabIdentifier}))
             Next
 
             ListView_Output.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent)
@@ -303,10 +365,22 @@ Public Class FormSearch
         End If
 
         Try
-            Dim iLocation As Integer = CInt(ListView_Output.SelectedItems(0).SubItems(2).Text)
-            Dim iLenght As Integer = CInt(ListView_Output.SelectedItems(0).SubItems(3).Text)
+            Dim sFile As String = ListView_Output.SelectedItems(0).SubItems(3).Text
+            Dim iLocation As Integer = CInt(ListView_Output.SelectedItems(0).SubItems(4).Text)
+            Dim iLenght As Integer = CInt(ListView_Output.SelectedItems(0).SubItems(5).Text)
+            Dim sTabIdentifier As String = ListView_Output.SelectedItems(0).SubItems(6).Text
 
-            SetTextEditorSelection(iLocation, iLenght, False)
+            Dim mTab = g_mFormMain.g_ClassTabControl.GetTabByIdentifier(sTabIdentifier)
+            If (mTab Is Nothing) Then
+                MessageBox.Show("Could not show the result! The tab has been closed!", "Unable to show result", MessageBoxButtons.OK, MessageBoxIcon.Asterisk)
+                Return
+            End If
+
+            SetTextEditorSelection(mTab, iLocation, iLenght, False)
+
+            If (mTab.m_Index <> g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Index) Then
+                g_mFormMain.g_ClassTabControl.SelectTab(mTab.m_Index)
+            End If
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try

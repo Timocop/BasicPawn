@@ -47,8 +47,11 @@ Partial Class FormSearch
         Me.ListView_Output = New System.Windows.Forms.ListView()
         Me.ColumnHeader1 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader2 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.ColumnHeader3 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.Button_ListAllOpenTabs = New System.Windows.Forms.Button()
+        Me.ColumnHeader4 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
@@ -72,7 +75,7 @@ Partial Class FormSearch
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.TextBox_Search.Location = New System.Drawing.Point(68, 12)
         Me.TextBox_Search.Name = "TextBox_Search"
-        Me.TextBox_Search.Size = New System.Drawing.Size(331, 22)
+        Me.TextBox_Search.Size = New System.Drawing.Size(317, 22)
         Me.TextBox_Search.TabIndex = 1
         '
         'TextBox_Replace
@@ -81,7 +84,7 @@ Partial Class FormSearch
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.TextBox_Replace.Location = New System.Drawing.Point(68, 40)
         Me.TextBox_Replace.Name = "TextBox_Replace"
-        Me.TextBox_Replace.Size = New System.Drawing.Size(331, 22)
+        Me.TextBox_Replace.Size = New System.Drawing.Size(317, 22)
         Me.TextBox_Replace.TabIndex = 3
         '
         'Label2
@@ -97,9 +100,9 @@ Partial Class FormSearch
         '
         Me.Button_Search.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_Search.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_Search.Location = New System.Drawing.Point(405, 12)
+        Me.Button_Search.Location = New System.Drawing.Point(391, 12)
         Me.Button_Search.Name = "Button_Search"
-        Me.Button_Search.Size = New System.Drawing.Size(75, 23)
+        Me.Button_Search.Size = New System.Drawing.Size(116, 23)
         Me.Button_Search.TabIndex = 4
         Me.Button_Search.Text = "Search"
         Me.Button_Search.UseVisualStyleBackColor = True
@@ -108,9 +111,9 @@ Partial Class FormSearch
         '
         Me.Button_Replace.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_Replace.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_Replace.Location = New System.Drawing.Point(405, 41)
+        Me.Button_Replace.Location = New System.Drawing.Point(391, 41)
         Me.Button_Replace.Name = "Button_Replace"
-        Me.Button_Replace.Size = New System.Drawing.Size(75, 23)
+        Me.Button_Replace.Size = New System.Drawing.Size(116, 23)
         Me.Button_Replace.TabIndex = 5
         Me.Button_Replace.Text = "Replace"
         Me.Button_Replace.UseVisualStyleBackColor = True
@@ -211,9 +214,9 @@ Partial Class FormSearch
         '
         Me.Button_ReplaceAll.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_ReplaceAll.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_ReplaceAll.Location = New System.Drawing.Point(405, 70)
+        Me.Button_ReplaceAll.Location = New System.Drawing.Point(391, 70)
         Me.Button_ReplaceAll.Name = "Button_ReplaceAll"
-        Me.Button_ReplaceAll.Size = New System.Drawing.Size(75, 23)
+        Me.Button_ReplaceAll.Size = New System.Drawing.Size(116, 23)
         Me.Button_ReplaceAll.TabIndex = 10
         Me.Button_ReplaceAll.Text = "Replace All"
         Me.Button_ReplaceAll.UseVisualStyleBackColor = True
@@ -257,9 +260,9 @@ Partial Class FormSearch
         'StatusStrip1
         '
         Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripStatusLabel_Status})
-        Me.StatusStrip1.Location = New System.Drawing.Point(0, 389)
+        Me.StatusStrip1.Location = New System.Drawing.Point(0, 396)
         Me.StatusStrip1.Name = "StatusStrip1"
-        Me.StatusStrip1.Size = New System.Drawing.Size(492, 22)
+        Me.StatusStrip1.Size = New System.Drawing.Size(519, 22)
         Me.StatusStrip1.SizingGrip = False
         Me.StatusStrip1.TabIndex = 12
         Me.StatusStrip1.Text = "StatusStrip1"
@@ -274,23 +277,23 @@ Partial Class FormSearch
         '
         Me.Button_ListAll.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_ListAll.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_ListAll.Location = New System.Drawing.Point(405, 99)
+        Me.Button_ListAll.Location = New System.Drawing.Point(391, 99)
         Me.Button_ListAll.Name = "Button_ListAll"
-        Me.Button_ListAll.Size = New System.Drawing.Size(75, 23)
+        Me.Button_ListAll.Size = New System.Drawing.Size(116, 23)
         Me.Button_ListAll.TabIndex = 13
         Me.Button_ListAll.Text = "List All"
         Me.Button_ListAll.UseVisualStyleBackColor = True
         '
         'ListView_Output
         '
-        Me.ListView_Output.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1, Me.ColumnHeader2})
+        Me.ListView_Output.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1, Me.ColumnHeader2, Me.ColumnHeader3, Me.ColumnHeader4})
         Me.ListView_Output.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ListView_Output.FullRowSelect = True
         Me.ListView_Output.HideSelection = False
         Me.ListView_Output.Location = New System.Drawing.Point(3, 203)
         Me.ListView_Output.MultiSelect = False
         Me.ListView_Output.Name = "ListView_Output"
-        Me.ListView_Output.Size = New System.Drawing.Size(486, 183)
+        Me.ListView_Output.Size = New System.Drawing.Size(513, 190)
         Me.ListView_Output.TabIndex = 14
         Me.ListView_Output.UseCompatibleStateImageBehavior = False
         Me.ListView_Output.View = System.Windows.Forms.View.Details
@@ -298,13 +301,15 @@ Partial Class FormSearch
         '
         'ColumnHeader1
         '
-        Me.ColumnHeader1.Text = "Line"
-        Me.ColumnHeader1.Width = 57
+        Me.ColumnHeader1.Text = "File"
         '
         'ColumnHeader2
         '
-        Me.ColumnHeader2.Text = "Text"
-        Me.ColumnHeader2.Width = 415
+        Me.ColumnHeader2.Text = "Line"
+        '
+        'ColumnHeader3
+        '
+        Me.ColumnHeader3.Text = "Text"
         '
         'TableLayoutPanel1
         '
@@ -320,11 +325,12 @@ Partial Class FormSearch
         Me.TableLayoutPanel1.RowCount = 2
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 200.0!))
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(492, 389)
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(519, 396)
         Me.TableLayoutPanel1.TabIndex = 15
         '
         'Panel1
         '
+        Me.Panel1.Controls.Add(Me.Button_ListAllOpenTabs)
         Me.Panel1.Controls.Add(Me.Label1)
         Me.Panel1.Controls.Add(Me.TextBox_Search)
         Me.Panel1.Controls.Add(Me.Button_ListAll)
@@ -340,8 +346,23 @@ Partial Class FormSearch
         Me.Panel1.Location = New System.Drawing.Point(0, 0)
         Me.Panel1.Margin = New System.Windows.Forms.Padding(0)
         Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(492, 200)
+        Me.Panel1.Size = New System.Drawing.Size(519, 200)
         Me.Panel1.TabIndex = 0
+        '
+        'Button_ListAllOpenTabs
+        '
+        Me.Button_ListAllOpenTabs.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Button_ListAllOpenTabs.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.Button_ListAllOpenTabs.Location = New System.Drawing.Point(391, 128)
+        Me.Button_ListAllOpenTabs.Name = "Button_ListAllOpenTabs"
+        Me.Button_ListAllOpenTabs.Size = New System.Drawing.Size(116, 36)
+        Me.Button_ListAllOpenTabs.TabIndex = 14
+        Me.Button_ListAllOpenTabs.Text = "List All in All open tabs"
+        Me.Button_ListAllOpenTabs.UseVisualStyleBackColor = True
+        '
+        'ColumnHeader4
+        '
+        Me.ColumnHeader4.Text = "Path"
         '
         'FormSearch
         '
@@ -349,7 +370,7 @@ Partial Class FormSearch
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.AutoSize = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.ClientSize = New System.Drawing.Size(492, 411)
+        Me.ClientSize = New System.Drawing.Size(519, 418)
         Me.Controls.Add(Me.TableLayoutPanel1)
         Me.Controls.Add(Me.StatusStrip1)
         Me.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -401,4 +422,7 @@ Partial Class FormSearch
     Friend WithEvents ColumnHeader2 As ColumnHeader
     Friend WithEvents TableLayoutPanel1 As TableLayoutPanel
     Friend WithEvents Panel1 As Panel
+    Friend WithEvents ColumnHeader3 As ColumnHeader
+    Friend WithEvents Button_ListAllOpenTabs As Button
+    Friend WithEvents ColumnHeader4 As ColumnHeader
 End Class

@@ -176,6 +176,26 @@ Public Class ClassTabControl
         End Try
     End Sub
 
+    Public Function GetTabByIdentifier(sIdentifier As String) As SourceTabPage
+        For i = 0 To m_TabsCount - 1
+            If (m_Tab(i).m_Identifier = sIdentifier) Then
+                Return m_Tab(i)
+            End If
+        Next
+
+        Return Nothing
+    End Function
+
+    Public Function GetTabIndexByIdentifier(sIdentifier As String) As Integer
+        For i = 0 To m_TabsCount - 1
+            If (m_Tab(i).m_Identifier = sIdentifier) Then
+                Return i
+            End If
+        Next
+
+        Return -1
+    End Function
+
 
     ''' <summary>
     ''' Opens a new source file
@@ -659,6 +679,11 @@ Public Class ClassTabControl
             End Get
         End Property
 
+        Public ReadOnly Property m_Index As Integer
+            Get
+                Return Me.TabIndex - 1
+            End Get
+        End Property
 
 
         Public Property m_Changed As Boolean
