@@ -681,7 +681,13 @@ Public Class ClassTabControl
 
         Public ReadOnly Property m_Index As Integer
             Get
-                Return Me.TabIndex - 1
+                For i = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1
+                    If (g_mFormMain.g_ClassTabControl.m_Tab(i) Is Me) Then
+                        Return i
+                    End If
+                Next
+
+                Return -1
             End Get
         End Property
 
