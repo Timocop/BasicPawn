@@ -254,13 +254,14 @@ Public Class ClassSyntaxTools
                                                     Select Case (True)
                                                         Case (struc.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM
                                                             Dim sEnumName As String() = struc.sFunctionName.Split("."c)
-                                                            If (sEnumName.Length = 2) Then
-                                                                If (Not lExistList.Contains(sEnumName(0))) Then
-                                                                    lExistList.Add(sEnumName(0))
-                                                                End If
+                                                            Select Case (sEnumName.Length)
+                                                                Case 2
+                                                                    If (Not lExistList.Contains(sEnumName(0))) Then
+                                                                        lExistList.Add(sEnumName(0))
+                                                                    End If
 
-                                                                SB.Append(String.Format("<Key word=""{0}""/>", sEnumName(1)))
-                                                            End If
+                                                                    SB.Append(String.Format("<Key word=""{0}""/>", sEnumName(1)))
+                                                            End Select
 
                                                         Case (struc.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP
                                                             If (Not lExistList.Contains(struc.sFunctionName)) Then
@@ -287,11 +288,12 @@ Public Class ClassSyntaxTools
 
                                                         Case (struc.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM
                                                             Dim sEnumName As String() = struc.sFunctionName.Split("."c)
-                                                            If (sEnumName.Length = 2) Then
-                                                                If (Not lExistList.Contains(sEnumName(0))) Then
-                                                                    lExistList.Add(sEnumName(0))
-                                                                End If
-                                                            End If
+                                                            Select Case (sEnumName.Length)
+                                                                Case 1, 2
+                                                                    If (Not lExistList.Contains(sEnumName(0))) Then
+                                                                        lExistList.Add(sEnumName(0))
+                                                                    End If
+                                                            End Select
 
                                                         Case (struc.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP
                                                             If (Not lExistList.Contains(struc.sFunctionName)) Then
