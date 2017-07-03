@@ -208,43 +208,47 @@ Public Class UCObjectBrowser
         End If
 
         Dim sSearchText As String = TextboxWatermark_Search.Text
+        Dim mTreeNodes As TreeNode() = GetAllTreeViewNodes(TreeView_ObjectBrowser)
 
-        If (True) Then
-            Dim mFileNodes As TreeNodeCollection = TreeView_ObjectBrowser.Nodes
-            Dim mTypeNodes As TreeNodeCollection
-            Dim mNameNodes As TreeNodeCollection
-            Dim i As Integer
-            For i = 0 To mFileNodes.Count - 1
-                mTypeNodes = mFileNodes(i).Nodes
+        Dim iSelectedIndex As Integer = -1
+        For i = 0 To mTreeNodes.Length - 1
+            If (mTreeNodes(i).IsSelected) Then
+                iSelectedIndex = i
+                Exit For
+            End If
+        Next
 
-                Dim j As Integer
-                For j = 0 To mTypeNodes.Count - 1
-                    mNameNodes = mTypeNodes(j).Nodes
-
-                    Dim l As Integer
-                    For l = 0 To mNameNodes.Count - 1
-                        If (mNameNodes(l).Text.Contains(sSearchText)) Then
-                            TreeView_ObjectBrowser.SelectedNode = mNameNodes(l)
-                            TreeView_ObjectBrowser.SelectedNode.EnsureVisible()
-                            Return
-                        End If
-                    Next
-
-                    If (mTypeNodes(j).Text.Contains(sSearchText)) Then
-                        TreeView_ObjectBrowser.SelectedNode = mTypeNodes(j)
-                        TreeView_ObjectBrowser.SelectedNode.EnsureVisible()
-                        Return
-                    End If
-                Next
-
-                If (mFileNodes(i).Text.Contains(sSearchText)) Then
-                    TreeView_ObjectBrowser.SelectedNode = mFileNodes(i)
-                    TreeView_ObjectBrowser.SelectedNode.EnsureVisible()
-                    Return
-                End If
-            Next
-        End If
+        For i = iSelectedIndex + 1 To mTreeNodes.Length - 1
+            If (mTreeNodes(i).Text.ToLower.Contains(sSearchText.ToLower)) Then
+                TreeView_ObjectBrowser.SelectedNode = mTreeNodes(i)
+                TreeView_ObjectBrowser.SelectedNode.EnsureVisible()
+                Exit For
+            End If
+        Next
     End Sub
+
+    Private Function GetAllTreeViewNodes(mTreeView As TreeView) As TreeNode()
+        Dim lTreeNodes As New List(Of TreeNode)
+
+        For Each mItem As TreeNode In mTreeView.Nodes
+            lTreeNodes.AddRange(GetAllTreeViewNodes(mItem))
+        Next
+
+        Return lTreeNodes.ToArray
+    End Function
+
+    Private Function GetAllTreeViewNodes(mTreeNode As TreeNode) As TreeNode()
+        Dim lTreeNodes As New List(Of TreeNode)
+
+        lTreeNodes.Add(mTreeNode)
+
+        For Each mItem As TreeNode In mTreeNode.Nodes
+            lTreeNodes.AddRange(GetAllTreeViewNodes(mItem))
+        Next
+
+        Return lTreeNodes.ToArray
+    End Function
+
 
     Private Sub ContextMenuStrip_ObjectBrowser_Opening(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles ContextMenuStrip_ObjectBrowser.Opening
         If (TreeView_ObjectBrowser.SelectedNode Is Nothing) Then
