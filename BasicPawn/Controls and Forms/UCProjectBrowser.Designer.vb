@@ -40,13 +40,14 @@ Partial Class UCProjectBrowser
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_Exlcude = New System.Windows.Forms.ToolStripMenuItem()
         Me.TextboxWatermark_Search = New BasicPawn.ClassTextboxWatermark()
+        Me.ColumnHeader2 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ContextMenuStrip_ProjectFiles.SuspendLayout()
         Me.SuspendLayout()
         '
         'ListView_ProjectFiles
         '
         Me.ListView_ProjectFiles.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.ListView_ProjectFiles.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1})
+        Me.ListView_ProjectFiles.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1, Me.ColumnHeader2})
         Me.ListView_ProjectFiles.ContextMenuStrip = Me.ContextMenuStrip_ProjectFiles
         Me.ListView_ProjectFiles.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ListView_ProjectFiles.HideSelection = False
@@ -60,7 +61,7 @@ Partial Class UCProjectBrowser
         'ColumnHeader1
         '
         Me.ColumnHeader1.Text = "File"
-        Me.ColumnHeader1.Width = 198
+        Me.ColumnHeader1.Width = 250
         '
         'ContextMenuStrip_ProjectFiles
         '
@@ -159,6 +160,11 @@ Partial Class UCProjectBrowser
         Me.TextboxWatermark_Search.TabIndex = 1
         Me.TextboxWatermark_Search.Text = "Search..."
         '
+        'ColumnHeader2
+        '
+        Me.ColumnHeader2.Text = "Path"
+        Me.ColumnHeader2.Width = 500
+        '
         'UCProjectBrowser
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -191,4 +197,5 @@ Partial Class UCProjectBrowser
     Friend WithEvents ToolStripMenuItem_AddNewTabs As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_ProjectSave As ToolStripMenuItem
     Friend WithEvents TextboxWatermark_Search As ClassTextboxWatermark
+    Friend WithEvents ColumnHeader2 As ColumnHeader
 End Class
