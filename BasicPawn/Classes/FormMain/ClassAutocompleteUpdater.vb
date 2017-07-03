@@ -1350,7 +1350,7 @@ Public Class ClassAutocompleteUpdater
                     If (sType = "property") Then
                         Dim struc As New STRUC_AUTOCOMPLETE With {
                             .sFile = IO.Path.GetFileName(sFile),
-                            .sFullFunctionName = String.Format("methodmap {0}{1}{2} {3} {4}", sMethodMapName, sMethodMapParentingName, If(sMethodMapHasParent, " < " & sMethodMapParentName, ""), sTag, sMethodMapName),
+                            .sFullFunctionName = String.Format("methodmap {0} {1}{2}{3} = {4} {5}", sType, sMethodMapName, sMethodMapParentingName, If(sMethodMapHasParent, " < " & sMethodMapParentName, ""), sTag, sMethodMapName),
                             .sFunctionName = String.Format("{0}.{1}", sMethodMapName, sName),
                             .sInfo = sComment
                         }
@@ -1378,7 +1378,7 @@ Public Class ClassAutocompleteUpdater
                         If (bIsConstructor) Then
                             Dim struc As New STRUC_AUTOCOMPLETE With {
                                 .sFile = IO.Path.GetFileName(sFile),
-                                .sFullFunctionName = String.Format("methodmap {0}{1} {2}{3}", sMethodMapName, If(sMethodMapHasParent, " < " & sMethodMapParentName, ""), sMethodMapName, sBraceString),
+                                .sFullFunctionName = String.Format("methodmap {0}{1} = {2}{3}", sMethodMapName, If(sMethodMapHasParent, " < " & sMethodMapParentName, ""), sMethodMapName, sBraceString),
                                 .sFunctionName = String.Format("{0}.{1}", sMethodMapName, sMethodMapName),
                                 .sInfo = sComment
                             }
@@ -1390,7 +1390,7 @@ Public Class ClassAutocompleteUpdater
                         Else
                             Dim struc As New STRUC_AUTOCOMPLETE With {
                                 .sFile = IO.Path.GetFileName(sFile),
-                                .sFullFunctionName = String.Format("methodmap {0} {1} {2}{3} {4}{5}", sType, sTag, sMethodMapName, If(sMethodMapHasParent, " < " & sMethodMapParentName, ""), sName, sBraceString),
+                                .sFullFunctionName = String.Format("methodmap {0} {1}{2} = {3} {4}{5}", sType, sMethodMapName, If(sMethodMapHasParent, " < " & sMethodMapParentName, ""), sTag, sName, sBraceString),
                                 .sFunctionName = String.Format("{0}.{1}", sMethodMapName, sName),
                                 .sInfo = sComment
                             }
