@@ -1117,6 +1117,13 @@ Public Class FormMain
                     Me.BeginInvoke(Sub()
                                        g_ClassTabControl.AddTab(True)
                                        g_ClassTabControl.OpenFileTab(g_ClassTabControl.m_TabsCount - 1, sFile)
+
+                                       If (Me.WindowState = FormWindowState.Minimized) Then
+                                           ClassTools.ClassForms.FormWindowCommand(Me, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
+                                       End If
+                                       Me.TopMost = Not Me.TopMost
+                                       Me.TopMost = Not Me.TopMost
+
                                    End Sub)
 
                 Case COMARG_REQUEST_TABS
@@ -1186,7 +1193,7 @@ Public Class FormMain
                     End If
 
                     If (Me.WindowState = FormWindowState.Minimized) Then
-                        Me.WindowState = FormWindowState.Normal
+                        ClassTools.ClassForms.FormWindowCommand(Me, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
                     End If
                     Me.TopMost = Not Me.TopMost
                     Me.TopMost = Not Me.TopMost
