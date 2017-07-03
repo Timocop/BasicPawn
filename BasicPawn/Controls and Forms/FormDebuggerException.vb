@@ -38,7 +38,7 @@ Public Class FormDebuggerException
 
         ListView_StackTrace.BeginUpdate()
         Dim iIndex As Integer = 0
-        For Each stackTrace In smException.mStackTrace
+        For Each stackTrace In smException.mStackTraces
             Dim iRealLine As Integer = -1
             Dim sFile As String = ""
 

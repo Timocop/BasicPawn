@@ -123,9 +123,9 @@ Public Class ClassTextEditorTools
 
             If (sFile.ToLower = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File.ToLower) Then
                 Dim iLineCount As Integer = 0
-                Using SR As New IO.StringReader(mActiveTextEditor.Document.TextContent)
+                Using mSR As New IO.StringReader(mActiveTextEditor.Document.TextContent)
                     While True
-                        Dim sLine As String = SR.ReadLine
+                        Dim sLine As String = mSR.ReadLine
                         If (sLine Is Nothing) Then
                             Exit While
                         End If
@@ -758,9 +758,9 @@ Public Class ClassTextEditorTools
             Dim bRecord As Boolean = False
 
             Dim sLine As String
-            Using SR As New IO.StringReader(sOutputSource)
+            Using mSR As New IO.StringReader(sOutputSource)
                 While True
-                    sLine = SR.ReadLine()
+                    sLine = mSR.ReadLine()
                     If (sLine Is Nothing) Then
                         Exit While
                     End If

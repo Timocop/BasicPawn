@@ -710,10 +710,10 @@ Public Class FormMain
             End If
 
             Dim lRealSourceLines As New List(Of String)
-            Using mStringReader As New IO.StringReader(g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent)
+            Using mSR As New IO.StringReader(g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent)
                 Dim sLine As String
                 While True
-                    sLine = mStringReader.ReadLine
+                    sLine = mSR.ReadLine
                     If (sLine Is Nothing) Then
                         Exit While
                     End If
@@ -724,10 +724,10 @@ Public Class FormMain
 
             Dim sFormatedSource As String = g_ClassSyntaxTools.FormatCode(g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent)
             Dim lFormatedSourceLines As New List(Of String)
-            Using mStringReader As New IO.StringReader(sFormatedSource)
+            Using mSR As New IO.StringReader(sFormatedSource)
                 Dim sLine As String
                 While True
-                    sLine = mStringReader.ReadLine
+                    sLine = mSR.ReadLine
                     If (sLine Is Nothing) Then
                         Exit While
                     End If

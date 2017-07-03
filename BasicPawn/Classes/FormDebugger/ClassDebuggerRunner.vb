@@ -21,7 +21,7 @@ Imports System.Text.RegularExpressions
 Public Class ClassDebuggerRunner
     Implements IDisposable
 
-    Const MAX_SM_LOG_READ_LINES = 100
+    Const SM_LOG_READ_LINES_MAX = 100
 
     Public g_mFormDebugger As FormDebugger
 
@@ -142,17 +142,13 @@ Public Class ClassDebuggerRunner
             If (g_bSuspendGame <> value) Then
                 g_bSuspendGame = value
 
-                For Each proc As Process In Process.GetProcesses
+                For Each mProcess As Process In Process.GetProcesses
                     Try
-                        If (proc.HasExited) Then
+                        If (mProcess.HasExited OrElse mProcess.Id = Process.GetCurrentProcess.Id) Then
                             Continue For
                         End If
 
-                        If (proc.Id = Process.GetCurrentProcess.Id) Then
-                            Continue For
-                        End If
-
-                        Dim sFullPath As String = IO.Path.GetFullPath(proc.MainModule.FileName)
+                        Dim sFullPath As String = IO.Path.GetFullPath(mProcess.MainModule.FileName)
 
                         If (sFullPath.ToLower = IO.Path.GetFullPath(Application.ExecutablePath).ToLower) Then
                             Continue For
@@ -160,9 +156,9 @@ Public Class ClassDebuggerRunner
 
                         If (sFullPath.ToLower.StartsWith(m_GameFolder.ToLower)) Then
                             If (value) Then
-                                WinNative.SuspendProcess(proc)
+                                WinNative.SuspendProcess(mProcess)
                             Else
-                                WinNative.ResumeProcess(proc)
+                                WinNative.ResumeProcess(mProcess)
                             End If
                         End If
                     Catch ex As Exception
@@ -288,12 +284,12 @@ Public Class ClassDebuggerRunner
             Dim sCurrentFile As String = ""
 
             Dim sLine As String = ""
-            Using SR As New IO.StringReader(sSource)
+            Using mSR As New IO.StringReader(sSource)
                 While True
                     iCurrentFakeLine += 1
                     iCurrentLine += 1
 
-                    sLine = SR.ReadLine
+                    sLine = mSR.ReadLine
                     If (sLine Is Nothing) Then
                         lineInfo.Add(New STURC_SOURCE_LINES_INFO_ITEM() With {.iRealLine = iCurrentLine, .sFile = sCurrentFile})
                         Exit While
@@ -336,9 +332,9 @@ Public Class ClassDebuggerRunner
             Dim sourceFinished As New Text.StringBuilder
 
             Dim sLine As String = ""
-            Using SR As New IO.StringReader(sSource)
+            Using mSR As New IO.StringReader(sSource)
                 While True
-                    sLine = SR.ReadLine
+                    sLine = mSR.ReadLine
                     If (sLine Is Nothing) Then
                         Exit While
                     End If
@@ -824,12 +820,12 @@ Public Class ClassDebuggerRunner
 
             Dim sLines As String() = New String() {}
 
-            Dim SW As New Stopwatch
-            SW.Start()
+            Dim mStopWatch As New Stopwatch
+            mStopWatch.Start()
             While True
                 Try
-                    If (SW.ElapsedMilliseconds > 2500) Then
-                        SW.Stop()
+                    If (mStopWatch.ElapsedMilliseconds > 2500) Then
+                        mStopWatch.Stop()
                         Return
                     End If
 
@@ -841,7 +837,7 @@ Public Class ClassDebuggerRunner
                 Catch ex As Exception
                 End Try
             End While
-            SW.Stop()
+            mStopWatch.Stop()
 
             Try
                 IO.File.Delete(sFile)
@@ -936,12 +932,12 @@ Public Class ClassDebuggerRunner
 
             Dim sLines As String() = New String() {}
 
-            Dim SW As New Stopwatch
-            SW.Start()
+            Dim mStopWatch As New Stopwatch
+            mStopWatch.Start()
             While True
                 Try
-                    If (SW.ElapsedMilliseconds > 2500) Then
-                        SW.Stop()
+                    If (mStopWatch.ElapsedMilliseconds > 2500) Then
+                        mStopWatch.Stop()
                         Return
                     End If
 
@@ -953,7 +949,7 @@ Public Class ClassDebuggerRunner
                 Catch ex As Exception
                 End Try
             End While
-            SW.Stop()
+            mStopWatch.Stop()
 
             Try
                 IO.File.Delete(sFile)
@@ -1030,12 +1026,12 @@ Public Class ClassDebuggerRunner
 
             Dim sLines As String() = New String() {}
 
-            Dim SW As New Stopwatch
-            SW.Start()
+            Dim mStopWatch As New Stopwatch
+            mStopWatch.Start()
             While True
                 Try
-                    If (SW.ElapsedMilliseconds > 2500) Then
-                        SW.Stop()
+                    If (mStopWatch.ElapsedMilliseconds > 2500) Then
+                        mStopWatch.Stop()
                         Return
                     End If
 
@@ -1047,7 +1043,7 @@ Public Class ClassDebuggerRunner
                 Catch ex As Exception
                 End Try
             End While
-            SW.Stop()
+            mStopWatch.Stop()
 
             Try
                 IO.File.Delete(sFile)
@@ -1201,25 +1197,25 @@ Public Class ClassDebuggerRunner
             SyncLock g_mFileSystemWatcherLock
                 Dim bWasSuspended As Boolean = m_SuspendGame
 
-                Dim SW As New Stopwatch
-                SW.Start()
+                Dim mStopWatch As New Stopwatch
+                mStopWatch.Start()
                 While True
                     Try
-                        If (SW.ElapsedMilliseconds > 2500) Then
-                            SW.Stop()
+                        If (mStopWatch.ElapsedMilliseconds > 2500) Then
+                            mStopWatch.Stop()
                             Return
                         End If
 
                         'TODO: Add better techneque, this has a high false positive rate. (Reads while SourceMod writes to the file)
                         'Check if SourceMod wrote to the file.
                         Dim fileChangeTime As Date = IO.File.GetLastWriteTime(sFile)
-                        If (SW.ElapsedMilliseconds < 500 AndAlso (fileChangeTime + New TimeSpan(0, 0, 0, 0, 100)) > Date.Now) Then
+                        If (mStopWatch.ElapsedMilliseconds < 500 AndAlso (fileChangeTime + New TimeSpan(0, 0, 0, 0, 100)) > Date.Now) Then
                             Continue While
                         End If
 
                         'Make sure we suspend the game process first, otherwise we risk that SourceMod disables its logging because we used the file first
                         m_SuspendGame = True
-                        sLines = ClassTools.ClassStrings.StringReadLinesEnd(sFile, MAX_SM_LOG_READ_LINES)
+                        sLines = ClassTools.ClassStrings.StringReadLinesEnd(sFile, SM_LOG_READ_LINES_MAX)
                         m_SuspendGame = bWasSuspended
 
                         Exit While
@@ -1228,7 +1224,7 @@ Public Class ClassDebuggerRunner
                     Catch ex As Exception
                     End Try
                 End While
-                SW.Stop()
+                mStopWatch.Stop()
             End SyncLock
 
 
@@ -1393,25 +1389,25 @@ Public Class ClassDebuggerRunner
             SyncLock g_mFileSystemWatcherLock
                 Dim bWasSuspended As Boolean = m_SuspendGame
 
-                Dim SW As New Stopwatch
-                SW.Start()
+                Dim mStopWatch As New Stopwatch
+                mStopWatch.Start()
                 While True
                     Try
-                        If (SW.ElapsedMilliseconds > 2500) Then
-                            SW.Stop()
+                        If (mStopWatch.ElapsedMilliseconds > 2500) Then
+                            mStopWatch.Stop()
                             Return
                         End If
 
                         'TODO: Add better techneque, this has a high false positive rate. (Reads while SourceMod writes to the file)
                         'Check if SourceMod wrote to the file.
                         Dim fileChangeTime As Date = IO.File.GetLastWriteTime(sFile)
-                        If (SW.ElapsedMilliseconds < 500 AndAlso (fileChangeTime + New TimeSpan(0, 0, 0, 0, 100)) > Date.Now) Then
+                        If (mStopWatch.ElapsedMilliseconds < 500 AndAlso (fileChangeTime + New TimeSpan(0, 0, 0, 0, 100)) > Date.Now) Then
                             Continue While
                         End If
 
                         'Make sure we suspend the game process first, otherwise we risk that SourceMod disables its logging because we used the file first
                         m_SuspendGame = True
-                        sLines = ClassTools.ClassStrings.StringReadLinesEnd(sFile, MAX_SM_LOG_READ_LINES)
+                        sLines = ClassTools.ClassStrings.StringReadLinesEnd(sFile, SM_LOG_READ_LINES_MAX)
                         m_SuspendGame = bWasSuspended
 
                         Exit While
@@ -1420,7 +1416,7 @@ Public Class ClassDebuggerRunner
                     Catch ex As Exception
                     End Try
                 End While
-                SW.Stop()
+                mStopWatch.Stop()
             End SyncLock
 
 
@@ -1508,12 +1504,12 @@ Public Class ClassDebuggerRunner
         End Function
 
         Public Shared Function IsSuspended(pProcess As Process) As Boolean
-            Dim ptcThreads As ProcessThreadCollection = pProcess.Threads
-            If (ptcThreads.Count < 1) Then
+            Dim mThreads As ProcessThreadCollection = pProcess.Threads
+            If (mThreads.Count < 1) Then
                 Return False
             End If
 
-            Return (ptcThreads(0).ThreadState = ThreadState.Wait AndAlso ptcThreads(0).WaitReason = ThreadWaitReason.Suspended)
+            Return (mThreads(0).ThreadState = ThreadState.Wait AndAlso mThreads(0).WaitReason = ThreadWaitReason.Suspended)
         End Function
 
         ''' <summary>
@@ -1521,12 +1517,12 @@ Public Class ClassDebuggerRunner
         ''' </summary>
         ''' <param name="pProcess">The process class</param>
         Public Shared Sub SuspendProcess(pProcess As Process)
-            Dim ptcThreads As ProcessThreadCollection = pProcess.Threads
+            Dim mThreads As ProcessThreadCollection = pProcess.Threads
 
-            For i = 0 To ptcThreads.Count - 1
+            For i = 0 To mThreads.Count - 1
                 Dim hThread As IntPtr = IntPtr.Zero
                 Try
-                    hThread = OpenThread(ThreadAccess.SUSPEND_RESUME, False, ptcThreads(i).Id)
+                    hThread = OpenThread(ThreadAccess.SUSPEND_RESUME, False, mThreads(i).Id)
                     If hThread <> IntPtr.Zero Then
                         SuspendThread(hThread)
                     End If
@@ -1544,12 +1540,12 @@ Public Class ClassDebuggerRunner
         ''' </summary>
         ''' <param name="pProcess">The process class</param> 
         Public Shared Sub ResumeProcess(pProcess As Process)
-            Dim pThreadList As ProcessThreadCollection = pProcess.Threads
+            Dim mThreads As ProcessThreadCollection = pProcess.Threads
 
-            For i = 0 To pThreadList.Count - 1
+            For i = 0 To mThreads.Count - 1
                 Dim hThread As IntPtr = IntPtr.Zero
                 Try
-                    hThread = OpenThread(ThreadAccess.SUSPEND_RESUME, False, pThreadList(i).Id)
+                    hThread = OpenThread(ThreadAccess.SUSPEND_RESUME, False, mThreads(i).Id)
                     If hThread <> IntPtr.Zero Then
                         Dim suspendCount As Integer = 0
                         Do

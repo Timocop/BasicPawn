@@ -62,25 +62,25 @@ Public Class ClassDebuggerParser
     ''' </summary>
     ''' <param name="sSource"></param>
     Public Sub UpdateBreakpoints(sSource As String, bKeepIdentity As Boolean)
-        Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
+        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
 
         If (Not bKeepIdentity) Then
             g_lBreakpointList.Clear()
         End If
 
         Dim iListIndex As Integer = 0
-        For Each m As Match In Regex.Matches(sSource, String.Format("\b{0}\b\s*(?<Lenght>)(?<Arguments>\(){1}", g_sBreakpointName, "{0,1}"))
-            Dim iIndex As Integer = m.Index
-            Dim bHasArgument As Boolean = m.Groups("Arguments").Success
+        For Each mMatch As Match In Regex.Matches(sSource, String.Format("\b{0}\b\s*(?<Lenght>)(?<Arguments>\(){1}", g_sBreakpointName, "{0,1}"))
+            Dim iIndex As Integer = mMatch.Index
+            Dim bHasArgument As Boolean = mMatch.Groups("Arguments").Success
 
-            If (sourceAnalysis.m_InNonCode(iIndex) OrElse Not bHasArgument) Then
+            If (mSourceAnalysis.m_InNonCode(iIndex) OrElse Not bHasArgument) Then
                 Continue For
             End If
 
-            Dim iArgumentIndex As Integer = m.Groups("Arguments").Index
+            Dim iArgumentIndex As Integer = mMatch.Groups("Arguments").Index
 
             Dim sGUID As String = Guid.NewGuid.ToString
-            Dim iLine As Integer = sSource.Substring(0, m.Index).Split(New String() {vbLf}, 0).Length
+            Dim iLine As Integer = sSource.Substring(0, mMatch.Index).Split(New String() {vbLf}, 0).Length
             Dim iLineIndex As Integer = 0
             For i = iIndex - 1 To 0 Step -1
                 If (sSource(i) = vbLf) Then
@@ -90,19 +90,19 @@ Public Class ClassDebuggerParser
                 iLineIndex += 1
             Next
 
-            Dim iLenght As Integer = m.Groups("Lenght").Index - m.Index
+            Dim iLenght As Integer = mMatch.Groups("Lenght").Index - mMatch.Index
             Dim iTotalLenght As Integer = 0
             Dim sArguments As New StringBuilder
             Dim sTotalFunction As New StringBuilder
 
-            Dim iStartLevel As Integer = sourceAnalysis.m_GetParenthesisLevel(iIndex)
+            Dim iStartLevel As Integer = mSourceAnalysis.m_GetParenthesisLevel(iIndex)
             Dim bGetArguments As Boolean = False
             For i = iIndex To sSource.Length - 1
                 iTotalLenght += 1
 
                 sTotalFunction.Append(sSource(i))
 
-                If (sSource(i) = ")" AndAlso iStartLevel = sourceAnalysis.m_GetParenthesisLevel(i)) Then
+                If (sSource(i) = ")" AndAlso iStartLevel = mSourceAnalysis.m_GetParenthesisLevel(i)) Then
                     bGetArguments = False
                     Exit For
                 End If
@@ -155,25 +155,25 @@ Public Class ClassDebuggerParser
     ''' </summary>
     ''' <param name="sSource"></param>
     Public Sub UpdateWatchers(sSource As String, bKeepIdentity As Boolean)
-        Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
+        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
 
         If (Not bKeepIdentity) Then
             g_lWatcherList.Clear()
         End If
 
         Dim iListIndex As Integer = 0
-        For Each m As Match In Regex.Matches(sSource, String.Format("\b{0}\b\s*(?<Lenght>)(?<Arguments>\(){1}", g_sWatcherName, "{0,1}"))
-            Dim iIndex As Integer = m.Index
-            Dim bHasArgument As Boolean = m.Groups("Arguments").Success
+        For Each mMatch As Match In Regex.Matches(sSource, String.Format("\b{0}\b\s*(?<Lenght>)(?<Arguments>\(){1}", g_sWatcherName, "{0,1}"))
+            Dim iIndex As Integer = mMatch.Index
+            Dim bHasArgument As Boolean = mMatch.Groups("Arguments").Success
 
-            If (sourceAnalysis.m_InNonCode(iIndex) OrElse Not bHasArgument) Then
+            If (mSourceAnalysis.m_InNonCode(iIndex) OrElse Not bHasArgument) Then
                 Continue For
             End If
 
-            Dim iArgumentIndex As Integer = m.Groups("Arguments").Index
+            Dim iArgumentIndex As Integer = mMatch.Groups("Arguments").Index
 
             Dim sGUID As String = Guid.NewGuid.ToString
-            Dim iLine As Integer = sSource.Substring(0, m.Index).Split(New String() {vbLf}, 0).Length
+            Dim iLine As Integer = sSource.Substring(0, mMatch.Index).Split(New String() {vbLf}, 0).Length
             Dim iLineIndex As Integer = 0
             For i = iIndex - 1 To 0 Step -1
                 If (sSource(i) = vbLf) Then
@@ -183,19 +183,19 @@ Public Class ClassDebuggerParser
                 iLineIndex += 1
             Next
 
-            Dim iLenght As Integer = m.Groups("Lenght").Index - m.Index
+            Dim iLenght As Integer = mMatch.Groups("Lenght").Index - mMatch.Index
             Dim iTotalLenght As Integer = 0
             Dim sArguments As New StringBuilder()
             Dim sTotalFunction As New StringBuilder
 
-            Dim iStartLevel As Integer = sourceAnalysis.m_GetParenthesisLevel(iIndex)
+            Dim iStartLevel As Integer = mSourceAnalysis.m_GetParenthesisLevel(iIndex)
             Dim bGetArguments As Boolean = False
             For i = iIndex To sSource.Length - 1
                 iTotalLenght += 1
 
                 sTotalFunction.Append(sSource(i))
 
-                If (sSource(i) = ")" AndAlso iStartLevel = sourceAnalysis.m_GetParenthesisLevel(i)) Then
+                If (sSource(i) = ")" AndAlso iStartLevel = mSourceAnalysis.m_GetParenthesisLevel(i)) Then
                     bGetArguments = False
                     Exit For
                 End If
@@ -248,32 +248,32 @@ Public Class ClassDebuggerParser
     ''' </summary>
     ''' <returns></returns>
     Public Function GetDebuggerAutocomplete() As STRUC_AUTOCOMPLETE()
-        Dim autocompleteList As New List(Of STRUC_AUTOCOMPLETE)
-        Dim autocompleteInfo As New StringBuilder
+        Dim lAutocomplete As New List(Of STRUC_AUTOCOMPLETE)
+        Dim mInfoBuilder As New StringBuilder
 
-        autocompleteInfo.AppendLine("/**")
-        autocompleteInfo.AppendLine("*  Pauses the plugin until manually resumed. Also shows the current position in the BasicPawn Debugger.")
-        autocompleteInfo.AppendLine("*  Optionaly you can return a custom non-array value.")
-        autocompleteInfo.AppendLine("*/")
-        autocompleteList.Add(New STRUC_AUTOCOMPLETE With {
+        mInfoBuilder.AppendLine("/**")
+        mInfoBuilder.AppendLine("*  Pauses the plugin until manually resumed. Also shows the current position in the BasicPawn Debugger.")
+        mInfoBuilder.AppendLine("*  Optionaly you can return a custom non-array value.")
+        mInfoBuilder.AppendLine("*/")
+        lAutocomplete.Add(New STRUC_AUTOCOMPLETE With {
                              .sFile = "BasicPawn.exe",
                              .sFullFunctionName = String.Format("any:{0}(any:val=0)", g_sBreakpointName),
                              .sFunctionName = g_sBreakpointName,
-                             .sInfo = autocompleteInfo.ToString,
+                             .sInfo = mInfoBuilder.ToString,
                              .mType = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEBUG})
 
-        autocompleteInfo.Length = 0
-        autocompleteInfo.AppendLine("/**")
-        autocompleteInfo.AppendLine("*  Prints the passed value into the BasicPawn Debugger.")
-        autocompleteInfo.AppendLine("*/")
-        autocompleteList.Add(New STRUC_AUTOCOMPLETE With {
+        mInfoBuilder.Length = 0
+        mInfoBuilder.AppendLine("/**")
+        mInfoBuilder.AppendLine("*  Prints the passed value into the BasicPawn Debugger.")
+        mInfoBuilder.AppendLine("*/")
+        lAutocomplete.Add(New STRUC_AUTOCOMPLETE With {
                              .sFile = "BasicPawn.exe",
                              .sFullFunctionName = String.Format("any:{0}(any:val=0)", g_sWatcherName),
                              .sFunctionName = g_sWatcherName,
-                             .sInfo = autocompleteInfo.ToString,
+                             .sInfo = mInfoBuilder.ToString,
                              .mType = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEBUG})
 
-        Return autocompleteList.ToArray
+        Return lAutocomplete.ToArray
     End Function
 
     Structure STRUC_SM_EXCEPTION_STACK_TRACE
@@ -287,14 +287,14 @@ Public Class ClassDebuggerParser
         Dim sExceptionInfo As String
         Dim sBlamingFile As String
         Dim dLogDate As Date
-        Dim mStackTrace As STRUC_SM_EXCEPTION_STACK_TRACE()
+        Dim mStackTraces As STRUC_SM_EXCEPTION_STACK_TRACE()
     End Structure
 
     Structure STRUC_SM_FATAL_EXCEPTION
         Dim sExceptionInfo As String
         Dim sBlamingFile As String
         Dim dLogDate As Date
-        Dim sMiscInformation As Object()
+        Dim mMiscInformation As Object()
     End Structure
 
     ''' <summary>
@@ -305,23 +305,23 @@ Public Class ClassDebuggerParser
     Public Function ReadSourceModLogExceptions(sLogLines As String()) As STRUC_SM_EXCEPTION()
         Dim iExpectingState As Integer = 0
 
-        Dim smException As New STRUC_SM_EXCEPTION
+        Dim mSMException As New STRUC_SM_EXCEPTION
 
-        Dim smExceptionsList As New List(Of STRUC_SM_EXCEPTION)
-        Dim smStackTraceList As New List(Of STRUC_SM_EXCEPTION_STACK_TRACE)
+        Dim lSMExceptions As New List(Of STRUC_SM_EXCEPTION)
+        Dim lSMStackTraces As New List(Of STRUC_SM_EXCEPTION_STACK_TRACE)
 
         For i = 0 To sLogLines.Length - 1
             Dim mExceptionInfo As Match = Regex.Match(sLogLines(i), "^L (?<Date>[0-9]+\/[0-9]+\/[0-9]+ \- [0-9]+\:[0-9]+\:[0-9]+)\: \[SM\] Exception reported\:(?<Message>.*?)$")
             If (mExceptionInfo.Success) Then
                 If (iExpectingState = 3) Then
-                    smException.mStackTrace = smStackTraceList.ToArray
-                    smExceptionsList.Add(smException)
+                    mSMException.mStackTraces = lSMStackTraces.ToArray
+                    lSMExceptions.Add(mSMException)
 
                     iExpectingState = 0
                 End If
 
-                smException = New STRUC_SM_EXCEPTION
-                smStackTraceList = New List(Of STRUC_SM_EXCEPTION_STACK_TRACE)
+                mSMException = New STRUC_SM_EXCEPTION
+                lSMStackTraces = New List(Of STRUC_SM_EXCEPTION_STACK_TRACE)
 
                 Dim sDate As String = mExceptionInfo.Groups("Date").Value
                 Dim sMessage As String = mExceptionInfo.Groups("Message").Value
@@ -331,8 +331,8 @@ Public Class ClassDebuggerParser
                     Continue For
                 End If
 
-                smException.sExceptionInfo = sMessage.Trim
-                smException.dLogDate = dDate
+                mSMException.sExceptionInfo = sMessage.Trim
+                mSMException.dLogDate = dDate
 
                 iExpectingState = 1
                 Continue For
@@ -344,7 +344,7 @@ Public Class ClassDebuggerParser
                     If (mBlamingInfo.Success) Then
                         Dim sFile As String = mBlamingInfo.Groups("File").Value
 
-                        smException.sBlamingFile = sFile.Trim
+                        mSMException.sBlamingFile = sFile.Trim
 
                         iExpectingState = 2
                     Else
@@ -373,7 +373,7 @@ Public Class ClassDebuggerParser
                             Dim sFile As String = mMoreStackTraceInfo.Groups("File").Value.Trim
                             Dim sFunction As String = mMoreStackTraceInfo.Groups("Function").Value.Trim
 
-                            smStackTraceList.Add(New STRUC_SM_EXCEPTION_STACK_TRACE() With {
+                            lSMStackTraces.Add(New STRUC_SM_EXCEPTION_STACK_TRACE() With {
                                                  .iLine = iLine,
                                                  .sFileName = sFile,
                                                  .sFunctionName = sFunction,
@@ -382,22 +382,22 @@ Public Class ClassDebuggerParser
                         Case mMoreStackTraceInfo.Groups("NativeFault").Success
                             Dim sFunction As String = mMoreStackTraceInfo.Groups("Function").Value.Trim
 
-                            smStackTraceList.Add(New STRUC_SM_EXCEPTION_STACK_TRACE() With {
+                            lSMStackTraces.Add(New STRUC_SM_EXCEPTION_STACK_TRACE() With {
                                                  .iLine = -1,
                                                  .sFileName = "",
                                                  .sFunctionName = sFunction,
                                                  .bNativeFault = True})
 
                         Case Else
-                            smException.mStackTrace = smStackTraceList.ToArray
-                            smExceptionsList.Add(smException)
+                            mSMException.mStackTraces = lSMStackTraces.ToArray
+                            lSMExceptions.Add(mSMException)
 
                             iExpectingState = 0
                     End Select
             End Select
         Next
 
-        Return smExceptionsList.ToArray
+        Return lSMExceptions.ToArray
     End Function
 
     '''' <summary>
@@ -625,14 +625,14 @@ Public Class ClassDebuggerParser
 
                         If (bIsFunction) Then
                             Dim sSource As String = mActiveTextEditor.ActiveTextAreaControl.Document.TextContent
-                            Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
+                            Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
 
                             Dim iFullLenght As Integer = 0
-                            Dim iStartLevel As Integer = sourceAnalysis.m_GetParenthesisLevel(iStartOffset)
+                            Dim iStartLevel As Integer = mSourceAnalysis.m_GetParenthesisLevel(iStartOffset)
                             For i = iStartOffset To sSource.Length - 1
                                 iFullLenght += 1
 
-                                If (sSource(i) = ")" AndAlso iStartLevel = sourceAnalysis.m_GetParenthesisLevel(i)) Then
+                                If (sSource(i) = ")" AndAlso iStartLevel = mSourceAnalysis.m_GetParenthesisLevel(i)) Then
                                     Exit For
                                 End If
                             Next
@@ -906,14 +906,14 @@ Public Class ClassDebuggerParser
 
                         If (bIsFunction) Then
                             Dim sSource As String = mActiveTextEditor.ActiveTextAreaControl.Document.TextContent
-                            Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
+                            Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
 
                             Dim iFullLenght As Integer = 0
-                            Dim iStartLevel As Integer = sourceAnalysis.m_GetParenthesisLevel(iStartOffset)
+                            Dim iStartLevel As Integer = mSourceAnalysis.m_GetParenthesisLevel(iStartOffset)
                             For i = iStartOffset To sSource.Length - 1
                                 iFullLenght += 1
 
-                                If (sSource(i) = ")" AndAlso iStartLevel = sourceAnalysis.m_GetParenthesisLevel(i)) Then
+                                If (sSource(i) = ")" AndAlso iStartLevel = mSourceAnalysis.m_GetParenthesisLevel(i)) Then
                                     Exit For
                                 End If
                             Next

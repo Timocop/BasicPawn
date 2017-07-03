@@ -62,18 +62,18 @@ Public Class UCAutocomplete
 
         Private Function IComparer_Compare(x As Object, y As Object) As Integer Implements IComparer.Compare
             If (g_mUCAutocomplete.g_sLastAutocompleteText.Length > 0) Then
-                Dim lvX As ListViewItem = DirectCast(x, ListViewItem)
-                Dim lvY As ListViewItem = DirectCast(y, ListViewItem)
+                Dim mItemX As ListViewItem = DirectCast(x, ListViewItem)
+                Dim mItemY As ListViewItem = DirectCast(y, ListViewItem)
 
-                Dim lvXIndex As Integer = lvX.SubItems(g_Collum).Text.IndexOf(g_mUCAutocomplete.g_sLastAutocompleteText)
-                Dim lvYIndex As Integer = lvY.SubItems(g_Collum).Text.IndexOf(g_mUCAutocomplete.g_sLastAutocompleteText)
+                Dim iItemXIndex As Integer = mItemX.SubItems(g_Collum).Text.IndexOf(g_mUCAutocomplete.g_sLastAutocompleteText)
+                Dim iItemYIndex As Integer = mItemY.SubItems(g_Collum).Text.IndexOf(g_mUCAutocomplete.g_sLastAutocompleteText)
 
-                Return lvXIndex.CompareTo(lvYIndex)
+                Return iItemXIndex.CompareTo(iItemYIndex)
             Else
-                Dim lvX As ListViewItem = DirectCast(x, ListViewItem)
-                Dim lvY As ListViewItem = DirectCast(y, ListViewItem)
+                Dim mItemX As ListViewItem = DirectCast(x, ListViewItem)
+                Dim mItemY As ListViewItem = DirectCast(y, ListViewItem)
 
-                Return String.Compare(lvX.SubItems(g_Collum).Text, lvY.SubItems(g_Collum).Text)
+                Return String.Compare(mItemX.SubItems(g_Collum).Text, mItemY.SubItems(g_Collum).Text)
             End If
 
         End Function
@@ -113,17 +113,17 @@ Public Class UCAutocomplete
             Return False
         End If
 
-        Dim SB As New StringBuilder
+        Dim mStringBuilder As New StringBuilder
 
         For i = iValidOffset To iValidOffset - 64 Step -1
             If (i < 0 OrElse i > CInt(Me.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.TextLength)) - 1) Then
                 Exit For
             End If
 
-            SB.Append(Me.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.GetCharAt(i)))
+            mStringBuilder.Append(Me.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.GetCharAt(i)))
         Next
 
-        Dim sFuncStart As String = StrReverse(SB.ToString)
+        Dim sFuncStart As String = StrReverse(mStringBuilder.ToString)
         sFuncStart = Regex.Match(sFuncStart, "(\.){0,1}(\b[a-zA-Z0-9_]+\b)$").Value
 
         Me.BeginInvoke(Sub()
@@ -208,15 +208,15 @@ Public Class UCAutocomplete
 
         Dim mSelectedItem As ListViewItem = ListView_AutocompleteList.SelectedItems(0)
 
-        Dim struc As New FormMain.STRUC_AUTOCOMPLETE With {
+        Dim mAutocomplete As New FormMain.STRUC_AUTOCOMPLETE With {
             .sFile = mSelectedItem.SubItems(0).Text,
             .sFunctionName = mSelectedItem.SubItems(2).Text,
             .sFullFunctionName = mSelectedItem.SubItems(3).Text,
             .sInfo = mSelectedItem.SubItems(4).Text
         }
 
-        struc.mType = struc.ParseTypeFullNames(mSelectedItem.SubItems(1).Text)
-        Return struc
+        mAutocomplete.mType = mAutocomplete.ParseTypeFullNames(mSelectedItem.SubItems(1).Text)
+        Return mAutocomplete
     End Function
 
     Private Sub ListView1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListView_AutocompleteList.SelectedIndexChanged
@@ -281,9 +281,9 @@ Public Class UCAutocomplete
                             Dim sNewlineDistance As Integer = sNameToolTip.IndexOf("("c)
 
                             If (sNewlineDistance > -1) Then
-                                Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sNameToolTip)
+                                Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sNameToolTip)
                                 For ii = sNameToolTip.Length - 1 To 0 Step -1
-                                    If (sNameToolTip(ii) <> ","c OrElse sourceAnalysis.m_InNonCode(ii)) Then
+                                    If (sNameToolTip(ii) <> ","c OrElse mSourceAnalysis.m_InNonCode(ii)) Then
                                         Continue For
                                     End If
 
@@ -322,9 +322,9 @@ Public Class UCAutocomplete
                     Dim sNewlineDistance As Integer = sNameToolTip.IndexOf("("c)
 
                     If (sNewlineDistance > -1) Then
-                        Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sNameToolTip)
+                        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sNameToolTip)
                         For ii = sNameToolTip.Length - 1 To 0 Step -1
-                            If (sNameToolTip(ii) <> ","c OrElse sourceAnalysis.m_InNonCode(ii)) Then
+                            If (sNameToolTip(ii) <> ","c OrElse mSourceAnalysis.m_InNonCode(ii)) Then
                                 Continue For
                             End If
 

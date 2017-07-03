@@ -49,23 +49,23 @@ Public Class ClassPluginController
 
     Public Function LoadPlugin(sFile As String) As BasicPawnPluginInterface.IPluginInterface
         Try
-            Dim loadedAssembly As Reflection.Assembly = Reflection.Assembly.LoadFile(sFile)
+            Dim mAssembly As Reflection.Assembly = Reflection.Assembly.LoadFile(sFile)
 
-            For Each mType As Type In loadedAssembly.GetTypes
+            For Each mType As Type In mAssembly.GetTypes
                 Try
-                    Dim instanceObject As Object = loadedAssembly.CreateInstance(mType.FullName)
-                    Dim pluginInterface As BasicPawnPluginInterface.IPluginInterface = TryCast(instanceObject, BasicPawnPluginInterface.IPluginInterface)
-                    If (pluginInterface Is Nothing) Then
+                    Dim mInstance As Object = mAssembly.CreateInstance(mType.FullName)
+                    Dim mPlugin As BasicPawnPluginInterface.IPluginInterface = TryCast(mInstance, BasicPawnPluginInterface.IPluginInterface)
+                    If (mPlugin Is Nothing) Then
                         Continue For
                     End If
 
                     g_lPlugins.Add(New STRUC_PLUGIN_ITEM With {
-                        .mPluginInformation = pluginInterface.m_PluginInformation,
-                        .mPluginInterface = pluginInterface,
+                        .mPluginInformation = mPlugin.m_PluginInformation,
+                        .mPluginInterface = mPlugin,
                         .sFile = sFile
                     })
 
-                    Return pluginInterface
+                    Return mPlugin
                 Catch ex As MissingMethodException
                     'Ignore
                 Catch ex As Exception
@@ -86,12 +86,12 @@ Public Class ClassPluginController
 
         For Each sPluginFile As String In IO.Directory.GetFiles(sPluginDirectory, "*.dll")
             Try
-                Dim mLoadedPLugin = LoadPlugin(sPluginFile)
-                If (mLoadedPLugin Is Nothing) Then
+                Dim mPlugin = LoadPlugin(sPluginFile)
+                If (mPlugin Is Nothing) Then
                     Continue For
                 End If
 
-                mLoadedPLugin.OnPluginLoad(sPluginFile)
+                mPlugin.OnPluginLoad(sPluginFile)
             Catch ex As NotImplementedException
                 'Ignore
             Catch ex As Exception

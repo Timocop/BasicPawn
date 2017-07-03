@@ -41,13 +41,13 @@ Public Class ClassSyntaxTools
 
     Public g_SyntaxXML As String = My.Resources.SourcePawn_Syntax
 
-    Public sSyntax_HighlightCaretMarker As String = "<!-- [DO NOT EDIT | HIGHLIGHT CARET MARKER] -->"
-    Public sSyntax_HighlightWordMarker As String = "<!-- [DO NOT EDIT | HIGHLIGHT WORD MARKER] -->"
-    Public sSyntax_HighlightWordCustomMarker As String = "<!-- [DO NOT EDIT | HIGHLIGHT WORD CUSTOM MARKER] -->"
-    Public sSyntax_HighlightDefineMarker As String = "<!-- [DO NOT EDIT | DEFINE MARKER] -->"
-    Public sSyntax_HighlightEnumMarker As String = "<!-- [DO NOT EDIT | ENUM MARKER] -->"
-    Public sSyntax_HighlightEnum2Marker As String = "<!-- [DO NOT EDIT | ENUM2 MARKER] -->"
-    Public sSyntax_SourcePawnMarker As String = "SourcePawn-04e3632f-5472-42c5-929a-c3e0c2b35324"
+    Public g_sSyntax_HighlightCaretMarker As String = "<!-- [DO NOT EDIT | HIGHLIGHT CARET MARKER] -->"
+    Public g_sSyntax_HighlightWordMarker As String = "<!-- [DO NOT EDIT | HIGHLIGHT WORD MARKER] -->"
+    Public g_sSyntax_HighlightWordCustomMarker As String = "<!-- [DO NOT EDIT | HIGHLIGHT WORD CUSTOM MARKER] -->"
+    Public g_sSyntax_HighlightDefineMarker As String = "<!-- [DO NOT EDIT | DEFINE MARKER] -->"
+    Public g_sSyntax_HighlightEnumMarker As String = "<!-- [DO NOT EDIT | ENUM MARKER] -->"
+    Public g_sSyntax_HighlightEnum2Marker As String = "<!-- [DO NOT EDIT | ENUM2 MARKER] -->"
+    Public g_sSyntax_SourcePawnMarker As String = "SourcePawn-04e3632f-5472-42c5-929a-c3e0c2b35324"
 
     Public lAutocompleteList As New ClassSyncList(Of STRUC_AUTOCOMPLETE)
 
@@ -81,8 +81,7 @@ Public Class ClassSyntaxTools
         For i = 0 To g_SyntaxFiles.Length - 1
             CreateSyntaxFile(CType(i, ENUM_SYNTAX_FILES))
 
-            Dim synraxProvider As New FileSyntaxModeProvider(g_SyntaxFiles(i).sFolder)
-            HighlightingManager.Manager.AddSyntaxModeFileProvider(synraxProvider)
+            HighlightingManager.Manager.AddSyntaxModeFileProvider(New FileSyntaxModeProvider(g_SyntaxFiles(i).sFolder))
         Next
     End Sub
 
@@ -137,9 +136,9 @@ Public Class ClassSyntaxTools
                         IO.Path.GetExtension(ClassConfigs.m_ActiveConfig.g_sSyntaxHighlightingPath).ToLower = ".xml") Then
 
                     Dim sFileText As String = IO.File.ReadAllText(ClassConfigs.m_ActiveConfig.g_sSyntaxHighlightingPath)
-                    sModSyntaxXML = sFileText.Replace(sSyntax_SourcePawnMarker, g_SyntaxFiles(i).sDefinition)
+                    sModSyntaxXML = sFileText.Replace(g_sSyntax_SourcePawnMarker, g_SyntaxFiles(i).sDefinition)
                 Else
-                    sModSyntaxXML = g_SyntaxXML.Replace(sSyntax_SourcePawnMarker, g_SyntaxFiles(i).sDefinition)
+                    sModSyntaxXML = g_SyntaxXML.Replace(g_sSyntax_SourcePawnMarker, g_SyntaxFiles(i).sDefinition)
                 End If
 
                 IO.File.WriteAllText(g_SyntaxFiles(i).sFile, sModSyntaxXML)
@@ -168,15 +167,15 @@ Public Class ClassSyntaxTools
                     Select Case (i)
                         Case ENUM_SYNTAX_FILES.MAIN_TEXTEDITOR,
                                 ENUM_SYNTAX_FILES.DEBUGGER_TEXTEDITOR
-                            Dim SB As New StringBuilder
+                            Dim mXmlBuilder As New StringBuilder
 
                             Dim iHighlightCustomCount As Integer = 0
 
-                            Using SR As New IO.StreamReader(g_SyntaxFiles(i).sFile)
+                            Using mSR As New IO.StreamReader(g_SyntaxFiles(i).sFile)
                                 Dim sLine As String
 
                                 While True
-                                    sLine = SR.ReadLine
+                                    sLine = mSR.ReadLine
                                     If (sLine Is Nothing) Then
                                         Exit While
                                     End If
@@ -184,110 +183,110 @@ Public Class ClassSyntaxTools
                                     Select Case (iType)
                                         Case ENUM_SYNTAX_UPDATE_TYPE.CARET_WORD
                                             If (i = ENUM_SYNTAX_FILES.MAIN_TEXTEDITOR AndAlso
-                                                    sLine.Contains(sSyntax_HighlightCaretMarker)) Then
+                                                    sLine.Contains(g_sSyntax_HighlightCaretMarker)) Then
 
-                                                SB.Append(sSyntax_HighlightCaretMarker)
+                                                mXmlBuilder.Append(g_sSyntax_HighlightCaretMarker)
 
                                                 If (Not String.IsNullOrEmpty(g_sCaretWord) AndAlso ClassSettings.g_iSettingsAutoMark) Then
-                                                    SB.Append(String.Format("<Key word=""{0}""/>", g_sCaretWord))
+                                                    mXmlBuilder.Append(String.Format("<Key word=""{0}""/>", g_sCaretWord))
                                                 End If
 
-                                                SB.AppendLine()
+                                                mXmlBuilder.AppendLine()
                                                 Continue While
                                             End If
 
                                         Case ENUM_SYNTAX_UPDATE_TYPE.HIGHLIGHT_WORD
                                             If (i = ENUM_SYNTAX_FILES.MAIN_TEXTEDITOR AndAlso
-                                                    sLine.Contains(sSyntax_HighlightWordMarker)) Then
+                                                    sLine.Contains(g_sSyntax_HighlightWordMarker)) Then
 
-                                                SB.Append(sSyntax_HighlightWordMarker)
+                                                mXmlBuilder.Append(g_sSyntax_HighlightWordMarker)
 
                                                 If (Not String.IsNullOrEmpty(g_sHighlightWord)) Then
-                                                    SB.Append(String.Format("<Key word=""{0}""/>", g_sHighlightWord))
+                                                    mXmlBuilder.Append(String.Format("<Key word=""{0}""/>", g_sHighlightWord))
                                                 End If
 
-                                                SB.AppendLine()
+                                                mXmlBuilder.AppendLine()
                                                 Continue While
                                             End If
 
                                         Case ENUM_SYNTAX_UPDATE_TYPE.HIGHLIGHT_WORD_CUSTOM
                                             If (i = ENUM_SYNTAX_FILES.MAIN_TEXTEDITOR AndAlso
-                                                    sLine.Contains(sSyntax_HighlightWordCustomMarker)) Then
+                                                    sLine.Contains(g_sSyntax_HighlightWordCustomMarker)) Then
 
-                                                SB.Append(sSyntax_HighlightWordCustomMarker)
+                                                mXmlBuilder.Append(g_sSyntax_HighlightWordCustomMarker)
 
                                                 g_mFormMain.g_ClassCustomHighlighting.Add(iHighlightCustomCount)
                                                 Dim menuItem = g_mFormMain.g_ClassCustomHighlighting.m_HightlightItems()
 
                                                 If (menuItem(iHighlightCustomCount) IsNot Nothing AndAlso Not String.IsNullOrEmpty(menuItem(iHighlightCustomCount).sWord)) Then
-                                                    SB.Append(String.Format("<Key word=""{0}""/>", menuItem(iHighlightCustomCount).sWord))
+                                                    mXmlBuilder.Append(String.Format("<Key word=""{0}""/>", menuItem(iHighlightCustomCount).sWord))
                                                 End If
 
-                                                SB.AppendLine()
+                                                mXmlBuilder.AppendLine()
                                                 iHighlightCustomCount += 1
                                                 Continue While
                                             End If
 
                                         Case ENUM_SYNTAX_UPDATE_TYPE.AUTOCOMPLETE
-                                            If (sLine.Contains(sSyntax_HighlightDefineMarker)) Then
-                                                SB.Append(sSyntax_HighlightDefineMarker)
+                                            If (sLine.Contains(g_sSyntax_HighlightDefineMarker)) Then
+                                                mXmlBuilder.Append(g_sSyntax_HighlightDefineMarker)
 
-                                                For Each struc In lAutocompleteList
+                                                For Each mAutocomplete In lAutocompleteList
                                                     Select Case (True)
-                                                        Case (struc.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEFINE) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEFINE,
-                                                                    (struc.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PUBLICVAR) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PUBLICVAR
-                                                            SB.Append(String.Format("<Key word=""{0}""/>", struc.sFunctionName))
+                                                        Case (mAutocomplete.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEFINE) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEFINE,
+                                                                    (mAutocomplete.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PUBLICVAR) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PUBLICVAR
+                                                            mXmlBuilder.Append(String.Format("<Key word=""{0}""/>", mAutocomplete.sFunctionName))
 
                                                     End Select
                                                 Next
 
-                                                SB.AppendLine()
+                                                mXmlBuilder.AppendLine()
                                                 Continue While
                                             End If
 
-                                            If (sLine.Contains(sSyntax_HighlightEnumMarker)) Then
-                                                SB.Append(sSyntax_HighlightEnumMarker)
+                                            If (sLine.Contains(g_sSyntax_HighlightEnumMarker)) Then
+                                                mXmlBuilder.Append(g_sSyntax_HighlightEnumMarker)
 
                                                 Dim lExistList As New List(Of String)
 
-                                                For Each struc In lAutocompleteList
+                                                For Each mAutocomplete In lAutocompleteList
                                                     Select Case (True)
-                                                        Case (struc.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM
-                                                            Dim sEnumName As String() = struc.sFunctionName.Split("."c)
+                                                        Case (mAutocomplete.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM
+                                                            Dim sEnumName As String() = mAutocomplete.sFunctionName.Split("."c)
                                                             Select Case (sEnumName.Length)
                                                                 Case 2
                                                                     If (Not lExistList.Contains(sEnumName(0))) Then
                                                                         lExistList.Add(sEnumName(0))
                                                                     End If
 
-                                                                    SB.Append(String.Format("<Key word=""{0}""/>", sEnumName(1)))
+                                                                    mXmlBuilder.Append(String.Format("<Key word=""{0}""/>", sEnumName(1)))
                                                             End Select
 
-                                                        Case (struc.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP
-                                                            If (Not lExistList.Contains(struc.sFunctionName)) Then
-                                                                lExistList.Add(struc.sFunctionName)
+                                                        Case (mAutocomplete.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP
+                                                            If (Not lExistList.Contains(mAutocomplete.sFunctionName)) Then
+                                                                lExistList.Add(mAutocomplete.sFunctionName)
                                                             End If
                                                     End Select
                                                 Next
 
-                                                SB.AppendLine()
+                                                mXmlBuilder.AppendLine()
                                                 Continue While
                                             End If
 
-                                            If (sLine.Contains(sSyntax_HighlightEnum2Marker)) Then
-                                                SB.Append(sSyntax_HighlightEnum2Marker)
+                                            If (sLine.Contains(g_sSyntax_HighlightEnum2Marker)) Then
+                                                mXmlBuilder.Append(g_sSyntax_HighlightEnum2Marker)
 
                                                 Dim lExistList As New List(Of String)
 
-                                                For Each struc In lAutocompleteList
+                                                For Each mAutocomplete In lAutocompleteList
                                                     Select Case (True)
-                                                        Case (struc.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STRUCT) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STRUCT
-                                                            If (Not lExistList.Contains(struc.sFunctionName)) Then
-                                                                lExistList.Add(struc.sFunctionName)
+                                                        Case (mAutocomplete.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STRUCT) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STRUCT
+                                                            If (Not lExistList.Contains(mAutocomplete.sFunctionName)) Then
+                                                                lExistList.Add(mAutocomplete.sFunctionName)
                                                             End If
 
-                                                        Case (struc.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM
-                                                            Dim sEnumName As String() = struc.sFunctionName.Split("."c)
+                                                        Case (mAutocomplete.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM
+                                                            Dim sEnumName As String() = mAutocomplete.sFunctionName.Split("."c)
                                                             Select Case (sEnumName.Length)
                                                                 Case 1, 2
                                                                     If (Not lExistList.Contains(sEnumName(0))) Then
@@ -295,29 +294,29 @@ Public Class ClassSyntaxTools
                                                                     End If
                                                             End Select
 
-                                                        Case (struc.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP
-                                                            If (Not lExistList.Contains(struc.sFunctionName)) Then
-                                                                lExistList.Add(struc.sFunctionName)
+                                                        Case (mAutocomplete.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP
+                                                            If (Not lExistList.Contains(mAutocomplete.sFunctionName)) Then
+                                                                lExistList.Add(mAutocomplete.sFunctionName)
                                                             End If
                                                     End Select
                                                 Next
 
                                                 For Each s In lExistList
-                                                    SB.Append(String.Format("<Key word=""{0}""/>", s))
+                                                    mXmlBuilder.Append(String.Format("<Key word=""{0}""/>", s))
                                                 Next
 
-                                                SB.AppendLine()
+                                                mXmlBuilder.AppendLine()
                                                 Continue While
                                             End If
                                     End Select
 
                                     If (Not String.IsNullOrEmpty(sLine.Trim)) Then
-                                        SB.AppendLine(sLine.Trim)
+                                        mXmlBuilder.AppendLine(sLine.Trim)
                                     End If
                                 End While
                             End Using
 
-                            Dim sFormatedString As String = SB.ToString
+                            Dim sFormatedString As String = mXmlBuilder.ToString
 
                             'Invert colors of the syntax file. But only for the default syntax file.
                             While (ClassSettings.g_iSettingsInvertColors)
@@ -430,14 +429,14 @@ Public Class ClassSyntaxTools
 
         Dim iStartLoc As Integer = 0
 
-        Dim sourceAnalysis As ClassSyntaxSourceAnalysis = Nothing
+        Dim mSourceAnalysis As ClassSyntaxSourceAnalysis = Nothing
         If (bInvalidCodeCheck) Then
-            sourceAnalysis = New ClassSyntaxSourceAnalysis(sExpression)
+            mSourceAnalysis = New ClassSyntaxSourceAnalysis(sExpression)
         End If
 
         For i = 0 To sExpression.Length - 1
-            If (sourceAnalysis IsNot Nothing AndAlso bInvalidCodeCheck) Then
-                If (sourceAnalysis.m_InNonCode(i)) Then
+            If (mSourceAnalysis IsNot Nothing AndAlso bInvalidCodeCheck) Then
+                If (mSourceAnalysis.m_InNonCode(i)) Then
                     Continue For
                 End If
             End If
@@ -473,18 +472,18 @@ Public Class ClassSyntaxTools
     ''' <param name="sSource"></param>
     ''' <returns></returns>
     Public Function FormatCode(sSource As String) As String
-        Dim SB As New StringBuilder
-        Using SR As New IO.StringReader(sSource)
+        Dim mSourceBuilder As New StringBuilder
+        Using mSR As New IO.StringReader(sSource)
             While True
-                Dim sLine As String = SR.ReadLine
+                Dim sLine As String = mSR.ReadLine
                 If (sLine Is Nothing) Then
                     Exit While
                 End If
 
-                SB.AppendLine(sLine.Trim)
+                mSourceBuilder.AppendLine(sLine.Trim)
             End While
         End Using
-        sSource = SB.ToString
+        sSource = mSourceBuilder.ToString
 
         'Get any valid statements ends and put them in a list
         Dim lValidStateEnds As New List(Of Integer)
@@ -503,7 +502,7 @@ Public Class ClassSyntaxTools
             End If
         Next
 
-        Dim sourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
+        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
 
 
         Dim iBraceCount As Integer = 0
@@ -513,27 +512,27 @@ Public Class ClassSyntaxTools
             Try
                 Select Case (sSource(i))
                     Case "("c
-                        If (Not sourceAnalysis.m_InNonCode(i)) Then
+                        If (Not mSourceAnalysis.m_InNonCode(i)) Then
                             iBracedCount -= 1
                         End If
 
                     Case ")"c
-                        If (Not sourceAnalysis.m_InNonCode(i)) Then
+                        If (Not mSourceAnalysis.m_InNonCode(i)) Then
                             iBracedCount += 1
                         End If
 
                     Case "{"c
-                        If (Not sourceAnalysis.m_InNonCode(i)) Then
+                        If (Not mSourceAnalysis.m_InNonCode(i)) Then
                             iBraceCount -= 1
                         End If
 
                     Case "}"c
-                        If (Not sourceAnalysis.m_InNonCode(i)) Then
+                        If (Not mSourceAnalysis.m_InNonCode(i)) Then
                             iBraceCount += 1
                         End If
 
                     Case vbLf(0)
-                        'If (Not sourceAnalysis.InNonCode(i)) Then 
+                        'If (Not mSourceAnalysis.InNonCode(i)) Then 
                         Dim iStatementLevel As Integer = 0
                         For j = i To sSource.Length - 1
                             If (Not Regex.IsMatch(sSource(j), "\s")) Then
@@ -547,7 +546,7 @@ Public Class ClassSyntaxTools
 
                         If (iStatementLevel > -1) Then
                             For j = i - 1 To 0 Step -1
-                                If (sourceAnalysis.m_InNonCode(j)) Then
+                                If (mSourceAnalysis.m_InNonCode(j)) Then
                                     Continue For
                                 End If
 
@@ -565,7 +564,7 @@ Public Class ClassSyntaxTools
                             Next
                         End If
 
-                        sSource = sSource.Insert(i + 1, ClassSettings.ConvertSpaces(sourceAnalysis.m_GetBraceLevel(i + 1 + iBraceCount) + If(iBracedCount > 0, iBracedCount + 1, 0) + If(iStatementLevel > -1, iStatementLevel, 0)))
+                        sSource = sSource.Insert(i + 1, ClassSettings.ConvertSpaces(mSourceAnalysis.m_GetBraceLevel(i + 1 + iBraceCount) + If(iBracedCount > 0, iBracedCount + 1, 0) + If(iStatementLevel > -1, iStatementLevel, 0)))
                         'End If
                         iBraceCount = 0
 
@@ -595,9 +594,9 @@ Public Class ClassSyntaxTools
                 Return match.Index
             Next
         Else
-            Dim sourceAnalysis As New ClassSyntaxSourceAnalysis(sSource)
+            Dim mSourceAnalysis As New ClassSyntaxSourceAnalysis(sSource)
             For Each match As Match In Regex.Matches(sSource, sRegexPattern, RegexOptions.Multiline)
-                If (sourceAnalysis.m_InNonCode(match.Index)) Then
+                If (mSourceAnalysis.m_InNonCode(match.Index)) Then
                     Continue For
                 End If
 
