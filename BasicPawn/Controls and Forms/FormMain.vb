@@ -594,6 +594,15 @@ Public Class FormMain
                     g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
                     g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.IndentationSize = If(ClassSettings.g_iSettingsTabsToSpaces > 0, ClassSettings.g_iSettingsTabsToSpaces, 4)
                     g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.ConvertTabsToSpaces = (ClassSettings.g_iSettingsTabsToSpaces > 0)
+                    If (ClassSettings.g_iSettingsTabsToSpaces > 0) Then
+                        With New ICSharpCode.TextEditor.Actions.ConvertLeadingTabsToSpaces
+                            .Execute(g_ClassTabControl.m_Tab(j).m_TextEditor.ActiveTextAreaControl.TextArea)
+                        End With
+                    Else
+                        With New ICSharpCode.TextEditor.Actions.ConvertLeadingSpacesToTabs
+                            .Execute(g_ClassTabControl.m_Tab(j).m_TextEditor.ActiveTextAreaControl.TextArea)
+                        End With
+                    End If
                     g_ClassTabControl.m_Tab(j).m_TextEditor.Refresh()
                 Next
 
@@ -858,6 +867,15 @@ Public Class FormMain
                     g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
                     g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.IndentationSize = If(ClassSettings.g_iSettingsTabsToSpaces > 0, ClassSettings.g_iSettingsTabsToSpaces, 4)
                     g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.ConvertTabsToSpaces = (ClassSettings.g_iSettingsTabsToSpaces > 0)
+                    If (ClassSettings.g_iSettingsTabsToSpaces > 0) Then
+                        With New ICSharpCode.TextEditor.Actions.ConvertLeadingTabsToSpaces
+                            .Execute(g_ClassTabControl.m_Tab(j).m_TextEditor.ActiveTextAreaControl.TextArea)
+                        End With
+                    Else
+                        With New ICSharpCode.TextEditor.Actions.ConvertLeadingSpacesToTabs
+                            .Execute(g_ClassTabControl.m_Tab(j).m_TextEditor.ActiveTextAreaControl.TextArea)
+                        End With
+                    End If
                     g_ClassTabControl.m_Tab(j).m_TextEditor.Refresh()
                 Next
 

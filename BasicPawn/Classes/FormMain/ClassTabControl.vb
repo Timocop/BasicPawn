@@ -86,6 +86,16 @@ Public Class ClassTabControl
 
             If (bIncludeTemplate) Then
                 mTabPage.m_TextEditor.Document.TextContent = My.Resources.SourcePawnOldTemplate
+
+                If (ClassSettings.g_iSettingsTabsToSpaces > 0) Then
+                    With New ICSharpCode.TextEditor.Actions.ConvertLeadingTabsToSpaces
+                        .Execute(mTabPage.m_TextEditor.ActiveTextAreaControl.TextArea)
+                    End With
+                Else
+                    With New ICSharpCode.TextEditor.Actions.ConvertLeadingSpacesToTabs
+                        .Execute(mTabPage.m_TextEditor.ActiveTextAreaControl.TextArea)
+                    End With
+                End If
             End If
 
             g_mFormMain.TabControl_SourceTabs.TabPages.Add(mTabPage)
@@ -286,6 +296,16 @@ Public Class ClassTabControl
         SaveLoadTabEntries(iIndex, ENUM_TAB_CONFIG.LOAD)
 
         m_Tab(iIndex).m_ClassLineState.m_IgnoreUpdates = False
+
+        If (ClassSettings.g_iSettingsTabsToSpaces > 0) Then
+            With New ICSharpCode.TextEditor.Actions.ConvertLeadingTabsToSpaces
+                .Execute(m_Tab(iIndex).m_TextEditor.ActiveTextAreaControl.TextArea)
+            End With
+        Else
+            With New ICSharpCode.TextEditor.Actions.ConvertLeadingSpacesToTabs
+                .Execute(m_Tab(iIndex).m_TextEditor.ActiveTextAreaControl.TextArea)
+            End With
+        End If
 
         If (g_mFormMain.g_mUCStartPage.Visible) Then
             g_mFormMain.g_mUCStartPage.Hide()
@@ -638,6 +658,15 @@ Public Class ClassTabControl
             g_mSourceTextEditor.Document.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
             g_mSourceTextEditor.Document.TextEditorProperties.IndentationSize = If(ClassSettings.g_iSettingsTabsToSpaces > 0, ClassSettings.g_iSettingsTabsToSpaces, 4)
             g_mSourceTextEditor.Document.TextEditorProperties.ConvertTabsToSpaces = (ClassSettings.g_iSettingsTabsToSpaces > 0)
+            If (ClassSettings.g_iSettingsTabsToSpaces > 0) Then
+                With New ICSharpCode.TextEditor.Actions.ConvertLeadingTabsToSpaces
+                    .Execute(g_mSourceTextEditor.ActiveTextAreaControl.TextArea)
+                End With
+            Else
+                With New ICSharpCode.TextEditor.Actions.ConvertLeadingSpacesToTabs
+                    .Execute(g_mSourceTextEditor.ActiveTextAreaControl.TextArea)
+                End With
+            End If
 
             g_mSourceTextEditor.Parent = Me
             g_mSourceTextEditor.Dock = DockStyle.Fill
@@ -1105,12 +1134,6 @@ Public Class ClassTabControl
             Public Function GenerateFoldMarkers(document As IDocument, fileName As String, parseInformation As Object) As List(Of FoldMarker) Implements IFoldingStrategy.GenerateFoldMarkers
                 Dim mFolds As New List(Of FoldMarker)()
 
-                'If ((Tools.WordCount(document.TextContent, "{") + Tools.WordCount(document.TextContent, "}")) Mod 2 <> 0) Then
-                '    Return list
-                'End If
-
-                'Dim mSourceAnalysis As New SyntaxCharReader(document.TextContent)
-
                 Dim iMaxLevels As Integer = 0
                 Dim i As Integer = 0
                 While True
@@ -1130,12 +1153,6 @@ Public Class ClassTabControl
                 Dim iCurrentLevel As Integer = 0
 
                 For i = 0 To document.TextContent.Length - 1
-                    'If (mSourceAnalysis.InNonCode(i)) Then
-                    '    Continue For
-                    'End If
-
-                    'Dim iCurrentLevel As Integer = mSourceAnalysis.GetBraceLevel(i)
-
                     Select Case (document.TextContent(i))
                         Case "{"c
                             iCurrentLevel += 1
@@ -1150,8 +1167,6 @@ Public Class ClassTabControl
                                 Continue For
                             End If
 
-                            'Debug.WriteLine(document.TextContent.Substring(iLevels(iCurrentLevel), i - iLevels(iCurrentLevel)))
-
                             Dim iLineStart = document.GetLineNumberForOffset(iLevels(iCurrentLevel))
                             Dim iColumStart = document.GetLineSegment(iLineStart).Length
                             Dim iLineEnd = document.GetLineNumberForOffset(i)
@@ -1164,27 +1179,6 @@ Public Class ClassTabControl
                             mFolds.Add(New FoldMarker(document, iLineStart, iColumStart, iLineEnd, iColumEnd))
                     End Select
                 Next
-
-                '' Create foldmarkers for the whole document, enumerate through every line.
-                'For i As Integer = 0 To document.TotalNumberOfLines - 1
-                '    ' Get the text of current line.
-                '    Dim text As String = document.GetText(document.GetLineSegment(i))
-
-                '    If text.StartsWith("def") Then
-                '        ' Look for method starts
-                '        start = i
-                '    End If
-                '    If text.StartsWith("enddef;") Then
-                '        ' Look for method endings
-                '        ' Add a new FoldMarker to the list.
-                '        ' document = the current document
-                '        ' start = the start line for the FoldMarker
-                '        ' document.GetLineSegment(start).Length = the ending of the current line = the start column of our foldmarker.
-                '        ' i = The current line = end line of the FoldMarker.
-                '        ' 7 = The end column
-                '        list.Add(New FoldMarker(document, start, document.GetLineSegment(start).Length, i, 7))
-                '    End If
-                'Next
 
                 Return mFolds
             End Function
