@@ -91,49 +91,47 @@ Public Class FormMain
                 If (Not ClassSettings.g_iSettingsAlwaysOpenNewInstance AndAlso Array.IndexOf(Environment.GetCommandLineArgs, "-newinstance") = -1) Then
                     Dim pBasicPawnProc As Process() = Process.GetProcessesByName(IO.Path.GetFileNameWithoutExtension(Application.ExecutablePath))
                     If (pBasicPawnProc.Length > 0) Then
-                        Dim iCurrentPID As Integer = Process.GetCurrentProcess.Id
-                        Dim iMyTick As Long = Process.GetCurrentProcess.StartTime.Ticks
-                        Dim iLastTick As Long = Date.MinValue.Ticks
-                        Dim pLastProcess As Process = Nothing
+                        Dim lInstances As New List(Of Object()) '{ProcessId, StartTime.Ticks}
 
                         For Each pProcess As Process In pBasicPawnProc
                             Try
-                                If (pProcess.Id = iCurrentPID OrElse pProcess.MainModule.FileName.ToLower <> Application.ExecutablePath.ToLower) Then
+                                If (IO.Path.GetFullPath(pProcess.MainModule.FileName).ToLower <> IO.Path.GetFullPath(Application.ExecutablePath).ToLower) Then
                                     Continue For
                                 End If
 
-                                If (iMyTick < pProcess.StartTime.Ticks) Then
-                                    Continue For
-                                End If
-
-                                If (iLastTick > Date.MinValue.Ticks AndAlso iLastTick < pProcess.StartTime.Ticks) Then
-                                    Continue For
-                                End If
-
-                                pLastProcess = pProcess
-                                iLastTick = pProcess.StartTime.Ticks
+                                lInstances.Add(New Object() {pProcess.Id, pProcess.StartTime.Ticks})
                             Catch ex As Exception
                                 'Ignore random exceptions
                             End Try
                         Next
 
+                        'Takes care of the ticks sorting. If there are instances with the same ticks it should sort always the same.
+                        lInstances.Sort(Function(x As Object(), y As Object())
+                                            Return CLng(x(1)).CompareTo(CLng(y(1)))
+                                        End Function)
 
-                        If (pLastProcess IsNot Nothing) Then
-                            Try
-                                For i = 0 To lOpenFileList.Count - 1
-                                    If (IO.Path.GetExtension(lOpenFileList(i)).ToLower <> UCProjectBrowser.ClassProjectControl.g_sProjectExtension) Then
-                                        Dim mMsg As New ClassCrossAppComunication.ClassMessage(COMARG_OPEN_FILE_BY_PID, CStr(pLastProcess.Id), lOpenFileList(i))
-                                        g_ClassCrossAppComunication.SendMessage(mMsg)
-                                    End If
-                                Next
-                            Catch ex As Exception
-                                ClassExceptionLog.WriteToLogMessageBox(ex)
-                            End Try
+                        If (lInstances.Count > 0) Then
+                            Dim iMasterId As Integer = CInt(lInstances(0)(0))
 
-                            Me.WindowState = FormWindowState.Minimized
-                            Me.ShowInTaskbar = False
-                            Application.Exit()
-                            End
+                            If (iMasterId <> Process.GetCurrentProcess.Id) Then
+                                Try
+                                    Process.GetProcessById(iMasterId).WaitForInputIdle(5000)
+
+                                    For i = 0 To lOpenFileList.Count - 1
+                                        If (IO.Path.GetExtension(lOpenFileList(i)).ToLower <> UCProjectBrowser.ClassProjectControl.g_sProjectExtension) Then
+                                            Dim mMsg As New ClassCrossAppComunication.ClassMessage(COMARG_OPEN_FILE_BY_PID, CStr(iMasterId), lOpenFileList(i))
+                                            g_ClassCrossAppComunication.SendMessage(mMsg)
+                                        End If
+                                    Next
+                                Catch ex As Exception
+                                    ClassExceptionLog.WriteToLogMessageBox(ex)
+                                End Try
+
+                                Me.WindowState = FormWindowState.Minimized
+                                Me.ShowInTaskbar = False
+                                Application.Exit()
+                                End
+                            End If
                         End If
                     End If
                 End If
