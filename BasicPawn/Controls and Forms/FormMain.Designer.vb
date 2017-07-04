@@ -144,8 +144,11 @@ Partial Class FormMain
         Me.ToolStripMenuItem_HelpSpecialControlsCopySelected = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_HelpSpecialControlsDupLine = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_HelpSpecialControlsCommentLines = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripMenuItem_HelpAbout = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator15 = New System.Windows.Forms.ToolStripSeparator()
+        Me.ToolStripMenuItem_HelpCheckUpdates = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_HelpGithub = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator14 = New System.Windows.Forms.ToolStripSeparator()
+        Me.ToolStripMenuItem_HelpAbout = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Undo = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Redo = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_NewUpdate = New System.Windows.Forms.ToolStripMenuItem()
@@ -372,7 +375,7 @@ Partial Class FormMain
         '
         'MenuStrip_BasicPawn
         '
-        Me.MenuStrip_BasicPawn.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_File, Me.ToolStripMenuItem_Tools, Me.ToolStripMenuItem_Build, Me.ToolStripMenuItem_Test, Me.ToolStripMenuItem_Debug, Me.ToolStripMenuItem_Shell, Me.ToolStripMenuItem_Help, Me.ToolStripMenuItem_Undo, Me.ToolStripMenuItem_Redo, Me.ToolStripMenuItem_NewUpdate, Me.ToolStripMenuItem_TabClose, Me.ToolStripMenuItem_TabMoveRight, Me.ToolStripMenuItem_TabMoveLeft, Me.ToolStripMenuItem_TabOpenInstance})
+        Me.MenuStrip_BasicPawn.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_File, Me.ToolStripMenuItem_Tools, Me.ToolStripMenuItem_Undo, Me.ToolStripMenuItem_Redo, Me.ToolStripMenuItem_Build, Me.ToolStripMenuItem_Test, Me.ToolStripMenuItem_Debug, Me.ToolStripMenuItem_Shell, Me.ToolStripMenuItem_Help, Me.ToolStripMenuItem_NewUpdate, Me.ToolStripMenuItem_TabClose, Me.ToolStripMenuItem_TabMoveRight, Me.ToolStripMenuItem_TabMoveLeft, Me.ToolStripMenuItem_TabOpenInstance})
         Me.MenuStrip_BasicPawn.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip_BasicPawn.Name = "MenuStrip_BasicPawn"
         Me.MenuStrip_BasicPawn.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
@@ -670,7 +673,7 @@ Partial Class FormMain
         '
         'ToolStripMenuItem_Help
         '
-        Me.ToolStripMenuItem_Help.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_HelpSpecialControls, Me.ToolStripMenuItem_HelpAbout, Me.ToolStripMenuItem_HelpGithub})
+        Me.ToolStripMenuItem_Help.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_HelpSpecialControls, Me.ToolStripSeparator15, Me.ToolStripMenuItem_HelpCheckUpdates, Me.ToolStripMenuItem_HelpGithub, Me.ToolStripSeparator14, Me.ToolStripMenuItem_HelpAbout})
         Me.ToolStripMenuItem_Help.Image = CType(resources.GetObject("ToolStripMenuItem_Help.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_Help.Name = "ToolStripMenuItem_Help"
         Me.ToolStripMenuItem_Help.Size = New System.Drawing.Size(60, 20)
@@ -681,7 +684,7 @@ Partial Class FormMain
         Me.ToolStripMenuItem_HelpSpecialControls.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_HelpSpecialControlsAutocompleteUp, Me.ToolStripMenuItem_HelpSpecialControlsAutocompleteDown, Me.ToolStripMenuItem_HelpSpecialControlsAutocompletePaste, Me.ToolStripMenuItem_HelpSpecialControlsMoveSelected, Me.ToolStripMenuItem_HelpSpecialControlsCopySelected, Me.ToolStripMenuItem_HelpSpecialControlsDupLine, Me.ToolStripMenuItem_HelpSpecialControlsCommentLines})
         Me.ToolStripMenuItem_HelpSpecialControls.Image = CType(resources.GetObject("ToolStripMenuItem_HelpSpecialControls.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_HelpSpecialControls.Name = "ToolStripMenuItem_HelpSpecialControls"
-        Me.ToolStripMenuItem_HelpSpecialControls.Size = New System.Drawing.Size(159, 22)
+        Me.ToolStripMenuItem_HelpSpecialControls.Size = New System.Drawing.Size(170, 22)
         Me.ToolStripMenuItem_HelpSpecialControls.Text = "Special Controls"
         '
         'ToolStripMenuItem_HelpSpecialControlsAutocompleteUp
@@ -733,19 +736,36 @@ Partial Class FormMain
         Me.ToolStripMenuItem_HelpSpecialControlsCommentLines.Size = New System.Drawing.Size(274, 22)
         Me.ToolStripMenuItem_HelpSpecialControlsCommentLines.Text = "Comment Lines In/Out"
         '
-        'ToolStripMenuItem_HelpAbout
+        'ToolStripSeparator15
         '
-        Me.ToolStripMenuItem_HelpAbout.Image = CType(resources.GetObject("ToolStripMenuItem_HelpAbout.Image"), System.Drawing.Image)
-        Me.ToolStripMenuItem_HelpAbout.Name = "ToolStripMenuItem_HelpAbout"
-        Me.ToolStripMenuItem_HelpAbout.Size = New System.Drawing.Size(159, 22)
-        Me.ToolStripMenuItem_HelpAbout.Text = "About"
+        Me.ToolStripSeparator15.Name = "ToolStripSeparator15"
+        Me.ToolStripSeparator15.Size = New System.Drawing.Size(167, 6)
+        '
+        'ToolStripMenuItem_HelpCheckUpdates
+        '
+        Me.ToolStripMenuItem_HelpCheckUpdates.Image = Global.BasicPawn.My.Resources.Resources.imageres_5332_16x16_32
+        Me.ToolStripMenuItem_HelpCheckUpdates.Name = "ToolStripMenuItem_HelpCheckUpdates"
+        Me.ToolStripMenuItem_HelpCheckUpdates.Size = New System.Drawing.Size(170, 22)
+        Me.ToolStripMenuItem_HelpCheckUpdates.Text = "Check for updates"
         '
         'ToolStripMenuItem_HelpGithub
         '
         Me.ToolStripMenuItem_HelpGithub.Image = Global.BasicPawn.My.Resources.Resources.imageres_5316_16x16_32
         Me.ToolStripMenuItem_HelpGithub.Name = "ToolStripMenuItem_HelpGithub"
-        Me.ToolStripMenuItem_HelpGithub.Size = New System.Drawing.Size(159, 22)
+        Me.ToolStripMenuItem_HelpGithub.Size = New System.Drawing.Size(170, 22)
         Me.ToolStripMenuItem_HelpGithub.Text = "View on Github"
+        '
+        'ToolStripSeparator14
+        '
+        Me.ToolStripSeparator14.Name = "ToolStripSeparator14"
+        Me.ToolStripSeparator14.Size = New System.Drawing.Size(167, 6)
+        '
+        'ToolStripMenuItem_HelpAbout
+        '
+        Me.ToolStripMenuItem_HelpAbout.Image = CType(resources.GetObject("ToolStripMenuItem_HelpAbout.Image"), System.Drawing.Image)
+        Me.ToolStripMenuItem_HelpAbout.Name = "ToolStripMenuItem_HelpAbout"
+        Me.ToolStripMenuItem_HelpAbout.Size = New System.Drawing.Size(170, 22)
+        Me.ToolStripMenuItem_HelpAbout.Text = "About"
         '
         'ToolStripMenuItem_Undo
         '
@@ -1216,4 +1236,7 @@ Partial Class FormMain
     Friend WithEvents ToolStripMenuItem_OutlineToggleAll As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator13 As ToolStripSeparator
     Friend WithEvents ToolStripMenuItem_ToolsConvertTabsSpaces As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator15 As ToolStripSeparator
+    Friend WithEvents ToolStripMenuItem_HelpCheckUpdates As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator14 As ToolStripSeparator
 End Class

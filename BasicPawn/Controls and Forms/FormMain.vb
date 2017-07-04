@@ -839,6 +839,12 @@ Public Class FormMain
         MessageBox.Show(SB.ToString, "About", MessageBoxButtons.OK, MessageBoxIcon.Information)
     End Sub
 
+    Private Sub ToolStripMenuItem_HelpCheckUpdates_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_HelpCheckUpdates.Click
+        With New FormUpdate
+            .ShowDialog(Me)
+        End With
+    End Sub
+
     Private Sub ToolStripMenuItem_HelpGithub_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_HelpGithub.Click
         Try
             Process.Start("https://github.com/Timocop/BasicPawn")
@@ -863,8 +869,7 @@ Public Class FormMain
 #Region "MenuStrip_NewUpdate"
     Private Sub ToolStripMenuItem_NewUpdate_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_NewUpdate.Click
         With New FormUpdate
-            .Show(Me)
-            .BringToFront()
+            .ShowDialog(Me)
         End With
     End Sub
 #End Region
