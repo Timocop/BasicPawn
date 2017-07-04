@@ -528,6 +528,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="BasicPawnIcon.ico" />
+    <None Include="Resources\imageres_5357_16x16-32.png" />
     <None Include="Resources\155.png" />
     <None Include="Resources\098.png" />
     <None Include="Resources\imageres_5320_16x16-32.png" />

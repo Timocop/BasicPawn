@@ -86,16 +86,6 @@ Public Class ClassTabControl
 
             If (bIncludeTemplate) Then
                 mTabPage.m_TextEditor.Document.TextContent = My.Resources.SourcePawnOldTemplate
-
-                If (ClassSettings.g_iSettingsTabsToSpaces > 0) Then
-                    With New ICSharpCode.TextEditor.Actions.ConvertLeadingTabsToSpaces
-                        .Execute(mTabPage.m_TextEditor.ActiveTextAreaControl.TextArea)
-                    End With
-                Else
-                    With New ICSharpCode.TextEditor.Actions.ConvertLeadingSpacesToTabs
-                        .Execute(mTabPage.m_TextEditor.ActiveTextAreaControl.TextArea)
-                    End With
-                End If
             End If
 
             g_mFormMain.TabControl_SourceTabs.TabPages.Add(mTabPage)
@@ -296,16 +286,6 @@ Public Class ClassTabControl
         SaveLoadTabEntries(iIndex, ENUM_TAB_CONFIG.LOAD)
 
         m_Tab(iIndex).m_ClassLineState.m_IgnoreUpdates = False
-
-        If (ClassSettings.g_iSettingsTabsToSpaces > 0) Then
-            With New ICSharpCode.TextEditor.Actions.ConvertLeadingTabsToSpaces
-                .Execute(m_Tab(iIndex).m_TextEditor.ActiveTextAreaControl.TextArea)
-            End With
-        Else
-            With New ICSharpCode.TextEditor.Actions.ConvertLeadingSpacesToTabs
-                .Execute(m_Tab(iIndex).m_TextEditor.ActiveTextAreaControl.TextArea)
-            End With
-        End If
 
         If (g_mFormMain.g_mUCStartPage.Visible) Then
             g_mFormMain.g_mUCStartPage.Hide()
@@ -658,15 +638,6 @@ Public Class ClassTabControl
             g_mSourceTextEditor.Document.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
             g_mSourceTextEditor.Document.TextEditorProperties.IndentationSize = If(ClassSettings.g_iSettingsTabsToSpaces > 0, ClassSettings.g_iSettingsTabsToSpaces, 4)
             g_mSourceTextEditor.Document.TextEditorProperties.ConvertTabsToSpaces = (ClassSettings.g_iSettingsTabsToSpaces > 0)
-            If (ClassSettings.g_iSettingsTabsToSpaces > 0) Then
-                With New ICSharpCode.TextEditor.Actions.ConvertLeadingTabsToSpaces
-                    .Execute(g_mSourceTextEditor.ActiveTextAreaControl.TextArea)
-                End With
-            Else
-                With New ICSharpCode.TextEditor.Actions.ConvertLeadingSpacesToTabs
-                    .Execute(g_mSourceTextEditor.ActiveTextAreaControl.TextArea)
-                End With
-            End If
 
             g_mSourceTextEditor.Parent = Me
             g_mSourceTextEditor.Dock = DockStyle.Fill
