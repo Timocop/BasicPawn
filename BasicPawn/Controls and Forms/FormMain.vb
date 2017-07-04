@@ -1035,7 +1035,7 @@ Public Class FormMain
                         Dim iPID As Integer = Process.GetCurrentProcess.Id
                         Dim sProcessName As String = Process.GetCurrentProcess.ProcessName
                         Dim sTabIdentifier As String = g_ClassTabControl.m_Tab(i).m_Identifier
-                        Dim iTabIndex As Integer = g_ClassTabControl.m_Tab(i).TabIndex
+                        Dim iTabIndex As Integer = g_ClassTabControl.m_Tab(i).m_Index
                         Dim sTabFile As String = g_ClassTabControl.m_Tab(i).m_File
 
                         g_ClassCrossAppComunication.SendMessage(New ClassCrossAppComunication.ClassMessage(COMARG_REQUEST_TABS_ANSWER, CStr(iPID), sProcessName, sTabIdentifier, CStr(iTabIndex), sTabFile, sCallerIdentifier), False)
@@ -1075,7 +1075,7 @@ Public Class FormMain
                         Return
                     End If
 
-                    g_ClassTabControl.RemoveTab(mTab.TabIndex - 1, True)
+                    g_ClassTabControl.RemoveTab(mTab.m_Index, True)
 
                 Case COMARG_SHOW_PING_FLASH
                     Dim iPID As Integer = CInt(mClassMessage.m_Messages(0))
