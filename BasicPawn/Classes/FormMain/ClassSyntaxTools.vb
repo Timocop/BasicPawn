@@ -497,8 +497,12 @@ Public Class ClassSyntaxTools
 
                         Case ENUM_SYNTAX_FILES.DEBUGGER_TEXTEDITOR
                             If (g_mFormMain.g_mFormDebugger IsNot Nothing AndAlso Not g_mFormMain.g_mFormDebugger.IsDisposed) Then
-                                g_mFormMain.g_mFormDebugger.TextEditorControlEx_DebuggerSource.SetHighlighting(g_SyntaxFiles(i).sDefinition)
-                                g_mFormMain.g_mFormDebugger.TextEditorControlEx_DebuggerDiasm.SetHighlighting(g_SyntaxFiles(i).sDefinition)
+                                If (g_mFormMain.g_mFormDebugger.TextEditorControlEx_DebuggerSource.Document.HighlightingStrategy.Name <> g_SyntaxFiles(i).sDefinition) Then
+                                    g_mFormMain.g_mFormDebugger.TextEditorControlEx_DebuggerSource.SetHighlighting(g_SyntaxFiles(i).sDefinition)
+                                End If
+                                If (g_mFormMain.g_mFormDebugger.TextEditorControlEx_DebuggerDiasm.Document.HighlightingStrategy.Name <> g_SyntaxFiles(i).sDefinition) Then
+                                    g_mFormMain.g_mFormDebugger.TextEditorControlEx_DebuggerDiasm.SetHighlighting(g_SyntaxFiles(i).sDefinition)
+                                End If
                             End If
                     End Select
                 Next

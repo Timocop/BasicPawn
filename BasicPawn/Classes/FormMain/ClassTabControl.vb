@@ -23,16 +23,21 @@ Public Class ClassTabControl
 
     Private g_mFormMain As FormMain
     Private g_bIgnoreOnTabSelected As Boolean = False
-    Private g_iOldActiveIndex As Integer = -1
+    Private g_sOldActiveIdentifier As String = ""
     Private g_bIsLoadingEntries As Boolean = False
 
     Private g_iFreezePaintCounter As Integer = 0
+
+    Private WithEvents g_mTimer As Timer
+    Private g_sSelectTabDelayIdentifier As String = ""
 
 
     Public Sub New(f As FormMain)
         g_mFormMain = f
 
         AddHandler g_mFormMain.TabControl_SourceTabs.SelectedIndexChanged, AddressOf OnTabSelected
+
+        g_mTimer = New Timer
     End Sub
 
     Public Sub Init()
@@ -71,7 +76,7 @@ Public Class ClassTabControl
         End Get
     End Property
 
-    Public Sub AddTab(Optional bSelect As Boolean = False, Optional bIncludeTemplate As Boolean = False, Optional bChanged As Boolean = False)
+    Public Function AddTab(Optional bSelect As Boolean = False, Optional bIncludeTemplate As Boolean = False, Optional bChanged As Boolean = False) As SourceTabPage
         Try
             FreezePaint(g_mFormMain.SplitContainer_ToolboxAndEditor)
 
@@ -90,15 +95,17 @@ Public Class ClassTabControl
                 SelectTab(m_TabsCount - 1)
             End If
 
-            If (m_TabsCount > 1) Then
+            If (m_TabsCount > 1 AndAlso g_mFormMain.g_mUCStartPage.Visible) Then
                 g_mFormMain.g_mUCStartPage.Hide()
             End If
+
+            Return mTabPage
         Finally
             UnfreezePaint(g_mFormMain.SplitContainer_ToolboxAndEditor)
         End Try
-    End Sub
+    End Function
 
-    Public Function RemoveTab(iIndex As Integer, bPrompSave As Boolean) As Boolean
+    Public Function RemoveTab(iIndex As Integer, bPrompSave As Boolean, Optional iSelectTabIndex As Integer = -1) As Boolean
         Try
             FreezePaint(g_mFormMain.SplitContainer_ToolboxAndEditor)
 
@@ -106,23 +113,31 @@ Public Class ClassTabControl
                 Return False
             End If
 
-            g_iOldActiveIndex = -1
+            'g_sOldActiveIdentifier = ""
 
             Dim mTabPage = m_Tab(iIndex)
             mTabPage.Dispose()
             mTabPage = Nothing
 
             If (m_TabsCount < 1) Then
-                AddTab(False)
+                AddTab()
             End If
 
-            If (iIndex > m_TabsCount - 1) Then
-                SelectTab(m_TabsCount - 1)
+            If (iSelectTabIndex > -1) Then
+                If (iSelectTabIndex > m_TabsCount - 1) Then
+                    SelectTab(m_TabsCount - 1)
+                Else
+                    SelectTab(iSelectTabIndex)
+                End If
             Else
-                SelectTab(iIndex)
+                If (iIndex > m_TabsCount - 1) Then
+                    SelectTab(m_TabsCount - 1)
+                Else
+                    SelectTab(iIndex)
+                End If
             End If
 
-            If (m_TabsCount > 1) Then
+            If (m_TabsCount > 1 AndAlso g_mFormMain.g_mUCStartPage.Visible) Then
                 g_mFormMain.g_mUCStartPage.Hide()
             End If
 
@@ -137,9 +152,6 @@ Public Class ClassTabControl
             FreezePaint(g_mFormMain.SplitContainer_ToolboxAndEditor)
 
             g_bIgnoreOnTabSelected = True
-
-            SaveLoadTabEntries(iFromIndex, ENUM_TAB_CONFIG.SAVE)
-            SaveLoadTabEntries(iToIndex, ENUM_TAB_CONFIG.SAVE)
 
             Dim mFrom As SourceTabPage = m_Tab(iFromIndex)
             g_mFormMain.TabControl_SourceTabs.TabPages.Remove(mFrom)
@@ -157,23 +169,38 @@ Public Class ClassTabControl
         Try
             FreezePaint(g_mFormMain.SplitContainer_ToolboxAndEditor)
 
-            If (g_iOldActiveIndex > -1) Then
-                SaveLoadTabEntries(g_iOldActiveIndex, ENUM_TAB_CONFIG.SAVE)
-                m_Tab(g_iOldActiveIndex).m_HandlersEnabled = False
+            Dim iLastTabIndex As Integer = GetTabIndexByIdentifier(g_sOldActiveIdentifier)
+            If (iLastTabIndex > -1) Then
+                SaveLoadTabEntries(iLastTabIndex, ENUM_TAB_CONFIG.SAVE)
+                m_Tab(iLastTabIndex).m_HandlersEnabled = False
             End If
 
-            g_iOldActiveIndex = iIndex
-
             If (iIndex > -1) Then
+                g_sOldActiveIdentifier = m_Tab(iIndex).m_Identifier
+
                 SaveLoadTabEntries(iIndex, ENUM_TAB_CONFIG.LOAD)
                 m_Tab(iIndex).m_HandlersEnabled = True
 
                 g_mFormMain.TabControl_SourceTabs.SelectTab(iIndex)
                 g_mFormMain.g_ClassSyntaxTools.UpdateTextEditorSyntax()
+
             End If
         Finally
             UnfreezePaint(g_mFormMain.SplitContainer_ToolboxAndEditor)
         End Try
+    End Sub
+
+    Public Sub SelectTab(sIdentifier As String, iDelay As Integer)
+        g_mTimer.Stop()
+
+        If (String.IsNullOrEmpty(sIdentifier) OrElse GetTabIndexByIdentifier(sIdentifier) < 0) Then
+            g_sSelectTabDelayIdentifier = ""
+            Return
+        End If
+
+        g_sSelectTabDelayIdentifier = sIdentifier
+        g_mTimer.Interval = iDelay
+        g_mTimer.Start()
     End Sub
 
     Public Function GetTabByIdentifier(sIdentifier As String) As SourceTabPage
@@ -196,6 +223,22 @@ Public Class ClassTabControl
         Return -1
     End Function
 
+    Private Sub OnSwitchTabDelay(sender As Object, e As EventArgs) Handles g_mTimer.Tick
+        g_mTimer.Stop()
+
+        If (String.IsNullOrEmpty(g_sSelectTabDelayIdentifier)) Then
+            Return
+        End If
+
+        Dim iIndex As Integer = GetTabIndexByIdentifier(g_sSelectTabDelayIdentifier)
+        g_sSelectTabDelayIdentifier = ""
+
+        If (iIndex < 0) Then
+            Return
+        End If
+
+        SelectTab(iIndex)
+    End Sub
 
     ''' <summary>
     ''' Opens a new source file
@@ -221,7 +264,9 @@ Public Class ClassTabControl
 
             m_Tab(iIndex).m_ClassLineState.m_IgnoreUpdates = False
 
-            g_mFormMain.g_mUCStartPage.Hide()
+            If (g_mFormMain.g_mUCStartPage.Visible) Then
+                g_mFormMain.g_mUCStartPage.Hide()
+            End If
 
             g_mFormMain.PrintInformation("[INFO]", "User created a new source file")
             Return False
@@ -242,7 +287,9 @@ Public Class ClassTabControl
 
         m_Tab(iIndex).m_ClassLineState.m_IgnoreUpdates = False
 
-        g_mFormMain.g_mUCStartPage.Hide()
+        If (g_mFormMain.g_mUCStartPage.Visible) Then
+            g_mFormMain.g_mUCStartPage.Hide()
+        End If
 
         g_mFormMain.PrintInformation("[INFO]", "User opened a new file: " & sFile)
         Return True
@@ -365,7 +412,7 @@ Public Class ClassTabControl
             If (m_Tab(0).m_IsUnsaved AndAlso Not m_Tab(0).m_Changed) Then
                 Dim bLast As Boolean = (m_TabsCount = 1)
 
-                If (Not RemoveTab(0, True)) Then
+                If (Not RemoveTab(0, True, m_ActiveTabIndex)) Then
                     Exit While
                 End If
 
@@ -385,7 +432,7 @@ Public Class ClassTabControl
         While m_TabsCount > 0
             Dim bLast As Boolean = (m_TabsCount = 1)
 
-            If (Not RemoveTab(m_TabsCount - 1, True)) Then
+            If (Not RemoveTab(m_TabsCount - 1, True, 0)) Then
                 Return
             End If
 
@@ -482,6 +529,7 @@ Public Class ClassTabControl
 
         Public Sub New(f As FormMain)
             g_mFormMain = f
+
             CreateTextEditor()
 
             ClassControlStyle.UpdateControls(Me)
@@ -604,6 +652,22 @@ Public Class ClassTabControl
             g_sIdentifier = Guid.NewGuid.ToString
         End Sub
 
+        Public Function OpenFileTab(sFile As String, Optional bIgnoreSavePrompt As Boolean = False) As Boolean
+            Return g_mFormMain.g_ClassTabControl.OpenFileTab(m_Index, sFile, bIgnoreSavePrompt)
+        End Function
+
+        Public Sub SelectTab()
+            g_mFormMain.g_ClassTabControl.SelectTab(m_Index)
+        End Sub
+
+        Public Sub SelectTab(iDelay As Integer)
+            g_mFormMain.g_ClassTabControl.SelectTab(m_Identifier, iDelay)
+        End Sub
+
+        Public Function RemoveTab(bPrompSave As Boolean, Optional iSelectTabIndex As Integer = -1) As Boolean
+            Return g_mFormMain.g_ClassTabControl.RemoveTab(m_Index, bPrompSave, iSelectTabIndex)
+        End Function
+
         Protected Overrides Sub Dispose(disposing As Boolean)
             Try
                 If (disposing) Then
@@ -649,6 +713,12 @@ Public Class ClassTabControl
         Public ReadOnly Property m_IsUnsaved As Boolean
             Get
                 Return String.IsNullOrEmpty(g_sFile)
+            End Get
+        End Property
+
+        Public ReadOnly Property m_IsActive As Boolean
+            Get
+                Return (g_mFormMain.g_ClassTabControl.m_ActiveTabIndex = m_Index)
             End Get
         End Property
 
@@ -1132,6 +1202,11 @@ Public Class ClassTabControl
             If disposing Then
                 ' TODO: dispose managed state (managed objects).
                 RemoveHandler g_mFormMain.TabControl_SourceTabs.SelectedIndexChanged, AddressOf OnTabSelected
+
+                If (g_mTimer IsNot Nothing) Then
+                    g_mTimer.Dispose()
+                    g_mTimer = Nothing
+                End If
             End If
 
             ' TODO: free unmanaged resources (unmanaged objects) and override Finalize() below.

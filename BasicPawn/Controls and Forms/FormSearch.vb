@@ -378,8 +378,8 @@ Public Class FormSearch
 
             SetTextEditorSelection(mTab, iLocation, iLenght, False)
 
-            If (mTab.m_Index <> g_mFormMain.g_ClassTabControl.m_ActiveTabIndex) Then
-                g_mFormMain.g_ClassTabControl.SelectTab(mTab.m_Index)
+            If (Not mTab.m_IsActive) Then
+                mTab.SelectTab()
             End If
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)

@@ -104,8 +104,9 @@ Public Class UCInformationList
                         Continue For
                     End If
 
-                    g_mFormMain.g_ClassTabControl.AddTab(True)
-                    g_mFormMain.g_ClassTabControl.OpenFileTab(g_mFormMain.g_ClassTabControl.m_TabsCount - 1, sPath)
+                    Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
+                    mTab.OpenFileTab(sPath)
+                    mTab.SelectTab()
 
                     bForceEnd = True
                     Continue While

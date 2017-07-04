@@ -131,8 +131,9 @@ Public Class UCStartPage
                     g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(bAppendFiles)
                     bAppendFiles = True
                 Else
-                    g_mFormMain.g_ClassTabControl.AddTab(True)
-                    g_mFormMain.g_ClassTabControl.OpenFileTab(g_mFormMain.g_ClassTabControl.m_TabsCount - 1, mRecentItems(i).m_RecentFile)
+                    Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
+                    mTab.OpenFileTab(mRecentItems(i).m_RecentFile)
+                    mTab.SelectTab(500)
                 End If
             Catch ex As Exception
                 ClassExceptionLog.WriteToLogMessageBox(ex)
@@ -168,8 +169,9 @@ Public Class UCStartPage
                     g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(bAppendFiles)
                     bAppendFiles = True
                 Else
-                    g_mFormMain.g_ClassTabControl.AddTab(True)
-                    g_mFormMain.g_ClassTabControl.OpenFileTab(g_mFormMain.g_ClassTabControl.m_TabsCount - 1, mRecentItems(i).m_RecentFile)
+                    Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
+                    mTab.OpenFileTab(mRecentItems(i).m_RecentFile)
+                    mTab.SelectTab(500)
                 End If
             Catch ex As Exception
                 ClassExceptionLog.WriteToLogMessageBox(ex)

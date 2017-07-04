@@ -275,11 +275,12 @@ Public Class UCProjectBrowser
                     Continue For
                 End If
 
-                g_mFormMain.g_mUCStartPage.g_mFormMain.g_ClassTabControl.AddTab(True)
-                g_mFormMain.g_mUCStartPage.g_mFormMain.g_ClassTabControl.OpenFileTab(g_mFormMain.g_mUCStartPage.g_mFormMain.g_ClassTabControl.m_TabsCount - 1, sFile)
+                Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
+                mTab.OpenFileTab(sFile)
+                mTab.SelectTab(500)
             Next
 
-            g_mFormMain.g_mUCStartPage.g_mFormMain.g_ClassTabControl.RemoveUnsavedTabsLeft()
+            g_mFormMain.g_ClassTabControl.RemoveUnsavedTabsLeft()
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
@@ -397,8 +398,9 @@ Public Class UCProjectBrowser
                 End If
             Next
 
-            g_mFormMain.g_mUCStartPage.g_mFormMain.g_ClassTabControl.AddTab(True)
-            g_mFormMain.g_mUCStartPage.g_mFormMain.g_ClassTabControl.OpenFileTab(g_mFormMain.g_mUCStartPage.g_mFormMain.g_ClassTabControl.m_TabsCount - 1, sFile)
+            Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
+            mTab.OpenFileTab(sFile)
+            mTab.SelectTab(500)
 
             g_mFormMain.g_mUCStartPage.g_mFormMain.g_ClassTabControl.RemoveUnsavedTabsLeft()
         Catch ex As Exception

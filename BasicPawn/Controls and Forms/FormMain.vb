@@ -267,7 +267,7 @@ Public Class FormMain
         g_ClassTabControl.Init()
 
         'Hide StartPage when disabled in settings
-        If (Not ClassSettings.g_iSettingsAutoShowStartPage) Then
+        If (Not ClassSettings.g_iSettingsAutoShowStartPage AndAlso g_mUCStartPage.Visible) Then
             g_mUCStartPage.Hide()
         End If
 
@@ -281,7 +281,9 @@ Public Class FormMain
 
         If (lOpenFileList.Count > 0) Then
             'Hide StartPage when files are going to be opened. Such as project and source files.
-            g_mUCStartPage.Hide()
+            If (g_mUCStartPage.Visible) Then
+                g_mUCStartPage.Hide()
+            End If
 
             'Open all project files 
             Dim bAppendFiles As Boolean = False
@@ -296,8 +298,8 @@ Public Class FormMain
             'Open all files here
             For i = 0 To lOpenFileList.Count - 1
                 If (IO.Path.GetExtension(lOpenFileList(i)).ToLower <> UCProjectBrowser.ClassProjectControl.g_sProjectExtension) Then
-                    g_ClassTabControl.AddTab(False)
-                    g_ClassTabControl.OpenFileTab(g_ClassTabControl.m_TabsCount - 1, lOpenFileList(i), True)
+                    Dim mTab = g_ClassTabControl.AddTab()
+                    mTab.OpenFileTab(lOpenFileList(i), True)
 
                     If (i = 0 AndAlso g_ClassTabControl.m_TabsCount > 0) Then
                         g_ClassTabControl.RemoveTab(0, False)
@@ -479,8 +481,9 @@ Public Class FormMain
 
                 If (i.ShowDialog = DialogResult.OK) Then
                     For Each sFile As String In i.FileNames
-                        g_ClassTabControl.AddTab(True)
-                        g_ClassTabControl.OpenFileTab(g_ClassTabControl.m_TabsCount - 1, sFile)
+                        Dim mTab = g_ClassTabControl.AddTab()
+                        mTab.OpenFileTab(sFile)
+                        mTab.SelectTab(500)
                     Next
                 End If
             End Using
@@ -878,7 +881,7 @@ Public Class FormMain
                 Continue For
             End If
 
-            If (Not g_ClassTabControl.RemoveTab(i, True)) Then
+            If (Not g_ClassTabControl.RemoveTab(i, True, iActiveIndex)) Then
                 Return
             End If
         Next
@@ -910,7 +913,7 @@ Public Class FormMain
 
             Dim sFile As String = g_ClassTabControl.m_ActiveTab.m_File
 
-            If (g_ClassTabControl.RemoveTab(g_ClassTabControl.m_ActiveTabIndex, True)) Then
+            If (g_ClassTabControl.m_ActiveTab.RemoveTab(True)) Then
                 Process.Start(Application.ExecutablePath, String.Join(" ", {"-newinstance", String.Format("""{0}""", sFile)}))
             End If
         Catch ex As Exception
@@ -968,7 +971,7 @@ Public Class FormMain
     End Sub
 
     Private Sub ToolStripMenuItem_TabClose_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_TabClose.Click
-        g_ClassTabControl.RemoveTab(g_ClassTabControl.m_ActiveTabIndex, True)
+        g_ClassTabControl.m_ActiveTab.RemoveTab(True)
     End Sub
 
     Private Sub ToolStripMenuItem_TabMoveRight_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_TabMoveRight.Click
@@ -1017,8 +1020,9 @@ Public Class FormMain
                     End If
 
                     Me.BeginInvoke(Sub()
-                                       g_ClassTabControl.AddTab(True)
-                                       g_ClassTabControl.OpenFileTab(g_ClassTabControl.m_TabsCount - 1, sFile)
+                                       Dim mTab = g_ClassTabControl.AddTab()
+                                       mTab.OpenFileTab(sFile)
+                                       mTab.SelectTab(500)
 
                                        If (Me.WindowState = FormWindowState.Minimized) Then
                                            ClassTools.ClassForms.FormWindowCommand(Me, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
@@ -1075,7 +1079,7 @@ Public Class FormMain
                         Return
                     End If
 
-                    g_ClassTabControl.RemoveTab(mTab.m_Index, True)
+                    mTab.RemoveTab(True, g_ClassTabControl.m_ActiveTabIndex)
 
                 Case COMARG_SHOW_PING_FLASH
                     Dim iPID As Integer = CInt(mClassMessage.m_Messages(0))
@@ -1086,10 +1090,10 @@ Public Class FormMain
                     End If
 
                     If (Not String.IsNullOrEmpty(sTabIdentifier)) Then
-                        Dim iTabIndex = g_ClassTabControl.GetTabIndexByIdentifier(sTabIdentifier)
-                        If (iTabIndex > -1) Then
-                            If (g_ClassTabControl.m_ActiveTabIndex <> iTabIndex) Then
-                                g_ClassTabControl.SelectTab(iTabIndex)
+                        Dim mTab = g_ClassTabControl.GetTabByIdentifier(sTabIdentifier)
+                        If (mTab IsNot Nothing) Then
+                            If (Not mTab.m_IsActive) Then
+                                mTab.SelectTab()
                             End If
                         End If
                     End If

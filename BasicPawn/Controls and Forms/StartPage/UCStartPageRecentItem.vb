@@ -105,8 +105,9 @@ Public Class UCStartPageRecentItem
                 g_mUCStartPage.g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile = m_RecentFile
                 g_mUCStartPage.g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(False)
             Else
-                g_mUCStartPage.g_mFormMain.g_ClassTabControl.AddTab(True)
-                g_mUCStartPage.g_mFormMain.g_ClassTabControl.OpenFileTab(g_mUCStartPage.g_mFormMain.g_ClassTabControl.m_TabsCount - 1, m_RecentFile)
+                Dim mTab = g_mUCStartPage.g_mFormMain.g_ClassTabControl.AddTab()
+                mTab.OpenFileTab(m_RecentFile)
+                mTab.SelectTab(500)
             End If
 
             g_mUCStartPage.g_mFormMain.g_ClassTabControl.RemoveUnsavedTabsLeft()
