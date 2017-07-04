@@ -388,7 +388,13 @@ Public Class FormMain
             iItem.IsFolded = False
         Next
 
-        g_ClassTabControl.m_ActiveTab.m_TextEditor.Refresh()
+        g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.FoldingManager.NotifyFoldingsChanged(EventArgs.Empty)
+    End Sub
+
+    Private Sub ToolStripMenuItem_OutlineToggleAll_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_OutlineToggleAll.Click
+        With New ICSharpCode.TextEditor.Actions.ToggleAllFoldings
+            .Execute(g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea)
+        End With
     End Sub
 
     Private Sub ToolStripMenuItem_OutlineCollapseAll_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_OutlineCollapseAll.Click
@@ -396,7 +402,13 @@ Public Class FormMain
             iItem.IsFolded = True
         Next
 
-        g_ClassTabControl.m_ActiveTab.m_TextEditor.Refresh()
+        g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.FoldingManager.NotifyFoldingsChanged(EventArgs.Empty)
+    End Sub
+
+    Private Sub ToolStripMenuItem_Comment_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Comment.Click
+        With New ICSharpCode.TextEditor.Actions.ToggleComment
+            .Execute(g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea)
+        End With
     End Sub
 #End Region
 
