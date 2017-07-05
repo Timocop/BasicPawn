@@ -131,6 +131,8 @@ Partial Class FormMain
         Me.ToolStripSeparator4 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_ToolsShowInformation = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_ToolsClearInformationLog = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_Undo = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_Redo = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Build = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Test = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Debug = New System.Windows.Forms.ToolStripMenuItem()
@@ -149,8 +151,6 @@ Partial Class FormMain
         Me.ToolStripMenuItem_HelpGithub = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator14 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_HelpAbout = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripMenuItem_Undo = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripMenuItem_Redo = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_NewUpdate = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_TabClose = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_TabMoveRight = New System.Windows.Forms.ToolStripMenuItem()
@@ -639,6 +639,20 @@ Partial Class FormMain
         Me.ToolStripMenuItem_ToolsClearInformationLog.Size = New System.Drawing.Size(225, 22)
         Me.ToolStripMenuItem_ToolsClearInformationLog.Text = "Clear Information"
         '
+        'ToolStripMenuItem_Undo
+        '
+        Me.ToolStripMenuItem_Undo.Image = CType(resources.GetObject("ToolStripMenuItem_Undo.Image"), System.Drawing.Image)
+        Me.ToolStripMenuItem_Undo.Name = "ToolStripMenuItem_Undo"
+        Me.ToolStripMenuItem_Undo.Size = New System.Drawing.Size(64, 20)
+        Me.ToolStripMenuItem_Undo.Text = "&Undo"
+        '
+        'ToolStripMenuItem_Redo
+        '
+        Me.ToolStripMenuItem_Redo.Image = CType(resources.GetObject("ToolStripMenuItem_Redo.Image"), System.Drawing.Image)
+        Me.ToolStripMenuItem_Redo.Name = "ToolStripMenuItem_Redo"
+        Me.ToolStripMenuItem_Redo.Size = New System.Drawing.Size(62, 20)
+        Me.ToolStripMenuItem_Redo.Text = "&Redo"
+        '
         'ToolStripMenuItem_Build
         '
         Me.ToolStripMenuItem_Build.Image = CType(resources.GetObject("ToolStripMenuItem_Build.Image"), System.Drawing.Image)
@@ -766,20 +780,6 @@ Partial Class FormMain
         Me.ToolStripMenuItem_HelpAbout.Name = "ToolStripMenuItem_HelpAbout"
         Me.ToolStripMenuItem_HelpAbout.Size = New System.Drawing.Size(170, 22)
         Me.ToolStripMenuItem_HelpAbout.Text = "About"
-        '
-        'ToolStripMenuItem_Undo
-        '
-        Me.ToolStripMenuItem_Undo.Image = CType(resources.GetObject("ToolStripMenuItem_Undo.Image"), System.Drawing.Image)
-        Me.ToolStripMenuItem_Undo.Name = "ToolStripMenuItem_Undo"
-        Me.ToolStripMenuItem_Undo.Size = New System.Drawing.Size(64, 20)
-        Me.ToolStripMenuItem_Undo.Text = "&Undo"
-        '
-        'ToolStripMenuItem_Redo
-        '
-        Me.ToolStripMenuItem_Redo.Image = CType(resources.GetObject("ToolStripMenuItem_Redo.Image"), System.Drawing.Image)
-        Me.ToolStripMenuItem_Redo.Name = "ToolStripMenuItem_Redo"
-        Me.ToolStripMenuItem_Redo.Size = New System.Drawing.Size(62, 20)
-        Me.ToolStripMenuItem_Redo.Text = "&Redo"
         '
         'ToolStripMenuItem_NewUpdate
         '

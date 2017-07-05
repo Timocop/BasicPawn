@@ -6,6 +6,14 @@ Partial Class FormOpenTabFromInstances
     <System.Diagnostics.DebuggerNonUserCode()> _
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
+            If (disposing) Then
+                If (g_mShowDelayThread IsNot Nothing AndAlso g_mShowDelayThread.IsAlive) Then
+                    g_mShowDelayThread.Abort()
+                    g_mShowDelayThread.Join()
+                    g_mShowDelayThread = Nothing
+                End If
+            End If
+
             If disposing AndAlso components IsNot Nothing Then
                 components.Dispose()
             End If
@@ -169,6 +177,7 @@ Partial Class FormOpenTabFromInstances
         Me.Name = "FormOpenTabFromInstances"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Open tabs from Instances"
+        Me.TopMost = True
         Me.Panel_FooterControl.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()

@@ -19,6 +19,7 @@ Public Class FormOpenTabFromInstances
     Private g_mFormMain As FormMain
 
     Private g_sCallerIdentifier As String = Guid.NewGuid.ToString
+    Private g_mShowDelayThread As Threading.Thread
 
     Structure STRUC_TABINFO_ITEM
         Dim sTabIndentifier As String
@@ -140,7 +141,7 @@ Public Class FormOpenTabFromInstances
                 Dim sTabIdentifier As String = iItem.mTabInfo.Value.sTabIndentifier
                 Dim sFile As String = iItem.mTabInfo.Value.sTabFile
 
-                g_mFormMain.g_ClassCrossAppComunication.SendMessage(New ClassCrossAppComunication.ClassMessage(FormMain.COMARG_CLOSE_TAB, CStr(iPID), sTabIdentifier, sFile), False)
+                g_mFormMain.g_ClassCrossAppComunication.SendMessage(New ClassCrossAppComunication.ClassMessage(FormMain.COMARG_CLOSE_TAB, CStr(iPID), sTabIdentifier, sFile, CStr(True)), False)
             End If
         Next
 
@@ -161,30 +162,25 @@ Public Class FormOpenTabFromInstances
         Dim iPID As Integer = iItem.mTabInfo.Value.iProcessID
         Dim sTabIndetifier As String = iItem.mTabInfo.Value.sTabIndentifier
 
-        g_mFormMain.g_ClassCrossAppComunication.SendMessage(New ClassCrossAppComunication.ClassMessage(FormMain.COMARG_SHOW_PING_FLASH, CStr(iPID), sTabIndetifier), False)
-
-        If (Not Me.TopMost) Then
-            Me.TopMost = Not Me.TopMost
-            Me.TopMost = Not Me.TopMost
-        End If
-    End Sub
-
-    Private Sub ListView_Instances_ItemChecked(sender As Object, e As ItemCheckedEventArgs) Handles ListView_Instances.ItemChecked
-        If (Not e.Item.Checked) Then
-            Return
+        If (g_mShowDelayThread IsNot Nothing AndAlso g_mShowDelayThread.IsAlive) Then
+            g_mShowDelayThread.Abort()
+            g_mShowDelayThread.Join()
+            g_mShowDelayThread = Nothing
         End If
 
-        Dim iItem = DirectCast(e.Item, ClassListViewItem)
-
-        Dim iPID As Integer = iItem.mTabInfo.Value.iProcessID
-        Dim sTabIndetifier As String = iItem.mTabInfo.Value.sTabIndentifier
-
-        g_mFormMain.g_ClassCrossAppComunication.SendMessage(New ClassCrossAppComunication.ClassMessage(FormMain.COMARG_SHOW_PING_FLASH, CStr(iPID), sTabIndetifier), False)
-
-        If (Not Me.TopMost) Then
-            Me.TopMost = Not Me.TopMost
-            Me.TopMost = Not Me.TopMost
-        End If
+        'Ping with a small delay, so Me.Activate works correctly
+        g_mShowDelayThread = New Threading.Thread(Sub()
+                                                      Try
+                                                          Threading.Thread.Sleep(500)
+                                                          g_mFormMain.g_ClassCrossAppComunication.SendMessage(New ClassCrossAppComunication.ClassMessage(FormMain.COMARG_SHOW_PING_FLASH, CStr(iPID), sTabIndetifier), False)
+                                                      Catch ex As Threading.ThreadAbortException
+                                                          Throw
+                                                      Catch ex As Exception
+                                                      End Try
+                                                  End Sub) With {
+            .IsBackground = True
+        }
+        g_mShowDelayThread.Start()
     End Sub
 
     Class ClassListViewItem

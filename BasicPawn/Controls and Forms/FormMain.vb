@@ -566,10 +566,8 @@ Public Class FormMain
     End Sub
 
     Private Sub ToolStripMenuItem_FileLoadTabs_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileLoadTabs.Click
-        If (g_mFormOpenTabFromInstances Is Nothing OrElse g_mFormOpenTabFromInstances.IsDisposed) Then
-            g_mFormOpenTabFromInstances = New FormOpenTabFromInstances(Me)
-            g_mFormOpenTabFromInstances.Show(Me)
-        End If
+        g_mFormOpenTabFromInstances = New FormOpenTabFromInstances(Me)
+        g_mFormOpenTabFromInstances.ShowDialog(Me)
     End Sub
 
     Private Sub ToolStripMenuItem_FileStartPage_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileStartPage.Click
@@ -1026,10 +1024,8 @@ Public Class FormMain
     End Sub
 
     Private Sub ToolStripMenuItem_TabOpenInstance_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_TabOpenInstance.Click
-        If (g_mFormOpenTabFromInstances Is Nothing OrElse g_mFormOpenTabFromInstances.IsDisposed) Then
-            g_mFormOpenTabFromInstances = New FormOpenTabFromInstances(Me)
-            g_mFormOpenTabFromInstances.Show(Me)
-        End If
+        g_mFormOpenTabFromInstances = New FormOpenTabFromInstances(Me)
+        g_mFormOpenTabFromInstances.ShowDialog(Me)
     End Sub
 
     Private Sub OnMessageReceive(mClassMessage As ClassCrossAppComunication.ClassMessage) Handles g_ClassCrossAppComunication.OnMessageReceive
@@ -1056,9 +1052,8 @@ Public Class FormMain
                                        If (Me.WindowState = FormWindowState.Minimized) Then
                                            ClassTools.ClassForms.FormWindowCommand(Me, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
                                        End If
-                                       Me.TopMost = Not Me.TopMost
-                                       Me.TopMost = Not Me.TopMost
 
+                                       Me.Activate()
                                    End Sub)
 
                 Case COMARG_REQUEST_TABS
@@ -1082,11 +1077,7 @@ Public Class FormMain
                     Dim sTabFile As String = mClassMessage.m_Messages(4)
                     Dim sCallerIdentifier As String = mClassMessage.m_Messages(5)
 
-                    If (g_mFormOpenTabFromInstances Is Nothing OrElse g_mFormOpenTabFromInstances.IsDisposed) Then
-                        Return
-                    End If
-
-                    If (g_mFormOpenTabFromInstances IsNot Nothing) Then
+                    If (g_mFormOpenTabFromInstances IsNot Nothing AndAlso Not g_mFormOpenTabFromInstances.IsDisposed) Then
                         g_mFormOpenTabFromInstances.AddListViewItem(sTabIdentifier, iTabIndex, sTabFile, sProcessName, iPID, sCallerIdentifier)
                     End If
 
@@ -1094,21 +1085,28 @@ Public Class FormMain
                     Dim iPID As Integer = CInt(mClassMessage.m_Messages(0))
                     Dim sTabIdentifier As String = mClassMessage.m_Messages(1)
                     Dim sFile As String = mClassMessage.m_Messages(2)
+                    Dim bCloseAppWhenEmpty As Boolean = CBool(mClassMessage.m_Messages(3))
 
                     If (iPID <> Process.GetCurrentProcess.Id) Then
                         Return
                     End If
 
-                    Dim mTab = g_ClassTabControl.GetTabByIdentifier(sTabIdentifier)
-                    If (mTab Is Nothing) Then
-                        Return
-                    End If
+                    Me.BeginInvoke(Sub()
+                                       Dim mTab = g_ClassTabControl.GetTabByIdentifier(sTabIdentifier)
+                                       If (mTab Is Nothing) Then
+                                           Return
+                                       End If
 
-                    If (Not String.IsNullOrEmpty(sFile) AndAlso sFile <> mTab.m_File) Then
-                        Return
-                    End If
+                                       If (Not String.IsNullOrEmpty(sFile) AndAlso sFile <> mTab.m_File) Then
+                                           Return
+                                       End If
 
-                    mTab.RemoveTab(True, g_ClassTabControl.m_ActiveTabIndex)
+                                       mTab.RemoveTab(True, g_ClassTabControl.m_ActiveTabIndex)
+
+                                       If (bCloseAppWhenEmpty AndAlso g_ClassTabControl.m_TabsCount = 1 AndAlso g_ClassTabControl.m_ActiveTab.m_IsUnsaved) Then
+                                           Me.Close()
+                                       End If
+                                   End Sub)
 
                 Case COMARG_SHOW_PING_FLASH
                     Dim iPID As Integer = CInt(mClassMessage.m_Messages(0))
@@ -1118,22 +1116,24 @@ Public Class FormMain
                         Return
                     End If
 
-                    If (Not String.IsNullOrEmpty(sTabIdentifier)) Then
-                        Dim mTab = g_ClassTabControl.GetTabByIdentifier(sTabIdentifier)
-                        If (mTab IsNot Nothing) Then
-                            If (Not mTab.m_IsActive) Then
-                                mTab.SelectTab()
-                            End If
-                        End If
-                    End If
+                    Me.BeginInvoke(Sub()
+                                       If (Not String.IsNullOrEmpty(sTabIdentifier)) Then
+                                           Dim mTab = g_ClassTabControl.GetTabByIdentifier(sTabIdentifier)
+                                           If (mTab IsNot Nothing) Then
+                                               If (Not mTab.m_IsActive) Then
+                                                   mTab.SelectTab()
+                                               End If
+                                           End If
+                                       End If
 
-                    If (Me.WindowState = FormWindowState.Minimized) Then
-                        ClassTools.ClassForms.FormWindowCommand(Me, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
-                    End If
-                    Me.TopMost = Not Me.TopMost
-                    Me.TopMost = Not Me.TopMost
+                                       If (Me.WindowState = FormWindowState.Minimized) Then
+                                           ClassTools.ClassForms.FormWindowCommand(Me, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
+                                       End If
 
-                    ShowPingFlash()
+                                       Me.Activate()
+
+                                       ShowPingFlash()
+                                   End Sub)
             End Select
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)

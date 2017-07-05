@@ -303,6 +303,10 @@ Public Class ClassTools
             <DllImport("uxtheme", CharSet:=CharSet.[Unicode], ExactSpelling:=False)>
             Friend Shared Function SetWindowTheme(hWnd As IntPtr, textSubAppName As String, textSubIdList As String) As Integer
             End Function
+
+            <DllImport("user32")>
+            Friend Shared Function FlashWindow(hwnd As IntPtr, bInvert As Boolean) As Boolean
+            End Function
         End Class
 
         ''' <summary>
@@ -403,6 +407,10 @@ Public Class ClassTools
 
         Public Shared Sub FormWindowCommand(f As Form, i As NativeWinAPI.ShowWindowCommands)
             NativeWinAPI.ShowWindow(f.Handle, i)
+        End Sub
+
+        Public Shared Sub FlashFormWindow(f As Form)
+            NativeWinAPI.FlashWindow(f.Handle, True)
         End Sub
     End Class
 
