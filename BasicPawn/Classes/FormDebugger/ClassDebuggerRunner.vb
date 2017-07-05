@@ -884,8 +884,7 @@ Public Class ClassDebuggerRunner
                                                 If (g_mFormDebugger.WindowState = FormWindowState.Minimized) Then
                                                     ClassTools.ClassForms.FormWindowCommand(g_mFormDebugger, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
                                                 End If
-                                                g_mFormDebugger.TopMost = Not g_mFormDebugger.TopMost
-                                                g_mFormDebugger.TopMost = Not g_mFormDebugger.TopMost
+                                                g_mFormDebugger.Activate()
 
                                                 g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnDebuggerDebugPause())
                                             End Sub)
@@ -1275,8 +1274,7 @@ Public Class ClassDebuggerRunner
                                                         If (g_mFormDebugger.WindowState = FormWindowState.Minimized) Then
                                                             ClassTools.ClassForms.FormWindowCommand(g_mFormDebugger, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
                                                         End If
-                                                        g_mFormDebugger.TopMost = Not g_mFormDebugger.TopMost
-                                                        g_mFormDebugger.TopMost = Not g_mFormDebugger.TopMost
+                                                        g_mFormDebugger.Activate()
 
                                                         g_mFormDebuggerException = New FormDebuggerException(g_mFormDebugger, sFile, smExceptions(i))
                                                         g_mFormDebuggerException.Show(g_mFormDebugger)
@@ -1284,8 +1282,7 @@ Public Class ClassDebuggerRunner
                                                         If (g_mFormDebuggerException.WindowState = FormWindowState.Minimized) Then
                                                             ClassTools.ClassForms.FormWindowCommand(g_mFormDebuggerException, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
                                                         End If
-                                                        g_mFormDebuggerException.TopMost = Not g_mFormDebuggerException.TopMost
-                                                        g_mFormDebuggerException.TopMost = Not g_mFormDebuggerException.TopMost
+                                                        g_mFormDebuggerException.Activate()
 
                                                         g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnDebuggerDebugPause())
                                                     End Sub)
@@ -1331,8 +1328,7 @@ Public Class ClassDebuggerRunner
                                                         If (g_mFormDebugger.WindowState = FormWindowState.Minimized) Then
                                                             ClassTools.ClassForms.FormWindowCommand(g_mFormDebugger, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
                                                         End If
-                                                        g_mFormDebugger.TopMost = Not g_mFormDebugger.TopMost
-                                                        g_mFormDebugger.TopMost = Not g_mFormDebugger.TopMost
+                                                        g_mFormDebugger.Activate()
 
                                                         g_mFormDebuggerCriticalPopupException = New FormDebuggerCriticalPopup(g_mFormDebugger, "Unknown SourceMod Exception", "The debugger caught unknown exceptions!", String.Join(Environment.NewLine, sLines))
                                                         g_mFormDebuggerCriticalPopupException.Show(g_mFormDebugger)
@@ -1340,8 +1336,7 @@ Public Class ClassDebuggerRunner
                                                         If (g_mFormDebuggerCriticalPopupException.WindowState = FormWindowState.Minimized) Then
                                                             ClassTools.ClassForms.FormWindowCommand(g_mFormDebuggerCriticalPopupException, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
                                                         End If
-                                                        g_mFormDebuggerCriticalPopupException.TopMost = Not g_mFormDebuggerCriticalPopupException.TopMost
-                                                        g_mFormDebuggerCriticalPopupException.TopMost = Not g_mFormDebuggerCriticalPopupException.TopMost
+                                                        g_mFormDebuggerCriticalPopupException.Activate()
 
                                                         g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnDebuggerDebugPause())
                                                     End Sub)
@@ -1444,8 +1439,7 @@ Public Class ClassDebuggerRunner
                                                     If (g_mFormDebugger.WindowState = FormWindowState.Minimized) Then
                                                         ClassTools.ClassForms.FormWindowCommand(g_mFormDebugger, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
                                                     End If
-                                                    g_mFormDebugger.TopMost = Not g_mFormDebugger.TopMost
-                                                    g_mFormDebugger.TopMost = Not g_mFormDebugger.TopMost
+                                                    g_mFormDebugger.Activate()
 
                                                     g_mFormDebuggerCriticalPopupFatalException = New FormDebuggerCriticalPopup(g_mFormDebugger, "SourceMod Fatal Error", "The debugger caught fatal errors!", String.Join(Environment.NewLine, sLines))
                                                     g_mFormDebuggerCriticalPopupFatalException.Show(g_mFormDebugger)
@@ -1453,8 +1447,7 @@ Public Class ClassDebuggerRunner
                                                     If (g_mFormDebuggerCriticalPopupFatalException.WindowState = FormWindowState.Minimized) Then
                                                         ClassTools.ClassForms.FormWindowCommand(g_mFormDebuggerCriticalPopupFatalException, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
                                                     End If
-                                                    g_mFormDebuggerCriticalPopupFatalException.TopMost = Not g_mFormDebuggerCriticalPopupFatalException.TopMost
-                                                    g_mFormDebuggerCriticalPopupFatalException.TopMost = Not g_mFormDebuggerCriticalPopupFatalException.TopMost
+                                                    g_mFormDebuggerCriticalPopupFatalException.Activate()
 
                                                     g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnDebuggerDebugPause())
                                                 End Sub)
