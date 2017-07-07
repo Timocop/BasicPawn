@@ -25,6 +25,7 @@ Partial Class UCProjectBrowser
         Me.components = New System.ComponentModel.Container()
         Me.ListView_ProjectFiles = New System.Windows.Forms.ListView()
         Me.ColumnHeader1 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.ColumnHeader2 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ContextMenuStrip_ProjectFiles = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.ToolStripMenuItem_Open = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_ProjectSave = New System.Windows.Forms.ToolStripMenuItem()
@@ -40,7 +41,6 @@ Partial Class UCProjectBrowser
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_Exlcude = New System.Windows.Forms.ToolStripMenuItem()
         Me.TextboxWatermark_Search = New BasicPawn.ClassTextboxWatermark()
-        Me.ColumnHeader2 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ContextMenuStrip_ProjectFiles.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -62,6 +62,11 @@ Partial Class UCProjectBrowser
         '
         Me.ColumnHeader1.Text = "File"
         Me.ColumnHeader1.Width = 250
+        '
+        'ColumnHeader2
+        '
+        Me.ColumnHeader2.Text = "Path"
+        Me.ColumnHeader2.Width = 500
         '
         'ContextMenuStrip_ProjectFiles
         '
@@ -159,11 +164,6 @@ Partial Class UCProjectBrowser
         Me.TextboxWatermark_Search.Size = New System.Drawing.Size(276, 22)
         Me.TextboxWatermark_Search.TabIndex = 1
         Me.TextboxWatermark_Search.Text = "Search..."
-        '
-        'ColumnHeader2
-        '
-        Me.ColumnHeader2.Text = "Path"
-        Me.ColumnHeader2.Width = 500
         '
         'UCProjectBrowser
         '

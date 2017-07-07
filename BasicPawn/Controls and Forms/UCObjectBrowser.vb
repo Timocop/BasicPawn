@@ -222,13 +222,25 @@ Public Class UCObjectBrowser
             End If
         Next
 
-        For i = iSelectedIndex + 1 To mTreeNodes.Length - 1
-            If (mTreeNodes(i).Text.ToLower.Contains(sSearchText.ToLower)) Then
-                TreeView_ObjectBrowser.SelectedNode = mTreeNodes(i)
-                TreeView_ObjectBrowser.SelectedNode.EnsureVisible()
-                Exit For
-            End If
-        Next
+        While True
+            For i = iSelectedIndex + 1 To mTreeNodes.Length - 1
+                If (mTreeNodes(i).Text.ToLower.Contains(sSearchText.ToLower)) Then
+                    TreeView_ObjectBrowser.SelectedNode = mTreeNodes(i)
+                    TreeView_ObjectBrowser.SelectedNode.EnsureVisible()
+                    Exit While
+                End If
+            Next
+
+            For i = 0 To mTreeNodes.Length - 1
+                If (mTreeNodes(i).Text.ToLower.Contains(sSearchText.ToLower)) Then
+                    TreeView_ObjectBrowser.SelectedNode = mTreeNodes(i)
+                    TreeView_ObjectBrowser.SelectedNode.EnsureVisible()
+                    Exit While
+                End If
+            Next
+
+            Exit While
+        End While
     End Sub
 
     Private Function GetAllTreeViewNodes(mTreeView As TreeView) As TreeNode()
