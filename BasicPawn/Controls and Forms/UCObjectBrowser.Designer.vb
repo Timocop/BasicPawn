@@ -51,30 +51,32 @@ Partial Class UCObjectBrowser
         Me.ContextMenuStrip_ObjectBrowser.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_OpenFile, Me.ToolStripMenuItem_Copy, Me.ToolStripSeparator1, Me.ToolStripMenuItem_ListReferences})
         Me.ContextMenuStrip_ObjectBrowser.Name = "ContextMenuStrip_ObjectBrowser"
         Me.ContextMenuStrip_ObjectBrowser.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
-        Me.ContextMenuStrip_ObjectBrowser.ShowImageMargin = False
-        Me.ContextMenuStrip_ObjectBrowser.Size = New System.Drawing.Size(125, 76)
+        Me.ContextMenuStrip_ObjectBrowser.Size = New System.Drawing.Size(153, 98)
         '
         'ToolStripMenuItem_OpenFile
         '
+        Me.ToolStripMenuItem_OpenFile.Image = Global.BasicPawn.My.Resources.Resources.imageres_5338_16x16_32
         Me.ToolStripMenuItem_OpenFile.Name = "ToolStripMenuItem_OpenFile"
-        Me.ToolStripMenuItem_OpenFile.Size = New System.Drawing.Size(124, 22)
+        Me.ToolStripMenuItem_OpenFile.Size = New System.Drawing.Size(152, 22)
         Me.ToolStripMenuItem_OpenFile.Text = "Open file"
         '
         'ToolStripMenuItem_Copy
         '
+        Me.ToolStripMenuItem_Copy.Image = Global.BasicPawn.My.Resources.Resources.imageres_5350_16x16_32
         Me.ToolStripMenuItem_Copy.Name = "ToolStripMenuItem_Copy"
-        Me.ToolStripMenuItem_Copy.Size = New System.Drawing.Size(124, 22)
+        Me.ToolStripMenuItem_Copy.Size = New System.Drawing.Size(152, 22)
         Me.ToolStripMenuItem_Copy.Text = "Copy"
         '
         'ToolStripSeparator1
         '
         Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
-        Me.ToolStripSeparator1.Size = New System.Drawing.Size(121, 6)
+        Me.ToolStripSeparator1.Size = New System.Drawing.Size(149, 6)
         '
         'ToolStripMenuItem_ListReferences
         '
+        Me.ToolStripMenuItem_ListReferences.Image = Global.BasicPawn.My.Resources.Resources.imageres_5333_16x16_32
         Me.ToolStripMenuItem_ListReferences.Name = "ToolStripMenuItem_ListReferences"
-        Me.ToolStripMenuItem_ListReferences.Size = New System.Drawing.Size(124, 22)
+        Me.ToolStripMenuItem_ListReferences.Size = New System.Drawing.Size(152, 22)
         Me.ToolStripMenuItem_ListReferences.Text = "List references"
         '
         'TextboxWatermark_Search
