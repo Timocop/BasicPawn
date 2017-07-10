@@ -248,7 +248,7 @@ Public Class ClassTextEditorTools
             Dim sOutput As String = ""
 
             If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
-                g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Could not get current source file!", False, False, True)
+                g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Compiler can not be found!", False, False, True)
                 Return
             End If
 
@@ -313,13 +313,13 @@ Public Class ClassTextEditorTools
                 sOutputFile = String.Format("{0}.unk", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
             Else
                 If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    sOutputFile = String.Format("{0}\compiled\{1}.unk", IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File).TrimEnd("\"c), IO.Path.GetFileNameWithoutExtension(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File))
+                    sOutputFile = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), String.Format("compiled\{0}.unk", IO.Path.GetFileNameWithoutExtension(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)))
                 Else
                     If (Not IO.Directory.Exists(ClassConfigs.m_ActiveConfig.g_sOutputFolder)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Invalid output directory!", False, False, True)
                         Return
                     End If
-                    sOutputFile = String.Format("{0}\{1}.unk", ClassConfigs.m_ActiveConfig.g_sOutputFolder.TrimEnd("\"c), IO.Path.GetFileNameWithoutExtension(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File))
+                    sOutputFile = IO.Path.Combine(ClassConfigs.m_ActiveConfig.g_sOutputFolder, String.Format("{0}.unk", IO.Path.GetFileNameWithoutExtension(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)))
                 End If
             End If
 
@@ -388,13 +388,13 @@ Public Class ClassTextEditorTools
                         sOutputFile = sNewOutputFile
 
                 End Select
+            Else
+                g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Compiled output file can not be found!", False, False, True)
+                Return
             End If
 
             If (bTesting) Then
                 IO.File.Delete(sOutputFile)
-            ElseIf (Not IO.File.Exists(sOutputFile)) Then
-                g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Source output can not be found!", False, False, True)
-                Return
             End If
 
             If (Not bTesting) Then
@@ -412,10 +412,13 @@ Public Class ClassTextEditorTools
     ''' <param name="bTesting">Just creates a temporary file and removes it after compile.</param>
     ''' <param name="sSource">The source to compile.</param>
     ''' <param name="sOutputFile">The output file. This may change the extenstion if you using different compilers (e.g *.smx, *.amx, *.amxx). And extension is still required!</param>
+    ''' <param name="sWorkingDirectory">(Optional) Sets the compiler working directory.</param>
     ''' <param name="sCompilerPath">(Optional) The compiler path. If Nothing, it will use the global config compiler path.</param>
     ''' <param name="sIncludePaths">(Optional) The include paths seperated by ';'. If Nothing, it will use the global config include path.</param>
+    ''' <param name="sEmulateSourceFile">(Optional) Replaces the printed temporary path.</param>
+    ''' <param name="sCompilerOutput">(Optional) The orginal compiler output.</param>
     ''' <returns>True on success, false otherwise.</returns>
-    Public Function CompileSource(bTesting As Boolean, sSource As String, ByRef sOutputFile As String, Optional sWorkingDirectory As String = Nothing, Optional sCompilerPath As String = Nothing, Optional sIncludePaths As String = Nothing, Optional sEmulateSourceFile As String = Nothing) As Boolean
+    Public Function CompileSource(bTesting As Boolean, sSource As String, ByRef sOutputFile As String, Optional sWorkingDirectory As String = Nothing, Optional sCompilerPath As String = Nothing, Optional sIncludePaths As String = Nothing, Optional sEmulateSourceFile As String = Nothing, ByRef Optional sCompilerOutput As String = Nothing) As Boolean
         Try
             If (g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True)) Then
                 Return False
@@ -436,7 +439,7 @@ Public Class ClassTextEditorTools
             If (sCompilerPath Is Nothing) Then
                 If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                     If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
-                        g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Could not get current source file!", False, False, True)
+                        g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Compiler can not be found!", False, False, True)
                         Return False
                     End If
 
@@ -486,7 +489,7 @@ Public Class ClassTextEditorTools
             If (sIncludePaths Is Nothing) Then
                 If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                     If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
-                        g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Could not get current source file!", False, False, True)
+                        g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!", False, False, True)
                         Return False
                     End If
 
@@ -516,6 +519,10 @@ Public Class ClassTextEditorTools
             'Set output path
             If (bTesting) Then
                 sOutputFile = String.Format("{0}.unk", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
+            Else
+                If (String.IsNullOrEmpty(sOutputFile)) Then
+                    Throw New ArgumentException("Invalid output file")
+                End If
             End If
 
             IO.File.Delete(sOutputFile)
@@ -534,6 +541,8 @@ Public Class ClassTextEditorTools
             Else
                 ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, sArguments, sWorkingDirectory, iExitCode, sOutput)
             End If
+
+            sCompilerOutput = sOutput
 
             IO.File.Delete(TmpSourceFile)
 
@@ -596,13 +605,13 @@ Public Class ClassTextEditorTools
                         sOutputFile = sNewOutputFile
 
                 End Select
+            Else
+                g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Compiled output file can not be found!", False, False, True)
+                Return False
             End If
 
             If (bTesting) Then
                 IO.File.Delete(sOutputFile)
-            ElseIf (Not IO.File.Exists(sOutputFile)) Then
-                g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Source output can not be found!", False, False, True)
-                Return False
             End If
 
             If (Not bTesting) Then
@@ -624,8 +633,9 @@ Public Class ClassTextEditorTools
     ''' <param name="bCleanUpSourcemodDuplicate">Removed duplicated sourcemod includes, includes from the compiler.</param>
     ''' <param name="bCleanupForCompile">Removes pre-processor entries which hinders compiling.</param>
     ''' <param name="sTempOutputFile">The last used temporary file. Note: This is only the path, the file will be removed!</param>
+    ''' <param name="sCompilerOutput">(Optional) The orginal compiler output.</param>
     ''' <returns></returns>
-    Public Function GetCompilerPreProcessCode(bCleanUpSourcemodDuplicate As Boolean, bCleanupForCompile As Boolean, ByRef sTempOutputFile As String) As String
+    Public Function GetCompilerPreProcessCode(bCleanUpSourcemodDuplicate As Boolean, bCleanupForCompile As Boolean, ByRef sTempOutputFile As String, ByRef Optional sCompilerOutput As String = Nothing) As String
         Try
             If (g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True)) Then
                 Return Nothing
@@ -650,7 +660,7 @@ Public Class ClassTextEditorTools
             Dim sOutput As String = ""
 
             If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
-                g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Could not get current source file!", False, False, True)
+                g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Compiler can not be found!", False, False, True)
                 Return Nothing
             End If
 
@@ -736,6 +746,8 @@ Public Class ClassTextEditorTools
 
             Dim sArguments As String = String.Format("""{0}"" -l {1} -o""{2}""", sTmpSourcePath, String.Join(" ", lIncludeList.ToArray), sOutputFile)
             ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, sArguments, IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), iExitCode, sOutput)
+
+            sCompilerOutput = sOutput
 
             IO.File.Delete(sTmpSourcePath)
 
@@ -840,7 +852,7 @@ Public Class ClassTextEditorTools
             Dim sOutput As String = ""
 
             If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
-                g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get current source file!", False, False, True)
+                g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Compiler can not be found!", False, False, True)
                 Return Nothing
             End If
 
@@ -949,10 +961,13 @@ Public Class ClassTextEditorTools
     ''' <param name="bTesting">Just creates a temporary file and removes it after compile.</param>
     ''' <param name="sSource">The source to compile.</param>
     ''' <param name="sOutputFile">The output file. An extension is still required! (default is *.asm)</param>
+    ''' <param name="sWorkingDirectory">(Optional) Sets the compiler working directory.</param>
     ''' <param name="sCompilerPath">(Optional) The compiler path. If Nothing, it will use the global config compiler path.</param>
     ''' <param name="sIncludePaths">(Optional) The include paths seperated by ';'. If Nothing, it will use the global config include path.</param>
+    ''' <param name="sEmulateSourceFile">(Optional) Replaces the printed temporary path.</param>
+    ''' <param name="sCompilerOutput">(Optional) The orginal compiler output.</param>
     ''' <returns></returns>
-    Public Function GetCompilerAssemblyCode(bTesting As Boolean, sSource As String, ByRef sOutputFile As String, Optional sWorkingDirectory As String = Nothing, Optional sCompilerPath As String = Nothing, Optional sIncludePaths As String = Nothing, Optional sEmulateSourceFile As String = Nothing) As String
+    Public Function GetCompilerAssemblyCode(bTesting As Boolean, sSource As String, ByRef sOutputFile As String, Optional sWorkingDirectory As String = Nothing, Optional sCompilerPath As String = Nothing, Optional sIncludePaths As String = Nothing, Optional sEmulateSourceFile As String = Nothing, ByRef Optional sCompilerOutput As String = Nothing) As String
         Try
             If (g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True)) Then
                 Return Nothing
@@ -973,7 +988,7 @@ Public Class ClassTextEditorTools
             If (sCompilerPath Is Nothing) Then
                 If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                     If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
-                        g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get current source file!", False, False, True)
+                        g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Compiler can not be found!", False, False, True)
                         Return Nothing
                     End If
 
@@ -1023,7 +1038,7 @@ Public Class ClassTextEditorTools
             If (sIncludePaths Is Nothing) Then
                 If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                     If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
-                        g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get current source file!", False, False, True)
+                        g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Include path can not be found!", False, False, True)
                         Return Nothing
                     End If
 
@@ -1051,6 +1066,10 @@ Public Class ClassTextEditorTools
             'Set output path
             If (bTesting) Then
                 sOutputFile = String.Format("{0}.asm", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
+            Else
+                If (String.IsNullOrEmpty(sOutputFile)) Then
+                    Throw New ArgumentException("Invalid output file")
+                End If
             End If
 
             Dim TmpSourceFile As String = String.Format("{0}.src", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
@@ -1067,6 +1086,8 @@ Public Class ClassTextEditorTools
             Else
                 ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, sArguments, sWorkingDirectory, iExitCode, sOutput)
             End If
+
+            sCompilerOutput = sOutput
 
             Dim sLines As String() = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
             For i = 0 To sLines.Length - 1

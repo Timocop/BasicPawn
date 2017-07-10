@@ -33,6 +33,9 @@ Partial Class UCProjectBrowser
         Me.ToolStripMenuItem_Cut = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Copy = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Paste = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator4 = New System.Windows.Forms.ToolStripSeparator()
+        Me.ToolStripMenuItem_CompileAll = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_TestAll = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_AddTab = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_AddNewTabs = New System.Windows.Forms.ToolStripMenuItem()
@@ -41,9 +44,6 @@ Partial Class UCProjectBrowser
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_Exlcude = New System.Windows.Forms.ToolStripMenuItem()
         Me.TextboxWatermark_Search = New BasicPawn.ClassTextboxWatermark()
-        Me.ToolStripMenuItem_CompileAll = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripSeparator4 = New System.Windows.Forms.ToolStripSeparator()
-        Me.ToolStripMenuItem_TestAll = New System.Windows.Forms.ToolStripMenuItem()
         Me.ContextMenuStrip_ProjectFiles.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -80,7 +80,7 @@ Partial Class UCProjectBrowser
         '
         'ToolStripMenuItem_Open
         '
-        Me.ToolStripMenuItem_Open.Image = Global.BasicPawn.My.Resources.Resources.imageres_5339_16x16_32
+        Me.ToolStripMenuItem_Open.Image = Global.BasicPawn.My.Resources.Resources.imageres_5338_16x16_32
         Me.ToolStripMenuItem_Open.Name = "ToolStripMenuItem_Open"
         Me.ToolStripMenuItem_Open.Size = New System.Drawing.Size(183, 22)
         Me.ToolStripMenuItem_Open.Text = "Open"
@@ -117,6 +117,25 @@ Partial Class UCProjectBrowser
         Me.ToolStripMenuItem_Paste.Name = "ToolStripMenuItem_Paste"
         Me.ToolStripMenuItem_Paste.Size = New System.Drawing.Size(183, 22)
         Me.ToolStripMenuItem_Paste.Text = "Paste"
+        '
+        'ToolStripSeparator4
+        '
+        Me.ToolStripSeparator4.Name = "ToolStripSeparator4"
+        Me.ToolStripSeparator4.Size = New System.Drawing.Size(180, 6)
+        '
+        'ToolStripMenuItem_CompileAll
+        '
+        Me.ToolStripMenuItem_CompileAll.Image = Global.BasicPawn.My.Resources.Resources.imageres_5341_16x16_32
+        Me.ToolStripMenuItem_CompileAll.Name = "ToolStripMenuItem_CompileAll"
+        Me.ToolStripMenuItem_CompileAll.Size = New System.Drawing.Size(183, 22)
+        Me.ToolStripMenuItem_CompileAll.Text = "Compile"
+        '
+        'ToolStripMenuItem_TestAll
+        '
+        Me.ToolStripMenuItem_TestAll.Image = Global.BasicPawn.My.Resources.Resources.imageres_5342_16x16_32
+        Me.ToolStripMenuItem_TestAll.Name = "ToolStripMenuItem_TestAll"
+        Me.ToolStripMenuItem_TestAll.Size = New System.Drawing.Size(183, 22)
+        Me.ToolStripMenuItem_TestAll.Text = "Test"
         '
         'ToolStripSeparator3
         '
@@ -174,25 +193,6 @@ Partial Class UCProjectBrowser
         Me.TextboxWatermark_Search.Size = New System.Drawing.Size(276, 22)
         Me.TextboxWatermark_Search.TabIndex = 1
         Me.TextboxWatermark_Search.Text = "Search..."
-        '
-        'ToolStripMenuItem_CompileAll
-        '
-        Me.ToolStripMenuItem_CompileAll.Image = Global.BasicPawn.My.Resources.Resources.imageres_5341_16x16_32
-        Me.ToolStripMenuItem_CompileAll.Name = "ToolStripMenuItem_CompileAll"
-        Me.ToolStripMenuItem_CompileAll.Size = New System.Drawing.Size(183, 22)
-        Me.ToolStripMenuItem_CompileAll.Text = "Compile all"
-        '
-        'ToolStripSeparator4
-        '
-        Me.ToolStripSeparator4.Name = "ToolStripSeparator4"
-        Me.ToolStripSeparator4.Size = New System.Drawing.Size(180, 6)
-        '
-        'ToolStripMenuItem_TestAll
-        '
-        Me.ToolStripMenuItem_TestAll.Image = Global.BasicPawn.My.Resources.Resources.imageres_5342_16x16_32
-        Me.ToolStripMenuItem_TestAll.Name = "ToolStripMenuItem_TestAll"
-        Me.ToolStripMenuItem_TestAll.Size = New System.Drawing.Size(183, 22)
-        Me.ToolStripMenuItem_TestAll.Text = "Test all"
         '
         'UCProjectBrowser
         '

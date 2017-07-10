@@ -767,8 +767,8 @@ Public Class FormMain
             sSourceFile = g_ClassTabControl.m_ActiveTab.m_File
         End If
 
-        Dim sOutput As String = ""
-        g_ClassTextEditorTools.CompileSource(True, sSource, sOutput, IO.Path.GetDirectoryName(sSourceFile), Nothing, Nothing, sSourceFile)
+        Dim sOutputFile As String = ""
+        g_ClassTextEditorTools.CompileSource(True, sSource, sOutputFile, IO.Path.GetDirectoryName(sSourceFile), Nothing, Nothing, sSourceFile)
     End Sub
 #End Region
 

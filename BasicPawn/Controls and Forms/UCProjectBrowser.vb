@@ -400,7 +400,7 @@ Public Class UCProjectBrowser
 
             Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
             mTab.OpenFileTab(sFile)
-            mTab.SelectTab(500)
+            mTab.SelectTab()
 
             g_mFormMain.g_mUCStartPage.g_mFormMain.g_ClassTabControl.RemoveUnsavedTabsLeft()
         Catch ex As Exception
@@ -473,6 +473,9 @@ Public Class UCProjectBrowser
         ToolStripMenuItem_Open.Enabled = (ListView_ProjectFiles.SelectedItems.Count > 0)
         ToolStripMenuItem_ProjectSave.Enabled = (Not String.IsNullOrEmpty(g_ClassProjectControl.m_ProjectFile))
 
+        ToolStripMenuItem_CompileAll.Enabled = (ListView_ProjectFiles.SelectedItems.Count > 0)
+        ToolStripMenuItem_TestAll.Enabled = (ListView_ProjectFiles.SelectedItems.Count > 0)
+
         ToolStripMenuItem_Cut.Enabled = (ListView_ProjectFiles.SelectedItems.Count > 0)
         ToolStripMenuItem_Copy.Enabled = (ListView_ProjectFiles.SelectedItems.Count > 0)
         ToolStripMenuItem_Paste.Enabled = (g_mClipboardFiles.Count > 0)
@@ -503,5 +506,45 @@ Public Class UCProjectBrowser
                 ListView_ProjectFiles.Items(i).EnsureVisible()
             End If
         Next
+    End Sub
+
+    Private Sub ToolStripMenuItem_CompileAll_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_CompileAll.Click
+        Try
+            If (ListView_ProjectFiles.SelectedItems.Count < 1) Then
+                Return
+            End If
+
+            Dim lFiles As New List(Of String)
+
+            For Each mListViewItem As ListViewItem In ListView_ProjectFiles.SelectedItems
+                lFiles.Add(mListViewItem.SubItems(1).Text)
+            Next
+
+            Using i As New FormMultiCompiler(g_mFormMain, lFiles.ToArray, False)
+                i.ShowDialog(g_mFormMain)
+            End Using
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
+    Private Sub ToolStripMenuItem_TestAll_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_TestAll.Click
+        Try
+            If (ListView_ProjectFiles.SelectedItems.Count < 1) Then
+                Return
+            End If
+
+            Dim lFiles As New List(Of String)
+
+            For Each mListViewItem As ListViewItem In ListView_ProjectFiles.SelectedItems
+                lFiles.Add(mListViewItem.SubItems(1).Text)
+            Next
+
+            Using i As New FormMultiCompiler(g_mFormMain, lFiles.ToArray, True)
+                i.ShowDialog(g_mFormMain)
+            End Using
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
     End Sub
 End Class

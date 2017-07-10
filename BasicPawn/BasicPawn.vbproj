@@ -279,6 +279,12 @@
     <Compile Include="Controls and Forms\FormDebuggerStop.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Controls and Forms\FormMultiCompiler.Designer.vb">
+      <DependentUpon>FormMultiCompiler.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controls and Forms\FormMultiCompiler.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Controls and Forms\FormOpenTabFromInstances.Designer.vb">
       <DependentUpon>FormOpenTabFromInstances.vb</DependentUpon>
     </Compile>
@@ -397,6 +403,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls and Forms\FormDebuggerStop.resx">
       <DependentUpon>FormDebuggerStop.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls and Forms\FormMultiCompiler.resx">
+      <DependentUpon>FormMultiCompiler.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls and Forms\FormOpenTabFromInstances.resx">
       <DependentUpon>FormOpenTabFromInstances.vb</DependentUpon>

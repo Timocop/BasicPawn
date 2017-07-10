@@ -107,7 +107,7 @@ Public Class UCStartPageRecentItem
             Else
                 Dim mTab = g_mUCStartPage.g_mFormMain.g_ClassTabControl.AddTab()
                 mTab.OpenFileTab(m_RecentFile)
-                mTab.SelectTab(500)
+                mTab.SelectTab()
             End If
 
             g_mUCStartPage.g_mFormMain.g_ClassTabControl.RemoveUnsavedTabsLeft()
