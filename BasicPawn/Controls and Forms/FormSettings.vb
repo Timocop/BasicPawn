@@ -664,7 +664,7 @@ Public Class FormSettings
 
     Private Sub Button_AddDatabaseItem_Click(sender As Object, e As EventArgs) Handles Button_AddDatabaseItem.Click
         Using i As New FormDatabaseInput()
-            If (i.ShowDialog = DialogResult.OK) Then
+            If (i.ShowDialog(Me) = DialogResult.OK) Then
                 DatabaseViewer.AddItem(i.m_Name, i.m_Username)
 
                 Dim iItem As New ClassDatabase.STRUC_DATABASE_ITEM(i.m_Name, i.m_Username, i.m_Password)

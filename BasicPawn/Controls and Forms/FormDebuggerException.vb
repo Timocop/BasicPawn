@@ -96,7 +96,7 @@ Public Class FormDebuggerException
             Dim sLines As String() = ClassTools.ClassStrings.StringReadLinesEnd(g_sLogFile, MAX_LINES_TO_LIST)
 
             Using i As New FormDebuggerCriticalPopup(g_mFormDebugger, "SourceMod Exception Log", "Latest exceptions from the SourceMod log", String.Join(Environment.NewLine, sLines))
-                i.ShowDialog()
+                i.ShowDialog(Me)
             End Using
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)

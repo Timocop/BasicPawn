@@ -496,7 +496,7 @@ Public Class ClassDebuggerRunner
 
                 If (Not g_bRememberAction) Then
                     Using i As New FormDebuggerStop
-                        If (i.ShowDialog = DialogResult.OK) Then
+                        If (i.ShowDialog(g_mFormDebugger) = DialogResult.OK) Then
                             g_mRememberAction = i.m_DialogResult
                             g_bRememberAction = i.m_RememberAction
                         Else

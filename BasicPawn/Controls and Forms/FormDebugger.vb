@@ -431,7 +431,7 @@ Public Class FormDebugger
                     End If
                 End If
 
-                Select Case (i.ShowDialog)
+                Select Case (i.ShowDialog(Me))
                     Case DialogResult.OK
                         g_ClassDebuggerRunner.g_mActiveBreakpointValue.bReturnCustomValue = True
 

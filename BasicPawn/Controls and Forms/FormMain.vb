@@ -595,7 +595,7 @@ Public Class FormMain
 #Region "MenuStrip_Tools"
     Private Sub ToolStripMenuItem_ToolsSettingsAndConfigs_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsSettingsAndConfigs.Click
         Using i As New FormSettings(Me)
-            If (i.ShowDialog() = DialogResult.OK) Then
+            If (i.ShowDialog(Me) = DialogResult.OK) Then
                 UpdateFormConfigText()
 
                 g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
@@ -876,7 +876,7 @@ Public Class FormMain
     Private Sub ToolStripStatusLabel_CurrentConfig_Click(sender As Object, e As EventArgs) Handles ToolStripStatusLabel_CurrentConfig.Click
         Using i As New FormSettings(Me)
             i.TabControl1.SelectTab(1)
-            If (i.ShowDialog() = DialogResult.OK) Then
+            If (i.ShowDialog(Me) = DialogResult.OK) Then
                 UpdateFormConfigText()
 
                 g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
