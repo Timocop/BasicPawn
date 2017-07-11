@@ -572,6 +572,8 @@ Public Class ClassTextEditorTools
                 g_mFormMain.PrintInformation("[INFO]", vbTab & sLines(i))
             Next
 
+            sCompilerOutput = String.Join(Environment.NewLine, sLines)
+
             If (IO.File.Exists(sOutputFile)) Then
                 Select Case (compilerType)
                     Case ENUM_COMPILER_TYPE.SOURCEPAWN
@@ -1096,6 +1098,8 @@ Public Class ClassTextEditorTools
                 End If
                 g_mFormMain.PrintInformation("[INFO]", vbTab & sLines(i))
             Next
+
+            sCompilerOutput = String.Join(Environment.NewLine, sLines)
 
             Dim sAssemblySource As String = IO.File.ReadAllText(sOutputFile)
 
