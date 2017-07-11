@@ -31,12 +31,16 @@ Public Class ClassDatabaseViewer
 
         RemoveItemByName(sName)
 
-        Dim mDatabaseViewerItem As New ClassDatabaseViewerItem(sName, sUsername) With {
-            .Parent = Me,
+        With New ClassDatabaseViewerItem(sName, sUsername)
+            .SuspendLayout()
+
+            .Parent = Me
             .Dock = DockStyle.Top
-        }
-        mDatabaseViewerItem.BringToFront()
-        mDatabaseViewerItem.Show()
+            .BringToFront()
+            .Show()
+
+            .ResumeLayout()
+        End With
 
         Me.ResumeLayout()
     End Sub

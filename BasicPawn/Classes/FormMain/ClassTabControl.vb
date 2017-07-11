@@ -625,15 +625,16 @@ Public Class ClassTabControl
         End Sub
 
         Private Sub CreateTextEditor()
-            g_mSourceTextEditor = New TextEditorControlEx With {
-                .ContextMenuStrip = g_mFormMain.ContextMenuStrip_RightClick,
-                .IsIconBarVisible = True,
-                .ShowTabs = True,
-                .ShowVRuler = False,
-                .HideMouseCursor = True,
-                .Margin = New Padding(0),
-                .Padding = New Padding(0)
-            }
+            g_mSourceTextEditor = New TextEditorControlEx
+            g_mSourceTextEditor.SuspendLayout()
+
+            g_mSourceTextEditor.ContextMenuStrip = g_mFormMain.ContextMenuStrip_RightClick
+            g_mSourceTextEditor.IsIconBarVisible = True
+            g_mSourceTextEditor.ShowTabs = True
+            g_mSourceTextEditor.ShowVRuler = False
+            g_mSourceTextEditor.HideMouseCursor = True
+            g_mSourceTextEditor.Margin = New Padding(0)
+            g_mSourceTextEditor.Padding = New Padding(0)
 
             g_mSourceTextEditor.Document.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
             g_mSourceTextEditor.Document.TextEditorProperties.IndentationSize = If(ClassSettings.g_iSettingsTabsToSpaces > 0, ClassSettings.g_iSettingsTabsToSpaces, 4)
@@ -646,6 +647,7 @@ Public Class ClassTabControl
             g_mSourceTextEditor.Document.FoldingManager.UpdateFoldings(Nothing, Nothing)
 
             g_mSourceTextEditor.Visible = True
+            g_mSourceTextEditor.ResumeLayout()
         End Sub
 
         Public Sub NewIndetifier()

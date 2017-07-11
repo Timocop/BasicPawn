@@ -448,11 +448,15 @@ Public Class ClassControlStyle
 
 
     Public Shared Sub UpdateControls(c As Control)
+        c.SuspendLayout()
+
         SetColor(c)
 
         For Each i As Control In c.Controls
             UpdateControls(i)
         Next
+
+        c.ResumeLayout()
     End Sub
 
     ''' <summary>

@@ -76,6 +76,8 @@ Public Class UCStartPage
 
             If (Not bProjectsFound) Then
                 With New Label
+                    .SuspendLayout()
+
                     .Text = "No recent projects found!"
                     .Font = New Font(Me.Font.FontFamily, 12, FontStyle.Regular)
                     .AutoSize = False
@@ -84,11 +86,15 @@ Public Class UCStartPage
                     .Parent = TabPage_RecentProjects
                     .Dock = DockStyle.Fill
                     .Show()
+
+                    .ResumeLayout()
                 End With
             End If
 
             If (Not bFilesFound) Then
                 With New Label
+                    .SuspendLayout()
+
                     .Text = "No recent files found!"
                     .Font = New Font(Me.Font.FontFamily, 12, FontStyle.Regular)
                     .AutoSize = False
@@ -97,6 +103,8 @@ Public Class UCStartPage
                     .Parent = TabPage_RecentFiles
                     .Dock = DockStyle.Fill
                     .Show()
+
+                    .ResumeLayout()
                 End With
             End If
 
@@ -332,18 +340,21 @@ Public Class UCStartPage
         End Function
 
         Public Sub ClearRecentItems()
-            g_mUCStartPage.TabControl_RecentProjects.SuspendLayout()
+            g_mUCStartPage.TabPage_RecentFiles.SuspendLayout()
+            g_mUCStartPage.TabPage_RecentProjects.SuspendLayout()
 
             Dim mRecentItems = GetAllItems()
             For i = mRecentItems.Length - 1 To 0 Step -1
                 mRecentItems(i).Dispose()
             Next
 
-            g_mUCStartPage.TabControl_RecentProjects.ResumeLayout()
+            g_mUCStartPage.TabPage_RecentFiles.ResumeLayout()
+            g_mUCStartPage.TabPage_RecentProjects.ResumeLayout()
         End Sub
 
         Public Sub RefreshRecentItems()
-            g_mUCStartPage.TabControl_RecentProjects.SuspendLayout()
+            g_mUCStartPage.TabPage_RecentFiles.SuspendLayout()
+            g_mUCStartPage.TabPage_RecentProjects.SuspendLayout()
 
             ClearRecentItems()
 
@@ -435,6 +446,8 @@ Public Class UCStartPage
                 End Select
 
                 With New UCStartPageRecentItem(g_mUCStartPage, sFile)
+                    .SuspendLayout()
+
                     If (bProjectFile) Then
                         .Parent = g_mUCStartPage.TabPage_RecentProjects
                     Else
@@ -444,14 +457,19 @@ Public Class UCStartPage
                     .Dock = DockStyle.Top
                     .BringToFront()
                     .Show()
+
+                    .ResumeLayout()
                 End With
             Next
 
-            g_mUCStartPage.TabControl_RecentProjects.ResumeLayout()
+            g_mUCStartPage.TabPage_RecentFiles.ResumeLayout()
+            g_mUCStartPage.TabPage_RecentProjects.ResumeLayout()
         End Sub
 
         Private Sub CreateLastModifiedLabel(sText As String, mParent As Control)
             With New Label
+                .SuspendLayout()
+
                 .Text = sText
                 .Font = New Font(.Font.FontFamily, 12, FontStyle.Bold)
                 .Name &= "@SetForeColorRoyalBlue"
@@ -461,6 +479,8 @@ Public Class UCStartPage
                 .Dock = DockStyle.Top
                 .BringToFront()
                 .Show()
+
+                .ResumeLayout()
             End With
         End Sub
     End Class

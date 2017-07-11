@@ -109,7 +109,7 @@ Public Class FormMultiCompiler
 
                 Me.Invoke(Sub()
                               ProgressBar_Compiled.Increment(1)
-                              Me.Update()
+                              Me.Refresh()
                           End Sub)
             Next
 
