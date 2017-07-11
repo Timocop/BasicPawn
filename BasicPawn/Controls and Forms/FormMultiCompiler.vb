@@ -70,7 +70,6 @@ Public Class FormMultiCompiler
                 Dim sSource As String = IO.File.ReadAllText(g_sSourceFiles(i))
 
                 Dim sOutputFile As String = IO.Path.Combine(ClassConfigs.m_ActiveConfig.g_sOutputFolder, String.Format("{0}.unk", IO.Path.GetFileNameWithoutExtension(sSourceFile)))
-                Dim sCompilerOutput As String = ""
                 Dim bSuccess As Boolean = CBool(Me.Invoke(Function()
                                                               With New ClassDebuggerParser(g_mMainForm)
                                                                   If (.HasDebugPlaceholder(sSource)) Then
@@ -78,7 +77,7 @@ Public Class FormMultiCompiler
                                                                   End If
                                                               End With
 
-                                                              Return g_mMainForm.g_ClassTextEditorTools.CompileSource(g_bTestingOnly, sSource, sOutputFile, IO.Path.GetDirectoryName(sSourceFile), ClassConfigs.m_ActiveConfig.g_sCompilerPath, ClassConfigs.m_ActiveConfig.g_sIncludeFolders, sSourceFile, sCompilerOutput)
+                                                              Return g_mMainForm.g_ClassTextEditorTools.CompileSource(g_bTestingOnly, sSource, sOutputFile, IO.Path.GetDirectoryName(sSourceFile), ClassConfigs.m_ActiveConfig.g_sCompilerPath, ClassConfigs.m_ActiveConfig.g_sIncludeFolders, sSourceFile)
                                                           End Function))
 
                 Dim bCancel As Boolean = False
@@ -86,14 +85,10 @@ Public Class FormMultiCompiler
                 If (Not bSuccess) Then
                     Me.Invoke(Sub()
                                   With New Text.StringBuilder
-                                      .AppendLine(String.Format("'{0}' failed to compile! See information tab for more information.", sSourceFile))
+                                      .AppendLine(String.Format("'{0}' failed to compile!", sSourceFile))
+                                      .AppendLine("See information tab for more information.")
+                                      .AppendLine()
                                       .AppendLine("Do you want to open the file now?")
-
-                                      If (Not String.IsNullOrEmpty(sCompilerOutput)) Then
-                                          .AppendLine()
-                                          .AppendLine(New String("-"c, 64))
-                                          .AppendLine(sCompilerOutput)
-                                      End If
 
                                       Select Case (MessageBox.Show(Me, .ToString, "Compiler failure", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Error))
                                           Case DialogResult.Yes
