@@ -15,18 +15,22 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 
+Imports System.Text.RegularExpressions
+
 Public Class FormMultiCompiler
     Private g_mMainForm As FormMain
 
     Private g_sSourceFiles As String()
     Private g_bTestingOnly As Boolean = False
+    Private g_bCleanDebuggerPlaceholder As Boolean = False
 
     Private g_tMainThread As Threading.Thread
 
-    Public Sub New(f As FormMain, sSourceFiles As String(), bTestingOnly As Boolean)
+    Public Sub New(f As FormMain, sSourceFiles As String(), bTestingOnly As Boolean, bCleanDebuggerPlaceholder As Boolean)
         g_mMainForm = f
         g_sSourceFiles = sSourceFiles
         g_bTestingOnly = bTestingOnly
+        g_bCleanDebuggerPlaceholder = bCleanDebuggerPlaceholder
 
         ' This call is required by the designer.
         InitializeComponent()
@@ -68,17 +72,22 @@ Public Class FormMultiCompiler
             For i = 0 To g_sSourceFiles.Length - 1
                 Dim sSourceFile As String = g_sSourceFiles(i)
                 Dim sSource As String = IO.File.ReadAllText(g_sSourceFiles(i))
+                Dim sCompilerOutput As String = ""
 
                 Dim sOutputFile As String = IO.Path.Combine(ClassConfigs.m_ActiveConfig.g_sOutputFolder, String.Format("{0}.unk", IO.Path.GetFileNameWithoutExtension(sSourceFile)))
                 Dim bSuccess As Boolean = CBool(Me.Invoke(Function()
-                                                              With New ClassDebuggerParser(g_mMainForm)
-                                                                  If (.HasDebugPlaceholder(sSource)) Then
-                                                                      .CleanupDebugPlaceholder(sSource)
-                                                                  End If
-                                                              End With
+                                                              If (g_bCleanDebuggerPlaceholder) Then
+                                                                  With New ClassDebuggerParser(g_mMainForm)
+                                                                      If (.HasDebugPlaceholder(sSource)) Then
+                                                                          .CleanupDebugPlaceholder(sSource)
+                                                                      End If
+                                                                  End With
+                                                              End If
 
-                                                              Return g_mMainForm.g_ClassTextEditorTools.CompileSource(g_bTestingOnly, sSource, sOutputFile, IO.Path.GetDirectoryName(sSourceFile), ClassConfigs.m_ActiveConfig.g_sCompilerPath, ClassConfigs.m_ActiveConfig.g_sIncludeFolders, sSourceFile)
+                                                              Return g_mMainForm.g_ClassTextEditorTools.CompileSource(g_bTestingOnly, sSource, sOutputFile, IO.Path.GetDirectoryName(sSourceFile), ClassConfigs.m_ActiveConfig.g_sCompilerPath, ClassConfigs.m_ActiveConfig.g_sIncludeFolders, sSourceFile, sCompilerOutput)
                                                           End Function))
+
+                Dim bWarning As Boolean = Regex.Match(sCompilerOutput, "\s+[0-9]+\s+\b(Warning|Warnings)\b\.").Success
 
                 Dim bCancel As Boolean = False
 
@@ -91,6 +100,25 @@ Public Class FormMultiCompiler
                                       .AppendLine("Do you want to open the file now?")
 
                                       Select Case (MessageBox.Show(Me, .ToString, "Compiler failure", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Error))
+                                          Case DialogResult.Yes
+                                              Dim mTab = g_mMainForm.g_ClassTabControl.AddTab()
+                                              mTab.OpenFileTab(sSourceFile)
+                                              mTab.SelectTab()
+
+                                          Case DialogResult.Cancel
+                                              bCancel = True
+                                      End Select
+                                  End With
+                              End Sub)
+                ElseIf (bWarning) Then
+                    Me.Invoke(Sub()
+                                  With New Text.StringBuilder
+                                      .AppendLine(String.Format("'{0}' has compiler warnings!", sSourceFile))
+                                      .AppendLine("See information tab for more information.")
+                                      .AppendLine()
+                                      .AppendLine("Do you want to open the file now?")
+
+                                      Select Case (MessageBox.Show(Me, .ToString, "Compiler warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Exclamation))
                                           Case DialogResult.Yes
                                               Dim mTab = g_mMainForm.g_ClassTabControl.AddTab()
                                               mTab.OpenFileTab(sSourceFile)

@@ -520,7 +520,7 @@ Public Class UCProjectBrowser
                 lFiles.Add(mListViewItem.SubItems(1).Text)
             Next
 
-            Using i As New FormMultiCompiler(g_mFormMain, lFiles.ToArray, False)
+            Using i As New FormMultiCompiler(g_mFormMain, lFiles.ToArray, False, False)
                 i.ShowDialog(g_mFormMain)
             End Using
         Catch ex As Exception
@@ -540,7 +540,7 @@ Public Class UCProjectBrowser
                 lFiles.Add(mListViewItem.SubItems(1).Text)
             Next
 
-            Using i As New FormMultiCompiler(g_mFormMain, lFiles.ToArray, True)
+            Using i As New FormMultiCompiler(g_mFormMain, lFiles.ToArray, True, False)
                 i.ShowDialog(g_mFormMain)
             End Using
         Catch ex As Exception
