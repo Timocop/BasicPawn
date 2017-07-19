@@ -37,6 +37,9 @@ Partial Class UCProjectBrowser
         Me.ToolStripMenuItem_CompileAll = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_TestAll = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
+        Me.ToolStripMenuItem_PackFile = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_ExtractFile = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_AddTab = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_AddNewTabs = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_AddAllTabs = New System.Windows.Forms.ToolStripMenuItem()
@@ -44,18 +47,22 @@ Partial Class UCProjectBrowser
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_Exlcude = New System.Windows.Forms.ToolStripMenuItem()
         Me.TextboxWatermark_Search = New BasicPawn.ClassTextboxWatermark()
+        Me.ColumnHeader3 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.ToolStripMenuItem_DeletePack = New System.Windows.Forms.ToolStripMenuItem()
         Me.ContextMenuStrip_ProjectFiles.SuspendLayout()
         Me.SuspendLayout()
         '
         'ListView_ProjectFiles
         '
         Me.ListView_ProjectFiles.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.ListView_ProjectFiles.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1, Me.ColumnHeader2})
+        Me.ListView_ProjectFiles.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1, Me.ColumnHeader2, Me.ColumnHeader3})
         Me.ListView_ProjectFiles.ContextMenuStrip = Me.ContextMenuStrip_ProjectFiles
         Me.ListView_ProjectFiles.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ListView_ProjectFiles.HideSelection = False
         Me.ListView_ProjectFiles.Location = New System.Drawing.Point(0, 22)
+        Me.ListView_ProjectFiles.Margin = New System.Windows.Forms.Padding(0)
         Me.ListView_ProjectFiles.Name = "ListView_ProjectFiles"
+        Me.ListView_ProjectFiles.ShowItemToolTips = True
         Me.ListView_ProjectFiles.Size = New System.Drawing.Size(276, 471)
         Me.ListView_ProjectFiles.TabIndex = 0
         Me.ListView_ProjectFiles.UseCompatibleStateImageBehavior = False
@@ -64,19 +71,19 @@ Partial Class UCProjectBrowser
         'ColumnHeader1
         '
         Me.ColumnHeader1.Text = "File"
-        Me.ColumnHeader1.Width = 250
+        Me.ColumnHeader1.Width = 150
         '
         'ColumnHeader2
         '
         Me.ColumnHeader2.Text = "Path"
-        Me.ColumnHeader2.Width = 500
+        Me.ColumnHeader2.Width = 150
         '
         'ContextMenuStrip_ProjectFiles
         '
-        Me.ContextMenuStrip_ProjectFiles.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_Open, Me.ToolStripMenuItem_ProjectSave, Me.ToolStripSeparator1, Me.ToolStripMenuItem_Cut, Me.ToolStripMenuItem_Copy, Me.ToolStripMenuItem_Paste, Me.ToolStripSeparator4, Me.ToolStripMenuItem_CompileAll, Me.ToolStripMenuItem_TestAll, Me.ToolStripSeparator3, Me.ToolStripMenuItem_AddTab, Me.ToolStripMenuItem_AddNewTabs, Me.ToolStripMenuItem_AddAllTabs, Me.ToolStripMenuItem_AddFiles, Me.ToolStripSeparator2, Me.ToolStripMenuItem_Exlcude})
+        Me.ContextMenuStrip_ProjectFiles.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_Open, Me.ToolStripMenuItem_ProjectSave, Me.ToolStripSeparator1, Me.ToolStripMenuItem_Cut, Me.ToolStripMenuItem_Copy, Me.ToolStripMenuItem_Paste, Me.ToolStripSeparator4, Me.ToolStripMenuItem_CompileAll, Me.ToolStripMenuItem_TestAll, Me.ToolStripSeparator3, Me.ToolStripMenuItem_PackFile, Me.ToolStripMenuItem_ExtractFile, Me.ToolStripMenuItem_DeletePack, Me.ToolStripSeparator5, Me.ToolStripMenuItem_AddTab, Me.ToolStripMenuItem_AddNewTabs, Me.ToolStripMenuItem_AddAllTabs, Me.ToolStripMenuItem_AddFiles, Me.ToolStripSeparator2, Me.ToolStripMenuItem_Exlcude})
         Me.ContextMenuStrip_ProjectFiles.Name = "ContextMenuStrip_ProjectFiles"
         Me.ContextMenuStrip_ProjectFiles.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
-        Me.ContextMenuStrip_ProjectFiles.Size = New System.Drawing.Size(184, 314)
+        Me.ContextMenuStrip_ProjectFiles.Size = New System.Drawing.Size(184, 386)
         '
         'ToolStripMenuItem_Open
         '
@@ -142,6 +149,27 @@ Partial Class UCProjectBrowser
         Me.ToolStripSeparator3.Name = "ToolStripSeparator3"
         Me.ToolStripSeparator3.Size = New System.Drawing.Size(180, 6)
         '
+        'ToolStripMenuItem_PackFile
+        '
+        Me.ToolStripMenuItem_PackFile.Image = Global.BasicPawn.My.Resources.Resources.imageres_5326_16x16_32
+        Me.ToolStripMenuItem_PackFile.Name = "ToolStripMenuItem_PackFile"
+        Me.ToolStripMenuItem_PackFile.Size = New System.Drawing.Size(183, 22)
+        Me.ToolStripMenuItem_PackFile.Text = "Pack"
+        Me.ToolStripMenuItem_PackFile.ToolTipText = "Packs the file into the project file. Can be used to make portable project files"
+        '
+        'ToolStripMenuItem_ExtractFile
+        '
+        Me.ToolStripMenuItem_ExtractFile.Image = Global.BasicPawn.My.Resources.Resources.imageres_5320_16x16_32
+        Me.ToolStripMenuItem_ExtractFile.Name = "ToolStripMenuItem_ExtractFile"
+        Me.ToolStripMenuItem_ExtractFile.Size = New System.Drawing.Size(183, 22)
+        Me.ToolStripMenuItem_ExtractFile.Text = "Extract"
+        Me.ToolStripMenuItem_ExtractFile.ToolTipText = "Extracts the packed file from the project file to drive"
+        '
+        'ToolStripSeparator5
+        '
+        Me.ToolStripSeparator5.Name = "ToolStripSeparator5"
+        Me.ToolStripSeparator5.Size = New System.Drawing.Size(180, 6)
+        '
         'ToolStripMenuItem_AddTab
         '
         Me.ToolStripMenuItem_AddTab.Image = Global.BasicPawn.My.Resources.Resources.imageres_5367_16x16_32
@@ -189,10 +217,24 @@ Partial Class UCProjectBrowser
         Me.TextboxWatermark_Search.Dock = System.Windows.Forms.DockStyle.Top
         Me.TextboxWatermark_Search.Location = New System.Drawing.Point(0, 0)
         Me.TextboxWatermark_Search.m_sWatermarkText = "Search..."
+        Me.TextboxWatermark_Search.Margin = New System.Windows.Forms.Padding(0)
         Me.TextboxWatermark_Search.Name = "TextboxWatermark_Search"
         Me.TextboxWatermark_Search.Size = New System.Drawing.Size(276, 22)
         Me.TextboxWatermark_Search.TabIndex = 1
         Me.TextboxWatermark_Search.Text = "Search..."
+        '
+        'ColumnHeader3
+        '
+        Me.ColumnHeader3.Text = "Packed"
+        Me.ColumnHeader3.Width = 50
+        '
+        'ToolStripMenuItem_DeletePack
+        '
+        Me.ToolStripMenuItem_DeletePack.Image = Global.BasicPawn.My.Resources.Resources.imageres_5318_16x16_32
+        Me.ToolStripMenuItem_DeletePack.Name = "ToolStripMenuItem_DeletePack"
+        Me.ToolStripMenuItem_DeletePack.Size = New System.Drawing.Size(183, 22)
+        Me.ToolStripMenuItem_DeletePack.Text = "Remove packed file"
+        Me.ToolStripMenuItem_DeletePack.ToolTipText = "Removes the packed file from the project file"
         '
         'UCProjectBrowser
         '
@@ -230,4 +272,9 @@ Partial Class UCProjectBrowser
     Friend WithEvents ToolStripSeparator4 As ToolStripSeparator
     Friend WithEvents ToolStripMenuItem_CompileAll As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_TestAll As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_PackFile As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_ExtractFile As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator5 As ToolStripSeparator
+    Friend WithEvents ColumnHeader3 As ColumnHeader
+    Friend WithEvents ToolStripMenuItem_DeletePack As ToolStripMenuItem
 End Class
