@@ -158,8 +158,7 @@ Public Class UCProjectBrowser
 
         Public Function ExtractFileDataDialog(mInfo As STRUC_PROJECT_FILE_INFO, ByRef r_sNewPath As String) As Boolean
             Using i As New SaveFileDialog
-                i.FileName = IO.Path.GetFileName(mInfo.sFile)
-                i.InitialDirectory = IO.Path.GetDirectoryName(mInfo.sFile)
+                i.FileName = mInfo.sFile
 
                 If (i.ShowDialog() = DialogResult.OK) Then
                     r_sNewPath = i.FileName
