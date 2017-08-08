@@ -26,6 +26,7 @@ Partial Class UCProjectBrowser
         Me.ListView_ProjectFiles = New System.Windows.Forms.ListView()
         Me.ColumnHeader1 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader2 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.ColumnHeader3 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ContextMenuStrip_ProjectFiles = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.ToolStripMenuItem_Open = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_ProjectSave = New System.Windows.Forms.ToolStripMenuItem()
@@ -39,6 +40,7 @@ Partial Class UCProjectBrowser
         Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_PackFile = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_ExtractFile = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_DeletePack = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_AddTab = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_AddNewTabs = New System.Windows.Forms.ToolStripMenuItem()
@@ -47,8 +49,6 @@ Partial Class UCProjectBrowser
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_Exlcude = New System.Windows.Forms.ToolStripMenuItem()
         Me.TextboxWatermark_Search = New BasicPawn.ClassTextboxWatermark()
-        Me.ColumnHeader3 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.ToolStripMenuItem_DeletePack = New System.Windows.Forms.ToolStripMenuItem()
         Me.ContextMenuStrip_ProjectFiles.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -77,6 +77,11 @@ Partial Class UCProjectBrowser
         '
         Me.ColumnHeader2.Text = "Path"
         Me.ColumnHeader2.Width = 150
+        '
+        'ColumnHeader3
+        '
+        Me.ColumnHeader3.Text = "Packed"
+        Me.ColumnHeader3.Width = 50
         '
         'ContextMenuStrip_ProjectFiles
         '
@@ -163,7 +168,15 @@ Partial Class UCProjectBrowser
         Me.ToolStripMenuItem_ExtractFile.Name = "ToolStripMenuItem_ExtractFile"
         Me.ToolStripMenuItem_ExtractFile.Size = New System.Drawing.Size(183, 22)
         Me.ToolStripMenuItem_ExtractFile.Text = "Extract"
-        Me.ToolStripMenuItem_ExtractFile.ToolTipText = "Extracts the packed file from the project file to drive"
+        Me.ToolStripMenuItem_ExtractFile.ToolTipText = "Extracts the packed file from the project file"
+        '
+        'ToolStripMenuItem_DeletePack
+        '
+        Me.ToolStripMenuItem_DeletePack.Image = Global.BasicPawn.My.Resources.Resources.imageres_5318_16x16_32
+        Me.ToolStripMenuItem_DeletePack.Name = "ToolStripMenuItem_DeletePack"
+        Me.ToolStripMenuItem_DeletePack.Size = New System.Drawing.Size(183, 22)
+        Me.ToolStripMenuItem_DeletePack.Text = "Remove packed file"
+        Me.ToolStripMenuItem_DeletePack.ToolTipText = "Removes the packed file from the project file"
         '
         'ToolStripSeparator5
         '
@@ -222,19 +235,6 @@ Partial Class UCProjectBrowser
         Me.TextboxWatermark_Search.Size = New System.Drawing.Size(276, 22)
         Me.TextboxWatermark_Search.TabIndex = 1
         Me.TextboxWatermark_Search.Text = "Search..."
-        '
-        'ColumnHeader3
-        '
-        Me.ColumnHeader3.Text = "Packed"
-        Me.ColumnHeader3.Width = 50
-        '
-        'ToolStripMenuItem_DeletePack
-        '
-        Me.ToolStripMenuItem_DeletePack.Image = Global.BasicPawn.My.Resources.Resources.imageres_5318_16x16_32
-        Me.ToolStripMenuItem_DeletePack.Name = "ToolStripMenuItem_DeletePack"
-        Me.ToolStripMenuItem_DeletePack.Size = New System.Drawing.Size(183, 22)
-        Me.ToolStripMenuItem_DeletePack.Text = "Remove packed file"
-        Me.ToolStripMenuItem_DeletePack.ToolTipText = "Removes the packed file from the project file"
         '
         'UCProjectBrowser
         '
