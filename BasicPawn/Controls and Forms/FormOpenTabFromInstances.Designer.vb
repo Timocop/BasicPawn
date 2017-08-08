@@ -7,11 +7,7 @@ Partial Class FormOpenTabFromInstances
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If (disposing) Then
-                If (g_mShowDelayThread IsNot Nothing AndAlso g_mShowDelayThread.IsAlive) Then
-                    g_mShowDelayThread.Abort()
-                    g_mShowDelayThread.Join()
-                    g_mShowDelayThread = Nothing
-                End If
+                CleanUp()
             End If
 
             If disposing AndAlso components IsNot Nothing Then

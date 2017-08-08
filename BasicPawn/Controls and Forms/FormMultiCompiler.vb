@@ -151,7 +151,11 @@ Public Class FormMultiCompiler
         End Try
     End Sub
 
-    Private Sub FormMultiCompiler_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+    Private Sub FormMultiCompiler_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
+        CleanUp()
+    End Sub
+
+    Private Sub CleanUp()
         If (g_tMainThread IsNot Nothing AndAlso g_tMainThread.IsAlive) Then
             g_tMainThread.Abort()
             g_tMainThread.Join()

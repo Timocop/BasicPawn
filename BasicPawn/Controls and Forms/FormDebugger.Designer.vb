@@ -7,18 +7,9 @@ Partial Class FormDebugger
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If (disposing) Then
-                g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnDebuggerEndPost(Me))
-
-                RemoveHandler TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.Caret.PositionChanged, AddressOf TextEditorControlEx_DebuggerSource_CaretPositionChanged
-
-                RemoveHandler TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.TextArea.SelectionManager.SelectionChanged, AddressOf TextEditorControlEx_DebuggerSource_CaretPositionChanged_DisplayInfos
-                RemoveHandler TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.TextArea.Caret.PositionChanged, AddressOf TextEditorControlEx_DebuggerSource_CaretPositionChanged_DisplayInfos
-
-                If (g_ClassDebuggerRunner IsNot Nothing) Then
-                    g_ClassDebuggerRunner.Dispose()
-                    g_ClassDebuggerRunner = Nothing
-                End If
+                CleanUp()
             End If
+
             If disposing AndAlso components IsNot Nothing Then
                 components.Dispose()
             End If

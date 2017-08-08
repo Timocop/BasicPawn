@@ -7,17 +7,7 @@ Partial Class FormUpdate
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If (disposing) Then
-                If (g_mCheckUpdateThread IsNot Nothing AndAlso g_mCheckUpdateThread.IsAlive) Then
-                    g_mCheckUpdateThread.Abort()
-                    g_mCheckUpdateThread.Join()
-                    g_mCheckUpdateThread = Nothing
-                End If
-
-                If (g_mUpdateThread IsNot Nothing AndAlso g_mUpdateThread.IsAlive) Then
-                    g_mUpdateThread.Abort()
-                    g_mUpdateThread.Join()
-                    g_mUpdateThread = Nothing
-                End If
+                CleanUp()
             End If
             If disposing AndAlso components IsNot Nothing Then
                 components.Dispose()

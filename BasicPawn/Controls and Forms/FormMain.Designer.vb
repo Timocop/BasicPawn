@@ -7,47 +7,7 @@ Partial Class FormMain
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If (disposing) Then
-                g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnPluginEndPost())
-
-                g_ClassAutocompleteUpdater.StopUpdate()
-                If (g_mFormOpenTabFromInstances IsNot Nothing AndAlso Not g_mFormOpenTabFromInstances.IsDisposed) Then
-                    g_mFormOpenTabFromInstances.Close()
-                    g_mFormOpenTabFromInstances.Dispose()
-                    g_mFormOpenTabFromInstances = Nothing
-                End If
-
-                g_ClassSyntaxUpdater.StopThread()
-                g_ClassAutocompleteUpdater.StopUpdate()
-                g_mUCObjectBrowser.StopUpdate()
-
-                For i = 0 To g_ClassSyntaxTools.g_SyntaxFiles.Length - 1
-                    If (Not String.IsNullOrEmpty(g_ClassSyntaxTools.g_SyntaxFiles(i).sFile) AndAlso IO.File.Exists(g_ClassSyntaxTools.g_SyntaxFiles(i).sFile)) Then
-                        IO.File.Delete(g_ClassSyntaxTools.g_SyntaxFiles(i).sFile)
-                    End If
-
-                    If (Not String.IsNullOrEmpty(g_ClassSyntaxTools.g_SyntaxFiles(i).sFolder) AndAlso IO.Directory.Exists(g_ClassSyntaxTools.g_SyntaxFiles(i).sFolder)) Then
-                        Try
-                            'Still errors...
-                            IO.Directory.Delete(g_ClassSyntaxTools.g_SyntaxFiles(i).sFolder, True)
-                        Catch ex As Exception
-                        End Try
-                    End If
-                Next
-
-                If (g_ClassCrossAppComunication IsNot Nothing) Then
-                    g_ClassCrossAppComunication.Dispose()
-                    g_ClassCrossAppComunication = Nothing
-                End If
-
-                If (g_ClassCustomHighlighting IsNot Nothing) Then
-                    g_ClassCustomHighlighting.Dispose()
-                    g_ClassCustomHighlighting = Nothing
-                End If
-
-                If (g_ClassTabControl IsNot Nothing) Then
-                    g_ClassTabControl.Dispose()
-                    g_ClassTabControl = Nothing
-                End If
+                CleanUp()
             End If
 
             If disposing AndAlso components IsNot Nothing Then

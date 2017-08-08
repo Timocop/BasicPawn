@@ -193,4 +193,16 @@ Public Class FormOpenTabFromInstances
         End Sub
     End Class
 
+    Private Sub FormOpenTabFromInstances_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
+        CleanUp()
+    End Sub
+
+    Private Sub CleanUp()
+        If (g_mShowDelayThread IsNot Nothing AndAlso g_mShowDelayThread.IsAlive) Then
+            g_mShowDelayThread.Abort()
+            g_mShowDelayThread.Join()
+            g_mShowDelayThread = Nothing
+        End If
+    End Sub
+
 End Class

@@ -7,11 +7,7 @@ Partial Class FormMultiCompiler
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If (disposing) Then
-                If (g_tMainThread IsNot Nothing AndAlso g_tMainThread.IsAlive) Then
-                    g_tMainThread.Abort()
-                    g_tMainThread.Join()
-                    g_tMainThread = Nothing
-                End If
+                CleanUp()
             End If
 
             If disposing AndAlso components IsNot Nothing Then

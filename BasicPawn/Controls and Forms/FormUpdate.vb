@@ -133,4 +133,23 @@ Public Class FormUpdate
             MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
+
+
+    Private Sub FormUpdate_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
+        CleanUp()
+    End Sub
+
+    Private Sub CleanUp()
+        If (g_mCheckUpdateThread IsNot Nothing AndAlso g_mCheckUpdateThread.IsAlive) Then
+            g_mCheckUpdateThread.Abort()
+            g_mCheckUpdateThread.Join()
+            g_mCheckUpdateThread = Nothing
+        End If
+
+        If (g_mUpdateThread IsNot Nothing AndAlso g_mUpdateThread.IsAlive) Then
+            g_mUpdateThread.Abort()
+            g_mUpdateThread.Join()
+            g_mUpdateThread = Nothing
+        End If
+    End Sub
 End Class

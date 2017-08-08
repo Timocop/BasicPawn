@@ -611,4 +611,23 @@ Public Class FormDebugger
         g_ClassDebuggerSettings.LoadSettings()
     End Sub
 #End Region
+
+    Private Sub FormDebugger_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
+        CleanUp()
+    End Sub
+
+    Private Sub CleanUp()
+        g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnDebuggerEndPost(Me))
+
+        RemoveHandler TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.Caret.PositionChanged, AddressOf TextEditorControlEx_DebuggerSource_CaretPositionChanged
+
+        RemoveHandler TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.TextArea.SelectionManager.SelectionChanged, AddressOf TextEditorControlEx_DebuggerSource_CaretPositionChanged_DisplayInfos
+        RemoveHandler TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.TextArea.Caret.PositionChanged, AddressOf TextEditorControlEx_DebuggerSource_CaretPositionChanged_DisplayInfos
+
+        If (g_ClassDebuggerRunner IsNot Nothing) Then
+            g_ClassDebuggerRunner.Dispose()
+            g_ClassDebuggerRunner = Nothing
+        End If
+    End Sub
+
 End Class
