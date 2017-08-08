@@ -49,9 +49,35 @@ Public Class FormDebuggerException
             End If
 
             If (stackTrace.sFileName = g_mFormDebugger.g_ClassDebuggerRunner.m_PluginIdentity) Then
-                ListView_StackTrace.Items.Add(New ListViewItem(New String() {iIndex.ToString, stackTrace.iLine.ToString, iRealLine.ToString, sFile, stackTrace.sFunctionName}))
+                Dim mListViewItemData As New ClassListViewItemData(New String() {
+                                                          CStr(iIndex),
+                                                          CStr(stackTrace.iLine),
+                                                          CStr(iRealLine),
+                                                          sFile,
+                                                          stackTrace.sFunctionName})
+
+                mListViewItemData.g_mData("Index") = iIndex
+                mListViewItemData.g_mData("Line") = stackTrace.iLine
+                mListViewItemData.g_mData("RealLine") = iRealLine
+                mListViewItemData.g_mData("File") = sFile
+                mListViewItemData.g_mData("FunctionName") = stackTrace.sFunctionName
+
+                ListView_StackTrace.Items.Add(mListViewItemData)
             Else
-                ListView_StackTrace.Items.Add(New ListViewItem(New String() {iIndex.ToString, "-1", stackTrace.iLine.ToString, stackTrace.sFileName, stackTrace.sFunctionName}))
+                Dim mListViewItemData As New ClassListViewItemData(New String() {
+                                                          CStr(iIndex),
+                                                          "-1",
+                                                          CStr(iRealLine),
+                                                          sFile,
+                                                          stackTrace.sFunctionName})
+
+                mListViewItemData.g_mData("Index") = iIndex
+                mListViewItemData.g_mData("Line") = stackTrace.iLine
+                mListViewItemData.g_mData("RealLine") = iRealLine
+                mListViewItemData.g_mData("File") = sFile
+                mListViewItemData.g_mData("FunctionName") = stackTrace.sFunctionName
+
+                ListView_StackTrace.Items.Add(mListViewItemData)
             End If
 
             iIndex += 1
@@ -73,7 +99,13 @@ Public Class FormDebuggerException
                 Return
             End If
 
-            Dim iDebugLine As Integer = CInt(ListView_StackTrace.SelectedItems(0).SubItems(1).Text)
+            If (TypeOf ListView_StackTrace.SelectedItems(0) IsNot ClassListViewItemData) Then
+                Return
+            End If
+
+            Dim mListViewItemData = DirectCast(ListView_StackTrace.SelectedItems(0), ClassListViewItemData)
+            Dim iDebugLine As Integer = CInt(mListViewItemData.g_mData("Line"))
+
             iDebugLine -= 1
 
             If (iDebugLine < 0) Then

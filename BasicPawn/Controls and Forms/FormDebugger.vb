@@ -112,12 +112,15 @@ Public Class FormDebugger
             'Add breakpoints
             ListView_Breakpoints.BeginUpdate()
             ListView_Breakpoints.Items.Clear()
-            For Each breakpointItem In g_ClassDebuggerParser.g_lBreakpointList
-                With ListView_Breakpoints.Items.Add(New ListViewItem(New String() {breakpointItem.iLine.ToString, breakpointItem.sArguments, "", breakpointItem.sGUID}))
+            For Each mBreakpointItem In g_ClassDebuggerParser.g_lBreakpointList
+                Dim mListViewItemData As New ClassListViewItemData(New String() {mBreakpointItem.iLine.ToString, mBreakpointItem.sArguments, ""})
+                mListViewItemData.g_mData("GUID") = mBreakpointItem.sGUID
+
+                With ListView_Breakpoints.Items.Add(mListViewItemData)
                     .Checked = True
                 End With
 
-                Dim marker As New ICSharpCode.TextEditor.Document.TextMarker(breakpointItem.iOffset, breakpointItem.iTotalLenght, ICSharpCode.TextEditor.Document.TextMarkerType.Underlined, Color.DarkOrange)
+                Dim marker As New ICSharpCode.TextEditor.Document.TextMarker(mBreakpointItem.iOffset, mBreakpointItem.iTotalLenght, ICSharpCode.TextEditor.Document.TextMarkerType.Underlined, Color.DarkOrange)
                 TextEditorControlEx_DebuggerSource.Document.MarkerStrategy.AddMarker(marker)
             Next
             ListView_Breakpoints.EndUpdate()
@@ -125,10 +128,13 @@ Public Class FormDebugger
             'Add watchers
             ListView_Watchers.BeginUpdate()
             ListView_Watchers.Items.Clear()
-            For Each breakpointItem In g_ClassDebuggerParser.g_lWatcherList
-                ListView_Watchers.Items.Add(New ListViewItem(New String() {breakpointItem.iLine.ToString, breakpointItem.sArguments, "", "0", breakpointItem.sGUID}))
+            For Each mWatcherItem In g_ClassDebuggerParser.g_lWatcherList
+                Dim mListViewItemData As New ClassListViewItemData(New String() {mWatcherItem.iLine.ToString, mWatcherItem.sArguments, "", "0"})
+                mListViewItemData.g_mData("GUID") = mWatcherItem.sGUID
 
-                Dim marker As New ICSharpCode.TextEditor.Document.TextMarker(breakpointItem.iOffset, breakpointItem.iTotalLenght, ICSharpCode.TextEditor.Document.TextMarkerType.Underlined, Color.DarkOrange)
+                ListView_Watchers.Items.Add(mListViewItemData)
+
+                Dim marker As New ICSharpCode.TextEditor.Document.TextMarker(mWatcherItem.iOffset, mWatcherItem.iTotalLenght, ICSharpCode.TextEditor.Document.TextMarkerType.Underlined, Color.DarkOrange)
                 TextEditorControlEx_DebuggerSource.Document.MarkerStrategy.AddMarker(marker)
             Next
             ListView_Watchers.EndUpdate()
@@ -137,7 +143,13 @@ Public Class FormDebugger
             ListView_Entities.BeginUpdate()
             ListView_Entities.Items.Clear()
             For i = 0 To 2048 - 1
-                ListView_Entities.Items.Add(New ListViewItem(New String() {i.ToString, "", "", ""}))
+                Dim mListViewItemData As New ClassListViewItemData(New String() {i.ToString, "", ""})
+                mListViewItemData.g_mData("Index") = i
+                mListViewItemData.g_mData("EntityRef") = 0
+                mListViewItemData.g_mData("Classname") = ""
+                mListViewItemData.g_mData("Ticks") = Nothing
+
+                ListView_Entities.Items.Add(mListViewItemData)
             Next
             ListView_Entities.EndUpdate()
 
@@ -241,15 +253,20 @@ Public Class FormDebugger
                 Return
             End If
 
-            Dim sGUID As String = ListView_Breakpoints.SelectedItems(0).SubItems(3).Text
+            If (TypeOf ListView_Breakpoints.SelectedItems(0) IsNot ClassListViewItemData) Then
+                Return
+            End If
 
-            For Each item In g_ClassDebuggerParser.g_lBreakpointList
-                If (item.sGUID <> sGUID) Then
+            Dim mListViewItemData = DirectCast(ListView_Breakpoints.SelectedItems(0), ClassListViewItemData)
+            Dim sGUID As String = CStr(mListViewItemData.g_mData("GUID"))
+
+            For Each mItem In g_ClassDebuggerParser.g_lBreakpointList
+                If (mItem.sGUID <> sGUID) Then
                     Continue For
                 End If
 
-                Dim startLocation As New ICSharpCode.TextEditor.TextLocation(item.iIndex, item.iLine - 1)
-                Dim endLocation As New ICSharpCode.TextEditor.TextLocation(item.iIndex + item.iTotalLenght, item.iLine - 1)
+                Dim startLocation As New ICSharpCode.TextEditor.TextLocation(mItem.iIndex, mItem.iLine - 1)
+                Dim endLocation As New ICSharpCode.TextEditor.TextLocation(mItem.iIndex + mItem.iTotalLenght, mItem.iLine - 1)
 
                 TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.Caret.Position = startLocation
                 TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.SelectionManager.SetSelection(startLocation, endLocation)
@@ -274,7 +291,12 @@ Public Class FormDebugger
                 Return
             End If
 
-            Dim sGUID As String = ListView_Watchers.SelectedItems(0).SubItems(4).Text
+            If (TypeOf ListView_Watchers.SelectedItems(0) IsNot ClassListViewItemData) Then
+                Return
+            End If
+
+            Dim mListViewItemData = DirectCast(ListView_Watchers.SelectedItems(0), ClassListViewItemData)
+            Dim sGUID As String = CStr(mListViewItemData.g_mData("GUID"))
 
             For Each item In g_ClassDebuggerParser.g_lWatcherList
                 If (item.sGUID <> sGUID) Then
@@ -363,8 +385,14 @@ Public Class FormDebugger
 
 #Region "Enable/Disable Breakpoints"
     Private Sub ListView_Breakpoints_ItemChecked(sender As Object, e As ItemCheckedEventArgs) Handles ListView_Breakpoints.ItemChecked
-        Dim sGUID As String = e.Item.SubItems(3).Text
-        g_ClassDebuggerRunner.m_IgnoreBreakpointGUID(sGUID) = Not e.Item.Checked
+        If (TypeOf e.Item IsNot ClassListViewItemData) Then
+            Return
+        End If
+
+        Dim mListViewItemData = DirectCast(e.Item, ClassListViewItemData)
+        Dim sGUID As String = CStr(mListViewItemData.g_mData("GUID"))
+
+        g_ClassDebuggerRunner.m_IgnoreBreakpointGUID(sGUID) = (Not e.Item.Checked)
     End Sub
 
     Private Sub ToolStripMenuItem_BreakpointsEnableAll_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_BreakpointsEnableAll.Click
@@ -518,9 +546,15 @@ Public Class FormDebugger
                     Next
 
                     For i = 0 To ListView_Breakpoints.Items.Count - 1
-                        If (ListView_Breakpoints.Items(i).SubItems(3).Text = sGUID) Then
-                            ListView_Breakpoints.Items(i).Selected = True
-                            ListView_Breakpoints.Items(i).EnsureVisible()
+                        If (TypeOf ListView_Breakpoints.Items(i) IsNot ClassListViewItemData) Then
+                            Continue For
+                        End If
+
+                        Dim mListViewItemData = DirectCast(ListView_Breakpoints.Items(i), ClassListViewItemData)
+
+                        If (CStr(mListViewItemData.g_mData("GUID")) = sGUID) Then
+                            mListViewItemData.Selected = True
+                            mListViewItemData.EnsureVisible()
                             Exit For
                         End If
                     Next
@@ -548,9 +582,15 @@ Public Class FormDebugger
                     Next
 
                     For i = 0 To ListView_Watchers.Items.Count - 1
-                        If (ListView_Watchers.Items(i).SubItems(4).Text = sGUID) Then
-                            ListView_Watchers.Items(i).Selected = True
-                            ListView_Watchers.Items(i).EnsureVisible()
+                        If (TypeOf ListView_Watchers.Items(i) IsNot ClassListViewItemData) Then
+                            Continue For
+                        End If
+
+                        Dim mListViewItemData = DirectCast(ListView_Watchers.Items(i), ClassListViewItemData)
+
+                        If (CStr(mListViewItemData.g_mData("GUID")) = sGUID) Then
+                            mListViewItemData.Selected = True
+                            mListViewItemData.EnsureVisible()
                             Exit For
                         End If
                     Next

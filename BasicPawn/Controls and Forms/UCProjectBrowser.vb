@@ -106,7 +106,6 @@ Public Class UCProjectBrowser
                 End If
 
                 Dim mListViewItemData = DirectCast(mListViewItem, ClassListViewItemData)
-
                 Dim mInfo As STRUC_PROJECT_FILE_INFO = CType(mListViewItemData.g_mData("Info"), STRUC_PROJECT_FILE_INFO)
 
                 mListViewItem.SubItems(0).Text = IO.Path.GetFileName(mInfo.sFile)
@@ -117,7 +116,7 @@ Public Class UCProjectBrowser
         End Sub
 
         Public Sub AddFile(mInfo As STRUC_PROJECT_FILE_INFO)
-            Dim mItem As New ClassListViewItemData(New String() {IO.Path.GetFileName(mInfo.sFile), mInfo.sFile, If(String.IsNullOrEmpty(mInfo.sPackedData), "-", "Yes")}) With {
+            Dim mListViewItemData As New ClassListViewItemData(New String() {IO.Path.GetFileName(mInfo.sFile), mInfo.sFile, If(String.IsNullOrEmpty(mInfo.sPackedData), "-", "Yes")}) With {
                 .ToolTipText = mInfo.sFile & If(String.IsNullOrEmpty(mInfo.sPackedData), "", Environment.NewLine & "(Packed)")
             }
 
@@ -125,15 +124,15 @@ Public Class UCProjectBrowser
                 mInfo.sGUID = Guid.NewGuid.ToString
             End If
 
-            mItem.g_mData("Info") = mInfo
+            mListViewItemData.g_mData("Info") = mInfo
 
-            g_mUCProjectBrowser.ListView_ProjectFiles.Items.Add(mItem)
+            g_mUCProjectBrowser.ListView_ProjectFiles.Items.Add(mListViewItemData)
 
             m_ProjectChanged = True
         End Sub
 
         Public Sub InsertFile(iIndex As Integer, mInfo As STRUC_PROJECT_FILE_INFO)
-            Dim mItem As New ClassListViewItemData(New String() {IO.Path.GetFileName(mInfo.sFile), mInfo.sFile, If(String.IsNullOrEmpty(mInfo.sPackedData), "-", "Yes")}) With {
+            Dim mListViewItemData As New ClassListViewItemData(New String() {IO.Path.GetFileName(mInfo.sFile), mInfo.sFile, If(String.IsNullOrEmpty(mInfo.sPackedData), "-", "Yes")}) With {
                 .ToolTipText = mInfo.sFile & If(String.IsNullOrEmpty(mInfo.sPackedData), "", Environment.NewLine & "(Packed)")
             }
 
@@ -141,9 +140,9 @@ Public Class UCProjectBrowser
                 mInfo.sGUID = Guid.NewGuid.ToString
             End If
 
-            mItem.g_mData("Info") = mInfo
+            mListViewItemData.g_mData("Info") = mInfo
 
-            g_mUCProjectBrowser.ListView_ProjectFiles.Items.Insert(iIndex, mItem)
+            g_mUCProjectBrowser.ListView_ProjectFiles.Items.Insert(iIndex, mListViewItemData)
 
             m_ProjectChanged = True
         End Sub

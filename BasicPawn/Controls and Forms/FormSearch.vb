@@ -286,7 +286,21 @@ Public Class FormSearch
 
                 Dim iLine As Integer = mTab.m_TextEditor.Document.GetLineNumberForOffset(mItem.iLocation) + 1
 
-                ListView_Output.Items.Add(New ListViewItem(New String() {IO.Path.GetFileName(mItem.sFile), CStr(iLine), sText, mItem.sFile, CStr(mItem.iLocation), CStr(mItem.iLenght), mItem.sTabIdentifier}))
+                Dim mListViewItemData As New ClassListViewItemData(New String() {
+                                                                   IO.Path.GetFileName(mItem.sFile),
+                                                                   CStr(iLine),
+                                                                   sText,
+                                                                   mItem.sFile})
+
+                mListViewItemData.g_mData("Filename") = IO.Path.GetFileName(mItem.sFile)
+                mListViewItemData.g_mData("Line") = iLine
+                mListViewItemData.g_mData("Text") = sText
+                mListViewItemData.g_mData("File") = mItem.sFile
+                mListViewItemData.g_mData("Location") = mItem.iLocation
+                mListViewItemData.g_mData("Lenght") = mItem.iLenght
+                mListViewItemData.g_mData("TabIdentifier") = mItem.sTabIdentifier
+
+                ListView_Output.Items.Add(mListViewItemData)
             Next
 
             ListView_Output.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent)
@@ -334,7 +348,21 @@ Public Class FormSearch
 
                 Dim iLine As Integer = mTab.m_TextEditor.Document.GetLineNumberForOffset(mItem.iLocation) + 1
 
-                ListView_Output.Items.Add(New ListViewItem(New String() {IO.Path.GetFileName(mItem.sFile), CStr(iLine), sText, mItem.sFile, CStr(mItem.iLocation), CStr(mItem.iLenght), mItem.sTabIdentifier}))
+                Dim mListViewItemData As New ClassListViewItemData(New String() {
+                                                                   IO.Path.GetFileName(mItem.sFile),
+                                                                   CStr(iLine),
+                                                                   sText,
+                                                                   mItem.sFile})
+
+                mListViewItemData.g_mData("Filename") = IO.Path.GetFileName(mItem.sFile)
+                mListViewItemData.g_mData("Line") = iLine
+                mListViewItemData.g_mData("Text") = sText
+                mListViewItemData.g_mData("File") = mItem.sFile
+                mListViewItemData.g_mData("Location") = mItem.iLocation
+                mListViewItemData.g_mData("Lenght") = mItem.iLenght
+                mListViewItemData.g_mData("TabIdentifier") = mItem.sTabIdentifier
+
+                ListView_Output.Items.Add(mListViewItemData)
             Next
 
             ListView_Output.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent)
@@ -364,11 +392,17 @@ Public Class FormSearch
             Return
         End If
 
+        If (TypeOf ListView_Output.SelectedItems(0) IsNot ClassListViewItemData) Then
+            Return
+        End If
+
         Try
-            Dim sFile As String = ListView_Output.SelectedItems(0).SubItems(3).Text
-            Dim iLocation As Integer = CInt(ListView_Output.SelectedItems(0).SubItems(4).Text)
-            Dim iLenght As Integer = CInt(ListView_Output.SelectedItems(0).SubItems(5).Text)
-            Dim sTabIdentifier As String = ListView_Output.SelectedItems(0).SubItems(6).Text
+            Dim mListViewItemData = DirectCast(ListView_Output.SelectedItems(0), ClassListViewItemData)
+
+            Dim sFile As String = CStr(mListViewItemData.g_mData("File"))
+            Dim iLocation As Integer = CInt(mListViewItemData.g_mData("Location"))
+            Dim iLenght As Integer = CInt(mListViewItemData.g_mData("Lenght"))
+            Dim sTabIdentifier As String = CStr(mListViewItemData.g_mData("TabIdentifier"))
 
             Dim mTab = g_mFormMain.g_ClassTabControl.GetTabByIdentifier(sTabIdentifier)
             If (mTab Is Nothing) Then

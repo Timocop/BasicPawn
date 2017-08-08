@@ -210,28 +210,40 @@ Public Class ClassDebuggerRunner
     Public Sub UpdateBreakpointListView()
         If (String.IsNullOrEmpty(g_mActiveBreakpointValue.sGUID)) Then
             For i = 0 To g_mFormDebugger.ListView_Breakpoints.Items.Count - 1
-                If (ClassControlStyle.m_IsInvertedColors) Then
-                    g_mFormDebugger.ListView_Breakpoints.Items(i).BackColor = ClassControlStyle.g_cDarkControlColor.mDarkBackground
-                Else
-                    g_mFormDebugger.ListView_Breakpoints.Items(i).BackColor = ClassControlStyle.g_cDarkControlColor.mLightBackground
+                If (TypeOf g_mFormDebugger.ListView_Breakpoints.Items(i) IsNot ClassListViewItemData) Then
+                    Continue For
                 End If
 
-                g_mFormDebugger.ListView_Breakpoints.Items(i).SubItems(2).Text = ""
+                Dim mListViewItemData = DirectCast(g_mFormDebugger.ListView_Breakpoints.Items(i), ClassListViewItemData)
+
+                If (ClassControlStyle.m_IsInvertedColors) Then
+                    mListViewItemData.BackColor = ClassControlStyle.g_cDarkControlColor.mDarkBackground
+                Else
+                    mListViewItemData.BackColor = ClassControlStyle.g_cDarkControlColor.mLightBackground
+                End If
+
+                mListViewItemData.SubItems(2).Text = ""
             Next
         Else
             For i = 0 To g_mFormDebugger.ListView_Breakpoints.Items.Count - 1
-                If (g_mActiveBreakpointValue.sGUID = g_mFormDebugger.ListView_Breakpoints.Items(i).SubItems(3).Text) Then
-                    g_mFormDebugger.ListView_Breakpoints.Items(i).BackColor = Color.Red
-                    g_mFormDebugger.ListView_Breakpoints.Items(i).Selected = True
-                    g_mFormDebugger.ListView_Breakpoints.Items(i).Selected = False
+                If (TypeOf g_mFormDebugger.ListView_Breakpoints.Items(i) IsNot ClassListViewItemData) Then
+                    Continue For
+                End If
+
+                Dim mListViewItemData = DirectCast(g_mFormDebugger.ListView_Breakpoints.Items(i), ClassListViewItemData)
+
+                If (g_mActiveBreakpointValue.sGUID = CStr(mListViewItemData.g_mData("GUID"))) Then
+                    mListViewItemData.BackColor = Color.Red
+                    mListViewItemData.Selected = True
+                    mListViewItemData.Selected = False
 
                     'ListView_Breakpoints.Select()
                     g_mFormDebugger.TabControl1.SelectTab(0)
 
                     If (g_mActiveBreakpointValue.bReturnCustomValue) Then
-                        g_mFormDebugger.ListView_Breakpoints.Items(i).SubItems(2).Text = String.Format("i:{0} | f:{1}", g_mActiveBreakpointValue.sIntegerValue, g_mActiveBreakpointValue.sFloatValue.Replace(",", "."))
+                        mListViewItemData.SubItems(2).Text = String.Format("i:{0} | f:{1}", g_mActiveBreakpointValue.sIntegerValue, g_mActiveBreakpointValue.sFloatValue.Replace(",", "."))
                     Else
-                        g_mFormDebugger.ListView_Breakpoints.Items(i).SubItems(2).Text = String.Format("i:{0} | f:{1}", g_mActiveBreakpointValue.sOrginalIntegerValue, g_mActiveBreakpointValue.sOrginalFloatValue.Replace(",", "."))
+                        mListViewItemData.SubItems(2).Text = String.Format("i:{0} | f:{1}", g_mActiveBreakpointValue.sOrginalIntegerValue, g_mActiveBreakpointValue.sOrginalFloatValue.Replace(",", "."))
                     End If
                 End If
             Next
@@ -972,9 +984,15 @@ Public Class ClassDebuggerRunner
             'INFO: Dont use 'Invoke' it deadlocks on FileSystemWatcher.Dispose, use async 'BeginInvoke' instead.
             g_mFormDebugger.BeginInvoke(Sub()
                                             For i = 0 To g_mFormDebugger.ListView_Watchers.Items.Count - 1
-                                                If (g_mFormDebugger.ListView_Watchers.Items(i).SubItems(4).Text = sGUID) Then
-                                                    g_mFormDebugger.ListView_Watchers.Items(i).SubItems(2).Text = String.Format("i:{0} | f:{1}", sInteger, sFloat)
-                                                    g_mFormDebugger.ListView_Watchers.Items(i).SubItems(3).Text = sCount
+                                                If (TypeOf g_mFormDebugger.ListView_Watchers.Items(i) IsNot ClassListViewItemData) Then
+                                                    Continue For
+                                                End If
+
+                                                Dim mListViewItemData = DirectCast(g_mFormDebugger.ListView_Watchers.Items(i), ClassListViewItemData)
+
+                                                If (CStr(mListViewItemData.g_mData("GUID")) = sGUID) Then
+                                                    mListViewItemData.SubItems(2).Text = String.Format("i:{0} | f:{1}", sInteger, sFloat)
+                                                    mListViewItemData.SubItems(3).Text = sCount
                                                 End If
                                             Next
                                         End Sub)
@@ -1070,24 +1088,33 @@ Public Class ClassDebuggerRunner
                     Case ENUM_ENTITY_ACTION.UPDATE
                         g_mFormDebugger.BeginInvoke(Sub()
                                                         Try
-                                                            Dim sOldEntRef As String = g_mFormDebugger.ListView_Entities.Items(iIndex).SubItems(1).Text
+                                                            If (TypeOf g_mFormDebugger.ListView_Entities.Items(iIndex) IsNot ClassListViewItemData) Then
+                                                                Return
+                                                            End If
+
+                                                            Dim mListViewItemData = DirectCast(g_mFormDebugger.ListView_Entities.Items(iIndex), ClassListViewItemData)
+
+                                                            Dim sOldEntRef As String = CStr(mListViewItemData.g_mData("EntityRef"))
                                                             Dim bIsNewEnt As Boolean = True
                                                             If (Not String.IsNullOrEmpty(sOldEntRef)) Then
                                                                 bIsNewEnt = (CInt(sOldEntRef) <> iEntRef)
                                                             End If
 
                                                             If (bIsNewEnt) Then
-                                                                g_mFormDebugger.ListView_Entities.Items(iIndex).SubItems(1).Text = iEntRef.ToString
-                                                                g_mFormDebugger.ListView_Entities.Items(iIndex).SubItems(2).Text = sClassname
-                                                                g_mFormDebugger.ListView_Entities.Items(iIndex).SubItems(3).Text = iDateTicks.ToString
+                                                                mListViewItemData.SubItems(1).Text = iEntRef.ToString
+                                                                mListViewItemData.SubItems(2).Text = sClassname
+
+                                                                mListViewItemData.g_mData("EntityRef") = iEntRef
+                                                                mListViewItemData.g_mData("Classname") = sClassname
+                                                                mListViewItemData.g_mData("Ticks") = iDateTicks
 
                                                                 If (ClassSettings.g_iSettingsDebuggerEntitiesEnableColoring) Then
-                                                                    g_mFormDebugger.ListView_Entities.Items(iIndex).BackColor = Color.Green
+                                                                    mListViewItemData.BackColor = Color.Green
                                                                 End If
 
                                                                 If (ClassSettings.g_iSettingsDebuggerEntitiesEnableAutoScroll) Then
-                                                                    g_mFormDebugger.ListView_Entities.Items(iIndex).Selected = True
-                                                                    g_mFormDebugger.ListView_Entities.Items(iIndex).EnsureVisible()
+                                                                    mListViewItemData.Selected = True
+                                                                    mListViewItemData.EnsureVisible()
                                                                 End If
                                                             End If
                                                         Catch ex As Exception
@@ -1097,19 +1124,28 @@ Public Class ClassDebuggerRunner
                     Case ENUM_ENTITY_ACTION.REMOVE
                         g_mFormDebugger.BeginInvoke(Sub()
                                                         Try
-                                                            Dim sOldEntRef As String = g_mFormDebugger.ListView_Entities.Items(iIndex).SubItems(1).Text
+                                                            If (TypeOf g_mFormDebugger.ListView_Entities.Items(iIndex) IsNot ClassListViewItemData) Then
+                                                                Return
+                                                            End If
+
+                                                            Dim mListViewItemData = DirectCast(g_mFormDebugger.ListView_Entities.Items(iIndex), ClassListViewItemData)
+
+                                                            Dim sOldEntRef As String = CStr(mListViewItemData.g_mData("EntityRef"))
                                                             Dim bIsNewEnt As Boolean = True
                                                             If (Not String.IsNullOrEmpty(sOldEntRef)) Then
                                                                 bIsNewEnt = (CInt(sOldEntRef) <> iEntRef)
                                                             End If
 
                                                             If (bIsNewEnt) Then
-                                                                g_mFormDebugger.ListView_Entities.Items(iIndex).SubItems(1).Text = "-1"
-                                                                g_mFormDebugger.ListView_Entities.Items(iIndex).SubItems(2).Text = "-"
-                                                                g_mFormDebugger.ListView_Entities.Items(iIndex).SubItems(3).Text = iDateTicks.ToString
+                                                                mListViewItemData.SubItems(1).Text = "-1"
+                                                                mListViewItemData.SubItems(2).Text = "-"
+
+                                                                mListViewItemData.g_mData("EntityRef") = -1
+                                                                mListViewItemData.g_mData("Classname") = "-"
+                                                                mListViewItemData.g_mData("Ticks") = iDateTicks
 
                                                                 If (ClassSettings.g_iSettingsDebuggerEntitiesEnableColoring) Then
-                                                                    g_mFormDebugger.ListView_Entities.Items(iIndex).BackColor = Color.Red
+                                                                    mListViewItemData.BackColor = Color.Red
                                                                 End If
                                                             End If
                                                         Catch ex As Exception
@@ -1138,21 +1174,27 @@ Public Class ClassDebuggerRunner
 
                 g_mFormDebugger.BeginInvoke(Sub()
                                                 For i = 0 To g_mFormDebugger.ListView_Entities.Items.Count - 1
-                                                    Dim sTicks As String = g_mFormDebugger.ListView_Entities.Items(i).SubItems(3).Text
-                                                    If (String.IsNullOrEmpty(sTicks)) Then
+                                                    If (TypeOf g_mFormDebugger.ListView_Entities.Items(i) IsNot ClassListViewItemData) Then
+                                                        Return
+                                                    End If
+
+                                                    Dim mListViewItemData = DirectCast(g_mFormDebugger.ListView_Entities.Items(i), ClassListViewItemData)
+
+                                                    Dim mTicks As Object = mListViewItemData.g_mData("Ticks")
+                                                    If (mTicks Is Nothing) Then
                                                         Continue For
                                                     End If
 
-                                                    Dim timeSpan As TimeSpan = New TimeSpan(CLng(sTicks))
+                                                    Dim mDate As New Date(CLng(mTicks))
 
-                                                    If ((timeSpan + New TimeSpan(0, 0, 0, 0, g_iListViewEntitesUpdaterTime)).Ticks < Date.Now.Ticks) Then
+                                                    If ((mDate + New TimeSpan(0, 0, 0, 0, g_iListViewEntitesUpdaterTime)) < Date.Now) Then
                                                         If (ClassControlStyle.m_IsInvertedColors) Then
-                                                            g_mFormDebugger.ListView_Entities.Items(i).BackColor = ClassControlStyle.g_cDarkControlColor.mDarkBackground
+                                                            mListViewItemData.BackColor = ClassControlStyle.g_cDarkControlColor.mDarkBackground
                                                         Else
-                                                            g_mFormDebugger.ListView_Entities.Items(i).BackColor = ClassControlStyle.g_cDarkControlColor.mLightBackground
+                                                            mListViewItemData.BackColor = ClassControlStyle.g_cDarkControlColor.mLightBackground
                                                         End If
 
-                                                        g_mFormDebugger.ListView_Entities.Items(i).SubItems(3).Text = ""
+                                                        mListViewItemData.g_mData("Ticks") = Nothing
                                                     End If
                                                 Next
                                             End Sub)
