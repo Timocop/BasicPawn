@@ -136,6 +136,7 @@ Partial Class FormSettings
         Me.Label17 = New System.Windows.Forms.Label()
         Me.Button_Cancel = New System.Windows.Forms.Button()
         Me.Button_Apply = New System.Windows.Forms.Button()
+        Me.CheckBox_AssociateAmxMod = New System.Windows.Forms.CheckBox()
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Settings.SuspendLayout()
         Me.Panel8.SuspendLayout()
@@ -201,9 +202,9 @@ Partial Class FormSettings
         Me.Panel8.Controls.Add(Me.CheckBox_EntitiesEnableColor)
         Me.Panel8.Controls.Add(Me.CheckBox_EntitiesEnableShowNewEnts)
         Me.Panel8.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel8.Location = New System.Drawing.Point(0, 631)
+        Me.Panel8.Location = New System.Drawing.Point(0, 655)
         Me.Panel8.Name = "Panel8"
-        Me.Panel8.Size = New System.Drawing.Size(602, 92)
+        Me.Panel8.Size = New System.Drawing.Size(585, 92)
         Me.Panel8.TabIndex = 25
         '
         'Label14
@@ -225,7 +226,7 @@ Partial Class FormSettings
         Me.Panel4.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel4.Location = New System.Drawing.Point(0, 0)
         Me.Panel4.Name = "Panel4"
-        Me.Panel4.Size = New System.Drawing.Size(602, 1)
+        Me.Panel4.Size = New System.Drawing.Size(585, 1)
         Me.Panel4.TabIndex = 10
         '
         'CheckBox_CatchExceptions
@@ -282,9 +283,9 @@ Partial Class FormSettings
         Me.Panel5.Controls.Add(Me.CheckBox_WindowsToolTipPopup)
         Me.Panel5.Controls.Add(Me.CheckBox_CaseSensitive)
         Me.Panel5.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel5.Location = New System.Drawing.Point(0, 323)
+        Me.Panel5.Location = New System.Drawing.Point(0, 347)
         Me.Panel5.Name = "Panel5"
-        Me.Panel5.Size = New System.Drawing.Size(602, 308)
+        Me.Panel5.Size = New System.Drawing.Size(585, 308)
         Me.Panel5.TabIndex = 22
         '
         'CheckBox_WindowsToolTipAnimations
@@ -342,7 +343,7 @@ Partial Class FormSettings
         Me.Panel15.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel15.Location = New System.Drawing.Point(0, 0)
         Me.Panel15.Name = "Panel15"
-        Me.Panel15.Size = New System.Drawing.Size(602, 1)
+        Me.Panel15.Size = New System.Drawing.Size(585, 1)
         Me.Panel15.TabIndex = 10
         '
         'CheckBox_VarAutocompleteShowObjectBrowser
@@ -462,9 +463,9 @@ Partial Class FormSettings
         Me.Panel6.Controls.Add(Me.CheckBox_DoubleClickMark)
         Me.Panel6.Controls.Add(Me.CheckBox_AutoMark)
         Me.Panel6.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel6.Location = New System.Drawing.Point(0, 255)
+        Me.Panel6.Location = New System.Drawing.Point(0, 279)
         Me.Panel6.Name = "Panel6"
-        Me.Panel6.Size = New System.Drawing.Size(602, 68)
+        Me.Panel6.Size = New System.Drawing.Size(585, 68)
         Me.Panel6.TabIndex = 23
         '
         'Label7
@@ -486,7 +487,7 @@ Partial Class FormSettings
         Me.Panel1.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel1.Location = New System.Drawing.Point(0, 0)
         Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(602, 1)
+        Me.Panel1.Size = New System.Drawing.Size(585, 1)
         Me.Panel1.TabIndex = 0
         '
         'CheckBox_DoubleClickMark
@@ -524,9 +525,9 @@ Partial Class FormSettings
         Me.Panel7.Controls.Add(Me.Label_Font)
         Me.Panel7.Controls.Add(Me.CheckBox_InvertedColors)
         Me.Panel7.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel7.Location = New System.Drawing.Point(0, 158)
+        Me.Panel7.Location = New System.Drawing.Point(0, 182)
         Me.Panel7.Name = "Panel7"
-        Me.Panel7.Size = New System.Drawing.Size(602, 97)
+        Me.Panel7.Size = New System.Drawing.Size(585, 97)
         Me.Panel7.TabIndex = 24
         '
         'NumericUpDown_TabsToSpaces
@@ -569,7 +570,7 @@ Partial Class FormSettings
         Me.Panel3.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel3.Location = New System.Drawing.Point(0, 0)
         Me.Panel3.Name = "Panel3"
-        Me.Panel3.Size = New System.Drawing.Size(602, 1)
+        Me.Panel3.Size = New System.Drawing.Size(585, 1)
         Me.Panel3.TabIndex = 9
         '
         'Button_Font
@@ -608,6 +609,7 @@ Partial Class FormSettings
         'Panel14
         '
         Me.Panel14.AutoSize = True
+        Me.Panel14.Controls.Add(Me.CheckBox_AssociateAmxMod)
         Me.Panel14.Controls.Add(Me.CheckBox_AssociateBasicPawnProject)
         Me.Panel14.Controls.Add(Me.CheckBox_AssociateIncludes)
         Me.Panel14.Controls.Add(Me.Label19)
@@ -618,7 +620,7 @@ Partial Class FormSettings
         Me.Panel14.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel14.Location = New System.Drawing.Point(0, 0)
         Me.Panel14.Name = "Panel14"
-        Me.Panel14.Size = New System.Drawing.Size(602, 158)
+        Me.Panel14.Size = New System.Drawing.Size(585, 182)
         Me.Panel14.TabIndex = 26
         '
         'CheckBox_AssociateBasicPawnProject
@@ -628,7 +630,7 @@ Partial Class FormSettings
         Me.CheckBox_AssociateBasicPawnProject.CheckState = System.Windows.Forms.CheckState.Checked
         Me.CheckBox_AssociateBasicPawnProject.Enabled = False
         Me.CheckBox_AssociateBasicPawnProject.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_AssociateBasicPawnProject.Location = New System.Drawing.Point(32, 137)
+        Me.CheckBox_AssociateBasicPawnProject.Location = New System.Drawing.Point(32, 161)
         Me.CheckBox_AssociateBasicPawnProject.Margin = New System.Windows.Forms.Padding(32, 3, 3, 3)
         Me.CheckBox_AssociateBasicPawnProject.Name = "CheckBox_AssociateBasicPawnProject"
         Me.CheckBox_AssociateBasicPawnProject.Size = New System.Drawing.Size(200, 18)
@@ -640,7 +642,7 @@ Partial Class FormSettings
         '
         Me.CheckBox_AssociateIncludes.AutoSize = True
         Me.CheckBox_AssociateIncludes.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_AssociateIncludes.Location = New System.Drawing.Point(32, 113)
+        Me.CheckBox_AssociateIncludes.Location = New System.Drawing.Point(32, 137)
         Me.CheckBox_AssociateIncludes.Margin = New System.Windows.Forms.Padding(32, 3, 3, 3)
         Me.CheckBox_AssociateIncludes.Name = "CheckBox_AssociateIncludes"
         Me.CheckBox_AssociateIncludes.Size = New System.Drawing.Size(126, 18)
@@ -1475,6 +1477,18 @@ Partial Class FormSettings
         Me.Button_Apply.Text = "Apply"
         Me.Button_Apply.UseVisualStyleBackColor = True
         '
+        'CheckBox_AssociateAmxMod
+        '
+        Me.CheckBox_AssociateAmxMod.AutoSize = True
+        Me.CheckBox_AssociateAmxMod.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_AssociateAmxMod.Location = New System.Drawing.Point(32, 113)
+        Me.CheckBox_AssociateAmxMod.Margin = New System.Windows.Forms.Padding(32, 3, 3, 3)
+        Me.CheckBox_AssociateAmxMod.Name = "CheckBox_AssociateAmxMod"
+        Me.CheckBox_AssociateAmxMod.Size = New System.Drawing.Size(152, 18)
+        Me.CheckBox_AssociateAmxMod.TabIndex = 25
+        Me.CheckBox_AssociateAmxMod.Text = "AMX Mod X files (*.sma)"
+        Me.CheckBox_AssociateAmxMod.UseVisualStyleBackColor = True
+        '
         'FormSettings
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -1648,4 +1662,5 @@ Partial Class FormSettings
     Friend WithEvents CheckBox_AssociateSourcePawn As CheckBox
     Friend WithEvents CheckBox_AssociateIncludes As CheckBox
     Friend WithEvents CheckBox_AssociateBasicPawnProject As CheckBox
+    Friend WithEvents CheckBox_AssociateAmxMod As CheckBox
 End Class

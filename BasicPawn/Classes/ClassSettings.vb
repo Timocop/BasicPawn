@@ -32,8 +32,9 @@ Public Class ClassSettings
     'General
     Public Shared g_iSettingsAlwaysOpenNewInstance As Boolean = False
     Public Shared g_iSettingsAutoShowStartPage As Boolean = True
-    Public Shared g_iSettingsAssociateSourcePawn As Boolean = True
-    Public Shared g_iSettingsAssociateIncludes As Boolean = True
+    Public Shared g_iSettingsAssociateSourcePawn As Boolean = False
+    Public Shared g_iSettingsAssociateAmxModX As Boolean = False
+    Public Shared g_iSettingsAssociateIncludes As Boolean = False
     'Text Editor
     Public Shared g_iSettingsTextEditorFont As Font = g_iSettingsDefaultEditorFont
     Public Shared g_iSettingsInvertColors As Boolean = False
@@ -73,6 +74,7 @@ Public Class ClassSettings
         initFile.WriteKeyValue("Editor", "AlwaysOpenNewInstance", If(g_iSettingsAlwaysOpenNewInstance, "1", "0"))
         initFile.WriteKeyValue("Editor", "AutoShowStartPage", If(g_iSettingsAutoShowStartPage, "1", "0"))
         initFile.WriteKeyValue("Editor", "AssociateSourcePawn", If(g_iSettingsAssociateSourcePawn, "1", "0"))
+        initFile.WriteKeyValue("Editor", "AssociateAmxModX", If(g_iSettingsAssociateAmxModX, "1", "0"))
         initFile.WriteKeyValue("Editor", "AssociateIncludes", If(g_iSettingsAssociateIncludes, "1", "0"))
         'Text Editor
         initFile.WriteKeyValue("Editor", "TextEditorFont", New FontConverter().ConvertToInvariantString(g_iSettingsTextEditorFont))
@@ -110,6 +112,7 @@ Public Class ClassSettings
             g_iSettingsAlwaysOpenNewInstance = (initFile.ReadKeyValue("Editor", "AlwaysOpenNewInstance", "0") <> "0")
             g_iSettingsAutoShowStartPage = (initFile.ReadKeyValue("Editor", "AutoShowStartPage", "1") <> "0")
             g_iSettingsAssociateSourcePawn = (initFile.ReadKeyValue("Editor", "AssociateSourcePawn", "0") <> "0")
+            g_iSettingsAssociateAmxModX = (initFile.ReadKeyValue("Editor", "AssociateAmxModX", "0") <> "0")
             g_iSettingsAssociateIncludes = (initFile.ReadKeyValue("Editor", "AssociateIncludes", "0") <> "0")
             'Text Editor
             Dim editorFont As Font = CType(New FontConverter().ConvertFromInvariantString(initFile.ReadKeyValue("Editor", "TextEditorFont", g_sSettingsDefaultEditorFont)), Font)
@@ -158,6 +161,13 @@ Public Class ClassSettings
         Else
             ClassTools.ClassRegistry.RemoveAssociation("BasicPawn.SourcePawn")
         End If
+
+        If (g_iSettingsAssociateAmxModX) Then
+            ClassTools.ClassRegistry.SetAssociation("BasicPawn.AmxModX", ".sma", String.Format("""{0}"" ""%1""", Application.ExecutablePath), Application.ExecutablePath, Application.ExecutablePath)
+        Else
+            ClassTools.ClassRegistry.RemoveAssociation("BasicPawn.AmxModX")
+        End If
+
         If (g_iSettingsAssociateIncludes) Then
             ClassTools.ClassRegistry.SetAssociation("BasicPawn.Includes", ".inc", String.Format("""{0}"" ""%1""", Application.ExecutablePath), Application.ExecutablePath, Application.ExecutablePath)
         Else

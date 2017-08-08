@@ -346,6 +346,7 @@ Public Class FormSettings
         CheckBox_AlwaysNewInstance.Checked = ClassSettings.g_iSettingsAlwaysOpenNewInstance
         CheckBox_AutoShowStartPage.Checked = ClassSettings.g_iSettingsAutoShowStartPage
         CheckBox_AssociateSourcePawn.Checked = ClassSettings.g_iSettingsAssociateSourcePawn
+        CheckBox_AssociateAmxMod.Checked = ClassSettings.g_iSettingsAssociateAmxModX
         CheckBox_AssociateIncludes.Checked = ClassSettings.g_iSettingsAssociateIncludes
         'Text Editor
         Label_Font.Text = New FontConverter().ConvertToInvariantString(ClassSettings.g_iSettingsTextEditorFont)
@@ -427,6 +428,7 @@ Public Class FormSettings
         ClassSettings.g_iSettingsAlwaysOpenNewInstance = CheckBox_AlwaysNewInstance.Checked
         ClassSettings.g_iSettingsAutoShowStartPage = CheckBox_AutoShowStartPage.Checked
         ClassSettings.g_iSettingsAssociateSourcePawn = CheckBox_AssociateSourcePawn.Checked
+        ClassSettings.g_iSettingsAssociateAmxModX = CheckBox_AssociateAmxMod.Checked
         ClassSettings.g_iSettingsAssociateIncludes = CheckBox_AssociateIncludes.Checked
         'Text Editor
         ClassSettings.g_iSettingsTextEditorFont = CType(New FontConverter().ConvertFromInvariantString(Label_Font.Text), Font)
