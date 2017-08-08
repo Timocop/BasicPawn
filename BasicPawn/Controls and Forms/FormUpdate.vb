@@ -68,7 +68,7 @@ Public Class FormUpdate
             If (ClassUpdate.CheckUpdateAvailable(sNextVersion, sCurrentVersion) OrElse bSkipCheck) Then
                 Me.Invoke(Sub()
                               Label_StatusTitle.Text = "A new BasicPawn update is available!" & Environment.NewLine & String.Format("Do you want to update from version {0} to version {1} now?", sCurrentVersion, sNextVersion)
-                              Button_Update.Enabled = True
+                              Button_Update.Visible = True
 
                               ClassPictureBoxQuality_WarnIcon.Visible = True
                               Label_WarnText.Visible = True

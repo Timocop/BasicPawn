@@ -55,7 +55,6 @@ Partial Class FormUpdate
         'Button_Update
         '
         Me.Button_Update.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button_Update.Enabled = False
         Me.Button_Update.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.Button_Update.Location = New System.Drawing.Point(152, 13)
         Me.Button_Update.Name = "Button_Update"
@@ -63,6 +62,7 @@ Partial Class FormUpdate
         Me.Button_Update.TabIndex = 0
         Me.Button_Update.Text = "Update and Exit"
         Me.Button_Update.UseVisualStyleBackColor = True
+        Me.Button_Update.Visible = False
         '
         'Panel_FooterControl
         '
