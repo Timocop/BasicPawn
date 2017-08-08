@@ -16,11 +16,11 @@
 
 
 
-Imports System.Runtime.Serialization
-
 Public Class UCObjectBrowser
     Private g_mFormMain As FormMain
     Private g_tUpdateThread As Threading.Thread
+
+    Private g_iControlDrawCoutner As Integer = 0
 
     Public Shared g_bWndProcBug As Boolean = False
 
@@ -80,9 +80,15 @@ Public Class UCObjectBrowser
             Dim bWndProcBug As Boolean = g_bWndProcBug
 
             If (bWndProcBug) Then
-                Me.Invoke(Sub() TreeView_ObjectBrowser.Visible = False)
+                Me.Invoke(Sub()
+                              TreeView_ObjectBrowser.Enabled = False
+                              TreeView_ObjectBrowser.Visible = False
+                          End Sub)
             Else
-                Me.Invoke(Sub() TreeView_ObjectBrowser.BeginUpdate())
+                Me.Invoke(Sub()
+                              TreeView_ObjectBrowser.Enabled = False
+                              ClassTools.ClassForms.SuspendDrawing(g_iControlDrawCoutner, TreeView_ObjectBrowser)
+                          End Sub)
             End If
 
             Dim lAutocompleteList As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
@@ -126,9 +132,7 @@ Public Class UCObjectBrowser
                     End If
 
                     If (bIsMainFile) Then
-                        Me.Invoke(Sub()
-                                      TreeView_ObjectBrowser.Nodes(sFile).ExpandAll()
-                                  End Sub)
+                        Me.Invoke(Sub() TreeView_ObjectBrowser.Nodes(sFile).ExpandAll())
                     End If
                 Next
             End If
@@ -172,9 +176,15 @@ Public Class UCObjectBrowser
             End If
 
             If (bWndProcBug) Then
-                Me.Invoke(Sub() TreeView_ObjectBrowser.Visible = True)
+                Me.Invoke(Sub()
+                              TreeView_ObjectBrowser.Visible = True
+                              TreeView_ObjectBrowser.Enabled = True
+                          End Sub)
             Else
-                Me.Invoke(Sub() TreeView_ObjectBrowser.EndUpdate())
+                Me.Invoke(Sub()
+                              ClassTools.ClassForms.ResumeDrawing(g_iControlDrawCoutner, TreeView_ObjectBrowser)
+                              TreeView_ObjectBrowser.Enabled = True
+                          End Sub)
             End If
         Catch ex As Threading.ThreadAbortException
             Throw
@@ -254,9 +264,9 @@ Public Class UCObjectBrowser
     End Function
 
     Private Function GetAllTreeViewNodes(mTreeNode As TreeNode) As TreeNode()
-        Dim lTreeNodes As New List(Of TreeNode)
-
-        lTreeNodes.Add(mTreeNode)
+        Dim lTreeNodes As New List(Of TreeNode) From {
+            mTreeNode
+        }
 
         For Each mItem As TreeNode In mTreeNode.Nodes
             lTreeNodes.AddRange(GetAllTreeViewNodes(mItem))

@@ -365,18 +365,30 @@ Public Class ClassTools
         ''' <summary>
         ''' Suspends drawing of a control using unmanaged.
         ''' </summary>
+        ''' <param name="i"></param>
         ''' <param name="c"></param>
-        Public Shared Sub SuspendDrawing(c As Control)
-            NativeWinAPI.SendMessage(c.Handle, NativeWinAPI.WM_SETREDRAW, False, 0)
+        Public Shared Sub SuspendDrawing(ByRef i As Integer, c As Control)
+            If (i = 0) Then
+                NativeWinAPI.SendMessage(c.Handle, NativeWinAPI.WM_SETREDRAW, False, 0)
+            End If
+
+            i += 1
         End Sub
 
         ''' <summary>
         ''' Resumes drawing of a control using unmanaged.
         ''' </summary>
+        ''' <param name="i"></param>
         ''' <param name="c"></param>
-        Public Shared Sub ResumeDrawing(c As Control)
-            NativeWinAPI.SendMessage(c.Handle, NativeWinAPI.WM_SETREDRAW, True, 0)
-            c.Refresh()
+        Public Shared Sub ResumeDrawing(ByRef i As Integer, c As Control)
+            If (i > 0) Then
+                i -= 1
+
+                If (i = 0) Then
+                    NativeWinAPI.SendMessage(c.Handle, NativeWinAPI.WM_SETREDRAW, True, 0)
+                    c.Refresh()
+                End If
+            End If
         End Sub
 
         ''' <summary>

@@ -26,7 +26,7 @@ Public Class ClassTabControl
     Private g_sOldActiveIdentifier As String = ""
     Private g_bIsLoadingEntries As Boolean = False
 
-    Private g_iFreezePaintCounter As Integer = 0
+    Private g_iControlDrawCoutner As Integer = 0
 
     Private WithEvents g_mTimer As Timer
     Private g_sSelectTabDelayIdentifier As String = ""
@@ -78,7 +78,7 @@ Public Class ClassTabControl
 
     Public Function AddTab(Optional bSelect As Boolean = False, Optional bIncludeTemplate As Boolean = False, Optional bChanged As Boolean = False) As SourceTabPage
         Try
-            FreezePaint(g_mFormMain.SplitContainer_ToolboxAndEditor)
+            ClassTools.ClassForms.SuspendDrawing(g_iControlDrawCoutner, g_mFormMain.SplitContainer_ToolboxAndEditor)
 
             Dim mTabPage As New SourceTabPage(g_mFormMain) With {
                 .m_Changed = bChanged
@@ -101,13 +101,13 @@ Public Class ClassTabControl
 
             Return mTabPage
         Finally
-            UnfreezePaint(g_mFormMain.SplitContainer_ToolboxAndEditor)
+            ClassTools.ClassForms.ResumeDrawing(g_iControlDrawCoutner, g_mFormMain.SplitContainer_ToolboxAndEditor)
         End Try
     End Function
 
     Public Function RemoveTab(iIndex As Integer, bPrompSave As Boolean, Optional iSelectTabIndex As Integer = -1) As Boolean
         Try
-            FreezePaint(g_mFormMain.SplitContainer_ToolboxAndEditor)
+            ClassTools.ClassForms.SuspendDrawing(g_iControlDrawCoutner, g_mFormMain.SplitContainer_ToolboxAndEditor)
 
             If (bPrompSave AndAlso PromptSaveTab(iIndex)) Then
                 Return False
@@ -143,13 +143,13 @@ Public Class ClassTabControl
 
             Return True
         Finally
-            UnfreezePaint(g_mFormMain.SplitContainer_ToolboxAndEditor)
+            ClassTools.ClassForms.ResumeDrawing(g_iControlDrawCoutner, g_mFormMain.SplitContainer_ToolboxAndEditor)
         End Try
     End Function
 
     Public Sub SwapTabs(iFromIndex As Integer, iToIndex As Integer)
         Try
-            FreezePaint(g_mFormMain.SplitContainer_ToolboxAndEditor)
+            ClassTools.ClassForms.SuspendDrawing(g_iControlDrawCoutner, g_mFormMain.SplitContainer_ToolboxAndEditor)
 
             g_bIgnoreOnTabSelected = True
 
@@ -161,13 +161,13 @@ Public Class ClassTabControl
 
             SelectTab(iToIndex)
         Finally
-            UnfreezePaint(g_mFormMain.SplitContainer_ToolboxAndEditor)
+            ClassTools.ClassForms.ResumeDrawing(g_iControlDrawCoutner, g_mFormMain.SplitContainer_ToolboxAndEditor)
         End Try
     End Sub
 
     Public Sub SelectTab(iIndex As Integer)
         Try
-            FreezePaint(g_mFormMain.SplitContainer_ToolboxAndEditor)
+            ClassTools.ClassForms.SuspendDrawing(g_iControlDrawCoutner, g_mFormMain.SplitContainer_ToolboxAndEditor)
 
             Dim iLastTabIndex As Integer = GetTabIndexByIdentifier(g_sOldActiveIdentifier)
             If (iLastTabIndex > -1) Then
@@ -186,7 +186,7 @@ Public Class ClassTabControl
 
             End If
         Finally
-            UnfreezePaint(g_mFormMain.SplitContainer_ToolboxAndEditor)
+            ClassTools.ClassForms.ResumeDrawing(g_iControlDrawCoutner, g_mFormMain.SplitContainer_ToolboxAndEditor)
         End Try
     End Sub
 
@@ -494,23 +494,6 @@ Public Class ClassTabControl
         g_bIgnoreOnTabSelected = True
         SelectTab(m_ActiveTabIndex)
         g_bIgnoreOnTabSelected = False
-    End Sub
-
-
-
-    Private Sub FreezePaint(c As Control)
-        g_iFreezePaintCounter += 1
-        ClassTools.ClassForms.SuspendDrawing(c)
-    End Sub
-
-    Private Sub UnfreezePaint(c As Control)
-        If (g_iFreezePaintCounter > 0) Then
-            g_iFreezePaintCounter -= 1
-
-            If (g_iFreezePaintCounter = 0) Then
-                ClassTools.ClassForms.ResumeDrawing(c)
-            End If
-        End If
     End Sub
 
     Public Class SourceTabPage
