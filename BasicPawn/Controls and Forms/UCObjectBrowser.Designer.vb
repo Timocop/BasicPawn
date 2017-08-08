@@ -23,7 +23,7 @@ Partial Class UCObjectBrowser
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Me.TreeView_ObjectBrowser = New BasicPawn.UCObjectBrowser.ClassTreeViewWine()
+        Me.TreeView_ObjectBrowser = New BasicPawn.UCObjectBrowser.ClassTreeViewFix()
         Me.ContextMenuStrip_ObjectBrowser = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.ToolStripMenuItem_OpenFile = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Copy = New System.Windows.Forms.ToolStripMenuItem()
@@ -104,7 +104,7 @@ Partial Class UCObjectBrowser
         Me.PerformLayout()
 
     End Sub
-    Friend WithEvents TreeView_ObjectBrowser As ClassTreeViewWine
+    Friend WithEvents TreeView_ObjectBrowser As ClassTreeViewFix
     Friend WithEvents TextboxWatermark_Search As ClassTextboxWatermark
     Friend WithEvents ContextMenuStrip_ObjectBrowser As ContextMenuStrip
     Friend WithEvents ToolStripMenuItem_OpenFile As ToolStripMenuItem

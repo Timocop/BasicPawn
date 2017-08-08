@@ -346,22 +346,18 @@ Public Class UCObjectBrowser
         End Try
     End Sub
 
-    Class ClassTreeViewWine
+    Class ClassTreeViewFix
         Inherits TreeView
 
         Protected Overrides Sub WndProc(ByRef m As Message)
-            If (ClassTools.ClassOperatingSystem.GetWineVersion() IsNot Nothing) Then
-                Try
-                    MyBase.WndProc(m)
-                Catch ex As Exception
-                    If (Not g_bWndProcBug) Then
-                        g_bWndProcBug = True
-                        ClassExceptionLog.WriteToLog(ex)
-                    End If
-                End Try
-            Else
+            Try
                 MyBase.WndProc(m)
-            End If
+            Catch ex As Exception
+                If (Not g_bWndProcBug) Then
+                    g_bWndProcBug = True
+                    ClassExceptionLog.WriteToLog(ex)
+                End If
+            End Try
         End Sub
     End Class
 End Class
