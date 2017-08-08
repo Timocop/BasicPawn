@@ -249,7 +249,11 @@ Public Class FormMain
 
     Private Sub FormMain_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Dim sWineVersion As String = ClassTools.ClassOperatingSystem.GetWineVersion()
-        ToolStripStatusLabel_AppVersion.Text = String.Format("v.{0} {1}", Application.ProductVersion, If(sWineVersion Is Nothing, "", "| Running on Wine " & sWineVersion)).Trim
+        Dim bMonoRuntime As Boolean = ClassTools.ClassOperatingSystem.IsMonoRuntime()
+        ToolStripStatusLabel_AppVersion.Text = String.Format("v.{0} {1} {2}",
+                                                             Application.ProductVersion,
+                                                             If(sWineVersion IsNot Nothing, "| Running on Wine " & sWineVersion, ""),
+                                                             If(bMonoRuntime, "| Running on Mono (Unsupported!)", "")).Trim
 
         'Some control init
         ToolStripComboBox_ToolsAutocompleteSyntax.SelectedIndex = 0

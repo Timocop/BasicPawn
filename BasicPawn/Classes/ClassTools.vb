@@ -612,6 +612,27 @@ Public Class ClassTools
 
             Return sWineVersion
         End Function
+
+        ''' <summary>
+        ''' Checks if the application is running using Mono.
+        ''' http://www.mono-project.com/docs/gui/winforms/porting-winforms-applications/
+        ''' </summary>
+        ''' <returns>True if running on Mono, false otherwise</returns>
+        Public Shared Function IsMonoRuntime() As Boolean
+            Static iMonoRuntime As Integer = -1
+
+            If (iMonoRuntime > -1) Then
+                Return (iMonoRuntime > 0)
+            End If
+
+            If (Type.GetType("Mono.Runtime") IsNot Nothing) Then
+                iMonoRuntime = 1
+                Return True
+            Else
+                iMonoRuntime = 0
+                Return False
+            End If
+        End Function
     End Class
 
     Class ClassRegistry
