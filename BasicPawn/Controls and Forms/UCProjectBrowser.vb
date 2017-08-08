@@ -106,7 +106,7 @@ Public Class UCProjectBrowser
                 End If
 
                 Dim mListViewItemData = DirectCast(mListViewItem, ClassListViewItemData)
-                Dim mInfo As STRUC_PROJECT_FILE_INFO = CType(mListViewItemData.g_mData("Info"), STRUC_PROJECT_FILE_INFO)
+                Dim mInfo = DirectCast(mListViewItemData.g_mData("Info"), STRUC_PROJECT_FILE_INFO)
 
                 mListViewItem.SubItems(0).Text = IO.Path.GetFileName(mInfo.sFile)
                 mListViewItem.SubItems(1).Text = mInfo.sFile
@@ -176,7 +176,14 @@ Public Class UCProjectBrowser
 
         Public Sub RemoveFileAll(sFile As String)
             For i = g_mUCProjectBrowser.ListView_ProjectFiles.Items.Count - 1 To 0 Step -1
-                If (GetFileAt(i).ToLower = sFile.ToLower) Then
+                If (TypeOf g_mUCProjectBrowser.ListView_ProjectFiles.Items(i) IsNot ClassListViewItemData) Then
+                    Continue For
+                End If
+
+                Dim mListViewItemData = DirectCast(g_mUCProjectBrowser.ListView_ProjectFiles.Items(i), ClassListViewItemData)
+                Dim mInfo = DirectCast(mListViewItemData.g_mData("Info"), STRUC_PROJECT_FILE_INFO)
+
+                If (mInfo.sFile.ToLower = sFile.ToLower) Then
                     g_mUCProjectBrowser.ListView_ProjectFiles.Items.RemoveAt(i)
                 End If
             Next
@@ -189,10 +196,6 @@ Public Class UCProjectBrowser
 
             m_ProjectChanged = True
         End Sub
-
-        Public Function GetFileAt(iIndex As Integer) As String
-            Return g_mUCProjectBrowser.ListView_ProjectFiles.Items(iIndex).SubItems(1).Text
-        End Function
 
         Public Function GetFilesCount() As Integer
             Return g_mUCProjectBrowser.ListView_ProjectFiles.Items.Count
@@ -207,8 +210,9 @@ Public Class UCProjectBrowser
                 End If
 
                 Dim mListViewItemData = DirectCast(mListViewItem, ClassListViewItemData)
+                Dim mInfo = DirectCast(mListViewItemData.g_mData("Info"), STRUC_PROJECT_FILE_INFO)
 
-                mFileList.Add(CType(mListViewItemData.g_mData("Info"), STRUC_PROJECT_FILE_INFO))
+                mFileList.Add(mInfo)
             Next
 
             Return mFileList.ToArray
@@ -351,7 +355,7 @@ Public Class UCProjectBrowser
                 End If
 
                 Dim mListViewItemData = DirectCast(mListViewItem, ClassListViewItemData)
-                Dim mInfo As ClassProjectControl.STRUC_PROJECT_FILE_INFO = CType(mListViewItemData.g_mData("Info"), ClassProjectControl.STRUC_PROJECT_FILE_INFO)
+                Dim mInfo = DirectCast(mListViewItemData.g_mData("Info"), ClassProjectControl.STRUC_PROJECT_FILE_INFO)
 
                 Dim bFound As Boolean = False
                 For i = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1
@@ -408,7 +412,7 @@ Public Class UCProjectBrowser
                 End If
 
                 Dim mListViewItemData = DirectCast(ListView_ProjectFiles.SelectedItems(i), ClassListViewItemData)
-                Dim mInfo As ClassProjectControl.STRUC_PROJECT_FILE_INFO = CType(mListViewItemData.g_mData("Info"), ClassProjectControl.STRUC_PROJECT_FILE_INFO)
+                Dim mInfo = DirectCast(mListViewItemData.g_mData("Info"), ClassProjectControl.STRUC_PROJECT_FILE_INFO)
                 Dim iIndex As Integer = ListView_ProjectFiles.SelectedItems(i).Index
 
                 mInfo.sGUID = Nothing
@@ -438,7 +442,7 @@ Public Class UCProjectBrowser
                 End If
 
                 Dim mListViewItemData = DirectCast(ListView_ProjectFiles.SelectedItems(i), ClassListViewItemData)
-                Dim mInfo As ClassProjectControl.STRUC_PROJECT_FILE_INFO = CType(mListViewItemData.g_mData("Info"), ClassProjectControl.STRUC_PROJECT_FILE_INFO)
+                Dim mInfo = DirectCast(mListViewItemData.g_mData("Info"), ClassProjectControl.STRUC_PROJECT_FILE_INFO)
 
                 mInfo.sGUID = Nothing
 
@@ -493,10 +497,15 @@ Public Class UCProjectBrowser
                 Return
             End If
 
-            Dim sFile As String = ListView_ProjectFiles.SelectedItems(0).SubItems(1).Text
+            If (TypeOf ListView_ProjectFiles.SelectedItems(0) IsNot ClassListViewItemData) Then
+                Return
+            End If
+
+            Dim mListViewItemData = DirectCast(ListView_ProjectFiles.SelectedItems(0), ClassListViewItemData)
+            Dim mInfo = DirectCast(mListViewItemData.g_mData("Info"), ClassProjectControl.STRUC_PROJECT_FILE_INFO)
 
             For i = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1
-                If (Not g_mFormMain.g_ClassTabControl.m_Tab(i).m_IsUnsaved AndAlso g_mFormMain.g_ClassTabControl.m_Tab(i).m_File.ToLower = sFile.ToLower) Then
+                If (Not g_mFormMain.g_ClassTabControl.m_Tab(i).m_IsUnsaved AndAlso g_mFormMain.g_ClassTabControl.m_Tab(i).m_File.ToLower = mInfo.sFile.ToLower) Then
                     If (g_mFormMain.g_ClassTabControl.m_ActiveTabIndex <> i) Then
                         g_mFormMain.g_ClassTabControl.SelectTab(i)
                     End If
@@ -506,7 +515,7 @@ Public Class UCProjectBrowser
             Next
 
             Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
-            mTab.OpenFileTab(sFile)
+            mTab.OpenFileTab(mInfo.sFile)
             mTab.SelectTab()
 
             g_mFormMain.g_mUCStartPage.g_mFormMain.g_ClassTabControl.RemoveUnsavedTabsLeft()
@@ -601,7 +610,7 @@ Public Class UCProjectBrowser
             End If
 
             Dim mListViewItemData = DirectCast(mListViewItem, ClassListViewItemData)
-            Dim mInfo As ClassProjectControl.STRUC_PROJECT_FILE_INFO = CType(mListViewItemData.g_mData("Info"), ClassProjectControl.STRUC_PROJECT_FILE_INFO)
+            Dim mInfo = DirectCast(mListViewItemData.g_mData("Info"), ClassProjectControl.STRUC_PROJECT_FILE_INFO)
 
             If (Not String.IsNullOrEmpty(mInfo.sPackedData)) Then
                 bPackedSelected = True
@@ -644,7 +653,14 @@ Public Class UCProjectBrowser
         Next
 
         For i = 0 To ListView_ProjectFiles.Items.Count - 1
-            If (ListView_ProjectFiles.Items(i).SubItems(0).Text.ToLower.Contains(sSearchText.ToLower)) Then
+            If (TypeOf ListView_ProjectFiles.Items(i) IsNot ClassListViewItemData) Then
+                Return
+            End If
+
+            Dim mListViewItemData = DirectCast(ListView_ProjectFiles.Items(i), ClassListViewItemData)
+            Dim mInfo = DirectCast(mListViewItemData.g_mData("Info"), ClassProjectControl.STRUC_PROJECT_FILE_INFO)
+
+            If (IO.Path.GetFileName(mInfo.sFile).ToLower.Contains(sSearchText.ToLower)) Then
                 ListView_ProjectFiles.Items(i).Selected = True
                 ListView_ProjectFiles.Items(i).EnsureVisible()
             End If
@@ -665,7 +681,7 @@ Public Class UCProjectBrowser
                 End If
 
                 Dim mListViewItemData = DirectCast(mListViewItem, ClassListViewItemData)
-                Dim mInfo As ClassProjectControl.STRUC_PROJECT_FILE_INFO = CType(mListViewItemData.g_mData("Info"), ClassProjectControl.STRUC_PROJECT_FILE_INFO)
+                Dim mInfo = DirectCast(mListViewItemData.g_mData("Info"), ClassProjectControl.STRUC_PROJECT_FILE_INFO)
 
                 lFiles.Add(mInfo.sFile)
             Next
@@ -692,7 +708,7 @@ Public Class UCProjectBrowser
                 End If
 
                 Dim mListViewItemData = DirectCast(mListViewItem, ClassListViewItemData)
-                Dim mInfo As ClassProjectControl.STRUC_PROJECT_FILE_INFO = CType(mListViewItemData.g_mData("Info"), ClassProjectControl.STRUC_PROJECT_FILE_INFO)
+                Dim mInfo = DirectCast(mListViewItemData.g_mData("Info"), ClassProjectControl.STRUC_PROJECT_FILE_INFO)
 
                 lFiles.Add(mInfo.sFile)
             Next
@@ -717,7 +733,7 @@ Public Class UCProjectBrowser
                 End If
 
                 Dim mListViewItemData = DirectCast(mListViewItem, ClassListViewItemData)
-                Dim mInfo As ClassProjectControl.STRUC_PROJECT_FILE_INFO = CType(mListViewItemData.g_mData("Info"), ClassProjectControl.STRUC_PROJECT_FILE_INFO)
+                Dim mInfo = DirectCast(mListViewItemData.g_mData("Info"), ClassProjectControl.STRUC_PROJECT_FILE_INFO)
 
                 g_ClassProjectControl.PackFileData(mInfo)
 
@@ -744,7 +760,7 @@ Public Class UCProjectBrowser
                 End If
 
                 Dim mListViewItemData = DirectCast(mListViewItem, ClassListViewItemData)
-                Dim mInfo As ClassProjectControl.STRUC_PROJECT_FILE_INFO = CType(mListViewItemData.g_mData("Info"), ClassProjectControl.STRUC_PROJECT_FILE_INFO)
+                Dim mInfo = DirectCast(mListViewItemData.g_mData("Info"), ClassProjectControl.STRUC_PROJECT_FILE_INFO)
 
                 If (String.IsNullOrEmpty(mInfo.sPackedData)) Then
                     MessageBox.Show("This file is not packed!", "Unable to extract", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -793,7 +809,7 @@ Public Class UCProjectBrowser
                 End If
 
                 Dim mListViewItemData = DirectCast(mListViewItem, ClassListViewItemData)
-                Dim mInfo As ClassProjectControl.STRUC_PROJECT_FILE_INFO = CType(mListViewItemData.g_mData("Info"), ClassProjectControl.STRUC_PROJECT_FILE_INFO)
+                Dim mInfo = DirectCast(mListViewItemData.g_mData("Info"), ClassProjectControl.STRUC_PROJECT_FILE_INFO)
 
                 If (String.IsNullOrEmpty(mInfo.sPackedData)) Then
                     MessageBox.Show("This file is not packed!", "Unable to remove", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
