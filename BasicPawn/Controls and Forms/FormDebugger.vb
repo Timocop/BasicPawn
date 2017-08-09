@@ -64,10 +64,16 @@ Public Class FormDebugger
 
     Private Function RefreshSource() As Boolean
         Try
+            Dim iCompilerType As ClassTextEditorTools.ENUM_COMPILER_TYPE = ClassTextEditorTools.ENUM_COMPILER_TYPE.UNKNOWN
+
             'Create Pre-Process source
-            Dim sLstSource As String = g_mFormMain.g_ClassTextEditorTools.GetCompilerPreProcessCode(True, True, g_sLastPreProcessSourceFile)
+            Dim sLstSource As String = g_mFormMain.g_ClassTextEditorTools.GetCompilerPreProcessCode(True, True, g_sLastPreProcessSourceFile, Nothing, iCompilerType)
             If (String.IsNullOrEmpty(sLstSource)) Then
                 Return False
+            End If
+
+            If (iCompilerType <> ClassTextEditorTools.ENUM_COMPILER_TYPE.SOURCEPAWN) Then
+                Throw New ArgumentException("Unsupported compiler")
             End If
 
             If (String.IsNullOrEmpty(g_sLastPreProcessSourceFile)) Then
@@ -92,9 +98,16 @@ Public Class FormDebugger
             With New ClassDebuggerParser(g_mFormMain)
                 .CleanupDebugPlaceholder(sAsmLstSource)
             End With
-            Dim sAsmSource As String = g_mFormMain.g_ClassTextEditorTools.GetCompilerAssemblyCode(True, sAsmLstSource, Nothing, IO.Path.GetDirectoryName(g_sLastPreProcessSourceFile))
+
+            iCompilerType = ClassTextEditorTools.ENUM_COMPILER_TYPE.UNKNOWN
+
+            Dim sAsmSource As String = g_mFormMain.g_ClassTextEditorTools.GetCompilerAssemblyCode(True, sAsmLstSource, Nothing, IO.Path.GetDirectoryName(g_sLastPreProcessSourceFile), Nothing, Nothing, Nothing, Nothing, iCompilerType)
             If (String.IsNullOrEmpty(sAsmSource)) Then
                 Return False
+            End If
+
+            If (iCompilerType <> ClassTextEditorTools.ENUM_COMPILER_TYPE.SOURCEPAWN) Then
+                Throw New ArgumentException("Unsupported compiler")
             End If
 
 

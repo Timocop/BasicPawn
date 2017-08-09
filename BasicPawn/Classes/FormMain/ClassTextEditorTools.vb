@@ -309,9 +309,7 @@ Public Class ClassTextEditorTools
             End If
 
             'Set output path
-            If (bTesting) Then
-                sOutputFile = String.Format("{0}.unk", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
-            Else
+            If (Not bTesting) Then
                 If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                     sOutputFile = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), String.Format("compiled\{0}.unk", IO.Path.GetFileNameWithoutExtension(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)))
                 Else
@@ -323,31 +321,31 @@ Public Class ClassTextEditorTools
                 End If
             End If
 
-            IO.File.Delete(sOutputFile)
+            Dim sTmpOutputFile As String = IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString)
 
             Dim lIncludeList As New List(Of String)
             For Each sInclude As String In sIncludePaths.Split(";"c)
                 lIncludeList.Add("-i""" & sInclude & """")
             Next
 
-            Dim sArguments As String = String.Format("""{0}"" {1} -o""{2}""", g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File, String.Join(" ", lIncludeList.ToArray), sOutputFile)
+            Dim sArguments As String = String.Format("""{0}"" {1} -o""{2}""", g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File, String.Join(" ", lIncludeList.ToArray), sTmpOutputFile)
             ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, sArguments, IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), iExitCode, sOutput)
 
-            Dim compilerType As ENUM_COMPILER_TYPE = ENUM_COMPILER_TYPE.UNKNOWN
+            Dim iCompilerType As ENUM_COMPILER_TYPE = ENUM_COMPILER_TYPE.UNKNOWN
 
             Dim sLines As String() = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
             For i = 0 To sLines.Length - 1
                 If (i = 0) Then
                     Select Case (True)
                         Case Regex.IsMatch(sLines(i), "\b(SourcePawn)\b \b(Compiler)\b", RegexOptions.IgnoreCase)
-                            compilerType = ENUM_COMPILER_TYPE.SOURCEPAWN
+                            iCompilerType = ENUM_COMPILER_TYPE.SOURCEPAWN
 
                         Case Regex.IsMatch(sLines(i), "\b(AMX)\b \b(Mod)\b \b(X)\b", RegexOptions.IgnoreCase)
-                            compilerType = ENUM_COMPILER_TYPE.AMXX
+                            iCompilerType = ENUM_COMPILER_TYPE.AMXX
 
                             'Old AMX Mod still uses Small compiler
                         Case Regex.IsMatch(sLines(i), "\b(Pawn)\b \b(compiler)\b", RegexOptions.IgnoreCase), Regex.IsMatch(sLines(i), "\b(Small)\b \b(compiler)\b", RegexOptions.IgnoreCase)
-                            compilerType = ENUM_COMPILER_TYPE.AMX
+                            iCompilerType = ENUM_COMPILER_TYPE.AMX
 
                     End Select
                 End If
@@ -355,51 +353,50 @@ Public Class ClassTextEditorTools
                 g_mFormMain.PrintInformation("[INFO]", vbTab & sLines(i))
             Next
 
-            If (IO.File.Exists(sOutputFile)) Then
-                Select Case (compilerType)
-                    Case ENUM_COMPILER_TYPE.SOURCEPAWN
-                        If (IO.Path.GetExtension(sOutputFile).ToLower = ".smx") Then
-                            Exit Select
-                        End If
-
-                        Dim sNewOutputFile As String = IO.Path.ChangeExtension(sOutputFile, ".smx")
-                        IO.File.Delete(sNewOutputFile)
-                        IO.File.Move(sOutputFile, sNewOutputFile)
-                        sOutputFile = sNewOutputFile
-
-                    Case ENUM_COMPILER_TYPE.AMXX
-                        If (IO.Path.GetExtension(sOutputFile).ToLower = ".amxx") Then
-                            Exit Select
-                        End If
-
-                        Dim sNewOutputFile As String = IO.Path.ChangeExtension(sOutputFile, ".amxx")
-                        IO.File.Delete(sNewOutputFile)
-                        IO.File.Move(sOutputFile, sNewOutputFile)
-                        sOutputFile = sNewOutputFile
-
-                    Case ENUM_COMPILER_TYPE.AMX
-                        If (IO.Path.GetExtension(sOutputFile).ToLower = ".amx") Then
-                            Exit Select
-                        End If
-
-                        Dim sNewOutputFile As String = IO.Path.ChangeExtension(sOutputFile, ".amx")
-                        IO.File.Delete(sNewOutputFile)
-                        IO.File.Move(sOutputFile, sNewOutputFile)
-                        sOutputFile = sNewOutputFile
-
-                End Select
+            'The AMX Mod X compiler seem to overwrite the *.unk extension, just find them using the unique GUID filename.
+            Dim sOutputMatches As String() = IO.Directory.GetFiles(IO.Path.GetDirectoryName(sTmpOutputFile), String.Format("{0}.*", IO.Path.GetFileNameWithoutExtension(sTmpOutputFile)), IO.SearchOption.TopDirectoryOnly)
+            If (sOutputMatches.Length = 1) Then
+                sTmpOutputFile = sOutputMatches(0)
             Else
                 g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Compiled output file can not be found!", False, False, True)
                 Return
             End If
 
             If (bTesting) Then
-                IO.File.Delete(sOutputFile)
-            End If
+                IO.File.Delete(sTmpOutputFile)
+            Else
+                Select Case (iCompilerType)
+                    Case ENUM_COMPILER_TYPE.SOURCEPAWN
+                        Dim sNewOutputFile As String = IO.Path.ChangeExtension(sOutputFile, ".smx")
+                        IO.File.Delete(sNewOutputFile)
+                        IO.File.Move(sTmpOutputFile, sNewOutputFile)
+                        sOutputFile = sNewOutputFile
 
-            If (Not bTesting) Then
+                    Case ENUM_COMPILER_TYPE.AMXX
+                        Dim sNewOutputFile As String = IO.Path.ChangeExtension(sOutputFile, ".amxx")
+                        IO.File.Delete(sNewOutputFile)
+                        IO.File.Move(sTmpOutputFile, sNewOutputFile)
+                        sOutputFile = sNewOutputFile
+
+                    Case ENUM_COMPILER_TYPE.AMX
+                        Dim sNewOutputFile As String = IO.Path.ChangeExtension(sOutputFile, ".amx")
+                        IO.File.Delete(sNewOutputFile)
+                        IO.File.Move(sTmpOutputFile, sNewOutputFile)
+                        sOutputFile = sNewOutputFile
+
+                    Case Else
+                        g_mFormMain.PrintInformation("[WARN]", vbTab & "Unsupported compiler!")
+
+                        Dim sNewOutputFile As String = IO.Path.ChangeExtension(sOutputFile, ".bin")
+                        IO.File.Delete(sNewOutputFile)
+                        IO.File.Move(sTmpOutputFile, sNewOutputFile)
+                        sOutputFile = sNewOutputFile
+
+                End Select
+
                 g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Saved compiled source: {0}", sOutputFile))
             End If
+
             g_mFormMain.PrintInformation("[INFO]", "Compiling source finished!", False, False, True)
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
@@ -418,7 +415,7 @@ Public Class ClassTextEditorTools
     ''' <param name="sEmulateSourceFile">(Optional) Replaces the printed temporary path.</param>
     ''' <param name="sCompilerOutput">(Optional) The orginal compiler output.</param>
     ''' <returns>True on success, false otherwise.</returns>
-    Public Function CompileSource(bTesting As Boolean, sSource As String, ByRef sOutputFile As String, Optional sWorkingDirectory As String = Nothing, Optional sCompilerPath As String = Nothing, Optional sIncludePaths As String = Nothing, Optional sEmulateSourceFile As String = Nothing, ByRef Optional sCompilerOutput As String = Nothing) As Boolean
+    Public Function CompileSource(bTesting As Boolean, sSource As String, ByRef sOutputFile As String, Optional sWorkingDirectory As String = Nothing, Optional sCompilerPath As String = Nothing, Optional sIncludePaths As String = Nothing, Optional sEmulateSourceFile As String = Nothing, ByRef Optional sCompilerOutput As String = Nothing, ByRef Optional iCompilerType As ENUM_COMPILER_TYPE = ENUM_COMPILER_TYPE.UNKNOWN) As Boolean
         Try
             If (g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True)) Then
                 Return False
@@ -517,15 +514,13 @@ Public Class ClassTextEditorTools
             End If
 
             'Set output path
-            If (bTesting) Then
-                sOutputFile = String.Format("{0}.unk", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
-            Else
+            If (Not bTesting) Then
                 If (String.IsNullOrEmpty(sOutputFile)) Then
                     Throw New ArgumentException("Invalid output file")
                 End If
             End If
 
-            IO.File.Delete(sOutputFile)
+            Dim sTmpOutputFile As String = IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString)
 
             Dim TmpSourceFile As String = String.Format("{0}.src", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
             IO.File.WriteAllText(TmpSourceFile, sSource)
@@ -535,7 +530,7 @@ Public Class ClassTextEditorTools
                 lIncludeList.Add("-i""" & sInclude & """")
             Next
 
-            Dim sArguments As String = String.Format("""{0}"" {1} -o""{2}""", TmpSourceFile, String.Join(" ", lIncludeList.ToArray), sOutputFile)
+            Dim sArguments As String = String.Format("""{0}"" {1} -o""{2}""", TmpSourceFile, String.Join(" ", lIncludeList.ToArray), sTmpOutputFile)
             If (String.IsNullOrEmpty(sWorkingDirectory) OrElse Not IO.Directory.Exists(sWorkingDirectory)) Then
                 ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, sArguments, iExitCode, sOutput)
             Else
@@ -546,21 +541,21 @@ Public Class ClassTextEditorTools
 
             IO.File.Delete(TmpSourceFile)
 
-            Dim compilerType As ENUM_COMPILER_TYPE = ENUM_COMPILER_TYPE.UNKNOWN
+            iCompilerType = ENUM_COMPILER_TYPE.UNKNOWN
 
             Dim sLines As String() = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
             For i = 0 To sLines.Length - 1
                 If (i = 0) Then
                     Select Case (True)
                         Case Regex.IsMatch(sLines(i), "\b(SourcePawn)\b \b(Compiler)\b", RegexOptions.IgnoreCase)
-                            compilerType = ENUM_COMPILER_TYPE.SOURCEPAWN
+                            iCompilerType = ENUM_COMPILER_TYPE.SOURCEPAWN
 
                         Case Regex.IsMatch(sLines(i), "\b(AMX)\b \b(Mod)\b \b(X)\b", RegexOptions.IgnoreCase)
-                            compilerType = ENUM_COMPILER_TYPE.AMXX
+                            iCompilerType = ENUM_COMPILER_TYPE.AMXX
 
                             'Old AMX Mod still uses Small compiler
                         Case Regex.IsMatch(sLines(i), "\b(Pawn)\b \b(compiler)\b", RegexOptions.IgnoreCase), Regex.IsMatch(sLines(i), "\b(Small)\b \b(compiler)\b", RegexOptions.IgnoreCase)
-                            compilerType = ENUM_COMPILER_TYPE.AMX
+                            iCompilerType = ENUM_COMPILER_TYPE.AMX
 
                     End Select
                 Else
@@ -574,51 +569,52 @@ Public Class ClassTextEditorTools
 
             sCompilerOutput = String.Join(Environment.NewLine, sLines)
 
-            If (IO.File.Exists(sOutputFile)) Then
-                Select Case (compilerType)
-                    Case ENUM_COMPILER_TYPE.SOURCEPAWN
-                        If (IO.Path.GetExtension(sOutputFile).ToLower = ".smx") Then
-                            Exit Select
-                        End If
-
-                        Dim sNewOutputFile As String = IO.Path.ChangeExtension(sOutputFile, ".smx")
-                        IO.File.Delete(sNewOutputFile)
-                        IO.File.Move(sOutputFile, sNewOutputFile)
-                        sOutputFile = sNewOutputFile
-
-                    Case ENUM_COMPILER_TYPE.AMXX
-                        If (IO.Path.GetExtension(sOutputFile).ToLower = ".amxx") Then
-                            Exit Select
-                        End If
-
-                        Dim sNewOutputFile As String = IO.Path.ChangeExtension(sOutputFile, ".amxx")
-                        IO.File.Delete(sNewOutputFile)
-                        IO.File.Move(sOutputFile, sNewOutputFile)
-                        sOutputFile = sNewOutputFile
-
-                    Case ENUM_COMPILER_TYPE.AMX
-                        If (IO.Path.GetExtension(sOutputFile).ToLower = ".amx") Then
-                            Exit Select
-                        End If
-
-                        Dim sNewOutputFile As String = IO.Path.ChangeExtension(sOutputFile, ".amx")
-                        IO.File.Delete(sNewOutputFile)
-                        IO.File.Move(sOutputFile, sNewOutputFile)
-                        sOutputFile = sNewOutputFile
-
-                End Select
+            'The AMX Mod X compiler seem to overwrite the *.unk extension, just find them using the unique GUID filename.
+            Dim sOutputMatches As String() = IO.Directory.GetFiles(IO.Path.GetDirectoryName(sTmpOutputFile), String.Format("{0}.*", IO.Path.GetFileNameWithoutExtension(sTmpOutputFile)), IO.SearchOption.TopDirectoryOnly)
+            If (sOutputMatches.Length = 1) Then
+                sTmpOutputFile = sOutputMatches(0)
             Else
                 g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Compiled output file can not be found!", False, False, True)
                 Return False
             End If
 
             If (bTesting) Then
-                IO.File.Delete(sOutputFile)
+                IO.File.Delete(sTmpOutputFile)
+            Else
+                Select Case (iCompilerType)
+                    Case ENUM_COMPILER_TYPE.SOURCEPAWN
+                        Dim sNewOutputFile As String = IO.Path.ChangeExtension(sOutputFile, ".smx")
+                        IO.File.Delete(sNewOutputFile)
+                        IO.File.Move(sTmpOutputFile, sNewOutputFile)
+                        sOutputFile = sNewOutputFile
+
+                    Case ENUM_COMPILER_TYPE.AMXX
+                        Dim sNewOutputFile As String = IO.Path.ChangeExtension(sOutputFile, ".amxx")
+                        IO.File.Delete(sNewOutputFile)
+                        IO.File.Move(sTmpOutputFile, sNewOutputFile)
+                        sOutputFile = sNewOutputFile
+
+                    Case ENUM_COMPILER_TYPE.AMX
+                        Dim sNewOutputFile As String = IO.Path.ChangeExtension(sOutputFile, ".amx")
+                        IO.File.Delete(sNewOutputFile)
+                        IO.File.Move(sTmpOutputFile, sNewOutputFile)
+                        sOutputFile = sNewOutputFile
+
+                    Case Else
+                        g_mFormMain.PrintInformation("[WARN]", vbTab & "Unsupported compiler!")
+
+                        Dim sNewOutputFile As String = IO.Path.ChangeExtension(sOutputFile, ".bin")
+                        IO.File.Delete(sNewOutputFile)
+                        IO.File.Move(sTmpOutputFile, sNewOutputFile)
+                        sOutputFile = sNewOutputFile
+
+                End Select
+
+                If (Not bTesting) Then
+                    g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Saved compiled source: {0}", sOutputFile))
+                End If
             End If
 
-            If (Not bTesting) Then
-                g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Saved compiled source: {0}", sOutputFile))
-            End If
             g_mFormMain.PrintInformation("[INFO]", "Compiling source finished!", False, False, True)
 
             Return True
@@ -637,7 +633,7 @@ Public Class ClassTextEditorTools
     ''' <param name="sTempOutputFile">The last used temporary file. Note: This is only the path, the file will be removed!</param>
     ''' <param name="sCompilerOutput">(Optional) The orginal compiler output.</param>
     ''' <returns></returns>
-    Public Function GetCompilerPreProcessCode(bCleanUpSourcemodDuplicate As Boolean, bCleanupForCompile As Boolean, ByRef sTempOutputFile As String, ByRef Optional sCompilerOutput As String = Nothing) As String
+    Public Function GetCompilerPreProcessCode(bCleanUpSourcemodDuplicate As Boolean, bCleanupForCompile As Boolean, ByRef sTempOutputFile As String, ByRef Optional sCompilerOutput As String = Nothing, ByRef Optional iCompilerType As ENUM_COMPILER_TYPE = ENUM_COMPILER_TYPE.UNKNOWN) As String
         Try
             If (g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True)) Then
                 Return Nothing
@@ -753,8 +749,25 @@ Public Class ClassTextEditorTools
 
             IO.File.Delete(sTmpSourcePath)
 
+            iCompilerType = ENUM_COMPILER_TYPE.UNKNOWN
+
             Dim sLines As String() = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
             For i = 0 To sLines.Length - 1
+                If (i = 0) Then
+                    Select Case (True)
+                        Case Regex.IsMatch(sLines(i), "\b(SourcePawn)\b \b(Compiler)\b", RegexOptions.IgnoreCase)
+                            iCompilerType = ENUM_COMPILER_TYPE.SOURCEPAWN
+
+                        Case Regex.IsMatch(sLines(i), "\b(AMX)\b \b(Mod)\b \b(X)\b", RegexOptions.IgnoreCase)
+                            iCompilerType = ENUM_COMPILER_TYPE.AMXX
+
+                            'Old AMX Mod still uses Small compiler
+                        Case Regex.IsMatch(sLines(i), "\b(Pawn)\b \b(compiler)\b", RegexOptions.IgnoreCase), Regex.IsMatch(sLines(i), "\b(Small)\b \b(compiler)\b", RegexOptions.IgnoreCase)
+                            iCompilerType = ENUM_COMPILER_TYPE.AMX
+
+                    End Select
+                End If
+
                 g_mFormMain.PrintInformation("[INFO]", vbTab & sLines(i))
             Next
 
@@ -832,7 +845,7 @@ Public Class ClassTextEditorTools
     ''' Gets the assembly from the code. Throws exceptions on compile error.
     ''' </summary> 
     ''' <returns></returns>
-    Public Function GetCompilerAssemblyCode() As String
+    Public Function GetCompilerAssemblyCode(ByRef Optional iCompilerType As ENUM_COMPILER_TYPE = ENUM_COMPILER_TYPE.UNKNOWN) As String
         Try
             If (g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True)) Then
                 Return Nothing
@@ -932,8 +945,25 @@ Public Class ClassTextEditorTools
 
             IO.File.Delete(sTmpSourcePath)
 
+            iCompilerType = ENUM_COMPILER_TYPE.UNKNOWN
+
             Dim sLines As String() = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
             For i = 0 To sLines.Length - 1
+                If (i = 0) Then
+                    Select Case (True)
+                        Case Regex.IsMatch(sLines(i), "\b(SourcePawn)\b \b(Compiler)\b", RegexOptions.IgnoreCase)
+                            iCompilerType = ENUM_COMPILER_TYPE.SOURCEPAWN
+
+                        Case Regex.IsMatch(sLines(i), "\b(AMX)\b \b(Mod)\b \b(X)\b", RegexOptions.IgnoreCase)
+                            iCompilerType = ENUM_COMPILER_TYPE.AMXX
+
+                            'Old AMX Mod still uses Small compiler
+                        Case Regex.IsMatch(sLines(i), "\b(Pawn)\b \b(compiler)\b", RegexOptions.IgnoreCase), Regex.IsMatch(sLines(i), "\b(Small)\b \b(compiler)\b", RegexOptions.IgnoreCase)
+                            iCompilerType = ENUM_COMPILER_TYPE.AMX
+
+                    End Select
+                End If
+
                 g_mFormMain.PrintInformation("[INFO]", vbTab & sLines(i))
             Next
 
@@ -969,7 +999,7 @@ Public Class ClassTextEditorTools
     ''' <param name="sEmulateSourceFile">(Optional) Replaces the printed temporary path.</param>
     ''' <param name="sCompilerOutput">(Optional) The orginal compiler output.</param>
     ''' <returns></returns>
-    Public Function GetCompilerAssemblyCode(bTesting As Boolean, sSource As String, ByRef sOutputFile As String, Optional sWorkingDirectory As String = Nothing, Optional sCompilerPath As String = Nothing, Optional sIncludePaths As String = Nothing, Optional sEmulateSourceFile As String = Nothing, ByRef Optional sCompilerOutput As String = Nothing) As String
+    Public Function GetCompilerAssemblyCode(bTesting As Boolean, sSource As String, ByRef sOutputFile As String, Optional sWorkingDirectory As String = Nothing, Optional sCompilerPath As String = Nothing, Optional sIncludePaths As String = Nothing, Optional sEmulateSourceFile As String = Nothing, ByRef Optional sCompilerOutput As String = Nothing, ByRef Optional iCompilerType As ENUM_COMPILER_TYPE = ENUM_COMPILER_TYPE.UNKNOWN) As String
         Try
             If (g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True)) Then
                 Return Nothing
@@ -1091,11 +1121,29 @@ Public Class ClassTextEditorTools
 
             sCompilerOutput = sOutput
 
+            iCompilerType = ENUM_COMPILER_TYPE.UNKNOWN
+
             Dim sLines As String() = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
             For i = 0 To sLines.Length - 1
-                If (Not String.IsNullOrEmpty(sEmulateSourceFile) AndAlso sLines(i).Contains(TmpSourceFile)) Then
-                    sLines(i) = Regex.Replace(sLines(i), "^\b" & Regex.Escape(TmpSourceFile) & "\b", sEmulateSourceFile)
+                If (i = 0) Then
+                    Select Case (True)
+                        Case Regex.IsMatch(sLines(i), "\b(SourcePawn)\b \b(Compiler)\b", RegexOptions.IgnoreCase)
+                            iCompilerType = ENUM_COMPILER_TYPE.SOURCEPAWN
+
+                        Case Regex.IsMatch(sLines(i), "\b(AMX)\b \b(Mod)\b \b(X)\b", RegexOptions.IgnoreCase)
+                            iCompilerType = ENUM_COMPILER_TYPE.AMXX
+
+                            'Old AMX Mod still uses Small compiler
+                        Case Regex.IsMatch(sLines(i), "\b(Pawn)\b \b(compiler)\b", RegexOptions.IgnoreCase), Regex.IsMatch(sLines(i), "\b(Small)\b \b(compiler)\b", RegexOptions.IgnoreCase)
+                            iCompilerType = ENUM_COMPILER_TYPE.AMX
+
+                    End Select
+                Else
+                    If (Not String.IsNullOrEmpty(sEmulateSourceFile) AndAlso sLines(i).Contains(TmpSourceFile)) Then
+                        sLines(i) = Regex.Replace(sLines(i), "^\b" & Regex.Escape(TmpSourceFile) & "\b", sEmulateSourceFile)
+                    End If
                 End If
+
                 g_mFormMain.PrintInformation("[INFO]", vbTab & sLines(i))
             Next
 

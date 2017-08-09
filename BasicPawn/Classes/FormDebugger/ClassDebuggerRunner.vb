@@ -431,12 +431,18 @@ Public Class ClassDebuggerRunner
 
             'Export debugger cmd runner engine
             If (True) Then
+                Dim iCompilerType As ClassTextEditorTools.ENUM_COMPILER_TYPE = ClassTextEditorTools.ENUM_COMPILER_TYPE.UNKNOWN
+
                 Dim sSource As String = g_mFormDebugger.g_ClassDebuggerRunnerEngine.GenerateRunnerEngine(False)
                 Dim sOutputFile As String = IO.Path.Combine(m_SourceModFolder, String.Format("plugins\BasicPawnDebugCmdRunEngine-{0}.unk", Guid.NewGuid.ToString))
                 g_sLatestDebuggerRunnerPlugin = sOutputFile
 
-                If (Not g_mFormDebugger.g_mFormMain.g_ClassTextEditorTools.CompileSource(False, sSource, sOutputFile)) Then
+                If (Not g_mFormDebugger.g_mFormMain.g_ClassTextEditorTools.CompileSource(False, sSource, sOutputFile, Nothing, Nothing, Nothing, Nothing, Nothing, iCompilerType)) Then
                     Throw New ArgumentException("Compiler failure! See information tab for more information. (BasicPawn Debug Cmd Runner Engine)")
+                End If
+
+                If (iCompilerType <> ClassTextEditorTools.ENUM_COMPILER_TYPE.SOURCEPAWN) Then
+                    Throw New ArgumentException("Unsupported compiler")
                 End If
 
                 g_sLatestDebuggerRunnerPlugin = sOutputFile
@@ -444,6 +450,8 @@ Public Class ClassDebuggerRunner
 
             'Export main plugin source
             If (True) Then
+                Dim iCompilerType As ClassTextEditorTools.ENUM_COMPILER_TYPE = ClassTextEditorTools.ENUM_COMPILER_TYPE.UNKNOWN
+
                 Dim sSource As String = g_mFormDebugger.TextEditorControlEx_DebuggerSource.Document.TextContent
                 Dim sOutputFile As String = IO.Path.Combine(m_SourceModFolder, String.Format("plugins\BasicPawnDebug-{0}.unk", Guid.NewGuid.ToString))
                 g_sLatestDebuggerPlugin = sOutputFile
@@ -462,8 +470,12 @@ Public Class ClassDebuggerRunner
 
                 g_ClassPreProcess.FinishSource(sSource)
 
-                If (Not g_mFormDebugger.g_mFormMain.g_ClassTextEditorTools.CompileSource(False, sSource, sOutputFile)) Then
+                If (Not g_mFormDebugger.g_mFormMain.g_ClassTextEditorTools.CompileSource(False, sSource, sOutputFile, Nothing, Nothing, Nothing, Nothing, Nothing, iCompilerType)) Then
                     Throw New ArgumentException("Compiler failure! See information tab for more information. (BasicPawn Debug Main Plugin)")
+                End If
+
+                If (iCompilerType <> ClassTextEditorTools.ENUM_COMPILER_TYPE.SOURCEPAWN) Then
+                    Throw New ArgumentException("Unsupported compiler")
                 End If
 
                 g_sLatestDebuggerPlugin = sOutputFile
