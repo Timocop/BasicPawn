@@ -711,6 +711,9 @@ Public Class ClassAutocompleteUpdater
 
 
                 Dim lEnumCommentArray As String() = New String(lEnumSplitList.Count - 1) {}
+                For j = 0 To lEnumCommentArray.Length - 1
+                    lEnumCommentArray(j) = ""
+                Next
 
                 Dim sEnumSourceLines As String() = sEnumSource.Split(New String() {vbNewLine, vbLf}, 0)
                 For ii = 0 To sEnumSourceLines.Length - 1
@@ -1177,6 +1180,10 @@ Public Class ClassAutocompleteUpdater
 
                 sComment = ""
                 lEnumCommentArray = New String(lEnumSplitList.Count - 1) {}
+                For j = 0 To lEnumCommentArray.Length - 1
+                    lEnumCommentArray(j) = ""
+                Next
+
                 sEnumSourceLines = sEnumSource.Split(New String() {vbNewLine, vbLf}, 0)
 
                 For ii = 0 To lEnumSplitList.Count - 1
