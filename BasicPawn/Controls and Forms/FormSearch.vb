@@ -198,6 +198,7 @@ Public Class FormSearch
                 For i = mResults.Length - 1 To 0 Step -1
                     If (mResults(i).iLocation < iOffset - mResults(i).iLenght) Then
                         g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.Replace(mResults(i).iLocation, mResults(i).iLenght, TextBox_Replace.Text)
+                        g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Refresh()
 
                         SetTextEditorSelection(g_mFormMain.g_ClassTabControl.m_ActiveTab, mResults(i).iLocation, TextBox_Replace.Text.Length, True)
                         Return
@@ -207,6 +208,7 @@ Public Class FormSearch
                 For i = 0 To mResults.Length - 1
                     If (mResults(i).iLocation >= iOffset) Then
                         g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.Replace(mResults(i).iLocation, mResults(i).iLenght, TextBox_Replace.Text)
+                        g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Refresh()
 
                         SetTextEditorSelection(g_mFormMain.g_ClassTabControl.m_ActiveTab, mResults(i).iLocation, TextBox_Replace.Text.Length, False)
                         Return
@@ -243,6 +245,7 @@ Public Class FormSearch
             Next
 
             g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.UndoStack.EndUndoGroup()
+            g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Refresh()
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
