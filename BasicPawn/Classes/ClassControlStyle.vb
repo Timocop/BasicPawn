@@ -44,6 +44,32 @@ Public Class ClassControlStyle
     Public Shared g_cDarkFormColor As New STRUC_CONTROL_COLORS(Color.Black, Color.White, Color.LightGray, Color.FromArgb(255, 48, 48, 48))
     Public Shared g_cDarkMenuColor As New STRUC_CONTROL_COLORS(Color.Black, Color.White, Color.LightGray, Color.FromArgb(255, 64, 64, 64))
 
+    ''' <summary>
+    ''' Updates the controls colors
+    ''' </summary>
+    ''' <param name="c"></param>
+    Public Shared Sub UpdateControls(c As Control)
+        c.SuspendLayout()
+
+        SetColor(c)
+
+        For Each i As Control In c.Controls
+            UpdateControls(i)
+        Next
+
+        c.ResumeLayout()
+    End Sub
+
+    ''' <summary>
+    ''' Invert the color
+    ''' </summary>
+    ''' <param name="cColor"></param>
+    ''' <returns></returns>
+    Public Shared Function InvertColor(cColor As Color) As Color
+        Dim cNewColor As Color = Color.FromArgb(cColor.ToArgb Xor -1) '&HFFFFFF 
+        Return Color.FromArgb(cColor.A, cNewColor.R, cNewColor.G, cNewColor.B)
+    End Function
+
     Private Shared Sub SetColor(o As Object)
         If (TypeOf o Is Control) Then
             Dim i As Control = DirectCast(o, Control)
@@ -71,7 +97,7 @@ Public Class ClassControlStyle
                         i.DrawMode = TabDrawMode.OwnerDrawFixed
                     End If
                 Else
-                        i.BackColor = g_cDarkPanelColor.mLightBackground
+                    i.BackColor = g_cDarkPanelColor.mLightBackground
                     i.ForeColor = g_cDarkPanelColor.mLightForegound
 
                     If (TypeOf i Is ClassTabControlColor) Then
@@ -79,7 +105,7 @@ Public Class ClassControlStyle
                     End If
                 End If
 
-                    For Each j As Object In i.TabPages
+                For Each j As Object In i.TabPages
                     SetColor(j)
                 Next
 
@@ -302,10 +328,14 @@ Public Class ClassControlStyle
                     i.RenderMode = ToolStripRenderMode.System
                     i.BackColor = g_cDarkMenuColor.mDarkBackground
                     i.ForeColor = g_cDarkMenuColor.mDarkForeground
+
+                    i.Renderer = New ClassToolStripCustomRenderer(g_cDarkMenuColor.mDarkBackground, g_cDarkMenuColor.mDarkBackground, g_cDarkMenuColor.mDarkForeground, g_cDarkControlColor.mDarkBackground, g_cDarkControlColor.mDarkBackground)
                 Else
                     i.RenderMode = ToolStripRenderMode.System
                     i.BackColor = g_cDarkMenuColor.mLightBackground
                     i.ForeColor = g_cDarkMenuColor.mLightForegound
+
+                    i.Renderer = New ToolStripSystemRenderer()
                 End If
 
                 For Each j As Object In i.Items
@@ -336,10 +366,14 @@ Public Class ClassControlStyle
                     i.RenderMode = ToolStripRenderMode.ManagerRenderMode
                     i.BackColor = g_cDarkMenuColor.mDarkBackground
                     i.ForeColor = g_cDarkMenuColor.mDarkForeground
+
+                    i.Renderer = New ClassToolStripCustomRenderer(g_cDarkMenuColor.mDarkBackground, g_cDarkMenuColor.mDarkBackground, g_cDarkMenuColor.mDarkForeground, g_cDarkControlColor.mDarkBackground, g_cDarkControlColor.mDarkBackground)
                 Else
                     i.RenderMode = ToolStripRenderMode.System
                     i.BackColor = g_cDarkMenuColor.mLightBackground
                     i.ForeColor = g_cDarkMenuColor.mLightForegound
+
+                    i.Renderer = New ToolStripSystemRenderer()
                 End If
 
                 For Each j As Object In i.Items
@@ -352,10 +386,14 @@ Public Class ClassControlStyle
                     i.RenderMode = ToolStripRenderMode.ManagerRenderMode
                     i.BackColor = g_cDarkMenuColor.mDarkBackground
                     i.ForeColor = g_cDarkMenuColor.mDarkForeground
+
+                    i.Renderer = New ClassToolStripCustomRenderer(g_cDarkMenuColor.mDarkBackground, g_cDarkMenuColor.mDarkBackground, g_cDarkMenuColor.mDarkForeground, g_cDarkControlColor.mDarkBackground, g_cDarkControlColor.mDarkBackground)
                 Else
                     i.RenderMode = ToolStripRenderMode.System
                     i.BackColor = g_cDarkMenuColor.mLightBackground
                     i.ForeColor = g_cDarkMenuColor.mLightForegound
+
+                    i.Renderer = New ToolStripSystemRenderer()
                 End If
 
                 For Each j As Object In i.Items
@@ -368,10 +406,14 @@ Public Class ClassControlStyle
                     i.RenderMode = ToolStripRenderMode.ManagerRenderMode
                     i.BackColor = g_cDarkMenuColor.mDarkBackground
                     i.ForeColor = g_cDarkMenuColor.mDarkForeground
+
+                    i.Renderer = New ClassToolStripCustomRenderer(g_cDarkMenuColor.mDarkBackground, g_cDarkMenuColor.mDarkBackground, g_cDarkMenuColor.mDarkForeground, g_cDarkControlColor.mDarkBackground, g_cDarkControlColor.mDarkBackground)
                 Else
                     i.RenderMode = ToolStripRenderMode.System
                     i.BackColor = g_cDarkMenuColor.mLightBackground
                     i.ForeColor = g_cDarkMenuColor.mLightForegound
+
+                    i.Renderer = New ToolStripSystemRenderer()
                 End If
 
                 For Each j As Object In i.Items
@@ -422,10 +464,14 @@ Public Class ClassControlStyle
                     i.RenderMode = ToolStripRenderMode.ManagerRenderMode
                     i.BackColor = g_cDarkMenuColor.mDarkBackground
                     i.ForeColor = g_cDarkMenuColor.mDarkForeground
+
+                    i.Renderer = New ClassToolStripCustomRenderer(g_cDarkMenuColor.mDarkBackground, g_cDarkMenuColor.mDarkBackground, g_cDarkMenuColor.mDarkForeground, g_cDarkControlColor.mDarkBackground, g_cDarkControlColor.mDarkBackground)
                 Else
                     i.RenderMode = ToolStripRenderMode.System
                     i.BackColor = g_cDarkMenuColor.mLightBackground
                     i.ForeColor = g_cDarkMenuColor.mLightForegound
+
+                    i.Renderer = New ToolStripSystemRenderer()
                 End If
 
                 For Each j As Object In i.Items
@@ -446,26 +492,90 @@ Public Class ClassControlStyle
 
     End Sub
 
+    Private Class ClassToolStripCustomRenderer
+        Inherits ToolStripProfessionalRenderer
 
-    Public Shared Sub UpdateControls(c As Control)
-        c.SuspendLayout()
+        Public Sub New(iToolStripBackgroundColor As Color, iImageMarginColor As Color, iMenuItemBorderColor As Color, iMenuItemPressedColor As Color, iMenuItemSelected As Color)
+            MyBase.New(New HightContrastColors(iToolStripBackgroundColor, iImageMarginColor, iMenuItemBorderColor, iMenuItemPressedColor, iMenuItemSelected))
+        End Sub
 
-        SetColor(c)
+        Private Class HightContrastColors
+            Inherits ProfessionalColorTable
 
-        For Each i As Control In c.Controls
-            UpdateControls(i)
-        Next
+            Private g_iToolStripBackgroundColor As Color
+            Private g_iImageMarginColor As Color
+            Private g_iMenuItemBorderColor As Color
+            Private g_iMenuItemPressedColor As Color
+            Private g_iMenuItemSelected As Color
 
-        c.ResumeLayout()
-    End Sub
+            Public Sub New(iToolStripBackgroundColor As Color, iImageMarginColor As Color, iMenuItemBorderColor As Color, iMenuItemPressedColor As Color, iMenuItemSelected As Color)
+                g_iToolStripBackgroundColor = iToolStripBackgroundColor
+                g_iImageMarginColor = iImageMarginColor
+                g_iMenuItemBorderColor = iMenuItemBorderColor
+                g_iMenuItemPressedColor = iMenuItemPressedColor
+                g_iMenuItemSelected = iMenuItemSelected
+            End Sub
 
-    ''' <summary>
-    ''' Invert the color
-    ''' </summary>
-    ''' <param name="cColor"></param>
-    ''' <returns></returns>
-    Public Shared Function InvertColor(cColor As Color) As Color
-        Dim cNewColor As Color = Color.FromArgb(cColor.ToArgb Xor -1) '&HFFFFFF 
-        Return Color.FromArgb(cColor.A, cNewColor.R, cNewColor.G, cNewColor.B)
-    End Function
+
+
+            'Menus
+            Public Overrides ReadOnly Property ToolStripDropDownBackground As Color
+                Get
+                    Return g_iToolStripBackgroundColor
+                End Get
+            End Property
+
+            Public Overrides ReadOnly Property ImageMarginGradientBegin As Color
+                Get
+                    Return g_iImageMarginColor
+                End Get
+            End Property
+            Public Overrides ReadOnly Property ImageMarginGradientEnd As Color
+                Get
+                    Return g_iImageMarginColor
+                End Get
+            End Property
+            Public Overrides ReadOnly Property ImageMarginGradientMiddle As Color
+                Get
+                    Return g_iImageMarginColor
+                End Get
+            End Property
+
+            Public Overrides ReadOnly Property MenuItemBorder As Color
+                Get
+                    Return g_iMenuItemBorderColor
+                End Get
+            End Property
+            Public Overrides ReadOnly Property MenuItemPressedGradientBegin As Color
+                Get
+                    Return g_iMenuItemPressedColor
+                End Get
+            End Property
+            Public Overrides ReadOnly Property MenuItemPressedGradientEnd As Color
+                Get
+                    Return g_iMenuItemPressedColor
+                End Get
+            End Property
+            Public Overrides ReadOnly Property MenuItemPressedGradientMiddle As Color
+                Get
+                    Return g_iMenuItemPressedColor
+                End Get
+            End Property
+            Public Overrides ReadOnly Property MenuItemSelected() As Color
+                Get
+                    Return g_iMenuItemSelected
+                End Get
+            End Property
+            Public Overrides ReadOnly Property MenuItemSelectedGradientBegin() As Color
+                Get
+                    Return g_iMenuItemSelected
+                End Get
+            End Property
+            Public Overrides ReadOnly Property MenuItemSelectedGradientEnd() As Color
+                Get
+                    Return g_iMenuItemSelected
+                End Get
+            End Property
+        End Class
+    End Class
 End Class

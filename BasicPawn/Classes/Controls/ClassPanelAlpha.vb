@@ -19,42 +19,40 @@ Public Class ClassPanelAlpha
     Inherits Panel
 
     Private g_mOpacity As Integer = 50
-    Public g_mTransparentBackColor As Color
+    Private g_mTransparentBackColor As Color = Color.Black
 
     Public Sub New()
-        g_mTransparentBackColor = Color.Red
-        m_Opacity = 50
-        Me.BackColor = Color.Transparent
-
         ClassTools.ClassForms.SetDoubleBufferingAllChilds(Me, True)
         ClassTools.ClassForms.SetDoubleBufferingUnmanagedAllChilds(Me, True)
     End Sub
 
     Protected Overrides Sub OnPaint(e As PaintEventArgs)
-        If Me.Parent IsNot Nothing AndAlso m_Opacity > 0 Then
-            Dim lControls As New SortedList(Of Integer, Control)
-
-            Using mBitmap = New Bitmap(Me.Parent.Width, Me.Parent.Height)
-                For Each c As Control In Me.Parent.Controls
-                    If (Me.Parent.Controls.GetChildIndex(c) > Me.Parent.Controls.GetChildIndex(Me) AndAlso c.Bounds.IntersectsWith(Me.Bounds)) Then
-                        lControls.Add(-Me.Parent.Controls.GetChildIndex(c), c)
-                    End If
-                Next
-
-                For Each i In lControls
-                    If (Not i.Value.Visible) Then
-                        Continue For
-                    End If
-
-                    i.Value.DrawToBitmap(mBitmap, i.Value.Bounds)
-                Next
-
-                e.Graphics.DrawImage(mBitmap, -Left, -Top)
-                Using b = New SolidBrush(Color.FromArgb(Me.g_mOpacity, Me.g_mTransparentBackColor))
-                    e.Graphics.FillRectangle(b, Me.ClientRectangle)
-                End Using
-            End Using
+        If (Me.Parent Is Nothing) Then
+            Return
         End If
+
+        Dim lControls As New SortedList(Of Integer, Control)
+
+        Using mBitmap = New Bitmap(Me.Parent.Width, Me.Parent.Height)
+            For Each c As Control In Me.Parent.Controls
+                If (Me.Parent.Controls.GetChildIndex(c) > Me.Parent.Controls.GetChildIndex(Me) AndAlso c.Bounds.IntersectsWith(Me.Bounds)) Then
+                    lControls.Add(-Me.Parent.Controls.GetChildIndex(c), c)
+                End If
+            Next
+
+            For Each i In lControls
+                If (Not i.Value.Visible) Then
+                    Continue For
+                End If
+
+                i.Value.DrawToBitmap(mBitmap, i.Value.Bounds)
+            Next
+
+            e.Graphics.DrawImage(mBitmap, -Left, -Top)
+            Using b = New SolidBrush(Color.FromArgb(Me.g_mOpacity, Me.g_mTransparentBackColor))
+                e.Graphics.FillRectangle(b, Me.ClientRectangle)
+            End Using
+        End Using
     End Sub
 
     Public Property m_Opacity As Integer
@@ -62,8 +60,13 @@ Public Class ClassPanelAlpha
             Return g_mOpacity
         End Get
         Set(value As Integer)
-            value = Math.Max(value, 0)
-            value = Math.Min(value, 100)
+            If (value > 100) Then
+                value = 100
+            End If
+
+            If (value < 0) Then
+                value = 0
+            End If
 
             g_mOpacity = value
             Me.Invalidate()
