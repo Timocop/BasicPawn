@@ -496,10 +496,10 @@ Public Class ClassControlStyle
         Inherits ToolStripProfessionalRenderer
 
         Public Sub New(iToolStripBackgroundColor As Color, iImageMarginColor As Color, iMenuItemBorderColor As Color, iMenuItemPressedColor As Color, iMenuItemSelected As Color)
-            MyBase.New(New HightContrastColors(iToolStripBackgroundColor, iImageMarginColor, iMenuItemBorderColor, iMenuItemPressedColor, iMenuItemSelected))
+            MyBase.New(New CustomProfessionalColorTable(iToolStripBackgroundColor, iImageMarginColor, iMenuItemBorderColor, iMenuItemPressedColor, iMenuItemSelected))
         End Sub
 
-        Private Class HightContrastColors
+        Private Class CustomProfessionalColorTable
             Inherits ProfessionalColorTable
 
             Private g_iToolStripBackgroundColor As Color
