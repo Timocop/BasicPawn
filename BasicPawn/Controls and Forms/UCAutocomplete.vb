@@ -139,7 +139,7 @@ Public Class UCAutocomplete
             Return 0
         End If
 
-        If (sText.Length < 3 OrElse String.IsNullOrEmpty(sText) OrElse Regex.IsMatch(sText, "^[0-9]+$")) Then
+        If (String.IsNullOrEmpty(sText) OrElse sText.Length < 3 OrElse Regex.IsMatch(sText, "^[0-9]+$")) Then
             ListView_AutocompleteList.Items.Clear()
             ListView_AutocompleteList.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize)
             g_sLastAutocompleteText = ""
@@ -149,7 +149,7 @@ Public Class UCAutocomplete
         Dim bSelectedWord As Boolean = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.SelectionManager.HasSomethingSelected
         Dim lListViewItemsList As New List(Of ClassListViewItemData)
 
-        Dim sAutocompleteArray As ClassSyntaxTools.STRUC_AUTOCOMPLETE() = g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.ToArray
+        Dim sAutocompleteArray As ClassSyntaxTools.STRUC_AUTOCOMPLETE() = ClassSyntaxTools.g_lAutocompleteList.ToArray
         For i = 0 To sAutocompleteArray.Length - 1
             If (bSelectedWord) Then
                 If (sAutocompleteArray(i).sFunctionName.Equals(sText)) Then
@@ -282,7 +282,7 @@ Public Class UCAutocomplete
                 End If
 
                 Dim bPrintedInfo As Boolean = False
-                Dim sAutocompleteArray As ClassSyntaxTools.STRUC_AUTOCOMPLETE() = g_AutocompleteUC.g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.ToArray
+                Dim sAutocompleteArray As ClassSyntaxTools.STRUC_AUTOCOMPLETE() = ClassSyntaxTools.g_lAutocompleteList.ToArray
                 For i = 0 To sAutocompleteArray.Length - 1
                     If (sAutocompleteArray(i).sFunctionName.Contains(sCurrentMethodName) AndAlso
                                 (sAutocompleteArray(i).mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE AndAlso

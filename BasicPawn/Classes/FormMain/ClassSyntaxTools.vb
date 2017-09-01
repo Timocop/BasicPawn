@@ -21,11 +21,24 @@ Imports ICSharpCode.TextEditor.Document
 
 Public Class ClassSyntaxTools
     Private g_mFormMain As FormMain
+    Private _lock As Object = New Object()
 
-    Public g_sStatementsArray As String() = {"if", "else", "for", "while", "do", "switch"}
+    Public Shared g_sStatementsArray As String() = {"if", "else", "for", "while", "do", "switch"}
 
-    Public g_sHighlightWord As String = ""
-    Public g_sCaretWord As String = ""
+    Public Shared g_sHighlightWord As String = ""
+    Public Shared g_sCaretWord As String = ""
+
+    Public Shared g_SyntaxXML As String = My.Resources.SourcePawn_Syntax
+
+    Public Shared g_sSyntax_HighlightCaretMarker As String = "<!-- [DO NOT EDIT | HIGHLIGHT CARET MARKER] -->"
+    Public Shared g_sSyntax_HighlightWordMarker As String = "<!-- [DO NOT EDIT | HIGHLIGHT WORD MARKER] -->"
+    Public Shared g_sSyntax_HighlightWordCustomMarker As String = "<!-- [DO NOT EDIT | HIGHLIGHT WORD CUSTOM MARKER] -->"
+    Public Shared g_sSyntax_HighlightDefineMarker As String = "<!-- [DO NOT EDIT | DEFINE MARKER] -->"
+    Public Shared g_sSyntax_HighlightEnumMarker As String = "<!-- [DO NOT EDIT | ENUM MARKER] -->"
+    Public Shared g_sSyntax_HighlightEnum2Marker As String = "<!-- [DO NOT EDIT | ENUM2 MARKER] -->"
+    Public Shared g_sSyntax_SourcePawnMarker As String = "SourcePawn-04e3632f-5472-42c5-929a-c3e0c2b35324"
+
+    Public Shared g_lAutocompleteList As New ClassSyncList(Of STRUC_AUTOCOMPLETE)
 
     Enum ENUM_SYNTAX_FILES
         MAIN_TEXTEDITOR
@@ -36,21 +49,15 @@ Public Class ClassSyntaxTools
         Dim sFolder As String
         Dim sDefinition As String
     End Structure
-    Public g_SyntaxFiles([Enum].GetNames(GetType(ENUM_SYNTAX_FILES)).Length - 1) As STRUC_SYNTAX_FILES_ITEM
+    Public Shared g_SyntaxFiles As STRUC_SYNTAX_FILES_ITEM()
 
-    Public g_SyntaxXML As String = My.Resources.SourcePawn_Syntax
-
-    Public g_sSyntax_HighlightCaretMarker As String = "<!-- [DO NOT EDIT | HIGHLIGHT CARET MARKER] -->"
-    Public g_sSyntax_HighlightWordMarker As String = "<!-- [DO NOT EDIT | HIGHLIGHT WORD MARKER] -->"
-    Public g_sSyntax_HighlightWordCustomMarker As String = "<!-- [DO NOT EDIT | HIGHLIGHT WORD CUSTOM MARKER] -->"
-    Public g_sSyntax_HighlightDefineMarker As String = "<!-- [DO NOT EDIT | DEFINE MARKER] -->"
-    Public g_sSyntax_HighlightEnumMarker As String = "<!-- [DO NOT EDIT | ENUM MARKER] -->"
-    Public g_sSyntax_HighlightEnum2Marker As String = "<!-- [DO NOT EDIT | ENUM2 MARKER] -->"
-    Public g_sSyntax_SourcePawnMarker As String = "SourcePawn-04e3632f-5472-42c5-929a-c3e0c2b35324"
-
-    Public lAutocompleteList As New ClassSyncList(Of STRUC_AUTOCOMPLETE)
-
-    Private _lock As Object = New Object()
+    Enum ENUM_MOD_TYPE
+        SOURCEMOD
+        AMXMODX
+        PAWN
+    End Enum
+    Public Shared g_iActiveModType As ENUM_MOD_TYPE = ENUM_MOD_TYPE.SOURCEMOD
+    Public Shared g_sEscapeCharacters As String()
 
     Public Enum ENUM_SYNTAX_UPDATE_TYPE
         NONE
@@ -60,21 +67,36 @@ Public Class ClassSyntaxTools
         AUTOCOMPLETE
     End Enum
 
+    Shared Sub New()
+        Dim sSyntaxWorkingDir As String = IO.Path.Combine(My.Computer.FileSystem.SpecialDirectories.Temp, Guid.NewGuid.ToString)
+
+        g_sEscapeCharacters = New String() {"\", "^", "\"}
+
+        g_SyntaxFiles = {
+                New STRUC_SYNTAX_FILES_ITEM() With {
+                    .sFile = String.Format("{0}.xshd", IO.Path.Combine(sSyntaxWorkingDir, Guid.NewGuid.ToString)),
+                    .sFolder = sSyntaxWorkingDir,
+                    .sDefinition = "SourcePawn-MainTextEditor-" & Guid.NewGuid.ToString},
+                New STRUC_SYNTAX_FILES_ITEM() With {
+                    .sFile = String.Format("{0}.xshd", IO.Path.Combine(sSyntaxWorkingDir, Guid.NewGuid.ToString)),
+                    .sFolder = sSyntaxWorkingDir,
+                    .sDefinition = "SourcePawn-DebugTextEditor-" & Guid.NewGuid.ToString}
+            }
+    End Sub
+
+
     Public Sub New(f As FormMain)
         g_mFormMain = f
 
-        'Add syntax Files for TextEditor
-        Dim sSyntaxWorkingDir As String = IO.Path.Combine(My.Computer.FileSystem.SpecialDirectories.Temp, Guid.NewGuid.ToString)
+        'Check escape chars
+        If (g_sEscapeCharacters.Length <> [Enum].GetNames(GetType(ENUM_MOD_TYPE)).Length) Then
+            Throw New ArgumentException("g_sEscapeCharacters lenght")
+        End If
 
-        g_SyntaxFiles(ENUM_SYNTAX_FILES.MAIN_TEXTEDITOR) = New STRUC_SYNTAX_FILES_ITEM() With {
-                                                                    .sFile = String.Format("{0}.xshd", IO.Path.Combine(sSyntaxWorkingDir, Guid.NewGuid.ToString)),
-                                                                    .sFolder = sSyntaxWorkingDir,
-                                                                    .sDefinition = "SourcePawn-MainTextEditor-" & Guid.NewGuid.ToString}
-
-        g_SyntaxFiles(ENUM_SYNTAX_FILES.DEBUGGER_TEXTEDITOR) = New STRUC_SYNTAX_FILES_ITEM() With {
-                                                                    .sFile = String.Format("{0}.xshd", IO.Path.Combine(sSyntaxWorkingDir, Guid.NewGuid.ToString)),
-                                                                    .sFolder = sSyntaxWorkingDir,
-                                                                    .sDefinition = "SourcePawn-DebugTextEditor-" & Guid.NewGuid.ToString}
+        'Check syntax Files for TextEditor
+        If (g_SyntaxFiles.Length <> [Enum].GetNames(GetType(ENUM_SYNTAX_FILES)).Length) Then
+            Throw New ArgumentException("g_SyntaxFiles lenght")
+        End If
 
         'Add all syntax files to the provider, only once
         For i = 0 To g_SyntaxFiles.Length - 1
@@ -83,7 +105,6 @@ Public Class ClassSyntaxTools
             HighlightingManager.Manager.AddSyntaxModeFileProvider(New FileSyntaxModeProvider(g_SyntaxFiles(i).sFolder))
         Next
     End Sub
-
 
     Public Class STRUC_AUTOCOMPLETE
         Public sInfo As String
@@ -326,7 +347,7 @@ Public Class ClassSyntaxTools
                                             If (sLine.Contains(g_sSyntax_HighlightDefineMarker)) Then
                                                 mXmlBuilder.Append(g_sSyntax_HighlightDefineMarker)
 
-                                                For Each mAutocomplete In lAutocompleteList
+                                                For Each mAutocomplete In g_lAutocompleteList
                                                     Select Case (True)
                                                         Case (mAutocomplete.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEFINE) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEFINE,
                                                                     (mAutocomplete.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PUBLICVAR) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PUBLICVAR
@@ -344,7 +365,7 @@ Public Class ClassSyntaxTools
 
                                                 Dim lExistList As New List(Of String)
 
-                                                For Each mAutocomplete In lAutocompleteList
+                                                For Each mAutocomplete In g_lAutocompleteList
                                                     Select Case (True)
                                                         Case (mAutocomplete.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM
                                                             Dim sEnumName As String() = mAutocomplete.sFunctionName.Split("."c)
@@ -373,7 +394,7 @@ Public Class ClassSyntaxTools
 
                                                 Dim lExistList As New List(Of String)
 
-                                                For Each mAutocomplete In lAutocompleteList
+                                                For Each mAutocomplete In g_lAutocompleteList
                                                     Select Case (True)
                                                         Case (mAutocomplete.mType And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STRUCT) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STRUCT
                                                             If (Not lExistList.Contains(mAutocomplete.sFunctionName)) Then
@@ -447,6 +468,28 @@ Public Class ClassSyntaxTools
 
                                 Exit While
                             End While
+
+                            'Set escape characters
+                            If (True) Then
+                                Dim mMatchColl As MatchCollection = Regex.Matches(sFormatedString, "\b(escapecharacter)\b\s*=\s*""(?<EscapeChar>(\^|\\))""")
+                                For j = mMatchColl.Count - 1 To 0 Step -1
+                                    If (Not mMatchColl(j).Success) Then
+                                        Continue For
+                                    End If
+
+                                    Try
+                                        Dim sEscapeChar As String = mMatchColl(j).Groups("EscapeChar").Value
+                                        If (sEscapeChar = g_sEscapeCharacters(g_iActiveModType)) Then
+                                            Continue For
+                                        End If
+
+                                        Dim iEscapeCharIndex As Integer = mMatchColl(j).Groups("EscapeChar").Index
+
+                                        sFormatedString = sFormatedString.Remove(iEscapeCharIndex, g_sEscapeCharacters(g_iActiveModType).Length)
+                                        sFormatedString = sFormatedString.Insert(iEscapeCharIndex, g_sEscapeCharacters(g_iActiveModType))
+                                    Catch : End Try
+                                Next
+                            End If
 
                             IO.File.WriteAllText(g_SyntaxFiles(i).sFile, sFormatedString)
                     End Select
@@ -1056,10 +1099,10 @@ Public Class ClassSyntaxTools
                         End If
 
                         'ignore \'
-                        If (i > 1 AndAlso sText(i - 1) <> "\"c) Then
+                        If (i > 1 AndAlso sText(i - 1) <> ClassSyntaxTools.g_sEscapeCharacters(ClassSyntaxTools.g_iActiveModType)) Then
                             bInChar = If(bInChar > 0, 0, 1)
                             iStateArray(i, ENUM_STATE_TYPES.IN_CHAR) = 1
-                        ElseIf (i > 2 AndAlso sText(i - 1) = "\"c AndAlso sText(i - 2) = "\"c) Then
+                        ElseIf (i > 2 AndAlso sText(i - 1) = ClassSyntaxTools.g_sEscapeCharacters(ClassSyntaxTools.g_iActiveModType) AndAlso sText(i - 2) = ClassSyntaxTools.g_sEscapeCharacters(ClassSyntaxTools.g_iActiveModType)) Then
                             bInChar = If(bInChar > 0, 0, 1)
                             iStateArray(i, ENUM_STATE_TYPES.IN_CHAR) = 1
                         End If
@@ -1073,10 +1116,10 @@ Public Class ClassSyntaxTools
                         End If
 
                         'ignore \"
-                        If (i > 1 AndAlso sText(i - 1) <> "\"c) Then
+                        If (i > 1 AndAlso sText(i - 1) <> ClassSyntaxTools.g_sEscapeCharacters(ClassSyntaxTools.g_iActiveModType)) Then
                             bInString = If(bInString > 0, 0, 1)
                             iStateArray(i, ENUM_STATE_TYPES.IN_STRING) = 1
-                        ElseIf (i > 2 AndAlso sText(i - 1) = "\"c AndAlso sText(i - 2) = "\"c) Then
+                        ElseIf (i > 2 AndAlso sText(i - 1) = ClassSyntaxTools.g_sEscapeCharacters(ClassSyntaxTools.g_iActiveModType) AndAlso sText(i - 2) = ClassSyntaxTools.g_sEscapeCharacters(ClassSyntaxTools.g_iActiveModType)) Then
                             bInString = If(bInString > 0, 0, 1)
                             iStateArray(i, ENUM_STATE_TYPES.IN_STRING) = 1
                         End If

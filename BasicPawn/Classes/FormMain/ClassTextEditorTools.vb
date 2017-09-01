@@ -36,18 +36,18 @@ Public Class ClassTextEditorTools
     Public Sub MarkSelectedWord()
         Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
 
-        Dim sLastWord As String = g_mFormMain.g_ClassSyntaxTools.g_sHighlightWord
-        g_mFormMain.g_ClassSyntaxTools.g_sHighlightWord = ""
+        Dim sLastWord As String = ClassSyntaxTools.g_sHighlightWord
+        ClassSyntaxTools.g_sHighlightWord = ""
 
         If (mActiveTextEditor.ActiveTextAreaControl.SelectionManager.HasSomethingSelected) Then
             Dim m_CurrentSelection As ISelection = mActiveTextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection(0)
 
             If (Regex.IsMatch(m_CurrentSelection.SelectedText, "^[a-zA-Z0-9_]+$")) Then
-                g_mFormMain.g_ClassSyntaxTools.g_sHighlightWord = m_CurrentSelection.SelectedText
+                ClassSyntaxTools.g_sHighlightWord = m_CurrentSelection.SelectedText
             End If
         End If
 
-        If (g_mFormMain.g_ClassSyntaxTools.g_sHighlightWord = sLastWord) Then
+        If (ClassSyntaxTools.g_sHighlightWord = sLastWord) Then
             Return
         End If
 
@@ -61,23 +61,23 @@ Public Class ClassTextEditorTools
     Public Sub MarkCaretWord()
         Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
 
-        Dim sLastWord As String = g_mFormMain.g_ClassSyntaxTools.g_sCaretWord
-        g_mFormMain.g_ClassSyntaxTools.g_sCaretWord = ""
+        Dim sLastWord As String = ClassSyntaxTools.g_sCaretWord
+        ClassSyntaxTools.g_sCaretWord = ""
 
         If (Not mActiveTextEditor.ActiveTextAreaControl.SelectionManager.HasSomethingSelected) Then
             Dim sWord As String = GetCaretWord(False)
 
             If (Not String.IsNullOrEmpty(sWord)) Then
-                g_mFormMain.g_ClassSyntaxTools.g_sCaretWord = sWord
+                ClassSyntaxTools.g_sCaretWord = sWord
             End If
         End If
 
-        If (g_mFormMain.g_ClassSyntaxTools.g_sCaretWord = sLastWord) Then
+        If (ClassSyntaxTools.g_sCaretWord = sLastWord) Then
             Return
         End If
 
-        If (Not String.IsNullOrEmpty(g_mFormMain.g_ClassSyntaxTools.g_sCaretWord) AndAlso
-                    Regex.Matches(mActiveTextEditor.Document.TextContent, String.Format("\b{0}\b", Regex.Escape(g_mFormMain.g_ClassSyntaxTools.g_sCaretWord)), RegexOptions.Multiline).Count < 2) Then
+        If (Not String.IsNullOrEmpty(ClassSyntaxTools.g_sCaretWord) AndAlso
+                    Regex.Matches(mActiveTextEditor.Document.TextContent, String.Format("\b{0}\b", Regex.Escape(ClassSyntaxTools.g_sCaretWord)), RegexOptions.Multiline).Count < 2) Then
             Return
         End If
 

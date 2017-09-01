@@ -92,7 +92,7 @@ Public Class UCObjectBrowser
             End If
 
             Dim lAutocompleteList As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
-            lAutocompleteList.AddRange(g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.ToArray)
+            lAutocompleteList.AddRange(ClassSyntaxTools.g_lAutocompleteList.ToArray)
 
             If (True) Then
                 Dim i As Integer
@@ -174,6 +174,8 @@ Public Class UCObjectBrowser
                     End If
                 Next
             End If
+
+            lAutocompleteList = Nothing
 
             If (bWndProcBug) Then
                 Me.Invoke(Sub()

@@ -23,6 +23,8 @@ Partial Class FormSettings
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormSettings))
+        Me.Button_Cancel = New System.Windows.Forms.Button()
+        Me.Button_Apply = New System.Windows.Forms.Button()
         Me.TabControl1 = New BasicPawn.ClassTabControlColor()
         Me.TabPage_Settings = New System.Windows.Forms.TabPage()
         Me.Panel8 = New System.Windows.Forms.Panel()
@@ -101,6 +103,8 @@ Partial Class FormSettings
         Me.Button_SourceModFolder = New System.Windows.Forms.Button()
         Me.Label12 = New System.Windows.Forms.Label()
         Me.Panel9 = New System.Windows.Forms.Panel()
+        Me.Label20 = New System.Windows.Forms.Label()
+        Me.ComboBox_ModType = New System.Windows.Forms.ComboBox()
         Me.Label11 = New System.Windows.Forms.Label()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.RadioButton_ConfigSettingAutomatic = New System.Windows.Forms.RadioButton()
@@ -135,8 +139,6 @@ Partial Class FormSettings
         Me.TableLayoutPanel3 = New System.Windows.Forms.TableLayoutPanel()
         Me.ClassPictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
         Me.Label17 = New System.Windows.Forms.Label()
-        Me.Button_Cancel = New System.Windows.Forms.Button()
-        Me.Button_Apply = New System.Windows.Forms.Button()
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Settings.SuspendLayout()
         Me.Panel8.SuspendLayout()
@@ -162,6 +164,30 @@ Partial Class FormSettings
         Me.TableLayoutPanel3.SuspendLayout()
         CType(Me.ClassPictureBoxQuality1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
+        '
+        'Button_Cancel
+        '
+        Me.Button_Cancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Button_Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
+        Me.Button_Cancel.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.Button_Cancel.Location = New System.Drawing.Point(536, 768)
+        Me.Button_Cancel.Name = "Button_Cancel"
+        Me.Button_Cancel.Size = New System.Drawing.Size(86, 23)
+        Me.Button_Cancel.TabIndex = 1
+        Me.Button_Cancel.Text = "Cancel"
+        Me.Button_Cancel.UseVisualStyleBackColor = True
+        '
+        'Button_Apply
+        '
+        Me.Button_Apply.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Button_Apply.DialogResult = System.Windows.Forms.DialogResult.OK
+        Me.Button_Apply.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.Button_Apply.Location = New System.Drawing.Point(444, 768)
+        Me.Button_Apply.Name = "Button_Apply"
+        Me.Button_Apply.Size = New System.Drawing.Size(86, 23)
+        Me.Button_Apply.TabIndex = 2
+        Me.Button_Apply.Text = "Apply"
+        Me.Button_Apply.UseVisualStyleBackColor = True
         '
         'TabControl1
         '
@@ -873,7 +899,7 @@ Partial Class FormSettings
         Me.GroupBox_ConfigSettings.Location = New System.Drawing.Point(0, 0)
         Me.GroupBox_ConfigSettings.Margin = New System.Windows.Forms.Padding(0)
         Me.GroupBox_ConfigSettings.Name = "GroupBox_ConfigSettings"
-        Me.GroupBox_ConfigSettings.Size = New System.Drawing.Size(452, 508)
+        Me.GroupBox_ConfigSettings.Size = New System.Drawing.Size(452, 535)
         Me.GroupBox_ConfigSettings.TabIndex = 7
         Me.GroupBox_ConfigSettings.TabStop = False
         Me.GroupBox_ConfigSettings.Text = "Config Settings"
@@ -891,7 +917,7 @@ Partial Class FormSettings
         Me.Panel11.Controls.Add(Me.Button_SyntaxPath)
         Me.Panel11.Controls.Add(Me.LinkLabel_SyntaxDefault)
         Me.Panel11.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel11.Location = New System.Drawing.Point(3, 365)
+        Me.Panel11.Location = New System.Drawing.Point(3, 392)
         Me.Panel11.Name = "Panel11"
         Me.Panel11.Size = New System.Drawing.Size(446, 140)
         Me.Panel11.TabIndex = 30
@@ -1001,7 +1027,7 @@ Partial Class FormSettings
         Me.Panel10.Controls.Add(Me.Button_SourceModFolder)
         Me.Panel10.Controls.Add(Me.Label12)
         Me.Panel10.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel10.Location = New System.Drawing.Point(3, 263)
+        Me.Panel10.Location = New System.Drawing.Point(3, 290)
         Me.Panel10.Name = "Panel10"
         Me.Panel10.Size = New System.Drawing.Size(446, 102)
         Me.Panel10.TabIndex = 29
@@ -1091,6 +1117,8 @@ Partial Class FormSettings
         'Panel9
         '
         Me.Panel9.AutoSize = True
+        Me.Panel9.Controls.Add(Me.Label20)
+        Me.Panel9.Controls.Add(Me.ComboBox_ModType)
         Me.Panel9.Controls.Add(Me.Label11)
         Me.Panel9.Controls.Add(Me.Label3)
         Me.Panel9.Controls.Add(Me.RadioButton_ConfigSettingAutomatic)
@@ -1100,8 +1128,28 @@ Partial Class FormSettings
         Me.Panel9.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel9.Location = New System.Drawing.Point(3, 18)
         Me.Panel9.Name = "Panel9"
-        Me.Panel9.Size = New System.Drawing.Size(446, 245)
+        Me.Panel9.Size = New System.Drawing.Size(446, 272)
         Me.Panel9.TabIndex = 28
+        '
+        'Label20
+        '
+        Me.Label20.AutoSize = True
+        Me.Label20.Location = New System.Drawing.Point(3, 251)
+        Me.Label20.Name = "Label20"
+        Me.Label20.Size = New System.Drawing.Size(34, 13)
+        Me.Label20.TabIndex = 27
+        Me.Label20.Text = "Mod:"
+        '
+        'ComboBox_ModType
+        '
+        Me.ComboBox_ModType.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ComboBox_ModType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.ComboBox_ModType.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.ComboBox_ModType.FormattingEnabled = True
+        Me.ComboBox_ModType.Location = New System.Drawing.Point(225, 248)
+        Me.ComboBox_ModType.Name = "ComboBox_ModType"
+        Me.ComboBox_ModType.Size = New System.Drawing.Size(212, 21)
+        Me.ComboBox_ModType.TabIndex = 26
         '
         'Label11
         '
@@ -1465,30 +1513,6 @@ Partial Class FormSettings
         Me.Label17.Text = "Loaded BasicPawn plugins are able to read stored database entries. Make sure all " &
     "installed plugins are from a trustworthy publisher to prevent theft."
         '
-        'Button_Cancel
-        '
-        Me.Button_Cancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button_Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.Button_Cancel.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_Cancel.Location = New System.Drawing.Point(536, 768)
-        Me.Button_Cancel.Name = "Button_Cancel"
-        Me.Button_Cancel.Size = New System.Drawing.Size(86, 23)
-        Me.Button_Cancel.TabIndex = 1
-        Me.Button_Cancel.Text = "Cancel"
-        Me.Button_Cancel.UseVisualStyleBackColor = True
-        '
-        'Button_Apply
-        '
-        Me.Button_Apply.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button_Apply.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.Button_Apply.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_Apply.Location = New System.Drawing.Point(444, 768)
-        Me.Button_Apply.Name = "Button_Apply"
-        Me.Button_Apply.Size = New System.Drawing.Size(86, 23)
-        Me.Button_Apply.TabIndex = 2
-        Me.Button_Apply.Text = "Apply"
-        Me.Button_Apply.UseVisualStyleBackColor = True
-        '
         'FormSettings
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -1663,4 +1687,6 @@ Partial Class FormSettings
     Friend WithEvents CheckBox_AssociateIncludes As CheckBox
     Friend WithEvents CheckBox_AssociateBasicPawnProject As CheckBox
     Friend WithEvents CheckBox_AssociateAmxMod As CheckBox
+    Friend WithEvents Label20 As Label
+    Friend WithEvents ComboBox_ModType As ComboBox
 End Class

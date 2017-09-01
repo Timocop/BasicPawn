@@ -23,15 +23,27 @@ Public Class FormSettings
     Private g_bRestoreConfigs As Boolean = False
     Private g_bIgnoreChange As Boolean = False
     Private g_bConfigSettingsChanged As Boolean = False
+    Private g_bComboBoxModTypeIgnore As Boolean = False
 
     Public Sub New(f As FormMain)
+        g_mFormMain = f
         g_bIgnoreChange = True
 
         ' This call is required by the designer.
         InitializeComponent()
 
-        ' Add any initialization after the InitializeComponent() call.
-        g_mFormMain = f
+        ' Add any initialization after the InitializeComponent() call. 
+        g_bComboBoxModTypeIgnore = True
+        ComboBox_ModType.Items.Clear()
+        ComboBox_ModType.Items.Add("Auto-detect")
+        ComboBox_ModType.Items.Add("SourceMod")
+        ComboBox_ModType.Items.Add("AMX Mod X")
+        ComboBox_ModType.SelectedIndex = 0
+        g_bComboBoxModTypeIgnore = False
+
+        If (ComboBox_ModType.Items.Count <> [Enum].GetNames(GetType(ClassConfigs.STRUC_CONFIG_ITEM.ENUM_MOD_TYPE)).Length) Then
+            Throw New ArgumentException("ComboBox_ModType range")
+        End If
 
         Me.Size = Me.MinimumSize
 
@@ -47,6 +59,10 @@ Public Class FormSettings
             Return g_bConfigSettingsChanged
         End Get
         Set(value As Boolean)
+            If (g_bIgnoreChange) Then
+                Return
+            End If
+
             g_bConfigSettingsChanged = value
 
             GroupBox_ConfigSettings.Text = GroupBox_ConfigSettings.Text.TrimEnd("*"c) & If(g_bConfigSettingsChanged, "*"c, "")
@@ -129,6 +145,7 @@ Public Class FormSettings
                 TextBox_IncludeFolder.Text = ""
                 TextBox_OutputFolder.Text = ""
                 CheckBox_ConfigIsDefault.Checked = False
+                ComboBox_ModType.SelectedIndex = 0
                 'Debugging
                 TextBox_GameFolder.Text = ""
                 TextBox_SourceModFolder.Text = ""
@@ -155,6 +172,7 @@ Public Class FormSettings
             TextBox_IncludeFolder.Text = ""
             TextBox_OutputFolder.Text = ""
             CheckBox_ConfigIsDefault.Checked = False
+            ComboBox_ModType.SelectedIndex = 0
             'Debugging
             TextBox_GameFolder.Text = ""
             TextBox_SourceModFolder.Text = ""
@@ -181,6 +199,7 @@ Public Class FormSettings
             TextBox_IncludeFolder.Text = mConfig.g_sIncludeFolders
             TextBox_OutputFolder.Text = mConfig.g_sOutputFolder
             CheckBox_ConfigIsDefault.Checked = mConfig.g_bAutoload
+            ComboBox_ModType.SelectedIndex = mConfig.g_iModType
             'Debugging
             TextBox_GameFolder.Text = mConfig.g_sDebugGameFolder
             TextBox_SourceModFolder.Text = mConfig.g_sDebugSourceModFolder
@@ -308,6 +327,7 @@ Public Class FormSettings
                                                                         TextBox_CompilerPath.Text,
                                                                         TextBox_OutputFolder.Text,
                                                                         CheckBox_ConfigIsDefault.Checked,
+                                                                        CType(ComboBox_ModType.SelectedIndex, ClassConfigs.STRUC_CONFIG_ITEM.ENUM_MOD_TYPE),
                                                                         TextBox_GameFolder.Text,
                                                                         TextBox_SourceModFolder.Text,
                                                                         TextBox_Shell.Text,
@@ -614,20 +634,6 @@ Public Class FormSettings
         MarkChanged()
     End Sub
 
-    Public Sub MarkChanged()
-        If (Not g_bIgnoreChange AndAlso Not TabPage_Configs.Text.EndsWith("*"c)) Then
-            TabPage_Configs.Text = TabPage_Configs.Text & "*"
-            TabControl1.Refresh()
-        End If
-    End Sub
-
-    Public Sub ResetChanged()
-        If (TabPage_Configs.Text.EndsWith("*"c)) Then
-            TabPage_Configs.Text = TabPage_Configs.Text.TrimEnd("*"c)
-            TabControl1.Refresh()
-        End If
-    End Sub
-
     Private Sub TextBox_CompilerPath_TextChanged(sender As Object, e As EventArgs) Handles TextBox_CompilerPath.TextChanged
         m_ConfigSettingsChanged = True
         MarkChanged()
@@ -668,6 +674,15 @@ Public Class FormSettings
         MarkChanged()
     End Sub
 
+    Private Sub ComboBox_ModType_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboBox_ModType.SelectedIndexChanged
+        If (g_bComboBoxModTypeIgnore) Then
+            Return
+        End If
+
+        m_ConfigSettingsChanged = True
+        MarkChanged()
+    End Sub
+
     Private Sub Button_AddDatabaseItem_Click(sender As Object, e As EventArgs) Handles Button_AddDatabaseItem.Click
         Using i As New FormDatabaseInput()
             If (i.ShowDialog(Me) = DialogResult.OK) Then
@@ -681,5 +696,19 @@ Public Class FormSettings
 
     Private Sub Button_Refresh_Click(sender As Object, e As EventArgs) Handles Button_Refresh.Click
         DatabaseViewer.FillFromDatabase()
+    End Sub
+
+    Public Sub MarkChanged()
+        If (Not g_bIgnoreChange AndAlso Not TabPage_Configs.Text.EndsWith("*"c)) Then
+            TabPage_Configs.Text = TabPage_Configs.Text & "*"
+            TabControl1.Refresh()
+        End If
+    End Sub
+
+    Public Sub ResetChanged()
+        If (TabPage_Configs.Text.EndsWith("*"c)) Then
+            TabPage_Configs.Text = TabPage_Configs.Text.TrimEnd("*"c)
+            TabControl1.Refresh()
+        End If
     End Sub
 End Class

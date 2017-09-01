@@ -24,12 +24,19 @@ Public Class ClassConfigs
     Class STRUC_CONFIG_ITEM
         Private g_sName As String = ""
 
+        Enum ENUM_MOD_TYPE
+            AUTO_DETECT
+            SOURCEMOD
+            AMXMODX
+        End Enum
+
         'General
         Public g_iCompilingType As ClassSettings.ENUM_COMPILING_TYPE = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC
         Public g_sIncludeFolders As String = ""
         Public g_sCompilerPath As String = ""
         Public g_sOutputFolder As String = ""
         Public g_bAutoload As Boolean = False
+        Public g_iModType As ENUM_MOD_TYPE = ENUM_MOD_TYPE.AUTO_DETECT
         'Debugging
         Public g_sDebugGameFolder As String = ""
         Public g_sDebugSourceModFolder As String = ""
@@ -42,7 +49,7 @@ Public Class ClassConfigs
         End Sub
 
         Public Sub New(sName As String,
-                       iCompilingType As ClassSettings.ENUM_COMPILING_TYPE, sIncludeFolders As String, sCompilerPath As String, sOutputFolder As String, bAutoload As Boolean,
+                       iCompilingType As ClassSettings.ENUM_COMPILING_TYPE, sIncludeFolders As String, sCompilerPath As String, sOutputFolder As String, bAutoload As Boolean, iModType As ENUM_MOD_TYPE,
                        sDebugGameFolder As String, sDebugSourceModFolder As String,
                        sExecuteShell As String, sSyntaxHighlightingPath As String)
 
@@ -53,6 +60,7 @@ Public Class ClassConfigs
             g_sCompilerPath = sCompilerPath
             g_sOutputFolder = sOutputFolder
             g_bAutoload = bAutoload
+            g_iModType = iModType
             'Debugging
             g_sDebugGameFolder = sDebugGameFolder
             g_sDebugSourceModFolder = sDebugSourceModFolder
@@ -157,6 +165,7 @@ Public Class ClassConfigs
         iniFile.WriteKeyValue("Config", "IncludeDirectory", mConfig.g_sIncludeFolders)
         iniFile.WriteKeyValue("Config", "OutputDirectory", mConfig.g_sOutputFolder)
         iniFile.WriteKeyValue("Config", "Autoload", If(mConfig.g_bAutoload, "1", "0"))
+        iniFile.WriteKeyValue("Config", "ModType", CStr(mConfig.g_iModType))
         'Debugging
         iniFile.WriteKeyValue("Config", "DebugGameDirectory", mConfig.g_sDebugGameFolder)
         iniFile.WriteKeyValue("Config", "DebugSourceModDirectory", mConfig.g_sDebugSourceModFolder)
@@ -186,6 +195,13 @@ Public Class ClassConfigs
         Dim sCompilerPath As String = iniFile.ReadKeyValue("Config", "CompilerPath", "")
         Dim sOutputFolder As String = iniFile.ReadKeyValue("Config", "OutputDirectory", "")
         Dim bIsDefault As Boolean = (iniFile.ReadKeyValue("Config", "Autoload", "0") <> "0")
+        Dim sModType As String = iniFile.ReadKeyValue("Config", "ModType", CStr(STRUC_CONFIG_ITEM.ENUM_MOD_TYPE.AUTO_DETECT))
+        Dim iModType As Integer
+        If (Integer.TryParse(sModType, iModType)) Then
+            iModType = ClassTools.ClassMath.ClampInt(iModType, 0, [Enum].GetNames(GetType(STRUC_CONFIG_ITEM.ENUM_MOD_TYPE)).Length - 1)
+        Else
+            iModType = STRUC_CONFIG_ITEM.ENUM_MOD_TYPE.AUTO_DETECT
+        End If
         'Debugging
         Dim sDebugGameFolder As String = iniFile.ReadKeyValue("Config", "DebugGameDirectory", "")
         Dim sDebugSourceModFolder As String = iniFile.ReadKeyValue("Config", "DebugSourceModDirectory", "")
@@ -193,7 +209,7 @@ Public Class ClassConfigs
         Dim sExecuteShell As String = iniFile.ReadKeyValue("Config", "ExecuteShell", "")
         Dim sSyntaxHighlightingPath As String = iniFile.ReadKeyValue("Config", "SyntaxPath", "")
 
-        Return New STRUC_CONFIG_ITEM(sName, iCompilingType, sOpenIncludeFolders, sCompilerPath, sOutputFolder, bIsDefault, sDebugGameFolder, sDebugSourceModFolder, sExecuteShell, sSyntaxHighlightingPath)
+        Return New STRUC_CONFIG_ITEM(sName, iCompilingType, sOpenIncludeFolders, sCompilerPath, sOutputFolder, bIsDefault, CType(iModType, STRUC_CONFIG_ITEM.ENUM_MOD_TYPE), sDebugGameFolder, sDebugSourceModFolder, sExecuteShell, sSyntaxHighlightingPath)
     End Function
 
     Shared Function RemoveConfig(sName As String) As Boolean

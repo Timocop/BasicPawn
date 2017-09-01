@@ -35,6 +35,7 @@ Public Class ClassTabControl
     Public Sub New(f As FormMain)
         g_mFormMain = f
 
+        RemoveHandler g_mFormMain.TabControl_SourceTabs.SelectedIndexChanged, AddressOf OnTabSelected
         AddHandler g_mFormMain.TabControl_SourceTabs.SelectedIndexChanged, AddressOf OnTabSelected
 
         g_mTimer = New Timer
@@ -452,7 +453,7 @@ Public Class ClassTabControl
     Private Sub SaveLoadTabEntries(iIndex As Integer, i As ENUM_TAB_CONFIG)
         Select Case (i)
             Case ENUM_TAB_CONFIG.SAVE
-                m_Tab(iIndex).m_AutocompleteItems = g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.ToArray
+                m_Tab(iIndex).m_AutocompleteItems = ClassSyntaxTools.g_lAutocompleteList.ToArray
 
             Case Else
                 Try
@@ -465,11 +466,11 @@ Public Class ClassTabControl
                     g_mFormMain.g_ClassAutocompleteUpdater.StopUpdate()
 
                     'Autocomplete 
-                    g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.DoSync(
+                    ClassSyntaxTools.g_lAutocompleteList.DoSync(
                             Sub()
-                                g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.Clear()
+                                ClassSyntaxTools.g_lAutocompleteList.Clear()
                                 If (m_Tab(iIndex).m_AutocompleteItems IsNot Nothing) Then
-                                    g_mFormMain.g_ClassSyntaxTools.lAutocompleteList.AddRange(m_Tab(iIndex).m_AutocompleteItems)
+                                    ClassSyntaxTools.g_lAutocompleteList.AddRange(m_Tab(iIndex).m_AutocompleteItems)
                                 End If
                             End Sub)
 
@@ -662,6 +663,8 @@ Public Class ClassTabControl
                         g_mSourceTextEditor.Dispose()
                         g_mSourceTextEditor = Nothing
                     End If
+
+                    g_mAutocompleteItems = Nothing
                 End If
             Finally
                 MyBase.Dispose(disposing)
