@@ -60,6 +60,7 @@ Partial Class FormSettings
         Me.Label_Font = New System.Windows.Forms.Label()
         Me.CheckBox_InvertedColors = New System.Windows.Forms.CheckBox()
         Me.Panel14 = New System.Windows.Forms.Panel()
+        Me.CheckBox_AssociateAmxMod = New System.Windows.Forms.CheckBox()
         Me.CheckBox_AssociateBasicPawnProject = New System.Windows.Forms.CheckBox()
         Me.CheckBox_AssociateIncludes = New System.Windows.Forms.CheckBox()
         Me.Label19 = New System.Windows.Forms.Label()
@@ -136,7 +137,6 @@ Partial Class FormSettings
         Me.Label17 = New System.Windows.Forms.Label()
         Me.Button_Cancel = New System.Windows.Forms.Button()
         Me.Button_Apply = New System.Windows.Forms.Button()
-        Me.CheckBox_AssociateAmxMod = New System.Windows.Forms.CheckBox()
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Settings.SuspendLayout()
         Me.Panel8.SuspendLayout()
@@ -622,6 +622,18 @@ Partial Class FormSettings
         Me.Panel14.Name = "Panel14"
         Me.Panel14.Size = New System.Drawing.Size(585, 182)
         Me.Panel14.TabIndex = 26
+        '
+        'CheckBox_AssociateAmxMod
+        '
+        Me.CheckBox_AssociateAmxMod.AutoSize = True
+        Me.CheckBox_AssociateAmxMod.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_AssociateAmxMod.Location = New System.Drawing.Point(32, 113)
+        Me.CheckBox_AssociateAmxMod.Margin = New System.Windows.Forms.Padding(32, 3, 3, 3)
+        Me.CheckBox_AssociateAmxMod.Name = "CheckBox_AssociateAmxMod"
+        Me.CheckBox_AssociateAmxMod.Size = New System.Drawing.Size(152, 18)
+        Me.CheckBox_AssociateAmxMod.TabIndex = 25
+        Me.CheckBox_AssociateAmxMod.Text = "AMX Mod X files (*.sma)"
+        Me.CheckBox_AssociateAmxMod.UseVisualStyleBackColor = True
         '
         'CheckBox_AssociateBasicPawnProject
         '
@@ -1476,18 +1488,6 @@ Partial Class FormSettings
         Me.Button_Apply.TabIndex = 2
         Me.Button_Apply.Text = "Apply"
         Me.Button_Apply.UseVisualStyleBackColor = True
-        '
-        'CheckBox_AssociateAmxMod
-        '
-        Me.CheckBox_AssociateAmxMod.AutoSize = True
-        Me.CheckBox_AssociateAmxMod.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_AssociateAmxMod.Location = New System.Drawing.Point(32, 113)
-        Me.CheckBox_AssociateAmxMod.Margin = New System.Windows.Forms.Padding(32, 3, 3, 3)
-        Me.CheckBox_AssociateAmxMod.Name = "CheckBox_AssociateAmxMod"
-        Me.CheckBox_AssociateAmxMod.Size = New System.Drawing.Size(152, 18)
-        Me.CheckBox_AssociateAmxMod.TabIndex = 25
-        Me.CheckBox_AssociateAmxMod.Text = "AMX Mod X files (*.sma)"
-        Me.CheckBox_AssociateAmxMod.UseVisualStyleBackColor = True
         '
         'FormSettings
         '
