@@ -133,7 +133,7 @@ Public Class ClassAutocompleteUpdater
 
             'Detect current mod type...
             If (ClassConfigs.m_ActiveConfig.g_iModType = ClassConfigs.STRUC_CONFIG_ITEM.ENUM_MOD_TYPE.AUTO_DETECT) Then
-                Dim iModType As ClassSyntaxTools.ENUM_MOD_TYPE = ClassSyntaxTools.ENUM_MOD_TYPE.SOURCEMOD
+                Dim iModType As ClassSyntaxTools.ENUM_MOD_TYPE = CType(-1, ClassSyntaxTools.ENUM_MOD_TYPE)
 
                 For i = 0 To sIncludes.Length - 1
                     '... by includes
@@ -163,7 +163,25 @@ Public Class ClassAutocompleteUpdater
                     End Select
                 Next
 
-                ClassSyntaxTools.g_iActiveModType = iModType
+                If (ClassSyntaxTools.g_iActiveModType <> iModType) Then
+                    Select Case (iModType)
+                        Case ClassSyntaxTools.ENUM_MOD_TYPE.SOURCEMOD
+                            g_mFormMain.PrintInformation("[INFO]", "Auto-Detected mod: SourceMod")
+
+                        Case ClassSyntaxTools.ENUM_MOD_TYPE.AMXMODX
+                            g_mFormMain.PrintInformation("[INFO]", "Auto-Detected mod: AMX Mod X")
+
+                        Case ClassSyntaxTools.ENUM_MOD_TYPE.PAWN
+                            g_mFormMain.PrintInformation("[INFO]", "Auto-Detected mod: Pawn")
+
+                        Case Else
+                            g_mFormMain.PrintInformation("[WARN]", "Auto-Detected mod: Unknown")
+                    End Select
+                End If
+
+                If (iModType > -1) Then
+                    ClassSyntaxTools.g_iActiveModType = iModType
+                End If
             Else
                 Select Case (ClassConfigs.m_ActiveConfig.g_iModType)
                     Case ClassConfigs.STRUC_CONFIG_ITEM.ENUM_MOD_TYPE.SOURCEMOD
