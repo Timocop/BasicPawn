@@ -627,9 +627,9 @@ Partial Class FormSettings
         Me.CheckBox_InvertedColors.Location = New System.Drawing.Point(6, 52)
         Me.CheckBox_InvertedColors.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_InvertedColors.Name = "CheckBox_InvertedColors"
-        Me.CheckBox_InvertedColors.Size = New System.Drawing.Size(108, 18)
+        Me.CheckBox_InvertedColors.Size = New System.Drawing.Size(134, 18)
         Me.CheckBox_InvertedColors.TabIndex = 13
-        Me.CheckBox_InvertedColors.Text = "Inverted colors"
+        Me.CheckBox_InvertedColors.Text = "High contrast mode"
         Me.CheckBox_InvertedColors.UseVisualStyleBackColor = True
         '
         'Panel14
