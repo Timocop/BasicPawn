@@ -30,6 +30,7 @@ Partial Class FormDebugger
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormDebugger))
         Me.StatusStrip_BPDebugger = New System.Windows.Forms.StatusStrip()
         Me.ToolStripStatusLabel_DebugState = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.ToolStripStatusLabel_NoConnection = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ToolStripStatusLabel_EditorDebugLing = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ToolStripStatusLabel_EditorLine = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ToolStripStatusLabel_EditorCollum = New System.Windows.Forms.ToolStripStatusLabel()
@@ -49,12 +50,12 @@ Partial Class FormDebugger
         Me.ToolStripMenuItem_DebugStop = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_DebugRefresh = New System.Windows.Forms.ToolStripMenuItem()
         Me.SplitContainer1 = New System.Windows.Forms.SplitContainer()
-        Me.TabControl2 = New ClassTabControlColor()
+        Me.TabControl2 = New BasicPawn.ClassTabControlColor()
         Me.TabPage_Source = New System.Windows.Forms.TabPage()
         Me.TextEditorControlEx_DebuggerSource = New BasicPawn.TextEditorControlEx()
         Me.TabPage_Diasm = New System.Windows.Forms.TabPage()
         Me.TextEditorControlEx_DebuggerDiasm = New BasicPawn.TextEditorControlEx()
-        Me.TabControl1 = New ClassTabControlColor()
+        Me.TabControl1 = New BasicPawn.ClassTabControlColor()
         Me.TabPage_Breakpoints = New System.Windows.Forms.TabPage()
         Me.ListView_Breakpoints = New System.Windows.Forms.ListView()
         Me.ColumnHeader1 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
@@ -76,6 +77,7 @@ Partial Class FormDebugger
         Me.ColumnHeader8 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader9 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader10 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.Timer_ConnectionCheck = New System.Windows.Forms.Timer(Me.components)
         Me.StatusStrip_BPDebugger.SuspendLayout()
         Me.MenuStrip_BPDebugger.SuspendLayout()
         Me.SplitContainer1.Panel1.SuspendLayout()
@@ -93,7 +95,7 @@ Partial Class FormDebugger
         '
         'StatusStrip_BPDebugger
         '
-        Me.StatusStrip_BPDebugger.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripStatusLabel_DebugState, Me.ToolStripStatusLabel_EditorDebugLing, Me.ToolStripStatusLabel_EditorLine, Me.ToolStripStatusLabel_EditorCollum, Me.ToolStripStatusLabel_EditorSelected})
+        Me.StatusStrip_BPDebugger.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripStatusLabel_DebugState, Me.ToolStripStatusLabel_NoConnection, Me.ToolStripStatusLabel_EditorDebugLing, Me.ToolStripStatusLabel_EditorLine, Me.ToolStripStatusLabel_EditorCollum, Me.ToolStripStatusLabel_EditorSelected})
         Me.StatusStrip_BPDebugger.Location = New System.Drawing.Point(0, 707)
         Me.StatusStrip_BPDebugger.Name = "StatusStrip_BPDebugger"
         Me.StatusStrip_BPDebugger.Size = New System.Drawing.Size(1008, 22)
@@ -106,6 +108,14 @@ Partial Class FormDebugger
         Me.ToolStripStatusLabel_DebugState.Name = "ToolStripStatusLabel_DebugState"
         Me.ToolStripStatusLabel_DebugState.Size = New System.Drawing.Size(143, 17)
         Me.ToolStripStatusLabel_DebugState.Text = "Status: Debugger stopped"
+        '
+        'ToolStripStatusLabel_NoConnection
+        '
+        Me.ToolStripStatusLabel_NoConnection.BackColor = System.Drawing.Color.Red
+        Me.ToolStripStatusLabel_NoConnection.Name = "ToolStripStatusLabel_NoConnection"
+        Me.ToolStripStatusLabel_NoConnection.Size = New System.Drawing.Size(132, 17)
+        Me.ToolStripStatusLabel_NoConnection.Text = "(Target not responding)"
+        Me.ToolStripStatusLabel_NoConnection.Visible = False
         '
         'ToolStripStatusLabel_EditorDebugLing
         '
@@ -481,6 +491,10 @@ Partial Class FormDebugger
         Me.ColumnHeader10.Text = "Classname"
         Me.ColumnHeader10.Width = 175
         '
+        'Timer_ConnectionCheck
+        '
+        Me.Timer_ConnectionCheck.Interval = 10000
+        '
         'FormDebugger
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -563,4 +577,6 @@ Partial Class FormDebugger
     Friend WithEvents ToolStripStatusLabel_EditorCollum As ToolStripStatusLabel
     Friend WithEvents ToolStripStatusLabel_EditorSelected As ToolStripStatusLabel
     Friend WithEvents ToolStripMenuItem_DebugRefresh As ToolStripMenuItem
+    Friend WithEvents ToolStripStatusLabel_NoConnection As ToolStripStatusLabel
+    Friend WithEvents Timer_ConnectionCheck As Timer
 End Class

@@ -5,7 +5,13 @@
 #define ENTITY_FULL_UPDATE_TIME 60.0
 #define MAXENTITIES 2048
 
-public Plugin:myinfo = 
+enum EntityDebuggerAction
+{
+	Action_Update,
+	Action_Remove,
+}
+
+public Plugin:myinfo =
 {
 	name = "BasicPawn Debugger Module Runner",
 	author = "Timocop",
@@ -14,10 +20,9 @@ public Plugin:myinfo =
 	url = ""
 };
 
-enum EntityDebuggerAction 
+public OnPluginStart()
 {
-	Action_Update,
-	Action_Remove,
+	CreateTimer(1.0, SendPingTimer, INVALID_HANDLE, TIMER_REPEAT);
 }
 
 public OnGameFrame()
@@ -30,22 +35,22 @@ public OnGameFrame()
 		new Handle:hFile = OpenFile("{IndentifierGUID}.cmd.bpdebug", "r");
 		if(hFile == INVALID_HANDLE)
 			break;
-	
-		decl String:sCmd[1024];
+		
+		static String:sCmd[1024];
 		while(ReadFileLine(hFile, sCmd, sizeof(sCmd))) {
 			if(StrContains(sCmd, "@reloadmap") == 0) {
-				decl String:sMapname[PLATFORM_MAX_PATH];
+				static String:sMapname[PLATFORM_MAX_PATH];
 				GetCurrentMap(sMapname, sizeof(sMapname));
 				
 				ForceChangeLevel(sMapname, "BasicPawn - Debugger Command");
 				continue;
 			}
-
+			
 			ServerCommand(sCmd);
 		}
-	
+		
 		CloseHandle(hFile);
-	
+		
 		DeleteFile("{IndentifierGUID}.cmd.bpdebug");
 		break;
 	}
@@ -59,15 +64,15 @@ public OnGameFrame()
 		
 		new Float:fNow = GetEngineTime();
 		new bool:bForceUpdate = ((fLastNow + ENTITY_FULL_UPDATE_TIME) < fNow);
-		new Handle:hEntStack = CreateStack(sizeof(sBuffer)); 
+		new Handle:hEntStack = CreateStack(sizeof(sBuffer));
 		
 		if(bForceUpdate)
 			fLastNow = fNow;
 		
 		for(new i = 0; i < MAXENTITIES; i++)
 		{
-			if(!bForceUpdate 
-					&& iEntityRef[i] != INVALID_ENT_REFERENCE 
+			if(!bForceUpdate
+					&& iEntityRef[i] != INVALID_ENT_REFERENCE
 					&& IsValidEntity(iEntityRef[i]))
 			{
 				continue;
@@ -75,7 +80,7 @@ public OnGameFrame()
 			else if(IsValidEntity(i))
 			{
 				iEntityRef[i] = EntIndexToEntRef(i);
-
+				
 				GetEntityClassname(i, sClassname, sizeof(sClassname));
 				
 				FormatEx(sBuffer, sizeof(sBuffer), "%d:%d:%d:%s", i, iEntityRef[i], Action_Update, sClassname);
@@ -83,7 +88,7 @@ public OnGameFrame()
 			}
 			else if(iEntityRef[i] != INVALID_ENT_REFERENCE)
 			{
-				iEntityRef[i] = INVALID_ENT_REFERENCE; 
+				iEntityRef[i] = INVALID_ENT_REFERENCE;
 				
 				FormatEx(sBuffer, sizeof(sBuffer), "%d:%d:%d:%s", i, iEntityRef[i], Action_Remove, "");
 				PushStackString(hEntStack, sBuffer);
@@ -92,7 +97,7 @@ public OnGameFrame()
 		
 		if(!IsStackEmpty(hEntStack)) {
 			new Handle:hEntFile = OpenFile("{IndentifierGUID}.entities.bpdebug", "w");
-
+			
 			while(hEntFile != INVALID_HANDLE && !IsStackEmpty(hEntStack)) {
 				PopStackString(hEntStack, sBuffer, sizeof(sBuffer));
 				WriteFileLine(hEntFile, sBuffer);
@@ -106,4 +111,21 @@ public OnGameFrame()
 		
 		break;
 	}
+}
+
+public Action:SendPingTimer(Handle:hTimer)
+{
+	for(; /* Ping to BasicPawn Debugger */ ;)
+	{
+		new Handle:hFile = OpenFile("{IndentifierGUID}.ping.bpdebug", "w");
+		if(hFile == INVALID_HANDLE)
+			break;
+		
+		WriteFileString(hFile, "1", false);
+		
+		CloseHandle(hFile);
+		break;
+	}
+	
+	return Plugin_Continue;
 }

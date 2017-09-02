@@ -253,6 +253,8 @@ Public Class ClassDebuggerParser
         mInfoBuilder.AppendLine("/**")
         mInfoBuilder.AppendLine("*  Pauses the plugin until manually resumed. Also shows the current position in the BasicPawn Debugger.")
         mInfoBuilder.AppendLine("*  Optionaly you can return a custom non-array value.")
+        mInfoBuilder.AppendLine("*")
+        mInfoBuilder.AppendLine("*  NOTE: Because the 'any' type the compiler will see the return value as 'int' by default even if you return a float value. Don't return floats in expressions unless you re-tag it as float yourself.")
         mInfoBuilder.AppendLine("*/")
         lAutocomplete.Add(New ClassSyntaxTools.STRUC_AUTOCOMPLETE With {
                              .sFile = "BasicPawn.exe",
@@ -264,6 +266,8 @@ Public Class ClassDebuggerParser
         mInfoBuilder.Length = 0
         mInfoBuilder.AppendLine("/**")
         mInfoBuilder.AppendLine("*  Prints the passed value into the BasicPawn Debugger.")
+        mInfoBuilder.AppendLine("*")
+        mInfoBuilder.AppendLine("*  NOTE: Because the 'any' type the compiler will see the return value as 'int' by default even if you return a float value. Don't return floats in expressions unless you re-tag it as float yourself.")
         mInfoBuilder.AppendLine("*/")
         lAutocomplete.Add(New ClassSyntaxTools.STRUC_AUTOCOMPLETE With {
                              .sFile = "BasicPawn.exe",
@@ -547,8 +551,9 @@ Public Class ClassDebuggerParser
     ''' </summary>
     Class ClassRunnerEngine
         Public g_sDebuggerRunnerGuid As String = Guid.NewGuid.ToString
-        Public Shared g_sDebuggerRunnerCmdFileExt As String = ".cmd.bpdebug"
-        Public Shared g_sDebuggerRunnerEntityFileExt As String = ".entities.bpdebug"
+        Public Shared g_sDebuggerRunnerCmdFileExt As String = ".cmd" & g_sDebuggerFilesExt
+        Public Shared g_sDebuggerRunnerEntityFileExt As String = ".entities" & g_sDebuggerFilesExt
+        Public Shared g_sDebuggerRunnerPingExt As String = ".ping" & g_sDebuggerFilesExt
 
         ''' <summary>
         ''' Generates a engine source which can be used to accept commands, when its running.

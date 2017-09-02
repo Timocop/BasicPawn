@@ -43,6 +43,7 @@ Public Class ClassDebuggerRunner
         ENTITIES
         EXCEPTIONS
         FATAL_EXCEPTIONS
+        PING
     End Enum
     Private g_mFileSystemWatcherArray([Enum].GetNames(GetType(ENUM_FILESYSTEMWATCHER_TYPES)).Length - 1) As IO.FileSystemWatcher
     Private g_mFileSystemWatcherLock As New Object
@@ -383,6 +384,7 @@ Public Class ClassDebuggerRunner
 
             g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Starting debugger..."
             g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Orange
+            g_mFormDebugger.ToolStripStatusLabel_NoConnection.Visible = False
 
             'Set unique plugin identity
             m_PluginIdentity = Guid.NewGuid.ToString
@@ -481,9 +483,11 @@ Public Class ClassDebuggerRunner
                 g_sLatestDebuggerPlugin = sOutputFile
             End If
 
+            g_mFormDebugger.Timer_ConnectionCheck.Start()
 
             g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Debugger running! (Reload the map or enter 'sm plugins refresh' into the console to load all new plugins)"
             g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Green
+            g_mFormDebugger.ToolStripStatusLabel_NoConnection.Visible = False
 
             'Make sure other async threads doenst fuckup everthing
             SyncLock g_mFileSystemWatcherLock
@@ -500,6 +504,7 @@ Public Class ClassDebuggerRunner
 
             g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Error! " & ex.Message
             g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Red
+            g_mFormDebugger.ToolStripStatusLabel_NoConnection.Visible = False
 
             Return False
         End Try
@@ -621,8 +626,11 @@ Public Class ClassDebuggerRunner
 
             UpdateBreakpointListView()
 
+            g_mFormDebugger.Timer_ConnectionCheck.Stop()
+
             g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Debugger stopped!"
             g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Red
+            g_mFormDebugger.ToolStripStatusLabel_NoConnection.Visible = False
 
             g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnDebuggerDebugStop())
         Catch ex As Exception
@@ -630,6 +638,7 @@ Public Class ClassDebuggerRunner
 
             g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Error! " & ex.Message
             g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Red
+            g_mFormDebugger.ToolStripStatusLabel_NoConnection.Visible = False
         End Try
 
         Return True
@@ -687,8 +696,11 @@ Public Class ClassDebuggerRunner
 
             UpdateBreakpointListView()
 
+            g_mFormDebugger.Timer_ConnectionCheck.Start()
+
             g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Debugger running!"
             g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Green
+            g_mFormDebugger.ToolStripStatusLabel_NoConnection.Visible = False
 
             g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnDebuggerDebugStart())
         Catch ex As Exception
@@ -696,6 +708,7 @@ Public Class ClassDebuggerRunner
 
             g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Error! " & ex.Message
             g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Red
+            g_mFormDebugger.ToolStripStatusLabel_NoConnection.Visible = False
         End Try
     End Sub
 
@@ -717,8 +730,11 @@ Public Class ClassDebuggerRunner
 
             UpdateBreakpointListView()
 
+            g_mFormDebugger.Timer_ConnectionCheck.Stop()
+
             g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Debugger awaiting input..."
             g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Orange
+            g_mFormDebugger.ToolStripStatusLabel_NoConnection.Visible = False
 
             g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnDebuggerDebugPause())
         Catch ex As Exception
@@ -726,6 +742,7 @@ Public Class ClassDebuggerRunner
 
             g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Error! " & ex.Message
             g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Red
+            g_mFormDebugger.ToolStripStatusLabel_NoConnection.Visible = False
         End Try
     End Sub
 
@@ -772,6 +789,11 @@ Public Class ClassDebuggerRunner
                     AddHandler g_mFileSystemWatcherArray(i).Changed, AddressOf FSW_OnSourceModFatalException
                     AddHandler g_mFileSystemWatcherArray(i).Renamed, AddressOf FSW_OnSourceModFatalException
 
+                Case ENUM_FILESYSTEMWATCHER_TYPES.PING
+                    AddHandler g_mFileSystemWatcherArray(i).Created, AddressOf FSW_OnPingFetch
+                    AddHandler g_mFileSystemWatcherArray(i).Changed, AddressOf FSW_OnPingFetch
+                    AddHandler g_mFileSystemWatcherArray(i).Renamed, AddressOf FSW_OnPingFetch
+
                 Case Else
                     Throw New ArgumentException("Invalid FileSystemWatcher")
             End Select
@@ -807,6 +829,10 @@ Public Class ClassDebuggerRunner
             RemoveHandler g_mFileSystemWatcherArray(i).Changed, AddressOf FSW_OnSourceModFatalException
             RemoveHandler g_mFileSystemWatcherArray(i).Renamed, AddressOf FSW_OnSourceModFatalException
 
+            RemoveHandler g_mFileSystemWatcherArray(i).Created, AddressOf FSW_OnPingFetch
+            RemoveHandler g_mFileSystemWatcherArray(i).Changed, AddressOf FSW_OnPingFetch
+            RemoveHandler g_mFileSystemWatcherArray(i).Renamed, AddressOf FSW_OnPingFetch
+
             g_mFileSystemWatcherArray(i).Dispose()
             g_mFileSystemWatcherArray(i) = Nothing
         Next
@@ -820,20 +846,17 @@ Public Class ClassDebuggerRunner
     Private Sub FSW_OnBreakpointDetected(sender As Object, e As IO.FileSystemEventArgs)
         Try
             Dim sFile As String = e.FullPath
-
             If (Not IO.File.Exists(sFile)) Then
                 Return
             End If
 
             Dim sFileExt As String = IO.Path.GetExtension(sFile)
-
             If (sFileExt.ToLower <> ClassDebuggerParser.g_sDebuggerFilesExt.ToLower OrElse Not sFile.ToLower.EndsWith(ClassDebuggerParser.g_sDebuggerBreakpointTriggerExt.ToLower)) Then
                 Return
             End If
 
 
             Dim sGUID As String = IO.Path.GetFileName(sFile).ToLower.Replace(ClassDebuggerParser.g_sDebuggerBreakpointTriggerExt.ToLower, "")
-
             If (String.IsNullOrEmpty(sGUID) OrElse sGUID.Trim.Length = 0) Then
                 Return
             End If
@@ -904,6 +927,7 @@ Public Class ClassDebuggerRunner
 
                                                 g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Debugger awaiting input..."
                                                 g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Orange
+                                                g_mFormDebugger.ToolStripStatusLabel_NoConnection.Visible = False
 
                                                 If (g_mFormDebugger.WindowState = FormWindowState.Minimized) Then
                                                     ClassTools.ClassForms.FormWindowCommand(g_mFormDebugger, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
@@ -930,20 +954,17 @@ Public Class ClassDebuggerRunner
     Private Sub FSW_OnWatcherDetected(sender As Object, e As IO.FileSystemEventArgs)
         Try
             Dim sFile As String = e.FullPath
-
             If (Not IO.File.Exists(sFile)) Then
                 Return
             End If
 
             Dim sFileExt As String = IO.Path.GetExtension(sFile)
-
             If (sFileExt.ToLower <> ClassDebuggerParser.g_sDebuggerFilesExt.ToLower OrElse Not sFile.ToLower.EndsWith(ClassDebuggerParser.g_sDebuggerWatcherValueExt.ToLower)) Then
                 Return
             End If
 
 
             Dim sGUID As String = IO.Path.GetFileName(sFile).ToLower.Replace(ClassDebuggerParser.g_sDebuggerWatcherValueExt.ToLower, "")
-
             If (String.IsNullOrEmpty(sGUID) OrElse sGUID.Trim.Length = 0) Then
                 Return
             End If
@@ -1030,20 +1051,17 @@ Public Class ClassDebuggerRunner
     Private Sub FSW_OnEntitiesFetch(sender As Object, e As IO.FileSystemEventArgs)
         Try
             Dim sFile As String = e.FullPath
-
             If (Not IO.File.Exists(sFile)) Then
                 Return
             End If
 
             Dim sFileExt As String = IO.Path.GetExtension(sFile)
-
             If (sFileExt.ToLower <> ClassDebuggerParser.g_sDebuggerFilesExt.ToLower OrElse Not sFile.ToLower.EndsWith(ClassDebuggerParser.ClassRunnerEngine.g_sDebuggerRunnerEntityFileExt.ToLower)) Then
                 Return
             End If
 
 
             Dim sGUID As String = IO.Path.GetFileName(sFile).ToLower.Replace(ClassDebuggerParser.ClassRunnerEngine.g_sDebuggerRunnerEntityFileExt.ToLower, "")
-
             If (String.IsNullOrEmpty(sGUID) OrElse sGUID.Trim.Length = 0) Then
                 Return
             End If
@@ -1166,6 +1184,48 @@ Public Class ClassDebuggerRunner
                                                     End Sub)
                 End Select
             Next
+        Catch ex As Threading.ThreadAbortException
+            Throw
+        Catch ex As ObjectDisposedException
+            'Filter unexpected disposes
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
+    ''' <summary>
+    ''' Handle fetched pings from plugins.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub FSW_OnPingFetch(sender As Object, e As IO.FileSystemEventArgs)
+        Try
+            Dim sFile As String = e.FullPath
+            If (Not IO.File.Exists(sFile)) Then
+                Return
+            End If
+
+            Dim sFileExt As String = IO.Path.GetExtension(sFile)
+            If (sFileExt.ToLower <> ClassDebuggerParser.g_sDebuggerFilesExt.ToLower OrElse Not sFile.ToLower.EndsWith(ClassDebuggerParser.ClassRunnerEngine.g_sDebuggerRunnerPingExt.ToLower)) Then
+                Return
+            End If
+
+
+            Dim sGUID As String = IO.Path.GetFileName(sFile).ToLower.Replace(ClassDebuggerParser.ClassRunnerEngine.g_sDebuggerRunnerPingExt.ToLower, "")
+            If (String.IsNullOrEmpty(sGUID) OrElse sGUID.Trim.Length = 0) Then
+                Return
+            End If
+
+            If (g_mFormDebugger.g_ClassDebuggerRunnerEngine.g_sDebuggerRunnerGuid <> sGUID) Then
+                Return
+            End If
+
+            g_mFormDebugger.BeginInvoke(Sub()
+                                            g_mFormDebugger.ToolStripStatusLabel_NoConnection.Visible = False
+
+                                            g_mFormDebugger.Timer_ConnectionCheck.Stop()
+                                            g_mFormDebugger.Timer_ConnectionCheck.Start()
+                                        End Sub)
         Catch ex As Threading.ThreadAbortException
             Throw
         Catch ex As ObjectDisposedException

@@ -15,7 +15,6 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 
-Imports System.ComponentModel
 Imports System.Text.RegularExpressions
 
 Public Class FormDebugger
@@ -31,13 +30,12 @@ Public Class FormDebugger
     Public g_bListViewEnableClickSelect As Boolean = True
 
     Public Sub New(f As FormMain)
+        g_mFormMain = f
 
         ' This call is required by the designer.
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call.
-        g_mFormMain = f
-
         g_ClassDebuggerParser = New ClassDebuggerParser(g_mFormMain)
         g_ClassDebuggerRunnerEngine = New ClassDebuggerParser.ClassRunnerEngine
         g_ClassDebuggerRunner = New ClassDebuggerRunner(Me)
@@ -683,4 +681,11 @@ Public Class FormDebugger
         End If
     End Sub
 
+    Private Sub Timer_ConnectionCheck_Tick(sender As Object, e As EventArgs) Handles Timer_ConnectionCheck.Tick
+        If (g_ClassDebuggerRunner.m_DebuggingState <> ClassDebuggerRunner.ENUM_DEBUGGING_STATE.STARTED) Then
+            Return
+        End If
+
+        ToolStripStatusLabel_NoConnection.Visible = True
+    End Sub
 End Class

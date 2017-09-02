@@ -293,7 +293,7 @@ Public Class ClassControlStyle
             Case TypeOf o Is ToolStripLabel
                 Dim i As ToolStripLabel = DirectCast(o, ToolStripLabel)
                 Select Case (i.Name)
-                    Case "ToolStripStatusLabel_DebugState"
+                    Case "ToolStripStatusLabel_DebugState", "ToolStripStatusLabel_NoConnection"
                         If (m_IsInvertedColors) Then
                             i.ForeColor = Color.Black
                         Else
