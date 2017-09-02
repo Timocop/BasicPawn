@@ -48,9 +48,6 @@ Public Class PluginSample
         g_mFormMain = DirectCast(mFormMain, FormMain)
 
         g_ClassTestToolbox = New ClassTestToolbox(Me)
-
-        g_ClassTestToolbox.BuildToolbox()
-        g_ClassTestToolbox.BuildAboutMenu()
     End Sub
 
     Public Function OnPluginEnd() As Boolean Implements IPluginInterface.OnPluginEnd
@@ -118,20 +115,29 @@ Public Class PluginSample
 
         Private g_mPluginSample As PluginSample
 
+        Private mToolboxPage As TabPage
+        Private mTestButton As Button
+        Private g_mAboutMenuItem As ToolStripMenuItem
+
         Public Sub New(mPluginSample As PluginSample)
             g_mPluginSample = mPluginSample
+
+            mToolboxPage = New TabPage("Test Toolbox")
+            mTestButton = New Button
+            g_mAboutMenuItem = New ToolStripMenuItem("About Sample Plugin", BasicPawn.My.Resources.imageres_5314_16x16_32)
+
+            BuildAboutMenu()
+            BuildToolbox()
         End Sub
 
-        Private mToolboxPage As New TabPage("Test Toolbox")
-        Private mTestButton As New Button
-        Private g_mAboutMenuItem As New ToolStripMenuItem("About Sample Plugin", BasicPawn.My.Resources.imageres_5314_16x16_32)
-
-        Public Sub BuildAboutMenu()
+        Private Sub BuildAboutMenu()
             g_mPluginSample.g_mFormMain.MenuStrip_BasicPawn.Items.Add(g_mAboutMenuItem)
+
+            RemoveHandler g_mAboutMenuItem.Click, AddressOf OnMenuItemClick
             AddHandler g_mAboutMenuItem.Click, AddressOf OnMenuItemClick
         End Sub
 
-        Public Sub BuildToolbox()
+        Private Sub BuildToolbox()
             mToolboxPage.BackColor = Color.White
 
             g_mPluginSample.g_mFormMain.TabControl_Toolbox.TabPages.Add(mToolboxPage)
@@ -141,9 +147,9 @@ Public Class PluginSample
             mTestButton.Text = "Show Messagebox"
             mTestButton.UseVisualStyleBackColor = True
 
+            RemoveHandler mTestButton.Click, AddressOf OnButtonClick
             AddHandler mTestButton.Click, AddressOf OnButtonClick
         End Sub
-
 
         Private Sub OnButtonClick(sender As Object, e As EventArgs)
             MsgBox("Hello World!")
@@ -167,6 +173,21 @@ Public Class PluginSample
                     ' TODO: dispose managed state (managed objects).
                     RemoveHandler mTestButton.Click, AddressOf OnButtonClick
                     RemoveHandler g_mAboutMenuItem.Click, AddressOf OnMenuItemClick
+
+                    If (g_mAboutMenuItem IsNot Nothing AndAlso Not g_mAboutMenuItem.IsDisposed) Then
+                        g_mAboutMenuItem.Dispose()
+                        g_mAboutMenuItem = Nothing
+                    End If
+
+                    If (mTestButton IsNot Nothing AndAlso Not mTestButton.IsDisposed) Then
+                        mTestButton.Dispose()
+                        mTestButton = Nothing
+                    End If
+
+                    If (mToolboxPage IsNot Nothing AndAlso Not mToolboxPage.IsDisposed) Then
+                        mToolboxPage.Dispose()
+                        mToolboxPage = Nothing
+                    End If
                 End If
 
                 ' TODO: free unmanaged resources (unmanaged objects) and override Finalize() below.
