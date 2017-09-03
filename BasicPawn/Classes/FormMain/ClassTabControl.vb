@@ -260,6 +260,7 @@ Public Class ClassTabControl
 
             m_Tab(iIndex).m_Changed = False
             m_Tab(iIndex).m_AutocompleteItems = Nothing
+            m_Tab(iIndex).m_FileCachedWriteDate = Now
 
             SaveLoadTabEntries(iIndex, ENUM_TAB_CONFIG.LOAD)
 
@@ -283,6 +284,7 @@ Public Class ClassTabControl
 
         m_Tab(iIndex).m_Changed = False
         m_Tab(iIndex).m_AutocompleteItems = Nothing
+        m_Tab(iIndex).m_FileCachedWriteDate = m_Tab(iIndex).m_FileRealWriteDate
 
         SaveLoadTabEntries(iIndex, ENUM_TAB_CONFIG.LOAD)
 
@@ -319,6 +321,8 @@ Public Class ClassTabControl
                     g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & m_Tab(iIndex).m_File)
                     IO.File.WriteAllText(m_Tab(iIndex).m_File, m_Tab(iIndex).m_TextEditor.Document.TextContent)
 
+                    m_Tab(iIndex).m_FileCachedWriteDate = m_Tab(iIndex).m_FileRealWriteDate
+
                     g_mFormMain.g_mUCStartPage.g_mClassRecentItems.AddRecent(m_Tab(iIndex).m_File)
                     g_mFormMain.ShowPingFlash()
 
@@ -332,6 +336,8 @@ Public Class ClassTabControl
 
             g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & m_Tab(iIndex).m_File)
             IO.File.WriteAllText(m_Tab(iIndex).m_File, m_Tab(iIndex).m_TextEditor.Document.TextContent)
+
+            m_Tab(iIndex).m_FileCachedWriteDate = m_Tab(iIndex).m_FileRealWriteDate
 
             g_mFormMain.g_mUCStartPage.g_mClassRecentItems.AddRecent(m_Tab(iIndex).m_File)
             g_mFormMain.ShowPingFlash()
@@ -374,6 +380,8 @@ Public Class ClassTabControl
                             g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & m_Tab(iIndex).m_File)
                             IO.File.WriteAllText(m_Tab(iIndex).m_File, m_Tab(iIndex).m_TextEditor.Document.TextContent)
 
+                            m_Tab(iIndex).m_FileCachedWriteDate = m_Tab(iIndex).m_FileRealWriteDate
+
                             g_mFormMain.g_mUCStartPage.g_mClassRecentItems.AddRecent(m_Tab(iIndex).m_File)
                             g_mFormMain.ShowPingFlash()
 
@@ -389,6 +397,8 @@ Public Class ClassTabControl
 
                     g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & m_Tab(iIndex).m_File)
                     IO.File.WriteAllText(m_Tab(iIndex).m_File, m_Tab(iIndex).m_TextEditor.Document.TextContent)
+
+                    m_Tab(iIndex).m_FileCachedWriteDate = m_Tab(iIndex).m_FileRealWriteDate
 
                     g_mFormMain.g_mUCStartPage.g_mClassRecentItems.AddRecent(m_Tab(iIndex).m_File)
                     g_mFormMain.ShowPingFlash()
@@ -487,6 +497,35 @@ Public Class ClassTabControl
         End Select
     End Sub
 
+    Public Sub CheckFilesChangedPrompt()
+        For i = 0 To m_TabsCount - 1
+            If (m_Tab(i).m_IsUnsaved OrElse Not IO.File.Exists(m_Tab(i).m_File)) Then
+                Continue For
+            End If
+
+            If (Not m_Tab(i).m_IsFileNewer) Then
+                Continue For
+            End If
+
+            Select Case (MessageBox.Show(String.Format("'{0}' in tab '{1}' has been changed! Do you want to reload the tab?", m_Tab(i).m_File, i + 1), "File changed", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+                Case DialogResult.Yes
+                    While True
+                        If (Not OpenFileTab(i, m_Tab(i).m_File, True)) Then
+                            Select Case (MessageBox.Show("Could not open file", "Error", MessageBoxButtons.RetryCancel))
+                                Case DialogResult.Retry
+                                    Continue While
+                            End Select
+                        End If
+
+                        Exit While
+                    End While
+            End Select
+
+
+            m_Tab(i).m_FileCachedWriteDate = m_Tab(i).m_FileRealWriteDate
+        Next
+    End Sub
+
     Private Sub OnTabSelected(sender As Object, e As EventArgs)
         If (g_bIgnoreOnTabSelected) Then
             Return
@@ -510,6 +549,7 @@ Public Class ClassTabControl
         Private g_mAutocompleteItems As ClassSyntaxTools.STRUC_AUTOCOMPLETE()
         Private g_mSourceTextEditor As TextEditorControlEx
         Private g_bEnabled As Boolean = True
+        Private g_mFileCachedWriteDate As Date
 
         Public Sub New(f As FormMain)
             g_mFormMain = f
@@ -696,6 +736,30 @@ Public Class ClassTabControl
                 m_Title = IO.Path.GetFileName(g_sFile)
                 Me.ToolTipText = g_sFile
             End Set
+        End Property
+
+        Public Property m_FileRealWriteDate As Date
+            Get
+                Return IO.File.GetLastWriteTime(g_sFile)
+            End Get
+            Set(value As Date)
+                IO.File.SetLastWriteTime(g_sFile, value)
+            End Set
+        End Property
+
+        Public Property m_FileCachedWriteDate As Date
+            Get
+                Return g_mFileCachedWriteDate
+            End Get
+            Set(value As Date)
+                g_mFileCachedWriteDate = value
+            End Set
+        End Property
+
+        Public ReadOnly Property m_IsFileNewer As Boolean
+            Get
+                Return (m_FileRealWriteDate > m_FileCachedWriteDate)
+            End Get
         End Property
 
         Public ReadOnly Property m_IsUnsaved As Boolean

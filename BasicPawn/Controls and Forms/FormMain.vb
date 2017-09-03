@@ -56,6 +56,7 @@ Public Class FormMain
     Public Const COMARG_SHOW_PING_FLASH As String = "BasicPawnComServer-ShowPingFlash-04e3632f-5472-42c5-929a-c3e0c2b35324"
 
     Private g_mPingFlashPanel As ClassPanelAlpha
+    Private g_bFormPostCreate As Boolean = False
     Private g_bFormPostLoad As Boolean = False
 
 
@@ -204,7 +205,7 @@ Public Class FormMain
         g_mPingFlashPanel.BringToFront()
         g_mPingFlashPanel.Visible = False
 
-        g_bFormPostLoad = True
+        g_bFormPostCreate = True
     End Sub
 
     Public Sub UpdateFormConfigText()
@@ -342,6 +343,8 @@ Public Class FormMain
             .IsBackground = True
         }
         mCheckUpdasteThread.Start()
+
+        g_bFormPostLoad = True
     End Sub
 
     Private Sub FormMain_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
@@ -1035,7 +1038,7 @@ Public Class FormMain
     Private Sub OnMessageReceive(mClassMessage As ClassCrossAppComunication.ClassMessage) Handles g_ClassCrossAppComunication.OnMessageReceive
         Try
             'Just in case we get a message before the controls have been created
-            If (Not g_bFormPostLoad) Then
+            If (Not g_bFormPostCreate) Then
                 Return
             End If
 
@@ -1217,5 +1220,17 @@ Public Class FormMain
             g_ClassTabControl.Dispose()
             g_ClassTabControl = Nothing
         End If
+    End Sub
+
+    Private Sub FormMain_Layout(sender As Object, e As LayoutEventArgs) Handles Me.Layout
+        Try
+            If (Not g_bFormPostLoad) Then
+                Return
+            End If
+
+            g_ClassTabControl.CheckFilesChangedPrompt()
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
     End Sub
 End Class
