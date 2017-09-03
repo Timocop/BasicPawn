@@ -242,6 +242,15 @@ Public Class ClassControlStyle
             Case TypeOf o Is Label
                 Dim i As Label = DirectCast(o, Label)
                 Select Case (True)
+                    Case i.Name.Contains("@TitleColors")
+                        If (m_IsInvertedColors) Then
+                            i.BackColor = Color.Transparent
+                            i.ForeColor = Color.Black
+                        Else
+                            i.BackColor = Color.Transparent
+                            i.ForeColor = Color.Black
+                        End If
+
                     Case i.Name.Contains("@SetForeColorRoyalBlue")
                         If (m_IsInvertedColors) Then
                             i.BackColor = Color.Transparent
@@ -249,15 +258,6 @@ Public Class ClassControlStyle
                         Else
                             i.BackColor = g_cDarkFormColor.mLightBackground
                             i.ForeColor = Color.RoyalBlue
-                        End If
-
-                    Case i.Name = "Label_Title"
-                        If (m_IsInvertedColors) Then
-                            i.BackColor = Color.Transparent
-                            i.ForeColor = Color.Black
-                        Else
-                            i.BackColor = Color.Transparent
-                            i.ForeColor = Color.Black
                         End If
 
                     Case Else
@@ -292,8 +292,8 @@ Public Class ClassControlStyle
 
             Case TypeOf o Is ToolStripLabel
                 Dim i As ToolStripLabel = DirectCast(o, ToolStripLabel)
-                Select Case (i.Name)
-                    Case "ToolStripStatusLabel_DebugState", "ToolStripStatusLabel_NoConnection"
+                Select Case (True)
+                    Case i.Name.Contains("@KeepBackColor")
                         If (m_IsInvertedColors) Then
                             i.ForeColor = Color.Black
                         Else
@@ -325,18 +325,26 @@ Public Class ClassControlStyle
             Case TypeOf o Is StatusStrip
                 Dim i As StatusStrip = DirectCast(o, StatusStrip)
                 If (m_IsInvertedColors) Then
-                    i.RenderMode = ToolStripRenderMode.System
+                    i.RenderMode = ToolStripRenderMode.ManagerRenderMode
                     i.BackColor = g_cDarkMenuColor.mDarkBackground
                     i.ForeColor = g_cDarkMenuColor.mDarkForeground
-
-                    i.Renderer = New ClassToolStripCustomRenderer(g_cDarkMenuColor.mDarkBackground, g_cDarkMenuColor.mDarkBackground, g_cDarkMenuColor.mDarkForeground, g_cDarkControlColor.mDarkBackground, g_cDarkControlColor.mDarkBackground)
                 Else
                     i.RenderMode = ToolStripRenderMode.System
                     i.BackColor = g_cDarkMenuColor.mLightBackground
                     i.ForeColor = g_cDarkMenuColor.mLightForegound
-
-                    i.Renderer = New ToolStripSystemRenderer()
                 End If
+
+                Select Case (True)
+                    Case i.Name.Contains("@NoCustomRenderer")
+                        i.Renderer = New ToolStripSystemRenderer()
+
+                    Case Else
+                        If (m_IsInvertedColors) Then
+                            i.Renderer = New ClassToolStripCustomRenderer(g_cDarkMenuColor.mDarkBackground, g_cDarkMenuColor.mDarkBackground, g_cDarkMenuColor.mDarkForeground, g_cDarkControlColor.mDarkBackground, g_cDarkControlColor.mDarkBackground)
+                        Else
+                            i.Renderer = New ToolStripSystemRenderer()
+                        End If
+                End Select
 
                 For Each j As Object In i.Items
                     SetColor(j)
@@ -366,15 +374,23 @@ Public Class ClassControlStyle
                     i.RenderMode = ToolStripRenderMode.ManagerRenderMode
                     i.BackColor = g_cDarkMenuColor.mDarkBackground
                     i.ForeColor = g_cDarkMenuColor.mDarkForeground
-
-                    i.Renderer = New ClassToolStripCustomRenderer(g_cDarkMenuColor.mDarkBackground, g_cDarkMenuColor.mDarkBackground, g_cDarkMenuColor.mDarkForeground, g_cDarkControlColor.mDarkBackground, g_cDarkControlColor.mDarkBackground)
                 Else
                     i.RenderMode = ToolStripRenderMode.System
                     i.BackColor = g_cDarkMenuColor.mLightBackground
                     i.ForeColor = g_cDarkMenuColor.mLightForegound
-
-                    i.Renderer = New ToolStripSystemRenderer()
                 End If
+
+                Select Case (True)
+                    Case i.Name.Contains("@NoCustomRenderer")
+                        i.Renderer = New ToolStripSystemRenderer()
+
+                    Case Else
+                        If (m_IsInvertedColors) Then
+                            i.Renderer = New ClassToolStripCustomRenderer(g_cDarkMenuColor.mDarkBackground, g_cDarkMenuColor.mDarkBackground, g_cDarkMenuColor.mDarkForeground, g_cDarkControlColor.mDarkBackground, g_cDarkControlColor.mDarkBackground)
+                        Else
+                            i.Renderer = New ToolStripSystemRenderer()
+                        End If
+                End Select
 
                 For Each j As Object In i.Items
                     SetColor(j)
@@ -386,15 +402,23 @@ Public Class ClassControlStyle
                     i.RenderMode = ToolStripRenderMode.ManagerRenderMode
                     i.BackColor = g_cDarkMenuColor.mDarkBackground
                     i.ForeColor = g_cDarkMenuColor.mDarkForeground
-
-                    i.Renderer = New ClassToolStripCustomRenderer(g_cDarkMenuColor.mDarkBackground, g_cDarkMenuColor.mDarkBackground, g_cDarkMenuColor.mDarkForeground, g_cDarkControlColor.mDarkBackground, g_cDarkControlColor.mDarkBackground)
                 Else
                     i.RenderMode = ToolStripRenderMode.System
                     i.BackColor = g_cDarkMenuColor.mLightBackground
                     i.ForeColor = g_cDarkMenuColor.mLightForegound
-
-                    i.Renderer = New ToolStripSystemRenderer()
                 End If
+
+                Select Case (True)
+                    Case i.Name.Contains("@NoCustomRenderer")
+                        i.Renderer = New ToolStripSystemRenderer()
+
+                    Case Else
+                        If (m_IsInvertedColors) Then
+                            i.Renderer = New ClassToolStripCustomRenderer(g_cDarkMenuColor.mDarkBackground, g_cDarkMenuColor.mDarkBackground, g_cDarkMenuColor.mDarkForeground, g_cDarkControlColor.mDarkBackground, g_cDarkControlColor.mDarkBackground)
+                        Else
+                            i.Renderer = New ToolStripSystemRenderer()
+                        End If
+                End Select
 
                 For Each j As Object In i.Items
                     SetColor(j)
@@ -406,15 +430,23 @@ Public Class ClassControlStyle
                     i.RenderMode = ToolStripRenderMode.ManagerRenderMode
                     i.BackColor = g_cDarkMenuColor.mDarkBackground
                     i.ForeColor = g_cDarkMenuColor.mDarkForeground
-
-                    i.Renderer = New ClassToolStripCustomRenderer(g_cDarkMenuColor.mDarkBackground, g_cDarkMenuColor.mDarkBackground, g_cDarkMenuColor.mDarkForeground, g_cDarkControlColor.mDarkBackground, g_cDarkControlColor.mDarkBackground)
                 Else
                     i.RenderMode = ToolStripRenderMode.System
                     i.BackColor = g_cDarkMenuColor.mLightBackground
                     i.ForeColor = g_cDarkMenuColor.mLightForegound
-
-                    i.Renderer = New ToolStripSystemRenderer()
                 End If
+
+                Select Case (True)
+                    Case i.Name.Contains("@NoCustomRenderer")
+                        i.Renderer = New ToolStripSystemRenderer()
+
+                    Case Else
+                        If (m_IsInvertedColors) Then
+                            i.Renderer = New ClassToolStripCustomRenderer(g_cDarkMenuColor.mDarkBackground, g_cDarkMenuColor.mDarkBackground, g_cDarkMenuColor.mDarkForeground, g_cDarkControlColor.mDarkBackground, g_cDarkControlColor.mDarkBackground)
+                        Else
+                            i.Renderer = New ToolStripSystemRenderer()
+                        End If
+                End Select
 
                 For Each j As Object In i.Items
                     SetColor(j)
@@ -450,13 +482,23 @@ Public Class ClassControlStyle
 
             Case TypeOf o Is ToolStripItem
                 Dim i As ToolStripItem = DirectCast(o, ToolStripItem)
-                If (m_IsInvertedColors) Then
-                    i.BackColor = g_cDarkMenuColor.mDarkBackground
-                    i.ForeColor = g_cDarkMenuColor.mDarkForeground
-                Else
-                    i.BackColor = g_cDarkMenuColor.mLightBackground
-                    i.ForeColor = g_cDarkMenuColor.mLightForegound
-                End If
+                Select Case (True)
+                    Case i.Name.Contains("@KeepBackColor")
+                        If (m_IsInvertedColors) Then
+                            i.ForeColor = Color.Black
+                        Else
+                            i.ForeColor = g_cDarkMenuColor.mLightForegound
+                        End If
+
+                    Case Else
+                        If (m_IsInvertedColors) Then
+                            i.BackColor = g_cDarkMenuColor.mDarkBackground
+                            i.ForeColor = g_cDarkMenuColor.mDarkForeground
+                        Else
+                            i.BackColor = g_cDarkMenuColor.mLightBackground
+                            i.ForeColor = g_cDarkMenuColor.mLightForegound
+                        End If
+                End Select
 
             Case TypeOf o Is ToolStrip
                 Dim i As ToolStrip = DirectCast(o, ToolStrip)
@@ -464,15 +506,23 @@ Public Class ClassControlStyle
                     i.RenderMode = ToolStripRenderMode.ManagerRenderMode
                     i.BackColor = g_cDarkMenuColor.mDarkBackground
                     i.ForeColor = g_cDarkMenuColor.mDarkForeground
-
-                    i.Renderer = New ClassToolStripCustomRenderer(g_cDarkMenuColor.mDarkBackground, g_cDarkMenuColor.mDarkBackground, g_cDarkMenuColor.mDarkForeground, g_cDarkControlColor.mDarkBackground, g_cDarkControlColor.mDarkBackground)
                 Else
                     i.RenderMode = ToolStripRenderMode.System
                     i.BackColor = g_cDarkMenuColor.mLightBackground
                     i.ForeColor = g_cDarkMenuColor.mLightForegound
-
-                    i.Renderer = New ToolStripSystemRenderer()
                 End If
+
+                Select Case (True)
+                    Case i.Name.Contains("@NoCustomRenderer")
+                        i.Renderer = New ToolStripSystemRenderer()
+
+                    Case Else
+                        If (m_IsInvertedColors) Then
+                            i.Renderer = New ClassToolStripCustomRenderer(g_cDarkMenuColor.mDarkBackground, g_cDarkMenuColor.mDarkBackground, g_cDarkMenuColor.mDarkForeground, g_cDarkControlColor.mDarkBackground, g_cDarkControlColor.mDarkBackground)
+                        Else
+                            i.Renderer = New ToolStripSystemRenderer()
+                        End If
+                End Select
 
                 For Each j As Object In i.Items
                     SetColor(j)

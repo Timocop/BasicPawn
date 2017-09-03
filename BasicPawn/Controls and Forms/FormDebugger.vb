@@ -36,6 +36,10 @@ Public Class FormDebugger
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call.
+        ToolStripStatusLabel_DebugState.Name &= "@KeepBackColor"
+        ToolStripStatusLabel_NoConnection.Name &= "@KeepBackColor"
+        StatusStrip_BPDebugger.Name &= "@NoCustomRenderer"
+
         g_ClassDebuggerParser = New ClassDebuggerParser(g_mFormMain)
         g_ClassDebuggerRunnerEngine = New ClassDebuggerParser.ClassRunnerEngine
         g_ClassDebuggerRunner = New ClassDebuggerRunner(Me)

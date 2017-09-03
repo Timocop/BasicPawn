@@ -29,6 +29,7 @@ Public Class FormDebuggerException
         ' Add any initialization after the InitializeComponent() call.
         Panel_FooterControl.Name &= "@FooterControl"
         Panel_FooterDarkControl.Name &= "@FooterDarkControl"
+        Label_Title.Name &= "@TitleColors"
 
         g_mFormDebugger = mFormDebugger
         g_sLogFile = sLogFile
