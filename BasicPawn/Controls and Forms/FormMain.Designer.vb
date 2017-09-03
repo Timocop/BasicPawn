@@ -144,6 +144,7 @@ Partial Class FormMain
         Me.ToolStripProgressBar_Autocomplete = New System.Windows.Forms.ToolStripProgressBar()
         Me.ToolStripStatusLabel_AppVersion = New System.Windows.Forms.ToolStripStatusLabel()
         Me.Timer_PingFlash = New System.Windows.Forms.Timer(Me.components)
+        Me.ToolStripMenuItem_ToolsAutocompleteCurrentMod = New System.Windows.Forms.ToolStripMenuItem()
         Me.ContextMenuStrip_RightClick.SuspendLayout()
         Me.MenuStrip_BasicPawn.SuspendLayout()
         Me.SplitContainer_ToolboxSourceAndDetails.Panel1.SuspendLayout()
@@ -545,7 +546,7 @@ Partial Class FormMain
         '
         'ToolStripMenuItem_ToolsAutocomplete
         '
-        Me.ToolStripMenuItem_ToolsAutocomplete.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_ToolsAutocompleteUpdate, Me.ToolStripComboBox_ToolsAutocompleteSyntax, Me.ToolStripSeparator5, Me.ToolStripMenuItem_ToolsAutocompleteShowAutocomplete})
+        Me.ToolStripMenuItem_ToolsAutocomplete.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_ToolsAutocompleteUpdate, Me.ToolStripComboBox_ToolsAutocompleteSyntax, Me.ToolStripMenuItem_ToolsAutocompleteCurrentMod, Me.ToolStripSeparator5, Me.ToolStripMenuItem_ToolsAutocompleteShowAutocomplete})
         Me.ToolStripMenuItem_ToolsAutocomplete.Image = CType(resources.GetObject("ToolStripMenuItem_ToolsAutocomplete.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_ToolsAutocomplete.Name = "ToolStripMenuItem_ToolsAutocomplete"
         Me.ToolStripMenuItem_ToolsAutocomplete.Size = New System.Drawing.Size(225, 22)
@@ -1048,6 +1049,13 @@ Partial Class FormMain
         'Timer_PingFlash
         '
         '
+        'ToolStripMenuItem_ToolsAutocompleteCurrentMod
+        '
+        Me.ToolStripMenuItem_ToolsAutocompleteCurrentMod.Enabled = False
+        Me.ToolStripMenuItem_ToolsAutocompleteCurrentMod.Name = "ToolStripMenuItem_ToolsAutocompleteCurrentMod"
+        Me.ToolStripMenuItem_ToolsAutocompleteCurrentMod.Size = New System.Drawing.Size(360, 22)
+        Me.ToolStripMenuItem_ToolsAutocompleteCurrentMod.Text = "Current Mod: Unknown"
+        '
         'FormMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -1199,4 +1207,5 @@ Partial Class FormMain
     Friend WithEvents ToolStripSeparator15 As ToolStripSeparator
     Friend WithEvents ToolStripMenuItem_HelpCheckUpdates As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator14 As ToolStripSeparator
+    Friend WithEvents ToolStripMenuItem_ToolsAutocompleteCurrentMod As ToolStripMenuItem
 End Class

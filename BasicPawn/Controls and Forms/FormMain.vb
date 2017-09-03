@@ -741,6 +741,23 @@ Public Class FormMain
     Private Sub ToolStripMenuItem_ListReferences_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ListReferences.Click
         g_ClassTextEditorTools.ListReferences()
     End Sub
+
+    Private Sub ToolStripMenuItem_ToolsAutocomplete_DropDownOpening(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsAutocomplete.DropDownOpening
+        Dim sMod As String
+
+        Select Case (ClassSyntaxTools.g_iActiveModType)
+            Case ClassSyntaxTools.ENUM_MOD_TYPE.SOURCEMOD
+                sMod = "SourceMod"
+            Case ClassSyntaxTools.ENUM_MOD_TYPE.AMXMODX
+                sMod = "AMX Mod X"
+            Case ClassSyntaxTools.ENUM_MOD_TYPE.PAWN
+                sMod = "Pawn"
+            Case Else
+                sMod = "Unknown"
+        End Select
+
+        ToolStripMenuItem_ToolsAutocompleteCurrentMod.Text = String.Format("Current Mod: {0}", sMod)
+    End Sub
 #End Region
 
 #Region "MenuStrip_Build"
