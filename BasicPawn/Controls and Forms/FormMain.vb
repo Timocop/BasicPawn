@@ -322,7 +322,18 @@ Public Class FormMain
 
         g_ClassSyntaxUpdater.StartThread()
 
-        g_ClassPluginController.LoadPlugins(IO.Path.Combine(Application.StartupPath, "plugins"))
+        While True
+            For i = 1 To Environment.GetCommandLineArgs.Length - 1
+                If (Environment.GetCommandLineArgs(i).ToLower = "-safemode") Then
+                    Exit While
+                End If
+            Next
+
+            g_ClassPluginController.LoadPlugins(IO.Path.Combine(Application.StartupPath, "plugins"))
+
+            Exit While
+        End While
+
         g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnPluginStart(Me))
 
         Dim mCheckUpdasteThread As New Threading.Thread(Sub()

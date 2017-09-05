@@ -86,6 +86,7 @@ Partial Class FormMain
         Me.ToolStripMenuItem_ToolsAutocomplete = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_ToolsAutocompleteUpdate = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripComboBox_ToolsAutocompleteSyntax = New System.Windows.Forms.ToolStripComboBox()
+        Me.ToolStripMenuItem_ToolsAutocompleteCurrentMod = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_ToolsAutocompleteShowAutocomplete = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator4 = New System.Windows.Forms.ToolStripSeparator()
@@ -144,7 +145,6 @@ Partial Class FormMain
         Me.ToolStripProgressBar_Autocomplete = New System.Windows.Forms.ToolStripProgressBar()
         Me.ToolStripStatusLabel_AppVersion = New System.Windows.Forms.ToolStripStatusLabel()
         Me.Timer_PingFlash = New System.Windows.Forms.Timer(Me.components)
-        Me.ToolStripMenuItem_ToolsAutocompleteCurrentMod = New System.Windows.Forms.ToolStripMenuItem()
         Me.ContextMenuStrip_RightClick.SuspendLayout()
         Me.MenuStrip_BasicPawn.SuspendLayout()
         Me.SplitContainer_ToolboxSourceAndDetails.Panel1.SuspendLayout()
@@ -568,6 +568,13 @@ Partial Class FormMain
         Me.ToolStripComboBox_ToolsAutocompleteSyntax.Items.AddRange(New Object() {"Parse mixed syntax", "Parse SourcePawn <1.6, AMX Mod X and Pawn syntax", "Parse SourcePawn >1.7 syntax only"})
         Me.ToolStripComboBox_ToolsAutocompleteSyntax.Name = "ToolStripComboBox_ToolsAutocompleteSyntax"
         Me.ToolStripComboBox_ToolsAutocompleteSyntax.Size = New System.Drawing.Size(300, 23)
+        '
+        'ToolStripMenuItem_ToolsAutocompleteCurrentMod
+        '
+        Me.ToolStripMenuItem_ToolsAutocompleteCurrentMod.Enabled = False
+        Me.ToolStripMenuItem_ToolsAutocompleteCurrentMod.Name = "ToolStripMenuItem_ToolsAutocompleteCurrentMod"
+        Me.ToolStripMenuItem_ToolsAutocompleteCurrentMod.Size = New System.Drawing.Size(360, 22)
+        Me.ToolStripMenuItem_ToolsAutocompleteCurrentMod.Text = "Current Mod: Unknown"
         '
         'ToolStripSeparator5
         '
@@ -1048,13 +1055,6 @@ Partial Class FormMain
         '
         'Timer_PingFlash
         '
-        '
-        'ToolStripMenuItem_ToolsAutocompleteCurrentMod
-        '
-        Me.ToolStripMenuItem_ToolsAutocompleteCurrentMod.Enabled = False
-        Me.ToolStripMenuItem_ToolsAutocompleteCurrentMod.Name = "ToolStripMenuItem_ToolsAutocompleteCurrentMod"
-        Me.ToolStripMenuItem_ToolsAutocompleteCurrentMod.Size = New System.Drawing.Size(360, 22)
-        Me.ToolStripMenuItem_ToolsAutocompleteCurrentMod.Text = "Current Mod: Unknown"
         '
         'FormMain
         '
