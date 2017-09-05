@@ -613,7 +613,7 @@ Public Class ClassSyntaxTools
     ''' </summary>
     ''' <param name="sSource"></param>
     ''' <returns></returns>
-    Public Function FormatCode(sSource As String) As String
+    Public Function FormatCode(sSource As String, iIndentationType As ClassSettings.ENUM_INDENTATION_TYPES) As String
         Dim mSourceBuilder As New StringBuilder
         Using mSR As New IO.StringReader(sSource)
             While True
@@ -706,7 +706,7 @@ Public Class ClassSyntaxTools
                             Next
                         End If
 
-                        sSource = sSource.Insert(i + 1, ClassSettings.ConvertSpaces(mSourceAnalysis.m_GetBraceLevel(i + 1 + iBraceCount) + If(iBracedCount > 0, iBracedCount + 1, 0) + If(iStatementLevel > -1, iStatementLevel, 0)))
+                        sSource = sSource.Insert(i + 1, ClassSettings.BuildIndentation(mSourceAnalysis.m_GetBraceLevel(i + 1 + iBraceCount) + If(iBracedCount > 0, iBracedCount + 1, 0) + If(iStatementLevel > -1, iStatementLevel, 0), iIndentationType))
                         'End If
                         iBraceCount = 0
 

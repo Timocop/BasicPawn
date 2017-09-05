@@ -903,17 +903,22 @@ Public Class ClassTabControl
                                         Dim iLineLenNum As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Length
                                         g_mSourceTextEditor.ActiveTextAreaControl.Document.Remove(iLineOffsetNum, iLineLenNum)
 
-                                        Dim sNewInputFirst As String = "public" & mAutocomplete.sFullFunctionName.Remove(0, "forward".Length) & Environment.NewLine &
-                                                                       "{" & Environment.NewLine &
-                                                                       ClassSettings.ConvertSpaces(1)
-                                        Dim sNewInputLast As String = Environment.NewLine &
-                                                                       "}"
+                                        Dim sIndentation As String = ClassSettings.BuildIndentation(1, ClassSettings.ENUM_INDENTATION_TYPES.USE_SETTINGS)
 
-                                        g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iLineOffsetNum, sNewInputFirst & sNewInputLast)
+                                        Dim sNewInput As String
+                                        With New Text.StringBuilder
+                                            .AppendLine("public " & mAutocomplete.sFullFunctionName.Remove(0, "forward".Length).Trim)
+                                            .AppendLine("{")
+                                            .AppendLine(sIndentation)
+                                            .AppendLine("}")
+                                            sNewInput = .ToString
+                                        End With
+
+                                        g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iLineOffsetNum, sNewInput)
 
                                         iPosition = g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column
                                         g_mSourceTextEditor.ActiveTextAreaControl.Caret.Line = iLineNum + 2
-                                        g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = 1
+                                        g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = sIndentation.Length
                                     Else
                                         g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, mAutocomplete.sFunctionName)
 
@@ -927,17 +932,22 @@ Public Class ClassTabControl
                                         Dim iLineLenNum As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Length
                                         g_mSourceTextEditor.ActiveTextAreaControl.Document.Remove(iLineOffsetNum, iLineLenNum)
 
-                                        Dim sNewInputFirst As String = "public" & mAutocomplete.sFullFunctionName.Remove(0, "functag".Length) & Environment.NewLine &
-                                                                       "{" & Environment.NewLine &
-                                                                       ClassSettings.ConvertSpaces(1)
-                                        Dim sNewInputLast As String = Environment.NewLine &
-                                                                       "}"
+                                        Dim sIndentation As String = ClassSettings.BuildIndentation(1, ClassSettings.ENUM_INDENTATION_TYPES.USE_SETTINGS)
 
-                                        g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iLineOffsetNum, sNewInputFirst & sNewInputLast)
+                                        Dim sNewInput As String
+                                        With New Text.StringBuilder
+                                            .AppendLine("public " & mAutocomplete.sFullFunctionName.Remove(0, "functag".Length).Trim)
+                                            .AppendLine("{")
+                                            .AppendLine(sIndentation)
+                                            .AppendLine("}")
+                                            sNewInput = .ToString
+                                        End With
+
+                                        g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iLineOffsetNum, sNewInput)
 
                                         iPosition = g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column
                                         g_mSourceTextEditor.ActiveTextAreaControl.Caret.Line = iLineNum + 2
-                                        g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = 1
+                                        g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = sIndentation.Length
                                     Else
                                         g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, mAutocomplete.sFunctionName)
 
@@ -953,17 +963,22 @@ Public Class ClassTabControl
                                         Dim iLineLenNum As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Length
                                         g_mSourceTextEditor.ActiveTextAreaControl.Document.Remove(iLineOffsetNum, iLineLenNum)
 
-                                        Dim sNewInputFirst As String = mAutocomplete.sFunctionName & Environment.NewLine &
-                                                                       "{" & Environment.NewLine &
-                                                                       ClassSettings.ConvertSpaces(1)
-                                        Dim sNewInputLast As String = Environment.NewLine &
-                                                                       "}"
+                                        Dim sIndentation As String = ClassSettings.BuildIndentation(1, ClassSettings.ENUM_INDENTATION_TYPES.USE_SETTINGS)
 
-                                        g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iLineOffsetNum, sNewInputFirst & sNewInputLast)
+                                        Dim sNewInput As String
+                                        With New Text.StringBuilder
+                                            .AppendLine(mAutocomplete.sFunctionName.Trim)
+                                            .AppendLine("{")
+                                            .AppendLine(sIndentation)
+                                            .AppendLine("}")
+                                            sNewInput = .ToString
+                                        End With
+
+                                        g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iLineOffsetNum, sNewInput)
 
                                         iPosition = g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column
                                         g_mSourceTextEditor.ActiveTextAreaControl.Caret.Line = iLineNum + 2
-                                        g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = 1
+                                        g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = sIndentation.Length
                                     Else
                                         g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, mAutocomplete.sFunctionName)
 

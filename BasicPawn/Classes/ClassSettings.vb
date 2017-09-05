@@ -189,12 +189,31 @@ Public Class ClassSettings
         End Sub
     End Class
 
-    Public Shared Function ConvertSpaces(iLenght As Integer) As String
-        If (g_iSettingsTabsToSpaces > 0) Then
-            Return New Text.StringBuilder().Insert(0, New String(" "c, g_iSettingsTabsToSpaces), iLenght).ToString
-        Else
-            Return New Text.StringBuilder().Insert(0, vbTab, iLenght).ToString
-        End If
+    Enum ENUM_INDENTATION_TYPES
+        USE_SETTINGS
+        TABS
+        SPACES
+    End Enum
+
+    Public Shared Function BuildIndentation(iLenght As Integer, iIndentationType As ENUM_INDENTATION_TYPES) As String
+        Select Case (iIndentationType)
+            Case ENUM_INDENTATION_TYPES.USE_SETTINGS
+                If (g_iSettingsTabsToSpaces > 0) Then
+                    Return New Text.StringBuilder().Insert(0, New String(" "c, g_iSettingsTabsToSpaces), iLenght).ToString
+                Else
+                    Return New Text.StringBuilder().Insert(0, vbTab, iLenght).ToString
+                End If
+
+            Case ENUM_INDENTATION_TYPES.TABS
+                Return New Text.StringBuilder().Insert(0, vbTab, iLenght).ToString
+
+            Case ENUM_INDENTATION_TYPES.SPACES
+                Return New Text.StringBuilder().Insert(0, New String(" "c, g_iSettingsTabsToSpaces), iLenght).ToString
+
+            Case Else
+                Throw New ArgumentException("Invalid indentation type")
+
+        End Select
     End Function
 
     ''' <summary>

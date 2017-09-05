@@ -650,7 +650,7 @@ Public Class FormMain
                 End While
             End Using
 
-            Dim sFormatedSource As String = g_ClassSyntaxTools.FormatCode(g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent)
+            Dim sFormatedSource As String = g_ClassSyntaxTools.FormatCode(g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent, ClassSettings.ENUM_INDENTATION_TYPES.USE_SETTINGS)
             Dim lFormatedSourceLines As New List(Of String)
             Using mSR As New IO.StringReader(sFormatedSource)
                 Dim sLine As String
