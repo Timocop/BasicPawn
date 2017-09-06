@@ -65,7 +65,7 @@ Public Class ClassTextEditorTools
         ClassSyntaxTools.g_sCaretWord = ""
 
         If (Not mActiveTextEditor.ActiveTextAreaControl.SelectionManager.HasSomethingSelected) Then
-            Dim sWord As String = GetCaretWord(False)
+            Dim sWord As String = GetCaretWord(False, False)
 
             If (Not String.IsNullOrEmpty(sWord)) Then
                 ClassSyntaxTools.g_sCaretWord = sWord
@@ -97,7 +97,7 @@ Public Class ClassTextEditorTools
         If (Not String.IsNullOrEmpty(sText)) Then
             sWord = sText
         Else
-            sWord = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(False)
+            sWord = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(False, False)
         End If
 
         If (String.IsNullOrEmpty(sWord)) Then
@@ -187,9 +187,10 @@ Public Class ClassTextEditorTools
     ''' <summary>
     ''' Gets the caret word in the text editor
     ''' </summary>
-    ''' <param name="bIncludeDot">If true, includes dots (e.g ThisWord.ThatWord)</param>
+    ''' <param name="bIncludeMethodmaps">If true, includes methodmaps (e.g Methodmap.Name)</param>
+    ''' <param name="bIncludeMethodNames">If true, includes method names. Skips arguments. (e.g method().Name -> Method.Name)</param>
     ''' <returns></returns>
-    Public Function GetCaretWord(bIncludeDot As Boolean) As String
+    Public Function GetCaretWord(bIncludeMethodmaps As Boolean, bIncludeMethodNames As Boolean) As String
         Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
 
         Dim iOffset As Integer = mActiveTextEditor.ActiveTextAreaControl.TextArea.Caret.Offset
@@ -197,21 +198,64 @@ Public Class ClassTextEditorTools
         Dim iLineOffset As Integer = mActiveTextEditor.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iOffset).Offset
         Dim iLineLen As Integer = mActiveTextEditor.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iOffset).Length
 
-        Dim sFuncStart As String
-        Dim sFuncEnd As String
-        Dim sFunctionName As String
+        Dim sWordLeft As String = ""
+        Dim sWordRight As String = ""
 
-        If (bIncludeDot) Then
-            sFuncStart = Regex.Match(mActiveTextEditor.ActiveTextAreaControl.Document.GetText(iLineOffset, iPosition), "((\b[a-zA-Z0-9_]+\b)(\.){0,1}(\b[a-zA-Z0-9_]+\b){0,1})$").Value
-            sFuncEnd = Regex.Match(mActiveTextEditor.ActiveTextAreaControl.Document.GetText(iLineOffset + iPosition, iLineLen - iPosition), "^((\b[a-zA-Z0-9_]+\b){0,1}(\.){0,1}(\b[a-zA-Z0-9_]+\b))").Value
+        If (bIncludeMethodmaps OrElse bIncludeMethodNames) Then
+            Dim bIsMethod As Boolean = Regex.Match(mActiveTextEditor.Document.GetText(iLineOffset, iPosition), "(\))(\.)(\b[a-zA-Z0-9_]+\b){0,1}$").Success
+
+            If (bIncludeMethodNames AndAlso bIsMethod) Then
+                Dim sSource As String = mActiveTextEditor.Document.GetText(0, iOffset)
+                If (sSource.Length > 0) Then
+                    Dim mSourceBuilder As New Text.StringBuilder(sSource.Length)
+                    Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
+                    Dim iLastParenthesisLevel As Integer = mSourceAnalysis.m_GetParenthesisLevel(sSource.Length - 1)
+
+                    For i = sSource.Length - 1 To 0 Step -1
+                        If (mSourceAnalysis.m_GetBraceLevel(i) < 1) Then
+                            Exit For
+                        End If
+
+                        If (mSourceAnalysis.m_InNonCode(i)) Then
+                            Continue For
+                        End If
+
+                        If (mSourceAnalysis.m_GetParenthesisLevel(i) <> iLastParenthesisLevel) Then
+                            Continue For
+                        End If
+
+                        If (sSource(i) = "("c OrElse sSource(i) = ")"c) Then
+                            Continue For
+                        End If
+
+                        mSourceBuilder.Append(sSource(i))
+                    Next
+
+                    Dim sFilteredSource As String = StrReverse(mSourceBuilder.ToString)
+
+                    sWordLeft = Regex.Match(sFilteredSource, "((\b[a-zA-Z0-9_]+\b)(\.){0,1}(\b[a-zA-Z0-9_]+\b){0,1})$").Value
+                    If (sWordLeft.Contains("."c)) Then
+                        'If the left contains already 2 parts of a methodmap, then only get the name on the right side.
+                        sWordRight = Regex.Match(mActiveTextEditor.Document.GetText(iLineOffset + iPosition, iLineLen - iPosition), "^(\b[a-zA-Z0-9_]+\b)").Value
+                    Else
+                        sWordRight = Regex.Match(mActiveTextEditor.Document.GetText(iLineOffset + iPosition, iLineLen - iPosition), "^((\b[a-zA-Z0-9_]+\b){0,1}(\.){0,1}(\b[a-zA-Z0-9_]+\b))").Value
+                    End If
+                End If
+            Else
+                sWordLeft = Regex.Match(mActiveTextEditor.Document.GetText(iLineOffset, iPosition), "((\b[a-zA-Z0-9_]+\b)(\.){0,1}(\b[a-zA-Z0-9_]+\b){0,1})$").Value
+                If (sWordLeft.Contains("."c)) Then
+                    'If the left contains already 2 parts of a methodmap, then only get the name on the right side.
+                    sWordRight = Regex.Match(mActiveTextEditor.Document.GetText(iLineOffset + iPosition, iLineLen - iPosition), "^(\b[a-zA-Z0-9_]+\b)").Value
+                Else
+                    sWordRight = Regex.Match(mActiveTextEditor.Document.GetText(iLineOffset + iPosition, iLineLen - iPosition), "^((\b[a-zA-Z0-9_]+\b){0,1}(\.){0,1}(\b[a-zA-Z0-9_]+\b))").Value
+                End If
+            End If
         Else
-            sFuncStart = Regex.Match(mActiveTextEditor.ActiveTextAreaControl.Document.GetText(iLineOffset, iPosition), "(\b[a-zA-Z0-9_]+\b)$").Value
-            sFuncEnd = Regex.Match(mActiveTextEditor.ActiveTextAreaControl.Document.GetText(iLineOffset + iPosition, iLineLen - iPosition), "^(\b[a-zA-Z0-9_]+\b)").Value
+            sWordLeft = Regex.Match(mActiveTextEditor.Document.GetText(iLineOffset, iPosition), "(\b[a-zA-Z0-9_]+\b)$").Value
+            sWordRight = Regex.Match(mActiveTextEditor.Document.GetText(iLineOffset + iPosition, iLineLen - iPosition), "^(\b[a-zA-Z0-9_]+\b)").Value
         End If
 
-        sFunctionName = (sFuncStart & sFuncEnd)
-
-        Return sFunctionName
+        Return (sWordLeft & sWordRight)
     End Function
 
     Enum ENUM_COMPILER_TYPE
@@ -1298,7 +1342,7 @@ Public Class ClassTextEditorTools
                         highlightItem.sWord = m_CurrentSelection.SelectedText
                     End If
                 Else
-                    Dim sWord As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(False)
+                    Dim sWord As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(False, False)
 
                     If (Not String.IsNullOrEmpty(sWord)) Then
                         highlightItem.sWord = sWord

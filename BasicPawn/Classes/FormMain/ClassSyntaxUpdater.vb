@@ -74,7 +74,7 @@ Public Class ClassSyntaxUpdater
                     g_mFormMain.BeginInvoke(Sub() g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.VARIABLES_AUTOCOMPLETE))
                 End If
 
-                'Update method Autocomplete
+                'Update Method Autocomplete
                 If (dLastMethodAutocompleteUpdate < Now) Then
                     dLastMethodAutocompleteUpdate = (Now + New TimeSpan(0, 0, 0, 10, 0))
 
@@ -101,7 +101,7 @@ Public Class ClassSyntaxUpdater
                 If (iLastMethodAutoupdateCaretOffset <> iCaretOffset) Then
                     iLastMethodAutoupdateCaretOffset = iCaretOffset
 
-                    If (Not g_mFormMain.g_mUCAutocomplete.ParseMethodAutocomplete(True)) Then
+                    If (Not g_mFormMain.g_mUCAutocomplete.ParseMethodIntelliSense(True)) Then
                         g_mFormMain.BeginInvoke(Sub()
                                                     g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.m_CurrentMethod = ""
                                                     g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip()
@@ -117,8 +117,8 @@ Public Class ClassSyntaxUpdater
 
                     If (iLastAutoupdateCaretOffset = iCaretOffset) Then
                         g_mFormMain.BeginInvoke(Sub()
-                                                    g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete("")
-                                                    g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.m_CurrentMethod = ""
+                                                    'g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete("")
+                                                    'g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.m_CurrentMethod = ""
                                                     g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip()
                                                 End Sub)
                     End If
@@ -138,22 +138,17 @@ Public Class ClassSyntaxUpdater
                         Dim iLineLen As Integer = CInt(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iCaretOffset).Length))
 
                         If ((iLineLen - iPosition) > 0) Then
-                            Dim sFunctionName As String = CType(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True)), String)
+                            Dim sFunctionName As String = CType(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True, True)), String)
 
                             If (CInt(g_mFormMain.Invoke(Function() g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete(sFunctionName))) < 1) Then
-                                sFunctionName = CStr(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTextEditorTools.GetCaretWord(False)))
+                                sFunctionName = CStr(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTextEditorTools.GetCaretWord(False, False)))
 
-                                g_mFormMain.Invoke(Sub() g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete(sFunctionName))
-                                g_mFormMain.Invoke(Sub() g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip())
-                            Else
-                                g_mFormMain.Invoke(Sub() g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip())
+                                g_mFormMain.BeginInvoke(Sub() g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete(sFunctionName))
                             End If
-                        Else
-                            g_mFormMain.Invoke(Sub() g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip())
                         End If
-                    Else
-                        g_mFormMain.Invoke(Sub() g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip())
                     End If
+
+                    g_mFormMain.BeginInvoke(Sub() g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip())
                 End If
 
                 'Update caret word maker

@@ -610,7 +610,7 @@ Public Class ClassDebuggerParser
                 mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iOffset, String.Format("{0}(", ClassDebuggerParser.g_sBreakpointName))
                 mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
             Else
-                Dim sCaretWord As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True)
+                Dim sCaretWord As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True, False)
 
                 If (String.IsNullOrEmpty(sCaretWord)) Then
                     Dim iOffset As Integer = mActiveTextEditor.ActiveTextAreaControl.Caret.Offset
@@ -664,7 +664,7 @@ Public Class ClassDebuggerParser
         ''' </summary>
         Public Sub TextEditorRemoveBreakpointAtCaret()
             Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
-            Dim sCaretWord As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True)
+            Dim sCaretWord As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True, False)
 
             If (sCaretWord <> ClassDebuggerParser.g_sBreakpointName) Then
                 g_mFormMain.PrintInformation("[ERROR]", "This is not a valid breakpoint!")
@@ -891,7 +891,7 @@ Public Class ClassDebuggerParser
                 mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iOffset, String.Format("{0}(", ClassDebuggerParser.g_sWatcherName))
                 mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
             Else
-                Dim sCaretWord As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True)
+                Dim sCaretWord As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True, False)
 
                 If (String.IsNullOrEmpty(sCaretWord)) Then
                     Dim iOffset As Integer = mActiveTextEditor.ActiveTextAreaControl.Caret.Offset
@@ -945,7 +945,7 @@ Public Class ClassDebuggerParser
         ''' </summary>
         Public Sub TextEditorRemoveWatcherAtCaret()
             Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
-            Dim sCaretWord As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True)
+            Dim sCaretWord As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True, False)
 
             If (sCaretWord <> ClassDebuggerParser.g_sWatcherName) Then
                 g_mFormMain.PrintInformation("[ERROR]", "This is not a valid watcher!")

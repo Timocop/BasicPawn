@@ -125,15 +125,16 @@ Public Class ClassSyntaxTools
             [CONST] = (1 << 7)
             [PUBLIC] = (1 << 8)
             NATIVE = (1 << 9)
-            FORWARD = (1 << 10)
-            TYPESET = (1 << 11)
-            METHODMAP = (1 << 12)
-            TYPEDEF = (1 << 13)
-            VARIABLE = (1 << 14)
-            PUBLICVAR = (1 << 15)
-            [PROPERTY] = (1 << 16)
-            [FUNCTION] = (1 << 17)
-            STRUCT = (1 << 18)
+            METHOD = (1 << 10)
+            FORWARD = (1 << 11)
+            TYPESET = (1 << 12)
+            METHODMAP = (1 << 13)
+            TYPEDEF = (1 << 14)
+            VARIABLE = (1 << 15)
+            PUBLICVAR = (1 << 16)
+            [PROPERTY] = (1 << 17)
+            [FUNCTION] = (1 << 18)
+            STRUCT = (1 << 19)
         End Enum
 
         Public Function ParseTypeFullNames(sStr As String) As ENUM_TYPE_FLAGS
@@ -155,6 +156,7 @@ Public Class ClassSyntaxTools
                     Case "const" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.CONST)
                     Case "public" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.PUBLIC)
                     Case "native" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.NATIVE)
+                    Case "method" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.METHOD)
                     Case "forward" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.FORWARD)
                     Case "typeset" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.TYPESET)
                     Case "methodmap" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.METHODMAP)
@@ -183,6 +185,7 @@ Public Class ClassSyntaxTools
             If ((mType And ENUM_TYPE_FLAGS.CONST) = ENUM_TYPE_FLAGS.CONST) Then lNames.Add("const")
             If ((mType And ENUM_TYPE_FLAGS.PUBLIC) = ENUM_TYPE_FLAGS.PUBLIC) Then lNames.Add("public")
             If ((mType And ENUM_TYPE_FLAGS.NATIVE) = ENUM_TYPE_FLAGS.NATIVE) Then lNames.Add("native")
+            If ((mType And ENUM_TYPE_FLAGS.METHOD) = ENUM_TYPE_FLAGS.METHOD) Then lNames.Add("method")
             If ((mType And ENUM_TYPE_FLAGS.FORWARD) = ENUM_TYPE_FLAGS.FORWARD) Then lNames.Add("forward")
             If ((mType And ENUM_TYPE_FLAGS.TYPESET) = ENUM_TYPE_FLAGS.TYPESET) Then lNames.Add("typeset")
             If ((mType And ENUM_TYPE_FLAGS.METHODMAP) = ENUM_TYPE_FLAGS.METHODMAP) Then lNames.Add("methodmap")
@@ -818,6 +821,12 @@ Public Class ClassSyntaxTools
         Private iStateArray As Integer(,)
         Private iMaxLenght As Integer = 0
         Private sCacheText As String = ""
+
+        Public ReadOnly Property m_IsRange(i As Integer) As Boolean
+            Get
+                Return (i > -1 AndAlso i < iMaxLenght)
+            End Get
+        End Property
 
         ''' <summary>
         ''' Gets the max lenght

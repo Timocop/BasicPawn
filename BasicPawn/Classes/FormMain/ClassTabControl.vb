@@ -1011,18 +1011,33 @@ Public Class ClassTabControl
                                 Case (mAutocomplete.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP,
                                        (mAutocomplete.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE
                                     If (mAutocomplete.sFunctionName.IndexOf("."c) > -1 AndAlso sFunctionName.IndexOf("."c) > -1 AndAlso Not sFunctionName.StartsWith(mAutocomplete.sFunctionName)) Then
-                                        Dim sNewInput As String = String.Format("{0}.{1}",
-                                                                            sFunctionName.Remove(sFunctionName.LastIndexOf("."c), sFunctionName.Length - sFunctionName.LastIndexOf("."c)),
-                                                                            mAutocomplete.sFunctionName.Remove(0, mAutocomplete.sFunctionName.IndexOf("."c) + 1))
+                                        Dim sParenthesis As String = ""
+                                        If (mAutocomplete.sFullFunctionName.Contains("("c) AndAlso mAutocomplete.sFullFunctionName.Contains(")"c)) Then
+                                            sParenthesis = "()"
+                                        End If
+
+                                        Dim sNewInput As String = String.Format("{0}.{1}{2}",
+                                                                                sFunctionName.Remove(sFunctionName.LastIndexOf("."c), sFunctionName.Length - sFunctionName.LastIndexOf("."c)),
+                                                                                mAutocomplete.sFunctionName.Remove(0, mAutocomplete.sFunctionName.IndexOf("."c) + 1),
+                                                                                sParenthesis)
                                         g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, sNewInput)
 
                                         iPosition = g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column
-                                        g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = iPosition + sNewInput.Length
+                                        g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = iPosition + sNewInput.Length + If(sParenthesis.Length > 0, -1, 0)
                                     Else
-                                        g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, mAutocomplete.sFunctionName.Remove(0, mAutocomplete.sFunctionName.IndexOf("."c) + 1))
+                                        Dim sParenthesis As String = ""
+                                        If (mAutocomplete.sFullFunctionName.Contains("("c) AndAlso mAutocomplete.sFullFunctionName.Contains(")"c)) Then
+                                            sParenthesis = "()"
+                                        End If
+
+                                        Dim sNewInput As String = String.Format("{0}{1}",
+                                                                                mAutocomplete.sFunctionName.Remove(0, mAutocomplete.sFunctionName.IndexOf("."c) + 1),
+                                                                                sParenthesis)
+
+                                        g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, sNewInput)
 
                                         iPosition = g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column
-                                        g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = iPosition + mAutocomplete.sFunctionName.Remove(0, mAutocomplete.sFunctionName.IndexOf("."c) + 1).Length
+                                        g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = iPosition + sNewInput.Length + If(sParenthesis.Length > 0, -1, 0)
                                     End If
 
                                 Case Else
@@ -1139,10 +1154,10 @@ Public Class ClassTabControl
 
                 iOldCaretPos = iOffset
 
-                Dim sFunctionName As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True)
+                Dim sFunctionName As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True, True)
 
                 If (g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete(sFunctionName) < 1) Then
-                    sFunctionName = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(False)
+                    sFunctionName = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(False, False)
 
                     g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete(sFunctionName)
                 Else

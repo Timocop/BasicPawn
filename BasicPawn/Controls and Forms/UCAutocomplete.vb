@@ -21,7 +21,7 @@ Imports System.Text.RegularExpressions
 Public Class UCAutocomplete
     Private g_mFormMain As FormMain
 
-    Public g_ClassToolTip As ClassToolTip 
+    Public g_ClassToolTip As ClassToolTip
     Public g_sLastAutocompleteText As String = ""
 
     Public Sub New(f As FormMain)
@@ -80,7 +80,7 @@ Public Class UCAutocomplete
     End Class
 
 
-    Public Function ParseMethodAutocomplete(Optional bForceUpdate As Boolean = False) As Boolean
+    Public Function ParseMethodIntelliSense(bForceUpdate As Boolean) As Boolean
         If (bForceUpdate) Then
             Dim sTextContent As String = CStr(Me.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent))
             g_mFormMain.g_mSourceSyntaxSourceAnalysis = New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sTextContent)
@@ -91,43 +91,62 @@ Public Class UCAutocomplete
         End If
 
         Dim iCaretOffset As Integer = CInt(Me.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Offset))
+        If (iCaretOffset - 1 < 1) Then
+            Return False
+        End If
 
-        If (iCaretOffset <= 1 OrElse
-                        iCaretOffset >= g_mFormMain.g_mSourceSyntaxSourceAnalysis.m_GetMaxLenght() OrElse
+        If (Not g_mFormMain.g_mSourceSyntaxSourceAnalysis.m_IsRange(iCaretOffset) OrElse
                         g_mFormMain.g_mSourceSyntaxSourceAnalysis.m_InMultiComment(iCaretOffset) OrElse
                         g_mFormMain.g_mSourceSyntaxSourceAnalysis.m_InSingleComment(iCaretOffset)) Then
             Return False
         End If
 
-        Dim iValidOffset As Integer = -1
-        Dim iCaretBrace As Integer = g_mFormMain.g_mSourceSyntaxSourceAnalysis.m_GetParenthesisLevel(iCaretOffset - 1)
+        'Create a valid range to read the method name and for performance. 
+        Dim mStringBuilder As New StringBuilder
+        Dim iLastParenthesis As Integer = g_mFormMain.g_mSourceSyntaxSourceAnalysis.m_GetParenthesisLevel(iCaretOffset - 1)
         Dim i As Integer
         For i = iCaretOffset - 1 To 0 Step -1
-            If (g_mFormMain.g_mSourceSyntaxSourceAnalysis.m_GetParenthesisLevel(i) < iCaretBrace) Then
-                iValidOffset = i
-                Exit For
-            End If
-        Next
-
-        If (iValidOffset < 0) Then
-            Return False
-        End If
-
-        Dim mStringBuilder As New StringBuilder
-
-        For i = iValidOffset To iValidOffset - 64 Step -1
-            If (i < 0 OrElse i > CInt(Me.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.TextLength)) - 1) Then
+            If (g_mFormMain.g_mSourceSyntaxSourceAnalysis.m_GetBraceLevel(i) < 1 OrElse
+                        g_mFormMain.g_mSourceSyntaxSourceAnalysis.m_GetParenthesisLevel(i) < iLastParenthesis - 1) Then
                 Exit For
             End If
 
-            mStringBuilder.Append(Me.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.GetCharAt(i)))
+            If (g_mFormMain.g_mSourceSyntaxSourceAnalysis.m_InNonCode(i)) Then
+                Continue For
+            End If
+
+            If (g_mFormMain.g_mSourceSyntaxSourceAnalysis.m_GetParenthesisLevel(i) > iLastParenthesis - 1) Then
+                Continue For
+            End If
+
+            Dim sChar As Char
+            Dim bExitFor As Boolean = False
+
+            Me.Invoke(Sub()
+                          If (i > g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.TextLength - 1) Then
+                              bExitFor = True
+                              Return
+                          End If
+
+                          sChar = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.GetCharAt(i)
+                      End Sub)
+
+            If (bExitFor) Then
+                Exit For
+            End If
+
+            If (sChar = "("c OrElse sChar = ")"c) Then
+                Continue For
+            End If
+
+            mStringBuilder.Append(sChar)
         Next
 
-        Dim sFuncStart As String = StrReverse(mStringBuilder.ToString)
-        sFuncStart = Regex.Match(sFuncStart, "(\.){0,1}(\b[a-zA-Z0-9_]+\b)$").Value
+        Dim sTmp As String = StrReverse(mStringBuilder.ToString).Trim
+        Dim sMethodStart As String = Regex.Match(sTmp, "((\b[a-zA-Z0-9_]+\b)(\.){0,1}(\b[a-zA-Z0-9_]+\b){0,1})$").Value '"(\.){0,1}(\b[a-zA-Z0-9_]+\b)$"
 
         Me.BeginInvoke(Sub()
-                           g_ClassToolTip.m_CurrentMethod = sFuncStart
+                           g_ClassToolTip.m_CurrentMethod = sMethodStart
                            g_ClassToolTip.UpdateToolTip()
                        End Sub)
         Return True
@@ -154,9 +173,9 @@ Public Class UCAutocomplete
             If (bSelectedWord) Then
                 If (sAutocompleteArray(i).sFunctionName.Equals(sText)) Then
                     Dim mListViewItemData As New ClassListViewItemData(New String() {sAutocompleteArray(i).sFile,
-                                                                            sAutocompleteArray(i).GetTypeFullNames,
-                                                                            sAutocompleteArray(i).sFunctionName,
-                                                                            sAutocompleteArray(i).sFullFunctionName})
+                                                                                    sAutocompleteArray(i).GetTypeFullNames,
+                                                                                    sAutocompleteArray(i).sFunctionName,
+                                                                                    sAutocompleteArray(i).sFullFunctionName})
 
                     mListViewItemData.g_mData("File") = sAutocompleteArray(i).sFile
                     mListViewItemData.g_mData("TypeFullNames") = sAutocompleteArray(i).GetTypeFullNames
@@ -170,9 +189,9 @@ Public Class UCAutocomplete
                 If (sAutocompleteArray(i).sFile.Equals(sText, If(ClassSettings.g_iSettingsAutocompleteCaseSensitive, StringComparison.Ordinal, StringComparison.OrdinalIgnoreCase)) OrElse
                             sAutocompleteArray(i).sFunctionName.IndexOf(sText, If(ClassSettings.g_iSettingsAutocompleteCaseSensitive, StringComparison.Ordinal, StringComparison.OrdinalIgnoreCase)) > -1) Then
                     Dim mListViewItemData As New ClassListViewItemData(New String() {sAutocompleteArray(i).sFile,
-                                                                            sAutocompleteArray(i).GetTypeFullNames,
-                                                                            sAutocompleteArray(i).sFunctionName,
-                                                                            sAutocompleteArray(i).sFullFunctionName})
+                                                                                    sAutocompleteArray(i).GetTypeFullNames,
+                                                                                    sAutocompleteArray(i).sFunctionName,
+                                                                                    sAutocompleteArray(i).sFullFunctionName})
 
                     mListViewItemData.g_mData("File") = sAutocompleteArray(i).sFile
                     mListViewItemData.g_mData("TypeFullNames") = sAutocompleteArray(i).GetTypeFullNames
@@ -237,7 +256,7 @@ Public Class UCAutocomplete
         Return mAutocomplete
     End Function
 
-    Private Sub ListView1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListView_AutocompleteList.SelectedIndexChanged
+    Private Sub ListView_AutocompleteList_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListView_AutocompleteList.SelectedIndexChanged
         g_ClassToolTip.UpdateToolTip()
     End Sub
 
@@ -276,53 +295,76 @@ Public Class UCAutocomplete
 
             If (Not String.IsNullOrEmpty(g_sCurrentMethodName)) Then
                 Dim sCurrentMethodName As String = g_sCurrentMethodName
-                Dim bIsMethodMap As Boolean = sCurrentMethodName.StartsWith("."c)
-                If (bIsMethodMap) Then
+
+                Dim bIsMethodMapEnd As Boolean = sCurrentMethodName.StartsWith("."c)
+                If (bIsMethodMapEnd) Then
                     sCurrentMethodName = sCurrentMethodName.Remove(0, 1)
                 End If
+
+                Dim bIsMethodMap As Boolean = sCurrentMethodName.Contains("."c)
+
+                Dim lAlreadyShownList As New List(Of String)
 
                 Dim bPrintedInfo As Boolean = False
                 Dim sAutocompleteArray As ClassSyntaxTools.STRUC_AUTOCOMPLETE() = ClassSyntaxTools.g_lAutocompleteList.ToArray
                 For i = 0 To sAutocompleteArray.Length - 1
-                    If (sAutocompleteArray(i).sFunctionName.Contains(sCurrentMethodName) AndAlso
-                                (sAutocompleteArray(i).mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE AndAlso
-                                Regex.IsMatch(sAutocompleteArray(i).sFunctionName, String.Format("{0}\b{1}\b", If(bIsMethodMap, "(\.)", ""), Regex.Escape(sCurrentMethodName)))) Then
-
-                        If (ClassSettings.g_iSettingsUseWindowsToolTip AndAlso Not bPrintedInfo) Then
-                            bPrintedInfo = True
-                            SB_TipText_IntelliSenseToolTip.AppendLine("IntelliSense:")
-                        End If
-
-                        Dim sName As String = Regex.Replace(sAutocompleteArray(i).sFullFunctionName.Trim, vbTab, New String(" "c, iTabSize))
-                        Dim sNameToolTip As String = Regex.Replace(sAutocompleteArray(i).sFullFunctionName.Trim, vbTab, New String(" "c, iTabSize))
-                        If (ClassSettings.g_iSettingsUseWindowsToolTip) Then
-                            Dim sNewlineDistance As Integer = sNameToolTip.IndexOf("("c)
-
-                            If (sNewlineDistance > -1) Then
-                                Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sNameToolTip)
-                                For ii = sNameToolTip.Length - 1 To 0 Step -1
-                                    If (sNameToolTip(ii) <> ","c OrElse mSourceAnalysis.m_InNonCode(ii)) Then
-                                        Continue For
-                                    End If
-
-                                    sNameToolTip = sNameToolTip.Insert(ii + 1, Environment.NewLine & New String(" "c, sNewlineDistance))
-                                Next
-                            End If
-                        End If
-
-                        Dim sComment As String = Regex.Replace(sAutocompleteArray(i).sInfo.Trim, "^", New String(" "c, iTabSize), RegexOptions.Multiline)
-
-                        SB_TipText_IntelliSense.AppendLine(sName)
-                        SB_TipText_IntelliSenseToolTip.AppendLine(sNameToolTip)
-
-                        If (ClassSettings.g_iSettingsToolTipMethodComments AndAlso Not String.IsNullOrEmpty(sComment.Trim)) Then
-                            SB_TipText_IntelliSense.AppendLine(sComment)
-                            SB_TipText_IntelliSenseToolTip.AppendLine(sComment)
-                        End If
-
-                        SB_TipText_IntelliSense.AppendLine()
-                        SB_TipText_IntelliSenseToolTip.AppendLine()
+                    If ((sAutocompleteArray(i).mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE AndAlso Not bIsMethodMap) Then
+                        Continue For
                     End If
+
+                    If (bIsMethodMap) Then
+                        If (Not sAutocompleteArray(i).sFunctionName.Equals(sCurrentMethodName)) Then
+                            Continue For
+                        End If
+                    Else
+                        If (Not sAutocompleteArray(i).sFunctionName.Contains(sCurrentMethodName) OrElse
+                                    Not Regex.IsMatch(sAutocompleteArray(i).sFunctionName, String.Format("{0}\b{1}\b", If(bIsMethodMapEnd, "(\.)", ""), Regex.Escape(sCurrentMethodName)))) Then
+                            Continue For
+                        End If
+                    End If
+
+
+                    If (ClassSettings.g_iSettingsUseWindowsToolTip AndAlso Not bPrintedInfo) Then
+                        bPrintedInfo = True
+                        SB_TipText_IntelliSenseToolTip.AppendLine("IntelliSense:")
+                    End If
+
+                    Dim sName As String = Regex.Replace(sAutocompleteArray(i).sFullFunctionName.Trim, vbTab, New String(" "c, iTabSize))
+                    Dim sNameToolTip As String = Regex.Replace(sAutocompleteArray(i).sFullFunctionName.Trim, vbTab, New String(" "c, iTabSize))
+
+                    If (lAlreadyShownList.Contains(sName)) Then
+                        Continue For
+                    End If
+
+                    lAlreadyShownList.Add(sName)
+
+                    If (ClassSettings.g_iSettingsUseWindowsToolTip) Then
+                        Dim sNewlineDistance As Integer = sNameToolTip.IndexOf("("c)
+
+                        If (sNewlineDistance > -1) Then
+                            Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sNameToolTip)
+                            For ii = sNameToolTip.Length - 1 To 0 Step -1
+                                If (sNameToolTip(ii) <> ","c OrElse mSourceAnalysis.m_InNonCode(ii)) Then
+                                    Continue For
+                                End If
+
+                                sNameToolTip = sNameToolTip.Insert(ii + 1, Environment.NewLine & New String(" "c, sNewlineDistance))
+                            Next
+                        End If
+                    End If
+
+                    Dim sComment As String = Regex.Replace(sAutocompleteArray(i).sInfo.Trim, "^", New String(" "c, iTabSize), RegexOptions.Multiline)
+
+                    SB_TipText_IntelliSense.AppendLine(sName)
+                    SB_TipText_IntelliSenseToolTip.AppendLine(sNameToolTip)
+
+                    If (ClassSettings.g_iSettingsToolTipMethodComments AndAlso Not String.IsNullOrEmpty(sComment.Trim)) Then
+                        SB_TipText_IntelliSense.AppendLine(sComment)
+                        SB_TipText_IntelliSenseToolTip.AppendLine(sComment)
+                    End If
+
+                    SB_TipText_IntelliSense.AppendLine()
+                    SB_TipText_IntelliSenseToolTip.AppendLine()
                 Next
             End If
 
