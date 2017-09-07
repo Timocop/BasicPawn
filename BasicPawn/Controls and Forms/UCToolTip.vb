@@ -39,6 +39,18 @@ Public Class UCToolTip
         TextEditorControl_ToolTip.ActiveTextAreaControl.HScrollBar.Visible = False
         TextEditorControl_ToolTip.ActiveTextAreaControl.VScrollBar.Visible = False
 
+        If (ClassTools.ClassOperatingSystem.GetWineVersion Is Nothing) Then
+            'Block the Text Editor, but still make it visible
+            Dim mAlphaPanel As New ClassPanelAlpha With {
+                .Parent = Me,
+                .Dock = DockStyle.Fill,
+                .m_Opacity = 0,
+                .m_TransparentBackColor = Color.White
+            }
+            Me.Controls.Add(mAlphaPanel)
+            mAlphaPanel.BringToFront()
+        End If
+
         ClassControlStyle.UpdateControls(Me)
     End Sub
 
@@ -85,8 +97,11 @@ Public Class UCToolTip
                     (mCursorPoint.X + g_iSizeSpace > mMePoint.X AndAlso mCursorPoint.Y + g_iSizeSpace > mMePoint.Y AndAlso
                         mCursorPoint.X < mMePoint.X + Me.Width + g_iSizeSpace AndAlso mCursorPoint.Y < mMePoint.Y + Me.Height + g_iSizeSpace)) Then
                 g_mMoveLocation.Y += g_iMoveStep
+
                 Me.Location = New Point(g_mLocation.X, g_mLocation.Y + g_mMoveLocation.Y)
+
                 bMoved = True
+
                 If (bInstant) Then
                     Continue While
                 End If
@@ -96,8 +111,11 @@ Public Class UCToolTip
                                 mCursorPoint.X < mMePoint.X + Me.Width + g_iSizeSpace + g_iMoveStep AndAlso mCursorPoint.Y < mMePoint.Y + Me.Height + g_iSizeSpace + g_iMoveStep)) Then
                 g_mMoveLocation.Y -= g_iMoveStep
                 g_mMoveLocation.Y = Math.Max(g_mMoveLocation.Y, 0)
+
                 Me.Location = New Point(g_mLocation.X, g_mLocation.Y + g_mMoveLocation.Y)
+
                 bMoved = True
+
                 If (bInstant) Then
                     Continue While
                 End If

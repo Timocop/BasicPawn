@@ -109,7 +109,7 @@ Public Class ClassSyntaxUpdater
                     End If
                 End If
 
-                'Update Autocomplete
+                'Hide Autocomplete & IntelliSense TolTips when scrolling
                 Static iLastAutoupdateCaretOffset As Integer = -1
                 Static iLastAutoupdateCaretPos As Integer = -1
                 If (iLastAutoupdateCaretPos <> iCaretPos) Then
@@ -117,8 +117,8 @@ Public Class ClassSyntaxUpdater
 
                     If (iLastAutoupdateCaretOffset = iCaretOffset) Then
                         g_mFormMain.BeginInvoke(Sub()
-                                                    'g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete("")
-                                                    'g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.m_CurrentMethod = ""
+                                                    g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete("")
+                                                    g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.m_CurrentMethod = ""
                                                     g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip()
                                                 End Sub)
                     End If
