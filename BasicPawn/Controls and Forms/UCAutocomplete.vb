@@ -171,33 +171,33 @@ Public Class UCAutocomplete
         Dim sAutocompleteArray As ClassSyntaxTools.STRUC_AUTOCOMPLETE() = ClassSyntaxTools.g_lAutocompleteList.ToArray
         For i = 0 To sAutocompleteArray.Length - 1
             If (bSelectedWord) Then
-                If (sAutocompleteArray(i).sFunctionName.Equals(sText)) Then
-                    Dim mListViewItemData As New ClassListViewItemData(New String() {sAutocompleteArray(i).sFile,
+                If (sAutocompleteArray(i).m_FunctionName.Equals(sText)) Then
+                    Dim mListViewItemData As New ClassListViewItemData(New String() {sAutocompleteArray(i).m_File,
                                                                                     sAutocompleteArray(i).GetTypeFullNames,
-                                                                                    sAutocompleteArray(i).sFunctionName,
-                                                                                    sAutocompleteArray(i).sFullFunctionName})
+                                                                                    sAutocompleteArray(i).m_FunctionName,
+                                                                                    sAutocompleteArray(i).m_FullFunctionName})
 
-                    mListViewItemData.g_mData("File") = sAutocompleteArray(i).sFile
+                    mListViewItemData.g_mData("File") = sAutocompleteArray(i).m_File
                     mListViewItemData.g_mData("TypeFullNames") = sAutocompleteArray(i).GetTypeFullNames
-                    mListViewItemData.g_mData("FunctionName") = sAutocompleteArray(i).sFunctionName
-                    mListViewItemData.g_mData("FullFunctionName") = sAutocompleteArray(i).sFullFunctionName
-                    mListViewItemData.g_mData("Info") = sAutocompleteArray(i).sInfo
+                    mListViewItemData.g_mData("FunctionName") = sAutocompleteArray(i).m_FunctionName
+                    mListViewItemData.g_mData("FullFunctionName") = sAutocompleteArray(i).m_FullFunctionName
+                    mListViewItemData.g_mData("Info") = sAutocompleteArray(i).m_Info
 
                     lListViewItemsList.Add(mListViewItemData)
                 End If
             Else
-                If (sAutocompleteArray(i).sFile.Equals(sText, If(ClassSettings.g_iSettingsAutocompleteCaseSensitive, StringComparison.Ordinal, StringComparison.OrdinalIgnoreCase)) OrElse
-                            sAutocompleteArray(i).sFunctionName.IndexOf(sText, If(ClassSettings.g_iSettingsAutocompleteCaseSensitive, StringComparison.Ordinal, StringComparison.OrdinalIgnoreCase)) > -1) Then
-                    Dim mListViewItemData As New ClassListViewItemData(New String() {sAutocompleteArray(i).sFile,
+                If (sAutocompleteArray(i).m_File.Equals(sText, If(ClassSettings.g_iSettingsAutocompleteCaseSensitive, StringComparison.Ordinal, StringComparison.OrdinalIgnoreCase)) OrElse
+                            sAutocompleteArray(i).m_FunctionName.IndexOf(sText, If(ClassSettings.g_iSettingsAutocompleteCaseSensitive, StringComparison.Ordinal, StringComparison.OrdinalIgnoreCase)) > -1) Then
+                    Dim mListViewItemData As New ClassListViewItemData(New String() {sAutocompleteArray(i).m_File,
                                                                                     sAutocompleteArray(i).GetTypeFullNames,
-                                                                                    sAutocompleteArray(i).sFunctionName,
-                                                                                    sAutocompleteArray(i).sFullFunctionName})
+                                                                                    sAutocompleteArray(i).m_FunctionName,
+                                                                                    sAutocompleteArray(i).m_FullFunctionName})
 
-                    mListViewItemData.g_mData("File") = sAutocompleteArray(i).sFile
+                    mListViewItemData.g_mData("File") = sAutocompleteArray(i).m_File
                     mListViewItemData.g_mData("TypeFullNames") = sAutocompleteArray(i).GetTypeFullNames
-                    mListViewItemData.g_mData("FunctionName") = sAutocompleteArray(i).sFunctionName
-                    mListViewItemData.g_mData("FullFunctionName") = sAutocompleteArray(i).sFullFunctionName
-                    mListViewItemData.g_mData("Info") = sAutocompleteArray(i).sInfo
+                    mListViewItemData.g_mData("FunctionName") = sAutocompleteArray(i).m_FunctionName
+                    mListViewItemData.g_mData("FullFunctionName") = sAutocompleteArray(i).m_FullFunctionName
+                    mListViewItemData.g_mData("Info") = sAutocompleteArray(i).m_Info
 
                     lListViewItemsList.Add(mListViewItemData)
                 End If
@@ -245,14 +245,12 @@ Public Class UCAutocomplete
 
         Dim mListViewItemData = DirectCast(ListView_AutocompleteList.SelectedItems(0), ClassListViewItemData)
 
-        Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE With {
-            .sFile = CStr(mListViewItemData.g_mData("File")),
-            .sFunctionName = CStr(mListViewItemData.g_mData("FunctionName")),
-            .sFullFunctionName = CStr(mListViewItemData.g_mData("FullFunctionName")),
-            .sInfo = CStr(mListViewItemData.g_mData("Info"))
-        }
+        Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(CStr(mListViewItemData.g_mData("Info")),
+                                                                     CStr(mListViewItemData.g_mData("File")),
+                                                                     ClassSyntaxTools.STRUC_AUTOCOMPLETE.ParseTypeFullNames(CStr(mListViewItemData.g_mData("TypeFullNames"))),
+                                                                     CStr(mListViewItemData.g_mData("FunctionName")),
+                                                                     CStr(mListViewItemData.g_mData("FullFunctionName")))
 
-        mAutocomplete.mType = mAutocomplete.ParseTypeFullNames(CStr(mListViewItemData.g_mData("TypeFullNames")))
         Return mAutocomplete
     End Function
 
@@ -308,17 +306,17 @@ Public Class UCAutocomplete
                 Dim bPrintedInfo As Boolean = False
                 Dim sAutocompleteArray As ClassSyntaxTools.STRUC_AUTOCOMPLETE() = ClassSyntaxTools.g_lAutocompleteList.ToArray
                 For i = 0 To sAutocompleteArray.Length - 1
-                    If ((sAutocompleteArray(i).mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE AndAlso Not bIsMethodMap) Then
+                    If ((sAutocompleteArray(i).m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE AndAlso Not bIsMethodMap) Then
                         Continue For
                     End If
 
                     If (bIsMethodMap) Then
-                        If (Not sAutocompleteArray(i).sFunctionName.Equals(sCurrentMethodName)) Then
+                        If (Not sAutocompleteArray(i).m_FunctionName.Equals(sCurrentMethodName)) Then
                             Continue For
                         End If
                     Else
-                        If (Not sAutocompleteArray(i).sFunctionName.Contains(sCurrentMethodName) OrElse
-                                    Not Regex.IsMatch(sAutocompleteArray(i).sFunctionName, String.Format("{0}\b{1}\b", If(bIsMethodMapEnd, "(\.)", ""), Regex.Escape(sCurrentMethodName)))) Then
+                        If (Not sAutocompleteArray(i).m_FunctionName.Contains(sCurrentMethodName) OrElse
+                                    Not Regex.IsMatch(sAutocompleteArray(i).m_FunctionName, String.Format("{0}\b{1}\b", If(bIsMethodMapEnd, "(\.)", ""), Regex.Escape(sCurrentMethodName)))) Then
                             Continue For
                         End If
                     End If
@@ -329,8 +327,8 @@ Public Class UCAutocomplete
                         SB_TipText_IntelliSenseToolTip.AppendLine("IntelliSense:")
                     End If
 
-                    Dim sName As String = Regex.Replace(sAutocompleteArray(i).sFullFunctionName.Trim, vbTab, New String(" "c, iTabSize))
-                    Dim sNameToolTip As String = Regex.Replace(sAutocompleteArray(i).sFullFunctionName.Trim, vbTab, New String(" "c, iTabSize))
+                    Dim sName As String = Regex.Replace(sAutocompleteArray(i).m_FullFunctionName.Trim, vbTab, New String(" "c, iTabSize))
+                    Dim sNameToolTip As String = Regex.Replace(sAutocompleteArray(i).m_FullFunctionName.Trim, vbTab, New String(" "c, iTabSize))
 
                     If (lAlreadyShownList.Contains(sName)) Then
                         Continue For
@@ -353,7 +351,7 @@ Public Class UCAutocomplete
                         End If
                     End If
 
-                    Dim sComment As String = Regex.Replace(sAutocompleteArray(i).sInfo.Trim, "^", New String(" "c, iTabSize), RegexOptions.Multiline)
+                    Dim sComment As String = Regex.Replace(sAutocompleteArray(i).m_Info.Trim, "^", New String(" "c, iTabSize), RegexOptions.Multiline)
 
                     SB_TipText_IntelliSense.AppendLine(sName)
                     SB_TipText_IntelliSenseToolTip.AppendLine(sNameToolTip)

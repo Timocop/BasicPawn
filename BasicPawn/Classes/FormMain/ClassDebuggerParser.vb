@@ -256,12 +256,11 @@ Public Class ClassDebuggerParser
         mInfoBuilder.AppendLine("*")
         mInfoBuilder.AppendLine("*  NOTE: Because the 'any' type the compiler will see the return value as 'int' by default even if you return a float value. Don't return floats in expressions unless you re-tag it as float yourself.")
         mInfoBuilder.AppendLine("*/")
-        lAutocomplete.Add(New ClassSyntaxTools.STRUC_AUTOCOMPLETE With {
-                             .sFile = "BasicPawn.exe",
-                             .sFullFunctionName = String.Format("any:{0}(any:val=0)", g_sBreakpointName),
-                             .sFunctionName = g_sBreakpointName,
-                             .sInfo = mInfoBuilder.ToString,
-                             .mType = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEBUG})
+        lAutocomplete.Add(New ClassSyntaxTools.STRUC_AUTOCOMPLETE(mInfoBuilder.ToString,
+                                                                  "BasicPawn.exe",
+                                                                  ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEBUG,
+                                                                  g_sBreakpointName,
+                                                                  String.Format("any:{0}(any:val=0)", g_sBreakpointName)))
 
         mInfoBuilder.Length = 0
         mInfoBuilder.AppendLine("/**")
@@ -269,12 +268,11 @@ Public Class ClassDebuggerParser
         mInfoBuilder.AppendLine("*")
         mInfoBuilder.AppendLine("*  NOTE: Because the 'any' type the compiler will see the return value as 'int' by default even if you return a float value. Don't return floats in expressions unless you re-tag it as float yourself.")
         mInfoBuilder.AppendLine("*/")
-        lAutocomplete.Add(New ClassSyntaxTools.STRUC_AUTOCOMPLETE With {
-                             .sFile = "BasicPawn.exe",
-                             .sFullFunctionName = String.Format("any:{0}(any:val=0)", g_sWatcherName),
-                             .sFunctionName = g_sWatcherName,
-                             .sInfo = mInfoBuilder.ToString,
-                             .mType = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEBUG})
+        lAutocomplete.Add(New ClassSyntaxTools.STRUC_AUTOCOMPLETE(mInfoBuilder.ToString,
+                                                                  "BasicPawn.exe",
+                                                                  ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEBUG,
+                                                                  g_sWatcherName,
+                                                                  String.Format("any:{0}(any:val=0)", g_sWatcherName)))
 
         Return lAutocomplete.ToArray
     End Function
@@ -484,7 +482,7 @@ Public Class ClassDebuggerParser
     '                        smStackTraceList.Add(New STRUC_SM_EXCEPTION_STACK_TRACE() With {
     '                                             .iLine = iLine,
     '                                             .sFileName = sFile,
-    '                                             .sFunctionName = sFunction,
+    '                                             .m_FunctionName = sFunction,
     '                                             .bNativeFault = False})
 
     '                    Case mMoreStackTraceInfo.Groups("NativeFault").Success
@@ -493,7 +491,7 @@ Public Class ClassDebuggerParser
     '                        smStackTraceList.Add(New STRUC_SM_EXCEPTION_STACK_TRACE() With {
     '                                             .iLine = -1,
     '                                             .sFileName = "",
-    '                                             .sFunctionName = sFunction,
+    '                                             .m_FunctionName = sFunction,
     '                                             .bNativeFault = True})
 
     '                    Case Else

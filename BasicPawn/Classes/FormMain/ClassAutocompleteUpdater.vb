@@ -219,7 +219,7 @@ Public Class ClassAutocompleteUpdater
             'Save everything and update syntax
             ClassSyntaxTools.g_lAutocompleteList.DoSync(
                 Sub()
-                    ClassSyntaxTools.g_lAutocompleteList.RemoveAll(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) (x.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
+                    ClassSyntaxTools.g_lAutocompleteList.RemoveAll(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
                     ClassSyntaxTools.g_lAutocompleteList.AddRange(lTmpAutocompleteList.ToArray)
                 End Sub)
 
@@ -258,64 +258,66 @@ Public Class ClassAutocompleteUpdater
         '       Test1.Close
         '       Test2.Close
         If (True) Then
-            Dim lAlreadyDidList As New List(Of String)
             Dim lTmpAutoAddList As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
 
             For i = lTmpAutoList.Count - 1 To 0 Step -1
-                If ((lTmpAutoList(i).mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) <> ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP OrElse
-                            Not lTmpAutoList(i).sFullFunctionName.Contains("<"c) OrElse
-                            Not lTmpAutoList(i).sFunctionName.Contains("."c)) Then
+                If ((lTmpAutoList(i).m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) <> ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP OrElse
+                            Not lTmpAutoList(i).m_FunctionName.Contains("."c)) Then
                     Continue For
                 End If
 
-                Dim mMatch As Match = Regex.Match(lTmpAutoList(i).sFullFunctionName, "(?<Name>\b[a-zA-Z0-9_]+\b)\s+(\<)\s+(?<Parent>\b[a-zA-Z0-9_]+\b)")
-                If (Not mMatch.Success) Then
+                Dim sMethodmapName As String = CStr(lTmpAutoList(i).m_Data("MethodmapName"))
+                Dim sMethodmapParentName As String = CStr(lTmpAutoList(i).m_Data("MethodmapParentName"))
+                If (String.IsNullOrEmpty(sMethodmapName) OrElse String.IsNullOrEmpty(sMethodmapParentName)) Then
                     Continue For
                 End If
 
-                Dim sName As String = mMatch.Groups("Name").Value
-                Dim sParent As String = mMatch.Groups("Parent").Value
-
-                If (lAlreadyDidList.Contains(sParent & ":" & sName)) Then
-                    Continue For
-                End If
-
-                lAlreadyDidList.Add(sParent & ":" & sName)
-
-                Dim iOldNextParent As String = sParent
+                Dim iOldNextParent As String = sMethodmapParentName
 
                 While (Not String.IsNullOrEmpty(iOldNextParent))
                     Dim sNextParent As String = ""
 
                     For ii = 0 To lTmpAutoList.Count - 1
-                        If ((lTmpAutoList(ii).mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) <> ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP OrElse
-                                    Not lTmpAutoList(ii).sFunctionName.Contains("."c)) Then
+                        If ((lTmpAutoList(ii).m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) <> ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP OrElse
+                                    Not lTmpAutoList(ii).m_FunctionName.Contains("."c)) Then
                             Continue For
                         End If
 
                         'TODO: Dont use yet, make methodmap parsing more efficent first
-                        'If ((lTmpAutoList(ii).mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STATIC) <> ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STATIC) Then
+                        'If ((lTmpAutoList(ii).m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STATIC) <> ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STATIC) Then
                         '    Continue For
                         'End If
 
-                        Dim mParentMatch As Match = Regex.Match(lTmpAutoList(ii).sFullFunctionName, "(?<Name>\b[a-zA-Z0-9_]+\b)\s+(\<)\s+(?<Parent>\b[a-zA-Z0-9_]+\b)")
-
-                        Dim sParentName As String = mParentMatch.Groups("Name").Value
-                        Dim sParentParent As String = mParentMatch.Groups("Parent").Value
-
-                        If (String.IsNullOrEmpty(sParentParent) OrElse iOldNextParent <> sParentName) Then
+                        Dim sParentMethodmapName As String = CStr(lTmpAutoList(ii).m_Data("MethodmapName"))
+                        Dim sParentMethodmapParentName As String = CStr(lTmpAutoList(ii).m_Data("MethodmapParentName"))
+                        Dim sParentMethodmapMethodName As String = CStr(lTmpAutoList(ii).m_Data("MethodmapMethodName"))
+                        If (String.IsNullOrEmpty(sParentMethodmapName) OrElse String.IsNullOrEmpty(sParentMethodmapMethodName)) Then
                             Continue For
                         End If
 
-                        sNextParent = sParentParent
+                        If (iOldNextParent <> sParentMethodmapName) Then
+                            Continue For
+                        End If
 
-                        lTmpAutoAddList.Add(New ClassSyntaxTools.STRUC_AUTOCOMPLETE With {
-                            .sFile = lTmpAutoList(ii).sFile,
-                            .sFullFunctionName = lTmpAutoList(ii).sFullFunctionName,
-                            .sFunctionName = Regex.Replace(lTmpAutoList(ii).sFunctionName, "^\b[a-zA-Z0-9_]+\b\.", String.Format("{0}.", sName)),
-                            .sInfo = lTmpAutoList(ii).sInfo,
-                            .mType = lTmpAutoList(ii).mType
-                        })
+                        sNextParent = sParentMethodmapParentName
+
+                        Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(lTmpAutoList(ii).m_Info,
+                                                                                    lTmpAutoList(ii).m_File,
+                                                                                    lTmpAutoList(ii).m_Type,
+                                                                                    String.Format("{0}.{1}", sMethodmapName, sParentMethodmapMethodName),
+                                                                                    lTmpAutoList(ii).m_FullFunctionName)
+
+                        For Each mData In lTmpAutoList(ii).m_Data
+                            mAutocomplete.m_Data(mData.Key) = mData.Value
+                        Next
+
+                        mAutocomplete.m_Data("VariableMethodmapName") = sParentMethodmapName
+                        mAutocomplete.m_Data("VariableMethodmapMethod") = sParentMethodmapMethodName
+
+                        If (Not lTmpAutoList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionName = mAutocomplete.m_FunctionName) AndAlso
+                                Not lTmpAutoAddList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionName = mAutocomplete.m_FunctionName)) Then
+                            lTmpAutoAddList.Add(mAutocomplete)
+                        End If
                     Next
 
                     iOldNextParent = sNextParent
@@ -330,64 +332,66 @@ Public Class ClassAutocompleteUpdater
         '   to
         '       Method.Close
         If (True) Then
-            Dim lAlreadyDidList As New List(Of String)
             Dim lTmpAutoAddList As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
 
             For i = lTmpAutoList.Count - 1 To 0 Step -1
-                If ((lTmpAutoList(i).mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) <> ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP OrElse
-                            Not lTmpAutoList(i).sFullFunctionName.Contains("<"c) OrElse
-                            Not lTmpAutoList(i).sFunctionName.Contains("."c)) Then
+                If ((lTmpAutoList(i).m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) <> ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP OrElse
+                            Not lTmpAutoList(i).m_FunctionName.Contains("."c)) Then
                     Continue For
                 End If
 
-                Dim mMatch As Match = Regex.Match(lTmpAutoList(i).sFullFunctionName, "(?<Name>\b[a-zA-Z0-9_]+\b)\s+(\<)\s+(?<Parent>\b[a-zA-Z0-9_]+\b)\s+(\=)\s+(?<Return>\b[a-zA-Z0-9_]+\b)\s+(?<Method>\b[a-zA-Z0-9_]+\b)")
-                If (Not mMatch.Success) Then
+                Dim sMethodmapMethodName As String = CStr(lTmpAutoList(i).m_Data("MethodmapMethodName"))
+                Dim sMethodmapMethodTag As String = CStr(lTmpAutoList(i).m_Data("MethodmapMethodTag"))
+                If (String.IsNullOrEmpty(sMethodmapMethodName) OrElse String.IsNullOrEmpty(sMethodmapMethodTag)) Then
                     Continue For
                 End If
 
-                Dim sName As String = mMatch.Groups("Method").Value
-                Dim sReturn As String = mMatch.Groups("Return").Value
-
-                If (lAlreadyDidList.Contains(sReturn & ":" & sName)) Then
-                    Continue For
-                End If
-
-                lAlreadyDidList.Add(sReturn & ":" & sName)
-
-                Dim iOldNextParent As String = sReturn
+                Dim iOldNextParent As String = sMethodmapMethodTag
 
                 While (Not String.IsNullOrEmpty(iOldNextParent))
                     Dim sNextParent As String = ""
 
                     For ii = 0 To lTmpAutoList.Count - 1
-                        If ((lTmpAutoList(ii).mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) <> ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP OrElse
-                                    Not lTmpAutoList(ii).sFunctionName.Contains("."c)) Then
+                        If ((lTmpAutoList(ii).m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) <> ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP OrElse
+                                    Not lTmpAutoList(ii).m_FunctionName.Contains("."c)) Then
                             Continue For
                         End If
 
                         'TODO: Dont use yet, make methodmap parsing more efficent first
-                        'If ((lTmpAutoList(ii).mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STATIC) <> ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STATIC) Then
+                        'If ((lTmpAutoList(ii).m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STATIC) <> ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STATIC) Then
                         '    Continue For
                         'End If
 
-                        Dim mParentMatch As Match = Regex.Match(lTmpAutoList(ii).sFullFunctionName, "(?<Name>\b[a-zA-Z0-9_]+\b)\s+(\<)\s+(?<Parent>\b[a-zA-Z0-9_]+\b)")
-
-                        Dim sParentName As String = mParentMatch.Groups("Name").Value
-                        Dim sParentParent As String = mParentMatch.Groups("Parent").Value
-
-                        If (String.IsNullOrEmpty(sParentParent) OrElse iOldNextParent <> sParentName) Then
+                        Dim sParentMethodmapName As String = CStr(lTmpAutoList(ii).m_Data("MethodmapName"))
+                        Dim sParentMethodmapParentName As String = CStr(lTmpAutoList(ii).m_Data("MethodmapParentName"))
+                        Dim sParentMethodmapMethodName As String = CStr(lTmpAutoList(ii).m_Data("MethodmapMethodName"))
+                        If (String.IsNullOrEmpty(sParentMethodmapName) OrElse String.IsNullOrEmpty(sParentMethodmapMethodName)) Then
                             Continue For
                         End If
 
-                        sNextParent = sParentParent
+                        If (iOldNextParent <> sParentMethodmapName) Then
+                            Continue For
+                        End If
 
-                        lTmpAutoAddList.Add(New ClassSyntaxTools.STRUC_AUTOCOMPLETE With {
-                            .sFile = lTmpAutoList(ii).sFile,
-                            .sFullFunctionName = lTmpAutoList(ii).sFullFunctionName,
-                            .sFunctionName = Regex.Replace(lTmpAutoList(ii).sFunctionName, "^\b[a-zA-Z0-9_]+\b\.", String.Format("{0}.", sName)),
-                            .sInfo = lTmpAutoList(ii).sInfo,
-                            .mType = lTmpAutoList(ii).mType
-                        })
+                        sNextParent = sParentMethodmapParentName
+
+                        Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(lTmpAutoList(ii).m_Info,
+                                                                                    lTmpAutoList(ii).m_File,
+                                                                                    lTmpAutoList(ii).m_Type,
+                                                                                    String.Format("{0}.{1}", sMethodmapMethodName, sParentMethodmapMethodName),
+                                                                                    lTmpAutoList(ii).m_FullFunctionName)
+
+                        For Each mData In lTmpAutoList(ii).m_Data
+                            mAutocomplete.m_Data(mData.Key) = mData.Value
+                        Next
+
+                        mAutocomplete.m_Data("VariableMethodmapName") = sMethodmapMethodName
+                        mAutocomplete.m_Data("VariableMethodmapMethod") = sParentMethodmapMethodName
+
+                        If (Not lTmpAutoList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionName = mAutocomplete.m_FunctionName) AndAlso
+                                Not lTmpAutoAddList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionName = mAutocomplete.m_FunctionName)) Then
+                            lTmpAutoAddList.Add(mAutocomplete)
+                        End If
                     Next
 
                     iOldNextParent = sNextParent
@@ -420,19 +424,19 @@ Public Class ClassAutocompleteUpdater
         }
 
         lTmpAutoList.ForEach(Sub(j As ClassSyntaxTools.STRUC_AUTOCOMPLETE)
-                                 If ((j.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM) <> ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM) Then
+                                 If ((j.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM) <> ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM) Then
                                      Return
                                  End If
 
-                                 If (j.sFunctionName.Contains("."c)) Then
+                                 If (j.m_FunctionName.Contains("."c)) Then
                                      Return
                                  End If
 
-                                 If (lNames.Contains(j.sFunctionName)) Then
+                                 If (lNames.Contains(j.m_FunctionName)) Then
                                      Return
                                  End If
 
-                                 lNames.Add(j.sFunctionName)
+                                 lNames.Add(j.m_FunctionName)
                              End Sub)
 
         Return lNames.ToArray
@@ -629,15 +633,15 @@ Public Class ClassAutocompleteUpdater
 
                 Dim sStructName As String = mMatch.Groups("Name").Value
 
-                Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE With {
-                    .sFile = IO.Path.GetFileName(sFile),
-                    .sFullFunctionName = "struct " & sStructName,
-                    .sFunctionName = sStructName,
-                    .sInfo = "",
-                    .mType = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STRUCT
-                }
+                Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE("",
+                                                                            IO.Path.GetFileName(sFile),
+                                                                            ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STRUCT,
+                                                                            sStructName,
+                                                                            "struct " & sStructName)
 
-                If (Not lTmpAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.mType = mAutocomplete.mType AndAlso x.sFunctionName = mAutocomplete.sFunctionName)) Then
+                mAutocomplete.m_Data("StructName") = sStructName
+
+                If (Not lTmpAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionName = mAutocomplete.m_FunctionName)) Then
                     lTmpAutocompleteList.Add(mAutocomplete)
                 End If
             Next
@@ -669,15 +673,16 @@ Public Class ClassAutocompleteUpdater
 
                 Dim sEnumName As String = mMatch.Groups("Name").Value
 
-                Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE With {
-                    .sFile = IO.Path.GetFileName(sFile),
-                    .sFullFunctionName = "enum " & sEnumName,
-                    .sFunctionName = sEnumName,
-                    .sInfo = "",
-                    .mType = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM
-                }
+                Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE("",
+                                                                            IO.Path.GetFileName(sFile),
+                                                                            ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM,
+                                                                            sEnumName,
+                                                                            "enum " & sEnumName)
 
-                If (Not lTmpAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.mType = mAutocomplete.mType AndAlso x.sFunctionName = mAutocomplete.sFunctionName)) Then
+                mAutocomplete.m_Data("EnumName") = sEnumName
+                mAutocomplete.m_Data("EnumIsMethodmap") = True
+
+                If (Not lTmpAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionName = mAutocomplete.m_FunctionName)) Then
                     lTmpAutocompleteList.Add(mAutocomplete)
                 End If
             Next
@@ -709,15 +714,16 @@ Public Class ClassAutocompleteUpdater
 
                 Dim sEnumName As String = mMatch.Groups("Name").Value
 
-                Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE With {
-                    .sFile = IO.Path.GetFileName(sFile),
-                    .sFullFunctionName = "enum " & sEnumName,
-                    .sFunctionName = sEnumName,
-                    .sInfo = "",
-                    .mType = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM
-                }
+                Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE("",
+                                                                            IO.Path.GetFileName(sFile),
+                                                                            ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM,
+                                                                            sEnumName,
+                                                                            "enum " & sEnumName)
 
-                If (Not lTmpAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.mType = mAutocomplete.mType AndAlso x.sFunctionName = mAutocomplete.sFunctionName)) Then
+                mAutocomplete.m_Data("EnumName") = sEnumName
+                mAutocomplete.m_Data("EnumIsTypeset") = True
+
+                If (Not lTmpAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionName = mAutocomplete.m_FunctionName)) Then
                     lTmpAutocompleteList.Add(mAutocomplete)
                 End If
             Next
@@ -749,13 +755,13 @@ Public Class ClassAutocompleteUpdater
         '        Dim sEnumName As String = mMatch.Groups("Name").Value
 
         '        Dim mAutocomplete As ClassSyntaxTools.STRUC_AUTOCOMPLETE
-        '        mAutocomplete.sFile = IO.Path.GetFileName(sFile)
+        '        mAutocomplete.m_File = IO.Path.GetFileName(sFile)
         '        mAutocomplete.sFullFunctionname = "enum " & sEnumName
-        '        mAutocomplete.sFunctionName = sEnumName
-        '        mAutocomplete.sInfo = ""
+        '        mAutocomplete.m_FunctionName = sEnumName
+        '        mAutocomplete.m_Info = ""
         '        mAutocomplete.sType = "enum"
 
-        '        If (Not lTmpAutoList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.sType = mAutocomplete.sType AndAlso x.sFunctionName = mAutocomplete.sFunctionName)) Then
+        '        If (Not lTmpAutoList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.sType = mAutocomplete.sType AndAlso x.m_FunctionName = mAutocomplete.m_FunctionName)) Then
         '            lTmpAutoList.Add(mAutocomplete)
         '        End If
         '    Next
@@ -901,15 +907,15 @@ Public Class ClassAutocompleteUpdater
                 Next
 
                 If (True) Then
-                    Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE With {
-                        .sFile = IO.Path.GetFileName(sFile),
-                        .sFullFunctionName = "enum " & sEnumName,
-                        .sFunctionName = sEnumName,
-                        .sInfo = "",
-                        .mType = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM
-                    }
+                    Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE("",
+                                                                                IO.Path.GetFileName(sFile),
+                                                                                ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM,
+                                                                                sEnumName,
+                                                                                "enum " & sEnumName)
 
-                    If (Not lTmpAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.mType = mAutocomplete.mType AndAlso x.sFunctionName = mAutocomplete.sFunctionName)) Then
+                    mAutocomplete.m_Data("EnumName") = sEnumName
+
+                    If (Not lTmpAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionName = mAutocomplete.m_FunctionName)) Then
                         lTmpAutocompleteList.Add(mAutocomplete)
                     End If
                 End If
@@ -926,15 +932,17 @@ Public Class ClassAutocompleteUpdater
 
                     Dim sEnumVarName As String = mMatch2.Groups("Name").Value
 
-                    Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE With {
-                        .sFile = IO.Path.GetFileName(sFile),
-                        .sFullFunctionName = String.Format("enum {0} {1}", sEnumName, sEnumFull),
-                        .sFunctionName = String.Format("{0}.{1}", sEnumName, sEnumVarName),
-                        .sInfo = sEnumComment,
-                        .mType = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM
-                    }
+                    Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(sEnumComment,
+                                                                                IO.Path.GetFileName(sFile),
+                                                                                ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM,
+                                                                                String.Format("{0}.{1}", sEnumName, sEnumVarName),
+                                                                                String.Format("enum {0} {1}", sEnumName, sEnumFull))
 
-                    If (Not lTmpAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.mType = mAutocomplete.mType AndAlso x.sFunctionName = mAutocomplete.sFunctionName)) Then
+                    mAutocomplete.m_Data("EnumName") = sEnumName
+                    mAutocomplete.m_Data("EnumIsChild") = True
+                    mAutocomplete.m_Data("EnumChildName") = sEnumVarName
+
+                    If (Not lTmpAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionName = mAutocomplete.m_FunctionName)) Then
                         lTmpAutocompleteList.Add(mAutocomplete)
                     End If
                 Next
@@ -951,13 +959,13 @@ Public Class ClassAutocompleteUpdater
 
             Dim mMatch As Match
 
+            Dim sFullDefine As String
             Dim sFullName As String
             Dim sName As String
 
             Dim iBraceList As Integer()()
 
             Dim sBraceText As String
-            Dim sFullDefine As String
 
             Using mSR As New IO.StringReader(sSource)
                 While True
@@ -970,13 +978,14 @@ Public Class ClassAutocompleteUpdater
                         Continue While
                     End If
 
-                    mMatch = Regex.Match(sLine, "^\s*#define\s+(?<Name>\b[a-zA-Z0-9_]+\b)\s*(?<Arguments>\()*")
+                    mMatch = Regex.Match(sLine, "(?<FullDefine>^\s*#define\s+(?<Name>\b[a-zA-Z0-9_]+\b)\s*)(?<Arguments>\()*")
                     If (Not mMatch.Success) Then
                         Continue While
                     End If
 
                     sFullName = ""
                     sName = mMatch.Groups("Name").Value
+                    sFullDefine = mMatch.Groups("FullDefine").Value
 
                     If (mMatch.Groups("Arguments").Success) Then
                         iBraceList = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(sLine, "("c, ")"c, 1, True)
@@ -984,26 +993,29 @@ Public Class ClassAutocompleteUpdater
                             Continue While
                         End If
 
-                        sBraceText = sLine.Substring(iBraceList(0)(0) + 1, iBraceList(0)(1) - iBraceList(0)(0))
+                        sBraceText = sLine.Substring(iBraceList(0)(0), iBraceList(0)(1) - iBraceList(0)(0) + 1)
 
-                        sFullDefine = Regex.Match(sLine, String.Format("{0}{1}(.*?)$", Regex.Escape(mMatch.Value), Regex.Escape(sBraceText))).Value
+                        sFullDefine = Regex.Match(sLine, String.Format("{0}{1}(.*?)$", Regex.Escape(sFullDefine), Regex.Escape(sBraceText))).Value
                         sFullName = sFullDefine
                     Else
-                        sFullDefine = Regex.Match(sLine, String.Format("{0}(.*?)$", Regex.Escape(mMatch.Value))).Value
+                        sBraceText = ""
+
+                        sFullDefine = Regex.Match(sLine, String.Format("{0}(.*?)$", Regex.Escape(sFullDefine))).Value
                         sFullName = sFullDefine
                     End If
 
                     sFullName = sFullName.Replace(vbTab, " ")
 
-                    Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE With {
-                        .sFile = IO.Path.GetFileName(sFile),
-                        .sFullFunctionName = sFullName,
-                        .sFunctionName = sName,
-                        .sInfo = "",
-                        .mType = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEFINE
-                    }
+                    Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE("",
+                                                                                IO.Path.GetFileName(sFile),
+                                                                                ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEFINE,
+                                                                                sName,
+                                                                                sFullName)
 
-                    If (Not lTmpAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.mType = mAutocomplete.mType AndAlso x.sFunctionName = mAutocomplete.sFunctionName)) Then
+                    mAutocomplete.m_Data("DefineName") = sName
+                    mAutocomplete.m_Data("DefineArguments") = sBraceText
+
+                    If (Not lTmpAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionName = mAutocomplete.m_FunctionName)) Then
                         lTmpAutocompleteList.Add(mAutocomplete)
                     End If
                 End While
@@ -1028,6 +1040,9 @@ Public Class ClassAutocompleteUpdater
             Dim sFullName As String
             Dim sName As String
             Dim sComment As String
+            Dim sTypes As String
+            Dim sTag As String
+            Dim sOther As String
 
             Dim sLines As String() = sSource.Split(New String() {vbNewLine, vbLf}, 0)
             Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
@@ -1066,22 +1081,28 @@ Public Class ClassAutocompleteUpdater
                 sFullName = ""
                 sName = mMatch.Groups("Name").Value
                 sComment = Regex.Match(mMatch.Groups("Other").Value, "/\*(.*?)\*/\s*$").Value
+                sTypes = mMatch.Groups("Types").Value
+                sTag = mMatch.Groups("Tag").Value
+                sOther = mMatch.Groups("Other").Value
 
-                sFullName = String.Format("{0} {1}{2}{3}", mMatch.Groups("Types").Value, mMatch.Groups("Tag").Value, mMatch.Groups("Name").Value, mMatch.Groups("Other").Value)
+                sFullName = String.Format("{0} {1}{2}{3}", sTypes, sTag, sName, sOther)
                 sFullName = sFullName.Replace(vbTab, " "c)
                 If (Not String.IsNullOrEmpty(sComment)) Then
                     sFullName = sFullName.Replace(sComment, "")
                 End If
 
-                Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE With {
-                    .sFile = IO.Path.GetFileName(sFile),
-                    .sFullFunctionName = sFullName,
-                    .sFunctionName = sName,
-                    .sInfo = sComment,
-                    .mType = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PUBLICVAR
-                }
+                Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(sComment,
+                                                                                IO.Path.GetFileName(sFile),
+                                                                                ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PUBLICVAR,
+                                                                                sName,
+                                                                                sFullName)
 
-                If (Not lTmpAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.mType = mAutocomplete.mType AndAlso x.sFunctionName = mAutocomplete.sFunctionName)) Then
+                mAutocomplete.m_Data("PublicvarName") = sName
+                mAutocomplete.m_Data("PublicvarTypes") = sTypes
+                mAutocomplete.m_Data("PublicvarTag") = sTag
+                mAutocomplete.m_Data("PublicvarOther") = sOther
+
+                If (Not lTmpAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionName = mAutocomplete.m_FunctionName)) Then
                     lTmpAutocompleteList.Add(mAutocomplete)
                 End If
             Next
@@ -1096,7 +1117,7 @@ Public Class ClassAutocompleteUpdater
             Dim sTypes As String()
             Dim sTag As String
             Dim sName As String
-            Dim sFull As String
+            Dim sFullname As String
             Dim sComment As String
 
             Dim mFuncTagMatch As Match
@@ -1156,7 +1177,7 @@ Public Class ClassAutocompleteUpdater
                 sTypes = mMatch.Groups("Types").Value.Split(New Char() {" "c}, StringSplitOptions.RemoveEmptyEntries)
                 sTag = mMatch.Groups("Tag").Value
                 sName = mMatch.Groups("Name").Value
-                sFull = mMatch.Groups("Types").Value & sTag & sName & sBraceText
+                sFullname = mMatch.Groups("Types").Value & sTag & sName & sBraceText
                 sComment = ""
 
                 If (Regex.IsMatch(sName, String.Format("(\b{0}\b)", String.Join("\b|\b", ClassSyntaxTools.g_sStatementsArray)))) Then
@@ -1169,20 +1190,20 @@ Public Class ClassAutocompleteUpdater
 
                 If (Array.IndexOf(sTypes, "functag") > -1) Then
                     While True
-                        mFuncTagMatch = Regex.Match(sFull, "(?<Name>\b[a-zA-Z0-9_]+\b)\s+(?<Tag>\b[a-zA-Z0-9_]+\:\b)*\b(public)\b\s*\(")
+                        mFuncTagMatch = Regex.Match(sFullname, "(?<Name>\b[a-zA-Z0-9_]+\b)\s+(?<Tag>\b[a-zA-Z0-9_]+\:\b)*\b(public)\b\s*\(")
                         If (mFuncTagMatch.Success) Then
                             sTypes = New String() {"functag"}
                             sTag = mFuncTagMatch.Groups("Tag").Value
                             sName = mFuncTagMatch.Groups("Name").Value
-                            sFull = "functag " & sTag & sName & sBraceText
+                            sFullname = "functag " & sTag & sName & sBraceText
                             Exit While
                         End If
-                        mFuncTagMatch = Regex.Match(sFull, "\b(public)\b\s+(?<Tag>\b[a-zA-Z0-9_]+\:\b)*(?<Name>\b[a-zA-Z0-9_]+\b)\s*\(")
+                        mFuncTagMatch = Regex.Match(sFullname, "\b(public)\b\s+(?<Tag>\b[a-zA-Z0-9_]+\:\b)*(?<Name>\b[a-zA-Z0-9_]+\b)\s*\(")
                         If (mFuncTagMatch.Success) Then
                             sTypes = New String() {"functag"}
                             sTag = mFuncTagMatch.Groups("Tag").Value
                             sName = mFuncTagMatch.Groups("Name").Value
-                            sFull = "functag " & sTag & sName & sBraceText
+                            sFullname = "functag " & sTag & sName & sBraceText
                             Exit While
                         End If
 
@@ -1218,15 +1239,17 @@ Public Class ClassAutocompleteUpdater
 
                 sComment = New Regex("^\s+", RegexOptions.Multiline).Replace(sComment, "")
 
-                Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE With {
-                    .sFile = IO.Path.GetFileName(sFile),
-                    .sFullFunctionName = sFull,
-                    .sFunctionName = sName,
-                    .sInfo = sComment
-                }
-                mAutocomplete.mType = mAutocomplete.ParseTypeNames(sTypes) Or ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHOD
+                Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(sComment,
+                                                                                IO.Path.GetFileName(sFile),
+                                                                                ClassSyntaxTools.STRUC_AUTOCOMPLETE.ParseTypeNames(sTypes) Or ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHOD,
+                                                                                sName,
+                                                                                sFullname)
 
-                If (Not lTmpAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.mType = mAutocomplete.mType AndAlso x.sFunctionName = mAutocomplete.sFunctionName)) Then
+                mAutocomplete.m_Data("MethodName") = sName
+                mAutocomplete.m_Data("MethodType") = String.Join(" ", sTypes)
+                mAutocomplete.m_Data("MethodTag") = sTag.Trim
+
+                If (Not lTmpAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionName = mAutocomplete.m_FunctionName)) Then
                     lTmpAutocompleteList.Add(mAutocomplete)
                 End If
             Next
@@ -1398,15 +1421,17 @@ Public Class ClassAutocompleteUpdater
 
                     Dim sEnumVarName As String = regMatch.Groups("Name").Value
 
-                    Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE With {
-                        .sFile = IO.Path.GetFileName(sFile),
-                        .sFullFunctionName = String.Format("funcenum {0} {1}", sEnumName, sEnumFull),
-                        .sFunctionName = "public " & (New Regex("\b(public)\b").Replace(sEnumFull, sEnumName, 1)),
-                        .sInfo = sEnumComment,
-                        .mType = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM
-                    }
+                    Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(sEnumComment,
+                                                                                IO.Path.GetFileName(sFile),
+                                                                                ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM,
+                                                                                "public " & (New Regex("\b(public)\b").Replace(sEnumFull, sEnumName, 1)),
+                                                                                String.Format("funcenum {0} {1}", sEnumName, sEnumFull))
 
-                    If (Not lTmpAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.mType = mAutocomplete.mType AndAlso x.sFunctionName = mAutocomplete.sFunctionName)) Then
+                    mAutocomplete.m_Data("FuncenumName") = sEnumName
+                    mAutocomplete.m_Data("FuncenumVarName") = sEnumVarName
+                    mAutocomplete.m_Data("FuncenumFull") = sEnumFull
+
+                    If (Not lTmpAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionName = mAutocomplete.m_FunctionName)) Then
                         lTmpAutocompleteList.Add(mAutocomplete)
                     End If
                 Next
@@ -1457,15 +1482,23 @@ Public Class ClassAutocompleteUpdater
                 sMethodMapParentingName = mMatch.Groups("ParentingName").Value
 
                 If (True) Then
-                    Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE With {
-                        .sFile = IO.Path.GetFileName(sFile),
-                        .sFullFunctionName = "methodmap " & sMethodMapName & sMethodMapFullParentName,
-                        .sFunctionName = sMethodMapName,
-                        .sInfo = "",
-                        .mType = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP
-                    }
+                    Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE("",
+                                                                                IO.Path.GetFileName(sFile),
+                                                                                ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP,
+                                                                                sMethodMapName,
+                                                                                "methodmap " & sMethodMapName & sMethodMapFullParentName)
 
-                    If (Not lTmpAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.mType = mAutocomplete.mType AndAlso x.sFunctionName = mAutocomplete.sFunctionName)) Then
+                    mAutocomplete.m_Data("MethodmapName") = sMethodMapName
+                    mAutocomplete.m_Data("MethodmapParentName") = sMethodMapParentName
+                    mAutocomplete.m_Data("MethodmapParentingName") = sMethodMapParentingName
+
+                    mAutocomplete.m_Data("MethodmapMethodType") = ""
+                    mAutocomplete.m_Data("MethodmapMethodTag") = ""
+                    mAutocomplete.m_Data("MethodmapMethodName") = ""
+                    mAutocomplete.m_Data("MethodmapMethodArguments") = ""
+                    mAutocomplete.m_Data("MethodmapMethodIsConstructor") = False
+
+                    If (Not lTmpAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionName = mAutocomplete.m_FunctionName)) Then
                         lTmpAutocompleteList.Add(mAutocomplete)
                     End If
                 End If
@@ -1505,16 +1538,28 @@ Public Class ClassAutocompleteUpdater
                     Dim sTag As String = mMethodMatches(ii).Groups("Tag").Value.Trim
                     Dim sName As String = mMethodMatches(ii).Groups("Name").Value
 
-                    If (sType = "property") Then
-                        Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE With {
-                            .sFile = IO.Path.GetFileName(sFile),
-                            .sFullFunctionName = String.Format("methodmap {0} {1}{2}{3} = {4} {5}", sType, sMethodMapName, sMethodMapParentingName, If(sMethodMapHasParent, " < " & sMethodMapParentName, ""), sTag, sName),
-                            .sFunctionName = String.Format("{0}.{1}", sMethodMapName, sName),
-                            .sInfo = sComment
-                        }
-                        mAutocomplete.mType = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP Or mAutocomplete.ParseTypeFullNames(sType)
+                    If (sName = "get" OrElse sName = "set") Then
+                        Continue For
+                    End If
 
-                        If (Not lTmpAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.mType = mAutocomplete.mType AndAlso x.sFunctionName = mAutocomplete.sFunctionName)) Then
+                    If (sType = "property") Then
+                        Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(sComment,
+                                                                                    IO.Path.GetFileName(sFile),
+                                                                                    ClassSyntaxTools.STRUC_AUTOCOMPLETE.ParseTypeFullNames(sType) Or ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP,
+                                                                                    String.Format("{0}.{1}", sMethodMapName, sName),
+                                                                                    String.Format("methodmap {0} {1}{2}{3} = {4} {5}", sType, sMethodMapName, sMethodMapParentingName, If(sMethodMapHasParent, " < " & sMethodMapParentName, ""), sTag, sName))
+
+                        mAutocomplete.m_Data("MethodmapName") = sMethodMapName
+                        mAutocomplete.m_Data("MethodmapParentName") = sMethodMapParentName
+                        mAutocomplete.m_Data("MethodmapParentingName") = sMethodMapParentingName
+
+                        mAutocomplete.m_Data("MethodmapMethodType") = sType
+                        mAutocomplete.m_Data("MethodmapMethodTag") = sTag
+                        mAutocomplete.m_Data("MethodmapMethodName") = sName
+                        mAutocomplete.m_Data("MethodmapMethodArguments") = ""
+                        mAutocomplete.m_Data("MethodmapMethodIsConstructor") = False
+
+                        If (Not lTmpAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionName = mAutocomplete.m_FunctionName)) Then
                             lTmpAutocompleteList.Add(mAutocomplete)
                         End If
                     Else
@@ -1534,30 +1579,46 @@ Public Class ClassAutocompleteUpdater
                         End If
 
                         If (bIsConstructor) Then
-                            Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE With {
-                                .sFile = IO.Path.GetFileName(sFile),
-                                .sFullFunctionName = String.Format("methodmap {0}{1} = {2}{3}", sMethodMapName, If(sMethodMapHasParent, " < " & sMethodMapParentName, ""), sMethodMapName, sBraceString),
-                                .sFunctionName = sMethodMapName, 'String.Format("{0}.{1}", sMethodMapName, sMethodMapName),
-                                .sInfo = sComment
-                            }
-                            mAutocomplete.mType = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP Or mAutocomplete.ParseTypeFullNames(sType)
+                            Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(sComment,
+                                                                                        IO.Path.GetFileName(sFile),
+                                                                                        ClassSyntaxTools.STRUC_AUTOCOMPLETE.ParseTypeFullNames(sType) Or ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP,
+                                                                                        sMethodMapName,
+                                                                                        String.Format("methodmap {0}{1} = {2}{3}", sMethodMapName, If(sMethodMapHasParent, " < " & sMethodMapParentName, ""), sMethodMapName, sBraceString))
+
+                            mAutocomplete.m_Data("MethodmapName") = sMethodMapName
+                            mAutocomplete.m_Data("MethodmapParentName") = sMethodMapParentName
+                            mAutocomplete.m_Data("MethodmapParentingName") = sMethodMapParentingName
+
+                            mAutocomplete.m_Data("MethodmapMethodType") = sType
+                            mAutocomplete.m_Data("MethodmapMethodTag") = sTag
+                            mAutocomplete.m_Data("MethodmapMethodName") = sName
+                            mAutocomplete.m_Data("MethodmapMethodArguments") = sBraceString
+                            mAutocomplete.m_Data("MethodmapMethodIsConstructor") = True
 
                             'Remove all single methodmaps and replace them with the constructor, the enum version needs to stay for autocompletion.
-                            lTmpAutocompleteList.RemoveAll(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.mType = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP AndAlso x.sFunctionName = mAutocomplete.sFunctionName)
+                            lTmpAutocompleteList.RemoveAll(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP AndAlso x.m_FunctionName = mAutocomplete.m_FunctionName)
 
-                            If (Not lTmpAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.mType = mAutocomplete.mType AndAlso x.sFunctionName = mAutocomplete.sFunctionName)) Then
+                            If (Not lTmpAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionName = mAutocomplete.m_FunctionName)) Then
                                 lTmpAutocompleteList.Add(mAutocomplete)
                             End If
                         Else
-                            Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE With {
-                                .sFile = IO.Path.GetFileName(sFile),
-                                .sFullFunctionName = String.Format("methodmap {0} {1}{2} = {3} {4}{5}", sType, sMethodMapName, If(sMethodMapHasParent, " < " & sMethodMapParentName, ""), sTag, sName, sBraceString),
-                                .sFunctionName = String.Format("{0}.{1}", sMethodMapName, sName),
-                                .sInfo = sComment
-                            }
-                            mAutocomplete.mType = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP Or mAutocomplete.ParseTypeFullNames(sType)
+                            Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(sComment,
+                                                                                        IO.Path.GetFileName(sFile),
+                                                                                        ClassSyntaxTools.STRUC_AUTOCOMPLETE.ParseTypeFullNames(sType) Or ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP,
+                                                                                        String.Format("{0}.{1}", sMethodMapName, sName),
+                                                                                        String.Format("methodmap {0} {1}{2} = {3} {4}{5}", sType, sMethodMapName, If(sMethodMapHasParent, " < " & sMethodMapParentName, ""), sTag, sName, sBraceString))
 
-                            If (Not lTmpAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.mType = mAutocomplete.mType AndAlso x.sFunctionName = mAutocomplete.sFunctionName)) Then
+                            mAutocomplete.m_Data("MethodmapName") = sMethodMapName
+                            mAutocomplete.m_Data("MethodmapParentName") = sMethodMapParentName
+                            mAutocomplete.m_Data("MethodmapParentingName") = sMethodMapParentingName
+
+                            mAutocomplete.m_Data("MethodmapMethodType") = sType
+                            mAutocomplete.m_Data("MethodmapMethodTag") = sTag
+                            mAutocomplete.m_Data("MethodmapMethodName") = sName
+                            mAutocomplete.m_Data("MethodmapMethodArguments") = sBraceString
+                            mAutocomplete.m_Data("MethodmapMethodIsConstructor") = False
+
+                            If (Not lTmpAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionName = mAutocomplete.m_FunctionName)) Then
                                 lTmpAutocompleteList.Add(mAutocomplete)
                             End If
                         End If
@@ -1602,15 +1663,16 @@ Public Class ClassAutocompleteUpdater
                 sMethodMapName = mMatch.Groups("Name").Value
 
                 If (True) Then
-                    Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE With {
-                        .sFile = IO.Path.GetFileName(sFile),
-                        .sFullFunctionName = "enum " & sMethodMapName,
-                        .sFunctionName = sMethodMapName,
-                        .sInfo = "",
-                        .mType = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM
-                    }
+                    Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE("",
+                                                                                IO.Path.GetFileName(sFile),
+                                                                                ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM,
+                                                                                sMethodMapName,
+                                                                                "enum " & sMethodMapName)
 
-                    If (Not lTmpAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.mType = mAutocomplete.mType AndAlso x.sFunctionName = mAutocomplete.sFunctionName)) Then
+                    mAutocomplete.m_Data("EnumName") = sMethodMapName
+                    mAutocomplete.m_Data("EnumIsTypeset") = True
+
+                    If (Not lTmpAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionName = mAutocomplete.m_FunctionName)) Then
                         lTmpAutocompleteList.Add(mAutocomplete)
                     End If
                 End If
@@ -1660,15 +1722,18 @@ Public Class ClassAutocompleteUpdater
                         Continue For
                     End If
 
-                    Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE With {
-                        .sFile = IO.Path.GetFileName(sFile),
-                        .sFullFunctionName = String.Format("typeset {0} {1} {2}{3}", sMethodMapName, sType, sTag, sBraceString),
-                        .sFunctionName = String.Format("public {0} {1}{2}", sTag, sMethodMapName, sBraceString),
-                        .sInfo = sComment
-                    }
-                    mAutocomplete.mType = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET Or mAutocomplete.ParseTypeFullNames(sType)
+                    Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(sComment,
+                                                                                IO.Path.GetFileName(sFile),
+                                                                                ClassSyntaxTools.STRUC_AUTOCOMPLETE.ParseTypeFullNames(sType) Or ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET,
+                                                                                String.Format("public {0} {1}{2}", sTag, sMethodMapName, sBraceString),
+                                                                                String.Format("typeset {0} {1} {2}{3}", sMethodMapName, sType, sTag, sBraceString))
 
-                    If (Not lTmpAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.mType = mAutocomplete.mType AndAlso x.sFunctionName = mAutocomplete.sFunctionName)) Then
+                    mAutocomplete.m_Data("TypesetType") = sType
+                    mAutocomplete.m_Data("TypesetTag") = sTag
+                    mAutocomplete.m_Data("TypesetName") = sMethodMapName
+                    mAutocomplete.m_Data("TypesetArguments") = sBraceString
+
+                    If (Not lTmpAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionName = mAutocomplete.m_FunctionName)) Then
                         lTmpAutocompleteList.Add(mAutocomplete)
                     End If
                 Next
@@ -1733,16 +1798,17 @@ Public Class ClassAutocompleteUpdater
                 sComment = Regex.Replace(sComment, "^\s+", "", RegexOptions.Multiline)
                 sComment = Regex.Replace(sComment, "\s+$", "", RegexOptions.Multiline)
 
+                Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(sComment,
+                                                                                IO.Path.GetFileName(sFile),
+                                                                                ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF,
+                                                                                String.Format("public {0} {1}({2})", sTag, sName, sBraceString),
+                                                                                String.Format("typedef {0} = function {1} ({2})", sName, sTag, sBraceString))
 
-                Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE With {
-                    .sFile = IO.Path.GetFileName(sFile),
-                    .sFullFunctionName = String.Format("typedef {0} = function {1} ({2})", sName, sTag, sBraceString),
-                    .sFunctionName = String.Format("public {0} {1}({2})", sTag, sName, sBraceString),
-                    .sInfo = sComment,
-                    .mType = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF
-                }
+                mAutocomplete.m_Data("TypedefTag") = sTag
+                mAutocomplete.m_Data("TypedefName") = sName
+                mAutocomplete.m_Data("TypedefArguments") = String.Format("({0})", sBraceString)
 
-                If (Not lTmpAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.mType = mAutocomplete.mType AndAlso x.sFunctionName = mAutocomplete.sFunctionName)) Then
+                If (Not lTmpAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionName = mAutocomplete.m_FunctionName)) Then
                     lTmpAutocompleteList.Add(mAutocomplete)
                 End If
             Next
@@ -1766,7 +1832,7 @@ Public Class ClassAutocompleteUpdater
             End If
 
 
-            Dim lTmpVarAutocompleteList As New ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
+            Dim lTmpVarAutocompleteList As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
 
             'Parse variables and create methodmaps for variables
             If (True) Then
@@ -1786,7 +1852,7 @@ Public Class ClassAutocompleteUpdater
 
             ClassSyntaxTools.g_lAutocompleteList.DoSync(
                 Sub()
-                    ClassSyntaxTools.g_lAutocompleteList.RemoveAll(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) (x.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
+                    ClassSyntaxTools.g_lAutocompleteList.RemoveAll(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
                     ClassSyntaxTools.g_lAutocompleteList.AddRange(lTmpVarAutocompleteList.ToArray)
                 End Sub)
 
@@ -1806,7 +1872,7 @@ Public Class ClassAutocompleteUpdater
         Dim sFile As String
     End Structure
 
-    Private Sub ParseVariables_Pre(sActiveSource As String, sActiveSourceFile As String, ByRef sFile As String, ByRef sRegExEnumPattern As String, ByRef lTmpVarAutocompleteList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE), ByRef lTmpAutocompleteList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE))
+    Private Sub ParseVariables_Pre(sActiveSource As String, sActiveSourceFile As String, ByRef sFile As String, ByRef sRegExEnumPattern As String, ByRef lTmpVarAutocompleteList As List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE), ByRef lTmpAutocompleteList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE))
         Dim sSource As String
         If (sActiveSourceFile.ToLower = sFile.ToLower) Then
             sSource = sActiveSource
@@ -1903,16 +1969,16 @@ Public Class ClassAutocompleteUpdater
                         End If
 
                         If (lTmpAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE)
-                                                            If ((x.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE OrElse
-                                                                    (x.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD OrElse
-                                                                    (x.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM OrElse
-                                                                    (x.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG OrElse
-                                                                    (x.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF OrElse
-                                                                    (x.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) Then
+                                                            If ((x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE OrElse
+                                                                    (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD OrElse
+                                                                    (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM OrElse
+                                                                    (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG OrElse
+                                                                    (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF OrElse
+                                                                    (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) Then
                                                                 Return False
                                                             End If
 
-                                                            Return Regex.IsMatch(x.sFunctionName, String.Format("\b{0}\b", Regex.Escape(sVar)))
+                                                            Return Regex.IsMatch(x.m_FunctionName, String.Format("\b{0}\b", Regex.Escape(sVar)))
                                                         End Function)) Then
                             Exit Select
                         End If
@@ -1922,23 +1988,39 @@ Public Class ClassAutocompleteUpdater
                         End If
 
                         Dim sTmpFile As String = IO.Path.GetFileName(sFile)
-                        Dim mItem As ClassSyntaxTools.STRUC_AUTOCOMPLETE = lTmpVarAutocompleteList.Find(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.sFile.ToLower = sTmpFile.ToLower AndAlso x.sFunctionName = sVar AndAlso (x.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
+                        Dim mItem As ClassSyntaxTools.STRUC_AUTOCOMPLETE = lTmpVarAutocompleteList.Find(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_File.ToLower = sTmpFile.ToLower AndAlso x.m_FunctionName = sVar AndAlso (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
                         If (mItem Is Nothing) Then
-                            mItem = New ClassSyntaxTools.STRUC_AUTOCOMPLETE With {
-                                .sFile = sTmpFile.ToLower,
-                                .sFullFunctionName = String.Format("{0} > {1}", sVar, sTag),
-                                .sFunctionName = sVar,
-                                .sInfo = "",
-                                .mType = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE
-                            }
-                            lTmpVarAutocompleteList.Add(mItem)
+                            Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE("",
+                                                                                            IO.Path.GetFileName(sFile),
+                                                                                            ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE,
+                                                                                            sVar,
+                                                                                            String.Format("{0} > {1}", sVar, sTag))
+
+                            mAutocomplete.m_Data("VariableName") = sVar
+                            mAutocomplete.m_Data("VariableTags") = New String() {sTag}
+
+                            lTmpVarAutocompleteList.Add(mAutocomplete)
                         Else
-                            If (Not Regex.IsMatch(mItem.sFullFunctionName, String.Format("\b{0}\b", Regex.Escape(sTag)))) Then
-                                mItem.sFullFunctionName = String.Format("{0}|{1}", mItem.sFullFunctionName, sTag)
+                            If (Not Regex.IsMatch(mItem.m_FullFunctionName, String.Format("\b{0}\b", Regex.Escape(sTag)))) Then
+                                mItem.m_FullFunctionName = String.Format("{0}|{1}", mItem.m_FullFunctionName, sTag)
+                            End If
+
+                            If (mItem.m_Data.ContainsKey("VariableTags")) Then
+                                Dim sItemTags As String() = CType(mItem.m_Data("VariableTags"), String())
+
+                                If (Array.IndexOf(sItemTags, sTag) = -1) Then
+                                    With New List(Of String)
+                                        .AddRange(sItemTags)
+                                        .Add(sTag)
+                                        mItem.m_Data("VariableTags") = .ToArray
+                                    End With
+                                End If
+                            Else
+                                Throw New ArgumentException("VariableTags invalid")
                             End If
                         End If
 
-                    Case 2 'New Style
+                            Case 2 'New Style
                         If (ClassSettings.g_iSettingsAutocompleteSyntax <> ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX AndAlso ClassSettings.g_iSettingsAutocompleteSyntax <> ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7) Then
                             Exit Select
                         End If
@@ -1960,16 +2042,16 @@ Public Class ClassAutocompleteUpdater
                         End If
 
                         If (lTmpAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE)
-                                                            If ((x.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE OrElse
-                                                                    (x.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD OrElse
-                                                                    (x.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM OrElse
-                                                                    (x.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG OrElse
-                                                                    (x.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF OrElse
-                                                                    (x.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) Then
+                                                            If ((x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE OrElse
+                                                                    (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD OrElse
+                                                                    (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM OrElse
+                                                                    (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG OrElse
+                                                                    (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF OrElse
+                                                                    (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) Then
                                                                 Return False
                                                             End If
 
-                                                            Return Regex.IsMatch(x.sFunctionName, String.Format("\b{0}\b", Regex.Escape(sVar)))
+                                                            Return Regex.IsMatch(x.m_FunctionName, String.Format("\b{0}\b", Regex.Escape(sVar)))
                                                         End Function)) Then
                             Exit Select
                         End If
@@ -1983,19 +2065,35 @@ Public Class ClassAutocompleteUpdater
                         End If
 
                         Dim sTmpFile As String = IO.Path.GetFileName(sFile)
-                        Dim mAutocomplete As ClassSyntaxTools.STRUC_AUTOCOMPLETE = lTmpVarAutocompleteList.Find(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.sFile.ToLower = sTmpFile.ToLower AndAlso x.sFunctionName = sVar AndAlso (x.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
-                        If (mAutocomplete Is Nothing) Then
-                            mAutocomplete = New ClassSyntaxTools.STRUC_AUTOCOMPLETE With {
-                                .sFile = sTmpFile.ToLower,
-                                .sFullFunctionName = String.Format("{0} > {1}", sVar, sTag),
-                                .sFunctionName = sVar,
-                                .sInfo = "",
-                                .mType = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE
-                            }
+                        Dim mItem As ClassSyntaxTools.STRUC_AUTOCOMPLETE = lTmpVarAutocompleteList.Find(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_File.ToLower = sTmpFile.ToLower AndAlso x.m_FunctionName = sVar AndAlso (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
+                        If (mItem Is Nothing) Then
+                            Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE("",
+                                                                                            IO.Path.GetFileName(sFile),
+                                                                                            ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE,
+                                                                                            sVar,
+                                                                                            String.Format("{0} > {1}", sVar, sTag))
+
+                            mAutocomplete.m_Data("VariableName") = sVar
+                            mAutocomplete.m_Data("VariableTags") = New String() {sTag}
+
                             lTmpVarAutocompleteList.Add(mAutocomplete)
                         Else
-                            If (Not Regex.IsMatch(mAutocomplete.sFullFunctionName, String.Format("\b{0}\b", Regex.Escape(sTag)))) Then
-                                mAutocomplete.sFullFunctionName = String.Format("{0}|{1}", mAutocomplete.sFullFunctionName, sTag)
+                            If (Not Regex.IsMatch(mItem.m_FullFunctionName, String.Format("\b{0}\b", Regex.Escape(sTag)))) Then
+                                mItem.m_FullFunctionName = String.Format("{0}|{1}", mItem.m_FullFunctionName, sTag)
+                            End If
+
+                            If (mItem.m_Data.ContainsKey("VariableTags")) Then
+                                Dim sItemTags As String() = CType(mItem.m_Data("VariableTags"), String())
+
+                                If (Array.IndexOf(sItemTags, sTag) = -1) Then
+                                    With New List(Of String)
+                                        .AddRange(sItemTags)
+                                        .Add(sTag)
+                                        mItem.m_Data("VariableTags") = .ToArray
+                                    End With
+                                End If
+                            Else
+                                Throw New ArgumentException("VariableTags invalid")
                             End If
                         End If
 
@@ -2031,16 +2129,16 @@ Public Class ClassAutocompleteUpdater
                         End If
 
                         If (lTmpAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE)
-                                                            If ((x.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE OrElse
-                                                                    (x.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD OrElse
-                                                                    (x.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM OrElse
-                                                                    (x.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG OrElse
-                                                                    (x.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF OrElse
-                                                                    (x.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) Then
+                                                            If ((x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE OrElse
+                                                                    (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD OrElse
+                                                                    (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM OrElse
+                                                                    (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG OrElse
+                                                                    (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF OrElse
+                                                                    (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) Then
                                                                 Return False
                                                             End If
 
-                                                            Return Regex.IsMatch(x.sFunctionName, String.Format("\b{0}\b", Regex.Escape(sVar)))
+                                                            Return Regex.IsMatch(x.m_FunctionName, String.Format("\b{0}\b", Regex.Escape(sVar)))
                                                         End Function)) Then
                             Continue For
                         End If
@@ -2050,22 +2148,38 @@ Public Class ClassAutocompleteUpdater
                         End If
 
                         Dim sTmpFile As String = IO.Path.GetFileName(sFile)
-                        Dim mAutocomplete As ClassSyntaxTools.STRUC_AUTOCOMPLETE = lTmpVarAutocompleteList.Find(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.sFile.ToLower = sTmpFile.ToLower AndAlso x.sFunctionName = sVar AndAlso (x.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
-                        If (mAutocomplete Is Nothing) Then
-                            mAutocomplete = New ClassSyntaxTools.STRUC_AUTOCOMPLETE With {
-                                .sFile = sTmpFile.ToLower,
-                                .sFullFunctionName = String.Format("{0} > {1}", sVar, If(bIsConst, "const:", "") & sTag),
-                                .sFunctionName = sVar,
-                                .sInfo = "",
-                                .mType = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE
-                            }
+                        Dim mItem As ClassSyntaxTools.STRUC_AUTOCOMPLETE = lTmpVarAutocompleteList.Find(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_File.ToLower = sTmpFile.ToLower AndAlso x.m_FunctionName = sVar AndAlso (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
+                        If (mItem Is Nothing) Then
+                            Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE("",
+                                                                                            IO.Path.GetFileName(sFile),
+                                                                                            ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE,
+                                                                                            sVar,
+                                                                                            String.Format("{0} > {1}", sVar, sTag)) 'String.Format("{0} > {1}", sVar, If(bIsConst, "const:", "") & sTag)
+
+                            mAutocomplete.m_Data("VariableName") = sVar
+                            mAutocomplete.m_Data("VariableTags") = New String() {sTag}
+
                             lTmpVarAutocompleteList.Add(mAutocomplete)
                         Else
-                            If (Not Regex.IsMatch(mAutocomplete.sFullFunctionName, String.Format("\b{0}\b", Regex.Escape(sTag)))) Then
-                                mAutocomplete.sFullFunctionName = String.Format("{0}|{1}", mAutocomplete.sFullFunctionName, sTag)
+                            If (Not Regex.IsMatch(mItem.m_FullFunctionName, String.Format("\b{0}\b", Regex.Escape(sTag)))) Then
+                                mItem.m_FullFunctionName = String.Format("{0}|{1}", mItem.m_FullFunctionName, sTag)
                             End If
-                            If (bIsConst AndAlso Not Regex.IsMatch(mAutocomplete.sFullFunctionName, String.Format("\b{0}\b", "const"))) Then
-                                mAutocomplete.sFullFunctionName = String.Format("{0}:{1}", "const", mAutocomplete.sFullFunctionName)
+                            'If (bIsConst AndAlso Not Regex.IsMatch(mItem.m_FullFunctionName, String.Format("\b{0}\b", "const"))) Then
+                            '    mItem.m_FullFunctionName = String.Format("{0}:{1}", "const", mItem.m_FullFunctionName)
+                            'End If
+
+                            If (mItem.m_Data.ContainsKey("VariableTags")) Then
+                                Dim sItemTags As String() = CType(mItem.m_Data("VariableTags"), String())
+
+                                If (Array.IndexOf(sItemTags, sTag) = -1) Then
+                                    With New List(Of String)
+                                        .AddRange(sItemTags)
+                                        .Add(sTag)
+                                        mItem.m_Data("VariableTags") = .ToArray
+                                    End With
+                                End If
+                            Else
+                                Throw New ArgumentException("VariableTags invalid")
                             End If
                         End If
                     Next
@@ -2099,16 +2213,16 @@ Public Class ClassAutocompleteUpdater
                         End If
 
                         If (lTmpAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE)
-                                                            If ((x.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE OrElse
-                                                                    (x.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD OrElse
-                                                                    (x.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM OrElse
-                                                                    (x.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG OrElse
-                                                                    (x.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF OrElse
-                                                                    (x.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) Then
+                                                            If ((x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE OrElse
+                                                                    (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD OrElse
+                                                                    (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM OrElse
+                                                                    (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG OrElse
+                                                                    (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF OrElse
+                                                                    (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) Then
                                                                 Return False
                                                             End If
 
-                                                            Return Regex.IsMatch(x.sFunctionName, String.Format("\b{0}\b", Regex.Escape(sVar)))
+                                                            Return Regex.IsMatch(x.m_FunctionName, String.Format("\b{0}\b", Regex.Escape(sVar)))
                                                         End Function)) Then
                             Continue For
                         End If
@@ -2116,22 +2230,38 @@ Public Class ClassAutocompleteUpdater
                         sLastTag = sTag
 
                         Dim sTmpFile As String = IO.Path.GetFileName(sFile)
-                        Dim mAutocomplete As ClassSyntaxTools.STRUC_AUTOCOMPLETE = lTmpVarAutocompleteList.Find(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.sFile.ToLower = sTmpFile.ToLower AndAlso x.sFunctionName = sVar AndAlso (x.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
-                        If (mAutocomplete Is Nothing) Then
-                            mAutocomplete = New ClassSyntaxTools.STRUC_AUTOCOMPLETE With {
-                                .sFile = sTmpFile.ToLower,
-                                .sFullFunctionName = String.Format("{0} > {1}", sVar, If(bIsConst, "const:", "") & sTag),
-                                .sFunctionName = sVar,
-                                .sInfo = "",
-                                .mType = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE
-                            }
+                        Dim mItem As ClassSyntaxTools.STRUC_AUTOCOMPLETE = lTmpVarAutocompleteList.Find(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_File.ToLower = sTmpFile.ToLower AndAlso x.m_FunctionName = sVar AndAlso (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
+                        If (mItem Is Nothing) Then
+                            Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE("",
+                                                                                            IO.Path.GetFileName(sFile),
+                                                                                            ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE,
+                                                                                            sVar,
+                                                                                            String.Format("{0} > {1}", sVar, sTag)) 'String.Format("{0} > {1}", sVar, If(bIsConst, "const:", "") & sTag)
+
+                            mAutocomplete.m_Data("VariableName") = sVar
+                            mAutocomplete.m_Data("VariableTags") = New String() {sTag}
+
                             lTmpVarAutocompleteList.Add(mAutocomplete)
                         Else
-                            If (Not Regex.IsMatch(mAutocomplete.sFullFunctionName, String.Format("\b{0}\b", Regex.Escape(sTag)))) Then
-                                mAutocomplete.sFullFunctionName = String.Format("{0}|{1}", mAutocomplete.sFullFunctionName, sTag)
+                            If (Not Regex.IsMatch(mItem.m_FullFunctionName, String.Format("\b{0}\b", Regex.Escape(sTag)))) Then
+                                mItem.m_FullFunctionName = String.Format("{0}|{1}", mItem.m_FullFunctionName, sTag)
                             End If
-                            If (bIsConst AndAlso Not Regex.IsMatch(mAutocomplete.sFullFunctionName, String.Format("\b{0}\b", "const"))) Then
-                                mAutocomplete.sFullFunctionName = String.Format("{0}:{1}", "const", mAutocomplete.sFullFunctionName)
+                            'If (bIsConst AndAlso Not Regex.IsMatch(mItem.m_FullFunctionName, String.Format("\b{0}\b", "const"))) Then
+                            '    mItem.m_FullFunctionName = String.Format("{0}:{1}", "const", mItem.m_FullFunctionName)
+                            'End If
+
+                            If (mItem.m_Data.ContainsKey("VariableTags")) Then
+                                Dim sItemTags As String() = CType(mItem.m_Data("VariableTags"), String())
+
+                                If (Array.IndexOf(sItemTags, sTag) = -1) Then
+                                    With New List(Of String)
+                                        .AddRange(sItemTags)
+                                        .Add(sTag)
+                                        mItem.m_Data("VariableTags") = .ToArray
+                                    End With
+                                End If
+                            Else
+                                Throw New ArgumentException("VariableTags invalid")
                             End If
                         End If
                     Next
@@ -2141,24 +2271,24 @@ Public Class ClassAutocompleteUpdater
 
     End Sub
 
-    Private Sub ParseVariables_Post(sActiveSource As String, sActiveSourceFile As String, ByRef sRegExEnumPattern As String, ByRef lTmpVarAutocompleteList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE), ByRef lTmpAutocompleteList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE))
+    Private Sub ParseVariables_Post(sActiveSource As String, sActiveSourceFile As String, ByRef sRegExEnumPattern As String, ByRef lTmpVarAutocompleteList As List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE), ByRef lTmpAutocompleteList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE))
         'Parse function argument variables
         If (True) Then
             Dim lArgList As New List(Of STRUC_PARSE_ARGUMENT_ITEM)
             Dim mCodeBuilder As New StringBuilder
 
             For Each mItem In lTmpAutocompleteList
-                If ((mItem.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) Then
+                If ((mItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) Then
                     Continue For
                 End If
 
                 If (ClassSettings.g_iSettingsVarAutocompleteCurrentSourceOnly) Then
-                    If (Not String.IsNullOrEmpty(sActiveSourceFile) AndAlso IO.Path.GetFileName(sActiveSourceFile).ToLower <> mItem.sFile.ToLower) Then
+                    If (Not String.IsNullOrEmpty(sActiveSourceFile) AndAlso IO.Path.GetFileName(sActiveSourceFile).ToLower <> mItem.m_File.ToLower) Then
                         Continue For
                     End If
                 End If
 
-                Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(mItem.sFullFunctionName)
+                Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(mItem.m_FullFunctionName)
                 mCodeBuilder.Length = 0
 
                 Dim bInvalidBracketLevel As Boolean = False
@@ -2166,8 +2296,8 @@ Public Class ClassAutocompleteUpdater
                 Dim bInvalidParentLevel As Boolean = False
                 Dim bNeedSave As Boolean = False
                 'This is the easiest and yet stupiest idea to resolve multi-decls i've ever come up with...
-                For i = 0 To mItem.sFullFunctionName.Length - 1
-                    If (bNeedSave OrElse i = mItem.sFullFunctionName.Length - 1) Then
+                For i = 0 To mItem.m_FullFunctionName.Length - 1
+                    If (bNeedSave OrElse i = mItem.m_FullFunctionName.Length - 1) Then
                         bNeedSave = False
 
                         Dim sLine As String = mCodeBuilder.ToString.Trim
@@ -2176,7 +2306,7 @@ Public Class ClassAutocompleteUpdater
                         sLine = Regex.Replace(sLine, Regex.Escape("@"), "")
 
                         If (Not String.IsNullOrEmpty(sLine)) Then
-                            lArgList.Add(New STRUC_PARSE_ARGUMENT_ITEM With {.sArgument = sLine, .sFile = mItem.sFile})
+                            lArgList.Add(New STRUC_PARSE_ARGUMENT_ITEM With {.sArgument = sLine, .sFile = mItem.m_File})
                         End If
 
                         mCodeBuilder.Length = 0
@@ -2208,11 +2338,11 @@ Public Class ClassAutocompleteUpdater
 
                     If (mSourceAnalysis.m_GetParenthesisLevel(i) > 0) Then
                         If (bInvalidParentLevel) Then
-                            If (mItem.sFullFunctionName(i) = ","c) Then
+                            If (mItem.m_FullFunctionName(i) = ","c) Then
                                 bNeedSave = True
                                 Continue For
                             Else
-                                mCodeBuilder.Append(mItem.sFullFunctionName(i))
+                                mCodeBuilder.Append(mItem.m_FullFunctionName(i))
                             End If
                         End If
                         If (Not bInvalidParentLevel) Then
@@ -2238,19 +2368,35 @@ Public Class ClassAutocompleteUpdater
 
                     If (Not bIsOneSeven AndAlso mMatch.Success AndAlso mMatch.Groups("Var").Success AndAlso Not g_mFormMain.g_ClassSyntaxTools.IsForbiddenVariableName(sVar)) Then
                         Dim sTmpFile As String = IO.Path.GetFileName(mArg.sFile)
-                        Dim mAutocomplete As ClassSyntaxTools.STRUC_AUTOCOMPLETE = lTmpVarAutocompleteList.Find(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.sFile.ToLower = sTmpFile.ToLower AndAlso x.sFunctionName = sVar AndAlso (x.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
-                        If (mAutocomplete Is Nothing) Then
-                            mAutocomplete = New ClassSyntaxTools.STRUC_AUTOCOMPLETE With {
-                                .sFile = sTmpFile.ToLower,
-                                .sFullFunctionName = String.Format("{0} > {1}", sVar, sTag),
-                                .sFunctionName = sVar,
-                                .sInfo = "",
-                                .mType = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE
-                            }
+                        Dim mItem As ClassSyntaxTools.STRUC_AUTOCOMPLETE = lTmpVarAutocompleteList.Find(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_File.ToLower = sTmpFile.ToLower AndAlso x.m_FunctionName = sVar AndAlso (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
+                        If (mItem Is Nothing) Then
+                            Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE("",
+                                                                                            IO.Path.GetFileName(mArg.sFile),
+                                                                                            ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE,
+                                                                                            sVar,
+                                                                                            String.Format("{0} > {1}", sVar, sTag))
+
+                            mAutocomplete.m_Data("VariableName") = sVar
+                            mAutocomplete.m_Data("VariableTags") = New String() {sTag}
+
                             lTmpVarAutocompleteList.Add(mAutocomplete)
                         Else
-                            If (Not Regex.IsMatch(mAutocomplete.sFullFunctionName, String.Format("\b{0}\b", Regex.Escape(sTag)))) Then
-                                mAutocomplete.sFullFunctionName = String.Format("{0}|{1}", mAutocomplete.sFullFunctionName, sTag)
+                            If (Not Regex.IsMatch(mItem.m_FullFunctionName, String.Format("\b{0}\b", Regex.Escape(sTag)))) Then
+                                mItem.m_FullFunctionName = String.Format("{0}|{1}", mItem.m_FullFunctionName, sTag)
+                            End If
+
+                            If (mItem.m_Data.ContainsKey("VariableTags")) Then
+                                Dim sItemTags As String() = CType(mItem.m_Data("VariableTags"), String())
+
+                                If (Array.IndexOf(sItemTags, sTag) = -1) Then
+                                    With New List(Of String)
+                                        .AddRange(sItemTags)
+                                        .Add(sTag)
+                                        mItem.m_Data("VariableTags") = .ToArray
+                                    End With
+                                End If
+                            Else
+                                Throw New ArgumentException("VariableTags invalid")
                             End If
                         End If
                     End If
@@ -2264,19 +2410,35 @@ Public Class ClassAutocompleteUpdater
 
                     If (mMatch.Success AndAlso mMatch.Groups("Var").Success AndAlso Not g_mFormMain.g_ClassSyntaxTools.IsForbiddenVariableName(sVar)) Then
                         Dim sTmpFile As String = IO.Path.GetFileName(mArg.sFile)
-                        Dim mAutocomplete As ClassSyntaxTools.STRUC_AUTOCOMPLETE = lTmpVarAutocompleteList.Find(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.sFile.ToLower = sTmpFile.ToLower AndAlso x.sFunctionName = sVar AndAlso (x.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
-                        If (mAutocomplete Is Nothing) Then
-                            mAutocomplete = New ClassSyntaxTools.STRUC_AUTOCOMPLETE With {
-                                .sFile = sTmpFile.ToLower,
-                                .sFullFunctionName = String.Format("{0} > {1}", sVar, sTag),
-                                .sFunctionName = sVar,
-                                .sInfo = "",
-                                .mType = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE
-                            }
+                        Dim mItem As ClassSyntaxTools.STRUC_AUTOCOMPLETE = lTmpVarAutocompleteList.Find(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_File.ToLower = sTmpFile.ToLower AndAlso x.m_FunctionName = sVar AndAlso (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
+                        If (mItem Is Nothing) Then
+                            Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE("",
+                                                                                            IO.Path.GetFileName(mArg.sFile),
+                                                                                            ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE,
+                                                                                            sVar,
+                                                                                            String.Format("{0} > {1}", sVar, sTag))
+
+                            mAutocomplete.m_Data("VariableName") = sVar
+                            mAutocomplete.m_Data("VariableTags") = New String() {sTag}
+
                             lTmpVarAutocompleteList.Add(mAutocomplete)
                         Else
-                            If (Not Regex.IsMatch(mAutocomplete.sFullFunctionName, String.Format("\b{0}\b", Regex.Escape(sTag)))) Then
-                                mAutocomplete.sFullFunctionName = String.Format("{0}|{1}", mAutocomplete.sFullFunctionName, sTag)
+                            If (Not Regex.IsMatch(mItem.m_FullFunctionName, String.Format("\b{0}\b", Regex.Escape(sTag)))) Then
+                                mItem.m_FullFunctionName = String.Format("{0}|{1}", mItem.m_FullFunctionName, sTag)
+                            End If
+
+                            If (mItem.m_Data.ContainsKey("VariableTags")) Then
+                                Dim sItemTags As String() = CType(mItem.m_Data("VariableTags"), String())
+
+                                If (Array.IndexOf(sItemTags, sTag) = -1) Then
+                                    With New List(Of String)
+                                        .AddRange(sItemTags)
+                                        .Add(sTag)
+                                        mItem.m_Data("VariableTags") = .ToArray
+                                    End With
+                                End If
+                            Else
+                                Throw New ArgumentException("VariableTags invalid")
                             End If
                         End If
                     End If
@@ -2289,39 +2451,54 @@ Public Class ClassAutocompleteUpdater
             Dim lVarMethodmapList As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
 
             For Each mVariableItem In lTmpVarAutocompleteList
-                If ((mVariableItem.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) Then
+                If ((mVariableItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) Then
+                    Continue For
+                End If
+
+                Dim sVariableName As String = CStr(mVariableItem.m_Data("VariableName"))
+                Dim sVariableTags As String() = CType(mVariableItem.m_Data("VariableTags"), String())
+                If (String.IsNullOrEmpty(sVariableName)) Then
                     Continue For
                 End If
 
                 For Each mMethodmapItem In lTmpAutocompleteList
-                    If ((mMethodmapItem.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) <> ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP OrElse Not mMethodmapItem.sFunctionName.Contains("."c)) Then
+                    If ((mMethodmapItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) <> ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP OrElse
+                                Not mMethodmapItem.m_FunctionName.Contains("."c)) Then
                         Continue For
                     End If
 
                     'TODO: Dont use yet, make methodmap parsing more efficent first
-                    'If ((mMethodmapItem.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STATIC) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STATIC) Then
+                    'If ((mMethodmapItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STATIC) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STATIC) Then
                     '    Continue For
                     'End If
 
-                    Dim sMethodmapParts As String() = mMethodmapItem.sFunctionName.Split(New String() {"."c}, 0)
-                    If (sMethodmapParts.Length <> 2) Then
+                    Dim sMethodmapName As String = CStr(mMethodmapItem.m_Data("MethodmapName"))
+                    Dim sMethodmapMethodName As String = CStr(mMethodmapItem.m_Data("MethodmapMethodName"))
+                    If (String.IsNullOrEmpty(sMethodmapName) OrElse String.IsNullOrEmpty(sMethodmapMethodName)) Then
                         Continue For
                     End If
 
-                    Dim sMethodmapName As String = sMethodmapParts(0)
-                    Dim sMethodmapMethod As String = sMethodmapParts(1)
-
-                    If (Not Regex.IsMatch(mVariableItem.sFullFunctionName, String.Format("\b{0}\b", Regex.Escape(sMethodmapName)))) Then
+                    If (Array.IndexOf(sVariableTags, sMethodmapName) = -1) Then
                         Continue For
                     End If
 
-                    lVarMethodmapList.Add(New ClassSyntaxTools.STRUC_AUTOCOMPLETE With {
-                        .sFile = IO.Path.GetFileName(mVariableItem.sFile).ToLower,
-                        .sFullFunctionName = mMethodmapItem.sFullFunctionName,
-                        .sFunctionName = String.Format("{0}.{1}", mVariableItem.sFunctionName, sMethodmapMethod),
-                        .sInfo = mMethodmapItem.sInfo,
-                        .mType = (ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE Or mMethodmapItem.mType) And Not ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP
-                    })
+                    Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(mMethodmapItem.m_Info,
+                                                                                IO.Path.GetFileName(mVariableItem.m_File),
+                                                                                (ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE Or mMethodmapItem.m_Type) And Not ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP,
+                                                                                String.Format("{0}.{1}", sVariableName, sMethodmapMethodName),
+                                                                                mMethodmapItem.m_FullFunctionName)
+
+                    For Each mData In mMethodmapItem.m_Data
+                        mAutocomplete.m_Data(mData.Key) = mData.Value
+                    Next
+
+                    mAutocomplete.m_Data("VariableMethodmapName") = sVariableName
+                    mAutocomplete.m_Data("VariableMethodmapMethod") = sMethodmapMethodName
+
+                    If (Not lTmpVarAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionName = mAutocomplete.m_FunctionName) AndAlso
+                                Not lVarMethodmapList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionName = mAutocomplete.m_FunctionName)) Then
+                        lVarMethodmapList.Add(mAutocomplete)
+                    End If
                 Next
             Next
 
@@ -2333,44 +2510,58 @@ Public Class ClassAutocompleteUpdater
             Dim lVarMethodmapList As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
 
             For Each mVariableItem In lTmpAutocompleteList
-                If ((mVariableItem.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) Then
+                If ((mVariableItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) Then
                     Continue For
                 End If
 
-                If ((mVariableItem.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHOD) <> ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHOD) Then
+                If ((mVariableItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHOD) <> ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHOD) Then
+                    Continue For
+                End If
+
+                Dim sVariableName As String = CStr(mVariableItem.m_Data("MethodName"))
+                Dim sVariableTag As String = CStr(mVariableItem.m_Data("MethodTag"))
+                If (String.IsNullOrEmpty(sVariableName)) Then
                     Continue For
                 End If
 
                 For Each mMethodmapItem In lTmpAutocompleteList
-                    If ((mMethodmapItem.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) <> ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP OrElse
-                                Not mMethodmapItem.sFunctionName.Contains("."c)) Then
+                    If ((mMethodmapItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) <> ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP OrElse
+                                Not mMethodmapItem.m_FunctionName.Contains("."c)) Then
                         Continue For
                     End If
 
                     'TODO: Dont use yet, make methodmap parsing more efficent first
-                    'If ((mMethodmapItem.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STATIC) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STATIC) Then
+                    'If ((mMethodmapItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STATIC) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STATIC) Then
                     '    Continue For
                     'End If
 
-                    Dim sMethodmapParts As String() = mMethodmapItem.sFunctionName.Split(New String() {"."c}, 0)
-                    If (sMethodmapParts.Length <> 2) Then
+                    Dim sMethodmapName As String = CStr(mMethodmapItem.m_Data("MethodmapName"))
+                    Dim sMethodmapMethodName As String = CStr(mMethodmapItem.m_Data("MethodmapMethodName"))
+                    If (String.IsNullOrEmpty(sMethodmapName) OrElse String.IsNullOrEmpty(sMethodmapMethodName)) Then
                         Continue For
                     End If
 
-                    Dim sMethodmapName As String = sMethodmapParts(0)
-                    Dim sMethodmapMethod As String = sMethodmapParts(1)
-
-                    If (Not Regex.IsMatch(mVariableItem.sFullFunctionName, String.Format("\b{0}\b", Regex.Escape(sMethodmapName)))) Then
+                    If (sVariableTag <> sMethodmapName) Then
                         Continue For
                     End If
 
-                    lVarMethodmapList.Add(New ClassSyntaxTools.STRUC_AUTOCOMPLETE With {
-                        .sFile = IO.Path.GetFileName(mVariableItem.sFile).ToLower,
-                        .sFullFunctionName = mMethodmapItem.sFullFunctionName,
-                        .sFunctionName = String.Format("{0}.{1}", mVariableItem.sFunctionName, sMethodmapMethod),
-                        .sInfo = mMethodmapItem.sInfo,
-                        .mType = (ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE Or mMethodmapItem.mType) And Not ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP
-                    })
+                    Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(mMethodmapItem.m_Info,
+                                                                                IO.Path.GetFileName(mVariableItem.m_File),
+                                                                                (ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE Or mMethodmapItem.m_Type) And Not ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP,
+                                                                                String.Format("{0}.{1}", sVariableName, sMethodmapMethodName),
+                                                                                mMethodmapItem.m_FullFunctionName)
+
+                    For Each mData In mMethodmapItem.m_Data
+                        mAutocomplete.m_Data(mData.Key) = mData.Value
+                    Next
+
+                    mAutocomplete.m_Data("VariableMethodmapName") = sVariableName
+                    mAutocomplete.m_Data("VariableMethodmapMethod") = sMethodmapMethodName
+
+                    If (Not lTmpVarAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionName = mAutocomplete.m_FunctionName) AndAlso
+                                Not lVarMethodmapList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionName = mAutocomplete.m_FunctionName)) Then
+                        lVarMethodmapList.Add(mAutocomplete)
+                    End If
                 Next
             Next
 

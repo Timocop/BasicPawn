@@ -897,7 +897,7 @@ Public Class ClassTabControl
 
                         If (mAutocomplete IsNot Nothing) Then
                             Select Case (True)
-                                Case (mAutocomplete.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD
+                                Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD
                                     If (bIsEmpty) Then
                                         Dim iLineOffsetNum As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Offset
                                         Dim iLineLenNum As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Length
@@ -907,7 +907,7 @@ Public Class ClassTabControl
 
                                         Dim sNewInput As String
                                         With New Text.StringBuilder
-                                            .AppendLine("public " & mAutocomplete.sFullFunctionName.Remove(0, "forward".Length).Trim)
+                                            .AppendLine("public " & mAutocomplete.m_FullFunctionName.Remove(0, "forward".Length).Trim)
                                             .AppendLine("{")
                                             .AppendLine(sIndentation)
                                             .AppendLine("}")
@@ -920,13 +920,13 @@ Public Class ClassTabControl
                                         g_mSourceTextEditor.ActiveTextAreaControl.Caret.Line = iLineNum + 2
                                         g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = sIndentation.Length
                                     Else
-                                        g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, mAutocomplete.sFunctionName)
+                                        g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, mAutocomplete.m_FunctionName)
 
                                         iPosition = g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column
-                                        g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = iPosition + mAutocomplete.sFunctionName.Length
+                                        g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = iPosition + mAutocomplete.m_FunctionName.Length
                                     End If
 
-                                Case (mAutocomplete.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG
+                                Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG
                                     If (bIsEmpty) Then
                                         Dim iLineOffsetNum As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Offset
                                         Dim iLineLenNum As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Length
@@ -936,7 +936,7 @@ Public Class ClassTabControl
 
                                         Dim sNewInput As String
                                         With New Text.StringBuilder
-                                            .AppendLine("public " & mAutocomplete.sFullFunctionName.Remove(0, "functag".Length).Trim)
+                                            .AppendLine("public " & mAutocomplete.m_FullFunctionName.Remove(0, "functag".Length).Trim)
                                             .AppendLine("{")
                                             .AppendLine(sIndentation)
                                             .AppendLine("}")
@@ -949,15 +949,15 @@ Public Class ClassTabControl
                                         g_mSourceTextEditor.ActiveTextAreaControl.Caret.Line = iLineNum + 2
                                         g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = sIndentation.Length
                                     Else
-                                        g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, mAutocomplete.sFunctionName)
+                                        g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, mAutocomplete.m_FunctionName)
 
                                         iPosition = g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column
-                                        g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = iPosition + mAutocomplete.sFunctionName.Length
+                                        g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = iPosition + mAutocomplete.m_FunctionName.Length
                                     End If
 
-                                Case (mAutocomplete.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM,
-                                         (mAutocomplete.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET,
-                                         (mAutocomplete.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF
+                                Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM,
+                                         (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET,
+                                         (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF
                                     If (bIsEmpty) Then
                                         Dim iLineOffsetNum As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Offset
                                         Dim iLineLenNum As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Length
@@ -967,7 +967,7 @@ Public Class ClassTabControl
 
                                         Dim sNewInput As String
                                         With New Text.StringBuilder
-                                            .AppendLine(mAutocomplete.sFunctionName.Trim)
+                                            .AppendLine(mAutocomplete.m_FunctionName.Trim)
                                             .AppendLine("{")
                                             .AppendLine(sIndentation)
                                             .AppendLine("}")
@@ -980,45 +980,45 @@ Public Class ClassTabControl
                                         g_mSourceTextEditor.ActiveTextAreaControl.Caret.Line = iLineNum + 2
                                         g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = sIndentation.Length
                                     Else
-                                        g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, mAutocomplete.sFunctionName)
+                                        g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, mAutocomplete.m_FunctionName)
 
                                         iPosition = g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column
-                                        g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = iPosition + mAutocomplete.sFunctionName.Length
+                                        g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = iPosition + mAutocomplete.m_FunctionName.Length
                                     End If
 
 
-                                Case (mAutocomplete.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEFINE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEFINE,
-                                       (mAutocomplete.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PUBLICVAR) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PUBLICVAR
-                                    g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, mAutocomplete.sFunctionName)
+                                Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEFINE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEFINE,
+                                       (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PUBLICVAR) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PUBLICVAR
+                                    g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, mAutocomplete.m_FunctionName)
 
                                     iPosition = g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column
-                                    g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = iPosition + mAutocomplete.sFunctionName.Length
+                                    g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = iPosition + mAutocomplete.m_FunctionName.Length
 
-                                Case (mAutocomplete.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM,
-                                        (mAutocomplete.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STRUCT) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STRUCT
-                                    If (ClassSettings.g_iSettingsFullEnumAutocomplete OrElse mAutocomplete.sFunctionName.IndexOf("."c) < 0) Then
-                                        g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, mAutocomplete.sFunctionName.Replace("."c, ":"c))
+                                Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM,
+                                        (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STRUCT) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STRUCT
+                                    If (ClassSettings.g_iSettingsFullEnumAutocomplete OrElse mAutocomplete.m_FunctionName.IndexOf("."c) < 0) Then
+                                        g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, mAutocomplete.m_FunctionName.Replace("."c, ":"c))
 
                                         iPosition = g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column
-                                        g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = iPosition + mAutocomplete.sFunctionName.Length
+                                        g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = iPosition + mAutocomplete.m_FunctionName.Length
                                     Else
-                                        g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, mAutocomplete.sFunctionName.Remove(0, mAutocomplete.sFunctionName.IndexOf("."c) + 1))
+                                        g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, mAutocomplete.m_FunctionName.Remove(0, mAutocomplete.m_FunctionName.IndexOf("."c) + 1))
 
                                         iPosition = g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column
-                                        g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = iPosition + mAutocomplete.sFunctionName.Remove(0, mAutocomplete.sFunctionName.IndexOf("."c) + 1).Length
+                                        g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = iPosition + mAutocomplete.m_FunctionName.Remove(0, mAutocomplete.m_FunctionName.IndexOf("."c) + 1).Length
                                     End If
 
-                                Case (mAutocomplete.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP,
-                                       (mAutocomplete.mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE
-                                    If (mAutocomplete.sFunctionName.IndexOf("."c) > -1 AndAlso sFunctionName.IndexOf("."c) > -1 AndAlso Not sFunctionName.StartsWith(mAutocomplete.sFunctionName)) Then
+                                Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP,
+                                       (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE
+                                    If (mAutocomplete.m_FunctionName.IndexOf("."c) > -1 AndAlso sFunctionName.IndexOf("."c) > -1 AndAlso Not sFunctionName.StartsWith(mAutocomplete.m_FunctionName)) Then
                                         Dim sParenthesis As String = ""
-                                        If (mAutocomplete.sFullFunctionName.Contains("("c) AndAlso mAutocomplete.sFullFunctionName.Contains(")"c)) Then
+                                        If (mAutocomplete.m_FullFunctionName.Contains("("c) AndAlso mAutocomplete.m_FullFunctionName.Contains(")"c)) Then
                                             sParenthesis = "()"
                                         End If
 
                                         Dim sNewInput As String = String.Format("{0}.{1}{2}",
                                                                                 sFunctionName.Remove(sFunctionName.LastIndexOf("."c), sFunctionName.Length - sFunctionName.LastIndexOf("."c)),
-                                                                                mAutocomplete.sFunctionName.Remove(0, mAutocomplete.sFunctionName.IndexOf("."c) + 1),
+                                                                                mAutocomplete.m_FunctionName.Remove(0, mAutocomplete.m_FunctionName.IndexOf("."c) + 1),
                                                                                 sParenthesis)
                                         g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, sNewInput)
 
@@ -1026,12 +1026,12 @@ Public Class ClassTabControl
                                         g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = iPosition + sNewInput.Length + If(sParenthesis.Length > 0, -1, 0)
                                     Else
                                         Dim sParenthesis As String = ""
-                                        If (mAutocomplete.sFullFunctionName.Contains("("c) AndAlso mAutocomplete.sFullFunctionName.Contains(")"c)) Then
+                                        If (mAutocomplete.m_FullFunctionName.Contains("("c) AndAlso mAutocomplete.m_FullFunctionName.Contains(")"c)) Then
                                             sParenthesis = "()"
                                         End If
 
                                         Dim sNewInput As String = String.Format("{0}{1}",
-                                                                                mAutocomplete.sFunctionName.Remove(0, mAutocomplete.sFunctionName.IndexOf("."c) + 1),
+                                                                                mAutocomplete.m_FunctionName.Remove(0, mAutocomplete.m_FunctionName.IndexOf("."c) + 1),
                                                                                 sParenthesis)
 
                                         g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, sNewInput)
@@ -1042,13 +1042,13 @@ Public Class ClassTabControl
 
                                 Case Else
                                     If (ClassSettings.g_iSettingsFullMethodAutocomplete) Then
-                                        Dim sNewInput As String = mAutocomplete.sFullFunctionName.Remove(0, Regex.Match(mAutocomplete.sFullFunctionName, "^(?<Useless>.*?)\b[a-zA-Z0-9_]+\b\s*\(").Groups("Useless").Length)
+                                        Dim sNewInput As String = mAutocomplete.m_FullFunctionName.Remove(0, Regex.Match(mAutocomplete.m_FullFunctionName, "^(?<Useless>.*?)(\b[a-zA-Z0-9_]+\b)\s*(\()").Groups("Useless").Length)
                                         g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, sNewInput)
 
                                         iPosition = g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column
                                         g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = iPosition + sNewInput.Length
                                     Else
-                                        Dim sNewInput As String = mAutocomplete.sFunctionName.Remove(0, Regex.Match(mAutocomplete.sFunctionName, "^(?<Useless>.*?)\b[a-zA-Z0-9_]+\b\s*\(").Groups("Useless").Length)
+                                        Dim sNewInput As String = mAutocomplete.m_FunctionName.Remove(0, Regex.Match(mAutocomplete.m_FunctionName, "^(?<Useless>.*?)(\b[a-zA-Z0-9_]+\b)\s*(\()").Groups("Useless").Length)
                                         g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, String.Format("{0}()", sNewInput))
 
                                         iPosition = g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column

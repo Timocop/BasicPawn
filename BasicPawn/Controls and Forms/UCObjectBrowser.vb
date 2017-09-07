@@ -98,13 +98,13 @@ Public Class UCObjectBrowser
                 Dim i As Integer
                 For i = 0 To lAutocompleteList.Count - 1
                     If (Not ClassSettings.g_iSettingsVarAutocompleteShowObjectBrowser) Then
-                        If ((lAutocompleteList(i).mType And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) Then
+                        If ((lAutocompleteList(i).m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) Then
                             Continue For
                         End If
                     End If
 
                     'Add missing nodes
-                    Dim sFile As String = lAutocompleteList(i).sFile
+                    Dim sFile As String = lAutocompleteList(i).m_File
                     Dim bIsMainFile As Boolean = Array.Exists(g_sSourceMainFileExt, Function(s As String) sFile.ToLower.EndsWith(s.ToLower))
                     If (Not CBool(Me.Invoke(Function() TreeView_ObjectBrowser.Nodes.ContainsKey(sFile)))) Then
                         If (bIsMainFile) Then
@@ -120,13 +120,13 @@ Public Class UCObjectBrowser
                         End If
                     End If
 
-                    Dim iTypes As Integer = lAutocompleteList(i).mType
+                    Dim iTypes As Integer = lAutocompleteList(i).m_Type
                     Dim sTypes As String = If(String.IsNullOrEmpty(lAutocompleteList(i).GetTypeFullNames), "private", lAutocompleteList(i).GetTypeFullNames.ToLower)
                     If (Not CBool(Me.Invoke(Function() TreeView_ObjectBrowser.Nodes(sFile).Nodes.ContainsKey(sTypes)))) Then
                         Me.Invoke(Sub() TreeView_ObjectBrowser.Nodes(sFile).Nodes.Add(sTypes, sTypes))
                     End If
 
-                    Dim sName As String = lAutocompleteList(i).sFunctionName
+                    Dim sName As String = lAutocompleteList(i).m_FunctionName
                     If (Not CBool(Me.Invoke(Function() TreeView_ObjectBrowser.Nodes(sFile).Nodes(sTypes).Nodes.ContainsKey(sName)))) Then
                         Me.Invoke(Sub() TreeView_ObjectBrowser.Nodes(sFile).Nodes(sTypes).Nodes.Add(New ClassTreeNodeAutocomplete(sName, sName, sFile, iTypes, sName)))
                     End If
@@ -159,7 +159,7 @@ Public Class UCObjectBrowser
                                 Continue For
                             End If
 
-                            If (Not lAutocompleteList.Exists(Function(m As ClassSyntaxTools.STRUC_AUTOCOMPLETE) m.sFile = mTreeNodeAutocomplete.g_sFile AndAlso m.mType = mTreeNodeAutocomplete.g_iType AndAlso m.sFunctionName = mTreeNodeAutocomplete.g_sFunction)) Then
+                            If (Not lAutocompleteList.Exists(Function(m As ClassSyntaxTools.STRUC_AUTOCOMPLETE) m.m_File = mTreeNodeAutocomplete.g_sFile AndAlso m.m_Type = mTreeNodeAutocomplete.g_iType AndAlso m.m_FunctionName = mTreeNodeAutocomplete.g_sFunction)) Then
                                 Me.Invoke(Sub() mNameNodes(l).Remove())
                             End If
                         Next
