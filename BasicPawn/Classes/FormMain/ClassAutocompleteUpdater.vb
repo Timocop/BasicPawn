@@ -131,6 +131,9 @@ Public Class ClassAutocompleteUpdater
 
             Dim sIncludes As String() = GetIncludeFiles(sActiveSource, sActiveSourceFile, sActiveSourceFile)
 
+            'Add preprocessor stuff
+            lTmpAutocompleteList.AddRange(GetPreprocessorKeywords(sIncludes))
+
             'Detect current mod type...
             If (ClassConfigs.m_ActiveConfig.g_iModType = ClassConfigs.STRUC_CONFIG_ITEM.ENUM_MOD_TYPE.AUTO_DETECT) Then
                 Dim iModType As ClassSyntaxTools.ENUM_MOD_TYPE = CType(-1, ClassSyntaxTools.ENUM_MOD_TYPE)
@@ -245,6 +248,67 @@ Public Class ClassAutocompleteUpdater
             ClassExceptionLog.WriteToLog(ex)
         End Try
     End Sub
+
+    Private Function GetPreprocessorKeywords(sIncludes As String()) As ClassSyntaxTools.STRUC_AUTOCOMPLETE()
+        Dim lTmpAutoList As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
+
+        Dim mDic As New Dictionary(Of String, String)
+        Dim mDicOp As New Dictionary(Of String, String)
+
+        'Pragmas
+        mDic("assert") = "#assert"
+        mDic("define") = "#define <name>"
+        mDic("emit") = "#emit <opcode>"
+        mDic("endinput") = "#endinput"
+        mDic("endscript") = "#endscript"
+        mDic("error") = "#error <message>"
+        mDic("file") = "#file <filepath>"
+        mDic("line") = "#line <value>"
+        mDic("section") = "#section <name>"
+        mDic("include") = "#include <filename>"
+        mDic("tryinclude") = "#tryinclude <filename>"
+        mDic("undef") = "#undef <name>"
+
+        'Pragmas
+        mDic("pragma") = "#pragma <keyvalue> <value>"
+        mDic("pragma align") = "#pragma align"
+        mDic("pragma amxram") = "#pragma amxram <value>"
+        mDic("pragma amxlimit") = "#pragma amxlimit <value>"
+        mDic("pragma codepage") = "#pragma codepage <name/value>"
+        mDic("pragma compress") = "#pragma compress <1/0>"
+        mDic("pragma ctrlchar") = "#pragma ctrlchar <value>"
+        mDic("pragma deprecated") = "#pragma deprecated <value>"
+        mDic("pragma dynamic") = "#pragma dynamic <value>"
+        mDic("pragma library") = "#pragma library <name>"
+        mDic("pragma pack") = "#pragma pack <1/0>"
+        mDic("pragma rational") = "#pragma rational <tagname(value)>"
+        mDic("pragma semicolon") = "#pragma semicolon <1/0>"
+        mDic("pragma tabsize") = "#pragma tabsize <value>"
+        mDic("pragma unused") = "#pragma unused <symbol,...>"
+
+        For i = 0 To sIncludes.Length - 1
+            Dim sKey As String = String.Format("include <{0}>", IO.Path.GetFileNameWithoutExtension(sIncludes(i)))
+            Dim sValue As String = String.Format("#include <{0}>", IO.Path.GetFileNameWithoutExtension(sIncludes(i)))
+            mDic(sKey) = sValue
+        Next
+
+        'Operators
+        mDicOp("char") = "<exp> char"
+        mDicOp("defined") = "defined <symbol>"
+        mDicOp("sizeof") = "sizeof <symbol>"
+        mDicOp("state") = "state <symbol>"
+        mDicOp("tagof") = "tagof <symbol>"
+
+        For Each mItem In mDic
+            lTmpAutoList.Add(New ClassSyntaxTools.STRUC_AUTOCOMPLETE("", "compiler.exe", ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PREPROCESSOR, mItem.Key, mItem.Value))
+        Next
+
+        For Each mItem In mDicOp
+            lTmpAutoList.Add(New ClassSyntaxTools.STRUC_AUTOCOMPLETE("", "compiler.exe", ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.OPERATOR, mItem.Key, mItem.Value))
+        Next
+
+        Return lTmpAutoList.ToArray
+    End Function
 
     ''' <summary>
     ''' Merges all methods etc. methodmaps with parent methodmaps

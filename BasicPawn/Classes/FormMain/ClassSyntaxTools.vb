@@ -195,6 +195,8 @@ Public Class ClassSyntaxTools
             [PROPERTY] = (1 << 17)
             [FUNCTION] = (1 << 18)
             STRUCT = (1 << 19)
+            PREPROCESSOR = (1 << 20)
+            [OPERATOR] = (1 << 21)
         End Enum
 
         Public Shared Function ParseTypeFullNames(sStr As String) As ENUM_TYPE_FLAGS
@@ -226,6 +228,8 @@ Public Class ClassSyntaxTools
                     Case "property" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.PROPERTY)
                     Case "function" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.FUNCTION)
                     Case "struct" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.STRUCT)
+                    Case "preprocessor" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.PREPROCESSOR)
+                    Case "operator" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.OPERATOR)
                 End Select
             Next
 
@@ -255,6 +259,8 @@ Public Class ClassSyntaxTools
             If ((g_iType And ENUM_TYPE_FLAGS.PROPERTY) = ENUM_TYPE_FLAGS.PROPERTY) Then lNames.Add("property")
             If ((g_iType And ENUM_TYPE_FLAGS.FUNCTION) = ENUM_TYPE_FLAGS.FUNCTION) Then lNames.Add("function")
             If ((g_iType And ENUM_TYPE_FLAGS.STRUCT) = ENUM_TYPE_FLAGS.STRUCT) Then lNames.Add("struct")
+            If ((g_iType And ENUM_TYPE_FLAGS.PREPROCESSOR) = ENUM_TYPE_FLAGS.PREPROCESSOR) Then lNames.Add("preprocessor")
+            If ((g_iType And ENUM_TYPE_FLAGS.OPERATOR) = ENUM_TYPE_FLAGS.OPERATOR) Then lNames.Add("operator")
 
             Return lNames.ToArray
         End Function
