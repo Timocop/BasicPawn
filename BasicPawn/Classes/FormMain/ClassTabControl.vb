@@ -43,7 +43,7 @@ Public Class ClassTabControl
 
     Public Sub Init()
         g_mFormMain.TabControl_SourceTabs.TabPages.Clear()
-        AddTab(True, True, False)
+        AddTab(True, True)
     End Sub
 
     ReadOnly Property m_IsLoadingEntries As Boolean
@@ -80,6 +80,14 @@ Public Class ClassTabControl
     Public Function AddTab(Optional bSelect As Boolean = False, Optional bIncludeTemplate As Boolean = False, Optional bChanged As Boolean = False) As SourceTabPage
         Try
             ClassTools.ClassForms.SuspendDrawing(g_iControlDrawCoutner, g_mFormMain.SplitContainer_ToolboxAndEditor)
+
+            'Recycle first unsaved tab
+            If (m_TabsCount = 1) Then
+                Dim mOldTab = m_Tab(0)
+                If (mOldTab.m_IsUnsaved AndAlso Not mOldTab.m_Changed) Then
+                    Return mOldTab
+                End If
+            End If
 
             Dim mTabPage As New SourceTabPage(g_mFormMain) With {
                 .m_Changed = bChanged

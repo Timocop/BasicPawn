@@ -304,10 +304,6 @@ Public Class FormMain
                 If (IO.Path.GetExtension(lOpenFileList(i)).ToLower <> UCProjectBrowser.ClassProjectControl.g_sProjectExtension) Then
                     Dim mTab = g_ClassTabControl.AddTab()
                     mTab.OpenFileTab(lOpenFileList(i), True)
-
-                    If (i = 0 AndAlso g_ClassTabControl.m_TabsCount > 0) Then
-                        g_ClassTabControl.RemoveTab(0, False)
-                    End If
                 End If
             Next
 
