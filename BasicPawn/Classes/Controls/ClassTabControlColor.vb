@@ -20,10 +20,10 @@ Public Class ClassTabControlColor
 
     'TODO: Find better way to double buffer tabs without high CPU usage when tabs are drawn outside the window.
     'Protected Overrides Sub OnInvalidated(e As InvalidateEventArgs)
-    '    MyBase.OnInvalidated(e)
-
     '    ClassTools.ClassForms.SetDoubleBuffering(Me, True)
     '    ClassTools.ClassForms.SetDoubleBufferingUnmanaged(Me, True)
+
+    '    MyBase.OnInvalidated(e)
     'End Sub
 
     Protected Overrides Sub OnDrawItem(e As DrawItemEventArgs)
@@ -37,6 +37,9 @@ Public Class ClassTabControlColor
         Dim mTabFore As Brush
 
         Dim mTabRec As Rectangle
+
+        Dim r As Rectangle = Me.GetTabRect(Me.TabPages.Count - 1)
+        e.Graphics.FillRectangle(New SolidBrush(ClassControlStyle.g_cDarkFormColor.mDarkBackground), New RectangleF(r.X + r.Width, r.Y - 5, Me.Width - (r.X + r.Width) + 5, r.Height + 5))
 
         If e.Index = Me.SelectedIndex Then
             mTabFont = e.Font 'New Font(e.Font, FontStyle.Bold)
@@ -58,8 +61,5 @@ Public Class ClassTabControlColor
         mTabRec = e.Bounds
         mTabRec = New Rectangle(mTabRec.X + 2, mTabRec.Y + 2, mTabRec.Width - 2, mTabRec.Height - 2)
         e.Graphics.DrawString(Me.TabPages(e.Index).Text, mTabFont, mTabFore, mTabRec, New StringFormat())
-
-        Dim r As Rectangle = Me.GetTabRect(Me.TabPages.Count - 1)
-        e.Graphics.FillRectangle(New SolidBrush(ClassControlStyle.g_cDarkFormColor.mDarkBackground), New RectangleF(r.X + r.Width, r.Y - 5, Me.Width - (r.X + r.Width) + 5, r.Height + 5))
     End Sub
 End Class

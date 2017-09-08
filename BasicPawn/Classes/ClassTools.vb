@@ -346,8 +346,7 @@ Public Class ClassTools
         ''' <param name="c"></param>
         ''' <param name="bEnable"></param>
         Public Shared Sub SetDoubleBuffering(c As Control, bEnable As Boolean)
-            Dim controlProperty As Reflection.PropertyInfo = GetType(Control).GetProperty("DoubleBuffered", Reflection.BindingFlags.NonPublic Or Reflection.BindingFlags.Instance)
-            controlProperty.SetValue(c, bEnable, Nothing)
+            GetType(Control).InvokeMember("DoubleBuffered", Reflection.BindingFlags.SetProperty Or Reflection.BindingFlags.Instance Or Reflection.BindingFlags.NonPublic, Nothing, c, New Object() {True})
         End Sub
 
         ''' <summary>
