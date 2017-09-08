@@ -130,9 +130,10 @@ Public Class ClassAutocompleteUpdater
             lTmpAutocompleteList.AddRange((New ClassDebuggerParser(g_mFormMain)).GetDebuggerAutocomplete)
 
             Dim sIncludes As String() = GetIncludeFiles(sActiveSource, sActiveSourceFile, sActiveSourceFile)
+            Dim sIncludesAll As String() = GetIncludeFiles(sActiveSource, sActiveSourceFile, sActiveSourceFile, True)
 
             'Add preprocessor stuff
-            lTmpAutocompleteList.AddRange(GetPreprocessorKeywords(sIncludes))
+            lTmpAutocompleteList.AddRange(GetPreprocessorKeywords(sIncludesAll))
 
             'Detect current mod type...
             If (ClassConfigs.m_ActiveConfig.g_iModType = ClassConfigs.STRUC_CONFIG_ITEM.ENUM_MOD_TYPE.AUTO_DETECT) Then
