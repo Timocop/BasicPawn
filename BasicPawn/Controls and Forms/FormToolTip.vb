@@ -15,7 +15,7 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 
-Public Class UCToolTip
+Public Class FormToolTip
     Private g_mFormMain As FormMain
 
     Private g_mLocation As Point
@@ -51,21 +51,10 @@ Public Class UCToolTip
             mAlphaPanel.BringToFront()
         End If
 
+        ClassTools.ClassForms.SetDoubleBufferingAllChilds(Me, True)
+        ClassTools.ClassForms.SetDoubleBufferingUnmanagedAllChilds(Me, True)
+
         ClassControlStyle.UpdateControls(Me)
-    End Sub
-
-    Private Sub Timer_Move_Tick(sender As Object, e As EventArgs) Handles Timer_Move.Tick
-        If (MoveWindow(Not ClassSettings.g_iSettingsUseWindowsToolTipAnimations)) Then
-            Timer_Move.Interval = g_iMoveSpeed
-        Else
-            Timer_Move.Interval = g_iIdleSpeed
-        End If
-    End Sub
-
-    Protected Overrides Sub OnVisibleChanged(e As EventArgs)
-        MyBase.OnVisibleChanged(e)
-
-        Timer_Move.Enabled = Me.Visible
     End Sub
 
     Property m_Location As Point
@@ -73,32 +62,52 @@ Public Class UCToolTip
             Return g_mLocation
         End Get
         Set(value As Point)
-            Dim bWasVisible = Me.Visible
-            Me.Visible = False
+            Me.SuspendLayout()
 
-            g_mLocation = value
-            Me.Location = value
             g_mMoveLocation = New Point()
-            MoveWindow(True)
+            g_mLocation = value
+            MoveWindow(value, True)
 
-            Me.Visible = bWasVisible
+            Me.ResumeLayout()
         End Set
     End Property
 
-    Private Function MoveWindow(bInstant As Boolean) As Boolean
+    Private Sub Timer_Move_Tick(sender As Object, e As EventArgs) Handles Timer_Move.Tick
+        If (Form.ActiveForm Is g_mFormMain AndAlso MoveWindow(Me.Location, Not ClassSettings.g_iSettingsUseWindowsToolTipAnimations)) Then
+            Timer_Move.Interval = g_iMoveSpeed
+        Else
+            Timer_Move.Interval = g_iIdleSpeed
+        End If
+    End Sub
+
+    Protected Overrides ReadOnly Property ShowWithoutActivation As Boolean
+        Get
+            Return True
+        End Get
+    End Property
+
+    Protected Overrides Sub OnVisibleChanged(e As EventArgs)
+        MyBase.OnVisibleChanged(e)
+
+        Timer_Move.Enabled = Me.Visible
+    End Sub
+
+    Private Function MoveWindow(mStartLocation As Point, bInstant As Boolean) As Boolean
         Dim bMoved As Boolean = False
 
+        Dim mCursorPoint As Point = Cursor.Position
+        Dim mLocation As Point = mStartLocation
+        If (mLocation = Point.Empty) Then
+            mLocation = Me.Location
+        End If
+
         While True
-            Dim mCursorPoint As Point = Cursor.Position
-
-            Dim mMePoint As Point = Me.PointToScreen(Point.Empty)
-
             If (g_mMoveLocation.Y < 500 AndAlso
-                    (mCursorPoint.X + g_iSizeSpace > mMePoint.X AndAlso mCursorPoint.Y + g_iSizeSpace > mMePoint.Y AndAlso
-                        mCursorPoint.X < mMePoint.X + Me.Width + g_iSizeSpace AndAlso mCursorPoint.Y < mMePoint.Y + Me.Height + g_iSizeSpace)) Then
+                    (mCursorPoint.X + g_iSizeSpace > mLocation.X AndAlso mCursorPoint.Y + g_iSizeSpace > mLocation.Y AndAlso
+                        mCursorPoint.X < mLocation.X + Me.Width + g_iSizeSpace AndAlso mCursorPoint.Y < mLocation.Y + Me.Height + g_iSizeSpace)) Then
                 g_mMoveLocation.Y += g_iMoveStep
 
-                Me.Location = New Point(g_mLocation.X, g_mLocation.Y + g_mMoveLocation.Y)
+                mLocation = New Point(g_mLocation.X, g_mLocation.Y + g_mMoveLocation.Y)
 
                 bMoved = True
 
@@ -107,12 +116,12 @@ Public Class UCToolTip
                 End If
 
             ElseIf (g_mMoveLocation.Y > 0 AndAlso
-                        Not (mCursorPoint.X + g_iSizeSpace + g_iMoveStep > mMePoint.X AndAlso mCursorPoint.Y + g_iSizeSpace + g_iMoveStep > mMePoint.Y AndAlso
-                                mCursorPoint.X < mMePoint.X + Me.Width + g_iSizeSpace + g_iMoveStep AndAlso mCursorPoint.Y < mMePoint.Y + Me.Height + g_iSizeSpace + g_iMoveStep)) Then
+                        Not (mCursorPoint.X + g_iSizeSpace + g_iMoveStep > mLocation.X AndAlso mCursorPoint.Y + g_iSizeSpace + g_iMoveStep > mLocation.Y AndAlso
+                                mCursorPoint.X < mLocation.X + Me.Width + g_iSizeSpace + g_iMoveStep AndAlso mCursorPoint.Y < mLocation.Y + Me.Height + g_iSizeSpace + g_iMoveStep)) Then
                 g_mMoveLocation.Y -= g_iMoveStep
                 g_mMoveLocation.Y = Math.Max(g_mMoveLocation.Y, 0)
 
-                Me.Location = New Point(g_mLocation.X, g_mLocation.Y + g_mMoveLocation.Y)
+                mLocation = New Point(g_mLocation.X, g_mLocation.Y + g_mMoveLocation.Y)
 
                 bMoved = True
 
@@ -124,6 +133,8 @@ Public Class UCToolTip
             Exit While
         End While
 
+        Me.Location = mLocation
+
         Return bMoved
     End Function
 
@@ -132,5 +143,7 @@ Public Class UCToolTip
         Dim textSize = TextRenderer.MeasureText(TextEditorControl_ToolTip.Document.TextContent, TextEditorControl_ToolTip.ActiveTextAreaControl.Font)
         Me.Width = CInt(textSize.Width * 1.25)
         Me.Height = CInt(textSize.Height * 1.25)
+
+        Me.Refresh()
     End Sub
 End Class

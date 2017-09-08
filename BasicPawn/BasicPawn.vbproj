@@ -292,6 +292,12 @@
     <Compile Include="Controls and Forms\FormOpenTabFromInstances.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Controls and Forms\FormToolTip.Designer.vb">
+      <DependentUpon>FormToolTip.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controls and Forms\FormToolTip.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Controls and Forms\FormUpdate.Designer.vb">
       <DependentUpon>FormUpdate.vb</DependentUpon>
     </Compile>
@@ -339,12 +345,6 @@
       <DependentUpon>UCProjectBrowser.vb</DependentUpon>
     </Compile>
     <Compile Include="Controls and Forms\UCProjectBrowser.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls and Forms\UCToolTip.Designer.vb">
-      <DependentUpon>UCToolTip.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Controls and Forms\UCToolTip.vb">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
@@ -411,6 +411,9 @@
     <EmbeddedResource Include="Controls and Forms\FormOpenTabFromInstances.resx">
       <DependentUpon>FormOpenTabFromInstances.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls and Forms\FormToolTip.resx">
+      <DependentUpon>FormToolTip.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls and Forms\FormUpdate.resx">
       <DependentUpon>FormUpdate.vb</DependentUpon>
     </EmbeddedResource>
@@ -435,9 +438,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls and Forms\UCProjectBrowser.resx">
       <DependentUpon>UCProjectBrowser.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls and Forms\UCToolTip.resx">
-      <DependentUpon>UCToolTip.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>PublicVbMyResourcesResXFileCodeGenerator</Generator>

@@ -604,14 +604,17 @@ Public Class ClassSyntaxTools
                                 End If
                             Next
 
-                            g_mFormMain.g_mUCToolTip.TextEditorControl_ToolTip.SetHighlighting(g_SyntaxFiles(i).sDefinition)
-                            g_mFormMain.g_mUCToolTip.TextEditorControl_ToolTip.Font = New Font(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Font.FontFamily, 8, FontStyle.Regular)
+                            If (g_mFormMain.g_mFormToolTip.TextEditorControl_ToolTip.Document.HighlightingStrategy.Name <> g_SyntaxFiles(i).sDefinition) Then
+                                g_mFormMain.g_mFormToolTip.TextEditorControl_ToolTip.SetHighlighting(g_SyntaxFiles(i).sDefinition)
+                                g_mFormMain.g_mFormToolTip.TextEditorControl_ToolTip.Font = New Font(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Font.FontFamily, 8, FontStyle.Regular)
+                            End If
 
                         Case ENUM_SYNTAX_FILES.DEBUGGER_TEXTEDITOR
                             If (g_mFormMain.g_mFormDebugger IsNot Nothing AndAlso Not g_mFormMain.g_mFormDebugger.IsDisposed) Then
                                 If (g_mFormMain.g_mFormDebugger.TextEditorControlEx_DebuggerSource.Document.HighlightingStrategy.Name <> g_SyntaxFiles(i).sDefinition) Then
                                     g_mFormMain.g_mFormDebugger.TextEditorControlEx_DebuggerSource.SetHighlighting(g_SyntaxFiles(i).sDefinition)
                                 End If
+
                                 If (g_mFormMain.g_mFormDebugger.TextEditorControlEx_DebuggerDiasm.Document.HighlightingStrategy.Name <> g_SyntaxFiles(i).sDefinition) Then
                                     g_mFormMain.g_mFormDebugger.TextEditorControlEx_DebuggerDiasm.SetHighlighting(g_SyntaxFiles(i).sDefinition)
                                 End If
@@ -884,13 +887,13 @@ Public Class ClassSyntaxTools
             IN_PREPROCESSOR
         End Enum
 
-        Private iStateArray As Integer(,)
-        Private iMaxLenght As Integer = 0
-        Private sCacheText As String = ""
+        Private g_iStateArray As Integer(,)
+        Private g_iMaxLenght As Integer = 0
+        Private g_sCacheText As String = ""
 
         Public ReadOnly Property m_IsRange(i As Integer) As Boolean
             Get
-                Return (i > -1 AndAlso i < iMaxLenght)
+                Return (i > -1 AndAlso i < g_iMaxLenght)
             End Get
         End Property
 
@@ -900,7 +903,7 @@ Public Class ClassSyntaxTools
         ''' <returns></returns>
         Public ReadOnly Property m_GetMaxLenght() As Integer
             Get
-                Return iMaxLenght
+                Return g_iMaxLenght
             End Get
         End Property
 
@@ -911,7 +914,7 @@ Public Class ClassSyntaxTools
         ''' <returns></returns>
         Public ReadOnly Property m_InSingleComment(i As Integer) As Boolean
             Get
-                Return iStateArray(i, ENUM_STATE_TYPES.IN_SINGLE_COMMENT) > 0
+                Return g_iStateArray(i, ENUM_STATE_TYPES.IN_SINGLE_COMMENT) > 0
             End Get
         End Property
 
@@ -922,7 +925,7 @@ Public Class ClassSyntaxTools
         ''' <returns></returns>
         Public ReadOnly Property m_InMultiComment(i As Integer) As Boolean
             Get
-                Return iStateArray(i, ENUM_STATE_TYPES.IN_MULTI_COMMENT) > 0
+                Return g_iStateArray(i, ENUM_STATE_TYPES.IN_MULTI_COMMENT) > 0
             End Get
         End Property
 
@@ -933,7 +936,7 @@ Public Class ClassSyntaxTools
         ''' <returns></returns>
         Public ReadOnly Property m_InString(i As Integer) As Boolean
             Get
-                Return iStateArray(i, ENUM_STATE_TYPES.IN_STRING) > 0
+                Return g_iStateArray(i, ENUM_STATE_TYPES.IN_STRING) > 0
             End Get
         End Property
 
@@ -944,7 +947,7 @@ Public Class ClassSyntaxTools
         ''' <returns></returns>
         Public ReadOnly Property m_InChar(i As Integer) As Boolean
             Get
-                Return iStateArray(i, ENUM_STATE_TYPES.IN_CHAR) > 0
+                Return g_iStateArray(i, ENUM_STATE_TYPES.IN_CHAR) > 0
             End Get
         End Property
 
@@ -955,7 +958,7 @@ Public Class ClassSyntaxTools
         ''' <returns></returns>
         Public ReadOnly Property m_InPreprocessor(i As Integer) As Boolean
             Get
-                Return iStateArray(i, ENUM_STATE_TYPES.IN_PREPROCESSOR) > 0
+                Return g_iStateArray(i, ENUM_STATE_TYPES.IN_PREPROCESSOR) > 0
             End Get
         End Property
 
@@ -966,7 +969,7 @@ Public Class ClassSyntaxTools
         ''' <returns></returns>
         Public ReadOnly Property m_GetParenthesisLevel(i As Integer) As Integer
             Get
-                Return iStateArray(i, ENUM_STATE_TYPES.PARENTHESIS_LEVEL)
+                Return g_iStateArray(i, ENUM_STATE_TYPES.PARENTHESIS_LEVEL)
             End Get
         End Property
 
@@ -977,7 +980,7 @@ Public Class ClassSyntaxTools
         ''' <returns></returns>
         Public ReadOnly Property m_GetBracketLevel(i As Integer) As Integer
             Get
-                Return iStateArray(i, ENUM_STATE_TYPES.BRACKET_LEVEL)
+                Return g_iStateArray(i, ENUM_STATE_TYPES.BRACKET_LEVEL)
             End Get
         End Property
 
@@ -988,7 +991,7 @@ Public Class ClassSyntaxTools
         ''' <returns></returns>
         Public ReadOnly Property m_GetBraceLevel(i As Integer) As Integer
             Get
-                Return iStateArray(i, ENUM_STATE_TYPES.BRACE_LEVEL)
+                Return g_iStateArray(i, ENUM_STATE_TYPES.BRACE_LEVEL)
             End Get
         End Property
 
@@ -999,12 +1002,16 @@ Public Class ClassSyntaxTools
         ''' <returns></returns>
         Public ReadOnly Property m_InNonCode(i As Integer) As Boolean
             Get
-                Return (iStateArray(i, ENUM_STATE_TYPES.IN_SINGLE_COMMENT) > 0 OrElse
-                            iStateArray(i, ENUM_STATE_TYPES.IN_MULTI_COMMENT) > 0 OrElse
-                            iStateArray(i, ENUM_STATE_TYPES.IN_STRING) > 0 OrElse
-                            iStateArray(i, ENUM_STATE_TYPES.IN_CHAR) > 0)
+                Return (g_iStateArray(i, ENUM_STATE_TYPES.IN_SINGLE_COMMENT) > 0 OrElse
+                            g_iStateArray(i, ENUM_STATE_TYPES.IN_MULTI_COMMENT) > 0 OrElse
+                            g_iStateArray(i, ENUM_STATE_TYPES.IN_STRING) > 0 OrElse
+                            g_iStateArray(i, ENUM_STATE_TYPES.IN_CHAR) > 0)
             End Get
         End Property
+
+        Public Function GetCachedText() As String
+            Return g_sCacheText
+        End Function
 
         Public Function GetIndexFromLine(iLine As Integer) As Integer
             If (iLine = 0) Then
@@ -1012,13 +1019,13 @@ Public Class ClassSyntaxTools
             End If
 
             Dim iLineCount As Integer = 0
-            For i = 0 To sCacheText.Length - 1
-                Select Case (sCacheText(i))
+            For i = 0 To g_sCacheText.Length - 1
+                Select Case (g_sCacheText(i))
                     Case vbLf(0)
                         iLineCount += 1
 
                         If (iLineCount >= iLine) Then
-                            Return If(i + 1 > sCacheText.Length - 1, -1, i + 1)
+                            Return If(i + 1 > g_sCacheText.Length - 1, -1, i + 1)
                         End If
                 End Select
             Next
@@ -1028,10 +1035,10 @@ Public Class ClassSyntaxTools
 
 
         Public Sub New(ByRef sText As String, Optional bIgnorePreprocessor As Boolean = True)
-            sCacheText = sText
-            iMaxLenght = sText.Length
+            g_sCacheText = sText
+            g_iMaxLenght = sText.Length
 
-            iStateArray = New Integer(sText.Length, [Enum].GetNames(GetType(ENUM_STATE_TYPES)).Length - 1) {}
+            g_iStateArray = New Integer(sText.Length, [Enum].GetNames(GetType(ENUM_STATE_TYPES)).Length - 1) {}
 
             Dim iParenthesisLevel As Integer = 0 '()
             Dim iBracketLevel As Integer = 0 '[]
@@ -1043,14 +1050,14 @@ Public Class ClassSyntaxTools
             Dim bInPreprocessor As Integer = 0
 
             For i = 0 To sText.Length - 1
-                iStateArray(i, ENUM_STATE_TYPES.PARENTHESIS_LEVEL) = iParenthesisLevel '0
-                iStateArray(i, ENUM_STATE_TYPES.BRACKET_LEVEL) = iBracketLevel '1
-                iStateArray(i, ENUM_STATE_TYPES.BRACE_LEVEL) = iBraceLevel '2
-                iStateArray(i, ENUM_STATE_TYPES.IN_SINGLE_COMMENT) = bInSingleComment '3
-                iStateArray(i, ENUM_STATE_TYPES.IN_MULTI_COMMENT) = bInMultiComment '4
-                iStateArray(i, ENUM_STATE_TYPES.IN_STRING) = bInString '5
-                iStateArray(i, ENUM_STATE_TYPES.IN_CHAR) = bInChar '6
-                iStateArray(i, ENUM_STATE_TYPES.IN_PREPROCESSOR) = bInPreprocessor '7
+                g_iStateArray(i, ENUM_STATE_TYPES.PARENTHESIS_LEVEL) = iParenthesisLevel '0
+                g_iStateArray(i, ENUM_STATE_TYPES.BRACKET_LEVEL) = iBracketLevel '1
+                g_iStateArray(i, ENUM_STATE_TYPES.BRACE_LEVEL) = iBraceLevel '2
+                g_iStateArray(i, ENUM_STATE_TYPES.IN_SINGLE_COMMENT) = bInSingleComment '3
+                g_iStateArray(i, ENUM_STATE_TYPES.IN_MULTI_COMMENT) = bInMultiComment '4
+                g_iStateArray(i, ENUM_STATE_TYPES.IN_STRING) = bInString '5
+                g_iStateArray(i, ENUM_STATE_TYPES.IN_CHAR) = bInChar '6
+                g_iStateArray(i, ENUM_STATE_TYPES.IN_PREPROCESSOR) = bInPreprocessor '7
 
                 Select Case (sText(i))
                     Case "#"c
@@ -1060,7 +1067,8 @@ Public Class ClassSyntaxTools
 
                         '/*
                         bInPreprocessor = 1
-                        iStateArray(i, ENUM_STATE_TYPES.IN_PREPROCESSOR) = 1
+                        g_iStateArray(i, ENUM_STATE_TYPES.IN_PREPROCESSOR) = 1
+
                     Case "*"c
                         If (bInSingleComment > 0 OrElse bInString > 0 OrElse bInChar > 0) Then
                             Continue For
@@ -1070,8 +1078,8 @@ Public Class ClassSyntaxTools
                         If (i > 0) Then
                             If (sText(i - 1) = "/"c AndAlso bInMultiComment < 1) Then
                                 bInMultiComment = 1
-                                iStateArray(i, ENUM_STATE_TYPES.IN_MULTI_COMMENT) = 1
-                                iStateArray(i - 1, ENUM_STATE_TYPES.IN_MULTI_COMMENT) = 1
+                                g_iStateArray(i, ENUM_STATE_TYPES.IN_MULTI_COMMENT) = 1
+                                g_iStateArray(i - 1, ENUM_STATE_TYPES.IN_MULTI_COMMENT) = 1
                                 Continue For
                             End If
                         End If
@@ -1079,13 +1087,14 @@ Public Class ClassSyntaxTools
                         If (i + 1 < sText.Length - 1) Then
                             If (sText(i + 1) = "/"c AndAlso bInMultiComment > 0) Then
                                 bInMultiComment = 0
-                                iStateArray(i, ENUM_STATE_TYPES.IN_MULTI_COMMENT) = 1
-                                iStateArray(i + 1, ENUM_STATE_TYPES.IN_MULTI_COMMENT) = 1
+                                g_iStateArray(i, ENUM_STATE_TYPES.IN_MULTI_COMMENT) = 1
+                                g_iStateArray(i + 1, ENUM_STATE_TYPES.IN_MULTI_COMMENT) = 1
 
                                 i += 1
                                 Continue For
                             End If
                         End If
+
                     Case "/"c
                         If (bInMultiComment > 0 OrElse bInString > 0 OrElse bInChar > 0) Then
                             Continue For
@@ -1095,9 +1104,10 @@ Public Class ClassSyntaxTools
                         If (i + 1 < sText.Length - 1) Then
                             If (sText(i + 1) = "/"c AndAlso bInSingleComment < 1) Then
                                 bInSingleComment = 1
-                                iStateArray(i, ENUM_STATE_TYPES.IN_SINGLE_COMMENT) = bInSingleComment
+                                g_iStateArray(i, ENUM_STATE_TYPES.IN_SINGLE_COMMENT) = bInSingleComment
                             End If
                         End If
+
                     Case "("c
                         If (Not bIgnorePreprocessor AndAlso bInPreprocessor > 0) Then
                             Continue For
@@ -1108,7 +1118,8 @@ Public Class ClassSyntaxTools
                         End If
 
                         iParenthesisLevel += 1
-                        iStateArray(i, ENUM_STATE_TYPES.PARENTHESIS_LEVEL) = iParenthesisLevel
+                        g_iStateArray(i, ENUM_STATE_TYPES.PARENTHESIS_LEVEL) = iParenthesisLevel
+
                     Case ")"c
                         If (Not bIgnorePreprocessor AndAlso bInPreprocessor > 0) Then
                             Continue For
@@ -1119,7 +1130,8 @@ Public Class ClassSyntaxTools
                         End If
 
                         iParenthesisLevel -= 1
-                        iStateArray(i, ENUM_STATE_TYPES.PARENTHESIS_LEVEL) = iParenthesisLevel
+                        g_iStateArray(i, ENUM_STATE_TYPES.PARENTHESIS_LEVEL) = iParenthesisLevel
+
                     Case "["c
                         If (Not bIgnorePreprocessor AndAlso bInPreprocessor > 0) Then
                             Continue For
@@ -1130,7 +1142,8 @@ Public Class ClassSyntaxTools
                         End If
 
                         iBracketLevel += 1
-                        iStateArray(i, ENUM_STATE_TYPES.BRACKET_LEVEL) = iBracketLevel
+                        g_iStateArray(i, ENUM_STATE_TYPES.BRACKET_LEVEL) = iBracketLevel
+
                     Case "]"c
                         If (Not bIgnorePreprocessor AndAlso bInPreprocessor > 0) Then
                             Continue For
@@ -1141,7 +1154,8 @@ Public Class ClassSyntaxTools
                         End If
 
                         iBracketLevel -= 1
-                        iStateArray(i, ENUM_STATE_TYPES.BRACKET_LEVEL) = iBracketLevel
+                        g_iStateArray(i, ENUM_STATE_TYPES.BRACKET_LEVEL) = iBracketLevel
+
                     Case "{"c
                         If (Not bIgnorePreprocessor AndAlso bInPreprocessor > 0) Then
                             Continue For
@@ -1152,7 +1166,8 @@ Public Class ClassSyntaxTools
                         End If
 
                         iBraceLevel += 1
-                        iStateArray(i, ENUM_STATE_TYPES.BRACE_LEVEL) = iBraceLevel
+                        g_iStateArray(i, ENUM_STATE_TYPES.BRACE_LEVEL) = iBraceLevel
+
                     Case "}"c
                         If (Not bIgnorePreprocessor AndAlso bInPreprocessor > 0) Then
                             Continue For
@@ -1163,7 +1178,8 @@ Public Class ClassSyntaxTools
                         End If
 
                         iBraceLevel -= 1
-                        iStateArray(i, ENUM_STATE_TYPES.BRACE_LEVEL) = iBraceLevel
+                        g_iStateArray(i, ENUM_STATE_TYPES.BRACE_LEVEL) = iBraceLevel
+
                     Case "'"c
                         If (Not bIgnorePreprocessor AndAlso bInPreprocessor > 0) Then
                             Continue For
@@ -1176,11 +1192,12 @@ Public Class ClassSyntaxTools
                         'ignore \'
                         If (i > 1 AndAlso sText(i - 1) <> ClassSyntaxTools.g_sEscapeCharacters(ClassSyntaxTools.g_iActiveModType)) Then
                             bInChar = If(bInChar > 0, 0, 1)
-                            iStateArray(i, ENUM_STATE_TYPES.IN_CHAR) = 1
+                            g_iStateArray(i, ENUM_STATE_TYPES.IN_CHAR) = 1
                         ElseIf (i > 2 AndAlso sText(i - 1) = ClassSyntaxTools.g_sEscapeCharacters(ClassSyntaxTools.g_iActiveModType) AndAlso sText(i - 2) = ClassSyntaxTools.g_sEscapeCharacters(ClassSyntaxTools.g_iActiveModType)) Then
                             bInChar = If(bInChar > 0, 0, 1)
-                            iStateArray(i, ENUM_STATE_TYPES.IN_CHAR) = 1
+                            g_iStateArray(i, ENUM_STATE_TYPES.IN_CHAR) = 1
                         End If
+
                     Case """"c
                         If (Not bIgnorePreprocessor AndAlso bInPreprocessor > 0) Then
                             Continue For
@@ -1193,30 +1210,32 @@ Public Class ClassSyntaxTools
                         'ignore \"
                         If (i > 1 AndAlso sText(i - 1) <> ClassSyntaxTools.g_sEscapeCharacters(ClassSyntaxTools.g_iActiveModType)) Then
                             bInString = If(bInString > 0, 0, 1)
-                            iStateArray(i, ENUM_STATE_TYPES.IN_STRING) = 1
+                            g_iStateArray(i, ENUM_STATE_TYPES.IN_STRING) = 1
                         ElseIf (i > 2 AndAlso sText(i - 1) = ClassSyntaxTools.g_sEscapeCharacters(ClassSyntaxTools.g_iActiveModType) AndAlso sText(i - 2) = ClassSyntaxTools.g_sEscapeCharacters(ClassSyntaxTools.g_iActiveModType)) Then
                             bInString = If(bInString > 0, 0, 1)
-                            iStateArray(i, ENUM_STATE_TYPES.IN_STRING) = 1
+                            g_iStateArray(i, ENUM_STATE_TYPES.IN_STRING) = 1
                         End If
+
                     Case vbLf(0)
                         If (bInSingleComment > 0) Then
                             bInSingleComment = 0
-                            iStateArray(i, ENUM_STATE_TYPES.IN_SINGLE_COMMENT) = bInSingleComment
+                            g_iStateArray(i, ENUM_STATE_TYPES.IN_SINGLE_COMMENT) = bInSingleComment
                         End If
 
                         If (bInPreprocessor > 0) Then
                             bInPreprocessor = 0
-                            iStateArray(i, ENUM_STATE_TYPES.IN_PREPROCESSOR) = bInPreprocessor
+                            g_iStateArray(i, ENUM_STATE_TYPES.IN_PREPROCESSOR) = bInPreprocessor
                         End If
+
                     Case Else
-                        iStateArray(i, ENUM_STATE_TYPES.PARENTHESIS_LEVEL) = iParenthesisLevel
-                        iStateArray(i, ENUM_STATE_TYPES.BRACKET_LEVEL) = iBracketLevel
-                        iStateArray(i, ENUM_STATE_TYPES.BRACE_LEVEL) = iBraceLevel
-                        iStateArray(i, ENUM_STATE_TYPES.IN_SINGLE_COMMENT) = bInSingleComment
-                        iStateArray(i, ENUM_STATE_TYPES.IN_MULTI_COMMENT) = bInMultiComment
-                        iStateArray(i, ENUM_STATE_TYPES.IN_STRING) = bInString
-                        iStateArray(i, ENUM_STATE_TYPES.IN_CHAR) = bInChar
-                        iStateArray(i, ENUM_STATE_TYPES.IN_PREPROCESSOR) = bInPreprocessor
+                        g_iStateArray(i, ENUM_STATE_TYPES.PARENTHESIS_LEVEL) = iParenthesisLevel
+                        g_iStateArray(i, ENUM_STATE_TYPES.BRACKET_LEVEL) = iBracketLevel
+                        g_iStateArray(i, ENUM_STATE_TYPES.BRACE_LEVEL) = iBraceLevel
+                        g_iStateArray(i, ENUM_STATE_TYPES.IN_SINGLE_COMMENT) = bInSingleComment
+                        g_iStateArray(i, ENUM_STATE_TYPES.IN_MULTI_COMMENT) = bInMultiComment
+                        g_iStateArray(i, ENUM_STATE_TYPES.IN_STRING) = bInString
+                        g_iStateArray(i, ENUM_STATE_TYPES.IN_CHAR) = bInChar
+                        g_iStateArray(i, ENUM_STATE_TYPES.IN_PREPROCESSOR) = bInPreprocessor
                 End Select
             Next
         End Sub

@@ -1,8 +1,8 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class UCToolTip
-    Inherits System.Windows.Forms.UserControl
+Partial Class FormToolTip
+    Inherits System.Windows.Forms.Form
 
-    'UserControl überschreibt den Löschvorgang, um die Komponentenliste zu bereinigen.
+    'Form overrides dispose to clean up the component list.
     <System.Diagnostics.DebuggerNonUserCode()> _
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
@@ -14,12 +14,12 @@ Partial Class UCToolTip
         End Try
     End Sub
 
-    'Wird vom Windows Form-Designer benötigt.
+    'Required by the Windows Form Designer
     Private components As System.ComponentModel.IContainer
 
-    'Hinweis: Die folgende Prozedur ist für den Windows Form-Designer erforderlich.
-    'Das Bearbeiten ist mit dem Windows Form-Designer möglich.  
-    'Das Bearbeiten mit dem Code-Editor ist nicht möglich.
+    'NOTE: The following procedure is required by the Windows Form Designer
+    'It can be modified using the Windows Form Designer.  
+    'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
@@ -40,19 +40,23 @@ Partial Class UCToolTip
         Me.TextEditorControl_ToolTip.ShowLineNumbers = False
         Me.TextEditorControl_ToolTip.ShowMatchingBracket = False
         Me.TextEditorControl_ToolTip.ShowVRuler = False
-        Me.TextEditorControl_ToolTip.Size = New System.Drawing.Size(134, 94)
-        Me.TextEditorControl_ToolTip.TabIndex = 0
+        Me.TextEditorControl_ToolTip.Size = New System.Drawing.Size(447, 129)
+        Me.TextEditorControl_ToolTip.TabIndex = 1
         '
-        'UCToolTip
+        'FormToolTip
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
-        Me.BackColor = System.Drawing.Color.White
-        Me.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.ClientSize = New System.Drawing.Size(447, 129)
+        Me.ControlBox = False
         Me.Controls.Add(Me.TextEditorControl_ToolTip)
         Me.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Name = "UCToolTip"
-        Me.Size = New System.Drawing.Size(134, 94)
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow
+        Me.MaximizeBox = False
+        Me.MinimizeBox = False
+        Me.Name = "FormToolTip"
+        Me.ShowIcon = False
+        Me.ShowInTaskbar = False
         Me.ResumeLayout(False)
 
     End Sub

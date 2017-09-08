@@ -38,7 +38,7 @@ Public Class FormMain
     Public g_mUCInformationList As UCInformationList
     Public g_mUCObjectBrowser As UCObjectBrowser
     Public g_mUCProjectBrowser As UCProjectBrowser
-    Public g_mUCToolTip As UCToolTip
+    Public g_mFormToolTip As FormToolTip
     Public g_mFormDebugger As FormDebugger
     Public g_mFormOpenTabFromInstances As FormOpenTabFromInstances
     Public g_mUCStartPage As UCStartPage
@@ -180,11 +180,10 @@ Public Class FormMain
         }
         g_mUCProjectBrowser.Show()
 
-        g_mUCToolTip = New UCToolTip(Me) With {
-            .Parent = SplitContainer_ToolboxAndEditor.Panel2
+        g_mFormToolTip = New FormToolTip(Me) With {
+            .Owner = Me
         }
-        g_mUCToolTip.BringToFront()
-        g_mUCToolTip.Hide()
+        g_mFormToolTip.Hide()
 
         g_mUCStartPage = New UCStartPage(Me) With {
             .Parent = Me,
@@ -1257,6 +1256,30 @@ Public Class FormMain
             End If
 
             g_ClassTabControl.CheckFilesChangedPrompt()
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
+    Private Sub FormMain_Move(sender As Object, e As EventArgs) Handles Me.Move
+        Try
+            If (Not g_bFormPostLoad) Then
+                Return
+            End If
+
+            g_mUCAutocomplete.g_ClassToolTip.UpdateToolTipFormLocation()
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
+    Private Sub FormMain_SizeChanged(sender As Object, e As EventArgs) Handles Me.SizeChanged
+        Try
+            If (Not g_bFormPostLoad) Then
+                Return
+            End If
+
+            g_mUCAutocomplete.g_ClassToolTip.UpdateToolTipFormLocation()
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try

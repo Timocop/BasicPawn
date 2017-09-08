@@ -80,42 +80,36 @@ Public Class UCAutocomplete
     End Class
 
 
-    Public Function ParseMethodIntelliSense(bForceUpdate As Boolean) As Boolean
-        If (bForceUpdate) Then
-            Dim sTextContent As String = CStr(Me.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent))
-            g_mFormMain.g_mSourceSyntaxSourceAnalysis = New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sTextContent)
-        End If
-
-        If (g_mFormMain.g_mSourceSyntaxSourceAnalysis Is Nothing) Then
-            Return False
-        End If
+    Public Function UpdateIntelliSense() As Boolean
+        Dim sTextContent As String = CStr(Me.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent))
+        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sTextContent)
 
         Dim iCaretOffset As Integer = CInt(Me.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Offset))
         If (iCaretOffset - 1 < 1) Then
             Return False
         End If
 
-        If (Not g_mFormMain.g_mSourceSyntaxSourceAnalysis.m_IsRange(iCaretOffset) OrElse
-                        g_mFormMain.g_mSourceSyntaxSourceAnalysis.m_InMultiComment(iCaretOffset) OrElse
-                        g_mFormMain.g_mSourceSyntaxSourceAnalysis.m_InSingleComment(iCaretOffset)) Then
+        If (Not mSourceAnalysis.m_IsRange(iCaretOffset) OrElse
+                        mSourceAnalysis.m_InMultiComment(iCaretOffset) OrElse
+                        mSourceAnalysis.m_InSingleComment(iCaretOffset)) Then
             Return False
         End If
 
         'Create a valid range to read the method name and for performance. 
         Dim mStringBuilder As New StringBuilder
-        Dim iLastParenthesis As Integer = g_mFormMain.g_mSourceSyntaxSourceAnalysis.m_GetParenthesisLevel(iCaretOffset - 1)
+        Dim iLastParenthesis As Integer = mSourceAnalysis.m_GetParenthesisLevel(iCaretOffset - 1)
         Dim i As Integer
         For i = iCaretOffset - 1 To 0 Step -1
-            If (g_mFormMain.g_mSourceSyntaxSourceAnalysis.m_GetBraceLevel(i) < 1 OrElse
-                        g_mFormMain.g_mSourceSyntaxSourceAnalysis.m_GetParenthesisLevel(i) < iLastParenthesis - 1) Then
+            If (mSourceAnalysis.m_GetBraceLevel(i) < 1 OrElse
+                        mSourceAnalysis.m_GetParenthesisLevel(i) < iLastParenthesis - 1) Then
                 Exit For
             End If
 
-            If (g_mFormMain.g_mSourceSyntaxSourceAnalysis.m_InNonCode(i)) Then
+            If (mSourceAnalysis.m_InNonCode(i)) Then
                 Continue For
             End If
 
-            If (g_mFormMain.g_mSourceSyntaxSourceAnalysis.m_GetParenthesisLevel(i) > iLastParenthesis - 1) Then
+            If (mSourceAnalysis.m_GetParenthesisLevel(i) > iLastParenthesis - 1) Then
                 Continue For
             End If
 
@@ -304,6 +298,8 @@ Public Class UCAutocomplete
                 Dim lAlreadyShownList As New List(Of String)
 
                 Dim bPrintedInfo As Boolean = False
+                Dim iPrintedItems As Integer = 0
+                Dim iMaxPrintedItems As Integer = 3
                 Dim sAutocompleteArray As ClassSyntaxTools.STRUC_AUTOCOMPLETE() = ClassSyntaxTools.g_lAutocompleteList.ToArray
                 For i = 0 To sAutocompleteArray.Length - 1
                     If ((sAutocompleteArray(i).m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE AndAlso Not bIsMethodMap) Then
@@ -354,15 +350,23 @@ Public Class UCAutocomplete
                     Dim sComment As String = Regex.Replace(sAutocompleteArray(i).m_Info.Trim, "^", New String(" "c, iTabSize), RegexOptions.Multiline)
 
                     SB_TipText_IntelliSense.AppendLine(sName)
-                    SB_TipText_IntelliSenseToolTip.AppendLine(sNameToolTip)
-
                     If (ClassSettings.g_iSettingsToolTipMethodComments AndAlso Not String.IsNullOrEmpty(sComment.Trim)) Then
                         SB_TipText_IntelliSense.AppendLine(sComment)
-                        SB_TipText_IntelliSenseToolTip.AppendLine(sComment)
+                    End If
+                    SB_TipText_IntelliSense.AppendLine()
+
+                    If (iPrintedItems < iMaxPrintedItems) Then
+                        SB_TipText_IntelliSenseToolTip.AppendLine(sNameToolTip)
+                        If (ClassSettings.g_iSettingsToolTipMethodComments AndAlso Not String.IsNullOrEmpty(sComment.Trim)) Then
+                            SB_TipText_IntelliSenseToolTip.AppendLine(sComment)
+                        End If
+                        SB_TipText_IntelliSenseToolTip.AppendLine()
+
+                    ElseIf (iPrintedItems = iMaxPrintedItems) Then
+                        SB_TipText_IntelliSenseToolTip.AppendLine("...")
                     End If
 
-                    SB_TipText_IntelliSense.AppendLine()
-                    SB_TipText_IntelliSenseToolTip.AppendLine()
+                    iPrintedItems += 1
                 Next
             End If
 
@@ -402,35 +406,16 @@ Public Class UCAutocomplete
                 End If
             End If
 
-            If (ClassSettings.g_iSettingsUseWindowsToolTip) Then
-                'Dim iXSpace As Integer = g_AutocompleteUC.g_mFormMain.TextEditorControl1.ActiveTextAreaControl.PointToScreen(Point.Empty).X - g_AutocompleteUC.g_mFormMain.PointToScreen(Point.Empty).X
-                'Dim iYSpace As Integer = g_AutocompleteUC.g_mFormMain.TextEditorControl1.ActiveTextAreaControl.PointToScreen(Point.Empty).Y - g_AutocompleteUC.g_mFormMain.PointToScreen(Point.Empty).Y
-                Dim iXSpace As Integer = 0
-                Dim iYSpace As Integer = 0
+            If (True) Then
+                'UpdateToolTipFormLocation()
 
-                Dim iX As Integer = g_AutocompleteUC.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Caret.ScreenPosition.X + iXSpace
-                Dim iY As Integer = g_AutocompleteUC.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Caret.ScreenPosition.Y + iYSpace
-                Dim iFontH As Integer = CInt(g_AutocompleteUC.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Font.GetHeight)
-
-                Dim iWTabSpace As Integer = 6
-                Dim iHTabSpace As Integer = g_AutocompleteUC.g_mFormMain.TabControl_SourceTabs.ItemSize.Height + 6
-
-                'Dim iFontH As Integer = (g_AutocompleteUC.g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Font.GetHeight * 2) + g_AutocompleteUC.g_mFormMain.TextEditorControl1.ActiveTextAreaControl.Font.GetHeight
-
-                If (SB_TipText_IntelliSenseToolTip.Length + SB_TipText_AutocompleteToolTip.Length > 0) Then
-                    g_AutocompleteUC.g_mFormMain.g_mUCToolTip.TextEditorControl_ToolTip.Document.TextContent = SB_TipText_IntelliSenseToolTip.ToString & SB_TipText_AutocompleteToolTip.ToString
-                    g_AutocompleteUC.g_mFormMain.g_mUCToolTip.m_Location = New Point(iX + iWTabSpace, iY + iHTabSpace + iFontH)
-                    g_AutocompleteUC.g_mFormMain.g_mUCToolTip.Show()
-                    g_AutocompleteUC.g_mFormMain.g_mUCToolTip.TextEditorControl_ToolTip.Refresh()
-                Else
-                    g_AutocompleteUC.g_mFormMain.g_mUCToolTip.Hide()
+                If (ClassSettings.g_iSettingsUseWindowsToolTip) Then
+                    g_AutocompleteUC.g_mFormMain.g_mFormToolTip.TextEditorControl_ToolTip.Document.TextContent = SB_TipText_IntelliSenseToolTip.ToString & SB_TipText_AutocompleteToolTip.ToString
+                ElseIf (g_AutocompleteUC.g_mFormMain.g_mFormToolTip.TextEditorControl_ToolTip.Document.TextLength > 0) Then
+                    g_AutocompleteUC.g_mFormMain.g_mFormToolTip.TextEditorControl_ToolTip.Document.TextContent = ""
                 End If
-            Else
-                If (g_AutocompleteUC.g_mFormMain.g_mUCToolTip.Visible) Then
-                    g_AutocompleteUC.g_mFormMain.g_mUCToolTip.TextEditorControl_ToolTip.Document.TextContent = ""
-                    g_AutocompleteUC.g_mFormMain.g_mUCToolTip.Hide()
-                    g_AutocompleteUC.g_mFormMain.g_mUCToolTip.TextEditorControl_ToolTip.Refresh()
-                End If
+
+                UpdateToolTipFormLocation()
             End If
 
             If (True) Then
@@ -458,6 +443,44 @@ Public Class UCAutocomplete
                     g_AutocompleteUC.SplitContainer1.Panel2Collapsed = False
                 Else
                     g_AutocompleteUC.SplitContainer1.Panel2Collapsed = True
+                End If
+            End If
+        End Sub
+
+        Public Sub UpdateToolTipFormLocation()
+            If (ClassSettings.g_iSettingsUseWindowsToolTip) Then
+                Dim iEditorX As Integer = g_AutocompleteUC.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.PointToScreen(Point.Empty).X
+                Dim iEditorY As Integer = g_AutocompleteUC.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.PointToScreen(Point.Empty).Y
+                Dim iEditorW As Integer = g_AutocompleteUC.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Width
+                Dim iEditorH As Integer = g_AutocompleteUC.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Height
+
+                Dim iX As Integer = g_AutocompleteUC.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Caret.ScreenPosition.X + iEditorX
+                Dim iY As Integer = g_AutocompleteUC.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Caret.ScreenPosition.Y + iEditorY
+
+                Dim iFontH As Integer = CInt(g_AutocompleteUC.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Font.GetHeight)
+                Dim iWTabSpace As Integer = 0
+                Dim iHTabSpace As Integer = 6
+
+                Dim iNewLocation As New Point(iX + iWTabSpace, iY + iHTabSpace + iFontH)
+                Dim bOutsideEditor As Boolean = False
+                If (iNewLocation.X < iEditorX OrElse iNewLocation.X > (iEditorX + iEditorW)) Then
+                    bOutsideEditor = True
+                End If
+                If (iNewLocation.Y < iEditorY OrElse iNewLocation.Y > (iEditorY + iEditorH)) Then
+                    bOutsideEditor = True
+                End If
+
+                If (Not bOutsideEditor AndAlso g_AutocompleteUC.g_mFormMain.g_mFormToolTip.TextEditorControl_ToolTip.Document.TextLength > 0) Then
+                    g_AutocompleteUC.g_mFormMain.g_mFormToolTip.m_Location = iNewLocation
+
+                    g_AutocompleteUC.g_mFormMain.g_mFormToolTip.Visible = True
+                    g_AutocompleteUC.g_mFormMain.g_mFormToolTip.Refresh()
+                Else
+                    g_AutocompleteUC.g_mFormMain.g_mFormToolTip.Visible = False
+                End If
+            Else
+                If (g_AutocompleteUC.g_mFormMain.g_mFormToolTip.Visible) Then
+                    g_AutocompleteUC.g_mFormMain.g_mFormToolTip.Visible = False
                 End If
             End If
         End Sub

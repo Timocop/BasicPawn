@@ -74,7 +74,7 @@ Public Class ClassSyntaxUpdater
                     g_mFormMain.BeginInvoke(Sub() g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.VARIABLES_AUTOCOMPLETE))
                 End If
 
-                'Update Method Autocomplete
+                'Update source analysis
                 If (dLastMethodAutocompleteUpdate < Now) Then
                     dLastMethodAutocompleteUpdate = (Now + New TimeSpan(0, 0, 0, 10, 0))
 
@@ -93,15 +93,14 @@ Public Class ClassSyntaxUpdater
 
 
                 Dim iCaretOffset As Integer = CInt(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Offset))
-                Dim iCaretPos As Integer = CInt(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.ScreenPosition.X +
-                                                                       g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.ScreenPosition.Y))
+                Dim iCaretPos As Point = CType(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.ScreenPosition), Point)
 
                 'Update Method Autoupdate 
                 Static iLastMethodAutoupdateCaretOffset As Integer = -1
                 If (iLastMethodAutoupdateCaretOffset <> iCaretOffset) Then
                     iLastMethodAutoupdateCaretOffset = iCaretOffset
 
-                    If (Not g_mFormMain.g_mUCAutocomplete.ParseMethodIntelliSense(True)) Then
+                    If (Not g_mFormMain.g_mUCAutocomplete.UpdateIntelliSense()) Then
                         g_mFormMain.BeginInvoke(Sub()
                                                     g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.m_CurrentMethod = ""
                                                     g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip()
@@ -109,21 +108,14 @@ Public Class ClassSyntaxUpdater
                     End If
                 End If
 
-                'Hide Autocomplete & IntelliSense TolTips when scrolling
-                Static iLastAutoupdateCaretOffset As Integer = -1
-                Static iLastAutoupdateCaretPos As Integer = -1
+                'Hide Autocomplete & IntelliSense Tooltips when scrolling 
+                Static iLastAutoupdateCaretPos As Point
                 If (iLastAutoupdateCaretPos <> iCaretPos) Then
                     iLastAutoupdateCaretPos = iCaretPos
 
-                    If (iLastAutoupdateCaretOffset = iCaretOffset) Then
-                        g_mFormMain.BeginInvoke(Sub()
-                                                    g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete("")
-                                                    g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.m_CurrentMethod = ""
-                                                    g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip()
-                                                End Sub)
-                    End If
-
-                    iLastAutoupdateCaretOffset = iCaretOffset
+                    g_mFormMain.BeginInvoke(Sub()
+                                                g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTipFormLocation()
+                                            End Sub)
                 End If
 
                 'Update Autocomplete
