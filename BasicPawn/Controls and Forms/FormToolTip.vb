@@ -140,10 +140,13 @@ Public Class FormToolTip
 
     Private Sub TextEditorControl_ToolTip_TextChanged(sender As Object, e As EventArgs) Handles TextEditorControl_ToolTip.TextChanged
         'TODO: Better DPI, Border detection, or size in general
+        Me.SuspendLayout()
+
         Dim textSize = TextRenderer.MeasureText(TextEditorControl_ToolTip.Document.TextContent, TextEditorControl_ToolTip.ActiveTextAreaControl.Font)
         Me.Width = CInt(textSize.Width * 1.25)
         Me.Height = CInt(textSize.Height * 1.25)
 
+        Me.ResumeLayout()
         Me.Refresh()
     End Sub
 End Class
