@@ -263,6 +263,8 @@ Public Class ClassTabControl
 
         If (String.IsNullOrEmpty(sFile) OrElse Not IO.File.Exists(sFile)) Then
             m_Tab(iIndex).m_ClassLineState.m_IgnoreUpdates = True
+
+            m_Tab(iIndex).m_FileCachedWriteDate = Date.MaxValue
             m_Tab(iIndex).m_File = ""
             m_Tab(iIndex).m_TextEditor.Document.TextContent = ""
 
@@ -287,6 +289,7 @@ Public Class ClassTabControl
 
         m_Tab(iIndex).m_ClassLineState.m_IgnoreUpdates = True
 
+        m_Tab(iIndex).m_FileCachedWriteDate = Date.MaxValue
         m_Tab(iIndex).m_File = sFile
         m_Tab(iIndex).m_TextEditor.Document.TextContent = sFileText
 
@@ -320,6 +323,7 @@ Public Class ClassTabControl
                 i.FileName = m_Tab(iIndex).m_File
 
                 If (i.ShowDialog = DialogResult.OK) Then
+                    m_Tab(iIndex).m_FileCachedWriteDate = Date.MaxValue
                     m_Tab(iIndex).m_File = i.FileName
 
                     m_Tab(iIndex).m_Changed = False
@@ -338,6 +342,7 @@ Public Class ClassTabControl
                 End If
             End Using
         Else
+            m_Tab(iIndex).m_FileCachedWriteDate = Date.MaxValue
             m_Tab(iIndex).m_Changed = False
             m_Tab(iIndex).m_ClassLineState.SaveStates(m_Tab(iIndex).m_TextEditor)
             m_Tab(iIndex).m_TextEditor.Refresh()
@@ -379,6 +384,7 @@ Public Class ClassTabControl
                         i.FileName = m_Tab(iIndex).m_File
 
                         If (i.ShowDialog = DialogResult.OK) Then
+                            m_Tab(iIndex).m_FileCachedWriteDate = Date.MaxValue
                             m_Tab(iIndex).m_File = i.FileName
 
                             m_Tab(iIndex).m_Changed = False
@@ -399,6 +405,7 @@ Public Class ClassTabControl
                         End If
                     End Using
                 Else
+                    m_Tab(iIndex).m_FileCachedWriteDate = Date.MaxValue
                     m_Tab(iIndex).m_Changed = False
                     m_Tab(iIndex).m_ClassLineState.SaveStates(m_Tab(iIndex).m_TextEditor)
                     m_Tab(iIndex).m_TextEditor.Refresh()
