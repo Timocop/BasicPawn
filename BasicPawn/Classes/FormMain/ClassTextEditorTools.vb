@@ -15,7 +15,6 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 
-Imports System.Text
 Imports System.Text.RegularExpressions
 Imports ICSharpCode.TextEditor
 Imports ICSharpCode.TextEditor.Document
@@ -65,7 +64,7 @@ Public Class ClassTextEditorTools
         ClassSyntaxTools.g_sCaretWord = ""
 
         If (Not mActiveTextEditor.ActiveTextAreaControl.SelectionManager.HasSomethingSelected) Then
-            Dim sWord As String = GetCaretWord(False, False)
+            Dim sWord As String = GetCaretWord(False, False, False)
 
             If (Not String.IsNullOrEmpty(sWord)) Then
                 ClassSyntaxTools.g_sCaretWord = sWord
@@ -97,7 +96,7 @@ Public Class ClassTextEditorTools
         If (Not String.IsNullOrEmpty(sText)) Then
             sWord = sText
         Else
-            sWord = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(False, False)
+            sWord = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(False, False, False)
         End If
 
         If (String.IsNullOrEmpty(sWord)) Then
@@ -190,7 +189,7 @@ Public Class ClassTextEditorTools
     ''' <param name="bIncludeMethodmaps">If true, includes methodmaps (e.g Methodmap.Name)</param>
     ''' <param name="bIncludeMethodNames">If true, includes method names. Skips arguments. (e.g method().Name -> Method.Name)</param>
     ''' <returns></returns>
-    Public Function GetCaretWord(bIncludeMethodmaps As Boolean, bIncludeMethodNames As Boolean) As String
+    Public Function GetCaretWord(bIncludeMethodmaps As Boolean, bIncludeMethodNames As Boolean, bIncludeArrayNames As Boolean) As String
         Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
 
         Dim iOffset As Integer = mActiveTextEditor.ActiveTextAreaControl.TextArea.Caret.Offset
@@ -201,10 +200,11 @@ Public Class ClassTextEditorTools
         Dim sWordLeft As String = ""
         Dim sWordRight As String = ""
 
-        If (bIncludeMethodmaps OrElse bIncludeMethodNames) Then
+        If (bIncludeMethodmaps OrElse bIncludeMethodNames OrElse bIncludeArrayNames) Then
             Dim bIsMethod As Boolean = Regex.Match(mActiveTextEditor.Document.GetText(iLineOffset, iPosition), "(\))(\.)(\b[a-zA-Z0-9_]+\b){0,1}$").Success
+            Dim bIsArray As Boolean = Regex.Match(mActiveTextEditor.Document.GetText(iLineOffset, iPosition), "(\])(\.)(\b[a-zA-Z0-9_]+\b){0,1}$").Success
 
-            If (bIncludeMethodNames AndAlso bIsMethod) Then
+            If ((bIncludeMethodNames AndAlso bIsMethod) OrElse (bIncludeArrayNames AndAlso bIsArray)) Then
                 Dim sSource As String = mActiveTextEditor.Document.GetText(0, iOffset)
                 If (sSource.Length > 0) Then
                     Dim mSourceBuilder As New Text.StringBuilder(sSource.Length)
@@ -220,13 +220,27 @@ Public Class ClassTextEditorTools
                             Continue For
                         End If
 
-                        If (mSourceAnalysis.m_GetParenthesisLevel(i) <> iLastParenthesisLevel) Then
-                            Continue For
+                        If (bIncludeMethodNames AndAlso bIsMethod) Then
+                            If (mSourceAnalysis.m_GetParenthesisLevel(i) <> iLastParenthesisLevel) Then
+                                Continue For
+                            End If
+
+                            If (sSource(i) = "("c OrElse sSource(i) = ")"c) Then
+                                Continue For
+                            End If
+
+                        ElseIf (bIncludeArrayNames AndAlso bIsArray) Then
+                            If (mSourceAnalysis.m_GetBracketLevel(i) > 0) Then
+                                Continue For
+                            End If
+
+                            If (sSource(i) = "["c OrElse sSource(i) = "]"c) Then
+                                Continue For
+                            End If
+                        Else
+                            Throw New ArgumentException("Unknown action")
                         End If
 
-                        If (sSource(i) = "("c OrElse sSource(i) = ")"c) Then
-                            Continue For
-                        End If
 
                         mSourceBuilder.Append(sSource(i))
                     Next
@@ -241,6 +255,7 @@ Public Class ClassTextEditorTools
                         sWordRight = Regex.Match(mActiveTextEditor.Document.GetText(iLineOffset + iPosition, iLineLen - iPosition), "^((\b[a-zA-Z0-9_]+\b){0,1}(\.){0,1}(\b[a-zA-Z0-9_]+\b))").Value
                     End If
                 End If
+
             Else
                 sWordLeft = Regex.Match(mActiveTextEditor.Document.GetText(iLineOffset, iPosition), "((\b[a-zA-Z0-9_]+\b)(\.){0,1}(\b[a-zA-Z0-9_]+\b){0,1})$").Value
                 If (sWordLeft.Contains("."c)) Then
@@ -769,7 +784,7 @@ Public Class ClassTextEditorTools
 
             If (bCleanUpSourcemodDuplicate) Then
                 '#file pushes the lines +1 in the main source, add #line 0 to make them even again
-                Dim SB As New StringBuilder
+                Dim SB As New Text.StringBuilder
                 SB.AppendLine("#file " & sMarkStart)
                 SB.AppendLine("#line 0")
                 SB.AppendLine(sTmpSource)
@@ -1342,7 +1357,7 @@ Public Class ClassTextEditorTools
                         highlightItem.sWord = m_CurrentSelection.SelectedText
                     End If
                 Else
-                    Dim sWord As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(False, False)
+                    Dim sWord As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(False, False, False)
 
                     If (Not String.IsNullOrEmpty(sWord)) Then
                         highlightItem.sWord = sWord

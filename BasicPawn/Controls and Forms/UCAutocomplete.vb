@@ -109,7 +109,8 @@ Public Class UCAutocomplete
                 Continue For
             End If
 
-            If (mSourceAnalysis.m_GetParenthesisLevel(i) > iLastParenthesis - 1) Then
+            If (mSourceAnalysis.m_GetParenthesisLevel(i) > iLastParenthesis - 1 OrElse
+                        mSourceAnalysis.m_GetBracketLevel(i) > 0) Then
                 Continue For
             End If
 
@@ -129,7 +130,8 @@ Public Class UCAutocomplete
                 Exit For
             End If
 
-            If (sChar = "("c OrElse sChar = ")"c) Then
+            If (sChar = "("c OrElse sChar = ")"c OrElse
+                        sChar = "["c OrElse sChar = "]"c) Then
                 Continue For
             End If
 
@@ -137,7 +139,7 @@ Public Class UCAutocomplete
         Next
 
         Dim sTmp As String = StrReverse(mStringBuilder.ToString).Trim
-        Dim sMethodStart As String = Regex.Match(sTmp, "((\b[a-zA-Z0-9_]+\b)(\.){0,1}(\b[a-zA-Z0-9_]+\b){0,1})$").Value '"(\.){0,1}(\b[a-zA-Z0-9_]+\b)$"
+        Dim sMethodStart As String = Regex.Match(sTmp, "((\b[a-zA-Z0-9_]+\b)(\.){0,1}(\b[a-zA-Z0-9_]+\b){0,1})$").Value
 
         Me.BeginInvoke(Sub()
                            g_ClassToolTip.m_CurrentMethod = sMethodStart
@@ -148,10 +150,6 @@ Public Class UCAutocomplete
 
 
     Public Function UpdateAutocomplete(sText As String) As Integer
-        If (g_mFormMain Is Nothing) Then
-            Return 0
-        End If
-
         If (String.IsNullOrEmpty(sText) OrElse sText.Length < 3 OrElse Regex.IsMatch(sText, "^[0-9]+$")) Then
             ListView_AutocompleteList.Items.Clear()
             ListView_AutocompleteList.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize)
