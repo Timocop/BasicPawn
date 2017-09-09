@@ -78,6 +78,11 @@ Public Class FormSearch
     ''' </summary>
     ''' <returns></returns>
     Private Function DoSearch(bAllOpenTabs As Boolean) As STRUC_SEARCH_RESULTS()
+        If (String.IsNullOrEmpty(TextBox_Search.Text) OrElse TextBox_Search.Text.Trim.Length < 1) Then
+            ToolStripStatusLabel_Status.Text = "Unable to search 'nothing'!"
+            Return Nothing
+        End If
+
         Dim mRegex As Regex
         Try
             Select Case (RadioButton_ModeNormal.Checked)
