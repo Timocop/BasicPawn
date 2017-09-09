@@ -503,6 +503,9 @@ Public Class UCProjectBrowser
 
             Dim mListViewItemData = DirectCast(ListView_ProjectFiles.SelectedItems(0), ClassListViewItemData)
             Dim mInfo = DirectCast(mListViewItemData.g_mData("Info"), ClassProjectControl.STRUC_PROJECT_FILE_INFO)
+            If (Not IO.File.Exists(mInfo.sFile)) Then
+                Throw New ArgumentException("File does not exist")
+            End If
 
             For i = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1
                 If (Not g_mFormMain.g_ClassTabControl.m_Tab(i).m_IsUnsaved AndAlso g_mFormMain.g_ClassTabControl.m_Tab(i).m_File.ToLower = mInfo.sFile.ToLower) Then
@@ -734,6 +737,9 @@ Public Class UCProjectBrowser
 
                 Dim mListViewItemData = DirectCast(mListViewItem, ClassListViewItemData)
                 Dim mInfo = DirectCast(mListViewItemData.g_mData("Info"), ClassProjectControl.STRUC_PROJECT_FILE_INFO)
+                If (Not IO.File.Exists(mInfo.sFile)) Then
+                    Throw New ArgumentException("File does not exist")
+                End If
 
                 g_ClassProjectControl.PackFileData(mInfo)
 
@@ -776,9 +782,7 @@ Public Class UCProjectBrowser
                 With New Text.StringBuilder
                     .AppendLine("Do you want to replace the path in the project file to the extracted path?")
                     .AppendLine()
-                    .AppendLine(mInfo.sFile)
-                    .AppendLine("to")
-                    .AppendLine(sNewPath)
+                    .AppendLine(String.Format("'{0}' to '{1}'", mInfo.sFile, sNewPath))
 
                     Select Case (MessageBox.Show(.ToString, "Replace path", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
                         Case DialogResult.Yes
