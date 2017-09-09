@@ -24,30 +24,11 @@ Public Class PluginSample
     Implements IPluginInterface
 
     Private g_mFormMain As FormMain
-    Private g_ClassTestToolbox As ClassTestToolbox
+    Private g_ClassPlugin As ClassPlugin
 
-
-    Public ReadOnly Property m_PluginInformation As IPluginInterface.STRUC_PLUGIN_INFORMATION Implements IPluginInterface.m_PluginInformation
-        Get
-            Return New IPluginInterface.STRUC_PLUGIN_INFORMATION("Sample Plugin", "Timocop", "A simple sample plugin", "0.0", Nothing)
-        End Get
-    End Property
-
-    Public Sub OnPluginEndPost() Implements IPluginInterface.OnPluginEndPost
-        If (g_ClassTestToolbox IsNot Nothing) Then
-            g_ClassTestToolbox.Dispose()
-            g_ClassTestToolbox = Nothing
-        End If
-    End Sub
-
+#Region "Unused"
     Public Sub OnPluginLoad(sDLLPath As String) Implements IPluginInterface.OnPluginLoad
         Throw New NotImplementedException()
-    End Sub
-
-    Public Sub OnPluginStart(mFormMain As Object) Implements IPluginInterface.OnPluginStart
-        g_mFormMain = DirectCast(mFormMain, FormMain)
-
-        g_ClassTestToolbox = New ClassTestToolbox(Me)
     End Sub
 
     Public Function OnPluginEnd() As Boolean Implements IPluginInterface.OnPluginEnd
@@ -109,28 +90,76 @@ Public Class PluginSample
     Public Sub OnDebuggerRefresh(mFormDebugger As Object) Implements IPluginInterface.OnDebuggerRefresh
         Throw New NotImplementedException()
     End Sub
+#End Region
 
-    Class ClassTestToolbox
+    Public ReadOnly Property m_PluginInformation As IPluginInterface.STRUC_PLUGIN_INFORMATION Implements IPluginInterface.m_PluginInformation
+        Get
+            Return New IPluginInterface.STRUC_PLUGIN_INFORMATION("Sample Plugin",
+                                                                 "Timocop",
+                                                                 "A simple sample plugin",
+                                                                 "0.0",
+                                                                 Nothing)
+        End Get
+    End Property
+
+    Public Sub OnPluginStart(mFormMain As Object, bEnabled As Boolean) Implements IPluginInterface.OnPluginStart
+        g_mFormMain = DirectCast(mFormMain, FormMain)
+
+        If (bEnabled) Then
+            g_ClassPlugin = New ClassPlugin(Me)
+        End If
+    End Sub
+
+    Public Sub OnPluginEndPost() Implements IPluginInterface.OnPluginEndPost
+        If (g_ClassPlugin IsNot Nothing) Then
+            g_ClassPlugin.Dispose()
+            g_ClassPlugin = Nothing
+        End If
+    End Sub
+
+    Public ReadOnly Property m_PluginEnabled As Boolean Implements IPluginInterface.m_PluginEnabled
+        Get
+            Return (g_ClassPlugin IsNot Nothing)
+        End Get
+    End Property
+
+    Public Function OnPluginEnabled(ByRef sReason As String) As Boolean Implements IPluginInterface.OnPluginEnabled
+        If (g_ClassPlugin Is Nothing) Then
+            g_ClassPlugin = New ClassPlugin(Me)
+        End If
+
+        Return True
+    End Function
+
+    Public Function OnPluginDisabled(ByRef sReason As String) As Boolean Implements IPluginInterface.OnPluginDisabled
+        If (g_ClassPlugin IsNot Nothing) Then
+            g_ClassPlugin.Dispose()
+            g_ClassPlugin = Nothing
+        End If
+
+        Return True
+    End Function
+
+    Class ClassPlugin
         Implements IDisposable
 
         Private g_mPluginSample As PluginSample
 
-        Private mToolboxPage As TabPage
-        Private mTestButton As Button
+        Private g_mToolboxPage As TabPage
+        Private g_mTestButton As Button
         Private g_mAboutMenuItem As ToolStripMenuItem
+
 
         Public Sub New(mPluginSample As PluginSample)
             g_mPluginSample = mPluginSample
-
-            mToolboxPage = New TabPage("Test Toolbox")
-            mTestButton = New Button
-            g_mAboutMenuItem = New ToolStripMenuItem("About Sample Plugin", BasicPawn.My.Resources.imageres_5314_16x16_32)
 
             BuildAboutMenu()
             BuildToolbox()
         End Sub
 
+
         Private Sub BuildAboutMenu()
+            g_mAboutMenuItem = New ToolStripMenuItem("About Sample Plugin", BasicPawn.My.Resources.imageres_5314_16x16_32)
             g_mPluginSample.g_mFormMain.MenuStrip_BasicPawn.Items.Add(g_mAboutMenuItem)
 
             RemoveHandler g_mAboutMenuItem.Click, AddressOf OnMenuItemClick
@@ -138,27 +167,34 @@ Public Class PluginSample
         End Sub
 
         Private Sub BuildToolbox()
-            mToolboxPage.BackColor = Color.White
+            g_mToolboxPage = New TabPage("Test Toolbox") With {
+                .BackColor = Color.White
+            }
+            g_mPluginSample.g_mFormMain.TabControl_Toolbox.TabPages.Add(g_mToolboxPage)
 
-            g_mPluginSample.g_mFormMain.TabControl_Toolbox.TabPages.Add(mToolboxPage)
+            g_mTestButton = New Button With {
+                .Parent = g_mToolboxPage,
+                .Dock = DockStyle.Top,
+                .Text = "Show Messagebox",
+                .UseVisualStyleBackColor = True
+            }
 
-            mTestButton.Parent = mToolboxPage
-            mTestButton.Dock = DockStyle.Top
-            mTestButton.Text = "Show Messagebox"
-            mTestButton.UseVisualStyleBackColor = True
+            RemoveHandler g_mTestButton.Click, AddressOf OnButtonClick
+            AddHandler g_mTestButton.Click, AddressOf OnButtonClick
 
-            RemoveHandler mTestButton.Click, AddressOf OnButtonClick
-            AddHandler mTestButton.Click, AddressOf OnButtonClick
+            ClassControlStyle.UpdateControls(g_mToolboxPage)
+            ClassControlStyle.UpdateControls(g_mTestButton)
         End Sub
 
-        Private Sub OnButtonClick(sender As Object, e As EventArgs)
-            MsgBox("Hello World!")
-        End Sub
 
         Private Sub OnMenuItemClick(sender As Object, e As EventArgs)
             Using i As New FormAbout(g_mPluginSample)
                 i.ShowDialog()
             End Using
+        End Sub
+
+        Private Sub OnButtonClick(sender As Object, e As EventArgs)
+            MsgBox("Hello World!")
         End Sub
 
 
@@ -171,7 +207,7 @@ Public Class PluginSample
             If Not Me.disposedValue Then
                 If disposing Then
                     ' TODO: dispose managed state (managed objects).
-                    RemoveHandler mTestButton.Click, AddressOf OnButtonClick
+                    RemoveHandler g_mTestButton.Click, AddressOf OnButtonClick
                     RemoveHandler g_mAboutMenuItem.Click, AddressOf OnMenuItemClick
 
                     If (g_mAboutMenuItem IsNot Nothing AndAlso Not g_mAboutMenuItem.IsDisposed) Then
@@ -179,14 +215,14 @@ Public Class PluginSample
                         g_mAboutMenuItem = Nothing
                     End If
 
-                    If (mTestButton IsNot Nothing AndAlso Not mTestButton.IsDisposed) Then
-                        mTestButton.Dispose()
-                        mTestButton = Nothing
+                    If (g_mTestButton IsNot Nothing AndAlso Not g_mTestButton.IsDisposed) Then
+                        g_mTestButton.Dispose()
+                        g_mTestButton = Nothing
                     End If
 
-                    If (mToolboxPage IsNot Nothing AndAlso Not mToolboxPage.IsDisposed) Then
-                        mToolboxPage.Dispose()
-                        mToolboxPage = Nothing
+                    If (g_mToolboxPage IsNot Nothing AndAlso Not g_mToolboxPage.IsDisposed) Then
+                        g_mToolboxPage.Dispose()
+                        g_mToolboxPage = Nothing
                     End If
                 End If
 

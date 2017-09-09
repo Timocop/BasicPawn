@@ -42,8 +42,21 @@ Public Interface IPluginInterface
     ''' <returns></returns>
     ReadOnly Property m_PluginInformation As STRUC_PLUGIN_INFORMATION
 
-
 #Region "Main"
+    ''' <summary>
+    ''' Checks if the plugin is enabled or disabled. Controlled by the plugin.
+    ''' </summary>
+    ''' <returns></returns>
+    ReadOnly Property m_PluginEnabled As Boolean
+
+    ''' <summary>
+    ''' Fires when the user requested to enable/disable the plugin.
+    ''' </summary>
+    ''' <param name="sReason">The reason why it didn't succeed</param>
+    ''' <returns>True on success, false otherwise.</returns>
+    Function OnPluginEnabled(ByRef sReason As String) As Boolean
+    Function OnPluginDisabled(ByRef sReason As String) As Boolean
+
     ''' <summary>
     ''' Fires when the plugin is loaded.
     ''' </summary>
@@ -54,7 +67,8 @@ Public Interface IPluginInterface
     ''' Fires when main form has finished loading.
     ''' </summary>
     ''' <param name="mFormMain">BasicPawn.FormMain</param> 
-    Sub OnPluginStart(mFormMain As Object)
+    ''' <param name="bEnabled">True if the plugin is enabled, false otherwise. Enabling and Disabling is controlled by the plugin.</param> 
+    Sub OnPluginStart(mFormMain As Object, bEnabled As Boolean)
 
     ''' <summary>
     ''' Fires when the main form is closing.

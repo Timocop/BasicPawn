@@ -61,7 +61,7 @@ Public Class FormDebugger
             Return
         End If
 
-        g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnDebuggerStart(Me))
+        g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnDebuggerStart(Me))
     End Sub
 
     Private Function RefreshSource() As Boolean
@@ -170,7 +170,7 @@ Public Class FormDebugger
 
             ClassControlStyle.UpdateControls(Me)
 
-            g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnDebuggerRefresh(Me))
+            g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnDebuggerRefresh(Me))
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
             Return False
@@ -332,8 +332,8 @@ Public Class FormDebugger
     End Sub
 
     Private Sub FormDebugger_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
-        g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface)
-                                                               If (Not j.OnDebuggerEnd(Me)) Then
+        g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM)
+                                                               If (Not j.mPluginInterface.OnDebuggerEnd(Me)) Then
                                                                    e.Cancel = True
                                                                End If
                                                            End Sub)
@@ -672,7 +672,7 @@ Public Class FormDebugger
     End Sub
 
     Private Sub CleanUp()
-        g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnDebuggerEndPost(Me))
+        g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnDebuggerEndPost(Me))
 
         RemoveHandler TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.Caret.PositionChanged, AddressOf TextEditorControlEx_DebuggerSource_CaretPositionChanged
 

@@ -35,10 +35,62 @@ Public Class ClassPluginController
         End Get
     End Property
 
-    Public Sub PluginsExecute(mAction As Action(Of BasicPawnPluginInterface.IPluginInterface))
+    Public Property m_PluginEnabledByConfig(mPlugin As STRUC_PLUGIN_ITEM) As Boolean
+        Get
+            Dim sFilename As String = IO.Path.GetFileName(mPlugin.sFile)
+            Dim sConfigFile As String = IO.Path.Combine(Application.StartupPath, "plugins\PluginConfig.ini")
+            Dim bEnabled As Boolean = True
+
+            If (Not IO.File.Exists(sConfigFile)) Then
+                IO.File.WriteAllText(sConfigFile, "")
+            End If
+
+            Dim mIniFile As New ClassIniFile(sConfigFile)
+            For Each mItem In mIniFile.ReadEverything
+                If (mItem.sSection <> "Plugins") Then
+                    Continue For
+                End If
+
+                If (mItem.sValue.ToLower <> sFilename.ToLower) Then
+                    Continue For
+                End If
+
+                Dim sGuid As String = mItem.sKey
+
+                bEnabled = (mIniFile.ReadKeyValue("States", sGuid, "1") = "1")
+                Exit For
+            Next
+
+            Return bEnabled
+        End Get
+        Set(value As Boolean)
+            Dim sFilename As String = IO.Path.GetFileName(mPlugin.sFile)
+            Dim sConfigFile As String = IO.Path.Combine(Application.StartupPath, "plugins\PluginConfig.ini")
+
+            Dim sGuid As String = Guid.NewGuid.ToString
+            Dim mIniFile As New ClassIniFile(sConfigFile)
+            For Each mItem In mIniFile.ReadEverything
+                If (mItem.sSection <> "Plugins") Then
+                    Continue For
+                End If
+
+                If (mItem.sValue.ToLower <> sFilename.ToLower) Then
+                    Continue For
+                End If
+
+                sGuid = mItem.sKey
+                Exit For
+            Next
+
+            mIniFile.WriteKeyValue("States", sGuid, If(value, "1", "0"))
+            mIniFile.WriteKeyValue("Plugins", sGuid, sFilename)
+        End Set
+    End Property
+
+    Public Sub PluginsExecute(mAction As Action(Of STRUC_PLUGIN_ITEM))
         For Each mPlugin In m_Plugins
             Try
-                mAction(mPlugin.mPluginInterface)
+                mAction(mPlugin)
             Catch ex As NotImplementedException
                 'Ignore
             Catch ex As Exception
@@ -49,15 +101,16 @@ Public Class ClassPluginController
 
     Public Function LoadPlugin(sFile As String) As BasicPawnPluginInterface.IPluginInterface
         Try
-            Dim mAssembly As Reflection.Assembly = Reflection.Assembly.LoadFile(sFile)
+            Dim mAssembly = Reflection.Assembly.LoadFile(sFile)
 
-            For Each mType As Type In mAssembly.GetTypes
+            For Each mType In mAssembly.GetTypes
                 Try
-                    Dim mInstance As Object = mAssembly.CreateInstance(mType.FullName)
-                    Dim mPlugin As BasicPawnPluginInterface.IPluginInterface = TryCast(mInstance, BasicPawnPluginInterface.IPluginInterface)
-                    If (mPlugin Is Nothing) Then
+                    If (Not GetType(BasicPawnPluginInterface.IPluginInterface).IsAssignableFrom(mType)) Then
                         Continue For
                     End If
+
+                    Dim mInstance As Object = mAssembly.CreateInstance(mType.FullName)
+                    Dim mPlugin = DirectCast(mInstance, BasicPawnPluginInterface.IPluginInterface)
 
                     g_lPlugins.Add(New STRUC_PLUGIN_ITEM With {
                         .mPluginInformation = mPlugin.m_PluginInformation,
@@ -66,8 +119,6 @@ Public Class ClassPluginController
                     })
 
                     Return mPlugin
-                Catch ex As MissingMethodException
-                    'Ignore
                 Catch ex As Exception
                     ClassExceptionLog.WriteToLogMessageBox(ex)
                 End Try

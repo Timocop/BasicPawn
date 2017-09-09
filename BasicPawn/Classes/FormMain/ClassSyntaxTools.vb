@@ -302,7 +302,7 @@ Public Class ClassSyntaxTools
             ClassControlStyle.UpdateControls(c)
         Next
 
-        g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnFormColorUpdate())
+        g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnFormColorUpdate())
     End Sub
 
     ''' <summary>
@@ -341,7 +341,7 @@ Public Class ClassSyntaxTools
     ''' <param name="bForceFromMemory">If true, overwrites the syntax file from memory cache (factory new)</param>
     Public Sub UpdateSyntaxFile(iType As ENUM_SYNTAX_UPDATE_TYPE, Optional bForceFromMemory As Boolean = False)
         Try
-            g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnSyntaxUpdate(iType, bForceFromMemory))
+            g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnSyntaxUpdate(iType, bForceFromMemory))
 
             SyncLock _lock
                 For i = 0 To g_SyntaxFiles.Length - 1
@@ -565,7 +565,7 @@ Public Class ClassSyntaxTools
                 Next
             End SyncLock
 
-            g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnSyntaxUpdateEnd(iType, bForceFromMemory))
+            g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnSyntaxUpdateEnd(iType, bForceFromMemory))
         Catch ex As Threading.ThreadAbortException
             Throw
         Catch ex As Exception
@@ -579,7 +579,7 @@ Public Class ClassSyntaxTools
     Public Sub UpdateTextEditorSyntax()
         Try
             SyncLock _lock
-                g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnEditorSyntaxUpdate())
+                g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnEditorSyntaxUpdate())
 
                 For i = 0 To g_SyntaxFiles.Length - 1
                     If (Not IO.File.Exists(g_SyntaxFiles(i).sFile)) Then

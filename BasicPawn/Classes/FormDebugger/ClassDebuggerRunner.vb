@@ -496,7 +496,7 @@ Public Class ClassDebuggerRunner
                 m_SuspendGame = False
             End SyncLock
 
-            g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnDebuggerDebugStart())
+            g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnDebuggerDebugStart())
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
 
@@ -632,7 +632,7 @@ Public Class ClassDebuggerRunner
             g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Red
             g_mFormDebugger.ToolStripStatusLabel_NoConnection.Visible = False
 
-            g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnDebuggerDebugStop())
+            g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnDebuggerDebugStop())
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
 
@@ -702,7 +702,7 @@ Public Class ClassDebuggerRunner
             g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Green
             g_mFormDebugger.ToolStripStatusLabel_NoConnection.Visible = False
 
-            g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnDebuggerDebugStart())
+            g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnDebuggerDebugStart())
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
 
@@ -736,7 +736,7 @@ Public Class ClassDebuggerRunner
             g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Orange
             g_mFormDebugger.ToolStripStatusLabel_NoConnection.Visible = False
 
-            g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnDebuggerDebugPause())
+            g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnDebuggerDebugPause())
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
 
@@ -934,7 +934,7 @@ Public Class ClassDebuggerRunner
                                                 End If
                                                 g_mFormDebugger.Activate()
 
-                                                g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnDebuggerDebugPause())
+                                                g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnDebuggerDebugPause())
                                             End Sub)
             End SyncLock
         Catch ex As Threading.ThreadAbortException
@@ -1398,7 +1398,7 @@ Public Class ClassDebuggerRunner
                                                         End If
                                                         g_mFormDebuggerException.Activate()
 
-                                                        g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnDebuggerDebugPause())
+                                                        g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnDebuggerDebugPause())
                                                     End Sub)
 
                     End SyncLock
@@ -1452,7 +1452,7 @@ Public Class ClassDebuggerRunner
                                                         End If
                                                         g_mFormDebuggerCriticalPopupException.Activate()
 
-                                                        g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnDebuggerDebugPause())
+                                                        g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnDebuggerDebugPause())
                                                     End Sub)
                     End SyncLock
                 End If
@@ -1563,7 +1563,7 @@ Public Class ClassDebuggerRunner
                                                     End If
                                                     g_mFormDebuggerCriticalPopupFatalException.Activate()
 
-                                                    g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnDebuggerDebugPause())
+                                                    g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnDebuggerDebugPause())
                                                 End Sub)
                 End SyncLock
             End If

@@ -22,9 +22,15 @@ Partial Class FormSettings
     'Das Bearbeiten mit dem Code-Editor ist nicht möglich.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormSettings))
         Me.Button_Cancel = New System.Windows.Forms.Button()
         Me.Button_Apply = New System.Windows.Forms.Button()
+        Me.ContextMenuStrip_Plugins = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.ToolStripMenuItem_PluginsRefresh = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
+        Me.ToolStripMenuItem_PluginsEnable = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_PluginsDisable = New System.Windows.Forms.ToolStripMenuItem()
         Me.TabControl1 = New BasicPawn.ClassTabControlColor()
         Me.TabPage_Settings = New System.Windows.Forms.TabPage()
         Me.Panel8 = New System.Windows.Forms.Panel()
@@ -129,6 +135,7 @@ Partial Class FormSettings
         Me.ColumnHeader4 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader5 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader6 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.ColumnHeader7 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.TabPage_Database = New System.Windows.Forms.TabPage()
         Me.Button_Refresh = New System.Windows.Forms.Button()
         Me.TableLayoutPanel4 = New System.Windows.Forms.TableLayoutPanel()
@@ -139,6 +146,7 @@ Partial Class FormSettings
         Me.TableLayoutPanel3 = New System.Windows.Forms.TableLayoutPanel()
         Me.ClassPictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
         Me.Label17 = New System.Windows.Forms.Label()
+        Me.ContextMenuStrip_Plugins.SuspendLayout()
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Settings.SuspendLayout()
         Me.Panel8.SuspendLayout()
@@ -188,6 +196,35 @@ Partial Class FormSettings
         Me.Button_Apply.TabIndex = 2
         Me.Button_Apply.Text = "Apply"
         Me.Button_Apply.UseVisualStyleBackColor = True
+        '
+        'ContextMenuStrip_Plugins
+        '
+        Me.ContextMenuStrip_Plugins.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_PluginsRefresh, Me.ToolStripSeparator1, Me.ToolStripMenuItem_PluginsEnable, Me.ToolStripMenuItem_PluginsDisable})
+        Me.ContextMenuStrip_Plugins.Name = "ContextMenuStrip_Plugins"
+        Me.ContextMenuStrip_Plugins.Size = New System.Drawing.Size(153, 98)
+        '
+        'ToolStripMenuItem_PluginsRefresh
+        '
+        Me.ToolStripMenuItem_PluginsRefresh.Name = "ToolStripMenuItem_PluginsRefresh"
+        Me.ToolStripMenuItem_PluginsRefresh.Size = New System.Drawing.Size(152, 22)
+        Me.ToolStripMenuItem_PluginsRefresh.Text = "Refresh"
+        '
+        'ToolStripSeparator1
+        '
+        Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
+        Me.ToolStripSeparator1.Size = New System.Drawing.Size(149, 6)
+        '
+        'ToolStripMenuItem_PluginsEnable
+        '
+        Me.ToolStripMenuItem_PluginsEnable.Name = "ToolStripMenuItem_PluginsEnable"
+        Me.ToolStripMenuItem_PluginsEnable.Size = New System.Drawing.Size(152, 22)
+        Me.ToolStripMenuItem_PluginsEnable.Text = "Enable"
+        '
+        'ToolStripMenuItem_PluginsDisable
+        '
+        Me.ToolStripMenuItem_PluginsDisable.Name = "ToolStripMenuItem_PluginsDisable"
+        Me.ToolStripMenuItem_PluginsDisable.Size = New System.Drawing.Size(152, 22)
+        Me.ToolStripMenuItem_PluginsDisable.Text = "Disable"
         '
         'TabControl1
         '
@@ -1349,7 +1386,8 @@ Partial Class FormSettings
         '
         'ListView_Plugins
         '
-        Me.ListView_Plugins.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1, Me.ColumnHeader2, Me.ColumnHeader3, Me.ColumnHeader4, Me.ColumnHeader5, Me.ColumnHeader6})
+        Me.ListView_Plugins.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1, Me.ColumnHeader2, Me.ColumnHeader3, Me.ColumnHeader4, Me.ColumnHeader5, Me.ColumnHeader6, Me.ColumnHeader7})
+        Me.ListView_Plugins.ContextMenuStrip = Me.ContextMenuStrip_Plugins
         Me.ListView_Plugins.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ListView_Plugins.Location = New System.Drawing.Point(3, 3)
         Me.ListView_Plugins.Name = "ListView_Plugins"
@@ -1361,32 +1399,37 @@ Partial Class FormSettings
         'ColumnHeader1
         '
         Me.ColumnHeader1.Text = "File"
-        Me.ColumnHeader1.Width = 100
+        Me.ColumnHeader1.Width = 75
         '
         'ColumnHeader2
         '
         Me.ColumnHeader2.Text = "Name"
-        Me.ColumnHeader2.Width = 100
+        Me.ColumnHeader2.Width = 75
         '
         'ColumnHeader3
         '
         Me.ColumnHeader3.Text = "Author"
-        Me.ColumnHeader3.Width = 100
+        Me.ColumnHeader3.Width = 75
         '
         'ColumnHeader4
         '
         Me.ColumnHeader4.Text = "Description"
-        Me.ColumnHeader4.Width = 100
+        Me.ColumnHeader4.Width = 75
         '
         'ColumnHeader5
         '
         Me.ColumnHeader5.Text = "Version"
-        Me.ColumnHeader5.Width = 100
+        Me.ColumnHeader5.Width = 75
         '
         'ColumnHeader6
         '
         Me.ColumnHeader6.Text = "URL"
-        Me.ColumnHeader6.Width = 100
+        Me.ColumnHeader6.Width = 75
+        '
+        'ColumnHeader7
+        '
+        Me.ColumnHeader7.Text = "Enabled"
+        Me.ColumnHeader7.Width = 75
         '
         'TabPage_Database
         '
@@ -1530,6 +1573,7 @@ Partial Class FormSettings
         Me.Name = "FormSettings"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
         Me.Text = "Settings"
+        Me.ContextMenuStrip_Plugins.ResumeLayout(False)
         Me.TabControl1.ResumeLayout(False)
         Me.TabPage_Settings.ResumeLayout(False)
         Me.TabPage_Settings.PerformLayout()
@@ -1689,4 +1733,10 @@ Partial Class FormSettings
     Friend WithEvents CheckBox_AssociateAmxMod As CheckBox
     Friend WithEvents Label20 As Label
     Friend WithEvents ComboBox_ModType As ComboBox
+    Friend WithEvents ContextMenuStrip_Plugins As ContextMenuStrip
+    Friend WithEvents ToolStripMenuItem_PluginsRefresh As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator1 As ToolStripSeparator
+    Friend WithEvents ToolStripMenuItem_PluginsEnable As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_PluginsDisable As ToolStripMenuItem
+    Friend WithEvents ColumnHeader7 As ColumnHeader
 End Class

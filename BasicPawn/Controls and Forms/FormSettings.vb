@@ -54,6 +54,155 @@ Public Class FormSettings
         m_ConfigSettingsChanged = False
     End Sub
 
+#Region "Load/Save/General"
+    Private Sub SettingsForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        'List all configs
+        UpdateConfigListBox()
+
+        'Get all settings
+        ClassSettings.LoadSettings()
+
+        'General
+        CheckBox_AlwaysNewInstance.Checked = ClassSettings.g_iSettingsAlwaysOpenNewInstance
+        CheckBox_AutoShowStartPage.Checked = ClassSettings.g_iSettingsAutoShowStartPage
+        CheckBox_AssociateSourcePawn.Checked = ClassSettings.g_iSettingsAssociateSourcePawn
+        CheckBox_AssociateAmxMod.Checked = ClassSettings.g_iSettingsAssociateAmxModX
+        CheckBox_AssociateIncludes.Checked = ClassSettings.g_iSettingsAssociateIncludes
+        'Text Editor
+        Label_Font.Text = New FontConverter().ConvertToInvariantString(ClassSettings.g_iSettingsTextEditorFont)
+        CheckBox_InvertedColors.Checked = ClassSettings.g_iSettingsInvertColors
+        CheckBox_TabsToSpace.Checked = (ClassSettings.g_iSettingsTabsToSpaces > 0)
+        NumericUpDown_TabsToSpaces.Value = If(ClassSettings.g_iSettingsTabsToSpaces > 0, ClassSettings.g_iSettingsTabsToSpaces, 4)
+        'Syntax Highligting
+        CheckBox_DoubleClickMark.Checked = ClassSettings.g_iSettingsDoubleClickMark
+        CheckBox_AutoMark.Checked = ClassSettings.g_iSettingsAutoMark
+        'Autocomplete
+        CheckBox_AlwaysLoadDefaultIncludes.Checked = ClassSettings.g_iSettingsAlwaysLoadDefaultIncludes
+        CheckBox_OnScreenIntelliSense.Checked = ClassSettings.g_iSettingsEnableToolTip
+        CheckBox_CommentsMethodIntelliSense.Checked = ClassSettings.g_iSettingsToolTipMethodComments
+        CheckBox_CommentsAutocompleteIntelliSense.Checked = ClassSettings.g_iSettingsToolTipAutocompleteComments
+        CheckBox_WindowsToolTipPopup.Checked = ClassSettings.g_iSettingsUseWindowsToolTip
+        CheckBox_WindowsToolTipAnimations.Checked = ClassSettings.g_iSettingsUseWindowsToolTipAnimations
+        CheckBox_FullAutcompleteMethods.Checked = ClassSettings.g_iSettingsFullMethodAutocomplete
+        CheckBox_FullAutocompleteReTagging.Checked = ClassSettings.g_iSettingsFullEnumAutocomplete
+        CheckBox_CaseSensitive.Checked = ClassSettings.g_iSettingsAutocompleteCaseSensitive
+        CheckBox_CurrentSourceVarAutocomplete.Checked = ClassSettings.g_iSettingsVarAutocompleteCurrentSourceOnly
+        CheckBox_VarAutocompleteShowObjectBrowser.Checked = ClassSettings.g_iSettingsVarAutocompleteShowObjectBrowser
+        CheckBox_SwitchTabToAutocomplete.Checked = ClassSettings.g_iSettingsSwitchTabToAutocomplete
+        'Debugger
+        CheckBox_CatchExceptions.Checked = ClassSettings.g_iSettingsDebuggerCatchExceptions
+        CheckBox_EntitiesEnableColor.Checked = ClassSettings.g_iSettingsDebuggerEntitiesEnableAutoScroll
+        CheckBox_EntitiesEnableShowNewEnts.Checked = ClassSettings.g_iSettingsDebuggerEntitiesEnableAutoScroll
+
+        'Get restore-point configs 
+        For Each mConfig As ClassConfigs.STRUC_CONFIG_ITEM In ClassConfigs.GetConfigs(False)
+            g_lRestoreConfigs.Add(mConfig)
+        Next
+        g_bRestoreConfigs = True
+
+        'Get current config 
+        TextBox_ConfigName.Text = ClassConfigs.m_ActiveConfig.GetName
+
+        Dim i As Integer = ListBox_Configs.FindStringExact(ClassConfigs.m_ActiveConfig.GetName)
+        If (i > -1) Then
+            ListBox_Configs.SetSelected(i, True)
+        End If
+
+        If (Not ClassConfigs.m_ActiveConfig.ConfigExist AndAlso Not ClassConfigs.m_ActiveConfig.IsDefault) Then
+            MessageBox.Show("Current config not found!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+        End If
+
+
+        'List plugins
+        UpdatePluginsListView()
+
+        'Fill DatabaseViewer
+        DatabaseViewer.FillFromDatabase()
+
+        ClassControlStyle.UpdateControls(Me)
+    End Sub
+
+    Private Sub Button_Apply_Click(sender As Object, e As EventArgs) Handles Button_Apply.Click
+        g_bRestoreConfigs = False
+
+        If (ListBox_Configs.SelectedItems.Count > 0) Then
+            Dim sName As String = ListBox_Configs.SelectedItems(0).ToString
+
+            ClassConfigs.m_ActiveConfig = ClassConfigs.LoadConfig(sName)
+        End If
+
+        'General
+        ClassSettings.g_iSettingsAlwaysOpenNewInstance = CheckBox_AlwaysNewInstance.Checked
+        ClassSettings.g_iSettingsAutoShowStartPage = CheckBox_AutoShowStartPage.Checked
+        ClassSettings.g_iSettingsAssociateSourcePawn = CheckBox_AssociateSourcePawn.Checked
+        ClassSettings.g_iSettingsAssociateAmxModX = CheckBox_AssociateAmxMod.Checked
+        ClassSettings.g_iSettingsAssociateIncludes = CheckBox_AssociateIncludes.Checked
+        'Text Editor
+        ClassSettings.g_iSettingsTextEditorFont = CType(New FontConverter().ConvertFromInvariantString(Label_Font.Text), Font)
+        ClassSettings.g_iSettingsInvertColors = CheckBox_InvertedColors.Checked
+        ClassSettings.g_iSettingsTabsToSpaces = CInt(If(CheckBox_TabsToSpace.Checked, NumericUpDown_TabsToSpaces.Value, 0))
+        'Syntax Highligting
+        ClassSettings.g_iSettingsDoubleClickMark = CheckBox_DoubleClickMark.Checked
+        ClassSettings.g_iSettingsAutoMark = CheckBox_AutoMark.Checked
+        'Autocomplete
+        ClassSettings.g_iSettingsAlwaysLoadDefaultIncludes = CheckBox_AlwaysLoadDefaultIncludes.Checked
+        ClassSettings.g_iSettingsEnableToolTip = CheckBox_OnScreenIntelliSense.Checked
+        ClassSettings.g_iSettingsToolTipMethodComments = CheckBox_CommentsMethodIntelliSense.Checked
+        ClassSettings.g_iSettingsToolTipAutocompleteComments = CheckBox_CommentsAutocompleteIntelliSense.Checked
+        ClassSettings.g_iSettingsUseWindowsToolTip = CheckBox_WindowsToolTipPopup.Checked
+        ClassSettings.g_iSettingsUseWindowsToolTipAnimations = CheckBox_WindowsToolTipAnimations.Checked
+        ClassSettings.g_iSettingsFullMethodAutocomplete = CheckBox_FullAutcompleteMethods.Checked
+        ClassSettings.g_iSettingsFullEnumAutocomplete = CheckBox_FullAutocompleteReTagging.Checked
+        ClassSettings.g_iSettingsAutocompleteCaseSensitive = CheckBox_CaseSensitive.Checked
+        ClassSettings.g_iSettingsVarAutocompleteCurrentSourceOnly = CheckBox_CurrentSourceVarAutocomplete.Checked
+        ClassSettings.g_iSettingsVarAutocompleteShowObjectBrowser = CheckBox_VarAutocompleteShowObjectBrowser.Checked
+        ClassSettings.g_iSettingsSwitchTabToAutocomplete = CheckBox_SwitchTabToAutocomplete.Checked
+        'Debugger
+        ClassSettings.g_iSettingsDebuggerCatchExceptions = CheckBox_CatchExceptions.Checked
+        ClassSettings.g_iSettingsDebuggerEntitiesEnableColoring = CheckBox_EntitiesEnableColor.Checked
+        ClassSettings.g_iSettingsDebuggerEntitiesEnableAutoScroll = CheckBox_EntitiesEnableShowNewEnts.Checked
+
+        ClassSettings.SaveSettings()
+
+
+        g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnSettingsChanged())
+
+        Me.Close()
+    End Sub
+
+    Private Sub Button_Cancel_Click(sender As Object, e As EventArgs) Handles Button_Cancel.Click
+        Me.Close()
+    End Sub
+
+    Private Sub FormSettings_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+        If (Not g_bRestoreConfigs) Then
+            Return
+        End If
+
+        For Each mConfig As ClassConfigs.STRUC_CONFIG_ITEM In ClassConfigs.GetConfigs(False)
+            mConfig.RemoveConfig()
+        Next
+
+        For Each mConfig As ClassConfigs.STRUC_CONFIG_ITEM In g_lRestoreConfigs
+            mConfig.SaveConfig()
+        Next
+    End Sub
+
+#End Region
+
+#Region "Settings"
+    Private Sub Button_Font_Click(sender As Object, e As EventArgs) Handles Button_Font.Click
+        Using i As New FontDialog()
+            i.Font = CType(New FontConverter().ConvertFromInvariantString(Label_Font.Text), Font)
+
+            If (i.ShowDialog = DialogResult.OK) Then
+                Label_Font.Text = New FontConverter().ConvertToInvariantString(i.Font)
+            End If
+        End Using
+    End Sub
+#End Region
+
+#Region "Configs"
     Private Property m_ConfigSettingsChanged As Boolean
         Get
             Return g_bConfigSettingsChanged
@@ -89,7 +238,7 @@ Public Class FormSettings
 
         MarkChanged()
 
-        g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnConfigChanged())
+        g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnConfigChanged())
     End Sub
 
     Private Sub Button_ConfigRemove_Click(sender As Object, e As EventArgs) Handles Button_ConfigRemove.Click
@@ -101,7 +250,7 @@ Public Class FormSettings
 
                 MarkChanged()
 
-                g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnConfigChanged())
+                g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnConfigChanged())
             End If
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
@@ -111,7 +260,7 @@ Public Class FormSettings
     ''' <summary>
     ''' Updates the configs in the ListBox
     ''' </summary>
-    Private Sub UpdateList()
+    Private Sub UpdateConfigListBox()
         ListBox_Configs.BeginUpdate()
         ListBox_Configs.Items.Clear()
 
@@ -335,174 +484,11 @@ Public Class FormSettings
 
             m_ConfigSettingsChanged = False
 
-            g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnConfigChanged())
+            g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnConfigChanged())
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
     End Sub
-
-    Private Sub Button_Cancel_Click(sender As Object, e As EventArgs) Handles Button_Cancel.Click
-        Me.Close()
-    End Sub
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#Region "Load/Save"
-    Private Sub SettingsForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        'List all configs
-        UpdateList()
-
-        'Get all settings
-        ClassSettings.LoadSettings()
-
-        'General
-        CheckBox_AlwaysNewInstance.Checked = ClassSettings.g_iSettingsAlwaysOpenNewInstance
-        CheckBox_AutoShowStartPage.Checked = ClassSettings.g_iSettingsAutoShowStartPage
-        CheckBox_AssociateSourcePawn.Checked = ClassSettings.g_iSettingsAssociateSourcePawn
-        CheckBox_AssociateAmxMod.Checked = ClassSettings.g_iSettingsAssociateAmxModX
-        CheckBox_AssociateIncludes.Checked = ClassSettings.g_iSettingsAssociateIncludes
-        'Text Editor
-        Label_Font.Text = New FontConverter().ConvertToInvariantString(ClassSettings.g_iSettingsTextEditorFont)
-        CheckBox_InvertedColors.Checked = ClassSettings.g_iSettingsInvertColors
-        CheckBox_TabsToSpace.Checked = (ClassSettings.g_iSettingsTabsToSpaces > 0)
-        NumericUpDown_TabsToSpaces.Value = If(ClassSettings.g_iSettingsTabsToSpaces > 0, ClassSettings.g_iSettingsTabsToSpaces, 4)
-        'Syntax Highligting
-        CheckBox_DoubleClickMark.Checked = ClassSettings.g_iSettingsDoubleClickMark
-        CheckBox_AutoMark.Checked = ClassSettings.g_iSettingsAutoMark
-        'Autocomplete
-        CheckBox_AlwaysLoadDefaultIncludes.Checked = ClassSettings.g_iSettingsAlwaysLoadDefaultIncludes
-        CheckBox_OnScreenIntelliSense.Checked = ClassSettings.g_iSettingsEnableToolTip
-        CheckBox_CommentsMethodIntelliSense.Checked = ClassSettings.g_iSettingsToolTipMethodComments
-        CheckBox_CommentsAutocompleteIntelliSense.Checked = ClassSettings.g_iSettingsToolTipAutocompleteComments
-        CheckBox_WindowsToolTipPopup.Checked = ClassSettings.g_iSettingsUseWindowsToolTip
-        CheckBox_WindowsToolTipAnimations.Checked = ClassSettings.g_iSettingsUseWindowsToolTipAnimations
-        CheckBox_FullAutcompleteMethods.Checked = ClassSettings.g_iSettingsFullMethodAutocomplete
-        CheckBox_FullAutocompleteReTagging.Checked = ClassSettings.g_iSettingsFullEnumAutocomplete
-        CheckBox_CaseSensitive.Checked = ClassSettings.g_iSettingsAutocompleteCaseSensitive
-        CheckBox_CurrentSourceVarAutocomplete.Checked = ClassSettings.g_iSettingsVarAutocompleteCurrentSourceOnly
-        CheckBox_VarAutocompleteShowObjectBrowser.Checked = ClassSettings.g_iSettingsVarAutocompleteShowObjectBrowser
-        CheckBox_SwitchTabToAutocomplete.Checked = ClassSettings.g_iSettingsSwitchTabToAutocomplete
-        'Debugger
-        CheckBox_CatchExceptions.Checked = ClassSettings.g_iSettingsDebuggerCatchExceptions
-        CheckBox_EntitiesEnableColor.Checked = ClassSettings.g_iSettingsDebuggerEntitiesEnableAutoScroll
-        CheckBox_EntitiesEnableShowNewEnts.Checked = ClassSettings.g_iSettingsDebuggerEntitiesEnableAutoScroll
-
-        'Get restore-point configs 
-        For Each mConfig As ClassConfigs.STRUC_CONFIG_ITEM In ClassConfigs.GetConfigs(False)
-            g_lRestoreConfigs.Add(mConfig)
-        Next
-        g_bRestoreConfigs = True
-
-        'Get current config 
-        TextBox_ConfigName.Text = ClassConfigs.m_ActiveConfig.GetName
-
-        Dim i As Integer = ListBox_Configs.FindStringExact(ClassConfigs.m_ActiveConfig.GetName)
-        If (i > -1) Then
-            ListBox_Configs.SetSelected(i, True)
-        End If
-
-        If (Not ClassConfigs.m_ActiveConfig.ConfigExist AndAlso Not ClassConfigs.m_ActiveConfig.IsDefault) Then
-            MessageBox.Show("Current config not found!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-        End If
-
-
-        'List plugins
-        Dim lListViewItems As New List(Of ListViewItem)
-        For Each pluginInfo In g_mFormMain.g_ClassPluginController.m_Plugins
-            If (pluginInfo.mPluginInformation Is Nothing) Then
-                lListViewItems.Add(New ListViewItem(New String() {
-                                                   IO.Path.GetFileName(pluginInfo.sFile),
-                                                   "-",
-                                                   "-",
-                                                   "-",
-                                                   "-",
-                                                   "-"
-                                               }))
-            Else
-                lListViewItems.Add(New ListViewItem(New String() {
-                                                   IO.Path.GetFileName(pluginInfo.sFile),
-                                                   pluginInfo.mPluginInformation.sName,
-                                                   pluginInfo.mPluginInformation.sAuthor,
-                                                   pluginInfo.mPluginInformation.sDescription,
-                                                   pluginInfo.mPluginInformation.sVersion,
-                                                   pluginInfo.mPluginInformation.sURL
-                                               }))
-            End If
-
-        Next
-        ListView_Plugins.Items.Clear()
-        ListView_Plugins.Items.AddRange(lListViewItems.ToArray)
-        ListView_Plugins.AutoResizeColumns(If(ListView_Plugins.Items.Count > 0, ColumnHeaderAutoResizeStyle.ColumnContent, ColumnHeaderAutoResizeStyle.HeaderSize))
-
-        'Fill DatabaseViewer
-        DatabaseViewer.FillFromDatabase()
-
-        ClassControlStyle.UpdateControls(Me)
-    End Sub
-
-    Private Sub Button_Apply_Click(sender As Object, e As EventArgs) Handles Button_Apply.Click
-        g_bRestoreConfigs = False
-
-        If (ListBox_Configs.SelectedItems.Count > 0) Then
-            Dim sName As String = ListBox_Configs.SelectedItems(0).ToString
-
-            ClassConfigs.m_ActiveConfig = ClassConfigs.LoadConfig(sName)
-        End If
-
-        'General
-        ClassSettings.g_iSettingsAlwaysOpenNewInstance = CheckBox_AlwaysNewInstance.Checked
-        ClassSettings.g_iSettingsAutoShowStartPage = CheckBox_AutoShowStartPage.Checked
-        ClassSettings.g_iSettingsAssociateSourcePawn = CheckBox_AssociateSourcePawn.Checked
-        ClassSettings.g_iSettingsAssociateAmxModX = CheckBox_AssociateAmxMod.Checked
-        ClassSettings.g_iSettingsAssociateIncludes = CheckBox_AssociateIncludes.Checked
-        'Text Editor
-        ClassSettings.g_iSettingsTextEditorFont = CType(New FontConverter().ConvertFromInvariantString(Label_Font.Text), Font)
-        ClassSettings.g_iSettingsInvertColors = CheckBox_InvertedColors.Checked
-        ClassSettings.g_iSettingsTabsToSpaces = CInt(If(CheckBox_TabsToSpace.Checked, NumericUpDown_TabsToSpaces.Value, 0))
-        'Syntax Highligting
-        ClassSettings.g_iSettingsDoubleClickMark = CheckBox_DoubleClickMark.Checked
-        ClassSettings.g_iSettingsAutoMark = CheckBox_AutoMark.Checked
-        'Autocomplete
-        ClassSettings.g_iSettingsAlwaysLoadDefaultIncludes = CheckBox_AlwaysLoadDefaultIncludes.Checked
-        ClassSettings.g_iSettingsEnableToolTip = CheckBox_OnScreenIntelliSense.Checked
-        ClassSettings.g_iSettingsToolTipMethodComments = CheckBox_CommentsMethodIntelliSense.Checked
-        ClassSettings.g_iSettingsToolTipAutocompleteComments = CheckBox_CommentsAutocompleteIntelliSense.Checked
-        ClassSettings.g_iSettingsUseWindowsToolTip = CheckBox_WindowsToolTipPopup.Checked
-        ClassSettings.g_iSettingsUseWindowsToolTipAnimations = CheckBox_WindowsToolTipAnimations.Checked
-        ClassSettings.g_iSettingsFullMethodAutocomplete = CheckBox_FullAutcompleteMethods.Checked
-        ClassSettings.g_iSettingsFullEnumAutocomplete = CheckBox_FullAutocompleteReTagging.Checked
-        ClassSettings.g_iSettingsAutocompleteCaseSensitive = CheckBox_CaseSensitive.Checked
-        ClassSettings.g_iSettingsVarAutocompleteCurrentSourceOnly = CheckBox_CurrentSourceVarAutocomplete.Checked
-        ClassSettings.g_iSettingsVarAutocompleteShowObjectBrowser = CheckBox_VarAutocompleteShowObjectBrowser.Checked
-        ClassSettings.g_iSettingsSwitchTabToAutocomplete = CheckBox_SwitchTabToAutocomplete.Checked
-        'Debugger
-        ClassSettings.g_iSettingsDebuggerCatchExceptions = CheckBox_CatchExceptions.Checked
-        ClassSettings.g_iSettingsDebuggerEntitiesEnableColoring = CheckBox_EntitiesEnableColor.Checked
-        ClassSettings.g_iSettingsDebuggerEntitiesEnableAutoScroll = CheckBox_EntitiesEnableShowNewEnts.Checked
-
-        ClassSettings.SaveSettings()
-
-
-        g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnSettingsChanged())
-
-        Me.Close()
-    End Sub
-#End Region
-
-
-
-
 
     Private Sub Button_ConfigCopy_Click(sender As Object, e As EventArgs) Handles Button_ConfigCopy.Click
         If (ListBox_Configs.SelectedItems.Count < 1) Then
@@ -533,7 +519,7 @@ Public Class FormSettings
 
         MarkChanged()
 
-        g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnConfigChanged())
+        g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnConfigChanged())
     End Sub
 
     Private Sub Button_ConfigRename_Click(sender As Object, e As EventArgs) Handles Button_ConfigRename.Click
@@ -578,17 +564,7 @@ Public Class FormSettings
 
         MarkChanged()
 
-        g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnConfigChanged())
-    End Sub
-
-    Private Sub Button_Font_Click(sender As Object, e As EventArgs) Handles Button_Font.Click
-        Using i As New FontDialog()
-            i.Font = CType(New FontConverter().ConvertFromInvariantString(Label_Font.Text), Font)
-
-            If (i.ShowDialog = DialogResult.OK) Then
-                Label_Font.Text = New FontConverter().ConvertToInvariantString(i.Font)
-            End If
-        End Using
+        g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnConfigChanged())
     End Sub
 
     Private Sub LinkLabel_ShowShellArguments_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_ShowShellArguments.LinkClicked
@@ -620,20 +596,6 @@ Public Class FormSettings
 
     Private Sub LinkLabel_SyntaxDefault_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_SyntaxDefault.LinkClicked
         TextBox_SyntaxPath.Text = ""
-    End Sub
-
-    Private Sub FormSettings_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
-        If (Not g_bRestoreConfigs) Then
-            Return
-        End If
-
-        For Each mConfig As ClassConfigs.STRUC_CONFIG_ITEM In ClassConfigs.GetConfigs(False)
-            mConfig.RemoveConfig()
-        Next
-
-        For Each mConfig As ClassConfigs.STRUC_CONFIG_ITEM In g_lRestoreConfigs
-            mConfig.SaveConfig()
-        Next
     End Sub
 
     Private Sub RadioButton_ConfigSettingAutomatic_CheckedChanged(sender As Object, e As EventArgs) Handles RadioButton_ConfigSettingAutomatic.CheckedChanged
@@ -695,6 +657,144 @@ Public Class FormSettings
         MarkChanged()
     End Sub
 
+    Public Sub MarkChanged()
+        If (Not g_bIgnoreChange AndAlso Not TabPage_Configs.Text.EndsWith("*"c)) Then
+            TabPage_Configs.Text = TabPage_Configs.Text & "*"
+            TabControl1.Refresh()
+        End If
+    End Sub
+
+    Public Sub ResetChanged()
+        If (TabPage_Configs.Text.EndsWith("*"c)) Then
+            TabPage_Configs.Text = TabPage_Configs.Text.TrimEnd("*"c)
+            TabControl1.Refresh()
+        End If
+    End Sub
+#End Region
+
+#Region "Plugins"
+    Private Sub ToolStripMenuItem_PluginsRefresh_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_PluginsRefresh.Click
+        UpdatePluginsListView()
+    End Sub
+
+    Private Sub ContextMenuStrip_Plugins_Opening(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles ContextMenuStrip_Plugins.Opening
+        ToolStripMenuItem_PluginsEnable.Enabled = (ListView_Plugins.SelectedItems.Count > 0)
+        ToolStripMenuItem_PluginsDisable.Enabled = (ListView_Plugins.SelectedItems.Count > 0)
+    End Sub
+
+    Private Sub ToolStripMenuItem_PluginsEnable_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_PluginsEnable.Click
+        Try
+            For Each mItem As ListViewItem In ListView_Plugins.SelectedItems
+                SetPluginState(mItem.SubItems(0).Text, True)
+            Next
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+
+        UpdatePluginsListView()
+    End Sub
+
+    Private Sub ToolStripMenuItem_PluginsDisable_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_PluginsDisable.Click
+        Try
+            For Each mItem As ListViewItem In ListView_Plugins.SelectedItems
+                SetPluginState(mItem.SubItems(0).Text, False)
+            Next
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+
+        UpdatePluginsListView()
+    End Sub
+
+    Private Sub UpdatePluginsListView()
+        Dim lListViewItems As New List(Of ListViewItem)
+        For Each mPlugin In g_mFormMain.g_ClassPluginController.m_Plugins
+            Try
+                Dim sEnabled As String = If(mPlugin.mPluginInterface.m_PluginEnabled, "Yes", "")
+
+                If (mPlugin.mPluginInformation Is Nothing) Then
+                    lListViewItems.Add(New ListViewItem(New String() {
+                                                        IO.Path.GetFileName(mPlugin.sFile),
+                                                        "-",
+                                                        "-",
+                                                        "-",
+                                                        "-",
+                                                        "-",
+                                                        sEnabled
+                                                   }))
+                Else
+                    lListViewItems.Add(New ListViewItem(New String() {
+                                                                IO.Path.GetFileName(mPlugin.sFile),
+                                                                mPlugin.mPluginInformation.sName,
+                                                                mPlugin.mPluginInformation.sAuthor,
+                                                                mPlugin.mPluginInformation.sDescription,
+                                                                mPlugin.mPluginInformation.sVersion,
+                                                                mPlugin.mPluginInformation.sURL,
+                                                                sEnabled
+                                                           }))
+                End If
+            Catch ex As Exception
+                lListViewItems.Add(New ListViewItem(New String() {
+                                                                IO.Path.GetFileName(mPlugin.sFile),
+                                                                "-",
+                                                                "-",
+                                                                "-",
+                                                                "-",
+                                                                "-",
+                                                                String.Format("Error - {0}", ex.Message)
+                                                           }))
+
+                ClassExceptionLog.WriteToLogMessageBox(ex)
+            End Try
+        Next
+
+        ListView_Plugins.Items.Clear()
+        ListView_Plugins.Items.AddRange(lListViewItems.ToArray)
+        ListView_Plugins.AutoResizeColumns(If(ListView_Plugins.Items.Count > 0, ColumnHeaderAutoResizeStyle.ColumnContent, ColumnHeaderAutoResizeStyle.HeaderSize))
+    End Sub
+
+    Private Sub SetPluginState(sFilename As String, bEnable As Boolean)
+        For Each mPlugin In g_mFormMain.g_ClassPluginController.m_Plugins
+            If (IO.Path.GetFileName(mPlugin.sFile).ToLower <> sFilename.ToLower) Then
+                Continue For
+            End If
+
+            While True
+                Dim bSuccess As Boolean = False
+                Dim sReason As String = ""
+
+                If (bEnable) Then
+                    bSuccess = mPlugin.mPluginInterface.OnPluginEnabled(sReason)
+                Else
+                    bSuccess = mPlugin.mPluginInterface.OnPluginDisabled(sReason)
+                End If
+
+                If (bSuccess) Then
+                    g_mFormMain.g_ClassPluginController.m_PluginEnabledByConfig(mPlugin) = bEnable
+                Else
+                    If (String.IsNullOrEmpty(sReason)) Then
+                        sReason = "Unknown"
+                    End If
+
+                    With New Text.StringBuilder
+                        .AppendLine(String.Format("Could not change plugin state of plugin '{0}' with reason:", mPlugin.sFile))
+                        .AppendLine()
+                        .AppendLine(sReason)
+
+                        Select Case (MessageBox.Show(.ToString, "Chould not change plugin state", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error))
+                            Case DialogResult.Retry
+                                Continue While
+                        End Select
+                    End With
+                End If
+
+                Exit While
+            End While
+        Next
+    End Sub
+#End Region
+
+#Region "Database"
     Private Sub Button_AddDatabaseItem_Click(sender As Object, e As EventArgs) Handles Button_AddDatabaseItem.Click
         Using i As New FormDatabaseInput()
             If (i.ShowDialog(Me) = DialogResult.OK) Then
@@ -709,18 +809,6 @@ Public Class FormSettings
     Private Sub Button_Refresh_Click(sender As Object, e As EventArgs) Handles Button_Refresh.Click
         DatabaseViewer.FillFromDatabase()
     End Sub
+#End Region
 
-    Public Sub MarkChanged()
-        If (Not g_bIgnoreChange AndAlso Not TabPage_Configs.Text.EndsWith("*"c)) Then
-            TabPage_Configs.Text = TabPage_Configs.Text & "*"
-            TabControl1.Refresh()
-        End If
-    End Sub
-
-    Public Sub ResetChanged()
-        If (TabPage_Configs.Text.EndsWith("*"c)) Then
-            TabPage_Configs.Text = TabPage_Configs.Text.TrimEnd("*"c)
-            TabControl1.Refresh()
-        End If
-    End Sub
 End Class

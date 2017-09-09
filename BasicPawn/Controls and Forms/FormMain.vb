@@ -329,7 +329,7 @@ Public Class FormMain
             Exit While
         End While
 
-        g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnPluginStart(Me))
+        g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnPluginStart(Me, g_ClassPluginController.m_PluginEnabledByConfig(j)))
 
         Dim mCheckUpdasteThread As New Threading.Thread(Sub()
                                                             Try
@@ -354,8 +354,8 @@ Public Class FormMain
     End Sub
 
     Private Sub FormMain_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
-        g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface)
-                                                   If (Not j.OnPluginEnd()) Then
+        g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM)
+                                                   If (Not j.mPluginInterface.OnPluginEnd()) Then
                                                        e.Cancel = True
                                                    End If
                                                End Sub)
@@ -1202,7 +1202,7 @@ Public Class FormMain
     End Sub
 
     Private Sub CleanUp()
-        g_ClassPluginController.PluginsExecute(Sub(j As BasicPawnPluginInterface.IPluginInterface) j.OnPluginEndPost())
+        g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnPluginEndPost())
 
         g_ClassAutocompleteUpdater.StopUpdate()
         If (g_mFormOpenTabFromInstances IsNot Nothing AndAlso Not g_mFormOpenTabFromInstances.IsDisposed) Then
