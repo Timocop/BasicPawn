@@ -429,7 +429,7 @@ Public Class FormMain
 
 #Region "MenuStrip_File"
     Private Sub ToolStripMenuItem_FileNew_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileNew.Click
-        g_ClassTabControl.AddTab(True, True, False)
+        g_ClassTabControl.AddTab(True, True, False, True)
 
         PrintInformation("[INFO]", "User created a new source file")
     End Sub

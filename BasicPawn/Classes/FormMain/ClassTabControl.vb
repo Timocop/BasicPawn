@@ -77,12 +77,12 @@ Public Class ClassTabControl
         End Get
     End Property
 
-    Public Function AddTab(Optional bSelect As Boolean = False, Optional bIncludeTemplate As Boolean = False, Optional bChanged As Boolean = False) As SourceTabPage
+    Public Function AddTab(Optional bSelect As Boolean = False, Optional bIncludeTemplate As Boolean = False, Optional bChanged As Boolean = False, Optional bDontRecycleTabs As Boolean = False) As SourceTabPage
         Try
             ClassTools.ClassForms.SuspendDrawing(g_iControlDrawCoutner, g_mFormMain.SplitContainer_ToolboxAndEditor)
 
             'Recycle first unsaved tab
-            If (m_TabsCount = 1) Then
+            If (Not bDontRecycleTabs AndAlso m_TabsCount = 1) Then
                 Dim mOldTab = m_Tab(0)
                 If (mOldTab.m_IsUnsaved AndAlso Not mOldTab.m_Changed) Then
                     Return mOldTab
