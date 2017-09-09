@@ -33,9 +33,9 @@ Features:
 [**.NET Framework (Linux Wine)**](https://appdb.winehq.org/objectManager.php?sClass=application&iId=2586)
 
 ## Todo & Done (for v0.8)
-- [ ] Better plugin control
-- [ ] \(Plugin\) SFTP/FTP Uploader
-- [ ] \(Plugin\) Automatic Error Reporting using FTP
+ - [x] Better plugin control
+ - [ ] \(Plugin\) SFTP/FTP Uploader
+ - [ ] \(Plugin\) Automatic Error Reporting using FTP
 
 ## Screenshots
 ![Default Colors](http://i.imgur.com/QigHItn.png)
