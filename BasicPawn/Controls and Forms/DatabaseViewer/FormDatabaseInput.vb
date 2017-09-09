@@ -64,10 +64,8 @@ Public Class FormDatabaseInput
         End If
 
         If (ClassDatabase.IsNameUsed(m_Name)) Then
-            Select Case (MessageBox.Show("A Database entry with that name already exist!" & Environment.NewLine & "Do you want to overwrite it?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning))
-                Case DialogResult.No
-                    Return
-            End Select
+            MessageBox.Show("A Database entry with that name already exist!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Return
         End If
 
         Me.DialogResult = DialogResult.OK
