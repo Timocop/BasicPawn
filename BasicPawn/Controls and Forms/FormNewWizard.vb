@@ -25,6 +25,8 @@ Public Class FormNewWizard
     Private g_ClassProperties As New ClassProperties(Me)
     Private g_bIgnoreComboBoxSetPropertyEvents As Boolean = False
 
+    Private g_mSelectedPropertyItem As ClassListViewItemData
+
     Enum ENUM_TREEVIEW_ICONS
         FILE
         FOLDER
@@ -106,12 +108,16 @@ Public Class FormNewWizard
     End Sub
 
     Private Sub LinkLabel_CreateDefault_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_CreateDefault.LinkClicked
-        CreateTemplates()
+        Try
+            CreateTemplates()
 
-        g_ClassProperties.Clear()
-        FillTemplateExplorer()
-        FillListViewPropeties()
-        UpdatePreview()
+            g_ClassProperties.Clear()
+            FillTemplateExplorer()
+            FillListViewPropeties()
+            UpdatePreview()
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
     End Sub
 
     Class ClassProperties
@@ -496,6 +502,12 @@ Public Class FormNewWizard
                 Return
             End If
 
+            If (TypeOf ListView_Properties.SelectedItems(0) IsNot ClassListViewItemData) Then
+                Return
+            End If
+
+            g_mSelectedPropertyItem = DirectCast(ListView_Properties.SelectedItems(0), ClassListViewItemData)
+
             ContextMenuStrip_Properties.Show(ListView_Properties, New Point(ListView_Properties.SelectedItems(0).Bounds.Location.X, ListView_Properties.SelectedItems(0).Bounds.Location.Y + ListView_Properties.SelectedItems(0).Bounds.Height))
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
@@ -510,7 +522,8 @@ Public Class FormNewWizard
             Return
         End If
 
-        If (TypeOf ListView_Properties.SelectedItems(0) IsNot ClassListViewItemData) Then
+        If (TypeOf ListView_Properties.SelectedItems(0) IsNot ClassListViewItemData OrElse
+                    ListView_Properties.SelectedItems(0) IsNot g_mSelectedPropertyItem) Then
             e.Cancel = True
             Return
         End If
@@ -564,7 +577,8 @@ Public Class FormNewWizard
             Return
         End If
 
-        If (TypeOf ListView_Properties.SelectedItems(0) IsNot ClassListViewItemData) Then
+        If (TypeOf ListView_Properties.SelectedItems(0) IsNot ClassListViewItemData OrElse
+                    ListView_Properties.SelectedItems(0) IsNot g_mSelectedPropertyItem) Then
             Return
         End If
 
@@ -641,7 +655,17 @@ Public Class FormNewWizard
                 Return
             End If
 
-            Process.Start("explorer.exe", TreeView_Explorer.SelectedNode.FullPath)
+            Dim sPath As String = TreeView_Explorer.SelectedNode.FullPath
+
+            If (IO.File.Exists(sPath)) Then
+                sPath = IO.Path.GetDirectoryName(sPath)
+            End If
+
+            If (Not IO.Directory.Exists(sPath)) Then
+                Return
+            End If
+
+            Process.Start("explorer.exe", sPath)
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
@@ -670,7 +694,8 @@ Public Class FormNewWizard
 
     Private Sub ContextMenuStrip_TreeView_Opening(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles ContextMenuStrip_TreeView.Opening
         ToolStripMenuItem_OpenDir.Enabled = (TreeView_Explorer.SelectedNode IsNot Nothing AndAlso
-                                                        IO.Directory.Exists(TreeView_Explorer.SelectedNode.FullPath))
+                                                        (IO.Directory.Exists(TreeView_Explorer.SelectedNode.FullPath) OrElse
+                                                                IO.File.Exists(TreeView_Explorer.SelectedNode.FullPath)))
         ToolStripMenuItem_DelTemplate.Enabled = (TreeView_Explorer.SelectedNode IsNot Nothing AndAlso
                                                         (IO.Directory.Exists(TreeView_Explorer.SelectedNode.FullPath) OrElse
                                                                 IO.File.Exists(TreeView_Explorer.SelectedNode.FullPath)))

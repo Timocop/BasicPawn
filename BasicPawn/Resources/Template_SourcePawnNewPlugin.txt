@@ -18,7 +18,7 @@
 
 
 [Source]
-00100={?ForceSemicolon}{?DebugDefine}{?DebugEcho}
+00100={?DebugDefine}{?DebugEcho}
 00200=#define PLUGIN_NAME           "{$InfoName}"
 00300=#define PLUGIN_AUTHOR         "{$InfoAuthor}"
 00400=#define PLUGIN_DESCRIPTION    "{$InfoDescription}"
@@ -27,7 +27,7 @@
 00700=
 00800=#include <sourcemod>
 00900=#include <sdktools>
-01000={#NewDecl}
+01000={?ForceSemicolon}{#NewDecl}
 01100=public Plugin myinfo = 
 01200={
 01300=\tname = PLUGIN_NAME,

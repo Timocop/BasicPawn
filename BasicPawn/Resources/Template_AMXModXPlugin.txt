@@ -18,14 +18,14 @@
 
 
 [Source]
-00100={?ForceSemicolon}{?DebugDefine}{?DebugEcho}
+00100={?DebugDefine}{?DebugEcho}
 00200=#define PLUGIN_NAME           "{$InfoName}"
 00300=#define PLUGIN_AUTHOR         "{$InfoAuthor}"
 00400=#define PLUGIN_VERSION        "{$InfoVersion}"
 00500=
 00600=#include <amxmodx>
 00700=#include <amxmisc>
-00800=
+00800={?ForceSemicolon}
 00900=public plugin_init()
 01000={
 01100=\tregister_plugin(PLUGIN_NAME, PLUGIN_VERSION, PLUGIN_AUTHOR);
