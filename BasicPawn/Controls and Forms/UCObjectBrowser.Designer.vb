@@ -55,14 +55,14 @@ Partial Class UCObjectBrowser
         '
         'ToolStripMenuItem_OpenFile
         '
-        Me.ToolStripMenuItem_OpenFile.Image = Global.BasicPawn.My.Resources.Resources.imageres_5338_16x16_32
+        Me.ToolStripMenuItem_OpenFile.Image = Global.BasicPawn.My.Resources.Resources.imageres_5338_16x16
         Me.ToolStripMenuItem_OpenFile.Name = "ToolStripMenuItem_OpenFile"
         Me.ToolStripMenuItem_OpenFile.Size = New System.Drawing.Size(152, 22)
         Me.ToolStripMenuItem_OpenFile.Text = "Open file"
         '
         'ToolStripMenuItem_Copy
         '
-        Me.ToolStripMenuItem_Copy.Image = Global.BasicPawn.My.Resources.Resources.imageres_5350_16x16_32
+        Me.ToolStripMenuItem_Copy.Image = Global.BasicPawn.My.Resources.Resources.imageres_5350_16x16
         Me.ToolStripMenuItem_Copy.Name = "ToolStripMenuItem_Copy"
         Me.ToolStripMenuItem_Copy.Size = New System.Drawing.Size(152, 22)
         Me.ToolStripMenuItem_Copy.Text = "Copy"
@@ -74,7 +74,7 @@ Partial Class UCObjectBrowser
         '
         'ToolStripMenuItem_ListReferences
         '
-        Me.ToolStripMenuItem_ListReferences.Image = Global.BasicPawn.My.Resources.Resources.imageres_5333_16x16_32
+        Me.ToolStripMenuItem_ListReferences.Image = Global.BasicPawn.My.Resources.Resources.imageres_5333_16x16
         Me.ToolStripMenuItem_ListReferences.Name = "ToolStripMenuItem_ListReferences"
         Me.ToolStripMenuItem_ListReferences.Size = New System.Drawing.Size(152, 22)
         Me.ToolStripMenuItem_ListReferences.Text = "List references"

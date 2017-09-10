@@ -1475,7 +1475,7 @@ Partial Class FormSettings
         '
         'ClassPictureBoxQuality2
         '
-        Me.ClassPictureBoxQuality2.Image = Global.BasicPawn.My.Resources.Resources.imageres_5381_64x64_32
+        Me.ClassPictureBoxQuality2.Image = Global.BasicPawn.My.Resources.Resources.Bmp_DriveEncryption
         Me.ClassPictureBoxQuality2.Location = New System.Drawing.Point(3, 3)
         Me.ClassPictureBoxQuality2.m_HighQuality = True
         Me.ClassPictureBoxQuality2.Name = "ClassPictureBoxQuality2"

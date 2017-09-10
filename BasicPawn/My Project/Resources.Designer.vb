@@ -123,6 +123,16 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
+        Public ReadOnly Property Bmp_DriveEncryption() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("Bmp_DriveEncryption", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Drawing.Bitmap.
+        '''</summary>
         Public ReadOnly Property Bmp_Network() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("Bmp_Network", resourceCulture)
@@ -327,9 +337,9 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
-        Public ReadOnly Property imageres_5301_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5301_16x16() As System.Drawing.Bitmap
             Get
-                Dim obj As Object = ResourceManager.GetObject("imageres_5301_16x16-32", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("imageres_5301_16x16", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -337,9 +347,9 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
-        Public ReadOnly Property imageres_5302_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5302_16x16() As System.Drawing.Bitmap
             Get
-                Dim obj As Object = ResourceManager.GetObject("imageres_5302_16x16-32", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("imageres_5302_16x16", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -347,9 +357,9 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
-        Public ReadOnly Property imageres_5303_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5303_16x16() As System.Drawing.Bitmap
             Get
-                Dim obj As Object = ResourceManager.GetObject("imageres_5303_16x16-32", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("imageres_5303_16x16", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -357,9 +367,9 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
-        Public ReadOnly Property imageres_5304_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5304_16x16() As System.Drawing.Bitmap
             Get
-                Dim obj As Object = ResourceManager.GetObject("imageres_5304_16x16-32", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("imageres_5304_16x16", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -367,9 +377,9 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
-        Public ReadOnly Property imageres_5306_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5306_16x16() As System.Drawing.Bitmap
             Get
-                Dim obj As Object = ResourceManager.GetObject("imageres_5306_16x16-32", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("imageres_5306_16x16", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -377,9 +387,9 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
-        Public ReadOnly Property imageres_5311_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5311_16x16() As System.Drawing.Bitmap
             Get
-                Dim obj As Object = ResourceManager.GetObject("imageres_5311_16x16-32", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("imageres_5311_16x16", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -387,9 +397,9 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
-        Public ReadOnly Property imageres_5312_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5312_16x16() As System.Drawing.Bitmap
             Get
-                Dim obj As Object = ResourceManager.GetObject("imageres_5312_16x16-32", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("imageres_5312_16x16", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -397,9 +407,9 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
-        Public ReadOnly Property imageres_5313_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5313_16x16() As System.Drawing.Bitmap
             Get
-                Dim obj As Object = ResourceManager.GetObject("imageres_5313_16x16-32", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("imageres_5313_16x16", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -407,9 +417,9 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
-        Public ReadOnly Property imageres_5314_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5314_16x16() As System.Drawing.Bitmap
             Get
-                Dim obj As Object = ResourceManager.GetObject("imageres_5314_16x16-32", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("imageres_5314_16x16", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -417,9 +427,9 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
-        Public ReadOnly Property imageres_5315_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5315_16x16() As System.Drawing.Bitmap
             Get
-                Dim obj As Object = ResourceManager.GetObject("imageres_5315_16x16-32", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("imageres_5315_16x16", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -427,9 +437,9 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
-        Public ReadOnly Property imageres_5316_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5316_16x16() As System.Drawing.Bitmap
             Get
-                Dim obj As Object = ResourceManager.GetObject("imageres_5316_16x16-32", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("imageres_5316_16x16", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -437,9 +447,9 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
-        Public ReadOnly Property imageres_5318_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5318_16x16() As System.Drawing.Bitmap
             Get
-                Dim obj As Object = ResourceManager.GetObject("imageres_5318_16x16-32", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("imageres_5318_16x16", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -447,9 +457,9 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
-        Public ReadOnly Property imageres_5320_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5320_16x16() As System.Drawing.Bitmap
             Get
-                Dim obj As Object = ResourceManager.GetObject("imageres_5320_16x16-32", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("imageres_5320_16x16", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -457,9 +467,9 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
-        Public ReadOnly Property imageres_5326_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5326_16x16() As System.Drawing.Bitmap
             Get
-                Dim obj As Object = ResourceManager.GetObject("imageres_5326_16x16-32", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("imageres_5326_16x16", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -467,9 +477,9 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
-        Public ReadOnly Property imageres_5332_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5332_16x16() As System.Drawing.Bitmap
             Get
-                Dim obj As Object = ResourceManager.GetObject("imageres_5332_16x16-32", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("imageres_5332_16x16", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -477,9 +487,9 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
-        Public ReadOnly Property imageres_5333_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5333_16x16() As System.Drawing.Bitmap
             Get
-                Dim obj As Object = ResourceManager.GetObject("imageres_5333_16x16-32", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("imageres_5333_16x16", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -487,9 +497,9 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
-        Public ReadOnly Property imageres_5337_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5337_16x16() As System.Drawing.Bitmap
             Get
-                Dim obj As Object = ResourceManager.GetObject("imageres_5337_16x16-32", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("imageres_5337_16x16", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -497,9 +507,9 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
-        Public ReadOnly Property imageres_5338_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5338_16x16() As System.Drawing.Bitmap
             Get
-                Dim obj As Object = ResourceManager.GetObject("imageres_5338_16x16-32", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("imageres_5338_16x16", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -507,9 +517,9 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
-        Public ReadOnly Property imageres_5339_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5339_16x16() As System.Drawing.Bitmap
             Get
-                Dim obj As Object = ResourceManager.GetObject("imageres_5339_16x16-32", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("imageres_5339_16x16", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -517,9 +527,9 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
-        Public ReadOnly Property imageres_5341_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5341_16x16() As System.Drawing.Bitmap
             Get
-                Dim obj As Object = ResourceManager.GetObject("imageres_5341_16x16-32", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("imageres_5341_16x16", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -527,9 +537,9 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
-        Public ReadOnly Property imageres_5342_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5342_16x16() As System.Drawing.Bitmap
             Get
-                Dim obj As Object = ResourceManager.GetObject("imageres_5342_16x16-32", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("imageres_5342_16x16", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -537,9 +547,9 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
-        Public ReadOnly Property imageres_5343_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5343_16x16() As System.Drawing.Bitmap
             Get
-                Dim obj As Object = ResourceManager.GetObject("imageres_5343_16x16-32", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("imageres_5343_16x16", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -547,9 +557,9 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
-        Public ReadOnly Property imageres_5348_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5348_16x16() As System.Drawing.Bitmap
             Get
-                Dim obj As Object = ResourceManager.GetObject("imageres_5348_16x16-32", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("imageres_5348_16x16", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -557,9 +567,9 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
-        Public ReadOnly Property imageres_5350_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5350_16x16() As System.Drawing.Bitmap
             Get
-                Dim obj As Object = ResourceManager.GetObject("imageres_5350_16x16-32", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("imageres_5350_16x16", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -567,9 +577,9 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
-        Public ReadOnly Property imageres_5351_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5351_16x16() As System.Drawing.Bitmap
             Get
-                Dim obj As Object = ResourceManager.GetObject("imageres_5351_16x16-32", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("imageres_5351_16x16", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -577,9 +587,9 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
-        Public ReadOnly Property imageres_5356_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5356_16x16() As System.Drawing.Bitmap
             Get
-                Dim obj As Object = ResourceManager.GetObject("imageres_5356_16x16-32", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("imageres_5356_16x16", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -587,9 +597,9 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
-        Public ReadOnly Property imageres_5357_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5357_16x16() As System.Drawing.Bitmap
             Get
-                Dim obj As Object = ResourceManager.GetObject("imageres_5357_16x16-32", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("imageres_5357_16x16", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -597,9 +607,9 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
-        Public ReadOnly Property imageres_5360_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5360_16x16() As System.Drawing.Bitmap
             Get
-                Dim obj As Object = ResourceManager.GetObject("imageres_5360_16x16_32", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("imageres_5360_16x16", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -607,9 +617,9 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
-        Public ReadOnly Property imageres_5364_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5364_16x16() As System.Drawing.Bitmap
             Get
-                Dim obj As Object = ResourceManager.GetObject("imageres_5364_16x16-32", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("imageres_5364_16x16", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -617,9 +627,9 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
-        Public ReadOnly Property imageres_5367_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5367_16x16() As System.Drawing.Bitmap
             Get
-                Dim obj As Object = ResourceManager.GetObject("imageres_5367_16x16-32", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("imageres_5367_16x16", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -627,9 +637,9 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
-        Public ReadOnly Property imageres_5368_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5368_16x16() As System.Drawing.Bitmap
             Get
-                Dim obj As Object = ResourceManager.GetObject("imageres_5368_16x16-32", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("imageres_5368_16x16", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -637,19 +647,9 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
-        Public ReadOnly Property imageres_5372_16x16_32() As System.Drawing.Bitmap
+        Public ReadOnly Property imageres_5372_16x16() As System.Drawing.Bitmap
             Get
-                Dim obj As Object = ResourceManager.GetObject("imageres_5372_16x16-32", resourceCulture)
-                Return CType(obj,System.Drawing.Bitmap)
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized resource of type System.Drawing.Bitmap.
-        '''</summary>
-        Public ReadOnly Property imageres_5381_64x64_32() As System.Drawing.Bitmap
-            Get
-                Dim obj As Object = ResourceManager.GetObject("imageres_5381_64x64_32", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("imageres_5372_16x16", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -679,12 +679,12 @@ Namespace My.Resources
         ''';
         ''';	Type info:
         ''';		$ = Default string replace.
-        ''';		? = (Two names required) Boolean, first string replace if TRUE, second string replace if FALSE.
+        ''';		? = (Two names required) Boolean, first string replace if TRUE, second string replace if FALSE and the third is the default value 0/1.
         ''';		# = (More than one name required) List, multiple string replace choices.
         ''';
         ''';	Properties info:
         ''';		{&lt;TYPE&gt;NAME,DESCRIPTION[,ITEM_DESCRIPTION]}
-        ''';		{$PropertyName,The name of the property} = First argument is the name which will be replaced. The second is the description for the  [rest of string was truncated]&quot;;.
+        ''';		{$PropertyName,The name of the property} = First argument is the name which will be replaced. [rest of string was truncated]&quot;;.
         '''</summary>
         Public ReadOnly Property Template_AMXModXPlugin() As String
             Get
@@ -698,12 +698,12 @@ Namespace My.Resources
         ''';
         ''';	Type info:
         ''';		$ = Default string replace.
-        ''';		? = (Two names required) Boolean, first string replace if TRUE, second string replace if FALSE.
+        ''';		? = (Two names required) Boolean, first string replace if TRUE, second string replace if FALSE and the third is the default value 0/1.
         ''';		# = (More than one name required) List, multiple string replace choices.
         ''';
         ''';	Properties info:
         ''';		{&lt;TYPE&gt;NAME,DESCRIPTION[,ITEM_DESCRIPTION]}
-        ''';		{$PropertyName,The name of the property} = First argument is the name which will be replaced. The second is the description for the  [rest of string was truncated]&quot;;.
+        ''';		{$PropertyName,The name of the property} = First argument is the name which will be replaced. [rest of string was truncated]&quot;;.
         '''</summary>
         Public ReadOnly Property Template_Include() As String
             Get
@@ -717,12 +717,12 @@ Namespace My.Resources
         ''';
         ''';	Type info:
         ''';		$ = Default string replace.
-        ''';		? = (Two names required) Boolean, first string replace if TRUE, second string replace if FALSE.
+        ''';		? = (Two names required) Boolean, first string replace if TRUE, second string replace if FALSE and the third is the default value 0/1.
         ''';		# = (More than one name required) List, multiple string replace choices.
         ''';
         ''';	Properties info:
         ''';		{&lt;TYPE&gt;NAME,DESCRIPTION[,ITEM_DESCRIPTION]}
-        ''';		{$PropertyName,The name of the property} = First argument is the name which will be replaced. The second is the description for the  [rest of string was truncated]&quot;;.
+        ''';		{$PropertyName,The name of the property} = First argument is the name which will be replaced. [rest of string was truncated]&quot;;.
         '''</summary>
         Public ReadOnly Property Template_SourcePawnNewPlugin() As String
             Get
@@ -736,12 +736,12 @@ Namespace My.Resources
         ''';
         ''';	Type info:
         ''';		$ = Default string replace.
-        ''';		? = (Two names required) Boolean, first string replace if TRUE, second string replace if FALSE.
+        ''';		? = (Two names required) Boolean, first string replace if TRUE, second string replace if FALSE and the third is the default value 0/1.
         ''';		# = (More than one name required) List, multiple string replace choices.
         ''';
         ''';	Properties info:
         ''';		{&lt;TYPE&gt;NAME,DESCRIPTION[,ITEM_DESCRIPTION]}
-        ''';		{$PropertyName,The name of the property} = First argument is the name which will be replaced. The second is the description for the  [rest of string was truncated]&quot;;.
+        ''';		{$PropertyName,The name of the property} = First argument is the name which will be replaced. [rest of string was truncated]&quot;;.
         '''</summary>
         Public ReadOnly Property Template_SourcePawnOldPlugin() As String
             Get

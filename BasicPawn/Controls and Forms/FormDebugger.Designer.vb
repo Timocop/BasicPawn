@@ -155,14 +155,14 @@ Partial Class FormDebugger
         'ToolStripMenuItem_File
         '
         Me.ToolStripMenuItem_File.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItemFile_Exit})
-        Me.ToolStripMenuItem_File.Image = Global.BasicPawn.My.Resources.Resources.imageres_5306_16x16_32
+        Me.ToolStripMenuItem_File.Image = Global.BasicPawn.My.Resources.Resources.imageres_5306_16x16
         Me.ToolStripMenuItem_File.Name = "ToolStripMenuItem_File"
         Me.ToolStripMenuItem_File.Size = New System.Drawing.Size(53, 20)
         Me.ToolStripMenuItem_File.Text = "&File"
         '
         'ToolStripMenuItemFile_Exit
         '
-        Me.ToolStripMenuItemFile_Exit.Image = Global.BasicPawn.My.Resources.Resources.imageres_5337_16x16_32
+        Me.ToolStripMenuItemFile_Exit.Image = Global.BasicPawn.My.Resources.Resources.imageres_5337_16x16
         Me.ToolStripMenuItemFile_Exit.Name = "ToolStripMenuItemFile_Exit"
         Me.ToolStripMenuItemFile_Exit.Size = New System.Drawing.Size(92, 22)
         Me.ToolStripMenuItemFile_Exit.Text = "&Exit"
@@ -170,7 +170,7 @@ Partial Class FormDebugger
         'ToolStripMenuItem_Tools
         '
         Me.ToolStripMenuItem_Tools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_ToolsSettings, Me.ToolStripMenuItem_ToolsCleanupTemp})
-        Me.ToolStripMenuItem_Tools.Image = Global.BasicPawn.My.Resources.Resources.imageres_5364_16x16_32
+        Me.ToolStripMenuItem_Tools.Image = Global.BasicPawn.My.Resources.Resources.imageres_5364_16x16
         Me.ToolStripMenuItem_Tools.Name = "ToolStripMenuItem_Tools"
         Me.ToolStripMenuItem_Tools.Size = New System.Drawing.Size(63, 20)
         Me.ToolStripMenuItem_Tools.Text = "Tools"
@@ -178,7 +178,7 @@ Partial Class FormDebugger
         'ToolStripMenuItem_ToolsSettings
         '
         Me.ToolStripMenuItem_ToolsSettings.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_SettingsCatchExceptions, Me.ToolStripMenuItem_SettingsEntities})
-        Me.ToolStripMenuItem_ToolsSettings.Image = Global.BasicPawn.My.Resources.Resources.imageres_5364_16x16_32
+        Me.ToolStripMenuItem_ToolsSettings.Image = Global.BasicPawn.My.Resources.Resources.imageres_5364_16x16
         Me.ToolStripMenuItem_ToolsSettings.Name = "ToolStripMenuItem_ToolsSettings"
         Me.ToolStripMenuItem_ToolsSettings.Size = New System.Drawing.Size(254, 22)
         Me.ToolStripMenuItem_ToolsSettings.Text = "Settings"
@@ -215,7 +215,7 @@ Partial Class FormDebugger
         '
         'ToolStripMenuItem_ToolsCleanupTemp
         '
-        Me.ToolStripMenuItem_ToolsCleanupTemp.Image = Global.BasicPawn.My.Resources.Resources.imageres_5368_16x16_32
+        Me.ToolStripMenuItem_ToolsCleanupTemp.Image = Global.BasicPawn.My.Resources.Resources.imageres_5368_16x16
         Me.ToolStripMenuItem_ToolsCleanupTemp.Name = "ToolStripMenuItem_ToolsCleanupTemp"
         Me.ToolStripMenuItem_ToolsCleanupTemp.Size = New System.Drawing.Size(254, 22)
         Me.ToolStripMenuItem_ToolsCleanupTemp.Text = "Cleanup temporary debugger files"
@@ -224,7 +224,7 @@ Partial Class FormDebugger
         '
         Me.ToolStripMenuItem_DebugStart.AutoToolTip = True
         Me.ToolStripMenuItem_DebugStart.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.ToolStripMenuItem_DebugStart.Image = Global.BasicPawn.My.Resources.Resources.imageres_5341_16x16_32
+        Me.ToolStripMenuItem_DebugStart.Image = Global.BasicPawn.My.Resources.Resources.imageres_5341_16x16
         Me.ToolStripMenuItem_DebugStart.Name = "ToolStripMenuItem_DebugStart"
         Me.ToolStripMenuItem_DebugStart.Size = New System.Drawing.Size(28, 20)
         Me.ToolStripMenuItem_DebugStart.ToolTipText = "Start/Continue debugging"
@@ -233,7 +233,7 @@ Partial Class FormDebugger
         '
         Me.ToolStripMenuItem_DebugPause.AutoToolTip = True
         Me.ToolStripMenuItem_DebugPause.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.ToolStripMenuItem_DebugPause.Image = Global.BasicPawn.My.Resources.Resources.imageres_5313_16x16_32
+        Me.ToolStripMenuItem_DebugPause.Image = Global.BasicPawn.My.Resources.Resources.imageres_5313_16x16
         Me.ToolStripMenuItem_DebugPause.Name = "ToolStripMenuItem_DebugPause"
         Me.ToolStripMenuItem_DebugPause.Size = New System.Drawing.Size(28, 20)
         Me.ToolStripMenuItem_DebugPause.ToolTipText = "Suspend target"
@@ -241,7 +241,7 @@ Partial Class FormDebugger
         'ToolStripMenuItem_DebugStop
         '
         Me.ToolStripMenuItem_DebugStop.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.ToolStripMenuItem_DebugStop.Image = Global.BasicPawn.My.Resources.Resources.imageres_5337_16x16_32
+        Me.ToolStripMenuItem_DebugStop.Image = Global.BasicPawn.My.Resources.Resources.imageres_5337_16x16
         Me.ToolStripMenuItem_DebugStop.Name = "ToolStripMenuItem_DebugStop"
         Me.ToolStripMenuItem_DebugStop.Size = New System.Drawing.Size(28, 20)
         Me.ToolStripMenuItem_DebugStop.ToolTipText = "Stop debugging"
@@ -249,7 +249,7 @@ Partial Class FormDebugger
         'ToolStripMenuItem_DebugRefresh
         '
         Me.ToolStripMenuItem_DebugRefresh.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.ToolStripMenuItem_DebugRefresh.Image = Global.BasicPawn.My.Resources.Resources.imageres_5311_16x16_32
+        Me.ToolStripMenuItem_DebugRefresh.Image = Global.BasicPawn.My.Resources.Resources.imageres_5311_16x16
         Me.ToolStripMenuItem_DebugRefresh.Name = "ToolStripMenuItem_DebugRefresh"
         Me.ToolStripMenuItem_DebugRefresh.Size = New System.Drawing.Size(28, 20)
         Me.ToolStripMenuItem_DebugRefresh.ToolTipText = "Refreshes the source and restarts the debugger when debugging is active"

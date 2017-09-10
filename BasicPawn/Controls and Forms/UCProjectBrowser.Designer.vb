@@ -92,14 +92,14 @@ Partial Class UCProjectBrowser
         '
         'ToolStripMenuItem_Open
         '
-        Me.ToolStripMenuItem_Open.Image = Global.BasicPawn.My.Resources.Resources.imageres_5338_16x16_32
+        Me.ToolStripMenuItem_Open.Image = Global.BasicPawn.My.Resources.Resources.imageres_5338_16x16
         Me.ToolStripMenuItem_Open.Name = "ToolStripMenuItem_Open"
         Me.ToolStripMenuItem_Open.Size = New System.Drawing.Size(183, 22)
         Me.ToolStripMenuItem_Open.Text = "Open"
         '
         'ToolStripMenuItem_ProjectSave
         '
-        Me.ToolStripMenuItem_ProjectSave.Image = Global.BasicPawn.My.Resources.Resources.imageres_5303_16x16_32
+        Me.ToolStripMenuItem_ProjectSave.Image = Global.BasicPawn.My.Resources.Resources.imageres_5303_16x16
         Me.ToolStripMenuItem_ProjectSave.Name = "ToolStripMenuItem_ProjectSave"
         Me.ToolStripMenuItem_ProjectSave.Size = New System.Drawing.Size(183, 22)
         Me.ToolStripMenuItem_ProjectSave.Text = "Save Project"
@@ -111,21 +111,21 @@ Partial Class UCProjectBrowser
         '
         'ToolStripMenuItem_Cut
         '
-        Me.ToolStripMenuItem_Cut.Image = Global.BasicPawn.My.Resources.Resources.imageres_5314_16x16_32
+        Me.ToolStripMenuItem_Cut.Image = Global.BasicPawn.My.Resources.Resources.imageres_5314_16x16
         Me.ToolStripMenuItem_Cut.Name = "ToolStripMenuItem_Cut"
         Me.ToolStripMenuItem_Cut.Size = New System.Drawing.Size(183, 22)
         Me.ToolStripMenuItem_Cut.Text = "Cut"
         '
         'ToolStripMenuItem_Copy
         '
-        Me.ToolStripMenuItem_Copy.Image = Global.BasicPawn.My.Resources.Resources.imageres_5350_16x16_32
+        Me.ToolStripMenuItem_Copy.Image = Global.BasicPawn.My.Resources.Resources.imageres_5350_16x16
         Me.ToolStripMenuItem_Copy.Name = "ToolStripMenuItem_Copy"
         Me.ToolStripMenuItem_Copy.Size = New System.Drawing.Size(183, 22)
         Me.ToolStripMenuItem_Copy.Text = "Copy"
         '
         'ToolStripMenuItem_Paste
         '
-        Me.ToolStripMenuItem_Paste.Image = Global.BasicPawn.My.Resources.Resources.imageres_5301_16x16_32
+        Me.ToolStripMenuItem_Paste.Image = Global.BasicPawn.My.Resources.Resources.imageres_5301_16x16
         Me.ToolStripMenuItem_Paste.Name = "ToolStripMenuItem_Paste"
         Me.ToolStripMenuItem_Paste.Size = New System.Drawing.Size(183, 22)
         Me.ToolStripMenuItem_Paste.Text = "Paste"
@@ -137,14 +137,14 @@ Partial Class UCProjectBrowser
         '
         'ToolStripMenuItem_CompileAll
         '
-        Me.ToolStripMenuItem_CompileAll.Image = Global.BasicPawn.My.Resources.Resources.imageres_5341_16x16_32
+        Me.ToolStripMenuItem_CompileAll.Image = Global.BasicPawn.My.Resources.Resources.imageres_5341_16x16
         Me.ToolStripMenuItem_CompileAll.Name = "ToolStripMenuItem_CompileAll"
         Me.ToolStripMenuItem_CompileAll.Size = New System.Drawing.Size(183, 22)
         Me.ToolStripMenuItem_CompileAll.Text = "Compile"
         '
         'ToolStripMenuItem_TestAll
         '
-        Me.ToolStripMenuItem_TestAll.Image = Global.BasicPawn.My.Resources.Resources.imageres_5342_16x16_32
+        Me.ToolStripMenuItem_TestAll.Image = Global.BasicPawn.My.Resources.Resources.imageres_5342_16x16
         Me.ToolStripMenuItem_TestAll.Name = "ToolStripMenuItem_TestAll"
         Me.ToolStripMenuItem_TestAll.Size = New System.Drawing.Size(183, 22)
         Me.ToolStripMenuItem_TestAll.Text = "Test"
@@ -156,7 +156,7 @@ Partial Class UCProjectBrowser
         '
         'ToolStripMenuItem_PackFile
         '
-        Me.ToolStripMenuItem_PackFile.Image = Global.BasicPawn.My.Resources.Resources.imageres_5326_16x16_32
+        Me.ToolStripMenuItem_PackFile.Image = Global.BasicPawn.My.Resources.Resources.imageres_5326_16x16
         Me.ToolStripMenuItem_PackFile.Name = "ToolStripMenuItem_PackFile"
         Me.ToolStripMenuItem_PackFile.Size = New System.Drawing.Size(183, 22)
         Me.ToolStripMenuItem_PackFile.Text = "Pack"
@@ -164,7 +164,7 @@ Partial Class UCProjectBrowser
         '
         'ToolStripMenuItem_ExtractFile
         '
-        Me.ToolStripMenuItem_ExtractFile.Image = Global.BasicPawn.My.Resources.Resources.imageres_5320_16x16_32
+        Me.ToolStripMenuItem_ExtractFile.Image = Global.BasicPawn.My.Resources.Resources.imageres_5320_16x16
         Me.ToolStripMenuItem_ExtractFile.Name = "ToolStripMenuItem_ExtractFile"
         Me.ToolStripMenuItem_ExtractFile.Size = New System.Drawing.Size(183, 22)
         Me.ToolStripMenuItem_ExtractFile.Text = "Extract"
@@ -172,7 +172,7 @@ Partial Class UCProjectBrowser
         '
         'ToolStripMenuItem_DeletePack
         '
-        Me.ToolStripMenuItem_DeletePack.Image = Global.BasicPawn.My.Resources.Resources.imageres_5318_16x16_32
+        Me.ToolStripMenuItem_DeletePack.Image = Global.BasicPawn.My.Resources.Resources.imageres_5318_16x16
         Me.ToolStripMenuItem_DeletePack.Name = "ToolStripMenuItem_DeletePack"
         Me.ToolStripMenuItem_DeletePack.Size = New System.Drawing.Size(183, 22)
         Me.ToolStripMenuItem_DeletePack.Text = "Remove packed file"
@@ -185,7 +185,7 @@ Partial Class UCProjectBrowser
         '
         'ToolStripMenuItem_AddTab
         '
-        Me.ToolStripMenuItem_AddTab.Image = Global.BasicPawn.My.Resources.Resources.imageres_5367_16x16_32
+        Me.ToolStripMenuItem_AddTab.Image = Global.BasicPawn.My.Resources.Resources.imageres_5367_16x16
         Me.ToolStripMenuItem_AddTab.Name = "ToolStripMenuItem_AddTab"
         Me.ToolStripMenuItem_AddTab.Size = New System.Drawing.Size(183, 22)
         Me.ToolStripMenuItem_AddTab.Text = "Add this tab"
@@ -219,7 +219,7 @@ Partial Class UCProjectBrowser
         '
         'ToolStripMenuItem_Exlcude
         '
-        Me.ToolStripMenuItem_Exlcude.Image = Global.BasicPawn.My.Resources.Resources.imageres_5337_16x16_32
+        Me.ToolStripMenuItem_Exlcude.Image = Global.BasicPawn.My.Resources.Resources.imageres_5337_16x16
         Me.ToolStripMenuItem_Exlcude.Name = "ToolStripMenuItem_Exlcude"
         Me.ToolStripMenuItem_Exlcude.Size = New System.Drawing.Size(183, 22)
         Me.ToolStripMenuItem_Exlcude.Text = "Exclude from project"

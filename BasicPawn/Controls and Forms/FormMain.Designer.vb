@@ -209,14 +209,14 @@ Partial Class FormMain
         '
         'ToolStripMenuItem_Delete
         '
-        Me.ToolStripMenuItem_Delete.Image = Global.BasicPawn.My.Resources.Resources.imageres_5337_16x16_32
+        Me.ToolStripMenuItem_Delete.Image = Global.BasicPawn.My.Resources.Resources.imageres_5337_16x16
         Me.ToolStripMenuItem_Delete.Name = "ToolStripMenuItem_Delete"
         Me.ToolStripMenuItem_Delete.Size = New System.Drawing.Size(186, 22)
         Me.ToolStripMenuItem_Delete.Text = "Delete"
         '
         'ToolStripMenuItem_SelectAll
         '
-        Me.ToolStripMenuItem_SelectAll.Image = Global.BasicPawn.My.Resources.Resources.imageres_5312_16x16_32
+        Me.ToolStripMenuItem_SelectAll.Image = Global.BasicPawn.My.Resources.Resources.imageres_5312_16x16
         Me.ToolStripMenuItem_SelectAll.Name = "ToolStripMenuItem_SelectAll"
         Me.ToolStripMenuItem_SelectAll.Size = New System.Drawing.Size(186, 22)
         Me.ToolStripMenuItem_SelectAll.Text = "Select all"
@@ -286,14 +286,14 @@ Partial Class FormMain
         '
         'ToolStripMenuItem_HightlightCustom
         '
-        Me.ToolStripMenuItem_HightlightCustom.Image = Global.BasicPawn.My.Resources.Resources.imageres_5313_16x16_32
+        Me.ToolStripMenuItem_HightlightCustom.Image = Global.BasicPawn.My.Resources.Resources.imageres_5313_16x16
         Me.ToolStripMenuItem_HightlightCustom.Name = "ToolStripMenuItem_HightlightCustom"
         Me.ToolStripMenuItem_HightlightCustom.Size = New System.Drawing.Size(186, 22)
         Me.ToolStripMenuItem_HightlightCustom.Text = "Highlight color"
         '
         'ToolStripMenuItem_Comment
         '
-        Me.ToolStripMenuItem_Comment.Image = Global.BasicPawn.My.Resources.Resources.imageres_5348_16x16_32
+        Me.ToolStripMenuItem_Comment.Image = Global.BasicPawn.My.Resources.Resources.imageres_5348_16x16
         Me.ToolStripMenuItem_Comment.Name = "ToolStripMenuItem_Comment"
         Me.ToolStripMenuItem_Comment.Size = New System.Drawing.Size(186, 22)
         Me.ToolStripMenuItem_Comment.Text = "Comment line in/out"
@@ -306,7 +306,7 @@ Partial Class FormMain
         'ToolStripMenuItem_Outline
         '
         Me.ToolStripMenuItem_Outline.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_OutlineToggleAll, Me.ToolStripSeparator13, Me.ToolStripMenuItem_OutlineCollapseAll, Me.ToolStripMenuItem_OutlineExpandAll})
-        Me.ToolStripMenuItem_Outline.Image = Global.BasicPawn.My.Resources.Resources.imageres_5302_16x16_32
+        Me.ToolStripMenuItem_Outline.Image = Global.BasicPawn.My.Resources.Resources.imageres_5302_16x16
         Me.ToolStripMenuItem_Outline.Name = "ToolStripMenuItem_Outline"
         Me.ToolStripMenuItem_Outline.Size = New System.Drawing.Size(186, 22)
         Me.ToolStripMenuItem_Outline.Text = "Outlining"
@@ -373,7 +373,7 @@ Partial Class FormMain
         '
         'ToolStripMenuItem_FileLoadTabs
         '
-        Me.ToolStripMenuItem_FileLoadTabs.Image = Global.BasicPawn.My.Resources.Resources.imageres_5333_16x16_32
+        Me.ToolStripMenuItem_FileLoadTabs.Image = Global.BasicPawn.My.Resources.Resources.imageres_5333_16x16
         Me.ToolStripMenuItem_FileLoadTabs.Name = "ToolStripMenuItem_FileLoadTabs"
         Me.ToolStripMenuItem_FileLoadTabs.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
             Or System.Windows.Forms.Keys.O), System.Windows.Forms.Keys)
@@ -383,7 +383,7 @@ Partial Class FormMain
         '
         'ToolStripMenuItem_FileCloseAll
         '
-        Me.ToolStripMenuItem_FileCloseAll.Image = Global.BasicPawn.My.Resources.Resources.imageres_5318_16x16_32
+        Me.ToolStripMenuItem_FileCloseAll.Image = Global.BasicPawn.My.Resources.Resources.imageres_5318_16x16
         Me.ToolStripMenuItem_FileCloseAll.Name = "ToolStripMenuItem_FileCloseAll"
         Me.ToolStripMenuItem_FileCloseAll.Size = New System.Drawing.Size(290, 22)
         Me.ToolStripMenuItem_FileCloseAll.Text = "Close all"
@@ -404,7 +404,7 @@ Partial Class FormMain
         '
         'ToolStripMenuItem_FileSaveAll
         '
-        Me.ToolStripMenuItem_FileSaveAll.Image = Global.BasicPawn.My.Resources.Resources.imageres_5303_16x16_32
+        Me.ToolStripMenuItem_FileSaveAll.Image = Global.BasicPawn.My.Resources.Resources.imageres_5303_16x16
         Me.ToolStripMenuItem_FileSaveAll.Name = "ToolStripMenuItem_FileSaveAll"
         Me.ToolStripMenuItem_FileSaveAll.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
             Or System.Windows.Forms.Keys.S), System.Windows.Forms.Keys)
@@ -424,7 +424,7 @@ Partial Class FormMain
         '
         'ToolStripMenuItem_FileSaveAsTemp
         '
-        Me.ToolStripMenuItem_FileSaveAsTemp.Image = Global.BasicPawn.My.Resources.Resources.imageres_5303_16x16_32
+        Me.ToolStripMenuItem_FileSaveAsTemp.Image = Global.BasicPawn.My.Resources.Resources.imageres_5303_16x16
         Me.ToolStripMenuItem_FileSaveAsTemp.Name = "ToolStripMenuItem_FileSaveAsTemp"
         Me.ToolStripMenuItem_FileSaveAsTemp.Size = New System.Drawing.Size(290, 22)
         Me.ToolStripMenuItem_FileSaveAsTemp.Text = "Save as &temporary"
@@ -437,28 +437,28 @@ Partial Class FormMain
         '
         'ToolStripMenuItem_FileStartPage
         '
-        Me.ToolStripMenuItem_FileStartPage.Image = Global.BasicPawn.My.Resources.Resources.imageres_5364_16x16_32
+        Me.ToolStripMenuItem_FileStartPage.Image = Global.BasicPawn.My.Resources.Resources.imageres_5364_16x16
         Me.ToolStripMenuItem_FileStartPage.Name = "ToolStripMenuItem_FileStartPage"
         Me.ToolStripMenuItem_FileStartPage.Size = New System.Drawing.Size(290, 22)
         Me.ToolStripMenuItem_FileStartPage.Text = "StartPage"
         '
         'ToolStripMenuItem_FileProjectLoad
         '
-        Me.ToolStripMenuItem_FileProjectLoad.Image = Global.BasicPawn.My.Resources.Resources.imageres_5339_16x16_32
+        Me.ToolStripMenuItem_FileProjectLoad.Image = Global.BasicPawn.My.Resources.Resources.imageres_5339_16x16
         Me.ToolStripMenuItem_FileProjectLoad.Name = "ToolStripMenuItem_FileProjectLoad"
         Me.ToolStripMenuItem_FileProjectLoad.Size = New System.Drawing.Size(290, 22)
         Me.ToolStripMenuItem_FileProjectLoad.Text = "Load Project"
         '
         'ToolStripMenuItem_FileProjectSave
         '
-        Me.ToolStripMenuItem_FileProjectSave.Image = Global.BasicPawn.My.Resources.Resources.imageres_5304_16x16_32
+        Me.ToolStripMenuItem_FileProjectSave.Image = Global.BasicPawn.My.Resources.Resources.imageres_5304_16x16
         Me.ToolStripMenuItem_FileProjectSave.Name = "ToolStripMenuItem_FileProjectSave"
         Me.ToolStripMenuItem_FileProjectSave.Size = New System.Drawing.Size(290, 22)
         Me.ToolStripMenuItem_FileProjectSave.Text = "Save Project as..."
         '
         'ToolStripMenuItem_FileProjectClose
         '
-        Me.ToolStripMenuItem_FileProjectClose.Image = Global.BasicPawn.My.Resources.Resources.imageres_5320_16x16_32
+        Me.ToolStripMenuItem_FileProjectClose.Image = Global.BasicPawn.My.Resources.Resources.imageres_5320_16x16
         Me.ToolStripMenuItem_FileProjectClose.Name = "ToolStripMenuItem_FileProjectClose"
         Me.ToolStripMenuItem_FileProjectClose.Size = New System.Drawing.Size(290, 22)
         Me.ToolStripMenuItem_FileProjectClose.Text = "Close Project"
@@ -470,7 +470,7 @@ Partial Class FormMain
         '
         'ToolStripMenuItem_FileSavePacked
         '
-        Me.ToolStripMenuItem_FileSavePacked.Image = Global.BasicPawn.My.Resources.Resources.imageres_5303_16x16_32
+        Me.ToolStripMenuItem_FileSavePacked.Image = Global.BasicPawn.My.Resources.Resources.imageres_5303_16x16
         Me.ToolStripMenuItem_FileSavePacked.Name = "ToolStripMenuItem_FileSavePacked"
         Me.ToolStripMenuItem_FileSavePacked.Size = New System.Drawing.Size(290, 22)
         Me.ToolStripMenuItem_FileSavePacked.Text = "&Export Packed"
@@ -483,7 +483,7 @@ Partial Class FormMain
         '
         'ToolStripMenuItem_FileOpenFolder
         '
-        Me.ToolStripMenuItem_FileOpenFolder.Image = Global.BasicPawn.My.Resources.Resources.imageres_5304_16x16_32
+        Me.ToolStripMenuItem_FileOpenFolder.Image = Global.BasicPawn.My.Resources.Resources.imageres_5304_16x16
         Me.ToolStripMenuItem_FileOpenFolder.Name = "ToolStripMenuItem_FileOpenFolder"
         Me.ToolStripMenuItem_FileOpenFolder.Size = New System.Drawing.Size(290, 22)
         Me.ToolStripMenuItem_FileOpenFolder.Text = "Open current folder"
@@ -531,7 +531,7 @@ Partial Class FormMain
         '
         'ToolStripMenuItem_ToolsConvertTabsSpaces
         '
-        Me.ToolStripMenuItem_ToolsConvertTabsSpaces.Image = Global.BasicPawn.My.Resources.Resources.imageres_5357_16x16_32
+        Me.ToolStripMenuItem_ToolsConvertTabsSpaces.Image = Global.BasicPawn.My.Resources.Resources.imageres_5357_16x16
         Me.ToolStripMenuItem_ToolsConvertTabsSpaces.Name = "ToolStripMenuItem_ToolsConvertTabsSpaces"
         Me.ToolStripMenuItem_ToolsConvertTabsSpaces.Size = New System.Drawing.Size(225, 22)
         Me.ToolStripMenuItem_ToolsConvertTabsSpaces.Text = "Convert Tabs && Spaces"
@@ -725,14 +725,14 @@ Partial Class FormMain
         '
         'ToolStripMenuItem_HelpCheckUpdates
         '
-        Me.ToolStripMenuItem_HelpCheckUpdates.Image = Global.BasicPawn.My.Resources.Resources.imageres_5332_16x16_32
+        Me.ToolStripMenuItem_HelpCheckUpdates.Image = Global.BasicPawn.My.Resources.Resources.imageres_5332_16x16
         Me.ToolStripMenuItem_HelpCheckUpdates.Name = "ToolStripMenuItem_HelpCheckUpdates"
         Me.ToolStripMenuItem_HelpCheckUpdates.Size = New System.Drawing.Size(170, 22)
         Me.ToolStripMenuItem_HelpCheckUpdates.Text = "Check for updates"
         '
         'ToolStripMenuItem_HelpGithub
         '
-        Me.ToolStripMenuItem_HelpGithub.Image = Global.BasicPawn.My.Resources.Resources.imageres_5316_16x16_32
+        Me.ToolStripMenuItem_HelpGithub.Image = Global.BasicPawn.My.Resources.Resources.imageres_5316_16x16
         Me.ToolStripMenuItem_HelpGithub.Name = "ToolStripMenuItem_HelpGithub"
         Me.ToolStripMenuItem_HelpGithub.Size = New System.Drawing.Size(170, 22)
         Me.ToolStripMenuItem_HelpGithub.Text = "View on Github"
@@ -901,7 +901,7 @@ Partial Class FormMain
         '
         'ToolStripMenuItem_Tabs_Close
         '
-        Me.ToolStripMenuItem_Tabs_Close.Image = Global.BasicPawn.My.Resources.Resources.imageres_5337_16x16_32
+        Me.ToolStripMenuItem_Tabs_Close.Image = Global.BasicPawn.My.Resources.Resources.imageres_5337_16x16
         Me.ToolStripMenuItem_Tabs_Close.Name = "ToolStripMenuItem_Tabs_Close"
         Me.ToolStripMenuItem_Tabs_Close.Size = New System.Drawing.Size(178, 22)
         Me.ToolStripMenuItem_Tabs_Close.Text = "Close"
@@ -925,14 +925,14 @@ Partial Class FormMain
         '
         'ToolStripMenuItem_Tabs_OpenFolder
         '
-        Me.ToolStripMenuItem_Tabs_OpenFolder.Image = Global.BasicPawn.My.Resources.Resources.imageres_5304_16x16_32
+        Me.ToolStripMenuItem_Tabs_OpenFolder.Image = Global.BasicPawn.My.Resources.Resources.imageres_5304_16x16
         Me.ToolStripMenuItem_Tabs_OpenFolder.Name = "ToolStripMenuItem_Tabs_OpenFolder"
         Me.ToolStripMenuItem_Tabs_OpenFolder.Size = New System.Drawing.Size(178, 22)
         Me.ToolStripMenuItem_Tabs_OpenFolder.Text = "Open current folder"
         '
         'ToolStripMenuItem_Tabs_Popout
         '
-        Me.ToolStripMenuItem_Tabs_Popout.Image = Global.BasicPawn.My.Resources.Resources.imageres_5333_16x16_32
+        Me.ToolStripMenuItem_Tabs_Popout.Image = Global.BasicPawn.My.Resources.Resources.imageres_5333_16x16
         Me.ToolStripMenuItem_Tabs_Popout.Name = "ToolStripMenuItem_Tabs_Popout"
         Me.ToolStripMenuItem_Tabs_Popout.Size = New System.Drawing.Size(178, 22)
         Me.ToolStripMenuItem_Tabs_Popout.Text = "Popout"

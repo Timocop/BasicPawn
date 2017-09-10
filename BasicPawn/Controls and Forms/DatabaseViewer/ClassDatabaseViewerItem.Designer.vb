@@ -83,7 +83,7 @@ Partial Class ClassDatabaseViewerItem
         'ClassPictureBoxQuality1
         '
         Me.ClassPictureBoxQuality1.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.ClassPictureBoxQuality1.Image = Global.BasicPawn.My.Resources.Resources.imageres_5360_16x16_32
+        Me.ClassPictureBoxQuality1.Image = Global.BasicPawn.My.Resources.Resources.imageres_5360_16x16
         Me.ClassPictureBoxQuality1.Location = New System.Drawing.Point(9, 7)
         Me.ClassPictureBoxQuality1.m_HighQuality = True
         Me.ClassPictureBoxQuality1.Margin = New System.Windows.Forms.Padding(9, 3, 9, 3)
