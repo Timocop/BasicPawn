@@ -159,7 +159,7 @@ Public Class PluginSample
 
 
         Private Sub BuildAboutMenu()
-            g_mAboutMenuItem = New ToolStripMenuItem("About Sample Plugin", BasicPawn.My.Resources.imageres_5314_16x16_32)
+            g_mAboutMenuItem = New ToolStripMenuItem("About Sample Plugin", BasicPawn.My.Resources.imageres_5314_16x16)
             g_mPluginSample.g_mFormMain.MenuStrip_BasicPawn.Items.Add(g_mAboutMenuItem)
 
             RemoveHandler g_mAboutMenuItem.Click, AddressOf OnMenuItemClick

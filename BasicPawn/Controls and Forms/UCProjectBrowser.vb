@@ -356,6 +356,9 @@ Public Class UCProjectBrowser
 
                 Dim mListViewItemData = DirectCast(mListViewItem, ClassListViewItemData)
                 Dim mInfo = DirectCast(mListViewItemData.g_mData("Info"), ClassProjectControl.STRUC_PROJECT_FILE_INFO)
+                If (Not IO.File.Exists(mInfo.sFile)) Then
+                    Throw New ArgumentException(String.Format("File '{0}' does not exist", mInfo.sFile))
+                End If
 
                 Dim bFound As Boolean = False
                 For i = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1
@@ -386,7 +389,16 @@ Public Class UCProjectBrowser
     Private Sub ToolStripMenuItem_ProjectSave_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ProjectSave.Click
         Try
             If (String.IsNullOrEmpty(g_ClassProjectControl.m_ProjectFile)) Then
-                Return
+                Using i As New SaveFileDialog
+                    i.Filter = String.Format("BasicPawn Project|*{0}", ClassProjectControl.g_sProjectExtension)
+                    i.FileName = g_ClassProjectControl.m_ProjectFile
+
+                    If (i.ShowDialog = DialogResult.OK) Then
+                        g_ClassProjectControl.m_ProjectFile = i.FileName
+                    Else
+                        Return
+                    End If
+                End Using
             End If
 
             g_ClassProjectControl.SaveProject()
@@ -504,7 +516,7 @@ Public Class UCProjectBrowser
             Dim mListViewItemData = DirectCast(ListView_ProjectFiles.SelectedItems(0), ClassListViewItemData)
             Dim mInfo = DirectCast(mListViewItemData.g_mData("Info"), ClassProjectControl.STRUC_PROJECT_FILE_INFO)
             If (Not IO.File.Exists(mInfo.sFile)) Then
-                Throw New ArgumentException("File does not exist")
+                Throw New ArgumentException(String.Format("File '{0}' does not exist", mInfo.sFile))
             End If
 
             For i = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1
@@ -622,7 +634,6 @@ Public Class UCProjectBrowser
         Next
 
         ToolStripMenuItem_Open.Enabled = (ListView_ProjectFiles.SelectedItems.Count > 0)
-        ToolStripMenuItem_ProjectSave.Enabled = (Not String.IsNullOrEmpty(g_ClassProjectControl.m_ProjectFile))
 
         ToolStripMenuItem_CompileAll.Enabled = (ListView_ProjectFiles.SelectedItems.Count > 0)
         ToolStripMenuItem_TestAll.Enabled = (ListView_ProjectFiles.SelectedItems.Count > 0)
