@@ -22,7 +22,7 @@ Namespace My.Resources
     '''<summary>
     '''  A strongly-typed resource class, for looking up localized strings, etc.
     '''</summary>
-    <Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0"),  _
+    <Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0"),  _
      Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
      Global.System.Runtime.CompilerServices.CompilerGeneratedAttribute(),  _
      Global.Microsoft.VisualBasic.HideModuleNameAttribute()>  _
@@ -171,7 +171,7 @@ Namespace My.Resources
         '''	Handle hTriggerFile = OpenFile(&quot;{IndentifierGUID}.trigger.bpdebug&quot;, &quot;w&quot;);
         '''	if(hTriggerFile == INVALID_HANDLE)
         '''		return val;
-        '''
+        '''	
         '''	WriteFileLine(hTriggerFile, &quot;i:%d&quot;, val);
         '''	WriteFileLine(hTriggerFile, &quot;f:%f&quot;, val);
         '''	FlushFile(hTriggerFile);
@@ -181,7 +181,7 @@ Namespace My.Resources
         '''	{
         '''		if(FileExists(&quot;{IndentifierGUID}.continue.bpdebug&quot;))
         '''		{
-        '''			DeleteFile(&quot;{IndentifierGUID}.continue [rest of string was truncated]&quot;;.
+        '''			DeleteFile(&quot;{IndentifierGUID}.continu [rest of string was truncated]&quot;;.
         '''</summary>
         Public ReadOnly Property Debugger_BreakpointModuleNew() As String
             Get
@@ -200,7 +200,7 @@ Namespace My.Resources
         '''	new Handle:hTriggerFile = OpenFile(&quot;{IndentifierGUID}.trigger.bpdebug&quot;, &quot;w&quot;);
         '''	if(hTriggerFile == INVALID_HANDLE)
         '''		return val;
-        '''
+        '''	
         '''	WriteFileLine(hTriggerFile, &quot;i:%d&quot;, val);
         '''	WriteFileLine(hTriggerFile, &quot;f:%f&quot;, val);
         '''	FlushFile(hTriggerFile);
@@ -210,7 +210,7 @@ Namespace My.Resources
         '''	{
         '''		if(FileExists(&quot;{IndentifierGUID}.continue.bpdebug&quot;))
         '''		{
-        '''			DeleteFile(&quot;{IndentifierGUID}.cont [rest of string was truncated]&quot;;.
+        '''			DeleteFile(&quot;{IndentifierGUID}.con [rest of string was truncated]&quot;;.
         '''</summary>
         Public ReadOnly Property Debugger_BreakpointModuleOld() As String
             Get
@@ -226,7 +226,13 @@ Namespace My.Resources
         '''#define ENTITY_FULL_UPDATE_TIME 60.0
         '''#define MAXENTITIES 2048
         '''
-        '''public Plugin:myinfo = 
+        '''enum EntityDebuggerAction
+        '''{
+        '''	Action_Update,
+        '''	Action_Remove,
+        '''}
+        '''
+        '''public Plugin:myinfo =
         '''{
         '''	name = &quot;BasicPawn Debugger Module Runner&quot;,
         '''	author = &quot;Timocop&quot;,
@@ -235,17 +241,12 @@ Namespace My.Resources
         '''	url = &quot;&quot;
         '''};
         '''
-        '''enum EntityDebuggerAction 
+        '''public OnPluginStart()
         '''{
-        '''	Action_Update,
-        '''	Action_Remove,
+        '''	CreateTimer(1.0, SendPingTimer, INVALID_HANDLE, TIMER_REPEAT);
         '''}
         '''
-        '''public OnGameFrame()
-        '''{
-        '''	for(; /* Execute debugger commands */ ;)
-        '''	{
-        '''		if(!FileExists(&quot;{IndentifierGUID}.cmd.bpd [rest of string was truncated]&quot;;.
+        '''public OnGameFrame() [rest of string was truncated]&quot;;.
         '''</summary>
         Public ReadOnly Property Debugger_CommandRunnerEngineOld() As String
             Get
@@ -300,6 +301,26 @@ Namespace My.Resources
         Public ReadOnly Property Debugger_WatcherModuleOld() As String
             Get
                 Return ResourceManager.GetString("Debugger_WatcherModuleOld", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        '''</summary>
+        Public ReadOnly Property Ico_Folder() As System.Drawing.Icon
+            Get
+                Dim obj As Object = ResourceManager.GetObject("Ico_Folder", resourceCulture)
+                Return CType(obj,System.Drawing.Icon)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        '''</summary>
+        Public ReadOnly Property Ico_Rtf() As System.Drawing.Icon
+            Get
+                Dim obj As Object = ResourceManager.GetObject("Ico_Rtf", resourceCulture)
+                Return CType(obj,System.Drawing.Icon)
             End Get
         End Property
         
@@ -653,30 +674,78 @@ Namespace My.Resources
         End Property
         
         '''<summary>
-        '''  Looks up a localized string similar to #pragma semicolon 1
-        '''
-        '''#define DEBUG
-        '''
-        '''#include &lt;sourcemod&gt;
-        '''#include &lt;sdktools&gt;
-        '''
-        '''public Plugin:myinfo = 
-        '''{
-        '''	name = &quot;&quot;,
-        '''	author = &quot;&quot;,
-        '''	description = &quot;&quot;,
-        '''	version = &quot;0.0&quot;,
-        '''	url = &quot;&quot;
-        '''};
-        '''
-        '''public OnPluginStart()
-        '''{
-        '''	
-        '''}.
+        '''  Looks up a localized string similar to ; WARNING
+        '''; This file should not be read/overwritten by standard ini parsers!
+        ''';
+        ''';	Type info:
+        ''';		$ = Default string replace.
+        ''';		? = (Two names required) Boolean, first string replace if TRUE, second string replace if FALSE.
+        ''';		# = (More than one name required) List, multiple string replace choices.
+        ''';
+        ''';	Properties info:
+        ''';		{&lt;TYPE&gt;NAME,DESCRIPTION[,ITEM_DESCRIPTION]}
+        ''';		{$PropertyName,The name of the property} = First argument is the name which will be replaced. The second is the description for the  [rest of string was truncated]&quot;;.
         '''</summary>
-        Public ReadOnly Property SourcePawnOldTemplate() As String
+        Public ReadOnly Property Template_AMXModXPlugin() As String
             Get
-                Return ResourceManager.GetString("SourcePawnOldTemplate", resourceCulture)
+                Return ResourceManager.GetString("Template_AMXModXPlugin", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to ; WARNING
+        '''; This file should not be read/overwritten by standard ini parsers!
+        ''';
+        ''';	Type info:
+        ''';		$ = Default string replace.
+        ''';		? = (Two names required) Boolean, first string replace if TRUE, second string replace if FALSE.
+        ''';		# = (More than one name required) List, multiple string replace choices.
+        ''';
+        ''';	Properties info:
+        ''';		{&lt;TYPE&gt;NAME,DESCRIPTION[,ITEM_DESCRIPTION]}
+        ''';		{$PropertyName,The name of the property} = First argument is the name which will be replaced. The second is the description for the  [rest of string was truncated]&quot;;.
+        '''</summary>
+        Public ReadOnly Property Template_Include() As String
+            Get
+                Return ResourceManager.GetString("Template_Include", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to ; WARNING
+        '''; This file should not be read/overwritten by standard ini parsers!
+        ''';
+        ''';	Type info:
+        ''';		$ = Default string replace.
+        ''';		? = (Two names required) Boolean, first string replace if TRUE, second string replace if FALSE.
+        ''';		# = (More than one name required) List, multiple string replace choices.
+        ''';
+        ''';	Properties info:
+        ''';		{&lt;TYPE&gt;NAME,DESCRIPTION[,ITEM_DESCRIPTION]}
+        ''';		{$PropertyName,The name of the property} = First argument is the name which will be replaced. The second is the description for the  [rest of string was truncated]&quot;;.
+        '''</summary>
+        Public ReadOnly Property Template_SourcePawnNewPlugin() As String
+            Get
+                Return ResourceManager.GetString("Template_SourcePawnNewPlugin", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to ; WARNING
+        '''; This file should not be read/overwritten by standard ini parsers!
+        ''';
+        ''';	Type info:
+        ''';		$ = Default string replace.
+        ''';		? = (Two names required) Boolean, first string replace if TRUE, second string replace if FALSE.
+        ''';		# = (More than one name required) List, multiple string replace choices.
+        ''';
+        ''';	Properties info:
+        ''';		{&lt;TYPE&gt;NAME,DESCRIPTION[,ITEM_DESCRIPTION]}
+        ''';		{$PropertyName,The name of the property} = First argument is the name which will be replaced. The second is the description for the  [rest of string was truncated]&quot;;.
+        '''</summary>
+        Public ReadOnly Property Template_SourcePawnOldPlugin() As String
+            Get
+                Return ResourceManager.GetString("Template_SourcePawnOldPlugin", resourceCulture)
             End Get
         End Property
     End Module

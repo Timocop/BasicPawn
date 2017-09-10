@@ -286,6 +286,12 @@
     <Compile Include="Controls and Forms\FormMultiCompiler.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Controls and Forms\FormNewWizard.Designer.vb">
+      <DependentUpon>FormNewWizard.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controls and Forms\FormNewWizard.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Controls and Forms\FormOpenTabFromInstances.Designer.vb">
       <DependentUpon>FormOpenTabFromInstances.vb</DependentUpon>
     </Compile>
@@ -407,6 +413,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls and Forms\FormMultiCompiler.resx">
       <DependentUpon>FormMultiCompiler.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls and Forms\FormNewWizard.resx">
+      <DependentUpon>FormNewWizard.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls and Forms\FormOpenTabFromInstances.resx">
       <DependentUpon>FormOpenTabFromInstances.vb</DependentUpon>
@@ -538,6 +547,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="BasicPawnIcon.ico" />
+    <None Include="Resources\Template_Include.txt" />
+    <None Include="Resources\Template_AMXModXPlugin.txt" />
+    <None Include="Resources\Template_SourcePawnNewPlugin.txt" />
+    <None Include="Resources\imageres_90.ico" />
+    <None Include="Resources\imageres_3.ico" />
+    <None Include="Resources\imageres_2.ico" />
+    <None Include="Resources\Template_SourcePawnOldPlugin.txt" />
     <None Include="Resources\imageres_5326_16x16-32.png" />
     <None Include="Resources\imageres_5357_16x16-32.png" />
     <None Include="Resources\155.png" />

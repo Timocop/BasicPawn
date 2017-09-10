@@ -38,6 +38,10 @@ Public Class ClassIniFileMem
     Public Sub New()
     End Sub
 
+    Public Sub New(sContent As String)
+        g_sIniContent = sContent
+    End Sub
+
     ''' <summary>
     ''' Reads a key value.
     ''' </summary>

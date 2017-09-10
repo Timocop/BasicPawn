@@ -43,7 +43,7 @@ Public Class ClassTabControl
 
     Public Sub Init()
         g_mFormMain.TabControl_SourceTabs.TabPages.Clear()
-        AddTab(True, True)
+        AddTab(True)
     End Sub
 
     ReadOnly Property m_IsLoadingEntries As Boolean
@@ -77,8 +77,18 @@ Public Class ClassTabControl
         End Get
     End Property
 
-    Public Function AddTab(Optional bSelect As Boolean = False, Optional bIncludeTemplate As Boolean = False, Optional bChanged As Boolean = False, Optional bDontRecycleTabs As Boolean = False) As SourceTabPage
+    Public Function AddTab(Optional bSelect As Boolean = False, Optional bShowTemplateWizard As Boolean = False, Optional bChanged As Boolean = False, Optional bDontRecycleTabs As Boolean = False) As SourceTabPage
         Try
+            Dim sTemplateSource As String = ""
+
+            If (bShowTemplateWizard) Then
+                Using i As New FormNewWizard()
+                    If (i.ShowDialog = DialogResult.OK) Then
+                        sTemplateSource = i.m_PreviewTemplateSource
+                    End If
+                End Using
+            End If
+
             ClassTools.ClassForms.SuspendDrawing(g_iControlDrawCoutner, g_mFormMain.SplitContainer_ToolboxAndEditor)
 
             'Recycle first unsaved tab
@@ -90,11 +100,11 @@ Public Class ClassTabControl
             End If
 
             Dim mTabPage As New SourceTabPage(g_mFormMain) With {
-                .m_Changed = bChanged
+                .m_Changed = False
             }
 
-            If (bIncludeTemplate) Then
-                mTabPage.m_TextEditor.Document.TextContent = My.Resources.SourcePawnOldTemplate
+            If (bShowTemplateWizard) Then
+                mTabPage.m_TextEditor.Document.TextContent = sTemplateSource
             End If
 
             g_mFormMain.TabControl_SourceTabs.TabPages.Add(mTabPage)

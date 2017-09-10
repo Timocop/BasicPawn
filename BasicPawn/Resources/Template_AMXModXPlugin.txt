@@ -1,0 +1,45 @@
+; WARNING
+; This file should not be read/overwritten by standard ini parsers!
+;
+;	Type info:
+;		$ = Default string replace.
+;		? = (Two names required) Boolean, first string replace if TRUE, second string replace if FALSE and the third is the default value 0/1.
+;		# = (More than one name required) List, multiple string replace choices.
+;
+;	Properties info:
+;		{<TYPE>NAME,DESCRIPTION[,ITEM_DESCRIPTION]}
+;		{$PropertyName,The name of the property} = First argument is the name which will be replaced. The second is the description for the UI.
+;		{?PropertyName,Allow this property?} = Same as above.
+;		{#PropertyName,Difficulty,Normal} = Same as above but the third argument is the description in the list.
+;
+;	Formating info:
+;		\n = For newline.
+;		\t = For tab (or converted spaces).
+
+
+[Source]
+00100={?ForceSemicolon}{?DebugDefine}{?DebugEcho}
+00200=#define PLUGIN_NAME           "{$InfoName}"
+00300=#define PLUGIN_AUTHOR         "{$InfoAuthor}"
+00400=#define PLUGIN_VERSION        "{$InfoVersion}"
+00500=
+00600=#include <amxmodx>
+00700=#include <amxmisc>
+00800=
+00900=public plugin_init()
+01000={
+01100=\tregister_plugin(PLUGIN_NAME, PLUGIN_VERSION, PLUGIN_AUTHOR);
+01200=}
+
+[Properties]
+$InfoName,Plugin name								=My plugin
+$InfoAuthor,Plugin author							=
+$InfoVersion,Plugin version							=1.0
+?ForceSemicolon,Force Semicolon						=\n#pragma semicolon 1\n
+?ForceSemicolon,Force Semicolon						=
+?ForceSemicolon,Force Semicolon						=0
+?DebugDefine,DEBUG define							=\n#define DEBUG\n
+?DebugDefine,DEBUG define							=
+?DebugEcho,ECHO define								=\n#if 1\n\t#define ECHO(%0) server_print(%0)\n#else\n\t#define ECHO(%0)\n#endif\n
+?DebugEcho,ECHO define								=
+?DebugEcho,ECHO define								=0

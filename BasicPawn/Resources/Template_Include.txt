@@ -1,0 +1,34 @@
+; WARNING
+; This file should not be read/overwritten by standard ini parsers!
+;
+;	Type info:
+;		$ = Default string replace.
+;		? = (Two names required) Boolean, first string replace if TRUE, second string replace if FALSE and the third is the default value 0/1.
+;		# = (More than one name required) List, multiple string replace choices.
+;
+;	Properties info:
+;		{<TYPE>NAME,DESCRIPTION[,ITEM_DESCRIPTION]}
+;		{$PropertyName,The name of the property} = First argument is the name which will be replaced. The second is the description for the UI.
+;		{?PropertyName,Allow this property?} = Same as above.
+;		{#PropertyName,Difficulty,Normal} = Same as above but the third argument is the description in the list.
+;
+;	Formating info:
+;		\n = For newline.
+;		\t = For tab (or converted spaces).
+
+
+[Source]
+00100=//
+00200=// {$IncludeDescription}
+00300=//
+00400=
+00500=#if defined _{$IncludeName}_included
+00600=\t#endinput
+00700=#endif
+00800=#define _{$IncludeName}_included
+00900=
+
+
+[Properties]
+$IncludeName,Include name							=my_include
+$IncludeDescription,Description						=My include
