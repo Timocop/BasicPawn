@@ -111,6 +111,7 @@ Public Class ClassAutocompleteUpdater
                                         g_mFormMain.ToolStripProgressBar_Autocomplete.Visible = True
                                     End Sub)
 
+            Dim mTabs As ClassTabControl.SourceTabPage() = DirectCast(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.GetAllTabs()), ClassTabControl.SourceTabPage())
             Dim sActiveSourceFile As String = CStr(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File))
             Dim sActiveSource As String = CStr(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent))
 
@@ -129,19 +130,68 @@ Public Class ClassAutocompleteUpdater
             'Add debugger placeholder variables and methods
             lTmpAutocompleteList.AddRange((New ClassDebuggerParser(g_mFormMain)).GetDebuggerAutocomplete)
 
-            Dim sIncludes As String() = GetIncludeFiles(sActiveSource, sActiveSourceFile, sActiveSourceFile)
-            Dim sIncludesAll As String() = GetIncludeFiles(sActiveSource, sActiveSourceFile, sActiveSourceFile, True)
+            Dim lIncludes As New List(Of String)
+            Dim lIncludesAll As New List(Of String)
+
+            lIncludes.AddRange(GetIncludeFiles(sActiveSource, sActiveSourceFile, sActiveSourceFile))
+            lIncludesAll.AddRange(GetIncludeFiles(sActiveSource, sActiveSourceFile, sActiveSourceFile, True))
+
+            'Find main tab of include tabs
+            If (True) Then
+                Dim i As Integer
+                For i = 0 To mTabs.Length - 1
+                    If (mTabs(i).m_IsUnsaved) Then
+                        Continue For
+                    End If
+
+                    If (mTabs(i).m_File.ToLower = sActiveSourceFile.ToLower) Then
+                        Continue For
+                    End If
+
+                    If (mTabs(i).m_Includes Is Nothing) Then
+                        Continue For
+                    End If
+
+                    Dim sIncludes As String() = CType(mTabs(i).m_Includes.Clone, String())
+
+                    Dim bIsMain As Boolean = False
+
+                    Dim j As Integer
+                    For j = 0 To sIncludes.Length - 1
+                        If (sIncludes(j).ToLower <> sActiveSourceFile.ToLower) Then
+                            Continue For
+                        End If
+
+                        bIsMain = True
+                        Exit For
+                    Next
+
+                    If (Not bIsMain) Then
+                        Continue For
+                    End If
+
+                    For j = 0 To sIncludes.Length - 1
+                        If (Not lIncludes.Exists(Function(x As String) x.ToLower = sIncludes(j).ToLower)) Then
+                            lIncludes.Add(sIncludes(j))
+                        End If
+
+                        If (Not lIncludesAll.Exists(Function(x As String) x.ToLower = sIncludes(j).ToLower)) Then
+                            lIncludesAll.Add(sIncludes(j))
+                        End If
+                    Next
+                Next
+            End If
 
             'Add preprocessor stuff
-            lTmpAutocompleteList.AddRange(GetPreprocessorKeywords(sIncludesAll))
+            lTmpAutocompleteList.AddRange(GetPreprocessorKeywords(lIncludesAll.ToArray))
 
             'Detect current mod type...
             If (ClassConfigs.m_ActiveConfig.g_iModType = ClassConfigs.STRUC_CONFIG_ITEM.ENUM_MOD_TYPE.AUTO_DETECT) Then
                 Dim iModType As ClassSyntaxTools.ENUM_MOD_TYPE = CType(-1, ClassSyntaxTools.ENUM_MOD_TYPE)
 
-                For i = 0 To sIncludes.Length - 1
+                For i = 0 To lIncludes.Count - 1
                     '... by includes
-                    Select Case (IO.Path.GetFileName(sIncludes(i)).ToLower)
+                    Select Case (IO.Path.GetFileName(lIncludes(i)).ToLower)
                         Case "sourcemod.inc"
                             iModType = ClassSyntaxTools.ENUM_MOD_TYPE.SOURCEMOD
                             Exit For
@@ -152,7 +202,7 @@ Public Class ClassAutocompleteUpdater
                     End Select
 
                     '... by extension
-                    Select Case (IO.Path.GetExtension(sIncludes(i)).ToLower)
+                    Select Case (IO.Path.GetExtension(lIncludes(i)).ToLower)
                         Case ".sp"
                             iModType = ClassSyntaxTools.ENUM_MOD_TYPE.SOURCEMOD
                             Exit For
@@ -201,10 +251,10 @@ Public Class ClassAutocompleteUpdater
                 Dim sSourceList As New ClassSyncList(Of String())
 
                 Dim i As Integer
-                For i = 0 To sIncludes.Length - 1
-                    ParseAutocomplete_Pre(sActiveSource, sActiveSourceFile, sIncludes(i), sSourceList, lTmpAutocompleteList)
+                For i = 0 To lIncludes.Count - 1
+                    ParseAutocomplete_Pre(sActiveSource, sActiveSourceFile, lIncludes(i), sSourceList, lTmpAutocompleteList)
 
-                    g_mFormMain.BeginInvoke(Sub() g_mFormMain.ToolStripProgressBar_Autocomplete.Value = Math.Min(CInt(Math.Floor((i / sIncludes.Length) * 50)), 100))
+                    g_mFormMain.BeginInvoke(Sub() g_mFormMain.ToolStripProgressBar_Autocomplete.Value = Math.Min(CInt(Math.Floor((i / lIncludes.Count) * 50)), 100))
                 Next
 
                 Dim sRegExEnum As String = String.Format("(\b{0}\b)", String.Join("\b|\b", GetEnumNames(lTmpAutocompleteList)))
@@ -225,6 +275,12 @@ Public Class ClassAutocompleteUpdater
                 Sub()
                     ClassSyntaxTools.g_lAutocompleteList.RemoveAll(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
                     ClassSyntaxTools.g_lAutocompleteList.AddRange(lTmpAutocompleteList.ToArray)
+                End Sub)
+
+            ClassSyntaxTools.g_lIncludes.DoSync(
+                Sub()
+                    ClassSyntaxTools.g_lIncludes.Clear()
+                    ClassSyntaxTools.g_lIncludes.AddRange(lIncludes.ToArray)
                 End Sub)
 
             g_mFormMain.BeginInvoke(Sub()

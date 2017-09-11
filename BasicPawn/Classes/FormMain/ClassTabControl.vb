@@ -77,6 +77,16 @@ Public Class ClassTabControl
         End Get
     End Property
 
+    Public Function GetAllTabs() As SourceTabPage()
+        Dim lTabList As New List(Of SourceTabPage)
+
+        For i = 0 To m_TabsCount - 1
+            lTabList.Add(m_Tab(i))
+        Next
+
+        Return lTabList.ToArray
+    End Function
+
     Public Function AddTab(Optional bSelect As Boolean = False, Optional bShowTemplateWizard As Boolean = False, Optional bChanged As Boolean = False, Optional bDontRecycleTabs As Boolean = False) As SourceTabPage
         Try
             Dim sTemplateSource As String = ""
@@ -280,9 +290,10 @@ Public Class ClassTabControl
 
             m_Tab(iIndex).m_Changed = False
             m_Tab(iIndex).m_AutocompleteItems = Nothing
+            m_Tab(iIndex).m_Includes = Nothing
             m_Tab(iIndex).m_FileCachedWriteDate = Now
 
-            SaveLoadTabEntries(iIndex, ENUM_TAB_CONFIG.LOAD)
+            'SaveLoadTabEntries(iIndex, ENUM_TAB_CONFIG.LOAD)
 
             m_Tab(iIndex).m_ClassLineState.m_IgnoreUpdates = False
 
@@ -305,9 +316,10 @@ Public Class ClassTabControl
 
         m_Tab(iIndex).m_Changed = False
         m_Tab(iIndex).m_AutocompleteItems = Nothing
+        m_Tab(iIndex).m_Includes = Nothing
         m_Tab(iIndex).m_FileCachedWriteDate = m_Tab(iIndex).m_FileRealWriteDate
 
-        SaveLoadTabEntries(iIndex, ENUM_TAB_CONFIG.LOAD)
+        'SaveLoadTabEntries(iIndex, ENUM_TAB_CONFIG.LOAD)
 
         m_Tab(iIndex).m_ClassLineState.m_IgnoreUpdates = False
 
@@ -325,7 +337,7 @@ Public Class ClassTabControl
     ''' <param name="iIndex"></param>
     ''' <param name="bSaveAs">Force to use a new file using SaveFileDialog</param>
     Public Sub SaveFileTab(iIndex As Integer, Optional bSaveAs As Boolean = False)
-        SaveLoadTabEntries(iIndex, ENUM_TAB_CONFIG.SAVE)
+        'SaveLoadTabEntries(iIndex, ENUM_TAB_CONFIG.SAVE)
 
         If (bSaveAs OrElse m_Tab(iIndex).m_IsUnsaved OrElse Not IO.File.Exists(m_Tab(iIndex).m_File)) Then
             Using i As New SaveFileDialog
@@ -375,7 +387,7 @@ Public Class ClassTabControl
     ''' <param name="bAlwaysYes">If true, ignores MessageBox prompt</param>
     ''' <returns>False if saved, otherwise canceled.</returns>
     Public Function PromptSaveTab(iIndex As Integer, Optional bAlwaysPrompt As Boolean = False, Optional bAlwaysYes As Boolean = False) As Boolean
-        SaveLoadTabEntries(iIndex, ENUM_TAB_CONFIG.SAVE)
+        'SaveLoadTabEntries(iIndex, ENUM_TAB_CONFIG.SAVE)
 
         If (Not bAlwaysPrompt AndAlso Not m_Tab(iIndex).m_Changed) Then
             Return False
@@ -489,6 +501,7 @@ Public Class ClassTabControl
         Select Case (i)
             Case ENUM_TAB_CONFIG.SAVE
                 m_Tab(iIndex).m_AutocompleteItems = ClassSyntaxTools.g_lAutocompleteList.ToArray
+                m_Tab(iIndex).m_Includes = ClassSyntaxTools.g_lIncludes.ToArray
 
             Case Else
                 Try
@@ -506,6 +519,15 @@ Public Class ClassTabControl
                                 ClassSyntaxTools.g_lAutocompleteList.Clear()
                                 If (m_Tab(iIndex).m_AutocompleteItems IsNot Nothing) Then
                                     ClassSyntaxTools.g_lAutocompleteList.AddRange(m_Tab(iIndex).m_AutocompleteItems)
+                                End If
+                            End Sub)
+
+                    'Includes
+                    ClassSyntaxTools.g_lIncludes.DoSync(
+                            Sub()
+                                ClassSyntaxTools.g_lIncludes.Clear()
+                                If (m_Tab(iIndex).m_Includes IsNot Nothing) Then
+                                    ClassSyntaxTools.g_lIncludes.AddRange(m_Tab(iIndex).m_Includes)
                                 End If
                             End Sub)
 
@@ -572,6 +594,7 @@ Public Class ClassTabControl
 
         Private g_sFile As String = ""
         Private g_mAutocompleteItems As ClassSyntaxTools.STRUC_AUTOCOMPLETE()
+        Private g_sIncludes As String()
         Private g_mSourceTextEditor As TextEditorControlEx
         Private g_bEnabled As Boolean = True
         Private g_mFileCachedWriteDate As Date
@@ -730,6 +753,7 @@ Public Class ClassTabControl
                     End If
 
                     g_mAutocompleteItems = Nothing
+                    g_sIncludes = Nothing
                 End If
             Finally
                 MyBase.Dispose(disposing)
@@ -817,6 +841,15 @@ Public Class ClassTabControl
             End Get
             Set(value As ClassSyntaxTools.STRUC_AUTOCOMPLETE())
                 g_mAutocompleteItems = value
+            End Set
+        End Property
+
+        Public Property m_Includes As String()
+            Get
+                Return g_sIncludes
+            End Get
+            Set(value As String())
+                g_sIncludes = value
             End Set
         End Property
 

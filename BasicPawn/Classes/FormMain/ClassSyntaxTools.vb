@@ -39,6 +39,7 @@ Public Class ClassSyntaxTools
     Public Shared g_sSyntax_SourcePawnMarker As String = "SourcePawn-04e3632f-5472-42c5-929a-c3e0c2b35324"
 
     Public Shared g_lAutocompleteList As New ClassSyncList(Of STRUC_AUTOCOMPLETE)
+    Public Shared g_lIncludes As New ClassSyncList(Of String)
 
     Enum ENUM_SYNTAX_FILES
         MAIN_TEXTEDITOR
