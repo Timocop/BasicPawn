@@ -545,6 +545,7 @@ Public Class ClassTabControl
         Private g_mIncludeFiles As New ClassSyncList(Of DictionaryEntry) '{sTabIdentifier-Ref, IncludeFile}
         Private g_mIncludeFilesFull As New ClassSyncList(Of DictionaryEntry) '{sTabIdentifier-Ref, IncludeFile}
         Private g_iModType As ClassSyntaxTools.ENUM_MOD_TYPE = ClassSyntaxTools.ENUM_MOD_TYPE.SOURCEMOD
+        Private g_bHasReferenceIncludes As Boolean = False
         Private g_mSourceTextEditor As TextEditorControlEx
         Private g_bEnabled As Boolean = True
         Private g_mFileCachedWriteDate As Date
@@ -728,9 +729,9 @@ Public Class ClassTabControl
             End Get
             Set(value As String)
                 g_sFile = value
+                m_Title = IO.Path.GetFileName(value)
 
-                m_Title = IO.Path.GetFileName(g_sFile)
-                Me.ToolTipText = g_sFile
+                UpdateToolTip()
             End Set
         End Property
 
@@ -809,6 +810,20 @@ Public Class ClassTabControl
             End Set
         End Property
 
+        Public Property m_HasReferenceIncludes As Boolean
+            Get
+                Return g_bHasReferenceIncludes
+            End Get
+            Set(value As Boolean)
+                If (g_bHasReferenceIncludes <> value) Then
+                    g_bHasReferenceIncludes = value
+                    Text = g_sText
+
+                    UpdateToolTip()
+                End If
+            End Set
+        End Property
+
         Public ReadOnly Property m_ClassLineState As ClassTextEditorTools.ClassLineState
             Get
                 Return g_mFormMain.g_ClassLineState
@@ -835,6 +850,8 @@ Public Class ClassTabControl
                 If (g_bTextChanged <> value) Then
                     g_bTextChanged = value
                     Text = g_sText
+
+                    UpdateToolTip()
                 End If
             End Set
         End Property
@@ -851,11 +868,22 @@ Public Class ClassTabControl
             End Set
         End Property
 
+        Public Sub UpdateToolTip()
+            Dim lInfo As New List(Of String)
+            If (g_bTextChanged) Then
+                lInfo.Add("Unsaved")
+            End If
+            If (g_bHasReferenceIncludes) Then
+                lInfo.Add("Referenced in other tabs")
+            End If
+
+            Me.ToolTipText = g_sFile & If(lInfo.Count < 1, "", Environment.NewLine & String.Format("({0})", String.Join(", ", lInfo.ToArray)))
+        End Sub
 
 
         Public Overrides Property Text As String
             Get
-                Return g_sText & If(g_bTextChanged, "*"c, "")
+                Return If(g_bHasReferenceIncludes, "#", "") & g_sText & If(g_bTextChanged, "*"c, "")
             End Get
             Set(value As String)
                 MyBase.Text = value

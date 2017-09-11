@@ -163,6 +163,8 @@ Public Class ClassAutocompleteUpdater
 
             'Find main tab of include tabs
             If (True) Then
+                Dim bRefIncludeAdded As Boolean = False
+
                 Dim i As Integer
                 For i = 0 To mTabs.Length - 1
                     If (mTabs(i).m_IsUnsaved) Then
@@ -208,13 +210,19 @@ Public Class ClassAutocompleteUpdater
 
                         If (Not lIncludeFiles.Exists(Function(x As DictionaryEntry) CStr(x.Value).ToLower = CStr(mIncludes(j).Value).ToLower)) Then
                             lIncludeFiles.Add(New DictionaryEntry(sOtherTabIdentifier, mIncludes(j).Value))
+                            bRefIncludeAdded = True
                         End If
 
                         If (Not lIncludeFilesFull.Exists(Function(x As DictionaryEntry) CStr(x.Value).ToLower = CStr(mIncludes(j).Value).ToLower)) Then
                             lIncludeFilesFull.Add(New DictionaryEntry(sOtherTabIdentifier, mIncludes(j).Value))
+                            bRefIncludeAdded = True
                         End If
                     Next
                 Next
+
+                g_mFormMain.BeginInvoke(Sub()
+                                            mRequestTab.m_HasReferenceIncludes = bRefIncludeAdded
+                                        End Sub)
             End If
 
             'Save includes first, they wont be modified below this anyways
