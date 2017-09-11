@@ -91,8 +91,10 @@ Public Class UCObjectBrowser
                           End Sub)
             End If
 
+            Dim mActiveTab As ClassTabControl.SourceTabPage = DirectCast(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab), ClassTabControl.SourceTabPage)
+
             Dim lAutocompleteList As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
-            lAutocompleteList.AddRange(ClassSyntaxTools.g_lAutocompleteList.ToArray)
+            lAutocompleteList.AddRange(mActiveTab.m_AutocompleteItems.ToArray)
 
             If (True) Then
                 Dim i As Integer
@@ -294,7 +296,7 @@ Public Class UCObjectBrowser
                 Return
             End If
 
-            For Each sPath As String In g_mFormMain.g_ClassAutocompleteUpdater.GetIncludeFiles(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)
+            For Each sPath As String In g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IncludeFiles.ToArray
                 If (IO.Path.GetFileName(sPath).ToLower <> TreeView_ObjectBrowser.SelectedNode.Text.ToLower) Then
                     Continue For
                 End If

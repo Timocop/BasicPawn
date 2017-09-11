@@ -112,6 +112,7 @@ Public Class ClassAutocompleteUpdater
                                     End Sub)
 
             Dim mTabs As ClassTabControl.SourceTabPage() = DirectCast(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.GetAllTabs()), ClassTabControl.SourceTabPage())
+            Dim mActiveTab As ClassTabControl.SourceTabPage = DirectCast(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab), ClassTabControl.SourceTabPage)
             Dim sActiveSourceFile As String = CStr(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File))
             Dim sActiveSource As String = CStr(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent))
 
@@ -130,11 +131,11 @@ Public Class ClassAutocompleteUpdater
             'Add debugger placeholder variables and methods
             lTmpAutocompleteList.AddRange((New ClassDebuggerParser(g_mFormMain)).GetDebuggerAutocomplete)
 
-            Dim lIncludes As New List(Of String)
-            Dim lIncludesAll As New List(Of String)
+            Dim lIncludeFiles As New List(Of String)
+            Dim lIncludeFilesFull As New List(Of String)
 
-            lIncludes.AddRange(GetIncludeFiles(sActiveSource, sActiveSourceFile, sActiveSourceFile))
-            lIncludesAll.AddRange(GetIncludeFiles(sActiveSource, sActiveSourceFile, sActiveSourceFile, True))
+            lIncludeFiles.AddRange(GetIncludeFiles(sActiveSource, sActiveSourceFile, sActiveSourceFile))
+            lIncludeFilesFull.AddRange(GetIncludeFiles(sActiveSource, sActiveSourceFile, sActiveSourceFile, True))
 
             'Find main tab of include tabs
             If (True) Then
@@ -148,11 +149,11 @@ Public Class ClassAutocompleteUpdater
                         Continue For
                     End If
 
-                    If (mTabs(i).m_Includes Is Nothing) Then
+                    If (mTabs(i).m_IncludeFiles.Count < 1) Then
                         Continue For
                     End If
 
-                    Dim sIncludes As String() = CType(mTabs(i).m_Includes.Clone, String())
+                    Dim sIncludes As String() = mTabs(i).m_IncludeFiles.ToArray
 
                     Dim bIsMain As Boolean = False
 
@@ -171,27 +172,40 @@ Public Class ClassAutocompleteUpdater
                     End If
 
                     For j = 0 To sIncludes.Length - 1
-                        If (Not lIncludes.Exists(Function(x As String) x.ToLower = sIncludes(j).ToLower)) Then
-                            lIncludes.Add(sIncludes(j))
+                        If (Not lIncludeFiles.Exists(Function(x As String) x.ToLower = sIncludes(j).ToLower)) Then
+                            lIncludeFiles.Add(sIncludes(j))
                         End If
 
-                        If (Not lIncludesAll.Exists(Function(x As String) x.ToLower = sIncludes(j).ToLower)) Then
-                            lIncludesAll.Add(sIncludes(j))
+                        If (Not lIncludeFilesFull.Exists(Function(x As String) x.ToLower = sIncludes(j).ToLower)) Then
+                            lIncludeFilesFull.Add(sIncludes(j))
                         End If
                     Next
                 Next
             End If
 
+            'Save includes first, they wont be modified below this anyways
+            mActiveTab.m_IncludeFiles.DoSync(
+                Sub()
+                    mActiveTab.m_IncludeFiles.Clear()
+                    mActiveTab.m_IncludeFiles.AddRange(lIncludeFiles.ToArray)
+                End Sub)
+
+            mActiveTab.m_IncludeFilesFull.DoSync(
+                Sub()
+                    mActiveTab.m_IncludeFilesFull.Clear()
+                    mActiveTab.m_IncludeFilesFull.AddRange(lIncludeFilesFull.ToArray)
+                End Sub)
+
             'Add preprocessor stuff
-            lTmpAutocompleteList.AddRange(GetPreprocessorKeywords(lIncludesAll.ToArray))
+            lTmpAutocompleteList.AddRange(GetPreprocessorKeywords(lIncludeFilesFull.ToArray))
 
             'Detect current mod type...
             If (ClassConfigs.m_ActiveConfig.g_iModType = ClassConfigs.STRUC_CONFIG_ITEM.ENUM_MOD_TYPE.AUTO_DETECT) Then
                 Dim iModType As ClassSyntaxTools.ENUM_MOD_TYPE = CType(-1, ClassSyntaxTools.ENUM_MOD_TYPE)
 
-                For i = 0 To lIncludes.Count - 1
+                For i = 0 To lIncludeFiles.Count - 1
                     '... by includes
-                    Select Case (IO.Path.GetFileName(lIncludes(i)).ToLower)
+                    Select Case (IO.Path.GetFileName(lIncludeFiles(i)).ToLower)
                         Case "sourcemod.inc"
                             iModType = ClassSyntaxTools.ENUM_MOD_TYPE.SOURCEMOD
                             Exit For
@@ -202,7 +216,7 @@ Public Class ClassAutocompleteUpdater
                     End Select
 
                     '... by extension
-                    Select Case (IO.Path.GetExtension(lIncludes(i)).ToLower)
+                    Select Case (IO.Path.GetExtension(lIncludeFiles(i)).ToLower)
                         Case ".sp"
                             iModType = ClassSyntaxTools.ENUM_MOD_TYPE.SOURCEMOD
                             Exit For
@@ -251,10 +265,10 @@ Public Class ClassAutocompleteUpdater
                 Dim sSourceList As New ClassSyncList(Of String())
 
                 Dim i As Integer
-                For i = 0 To lIncludes.Count - 1
-                    ParseAutocomplete_Pre(sActiveSource, sActiveSourceFile, lIncludes(i), sSourceList, lTmpAutocompleteList)
+                For i = 0 To lIncludeFiles.Count - 1
+                    ParseAutocomplete_Pre(sActiveSource, sActiveSourceFile, lIncludeFiles(i), sSourceList, lTmpAutocompleteList)
 
-                    g_mFormMain.BeginInvoke(Sub() g_mFormMain.ToolStripProgressBar_Autocomplete.Value = Math.Min(CInt(Math.Floor((i / lIncludes.Count) * 50)), 100))
+                    g_mFormMain.BeginInvoke(Sub() g_mFormMain.ToolStripProgressBar_Autocomplete.Value = Math.Min(CInt(Math.Floor((i / lIncludeFiles.Count) * 50)), 100))
                 Next
 
                 Dim sRegExEnum As String = String.Format("(\b{0}\b)", String.Join("\b|\b", GetEnumNames(lTmpAutocompleteList)))
@@ -270,23 +284,20 @@ Public Class ClassAutocompleteUpdater
                 FinalizeAutocompleteMethodmap(lTmpAutocompleteList)
             End If
 
-            'Save everything and update syntax
-            ClassSyntaxTools.g_lAutocompleteList.DoSync(
+            'Save everything and update syntax 
+            mActiveTab.m_AutocompleteItems.DoSync(
                 Sub()
-                    ClassSyntaxTools.g_lAutocompleteList.RemoveAll(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
-                    ClassSyntaxTools.g_lAutocompleteList.AddRange(lTmpAutocompleteList.ToArray)
-                End Sub)
-
-            ClassSyntaxTools.g_lIncludes.DoSync(
-                Sub()
-                    ClassSyntaxTools.g_lIncludes.Clear()
-                    ClassSyntaxTools.g_lIncludes.AddRange(lIncludes.ToArray)
+                    mActiveTab.m_AutocompleteItems.RemoveAll(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
+                    mActiveTab.m_AutocompleteItems.AddRange(lTmpAutocompleteList.ToArray)
                 End Sub)
 
             g_mFormMain.BeginInvoke(Sub()
                                         'Dont move this outside of invoke! Results in "File is already in use!" when aborting the thread... for some reason...
                                         g_mFormMain.g_ClassSyntaxTools.UpdateSyntaxFile(ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE.AUTOCOMPLETE)
                                         g_mFormMain.g_ClassSyntaxTools.UpdateTextEditorSyntax()
+                                    End Sub)
+
+            g_mFormMain.BeginInvoke(Sub()
                                         g_mFormMain.g_mUCObjectBrowser.StartUpdate()
                                     End Sub)
 
@@ -1938,6 +1949,7 @@ Public Class ClassAutocompleteUpdater
 
     Private Sub VariableAutocompleteUpdate_Thread()
         Try
+            Dim mActiveTab As ClassTabControl.SourceTabPage = DirectCast(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab), ClassTabControl.SourceTabPage)
             Dim sSourceFile As String = CStr(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File))
             Dim sActiveSource As String = CStr(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent))
 
@@ -1947,8 +1959,11 @@ Public Class ClassAutocompleteUpdater
                 Return
             End If
 
+            Dim lActiveAutocomplete As New ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
+            lActiveAutocomplete.AddRange(mActiveTab.m_AutocompleteItems.ToArray)
+
             'No autocomplete entries?
-            If (ClassSyntaxTools.g_lAutocompleteList.Count < 1) Then
+            If (lActiveAutocomplete.Count < 1) Then
                 Return
             End If
 
@@ -1957,24 +1972,24 @@ Public Class ClassAutocompleteUpdater
 
             'Parse variables and create methodmaps for variables
             If (True) Then
-                Dim sRegExEnumPattern As String = String.Format("(\b{0}\b)", String.Join("\b|\b", GetEnumNames(ClassSyntaxTools.g_lAutocompleteList)))
+                Dim sRegExEnumPattern As String = String.Format("(\b{0}\b)", String.Join("\b|\b", GetEnumNames(lActiveAutocomplete)))
 
                 If (ClassSettings.g_iSettingsVarAutocompleteCurrentSourceOnly) Then
-                    ParseVariables_Pre(sActiveSource, sSourceFile, sSourceFile, sRegExEnumPattern, lTmpVarAutocompleteList, ClassSyntaxTools.g_lAutocompleteList)
+                    ParseVariables_Pre(sActiveSource, sSourceFile, sSourceFile, sRegExEnumPattern, lTmpVarAutocompleteList, lActiveAutocomplete)
                 Else
-                    Dim sFiles As String() = GetIncludeFiles(sActiveSource, sSourceFile, sSourceFile)
+                    Dim sFiles As String() = mActiveTab.m_IncludeFiles.ToArray
                     For i = 0 To sFiles.Length - 1
-                        ParseVariables_Pre(sActiveSource, sSourceFile, sFiles(i), sRegExEnumPattern, lTmpVarAutocompleteList, ClassSyntaxTools.g_lAutocompleteList)
+                        ParseVariables_Pre(sActiveSource, sSourceFile, sFiles(i), sRegExEnumPattern, lTmpVarAutocompleteList, lActiveAutocomplete)
                     Next
                 End If
 
-                ParseVariables_Post(sActiveSource, sSourceFile, sRegExEnumPattern, lTmpVarAutocompleteList, ClassSyntaxTools.g_lAutocompleteList)
+                ParseVariables_Post(sActiveSource, sSourceFile, sRegExEnumPattern, lTmpVarAutocompleteList, lActiveAutocomplete)
             End If
 
-            ClassSyntaxTools.g_lAutocompleteList.DoSync(
+            mActiveTab.m_AutocompleteItems.DoSync(
                 Sub()
-                    ClassSyntaxTools.g_lAutocompleteList.RemoveAll(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
-                    ClassSyntaxTools.g_lAutocompleteList.AddRange(lTmpVarAutocompleteList.ToArray)
+                    mActiveTab.m_AutocompleteItems.RemoveAll(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE)
+                    mActiveTab.m_AutocompleteItems.AddRange(lTmpVarAutocompleteList.ToArray)
                 End Sub)
 
             lTmpVarAutocompleteList = Nothing

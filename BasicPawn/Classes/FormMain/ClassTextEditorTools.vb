@@ -111,7 +111,7 @@ Public Class ClassTextEditorTools
 
         g_mFormMain.PrintInformation("[INFO]", String.Format("Listing references of: {0}", sWord), False, True, True)
 
-        Dim sIncludeFiles As String() = g_mFormMain.g_ClassAutocompleteUpdater.GetIncludeFiles(mActiveTextEditor.Document.TextContent, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)
+        Dim sIncludeFiles As String() = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IncludeFiles.ToArray
 
         Dim lRefList As New List(Of String)
 

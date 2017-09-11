@@ -51,10 +51,15 @@ Public Class ClassSyntaxUpdater
     ''' The main thread to update all kinds of stuff.
     ''' </summary>
     Private Sub SourceSyntaxUpdater_Thread()
-        Dim dLastFullAutocompleteUpdate As Date = Now
-        Dim dLastVarAutocompleteUpdate As Date = Now
-        Dim dLastMethodAutocompleteUpdate As Date = Now
-        Dim dLastFoldingUpdate As Date = Now
+        Static dFullAutocompleteUpdateDelay As New TimeSpan(0, 0, 1, 0, 0)
+        Static dVarAutocompleteUpdateDelay As New TimeSpan(0, 0, 0, 10, 0)
+        Static dMethodAutocompleteUpdateDelay As New TimeSpan(0, 0, 0, 10, 0)
+        Static dLastFoldingUpdateDelay As New TimeSpan(0, 0, 5)
+
+        Dim dLastFullAutocompleteUpdate As Date = (Now + dFullAutocompleteUpdateDelay)
+        Dim dLastVarAutocompleteUpdate As Date = (Now + dVarAutocompleteUpdateDelay)
+        Dim dLastMethodAutocompleteUpdate As Date = (Now + dMethodAutocompleteUpdateDelay)
+        Dim dLastFoldingUpdate As Date = (Now + dLastFoldingUpdateDelay)
 
         While True
             Threading.Thread.Sleep(500)
@@ -62,21 +67,21 @@ Public Class ClassSyntaxUpdater
             Try
                 'Update Autocomplete
                 If (dLastFullAutocompleteUpdate < Now OrElse g_mFormMain.g_ClassAutocompleteUpdater.g_bForceFullAutocompleteUpdate) Then
-                    dLastFullAutocompleteUpdate = (Now + New TimeSpan(0, 0, 1, 0, 0))
+                    dLastFullAutocompleteUpdate = (Now + dFullAutocompleteUpdateDelay)
 
                     g_mFormMain.BeginInvoke(Sub() g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL))
                 End If
 
                 'Update Variable Autocomplete
                 If (dLastVarAutocompleteUpdate < Now) Then
-                    dLastVarAutocompleteUpdate = (Now + New TimeSpan(0, 0, 0, 10, 0))
+                    dLastVarAutocompleteUpdate = (Now + dVarAutocompleteUpdateDelay)
 
                     g_mFormMain.BeginInvoke(Sub() g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.VARIABLES_AUTOCOMPLETE))
                 End If
 
                 'Update source analysis
                 If (dLastMethodAutocompleteUpdate < Now) Then
-                    dLastMethodAutocompleteUpdate = (Now + New TimeSpan(0, 0, 0, 10, 0))
+                    dLastMethodAutocompleteUpdate = (Now + dMethodAutocompleteUpdateDelay)
 
                     Dim sTextContent As String = CStr(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent))
                     g_mFormMain.g_mSourceSyntaxSourceAnalysis = New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sTextContent)
@@ -84,7 +89,7 @@ Public Class ClassSyntaxUpdater
 
                 'Update Foldings
                 If (dLastFoldingUpdate < Now) Then
-                    dLastFoldingUpdate = Now + New TimeSpan(0, 0, 5)
+                    dLastFoldingUpdate = (Now + dLastFoldingUpdateDelay)
 
                     'If ((Tools.WordCount(Me.Invoke(Function() TextEditorControl1.Document.TextContent), "{") + Tools.WordCount(Me.Invoke(Function() TextEditorControl1.Document.TextContent), "}")) Mod 2 = 0) Then
                     g_mFormMain.BeginInvoke(Sub() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.FoldingManager.UpdateFoldings(Nothing, Nothing))
@@ -122,7 +127,6 @@ Public Class ClassSyntaxUpdater
                 Static iLastAutoupdateCaretOffset2 As Integer = -1
                 If (iLastAutoupdateCaretOffset2 <> iCaretOffset) Then
                     iLastAutoupdateCaretOffset2 = iCaretOffset
-
 
                     If (iCaretOffset > -1 AndAlso iCaretOffset < CInt(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.TextLength))) Then
                         Dim iPosition As Integer = CInt(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column))

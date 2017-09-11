@@ -38,9 +38,6 @@ Public Class ClassSyntaxTools
     Public Shared g_sSyntax_HighlightEnum2Marker As String = "<!-- [DO NOT EDIT | ENUM2 MARKER] -->"
     Public Shared g_sSyntax_SourcePawnMarker As String = "SourcePawn-04e3632f-5472-42c5-929a-c3e0c2b35324"
 
-    Public Shared g_lAutocompleteList As New ClassSyncList(Of STRUC_AUTOCOMPLETE)
-    Public Shared g_lIncludes As New ClassSyncList(Of String)
-
     Enum ENUM_SYNTAX_FILES
         MAIN_TEXTEDITOR
         DEBUGGER_TEXTEDITOR
@@ -357,6 +354,9 @@ Public Class ClassSyntaxTools
 
                             Dim iHighlightCustomCount As Integer = 0
 
+                            Dim mActiveTab As ClassTabControl.SourceTabPage = DirectCast(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab), ClassTabControl.SourceTabPage)
+                            Dim mActiveAutocomplete As STRUC_AUTOCOMPLETE() = mActiveTab.m_AutocompleteItems.ToArray
+
                             Using mSR As New IO.StreamReader(g_SyntaxFiles(i).sFile)
                                 Dim sLine As String
 
@@ -417,7 +417,7 @@ Public Class ClassSyntaxTools
                                             If (sLine.Contains(g_sSyntax_HighlightDefineMarker)) Then
                                                 mXmlBuilder.Append(g_sSyntax_HighlightDefineMarker)
 
-                                                For Each mAutocomplete In g_lAutocompleteList
+                                                For Each mAutocomplete In mActiveAutocomplete
                                                     Select Case (True)
                                                         Case (mAutocomplete.m_Type And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEFINE) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEFINE,
                                                                     (mAutocomplete.m_Type And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PUBLICVAR) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PUBLICVAR
@@ -435,7 +435,7 @@ Public Class ClassSyntaxTools
 
                                                 Dim lExistList As New List(Of String)
 
-                                                For Each mAutocomplete In g_lAutocompleteList
+                                                For Each mAutocomplete In mActiveAutocomplete
                                                     Select Case (True)
                                                         Case (mAutocomplete.m_Type And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM
                                                             Dim sEnumName As String() = mAutocomplete.m_FunctionName.Split("."c)
@@ -464,7 +464,7 @@ Public Class ClassSyntaxTools
 
                                                 Dim lExistList As New List(Of String)
 
-                                                For Each mAutocomplete In g_lAutocompleteList
+                                                For Each mAutocomplete In mActiveAutocomplete
                                                     Select Case (True)
                                                         Case (mAutocomplete.m_Type And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STRUCT) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STRUCT
                                                             If (Not lExistList.Contains(mAutocomplete.m_FunctionName)) Then

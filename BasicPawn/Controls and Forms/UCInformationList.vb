@@ -83,7 +83,7 @@ Public Class UCInformationList
                     Exit While
                 End If
 
-                For Each sPath As String In g_mFormMain.g_ClassAutocompleteUpdater.GetIncludeFiles(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File, True)
+                For Each sPath As String In g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IncludeFilesFull.ToArray
                     If (String.IsNullOrEmpty(sPath) OrElse Not IO.File.Exists(sPath)) Then
                         Continue For
                     End If

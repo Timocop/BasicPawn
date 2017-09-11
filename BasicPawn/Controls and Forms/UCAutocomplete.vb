@@ -160,7 +160,7 @@ Public Class UCAutocomplete
         Dim bSelectedWord As Boolean = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.SelectionManager.HasSomethingSelected
         Dim lListViewItemsList As New List(Of ClassListViewItemData)
 
-        Dim sAutocompleteArray As ClassSyntaxTools.STRUC_AUTOCOMPLETE() = ClassSyntaxTools.g_lAutocompleteList.ToArray
+        Dim sAutocompleteArray As ClassSyntaxTools.STRUC_AUTOCOMPLETE() = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_AutocompleteItems.ToArray
         For i = 0 To sAutocompleteArray.Length - 1
             If (bSelectedWord) Then
                 If (sAutocompleteArray(i).m_FunctionName.Equals(sText)) Then
@@ -298,7 +298,7 @@ Public Class UCAutocomplete
                 Dim bPrintedInfo As Boolean = False
                 Dim iPrintedItems As Integer = 0
                 Dim iMaxPrintedItems As Integer = 3
-                Dim sAutocompleteArray As ClassSyntaxTools.STRUC_AUTOCOMPLETE() = ClassSyntaxTools.g_lAutocompleteList.ToArray
+                Dim sAutocompleteArray As ClassSyntaxTools.STRUC_AUTOCOMPLETE() = g_AutocompleteUC.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_AutocompleteItems.ToArray
                 For i = 0 To sAutocompleteArray.Length - 1
                     If ((sAutocompleteArray(i).m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE AndAlso Not bIsMethodMap) Then
                         Continue For

@@ -24,7 +24,6 @@ Public Class ClassTabControl
     Private g_mFormMain As FormMain
     Private g_bIgnoreOnTabSelected As Boolean = False
     Private g_sOldActiveIdentifier As String = ""
-    Private g_bIsLoadingEntries As Boolean = False
 
     Private g_iControlDrawCoutner As Integer = 0
 
@@ -45,13 +44,6 @@ Public Class ClassTabControl
         g_mFormMain.TabControl_SourceTabs.TabPages.Clear()
         AddTab(True)
     End Sub
-
-    ReadOnly Property m_IsLoadingEntries As Boolean
-        Get
-            Return g_bIsLoadingEntries
-        End Get
-    End Property
-
 
     ReadOnly Property m_ActiveTab As SourceTabPage
         Get
@@ -78,13 +70,13 @@ Public Class ClassTabControl
     End Property
 
     Public Function GetAllTabs() As SourceTabPage()
-        Dim lTabList As New List(Of SourceTabPage)
+        Dim lTabs As New List(Of SourceTabPage)
 
         For i = 0 To m_TabsCount - 1
-            lTabList.Add(m_Tab(i))
+            lTabs.Add(m_Tab(i))
         Next
 
-        Return lTabList.ToArray
+        Return lTabs.ToArray
     End Function
 
     Public Function AddTab(Optional bSelect As Boolean = False, Optional bShowTemplateWizard As Boolean = False, Optional bChanged As Boolean = False, Optional bDontRecycleTabs As Boolean = False) As SourceTabPage
@@ -200,19 +192,18 @@ Public Class ClassTabControl
 
             Dim iLastTabIndex As Integer = GetTabIndexByIdentifier(g_sOldActiveIdentifier)
             If (iLastTabIndex > -1) Then
-                SaveLoadTabEntries(iLastTabIndex, ENUM_TAB_CONFIG.SAVE)
                 m_Tab(iLastTabIndex).m_HandlersEnabled = False
             End If
 
             If (iIndex > -1) Then
                 g_sOldActiveIdentifier = m_Tab(iIndex).m_Identifier
 
-                SaveLoadTabEntries(iIndex, ENUM_TAB_CONFIG.LOAD)
                 m_Tab(iIndex).m_HandlersEnabled = True
 
                 g_mFormMain.TabControl_SourceTabs.SelectTab(iIndex)
                 g_mFormMain.g_ClassSyntaxTools.UpdateTextEditorSyntax()
 
+                FullUpdate()
             End If
         Finally
             ClassTools.ClassForms.ResumeDrawing(g_iControlDrawCoutner, g_mFormMain.SplitContainer_ToolboxAndEditor)
@@ -289,13 +280,13 @@ Public Class ClassTabControl
             m_Tab(iIndex).m_TextEditor.Document.TextContent = ""
 
             m_Tab(iIndex).m_Changed = False
-            m_Tab(iIndex).m_AutocompleteItems = Nothing
-            m_Tab(iIndex).m_Includes = Nothing
+            m_Tab(iIndex).m_AutocompleteItems.Clear()
+            m_Tab(iIndex).m_IncludeFiles.Clear()
             m_Tab(iIndex).m_FileCachedWriteDate = Now
 
-            'SaveLoadTabEntries(iIndex, ENUM_TAB_CONFIG.LOAD)
-
             m_Tab(iIndex).m_ClassLineState.m_IgnoreUpdates = False
+
+            FullUpdate()
 
             If (g_mFormMain.g_mUCStartPage.Visible) Then
                 g_mFormMain.g_mUCStartPage.Hide()
@@ -315,13 +306,13 @@ Public Class ClassTabControl
         m_Tab(iIndex).m_TextEditor.Document.TextContent = sFileText
 
         m_Tab(iIndex).m_Changed = False
-        m_Tab(iIndex).m_AutocompleteItems = Nothing
-        m_Tab(iIndex).m_Includes = Nothing
+        m_Tab(iIndex).m_AutocompleteItems.Clear()
+        m_Tab(iIndex).m_IncludeFiles.Clear()
         m_Tab(iIndex).m_FileCachedWriteDate = m_Tab(iIndex).m_FileRealWriteDate
 
-        'SaveLoadTabEntries(iIndex, ENUM_TAB_CONFIG.LOAD)
-
         m_Tab(iIndex).m_ClassLineState.m_IgnoreUpdates = False
+
+        FullUpdate()
 
         If (g_mFormMain.g_mUCStartPage.Visible) Then
             g_mFormMain.g_mUCStartPage.Hide()
@@ -337,8 +328,6 @@ Public Class ClassTabControl
     ''' <param name="iIndex"></param>
     ''' <param name="bSaveAs">Force to use a new file using SaveFileDialog</param>
     Public Sub SaveFileTab(iIndex As Integer, Optional bSaveAs As Boolean = False)
-        'SaveLoadTabEntries(iIndex, ENUM_TAB_CONFIG.SAVE)
-
         If (bSaveAs OrElse m_Tab(iIndex).m_IsUnsaved OrElse Not IO.File.Exists(m_Tab(iIndex).m_File)) Then
             Using i As New SaveFileDialog
                 i.Filter = "All supported files|*.sp;*.inc;*.sma|SourcePawn|*.sp|Include|*.inc|Pawn (Not fully supported)|*.pwn;*.p|AMX Mod X|*.sma|All files|*.*"
@@ -387,8 +376,6 @@ Public Class ClassTabControl
     ''' <param name="bAlwaysYes">If true, ignores MessageBox prompt</param>
     ''' <returns>False if saved, otherwise canceled.</returns>
     Public Function PromptSaveTab(iIndex As Integer, Optional bAlwaysPrompt As Boolean = False, Optional bAlwaysYes As Boolean = False) As Boolean
-        'SaveLoadTabEntries(iIndex, ENUM_TAB_CONFIG.SAVE)
-
         If (Not bAlwaysPrompt AndAlso Not m_Tab(iIndex).m_Changed) Then
             Return False
         End If
@@ -490,58 +477,20 @@ Public Class ClassTabControl
         End While
     End Sub
 
+    Public Sub FullUpdate()
+        'Stop all threads
+        'TODO: For some reason it locks the *.xshd file, need fix! 
+        'FIX: Using 'UpdateSyntaxFile' in the UI thread seems to solve this problem... but why, im using |SyncLock|, |Using| etc.?!
+        g_mFormMain.g_ClassSyntaxUpdater.StopThread()
+        g_mFormMain.g_ClassAutocompleteUpdater.StopUpdate()
 
+        g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete("")
+        g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.m_CurrentMethod = ""
+        g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip()
+        g_mFormMain.g_mUCObjectBrowser.StartUpdate()
 
-    Enum ENUM_TAB_CONFIG
-        SAVE
-        LOAD
-    End Enum
-
-    Private Sub SaveLoadTabEntries(iIndex As Integer, i As ENUM_TAB_CONFIG)
-        Select Case (i)
-            Case ENUM_TAB_CONFIG.SAVE
-                m_Tab(iIndex).m_AutocompleteItems = ClassSyntaxTools.g_lAutocompleteList.ToArray
-                m_Tab(iIndex).m_Includes = ClassSyntaxTools.g_lIncludes.ToArray
-
-            Case Else
-                Try
-                    g_bIsLoadingEntries = True
-
-                    'Stop all threads
-                    'TODO: For some reason it locks the *.xshd file, need fix! 
-                    'FIX: Using 'UpdateSyntaxFile' in the UI thread seems to solve this problem... but why, im using |SyncLock|, |Using| etc.?!
-                    g_mFormMain.g_ClassSyntaxUpdater.StopThread()
-                    g_mFormMain.g_ClassAutocompleteUpdater.StopUpdate()
-
-                    'Autocomplete 
-                    ClassSyntaxTools.g_lAutocompleteList.DoSync(
-                            Sub()
-                                ClassSyntaxTools.g_lAutocompleteList.Clear()
-                                If (m_Tab(iIndex).m_AutocompleteItems IsNot Nothing) Then
-                                    ClassSyntaxTools.g_lAutocompleteList.AddRange(m_Tab(iIndex).m_AutocompleteItems)
-                                End If
-                            End Sub)
-
-                    'Includes
-                    ClassSyntaxTools.g_lIncludes.DoSync(
-                            Sub()
-                                ClassSyntaxTools.g_lIncludes.Clear()
-                                If (m_Tab(iIndex).m_Includes IsNot Nothing) Then
-                                    ClassSyntaxTools.g_lIncludes.AddRange(m_Tab(iIndex).m_Includes)
-                                End If
-                            End Sub)
-
-                    g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete("")
-                    g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.m_CurrentMethod = ""
-                    g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip()
-                    g_mFormMain.g_mUCObjectBrowser.StartUpdate()
-
-                    g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
-                    g_mFormMain.g_ClassSyntaxUpdater.StartThread()
-                Finally
-                    g_bIsLoadingEntries = False
-                End Try
-        End Select
+        g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
+        g_mFormMain.g_ClassSyntaxUpdater.StartThread()
     End Sub
 
     Public Sub CheckFilesChangedPrompt()
@@ -593,8 +542,9 @@ Public Class ClassTabControl
         Private g_sIdentifier As String = Guid.NewGuid.ToString
 
         Private g_sFile As String = ""
-        Private g_mAutocompleteItems As ClassSyntaxTools.STRUC_AUTOCOMPLETE()
-        Private g_sIncludes As String()
+        Private g_mAutocompleteItems As New ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
+        Private g_mIncludeFiles As New ClassSyncList(Of String)
+        Private g_mIncludeFilesFull As New ClassSyncList(Of String)
         Private g_mSourceTextEditor As TextEditorControlEx
         Private g_bEnabled As Boolean = True
         Private g_mFileCachedWriteDate As Date
@@ -751,9 +701,6 @@ Public Class ClassTabControl
                         g_mSourceTextEditor.Dispose()
                         g_mSourceTextEditor = Nothing
                     End If
-
-                    g_mAutocompleteItems = Nothing
-                    g_sIncludes = Nothing
                 End If
             Finally
                 MyBase.Dispose(disposing)
@@ -835,22 +782,22 @@ Public Class ClassTabControl
             End Get
         End Property
 
-        Public Property m_AutocompleteItems As ClassSyntaxTools.STRUC_AUTOCOMPLETE()
+        Public ReadOnly Property m_AutocompleteItems As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
             Get
                 Return g_mAutocompleteItems
             End Get
-            Set(value As ClassSyntaxTools.STRUC_AUTOCOMPLETE())
-                g_mAutocompleteItems = value
-            End Set
         End Property
 
-        Public Property m_Includes As String()
+        Public ReadOnly Property m_IncludeFiles As ClassSyncList(Of String)
             Get
-                Return g_sIncludes
+                Return g_mIncludeFiles
             End Get
-            Set(value As String())
-                g_sIncludes = value
-            End Set
+        End Property
+
+        Public ReadOnly Property m_IncludeFilesFull As ClassSyncList(Of String)
+            Get
+                Return g_mIncludeFilesFull
+            End Get
         End Property
 
         Public ReadOnly Property m_ClassLineState As ClassTextEditorTools.ClassLineState
@@ -1244,9 +1191,7 @@ Public Class ClassTabControl
 
         Private Sub TextEditorControl_Source_TextChanged(sender As Object, e As EventArgs)
             Try
-                If (Not g_mFormMain.g_ClassTabControl.m_IsLoadingEntries) Then
-                    g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Changed = True
-                End If
+                g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Changed = True
             Catch ex As Exception
                 ClassExceptionLog.WriteToLogMessageBox(ex)
             End Try
