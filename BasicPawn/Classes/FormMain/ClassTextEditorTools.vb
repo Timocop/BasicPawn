@@ -111,16 +111,16 @@ Public Class ClassTextEditorTools
 
         g_mFormMain.PrintInformation("[INFO]", String.Format("Listing references of: {0}", sWord), False, True, True)
 
-        Dim sIncludeFiles As String() = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IncludeFiles.ToArray
+        Dim mIncludeFiles As DictionaryEntry() = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IncludeFiles.ToArray
 
         Dim lRefList As New List(Of String)
 
-        For Each sFile As String In sIncludeFiles
-            If (Not IO.File.Exists(sFile)) Then
+        For Each mInclude As DictionaryEntry In mIncludeFiles
+            If (Not IO.File.Exists(CStr(mInclude.Value))) Then
                 Continue For
             End If
 
-            If (sFile.ToLower = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File.ToLower) Then
+            If (CStr(mInclude.Value).ToLower = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File.ToLower) Then
                 Dim iLineCount As Integer = 0
                 Using mSR As New IO.StringReader(mActiveTextEditor.Document.TextContent)
                     While True
@@ -132,13 +132,13 @@ Public Class ClassTextEditorTools
                         iLineCount += 1
 
                         If (sLine.Contains(sWord) AndAlso Regex.IsMatch(sLine, String.Format("\b{0}\b", Regex.Escape(sWord)))) Then
-                            lRefList.Add(vbTab & String.Format("Reference found: {0}({1}) : {2}", sFile, iLineCount, sLine.Trim))
+                            lRefList.Add(vbTab & String.Format("Reference found: {0}({1}) : {2}", mInclude, iLineCount, sLine.Trim))
                         End If
                     End While
                 End Using
             Else
                 Dim iLineCount As Integer = 0
-                Using SR As New IO.StreamReader(sFile)
+                Using SR As New IO.StreamReader(CStr(mInclude.Value))
                     While True
                         Dim sLine As String = SR.ReadLine
                         If (sLine Is Nothing) Then
@@ -148,7 +148,7 @@ Public Class ClassTextEditorTools
                         iLineCount += 1
 
                         If (sLine.Contains(sWord) AndAlso Regex.IsMatch(sLine, String.Format("\b{0}\b", Regex.Escape(sWord)))) Then
-                            lRefList.Add(vbTab & String.Format("Reference found: {0}({1}) : {2}", sFile, iLineCount, sLine.Trim))
+                            lRefList.Add(vbTab & String.Format("Reference found: {0}({1}) : {2}", mInclude, iLineCount, sLine.Trim))
                         End If
                     End While
                 End Using

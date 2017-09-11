@@ -151,15 +151,25 @@ Public Class ClassAutocompleteUpdater
             'Add debugger placeholder variables and methods
             lTmpAutocompleteList.AddRange((New ClassDebuggerParser(g_mFormMain)).GetDebuggerAutocomplete)
 
-            Dim lIncludeFiles As New List(Of String)
-            Dim lIncludeFilesFull As New List(Of String)
+            Dim lIncludeFiles As New List(Of DictionaryEntry)
+            Dim lIncludeFilesFull As New List(Of DictionaryEntry)
 
-            lIncludeFiles.AddRange(GetIncludeFiles(sActiveSource, sActiveSourceFile, sActiveSourceFile))
-            lIncludeFilesFull.AddRange(GetIncludeFiles(sActiveSource, sActiveSourceFile, sActiveSourceFile, True))
+            For Each sInclude In GetIncludeFiles(sActiveSource, sActiveSourceFile, sActiveSourceFile)
+                lIncludeFiles.Add(New DictionaryEntry(sTabIdentifier, sInclude))
+            Next
+            For Each sInclude In GetIncludeFiles(sActiveSource, sActiveSourceFile, sActiveSourceFile, True)
+                lIncludeFilesFull.Add(New DictionaryEntry(sTabIdentifier, sInclude))
+            Next
 
             'Find main tab of include tabs
             If (True) Then
+                Dim lValidTabIdentifier As New List(Of String)
+
                 Dim i As Integer
+                For i = 0 To mTabs.Length - 1
+                    lValidTabIdentifier.Add(mTabs(i).m_Identifier)
+                Next
+
                 For i = 0 To mTabs.Length - 1
                     If (mTabs(i).m_IsUnsaved) Then
                         Continue For
@@ -173,13 +183,18 @@ Public Class ClassAutocompleteUpdater
                         Continue For
                     End If
 
-                    Dim sIncludes As String() = mTabs(i).m_IncludeFiles.ToArray
-
+                    Dim sOtherTabIdentifier As String = mTabs(i).m_Identifier
+                    Dim mIncludes As DictionaryEntry() = mTabs(i).m_IncludeFiles.ToArray
                     Dim bIsMain As Boolean = False
 
                     Dim j As Integer
-                    For j = 0 To sIncludes.Length - 1
-                        If (sIncludes(j).ToLower <> sActiveSourceFile.ToLower) Then
+                    For j = 0 To mIncludes.Length - 1
+                        'Check if the ref-tab still exist
+                        If (Not lValidTabIdentifier.Contains(CStr(mIncludes(j).Key))) Then
+                            Continue For
+                        End If
+
+                        If (CStr(mIncludes(j).Value).ToLower <> sActiveSourceFile.ToLower) Then
                             Continue For
                         End If
 
@@ -191,13 +206,13 @@ Public Class ClassAutocompleteUpdater
                         Continue For
                     End If
 
-                    For j = 0 To sIncludes.Length - 1
-                        If (Not lIncludeFiles.Exists(Function(x As String) x.ToLower = sIncludes(j).ToLower)) Then
-                            lIncludeFiles.Add(sIncludes(j))
+                    For j = 0 To mIncludes.Length - 1
+                        If (Not lIncludeFiles.Exists(Function(x As DictionaryEntry) CStr(x.Value).ToLower = CStr(mIncludes(j).Value).ToLower)) Then
+                            lIncludeFiles.Add(New DictionaryEntry(sOtherTabIdentifier, mIncludes(j).Value))
                         End If
 
-                        If (Not lIncludeFilesFull.Exists(Function(x As String) x.ToLower = sIncludes(j).ToLower)) Then
-                            lIncludeFilesFull.Add(sIncludes(j))
+                        If (Not lIncludeFilesFull.Exists(Function(x As DictionaryEntry) CStr(x.Value).ToLower = CStr(mIncludes(j).Value).ToLower)) Then
+                            lIncludeFilesFull.Add(New DictionaryEntry(sOtherTabIdentifier, mIncludes(j).Value))
                         End If
                     Next
                 Next
@@ -225,7 +240,7 @@ Public Class ClassAutocompleteUpdater
 
                 For i = 0 To lIncludeFiles.Count - 1
                     '... by includes
-                    Select Case (IO.Path.GetFileName(lIncludeFiles(i)).ToLower)
+                    Select Case (IO.Path.GetFileName(CStr(lIncludeFiles(i).Value)).ToLower)
                         Case "sourcemod.inc"
                             iModType = ClassSyntaxTools.ENUM_MOD_TYPE.SOURCEMOD
                             Exit For
@@ -236,7 +251,7 @@ Public Class ClassAutocompleteUpdater
                     End Select
 
                     '... by extension
-                    Select Case (IO.Path.GetExtension(lIncludeFiles(i)).ToLower)
+                    Select Case (IO.Path.GetExtension(CStr(lIncludeFiles(i).Value)).ToLower)
                         Case ".sp"
                             iModType = ClassSyntaxTools.ENUM_MOD_TYPE.SOURCEMOD
                             Exit For
@@ -289,7 +304,7 @@ Public Class ClassAutocompleteUpdater
 
                 Dim i As Integer
                 For i = 0 To lIncludeFiles.Count - 1
-                    ParseAutocomplete_Pre(sActiveSource, sActiveSourceFile, lIncludeFiles(i), sSourceList, lTmpAutocompleteList, iActiveModType)
+                    ParseAutocomplete_Pre(sActiveSource, sActiveSourceFile, CStr(lIncludeFiles(i).Value), sSourceList, lTmpAutocompleteList, iActiveModType)
 
                     g_mFormMain.BeginInvoke(Sub() g_mFormMain.ToolStripProgressBar_Autocomplete.Value = Math.Min(CInt(Math.Floor((i / lIncludeFiles.Count) * 50)), 100))
                 Next
@@ -343,7 +358,7 @@ Public Class ClassAutocompleteUpdater
         End Try
     End Sub
 
-    Private Function GetPreprocessorKeywords(sIncludes As String()) As ClassSyntaxTools.STRUC_AUTOCOMPLETE()
+    Private Function GetPreprocessorKeywords(mIncludes As DictionaryEntry()) As ClassSyntaxTools.STRUC_AUTOCOMPLETE()
         Dim lTmpAutoList As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
 
         Dim mDic As New Dictionary(Of String, String)
@@ -380,9 +395,9 @@ Public Class ClassAutocompleteUpdater
         mDic("pragma tabsize") = "#pragma tabsize <value>"
         mDic("pragma unused") = "#pragma unused <symbol,...>"
 
-        For i = 0 To sIncludes.Length - 1
-            Dim sKey As String = String.Format("include <{0}>", IO.Path.GetFileNameWithoutExtension(sIncludes(i)))
-            Dim sValue As String = String.Format("#include <{0}>", IO.Path.GetFileNameWithoutExtension(sIncludes(i)))
+        For i = 0 To mIncludes.Length - 1
+            Dim sKey As String = String.Format("include <{0}>", IO.Path.GetFileNameWithoutExtension(CStr(mIncludes(i).Value)))
+            Dim sValue As String = String.Format("#include <{0}>", IO.Path.GetFileNameWithoutExtension(CStr(mIncludes(i).Value)))
             mDic(sKey) = sValue
         Next
 
@@ -2009,9 +2024,9 @@ Public Class ClassAutocompleteUpdater
                 If (ClassSettings.g_iSettingsVarAutocompleteCurrentSourceOnly) Then
                     ParseVariables_Pre(sActiveSource, sSourceFile, sSourceFile, sRegExEnumPattern, lTmpVarAutocompleteList, lActiveAutocomplete, iActiveModType)
                 Else
-                    Dim sFiles As String() = mRequestTab.m_IncludeFiles.ToArray
-                    For i = 0 To sFiles.Length - 1
-                        ParseVariables_Pre(sActiveSource, sSourceFile, sFiles(i), sRegExEnumPattern, lTmpVarAutocompleteList, lActiveAutocomplete, iActiveModType)
+                    Dim mIncludes As DictionaryEntry() = mRequestTab.m_IncludeFiles.ToArray
+                    For i = 0 To mIncludes.Length - 1
+                        ParseVariables_Pre(sActiveSource, sSourceFile, CStr(mIncludes(i).Value), sRegExEnumPattern, lTmpVarAutocompleteList, lActiveAutocomplete, iActiveModType)
                     Next
                 End If
 

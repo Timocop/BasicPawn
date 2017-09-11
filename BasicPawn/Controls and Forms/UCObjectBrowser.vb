@@ -296,13 +296,13 @@ Public Class UCObjectBrowser
                 Return
             End If
 
-            For Each sPath As String In g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IncludeFiles.ToArray
-                If (IO.Path.GetFileName(sPath).ToLower <> TreeView_ObjectBrowser.SelectedNode.Text.ToLower) Then
+            For Each mInclude As DictionaryEntry In g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IncludeFiles.ToArray
+                If (IO.Path.GetFileName(CStr(mInclude.Value)).ToLower <> TreeView_ObjectBrowser.SelectedNode.Text.ToLower) Then
                     Continue For
                 End If
 
                 Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
-                mTab.OpenFileTab(sPath)
+                mTab.OpenFileTab(CStr(mInclude.Value))
                 mTab.SelectTab(500)
             Next
         Catch ex As Exception

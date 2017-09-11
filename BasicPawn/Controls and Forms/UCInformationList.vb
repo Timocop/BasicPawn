@@ -83,13 +83,13 @@ Public Class UCInformationList
                     Exit While
                 End If
 
-                For Each sPath As String In g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IncludeFilesFull.ToArray
-                    If (String.IsNullOrEmpty(sPath) OrElse Not IO.File.Exists(sPath)) Then
+                For Each mInclude As DictionaryEntry In g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IncludeFilesFull.ToArray
+                    If (String.IsNullOrEmpty(CStr(mInclude.Value)) OrElse Not IO.File.Exists(CStr(mInclude.Value))) Then
                         Continue For
                     End If
 
 
-                    Dim sRegexPath As String = sPath.Replace("/"c, "\"c)
+                    Dim sRegexPath As String = CStr(mInclude.Value).Replace("/"c, "\"c)
 
                     Dim lPathNames As New List(Of String)
                     For Each sName As String In sRegexPath.Split("\"c)
@@ -105,7 +105,7 @@ Public Class UCInformationList
                     End If
 
                     Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
-                    mTab.OpenFileTab(sPath)
+                    mTab.OpenFileTab(CStr(mInclude.Value))
                     mTab.SelectTab()
 
                     bForceEnd = True
