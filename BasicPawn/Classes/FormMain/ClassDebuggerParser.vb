@@ -60,8 +60,8 @@ Public Class ClassDebuggerParser
     ''' Updates the breakpoint list.
     ''' </summary>
     ''' <param name="sSource"></param>
-    Public Sub UpdateBreakpoints(sSource As String, bKeepIdentity As Boolean)
-        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
+    Public Sub UpdateBreakpoints(sSource As String, bKeepIdentity As Boolean, iModType As ClassSyntaxTools.ENUM_MOD_TYPE)
+        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iModType)
 
         If (Not bKeepIdentity) Then
             g_lBreakpointList.Clear()
@@ -153,8 +153,8 @@ Public Class ClassDebuggerParser
     ''' Updates the breakpoint list.
     ''' </summary>
     ''' <param name="sSource"></param>
-    Public Sub UpdateWatchers(sSource As String, bKeepIdentity As Boolean)
-        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
+    Public Sub UpdateWatchers(sSource As String, bKeepIdentity As Boolean, iModType As ClassSyntaxTools.ENUM_MOD_TYPE)
+        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iModType)
 
         If (Not bKeepIdentity) Then
             g_lWatcherList.Clear()
@@ -506,13 +506,13 @@ Public Class ClassDebuggerParser
     '    Return smExceptionsList.ToArray
     'End Function
 
-    Public Sub CleanupDebugPlaceholder(ByRef sSource As String)
+    Public Sub CleanupDebugPlaceholder(ByRef sSource As String, iModType As ClassSyntaxTools.ENUM_MOD_TYPE)
         'TODO: Add more debug placeholder
         With New ClassBreakpoints(g_mFormMain)
-            .RemoveAllBreakpoints(sSource)
+            .RemoveAllBreakpoints(sSource, iModType)
         End With
         With New ClassWatchers(g_mFormMain)
-            .RemoveAllWatchers(sSource)
+            .RemoveAllWatchers(sSource, iModType)
         End With
     End Sub
 
@@ -627,7 +627,7 @@ Public Class ClassDebuggerParser
 
                         If (bIsFunction) Then
                             Dim sSource As String = mActiveTextEditor.ActiveTextAreaControl.Document.TextContent
-                            Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
+                            Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ModType)
 
                             Dim iFullLenght As Integer = 0
                             Dim iStartLevel As Integer = mSourceAnalysis.m_GetParenthesisLevel(iStartOffset)
@@ -674,7 +674,7 @@ Public Class ClassDebuggerParser
             mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
 
             Dim debuggerParser As New ClassDebuggerParser(g_mFormMain)
-            debuggerParser.UpdateBreakpoints(mActiveTextEditor.Document.TextContent, False)
+            debuggerParser.UpdateBreakpoints(mActiveTextEditor.Document.TextContent, False, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ModType)
 
             Dim lRemovedBreakpoints As New List(Of Integer)
 
@@ -723,7 +723,7 @@ Public Class ClassDebuggerParser
 
             Dim debuggerParser As New ClassDebuggerParser(g_mFormMain)
             While True
-                debuggerParser.UpdateBreakpoints(mActiveTextEditor.Document.TextContent, False)
+                debuggerParser.UpdateBreakpoints(mActiveTextEditor.Document.TextContent, False, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ModType)
 
                 For i = debuggerParser.g_lBreakpointList.Count - 1 To 0 Step -1
                     Dim iIndex As Integer = debuggerParser.g_lBreakpointList(i).iOffset
@@ -780,12 +780,12 @@ Public Class ClassDebuggerParser
         ''' Removes all available breakpoints in the source
         ''' </summary>
         ''' <param name="sSource"></param>
-        Public Sub RemoveAllBreakpoints(ByRef sSource As String)
+        Public Sub RemoveAllBreakpoints(ByRef sSource As String, iModType As ClassSyntaxTools.ENUM_MOD_TYPE)
             Dim SB As New StringBuilder(sSource)
 
             Dim debuggerParser As New ClassDebuggerParser(g_mFormMain)
             While True
-                debuggerParser.UpdateBreakpoints(SB.ToString, False)
+                debuggerParser.UpdateBreakpoints(SB.ToString, False, iModType)
 
                 For i = debuggerParser.g_lBreakpointList.Count - 1 To 0 Step -1
                     Dim iIndex As Integer = debuggerParser.g_lBreakpointList(i).iOffset
@@ -842,11 +842,11 @@ Public Class ClassDebuggerParser
             Return SB.ToString
         End Function
 
-        Public Sub CompilerReady(ByRef sSource As String, debuggerParser As ClassDebuggerParser)
+        Public Sub CompilerReady(ByRef sSource As String, debuggerParser As ClassDebuggerParser, iModType As ClassSyntaxTools.ENUM_MOD_TYPE)
             Dim SB As New StringBuilder(sSource)
             Dim SBModules As New StringBuilder()
 
-            Dim bForceNewSyntax As Boolean = (g_mFormMain.g_ClassSyntaxTools.HasNewDeclsPragma(sSource) <> -1)
+            Dim bForceNewSyntax As Boolean = (g_mFormMain.g_ClassSyntaxTools.HasNewDeclsPragma(sSource, iModType) <> -1)
 
             For i = debuggerParser.g_lBreakpointList.Count - 1 To 0 Step -1
                 Dim iIndex As Integer = debuggerParser.g_lBreakpointList(i).iOffset
@@ -908,7 +908,7 @@ Public Class ClassDebuggerParser
 
                         If (bIsFunction) Then
                             Dim sSource As String = mActiveTextEditor.ActiveTextAreaControl.Document.TextContent
-                            Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
+                            Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ModType)
 
                             Dim iFullLenght As Integer = 0
                             Dim iStartLevel As Integer = mSourceAnalysis.m_GetParenthesisLevel(iStartOffset)
@@ -955,7 +955,7 @@ Public Class ClassDebuggerParser
             mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
 
             Dim debuggerParser As New ClassDebuggerParser(g_mFormMain)
-            debuggerParser.UpdateWatchers(mActiveTextEditor.Document.TextContent, False)
+            debuggerParser.UpdateWatchers(mActiveTextEditor.Document.TextContent, False, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ModType)
 
             Dim lRemovedWatchers As New List(Of Integer)
 
@@ -1003,7 +1003,7 @@ Public Class ClassDebuggerParser
 
             Dim debuggerParser As New ClassDebuggerParser(g_mFormMain)
             While True
-                debuggerParser.UpdateWatchers(mActiveTextEditor.Document.TextContent, False)
+                debuggerParser.UpdateWatchers(mActiveTextEditor.Document.TextContent, False, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ModType)
 
                 For i = debuggerParser.g_lWatcherList.Count - 1 To 0 Step -1
                     Dim iIndex As Integer = debuggerParser.g_lWatcherList(i).iOffset
@@ -1060,12 +1060,12 @@ Public Class ClassDebuggerParser
         ''' Removes all available watchers in the source
         ''' </summary>
         ''' <param name="sSource"></param>
-        Public Sub RemoveAllWatchers(ByRef sSource As String)
+        Public Sub RemoveAllWatchers(ByRef sSource As String, iModType As ClassSyntaxTools.ENUM_MOD_TYPE)
             Dim SB As New StringBuilder(sSource)
 
             Dim debuggerParser As New ClassDebuggerParser(g_mFormMain)
             While True
-                debuggerParser.UpdateWatchers(SB.ToString, False)
+                debuggerParser.UpdateWatchers(SB.ToString, False, iModType)
 
                 For i = debuggerParser.g_lWatcherList.Count - 1 To 0 Step -1
                     Dim iIndex As Integer = debuggerParser.g_lWatcherList(i).iOffset
@@ -1122,11 +1122,11 @@ Public Class ClassDebuggerParser
             Return SB.ToString
         End Function
 
-        Public Sub CompilerReady(ByRef sSource As String, debuggerParser As ClassDebuggerParser)
+        Public Sub CompilerReady(ByRef sSource As String, debuggerParser As ClassDebuggerParser, iModType As ClassSyntaxTools.ENUM_MOD_TYPE)
             Dim SB As New StringBuilder(sSource)
             Dim SBModules As New StringBuilder()
 
-            Dim bForceNewSyntax As Boolean = (g_mFormMain.g_ClassSyntaxTools.HasNewDeclsPragma(sSource) <> -1)
+            Dim bForceNewSyntax As Boolean = (g_mFormMain.g_ClassSyntaxTools.HasNewDeclsPragma(sSource, iModType) <> -1)
 
             For i = debuggerParser.g_lWatcherList.Count - 1 To 0 Step -1
                 Dim iIndex As Integer = debuggerParser.g_lWatcherList(i).iOffset

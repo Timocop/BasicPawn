@@ -32,8 +32,6 @@ Public Class FormMain
     Public WithEvents g_ClassCrossAppComunication As ClassCrossAppComunication
 #Enable Warning IDE1006 ' Naming Styles
 
-    Public g_mSourceSyntaxSourceAnalysis As ClassSyntaxTools.ClassSyntaxSourceAnalysis
-
     Public g_mUCAutocomplete As UCAutocomplete
     Public g_mUCInformationList As UCInformationList
     Public g_mUCObjectBrowser As UCObjectBrowser
@@ -654,7 +652,7 @@ Public Class FormMain
                 End While
             End Using
 
-            Dim sFormatedSource As String = g_ClassSyntaxTools.FormatCode(g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent, ClassSettings.ENUM_INDENTATION_TYPES.USE_SETTINGS)
+            Dim sFormatedSource As String = g_ClassSyntaxTools.FormatCode(g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent, ClassSettings.ENUM_INDENTATION_TYPES.USE_SETTINGS, g_ClassTabControl.m_ActiveTab.m_ModType)
             Dim lFormatedSourceLines As New List(Of String)
             Using mSR As New IO.StringReader(sFormatedSource)
                 Dim sLine As String
@@ -762,20 +760,21 @@ Public Class FormMain
     End Sub
 
     Private Sub ToolStripMenuItem_ToolsAutocomplete_DropDownOpening(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsAutocomplete.DropDownOpening
-        Dim sMod As String
+        Dim sModType As String
 
-        Select Case (ClassSyntaxTools.g_iActiveModType)
+        Select Case (g_ClassTabControl.m_ActiveTab.m_ModType)
             Case ClassSyntaxTools.ENUM_MOD_TYPE.SOURCEMOD
-                sMod = "SourceMod"
+                sModType = "SourceMod"
             Case ClassSyntaxTools.ENUM_MOD_TYPE.AMXMODX
-                sMod = "AMX Mod X"
+                sModType = "AMX Mod X"
             Case ClassSyntaxTools.ENUM_MOD_TYPE.PAWN
-                sMod = "Pawn"
+                sModType = "Pawn"
             Case Else
-                sMod = "Unknown"
+                sModType = "Unknown"
         End Select
 
-        ToolStripMenuItem_ToolsAutocompleteCurrentMod.Text = String.Format("Current Mod: {0}", sMod)
+
+        ToolStripMenuItem_ToolsAutocompleteCurrentMod.Text = String.Format("Current Mod: {0}", sModType)
     End Sub
 #End Region
 
@@ -801,7 +800,7 @@ Public Class FormMain
         Dim sSource As String = g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
         With New ClassDebuggerParser(Me)
             If (.HasDebugPlaceholder(sSource)) Then
-                .CleanupDebugPlaceholder(sSource)
+                .CleanupDebugPlaceholder(sSource, g_ClassTabControl.m_ActiveTab.m_ModType)
             End If
         End With
 

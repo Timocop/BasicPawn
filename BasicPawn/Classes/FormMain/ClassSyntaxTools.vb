@@ -54,7 +54,6 @@ Public Class ClassSyntaxTools
         AMXMODX
         PAWN
     End Enum
-    Public Shared g_iActiveModType As ENUM_MOD_TYPE = ENUM_MOD_TYPE.SOURCEMOD
     Public Shared g_sEscapeCharacters As String()
 
     Public Enum ENUM_SYNTAX_UPDATE_TYPE
@@ -356,6 +355,7 @@ Public Class ClassSyntaxTools
 
                             Dim mActiveTab As ClassTabControl.SourceTabPage = DirectCast(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab), ClassTabControl.SourceTabPage)
                             Dim mActiveAutocomplete As STRUC_AUTOCOMPLETE() = mActiveTab.m_AutocompleteItems.ToArray
+                            Dim iModType As ENUM_MOD_TYPE = CType(g_mFormMain.Invoke(Function() mActiveTab.m_ModType), ENUM_MOD_TYPE)
 
                             Using mSR As New IO.StreamReader(g_SyntaxFiles(i).sFile)
                                 Dim sLine As String
@@ -549,14 +549,14 @@ Public Class ClassSyntaxTools
 
                                     Try
                                         Dim sEscapeChar As String = mMatchColl(j).Groups("EscapeChar").Value
-                                        If (sEscapeChar = g_sEscapeCharacters(g_iActiveModType)) Then
+                                        If (sEscapeChar = g_sEscapeCharacters(iModType)) Then
                                             Continue For
                                         End If
 
                                         Dim iEscapeCharIndex As Integer = mMatchColl(j).Groups("EscapeChar").Index
 
-                                        sFormatedString = sFormatedString.Remove(iEscapeCharIndex, g_sEscapeCharacters(g_iActiveModType).Length)
-                                        sFormatedString = sFormatedString.Insert(iEscapeCharIndex, g_sEscapeCharacters(g_iActiveModType))
+                                        sFormatedString = sFormatedString.Remove(iEscapeCharIndex, g_sEscapeCharacters(iModType).Length)
+                                        sFormatedString = sFormatedString.Insert(iEscapeCharIndex, g_sEscapeCharacters(iModType))
                                     Catch : End Try
                                 Next
                             End If
@@ -637,7 +637,7 @@ Public Class ClassSyntaxTools
     ''' <param name="iTargetEndScopeLevel"></param>
     ''' <param name="bInvalidCodeCheck">If true, it will ignore all Non-Code stuff like strings, comments etc.</param>
     ''' <returns></returns>
-    Public Function GetExpressionBetweenCharacters(sExpression As String, sCharOpen As Char, sCharClose As Char, iTargetEndScopeLevel As Integer, Optional bInvalidCodeCheck As Boolean = False) As Integer()()
+    Public Function GetExpressionBetweenCharacters(sExpression As String, sCharOpen As Char, sCharClose As Char, iTargetEndScopeLevel As Integer, iModType As ENUM_MOD_TYPE, Optional bInvalidCodeCheck As Boolean = False) As Integer()()
         Dim iCurrentLevel As Integer = 0
         Dim sExpressionsList As New List(Of Integer())
         Dim bWasOpen As Boolean = False
@@ -646,7 +646,7 @@ Public Class ClassSyntaxTools
 
         Dim mSourceAnalysis As ClassSyntaxSourceAnalysis = Nothing
         If (bInvalidCodeCheck) Then
-            mSourceAnalysis = New ClassSyntaxSourceAnalysis(sExpression)
+            mSourceAnalysis = New ClassSyntaxSourceAnalysis(sExpression, iModType)
         End If
 
         For i = 0 To sExpression.Length - 1
@@ -686,7 +686,7 @@ Public Class ClassSyntaxTools
     ''' </summary>
     ''' <param name="sSource"></param>
     ''' <returns></returns>
-    Public Function FormatCode(sSource As String, iIndentationType As ClassSettings.ENUM_INDENTATION_TYPES) As String
+    Public Function FormatCode(sSource As String, iIndentationType As ClassSettings.ENUM_INDENTATION_TYPES, iModType As ENUM_MOD_TYPE) As String
         Dim mSourceBuilder As New StringBuilder
         Using mSR As New IO.StringReader(sSource)
             While True
@@ -702,7 +702,7 @@ Public Class ClassSyntaxTools
 
         'Get any valid statements ends and put them in a list
         Dim lValidStateEnds As New List(Of Integer)
-        Dim iExpressions As Integer()() = GetExpressionBetweenCharacters(sSource, "("c, ")"c, 1, True)
+        Dim iExpressions As Integer()() = GetExpressionBetweenCharacters(sSource, "("c, ")"c, 1, iModType, True)
         For Each mMatch As Match In Regex.Matches(sSource, "(?<!\#)(\b(if|while|for)\b\s*(?<End1>\()|\b(?<End2>else(?!\s+\b(if)\b))\b)")
             If (mMatch.Groups("End1").Success) Then
                 Dim iEndIndex As Integer = mMatch.Groups("End1").Index
@@ -717,7 +717,7 @@ Public Class ClassSyntaxTools
             End If
         Next
 
-        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource)
+        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iModType)
 
 
         Dim iBraceCount As Integer = 0
@@ -800,7 +800,7 @@ Public Class ClassSyntaxTools
     ''' <param name="sSource"></param>
     ''' <param name="bIgnoreChecks"></param>
     ''' <returns>The offset in the source, -1 if not found.</returns>
-    Public Function HasNewDeclsPragma(sSource As String, Optional bIgnoreChecks As Boolean = True) As Integer
+    Public Function HasNewDeclsPragma(sSource As String, iModType As ENUM_MOD_TYPE, Optional bIgnoreChecks As Boolean = True) As Integer
         'TODO: Add better check
         Dim sRegexPattern As String = "\#\b(pragma)\b(\s+|\s*(\\*)\s*)\b(newdecls)\b(\s+|\s*(\\*)\s*)\b(required)\b"
 
@@ -809,7 +809,7 @@ Public Class ClassSyntaxTools
                 Return match.Index
             Next
         Else
-            Dim mSourceAnalysis As New ClassSyntaxSourceAnalysis(sSource)
+            Dim mSourceAnalysis As New ClassSyntaxSourceAnalysis(sSource, iModType)
             For Each match As Match In Regex.Matches(sSource, sRegexPattern, RegexOptions.Multiline)
                 If (mSourceAnalysis.m_InNonCode(match.Index)) Then
                     Continue For
@@ -1035,7 +1035,7 @@ Public Class ClassSyntaxTools
         End Function
 
 
-        Public Sub New(ByRef sText As String, Optional bIgnorePreprocessor As Boolean = True)
+        Public Sub New(ByRef sText As String, iModType As ENUM_MOD_TYPE, Optional bIgnorePreprocessor As Boolean = True)
             g_sCacheText = sText
             g_iMaxLenght = sText.Length
 
@@ -1191,10 +1191,10 @@ Public Class ClassSyntaxTools
                         End If
 
                         'ignore \'
-                        If (i > 1 AndAlso sText(i - 1) <> ClassSyntaxTools.g_sEscapeCharacters(ClassSyntaxTools.g_iActiveModType)) Then
+                        If (i > 1 AndAlso sText(i - 1) <> ClassSyntaxTools.g_sEscapeCharacters(iModType)) Then
                             bInChar = If(bInChar > 0, 0, 1)
                             g_iStateArray(i, ENUM_STATE_TYPES.IN_CHAR) = 1
-                        ElseIf (i > 2 AndAlso sText(i - 1) = ClassSyntaxTools.g_sEscapeCharacters(ClassSyntaxTools.g_iActiveModType) AndAlso sText(i - 2) = ClassSyntaxTools.g_sEscapeCharacters(ClassSyntaxTools.g_iActiveModType)) Then
+                        ElseIf (i > 2 AndAlso sText(i - 1) = ClassSyntaxTools.g_sEscapeCharacters(iModType) AndAlso sText(i - 2) = ClassSyntaxTools.g_sEscapeCharacters(iModType)) Then
                             bInChar = If(bInChar > 0, 0, 1)
                             g_iStateArray(i, ENUM_STATE_TYPES.IN_CHAR) = 1
                         End If
@@ -1209,10 +1209,10 @@ Public Class ClassSyntaxTools
                         End If
 
                         'ignore \"
-                        If (i > 1 AndAlso sText(i - 1) <> ClassSyntaxTools.g_sEscapeCharacters(ClassSyntaxTools.g_iActiveModType)) Then
+                        If (i > 1 AndAlso sText(i - 1) <> ClassSyntaxTools.g_sEscapeCharacters(iModType)) Then
                             bInString = If(bInString > 0, 0, 1)
                             g_iStateArray(i, ENUM_STATE_TYPES.IN_STRING) = 1
-                        ElseIf (i > 2 AndAlso sText(i - 1) = ClassSyntaxTools.g_sEscapeCharacters(ClassSyntaxTools.g_iActiveModType) AndAlso sText(i - 2) = ClassSyntaxTools.g_sEscapeCharacters(ClassSyntaxTools.g_iActiveModType)) Then
+                        ElseIf (i > 2 AndAlso sText(i - 1) = ClassSyntaxTools.g_sEscapeCharacters(iModType) AndAlso sText(i - 2) = ClassSyntaxTools.g_sEscapeCharacters(iModType)) Then
                             bInString = If(bInString > 0, 0, 1)
                             g_iStateArray(i, ENUM_STATE_TYPES.IN_STRING) = 1
                         End If

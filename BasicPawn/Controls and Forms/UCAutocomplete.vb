@@ -82,7 +82,8 @@ Public Class UCAutocomplete
 
     Public Function UpdateIntelliSense() As Boolean
         Dim sTextContent As String = CStr(Me.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent))
-        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sTextContent)
+        Dim iModType As ClassSyntaxTools.ENUM_MOD_TYPE = CType(Me.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ModType), ClassSyntaxTools.ENUM_MOD_TYPE)
+        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sTextContent, iModType)
 
         Dim iCaretOffset As Integer = CInt(Me.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Offset))
         If (iCaretOffset - 1 < 1) Then
@@ -334,7 +335,7 @@ Public Class UCAutocomplete
                         Dim sNewlineDistance As Integer = sNameToolTip.IndexOf("("c)
 
                         If (sNewlineDistance > -1) Then
-                            Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sNameToolTip)
+                            Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sNameToolTip, g_AutocompleteUC.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ModType)
                             For ii = sNameToolTip.Length - 1 To 0 Step -1
                                 If (sNameToolTip(ii) <> ","c OrElse mSourceAnalysis.m_InNonCode(ii)) Then
                                     Continue For
@@ -382,7 +383,7 @@ Public Class UCAutocomplete
                     Dim sNewlineDistance As Integer = sNameToolTip.IndexOf("("c)
 
                     If (sNewlineDistance > -1) Then
-                        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sNameToolTip)
+                        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sNameToolTip, g_AutocompleteUC.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ModType)
                         For ii = sNameToolTip.Length - 1 To 0 Step -1
                             If (sNameToolTip(ii) <> ","c OrElse mSourceAnalysis.m_InNonCode(ii)) Then
                                 Continue For

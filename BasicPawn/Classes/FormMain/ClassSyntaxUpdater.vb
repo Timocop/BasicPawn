@@ -53,12 +53,10 @@ Public Class ClassSyntaxUpdater
     Private Sub SourceSyntaxUpdater_Thread()
         Static dFullAutocompleteUpdateDelay As New TimeSpan(0, 0, 1, 0, 0)
         Static dVarAutocompleteUpdateDelay As New TimeSpan(0, 0, 0, 10, 0)
-        Static dMethodAutocompleteUpdateDelay As New TimeSpan(0, 0, 0, 10, 0)
         Static dLastFoldingUpdateDelay As New TimeSpan(0, 0, 5)
 
         Dim dLastFullAutocompleteUpdate As Date = (Now + dFullAutocompleteUpdateDelay)
         Dim dLastVarAutocompleteUpdate As Date = (Now + dVarAutocompleteUpdateDelay)
-        Dim dLastMethodAutocompleteUpdate As Date = (Now + dMethodAutocompleteUpdateDelay)
         Dim dLastFoldingUpdate As Date = (Now + dLastFoldingUpdateDelay)
 
         While True
@@ -82,14 +80,6 @@ Public Class ClassSyntaxUpdater
                     dLastVarAutocompleteUpdate = (Now + dVarAutocompleteUpdateDelay)
 
                     g_mFormMain.BeginInvoke(Sub() g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.VARIABLES_AUTOCOMPLETE, Nothing))
-                End If
-
-                'Update source analysis
-                If (dLastMethodAutocompleteUpdate < Now) Then
-                    dLastMethodAutocompleteUpdate = (Now + dMethodAutocompleteUpdateDelay)
-
-                    Dim sTextContent As String = CStr(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent))
-                    g_mFormMain.g_mSourceSyntaxSourceAnalysis = New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sTextContent)
                 End If
 
                 'Update Foldings

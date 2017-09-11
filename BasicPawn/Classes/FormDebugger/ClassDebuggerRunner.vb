@@ -458,17 +458,17 @@ Public Class ClassDebuggerRunner
                 Dim sOutputFile As String = IO.Path.Combine(m_SourceModFolder, String.Format("plugins\BasicPawnDebug-{0}.unk", Guid.NewGuid.ToString))
                 g_sLatestDebuggerPlugin = sOutputFile
 
-                g_mFormDebugger.g_ClassDebuggerParser.UpdateBreakpoints(sSource, True)
+                g_mFormDebugger.g_ClassDebuggerParser.UpdateBreakpoints(sSource, True, g_mFormDebugger.g_iModType)
                 With New ClassDebuggerParser.ClassBreakpoints(g_mFormDebugger.g_mFormMain)
-                    .CompilerReady(sSource, g_mFormDebugger.g_ClassDebuggerParser)
+                    .CompilerReady(sSource, g_mFormDebugger.g_ClassDebuggerParser, g_mFormDebugger.g_iModType)
                 End With
-                g_mFormDebugger.g_ClassDebuggerParser.UpdateBreakpoints(g_mFormDebugger.TextEditorControlEx_DebuggerSource.Document.TextContent, True)
+                g_mFormDebugger.g_ClassDebuggerParser.UpdateBreakpoints(g_mFormDebugger.TextEditorControlEx_DebuggerSource.Document.TextContent, True, g_mFormDebugger.g_iModType)
 
-                g_mFormDebugger.g_ClassDebuggerParser.UpdateWatchers(sSource, True)
+                g_mFormDebugger.g_ClassDebuggerParser.UpdateWatchers(sSource, True, g_mFormDebugger.g_iModType)
                 With New ClassDebuggerParser.ClassWatchers(g_mFormDebugger.g_mFormMain)
-                    .CompilerReady(sSource, g_mFormDebugger.g_ClassDebuggerParser)
+                    .CompilerReady(sSource, g_mFormDebugger.g_ClassDebuggerParser, g_mFormDebugger.g_iModType)
                 End With
-                g_mFormDebugger.g_ClassDebuggerParser.UpdateWatchers(g_mFormDebugger.TextEditorControlEx_DebuggerSource.Document.TextContent, True)
+                g_mFormDebugger.g_ClassDebuggerParser.UpdateWatchers(g_mFormDebugger.TextEditorControlEx_DebuggerSource.Document.TextContent, True, g_mFormDebugger.g_iModType)
 
                 g_ClassPreProcess.FinishSource(sSource)
 

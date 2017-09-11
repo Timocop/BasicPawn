@@ -544,6 +544,7 @@ Public Class ClassTabControl
         Private g_mAutocompleteItems As New ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
         Private g_mIncludeFiles As New ClassSyncList(Of String)
         Private g_mIncludeFilesFull As New ClassSyncList(Of String)
+        Private g_iModType As ClassSyntaxTools.ENUM_MOD_TYPE = ClassSyntaxTools.ENUM_MOD_TYPE.SOURCEMOD
         Private g_mSourceTextEditor As TextEditorControlEx
         Private g_bEnabled As Boolean = True
         Private g_mFileCachedWriteDate As Date
@@ -791,6 +792,15 @@ Public Class ClassTabControl
             Get
                 Return g_mIncludeFiles
             End Get
+        End Property
+
+        Public Property m_ModType As ClassSyntaxTools.ENUM_MOD_TYPE
+            Get
+                Return g_iModType
+            End Get
+            Set(value As ClassSyntaxTools.ENUM_MOD_TYPE)
+                g_iModType = value
+            End Set
         End Property
 
         Public ReadOnly Property m_IncludeFilesFull As ClassSyncList(Of String)

@@ -25,6 +25,7 @@ Public Class FormDebugger
     Public g_ClassDebuggerSettings As ClassDebuggerSettings
 
     Public g_sLastPreProcessSourceFile As String = ""
+    Public g_iModType As ClassSyntaxTools.ENUM_MOD_TYPE = ClassSyntaxTools.ENUM_MOD_TYPE.SOURCEMOD
 
     Public g_bTextEditorEnableClickSelect As Boolean = True
     Public g_bListViewEnableClickSelect As Boolean = True
@@ -74,8 +75,23 @@ Public Class FormDebugger
                 Return False
             End If
 
+            Select Case (iCompilerType)
+                Case ClassTextEditorTools.ENUM_COMPILER_TYPE.SOURCEPAWN
+                    g_iModType = ClassSyntaxTools.ENUM_MOD_TYPE.SOURCEMOD
+
+                Case ClassTextEditorTools.ENUM_COMPILER_TYPE.AMXX
+                    g_iModType = ClassSyntaxTools.ENUM_MOD_TYPE.AMXMODX
+
+                Case ClassTextEditorTools.ENUM_COMPILER_TYPE.AMX
+                    g_iModType = ClassSyntaxTools.ENUM_MOD_TYPE.PAWN
+
+                Case ClassTextEditorTools.ENUM_COMPILER_TYPE.UNKNOWN
+                    Throw New ArgumentException("Unsupported compiler")
+            End Select
+
+            'TODO: Add AMX Mod X support
             If (iCompilerType <> ClassTextEditorTools.ENUM_COMPILER_TYPE.SOURCEPAWN) Then
-                Throw New ArgumentException("Unsupported compiler")
+                Throw New ArgumentException("Unsupported compiler. SourceMod required.")
             End If
 
             If (String.IsNullOrEmpty(g_sLastPreProcessSourceFile)) Then
@@ -91,14 +107,13 @@ Public Class FormDebugger
                                        RegexOptions.IgnoreCase Or RegexOptions.Multiline)
 
             g_ClassDebuggerRunner.g_ClassPreProcess.AnalysisSourceLines(sLstSource)
-            g_ClassDebuggerParser.UpdateBreakpoints(sLstSource, False)
-            g_ClassDebuggerParser.UpdateWatchers(sLstSource, False)
-
+            g_ClassDebuggerParser.UpdateBreakpoints(sLstSource, False, g_iModType)
+            g_ClassDebuggerParser.UpdateWatchers(sLstSource, False, g_iModType)
 
             'Create DIASM code
             Dim sAsmLstSource As String = sLstSource
             With New ClassDebuggerParser(g_mFormMain)
-                .CleanupDebugPlaceholder(sAsmLstSource)
+                .CleanupDebugPlaceholder(sAsmLstSource, g_iModType)
             End With
 
             iCompilerType = ClassTextEditorTools.ENUM_COMPILER_TYPE.UNKNOWN

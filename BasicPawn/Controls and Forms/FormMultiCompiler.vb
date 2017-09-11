@@ -73,13 +73,46 @@ Public Class FormMultiCompiler
                 Dim sSourceFile As String = g_sSourceFiles(i)
                 Dim sSource As String = IO.File.ReadAllText(g_sSourceFiles(i))
                 Dim sCompilerOutput As String = ""
+                Dim iModType As ClassSyntaxTools.ENUM_MOD_TYPE = ClassSyntaxTools.ENUM_MOD_TYPE.SOURCEMOD
+
+                'We have no other choices here. Get mod type by extension...
+                If (ClassConfigs.m_ActiveConfig.g_iModType = ClassConfigs.STRUC_CONFIG_ITEM.ENUM_MOD_TYPE.AUTO_DETECT) Then
+                    Select Case (IO.Path.GetExtension(sSourceFile).ToLower)
+                        Case ".sp"
+                            iModType = ClassSyntaxTools.ENUM_MOD_TYPE.SOURCEMOD
+
+                        Case ".sma"
+                            iModType = ClassSyntaxTools.ENUM_MOD_TYPE.AMXMODX
+
+                        Case ".p", ".pwn"
+                            iModType = ClassSyntaxTools.ENUM_MOD_TYPE.PAWN
+
+                        Case Else
+                            Select Case (MessageBox.Show(String.Format("Could not detect mod type on file '{0}'", sSourceFile), "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning))
+                                Case DialogResult.Cancel
+                                    Throw New ArgumentException("Compiling canceled")
+                            End Select
+                    End Select
+                Else
+                    Select Case (ClassConfigs.m_ActiveConfig.g_iModType)
+                        Case ClassConfigs.STRUC_CONFIG_ITEM.ENUM_MOD_TYPE.SOURCEMOD
+                            iModType = ClassSyntaxTools.ENUM_MOD_TYPE.SOURCEMOD
+
+                        Case ClassConfigs.STRUC_CONFIG_ITEM.ENUM_MOD_TYPE.AMXMODX
+                            iModType = ClassSyntaxTools.ENUM_MOD_TYPE.AMXMODX
+
+                        Case Else
+                            Throw New ArgumentException("Unknown mod type")
+                    End Select
+                End If
+
 
                 Dim sOutputFile As String = IO.Path.Combine(ClassConfigs.m_ActiveConfig.g_sOutputFolder, String.Format("{0}.unk", IO.Path.GetFileNameWithoutExtension(sSourceFile)))
                 Dim bSuccess As Boolean = CBool(Me.Invoke(Function()
                                                               If (g_bCleanDebuggerPlaceholder) Then
                                                                   With New ClassDebuggerParser(g_mMainForm)
                                                                       If (.HasDebugPlaceholder(sSource)) Then
-                                                                          .CleanupDebugPlaceholder(sSource)
+                                                                          .CleanupDebugPlaceholder(sSource, iModType)
                                                                       End If
                                                                   End With
                                                               End If
