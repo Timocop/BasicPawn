@@ -35,7 +35,7 @@ Public Class ClassAutocompleteUpdater
     End Sub
 
     Enum ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS
-        ALL = 0
+        ALL = -1
         FULL_AUTOCOMPLETE = (1 << 0)
         VARIABLES_AUTOCOMPLETE = (1 << 1)
     End Enum
@@ -47,14 +47,12 @@ Public Class ClassAutocompleteUpdater
         If (g_mAutocompleteUpdaterThread Is Nothing OrElse Not g_mAutocompleteUpdaterThread.IsAlive) Then
             g_mAutocompleteUpdaterThread = New Threading.Thread(Sub()
                                                                     SyncLock _lock
-                                                                        If (iUpdateType = ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL OrElse
-                                                                                    (iUpdateType And ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) = ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) Then
+                                                                        If ((iUpdateType And ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) = ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) Then
                                                                             RaiseEvent OnAutocompleteUpdateStarted(iUpdateType)
                                                                             FullAutocompleteUpdate_Thread()
                                                                         End If
 
-                                                                        If (iUpdateType = ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL OrElse
-                                                                                    (iUpdateType And ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.VARIABLES_AUTOCOMPLETE) = ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.VARIABLES_AUTOCOMPLETE) Then
+                                                                        If ((iUpdateType And ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.VARIABLES_AUTOCOMPLETE) = ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.VARIABLES_AUTOCOMPLETE) Then
                                                                             RaiseEvent OnAutocompleteUpdateStarted(iUpdateType)
                                                                             VariableAutocompleteUpdate_Thread()
                                                                         End If
@@ -67,8 +65,7 @@ Public Class ClassAutocompleteUpdater
             }
             g_mAutocompleteUpdaterThread.Start()
 
-            If (iUpdateType = ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL OrElse
-                        (iUpdateType And ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) = ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) Then
+            If ((iUpdateType And ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) = ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) Then
                 g_bForceFullAutocompleteUpdate = False
             End If
 
@@ -78,8 +75,7 @@ Public Class ClassAutocompleteUpdater
                 g_mFormMain.PrintInformation("[INFO]", "Could not start autocomplete update thread, it's already running!", False, False)
             End If
 
-            If (iUpdateType = ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL OrElse
-                        (iUpdateType And ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) = ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) Then
+            If ((iUpdateType And ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) = ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) Then
                 g_bForceFullAutocompleteUpdate = True
             End If
 
