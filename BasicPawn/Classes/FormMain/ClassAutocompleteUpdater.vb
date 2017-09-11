@@ -111,16 +111,12 @@ Public Class ClassAutocompleteUpdater
         Try
             'g_mFormMain.PrintInformation("[INFO]", "Autocomplete update started...")
 
-            g_mFormMain.BeginInvoke(Sub()
-                                        g_mFormMain.ToolStripProgressBar_Autocomplete.Value = 0
-                                        g_mFormMain.ToolStripProgressBar_Autocomplete.Visible = True
-                                    End Sub)
-
             Dim sActiveTabIdentifier As String = CStr(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Identifier))
             Dim mTabs As ClassTabControl.SourceTabPage() = DirectCast(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.GetAllTabs()), ClassTabControl.SourceTabPage())
             Dim mRequestTab As ClassTabControl.SourceTabPage = DirectCast(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.GetTabByIdentifier(sTabIdentifier)), ClassTabControl.SourceTabPage)
             If (mRequestTab Is Nothing) Then
                 g_mFormMain.BeginInvoke(Sub()
+                                            g_mFormMain.ToolStripProgressBar_Autocomplete.ToolTipText = ""
                                             g_mFormMain.ToolStripProgressBar_Autocomplete.Value = 100
                                             g_mFormMain.ToolStripProgressBar_Autocomplete.Visible = False
                                         End Sub)
@@ -135,6 +131,7 @@ Public Class ClassAutocompleteUpdater
 
             If (String.IsNullOrEmpty(sActiveSourceFile) OrElse Not IO.File.Exists(sActiveSourceFile)) Then
                 g_mFormMain.BeginInvoke(Sub()
+                                            g_mFormMain.ToolStripProgressBar_Autocomplete.ToolTipText = ""
                                             g_mFormMain.ToolStripProgressBar_Autocomplete.Value = 100
                                             g_mFormMain.ToolStripProgressBar_Autocomplete.Visible = False
                                         End Sub)
@@ -142,6 +139,12 @@ Public Class ClassAutocompleteUpdater
                 g_mFormMain.PrintInformation("[ERRO]", "Autocomplete update failed! Could not get current source file!", False, False)
                 Return
             End If
+
+            g_mFormMain.BeginInvoke(Sub()
+                                        g_mFormMain.ToolStripProgressBar_Autocomplete.ToolTipText = IO.Path.GetFileName(sActiveSourceFile)
+                                        g_mFormMain.ToolStripProgressBar_Autocomplete.Value = 0
+                                        g_mFormMain.ToolStripProgressBar_Autocomplete.Visible = True
+                                    End Sub)
 
             Dim lTmpAutocompleteList As New ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
 
@@ -324,6 +327,7 @@ Public Class ClassAutocompleteUpdater
 
 
             g_mFormMain.BeginInvoke(Sub()
+                                        g_mFormMain.ToolStripProgressBar_Autocomplete.ToolTipText = ""
                                         g_mFormMain.ToolStripProgressBar_Autocomplete.Value = 100
                                         g_mFormMain.ToolStripProgressBar_Autocomplete.Visible = False
                                     End Sub)

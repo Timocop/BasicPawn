@@ -58,6 +58,7 @@ Partial Class FormMain
         Me.MenuStrip_BasicPawn = New System.Windows.Forms.MenuStrip()
         Me.ToolStripMenuItem_File = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_FileNew = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_FileNewWizard = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_FileOpen = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_FileLoadTabs = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_FileCloseAll = New System.Windows.Forms.ToolStripMenuItem()
@@ -137,7 +138,6 @@ Partial Class FormMain
         Me.ToolStripProgressBar_Autocomplete = New System.Windows.Forms.ToolStripProgressBar()
         Me.ToolStripStatusLabel_AppVersion = New System.Windows.Forms.ToolStripStatusLabel()
         Me.Timer_PingFlash = New System.Windows.Forms.Timer(Me.components)
-        Me.ToolStripMenuItem_FileNewWizard = New System.Windows.Forms.ToolStripMenuItem()
         Me.TabControl_Toolbox = New BasicPawn.ClassTabControlColor()
         Me.TabPage_ObjectBrowser = New System.Windows.Forms.TabPage()
         Me.TabPage_ProjectBrowser = New System.Windows.Forms.TabPage()
@@ -362,6 +362,15 @@ Partial Class FormMain
         Me.ToolStripMenuItem_FileNew.Size = New System.Drawing.Size(290, 22)
         Me.ToolStripMenuItem_FileNew.Text = "&New"
         Me.ToolStripMenuItem_FileNew.ToolTipText = "Creates a new tab"
+        '
+        'ToolStripMenuItem_FileNewWizard
+        '
+        Me.ToolStripMenuItem_FileNewWizard.Image = Global.BasicPawn.My.Resources.Resources.imageres_5350_16x16
+        Me.ToolStripMenuItem_FileNewWizard.Name = "ToolStripMenuItem_FileNewWizard"
+        Me.ToolStripMenuItem_FileNewWizard.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
+            Or System.Windows.Forms.Keys.N), System.Windows.Forms.Keys)
+        Me.ToolStripMenuItem_FileNewWizard.Size = New System.Drawing.Size(290, 22)
+        Me.ToolStripMenuItem_FileNewWizard.Text = "New using templates"
         '
         'ToolStripMenuItem_FileOpen
         '
@@ -949,14 +958,14 @@ Partial Class FormMain
         'ToolStripStatusLabel_LastInformation
         '
         Me.ToolStripStatusLabel_LastInformation.Name = "ToolStripStatusLabel_LastInformation"
-        Me.ToolStripStatusLabel_LastInformation.Size = New System.Drawing.Size(696, 17)
+        Me.ToolStripStatusLabel_LastInformation.Size = New System.Drawing.Size(600, 17)
         Me.ToolStripStatusLabel_LastInformation.Spring = True
         Me.ToolStripStatusLabel_LastInformation.Text = "Last Info: No information"
         '
         'ToolStripProgressBar_Autocomplete
         '
         Me.ToolStripProgressBar_Autocomplete.Name = "ToolStripProgressBar_Autocomplete"
-        Me.ToolStripProgressBar_Autocomplete.Size = New System.Drawing.Size(100, 16)
+        Me.ToolStripProgressBar_Autocomplete.Size = New System.Drawing.Size(86, 16)
         '
         'ToolStripStatusLabel_AppVersion
         '
@@ -966,15 +975,6 @@ Partial Class FormMain
         '
         'Timer_PingFlash
         '
-        '
-        'ToolStripMenuItem_FileNewWizard
-        '
-        Me.ToolStripMenuItem_FileNewWizard.Image = Global.BasicPawn.My.Resources.Resources.imageres_5350_16x16
-        Me.ToolStripMenuItem_FileNewWizard.Name = "ToolStripMenuItem_FileNewWizard"
-        Me.ToolStripMenuItem_FileNewWizard.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
-            Or System.Windows.Forms.Keys.N), System.Windows.Forms.Keys)
-        Me.ToolStripMenuItem_FileNewWizard.Size = New System.Drawing.Size(290, 22)
-        Me.ToolStripMenuItem_FileNewWizard.Text = "New using templates"
         '
         'TabControl_Toolbox
         '
