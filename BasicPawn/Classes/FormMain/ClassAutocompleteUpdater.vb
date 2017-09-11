@@ -942,7 +942,7 @@ Public Class ClassAutocompleteUpdater
 
                 sEnumName = mMatch.Groups("Name").Value
                 If (String.IsNullOrEmpty(sEnumName.Trim)) Then
-                    g_mFormMain.PrintInformation("[WARN]", String.Format("Failed to read name from enum because it has no name: Renamed to 'Enum' ({0})", IO.Path.GetFileName(sFile)), False, False)
+                    'g_mFormMain.PrintInformation("[WARN]", String.Format("Failed to read name from enum because it has no name: Renamed to 'Enum' ({0})", IO.Path.GetFileName(sFile)), False, False)
                     sEnumName = "Enum"
                 End If
 
