@@ -120,6 +120,10 @@ Partial Class FormMain
         Me.ToolStripMenuItem_TabOpenInstance = New System.Windows.Forms.ToolStripMenuItem()
         Me.SplitContainer_ToolboxSourceAndDetails = New System.Windows.Forms.SplitContainer()
         Me.SplitContainer_ToolboxAndEditor = New System.Windows.Forms.SplitContainer()
+        Me.TabControl_Toolbox = New BasicPawn.ClassTabControlColor()
+        Me.TabPage_ObjectBrowser = New System.Windows.Forms.TabPage()
+        Me.TabPage_ProjectBrowser = New System.Windows.Forms.TabPage()
+        Me.TabControl_SourceTabs = New BasicPawn.ClassTabControlColor()
         Me.ContextMenuStrip_Tabs = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.ToolStripMenuItem_Tabs_Close = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Tabs_CloseAllButThis = New System.Windows.Forms.ToolStripMenuItem()
@@ -127,6 +131,10 @@ Partial Class FormMain
         Me.ToolStripSeparator12 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_Tabs_OpenFolder = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Tabs_Popout = New System.Windows.Forms.ToolStripMenuItem()
+        Me.TabPage1 = New System.Windows.Forms.TabPage()
+        Me.TabControl_Details = New BasicPawn.ClassTabControlColor()
+        Me.TabPage_Autocomplete = New System.Windows.Forms.TabPage()
+        Me.TabPage_Information = New System.Windows.Forms.TabPage()
         Me.ImageList1 = New System.Windows.Forms.ImageList(Me.components)
         Me.StatusStrip_BasicPawn = New System.Windows.Forms.StatusStrip()
         Me.ToolStripStatusLabel_EditorLine = New System.Windows.Forms.ToolStripStatusLabel()
@@ -138,14 +146,7 @@ Partial Class FormMain
         Me.ToolStripProgressBar_Autocomplete = New System.Windows.Forms.ToolStripProgressBar()
         Me.ToolStripStatusLabel_AppVersion = New System.Windows.Forms.ToolStripStatusLabel()
         Me.Timer_PingFlash = New System.Windows.Forms.Timer(Me.components)
-        Me.TabControl_Toolbox = New BasicPawn.ClassTabControlColor()
-        Me.TabPage_ObjectBrowser = New System.Windows.Forms.TabPage()
-        Me.TabPage_ProjectBrowser = New System.Windows.Forms.TabPage()
-        Me.TabControl_SourceTabs = New BasicPawn.ClassTabControlColor()
-        Me.TabPage1 = New System.Windows.Forms.TabPage()
-        Me.TabControl_Details = New BasicPawn.ClassTabControlColor()
-        Me.TabPage_Autocomplete = New System.Windows.Forms.TabPage()
-        Me.TabPage_Information = New System.Windows.Forms.TabPage()
+        Me.ToolStripMenuItem_ToolsAutocompleteUpdateAll = New System.Windows.Forms.ToolStripMenuItem()
         Me.ContextMenuStrip_RightClick.SuspendLayout()
         Me.MenuStrip_BasicPawn.SuspendLayout()
         Me.SplitContainer_ToolboxSourceAndDetails.Panel1.SuspendLayout()
@@ -154,11 +155,11 @@ Partial Class FormMain
         Me.SplitContainer_ToolboxAndEditor.Panel1.SuspendLayout()
         Me.SplitContainer_ToolboxAndEditor.Panel2.SuspendLayout()
         Me.SplitContainer_ToolboxAndEditor.SuspendLayout()
-        Me.ContextMenuStrip_Tabs.SuspendLayout()
-        Me.StatusStrip_BasicPawn.SuspendLayout()
         Me.TabControl_Toolbox.SuspendLayout()
         Me.TabControl_SourceTabs.SuspendLayout()
+        Me.ContextMenuStrip_Tabs.SuspendLayout()
         Me.TabControl_Details.SuspendLayout()
+        Me.StatusStrip_BasicPawn.SuspendLayout()
         Me.SuspendLayout()
         '
         'ContextMenuStrip_RightClick
@@ -556,7 +557,7 @@ Partial Class FormMain
         '
         'ToolStripMenuItem_ToolsAutocomplete
         '
-        Me.ToolStripMenuItem_ToolsAutocomplete.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_ToolsAutocompleteUpdate, Me.ToolStripComboBox_ToolsAutocompleteSyntax, Me.ToolStripMenuItem_ToolsAutocompleteCurrentMod, Me.ToolStripSeparator5, Me.ToolStripMenuItem_ToolsAutocompleteShowAutocomplete})
+        Me.ToolStripMenuItem_ToolsAutocomplete.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_ToolsAutocompleteUpdate, Me.ToolStripMenuItem_ToolsAutocompleteUpdateAll, Me.ToolStripComboBox_ToolsAutocompleteSyntax, Me.ToolStripMenuItem_ToolsAutocompleteCurrentMod, Me.ToolStripSeparator5, Me.ToolStripMenuItem_ToolsAutocompleteShowAutocomplete})
         Me.ToolStripMenuItem_ToolsAutocomplete.Image = CType(resources.GetObject("ToolStripMenuItem_ToolsAutocomplete.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_ToolsAutocomplete.Name = "ToolStripMenuItem_ToolsAutocomplete"
         Me.ToolStripMenuItem_ToolsAutocomplete.Size = New System.Drawing.Size(225, 22)
@@ -856,6 +857,52 @@ Partial Class FormMain
         Me.SplitContainer_ToolboxAndEditor.SplitterDistance = 200
         Me.SplitContainer_ToolboxAndEditor.TabIndex = 1
         '
+        'TabControl_Toolbox
+        '
+        Me.TabControl_Toolbox.Controls.Add(Me.TabPage_ObjectBrowser)
+        Me.TabControl_Toolbox.Controls.Add(Me.TabPage_ProjectBrowser)
+        Me.TabControl_Toolbox.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TabControl_Toolbox.Location = New System.Drawing.Point(0, 0)
+        Me.TabControl_Toolbox.Margin = New System.Windows.Forms.Padding(0)
+        Me.TabControl_Toolbox.Name = "TabControl_Toolbox"
+        Me.TabControl_Toolbox.Padding = New System.Drawing.Point(0, 0)
+        Me.TabControl_Toolbox.SelectedIndex = 0
+        Me.TabControl_Toolbox.Size = New System.Drawing.Size(200, 500)
+        Me.TabControl_Toolbox.TabIndex = 0
+        '
+        'TabPage_ObjectBrowser
+        '
+        Me.TabPage_ObjectBrowser.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage_ObjectBrowser.Margin = New System.Windows.Forms.Padding(0)
+        Me.TabPage_ObjectBrowser.Name = "TabPage_ObjectBrowser"
+        Me.TabPage_ObjectBrowser.Size = New System.Drawing.Size(192, 474)
+        Me.TabPage_ObjectBrowser.TabIndex = 0
+        Me.TabPage_ObjectBrowser.Text = "Object Browser"
+        Me.TabPage_ObjectBrowser.UseVisualStyleBackColor = True
+        '
+        'TabPage_ProjectBrowser
+        '
+        Me.TabPage_ProjectBrowser.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage_ProjectBrowser.Name = "TabPage_ProjectBrowser"
+        Me.TabPage_ProjectBrowser.Size = New System.Drawing.Size(192, 474)
+        Me.TabPage_ProjectBrowser.TabIndex = 1
+        Me.TabPage_ProjectBrowser.Text = "Project Browser"
+        Me.TabPage_ProjectBrowser.UseVisualStyleBackColor = True
+        '
+        'TabControl_SourceTabs
+        '
+        Me.TabControl_SourceTabs.ContextMenuStrip = Me.ContextMenuStrip_Tabs
+        Me.TabControl_SourceTabs.Controls.Add(Me.TabPage1)
+        Me.TabControl_SourceTabs.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TabControl_SourceTabs.Location = New System.Drawing.Point(0, 0)
+        Me.TabControl_SourceTabs.Margin = New System.Windows.Forms.Padding(0)
+        Me.TabControl_SourceTabs.Name = "TabControl_SourceTabs"
+        Me.TabControl_SourceTabs.Padding = New System.Drawing.Point(0, 0)
+        Me.TabControl_SourceTabs.SelectedIndex = 0
+        Me.TabControl_SourceTabs.ShowToolTips = True
+        Me.TabControl_SourceTabs.Size = New System.Drawing.Size(804, 500)
+        Me.TabControl_SourceTabs.TabIndex = 1
+        '
         'ContextMenuStrip_Tabs
         '
         Me.ContextMenuStrip_Tabs.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_Tabs_Close, Me.ToolStripMenuItem_Tabs_CloseAllButThis, Me.ToolStripMenuItem_Tabs_CloseAll, Me.ToolStripSeparator12, Me.ToolStripMenuItem_Tabs_OpenFolder, Me.ToolStripMenuItem_Tabs_Popout})
@@ -900,6 +947,50 @@ Partial Class FormMain
         Me.ToolStripMenuItem_Tabs_Popout.Name = "ToolStripMenuItem_Tabs_Popout"
         Me.ToolStripMenuItem_Tabs_Popout.Size = New System.Drawing.Size(178, 22)
         Me.ToolStripMenuItem_Tabs_Popout.Text = "Popout"
+        '
+        'TabPage1
+        '
+        Me.TabPage1.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage1.Margin = New System.Windows.Forms.Padding(0)
+        Me.TabPage1.Name = "TabPage1"
+        Me.TabPage1.Size = New System.Drawing.Size(796, 474)
+        Me.TabPage1.TabIndex = 0
+        Me.TabPage1.Text = "New*"
+        Me.TabPage1.UseVisualStyleBackColor = True
+        '
+        'TabControl_Details
+        '
+        Me.TabControl_Details.Controls.Add(Me.TabPage_Autocomplete)
+        Me.TabControl_Details.Controls.Add(Me.TabPage_Information)
+        Me.TabControl_Details.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TabControl_Details.ImageList = Me.ImageList1
+        Me.TabControl_Details.Location = New System.Drawing.Point(0, 0)
+        Me.TabControl_Details.Name = "TabControl_Details"
+        Me.TabControl_Details.SelectedIndex = 0
+        Me.TabControl_Details.Size = New System.Drawing.Size(1008, 179)
+        Me.TabControl_Details.TabIndex = 0
+        '
+        'TabPage_Autocomplete
+        '
+        Me.TabPage_Autocomplete.ImageIndex = 1
+        Me.TabPage_Autocomplete.Location = New System.Drawing.Point(4, 23)
+        Me.TabPage_Autocomplete.Name = "TabPage_Autocomplete"
+        Me.TabPage_Autocomplete.Padding = New System.Windows.Forms.Padding(3)
+        Me.TabPage_Autocomplete.Size = New System.Drawing.Size(1000, 152)
+        Me.TabPage_Autocomplete.TabIndex = 0
+        Me.TabPage_Autocomplete.Text = "Autocomplete & IntelliSense"
+        Me.TabPage_Autocomplete.UseVisualStyleBackColor = True
+        '
+        'TabPage_Information
+        '
+        Me.TabPage_Information.ImageIndex = 0
+        Me.TabPage_Information.Location = New System.Drawing.Point(4, 23)
+        Me.TabPage_Information.Name = "TabPage_Information"
+        Me.TabPage_Information.Padding = New System.Windows.Forms.Padding(3)
+        Me.TabPage_Information.Size = New System.Drawing.Size(1000, 152)
+        Me.TabPage_Information.TabIndex = 1
+        Me.TabPage_Information.Text = "Information"
+        Me.TabPage_Information.UseVisualStyleBackColor = True
         '
         'ImageList1
         '
@@ -958,7 +1049,7 @@ Partial Class FormMain
         'ToolStripStatusLabel_LastInformation
         '
         Me.ToolStripStatusLabel_LastInformation.Name = "ToolStripStatusLabel_LastInformation"
-        Me.ToolStripStatusLabel_LastInformation.Size = New System.Drawing.Size(600, 17)
+        Me.ToolStripStatusLabel_LastInformation.Size = New System.Drawing.Size(710, 17)
         Me.ToolStripStatusLabel_LastInformation.Spring = True
         Me.ToolStripStatusLabel_LastInformation.Text = "Last Info: No information"
         '
@@ -976,95 +1067,12 @@ Partial Class FormMain
         'Timer_PingFlash
         '
         '
-        'TabControl_Toolbox
+        'ToolStripMenuItem_ToolsAutocompleteUpdateAll
         '
-        Me.TabControl_Toolbox.Controls.Add(Me.TabPage_ObjectBrowser)
-        Me.TabControl_Toolbox.Controls.Add(Me.TabPage_ProjectBrowser)
-        Me.TabControl_Toolbox.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TabControl_Toolbox.Location = New System.Drawing.Point(0, 0)
-        Me.TabControl_Toolbox.Margin = New System.Windows.Forms.Padding(0)
-        Me.TabControl_Toolbox.Name = "TabControl_Toolbox"
-        Me.TabControl_Toolbox.Padding = New System.Drawing.Point(0, 0)
-        Me.TabControl_Toolbox.SelectedIndex = 0
-        Me.TabControl_Toolbox.Size = New System.Drawing.Size(200, 500)
-        Me.TabControl_Toolbox.TabIndex = 0
-        '
-        'TabPage_ObjectBrowser
-        '
-        Me.TabPage_ObjectBrowser.Location = New System.Drawing.Point(4, 22)
-        Me.TabPage_ObjectBrowser.Margin = New System.Windows.Forms.Padding(0)
-        Me.TabPage_ObjectBrowser.Name = "TabPage_ObjectBrowser"
-        Me.TabPage_ObjectBrowser.Size = New System.Drawing.Size(192, 474)
-        Me.TabPage_ObjectBrowser.TabIndex = 0
-        Me.TabPage_ObjectBrowser.Text = "Object Browser"
-        Me.TabPage_ObjectBrowser.UseVisualStyleBackColor = True
-        '
-        'TabPage_ProjectBrowser
-        '
-        Me.TabPage_ProjectBrowser.Location = New System.Drawing.Point(4, 22)
-        Me.TabPage_ProjectBrowser.Name = "TabPage_ProjectBrowser"
-        Me.TabPage_ProjectBrowser.Size = New System.Drawing.Size(192, 474)
-        Me.TabPage_ProjectBrowser.TabIndex = 1
-        Me.TabPage_ProjectBrowser.Text = "Project Browser"
-        Me.TabPage_ProjectBrowser.UseVisualStyleBackColor = True
-        '
-        'TabControl_SourceTabs
-        '
-        Me.TabControl_SourceTabs.ContextMenuStrip = Me.ContextMenuStrip_Tabs
-        Me.TabControl_SourceTabs.Controls.Add(Me.TabPage1)
-        Me.TabControl_SourceTabs.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TabControl_SourceTabs.Location = New System.Drawing.Point(0, 0)
-        Me.TabControl_SourceTabs.Margin = New System.Windows.Forms.Padding(0)
-        Me.TabControl_SourceTabs.Name = "TabControl_SourceTabs"
-        Me.TabControl_SourceTabs.Padding = New System.Drawing.Point(0, 0)
-        Me.TabControl_SourceTabs.SelectedIndex = 0
-        Me.TabControl_SourceTabs.ShowToolTips = True
-        Me.TabControl_SourceTabs.Size = New System.Drawing.Size(804, 500)
-        Me.TabControl_SourceTabs.TabIndex = 1
-        '
-        'TabPage1
-        '
-        Me.TabPage1.Location = New System.Drawing.Point(4, 22)
-        Me.TabPage1.Margin = New System.Windows.Forms.Padding(0)
-        Me.TabPage1.Name = "TabPage1"
-        Me.TabPage1.Size = New System.Drawing.Size(796, 474)
-        Me.TabPage1.TabIndex = 0
-        Me.TabPage1.Text = "New*"
-        Me.TabPage1.UseVisualStyleBackColor = True
-        '
-        'TabControl_Details
-        '
-        Me.TabControl_Details.Controls.Add(Me.TabPage_Autocomplete)
-        Me.TabControl_Details.Controls.Add(Me.TabPage_Information)
-        Me.TabControl_Details.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TabControl_Details.ImageList = Me.ImageList1
-        Me.TabControl_Details.Location = New System.Drawing.Point(0, 0)
-        Me.TabControl_Details.Name = "TabControl_Details"
-        Me.TabControl_Details.SelectedIndex = 0
-        Me.TabControl_Details.Size = New System.Drawing.Size(1008, 179)
-        Me.TabControl_Details.TabIndex = 0
-        '
-        'TabPage_Autocomplete
-        '
-        Me.TabPage_Autocomplete.ImageIndex = 1
-        Me.TabPage_Autocomplete.Location = New System.Drawing.Point(4, 23)
-        Me.TabPage_Autocomplete.Name = "TabPage_Autocomplete"
-        Me.TabPage_Autocomplete.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage_Autocomplete.Size = New System.Drawing.Size(1000, 152)
-        Me.TabPage_Autocomplete.TabIndex = 0
-        Me.TabPage_Autocomplete.Text = "Autocomplete & IntelliSense"
-        Me.TabPage_Autocomplete.UseVisualStyleBackColor = True
-        '
-        'TabPage_Information
-        '
-        Me.TabPage_Information.ImageIndex = 0
-        Me.TabPage_Information.Location = New System.Drawing.Point(4, 23)
-        Me.TabPage_Information.Name = "TabPage_Information"
-        Me.TabPage_Information.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage_Information.Size = New System.Drawing.Size(1000, 152)
-        Me.TabPage_Information.TabIndex = 1
-        Me.TabPage_Information.Text = "Information"
-        Me.TabPage_Information.UseVisualStyleBackColor = True
+        Me.ToolStripMenuItem_ToolsAutocompleteUpdateAll.Name = "ToolStripMenuItem_ToolsAutocompleteUpdateAll"
+        Me.ToolStripMenuItem_ToolsAutocompleteUpdateAll.ShortcutKeys = CType((System.Windows.Forms.Keys.Shift Or System.Windows.Forms.Keys.F5), System.Windows.Forms.Keys)
+        Me.ToolStripMenuItem_ToolsAutocompleteUpdateAll.Size = New System.Drawing.Size(360, 22)
+        Me.ToolStripMenuItem_ToolsAutocompleteUpdateAll.Text = "Update all tabs"
         '
         'FormMain
         '
@@ -1090,12 +1098,12 @@ Partial Class FormMain
         Me.SplitContainer_ToolboxAndEditor.Panel1.ResumeLayout(False)
         Me.SplitContainer_ToolboxAndEditor.Panel2.ResumeLayout(False)
         Me.SplitContainer_ToolboxAndEditor.ResumeLayout(False)
-        Me.ContextMenuStrip_Tabs.ResumeLayout(False)
-        Me.StatusStrip_BasicPawn.ResumeLayout(False)
-        Me.StatusStrip_BasicPawn.PerformLayout()
         Me.TabControl_Toolbox.ResumeLayout(False)
         Me.TabControl_SourceTabs.ResumeLayout(False)
+        Me.ContextMenuStrip_Tabs.ResumeLayout(False)
         Me.TabControl_Details.ResumeLayout(False)
+        Me.StatusStrip_BasicPawn.ResumeLayout(False)
+        Me.StatusStrip_BasicPawn.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -1219,4 +1227,5 @@ Partial Class FormMain
     Friend WithEvents ToolStripSeparator14 As ToolStripSeparator
     Friend WithEvents ToolStripMenuItem_ToolsAutocompleteCurrentMod As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_FileNewWizard As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_ToolsAutocompleteUpdateAll As ToolStripMenuItem
 End Class
