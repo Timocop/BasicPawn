@@ -45,9 +45,6 @@ Public Class FormNewWizard
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call.
-        ClassTools.ClassForms.SetDoubleBufferingAllChilds(Me, True)
-        ClassTools.ClassForms.SetDoubleBufferingUnmanagedAllChilds(Me, True)
-
         ImageList_TreeView.Images.Clear()
         ImageList_TreeView.Images.Add(CStr(ENUM_TREEVIEW_ICONS.FILE), My.Resources.Ico_Rtf)
         ImageList_TreeView.Images.Add(CStr(ENUM_TREEVIEW_ICONS.FOLDER), My.Resources.Ico_Folder)
@@ -498,6 +495,9 @@ Public Class FormNewWizard
 
     Private Sub ListView_Properties_Click(sender As Object, e As EventArgs) Handles ListView_Properties.Click
         Try
+            ContextMenuStrip_Properties.Close()
+            g_mSelectedPropertyItem = Nothing
+
             If (ListView_Properties.SelectedItems.Count < 1) Then
                 Return
             End If
@@ -508,116 +508,109 @@ Public Class FormNewWizard
 
             g_mSelectedPropertyItem = DirectCast(ListView_Properties.SelectedItems(0), ClassListViewItemData)
 
-            ContextMenuStrip_Properties.Show(ListView_Properties, New Point(ListView_Properties.SelectedItems(0).Bounds.Location.X, ListView_Properties.SelectedItems(0).Bounds.Location.Y + ListView_Properties.SelectedItems(0).Bounds.Height))
+            ContextMenuStrip_Properties.Show(ListView_Properties, New Point(g_mSelectedPropertyItem.Bounds.Location.X, g_mSelectedPropertyItem.Bounds.Location.Y + g_mSelectedPropertyItem.Bounds.Height))
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
     End Sub
 
     Private Sub ContextMenuStrip_Properties_Opening(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles ContextMenuStrip_Properties.Opening
-        ClassControlStyle.UpdateControls(ContextMenuStrip_Properties)
+        Try
+            ClassControlStyle.UpdateControls(ContextMenuStrip_Properties)
 
-        If (ListView_Properties.SelectedItems.Count < 1) Then
-            e.Cancel = True
-            Return
-        End If
-
-        If (TypeOf ListView_Properties.SelectedItems(0) IsNot ClassListViewItemData OrElse
-                    ListView_Properties.SelectedItems(0) IsNot g_mSelectedPropertyItem) Then
-            e.Cancel = True
-            Return
-        End If
-
-        Dim mListViewItem = DirectCast(ListView_Properties.SelectedItems(0), ClassListViewItemData)
-        Dim mUnkProperty As Object = mListViewItem.g_mData("Property")
-
-        Select Case (True)
-            Case (TypeOf mUnkProperty Is ClassProperties.STRUC_DEFAULT_REPLACE)
-                Dim mProperty = DirectCast(mUnkProperty, ClassProperties.STRUC_DEFAULT_REPLACE)
-
-                g_bIgnoreComboBoxSetPropertyEvents = True
-                ToolStripComboBox_SetProperty.Items.Clear()
-                ToolStripComboBox_SetProperty.Text = mProperty.sReplace
-                ToolStripComboBox_SetProperty.DropDownStyle = ComboBoxStyle.DropDown
-                g_bIgnoreComboBoxSetPropertyEvents = False
-
-            Case (TypeOf mUnkProperty Is ClassProperties.STRUC_BOOLEAN_REPLACE)
-                Dim mProperty = DirectCast(mUnkProperty, ClassProperties.STRUC_BOOLEAN_REPLACE)
-
-                g_bIgnoreComboBoxSetPropertyEvents = True
-                ToolStripComboBox_SetProperty.Items.Clear()
-                ToolStripComboBox_SetProperty.Items.Add("True")
-                ToolStripComboBox_SetProperty.Items.Add("False")
-                ToolStripComboBox_SetProperty.SelectedIndex = If(mProperty.bValue, 0, 1)
-                ToolStripComboBox_SetProperty.DropDownStyle = ComboBoxStyle.DropDownList
-                g_bIgnoreComboBoxSetPropertyEvents = False
-
-            Case (TypeOf mUnkProperty Is ClassProperties.STRUC_LIST_REPLACE)
-                Dim mProperty = DirectCast(mUnkProperty, ClassProperties.STRUC_LIST_REPLACE)
-
-                g_bIgnoreComboBoxSetPropertyEvents = True
-                ToolStripComboBox_SetProperty.Items.Clear()
-
-                For Each mItem In mProperty.mReplace
-                    ToolStripComboBox_SetProperty.Items.Add(mItem.sItemDescription)
-                Next
-
-                ToolStripComboBox_SetProperty.SelectedIndex = mProperty.iIndex
-                ToolStripComboBox_SetProperty.DropDownStyle = ComboBoxStyle.DropDownList
-                g_bIgnoreComboBoxSetPropertyEvents = False
-
-            Case Else
+            If (g_mSelectedPropertyItem Is Nothing OrElse
+                        TypeOf g_mSelectedPropertyItem IsNot ClassListViewItemData) Then
                 e.Cancel = True
                 Return
-        End Select
+            End If
+
+            Dim mUnkProperty As Object = g_mSelectedPropertyItem.g_mData("Property")
+
+            Select Case (True)
+                Case (TypeOf mUnkProperty Is ClassProperties.STRUC_DEFAULT_REPLACE)
+                    Dim mProperty = DirectCast(mUnkProperty, ClassProperties.STRUC_DEFAULT_REPLACE)
+
+                    g_bIgnoreComboBoxSetPropertyEvents = True
+                    ToolStripComboBox_SetProperty.Items.Clear()
+                    ToolStripComboBox_SetProperty.DropDownStyle = ComboBoxStyle.DropDown
+                    ToolStripComboBox_SetProperty.Text = mProperty.sReplace
+                    g_bIgnoreComboBoxSetPropertyEvents = False
+
+                Case (TypeOf mUnkProperty Is ClassProperties.STRUC_BOOLEAN_REPLACE)
+                    Dim mProperty = DirectCast(mUnkProperty, ClassProperties.STRUC_BOOLEAN_REPLACE)
+
+                    g_bIgnoreComboBoxSetPropertyEvents = True
+                    ToolStripComboBox_SetProperty.Items.Clear()
+                    ToolStripComboBox_SetProperty.DropDownStyle = ComboBoxStyle.DropDownList
+                    ToolStripComboBox_SetProperty.Items.Add("True")
+                    ToolStripComboBox_SetProperty.Items.Add("False")
+                    ToolStripComboBox_SetProperty.SelectedIndex = If(mProperty.bValue, 0, 1)
+                    g_bIgnoreComboBoxSetPropertyEvents = False
+
+                Case (TypeOf mUnkProperty Is ClassProperties.STRUC_LIST_REPLACE)
+                    Dim mProperty = DirectCast(mUnkProperty, ClassProperties.STRUC_LIST_REPLACE)
+
+                    g_bIgnoreComboBoxSetPropertyEvents = True
+                    ToolStripComboBox_SetProperty.Items.Clear()
+                    ToolStripComboBox_SetProperty.DropDownStyle = ComboBoxStyle.DropDownList
+
+                    For Each mItem In mProperty.mReplace
+                        ToolStripComboBox_SetProperty.Items.Add(mItem.sItemDescription)
+                    Next
+
+                    ToolStripComboBox_SetProperty.SelectedIndex = mProperty.iIndex
+                    g_bIgnoreComboBoxSetPropertyEvents = False
+
+                Case Else
+                    e.Cancel = True
+                    Return
+            End Select
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
     End Sub
 
-    Private Sub ContextMenuStrip_Properties_Closing(sender As Object, e As ToolStripDropDownClosingEventArgs) Handles ContextMenuStrip_Properties.Closing
-        If (ListView_Properties.SelectedItems.Count < 1) Then
-            Return
-        End If
+    Private Sub SetPropertiesByComboBox()
+        Try
+            If (g_mSelectedPropertyItem Is Nothing OrElse
+                        TypeOf g_mSelectedPropertyItem IsNot ClassListViewItemData) Then
+                Return
+            End If
 
-        If (TypeOf ListView_Properties.SelectedItems(0) IsNot ClassListViewItemData OrElse
-                    ListView_Properties.SelectedItems(0) IsNot g_mSelectedPropertyItem) Then
-            Return
-        End If
+            Dim mUnkProperty As Object = g_mSelectedPropertyItem.g_mData("Property")
+            Dim sKey As String = CStr(g_mSelectedPropertyItem.g_mData("Key"))
 
-        Dim mListViewItem = DirectCast(ListView_Properties.SelectedItems(0), ClassListViewItemData)
-        Dim mUnkProperty As Object = mListViewItem.g_mData("Property")
-        Dim sKey As String = CStr(mListViewItem.g_mData("Key"))
+            Select Case (True)
+                Case (TypeOf mUnkProperty Is ClassProperties.STRUC_DEFAULT_REPLACE AndAlso
+                            g_ClassProperties.m_PropertiesTypeDefault.ContainsKey(sKey))
+                    Dim mProperty = g_ClassProperties.m_PropertiesTypeDefault(sKey)
 
-        Select Case (True)
-            Case (TypeOf mUnkProperty Is ClassProperties.STRUC_DEFAULT_REPLACE AndAlso
-                        g_ClassProperties.m_PropertiesTypeDefault.ContainsKey(sKey))
-                Dim mProperty = g_ClassProperties.m_PropertiesTypeDefault(sKey)
+                    mProperty.sReplace = ToolStripComboBox_SetProperty.Text
 
-                mProperty.sReplace = ToolStripComboBox_SetProperty.Text
+                    g_ClassProperties.m_PropertiesTypeDefault(sKey) = mProperty
 
-                g_ClassProperties.m_PropertiesTypeDefault(sKey) = mProperty
+                Case (TypeOf mUnkProperty Is ClassProperties.STRUC_BOOLEAN_REPLACE AndAlso
+                            g_ClassProperties.m_PropertiesTypeBoolean.ContainsKey(sKey))
+                    Dim mProperty = g_ClassProperties.m_PropertiesTypeBoolean(sKey)
 
-            Case (TypeOf mUnkProperty Is ClassProperties.STRUC_BOOLEAN_REPLACE AndAlso
-                        g_ClassProperties.m_PropertiesTypeBoolean.ContainsKey(sKey))
-                Dim mProperty = g_ClassProperties.m_PropertiesTypeBoolean(sKey)
+                    mProperty.bValue = (ToolStripComboBox_SetProperty.SelectedIndex = 0)
 
-                mProperty.bValue = (ToolStripComboBox_SetProperty.SelectedIndex = 0)
+                    g_ClassProperties.m_PropertiesTypeBoolean(sKey) = mProperty
 
-                g_ClassProperties.m_PropertiesTypeBoolean(sKey) = mProperty
+                Case (TypeOf mUnkProperty Is ClassProperties.STRUC_LIST_REPLACE AndAlso
+                            g_ClassProperties.m_PropertiesTypeList.ContainsKey(sKey))
+                    Dim mProperty = g_ClassProperties.m_PropertiesTypeList(sKey)
 
-            Case (TypeOf mUnkProperty Is ClassProperties.STRUC_LIST_REPLACE AndAlso
-                        g_ClassProperties.m_PropertiesTypeList.ContainsKey(sKey))
-                Dim mProperty = g_ClassProperties.m_PropertiesTypeList(sKey)
+                    mProperty.iIndex = ToolStripComboBox_SetProperty.SelectedIndex
 
-                mProperty.iIndex = ToolStripComboBox_SetProperty.SelectedIndex
+                    g_ClassProperties.m_PropertiesTypeList(sKey) = mProperty
+            End Select
 
-                g_ClassProperties.m_PropertiesTypeList(sKey) = mProperty
-        End Select
-
-        FillListViewPropeties()
-        UpdatePreview()
-    End Sub
-
-    Private Sub ContextMenuStrip_Properties_Opened(sender As Object, e As EventArgs) Handles ContextMenuStrip_Properties.Opened
-        ToolStripComboBox_SetProperty.Focus()
+            FillListViewPropeties()
+            UpdatePreview()
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
     End Sub
 
     Private Sub ToolStripComboBox_SetProperty_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ToolStripComboBox_SetProperty.SelectedIndexChanged
@@ -629,6 +622,7 @@ Public Class FormNewWizard
             Return
         End If
 
+        SetPropertiesByComboBox()
         ContextMenuStrip_Properties.Close()
     End Sub
 
@@ -641,12 +635,13 @@ Public Class FormNewWizard
             Return
         End If
 
-        If (e.KeyCode <> Keys.Enter) Then
-            Return
-        End If
+        Select Case (e.KeyCode)
+            Case Keys.Enter
+                e.Handled = True
+                SetPropertiesByComboBox()
+                ContextMenuStrip_Properties.Close()
 
-        e.Handled = True
-        ContextMenuStrip_Properties.Close()
+        End Select
     End Sub
 
     Private Sub ToolStripMenuItem_OpenDir_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_OpenDir.Click
@@ -700,5 +695,6 @@ Public Class FormNewWizard
                                                         (IO.Directory.Exists(TreeView_Explorer.SelectedNode.FullPath) OrElse
                                                                 IO.File.Exists(TreeView_Explorer.SelectedNode.FullPath)))
     End Sub
+
 #End Region
 End Class

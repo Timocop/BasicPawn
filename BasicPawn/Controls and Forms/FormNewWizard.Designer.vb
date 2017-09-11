@@ -51,6 +51,7 @@ Partial Class FormNewWizard
         '
         Me.TreeView_Explorer.ContextMenuStrip = Me.ContextMenuStrip_TreeView
         Me.TreeView_Explorer.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TreeView_Explorer.HideSelection = False
         Me.TreeView_Explorer.ImageIndex = 0
         Me.TreeView_Explorer.ImageList = Me.ImageList_TreeView
         Me.TreeView_Explorer.Location = New System.Drawing.Point(0, 13)
@@ -120,6 +121,7 @@ Partial Class FormNewWizard
         Me.ListView_Properties.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1, Me.ColumnHeader2})
         Me.ListView_Properties.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ListView_Properties.FullRowSelect = True
+        Me.ListView_Properties.HideSelection = False
         Me.ListView_Properties.Location = New System.Drawing.Point(749, 13)
         Me.ListView_Properties.Margin = New System.Windows.Forms.Padding(0)
         Me.ListView_Properties.MultiSelect = False
@@ -145,14 +147,14 @@ Partial Class FormNewWizard
         Me.ContextMenuStrip_Properties.Name = "ContextMenuStrip_Properties"
         Me.ContextMenuStrip_Properties.ShowImageMargin = False
         Me.ContextMenuStrip_Properties.ShowItemToolTips = False
-        Me.ContextMenuStrip_Properties.Size = New System.Drawing.Size(236, 27)
+        Me.ContextMenuStrip_Properties.Size = New System.Drawing.Size(211, 27)
         '
         'ToolStripComboBox_SetProperty
         '
         Me.ToolStripComboBox_SetProperty.DropDownWidth = 200
         Me.ToolStripComboBox_SetProperty.Margin = New System.Windows.Forms.Padding(0)
         Me.ToolStripComboBox_SetProperty.Name = "ToolStripComboBox_SetProperty"
-        Me.ToolStripComboBox_SetProperty.Size = New System.Drawing.Size(200, 23)
+        Me.ToolStripComboBox_SetProperty.Size = New System.Drawing.Size(175, 23)
         '
         'Label1
         '
@@ -227,6 +229,7 @@ Partial Class FormNewWizard
         Me.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MinimizeBox = False
+        Me.MinimumSize = New System.Drawing.Size(640, 480)
         Me.Name = "FormNewWizard"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
         Me.Text = "New Wizard"
