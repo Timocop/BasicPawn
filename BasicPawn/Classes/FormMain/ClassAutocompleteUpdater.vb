@@ -163,13 +163,7 @@ Public Class ClassAutocompleteUpdater
 
             'Find main tab of include tabs
             If (True) Then
-                Dim lValidTabIdentifier As New List(Of String)
-
                 Dim i As Integer
-                For i = 0 To mTabs.Length - 1
-                    lValidTabIdentifier.Add(mTabs(i).m_Identifier)
-                Next
-
                 For i = 0 To mTabs.Length - 1
                     If (mTabs(i).m_IsUnsaved) Then
                         Continue For
@@ -189,8 +183,8 @@ Public Class ClassAutocompleteUpdater
 
                     Dim j As Integer
                     For j = 0 To mIncludes.Length - 1
-                        'Check if the ref-tab still exist
-                        If (Not lValidTabIdentifier.Contains(CStr(mIncludes(j).Key))) Then
+                        'Only check orginal includes, skip other ones
+                        If (CStr(mIncludes(j).Key) <> sOtherTabIdentifier) Then
                             Continue For
                         End If
 
@@ -207,6 +201,11 @@ Public Class ClassAutocompleteUpdater
                     End If
 
                     For j = 0 To mIncludes.Length - 1
+                        'Only check orginal includes, skip other ones
+                        If (CStr(mIncludes(j).Key) <> sOtherTabIdentifier) Then
+                            Continue For
+                        End If
+
                         If (Not lIncludeFiles.Exists(Function(x As DictionaryEntry) CStr(x.Value).ToLower = CStr(mIncludes(j).Value).ToLower)) Then
                             lIncludeFiles.Add(New DictionaryEntry(sOtherTabIdentifier, mIncludes(j).Value))
                         End If
@@ -2024,9 +2023,9 @@ Public Class ClassAutocompleteUpdater
                 If (ClassSettings.g_iSettingsVarAutocompleteCurrentSourceOnly) Then
                     ParseVariables_Pre(sActiveSource, sSourceFile, sSourceFile, sRegExEnumPattern, lTmpVarAutocompleteList, lActiveAutocomplete, iActiveModType)
                 Else
-                    Dim mIncludes As DictionaryEntry() = mRequestTab.m_IncludeFiles.ToArray
-                    For i = 0 To mIncludes.Length - 1
-                        ParseVariables_Pre(sActiveSource, sSourceFile, CStr(mIncludes(i).Value), sRegExEnumPattern, lTmpVarAutocompleteList, lActiveAutocomplete, iActiveModType)
+                    Dim mIncludeFiles As DictionaryEntry() = mRequestTab.m_IncludeFiles.ToArray
+                    For i = 0 To mIncludeFiles.Length - 1
+                        ParseVariables_Pre(sActiveSource, sSourceFile, CStr(mIncludeFiles(i).Value), sRegExEnumPattern, lTmpVarAutocompleteList, lActiveAutocomplete, iActiveModType)
                     Next
                 End If
 

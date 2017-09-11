@@ -132,7 +132,7 @@ Public Class ClassTextEditorTools
                         iLineCount += 1
 
                         If (sLine.Contains(sWord) AndAlso Regex.IsMatch(sLine, String.Format("\b{0}\b", Regex.Escape(sWord)))) Then
-                            lRefList.Add(vbTab & String.Format("Reference found: {0}({1}) : {2}", mInclude, iLineCount, sLine.Trim))
+                            lRefList.Add(vbTab & String.Format("Reference found: {0}({1}) : {2}", CStr(mInclude.Value), iLineCount, sLine.Trim))
                         End If
                     End While
                 End Using
@@ -148,7 +148,7 @@ Public Class ClassTextEditorTools
                         iLineCount += 1
 
                         If (sLine.Contains(sWord) AndAlso Regex.IsMatch(sLine, String.Format("\b{0}\b", Regex.Escape(sWord)))) Then
-                            lRefList.Add(vbTab & String.Format("Reference found: {0}({1}) : {2}", mInclude, iLineCount, sLine.Trim))
+                            lRefList.Add(vbTab & String.Format("Reference found: {0}({1}) : {2}", CStr(mInclude.Value), iLineCount, sLine.Trim))
                         End If
                     End While
                 End Using
