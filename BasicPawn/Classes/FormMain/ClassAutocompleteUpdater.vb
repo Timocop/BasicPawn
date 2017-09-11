@@ -2957,9 +2957,6 @@ Public Class ClassAutocompleteUpdater
                                     sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.inc", IO.Path.Combine(sCompilerPath, sDefaultInc)))
 
                                 Case Else
-                                    If (Not lLoadedIncludes.ContainsKey(sDefaultInc.ToLower)) Then
-                                        lLoadedIncludes(sDefaultInc.ToLower) = False
-                                    End If
                                     Continue For
                             End Select
 
@@ -2987,7 +2984,7 @@ Public Class ClassAutocompleteUpdater
                             Continue While
                         End If
 
-                        Dim mMatch As Match = Regex.Match(sLine, "^\s*#(include|tryinclude)\s+(\<(?<PathInc>.*?)\>|""(?<PathFull>.*?)"")\s*$", RegexOptions.Compiled)
+                        Dim mMatch As Match = Regex.Match(sLine, "^\s*#(include|tryinclude)\s+(\<(?<PathInc>.*?)\>|""(?<PathFull>.*?)"")\s*$")
                         If (Not mMatch.Success) Then
                             Continue While
                         End If
