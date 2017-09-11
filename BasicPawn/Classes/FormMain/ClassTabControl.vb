@@ -203,7 +203,7 @@ Public Class ClassTabControl
                 g_mFormMain.TabControl_SourceTabs.SelectTab(iIndex)
                 g_mFormMain.g_ClassSyntaxTools.UpdateTextEditorSyntax()
 
-                FullUpdate()
+                FullUpdate(m_Tab(iIndex))
             End If
         Finally
             ClassTools.ClassForms.ResumeDrawing(g_iControlDrawCoutner, g_mFormMain.SplitContainer_ToolboxAndEditor)
@@ -286,7 +286,7 @@ Public Class ClassTabControl
 
             m_Tab(iIndex).m_ClassLineState.m_IgnoreUpdates = False
 
-            FullUpdate()
+            FullUpdate(m_Tab(iIndex))
 
             If (g_mFormMain.g_mUCStartPage.Visible) Then
                 g_mFormMain.g_mUCStartPage.Hide()
@@ -312,7 +312,7 @@ Public Class ClassTabControl
 
         m_Tab(iIndex).m_ClassLineState.m_IgnoreUpdates = False
 
-        FullUpdate()
+        FullUpdate(m_Tab(iIndex))
 
         If (g_mFormMain.g_mUCStartPage.Visible) Then
             g_mFormMain.g_mUCStartPage.Hide()
@@ -349,7 +349,7 @@ Public Class ClassTabControl
                     g_mFormMain.g_mUCStartPage.g_mClassRecentItems.AddRecent(m_Tab(iIndex).m_File)
                     g_mFormMain.ShowPingFlash()
 
-                    g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
+                    g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, Nothing)
                 End If
             End Using
         Else
@@ -477,19 +477,18 @@ Public Class ClassTabControl
         End While
     End Sub
 
-    Public Sub FullUpdate()
+    Public Sub FullUpdate(mTab As SourceTabPage)
         'Stop all threads
         'TODO: For some reason it locks the *.xshd file, need fix! 
         'FIX: Using 'UpdateSyntaxFile' in the UI thread seems to solve this problem... but why, im using |SyncLock|, |Using| etc.?!
         g_mFormMain.g_ClassSyntaxUpdater.StopThread()
-        g_mFormMain.g_ClassAutocompleteUpdater.StopUpdate()
 
         g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete("")
         g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.m_CurrentMethod = ""
         g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip()
         g_mFormMain.g_mUCObjectBrowser.StartUpdate()
 
-        g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
+        g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, mTab.m_Identifier)
         g_mFormMain.g_ClassSyntaxUpdater.StartThread()
     End Sub
 

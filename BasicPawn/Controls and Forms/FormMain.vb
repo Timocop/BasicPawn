@@ -58,6 +58,7 @@ Public Class FormMain
     Private g_mPingFlashPanel As ClassPanelAlpha
     Private g_bFormPostCreate As Boolean = False
     Private g_bFormPostLoad As Boolean = False
+    Private g_bIgnoreComboBoxEvent As Boolean = False
 
 
 
@@ -256,7 +257,9 @@ Public Class FormMain
                                                              If(bMonoRuntime, "| Running on Mono (Unsupported!)", "")).Trim
 
         'Some control init
+        g_bIgnoreComboBoxEvent = True
         ToolStripComboBox_ToolsAutocompleteSyntax.SelectedIndex = 0
+        g_bIgnoreComboBoxEvent = False
 
         'Load default configs
         For Each mConfig As ClassConfigs.STRUC_CONFIG_ITEM In ClassConfigs.GetConfigs(False)
@@ -310,7 +313,7 @@ Public Class FormMain
         End If
 
         'Update Autocomplete
-        g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
+        g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, Nothing)
 
         'UpdateTextEditorControl1Colors()
         g_ClassSyntaxTools.UpdateFormColors()
@@ -544,7 +547,7 @@ Public Class FormMain
         g_ClassTabControl.m_ActiveTab.m_File = sTempFile
         g_ClassTabControl.SaveFileTab(g_ClassTabControl.m_ActiveTabIndex)
 
-        g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
+        g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, Nothing)
     End Sub
 
     Private Sub ToolStripMenuItem_FileSavePacked_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileSavePacked.Click
@@ -617,7 +620,7 @@ Public Class FormMain
             If (i.ShowDialog(Me) = DialogResult.OK) Then
                 UpdateFormConfigText()
 
-                g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
+                g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, Nothing)
 
                 For j = 0 To g_ClassTabControl.m_TabsCount - 1
                     g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
@@ -728,10 +731,14 @@ Public Class FormMain
     End Sub
 
     Private Sub ToolStripMenuItem_ToolsAutocompleteUpdate_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsAutocompleteUpdate.Click
-        g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
+        g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, Nothing)
     End Sub
 
     Private Sub ToolStripComboBox_ToolsAutocompleteSyntax_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ToolStripComboBox_ToolsAutocompleteSyntax.SelectedIndexChanged
+        If (g_bIgnoreComboBoxEvent) Then
+            Return
+        End If
+
         Select Case (ToolStripComboBox_ToolsAutocompleteSyntax.SelectedIndex)
             Case 0
                 ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX
@@ -741,7 +748,7 @@ Public Class FormMain
                 ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7
         End Select
 
-        g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
+        g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, Nothing)
     End Sub
 
     Private Sub ToolStripMenuItem_ToolsAutocompleteShowAutocomplete_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsAutocompleteShowAutocomplete.Click
@@ -915,7 +922,7 @@ Public Class FormMain
             If (i.ShowDialog(Me) = DialogResult.OK) Then
                 UpdateFormConfigText()
 
-                g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
+                g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, Nothing)
 
                 For j = 0 To g_ClassTabControl.m_TabsCount - 1
                     g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
@@ -1210,7 +1217,6 @@ Public Class FormMain
     Private Sub CleanUp()
         g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnPluginEndPost())
 
-        g_ClassAutocompleteUpdater.StopUpdate()
         If (g_mFormOpenTabFromInstances IsNot Nothing AndAlso Not g_mFormOpenTabFromInstances.IsDisposed) Then
             g_mFormOpenTabFromInstances.Close()
             g_mFormOpenTabFromInstances.Dispose()

@@ -66,17 +66,22 @@ Public Class ClassSyntaxUpdater
 
             Try
                 'Update Autocomplete
-                If (dLastFullAutocompleteUpdate < Now OrElse g_mFormMain.g_ClassAutocompleteUpdater.g_bForceFullAutocompleteUpdate) Then
+                If (g_mFormMain.g_ClassAutocompleteUpdater.g_lFullAutocompleteTabRequests.Count > 0) Then
+                    Dim sTabIdentifier As String = g_mFormMain.g_ClassAutocompleteUpdater.g_lFullAutocompleteTabRequests(0)
+
+                    g_mFormMain.BeginInvoke(Sub() g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, sTabIdentifier))
+
+                ElseIf (dLastFullAutocompleteUpdate < Now) Then
                     dLastFullAutocompleteUpdate = (Now + dFullAutocompleteUpdateDelay)
 
-                    g_mFormMain.BeginInvoke(Sub() g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL))
+                    g_mFormMain.BeginInvoke(Sub() g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, Nothing))
                 End If
 
                 'Update Variable Autocomplete
                 If (dLastVarAutocompleteUpdate < Now) Then
                     dLastVarAutocompleteUpdate = (Now + dVarAutocompleteUpdateDelay)
 
-                    g_mFormMain.BeginInvoke(Sub() g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.VARIABLES_AUTOCOMPLETE))
+                    g_mFormMain.BeginInvoke(Sub() g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.VARIABLES_AUTOCOMPLETE, Nothing))
                 End If
 
                 'Update source analysis
