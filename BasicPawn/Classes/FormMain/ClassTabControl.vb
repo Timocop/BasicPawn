@@ -23,7 +23,6 @@ Public Class ClassTabControl
 
     Private g_mFormMain As FormMain
     Private g_bIgnoreOnTabSelected As Boolean = False
-    Private g_sOldActiveIdentifier As String = ""
 
     Private g_iControlDrawCoutner As Integer = 0
 
@@ -134,8 +133,6 @@ Public Class ClassTabControl
                 Return False
             End If
 
-            'g_sOldActiveIdentifier = ""
-
             Dim mTabPage = m_Tab(iIndex)
             mTabPage.Dispose()
             mTabPage = Nothing
@@ -190,15 +187,22 @@ Public Class ClassTabControl
         Try
             ClassTools.ClassForms.SuspendDrawing(g_iControlDrawCoutner, g_mFormMain.SplitContainer_ToolboxAndEditor)
 
-            Dim iLastTabIndex As Integer = GetTabIndexByIdentifier(g_sOldActiveIdentifier)
-            If (iLastTabIndex > -1) Then
-                m_Tab(iLastTabIndex).m_HandlersEnabled = False
-            End If
+            For i = 0 To m_TabsCount - 1
+                If (iIndex = i) Then
+                    Continue For
+                End If
+
+                If (Not m_Tab(i).m_HandlersEnabled) Then
+                    Continue For
+                End If
+
+                m_Tab(i).m_HandlersEnabled = False
+            Next
 
             If (iIndex > -1) Then
-                g_sOldActiveIdentifier = m_Tab(iIndex).m_Identifier
-
-                m_Tab(iIndex).m_HandlersEnabled = True
+                If (Not m_Tab(iIndex).m_HandlersEnabled) Then
+                    m_Tab(iIndex).m_HandlersEnabled = True
+                End If
 
                 g_mFormMain.TabControl_SourceTabs.SelectTab(iIndex)
                 g_mFormMain.g_ClassSyntaxTools.UpdateTextEditorSyntax()

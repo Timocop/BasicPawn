@@ -86,6 +86,7 @@ Partial Class FormMain
         Me.ToolStripMenuItem_ToolsSearchReplace = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_ToolsAutocomplete = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_ToolsAutocompleteUpdate = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_ToolsAutocompleteUpdateAll = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripComboBox_ToolsAutocompleteSyntax = New System.Windows.Forms.ToolStripComboBox()
         Me.ToolStripMenuItem_ToolsAutocompleteCurrentMod = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
@@ -146,7 +147,6 @@ Partial Class FormMain
         Me.ToolStripProgressBar_Autocomplete = New System.Windows.Forms.ToolStripProgressBar()
         Me.ToolStripStatusLabel_AppVersion = New System.Windows.Forms.ToolStripStatusLabel()
         Me.Timer_PingFlash = New System.Windows.Forms.Timer(Me.components)
-        Me.ToolStripMenuItem_ToolsAutocompleteUpdateAll = New System.Windows.Forms.ToolStripMenuItem()
         Me.ContextMenuStrip_RightClick.SuspendLayout()
         Me.MenuStrip_BasicPawn.SuspendLayout()
         Me.SplitContainer_ToolboxSourceAndDetails.Panel1.SuspendLayout()
@@ -570,6 +570,13 @@ Partial Class FormMain
         Me.ToolStripMenuItem_ToolsAutocompleteUpdate.ShortcutKeys = System.Windows.Forms.Keys.F5
         Me.ToolStripMenuItem_ToolsAutocompleteUpdate.Size = New System.Drawing.Size(360, 22)
         Me.ToolStripMenuItem_ToolsAutocompleteUpdate.Text = "Update"
+        '
+        'ToolStripMenuItem_ToolsAutocompleteUpdateAll
+        '
+        Me.ToolStripMenuItem_ToolsAutocompleteUpdateAll.Name = "ToolStripMenuItem_ToolsAutocompleteUpdateAll"
+        Me.ToolStripMenuItem_ToolsAutocompleteUpdateAll.ShortcutKeys = CType((System.Windows.Forms.Keys.Shift Or System.Windows.Forms.Keys.F5), System.Windows.Forms.Keys)
+        Me.ToolStripMenuItem_ToolsAutocompleteUpdateAll.Size = New System.Drawing.Size(360, 22)
+        Me.ToolStripMenuItem_ToolsAutocompleteUpdateAll.Text = "Update all tabs"
         '
         'ToolStripComboBox_ToolsAutocompleteSyntax
         '
@@ -1066,13 +1073,6 @@ Partial Class FormMain
         '
         'Timer_PingFlash
         '
-        '
-        'ToolStripMenuItem_ToolsAutocompleteUpdateAll
-        '
-        Me.ToolStripMenuItem_ToolsAutocompleteUpdateAll.Name = "ToolStripMenuItem_ToolsAutocompleteUpdateAll"
-        Me.ToolStripMenuItem_ToolsAutocompleteUpdateAll.ShortcutKeys = CType((System.Windows.Forms.Keys.Shift Or System.Windows.Forms.Keys.F5), System.Windows.Forms.Keys)
-        Me.ToolStripMenuItem_ToolsAutocompleteUpdateAll.Size = New System.Drawing.Size(360, 22)
-        Me.ToolStripMenuItem_ToolsAutocompleteUpdateAll.Text = "Update all tabs"
         '
         'FormMain
         '
