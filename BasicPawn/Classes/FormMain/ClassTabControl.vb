@@ -551,7 +551,7 @@ Public Class ClassTabControl
         Private g_iModType As ClassSyntaxTools.ENUM_MOD_TYPE = ClassSyntaxTools.ENUM_MOD_TYPE.SOURCEMOD
         Private g_bHasReferenceIncludes As Boolean = False
         Private g_mSourceTextEditor As TextEditorControlEx
-        Private g_bEnabled As Boolean = True
+        Private g_bHandlersEnabled As Boolean = False
         Private g_mFileCachedWriteDate As Date
 
         Public Sub New(f As FormMain)
@@ -714,12 +714,12 @@ Public Class ClassTabControl
 
         Public Property m_HandlersEnabled As Boolean
             Get
-                Return g_bEnabled
+                Return g_bHandlersEnabled
             End Get
             Set(value As Boolean)
-                g_bEnabled = value
+                g_bHandlersEnabled = value
 
-                If (g_bEnabled) Then
+                If (g_bHandlersEnabled) Then
                     AddHandlers()
                 Else
                     RemoveHandlers()
