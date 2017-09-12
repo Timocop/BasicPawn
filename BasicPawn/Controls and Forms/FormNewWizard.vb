@@ -673,7 +673,7 @@ Public Class FormNewWizard
         ContextMenuStrip_Properties.Close()
     End Sub
 
-    Private Sub ToolStripComboBox_SetProperty_KeyUp(sender As Object, e As KeyEventArgs) Handles ToolStripComboBox_SetProperty.KeyUp
+    Private Sub ToolStripComboBox_SetProperty_KeyDown(sender As Object, e As KeyEventArgs) Handles ToolStripComboBox_SetProperty.KeyDown
         If (g_bIgnoreComboBoxSetPropertyEvents) Then
             Return
         End If
@@ -685,6 +685,8 @@ Public Class FormNewWizard
         Select Case (e.KeyCode)
             Case Keys.Enter
                 e.Handled = True
+                e.SuppressKeyPress = True
+
                 SetPropertiesByComboBox()
                 ContextMenuStrip_Properties.Close()
 

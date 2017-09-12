@@ -212,10 +212,13 @@ Public Class UCObjectBrowser
 
     End Class
 
-    Private Sub TextboxWatermark_Search_PreviewKeyDown(sender As Object, e As PreviewKeyDownEventArgs) Handles TextboxWatermark_Search.PreviewKeyDown
+    Private Sub TextboxWatermark_Search_KeyDown(sender As Object, e As KeyEventArgs) Handles TextboxWatermark_Search.KeyDown
         If (e.KeyCode <> Keys.Enter) Then
             Return
         End If
+
+        e.Handled = True
+        e.SuppressKeyPress = True
 
         Dim sSearchText As String = TextboxWatermark_Search.Text
         If (String.IsNullOrEmpty(sSearchText)) Then
