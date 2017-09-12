@@ -1084,19 +1084,13 @@ Public Class ClassTabControl
                                     End If
 
                                 Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PREPROCESSOR) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PREPROCESSOR
-                                    If (bIsEmpty) Then
-                                        Dim sNewInput As String = String.Format("#{0}", mAutocomplete.m_FunctionName)
+                                    Dim iLineOffsetNum As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Offset
+                                    Dim sNewInput As String = String.Format("#{0}", mAutocomplete.m_FunctionName)
 
-                                        g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, sNewInput)
+                                    g_mSourceTextEditor.ActiveTextAreaControl.Document.Remove(iLineOffsetNum, iPosition)
+                                    g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iLineOffsetNum, sNewInput)
 
-                                        iPosition = g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column
-                                        g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = iPosition + sNewInput.Length
-                                    Else
-                                        g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset - sFunctionName.Length, mAutocomplete.m_FunctionName)
-
-                                        iPosition = g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column
-                                        g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = iPosition + mAutocomplete.m_FunctionName.Length
-                                    End If
+                                    g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = sNewInput.Length
 
                                 Case Else
                                     If (ClassSettings.g_iSettingsFullMethodAutocomplete) Then
