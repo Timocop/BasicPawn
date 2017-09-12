@@ -30,6 +30,10 @@ Partial Class UCObjectBrowser
         Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_ListReferences = New System.Windows.Forms.ToolStripMenuItem()
         Me.TextboxWatermark_Search = New BasicPawn.ClassTextboxWatermark()
+        Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
+        Me.ToolStripMenuItem_ExpandAll = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_ExpandSources = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_CollapseAll = New System.Windows.Forms.ToolStripMenuItem()
         Me.ContextMenuStrip_ObjectBrowser.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -47,35 +51,35 @@ Partial Class UCObjectBrowser
         '
         'ContextMenuStrip_ObjectBrowser
         '
-        Me.ContextMenuStrip_ObjectBrowser.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_OpenFile, Me.ToolStripMenuItem_Copy, Me.ToolStripSeparator1, Me.ToolStripMenuItem_ListReferences})
+        Me.ContextMenuStrip_ObjectBrowser.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_OpenFile, Me.ToolStripMenuItem_Copy, Me.ToolStripSeparator1, Me.ToolStripMenuItem_ListReferences, Me.ToolStripSeparator2, Me.ToolStripMenuItem_ExpandAll, Me.ToolStripMenuItem_ExpandSources, Me.ToolStripMenuItem_CollapseAll})
         Me.ContextMenuStrip_ObjectBrowser.Name = "ContextMenuStrip_ObjectBrowser"
         Me.ContextMenuStrip_ObjectBrowser.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
-        Me.ContextMenuStrip_ObjectBrowser.Size = New System.Drawing.Size(150, 76)
+        Me.ContextMenuStrip_ObjectBrowser.Size = New System.Drawing.Size(175, 170)
         '
         'ToolStripMenuItem_OpenFile
         '
         Me.ToolStripMenuItem_OpenFile.Image = Global.BasicPawn.My.Resources.Resources.imageres_5338_16x16
         Me.ToolStripMenuItem_OpenFile.Name = "ToolStripMenuItem_OpenFile"
-        Me.ToolStripMenuItem_OpenFile.Size = New System.Drawing.Size(149, 22)
+        Me.ToolStripMenuItem_OpenFile.Size = New System.Drawing.Size(174, 22)
         Me.ToolStripMenuItem_OpenFile.Text = "Open file"
         '
         'ToolStripMenuItem_Copy
         '
         Me.ToolStripMenuItem_Copy.Image = Global.BasicPawn.My.Resources.Resources.imageres_5350_16x16
         Me.ToolStripMenuItem_Copy.Name = "ToolStripMenuItem_Copy"
-        Me.ToolStripMenuItem_Copy.Size = New System.Drawing.Size(149, 22)
+        Me.ToolStripMenuItem_Copy.Size = New System.Drawing.Size(174, 22)
         Me.ToolStripMenuItem_Copy.Text = "Copy"
         '
         'ToolStripSeparator1
         '
         Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
-        Me.ToolStripSeparator1.Size = New System.Drawing.Size(146, 6)
+        Me.ToolStripSeparator1.Size = New System.Drawing.Size(171, 6)
         '
         'ToolStripMenuItem_ListReferences
         '
         Me.ToolStripMenuItem_ListReferences.Image = Global.BasicPawn.My.Resources.Resources.imageres_5333_16x16
         Me.ToolStripMenuItem_ListReferences.Name = "ToolStripMenuItem_ListReferences"
-        Me.ToolStripMenuItem_ListReferences.Size = New System.Drawing.Size(149, 22)
+        Me.ToolStripMenuItem_ListReferences.Size = New System.Drawing.Size(174, 22)
         Me.ToolStripMenuItem_ListReferences.Text = "List references"
         '
         'TextboxWatermark_Search
@@ -87,6 +91,29 @@ Partial Class UCObjectBrowser
         Me.TextboxWatermark_Search.Size = New System.Drawing.Size(269, 22)
         Me.TextboxWatermark_Search.TabIndex = 2
         Me.TextboxWatermark_Search.Text = "Search..."
+        '
+        'ToolStripSeparator2
+        '
+        Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
+        Me.ToolStripSeparator2.Size = New System.Drawing.Size(171, 6)
+        '
+        'ToolStripMenuItem_ExpandAll
+        '
+        Me.ToolStripMenuItem_ExpandAll.Name = "ToolStripMenuItem_ExpandAll"
+        Me.ToolStripMenuItem_ExpandAll.Size = New System.Drawing.Size(174, 22)
+        Me.ToolStripMenuItem_ExpandAll.Text = "Expand all"
+        '
+        'ToolStripMenuItem_ExpandSources
+        '
+        Me.ToolStripMenuItem_ExpandSources.Name = "ToolStripMenuItem_ExpandSources"
+        Me.ToolStripMenuItem_ExpandSources.Size = New System.Drawing.Size(174, 22)
+        Me.ToolStripMenuItem_ExpandSources.Text = "Expand source files"
+        '
+        'ToolStripMenuItem_CollapseAll
+        '
+        Me.ToolStripMenuItem_CollapseAll.Name = "ToolStripMenuItem_CollapseAll"
+        Me.ToolStripMenuItem_CollapseAll.Size = New System.Drawing.Size(174, 22)
+        Me.ToolStripMenuItem_CollapseAll.Text = "Collapse all"
         '
         'UCObjectBrowser
         '
@@ -110,4 +137,8 @@ Partial Class UCObjectBrowser
     Friend WithEvents ToolStripSeparator1 As ToolStripSeparator
     Friend WithEvents ToolStripMenuItem_ListReferences As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_Copy As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator2 As ToolStripSeparator
+    Friend WithEvents ToolStripMenuItem_ExpandAll As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_ExpandSources As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_CollapseAll As ToolStripMenuItem
 End Class

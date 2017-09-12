@@ -132,10 +132,6 @@ Public Class UCObjectBrowser
                     If (Not CBool(Me.Invoke(Function() TreeView_ObjectBrowser.Nodes(sFile).Nodes(sTypes).Nodes.ContainsKey(sName)))) Then
                         Me.Invoke(Sub() TreeView_ObjectBrowser.Nodes(sFile).Nodes(sTypes).Nodes.Add(New ClassTreeNodeAutocomplete(sName, sName, sFile, iTypes, sName)))
                     End If
-
-                    If (bIsMainFile) Then
-                        Me.Invoke(Sub() TreeView_ObjectBrowser.Nodes(sFile).ExpandAll())
-                    End If
                 Next
             End If
 
@@ -369,6 +365,24 @@ Public Class UCObjectBrowser
         End Try
     End Sub
 
+    Private Sub ToolStripMenuItem_ExpandAll_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ExpandAll.Click
+        TreeView_ObjectBrowser.ExpandAll()
+    End Sub
+
+    Private Sub ToolStripMenuItem_ExpandSources_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ExpandSources.Click
+        For Each mNode As TreeNode In TreeView_ObjectBrowser.Nodes
+            If (Not Array.Exists(g_sSourceMainFileExt, Function(s As String) mNode.Text.ToLower.EndsWith(s.ToLower))) Then
+                Continue For
+            End If
+
+            mNode.ExpandAll()
+        Next
+    End Sub
+
+    Private Sub ToolStripMenuItem_CollapseAll_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_CollapseAll.Click
+        TreeView_ObjectBrowser.CollapseAll()
+    End Sub
+
     Class ClassTreeViewFix
         Inherits TreeView
 
@@ -383,5 +397,4 @@ Public Class UCObjectBrowser
             End Try
         End Sub
     End Class
-
 End Class
