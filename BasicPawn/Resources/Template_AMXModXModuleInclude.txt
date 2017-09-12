@@ -28,8 +28,15 @@
 00700=#endif
 00800=#define _{$IncludeName}_included
 00900=
+01000=#pragma reqclass {$ClassName}
+01100=#if !defined AMXMODX_NOAUTOLOAD
+01200=%t%#pragma defclasslib {$ClassName} {$ModuleName}
+01300=#endif
+01400=
 
 
 [Properties]
 $IncludeDescription,Description						=My include
 $IncludeName,Include name							=my_include
+$ClassName,Class name								=my_class
+$ModuleName,Library name							=my_library

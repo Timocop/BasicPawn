@@ -28,8 +28,39 @@
 00700=#endif
 00800=#define _{$IncludeName}_included
 00900=
-
+01000=
+01100=
+01200=
+01300=
+01400=public Extension __ext_{$IncludeName} =
+01500={
+01600=	name = "{$ExtenstionName}",
+01700=	file = "{$ExtenstionFilename}",
+01800=#if defined AUTOLOAD_EXTENSIONS
+01900=	autoload = 1,
+02000=#else
+02100=	autoload = 0,
+02200=#endif
+02300=#if defined REQUIRE_EXTENSIONS
+02400=	required = 1,
+02500=#else
+02600=	required = 0,
+02700=#endif
+02800=};
+02900=
+03000={?OptionalNatives}#if !defined REQUIRE_EXTENSIONS
+03100={?OptionalNatives}public void __pl_{$IncludeName}_SetNTVOptional()
+03200={?OptionalNatives}{
+03300={?OptionalNatives}%t%MarkNativeAsOptional("MyNative");
+03400={?OptionalNatives}}
+03500={?OptionalNatives}#endif
+03600=
 
 [Properties]
-$IncludeDescription,Description						=My include
-$IncludeName,Include name							=my_include
+$IncludeDescription,Description						=My library
+$IncludeName,Library name							=my_library
+$ExtenstionName,Extenstion name						=my_extension
+$ExtenstionFilename,Extenstion filename				=my_extension.ext
+?OptionalNatives,Optional natives					=
+?OptionalNatives,Optional natives					=%0%
+?OptionalNatives,Optional natives					=0

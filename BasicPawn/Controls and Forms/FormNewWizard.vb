@@ -94,12 +94,19 @@ Public Class FormNewWizard
 
                 Case (ENUM_TEMPLATE_TYPES.SOURCEMOD_OLD)
                     IO.File.WriteAllText(IO.Path.Combine(mItem.Value, "Plugin.txt"), My.Resources.Template_SourcePawnOldPlugin)
+                    IO.File.WriteAllText(IO.Path.Combine(mItem.Value, "Shared Plugin Library.txt"), My.Resources.Template_SourcePawnOldSharedPluginInclude)
+                    IO.File.WriteAllText(IO.Path.Combine(mItem.Value, "Extension Library.txt"), My.Resources.Template_SourcePawnOldExtensionInclude)
 
                 Case (ENUM_TEMPLATE_TYPES.SOURCEMOD_NEW)
                     IO.File.WriteAllText(IO.Path.Combine(mItem.Value, "Plugin.txt"), My.Resources.Template_SourcePawnNewPlugin)
+                    IO.File.WriteAllText(IO.Path.Combine(mItem.Value, "Shared Plugin Library.txt"), My.Resources.Template_SourcePawnNewSharedPluginInclude)
+                    IO.File.WriteAllText(IO.Path.Combine(mItem.Value, "Extension Library.txt"), My.Resources.Template_SourcePawnNewExtensionInclude)
 
                 Case (ENUM_TEMPLATE_TYPES.AMXMODX)
                     IO.File.WriteAllText(IO.Path.Combine(mItem.Value, "Plugin.txt"), My.Resources.Template_AMXModXPlugin)
+                    IO.File.WriteAllText(IO.Path.Combine(mItem.Value, "Include.txt"), My.Resources.Template_AMXModXInclude)
+                    IO.File.WriteAllText(IO.Path.Combine(mItem.Value, "Library.txt"), My.Resources.Template_AMXModXLibraryInclude)
+                    IO.File.WriteAllText(IO.Path.Combine(mItem.Value, "Module Library.txt"), My.Resources.Template_AMXModXModuleInclude)
             End Select
         Next
     End Sub
@@ -156,12 +163,17 @@ Public Class FormNewWizard
 
         ReadOnly Property m_Source As String
             Get
-                Dim sSource As String = String.Join(Environment.NewLine, g_lSource.ToArray)
+                Dim mSourceBuilder As New Text.StringBuilder()
 
-                ResolveNewlines(sSource)
-                ResolveTabs(sSource)
+                For Each sLine As String In g_lSource.ToArray
+                    ResolveNewlines(sLine)
+                    ResolveTabs(sLine)
+                    ResolveTerminator(sLine)
 
-                Return sSource
+                    mSourceBuilder.AppendLine(sLine)
+                Next
+
+                Return mSourceBuilder.ToString
             End Get
         End Property
 
@@ -339,11 +351,20 @@ Public Class FormNewWizard
         End Sub
 
         Public Sub ResolveNewlines(ByRef sSource As String)
-            sSource = sSource.Replace("\n", Environment.NewLine)
+            sSource = sSource.Replace("%n%", Environment.NewLine)
         End Sub
 
         Public Sub ResolveTabs(ByRef sSource As String)
-            sSource = sSource.Replace("\t", ClassSettings.BuildIndentation(1, ClassSettings.ENUM_INDENTATION_TYPES.USE_SETTINGS))
+            sSource = sSource.Replace("%t%", ClassSettings.BuildIndentation(1, ClassSettings.ENUM_INDENTATION_TYPES.USE_SETTINGS))
+        End Sub
+
+        Public Sub ResolveTerminator(ByRef sSource As String)
+            Dim iIndex As Integer = sSource.IndexOf("%0%")
+            If (iIndex < 0) Then
+                Return
+            End If
+
+            sSource = sSource.Substring(0, iIndex)
         End Sub
 
         Public Sub Clear()
@@ -379,6 +400,7 @@ Public Class FormNewWizard
 
                 ResolveNewlines(sLine)
                 ResolveTabs(sLine)
+                ResolveTerminator(sLine)
 
                 mSourceBuilder.AppendLine(sLine)
             Next

@@ -13,8 +13,9 @@
 ;		{#PropertyName,Difficulty,Normal} = Same as above but the third argument is the description in the list.
 ;
 ;	Formating info:
-;		\n = For newline.
-;		\t = For tab (or converted spaces).
+;		%n% = For newline.
+;		%t% = For tab (or converted spaces).
+;		%0% = Terminate line.
 
 
 [Source]
@@ -28,18 +29,18 @@
 00800={?ForceSemicolon}
 00900=public plugin_init()
 01000={
-01100=\tregister_plugin(PLUGIN_NAME, PLUGIN_VERSION, PLUGIN_AUTHOR);
+01100=%t%register_plugin(PLUGIN_NAME, PLUGIN_VERSION, PLUGIN_AUTHOR);
 01200=}
 
 [Properties]
 $InfoName,Plugin name								=My plugin
 $InfoAuthor,Plugin author							=
 $InfoVersion,Plugin version							=1.0
-?ForceSemicolon,Force Semicolon						=\n#pragma semicolon 1\n
+?ForceSemicolon,Force Semicolon						=%n%#pragma semicolon 1%n%
 ?ForceSemicolon,Force Semicolon						=
 ?ForceSemicolon,Force Semicolon						=0
-?DebugDefine,DEBUG define							=\n#define DEBUG\n
+?DebugDefine,DEBUG define							=%n%#define DEBUG%n%
 ?DebugDefine,DEBUG define							=
-?DebugEcho,ECHO define								=\n#if 1\n\t#define ECHO(%0) server_print(%0)\n#else\n\t#define ECHO(%0)\n#endif\n
+?DebugEcho,ECHO define								=%n%#if 1%n%%t%#define ECHO(%0) server_print(%0)%n%#else%n%%t%#define ECHO(%0)%n%#endif%n%
 ?DebugEcho,ECHO define								=
 ?DebugEcho,ECHO define								=0

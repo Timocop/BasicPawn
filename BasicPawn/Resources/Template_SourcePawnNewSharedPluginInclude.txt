@@ -28,8 +28,34 @@
 00700=#endif
 00800=#define _{$IncludeName}_included
 00900=
-
+01000=
+01100=
+01200=
+01300=
+01400=public SharedPlugin __pl_{$IncludeName} = 
+01500={
+01600=%t%name = "{$SharedPluginName}",
+01700=%t%file = "{$SharedPluginFilename}",
+01800=#if defined REQUIRE_PLUGIN
+01900=%t%required = 1,
+02000=#else
+02100=%t%required = 0,
+02200=#endif
+02300=};
+02400=
+02500={?OptionalNatives}#if !defined REQUIRE_PLUGIN
+02600={?OptionalNatives}public void __pl_{$IncludeName}_SetNTVOptional()
+02700={?OptionalNatives}{
+02800={?OptionalNatives}%t%MarkNativeAsOptional("MyNative");
+02900={?OptionalNatives}}
+03000={?OptionalNatives}#endif
+03100=
 
 [Properties]
-$IncludeDescription,Description						=My include
-$IncludeName,Include name							=my_include
+$IncludeDescription,Description						=My library
+$IncludeName,Library name							=my_library
+$SharedPluginName,Library name						=my_library
+$SharedPluginFilename,Plugin filename				=my_library.smx
+?OptionalNatives,Optional natives					=
+?OptionalNatives,Optional natives					=%0%
+?OptionalNatives,Optional natives					=0

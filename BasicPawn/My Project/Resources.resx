@@ -283,4 +283,25 @@
   <data name="Template_SourcePawnOldPlugin" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Template_SourcePawnOldPlugin.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;iso-8859-1</value>
   </data>
+  <data name="Template_AMXModXInclude" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Template_AMXModXInclude.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="Template_AMXModXLibraryInclude" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Template_AMXModXLibraryInclude.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="Template_AMXModXModuleInclude" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Template_AMXModXModuleInclude.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="Template_SourcePawnNewExtensionInclude" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Template_SourcePawnNewExtensionInclude.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="Template_SourcePawnNewSharedPluginInclude" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Template_SourcePawnNewSharedPluginInclude.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="Template_SourcePawnOldExtensionInclude" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Template_SourcePawnOldExtensionInclude.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="Template_SourcePawnOldSharedPluginInclude" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Template_SourcePawnOldSharedPluginInclude.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
 </root>

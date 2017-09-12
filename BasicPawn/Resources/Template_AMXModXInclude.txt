@@ -27,9 +27,14 @@
 00600=%t%#endinput
 00700=#endif
 00800=#define _{$IncludeName}_included
-00900=
+00900={?RegisterLibrary}%n%#pragma library {$RegisterLibraryName}%n%
+01000=
 
 
 [Properties]
 $IncludeDescription,Description						=My include
 $IncludeName,Include name							=my_include
+$RegisterLibraryName,Register library name					=my_library
+?RegisterLibrary,Register library					=
+?RegisterLibrary,Register library					=%0%
+?RegisterLibrary,Register library					=0

@@ -686,6 +686,63 @@ Namespace My.Resources
         ''';		{&lt;TYPE&gt;NAME,DESCRIPTION[,ITEM_DESCRIPTION]}
         ''';		{$PropertyName,The name of the property} = First argument is the name which will be replaced. [rest of string was truncated]&quot;;.
         '''</summary>
+        Public ReadOnly Property Template_AMXModXInclude() As String
+            Get
+                Return ResourceManager.GetString("Template_AMXModXInclude", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to ; WARNING
+        '''; This file should not be read/overwritten by standard ini parsers!
+        ''';
+        ''';	Type info:
+        ''';		$ = Default string replace.
+        ''';		? = (Two names required) Boolean, first string replace if TRUE, second string replace if FALSE and the third is the default value 0/1.
+        ''';		# = (More than one name required) List, multiple string replace choices.
+        ''';
+        ''';	Properties info:
+        ''';		{&lt;TYPE&gt;NAME,DESCRIPTION[,ITEM_DESCRIPTION]}
+        ''';		{$PropertyName,The name of the property} = First argument is the name which will be replaced. [rest of string was truncated]&quot;;.
+        '''</summary>
+        Public ReadOnly Property Template_AMXModXLibraryInclude() As String
+            Get
+                Return ResourceManager.GetString("Template_AMXModXLibraryInclude", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to ; WARNING
+        '''; This file should not be read/overwritten by standard ini parsers!
+        ''';
+        ''';	Type info:
+        ''';		$ = Default string replace.
+        ''';		? = (Two names required) Boolean, first string replace if TRUE, second string replace if FALSE and the third is the default value 0/1.
+        ''';		# = (More than one name required) List, multiple string replace choices.
+        ''';
+        ''';	Properties info:
+        ''';		{&lt;TYPE&gt;NAME,DESCRIPTION[,ITEM_DESCRIPTION]}
+        ''';		{$PropertyName,The name of the property} = First argument is the name which will be replaced. [rest of string was truncated]&quot;;.
+        '''</summary>
+        Public ReadOnly Property Template_AMXModXModuleInclude() As String
+            Get
+                Return ResourceManager.GetString("Template_AMXModXModuleInclude", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to ; WARNING
+        '''; This file should not be read/overwritten by standard ini parsers!
+        ''';
+        ''';	Type info:
+        ''';		$ = Default string replace.
+        ''';		? = (Two names required) Boolean, first string replace if TRUE, second string replace if FALSE and the third is the default value 0/1.
+        ''';		# = (More than one name required) List, multiple string replace choices.
+        ''';
+        ''';	Properties info:
+        ''';		{&lt;TYPE&gt;NAME,DESCRIPTION[,ITEM_DESCRIPTION]}
+        ''';		{$PropertyName,The name of the property} = First argument is the name which will be replaced. [rest of string was truncated]&quot;;.
+        '''</summary>
         Public ReadOnly Property Template_AMXModXPlugin() As String
             Get
                 Return ResourceManager.GetString("Template_AMXModXPlugin", resourceCulture)
@@ -724,6 +781,25 @@ Namespace My.Resources
         ''';		{&lt;TYPE&gt;NAME,DESCRIPTION[,ITEM_DESCRIPTION]}
         ''';		{$PropertyName,The name of the property} = First argument is the name which will be replaced. [rest of string was truncated]&quot;;.
         '''</summary>
+        Public ReadOnly Property Template_SourcePawnNewExtensionInclude() As String
+            Get
+                Return ResourceManager.GetString("Template_SourcePawnNewExtensionInclude", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to ; WARNING
+        '''; This file should not be read/overwritten by standard ini parsers!
+        ''';
+        ''';	Type info:
+        ''';		$ = Default string replace.
+        ''';		? = (Two names required) Boolean, first string replace if TRUE, second string replace if FALSE and the third is the default value 0/1.
+        ''';		# = (More than one name required) List, multiple string replace choices.
+        ''';
+        ''';	Properties info:
+        ''';		{&lt;TYPE&gt;NAME,DESCRIPTION[,ITEM_DESCRIPTION]}
+        ''';		{$PropertyName,The name of the property} = First argument is the name which will be replaced. [rest of string was truncated]&quot;;.
+        '''</summary>
         Public ReadOnly Property Template_SourcePawnNewPlugin() As String
             Get
                 Return ResourceManager.GetString("Template_SourcePawnNewPlugin", resourceCulture)
@@ -743,9 +819,66 @@ Namespace My.Resources
         ''';		{&lt;TYPE&gt;NAME,DESCRIPTION[,ITEM_DESCRIPTION]}
         ''';		{$PropertyName,The name of the property} = First argument is the name which will be replaced. [rest of string was truncated]&quot;;.
         '''</summary>
+        Public ReadOnly Property Template_SourcePawnNewSharedPluginInclude() As String
+            Get
+                Return ResourceManager.GetString("Template_SourcePawnNewSharedPluginInclude", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to ; WARNING
+        '''; This file should not be read/overwritten by standard ini parsers!
+        ''';
+        ''';	Type info:
+        ''';		$ = Default string replace.
+        ''';		? = (Two names required) Boolean, first string replace if TRUE, second string replace if FALSE and the third is the default value 0/1.
+        ''';		# = (More than one name required) List, multiple string replace choices.
+        ''';
+        ''';	Properties info:
+        ''';		{&lt;TYPE&gt;NAME,DESCRIPTION[,ITEM_DESCRIPTION]}
+        ''';		{$PropertyName,The name of the property} = First argument is the name which will be replaced. [rest of string was truncated]&quot;;.
+        '''</summary>
+        Public ReadOnly Property Template_SourcePawnOldExtensionInclude() As String
+            Get
+                Return ResourceManager.GetString("Template_SourcePawnOldExtensionInclude", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to ; WARNING
+        '''; This file should not be read/overwritten by standard ini parsers!
+        ''';
+        ''';	Type info:
+        ''';		$ = Default string replace.
+        ''';		? = (Two names required) Boolean, first string replace if TRUE, second string replace if FALSE and the third is the default value 0/1.
+        ''';		# = (More than one name required) List, multiple string replace choices.
+        ''';
+        ''';	Properties info:
+        ''';		{&lt;TYPE&gt;NAME,DESCRIPTION[,ITEM_DESCRIPTION]}
+        ''';		{$PropertyName,The name of the property} = First argument is the name which will be replaced. [rest of string was truncated]&quot;;.
+        '''</summary>
         Public ReadOnly Property Template_SourcePawnOldPlugin() As String
             Get
                 Return ResourceManager.GetString("Template_SourcePawnOldPlugin", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to ; WARNING
+        '''; This file should not be read/overwritten by standard ini parsers!
+        ''';
+        ''';	Type info:
+        ''';		$ = Default string replace.
+        ''';		? = (Two names required) Boolean, first string replace if TRUE, second string replace if FALSE and the third is the default value 0/1.
+        ''';		# = (More than one name required) List, multiple string replace choices.
+        ''';
+        ''';	Properties info:
+        ''';		{&lt;TYPE&gt;NAME,DESCRIPTION[,ITEM_DESCRIPTION]}
+        ''';		{$PropertyName,The name of the property} = First argument is the name which will be replaced. [rest of string was truncated]&quot;;.
+        '''</summary>
+        Public ReadOnly Property Template_SourcePawnOldSharedPluginInclude() As String
+            Get
+                Return ResourceManager.GetString("Template_SourcePawnOldSharedPluginInclude", resourceCulture)
             End Get
         End Property
     End Module

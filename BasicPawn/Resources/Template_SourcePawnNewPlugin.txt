@@ -13,8 +13,9 @@
 ;		{#PropertyName,Difficulty,Normal} = Same as above but the third argument is the description in the list.
 ;
 ;	Formating info:
-;		\n = For newline.
-;		\t = For tab (or converted spaces).
+;		%n% = For newline.
+;		%t% = For tab (or converted spaces).
+;		%0% = Terminate line.
 
 
 [Source]
@@ -28,19 +29,21 @@
 00800=#include <sourcemod>
 00900=#include <sdktools>
 01000={?ForceSemicolon}{#NewDecl}
-01100=public Plugin myinfo = 
-01200={
-01300=\tname = PLUGIN_NAME,
-01400=\tauthor = PLUGIN_AUTHOR,
-01500=\tdescription = PLUGIN_DESCRIPTION,
-01600=\tversion = PLUGIN_VERSION,
-01700=\turl = PLUGIN_URL
-01800=};
-01900={?LateloadCheck}
-02000=public void OnPluginStart()
-02100={
-02200=\t{#GameRequired}
-02300=}
+01100={?LateloadCheck}%n%bool g_bLateLoad;%n%
+01200=public Plugin myinfo = 
+01300={
+01400=%t%name = PLUGIN_NAME,
+01500=%t%author = PLUGIN_AUTHOR,
+01600=%t%description = PLUGIN_DESCRIPTION,
+01700=%t%version = PLUGIN_VERSION,
+01800=%t%url = PLUGIN_URL
+01900=};
+02000={?LateloadCheck}%n%public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)%n%{%n%%t%g_bLateLoad = late;%n%}%n%
+02100=public void OnPluginStart()
+02200={
+02300=%t%{#GameRequired}
+02400=}
+02500=
 
 [Properties]
 $InfoName,Plugin name								=My plugin
@@ -48,36 +51,36 @@ $InfoAuthor,Plugin author							=
 $InfoDescription,Plugin description					=
 $InfoVersion,Plugin version							=1.0
 $InfoUrl,Plugin url									=
-?ForceSemicolon,Force Semicolon						=\n#pragma semicolon 1\n
+?ForceSemicolon,Force Semicolon						=%n%#pragma semicolon 1%n%
 ?ForceSemicolon,Force Semicolon						=
-?DebugDefine,DEBUG define							=\n#define DEBUG\n
+?DebugDefine,DEBUG define							=%n%#define DEBUG%n%
 ?DebugDefine,DEBUG define							=
-?DebugEcho,ECHO define								=\n#if 1\n\t#define ECHO(%0) PrintToServer(%0)\n#else\n\t#define ECHO(%0)\n#endif\n
+?DebugEcho,ECHO define								=%n%%#if 1%n%%t%#define ECHO(%0) PrintToServer(%0)%n%#else%n%%t%#define ECHO(%0)%n%#endif%n%
 ?DebugEcho,ECHO define								=
 ?DebugEcho,ECHO define								=0
-?LateloadCheck,Late-load check						=\nbool g_bLateLoad;\n\npublic APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)\n{\n\tg_bLateLoad = late;\n}\n
 ?LateloadCheck,Late-load check						=
+?LateloadCheck,Late-load check						=%0%
 ?LateloadCheck,Late-load check						=0
 #NewDecl,New declaration,Inherit					=
-#NewDecl,New declaration,Required					=\n#pragma newdecls required\n
-#NewDecl,New declaration,Optional					=\n#pragma newdecls optional\n
+#NewDecl,New declaration,Required					=%n%#pragma newdecls required%n%
+#NewDecl,New declaration,Optional					=%n%#pragma newdecls optional%n%
 #GameRequired,Game required,None					=
-#GameRequired,Game required,AlienSwarm				=if(GetEngineVersion() != Engine_AlienSwarm)\n\t\tSetFailState("This plugin is for the game AlienSwarm only.");\n\t
-#GameRequired,Game required,Blade					=if(GetEngineVersion() != Engine_Blade)\n\t\tSetFailState("This plugin is for the game Blade only.");\n\t
-#GameRequired,Game required,BloodyGoodTime			=if(GetEngineVersion() != Engine_BloodyGoodTime)\n\t\tSetFailState("This plugin is for the game BloodyGoodTime only.");\n\t
-#GameRequired,Game required,Contagion				=if(GetEngineVersion() != Engine_Contagion)\n\t\tSetFailState("This plugin is for the game Contagion only.");\n\t
-#GameRequired,Game required,CSGO					=if(GetEngineVersion() != Engine_CSGO)\n\t\tSetFailState("This plugin is for the game CSGO only.");\n\t
-#GameRequired,Game required,CSS						=if(GetEngineVersion() != Engine_CSS)\n\t\tSetFailState("This plugin is for the game CSS only.");\n\t
-#GameRequired,Game required,CSGO/CSS				=if(GetEngineVersion() != Engine_CSGO && GetEngineVersion() != Engine_CSS)\n\t\tSetFailState("This plugin is for the game CSGO/CSS only.");\n\t
-#GameRequired,Game required,DarkMessiah				=if(GetEngineVersion() != Engine_DarkMessiah)\n\t\tSetFailState("This plugin is for the game DarkMessiah only.");\n\t
-#GameRequired,Game required,DODS					=if(GetEngineVersion() != Engine_DODS)\n\t\tSetFailState("This plugin is for the game DODS only.");\n\t
-#GameRequired,Game required,DOTA					=if(GetEngineVersion() != Engine_DOTA)\n\t\tSetFailState("This plugin is for the game DOTA only.");\n\t
-#GameRequired,Game required,EYE						=if(GetEngineVersion() != Engine_EYE)\n\t\tSetFailState("This plugin is for the game EYE only.");\n\t
-#GameRequired,Game required,HL2DM					=if(GetEngineVersion() != Engine_HL2DM)\n\t\tSetFailState("This plugin is for the game HL2DM only.");\n\t
-#GameRequired,Game required,Insurgency				=if(GetEngineVersion() != Engine_Insurgency)\n\t\tSetFailState("This plugin is for the game Insurgency only.");\n\t
-#GameRequired,Game required,Left4Dead				=if(GetEngineVersion() != Engine_Left4Dead)\n\t\tSetFailState("This plugin is for the game Left4Dead only.");\n\t
-#GameRequired,Game required,Left4Dead2				=if(GetEngineVersion() != Engine_Left4Dead2)\n\t\tSetFailState("This plugin is for the game Left4Dead2 only.");\n\t
-#GameRequired,Game required,Left4Dead/Left4Dead2	=if(GetEngineVersion() != Engine_Left4Dead && GetEngineVersion() != Engine_Left4Dead2)\n\t\tSetFailState("This plugin is for the game Left4Dead/Left4Dead2 only.");\n\t
-#GameRequired,Game required,NuclearDawn				=if(GetEngineVersion() != Engine_NuclearDawn)\n\t\tSetFailState("This plugin is for the game NuclearDawn only.");\n\t
-#GameRequired,Game required,Portal2					=if(GetEngineVersion() != Engine_Portal2)\n\t\tSetFailState("This plugin is for the game Portal2 only.");\n\t
-#GameRequired,Game required,TF2						=if(GetEngineVersion() != Engine_TF2)\n\t\tSetFailState("This plugin is for the game TF2 only.");\n\t
+#GameRequired,Game required,AlienSwarm				=if(GetEngineVersion() != Engine_AlienSwarm)%n%%t%%t%SetFailState("This plugin is for the game AlienSwarm only.");%n%%t%
+#GameRequired,Game required,Blade					=if(GetEngineVersion() != Engine_Blade)%n%%t%%t%SetFailState("This plugin is for the game Blade only.");%n%%t%
+#GameRequired,Game required,BloodyGoodTime			=if(GetEngineVersion() != Engine_BloodyGoodTime)%n%%t%%t%SetFailState("This plugin is for the game BloodyGoodTime only.");%n%%t%
+#GameRequired,Game required,Contagion				=if(GetEngineVersion() != Engine_Contagion)%n%%t%%t%SetFailState("This plugin is for the game Contagion only.");%n%%t%
+#GameRequired,Game required,CSGO					=if(GetEngineVersion() != Engine_CSGO)%n%%t%%t%SetFailState("This plugin is for the game CSGO only.");%n%%t%
+#GameRequired,Game required,CSS						=if(GetEngineVersion() != Engine_CSS)%n%%t%%t%SetFailState("This plugin is for the game CSS only.");%n%%t%
+#GameRequired,Game required,CSGO/CSS				=if(GetEngineVersion() != Engine_CSGO && GetEngineVersion() != Engine_CSS)%n%%t%%t%SetFailState("This plugin is for the game CSGO/CSS only.");%n%%t%
+#GameRequired,Game required,DarkMessiah				=if(GetEngineVersion() != Engine_DarkMessiah)%n%%t%%t%SetFailState("This plugin is for the game DarkMessiah only.");%n%%t%
+#GameRequired,Game required,DODS					=if(GetEngineVersion() != Engine_DODS)%n%%t%%t%SetFailState("This plugin is for the game DODS only.");%n%%t%
+#GameRequired,Game required,DOTA					=if(GetEngineVersion() != Engine_DOTA)%n%%t%%t%SetFailState("This plugin is for the game DOTA only.");%n%%t%
+#GameRequired,Game required,EYE						=if(GetEngineVersion() != Engine_EYE)%n%%t%%t%SetFailState("This plugin is for the game EYE only.");%n%%t%
+#GameRequired,Game required,HL2DM					=if(GetEngineVersion() != Engine_HL2DM)%n%%t%%t%SetFailState("This plugin is for the game HL2DM only.");%n%%t%
+#GameRequired,Game required,Insurgency				=if(GetEngineVersion() != Engine_Insurgency)%n%%t%%t%SetFailState("This plugin is for the game Insurgency only.");%n%%t%
+#GameRequired,Game required,Left4Dead				=if(GetEngineVersion() != Engine_Left4Dead)%n%%t%%t%SetFailState("This plugin is for the game Left4Dead only.");%n%%t%
+#GameRequired,Game required,Left4Dead2				=if(GetEngineVersion() != Engine_Left4Dead2)%n%%t%%t%SetFailState("This plugin is for the game Left4Dead2 only.");%n%%t%
+#GameRequired,Game required,Left4Dead/Left4Dead2	=if(GetEngineVersion() != Engine_Left4Dead && GetEngineVersion() != Engine_Left4Dead2)%n%%t%%t%SetFailState("This plugin is for the game Left4Dead/Left4Dead2 only.");%n%%t%
+#GameRequired,Game required,NuclearDawn				=if(GetEngineVersion() != Engine_NuclearDawn)%n%%t%%t%SetFailState("This plugin is for the game NuclearDawn only.");%n%%t%
+#GameRequired,Game required,Portal2					=if(GetEngineVersion() != Engine_Portal2)%n%%t%%t%SetFailState("This plugin is for the game Portal2 only.");%n%%t%
+#GameRequired,Game required,TF2						=if(GetEngineVersion() != Engine_TF2)%n%%t%%t%SetFailState("This plugin is for the game TF2 only.");%n%%t%
