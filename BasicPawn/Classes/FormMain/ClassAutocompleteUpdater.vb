@@ -371,7 +371,7 @@ Public Class ClassAutocompleteUpdater
         Dim mDic As New Dictionary(Of String, String)
         Dim mDicOp As New Dictionary(Of String, String)
 
-        'Pragmas
+        'Pawn
         mDic("assert") = "#assert"
         mDic("define") = "#define <name>"
         mDic("emit") = "#emit <opcode>"
@@ -385,7 +385,6 @@ Public Class ClassAutocompleteUpdater
         mDic("tryinclude") = "#tryinclude <filename>"
         mDic("undef") = "#undef <name>"
 
-        'Pragmas
         mDic("pragma") = "#pragma <keyvalue> <value>"
         mDic("pragma align") = "#pragma align"
         mDic("pragma amxram") = "#pragma amxram <value>"
@@ -395,12 +394,26 @@ Public Class ClassAutocompleteUpdater
         mDic("pragma ctrlchar") = "#pragma ctrlchar <value>"
         mDic("pragma deprecated") = "#pragma deprecated <value>"
         mDic("pragma dynamic") = "#pragma dynamic <value>"
-        mDic("pragma library") = "#pragma library <name>"
         mDic("pragma pack") = "#pragma pack <1/0>"
         mDic("pragma rational") = "#pragma rational <tagname(value)>"
         mDic("pragma semicolon") = "#pragma semicolon <1/0>"
         mDic("pragma tabsize") = "#pragma tabsize <value>"
         mDic("pragma unused") = "#pragma unused <symbol,...>"
+
+        'AMX Mod X
+        mDic("pragma library") = "#pragma library <library>"
+        mDic("pragma reqlib") = "#pragma reqlib <library>"
+        mDic("pragma loadlib") = "#pragma loadlib <library>"
+        mDic("pragma reqclass") = "#pragma reqclass <class>"
+        mDic("pragma defclasslib") = "#pragma defclasslib <class> <library>"
+        mDic("pragma explib") = "#pragma explib <symbol> <symbol>" 'TODO: Wtf are those and what arguments? Never been used anywhere, only found in the compiler source.
+        mDic("pragma expclass") = "#pragma expclass <symbol> <symbol>" 'TODO: Wtf are those and what arguments? Never been used anywhere, only found in the compiler source.
+
+        'SourcePawn
+        'NOTE: SourcePawn has alot of removed pragmas
+        mDic("pragma newdecls") = "#pragma newdecls <required/optional>"
+        mDic("pragma newdecls required") = "#pragma newdecls <required/optional>"
+        mDic("pragma newdecls optional") = "#pragma newdecls <required/optional>"
 
         For i = 0 To mIncludes.Length - 1
             Dim sKey As String = String.Format("include <{0}>", IO.Path.GetFileNameWithoutExtension(CStr(mIncludes(i).Value)))
