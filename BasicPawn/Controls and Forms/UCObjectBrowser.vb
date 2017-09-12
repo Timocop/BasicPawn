@@ -279,8 +279,39 @@ Public Class UCObjectBrowser
         Return lTreeNodes.ToArray
     End Function
 
+    Private Sub TreeView_ObjectBrowser_NodeMouseClick(sender As Object, e As TreeNodeMouseClickEventArgs) Handles TreeView_ObjectBrowser.NodeMouseClick
+        Try
+            'Fixes TreeView glichty focus with ContextMenuStrips
+            Select Case (e.Button)
+                Case MouseButtons.Right
+                    TreeView_ObjectBrowser.SelectedNode = e.Node
+                    ContextMenuStrip_ObjectBrowser.Show(TreeView_ObjectBrowser, e.Location)
+
+            End Select
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
+    Private Sub TreeView_ObjectBrowser_NodeMouseDoubleClick(sender As Object, e As TreeNodeMouseClickEventArgs) Handles TreeView_ObjectBrowser.NodeMouseDoubleClick
+        Try
+            Select Case (e.Button)
+                Case MouseButtons.Left
+                    If (e.Node.Level <> 2) Then
+                        Return
+                    End If
+
+                    g_mFormMain.g_ClassTextEditorTools.ListReferences(e.Node.Text)
+
+            End Select
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
 
     Private Sub ContextMenuStrip_ObjectBrowser_Opening(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles ContextMenuStrip_ObjectBrowser.Opening
+        ClassControlStyle.UpdateControls(ContextMenuStrip_ObjectBrowser)
+
         If (TreeView_ObjectBrowser.SelectedNode Is Nothing) Then
             Return
         End If
@@ -338,18 +369,6 @@ Public Class UCObjectBrowser
         End Try
     End Sub
 
-    Private Sub TreeView_ObjectBrowser_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles TreeView_ObjectBrowser.MouseDoubleClick
-        Try
-            If (TreeView_ObjectBrowser.SelectedNode Is Nothing OrElse TreeView_ObjectBrowser.SelectedNode.Level <> 2) Then
-                Return
-            End If
-
-            g_mFormMain.g_ClassTextEditorTools.ListReferences(TreeView_ObjectBrowser.SelectedNode.Text)
-        Catch ex As Exception
-            ClassExceptionLog.WriteToLogMessageBox(ex)
-        End Try
-    End Sub
-
     Class ClassTreeViewFix
         Inherits TreeView
 
@@ -364,4 +383,5 @@ Public Class UCObjectBrowser
             End Try
         End Sub
     End Class
+
 End Class

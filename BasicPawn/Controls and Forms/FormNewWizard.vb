@@ -416,6 +416,20 @@ Public Class FormNewWizard
         Return mDirectoyNode
     End Function
 
+    Private Sub TreeView_Explorer_NodeMouseClick(sender As Object, e As TreeNodeMouseClickEventArgs) Handles TreeView_Explorer.NodeMouseClick
+        Try
+            'Fixes TreeView glichty focus with ContextMenuStrips
+            Select Case (e.Button)
+                Case MouseButtons.Right
+                    TreeView_Explorer.SelectedNode = e.Node
+                    ContextMenuStrip_TreeView.Show(TreeView_Explorer, e.Location)
+
+            End Select
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
     Private Sub TreeView_Explorer_AfterSelect(sender As Object, e As TreeViewEventArgs) Handles TreeView_Explorer.AfterSelect
         Try
             Dim sTemplatePath As String = IO.Path.Combine(Application.StartupPath, e.Node.FullPath)
@@ -454,6 +468,17 @@ Public Class FormNewWizard
 
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
+    End Sub
+
+    Private Sub ContextMenuStrip_TreeView_Opening(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles ContextMenuStrip_TreeView.Opening
+        ClassControlStyle.UpdateControls(ContextMenuStrip_TreeView)
+
+        ToolStripMenuItem_OpenDir.Enabled = (TreeView_Explorer.SelectedNode IsNot Nothing AndAlso
+                                                        (IO.Directory.Exists(TreeView_Explorer.SelectedNode.FullPath) OrElse
+                                                                IO.File.Exists(TreeView_Explorer.SelectedNode.FullPath)))
+        ToolStripMenuItem_DelTemplate.Enabled = (TreeView_Explorer.SelectedNode IsNot Nothing AndAlso
+                                                        (IO.Directory.Exists(TreeView_Explorer.SelectedNode.FullPath) OrElse
+                                                                IO.File.Exists(TreeView_Explorer.SelectedNode.FullPath)))
     End Sub
 #End Region
 
@@ -685,15 +710,6 @@ Public Class FormNewWizard
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
-    End Sub
-
-    Private Sub ContextMenuStrip_TreeView_Opening(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles ContextMenuStrip_TreeView.Opening
-        ToolStripMenuItem_OpenDir.Enabled = (TreeView_Explorer.SelectedNode IsNot Nothing AndAlso
-                                                        (IO.Directory.Exists(TreeView_Explorer.SelectedNode.FullPath) OrElse
-                                                                IO.File.Exists(TreeView_Explorer.SelectedNode.FullPath)))
-        ToolStripMenuItem_DelTemplate.Enabled = (TreeView_Explorer.SelectedNode IsNot Nothing AndAlso
-                                                        (IO.Directory.Exists(TreeView_Explorer.SelectedNode.FullPath) OrElse
-                                                                IO.File.Exists(TreeView_Explorer.SelectedNode.FullPath)))
     End Sub
 
 #End Region

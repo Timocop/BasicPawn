@@ -25,11 +25,11 @@ Partial Class FormNewWizard
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormNewWizard))
         Me.TreeView_Explorer = New System.Windows.Forms.TreeView()
+        Me.ImageList_TreeView = New System.Windows.Forms.ImageList(Me.components)
         Me.ContextMenuStrip_TreeView = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.ToolStripMenuItem_OpenDir = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_DelTemplate = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ImageList_TreeView = New System.Windows.Forms.ImageList(Me.components)
         Me.RichTextBox_Preview = New System.Windows.Forms.RichTextBox()
         Me.Button_Apply = New System.Windows.Forms.Button()
         Me.ListView_Properties = New System.Windows.Forms.ListView()
@@ -49,7 +49,6 @@ Partial Class FormNewWizard
         '
         'TreeView_Explorer
         '
-        Me.TreeView_Explorer.ContextMenuStrip = Me.ContextMenuStrip_TreeView
         Me.TreeView_Explorer.Dock = System.Windows.Forms.DockStyle.Fill
         Me.TreeView_Explorer.HideSelection = False
         Me.TreeView_Explorer.ImageIndex = 0
@@ -60,6 +59,12 @@ Partial Class FormNewWizard
         Me.TreeView_Explorer.SelectedImageIndex = 0
         Me.TreeView_Explorer.Size = New System.Drawing.Size(222, 495)
         Me.TreeView_Explorer.TabIndex = 0
+        '
+        'ImageList_TreeView
+        '
+        Me.ImageList_TreeView.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit
+        Me.ImageList_TreeView.ImageSize = New System.Drawing.Size(24, 24)
+        Me.ImageList_TreeView.TransparentColor = System.Drawing.Color.Transparent
         '
         'ContextMenuStrip_TreeView
         '
@@ -84,12 +89,6 @@ Partial Class FormNewWizard
         Me.ToolStripMenuItem_DelTemplate.Name = "ToolStripMenuItem_DelTemplate"
         Me.ToolStripMenuItem_DelTemplate.Size = New System.Drawing.Size(156, 22)
         Me.ToolStripMenuItem_DelTemplate.Text = "Move to Recycle bin"
-        '
-        'ImageList_TreeView
-        '
-        Me.ImageList_TreeView.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit
-        Me.ImageList_TreeView.ImageSize = New System.Drawing.Size(24, 24)
-        Me.ImageList_TreeView.TransparentColor = System.Drawing.Color.Transparent
         '
         'RichTextBox_Preview
         '
