@@ -2059,8 +2059,6 @@ Public Class ClassAutocompleteUpdater
             Dim lCommaLinesList As New List(Of String)
             Dim mCodeBuilder As New StringBuilder
 
-            Dim bInvalidBracketLevel As Boolean = False
-            Dim bInvalidParentLevel As Boolean = False
             'This is the easiest and yet stupiest idea to resolve multi-decls i've ever come up with...
             For i = 0 To sSource.Length - 1
                 If (i <> sSource.Length - 1) Then
@@ -2069,26 +2067,18 @@ Public Class ClassAutocompleteUpdater
                     End If
 
                     If (mSourceAnalysis.GetBracketLevel(i, Nothing) > 0) Then
-                        If (Not bInvalidBracketLevel) Then
-                            bInvalidBracketLevel = True
-                        End If
-
-                        Continue For
-                    ElseIf (bInvalidBracketLevel) Then
-                        bInvalidBracketLevel = False
                         Continue For
                     End If
 
-                    If (mSourceAnalysis.GetParenthesisLevel(i, Nothing) > 0) Then
-                        If (Not bInvalidParentLevel) Then
-                            bInvalidParentLevel = True
-                            mCodeBuilder.Append("(")
-                        End If
+                    Dim iParentRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
+                    If (mSourceAnalysis.GetParenthesisLevel(i, iParentRange) > 0) Then
+                        Select Case (iParentRange)
+                            Case ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.START
+                                mCodeBuilder.Append("(")
 
-                        Continue For
-                    ElseIf (bInvalidParentLevel) Then
-                        bInvalidParentLevel = False
-                        mCodeBuilder.Append(")")
+                            Case ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END
+                                mCodeBuilder.Append(")")
+                        End Select
 
                         Continue For
                     End If
@@ -2102,6 +2092,12 @@ Public Class ClassAutocompleteUpdater
                     End If
 
                     mCodeBuilder.Length = 0
+
+                    'To make sure the assignment doesnt get parsed as variable
+                    If (sSource(i) = "="c) Then
+                        mCodeBuilder.Append(sSource(i))
+                    End If
+
                     Continue For
                 End If
 
@@ -2461,9 +2457,6 @@ Public Class ClassAutocompleteUpdater
                 Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(mItem.m_FullFunctionName, iModType)
                 mCodeBuilder.Length = 0
 
-                Dim bInvalidBracketLevel As Boolean = False
-                Dim bInvalidBraceLevel As Boolean = False
-                Dim bInvalidParentLevel As Boolean = False
                 Dim bNeedSave As Boolean = False
                 'This is the easiest and yet stupiest idea to resolve multi-decls i've ever come up with...
                 For i = 0 To mItem.m_FullFunctionName.Length - 1
@@ -2486,44 +2479,22 @@ Public Class ClassAutocompleteUpdater
                         Continue For
                     End If
 
-                    If (mSourceAnalysis.GetBracketLevel(i, Nothing) > 0) Then
-                        If (Not bInvalidBracketLevel) Then
-                            bInvalidBracketLevel = True
-                        End If
-                        Continue For
-                    ElseIf (bInvalidBracketLevel) Then
-                        bInvalidBracketLevel = False
+                    If (mSourceAnalysis.GetBracketLevel(i, Nothing) > 0 OrElse
+                                mSourceAnalysis.GetBraceLevel(i, Nothing) > 0) Then
                         Continue For
                     End If
 
-                    If (mSourceAnalysis.GetBraceLevel(i, Nothing) > 0) Then
-                        If (Not bInvalidBraceLevel) Then
-                            bInvalidBraceLevel = True
-                        End If
-                        Continue For
-                    ElseIf (bInvalidBraceLevel) Then
-                        bInvalidBraceLevel = False
+                    Dim iParentRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
+                    If (mSourceAnalysis.GetParenthesisLevel(i, iParentRange) < 1 OrElse
+                                iParentRange <> ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.NONE) Then
                         Continue For
                     End If
 
-                    If (mSourceAnalysis.GetParenthesisLevel(i, Nothing) > 0) Then
-                        If (bInvalidParentLevel) Then
-                            If (mItem.m_FullFunctionName(i) = ","c) Then
-                                bNeedSave = True
-                                Continue For
-                            Else
-                                mCodeBuilder.Append(mItem.m_FullFunctionName(i))
-                            End If
-                        End If
-                        If (Not bInvalidParentLevel) Then
-                            bInvalidParentLevel = True
-                        End If
-
-                        Continue For
-                    ElseIf (bInvalidParentLevel) Then
-                        bInvalidParentLevel = False
+                    If (mItem.m_FullFunctionName(i) = ","c) Then
                         bNeedSave = True
                         Continue For
+                    Else
+                        mCodeBuilder.Append(mItem.m_FullFunctionName(i))
                     End If
                 Next
             Next
