@@ -1191,10 +1191,16 @@ Public Class ClassSyntaxTools
                         End If
 
                         'ignore \'
-                        If (i > 1 AndAlso sText(i - 1) <> ClassSyntaxTools.g_sEscapeCharacters(iModType)) Then
-                            bInChar = If(bInChar > 0, 0, 1)
-                            g_iStateArray(i, ENUM_STATE_TYPES.IN_CHAR) = 1
-                        ElseIf (i > 2 AndAlso sText(i - 1) = ClassSyntaxTools.g_sEscapeCharacters(iModType) AndAlso sText(i - 2) = ClassSyntaxTools.g_sEscapeCharacters(iModType)) Then
+                        Dim iEscapes As Integer = 0
+                        For j = i - 1 To 0 Step -1
+                            If (sText(j) <> ClassSyntaxTools.g_sEscapeCharacters(iModType)) Then
+                                Exit For
+                            End If
+
+                            iEscapes += 1
+                        Next
+
+                        If ((iEscapes Mod 2) = 0) Then
                             bInChar = If(bInChar > 0, 0, 1)
                             g_iStateArray(i, ENUM_STATE_TYPES.IN_CHAR) = 1
                         End If
@@ -1209,10 +1215,16 @@ Public Class ClassSyntaxTools
                         End If
 
                         'ignore \"
-                        If (i > 1 AndAlso sText(i - 1) <> ClassSyntaxTools.g_sEscapeCharacters(iModType)) Then
-                            bInString = If(bInString > 0, 0, 1)
-                            g_iStateArray(i, ENUM_STATE_TYPES.IN_STRING) = 1
-                        ElseIf (i > 2 AndAlso sText(i - 1) = ClassSyntaxTools.g_sEscapeCharacters(iModType) AndAlso sText(i - 2) = ClassSyntaxTools.g_sEscapeCharacters(iModType)) Then
+                        Dim iEscapes As Integer = 0
+                        For j = i - 1 To 0 Step -1
+                            If (sText(j) <> ClassSyntaxTools.g_sEscapeCharacters(iModType)) Then
+                                Exit For
+                            End If
+
+                            iEscapes += 1
+                        Next
+
+                        If ((iEscapes Mod 2) = 0) Then
                             bInString = If(bInString > 0, 0, 1)
                             g_iStateArray(i, ENUM_STATE_TYPES.IN_STRING) = 1
                         End If
