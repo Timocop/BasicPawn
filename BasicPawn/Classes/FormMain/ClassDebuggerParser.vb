@@ -94,14 +94,15 @@ Public Class ClassDebuggerParser
             Dim sArguments As New StringBuilder
             Dim sTotalFunction As New StringBuilder
 
-            Dim iStartLevel As Integer = mSourceAnalysis.m_GetParenthesisLevel(iIndex)
+            Dim iStartLevel As Integer = mSourceAnalysis.GetParenthesisLevel(iIndex, Nothing)
             Dim bGetArguments As Boolean = False
             For i = iIndex To sSource.Length - 1
                 iTotalLenght += 1
 
                 sTotalFunction.Append(sSource(i))
 
-                If (sSource(i) = ")" AndAlso iStartLevel = mSourceAnalysis.m_GetParenthesisLevel(i)) Then
+                Dim iParentRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
+                If (iStartLevel = mSourceAnalysis.GetParenthesisLevel(i, iParentRange) AndAlso iParentRange = ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END) Then
                     bGetArguments = False
                     Exit For
                 End If
@@ -187,14 +188,15 @@ Public Class ClassDebuggerParser
             Dim sArguments As New StringBuilder()
             Dim sTotalFunction As New StringBuilder
 
-            Dim iStartLevel As Integer = mSourceAnalysis.m_GetParenthesisLevel(iIndex)
+            Dim iStartLevel As Integer = mSourceAnalysis.GetParenthesisLevel(iIndex, Nothing)
             Dim bGetArguments As Boolean = False
             For i = iIndex To sSource.Length - 1
                 iTotalLenght += 1
 
                 sTotalFunction.Append(sSource(i))
 
-                If (sSource(i) = ")" AndAlso iStartLevel = mSourceAnalysis.m_GetParenthesisLevel(i)) Then
+                Dim iParentRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
+                If (iStartLevel = mSourceAnalysis.GetParenthesisLevel(i, iParentRange) AndAlso iParentRange = ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END) Then
                     bGetArguments = False
                     Exit For
                 End If
@@ -630,11 +632,12 @@ Public Class ClassDebuggerParser
                             Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ModType)
 
                             Dim iFullLenght As Integer = 0
-                            Dim iStartLevel As Integer = mSourceAnalysis.m_GetParenthesisLevel(iStartOffset)
+                            Dim iStartLevel As Integer = mSourceAnalysis.GetParenthesisLevel(iStartOffset, Nothing)
                             For i = iStartOffset To sSource.Length - 1
                                 iFullLenght += 1
 
-                                If (sSource(i) = ")" AndAlso iStartLevel = mSourceAnalysis.m_GetParenthesisLevel(i)) Then
+                                Dim iParentRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
+                                If (iStartLevel = mSourceAnalysis.GetParenthesisLevel(i, iParentRange) AndAlso iParentRange = ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END) Then
                                     Exit For
                                 End If
                             Next
@@ -911,11 +914,12 @@ Public Class ClassDebuggerParser
                             Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ModType)
 
                             Dim iFullLenght As Integer = 0
-                            Dim iStartLevel As Integer = mSourceAnalysis.m_GetParenthesisLevel(iStartOffset)
+                            Dim iStartLevel As Integer = mSourceAnalysis.GetParenthesisLevel(iStartOffset, Nothing)
                             For i = iStartOffset To sSource.Length - 1
                                 iFullLenght += 1
 
-                                If (sSource(i) = ")" AndAlso iStartLevel = mSourceAnalysis.m_GetParenthesisLevel(i)) Then
+                                Dim iParentRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
+                                If (iStartLevel = mSourceAnalysis.GetParenthesisLevel(i, iParentRange) AndAlso iParentRange = ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END) Then
                                     Exit For
                                 End If
                             Next

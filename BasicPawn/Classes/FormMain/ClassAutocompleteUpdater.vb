@@ -664,14 +664,13 @@ Public Class ClassAutocompleteUpdater
             'Filter new lines in statements with parenthesis e.g: MyStuff(MyArg1,
             '                                                               MyArg2)
             For i = 0 To sSource.Length - 1
-
                 Select Case (sSource(i))
                     Case vbLf(0)
                         If (mSourceAnalysis.m_InNonCode(i)) Then
                             Exit Select
                         End If
 
-                        If (mSourceAnalysis.m_GetParenthesisLevel(i) > 0) Then
+                        If (mSourceAnalysis.GetParenthesisLevel(i, Nothing) > 0) Then
                             Select Case (True)
                                 Case i > 1 AndAlso sSource(i - 1) = vbCr
                                     sSource = sSource.Remove(i - 1, 2)
@@ -690,7 +689,7 @@ Public Class ClassAutocompleteUpdater
                         'Results in:
                         'if(//This my cause problems!)
                         'Just remove the comments
-                        If (mSourceAnalysis.m_GetParenthesisLevel(i) > 0 AndAlso mSourceAnalysis.m_InSingleComment(i)) Then
+                        If (mSourceAnalysis.GetParenthesisLevel(i, Nothing) > 0 AndAlso mSourceAnalysis.m_InSingleComment(i)) Then
                             sSource = sSource.Remove(i, 1)
                             sSource = sSource.Insert(i, " "c)
                         End If
@@ -710,65 +709,37 @@ Public Class ClassAutocompleteUpdater
 
         CleanUpNewLinesSource(sSource, iModType)
 
-        Dim lStringLocList As New List(Of Integer())
         Dim lBraceLocList As New List(Of Integer())
-
-        If (True) Then
-            'Filter new spaces 
-            Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iModType)
-
-            Dim iBraceLevel As Integer = 0
-            Dim iStringStart As Integer = 0
-            Dim iBraceStart As Integer = 0
-            Dim bInString As Boolean = False
-            For i = 0 To sSource.Length - 1
-                Select Case (sSource(i))
-                    Case "("c
-                        If (mSourceAnalysis.m_InNonCode(i)) Then
-                            Continue For
-                        End If
-
-                        If (iBraceLevel = 0) Then
-                            iBraceStart = i
-                        End If
-                        iBraceLevel += 1
-                    Case ")"c
-                        If (mSourceAnalysis.m_InNonCode(i)) Then
-                            Continue For
-                        End If
-
-                        iBraceLevel -= 1
-                        If (iBraceLevel = 0) Then
-                            Dim iBraceLen = i - iBraceStart + 1
-                            lBraceLocList.Add(New Integer() {iBraceStart, iBraceLen})
-                        End If
-                    Case """"c
-                        If (i > 1 AndAlso sSource(i - 1) <> ClassSyntaxTools.g_sEscapeCharacters(iModType)) Then
-                            If (Not bInString AndAlso sSource(i - 1) = "'"c) Then
-                                Continue For
-                            End If
-
-                            Select Case (bInString)
-                                Case True
-                                    Dim iStringLen = i - iStringStart + 1
-                                    lStringLocList.Add(New Integer() {iStringStart, iStringLen})
-                                Case Else
-                                    iStringStart = i
-                            End Select
-
-                            bInString = Not bInString
-                        End If
-                End Select
-            Next
-        End If
 
         'Fix function spaces
         If (True) Then
-            For i = lBraceLocList.Count - 1 To 0 Step -1
-                Dim iBraceStart As Integer = lBraceLocList(i)(0)
-                Dim iBraceLen As Integer = lBraceLocList(i)(1)
+            Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iModType)
 
-                Dim sBraceString As String = sSource.Substring(iBraceStart, iBraceLen)
+            Dim iParentStart As Integer = 0
+            Dim iParentLen As Integer = 0
+            For i = 0 To sSource.Length - 1
+                Dim iParentRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
+                Dim iParentLevel As Integer = mSourceAnalysis.GetParenthesisLevel(i, iParentRange)
+                Select Case (iParentRange)
+                    Case ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.START
+                        If (iParentLevel - 1 = 0) Then
+                            iParentStart = i
+                        End If
+
+                    Case ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END
+                        If (iParentLevel - 1 = 0) Then
+                            iParentLen = i - iParentStart + 1
+                            lBraceLocList.Add(New Integer() {iParentStart, iParentLen})
+                        End If
+
+                End Select
+            Next
+
+            For i = lBraceLocList.Count - 1 To 0 Step -1
+                iParentStart = lBraceLocList(i)(0)
+                iParentLen = lBraceLocList(i)(1)
+
+                Dim sBraceString As String = sSource.Substring(iParentStart, iParentLen)
                 Dim mRegMatchCol As MatchCollection = Regex.Matches(sBraceString, "\s+")
 
                 For ii = mRegMatchCol.Count - 1 To 0 Step -1
@@ -777,16 +748,9 @@ Public Class ClassAutocompleteUpdater
                         Continue For
                     End If
 
-                    Dim iOffset As Integer = iBraceStart + mMatch.Index
+                    Dim iOffset As Integer = iParentStart + mMatch.Index
                     Dim bContinue As Boolean = False
-                    For iii = 0 To lStringLocList.Count - 1
-                        If (iOffset > lStringLocList(iii)(0) AndAlso iOffset < (lStringLocList(iii)(0) + lStringLocList(iii)(1))) Then
-                            bContinue = True
-                            Exit For
-                        End If
-                    Next
-
-                    If (bContinue) Then
+                    If (mSourceAnalysis.m_InNonCode(iOffset)) Then
                         Continue For
                     End If
 
@@ -794,8 +758,8 @@ Public Class ClassAutocompleteUpdater
                     sBraceString = sBraceString.Insert(mMatch.Index, " "c)
                 Next
 
-                sSource = sSource.Remove(iBraceStart, iBraceLen)
-                sSource = sSource.Insert(iBraceStart, sBraceString)
+                sSource = sSource.Remove(iParentStart, iParentLen)
+                sSource = sSource.Insert(iParentStart, sBraceString)
             Next
         End If
 
@@ -1028,7 +992,7 @@ Public Class ClassAutocompleteUpdater
                 For ii = 0 To sEnumSource.Length - 1
                     Select Case (sEnumSource(ii))
                         Case ","c
-                            If (mSourceAnalysis.m_GetParenthesisLevel(ii) > 0 OrElse mSourceAnalysis.m_GetBracketLevel(ii) > 0 OrElse mSourceAnalysis.m_GetBraceLevel(ii) > 0 OrElse mSourceAnalysis.m_InNonCode(ii)) Then
+                            If (mSourceAnalysis.GetParenthesisLevel(ii, Nothing) > 0 OrElse mSourceAnalysis.GetBracketLevel(ii, Nothing) > 0 OrElse mSourceAnalysis.GetBraceLevel(ii, Nothing) > 0 OrElse mSourceAnalysis.m_InNonCode(ii)) Then
                                 Exit Select
                             End If
 
@@ -1244,7 +1208,7 @@ Public Class ClassAutocompleteUpdater
                 End If
 
                 Dim iIndex = mSourceAnalysis.GetIndexFromLine(i)
-                If (iIndex < 0 OrElse mSourceAnalysis.m_GetBraceLevel(iIndex) > 0 OrElse mSourceAnalysis.m_InNonCode(iIndex)) Then
+                If (iIndex < 0 OrElse mSourceAnalysis.GetBraceLevel(iIndex, Nothing) > 0 OrElse mSourceAnalysis.m_InNonCode(iIndex)) Then
                     Continue For
                 End If
 
@@ -1320,9 +1284,10 @@ Public Class ClassAutocompleteUpdater
             Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iModType)
             Dim sLines As String() = sSource.Split(New String() {vbNewLine, vbLf}, 0)
 
-            If (mSourceAnalysis.m_GetMaxLenght - 1 > 0) Then
-                Dim iLastBraceLevel As Integer = mSourceAnalysis.m_GetBraceLevel(mSourceAnalysis.m_GetMaxLenght - 1)
-                If (iLastBraceLevel > 0) Then
+            If (mSourceAnalysis.m_MaxLenght - 1 > 0) Then
+                Dim iLeftBraceRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
+                Dim iLastBraceLevel As Integer = mSourceAnalysis.GetBraceLevel(mSourceAnalysis.m_MaxLenght - 1, iLeftBraceRange)
+                If (iLastBraceLevel > 0 AndAlso iLeftBraceRange <> ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END) Then
                     g_mFormMain.PrintInformation("[ERRO]", String.Format("Uneven brace level! May lead to syntax parser failures! [LV:{0}] ({1})", iLastBraceLevel, IO.Path.GetFileName(sFile)), False, False)
                 End If
             End If
@@ -1333,7 +1298,7 @@ Public Class ClassAutocompleteUpdater
                 End If
 
                 Dim iIndex = mSourceAnalysis.GetIndexFromLine(i)
-                If (iIndex < 0 OrElse mSourceAnalysis.m_GetBraceLevel(iIndex) > 0 OrElse mSourceAnalysis.m_InNonCode(iIndex)) Then
+                If (iIndex < 0 OrElse mSourceAnalysis.GetBraceLevel(iIndex, Nothing) > 0 OrElse mSourceAnalysis.m_InNonCode(iIndex)) Then
                     Continue For
                 End If
 
@@ -1506,7 +1471,7 @@ Public Class ClassAutocompleteUpdater
                 For ii = 0 To sEnumSource.Length - 1
                     Select Case (sEnumSource(ii))
                         Case ","c
-                            If (mSourceAnalysis.m_GetParenthesisLevel(ii) > 0 OrElse mSourceAnalysis.m_GetBracketLevel(ii) > 0 OrElse mSourceAnalysis.m_GetBraceLevel(ii) > 0 OrElse mSourceAnalysis.m_InNonCode(ii)) Then
+                            If (mSourceAnalysis.GetParenthesisLevel(ii, Nothing) > 0 OrElse mSourceAnalysis.GetBracketLevel(ii, Nothing) > 0 OrElse mSourceAnalysis.GetBraceLevel(ii, Nothing) > 0 OrElse mSourceAnalysis.m_InNonCode(ii)) Then
                                 Exit Select
                             End If
 
@@ -2103,25 +2068,28 @@ Public Class ClassAutocompleteUpdater
                         Continue For
                     End If
 
-                    If (mSourceAnalysis.m_GetBracketLevel(i) > 0) Then
+                    If (mSourceAnalysis.GetBracketLevel(i, Nothing) > 0) Then
                         If (Not bInvalidBracketLevel) Then
                             bInvalidBracketLevel = True
                         End If
+
                         Continue For
                     ElseIf (bInvalidBracketLevel) Then
                         bInvalidBracketLevel = False
                         Continue For
                     End If
 
-                    If (mSourceAnalysis.m_GetParenthesisLevel(i) > 0) Then
+                    If (mSourceAnalysis.GetParenthesisLevel(i, Nothing) > 0) Then
                         If (Not bInvalidParentLevel) Then
                             bInvalidParentLevel = True
                             mCodeBuilder.Append("(")
                         End If
+
                         Continue For
                     ElseIf (bInvalidParentLevel) Then
                         bInvalidParentLevel = False
                         mCodeBuilder.Append(")")
+
                         Continue For
                     End If
                 End If
@@ -2518,7 +2486,7 @@ Public Class ClassAutocompleteUpdater
                         Continue For
                     End If
 
-                    If (mSourceAnalysis.m_GetBracketLevel(i) > 0) Then
+                    If (mSourceAnalysis.GetBracketLevel(i, Nothing) > 0) Then
                         If (Not bInvalidBracketLevel) Then
                             bInvalidBracketLevel = True
                         End If
@@ -2528,7 +2496,7 @@ Public Class ClassAutocompleteUpdater
                         Continue For
                     End If
 
-                    If (mSourceAnalysis.m_GetBraceLevel(i) > 0) Then
+                    If (mSourceAnalysis.GetBraceLevel(i, Nothing) > 0) Then
                         If (Not bInvalidBraceLevel) Then
                             bInvalidBraceLevel = True
                         End If
@@ -2538,7 +2506,7 @@ Public Class ClassAutocompleteUpdater
                         Continue For
                     End If
 
-                    If (mSourceAnalysis.m_GetParenthesisLevel(i) > 0) Then
+                    If (mSourceAnalysis.GetParenthesisLevel(i, Nothing) > 0) Then
                         If (bInvalidParentLevel) Then
                             If (mItem.m_FullFunctionName(i) = ","c) Then
                                 bNeedSave = True

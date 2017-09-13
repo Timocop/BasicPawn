@@ -209,10 +209,10 @@ Public Class ClassTextEditorTools
                 If (sSource.Length > 0) Then
                     Dim mSourceBuilder As New Text.StringBuilder(sSource.Length)
                     Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ModType)
-                    Dim iLastParenthesisLevel As Integer = mSourceAnalysis.m_GetParenthesisLevel(sSource.Length - 1)
+                    Dim iLastParenthesisLevel As Integer = mSourceAnalysis.GetParenthesisLevel(sSource.Length - 1, Nothing)
 
                     For i = sSource.Length - 1 To 0 Step -1
-                        If (mSourceAnalysis.m_GetBraceLevel(i) < 1) Then
+                        If (mSourceAnalysis.GetBraceLevel(i, Nothing) < 1) Then
                             Exit For
                         End If
 
@@ -221,20 +221,12 @@ Public Class ClassTextEditorTools
                         End If
 
                         If (bIncludeMethodNames AndAlso bIsMethod) Then
-                            If (mSourceAnalysis.m_GetParenthesisLevel(i) <> iLastParenthesisLevel) Then
-                                Continue For
-                            End If
-
-                            If (sSource(i) = "("c OrElse sSource(i) = ")"c) Then
+                            If (mSourceAnalysis.GetParenthesisLevel(i, Nothing) <> iLastParenthesisLevel) Then
                                 Continue For
                             End If
 
                         ElseIf (bIncludeArrayNames AndAlso bIsArray) Then
-                            If (mSourceAnalysis.m_GetBracketLevel(i) > 0) Then
-                                Continue For
-                            End If
-
-                            If (sSource(i) = "["c OrElse sSource(i) = "]"c) Then
+                            If (mSourceAnalysis.GetBracketLevel(i, Nothing) > 0) Then
                                 Continue For
                             End If
                         Else

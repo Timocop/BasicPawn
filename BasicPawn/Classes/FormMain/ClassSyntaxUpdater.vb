@@ -114,7 +114,7 @@ Public Class ClassSyntaxUpdater
 
                     If (Not g_mFormMain.g_mUCAutocomplete.UpdateIntelliSense()) Then
                         ClassThread.ExecAsync(g_mFormMain.g_mUCAutocomplete, Sub()
-                                                                                 g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.m_CurrentMethod = ""
+                                                                                 g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.m_IntelliSenseFunction = ""
                                                                                  g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip()
                                                                              End Sub)
                     End If

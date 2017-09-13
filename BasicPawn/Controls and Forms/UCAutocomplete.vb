@@ -82,15 +82,15 @@ Public Class UCAutocomplete
 
     Public Function UpdateIntelliSense() As Boolean
         Dim sTextContent As String = ClassThread.Exec(Of String)(Me, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent)
+        Dim iCaretOffset As Integer = ClassThread.Exec(Of Integer)(Me, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Offset)
         Dim iModType As ClassSyntaxTools.ENUM_MOD_TYPE = ClassThread.Exec(Of ClassSyntaxTools.ENUM_MOD_TYPE)(Me, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ModType)
         Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sTextContent, iModType)
 
-        Dim iCaretOffset As Integer = ClassThread.Exec(Of Integer)(Me, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Offset)
-        If (iCaretOffset - 1 < 1) Then
+        If (iCaretOffset < 0 OrElse iCaretOffset > sTextContent.Length - 1) Then
             Return False
         End If
 
-        If (Not mSourceAnalysis.m_IsRange(iCaretOffset) OrElse
+        If (Not mSourceAnalysis.m_InRange(iCaretOffset) OrElse
                         mSourceAnalysis.m_InMultiComment(iCaretOffset) OrElse
                         mSourceAnalysis.m_InSingleComment(iCaretOffset)) Then
             Return False
@@ -98,11 +98,16 @@ Public Class UCAutocomplete
 
         'Create a valid range to read the method name and for performance. 
         Dim mStringBuilder As New StringBuilder
-        Dim iLastParenthesis As Integer = mSourceAnalysis.m_GetParenthesisLevel(iCaretOffset - 1)
+        Dim iLastParenthesisRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
+        Dim iLastParenthesis As Integer = mSourceAnalysis.GetParenthesisLevel(iCaretOffset, iLastParenthesisRange)
+        If (iLastParenthesisRange = ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.START) Then
+            iLastParenthesis -= 1
+        End If
+
         Dim i As Integer
         For i = iCaretOffset - 1 To 0 Step -1
-            If (mSourceAnalysis.m_GetBraceLevel(i) < 1 OrElse
-                        mSourceAnalysis.m_GetParenthesisLevel(i) < iLastParenthesis - 1) Then
+            If (mSourceAnalysis.GetBraceLevel(i, Nothing) < 1 OrElse
+                        mSourceAnalysis.GetParenthesisLevel(i, Nothing) < iLastParenthesis - 1) Then
                 Exit For
             End If
 
@@ -110,40 +115,19 @@ Public Class UCAutocomplete
                 Continue For
             End If
 
-            If (mSourceAnalysis.m_GetParenthesisLevel(i) > iLastParenthesis - 1 OrElse
-                        mSourceAnalysis.m_GetBracketLevel(i) > 0) Then
+            If (mSourceAnalysis.GetParenthesisLevel(i, Nothing) > iLastParenthesis - 1 OrElse
+                        mSourceAnalysis.GetBracketLevel(i, Nothing) > 0) Then
                 Continue For
             End If
 
-            Dim sChar As Char
-            Dim bExitFor As Boolean = False
-
-            ClassThread.Exec(Of Object)(Me, Sub()
-                                                If (i > g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.TextLength - 1) Then
-                                                    bExitFor = True
-                                                    Return
-                                                End If
-
-                                                sChar = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.GetCharAt(i)
-                                            End Sub)
-
-            If (bExitFor) Then
-                Exit For
-            End If
-
-            If (sChar = "("c OrElse sChar = ")"c OrElse
-                        sChar = "["c OrElse sChar = "]"c) Then
-                Continue For
-            End If
-
-            mStringBuilder.Append(sChar)
+            mStringBuilder.Append(sTextContent(i))
         Next
 
         Dim sTmp As String = StrReverse(mStringBuilder.ToString).Trim
         Dim sMethodStart As String = Regex.Match(sTmp, "((\b[a-zA-Z0-9_]+\b)(\.){0,1}(\b[a-zA-Z0-9_]+\b){0,1})$").Value
 
         ClassThread.ExecAsync(Me, Sub()
-                                      g_ClassToolTip.m_CurrentMethod = sMethodStart
+                                      g_ClassToolTip.m_IntelliSenseFunction = sMethodStart
                                       g_ClassToolTip.UpdateToolTip()
                                   End Sub)
         Return True
@@ -254,18 +238,18 @@ Public Class UCAutocomplete
     Public Class ClassToolTip
         Public g_AutocompleteUC As UCAutocomplete
 
-        Private g_sCurrentMethodName As String = ""
+        Private g_sIntelliSenseFunction As String = ""
 
         Public Sub New(c As UCAutocomplete)
             g_AutocompleteUC = c
         End Sub
 
-        Public Property m_CurrentMethod As String
+        Public Property m_IntelliSenseFunction As String
             Get
-                Return g_sCurrentMethodName
+                Return g_sIntelliSenseFunction
             End Get
             Set(value As String)
-                g_sCurrentMethodName = value
+                g_sIntelliSenseFunction = value
                 ' UpdateToolTip()
             End Set
         End Property
@@ -284,15 +268,15 @@ Public Class UCAutocomplete
 
             Dim iTabSize As Integer = 4
 
-            If (Not String.IsNullOrEmpty(g_sCurrentMethodName)) Then
-                Dim sCurrentMethodName As String = g_sCurrentMethodName
+            If (Not String.IsNullOrEmpty(g_sIntelliSenseFunction)) Then
+                Dim sIntelliSenseFunction As String = g_sIntelliSenseFunction
 
-                Dim bIsMethodMapEnd As Boolean = sCurrentMethodName.StartsWith("."c)
+                Dim bIsMethodMapEnd As Boolean = sIntelliSenseFunction.StartsWith("."c)
                 If (bIsMethodMapEnd) Then
-                    sCurrentMethodName = sCurrentMethodName.Remove(0, 1)
+                    sIntelliSenseFunction = sIntelliSenseFunction.Remove(0, 1)
                 End If
 
-                Dim bIsMethodMap As Boolean = sCurrentMethodName.Contains("."c)
+                Dim bIsMethodMap As Boolean = sIntelliSenseFunction.Contains("."c)
 
                 Dim lAlreadyShownList As New List(Of String)
 
@@ -306,12 +290,12 @@ Public Class UCAutocomplete
                     End If
 
                     If (bIsMethodMap) Then
-                        If (Not sAutocompleteArray(i).m_FunctionName.Equals(sCurrentMethodName)) Then
+                        If (Not sAutocompleteArray(i).m_FunctionName.Equals(sIntelliSenseFunction)) Then
                             Continue For
                         End If
                     Else
-                        If (Not sAutocompleteArray(i).m_FunctionName.Contains(sCurrentMethodName) OrElse
-                                    Not Regex.IsMatch(sAutocompleteArray(i).m_FunctionName, String.Format("{0}\b{1}\b", If(bIsMethodMapEnd, "(\.)", ""), Regex.Escape(sCurrentMethodName)))) Then
+                        If (Not sAutocompleteArray(i).m_FunctionName.Contains(sIntelliSenseFunction) OrElse
+                                    Not Regex.IsMatch(sAutocompleteArray(i).m_FunctionName, String.Format("{0}\b{1}\b", If(bIsMethodMapEnd, "(\.)", ""), Regex.Escape(sIntelliSenseFunction)))) Then
                             Continue For
                         End If
                     End If

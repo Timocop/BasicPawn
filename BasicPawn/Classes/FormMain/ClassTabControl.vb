@@ -488,7 +488,7 @@ Public Class ClassTabControl
         g_mFormMain.g_ClassSyntaxUpdater.StopThread()
 
         g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete("")
-        g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.m_CurrentMethod = ""
+        g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.m_IntelliSenseFunction = ""
         g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip()
         g_mFormMain.g_mUCObjectBrowser.StartUpdate()
 
@@ -1284,14 +1284,14 @@ Public Class ClassTabControl
 
                 For i = 0 To document.TextContent.Length - 1
                     Select Case (document.TextContent(i))
-                        Case "{"c
+                        Case ("{"c)
                             iCurrentLevel += 1
                             If ((iCurrentLevel - 1) < 0) Then
                                 Continue For
                             End If
 
                             iLevels(iCurrentLevel - 1) = If(i > 0, i - 1, i)
-                        Case "}"c
+                        Case ("}"c)
                             iCurrentLevel -= 1
                             If (iCurrentLevel < 0) Then
                                 Continue For
