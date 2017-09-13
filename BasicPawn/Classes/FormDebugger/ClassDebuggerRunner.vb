@@ -31,7 +31,7 @@ Public Class ClassDebuggerRunner
     Private g_mFormDebuggerCriticalPopupException As FormDebuggerCriticalPopup
     Private g_mFormDebuggerCriticalPopupFatalException As FormDebuggerCriticalPopup
 
-    Private g_tListViewEntitiesUpdaterThread As Threading.Thread
+    Private g_mListViewEntitiesUpdaterThread As Threading.Thread
     Private Const g_iListViewEntitesUpdaterTime As Integer = 2500
 
     Private g_mRememberAction As FormDebuggerStop.ENUM_DIALOG_RESULT = FormDebuggerStop.ENUM_DIALOG_RESULT.DO_NOTHING
@@ -415,18 +415,14 @@ Public Class ClassDebuggerRunner
             'Setup I/O events
             CreateFileSystemWatcher(sGameDir)
 
-            'Setup listview entities updater
-            If (g_tListViewEntitiesUpdaterThread IsNot Nothing AndAlso g_tListViewEntitiesUpdaterThread.IsAlive) Then
-                g_tListViewEntitiesUpdaterThread.Abort()
-                g_tListViewEntitiesUpdaterThread.Join()
-                g_tListViewEntitiesUpdaterThread = Nothing
-            End If
+            'Setup listview entities updater 
+            ClassThread.Abort(g_mListViewEntitiesUpdaterThread)
 
-            g_tListViewEntitiesUpdaterThread = New Threading.Thread(AddressOf ListViewEntitiesUpdaterThread) With {
+            g_mListViewEntitiesUpdaterThread = New Threading.Thread(AddressOf ListViewEntitiesUpdaterThread) With {
                 .Priority = Threading.ThreadPriority.Lowest,
                 .IsBackground = True
             }
-            g_tListViewEntitiesUpdaterThread.Start()
+            g_mListViewEntitiesUpdaterThread.Start()
 
 
             g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Compiling plugin and BasicPawn modules..."
@@ -593,11 +589,7 @@ Public Class ClassDebuggerRunner
             RemoveFileSystemWatcher()
 
             'Remove entities updater thread
-            If (g_tListViewEntitiesUpdaterThread IsNot Nothing AndAlso g_tListViewEntitiesUpdaterThread.IsAlive) Then
-                g_tListViewEntitiesUpdaterThread.Abort()
-                g_tListViewEntitiesUpdaterThread.Join()
-                g_tListViewEntitiesUpdaterThread = Nothing
-            End If
+            ClassThread.Abort(g_mListViewEntitiesUpdaterThread)
 
             'Remove plugin
             If (Not String.IsNullOrEmpty(g_sLatestDebuggerPlugin) AndAlso IO.File.Exists(g_sLatestDebuggerPlugin)) Then
@@ -918,24 +910,24 @@ Public Class ClassDebuggerRunner
 
 
                 'INFO: Dont use 'Invoke' it deadlocks on FileSystemWatcher.Dispose, use async 'BeginInvoke' instead.
-                g_mFormDebugger.BeginInvoke(Sub()
-                                                If (m_DebuggingState <> ENUM_DEBUGGING_STATE.PAUSED) Then
-                                                    Return
-                                                End If
+                ClassThread.ExecAsync(g_mFormDebugger, Sub()
+                                                           If (m_DebuggingState <> ENUM_DEBUGGING_STATE.PAUSED) Then
+                                                               Return
+                                                           End If
 
-                                                UpdateBreakpointListView()
+                                                           UpdateBreakpointListView()
 
-                                                g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Debugger awaiting input..."
-                                                g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Orange
-                                                g_mFormDebugger.ToolStripStatusLabel_NoConnection.Visible = False
+                                                           g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Debugger awaiting input..."
+                                                           g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Orange
+                                                           g_mFormDebugger.ToolStripStatusLabel_NoConnection.Visible = False
 
-                                                If (g_mFormDebugger.WindowState = FormWindowState.Minimized) Then
-                                                    ClassTools.ClassForms.FormWindowCommand(g_mFormDebugger, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
-                                                End If
-                                                g_mFormDebugger.Activate()
+                                                           If (g_mFormDebugger.WindowState = FormWindowState.Minimized) Then
+                                                               ClassTools.ClassForms.FormWindowCommand(g_mFormDebugger, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
+                                                           End If
+                                                           g_mFormDebugger.Activate()
 
-                                                g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnDebuggerDebugPause())
-                                            End Sub)
+                                                           g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnDebuggerDebugPause())
+                                                       End Sub)
             End SyncLock
         Catch ex As Threading.ThreadAbortException
             Throw
@@ -1015,20 +1007,20 @@ Public Class ClassDebuggerRunner
             End If
 
             'INFO: Dont use 'Invoke' it deadlocks on FileSystemWatcher.Dispose, use async 'BeginInvoke' instead.
-            g_mFormDebugger.BeginInvoke(Sub()
-                                            For i = 0 To g_mFormDebugger.ListView_Watchers.Items.Count - 1
-                                                If (TypeOf g_mFormDebugger.ListView_Watchers.Items(i) IsNot ClassListViewItemData) Then
-                                                    Continue For
-                                                End If
+            ClassThread.ExecAsync(g_mFormDebugger.ListView_Watchers, Sub()
+                                                                         For i = 0 To g_mFormDebugger.ListView_Watchers.Items.Count - 1
+                                                                             If (TypeOf g_mFormDebugger.ListView_Watchers.Items(i) IsNot ClassListViewItemData) Then
+                                                                                 Continue For
+                                                                             End If
 
-                                                Dim mListViewItemData = DirectCast(g_mFormDebugger.ListView_Watchers.Items(i), ClassListViewItemData)
+                                                                             Dim mListViewItemData = DirectCast(g_mFormDebugger.ListView_Watchers.Items(i), ClassListViewItemData)
 
-                                                If (CStr(mListViewItemData.g_mData("GUID")) = sGUID) Then
-                                                    mListViewItemData.SubItems(2).Text = String.Format("i:{0} | f:{1}", sInteger, sFloat)
-                                                    mListViewItemData.SubItems(3).Text = sCount
-                                                End If
-                                            Next
-                                        End Sub)
+                                                                             If (CStr(mListViewItemData.g_mData("GUID")) = sGUID) Then
+                                                                                 mListViewItemData.SubItems(2).Text = String.Format("i:{0} | f:{1}", sInteger, sFloat)
+                                                                                 mListViewItemData.SubItems(3).Text = sCount
+                                                                             End If
+                                                                         Next
+                                                                     End Sub)
         Catch ex As Threading.ThreadAbortException
             Throw
         Catch ex As ObjectDisposedException
@@ -1116,72 +1108,72 @@ Public Class ClassDebuggerRunner
 
                 Select Case (iAction)
                     Case ENUM_ENTITY_ACTION.UPDATE
-                        g_mFormDebugger.BeginInvoke(Sub()
-                                                        Try
-                                                            If (TypeOf g_mFormDebugger.ListView_Entities.Items(iIndex) IsNot ClassListViewItemData) Then
-                                                                Return
-                                                            End If
+                        ClassThread.ExecAsync(g_mFormDebugger.ListView_Entities, Sub()
+                                                                                     Try
+                                                                                         If (TypeOf g_mFormDebugger.ListView_Entities.Items(iIndex) IsNot ClassListViewItemData) Then
+                                                                                             Return
+                                                                                         End If
 
-                                                            Dim mListViewItemData = DirectCast(g_mFormDebugger.ListView_Entities.Items(iIndex), ClassListViewItemData)
+                                                                                         Dim mListViewItemData = DirectCast(g_mFormDebugger.ListView_Entities.Items(iIndex), ClassListViewItemData)
 
-                                                            Dim sOldEntRef As String = CStr(mListViewItemData.g_mData("EntityRef"))
-                                                            Dim bIsNewEnt As Boolean = True
-                                                            If (Not String.IsNullOrEmpty(sOldEntRef)) Then
-                                                                bIsNewEnt = (CInt(sOldEntRef) <> iEntRef)
-                                                            End If
+                                                                                         Dim sOldEntRef As String = CStr(mListViewItemData.g_mData("EntityRef"))
+                                                                                         Dim bIsNewEnt As Boolean = True
+                                                                                         If (Not String.IsNullOrEmpty(sOldEntRef)) Then
+                                                                                             bIsNewEnt = (CInt(sOldEntRef) <> iEntRef)
+                                                                                         End If
 
-                                                            If (bIsNewEnt) Then
-                                                                mListViewItemData.SubItems(1).Text = iEntRef.ToString
-                                                                mListViewItemData.SubItems(2).Text = sClassname
+                                                                                         If (bIsNewEnt) Then
+                                                                                             mListViewItemData.SubItems(1).Text = iEntRef.ToString
+                                                                                             mListViewItemData.SubItems(2).Text = sClassname
 
-                                                                mListViewItemData.g_mData("EntityRef") = iEntRef
-                                                                mListViewItemData.g_mData("Classname") = sClassname
-                                                                mListViewItemData.g_mData("Ticks") = iDateTicks
+                                                                                             mListViewItemData.g_mData("EntityRef") = iEntRef
+                                                                                             mListViewItemData.g_mData("Classname") = sClassname
+                                                                                             mListViewItemData.g_mData("Ticks") = iDateTicks
 
-                                                                If (ClassSettings.g_iSettingsDebuggerEntitiesEnableColoring) Then
-                                                                    mListViewItemData.BackColor = Color.Green
-                                                                End If
+                                                                                             If (ClassSettings.g_iSettingsDebuggerEntitiesEnableColoring) Then
+                                                                                                 mListViewItemData.BackColor = Color.Green
+                                                                                             End If
 
-                                                                If (ClassSettings.g_iSettingsDebuggerEntitiesEnableAutoScroll) Then
-                                                                    mListViewItemData.Selected = True
-                                                                    mListViewItemData.EnsureVisible()
-                                                                End If
-                                                            End If
-                                                        Catch ex As Exception
-                                                            'Ignore random minor errors
-                                                        End Try
-                                                    End Sub)
+                                                                                             If (ClassSettings.g_iSettingsDebuggerEntitiesEnableAutoScroll) Then
+                                                                                                 mListViewItemData.Selected = True
+                                                                                                 mListViewItemData.EnsureVisible()
+                                                                                             End If
+                                                                                         End If
+                                                                                     Catch ex As Exception
+                                                                                         'Ignore random minor errors
+                                                                                     End Try
+                                                                                 End Sub)
                     Case ENUM_ENTITY_ACTION.REMOVE
-                        g_mFormDebugger.BeginInvoke(Sub()
-                                                        Try
-                                                            If (TypeOf g_mFormDebugger.ListView_Entities.Items(iIndex) IsNot ClassListViewItemData) Then
-                                                                Return
-                                                            End If
+                        ClassThread.ExecAsync(g_mFormDebugger.ListView_Entities, Sub()
+                                                                                     Try
+                                                                                         If (TypeOf g_mFormDebugger.ListView_Entities.Items(iIndex) IsNot ClassListViewItemData) Then
+                                                                                             Return
+                                                                                         End If
 
-                                                            Dim mListViewItemData = DirectCast(g_mFormDebugger.ListView_Entities.Items(iIndex), ClassListViewItemData)
+                                                                                         Dim mListViewItemData = DirectCast(g_mFormDebugger.ListView_Entities.Items(iIndex), ClassListViewItemData)
 
-                                                            Dim sOldEntRef As String = CStr(mListViewItemData.g_mData("EntityRef"))
-                                                            Dim bIsNewEnt As Boolean = True
-                                                            If (Not String.IsNullOrEmpty(sOldEntRef)) Then
-                                                                bIsNewEnt = (CInt(sOldEntRef) <> iEntRef)
-                                                            End If
+                                                                                         Dim sOldEntRef As String = CStr(mListViewItemData.g_mData("EntityRef"))
+                                                                                         Dim bIsNewEnt As Boolean = True
+                                                                                         If (Not String.IsNullOrEmpty(sOldEntRef)) Then
+                                                                                             bIsNewEnt = (CInt(sOldEntRef) <> iEntRef)
+                                                                                         End If
 
-                                                            If (bIsNewEnt) Then
-                                                                mListViewItemData.SubItems(1).Text = "-1"
-                                                                mListViewItemData.SubItems(2).Text = "-"
+                                                                                         If (bIsNewEnt) Then
+                                                                                             mListViewItemData.SubItems(1).Text = "-1"
+                                                                                             mListViewItemData.SubItems(2).Text = "-"
 
-                                                                mListViewItemData.g_mData("EntityRef") = -1
-                                                                mListViewItemData.g_mData("Classname") = "-"
-                                                                mListViewItemData.g_mData("Ticks") = iDateTicks
+                                                                                             mListViewItemData.g_mData("EntityRef") = -1
+                                                                                             mListViewItemData.g_mData("Classname") = "-"
+                                                                                             mListViewItemData.g_mData("Ticks") = iDateTicks
 
-                                                                If (ClassSettings.g_iSettingsDebuggerEntitiesEnableColoring) Then
-                                                                    mListViewItemData.BackColor = Color.Red
-                                                                End If
-                                                            End If
-                                                        Catch ex As Exception
-                                                            'Ignore random minor errors
-                                                        End Try
-                                                    End Sub)
+                                                                                             If (ClassSettings.g_iSettingsDebuggerEntitiesEnableColoring) Then
+                                                                                                 mListViewItemData.BackColor = Color.Red
+                                                                                             End If
+                                                                                         End If
+                                                                                     Catch ex As Exception
+                                                                                         'Ignore random minor errors
+                                                                                     End Try
+                                                                                 End Sub)
                 End Select
             Next
         Catch ex As Threading.ThreadAbortException
@@ -1220,12 +1212,12 @@ Public Class ClassDebuggerRunner
                 Return
             End If
 
-            g_mFormDebugger.BeginInvoke(Sub()
-                                            g_mFormDebugger.ToolStripStatusLabel_NoConnection.Visible = False
+            ClassThread.ExecAsync(g_mFormDebugger, Sub()
+                                                       g_mFormDebugger.ToolStripStatusLabel_NoConnection.Visible = False
 
-                                            g_mFormDebugger.Timer_ConnectionCheck.Stop()
-                                            g_mFormDebugger.Timer_ConnectionCheck.Start()
-                                        End Sub)
+                                                       g_mFormDebugger.Timer_ConnectionCheck.Stop()
+                                                       g_mFormDebugger.Timer_ConnectionCheck.Start()
+                                                   End Sub)
         Catch ex As Threading.ThreadAbortException
             Throw
         Catch ex As ObjectDisposedException
@@ -1244,32 +1236,32 @@ Public Class ClassDebuggerRunner
             While True
                 Threading.Thread.Sleep(g_iListViewEntitesUpdaterTime)
 
-                g_mFormDebugger.BeginInvoke(Sub()
-                                                For i = 0 To g_mFormDebugger.ListView_Entities.Items.Count - 1
-                                                    If (TypeOf g_mFormDebugger.ListView_Entities.Items(i) IsNot ClassListViewItemData) Then
-                                                        Return
-                                                    End If
+                ClassThread.ExecAsync(g_mFormDebugger.ListView_Entities, Sub()
+                                                                             For i = 0 To g_mFormDebugger.ListView_Entities.Items.Count - 1
+                                                                                 If (TypeOf g_mFormDebugger.ListView_Entities.Items(i) IsNot ClassListViewItemData) Then
+                                                                                     Return
+                                                                                 End If
 
-                                                    Dim mListViewItemData = DirectCast(g_mFormDebugger.ListView_Entities.Items(i), ClassListViewItemData)
+                                                                                 Dim mListViewItemData = DirectCast(g_mFormDebugger.ListView_Entities.Items(i), ClassListViewItemData)
 
-                                                    Dim mTicks As Object = mListViewItemData.g_mData("Ticks")
-                                                    If (mTicks Is Nothing) Then
-                                                        Continue For
-                                                    End If
+                                                                                 Dim mTicks As Object = mListViewItemData.g_mData("Ticks")
+                                                                                 If (mTicks Is Nothing) Then
+                                                                                     Continue For
+                                                                                 End If
 
-                                                    Dim mDate As New Date(CLng(mTicks))
+                                                                                 Dim mDate As New Date(CLng(mTicks))
 
-                                                    If ((mDate + New TimeSpan(0, 0, 0, 0, g_iListViewEntitesUpdaterTime)) < Date.Now) Then
-                                                        If (ClassControlStyle.m_IsInvertedColors) Then
-                                                            mListViewItemData.BackColor = ClassControlStyle.g_cDarkControlColor.mDarkBackground
-                                                        Else
-                                                            mListViewItemData.BackColor = ClassControlStyle.g_cDarkControlColor.mLightBackground
-                                                        End If
+                                                                                 If ((mDate + New TimeSpan(0, 0, 0, 0, g_iListViewEntitesUpdaterTime)) < Date.Now) Then
+                                                                                     If (ClassControlStyle.m_IsInvertedColors) Then
+                                                                                         mListViewItemData.BackColor = ClassControlStyle.g_cDarkControlColor.mDarkBackground
+                                                                                     Else
+                                                                                         mListViewItemData.BackColor = ClassControlStyle.g_cDarkControlColor.mLightBackground
+                                                                                     End If
 
-                                                        mListViewItemData.g_mData("Ticks") = Nothing
-                                                    End If
-                                                Next
-                                            End Sub)
+                                                                                     mListViewItemData.g_mData("Ticks") = Nothing
+                                                                                 End If
+                                                                             Next
+                                                                         End Sub)
             End While
         Catch ex As Threading.ThreadAbortException
             Throw
@@ -1370,36 +1362,36 @@ Public Class ClassDebuggerRunner
                         m_DebuggingState = ENUM_DEBUGGING_STATE.PAUSED
 
                         'INFO: Dont use 'Invoke' it deadlocks on FileSystemWatcher.Dispose, use async 'BeginInvoke' instead.
-                        g_mFormDebugger.BeginInvoke(Sub()
-                                                        If (g_mFormDebuggerException IsNot Nothing AndAlso Not g_mFormDebuggerException.IsDisposed) Then
-                                                            Return
-                                                        End If
+                        ClassThread.ExecAsync(g_mFormDebugger, Sub()
+                                                                   If (g_mFormDebuggerException IsNot Nothing AndAlso Not g_mFormDebuggerException.IsDisposed) Then
+                                                                       Return
+                                                                   End If
 
-                                                        If (m_DebuggingState <> ENUM_DEBUGGING_STATE.PAUSED) Then
-                                                            Return
-                                                        End If
+                                                                   If (m_DebuggingState <> ENUM_DEBUGGING_STATE.PAUSED) Then
+                                                                       Return
+                                                                   End If
 
-                                                        UpdateBreakpointListView()
+                                                                   UpdateBreakpointListView()
 
-                                                        g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Debugger awaiting input..."
-                                                        g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Orange
+                                                                   g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Debugger awaiting input..."
+                                                                   g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Orange
 
 
-                                                        If (g_mFormDebugger.WindowState = FormWindowState.Minimized) Then
-                                                            ClassTools.ClassForms.FormWindowCommand(g_mFormDebugger, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
-                                                        End If
-                                                        g_mFormDebugger.Activate()
+                                                                   If (g_mFormDebugger.WindowState = FormWindowState.Minimized) Then
+                                                                       ClassTools.ClassForms.FormWindowCommand(g_mFormDebugger, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
+                                                                   End If
+                                                                   g_mFormDebugger.Activate()
 
-                                                        g_mFormDebuggerException = New FormDebuggerException(g_mFormDebugger, sFile, smExceptions(i))
-                                                        g_mFormDebuggerException.Show(g_mFormDebugger)
+                                                                   g_mFormDebuggerException = New FormDebuggerException(g_mFormDebugger, sFile, smExceptions(i))
+                                                                   g_mFormDebuggerException.Show(g_mFormDebugger)
 
-                                                        If (g_mFormDebuggerException.WindowState = FormWindowState.Minimized) Then
-                                                            ClassTools.ClassForms.FormWindowCommand(g_mFormDebuggerException, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
-                                                        End If
-                                                        g_mFormDebuggerException.Activate()
+                                                                   If (g_mFormDebuggerException.WindowState = FormWindowState.Minimized) Then
+                                                                       ClassTools.ClassForms.FormWindowCommand(g_mFormDebuggerException, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
+                                                                   End If
+                                                                   g_mFormDebuggerException.Activate()
 
-                                                        g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnDebuggerDebugPause())
-                                                    End Sub)
+                                                                   g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnDebuggerDebugPause())
+                                                               End Sub)
 
                     End SyncLock
 
@@ -1421,39 +1413,39 @@ Public Class ClassDebuggerRunner
                         m_DebuggingState = ENUM_DEBUGGING_STATE.PAUSED
 
                         'INFO: Dont use 'Invoke' it deadlocks on FileSystemWatcher.Dispose, use async 'BeginInvoke' instead.
-                        g_mFormDebugger.BeginInvoke(Sub()
-                                                        If (g_mFormDebuggerException IsNot Nothing AndAlso Not g_mFormDebuggerException.IsDisposed) Then
-                                                            Return
-                                                        End If
+                        ClassThread.ExecAsync(g_mFormDebugger, Sub()
+                                                                   If (g_mFormDebuggerException IsNot Nothing AndAlso Not g_mFormDebuggerException.IsDisposed) Then
+                                                                       Return
+                                                                   End If
 
-                                                        If (g_mFormDebuggerCriticalPopupException IsNot Nothing AndAlso Not g_mFormDebuggerCriticalPopupException.IsDisposed) Then
-                                                            Return
-                                                        End If
+                                                                   If (g_mFormDebuggerCriticalPopupException IsNot Nothing AndAlso Not g_mFormDebuggerCriticalPopupException.IsDisposed) Then
+                                                                       Return
+                                                                   End If
 
-                                                        If (m_DebuggingState <> ENUM_DEBUGGING_STATE.PAUSED) Then
-                                                            Return
-                                                        End If
+                                                                   If (m_DebuggingState <> ENUM_DEBUGGING_STATE.PAUSED) Then
+                                                                       Return
+                                                                   End If
 
-                                                        UpdateBreakpointListView()
+                                                                   UpdateBreakpointListView()
 
-                                                        g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Debugger awaiting input..."
-                                                        g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Orange
+                                                                   g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Debugger awaiting input..."
+                                                                   g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Orange
 
-                                                        If (g_mFormDebugger.WindowState = FormWindowState.Minimized) Then
-                                                            ClassTools.ClassForms.FormWindowCommand(g_mFormDebugger, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
-                                                        End If
-                                                        g_mFormDebugger.Activate()
+                                                                   If (g_mFormDebugger.WindowState = FormWindowState.Minimized) Then
+                                                                       ClassTools.ClassForms.FormWindowCommand(g_mFormDebugger, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
+                                                                   End If
+                                                                   g_mFormDebugger.Activate()
 
-                                                        g_mFormDebuggerCriticalPopupException = New FormDebuggerCriticalPopup(g_mFormDebugger, "Unknown SourceMod Exception", "The debugger caught unknown exceptions!", String.Join(Environment.NewLine, sLines))
-                                                        g_mFormDebuggerCriticalPopupException.Show(g_mFormDebugger)
+                                                                   g_mFormDebuggerCriticalPopupException = New FormDebuggerCriticalPopup(g_mFormDebugger, "Unknown SourceMod Exception", "The debugger caught unknown exceptions!", String.Join(Environment.NewLine, sLines))
+                                                                   g_mFormDebuggerCriticalPopupException.Show(g_mFormDebugger)
 
-                                                        If (g_mFormDebuggerCriticalPopupException.WindowState = FormWindowState.Minimized) Then
-                                                            ClassTools.ClassForms.FormWindowCommand(g_mFormDebuggerCriticalPopupException, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
-                                                        End If
-                                                        g_mFormDebuggerCriticalPopupException.Activate()
+                                                                   If (g_mFormDebuggerCriticalPopupException.WindowState = FormWindowState.Minimized) Then
+                                                                       ClassTools.ClassForms.FormWindowCommand(g_mFormDebuggerCriticalPopupException, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
+                                                                   End If
+                                                                   g_mFormDebuggerCriticalPopupException.Activate()
 
-                                                        g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnDebuggerDebugPause())
-                                                    End Sub)
+                                                                   g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnDebuggerDebugPause())
+                                                               End Sub)
                     End SyncLock
                 End If
             End If
@@ -1536,35 +1528,35 @@ Public Class ClassDebuggerRunner
                     m_DebuggingState = ENUM_DEBUGGING_STATE.PAUSED
 
                     'INFO: Dont use 'Invoke' it deadlocks on FileSystemWatcher.Dispose, use async 'BeginInvoke' instead.
-                    g_mFormDebugger.BeginInvoke(Sub()
-                                                    If (g_mFormDebuggerCriticalPopupFatalException IsNot Nothing AndAlso Not g_mFormDebuggerCriticalPopupFatalException.IsDisposed) Then
-                                                        Return
-                                                    End If
+                    ClassThread.ExecAsync(g_mFormDebugger, Sub()
+                                                               If (g_mFormDebuggerCriticalPopupFatalException IsNot Nothing AndAlso Not g_mFormDebuggerCriticalPopupFatalException.IsDisposed) Then
+                                                                   Return
+                                                               End If
 
-                                                    If (m_DebuggingState <> ENUM_DEBUGGING_STATE.PAUSED) Then
-                                                        Return
-                                                    End If
+                                                               If (m_DebuggingState <> ENUM_DEBUGGING_STATE.PAUSED) Then
+                                                                   Return
+                                                               End If
 
-                                                    UpdateBreakpointListView()
+                                                               UpdateBreakpointListView()
 
-                                                    g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Debugger awaiting input..."
-                                                    g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Orange
+                                                               g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Debugger awaiting input..."
+                                                               g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Orange
 
-                                                    If (g_mFormDebugger.WindowState = FormWindowState.Minimized) Then
-                                                        ClassTools.ClassForms.FormWindowCommand(g_mFormDebugger, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
-                                                    End If
-                                                    g_mFormDebugger.Activate()
+                                                               If (g_mFormDebugger.WindowState = FormWindowState.Minimized) Then
+                                                                   ClassTools.ClassForms.FormWindowCommand(g_mFormDebugger, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
+                                                               End If
+                                                               g_mFormDebugger.Activate()
 
-                                                    g_mFormDebuggerCriticalPopupFatalException = New FormDebuggerCriticalPopup(g_mFormDebugger, "SourceMod Fatal Error", "The debugger caught fatal errors!", String.Join(Environment.NewLine, sLines))
-                                                    g_mFormDebuggerCriticalPopupFatalException.Show(g_mFormDebugger)
+                                                               g_mFormDebuggerCriticalPopupFatalException = New FormDebuggerCriticalPopup(g_mFormDebugger, "SourceMod Fatal Error", "The debugger caught fatal errors!", String.Join(Environment.NewLine, sLines))
+                                                               g_mFormDebuggerCriticalPopupFatalException.Show(g_mFormDebugger)
 
-                                                    If (g_mFormDebuggerCriticalPopupFatalException.WindowState = FormWindowState.Minimized) Then
-                                                        ClassTools.ClassForms.FormWindowCommand(g_mFormDebuggerCriticalPopupFatalException, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
-                                                    End If
-                                                    g_mFormDebuggerCriticalPopupFatalException.Activate()
+                                                               If (g_mFormDebuggerCriticalPopupFatalException.WindowState = FormWindowState.Minimized) Then
+                                                                   ClassTools.ClassForms.FormWindowCommand(g_mFormDebuggerCriticalPopupFatalException, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
+                                                               End If
+                                                               g_mFormDebuggerCriticalPopupFatalException.Activate()
 
-                                                    g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnDebuggerDebugPause())
-                                                End Sub)
+                                                               g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnDebuggerDebugPause())
+                                                           End Sub)
                 End SyncLock
             End If
         Catch ex As Threading.ThreadAbortException
@@ -1673,11 +1665,7 @@ Public Class ClassDebuggerRunner
                 ' TODO: dispose managed state (managed objects).
                 RemoveFileSystemWatcher()
 
-                If (g_tListViewEntitiesUpdaterThread IsNot Nothing AndAlso g_tListViewEntitiesUpdaterThread.IsAlive) Then
-                    g_tListViewEntitiesUpdaterThread.Abort()
-                    g_tListViewEntitiesUpdaterThread.Join()
-                    g_tListViewEntitiesUpdaterThread = Nothing
-                End If
+                ClassThread.Abort(g_mListViewEntitiesUpdaterThread)
 
                 If (g_mFormDebuggerException IsNot Nothing AndAlso Not g_mFormDebuggerException.IsDisposed) Then
                     g_mFormDebuggerException.Dispose()

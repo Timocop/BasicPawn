@@ -211,32 +211,31 @@ Public Class FormMain
     End Sub
 
     Public Sub PrintInformation(sType As String, sMessage As String, Optional bClear As Boolean = False, Optional bShowInformationTab As Boolean = False, Optional bEnsureVisible As Boolean = False)
-        Me.BeginInvoke(
-            Sub()
-                If (g_mUCInformationList Is Nothing) Then
-                    Return
-                End If
+        ClassThread.ExecAsync(Me, Sub()
+                                      If (g_mUCInformationList Is Nothing) Then
+                                          Return
+                                      End If
 
-                If (bClear) Then
-                    g_mUCInformationList.ListBox_Information.Items.Clear()
-                End If
+                                      If (bClear) Then
+                                          g_mUCInformationList.ListBox_Information.Items.Clear()
+                                      End If
 
-                Dim iIndex = g_mUCInformationList.ListBox_Information.Items.Add(String.Format("{0} ({1}) {2}", sType, Now.ToString, sMessage))
+                                      Dim iIndex = g_mUCInformationList.ListBox_Information.Items.Add(String.Format("{0} ({1}) {2}", sType, Now.ToString, sMessage))
 
-                ToolStripStatusLabel_LastInformation.Text = sMessage
+                                      ToolStripStatusLabel_LastInformation.Text = sMessage
 
-                If (bEnsureVisible) Then
-                    'Scroll to item
-                    g_mUCInformationList.ListBox_Information.TopIndex = iIndex
-                End If
+                                      If (bEnsureVisible) Then
+                                          'Scroll to item
+                                          g_mUCInformationList.ListBox_Information.TopIndex = iIndex
+                                      End If
 
-                If (bShowInformationTab) Then
-                    SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed = False
-                    SplitContainer_ToolboxSourceAndDetails.SplitterDistance = SplitContainer_ToolboxSourceAndDetails.Height - 200
+                                      If (bShowInformationTab) Then
+                                          SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed = False
+                                          SplitContainer_ToolboxSourceAndDetails.SplitterDistance = SplitContainer_ToolboxSourceAndDetails.Height - 200
 
-                    TabControl_Details.SelectTab(1)
-                End If
-            End Sub)
+                                          TabControl_Details.SelectTab(1)
+                                      End If
+                                  End Sub)
     End Sub
 
     Private Sub ContextMenuStrip_RightClick_Opening(sender As Object, e As CancelEventArgs) Handles ContextMenuStrip_RightClick.Opening
@@ -338,12 +337,16 @@ Public Class FormMain
         Dim mCheckUpdasteThread As New Threading.Thread(Sub()
                                                             Try
 #If DEBUG Then
-                                                                Me.BeginInvoke(Sub() ToolStripMenuItem_NewUpdate.Visible = True)
+                                                                ClassThread.ExecAsync(Me, Sub()
+                                                                                              ToolStripMenuItem_NewUpdate.Visible = True
+                                                                                          End Sub)
 #End If
                                                                 Threading.Thread.Sleep(10000)
 
                                                                 If (ClassUpdate.CheckUpdateAvailable()) Then
-                                                                    Me.BeginInvoke(Sub() ToolStripMenuItem_NewUpdate.Visible = True)
+                                                                    ClassThread.ExecAsync(Me, Sub()
+                                                                                                  ToolStripMenuItem_NewUpdate.Visible = True
+                                                                                              End Sub)
                                                                 End If
                                                             Catch ex As Threading.ThreadAbortException
                                                                 Throw
@@ -1102,17 +1105,17 @@ Public Class FormMain
                         Return
                     End If
 
-                    Me.BeginInvoke(Sub()
-                                       Dim mTab = g_ClassTabControl.AddTab()
-                                       mTab.OpenFileTab(sFile)
-                                       mTab.SelectTab(500)
+                    ClassThread.ExecAsync(Me, Sub()
+                                                  Dim mTab = g_ClassTabControl.AddTab()
+                                                  mTab.OpenFileTab(sFile)
+                                                  mTab.SelectTab(500)
 
-                                       If (Me.WindowState = FormWindowState.Minimized) Then
-                                           ClassTools.ClassForms.FormWindowCommand(Me, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
-                                       End If
+                                                  If (Me.WindowState = FormWindowState.Minimized) Then
+                                                      ClassTools.ClassForms.FormWindowCommand(Me, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
+                                                  End If
 
-                                       Me.Activate()
-                                   End Sub)
+                                                  Me.Activate()
+                                              End Sub)
 
                 Case COMARG_REQUEST_TABS
                     Dim sCallerIdentifier As String = mClassMessage.m_Messages(0)
@@ -1149,22 +1152,22 @@ Public Class FormMain
                         Return
                     End If
 
-                    Me.BeginInvoke(Sub()
-                                       Dim mTab = g_ClassTabControl.GetTabByIdentifier(sTabIdentifier)
-                                       If (mTab Is Nothing) Then
-                                           Return
-                                       End If
+                    ClassThread.ExecAsync(Me, Sub()
+                                                  Dim mTab = g_ClassTabControl.GetTabByIdentifier(sTabIdentifier)
+                                                  If (mTab Is Nothing) Then
+                                                      Return
+                                                  End If
 
-                                       If (Not String.IsNullOrEmpty(sFile) AndAlso sFile <> mTab.m_File) Then
-                                           Return
-                                       End If
+                                                  If (Not String.IsNullOrEmpty(sFile) AndAlso sFile <> mTab.m_File) Then
+                                                      Return
+                                                  End If
 
-                                       mTab.RemoveTab(True, g_ClassTabControl.m_ActiveTabIndex)
+                                                  mTab.RemoveTab(True, g_ClassTabControl.m_ActiveTabIndex)
 
-                                       If (bCloseAppWhenEmpty AndAlso g_ClassTabControl.m_TabsCount = 1 AndAlso g_ClassTabControl.m_ActiveTab.m_IsUnsaved) Then
-                                           Me.Close()
-                                       End If
-                                   End Sub)
+                                                  If (bCloseAppWhenEmpty AndAlso g_ClassTabControl.m_TabsCount = 1 AndAlso g_ClassTabControl.m_ActiveTab.m_IsUnsaved) Then
+                                                      Me.Close()
+                                                  End If
+                                              End Sub)
 
                 Case COMARG_SHOW_PING_FLASH
                     Dim iPID As Integer = CInt(mClassMessage.m_Messages(0))
@@ -1174,24 +1177,24 @@ Public Class FormMain
                         Return
                     End If
 
-                    Me.BeginInvoke(Sub()
-                                       If (Not String.IsNullOrEmpty(sTabIdentifier)) Then
-                                           Dim mTab = g_ClassTabControl.GetTabByIdentifier(sTabIdentifier)
-                                           If (mTab IsNot Nothing) Then
-                                               If (Not mTab.m_IsActive) Then
-                                                   mTab.SelectTab()
-                                               End If
-                                           End If
-                                       End If
+                    ClassThread.ExecAsync(Me, Sub()
+                                                  If (Not String.IsNullOrEmpty(sTabIdentifier)) Then
+                                                      Dim mTab = g_ClassTabControl.GetTabByIdentifier(sTabIdentifier)
+                                                      If (mTab IsNot Nothing) Then
+                                                          If (Not mTab.m_IsActive) Then
+                                                              mTab.SelectTab()
+                                                          End If
+                                                      End If
+                                                  End If
 
-                                       If (Me.WindowState = FormWindowState.Minimized) Then
-                                           ClassTools.ClassForms.FormWindowCommand(Me, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
-                                       End If
+                                                  If (Me.WindowState = FormWindowState.Minimized) Then
+                                                      ClassTools.ClassForms.FormWindowCommand(Me, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
+                                                  End If
 
-                                       Me.Activate()
+                                                  Me.Activate()
 
-                                       ShowPingFlash()
-                                   End Sub)
+                                                  ShowPingFlash()
+                                              End Sub)
             End Select
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)

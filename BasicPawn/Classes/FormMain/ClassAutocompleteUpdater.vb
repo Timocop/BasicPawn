@@ -51,7 +51,7 @@ Public Class ClassAutocompleteUpdater
             sTabIdentifier = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Identifier
         End If
 
-        If (g_mAutocompleteUpdaterThread Is Nothing OrElse Not g_mAutocompleteUpdaterThread.IsAlive) Then
+        If (Not ClassThread.IsValid(g_mAutocompleteUpdaterThread)) Then
             g_mAutocompleteUpdaterThread = New Threading.Thread(Sub()
                                                                     SyncLock _lock
                                                                         If ((iUpdateType And ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) = ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) Then
@@ -98,53 +98,47 @@ Public Class ClassAutocompleteUpdater
     Public Sub StopUpdate()
         RaiseEvent OnAutocompleteUpdateAbort()
 
-        If (g_mAutocompleteUpdaterThread IsNot Nothing AndAlso g_mAutocompleteUpdaterThread.IsAlive) Then
-            'g_mFormMain.PrintInformation("[WARN]", "Autocomplete update canceled!")
-
-            g_mAutocompleteUpdaterThread.Abort()
-            g_mAutocompleteUpdaterThread.Join()
-            g_mAutocompleteUpdaterThread = Nothing
-        End If
+        ClassThread.Abort(g_mAutocompleteUpdaterThread)
     End Sub
 
     Private Sub FullAutocompleteUpdate_Thread(sTabIdentifier As String)
         Try
             'g_mFormMain.PrintInformation("[INFO]", "Autocomplete update started...")
 
-            Dim sActiveTabIdentifier As String = CStr(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Identifier))
-            Dim mTabs As ClassTabControl.SourceTabPage() = DirectCast(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.GetAllTabs()), ClassTabControl.SourceTabPage())
-            Dim mRequestTab As ClassTabControl.SourceTabPage = DirectCast(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.GetTabByIdentifier(sTabIdentifier)), ClassTabControl.SourceTabPage)
+            Dim sActiveTabIdentifier As String = ClassThread.Exec(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Identifier)
+            Dim mTabs As ClassTabControl.SourceTabPage() = ClassThread.Exec(Of ClassTabControl.SourceTabPage())(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.GetAllTabs())
+            Dim mRequestTab As ClassTabControl.SourceTabPage = ClassThread.Exec(Of ClassTabControl.SourceTabPage)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.GetTabByIdentifier(sTabIdentifier))
             If (mRequestTab Is Nothing) Then
-                g_mFormMain.BeginInvoke(Sub()
-                                            g_mFormMain.ToolStripProgressBar_Autocomplete.ToolTipText = ""
-                                            g_mFormMain.ToolStripProgressBar_Autocomplete.Value = 100
-                                            g_mFormMain.ToolStripProgressBar_Autocomplete.Visible = False
-                                        End Sub)
+                ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                       g_mFormMain.ToolStripProgressBar_Autocomplete.ToolTipText = ""
+                                                       g_mFormMain.ToolStripProgressBar_Autocomplete.Value = 100
+                                                       g_mFormMain.ToolStripProgressBar_Autocomplete.Visible = False
+                                                   End Sub)
 
                 g_mFormMain.PrintInformation("[WARN]", "Autocomplete update failed! Could not get tab!", False, False)
                 Return
             End If
 
-            Dim sActiveSourceFile As String = CStr(g_mFormMain.Invoke(Function() mRequestTab.m_File))
-            Dim sActiveSource As String = CStr(g_mFormMain.Invoke(Function() mRequestTab.m_TextEditor.Document.TextContent))
-            Dim iActiveModType As ClassSyntaxTools.ENUM_MOD_TYPE = CType(g_mFormMain.Invoke(Function() mRequestTab.m_ModType), ClassSyntaxTools.ENUM_MOD_TYPE)
+            Dim sRequestedSourceFile As String = mRequestTab.m_File
+            Dim iRequestedModType As ClassSyntaxTools.ENUM_MOD_TYPE = mRequestTab.m_ModType
+            Dim sRequestedSource As String = ClassThread.Exec(Of String)(mRequestTab, Function() mRequestTab.m_TextEditor.Document.TextContent)
 
-            If (String.IsNullOrEmpty(sActiveSourceFile) OrElse Not IO.File.Exists(sActiveSourceFile)) Then
-                g_mFormMain.BeginInvoke(Sub()
-                                            g_mFormMain.ToolStripProgressBar_Autocomplete.ToolTipText = ""
-                                            g_mFormMain.ToolStripProgressBar_Autocomplete.Value = 100
-                                            g_mFormMain.ToolStripProgressBar_Autocomplete.Visible = False
-                                        End Sub)
+            If (String.IsNullOrEmpty(sRequestedSourceFile) OrElse Not IO.File.Exists(sRequestedSourceFile)) Then
+                ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                       g_mFormMain.ToolStripProgressBar_Autocomplete.ToolTipText = ""
+                                                       g_mFormMain.ToolStripProgressBar_Autocomplete.Value = 100
+                                                       g_mFormMain.ToolStripProgressBar_Autocomplete.Visible = False
+                                                   End Sub)
 
                 g_mFormMain.PrintInformation("[ERRO]", "Autocomplete update failed! Could not get current source file!", False, False)
                 Return
             End If
 
-            g_mFormMain.BeginInvoke(Sub()
-                                        g_mFormMain.ToolStripProgressBar_Autocomplete.ToolTipText = IO.Path.GetFileName(sActiveSourceFile)
-                                        g_mFormMain.ToolStripProgressBar_Autocomplete.Value = 0
-                                        g_mFormMain.ToolStripProgressBar_Autocomplete.Visible = True
-                                    End Sub)
+            ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                   g_mFormMain.ToolStripProgressBar_Autocomplete.ToolTipText = IO.Path.GetFileName(sRequestedSourceFile)
+                                                   g_mFormMain.ToolStripProgressBar_Autocomplete.Value = 0
+                                                   g_mFormMain.ToolStripProgressBar_Autocomplete.Visible = True
+                                               End Sub)
 
             Dim lTmpAutocompleteList As New ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
 
@@ -154,10 +148,10 @@ Public Class ClassAutocompleteUpdater
             Dim lIncludeFiles As New List(Of DictionaryEntry)
             Dim lIncludeFilesFull As New List(Of DictionaryEntry)
 
-            For Each sInclude In GetIncludeFiles(sActiveSource, sActiveSourceFile, sActiveSourceFile)
+            For Each sInclude In GetIncludeFiles(sRequestedSource, sRequestedSourceFile, sRequestedSourceFile)
                 lIncludeFiles.Add(New DictionaryEntry(sTabIdentifier, sInclude))
             Next
-            For Each sInclude In GetIncludeFiles(sActiveSource, sActiveSourceFile, sActiveSourceFile, True)
+            For Each sInclude In GetIncludeFiles(sRequestedSource, sRequestedSourceFile, sRequestedSourceFile, True)
                 lIncludeFilesFull.Add(New DictionaryEntry(sTabIdentifier, sInclude))
             Next
 
@@ -171,7 +165,7 @@ Public Class ClassAutocompleteUpdater
                         Continue For
                     End If
 
-                    If (mTabs(i).m_File.ToLower = sActiveSourceFile.ToLower) Then
+                    If (mTabs(i).m_File.ToLower = sRequestedSourceFile.ToLower) Then
                         Continue For
                     End If
 
@@ -190,7 +184,7 @@ Public Class ClassAutocompleteUpdater
                             Continue For
                         End If
 
-                        If (CStr(mIncludes(j).Value).ToLower <> sActiveSourceFile.ToLower) Then
+                        If (CStr(mIncludes(j).Value).ToLower <> sRequestedSourceFile.ToLower) Then
                             Continue For
                         End If
 
@@ -220,9 +214,10 @@ Public Class ClassAutocompleteUpdater
                     Next
                 Next
 
-                g_mFormMain.BeginInvoke(Sub()
-                                            mRequestTab.m_HasReferenceIncludes = bRefIncludeAdded
-                                        End Sub)
+                ''mRequestTab.m_HasReferenceIncludes' Calls UI elements, invoke it.
+                ClassThread.ExecAsync(mRequestTab, Sub()
+                                                       mRequestTab.m_HasReferenceIncludes = bRefIncludeAdded
+                                                   End Sub)
             End If
 
             'Save includes first, they wont be modified below this anyways
@@ -273,37 +268,37 @@ Public Class ClassAutocompleteUpdater
                     End Select
                 Next
 
-                If (iActiveModType <> iModType) Then
+                If (iRequestedModType <> iModType) Then
                     Select Case (iModType)
                         Case ClassSyntaxTools.ENUM_MOD_TYPE.SOURCEMOD
-                            g_mFormMain.PrintInformation("[INFO]", String.Format("Auto-Detected mod: SourceMod ({0})", IO.Path.GetFileName(sActiveSourceFile)))
+                            g_mFormMain.PrintInformation("[INFO]", String.Format("Auto-Detected mod: SourceMod ({0})", IO.Path.GetFileName(sRequestedSourceFile)))
 
                         Case ClassSyntaxTools.ENUM_MOD_TYPE.AMXMODX
-                            g_mFormMain.PrintInformation("[INFO]", String.Format("Auto-Detected mod: AMX Mod X ({0})", IO.Path.GetFileName(sActiveSourceFile)))
+                            g_mFormMain.PrintInformation("[INFO]", String.Format("Auto-Detected mod: AMX Mod X ({0})", IO.Path.GetFileName(sRequestedSourceFile)))
 
                         Case ClassSyntaxTools.ENUM_MOD_TYPE.PAWN
-                            g_mFormMain.PrintInformation("[INFO]", String.Format("Auto-Detected mod: Pawn ({0})", IO.Path.GetFileName(sActiveSourceFile)))
+                            g_mFormMain.PrintInformation("[INFO]", String.Format("Auto-Detected mod: Pawn ({0})", IO.Path.GetFileName(sRequestedSourceFile)))
 
                         Case Else
-                            g_mFormMain.PrintInformation("[WARN]", String.Format("Auto-Detected mod: Unknown ({0})", IO.Path.GetFileName(sActiveSourceFile)))
+                            g_mFormMain.PrintInformation("[WARN]", String.Format("Auto-Detected mod: Unknown ({0})", IO.Path.GetFileName(sRequestedSourceFile)))
                     End Select
                 End If
 
                 If (iModType > -1) Then
-                    iActiveModType = iModType
+                    iRequestedModType = iModType
                 End If
             Else
                 Select Case (ClassConfigs.m_ActiveConfig.g_iModType)
                     Case ClassConfigs.STRUC_CONFIG_ITEM.ENUM_MOD_TYPE.SOURCEMOD
-                        iActiveModType = ClassSyntaxTools.ENUM_MOD_TYPE.SOURCEMOD
+                        iRequestedModType = ClassSyntaxTools.ENUM_MOD_TYPE.SOURCEMOD
 
                     Case ClassConfigs.STRUC_CONFIG_ITEM.ENUM_MOD_TYPE.AMXMODX
-                        iActiveModType = ClassSyntaxTools.ENUM_MOD_TYPE.AMXMODX
+                        iRequestedModType = ClassSyntaxTools.ENUM_MOD_TYPE.AMXMODX
                 End Select
             End If
 
             'Set mod type
-            g_mFormMain.BeginInvoke(Sub() mRequestTab.m_ModType = iActiveModType)
+            mRequestTab.m_ModType = iRequestedModType
 
             'Parse everything. Methods etc.
             If (True) Then
@@ -311,16 +306,20 @@ Public Class ClassAutocompleteUpdater
 
                 Dim i As Integer
                 For i = 0 To lIncludeFiles.Count - 1
-                    ParseAutocomplete_Pre(sActiveSource, sActiveSourceFile, CStr(lIncludeFiles(i).Value), sSourceList, lTmpAutocompleteList, iActiveModType)
+                    ParseAutocomplete_Pre(sRequestedSource, sRequestedSourceFile, CStr(lIncludeFiles(i).Value), sSourceList, lTmpAutocompleteList, iRequestedModType)
 
-                    g_mFormMain.BeginInvoke(Sub() g_mFormMain.ToolStripProgressBar_Autocomplete.Value = Math.Min(CInt(Math.Floor((i / lIncludeFiles.Count) * 50)), 100))
+                    ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                           g_mFormMain.ToolStripProgressBar_Autocomplete.Value = Math.Min(CInt(Math.Floor((i / lIncludeFiles.Count) * 50)), 100)
+                                                       End Sub)
                 Next
 
                 Dim sRegExEnum As String = String.Format("(\b{0}\b)", String.Join("\b|\b", GetEnumNames(lTmpAutocompleteList)))
                 For i = 0 To sSourceList.Count - 1
-                    ParseAutocomplete_Post(sActiveSource, sActiveSourceFile, sSourceList(i)(0), sRegExEnum, sSourceList(i)(1), lTmpAutocompleteList, iActiveModType)
+                    ParseAutocomplete_Post(sRequestedSource, sRequestedSourceFile, sSourceList(i)(0), sRegExEnum, sSourceList(i)(1), lTmpAutocompleteList, iRequestedModType)
 
-                    g_mFormMain.BeginInvoke(Sub() g_mFormMain.ToolStripProgressBar_Autocomplete.Value = Math.Min(CInt(Math.Floor((i / sSourceList.Count) * 50) + 50), 100))
+                    ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                           g_mFormMain.ToolStripProgressBar_Autocomplete.Value = Math.Min(CInt(Math.Floor((i / sSourceList.Count) * 50) + 50), 100)
+                                                       End Sub)
                 Next
             End If
 
@@ -336,23 +335,23 @@ Public Class ClassAutocompleteUpdater
 
             'Dont spam the user with UI updates, only on active tabs
             If (sActiveTabIdentifier = sTabIdentifier) Then
-                g_mFormMain.BeginInvoke(Sub()
-                                            'Dont move this outside of invoke! Results in "File is already in use!" when aborting the thread... for some reason...
-                                            g_mFormMain.g_ClassSyntaxTools.UpdateSyntaxFile(ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE.AUTOCOMPLETE)
-                                            g_mFormMain.g_ClassSyntaxTools.UpdateTextEditorSyntax()
-                                        End Sub)
+                ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                       'Dont move this outside of invoke! Results in "File is already in use!" when aborting the thread... for some reason...
+                                                       g_mFormMain.g_ClassSyntaxTools.UpdateSyntaxFile(ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE.AUTOCOMPLETE)
+                                                       g_mFormMain.g_ClassSyntaxTools.UpdateTextEditorSyntax()
+                                                   End Sub)
 
-                g_mFormMain.BeginInvoke(Sub()
-                                            g_mFormMain.g_mUCObjectBrowser.StartUpdate()
-                                        End Sub)
+                ClassThread.ExecAsync(g_mFormMain.g_mUCObjectBrowser, Sub()
+                                                                          g_mFormMain.g_mUCObjectBrowser.StartUpdate()
+                                                                      End Sub)
             End If
 
 
-            g_mFormMain.BeginInvoke(Sub()
-                                        g_mFormMain.ToolStripProgressBar_Autocomplete.ToolTipText = ""
-                                        g_mFormMain.ToolStripProgressBar_Autocomplete.Value = 100
-                                        g_mFormMain.ToolStripProgressBar_Autocomplete.Visible = False
-                                    End Sub)
+            ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                   g_mFormMain.ToolStripProgressBar_Autocomplete.ToolTipText = ""
+                                                   g_mFormMain.ToolStripProgressBar_Autocomplete.Value = 100
+                                                   g_mFormMain.ToolStripProgressBar_Autocomplete.Visible = False
+                                               End Sub)
 
             lTmpAutocompleteList = Nothing
 
@@ -2010,18 +2009,18 @@ Public Class ClassAutocompleteUpdater
 
     Private Sub VariableAutocompleteUpdate_Thread(sTabIdentifier As String)
         Try
-            Dim mRequestTab As ClassTabControl.SourceTabPage = DirectCast(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.GetTabByIdentifier(sTabIdentifier)), ClassTabControl.SourceTabPage)
+            Dim mRequestTab As ClassTabControl.SourceTabPage = ClassThread.Exec(Of ClassTabControl.SourceTabPage)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.GetTabByIdentifier(sTabIdentifier))
             If (mRequestTab Is Nothing) Then
                 'g_mFormMain.PrintInformation("[WARN]", "Variable autocomplete update failed! Could not get tab!", False, False)
                 Return
             End If
 
-            Dim sSourceFile As String = CStr(g_mFormMain.Invoke(Function() mRequestTab.m_File))
-            Dim sActiveSource As String = CStr(g_mFormMain.Invoke(Function() mRequestTab.m_TextEditor.Document.TextContent))
-            Dim iActiveModType As ClassSyntaxTools.ENUM_MOD_TYPE = CType(g_mFormMain.Invoke(Function() mRequestTab.m_ModType), ClassSyntaxTools.ENUM_MOD_TYPE)
+            Dim sRequestedSourceFile As String = mRequestTab.m_File
+            Dim iRequestedModType As ClassSyntaxTools.ENUM_MOD_TYPE = mRequestTab.m_ModType
+            Dim sRequestedSource As String = ClassThread.Exec(Of String)(mRequestTab, Function() mRequestTab.m_TextEditor.Document.TextContent)
 
             'g_mFormMain.PrintInformation("[INFO]", "Variable autocomplete update started...")
-            If (String.IsNullOrEmpty(sSourceFile) OrElse Not IO.File.Exists(sSourceFile)) Then
+            If (String.IsNullOrEmpty(sRequestedSourceFile) OrElse Not IO.File.Exists(sRequestedSourceFile)) Then
                 'g_mFormMain.PrintInformation("[ERRO]", "Variable autocomplete update failed! Could not get current source file!")
                 Return
             End If
@@ -2042,15 +2041,15 @@ Public Class ClassAutocompleteUpdater
                 Dim sRegExEnumPattern As String = String.Format("(\b{0}\b)", String.Join("\b|\b", GetEnumNames(lActiveAutocomplete)))
 
                 If (ClassSettings.g_iSettingsVarAutocompleteCurrentSourceOnly) Then
-                    ParseVariables_Pre(sActiveSource, sSourceFile, sSourceFile, sRegExEnumPattern, lTmpVarAutocompleteList, lActiveAutocomplete, iActiveModType)
+                    ParseVariables_Pre(sRequestedSource, sRequestedSourceFile, sRequestedSourceFile, sRegExEnumPattern, lTmpVarAutocompleteList, lActiveAutocomplete, iRequestedModType)
                 Else
                     Dim mIncludeFiles As DictionaryEntry() = mRequestTab.m_IncludeFiles.ToArray
                     For i = 0 To mIncludeFiles.Length - 1
-                        ParseVariables_Pre(sActiveSource, sSourceFile, CStr(mIncludeFiles(i).Value), sRegExEnumPattern, lTmpVarAutocompleteList, lActiveAutocomplete, iActiveModType)
+                        ParseVariables_Pre(sRequestedSource, sRequestedSourceFile, CStr(mIncludeFiles(i).Value), sRegExEnumPattern, lTmpVarAutocompleteList, lActiveAutocomplete, iRequestedModType)
                     Next
                 End If
 
-                ParseVariables_Post(sActiveSource, sSourceFile, sRegExEnumPattern, lTmpVarAutocompleteList, lActiveAutocomplete, iActiveModType)
+                ParseVariables_Post(sRequestedSource, sRequestedSourceFile, sRegExEnumPattern, lTmpVarAutocompleteList, lActiveAutocomplete, iRequestedModType)
             End If
 
             mRequestTab.m_AutocompleteItems.DoSync(

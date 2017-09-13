@@ -32,12 +32,10 @@ Public Class FormUpdate
     Private Sub FormUpdate_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ClassControlStyle.UpdateControls(Me)
 
-        If (g_mCheckUpdateThread Is Nothing OrElse Not g_mCheckUpdateThread.IsAlive) Then
-            g_mCheckUpdateThread = New Threading.Thread(AddressOf CheckUpdate) With {
-                .IsBackground = True
-            }
-            g_mCheckUpdateThread.Start()
-        End If
+        g_mCheckUpdateThread = New Threading.Thread(AddressOf CheckUpdate) With {
+                    .IsBackground = True
+                }
+        g_mCheckUpdateThread.Start()
     End Sub
 
     Private Sub Button_Close_Click(sender As Object, e As EventArgs) Handles Button_Close.Click
@@ -45,7 +43,7 @@ Public Class FormUpdate
     End Sub
 
     Private Sub Button_Update_Click(sender As Object, e As EventArgs) Handles Button_Update.Click
-        If (g_mUpdateThread IsNot Nothing AndAlso g_mUpdateThread.IsAlive) Then
+        If (ClassThread.IsValid(g_mUpdateThread)) Then
             Return
         End If
 
@@ -66,17 +64,17 @@ Public Class FormUpdate
 #End If
 
             If (ClassUpdate.CheckUpdateAvailable(sNextVersion, sCurrentVersion) OrElse bSkipCheck) Then
-                Me.Invoke(Sub()
-                              Label_StatusTitle.Text = "A new BasicPawn update is available!" & Environment.NewLine & String.Format("Do you want to update from version {0} to version {1} now?", sCurrentVersion, sNextVersion)
-                              Button_Update.Visible = True
+                ClassThread.Exec(Of Object)(Me, Sub()
+                                                    Label_StatusTitle.Text = "A new BasicPawn update is available!" & Environment.NewLine & String.Format("Do you want to update from version {0} to version {1} now?", sCurrentVersion, sNextVersion)
+                                                    Button_Update.Visible = True
 
-                              ClassPictureBoxQuality_WarnIcon.Visible = True
-                              Label_WarnText.Visible = True
-                          End Sub)
+                                                    ClassPictureBoxQuality_WarnIcon.Visible = True
+                                                    Label_WarnText.Visible = True
+                                                End Sub)
             Else
-                Me.Invoke(Sub()
-                              Label_StatusTitle.Text = "There are no new updates available!"
-                          End Sub)
+                ClassThread.Exec(Of Object)(Me, Sub()
+                                                    Label_StatusTitle.Text = "There are no new updates available!"
+                                                End Sub)
             End If
 
         Catch ex As Threading.ThreadAbortException
@@ -84,45 +82,45 @@ Public Class FormUpdate
         Catch ex As Exception
             ClassExceptionLog.WriteToLog(ex)
 
-            Me.BeginInvoke(Sub()
-                               Label_StatusTitle.Text = "Could not check for updates!"
+            ClassThread.ExecAsync(Me, Sub()
+                                          Label_StatusTitle.Text = "Could not check for updates!"
 
-                               Label_Status.Text = "Error: " & ex.Message
-                               Label_Status.ForeColor = Color.Red
-                               Label_Status.Visible = True
-                               ProgressBar_Status.Visible = False
-                           End Sub)
+                                          Label_Status.Text = "Error: " & ex.Message
+                                          Label_Status.ForeColor = Color.Red
+                                          Label_Status.Visible = True
+                                          ProgressBar_Status.Visible = False
+                                      End Sub)
         End Try
     End Sub
 
     Private Sub UpdateThread()
         Try
-            Me.Invoke(Sub()
-                          Label_Status.Text = "Status: Downloading updates..."
-                          ClassControlStyle.UpdateControls(Label_Status)
-                          Label_Status.Visible = True
-                          ProgressBar_Status.Visible = True
-                      End Sub)
+            ClassThread.Exec(Of Object)(Me, Sub()
+                                                Label_Status.Text = "Status: Downloading updates..."
+                                                ClassControlStyle.UpdateControls(Label_Status)
+                                                Label_Status.Visible = True
+                                                ProgressBar_Status.Visible = True
+                                            End Sub)
 
             ClassUpdate.InstallUpdate()
 
             'Debug only
-            Me.Invoke(Sub()
-                          Label_Status.Text = "Status: Downloaded update!"
-                          Label_Status.Visible = True
-                          ProgressBar_Status.Visible = False
-                      End Sub)
+            ClassThread.Exec(Of Object)(Me, Sub()
+                                                Label_Status.Text = "Status: Downloaded update!"
+                                                Label_Status.Visible = True
+                                                ProgressBar_Status.Visible = False
+                                            End Sub)
         Catch ex As Threading.ThreadAbortException
             Throw
         Catch ex As Exception
             ClassExceptionLog.WriteToLog(ex)
 
-            Me.BeginInvoke(Sub()
-                               Label_Status.Text = "Error: " & ex.Message
-                               Label_Status.ForeColor = Color.Red
-                               Label_Status.Visible = True
-                               ProgressBar_Status.Visible = False
-                           End Sub)
+            ClassThread.ExecAsync(Me, Sub()
+                                          Label_Status.Text = "Error: " & ex.Message
+                                          Label_Status.ForeColor = Color.Red
+                                          Label_Status.Visible = True
+                                          ProgressBar_Status.Visible = False
+                                      End Sub)
         End Try
     End Sub
 
@@ -140,16 +138,7 @@ Public Class FormUpdate
     End Sub
 
     Private Sub CleanUp()
-        If (g_mCheckUpdateThread IsNot Nothing AndAlso g_mCheckUpdateThread.IsAlive) Then
-            g_mCheckUpdateThread.Abort()
-            g_mCheckUpdateThread.Join()
-            g_mCheckUpdateThread = Nothing
-        End If
-
-        If (g_mUpdateThread IsNot Nothing AndAlso g_mUpdateThread.IsAlive) Then
-            g_mUpdateThread.Abort()
-            g_mUpdateThread.Join()
-            g_mUpdateThread = Nothing
-        End If
+        ClassThread.Abort(g_mCheckUpdateThread)
+        ClassThread.Abort(g_mUpdateThread)
     End Sub
 End Class

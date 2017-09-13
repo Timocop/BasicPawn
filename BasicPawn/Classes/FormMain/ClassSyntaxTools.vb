@@ -353,9 +353,9 @@ Public Class ClassSyntaxTools
 
                             Dim iHighlightCustomCount As Integer = 0
 
-                            Dim mActiveTab As ClassTabControl.SourceTabPage = DirectCast(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab), ClassTabControl.SourceTabPage)
+                            Dim mActiveTab As ClassTabControl.SourceTabPage = g_mFormMain.g_ClassTabControl.m_ActiveTab
                             Dim mActiveAutocomplete As STRUC_AUTOCOMPLETE() = mActiveTab.m_AutocompleteItems.ToArray
-                            Dim iModType As ENUM_MOD_TYPE = CType(g_mFormMain.Invoke(Function() mActiveTab.m_ModType), ENUM_MOD_TYPE)
+                            Dim iModType As ENUM_MOD_TYPE = mActiveTab.m_ModType
 
                             Using mSR As New IO.StreamReader(g_SyntaxFiles(i).sFile)
                                 Dim sLine As String
@@ -1241,5 +1241,4 @@ Public Class ClassSyntaxTools
             Next
         End Sub
     End Class
-
 End Class

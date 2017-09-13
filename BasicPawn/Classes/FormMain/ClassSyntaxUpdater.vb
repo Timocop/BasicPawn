@@ -27,24 +27,22 @@ Public Class ClassSyntaxUpdater
     ''' Starts the updater thread
     ''' </summary>
     Public Sub StartThread()
-        If (g_mSourceSyntaxUpdaterThread Is Nothing OrElse Not g_mSourceSyntaxUpdaterThread.IsAlive) Then
-            g_mSourceSyntaxUpdaterThread = New Threading.Thread(AddressOf SourceSyntaxUpdater_Thread) With {
-                .Priority = Threading.ThreadPriority.Lowest,
-                .IsBackground = True
-            }
-            g_mSourceSyntaxUpdaterThread.Start()
+        If (ClassThread.IsValid(g_mSourceSyntaxUpdaterThread)) Then
+            Return
         End If
+
+        g_mSourceSyntaxUpdaterThread = New Threading.Thread(AddressOf SourceSyntaxUpdater_Thread) With {
+               .Priority = Threading.ThreadPriority.Lowest,
+               .IsBackground = True
+           }
+        g_mSourceSyntaxUpdaterThread.Start()
     End Sub
 
     ''' <summary>
     ''' Stops the updater thread
     ''' </summary>
     Public Sub StopThread()
-        If (g_mSourceSyntaxUpdaterThread IsNot Nothing AndAlso g_mSourceSyntaxUpdaterThread.IsAlive) Then
-            g_mSourceSyntaxUpdaterThread.Abort()
-            g_mSourceSyntaxUpdaterThread.Join()
-            g_mSourceSyntaxUpdaterThread = Nothing
-        End If
+        ClassThread.Abort(g_mSourceSyntaxUpdaterThread)
     End Sub
 
     ''' <summary>
@@ -65,41 +63,49 @@ Public Class ClassSyntaxUpdater
             Try
                 'Update Autocomplete
                 If (g_mFormMain.g_ClassAutocompleteUpdater.g_lFullAutocompleteTabRequests.Count > 0) Then
-                    Dim sTabIdentifier As String = g_mFormMain.g_ClassAutocompleteUpdater.g_lFullAutocompleteTabRequests(0)
-                    Dim sActiveTabIdentifier As String = CStr(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Identifier))
+                    Dim sRequestedTabIdentifier As String = g_mFormMain.g_ClassAutocompleteUpdater.g_lFullAutocompleteTabRequests(0)
+                    Dim sActiveTabIdentifier As String = ClassThread.Exec(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Identifier)
 
                     'Active tabs have higher priority to update
                     If (g_mFormMain.g_ClassAutocompleteUpdater.g_lFullAutocompleteTabRequests.Contains(sActiveTabIdentifier)) Then
-                        sTabIdentifier = sActiveTabIdentifier
+                        sRequestedTabIdentifier = sActiveTabIdentifier
                     End If
 
-                    g_mFormMain.BeginInvoke(Sub() g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, sTabIdentifier))
+                    ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                           g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, sRequestedTabIdentifier)
+                                                       End Sub)
 
-                    ElseIf (dLastFullAutocompleteUpdate < Now) Then
-                        dLastFullAutocompleteUpdate = (Now + dFullAutocompleteUpdateDelay)
+                ElseIf (dLastFullAutocompleteUpdate < Now) Then
+                    dLastFullAutocompleteUpdate = (Now + dFullAutocompleteUpdateDelay)
 
-                    g_mFormMain.BeginInvoke(Sub() g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, Nothing))
+                    ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                           g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, Nothing)
+                                                       End Sub)
                 End If
 
                 'Update Variable Autocomplete
                 If (dLastVarAutocompleteUpdate < Now) Then
                     dLastVarAutocompleteUpdate = (Now + dVarAutocompleteUpdateDelay)
 
-                    g_mFormMain.BeginInvoke(Sub() g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.VARIABLES_AUTOCOMPLETE, Nothing))
+                    ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                           g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.VARIABLES_AUTOCOMPLETE, Nothing)
+                                                       End Sub)
                 End If
 
                 'Update Foldings
                 If (dLastFoldingUpdate < Now) Then
                     dLastFoldingUpdate = (Now + dLastFoldingUpdateDelay)
 
-                    'If ((Tools.WordCount(Me.Invoke(Function() TextEditorControl1.Document.TextContent), "{") + Tools.WordCount(Me.Invoke(Function() TextEditorControl1.Document.TextContent), "}")) Mod 2 = 0) Then
-                    g_mFormMain.BeginInvoke(Sub() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.FoldingManager.UpdateFoldings(Nothing, Nothing))
+                    'If ((Tools.WordCount(ClassThread.Exec(Of Object)(Function() TextEditorControl1.Document.TextContent), "{") + Tools.WordCount(ClassThread.Exec(Of Object)(Function() TextEditorControl1.Document.TextContent), "}")) Mod 2 = 0) Then
+                    ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                           g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.FoldingManager.UpdateFoldings(Nothing, Nothing)
+                                                       End Sub)
                     'End If
                 End If
 
 
-                Dim iCaretOffset As Integer = CInt(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Offset))
-                Dim iCaretPos As Point = CType(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.ScreenPosition), Point)
+                Dim iCaretOffset As Integer = ClassThread.Exec(Of Integer)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Offset)
+                Dim iCaretPos As Point = ClassThread.Exec(Of Point)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.ScreenPosition)
 
                 'Update Method Autoupdate 
                 Static iLastMethodAutoupdateCaretOffset As Integer = -1
@@ -107,10 +113,10 @@ Public Class ClassSyntaxUpdater
                     iLastMethodAutoupdateCaretOffset = iCaretOffset
 
                     If (Not g_mFormMain.g_mUCAutocomplete.UpdateIntelliSense()) Then
-                        g_mFormMain.BeginInvoke(Sub()
-                                                    g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.m_CurrentMethod = ""
-                                                    g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip()
-                                                End Sub)
+                        ClassThread.ExecAsync(g_mFormMain.g_mUCAutocomplete, Sub()
+                                                                                 g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.m_CurrentMethod = ""
+                                                                                 g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip()
+                                                                             End Sub)
                     End If
                 End If
 
@@ -119,9 +125,9 @@ Public Class ClassSyntaxUpdater
                 If (iLastAutoupdateCaretPos <> iCaretPos) Then
                     iLastAutoupdateCaretPos = iCaretPos
 
-                    g_mFormMain.BeginInvoke(Sub()
-                                                g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTipFormLocation()
-                                            End Sub)
+                    ClassThread.ExecAsync(g_mFormMain.g_mUCAutocomplete, Sub()
+                                                                             g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTipFormLocation()
+                                                                         End Sub)
                 End If
 
                 'Update Autocomplete
@@ -129,23 +135,27 @@ Public Class ClassSyntaxUpdater
                 If (iLastAutoupdateCaretOffset2 <> iCaretOffset) Then
                     iLastAutoupdateCaretOffset2 = iCaretOffset
 
-                    If (iCaretOffset > -1 AndAlso iCaretOffset < CInt(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.TextLength))) Then
-                        Dim iPosition As Integer = CInt(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column))
-                        Dim iLineOffset As Integer = CInt(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iCaretOffset).Offset))
-                        Dim iLineLen As Integer = CInt(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iCaretOffset).Length))
+                    If (iCaretOffset > -1 AndAlso iCaretOffset < ClassThread.Exec(Of Integer)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.TextLength)) Then
+                        Dim iPosition As Integer = ClassThread.Exec(Of Integer)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column)
+                        Dim iLineOffset As Integer = ClassThread.Exec(Of Integer)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iCaretOffset).Offset)
+                        Dim iLineLen As Integer = ClassThread.Exec(Of Integer)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iCaretOffset).Length)
 
                         If ((iLineLen - iPosition) > 0) Then
-                            Dim sFunctionName As String = CType(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True, True, True)), String)
+                            Dim sFunctionName As String = ClassThread.Exec(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True, True, True))
 
-                            If (CInt(g_mFormMain.Invoke(Function() g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete(sFunctionName))) < 1) Then
-                                sFunctionName = CStr(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTextEditorTools.GetCaretWord(False, False, False)))
+                            If (ClassThread.Exec(Of Integer)(g_mFormMain.g_mUCAutocomplete, Function() g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete(sFunctionName)) < 1) Then
+                                sFunctionName = ClassThread.Exec(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTextEditorTools.GetCaretWord(False, False, False))
 
-                                g_mFormMain.BeginInvoke(Sub() g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete(sFunctionName))
+                                ClassThread.ExecAsync(g_mFormMain.g_mUCAutocomplete, Sub()
+                                                                                         g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete(sFunctionName)
+                                                                                     End Sub)
                             End If
                         End If
                     End If
 
-                    g_mFormMain.BeginInvoke(Sub() g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip())
+                    ClassThread.ExecAsync(g_mFormMain.g_mUCAutocomplete, Sub()
+                                                                             g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip()
+                                                                         End Sub)
                 End If
 
                 'Update caret word maker
@@ -154,7 +164,9 @@ Public Class ClassSyntaxUpdater
                     iLastAutoupdateCaretOffset3 = iCaretOffset
 
                     If (ClassSettings.g_iSettingsAutoMark) Then
-                        g_mFormMain.BeginInvoke(Sub() g_mFormMain.g_ClassTextEditorTools.MarkCaretWord())
+                        ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                               g_mFormMain.g_ClassTextEditorTools.MarkCaretWord()
+                                                           End Sub)
                     End If
                 End If
 

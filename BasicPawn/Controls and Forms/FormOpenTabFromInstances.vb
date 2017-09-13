@@ -167,12 +167,8 @@ Public Class FormOpenTabFromInstances
 
         Dim iPID As Integer = mTabInfo.Value.iProcessID
         Dim sTabIndetifier As String = mTabInfo.Value.sTabIndentifier
-
-        If (g_mShowDelayThread IsNot Nothing AndAlso g_mShowDelayThread.IsAlive) Then
-            g_mShowDelayThread.Abort()
-            g_mShowDelayThread.Join()
-            g_mShowDelayThread = Nothing
-        End If
+         
+        ClassThread.Abort(g_mShowDelayThread)
 
         'Ping with a small delay, so Me.Activate works correctly
         g_mShowDelayThread = New Threading.Thread(Sub()
@@ -194,11 +190,7 @@ Public Class FormOpenTabFromInstances
     End Sub
 
     Private Sub CleanUp()
-        If (g_mShowDelayThread IsNot Nothing AndAlso g_mShowDelayThread.IsAlive) Then
-            g_mShowDelayThread.Abort()
-            g_mShowDelayThread.Join()
-            g_mShowDelayThread = Nothing
-        End If
+        ClassThread.Abort(g_mShowDelayThread)
     End Sub
 
 End Class

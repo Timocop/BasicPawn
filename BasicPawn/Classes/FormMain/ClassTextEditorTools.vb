@@ -1270,17 +1270,17 @@ Public Class ClassTextEditorTools
 
             Dim sIdentifier = Guid.NewGuid.ToString
 
-            Dim dropItem As ToolStripMenuItem = CType(g_mFormMain.Invoke(Function() g_mFormMain.ToolStripMenuItem_HightlightCustom.DropDownItems.Add(String.Format("{0} {1}", g_sColorTextName, iIndex))), ToolStripMenuItem)
-            dropItem.Name = sIdentifier
-            dropItem.BackColor = Color.White
+            Dim mMenuItem As ToolStripMenuItem = DirectCast(g_mFormMain.ToolStripMenuItem_HightlightCustom.DropDownItems.Add(String.Format("{0} {1}", g_sColorTextName, iIndex)), ToolStripMenuItem)
+            mMenuItem.Name = sIdentifier
+            mMenuItem.BackColor = Color.White
 
-            RemoveHandler dropItem.Click, AddressOf OnClick
-            AddHandler dropItem.Click, AddressOf OnClick
+            RemoveHandler mMenuItem.Click, AddressOf OnClick
+            AddHandler mMenuItem.Click, AddressOf OnClick
 
             g_lHighlightItemList(iIndex) = New STRUC_HIGHLIGHT_ITEM With {
                 .sIdentifier = sIdentifier,
                 .sWord = "",
-                .mToolStripItem = dropItem
+                .mToolStripItem = mMenuItem
             }
 
         End Sub

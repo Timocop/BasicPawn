@@ -24,7 +24,7 @@ Public Class FormMultiCompiler
     Private g_bTestingOnly As Boolean = False
     Private g_bCleanDebuggerPlaceholder As Boolean = False
 
-    Private g_tMainThread As Threading.Thread
+    Private g_mCompilerThread As Threading.Thread
 
     Public Sub New(f As FormMain, sSourceFiles As String(), bTestingOnly As Boolean, bCleanDebuggerPlaceholder As Boolean)
         g_mMainForm = f
@@ -52,22 +52,22 @@ Public Class FormMultiCompiler
 
 
     Public Sub StartCompile()
-        If (g_tMainThread IsNot Nothing AndAlso g_tMainThread.IsAlive) Then
+        If (ClassThread.IsValid(g_mCompilerThread)) Then
             Return
         End If
 
-        g_tMainThread = New Threading.Thread(AddressOf CompilerThread) With {
+        g_mCompilerThread = New Threading.Thread(AddressOf CompilerThread) With {
             .IsBackground = True
         }
-        g_tMainThread.Start()
+        g_mCompilerThread.Start()
     End Sub
 
     Private Sub CompilerThread()
         Try
-            Me.Invoke(Sub()
-                          ProgressBar_Compiled.Maximum = g_sSourceFiles.Length
-                          ProgressBar_Compiled.Value = 0
-                      End Sub)
+            ClassThread.Exec(Of Object)(ProgressBar_Compiled, Sub()
+                                                                  ProgressBar_Compiled.Maximum = g_sSourceFiles.Length
+                                                                  ProgressBar_Compiled.Value = 0
+                                                              End Sub)
 
             For i = 0 To g_sSourceFiles.Length - 1
                 Dim sSourceFile As String = g_sSourceFiles(i)
@@ -108,79 +108,77 @@ Public Class FormMultiCompiler
 
 
                 Dim sOutputFile As String = IO.Path.Combine(ClassConfigs.m_ActiveConfig.g_sOutputFolder, String.Format("{0}.unk", IO.Path.GetFileNameWithoutExtension(sSourceFile)))
-                Dim bSuccess As Boolean = CBool(Me.Invoke(Function()
-                                                              If (g_bCleanDebuggerPlaceholder) Then
-                                                                  With New ClassDebuggerParser(g_mMainForm)
-                                                                      If (.HasDebugPlaceholder(sSource)) Then
-                                                                          .CleanupDebugPlaceholder(sSource, iModType)
-                                                                      End If
-                                                                  End With
-                                                              End If
+                Dim bSuccess As Boolean = ClassThread.Exec(Of Boolean)(Me, Function()
+                                                                               If (g_bCleanDebuggerPlaceholder) Then
+                                                                                   With New ClassDebuggerParser(g_mMainForm)
+                                                                                       If (.HasDebugPlaceholder(sSource)) Then
+                                                                                           Call .CleanupDebugPlaceholder(sSource, iModType)
+                                                                                       End If
+                                                                                   End With
+                                                                               End If
 
-                                                              Return g_mMainForm.g_ClassTextEditorTools.CompileSource(g_bTestingOnly, sSource, sOutputFile, IO.Path.GetDirectoryName(sSourceFile), ClassConfigs.m_ActiveConfig.g_sCompilerPath, ClassConfigs.m_ActiveConfig.g_sIncludeFolders, sSourceFile, sCompilerOutput)
-                                                          End Function))
+                                                                               Return g_mMainForm.g_ClassTextEditorTools.CompileSource(g_bTestingOnly, sSource, sOutputFile, IO.Path.GetDirectoryName(sSourceFile), ClassConfigs.m_ActiveConfig.g_sCompilerPath, ClassConfigs.m_ActiveConfig.g_sIncludeFolders, sSourceFile, sCompilerOutput)
+                                                                           End Function)
 
                 Dim bWarning As Boolean = Regex.Match(sCompilerOutput, "\s+[0-9]+\s+\b(Warning|Warnings)\b\.").Success
 
                 Dim bCancel As Boolean = False
 
                 If (Not bSuccess) Then
-                    Me.Invoke(Sub()
-                                  With New Text.StringBuilder
-                                      .AppendLine(String.Format("'{0}' failed to compile!", sSourceFile))
-                                      .AppendLine("See information tab for more information.")
-                                      .AppendLine()
-                                      .AppendLine("Do you want to open the file now?")
+                    ClassThread.Exec(Of Object)(Me, Sub()
+                                                        With New Text.StringBuilder
+                                                            .AppendLine(String.Format("'{0}' failed to compile!", sSourceFile))
+                                                            .AppendLine("See information tab for more information.")
+                                                            .AppendLine()
+                                                            .AppendLine("Do you want to open the file now?")
 
-                                      Select Case (MessageBox.Show(Me, .ToString, "Compiler failure", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Error))
-                                          Case DialogResult.Yes
-                                              Dim mTab = g_mMainForm.g_ClassTabControl.AddTab()
-                                              mTab.OpenFileTab(sSourceFile)
-                                              mTab.SelectTab()
+                                                            Select Case (MessageBox.Show(Me, .ToString, "Compiler failure", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Error))
+                                                                Case DialogResult.Yes
+                                                                    Dim mTab = g_mMainForm.g_ClassTabControl.AddTab()
+                                                                    mTab.OpenFileTab(sSourceFile)
+                                                                    mTab.SelectTab()
 
-                                          Case DialogResult.Cancel
-                                              bCancel = True
-                                      End Select
-                                  End With
-                              End Sub)
+                                                                Case DialogResult.Cancel
+                                                                    bCancel = True
+                                                            End Select
+                                                        End With
+                                                    End Sub)
                 ElseIf (bWarning) Then
-                    Me.Invoke(Sub()
-                                  With New Text.StringBuilder
-                                      .AppendLine(String.Format("'{0}' has compiler warnings!", sSourceFile))
-                                      .AppendLine("See information tab for more information.")
-                                      .AppendLine()
-                                      .AppendLine("Do you want to open the file now?")
+                    ClassThread.Exec(Of Object)(Me, Sub()
+                                                        With New Text.StringBuilder
+                                                            .AppendLine(String.Format("'{0}' has compiler warnings!", sSourceFile))
+                                                            .AppendLine("See information tab for more information.")
+                                                            .AppendLine()
+                                                            .AppendLine("Do you want to open the file now?")
 
-                                      Select Case (MessageBox.Show(Me, .ToString, "Compiler warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Exclamation))
-                                          Case DialogResult.Yes
-                                              Dim mTab = g_mMainForm.g_ClassTabControl.AddTab()
-                                              mTab.OpenFileTab(sSourceFile)
-                                              mTab.SelectTab()
+                                                            Select Case (MessageBox.Show(Me, .ToString, "Compiler warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Exclamation))
+                                                                Case DialogResult.Yes
+                                                                    Dim mTab = g_mMainForm.g_ClassTabControl.AddTab()
+                                                                    mTab.OpenFileTab(sSourceFile)
+                                                                    mTab.SelectTab()
 
-                                          Case DialogResult.Cancel
-                                              bCancel = True
-                                      End Select
-                                  End With
-                              End Sub)
+                                                                Case DialogResult.Cancel
+                                                                    bCancel = True
+                                                            End Select
+                                                        End With
+                                                    End Sub)
                 End If
 
                 If (bCancel) Then
                     Exit For
                 End If
 
-                Me.Invoke(Sub()
-                              ProgressBar_Compiled.Increment(1)
-                              Me.Refresh()
-                          End Sub)
+                ClassThread.Exec(Of Object)(ProgressBar_Compiled, Sub() ProgressBar_Compiled.Increment(1))
+                ClassThread.Exec(Of Object)(Me, Sub() Me.Refresh())
             Next
 
-            Me.BeginInvoke(Sub() Me.Close())
+            ClassThread.ExecAsync(Me, Sub() Me.Close())
         Catch ex As Threading.ThreadAbortException
             Throw
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
 
-            Me.BeginInvoke(Sub() Me.Close())
+            ClassThread.ExecAsync(Me, Sub() Me.Close())
         End Try
     End Sub
 
@@ -189,10 +187,6 @@ Public Class FormMultiCompiler
     End Sub
 
     Private Sub CleanUp()
-        If (g_tMainThread IsNot Nothing AndAlso g_tMainThread.IsAlive) Then
-            g_tMainThread.Abort()
-            g_tMainThread.Join()
-            g_tMainThread = Nothing
-        End If
+        ClassThread.Abort(g_mCompilerThread)
     End Sub
 End Class

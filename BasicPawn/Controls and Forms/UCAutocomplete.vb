@@ -81,11 +81,11 @@ Public Class UCAutocomplete
 
 
     Public Function UpdateIntelliSense() As Boolean
-        Dim sTextContent As String = CStr(Me.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent))
-        Dim iModType As ClassSyntaxTools.ENUM_MOD_TYPE = CType(Me.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ModType), ClassSyntaxTools.ENUM_MOD_TYPE)
+        Dim sTextContent As String = ClassThread.Exec(Of String)(Me, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent)
+        Dim iModType As ClassSyntaxTools.ENUM_MOD_TYPE = ClassThread.Exec(Of ClassSyntaxTools.ENUM_MOD_TYPE)(Me, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ModType)
         Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sTextContent, iModType)
 
-        Dim iCaretOffset As Integer = CInt(Me.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Offset))
+        Dim iCaretOffset As Integer = ClassThread.Exec(Of Integer)(Me, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Offset)
         If (iCaretOffset - 1 < 1) Then
             Return False
         End If
@@ -118,14 +118,14 @@ Public Class UCAutocomplete
             Dim sChar As Char
             Dim bExitFor As Boolean = False
 
-            Me.Invoke(Sub()
-                          If (i > g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.TextLength - 1) Then
-                              bExitFor = True
-                              Return
-                          End If
+            ClassThread.Exec(Of Object)(Me, Sub()
+                                                If (i > g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.TextLength - 1) Then
+                                                    bExitFor = True
+                                                    Return
+                                                End If
 
-                          sChar = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.GetCharAt(i)
-                      End Sub)
+                                                sChar = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.GetCharAt(i)
+                                            End Sub)
 
             If (bExitFor) Then
                 Exit For
@@ -142,10 +142,10 @@ Public Class UCAutocomplete
         Dim sTmp As String = StrReverse(mStringBuilder.ToString).Trim
         Dim sMethodStart As String = Regex.Match(sTmp, "((\b[a-zA-Z0-9_]+\b)(\.){0,1}(\b[a-zA-Z0-9_]+\b){0,1})$").Value
 
-        Me.BeginInvoke(Sub()
-                           g_ClassToolTip.m_CurrentMethod = sMethodStart
-                           g_ClassToolTip.UpdateToolTip()
-                       End Sub)
+        ClassThread.ExecAsync(Me, Sub()
+                                      g_ClassToolTip.m_CurrentMethod = sMethodStart
+                                      g_ClassToolTip.UpdateToolTip()
+                                  End Sub)
         Return True
     End Function
 
