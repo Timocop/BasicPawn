@@ -66,11 +66,17 @@ Public Class ClassSyntaxUpdater
                 'Update Autocomplete
                 If (g_mFormMain.g_ClassAutocompleteUpdater.g_lFullAutocompleteTabRequests.Count > 0) Then
                     Dim sTabIdentifier As String = g_mFormMain.g_ClassAutocompleteUpdater.g_lFullAutocompleteTabRequests(0)
+                    Dim sActiveTabIdentifier As String = CStr(g_mFormMain.Invoke(Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Identifier))
+
+                    'Active tabs have higher priority to update
+                    If (g_mFormMain.g_ClassAutocompleteUpdater.g_lFullAutocompleteTabRequests.Contains(sActiveTabIdentifier)) Then
+                        sTabIdentifier = sActiveTabIdentifier
+                    End If
 
                     g_mFormMain.BeginInvoke(Sub() g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, sTabIdentifier))
 
-                ElseIf (dLastFullAutocompleteUpdate < Now) Then
-                    dLastFullAutocompleteUpdate = (Now + dFullAutocompleteUpdateDelay)
+                    ElseIf (dLastFullAutocompleteUpdate < Now) Then
+                        dLastFullAutocompleteUpdate = (Now + dFullAutocompleteUpdateDelay)
 
                     g_mFormMain.BeginInvoke(Sub() g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, Nothing))
                 End If
