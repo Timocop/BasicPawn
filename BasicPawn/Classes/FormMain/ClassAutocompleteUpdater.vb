@@ -78,9 +78,9 @@ Public Class ClassAutocompleteUpdater
 
             Return True
         Else
-            If (g_lFullAutocompleteTabRequests.Count < 1) Then
-                g_mFormMain.PrintInformation("[INFO]", "Could not start autocomplete update thread, it's already running!", False, False)
-            End If
+            'If (g_lFullAutocompleteTabRequests.Count < 1) Then
+            '    g_mFormMain.PrintInformation("[INFO]", "Could not start autocomplete update thread, it's already running!", False, False)
+            'End If
 
             If ((iUpdateType And ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) = ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) Then
                 If (Not g_lFullAutocompleteTabRequests.Contains(sTabIdentifier)) Then
