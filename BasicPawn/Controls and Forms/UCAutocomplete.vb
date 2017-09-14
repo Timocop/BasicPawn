@@ -370,7 +370,7 @@ Public Class UCAutocomplete
                         End If
                     End If
 
-                    Dim sComment As String = Regex.Replace(sAutocompleteArray(i).m_Info.Trim, "^", New String(" "c, iTabSize), RegexOptions.Multiline)
+                    Dim sComment As String = Regex.Replace(sAutocompleteArray(i).m_Info.Trim, String.Format("(^|{0})", vbTab), New String(" "c, iTabSize), RegexOptions.Multiline)
 
                     SB_TipText_IntelliSense.AppendLine(sName)
                     If (ClassSettings.g_iSettingsToolTipMethodComments AndAlso Not String.IsNullOrEmpty(sComment.Trim)) Then
@@ -419,7 +419,7 @@ Public Class UCAutocomplete
                     End If
                 End If
 
-                Dim sComment As String = Regex.Replace(CStr(mListViewItemData.g_mData("Info")).Trim, "^", New String(" "c, iTabSize), RegexOptions.Multiline)
+                Dim sComment As String = Regex.Replace(CStr(mListViewItemData.g_mData("Info")).Trim, String.Format("(^|{0})", vbTab), New String(" "c, iTabSize), RegexOptions.Multiline)
 
                 SB_TipText_Autocomplete.AppendLine(sName)
                 SB_TipText_AutocompleteToolTip.AppendLine(sNameToolTip)

@@ -160,9 +160,8 @@ Public Class FormToolTip
         'TODO: Better DPI, Border detection, or size in general
         Me.SuspendLayout()
 
-        Dim textSize = TextRenderer.MeasureText(TextEditorControl_ToolTip.Document.TextContent, TextEditorControl_ToolTip.ActiveTextAreaControl.Font)
-        Me.Width = CInt(textSize.Width * 1.1)
-        Me.Height = CInt(textSize.Height * 1.1)
+        Dim textSize = TextRenderer.MeasureText(TextEditorControl_ToolTip.Document.TextContent, New Font(TextEditorControl_ToolTip.ActiveTextAreaControl.Font, FontStyle.Bold))
+        Me.Size = New Size(CInt(textSize.Width * 1.1), CInt(textSize.Height * 1.1))
 
         Me.ResumeLayout()
         Me.Refresh()
