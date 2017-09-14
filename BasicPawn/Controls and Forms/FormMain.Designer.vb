@@ -129,6 +129,9 @@ Partial Class FormMain
         Me.ToolStripMenuItem_Tabs_Close = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Tabs_CloseAllButThis = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Tabs_CloseAll = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator16 = New System.Windows.Forms.ToolStripSeparator()
+        Me.ToolStripMenuItem_Tabs_Cut = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_Tabs_Insert = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator12 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_Tabs_OpenFolder = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Tabs_Popout = New System.Windows.Forms.ToolStripMenuItem()
@@ -912,10 +915,10 @@ Partial Class FormMain
         '
         'ContextMenuStrip_Tabs
         '
-        Me.ContextMenuStrip_Tabs.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_Tabs_Close, Me.ToolStripMenuItem_Tabs_CloseAllButThis, Me.ToolStripMenuItem_Tabs_CloseAll, Me.ToolStripSeparator12, Me.ToolStripMenuItem_Tabs_OpenFolder, Me.ToolStripMenuItem_Tabs_Popout})
+        Me.ContextMenuStrip_Tabs.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_Tabs_Close, Me.ToolStripMenuItem_Tabs_CloseAllButThis, Me.ToolStripMenuItem_Tabs_CloseAll, Me.ToolStripSeparator16, Me.ToolStripMenuItem_Tabs_Cut, Me.ToolStripMenuItem_Tabs_Insert, Me.ToolStripSeparator12, Me.ToolStripMenuItem_Tabs_OpenFolder, Me.ToolStripMenuItem_Tabs_Popout})
         Me.ContextMenuStrip_Tabs.Name = "ContextMenuStrip_Tabs"
         Me.ContextMenuStrip_Tabs.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
-        Me.ContextMenuStrip_Tabs.Size = New System.Drawing.Size(179, 120)
+        Me.ContextMenuStrip_Tabs.Size = New System.Drawing.Size(179, 170)
         '
         'ToolStripMenuItem_Tabs_Close
         '
@@ -935,6 +938,25 @@ Partial Class FormMain
         Me.ToolStripMenuItem_Tabs_CloseAll.Name = "ToolStripMenuItem_Tabs_CloseAll"
         Me.ToolStripMenuItem_Tabs_CloseAll.Size = New System.Drawing.Size(178, 22)
         Me.ToolStripMenuItem_Tabs_CloseAll.Text = "Close all"
+        '
+        'ToolStripSeparator16
+        '
+        Me.ToolStripSeparator16.Name = "ToolStripSeparator16"
+        Me.ToolStripSeparator16.Size = New System.Drawing.Size(175, 6)
+        '
+        'ToolStripMenuItem_Tabs_Cut
+        '
+        Me.ToolStripMenuItem_Tabs_Cut.Image = Global.BasicPawn.My.Resources.Resources.imageres_5314_16x16
+        Me.ToolStripMenuItem_Tabs_Cut.Name = "ToolStripMenuItem_Tabs_Cut"
+        Me.ToolStripMenuItem_Tabs_Cut.Size = New System.Drawing.Size(178, 22)
+        Me.ToolStripMenuItem_Tabs_Cut.Text = "Cut"
+        '
+        'ToolStripMenuItem_Tabs_Insert
+        '
+        Me.ToolStripMenuItem_Tabs_Insert.Image = Global.BasicPawn.My.Resources.Resources.imageres_5301_16x16
+        Me.ToolStripMenuItem_Tabs_Insert.Name = "ToolStripMenuItem_Tabs_Insert"
+        Me.ToolStripMenuItem_Tabs_Insert.Size = New System.Drawing.Size(178, 22)
+        Me.ToolStripMenuItem_Tabs_Insert.Text = "Insert"
         '
         'ToolStripSeparator12
         '
@@ -1228,4 +1250,7 @@ Partial Class FormMain
     Friend WithEvents ToolStripMenuItem_ToolsAutocompleteCurrentMod As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_FileNewWizard As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_ToolsAutocompleteUpdateAll As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator16 As ToolStripSeparator
+    Friend WithEvents ToolStripMenuItem_Tabs_Cut As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_Tabs_Insert As ToolStripMenuItem
 End Class

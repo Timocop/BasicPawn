@@ -217,7 +217,7 @@ Public Class ClassTabControl
     Public Sub SelectTab(sIdentifier As String, iDelay As Integer)
         g_mTimer.Stop()
 
-        If (String.IsNullOrEmpty(sIdentifier) OrElse GetTabIndexByIdentifier(sIdentifier) < 0) Then
+        If (GetTabIndexByIdentifier(sIdentifier) < 0) Then
             g_sSelectTabDelayIdentifier = ""
             Return
         End If
@@ -228,6 +228,10 @@ Public Class ClassTabControl
     End Sub
 
     Public Function GetTabByIdentifier(sIdentifier As String) As SourceTabPage
+        If (String.IsNullOrEmpty(sIdentifier)) Then
+            Return Nothing
+        End If
+
         For i = 0 To m_TabsCount - 1
             If (m_Tab(i).m_Identifier = sIdentifier) Then
                 Return m_Tab(i)
@@ -238,6 +242,10 @@ Public Class ClassTabControl
     End Function
 
     Public Function GetTabIndexByIdentifier(sIdentifier As String) As Integer
+        If (String.IsNullOrEmpty(sIdentifier)) Then
+            Return -1
+        End If
+
         For i = 0 To m_TabsCount - 1
             If (m_Tab(i).m_Identifier = sIdentifier) Then
                 Return i

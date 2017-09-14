@@ -57,6 +57,7 @@ Public Class FormMain
     Private g_bFormPostCreate As Boolean = False
     Private g_bFormPostLoad As Boolean = False
     Private g_bIgnoreComboBoxEvent As Boolean = False
+    Private g_sTabsClipboardIdentifier As String = ""
 
 
 
@@ -957,6 +958,13 @@ Public Class FormMain
 #End Region
 
 #Region "ContextMenuStrip_Tabs"
+    Private Sub ContextMenuStrip_Tabs_Opening(sender As Object, e As CancelEventArgs) Handles ContextMenuStrip_Tabs.Opening
+        Dim mTab As ClassTabControl.SourceTabPage = g_ClassTabControl.GetTabByIdentifier(g_sTabsClipboardIdentifier)
+
+        ToolStripMenuItem_Tabs_Insert.Enabled = (mTab IsNot Nothing)
+        ToolStripMenuItem_Tabs_Insert.Text = If(mTab IsNot Nothing, String.Format("Insert ({0})", mTab.m_Title), "Insert")
+    End Sub
+
     Private Sub ToolStripMenuItem_Tabs_Close_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Tabs_Close.Click
         g_ClassTabControl.RemoveTab(g_ClassTabControl.m_ActiveTabIndex, True)
     End Sub
@@ -977,6 +985,21 @@ Public Class FormMain
 
     Private Sub ToolStripMenuItem_Tabs_CloseAll_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Tabs_CloseAll.Click
         g_ClassTabControl.RemoveAllTabs()
+    End Sub
+
+    Private Sub ToolStripMenuItem_Tabs_Cut_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Tabs_Cut.Click
+        g_sTabsClipboardIdentifier = g_ClassTabControl.m_ActiveTab.m_Identifier
+    End Sub
+
+    Private Sub ToolStripMenuItem_Tabs_Insert_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Tabs_Insert.Click
+        Dim iFromIndex As Integer = g_ClassTabControl.GetTabIndexByIdentifier(g_sTabsClipboardIdentifier)
+        If (iFromIndex < 0) Then
+            Return
+        End If
+
+        Dim iToIndex As Integer = g_ClassTabControl.m_ActiveTab.m_Index
+
+        g_ClassTabControl.SwapTabs(iFromIndex, iToIndex)
     End Sub
 
     Private Sub ToolStripMenuItem_Tabs_OpenFolder_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Tabs_OpenFolder.Click
