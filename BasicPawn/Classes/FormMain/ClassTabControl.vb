@@ -392,12 +392,7 @@ Public Class ClassTabControl
             Return False
         End If
 
-        Dim sFilename As String = ""
-        If (Not m_Tab(iIndex).m_IsUnsaved AndAlso IO.File.Exists(m_Tab(iIndex).m_File)) Then
-            sFilename = String.Format(" ({0})", IO.Path.GetFileName(m_Tab(iIndex).m_File))
-        End If
-
-        Select Case (If(bAlwaysYes, DialogResult.Yes, MessageBox.Show(String.Format("Do you want to save your work?{0}", sFilename), "Information", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question)))
+        Select Case (If(bAlwaysYes, DialogResult.Yes, MessageBox.Show(String.Format("Do you want to save your work? ({0})", m_Tab(iIndex).m_Title), "Information", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question)))
             Case DialogResult.Yes
                 If (m_Tab(iIndex).m_IsUnsaved OrElse Not IO.File.Exists(m_Tab(iIndex).m_File)) Then
                     Using i As New SaveFileDialog
