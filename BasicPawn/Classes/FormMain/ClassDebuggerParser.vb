@@ -102,7 +102,8 @@ Public Class ClassDebuggerParser
                 sTotalFunction.Append(sSource(i))
 
                 Dim iParentRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
-                If (iStartLevel = mSourceAnalysis.GetParenthesisLevel(i, iParentRange) AndAlso iParentRange = ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END) Then
+                If (iStartLevel + 1 = mSourceAnalysis.GetParenthesisLevel(i, iParentRange) AndAlso
+                            iParentRange = ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END) Then
                     bGetArguments = False
                     Exit For
                 End If
@@ -185,7 +186,7 @@ Public Class ClassDebuggerParser
 
             Dim iLenght As Integer = mMatch.Groups("Lenght").Index - mMatch.Index
             Dim iTotalLenght As Integer = 0
-            Dim sArguments As New StringBuilder()
+            Dim sArguments As New StringBuilder
             Dim sTotalFunction As New StringBuilder
 
             Dim iStartLevel As Integer = mSourceAnalysis.GetParenthesisLevel(iIndex, Nothing)
@@ -196,7 +197,8 @@ Public Class ClassDebuggerParser
                 sTotalFunction.Append(sSource(i))
 
                 Dim iParentRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
-                If (iStartLevel = mSourceAnalysis.GetParenthesisLevel(i, iParentRange) AndAlso iParentRange = ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END) Then
+                If (iStartLevel + 1 = mSourceAnalysis.GetParenthesisLevel(i, iParentRange) AndAlso
+                            iParentRange = ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END) Then
                     bGetArguments = False
                     Exit For
                 End If
@@ -610,7 +612,7 @@ Public Class ClassDebuggerParser
                 mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iOffset, String.Format("{0}(", ClassDebuggerParser.g_sBreakpointName))
                 mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
             Else
-                Dim sCaretWord As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True, False, False)
+                Dim sCaretWord As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True, False, True)
 
                 If (String.IsNullOrEmpty(sCaretWord)) Then
                     Dim iOffset As Integer = mActiveTextEditor.ActiveTextAreaControl.Caret.Offset
@@ -618,16 +620,38 @@ Public Class ClassDebuggerParser
                 Else
                     Dim iOffset As Integer = mActiveTextEditor.ActiveTextAreaControl.Caret.Offset
 
-                    For Each m As Match In Regex.Matches(mActiveTextEditor.ActiveTextAreaControl.Document.TextContent, String.Format("(?<Word>\b{0}\b)(?<Function>\s*\(){1}", Regex.Escape(sCaretWord), "{0,1}"))
+                    For Each m As Match In Regex.Matches(mActiveTextEditor.ActiveTextAreaControl.Document.TextContent, String.Format("(?<Word>\b{0}\b)((?<Function>\s*\()|(?<Array>\s*\[)|)", Regex.Escape(sCaretWord)))
                         Dim iStartOffset As Integer = m.Groups("Word").Index
                         Dim iStartLen As Integer = m.Groups("Word").Value.Length
                         Dim bIsFunction As Boolean = m.Groups("Function").Success
+                        Dim bIsArray As Boolean = m.Groups("Array").Success
 
                         If (iOffset < iStartOffset OrElse iOffset > (iStartOffset + iStartLen)) Then
                             Continue For
                         End If
 
-                        If (bIsFunction) Then
+                        If (bIsArray) Then
+                            Dim sSource As String = mActiveTextEditor.ActiveTextAreaControl.Document.TextContent
+                            Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ModType)
+
+                            Dim iFullLenght As Integer = 0
+                            Dim iStartLevel As Integer = mSourceAnalysis.GetBracketLevel(iStartOffset, Nothing)
+                            For i = iStartOffset To sSource.Length - 1
+                                iFullLenght += 1
+
+                                Dim iBracketRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
+                                If (iStartLevel + 1 = mSourceAnalysis.GetBracketLevel(i, iBracketRange) AndAlso
+                                            iBracketRange = ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END) Then
+                                    Exit For
+                                End If
+                            Next
+
+                            mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
+                            mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset + iFullLenght, ")")
+                            mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset, String.Format("{0}(", ClassDebuggerParser.g_sBreakpointName))
+                            mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
+
+                        ElseIf (bIsFunction) Then
                             Dim sSource As String = mActiveTextEditor.ActiveTextAreaControl.Document.TextContent
                             Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ModType)
 
@@ -637,7 +661,8 @@ Public Class ClassDebuggerParser
                                 iFullLenght += 1
 
                                 Dim iParentRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
-                                If (iStartLevel = mSourceAnalysis.GetParenthesisLevel(i, iParentRange) AndAlso iParentRange = ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END) Then
+                                If (iStartLevel + 1 = mSourceAnalysis.GetParenthesisLevel(i, iParentRange) AndAlso
+                                            iParentRange = ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END) Then
                                     Exit For
                                 End If
                             Next
@@ -646,6 +671,7 @@ Public Class ClassDebuggerParser
                             mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset + iFullLenght, ")")
                             mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset, String.Format("{0}(", ClassDebuggerParser.g_sBreakpointName))
                             mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
+
                         Else
                             mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
                             mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset + iStartLen, ")")
@@ -900,16 +926,38 @@ Public Class ClassDebuggerParser
                 Else
                     Dim iOffset As Integer = mActiveTextEditor.ActiveTextAreaControl.Caret.Offset
 
-                    For Each m As Match In Regex.Matches(mActiveTextEditor.ActiveTextAreaControl.Document.TextContent, String.Format("(?<Word>\b{0}\b)(?<Function>\s*\(){1}", Regex.Escape(sCaretWord), "{0,1}"))
+                    For Each m As Match In Regex.Matches(mActiveTextEditor.ActiveTextAreaControl.Document.TextContent, String.Format("(?<Word>\b{0}\b)((?<Function>\s*\()|(?<Array>\s*\[)|)", Regex.Escape(sCaretWord)))
                         Dim iStartOffset As Integer = m.Groups("Word").Index
                         Dim iStartLen As Integer = m.Groups("Word").Value.Length
                         Dim bIsFunction As Boolean = m.Groups("Function").Success
+                        Dim bIsArray As Boolean = m.Groups("Array").Success
 
                         If (iOffset < iStartOffset OrElse iOffset > (iStartOffset + iStartLen)) Then
                             Continue For
                         End If
 
-                        If (bIsFunction) Then
+                        If (bIsArray) Then
+                            Dim sSource As String = mActiveTextEditor.ActiveTextAreaControl.Document.TextContent
+                            Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ModType)
+
+                            Dim iFullLenght As Integer = 0
+                            Dim iStartLevel As Integer = mSourceAnalysis.GetBracketLevel(iStartOffset, Nothing)
+                            For i = iStartOffset To sSource.Length - 1
+                                iFullLenght += 1
+
+                                Dim iBracketRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
+                                If (iStartLevel + 1 = mSourceAnalysis.GetBracketLevel(i, iBracketRange) AndAlso
+                                            iBracketRange = ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END) Then
+                                    Exit For
+                                End If
+                            Next
+
+                            mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
+                            mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset + iFullLenght, ")")
+                            mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset, String.Format("{0}(", ClassDebuggerParser.g_sWatcherName))
+                            mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
+
+                        ElseIf (bIsFunction) Then
                             Dim sSource As String = mActiveTextEditor.ActiveTextAreaControl.Document.TextContent
                             Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ModType)
 
@@ -919,7 +967,8 @@ Public Class ClassDebuggerParser
                                 iFullLenght += 1
 
                                 Dim iParentRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
-                                If (iStartLevel = mSourceAnalysis.GetParenthesisLevel(i, iParentRange) AndAlso iParentRange = ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END) Then
+                                If (iStartLevel + 1 = mSourceAnalysis.GetParenthesisLevel(i, iParentRange) AndAlso
+                                            iParentRange = ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END) Then
                                     Exit For
                                 End If
                             Next
@@ -928,6 +977,7 @@ Public Class ClassDebuggerParser
                             mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset + iFullLenght, ")")
                             mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset, String.Format("{0}(", ClassDebuggerParser.g_sWatcherName))
                             mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
+
                         Else
                             mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
                             mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset + iStartLen, ")")
