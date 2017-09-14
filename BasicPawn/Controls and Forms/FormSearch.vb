@@ -380,16 +380,20 @@ Public Class FormSearch
         End Try
     End Sub
 
-    Private Sub TextBox_Search_KeyUp(sender As Object, e As KeyEventArgs) Handles TextBox_Search.KeyUp
+
+    Private Sub TextBox_Search_KeyDown(sender As Object, e As KeyEventArgs) Handles TextBox_Search.KeyDown
         Select Case (e.KeyCode)
             Case Keys.Up
                 e.Handled = True
+                e.SuppressKeyPress = True
 
                 RadioButton_DirectionUp.Checked = True
                 Button_Search.PerformClick()
 
             Case Keys.Down
                 e.Handled = True
+                e.SuppressKeyPress = True
+
                 RadioButton_DirectionDown.Checked = True
                 Button_Search.PerformClick()
         End Select
