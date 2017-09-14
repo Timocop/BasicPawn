@@ -29,11 +29,11 @@ Partial Class UCObjectBrowser
         Me.ToolStripMenuItem_Copy = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_ListReferences = New System.Windows.Forms.ToolStripMenuItem()
-        Me.TextboxWatermark_Search = New BasicPawn.ClassTextboxWatermark()
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_ExpandAll = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_ExpandSources = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_CollapseAll = New System.Windows.Forms.ToolStripMenuItem()
+        Me.TextboxWatermark_Search = New BasicPawn.ClassTextboxWatermark()
         Me.ContextMenuStrip_ObjectBrowser.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -61,7 +61,7 @@ Partial Class UCObjectBrowser
         Me.ToolStripMenuItem_OpenFile.Image = Global.BasicPawn.My.Resources.Resources.imageres_5338_16x16
         Me.ToolStripMenuItem_OpenFile.Name = "ToolStripMenuItem_OpenFile"
         Me.ToolStripMenuItem_OpenFile.Size = New System.Drawing.Size(174, 22)
-        Me.ToolStripMenuItem_OpenFile.Text = "Open file"
+        Me.ToolStripMenuItem_OpenFile.Text = "Open"
         '
         'ToolStripMenuItem_Copy
         '
@@ -81,16 +81,6 @@ Partial Class UCObjectBrowser
         Me.ToolStripMenuItem_ListReferences.Name = "ToolStripMenuItem_ListReferences"
         Me.ToolStripMenuItem_ListReferences.Size = New System.Drawing.Size(174, 22)
         Me.ToolStripMenuItem_ListReferences.Text = "List references"
-        '
-        'TextboxWatermark_Search
-        '
-        Me.TextboxWatermark_Search.Dock = System.Windows.Forms.DockStyle.Top
-        Me.TextboxWatermark_Search.Location = New System.Drawing.Point(0, 0)
-        Me.TextboxWatermark_Search.m_sWatermarkText = "Search..."
-        Me.TextboxWatermark_Search.Name = "TextboxWatermark_Search"
-        Me.TextboxWatermark_Search.Size = New System.Drawing.Size(269, 22)
-        Me.TextboxWatermark_Search.TabIndex = 2
-        Me.TextboxWatermark_Search.Text = "Search..."
         '
         'ToolStripSeparator2
         '
@@ -114,6 +104,16 @@ Partial Class UCObjectBrowser
         Me.ToolStripMenuItem_CollapseAll.Name = "ToolStripMenuItem_CollapseAll"
         Me.ToolStripMenuItem_CollapseAll.Size = New System.Drawing.Size(174, 22)
         Me.ToolStripMenuItem_CollapseAll.Text = "Collapse all"
+        '
+        'TextboxWatermark_Search
+        '
+        Me.TextboxWatermark_Search.Dock = System.Windows.Forms.DockStyle.Top
+        Me.TextboxWatermark_Search.Location = New System.Drawing.Point(0, 0)
+        Me.TextboxWatermark_Search.m_sWatermarkText = "Search..."
+        Me.TextboxWatermark_Search.Name = "TextboxWatermark_Search"
+        Me.TextboxWatermark_Search.Size = New System.Drawing.Size(269, 22)
+        Me.TextboxWatermark_Search.TabIndex = 2
+        Me.TextboxWatermark_Search.Text = "Search..."
         '
         'UCObjectBrowser
         '

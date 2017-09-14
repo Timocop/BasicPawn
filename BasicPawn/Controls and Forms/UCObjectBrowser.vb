@@ -339,6 +339,21 @@ Public Class UCObjectBrowser
                     Continue For
                 End If
 
+                Dim bFound As Boolean = False
+                For i = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1
+                    If (Not g_mFormMain.g_ClassTabControl.m_Tab(i).m_IsUnsaved AndAlso g_mFormMain.g_ClassTabControl.m_Tab(i).m_File.ToLower = CStr(mInclude.Value).ToLower) Then
+                        If (g_mFormMain.g_ClassTabControl.m_ActiveTabIndex <> i) Then
+                            g_mFormMain.g_ClassTabControl.SelectTab(i)
+                        End If
+
+                        bFound = True
+                        Exit For
+                    End If
+                Next
+                If (bFound) Then
+                    Continue For
+                End If
+
                 Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
                 mTab.OpenFileTab(CStr(mInclude.Value))
                 mTab.SelectTab(500)
