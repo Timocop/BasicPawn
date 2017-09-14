@@ -616,7 +616,8 @@ Public Class ClassAutocompleteUpdater
         }
 
         lTmpAutoList.ForEach(Sub(j As ClassSyntaxTools.STRUC_AUTOCOMPLETE)
-                                 If ((j.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM) <> ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM) Then
+                                 If ((j.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM) <> ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM AndAlso
+                                            (j.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STRUCT) <> ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STRUCT) Then
                                      Return
                                  End If
 
@@ -1193,17 +1194,21 @@ Public Class ClassAutocompleteUpdater
 
             Dim mMatch As Match
 
+            Dim iBracketList As Integer()()
             Dim sFullName As String
             Dim sName As String
             Dim sComment As String
             Dim sTypes As String
             Dim sTag As String
             Dim sOther As String
+            Dim IsFunction As Boolean
+            Dim IsInvalidName As Boolean
+            Dim IsArray As Boolean
 
             Dim sLines As String() = sSource.Split(New String() {vbNewLine, vbLf}, 0)
             Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iModType)
             For i = 0 To sLines.Length - 1
-                If (Not sLines(i).Contains("public") OrElse Not sLines(i).Contains(";"c)) Then
+                If (Not sLines(i).Contains("public")) Then
                     Continue For
                 End If
 
@@ -1220,10 +1225,10 @@ Public Class ClassAutocompleteUpdater
                     End If
 
                     'SP 1.6 +Tags
-                    mMatch = Regex.Match(sLines(i), String.Format("^\s*(?<Types>public(\b[a-zA-Z0-9_ ]+\b)*)\s+(?<Tag>\b{0}\b\:)(?<Name>\b[a-zA-Z0-9_]+\b)(?<Other>(.*?))$", sRegExEnum))
+                    mMatch = Regex.Match(sLines(i), String.Format("^\s*(?<Types>public(\b[a-zA-Z0-9_ ]+\b)*)\s+(?<Tag>\b{0}\b\:)(?<Name>\b[a-zA-Z0-9_]+\b)(?<Other>(.*?))$", sRegExEnum, "{0}"))
                     If (Not mMatch.Success) Then
                         'SP 1.6 -Tags
-                        mMatch = Regex.Match(sLines(i), String.Format("^\s*(?<Types>public(\b[a-zA-Z0-9_ ]+\b)*)\s+(?<!<Tag>\b{0}\b\:)(?<Name>\b[a-zA-Z0-9_]+\b)(?<Other>(.*?))$", sRegExEnum))
+                        mMatch = Regex.Match(sLines(i), String.Format("^\s*(?<Types>public(\b[a-zA-Z0-9_ ]+\b)*)\s+(?<!<Tag>\b{0}\b\:)(?<Name>\b[a-zA-Z0-9_]+\b)(?<Other>(.*?))$", sRegExEnum, "{0}"))
                         If (Not mMatch.Success) Then
                             Continue For
                         End If
@@ -1239,13 +1244,25 @@ Public Class ClassAutocompleteUpdater
                 sComment = Regex.Match(mMatch.Groups("Other").Value, "/\*(.*?)\*/\s*$").Value
                 sTypes = mMatch.Groups("Types").Value
                 sTag = mMatch.Groups("Tag").Value
-                sOther = mMatch.Groups("Other").Value
+                sOther = mMatch.Groups("Other").Value.Trim
+                IsFunction = sOther.StartsWith("(")
+                IsArray = sOther.StartsWith("[")
+                IsInvalidName = sOther.StartsWith(":")
 
-                sFullName = String.Format("{0} {1}{2}{3}", sTypes, sTag, sName, sOther)
-                sFullName = sFullName.Replace(vbTab, " "c)
-                If (Not String.IsNullOrEmpty(sComment)) Then
-                    sFullName = sFullName.Replace(sComment, "")
+                If (IsFunction OrElse IsInvalidName) Then
+                    Continue For
                 End If
+
+                Dim sArrayDim As String = ""
+                If (IsArray) Then
+                    iBracketList = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(sOther, "["c, "]"c, 1, iModType, True)
+                    For j = 0 To iBracketList.Length - 1
+                        sArrayDim &= sOther.Substring(iBracketList(j)(0), iBracketList(j)(1) - iBracketList(j)(0) + 1)
+                    Next
+                End If
+
+                sFullName = String.Format("{0} {1}{2}{3}", sTypes, sTag, sName, sArrayDim)
+                sFullName = sFullName.Replace(vbTab, " "c)
 
                 Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(sComment,
                                                                                 IO.Path.GetFileName(sFile),
@@ -1256,7 +1273,7 @@ Public Class ClassAutocompleteUpdater
                 mAutocomplete.m_Data("PublicvarName") = sName
                 mAutocomplete.m_Data("PublicvarTypes") = sTypes
                 mAutocomplete.m_Data("PublicvarTag") = sTag
-                mAutocomplete.m_Data("PublicvarOther") = sOther
+                mAutocomplete.m_Data("PublicvarArrayDim") = sArrayDim
 
                 If (Not lTmpAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionName = mAutocomplete.m_FunctionName)) Then
                     lTmpAutocompleteList.Add(mAutocomplete)
