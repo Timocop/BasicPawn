@@ -23,6 +23,7 @@ Public Class UCAutocomplete
 
     Public g_ClassToolTip As ClassToolTip
     Public g_sLastAutocompleteText As String = ""
+    Private g_bControlLoaded As Boolean = False
 
     Public Sub New(f As FormMain)
         g_mFormMain = f
@@ -34,6 +35,40 @@ Public Class UCAutocomplete
         Label_IntelliSense.Name &= "@SetForeColorRoyalBlue"
         Label_Autocomplete.Name &= "@SetForeColorRoyalBlue"
 
+        TextEditorControlEx_IntelliSense.IsReadOnly = True
+        TextEditorControlEx_IntelliSense.TextEditorProperties.MouseWheelTextZoom = False
+        TextEditorControlEx_IntelliSense.ActiveTextAreaControl.HScrollBar.Visible = False
+        TextEditorControlEx_IntelliSense.ActiveTextAreaControl.VScrollBar.Visible = True
+        TextEditorControlEx_Autocomplete.IsReadOnly = True
+        TextEditorControlEx_Autocomplete.TextEditorProperties.MouseWheelTextZoom = False
+        TextEditorControlEx_Autocomplete.ActiveTextAreaControl.HScrollBar.Visible = False
+        TextEditorControlEx_Autocomplete.ActiveTextAreaControl.VScrollBar.Visible = True
+
+        'Fix shitty disabled scrollbars side effects...
+        If (True) Then
+            Dim TextEditorLoc As Point
+            Dim TextEditorRec As Rectangle
+
+            TextEditorControlEx_IntelliSense.Dock = DockStyle.Fill
+            TextEditorLoc = TextEditorControlEx_IntelliSense.Location
+            TextEditorRec = TextEditorControlEx_IntelliSense.Bounds
+            TextEditorControlEx_IntelliSense.Dock = DockStyle.None
+            TextEditorControlEx_IntelliSense.Location = TextEditorLoc
+            TextEditorControlEx_IntelliSense.Bounds = TextEditorRec
+            TextEditorControlEx_IntelliSense.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right Or AnchorStyles.Top
+
+            TextEditorControlEx_Autocomplete.Dock = DockStyle.Fill
+            TextEditorLoc = TextEditorControlEx_Autocomplete.Location
+            TextEditorRec = TextEditorControlEx_Autocomplete.Bounds
+            TextEditorControlEx_Autocomplete.Dock = DockStyle.None
+            TextEditorControlEx_Autocomplete.Location = TextEditorLoc
+            TextEditorControlEx_Autocomplete.Bounds = TextEditorRec
+            TextEditorControlEx_Autocomplete.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right Or AnchorStyles.Top
+
+            TextEditorControlEx_IntelliSense.Height += SystemInformation.VerticalScrollBarWidth
+            TextEditorControlEx_Autocomplete.Height += SystemInformation.VerticalScrollBarWidth
+        End If
+
         g_ClassToolTip = New ClassToolTip(Me)
 
         'Set double buffering to avoid annonying flickers when collapsing/showing SplitContainer panels
@@ -42,6 +77,10 @@ Public Class UCAutocomplete
 
         ListView_AutocompleteList.ListViewItemSorter = New ListViewItemComparer(Me, 2)
         ListView_AutocompleteList.Sorting = SortOrder.Ascending
+    End Sub
+
+    Private Sub UCAutocomplete_Load(sender As Object, e As EventArgs) Handles Me.Load
+        g_bControlLoaded = True
     End Sub
 
     Class ListViewItemComparer
@@ -404,14 +443,16 @@ Public Class UCAutocomplete
             If (True) Then
                 If (SB_TipText_IntelliSense.Length > 0) Then
                     g_AutocompleteUC.SplitContainer2.Panel1Collapsed = False
-                    g_AutocompleteUC.RichTextBox_IntelliSense.Text = SB_TipText_IntelliSense.ToString
+                    g_AutocompleteUC.TextEditorControlEx_IntelliSense.Text = SB_TipText_IntelliSense.ToString
+                    g_AutocompleteUC.TextEditorControlEx_IntelliSense.Refresh()
                 Else
                     g_AutocompleteUC.SplitContainer2.Panel1Collapsed = True
                 End If
 
                 If (SB_TipText_Autocomplete.Length > 0) Then
                     g_AutocompleteUC.SplitContainer2.Panel2Collapsed = False
-                    g_AutocompleteUC.RichTextBox_Autocomplete.Text = SB_TipText_Autocomplete.ToString
+                    g_AutocompleteUC.TextEditorControlEx_Autocomplete.Text = SB_TipText_Autocomplete.ToString
+                    g_AutocompleteUC.TextEditorControlEx_Autocomplete.Refresh()
                 Else
                     g_AutocompleteUC.SplitContainer2.Panel2Collapsed = True
                 End If
@@ -469,23 +510,7 @@ Public Class UCAutocomplete
         End Sub
     End Class
 
-    Private Sub RichTextBox_IntelliSense_TextChanged(sender As Object, e As EventArgs) Handles RichTextBox_IntelliSense.TextChanged
-        If (ClassTools.ClassOperatingSystem.GetWineVersion Is Nothing) Then
-            Return
-        End If
+    Private Sub TextEditorControlEx_IntelliSense_BlockCmds(sender As Object, e As LayoutEventArgs)
 
-        'WINE BUG: Text color keeps resetting when text changes. Re-apply color on text change.
-        RichTextBox_IntelliSense.BackColor = RichTextBox_IntelliSense.BackColor
-        RichTextBox_IntelliSense.ForeColor = RichTextBox_IntelliSense.ForeColor
-    End Sub
-
-    Private Sub RichTextBox_Autocomplete_TextChanged(sender As Object, e As EventArgs) Handles RichTextBox_Autocomplete.TextChanged
-        If (ClassTools.ClassOperatingSystem.GetWineVersion Is Nothing) Then
-            Return
-        End If
-
-        'WINE BUG: Text color keeps resetting when text changes. Re-apply color on text change.
-        RichTextBox_Autocomplete.BackColor = RichTextBox_Autocomplete.BackColor
-        RichTextBox_Autocomplete.ForeColor = RichTextBox_Autocomplete.ForeColor
     End Sub
 End Class

@@ -33,11 +33,29 @@ Public Class FormToolTip
 
         ' Add any initialization after the InitializeComponent() call. 
         TextEditorControl_ToolTip.IsReadOnly = True
-        TextEditorControl_ToolTip.ActiveTextAreaControl.TextEditorProperties.IndentationSize = 0
+        TextEditorControl_ToolTip.TextEditorProperties.MouseWheelTextZoom = False
+        TextEditorControl_ToolTip.TextEditorProperties.IndentationSize = 0
         TextEditorControl_ToolTip.ActiveTextAreaControl.AutoScroll = False
         TextEditorControl_ToolTip.ActiveTextAreaControl.AutoSize = False
         TextEditorControl_ToolTip.ActiveTextAreaControl.HScrollBar.Visible = False
         TextEditorControl_ToolTip.ActiveTextAreaControl.VScrollBar.Visible = False
+
+        'Fix shitty disabled scrollbars side effects...
+        If (True) Then
+            Dim TextEditorLoc As Point
+            Dim TextEditorRec As Rectangle
+
+            TextEditorControl_ToolTip.Dock = DockStyle.Fill
+            TextEditorLoc = TextEditorControl_ToolTip.Location
+            TextEditorRec = TextEditorControl_ToolTip.Bounds
+            TextEditorControl_ToolTip.Dock = DockStyle.None
+            TextEditorControl_ToolTip.Location = TextEditorLoc
+            TextEditorControl_ToolTip.Bounds = TextEditorRec
+            TextEditorControl_ToolTip.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right Or AnchorStyles.Top
+
+            TextEditorControl_ToolTip.Width += SystemInformation.VerticalScrollBarWidth
+            TextEditorControl_ToolTip.Height += SystemInformation.VerticalScrollBarWidth
+        End If
 
         If (ClassTools.ClassOperatingSystem.GetWineVersion Is Nothing) Then
             'Block the Text Editor, but still make it visible
@@ -143,8 +161,8 @@ Public Class FormToolTip
         Me.SuspendLayout()
 
         Dim textSize = TextRenderer.MeasureText(TextEditorControl_ToolTip.Document.TextContent, TextEditorControl_ToolTip.ActiveTextAreaControl.Font)
-        Me.Width = CInt(textSize.Width * 1.25)
-        Me.Height = CInt(textSize.Height * 1.25)
+        Me.Width = CInt(textSize.Width * 1.1)
+        Me.Height = CInt(textSize.Height * 1.1)
 
         Me.ResumeLayout()
         Me.Refresh()

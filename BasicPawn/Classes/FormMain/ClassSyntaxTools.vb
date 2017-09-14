@@ -610,6 +610,16 @@ Public Class ClassSyntaxTools
                                 g_mFormMain.g_mFormToolTip.TextEditorControl_ToolTip.Font = New Font(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Font.FontFamily, 8, FontStyle.Regular)
                             End If
 
+                            If (g_mFormMain.g_mUCAutocomplete.TextEditorControlEx_IntelliSense.Document.HighlightingStrategy.Name <> g_SyntaxFiles(i).sDefinition) Then
+                                g_mFormMain.g_mUCAutocomplete.TextEditorControlEx_IntelliSense.SetHighlighting(g_SyntaxFiles(i).sDefinition)
+                                g_mFormMain.g_mUCAutocomplete.TextEditorControlEx_IntelliSense.Font = New Font(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Font.FontFamily, 8, FontStyle.Regular)
+                            End If
+
+                            If (g_mFormMain.g_mUCAutocomplete.TextEditorControlEx_Autocomplete.Document.HighlightingStrategy.Name <> g_SyntaxFiles(i).sDefinition) Then
+                                g_mFormMain.g_mUCAutocomplete.TextEditorControlEx_Autocomplete.SetHighlighting(g_SyntaxFiles(i).sDefinition)
+                                g_mFormMain.g_mUCAutocomplete.TextEditorControlEx_Autocomplete.Font = New Font(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Font.FontFamily, 8, FontStyle.Regular)
+                            End If
+
                         Case ENUM_SYNTAX_FILES.DEBUGGER_TEXTEDITOR
                             If (g_mFormMain.g_mFormDebugger IsNot Nothing AndAlso Not g_mFormMain.g_mFormDebugger.IsDisposed) Then
                                 If (g_mFormMain.g_mFormDebugger.TextEditorControlEx_DebuggerSource.Document.HighlightingStrategy.Name <> g_SyntaxFiles(i).sDefinition) Then

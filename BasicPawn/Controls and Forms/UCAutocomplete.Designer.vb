@@ -32,11 +32,11 @@ Partial Class UCAutocomplete
         Me.SplitContainer1 = New System.Windows.Forms.SplitContainer()
         Me.SplitContainer2 = New System.Windows.Forms.SplitContainer()
         Me.Panel_IntelliSense = New System.Windows.Forms.Panel()
-        Me.RichTextBox_IntelliSense = New System.Windows.Forms.RichTextBox()
         Me.Label_IntelliSense = New System.Windows.Forms.Label()
         Me.Panel_Autocomplete = New System.Windows.Forms.Panel()
-        Me.RichTextBox_Autocomplete = New System.Windows.Forms.RichTextBox()
         Me.Label_Autocomplete = New System.Windows.Forms.Label()
+        Me.TextEditorControlEx_IntelliSense = New BasicPawn.TextEditorControlEx()
+        Me.TextEditorControlEx_Autocomplete = New BasicPawn.TextEditorControlEx()
         Me.SplitContainer1.Panel1.SuspendLayout()
         Me.SplitContainer1.Panel2.SuspendLayout()
         Me.SplitContainer1.SuspendLayout()
@@ -133,26 +133,13 @@ Partial Class UCAutocomplete
         '
         'Panel_IntelliSense
         '
-        Me.Panel_IntelliSense.Controls.Add(Me.RichTextBox_IntelliSense)
+        Me.Panel_IntelliSense.Controls.Add(Me.TextEditorControlEx_IntelliSense)
         Me.Panel_IntelliSense.Controls.Add(Me.Label_IntelliSense)
         Me.Panel_IntelliSense.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Panel_IntelliSense.Location = New System.Drawing.Point(0, 0)
         Me.Panel_IntelliSense.Name = "Panel_IntelliSense"
         Me.Panel_IntelliSense.Size = New System.Drawing.Size(419, 77)
         Me.Panel_IntelliSense.TabIndex = 3
-        '
-        'RichTextBox_IntelliSense
-        '
-        Me.RichTextBox_IntelliSense.BackColor = System.Drawing.Color.White
-        Me.RichTextBox_IntelliSense.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.RichTextBox_IntelliSense.Cursor = System.Windows.Forms.Cursors.Arrow
-        Me.RichTextBox_IntelliSense.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.RichTextBox_IntelliSense.Location = New System.Drawing.Point(0, 13)
-        Me.RichTextBox_IntelliSense.Name = "RichTextBox_IntelliSense"
-        Me.RichTextBox_IntelliSense.ReadOnly = True
-        Me.RichTextBox_IntelliSense.Size = New System.Drawing.Size(419, 64)
-        Me.RichTextBox_IntelliSense.TabIndex = 1
-        Me.RichTextBox_IntelliSense.Text = ""
         '
         'Label_IntelliSense
         '
@@ -168,26 +155,13 @@ Partial Class UCAutocomplete
         '
         'Panel_Autocomplete
         '
-        Me.Panel_Autocomplete.Controls.Add(Me.RichTextBox_Autocomplete)
+        Me.Panel_Autocomplete.Controls.Add(Me.TextEditorControlEx_Autocomplete)
         Me.Panel_Autocomplete.Controls.Add(Me.Label_Autocomplete)
         Me.Panel_Autocomplete.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Panel_Autocomplete.Location = New System.Drawing.Point(0, 0)
         Me.Panel_Autocomplete.Name = "Panel_Autocomplete"
         Me.Panel_Autocomplete.Size = New System.Drawing.Size(419, 80)
         Me.Panel_Autocomplete.TabIndex = 4
-        '
-        'RichTextBox_Autocomplete
-        '
-        Me.RichTextBox_Autocomplete.BackColor = System.Drawing.Color.White
-        Me.RichTextBox_Autocomplete.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.RichTextBox_Autocomplete.Cursor = System.Windows.Forms.Cursors.Arrow
-        Me.RichTextBox_Autocomplete.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.RichTextBox_Autocomplete.Location = New System.Drawing.Point(0, 13)
-        Me.RichTextBox_Autocomplete.Name = "RichTextBox_Autocomplete"
-        Me.RichTextBox_Autocomplete.ReadOnly = True
-        Me.RichTextBox_Autocomplete.Size = New System.Drawing.Size(419, 67)
-        Me.RichTextBox_Autocomplete.TabIndex = 0
-        Me.RichTextBox_Autocomplete.Text = ""
         '
         'Label_Autocomplete
         '
@@ -200,6 +174,36 @@ Partial Class UCAutocomplete
         Me.Label_Autocomplete.Size = New System.Drawing.Size(79, 13)
         Me.Label_Autocomplete.TabIndex = 3
         Me.Label_Autocomplete.Text = "Autocomplete"
+        '
+        'TextEditorControlEx_IntelliSense
+        '
+        Me.TextEditorControlEx_IntelliSense.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TextEditorControlEx_IntelliSense.EnableFolding = False
+        Me.TextEditorControlEx_IntelliSense.IsReadOnly = False
+        Me.TextEditorControlEx_IntelliSense.Location = New System.Drawing.Point(0, 13)
+        Me.TextEditorControlEx_IntelliSense.Margin = New System.Windows.Forms.Padding(0)
+        Me.TextEditorControlEx_IntelliSense.Name = "TextEditorControlEx_IntelliSense"
+        Me.TextEditorControlEx_IntelliSense.ShowLineNumbers = False
+        Me.TextEditorControlEx_IntelliSense.ShowMatchingBracket = False
+        Me.TextEditorControlEx_IntelliSense.ShowVRuler = False
+        Me.TextEditorControlEx_IntelliSense.Size = New System.Drawing.Size(419, 64)
+        Me.TextEditorControlEx_IntelliSense.TabIndex = 5
+        Me.TextEditorControlEx_IntelliSense.Text = "IntelliSense"
+        '
+        'TextEditorControlEx_Autocomplete
+        '
+        Me.TextEditorControlEx_Autocomplete.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TextEditorControlEx_Autocomplete.EnableFolding = False
+        Me.TextEditorControlEx_Autocomplete.IsReadOnly = False
+        Me.TextEditorControlEx_Autocomplete.Location = New System.Drawing.Point(0, 13)
+        Me.TextEditorControlEx_Autocomplete.Margin = New System.Windows.Forms.Padding(0)
+        Me.TextEditorControlEx_Autocomplete.Name = "TextEditorControlEx_Autocomplete"
+        Me.TextEditorControlEx_Autocomplete.ShowLineNumbers = False
+        Me.TextEditorControlEx_Autocomplete.ShowMatchingBracket = False
+        Me.TextEditorControlEx_Autocomplete.ShowVRuler = False
+        Me.TextEditorControlEx_Autocomplete.Size = New System.Drawing.Size(419, 67)
+        Me.TextEditorControlEx_Autocomplete.TabIndex = 4
+        Me.TextEditorControlEx_Autocomplete.Text = "Autocomplete"
         '
         'UCAutocomplete
         '
@@ -233,9 +237,9 @@ Partial Class UCAutocomplete
     Friend WithEvents SplitContainer1 As SplitContainer
     Friend WithEvents SplitContainer2 As SplitContainer
     Friend WithEvents Panel_IntelliSense As Panel
-    Friend WithEvents RichTextBox_IntelliSense As RichTextBox
     Friend WithEvents Label_IntelliSense As Label
     Friend WithEvents Panel_Autocomplete As Panel
-    Friend WithEvents RichTextBox_Autocomplete As RichTextBox
     Friend WithEvents Label_Autocomplete As Label
+    Friend WithEvents TextEditorControlEx_Autocomplete As TextEditorControlEx
+    Friend WithEvents TextEditorControlEx_IntelliSense As TextEditorControlEx
 End Class
