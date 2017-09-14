@@ -307,6 +307,7 @@ Public Class UCAutocomplete
 
             Dim iTabSize As Integer = 4
 
+            'IntelliSense
             If (Not String.IsNullOrEmpty(g_sIntelliSenseFunction)) Then
                 Dim sIntelliSenseFunction As String = g_sIntelliSenseFunction
 
@@ -392,6 +393,7 @@ Public Class UCAutocomplete
                 Next
             End If
 
+            'Autocomplete
             If (g_AutocompleteUC.ListView_AutocompleteList.SelectedItems.Count > 0 AndAlso
                         TypeOf g_AutocompleteUC.ListView_AutocompleteList.SelectedItems(0) Is ClassListViewItemData) Then
                 Dim mListViewItemData = DirectCast(g_AutocompleteUC.ListView_AutocompleteList.SelectedItems(0), ClassListViewItemData)
@@ -428,13 +430,16 @@ Public Class UCAutocomplete
                 End If
             End If
 
+            'ToolTip
             If (True) Then
                 'UpdateToolTipFormLocation()
 
                 If (ClassSettings.g_iSettingsUseWindowsToolTip) Then
                     g_AutocompleteUC.g_mFormMain.g_mFormToolTip.TextEditorControl_ToolTip.Document.TextContent = SB_TipText_IntelliSenseToolTip.ToString & SB_TipText_AutocompleteToolTip.ToString
-                ElseIf (g_AutocompleteUC.g_mFormMain.g_mFormToolTip.TextEditorControl_ToolTip.Document.TextLength > 0) Then
-                    g_AutocompleteUC.g_mFormMain.g_mFormToolTip.TextEditorControl_ToolTip.Document.TextContent = ""
+                Else
+                    If (g_AutocompleteUC.g_mFormMain.g_mFormToolTip.TextEditorControl_ToolTip.Document.TextLength > 0) Then
+                        g_AutocompleteUC.g_mFormMain.g_mFormToolTip.TextEditorControl_ToolTip.Document.TextContent = ""
+                    End If
                 End If
 
                 UpdateToolTipFormLocation()
@@ -509,8 +514,4 @@ Public Class UCAutocomplete
             End If
         End Sub
     End Class
-
-    Private Sub TextEditorControlEx_IntelliSense_BlockCmds(sender As Object, e As LayoutEventArgs)
-
-    End Sub
 End Class
