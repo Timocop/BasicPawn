@@ -105,9 +105,9 @@ Public Class ClassAutocompleteUpdater
         Try
             'g_mFormMain.PrintInformation("[INFO]", "Autocomplete update started...")
 
-            Dim sActiveTabIdentifier As String = ClassThread.Exec(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Identifier)
-            Dim mTabs As ClassTabControl.SourceTabPage() = ClassThread.Exec(Of ClassTabControl.SourceTabPage())(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.GetAllTabs())
-            Dim mRequestTab As ClassTabControl.SourceTabPage = ClassThread.Exec(Of ClassTabControl.SourceTabPage)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.GetTabByIdentifier(sTabIdentifier))
+            Dim sActiveTabIdentifier As String = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Identifier)
+            Dim mTabs As ClassTabControl.SourceTabPage() = ClassThread.ExecEx(Of ClassTabControl.SourceTabPage())(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.GetAllTabs())
+            Dim mRequestTab As ClassTabControl.SourceTabPage = ClassThread.ExecEx(Of ClassTabControl.SourceTabPage)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.GetTabByIdentifier(sTabIdentifier))
             If (mRequestTab Is Nothing) Then
                 ClassThread.ExecAsync(g_mFormMain, Sub()
                                                        g_mFormMain.ToolStripProgressBar_Autocomplete.ToolTipText = ""
@@ -121,7 +121,7 @@ Public Class ClassAutocompleteUpdater
 
             Dim sRequestedSourceFile As String = mRequestTab.m_File
             Dim iRequestedModType As ClassSyntaxTools.ENUM_MOD_TYPE = mRequestTab.m_ModType
-            Dim sRequestedSource As String = ClassThread.Exec(Of String)(mRequestTab, Function() mRequestTab.m_TextEditor.Document.TextContent)
+            Dim sRequestedSource As String = ClassThread.ExecEx(Of String)(mRequestTab, Function() mRequestTab.m_TextEditor.Document.TextContent)
 
             If (String.IsNullOrEmpty(sRequestedSourceFile) OrElse Not IO.File.Exists(sRequestedSourceFile)) Then
                 ClassThread.ExecAsync(g_mFormMain, Sub()
@@ -1991,7 +1991,7 @@ Public Class ClassAutocompleteUpdater
 
     Private Sub VariableAutocompleteUpdate_Thread(sTabIdentifier As String)
         Try
-            Dim mRequestTab As ClassTabControl.SourceTabPage = ClassThread.Exec(Of ClassTabControl.SourceTabPage)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.GetTabByIdentifier(sTabIdentifier))
+            Dim mRequestTab As ClassTabControl.SourceTabPage = ClassThread.ExecEx(Of ClassTabControl.SourceTabPage)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.GetTabByIdentifier(sTabIdentifier))
             If (mRequestTab Is Nothing) Then
                 'g_mFormMain.PrintInformation("[WARN]", "Variable autocomplete update failed! Could not get tab!", False, False)
                 Return
@@ -1999,7 +1999,7 @@ Public Class ClassAutocompleteUpdater
 
             Dim sRequestedSourceFile As String = mRequestTab.m_File
             Dim iRequestedModType As ClassSyntaxTools.ENUM_MOD_TYPE = mRequestTab.m_ModType
-            Dim sRequestedSource As String = ClassThread.Exec(Of String)(mRequestTab, Function() mRequestTab.m_TextEditor.Document.TextContent)
+            Dim sRequestedSource As String = ClassThread.ExecEx(Of String)(mRequestTab, Function() mRequestTab.m_TextEditor.Document.TextContent)
 
             'g_mFormMain.PrintInformation("[INFO]", "Variable autocomplete update started...")
             If (String.IsNullOrEmpty(sRequestedSourceFile) OrElse Not IO.File.Exists(sRequestedSourceFile)) Then

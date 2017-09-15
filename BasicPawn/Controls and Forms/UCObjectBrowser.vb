@@ -78,24 +78,24 @@ Public Class UCObjectBrowser
             Dim bWndProcBug As Boolean = g_bWndProcBug
 
             If (bWndProcBug) Then
-                ClassThread.Exec(Of Object)(Me, Sub()
+                ClassThread.ExecEx(Of Object)(Me, Sub()
                                                     TreeView_ObjectBrowser.Enabled = False
                                                     TreeView_ObjectBrowser.Visible = False
                                                 End Sub)
             Else
-                ClassThread.Exec(Of Object)(Me, Sub()
+                ClassThread.ExecEx(Of Object)(Me, Sub()
                                                     TreeView_ObjectBrowser.Enabled = False
                                                     ClassTools.ClassForms.SuspendDrawing(g_iControlDrawCoutner, TreeView_ObjectBrowser)
                                                 End Sub)
             End If
 
-            Dim mActiveTab As ClassTabControl.SourceTabPage = ClassThread.Exec(Of ClassTabControl.SourceTabPage)(Me, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab)
+            Dim mActiveTab As ClassTabControl.SourceTabPage = ClassThread.ExecEx(Of ClassTabControl.SourceTabPage)(Me, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab)
 
             Dim lAutocompleteList As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
             lAutocompleteList.AddRange(mActiveTab.m_AutocompleteItems.ToArray)
 
             If (True) Then
-                Dim mFileNodes As TreeNodeCollection = ClassThread.Exec(Of TreeNodeCollection)(TreeView_ObjectBrowser, Function() TreeView_ObjectBrowser.Nodes)
+                Dim mFileNodes As TreeNodeCollection = ClassThread.ExecEx(Of TreeNodeCollection)(TreeView_ObjectBrowser, Function() TreeView_ObjectBrowser.Nodes)
                 Dim mTypeNodes As TreeNodeCollection
                 Dim mNameNodes As TreeNodeCollection
 
@@ -113,12 +113,12 @@ Public Class UCObjectBrowser
 
                     If (Not mFileNodes.ContainsKey(sFile)) Then
                         If (bIsMainFile) Then
-                            ClassThread.Exec(Of Object)(TreeView_ObjectBrowser, Sub()
+                            ClassThread.ExecEx(Of Object)(TreeView_ObjectBrowser, Sub()
                                                                                     Dim mTreeNode = mFileNodes.Insert(0, sFile, sFile)
                                                                                     mTreeNode.NodeFont = New Font(TreeView_ObjectBrowser.Font, FontStyle.Regular)
                                                                                 End Sub)
                         Else
-                            ClassThread.Exec(Of Object)(TreeView_ObjectBrowser, Sub()
+                            ClassThread.ExecEx(Of Object)(TreeView_ObjectBrowser, Sub()
                                                                                     Dim mTreeNode = mFileNodes.Add(sFile, sFile)
                                                                                     mTreeNode.NodeFont = New Font(TreeView_ObjectBrowser.Font, FontStyle.Italic)
                                                                                 End Sub)
@@ -130,14 +130,14 @@ Public Class UCObjectBrowser
                     Dim iTypes As Integer = lAutocompleteList(i).m_Type
                     Dim sTypes As String = If(String.IsNullOrEmpty(lAutocompleteList(i).GetTypeFullNames), "private", lAutocompleteList(i).GetTypeFullNames.ToLower)
                     If (Not mTypeNodes.ContainsKey(sTypes)) Then
-                        ClassThread.Exec(Of Object)(TreeView_ObjectBrowser, Sub() mTypeNodes.Add(sTypes, sTypes))
+                        ClassThread.ExecEx(Of Object)(TreeView_ObjectBrowser, Sub() mTypeNodes.Add(sTypes, sTypes))
                     End If
 
                     mNameNodes = mTypeNodes(sTypes).Nodes
 
                     Dim sName As String = lAutocompleteList(i).m_FunctionName
                     If (Not mNameNodes.ContainsKey(sName)) Then
-                        ClassThread.Exec(Of Object)(TreeView_ObjectBrowser, Sub() mNameNodes.Add(New ClassTreeNodeAutocomplete(sName, sName, sFile, iTypes, sName)))
+                        ClassThread.ExecEx(Of Object)(TreeView_ObjectBrowser, Sub() mNameNodes.Add(New ClassTreeNodeAutocomplete(sName, sName, sFile, iTypes, sName)))
                     End If
                 Next
             End If
@@ -145,7 +145,7 @@ Public Class UCObjectBrowser
 
             'Remove invalid nodes 
             If (True) Then
-                Dim mFileNodes As TreeNodeCollection = ClassThread.Exec(Of TreeNodeCollection)(TreeView_ObjectBrowser, Function() TreeView_ObjectBrowser.Nodes)
+                Dim mFileNodes As TreeNodeCollection = ClassThread.ExecEx(Of TreeNodeCollection)(TreeView_ObjectBrowser, Function() TreeView_ObjectBrowser.Nodes)
                 Dim mTypeNodes As TreeNodeCollection
                 Dim mNameNodes As TreeNodeCollection
 
@@ -161,22 +161,22 @@ Public Class UCObjectBrowser
                         For l = mNameNodes.Count - 1 To 0 Step -1
                             Dim mTreeNodeAutocomplete As ClassTreeNodeAutocomplete = TryCast(mNameNodes(l), ClassTreeNodeAutocomplete)
                             If (mTreeNodeAutocomplete Is Nothing) Then
-                                ClassThread.Exec(Of Object)(TreeView_ObjectBrowser, Sub() mNameNodes(l).Remove())
+                                ClassThread.ExecEx(Of Object)(TreeView_ObjectBrowser, Sub() mNameNodes(l).Remove())
                                 Continue For
                             End If
 
                             If (Not lAutocompleteList.Exists(Function(m As ClassSyntaxTools.STRUC_AUTOCOMPLETE) m.m_File = mTreeNodeAutocomplete.g_sFile AndAlso m.m_Type = mTreeNodeAutocomplete.g_iType AndAlso m.m_FunctionName = mTreeNodeAutocomplete.g_sFunction)) Then
-                                ClassThread.Exec(Of Object)(TreeView_ObjectBrowser, Sub() mNameNodes(l).Remove())
+                                ClassThread.ExecEx(Of Object)(TreeView_ObjectBrowser, Sub() mNameNodes(l).Remove())
                             End If
                         Next
 
                         If (mTypeNodes(j).Nodes.Count < 1) Then
-                            ClassThread.Exec(Of Object)(TreeView_ObjectBrowser, Sub() mTypeNodes(j).Remove())
+                            ClassThread.ExecEx(Of Object)(TreeView_ObjectBrowser, Sub() mTypeNodes(j).Remove())
                         End If
                     Next
 
                     If (mFileNodes(i).Nodes.Count < 1) Then
-                        ClassThread.Exec(Of Object)(TreeView_ObjectBrowser, Sub() mFileNodes(i).Remove())
+                        ClassThread.ExecEx(Of Object)(TreeView_ObjectBrowser, Sub() mFileNodes(i).Remove())
                     End If
                 Next
             End If
@@ -184,12 +184,12 @@ Public Class UCObjectBrowser
             lAutocompleteList = Nothing
 
             If (bWndProcBug) Then
-                ClassThread.Exec(Of Object)(TreeView_ObjectBrowser, Sub()
+                ClassThread.ExecEx(Of Object)(TreeView_ObjectBrowser, Sub()
                                                                         TreeView_ObjectBrowser.Visible = True
                                                                         TreeView_ObjectBrowser.Enabled = True
                                                                     End Sub)
             Else
-                ClassThread.Exec(Of Object)(TreeView_ObjectBrowser, Sub()
+                ClassThread.ExecEx(Of Object)(TreeView_ObjectBrowser, Sub()
                                                                         ClassTools.ClassForms.ResumeDrawing(g_iControlDrawCoutner, TreeView_ObjectBrowser)
                                                                         TreeView_ObjectBrowser.Enabled = True
                                                                     End Sub)

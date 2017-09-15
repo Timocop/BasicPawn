@@ -52,7 +52,7 @@ Public Class ClassThread
     End Sub
 
     ''' <summary>
-    ''' Invokes a thread-safe delegate
+    ''' Invokes a thread-safe delegate.
     ''' </summary>
     ''' <typeparam name="T"></typeparam>
     ''' <param name="mControl"></param>
@@ -60,6 +60,18 @@ Public Class ClassThread
     ''' <param name="mParam"></param>
     ''' <returns></returns>
     Public Shared Function Exec(Of T)(mControl As Control, mDelegate As [Delegate], ParamArray mParam() As Object) As T
+        Return DirectCast(mControl.Invoke(mDelegate, mParam), T)
+    End Function
+
+    ''' <summary>
+    ''' Invokes a thread-safe delegate with 'Control.InvokeRequired' check.
+    ''' </summary>
+    ''' <typeparam name="T"></typeparam>
+    ''' <param name="mControl"></param>
+    ''' <param name="mDelegate"></param>
+    ''' <param name="mParam"></param>
+    ''' <returns></returns>
+    Public Shared Function ExecEx(Of T)(mControl As Control, mDelegate As [Delegate], ParamArray mParam() As Object) As T
         If (mControl.InvokeRequired) Then
             Return DirectCast(mControl.Invoke(mDelegate, mParam), T)
         Else
@@ -68,12 +80,22 @@ Public Class ClassThread
     End Function
 
     ''' <summary>
-    ''' Invokes a async thread-safe delegate
+    ''' Invokes a async thread-safe delegate.
     ''' </summary>
     ''' <param name="mControl"></param>
     ''' <param name="mDelegate"></param>
     ''' <param name="mParam"></param>
     Public Shared Sub ExecAsync(mControl As Control, mDelegate As [Delegate], ParamArray mParam() As Object)
+        mControl.BeginInvoke(mDelegate, mParam)
+    End Sub
+
+    ''' <summary>
+    ''' Invokes a async thread-safe delegate with 'Control.InvokeRequired' check.
+    ''' </summary>
+    ''' <param name="mControl"></param>
+    ''' <param name="mDelegate"></param>
+    ''' <param name="mParam"></param>
+    Public Shared Sub ExecAsyncEx(mControl As Control, mDelegate As [Delegate], ParamArray mParam() As Object)
         If (mControl.InvokeRequired) Then
             mControl.BeginInvoke(mDelegate, mParam)
         Else

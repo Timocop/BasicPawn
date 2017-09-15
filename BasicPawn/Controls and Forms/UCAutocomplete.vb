@@ -120,9 +120,9 @@ Public Class UCAutocomplete
 
 
     Public Function UpdateIntelliSense() As Boolean
-        Dim sTextContent As String = ClassThread.Exec(Of String)(Me, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent)
-        Dim iCaretOffset As Integer = ClassThread.Exec(Of Integer)(Me, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Offset)
-        Dim iModType As ClassSyntaxTools.ENUM_MOD_TYPE = ClassThread.Exec(Of ClassSyntaxTools.ENUM_MOD_TYPE)(Me, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ModType)
+        Dim sTextContent As String = ClassThread.ExecEx(Of String)(Me, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent)
+        Dim iCaretOffset As Integer = ClassThread.ExecEx(Of Integer)(Me, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Offset)
+        Dim iModType As ClassSyntaxTools.ENUM_MOD_TYPE = ClassThread.ExecEx(Of ClassSyntaxTools.ENUM_MOD_TYPE)(Me, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ModType)
         Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sTextContent, iModType)
 
         If (iCaretOffset < 0 OrElse iCaretOffset > sTextContent.Length - 1) Then

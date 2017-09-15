@@ -64,7 +64,7 @@ Public Class FormMultiCompiler
 
     Private Sub CompilerThread()
         Try
-            ClassThread.Exec(Of Object)(ProgressBar_Compiled, Sub()
+            ClassThread.ExecEx(Of Object)(ProgressBar_Compiled, Sub()
                                                                   ProgressBar_Compiled.Maximum = g_sSourceFiles.Length
                                                                   ProgressBar_Compiled.Value = 0
                                                               End Sub)
@@ -108,7 +108,7 @@ Public Class FormMultiCompiler
 
 
                 Dim sOutputFile As String = IO.Path.Combine(ClassConfigs.m_ActiveConfig.g_sOutputFolder, String.Format("{0}.unk", IO.Path.GetFileNameWithoutExtension(sSourceFile)))
-                Dim bSuccess As Boolean = ClassThread.Exec(Of Boolean)(Me, Function()
+                Dim bSuccess As Boolean = ClassThread.ExecEx(Of Boolean)(Me, Function()
                                                                                If (g_bCleanDebuggerPlaceholder) Then
                                                                                    With New ClassDebuggerParser(g_mMainForm)
                                                                                        If (.HasDebugPlaceholder(sSource)) Then
@@ -125,7 +125,7 @@ Public Class FormMultiCompiler
                 Dim bCancel As Boolean = False
 
                 If (Not bSuccess) Then
-                    ClassThread.Exec(Of Object)(Me, Sub()
+                    ClassThread.ExecEx(Of Object)(Me, Sub()
                                                         With New Text.StringBuilder
                                                             .AppendLine(String.Format("'{0}' failed to compile!", sSourceFile))
                                                             .AppendLine("See information tab for more information.")
@@ -144,7 +144,7 @@ Public Class FormMultiCompiler
                                                         End With
                                                     End Sub)
                 ElseIf (bWarning) Then
-                    ClassThread.Exec(Of Object)(Me, Sub()
+                    ClassThread.ExecEx(Of Object)(Me, Sub()
                                                         With New Text.StringBuilder
                                                             .AppendLine(String.Format("'{0}' has compiler warnings!", sSourceFile))
                                                             .AppendLine("See information tab for more information.")
@@ -168,8 +168,8 @@ Public Class FormMultiCompiler
                     Exit For
                 End If
 
-                ClassThread.Exec(Of Object)(ProgressBar_Compiled, Sub() ProgressBar_Compiled.Increment(1))
-                ClassThread.Exec(Of Object)(Me, Sub() Me.Refresh())
+                ClassThread.ExecEx(Of Object)(ProgressBar_Compiled, Sub() ProgressBar_Compiled.Increment(1))
+                ClassThread.ExecEx(Of Object)(Me, Sub() Me.Refresh())
             Next
 
             ClassThread.ExecAsync(Me, Sub() Me.Close())

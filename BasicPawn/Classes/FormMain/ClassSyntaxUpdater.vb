@@ -64,7 +64,7 @@ Public Class ClassSyntaxUpdater
                 'Update Autocomplete
                 If (g_mFormMain.g_ClassAutocompleteUpdater.g_lFullAutocompleteTabRequests.Count > 0) Then
                     Dim sRequestedTabIdentifier As String = g_mFormMain.g_ClassAutocompleteUpdater.g_lFullAutocompleteTabRequests(0)
-                    Dim sActiveTabIdentifier As String = ClassThread.Exec(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Identifier)
+                    Dim sActiveTabIdentifier As String = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Identifier)
 
                     'Active tabs have higher priority to update
                     If (g_mFormMain.g_ClassAutocompleteUpdater.g_lFullAutocompleteTabRequests.Contains(sActiveTabIdentifier)) Then
@@ -104,8 +104,8 @@ Public Class ClassSyntaxUpdater
                 End If
 
 
-                Dim iCaretOffset As Integer = ClassThread.Exec(Of Integer)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Offset)
-                Dim iCaretPos As Point = ClassThread.Exec(Of Point)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.ScreenPosition)
+                Dim iCaretOffset As Integer = ClassThread.ExecEx(Of Integer)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Offset)
+                Dim iCaretPos As Point = ClassThread.ExecEx(Of Point)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.ScreenPosition)
 
                 'Update Method Autoupdate 
                 Static iLastMethodAutoupdateCaretOffset As Integer = -1
@@ -135,16 +135,16 @@ Public Class ClassSyntaxUpdater
                 If (iLastAutoupdateCaretOffset2 <> iCaretOffset) Then
                     iLastAutoupdateCaretOffset2 = iCaretOffset
 
-                    If (iCaretOffset > -1 AndAlso iCaretOffset < ClassThread.Exec(Of Integer)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.TextLength)) Then
-                        Dim iPosition As Integer = ClassThread.Exec(Of Integer)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column)
-                        Dim iLineOffset As Integer = ClassThread.Exec(Of Integer)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iCaretOffset).Offset)
-                        Dim iLineLen As Integer = ClassThread.Exec(Of Integer)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iCaretOffset).Length)
+                    If (iCaretOffset > -1 AndAlso iCaretOffset < ClassThread.ExecEx(Of Integer)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.TextLength)) Then
+                        Dim iPosition As Integer = ClassThread.ExecEx(Of Integer)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column)
+                        Dim iLineOffset As Integer = ClassThread.ExecEx(Of Integer)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iCaretOffset).Offset)
+                        Dim iLineLen As Integer = ClassThread.ExecEx(Of Integer)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iCaretOffset).Length)
 
                         If ((iLineLen - iPosition) > 0) Then
-                            Dim sFunctionName As String = ClassThread.Exec(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True, True, True))
+                            Dim sFunctionName As String = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True, True, True))
 
-                            If (ClassThread.Exec(Of Integer)(g_mFormMain.g_mUCAutocomplete, Function() g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete(sFunctionName)) < 1) Then
-                                sFunctionName = ClassThread.Exec(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTextEditorTools.GetCaretWord(False, False, False))
+                            If (ClassThread.ExecEx(Of Integer)(g_mFormMain.g_mUCAutocomplete, Function() g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete(sFunctionName)) < 1) Then
+                                sFunctionName = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTextEditorTools.GetCaretWord(False, False, False))
 
                                 ClassThread.ExecAsync(g_mFormMain.g_mUCAutocomplete, Sub()
                                                                                          g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete(sFunctionName)

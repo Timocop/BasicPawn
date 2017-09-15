@@ -64,7 +64,7 @@ Public Class FormUpdate
 #End If
 
             If (ClassUpdate.CheckUpdateAvailable(sNextVersion, sCurrentVersion) OrElse bSkipCheck) Then
-                ClassThread.Exec(Of Object)(Me, Sub()
+                ClassThread.ExecEx(Of Object)(Me, Sub()
                                                     Label_StatusTitle.Text = "A new BasicPawn update is available!" & Environment.NewLine & String.Format("Do you want to update from version {0} to version {1} now?", sCurrentVersion, sNextVersion)
                                                     Button_Update.Visible = True
 
@@ -72,7 +72,7 @@ Public Class FormUpdate
                                                     Label_WarnText.Visible = True
                                                 End Sub)
             Else
-                ClassThread.Exec(Of Object)(Me, Sub()
+                ClassThread.ExecEx(Of Object)(Me, Sub()
                                                     Label_StatusTitle.Text = "There are no new updates available!"
                                                 End Sub)
             End If
@@ -95,7 +95,7 @@ Public Class FormUpdate
 
     Private Sub UpdateThread()
         Try
-            ClassThread.Exec(Of Object)(Me, Sub()
+            ClassThread.ExecEx(Of Object)(Me, Sub()
                                                 Label_Status.Text = "Status: Downloading updates..."
                                                 ClassControlStyle.UpdateControls(Label_Status)
                                                 Label_Status.Visible = True
@@ -105,7 +105,7 @@ Public Class FormUpdate
             ClassUpdate.InstallUpdate()
 
             'Debug only
-            ClassThread.Exec(Of Object)(Me, Sub()
+            ClassThread.ExecEx(Of Object)(Me, Sub()
                                                 Label_Status.Text = "Status: Downloaded update!"
                                                 Label_Status.Visible = True
                                                 ProgressBar_Status.Visible = False
