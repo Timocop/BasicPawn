@@ -41,6 +41,6 @@ $InfoVersion,Plugin version							=1.0
 ?ForceSemicolon,Force Semicolon						=0
 ?DebugDefine,DEBUG define							=%n%#define DEBUG%n%
 ?DebugDefine,DEBUG define							=
-?DebugEcho,ECHO define								=%n%#if 1%n%%t%#define ECHO(%0) server_print(%0)%n%#else%n%%t%#define ECHO(%0)%n%#endif%n%
+?DebugEcho,ECHO define								=%n%#if 1%n%%t%#define ECHO(%0) server_print(%0);%n%#else%n%%t%#define ECHO(%0)%n%#endif%n%
 ?DebugEcho,ECHO define								=
 ?DebugEcho,ECHO define								=0
