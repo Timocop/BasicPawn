@@ -601,6 +601,8 @@ Public Class ClassTabControl
 
             AddHandler g_mSourceTextEditor.TextChanged, AddressOf TextEditorControl_Source_TextChanged
 
+            AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MotherTextAreaControl.VScrollBar.ValueChanged, AddressOf TextEditorControl_Source_Scroll
+
             AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.DragEnter, AddressOf TextEditorControl_Source_DragEnter
             AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.DragDrop, AddressOf TextEditorControl_Source_DragDrop
             AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.DragOver, AddressOf TextEditorControl_Source_DragOver
@@ -623,6 +625,8 @@ Public Class ClassTabControl
             RemoveHandler g_mSourceTextEditor.ProcessCmdKeyEvent, AddressOf TextEditorControl_Source_ProcessCmdKey
 
             RemoveHandler g_mSourceTextEditor.TextChanged, AddressOf TextEditorControl_Source_TextChanged
+
+            RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MotherTextAreaControl.VScrollBar.ValueChanged, AddressOf TextEditorControl_Source_Scroll
 
             RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.DragEnter, AddressOf TextEditorControl_Source_DragEnter
             RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.DragDrop, AddressOf TextEditorControl_Source_DragDrop
@@ -884,6 +888,10 @@ Public Class ClassTabControl
                 MyBase.Text = value
             End Set
         End Property
+
+        Private Sub TextEditorControl_Source_Scroll(sender As Object, e As EventArgs)
+            g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTipFormLocation()
+        End Sub
 
 #Region "Drag & Drop"
         Private Sub TextEditorControl_Source_DragEnter(sender As Object, e As DragEventArgs)
@@ -1277,8 +1285,6 @@ Public Class ClassTabControl
             End Try
         End Sub
 #End Region
-
-
 
 #Region "TextEditor Folding Code"
 
