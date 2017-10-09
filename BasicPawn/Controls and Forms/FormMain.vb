@@ -1315,8 +1315,10 @@ Public Class FormMain
         End If
     End Sub
 
-    Private Sub FormMain_Layout(sender As Object, e As LayoutEventArgs) Handles Me.Layout
+    Private Sub Timer_CheckFiles_Tick(sender As Object, e As EventArgs) Handles Timer_CheckFiles.Tick
         Try
+            Timer_CheckFiles.Stop()
+
             If (Not g_bFormPostLoad) Then
                 Return
             End If
@@ -1324,6 +1326,8 @@ Public Class FormMain
             g_ClassTabControl.CheckFilesChangedPrompt()
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
+        Finally
+            Timer_CheckFiles.Start()
         End Try
     End Sub
 
