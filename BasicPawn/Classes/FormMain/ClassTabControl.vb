@@ -589,29 +589,18 @@ Public Class ClassTabControl
 
             AddHandler g_mSourceTextEditor.ProcessCmdKeyEvent, AddressOf TextEditorControl_Source_ProcessCmdKey
 
-            AddHandler g_mSourceTextEditor.MouseDoubleClick, AddressOf TextEditorControl_Source_DoubleClickMarkWord
-            AddHandler g_mSourceTextEditor.ActiveTextAreaControl.MouseDoubleClick, AddressOf TextEditorControl_Source_DoubleClickMarkWord
+            AddHandler g_mSourceTextEditor.TextChanged, AddressOf TextEditorControl_Source_TextChanged
+
+            AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.DragEnter, AddressOf TextEditorControl_Source_DragEnter
+            AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.DragDrop, AddressOf TextEditorControl_Source_DragDrop
+            AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.DragOver, AddressOf TextEditorControl_Source_DragOver
+
             AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseDoubleClick, AddressOf TextEditorControl_Source_DoubleClickMarkWord
 
-            AddHandler g_mSourceTextEditor.MouseClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
-            AddHandler g_mSourceTextEditor.ActiveTextAreaControl.MouseClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
             AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
-
-            AddHandler g_mSourceTextEditor.MouseUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
-            AddHandler g_mSourceTextEditor.ActiveTextAreaControl.MouseUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
             AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
-
-            AddHandler g_mSourceTextEditor.MouseDoubleClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
-            AddHandler g_mSourceTextEditor.ActiveTextAreaControl.MouseDoubleClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
             AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseDoubleClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
-
-            AddHandler g_mSourceTextEditor.KeyUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
-            AddHandler g_mSourceTextEditor.ActiveTextAreaControl.KeyUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
             AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.KeyUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
-
-            AddHandler g_mSourceTextEditor.TextChanged, AddressOf TextEditorControl_Source_TextChanged
-            AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextChanged, AddressOf TextEditorControl_Source_TextChanged
-            AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.TextChanged, AddressOf TextEditorControl_Source_TextChanged
 
             AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.SelectionManager.SelectionChanged, AddressOf TextEditorControl_Source_UpdateInfo
             AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.PositionChanged, AddressOf TextEditorControl_Source_UpdateInfo
@@ -623,29 +612,18 @@ Public Class ClassTabControl
         Private Sub RemoveHandlers()
             RemoveHandler g_mSourceTextEditor.ProcessCmdKeyEvent, AddressOf TextEditorControl_Source_ProcessCmdKey
 
-            RemoveHandler g_mSourceTextEditor.MouseDoubleClick, AddressOf TextEditorControl_Source_DoubleClickMarkWord
-            RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.MouseDoubleClick, AddressOf TextEditorControl_Source_DoubleClickMarkWord
+            RemoveHandler g_mSourceTextEditor.TextChanged, AddressOf TextEditorControl_Source_TextChanged
+
+            RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.DragEnter, AddressOf TextEditorControl_Source_DragEnter
+            RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.DragDrop, AddressOf TextEditorControl_Source_DragDrop
+            RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.DragOver, AddressOf TextEditorControl_Source_DragOver
+
             RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseDoubleClick, AddressOf TextEditorControl_Source_DoubleClickMarkWord
 
-            RemoveHandler g_mSourceTextEditor.MouseClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
-            RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.MouseClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
             RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
-
-            RemoveHandler g_mSourceTextEditor.MouseUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
-            RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.MouseUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
             RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
-
-            RemoveHandler g_mSourceTextEditor.MouseDoubleClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
-            RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.MouseDoubleClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
             RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseDoubleClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
-
-            RemoveHandler g_mSourceTextEditor.KeyUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
-            RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.KeyUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
             RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.KeyUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
-
-            RemoveHandler g_mSourceTextEditor.TextChanged, AddressOf TextEditorControl_Source_TextChanged
-            RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextChanged, AddressOf TextEditorControl_Source_TextChanged
-            RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.TextChanged, AddressOf TextEditorControl_Source_TextChanged
 
             RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.SelectionManager.SelectionChanged, AddressOf TextEditorControl_Source_UpdateInfo
             RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.PositionChanged, AddressOf TextEditorControl_Source_UpdateInfo
@@ -896,6 +874,48 @@ Public Class ClassTabControl
                 MyBase.Text = value
             End Set
         End Property
+
+#Region "Drag & Drop"
+        Private Sub TextEditorControl_Source_DragEnter(sender As Object, e As DragEventArgs)
+            Try
+                If (e.Data.GetDataPresent(DataFormats.FileDrop)) Then
+                    e.Effect = DragDropEffects.Copy
+                End If
+            Catch ex As Exception
+                ClassExceptionLog.WriteToLogMessageBox(ex)
+            End Try
+        End Sub
+
+        Private Sub TextEditorControl_Source_DragOver(sender As Object, e As DragEventArgs)
+            Try
+                If (e.Data.GetDataPresent(DataFormats.FileDrop)) Then
+                    e.Effect = DragDropEffects.Copy
+                End If
+            Catch ex As Exception
+                ClassExceptionLog.WriteToLogMessageBox(ex)
+            End Try
+        End Sub
+
+        Private Sub TextEditorControl_Source_DragDrop(sender As Object, e As DragEventArgs)
+            Try
+                If (e.Data.GetDataPresent(DataFormats.FileDrop)) Then
+                    Dim sFiles As String() = DirectCast(e.Data.GetData(DataFormats.FileDrop), String())
+
+                    For i = 0 To sFiles.Length - 1
+                        If (Not IO.File.Exists(sFiles(i))) Then
+                            Continue For
+                        End If
+
+                        Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
+                        mTab.OpenFileTab(sFiles(i))
+                        mTab.SelectTab(500)
+                    Next
+                End If
+            Catch ex As Exception
+                ClassExceptionLog.WriteToLogMessageBox(ex)
+            End Try
+        End Sub
+#End Region
 
 #Region "TextEditor Controls"
         Private Sub TextEditorControl_Source_ProcessCmdKey(ByRef bBlock As Boolean, ByRef iMsg As Message, iKeys As Keys)
