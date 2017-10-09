@@ -528,6 +528,16 @@ Public Class ClassTabControl
         Next
     End Sub
 
+    Public Function GetTabByCursorPoint() As SourceTabPage
+        For i = 0 To g_mFormMain.TabControl_SourceTabs.TabPages.Count - 1
+            If (g_mFormMain.TabControl_SourceTabs.GetTabRect(i).Contains(g_mFormMain.TabControl_SourceTabs.PointToClient(Cursor.Position))) Then
+                Return DirectCast(g_mFormMain.TabControl_SourceTabs.TabPages(i), SourceTabPage)
+            End If
+        Next
+
+        Return Nothing
+    End Function
+
     Private Sub OnTabSelected(sender As Object, e As EventArgs)
         If (g_bIgnoreOnTabSelected) Then
             Return

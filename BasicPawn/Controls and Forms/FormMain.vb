@@ -58,6 +58,8 @@ Public Class FormMain
     Private g_bFormPostLoad As Boolean = False
     Private g_bIgnoreComboBoxEvent As Boolean = False
     Private g_sTabsClipboardIdentifier As String = ""
+    Private g_mTabControlDragTab As ClassTabControl.SourceTabPage = Nothing
+    Private g_mTabControlDragPoint As Point = Point.Empty
 
 
 
@@ -963,6 +965,18 @@ Public Class FormMain
 
         ToolStripMenuItem_Tabs_Insert.Enabled = (mTab IsNot Nothing)
         ToolStripMenuItem_Tabs_Insert.Text = If(mTab IsNot Nothing, String.Format("Insert ({0})", mTab.m_Title), "Insert")
+
+        Dim mPointTab = g_ClassTabControl.GetTabByCursorPoint()
+        If (mPointTab Is Nothing) Then
+            Return
+        End If
+
+        Dim iPointTabIndex = TabControl_SourceTabs.TabPages.IndexOf(mPointTab)
+        If (iPointTabIndex < 0 OrElse iPointTabIndex = g_ClassTabControl.m_ActiveTabIndex) Then
+            Return
+        End If
+
+        g_ClassTabControl.SelectTab(iPointTabIndex)
     End Sub
 
     Private Sub ToolStripMenuItem_Tabs_Close_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Tabs_Close.Click
@@ -1333,4 +1347,65 @@ Public Class FormMain
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
     End Sub
+
+#Region "Drag & Drop TabControl Tabs"
+    Private Sub TabControl_SourceTabs_MouseDown(sender As Object, e As MouseEventArgs) Handles TabControl_SourceTabs.MouseDown
+        g_mTabControlDragTab = g_ClassTabControl.GetTabByCursorPoint()
+    End Sub
+
+    Private Sub TabControl_SourceTabs_MouseUp(sender As Object, e As MouseEventArgs) Handles TabControl_SourceTabs.MouseUp
+        g_mTabControlDragTab = Nothing
+    End Sub
+
+    Private Sub TabControl_SourceTabs_MouseMove(sender As Object, e As MouseEventArgs) Handles TabControl_SourceTabs.MouseMove
+        Try
+            If (g_mTabControlDragTab Is Nothing OrElse e.Button <> MouseButtons.Left) Then
+                Return
+            End If
+
+            TabControl_SourceTabs.DoDragDrop(g_mTabControlDragTab, DragDropEffects.Move)
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
+    Private Sub TabControl_SourceTabs_DragOver(sender As Object, e As DragEventArgs) Handles TabControl_SourceTabs.DragOver
+        Try
+            If (g_mTabControlDragPoint = Cursor.Position) Then
+                Return
+            End If
+
+            Dim mDragTab = DirectCast(e.Data.GetData(GetType(ClassTabControl.SourceTabPage)), ClassTabControl.SourceTabPage)
+            If (mDragTab Is Nothing) Then
+                Return
+            End If
+
+            Dim mPointTab = g_ClassTabControl.GetTabByCursorPoint()
+            If (mPointTab Is Nothing) Then
+                Return
+            End If
+
+            If (mDragTab IsNot g_mTabControlDragTab) Then
+                Return
+            End If
+
+            If (mDragTab Is mPointTab) Then
+                Return
+            End If
+
+            Dim iDragIndex = TabControl_SourceTabs.TabPages.IndexOf(mDragTab)
+            Dim iPointIndex = TabControl_SourceTabs.TabPages.IndexOf(mPointTab)
+            If (iDragIndex < 0 OrElse iPointIndex < 0) Then
+                Return
+            End If
+
+            e.Effect = DragDropEffects.Move
+            g_ClassTabControl.SwapTabs(iDragIndex, iPointIndex)
+
+            g_mTabControlDragPoint = Cursor.Position
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+#End Region
 End Class
