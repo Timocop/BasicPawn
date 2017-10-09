@@ -147,6 +147,9 @@ Public Class FormMain
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call. 
+        ImageList_Details.Images.Clear()
+        ImageList_Details.Images.Add("0", My.Resources.imageres_5332_16x16)
+        ImageList_Details.Images.Add("1", My.Resources.imageres_5333_16x16)
 
         g_ClassSyntaxUpdater = New ClassSyntaxUpdater(Me)
         g_ClassSyntaxTools = New ClassSyntaxTools(Me)
