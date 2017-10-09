@@ -502,10 +502,14 @@ Public Class UCAutocomplete
                 If (Not bOutsideEditor AndAlso g_AutocompleteUC.g_mFormMain.g_mFormToolTip.TextEditorControl_ToolTip.Document.TextLength > 0) Then
                     g_AutocompleteUC.g_mFormMain.g_mFormToolTip.m_Location = iNewLocation
 
-                    g_AutocompleteUC.g_mFormMain.g_mFormToolTip.Visible = True
-                    g_AutocompleteUC.g_mFormMain.g_mFormToolTip.Refresh()
+                    If (Not g_AutocompleteUC.g_mFormMain.g_mFormToolTip.Visible) Then
+                        g_AutocompleteUC.g_mFormMain.g_mFormToolTip.Visible = True
+                        g_AutocompleteUC.g_mFormMain.g_mFormToolTip.Refresh()
+                    End If
                 Else
-                    g_AutocompleteUC.g_mFormMain.g_mFormToolTip.Visible = False
+                    If (g_AutocompleteUC.g_mFormMain.g_mFormToolTip.Visible) Then
+                        g_AutocompleteUC.g_mFormMain.g_mFormToolTip.Visible = False
+                    End If
                 End If
             Else
                 If (g_AutocompleteUC.g_mFormMain.g_mFormToolTip.Visible) Then
