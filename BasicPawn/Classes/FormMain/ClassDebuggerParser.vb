@@ -255,11 +255,12 @@ Public Class ClassDebuggerParser
         Dim mInfoBuilder As New StringBuilder
 
         mInfoBuilder.AppendLine("/**")
-        mInfoBuilder.AppendLine("*  Pauses the plugin until manually resumed. Also shows the current position in the BasicPawn Debugger.")
-        mInfoBuilder.AppendLine("*  Optionaly you can return a custom non-array value.")
-        mInfoBuilder.AppendLine("*")
-        mInfoBuilder.AppendLine("*  NOTE: Because the 'any' type the compiler will see the return value as 'int' by default even if you return a float value. Don't return floats in expressions unless you re-tag it as float yourself.")
-        mInfoBuilder.AppendLine("*/")
+        mInfoBuilder.AppendLine(" * Pauses the plugin until manually resumed. Also shows the current position in the BasicPawn Debugger.")
+        mInfoBuilder.AppendLine(" * Optionaly you can return a custom non-array value.")
+        mInfoBuilder.AppendLine(" *")
+        mInfoBuilder.AppendLine(" * WARN: Do not use this in 'float-to-float' comparisons.")
+        mInfoBuilder.AppendLine(" *       The operator will see the 'any' type as non-float and parse it incorrectly.")
+        mInfoBuilder.AppendLine(" */")
         lAutocomplete.Add(New ClassSyntaxTools.STRUC_AUTOCOMPLETE(mInfoBuilder.ToString,
                                                                   "BasicPawn.exe",
                                                                   ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEBUG,
@@ -268,10 +269,11 @@ Public Class ClassDebuggerParser
 
         mInfoBuilder.Length = 0
         mInfoBuilder.AppendLine("/**")
-        mInfoBuilder.AppendLine("*  Prints the passed value into the BasicPawn Debugger.")
-        mInfoBuilder.AppendLine("*")
-        mInfoBuilder.AppendLine("*  NOTE: Because the 'any' type the compiler will see the return value as 'int' by default even if you return a float value. Don't return floats in expressions unless you re-tag it as float yourself.")
-        mInfoBuilder.AppendLine("*/")
+        mInfoBuilder.AppendLine(" * Prints the passed value into the BasicPawn Debugger.")
+        mInfoBuilder.AppendLine(" *")
+        mInfoBuilder.AppendLine(" * WARN: Do not use this in 'float-to-float' comparisons.")
+        mInfoBuilder.AppendLine(" *       The operator will see the 'any' type as non-float and parse it incorrectly.")
+        mInfoBuilder.AppendLine(" */")
         lAutocomplete.Add(New ClassSyntaxTools.STRUC_AUTOCOMPLETE(mInfoBuilder.ToString,
                                                                   "BasicPawn.exe",
                                                                   ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEBUG,
