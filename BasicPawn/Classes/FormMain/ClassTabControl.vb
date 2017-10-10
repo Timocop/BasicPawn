@@ -896,9 +896,11 @@ Public Class ClassTabControl
 #Region "Drag & Drop"
         Private Sub TextEditorControl_Source_DragEnter(sender As Object, e As DragEventArgs)
             Try
-                If (e.Data.GetDataPresent(DataFormats.FileDrop)) Then
-                    e.Effect = DragDropEffects.Copy
+                If (Not e.Data.GetDataPresent(DataFormats.FileDrop)) Then
+                    Return
                 End If
+
+                e.Effect = DragDropEffects.Copy
             Catch ex As Exception
                 ClassExceptionLog.WriteToLogMessageBox(ex)
             End Try
@@ -906,9 +908,11 @@ Public Class ClassTabControl
 
         Private Sub TextEditorControl_Source_DragOver(sender As Object, e As DragEventArgs)
             Try
-                If (e.Data.GetDataPresent(DataFormats.FileDrop)) Then
-                    e.Effect = DragDropEffects.Copy
+                If (Not e.Data.GetDataPresent(DataFormats.FileDrop)) Then
+                    Return
                 End If
+
+                e.Effect = DragDropEffects.Copy
             Catch ex As Exception
                 ClassExceptionLog.WriteToLogMessageBox(ex)
             End Try
@@ -916,19 +920,21 @@ Public Class ClassTabControl
 
         Private Sub TextEditorControl_Source_DragDrop(sender As Object, e As DragEventArgs)
             Try
-                If (e.Data.GetDataPresent(DataFormats.FileDrop)) Then
-                    Dim sFiles As String() = DirectCast(e.Data.GetData(DataFormats.FileDrop), String())
-
-                    For i = 0 To sFiles.Length - 1
-                        If (Not IO.File.Exists(sFiles(i))) Then
-                            Continue For
-                        End If
-
-                        Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
-                        mTab.OpenFileTab(sFiles(i))
-                        mTab.SelectTab(500)
-                    Next
+                If (Not e.Data.GetDataPresent(DataFormats.FileDrop)) Then
+                    Return
                 End If
+
+                Dim sFiles As String() = CType(e.Data.GetData(DataFormats.FileDrop), String())
+
+                For Each sFile As String In sFiles
+                    If (Not IO.File.Exists(sFile)) Then
+                        Continue For
+                    End If
+
+                    Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
+                    mTab.OpenFileTab(sFile)
+                    mTab.SelectTab(500)
+                Next
             Catch ex As Exception
                 ClassExceptionLog.WriteToLogMessageBox(ex)
             End Try

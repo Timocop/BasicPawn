@@ -878,7 +878,7 @@ Public Class UCProjectBrowser
                 Return
             End If
 
-            Dim sFiles As String() = DirectCast(e.Data.GetData(DataFormats.FileDrop), String())
+            Dim sFiles As String() = CType(e.Data.GetData(DataFormats.FileDrop), String())
             If (sFiles Is Nothing) Then
                 Return
             End If
