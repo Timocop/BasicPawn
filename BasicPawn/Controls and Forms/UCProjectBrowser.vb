@@ -846,4 +846,57 @@ Public Class UCProjectBrowser
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
     End Sub
+
+#Region "File Drag & Drop"
+    Private Sub ListView_ProjectFiles_DragEnter(sender As Object, e As DragEventArgs) Handles ListView_ProjectFiles.DragEnter
+        Try
+            If (Not e.Data.GetDataPresent(DataFormats.FileDrop)) Then
+                Return
+            End If
+
+            e.Effect = DragDropEffects.Copy
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
+    Private Sub ListView_ProjectFiles_DragOver(sender As Object, e As DragEventArgs) Handles ListView_ProjectFiles.DragOver
+        Try
+            If (Not e.Data.GetDataPresent(DataFormats.FileDrop)) Then
+                Return
+            End If
+
+            e.Effect = DragDropEffects.Copy
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
+    Private Sub ListView_ProjectFiles_DragDrop(sender As Object, e As DragEventArgs) Handles ListView_ProjectFiles.DragDrop
+        Try
+            If (Not e.Data.GetDataPresent(DataFormats.FileDrop)) Then
+                Return
+            End If
+
+            Dim sFiles As String() = DirectCast(e.Data.GetData(DataFormats.FileDrop), String())
+            If (sFiles Is Nothing) Then
+                Return
+            End If
+
+            For Each sFile As String In sFiles
+                If (Not IO.File.Exists(sFile)) Then
+                    Continue For
+                End If
+
+                g_ClassProjectControl.AddFile(New ClassProjectControl.STRUC_PROJECT_FILE_INFO With {
+                    .sGUID = Nothing,
+                    .sFile = sFile,
+                    .sPackedData = Nothing
+                })
+            Next
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+#End Region
 End Class

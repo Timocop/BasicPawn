@@ -54,6 +54,7 @@ Partial Class UCProjectBrowser
         '
         'ListView_ProjectFiles
         '
+        Me.ListView_ProjectFiles.AllowDrop = True
         Me.ListView_ProjectFiles.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.ListView_ProjectFiles.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1, Me.ColumnHeader2, Me.ColumnHeader3})
         Me.ListView_ProjectFiles.ContextMenuStrip = Me.ContextMenuStrip_ProjectFiles
