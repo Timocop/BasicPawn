@@ -84,9 +84,9 @@ Public Class UCObjectBrowser
                                                 End Sub)
             Else
                 ClassThread.ExecEx(Of Object)(Me, Sub()
-                                                    TreeView_ObjectBrowser.Enabled = False
-                                                    ClassTools.ClassForms.SuspendDrawing(g_iControlDrawCoutner, TreeView_ObjectBrowser)
-                                                End Sub)
+                                                      ClassTools.ClassForms.SuspendDrawing(g_iControlDrawCoutner, TreeView_ObjectBrowser)
+                                                      TreeView_ObjectBrowser.Enabled = False
+                                                  End Sub)
             End If
 
             Dim mActiveTab As ClassTabControl.SourceTabPage = ClassThread.ExecEx(Of ClassTabControl.SourceTabPage)(Me, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab)
