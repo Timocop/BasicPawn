@@ -50,12 +50,6 @@ Partial Class FormDebugger
         Me.ToolStripMenuItem_DebugStop = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_DebugRefresh = New System.Windows.Forms.ToolStripMenuItem()
         Me.SplitContainer1 = New System.Windows.Forms.SplitContainer()
-        Me.ContextMenuStrip_Breakpoints = New System.Windows.Forms.ContextMenuStrip(Me.components)
-        Me.ToolStripMenuItem_BreakpointsEnableAll = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripMenuItem_BreakpointsDisableAll = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
-        Me.ToolStripMenuItem_BreakpointsSetValues = New System.Windows.Forms.ToolStripMenuItem()
-        Me.Timer_ConnectionCheck = New System.Windows.Forms.Timer(Me.components)
         Me.TabControl2 = New BasicPawn.ClassTabControlColor()
         Me.TabPage_Source = New System.Windows.Forms.TabPage()
         Me.TextEditorControlEx_DebuggerSource = New BasicPawn.TextEditorControlEx()
@@ -67,6 +61,11 @@ Partial Class FormDebugger
         Me.ColumnHeader1 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader2 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader4 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.ContextMenuStrip_Breakpoints = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.ToolStripMenuItem_BreakpointsEnableAll = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_BreakpointsDisableAll = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
+        Me.ToolStripMenuItem_BreakpointsSetValues = New System.Windows.Forms.ToolStripMenuItem()
         Me.TabPage_Watchers = New System.Windows.Forms.TabPage()
         Me.ListView_Watchers = New System.Windows.Forms.ListView()
         Me.ColumnHeader3 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
@@ -78,17 +77,18 @@ Partial Class FormDebugger
         Me.ColumnHeader8 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader9 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader10 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.Timer_ConnectionCheck = New System.Windows.Forms.Timer(Me.components)
         Me.StatusStrip_BPDebugger.SuspendLayout()
         Me.MenuStrip_BPDebugger.SuspendLayout()
         Me.SplitContainer1.Panel1.SuspendLayout()
         Me.SplitContainer1.Panel2.SuspendLayout()
         Me.SplitContainer1.SuspendLayout()
-        Me.ContextMenuStrip_Breakpoints.SuspendLayout()
         Me.TabControl2.SuspendLayout()
         Me.TabPage_Source.SuspendLayout()
         Me.TabPage_Diasm.SuspendLayout()
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Breakpoints.SuspendLayout()
+        Me.ContextMenuStrip_Breakpoints.SuspendLayout()
         Me.TabPage_Watchers.SuspendLayout()
         Me.TabPage_Entities.SuspendLayout()
         Me.SuspendLayout()
@@ -272,41 +272,6 @@ Partial Class FormDebugger
         Me.SplitContainer1.SplitterDistance = 715
         Me.SplitContainer1.TabIndex = 0
         '
-        'ContextMenuStrip_Breakpoints
-        '
-        Me.ContextMenuStrip_Breakpoints.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_BreakpointsEnableAll, Me.ToolStripMenuItem_BreakpointsDisableAll, Me.ToolStripSeparator1, Me.ToolStripMenuItem_BreakpointsSetValues})
-        Me.ContextMenuStrip_Breakpoints.Name = "ContextMenuStrip_Breakpoints"
-        Me.ContextMenuStrip_Breakpoints.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
-        Me.ContextMenuStrip_Breakpoints.ShowImageMargin = False
-        Me.ContextMenuStrip_Breakpoints.Size = New System.Drawing.Size(200, 76)
-        '
-        'ToolStripMenuItem_BreakpointsEnableAll
-        '
-        Me.ToolStripMenuItem_BreakpointsEnableAll.Name = "ToolStripMenuItem_BreakpointsEnableAll"
-        Me.ToolStripMenuItem_BreakpointsEnableAll.Size = New System.Drawing.Size(199, 22)
-        Me.ToolStripMenuItem_BreakpointsEnableAll.Text = "Enable all breakpoints"
-        '
-        'ToolStripMenuItem_BreakpointsDisableAll
-        '
-        Me.ToolStripMenuItem_BreakpointsDisableAll.Name = "ToolStripMenuItem_BreakpointsDisableAll"
-        Me.ToolStripMenuItem_BreakpointsDisableAll.Size = New System.Drawing.Size(199, 22)
-        Me.ToolStripMenuItem_BreakpointsDisableAll.Text = "Disable all breakpoints"
-        '
-        'ToolStripSeparator1
-        '
-        Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
-        Me.ToolStripSeparator1.Size = New System.Drawing.Size(196, 6)
-        '
-        'ToolStripMenuItem_BreakpointsSetValues
-        '
-        Me.ToolStripMenuItem_BreakpointsSetValues.Name = "ToolStripMenuItem_BreakpointsSetValues"
-        Me.ToolStripMenuItem_BreakpointsSetValues.Size = New System.Drawing.Size(199, 22)
-        Me.ToolStripMenuItem_BreakpointsSetValues.Text = "Set active breakpoint value..."
-        '
-        'Timer_ConnectionCheck
-        '
-        Me.Timer_ConnectionCheck.Interval = 10000
-        '
         'TabControl2
         '
         Me.TabControl2.Controls.Add(Me.TabPage_Source)
@@ -415,6 +380,37 @@ Partial Class FormDebugger
         Me.ColumnHeader4.Text = "Value"
         Me.ColumnHeader4.Width = 100
         '
+        'ContextMenuStrip_Breakpoints
+        '
+        Me.ContextMenuStrip_Breakpoints.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_BreakpointsEnableAll, Me.ToolStripMenuItem_BreakpointsDisableAll, Me.ToolStripSeparator1, Me.ToolStripMenuItem_BreakpointsSetValues})
+        Me.ContextMenuStrip_Breakpoints.Name = "ContextMenuStrip_Breakpoints"
+        Me.ContextMenuStrip_Breakpoints.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
+        Me.ContextMenuStrip_Breakpoints.ShowImageMargin = False
+        Me.ContextMenuStrip_Breakpoints.Size = New System.Drawing.Size(200, 76)
+        '
+        'ToolStripMenuItem_BreakpointsEnableAll
+        '
+        Me.ToolStripMenuItem_BreakpointsEnableAll.Name = "ToolStripMenuItem_BreakpointsEnableAll"
+        Me.ToolStripMenuItem_BreakpointsEnableAll.Size = New System.Drawing.Size(199, 22)
+        Me.ToolStripMenuItem_BreakpointsEnableAll.Text = "Enable all breakpoints"
+        '
+        'ToolStripMenuItem_BreakpointsDisableAll
+        '
+        Me.ToolStripMenuItem_BreakpointsDisableAll.Name = "ToolStripMenuItem_BreakpointsDisableAll"
+        Me.ToolStripMenuItem_BreakpointsDisableAll.Size = New System.Drawing.Size(199, 22)
+        Me.ToolStripMenuItem_BreakpointsDisableAll.Text = "Disable all breakpoints"
+        '
+        'ToolStripSeparator1
+        '
+        Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
+        Me.ToolStripSeparator1.Size = New System.Drawing.Size(196, 6)
+        '
+        'ToolStripMenuItem_BreakpointsSetValues
+        '
+        Me.ToolStripMenuItem_BreakpointsSetValues.Name = "ToolStripMenuItem_BreakpointsSetValues"
+        Me.ToolStripMenuItem_BreakpointsSetValues.Size = New System.Drawing.Size(199, 22)
+        Me.ToolStripMenuItem_BreakpointsSetValues.Text = "Set active breakpoint value..."
+        '
         'TabPage_Watchers
         '
         Me.TabPage_Watchers.Controls.Add(Me.ListView_Watchers)
@@ -495,6 +491,10 @@ Partial Class FormDebugger
         Me.ColumnHeader10.Text = "Classname"
         Me.ColumnHeader10.Width = 175
         '
+        'Timer_ConnectionCheck
+        '
+        Me.Timer_ConnectionCheck.Interval = 10000
+        '
         'FormDebugger
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -508,7 +508,7 @@ Partial Class FormDebugger
         Me.MainMenuStrip = Me.MenuStrip_BPDebugger
         Me.Name = "FormDebugger"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
-        Me.Text = "BasicPawn - Debugger"
+        Me.Text = "BasicPawn Debugger"
         Me.StatusStrip_BPDebugger.ResumeLayout(False)
         Me.StatusStrip_BPDebugger.PerformLayout()
         Me.MenuStrip_BPDebugger.ResumeLayout(False)
@@ -516,12 +516,12 @@ Partial Class FormDebugger
         Me.SplitContainer1.Panel1.ResumeLayout(False)
         Me.SplitContainer1.Panel2.ResumeLayout(False)
         Me.SplitContainer1.ResumeLayout(False)
-        Me.ContextMenuStrip_Breakpoints.ResumeLayout(False)
         Me.TabControl2.ResumeLayout(False)
         Me.TabPage_Source.ResumeLayout(False)
         Me.TabPage_Diasm.ResumeLayout(False)
         Me.TabControl1.ResumeLayout(False)
         Me.TabPage_Breakpoints.ResumeLayout(False)
+        Me.ContextMenuStrip_Breakpoints.ResumeLayout(False)
         Me.TabPage_Watchers.ResumeLayout(False)
         Me.TabPage_Entities.ResumeLayout(False)
         Me.ResumeLayout(False)

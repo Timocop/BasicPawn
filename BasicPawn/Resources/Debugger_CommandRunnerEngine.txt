@@ -42,7 +42,7 @@ public OnGameFrame()
 				static String:sMapname[PLATFORM_MAX_PATH];
 				GetCurrentMap(sMapname, sizeof(sMapname));
 				
-				ForceChangeLevel(sMapname, "BasicPawn - Debugger Command");
+				ForceChangeLevel(sMapname, "BasicPawn Debugger Command");
 				continue;
 			}
 			

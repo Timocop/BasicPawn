@@ -67,125 +67,142 @@ Public Class FormDebugger
 
     Private Function RefreshSource() As Boolean
         Try
-            Dim iCompilerType As ClassTextEditorTools.ENUM_COMPILER_TYPE = ClassTextEditorTools.ENUM_COMPILER_TYPE.UNKNOWN
+            Using mFormProgress As New FormProgress
+                mFormProgress.Text = "BasicPawn Debugger - Generating source..."
+                mFormProgress.Show(Me)
+                mFormProgress.m_Progress = 0
 
-            'Create Pre-Process source
-            Dim sLstSource As String = g_mFormMain.g_ClassTextEditorTools.GetCompilerPreProcessCode(True, True, g_sLastPreProcessSourceFile, True, Nothing, iCompilerType)
-            If (String.IsNullOrEmpty(sLstSource)) Then
-                Return False
-            End If
+                Dim iCompilerType As ClassTextEditorTools.ENUM_COMPILER_TYPE = ClassTextEditorTools.ENUM_COMPILER_TYPE.UNKNOWN
 
-            Select Case (iCompilerType)
-                Case ClassTextEditorTools.ENUM_COMPILER_TYPE.SOURCEPAWN
-                    g_iLanguage = ClassSyntaxTools.ENUM_LANGUAGE_TYPE.SOURCEPAWN
+                'Create Pre-Process source
+                Dim sLstSource As String = g_mFormMain.g_ClassTextEditorTools.GetCompilerPreProcessCode(True, True, g_sLastPreProcessSourceFile, True, Nothing, iCompilerType)
+                If (String.IsNullOrEmpty(sLstSource)) Then
+                    Return False
+                End If
 
-                Case ClassTextEditorTools.ENUM_COMPILER_TYPE.AMXX
-                    g_iLanguage = ClassSyntaxTools.ENUM_LANGUAGE_TYPE.AMXMODX
+                mFormProgress.m_Progress = 20
 
-                Case ClassTextEditorTools.ENUM_COMPILER_TYPE.AMX
-                    g_iLanguage = ClassSyntaxTools.ENUM_LANGUAGE_TYPE.PAWN
+                Select Case (iCompilerType)
+                    Case ClassTextEditorTools.ENUM_COMPILER_TYPE.SOURCEPAWN
+                        g_iLanguage = ClassSyntaxTools.ENUM_LANGUAGE_TYPE.SOURCEPAWN
 
-                Case ClassTextEditorTools.ENUM_COMPILER_TYPE.UNKNOWN
-                    Throw New ArgumentException("Unsupported compiler")
-            End Select
+                    Case ClassTextEditorTools.ENUM_COMPILER_TYPE.AMXX
+                        g_iLanguage = ClassSyntaxTools.ENUM_LANGUAGE_TYPE.AMXMODX
 
-            'TODO: Add AMX Mod X support
-            If (iCompilerType <> ClassTextEditorTools.ENUM_COMPILER_TYPE.SOURCEPAWN) Then
-                Throw New ArgumentException("Unsupported compiler. SourceMod required.")
-            End If
+                    Case ClassTextEditorTools.ENUM_COMPILER_TYPE.AMX
+                        g_iLanguage = ClassSyntaxTools.ENUM_LANGUAGE_TYPE.PAWN
 
-            If (String.IsNullOrEmpty(g_sLastPreProcessSourceFile)) Then
-                Throw New ArgumentException("Last Pre-Process source invalid")
-            End If
+                    Case ClassTextEditorTools.ENUM_COMPILER_TYPE.UNKNOWN
+                        Throw New ArgumentException("Unsupported compiler")
+                End Select
+
+                'TODO: Add AMX Mod X support
+                If (iCompilerType <> ClassTextEditorTools.ENUM_COMPILER_TYPE.SOURCEPAWN) Then
+                    Throw New ArgumentException("Unsupported compiler. SourceMod required.")
+                End If
+
+                If (String.IsNullOrEmpty(g_sLastPreProcessSourceFile)) Then
+                    Throw New ArgumentException("Last Pre-Process source invalid")
+                End If
 
 
-            g_ClassDebuggerRunner.g_ClassPreProcess.FixPreProcessFiles(sLstSource)
-            'Replace the temp source file with the currently opened one
-            sLstSource = Regex.Replace(sLstSource,
+                g_ClassDebuggerRunner.g_ClassPreProcess.FixPreProcessFiles(sLstSource)
+                'Replace the temp source file with the currently opened one
+                sLstSource = Regex.Replace(sLstSource,
                                        String.Format("^\s*\#file ""{0}""\s*$", Regex.Escape(g_sLastPreProcessSourceFile)),
                                        String.Format("#file ""{0}""", g_ClassDebuggerRunner.m_CurrentSourceFile),
                                        RegexOptions.IgnoreCase Or RegexOptions.Multiline)
 
-            g_ClassDebuggerRunner.g_ClassPreProcess.AnalysisSourceLines(sLstSource)
-            g_ClassDebuggerParser.UpdateBreakpoints(sLstSource, False, g_iLanguage)
-            g_ClassDebuggerParser.UpdateWatchers(sLstSource, False, g_iLanguage)
+                g_ClassDebuggerRunner.g_ClassPreProcess.AnalysisSourceLines(sLstSource)
+                g_ClassDebuggerParser.UpdateBreakpoints(sLstSource, False, g_iLanguage)
+                g_ClassDebuggerParser.UpdateWatchers(sLstSource, False, g_iLanguage)
 
-            'Create DIASM code
-            Dim sAsmLstSource As String = sLstSource
-            With New ClassDebuggerParser(g_mFormMain)
-                .CleanupDebugPlaceholder(sAsmLstSource, g_iLanguage)
-            End With
+                mFormProgress.m_Progress = 40
 
-            iCompilerType = ClassTextEditorTools.ENUM_COMPILER_TYPE.UNKNOWN
-
-            Dim sAsmSource As String = g_mFormMain.g_ClassTextEditorTools.GetCompilerAssemblyCode(True, sAsmLstSource, Nothing, IO.Path.GetDirectoryName(g_sLastPreProcessSourceFile), Nothing, Nothing, Nothing, True, Nothing, iCompilerType)
-            If (String.IsNullOrEmpty(sAsmSource)) Then
-                Return False
-            End If
-
-            If (iCompilerType <> ClassTextEditorTools.ENUM_COMPILER_TYPE.SOURCEPAWN) Then
-                Throw New ArgumentException("Unsupported compiler")
-            End If
-
-
-
-            TextEditorControlEx_DebuggerSource.Document.TextContent = sLstSource
-            TextEditorControlEx_DebuggerDiasm.Document.TextContent = sAsmSource
-
-            TextEditorControlEx_DebuggerSource.Refresh()
-            TextEditorControlEx_DebuggerDiasm.Refresh()
-
-            g_mFormMain.g_ClassSyntaxTools.UpdateTextEditorSyntax()
-
-            TextEditorControlEx_DebuggerSource.Document.MarkerStrategy.RemoveAll(Function() True)
-
-            'Add breakpoints
-            ListView_Breakpoints.BeginUpdate()
-            ListView_Breakpoints.Items.Clear()
-            For Each mBreakpointItem In g_ClassDebuggerParser.g_lBreakpointList
-                Dim mListViewItemData As New ClassListViewItemData(New String() {mBreakpointItem.iLine.ToString, mBreakpointItem.sArguments, ""})
-                mListViewItemData.g_mData("GUID") = mBreakpointItem.sGUID
-
-                With ListView_Breakpoints.Items.Add(mListViewItemData)
-                    .Checked = True
+                'Create DIASM code
+                Dim sAsmLstSource As String = sLstSource
+                With New ClassDebuggerParser(g_mFormMain)
+                    .CleanupDebugPlaceholder(sAsmLstSource, g_iLanguage)
                 End With
 
-                Dim marker As New ICSharpCode.TextEditor.Document.TextMarker(mBreakpointItem.iOffset, mBreakpointItem.iTotalLenght, ICSharpCode.TextEditor.Document.TextMarkerType.Underlined, Color.DarkOrange)
-                TextEditorControlEx_DebuggerSource.Document.MarkerStrategy.AddMarker(marker)
-            Next
-            ListView_Breakpoints.EndUpdate()
+                iCompilerType = ClassTextEditorTools.ENUM_COMPILER_TYPE.UNKNOWN
 
-            'Add watchers
-            ListView_Watchers.BeginUpdate()
-            ListView_Watchers.Items.Clear()
-            For Each mWatcherItem In g_ClassDebuggerParser.g_lWatcherList
-                Dim mListViewItemData As New ClassListViewItemData(New String() {mWatcherItem.iLine.ToString, mWatcherItem.sArguments, "", "0"})
-                mListViewItemData.g_mData("GUID") = mWatcherItem.sGUID
+                Dim sAsmSource As String = g_mFormMain.g_ClassTextEditorTools.GetCompilerAssemblyCode(True, sAsmLstSource, Nothing, IO.Path.GetDirectoryName(g_sLastPreProcessSourceFile), Nothing, Nothing, Nothing, True, Nothing, iCompilerType)
+                If (String.IsNullOrEmpty(sAsmSource)) Then
+                    Return False
+                End If
 
-                ListView_Watchers.Items.Add(mListViewItemData)
+                If (iCompilerType <> ClassTextEditorTools.ENUM_COMPILER_TYPE.SOURCEPAWN) Then
+                    Throw New ArgumentException("Unsupported compiler")
+                End If
 
-                Dim marker As New ICSharpCode.TextEditor.Document.TextMarker(mWatcherItem.iOffset, mWatcherItem.iTotalLenght, ICSharpCode.TextEditor.Document.TextMarkerType.Underlined, Color.DarkOrange)
-                TextEditorControlEx_DebuggerSource.Document.MarkerStrategy.AddMarker(marker)
-            Next
-            ListView_Watchers.EndUpdate()
+                mFormProgress.m_Progress = 60
 
-            'Add entities
-            ListView_Entities.BeginUpdate()
-            ListView_Entities.Items.Clear()
-            For i = 0 To 2048 - 1
-                Dim mListViewItemData As New ClassListViewItemData(New String() {i.ToString, "", ""})
-                mListViewItemData.g_mData("Index") = i
-                mListViewItemData.g_mData("EntityRef") = 0
-                mListViewItemData.g_mData("Classname") = ""
-                mListViewItemData.g_mData("Ticks") = Nothing
 
-                ListView_Entities.Items.Add(mListViewItemData)
-            Next
-            ListView_Entities.EndUpdate()
 
-            ClassControlStyle.UpdateControls(Me)
+                TextEditorControlEx_DebuggerSource.Document.TextContent = sLstSource
+                TextEditorControlEx_DebuggerDiasm.Document.TextContent = sAsmSource
 
-            g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnDebuggerRefresh(Me))
+                TextEditorControlEx_DebuggerSource.Refresh()
+                TextEditorControlEx_DebuggerDiasm.Refresh()
+
+                g_mFormMain.g_ClassSyntaxTools.UpdateTextEditorSyntax()
+
+                TextEditorControlEx_DebuggerSource.Document.MarkerStrategy.RemoveAll(Function() True)
+
+                mFormProgress.m_Progress = 80
+
+                'Add breakpoints
+                ListView_Breakpoints.BeginUpdate()
+                ListView_Breakpoints.Items.Clear()
+                For Each mBreakpointItem In g_ClassDebuggerParser.g_lBreakpointList
+                    Dim mListViewItemData As New ClassListViewItemData(New String() {mBreakpointItem.iLine.ToString, mBreakpointItem.sArguments, ""})
+                    mListViewItemData.g_mData("GUID") = mBreakpointItem.sGUID
+
+                    With ListView_Breakpoints.Items.Add(mListViewItemData)
+                        .Checked = True
+                    End With
+
+                    Dim marker As New ICSharpCode.TextEditor.Document.TextMarker(mBreakpointItem.iOffset, mBreakpointItem.iTotalLenght, ICSharpCode.TextEditor.Document.TextMarkerType.Underlined, Color.DarkOrange)
+                    TextEditorControlEx_DebuggerSource.Document.MarkerStrategy.AddMarker(marker)
+                Next
+                ListView_Breakpoints.EndUpdate()
+
+                'Add watchers
+                ListView_Watchers.BeginUpdate()
+                ListView_Watchers.Items.Clear()
+                For Each mWatcherItem In g_ClassDebuggerParser.g_lWatcherList
+                    Dim mListViewItemData As New ClassListViewItemData(New String() {mWatcherItem.iLine.ToString, mWatcherItem.sArguments, "", "0"})
+                    mListViewItemData.g_mData("GUID") = mWatcherItem.sGUID
+
+                    ListView_Watchers.Items.Add(mListViewItemData)
+
+                    Dim marker As New ICSharpCode.TextEditor.Document.TextMarker(mWatcherItem.iOffset, mWatcherItem.iTotalLenght, ICSharpCode.TextEditor.Document.TextMarkerType.Underlined, Color.DarkOrange)
+                    TextEditorControlEx_DebuggerSource.Document.MarkerStrategy.AddMarker(marker)
+                Next
+                ListView_Watchers.EndUpdate()
+
+                'Add entities
+                ListView_Entities.BeginUpdate()
+                ListView_Entities.Items.Clear()
+                For i = 0 To 2048 - 1
+                    Dim mListViewItemData As New ClassListViewItemData(New String() {i.ToString, "", ""})
+                    mListViewItemData.g_mData("Index") = i
+                    mListViewItemData.g_mData("EntityRef") = 0
+                    mListViewItemData.g_mData("Classname") = ""
+                    mListViewItemData.g_mData("Ticks") = Nothing
+
+                    ListView_Entities.Items.Add(mListViewItemData)
+                Next
+                ListView_Entities.EndUpdate()
+
+                mFormProgress.m_Progress = 100
+
+                ClassControlStyle.UpdateControls(Me)
+
+                g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnDebuggerRefresh(Me))
+
+            End Using
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
             Return False

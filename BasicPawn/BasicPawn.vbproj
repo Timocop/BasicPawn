@@ -299,6 +299,12 @@
     <Compile Include="Controls and Forms\FormOpenTabFromInstances.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Controls and Forms\FormProgress.Designer.vb">
+      <DependentUpon>FormProgress.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controls and Forms\FormProgress.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Controls and Forms\FormToolTip.Designer.vb">
       <DependentUpon>FormToolTip.vb</DependentUpon>
     </Compile>
@@ -420,6 +426,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls and Forms\FormOpenTabFromInstances.resx">
       <DependentUpon>FormOpenTabFromInstances.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls and Forms\FormProgress.resx">
+      <DependentUpon>FormProgress.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls and Forms\FormToolTip.resx">
       <DependentUpon>FormToolTip.vb</DependentUpon>

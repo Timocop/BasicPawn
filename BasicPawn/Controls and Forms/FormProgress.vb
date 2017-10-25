@@ -1,0 +1,56 @@
+﻿'BasicPawn
+'Copyright(C) 2017 TheTimocop
+
+'This program Is free software: you can redistribute it And/Or modify
+'it under the terms Of the GNU General Public License As published by
+'the Free Software Foundation, either version 3 Of the License, Or
+'(at your option) any later version.
+
+'This program Is distributed In the hope that it will be useful,
+'but WITHOUT ANY WARRANTY; without even the implied warranty Of
+'MERCHANTABILITY Or FITNESS FOR A PARTICULAR PURPOSE.  See the
+'GNU General Public License For more details.
+
+'You should have received a copy Of the GNU General Public License
+'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
+
+
+Public Class FormProgress
+    Public Sub New()
+
+        ' This call is required by the designer.
+        InitializeComponent()
+
+        ' Add any initialization after the InitializeComponent() call. 
+        Panel_FooterControl.Name &= "@FooterControl"
+        Panel_FooterDarkControl.Name &= "@FooterDarkControl"
+    End Sub
+
+    Private Sub FormProgress_Load(sender As Object, e As EventArgs) Handles Me.Load
+        ClassControlStyle.UpdateControls(Me)
+    End Sub
+
+    Private Sub FormProgress_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+        If (e.CloseReason = CloseReason.UserClosing) Then
+            e.Cancel = True
+        End If
+    End Sub
+
+    Property m_Progress As Integer
+        Get
+            Return ProgressBar_Progress.Value
+        End Get
+        Set(value As Integer)
+            value = Math.Min(value, ProgressBar_Progress.Maximum)
+
+            'Skip animation
+            Dim tmpInt = ProgressBar_Progress.Maximum
+            ProgressBar_Progress.Maximum += 1
+            ProgressBar_Progress.Value = value + 1
+            ProgressBar_Progress.Value = value
+            ProgressBar_Progress.Maximum = tmpInt
+
+            Me.Refresh()
+        End Set
+    End Property
+End Class
