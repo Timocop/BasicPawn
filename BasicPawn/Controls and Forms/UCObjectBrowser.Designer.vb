@@ -54,7 +54,7 @@ Partial Class UCObjectBrowser
         Me.ContextMenuStrip_ObjectBrowser.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_OpenFile, Me.ToolStripMenuItem_Copy, Me.ToolStripSeparator1, Me.ToolStripMenuItem_ListReferences, Me.ToolStripSeparator2, Me.ToolStripMenuItem_ExpandAll, Me.ToolStripMenuItem_ExpandSources, Me.ToolStripMenuItem_CollapseAll})
         Me.ContextMenuStrip_ObjectBrowser.Name = "ContextMenuStrip_ObjectBrowser"
         Me.ContextMenuStrip_ObjectBrowser.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
-        Me.ContextMenuStrip_ObjectBrowser.Size = New System.Drawing.Size(175, 170)
+        Me.ContextMenuStrip_ObjectBrowser.Size = New System.Drawing.Size(175, 148)
         '
         'ToolStripMenuItem_OpenFile
         '
@@ -109,11 +109,10 @@ Partial Class UCObjectBrowser
         '
         Me.TextboxWatermark_Search.Dock = System.Windows.Forms.DockStyle.Top
         Me.TextboxWatermark_Search.Location = New System.Drawing.Point(0, 0)
-        Me.TextboxWatermark_Search.m_sWatermarkText = "Search..."
+        Me.TextboxWatermark_Search.m_WatermarkText = "Search..."
         Me.TextboxWatermark_Search.Name = "TextboxWatermark_Search"
         Me.TextboxWatermark_Search.Size = New System.Drawing.Size(269, 22)
         Me.TextboxWatermark_Search.TabIndex = 2
-        Me.TextboxWatermark_Search.Text = "Search..."
         '
         'UCObjectBrowser
         '

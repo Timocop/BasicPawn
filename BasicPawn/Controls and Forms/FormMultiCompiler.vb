@@ -117,8 +117,16 @@ Public Class FormMultiCompiler
                                                                                    End With
                                                                                End If
 
-                                                                               Return g_mMainForm.g_ClassTextEditorTools.CompileSource(g_bTestingOnly, sSource, sOutputFile, IO.Path.GetDirectoryName(sSourceFile), ClassConfigs.m_ActiveConfig.g_sCompilerPath, ClassConfigs.m_ActiveConfig.g_sIncludeFolders, sSourceFile, sCompilerOutput)
-                                                                           End Function)
+                                                                                 Return g_mMainForm.g_ClassTextEditorTools.CompileSource(g_bTestingOnly,
+                                                                                                                                       sSource,
+                                                                                                                                       sOutputFile,
+                                                                                                                                       IO.Path.GetDirectoryName(sSourceFile),
+                                                                                                                                       ClassConfigs.m_ActiveConfig.g_sCompilerPath,
+                                                                                                                                       ClassConfigs.m_ActiveConfig.g_sIncludeFolders,
+                                                                                                                                       sSourceFile,
+                                                                                                                                       True,
+                                                                                                                                       sCompilerOutput)
+                                                                             End Function)
 
                 Dim bWarning As Boolean = Regex.Match(sCompilerOutput, "\s+[0-9]+\s+\b(Warning|Warnings)\b\.").Success
 

@@ -230,12 +230,11 @@ Partial Class UCProjectBrowser
         '
         Me.TextboxWatermark_Search.Dock = System.Windows.Forms.DockStyle.Top
         Me.TextboxWatermark_Search.Location = New System.Drawing.Point(0, 0)
-        Me.TextboxWatermark_Search.m_sWatermarkText = "Search..."
+        Me.TextboxWatermark_Search.m_WatermarkText = "Search..."
         Me.TextboxWatermark_Search.Margin = New System.Windows.Forms.Padding(0)
         Me.TextboxWatermark_Search.Name = "TextboxWatermark_Search"
         Me.TextboxWatermark_Search.Size = New System.Drawing.Size(276, 22)
         Me.TextboxWatermark_Search.TabIndex = 1
-        Me.TextboxWatermark_Search.Text = "Search..."
         '
         'UCProjectBrowser
         '

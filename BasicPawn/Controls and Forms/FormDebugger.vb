@@ -70,7 +70,7 @@ Public Class FormDebugger
             Dim iCompilerType As ClassTextEditorTools.ENUM_COMPILER_TYPE = ClassTextEditorTools.ENUM_COMPILER_TYPE.UNKNOWN
 
             'Create Pre-Process source
-            Dim sLstSource As String = g_mFormMain.g_ClassTextEditorTools.GetCompilerPreProcessCode(True, True, g_sLastPreProcessSourceFile, Nothing, iCompilerType)
+            Dim sLstSource As String = g_mFormMain.g_ClassTextEditorTools.GetCompilerPreProcessCode(True, True, g_sLastPreProcessSourceFile, True, Nothing, iCompilerType)
             If (String.IsNullOrEmpty(sLstSource)) Then
                 Return False
             End If
@@ -118,7 +118,7 @@ Public Class FormDebugger
 
             iCompilerType = ClassTextEditorTools.ENUM_COMPILER_TYPE.UNKNOWN
 
-            Dim sAsmSource As String = g_mFormMain.g_ClassTextEditorTools.GetCompilerAssemblyCode(True, sAsmLstSource, Nothing, IO.Path.GetDirectoryName(g_sLastPreProcessSourceFile), Nothing, Nothing, Nothing, Nothing, iCompilerType)
+            Dim sAsmSource As String = g_mFormMain.g_ClassTextEditorTools.GetCompilerAssemblyCode(True, sAsmLstSource, Nothing, IO.Path.GetDirectoryName(g_sLastPreProcessSourceFile), Nothing, Nothing, Nothing, True, Nothing, iCompilerType)
             If (String.IsNullOrEmpty(sAsmSource)) Then
                 Return False
             End If

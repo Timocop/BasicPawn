@@ -23,7 +23,7 @@ Public Class FormSettings
     Private g_bRestoreConfigs As Boolean = False
     Private g_bIgnoreChange As Boolean = False
     Private g_bConfigSettingsChanged As Boolean = False
-    Private g_bComboBoxModTypeIgnore As Boolean = False
+    Private g_bComboBoxIgnoreEvent As Boolean = False
 
     Public Sub New(f As FormMain)
         g_mFormMain = f
@@ -33,13 +33,57 @@ Public Class FormSettings
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call. 
-        g_bComboBoxModTypeIgnore = True
+        g_bComboBoxIgnoreEvent = True
         ComboBox_ModType.Items.Clear()
         ComboBox_ModType.Items.Add("Auto-detect")
         ComboBox_ModType.Items.Add("SourceMod")
         ComboBox_ModType.Items.Add("AMX Mod X")
         ComboBox_ModType.SelectedIndex = 0
-        g_bComboBoxModTypeIgnore = False
+        g_bComboBoxIgnoreEvent = False
+
+        'SourceMod
+        If (True) Then
+            g_bComboBoxIgnoreEvent = True
+            ComboBox_COOptimizationLevelSP.Items.Clear()
+            ComboBox_COOptimizationLevelSP.Items.Add("Default")
+            ComboBox_COOptimizationLevelSP.Items.Add("0 - No optimization")
+            ComboBox_COOptimizationLevelSP.Items.Add("2 - Full optimizations")
+
+            ComboBox_COVerbosityLevelSP.Items.Clear()
+            ComboBox_COVerbosityLevelSP.Items.Add("Default")
+            ComboBox_COVerbosityLevelSP.Items.Add("0 - Quiet")
+            ComboBox_COVerbosityLevelSP.Items.Add("1 - Normal")
+            ComboBox_COVerbosityLevelSP.Items.Add("2 - Verbose")
+
+            ComboBox_COTreatWarningsAsErrorsSP.Items.Clear()
+            ComboBox_COTreatWarningsAsErrorsSP.Items.Add("Default")
+            ComboBox_COTreatWarningsAsErrorsSP.Items.Add("True")
+            ComboBox_COTreatWarningsAsErrorsSP.Items.Add("False")
+            g_bComboBoxIgnoreEvent = False
+        End If
+
+        'AMX Mod X
+        If (True) Then
+            g_bComboBoxIgnoreEvent = True
+            ComboBox_COSymbolicInformationAMXX.Items.Clear()
+            ComboBox_COSymbolicInformationAMXX.Items.Add("Default")
+            ComboBox_COSymbolicInformationAMXX.Items.Add("0 - No symbolic information, no run-time checks")
+            ComboBox_COSymbolicInformationAMXX.Items.Add("1 - Run-time checks, no symbolic information")
+            ComboBox_COSymbolicInformationAMXX.Items.Add("2 - Full debug information And dynamic checking")
+            ComboBox_COSymbolicInformationAMXX.Items.Add("3 - Full debug information, dynamic checking, no optimization")
+
+            ComboBox_COVerbosityLevelAMXX.Items.Clear()
+            ComboBox_COVerbosityLevelAMXX.Items.Add("Default")
+            ComboBox_COVerbosityLevelAMXX.Items.Add("0 - Quiet")
+            ComboBox_COVerbosityLevelAMXX.Items.Add("1 - Normal")
+            ComboBox_COVerbosityLevelAMXX.Items.Add("2 - Verbose")
+
+            ComboBox_COTreatWarningsAsErrorsAMXX.Items.Clear()
+            ComboBox_COTreatWarningsAsErrorsAMXX.Items.Add("Default")
+            ComboBox_COTreatWarningsAsErrorsAMXX.Items.Add("True")
+            ComboBox_COTreatWarningsAsErrorsAMXX.Items.Add("False")
+            g_bComboBoxIgnoreEvent = False
+        End If
 
         If (ComboBox_ModType.Items.Count <> [Enum].GetNames(GetType(ClassConfigs.STRUC_CONFIG_ITEM.ENUM_MOD_TYPE)).Length) Then
             Throw New ArgumentException("ComboBox_ModType range")
@@ -287,20 +331,40 @@ Public Class FormSettings
                 GroupBox_ConfigSettings.Enabled = False
                 GroupBox_ConfigSettings.Visible = False
 
-                'General
-                TextBox_ConfigName.Text = sName
-                RadioButton_ConfigSettingAutomatic.Checked = True
-                TextBox_CompilerPath.Text = ""
-                TextBox_IncludeFolder.Text = ""
-                TextBox_OutputFolder.Text = ""
-                CheckBox_ConfigIsDefault.Checked = False
-                ComboBox_ModType.SelectedIndex = 0
-                'Debugging
-                TextBox_GameFolder.Text = ""
-                TextBox_SourceModFolder.Text = ""
-                'Misc
-                TextBox_Shell.Text = ""
-                TextBox_SyntaxPath.Text = ""
+                'Fill controls
+                If (True) Then
+                    'General
+                    TextBox_ConfigName.Text = sName
+                    RadioButton_ConfigSettingAutomatic.Checked = True
+                    TextBox_CompilerPath.Text = ""
+                    TextBox_IncludeFolder.Text = ""
+                    TextBox_OutputFolder.Text = ""
+                    CheckBox_ConfigIsDefault.Checked = False
+                    ComboBox_ModType.SelectedIndex = 0
+                    'Compiler Options
+                    '   (SourcePawn)
+                    ComboBox_COOptimizationLevelSP.SelectedIndex = 0
+                    ComboBox_COVerbosityLevelSP.SelectedIndex = 0
+                    ComboBox_COTreatWarningsAsErrorsSP.SelectedIndex = 0
+                    TextBoxEx_COIgnoredWarningsSP.Text = ""
+                    TextBoxEx_CODefineConstantsSP.Text = ""
+                    TextBoxEx_COIgnoredWarningsSP.ShowWatermark()
+                    TextBoxEx_CODefineConstantsSP.ShowWatermark()
+                    '   (AMX Mod X) 
+                    ComboBox_COVerbosityLevelAMXX.SelectedIndex = 0
+                    ComboBox_COTreatWarningsAsErrorsAMXX.SelectedIndex = 0
+                    ComboBox_COSymbolicInformationAMXX.SelectedIndex = 0
+                    TextBoxEx_COIgnoredWarningsAMXX.Text = ""
+                    TextBoxEx_CODefineConstantsAMXX.Text = ""
+                    TextBoxEx_COIgnoredWarningsAMXX.ShowWatermark()
+                    TextBoxEx_CODefineConstantsAMXX.ShowWatermark()
+                    'Debugging
+                    TextBox_GameFolder.Text = ""
+                    TextBox_SourceModFolder.Text = ""
+                    'Misc
+                    TextBox_Shell.Text = ""
+                    TextBox_SyntaxPath.Text = ""
+                End If
 
                 g_bIgnoreChange = False
                 m_ConfigSettingsChanged = False
@@ -314,20 +378,40 @@ Public Class FormSettings
             GroupBox_ConfigSettings.Enabled = True
             GroupBox_ConfigSettings.Visible = True
 
-            'General
-            TextBox_ConfigName.Text = sName
-            RadioButton_ConfigSettingAutomatic.Checked = True
-            TextBox_CompilerPath.Text = ""
-            TextBox_IncludeFolder.Text = ""
-            TextBox_OutputFolder.Text = ""
-            CheckBox_ConfigIsDefault.Checked = False
-            ComboBox_ModType.SelectedIndex = 0
-            'Debugging
-            TextBox_GameFolder.Text = ""
-            TextBox_SourceModFolder.Text = ""
-            'Misc
-            TextBox_Shell.Text = ""
-            TextBox_SyntaxPath.Text = ""
+            'Fill controls
+            If (True) Then
+                'General
+                TextBox_ConfigName.Text = sName
+                RadioButton_ConfigSettingAutomatic.Checked = True
+                TextBox_CompilerPath.Text = ""
+                TextBox_IncludeFolder.Text = ""
+                TextBox_OutputFolder.Text = ""
+                CheckBox_ConfigIsDefault.Checked = False
+                ComboBox_ModType.SelectedIndex = 0
+                'Compiler Options
+                '   (SourcePawn)
+                ComboBox_COOptimizationLevelSP.SelectedIndex = 0
+                ComboBox_COVerbosityLevelSP.SelectedIndex = 0
+                ComboBox_COTreatWarningsAsErrorsSP.SelectedIndex = 0
+                TextBoxEx_COIgnoredWarningsSP.Text = ""
+                TextBoxEx_CODefineConstantsSP.Text = ""
+                TextBoxEx_COIgnoredWarningsSP.ShowWatermark()
+                TextBoxEx_CODefineConstantsSP.ShowWatermark()
+                '   (AMX Mod X) 
+                ComboBox_COVerbosityLevelAMXX.SelectedIndex = 0
+                ComboBox_COTreatWarningsAsErrorsAMXX.SelectedIndex = 0
+                ComboBox_COSymbolicInformationAMXX.SelectedIndex = 0
+                TextBoxEx_COIgnoredWarningsAMXX.Text = ""
+                TextBoxEx_CODefineConstantsAMXX.Text = ""
+                TextBoxEx_COIgnoredWarningsAMXX.ShowWatermark()
+                TextBoxEx_CODefineConstantsAMXX.ShowWatermark()
+                'Debugging
+                TextBox_GameFolder.Text = ""
+                TextBox_SourceModFolder.Text = ""
+                'Misc
+                TextBox_Shell.Text = ""
+                TextBox_SyntaxPath.Text = ""
+            End If
 
             g_bIgnoreChange = False
             m_ConfigSettingsChanged = False
@@ -341,20 +425,92 @@ Public Class FormSettings
 
             g_bIgnoreChange = True
 
-            'General
-            RadioButton_ConfigSettingAutomatic.Checked = True
-            RadioButton_ConfigSettingManual.Checked = (mConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.CONFIG)
-            TextBox_CompilerPath.Text = mConfig.g_sCompilerPath
-            TextBox_IncludeFolder.Text = mConfig.g_sIncludeFolders
-            TextBox_OutputFolder.Text = mConfig.g_sOutputFolder
-            CheckBox_ConfigIsDefault.Checked = mConfig.g_bAutoload
-            ComboBox_ModType.SelectedIndex = mConfig.g_iModType
-            'Debugging
-            TextBox_GameFolder.Text = mConfig.g_sDebugGameFolder
-            TextBox_SourceModFolder.Text = mConfig.g_sDebugSourceModFolder
-            'Misc
-            TextBox_Shell.Text = mConfig.g_sExecuteShell
-            TextBox_SyntaxPath.Text = mConfig.g_sSyntaxHighlightingPath
+            'Fill controls
+            If (True) Then
+                'General
+                RadioButton_ConfigSettingAutomatic.Checked = True
+                RadioButton_ConfigSettingManual.Checked = (mConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.CONFIG)
+                TextBox_CompilerPath.Text = mConfig.g_sCompilerPath
+                TextBox_IncludeFolder.Text = mConfig.g_sIncludeFolders
+                TextBox_OutputFolder.Text = mConfig.g_sOutputFolder
+                CheckBox_ConfigIsDefault.Checked = mConfig.g_bAutoload
+                ComboBox_ModType.SelectedIndex = mConfig.g_iModType
+                'Compiler Options
+                '   SourcePawn
+                If (True) Then
+                    Select Case (mConfig.g_mCompilerOptionsSP.g_iOptimizationLevel)
+                        Case 0
+                            ComboBox_COOptimizationLevelSP.SelectedIndex = 1
+                        Case 2
+                            ComboBox_COOptimizationLevelSP.SelectedIndex = 2
+                    End Select
+
+                    Select Case (mConfig.g_mCompilerOptionsSP.g_iVerbosityLevel)
+                        Case 0
+                            ComboBox_COVerbosityLevelSP.SelectedIndex = 1
+                        Case 1
+                            ComboBox_COVerbosityLevelSP.SelectedIndex = 2
+                        Case 2
+                            ComboBox_COVerbosityLevelSP.SelectedIndex = 3
+                        Case 3
+                            ComboBox_COVerbosityLevelSP.SelectedIndex = 4
+                    End Select
+
+                    Select Case (mConfig.g_mCompilerOptionsSP.g_iTreatWarningsAsErrors)
+                        Case 1
+                            ComboBox_COTreatWarningsAsErrorsSP.SelectedIndex = 1
+                        Case 0
+                            ComboBox_COTreatWarningsAsErrorsSP.SelectedIndex = 2
+                    End Select
+
+                    TextBoxEx_COIgnoredWarningsSP.Text = ClassConfigs.STRUC_CONFIG_ITEM.CompilerOptions.IgnoredWarningsToString(mConfig.g_mCompilerOptionsSP.g_lIgnoredWarnings)
+                    TextBoxEx_CODefineConstantsSP.Text = ClassConfigs.STRUC_CONFIG_ITEM.CompilerOptions.DefineConstantsToString(mConfig.g_mCompilerOptionsSP.g_mDefineConstants)
+                    TextBoxEx_COIgnoredWarningsSP.ShowWatermark()
+                    TextBoxEx_CODefineConstantsSP.ShowWatermark()
+                End If
+                '   AMX Mod X
+                If (True) Then
+                    Select Case (mConfig.g_mCompilerOptionsAMXX.g_iSymbolicInformation)
+                        Case 0
+                            ComboBox_COSymbolicInformationAMXX.SelectedIndex = 1
+                        Case 1
+                            ComboBox_COSymbolicInformationAMXX.SelectedIndex = 2
+                        Case 2
+                            ComboBox_COSymbolicInformationAMXX.SelectedIndex = 3
+                        Case 3
+                            ComboBox_COSymbolicInformationAMXX.SelectedIndex = 4
+                    End Select
+
+                    Select Case (mConfig.g_mCompilerOptionsAMXX.g_iVerbosityLevel)
+                        Case 0
+                            ComboBox_COVerbosityLevelAMXX.SelectedIndex = 1
+                        Case 1
+                            ComboBox_COVerbosityLevelAMXX.SelectedIndex = 2
+                        Case 2
+                            ComboBox_COVerbosityLevelAMXX.SelectedIndex = 3
+                        Case 3
+                            ComboBox_COVerbosityLevelAMXX.SelectedIndex = 4
+                    End Select
+
+                    Select Case (mConfig.g_mCompilerOptionsAMXX.g_iTreatWarningsAsErrors)
+                        Case 1
+                            ComboBox_COTreatWarningsAsErrorsAMXX.SelectedIndex = 1
+                        Case 0
+                            ComboBox_COTreatWarningsAsErrorsAMXX.SelectedIndex = 2
+                    End Select
+
+                    TextBoxEx_COIgnoredWarningsAMXX.Text = ClassConfigs.STRUC_CONFIG_ITEM.CompilerOptions.IgnoredWarningsToString(mConfig.g_mCompilerOptionsAMXX.g_lIgnoredWarnings)
+                    TextBoxEx_CODefineConstantsAMXX.Text = ClassConfigs.STRUC_CONFIG_ITEM.CompilerOptions.DefineConstantsToString(mConfig.g_mCompilerOptionsAMXX.g_mDefineConstants)
+                    TextBoxEx_COIgnoredWarningsAMXX.ShowWatermark()
+                    TextBoxEx_CODefineConstantsAMXX.ShowWatermark()
+                End If
+                'Debugging
+                TextBox_GameFolder.Text = mConfig.g_sDebugGameFolder
+                TextBox_SourceModFolder.Text = mConfig.g_sDebugSourceModFolder
+                'Misc
+                TextBox_Shell.Text = mConfig.g_sExecuteShell
+                TextBox_SyntaxPath.Text = mConfig.g_sSyntaxHighlightingPath
+            End If
 
             g_bIgnoreChange = False
             m_ConfigSettingsChanged = False
@@ -470,6 +626,77 @@ Public Class FormSettings
                 Next
             End If
 
+            Dim mCompilerOptionsSP As New ClassConfigs.STRUC_CONFIG_ITEM.CompilerOptions.STRUC_SP_COMPILER_OPTIONS
+            Dim mCompilerOptionsAMXX As New ClassConfigs.STRUC_CONFIG_ITEM.CompilerOptions.STRUC_AMXX_COMPILER_OPTIONS
+
+            'SourcePawn
+            If (True) Then
+                Select Case (ComboBox_COOptimizationLevelSP.SelectedIndex)
+                    Case 1
+                        mCompilerOptionsSP.g_iOptimizationLevel = 0
+                    Case 2
+                        mCompilerOptionsSP.g_iOptimizationLevel = 2
+                End Select
+
+                Select Case (ComboBox_COVerbosityLevelSP.SelectedIndex)
+                    Case 1
+                        mCompilerOptionsSP.g_iVerbosityLevel = 0
+                    Case 2
+                        mCompilerOptionsSP.g_iVerbosityLevel = 1
+                    Case 3
+                        mCompilerOptionsSP.g_iVerbosityLevel = 2
+                End Select
+
+                Select Case (ComboBox_COTreatWarningsAsErrorsSP.SelectedIndex)
+                    Case 1
+                        mCompilerOptionsSP.g_iTreatWarningsAsErrors = 1
+                    Case 2
+                        mCompilerOptionsSP.g_iTreatWarningsAsErrors = 0
+                End Select
+
+                mCompilerOptionsSP.g_lIgnoredWarnings.Clear()
+                ClassConfigs.STRUC_CONFIG_ITEM.CompilerOptions.ParseIgnoredWarnings(TextBoxEx_COIgnoredWarningsSP.m_NoWatermarkText, mCompilerOptionsSP.g_lIgnoredWarnings)
+
+                mCompilerOptionsSP.g_mDefineConstants.Clear()
+                ClassConfigs.STRUC_CONFIG_ITEM.CompilerOptions.ParseDefineConstants(TextBoxEx_CODefineConstantsSP.m_NoWatermarkText, mCompilerOptionsSP.g_mDefineConstants)
+            End If
+
+            'AMX Mod X
+            If (True) Then
+                Select Case (ComboBox_COSymbolicInformationAMXX.SelectedIndex)
+                    Case 1
+                        mCompilerOptionsAMXX.g_iSymbolicInformation = 0
+                    Case 2
+                        mCompilerOptionsAMXX.g_iSymbolicInformation = 1
+                    Case 3
+                        mCompilerOptionsAMXX.g_iSymbolicInformation = 2
+                    Case 4
+                        mCompilerOptionsAMXX.g_iSymbolicInformation = 3
+                End Select
+
+                Select Case (ComboBox_COVerbosityLevelAMXX.SelectedIndex)
+                    Case 1
+                        mCompilerOptionsAMXX.g_iVerbosityLevel = 0
+                    Case 2
+                        mCompilerOptionsAMXX.g_iVerbosityLevel = 1
+                    Case 3
+                        mCompilerOptionsAMXX.g_iVerbosityLevel = 2
+                End Select
+
+                Select Case (ComboBox_COTreatWarningsAsErrorsAMXX.SelectedIndex)
+                    Case 1
+                        mCompilerOptionsAMXX.g_iTreatWarningsAsErrors = 1
+                    Case 2
+                        mCompilerOptionsAMXX.g_iTreatWarningsAsErrors = 0
+                End Select
+
+                mCompilerOptionsAMXX.g_lIgnoredWarnings.Clear()
+                ClassConfigs.STRUC_CONFIG_ITEM.CompilerOptions.ParseIgnoredWarnings(TextBoxEx_COIgnoredWarningsAMXX.m_NoWatermarkText, mCompilerOptionsAMXX.g_lIgnoredWarnings)
+
+                mCompilerOptionsAMXX.g_mDefineConstants.Clear()
+                ClassConfigs.STRUC_CONFIG_ITEM.CompilerOptions.ParseDefineConstants(TextBoxEx_CODefineConstantsAMXX.m_NoWatermarkText, mCompilerOptionsAMXX.g_mDefineConstants)
+            End If
+
             ClassConfigs.SaveConfig(New ClassConfigs.STRUC_CONFIG_ITEM(sName,
                                                                         If(RadioButton_ConfigSettingManual.Checked, ClassSettings.ENUM_COMPILING_TYPE.CONFIG, ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC),
                                                                         TextBox_IncludeFolder.Text,
@@ -477,6 +704,8 @@ Public Class FormSettings
                                                                         TextBox_OutputFolder.Text,
                                                                         CheckBox_ConfigIsDefault.Checked,
                                                                         CType(ComboBox_ModType.SelectedIndex, ClassConfigs.STRUC_CONFIG_ITEM.ENUM_MOD_TYPE),
+                                                                        mCompilerOptionsSP,
+                                                                        mCompilerOptionsAMXX,
                                                                         TextBox_GameFolder.Text,
                                                                         TextBox_SourceModFolder.Text,
                                                                         TextBox_Shell.Text,
@@ -649,7 +878,97 @@ Public Class FormSettings
     End Sub
 
     Private Sub ComboBox_ModType_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboBox_ModType.SelectedIndexChanged
-        If (g_bComboBoxModTypeIgnore) Then
+        If (g_bComboBoxIgnoreEvent) Then
+            Return
+        End If
+
+        m_ConfigSettingsChanged = True
+        MarkChanged()
+    End Sub
+
+    Private Sub ComboBox_COOptimizationLevelSP_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboBox_COOptimizationLevelSP.SelectedIndexChanged
+        If (g_bComboBoxIgnoreEvent) Then
+            Return
+        End If
+
+        m_ConfigSettingsChanged = True
+        MarkChanged()
+    End Sub
+
+    Private Sub ComboBox_COVerbosityLevelSP_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboBox_COVerbosityLevelSP.SelectedIndexChanged
+        If (g_bComboBoxIgnoreEvent) Then
+            Return
+        End If
+
+        m_ConfigSettingsChanged = True
+        MarkChanged()
+    End Sub
+
+    Private Sub ComboBox_COTreatWarningsAsErrorsSP_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboBox_COTreatWarningsAsErrorsSP.SelectedIndexChanged
+        If (g_bComboBoxIgnoreEvent) Then
+            Return
+        End If
+
+        m_ConfigSettingsChanged = True
+        MarkChanged()
+    End Sub
+
+    Private Sub TextBoxEx_COIgnoredWarningsSP_TextChanged(sender As Object, e As EventArgs) Handles TextBoxEx_COIgnoredWarningsSP.TextChanged
+        If (TextBoxEx_COIgnoredWarningsSP.m_WatermarkVisible) Then
+            Return
+        End If
+
+        m_ConfigSettingsChanged = True
+        MarkChanged()
+    End Sub
+
+    Private Sub TextBoxEx_CODefineConstantsSP_TextChanged(sender As Object, e As EventArgs) Handles TextBoxEx_CODefineConstantsSP.TextChanged
+        If (TextBoxEx_CODefineConstantsSP.m_WatermarkVisible) Then
+            Return
+        End If
+
+        m_ConfigSettingsChanged = True
+        MarkChanged()
+    End Sub
+
+    Private Sub ComboBox_COSymbolicInformationAMXX_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboBox_COSymbolicInformationAMXX.SelectedIndexChanged
+        If (g_bComboBoxIgnoreEvent) Then
+            Return
+        End If
+
+        m_ConfigSettingsChanged = True
+        MarkChanged()
+    End Sub
+
+    Private Sub ComboBox_COVerbosityLevelAMXX_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboBox_COVerbosityLevelAMXX.SelectedIndexChanged
+        If (g_bComboBoxIgnoreEvent) Then
+            Return
+        End If
+
+        m_ConfigSettingsChanged = True
+        MarkChanged()
+    End Sub
+
+    Private Sub ComboBox_COTreatWarningsAsErrorsAMXX_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboBox_COTreatWarningsAsErrorsAMXX.SelectedIndexChanged
+        If (g_bComboBoxIgnoreEvent) Then
+            Return
+        End If
+
+        m_ConfigSettingsChanged = True
+        MarkChanged()
+    End Sub
+
+    Private Sub TextBoxEx_COIgnoredWarningsAMXX_TextChanged(sender As Object, e As EventArgs) Handles TextBoxEx_COIgnoredWarningsAMXX.TextChanged
+        If (TextBoxEx_COIgnoredWarningsAMXX.m_WatermarkVisible) Then
+            Return
+        End If
+
+        m_ConfigSettingsChanged = True
+        MarkChanged()
+    End Sub
+
+    Private Sub TextBoxEx_CODefineConstantsAMXX_TextChanged(sender As Object, e As EventArgs) Handles TextBoxEx_CODefineConstantsAMXX.TextChanged
+        If (TextBoxEx_CODefineConstantsAMXX.m_WatermarkVisible) Then
             Return
         End If
 

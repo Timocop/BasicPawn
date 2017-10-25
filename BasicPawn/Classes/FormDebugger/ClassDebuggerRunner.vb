@@ -435,7 +435,7 @@ Public Class ClassDebuggerRunner
                 Dim sOutputFile As String = IO.Path.Combine(m_SourceModFolder, String.Format("plugins\BasicPawnDebugCmdRunEngine-{0}.unk", Guid.NewGuid.ToString))
                 g_sLatestDebuggerRunnerPlugin = sOutputFile
 
-                If (Not g_mFormDebugger.g_mFormMain.g_ClassTextEditorTools.CompileSource(False, sSource, sOutputFile, Nothing, Nothing, Nothing, Nothing, Nothing, iCompilerType)) Then
+                If (Not g_mFormDebugger.g_mFormMain.g_ClassTextEditorTools.CompileSource(False, sSource, sOutputFile, Nothing, Nothing, Nothing, Nothing, True, Nothing, iCompilerType)) Then
                     Throw New ArgumentException("Compiler failure! See information tab for more information. (BasicPawn Debug Cmd Runner Engine)")
                 End If
 
@@ -468,7 +468,7 @@ Public Class ClassDebuggerRunner
 
                 g_ClassPreProcess.FinishSource(sSource)
 
-                If (Not g_mFormDebugger.g_mFormMain.g_ClassTextEditorTools.CompileSource(False, sSource, sOutputFile, Nothing, Nothing, Nothing, Nothing, Nothing, iCompilerType)) Then
+                If (Not g_mFormDebugger.g_mFormMain.g_ClassTextEditorTools.CompileSource(False, sSource, sOutputFile, Nothing, Nothing, Nothing, Nothing, True, Nothing, iCompilerType)) Then
                     Throw New ArgumentException("Compiler failure! See information tab for more information. (BasicPawn Debug Main Plugin)")
                 End If
 

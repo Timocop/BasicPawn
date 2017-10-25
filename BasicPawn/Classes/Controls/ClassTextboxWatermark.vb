@@ -22,63 +22,95 @@ Public Class ClassTextboxWatermark
     Private g_bIsWatermarkVisible As Boolean = False
 
     ''' <summary>
-    ''' Displays text on top of the textbox
+    ''' Displays text on top of the textbox.
     ''' </summary>
     ''' <returns></returns>
-    Public Property m_sWatermarkText() As String
+    Public Property m_WatermarkText() As String
         Get
             Return g_sWatermarkText
         End Get
         Set(value As String)
             g_sWatermarkText = value
 
-            If (Not String.IsNullOrEmpty(g_sWatermarkText)) Then
-                Me.Text = g_sWatermarkText
-                g_bIsWatermarkVisible = True
-            End If
+            ShowWatermark()
         End Set
     End Property
 
     ''' <summary>
-    ''' Checks if the watermark is currently visible
+    ''' Checks if the watermark is currently visible.
     ''' </summary>
     ''' <returns>True if visible, false otherwise</returns>
-    Public ReadOnly Property m_bWatermarkVisible() As Boolean
+    Public ReadOnly Property m_WatermarkVisible() As Boolean
         Get
             Return g_bIsWatermarkVisible
         End Get
     End Property
 
-    Protected Overrides Sub OnGotFocus(e As EventArgs)
-        If (g_bIsWatermarkVisible) Then
-            Me.Text = ""
-            g_bIsWatermarkVisible = False
-        End If
-
-        MyBase.OnGotFocus(e)
-    End Sub
+    ''' <summary>
+    ''' Gets the current text, will return an empty string when the watermark is visible.
+    ''' </summary>
+    ''' <returns></returns>
+    Public ReadOnly Property m_NoWatermarkText As String
+        Get
+            If (g_bIsWatermarkVisible) Then
+                Return ""
+            Else
+                Return Me.Text
+            End If
+        End Get
+    End Property
 
     Public Overrides Property Text As String
         Get
             Return MyBase.Text
         End Get
         Set(value As String)
+            MyBase.Text = value
+
             If (g_sWatermarkText <> value) Then
+                Me.Font = New Font(Me.Font, FontStyle.Regular)
                 g_bIsWatermarkVisible = False
             End If
-
-            MyBase.Text = value
         End Set
     End Property
 
+    Protected Overrides Sub OnGotFocus(e As EventArgs)
+        HideWatermark()
+
+        MyBase.OnGotFocus(e)
+    End Sub
+
     Protected Overrides Sub OnLostFocus(e As EventArgs)
-        If (Not String.IsNullOrEmpty(g_sWatermarkText)) Then
-            If (String.IsNullOrEmpty(Me.Text) OrElse String.IsNullOrEmpty(Me.Text.Trim)) Then
-                Me.Text = g_sWatermarkText
-                g_bIsWatermarkVisible = True
-            End If
-        End If
+        ShowWatermark()
 
         MyBase.OnLostFocus(e)
+    End Sub
+
+    Public Sub ShowWatermark()
+        If (g_bIsWatermarkVisible) Then
+            Return
+        End If
+
+        If (String.IsNullOrEmpty(g_sWatermarkText)) Then
+            Return
+        End If
+
+        If (Not String.IsNullOrEmpty(Me.Text) AndAlso Not String.IsNullOrEmpty(Me.Text.Trim)) Then
+            Return
+        End If
+
+        g_bIsWatermarkVisible = True
+        Me.Text = g_sWatermarkText
+        Me.Font = New Font(Me.Font, FontStyle.Italic)
+    End Sub
+
+    Public Sub HideWatermark()
+        If (Not g_bIsWatermarkVisible) Then
+            Return
+        End If
+
+        Me.Font = New Font(Me.Font, FontStyle.Regular)
+        Me.Text = ""
+        g_bIsWatermarkVisible = False
     End Sub
 End Class

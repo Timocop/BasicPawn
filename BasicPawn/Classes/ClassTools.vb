@@ -63,6 +63,9 @@ Public Class ClassTools
         ''' <param name="r_ExitCode"></param>
         ''' <param name="r_Output"></param>
         Public Shared Sub ExecuteProgram(sPath As String, sArguments As String, ByRef r_ExitCode As Integer, ByRef r_Output As String)
+            r_ExitCode = 0
+            r_Output = ""
+
             Using i As New Process
                 i.StartInfo.CreateNoWindow = True
                 i.StartInfo.RedirectStandardOutput = True
@@ -86,6 +89,9 @@ Public Class ClassTools
         ''' <param name="r_ExitCode"></param>
         ''' <param name="r_Output"></param>
         Public Shared Sub ExecuteProgram(sPath As String, sArguments As String, sWorkingDirectory As String, ByRef r_ExitCode As Integer, ByRef r_Output As String)
+            r_ExitCode = 0
+            r_Output = ""
+
             Using i As New Process
                 i.StartInfo.CreateNoWindow = True
                 i.StartInfo.RedirectStandardOutput = True

@@ -15,6 +15,8 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 
+Imports System.Text.RegularExpressions
+
 Public Class ClassConfigs
     Private Shared g_sConfigFolder As String = IO.Path.Combine(Application.StartupPath, "configs")
     Private Shared g_sConfigFileExt As String = ".ini"
@@ -30,6 +32,340 @@ Public Class ClassConfigs
             AMXMODX
         End Enum
 
+        Class CompilerOptions
+            Interface ICompilerOptions
+
+                Function BuildCommandline() As String
+
+                Sub SaveToIni(ByRef mIniFile As ClassIniFile)
+
+                Sub LoadFromIni(ByRef mIniFile As ClassIniFile)
+
+            End Interface
+
+            Class STRUC_SP_COMPILER_OPTIONS
+                Implements ICompilerOptions
+
+                'Options:
+                '         -a       output assembler code
+                '         -c<name> codepage name Or number; e.g. 1252 for Windows Latin-1
+                '         -Dpath   active directory path
+                '         -e<name> set name of error file (quiet compile)
+                '         -H<hwnd> window handle to send a notification message on finish
+                '         -h       show included file paths
+                '         -i<name> path for include files
+                '         -l       create list file (preprocess only)
+                '         -o<name> set base name of (P-code) output file
+                '         -O<num>  optimization level (default=-O2)
+                '             0    no optimization
+                '             2    full optimizations
+                '         -p<name> set name of "prefix" file
+                '         -s<num>  skip lines from the input file
+                '         -t<num>  TAB indent size (in character positions, default=8)
+                '         -v<num>  verbosity level; 0=quiet, 1=normal, 2=verbose (default=1)
+                '         -w<num>  disable a specific warning by its number
+                '         -E       treat warnings as errors
+                '         -\       use '\' for escape characters
+                '         -^       use '^' for escape characters
+                '         -;<+/->  require a semicolon to end each statement (default=-)
+                '         sym=val  define constant "sym" with value "val"
+                '         sym=     define constant "sym" with value 0
+
+                Private g_sSectionName As String = "CompilerOptionsSP"
+
+                Public g_iOptimizationLevel As Integer = -1
+                Public g_iVerbosityLevel As Integer = -1
+                Public g_iTreatWarningsAsErrors As Integer = -1
+                Public g_lIgnoredWarnings As New List(Of String)
+                Public g_mDefineConstants As New Dictionary(Of String, String)
+
+                Public Sub New()
+                End Sub
+
+                Public Sub New(iOptimizationLevel As Integer, iVerbosityLevel As Integer, iTreatWarningsAsErrors As Integer, lIgnoredWarnings As List(Of String), mDefineConstants As Dictionary(Of String, String))
+                    g_iOptimizationLevel = iOptimizationLevel
+                    g_iVerbosityLevel = iVerbosityLevel
+                    g_iTreatWarningsAsErrors = iTreatWarningsAsErrors
+                    g_lIgnoredWarnings = New List(Of String)(lIgnoredWarnings)
+                    g_mDefineConstants = New Dictionary(Of String, String)(mDefineConstants)
+                End Sub
+
+                Public Function BuildCommandline() As String Implements ICompilerOptions.BuildCommandline
+                    Dim lCmds As New List(Of String)
+
+                    'g_iOptimizationLevel
+                    Select Case (g_iOptimizationLevel)
+                        Case 0, 2
+                            lCmds.Add(String.Format("-O{0}", g_iOptimizationLevel))
+                    End Select
+
+                    'g_iVerbosityLevel
+                    Select Case (g_iVerbosityLevel)
+                        Case 0, 1, 2
+                            lCmds.Add(String.Format("-v{0}", g_iVerbosityLevel))
+                    End Select
+
+                    'g_bTreatWarningsAsErrors
+                    Select Case (g_iTreatWarningsAsErrors)
+                        Case 1
+                            lCmds.Add("-E")
+                    End Select
+
+                    'g_lIgnoredWarnings
+                    For Each sWarnNum In g_lIgnoredWarnings
+                        If (Not IsValidIgnoredWarning(sWarnNum)) Then
+                            Continue For
+                        End If
+
+                        lCmds.Add(String.Format("-w{0}", sWarnNum))
+                    Next
+
+                    'g_mDefineConstants
+                    For Each mDefine In g_mDefineConstants
+                        If (Not IsValidDefineConstant(mDefine.Key, mDefine.Value)) Then
+                            Continue For
+                        End If
+
+                        lCmds.Add(String.Format("{0}={1}", mDefine.Key, mDefine.Value))
+                    Next
+
+                    Return String.Join(" "c, lCmds.ToArray)
+                End Function
+
+                Public Sub SaveToIni(ByRef mIniFile As ClassIniFile) Implements ICompilerOptions.SaveToIni
+                    Dim tmpStr As String
+
+                    mIniFile.WriteKeyValue(g_sSectionName, "OptimizationLevel", If(g_iOptimizationLevel < 0, Nothing, CStr(g_iOptimizationLevel)))
+                    mIniFile.WriteKeyValue(g_sSectionName, "VerbosityLevel", If(g_iVerbosityLevel < 0, Nothing, CStr(g_iVerbosityLevel)))
+                    mIniFile.WriteKeyValue(g_sSectionName, "TreatWarningsAsErrors", If(g_iTreatWarningsAsErrors < 0, Nothing, CStr(g_iTreatWarningsAsErrors)))
+
+                    tmpStr = IgnoredWarningsToString(g_lIgnoredWarnings)
+                    mIniFile.WriteKeyValue(g_sSectionName, "IgnoreWarnings", If(String.IsNullOrEmpty(tmpStr), Nothing, tmpStr))
+
+                    tmpStr = DefineConstantsToString(g_mDefineConstants)
+                    mIniFile.WriteKeyValue(g_sSectionName, "DefineConstants", If(String.IsNullOrEmpty(tmpStr), Nothing, tmpStr))
+                End Sub
+
+                Public Sub LoadFromIni(ByRef mIniFile As ClassIniFile) Implements ICompilerOptions.LoadFromIni
+                    Dim tmpStr As String
+
+                    tmpStr = mIniFile.ReadKeyValue(g_sSectionName, "OptimizationLevel", Nothing)
+                    g_iOptimizationLevel = If(String.IsNullOrEmpty(tmpStr), -1, CInt(tmpStr))
+
+                    tmpStr = mIniFile.ReadKeyValue(g_sSectionName, "VerbosityLevel", Nothing)
+                    g_iVerbosityLevel = If(String.IsNullOrEmpty(tmpStr), -1, CInt(tmpStr))
+
+                    tmpStr = mIniFile.ReadKeyValue(g_sSectionName, "TreatWarningsAsErrors", Nothing)
+                    g_iTreatWarningsAsErrors = If(String.IsNullOrEmpty(tmpStr), -1, CInt(tmpStr))
+
+                    tmpStr = mIniFile.ReadKeyValue(g_sSectionName, "IgnoreWarnings", "")
+                    g_lIgnoredWarnings.Clear()
+                    ParseIgnoredWarnings(tmpStr, g_lIgnoredWarnings)
+
+                    tmpStr = mIniFile.ReadKeyValue(g_sSectionName, "DefineConstants", "")
+                    g_mDefineConstants.Clear()
+                    ParseDefineConstants(tmpStr, g_mDefineConstants)
+                End Sub
+            End Class
+
+            Class STRUC_AMXX_COMPILER_OPTIONS
+                Implements ICompilerOptions
+
+                'Options:
+                '         -A<num>  alignment in bytes of the data segment And the stack
+                '         -a       output assembler code
+                '         -C[+/-]  compact encoding for output file (default=-)
+                '         -c<name> codepage name Or number; e.g. 1252 for Windows Latin-1
+                '         -Dpath   active directory path
+                '         -d0      no symbolic information, no run-time checks
+                '         -d1      [default] run-time checks, no symbolic information
+                '         -d2      full debug information And dynamic checking
+                '         -d3      full debug information, dynamic checking, no optimization
+                '         -e<name> set name of error file (quiet compile)
+                '         -H<hwnd> window handle to send a notification message on finish
+                '         -i<name> path for include files
+                '         -l       create list file (preprocess only)
+                '         -o<name> set base name of (P-code) output file
+                '         -p<name> set name of "prefix" file
+                '         -r[name] write cross reference report to console Or to specified file
+                '         -S<num>  stack/heap size in cells (default=4096)
+                '         -s<num>  skip lines from the input file
+                '         -t<num>  TAB indent size (in character positions, default=8)
+                '         -v<num>  verbosity level; 0=quiet, 1=normal, 2=verbose (default=1)
+                '         -w<num>  disable a specific warning by its number
+                '         -E       treat warnings as errors
+                '         -X<num>  abstract machine size limit in bytes
+                '         -\       use '\' for escape characters
+                '         -^       use '^' for escape characters
+                '         -;[+/-]  require a semicolon to end each statement (default=-)
+                '         -([+/-]  require parantheses for function invocation (default=-)
+                '         sym=val  define constant "sym" with value "val"
+                '         sym=     define constant "sym" with value 0
+
+                Private g_sSectionName As String = "CompilerOptionsAMXX"
+
+                Public g_iVerbosityLevel As Integer = -1
+                Public g_iTreatWarningsAsErrors As Integer = -1
+                Public g_iSymbolicInformation As Integer = -1
+                Public g_lIgnoredWarnings As New List(Of String)
+                Public g_mDefineConstants As New Dictionary(Of String, String)
+
+                Public Sub New()
+                End Sub
+
+                Public Sub New(iVerbosityLevel As Integer, iTreatWarningsAsErrors As Integer, iSymbolicInformation As Integer, lIgnoredWarnings As List(Of String), mDefineConstants As Dictionary(Of String, String))
+                    g_iVerbosityLevel = iVerbosityLevel
+                    g_iTreatWarningsAsErrors = iTreatWarningsAsErrors
+                    g_lIgnoredWarnings = New List(Of String)(lIgnoredWarnings)
+                    g_mDefineConstants = New Dictionary(Of String, String)(mDefineConstants)
+                    g_iSymbolicInformation = iSymbolicInformation
+                End Sub
+
+                Public Function BuildCommandline() As String Implements ICompilerOptions.BuildCommandline
+                    Dim lCmds As New List(Of String)
+
+                    'g_iVerbosityLevel
+                    Select Case (g_iVerbosityLevel)
+                        Case 0, 1, 2
+                            lCmds.Add(String.Format("-v{0}", g_iVerbosityLevel))
+                    End Select
+
+                    'g_bTreatWarningsAsErrors
+                    Select Case (g_iTreatWarningsAsErrors)
+                        Case 1
+                            lCmds.Add("-E")
+                    End Select
+
+                    'g_iSymbolicInformation
+                    Select Case (g_iSymbolicInformation)
+                        Case 0, 1, 2, 3
+                            lCmds.Add(String.Format("-d{0}", g_iSymbolicInformation))
+                    End Select
+
+                    'g_lIgnoredWarnings
+                    For Each sWarnNum In g_lIgnoredWarnings
+                        If (Not IsValidIgnoredWarning(sWarnNum)) Then
+                            Continue For
+                        End If
+
+                        lCmds.Add(String.Format("-w{0}", sWarnNum))
+                    Next
+
+                    'g_mDefineConstants
+                    For Each mDefine In g_mDefineConstants
+                        If (Not IsValidDefineConstant(mDefine.Key, mDefine.Value)) Then
+                            Continue For
+                        End If
+
+                        lCmds.Add(String.Format("{0}={1}", mDefine.Key, mDefine.Value))
+                    Next
+
+                    Return String.Join(" "c, lCmds.ToArray)
+                End Function
+
+                Public Sub SaveToIni(ByRef mIniFile As ClassIniFile) Implements ICompilerOptions.SaveToIni
+                    Dim tmpStr As String
+
+                    mIniFile.WriteKeyValue(g_sSectionName, "VerbosityLevel", If(g_iVerbosityLevel < 0, Nothing, CStr(g_iVerbosityLevel)))
+                    mIniFile.WriteKeyValue(g_sSectionName, "TreatWarningsAsErrors", If(g_iTreatWarningsAsErrors < 0, Nothing, CStr(g_iTreatWarningsAsErrors)))
+                    mIniFile.WriteKeyValue(g_sSectionName, "SymbolicInformation", If(g_iSymbolicInformation < 0, Nothing, CStr(g_iVerbosityLevel)))
+
+                    tmpStr = IgnoredWarningsToString(g_lIgnoredWarnings)
+                    mIniFile.WriteKeyValue(g_sSectionName, "IgnoreWarnings", If(String.IsNullOrEmpty(tmpStr), Nothing, tmpStr))
+
+                    tmpStr = DefineConstantsToString(g_mDefineConstants)
+                    mIniFile.WriteKeyValue(g_sSectionName, "DefineConstants", If(String.IsNullOrEmpty(tmpStr), Nothing, tmpStr))
+                End Sub
+
+                Public Sub LoadFromIni(ByRef mIniFile As ClassIniFile) Implements ICompilerOptions.LoadFromIni
+                    Dim tmpStr As String
+
+                    tmpStr = mIniFile.ReadKeyValue(g_sSectionName, "VerbosityLevel", Nothing)
+                    g_iVerbosityLevel = If(String.IsNullOrEmpty(tmpStr), -1, CInt(tmpStr))
+
+                    tmpStr = mIniFile.ReadKeyValue(g_sSectionName, "TreatWarningsAsErrors", Nothing)
+                    g_iTreatWarningsAsErrors = If(String.IsNullOrEmpty(tmpStr), -1, CInt(tmpStr))
+
+                    tmpStr = mIniFile.ReadKeyValue(g_sSectionName, "SymbolicInformation", Nothing)
+                    g_iSymbolicInformation = If(String.IsNullOrEmpty(tmpStr), -1, CInt(tmpStr))
+
+                    tmpStr = mIniFile.ReadKeyValue(g_sSectionName, "IgnoreWarnings", "")
+                    g_lIgnoredWarnings.Clear()
+                    ParseIgnoredWarnings(tmpStr, g_lIgnoredWarnings)
+
+                    tmpStr = mIniFile.ReadKeyValue(g_sSectionName, "DefineConstants", "")
+                    g_mDefineConstants.Clear()
+                    ParseDefineConstants(tmpStr, g_mDefineConstants)
+                End Sub
+            End Class
+
+            Public Shared Sub ParseIgnoredWarnings(sInput As String, ByRef lIgnoredWarnings As List(Of String))
+                For Each sWarnNum As String In sInput.Split(";"c)
+                    sWarnNum = sWarnNum.Trim
+
+                    If (Not IsValidIgnoredWarning(sWarnNum)) Then
+                        Continue For
+                    End If
+
+                    lIgnoredWarnings.Add(sWarnNum)
+                Next
+            End Sub
+
+            Public Shared Function IgnoredWarningsToString(ByRef lIgnoredWarnings As List(Of String)) As String
+                Dim tmpList As New List(Of String)
+
+                For Each sWarnNum In lIgnoredWarnings
+                    If (Not IsValidIgnoredWarning(sWarnNum)) Then
+                        Continue For
+                    End If
+
+                    tmpList.Add(sWarnNum)
+                Next
+
+                Return String.Join(";"c, tmpList.ToArray)
+            End Function
+
+            Public Shared Sub ParseDefineConstants(sInput As String, ByRef mDefineConstants As Dictionary(Of String, String))
+                For Each sDefine As String In sInput.Split(";"c)
+                    Dim sDefineArray As String() = sDefine.Split("="c)
+                    If (sDefineArray.Length <> 2) Then
+                        Continue For
+                    End If
+
+                    sDefineArray(0) = sDefineArray(0).Trim
+                    sDefineArray(1) = sDefineArray(1).Trim
+
+                    If (Not IsValidDefineConstant(sDefineArray(0), sDefineArray(1))) Then
+                        Continue For
+                    End If
+
+                    mDefineConstants(sDefineArray(0)) = sDefineArray(1)
+                Next
+            End Sub
+
+            Public Shared Function DefineConstantsToString(ByRef mDefineConstants As Dictionary(Of String, String)) As String
+                Dim tmpList As New List(Of String)
+
+                For Each mDefine In mDefineConstants
+                    If (Not IsValidDefineConstant(mDefine.Key, mDefine.Value)) Then
+                        Continue For
+                    End If
+
+                    tmpList.Add(String.Format("{0}={1}", mDefine.Key, mDefine.Value))
+                Next
+
+                Return String.Join(";"c, tmpList.ToArray)
+            End Function
+
+            Public Shared Function IsValidIgnoredWarning(sWarnNum As String) As Boolean
+                Return Regex.IsMatch(sWarnNum, "^[0-9]+$")
+            End Function
+
+            Public Shared Function IsValidDefineConstant(sKey As String, sValue As String) As Boolean
+                Return (Regex.IsMatch(sKey, "^[a-zA-Z0-9_]+$") AndAlso Regex.IsMatch(sValue, "^[0-9]+$"))
+            End Function
+        End Class
+
         'General
         Public g_iCompilingType As ClassSettings.ENUM_COMPILING_TYPE = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC
         Public g_sIncludeFolders As String = ""
@@ -37,6 +373,9 @@ Public Class ClassConfigs
         Public g_sOutputFolder As String = ""
         Public g_bAutoload As Boolean = False
         Public g_iModType As ENUM_MOD_TYPE = ENUM_MOD_TYPE.AUTO_DETECT
+        'Compiler Options
+        Public g_mCompilerOptionsSP As New CompilerOptions.STRUC_SP_COMPILER_OPTIONS
+        Public g_mCompilerOptionsAMXX As New CompilerOptions.STRUC_AMXX_COMPILER_OPTIONS
         'Debugging
         Public g_sDebugGameFolder As String = ""
         Public g_sDebugSourceModFolder As String = ""
@@ -50,6 +389,7 @@ Public Class ClassConfigs
 
         Public Sub New(sName As String,
                        iCompilingType As ClassSettings.ENUM_COMPILING_TYPE, sIncludeFolders As String, sCompilerPath As String, sOutputFolder As String, bAutoload As Boolean, iModType As ENUM_MOD_TYPE,
+                       mCompilerOptionsSP As CompilerOptions.STRUC_SP_COMPILER_OPTIONS, mCompilerOptionsAMXX As CompilerOptions.STRUC_AMXX_COMPILER_OPTIONS,
                        sDebugGameFolder As String, sDebugSourceModFolder As String,
                        sExecuteShell As String, sSyntaxHighlightingPath As String)
 
@@ -61,6 +401,9 @@ Public Class ClassConfigs
             g_sOutputFolder = sOutputFolder
             g_bAutoload = bAutoload
             g_iModType = iModType
+            'Compiler Options
+            g_mCompilerOptionsSP = mCompilerOptionsSP
+            g_mCompilerOptionsAMXX = mCompilerOptionsAMXX
             'Debugging
             g_sDebugGameFolder = sDebugGameFolder
             g_sDebugSourceModFolder = sDebugSourceModFolder
@@ -159,6 +502,7 @@ Public Class ClassConfigs
         End If
 
         Dim iniFile As New ClassIniFile(sConfigFile)
+
         'Misc
         iniFile.WriteKeyValue("Config", "Type", If(mConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.CONFIG, "1", "0"))
         iniFile.WriteKeyValue("Config", "CompilerPath", mConfig.g_sCompilerPath)
@@ -166,9 +510,15 @@ Public Class ClassConfigs
         iniFile.WriteKeyValue("Config", "OutputDirectory", mConfig.g_sOutputFolder)
         iniFile.WriteKeyValue("Config", "Autoload", If(mConfig.g_bAutoload, "1", "0"))
         iniFile.WriteKeyValue("Config", "ModType", CStr(mConfig.g_iModType))
+
+        'Compiler Options
+        mConfig.g_mCompilerOptionsSP.SaveToIni(iniFile)
+        mConfig.g_mCompilerOptionsAMXX.SaveToIni(iniFile)
+
         'Debugging
         iniFile.WriteKeyValue("Config", "DebugGameDirectory", mConfig.g_sDebugGameFolder)
         iniFile.WriteKeyValue("Config", "DebugSourceModDirectory", mConfig.g_sDebugSourceModFolder)
+
         'Misc
         iniFile.WriteKeyValue("Config", "ExecuteShell", mConfig.g_sExecuteShell)
         iniFile.WriteKeyValue("Config", "SyntaxPath", mConfig.g_sSyntaxHighlightingPath)
@@ -202,14 +552,25 @@ Public Class ClassConfigs
         Else
             iModType = STRUC_CONFIG_ITEM.ENUM_MOD_TYPE.AUTO_DETECT
         End If
+
+        'Compiler Options
+        Dim mCompilerOptionsSourcePawn As New STRUC_CONFIG_ITEM.CompilerOptions.STRUC_SP_COMPILER_OPTIONS
+        Dim mCompilerOptionsAMXModX As New STRUC_CONFIG_ITEM.CompilerOptions.STRUC_AMXX_COMPILER_OPTIONS
+        mCompilerOptionsSourcePawn.LoadFromIni(iniFile)
+        mCompilerOptionsAMXModX.LoadFromIni(iniFile)
+
         'Debugging
         Dim sDebugGameFolder As String = iniFile.ReadKeyValue("Config", "DebugGameDirectory", "")
         Dim sDebugSourceModFolder As String = iniFile.ReadKeyValue("Config", "DebugSourceModDirectory", "")
+
         'Misc
         Dim sExecuteShell As String = iniFile.ReadKeyValue("Config", "ExecuteShell", "")
         Dim sSyntaxHighlightingPath As String = iniFile.ReadKeyValue("Config", "SyntaxPath", "")
 
-        Return New STRUC_CONFIG_ITEM(sName, iCompilingType, sOpenIncludeFolders, sCompilerPath, sOutputFolder, bIsDefault, CType(iModType, STRUC_CONFIG_ITEM.ENUM_MOD_TYPE), sDebugGameFolder, sDebugSourceModFolder, sExecuteShell, sSyntaxHighlightingPath)
+        Return New STRUC_CONFIG_ITEM(sName, iCompilingType, sOpenIncludeFolders, sCompilerPath, sOutputFolder, bIsDefault, CType(iModType, STRUC_CONFIG_ITEM.ENUM_MOD_TYPE),
+                                     mCompilerOptionsSourcePawn, mCompilerOptionsAMXModX,
+                                     sDebugGameFolder, sDebugSourceModFolder,
+                                     sExecuteShell, sSyntaxHighlightingPath)
     End Function
 
     Shared Function RemoveConfig(sName As String) As Boolean
