@@ -561,7 +561,7 @@ Public Class ClassTabControl
         Private g_mAutocompleteItems As New ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
         Private g_mIncludeFiles As New ClassSyncList(Of DictionaryEntry) '{sTabIdentifier-Ref, IncludeFile}
         Private g_mIncludeFilesFull As New ClassSyncList(Of DictionaryEntry) '{sTabIdentifier-Ref, IncludeFile}
-        Private g_iModType As ClassSyntaxTools.ENUM_MOD_TYPE = ClassSyntaxTools.ENUM_MOD_TYPE.SOURCEMOD
+        Private g_iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = ClassSyntaxTools.ENUM_LANGUAGE_TYPE.SOURCEPAWN
         Private g_bHasReferenceIncludes As Boolean = False
         Private g_mSourceTextEditor As TextEditorControlEx
         Private g_bHandlersEnabled As Boolean = False
@@ -800,12 +800,12 @@ Public Class ClassTabControl
             End Get
         End Property
 
-        Public Property m_ModType As ClassSyntaxTools.ENUM_MOD_TYPE
+        Public Property m_Language As ClassSyntaxTools.ENUM_LANGUAGE_TYPE
             Get
-                Return g_iModType
+                Return g_iLanguage
             End Get
-            Set(value As ClassSyntaxTools.ENUM_MOD_TYPE)
-                g_iModType = value
+            Set(value As ClassSyntaxTools.ENUM_LANGUAGE_TYPE)
+                g_iLanguage = value
             End Set
         End Property
 

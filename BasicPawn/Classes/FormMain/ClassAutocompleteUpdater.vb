@@ -120,7 +120,7 @@ Public Class ClassAutocompleteUpdater
             End If
 
             Dim sRequestedSourceFile As String = mRequestTab.m_File
-            Dim iRequestedModType As ClassSyntaxTools.ENUM_MOD_TYPE = mRequestTab.m_ModType
+            Dim iRequestedLangauge As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = mRequestTab.m_Language
             Dim sRequestedSource As String = ClassThread.ExecEx(Of String)(mRequestTab, Function() mRequestTab.m_TextEditor.Document.TextContent)
 
             If (String.IsNullOrEmpty(sRequestedSourceFile) OrElse Not IO.File.Exists(sRequestedSourceFile)) Then
@@ -237,68 +237,68 @@ Public Class ClassAutocompleteUpdater
             lTmpAutocompleteList.AddRange(GetPreprocessorKeywords(lIncludeFilesFull.ToArray))
 
             'Detect current mod type...
-            If (ClassConfigs.m_ActiveConfig.g_iModType = ClassConfigs.STRUC_CONFIG_ITEM.ENUM_MOD_TYPE.AUTO_DETECT) Then
-                Dim iModType As ClassSyntaxTools.ENUM_MOD_TYPE = CType(-1, ClassSyntaxTools.ENUM_MOD_TYPE)
+            If (ClassConfigs.m_ActiveConfig.g_iLanguage = ClassConfigs.STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE.AUTO_DETECT) Then
+                Dim iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = CType(-1, ClassSyntaxTools.ENUM_LANGUAGE_TYPE)
 
                 For i = 0 To lIncludeFiles.Count - 1
                     '... by includes
                     Select Case (IO.Path.GetFileName(CStr(lIncludeFiles(i).Value)).ToLower)
                         Case "sourcemod.inc"
-                            iModType = ClassSyntaxTools.ENUM_MOD_TYPE.SOURCEMOD
+                            iLanguage = ClassSyntaxTools.ENUM_LANGUAGE_TYPE.SOURCEPAWN
                             Exit For
 
                         Case "amxmodx.inc"
-                            iModType = ClassSyntaxTools.ENUM_MOD_TYPE.AMXMODX
+                            iLanguage = ClassSyntaxTools.ENUM_LANGUAGE_TYPE.AMXMODX
                             Exit For
                     End Select
 
                     '... by extension
                     Select Case (IO.Path.GetExtension(CStr(lIncludeFiles(i).Value)).ToLower)
                         Case ".sp"
-                            iModType = ClassSyntaxTools.ENUM_MOD_TYPE.SOURCEMOD
+                            iLanguage = ClassSyntaxTools.ENUM_LANGUAGE_TYPE.SOURCEPAWN
                             Exit For
 
                         Case ".sma"
-                            iModType = ClassSyntaxTools.ENUM_MOD_TYPE.AMXMODX
+                            iLanguage = ClassSyntaxTools.ENUM_LANGUAGE_TYPE.AMXMODX
                             Exit For
 
                         Case ".p", ".pwn"
-                            iModType = ClassSyntaxTools.ENUM_MOD_TYPE.PAWN
+                            iLanguage = ClassSyntaxTools.ENUM_LANGUAGE_TYPE.PAWN
                             Exit For
                     End Select
                 Next
 
-                If (iRequestedModType <> iModType) Then
-                    Select Case (iModType)
-                        Case ClassSyntaxTools.ENUM_MOD_TYPE.SOURCEMOD
-                            g_mFormMain.PrintInformation("[INFO]", String.Format("Auto-Detected mod: SourceMod ({0})", IO.Path.GetFileName(sRequestedSourceFile)))
+                If (iRequestedLangauge <> iLanguage) Then
+                    Select Case (iLanguage)
+                        Case ClassSyntaxTools.ENUM_LANGUAGE_TYPE.SOURCEPAWN
+                            g_mFormMain.PrintInformation("[INFO]", String.Format("Auto-Detected language: SourcePawn ({0})", IO.Path.GetFileName(sRequestedSourceFile)))
 
-                        Case ClassSyntaxTools.ENUM_MOD_TYPE.AMXMODX
-                            g_mFormMain.PrintInformation("[INFO]", String.Format("Auto-Detected mod: AMX Mod X ({0})", IO.Path.GetFileName(sRequestedSourceFile)))
+                        Case ClassSyntaxTools.ENUM_LANGUAGE_TYPE.AMXMODX
+                            g_mFormMain.PrintInformation("[INFO]", String.Format("Auto-Detected language: AMX Mod X ({0})", IO.Path.GetFileName(sRequestedSourceFile)))
 
-                        Case ClassSyntaxTools.ENUM_MOD_TYPE.PAWN
-                            g_mFormMain.PrintInformation("[INFO]", String.Format("Auto-Detected mod: Pawn ({0})", IO.Path.GetFileName(sRequestedSourceFile)))
+                        Case ClassSyntaxTools.ENUM_LANGUAGE_TYPE.PAWN
+                            g_mFormMain.PrintInformation("[INFO]", String.Format("Auto-Detected language: Pawn ({0})", IO.Path.GetFileName(sRequestedSourceFile)))
 
                         Case Else
-                            g_mFormMain.PrintInformation("[WARN]", String.Format("Auto-Detected mod: Unknown ({0})", IO.Path.GetFileName(sRequestedSourceFile)))
+                            g_mFormMain.PrintInformation("[WARN]", String.Format("Auto-Detected language: Unknown ({0})", IO.Path.GetFileName(sRequestedSourceFile)))
                     End Select
                 End If
 
-                If (iModType > -1) Then
-                    iRequestedModType = iModType
+                If (iLanguage > -1) Then
+                    iRequestedLangauge = iLanguage
                 End If
             Else
-                Select Case (ClassConfigs.m_ActiveConfig.g_iModType)
-                    Case ClassConfigs.STRUC_CONFIG_ITEM.ENUM_MOD_TYPE.SOURCEMOD
-                        iRequestedModType = ClassSyntaxTools.ENUM_MOD_TYPE.SOURCEMOD
+                Select Case (ClassConfigs.m_ActiveConfig.g_iLanguage)
+                    Case ClassConfigs.STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE.SOURCEPAWN
+                        iRequestedLangauge = ClassSyntaxTools.ENUM_LANGUAGE_TYPE.SOURCEPAWN
 
-                    Case ClassConfigs.STRUC_CONFIG_ITEM.ENUM_MOD_TYPE.AMXMODX
-                        iRequestedModType = ClassSyntaxTools.ENUM_MOD_TYPE.AMXMODX
+                    Case ClassConfigs.STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE.AMXMODX
+                        iRequestedLangauge = ClassSyntaxTools.ENUM_LANGUAGE_TYPE.AMXMODX
                 End Select
             End If
 
             'Set mod type
-            mRequestTab.m_ModType = iRequestedModType
+            mRequestTab.m_Language = iRequestedLangauge
 
             'Parse everything. Methods etc.
             If (True) Then
@@ -306,7 +306,7 @@ Public Class ClassAutocompleteUpdater
 
                 Dim i As Integer
                 For i = 0 To lIncludeFiles.Count - 1
-                    ParseAutocomplete_Pre(sRequestedSource, sRequestedSourceFile, CStr(lIncludeFiles(i).Value), sSourceList, lTmpAutocompleteList, iRequestedModType)
+                    ParseAutocomplete_Pre(sRequestedSource, sRequestedSourceFile, CStr(lIncludeFiles(i).Value), sSourceList, lTmpAutocompleteList, iRequestedLangauge)
 
                     ClassThread.ExecAsync(g_mFormMain, Sub()
                                                            g_mFormMain.ToolStripProgressBar_Autocomplete.Value = Math.Min(CInt(Math.Floor((i / lIncludeFiles.Count) * 50)), 100)
@@ -315,7 +315,7 @@ Public Class ClassAutocompleteUpdater
 
                 Dim sRegExEnum As String = String.Format("(\b{0}\b)", String.Join("\b|\b", GetEnumNames(lTmpAutocompleteList)))
                 For i = 0 To sSourceList.Count - 1
-                    ParseAutocomplete_Post(sRequestedSource, sRequestedSourceFile, sSourceList(i)(0), sRegExEnum, sSourceList(i)(1), lTmpAutocompleteList, iRequestedModType)
+                    ParseAutocomplete_Post(sRequestedSource, sRequestedSourceFile, sSourceList(i)(0), sRegExEnum, sSourceList(i)(1), lTmpAutocompleteList, iRequestedLangauge)
 
                     ClassThread.ExecAsync(g_mFormMain, Sub()
                                                            g_mFormMain.ToolStripProgressBar_Autocomplete.Value = Math.Min(CInt(Math.Floor((i / sSourceList.Count) * 50) + 50), 100)
@@ -635,7 +635,7 @@ Public Class ClassAutocompleteUpdater
         Return lNames.ToArray
     End Function
 
-    Public Sub CleanUpNewLinesSource(ByRef sSource As String, iModType As ClassSyntaxTools.ENUM_MOD_TYPE)
+    Public Sub CleanUpNewLinesSource(ByRef sSource As String, iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE)
         'Remove new lines e.g: MyStuff \
         '                      MyStuff2
         sSource = Regex.Replace(sSource, "\\\s*\n\s*", "")
@@ -660,7 +660,7 @@ Public Class ClassAutocompleteUpdater
         End If
 
         If (True) Then
-            Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iModType)
+            Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iLanguage)
 
             'Filter new lines in statements with parenthesis e.g: MyStuff(MyArg1,
             '                                                               MyArg2)
@@ -700,7 +700,7 @@ Public Class ClassAutocompleteUpdater
         End If
     End Sub
 
-    Private Sub ParseAutocomplete_Pre(sActiveSource As String, sActiveSourceFile As String, sFile As String, ByRef sSourceList As ClassSyncList(Of String()), ByRef lTmpAutocompleteList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE), iModType As ClassSyntaxTools.ENUM_MOD_TYPE)
+    Private Sub ParseAutocomplete_Pre(sActiveSource As String, sActiveSourceFile As String, sFile As String, ByRef sSourceList As ClassSyncList(Of String()), ByRef lTmpAutocompleteList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE), iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE)
         Dim sSource As String
         If (sActiveSourceFile.ToLower = sFile.ToLower) Then
             sSource = sActiveSource
@@ -708,13 +708,13 @@ Public Class ClassAutocompleteUpdater
             sSource = IO.File.ReadAllText(sFile)
         End If
 
-        CleanUpNewLinesSource(sSource, iModType)
+        CleanUpNewLinesSource(sSource, iLanguage)
 
         Dim lBraceLocList As New List(Of Integer())
 
         'Fix function spaces
         If (True) Then
-            Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iModType)
+            Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iLanguage)
 
             Dim iParentStart As Integer = 0
             Dim iParentLen As Integer = 0
@@ -770,7 +770,7 @@ Public Class ClassAutocompleteUpdater
             Dim mSourceBuilder As New StringBuilder(sSource.Length)
 
             If (True) Then
-                Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iModType)
+                Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iLanguage)
 
                 For i = 0 To sSource.Length - 1
                     mSourceBuilder.Append(If(mSourceAnalysis.m_InNonCode(i), " "c, sSource(i)))
@@ -810,7 +810,7 @@ Public Class ClassAutocompleteUpdater
             Dim mSourceBuilder As New StringBuilder(sSource.Length)
 
             If (True) Then
-                Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iModType)
+                Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iLanguage)
 
                 For i = 0 To sSource.Length - 1
                     mSourceBuilder.Append(If(mSourceAnalysis.m_InNonCode(i), " "c, sSource(i)))
@@ -851,7 +851,7 @@ Public Class ClassAutocompleteUpdater
             Dim mSourceBuilder As New StringBuilder(sSource.Length)
 
             If (True) Then
-                Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iModType)
+                Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iLanguage)
 
                 For i = 0 To sSource.Length - 1
                     mSourceBuilder.Append(If(mSourceAnalysis.m_InNonCode(i), " "c, sSource(i)))
@@ -929,7 +929,7 @@ Public Class ClassAutocompleteUpdater
             Dim mSourceBuilder As New StringBuilder(sSource.Length)
 
             If (True) Then
-                Dim mSourceAnalysis2 As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iModType)
+                Dim mSourceAnalysis2 As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iLanguage)
 
                 For i = 0 To sSource.Length - 1
                     mSourceBuilder.Append(If(mSourceAnalysis2.m_InNonCode(i), " "c, sSource(i)))
@@ -937,7 +937,7 @@ Public Class ClassAutocompleteUpdater
             End If
 
             Dim mPossibleEnumMatches As MatchCollection = Regex.Matches(mSourceBuilder.ToString, "^\s*\b(enum)\b\s*((?<Tag>\b[a-zA-Z0-9_]+\b)(\:)(?<Name>\b[a-zA-Z0-9_]+\b)(\(.*?\)){0,1}|(?<Name>\b[a-zA-Z0-9_]+\b)(\:){0,1}(\(.*?\)){0,1}|\(.*?\)|)\s*(?<BraceStart>\{)", RegexOptions.Multiline)
-            Dim iBraceList As Integer()() = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(mSourceBuilder.ToString, "{"c, "}"c, 1, iModType, True)
+            Dim iBraceList As Integer()() = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(mSourceBuilder.ToString, "{"c, "}"c, 1, iLanguage, True)
 
 
             Dim mMatch As Match
@@ -985,7 +985,7 @@ Public Class ClassAutocompleteUpdater
                     Continue For
                 End If
 
-                mSourceAnalysis = New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sEnumSource, iModType)
+                mSourceAnalysis = New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sEnumSource, iLanguage)
 
                 mEnumBuilder = New StringBuilder
                 lEnumSplitList = New List(Of String)
@@ -1109,7 +1109,7 @@ Public Class ClassAutocompleteUpdater
         sSourceList.Add(New String() {sFile, sSource})
     End Sub
 
-    Private Sub ParseAutocomplete_Post(sActiveSource As String, sActiveSourceFile As String, ByRef sFile As String, ByRef sRegExEnum As String, ByRef sSource As String, ByRef lTmpAutocompleteList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE), iModType As ClassSyntaxTools.ENUM_MOD_TYPE)
+    Private Sub ParseAutocomplete_Post(sActiveSource As String, sActiveSourceFile As String, ByRef sFile As String, ByRef sRegExEnum As String, ByRef sSource As String, ByRef lTmpAutocompleteList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE), iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE)
         'Get Defines
         If (sSource.Contains("#define")) Then
             Dim sLine As String
@@ -1145,7 +1145,7 @@ Public Class ClassAutocompleteUpdater
                     sFullDefine = mMatch.Groups("FullDefine").Value
 
                     If (mMatch.Groups("Arguments").Success) Then
-                        iBraceList = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(sLine, "("c, ")"c, 1, iModType, True)
+                        iBraceList = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(sLine, "("c, ")"c, 1, iLanguage, True)
                         If (iBraceList.Length < 1) Then
                             Continue While
                         End If
@@ -1206,7 +1206,7 @@ Public Class ClassAutocompleteUpdater
             Dim IsArray As Boolean
 
             Dim sLines As String() = sSource.Split(New String() {vbNewLine, vbLf}, 0)
-            Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iModType)
+            Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iLanguage)
             For i = 0 To sLines.Length - 1
                 If (Not sLines(i).Contains("public")) Then
                     Continue For
@@ -1255,7 +1255,7 @@ Public Class ClassAutocompleteUpdater
 
                 Dim sArrayDim As String = ""
                 If (IsArray) Then
-                    iBracketList = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(sOther, "["c, "]"c, 1, iModType, True)
+                    iBracketList = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(sOther, "["c, "]"c, 1, iLanguage, True)
                     For j = 0 To iBracketList.Length - 1
                         sArrayDim &= sOther.Substring(iBracketList(j)(0), iBracketList(j)(1) - iBracketList(j)(0) + 1)
                     Next
@@ -1298,7 +1298,7 @@ Public Class ClassAutocompleteUpdater
             Dim bCommentStart As Boolean
             Dim mRegMatch2 As Match
 
-            Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iModType)
+            Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iLanguage)
             Dim sLines As String() = sSource.Split(New String() {vbNewLine, vbLf}, 0)
 
             If (mSourceAnalysis.m_MaxLenght - 1 > 0) Then
@@ -1319,7 +1319,7 @@ Public Class ClassAutocompleteUpdater
                     Continue For
                 End If
 
-                iBraceList = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(sLines(i), "("c, ")"c, 1, iModType, True)
+                iBraceList = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(sLines(i), "("c, ")"c, 1, iLanguage, True)
                 If (iBraceList.Length < 1) Then
                     Continue For
                 End If
@@ -1432,7 +1432,7 @@ Public Class ClassAutocompleteUpdater
         'Get funcenums
         If ((ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_6 OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX) AndAlso sSource.Contains("funcenum")) Then
             Dim mPossibleEnumMatches As MatchCollection = Regex.Matches(sSource, "^\s*\b(funcenum)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)\s*(?<BraceStart>\{)", RegexOptions.Multiline)
-            Dim iBraceList As Integer()() = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(sSource, "{"c, "}"c, 1, iModType, True)
+            Dim iBraceList As Integer()() = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(sSource, "{"c, "}"c, 1, iLanguage, True)
 
             Dim mMatch As Match
 
@@ -1483,7 +1483,7 @@ Public Class ClassAutocompleteUpdater
                 SB = New StringBuilder
                 lEnumSplitList = New List(Of String)
 
-                mSourceAnalysis = New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sEnumSource, iModType)
+                mSourceAnalysis = New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sEnumSource, iLanguage)
 
                 For ii = 0 To sEnumSource.Length - 1
                     Select Case (sEnumSource(ii))
@@ -1615,7 +1615,7 @@ Public Class ClassAutocompleteUpdater
         'Get methodmaps
         If ((ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7 OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX) AndAlso sSource.Contains("methodmap")) Then
             Dim mPossibleMethodmapMatches As MatchCollection = Regex.Matches(sSource, "^\s*\b(methodmap)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)(?<ParentingName>\s+\b[a-zA-Z0-9_]+\b){0,1}(?<FullParent>\s*\<\s*(?<Parent>\b[a-zA-Z0-9_]+\b)){0,1}\s*(?<BraceStart>\{)", RegexOptions.Multiline)
-            Dim iBraceList As Integer()() = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(sSource, "{"c, "}"c, 1, iModType, True)
+            Dim iBraceList As Integer()() = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(sSource, "{"c, "}"c, 1, iLanguage, True)
 
             Dim mMatch As Match
 
@@ -1677,8 +1677,8 @@ Public Class ClassAutocompleteUpdater
                     End If
                 End If
 
-                Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sMethodmapSource, iModType)
-                Dim iMethodmapBraceList As Integer()() = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(sMethodmapSource, "("c, ")"c, 1, iModType, True)
+                Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sMethodmapSource, iLanguage)
+                Dim iMethodmapBraceList As Integer()() = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(sMethodmapSource, "("c, ")"c, 1, iLanguage, True)
 
                 Dim mMethodMatches As MatchCollection = Regex.Matches(sMethodmapSource,
                                                                       String.Format("^\s*(?<Type>\b(property|public\s+(static\s*){2}(native\s*){4}|public)\b)\s+((?<Tag>\b({0})\b\s)\s*(?<Name>\b[a-zA-Z0-9_]+\b)|(?<Constructor>\b{1}\b)|(?<Name>\b[a-zA-Z0-9_]+\b))\s*(?<BraceStart>\(){3}", sRegExEnum, sMethodMapName, "{0,1}", "{0,1}", "{0,1}"),
@@ -1804,7 +1804,7 @@ Public Class ClassAutocompleteUpdater
         'Get typesets
         If ((ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7 OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX) AndAlso sSource.Contains("typeset")) Then
             Dim mPossibleMethodmapMatches As MatchCollection = Regex.Matches(sSource, "^\s*\b(typeset)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)\s*(?<BraceStart>\{)", RegexOptions.Multiline)
-            Dim iBraceList As Integer()() = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(sSource, "{"c, "}"c, 1, iModType, True)
+            Dim iBraceList As Integer()() = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(sSource, "{"c, "}"c, 1, iLanguage, True)
 
             Dim mMatch As Match
 
@@ -1851,8 +1851,8 @@ Public Class ClassAutocompleteUpdater
                     End If
                 End If
 
-                Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sMethodmapSource, iModType)
-                Dim iMethodmapBraceList As Integer()() = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(sMethodmapSource, "("c, ")"c, 1, iModType, True)
+                Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sMethodmapSource, iLanguage)
+                Dim iMethodmapBraceList As Integer()() = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(sMethodmapSource, "("c, ")"c, 1, iLanguage, True)
 
                 Dim mMethodMatches As MatchCollection = Regex.Matches(sMethodmapSource, String.Format("^\s*(?<Type>\b(function)\b)\s+(?<Tag>\b({0})\b)\s*(?<BraceStart>\()", sRegExEnum), RegexOptions.Multiline)
 
@@ -1917,9 +1917,9 @@ Public Class ClassAutocompleteUpdater
         'Get typedefs
         If ((ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7 OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX) AndAlso sSource.Contains("typedef")) Then
             Dim mPossibleMethodmapMatches As MatchCollection = Regex.Matches(sSource, String.Format("^\s*\b(typedef)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)\s+=\s+\b(function)\b\s+(?<Tag>\b({0})\b)\s*(?<BraceStart>\()", sRegExEnum), RegexOptions.Multiline)
-            Dim iBraceList As Integer()() = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(sSource, "("c, ")"c, 1, iModType, True)
+            Dim iBraceList As Integer()() = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(sSource, "("c, ")"c, 1, iLanguage, True)
 
-            Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iModType)
+            Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iLanguage)
 
             For i = 0 To mPossibleMethodmapMatches.Count - 1
                 Dim mMatch As Match = mPossibleMethodmapMatches(i)
@@ -1998,7 +1998,7 @@ Public Class ClassAutocompleteUpdater
             End If
 
             Dim sRequestedSourceFile As String = mRequestTab.m_File
-            Dim iRequestedModType As ClassSyntaxTools.ENUM_MOD_TYPE = mRequestTab.m_ModType
+            Dim iRequestedLangauge As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = mRequestTab.m_Language
             Dim sRequestedSource As String = ClassThread.ExecEx(Of String)(mRequestTab, Function() mRequestTab.m_TextEditor.Document.TextContent)
 
             'g_mFormMain.PrintInformation("[INFO]", "Variable autocomplete update started...")
@@ -2023,15 +2023,15 @@ Public Class ClassAutocompleteUpdater
                 Dim sRegExEnumPattern As String = String.Format("(\b{0}\b)", String.Join("\b|\b", GetEnumNames(lActiveAutocomplete)))
 
                 If (ClassSettings.g_iSettingsVarAutocompleteCurrentSourceOnly) Then
-                    ParseVariables_Pre(sRequestedSource, sRequestedSourceFile, sRequestedSourceFile, sRegExEnumPattern, lTmpVarAutocompleteList, lActiveAutocomplete, iRequestedModType)
+                    ParseVariables_Pre(sRequestedSource, sRequestedSourceFile, sRequestedSourceFile, sRegExEnumPattern, lTmpVarAutocompleteList, lActiveAutocomplete, iRequestedLangauge)
                 Else
                     Dim mIncludeFiles As DictionaryEntry() = mRequestTab.m_IncludeFiles.ToArray
                     For i = 0 To mIncludeFiles.Length - 1
-                        ParseVariables_Pre(sRequestedSource, sRequestedSourceFile, CStr(mIncludeFiles(i).Value), sRegExEnumPattern, lTmpVarAutocompleteList, lActiveAutocomplete, iRequestedModType)
+                        ParseVariables_Pre(sRequestedSource, sRequestedSourceFile, CStr(mIncludeFiles(i).Value), sRegExEnumPattern, lTmpVarAutocompleteList, lActiveAutocomplete, iRequestedLangauge)
                     Next
                 End If
 
-                ParseVariables_Post(sRequestedSource, sRequestedSourceFile, sRegExEnumPattern, lTmpVarAutocompleteList, lActiveAutocomplete, iRequestedModType)
+                ParseVariables_Post(sRequestedSource, sRequestedSourceFile, sRegExEnumPattern, lTmpVarAutocompleteList, lActiveAutocomplete, iRequestedLangauge)
             End If
 
             mRequestTab.m_AutocompleteItems.DoSync(
@@ -2056,7 +2056,7 @@ Public Class ClassAutocompleteUpdater
         Dim sFile As String
     End Structure
 
-    Private Sub ParseVariables_Pre(sActiveSource As String, sActiveSourceFile As String, ByRef sFile As String, ByRef sRegExEnumPattern As String, ByRef lTmpVarAutocompleteList As List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE), ByRef lTmpAutocompleteList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE), iModType As ClassSyntaxTools.ENUM_MOD_TYPE)
+    Private Sub ParseVariables_Pre(sActiveSource As String, sActiveSourceFile As String, ByRef sFile As String, ByRef sRegExEnumPattern As String, ByRef lTmpVarAutocompleteList As List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE), ByRef lTmpAutocompleteList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE), iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE)
         Dim sSource As String
         If (sActiveSourceFile.ToLower = sFile.ToLower) Then
             sSource = sActiveSource
@@ -2064,7 +2064,7 @@ Public Class ClassAutocompleteUpdater
             sSource = IO.File.ReadAllText(sFile)
         End If
 
-        CleanUpNewLinesSource(sSource, iModType)
+        CleanUpNewLinesSource(sSource, iLanguage)
 
         'Parse variables
         If (True) Then
@@ -2072,7 +2072,7 @@ Public Class ClassAutocompleteUpdater
             Dim sOldStyleVarPattern As String = String.Format("(?<Init>{0}\s+)(?<IsConst>\b(const)\b\s+){2}((?<Tag>{1})\:\s*(?<Var>\b[a-zA-Z0-9_]+\b)|(?<Var>\b[a-zA-Z0-9_]+\b))($|\W)", sInitTypesPattern, sRegExEnumPattern, "{0,1}")
             Dim sNewStyleVarPattern As String = String.Format("(?<IsConst>\b(const)\b\s+){1}(?<Tag>{0})\s+(?<Var>\b[a-zA-Z0-9_]+\b)($|\W)", sRegExEnumPattern, "{0,1}")
 
-            Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iModType)
+            Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iLanguage)
             Dim lCommaLinesList As New List(Of String)
             Dim mCodeBuilder As New StringBuilder
 
@@ -2454,7 +2454,7 @@ Public Class ClassAutocompleteUpdater
 
     End Sub
 
-    Private Sub ParseVariables_Post(sActiveSource As String, sActiveSourceFile As String, ByRef sRegExEnumPattern As String, ByRef lTmpVarAutocompleteList As List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE), ByRef lTmpAutocompleteList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE), iModType As ClassSyntaxTools.ENUM_MOD_TYPE)
+    Private Sub ParseVariables_Post(sActiveSource As String, sActiveSourceFile As String, ByRef sRegExEnumPattern As String, ByRef lTmpVarAutocompleteList As List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE), ByRef lTmpAutocompleteList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE), iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE)
         'Parse function argument variables
         If (True) Then
             Dim lArgList As New List(Of STRUC_PARSE_ARGUMENT_ITEM)
@@ -2471,7 +2471,7 @@ Public Class ClassAutocompleteUpdater
                     End If
                 End If
 
-                Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(mItem.m_FullFunctionName, iModType)
+                Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(mItem.m_FullFunctionName, iLanguage)
                 mCodeBuilder.Length = 0
 
                 Dim bNeedSave As Boolean = False

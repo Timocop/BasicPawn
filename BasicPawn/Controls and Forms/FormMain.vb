@@ -667,7 +667,7 @@ Public Class FormMain
                 End While
             End Using
 
-            Dim sFormatedSource As String = g_ClassSyntaxTools.FormatCode(g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent, ClassSettings.ENUM_INDENTATION_TYPES.USE_SETTINGS, g_ClassTabControl.m_ActiveTab.m_ModType)
+            Dim sFormatedSource As String = g_ClassSyntaxTools.FormatCode(g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent, ClassSettings.ENUM_INDENTATION_TYPES.USE_SETTINGS, g_ClassTabControl.m_ActiveTab.m_Language)
             Dim lFormatedSourceLines As New List(Of String)
             Using mSR As New IO.StringReader(sFormatedSource)
                 Dim sLine As String
@@ -782,21 +782,21 @@ Public Class FormMain
     End Sub
 
     Private Sub ToolStripMenuItem_ToolsAutocomplete_DropDownOpening(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsAutocomplete.DropDownOpening
-        Dim sModType As String
+        Dim sLanguage As String
 
-        Select Case (g_ClassTabControl.m_ActiveTab.m_ModType)
-            Case ClassSyntaxTools.ENUM_MOD_TYPE.SOURCEMOD
-                sModType = "SourceMod"
-            Case ClassSyntaxTools.ENUM_MOD_TYPE.AMXMODX
-                sModType = "AMX Mod X"
-            Case ClassSyntaxTools.ENUM_MOD_TYPE.PAWN
-                sModType = "Pawn"
+        Select Case (g_ClassTabControl.m_ActiveTab.m_Language)
+            Case ClassSyntaxTools.ENUM_LANGUAGE_TYPE.SOURCEPAWN
+                sLanguage = "SourcePawn"
+            Case ClassSyntaxTools.ENUM_LANGUAGE_TYPE.AMXMODX
+                sLanguage = "AMX Mod X"
+            Case ClassSyntaxTools.ENUM_LANGUAGE_TYPE.PAWN
+                sLanguage = "Pawn"
             Case Else
-                sModType = "Unknown"
+                sLanguage = "Unknown"
         End Select
 
 
-        ToolStripMenuItem_ToolsAutocompleteCurrentMod.Text = String.Format("Current Mod: {0}", sModType)
+        ToolStripMenuItem_ToolsAutocompleteCurrentMod.Text = String.Format("Current langauge: {0}", sLanguage)
     End Sub
 #End Region
 
@@ -822,7 +822,7 @@ Public Class FormMain
         Dim sSource As String = g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
         With New ClassDebuggerParser(Me)
             If (.HasDebugPlaceholder(sSource)) Then
-                .CleanupDebugPlaceholder(sSource, g_ClassTabControl.m_ActiveTab.m_ModType)
+                .CleanupDebugPlaceholder(sSource, g_ClassTabControl.m_ActiveTab.m_Language)
             End If
         End With
 

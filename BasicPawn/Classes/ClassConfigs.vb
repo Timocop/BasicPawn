@@ -26,9 +26,9 @@ Public Class ClassConfigs
     Class STRUC_CONFIG_ITEM
         Private g_sName As String = ""
 
-        Enum ENUM_MOD_TYPE
+        Enum ENUM_LANGUAGE_DETECT_TYPE
             AUTO_DETECT
-            SOURCEMOD
+            SOURCEPAWN
             AMXMODX
         End Enum
 
@@ -372,7 +372,7 @@ Public Class ClassConfigs
         Public g_sCompilerPath As String = ""
         Public g_sOutputFolder As String = ""
         Public g_bAutoload As Boolean = False
-        Public g_iModType As ENUM_MOD_TYPE = ENUM_MOD_TYPE.AUTO_DETECT
+        Public g_iLanguage As ENUM_LANGUAGE_DETECT_TYPE = ENUM_LANGUAGE_DETECT_TYPE.AUTO_DETECT
         'Compiler Options
         Public g_mCompilerOptionsSP As New CompilerOptions.STRUC_SP_COMPILER_OPTIONS
         Public g_mCompilerOptionsAMXX As New CompilerOptions.STRUC_AMXX_COMPILER_OPTIONS
@@ -388,7 +388,7 @@ Public Class ClassConfigs
         End Sub
 
         Public Sub New(sName As String,
-                       iCompilingType As ClassSettings.ENUM_COMPILING_TYPE, sIncludeFolders As String, sCompilerPath As String, sOutputFolder As String, bAutoload As Boolean, iModType As ENUM_MOD_TYPE,
+                       iCompilingType As ClassSettings.ENUM_COMPILING_TYPE, sIncludeFolders As String, sCompilerPath As String, sOutputFolder As String, bAutoload As Boolean, iLanguage As ENUM_LANGUAGE_DETECT_TYPE,
                        mCompilerOptionsSP As CompilerOptions.STRUC_SP_COMPILER_OPTIONS, mCompilerOptionsAMXX As CompilerOptions.STRUC_AMXX_COMPILER_OPTIONS,
                        sDebugGameFolder As String, sDebugSourceModFolder As String,
                        sExecuteShell As String, sSyntaxHighlightingPath As String)
@@ -400,7 +400,7 @@ Public Class ClassConfigs
             g_sCompilerPath = sCompilerPath
             g_sOutputFolder = sOutputFolder
             g_bAutoload = bAutoload
-            g_iModType = iModType
+            g_iLanguage = iLanguage
             'Compiler Options
             g_mCompilerOptionsSP = mCompilerOptionsSP
             g_mCompilerOptionsAMXX = mCompilerOptionsAMXX
@@ -509,7 +509,7 @@ Public Class ClassConfigs
         iniFile.WriteKeyValue("Config", "IncludeDirectory", mConfig.g_sIncludeFolders)
         iniFile.WriteKeyValue("Config", "OutputDirectory", mConfig.g_sOutputFolder)
         iniFile.WriteKeyValue("Config", "Autoload", If(mConfig.g_bAutoload, "1", "0"))
-        iniFile.WriteKeyValue("Config", "ModType", CStr(mConfig.g_iModType))
+        iniFile.WriteKeyValue("Config", "ModType", CStr(mConfig.g_iLanguage))
 
         'Compiler Options
         mConfig.g_mCompilerOptionsSP.SaveToIni(iniFile)
@@ -545,12 +545,12 @@ Public Class ClassConfigs
         Dim sCompilerPath As String = iniFile.ReadKeyValue("Config", "CompilerPath", "")
         Dim sOutputFolder As String = iniFile.ReadKeyValue("Config", "OutputDirectory", "")
         Dim bIsDefault As Boolean = (iniFile.ReadKeyValue("Config", "Autoload", "0") <> "0")
-        Dim sModType As String = iniFile.ReadKeyValue("Config", "ModType", CStr(STRUC_CONFIG_ITEM.ENUM_MOD_TYPE.AUTO_DETECT))
-        Dim iModType As Integer
-        If (Integer.TryParse(sModType, iModType)) Then
-            iModType = ClassTools.ClassMath.ClampInt(iModType, 0, [Enum].GetNames(GetType(STRUC_CONFIG_ITEM.ENUM_MOD_TYPE)).Length - 1)
+        Dim sLanguage As String = iniFile.ReadKeyValue("Config", "ModType", CStr(STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE.AUTO_DETECT))
+        Dim iLanguage As Integer
+        If (Integer.TryParse(sLanguage, iLanguage)) Then
+            iLanguage = ClassTools.ClassMath.ClampInt(iLanguage, 0, [Enum].GetNames(GetType(STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE)).Length - 1)
         Else
-            iModType = STRUC_CONFIG_ITEM.ENUM_MOD_TYPE.AUTO_DETECT
+            iLanguage = STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE.AUTO_DETECT
         End If
 
         'Compiler Options
@@ -567,7 +567,7 @@ Public Class ClassConfigs
         Dim sExecuteShell As String = iniFile.ReadKeyValue("Config", "ExecuteShell", "")
         Dim sSyntaxHighlightingPath As String = iniFile.ReadKeyValue("Config", "SyntaxPath", "")
 
-        Return New STRUC_CONFIG_ITEM(sName, iCompilingType, sOpenIncludeFolders, sCompilerPath, sOutputFolder, bIsDefault, CType(iModType, STRUC_CONFIG_ITEM.ENUM_MOD_TYPE),
+        Return New STRUC_CONFIG_ITEM(sName, iCompilingType, sOpenIncludeFolders, sCompilerPath, sOutputFolder, bIsDefault, CType(iLanguage, STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE),
                                      mCompilerOptionsSourcePawn, mCompilerOptionsAMXModX,
                                      sDebugGameFolder, sDebugSourceModFolder,
                                      sExecuteShell, sSyntaxHighlightingPath)

@@ -122,8 +122,8 @@ Public Class UCAutocomplete
     Public Function UpdateIntelliSense() As Boolean
         Dim sTextContent As String = ClassThread.ExecEx(Of String)(Me, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent)
         Dim iCaretOffset As Integer = ClassThread.ExecEx(Of Integer)(Me, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Offset)
-        Dim iModType As ClassSyntaxTools.ENUM_MOD_TYPE = ClassThread.ExecEx(Of ClassSyntaxTools.ENUM_MOD_TYPE)(Me, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ModType)
-        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sTextContent, iModType)
+        Dim iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = ClassThread.ExecEx(Of ClassSyntaxTools.ENUM_LANGUAGE_TYPE)(Me, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
+        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sTextContent, iLanguage)
 
         If (iCaretOffset < 0 OrElse iCaretOffset > sTextContent.Length - 1) Then
             Return False
@@ -359,7 +359,7 @@ Public Class UCAutocomplete
                         Dim sNewlineDistance As Integer = sNameToolTip.IndexOf("("c)
 
                         If (sNewlineDistance > -1) Then
-                            Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sNameToolTip, g_AutocompleteUC.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ModType)
+                            Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sNameToolTip, g_AutocompleteUC.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
                             For ii = sNameToolTip.Length - 1 To 0 Step -1
                                 If (sNameToolTip(ii) <> ","c OrElse mSourceAnalysis.m_InNonCode(ii)) Then
                                     Continue For
@@ -408,7 +408,7 @@ Public Class UCAutocomplete
                     Dim sNewlineDistance As Integer = sNameToolTip.IndexOf("("c)
 
                     If (sNewlineDistance > -1) Then
-                        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sNameToolTip, g_AutocompleteUC.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ModType)
+                        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sNameToolTip, g_AutocompleteUC.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
                         For ii = sNameToolTip.Length - 1 To 0 Step -1
                             If (sNameToolTip(ii) <> ","c OrElse mSourceAnalysis.m_InNonCode(ii)) Then
                                 Continue For

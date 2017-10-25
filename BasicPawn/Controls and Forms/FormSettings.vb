@@ -34,11 +34,11 @@ Public Class FormSettings
 
         ' Add any initialization after the InitializeComponent() call. 
         g_bComboBoxIgnoreEvent = True
-        ComboBox_ModType.Items.Clear()
-        ComboBox_ModType.Items.Add("Auto-detect")
-        ComboBox_ModType.Items.Add("SourceMod")
-        ComboBox_ModType.Items.Add("AMX Mod X")
-        ComboBox_ModType.SelectedIndex = 0
+        ComboBox_Language.Items.Clear()
+        ComboBox_Language.Items.Add("Auto-detect")
+        ComboBox_Language.Items.Add("SourcePawn")
+        ComboBox_Language.Items.Add("AMX Mod X")
+        ComboBox_Language.SelectedIndex = 0
         g_bComboBoxIgnoreEvent = False
 
         'SourceMod
@@ -85,8 +85,8 @@ Public Class FormSettings
             g_bComboBoxIgnoreEvent = False
         End If
 
-        If (ComboBox_ModType.Items.Count <> [Enum].GetNames(GetType(ClassConfigs.STRUC_CONFIG_ITEM.ENUM_MOD_TYPE)).Length) Then
-            Throw New ArgumentException("ComboBox_ModType range")
+        If (ComboBox_Language.Items.Count <> [Enum].GetNames(GetType(ClassConfigs.STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE)).Length) Then
+            Throw New ArgumentException("ComboBox_Language range")
         End If
 
         Me.Size = Me.MinimumSize
@@ -340,7 +340,7 @@ Public Class FormSettings
                     TextBox_IncludeFolder.Text = ""
                     TextBox_OutputFolder.Text = ""
                     CheckBox_ConfigIsDefault.Checked = False
-                    ComboBox_ModType.SelectedIndex = 0
+                    ComboBox_Language.SelectedIndex = 0
                     'Compiler Options
                     '   (SourcePawn)
                     ComboBox_COOptimizationLevelSP.SelectedIndex = 0
@@ -387,7 +387,7 @@ Public Class FormSettings
                 TextBox_IncludeFolder.Text = ""
                 TextBox_OutputFolder.Text = ""
                 CheckBox_ConfigIsDefault.Checked = False
-                ComboBox_ModType.SelectedIndex = 0
+                ComboBox_Language.SelectedIndex = 0
                 'Compiler Options
                 '   (SourcePawn)
                 ComboBox_COOptimizationLevelSP.SelectedIndex = 0
@@ -434,7 +434,7 @@ Public Class FormSettings
                 TextBox_IncludeFolder.Text = mConfig.g_sIncludeFolders
                 TextBox_OutputFolder.Text = mConfig.g_sOutputFolder
                 CheckBox_ConfigIsDefault.Checked = mConfig.g_bAutoload
-                ComboBox_ModType.SelectedIndex = mConfig.g_iModType
+                ComboBox_Language.SelectedIndex = mConfig.g_iLanguage
                 'Compiler Options
                 '   SourcePawn
                 If (True) Then
@@ -703,7 +703,7 @@ Public Class FormSettings
                                                                         TextBox_CompilerPath.Text,
                                                                         TextBox_OutputFolder.Text,
                                                                         CheckBox_ConfigIsDefault.Checked,
-                                                                        CType(ComboBox_ModType.SelectedIndex, ClassConfigs.STRUC_CONFIG_ITEM.ENUM_MOD_TYPE),
+                                                                        CType(ComboBox_Language.SelectedIndex, ClassConfigs.STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE),
                                                                         mCompilerOptionsSP,
                                                                         mCompilerOptionsAMXX,
                                                                         TextBox_GameFolder.Text,
@@ -877,7 +877,7 @@ Public Class FormSettings
         MarkChanged()
     End Sub
 
-    Private Sub ComboBox_ModType_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboBox_ModType.SelectedIndexChanged
+    Private Sub ComboBox_Language_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboBox_Language.SelectedIndexChanged
         If (g_bComboBoxIgnoreEvent) Then
             Return
         End If

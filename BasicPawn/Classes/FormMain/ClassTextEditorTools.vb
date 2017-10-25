@@ -208,7 +208,7 @@ Public Class ClassTextEditorTools
                 Dim sSource As String = mActiveTextEditor.Document.GetText(0, iOffset)
                 If (sSource.Length > 0) Then
                     Dim mSourceBuilder As New Text.StringBuilder(sSource.Length)
-                    Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ModType)
+                    Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
                     Dim iLastParenthesisLevel As Integer = mSourceAnalysis.GetParenthesisLevel(sSource.Length - 1, Nothing)
 
                     For i = sSource.Length - 1 To 0 Step -1

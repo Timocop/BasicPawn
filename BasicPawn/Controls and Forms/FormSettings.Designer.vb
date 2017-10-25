@@ -134,7 +134,7 @@ Partial Class FormSettings
         Me.Label29 = New System.Windows.Forms.Label()
         Me.ComboBox_COVerbosityLevelAMXX = New System.Windows.Forms.ComboBox()
         Me.Label20 = New System.Windows.Forms.Label()
-        Me.ComboBox_ModType = New System.Windows.Forms.ComboBox()
+        Me.ComboBox_Language = New System.Windows.Forms.ComboBox()
         Me.Label11 = New System.Windows.Forms.Label()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.RadioButton_ConfigSettingAutomatic = New System.Windows.Forms.RadioButton()
@@ -1184,7 +1184,7 @@ Partial Class FormSettings
         Me.Panel9.AutoSize = True
         Me.Panel9.Controls.Add(Me.GroupBox2)
         Me.Panel9.Controls.Add(Me.Label20)
-        Me.Panel9.Controls.Add(Me.ComboBox_ModType)
+        Me.Panel9.Controls.Add(Me.ComboBox_Language)
         Me.Panel9.Controls.Add(Me.Label11)
         Me.Panel9.Controls.Add(Me.Label3)
         Me.Panel9.Controls.Add(Me.RadioButton_ConfigSettingAutomatic)
@@ -1469,20 +1469,20 @@ Partial Class FormSettings
         Me.Label20.AutoSize = True
         Me.Label20.Location = New System.Drawing.Point(3, 251)
         Me.Label20.Name = "Label20"
-        Me.Label20.Size = New System.Drawing.Size(34, 13)
+        Me.Label20.Size = New System.Drawing.Size(61, 13)
         Me.Label20.TabIndex = 27
-        Me.Label20.Text = "Mod:"
+        Me.Label20.Text = "Language:"
         '
-        'ComboBox_ModType
+        'ComboBox_Language
         '
-        Me.ComboBox_ModType.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.ComboBox_ModType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.ComboBox_ModType.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.ComboBox_ModType.FormattingEnabled = True
-        Me.ComboBox_ModType.Location = New System.Drawing.Point(358, 248)
-        Me.ComboBox_ModType.Name = "ComboBox_ModType"
-        Me.ComboBox_ModType.Size = New System.Drawing.Size(212, 21)
-        Me.ComboBox_ModType.TabIndex = 26
+        Me.ComboBox_Language.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ComboBox_Language.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.ComboBox_Language.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.ComboBox_Language.FormattingEnabled = True
+        Me.ComboBox_Language.Location = New System.Drawing.Point(358, 248)
+        Me.ComboBox_Language.Name = "ComboBox_Language"
+        Me.ComboBox_Language.Size = New System.Drawing.Size(212, 21)
+        Me.ComboBox_Language.TabIndex = 26
         '
         'Label11
         '
@@ -2034,7 +2034,7 @@ Partial Class FormSettings
     Friend WithEvents CheckBox_AssociateBasicPawnProject As CheckBox
     Friend WithEvents CheckBox_AssociateAmxMod As CheckBox
     Friend WithEvents Label20 As Label
-    Friend WithEvents ComboBox_ModType As ComboBox
+    Friend WithEvents ComboBox_Language As ComboBox
     Friend WithEvents ContextMenuStrip_Plugins As ContextMenuStrip
     Friend WithEvents ToolStripMenuItem_PluginsRefresh As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator1 As ToolStripSeparator

@@ -49,8 +49,8 @@ Public Class ClassSyntaxTools
     End Structure
     Public Shared g_SyntaxFiles As STRUC_SYNTAX_FILES_ITEM()
 
-    Enum ENUM_MOD_TYPE
-        SOURCEMOD
+    Enum ENUM_LANGUAGE_TYPE
+        SOURCEPAWN
         AMXMODX
         PAWN
     End Enum
@@ -86,7 +86,7 @@ Public Class ClassSyntaxTools
         g_mFormMain = f
 
         'Check escape chars
-        If (g_sEscapeCharacters.Length <> [Enum].GetNames(GetType(ENUM_MOD_TYPE)).Length) Then
+        If (g_sEscapeCharacters.Length <> [Enum].GetNames(GetType(ENUM_LANGUAGE_TYPE)).Length) Then
             Throw New ArgumentException("g_sEscapeCharacters lenght")
         End If
 
@@ -355,7 +355,7 @@ Public Class ClassSyntaxTools
 
                             Dim mActiveTab As ClassTabControl.SourceTabPage = g_mFormMain.g_ClassTabControl.m_ActiveTab
                             Dim mActiveAutocomplete As STRUC_AUTOCOMPLETE() = mActiveTab.m_AutocompleteItems.ToArray
-                            Dim iModType As ENUM_MOD_TYPE = mActiveTab.m_ModType
+                            Dim iLanguage As ENUM_LANGUAGE_TYPE = mActiveTab.m_Language
 
                             Using mSR As New IO.StreamReader(g_SyntaxFiles(i).sFile)
                                 Dim sLine As String
@@ -549,14 +549,14 @@ Public Class ClassSyntaxTools
 
                                     Try
                                         Dim sEscapeChar As String = mMatchColl(j).Groups("EscapeChar").Value
-                                        If (sEscapeChar = g_sEscapeCharacters(iModType)) Then
+                                        If (sEscapeChar = g_sEscapeCharacters(iLanguage)) Then
                                             Continue For
                                         End If
 
                                         Dim iEscapeCharIndex As Integer = mMatchColl(j).Groups("EscapeChar").Index
 
-                                        sFormatedString = sFormatedString.Remove(iEscapeCharIndex, g_sEscapeCharacters(iModType).Length)
-                                        sFormatedString = sFormatedString.Insert(iEscapeCharIndex, g_sEscapeCharacters(iModType))
+                                        sFormatedString = sFormatedString.Remove(iEscapeCharIndex, g_sEscapeCharacters(iLanguage).Length)
+                                        sFormatedString = sFormatedString.Insert(iEscapeCharIndex, g_sEscapeCharacters(iLanguage))
                                     Catch : End Try
                                 Next
                             End If
@@ -647,7 +647,7 @@ Public Class ClassSyntaxTools
     ''' <param name="iTargetEndScopeLevel"></param>
     ''' <param name="bInvalidCodeCheck">If true, it will ignore all Non-Code stuff like strings, comments etc.</param>
     ''' <returns></returns>
-    Public Function GetExpressionBetweenCharacters(sExpression As String, sCharOpen As Char, sCharClose As Char, iTargetEndScopeLevel As Integer, iModType As ENUM_MOD_TYPE, Optional bInvalidCodeCheck As Boolean = False) As Integer()()
+    Public Function GetExpressionBetweenCharacters(sExpression As String, sCharOpen As Char, sCharClose As Char, iTargetEndScopeLevel As Integer, iLanguage As ENUM_LANGUAGE_TYPE, Optional bInvalidCodeCheck As Boolean = False) As Integer()()
         Dim iCurrentLevel As Integer = 0
         Dim sExpressionsList As New List(Of Integer())
         Dim bWasOpen As Boolean = False
@@ -656,7 +656,7 @@ Public Class ClassSyntaxTools
 
         Dim mSourceAnalysis As ClassSyntaxSourceAnalysis = Nothing
         If (bInvalidCodeCheck) Then
-            mSourceAnalysis = New ClassSyntaxSourceAnalysis(sExpression, iModType)
+            mSourceAnalysis = New ClassSyntaxSourceAnalysis(sExpression, iLanguage)
         End If
 
         For i = 0 To sExpression.Length - 1
@@ -696,7 +696,7 @@ Public Class ClassSyntaxTools
     ''' </summary>
     ''' <param name="sSource"></param>
     ''' <returns></returns>
-    Public Function FormatCode(sSource As String, iIndentationType As ClassSettings.ENUM_INDENTATION_TYPES, iModType As ENUM_MOD_TYPE) As String
+    Public Function FormatCode(sSource As String, iIndentationType As ClassSettings.ENUM_INDENTATION_TYPES, iLanguage As ENUM_LANGUAGE_TYPE) As String
         Dim mSourceBuilder As New StringBuilder
         Using mSR As New IO.StringReader(sSource)
             While True
@@ -712,7 +712,7 @@ Public Class ClassSyntaxTools
 
         'Get any valid statements ends and put them in a list
         Dim lValidStateEnds As New List(Of Integer)
-        Dim iExpressions As Integer()() = GetExpressionBetweenCharacters(sSource, "("c, ")"c, 1, iModType, True)
+        Dim iExpressions As Integer()() = GetExpressionBetweenCharacters(sSource, "("c, ")"c, 1, iLanguage, True)
         For Each mMatch As Match In Regex.Matches(sSource, "(?<!\#)(\b(if|while|for)\b\s*(?<End1>\()|\b(?<End2>else(?!\s+\b(if)\b))\b)")
             If (mMatch.Groups("End1").Success) Then
                 Dim iEndIndex As Integer = mMatch.Groups("End1").Index
@@ -727,7 +727,7 @@ Public Class ClassSyntaxTools
             End If
         Next
 
-        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iModType)
+        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iLanguage)
 
 
         Dim iBraceCount As Integer = 0
@@ -823,7 +823,7 @@ Public Class ClassSyntaxTools
     ''' <param name="sSource"></param>
     ''' <param name="bIgnoreChecks"></param>
     ''' <returns>The offset in the source, -1 if not found.</returns>
-    Public Function HasNewDeclsPragma(sSource As String, iModType As ENUM_MOD_TYPE, Optional bIgnoreChecks As Boolean = True) As Integer
+    Public Function HasNewDeclsPragma(sSource As String, iLanguage As ENUM_LANGUAGE_TYPE, Optional bIgnoreChecks As Boolean = True) As Integer
         'TODO: Add better check
         Dim sRegexPattern As String = "\#\b(pragma)\b(\s+|\s*(\\*)\s*)\b(newdecls)\b(\s+|\s*(\\*)\s*)\b(required)\b"
 
@@ -832,7 +832,7 @@ Public Class ClassSyntaxTools
                 Return match.Index
             Next
         Else
-            Dim mSourceAnalysis As New ClassSyntaxSourceAnalysis(sSource, iModType)
+            Dim mSourceAnalysis As New ClassSyntaxSourceAnalysis(sSource, iLanguage)
             For Each match As Match In Regex.Matches(sSource, sRegexPattern, RegexOptions.Multiline)
                 If (mSourceAnalysis.m_InNonCode(match.Index)) Then
                     Continue For
@@ -1094,7 +1094,7 @@ Public Class ClassSyntaxTools
         End Function
 
 
-        Public Sub New(ByRef sText As String, iModType As ENUM_MOD_TYPE, Optional bIgnorePreprocessor As Boolean = True)
+        Public Sub New(ByRef sText As String, iLanguage As ENUM_LANGUAGE_TYPE, Optional bIgnorePreprocessor As Boolean = True)
             g_sCacheText = sText
             g_iMaxLenght = sText.Length
 
@@ -1252,7 +1252,7 @@ Public Class ClassSyntaxTools
                         'ignore \'
                         Dim iEscapes As Integer = 0
                         For j = i - 1 To 0 Step -1
-                            If (sText(j) <> ClassSyntaxTools.g_sEscapeCharacters(iModType)) Then
+                            If (sText(j) <> ClassSyntaxTools.g_sEscapeCharacters(iLanguage)) Then
                                 Exit For
                             End If
 
@@ -1276,7 +1276,7 @@ Public Class ClassSyntaxTools
                         'ignore \"
                         Dim iEscapes As Integer = 0
                         For j = i - 1 To 0 Step -1
-                            If (sText(j) <> ClassSyntaxTools.g_sEscapeCharacters(iModType)) Then
+                            If (sText(j) <> ClassSyntaxTools.g_sEscapeCharacters(iLanguage)) Then
                                 Exit For
                             End If
 
