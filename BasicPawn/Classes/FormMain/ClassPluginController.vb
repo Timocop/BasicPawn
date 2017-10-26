@@ -45,45 +45,47 @@ Public Class ClassPluginController
                 IO.File.WriteAllText(sConfigFile, "")
             End If
 
-            Dim mIniFile As New ClassIniFile(sConfigFile)
-            For Each mItem In mIniFile.ReadEverything
-                If (mItem.sSection <> "Plugins") Then
-                    Continue For
-                End If
+            Using mIni As New ClassIni(sConfigFile, IO.FileMode.OpenOrCreate)
+                For Each mItem In mIni.ReadEverything
+                    If (mItem.sSection <> "Plugins") Then
+                        Continue For
+                    End If
 
-                If (mItem.sValue.ToLower <> sFilename.ToLower) Then
-                    Continue For
-                End If
+                    If (mItem.sValue.ToLower <> sFilename.ToLower) Then
+                        Continue For
+                    End If
 
-                Dim sGuid As String = mItem.sKey
+                    Dim sGuid As String = mItem.sKey
 
-                bEnabled = (mIniFile.ReadKeyValue("States", sGuid, "1") = "1")
-                Exit For
-            Next
+                    bEnabled = (mIni.ReadKeyValue("States", sGuid, "1") = "1")
+                    Exit For
+                Next
+            End Using
 
             Return bEnabled
         End Get
         Set(value As Boolean)
             Dim sFilename As String = IO.Path.GetFileName(mPlugin.sFile)
             Dim sConfigFile As String = IO.Path.Combine(Application.StartupPath, "plugins\PluginConfig.ini")
-
             Dim sGuid As String = Guid.NewGuid.ToString
-            Dim mIniFile As New ClassIniFile(sConfigFile)
-            For Each mItem In mIniFile.ReadEverything
-                If (mItem.sSection <> "Plugins") Then
-                    Continue For
-                End If
 
-                If (mItem.sValue.ToLower <> sFilename.ToLower) Then
-                    Continue For
-                End If
+            Using mIni As New ClassIni(sConfigFile, IO.FileMode.OpenOrCreate)
+                For Each mItem In mIni.ReadEverything
+                    If (mItem.sSection <> "Plugins") Then
+                        Continue For
+                    End If
 
-                sGuid = mItem.sKey
-                Exit For
-            Next
+                    If (mItem.sValue.ToLower <> sFilename.ToLower) Then
+                        Continue For
+                    End If
 
-            mIniFile.WriteKeyValue("States", sGuid, If(value, "1", "0"))
-            mIniFile.WriteKeyValue("Plugins", sGuid, sFilename)
+                    sGuid = mItem.sKey
+                    Exit For
+                Next
+
+                mIni.WriteKeyValue("States", sGuid, If(value, "1", "0"))
+                mIni.WriteKeyValue("Plugins", sGuid, sFilename)
+            End Using
         End Set
     End Property
 

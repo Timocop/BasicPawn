@@ -218,25 +218,7 @@ Public Class UCStartPage
                 Return
             End If
 
-            Dim mIni As New ClassIniFile(m_RecentIni)
-
-            For Each iItem In mIni.ReadEverything
-                If (iItem.sSection <> RECENT_SECTION) Then
-                    Continue For
-                End If
-
-                If (iItem.sValue.ToLower <> sFile.ToLower) Then
-                    Continue For
-                End If
-
-                mIni.WriteKeyValue(iItem.sSection, iItem.sKey)
-            Next
-        End Sub
-
-        Public Sub AddRecent(sFile As String)
-            Dim mIni As New ClassIniFile(m_RecentIni)
-
-            If (IO.File.Exists(m_RecentIni)) Then
+            Using mIni As New ClassIni(m_RecentIni, IO.FileMode.OpenOrCreate)
                 For Each iItem In mIni.ReadEverything
                     If (iItem.sSection <> RECENT_SECTION) Then
                         Continue For
@@ -248,9 +230,27 @@ Public Class UCStartPage
 
                     mIni.WriteKeyValue(iItem.sSection, iItem.sKey)
                 Next
-            End If
+            End Using
+        End Sub
 
-            mIni.WriteKeyValue(RECENT_SECTION, Guid.NewGuid.ToString, sFile)
+        Public Sub AddRecent(sFile As String)
+            Using mIni As New ClassIni(m_RecentIni, IO.FileMode.OpenOrCreate)
+                If (IO.File.Exists(m_RecentIni)) Then
+                    For Each iItem In mIni.ReadEverything
+                        If (iItem.sSection <> RECENT_SECTION) Then
+                            Continue For
+                        End If
+
+                        If (iItem.sValue.ToLower <> sFile.ToLower) Then
+                            Continue For
+                        End If
+
+                        mIni.WriteKeyValue(iItem.sSection, iItem.sKey)
+                    Next
+                End If
+
+                mIni.WriteKeyValue(RECENT_SECTION, Guid.NewGuid.ToString, sFile)
+            End Using
         End Sub
 
         Public Function GetRecentItems() As UCStartPageRecentItem()
@@ -292,24 +292,25 @@ Public Class UCStartPage
 
             Dim lRecentFiles As New List(Of String)
 
-            Dim mIni As New ClassIniFile(m_RecentIni)
-            For Each iItem In mIni.ReadEverything
-                If (iItem.sSection <> RECENT_SECTION) Then
-                    Continue For
-                End If
+            Using mIni As New ClassIni(m_RecentIni, IO.FileMode.OpenOrCreate)
+                For Each iItem In mIni.ReadEverything
+                    If (iItem.sSection <> RECENT_SECTION) Then
+                        Continue For
+                    End If
 
-                If (Not IO.File.Exists(iItem.sValue.ToLower)) Then
-                    'Remove invalid entries from ini
-                    mIni.WriteKeyValue(RECENT_SECTION, iItem.sKey, Nothing)
-                    Continue For
-                End If
+                    If (Not IO.File.Exists(iItem.sValue.ToLower)) Then
+                        'Remove invalid entries from ini
+                        mIni.WriteKeyValue(RECENT_SECTION, iItem.sKey, Nothing)
+                        Continue For
+                    End If
 
-                If (lRecentFiles.Contains(iItem.sValue.ToLower)) Then
-                    Continue For
-                End If
+                    If (lRecentFiles.Contains(iItem.sValue.ToLower)) Then
+                        Continue For
+                    End If
 
-                lRecentFiles.Add(iItem.sValue.ToLower)
-            Next
+                    lRecentFiles.Add(iItem.sValue.ToLower)
+                Next
+            End Using
 
             Return lRecentFiles.ToArray
         End Function

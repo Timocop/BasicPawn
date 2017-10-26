@@ -104,10 +104,11 @@ Public Class ClassDatabase
 #End If
 
 
-            Dim mIniFile As New ClassIniFile(g_sDatabasePath)
-            mIniFile.WriteKeyValue(g_sName, "UserSid", g_sUserSid)
-            mIniFile.WriteKeyValue(g_sName, "Username", sCryptUsername)
-            mIniFile.WriteKeyValue(g_sName, "Password", sCryptPassword)
+            Using mIni As New ClassIni(g_sDatabasePath, IO.FileMode.OpenOrCreate)
+                mIni.WriteKeyValue(g_sName, "UserSid", g_sUserSid)
+                mIni.WriteKeyValue(g_sName, "Username", sCryptUsername)
+                mIni.WriteKeyValue(g_sName, "Password", sCryptPassword)
+            End Using
         End Sub
 
         Public Sub Remove()
@@ -115,10 +116,11 @@ Public Class ClassDatabase
                 Return
             End If
 
-            Dim mIniFile As New ClassIniFile(g_sDatabasePath)
-            mIniFile.WriteKeyValue(g_sName, "UserSid")
-            mIniFile.WriteKeyValue(g_sName, "Username")
-            mIniFile.WriteKeyValue(g_sName, "Password")
+            Using mIni As New ClassIni(g_sDatabasePath, IO.FileMode.OpenOrCreate)
+                mIni.WriteKeyValue(g_sName, "UserSid")
+                mIni.WriteKeyValue(g_sName, "Username")
+                mIni.WriteKeyValue(g_sName, "Password")
+            End Using
         End Sub
     End Class
 
@@ -129,32 +131,31 @@ Public Class ClassDatabase
 
         Dim lDatabaseItems As New List(Of STRUC_DATABASE_ITEM)
 
-        Dim mIniFile As New ClassIniFile(g_sDatabasePath)
+        Using mIni As New ClassIni(g_sDatabasePath, IO.FileMode.OpenOrCreate)
+            For Each sSection As String In mIni.GetSectionNames
+                Try
+                    Dim sCryptUserSid As String = mIni.ReadKeyValue(sSection, "UserSid")
+                    Dim sCryptUsername As String = mIni.ReadKeyValue(sSection, "Username")
+                    Dim sCryptPassword As String = mIni.ReadKeyValue(sSection, "Password")
 
-        For Each sSection As String In mIniFile.GetSectionNames
-            Try
-                Dim sCryptUserSid As String = mIniFile.ReadKeyValue(sSection, "UserSid")
-                Dim sCryptUsername As String = mIniFile.ReadKeyValue(sSection, "Username")
-                Dim sCryptPassword As String = mIniFile.ReadKeyValue(sSection, "Password")
+                    If (String.IsNullOrEmpty(sCryptUserSid) OrElse String.IsNullOrEmpty(sCryptUsername) OrElse String.IsNullOrEmpty(sCryptPassword)) Then
+                        Continue For
+                    End If
 
-                If (String.IsNullOrEmpty(sCryptUserSid) OrElse String.IsNullOrEmpty(sCryptUsername) OrElse String.IsNullOrEmpty(sCryptPassword)) Then
-                    Continue For
-                End If
-
-                If (sCryptUserSid.ToLower <> WindowsIdentity.GetCurrent.User.Value.ToLower) Then
-                    Continue For
-                End If
+                    If (sCryptUserSid.ToLower <> WindowsIdentity.GetCurrent.User.Value.ToLower) Then
+                        Continue For
+                    End If
 
 
 #If ENCRYPT_DATABASE Then
-                Dim iCryptUsername As Byte() = ClassTools.ClassCrypto.ClassBase.FromBase64Ex(sCryptUsername)
-                Dim iCryptPassword As Byte() = ClassTools.ClassCrypto.ClassBase.FromBase64Ex(sCryptPassword)
+                    Dim iCryptUsername As Byte() = ClassTools.ClassCrypto.ClassBase.FromBase64Ex(sCryptUsername)
+                    Dim iCryptPassword As Byte() = ClassTools.ClassCrypto.ClassBase.FromBase64Ex(sCryptPassword)
 
-                iCryptUsername = ClassSecureStorage.Decrypt(iCryptUsername)
-                iCryptPassword = ClassSecureStorage.Decrypt(iCryptPassword)
+                    iCryptUsername = ClassSecureStorage.Decrypt(iCryptUsername)
+                    iCryptPassword = ClassSecureStorage.Decrypt(iCryptPassword)
 
-                sCryptUsername = Encoding.Unicode.GetString(iCryptUsername)
-                sCryptPassword = Encoding.Unicode.GetString(iCryptPassword)
+                    sCryptUsername = Encoding.Unicode.GetString(iCryptUsername)
+                    sCryptPassword = Encoding.Unicode.GetString(iCryptPassword)
 #Else
                 Dim iCryptUsername As Byte() = ClassTools.ClassCrypto.Base.FromBase64Ex(sCryptUsername)
                 Dim iCryptPassword As Byte() = ClassTools.ClassCrypto.Base.FromBase64Ex(sCryptPassword)
@@ -163,11 +164,12 @@ Public Class ClassDatabase
                 sCryptPassword = Encoding.Unicode.GetString(iCryptPassword)
 #End If
 
-                lDatabaseItems.Add(New STRUC_DATABASE_ITEM(sSection, sCryptUserSid, sCryptUsername, sCryptPassword))
-            Catch ex As Exception
-                'Ignore invalid base64
-            End Try
-        Next
+                    lDatabaseItems.Add(New STRUC_DATABASE_ITEM(sSection, sCryptUserSid, sCryptUsername, sCryptPassword))
+                Catch ex As Exception
+                    'Ignore invalid base64
+                End Try
+            Next
+        End Using
 
         Return lDatabaseItems.ToArray
     End Function
@@ -177,13 +179,13 @@ Public Class ClassDatabase
             Return False
         End If
 
-        Dim mIniFile As New ClassIniFile(g_sDatabasePath)
-
-        For Each sSection As String In mIniFile.GetSectionNames
-            If (sSection = sName) Then
-                Return True
-            End If
-        Next
+        Using mIni As New ClassIni(g_sDatabasePath, IO.FileMode.OpenOrCreate)
+            For Each sSection As String In mIni.GetSectionNames
+                If (sSection = sName) Then
+                    Return True
+                End If
+            Next
+        End Using
 
         Return False
     End Function

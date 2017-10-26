@@ -37,9 +37,9 @@ Public Class ClassConfigs
 
                 Function BuildCommandline() As String
 
-                Sub SaveToIni(ByRef mIniFile As ClassIniFile)
+                Sub SaveToIni(ByRef mIni As ClassIni)
 
-                Sub LoadFromIni(ByRef mIniFile As ClassIniFile)
+                Sub LoadFromIni(ByRef mIni As ClassIni)
 
             End Interface
 
@@ -132,37 +132,37 @@ Public Class ClassConfigs
                     Return String.Join(" "c, lCmds.ToArray)
                 End Function
 
-                Public Sub SaveToIni(ByRef mIniFile As ClassIniFile) Implements ICompilerOptions.SaveToIni
+                Public Sub SaveToIni(ByRef mIni As ClassIni) Implements ICompilerOptions.SaveToIni
                     Dim tmpStr As String
 
-                    mIniFile.WriteKeyValue(g_sSectionName, "OptimizationLevel", If(g_iOptimizationLevel < 0, Nothing, CStr(g_iOptimizationLevel)))
-                    mIniFile.WriteKeyValue(g_sSectionName, "VerbosityLevel", If(g_iVerbosityLevel < 0, Nothing, CStr(g_iVerbosityLevel)))
-                    mIniFile.WriteKeyValue(g_sSectionName, "TreatWarningsAsErrors", If(g_iTreatWarningsAsErrors < 0, Nothing, CStr(g_iTreatWarningsAsErrors)))
+                    mIni.WriteKeyValue(g_sSectionName, "OptimizationLevel", If(g_iOptimizationLevel < 0, Nothing, CStr(g_iOptimizationLevel)))
+                    mIni.WriteKeyValue(g_sSectionName, "VerbosityLevel", If(g_iVerbosityLevel < 0, Nothing, CStr(g_iVerbosityLevel)))
+                    mIni.WriteKeyValue(g_sSectionName, "TreatWarningsAsErrors", If(g_iTreatWarningsAsErrors < 0, Nothing, CStr(g_iTreatWarningsAsErrors)))
 
                     tmpStr = IgnoredWarningsToString(g_lIgnoredWarnings)
-                    mIniFile.WriteKeyValue(g_sSectionName, "IgnoreWarnings", If(String.IsNullOrEmpty(tmpStr), Nothing, tmpStr))
+                    mIni.WriteKeyValue(g_sSectionName, "IgnoreWarnings", If(String.IsNullOrEmpty(tmpStr), Nothing, tmpStr))
 
                     tmpStr = DefineConstantsToString(g_mDefineConstants)
-                    mIniFile.WriteKeyValue(g_sSectionName, "DefineConstants", If(String.IsNullOrEmpty(tmpStr), Nothing, tmpStr))
+                    mIni.WriteKeyValue(g_sSectionName, "DefineConstants", If(String.IsNullOrEmpty(tmpStr), Nothing, tmpStr))
                 End Sub
 
-                Public Sub LoadFromIni(ByRef mIniFile As ClassIniFile) Implements ICompilerOptions.LoadFromIni
+                Public Sub LoadFromIni(ByRef mIni As ClassIni) Implements ICompilerOptions.LoadFromIni
                     Dim tmpStr As String
 
-                    tmpStr = mIniFile.ReadKeyValue(g_sSectionName, "OptimizationLevel", Nothing)
+                    tmpStr = mIni.ReadKeyValue(g_sSectionName, "OptimizationLevel", Nothing)
                     g_iOptimizationLevel = If(String.IsNullOrEmpty(tmpStr), -1, CInt(tmpStr))
 
-                    tmpStr = mIniFile.ReadKeyValue(g_sSectionName, "VerbosityLevel", Nothing)
+                    tmpStr = mIni.ReadKeyValue(g_sSectionName, "VerbosityLevel", Nothing)
                     g_iVerbosityLevel = If(String.IsNullOrEmpty(tmpStr), -1, CInt(tmpStr))
 
-                    tmpStr = mIniFile.ReadKeyValue(g_sSectionName, "TreatWarningsAsErrors", Nothing)
+                    tmpStr = mIni.ReadKeyValue(g_sSectionName, "TreatWarningsAsErrors", Nothing)
                     g_iTreatWarningsAsErrors = If(String.IsNullOrEmpty(tmpStr), -1, CInt(tmpStr))
 
-                    tmpStr = mIniFile.ReadKeyValue(g_sSectionName, "IgnoreWarnings", "")
+                    tmpStr = mIni.ReadKeyValue(g_sSectionName, "IgnoreWarnings", "")
                     g_lIgnoredWarnings.Clear()
                     ParseIgnoredWarnings(tmpStr, g_lIgnoredWarnings)
 
-                    tmpStr = mIniFile.ReadKeyValue(g_sSectionName, "DefineConstants", "")
+                    tmpStr = mIni.ReadKeyValue(g_sSectionName, "DefineConstants", "")
                     g_mDefineConstants.Clear()
                     ParseDefineConstants(tmpStr, g_mDefineConstants)
                 End Sub
@@ -263,37 +263,37 @@ Public Class ClassConfigs
                     Return String.Join(" "c, lCmds.ToArray)
                 End Function
 
-                Public Sub SaveToIni(ByRef mIniFile As ClassIniFile) Implements ICompilerOptions.SaveToIni
+                Public Sub SaveToIni(ByRef mIni As ClassIni) Implements ICompilerOptions.SaveToIni
                     Dim tmpStr As String
 
-                    mIniFile.WriteKeyValue(g_sSectionName, "VerbosityLevel", If(g_iVerbosityLevel < 0, Nothing, CStr(g_iVerbosityLevel)))
-                    mIniFile.WriteKeyValue(g_sSectionName, "TreatWarningsAsErrors", If(g_iTreatWarningsAsErrors < 0, Nothing, CStr(g_iTreatWarningsAsErrors)))
-                    mIniFile.WriteKeyValue(g_sSectionName, "SymbolicInformation", If(g_iSymbolicInformation < 0, Nothing, CStr(g_iVerbosityLevel)))
+                    mIni.WriteKeyValue(g_sSectionName, "VerbosityLevel", If(g_iVerbosityLevel < 0, Nothing, CStr(g_iVerbosityLevel)))
+                    mIni.WriteKeyValue(g_sSectionName, "TreatWarningsAsErrors", If(g_iTreatWarningsAsErrors < 0, Nothing, CStr(g_iTreatWarningsAsErrors)))
+                    mIni.WriteKeyValue(g_sSectionName, "SymbolicInformation", If(g_iSymbolicInformation < 0, Nothing, CStr(g_iVerbosityLevel)))
 
                     tmpStr = IgnoredWarningsToString(g_lIgnoredWarnings)
-                    mIniFile.WriteKeyValue(g_sSectionName, "IgnoreWarnings", If(String.IsNullOrEmpty(tmpStr), Nothing, tmpStr))
+                    mIni.WriteKeyValue(g_sSectionName, "IgnoreWarnings", If(String.IsNullOrEmpty(tmpStr), Nothing, tmpStr))
 
                     tmpStr = DefineConstantsToString(g_mDefineConstants)
-                    mIniFile.WriteKeyValue(g_sSectionName, "DefineConstants", If(String.IsNullOrEmpty(tmpStr), Nothing, tmpStr))
+                    mIni.WriteKeyValue(g_sSectionName, "DefineConstants", If(String.IsNullOrEmpty(tmpStr), Nothing, tmpStr))
                 End Sub
 
-                Public Sub LoadFromIni(ByRef mIniFile As ClassIniFile) Implements ICompilerOptions.LoadFromIni
+                Public Sub LoadFromIni(ByRef mIni As ClassIni) Implements ICompilerOptions.LoadFromIni
                     Dim tmpStr As String
 
-                    tmpStr = mIniFile.ReadKeyValue(g_sSectionName, "VerbosityLevel", Nothing)
+                    tmpStr = mIni.ReadKeyValue(g_sSectionName, "VerbosityLevel", Nothing)
                     g_iVerbosityLevel = If(String.IsNullOrEmpty(tmpStr), -1, CInt(tmpStr))
 
-                    tmpStr = mIniFile.ReadKeyValue(g_sSectionName, "TreatWarningsAsErrors", Nothing)
+                    tmpStr = mIni.ReadKeyValue(g_sSectionName, "TreatWarningsAsErrors", Nothing)
                     g_iTreatWarningsAsErrors = If(String.IsNullOrEmpty(tmpStr), -1, CInt(tmpStr))
 
-                    tmpStr = mIniFile.ReadKeyValue(g_sSectionName, "SymbolicInformation", Nothing)
+                    tmpStr = mIni.ReadKeyValue(g_sSectionName, "SymbolicInformation", Nothing)
                     g_iSymbolicInformation = If(String.IsNullOrEmpty(tmpStr), -1, CInt(tmpStr))
 
-                    tmpStr = mIniFile.ReadKeyValue(g_sSectionName, "IgnoreWarnings", "")
+                    tmpStr = mIni.ReadKeyValue(g_sSectionName, "IgnoreWarnings", "")
                     g_lIgnoredWarnings.Clear()
                     ParseIgnoredWarnings(tmpStr, g_lIgnoredWarnings)
 
-                    tmpStr = mIniFile.ReadKeyValue(g_sSectionName, "DefineConstants", "")
+                    tmpStr = mIni.ReadKeyValue(g_sSectionName, "DefineConstants", "")
                     g_mDefineConstants.Clear()
                     ParseDefineConstants(tmpStr, g_mDefineConstants)
                 End Sub
@@ -501,27 +501,27 @@ Public Class ClassConfigs
             IO.Directory.CreateDirectory(m_ConfigFolder)
         End If
 
-        Dim iniFile As New ClassIniFile(sConfigFile)
+        Using mIni As New ClassIni(sConfigFile, IO.FileMode.OpenOrCreate)
+            'Misc
+            mIni.WriteKeyValue("Config", "Type", If(mConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.CONFIG, "1", "0"))
+            mIni.WriteKeyValue("Config", "CompilerPath", mConfig.g_sCompilerPath)
+            mIni.WriteKeyValue("Config", "IncludeDirectory", mConfig.g_sIncludeFolders)
+            mIni.WriteKeyValue("Config", "OutputDirectory", mConfig.g_sOutputFolder)
+            mIni.WriteKeyValue("Config", "Autoload", If(mConfig.g_bAutoload, "1", "0"))
+            mIni.WriteKeyValue("Config", "ModType", CStr(mConfig.g_iLanguage))
 
-        'Misc
-        iniFile.WriteKeyValue("Config", "Type", If(mConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.CONFIG, "1", "0"))
-        iniFile.WriteKeyValue("Config", "CompilerPath", mConfig.g_sCompilerPath)
-        iniFile.WriteKeyValue("Config", "IncludeDirectory", mConfig.g_sIncludeFolders)
-        iniFile.WriteKeyValue("Config", "OutputDirectory", mConfig.g_sOutputFolder)
-        iniFile.WriteKeyValue("Config", "Autoload", If(mConfig.g_bAutoload, "1", "0"))
-        iniFile.WriteKeyValue("Config", "ModType", CStr(mConfig.g_iLanguage))
+            'Compiler Options
+            mConfig.g_mCompilerOptionsSP.SaveToIni(mIni)
+            mConfig.g_mCompilerOptionsAMXX.SaveToIni(mIni)
 
-        'Compiler Options
-        mConfig.g_mCompilerOptionsSP.SaveToIni(iniFile)
-        mConfig.g_mCompilerOptionsAMXX.SaveToIni(iniFile)
+            'Debugging
+            mIni.WriteKeyValue("Config", "DebugGameDirectory", mConfig.g_sDebugGameFolder)
+            mIni.WriteKeyValue("Config", "DebugSourceModDirectory", mConfig.g_sDebugSourceModFolder)
 
-        'Debugging
-        iniFile.WriteKeyValue("Config", "DebugGameDirectory", mConfig.g_sDebugGameFolder)
-        iniFile.WriteKeyValue("Config", "DebugSourceModDirectory", mConfig.g_sDebugSourceModFolder)
-
-        'Misc
-        iniFile.WriteKeyValue("Config", "ExecuteShell", mConfig.g_sExecuteShell)
-        iniFile.WriteKeyValue("Config", "SyntaxPath", mConfig.g_sSyntaxHighlightingPath)
+            'Misc
+            mIni.WriteKeyValue("Config", "ExecuteShell", mConfig.g_sExecuteShell)
+            mIni.WriteKeyValue("Config", "SyntaxPath", mConfig.g_sSyntaxHighlightingPath)
+        End Using
 
         Return True
     End Function
@@ -537,40 +537,40 @@ Public Class ClassConfigs
             Return Nothing
         End If
 
-        Dim iniFile As New ClassIniFile(sConfigFile)
+        Using mIni As New ClassIni(sConfigFile, IO.FileMode.OpenOrCreate)
+            'General
+            Dim iCompilingType As ClassSettings.ENUM_COMPILING_TYPE = If(mIni.ReadKeyValue("Config", "Type", "0") <> "0", ClassSettings.ENUM_COMPILING_TYPE.CONFIG, ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC)
+            Dim sOpenIncludeFolders As String = mIni.ReadKeyValue("Config", "IncludeDirectory", "")
+            Dim sCompilerPath As String = mIni.ReadKeyValue("Config", "CompilerPath", "")
+            Dim sOutputFolder As String = mIni.ReadKeyValue("Config", "OutputDirectory", "")
+            Dim bIsDefault As Boolean = (mIni.ReadKeyValue("Config", "Autoload", "0") <> "0")
+            Dim sLanguage As String = mIni.ReadKeyValue("Config", "ModType", CStr(STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE.AUTO_DETECT))
+            Dim iLanguage As Integer
+            If (Integer.TryParse(sLanguage, iLanguage)) Then
+                iLanguage = ClassTools.ClassMath.ClampInt(iLanguage, 0, [Enum].GetNames(GetType(STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE)).Length - 1)
+            Else
+                iLanguage = STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE.AUTO_DETECT
+            End If
 
-        'General
-        Dim iCompilingType As ClassSettings.ENUM_COMPILING_TYPE = If(iniFile.ReadKeyValue("Config", "Type", "0") <> "0", ClassSettings.ENUM_COMPILING_TYPE.CONFIG, ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC)
-        Dim sOpenIncludeFolders As String = iniFile.ReadKeyValue("Config", "IncludeDirectory", "")
-        Dim sCompilerPath As String = iniFile.ReadKeyValue("Config", "CompilerPath", "")
-        Dim sOutputFolder As String = iniFile.ReadKeyValue("Config", "OutputDirectory", "")
-        Dim bIsDefault As Boolean = (iniFile.ReadKeyValue("Config", "Autoload", "0") <> "0")
-        Dim sLanguage As String = iniFile.ReadKeyValue("Config", "ModType", CStr(STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE.AUTO_DETECT))
-        Dim iLanguage As Integer
-        If (Integer.TryParse(sLanguage, iLanguage)) Then
-            iLanguage = ClassTools.ClassMath.ClampInt(iLanguage, 0, [Enum].GetNames(GetType(STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE)).Length - 1)
-        Else
-            iLanguage = STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE.AUTO_DETECT
-        End If
+            'Compiler Options
+            Dim mCompilerOptionsSourcePawn As New STRUC_CONFIG_ITEM.CompilerOptions.STRUC_SP_COMPILER_OPTIONS
+            Dim mCompilerOptionsAMXModX As New STRUC_CONFIG_ITEM.CompilerOptions.STRUC_AMXX_COMPILER_OPTIONS
+            mCompilerOptionsSourcePawn.LoadFromIni(mIni)
+            mCompilerOptionsAMXModX.LoadFromIni(mIni)
 
-        'Compiler Options
-        Dim mCompilerOptionsSourcePawn As New STRUC_CONFIG_ITEM.CompilerOptions.STRUC_SP_COMPILER_OPTIONS
-        Dim mCompilerOptionsAMXModX As New STRUC_CONFIG_ITEM.CompilerOptions.STRUC_AMXX_COMPILER_OPTIONS
-        mCompilerOptionsSourcePawn.LoadFromIni(iniFile)
-        mCompilerOptionsAMXModX.LoadFromIni(iniFile)
+            'Debugging
+            Dim sDebugGameFolder As String = mIni.ReadKeyValue("Config", "DebugGameDirectory", "")
+            Dim sDebugSourceModFolder As String = mIni.ReadKeyValue("Config", "DebugSourceModDirectory", "")
 
-        'Debugging
-        Dim sDebugGameFolder As String = iniFile.ReadKeyValue("Config", "DebugGameDirectory", "")
-        Dim sDebugSourceModFolder As String = iniFile.ReadKeyValue("Config", "DebugSourceModDirectory", "")
+            'Misc
+            Dim sExecuteShell As String = mIni.ReadKeyValue("Config", "ExecuteShell", "")
+            Dim sSyntaxHighlightingPath As String = mIni.ReadKeyValue("Config", "SyntaxPath", "")
 
-        'Misc
-        Dim sExecuteShell As String = iniFile.ReadKeyValue("Config", "ExecuteShell", "")
-        Dim sSyntaxHighlightingPath As String = iniFile.ReadKeyValue("Config", "SyntaxPath", "")
-
-        Return New STRUC_CONFIG_ITEM(sName, iCompilingType, sOpenIncludeFolders, sCompilerPath, sOutputFolder, bIsDefault, CType(iLanguage, STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE),
+            Return New STRUC_CONFIG_ITEM(sName, iCompilingType, sOpenIncludeFolders, sCompilerPath, sOutputFolder, bIsDefault, CType(iLanguage, STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE),
                                      mCompilerOptionsSourcePawn, mCompilerOptionsAMXModX,
                                      sDebugGameFolder, sDebugSourceModFolder,
                                      sExecuteShell, sSyntaxHighlightingPath)
+        End Using
     End Function
 
     Shared Function RemoveConfig(sName As String) As Boolean

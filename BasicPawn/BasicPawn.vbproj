@@ -210,7 +210,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Classes\ClassExceptionLog.vb" />
-    <Compile Include="Classes\ClassIniFile.vb" />
+    <Compile Include="Classes\ClassIni.vb" />
     <Compile Include="Classes\Controls\ClassPanelQuality.vb">
       <SubType>Component</SubType>
     </Compile>
@@ -218,7 +218,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Classes\ClassSyncList.vb" />
-    <Compile Include="Classes\ClassIniFileMem.vb" />
     <Compile Include="Classes\Controls\ClassWebClientEx.vb">
       <SubType>Component</SubType>
     </Compile>

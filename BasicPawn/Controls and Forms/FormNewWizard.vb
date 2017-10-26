@@ -202,135 +202,136 @@ Public Class FormNewWizard
         Public Sub Parse(sSource As String)
             Clear()
 
-            Dim mIniMem As New ClassIniFileMem(sSource)
-            For Each mItem In mIniMem.ReadEverything
-                Select Case (mItem.sSection)
-                    Case "Source"
-                        g_lSource.Add(mItem.sValue)
+            Using mIniMem As New ClassIni(sSource)
+                For Each mItem In mIniMem.ReadEverything
+                    Select Case (mItem.sSection)
+                        Case "Source"
+                            g_lSource.Add(mItem.sValue)
 
-                    Case "Properties"
-                        Select Case (True)
-                            Case mItem.sKey.StartsWith("$")
-                                Dim sProperty As String = mItem.sKey.TrimStart("$"c)
-                                Dim sSplit As String() = sProperty.Split(","c)
-                                If (sSplit.Length <> 2) Then
-                                    Continue For
-                                End If
+                        Case "Properties"
+                            Select Case (True)
+                                Case mItem.sKey.StartsWith("$")
+                                    Dim sProperty As String = mItem.sKey.TrimStart("$"c)
+                                    Dim sSplit As String() = sProperty.Split(","c)
+                                    If (sSplit.Length <> 2) Then
+                                        Continue For
+                                    End If
 
-                                Dim sName As String = sSplit(0)
-                                Dim sDescription As String = sSplit(1)
+                                    Dim sName As String = sSplit(0)
+                                    Dim sDescription As String = sSplit(1)
 
-                                If (String.IsNullOrEmpty(sName) OrElse sName.Trim.Length < 1) Then
-                                    Continue For
-                                End If
+                                    If (String.IsNullOrEmpty(sName) OrElse sName.Trim.Length < 1) Then
+                                        Continue For
+                                    End If
 
-                                If (g_lPropertiesTypeDefault.ContainsKey(sName)) Then
-                                    Continue For
-                                End If
+                                    If (g_lPropertiesTypeDefault.ContainsKey(sName)) Then
+                                        Continue For
+                                    End If
 
-                                Dim mItemDefault As New STRUC_DEFAULT_REPLACE With {
-                                    .sDescription = sDescription.Trim,
-                                    .sReplace = mItem.sValue.Trim
-                                }
+                                    Dim mItemDefault As New STRUC_DEFAULT_REPLACE With {
+                                        .sDescription = sDescription.Trim,
+                                        .sReplace = mItem.sValue.Trim
+                                    }
 
-                                g_lPropertiesTypeDefault(sName) = mItemDefault
+                                    g_lPropertiesTypeDefault(sName) = mItemDefault
 
-                            Case mItem.sKey.StartsWith("?")
-                                Dim sProperty As String = mItem.sKey.TrimStart("?"c)
-                                Dim sSplit As String() = sProperty.Split(","c)
-                                If (sSplit.Length <> 2) Then
-                                    Continue For
-                                End If
+                                Case mItem.sKey.StartsWith("?")
+                                    Dim sProperty As String = mItem.sKey.TrimStart("?"c)
+                                    Dim sSplit As String() = sProperty.Split(","c)
+                                    If (sSplit.Length <> 2) Then
+                                        Continue For
+                                    End If
 
-                                Dim sName As String = sSplit(0)
-                                Dim sDescription As String = sSplit(1)
+                                    Dim sName As String = sSplit(0)
+                                    Dim sDescription As String = sSplit(1)
 
-                                If (String.IsNullOrEmpty(sName) OrElse sName.Trim.Length < 1) Then
-                                    Continue For
-                                End If
+                                    If (String.IsNullOrEmpty(sName) OrElse sName.Trim.Length < 1) Then
+                                        Continue For
+                                    End If
 
-                                If (g_lPropertiesTypeBoolean.ContainsKey(sName)) Then
-                                    'If we hit the second key, its probably FALSE, we already hit TRUE.
-                                    If (g_lPropertiesTypeBoolean(sName).sReplaceTrue Is Nothing) Then
-                                        Throw New ArgumentException(String.Format("Boolean property '{0}' has no TRUE replacement", sName))
+                                    If (g_lPropertiesTypeBoolean.ContainsKey(sName)) Then
+                                        'If we hit the second key, its probably FALSE, we already hit TRUE.
+                                        If (g_lPropertiesTypeBoolean(sName).sReplaceTrue Is Nothing) Then
+                                            Throw New ArgumentException(String.Format("Boolean property '{0}' has no TRUE replacement", sName))
 
-                                    ElseIf (g_lPropertiesTypeBoolean(sName).sReplaceFalse Is Nothing) Then
-                                        Dim mItemBoolean = g_lPropertiesTypeBoolean(sName)
+                                        ElseIf (g_lPropertiesTypeBoolean(sName).sReplaceFalse Is Nothing) Then
+                                            Dim mItemBoolean = g_lPropertiesTypeBoolean(sName)
 
-                                        mItemBoolean.sReplaceFalse = mItem.sValue.Trim
+                                            mItemBoolean.sReplaceFalse = mItem.sValue.Trim
 
-                                        g_lPropertiesTypeBoolean(sName) = mItemBoolean
+                                            g_lPropertiesTypeBoolean(sName) = mItemBoolean
+                                        Else
+                                            Dim mItemBoolean = g_lPropertiesTypeBoolean(sName)
+
+                                            mItemBoolean.bValue = (mItem.sValue = "1")
+
+                                            g_lPropertiesTypeBoolean(sName) = mItemBoolean
+                                        End If
                                     Else
-                                        Dim mItemBoolean = g_lPropertiesTypeBoolean(sName)
-
-                                        mItemBoolean.bValue = (mItem.sValue = "1")
+                                        Dim mItemBoolean As New STRUC_BOOLEAN_REPLACE With {
+                                            .sDescription = sDescription.Trim,
+                                            .sReplaceTrue = mItem.sValue.Trim,
+                                            .sReplaceFalse = Nothing,
+                                            .bValue = True
+                                        }
 
                                         g_lPropertiesTypeBoolean(sName) = mItemBoolean
                                     End If
-                                Else
-                                    Dim mItemBoolean As New STRUC_BOOLEAN_REPLACE With {
-                                        .sDescription = sDescription.Trim,
-                                        .sReplaceTrue = mItem.sValue.Trim,
-                                        .sReplaceFalse = Nothing,
-                                        .bValue = True
-                                    }
 
-                                    g_lPropertiesTypeBoolean(sName) = mItemBoolean
-                                End If
+                                Case mItem.sKey.StartsWith("#")
+                                    Dim sProperty As String = mItem.sKey.TrimStart("#"c)
+                                    Dim sSplit As String() = sProperty.Split(","c)
+                                    If (sSplit.Length <> 3) Then
+                                        Continue For
+                                    End If
 
-                            Case mItem.sKey.StartsWith("#")
-                                Dim sProperty As String = mItem.sKey.TrimStart("#"c)
-                                Dim sSplit As String() = sProperty.Split(","c)
-                                If (sSplit.Length <> 3) Then
-                                    Continue For
-                                End If
+                                    Dim sName As String = sSplit(0)
+                                    Dim sDescription As String = sSplit(1)
+                                    Dim sItemDescription As String = sSplit(2)
 
-                                Dim sName As String = sSplit(0)
-                                Dim sDescription As String = sSplit(1)
-                                Dim sItemDescription As String = sSplit(2)
+                                    If (String.IsNullOrEmpty(sName) OrElse sName.Trim.Length < 1) Then
+                                        Continue For
+                                    End If
 
-                                If (String.IsNullOrEmpty(sName) OrElse sName.Trim.Length < 1) Then
-                                    Continue For
-                                End If
+                                    If (String.IsNullOrEmpty(sItemDescription) OrElse sItemDescription.Trim.Length < 1) Then
+                                        Continue For
+                                    End If
 
-                                If (String.IsNullOrEmpty(sItemDescription) OrElse sItemDescription.Trim.Length < 1) Then
-                                    Continue For
-                                End If
+                                    If (g_lPropertiesTypeList.ContainsKey(sName)) Then
+                                        Dim mItemList = g_lPropertiesTypeList(sName)
 
-                                If (g_lPropertiesTypeList.ContainsKey(sName)) Then
-                                    Dim mItemList = g_lPropertiesTypeList(sName)
+                                        With New List(Of STRUC_LIST_REPLACE.STRUC_LIST_REPLACE_ITEM)
+                                            .AddRange(mItemList.mReplace)
 
-                                    With New List(Of STRUC_LIST_REPLACE.STRUC_LIST_REPLACE_ITEM)
-                                        .AddRange(mItemList.mReplace)
+                                            Dim mItemItemList As New STRUC_LIST_REPLACE.STRUC_LIST_REPLACE_ITEM With {
+                                                .sItemDescription = sItemDescription,
+                                                .sReplace = mItem.sValue.Trim
+                                            }
+                                            .Add(mItemItemList)
 
+                                            mItemList.mReplace = .ToArray
+                                        End With
+
+                                        g_lPropertiesTypeList(sName) = mItemList
+                                    Else
                                         Dim mItemItemList As New STRUC_LIST_REPLACE.STRUC_LIST_REPLACE_ITEM With {
                                             .sItemDescription = sItemDescription,
                                             .sReplace = mItem.sValue.Trim
                                         }
-                                        .Add(mItemItemList)
 
-                                        mItemList.mReplace = .ToArray
-                                    End With
+                                        Dim mItemList As New STRUC_LIST_REPLACE With {
+                                            .sDescription = sDescription.Trim,
+                                            .mReplace = {mItemItemList},
+                                            .iIndex = 0
+                                        }
 
-                                    g_lPropertiesTypeList(sName) = mItemList
-                                Else
-                                    Dim mItemItemList As New STRUC_LIST_REPLACE.STRUC_LIST_REPLACE_ITEM With {
-                                        .sItemDescription = sItemDescription,
-                                        .sReplace = mItem.sValue.Trim
-                                    }
+                                        g_lPropertiesTypeList(sName) = mItemList
+                                    End If
 
-                                    Dim mItemList As New STRUC_LIST_REPLACE With {
-                                        .sDescription = sDescription.Trim,
-                                        .mReplace = {mItemItemList},
-                                        .iIndex = 0
-                                    }
-
-                                    g_lPropertiesTypeList(sName) = mItemList
-                                End If
-
-                        End Select
-                End Select
-            Next
+                            End Select
+                    End Select
+                Next
+            End Using
 
             'Check for unfinished properties 
             For Each mItem In g_lPropertiesTypeBoolean
