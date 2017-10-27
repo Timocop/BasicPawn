@@ -340,7 +340,7 @@ Public Class ClassTabControl
     ''' <param name="iIndex"></param>
     ''' <param name="bSaveAs">Force to use a new file using SaveFileDialog</param>
     Public Sub SaveFileTab(iIndex As Integer, Optional bSaveAs As Boolean = False)
-        If (bSaveAs OrElse m_Tab(iIndex).m_IsUnsaved OrElse Not IO.File.Exists(m_Tab(iIndex).m_File)) Then
+        If (bSaveAs OrElse m_Tab(iIndex).m_IsUnsaved OrElse m_Tab(iIndex).m_InvalidFile) Then
             Using i As New SaveFileDialog
                 i.Filter = "All supported files|*.sp;*.inc;*.sma|SourcePawn|*.sp|Include|*.inc|Pawn (Not fully supported)|*.pwn;*.p|AMX Mod X|*.sma|All files|*.*"
                 i.FileName = m_Tab(iIndex).m_File
@@ -387,14 +387,18 @@ Public Class ClassTabControl
     ''' <param name="bAlwaysPrompt">If true, always show MessageBox even if the code didnt change</param>
     ''' <param name="bAlwaysYes">If true, ignores MessageBox prompt</param>
     ''' <returns>False if saved, otherwise canceled.</returns>
-    Public Function PromptSaveTab(iIndex As Integer, Optional bAlwaysPrompt As Boolean = False, Optional bAlwaysYes As Boolean = False) As Boolean
-        If (Not bAlwaysPrompt AndAlso Not m_Tab(iIndex).m_Changed) Then
+    Public Function PromptSaveTab(iIndex As Integer, Optional bAlwaysPrompt As Boolean = False, Optional bAlwaysYes As Boolean = False, Optional bAlwaysSaveUnsaved As Boolean = False) As Boolean
+        Dim bIsUnsaved As Boolean = (m_Tab(iIndex).m_IsUnsaved OrElse m_Tab(iIndex).m_InvalidFile)
+
+        If (bAlwaysPrompt OrElse m_Tab(iIndex).m_Changed OrElse (bAlwaysSaveUnsaved AndAlso bIsUnsaved)) Then
+            'Continue
+        Else
             Return False
         End If
 
         Select Case (If(bAlwaysYes, DialogResult.Yes, MessageBox.Show(String.Format("Do you want to save your work? ({0})", m_Tab(iIndex).m_Title), "Information", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question)))
             Case DialogResult.Yes
-                If (m_Tab(iIndex).m_IsUnsaved OrElse Not IO.File.Exists(m_Tab(iIndex).m_File)) Then
+                If (bIsUnsaved) Then
                     Using i As New SaveFileDialog
                         i.Filter = "All supported files|*.sp;*.inc;*.sma|SourcePawn|*.sp|Include|*.inc|Pawn (Not fully supported)|*.pwn;*.p|AMX Mod X|*.sma|All files|*.*"
                         i.FileName = m_Tab(iIndex).m_File
@@ -501,7 +505,7 @@ Public Class ClassTabControl
 
     Public Sub CheckFilesChangedPrompt()
         For i = 0 To m_TabsCount - 1
-            If (m_Tab(i).m_IsUnsaved OrElse Not IO.File.Exists(m_Tab(i).m_File)) Then
+            If (m_Tab(i).m_IsUnsaved OrElse m_Tab(i).m_InvalidFile) Then
                 Continue For
             End If
 
@@ -761,6 +765,12 @@ Public Class ClassTabControl
         Public ReadOnly Property m_IsUnsaved As Boolean
             Get
                 Return String.IsNullOrEmpty(g_sFile)
+            End Get
+        End Property
+
+        Public ReadOnly Property m_InvalidFile As Boolean
+            Get
+                Return (Not IO.File.Exists(g_sFile))
             End Get
         End Property
 

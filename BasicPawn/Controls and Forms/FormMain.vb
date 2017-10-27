@@ -563,8 +563,8 @@ Public Class FormMain
     Private Sub ToolStripMenuItem_FileSavePacked_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileSavePacked.Click
         Try
             Dim sTempFile As String = ""
-            Dim sLstSource As String = g_ClassTextEditorTools.GetCompilerPreProcessCode(True, True, sTempFile)
-            If (String.IsNullOrEmpty(sLstSource)) Then
+            Dim sPreSource As String = g_ClassTextEditorTools.GetCompilerPreProcessCode(Nothing, True, True, sTempFile)
+            If (String.IsNullOrEmpty(sPreSource)) Then
                 MessageBox.Show("Could not export packed source. See information tab for more information.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
 
                 Return
@@ -575,11 +575,11 @@ Public Class FormMain
             End If
 
             With New ClassDebuggerRunner.ClassPreProcess(Nothing)
-                .FixPreProcessFiles(sLstSource)
+                .FixPreProcessFiles(sPreSource)
             End With
 
             'Replace the temp source file with the currently opened one
-            sLstSource = Regex.Replace(sLstSource,
+            sPreSource = Regex.Replace(sPreSource,
                                        String.Format("^\s*\#file ""{0}""\s*$", Regex.Escape(sTempFile)),
                                        String.Format("#file ""{0}""", g_ClassTabControl.m_ActiveTab.m_File),
                                        RegexOptions.IgnoreCase Or RegexOptions.Multiline)
@@ -589,7 +589,7 @@ Public Class FormMain
                 i.FileName = IO.Path.Combine(IO.Path.GetDirectoryName(g_ClassTabControl.m_ActiveTab.m_File), IO.Path.GetFileNameWithoutExtension(g_ClassTabControl.m_ActiveTab.m_File) & ".packed" & IO.Path.GetExtension(g_ClassTabControl.m_ActiveTab.m_File))
 
                 If (i.ShowDialog = DialogResult.OK) Then
-                    IO.File.WriteAllText(i.FileName, sLstSource)
+                    IO.File.WriteAllText(i.FileName, sPreSource)
                 End If
             End Using
         Catch ex As Exception
@@ -608,7 +608,7 @@ Public Class FormMain
 
     Private Sub ToolStripMenuItem_FileOpenFolder_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileOpenFolder.Click
         Try
-            If (g_ClassTabControl.m_ActiveTab.m_IsUnsaved OrElse Not IO.File.Exists(g_ClassTabControl.m_ActiveTab.m_File)) Then
+            If (g_ClassTabControl.m_ActiveTab.m_IsUnsaved OrElse g_ClassTabControl.m_ActiveTab.m_InvalidFile) Then
                 MessageBox.Show("Could not open current folder. Source file does not exist!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Return
             End If
@@ -802,24 +802,8 @@ Public Class FormMain
 
 #Region "MenuStrip_Build"
     Private Sub ToolStripMenuItem_Build_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Build.Click
-        With New ClassDebuggerParser(Me)
-            If (.HasDebugPlaceholder(g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent)) Then
-                Select Case (MessageBox.Show("All BasicPawn Debugger placeholders need to be removed before compiling the source. Remove all placeholder?", "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation))
-                    Case DialogResult.OK
-                        .CleanupDebugPlaceholder(Me)
-                    Case Else
-                        Return
-                End Select
-            End If
-        End With
-
-        g_ClassTextEditorTools.CompileSource(False)
-    End Sub
-#End Region
-
-#Region "MenuStrip_Test"
-    Private Sub ToolStripMenuItem_Test_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Test.Click
         Dim sSource As String = g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
+
         With New ClassDebuggerParser(Me)
             If (.HasDebugPlaceholder(sSource)) Then
                 .CleanupDebugPlaceholder(sSource, g_ClassTabControl.m_ActiveTab.m_Language)
@@ -827,22 +811,55 @@ Public Class FormMain
         End With
 
         Dim sSourceFile As String = Nothing
-        If (Not g_ClassTabControl.m_ActiveTab.m_IsUnsaved AndAlso IO.File.Exists(g_ClassTabControl.m_ActiveTab.m_File)) Then
+        If (Not g_ClassTabControl.m_ActiveTab.m_IsUnsaved AndAlso Not g_ClassTabControl.m_ActiveTab.m_InvalidFile) Then
             sSourceFile = g_ClassTabControl.m_ActiveTab.m_File
         End If
 
         Dim sOutputFile As String = ""
-        g_ClassTextEditorTools.CompileSource(True, sSource, sOutputFile, IO.Path.GetDirectoryName(sSourceFile), Nothing, Nothing, sSourceFile)
+        g_ClassTextEditorTools.CompileSource(False, sSource, sOutputFile, If(sSourceFile Is Nothing, Nothing, IO.Path.GetDirectoryName(sSourceFile)), Nothing, Nothing, sSourceFile)
+    End Sub
+#End Region
+
+#Region "MenuStrip_Test"
+    Private Sub ToolStripMenuItem_Test_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Test.Click
+        Dim sSource As String = g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
+
+        With New ClassDebuggerParser(Me)
+            If (.HasDebugPlaceholder(sSource)) Then
+                .CleanupDebugPlaceholder(sSource, g_ClassTabControl.m_ActiveTab.m_Language)
+            End If
+        End With
+
+        Dim sSourceFile As String = Nothing
+        If (Not g_ClassTabControl.m_ActiveTab.m_IsUnsaved AndAlso Not g_ClassTabControl.m_ActiveTab.m_InvalidFile) Then
+            sSourceFile = g_ClassTabControl.m_ActiveTab.m_File
+        End If
+
+        Dim sOutputFile As String = ""
+        g_ClassTextEditorTools.CompileSource(True, sSource, sOutputFile, If(sSourceFile Is Nothing, Nothing, IO.Path.GetDirectoryName(sSourceFile)), Nothing, Nothing, sSourceFile)
     End Sub
 #End Region
 
 #Region "MenuStrip_Debug"
     Private Sub ToolStripMenuItem_Debug_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Debug.Click
         If (g_mFormDebugger Is Nothing OrElse g_mFormDebugger.IsDisposed) Then
-            g_mFormDebugger = New FormDebugger(Me)
-            g_mFormDebugger.Show(Me)
+            Try
+                g_mFormDebugger = New FormDebugger(Me, g_ClassTabControl.m_ActiveTab)
+                g_mFormDebugger.Show()
+            Catch ex As Exception
+                ClassExceptionLog.WriteToLogMessageBox(ex)
+
+                If (g_mFormDebugger IsNot Nothing AndAlso Not g_mFormDebugger.IsDisposed) Then
+                    g_mFormDebugger.Dispose()
+                    g_mFormDebugger = Nothing
+                End If
+            End Try
         Else
-            g_mFormDebugger.BringToFront()
+            If (g_mFormDebugger.WindowState = FormWindowState.Minimized) Then
+                ClassTools.ClassForms.FormWindowCommand(g_mFormDebugger, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
+            End If
+
+            g_mFormDebugger.Activate()
         End If
     End Sub
 #End Region
@@ -1021,7 +1038,7 @@ Public Class FormMain
 
     Private Sub ToolStripMenuItem_Tabs_OpenFolder_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Tabs_OpenFolder.Click
         Try
-            If (g_ClassTabControl.m_ActiveTab.m_IsUnsaved OrElse Not IO.File.Exists(g_ClassTabControl.m_ActiveTab.m_File)) Then
+            If (g_ClassTabControl.m_ActiveTab.m_IsUnsaved OrElse g_ClassTabControl.m_ActiveTab.m_InvalidFile) Then
                 MessageBox.Show("Could not open current folder. Source file does not exist!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Return
             End If
@@ -1034,7 +1051,7 @@ Public Class FormMain
 
     Private Sub ToolStripMenuItem_Tabs_Popout_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Tabs_Popout.Click
         Try
-            If (g_ClassTabControl.m_ActiveTab.m_IsUnsaved OrElse Not IO.File.Exists(g_ClassTabControl.m_ActiveTab.m_File)) Then
+            If (g_ClassTabControl.m_ActiveTab.m_IsUnsaved OrElse g_ClassTabControl.m_ActiveTab.m_InvalidFile) Then
                 MessageBox.Show("Could not popout tab. Source file does not exist!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Return
             End If

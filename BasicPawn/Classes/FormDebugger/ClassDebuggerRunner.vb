@@ -65,6 +65,7 @@ Public Class ClassDebuggerRunner
     Private g_sGameFolder As String = ""
     Private g_sSourceModFolder As String = ""
     Private g_sCurrentSourceFile As String = ""
+    Private g_sCurrentSource As String = ""
 
     Structure STURC_SOURCE_LINES_INFO_ITEM
         Dim iRealLine As Integer
@@ -92,9 +93,8 @@ Public Class ClassDebuggerRunner
         g_mFormDebugger = f
         g_sGameFolder = ClassConfigs.m_ActiveConfig.g_sDebugGameFolder
         g_sSourceModFolder = ClassConfigs.m_ActiveConfig.g_sDebugSourceModFolder
-        g_sCurrentSourceFile = g_mFormDebugger.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File
 
-        g_mFormDebugger.Text &= String.Format(" ({0})", IO.Path.GetFileName(g_sCurrentSourceFile))
+        UpdateSourceFromTab()
 
         g_ClassPreProcess = New ClassPreProcess(Me)
     End Sub
@@ -114,6 +114,12 @@ Public Class ClassDebuggerRunner
     Public ReadOnly Property m_CurrentSourceFile As String
         Get
             Return g_sCurrentSourceFile
+        End Get
+    End Property
+
+    Public ReadOnly Property m_CurrentSource As String
+        Get
+            Return g_sCurrentSource
         End Get
     End Property
 
@@ -203,6 +209,19 @@ Public Class ClassDebuggerRunner
             End If
         End Set
     End Property
+
+    ''' <summary>
+    ''' Updates the source from the debug tab. 
+    ''' </summary>
+    Public Sub UpdateSourceFromTab()
+        Dim iIndex As Integer = g_mFormDebugger.g_mFormMain.g_ClassTabControl.GetTabIndexByIdentifier(g_mFormDebugger.g_sDebugTabIdentifier)
+        If (iIndex < 0) Then
+            Throw New ArgumentException("Tab does not exist")
+        End If
+
+        g_sCurrentSourceFile = g_mFormDebugger.g_mFormMain.g_ClassTabControl.m_Tab(iIndex).m_File
+        g_sCurrentSource = g_mFormDebugger.g_mFormMain.g_ClassTabControl.m_Tab(iIndex).m_TextEditor.Document.TextContent
+    End Sub
 
     ''' <summary>
     ''' Updates the current breakpoints in the breakpoint ListView

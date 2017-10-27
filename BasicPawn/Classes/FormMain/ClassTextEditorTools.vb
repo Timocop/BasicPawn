@@ -104,7 +104,7 @@ Public Class ClassTextEditorTools
             Return
         End If
 
-        If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
+        If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved OrElse g_mFormMain.g_ClassTabControl.m_ActiveTab.m_InvalidFile) Then
             g_mFormMain.PrintInformation("[ERRO]", "Can't check references! Could not get current source file!", False, True, True)
             Return
         End If
@@ -272,219 +272,221 @@ Public Class ClassTextEditorTools
         AMX
     End Enum
 
-    ''' <summary>
-    ''' Compiles the source in the text editor.
-    ''' It uses the config compiler and include path.
-    ''' </summary>
-    ''' <param name="bTesting">Just creates a temporary file and removes it after compile.</param>
-    Public Sub CompileSource(bTesting As Boolean)
-        Try
-            If (g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True)) Then
-                Return
-            End If
+    '''' <summary>
+    '''' Compiles the source in the text editor.
+    '''' It uses the config compiler and include path.
+    '''' </summary>
+    '''' <param name="bTesting">Just creates a temporary file and removes it after compile.</param>
+    'Public Sub CompileSource(bTesting As Boolean)
+    '    Try
+    '        If (g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True, True)) Then
+    '            Return
+    '        End If
 
-            If (g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed) Then
-                g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed = False
-                g_mFormMain.SplitContainer_ToolboxSourceAndDetails.SplitterDistance = g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Height - 200
-            End If
-            g_mFormMain.TabControl_Details.SelectTab(1)
+    '        If (g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed) Then
+    '            g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed = False
+    '            g_mFormMain.SplitContainer_ToolboxSourceAndDetails.SplitterDistance = g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Height - 200
+    '        End If
+    '        g_mFormMain.TabControl_Details.SelectTab(1)
 
-            g_mFormMain.PrintInformation("[INFO]", "Compiling source started!", False, False, True)
+    '        g_mFormMain.PrintInformation("[INFO]", "Compiling source started!", False, False, True)
 
-            Dim sCompilerPath As String = ""
-            Dim sIncludePaths As String = ""
-            Dim sOutputFile As String = ""
+    '        Dim sCompilerPath As String = ""
+    '        Dim sIncludePaths As String = ""
+    '        Dim sOutputFile As String = ""
 
-            Dim iExitCode As Integer = 0
-            Dim sOutput As String = ""
+    '        Dim iExitCode As Integer = 0
+    '        Dim sOutput As String = ""
 
-            If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
-                g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Compiler can not be found!", False, False, True)
-                Return
-            End If
+    '        If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
+    '            g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Could not get current source file!", False, False, True)
+    '            Return
+    '        End If
 
-            'Check compiler
-            If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                While True
-                    'SourcePawn
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "spcomp.exe")
-                    If (IO.File.Exists(sCompilerPath)) Then
-                        Exit While
-                    End If
+    '        'Check compiler
+    '        If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
+    '            While True
+    '                'SourcePawn
+    '                sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "spcomp.exe")
+    '                If (IO.File.Exists(sCompilerPath)) Then
+    '                    Exit While
+    '                End If
 
-                    'AMX Mod X
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "amxxpc.exe")
-                    If (IO.File.Exists(sCompilerPath)) Then
-                        Exit While
-                    End If
+    '                'AMX Mod X
+    '                sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "amxxpc.exe")
+    '                If (IO.File.Exists(sCompilerPath)) Then
+    '                    Exit While
+    '                End If
 
-                    'Small
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "sc.exe")
-                    If (IO.File.Exists(sCompilerPath)) Then
-                        Exit While
-                    End If
+    '                'Small
+    '                sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "sc.exe")
+    '                If (IO.File.Exists(sCompilerPath)) Then
+    '                    Exit While
+    '                End If
 
-                    'Pawn
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "pawncc.exe")
-                    If (IO.File.Exists(sCompilerPath)) Then
-                        Exit While
-                    End If
+    '                'Pawn
+    '                sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "pawncc.exe")
+    '                If (IO.File.Exists(sCompilerPath)) Then
+    '                    Exit While
+    '                End If
 
-                    g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Compiler can not be found!", False, False, True)
-                    Return
-                End While
-            Else
-                sCompilerPath = ClassConfigs.m_ActiveConfig.g_sCompilerPath
-                If (Not IO.File.Exists(sCompilerPath)) Then
-                    g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Compiler can not be found!", False, False, True)
-                    Return
-                End If
-            End If
+    '                g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Compiler can not be found!", False, False, True)
+    '                Return
+    '            End While
+    '        Else
+    '            sCompilerPath = ClassConfigs.m_ActiveConfig.g_sCompilerPath
+    '            If (Not IO.File.Exists(sCompilerPath)) Then
+    '                g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Compiler can not be found!", False, False, True)
+    '                Return
+    '            End If
+    '        End If
 
-            'Check include path
-            If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "include")
+    '        'Check include path
+    '        If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
+    '            sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "include")
 
-                If (Not IO.Directory.Exists(sIncludePaths)) Then
-                    g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!", False, False, True)
-                    Return
-                End If
-            Else
-                sIncludePaths = ClassConfigs.m_ActiveConfig.g_sIncludeFolders
-                For Each sInclude As String In sIncludePaths.Split(";"c)
-                    If (Not IO.Directory.Exists(sInclude)) Then
-                        g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!", False, False, True)
-                        Return
-                    End If
-                Next
-            End If
+    '            If (Not IO.Directory.Exists(sIncludePaths)) Then
+    '                g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!", False, False, True)
+    '                Return
+    '            End If
+    '        Else
+    '            sIncludePaths = ClassConfigs.m_ActiveConfig.g_sIncludeFolders
+    '            For Each sInclude As String In sIncludePaths.Split(";"c)
+    '                If (Not IO.Directory.Exists(sInclude)) Then
+    '                    g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!", False, False, True)
+    '                    Return
+    '                End If
+    '            Next
+    '        End If
 
-            'Set output path
-            If (Not bTesting) Then
-                If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    sOutputFile = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), String.Format("compiled\{0}.unk", IO.Path.GetFileNameWithoutExtension(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)))
-                Else
-                    If (Not IO.Directory.Exists(ClassConfigs.m_ActiveConfig.g_sOutputFolder)) Then
-                        g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Invalid output directory!", False, False, True)
-                        Return
-                    End If
-                    sOutputFile = IO.Path.Combine(ClassConfigs.m_ActiveConfig.g_sOutputFolder, String.Format("{0}.unk", IO.Path.GetFileNameWithoutExtension(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)))
-                End If
-            End If
+    '        'Set output path
+    '        If (Not bTesting) Then
+    '            If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
+    '                sOutputFile = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), String.Format("compiled\{0}.unk", IO.Path.GetFileNameWithoutExtension(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)))
+    '            Else
+    '                If (Not IO.Directory.Exists(ClassConfigs.m_ActiveConfig.g_sOutputFolder)) Then
+    '                    g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Invalid output directory!", False, False, True)
+    '                    Return
+    '                End If
+    '                sOutputFile = IO.Path.Combine(ClassConfigs.m_ActiveConfig.g_sOutputFolder, String.Format("{0}.unk", IO.Path.GetFileNameWithoutExtension(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)))
+    '            End If
+    '        End If
 
-            Dim sTmpOutputFile As String = IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString)
+    '        Dim sTmpOutputFile As String = IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString)
 
-            Dim lIncludeList As New List(Of String)
-            For Each sInclude As String In sIncludePaths.Split(";"c)
-                lIncludeList.Add("-i""" & sInclude & """")
-            Next
+    '        Dim lIncludeList As New List(Of String)
+    '        For Each sInclude As String In sIncludePaths.Split(";"c)
+    '            lIncludeList.Add("-i""" & sInclude & """")
+    '        Next
 
-            'Get compiler type first.
-            'Normaly every compiler should print help without any process arguments, but AMX Mod X compiler wants input...
-            'Use an unfinished argument to force help.
-            'TODO: Should detect compiler type using file info instead? This is a bad hack.
-            ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, "-", IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), iExitCode, sOutput)
+    '        'Get compiler type first.
+    '        'Normaly every compiler should print help without any process arguments, but AMX Mod X compiler wants input...
+    '        'Use an unfinished argument to force help.
+    '        'TODO: Should detect compiler type using file info instead? This is a bad hack.
+    '        ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, "-", IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), iExitCode, sOutput)
 
-            Dim iCompilerType As ENUM_COMPILER_TYPE = ENUM_COMPILER_TYPE.UNKNOWN
+    '        Dim iCompilerType As ENUM_COMPILER_TYPE = ENUM_COMPILER_TYPE.UNKNOWN
 
-            Dim sLines As String() = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
-            If (sLines.Length > 0) Then
-                Select Case (True)
-                    Case Regex.IsMatch(sLines(0), "\b(SourcePawn)\b \b(Compiler)\b", RegexOptions.IgnoreCase)
-                        iCompilerType = ENUM_COMPILER_TYPE.SOURCEPAWN
+    '        Dim sLines As String() = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
+    '        If (sLines.Length > 0) Then
+    '            Select Case (True)
+    '                Case Regex.IsMatch(sLines(0), "\b(SourcePawn)\b \b(Compiler)\b", RegexOptions.IgnoreCase)
+    '                    iCompilerType = ENUM_COMPILER_TYPE.SOURCEPAWN
 
-                    Case Regex.IsMatch(sLines(0), "\b(AMX)\b \b(Mod)\b \b(X)\b", RegexOptions.IgnoreCase)
-                        iCompilerType = ENUM_COMPILER_TYPE.AMXX
+    '                Case Regex.IsMatch(sLines(0), "\b(AMX)\b \b(Mod)\b \b(X)\b", RegexOptions.IgnoreCase)
+    '                    iCompilerType = ENUM_COMPILER_TYPE.AMXX
 
-                    'Old AMX Mod still uses Small compiler
-                    Case Regex.IsMatch(sLines(0), "\b(Pawn)\b \b(compiler)\b", RegexOptions.IgnoreCase), Regex.IsMatch(sLines(0), "\b(Small)\b \b(compiler)\b", RegexOptions.IgnoreCase)
-                        iCompilerType = ENUM_COMPILER_TYPE.AMX
+    '                'Old AMX Mod still uses Small compiler
+    '                Case Regex.IsMatch(sLines(0), "\b(Pawn)\b \b(compiler)\b", RegexOptions.IgnoreCase), Regex.IsMatch(sLines(0), "\b(Small)\b \b(compiler)\b", RegexOptions.IgnoreCase)
+    '                    iCompilerType = ENUM_COMPILER_TYPE.AMX
 
-                End Select
-            End If
+    '            End Select
+    '        End If
 
-            'Build arguments 
-            Dim lArguments As New List(Of String) From {
-                String.Format("""{0}"" {1} -o""{2}""", g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File, String.Join(" ", lIncludeList.ToArray), sTmpOutputFile)
-            }
+    '        'Build arguments 
+    '        Dim lArguments As New List(Of String) From {
+    '            String.Format("""{0}"" {1} -o""{2}""", g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File, String.Join(" ", lIncludeList.ToArray), sTmpOutputFile)
+    '        }
 
-            Select Case (iCompilerType)
-                Case ENUM_COMPILER_TYPE.SOURCEPAWN
-                    lArguments.Add(ClassConfigs.m_ActiveConfig.g_mCompilerOptionsSP.BuildCommandline)
+    '        Select Case (iCompilerType)
+    '            Case ENUM_COMPILER_TYPE.SOURCEPAWN
+    '                lArguments.Add(ClassConfigs.m_ActiveConfig.g_mCompilerOptionsSP.BuildCommandline)
 
-                Case ENUM_COMPILER_TYPE.AMXX
-                    lArguments.Add(ClassConfigs.m_ActiveConfig.g_mCompilerOptionsAMXX.BuildCommandline)
+    '            Case ENUM_COMPILER_TYPE.AMXX
+    '                lArguments.Add(ClassConfigs.m_ActiveConfig.g_mCompilerOptionsAMXX.BuildCommandline)
 
-            End Select
+    '        End Select
 
-            'Compile
-            ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, String.Join(" "c, lArguments.ToArray), IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), iExitCode, sOutput)
+    '        'Compile
+    '        ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, String.Join(" "c, lArguments.ToArray), IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), iExitCode, sOutput)
 
-            For Each sLine In sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
-                g_mFormMain.PrintInformation("[INFO]", vbTab & sLine)
-            Next
+    '        For Each sLine In sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
+    '            g_mFormMain.PrintInformation("[INFO]", vbTab & sLine)
+    '        Next
 
-            'The AMX Mod X compiler seem to overwrite the *.unk extension, just find them using the unique GUID filename.
-            Dim sOutputMatches As String() = IO.Directory.GetFiles(IO.Path.GetDirectoryName(sTmpOutputFile), String.Format("{0}.*", IO.Path.GetFileNameWithoutExtension(sTmpOutputFile)), IO.SearchOption.TopDirectoryOnly)
-            If (sOutputMatches.Length = 1) Then
-                sTmpOutputFile = sOutputMatches(0)
-            Else
-                g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Compiled output file can not be found!", False, False, True)
-                Return
-            End If
+    '        'The AMX Mod X compiler seem to overwrite the *.unk extension, just find them using the unique GUID filename.
+    '        Dim sOutputMatches As String() = IO.Directory.GetFiles(IO.Path.GetDirectoryName(sTmpOutputFile), String.Format("{0}.*", IO.Path.GetFileNameWithoutExtension(sTmpOutputFile)), IO.SearchOption.TopDirectoryOnly)
+    '        If (sOutputMatches.Length = 1) Then
+    '            sTmpOutputFile = sOutputMatches(0)
+    '        Else
+    '            g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Compiled output file can not be found!", False, False, True)
+    '            Return
+    '        End If
 
-            If (bTesting) Then
-                IO.File.Delete(sTmpOutputFile)
-            Else
-                Select Case (iCompilerType)
-                    Case ENUM_COMPILER_TYPE.SOURCEPAWN
-                        Dim sNewOutputFile As String = IO.Path.ChangeExtension(sOutputFile, ".smx")
-                        IO.File.Delete(sNewOutputFile)
-                        IO.File.Move(sTmpOutputFile, sNewOutputFile)
-                        sOutputFile = sNewOutputFile
+    '        If (bTesting) Then
+    '            IO.File.Delete(sTmpOutputFile)
+    '        Else
+    '            Select Case (iCompilerType)
+    '                Case ENUM_COMPILER_TYPE.SOURCEPAWN
+    '                    Dim sNewOutputFile As String = IO.Path.ChangeExtension(sOutputFile, ".smx")
+    '                    IO.File.Delete(sNewOutputFile)
+    '                    IO.File.Move(sTmpOutputFile, sNewOutputFile)
+    '                    sOutputFile = sNewOutputFile
 
-                    Case ENUM_COMPILER_TYPE.AMXX
-                        Dim sNewOutputFile As String = IO.Path.ChangeExtension(sOutputFile, ".amxx")
-                        IO.File.Delete(sNewOutputFile)
-                        IO.File.Move(sTmpOutputFile, sNewOutputFile)
-                        sOutputFile = sNewOutputFile
+    '                Case ENUM_COMPILER_TYPE.AMXX
+    '                    Dim sNewOutputFile As String = IO.Path.ChangeExtension(sOutputFile, ".amxx")
+    '                    IO.File.Delete(sNewOutputFile)
+    '                    IO.File.Move(sTmpOutputFile, sNewOutputFile)
+    '                    sOutputFile = sNewOutputFile
 
-                    Case ENUM_COMPILER_TYPE.AMX
-                        Dim sNewOutputFile As String = IO.Path.ChangeExtension(sOutputFile, ".amx")
-                        IO.File.Delete(sNewOutputFile)
-                        IO.File.Move(sTmpOutputFile, sNewOutputFile)
-                        sOutputFile = sNewOutputFile
+    '                Case ENUM_COMPILER_TYPE.AMX
+    '                    Dim sNewOutputFile As String = IO.Path.ChangeExtension(sOutputFile, ".amx")
+    '                    IO.File.Delete(sNewOutputFile)
+    '                    IO.File.Move(sTmpOutputFile, sNewOutputFile)
+    '                    sOutputFile = sNewOutputFile
 
-                    Case Else
-                        g_mFormMain.PrintInformation("[WARN]", vbTab & "Unsupported compiler!")
+    '                Case Else
+    '                    g_mFormMain.PrintInformation("[WARN]", vbTab & "Unsupported compiler!")
 
-                        Dim sNewOutputFile As String = IO.Path.ChangeExtension(sOutputFile, ".bin")
-                        IO.File.Delete(sNewOutputFile)
-                        IO.File.Move(sTmpOutputFile, sNewOutputFile)
-                        sOutputFile = sNewOutputFile
+    '                    Dim sNewOutputFile As String = IO.Path.ChangeExtension(sOutputFile, ".bin")
+    '                    IO.File.Delete(sNewOutputFile)
+    '                    IO.File.Move(sTmpOutputFile, sNewOutputFile)
+    '                    sOutputFile = sNewOutputFile
 
-                End Select
+    '            End Select
 
-                g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Saved compiled source: {0}", sOutputFile))
-            End If
+    '            g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Saved compiled source: {0}", sOutputFile))
+    '        End If
 
-            g_mFormMain.PrintInformation("[INFO]", "Compiling source finished!", False, False, True)
-        Catch ex As Exception
-            ClassExceptionLog.WriteToLogMessageBox(ex)
-        End Try
-    End Sub
+    '        g_mFormMain.PrintInformation("[INFO]", "Compiling source finished!", False, False, True)
+    '    Catch ex As Exception
+    '        ClassExceptionLog.WriteToLogMessageBox(ex)
+    '    End Try
+    'End Sub
 
     ''' <summary>
     ''' Compiles the source.
     ''' </summary>
     ''' <param name="bTesting">Just creates a temporary file and removes it after compile.</param>
-    ''' <param name="sSource">The source to compile.</param>
-    ''' <param name="sOutputFile">The output file. This may change the extenstion if you using different compilers (e.g *.smx, *.amx, *.amxx). And extension is still required!</param>
-    ''' <param name="sWorkingDirectory">(Optional) Sets the compiler working directory.</param>
-    ''' <param name="sCompilerPath">(Optional) The compiler path. If Nothing, it will use the global config compiler path.</param>
-    ''' <param name="sIncludePaths">(Optional) The include paths seperated by ';'. If Nothing, it will use the global config include path.</param>
-    ''' <param name="sEmulateSourceFile">(Optional) Replaces the printed temporary path.</param>
-    ''' <param name="sCompilerOutput">(Optional) The orginal compiler output.</param>
+    ''' <param name="sSource">The source to compile. Use |Nothing| to get the source from the active tab.</param>
+    ''' <param name="sOutputFile">The output file. This may change the extenstion if you using different compilers (e.g *.smx, *.amx, *.amxx). And extension is still required! Use |Nothing| to get the output by active tab.</param>
+    ''' <param name="sWorkingDirectory">Sets the compiler working directory. Use |Nothing| to use the working directioy from the active tab.</param>
+    ''' <param name="sCompilerPath">The compiler path. Use |Nothing| to get the source from the active tab.</param>
+    ''' <param name="sIncludePaths">The include paths seperated by ';'. Use |Nothing| to get the source from the active tab.</param>
+    ''' <param name="sEmulateSourceFile">Replaces the printed temporary path. Use |Nothing| to get the source from the active tab.</param>
+    ''' <param name="bUseCustomCompilerOptions">If true it will use the configs custom compiler options, false otherwise.</param>
+    ''' <param name="sCompilerOutput">The compiler output.</param>
+    ''' <param name="iCompilerType"></param>
     ''' <returns>True on success, false otherwise.</returns>
     Public Function CompileSource(bTesting As Boolean,
                                   sSource As String,
@@ -497,8 +499,8 @@ Public Class ClassTextEditorTools
                                   ByRef Optional sCompilerOutput As String = Nothing,
                                   ByRef Optional iCompilerType As ENUM_COMPILER_TYPE = ENUM_COMPILER_TYPE.UNKNOWN) As Boolean
         Try
-            If (g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True)) Then
-                Return False
+            If (sSource Is Nothing) Then
+                sSource = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
             End If
 
             If (g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed) Then
@@ -511,12 +513,19 @@ Public Class ClassTextEditorTools
 
             Dim iExitCode As Integer = 0
             Dim sOutput As String = ""
+            Dim sLines As String()
 
             'Check compiler
             If (sCompilerPath Is Nothing) Then
                 If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
-                        g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Compiler can not be found!", False, False, True)
+                    If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved AndAlso
+                                g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True, True)) Then
+                        g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Could not get current source file!", False, False, True)
+                        Return False
+                    End If
+
+                    If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved) Then
+                        g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Could not get current source file!", False, False, True)
                         Return False
                     End If
 
@@ -565,8 +574,14 @@ Public Class ClassTextEditorTools
             'Check include path
             If (sIncludePaths Is Nothing) Then
                 If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
-                        g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!", False, False, True)
+                    If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved AndAlso
+                                g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True, True)) Then
+                        g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Could not get current source file!", False, False, True)
+                        Return False
+                    End If
+
+                    If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved) Then
+                        g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Could not get current source file!", False, False, True)
                         Return False
                     End If
 
@@ -596,7 +611,25 @@ Public Class ClassTextEditorTools
             'Set output path
             If (Not bTesting) Then
                 If (String.IsNullOrEmpty(sOutputFile)) Then
-                    Throw New ArgumentException("Invalid output file")
+                    If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved AndAlso
+                                g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True, True)) Then
+                        Return False
+                    End If
+
+                    If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved) Then
+                        g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Could not get current source file!", False, False, True)
+                        Return False
+                    End If
+
+                    If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
+                        sOutputFile = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), String.Format("compiled\{0}.unk", IO.Path.GetFileNameWithoutExtension(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)))
+                    Else
+                        If (Not IO.Directory.Exists(ClassConfigs.m_ActiveConfig.g_sOutputFolder)) Then
+                            g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Invalid output directory!", False, False, True)
+                            Return False
+                        End If
+                        sOutputFile = IO.Path.Combine(ClassConfigs.m_ActiveConfig.g_sOutputFolder, String.Format("{0}.unk", IO.Path.GetFileNameWithoutExtension(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)))
+                    End If
                 End If
             End If
 
@@ -618,7 +651,7 @@ Public Class ClassTextEditorTools
 
             iCompilerType = ENUM_COMPILER_TYPE.UNKNOWN
 
-            Dim sLines As String() = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
+            sLines = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
             If (sLines.Length > 0) Then
                 Select Case (True)
                     Case Regex.IsMatch(sLines(0), "\b(SourcePawn)\b \b(Compiler)\b", RegexOptions.IgnoreCase)
@@ -661,12 +694,13 @@ Public Class ClassTextEditorTools
 
             IO.File.Delete(TmpSourceFile)
 
-            For Each sLine In sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
-                If (Not String.IsNullOrEmpty(sEmulateSourceFile) AndAlso sLine.Contains(TmpSourceFile)) Then
-                    sLine = Regex.Replace(sLine, "^\b" & Regex.Escape(TmpSourceFile) & "\b", sEmulateSourceFile)
+            sLines = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
+            For i = 0 To sLines.Length - 1
+                If (Not String.IsNullOrEmpty(sEmulateSourceFile) AndAlso sLines(i).Contains(TmpSourceFile)) Then
+                    sLines(i) = Regex.Replace(sLines(i), "^\b" & Regex.Escape(TmpSourceFile) & "\b", sEmulateSourceFile)
                 End If
 
-                g_mFormMain.PrintInformation("[INFO]", vbTab & sLine)
+                g_mFormMain.PrintInformation("[INFO]", vbTab & sLines(i))
             Next
 
             sCompilerOutput = String.Join(Environment.NewLine, sLines)
@@ -727,23 +761,273 @@ Public Class ClassTextEditorTools
         Return False
     End Function
 
+    '''' <summary>
+    '''' Gets the pre-process source from the compiler. Its cleaned up, defines resolved etc.
+    '''' </summary>
+    '''' <param name="bCleanUpSourcemodDuplicate">Removed duplicated sourcemod includes, includes from the compiler.</param>
+    '''' <param name="bCleanupForCompile">Removes pre-processor entries which hinders compiling.</param>
+    '''' <param name="sTempOutputFile">The last used temporary file. Note: This is only the path, the file will be removed!</param>
+    '''' <param name="sCompilerOutput">(Optional) The orginal compiler output.</param>
+    '''' <returns></returns>
+    'Public Function GetCompilerPreProcessCode(bCleanUpSourcemodDuplicate As Boolean,
+    '                                          bCleanupForCompile As Boolean,
+    '                                          ByRef sTempOutputFile As String,
+    '                                          Optional bUseCustomCompilerOptions As Boolean = True,
+    '                                          ByRef Optional sCompilerOutput As String = Nothing,
+    '                                          ByRef Optional iCompilerType As ENUM_COMPILER_TYPE = ENUM_COMPILER_TYPE.UNKNOWN) As String
+    '    Try
+    '        If (g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True, True)) Then
+    '            Return Nothing
+    '        End If
+
+    '        If (g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed) Then
+    '            g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed = False
+    '            g_mFormMain.SplitContainer_ToolboxSourceAndDetails.SplitterDistance = g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Height - 200
+    '        End If
+    '        g_mFormMain.TabControl_Details.SelectTab(1)
+
+    '        g_mFormMain.PrintInformation("[INFO]", "Pre-Processing source started!", False, False, True)
+
+    '        Dim sMarkStart As String = Guid.NewGuid.ToString
+    '        Dim sMarkEnd As String = Guid.NewGuid.ToString
+
+    '        Dim sCompilerPath As String = ""
+    '        Dim sIncludePaths As String = ""
+    '        Dim sOutputFile As String = ""
+
+    '        Dim iExitCode As Integer = 0
+    '        Dim sOutput As String = ""
+
+    '        If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
+    '            g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Could not get current source file!", False, False, True)
+    '            Return Nothing
+    '        End If
+
+    '        'Check compiler
+    '        If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
+    '            While True
+    '                'SourcePawn
+    '                sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "spcomp.exe")
+    '                If (IO.File.Exists(sCompilerPath)) Then
+    '                    Exit While
+    '                End If
+
+    '                'AMX Mod X
+    '                sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "amxxpc.exe")
+    '                If (IO.File.Exists(sCompilerPath)) Then
+    '                    Exit While
+    '                End If
+
+    '                'Small
+    '                sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "sc.exe")
+    '                If (IO.File.Exists(sCompilerPath)) Then
+    '                    Exit While
+    '                End If
+
+    '                'Pawn
+    '                sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "pawncc.exe")
+    '                If (IO.File.Exists(sCompilerPath)) Then
+    '                    Exit While
+    '                End If
+
+    '                g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Compiler can not be found!", False, False, True)
+    '                Return Nothing
+    '            End While
+    '        Else
+    '            sCompilerPath = ClassConfigs.m_ActiveConfig.g_sCompilerPath
+    '            If (Not IO.File.Exists(sCompilerPath)) Then
+    '                g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Compiler can not be found!", False, False, True)
+    '                Return Nothing
+    '            End If
+    '        End If
+
+    '        'Check include path
+    '        If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
+    '            sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "include")
+    '            If (Not IO.Directory.Exists(sIncludePaths)) Then
+    '                g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!", False, False, True)
+    '                Return Nothing
+    '            End If
+    '        Else
+    '            sIncludePaths = ClassConfigs.m_ActiveConfig.g_sIncludeFolders
+    '            For Each sInclude As String In sIncludePaths.Split(";"c)
+    '                If (Not IO.Directory.Exists(sInclude)) Then
+    '                    g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!", False, False, True)
+    '                    Return Nothing
+    '                End If
+    '            Next
+    '        End If
+
+
+    '        Dim sTmpSource As String = IO.File.ReadAllText(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)
+    '        Dim sTmpSourcePath As String = String.Format("{0}.src", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
+
+    '        sTempOutputFile = sTmpSourcePath
+
+    '        If (bCleanUpSourcemodDuplicate) Then
+    '            '#file pushes the lines +1 in the main source, add #line 0 to make them even again
+    '            Dim SB As New Text.StringBuilder
+    '            SB.AppendLine("#file " & sMarkStart)
+    '            SB.AppendLine("#line 0")
+    '            SB.AppendLine(sTmpSource)
+    '            SB.AppendLine("#file " & sMarkEnd)
+    '            sTmpSource = SB.ToString
+    '        End If
+
+    '        IO.File.WriteAllText(sTmpSourcePath, sTmpSource)
+
+    '        sOutputFile = String.Format("{0}.lst", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
+
+    '        Dim lIncludeList As New List(Of String)
+    '        For Each sInclude As String In sIncludePaths.Split(";"c)
+    '            lIncludeList.Add("-i""" & sInclude & """")
+    '        Next
+
+    '        'Get compiler type first.
+    '        'Normaly every compiler should print help without any process arguments, but AMX Mod X compiler wants input...
+    '        'Use an unfinished argument to force help.
+    '        'TODO: Should detect compiler type using file info instead? This is a bad hack.
+    '        ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, "-", IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), iExitCode, sOutput)
+
+    '        iCompilerType = ENUM_COMPILER_TYPE.UNKNOWN
+
+    '        Dim sLines As String() = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
+    '        If (sLines.Length > 0) Then
+    '            Select Case (True)
+    '                Case Regex.IsMatch(sLines(0), "\b(SourcePawn)\b \b(Compiler)\b", RegexOptions.IgnoreCase)
+    '                    iCompilerType = ENUM_COMPILER_TYPE.SOURCEPAWN
+
+    '                Case Regex.IsMatch(sLines(0), "\b(AMX)\b \b(Mod)\b \b(X)\b", RegexOptions.IgnoreCase)
+    '                    iCompilerType = ENUM_COMPILER_TYPE.AMXX
+
+    '                        'Old AMX Mod still uses Small compiler
+    '                Case Regex.IsMatch(sLines(0), "\b(Pawn)\b \b(compiler)\b", RegexOptions.IgnoreCase), Regex.IsMatch(sLines(0), "\b(Small)\b \b(compiler)\b", RegexOptions.IgnoreCase)
+    '                    iCompilerType = ENUM_COMPILER_TYPE.AMX
+
+    '            End Select
+    '        End If
+
+    '        'Build arguments 
+    '        Dim lArguments As New List(Of String) From {
+    '           String.Format("""{0}"" -l {1} -o""{2}""", sTmpSourcePath, String.Join(" ", lIncludeList.ToArray), sOutputFile)
+    '        }
+
+    '        If (bUseCustomCompilerOptions) Then
+    '            Select Case (iCompilerType)
+    '                Case ENUM_COMPILER_TYPE.SOURCEPAWN
+    '                    lArguments.Add(ClassConfigs.m_ActiveConfig.g_mCompilerOptionsSP.BuildCommandline)
+
+    '                Case ENUM_COMPILER_TYPE.AMXX
+    '                    lArguments.Add(ClassConfigs.m_ActiveConfig.g_mCompilerOptionsAMXX.BuildCommandline)
+
+    '            End Select
+    '        End If
+
+    '        'Compile 
+    '        ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, String.Join(" "c, lArguments.ToArray), IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), iExitCode, sOutput)
+
+    '        sCompilerOutput = sOutput
+
+    '        IO.File.Delete(sTmpSourcePath)
+
+    '        For Each sLine In sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
+    '            g_mFormMain.PrintInformation("[INFO]", vbTab & sLine)
+    '        Next
+
+    '        If (String.IsNullOrEmpty(sOutputFile) OrElse Not IO.File.Exists(sOutputFile)) Then
+    '            g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Could not get Pre-Processed source file!", False, False, True)
+    '            Return Nothing
+    '        End If
+
+    '        Dim sOutputSource As String = IO.File.ReadAllText(sOutputFile)
+
+    '        IO.File.Delete(sOutputFile)
+
+
+    '        Dim sList As New List(Of String)
+    '        Dim bRecord As Boolean = False
+
+    '        Dim sOutputLine As String
+    '        Using mSR As New IO.StringReader(sOutputSource)
+    '            While True
+    '                sOutputLine = mSR.ReadLine()
+    '                If (sOutputLine Is Nothing) Then
+    '                    Exit While
+    '                End If
+
+    '                If (bCleanUpSourcemodDuplicate) Then
+    '                    If (Not bRecord) Then
+    '                        If (sOutputLine.Contains("#file " & sMarkStart)) Then
+    '                            bRecord = True
+    '                            Continue While
+    '                        Else
+    '                            If (sList.Count > 0) Then
+    '                                sList.Clear()
+    '                            End If
+    '                            Continue While
+    '                        End If
+    '                    Else
+    '                        'Remove invalid lines
+    '                        If (sOutputLine.Contains("#line 0")) Then
+    '                            Continue While
+    '                        End If
+
+    '                        If (sOutputLine.Contains("#file " & sMarkEnd)) Then
+    '                            Exit While
+    '                        End If
+    '                    End If
+    '                End If
+
+    '                sList.Add(sOutputLine)
+    '            End While
+    '        End Using
+
+    '        Dim sNewSource = String.Join(Environment.NewLine, sList.ToArray)
+
+    '        If (bCleanupForCompile) Then
+    '            sNewSource = Regex.Replace(sNewSource, "^\s*#\b(endinput)\b", "", RegexOptions.Multiline)
+    '        End If
+
+
+    '        g_mFormMain.PrintInformation("[INFO]", "Pre-Processing source finished!", False, False, True)
+
+    '        Return sNewSource
+    '    Catch ex As Exception
+    '        ClassExceptionLog.WriteToLogMessageBox(ex)
+    '    End Try
+
+    '    Return Nothing
+    'End Function
+
     ''' <summary>
-    ''' Gets the pre-process source from the compiler. Its cleaned up, defines resolved etc.
+    ''' Generates pre-process source. Cleaned up, defines resolved etc.
     ''' </summary>
-    ''' <param name="bCleanUpSourcemodDuplicate">Removed duplicated sourcemod includes, includes from the compiler.</param>
+    ''' <param name="sSource">The source to compile. Use |Nothing| to get the source from the active tab.</param>
+    ''' <param name="bCleanUpSourcemodDuplicate">Removes duplicated sourcemod includes.</param>
     ''' <param name="bCleanupForCompile">Removes pre-processor entries which hinders compiling.</param>
     ''' <param name="sTempOutputFile">The last used temporary file. Note: This is only the path, the file will be removed!</param>
-    ''' <param name="sCompilerOutput">(Optional) The orginal compiler output.</param>
-    ''' <returns></returns>
-    Public Function GetCompilerPreProcessCode(bCleanUpSourcemodDuplicate As Boolean,
+    ''' <param name="sWorkingDirectory">Sets the compiler working directory. Use |Nothing| to use the working directioy from the active tab.</param>
+    ''' <param name="sCompilerPath">The compiler path. Use |Nothing| to get the source from the active tab.</param>
+    ''' <param name="sIncludePaths">The include paths seperated by ';'. Use |Nothing| to get the source from the active tab.</param>
+    ''' <param name="sEmulateSourceFile">Replaces the printed temporary path. Use |Nothing| to get the source from the active tab.</param>
+    ''' <param name="bUseCustomCompilerOptions">If true it will use the configs custom compiler options, false otherwise.</param>
+    ''' <param name="sCompilerOutput">The compiler output.</param>
+    ''' <param name="iCompilerType"></param>
+    ''' <returns>New source on success, |Nothing| in otherwise.</returns>
+    Public Function GetCompilerPreProcessCode(sSource As String,
+                                              bCleanUpSourcemodDuplicate As Boolean,
                                               bCleanupForCompile As Boolean,
                                               ByRef sTempOutputFile As String,
+                                              Optional sWorkingDirectory As String = Nothing,
+                                              Optional sCompilerPath As String = Nothing,
+                                              Optional sIncludePaths As String = Nothing,
+                                              Optional sEmulateSourceFile As String = Nothing,
                                               Optional bUseCustomCompilerOptions As Boolean = True,
                                               ByRef Optional sCompilerOutput As String = Nothing,
                                               ByRef Optional iCompilerType As ENUM_COMPILER_TYPE = ENUM_COMPILER_TYPE.UNKNOWN) As String
         Try
-            If (g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True)) Then
-                Return Nothing
+            If (sSource Is Nothing) Then
+                sSource = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
             End If
 
             If (g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed) Then
@@ -757,50 +1041,62 @@ Public Class ClassTextEditorTools
             Dim sMarkStart As String = Guid.NewGuid.ToString
             Dim sMarkEnd As String = Guid.NewGuid.ToString
 
-            Dim sCompilerPath As String = ""
-            Dim sIncludePaths As String = ""
             Dim sOutputFile As String = ""
 
             Dim iExitCode As Integer = 0
             Dim sOutput As String = ""
-
-            If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
-                g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Compiler can not be found!", False, False, True)
-                Return Nothing
-            End If
+            Dim sLines As String()
 
             'Check compiler
-            If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                While True
-                    'SourcePawn
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "spcomp.exe")
-                    If (IO.File.Exists(sCompilerPath)) Then
-                        Exit While
+            If (sCompilerPath Is Nothing) Then
+                If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
+                    If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved AndAlso
+                                g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True, True)) Then
+                        g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Could not get current source file!", False, False, True)
+                        Return Nothing
                     End If
 
-                    'AMX Mod X
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "amxxpc.exe")
-                    If (IO.File.Exists(sCompilerPath)) Then
-                        Exit While
+                    If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved) Then
+                        g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Could not get current source file!", False, False, True)
+                        Return Nothing
                     End If
 
-                    'Small
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "sc.exe")
-                    If (IO.File.Exists(sCompilerPath)) Then
-                        Exit While
-                    End If
+                    While True
+                        'SourcePawn
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "spcomp.exe")
+                        If (IO.File.Exists(sCompilerPath)) Then
+                            Exit While
+                        End If
 
-                    'Pawn
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "pawncc.exe")
-                    If (IO.File.Exists(sCompilerPath)) Then
-                        Exit While
-                    End If
+                        'AMX Mod X
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "amxxpc.exe")
+                        If (IO.File.Exists(sCompilerPath)) Then
+                            Exit While
+                        End If
 
-                    g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Compiler can not be found!", False, False, True)
-                    Return Nothing
-                End While
+                        'Small
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "sc.exe")
+                        If (IO.File.Exists(sCompilerPath)) Then
+                            Exit While
+                        End If
+
+                        'Pawn
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "pawncc.exe")
+                        If (IO.File.Exists(sCompilerPath)) Then
+                            Exit While
+                        End If
+
+                        g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Compiler can not be found!", False, False, True)
+                        Return Nothing
+                    End While
+                Else
+                    sCompilerPath = ClassConfigs.m_ActiveConfig.g_sCompilerPath
+                    If (Not IO.File.Exists(sCompilerPath)) Then
+                        g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Compiler can not be found!", False, False, True)
+                        Return Nothing
+                    End If
+                End If
             Else
-                sCompilerPath = ClassConfigs.m_ActiveConfig.g_sCompilerPath
                 If (Not IO.File.Exists(sCompilerPath)) Then
                     g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Compiler can not be found!", False, False, True)
                     Return Nothing
@@ -808,24 +1104,42 @@ Public Class ClassTextEditorTools
             End If
 
             'Check include path
-            If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "include")
-                If (Not IO.Directory.Exists(sIncludePaths)) Then
-                    g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!", False, False, True)
-                    Return Nothing
-                End If
-            Else
-                sIncludePaths = ClassConfigs.m_ActiveConfig.g_sIncludeFolders
-                For Each sInclude As String In sIncludePaths.Split(";"c)
-                    If (Not IO.Directory.Exists(sInclude)) Then
-                        g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!", False, False, True)
+            If (sIncludePaths Is Nothing) Then
+                If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
+                    If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved AndAlso
+                                g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True, True)) Then
+                        g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Could not get current source file!", False, False, True)
                         Return Nothing
                     End If
-                Next
+
+                    If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved) Then
+                        g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Could not get current source file!", False, False, True)
+                        Return Nothing
+                    End If
+
+                    sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "include")
+                    If (Not IO.Directory.Exists(sIncludePaths)) Then
+                        g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Include path can not be found!", False, False, True)
+                        Return Nothing
+                    End If
+                Else
+                    sIncludePaths = ClassConfigs.m_ActiveConfig.g_sIncludeFolders
+                    For Each sInclude As String In sIncludePaths.Split(";"c)
+                        If (Not IO.Directory.Exists(sInclude)) Then
+                            g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Include path can not be found!", False, False, True)
+                            Return Nothing
+                        End If
+                    Next
+                End If
+            Else
+                If (Not IO.Directory.Exists(sIncludePaths)) Then
+                    g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Include path can not be found!", False, False, True)
+                    Return Nothing
+                End If
             End If
 
 
-            Dim sTmpSource As String = IO.File.ReadAllText(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)
+            Dim sTmpSource As String = sSource
             Dim sTmpSourcePath As String = String.Format("{0}.src", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
 
             sTempOutputFile = sTmpSourcePath
@@ -853,11 +1167,11 @@ Public Class ClassTextEditorTools
             'Normaly every compiler should print help without any process arguments, but AMX Mod X compiler wants input...
             'Use an unfinished argument to force help.
             'TODO: Should detect compiler type using file info instead? This is a bad hack.
-            ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, "-", IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), iExitCode, sOutput)
+            ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, "-", iExitCode, sOutput)
 
             iCompilerType = ENUM_COMPILER_TYPE.UNKNOWN
 
-            Dim sLines As String() = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
+            sLines = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
             If (sLines.Length > 0) Then
                 Select Case (True)
                     Case Regex.IsMatch(sLines(0), "\b(SourcePawn)\b \b(Compiler)\b", RegexOptions.IgnoreCase)
@@ -890,15 +1204,26 @@ Public Class ClassTextEditorTools
             End If
 
             'Compile 
-            ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, String.Join(" "c, lArguments.ToArray), IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), iExitCode, sOutput)
+            If (String.IsNullOrEmpty(sWorkingDirectory) OrElse Not IO.Directory.Exists(sWorkingDirectory)) Then
+                ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, String.Join(" "c, lArguments.ToArray), iExitCode, sOutput)
+            Else
+                ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, String.Join(" "c, lArguments.ToArray), sWorkingDirectory, iExitCode, sOutput)
+            End If
 
             sCompilerOutput = sOutput
 
             IO.File.Delete(sTmpSourcePath)
 
-            For Each sLine In sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
-                g_mFormMain.PrintInformation("[INFO]", vbTab & sLine)
+            sLines = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
+            For i = 0 To sLines.Length - 1
+                If (Not String.IsNullOrEmpty(sEmulateSourceFile) AndAlso sLines(i).Contains(sTmpSourcePath)) Then
+                    sLines(i) = Regex.Replace(sLines(i), "^\b" & Regex.Escape(sTmpSourcePath) & "\b", sEmulateSourceFile)
+                End If
+
+                g_mFormMain.PrintInformation("[INFO]", vbTab & sLines(i))
             Next
+
+            sCompilerOutput = String.Join(Environment.NewLine, sLines)
 
             If (String.IsNullOrEmpty(sOutputFile) OrElse Not IO.File.Exists(sOutputFile)) Then
                 g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Could not get Pre-Processed source file!", False, False, True)
@@ -965,187 +1290,189 @@ Public Class ClassTextEditorTools
         Return Nothing
     End Function
 
+    '''' <summary>
+    '''' Gets the assembly from the code. Throws exceptions on compile error.
+    '''' </summary> 
+    '''' <returns></returns>
+    'Public Function GetCompilerAssemblyCode(Optional bUseCustomCompilerOptions As Boolean = True,
+    '                                        ByRef Optional iCompilerType As ENUM_COMPILER_TYPE = ENUM_COMPILER_TYPE.UNKNOWN) As String
+    '    Try
+    '        If (g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True, True)) Then
+    '            Return Nothing
+    '        End If
+
+    '        If (g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed) Then
+    '            g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed = False
+    '            g_mFormMain.SplitContainer_ToolboxSourceAndDetails.SplitterDistance = g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Height - 200
+    '        End If
+    '        g_mFormMain.TabControl_Details.SelectTab(1)
+
+    '        g_mFormMain.PrintInformation("[INFO]", "DIASM source started!")
+
+    '        Dim sCompilerPath As String = ""
+    '        Dim sIncludePaths As String = ""
+    '        Dim sOutputFile As String = ""
+
+    '        Dim iExitCode As Integer = 0
+    '        Dim sOutput As String = ""
+
+    '        If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
+    '            g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get current source file!", False, False, True)
+    '            Return Nothing
+    '        End If
+
+    '        'Check compiler
+    '        If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
+    '            While True
+    '                'SourcePawn
+    '                sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "spcomp.exe")
+    '                If (IO.File.Exists(sCompilerPath)) Then
+    '                    Exit While
+    '                End If
+
+    '                'AMX Mod X
+    '                sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "amxxpc.exe")
+    '                If (IO.File.Exists(sCompilerPath)) Then
+    '                    Exit While
+    '                End If
+
+    '                'Small
+    '                sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "sc.exe")
+    '                If (IO.File.Exists(sCompilerPath)) Then
+    '                    Exit While
+    '                End If
+
+    '                'Pawn
+    '                sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "pawncc.exe")
+    '                If (IO.File.Exists(sCompilerPath)) Then
+    '                    Exit While
+    '                End If
+
+    '                g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Compiler can not be found!", False, False, True)
+    '                Return Nothing
+    '            End While
+    '        Else
+    '            sCompilerPath = ClassConfigs.m_ActiveConfig.g_sCompilerPath
+    '            If (Not IO.File.Exists(sCompilerPath)) Then
+    '                g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Compiler can not be found!", False, False, True)
+    '                Return Nothing
+    '            End If
+    '        End If
+
+    '        'Check include path
+    '        If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
+    '            sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "include")
+
+    '            If (Not IO.Directory.Exists(sIncludePaths)) Then
+    '                g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Include path can not be found!", False, False, True)
+    '                Return Nothing
+    '            End If
+    '        Else
+    '            sIncludePaths = ClassConfigs.m_ActiveConfig.g_sIncludeFolders
+    '            For Each sInclude As String In sIncludePaths.Split(";"c)
+    '                If (Not IO.Directory.Exists(sInclude)) Then
+    '                    g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Include path can not be found!", False, False, True)
+    '                    Return Nothing
+    '                End If
+    '            Next
+    '        End If
+
+
+    '        Dim sTmpSource As String = IO.File.ReadAllText(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)
+    '        Dim sTmpSourcePath As String = String.Format("{0}.src", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
+
+    '        IO.File.WriteAllText(sTmpSourcePath, sTmpSource)
+
+    '        sOutputFile = String.Format("{0}.asm", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
+
+    '        Dim lIncludeList As New List(Of String)
+    '        For Each sInclude As String In sIncludePaths.Split(";"c)
+    '            lIncludeList.Add("-i""" & sInclude & """")
+    '        Next
+
+    '        'Get compiler type first.
+    '        'Normaly every compiler should print help without any process arguments, but AMX Mod X compiler wants input...
+    '        'Use an unfinished argument to force help.
+    '        'TODO: Should detect compiler type using file info instead? This is a bad hack.
+    '        ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, "-", IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), iExitCode, sOutput)
+
+    '        iCompilerType = ENUM_COMPILER_TYPE.UNKNOWN
+
+    '        Dim sLines As String() = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
+    '        If (sLines.Length > 0) Then
+    '            Select Case (True)
+    '                Case Regex.IsMatch(sLines(0), "\b(SourcePawn)\b \b(Compiler)\b", RegexOptions.IgnoreCase)
+    '                    iCompilerType = ENUM_COMPILER_TYPE.SOURCEPAWN
+
+    '                Case Regex.IsMatch(sLines(0), "\b(AMX)\b \b(Mod)\b \b(X)\b", RegexOptions.IgnoreCase)
+    '                    iCompilerType = ENUM_COMPILER_TYPE.AMXX
+
+    '                'Old AMX Mod still uses Small compiler
+    '                Case Regex.IsMatch(sLines(0), "\b(Pawn)\b \b(compiler)\b", RegexOptions.IgnoreCase), Regex.IsMatch(sLines(0), "\b(Small)\b \b(compiler)\b", RegexOptions.IgnoreCase)
+    '                    iCompilerType = ENUM_COMPILER_TYPE.AMX
+
+    '            End Select
+    '        End If
+
+    '        'Build arguments 
+    '        Dim lArguments As New List(Of String) From {
+    '            String.Format("""{0}"" -a {1} -o""{2}""", sTmpSourcePath, String.Join(" ", lIncludeList.ToArray), sOutputFile)
+    '        }
+
+    '        If (bUseCustomCompilerOptions) Then
+    '            Select Case (iCompilerType)
+    '                Case ENUM_COMPILER_TYPE.SOURCEPAWN
+    '                    lArguments.Add(ClassConfigs.m_ActiveConfig.g_mCompilerOptionsSP.BuildCommandline)
+
+    '                Case ENUM_COMPILER_TYPE.AMXX
+    '                    lArguments.Add(ClassConfigs.m_ActiveConfig.g_mCompilerOptionsAMXX.BuildCommandline)
+
+    '            End Select
+    '        End If
+
+    '        'Compile 
+    '        ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, String.Join(" "c, lArguments.ToArray), IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), iExitCode, sOutput)
+
+    '        IO.File.Delete(sTmpSourcePath)
+
+    '        For Each sLine In sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
+    '            g_mFormMain.PrintInformation("[INFO]", vbTab & sLine)
+    '        Next
+
+    '        If (String.IsNullOrEmpty(sOutputFile) OrElse Not IO.File.Exists(sOutputFile)) Then
+    '            g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get Pre-Processed source file!", False, False, True)
+    '            Return Nothing
+    '        End If
+
+    '        Dim sOutputSource As String = IO.File.ReadAllText(sOutputFile)
+
+    '        IO.File.Delete(sOutputFile)
+
+
+    '        g_mFormMain.PrintInformation("[INFO]", "DIASM source finished!", False, False, True)
+
+    '        Return sOutputSource
+    '    Catch ex As Exception
+    '        ClassExceptionLog.WriteToLogMessageBox(ex)
+    '    End Try
+
+    '    Return Nothing
+    'End Function
+
     ''' <summary>
-    ''' Gets the assembly from the code. Throws exceptions on compile error.
-    ''' </summary> 
-    ''' <returns></returns>
-    Public Function GetCompilerAssemblyCode(Optional bUseCustomCompilerOptions As Boolean = True,
-                                            ByRef Optional iCompilerType As ENUM_COMPILER_TYPE = ENUM_COMPILER_TYPE.UNKNOWN) As String
-        Try
-            If (g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True)) Then
-                Return Nothing
-            End If
-
-            If (g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed) Then
-                g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed = False
-                g_mFormMain.SplitContainer_ToolboxSourceAndDetails.SplitterDistance = g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Height - 200
-            End If
-            g_mFormMain.TabControl_Details.SelectTab(1)
-
-            g_mFormMain.PrintInformation("[INFO]", "DIASM source started!")
-
-            Dim sCompilerPath As String = ""
-            Dim sIncludePaths As String = ""
-            Dim sOutputFile As String = ""
-
-            Dim iExitCode As Integer = 0
-            Dim sOutput As String = ""
-
-            If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
-                g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Compiler can not be found!", False, False, True)
-                Return Nothing
-            End If
-
-            'Check compiler
-            If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                While True
-                    'SourcePawn
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "spcomp.exe")
-                    If (IO.File.Exists(sCompilerPath)) Then
-                        Exit While
-                    End If
-
-                    'AMX Mod X
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "amxxpc.exe")
-                    If (IO.File.Exists(sCompilerPath)) Then
-                        Exit While
-                    End If
-
-                    'Small
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "sc.exe")
-                    If (IO.File.Exists(sCompilerPath)) Then
-                        Exit While
-                    End If
-
-                    'Pawn
-                    sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "pawncc.exe")
-                    If (IO.File.Exists(sCompilerPath)) Then
-                        Exit While
-                    End If
-
-                    g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Compiler can not be found!", False, False, True)
-                    Return Nothing
-                End While
-            Else
-                sCompilerPath = ClassConfigs.m_ActiveConfig.g_sCompilerPath
-                If (Not IO.File.Exists(sCompilerPath)) Then
-                    g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Compiler can not be found!", False, False, True)
-                    Return Nothing
-                End If
-            End If
-
-            'Check include path
-            If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "include")
-
-                If (Not IO.Directory.Exists(sIncludePaths)) Then
-                    g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Include path can not be found!", False, False, True)
-                    Return Nothing
-                End If
-            Else
-                sIncludePaths = ClassConfigs.m_ActiveConfig.g_sIncludeFolders
-                For Each sInclude As String In sIncludePaths.Split(";"c)
-                    If (Not IO.Directory.Exists(sInclude)) Then
-                        g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Include path can not be found!", False, False, True)
-                        Return Nothing
-                    End If
-                Next
-            End If
-
-
-            Dim sTmpSource As String = IO.File.ReadAllText(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)
-            Dim sTmpSourcePath As String = String.Format("{0}.src", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
-
-            IO.File.WriteAllText(sTmpSourcePath, sTmpSource)
-
-            sOutputFile = String.Format("{0}.asm", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
-
-            Dim lIncludeList As New List(Of String)
-            For Each sInclude As String In sIncludePaths.Split(";"c)
-                lIncludeList.Add("-i""" & sInclude & """")
-            Next
-
-            'Get compiler type first.
-            'Normaly every compiler should print help without any process arguments, but AMX Mod X compiler wants input...
-            'Use an unfinished argument to force help.
-            'TODO: Should detect compiler type using file info instead? This is a bad hack.
-            ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, "-", IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), iExitCode, sOutput)
-
-            iCompilerType = ENUM_COMPILER_TYPE.UNKNOWN
-
-            Dim sLines As String() = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
-            If (sLines.Length > 0) Then
-                Select Case (True)
-                    Case Regex.IsMatch(sLines(0), "\b(SourcePawn)\b \b(Compiler)\b", RegexOptions.IgnoreCase)
-                        iCompilerType = ENUM_COMPILER_TYPE.SOURCEPAWN
-
-                    Case Regex.IsMatch(sLines(0), "\b(AMX)\b \b(Mod)\b \b(X)\b", RegexOptions.IgnoreCase)
-                        iCompilerType = ENUM_COMPILER_TYPE.AMXX
-
-                    'Old AMX Mod still uses Small compiler
-                    Case Regex.IsMatch(sLines(0), "\b(Pawn)\b \b(compiler)\b", RegexOptions.IgnoreCase), Regex.IsMatch(sLines(0), "\b(Small)\b \b(compiler)\b", RegexOptions.IgnoreCase)
-                        iCompilerType = ENUM_COMPILER_TYPE.AMX
-
-                End Select
-            End If
-
-            'Build arguments 
-            Dim lArguments As New List(Of String) From {
-                String.Format("""{0}"" -a {1} -o""{2}""", sTmpSourcePath, String.Join(" ", lIncludeList.ToArray), sOutputFile)
-            }
-
-            If (bUseCustomCompilerOptions) Then
-                Select Case (iCompilerType)
-                    Case ENUM_COMPILER_TYPE.SOURCEPAWN
-                        lArguments.Add(ClassConfigs.m_ActiveConfig.g_mCompilerOptionsSP.BuildCommandline)
-
-                    Case ENUM_COMPILER_TYPE.AMXX
-                        lArguments.Add(ClassConfigs.m_ActiveConfig.g_mCompilerOptionsAMXX.BuildCommandline)
-
-                End Select
-            End If
-
-            'Compile 
-            ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, String.Join(" "c, lArguments.ToArray), IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), iExitCode, sOutput)
-
-            IO.File.Delete(sTmpSourcePath)
-
-            For Each sLine In sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
-                g_mFormMain.PrintInformation("[INFO]", vbTab & sLine)
-            Next
-
-            If (String.IsNullOrEmpty(sOutputFile) OrElse Not IO.File.Exists(sOutputFile)) Then
-                g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get Pre-Processed source file!", False, False, True)
-                Return Nothing
-            End If
-
-            Dim sOutputSource As String = IO.File.ReadAllText(sOutputFile)
-
-            IO.File.Delete(sOutputFile)
-
-
-            g_mFormMain.PrintInformation("[INFO]", "DIASM source finished!", False, False, True)
-
-            Return sOutputSource
-        Catch ex As Exception
-            ClassExceptionLog.WriteToLogMessageBox(ex)
-        End Try
-
-        Return Nothing
-    End Function
-
-    ''' <summary>
-    ''' Gets the assembly from the code. Throws exceptions on compile error.
+    ''' Compiles new assembly from source.
     ''' </summary>
     ''' <param name="bTesting">Just creates a temporary file and removes it after compile.</param>
-    ''' <param name="sSource">The source to compile.</param>
+    ''' <param name="sSource">The source to compile. Use |Nothing| to get the source from the active tab.</param>
     ''' <param name="sOutputFile">The output file. An extension is still required! (default is *.asm)</param>
-    ''' <param name="sWorkingDirectory">(Optional) Sets the compiler working directory.</param>
-    ''' <param name="sCompilerPath">(Optional) The compiler path. If Nothing, it will use the global config compiler path.</param>
-    ''' <param name="sIncludePaths">(Optional) The include paths seperated by ';'. If Nothing, it will use the global config include path.</param>
-    ''' <param name="sEmulateSourceFile">(Optional) Replaces the printed temporary path.</param>
-    ''' <param name="sCompilerOutput">(Optional) The orginal compiler output.</param>
-    ''' <returns></returns>
+    ''' <param name="sWorkingDirectory">Sets the compiler working directory. Use |Nothing| to use the working directioy from the active tab.</param>
+    ''' <param name="sCompilerPath">The compiler path. Use |Nothing| to get the source from the active tab.</param>
+    ''' <param name="sIncludePaths">The include paths seperated by ';'. Use |Nothing| to get the source from the active tab.</param>
+    ''' <param name="sEmulateSourceFile">Replaces the printed temporary path. Use |Nothing| to get the source from the active tab.</param>
+    ''' <param name="bUseCustomCompilerOptions">If true it will use the configs custom compiler options, false otherwise.</param>
+    ''' <param name="sCompilerOutput">The compiler output.</param>
+    ''' <param name="iCompilerType"></param>
+    ''' <returns>New assembly on success, |Nothing| otherwise.</returns>
     Public Function GetCompilerAssemblyCode(bTesting As Boolean,
                                             sSource As String,
                                             ByRef sOutputFile As String,
@@ -1157,8 +1484,8 @@ Public Class ClassTextEditorTools
                                             ByRef Optional sCompilerOutput As String = Nothing,
                                             ByRef Optional iCompilerType As ENUM_COMPILER_TYPE = ENUM_COMPILER_TYPE.UNKNOWN) As String
         Try
-            If (g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True)) Then
-                Return Nothing
+            If (sSource Is Nothing) Then
+                sSource = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
             End If
 
             If (g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed) Then
@@ -1171,12 +1498,19 @@ Public Class ClassTextEditorTools
 
             Dim iExitCode As Integer = 0
             Dim sOutput As String = ""
+            Dim sLines As String()
 
             'Check compiler
             If (sCompilerPath Is Nothing) Then
                 If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
-                        g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Compiler can not be found!", False, False, True)
+                    If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved AndAlso
+                                g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True, True)) Then
+                        g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get current source file!", False, False, True)
+                        Return Nothing
+                    End If
+
+                    If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved) Then
+                        g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get current source file!", False, False, True)
                         Return Nothing
                     End If
 
@@ -1225,8 +1559,14 @@ Public Class ClassTextEditorTools
             'Check include path
             If (sIncludePaths Is Nothing) Then
                 If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved OrElse Not IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
-                        g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Include path can not be found!", False, False, True)
+                    If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved AndAlso
+                                g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True, True)) Then
+                        g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get current source file!", False, False, True)
+                        Return Nothing
+                    End If
+
+                    If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved) Then
+                        g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get current source file!", False, False, True)
                         Return Nothing
                     End If
 
@@ -1276,7 +1616,7 @@ Public Class ClassTextEditorTools
 
             iCompilerType = ENUM_COMPILER_TYPE.UNKNOWN
 
-            Dim sLines As String() = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
+            sLines = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
             If (sLines.Length > 0) Then
                 Select Case (True)
                     Case Regex.IsMatch(sLines(0), "\b(SourcePawn)\b \b(Compiler)\b", RegexOptions.IgnoreCase)
@@ -1317,12 +1657,13 @@ Public Class ClassTextEditorTools
 
             sCompilerOutput = sOutput
 
-            For Each sLine In sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
-                If (Not String.IsNullOrEmpty(sEmulateSourceFile) AndAlso sLine.Contains(TmpSourceFile)) Then
-                    sLine = Regex.Replace(sLine, "^\b" & Regex.Escape(TmpSourceFile) & "\b", sEmulateSourceFile)
+            sLines = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
+            For i = 0 To sLines.Length - 1
+                If (Not String.IsNullOrEmpty(sEmulateSourceFile) AndAlso sLines(i).Contains(TmpSourceFile)) Then
+                    sLines(i) = Regex.Replace(sLines(i), "^\b" & Regex.Escape(TmpSourceFile) & "\b", sEmulateSourceFile)
                 End If
 
-                g_mFormMain.PrintInformation("[INFO]", vbTab & sLine)
+                g_mFormMain.PrintInformation("[INFO]", vbTab & sLines(i))
             Next
 
             sCompilerOutput = String.Join(Environment.NewLine, sLines)

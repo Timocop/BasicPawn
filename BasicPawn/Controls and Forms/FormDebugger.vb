@@ -19,6 +19,8 @@ Imports System.Text.RegularExpressions
 
 Public Class FormDebugger
     Public g_mFormMain As FormMain
+    Public g_sDebugTabIdentifier As String = ""
+
     Public g_ClassDebuggerParser As ClassDebuggerParser
     Public g_ClassDebuggerRunnerEngine As ClassDebuggerParser.ClassRunnerEngine
     Public g_ClassDebuggerRunner As ClassDebuggerRunner
@@ -30,8 +32,17 @@ Public Class FormDebugger
     Public g_bTextEditorEnableClickSelect As Boolean = True
     Public g_bListViewEnableClickSelect As Boolean = True
 
-    Public Sub New(f As FormMain)
+    Public Sub New(f As FormMain, mDebugTab As ClassTabControl.SourceTabPage)
+        Me.New(f, mDebugTab.m_Identifier)
+    End Sub
+
+    Public Sub New(f As FormMain, sDebugTabIdentifier As String)
         g_mFormMain = f
+        g_sDebugTabIdentifier = sDebugTabIdentifier
+
+        If (g_mFormMain.g_ClassTabControl.GetTabIndexByIdentifier(g_sDebugTabIdentifier) < 0) Then
+            Throw New ArgumentException("Tab does not exist")
+        End If
 
         ' This call is required by the designer.
         InitializeComponent()
@@ -72,15 +83,39 @@ Public Class FormDebugger
                 mFormProgress.Show(Me)
                 mFormProgress.m_Progress = 0
 
+
+                If (g_mFormMain.g_ClassTabControl.GetTabIndexByIdentifier(g_sDebugTabIdentifier) < 0) Then
+                    Throw New ArgumentException("Tab does not exist")
+                End If
+
+                g_ClassDebuggerRunner.UpdateSourceFromTab()
+                Me.Text = String.Format("BasicPawn Debugger ({0})", If(String.IsNullOrEmpty(g_ClassDebuggerRunner.m_CurrentSourceFile), "Unnamed", IO.Path.GetFileName(g_ClassDebuggerRunner.m_CurrentSourceFile)))
+
+
+                mFormProgress.m_Progress = 10
+
+
                 Dim iCompilerType As ClassTextEditorTools.ENUM_COMPILER_TYPE = ClassTextEditorTools.ENUM_COMPILER_TYPE.UNKNOWN
 
                 'Create Pre-Process source
-                Dim sLstSource As String = g_mFormMain.g_ClassTextEditorTools.GetCompilerPreProcessCode(True, True, g_sLastPreProcessSourceFile, True, Nothing, iCompilerType)
-                If (String.IsNullOrEmpty(sLstSource)) Then
+                Dim sPreSource As String = g_mFormMain.g_ClassTextEditorTools.GetCompilerPreProcessCode(g_ClassDebuggerRunner.m_CurrentSource,
+                                                                                                        True,
+                                                                                                        True,
+                                                                                                        g_sLastPreProcessSourceFile,
+                                                                                                        Nothing,
+                                                                                                        Nothing,
+                                                                                                        Nothing,
+                                                                                                        If(String.IsNullOrEmpty(g_ClassDebuggerRunner.m_CurrentSourceFile), "Unnamed", g_ClassDebuggerRunner.m_CurrentSourceFile),
+                                                                                                        True,
+                                                                                                        Nothing,
+                                                                                                        iCompilerType)
+                If (String.IsNullOrEmpty(sPreSource)) Then
                     Return False
                 End If
 
+
                 mFormProgress.m_Progress = 20
+
 
                 Select Case (iCompilerType)
                     Case ClassTextEditorTools.ENUM_COMPILER_TYPE.SOURCEPAWN
@@ -106,28 +141,39 @@ Public Class FormDebugger
                 End If
 
 
-                g_ClassDebuggerRunner.g_ClassPreProcess.FixPreProcessFiles(sLstSource)
+                g_ClassDebuggerRunner.g_ClassPreProcess.FixPreProcessFiles(sPreSource)
                 'Replace the temp source file with the currently opened one
-                sLstSource = Regex.Replace(sLstSource,
+                sPreSource = Regex.Replace(sPreSource,
                                        String.Format("^\s*\#file ""{0}""\s*$", Regex.Escape(g_sLastPreProcessSourceFile)),
-                                       String.Format("#file ""{0}""", g_ClassDebuggerRunner.m_CurrentSourceFile),
+                                       String.Format("#file ""{0}""", If(String.IsNullOrEmpty(g_ClassDebuggerRunner.m_CurrentSourceFile), "Unnamed", g_ClassDebuggerRunner.m_CurrentSourceFile)),
                                        RegexOptions.IgnoreCase Or RegexOptions.Multiline)
 
-                g_ClassDebuggerRunner.g_ClassPreProcess.AnalysisSourceLines(sLstSource)
-                g_ClassDebuggerParser.UpdateBreakpoints(sLstSource, False, g_iLanguage)
-                g_ClassDebuggerParser.UpdateWatchers(sLstSource, False, g_iLanguage)
+                g_ClassDebuggerRunner.g_ClassPreProcess.AnalysisSourceLines(sPreSource)
+                g_ClassDebuggerParser.UpdateBreakpoints(sPreSource, False, g_iLanguage)
+                g_ClassDebuggerParser.UpdateWatchers(sPreSource, False, g_iLanguage)
+
 
                 mFormProgress.m_Progress = 40
 
+
                 'Create DIASM code
-                Dim sAsmLstSource As String = sLstSource
+                Dim sAsmLstSource As String = sPreSource
                 With New ClassDebuggerParser(g_mFormMain)
                     .CleanupDebugPlaceholder(sAsmLstSource, g_iLanguage)
                 End With
 
                 iCompilerType = ClassTextEditorTools.ENUM_COMPILER_TYPE.UNKNOWN
 
-                Dim sAsmSource As String = g_mFormMain.g_ClassTextEditorTools.GetCompilerAssemblyCode(True, sAsmLstSource, Nothing, IO.Path.GetDirectoryName(g_sLastPreProcessSourceFile), Nothing, Nothing, Nothing, True, Nothing, iCompilerType)
+                Dim sAsmSource As String = g_mFormMain.g_ClassTextEditorTools.GetCompilerAssemblyCode(True,
+                                                                                                      sAsmLstSource,
+                                                                                                      Nothing,
+                                                                                                      IO.Path.GetDirectoryName(g_sLastPreProcessSourceFile),
+                                                                                                      Nothing,
+                                                                                                      Nothing,
+                                                                                                      Nothing,
+                                                                                                      True,
+                                                                                                      Nothing,
+                                                                                                      iCompilerType)
                 If (String.IsNullOrEmpty(sAsmSource)) Then
                     Return False
                 End If
@@ -136,11 +182,11 @@ Public Class FormDebugger
                     Throw New ArgumentException("Unsupported compiler")
                 End If
 
+
                 mFormProgress.m_Progress = 60
 
 
-
-                TextEditorControlEx_DebuggerSource.Document.TextContent = sLstSource
+                TextEditorControlEx_DebuggerSource.Document.TextContent = sPreSource
                 TextEditorControlEx_DebuggerDiasm.Document.TextContent = sAsmSource
 
                 TextEditorControlEx_DebuggerSource.Refresh()
@@ -150,7 +196,9 @@ Public Class FormDebugger
 
                 TextEditorControlEx_DebuggerSource.Document.MarkerStrategy.RemoveAll(Function() True)
 
+
                 mFormProgress.m_Progress = 80
+
 
                 'Add breakpoints
                 ListView_Breakpoints.BeginUpdate()
@@ -196,7 +244,9 @@ Public Class FormDebugger
                 Next
                 ListView_Entities.EndUpdate()
 
+
                 mFormProgress.m_Progress = 100
+
 
                 ClassControlStyle.UpdateControls(Me)
 
@@ -542,19 +592,23 @@ Public Class FormDebugger
         Try
             Dim iDebugLine As Integer = TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.TextArea.Caret.Position.Line
             Dim iRealLine As Integer = -1
-            Dim sFile As String = "Unknown"
+            Dim sFilename As String = "Unknown"
             If (iDebugLine > -1 AndAlso iDebugLine < g_ClassDebuggerRunner.g_mSourceLinesInfo.Length) Then
                 Dim info = g_ClassDebuggerRunner.g_mSourceLinesInfo(iDebugLine)
                 iRealLine = info.iRealLine
-                sFile = IO.Path.GetFileName(info.sFile)
+                sFilename = IO.Path.GetFileName(info.sFile)
 
-                If (String.IsNullOrEmpty(sFile)) Then
-                    sFile = IO.Path.GetFileName(g_ClassDebuggerRunner.m_CurrentSourceFile)
+                If (String.IsNullOrEmpty(sFilename)) Then
+                    If (String.IsNullOrEmpty(g_ClassDebuggerRunner.m_CurrentSourceFile)) Then
+                        sFilename = "Unknown"
+                    Else
+                        sFilename = IO.Path.GetFileName(g_ClassDebuggerRunner.m_CurrentSourceFile)
+                    End If
                 End If
             End If
 
             ToolStripStatusLabel_EditorDebugLing.Text = String.Format("DL: {0}", iDebugLine + 1)
-            ToolStripStatusLabel_EditorLine.Text = String.Format("L: {0} ({1})", iRealLine, sFile)
+            ToolStripStatusLabel_EditorLine.Text = String.Format("L: {0} ({1})", iRealLine, sFilename)
             ToolStripStatusLabel_EditorCollum.Text = String.Format("C: {0}", TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.TextArea.Caret.Column)
             ToolStripStatusLabel_EditorSelected.Text = String.Format("S: {0}", TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.TextArea.SelectionManager.SelectedText.Length)
         Catch ex As Exception
