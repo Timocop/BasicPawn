@@ -804,7 +804,7 @@ Public Class FormSettings
             SB.AppendLine("All available shell arguments:")
             SB.AppendLine()
 
-            For Each iItem In ClassSettings.GetShellArguments(g_mFormMain)
+            For Each iItem In ClassSettings.GetShellArguments(g_mFormMain, Nothing)
                 SB.AppendLine(String.Format("{0} - {1}", iItem.g_sMarker, iItem.g_sArgumentName))
             Next
 

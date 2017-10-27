@@ -869,8 +869,8 @@ Public Class FormMain
         Try
             Dim sShell As String = ClassConfigs.m_ActiveConfig.g_sExecuteShell
 
-            For Each shellModule In ClassSettings.GetShellArguments(Me)
-                sShell = sShell.Replace(shellModule.g_sMarker, shellModule.g_sArgument)
+            For Each mArg In ClassSettings.GetShellArguments(Me, Nothing)
+                sShell = sShell.Replace(mArg.g_sMarker, mArg.g_sArgument)
             Next
 
             Try

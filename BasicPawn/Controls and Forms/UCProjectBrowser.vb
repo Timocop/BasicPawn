@@ -738,6 +738,56 @@ Public Class UCProjectBrowser
         End Try
     End Sub
 
+    Private Sub ToolStripMenuItem_ShellAll_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ShellAll.Click
+        Try
+            If (ListView_ProjectFiles.SelectedItems.Count < 1) Then
+                Return
+            End If
+
+            Dim lFiles As New List(Of String)
+
+            For Each mListViewItem As ListViewItem In ListView_ProjectFiles.SelectedItems
+                If (TypeOf mListViewItem IsNot ClassListViewItemData) Then
+                    Continue For
+                End If
+
+                Dim mListViewItemData = DirectCast(mListViewItem, ClassListViewItemData)
+                Dim mInfo = DirectCast(mListViewItemData.g_mData("Info"), ClassProjectControl.STRUC_PROJECT_FILE_INFO)
+
+                lFiles.Add(mInfo.sFile)
+            Next
+
+            Using i As New FormProgress
+                i.Text = "Executing shell..."
+                i.ProgressBar_Progress.Maximum = lFiles.Count
+                i.Show(Me)
+                i.m_Progress = 0
+
+                For Each sFile In lFiles
+                    Dim sShell As String = ClassConfigs.m_ActiveConfig.g_sExecuteShell
+
+                    For Each mArg In ClassSettings.GetShellArguments(g_mFormMain, sFile)
+                        sShell = sShell.Replace(mArg.g_sMarker, mArg.g_sArgument)
+                    Next
+
+                    Try
+                        If (String.IsNullOrEmpty(sShell)) Then
+                            Throw New ArgumentException("Shell is empty")
+                        End If
+
+                        Shell(sShell, AppWinStyle.NormalFocus)
+                    Catch ex As Exception
+                        MessageBox.Show(ex.Message & Environment.NewLine & Environment.NewLine & sShell, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    End Try
+
+                    i.m_Progress += 1
+                Next
+            End Using
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
     Private Sub ToolStripMenuItem_PackFile_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_PackFile.Click
         Try
             If (ListView_ProjectFiles.SelectedItems.Count < 1) Then

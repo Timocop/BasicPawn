@@ -223,11 +223,13 @@ Public Class ClassSettings
     ''' Gets all available shell arguments
     ''' </summary>
     ''' <returns></returns>
-    Public Shared Function GetShellArguments(mFormMain As FormMain) As STRUC_SHELL_ARGUMENT_ITEM()
+    Public Shared Function GetShellArguments(mFormMain As FormMain, sFile As String) As STRUC_SHELL_ARGUMENT_ITEM()
         'TODO: Add more shell arguments
         Dim sShellList As New List(Of STRUC_SHELL_ARGUMENT_ITEM)
 
-        Dim sFile As String = mFormMain.g_ClassTabControl.m_ActiveTab.m_File
+        If (String.IsNullOrEmpty(sFile)) Then
+            sFile = mFormMain.g_ClassTabControl.m_ActiveTab.m_File
+        End If
 
         sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%input%", "Current opened source file", sFile))
         sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%inputfilename%", "Current opened source filename", If(String.IsNullOrEmpty(sFile), "", IO.Path.GetFileNameWithoutExtension(sFile))))
