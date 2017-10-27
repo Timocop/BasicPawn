@@ -127,6 +127,7 @@ Public Class FormSettings
         CheckBox_CommentsAutocompleteIntelliSense.Checked = ClassSettings.g_iSettingsToolTipAutocompleteComments
         CheckBox_WindowsToolTipPopup.Checked = ClassSettings.g_iSettingsUseWindowsToolTip
         CheckBox_WindowsToolTipAnimations.Checked = ClassSettings.g_iSettingsUseWindowsToolTipAnimations
+        CheckBox_WindowsToolTipNewlineMethods.Checked = ClassSettings.g_iSettingsUseWindowsToolTipNewlineMethods
         CheckBox_FullAutcompleteMethods.Checked = ClassSettings.g_iSettingsFullMethodAutocomplete
         CheckBox_FullAutocompleteReTagging.Checked = ClassSettings.g_iSettingsFullEnumAutocomplete
         CheckBox_CaseSensitive.Checked = ClassSettings.g_iSettingsAutocompleteCaseSensitive
@@ -195,6 +196,7 @@ Public Class FormSettings
         ClassSettings.g_iSettingsToolTipAutocompleteComments = CheckBox_CommentsAutocompleteIntelliSense.Checked
         ClassSettings.g_iSettingsUseWindowsToolTip = CheckBox_WindowsToolTipPopup.Checked
         ClassSettings.g_iSettingsUseWindowsToolTipAnimations = CheckBox_WindowsToolTipAnimations.Checked
+        ClassSettings.g_iSettingsUseWindowsToolTipNewlineMethods = CheckBox_WindowsToolTipNewlineMethods.Checked
         ClassSettings.g_iSettingsFullMethodAutocomplete = CheckBox_FullAutcompleteMethods.Checked
         ClassSettings.g_iSettingsFullEnumAutocomplete = CheckBox_FullAutocompleteReTagging.Checked
         ClassSettings.g_iSettingsAutocompleteCaseSensitive = CheckBox_CaseSensitive.Checked

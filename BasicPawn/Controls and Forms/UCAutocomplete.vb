@@ -355,7 +355,7 @@ Public Class UCAutocomplete
 
                     lAlreadyShownList.Add(sName)
 
-                    If (ClassSettings.g_iSettingsUseWindowsToolTip) Then
+                    If (ClassSettings.g_iSettingsUseWindowsToolTip AndAlso ClassSettings.g_iSettingsUseWindowsToolTipNewlineMethods) Then
                         Dim sNewlineDistance As Integer = sNameToolTip.IndexOf("("c)
 
                         If (sNewlineDistance > -1) Then
@@ -404,7 +404,7 @@ Public Class UCAutocomplete
 
                 Dim sName As String = Regex.Replace(CStr(mListViewItemData.g_mData("FullFunctionName")).Trim, vbTab, New String(" "c, iTabSize))
                 Dim sNameToolTip As String = Regex.Replace(CStr(mListViewItemData.g_mData("FullFunctionName")).Trim, vbTab, New String(" "c, iTabSize))
-                If (ClassSettings.g_iSettingsUseWindowsToolTip) Then
+                If (ClassSettings.g_iSettingsUseWindowsToolTip AndAlso ClassSettings.g_iSettingsUseWindowsToolTipNewlineMethods) Then
                     Dim sNewlineDistance As Integer = sNameToolTip.IndexOf("("c)
 
                     If (sNewlineDistance > -1) Then
