@@ -252,6 +252,10 @@ Public Class FormMain
 #End Region
 
     Private Sub FormMain_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        'Load last window info
+        ClassSettings.LoadWindowInfo(Me)
+
+        'Display Mono/Wine version
         Dim sWineVersion As String = ClassTools.ClassOperatingSystem.GetWineVersion()
         Dim bMonoRuntime As Boolean = ClassTools.ClassOperatingSystem.IsMonoRuntime()
         ToolStripStatusLabel_AppVersion.Text = String.Format("v.{0} {1} {2}",
@@ -1105,9 +1109,13 @@ Public Class FormMain
 
 
     Private Sub FormMain_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+        'Save window info
+        ClassSettings.SaveWindowInfo(Me)
+
+        'Close debugger 
         If (g_mFormDebugger IsNot Nothing AndAlso Not g_mFormDebugger.IsDisposed) Then
-            g_mFormDebugger.Close()
-        End If
+                g_mFormDebugger.Close()
+            End If
 
         If (g_mFormDebugger IsNot Nothing AndAlso Not g_mFormDebugger.IsDisposed) Then
             MessageBox.Show("You can not close BasicPawn while debugging!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)

@@ -67,6 +67,9 @@ Public Class FormDebugger
     End Sub
 
     Private Sub FormDebugger_Load(sender As Object, e As EventArgs) Handles Me.Load
+        'Load window info
+        ClassSettings.LoadWindowInfo(Me)
+
         If (Not RefreshSource()) Then
             MessageBox.Show("Could not open debugger. See information tab for more information.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Me.Dispose()
@@ -251,7 +254,6 @@ Public Class FormDebugger
                 ClassControlStyle.UpdateControls(Me)
 
                 g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnDebuggerRefresh(Me))
-
             End Using
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
@@ -414,6 +416,9 @@ Public Class FormDebugger
     End Sub
 
     Private Sub FormDebugger_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+        'Save window info
+        ClassSettings.SaveWindowInfo(Me)
+
         g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM)
                                                                If (Not j.mPluginInterface.OnDebuggerEnd(Me)) Then
                                                                    e.Cancel = True

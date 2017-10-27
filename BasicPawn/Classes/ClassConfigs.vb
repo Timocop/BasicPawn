@@ -501,26 +501,28 @@ Public Class ClassConfigs
             IO.Directory.CreateDirectory(m_ConfigFolder)
         End If
 
-        Using mIni As New ClassIni(sConfigFile, IO.FileMode.OpenOrCreate)
-            'Misc
-            mIni.WriteKeyValue("Config", "Type", If(mConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.CONFIG, "1", "0"))
-            mIni.WriteKeyValue("Config", "CompilerPath", mConfig.g_sCompilerPath)
-            mIni.WriteKeyValue("Config", "IncludeDirectory", mConfig.g_sIncludeFolders)
-            mIni.WriteKeyValue("Config", "OutputDirectory", mConfig.g_sOutputFolder)
-            mIni.WriteKeyValue("Config", "Autoload", If(mConfig.g_bAutoload, "1", "0"))
-            mIni.WriteKeyValue("Config", "ModType", CStr(mConfig.g_iLanguage))
+        Using mStream = ClassFileStreamWait.Create(sConfigFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
+            Using mIni As New ClassIni(mStream)
+                'Misc
+                mIni.WriteKeyValue("Config", "Type", If(mConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.CONFIG, "1", "0"))
+                mIni.WriteKeyValue("Config", "CompilerPath", mConfig.g_sCompilerPath)
+                mIni.WriteKeyValue("Config", "IncludeDirectory", mConfig.g_sIncludeFolders)
+                mIni.WriteKeyValue("Config", "OutputDirectory", mConfig.g_sOutputFolder)
+                mIni.WriteKeyValue("Config", "Autoload", If(mConfig.g_bAutoload, "1", "0"))
+                mIni.WriteKeyValue("Config", "ModType", CStr(mConfig.g_iLanguage))
 
-            'Compiler Options
-            mConfig.g_mCompilerOptionsSP.SaveToIni(mIni)
-            mConfig.g_mCompilerOptionsAMXX.SaveToIni(mIni)
+                'Compiler Options
+                mConfig.g_mCompilerOptionsSP.SaveToIni(mIni)
+                mConfig.g_mCompilerOptionsAMXX.SaveToIni(mIni)
 
-            'Debugging
-            mIni.WriteKeyValue("Config", "DebugGameDirectory", mConfig.g_sDebugGameFolder)
-            mIni.WriteKeyValue("Config", "DebugSourceModDirectory", mConfig.g_sDebugSourceModFolder)
+                'Debugging
+                mIni.WriteKeyValue("Config", "DebugGameDirectory", mConfig.g_sDebugGameFolder)
+                mIni.WriteKeyValue("Config", "DebugSourceModDirectory", mConfig.g_sDebugSourceModFolder)
 
-            'Misc
-            mIni.WriteKeyValue("Config", "ExecuteShell", mConfig.g_sExecuteShell)
-            mIni.WriteKeyValue("Config", "SyntaxPath", mConfig.g_sSyntaxHighlightingPath)
+                'Misc
+                mIni.WriteKeyValue("Config", "ExecuteShell", mConfig.g_sExecuteShell)
+                mIni.WriteKeyValue("Config", "SyntaxPath", mConfig.g_sSyntaxHighlightingPath)
+            End Using
         End Using
 
         Return True
@@ -537,39 +539,41 @@ Public Class ClassConfigs
             Return Nothing
         End If
 
-        Using mIni As New ClassIni(sConfigFile, IO.FileMode.OpenOrCreate)
-            'General
-            Dim iCompilingType As ClassSettings.ENUM_COMPILING_TYPE = If(mIni.ReadKeyValue("Config", "Type", "0") <> "0", ClassSettings.ENUM_COMPILING_TYPE.CONFIG, ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC)
-            Dim sOpenIncludeFolders As String = mIni.ReadKeyValue("Config", "IncludeDirectory", "")
-            Dim sCompilerPath As String = mIni.ReadKeyValue("Config", "CompilerPath", "")
-            Dim sOutputFolder As String = mIni.ReadKeyValue("Config", "OutputDirectory", "")
-            Dim bIsDefault As Boolean = (mIni.ReadKeyValue("Config", "Autoload", "0") <> "0")
-            Dim sLanguage As String = mIni.ReadKeyValue("Config", "ModType", CStr(STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE.AUTO_DETECT))
-            Dim iLanguage As Integer
-            If (Integer.TryParse(sLanguage, iLanguage)) Then
-                iLanguage = ClassTools.ClassMath.ClampInt(iLanguage, 0, [Enum].GetNames(GetType(STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE)).Length - 1)
-            Else
-                iLanguage = STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE.AUTO_DETECT
-            End If
+        Using mStream = ClassFileStreamWait.Create(sConfigFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
+            Using mIni As New ClassIni(mStream)
+                'General
+                Dim iCompilingType As ClassSettings.ENUM_COMPILING_TYPE = If(mIni.ReadKeyValue("Config", "Type", "0") <> "0", ClassSettings.ENUM_COMPILING_TYPE.CONFIG, ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC)
+                Dim sOpenIncludeFolders As String = mIni.ReadKeyValue("Config", "IncludeDirectory", "")
+                Dim sCompilerPath As String = mIni.ReadKeyValue("Config", "CompilerPath", "")
+                Dim sOutputFolder As String = mIni.ReadKeyValue("Config", "OutputDirectory", "")
+                Dim bIsDefault As Boolean = (mIni.ReadKeyValue("Config", "Autoload", "0") <> "0")
+                Dim sLanguage As String = mIni.ReadKeyValue("Config", "ModType", CStr(STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE.AUTO_DETECT))
+                Dim iLanguage As Integer
+                If (Integer.TryParse(sLanguage, iLanguage)) Then
+                    iLanguage = ClassTools.ClassMath.ClampInt(iLanguage, 0, [Enum].GetNames(GetType(STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE)).Length - 1)
+                Else
+                    iLanguage = STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE.AUTO_DETECT
+                End If
 
-            'Compiler Options
-            Dim mCompilerOptionsSourcePawn As New STRUC_CONFIG_ITEM.CompilerOptions.STRUC_SP_COMPILER_OPTIONS
-            Dim mCompilerOptionsAMXModX As New STRUC_CONFIG_ITEM.CompilerOptions.STRUC_AMXX_COMPILER_OPTIONS
-            mCompilerOptionsSourcePawn.LoadFromIni(mIni)
-            mCompilerOptionsAMXModX.LoadFromIni(mIni)
+                'Compiler Options
+                Dim mCompilerOptionsSourcePawn As New STRUC_CONFIG_ITEM.CompilerOptions.STRUC_SP_COMPILER_OPTIONS
+                Dim mCompilerOptionsAMXModX As New STRUC_CONFIG_ITEM.CompilerOptions.STRUC_AMXX_COMPILER_OPTIONS
+                mCompilerOptionsSourcePawn.LoadFromIni(mIni)
+                mCompilerOptionsAMXModX.LoadFromIni(mIni)
 
-            'Debugging
-            Dim sDebugGameFolder As String = mIni.ReadKeyValue("Config", "DebugGameDirectory", "")
-            Dim sDebugSourceModFolder As String = mIni.ReadKeyValue("Config", "DebugSourceModDirectory", "")
+                'Debugging
+                Dim sDebugGameFolder As String = mIni.ReadKeyValue("Config", "DebugGameDirectory", "")
+                Dim sDebugSourceModFolder As String = mIni.ReadKeyValue("Config", "DebugSourceModDirectory", "")
 
-            'Misc
-            Dim sExecuteShell As String = mIni.ReadKeyValue("Config", "ExecuteShell", "")
-            Dim sSyntaxHighlightingPath As String = mIni.ReadKeyValue("Config", "SyntaxPath", "")
+                'Misc
+                Dim sExecuteShell As String = mIni.ReadKeyValue("Config", "ExecuteShell", "")
+                Dim sSyntaxHighlightingPath As String = mIni.ReadKeyValue("Config", "SyntaxPath", "")
 
-            Return New STRUC_CONFIG_ITEM(sName, iCompilingType, sOpenIncludeFolders, sCompilerPath, sOutputFolder, bIsDefault, CType(iLanguage, STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE),
-                                     mCompilerOptionsSourcePawn, mCompilerOptionsAMXModX,
-                                     sDebugGameFolder, sDebugSourceModFolder,
-                                     sExecuteShell, sSyntaxHighlightingPath)
+                Return New STRUC_CONFIG_ITEM(sName, iCompilingType, sOpenIncludeFolders, sCompilerPath, sOutputFolder, bIsDefault, CType(iLanguage, STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE),
+                                         mCompilerOptionsSourcePawn, mCompilerOptionsAMXModX,
+                                         sDebugGameFolder, sDebugSourceModFolder,
+                                         sExecuteShell, sSyntaxHighlightingPath)
+            End Using
         End Using
     End Function
 

@@ -218,24 +218,8 @@ Public Class UCStartPage
                 Return
             End If
 
-            Using mIni As New ClassIni(m_RecentIni, IO.FileMode.OpenOrCreate)
-                For Each iItem In mIni.ReadEverything
-                    If (iItem.sSection <> RECENT_SECTION) Then
-                        Continue For
-                    End If
-
-                    If (iItem.sValue.ToLower <> sFile.ToLower) Then
-                        Continue For
-                    End If
-
-                    mIni.WriteKeyValue(iItem.sSection, iItem.sKey)
-                Next
-            End Using
-        End Sub
-
-        Public Sub AddRecent(sFile As String)
-            Using mIni As New ClassIni(m_RecentIni, IO.FileMode.OpenOrCreate)
-                If (IO.File.Exists(m_RecentIni)) Then
+            Using mStream = ClassFileStreamWait.Create(m_RecentIni, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
+                Using mIni As New ClassIni(mStream)
                     For Each iItem In mIni.ReadEverything
                         If (iItem.sSection <> RECENT_SECTION) Then
                             Continue For
@@ -247,9 +231,29 @@ Public Class UCStartPage
 
                         mIni.WriteKeyValue(iItem.sSection, iItem.sKey)
                     Next
-                End If
+                End Using
+            End Using
+        End Sub
 
-                mIni.WriteKeyValue(RECENT_SECTION, Guid.NewGuid.ToString, sFile)
+        Public Sub AddRecent(sFile As String)
+            Using mStream = ClassFileStreamWait.Create(m_RecentIni, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
+                Using mIni As New ClassIni(mStream)
+                    If (IO.File.Exists(m_RecentIni)) Then
+                        For Each iItem In mIni.ReadEverything
+                            If (iItem.sSection <> RECENT_SECTION) Then
+                                Continue For
+                            End If
+
+                            If (iItem.sValue.ToLower <> sFile.ToLower) Then
+                                Continue For
+                            End If
+
+                            mIni.WriteKeyValue(iItem.sSection, iItem.sKey)
+                        Next
+                    End If
+
+                    mIni.WriteKeyValue(RECENT_SECTION, Guid.NewGuid.ToString, sFile)
+                End Using
             End Using
         End Sub
 
@@ -292,24 +296,26 @@ Public Class UCStartPage
 
             Dim lRecentFiles As New List(Of String)
 
-            Using mIni As New ClassIni(m_RecentIni, IO.FileMode.OpenOrCreate)
-                For Each iItem In mIni.ReadEverything
-                    If (iItem.sSection <> RECENT_SECTION) Then
-                        Continue For
-                    End If
+            Using mStream = ClassFileStreamWait.Create(m_RecentIni, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
+                Using mIni As New ClassIni(mStream)
+                    For Each iItem In mIni.ReadEverything
+                        If (iItem.sSection <> RECENT_SECTION) Then
+                            Continue For
+                        End If
 
-                    If (Not IO.File.Exists(iItem.sValue.ToLower)) Then
-                        'Remove invalid entries from ini
-                        mIni.WriteKeyValue(RECENT_SECTION, iItem.sKey, Nothing)
-                        Continue For
-                    End If
+                        If (Not IO.File.Exists(iItem.sValue.ToLower)) Then
+                            'Remove invalid entries from ini
+                            mIni.WriteKeyValue(RECENT_SECTION, iItem.sKey, Nothing)
+                            Continue For
+                        End If
 
-                    If (lRecentFiles.Contains(iItem.sValue.ToLower)) Then
-                        Continue For
-                    End If
+                        If (lRecentFiles.Contains(iItem.sValue.ToLower)) Then
+                            Continue For
+                        End If
 
-                    lRecentFiles.Add(iItem.sValue.ToLower)
-                Next
+                        lRecentFiles.Add(iItem.sValue.ToLower)
+                    Next
+                End Using
             End Using
 
             Return lRecentFiles.ToArray

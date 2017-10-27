@@ -45,21 +45,23 @@ Public Class ClassPluginController
                 IO.File.WriteAllText(sConfigFile, "")
             End If
 
-            Using mIni As New ClassIni(sConfigFile, IO.FileMode.OpenOrCreate)
-                For Each mItem In mIni.ReadEverything
-                    If (mItem.sSection <> "Plugins") Then
-                        Continue For
-                    End If
+            Using mStream = ClassFileStreamWait.Create(sConfigFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
+                Using mIni As New ClassIni(mStream)
+                    For Each mItem In mIni.ReadEverything
+                        If (mItem.sSection <> "Plugins") Then
+                            Continue For
+                        End If
 
-                    If (mItem.sValue.ToLower <> sFilename.ToLower) Then
-                        Continue For
-                    End If
+                        If (mItem.sValue.ToLower <> sFilename.ToLower) Then
+                            Continue For
+                        End If
 
-                    Dim sGuid As String = mItem.sKey
+                        Dim sGuid As String = mItem.sKey
 
-                    bEnabled = (mIni.ReadKeyValue("States", sGuid, "1") = "1")
-                    Exit For
-                Next
+                        bEnabled = (mIni.ReadKeyValue("States", sGuid, "1") = "1")
+                        Exit For
+                    Next
+                End Using
             End Using
 
             Return bEnabled
@@ -69,22 +71,24 @@ Public Class ClassPluginController
             Dim sConfigFile As String = IO.Path.Combine(Application.StartupPath, "plugins\PluginConfig.ini")
             Dim sGuid As String = Guid.NewGuid.ToString
 
-            Using mIni As New ClassIni(sConfigFile, IO.FileMode.OpenOrCreate)
-                For Each mItem In mIni.ReadEverything
-                    If (mItem.sSection <> "Plugins") Then
-                        Continue For
-                    End If
+            Using mStream = ClassFileStreamWait.Create(sConfigFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
+                Using mIni As New ClassIni(mStream)
+                    For Each mItem In mIni.ReadEverything
+                        If (mItem.sSection <> "Plugins") Then
+                            Continue For
+                        End If
 
-                    If (mItem.sValue.ToLower <> sFilename.ToLower) Then
-                        Continue For
-                    End If
+                        If (mItem.sValue.ToLower <> sFilename.ToLower) Then
+                            Continue For
+                        End If
 
-                    sGuid = mItem.sKey
-                    Exit For
-                Next
+                        sGuid = mItem.sKey
+                        Exit For
+                    Next
 
-                mIni.WriteKeyValue("States", sGuid, If(value, "1", "0"))
-                mIni.WriteKeyValue("Plugins", sGuid, sFilename)
+                    mIni.WriteKeyValue("States", sGuid, If(value, "1", "0"))
+                    mIni.WriteKeyValue("Plugins", sGuid, sFilename)
+                End Using
             End Using
         End Set
     End Property

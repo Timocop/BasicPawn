@@ -283,14 +283,16 @@ Public Class UCProjectBrowser
 
             IO.File.WriteAllText(g_sProjectFile, "")
 
-            Using mIni As New ClassIni(g_sProjectFile, IO.FileMode.OpenOrCreate)
-                For Each mInfo As STRUC_PROJECT_FILE_INFO In GetFiles()
-                    mIni.WriteKeyValue("Project", mInfo.sGUID, mInfo.sFile)
+            Using mStream = ClassFileStreamWait.Create(g_sProjectFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
+                Using mIni As New ClassIni(mStream)
+                    For Each mInfo As STRUC_PROJECT_FILE_INFO In GetFiles()
+                        mIni.WriteKeyValue("Project", mInfo.sGUID, mInfo.sFile)
 
-                    If (Not String.IsNullOrEmpty(mInfo.sPackedData)) Then
-                        mIni.WriteKeyValue("PackedData", mInfo.sGUID, ClassTools.ClassCrypto.ClassBase.ToBase64(mInfo.sPackedData, System.Text.Encoding.UTF8))
-                    End If
-                Next
+                        If (Not String.IsNullOrEmpty(mInfo.sPackedData)) Then
+                            mIni.WriteKeyValue("PackedData", mInfo.sGUID, ClassTools.ClassCrypto.ClassBase.ToBase64(mInfo.sPackedData, System.Text.Encoding.UTF8))
+                        End If
+                    Next
+                End Using
             End Using
 
             m_ProjectChanged = False
@@ -311,24 +313,26 @@ Public Class UCProjectBrowser
 
             Dim bDidAppend As Boolean = GetFilesCount() > 0
 
-            Using mIni As New ClassIni(g_sProjectFile, IO.FileMode.OpenOrCreate)
-                For Each mItem In mIni.ReadEverything
-                    If (mItem.sSection <> "Project") Then
-                        Continue For
-                    End If
+            Using mStream = ClassFileStreamWait.Create(g_sProjectFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
+                Using mIni As New ClassIni(mStream)
+                    For Each mItem In mIni.ReadEverything
+                        If (mItem.sSection <> "Project") Then
+                            Continue For
+                        End If
 
-                    Dim sPackedData As String = mIni.ReadKeyValue("PackedData", mItem.sKey, Nothing)
-                    If (Not String.IsNullOrEmpty(sPackedData)) Then
-                        sPackedData = ClassTools.ClassCrypto.ClassBase.FromBase64(sPackedData, System.Text.Encoding.UTF8)
-                    End If
+                        Dim sPackedData As String = mIni.ReadKeyValue("PackedData", mItem.sKey, Nothing)
+                        If (Not String.IsNullOrEmpty(sPackedData)) Then
+                            sPackedData = ClassTools.ClassCrypto.ClassBase.FromBase64(sPackedData, System.Text.Encoding.UTF8)
+                        End If
 
-                    AddFile(New STRUC_PROJECT_FILE_INFO With {
-                        .sGUID = mItem.sKey,
-                        .sFile = mItem.sValue,
-                        .sPackedData = sPackedData
-                    })
-                    g_mUCProjectBrowser.g_mFormMain.PrintInformation("[INFO]", vbTab & "Loaded project file: " & mItem.sValue)
-                Next
+                        AddFile(New STRUC_PROJECT_FILE_INFO With {
+                            .sGUID = mItem.sKey,
+                            .sFile = mItem.sValue,
+                            .sPackedData = sPackedData
+                        })
+                        g_mUCProjectBrowser.g_mFormMain.PrintInformation("[INFO]", vbTab & "Loaded project file: " & mItem.sValue)
+                    Next
+                End Using
             End Using
 
             m_ProjectChanged = bDidAppend
