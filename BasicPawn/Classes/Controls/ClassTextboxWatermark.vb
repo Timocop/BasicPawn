@@ -67,6 +67,10 @@ Public Class ClassTextboxWatermark
         Set(value As String)
             MyBase.Text = value
 
+            If (Me.DesignMode) Then
+                Return
+            End If
+
             If (g_sWatermarkText <> value) Then
                 Me.Font = New Font(Me.Font, FontStyle.Regular)
                 g_bIsWatermarkVisible = False
@@ -87,6 +91,10 @@ Public Class ClassTextboxWatermark
     End Sub
 
     Public Sub ShowWatermark()
+        If (Me.DesignMode) Then
+            Return
+        End If
+
         If (g_bIsWatermarkVisible) Then
             Return
         End If
@@ -105,6 +113,10 @@ Public Class ClassTextboxWatermark
     End Sub
 
     Public Sub HideWatermark()
+        If (Me.DesignMode) Then
+            Return
+        End If
+
         If (Not g_bIsWatermarkVisible) Then
             Return
         End If

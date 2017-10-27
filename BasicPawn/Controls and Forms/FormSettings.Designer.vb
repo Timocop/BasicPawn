@@ -1253,25 +1253,21 @@ Partial Class FormSettings
         '
         Me.TextBoxEx_CODefineConstantsSP.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TextBoxEx_CODefineConstantsSP.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Italic)
         Me.TextBoxEx_CODefineConstantsSP.Location = New System.Drawing.Point(198, 115)
         Me.TextBoxEx_CODefineConstantsSP.m_WatermarkText = "sym=val;sym2=val..."
         Me.TextBoxEx_CODefineConstantsSP.Name = "TextBoxEx_CODefineConstantsSP"
-        Me.TextBoxEx_CODefineConstantsSP.Size = New System.Drawing.Size(355, 20)
+        Me.TextBoxEx_CODefineConstantsSP.Size = New System.Drawing.Size(355, 22)
         Me.TextBoxEx_CODefineConstantsSP.TabIndex = 8
-        Me.TextBoxEx_CODefineConstantsSP.Text = "sym=val;sym2=val..."
         '
         'TextBoxEx_COIgnoredWarningsSP
         '
         Me.TextBoxEx_COIgnoredWarningsSP.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TextBoxEx_COIgnoredWarningsSP.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Italic)
         Me.TextBoxEx_COIgnoredWarningsSP.Location = New System.Drawing.Point(198, 87)
         Me.TextBoxEx_COIgnoredWarningsSP.m_WatermarkText = "100;101..."
         Me.TextBoxEx_COIgnoredWarningsSP.Name = "TextBoxEx_COIgnoredWarningsSP"
-        Me.TextBoxEx_COIgnoredWarningsSP.Size = New System.Drawing.Size(355, 20)
+        Me.TextBoxEx_COIgnoredWarningsSP.Size = New System.Drawing.Size(355, 22)
         Me.TextBoxEx_COIgnoredWarningsSP.TabIndex = 7
-        Me.TextBoxEx_COIgnoredWarningsSP.Text = "100;101..."
         '
         'Label24
         '
@@ -1357,7 +1353,7 @@ Partial Class FormSettings
         Me.TabPage2.Location = New System.Drawing.Point(4, 22)
         Me.TabPage2.Name = "TabPage2"
         Me.TabPage2.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage2.Size = New System.Drawing.Size(559, 147)
+        Me.TabPage2.Size = New System.Drawing.Size(559, 145)
         Me.TabPage2.TabIndex = 1
         Me.TabPage2.Text = "AMX Mod X"
         Me.TabPage2.UseVisualStyleBackColor = True
@@ -1395,25 +1391,21 @@ Partial Class FormSettings
         '
         Me.TextBoxEx_CODefineConstantsAMXX.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TextBoxEx_CODefineConstantsAMXX.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Italic)
         Me.TextBoxEx_CODefineConstantsAMXX.Location = New System.Drawing.Point(198, 115)
         Me.TextBoxEx_CODefineConstantsAMXX.m_WatermarkText = "sym=val;sym2=val..."
         Me.TextBoxEx_CODefineConstantsAMXX.Name = "TextBoxEx_CODefineConstantsAMXX"
-        Me.TextBoxEx_CODefineConstantsAMXX.Size = New System.Drawing.Size(355, 20)
+        Me.TextBoxEx_CODefineConstantsAMXX.Size = New System.Drawing.Size(355, 22)
         Me.TextBoxEx_CODefineConstantsAMXX.TabIndex = 18
-        Me.TextBoxEx_CODefineConstantsAMXX.Text = "sym=val;sym2=val..."
         '
         'TextBoxEx_COIgnoredWarningsAMXX
         '
         Me.TextBoxEx_COIgnoredWarningsAMXX.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TextBoxEx_COIgnoredWarningsAMXX.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Italic)
         Me.TextBoxEx_COIgnoredWarningsAMXX.Location = New System.Drawing.Point(198, 87)
         Me.TextBoxEx_COIgnoredWarningsAMXX.m_WatermarkText = "100;101..."
         Me.TextBoxEx_COIgnoredWarningsAMXX.Name = "TextBoxEx_COIgnoredWarningsAMXX"
-        Me.TextBoxEx_COIgnoredWarningsAMXX.Size = New System.Drawing.Size(355, 20)
+        Me.TextBoxEx_COIgnoredWarningsAMXX.Size = New System.Drawing.Size(355, 22)
         Me.TextBoxEx_COIgnoredWarningsAMXX.TabIndex = 17
-        Me.TextBoxEx_COIgnoredWarningsAMXX.Text = "100;101..."
         '
         'Label27
         '
