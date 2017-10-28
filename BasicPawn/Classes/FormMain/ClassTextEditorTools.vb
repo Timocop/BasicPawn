@@ -411,6 +411,7 @@ Public Class ClassTextEditorTools
                 If (String.IsNullOrEmpty(sOutputFile)) Then
                     If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved AndAlso
                                 g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True, True)) Then
+                        g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Could not get current source file!", False, False, True)
                         Return False
                     End If
 
@@ -550,7 +551,6 @@ Public Class ClassTextEditorTools
             End If
 
             g_mFormMain.PrintInformation("[INFO]", "Compiling source finished!", False, False, True)
-
             Return True
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
@@ -839,9 +839,7 @@ Public Class ClassTextEditorTools
                 sNewSource = Regex.Replace(sNewSource, "^\s*#\b(endinput)\b", "", RegexOptions.Multiline)
             End If
 
-
             g_mFormMain.PrintInformation("[INFO]", "Pre-Processing source finished!", False, False, True)
-
             Return sNewSource
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
@@ -1070,8 +1068,8 @@ Public Class ClassTextEditorTools
             If (Not bTesting) Then
                 g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Saved DIASM source: {0}", sOutputFile))
             End If
-            g_mFormMain.PrintInformation("[INFO]", "DIASM source finished!", False, False, True)
 
+            g_mFormMain.PrintInformation("[INFO]", "DIASM source finished!", False, False, True)
             Return sAssemblySource
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
