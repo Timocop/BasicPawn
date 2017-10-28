@@ -252,9 +252,6 @@ Public Class FormMain
 #End Region
 
     Private Sub FormMain_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        'Load last window info
-        ClassSettings.LoadWindowInfo(Me)
-
         'Display Mono/Wine version
         Dim sWineVersion As String = ClassTools.ClassOperatingSystem.GetWineVersion()
         Dim bMonoRuntime As Boolean = ClassTools.ClassOperatingSystem.IsMonoRuntime()
@@ -366,6 +363,9 @@ Public Class FormMain
             .IsBackground = True
         }
         mCheckUpdasteThread.Start()
+
+        'Load last window info
+        ClassSettings.LoadWindowInfo(Me)
 
         g_bFormPostLoad = True
     End Sub

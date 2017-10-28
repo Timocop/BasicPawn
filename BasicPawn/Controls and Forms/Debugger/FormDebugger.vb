@@ -67,9 +67,6 @@ Public Class FormDebugger
     End Sub
 
     Private Sub FormDebugger_Load(sender As Object, e As EventArgs) Handles Me.Load
-        'Load window info
-        ClassSettings.LoadWindowInfo(Me)
-
         If (Not RefreshSource()) Then
             MessageBox.Show("Could not open debugger. See information tab for more information.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Me.Dispose()
@@ -77,6 +74,9 @@ Public Class FormDebugger
         End If
 
         g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnDebuggerStart(Me))
+
+        'Load window info
+        ClassSettings.LoadWindowInfo(Me)
     End Sub
 
     Private Function RefreshSource() As Boolean
@@ -113,7 +113,7 @@ Public Class FormDebugger
                                                                                                         Nothing,
                                                                                                         iCompilerType)
                 If (String.IsNullOrEmpty(sPreSource)) Then
-                    Return False
+                    Throw New ArgumentException("Invalid source")
                 End If
 
 
@@ -178,7 +178,7 @@ Public Class FormDebugger
                                                                                                       Nothing,
                                                                                                       iCompilerType)
                 If (String.IsNullOrEmpty(sAsmSource)) Then
-                    Return False
+                    Throw New ArgumentException("Invalid source")
                 End If
 
                 If (iCompilerType <> ClassTextEditorTools.ENUM_COMPILER_TYPE.SOURCEPAWN) Then
