@@ -19,7 +19,7 @@ Public Class UCProjectBrowser
     Public g_mFormMain As FormMain
     Public g_ClassProjectControl As ClassProjectControl
 
-    Private g_mClipboardFiles As New List(Of ClassProjectControl.STRUC_PROJECT_FILE_INFO)
+    Private g_lClipboardFiles As New List(Of ClassProjectControl.STRUC_PROJECT_FILE_INFO)
 
     Public Sub New(f As FormMain)
         g_mFormMain = f
@@ -202,7 +202,7 @@ Public Class UCProjectBrowser
         End Function
 
         Public Function GetFiles() As STRUC_PROJECT_FILE_INFO()
-            Dim mFileList As New List(Of STRUC_PROJECT_FILE_INFO)
+            Dim lFileList As New List(Of STRUC_PROJECT_FILE_INFO)
 
             For Each mListViewItem As ListViewItem In g_mUCProjectBrowser.ListView_ProjectFiles.Items
                 If (TypeOf mListViewItem IsNot ClassListViewItemData) Then
@@ -212,10 +212,10 @@ Public Class UCProjectBrowser
                 Dim mListViewItemData = DirectCast(mListViewItem, ClassListViewItemData)
                 Dim mInfo = DirectCast(mListViewItemData.g_mData("Info"), STRUC_PROJECT_FILE_INFO)
 
-                mFileList.Add(mInfo)
+                lFileList.Add(mInfo)
             Next
 
-            Return mFileList.ToArray
+            Return lFileList.ToArray
         End Function
 
         Public Function IsFileInProject(sFile As String) As Boolean
@@ -420,7 +420,7 @@ Public Class UCProjectBrowser
                 Return
             End If
 
-            g_mClipboardFiles.Clear()
+            g_lClipboardFiles.Clear()
 
             For i = ListView_ProjectFiles.SelectedItems.Count - 1 To 0 Step -1
                 If (TypeOf ListView_ProjectFiles.SelectedItems(i) IsNot ClassListViewItemData) Then
@@ -433,12 +433,12 @@ Public Class UCProjectBrowser
 
                 mInfo.sGUID = Nothing
 
-                g_mClipboardFiles.Add(mInfo)
+                g_lClipboardFiles.Add(mInfo)
 
                 g_ClassProjectControl.RemoveFileAt(iIndex)
             Next
 
-            g_mClipboardFiles.Reverse()
+            g_lClipboardFiles.Reverse()
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
@@ -450,7 +450,7 @@ Public Class UCProjectBrowser
                 Return
             End If
 
-            g_mClipboardFiles.Clear()
+            g_lClipboardFiles.Clear()
 
             For i = ListView_ProjectFiles.SelectedItems.Count - 1 To 0 Step -1
                 If (TypeOf ListView_ProjectFiles.SelectedItems(i) IsNot ClassListViewItemData) Then
@@ -462,10 +462,10 @@ Public Class UCProjectBrowser
 
                 mInfo.sGUID = Nothing
 
-                g_mClipboardFiles.Add(mInfo)
+                g_lClipboardFiles.Add(mInfo)
             Next
 
-            g_mClipboardFiles.Reverse()
+            g_lClipboardFiles.Reverse()
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
@@ -476,16 +476,16 @@ Public Class UCProjectBrowser
             If (ListView_ProjectFiles.SelectedItems.Count > 0) Then
                 Dim iIndex As Integer = ListView_ProjectFiles.SelectedItems(0).Index
 
-                For i = g_mClipboardFiles.Count - 1 To 0 Step -1
-                    g_ClassProjectControl.InsertFile(iIndex, g_mClipboardFiles(i))
+                For i = g_lClipboardFiles.Count - 1 To 0 Step -1
+                    g_ClassProjectControl.InsertFile(iIndex, g_lClipboardFiles(i))
                 Next
             Else
-                For i = 0 To g_mClipboardFiles.Count - 1
-                    g_ClassProjectControl.AddFile(g_mClipboardFiles(i))
+                For i = 0 To g_lClipboardFiles.Count - 1
+                    g_ClassProjectControl.AddFile(g_lClipboardFiles(i))
                 Next
             End If
 
-            g_mClipboardFiles.Clear()
+            g_lClipboardFiles.Clear()
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
@@ -641,6 +641,7 @@ Public Class UCProjectBrowser
 
         ToolStripMenuItem_CompileAll.Enabled = (ListView_ProjectFiles.SelectedItems.Count > 0)
         ToolStripMenuItem_TestAll.Enabled = (ListView_ProjectFiles.SelectedItems.Count > 0)
+        ToolStripMenuItem_ShellAll.Enabled = (ListView_ProjectFiles.SelectedItems.Count > 0)
 
         ToolStripMenuItem_PackFile.Enabled = (ListView_ProjectFiles.SelectedItems.Count > 0)
         ToolStripMenuItem_ExtractFile.Enabled = bPackedSelected
@@ -648,7 +649,7 @@ Public Class UCProjectBrowser
 
         ToolStripMenuItem_Cut.Enabled = (ListView_ProjectFiles.SelectedItems.Count > 0)
         ToolStripMenuItem_Copy.Enabled = (ListView_ProjectFiles.SelectedItems.Count > 0)
-        ToolStripMenuItem_Paste.Enabled = (g_mClipboardFiles.Count > 0)
+        ToolStripMenuItem_Paste.Enabled = (g_lClipboardFiles.Count > 0)
 
         ToolStripMenuItem_AddTab.Enabled = (Not g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved)
 
