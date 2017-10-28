@@ -50,7 +50,7 @@ Public Class ClassSettings
     Public Shared g_iSettingsToolTipAutocompleteComments As Boolean = True
     Public Shared g_iSettingsUseWindowsToolTip As Boolean = False
     Public Shared g_iSettingsUseWindowsToolTipAnimations As Boolean = True
-    Public Shared g_iSettingsUseWindowsToolTipNewlineMethods As Boolean = False
+    Public Shared g_iSettingsUseWindowsToolTipNewlineMethods As Boolean = True
     Public Shared g_iSettingsFullMethodAutocomplete As Boolean = False
     Public Shared g_iSettingsFullEnumAutocomplete As Boolean = False
     Public Shared g_iSettingsAutocompleteCaseSensitive As Boolean = True
@@ -143,7 +143,7 @@ Public Class ClassSettings
                     g_iSettingsToolTipAutocompleteComments = (mIni.ReadKeyValue("Editor", "ToolTipAutocompleteComments", "1") <> "0")
                     g_iSettingsUseWindowsToolTip = (mIni.ReadKeyValue("Editor", "UseWindowsToolTip", "0") <> "0")
                     g_iSettingsUseWindowsToolTipAnimations = (mIni.ReadKeyValue("Editor", "UseWindowsToolTipAnimations", "1") <> "0")
-                    g_iSettingsUseWindowsToolTipNewlineMethods = (mIni.ReadKeyValue("Editor", "UseWindowsToolTipNewlineMethods", "0") <> "0")
+                    g_iSettingsUseWindowsToolTipNewlineMethods = (mIni.ReadKeyValue("Editor", "UseWindowsToolTipNewlineMethods", "1") <> "0")
                     g_iSettingsFullMethodAutocomplete = (mIni.ReadKeyValue("Editor", "FullMethodAutocomplete", "0") <> "0")
                     g_iSettingsFullEnumAutocomplete = (mIni.ReadKeyValue("Editor", "FullEnumAutocomplete", "0") <> "0")
                     g_iSettingsAutocompleteCaseSensitive = (mIni.ReadKeyValue("Editor", "AutocompleteCaseSensitive", "1") <> "0")
