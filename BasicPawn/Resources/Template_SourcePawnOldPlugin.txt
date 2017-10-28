@@ -54,7 +54,7 @@ $InfoUrl,Plugin url									=
 ?ForceSemicolon,Force Semicolon						=
 ?DebugDefine,DEBUG define							=%n%#define DEBUG%n%
 ?DebugDefine,DEBUG define							=
-?DebugEcho,ECHO define								=%n%#if 1%n%%t%#define ECHO(%0) PrintToServer(%0);%n%#else%n%%t%#define ECHO(%0)%n%#endif%n%
+?DebugEcho,ECHO define								=%n%#define ECHO_TYPE 0%t%%t%/* 0: Disabled; 1: Print to console; 2: Print to console and logs */%n%%n%#if ECHO_TYPE == 1%n%%t%#define ECHO(%0) { PrintToServer(%0); }%n%#elseif ECHO_TYPE == 2%n%%t%#define ECHO(%0) { PrintToServer(%0); LogMessage("ECHO: %s", %0); }%n%#else%n%%t%#define ECHO(%0) {}%n%#endif%n%
 ?DebugEcho,ECHO define								=
 ?DebugEcho,ECHO define								=0
 ?LateloadCheck,Late-load check						=

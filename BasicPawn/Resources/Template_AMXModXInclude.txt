@@ -34,7 +34,7 @@
 [Properties]
 $IncludeDescription,Description						=My include
 $IncludeName,Include name							=my_include
-$RegisterLibraryName,Register library name					=my_library
+$RegisterLibraryName,Register library name			=my_library
 ?RegisterLibrary,Register library					=
 ?RegisterLibrary,Register library					=%0%
 ?RegisterLibrary,Register library					=0
