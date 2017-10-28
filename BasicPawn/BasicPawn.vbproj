@@ -254,34 +254,34 @@
     <Compile Include="Controls and Forms\DatabaseViewer\FormDatabaseInput.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Controls and Forms\FormDebuggerBreakpointSetValue.Designer.vb">
+    <Compile Include="Controls and Forms\Debugger\FormDebuggerBreakpointSetValue.Designer.vb">
       <DependentUpon>FormDebuggerBreakpointSetValue.vb</DependentUpon>
     </Compile>
-    <Compile Include="Controls and Forms\FormDebuggerBreakpointSetValue.vb">
+    <Compile Include="Controls and Forms\Debugger\FormDebuggerBreakpointSetValue.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Controls and Forms\FormDebugger.Designer.vb">
+    <Compile Include="Controls and Forms\Debugger\FormDebugger.Designer.vb">
       <DependentUpon>FormDebugger.vb</DependentUpon>
     </Compile>
-    <Compile Include="Controls and Forms\FormDebugger.vb">
+    <Compile Include="Controls and Forms\Debugger\FormDebugger.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Controls and Forms\FormDebuggerCriticalPopup.Designer.vb">
+    <Compile Include="Controls and Forms\Debugger\FormDebuggerCriticalPopup.Designer.vb">
       <DependentUpon>FormDebuggerCriticalPopup.vb</DependentUpon>
     </Compile>
-    <Compile Include="Controls and Forms\FormDebuggerCriticalPopup.vb">
+    <Compile Include="Controls and Forms\Debugger\FormDebuggerCriticalPopup.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Controls and Forms\FormDebuggerException.Designer.vb">
+    <Compile Include="Controls and Forms\Debugger\FormDebuggerException.Designer.vb">
       <DependentUpon>FormDebuggerException.vb</DependentUpon>
     </Compile>
-    <Compile Include="Controls and Forms\FormDebuggerException.vb">
+    <Compile Include="Controls and Forms\Debugger\FormDebuggerException.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Controls and Forms\FormDebuggerStop.Designer.vb">
+    <Compile Include="Controls and Forms\Debugger\FormDebuggerStop.Designer.vb">
       <DependentUpon>FormDebuggerStop.vb</DependentUpon>
     </Compile>
-    <Compile Include="Controls and Forms\FormDebuggerStop.vb">
+    <Compile Include="Controls and Forms\Debugger\FormDebuggerStop.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Controls and Forms\FormMultiCompiler.Designer.vb">
@@ -406,19 +406,19 @@
     <EmbeddedResource Include="Controls and Forms\DatabaseViewer\FormDatabaseInput.resx">
       <DependentUpon>FormDatabaseInput.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls and Forms\FormDebuggerBreakpointSetValue.resx">
+    <EmbeddedResource Include="Controls and Forms\Debugger\FormDebuggerBreakpointSetValue.resx">
       <DependentUpon>FormDebuggerBreakpointSetValue.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls and Forms\FormDebugger.resx">
+    <EmbeddedResource Include="Controls and Forms\Debugger\FormDebugger.resx">
       <DependentUpon>FormDebugger.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls and Forms\FormDebuggerCriticalPopup.resx">
+    <EmbeddedResource Include="Controls and Forms\Debugger\FormDebuggerCriticalPopup.resx">
       <DependentUpon>FormDebuggerCriticalPopup.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls and Forms\FormDebuggerException.resx">
+    <EmbeddedResource Include="Controls and Forms\Debugger\FormDebuggerException.resx">
       <DependentUpon>FormDebuggerException.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls and Forms\FormDebuggerStop.resx">
+    <EmbeddedResource Include="Controls and Forms\Debugger\FormDebuggerStop.resx">
       <DependentUpon>FormDebuggerStop.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls and Forms\FormMultiCompiler.resx">
