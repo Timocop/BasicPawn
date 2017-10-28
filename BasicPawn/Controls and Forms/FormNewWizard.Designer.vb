@@ -30,7 +30,7 @@ Partial Class FormNewWizard
         Me.ToolStripMenuItem_OpenDir = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_DelTemplate = New System.Windows.Forms.ToolStripMenuItem()
-        Me.RichTextBox_Preview = New System.Windows.Forms.RichTextBox()
+        Me.RichTextBox_Preview = New BasicPawn.ClassRichTextBoxFix()
         Me.Button_Apply = New System.Windows.Forms.Button()
         Me.ListView_Properties = New System.Windows.Forms.ListView()
         Me.ColumnHeader1 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
@@ -242,7 +242,7 @@ Partial Class FormNewWizard
     End Sub
 
     Friend WithEvents TreeView_Explorer As TreeView
-    Friend WithEvents RichTextBox_Preview As RichTextBox
+    Friend WithEvents RichTextBox_Preview As ClassRichTextBoxFix
     Friend WithEvents Button_Apply As Button
     Friend WithEvents ListView_Properties As ListView
     Friend WithEvents Label1 As Label
