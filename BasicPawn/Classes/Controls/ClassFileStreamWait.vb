@@ -51,5 +51,8 @@ Public Class ClassFileStreamWait
                 End If
             End If
         End While
+
+        'Should never reach
+        Throw New ArgumentException("Unable to create IO.FileStream")
     End Function
 End Class
