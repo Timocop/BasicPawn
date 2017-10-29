@@ -1299,7 +1299,7 @@ Public Class FormMain
                 mIni.WriteKeyValue(Me.Name, "ViewToolbox", If(ToolStripMenuItem_ViewToolbox.Checked, "1", "0"))
                 mIni.WriteKeyValue(Me.Name, "ViewDetails", If(ToolStripMenuItem_ViewDetails.Checked, "1", "0"))
                 mIni.WriteKeyValue(Me.Name, "ToolboxSize", CStr(SplitContainer_ToolboxAndEditor.SplitterDistance))
-                mIni.WriteKeyValue(Me.Name, "DetailsSize", CStr(SplitContainer_ToolboxSourceAndDetails.SplitterDistance))
+                mIni.WriteKeyValue(Me.Name, "DetailsSize", CStr(SplitContainer_ToolboxSourceAndDetails.Height - SplitContainer_ToolboxSourceAndDetails.SplitterDistance))
             End Using
         End Using
     End Sub
@@ -1326,7 +1326,7 @@ Public Class FormMain
 
                 tmpStr = mIni.ReadKeyValue(Me.Name, "DetailsSize", Nothing)
                 If (tmpStr IsNot Nothing AndAlso Integer.TryParse(tmpStr, tmpInt) AndAlso tmpInt > -1) Then
-                    SplitContainer_ToolboxSourceAndDetails.SplitterDistance = tmpInt
+                    SplitContainer_ToolboxSourceAndDetails.SplitterDistance = (SplitContainer_ToolboxSourceAndDetails.Height - tmpInt)
                 End If
             End Using
         End Using
