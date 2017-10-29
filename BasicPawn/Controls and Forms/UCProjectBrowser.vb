@@ -843,25 +843,28 @@ Public Class UCProjectBrowser
                 End If
 
                 Dim sNewPath As String = Nothing
-
                 If (Not g_ClassProjectControl.ExtractFileDataDialog(mInfo, sNewPath)) Then
                     Return
                 End If
 
-                With New Text.StringBuilder
-                    .AppendLine("Do you want to replace the path in the project file to the extracted path?")
-                    .AppendLine()
-                    .AppendLine(String.Format("'{0}' to '{1}'", mInfo.sFile, sNewPath))
+                If (mInfo.sFile.ToLower <> sNewPath.ToLower) Then
+                    With New Text.StringBuilder
+                        .AppendLine("Do you want to replace the path in the project file to the extracted path?")
+                        .AppendLine()
+                        .AppendLine(String.Format("'{0}'", mInfo.sFile))
+                        .AppendLine("to")
+                        .AppendLine(String.Format("'{0}'", sNewPath))
 
-                    Select Case (MessageBox.Show(.ToString, "Replace path", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
-                        Case DialogResult.Yes
-                            mInfo.sFile = sNewPath
+                        Select Case (MessageBox.Show(.ToString, "Replace path", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+                            Case DialogResult.Yes
+                                mInfo.sFile = sNewPath
 
-                            mListViewItemData.g_mData("Info") = mInfo
+                                mListViewItemData.g_mData("Info") = mInfo
 
-                            g_ClassProjectControl.m_ProjectChanged = True
-                    End Select
-                End With
+                                g_ClassProjectControl.m_ProjectChanged = True
+                        End Select
+                    End With
+                End If
             Next
 
             g_ClassProjectControl.UpdateListViewInfo()
