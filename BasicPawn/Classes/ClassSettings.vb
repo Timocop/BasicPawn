@@ -24,12 +24,12 @@ Public Class ClassSettings
     End Enum
 
     Public Shared g_iSettingsAutocompleteSyntax As ENUM_AUTOCOMPLETE_SYNTAX = ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX
-    Public Shared g_iSettingsDefaultEditorFont As Font = New Font("Consolas", 9, FontStyle.Regular)
-    Public Shared g_sSettingsDefaultEditorFont As String = New FontConverter().ConvertToInvariantString(g_iSettingsDefaultEditorFont)
+    Public Shared ReadOnly g_iSettingsDefaultEditorFont As Font = New Font("Consolas", 9, FontStyle.Regular)
+    Public Shared ReadOnly g_sSettingsDefaultEditorFont As String = New FontConverter().ConvertToInvariantString(g_iSettingsDefaultEditorFont)
 
     'Settings
-    Public Shared g_sSettingsFile As String = IO.Path.Combine(Application.StartupPath, "settings.ini")
-    Public Shared g_sWindowInfoFile As String = IO.Path.Combine(Application.StartupPath, "windowinfo.ini")
+    Public Shared ReadOnly g_sSettingsFile As String = IO.Path.Combine(Application.StartupPath, "settings.ini")
+    Public Shared ReadOnly g_sWindowInfoFile As String = IO.Path.Combine(Application.StartupPath, "windowinfo.ini")
     'General
     Public Shared g_iSettingsAlwaysOpenNewInstance As Boolean = False
     Public Shared g_iSettingsAutoShowStartPage As Boolean = True

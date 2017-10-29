@@ -78,6 +78,9 @@ Partial Class FormMain
         Me.ToolStripMenuItem_FileOpenFolder = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_FileExit = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_View = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_ViewToolbox = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_ViewDetails = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Tools = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_ToolsSettingsAndConfigs = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
@@ -342,7 +345,7 @@ Partial Class FormMain
         '
         'MenuStrip_BasicPawn
         '
-        Me.MenuStrip_BasicPawn.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_File, Me.ToolStripMenuItem_Tools, Me.ToolStripMenuItem_Undo, Me.ToolStripMenuItem_Redo, Me.ToolStripMenuItem_Build, Me.ToolStripMenuItem_Test, Me.ToolStripMenuItem_Debug, Me.ToolStripMenuItem_Shell, Me.ToolStripMenuItem_Help, Me.ToolStripMenuItem_NewUpdate, Me.ToolStripMenuItem_TabClose, Me.ToolStripMenuItem_TabMoveRight, Me.ToolStripMenuItem_TabMoveLeft, Me.ToolStripMenuItem_TabOpenInstance})
+        Me.MenuStrip_BasicPawn.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_File, Me.ToolStripMenuItem_View, Me.ToolStripMenuItem_Tools, Me.ToolStripMenuItem_Undo, Me.ToolStripMenuItem_Redo, Me.ToolStripMenuItem_Build, Me.ToolStripMenuItem_Test, Me.ToolStripMenuItem_Debug, Me.ToolStripMenuItem_Shell, Me.ToolStripMenuItem_Help, Me.ToolStripMenuItem_NewUpdate, Me.ToolStripMenuItem_TabClose, Me.ToolStripMenuItem_TabMoveRight, Me.ToolStripMenuItem_TabMoveLeft, Me.ToolStripMenuItem_TabOpenInstance})
         Me.MenuStrip_BasicPawn.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip_BasicPawn.Name = "MenuStrip_BasicPawn"
         Me.MenuStrip_BasicPawn.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
@@ -516,6 +519,28 @@ Partial Class FormMain
         Me.ToolStripMenuItem_FileExit.Size = New System.Drawing.Size(290, 22)
         Me.ToolStripMenuItem_FileExit.Text = "Exit"
         Me.ToolStripMenuItem_FileExit.ToolTipText = "Quits BasicPawn"
+        '
+        'ToolStripMenuItem_View
+        '
+        Me.ToolStripMenuItem_View.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_ViewToolbox, Me.ToolStripMenuItem_ViewDetails})
+        Me.ToolStripMenuItem_View.Image = Global.BasicPawn.My.Resources.Resources.imageres_5321_16x16
+        Me.ToolStripMenuItem_View.Name = "ToolStripMenuItem_View"
+        Me.ToolStripMenuItem_View.Size = New System.Drawing.Size(60, 20)
+        Me.ToolStripMenuItem_View.Text = "&View"
+        '
+        'ToolStripMenuItem_ViewToolbox
+        '
+        Me.ToolStripMenuItem_ViewToolbox.CheckOnClick = True
+        Me.ToolStripMenuItem_ViewToolbox.Name = "ToolStripMenuItem_ViewToolbox"
+        Me.ToolStripMenuItem_ViewToolbox.Size = New System.Drawing.Size(116, 22)
+        Me.ToolStripMenuItem_ViewToolbox.Text = "Toolbox"
+        '
+        'ToolStripMenuItem_ViewDetails
+        '
+        Me.ToolStripMenuItem_ViewDetails.CheckOnClick = True
+        Me.ToolStripMenuItem_ViewDetails.Name = "ToolStripMenuItem_ViewDetails"
+        Me.ToolStripMenuItem_ViewDetails.Size = New System.Drawing.Size(116, 22)
+        Me.ToolStripMenuItem_ViewDetails.Text = "Details"
         '
         'ToolStripMenuItem_Tools
         '
@@ -1260,4 +1285,7 @@ Partial Class FormMain
     Friend WithEvents ToolStripMenuItem_Tabs_Cut As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_Tabs_Insert As ToolStripMenuItem
     Friend WithEvents Timer_CheckFiles As Timer
+    Friend WithEvents ToolStripMenuItem_View As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_ViewToolbox As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_ViewDetails As ToolStripMenuItem
 End Class

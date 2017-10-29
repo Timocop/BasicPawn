@@ -57,6 +57,7 @@ Public Class FormMain
     Private g_bFormPostCreate As Boolean = False
     Private g_bFormPostLoad As Boolean = False
     Private g_bIgnoreComboBoxEvent As Boolean = False
+    Private g_bIgnoreCheckedChangedEvent As Boolean = False
     Private g_sTabsClipboardIdentifier As String = ""
     Private g_mTabControlDragTab As ClassTabControl.SourceTabPage = Nothing
     Private g_mTabControlDragPoint As Point = Point.Empty
@@ -366,27 +367,45 @@ Public Class FormMain
 
         'Load last window info
         ClassSettings.LoadWindowInfo(Me)
+        LoadViews()
 
         g_bFormPostLoad = True
     End Sub
 
-    Private Sub FormMain_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
+    Private Sub FormMain_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
         g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM)
                                                    If (Not j.mPluginInterface.OnPluginEnd()) Then
                                                        e.Cancel = True
                                                    End If
                                                End Sub)
 
+        'Save tabs
         For i = 0 To g_ClassTabControl.m_TabsCount - 1
             If (g_ClassTabControl.PromptSaveTab(i)) Then
                 e.Cancel = True
             End If
         Next
 
+        'Save projects
         If (g_mUCProjectBrowser.g_ClassProjectControl.PrompSaveProject()) Then
             e.Cancel = True
         End If
+
+        'Close debugger 
+        If (g_mFormDebugger IsNot Nothing AndAlso Not g_mFormDebugger.IsDisposed) Then
+            g_mFormDebugger.Close()
+        End If
+
+        If (g_mFormDebugger IsNot Nothing AndAlso Not g_mFormDebugger.IsDisposed) Then
+            MessageBox.Show("You can not close BasicPawn while debugging!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            e.Cancel = True
+        End If
+
+        'Save window info
+        ClassSettings.SaveWindowInfo(Me)
+        SaveViews()
     End Sub
+
 
 #Region "ContextMenuStrip_RightClick"
     Private Sub ToolStripMenuItem_Mark_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Mark.Click
@@ -625,6 +644,26 @@ Public Class FormMain
 
     Private Sub ToolStripMenuItem_FileExit_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileExit.Click
         Me.Close()
+    End Sub
+#End Region
+
+#Region "MenuStrip_View"
+    Private Sub ToolStripMenuItem_ViewToolbox_CheckedChanged(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ViewToolbox.CheckedChanged
+        If (g_bIgnoreCheckedChangedEvent) Then
+            Return
+        End If
+
+        UpdateViews()
+        SaveViews()
+    End Sub
+
+    Private Sub ToolStripMenuItem_ViewDetails_CheckedChanged(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ViewDetails.CheckedChanged
+        If (g_bIgnoreCheckedChangedEvent) Then
+            Return
+        End If
+
+        UpdateViews()
+        SaveViews()
     End Sub
 #End Region
 
@@ -1107,22 +1146,6 @@ Public Class FormMain
         End With
     End Sub
 
-
-    Private Sub FormMain_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
-        'Save window info
-        ClassSettings.SaveWindowInfo(Me)
-
-        'Close debugger 
-        If (g_mFormDebugger IsNot Nothing AndAlso Not g_mFormDebugger.IsDisposed) Then
-                g_mFormDebugger.Close()
-            End If
-
-        If (g_mFormDebugger IsNot Nothing AndAlso Not g_mFormDebugger.IsDisposed) Then
-            MessageBox.Show("You can not close BasicPawn while debugging!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            e.Cancel = True
-        End If
-    End Sub
-
     Private Sub ToolStripMenuItem_TabClose_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_TabClose.Click
         g_ClassTabControl.m_ActiveTab.RemoveTab(True)
     End Sub
@@ -1264,6 +1287,56 @@ Public Class FormMain
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
+    End Sub
+
+    Public Sub SaveViews()
+        If (String.IsNullOrEmpty(Me.Name)) Then
+            Return
+        End If
+
+        Using mStream = ClassFileStreamWait.Create(ClassSettings.g_sWindowInfoFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
+            Using mIni As New ClassIni(mStream)
+                mIni.WriteKeyValue(Me.Name, "ViewToolbox", If(ToolStripMenuItem_ViewToolbox.Checked, "1", "0"))
+                mIni.WriteKeyValue(Me.Name, "ViewDetails", If(ToolStripMenuItem_ViewDetails.Checked, "1", "0"))
+                mIni.WriteKeyValue(Me.Name, "ToolboxSize", CStr(SplitContainer_ToolboxAndEditor.SplitterDistance))
+                mIni.WriteKeyValue(Me.Name, "DetailsSize", CStr(SplitContainer_ToolboxSourceAndDetails.SplitterDistance))
+            End Using
+        End Using
+    End Sub
+
+    Public Sub LoadViews()
+        If (String.IsNullOrEmpty(Me.Name)) Then
+            Return
+        End If
+
+        Dim tmpStr As String
+        Dim tmpInt As Integer
+
+        Using mStream = ClassFileStreamWait.Create(ClassSettings.g_sWindowInfoFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
+            Using mIni As New ClassIni(mStream)
+                g_bIgnoreCheckedChangedEvent = True
+                ToolStripMenuItem_ViewToolbox.Checked = (mIni.ReadKeyValue(Me.Name, "ViewToolbox", "1") <> "0")
+                ToolStripMenuItem_ViewDetails.Checked = (mIni.ReadKeyValue(Me.Name, "ViewDetails", "1") <> "0")
+                g_bIgnoreCheckedChangedEvent = False
+
+                tmpStr = mIni.ReadKeyValue(Me.Name, "ToolboxSize", Nothing)
+                If (tmpStr IsNot Nothing AndAlso Integer.TryParse(tmpStr, tmpInt) AndAlso tmpInt > -1) Then
+                    SplitContainer_ToolboxAndEditor.SplitterDistance = tmpInt
+                End If
+
+                tmpStr = mIni.ReadKeyValue(Me.Name, "DetailsSize", Nothing)
+                If (tmpStr IsNot Nothing AndAlso Integer.TryParse(tmpStr, tmpInt) AndAlso tmpInt > -1) Then
+                    SplitContainer_ToolboxSourceAndDetails.SplitterDistance = tmpInt
+                End If
+            End Using
+        End Using
+
+        UpdateViews()
+    End Sub
+
+    Public Sub UpdateViews()
+        SplitContainer_ToolboxAndEditor.Panel1Collapsed = (Not ToolStripMenuItem_ViewToolbox.Checked)
+        SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed = (Not ToolStripMenuItem_ViewDetails.Checked)
     End Sub
 
     Public Sub ShowPingFlash()

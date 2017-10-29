@@ -560,6 +560,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="BasicPawnIcon.ico" />
+    <None Include="Resources\imageres_5321_16x16-32.png" />
     <None Include="Resources\Template_AMXModXInclude.txt" />
     <None Include="Resources\Template_AMXModXLibraryInclude.txt" />
     <None Include="Resources\Template_AMXModXModuleInclude.txt" />
