@@ -1325,7 +1325,7 @@ Public Class FormMain
                 End If
 
                 tmpStr = mIni.ReadKeyValue(Me.Name, "DetailsSize", Nothing)
-                If (tmpStr IsNot Nothing AndAlso Integer.TryParse(tmpStr, tmpInt) AndAlso tmpInt > -1) Then
+                If (tmpStr IsNot Nothing AndAlso Integer.TryParse(tmpStr, tmpInt) AndAlso (SplitContainer_ToolboxSourceAndDetails.Height - tmpInt) > -1) Then
                     SplitContainer_ToolboxSourceAndDetails.SplitterDistance = (SplitContainer_ToolboxSourceAndDetails.Height - tmpInt)
                 End If
             End Using
