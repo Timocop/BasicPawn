@@ -281,8 +281,6 @@ Public Class FormSearch
                     Continue For
                 End If
 
-                SetTextEditorSelection(mTab, mItem.iLocation, mItem.iLenght, False)
-
                 If (mItem.iLocation + mItem.iLenght > mTab.m_TextEditor.Document.TextLength) Then
                     Continue For
                 End If
@@ -342,8 +340,6 @@ Public Class FormSearch
                 If (mTab Is Nothing) Then
                     Continue For
                 End If
-
-                SetTextEditorSelection(mTab, mItem.iLocation, mItem.iLenght, False)
 
                 If (mItem.iLocation + mItem.iLenght > mTab.m_TextEditor.Document.TextLength) Then
                     Continue For
