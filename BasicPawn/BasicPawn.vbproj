@@ -222,6 +222,12 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Classes\ClassSyncList.vb" />
+    <Compile Include="Classes\Controls\ClassTextMinimap.Designer.vb">
+      <DependentUpon>ClassTextMinimap.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Classes\Controls\ClassTextMinimap.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Classes\Controls\ClassWebClientEx.vb">
       <SubType>Component</SubType>
     </Compile>
@@ -397,6 +403,9 @@
     <Compile Include="Classes\ClassTools.vb" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Classes\Controls\ClassTextMinimap.resx">
+      <DependentUpon>ClassTextMinimap.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls and Forms\DatabaseViewer\ClassDatabaseViewer.resx">
       <DependentUpon>ClassDatabaseViewer.vb</DependentUpon>
     </EmbeddedResource>

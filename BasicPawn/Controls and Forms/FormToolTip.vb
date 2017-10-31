@@ -65,7 +65,6 @@ Public Class FormToolTip
                 .m_Opacity = 0,
                 .m_TransparentBackColor = Color.White
             }
-            Me.Controls.Add(mAlphaPanel)
             mAlphaPanel.BringToFront()
         End If
 

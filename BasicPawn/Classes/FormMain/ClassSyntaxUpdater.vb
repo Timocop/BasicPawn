@@ -49,13 +49,15 @@ Public Class ClassSyntaxUpdater
     ''' The main thread to update all kinds of stuff.
     ''' </summary>
     Private Sub SourceSyntaxUpdater_Thread()
-        Static dFullAutocompleteUpdateDelay As New TimeSpan(0, 0, 1, 0, 0)
-        Static dVarAutocompleteUpdateDelay As New TimeSpan(0, 0, 0, 10, 0)
-        Static dLastFoldingUpdateDelay As New TimeSpan(0, 0, 5)
+        Static mFullAutocompleteUpdateDelay As New TimeSpan(0, 0, 1, 0, 0)
+        Static mVarAutocompleteUpdateDelay As New TimeSpan(0, 0, 0, 10, 0)
+        Static mFoldingUpdateDelay As New TimeSpan(0, 0, 5)
+        Static mTextMinimapDelay As New TimeSpan(0, 0, 1)
 
-        Dim dLastFullAutocompleteUpdate As Date = (Now + dFullAutocompleteUpdateDelay)
-        Dim dLastVarAutocompleteUpdate As Date = (Now + dVarAutocompleteUpdateDelay)
-        Dim dLastFoldingUpdate As Date = (Now + dLastFoldingUpdateDelay)
+        Dim dLastFullAutocompleteUpdate As Date = (Now + mFullAutocompleteUpdateDelay)
+        Dim dLastVarAutocompleteUpdate As Date = (Now + mVarAutocompleteUpdateDelay)
+        Dim dLastFoldingUpdate As Date = (Now + mFoldingUpdateDelay)
+        Dim dLastTextMinimapDelay As Date = (Now + mTextMinimapDelay)
 
         While True
             Threading.Thread.Sleep(500)
@@ -76,7 +78,7 @@ Public Class ClassSyntaxUpdater
                                                        End Sub)
 
                 ElseIf (dLastFullAutocompleteUpdate < Now) Then
-                    dLastFullAutocompleteUpdate = (Now + dFullAutocompleteUpdateDelay)
+                    dLastFullAutocompleteUpdate = (Now + mFullAutocompleteUpdateDelay)
 
                     ClassThread.ExecAsync(g_mFormMain, Sub()
                                                            g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, Nothing)
@@ -85,7 +87,7 @@ Public Class ClassSyntaxUpdater
 
                 'Update Variable Autocomplete
                 If (dLastVarAutocompleteUpdate < Now) Then
-                    dLastVarAutocompleteUpdate = (Now + dVarAutocompleteUpdateDelay)
+                    dLastVarAutocompleteUpdate = (Now + mVarAutocompleteUpdateDelay)
 
                     ClassThread.ExecAsync(g_mFormMain, Sub()
                                                            g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.VARIABLES_AUTOCOMPLETE, Nothing)
@@ -94,13 +96,21 @@ Public Class ClassSyntaxUpdater
 
                 'Update Foldings
                 If (dLastFoldingUpdate < Now) Then
-                    dLastFoldingUpdate = (Now + dLastFoldingUpdateDelay)
+                    dLastFoldingUpdate = (Now + mFoldingUpdateDelay)
 
-                    'If ((Tools.WordCount(ClassThread.Exec(Of Object)(Function() TextEditorControl1.Document.TextContent), "{") + Tools.WordCount(ClassThread.Exec(Of Object)(Function() TextEditorControl1.Document.TextContent), "}")) Mod 2 = 0) Then
                     ClassThread.ExecAsync(g_mFormMain, Sub()
                                                            g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.FoldingManager.UpdateFoldings(Nothing, Nothing)
                                                        End Sub)
-                    'End If
+                End If
+
+                'Update Foldings
+                If (dLastTextMinimapDelay < Now) Then
+                    dLastTextMinimapDelay = (Now + mTextMinimapDelay)
+
+                    ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                           g_mFormMain.g_mUCTextMinimap.UpdateText()
+                                                           g_mFormMain.g_mUCTextMinimap.UpdatePosition(False, True, False)
+                                                       End Sub)
                 End If
 
 

@@ -290,6 +290,10 @@ Public Class ClassControlStyle
                     i.ForeColor = g_cDarkControlColor.mLightForegound
                 End If
 
+                'Fix RichTextBox drawing issues
+                i.BackColor = i.BackColor
+                i.ForeColor = i.ForeColor
+
             Case TypeOf o Is ToolStripLabel
                 Dim i As ToolStripLabel = DirectCast(o, ToolStripLabel)
                 Select Case (True)

@@ -81,6 +81,7 @@ Partial Class FormMain
         Me.ToolStripMenuItem_View = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_ViewToolbox = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_ViewDetails = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_ViewMinimap = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Tools = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_ToolsSettingsAndConfigs = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
@@ -522,7 +523,7 @@ Partial Class FormMain
         '
         'ToolStripMenuItem_View
         '
-        Me.ToolStripMenuItem_View.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_ViewToolbox, Me.ToolStripMenuItem_ViewDetails})
+        Me.ToolStripMenuItem_View.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_ViewToolbox, Me.ToolStripMenuItem_ViewDetails, Me.ToolStripMenuItem_ViewMinimap})
         Me.ToolStripMenuItem_View.Image = Global.BasicPawn.My.Resources.Resources.imageres_5321_16x16
         Me.ToolStripMenuItem_View.Name = "ToolStripMenuItem_View"
         Me.ToolStripMenuItem_View.Size = New System.Drawing.Size(60, 20)
@@ -532,15 +533,22 @@ Partial Class FormMain
         '
         Me.ToolStripMenuItem_ViewToolbox.CheckOnClick = True
         Me.ToolStripMenuItem_ViewToolbox.Name = "ToolStripMenuItem_ViewToolbox"
-        Me.ToolStripMenuItem_ViewToolbox.Size = New System.Drawing.Size(116, 22)
+        Me.ToolStripMenuItem_ViewToolbox.Size = New System.Drawing.Size(181, 22)
         Me.ToolStripMenuItem_ViewToolbox.Text = "Toolbox"
         '
         'ToolStripMenuItem_ViewDetails
         '
         Me.ToolStripMenuItem_ViewDetails.CheckOnClick = True
         Me.ToolStripMenuItem_ViewDetails.Name = "ToolStripMenuItem_ViewDetails"
-        Me.ToolStripMenuItem_ViewDetails.Size = New System.Drawing.Size(116, 22)
+        Me.ToolStripMenuItem_ViewDetails.Size = New System.Drawing.Size(181, 22)
         Me.ToolStripMenuItem_ViewDetails.Text = "Details"
+        '
+        'ToolStripMenuItem_ViewMinimap
+        '
+        Me.ToolStripMenuItem_ViewMinimap.CheckOnClick = True
+        Me.ToolStripMenuItem_ViewMinimap.Name = "ToolStripMenuItem_ViewMinimap"
+        Me.ToolStripMenuItem_ViewMinimap.Size = New System.Drawing.Size(181, 22)
+        Me.ToolStripMenuItem_ViewMinimap.Text = "Document Minimap"
         '
         'ToolStripMenuItem_Tools
         '
@@ -1288,4 +1296,5 @@ Partial Class FormMain
     Friend WithEvents ToolStripMenuItem_View As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_ViewToolbox As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_ViewDetails As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_ViewMinimap As ToolStripMenuItem
 End Class

@@ -497,6 +497,10 @@ Public Class ClassTabControl
         g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete("")
         g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.m_IntelliSenseFunction = ""
         g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip()
+
+        g_mFormMain.g_mUCTextMinimap.UpdateText()
+        g_mFormMain.g_mUCTextMinimap.UpdatePosition(False, True, True)
+
         g_mFormMain.g_mUCObjectBrowser.StartUpdate()
 
         g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, mTab.m_Identifier)
@@ -901,6 +905,7 @@ Public Class ClassTabControl
 
         Private Sub TextEditorControl_Source_Scroll(sender As Object, e As EventArgs)
             g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTipFormLocation()
+            g_mFormMain.g_mUCTextMinimap.UpdatePosition(False, True, True)
         End Sub
 
 #Region "Drag & Drop"

@@ -40,6 +40,7 @@ Public Class FormMain
     Public g_mFormDebugger As FormDebugger
     Public g_mFormOpenTabFromInstances As FormOpenTabFromInstances
     Public g_mUCStartPage As UCStartPage
+    Public g_mUCTextMinimap As ClassTextMinimap
 
     Public g_cDarkTextEditorBackgroundColor As Color = Color.FromArgb(255, 26, 26, 26)
     Public g_cDarkFormDetailsBackgroundColor As Color = Color.FromArgb(255, 24, 24, 24)
@@ -61,7 +62,7 @@ Public Class FormMain
     Private g_sTabsClipboardIdentifier As String = ""
     Private g_mTabControlDragTab As ClassTabControl.SourceTabPage = Nothing
     Private g_mTabControlDragPoint As Point = Point.Empty
-
+    Private g_iDefaultDetailsSplitterDistance As Integer = 150
 
 
 #Region "GUI Stuff"
@@ -198,15 +199,22 @@ Public Class FormMain
         g_mUCStartPage.BringToFront()
         g_mUCStartPage.Show()
 
-        SplitContainer_ToolboxSourceAndDetails.SplitterDistance = SplitContainer_ToolboxSourceAndDetails.Height - 175
+        g_mUCTextMinimap = New ClassTextMinimap(Me) With {
+            .Parent = SplitContainer_ToolboxAndEditor.Panel2,
+            .Dock = DockStyle.Right
+        }
+        g_mUCTextMinimap.SendToBack()
+        g_mUCTextMinimap.Show()
 
-        g_mPingFlashPanel = New ClassPanelAlpha
-        Me.Controls.Add(g_mPingFlashPanel)
-        g_mPingFlashPanel.Name = "@KeepForeBackColor"
-        g_mPingFlashPanel.Parent = Me
-        g_mPingFlashPanel.Dock = DockStyle.Fill
-        g_mPingFlashPanel.m_TransparentBackColor = Color.FromKnownColor(KnownColor.RoyalBlue)
-        g_mPingFlashPanel.m_Opacity = 0
+        SplitContainer_ToolboxSourceAndDetails.SplitterDistance = (SplitContainer_ToolboxSourceAndDetails.Height - g_iDefaultDetailsSplitterDistance)
+
+        g_mPingFlashPanel = New ClassPanelAlpha With {
+            .Name = "@KeepForeBackColor",
+            .Parent = Me,
+            .Dock = DockStyle.Fill,
+            .m_TransparentBackColor = Color.FromKnownColor(KnownColor.RoyalBlue),
+            .m_Opacity = 0
+        }
         g_mPingFlashPanel.BringToFront()
         g_mPingFlashPanel.Visible = False
 
@@ -238,10 +246,13 @@ Public Class FormMain
 
                                       If (bShowInformationTab) Then
                                           SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed = False
-                                          SplitContainer_ToolboxSourceAndDetails.SplitterDistance = SplitContainer_ToolboxSourceAndDetails.Height - 200
+
+                                          If (SplitContainer_ToolboxSourceAndDetails.SplitterDistance > (SplitContainer_ToolboxSourceAndDetails.Height - g_iDefaultDetailsSplitterDistance)) Then
+                                              SplitContainer_ToolboxSourceAndDetails.SplitterDistance = (SplitContainer_ToolboxSourceAndDetails.Height - g_iDefaultDetailsSplitterDistance)
+                                          End If
 
                                           TabControl_Details.SelectTab(1)
-                                      End If
+                                          End If
                                   End Sub)
     End Sub
 
@@ -665,6 +676,15 @@ Public Class FormMain
         UpdateViews()
         SaveViews()
     End Sub
+
+    Private Sub ToolStripMenuItem_ViewMinimap_CheckedChanged(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ViewMinimap.CheckedChanged
+        If (g_bIgnoreCheckedChangedEvent) Then
+            Return
+        End If
+
+        UpdateViews()
+        SaveViews()
+    End Sub
 #End Region
 
 #Region "MenuStrip_Tools"
@@ -778,7 +798,11 @@ Public Class FormMain
 
     Private Sub ToolStripMenuItem_ToolsShowInformation_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsShowInformation.Click
         SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed = False
-        SplitContainer_ToolboxSourceAndDetails.SplitterDistance = SplitContainer_ToolboxSourceAndDetails.Height - 200
+
+        If (SplitContainer_ToolboxSourceAndDetails.SplitterDistance > (SplitContainer_ToolboxSourceAndDetails.Height - g_iDefaultDetailsSplitterDistance)) Then
+            SplitContainer_ToolboxSourceAndDetails.SplitterDistance = (SplitContainer_ToolboxSourceAndDetails.Height - g_iDefaultDetailsSplitterDistance)
+        End If
+
         TabControl_Details.SelectTab(1)
     End Sub
 
@@ -816,7 +840,11 @@ Public Class FormMain
 
     Private Sub ToolStripMenuItem_ToolsAutocompleteShowAutocomplete_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsAutocompleteShowAutocomplete.Click
         SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed = False
-        SplitContainer_ToolboxSourceAndDetails.SplitterDistance = SplitContainer_ToolboxSourceAndDetails.Height - 200
+
+        If (SplitContainer_ToolboxSourceAndDetails.SplitterDistance > (SplitContainer_ToolboxSourceAndDetails.Height - g_iDefaultDetailsSplitterDistance)) Then
+            SplitContainer_ToolboxSourceAndDetails.SplitterDistance = (SplitContainer_ToolboxSourceAndDetails.Height - g_iDefaultDetailsSplitterDistance)
+        End If
+
         TabControl_Details.SelectTab(0)
     End Sub
 
@@ -1298,6 +1326,7 @@ Public Class FormMain
             Using mIni As New ClassIni(mStream)
                 mIni.WriteKeyValue(Me.Name, "ViewToolbox", If(ToolStripMenuItem_ViewToolbox.Checked, "1", "0"))
                 mIni.WriteKeyValue(Me.Name, "ViewDetails", If(ToolStripMenuItem_ViewDetails.Checked, "1", "0"))
+                mIni.WriteKeyValue(Me.Name, "ViewMinimap", If(ToolStripMenuItem_ViewMinimap.Checked, "1", "0"))
                 mIni.WriteKeyValue(Me.Name, "ToolboxSize", CStr(SplitContainer_ToolboxAndEditor.SplitterDistance))
                 mIni.WriteKeyValue(Me.Name, "DetailsSize", CStr(SplitContainer_ToolboxSourceAndDetails.Height - SplitContainer_ToolboxSourceAndDetails.SplitterDistance))
             End Using
@@ -1317,6 +1346,7 @@ Public Class FormMain
                 g_bIgnoreCheckedChangedEvent = True
                 ToolStripMenuItem_ViewToolbox.Checked = (mIni.ReadKeyValue(Me.Name, "ViewToolbox", "1") <> "0")
                 ToolStripMenuItem_ViewDetails.Checked = (mIni.ReadKeyValue(Me.Name, "ViewDetails", "1") <> "0")
+                ToolStripMenuItem_ViewMinimap.Checked = (mIni.ReadKeyValue(Me.Name, "ViewMinimap", "1") <> "0")
                 g_bIgnoreCheckedChangedEvent = False
 
                 tmpStr = mIni.ReadKeyValue(Me.Name, "ToolboxSize", Nothing)
@@ -1337,6 +1367,7 @@ Public Class FormMain
     Public Sub UpdateViews()
         SplitContainer_ToolboxAndEditor.Panel1Collapsed = (Not ToolStripMenuItem_ViewToolbox.Checked)
         SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed = (Not ToolStripMenuItem_ViewDetails.Checked)
+        g_mUCTextMinimap.Visible = (ToolStripMenuItem_ViewMinimap.Checked)
     End Sub
 
     Public Sub ShowPingFlash()
