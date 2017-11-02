@@ -5,7 +5,7 @@ BasicPawn is currently in alpha state, new features are planed!
 
 Supported:
 - SourceMod
-- AMX Mod X (Debugger not supported yet)
+- AMX Mod X (Debugger not supported yet and some Pawn features are not supported)
 - Pawn (Not fully supported)
 
 Features:
@@ -34,7 +34,7 @@ Features:
 
 ## Todo & Done (for v0.8)
  - [x] Better plugin control
- - [ ] \(Plugin\) SFTP/FTP Uploader
+ - [x] \(Plugin\) SFTP/FTP Uploader
  - [ ] \(Plugin\) Automatic Error Reporting using FTP
 
 ## Screenshots
@@ -43,21 +43,3 @@ Features:
 ![BasicPawn Debugger](http://i.imgur.com/KofZrsx.png)
 ![Unlimited Custom Highlight Colors](http://i.imgur.com/XxhCMwU.png)
 ![BasicPawn on Linux Ubuntu](http://i.imgur.com/4pMDRsS.png)
-
-(Older Versions)
-
-http://i.imgur.com/NtAXuQ2.png
-
-http://i.imgur.com/s2zlB7S.png
-
-http://i.imgur.com/zUhUMVe.png
-
-http://i.imgur.com/E4zgJcJ.png
-
-http://i.imgur.com/G2MReGP.png
-
-http://i.imgur.com/8OEWAhd.png
-
-http://i.imgur.com/RJsY478.png
-
-http://i.imgur.com/y4HHUnz.png
