@@ -873,65 +873,77 @@ Public Class FormMain
 
 #Region "MenuStrip_Build"
     Private Sub ToolStripMenuItem_Build_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Build.Click
-        Dim sSource As String = g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
+        Try
+            Dim sSource As String = g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
 
-        With New ClassDebuggerParser(Me)
-            If (.HasDebugPlaceholder(sSource)) Then
-                .CleanupDebugPlaceholder(sSource, g_ClassTabControl.m_ActiveTab.m_Language)
+            With New ClassDebuggerParser(Me)
+                If (.HasDebugPlaceholder(sSource)) Then
+                    .CleanupDebugPlaceholder(sSource, g_ClassTabControl.m_ActiveTab.m_Language)
+                End If
+            End With
+
+            Dim sSourceFile As String = Nothing
+            If (Not g_ClassTabControl.m_ActiveTab.m_IsUnsaved AndAlso Not g_ClassTabControl.m_ActiveTab.m_InvalidFile) Then
+                sSourceFile = g_ClassTabControl.m_ActiveTab.m_File
             End If
-        End With
 
-        Dim sSourceFile As String = Nothing
-        If (Not g_ClassTabControl.m_ActiveTab.m_IsUnsaved AndAlso Not g_ClassTabControl.m_ActiveTab.m_InvalidFile) Then
-            sSourceFile = g_ClassTabControl.m_ActiveTab.m_File
-        End If
-
-        Dim sOutputFile As String = ""
-        g_ClassTextEditorTools.CompileSource(False, sSource, sOutputFile, If(sSourceFile Is Nothing, Nothing, IO.Path.GetDirectoryName(sSourceFile)), Nothing, Nothing, sSourceFile)
+            Dim sOutputFile As String = ""
+            g_ClassTextEditorTools.CompileSource(False, sSource, sOutputFile, If(sSourceFile Is Nothing, Nothing, IO.Path.GetDirectoryName(sSourceFile)), Nothing, Nothing, sSourceFile)
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
     End Sub
 #End Region
 
 #Region "MenuStrip_Test"
     Private Sub ToolStripMenuItem_Test_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Test.Click
-        Dim sSource As String = g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
+        Try
+            Dim sSource As String = g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
 
-        With New ClassDebuggerParser(Me)
-            If (.HasDebugPlaceholder(sSource)) Then
-                .CleanupDebugPlaceholder(sSource, g_ClassTabControl.m_ActiveTab.m_Language)
+            With New ClassDebuggerParser(Me)
+                If (.HasDebugPlaceholder(sSource)) Then
+                    .CleanupDebugPlaceholder(sSource, g_ClassTabControl.m_ActiveTab.m_Language)
+                End If
+            End With
+
+            Dim sSourceFile As String = Nothing
+            If (Not g_ClassTabControl.m_ActiveTab.m_IsUnsaved AndAlso Not g_ClassTabControl.m_ActiveTab.m_InvalidFile) Then
+                sSourceFile = g_ClassTabControl.m_ActiveTab.m_File
             End If
-        End With
 
-        Dim sSourceFile As String = Nothing
-        If (Not g_ClassTabControl.m_ActiveTab.m_IsUnsaved AndAlso Not g_ClassTabControl.m_ActiveTab.m_InvalidFile) Then
-            sSourceFile = g_ClassTabControl.m_ActiveTab.m_File
-        End If
-
-        Dim sOutputFile As String = ""
-        g_ClassTextEditorTools.CompileSource(True, sSource, sOutputFile, If(sSourceFile Is Nothing, Nothing, IO.Path.GetDirectoryName(sSourceFile)), Nothing, Nothing, sSourceFile)
+            Dim sOutputFile As String = ""
+            g_ClassTextEditorTools.CompileSource(True, sSource, sOutputFile, If(sSourceFile Is Nothing, Nothing, IO.Path.GetDirectoryName(sSourceFile)), Nothing, Nothing, sSourceFile)
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
     End Sub
 #End Region
 
 #Region "MenuStrip_Debug"
     Private Sub ToolStripMenuItem_Debug_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Debug.Click
-        If (g_mFormDebugger Is Nothing OrElse g_mFormDebugger.IsDisposed) Then
-            Try
-                g_mFormDebugger = New FormDebugger(Me, g_ClassTabControl.m_ActiveTab)
-                g_mFormDebugger.Show()
-            Catch ex As Exception
-                ClassExceptionLog.WriteToLogMessageBox(ex)
+        Try
+            If (g_mFormDebugger Is Nothing OrElse g_mFormDebugger.IsDisposed) Then
+                Try
+                    g_mFormDebugger = New FormDebugger(Me, g_ClassTabControl.m_ActiveTab)
+                    g_mFormDebugger.Show()
+                Catch ex As Exception
+                    ClassExceptionLog.WriteToLogMessageBox(ex)
 
-                If (g_mFormDebugger IsNot Nothing AndAlso Not g_mFormDebugger.IsDisposed) Then
-                    g_mFormDebugger.Dispose()
-                    g_mFormDebugger = Nothing
+                    If (g_mFormDebugger IsNot Nothing AndAlso Not g_mFormDebugger.IsDisposed) Then
+                        g_mFormDebugger.Dispose()
+                        g_mFormDebugger = Nothing
+                    End If
+                End Try
+            Else
+                If (g_mFormDebugger.WindowState = FormWindowState.Minimized) Then
+                    ClassTools.ClassForms.FormWindowCommand(g_mFormDebugger, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
                 End If
-            End Try
-        Else
-            If (g_mFormDebugger.WindowState = FormWindowState.Minimized) Then
-                ClassTools.ClassForms.FormWindowCommand(g_mFormDebugger, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
-            End If
 
-            g_mFormDebugger.Activate()
-        End If
+                g_mFormDebugger.Activate()
+            End If
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
     End Sub
 #End Region
 

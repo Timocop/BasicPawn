@@ -15,25 +15,21 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 
+Imports System.Windows.Forms
 Imports BasicPawn
 Imports BasicPawnPluginInterface
-Imports System.Windows.Forms
-Imports System.Drawing
 
-Public Class PluginSample
+Public Class PluginFTP
     Implements IPluginInterface
 
-    Private g_mFormMain As FormMain
+    Public g_mFormMain As FormMain
+
     Private g_ClassPlugin As ClassPlugin
 
 #Region "Unused"
     Public Sub OnPluginLoad(sDLLPath As String) Implements IPluginInterface.OnPluginLoad
         Throw New NotImplementedException()
     End Sub
-
-    Public Function OnPluginEnd() As Boolean Implements IPluginInterface.OnPluginEnd
-        Throw New NotImplementedException()
-    End Function
 
     Public Sub OnSettingsChanged() Implements IPluginInterface.OnSettingsChanged
         Throw New NotImplementedException()
@@ -67,9 +63,9 @@ Public Class PluginSample
         Throw New NotImplementedException()
     End Sub
 
-    Public Function OnDebuggerEnd(mFormDebugger As Object) As Boolean Implements IPluginInterface.OnDebuggerEnd
+    Public Sub OnDebuggerRefresh(mFormDebugger As Object) Implements IPluginInterface.OnDebuggerRefresh
         Throw New NotImplementedException()
-    End Function
+    End Sub
 
     Public Sub OnDebuggerEndPost(mFormDebugger As Object) Implements IPluginInterface.OnDebuggerEndPost
         Throw New NotImplementedException()
@@ -87,17 +83,21 @@ Public Class PluginSample
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnDebuggerRefresh(mFormDebugger As Object) Implements IPluginInterface.OnDebuggerRefresh
+    Public Function OnPluginEnd() As Boolean Implements IPluginInterface.OnPluginEnd
         Throw New NotImplementedException()
-    End Sub
+    End Function
+
+    Public Function OnDebuggerEnd(mFormDebugger As Object) As Boolean Implements IPluginInterface.OnDebuggerEnd
+        Throw New NotImplementedException()
+    End Function
 #End Region
 
     Public ReadOnly Property m_PluginInformation As IPluginInterface.STRUC_PLUGIN_INFORMATION Implements IPluginInterface.m_PluginInformation
         Get
-            Return New IPluginInterface.STRUC_PLUGIN_INFORMATION("Sample Plugin",
+            Return New IPluginInterface.STRUC_PLUGIN_INFORMATION("FTP Plugin",
                                                                  "Timocop",
-                                                                 "A simple sample plugin",
-                                                                 "0.0",
+                                                                 "Allows uploading files to servers over FTP.",
+                                                                 "1.0",
                                                                  Nothing)
         End Get
     End Property
@@ -110,18 +110,18 @@ Public Class PluginSample
         End If
     End Sub
 
+    Public ReadOnly Property m_PluginEnabled As Boolean Implements IPluginInterface.m_PluginEnabled
+        Get
+            Return (g_ClassPlugin IsNot Nothing)
+        End Get
+    End Property
+
     Public Sub OnPluginEndPost() Implements IPluginInterface.OnPluginEndPost
         If (g_ClassPlugin IsNot Nothing) Then
             g_ClassPlugin.Dispose()
             g_ClassPlugin = Nothing
         End If
     End Sub
-
-    Public ReadOnly Property m_PluginEnabled As Boolean Implements IPluginInterface.m_PluginEnabled
-        Get
-            Return (g_ClassPlugin IsNot Nothing)
-        End Get
-    End Property
 
     Public Function OnPluginEnabled(ByRef sReason As String) As Boolean Implements IPluginInterface.OnPluginEnabled
         If (g_ClassPlugin Is Nothing) Then
@@ -143,60 +143,73 @@ Public Class PluginSample
     Class ClassPlugin
         Implements IDisposable
 
-        Private g_mPluginSample As PluginSample
+        Public g_mPluginFTP As PluginFTP
 
-        Private g_mToolboxPage As TabPage
-        Private g_mTestButton As Button
-        Private g_mAboutMenuItem As ToolStripMenuItem
+        Private g_mFtpMenuSplit As ToolStripSeparator
+        Private g_mFtpMenuItem As ToolStripMenuItem
+        Private g_mFtpCompileItem As ToolStripMenuItem
 
+        Public Sub New(mPluginSample As PluginFTP)
+            g_mPluginFTP = mPluginSample
 
-        Public Sub New(mPluginSample As PluginSample)
-            g_mPluginSample = mPluginSample
-
-            BuildAboutMenu()
-            BuildToolbox()
+            BuildFTPMenu()
         End Sub
 
+        Private Sub BuildFTPMenu()
+            g_mFtpMenuSplit = New ToolStripSeparator
+            g_mFtpMenuItem = New ToolStripMenuItem("FTP File Upload", My.Resources.imageres_5340_16x16)
+            g_mPluginFTP.g_mFormMain.ToolStripMenuItem_Tools.DropDownItems.Add(g_mFtpMenuSplit)
+            g_mPluginFTP.g_mFormMain.ToolStripMenuItem_Tools.DropDownItems.Add(g_mFtpMenuItem)
 
-        Private Sub BuildAboutMenu()
-            g_mAboutMenuItem = New ToolStripMenuItem("About Sample Plugin", My.Resources.imageres_5314_16x16)
-            g_mPluginSample.g_mFormMain.MenuStrip_BasicPawn.Items.Add(g_mAboutMenuItem)
+            RemoveHandler g_mFtpMenuItem.Click, AddressOf OnMenuItemClick
+            AddHandler g_mFtpMenuItem.Click, AddressOf OnMenuItemClick
 
-            RemoveHandler g_mAboutMenuItem.Click, AddressOf OnMenuItemClick
-            AddHandler g_mAboutMenuItem.Click, AddressOf OnMenuItemClick
+            Dim iBuildIndex As Integer = g_mPluginFTP.g_mFormMain.MenuStrip_BasicPawn.Items.IndexOf(g_mPluginFTP.g_mFormMain.ToolStripMenuItem_Build)
+            If (iBuildIndex > -1) Then
+                g_mFtpCompileItem = New ToolStripMenuItem("Upload", My.Resources.imageres_5340_16x16)
+
+                g_mPluginFTP.g_mFormMain.MenuStrip_BasicPawn.Items.Insert(iBuildIndex, g_mFtpCompileItem)
+
+                RemoveHandler g_mFtpCompileItem.Click, AddressOf OnCompileItemClick
+                AddHandler g_mFtpCompileItem.Click, AddressOf OnCompileItemClick
+            End If
         End Sub
-
-        Private Sub BuildToolbox()
-            g_mToolboxPage = New TabPage("Test Toolbox") With {
-                .BackColor = Color.White
-            }
-            g_mPluginSample.g_mFormMain.TabControl_Toolbox.TabPages.Add(g_mToolboxPage)
-
-            g_mTestButton = New Button With {
-                .Parent = g_mToolboxPage,
-                .Dock = DockStyle.Top,
-                .Text = "Show Messagebox",
-                .UseVisualStyleBackColor = True
-            }
-
-            RemoveHandler g_mTestButton.Click, AddressOf OnButtonClick
-            AddHandler g_mTestButton.Click, AddressOf OnButtonClick
-
-            ClassControlStyle.UpdateControls(g_mToolboxPage)
-            ClassControlStyle.UpdateControls(g_mTestButton)
-        End Sub
-
 
         Private Sub OnMenuItemClick(sender As Object, e As EventArgs)
-            Using i As New FormAbout(g_mPluginSample)
-                i.ShowDialog()
-            End Using
+            Try
+                Using i As New FormFTP(g_mPluginFTP, "")
+                    i.ShowDialog(g_mPluginFTP.g_mFormMain)
+                End Using
+            Catch ex As Exception
+                ClassExceptionLog.WriteToLogMessageBox(ex)
+            End Try
         End Sub
 
-        Private Sub OnButtonClick(sender As Object, e As EventArgs)
-            MsgBox("Hello World!")
-        End Sub
+        Private Sub OnCompileItemClick(sender As Object, e As EventArgs)
+            Try
+                Dim sSource As String = g_mPluginFTP.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
 
+                With New ClassDebuggerParser(g_mPluginFTP.g_mFormMain)
+                    If (.HasDebugPlaceholder(sSource)) Then
+                        .CleanupDebugPlaceholder(sSource, g_mPluginFTP.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
+                    End If
+                End With
+
+                Dim sSourceFile As String = Nothing
+                If (Not g_mPluginFTP.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved AndAlso Not g_mPluginFTP.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_InvalidFile) Then
+                    sSourceFile = g_mPluginFTP.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File
+                End If
+
+                Dim sOutputFile As String = ""
+                g_mPluginFTP.g_mFormMain.g_ClassTextEditorTools.CompileSource(False, sSource, sOutputFile, If(sSourceFile Is Nothing, Nothing, IO.Path.GetDirectoryName(sSourceFile)), Nothing, Nothing, sSourceFile)
+
+                Using i As New FormFTP(g_mPluginFTP, sOutputFile)
+                    i.ShowDialog(g_mPluginFTP.g_mFormMain)
+                End Using
+            Catch ex As Exception
+                ClassExceptionLog.WriteToLogMessageBox(ex)
+            End Try
+        End Sub
 
 
 #Region "IDisposable Support"
@@ -204,34 +217,32 @@ Public Class PluginSample
 
         ' IDisposable
         Protected Overridable Sub Dispose(disposing As Boolean)
-            If Not Me.disposedValue Then
+            If Not disposedValue Then
                 If disposing Then
                     ' TODO: dispose managed state (managed objects).
-                    RemoveHandler g_mTestButton.Click, AddressOf OnButtonClick
-                    RemoveHandler g_mAboutMenuItem.Click, AddressOf OnMenuItemClick
+                    RemoveHandler g_mFtpMenuItem.Click, AddressOf OnMenuItemClick
+                    RemoveHandler g_mFtpCompileItem.Click, AddressOf OnCompileItemClick
 
-                    If (g_mAboutMenuItem IsNot Nothing AndAlso Not g_mAboutMenuItem.IsDisposed) Then
-                        g_mAboutMenuItem.Dispose()
-                        g_mAboutMenuItem = Nothing
+                    If (g_mFtpMenuSplit IsNot Nothing AndAlso Not g_mFtpMenuSplit.IsDisposed) Then
+                        g_mFtpMenuSplit.Dispose()
+                        g_mFtpMenuSplit = Nothing
                     End If
 
-                    If (g_mTestButton IsNot Nothing AndAlso Not g_mTestButton.IsDisposed) Then
-                        g_mTestButton.Dispose()
-                        g_mTestButton = Nothing
+                    If (g_mFtpMenuItem IsNot Nothing AndAlso Not g_mFtpMenuItem.IsDisposed) Then
+                        g_mFtpMenuItem.Dispose()
+                        g_mFtpMenuItem = Nothing
                     End If
 
-                    If (g_mToolboxPage IsNot Nothing AndAlso Not g_mToolboxPage.IsDisposed) Then
-                        g_mToolboxPage.Dispose()
-                        g_mToolboxPage = Nothing
-
-                        g_mPluginSample.g_mFormMain.TabControl_Toolbox.UpdateLineOverflow()
+                    If (g_mFtpCompileItem IsNot Nothing AndAlso Not g_mFtpCompileItem.IsDisposed) Then
+                        g_mFtpCompileItem.Dispose()
+                        g_mFtpCompileItem = Nothing
                     End If
                 End If
 
                 ' TODO: free unmanaged resources (unmanaged objects) and override Finalize() below.
                 ' TODO: set large fields to null.
             End If
-            Me.disposedValue = True
+            disposedValue = True
         End Sub
 
         ' TODO: override Finalize() only if Dispose(disposing As Boolean) above has code to free unmanaged resources.

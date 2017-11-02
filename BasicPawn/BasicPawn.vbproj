@@ -210,6 +210,9 @@
     <Compile Include="Classes\Controls\ClassTabControlColor.vb">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Classes\Controls\ClassTabControlFix.vb">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Classes\Controls\ClassTextboxWatermark.vb">
       <SubType>Component</SubType>
     </Compile>
@@ -312,6 +315,12 @@
       <DependentUpon>FormProgress.vb</DependentUpon>
     </Compile>
     <Compile Include="Controls and Forms\FormProgress.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls and Forms\FormFileDialogFTP.Designer.vb">
+      <DependentUpon>FormFileDialogFTP.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controls and Forms\FormFileDialogFTP.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Controls and Forms\FormToolTip.Designer.vb">
@@ -441,6 +450,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls and Forms\FormProgress.resx">
       <DependentUpon>FormProgress.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls and Forms\FormFileDialogFTP.resx">
+      <DependentUpon>FormFileDialogFTP.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls and Forms\FormToolTip.resx">
       <DependentUpon>FormToolTip.vb</DependentUpon>
@@ -618,7 +630,10 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /y "$(TargetPath)"  "$(SolutionDir)Required Plugin References"</PostBuildEvent>
+    <PostBuildEvent>if "$(ConfigurationName)"=="Debug" (
+copy /y "$(TargetPath)"  "$(SolutionDir)Required Plugin References"
+echo         Copyed '$(ProjectName)' to Required Plugin References!
+)</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

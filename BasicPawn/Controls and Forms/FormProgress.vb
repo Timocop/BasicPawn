@@ -16,6 +16,8 @@
 
 
 Public Class FormProgress
+    Private g_mCloseAction As Func(Of Boolean) = Nothing
+
     Public Sub New()
 
         ' This call is required by the designer.
@@ -32,7 +34,7 @@ Public Class FormProgress
 
     Private Sub FormProgress_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
         If (e.CloseReason = CloseReason.UserClosing) Then
-            e.Cancel = True
+            e.Cancel = If(g_mCloseAction Is Nothing, True, g_mCloseAction.Invoke)
         End If
     End Sub
 
@@ -51,6 +53,19 @@ Public Class FormProgress
             ProgressBar_Progress.Maximum = tmpInt
 
             Me.Refresh()
+        End Set
+    End Property
+
+    ''' <summary>
+    ''' Action when closing the form.
+    ''' </summary>
+    ''' <returns>True to cancel closing, false otherwise</returns>
+    Property m_CloseAction As Func(Of Boolean)
+        Get
+            Return g_mCloseAction
+        End Get
+        Set(value As Func(Of Boolean))
+            g_mCloseAction = value
         End Set
     End Property
 End Class

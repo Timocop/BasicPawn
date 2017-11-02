@@ -65,7 +65,7 @@ Public Class ClassFTP
         End Set
     End Property
 
-    Public Sub DownloadFile(sRemoteFile As String, sLocalFile As String, Optional iBufferSize As Integer = 4 * 1024)
+    Public Sub DownloadFile(sRemoteFile As String, sLocalFile As String, Optional mDownloadCallback As Action(Of ULong) = Nothing, Optional iBufferSize As Integer = 1024 * 8)
         Dim mRemoteURI As New Uri(String.Format("ftp://{0}/{1}", m_Host.TrimEnd("/"c), sRemoteFile.TrimStart("/"c)))
 
         Dim mFtpRequest = DirectCast(FtpWebRequest.Create(mRemoteURI), FtpWebRequest)
@@ -75,36 +75,46 @@ Public Class ClassFTP
         Using mFtpResponse = DirectCast(mFtpRequest.GetResponse(), FtpWebResponse)
             Using mFtpStream = mFtpResponse.GetResponseStream()
                 Using mFileStream As New FileStream(sLocalFile, FileMode.Create)
-                    Dim iBuffer As Byte() = New Byte(iBufferSize) {}
+                    Dim iBuffer As Byte() = New Byte(iBufferSize - 1) {}
                     Dim iBytesRead As Integer = 0
+                    Dim iTotalRead As ULong = 0
 
                     Do
                         iBytesRead = mFtpStream.Read(iBuffer, 0, iBufferSize)
                         mFileStream.Write(iBuffer, 0, iBytesRead)
+
+                        If (mDownloadCallback IsNot Nothing) Then
+                            iTotalRead += CULng(iBytesRead)
+                            mDownloadCallback.Invoke(iTotalRead)
+                        End If
                     Loop While iBytesRead > 0
                 End Using
             End Using
         End Using
     End Sub
 
-    Public Sub UploadFile(sLocalFile As String, sRemoteFile As String, Optional iBufferSize As Integer = 4 * 1024)
+    Public Sub UploadFile(sLocalFile As String, sRemoteFile As String, Optional mUploadCallback As Action(Of ULong) = Nothing, Optional iBufferSize As Integer = 1024 * 8)
         Dim mRemoteURI As New Uri(String.Format("ftp://{0}/{1}", m_Host.TrimEnd("/"c), sRemoteFile.TrimStart("/"c)))
 
         Dim mFtpRequest = DirectCast(FtpWebRequest.Create(mRemoteURI), FtpWebRequest)
         mFtpRequest.Credentials = New NetworkCredential(m_User, m_Password)
         mFtpRequest.Method = WebRequestMethods.Ftp.UploadFile
 
-        Using mFtpResponse = DirectCast(mFtpRequest.GetResponse(), FtpWebResponse)
-            Using mFtpStream = mFtpResponse.GetResponseStream()
-                Using mFileStream As New FileStream(sLocalFile, FileMode.Open)
-                    Dim iBuffer As Byte() = New Byte(iBufferSize) {}
-                    Dim iBytesRead As Integer = 0
+        Using mFtpStream = mFtpRequest.GetRequestStream()
+            Using mFileStream As New FileStream(sLocalFile, FileMode.Open)
+                Dim iBuffer As Byte() = New Byte(iBufferSize - 1) {}
+                Dim iBytesRead As Integer = 0
+                Dim iTotalRead As ULong = 0
 
-                    Do
-                        iBytesRead = mFileStream.Read(iBuffer, 0, iBufferSize)
-                        mFtpStream.Write(iBuffer, 0, iBytesRead)
-                    Loop While iBytesRead > 0
-                End Using
+                Do
+                    iBytesRead = mFileStream.Read(iBuffer, 0, iBufferSize)
+                    mFtpStream.Write(iBuffer, 0, iBytesRead)
+
+                    If (mUploadCallback IsNot Nothing) Then
+                        iTotalRead += CULng(iBytesRead)
+                        mUploadCallback.Invoke(iTotalRead)
+                    End If
+                Loop While iBytesRead > 0
             End Using
         End Using
     End Sub
@@ -166,8 +176,7 @@ Public Class ClassFTP
         Using mFtpResponse = DirectCast(mFtpRequest.GetResponse(), FtpWebResponse)
             Using mFtpStream = mFtpResponse.GetResponseStream()
                 Using mFtpStreamReader As New StreamReader(mFtpStream)
-                    Dim sPattern As String = "^(?<Permissions>[\w-]+)\s+(?<Node>\d+)\s+(?<Owner>[\w\d]+)\s+(?<Group>[\w\d]+)\s+(?<Size>\d+)\s+(?<Date>\w+\s+\d+\s+\d+|\w+\s+\d+\s+\d+:\d+)\s(?<Name>.+)$"
-                    Dim mRegex As New Regex(sPattern)
+                    Dim mRegex As New Regex("^(?<Permissions>[\w-]+)\s+(?<Node>\d+)\s+(?<Owner>[\w\d]+)\s+(?<Group>[\w\d]+)\s+(?<Size>\d+)\s+(?<Date>\w+\s+\d+\s+\d+|\w+\s+\d+\s+\d+:\d+)\s(?<Name>.+)$")
                     Dim mCulture As CultureInfo = CultureInfo.GetCultureInfo("en-us")
                     Dim sDateTimeFormat As String() = New String() {"MMM dd HH:mm", "MMM dd H:mm", "MMM d HH:mm", "MMM d H:mm"}
                     Dim sDateFormats As String() = New String() {"MMM dd yyyy", "MMM d yyyy"}

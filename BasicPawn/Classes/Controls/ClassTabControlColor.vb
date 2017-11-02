@@ -16,7 +16,7 @@
 
 
 Public Class ClassTabControlColor
-    Inherits TabControl
+    Inherits ClassTabControlFix
 
     'TODO: Find better way to double buffer tabs without high CPU usage when tabs are drawn outside the window.
     'Protected Overrides Sub OnInvalidated(e As InvalidateEventArgs)

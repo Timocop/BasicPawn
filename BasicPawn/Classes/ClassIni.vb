@@ -239,6 +239,15 @@ Public Class ClassIni
     End Sub
 
     ''' <summary>
+    ''' Exports the IO.Stream content to string.
+    ''' </summary>
+    ''' <returns></returns>
+    Public Function ExportToString() As String
+        g_mStream.Seek(0, IO.SeekOrigin.Begin)
+        Return g_mStreamReader.ReadToEnd
+    End Function
+
+    ''' <summary>
     ''' Parses the file content to IO.Stream.
     ''' </summary>
     ''' <param name="sFile"></param>
@@ -251,17 +260,24 @@ Public Class ClassIni
         End Using
     End Sub
 
+    ''' <summary>
+    ''' Parses the string content to IO.Stream.
+    ''' </summary>
+    ''' <param name="sText"></param>
+    Public Sub ParseFromString(sText As String)
+        g_mStreamWriter.BaseStream.Seek(0, IO.SeekOrigin.Begin)
+        g_mStreamWriter.BaseStream.SetLength(0)
+        g_mStreamWriter.Write(sText)
+    End Sub
+
     Private Sub CopyStream(mInput As IO.Stream, mOutput As IO.Stream, iBufferSize As Integer)
         Dim iBuffer As Byte() = New Byte(iBufferSize - 1) {}
+        Dim iBytesRead As Integer = 0
 
-        While True
-            Dim iCount As Integer = mInput.Read(iBuffer, 0, iBuffer.Length)
-            If (iCount < 1) Then
-                Return
-            End If
-
-            mOutput.Write(iBuffer, 0, iCount)
-        End While
+        Do
+            iBytesRead = mInput.Read(iBuffer, 0, iBuffer.Length)
+            mOutput.Write(iBuffer, 0, iBytesRead)
+        Loop While iBytesRead > 0
     End Sub
 
     ''' <summary>

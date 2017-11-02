@@ -1175,15 +1175,10 @@ Partial Class FormMain
     Friend WithEvents ToolStripMenuItem_Paste As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_Copy As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_Cut As ToolStripMenuItem
-    Friend WithEvents ToolStripMenuItem_File As ToolStripMenuItem
-    Friend WithEvents ToolStripMenuItem_Tools As ToolStripMenuItem
-    Friend WithEvents ToolStripMenuItem_Build As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_FileOpen As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_FileSave As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_FileSaveAs As ToolStripMenuItem
-    Friend WithEvents ToolStripMenuItem_Test As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_FileExit As ToolStripMenuItem
-    Friend WithEvents ToolStripMenuItem_Help As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator2 As ToolStripSeparator
     Friend WithEvents ToolStripMenuItem_ToolsAutocomplete As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_ToolsAutocompleteUpdate As ToolStripMenuItem
@@ -1194,8 +1189,6 @@ Partial Class FormMain
     Friend WithEvents ToolStripMenuItem_ToolsShowInformation As ToolStripMenuItem
     Friend WithEvents ToolStripStatusLabel_EditorLine As ToolStripStatusLabel
     Friend WithEvents ToolStripStatusLabel_EditorCollum As ToolStripStatusLabel
-    Friend WithEvents ToolStripMenuItem_Undo As ToolStripMenuItem
-    Friend WithEvents ToolStripMenuItem_Redo As ToolStripMenuItem
     Friend WithEvents ImageList_Details As ImageList
     Friend WithEvents ToolStripMenuItem_FileNew As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_ToolsSettingsAndConfigs As ToolStripMenuItem
@@ -1214,16 +1207,13 @@ Partial Class FormMain
     Friend WithEvents ToolStripMenuItem_ToolsFormatCode As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_ListReferences As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_ToolsClearInformationLog As ToolStripMenuItem
-    Friend WithEvents ToolStripMenuItem_Shell As ToolStripMenuItem
     Friend WithEvents SplitContainer_ToolboxAndEditor As SplitContainer
     Friend WithEvents TabPage_ObjectBrowser As TabPage
     Friend WithEvents ToolStripMenuItem_ToolsSearchReplace As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_HelpSpecialControlsDupLine As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator5 As ToolStripSeparator
     Friend WithEvents ToolStripSeparator4 As ToolStripSeparator
-    Friend WithEvents ToolStripMenuItem_NewUpdate As ToolStripMenuItem
     Friend WithEvents ToolStripStatusLabel_AppVersion As ToolStripStatusLabel
-    Friend WithEvents ToolStripMenuItem_Debug As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_Debugger As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_DebuggerBreakpoints As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_DebuggerBreakpointInsert As ToolStripMenuItem
@@ -1238,16 +1228,12 @@ Partial Class FormMain
     Friend WithEvents ToolStripMenuItem_HightlightCustom As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_FileOpenFolder As ToolStripMenuItem
     Friend WithEvents TabPage1 As TabPage
-    Friend WithEvents ToolStripMenuItem_TabClose As ToolStripMenuItem
-    Friend WithEvents ToolStripMenuItem_TabMoveRight As ToolStripMenuItem
-    Friend WithEvents ToolStripMenuItem_TabMoveLeft As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_FileSaveAll As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator9 As ToolStripSeparator
     Friend WithEvents ToolStripMenuItem_FileLoadTabs As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator7 As ToolStripSeparator
     Friend WithEvents ToolStripSeparator8 As ToolStripSeparator
     Friend WithEvents Timer_PingFlash As Timer
-    Friend WithEvents ToolStripMenuItem_TabOpenInstance As ToolStripMenuItem
     Friend WithEvents TabControl_SourceTabs As ClassTabControlColor
     Public WithEvents TabControl_Toolbox As ClassTabControlColor
     Public WithEvents TextEditorControl_Source As TextEditorControlEx
@@ -1293,8 +1279,22 @@ Partial Class FormMain
     Friend WithEvents ToolStripMenuItem_Tabs_Cut As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_Tabs_Insert As ToolStripMenuItem
     Friend WithEvents Timer_CheckFiles As Timer
-    Friend WithEvents ToolStripMenuItem_View As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_ViewToolbox As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_ViewDetails As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_ViewMinimap As ToolStripMenuItem
+    Public WithEvents ToolStripMenuItem_File As ToolStripMenuItem
+    Public WithEvents ToolStripMenuItem_Tools As ToolStripMenuItem
+    Public WithEvents ToolStripMenuItem_Build As ToolStripMenuItem
+    Public WithEvents ToolStripMenuItem_Test As ToolStripMenuItem
+    Public WithEvents ToolStripMenuItem_Help As ToolStripMenuItem
+    Public WithEvents ToolStripMenuItem_Undo As ToolStripMenuItem
+    Public WithEvents ToolStripMenuItem_Redo As ToolStripMenuItem
+    Public WithEvents ToolStripMenuItem_Shell As ToolStripMenuItem
+    Public WithEvents ToolStripMenuItem_NewUpdate As ToolStripMenuItem
+    Public WithEvents ToolStripMenuItem_Debug As ToolStripMenuItem
+    Public WithEvents ToolStripMenuItem_TabClose As ToolStripMenuItem
+    Public WithEvents ToolStripMenuItem_TabMoveRight As ToolStripMenuItem
+    Public WithEvents ToolStripMenuItem_TabMoveLeft As ToolStripMenuItem
+    Public WithEvents ToolStripMenuItem_TabOpenInstance As ToolStripMenuItem
+    Public WithEvents ToolStripMenuItem_View As ToolStripMenuItem
 End Class

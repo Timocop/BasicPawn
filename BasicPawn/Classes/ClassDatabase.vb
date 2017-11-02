@@ -128,6 +128,16 @@ Public Class ClassDatabase
         End Sub
     End Class
 
+    Public Shared Function FindDatabaseItemByName(sName As String) As STRUC_DATABASE_ITEM
+        For Each mItem In GetDatabaseItems()
+            If (mItem.m_Name = sName) Then
+                Return mItem
+            End If
+        Next
+
+        Return Nothing
+    End Function
+
     Public Shared Function GetDatabaseItems() As STRUC_DATABASE_ITEM()
         If (Not IO.File.Exists(g_sDatabasePath)) Then
             Return {}

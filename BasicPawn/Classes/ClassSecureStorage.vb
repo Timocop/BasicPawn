@@ -21,7 +21,7 @@ Imports System.Security.Principal
 Public Class ClassSecureStorage
     Private Shared g_iEntropy As Byte() = {110, 156, 222, 18, 129, 105, 11, 43, 235, 7}
     Private g_sName As String
-    Private g_iBytes As Byte()
+    Private g_iBytes As Byte() = New Byte() {}
 
     Public ReadOnly Property m_StoragePath(sName As String) As String
         Get
@@ -59,6 +59,7 @@ Public Class ClassSecureStorage
 
     Public Function Open() As Boolean
         If (Not IO.File.Exists(m_StoragePath(m_Name))) Then
+            g_iBytes = New Byte() {}
             Return False
         End If
 
