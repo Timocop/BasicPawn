@@ -129,9 +129,7 @@ Partial Class UCObjectBrowser
         Me.PerformLayout()
 
     End Sub
-    Friend WithEvents TreeView_ObjectBrowser As ClassTreeViewFix
     Friend WithEvents TextboxWatermark_Search As ClassTextboxWatermark
-    Friend WithEvents ContextMenuStrip_ObjectBrowser As ContextMenuStrip
     Friend WithEvents ToolStripMenuItem_OpenFile As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator1 As ToolStripSeparator
     Friend WithEvents ToolStripMenuItem_ListReferences As ToolStripMenuItem
@@ -140,4 +138,6 @@ Partial Class UCObjectBrowser
     Friend WithEvents ToolStripMenuItem_ExpandAll As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_ExpandSources As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_CollapseAll As ToolStripMenuItem
+    Public WithEvents ContextMenuStrip_ObjectBrowser As ContextMenuStrip
+    Public WithEvents TreeView_ObjectBrowser As ClassTreeViewFix
 End Class

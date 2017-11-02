@@ -37,6 +37,7 @@ Partial Class UCProjectBrowser
         Me.ToolStripSeparator4 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_CompileAll = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_TestAll = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_ShellAll = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_PackFile = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_ExtractFile = New System.Windows.Forms.ToolStripMenuItem()
@@ -49,7 +50,6 @@ Partial Class UCProjectBrowser
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_Exlcude = New System.Windows.Forms.ToolStripMenuItem()
         Me.TextboxWatermark_Search = New BasicPawn.ClassTextboxWatermark()
-        Me.ToolStripMenuItem_ShellAll = New System.Windows.Forms.ToolStripMenuItem()
         Me.ContextMenuStrip_ProjectFiles.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -90,7 +90,7 @@ Partial Class UCProjectBrowser
         Me.ContextMenuStrip_ProjectFiles.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_Open, Me.ToolStripMenuItem_ProjectSave, Me.ToolStripSeparator1, Me.ToolStripMenuItem_Cut, Me.ToolStripMenuItem_Copy, Me.ToolStripMenuItem_Paste, Me.ToolStripSeparator4, Me.ToolStripMenuItem_CompileAll, Me.ToolStripMenuItem_TestAll, Me.ToolStripMenuItem_ShellAll, Me.ToolStripSeparator3, Me.ToolStripMenuItem_PackFile, Me.ToolStripMenuItem_ExtractFile, Me.ToolStripMenuItem_DeletePack, Me.ToolStripSeparator5, Me.ToolStripMenuItem_AddTab, Me.ToolStripMenuItem_AddNewTabs, Me.ToolStripMenuItem_AddAllTabs, Me.ToolStripMenuItem_AddFiles, Me.ToolStripSeparator2, Me.ToolStripMenuItem_Exlcude})
         Me.ContextMenuStrip_ProjectFiles.Name = "ContextMenuStrip_ProjectFiles"
         Me.ContextMenuStrip_ProjectFiles.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
-        Me.ContextMenuStrip_ProjectFiles.Size = New System.Drawing.Size(184, 408)
+        Me.ContextMenuStrip_ProjectFiles.Size = New System.Drawing.Size(184, 386)
         '
         'ToolStripMenuItem_Open
         '
@@ -150,6 +150,13 @@ Partial Class UCProjectBrowser
         Me.ToolStripMenuItem_TestAll.Name = "ToolStripMenuItem_TestAll"
         Me.ToolStripMenuItem_TestAll.Size = New System.Drawing.Size(183, 22)
         Me.ToolStripMenuItem_TestAll.Text = "Test"
+        '
+        'ToolStripMenuItem_ShellAll
+        '
+        Me.ToolStripMenuItem_ShellAll.Image = Global.BasicPawn.My.Resources.Resources.imageres_5372_16x16
+        Me.ToolStripMenuItem_ShellAll.Name = "ToolStripMenuItem_ShellAll"
+        Me.ToolStripMenuItem_ShellAll.Size = New System.Drawing.Size(183, 22)
+        Me.ToolStripMenuItem_ShellAll.Text = "Shell"
         '
         'ToolStripSeparator3
         '
@@ -237,13 +244,6 @@ Partial Class UCProjectBrowser
         Me.TextboxWatermark_Search.Size = New System.Drawing.Size(276, 22)
         Me.TextboxWatermark_Search.TabIndex = 1
         '
-        'ToolStripMenuItem_ShellAll
-        '
-        Me.ToolStripMenuItem_ShellAll.Image = Global.BasicPawn.My.Resources.Resources.imageres_5372_16x16
-        Me.ToolStripMenuItem_ShellAll.Name = "ToolStripMenuItem_ShellAll"
-        Me.ToolStripMenuItem_ShellAll.Size = New System.Drawing.Size(183, 22)
-        Me.ToolStripMenuItem_ShellAll.Text = "Shell"
-        '
         'UCProjectBrowser
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -258,32 +258,31 @@ Partial Class UCProjectBrowser
         Me.PerformLayout()
 
     End Sub
-
-    Friend WithEvents ListView_ProjectFiles As ListView
     Friend WithEvents ColumnHeader1 As ColumnHeader
-    Friend WithEvents ContextMenuStrip_ProjectFiles As ContextMenuStrip
-    Friend WithEvents ToolStripMenuItem_Open As ToolStripMenuItem
-    Friend WithEvents ToolStripSeparator1 As ToolStripSeparator
-    Friend WithEvents ToolStripMenuItem_Cut As ToolStripMenuItem
-    Friend WithEvents ToolStripMenuItem_Copy As ToolStripMenuItem
-    Friend WithEvents ToolStripMenuItem_Paste As ToolStripMenuItem
-    Friend WithEvents ToolStripSeparator2 As ToolStripSeparator
-    Friend WithEvents ToolStripMenuItem_Exlcude As ToolStripMenuItem
-    Friend WithEvents ToolStripSeparator3 As ToolStripSeparator
-    Friend WithEvents ToolStripMenuItem_AddTab As ToolStripMenuItem
-    Friend WithEvents ToolStripMenuItem_AddAllTabs As ToolStripMenuItem
-    Friend WithEvents ToolStripMenuItem_AddFiles As ToolStripMenuItem
-    Friend WithEvents ToolStripMenuItem_AddNewTabs As ToolStripMenuItem
-    Friend WithEvents ToolStripMenuItem_ProjectSave As ToolStripMenuItem
     Friend WithEvents TextboxWatermark_Search As ClassTextboxWatermark
     Friend WithEvents ColumnHeader2 As ColumnHeader
-    Friend WithEvents ToolStripSeparator4 As ToolStripSeparator
-    Friend WithEvents ToolStripMenuItem_CompileAll As ToolStripMenuItem
-    Friend WithEvents ToolStripMenuItem_TestAll As ToolStripMenuItem
-    Friend WithEvents ToolStripMenuItem_PackFile As ToolStripMenuItem
-    Friend WithEvents ToolStripMenuItem_ExtractFile As ToolStripMenuItem
-    Friend WithEvents ToolStripSeparator5 As ToolStripSeparator
     Friend WithEvents ColumnHeader3 As ColumnHeader
-    Friend WithEvents ToolStripMenuItem_DeletePack As ToolStripMenuItem
-    Friend WithEvents ToolStripMenuItem_ShellAll As ToolStripMenuItem
+    Public WithEvents ContextMenuStrip_ProjectFiles As ContextMenuStrip
+    Public WithEvents ToolStripMenuItem_Open As ToolStripMenuItem
+    Public WithEvents ToolStripSeparator1 As ToolStripSeparator
+    Public WithEvents ToolStripMenuItem_Cut As ToolStripMenuItem
+    Public WithEvents ToolStripMenuItem_Copy As ToolStripMenuItem
+    Public WithEvents ToolStripMenuItem_Paste As ToolStripMenuItem
+    Public WithEvents ToolStripSeparator2 As ToolStripSeparator
+    Public WithEvents ToolStripMenuItem_Exlcude As ToolStripMenuItem
+    Public WithEvents ToolStripSeparator3 As ToolStripSeparator
+    Public WithEvents ToolStripMenuItem_AddTab As ToolStripMenuItem
+    Public WithEvents ToolStripMenuItem_AddAllTabs As ToolStripMenuItem
+    Public WithEvents ToolStripMenuItem_AddFiles As ToolStripMenuItem
+    Public WithEvents ToolStripMenuItem_AddNewTabs As ToolStripMenuItem
+    Public WithEvents ToolStripMenuItem_ProjectSave As ToolStripMenuItem
+    Public WithEvents ToolStripSeparator4 As ToolStripSeparator
+    Public WithEvents ToolStripMenuItem_CompileAll As ToolStripMenuItem
+    Public WithEvents ToolStripMenuItem_TestAll As ToolStripMenuItem
+    Public WithEvents ToolStripMenuItem_PackFile As ToolStripMenuItem
+    Public WithEvents ToolStripMenuItem_ExtractFile As ToolStripMenuItem
+    Public WithEvents ToolStripSeparator5 As ToolStripSeparator
+    Public WithEvents ToolStripMenuItem_DeletePack As ToolStripMenuItem
+    Public WithEvents ToolStripMenuItem_ShellAll As ToolStripMenuItem
+    Public WithEvents ListView_ProjectFiles As ListView
 End Class

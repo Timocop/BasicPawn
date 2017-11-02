@@ -25,12 +25,14 @@ Public Class FormMultiCompiler
     Private g_bCleanDebuggerPlaceholder As Boolean = False
 
     Private g_mCompilerThread As Threading.Thread
+    Private g_lCompiledFiles As New List(Of String)
 
-    Public Sub New(f As FormMain, sSourceFiles As String(), bTestingOnly As Boolean, bCleanDebuggerPlaceholder As Boolean)
+    Public Sub New(f As FormMain, sSourceFiles As String(), bTestingOnly As Boolean, bCleanDebuggerPlaceholder As Boolean, Optional ByRef lCompiledFiles As List(Of String) = Nothing)
         g_mMainForm = f
         g_sSourceFiles = sSourceFiles
         g_bTestingOnly = bTestingOnly
         g_bCleanDebuggerPlaceholder = bCleanDebuggerPlaceholder
+        lCompiledFiles = g_lCompiledFiles
 
         ' This call is required by the designer.
         InitializeComponent()
@@ -55,6 +57,8 @@ Public Class FormMultiCompiler
         If (ClassThread.IsValid(g_mCompilerThread)) Then
             Return
         End If
+
+        g_lCompiledFiles.Clear()
 
         g_mCompilerThread = New Threading.Thread(AddressOf CompilerThread) With {
             .IsBackground = True
@@ -114,8 +118,8 @@ Public Class FormMultiCompiler
                                                                                          If (.HasDebugPlaceholder(sSource)) Then
                                                                                              Call .CleanupDebugPlaceholder(sSource, iLanguage)
                                                                                          End If
-                                                                                   End With
-                                                                               End If
+                                                                                     End With
+                                                                                 End If
 
                                                                                  Return g_mMainForm.g_ClassTextEditorTools.CompileSource(g_bTestingOnly,
                                                                                                                                        sSource,
@@ -127,6 +131,10 @@ Public Class FormMultiCompiler
                                                                                                                                        True,
                                                                                                                                        sCompilerOutput)
                                                                              End Function)
+
+                If (bSuccess AndAlso IO.File.Exists(sOutputFile)) Then
+                    g_lCompiledFiles.Add(sOutputFile)
+                End If
 
                 Dim bWarning As Boolean = Regex.Match(sCompilerOutput, "\s+[0-9]+\s+\b(Warning|Warnings)\b\.").Success
 

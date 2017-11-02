@@ -148,6 +148,7 @@ Public Class PluginFTP
         Private g_mFtpMenuSplit As ToolStripSeparator
         Private g_mFtpMenuItem As ToolStripMenuItem
         Private g_mFtpCompileItem As ToolStripMenuItem
+        Private g_mFtpCompileAllItem As ToolStripMenuItem
 
         Public Sub New(mPluginSample As PluginFTP)
             g_mPluginFTP = mPluginSample
@@ -173,11 +174,24 @@ Public Class PluginFTP
                 RemoveHandler g_mFtpCompileItem.Click, AddressOf OnCompileItemClick
                 AddHandler g_mFtpCompileItem.Click, AddressOf OnCompileItemClick
             End If
+
+            Dim iBuildAllIndex As Integer = g_mPluginFTP.g_mFormMain.g_mUCProjectBrowser.ContextMenuStrip_ProjectFiles.Items.IndexOf(g_mPluginFTP.g_mFormMain.g_mUCProjectBrowser.ToolStripMenuItem_CompileAll)
+            If (iBuildAllIndex > -1) Then
+                g_mFtpCompileAllItem = New ToolStripMenuItem("Upload", My.Resources.imageres_5340_16x16)
+
+                g_mPluginFTP.g_mFormMain.g_mUCProjectBrowser.ContextMenuStrip_ProjectFiles.Items.Insert(iBuildAllIndex, g_mFtpCompileAllItem)
+
+                RemoveHandler g_mFtpCompileAllItem.Click, AddressOf OnCompileAllItemClick
+                AddHandler g_mFtpCompileAllItem.Click, AddressOf OnCompileAllItemClick
+
+                RemoveHandler g_mPluginFTP.g_mFormMain.g_mUCProjectBrowser.ContextMenuStrip_ProjectFiles.Opening, AddressOf ContextMenuStripProjectFilesOpening
+                AddHandler g_mPluginFTP.g_mFormMain.g_mUCProjectBrowser.ContextMenuStrip_ProjectFiles.Opening, AddressOf ContextMenuStripProjectFilesOpening
+            End If
         End Sub
 
         Private Sub OnMenuItemClick(sender As Object, e As EventArgs)
             Try
-                Using i As New FormFTP(g_mPluginFTP, "")
+                Using i As New FormFTP(g_mPluginFTP, New String() {})
                     i.ShowDialog(g_mPluginFTP.g_mFormMain)
                 End Using
             Catch ex As Exception
@@ -211,6 +225,47 @@ Public Class PluginFTP
             End Try
         End Sub
 
+        Private Sub OnCompileAllItemClick(sender As Object, e As EventArgs)
+            Try
+                If (g_mPluginFTP.g_mFormMain.g_mUCProjectBrowser.ListView_ProjectFiles.SelectedItems.Count < 1) Then
+                    Return
+                End If
+
+                Dim lFiles As New List(Of String)
+
+                For Each mListViewItem As ListViewItem In g_mPluginFTP.g_mFormMain.g_mUCProjectBrowser.ListView_ProjectFiles.SelectedItems
+                    If (TypeOf mListViewItem IsNot ClassListViewItemData) Then
+                        Continue For
+                    End If
+
+                    Dim mListViewItemData = DirectCast(mListViewItem, ClassListViewItemData)
+                    Dim mInfo = DirectCast(mListViewItemData.g_mData("Info"), UCProjectBrowser.ClassProjectControl.STRUC_PROJECT_FILE_INFO)
+
+                    lFiles.Add(mInfo.sFile)
+                Next
+
+                Dim lCompiledFiles As New List(Of String)
+
+                Using i As New FormMultiCompiler(g_mPluginFTP.g_mFormMain, lFiles.ToArray, False, False, lCompiledFiles)
+                    i.ShowDialog(g_mPluginFTP.g_mFormMain)
+                End Using
+
+                Using i As New FormFTP(g_mPluginFTP, lCompiledFiles.ToArray)
+                    i.ShowDialog(g_mPluginFTP.g_mFormMain)
+                End Using
+            Catch ex As Exception
+                ClassExceptionLog.WriteToLogMessageBox(ex)
+            End Try
+        End Sub
+
+        Private Sub ContextMenuStripProjectFilesOpening(sender As Object, e As System.ComponentModel.CancelEventArgs)
+            If (g_mFtpCompileAllItem Is Nothing OrElse g_mFtpCompileAllItem.IsDisposed) Then
+                Return
+            End If
+
+            g_mFtpCompileAllItem.Enabled = (g_mPluginFTP.g_mFormMain.g_mUCProjectBrowser.ListView_ProjectFiles.SelectedItems.Count > 0)
+        End Sub
+
 
 #Region "IDisposable Support"
         Private disposedValue As Boolean ' To detect redundant calls
@@ -222,6 +277,8 @@ Public Class PluginFTP
                     ' TODO: dispose managed state (managed objects).
                     RemoveHandler g_mFtpMenuItem.Click, AddressOf OnMenuItemClick
                     RemoveHandler g_mFtpCompileItem.Click, AddressOf OnCompileItemClick
+                    RemoveHandler g_mFtpCompileAllItem.Click, AddressOf OnCompileAllItemClick
+                    RemoveHandler g_mPluginFTP.g_mFormMain.g_mUCProjectBrowser.ContextMenuStrip_ProjectFiles.Opening, AddressOf ContextMenuStripProjectFilesOpening
 
                     If (g_mFtpMenuSplit IsNot Nothing AndAlso Not g_mFtpMenuSplit.IsDisposed) Then
                         g_mFtpMenuSplit.Dispose()
@@ -236,6 +293,11 @@ Public Class PluginFTP
                     If (g_mFtpCompileItem IsNot Nothing AndAlso Not g_mFtpCompileItem.IsDisposed) Then
                         g_mFtpCompileItem.Dispose()
                         g_mFtpCompileItem = Nothing
+                    End If
+
+                    If (g_mFtpCompileAllItem IsNot Nothing AndAlso Not g_mFtpCompileAllItem.IsDisposed) Then
+                        g_mFtpCompileAllItem.Dispose()
+                        g_mFtpCompileAllItem = Nothing
                     End If
                 End If
 

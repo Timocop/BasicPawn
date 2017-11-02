@@ -313,9 +313,9 @@ Partial Class FormFTP
         Me.Label6.AutoSize = True
         Me.Label6.Location = New System.Drawing.Point(12, 9)
         Me.Label6.Name = "Label6"
-        Me.Label6.Size = New System.Drawing.Size(84, 13)
+        Me.Label6.Size = New System.Drawing.Size(164, 13)
         Me.Label6.TabIndex = 5
-        Me.Label6.Text = "Uploading file:"
+        Me.Label6.Text = "Uploading file (seperate by ';'):"
         '
         'Label3
         '
