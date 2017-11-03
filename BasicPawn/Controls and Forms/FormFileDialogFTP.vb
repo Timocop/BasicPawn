@@ -227,12 +227,12 @@ Public Class FormFileDialogFTP
                                                                     End Select
 
                                                                     If (mItem.bIsDirectory) Then
-                                                                        mListViewItemData = New ClassListViewItemData(New String() {mItem.sName, CStr(mItem.iSize), mItem.dModified.ToString, mItem.sPermissions, mItem.sOwner}, "0")
+                                                                        mListViewItemData = New ClassListViewItemData(New String() {mItem.sName, ClassTools.ClassStrings.FormatBytes(mItem.iSize), mItem.dModified.ToString, mItem.sPermissions, mItem.sOwner}, "0")
                                                                         mListViewItemData.g_mData("Name") = mItem.sName
                                                                         mListViewItemData.g_mData("IsDirectory") = True
                                                                         lListViewDirectoryItems.Add(mListViewItemData)
                                                                     Else
-                                                                        mListViewItemData = New ClassListViewItemData(New String() {mItem.sName, CStr(mItem.iSize), mItem.dModified.ToString, mItem.sPermissions, mItem.sOwner}, "1")
+                                                                        mListViewItemData = New ClassListViewItemData(New String() {mItem.sName, ClassTools.ClassStrings.FormatBytes(mItem.iSize), mItem.dModified.ToString, mItem.sPermissions, mItem.sOwner}, "1")
                                                                         mListViewItemData.g_mData("Name") = mItem.sName
                                                                         mListViewItemData.g_mData("IsDirectory") = False
                                                                         lListViewFileItems.Add(mListViewItemData)
@@ -267,12 +267,12 @@ Public Class FormFileDialogFTP
                                                                     mFileAttributes.Append(If(mItem.OthersCanExecute, "x", "-"))
 
                                                                     If (mItem.IsDirectory) Then
-                                                                        mListViewItemData = New ClassListViewItemData(New String() {mItem.Name, CStr(mItem.Length), mItem.LastWriteTime.ToString, mFileAttributes.ToString, CStr(mItem.UserId)}, "0")
+                                                                        mListViewItemData = New ClassListViewItemData(New String() {mItem.Name, ClassTools.ClassStrings.FormatBytes(mItem.Length), mItem.LastWriteTime.ToString, mFileAttributes.ToString, CStr(mItem.UserId)}, "0")
                                                                         mListViewItemData.g_mData("Name") = mItem.Name
                                                                         mListViewItemData.g_mData("IsDirectory") = True
                                                                         lListViewDirectoryItems.Add(mListViewItemData)
                                                                     Else
-                                                                        mListViewItemData = New ClassListViewItemData(New String() {mItem.Name, CStr(mItem.Length), mItem.LastWriteTime.ToString, mFileAttributes.ToString, CStr(mItem.UserId)}, "1")
+                                                                        mListViewItemData = New ClassListViewItemData(New String() {mItem.Name, ClassTools.ClassStrings.FormatBytes(mItem.Length), mItem.LastWriteTime.ToString, mFileAttributes.ToString, CStr(mItem.UserId)}, "1")
                                                                         mListViewItemData.g_mData("Name") = mItem.Name
                                                                         mListViewItemData.g_mData("IsDirectory") = False
                                                                         lListViewFileItems.Add(mListViewItemData)

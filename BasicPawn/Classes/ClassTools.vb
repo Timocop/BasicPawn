@@ -199,11 +199,7 @@ Public Class ClassTools
                 iBytes = (iBytes / 1024)
             End While
 
-            If (i > 0) Then
-                Return iBytes.ToString("0.00") & " " & sNames(i)
-            Else
-                Return iBytes.ToString("N") & " " & sNames(i)
-            End If
+            Return iBytes.ToString("0.##") & " " & sNames(i)
         End Function
 
     End Class
