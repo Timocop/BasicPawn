@@ -190,6 +190,22 @@ Public Class ClassTools
                 End If
             End If
         End Sub
+
+        Public Shared Function FormatBytes(iBytes As Double) As String
+            Dim sNames As String() = New String() {"Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"}
+            Dim i = 0
+            While (iBytes >= 1024 AndAlso i < sNames.Length - 1)
+                i += 1
+                iBytes = (iBytes / 1024)
+            End While
+
+            If (i > 0) Then
+                Return iBytes.ToString("0.00") & " " & sNames(i)
+            Else
+                Return iBytes.ToString("N") & " " & sNames(i)
+            End If
+        End Function
+
     End Class
 
     Class ClassForms

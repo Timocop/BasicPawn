@@ -15,7 +15,7 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 Public Class ClassExceptionLog
-    Private Shared g_sLogName As String = IO.Path.Combine(Application.StartupPath, "application_error.log")
+    Public Shared ReadOnly g_sLogName As String = IO.Path.Combine(Application.StartupPath, "application_error.log")
 
     Public Shared Sub WriteToLog(ex As Exception)
         Dim SB As New Text.StringBuilder

@@ -69,6 +69,9 @@ Partial Class FormSettings
         Me.Label_Font = New System.Windows.Forms.Label()
         Me.CheckBox_InvertedColors = New System.Windows.Forms.CheckBox()
         Me.Panel14 = New System.Windows.Forms.Panel()
+        Me.Label30 = New System.Windows.Forms.Label()
+        Me.Button_ViewErrorLog = New System.Windows.Forms.Button()
+        Me.Button_ClearErrorLog = New System.Windows.Forms.Button()
         Me.CheckBox_AssociateAmxMod = New System.Windows.Forms.CheckBox()
         Me.CheckBox_AssociateBasicPawnProject = New System.Windows.Forms.CheckBox()
         Me.CheckBox_AssociateIncludes = New System.Windows.Forms.CheckBox()
@@ -294,7 +297,7 @@ Partial Class FormSettings
         Me.Panel8.Controls.Add(Me.CheckBox_EntitiesEnableColor)
         Me.Panel8.Controls.Add(Me.CheckBox_EntitiesEnableShowNewEnts)
         Me.Panel8.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel8.Location = New System.Drawing.Point(0, 679)
+        Me.Panel8.Location = New System.Drawing.Point(0, 708)
         Me.Panel8.Name = "Panel8"
         Me.Panel8.Size = New System.Drawing.Size(735, 92)
         Me.Panel8.TabIndex = 25
@@ -376,7 +379,7 @@ Partial Class FormSettings
         Me.Panel5.Controls.Add(Me.CheckBox_WindowsToolTipPopup)
         Me.Panel5.Controls.Add(Me.CheckBox_CaseSensitive)
         Me.Panel5.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel5.Location = New System.Drawing.Point(0, 347)
+        Me.Panel5.Location = New System.Drawing.Point(0, 376)
         Me.Panel5.Name = "Panel5"
         Me.Panel5.Size = New System.Drawing.Size(735, 332)
         Me.Panel5.TabIndex = 22
@@ -568,7 +571,7 @@ Partial Class FormSettings
         Me.Panel6.Controls.Add(Me.CheckBox_DoubleClickMark)
         Me.Panel6.Controls.Add(Me.CheckBox_AutoMark)
         Me.Panel6.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel6.Location = New System.Drawing.Point(0, 279)
+        Me.Panel6.Location = New System.Drawing.Point(0, 308)
         Me.Panel6.Name = "Panel6"
         Me.Panel6.Size = New System.Drawing.Size(735, 68)
         Me.Panel6.TabIndex = 23
@@ -630,7 +633,7 @@ Partial Class FormSettings
         Me.Panel7.Controls.Add(Me.Label_Font)
         Me.Panel7.Controls.Add(Me.CheckBox_InvertedColors)
         Me.Panel7.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel7.Location = New System.Drawing.Point(0, 182)
+        Me.Panel7.Location = New System.Drawing.Point(0, 211)
         Me.Panel7.Name = "Panel7"
         Me.Panel7.Size = New System.Drawing.Size(735, 97)
         Me.Panel7.TabIndex = 24
@@ -714,6 +717,9 @@ Partial Class FormSettings
         'Panel14
         '
         Me.Panel14.AutoSize = True
+        Me.Panel14.Controls.Add(Me.Label30)
+        Me.Panel14.Controls.Add(Me.Button_ViewErrorLog)
+        Me.Panel14.Controls.Add(Me.Button_ClearErrorLog)
         Me.Panel14.Controls.Add(Me.CheckBox_AssociateAmxMod)
         Me.Panel14.Controls.Add(Me.CheckBox_AssociateBasicPawnProject)
         Me.Panel14.Controls.Add(Me.CheckBox_AssociateIncludes)
@@ -725,8 +731,35 @@ Partial Class FormSettings
         Me.Panel14.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel14.Location = New System.Drawing.Point(0, 0)
         Me.Panel14.Name = "Panel14"
-        Me.Panel14.Size = New System.Drawing.Size(735, 182)
+        Me.Panel14.Size = New System.Drawing.Size(735, 211)
         Me.Panel14.TabIndex = 26
+        '
+        'Label30
+        '
+        Me.Label30.AutoSize = True
+        Me.Label30.Location = New System.Drawing.Point(3, 190)
+        Me.Label30.Name = "Label30"
+        Me.Label30.Size = New System.Drawing.Size(147, 13)
+        Me.Label30.TabIndex = 28
+        Me.Label30.Text = "Application exception logs:"
+        '
+        'Button_ViewErrorLog
+        '
+        Me.Button_ViewErrorLog.Location = New System.Drawing.Point(312, 185)
+        Me.Button_ViewErrorLog.Name = "Button_ViewErrorLog"
+        Me.Button_ViewErrorLog.Size = New System.Drawing.Size(150, 23)
+        Me.Button_ViewErrorLog.TabIndex = 27
+        Me.Button_ViewErrorLog.Text = "View log"
+        Me.Button_ViewErrorLog.UseVisualStyleBackColor = True
+        '
+        'Button_ClearErrorLog
+        '
+        Me.Button_ClearErrorLog.Location = New System.Drawing.Point(156, 185)
+        Me.Button_ClearErrorLog.Name = "Button_ClearErrorLog"
+        Me.Button_ClearErrorLog.Size = New System.Drawing.Size(150, 23)
+        Me.Button_ClearErrorLog.TabIndex = 26
+        Me.Button_ClearErrorLog.Text = "Clear log (Empty)"
+        Me.Button_ClearErrorLog.UseVisualStyleBackColor = True
         '
         'CheckBox_AssociateAmxMod
         '
@@ -2072,4 +2105,7 @@ Partial Class FormSettings
     Friend WithEvents Label29 As Label
     Friend WithEvents ComboBox_COVerbosityLevelAMXX As ComboBox
     Friend WithEvents CheckBox_WindowsToolTipNewlineMethods As CheckBox
+    Friend WithEvents Label30 As Label
+    Friend WithEvents Button_ViewErrorLog As Button
+    Friend WithEvents Button_ClearErrorLog As Button
 End Class

@@ -103,6 +103,9 @@ Public Class FormSettings
         'List all configs
         UpdateConfigListBox()
 
+        'Update log button text
+        UpdateErrorLogSize()
+
         'Get all settings
         ClassSettings.LoadSettings()
 
@@ -234,6 +237,47 @@ Public Class FormSettings
         Next
     End Sub
 
+    Private Sub Button_ClearErrorLog_Click(sender As Object, e As EventArgs) Handles Button_ClearErrorLog.Click
+        Try
+            If (IO.File.Exists(ClassExceptionLog.g_sLogName)) Then
+                IO.File.Delete(ClassExceptionLog.g_sLogName)
+            End If
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        Finally
+            UpdateErrorLogSize()
+        End Try
+    End Sub
+
+    Private Sub Button_ViewErrorLog_Click(sender As Object, e As EventArgs) Handles Button_ViewErrorLog.Click
+        Try
+            If (Not IO.File.Exists(ClassExceptionLog.g_sLogName)) Then
+                MessageBox.Show("Log file does not exist", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Return
+            End If
+
+            Process.Start("notepad", String.Format("""{0}""", ClassExceptionLog.g_sLogName))
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        Finally
+            UpdateErrorLogSize()
+        End Try
+    End Sub
+
+    Private Sub UpdateErrorLogSize()
+        Try
+            Dim mLogInfo As New IO.FileInfo(ClassExceptionLog.g_sLogName)
+
+            If (Not mLogInfo.Exists) Then
+                Button_ClearErrorLog.Text = "Clear log (Empty)"
+                Return
+            End If
+
+            Button_ClearErrorLog.Text = String.Format("Clear log ({0})", ClassTools.ClassStrings.FormatBytes(mLogInfo.Length))
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
 #End Region
 
 #Region "Settings"
