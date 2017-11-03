@@ -737,7 +737,8 @@ Partial Class FormSettings
         'Label30
         '
         Me.Label30.AutoSize = True
-        Me.Label30.Location = New System.Drawing.Point(3, 190)
+        Me.Label30.Location = New System.Drawing.Point(6, 190)
+        Me.Label30.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.Label30.Name = "Label30"
         Me.Label30.Size = New System.Drawing.Size(147, 13)
         Me.Label30.TabIndex = 28
@@ -745,7 +746,7 @@ Partial Class FormSettings
         '
         'Button_ViewErrorLog
         '
-        Me.Button_ViewErrorLog.Location = New System.Drawing.Point(312, 185)
+        Me.Button_ViewErrorLog.Location = New System.Drawing.Point(315, 185)
         Me.Button_ViewErrorLog.Name = "Button_ViewErrorLog"
         Me.Button_ViewErrorLog.Size = New System.Drawing.Size(150, 23)
         Me.Button_ViewErrorLog.TabIndex = 27
@@ -754,7 +755,7 @@ Partial Class FormSettings
         '
         'Button_ClearErrorLog
         '
-        Me.Button_ClearErrorLog.Location = New System.Drawing.Point(156, 185)
+        Me.Button_ClearErrorLog.Location = New System.Drawing.Point(159, 185)
         Me.Button_ClearErrorLog.Name = "Button_ClearErrorLog"
         Me.Button_ClearErrorLog.Size = New System.Drawing.Size(150, 23)
         Me.Button_ClearErrorLog.TabIndex = 26
