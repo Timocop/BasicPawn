@@ -187,6 +187,9 @@ Public Class PluginFTP
                 RemoveHandler g_mPluginFTP.g_mFormMain.g_mUCProjectBrowser.ContextMenuStrip_ProjectFiles.Opening, AddressOf ContextMenuStripProjectFilesOpening
                 AddHandler g_mPluginFTP.g_mFormMain.g_mUCProjectBrowser.ContextMenuStrip_ProjectFiles.Opening, AddressOf ContextMenuStripProjectFilesOpening
             End If
+
+            'Update all FormMain controls, to change style for the newly created controls
+            ClassControlStyle.UpdateControls(g_mPluginFTP.g_mFormMain)
         End Sub
 
         Private Sub OnMenuItemClick(sender As Object, e As EventArgs)

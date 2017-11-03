@@ -89,6 +89,8 @@ Public Class FormFileDialogFTP
 
     Private Sub FormFileDialogFTP_Load(sender As Object, e As EventArgs) Handles Me.Load
         RefreshListView()
+
+        ClassControlStyle.UpdateControls(Me)
     End Sub
 
     Private Sub Button_Apply_Click(sender As Object, e As EventArgs) Handles Button_Apply.Click
