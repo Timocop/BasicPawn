@@ -179,8 +179,8 @@ Public Class PluginFTP
     End Function
 
     Class ClassUpdate
-        Public Shared ReadOnly g_sGithubVersionURL As String = ""
-        Public Shared ReadOnly g_sGithubDownloadURL As String = ""
+        Public Shared ReadOnly g_sGithubVersionURL As String = "https://github.com/Timocop/BasicPawn/raw/master/Plugin%20Releases/BasicPawnPluginFTPCurrentVersion.txt"
+        Public Shared ReadOnly g_sGithubDownloadURL As String = "https://github.com/Timocop/BasicPawn/raw/master/Plugin%20Releases/BasicPawnPluginFTP.dll"
 
         Public Shared Function CheckUpdateAvailable() As Boolean
             Dim sNextVersion = ""
