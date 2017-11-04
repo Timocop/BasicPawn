@@ -29,6 +29,10 @@ Public Class ClassTabControl
     Private WithEvents g_mTimer As Timer
     Private g_sSelectTabDelayIdentifier As String = ""
 
+    Private g_iBeginUpdateCount As Integer = 0
+    Private g_bBeginRequestSyntaxUpdate As Boolean = False
+    Private g_bBeginRequestFullUpdate As Boolean = False
+
 
     Public Sub New(f As FormMain)
         g_mFormMain = f
@@ -79,18 +83,18 @@ Public Class ClassTabControl
     End Function
 
     Public Function AddTab(Optional bSelect As Boolean = False, Optional bShowTemplateWizard As Boolean = False, Optional bChanged As Boolean = False, Optional bDontRecycleTabs As Boolean = False) As SourceTabPage
+        Dim sTemplateSource As String = ""
+
+        If (bShowTemplateWizard) Then
+            Using i As New FormNewWizard()
+                If (i.ShowDialog = DialogResult.OK) Then
+                    sTemplateSource = i.m_PreviewTemplateSource
+                End If
+            End Using
+        End If
+
         Try
-            Dim sTemplateSource As String = ""
-
-            If (bShowTemplateWizard) Then
-                Using i As New FormNewWizard()
-                    If (i.ShowDialog = DialogResult.OK) Then
-                        sTemplateSource = i.m_PreviewTemplateSource
-                    End If
-                End Using
-            End If
-
-            ClassTools.ClassForms.SuspendDrawing(g_iControlDrawCoutner, g_mFormMain.SplitContainer_ToolboxAndEditor)
+            BeginUpdate()
 
             'Recycle first unsaved tab
             If (Not bDontRecycleTabs AndAlso m_TabsCount = 1) Then
@@ -109,7 +113,12 @@ Public Class ClassTabControl
             End If
 
             g_mFormMain.TabControl_SourceTabs.TabPages.Add(mTabPage)
-            g_mFormMain.g_ClassSyntaxTools.UpdateTextEditorSyntax()
+
+            If (g_iBeginUpdateCount > 0) Then
+                g_bBeginRequestSyntaxUpdate = True
+            Else
+                g_mFormMain.g_ClassSyntaxTools.UpdateTextEditorSyntax()
+            End If
 
             If (bSelect OrElse m_TabsCount < 2) Then
                 SelectTab(m_TabsCount - 1)
@@ -121,13 +130,13 @@ Public Class ClassTabControl
 
             Return mTabPage
         Finally
-            ClassTools.ClassForms.ResumeDrawing(g_iControlDrawCoutner, g_mFormMain.SplitContainer_ToolboxAndEditor)
+            EndUpdate()
         End Try
     End Function
 
     Public Function RemoveTab(iIndex As Integer, bPrompSave As Boolean, Optional iSelectTabIndex As Integer = -1) As Boolean
         Try
-            ClassTools.ClassForms.SuspendDrawing(g_iControlDrawCoutner, g_mFormMain.SplitContainer_ToolboxAndEditor)
+            BeginUpdate()
 
             If (bPrompSave AndAlso PromptSaveTab(iIndex)) Then
                 Return False
@@ -161,13 +170,13 @@ Public Class ClassTabControl
 
             Return True
         Finally
-            ClassTools.ClassForms.ResumeDrawing(g_iControlDrawCoutner, g_mFormMain.SplitContainer_ToolboxAndEditor)
+            EndUpdate()
         End Try
     End Function
 
     Public Sub SwapTabs(iFromIndex As Integer, iToIndex As Integer)
         Try
-            ClassTools.ClassForms.SuspendDrawing(g_iControlDrawCoutner, g_mFormMain.SplitContainer_ToolboxAndEditor)
+            BeginUpdate()
 
             g_bIgnoreOnTabSelected = True
 
@@ -179,13 +188,13 @@ Public Class ClassTabControl
 
             SelectTab(iToIndex)
         Finally
-            ClassTools.ClassForms.ResumeDrawing(g_iControlDrawCoutner, g_mFormMain.SplitContainer_ToolboxAndEditor)
+            EndUpdate()
         End Try
     End Sub
 
     Public Sub SelectTab(iIndex As Integer)
         Try
-            ClassTools.ClassForms.SuspendDrawing(g_iControlDrawCoutner, g_mFormMain.SplitContainer_ToolboxAndEditor)
+            BeginUpdate()
 
             For i = 0 To m_TabsCount - 1
                 If (iIndex = i) Then
@@ -205,12 +214,21 @@ Public Class ClassTabControl
                 End If
 
                 g_mFormMain.TabControl_SourceTabs.SelectTab(iIndex)
-                g_mFormMain.g_ClassSyntaxTools.UpdateTextEditorSyntax()
 
-                FullUpdate(m_Tab(iIndex))
+                If (g_iBeginUpdateCount > 0) Then
+                    g_bBeginRequestSyntaxUpdate = True
+                Else
+                    g_mFormMain.g_ClassSyntaxTools.UpdateTextEditorSyntax()
+                End If
+
+                If (g_iBeginUpdateCount > 0) Then
+                    g_bBeginRequestFullUpdate = True
+                Else
+                    FullUpdate(m_Tab(iIndex))
+                End If
             End If
         Finally
-            ClassTools.ClassForms.ResumeDrawing(g_iControlDrawCoutner, g_mFormMain.SplitContainer_ToolboxAndEditor)
+            EndUpdate()
         End Try
     End Sub
 
@@ -298,7 +316,11 @@ Public Class ClassTabControl
 
             m_Tab(iIndex).m_ClassLineState.m_IgnoreUpdates = False
 
-            FullUpdate(m_Tab(iIndex))
+            If (g_iBeginUpdateCount > 0) Then
+                g_bBeginRequestFullUpdate = True
+            Else
+                FullUpdate(m_Tab(iIndex))
+            End If
 
             If (g_mFormMain.g_mUCStartPage.Visible) Then
                 g_mFormMain.g_mUCStartPage.Hide()
@@ -324,7 +346,11 @@ Public Class ClassTabControl
 
         m_Tab(iIndex).m_ClassLineState.m_IgnoreUpdates = False
 
-        FullUpdate(m_Tab(iIndex))
+        If (g_iBeginUpdateCount > 0) Then
+            g_bBeginRequestFullUpdate = True
+        Else
+            FullUpdate(m_Tab(iIndex))
+        End If
 
         If (g_mFormMain.g_mUCStartPage.Visible) Then
             g_mFormMain.g_mUCStartPage.Hide()
@@ -454,57 +480,50 @@ Public Class ClassTabControl
     ''' Removes all unsaved tabs from left to right. Stops at first saved tab encounter.
     ''' </summary>
     Public Sub RemoveUnsavedTabsLeft()
-        While m_TabsCount > 0
-            If (m_Tab(0).m_IsUnsaved AndAlso Not m_Tab(0).m_Changed) Then
-                Dim bLast As Boolean = (m_TabsCount = 1)
+        Try
+            BeginUpdate()
 
-                If (Not RemoveTab(0, True, m_ActiveTabIndex)) Then
-                    Exit While
-                End If
+            While m_TabsCount > 0
+                If (m_Tab(0).m_IsUnsaved AndAlso Not m_Tab(0).m_Changed) Then
+                    Dim bLast As Boolean = (m_TabsCount = 1)
 
-                If (bLast) Then
-                    Exit While
+                    If (Not RemoveTab(0, True, m_ActiveTabIndex)) Then
+                        Return
+                    End If
+
+                    If (bLast) Then
+                        Return
+                    End If
+                Else
+                    Return
                 End If
-            Else
-                Exit While
-            End If
-        End While
+            End While
+        Finally
+            EndUpdate()
+        End Try
     End Sub
 
     ''' <summary>
     ''' Removes all tabs.
     ''' </summary>
     Public Sub RemoveAllTabs()
-        While m_TabsCount > 0
-            Dim bLast As Boolean = (m_TabsCount = 1)
+        Try
+            BeginUpdate()
 
-            If (Not RemoveTab(m_TabsCount - 1, True, 0)) Then
-                Return
-            End If
+            While m_TabsCount > 0
+                Dim bLast As Boolean = (m_TabsCount = 1)
 
-            If (bLast) Then
-                Exit While
-            End If
-        End While
-    End Sub
+                If (Not RemoveTab(m_TabsCount - 1, True, 0)) Then
+                    Return
+                End If
 
-    Public Sub FullUpdate(mTab As SourceTabPage)
-        'Stop all threads
-        'TODO: For some reason it locks the *.xshd file, need fix! 
-        'FIX: Using 'UpdateSyntaxFile' in the UI thread seems to solve this problem... but why, im using |SyncLock|, |Using| etc.?!
-        g_mFormMain.g_ClassSyntaxUpdater.StopThread()
-
-        g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete("")
-        g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.m_IntelliSenseFunction = ""
-        g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip()
-
-        g_mFormMain.g_mUCTextMinimap.UpdateText()
-        g_mFormMain.g_mUCTextMinimap.UpdatePosition(False, True, True)
-
-        g_mFormMain.g_mUCObjectBrowser.StartUpdate()
-
-        g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, mTab.m_Identifier)
-        g_mFormMain.g_ClassSyntaxUpdater.StartThread()
+                If (bLast) Then
+                    Return
+                End If
+            End While
+        Finally
+            EndUpdate()
+        End Try
     End Sub
 
     Public Sub CheckFilesChangedPrompt()
@@ -545,6 +564,52 @@ Public Class ClassTabControl
 
         Return Nothing
     End Function
+
+    Public Sub BeginUpdate()
+        g_iBeginUpdateCount += 1
+        ClassTools.ClassForms.SuspendDrawing(g_iControlDrawCoutner, g_mFormMain.SplitContainer_ToolboxAndEditor)
+    End Sub
+
+    Public Sub EndUpdate()
+        Try
+            If (g_iBeginUpdateCount > 0) Then
+                g_iBeginUpdateCount -= 1
+
+                If (g_bBeginRequestSyntaxUpdate AndAlso g_iBeginUpdateCount = 0) Then
+                    g_bBeginRequestSyntaxUpdate = False
+
+                    g_mFormMain.g_ClassSyntaxTools.UpdateTextEditorSyntax()
+                End If
+
+                If (g_bBeginRequestFullUpdate AndAlso g_iBeginUpdateCount = 0) Then
+                    g_bBeginRequestFullUpdate = False
+
+                    FullUpdate(m_ActiveTab)
+                End If
+            End If
+        Finally
+            ClassTools.ClassForms.ResumeDrawing(g_iControlDrawCoutner, g_mFormMain.SplitContainer_ToolboxAndEditor)
+        End Try
+    End Sub
+
+    Public Sub FullUpdate(mTab As SourceTabPage)
+        'Stop all threads
+        'TODO: For some reason it locks the *.xshd file, need fix! 
+        'FIX: Using 'UpdateSyntaxFile' in the UI thread seems to solve this problem... but why, im using |SyncLock|, |Using| etc.?!
+        g_mFormMain.g_ClassSyntaxUpdater.StopThread()
+
+        g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete("")
+        g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.m_IntelliSenseFunction = ""
+        g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip()
+
+        g_mFormMain.g_mUCTextMinimap.UpdateText()
+        g_mFormMain.g_mUCTextMinimap.UpdatePosition(False, True, True)
+
+        g_mFormMain.g_mUCObjectBrowser.StartUpdate()
+
+        g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, mTab.m_Identifier)
+        g_mFormMain.g_ClassSyntaxUpdater.StartThread()
+    End Sub
 
     Private Sub OnTabSelected(sender As Object, e As EventArgs)
         If (g_bIgnoreOnTabSelected) Then
@@ -941,17 +1006,23 @@ Public Class ClassTabControl
 
                 Dim sFiles As String() = CType(e.Data.GetData(DataFormats.FileDrop), String())
 
-                For Each sFile As String In sFiles
-                    If (Not IO.File.Exists(sFile)) Then
-                        Continue For
-                    End If
+                Try
+                    g_mFormMain.g_ClassTabControl.BeginUpdate()
 
-                    Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
-                    mTab.OpenFileTab(sFile)
-                    mTab.SelectTab(500)
-                Next
+                    For Each sFile As String In sFiles
+                        If (Not IO.File.Exists(sFile)) Then
+                            Continue For
+                        End If
+
+                        Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
+                        mTab.OpenFileTab(sFile)
+                        mTab.SelectTab(500)
+                    Next
+                Finally
+                    g_mFormMain.g_ClassTabControl.EndUpdate()
+                End Try
             Catch ex As Exception
-                ClassExceptionLog.WriteToLogMessageBox(ex)
+                    ClassExceptionLog.WriteToLogMessageBox(ex)
             End Try
         End Sub
 #End Region

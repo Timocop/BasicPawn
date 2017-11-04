@@ -319,13 +319,22 @@ Public Class FormMain
             Next
 
             'Open all files here
-            For i = 0 To lOpenFileList.Count - 1
-                If (IO.Path.GetExtension(lOpenFileList(i)).ToLower <> UCProjectBrowser.ClassProjectControl.g_sProjectExtension) Then
-                    Dim mTab = g_ClassTabControl.AddTab()
-                    mTab.OpenFileTab(lOpenFileList(i), True)
-                End If
-            Next
+            Try
+                g_ClassTabControl.BeginUpdate()
 
+                For i = 0 To lOpenFileList.Count - 1
+                    Try
+                        If (IO.Path.GetExtension(lOpenFileList(i)).ToLower <> UCProjectBrowser.ClassProjectControl.g_sProjectExtension) Then
+                            Dim mTab = g_ClassTabControl.AddTab()
+                            mTab.OpenFileTab(lOpenFileList(i), True)
+                        End If
+                    Catch ex As Exception
+                        ClassExceptionLog.WriteToLogMessageBox(ex)
+                    End Try
+                Next
+            Finally
+                g_ClassTabControl.EndUpdate()
+            End Try
         End If
 
         'Update Autocomplete 
@@ -558,11 +567,21 @@ Public Class FormMain
                 i.Multiselect = True
 
                 If (i.ShowDialog = DialogResult.OK) Then
-                    For Each sFile As String In i.FileNames
-                        Dim mTab = g_ClassTabControl.AddTab()
-                        mTab.OpenFileTab(sFile)
-                        mTab.SelectTab(500)
-                    Next
+                    Try
+                        g_ClassTabControl.BeginUpdate()
+
+                        For Each sFile As String In i.FileNames
+                            Try
+                                Dim mTab = g_ClassTabControl.AddTab()
+                                mTab.OpenFileTab(sFile)
+                                mTab.SelectTab(500)
+                            Catch ex As Exception
+                                ClassExceptionLog.WriteToLogMessageBox(ex)
+                            End Try
+                        Next
+                    Finally
+                        g_ClassTabControl.EndUpdate()
+                    End Try
                 End If
             End Using
         Catch ex As Exception
@@ -1089,15 +1108,21 @@ Public Class FormMain
     Private Sub ToolStripMenuItem_Tabs_CloseAllButThis_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Tabs_CloseAllButThis.Click
         Dim iActiveIndex As Integer = g_ClassTabControl.m_ActiveTabIndex
 
-        For i = g_ClassTabControl.m_TabsCount - 1 To 0 Step -1
-            If (iActiveIndex = i) Then
-                Continue For
-            End If
+        Try
+            g_ClassTabControl.BeginUpdate()
 
-            If (Not g_ClassTabControl.RemoveTab(i, True, iActiveIndex)) Then
-                Return
-            End If
-        Next
+            For i = g_ClassTabControl.m_TabsCount - 1 To 0 Step -1
+                If (iActiveIndex = i) Then
+                    Continue For
+                End If
+
+                If (Not g_ClassTabControl.RemoveTab(i, True, iActiveIndex)) Then
+                    Return
+                End If
+            Next
+        Finally
+            g_ClassTabControl.EndUpdate()
+        End Try
     End Sub
 
     Private Sub ToolStripMenuItem_Tabs_CloseAll_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Tabs_CloseAll.Click

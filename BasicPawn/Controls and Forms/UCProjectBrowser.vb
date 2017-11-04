@@ -353,38 +353,44 @@ Public Class UCProjectBrowser
                 Return
             End If
 
-            For Each mListViewItem As ListViewItem In ListView_ProjectFiles.SelectedItems
-                If (TypeOf mListViewItem IsNot ClassListViewItemData) Then
-                    Continue For
-                End If
+            Try
+                g_mFormMain.g_ClassTabControl.BeginUpdate()
 
-                Dim mListViewItemData = DirectCast(mListViewItem, ClassListViewItemData)
-                Dim mInfo = DirectCast(mListViewItemData.g_mData("Info"), ClassProjectControl.STRUC_PROJECT_FILE_INFO)
-                If (Not IO.File.Exists(mInfo.sFile)) Then
-                    Throw New ArgumentException(String.Format("File '{0}' does not exist", mInfo.sFile))
-                End If
-
-                Dim bFound As Boolean = False
-                For i = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1
-                    If (Not g_mFormMain.g_ClassTabControl.m_Tab(i).m_IsUnsaved AndAlso g_mFormMain.g_ClassTabControl.m_Tab(i).m_File.ToLower = mInfo.sFile.ToLower) Then
-                        If (g_mFormMain.g_ClassTabControl.m_ActiveTabIndex <> i) Then
-                            g_mFormMain.g_ClassTabControl.SelectTab(i)
-                        End If
-
-                        bFound = True
-                        Exit For
+                For Each mListViewItem As ListViewItem In ListView_ProjectFiles.SelectedItems
+                    If (TypeOf mListViewItem IsNot ClassListViewItemData) Then
+                        Continue For
                     End If
+
+                    Dim mListViewItemData = DirectCast(mListViewItem, ClassListViewItemData)
+                    Dim mInfo = DirectCast(mListViewItemData.g_mData("Info"), ClassProjectControl.STRUC_PROJECT_FILE_INFO)
+                    If (Not IO.File.Exists(mInfo.sFile)) Then
+                        Throw New ArgumentException(String.Format("File '{0}' does not exist", mInfo.sFile))
+                    End If
+
+                    Dim bFound As Boolean = False
+                    For i = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1
+                        If (Not g_mFormMain.g_ClassTabControl.m_Tab(i).m_IsUnsaved AndAlso g_mFormMain.g_ClassTabControl.m_Tab(i).m_File.ToLower = mInfo.sFile.ToLower) Then
+                            If (g_mFormMain.g_ClassTabControl.m_ActiveTabIndex <> i) Then
+                                g_mFormMain.g_ClassTabControl.SelectTab(i)
+                            End If
+
+                            bFound = True
+                            Exit For
+                        End If
+                    Next
+                    If (bFound) Then
+                        Continue For
+                    End If
+
+                    Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
+                    mTab.OpenFileTab(mInfo.sFile)
+                    mTab.SelectTab(500)
                 Next
-                If (bFound) Then
-                    Continue For
-                End If
 
-                Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
-                mTab.OpenFileTab(mInfo.sFile)
-                mTab.SelectTab(500)
-            Next
-
-            g_mFormMain.g_ClassTabControl.RemoveUnsavedTabsLeft()
+                g_mFormMain.g_ClassTabControl.RemoveUnsavedTabsLeft()
+            Finally
+                g_mFormMain.g_ClassTabControl.EndUpdate()
+            End Try
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
@@ -537,7 +543,7 @@ Public Class UCProjectBrowser
             mTab.OpenFileTab(mInfo.sFile)
             mTab.SelectTab()
 
-            g_mFormMain.g_mUCStartPage.g_mFormMain.g_ClassTabControl.RemoveUnsavedTabsLeft()
+            g_mFormMain.g_ClassTabControl.RemoveUnsavedTabsLeft()
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try

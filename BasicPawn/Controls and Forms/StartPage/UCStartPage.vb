@@ -164,31 +164,37 @@ Public Class UCStartPage
         Dim bSomethingSelected As Boolean = False
         Dim bAppendFiles As Boolean = False
 
-        For i = mRecentItems.Length - 1 To 0 Step -1
-            Try
-                If (Not mRecentItems(i).m_Open) Then
-                    Continue For
-                End If
+        Try
+            g_mFormMain.g_ClassTabControl.BeginUpdate()
 
-                bSomethingSelected = True
+            For i = mRecentItems.Length - 1 To 0 Step -1
+                Try
+                    If (Not mRecentItems(i).m_Open) Then
+                        Continue For
+                    End If
 
-                If (mRecentItems(i).m_IsProjectFile) Then
-                    g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile = mRecentItems(i).m_RecentFile
-                    g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(bAppendFiles)
-                    bAppendFiles = True
-                Else
-                    Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
-                    mTab.OpenFileTab(mRecentItems(i).m_RecentFile)
-                    mTab.SelectTab(500)
-                End If
-            Catch ex As Exception
-                ClassExceptionLog.WriteToLogMessageBox(ex)
-            End Try
-        Next
+                    bSomethingSelected = True
 
-        If (bSomethingSelected) Then
-            g_mFormMain.g_ClassTabControl.RemoveUnsavedTabsLeft()
-        End If
+                    If (mRecentItems(i).m_IsProjectFile) Then
+                        g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile = mRecentItems(i).m_RecentFile
+                        g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(bAppendFiles)
+                        bAppendFiles = True
+                    Else
+                        Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
+                        mTab.OpenFileTab(mRecentItems(i).m_RecentFile)
+                        mTab.SelectTab(500)
+                    End If
+                Catch ex As Exception
+                    ClassExceptionLog.WriteToLogMessageBox(ex)
+                End Try
+            Next
+
+            If (bSomethingSelected) Then
+                g_mFormMain.g_ClassTabControl.RemoveUnsavedTabsLeft()
+            End If
+        Finally
+            g_mFormMain.g_ClassTabControl.EndUpdate()
+        End Try
 
         If (Not bSomethingSelected) Then
             MessageBox.Show("No file selected to open!", "Could not open file", MessageBoxButtons.OK, MessageBoxIcon.Information)
