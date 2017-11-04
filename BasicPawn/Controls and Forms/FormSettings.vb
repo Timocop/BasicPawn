@@ -1116,7 +1116,7 @@ Public Class FormSettings
 
             ListView_Plugins.Items.Clear()
             ListView_Plugins.Items.AddRange(lListViewItems.ToArray)
-            ListView_Plugins.AutoResizeColumns(If(ListView_Plugins.Items.Count > 0, ColumnHeaderAutoResizeStyle.ColumnContent, ColumnHeaderAutoResizeStyle.HeaderSize))
+            ClassTools.ClassControls.ClassListView.AutoResizeColumns(ListView_Plugins)
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try

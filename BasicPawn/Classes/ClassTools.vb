@@ -204,6 +204,32 @@ Public Class ClassTools
 
     End Class
 
+    Class ClassControls
+        Class ClassListView
+            Public Shared Sub AutoResizeColumns(mListView As ListView)
+                Dim iWidth As Integer = 0
+
+                mListView.BeginUpdate()
+
+                For Each mColumn As ColumnHeader In mListView.Columns
+                    iWidth = mColumn.Width
+
+                    mListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent)
+                    If (iWidth > mColumn.Width) Then
+                        mColumn.Width = iWidth
+                    End If
+
+                    mListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize)
+                    If (iWidth > mColumn.Width) Then
+                        mColumn.Width = iWidth
+                    End If
+                Next
+
+                mListView.EndUpdate()
+            End Sub
+        End Class
+    End Class
+
     Class ClassForms
         ''' <summary>
         ''' Checks if a form is opened.

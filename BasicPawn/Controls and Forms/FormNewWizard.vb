@@ -532,7 +532,7 @@ Public Class FormNewWizard
 
         ListView_Properties.Items.Clear()
         ListView_Properties.Items.AddRange(mListViewItems.ToArray)
-        ListView_Properties.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent)
+        ClassTools.ClassControls.ClassListView.AutoResizeColumns(ListView_Properties)
     End Sub
 
     Private Sub UpdatePreview()

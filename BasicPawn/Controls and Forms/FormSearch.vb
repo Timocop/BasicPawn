@@ -309,7 +309,7 @@ Public Class FormSearch
                 ListView_Output.Items.Add(mListViewItemData)
             Next
 
-            ListView_Output.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent)
+            ClassTools.ClassControls.ClassListView.AutoResizeColumns(ListView_Output)
             ListView_Output.EndUpdate()
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
@@ -369,7 +369,7 @@ Public Class FormSearch
                 ListView_Output.Items.Add(mListViewItemData)
             Next
 
-            ListView_Output.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent)
+            ClassTools.ClassControls.ClassListView.AutoResizeColumns(ListView_Output)
             ListView_Output.EndUpdate()
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)

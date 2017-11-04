@@ -176,7 +176,7 @@ Public Class UCAutocomplete
     Public Function UpdateAutocomplete(sText As String) As Integer
         If (String.IsNullOrEmpty(sText) OrElse sText.Length < 3 OrElse Regex.IsMatch(sText, "^[0-9]+$")) Then
             ListView_AutocompleteList.Items.Clear()
-            ListView_AutocompleteList.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize)
+            ClassTools.ClassControls.ClassListView.AutoResizeColumns(ListView_AutocompleteList)
             g_sLastAutocompleteText = ""
             Return 0
         End If
@@ -237,14 +237,11 @@ Public Class UCAutocomplete
         g_sLastAutocompleteText = sText
         ListView_AutocompleteList.Sort()
 
+        ClassTools.ClassControls.ClassListView.AutoResizeColumns(ListView_AutocompleteList)
 
         If (ListView_AutocompleteList.Items.Count > 0) Then
             ListView_AutocompleteList.Items(0).Selected = True
             ListView_AutocompleteList.Items(0).EnsureVisible()
-
-            ListView_AutocompleteList.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent)
-        Else
-            ListView_AutocompleteList.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize)
         End If
 
         Return ListView_AutocompleteList.Items.Count

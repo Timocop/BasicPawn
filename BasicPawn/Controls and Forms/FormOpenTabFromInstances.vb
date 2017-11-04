@@ -80,7 +80,7 @@ Public Class FormOpenTabFromInstances
         }
 
         ListView_Instances.Items.Add(mListViewItemData)
-        ListView_Instances.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent)
+        ClassTools.ClassControls.ClassListView.AutoResizeColumns(ListView_Instances)
     End Sub
 
     Public Function FindOrCreateGroup(sHeader As String) As ListViewGroup

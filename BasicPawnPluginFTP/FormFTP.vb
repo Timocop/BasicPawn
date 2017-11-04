@@ -464,7 +464,7 @@ Public Class FormFTP
         ListView_FtpEntries.BeginUpdate()
         ListView_FtpEntries.Items.Clear()
         ListView_FtpEntries.Items.AddRange(lListViewItems.ToArray)
-        ListView_FtpEntries.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent)
+        ClassTools.ClassControls.ClassListView.AutoResizeColumns(ListView_FtpEntries)
         ListView_FtpEntries.EndUpdate()
     End Sub
 

@@ -296,7 +296,7 @@ Public Class FormFileDialogFTP
                                                                                                 ListView_FTP.Items.Clear()
                                                                                                 ListView_FTP.Items.AddRange(lListViewDirectoryItems.ToArray)
                                                                                                 ListView_FTP.Items.AddRange(lListViewFileItems.ToArray)
-                                                                                                ListView_FTP.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent)
+                                                                                                ClassTools.ClassControls.ClassListView.AutoResizeColumns(ListView_FTP)
                                                                                                 ListView_FTP.EndUpdate()
 
                                                                                                 Me.Enabled = True
