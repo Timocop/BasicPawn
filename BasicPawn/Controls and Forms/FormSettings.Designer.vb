@@ -174,6 +174,7 @@ Partial Class FormSettings
         Me.TableLayoutPanel3 = New System.Windows.Forms.TableLayoutPanel()
         Me.ClassPictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
         Me.Label17 = New System.Windows.Forms.Label()
+        Me.LinkLabel_MorePlugins = New System.Windows.Forms.LinkLabel()
         Me.ContextMenuStrip_Plugins.SuspendLayout()
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Settings.SuspendLayout()
@@ -1711,6 +1712,7 @@ Partial Class FormSettings
         '
         'TabPage_Plugins
         '
+        Me.TabPage_Plugins.Controls.Add(Me.LinkLabel_MorePlugins)
         Me.TabPage_Plugins.Controls.Add(Me.ListView_Plugins)
         Me.TabPage_Plugins.Location = New System.Drawing.Point(4, 22)
         Me.TabPage_Plugins.Name = "TabPage_Plugins"
@@ -1722,12 +1724,14 @@ Partial Class FormSettings
         '
         'ListView_Plugins
         '
+        Me.ListView_Plugins.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ListView_Plugins.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1, Me.ColumnHeader2, Me.ColumnHeader3, Me.ColumnHeader4, Me.ColumnHeader5, Me.ColumnHeader6, Me.ColumnHeader7})
         Me.ListView_Plugins.ContextMenuStrip = Me.ContextMenuStrip_Plugins
-        Me.ListView_Plugins.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ListView_Plugins.Location = New System.Drawing.Point(3, 3)
+        Me.ListView_Plugins.Location = New System.Drawing.Point(6, 6)
         Me.ListView_Plugins.Name = "ListView_Plugins"
-        Me.ListView_Plugins.Size = New System.Drawing.Size(746, 718)
+        Me.ListView_Plugins.Size = New System.Drawing.Size(740, 693)
         Me.ListView_Plugins.TabIndex = 0
         Me.ListView_Plugins.UseCompatibleStateImageBehavior = False
         Me.ListView_Plugins.View = System.Windows.Forms.View.Details
@@ -1892,6 +1896,19 @@ Partial Class FormSettings
         Me.Label17.Text = "Loaded BasicPawn plugins are able to read stored database entries. Make sure all " &
     "installed plugins are from a trustworthy publisher to prevent theft."
         '
+        'LinkLabel_MorePlugins
+        '
+        Me.LinkLabel_MorePlugins.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.LinkLabel_MorePlugins.AutoSize = True
+        Me.LinkLabel_MorePlugins.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
+        Me.LinkLabel_MorePlugins.Location = New System.Drawing.Point(6, 705)
+        Me.LinkLabel_MorePlugins.Margin = New System.Windows.Forms.Padding(3)
+        Me.LinkLabel_MorePlugins.Name = "LinkLabel_MorePlugins"
+        Me.LinkLabel_MorePlugins.Size = New System.Drawing.Size(105, 13)
+        Me.LinkLabel_MorePlugins.TabIndex = 1
+        Me.LinkLabel_MorePlugins.TabStop = True
+        Me.LinkLabel_MorePlugins.Text = "Get more plugins..."
+        '
         'FormSettings
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -1948,6 +1965,7 @@ Partial Class FormSettings
         Me.GroupBox1.ResumeLayout(False)
         Me.GroupBox1.PerformLayout()
         Me.TabPage_Plugins.ResumeLayout(False)
+        Me.TabPage_Plugins.PerformLayout()
         Me.TabPage_Database.ResumeLayout(False)
         Me.TableLayoutPanel4.ResumeLayout(False)
         Me.TableLayoutPanel4.PerformLayout()
@@ -2109,4 +2127,5 @@ Partial Class FormSettings
     Friend WithEvents Label30 As Label
     Friend WithEvents Button_ViewErrorLog As Button
     Friend WithEvents Button_ClearErrorLog As Button
+    Friend WithEvents LinkLabel_MorePlugins As LinkLabel
 End Class

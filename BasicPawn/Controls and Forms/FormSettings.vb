@@ -1072,90 +1072,106 @@ Public Class FormSettings
     End Sub
 
     Private Sub UpdatePluginsListView()
-        Dim lListViewItems As New List(Of ListViewItem)
-        For Each mPlugin In g_mFormMain.g_ClassPluginController.m_Plugins
-            Try
-                Dim sEnabled As String = If(mPlugin.mPluginInterface.m_PluginEnabled, "Yes", "")
+        Try
+            Dim lListViewItems As New List(Of ListViewItem)
+            For Each mPlugin In g_mFormMain.g_ClassPluginController.m_Plugins
+                Try
+                    Dim sEnabled As String = If(mPlugin.mPluginInterface.m_PluginEnabled, "Yes", "")
 
-                If (mPlugin.mPluginInformation Is Nothing) Then
+                    If (mPlugin.mPluginInformation Is Nothing) Then
+                        lListViewItems.Add(New ListViewItem(New String() {
+                                                            IO.Path.GetFileName(mPlugin.sFile),
+                                                            "-",
+                                                            "-",
+                                                            "-",
+                                                            "-",
+                                                            "-",
+                                                            sEnabled
+                                                       }))
+                    Else
+                        lListViewItems.Add(New ListViewItem(New String() {
+                                                                    IO.Path.GetFileName(mPlugin.sFile),
+                                                                    mPlugin.mPluginInformation.sName,
+                                                                    mPlugin.mPluginInformation.sAuthor,
+                                                                    mPlugin.mPluginInformation.sDescription,
+                                                                    mPlugin.mPluginInformation.sVersion,
+                                                                    mPlugin.mPluginInformation.sURL,
+                                                                    sEnabled
+                                                               }))
+                    End If
+                Catch ex As Exception
                     lListViewItems.Add(New ListViewItem(New String() {
-                                                        IO.Path.GetFileName(mPlugin.sFile),
-                                                        "-",
-                                                        "-",
-                                                        "-",
-                                                        "-",
-                                                        "-",
-                                                        sEnabled
-                                                   }))
-                Else
-                    lListViewItems.Add(New ListViewItem(New String() {
-                                                                IO.Path.GetFileName(mPlugin.sFile),
-                                                                mPlugin.mPluginInformation.sName,
-                                                                mPlugin.mPluginInformation.sAuthor,
-                                                                mPlugin.mPluginInformation.sDescription,
-                                                                mPlugin.mPluginInformation.sVersion,
-                                                                mPlugin.mPluginInformation.sURL,
-                                                                sEnabled
-                                                           }))
-                End If
-            Catch ex As Exception
-                lListViewItems.Add(New ListViewItem(New String() {
-                                                                IO.Path.GetFileName(mPlugin.sFile),
-                                                                "-",
-                                                                "-",
-                                                                "-",
-                                                                "-",
-                                                                "-",
-                                                                String.Format("Error - {0}", ex.Message)
-                                                           }))
+                                                                    IO.Path.GetFileName(mPlugin.sFile),
+                                                                    "-",
+                                                                    "-",
+                                                                    "-",
+                                                                    "-",
+                                                                    "-",
+                                                                    String.Format("Error - {0}", ex.Message)
+                                                               }))
 
-                ClassExceptionLog.WriteToLogMessageBox(ex)
-            End Try
-        Next
+                    ClassExceptionLog.WriteToLogMessageBox(ex)
+                End Try
+            Next
 
-        ListView_Plugins.Items.Clear()
-        ListView_Plugins.Items.AddRange(lListViewItems.ToArray)
-        ListView_Plugins.AutoResizeColumns(If(ListView_Plugins.Items.Count > 0, ColumnHeaderAutoResizeStyle.ColumnContent, ColumnHeaderAutoResizeStyle.HeaderSize))
+            ListView_Plugins.Items.Clear()
+            ListView_Plugins.Items.AddRange(lListViewItems.ToArray)
+            ListView_Plugins.AutoResizeColumns(If(ListView_Plugins.Items.Count > 0, ColumnHeaderAutoResizeStyle.ColumnContent, ColumnHeaderAutoResizeStyle.HeaderSize))
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
     End Sub
 
     Private Sub SetPluginState(sFilename As String, bEnable As Boolean)
-        For Each mPlugin In g_mFormMain.g_ClassPluginController.m_Plugins
-            If (IO.Path.GetFileName(mPlugin.sFile).ToLower <> sFilename.ToLower) Then
-                Continue For
-            End If
-
-            While True
-                Dim bSuccess As Boolean = False
-                Dim sReason As String = ""
-
-                If (bEnable) Then
-                    bSuccess = mPlugin.mPluginInterface.OnPluginEnabled(sReason)
-                Else
-                    bSuccess = mPlugin.mPluginInterface.OnPluginDisabled(sReason)
+        Try
+            For Each mPlugin In g_mFormMain.g_ClassPluginController.m_Plugins
+                If (IO.Path.GetFileName(mPlugin.sFile).ToLower <> sFilename.ToLower) Then
+                    Continue For
                 End If
 
-                If (bSuccess) Then
-                    g_mFormMain.g_ClassPluginController.m_PluginEnabledByConfig(mPlugin) = bEnable
-                Else
-                    If (String.IsNullOrEmpty(sReason)) Then
-                        sReason = "Unknown"
+                While True
+                    Dim bSuccess As Boolean = False
+                    Dim sReason As String = ""
+
+                    If (bEnable) Then
+                        bSuccess = mPlugin.mPluginInterface.OnPluginEnabled(sReason)
+                    Else
+                        bSuccess = mPlugin.mPluginInterface.OnPluginDisabled(sReason)
                     End If
 
-                    With New Text.StringBuilder
-                        .AppendLine(String.Format("Could not change plugin state of plugin '{0}' with reason:", mPlugin.sFile))
-                        .AppendLine()
-                        .AppendLine(sReason)
+                    If (bSuccess) Then
+                        g_mFormMain.g_ClassPluginController.m_PluginEnabledByConfig(mPlugin) = bEnable
+                    Else
+                        If (String.IsNullOrEmpty(sReason)) Then
+                            sReason = "Unknown"
+                        End If
 
-                        Select Case (MessageBox.Show(.ToString, "Chould not change plugin state", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error))
-                            Case DialogResult.Retry
-                                Continue While
-                        End Select
-                    End With
-                End If
+                        With New Text.StringBuilder
+                            .AppendLine(String.Format("Could not change plugin state of plugin '{0}' with reason:", mPlugin.sFile))
+                            .AppendLine()
+                            .AppendLine(sReason)
 
-                Exit While
-            End While
-        Next
+                            Select Case (MessageBox.Show(.ToString, "Chould not change plugin state", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error))
+                                Case DialogResult.Retry
+                                    Continue While
+                            End Select
+                        End With
+                    End If
+
+                    Exit While
+                End While
+            Next
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
+    Private Sub LinkLabel_MorePlugins_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_MorePlugins.LinkClicked
+        Try
+            Process.Start("https://github.com/Timocop/BasicPawn/tree/master/Plugin%20Releases")
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
     End Sub
 #End Region
 
