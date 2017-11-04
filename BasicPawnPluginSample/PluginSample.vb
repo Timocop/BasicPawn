@@ -97,7 +97,7 @@ Public Class PluginSample
             Return New IPluginInterface.STRUC_PLUGIN_INFORMATION("Sample Plugin",
                                                                  "Timocop",
                                                                  "A simple sample plugin",
-                                                                 "0.0",
+                                                                 Reflection.Assembly.GetExecutingAssembly.GetName.Version.ToString,
                                                                  Nothing)
         End Get
     End Property

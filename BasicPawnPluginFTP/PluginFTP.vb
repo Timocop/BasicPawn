@@ -29,7 +29,6 @@ Public Class PluginFTP
     Private g_mUpdateThread As Threading.Thread
 
     Private Shared ReadOnly g_mSpportedVersion As New Version("0.734")
-    Private Shared ReadOnly g_sCurrentVersion As String = "1.0"
 
 #Region "Unused"
     Public Sub OnPluginLoad(sDLLPath As String) Implements IPluginInterface.OnPluginLoad
@@ -102,7 +101,7 @@ Public Class PluginFTP
             Return New IPluginInterface.STRUC_PLUGIN_INFORMATION("FTP Plugin",
                                                                  "Timocop",
                                                                  "Allows uploading files to servers over FTP.",
-                                                                 g_sCurrentVersion,
+                                                                 ClassUpdate.GetCurrentVersion(),
                                                                  Nothing)
         End Get
     End Property
@@ -112,30 +111,6 @@ Public Class PluginFTP
 
         If (bEnabled) Then
             OnPluginEnabled(Nothing)
-        End If
-
-        If (Not ClassThread.IsValid(g_mUpdateThread)) Then
-            g_mUpdateThread = New Threading.Thread(Sub()
-                                                       Try
-                                                           Threading.Thread.Sleep(10000)
-
-                                                           Dim sCurrentVersion As String = ""
-                                                           Dim sNewVersion As String = ""
-                                                           If (ClassUpdate.CheckUpdateAvailable(sNewVersion, sCurrentVersion)) Then
-                                                               Select Case (MessageBox.Show(String.Format("A new version is available! Do you want to download version v{0} now?", sNewVersion), m_PluginInformation.sName, MessageBoxButtons.YesNo, MessageBoxIcon.Information))
-                                                                   Case DialogResult.Yes
-                                                                       Process.Start(ClassUpdate.g_sGithubDownloadURL)
-                                                               End Select
-                                                           End If
-                                                       Catch ex As Threading.ThreadAbortException
-                                                           Throw
-                                                       Catch ex As Exception
-                                                       End Try
-                                                   End Sub) With {
-                .IsBackground = True,
-                .Priority = Threading.ThreadPriority.Lowest
-            }
-            g_mUpdateThread.Start()
         End If
     End Sub
 
@@ -166,6 +141,30 @@ Public Class PluginFTP
             g_ClassPlugin = New ClassPlugin(Me)
         End If
 
+        If (Not ClassThread.IsValid(g_mUpdateThread)) Then
+            g_mUpdateThread = New Threading.Thread(Sub()
+                                                       Try
+                                                           Threading.Thread.Sleep(10000)
+
+                                                           Dim sCurrentVersion As String = ""
+                                                           Dim sNewVersion As String = ""
+                                                           If (ClassUpdate.CheckUpdateAvailable(sNewVersion, sCurrentVersion)) Then
+                                                               Select Case (MessageBox.Show(String.Format("A new version is available! Do you want to download version v{0} now?", sNewVersion), m_PluginInformation.sName, MessageBoxButtons.YesNo, MessageBoxIcon.Information))
+                                                                   Case DialogResult.Yes
+                                                                       Process.Start(ClassUpdate.g_sGithubDownloadURL)
+                                                               End Select
+                                                           End If
+                                                       Catch ex As Threading.ThreadAbortException
+                                                           Throw
+                                                       Catch ex As Exception
+                                                       End Try
+                                                   End Sub) With {
+                    .IsBackground = True,
+                    .Priority = Threading.ThreadPriority.Lowest
+                }
+            g_mUpdateThread.Start()
+        End If
+
         Return True
     End Function
 
@@ -190,12 +189,16 @@ Public Class PluginFTP
 
         Public Shared Function CheckUpdateAvailable(ByRef r_sNextVersion As String, ByRef r_sCurrentVersion As String) As Boolean
             Dim sNextVersion As String = Regex.Match(GetNextVersion(), "[0-9\.]+").Value
-            Dim sCurrentVersion As String = Regex.Match(g_sCurrentVersion, "[0-9\.]+").Value
+            Dim sCurrentVersion As String = Regex.Match(GetCurrentVersion(), "[0-9\.]+").Value
 
             r_sNextVersion = sNextVersion
             r_sCurrentVersion = sCurrentVersion
 
             Return (New Version(sNextVersion) > New Version(sCurrentVersion))
+        End Function
+
+        Public Shared Function GetCurrentVersion() As String
+            Return Reflection.Assembly.GetExecutingAssembly.GetName.Version.ToString
         End Function
 
         Public Shared Function GetNextVersion() As String
