@@ -15,6 +15,7 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 
+Imports System.Text.RegularExpressions
 Imports System.Windows.Forms
 Imports BasicPawn
 Imports BasicPawnPluginInterface
@@ -25,8 +26,10 @@ Public Class PluginFTP
     Public g_mFormMain As FormMain
 
     Private g_ClassPlugin As ClassPlugin
-    Private g_mSpportedVersion As New Version("0.734")
-    Private g_sCurrentVersion As String = "1.0"
+    Private g_mUpdateThread As Threading.Thread
+
+    Private Shared ReadOnly g_mSpportedVersion As New Version("0.734")
+    Private Shared ReadOnly g_sCurrentVersion As String = "1.0"
 
 #Region "Unused"
     Public Sub OnPluginLoad(sDLLPath As String) Implements IPluginInterface.OnPluginLoad
@@ -110,6 +113,30 @@ Public Class PluginFTP
         If (bEnabled) Then
             OnPluginEnabled(Nothing)
         End If
+
+        If (Not ClassThread.IsValid(g_mUpdateThread)) Then
+            g_mUpdateThread = New Threading.Thread(Sub()
+                                                       Try
+                                                           Threading.Thread.Sleep(10000)
+
+                                                           Dim sCurrentVersion As String = ""
+                                                           Dim sNewVersion As String = ""
+                                                           If (ClassUpdate.CheckUpdateAvailable(sNewVersion, sCurrentVersion)) Then
+                                                               Select Case (MessageBox.Show(String.Format("A new version is available! Do you want to download version v{0} now?", sNewVersion), m_PluginInformation.sName, MessageBoxButtons.YesNo, MessageBoxIcon.Information))
+                                                                   Case DialogResult.Yes
+                                                                       Process.Start(ClassUpdate.g_sGithubDownloadURL)
+                                                               End Select
+                                                           End If
+                                                       Catch ex As Threading.ThreadAbortException
+                                                           Throw
+                                                       Catch ex As Exception
+                                                       End Try
+                                                   End Sub) With {
+                .IsBackground = True,
+                .Priority = Threading.ThreadPriority.Lowest
+            }
+            g_mUpdateThread.Start()
+        End If
     End Sub
 
     Public ReadOnly Property m_PluginEnabled As Boolean Implements IPluginInterface.m_PluginEnabled
@@ -119,6 +146,8 @@ Public Class PluginFTP
     End Property
 
     Public Sub OnPluginEndPost() Implements IPluginInterface.OnPluginEndPost
+        ClassThread.Abort(g_mUpdateThread)
+
         If (g_ClassPlugin IsNot Nothing) Then
             g_ClassPlugin.Dispose()
             g_ClassPlugin = Nothing
@@ -148,6 +177,37 @@ Public Class PluginFTP
 
         Return True
     End Function
+
+    Class ClassUpdate
+        Public Shared ReadOnly g_sGithubVersionURL As String = ""
+        Public Shared ReadOnly g_sGithubDownloadURL As String = ""
+
+        Public Shared Function CheckUpdateAvailable() As Boolean
+            Dim sNextVersion = ""
+            Dim sCurrentVersion = ""
+            Return CheckUpdateAvailable(sNextVersion, sCurrentVersion)
+        End Function
+
+        Public Shared Function CheckUpdateAvailable(ByRef r_sNextVersion As String, ByRef r_sCurrentVersion As String) As Boolean
+            Dim sNextVersion As String = Regex.Match(GetNextVersion(), "[0-9\.]+").Value
+            Dim sCurrentVersion As String = Regex.Match(g_sCurrentVersion, "[0-9\.]+").Value
+
+            r_sNextVersion = sNextVersion
+            r_sCurrentVersion = sCurrentVersion
+
+            Return (New Version(sNextVersion) > New Version(sCurrentVersion))
+        End Function
+
+        Public Shared Function GetNextVersion() As String
+            If (String.IsNullOrEmpty(g_sGithubVersionURL)) Then
+                Throw New ArgumentException("Version URL empty")
+            End If
+
+            Using mWC As New ClassWebClientEx
+                Return mWC.DownloadString(g_sGithubVersionURL)
+            End Using
+        End Function
+    End Class
 
     Class ClassPlugin
         Implements IDisposable

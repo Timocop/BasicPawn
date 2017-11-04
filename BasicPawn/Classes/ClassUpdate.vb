@@ -18,11 +18,11 @@
 Imports System.Text.RegularExpressions
 
 Public Class ClassUpdate
-    Private Shared g_sRSAPublicKeyXML As String = "<RSAKeyValue><Modulus>vhkaxwuw08ufJcXdcCGvXjeF/UTpQzIvfjo+DqUDT6OyrCB5u86t536wSDJawFeMPR9JicrY7eiT8Jy9O7zsu0y3+aaR7nBNw9h7DIGFLsgASKHR5PD2uW1dh3ZilkLCk+eKwEER91MyYm5fEciudrwZbsHRhjsMsHRvuyu231U=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue>"
+    Public Shared ReadOnly g_sRSAPublicKeyXML As String = "<RSAKeyValue><Modulus>vhkaxwuw08ufJcXdcCGvXjeF/UTpQzIvfjo+DqUDT6OyrCB5u86t536wSDJawFeMPR9JicrY7eiT8Jy9O7zsu0y3+aaR7nBNw9h7DIGFLsgASKHR5PD2uW1dh3ZilkLCk+eKwEER91MyYm5fEciudrwZbsHRhjsMsHRvuyu231U=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue>"
 
-    Private Shared g_sGithubVersionURL As String = "https://github.com/Timocop/BasicPawn/raw/master/Update%20Depot/CurrentVersion.txt"
-    Private Shared g_sGithubHashURL As String = "https://github.com/Timocop/BasicPawn/raw/master/Update%20Depot/DataHash.txt"
-    Private Shared g_sGithubDataURL As String = "https://github.com/Timocop/BasicPawn/raw/master/Update%20Depot/BasicPawnUpdateSFX.dat"
+    Public Shared ReadOnly g_sGithubVersionURL As String = "https://github.com/Timocop/BasicPawn/raw/master/Update%20Depot/CurrentVersion.txt"
+    Public Shared ReadOnly g_sGithubHashURL As String = "https://github.com/Timocop/BasicPawn/raw/master/Update%20Depot/DataHash.txt"
+    Public Shared ReadOnly g_sGithubDataURL As String = "https://github.com/Timocop/BasicPawn/raw/master/Update%20Depot/BasicPawnUpdateSFX.dat"
 
     Public Shared Sub InstallUpdate()
         If (String.IsNullOrEmpty(g_sGithubHashURL)) Then
