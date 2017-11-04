@@ -54,7 +54,7 @@ Public Class FormToolTip
             TextEditorControl_ToolTip.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right Or AnchorStyles.Top
 
             TextEditorControl_ToolTip.Width += SystemInformation.VerticalScrollBarWidth
-            TextEditorControl_ToolTip.Height += SystemInformation.VerticalScrollBarWidth
+            TextEditorControl_ToolTip.Height += SystemInformation.HorizontalScrollBarHeight
         End If
 
         If (ClassTools.ClassOperatingSystem.GetWineVersion Is Nothing) Then
