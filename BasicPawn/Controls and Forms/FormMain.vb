@@ -886,7 +886,7 @@ Public Class FormMain
         End Select
 
 
-        ToolStripMenuItem_ToolsAutocompleteCurrentMod.Text = String.Format("Current langauge: {0}", sLanguage)
+        ToolStripMenuItem_ToolsAutocompleteCurrentMod.Text = String.Format("Current language: {0}", sLanguage)
     End Sub
 #End Region
 
