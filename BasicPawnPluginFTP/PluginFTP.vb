@@ -25,6 +25,8 @@ Public Class PluginFTP
     Public g_mFormMain As FormMain
 
     Private g_ClassPlugin As ClassPlugin
+    Private g_mSpportedVersion As New Version("0.734")
+    Private g_sCurrentVersion As String = "1.0"
 
 #Region "Unused"
     Public Sub OnPluginLoad(sDLLPath As String) Implements IPluginInterface.OnPluginLoad
@@ -97,7 +99,7 @@ Public Class PluginFTP
             Return New IPluginInterface.STRUC_PLUGIN_INFORMATION("FTP Plugin",
                                                                  "Timocop",
                                                                  "Allows uploading files to servers over FTP.",
-                                                                 "1.0",
+                                                                 g_sCurrentVersion,
                                                                  Nothing)
         End Get
     End Property
@@ -106,7 +108,7 @@ Public Class PluginFTP
         g_mFormMain = DirectCast(mFormMain, FormMain)
 
         If (bEnabled) Then
-            g_ClassPlugin = New ClassPlugin(Me)
+            OnPluginEnabled(Nothing)
         End If
     End Sub
 
@@ -124,6 +126,13 @@ Public Class PluginFTP
     End Sub
 
     Public Function OnPluginEnabled(ByRef sReason As String) As Boolean Implements IPluginInterface.OnPluginEnabled
+#If Not DEBUG Then
+        If (New Version(Application.ProductVersion) < g_mSpportedVersion) Then
+            sReason = String.Format("Unsupported BasicPawn version! Required is version v{0}.", g_mSpportedVersion.ToString)
+            Return False
+        End If
+#End If
+
         If (g_ClassPlugin Is Nothing) Then
             g_ClassPlugin = New ClassPlugin(Me)
         End If

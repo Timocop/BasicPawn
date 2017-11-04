@@ -263,7 +263,7 @@ Public Class FormFTP
                                                                                Continue For
                                                                            End If
 
-                                                                           g_mPluginFTP.g_mFormMain.PrintInformation("[INFO]", String.Format("Uploading file '{0}' ({1}/{2}) to {3}/{4} using {5}...", sFiles(i), i + 1, sFiles.Length, sHost.TrimEnd("/"c), sDestinationPath.TrimStart("/"c),
+                                                                           g_mPluginFTP.g_mFormMain.PrintInformation("[INFO]", String.Format("Uploading file '{0}' ({1}/{2}) to '{3}/{4}' using {5}...", sFiles(i), i + 1, sFiles.Length, sHost.TrimEnd("/"c), sDestinationPath.TrimStart("/"c),
                                                                                                                                        If(iProtocolType = ENUM_FTP_PROTOCOL_TYPE.FTP, "FTP", "SFTP")))
 
                                                                            Dim sFilename As String = IO.Path.GetFileName(sFiles(i))
