@@ -783,7 +783,7 @@ Public Class ClassTabControl
                 If (disposing) Then
                     RemoveHandlers()
 
-                    If (g_mSourceTextEditor IsNot Nothing) Then
+                    If (g_mSourceTextEditor IsNot Nothing AndAlso Not g_mSourceTextEditor.IsDisposed) Then
                         g_mSourceTextEditor.Dispose()
                         g_mSourceTextEditor = Nothing
                     End If

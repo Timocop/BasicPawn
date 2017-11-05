@@ -207,15 +207,17 @@ Public Class PluginSample
             If Not Me.disposedValue Then
                 If disposing Then
                     ' TODO: dispose managed state (managed objects).
-                    RemoveHandler g_mTestButton.Click, AddressOf OnButtonClick
-                    RemoveHandler g_mAboutMenuItem.Click, AddressOf OnMenuItemClick
 
                     If (g_mAboutMenuItem IsNot Nothing AndAlso Not g_mAboutMenuItem.IsDisposed) Then
+                        RemoveHandler g_mAboutMenuItem.Click, AddressOf OnMenuItemClick
+
                         g_mAboutMenuItem.Dispose()
                         g_mAboutMenuItem = Nothing
                     End If
 
                     If (g_mTestButton IsNot Nothing AndAlso Not g_mTestButton.IsDisposed) Then
+                        RemoveHandler g_mTestButton.Click, AddressOf OnButtonClick
+
                         g_mTestButton.Dispose()
                         g_mTestButton = Nothing
                     End If

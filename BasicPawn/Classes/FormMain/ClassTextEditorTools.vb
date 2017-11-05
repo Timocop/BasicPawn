@@ -1143,6 +1143,10 @@ Public Class ClassTextEditorTools
                     Continue For
                 End If
 
+                If (g_lHighlightItemList(i).mToolStripItem Is Nothing OrElse g_lHighlightItemList(i).mToolStripItem.IsDisposed) Then
+                    Continue For
+                End If
+
                 RemoveHandler g_lHighlightItemList(i).mToolStripItem.Click, AddressOf OnClick
 
                 g_lHighlightItemList(i).mToolStripItem.Dispose()

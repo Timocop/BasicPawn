@@ -350,9 +350,6 @@ Public Class PluginFTP
             If Not disposedValue Then
                 If disposing Then
                     ' TODO: dispose managed state (managed objects).
-                    RemoveHandler g_mFtpMenuItem.Click, AddressOf OnMenuItemClick
-                    RemoveHandler g_mFtpCompileItem.Click, AddressOf OnCompileItemClick
-                    RemoveHandler g_mFtpCompileAllItem.Click, AddressOf OnCompileAllItemClick
                     RemoveHandler g_mPluginFTP.g_mFormMain.g_mUCProjectBrowser.ContextMenuStrip_ProjectFiles.Opening, AddressOf ContextMenuStripProjectFilesOpening
 
                     If (g_mFtpMenuSplit IsNot Nothing AndAlso Not g_mFtpMenuSplit.IsDisposed) Then
@@ -361,16 +358,22 @@ Public Class PluginFTP
                     End If
 
                     If (g_mFtpMenuItem IsNot Nothing AndAlso Not g_mFtpMenuItem.IsDisposed) Then
+                        RemoveHandler g_mFtpMenuItem.Click, AddressOf OnMenuItemClick
+
                         g_mFtpMenuItem.Dispose()
                         g_mFtpMenuItem = Nothing
                     End If
 
                     If (g_mFtpCompileItem IsNot Nothing AndAlso Not g_mFtpCompileItem.IsDisposed) Then
+                        RemoveHandler g_mFtpCompileItem.Click, AddressOf OnCompileItemClick
+
                         g_mFtpCompileItem.Dispose()
                         g_mFtpCompileItem = Nothing
                     End If
 
                     If (g_mFtpCompileAllItem IsNot Nothing AndAlso Not g_mFtpCompileAllItem.IsDisposed) Then
+                        RemoveHandler g_mFtpCompileAllItem.Click, AddressOf OnCompileAllItemClick
+
                         g_mFtpCompileAllItem.Dispose()
                         g_mFtpCompileAllItem = Nothing
                     End If
