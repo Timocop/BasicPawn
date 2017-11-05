@@ -32,6 +32,7 @@ Public Class ClassTabControl
     Private g_iBeginUpdateCount As Integer = 0
     Private g_bBeginRequestSyntaxUpdate As Boolean = False
     Private g_bBeginRequestFullUpdate As Boolean = False
+    Private g_lBeginRequestFullUpdateTabs As New List(Of SourceTabPage)
 
 
     Public Sub New(f As FormMain)
@@ -223,6 +224,7 @@ Public Class ClassTabControl
 
                 If (g_iBeginUpdateCount > 0) Then
                     g_bBeginRequestFullUpdate = True
+                    g_lBeginRequestFullUpdateTabs.Add(m_Tab(iIndex))
                 Else
                     FullUpdate(m_Tab(iIndex))
                 End If
@@ -318,6 +320,7 @@ Public Class ClassTabControl
 
             If (g_iBeginUpdateCount > 0) Then
                 g_bBeginRequestFullUpdate = True
+                g_lBeginRequestFullUpdateTabs.Add(m_Tab(iIndex))
             Else
                 FullUpdate(m_Tab(iIndex))
             End If
@@ -348,6 +351,7 @@ Public Class ClassTabControl
 
         If (g_iBeginUpdateCount > 0) Then
             g_bBeginRequestFullUpdate = True
+            g_lBeginRequestFullUpdateTabs.Add(m_Tab(iIndex))
         Else
             FullUpdate(m_Tab(iIndex))
         End If
@@ -583,8 +587,10 @@ Public Class ClassTabControl
 
                 If (g_bBeginRequestFullUpdate AndAlso g_iBeginUpdateCount = 0) Then
                     g_bBeginRequestFullUpdate = False
+                    Dim mTabs = g_lBeginRequestFullUpdateTabs.ToArray
+                    g_lBeginRequestFullUpdateTabs.Clear()
 
-                    FullUpdate(m_ActiveTab)
+                    FullUpdate(mTabs)
                 End If
             End If
         Finally
@@ -593,6 +599,10 @@ Public Class ClassTabControl
     End Sub
 
     Public Sub FullUpdate(mTab As SourceTabPage)
+        FullUpdate({mTab})
+    End Sub
+
+    Public Sub FullUpdate(mTabs As SourceTabPage())
         'Stop all threads
         'TODO: For some reason it locks the *.xshd file, need fix! 
         'FIX: Using 'UpdateSyntaxFile' in the UI thread seems to solve this problem... but why, im using |SyncLock|, |Using| etc.?!
@@ -607,7 +617,10 @@ Public Class ClassTabControl
 
         g_mFormMain.g_mUCObjectBrowser.StartUpdate()
 
-        g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, mTab.m_Identifier)
+        For i = 0 To mTabs.Length - 1
+            g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, mTabs(i).m_Identifier)
+        Next
+
         g_mFormMain.g_ClassSyntaxUpdater.StartThread()
     End Sub
 
