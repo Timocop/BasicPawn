@@ -59,7 +59,8 @@ Public Class FormFTP
         ' This call is required by the designer.
         InitializeComponent()
 
-        ' Add any initialization after the InitializeComponent() call.
+        ' Add any initialization after the InitializeComponent() call. 
+        TextBox_UploadFile.Multiline = True
         TextBox_UploadFile.Text = String.Join(";"c, sFiles)
         GroupBox_NewEntry.Visible = False
         ComboBox_Protocol.SelectedIndex = 0

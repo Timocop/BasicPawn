@@ -307,6 +307,7 @@ Partial Class FormFTP
         Me.TextBox_UploadFile.Name = "TextBox_UploadFile"
         Me.TextBox_UploadFile.Size = New System.Drawing.Size(402, 22)
         Me.TextBox_UploadFile.TabIndex = 6
+        Me.TextBox_UploadFile.WordWrap = False
         '
         'Label6
         '
