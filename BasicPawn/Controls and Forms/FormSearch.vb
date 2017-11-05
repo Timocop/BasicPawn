@@ -400,12 +400,11 @@ Public Class FormSearch
             Return
         End If
 
-        If (TypeOf ListView_Output.SelectedItems(0) IsNot ClassListViewItemData) Then
-            Return
-        End If
-
         Try
-            Dim mListViewItemData = DirectCast(ListView_Output.SelectedItems(0), ClassListViewItemData)
+            Dim mListViewItemData = TryCast(ListView_Output.SelectedItems(0), ClassListViewItemData)
+            If (mListViewItemData Is Nothing) Then
+                Return
+            End If
 
             Dim sFile As String = CStr(mListViewItemData.g_mData("File"))
             Dim iLocation As Integer = CInt(mListViewItemData.g_mData("Location"))

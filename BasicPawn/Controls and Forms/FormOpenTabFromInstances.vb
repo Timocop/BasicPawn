@@ -112,11 +112,11 @@ Public Class FormOpenTabFromInstances
         Dim lFiles As New List(Of String)
 
         For i = ListView_Instances.CheckedItems.Count - 1 To 0 Step -1
-            If (TypeOf ListView_Instances.CheckedItems(i) IsNot ClassListViewItemData) Then
+            Dim mListViewItemData = TryCast(ListView_Instances.CheckedItems(i), ClassListViewItemData)
+            If (mListViewItemData Is Nothing) Then
                 Continue For
             End If
 
-            Dim mListViewItemData = DirectCast(ListView_Instances.CheckedItems(i), ClassListViewItemData)
             Dim mTabInfo As STRUC_TABINFO_ITEM? = DirectCast(mListViewItemData.g_mData("TabInfo"), STRUC_TABINFO_ITEM?)
 
             If (String.IsNullOrEmpty(mTabInfo.Value.sTabFile)) Then
@@ -158,11 +158,11 @@ Public Class FormOpenTabFromInstances
             Return
         End If
 
-        If (TypeOf ListView_Instances.SelectedItems(0) IsNot ClassListViewItemData) Then
+        Dim mListViewItemData = TryCast(ListView_Instances.SelectedItems(0), ClassListViewItemData)
+        If (mListViewItemData Is Nothing) Then
             Return
         End If
 
-        Dim mListViewItemData = DirectCast(ListView_Instances.SelectedItems(0), ClassListViewItemData)
         Dim mTabInfo As STRUC_TABINFO_ITEM? = DirectCast(mListViewItemData.g_mData("TabInfo"), STRUC_TABINFO_ITEM?)
 
         Dim iPID As Integer = mTabInfo.Value.iProcessID

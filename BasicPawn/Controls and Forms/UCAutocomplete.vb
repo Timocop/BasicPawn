@@ -252,11 +252,10 @@ Public Class UCAutocomplete
             Return Nothing
         End If
 
-        If (TypeOf ListView_AutocompleteList.SelectedItems(0) IsNot ClassListViewItemData) Then
+        Dim mListViewItemData = TryCast(ListView_AutocompleteList.SelectedItems(0), ClassListViewItemData)
+        If (mListViewItemData Is Nothing) Then
             Return Nothing
         End If
-
-        Dim mListViewItemData = DirectCast(ListView_AutocompleteList.SelectedItems(0), ClassListViewItemData)
 
         Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(CStr(mListViewItemData.g_mData("Info")),
                                                                      CStr(mListViewItemData.g_mData("File")),

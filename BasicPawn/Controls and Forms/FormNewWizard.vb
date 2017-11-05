@@ -550,11 +550,10 @@ Public Class FormNewWizard
                 Return
             End If
 
-            If (TypeOf ListView_Properties.SelectedItems(0) IsNot ClassListViewItemData) Then
+            g_mSelectedPropertyItem = TryCast(ListView_Properties.SelectedItems(0), ClassListViewItemData)
+            If (g_mSelectedPropertyItem Is Nothing) Then
                 Return
             End If
-
-            g_mSelectedPropertyItem = DirectCast(ListView_Properties.SelectedItems(0), ClassListViewItemData)
 
             ContextMenuStrip_Properties.Show(ListView_Properties, New Point(g_mSelectedPropertyItem.Bounds.Location.X, g_mSelectedPropertyItem.Bounds.Location.Y + g_mSelectedPropertyItem.Bounds.Height))
         Catch ex As Exception

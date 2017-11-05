@@ -100,11 +100,11 @@ Public Class FormDebuggerException
                 Return
             End If
 
-            If (TypeOf ListView_StackTrace.SelectedItems(0) IsNot ClassListViewItemData) Then
+            Dim mListViewItemData = TryCast(ListView_StackTrace.SelectedItems(0), ClassListViewItemData)
+            If (mListViewItemData Is Nothing) Then
                 Return
             End If
 
-            Dim mListViewItemData = DirectCast(ListView_StackTrace.SelectedItems(0), ClassListViewItemData)
             Dim iDebugLine As Integer = CInt(mListViewItemData.g_mData("Line"))
 
             iDebugLine -= 1

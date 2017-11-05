@@ -352,11 +352,11 @@ Public Class FormDebugger
                 Return
             End If
 
-            If (TypeOf ListView_Breakpoints.SelectedItems(0) IsNot ClassListViewItemData) Then
+            Dim mListViewItemData = TryCast(ListView_Breakpoints.SelectedItems(0), ClassListViewItemData)
+            If (mListViewItemData Is Nothing) Then
                 Return
             End If
 
-            Dim mListViewItemData = DirectCast(ListView_Breakpoints.SelectedItems(0), ClassListViewItemData)
             Dim sGUID As String = CStr(mListViewItemData.g_mData("GUID"))
 
             For Each mItem In g_ClassDebuggerParser.g_lBreakpointList
@@ -390,11 +390,11 @@ Public Class FormDebugger
                 Return
             End If
 
-            If (TypeOf ListView_Watchers.SelectedItems(0) IsNot ClassListViewItemData) Then
+            Dim mListViewItemData = TryCast(ListView_Watchers.SelectedItems(0), ClassListViewItemData)
+            If (mListViewItemData Is Nothing) Then
                 Return
             End If
 
-            Dim mListViewItemData = DirectCast(ListView_Watchers.SelectedItems(0), ClassListViewItemData)
             Dim sGUID As String = CStr(mListViewItemData.g_mData("GUID"))
 
             For Each item In g_ClassDebuggerParser.g_lWatcherList
@@ -487,11 +487,11 @@ Public Class FormDebugger
 
 #Region "Enable/Disable Breakpoints"
     Private Sub ListView_Breakpoints_ItemChecked(sender As Object, e As ItemCheckedEventArgs) Handles ListView_Breakpoints.ItemChecked
-        If (TypeOf e.Item IsNot ClassListViewItemData) Then
+        Dim mListViewItemData = TryCast(e.Item, ClassListViewItemData)
+        If (mListViewItemData Is Nothing) Then
             Return
         End If
 
-        Dim mListViewItemData = DirectCast(e.Item, ClassListViewItemData)
         Dim sGUID As String = CStr(mListViewItemData.g_mData("GUID"))
 
         g_ClassDebuggerRunner.m_IgnoreBreakpointGUID(sGUID) = (Not e.Item.Checked)
@@ -652,11 +652,10 @@ Public Class FormDebugger
                     Next
 
                     For i = 0 To ListView_Breakpoints.Items.Count - 1
-                        If (TypeOf ListView_Breakpoints.Items(i) IsNot ClassListViewItemData) Then
+                        Dim mListViewItemData = TryCast(ListView_Breakpoints.Items(i), ClassListViewItemData)
+                        If (mListViewItemData Is Nothing) Then
                             Continue For
                         End If
-
-                        Dim mListViewItemData = DirectCast(ListView_Breakpoints.Items(i), ClassListViewItemData)
 
                         If (CStr(mListViewItemData.g_mData("GUID")) = sGUID) Then
                             mListViewItemData.Selected = True
@@ -688,11 +687,10 @@ Public Class FormDebugger
                     Next
 
                     For i = 0 To ListView_Watchers.Items.Count - 1
-                        If (TypeOf ListView_Watchers.Items(i) IsNot ClassListViewItemData) Then
+                        Dim mListViewItemData = TryCast(ListView_Watchers.Items(i), ClassListViewItemData)
+                        If (mListViewItemData Is Nothing) Then
                             Continue For
                         End If
-
-                        Dim mListViewItemData = DirectCast(ListView_Watchers.Items(i), ClassListViewItemData)
 
                         If (CStr(mListViewItemData.g_mData("GUID")) = sGUID) Then
                             mListViewItemData.Selected = True

@@ -309,11 +309,11 @@ Public Class PluginFTP
                 Dim lFiles As New List(Of String)
 
                 For Each mListViewItem As ListViewItem In g_mPluginFTP.g_mFormMain.g_mUCProjectBrowser.ListView_ProjectFiles.SelectedItems
-                    If (TypeOf mListViewItem IsNot ClassListViewItemData) Then
+                    Dim mListViewItemData = TryCast(mListViewItem, ClassListViewItemData)
+                    If (mListViewItemData Is Nothing) Then
                         Continue For
                     End If
 
-                    Dim mListViewItemData = DirectCast(mListViewItem, ClassListViewItemData)
                     Dim mInfo = DirectCast(mListViewItemData.g_mData("Info"), UCProjectBrowser.ClassProjectControl.STRUC_PROJECT_FILE_INFO)
 
                     lFiles.Add(mInfo.sFile)

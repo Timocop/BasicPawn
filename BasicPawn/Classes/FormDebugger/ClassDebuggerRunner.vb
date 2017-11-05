@@ -230,11 +230,10 @@ Public Class ClassDebuggerRunner
     Public Sub UpdateBreakpointListView()
         If (String.IsNullOrEmpty(g_mActiveBreakpointValue.sGUID)) Then
             For i = 0 To g_mFormDebugger.ListView_Breakpoints.Items.Count - 1
-                If (TypeOf g_mFormDebugger.ListView_Breakpoints.Items(i) IsNot ClassListViewItemData) Then
+                Dim mListViewItemData = TryCast(g_mFormDebugger.ListView_Breakpoints.Items(i), ClassListViewItemData)
+                If (mListViewItemData Is Nothing) Then
                     Continue For
                 End If
-
-                Dim mListViewItemData = DirectCast(g_mFormDebugger.ListView_Breakpoints.Items(i), ClassListViewItemData)
 
                 If (ClassControlStyle.m_IsInvertedColors) Then
                     mListViewItemData.BackColor = ClassControlStyle.g_cDarkControlColor.mDarkBackground
@@ -246,11 +245,10 @@ Public Class ClassDebuggerRunner
             Next
         Else
             For i = 0 To g_mFormDebugger.ListView_Breakpoints.Items.Count - 1
-                If (TypeOf g_mFormDebugger.ListView_Breakpoints.Items(i) IsNot ClassListViewItemData) Then
+                Dim mListViewItemData = TryCast(g_mFormDebugger.ListView_Breakpoints.Items(i), ClassListViewItemData)
+                If (mListViewItemData Is Nothing) Then
                     Continue For
                 End If
-
-                Dim mListViewItemData = DirectCast(g_mFormDebugger.ListView_Breakpoints.Items(i), ClassListViewItemData)
 
                 If (g_mActiveBreakpointValue.sGUID = CStr(mListViewItemData.g_mData("GUID"))) Then
                     mListViewItemData.BackColor = Color.Red
@@ -1028,11 +1026,10 @@ Public Class ClassDebuggerRunner
             'INFO: Dont use 'Invoke' it deadlocks on FileSystemWatcher.Dispose, use async 'BeginInvoke' instead.
             ClassThread.ExecAsync(g_mFormDebugger.ListView_Watchers, Sub()
                                                                          For i = 0 To g_mFormDebugger.ListView_Watchers.Items.Count - 1
-                                                                             If (TypeOf g_mFormDebugger.ListView_Watchers.Items(i) IsNot ClassListViewItemData) Then
+                                                                             Dim mListViewItemData = TryCast(g_mFormDebugger.ListView_Watchers.Items(i), ClassListViewItemData)
+                                                                             If (mListViewItemData Is Nothing) Then
                                                                                  Continue For
                                                                              End If
-
-                                                                             Dim mListViewItemData = DirectCast(g_mFormDebugger.ListView_Watchers.Items(i), ClassListViewItemData)
 
                                                                              If (CStr(mListViewItemData.g_mData("GUID")) = sGUID) Then
                                                                                  mListViewItemData.SubItems(2).Text = String.Format("i:{0} | f:{1}", sInteger, sFloat)
@@ -1129,11 +1126,10 @@ Public Class ClassDebuggerRunner
                     Case ENUM_ENTITY_ACTION.UPDATE
                         ClassThread.ExecAsync(g_mFormDebugger.ListView_Entities, Sub()
                                                                                      Try
-                                                                                         If (TypeOf g_mFormDebugger.ListView_Entities.Items(iIndex) IsNot ClassListViewItemData) Then
+                                                                                         Dim mListViewItemData = TryCast(g_mFormDebugger.ListView_Entities.Items(iIndex), ClassListViewItemData)
+                                                                                         If (mListViewItemData Is Nothing) Then
                                                                                              Return
                                                                                          End If
-
-                                                                                         Dim mListViewItemData = DirectCast(g_mFormDebugger.ListView_Entities.Items(iIndex), ClassListViewItemData)
 
                                                                                          Dim sOldEntRef As String = CStr(mListViewItemData.g_mData("EntityRef"))
                                                                                          Dim bIsNewEnt As Boolean = True
@@ -1165,11 +1161,10 @@ Public Class ClassDebuggerRunner
                     Case ENUM_ENTITY_ACTION.REMOVE
                         ClassThread.ExecAsync(g_mFormDebugger.ListView_Entities, Sub()
                                                                                      Try
-                                                                                         If (TypeOf g_mFormDebugger.ListView_Entities.Items(iIndex) IsNot ClassListViewItemData) Then
+                                                                                         Dim mListViewItemData = TryCast(g_mFormDebugger.ListView_Entities.Items(iIndex), ClassListViewItemData)
+                                                                                         If (mListViewItemData Is Nothing) Then
                                                                                              Return
                                                                                          End If
-
-                                                                                         Dim mListViewItemData = DirectCast(g_mFormDebugger.ListView_Entities.Items(iIndex), ClassListViewItemData)
 
                                                                                          Dim sOldEntRef As String = CStr(mListViewItemData.g_mData("EntityRef"))
                                                                                          Dim bIsNewEnt As Boolean = True
@@ -1257,11 +1252,10 @@ Public Class ClassDebuggerRunner
 
                 ClassThread.ExecAsync(g_mFormDebugger.ListView_Entities, Sub()
                                                                              For i = 0 To g_mFormDebugger.ListView_Entities.Items.Count - 1
-                                                                                 If (TypeOf g_mFormDebugger.ListView_Entities.Items(i) IsNot ClassListViewItemData) Then
+                                                                                 Dim mListViewItemData = TryCast(g_mFormDebugger.ListView_Entities.Items(i), ClassListViewItemData)
+                                                                                 If (mListViewItemData Is Nothing) Then
                                                                                      Return
                                                                                  End If
-
-                                                                                 Dim mListViewItemData = DirectCast(g_mFormDebugger.ListView_Entities.Items(i), ClassListViewItemData)
 
                                                                                  Dim mTicks As Object = mListViewItemData.g_mData("Ticks")
                                                                                  If (mTicks Is Nothing) Then

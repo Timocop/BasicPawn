@@ -119,11 +119,11 @@ Public Class FormFileDialogFTP
             Return
         End If
 
-        If (TypeOf ListView_FTP.SelectedItems(0) IsNot ClassListViewItemData) Then
+        Dim mListViewItemData = TryCast(ListView_FTP.SelectedItems(0), ClassListViewItemData)
+        If (mListViewItemData Is Nothing) Then
             Return
         End If
 
-        Dim mListViewItemData As ClassListViewItemData = DirectCast(ListView_FTP.SelectedItems(0), ClassListViewItemData)
         Dim bIsDirectory As Boolean = CBool(mListViewItemData.g_mData("IsDirectory"))
         Dim sName As String = CStr(mListViewItemData.g_mData("Name"))
 
@@ -152,11 +152,11 @@ Public Class FormFileDialogFTP
             Return
         End If
 
-        If (TypeOf ListView_FTP.SelectedItems(0) IsNot ClassListViewItemData) Then
+        Dim mListViewItemData = TryCast(ListView_FTP.SelectedItems(0), ClassListViewItemData)
+        If (mListViewItemData Is Nothing) Then
             Return
         End If
 
-        Dim mListViewItemData As ClassListViewItemData = DirectCast(ListView_FTP.SelectedItems(0), ClassListViewItemData)
         Dim bIsDirectory As Boolean = CBool(mListViewItemData.g_mData("IsDirectory"))
         Dim sName As String = CStr(mListViewItemData.g_mData("Name"))
 

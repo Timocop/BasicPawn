@@ -102,11 +102,11 @@ Public Class FormFTP
             End If
 
             For i = 0 To ListView_FtpEntries.SelectedItems.Count - 1
-                If (TypeOf ListView_FtpEntries.SelectedItems(i) IsNot ClassListViewItemData) Then
+                Dim mListViewItemData = TryCast(ListView_FtpEntries.SelectedItems(i), ClassListViewItemData)
+                If (mListViewItemData Is Nothing) Then
                     Throw New ArgumentException("Invalid type")
                 End If
 
-                Dim mListViewItemData = DirectCast(ListView_FtpEntries.SelectedItems(i), ClassListViewItemData)
                 Dim sGUID As String = CStr(mListViewItemData.g_mData("GUID"))
 
                 g_lFtpEntries.RemoveAll(Function(x As STRUC_FTP_ENTRY_ITEM)
@@ -192,11 +192,11 @@ Public Class FormFTP
                 Return
             End If
 
-            If (TypeOf ListView_FtpEntries.SelectedItems(0) IsNot ClassListViewItemData) Then
+            Dim mListViewItemData = TryCast(ListView_FtpEntries.SelectedItems(0), ClassListViewItemData)
+            If (mListViewItemData Is Nothing) Then
                 Return
             End If
 
-            Dim mListViewItemData = DirectCast(ListView_FtpEntries.SelectedItems(0), ClassListViewItemData)
             Dim sGUID As String = CStr(mListViewItemData.g_mData("GUID"))
 
             For Each mFtpItem In g_lFtpEntries.ToArray
@@ -228,11 +228,11 @@ Public Class FormFTP
                 Return
             End If
 
-            If (TypeOf ListView_FtpEntries.SelectedItems(0) IsNot ClassListViewItemData) Then
+            Dim mListViewItemData = TryCast(ListView_FtpEntries.SelectedItems(0), ClassListViewItemData)
+            If (mListViewItemData Is Nothing) Then
                 Return
             End If
 
-            Dim mListViewItemData = DirectCast(ListView_FtpEntries.SelectedItems(0), ClassListViewItemData)
             Dim sGUID As String = CStr(mListViewItemData.g_mData("GUID"))
 
             For Each mFtpItem In g_lFtpEntries.ToArray
