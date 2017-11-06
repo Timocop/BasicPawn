@@ -30,12 +30,12 @@ Features:
  - [**.NET Framework (Linux Wine)**](https://appdb.winehq.org/objectManager.php?sClass=application&iId=2586)
 
 ## Plugins
- - [FTP Plugin](BasicPawnPluginFTP.dll)
+ - [FTP Plugin](https://github.com/Timocop/BasicPawn/raw/master/Plugin%20Releases/BasicPawnPluginFTP.dll)
  - [more...](Plugin%20Releases)
 
 ## Syntax Styles
- - [Monokai](Custom%20Syntax%20Styles/Monokai.xml)
- - [Visual Studio 2017 Dark](Custom%20Syntax%20Styles/VisualStudio2017_Dark.xml)
+ - [Monokai](https://github.com/Timocop/BasicPawn/raw/master/Custom%20Syntax%20Styles/Monokai.xml)
+ - [Visual Studio 2017 Dark](https://github.com/Timocop/BasicPawn/raw/master/Custom%20Syntax%20Styles/VisualStudio2017_Dark.xml)
  - [more...](Custom%20Syntax%20Styles)
 
 ## Todo & Done (for v0.8)
