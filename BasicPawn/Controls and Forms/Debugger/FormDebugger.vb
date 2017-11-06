@@ -32,6 +32,8 @@ Public Class FormDebugger
     Public g_bTextEditorEnableClickSelect As Boolean = True
     Public g_bListViewEnableClickSelect As Boolean = True
 
+    Private g_bPostLoad As Boolean = False
+
     Public Sub New(f As FormMain, mDebugTab As ClassTabControl.SourceTabPage)
         Me.New(f, mDebugTab.m_Identifier)
     End Sub
@@ -77,13 +79,19 @@ Public Class FormDebugger
 
         'Load window info
         ClassSettings.LoadWindowInfo(Me)
+
+        g_bPostLoad = True
     End Sub
 
     Private Function RefreshSource() As Boolean
         Try
             Using mFormProgress As New FormProgress
                 mFormProgress.Text = "BasicPawn Debugger - Generating source..."
-                mFormProgress.Show(Me)
+                If (g_bPostLoad) Then
+                    mFormProgress.Show(Me)
+                Else
+                    mFormProgress.Show(g_mFormMain)
+                End If
                 mFormProgress.m_Progress = 0
 
 

@@ -768,11 +768,11 @@ Public Class UCProjectBrowser
                 lFiles.Add(mInfo.sFile)
             Next
 
-            Using i As New FormProgress
-                i.Text = "Executing shell..."
-                i.ProgressBar_Progress.Maximum = lFiles.Count
-                i.Show(Me)
-                i.m_Progress = 0
+            Using mFormProgress As New FormProgress
+                mFormProgress.Text = "Executing shell..."
+                mFormProgress.ProgressBar_Progress.Maximum = lFiles.Count
+                mFormProgress.Show(Me)
+                mFormProgress.m_Progress = 0
 
                 For Each sFile In lFiles
                     Dim sShell As String = ClassConfigs.m_ActiveConfig.g_sExecuteShell
@@ -791,7 +791,7 @@ Public Class UCProjectBrowser
                         MessageBox.Show(ex.Message & Environment.NewLine & Environment.NewLine & sShell, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     End Try
 
-                    i.m_Progress += 1
+                    mFormProgress.m_Progress += 1
                 Next
             End Using
         Catch ex As Exception
