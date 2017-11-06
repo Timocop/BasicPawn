@@ -3,6 +3,6 @@ There needs to be a *.txt file for description and additional information.
 Optionaly a *.png file as thumbnail.
 And finally the syntax style file, all files must have the same name!
 Should be like this:
-	MyStyle.txt
-	MyStyle.png (Optional)
-	MyStyle.xml
+ - MyStyle.txt
+ - MyStyle.png (Optional)
+ - MyStyle.xml
