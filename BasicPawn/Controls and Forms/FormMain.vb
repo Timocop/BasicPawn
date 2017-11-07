@@ -615,11 +615,23 @@ Public Class FormMain
 
     Private Sub ToolStripMenuItem_FileSavePacked_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileSavePacked.Click
         Try
+            Dim sSource As String = g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
+
+            With New ClassDebuggerParser(Me)
+                If (.HasDebugPlaceholder(sSource)) Then
+                    .CleanupDebugPlaceholder(sSource, g_ClassTabControl.m_ActiveTab.m_Language)
+                End If
+            End With
+
+            Dim sSourceFile As String = Nothing
+            If (Not g_ClassTabControl.m_ActiveTab.m_IsUnsaved AndAlso Not g_ClassTabControl.m_ActiveTab.m_InvalidFile) Then
+                sSourceFile = g_ClassTabControl.m_ActiveTab.m_File
+            End If
+
             Dim sTempFile As String = ""
-            Dim sPreSource As String = g_ClassTextEditorTools.GetCompilerPreProcessCode(Nothing, True, True, sTempFile)
+            Dim sPreSource As String = g_ClassTextEditorTools.GetCompilerPreProcessCode(sSource, True, True, sTempFile, If(sSourceFile Is Nothing, Nothing, IO.Path.GetDirectoryName(sSourceFile)), Nothing, Nothing, sSourceFile)
             If (String.IsNullOrEmpty(sPreSource)) Then
                 MessageBox.Show("Could not export packed source. See information tab for more information.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-
                 Return
             End If
 
@@ -631,15 +643,9 @@ Public Class FormMain
                 .FixPreProcessFiles(sPreSource)
             End With
 
-            'Replace the temp source file with the currently opened one
-            sPreSource = Regex.Replace(sPreSource,
-                                       String.Format("^\s*\#file ""{0}""\s*$", Regex.Escape(sTempFile)),
-                                       String.Format("#file ""{0}""", g_ClassTabControl.m_ActiveTab.m_File),
-                                       RegexOptions.IgnoreCase Or RegexOptions.Multiline)
-
             Using i As New SaveFileDialog
                 i.Filter = "All supported files|*.sp;*.inc;*.sma|SourcePawn|*.sp|Include|*.inc|Pawn (Not fully supported)|*.pwn;*.p|AMX Mod X|*.sma|All files|*.*"
-                i.FileName = IO.Path.Combine(IO.Path.GetDirectoryName(g_ClassTabControl.m_ActiveTab.m_File), IO.Path.GetFileNameWithoutExtension(g_ClassTabControl.m_ActiveTab.m_File) & ".packed" & IO.Path.GetExtension(g_ClassTabControl.m_ActiveTab.m_File))
+                i.FileName = IO.Path.Combine(IO.Path.GetDirectoryName(g_ClassTabControl.m_ActiveTab.m_File), String.Format("{0}.packed{1}", IO.Path.GetFileNameWithoutExtension(g_ClassTabControl.m_ActiveTab.m_File), IO.Path.GetExtension(g_ClassTabControl.m_ActiveTab.m_File)))
 
                 If (i.ShowDialog = DialogResult.OK) Then
                     IO.File.WriteAllText(i.FileName, sPreSource)

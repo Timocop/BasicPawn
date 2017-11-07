@@ -281,7 +281,7 @@ Public Class ClassTextEditorTools
     ''' <param name="sWorkingDirectory">Sets the compiler working directory. Use |Nothing| to use the working directioy from the active tab.</param>
     ''' <param name="sCompilerPath">The compiler path. Use |Nothing| to get the source from the active tab.</param>
     ''' <param name="sIncludePaths">The include paths seperated by ';'. Use |Nothing| to get the source from the active tab.</param>
-    ''' <param name="sEmulateSourceFile">Replaces the printed temporary path. Use |Nothing| to get the source from the active tab.</param>
+    ''' <param name="sEmulateSourceFile">Replaces the printed temporary path.</param>
     ''' <param name="bUseCustomCompilerOptions">If true it will use the configs custom compiler options, false otherwise.</param>
     ''' <param name="sCompilerOutput">The compiler output.</param>
     ''' <param name="iCompilerType"></param>
@@ -299,6 +299,16 @@ Public Class ClassTextEditorTools
         Try
             If (sSource Is Nothing) Then
                 sSource = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
+            End If
+
+            If (Not String.IsNullOrEmpty(sEmulateSourceFile)) Then
+                With New Text.StringBuilder
+                    .AppendLine(String.Format("#file ""{0}""", sEmulateSourceFile))
+                    .AppendLine("#line 0")
+                    .AppendLine(sSource)
+
+                    sSource = .ToString
+                End With
             End If
 
             If (g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed) Then
@@ -495,10 +505,6 @@ Public Class ClassTextEditorTools
 
             sLines = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
             For i = 0 To sLines.Length - 1
-                If (Not String.IsNullOrEmpty(sEmulateSourceFile) AndAlso sLines(i).Contains(TmpSourceFile)) Then
-                    sLines(i) = Regex.Replace(sLines(i), "^\b" & Regex.Escape(TmpSourceFile) & "\b", sEmulateSourceFile)
-                End If
-
                 g_mFormMain.PrintInformation("[INFO]", vbTab & sLines(i))
             Next
 
@@ -569,7 +575,7 @@ Public Class ClassTextEditorTools
     ''' <param name="sWorkingDirectory">Sets the compiler working directory. Use |Nothing| to use the working directioy from the active tab.</param>
     ''' <param name="sCompilerPath">The compiler path. Use |Nothing| to get the source from the active tab.</param>
     ''' <param name="sIncludePaths">The include paths seperated by ';'. Use |Nothing| to get the source from the active tab.</param>
-    ''' <param name="sEmulateSourceFile">Replaces the printed temporary path. Use |Nothing| to get the source from the active tab.</param>
+    ''' <param name="sEmulateSourceFile">Replaces the printed temporary path.</param>
     ''' <param name="bUseCustomCompilerOptions">If true it will use the configs custom compiler options, false otherwise.</param>
     ''' <param name="sCompilerOutput">The compiler output.</param>
     ''' <param name="iCompilerType"></param>
@@ -588,6 +594,16 @@ Public Class ClassTextEditorTools
         Try
             If (sSource Is Nothing) Then
                 sSource = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
+            End If
+
+            If (Not String.IsNullOrEmpty(sEmulateSourceFile)) Then
+                With New Text.StringBuilder
+                    .AppendLine(String.Format("#file ""{0}""", sEmulateSourceFile))
+                    .AppendLine("#line 0")
+                    .AppendLine(sSource)
+
+                    sSource = .ToString
+                End With
             End If
 
             If (g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed) Then
@@ -706,12 +722,14 @@ Public Class ClassTextEditorTools
 
             If (bCleanUpSourcemodDuplicate) Then
                 '#file pushes the lines +1 in the main source, add #line 0 to make them even again
-                Dim SB As New Text.StringBuilder
-                SB.AppendLine("#file " & sMarkStart)
-                SB.AppendLine("#line 0")
-                SB.AppendLine(sTmpSource)
-                SB.AppendLine("#file " & sMarkEnd)
-                sTmpSource = SB.ToString
+                With New Text.StringBuilder
+                    .AppendLine("#file " & sMarkStart)
+                    .AppendLine("#line 0")
+                    .AppendLine(sTmpSource)
+                    .AppendLine("#file " & sMarkEnd)
+
+                    sTmpSource = .ToString
+                End With
             End If
 
             IO.File.WriteAllText(sTmpSourcePath, sTmpSource)
@@ -776,10 +794,6 @@ Public Class ClassTextEditorTools
 
             sLines = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
             For i = 0 To sLines.Length - 1
-                If (Not String.IsNullOrEmpty(sEmulateSourceFile) AndAlso sLines(i).Contains(sTmpSourcePath)) Then
-                    sLines(i) = Regex.Replace(sLines(i), "^\b" & Regex.Escape(sTmpSourcePath) & "\b", sEmulateSourceFile)
-                End If
-
                 g_mFormMain.PrintInformation("[INFO]", vbTab & sLines(i))
             Next
 
@@ -857,7 +871,7 @@ Public Class ClassTextEditorTools
     ''' <param name="sWorkingDirectory">Sets the compiler working directory. Use |Nothing| to use the working directioy from the active tab.</param>
     ''' <param name="sCompilerPath">The compiler path. Use |Nothing| to get the source from the active tab.</param>
     ''' <param name="sIncludePaths">The include paths seperated by ';'. Use |Nothing| to get the source from the active tab.</param>
-    ''' <param name="sEmulateSourceFile">Replaces the printed temporary path. Use |Nothing| to get the source from the active tab.</param>
+    ''' <param name="sEmulateSourceFile">Replaces the printed temporary path.</param>
     ''' <param name="bUseCustomCompilerOptions">If true it will use the configs custom compiler options, false otherwise.</param>
     ''' <param name="sCompilerOutput">The compiler output.</param>
     ''' <param name="iCompilerType"></param>
@@ -875,6 +889,16 @@ Public Class ClassTextEditorTools
         Try
             If (sSource Is Nothing) Then
                 sSource = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
+            End If
+
+            If (Not String.IsNullOrEmpty(sEmulateSourceFile)) Then
+                With New Text.StringBuilder
+                    .AppendLine(String.Format("#file ""{0}""", sEmulateSourceFile))
+                    .AppendLine("#line 0")
+                    .AppendLine(sSource)
+
+                    sSource = .ToString
+                End With
             End If
 
             If (g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed) Then
@@ -1048,10 +1072,6 @@ Public Class ClassTextEditorTools
 
             sLines = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
             For i = 0 To sLines.Length - 1
-                If (Not String.IsNullOrEmpty(sEmulateSourceFile) AndAlso sLines(i).Contains(TmpSourceFile)) Then
-                    sLines(i) = Regex.Replace(sLines(i), "^\b" & Regex.Escape(TmpSourceFile) & "\b", sEmulateSourceFile)
-                End If
-
                 g_mFormMain.PrintInformation("[INFO]", vbTab & sLines(i))
             Next
 

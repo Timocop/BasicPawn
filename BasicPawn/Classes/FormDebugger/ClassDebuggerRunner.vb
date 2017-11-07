@@ -288,7 +288,7 @@ Public Class ClassDebuggerRunner
         Public Sub FixPreProcessFiles(ByRef sSource As String)
             Dim fileMatches As MatchCollection = Regex.Matches(sSource, "(?<IsNewline>^\s*){0,1}#file\s+(?<Path>.*?)$", RegexOptions.Multiline)
             For i = fileMatches.Count - 1 To 0 Step -1
-                Dim sPath As String = fileMatches(i).Groups("Path").Value.Trim
+                Dim sPath As String = fileMatches(i).Groups("Path").Value.Trim.Trim(""""c)
 
                 If (fileMatches(i).Groups("IsNewline").Success) Then
                     sSource = sSource.Remove(fileMatches(i).Index, fileMatches(i).Value.Length)

@@ -953,7 +953,7 @@ Partial Class FormMain
         Me.ContextMenuStrip_Tabs.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_Tabs_Close, Me.ToolStripMenuItem_Tabs_CloseAllButThis, Me.ToolStripMenuItem_Tabs_CloseAll, Me.ToolStripSeparator16, Me.ToolStripMenuItem_Tabs_Cut, Me.ToolStripMenuItem_Tabs_Insert, Me.ToolStripSeparator12, Me.ToolStripMenuItem_Tabs_OpenFolder, Me.ToolStripMenuItem_Tabs_Popout})
         Me.ContextMenuStrip_Tabs.Name = "ContextMenuStrip_Tabs"
         Me.ContextMenuStrip_Tabs.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
-        Me.ContextMenuStrip_Tabs.Size = New System.Drawing.Size(179, 192)
+        Me.ContextMenuStrip_Tabs.Size = New System.Drawing.Size(179, 170)
         '
         'ToolStripMenuItem_Tabs_Close
         '
