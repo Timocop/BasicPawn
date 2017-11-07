@@ -372,7 +372,7 @@ Public Class ClassTabControl
     Public Sub SaveFileTab(iIndex As Integer, Optional bSaveAs As Boolean = False)
         If (bSaveAs OrElse m_Tab(iIndex).m_IsUnsaved OrElse m_Tab(iIndex).m_InvalidFile) Then
             Using i As New SaveFileDialog
-                i.Filter = "All supported files|*.sp;*.inc;*.sma|SourcePawn|*.sp|Include|*.inc|Pawn (Not fully supported)|*.pwn;*.p|AMX Mod X|*.sma|All files|*.*"
+                i.Filter = "All supported files|*.sp;*.inc;*.sma|SourcePawn|*.sp|Include|*.inc|AMX Mod X|*.sma|Pawn (Not fully supported)|*.pwn;*.p|All files|*.*"
                 i.FileName = m_Tab(iIndex).m_File
 
                 If (i.ShowDialog = DialogResult.OK) Then
@@ -430,7 +430,7 @@ Public Class ClassTabControl
             Case DialogResult.Yes
                 If (bIsUnsaved) Then
                     Using i As New SaveFileDialog
-                        i.Filter = "All supported files|*.sp;*.inc;*.sma|SourcePawn|*.sp|Include|*.inc|Pawn (Not fully supported)|*.pwn;*.p|AMX Mod X|*.sma|All files|*.*"
+                        i.Filter = "All supported files|*.sp;*.inc;*.sma|SourcePawn|*.sp|Include|*.inc|AMX Mod X|*.sma|Pawn (Not fully supported)|*.pwn;*.p|All files|*.*"
                         i.FileName = m_Tab(iIndex).m_File
 
                         If (i.ShowDialog = DialogResult.OK) Then

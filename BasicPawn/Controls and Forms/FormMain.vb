@@ -562,7 +562,7 @@ Public Class FormMain
     Private Sub ToolStripMenuItem_FileOpen_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileOpen.Click
         Try
             Using i As New OpenFileDialog
-                i.Filter = "All supported files|*.sp;*.inc;*.sma|SourcePawn|*.sp|Include|*.inc|Pawn (Not fully supported)|*.pwn;*.p|AMX Mod X|*.sma|All files|*.*"
+                i.Filter = "All supported files|*.sp;*.inc;*.sma|SourcePawn|*.sp|Include|*.inc|AMX Mod X|*.sma|Pawn (Not fully supported)|*.pwn;*.p|All files|*.*"
                 i.FileName = g_ClassTabControl.m_ActiveTab.m_File
                 i.Multiselect = True
 
@@ -644,7 +644,7 @@ Public Class FormMain
             End With
 
             Using i As New SaveFileDialog
-                i.Filter = "All supported files|*.sp;*.inc;*.sma|SourcePawn|*.sp|Include|*.inc|Pawn (Not fully supported)|*.pwn;*.p|AMX Mod X|*.sma|All files|*.*"
+                i.Filter = "All supported files|*.sp;*.inc;*.sma|SourcePawn|*.sp|Include|*.inc|AMX Mod X|*.sma|Pawn (Not fully supported)|*.pwn;*.p|All files|*.*"
                 i.FileName = IO.Path.Combine(IO.Path.GetDirectoryName(g_ClassTabControl.m_ActiveTab.m_File), String.Format("{0}.packed{1}", IO.Path.GetFileNameWithoutExtension(g_ClassTabControl.m_ActiveTab.m_File), IO.Path.GetExtension(g_ClassTabControl.m_ActiveTab.m_File)))
 
                 If (i.ShowDialog = DialogResult.OK) Then
