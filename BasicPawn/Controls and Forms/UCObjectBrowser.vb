@@ -135,7 +135,7 @@ Public Class UCObjectBrowser
 
                     mNameNodes = mTypeNodes(sTypes).Nodes
 
-                    Dim sName As String = lAutocompleteList(i).m_FunctionName
+                    Dim sName As String = lAutocompleteList(i).m_FunctionString
                     If (Not mNameNodes.ContainsKey(sName)) Then
                         ClassThread.ExecEx(Of Object)(TreeView_ObjectBrowser, Sub() mNameNodes.Add(New ClassTreeNodeAutocomplete(sName, sName, sFile, iTypes, sName)))
                     End If
@@ -165,7 +165,7 @@ Public Class UCObjectBrowser
                                 Continue For
                             End If
 
-                            If (Not lAutocompleteList.Exists(Function(m As ClassSyntaxTools.STRUC_AUTOCOMPLETE) m.m_File = mTreeNodeAutocomplete.g_sFile AndAlso m.m_Type = mTreeNodeAutocomplete.g_iType AndAlso m.m_FunctionName = mTreeNodeAutocomplete.g_sFunction)) Then
+                            If (Not lAutocompleteList.Exists(Function(m As ClassSyntaxTools.STRUC_AUTOCOMPLETE) m.m_File = mTreeNodeAutocomplete.g_sFile AndAlso m.m_Type = mTreeNodeAutocomplete.g_iType AndAlso m.m_FunctionString = mTreeNodeAutocomplete.g_sFunction)) Then
                                 ClassThread.ExecEx(Of Object)(TreeView_ObjectBrowser, Sub() mNameNodes(l).Remove())
                             End If
                         Next

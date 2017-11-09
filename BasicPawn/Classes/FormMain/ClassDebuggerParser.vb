@@ -265,6 +265,7 @@ Public Class ClassDebuggerParser
                                                                   "BasicPawn.exe",
                                                                   ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEBUG,
                                                                   g_sBreakpointName,
+                                                                  g_sBreakpointName,
                                                                   String.Format("any:{0}(any:val=0)", g_sBreakpointName)))
 
         mInfoBuilder.Length = 0
@@ -277,6 +278,7 @@ Public Class ClassDebuggerParser
         lAutocomplete.Add(New ClassSyntaxTools.STRUC_AUTOCOMPLETE(mInfoBuilder.ToString,
                                                                   "BasicPawn.exe",
                                                                   ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEBUG,
+                                                                  g_sWatcherName,
                                                                   g_sWatcherName,
                                                                   String.Format("any:{0}(any:val=0)", g_sWatcherName)))
 
