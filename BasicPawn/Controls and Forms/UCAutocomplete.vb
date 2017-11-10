@@ -226,14 +226,6 @@ Public Class UCAutocomplete
             End If
         Next
 
-        If (ClassSettings.g_iSettingsSwitchTabToAutocomplete AndAlso lListViewItemsList.Count > 0 AndAlso g_mFormMain.TabControl_Details.TabPages.IndexOf(g_mFormMain.TabControl_Details.SelectedTab) <> 0) Then
-            g_mFormMain.TabControl_Details.SuspendLayout()
-            g_mFormMain.TabControl_Details.Enabled = False
-            g_mFormMain.TabControl_Details.SelectTab(0)
-            g_mFormMain.TabControl_Details.Enabled = True
-            g_mFormMain.TabControl_Details.ResumeLayout()
-        End If
-
         ListView_AutocompleteList.BeginUpdate()
         ListView_AutocompleteList.Items.Clear()
         ListView_AutocompleteList.Items.AddRange(lListViewItemsList.ToArray)

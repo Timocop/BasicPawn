@@ -700,6 +700,8 @@ Public Class ClassTabControl
             AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseDoubleClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
             AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.KeyUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
 
+            AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_Source_SwitchToAutocompleteTab
+
             AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.SelectionManager.SelectionChanged, AddressOf TextEditorControl_Source_UpdateInfo
             AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.PositionChanged, AddressOf TextEditorControl_Source_UpdateInfo
 
@@ -724,6 +726,8 @@ Public Class ClassTabControl
             RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
             RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseDoubleClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
             RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.KeyUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
+
+            RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_Source_SwitchToAutocompleteTab
 
             RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.SelectionManager.SelectionChanged, AddressOf TextEditorControl_Source_UpdateInfo
             RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.PositionChanged, AddressOf TextEditorControl_Source_UpdateInfo
@@ -1337,6 +1341,31 @@ Public Class ClassTabControl
                 Else
                     g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip()
                 End If
+            Catch ex As Exception
+                ClassExceptionLog.WriteToLogMessageBox(ex)
+            End Try
+        End Sub
+
+        Private Sub TextEditorControl_Source_SwitchToAutocompleteTab(sender As Object, e As MouseEventArgs)
+            Try
+                If (Not ClassSettings.g_iSettingsSwitchTabToAutocomplete) Then
+                    Return
+                End If
+
+                If (e.Button <> MouseButtons.Left) Then
+                    Return
+                End If
+
+                If (g_mFormMain.g_mUCAutocomplete.ListView_AutocompleteList.Items.Count < 1 OrElse
+                            g_mFormMain.TabControl_Details.TabPages.IndexOf(g_mFormMain.TabControl_Details.SelectedTab) = 0) Then
+                    Return
+                End If
+
+                g_mFormMain.TabControl_Details.SuspendLayout()
+                g_mFormMain.TabControl_Details.Enabled = False
+                g_mFormMain.TabControl_Details.SelectTab(0)
+                g_mFormMain.TabControl_Details.Enabled = True
+                g_mFormMain.TabControl_Details.ResumeLayout()
             Catch ex As Exception
                 ClassExceptionLog.WriteToLogMessageBox(ex)
             End Try
