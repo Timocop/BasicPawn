@@ -289,6 +289,7 @@ Public Class ClassTextEditorTools
     Public Function CompileSource(bTesting As Boolean,
                                   sSource As String,
                                   ByRef sOutputFile As String,
+                                  Optional mConfig As ClassConfigs.STRUC_CONFIG_ITEM = Nothing,
                                   Optional sWorkingDirectory As String = Nothing,
                                   Optional sCompilerPath As String = Nothing,
                                   Optional sIncludePaths As String = Nothing,
@@ -299,6 +300,10 @@ Public Class ClassTextEditorTools
         Try
             If (sSource Is Nothing) Then
                 sSource = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
+            End If
+
+            If (mConfig Is Nothing) Then
+                mConfig = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ActiveConfig
             End If
 
             If (Not String.IsNullOrEmpty(sEmulateSourceFile)) Then
@@ -325,7 +330,7 @@ Public Class ClassTextEditorTools
 
             'Check compiler
             If (sCompilerPath Is Nothing) Then
-                If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
+                If (mConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                     If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved AndAlso
                                 g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True, True)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Could not get current source file!", False, False, True)
@@ -366,7 +371,7 @@ Public Class ClassTextEditorTools
                         Return False
                     End While
                 Else
-                    sCompilerPath = ClassConfigs.m_ActiveConfig.g_sCompilerPath
+                    sCompilerPath = mConfig.g_sCompilerPath
                     If (Not IO.File.Exists(sCompilerPath)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Compiler can not be found!", False, False, True)
                         Return False
@@ -381,7 +386,7 @@ Public Class ClassTextEditorTools
 
             'Check include path
             If (sIncludePaths Is Nothing) Then
-                If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
+                If (mConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                     If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved AndAlso
                                 g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True, True)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Could not get current source file!", False, False, True)
@@ -399,7 +404,7 @@ Public Class ClassTextEditorTools
                         Return False
                     End If
                 Else
-                    sIncludePaths = ClassConfigs.m_ActiveConfig.g_sIncludeFolders
+                    sIncludePaths = mConfig.g_sIncludeFolders
                     For Each sInclude As String In sIncludePaths.Split(";"c)
                         If (Not IO.Directory.Exists(sInclude)) Then
                             g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Include path can not be found!", False, False, True)
@@ -430,14 +435,14 @@ Public Class ClassTextEditorTools
                         Return False
                     End If
 
-                    If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
+                    If (mConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                         sOutputFile = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), String.Format("compiled\{0}.unk", IO.Path.GetFileNameWithoutExtension(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)))
                     Else
-                        If (Not IO.Directory.Exists(ClassConfigs.m_ActiveConfig.g_sOutputFolder)) Then
+                        If (Not IO.Directory.Exists(mConfig.g_sOutputFolder)) Then
                             g_mFormMain.PrintInformation("[ERRO]", "Compiling failed! Invalid output directory!", False, False, True)
                             Return False
                         End If
-                        sOutputFile = IO.Path.Combine(ClassConfigs.m_ActiveConfig.g_sOutputFolder, String.Format("{0}.unk", IO.Path.GetFileNameWithoutExtension(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)))
+                        sOutputFile = IO.Path.Combine(mConfig.g_sOutputFolder, String.Format("{0}.unk", IO.Path.GetFileNameWithoutExtension(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)))
                     End If
                 End If
             End If
@@ -484,10 +489,10 @@ Public Class ClassTextEditorTools
             If (bUseCustomCompilerOptions) Then
                 Select Case (iCompilerType)
                     Case ENUM_COMPILER_TYPE.SOURCEPAWN
-                        lArguments.Add(ClassConfigs.m_ActiveConfig.g_mCompilerOptionsSP.BuildCommandline)
+                        lArguments.Add(mConfig.g_mCompilerOptionsSP.BuildCommandline)
 
                     Case ENUM_COMPILER_TYPE.AMXX
-                        lArguments.Add(ClassConfigs.m_ActiveConfig.g_mCompilerOptionsAMXX.BuildCommandline)
+                        lArguments.Add(mConfig.g_mCompilerOptionsAMXX.BuildCommandline)
 
                 End Select
             End If
@@ -584,6 +589,7 @@ Public Class ClassTextEditorTools
                                               bCleanUpSourcemodDuplicate As Boolean,
                                               bCleanupForCompile As Boolean,
                                               ByRef sTempOutputFile As String,
+                                              Optional mConfig As ClassConfigs.STRUC_CONFIG_ITEM = Nothing,
                                               Optional sWorkingDirectory As String = Nothing,
                                               Optional sCompilerPath As String = Nothing,
                                               Optional sIncludePaths As String = Nothing,
@@ -594,6 +600,10 @@ Public Class ClassTextEditorTools
         Try
             If (sSource Is Nothing) Then
                 sSource = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
+            End If
+
+            If (mConfig Is Nothing) Then
+                mConfig = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ActiveConfig
             End If
 
             If (Not String.IsNullOrEmpty(sEmulateSourceFile)) Then
@@ -625,7 +635,7 @@ Public Class ClassTextEditorTools
 
             'Check compiler
             If (sCompilerPath Is Nothing) Then
-                If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
+                If (mConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                     If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved AndAlso
                                 g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True, True)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Could not get current source file!", False, False, True)
@@ -666,7 +676,7 @@ Public Class ClassTextEditorTools
                         Return Nothing
                     End While
                 Else
-                    sCompilerPath = ClassConfigs.m_ActiveConfig.g_sCompilerPath
+                    sCompilerPath = mConfig.g_sCompilerPath
                     If (Not IO.File.Exists(sCompilerPath)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Compiler can not be found!", False, False, True)
                         Return Nothing
@@ -681,7 +691,7 @@ Public Class ClassTextEditorTools
 
             'Check include path
             If (sIncludePaths Is Nothing) Then
-                If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
+                If (mConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                     If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved AndAlso
                                 g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True, True)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Could not get current source file!", False, False, True)
@@ -699,7 +709,7 @@ Public Class ClassTextEditorTools
                         Return Nothing
                     End If
                 Else
-                    sIncludePaths = ClassConfigs.m_ActiveConfig.g_sIncludeFolders
+                    sIncludePaths = mConfig.g_sIncludeFolders
                     For Each sInclude As String In sIncludePaths.Split(";"c)
                         If (Not IO.Directory.Exists(sInclude)) Then
                             g_mFormMain.PrintInformation("[ERRO]", "Pre-Processing failed! Include path can not be found!", False, False, True)
@@ -773,10 +783,10 @@ Public Class ClassTextEditorTools
             If (bUseCustomCompilerOptions) Then
                 Select Case (iCompilerType)
                     Case ENUM_COMPILER_TYPE.SOURCEPAWN
-                        lArguments.Add(ClassConfigs.m_ActiveConfig.g_mCompilerOptionsSP.BuildCommandline)
+                        lArguments.Add(mConfig.g_mCompilerOptionsSP.BuildCommandline)
 
                     Case ENUM_COMPILER_TYPE.AMXX
-                        lArguments.Add(ClassConfigs.m_ActiveConfig.g_mCompilerOptionsAMXX.BuildCommandline)
+                        lArguments.Add(mConfig.g_mCompilerOptionsAMXX.BuildCommandline)
 
                 End Select
             End If
@@ -879,6 +889,7 @@ Public Class ClassTextEditorTools
     Public Function GetCompilerAssemblyCode(bTesting As Boolean,
                                             sSource As String,
                                             ByRef sOutputFile As String,
+                                            Optional mConfig As ClassConfigs.STRUC_CONFIG_ITEM = Nothing,
                                             Optional sWorkingDirectory As String = Nothing,
                                             Optional sCompilerPath As String = Nothing,
                                             Optional sIncludePaths As String = Nothing,
@@ -889,6 +900,10 @@ Public Class ClassTextEditorTools
         Try
             If (sSource Is Nothing) Then
                 sSource = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
+            End If
+
+            If (mConfig Is Nothing) Then
+                mConfig = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ActiveConfig
             End If
 
             If (Not String.IsNullOrEmpty(sEmulateSourceFile)) Then
@@ -915,7 +930,7 @@ Public Class ClassTextEditorTools
 
             'Check compiler
             If (sCompilerPath Is Nothing) Then
-                If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
+                If (mConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                     If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved AndAlso
                                 g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True, True)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get current source file!", False, False, True)
@@ -956,7 +971,7 @@ Public Class ClassTextEditorTools
                         Return Nothing
                     End While
                 Else
-                    sCompilerPath = ClassConfigs.m_ActiveConfig.g_sCompilerPath
+                    sCompilerPath = mConfig.g_sCompilerPath
                     If (Not IO.File.Exists(sCompilerPath)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Compiler can not be found!", False, False, True)
                         Return Nothing
@@ -971,7 +986,7 @@ Public Class ClassTextEditorTools
 
             'Check include path
             If (sIncludePaths Is Nothing) Then
-                If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
+                If (mConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                     If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved AndAlso
                                 g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True, True)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Could not get current source file!", False, False, True)
@@ -989,7 +1004,7 @@ Public Class ClassTextEditorTools
                         Return Nothing
                     End If
                 Else
-                    sIncludePaths = ClassConfigs.m_ActiveConfig.g_sIncludeFolders
+                    sIncludePaths = mConfig.g_sIncludeFolders
                     For Each sInclude As String In sIncludePaths.Split(";"c)
                         If (Not IO.Directory.Exists(sInclude)) Then
                             g_mFormMain.PrintInformation("[ERRO]", "DIASM failed! Include path can not be found!", False, False, True)
@@ -1053,10 +1068,10 @@ Public Class ClassTextEditorTools
             If (bUseCustomCompilerOptions) Then
                 Select Case (iCompilerType)
                     Case ENUM_COMPILER_TYPE.SOURCEPAWN
-                        lArguments.Add(ClassConfigs.m_ActiveConfig.g_mCompilerOptionsSP.BuildCommandline)
+                        lArguments.Add(mConfig.g_mCompilerOptionsSP.BuildCommandline)
 
                     Case ENUM_COMPILER_TYPE.AMXX
-                        lArguments.Add(ClassConfigs.m_ActiveConfig.g_mCompilerOptionsAMXX.BuildCommandline)
+                        lArguments.Add(mConfig.g_mCompilerOptionsAMXX.BuildCommandline)
 
                 End Select
             End If

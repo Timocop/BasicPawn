@@ -66,6 +66,7 @@ Public Class ClassDebuggerRunner
     Private g_sSourceModFolder As String = ""
     Private g_sCurrentSourceFile As String = ""
     Private g_sCurrentSource As String = ""
+    Private g_mCurrentConfig As ClassConfigs.STRUC_CONFIG_ITEM
 
     Structure STURC_SOURCE_LINES_INFO_ITEM
         Dim iRealLine As Integer
@@ -91,8 +92,6 @@ Public Class ClassDebuggerRunner
 
     Public Sub New(f As FormDebugger)
         g_mFormDebugger = f
-        g_sGameFolder = ClassConfigs.m_ActiveConfig.g_sDebugGameFolder
-        g_sSourceModFolder = ClassConfigs.m_ActiveConfig.g_sDebugSourceModFolder
 
         UpdateSourceFromTab()
 
@@ -120,6 +119,12 @@ Public Class ClassDebuggerRunner
     Public ReadOnly Property m_CurrentSource As String
         Get
             Return g_sCurrentSource
+        End Get
+    End Property
+
+    Public ReadOnly Property m_CurrentConfig As ClassConfigs.STRUC_CONFIG_ITEM
+        Get
+            Return g_mCurrentConfig
         End Get
     End Property
 
@@ -221,6 +226,9 @@ Public Class ClassDebuggerRunner
 
         g_sCurrentSourceFile = g_mFormDebugger.g_mFormMain.g_ClassTabControl.m_Tab(iIndex).m_File
         g_sCurrentSource = g_mFormDebugger.g_mFormMain.g_ClassTabControl.m_Tab(iIndex).m_TextEditor.Document.TextContent
+        g_sGameFolder = g_mFormDebugger.g_mFormMain.g_ClassTabControl.m_Tab(iIndex).m_ActiveConfig.g_sDebugGameFolder
+        g_sSourceModFolder = g_mFormDebugger.g_mFormMain.g_ClassTabControl.m_Tab(iIndex).m_ActiveConfig.g_sDebugSourceModFolder
+        g_mCurrentConfig = g_mFormDebugger.g_mFormMain.g_ClassTabControl.m_Tab(iIndex).m_ActiveConfig
     End Sub
 
     ''' <summary>
@@ -452,7 +460,7 @@ Public Class ClassDebuggerRunner
                 Dim sOutputFile As String = IO.Path.Combine(m_SourceModFolder, String.Format("plugins\BasicPawnDebugCmdRunEngine-{0}.unk", Guid.NewGuid.ToString))
                 g_sLatestDebuggerRunnerPlugin = sOutputFile
 
-                If (Not g_mFormDebugger.g_mFormMain.g_ClassTextEditorTools.CompileSource(False, sSource, sOutputFile, Nothing, Nothing, Nothing, Nothing, True, Nothing, iCompilerType)) Then
+                If (Not g_mFormDebugger.g_mFormMain.g_ClassTextEditorTools.CompileSource(False, sSource, sOutputFile, m_CurrentConfig, Nothing, Nothing, Nothing, Nothing, True, Nothing, iCompilerType)) Then
                     Throw New ArgumentException("Compiler failure! See information tab for more information. (BasicPawn Debug Cmd Runner Engine)")
                 End If
 
@@ -485,7 +493,7 @@ Public Class ClassDebuggerRunner
 
                 g_ClassPreProcess.FinishSource(sSource)
 
-                If (Not g_mFormDebugger.g_mFormMain.g_ClassTextEditorTools.CompileSource(False, sSource, sOutputFile, Nothing, Nothing, Nothing, Nothing, True, Nothing, iCompilerType)) Then
+                If (Not g_mFormDebugger.g_mFormMain.g_ClassTextEditorTools.CompileSource(False, sSource, sOutputFile, m_CurrentConfig, Nothing, Nothing, Nothing, Nothing, True, Nothing, iCompilerType)) Then
                     Throw New ArgumentException("Compiler failure! See information tab for more information. (BasicPawn Debug Main Plugin)")
                 End If
 

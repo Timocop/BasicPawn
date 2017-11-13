@@ -122,6 +122,7 @@ Public Class ClassAutocompleteUpdater
             Dim sRequestedSourceFile As String = mRequestTab.m_File
             Dim iRequestedLangauge As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = mRequestTab.m_Language
             Dim sRequestedSource As String = ClassThread.ExecEx(Of String)(mRequestTab, Function() mRequestTab.m_TextEditor.Document.TextContent)
+            Dim mRequestedConfig As ClassConfigs.STRUC_CONFIG_ITEM = ClassThread.ExecEx(Of ClassConfigs.STRUC_CONFIG_ITEM)(mRequestTab, Function() mRequestTab.m_ActiveConfig)
 
             If (String.IsNullOrEmpty(sRequestedSourceFile) OrElse Not IO.File.Exists(sRequestedSourceFile)) Then
                 ClassThread.ExecAsync(g_mFormMain, Sub()
@@ -148,10 +149,10 @@ Public Class ClassAutocompleteUpdater
             Dim lIncludeFiles As New List(Of DictionaryEntry)
             Dim lIncludeFilesFull As New List(Of DictionaryEntry)
 
-            For Each sInclude In GetIncludeFiles(sRequestedSource, sRequestedSourceFile, sRequestedSourceFile)
+            For Each sInclude In GetIncludeFiles(mRequestedConfig, sRequestedSource, sRequestedSourceFile, sRequestedSourceFile)
                 lIncludeFiles.Add(New DictionaryEntry(sTabIdentifier, sInclude))
             Next
-            For Each sInclude In GetIncludeFiles(sRequestedSource, sRequestedSourceFile, sRequestedSourceFile, True)
+            For Each sInclude In GetIncludeFiles(mRequestedConfig, sRequestedSource, sRequestedSourceFile, sRequestedSourceFile, True)
                 lIncludeFilesFull.Add(New DictionaryEntry(sTabIdentifier, sInclude))
             Next
 
@@ -237,7 +238,7 @@ Public Class ClassAutocompleteUpdater
             lTmpAutocompleteList.AddRange(GetPreprocessorKeywords(lIncludeFilesFull.ToArray))
 
             'Detect current mod type...
-            If (ClassConfigs.m_ActiveConfig.g_iLanguage = ClassConfigs.STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE.AUTO_DETECT) Then
+            If (mRequestedConfig.g_iLanguage = ClassConfigs.STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE.AUTO_DETECT) Then
                 Dim iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = CType(-1, ClassSyntaxTools.ENUM_LANGUAGE_TYPE)
 
                 For i = 0 To lIncludeFiles.Count - 1
@@ -288,7 +289,7 @@ Public Class ClassAutocompleteUpdater
                     iRequestedLangauge = iLanguage
                 End If
             Else
-                Select Case (ClassConfigs.m_ActiveConfig.g_iLanguage)
+                Select Case (mRequestedConfig.g_iLanguage)
                     Case ClassConfigs.STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE.SOURCEPAWN
                         iRequestedLangauge = ClassSyntaxTools.ENUM_LANGUAGE_TYPE.SOURCEPAWN
 
@@ -2891,11 +2892,11 @@ Public Class ClassAutocompleteUpdater
     ''' </summary>
     ''' <param name="sPath"></param>
     ''' <returns>Array if include file paths</returns>
-    Public Function GetIncludeFiles(sActiveSource As String, sActiveSourceFile As String, sPath As String, Optional bFindAll As Boolean = False, Optional iMaxDirectoryDepth As Integer = 10) As String()
+    Public Function GetIncludeFiles(mConfig As ClassConfigs.STRUC_CONFIG_ITEM, sActiveSource As String, sActiveSourceFile As String, sPath As String, Optional bFindAll As Boolean = False, Optional iMaxDirectoryDepth As Integer = 10) As String()
         Dim lList As New List(Of String)
         Dim lLoadedIncludes As New Dictionary(Of String, Boolean)
 
-        GetIncludeFilesRecursive(sActiveSource, sActiveSourceFile, sPath, lList, lLoadedIncludes)
+        GetIncludeFilesRecursive(mConfig, sActiveSource, sActiveSourceFile, sPath, lList, lLoadedIncludes)
 
         If (bFindAll) Then
             While True
@@ -2908,14 +2909,14 @@ Public Class ClassAutocompleteUpdater
 
                 'Check includes
                 Dim sIncludePaths As String
-                If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
+                If (mConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                     If (String.IsNullOrEmpty(sActiveSourceFile) OrElse Not IO.File.Exists(sActiveSourceFile)) Then
                         g_mFormMain.PrintInformation("[ERRO]", "Could not read includes! Could not get current source file!", False, False)
                         Exit While
                     End If
                     sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(sActiveSourceFile), "include")
                 Else
-                    sIncludePaths = ClassConfigs.m_ActiveConfig.g_sIncludeFolders
+                    sIncludePaths = mConfig.g_sIncludeFolders
                 End If
 
 #If SEARCH_EVERYWHERE Then
@@ -2943,7 +2944,7 @@ Public Class ClassAutocompleteUpdater
                         Continue For
                     End If
 
-                    GetIncludeFilesRecursiveAll(sInclude, lList, lLoadedIncludes, iMaxDirectoryDepth)
+                    GetIncludeFilesRecursiveAll(mConfig, sInclude, lList, lLoadedIncludes, iMaxDirectoryDepth)
                 Next
 
 #If SEARCH_EVERYWHERE Then
@@ -2965,7 +2966,7 @@ Public Class ClassAutocompleteUpdater
         Return lList.ToArray
     End Function
 
-    Private Sub GetIncludeFilesRecursiveAll(sInclude As String, ByRef lList As List(Of String), lLoadedIncludes As Dictionary(Of String, Boolean), iMaxDirectoryDepth As Integer)
+    Private Sub GetIncludeFilesRecursiveAll(mConfig As ClassConfigs.STRUC_CONFIG_ITEM, sInclude As String, ByRef lList As List(Of String), lLoadedIncludes As Dictionary(Of String, Boolean), iMaxDirectoryDepth As Integer)
         Dim sFiles As String()
         Dim sDirectories As String()
 
@@ -2997,11 +2998,11 @@ Public Class ClassAutocompleteUpdater
         End If
 
         For Each i As String In sDirectories
-            GetIncludeFilesRecursiveAll(i, lList, lLoadedIncludes, iMaxDirectoryDepth - 1)
+            GetIncludeFilesRecursiveAll(mConfig, i, lList, lLoadedIncludes, iMaxDirectoryDepth - 1)
         Next
     End Sub
 
-    Private Sub GetIncludeFilesRecursive(sActiveSource As String, sActiveSourceFile As String, sPath As String, ByRef lList As List(Of String), lLoadedIncludes As Dictionary(Of String, Boolean))
+    Private Sub GetIncludeFilesRecursive(mConfig As ClassConfigs.STRUC_CONFIG_ITEM, sActiveSource As String, sActiveSourceFile As String, sPath As String, ByRef lList As List(Of String), lLoadedIncludes As Dictionary(Of String, Boolean))
         Dim sSource As String
 
         Dim sFileName As String = IO.Path.GetFileNameWithoutExtension(sPath)
@@ -3045,26 +3046,26 @@ Public Class ClassAutocompleteUpdater
         While True
             'Check includes
             Dim sIncludePaths As String
-            If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
+            If (mConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                 If (String.IsNullOrEmpty(sActiveSourceFile) OrElse Not IO.File.Exists(sActiveSourceFile)) Then
                     g_mFormMain.PrintInformation("[ERRO]", "Could not read includes! Could not get current source file!", False, False)
                     Exit While
                 End If
                 sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(sActiveSourceFile), "include")
             Else
-                sIncludePaths = ClassConfigs.m_ActiveConfig.g_sIncludeFolders
+                sIncludePaths = mConfig.g_sIncludeFolders
             End If
 
             'Check compiler
             Dim sCompilerPath As String
-            If (ClassConfigs.m_ActiveConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
+            If (mConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                 If (String.IsNullOrEmpty(sActiveSourceFile) OrElse Not IO.File.Exists(sActiveSourceFile)) Then
                     g_mFormMain.PrintInformation("[ERRO]", "Could not read includes! Could not get current source file!", False, False)
                     Exit While
                 End If
                 sCompilerPath = IO.Path.GetDirectoryName(sActiveSourceFile)
-            ElseIf (Not String.IsNullOrEmpty(ClassConfigs.m_ActiveConfig.g_sCompilerPath) AndAlso IO.File.Exists(ClassConfigs.m_ActiveConfig.g_sCompilerPath)) Then
-                sCompilerPath = IO.Path.GetDirectoryName(ClassConfigs.m_ActiveConfig.g_sCompilerPath)
+            ElseIf (Not String.IsNullOrEmpty(mConfig.g_sCompilerPath) AndAlso IO.File.Exists(mConfig.g_sCompilerPath)) Then
+                sCompilerPath = IO.Path.GetDirectoryName(mConfig.g_sCompilerPath)
             Else
                 sCompilerPath = ""
             End If
@@ -3237,7 +3238,7 @@ Public Class ClassAutocompleteUpdater
         End While
 
         For i = 0 To lPathList.Count - 1
-            GetIncludeFilesRecursive(sActiveSource, sActiveSourceFile, lPathList(i), lList, lLoadedIncludes)
+            GetIncludeFilesRecursive(mConfig, sActiveSource, sActiveSourceFile, lPathList(i), lList, lLoadedIncludes)
         Next
     End Sub
 End Class

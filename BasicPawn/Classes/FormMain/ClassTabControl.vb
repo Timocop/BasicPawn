@@ -51,7 +51,7 @@ Public Class ClassTabControl
 
     ReadOnly Property m_ActiveTab As SourceTabPage
         Get
-            Return DirectCast(g_mFormMain.TabControl_SourceTabs.SelectedTab, SourceTabPage)
+            Return TryCast(g_mFormMain.TabControl_SourceTabs.SelectedTab, SourceTabPage)
         End Get
     End Property
 
@@ -63,7 +63,7 @@ Public Class ClassTabControl
 
     ReadOnly Property m_Tab(iIndex As Integer) As SourceTabPage
         Get
-            Return DirectCast(g_mFormMain.TabControl_SourceTabs.TabPages(iIndex), SourceTabPage)
+            Return TryCast(g_mFormMain.TabControl_SourceTabs.TabPages(iIndex), SourceTabPage)
         End Get
     End Property
 
@@ -316,6 +316,8 @@ Public Class ClassTabControl
             m_Tab(iIndex).m_IncludeFiles.Clear()
             m_Tab(iIndex).m_FileCachedWriteDate = Now
 
+            m_Tab(iIndex).m_ActiveConfig = Nothing
+
             m_Tab(iIndex).m_ClassLineState.m_IgnoreUpdates = False
 
             If (g_iBeginUpdateCount > 0) Then
@@ -346,6 +348,23 @@ Public Class ClassTabControl
         m_Tab(iIndex).m_AutocompleteItems.Clear()
         m_Tab(iIndex).m_IncludeFiles.Clear()
         m_Tab(iIndex).m_FileCachedWriteDate = m_Tab(iIndex).m_FileRealWriteDate
+
+        Dim mKnownConfig = ClassConfigs.m_KnownConfigByFile(sFile)
+        If (mKnownConfig Is Nothing) Then
+            While True
+                For Each mConfig In ClassConfigs.GetConfigs(False)
+                    If (mConfig.g_bAutoload) Then
+                        m_Tab(iIndex).m_ActiveConfig = mConfig
+                        Exit While
+                    End If
+                Next
+
+                m_Tab(iIndex).m_ActiveConfig = Nothing
+                Exit While
+            End While
+        Else
+            m_Tab(iIndex).m_ActiveConfig = mKnownConfig
+        End If
 
         m_Tab(iIndex).m_ClassLineState.m_IgnoreUpdates = False
 
@@ -622,6 +641,10 @@ Public Class ClassTabControl
         Next
 
         g_mFormMain.g_ClassSyntaxUpdater.StartThread()
+
+        g_mFormMain.g_ClassSyntaxTools.RefreshSyntax()
+
+        g_mFormMain.UpdateFormConfigText()
     End Sub
 
     Private Sub OnTabSelected(sender As Object, e As EventArgs)
@@ -647,6 +670,7 @@ Public Class ClassTabControl
         Private g_mAutocompleteItems As New ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
         Private g_mIncludeFiles As New ClassSyncList(Of DictionaryEntry) '{sTabIdentifier-Ref, IncludeFile}
         Private g_mIncludeFilesFull As New ClassSyncList(Of DictionaryEntry) '{sTabIdentifier-Ref, IncludeFile}
+        Private g_mActiveConfig As ClassConfigs.STRUC_CONFIG_ITEM = ClassConfigs.m_DefaultConfig
         Private g_iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = ClassSyntaxTools.ENUM_LANGUAGE_TYPE.SOURCEPAWN
         Private g_bHasReferenceIncludes As Boolean = False
         Private g_mSourceTextEditor As TextEditorControlEx
@@ -894,6 +918,23 @@ Public Class ClassTabControl
             Get
                 Return g_mIncludeFilesFull
             End Get
+        End Property
+
+        Public Property m_ActiveConfig As ClassConfigs.STRUC_CONFIG_ITEM
+            Get
+                If (g_mActiveConfig IsNot Nothing AndAlso g_mActiveConfig.ConfigExist) Then
+                    Return g_mActiveConfig
+                Else
+                    Return ClassConfigs.m_DefaultConfig
+                End If
+            End Get
+            Set(value As ClassConfigs.STRUC_CONFIG_ITEM)
+                If (value Is Nothing) Then
+                    g_mActiveConfig = ClassConfigs.m_DefaultConfig
+                Else
+                    g_mActiveConfig = value
+                End If
+            End Set
         End Property
 
         Public Property m_Language As ClassSyntaxTools.ENUM_LANGUAGE_TYPE

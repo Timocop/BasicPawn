@@ -293,9 +293,9 @@ Public Class ClassSettings
         sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%input%", "Current opened source file", sFile))
         sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%inputfilename%", "Current opened source filename", If(String.IsNullOrEmpty(sFile), "", IO.Path.GetFileNameWithoutExtension(sFile))))
         sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%inputfolder%", "Current opened source file folder", If(String.IsNullOrEmpty(sFile), "", IO.Path.GetDirectoryName(sFile))))
-        sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%includes%", "Include folders", ClassConfigs.m_ActiveConfig.g_sIncludeFolders))
-        sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%compiler%", "Compiler path", ClassConfigs.m_ActiveConfig.g_sCompilerPath))
-        sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%output%", "Output folder", ClassConfigs.m_ActiveConfig.g_sOutputFolder))
+        sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%includes%", "Include folders", mFormMain.g_ClassTabControl.m_ActiveTab.m_ActiveConfig.g_sIncludeFolders))
+        sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%compiler%", "Compiler path", mFormMain.g_ClassTabControl.m_ActiveTab.m_ActiveConfig.g_sCompilerPath))
+        sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%output%", "Output folder", mFormMain.g_ClassTabControl.m_ActiveTab.m_ActiveConfig.g_sOutputFolder))
         sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%currentdir%", "BasicPawn statup folder", Application.StartupPath))
 
         Return sShellList.ToArray

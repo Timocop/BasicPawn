@@ -775,7 +775,12 @@ Public Class UCProjectBrowser
                 mFormProgress.m_Progress = 0
 
                 For Each sFile In lFiles
-                    Dim sShell As String = ClassConfigs.m_ActiveConfig.g_sExecuteShell
+                    Dim mConfig = ClassConfigs.m_KnownConfigByFile(sFile)
+                    If (mConfig Is Nothing) Then
+                        Throw New ArgumentException("No known config found for this file")
+                    End If
+
+                    Dim sShell As String = mConfig.g_sExecuteShell
 
                     For Each mArg In ClassSettings.GetShellArguments(g_mFormMain, sFile)
                         sShell = sShell.Replace(mArg.g_sMarker, mArg.g_sArgument)

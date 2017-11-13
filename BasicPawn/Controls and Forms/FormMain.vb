@@ -20,14 +20,14 @@ Imports System.Text
 Imports System.Text.RegularExpressions
 
 Public Class FormMain
+    Public g_ClassTabControl As ClassTabControl
     Public g_ClassSyntaxUpdater As ClassSyntaxUpdater
-    Public g_ClassSyntaxTools As ClassSyntaxTools
     Public g_ClassAutocompleteUpdater As ClassAutocompleteUpdater
     Public g_ClassTextEditorTools As ClassTextEditorTools
     Public g_ClassLineState As ClassTextEditorTools.ClassLineState
     Public g_ClassCustomHighlighting As ClassTextEditorTools.ClassCustomHighlighting
     Public g_ClassPluginController As ClassPluginController
-    Public g_ClassTabControl As ClassTabControl
+    Public g_ClassSyntaxTools As ClassSyntaxTools
 #Disable Warning IDE1006 ' Naming Styles
     Public WithEvents g_ClassCrossAppComunication As ClassCrossAppComunication
 #Enable Warning IDE1006 ' Naming Styles
@@ -153,14 +153,14 @@ Public Class FormMain
         ImageList_Details.Images.Add("0", My.Resources.imageres_5332_16x16)
         ImageList_Details.Images.Add("1", My.Resources.imageres_5333_16x16)
 
+        g_ClassTabControl = New ClassTabControl(Me)
         g_ClassSyntaxUpdater = New ClassSyntaxUpdater(Me)
-        g_ClassSyntaxTools = New ClassSyntaxTools(Me)
         g_ClassAutocompleteUpdater = New ClassAutocompleteUpdater(Me)
         g_ClassTextEditorTools = New ClassTextEditorTools(Me)
         g_ClassLineState = New ClassTextEditorTools.ClassLineState(Me)
         g_ClassCustomHighlighting = New ClassTextEditorTools.ClassCustomHighlighting(Me)
         g_ClassPluginController = New ClassPluginController(Me)
-        g_ClassTabControl = New ClassTabControl(Me)
+        g_ClassSyntaxTools = New ClassSyntaxTools(Me)
 
         ' Load other Forms/Controls
         g_mUCAutocomplete = New UCAutocomplete(Me) With {
@@ -222,7 +222,7 @@ Public Class FormMain
     End Sub
 
     Public Sub UpdateFormConfigText()
-        ToolStripStatusLabel_CurrentConfig.Text = "Config: " & ClassConfigs.m_ActiveConfig.GetName
+        ToolStripStatusLabel_CurrentConfig.Text = "Config: " & g_ClassTabControl.m_ActiveTab.m_ActiveConfig.GetName
     End Sub
 
     Public Sub PrintInformation(sType As String, sMessage As String, Optional bClear As Boolean = False, Optional bShowInformationTab As Boolean = False, Optional bEnsureVisible As Boolean = False)
@@ -276,15 +276,6 @@ Public Class FormMain
         g_bIgnoreComboBoxEvent = True
         ToolStripComboBox_ToolsAutocompleteSyntax.SelectedIndex = 0
         g_bIgnoreComboBoxEvent = False
-
-        'Load default configs
-        For Each mConfig As ClassConfigs.STRUC_CONFIG_ITEM In ClassConfigs.GetConfigs(False)
-            If (mConfig.g_bAutoload) Then
-                ClassConfigs.m_ActiveConfig = mConfig
-                UpdateFormConfigText()
-                Exit For
-            End If
-        Next
 
         'Clean tabs
         g_ClassTabControl.Init()
@@ -629,7 +620,7 @@ Public Class FormMain
             End If
 
             Dim sTempFile As String = ""
-            Dim sPreSource As String = g_ClassTextEditorTools.GetCompilerPreProcessCode(sSource, True, True, sTempFile, If(sSourceFile Is Nothing, Nothing, IO.Path.GetDirectoryName(sSourceFile)), Nothing, Nothing, sSourceFile)
+            Dim sPreSource As String = g_ClassTextEditorTools.GetCompilerPreProcessCode(sSource, True, True, sTempFile, Nothing, If(sSourceFile Is Nothing, Nothing, IO.Path.GetDirectoryName(sSourceFile)), Nothing, Nothing, sSourceFile)
             If (String.IsNullOrEmpty(sPreSource)) Then
                 MessageBox.Show("Could not export packed source. See information tab for more information.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Return
@@ -714,7 +705,7 @@ Public Class FormMain
 
 #Region "MenuStrip_Tools"
     Private Sub ToolStripMenuItem_ToolsSettingsAndConfigs_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsSettingsAndConfigs.Click
-        Using i As New FormSettings(Me)
+        Using i As New FormSettings(Me, FormSettings.ENUM_CONFIG_TYPE.ACTIVE)
             If (i.ShowDialog(Me) = DialogResult.OK) Then
                 UpdateFormConfigText()
 
@@ -913,7 +904,7 @@ Public Class FormMain
             End If
 
             Dim sOutputFile As String = ""
-            g_ClassTextEditorTools.CompileSource(False, sSource, sOutputFile, If(sSourceFile Is Nothing, Nothing, IO.Path.GetDirectoryName(sSourceFile)), Nothing, Nothing, sSourceFile)
+            g_ClassTextEditorTools.CompileSource(False, sSource, sOutputFile, Nothing, If(sSourceFile Is Nothing, Nothing, IO.Path.GetDirectoryName(sSourceFile)), Nothing, Nothing, sSourceFile)
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
@@ -937,7 +928,7 @@ Public Class FormMain
             End If
 
             Dim sOutputFile As String = ""
-            g_ClassTextEditorTools.CompileSource(True, sSource, sOutputFile, If(sSourceFile Is Nothing, Nothing, IO.Path.GetDirectoryName(sSourceFile)), Nothing, Nothing, sSourceFile)
+            g_ClassTextEditorTools.CompileSource(True, sSource, sOutputFile, Nothing, If(sSourceFile Is Nothing, Nothing, IO.Path.GetDirectoryName(sSourceFile)), Nothing, Nothing, sSourceFile)
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
@@ -975,7 +966,7 @@ Public Class FormMain
 #Region "MenuStrip_Shell"
     Private Sub ToolStripMenuItem_Shell_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Shell.Click
         Try
-            Dim sShell As String = ClassConfigs.m_ActiveConfig.g_sExecuteShell
+            Dim sShell As String = g_ClassTabControl.m_ActiveTab.m_ActiveConfig.g_sExecuteShell
 
             For Each mArg In ClassSettings.GetShellArguments(Me, Nothing)
                 sShell = sShell.Replace(mArg.g_sMarker, mArg.g_sArgument)
@@ -1063,7 +1054,35 @@ Public Class FormMain
 
 
     Private Sub ToolStripStatusLabel_CurrentConfig_Click(sender As Object, e As EventArgs) Handles ToolStripStatusLabel_CurrentConfig.Click
-        Using i As New FormSettings(Me)
+        ContextMenuStrip_Config.Show(Cursor.Position)
+    End Sub
+
+    Private Sub ToolStripMenuItem_EditConfigActiveTab_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_EditConfigActiveTab.Click
+        Using i As New FormSettings(Me, FormSettings.ENUM_CONFIG_TYPE.ACTIVE)
+            i.TabControl1.SelectTab(1)
+            If (i.ShowDialog(Me) = DialogResult.OK) Then
+                UpdateFormConfigText()
+
+                g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, Nothing)
+                For j = 0 To g_ClassTabControl.m_TabsCount - 1
+                    g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, g_ClassTabControl.m_Tab(j).m_Identifier)
+                Next
+
+                For j = 0 To g_ClassTabControl.m_TabsCount - 1
+                    g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
+                    g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.IndentationSize = If(ClassSettings.g_iSettingsTabsToSpaces > 0, ClassSettings.g_iSettingsTabsToSpaces, 4)
+                    g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.ConvertTabsToSpaces = (ClassSettings.g_iSettingsTabsToSpaces > 0)
+                    g_ClassTabControl.m_Tab(j).m_TextEditor.Refresh()
+                Next
+
+                g_ClassSyntaxTools.UpdateFormColors()
+            End If
+        End Using
+    End Sub
+
+    Private Sub ToolStripMenuItem_EditConfigAllTabs_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_EditConfigAllTabs.Click
+
+        Using i As New FormSettings(Me, FormSettings.ENUM_CONFIG_TYPE.ALL)
             i.TabControl1.SelectTab(1)
             If (i.ShowDialog(Me) = DialogResult.OK) Then
                 UpdateFormConfigText()

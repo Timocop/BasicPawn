@@ -299,18 +299,22 @@ Public Class ClassSyntaxTools
     ''' Updates the form colors and syntax.
     ''' </summary>
     Public Sub UpdateFormColors()
-        UpdateSyntaxFile(ENUM_SYNTAX_UPDATE_TYPE.NONE, True) 'Just generate new files once, we dont need to create new files every type.
-        UpdateSyntaxFile(ENUM_SYNTAX_UPDATE_TYPE.AUTOCOMPLETE)
-        UpdateSyntaxFile(ENUM_SYNTAX_UPDATE_TYPE.HIGHLIGHT_WORD)
-        UpdateSyntaxFile(ENUM_SYNTAX_UPDATE_TYPE.HIGHLIGHT_WORD_CUSTOM)
-        UpdateSyntaxFile(ENUM_SYNTAX_UPDATE_TYPE.CARET_WORD)
-        UpdateTextEditorSyntax()
+        RefreshSyntax()
 
         For Each c As Form In Application.OpenForms
             ClassControlStyle.UpdateControls(c)
         Next
 
         g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnFormColorUpdate())
+    End Sub
+
+    Public Sub RefreshSyntax()
+        UpdateSyntaxFile(ENUM_SYNTAX_UPDATE_TYPE.NONE, True) 'Just generate new files once, we dont need to create new files every type.
+        UpdateSyntaxFile(ENUM_SYNTAX_UPDATE_TYPE.AUTOCOMPLETE)
+        UpdateSyntaxFile(ENUM_SYNTAX_UPDATE_TYPE.HIGHLIGHT_WORD)
+        UpdateSyntaxFile(ENUM_SYNTAX_UPDATE_TYPE.HIGHLIGHT_WORD_CUSTOM)
+        UpdateSyntaxFile(ENUM_SYNTAX_UPDATE_TYPE.CARET_WORD)
+        UpdateTextEditorSyntax()
     End Sub
 
     ''' <summary>
@@ -324,11 +328,11 @@ Public Class ClassSyntaxTools
                 End If
 
                 Dim sModSyntaxXML As String
-                If (Not String.IsNullOrEmpty(ClassConfigs.m_ActiveConfig.g_sSyntaxHighlightingPath) AndAlso
-                        IO.File.Exists(ClassConfigs.m_ActiveConfig.g_sSyntaxHighlightingPath) AndAlso
-                        IO.Path.GetExtension(ClassConfigs.m_ActiveConfig.g_sSyntaxHighlightingPath).ToLower = ".xml") Then
-
-                    Dim sFileText As String = IO.File.ReadAllText(ClassConfigs.m_ActiveConfig.g_sSyntaxHighlightingPath)
+                If (g_mFormMain.g_ClassTabControl.m_ActiveTab IsNot Nothing AndAlso
+                            Not String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ActiveConfig.g_sSyntaxHighlightingPath) AndAlso
+                            IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ActiveConfig.g_sSyntaxHighlightingPath) AndAlso
+                            IO.Path.GetExtension(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ActiveConfig.g_sSyntaxHighlightingPath).ToLower = ".xml") Then 
+                    Dim sFileText As String = IO.File.ReadAllText(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ActiveConfig.g_sSyntaxHighlightingPath)
                     sModSyntaxXML = sFileText.Replace(g_sSyntax_SourcePawnMarker, g_SyntaxFiles(i).sDefinition)
                 Else
                     sModSyntaxXML = g_SyntaxXML.Replace(g_sSyntax_SourcePawnMarker, g_SyntaxFiles(i).sDefinition)
@@ -517,9 +521,9 @@ Public Class ClassSyntaxTools
 
                             'Invert colors of the syntax file. But only for the default syntax file.
                             While (ClassSettings.g_iSettingsInvertColors)
-                                If (Not String.IsNullOrEmpty(ClassConfigs.m_ActiveConfig.g_sSyntaxHighlightingPath) AndAlso
-                                        IO.File.Exists(ClassConfigs.m_ActiveConfig.g_sSyntaxHighlightingPath) AndAlso
-                                        IO.Path.GetExtension(ClassConfigs.m_ActiveConfig.g_sSyntaxHighlightingPath).ToLower = ".xml") Then
+                                If (Not String.IsNullOrEmpty(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ActiveConfig.g_sSyntaxHighlightingPath) AndAlso
+                                        IO.File.Exists(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ActiveConfig.g_sSyntaxHighlightingPath) AndAlso
+                                        IO.Path.GetExtension(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ActiveConfig.g_sSyntaxHighlightingPath).ToLower = ".xml") Then
                                     Exit While
                                 End If
 

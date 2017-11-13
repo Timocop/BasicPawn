@@ -28,7 +28,7 @@ Public Class PluginFTP
     Private g_ClassPlugin As ClassPlugin
     Private g_mUpdateThread As Threading.Thread
 
-    Private Shared ReadOnly g_mSpportedVersion As New Version("0.734")
+    Private Shared ReadOnly g_mSpportedVersion As New Version("0.737")
 
 #Region "Unused"
     Public Sub OnPluginLoad(sDLLPath As String) Implements IPluginInterface.OnPluginLoad
@@ -290,7 +290,7 @@ Public Class PluginFTP
                 End If
 
                 Dim sOutputFile As String = ""
-                g_mPluginFTP.g_mFormMain.g_ClassTextEditorTools.CompileSource(False, sSource, sOutputFile, If(sSourceFile Is Nothing, Nothing, IO.Path.GetDirectoryName(sSourceFile)), Nothing, Nothing, sSourceFile)
+                g_mPluginFTP.g_mFormMain.g_ClassTextEditorTools.CompileSource(False, sSource, sOutputFile, Nothing, If(sSourceFile Is Nothing, Nothing, IO.Path.GetDirectoryName(sSourceFile)), Nothing, Nothing, sSourceFile)
 
                 Using i As New FormFTP(g_mPluginFTP, sOutputFile)
                     i.ShowDialog(g_mPluginFTP.g_mFormMain)

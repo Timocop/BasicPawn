@@ -18,6 +18,7 @@
 
 Public Class FormSettings
     Private g_mFormMain As FormMain
+    Private g_iConfigType As ENUM_CONFIG_TYPE = ENUM_CONFIG_TYPE.ACTIVE
 
     Private g_lRestoreConfigs As New List(Of ClassConfigs.STRUC_CONFIG_ITEM)
     Private g_bRestoreConfigs As Boolean = False
@@ -25,12 +26,26 @@ Public Class FormSettings
     Private g_bConfigSettingsChanged As Boolean = False
     Private g_bComboBoxIgnoreEvent As Boolean = False
 
-    Public Sub New(f As FormMain)
+    Enum ENUM_CONFIG_TYPE
+        ALL
+        ACTIVE
+    End Enum
+
+    Public Sub New(f As FormMain, iConfigType As ENUM_CONFIG_TYPE)
         g_mFormMain = f
+        g_iConfigType = iConfigType
         g_bIgnoreChange = True
 
         ' This call is required by the designer.
         InitializeComponent()
+
+        Select Case (iConfigType)
+            Case ENUM_CONFIG_TYPE.ALL
+                TabPage_Configs.Text &= " (All Tabs)"
+
+            Case Else
+                TabPage_Configs.Text &= " (Active Tab)"
+        End Select
 
         ' Add any initialization after the InitializeComponent() call. 
         g_bComboBoxIgnoreEvent = True
@@ -149,14 +164,17 @@ Public Class FormSettings
         g_bRestoreConfigs = True
 
         'Get current config 
-        TextBox_ConfigName.Text = ClassConfigs.m_ActiveConfig.GetName
+        'NOTE: Only get the first 
+        Dim mCurrentConfig = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ActiveConfig
 
-        Dim i As Integer = ListBox_Configs.FindStringExact(ClassConfigs.m_ActiveConfig.GetName)
+        TextBox_ConfigName.Text = mCurrentConfig.GetName
+
+        Dim i As Integer = ListBox_Configs.FindStringExact(mCurrentConfig.GetName)
         If (i > -1) Then
             ListBox_Configs.SetSelected(i, True)
         End If
 
-        If (Not ClassConfigs.m_ActiveConfig.ConfigExist AndAlso Not ClassConfigs.m_ActiveConfig.IsDefault) Then
+        If (Not mCurrentConfig.ConfigExist AndAlso Not mCurrentConfig.IsDefault) Then
             MessageBox.Show("Current config not found!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
         End If
 
@@ -175,9 +193,33 @@ Public Class FormSettings
 
         If (ListBox_Configs.SelectedItems.Count > 0) Then
             Dim sName As String = ListBox_Configs.SelectedItems(0).ToString
+            Dim mConfig = ClassConfigs.LoadConfig(sName)
 
-            ClassConfigs.m_ActiveConfig = ClassConfigs.LoadConfig(sName)
+            Select Case (g_iConfigType)
+                Case ENUM_CONFIG_TYPE.ALL
+                    For i = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1
+                        g_mFormMain.g_ClassTabControl.m_Tab(i).m_ActiveConfig = mConfig
+
+                        If (Not g_mFormMain.g_ClassTabControl.m_Tab(i).m_IsUnsaved AndAlso Not g_mFormMain.g_ClassTabControl.m_Tab(i).m_InvalidFile) Then
+                            ClassConfigs.m_KnownConfigByFile(g_mFormMain.g_ClassTabControl.m_Tab(i).m_File) = mConfig
+                        End If
+                    Next
+
+                Case Else
+                    g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ActiveConfig = mConfig
+
+                    If (Not g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved AndAlso Not g_mFormMain.g_ClassTabControl.m_ActiveTab.m_InvalidFile) Then
+                        ClassConfigs.m_KnownConfigByFile(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File) = mConfig
+                    End If
+            End Select
         End If
+
+        'Cleanup invalid files from known configs
+        For Each mConfigItem In ClassConfigs.GetKnownConfigs()
+            If (Not IO.File.Exists(mConfigItem.sFile)) Then
+                ClassConfigs.m_KnownConfigByFile(mConfigItem.sFile) = Nothing
+            End If
+        Next
 
         'General
         ClassSettings.g_iSettingsAlwaysOpenNewInstance = CheckBox_AlwaysNewInstance.Checked
@@ -404,6 +446,7 @@ Public Class FormSettings
                     TextBoxEx_CODefineConstantsAMXX.Text = ""
                     TextBoxEx_COIgnoredWarningsAMXX.ShowWatermark()
                     TextBoxEx_CODefineConstantsAMXX.ShowWatermark()
+                    RefreshKnownFilesListBox()
                     'Debugging
                     TextBox_GameFolder.Text = ""
                     TextBox_SourceModFolder.Text = ""
@@ -451,6 +494,7 @@ Public Class FormSettings
                 TextBoxEx_CODefineConstantsAMXX.Text = ""
                 TextBoxEx_COIgnoredWarningsAMXX.ShowWatermark()
                 TextBoxEx_CODefineConstantsAMXX.ShowWatermark()
+                RefreshKnownFilesListBox()
                 'Debugging
                 TextBox_GameFolder.Text = ""
                 TextBox_SourceModFolder.Text = ""
@@ -550,6 +594,7 @@ Public Class FormSettings
                     TextBoxEx_COIgnoredWarningsAMXX.ShowWatermark()
                     TextBoxEx_CODefineConstantsAMXX.ShowWatermark()
                 End If
+                RefreshKnownFilesListBox()
                 'Debugging
                 TextBox_GameFolder.Text = mConfig.g_sDebugGameFolder
                 TextBox_SourceModFolder.Text = mConfig.g_sDebugSourceModFolder
@@ -1034,6 +1079,79 @@ Public Class FormSettings
             TabPage_Configs.Text = TabPage_Configs.Text.TrimEnd("*"c)
             TabControl1.Refresh()
         End If
+    End Sub
+
+    Private Sub Button_KnownFileAdd_Click(sender As Object, e As EventArgs) Handles Button_KnownFileAdd.Click
+        Try
+            If (ListBox_Configs.SelectedItems.Count < 1) Then
+                Return
+            End If
+
+            Dim sName As String = ListBox_Configs.SelectedItems(0).ToString
+            Dim mConfig As ClassConfigs.STRUC_CONFIG_ITEM = Nothing
+
+            For Each mFindConfig In ClassConfigs.GetConfigs(False)
+                If (mFindConfig.GetName = sName) Then
+                    mConfig = mFindConfig
+                    Exit For
+                End If
+            Next
+
+            If (mConfig Is Nothing) Then
+                Throw New ArgumentException("Config not found")
+            End If
+
+            Using i As New OpenFileDialog()
+                If (i.ShowDialog = DialogResult.OK) Then
+                    ClassConfigs.m_KnownConfigByFile(i.FileName) = mConfig
+                End If
+            End Using
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
+    Private Sub Button_KnownFileRemove_Click(sender As Object, e As EventArgs) Handles Button_KnownFileRemove.Click
+        Try
+            For i = ListView_KnownFiles.SelectedIndices.Count - 1 To 0 Step -1
+                Dim j = ListView_KnownFiles.SelectedIndices(i)
+                Dim sFile As String = CStr(ListView_KnownFiles.Items(j).SubItems(0).Text)
+
+                ClassConfigs.m_KnownConfigByFile(sFile) = Nothing
+
+                ListView_KnownFiles.Items.RemoveAt(j)
+            Next
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
+    Public Sub RefreshKnownFilesListBox()
+        Try
+            If (ListBox_Configs.SelectedItems.Count < 1) Then
+                Return
+            End If
+
+            Try
+                ListView_KnownFiles.BeginUpdate()
+                ListView_KnownFiles.Items.Clear()
+
+                Dim sName As String = ListBox_Configs.SelectedItems(0).ToString
+
+                For Each mKnownConfig In ClassConfigs.GetKnownConfigs
+                    If (mKnownConfig.sConfigName = sName) Then
+                        ListView_KnownFiles.Items.Add(mKnownConfig.sFile)
+                    End If
+                Next
+            Finally
+                ClassTools.ClassControls.ClassListView.AutoResizeColumns(ListView_KnownFiles)
+
+                ListView_KnownFiles.EndUpdate()
+            End Try
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+
     End Sub
 #End Region
 

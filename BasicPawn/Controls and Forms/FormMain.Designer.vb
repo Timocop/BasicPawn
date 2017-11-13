@@ -155,6 +155,9 @@ Partial Class FormMain
         Me.ToolStripStatusLabel_AppVersion = New System.Windows.Forms.ToolStripStatusLabel()
         Me.Timer_PingFlash = New System.Windows.Forms.Timer(Me.components)
         Me.Timer_CheckFiles = New System.Windows.Forms.Timer(Me.components)
+        Me.ContextMenuStrip_Config = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.ToolStripMenuItem_EditConfigActiveTab = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_EditConfigAllTabs = New System.Windows.Forms.ToolStripMenuItem()
         Me.ContextMenuStrip_RightClick.SuspendLayout()
         Me.MenuStrip_BasicPawn.SuspendLayout()
         Me.SplitContainer_ToolboxSourceAndDetails.Panel1.SuspendLayout()
@@ -168,6 +171,7 @@ Partial Class FormMain
         Me.ContextMenuStrip_Tabs.SuspendLayout()
         Me.TabControl_Details.SuspendLayout()
         Me.StatusStrip_BasicPawn.SuspendLayout()
+        Me.ContextMenuStrip_Config.SuspendLayout()
         Me.SuspendLayout()
         '
         'ContextMenuStrip_RightClick
@@ -1135,6 +1139,25 @@ Partial Class FormMain
         Me.Timer_CheckFiles.Enabled = True
         Me.Timer_CheckFiles.Interval = 2500
         '
+        'ContextMenuStrip_Config
+        '
+        Me.ContextMenuStrip_Config.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_EditConfigActiveTab, Me.ToolStripMenuItem_EditConfigAllTabs})
+        Me.ContextMenuStrip_Config.Name = "ContextMenuStrip_Config"
+        Me.ContextMenuStrip_Config.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
+        Me.ContextMenuStrip_Config.Size = New System.Drawing.Size(234, 48)
+        '
+        'ToolStripMenuItem_EditConfigActiveTab
+        '
+        Me.ToolStripMenuItem_EditConfigActiveTab.Name = "ToolStripMenuItem_EditConfigActiveTab"
+        Me.ToolStripMenuItem_EditConfigActiveTab.Size = New System.Drawing.Size(233, 22)
+        Me.ToolStripMenuItem_EditConfigActiveTab.Text = "Change config for active tab..."
+        '
+        'ToolStripMenuItem_EditConfigAllTabs
+        '
+        Me.ToolStripMenuItem_EditConfigAllTabs.Name = "ToolStripMenuItem_EditConfigAllTabs"
+        Me.ToolStripMenuItem_EditConfigAllTabs.Size = New System.Drawing.Size(233, 22)
+        Me.ToolStripMenuItem_EditConfigAllTabs.Text = "Change config for all tabs..."
+        '
         'FormMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -1165,6 +1188,7 @@ Partial Class FormMain
         Me.TabControl_Details.ResumeLayout(False)
         Me.StatusStrip_BasicPawn.ResumeLayout(False)
         Me.StatusStrip_BasicPawn.PerformLayout()
+        Me.ContextMenuStrip_Config.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -1297,4 +1321,7 @@ Partial Class FormMain
     Public WithEvents ToolStripSeparator16 As ToolStripSeparator
     Public WithEvents ToolStripMenuItem_Tabs_Cut As ToolStripMenuItem
     Public WithEvents ToolStripMenuItem_Tabs_Insert As ToolStripMenuItem
+    Public WithEvents ContextMenuStrip_Config As ContextMenuStrip
+    Friend WithEvents ToolStripMenuItem_EditConfigActiveTab As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_EditConfigAllTabs As ToolStripMenuItem
 End Class

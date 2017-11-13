@@ -113,6 +113,9 @@ Partial Class FormSettings
         Me.Button_SourceModFolder = New System.Windows.Forms.Button()
         Me.Label12 = New System.Windows.Forms.Label()
         Me.Panel9 = New System.Windows.Forms.Panel()
+        Me.GroupBox3 = New System.Windows.Forms.GroupBox()
+        Me.Button_KnownFileAdd = New System.Windows.Forms.Button()
+        Me.Button_KnownFileRemove = New System.Windows.Forms.Button()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
         Me.TabControl2 = New BasicPawn.ClassTabControlColor()
         Me.TabPage1 = New System.Windows.Forms.TabPage()
@@ -156,6 +159,7 @@ Partial Class FormSettings
         Me.Button_OutputFolder = New System.Windows.Forms.Button()
         Me.ListBox_Configs = New System.Windows.Forms.ListBox()
         Me.TabPage_Plugins = New System.Windows.Forms.TabPage()
+        Me.LinkLabel_MorePlugins = New System.Windows.Forms.LinkLabel()
         Me.ListView_Plugins = New System.Windows.Forms.ListView()
         Me.ColumnHeader1 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader2 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
@@ -174,7 +178,8 @@ Partial Class FormSettings
         Me.TableLayoutPanel3 = New System.Windows.Forms.TableLayoutPanel()
         Me.ClassPictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
         Me.Label17 = New System.Windows.Forms.Label()
-        Me.LinkLabel_MorePlugins = New System.Windows.Forms.LinkLabel()
+        Me.ListView_KnownFiles = New System.Windows.Forms.ListView()
+        Me.ColumnHeader8 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ContextMenuStrip_Plugins.SuspendLayout()
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Settings.SuspendLayout()
@@ -193,6 +198,7 @@ Partial Class FormSettings
         Me.Panel11.SuspendLayout()
         Me.Panel10.SuspendLayout()
         Me.Panel9.SuspendLayout()
+        Me.GroupBox3.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
         Me.TabControl2.SuspendLayout()
         Me.TabPage1.SuspendLayout()
@@ -211,7 +217,7 @@ Partial Class FormSettings
         Me.Button_Cancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.Button_Cancel.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_Cancel.Location = New System.Drawing.Point(686, 768)
+        Me.Button_Cancel.Location = New System.Drawing.Point(686, 526)
         Me.Button_Cancel.Name = "Button_Cancel"
         Me.Button_Cancel.Size = New System.Drawing.Size(86, 23)
         Me.Button_Cancel.TabIndex = 1
@@ -223,7 +229,7 @@ Partial Class FormSettings
         Me.Button_Apply.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_Apply.DialogResult = System.Windows.Forms.DialogResult.OK
         Me.Button_Apply.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_Apply.Location = New System.Drawing.Point(594, 768)
+        Me.Button_Apply.Location = New System.Drawing.Point(594, 526)
         Me.Button_Apply.Name = "Button_Apply"
         Me.Button_Apply.Size = New System.Drawing.Size(86, 23)
         Me.Button_Apply.TabIndex = 2
@@ -271,7 +277,7 @@ Partial Class FormSettings
         Me.TabControl1.Location = New System.Drawing.Point(12, 12)
         Me.TabControl1.Name = "TabControl1"
         Me.TabControl1.SelectedIndex = 0
-        Me.TabControl1.Size = New System.Drawing.Size(760, 750)
+        Me.TabControl1.Size = New System.Drawing.Size(760, 508)
         Me.TabControl1.TabIndex = 0
         '
         'TabPage_Settings
@@ -284,7 +290,7 @@ Partial Class FormSettings
         Me.TabPage_Settings.Controls.Add(Me.Panel14)
         Me.TabPage_Settings.Location = New System.Drawing.Point(4, 22)
         Me.TabPage_Settings.Name = "TabPage_Settings"
-        Me.TabPage_Settings.Size = New System.Drawing.Size(752, 724)
+        Me.TabPage_Settings.Size = New System.Drawing.Size(752, 482)
         Me.TabPage_Settings.TabIndex = 0
         Me.TabPage_Settings.Text = "Settings"
         Me.TabPage_Settings.UseVisualStyleBackColor = True
@@ -866,7 +872,7 @@ Partial Class FormSettings
         Me.TabPage_Configs.Controls.Add(Me.TableLayoutPanel1)
         Me.TabPage_Configs.Location = New System.Drawing.Point(4, 22)
         Me.TabPage_Configs.Name = "TabPage_Configs"
-        Me.TabPage_Configs.Size = New System.Drawing.Size(752, 724)
+        Me.TabPage_Configs.Size = New System.Drawing.Size(752, 482)
         Me.TabPage_Configs.TabIndex = 1
         Me.TabPage_Configs.Text = "Configs"
         Me.TabPage_Configs.UseVisualStyleBackColor = True
@@ -884,7 +890,7 @@ Partial Class FormSettings
         Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
         Me.TableLayoutPanel1.RowCount = 1
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(752, 724)
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(752, 482)
         Me.TableLayoutPanel1.TabIndex = 10
         '
         'TableLayoutPanel2
@@ -900,7 +906,7 @@ Partial Class FormSettings
         Me.TableLayoutPanel2.RowCount = 2
         Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 100.0!))
         Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.TableLayoutPanel2.Size = New System.Drawing.Size(602, 724)
+        Me.TableLayoutPanel2.Size = New System.Drawing.Size(602, 482)
         Me.TableLayoutPanel2.TabIndex = 8
         '
         'Panel17
@@ -1000,7 +1006,7 @@ Partial Class FormSettings
         Me.Panel2.Location = New System.Drawing.Point(0, 100)
         Me.Panel2.Margin = New System.Windows.Forms.Padding(0)
         Me.Panel2.Name = "Panel2"
-        Me.Panel2.Size = New System.Drawing.Size(602, 624)
+        Me.Panel2.Size = New System.Drawing.Size(602, 382)
         Me.Panel2.TabIndex = 1
         '
         'GroupBox_ConfigSettings
@@ -1013,7 +1019,7 @@ Partial Class FormSettings
         Me.GroupBox_ConfigSettings.Location = New System.Drawing.Point(0, 0)
         Me.GroupBox_ConfigSettings.Margin = New System.Windows.Forms.Padding(0)
         Me.GroupBox_ConfigSettings.Name = "GroupBox_ConfigSettings"
-        Me.GroupBox_ConfigSettings.Size = New System.Drawing.Size(585, 733)
+        Me.GroupBox_ConfigSettings.Size = New System.Drawing.Size(585, 929)
         Me.GroupBox_ConfigSettings.TabIndex = 7
         Me.GroupBox_ConfigSettings.TabStop = False
         Me.GroupBox_ConfigSettings.Text = "Config Settings"
@@ -1031,7 +1037,7 @@ Partial Class FormSettings
         Me.Panel11.Controls.Add(Me.Button_SyntaxPath)
         Me.Panel11.Controls.Add(Me.LinkLabel_SyntaxDefault)
         Me.Panel11.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel11.Location = New System.Drawing.Point(3, 590)
+        Me.Panel11.Location = New System.Drawing.Point(3, 786)
         Me.Panel11.Name = "Panel11"
         Me.Panel11.Size = New System.Drawing.Size(579, 140)
         Me.Panel11.TabIndex = 30
@@ -1080,6 +1086,7 @@ Partial Class FormSettings
         'LinkLabel_ShowShellArguments
         '
         Me.LinkLabel_ShowShellArguments.AutoSize = True
+        Me.LinkLabel_ShowShellArguments.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
         Me.LinkLabel_ShowShellArguments.Location = New System.Drawing.Point(3, 61)
         Me.LinkLabel_ShowShellArguments.Margin = New System.Windows.Forms.Padding(3, 0, 3, 6)
         Me.LinkLabel_ShowShellArguments.Name = "LinkLabel_ShowShellArguments"
@@ -1121,6 +1128,7 @@ Partial Class FormSettings
         'LinkLabel_SyntaxDefault
         '
         Me.LinkLabel_SyntaxDefault.AutoSize = True
+        Me.LinkLabel_SyntaxDefault.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
         Me.LinkLabel_SyntaxDefault.Location = New System.Drawing.Point(3, 121)
         Me.LinkLabel_SyntaxDefault.Margin = New System.Windows.Forms.Padding(3, 0, 3, 6)
         Me.LinkLabel_SyntaxDefault.Name = "LinkLabel_SyntaxDefault"
@@ -1141,7 +1149,7 @@ Partial Class FormSettings
         Me.Panel10.Controls.Add(Me.Button_SourceModFolder)
         Me.Panel10.Controls.Add(Me.Label12)
         Me.Panel10.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel10.Location = New System.Drawing.Point(3, 488)
+        Me.Panel10.Location = New System.Drawing.Point(3, 684)
         Me.Panel10.Name = "Panel10"
         Me.Panel10.Size = New System.Drawing.Size(579, 102)
         Me.Panel10.TabIndex = 29
@@ -1231,6 +1239,7 @@ Partial Class FormSettings
         'Panel9
         '
         Me.Panel9.AutoSize = True
+        Me.Panel9.Controls.Add(Me.GroupBox3)
         Me.Panel9.Controls.Add(Me.GroupBox2)
         Me.Panel9.Controls.Add(Me.Label20)
         Me.Panel9.Controls.Add(Me.ComboBox_Language)
@@ -1243,8 +1252,42 @@ Partial Class FormSettings
         Me.Panel9.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel9.Location = New System.Drawing.Point(3, 18)
         Me.Panel9.Name = "Panel9"
-        Me.Panel9.Size = New System.Drawing.Size(579, 470)
+        Me.Panel9.Size = New System.Drawing.Size(579, 666)
         Me.Panel9.TabIndex = 28
+        '
+        'GroupBox3
+        '
+        Me.GroupBox3.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.GroupBox3.Controls.Add(Me.ListView_KnownFiles)
+        Me.GroupBox3.Controls.Add(Me.Button_KnownFileAdd)
+        Me.GroupBox3.Controls.Add(Me.Button_KnownFileRemove)
+        Me.GroupBox3.Location = New System.Drawing.Point(3, 473)
+        Me.GroupBox3.Name = "GroupBox3"
+        Me.GroupBox3.Size = New System.Drawing.Size(573, 190)
+        Me.GroupBox3.TabIndex = 29
+        Me.GroupBox3.TabStop = False
+        Me.GroupBox3.Text = "Known Files"
+        '
+        'Button_KnownFileAdd
+        '
+        Me.Button_KnownFileAdd.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Button_KnownFileAdd.Location = New System.Drawing.Point(389, 161)
+        Me.Button_KnownFileAdd.Name = "Button_KnownFileAdd"
+        Me.Button_KnownFileAdd.Size = New System.Drawing.Size(86, 23)
+        Me.Button_KnownFileAdd.TabIndex = 2
+        Me.Button_KnownFileAdd.Text = "Add"
+        Me.Button_KnownFileAdd.UseVisualStyleBackColor = True
+        '
+        'Button_KnownFileRemove
+        '
+        Me.Button_KnownFileRemove.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Button_KnownFileRemove.Location = New System.Drawing.Point(481, 161)
+        Me.Button_KnownFileRemove.Name = "Button_KnownFileRemove"
+        Me.Button_KnownFileRemove.Size = New System.Drawing.Size(86, 23)
+        Me.Button_KnownFileRemove.TabIndex = 1
+        Me.Button_KnownFileRemove.Text = "Remove"
+        Me.Button_KnownFileRemove.UseVisualStyleBackColor = True
         '
         'GroupBox2
         '
@@ -1707,7 +1750,7 @@ Partial Class FormSettings
         Me.ListBox_Configs.ItemHeight = 21
         Me.ListBox_Configs.Location = New System.Drawing.Point(3, 3)
         Me.ListBox_Configs.Name = "ListBox_Configs"
-        Me.ListBox_Configs.Size = New System.Drawing.Size(144, 718)
+        Me.ListBox_Configs.Size = New System.Drawing.Size(144, 476)
         Me.ListBox_Configs.TabIndex = 0
         '
         'TabPage_Plugins
@@ -1717,10 +1760,23 @@ Partial Class FormSettings
         Me.TabPage_Plugins.Location = New System.Drawing.Point(4, 22)
         Me.TabPage_Plugins.Name = "TabPage_Plugins"
         Me.TabPage_Plugins.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage_Plugins.Size = New System.Drawing.Size(752, 724)
+        Me.TabPage_Plugins.Size = New System.Drawing.Size(752, 482)
         Me.TabPage_Plugins.TabIndex = 2
         Me.TabPage_Plugins.Text = "Plugins"
         Me.TabPage_Plugins.UseVisualStyleBackColor = True
+        '
+        'LinkLabel_MorePlugins
+        '
+        Me.LinkLabel_MorePlugins.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.LinkLabel_MorePlugins.AutoSize = True
+        Me.LinkLabel_MorePlugins.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
+        Me.LinkLabel_MorePlugins.Location = New System.Drawing.Point(6, 463)
+        Me.LinkLabel_MorePlugins.Margin = New System.Windows.Forms.Padding(3)
+        Me.LinkLabel_MorePlugins.Name = "LinkLabel_MorePlugins"
+        Me.LinkLabel_MorePlugins.Size = New System.Drawing.Size(105, 13)
+        Me.LinkLabel_MorePlugins.TabIndex = 1
+        Me.LinkLabel_MorePlugins.TabStop = True
+        Me.LinkLabel_MorePlugins.Text = "Get more plugins..."
         '
         'ListView_Plugins
         '
@@ -1731,7 +1787,7 @@ Partial Class FormSettings
         Me.ListView_Plugins.ContextMenuStrip = Me.ContextMenuStrip_Plugins
         Me.ListView_Plugins.Location = New System.Drawing.Point(6, 6)
         Me.ListView_Plugins.Name = "ListView_Plugins"
-        Me.ListView_Plugins.Size = New System.Drawing.Size(740, 693)
+        Me.ListView_Plugins.Size = New System.Drawing.Size(740, 451)
         Me.ListView_Plugins.TabIndex = 0
         Me.ListView_Plugins.UseCompatibleStateImageBehavior = False
         Me.ListView_Plugins.View = System.Windows.Forms.View.Details
@@ -1781,7 +1837,7 @@ Partial Class FormSettings
         Me.TabPage_Database.Location = New System.Drawing.Point(4, 22)
         Me.TabPage_Database.Name = "TabPage_Database"
         Me.TabPage_Database.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage_Database.Size = New System.Drawing.Size(752, 724)
+        Me.TabPage_Database.Size = New System.Drawing.Size(752, 482)
         Me.TabPage_Database.TabIndex = 3
         Me.TabPage_Database.Text = "Database"
         Me.TabPage_Database.UseVisualStyleBackColor = True
@@ -1790,7 +1846,7 @@ Partial Class FormSettings
         '
         Me.Button_Refresh.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_Refresh.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_Refresh.Location = New System.Drawing.Point(646, 635)
+        Me.Button_Refresh.Location = New System.Drawing.Point(646, 393)
         Me.Button_Refresh.Name = "Button_Refresh"
         Me.Button_Refresh.Size = New System.Drawing.Size(100, 23)
         Me.Button_Refresh.TabIndex = 6
@@ -1838,7 +1894,7 @@ Partial Class FormSettings
         '
         Me.Button_AddDatabaseItem.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_AddDatabaseItem.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_AddDatabaseItem.Location = New System.Drawing.Point(540, 635)
+        Me.Button_AddDatabaseItem.Location = New System.Drawing.Point(540, 393)
         Me.Button_AddDatabaseItem.Name = "Button_AddDatabaseItem"
         Me.Button_AddDatabaseItem.Size = New System.Drawing.Size(100, 23)
         Me.Button_AddDatabaseItem.TabIndex = 4
@@ -1854,7 +1910,7 @@ Partial Class FormSettings
         Me.DatabaseViewer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.DatabaseViewer.Location = New System.Drawing.Point(6, 75)
         Me.DatabaseViewer.Name = "DatabaseViewer"
-        Me.DatabaseViewer.Size = New System.Drawing.Size(740, 554)
+        Me.DatabaseViewer.Size = New System.Drawing.Size(740, 312)
         Me.DatabaseViewer.TabIndex = 3
         '
         'TableLayoutPanel3
@@ -1866,7 +1922,7 @@ Partial Class FormSettings
         Me.TableLayoutPanel3.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.TableLayoutPanel3.Controls.Add(Me.ClassPictureBoxQuality1, 0, 0)
         Me.TableLayoutPanel3.Controls.Add(Me.Label17, 1, 0)
-        Me.TableLayoutPanel3.Location = New System.Drawing.Point(6, 664)
+        Me.TableLayoutPanel3.Location = New System.Drawing.Point(6, 422)
         Me.TableLayoutPanel3.Name = "TableLayoutPanel3"
         Me.TableLayoutPanel3.RowCount = 1
         Me.TableLayoutPanel3.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
@@ -1896,25 +1952,30 @@ Partial Class FormSettings
         Me.Label17.Text = "Loaded BasicPawn plugins are able to read stored database entries. Make sure all " &
     "installed plugins are from a trustworthy publisher to prevent theft."
         '
-        'LinkLabel_MorePlugins
+        'ListView_KnownFiles
         '
-        Me.LinkLabel_MorePlugins.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.LinkLabel_MorePlugins.AutoSize = True
-        Me.LinkLabel_MorePlugins.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
-        Me.LinkLabel_MorePlugins.Location = New System.Drawing.Point(6, 705)
-        Me.LinkLabel_MorePlugins.Margin = New System.Windows.Forms.Padding(3)
-        Me.LinkLabel_MorePlugins.Name = "LinkLabel_MorePlugins"
-        Me.LinkLabel_MorePlugins.Size = New System.Drawing.Size(105, 13)
-        Me.LinkLabel_MorePlugins.TabIndex = 1
-        Me.LinkLabel_MorePlugins.TabStop = True
-        Me.LinkLabel_MorePlugins.Text = "Get more plugins..."
+        Me.ListView_KnownFiles.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ListView_KnownFiles.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader8})
+        Me.ListView_KnownFiles.Location = New System.Drawing.Point(6, 21)
+        Me.ListView_KnownFiles.Name = "ListView_KnownFiles"
+        Me.ListView_KnownFiles.Size = New System.Drawing.Size(561, 134)
+        Me.ListView_KnownFiles.Sorting = System.Windows.Forms.SortOrder.Ascending
+        Me.ListView_KnownFiles.TabIndex = 3
+        Me.ListView_KnownFiles.UseCompatibleStateImageBehavior = False
+        Me.ListView_KnownFiles.View = System.Windows.Forms.View.Details
+        '
+        'ColumnHeader8
+        '
+        Me.ColumnHeader8.Text = "File"
         '
         'FormSettings
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.CancelButton = Me.Button_Cancel
-        Me.ClientSize = New System.Drawing.Size(784, 803)
+        Me.ClientSize = New System.Drawing.Size(784, 561)
         Me.Controls.Add(Me.Button_Apply)
         Me.Controls.Add(Me.Button_Cancel)
         Me.Controls.Add(Me.TabControl1)
@@ -1956,6 +2017,7 @@ Partial Class FormSettings
         Me.Panel10.PerformLayout()
         Me.Panel9.ResumeLayout(False)
         Me.Panel9.PerformLayout()
+        Me.GroupBox3.ResumeLayout(False)
         Me.GroupBox2.ResumeLayout(False)
         Me.TabControl2.ResumeLayout(False)
         Me.TabPage1.ResumeLayout(False)
@@ -2128,4 +2190,9 @@ Partial Class FormSettings
     Friend WithEvents Button_ViewErrorLog As Button
     Friend WithEvents Button_ClearErrorLog As Button
     Friend WithEvents LinkLabel_MorePlugins As LinkLabel
+    Friend WithEvents GroupBox3 As GroupBox
+    Friend WithEvents Button_KnownFileRemove As Button
+    Friend WithEvents Button_KnownFileAdd As Button
+    Friend WithEvents ListView_KnownFiles As ListView
+    Friend WithEvents ColumnHeader8 As ColumnHeader
 End Class
