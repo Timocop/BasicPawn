@@ -96,6 +96,8 @@ Partial Class FormNewWizard
         Me.RichTextBox_Preview.Dock = System.Windows.Forms.DockStyle.Fill
         Me.RichTextBox_Preview.Font = New System.Drawing.Font("Consolas", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.RichTextBox_Preview.Location = New System.Drawing.Point(222, 13)
+        Me.RichTextBox_Preview.m_AllowZoom = False
+        Me.RichTextBox_Preview.m_SelectionEnabled = True
         Me.RichTextBox_Preview.Margin = New System.Windows.Forms.Padding(0)
         Me.RichTextBox_Preview.Name = "RichTextBox_Preview"
         Me.RichTextBox_Preview.ReadOnly = True
@@ -209,6 +211,7 @@ Partial Class FormNewWizard
         '
         Me.LinkLabel_CreateDefault.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.LinkLabel_CreateDefault.AutoSize = True
+        Me.LinkLabel_CreateDefault.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
         Me.LinkLabel_CreateDefault.Location = New System.Drawing.Point(12, 531)
         Me.LinkLabel_CreateDefault.Name = "LinkLabel_CreateDefault"
         Me.LinkLabel_CreateDefault.Size = New System.Drawing.Size(133, 13)

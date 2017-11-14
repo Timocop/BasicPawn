@@ -32,11 +32,11 @@ Partial Class UCAutocomplete
         Me.SplitContainer1 = New System.Windows.Forms.SplitContainer()
         Me.SplitContainer2 = New System.Windows.Forms.SplitContainer()
         Me.Panel_IntelliSense = New System.Windows.Forms.Panel()
+        Me.TextEditorControlEx_IntelliSense = New BasicPawn.TextEditorControlEx()
         Me.Label_IntelliSense = New System.Windows.Forms.Label()
         Me.Panel_Autocomplete = New System.Windows.Forms.Panel()
-        Me.Label_Autocomplete = New System.Windows.Forms.Label()
-        Me.TextEditorControlEx_IntelliSense = New BasicPawn.TextEditorControlEx()
         Me.TextEditorControlEx_Autocomplete = New BasicPawn.TextEditorControlEx()
+        Me.Label_Autocomplete = New System.Windows.Forms.Label()
         Me.SplitContainer1.Panel1.SuspendLayout()
         Me.SplitContainer1.Panel2.SuspendLayout()
         Me.SplitContainer1.SuspendLayout()
@@ -141,6 +141,21 @@ Partial Class UCAutocomplete
         Me.Panel_IntelliSense.Size = New System.Drawing.Size(419, 77)
         Me.Panel_IntelliSense.TabIndex = 3
         '
+        'TextEditorControlEx_IntelliSense
+        '
+        Me.TextEditorControlEx_IntelliSense.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TextEditorControlEx_IntelliSense.EnableFolding = False
+        Me.TextEditorControlEx_IntelliSense.IsReadOnly = False
+        Me.TextEditorControlEx_IntelliSense.Location = New System.Drawing.Point(0, 13)
+        Me.TextEditorControlEx_IntelliSense.Margin = New System.Windows.Forms.Padding(0)
+        Me.TextEditorControlEx_IntelliSense.Name = "TextEditorControlEx_IntelliSense"
+        Me.TextEditorControlEx_IntelliSense.ShowLineNumbers = False
+        Me.TextEditorControlEx_IntelliSense.ShowMatchingBracket = False
+        Me.TextEditorControlEx_IntelliSense.ShowVRuler = False
+        Me.TextEditorControlEx_IntelliSense.Size = New System.Drawing.Size(419, 64)
+        Me.TextEditorControlEx_IntelliSense.TabIndex = 5
+        Me.TextEditorControlEx_IntelliSense.Text = "IntelliSense"
+        '
         'Label_IntelliSense
         '
         Me.Label_IntelliSense.AutoSize = True
@@ -163,33 +178,6 @@ Partial Class UCAutocomplete
         Me.Panel_Autocomplete.Size = New System.Drawing.Size(419, 80)
         Me.Panel_Autocomplete.TabIndex = 4
         '
-        'Label_Autocomplete
-        '
-        Me.Label_Autocomplete.AutoSize = True
-        Me.Label_Autocomplete.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Label_Autocomplete.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label_Autocomplete.ForeColor = System.Drawing.Color.RoyalBlue
-        Me.Label_Autocomplete.Location = New System.Drawing.Point(0, 0)
-        Me.Label_Autocomplete.Name = "Label_Autocomplete"
-        Me.Label_Autocomplete.Size = New System.Drawing.Size(79, 13)
-        Me.Label_Autocomplete.TabIndex = 3
-        Me.Label_Autocomplete.Text = "Autocomplete"
-        '
-        'TextEditorControlEx_IntelliSense
-        '
-        Me.TextEditorControlEx_IntelliSense.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TextEditorControlEx_IntelliSense.EnableFolding = False
-        Me.TextEditorControlEx_IntelliSense.IsReadOnly = False
-        Me.TextEditorControlEx_IntelliSense.Location = New System.Drawing.Point(0, 13)
-        Me.TextEditorControlEx_IntelliSense.Margin = New System.Windows.Forms.Padding(0)
-        Me.TextEditorControlEx_IntelliSense.Name = "TextEditorControlEx_IntelliSense"
-        Me.TextEditorControlEx_IntelliSense.ShowLineNumbers = False
-        Me.TextEditorControlEx_IntelliSense.ShowMatchingBracket = False
-        Me.TextEditorControlEx_IntelliSense.ShowVRuler = False
-        Me.TextEditorControlEx_IntelliSense.Size = New System.Drawing.Size(419, 64)
-        Me.TextEditorControlEx_IntelliSense.TabIndex = 5
-        Me.TextEditorControlEx_IntelliSense.Text = "IntelliSense"
-        '
         'TextEditorControlEx_Autocomplete
         '
         Me.TextEditorControlEx_Autocomplete.Dock = System.Windows.Forms.DockStyle.Fill
@@ -204,6 +192,18 @@ Partial Class UCAutocomplete
         Me.TextEditorControlEx_Autocomplete.Size = New System.Drawing.Size(419, 67)
         Me.TextEditorControlEx_Autocomplete.TabIndex = 4
         Me.TextEditorControlEx_Autocomplete.Text = "Autocomplete"
+        '
+        'Label_Autocomplete
+        '
+        Me.Label_Autocomplete.AutoSize = True
+        Me.Label_Autocomplete.Dock = System.Windows.Forms.DockStyle.Top
+        Me.Label_Autocomplete.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label_Autocomplete.ForeColor = System.Drawing.Color.RoyalBlue
+        Me.Label_Autocomplete.Location = New System.Drawing.Point(0, 0)
+        Me.Label_Autocomplete.Name = "Label_Autocomplete"
+        Me.Label_Autocomplete.Size = New System.Drawing.Size(79, 13)
+        Me.Label_Autocomplete.TabIndex = 3
+        Me.Label_Autocomplete.Text = "Autocomplete"
         '
         'UCAutocomplete
         '

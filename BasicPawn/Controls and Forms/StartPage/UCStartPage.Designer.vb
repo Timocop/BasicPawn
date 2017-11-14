@@ -115,6 +115,7 @@ Partial Class UCStartPage
         '
         Me.LinkLabel_OpenNew.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.LinkLabel_OpenNew.AutoSize = True
+        Me.LinkLabel_OpenNew.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
         Me.LinkLabel_OpenNew.Location = New System.Drawing.Point(600, 47)
         Me.LinkLabel_OpenNew.Name = "LinkLabel_OpenNew"
         Me.LinkLabel_OpenNew.Size = New System.Drawing.Size(62, 13)
@@ -127,6 +128,7 @@ Partial Class UCStartPage
         '
         Me.LinkLabel_Open.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.LinkLabel_Open.AutoSize = True
+        Me.LinkLabel_Open.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
         Me.LinkLabel_Open.Location = New System.Drawing.Point(668, 47)
         Me.LinkLabel_Open.Name = "LinkLabel_Open"
         Me.LinkLabel_Open.Size = New System.Drawing.Size(36, 13)
@@ -139,6 +141,7 @@ Partial Class UCStartPage
         '
         Me.LinkLabel_Close.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.LinkLabel_Close.AutoSize = True
+        Me.LinkLabel_Close.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
         Me.LinkLabel_Close.Location = New System.Drawing.Point(710, 47)
         Me.LinkLabel_Close.Name = "LinkLabel_Close"
         Me.LinkLabel_Close.Size = New System.Drawing.Size(87, 13)

@@ -148,6 +148,7 @@ Partial Class FormOpenTabFromInstances
         '
         Me.LinkLabel_Refresh.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.LinkLabel_Refresh.AutoSize = True
+        Me.LinkLabel_Refresh.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
         Me.LinkLabel_Refresh.Location = New System.Drawing.Point(566, 349)
         Me.LinkLabel_Refresh.Name = "LinkLabel_Refresh"
         Me.LinkLabel_Refresh.Size = New System.Drawing.Size(46, 13)

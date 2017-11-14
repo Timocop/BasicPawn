@@ -652,6 +652,7 @@ Partial Class FormSettings
         'LinkLabel_DefaultSyntax
         '
         Me.LinkLabel_DefaultSyntax.AutoSize = True
+        Me.LinkLabel_DefaultSyntax.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
         Me.LinkLabel_DefaultSyntax.Location = New System.Drawing.Point(6, 144)
         Me.LinkLabel_DefaultSyntax.Margin = New System.Windows.Forms.Padding(6, 0, 3, 3)
         Me.LinkLabel_DefaultSyntax.Name = "LinkLabel_DefaultSyntax"
