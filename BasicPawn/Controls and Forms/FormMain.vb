@@ -1057,6 +1057,10 @@ Public Class FormMain
         ContextMenuStrip_Config.Show(Cursor.Position)
     End Sub
 
+    Private Sub ContextMenuStrip_Config_Opening(sender As Object, e As CancelEventArgs) Handles ContextMenuStrip_Config.Opening
+        ClassControlStyle.UpdateControls(ContextMenuStrip_Config)
+    End Sub
+
     Private Sub ToolStripMenuItem_EditConfigActiveTab_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_EditConfigActiveTab.Click
         Using i As New FormSettings(Me, FormSettings.ENUM_CONFIG_TYPE.ACTIVE)
             i.TabControl1.SelectTab(1)
