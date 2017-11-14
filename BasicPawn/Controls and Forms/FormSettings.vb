@@ -1104,8 +1104,14 @@ Public Class FormSettings
             End If
 
             Using i As New OpenFileDialog()
+                i.Multiselect = True
+
                 If (i.ShowDialog = DialogResult.OK) Then
-                    ClassConfigs.m_KnownConfigByFile(i.FileName) = mConfig
+                    For Each sFile As String In i.FileNames
+                        ClassConfigs.m_KnownConfigByFile(sFile) = mConfig
+                    Next
+
+                    RefreshKnownFilesListBox()
                 End If
             End Using
         Catch ex As Exception
@@ -1115,14 +1121,13 @@ Public Class FormSettings
 
     Private Sub Button_KnownFileRemove_Click(sender As Object, e As EventArgs) Handles Button_KnownFileRemove.Click
         Try
-            For i = ListView_KnownFiles.SelectedIndices.Count - 1 To 0 Step -1
-                Dim j = ListView_KnownFiles.SelectedIndices(i)
-                Dim sFile As String = CStr(ListView_KnownFiles.Items(j).SubItems(0).Text)
+            For Each mListViewItem As ListViewItem In ListView_KnownFiles.SelectedItems
+                Dim sFile As String = CStr(mListViewItem.SubItems(0).Text)
 
                 ClassConfigs.m_KnownConfigByFile(sFile) = Nothing
-
-                ListView_KnownFiles.Items.RemoveAt(j)
             Next
+
+            RefreshKnownFilesListBox()
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
