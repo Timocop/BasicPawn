@@ -79,13 +79,13 @@ Public Class FormMultiCompiler
                 Dim sCompilerOutput As String = ""
                 Dim iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = ClassSyntaxTools.ENUM_LANGUAGE_TYPE.SOURCEPAWN
 
-                Dim mConfig = ClassConfigs.m_KnownConfigByFile(sSourceFile)
-                If (mConfig Is Nothing) Then
+                Dim mKnownConfig = ClassConfigs.m_KnownConfigByFile(sSourceFile)
+                If (mKnownConfig Is Nothing) Then
                     Throw New ArgumentException("No known config found for this file")
                 End If
 
                 'We have no other choices here. Get mod type by extension...
-                If (mConfig.g_iLanguage = ClassConfigs.STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE.AUTO_DETECT) Then
+                If (mKnownConfig.g_iLanguage = ClassConfigs.STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE.AUTO_DETECT) Then
                     Select Case (IO.Path.GetExtension(sSourceFile).ToLower)
                         Case ".sp"
                             iLanguage = ClassSyntaxTools.ENUM_LANGUAGE_TYPE.SOURCEPAWN
@@ -103,7 +103,7 @@ Public Class FormMultiCompiler
                             End Select
                     End Select
                 Else
-                    Select Case (mConfig.g_iLanguage)
+                    Select Case (mKnownConfig.g_iLanguage)
                         Case ClassConfigs.STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE.SOURCEPAWN
                             iLanguage = ClassSyntaxTools.ENUM_LANGUAGE_TYPE.SOURCEPAWN
 
@@ -116,7 +116,7 @@ Public Class FormMultiCompiler
                 End If
 
 
-                Dim sOutputFile As String = IO.Path.Combine(mConfig.g_sOutputFolder, String.Format("{0}.unk", IO.Path.GetFileNameWithoutExtension(sSourceFile)))
+                Dim sOutputFile As String = IO.Path.Combine(mKnownConfig.g_sOutputFolder, String.Format("{0}.unk", IO.Path.GetFileNameWithoutExtension(sSourceFile)))
                 Dim bSuccess As Boolean = ClassThread.ExecEx(Of Boolean)(Me, Function()
                                                                                  If (g_bCleanDebuggerPlaceholder) Then
                                                                                      With New ClassDebuggerParser(g_mMainForm)
@@ -129,10 +129,10 @@ Public Class FormMultiCompiler
                                                                                  Return g_mMainForm.g_ClassTextEditorTools.CompileSource(g_bTestingOnly,
                                                                                                                                        sSource,
                                                                                                                                        sOutputFile,
-                                                                                                                                       mConfig,
+                                                                                                                                       mKnownConfig,
                                                                                                                                        IO.Path.GetDirectoryName(sSourceFile),
-                                                                                                                                       mConfig.g_sCompilerPath,
-                                                                                                                                       mConfig.g_sIncludeFolders,
+                                                                                                                                       mKnownConfig.g_sCompilerPath,
+                                                                                                                                       mKnownConfig.g_sIncludeFolders,
                                                                                                                                        sSourceFile,
                                                                                                                                        True,
                                                                                                                                        sCompilerOutput)

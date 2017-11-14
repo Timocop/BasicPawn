@@ -446,25 +446,26 @@ Public Class FormSettings
                     TextBox_OutputFolder.Text = ""
                     CheckBox_ConfigIsDefault.Checked = False
                     ComboBox_Language.SelectedIndex = 0
-
-                    'Compiler Options
-                    '   (SourcePawn)
-                    ComboBox_COOptimizationLevelSP.SelectedIndex = 0
-                    ComboBox_COVerbosityLevelSP.SelectedIndex = 0
-                    ComboBox_COTreatWarningsAsErrorsSP.SelectedIndex = 0
-                    TextBoxEx_COIgnoredWarningsSP.Text = ""
-                    TextBoxEx_CODefineConstantsSP.Text = ""
-                    TextBoxEx_COIgnoredWarningsSP.ShowWatermark()
-                    TextBoxEx_CODefineConstantsSP.ShowWatermark()
-                    '   (AMX Mod X) 
-                    ComboBox_COVerbosityLevelAMXX.SelectedIndex = 0
-                    ComboBox_COTreatWarningsAsErrorsAMXX.SelectedIndex = 0
-                    ComboBox_COSymbolicInformationAMXX.SelectedIndex = 0
-                    TextBoxEx_COIgnoredWarningsAMXX.Text = ""
-                    TextBoxEx_CODefineConstantsAMXX.Text = ""
-                    TextBoxEx_COIgnoredWarningsAMXX.ShowWatermark()
-                    TextBoxEx_CODefineConstantsAMXX.ShowWatermark()
-                    RefreshKnownFilesListBox()
+                    If (True) Then
+                        'Compiler Options
+                        '   (SourcePawn)
+                        ComboBox_COOptimizationLevelSP.SelectedIndex = 0
+                        ComboBox_COVerbosityLevelSP.SelectedIndex = 0
+                        ComboBox_COTreatWarningsAsErrorsSP.SelectedIndex = 0
+                        TextBoxEx_COIgnoredWarningsSP.Text = ""
+                        TextBoxEx_CODefineConstantsSP.Text = ""
+                        TextBoxEx_COIgnoredWarningsSP.ShowWatermark()
+                        TextBoxEx_CODefineConstantsSP.ShowWatermark()
+                        '   (AMX Mod X) 
+                        ComboBox_COVerbosityLevelAMXX.SelectedIndex = 0
+                        ComboBox_COTreatWarningsAsErrorsAMXX.SelectedIndex = 0
+                        ComboBox_COSymbolicInformationAMXX.SelectedIndex = 0
+                        TextBoxEx_COIgnoredWarningsAMXX.Text = ""
+                        TextBoxEx_CODefineConstantsAMXX.Text = ""
+                        TextBoxEx_COIgnoredWarningsAMXX.ShowWatermark()
+                        TextBoxEx_CODefineConstantsAMXX.ShowWatermark()
+                    End If
+                    ListView_KnownFiles.Items.Clear()
 
                     'Debugging
                     TextBox_GameFolder.Text = ""
@@ -496,25 +497,26 @@ Public Class FormSettings
                 TextBox_OutputFolder.Text = ""
                 CheckBox_ConfigIsDefault.Checked = False
                 ComboBox_Language.SelectedIndex = 0
-
-                'Compiler Options
-                '   (SourcePawn)
-                ComboBox_COOptimizationLevelSP.SelectedIndex = 0
-                ComboBox_COVerbosityLevelSP.SelectedIndex = 0
-                ComboBox_COTreatWarningsAsErrorsSP.SelectedIndex = 0
-                TextBoxEx_COIgnoredWarningsSP.Text = ""
-                TextBoxEx_CODefineConstantsSP.Text = ""
-                TextBoxEx_COIgnoredWarningsSP.ShowWatermark()
-                TextBoxEx_CODefineConstantsSP.ShowWatermark()
-                '   (AMX Mod X) 
-                ComboBox_COVerbosityLevelAMXX.SelectedIndex = 0
-                ComboBox_COTreatWarningsAsErrorsAMXX.SelectedIndex = 0
-                ComboBox_COSymbolicInformationAMXX.SelectedIndex = 0
-                TextBoxEx_COIgnoredWarningsAMXX.Text = ""
-                TextBoxEx_CODefineConstantsAMXX.Text = ""
-                TextBoxEx_COIgnoredWarningsAMXX.ShowWatermark()
-                TextBoxEx_CODefineConstantsAMXX.ShowWatermark()
-                RefreshKnownFilesListBox()
+                If (True) Then
+                    'Compiler Options
+                    '   (SourcePawn)
+                    ComboBox_COOptimizationLevelSP.SelectedIndex = 0
+                    ComboBox_COVerbosityLevelSP.SelectedIndex = 0
+                    ComboBox_COTreatWarningsAsErrorsSP.SelectedIndex = 0
+                    TextBoxEx_COIgnoredWarningsSP.Text = ""
+                    TextBoxEx_CODefineConstantsSP.Text = ""
+                    TextBoxEx_COIgnoredWarningsSP.ShowWatermark()
+                    TextBoxEx_CODefineConstantsSP.ShowWatermark()
+                    '   (AMX Mod X) 
+                    ComboBox_COVerbosityLevelAMXX.SelectedIndex = 0
+                    ComboBox_COTreatWarningsAsErrorsAMXX.SelectedIndex = 0
+                    ComboBox_COSymbolicInformationAMXX.SelectedIndex = 0
+                    TextBoxEx_COIgnoredWarningsAMXX.Text = ""
+                    TextBoxEx_CODefineConstantsAMXX.Text = ""
+                    TextBoxEx_COIgnoredWarningsAMXX.ShowWatermark()
+                    TextBoxEx_CODefineConstantsAMXX.ShowWatermark()
+                End If
+                ListView_KnownFiles.Items.Clear()
 
                 'Debugging
                 TextBox_GameFolder.Text = ""
@@ -1139,22 +1141,21 @@ Public Class FormSettings
                 Return
             End If
 
-            Try
-                ListView_KnownFiles.BeginUpdate()
-                ListView_KnownFiles.Items.Clear()
+            Dim lListViewItems As New List(Of ListViewItem)
 
-                Dim sName As String = ListBox_Configs.SelectedItems(0).ToString
+            Dim sName As String = ListBox_Configs.SelectedItems(0).ToString
 
-                For Each mKnownConfig In ClassConfigs.GetKnownConfigs
-                    If (mKnownConfig.sConfigName = sName) Then
-                        ListView_KnownFiles.Items.Add(mKnownConfig.sFile)
-                    End If
-                Next
-            Finally
-                ClassTools.ClassControls.ClassListView.AutoResizeColumns(ListView_KnownFiles)
+            For Each mKnownConfig In ClassConfigs.GetKnownConfigs
+                If (mKnownConfig.sConfigName = sName) Then
+                    lListViewItems.Add(New ListViewItem(New String() {mKnownConfig.sFile}))
+                End If
+            Next
 
-                ListView_KnownFiles.EndUpdate()
-            End Try
+            ListView_KnownFiles.BeginUpdate()
+            ListView_KnownFiles.Items.Clear()
+            ListView_KnownFiles.Items.AddRange(lListViewItems.ToArray)
+            ClassTools.ClassControls.ClassListView.AutoResizeColumns(ListView_KnownFiles)
+            ListView_KnownFiles.EndUpdate()
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
