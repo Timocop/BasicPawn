@@ -494,7 +494,7 @@ Public Class ClassConfigs
                 Using mIni As New ClassIni(mStream)
                     Dim sConfigName As String = mIni.ReadKeyValue(sFile.ToLower, "ConfigName", Nothing)
 
-                    If (Not String.IsNullOrEmpty(sConfigName)) Then
+                    If (sConfigName IsNot Nothing) Then
                         Return LoadConfig(sConfigName)
                     End If
                 End Using
@@ -523,7 +523,7 @@ Public Class ClassConfigs
                 For Each sSectionFile As String In mIni.GetSectionNames
                     Dim sConfigName As String = mIni.ReadKeyValue(sSectionFile, "ConfigName", Nothing)
 
-                    If (Not String.IsNullOrEmpty(sConfigName)) Then
+                    If (sConfigName IsNot Nothing) Then
                         lKnownConfigs.Add(New STRUC_KNOWN_CONFIG_ITEM(sSectionFile, sConfigName))
                     End If
                 Next

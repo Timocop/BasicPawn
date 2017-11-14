@@ -15,7 +15,6 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 
-
 Public Class ClassIni
     Implements IDisposable
 
@@ -27,6 +26,12 @@ Public Class ClassIni
         Dim sSection As String
         Dim sKey As String
         Dim sValue As String
+
+        Sub New(_Section As String, _Key As String, _Value As String)
+            sSection = _Section
+            sKey = _Key
+            sValue = _Value
+        End Sub
     End Structure
 
     Public Sub New()
@@ -59,9 +64,9 @@ Public Class ClassIni
     ''' <returns>The value from the key, otherwise Nothing.</returns>
     Public Function ReadKeyValue(sFromSection As String, sFromKey As String) As String
         Try
-            For Each iContent In ReadEverything()
-                If (iContent.sSection = sFromSection AndAlso iContent.sKey = sFromKey) Then
-                    Return iContent.sValue
+            For Each mContent In ReadEverything()
+                If (mContent.sSection = sFromSection AndAlso mContent.sKey = sFromKey) Then
+                    Return mContent.sValue
                 End If
             Next
         Catch : End Try
@@ -78,9 +83,9 @@ Public Class ClassIni
     ''' <returns>The value from the key, otherwise it will return 'sReturnIfNothing'.</returns>
     Public Function ReadKeyValue(sFromSection As String, sFromKey As String, sReturnIfNothing As String) As String
         Try
-            For Each iContent In ReadEverything()
-                If (iContent.sSection = sFromSection AndAlso iContent.sKey = sFromKey) Then
-                    Return iContent.sValue
+            For Each mContent In ReadEverything()
+                If (mContent.sSection = sFromSection AndAlso mContent.sKey = sFromKey) Then
+                    Return mContent.sValue
                 End If
             Next
         Catch : End Try
@@ -95,9 +100,9 @@ Public Class ClassIni
     ''' <param name="sFromKey">The key.</param>
     ''' <returns>The value from the key, otherwise Nothing.</returns>
     Public Function ReadKeyValueThrow(sFromSection As String, sFromKey As String) As String
-        For Each iContent In ReadEverything()
-            If (iContent.sSection = sFromSection AndAlso iContent.sKey = sFromKey) Then
-                Return iContent.sValue
+        For Each mContent In ReadEverything()
+            If (mContent.sSection = sFromSection AndAlso mContent.sKey = sFromKey) Then
+                Return mContent.sValue
             End If
         Next
 
@@ -105,24 +110,18 @@ Public Class ClassIni
     End Function
 
     Public Sub WriteKeyValue(sFromSection As String, sFromKey As String, Optional sFromValue As String = Nothing)
-        Dim lIniContentList As New List(Of STRUC_INI_CONTENT)
-        lIniContentList.AddRange(ReadEverything())
+        Dim lContents As New List(Of STRUC_INI_CONTENT)(ReadEverything())
 
         Dim bFoundContent As Boolean = False
 
         While True
-            For i = 0 To lIniContentList.Count - 1
-                If (lIniContentList(i).sSection = sFromSection AndAlso lIniContentList(i).sKey = sFromKey) Then
+            For i = 0 To lContents.Count - 1
+                If (lContents(i).sSection = sFromSection AndAlso lContents(i).sKey = sFromKey) Then
                     If (sFromValue Is Nothing) Then
-                        lIniContentList.RemoveAt(i)
+                        lContents.RemoveAt(i)
                         Continue While
                     Else
-                        lIniContentList(i) = New STRUC_INI_CONTENT With {
-                            .sSection = sFromSection,
-                            .sKey = sFromKey,
-                            .sValue = sFromValue
-                        }
-
+                        lContents(i) = New STRUC_INI_CONTENT(sFromSection, sFromKey, sFromValue)
                         bFoundContent = True
                     End If
                 End If
@@ -132,31 +131,27 @@ Public Class ClassIni
         End While
 
         If (Not bFoundContent AndAlso sFromValue IsNot Nothing) Then
-            lIniContentList.Add(New STRUC_INI_CONTENT With {
-                .sSection = sFromSection,
-                .sKey = sFromKey,
-                .sValue = sFromValue
-            })
+            lContents.Add(New STRUC_INI_CONTENT(sFromSection, sFromKey, sFromValue))
         End If
 
         'Process write to file
-        Dim lSectionsList As New List(Of String)
-        For i = 0 To lIniContentList.Count - 1
-            If (lSectionsList.Contains(lIniContentList(i).sSection)) Then
+        Dim lSectionNames As New List(Of String)
+        For i = 0 To lContents.Count - 1
+            If (lSectionNames.Contains(lContents(i).sSection)) Then
                 Continue For
             End If
 
-            lSectionsList.Add(lIniContentList(i).sSection)
+            lSectionNames.Add(lContents(i).sSection)
         Next
 
         'Sort items and write to file
         Dim SB As New Text.StringBuilder
-        For Each sSectionListItem In lSectionsList
-            SB.AppendLine(String.Format("[{0}]", sSectionListItem))
+        For Each sSection In lSectionNames
+            SB.AppendLine(String.Format("[{0}]", sSection))
 
-            For Each iContentListItem In lIniContentList
-                If (iContentListItem.sSection = sSectionListItem) Then
-                    SB.AppendLine(String.Format("{0}={1}", iContentListItem.sKey, iContentListItem.sValue))
+            For Each mContent In lContents
+                If (mContent.sSection = sSection) Then
+                    SB.AppendLine(mContent.sKey & "=" & mContent.sValue)
                 End If
             Next
         Next
@@ -171,18 +166,18 @@ Public Class ClassIni
     ''' </summary>
     ''' <returns>All section names.</returns>
     Public Function GetSectionNames() As String()
-        Dim iIniContent = ReadEverything()
+        Dim mContent = ReadEverything()
 
-        Dim lSectionsList As New List(Of String)
-        For i = 0 To iIniContent.Length - 1
-            If (lSectionsList.Contains(iIniContent(i).sSection)) Then
+        Dim lSectionNames As New List(Of String)
+        For i = 0 To mContent.Length - 1
+            If (lSectionNames.Contains(mContent(i).sSection)) Then
                 Continue For
             End If
 
-            lSectionsList.Add(iIniContent(i).sSection)
+            lSectionNames.Add(mContent(i).sSection)
         Next
 
-        Return lSectionsList.ToArray
+        Return lSectionNames.ToArray
     End Function
 
     ''' <summary>
@@ -190,7 +185,7 @@ Public Class ClassIni
     ''' </summary>
     ''' <returns></returns>
     Public Function ReadEverything() As STRUC_INI_CONTENT()
-        Dim lIniContentList As New List(Of STRUC_INI_CONTENT)
+        Dim lContents As New List(Of STRUC_INI_CONTENT)
 
         Dim sCurrentSection As String = ""
 
@@ -203,7 +198,7 @@ Public Class ClassIni
             End If
 
             'Ignore comments
-            If (sLine.Trim.StartsWith(";")) Then
+            If (sLine.TrimStart.StartsWith(";")) Then
                 Continue While
             End If
 
@@ -218,10 +213,10 @@ Public Class ClassIni
             End If
             mContent.sSection = sCurrentSection
 
-            lIniContentList.Add(mContent)
+            lContents.Add(mContent)
         End While
 
-        Return lIniContentList.ToArray
+        Return lContents.ToArray
     End Function
 
     ''' <summary>
@@ -301,8 +296,6 @@ Public Class ClassIni
     Private Function GetKeyAndValueFromLine(sLine As String) As STRUC_INI_CONTENT
         sLine = sLine.Trim
 
-        Dim iIniContent As New STRUC_INI_CONTENT
-
         Dim iAssignIndex As Integer = sLine.IndexOf("="c)
         If (iAssignIndex < 0) Then
             Return Nothing
@@ -311,11 +304,7 @@ Public Class ClassIni
         Dim sKey As String = sLine.Substring(0, iAssignIndex)
         Dim sValue As String = sLine.Remove(0, iAssignIndex + 1)
 
-        iIniContent.sSection = ""
-        iIniContent.sKey = sKey
-        iIniContent.sValue = sValue
-
-        Return iIniContent
+        Return New STRUC_INI_CONTENT("", sKey, sValue)
     End Function
 
 #Region "IDisposable Support"

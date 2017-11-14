@@ -216,9 +216,20 @@ Public Class FormSettings
         End If
 
         'Cleanup invalid files from known configs
-        For Each mConfigItem In ClassConfigs.GetKnownConfigs()
-            If (Not IO.File.Exists(mConfigItem.sFile)) Then
-                ClassConfigs.m_KnownConfigByFile(mConfigItem.sFile) = Nothing
+        Dim lConfigNames As New List(Of String)
+        For Each mItem In ClassConfigs.GetConfigs(False)
+            lConfigNames.Add(mItem.GetName)
+        Next
+
+        For Each mKnownConfig In ClassConfigs.GetKnownConfigs
+            If (Not lConfigNames.Contains(mKnownConfig.sConfigName)) Then
+                ClassConfigs.m_KnownConfigByFile(mKnownConfig.sFile) = Nothing
+                Continue For
+            End If
+
+            If (Not IO.File.Exists(mKnownConfig.sFile)) Then
+                ClassConfigs.m_KnownConfigByFile(mKnownConfig.sFile) = Nothing
+                Continue For
             End If
         Next
 
