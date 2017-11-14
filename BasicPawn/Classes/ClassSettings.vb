@@ -40,6 +40,7 @@ Public Class ClassSettings
     Public Shared g_iSettingsTextEditorFont As Font = g_iSettingsDefaultEditorFont
     Public Shared g_iSettingsInvertColors As Boolean = False
     Public Shared g_iSettingsTabsToSpaces As Integer = 0
+    Public Shared g_sSettingsSyntaxHighlightingPath As String = ""
     'Syntax Highligting
     Public Shared g_iSettingsDoubleClickMark As Boolean = True
     Public Shared g_iSettingsAutoMark As Boolean = True
@@ -82,6 +83,7 @@ Public Class ClassSettings
                 mIni.WriteKeyValue("Editor", "TextEditorFont", New FontConverter().ConvertToInvariantString(g_iSettingsTextEditorFont))
                 mIni.WriteKeyValue("Editor", "TextEditorInvertColors", If(g_iSettingsInvertColors, "1", "0"))
                 mIni.WriteKeyValue("Editor", "TextEditorTabsToSpaces", CStr(g_iSettingsTabsToSpaces))
+                mIni.WriteKeyValue("Editor", "TextEditorSyntaxHighlightingPath", g_sSettingsSyntaxHighlightingPath)
                 'Syntax Highligting
                 mIni.WriteKeyValue("Editor", "DoubleClickMark", If(g_iSettingsDoubleClickMark, "1", "0"))
                 mIni.WriteKeyValue("Editor", "AutoMark", If(g_iSettingsAutoMark, "1", "0"))
@@ -133,6 +135,7 @@ Public Class ClassSettings
                         iTabsToSpaces = If(iTabsToSpaces > 100, 100, iTabsToSpaces)
                         g_iSettingsTabsToSpaces = iTabsToSpaces
                     End If
+                    g_sSettingsSyntaxHighlightingPath = mIni.ReadKeyValue("Editor", "TextEditorSyntaxHighlightingPath", "")
                     'Syntax Highligting
                     g_iSettingsDoubleClickMark = (mIni.ReadKeyValue("Editor", "DoubleClickMark", "1") <> "0")
                     g_iSettingsAutoMark = (mIni.ReadKeyValue("Editor", "AutoMark", "1") <> "0")

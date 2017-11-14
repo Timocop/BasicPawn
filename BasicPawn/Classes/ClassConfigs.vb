@@ -402,7 +402,6 @@ Public Class ClassConfigs
         Public g_sDebugSourceModFolder As String = ""
         'Misc
         Public g_sExecuteShell As String = ""
-        Public g_sSyntaxHighlightingPath As String = ""
 
         Public Sub New(sName As String)
             g_sName = sName
@@ -412,7 +411,7 @@ Public Class ClassConfigs
                        iCompilingType As ClassSettings.ENUM_COMPILING_TYPE, sIncludeFolders As String, sCompilerPath As String, sOutputFolder As String, bAutoload As Boolean, iLanguage As ENUM_LANGUAGE_DETECT_TYPE,
                        mCompilerOptionsSP As CompilerOptions.STRUC_SP_COMPILER_OPTIONS, mCompilerOptionsAMXX As CompilerOptions.STRUC_AMXX_COMPILER_OPTIONS,
                        sDebugGameFolder As String, sDebugSourceModFolder As String,
-                       sExecuteShell As String, sSyntaxHighlightingPath As String)
+                       sExecuteShell As String)
 
             g_sName = sName
             'General
@@ -430,7 +429,6 @@ Public Class ClassConfigs
             g_sDebugSourceModFolder = sDebugSourceModFolder
             'Misc
             g_sExecuteShell = sExecuteShell
-            g_sSyntaxHighlightingPath = sSyntaxHighlightingPath
         End Sub
 
         Public Sub SetName(sName As String)
@@ -566,7 +564,6 @@ Public Class ClassConfigs
 
                 'Misc
                 mIni.WriteKeyValue("Config", "ExecuteShell", mConfig.g_sExecuteShell)
-                mIni.WriteKeyValue("Config", "SyntaxPath", mConfig.g_sSyntaxHighlightingPath)
             End Using
         End Using
 
@@ -612,12 +609,11 @@ Public Class ClassConfigs
 
                 'Misc
                 Dim sExecuteShell As String = mIni.ReadKeyValue("Config", "ExecuteShell", "")
-                Dim sSyntaxHighlightingPath As String = mIni.ReadKeyValue("Config", "SyntaxPath", "")
 
                 Return New STRUC_CONFIG_ITEM(sName, iCompilingType, sOpenIncludeFolders, sCompilerPath, sOutputFolder, bIsDefault, CType(iLanguage, STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE),
                                          mCompilerOptionsSourcePawn, mCompilerOptionsAMXModX,
                                          sDebugGameFolder, sDebugSourceModFolder,
-                                         sExecuteShell, sSyntaxHighlightingPath)
+                                         sExecuteShell)
             End Using
         End Using
     End Function

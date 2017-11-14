@@ -135,6 +135,7 @@ Public Class FormSettings
         CheckBox_InvertedColors.Checked = ClassSettings.g_iSettingsInvertColors
         CheckBox_TabsToSpace.Checked = (ClassSettings.g_iSettingsTabsToSpaces > 0)
         NumericUpDown_TabsToSpaces.Value = If(ClassSettings.g_iSettingsTabsToSpaces > 0, ClassSettings.g_iSettingsTabsToSpaces, 4)
+        TextBox_CustomSyntax.Text = ClassSettings.g_sSettingsSyntaxHighlightingPath
         'Syntax Highligting
         CheckBox_DoubleClickMark.Checked = ClassSettings.g_iSettingsDoubleClickMark
         CheckBox_AutoMark.Checked = ClassSettings.g_iSettingsAutoMark
@@ -231,6 +232,7 @@ Public Class FormSettings
         ClassSettings.g_iSettingsTextEditorFont = CType(New FontConverter().ConvertFromInvariantString(Label_Font.Text), Font)
         ClassSettings.g_iSettingsInvertColors = CheckBox_InvertedColors.Checked
         ClassSettings.g_iSettingsTabsToSpaces = CInt(If(CheckBox_TabsToSpace.Checked, NumericUpDown_TabsToSpaces.Value, 0))
+        ClassSettings.g_sSettingsSyntaxHighlightingPath = TextBox_CustomSyntax.Text
         'Syntax Highligting
         ClassSettings.g_iSettingsDoubleClickMark = CheckBox_DoubleClickMark.Checked
         ClassSettings.g_iSettingsAutoMark = CheckBox_AutoMark.Checked
@@ -332,6 +334,21 @@ Public Class FormSettings
             End If
         End Using
     End Sub
+
+    Private Sub Button_CustomSyntax_Click(sender As Object, e As EventArgs) Handles Button_CustomSyntax.Click
+        Using i As New OpenFileDialog
+            i.Filter = "Syntax highlighting XSHD file|*.xml"
+            i.FileName = TextBox_CustomSyntax.Text
+
+            If (i.ShowDialog = DialogResult.OK) Then
+                TextBox_CustomSyntax.Text = i.FileName
+            End If
+        End Using
+    End Sub
+
+    Private Sub LinkLabel_DefaultSyntax_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_DefaultSyntax.LinkClicked
+        TextBox_CustomSyntax.Text = ""
+    End Sub
 #End Region
 
 #Region "Configs"
@@ -429,6 +446,7 @@ Public Class FormSettings
                     TextBox_OutputFolder.Text = ""
                     CheckBox_ConfigIsDefault.Checked = False
                     ComboBox_Language.SelectedIndex = 0
+
                     'Compiler Options
                     '   (SourcePawn)
                     ComboBox_COOptimizationLevelSP.SelectedIndex = 0
@@ -447,12 +465,13 @@ Public Class FormSettings
                     TextBoxEx_COIgnoredWarningsAMXX.ShowWatermark()
                     TextBoxEx_CODefineConstantsAMXX.ShowWatermark()
                     RefreshKnownFilesListBox()
+
                     'Debugging
                     TextBox_GameFolder.Text = ""
                     TextBox_SourceModFolder.Text = ""
+
                     'Misc
                     TextBox_Shell.Text = ""
-                    TextBox_SyntaxPath.Text = ""
                 End If
 
                 g_bIgnoreChange = False
@@ -477,6 +496,7 @@ Public Class FormSettings
                 TextBox_OutputFolder.Text = ""
                 CheckBox_ConfigIsDefault.Checked = False
                 ComboBox_Language.SelectedIndex = 0
+
                 'Compiler Options
                 '   (SourcePawn)
                 ComboBox_COOptimizationLevelSP.SelectedIndex = 0
@@ -495,12 +515,13 @@ Public Class FormSettings
                 TextBoxEx_COIgnoredWarningsAMXX.ShowWatermark()
                 TextBoxEx_CODefineConstantsAMXX.ShowWatermark()
                 RefreshKnownFilesListBox()
+
                 'Debugging
                 TextBox_GameFolder.Text = ""
                 TextBox_SourceModFolder.Text = ""
+
                 'Misc
                 TextBox_Shell.Text = ""
-                TextBox_SyntaxPath.Text = ""
             End If
 
             g_bIgnoreChange = False
@@ -525,6 +546,7 @@ Public Class FormSettings
                 TextBox_OutputFolder.Text = mConfig.g_sOutputFolder
                 CheckBox_ConfigIsDefault.Checked = mConfig.g_bAutoload
                 ComboBox_Language.SelectedIndex = mConfig.g_iLanguage
+
                 'Compiler Options
                 '   SourcePawn
                 If (True) Then
@@ -595,12 +617,13 @@ Public Class FormSettings
                     TextBoxEx_CODefineConstantsAMXX.ShowWatermark()
                 End If
                 RefreshKnownFilesListBox()
+
                 'Debugging
                 TextBox_GameFolder.Text = mConfig.g_sDebugGameFolder
                 TextBox_SourceModFolder.Text = mConfig.g_sDebugSourceModFolder
+
                 'Misc
                 TextBox_Shell.Text = mConfig.g_sExecuteShell
-                TextBox_SyntaxPath.Text = mConfig.g_sSyntaxHighlightingPath
             End If
 
             g_bIgnoreChange = False
@@ -799,8 +822,7 @@ Public Class FormSettings
                                                                         mCompilerOptionsAMXX,
                                                                         TextBox_GameFolder.Text,
                                                                         TextBox_SourceModFolder.Text,
-                                                                        TextBox_Shell.Text,
-                                                                        TextBox_SyntaxPath.Text))
+                                                                        TextBox_Shell.Text))
 
             m_ConfigSettingsChanged = False
 
@@ -903,21 +925,6 @@ Public Class FormSettings
         End Try
     End Sub
 
-    Private Sub Button_SyntaxPath_Click(sender As Object, e As EventArgs) Handles Button_SyntaxPath.Click
-        Using i As New OpenFileDialog
-            i.Filter = "Syntax highlighting XSHD file|*.xml"
-            i.FileName = TextBox_SyntaxPath.Text
-
-            If (i.ShowDialog = DialogResult.OK) Then
-                TextBox_SyntaxPath.Text = i.FileName
-            End If
-        End Using
-    End Sub
-
-    Private Sub LinkLabel_SyntaxDefault_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_SyntaxDefault.LinkClicked
-        TextBox_SyntaxPath.Text = ""
-    End Sub
-
     Private Sub RadioButton_ConfigSettingAutomatic_CheckedChanged(sender As Object, e As EventArgs) Handles RadioButton_ConfigSettingAutomatic.CheckedChanged
         m_ConfigSettingsChanged = True
         MarkChanged()
@@ -959,11 +966,6 @@ Public Class FormSettings
     End Sub
 
     Private Sub TextBox_Shell_TextChanged(sender As Object, e As EventArgs) Handles TextBox_Shell.TextChanged
-        m_ConfigSettingsChanged = True
-        MarkChanged()
-    End Sub
-
-    Private Sub TextBox_SyntaxPath_TextChanged(sender As Object, e As EventArgs) Handles TextBox_SyntaxPath.TextChanged
         m_ConfigSettingsChanged = True
         MarkChanged()
     End Sub

@@ -61,6 +61,10 @@ Partial Class FormSettings
         Me.CheckBox_DoubleClickMark = New System.Windows.Forms.CheckBox()
         Me.CheckBox_AutoMark = New System.Windows.Forms.CheckBox()
         Me.Panel7 = New System.Windows.Forms.Panel()
+        Me.LinkLabel_DefaultSyntax = New System.Windows.Forms.LinkLabel()
+        Me.Button_CustomSyntax = New System.Windows.Forms.Button()
+        Me.TextBox_CustomSyntax = New System.Windows.Forms.TextBox()
+        Me.Label32 = New System.Windows.Forms.Label()
         Me.NumericUpDown_TabsToSpaces = New System.Windows.Forms.NumericUpDown()
         Me.CheckBox_TabsToSpace = New System.Windows.Forms.CheckBox()
         Me.Label8 = New System.Windows.Forms.Label()
@@ -99,10 +103,6 @@ Partial Class FormSettings
         Me.Label10 = New System.Windows.Forms.Label()
         Me.TextBox_Shell = New System.Windows.Forms.TextBox()
         Me.LinkLabel_ShowShellArguments = New System.Windows.Forms.LinkLabel()
-        Me.Label15 = New System.Windows.Forms.Label()
-        Me.TextBox_SyntaxPath = New System.Windows.Forms.TextBox()
-        Me.Button_SyntaxPath = New System.Windows.Forms.Button()
-        Me.LinkLabel_SyntaxDefault = New System.Windows.Forms.LinkLabel()
         Me.Panel10 = New System.Windows.Forms.Panel()
         Me.Label9 = New System.Windows.Forms.Label()
         Me.Panel12 = New System.Windows.Forms.Panel()
@@ -114,6 +114,8 @@ Partial Class FormSettings
         Me.Label12 = New System.Windows.Forms.Label()
         Me.Panel9 = New System.Windows.Forms.Panel()
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
+        Me.ListView_KnownFiles = New System.Windows.Forms.ListView()
+        Me.ColumnHeader8 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.Button_KnownFileAdd = New System.Windows.Forms.Button()
         Me.Button_KnownFileRemove = New System.Windows.Forms.Button()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
@@ -178,8 +180,6 @@ Partial Class FormSettings
         Me.TableLayoutPanel3 = New System.Windows.Forms.TableLayoutPanel()
         Me.ClassPictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
         Me.Label17 = New System.Windows.Forms.Label()
-        Me.ListView_KnownFiles = New System.Windows.Forms.ListView()
-        Me.ColumnHeader8 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ContextMenuStrip_Plugins.SuspendLayout()
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Settings.SuspendLayout()
@@ -304,7 +304,7 @@ Partial Class FormSettings
         Me.Panel8.Controls.Add(Me.CheckBox_EntitiesEnableColor)
         Me.Panel8.Controls.Add(Me.CheckBox_EntitiesEnableShowNewEnts)
         Me.Panel8.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel8.Location = New System.Drawing.Point(0, 708)
+        Me.Panel8.Location = New System.Drawing.Point(0, 771)
         Me.Panel8.Name = "Panel8"
         Me.Panel8.Size = New System.Drawing.Size(735, 92)
         Me.Panel8.TabIndex = 25
@@ -386,7 +386,7 @@ Partial Class FormSettings
         Me.Panel5.Controls.Add(Me.CheckBox_WindowsToolTipPopup)
         Me.Panel5.Controls.Add(Me.CheckBox_CaseSensitive)
         Me.Panel5.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel5.Location = New System.Drawing.Point(0, 376)
+        Me.Panel5.Location = New System.Drawing.Point(0, 439)
         Me.Panel5.Name = "Panel5"
         Me.Panel5.Size = New System.Drawing.Size(735, 332)
         Me.Panel5.TabIndex = 22
@@ -578,7 +578,7 @@ Partial Class FormSettings
         Me.Panel6.Controls.Add(Me.CheckBox_DoubleClickMark)
         Me.Panel6.Controls.Add(Me.CheckBox_AutoMark)
         Me.Panel6.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel6.Location = New System.Drawing.Point(0, 308)
+        Me.Panel6.Location = New System.Drawing.Point(0, 371)
         Me.Panel6.Name = "Panel6"
         Me.Panel6.Size = New System.Drawing.Size(735, 68)
         Me.Panel6.TabIndex = 23
@@ -632,6 +632,10 @@ Partial Class FormSettings
         'Panel7
         '
         Me.Panel7.AutoSize = True
+        Me.Panel7.Controls.Add(Me.LinkLabel_DefaultSyntax)
+        Me.Panel7.Controls.Add(Me.Button_CustomSyntax)
+        Me.Panel7.Controls.Add(Me.TextBox_CustomSyntax)
+        Me.Panel7.Controls.Add(Me.Label32)
         Me.Panel7.Controls.Add(Me.NumericUpDown_TabsToSpaces)
         Me.Panel7.Controls.Add(Me.CheckBox_TabsToSpace)
         Me.Panel7.Controls.Add(Me.Label8)
@@ -642,8 +646,48 @@ Partial Class FormSettings
         Me.Panel7.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel7.Location = New System.Drawing.Point(0, 211)
         Me.Panel7.Name = "Panel7"
-        Me.Panel7.Size = New System.Drawing.Size(735, 97)
+        Me.Panel7.Size = New System.Drawing.Size(735, 160)
         Me.Panel7.TabIndex = 24
+        '
+        'LinkLabel_DefaultSyntax
+        '
+        Me.LinkLabel_DefaultSyntax.AutoSize = True
+        Me.LinkLabel_DefaultSyntax.Location = New System.Drawing.Point(6, 144)
+        Me.LinkLabel_DefaultSyntax.Margin = New System.Windows.Forms.Padding(6, 0, 3, 3)
+        Me.LinkLabel_DefaultSyntax.Name = "LinkLabel_DefaultSyntax"
+        Me.LinkLabel_DefaultSyntax.Size = New System.Drawing.Size(148, 13)
+        Me.LinkLabel_DefaultSyntax.TabIndex = 21
+        Me.LinkLabel_DefaultSyntax.TabStop = True
+        Me.LinkLabel_DefaultSyntax.Text = "Default syntax highlighting"
+        '
+        'Button_CustomSyntax
+        '
+        Me.Button_CustomSyntax.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Button_CustomSyntax.Location = New System.Drawing.Point(700, 119)
+        Me.Button_CustomSyntax.Name = "Button_CustomSyntax"
+        Me.Button_CustomSyntax.Size = New System.Drawing.Size(32, 23)
+        Me.Button_CustomSyntax.TabIndex = 20
+        Me.Button_CustomSyntax.Text = "..."
+        Me.Button_CustomSyntax.UseVisualStyleBackColor = True
+        '
+        'TextBox_CustomSyntax
+        '
+        Me.TextBox_CustomSyntax.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.TextBox_CustomSyntax.Location = New System.Drawing.Point(6, 119)
+        Me.TextBox_CustomSyntax.Name = "TextBox_CustomSyntax"
+        Me.TextBox_CustomSyntax.Size = New System.Drawing.Size(688, 22)
+        Me.TextBox_CustomSyntax.TabIndex = 19
+        '
+        'Label32
+        '
+        Me.Label32.AutoSize = True
+        Me.Label32.Location = New System.Drawing.Point(6, 100)
+        Me.Label32.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.Label32.Name = "Label32"
+        Me.Label32.Size = New System.Drawing.Size(162, 13)
+        Me.Label32.TabIndex = 18
+        Me.Label32.Text = "Custom syntax highlight path:"
         '
         'NumericUpDown_TabsToSpaces
         '
@@ -1019,7 +1063,7 @@ Partial Class FormSettings
         Me.GroupBox_ConfigSettings.Location = New System.Drawing.Point(0, 0)
         Me.GroupBox_ConfigSettings.Margin = New System.Windows.Forms.Padding(0)
         Me.GroupBox_ConfigSettings.Name = "GroupBox_ConfigSettings"
-        Me.GroupBox_ConfigSettings.Size = New System.Drawing.Size(585, 929)
+        Me.GroupBox_ConfigSettings.Size = New System.Drawing.Size(585, 869)
         Me.GroupBox_ConfigSettings.TabIndex = 7
         Me.GroupBox_ConfigSettings.TabStop = False
         Me.GroupBox_ConfigSettings.Text = "Config Settings"
@@ -1032,14 +1076,10 @@ Partial Class FormSettings
         Me.Panel11.Controls.Add(Me.Label10)
         Me.Panel11.Controls.Add(Me.TextBox_Shell)
         Me.Panel11.Controls.Add(Me.LinkLabel_ShowShellArguments)
-        Me.Panel11.Controls.Add(Me.Label15)
-        Me.Panel11.Controls.Add(Me.TextBox_SyntaxPath)
-        Me.Panel11.Controls.Add(Me.Button_SyntaxPath)
-        Me.Panel11.Controls.Add(Me.LinkLabel_SyntaxDefault)
         Me.Panel11.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel11.Location = New System.Drawing.Point(3, 786)
         Me.Panel11.Name = "Panel11"
-        Me.Panel11.Size = New System.Drawing.Size(579, 140)
+        Me.Panel11.Size = New System.Drawing.Size(579, 80)
         Me.Panel11.TabIndex = 30
         '
         'Label13
@@ -1094,48 +1134,6 @@ Partial Class FormSettings
         Me.LinkLabel_ShowShellArguments.TabIndex = 18
         Me.LinkLabel_ShowShellArguments.TabStop = True
         Me.LinkLabel_ShowShellArguments.Text = "Show all shell arguments"
-        '
-        'Label15
-        '
-        Me.Label15.AutoSize = True
-        Me.Label15.Location = New System.Drawing.Point(3, 80)
-        Me.Label15.Name = "Label15"
-        Me.Label15.Size = New System.Drawing.Size(162, 13)
-        Me.Label15.TabIndex = 29
-        Me.Label15.Text = "Custom syntax highlight path:"
-        '
-        'TextBox_SyntaxPath
-        '
-        Me.TextBox_SyntaxPath.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TextBox_SyntaxPath.BackColor = System.Drawing.Color.White
-        Me.TextBox_SyntaxPath.Location = New System.Drawing.Point(3, 96)
-        Me.TextBox_SyntaxPath.Name = "TextBox_SyntaxPath"
-        Me.TextBox_SyntaxPath.Size = New System.Drawing.Size(536, 22)
-        Me.TextBox_SyntaxPath.TabIndex = 30
-        '
-        'Button_SyntaxPath
-        '
-        Me.Button_SyntaxPath.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button_SyntaxPath.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_SyntaxPath.Location = New System.Drawing.Point(545, 93)
-        Me.Button_SyntaxPath.Name = "Button_SyntaxPath"
-        Me.Button_SyntaxPath.Size = New System.Drawing.Size(31, 24)
-        Me.Button_SyntaxPath.TabIndex = 28
-        Me.Button_SyntaxPath.Text = "..."
-        Me.Button_SyntaxPath.UseVisualStyleBackColor = True
-        '
-        'LinkLabel_SyntaxDefault
-        '
-        Me.LinkLabel_SyntaxDefault.AutoSize = True
-        Me.LinkLabel_SyntaxDefault.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
-        Me.LinkLabel_SyntaxDefault.Location = New System.Drawing.Point(3, 121)
-        Me.LinkLabel_SyntaxDefault.Margin = New System.Windows.Forms.Padding(3, 0, 3, 6)
-        Me.LinkLabel_SyntaxDefault.Name = "LinkLabel_SyntaxDefault"
-        Me.LinkLabel_SyntaxDefault.Size = New System.Drawing.Size(148, 13)
-        Me.LinkLabel_SyntaxDefault.TabIndex = 31
-        Me.LinkLabel_SyntaxDefault.TabStop = True
-        Me.LinkLabel_SyntaxDefault.Text = "Default syntax highlighting"
         '
         'Panel10
         '
@@ -1199,7 +1197,7 @@ Partial Class FormSettings
         '
         Me.Button_GameFolder.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_GameFolder.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_GameFolder.Location = New System.Drawing.Point(545, 33)
+        Me.Button_GameFolder.Location = New System.Drawing.Point(545, 34)
         Me.Button_GameFolder.Name = "Button_GameFolder"
         Me.Button_GameFolder.Size = New System.Drawing.Size(31, 24)
         Me.Button_GameFolder.TabIndex = 21
@@ -1220,7 +1218,7 @@ Partial Class FormSettings
         '
         Me.Button_SourceModFolder.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_SourceModFolder.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_SourceModFolder.Location = New System.Drawing.Point(545, 74)
+        Me.Button_SourceModFolder.Location = New System.Drawing.Point(545, 75)
         Me.Button_SourceModFolder.Name = "Button_SourceModFolder"
         Me.Button_SourceModFolder.Size = New System.Drawing.Size(31, 24)
         Me.Button_SourceModFolder.TabIndex = 26
@@ -1268,6 +1266,24 @@ Partial Class FormSettings
         Me.GroupBox3.TabIndex = 29
         Me.GroupBox3.TabStop = False
         Me.GroupBox3.Text = "Known Files"
+        '
+        'ListView_KnownFiles
+        '
+        Me.ListView_KnownFiles.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ListView_KnownFiles.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader8})
+        Me.ListView_KnownFiles.Location = New System.Drawing.Point(6, 21)
+        Me.ListView_KnownFiles.Name = "ListView_KnownFiles"
+        Me.ListView_KnownFiles.Size = New System.Drawing.Size(561, 134)
+        Me.ListView_KnownFiles.Sorting = System.Windows.Forms.SortOrder.Ascending
+        Me.ListView_KnownFiles.TabIndex = 3
+        Me.ListView_KnownFiles.UseCompatibleStateImageBehavior = False
+        Me.ListView_KnownFiles.View = System.Windows.Forms.View.Details
+        '
+        'ColumnHeader8
+        '
+        Me.ColumnHeader8.Text = "File"
         '
         'Button_KnownFileAdd
         '
@@ -1952,24 +1968,6 @@ Partial Class FormSettings
         Me.Label17.Text = "Loaded BasicPawn plugins are able to read stored database entries. Make sure all " &
     "installed plugins are from a trustworthy publisher to prevent theft."
         '
-        'ListView_KnownFiles
-        '
-        Me.ListView_KnownFiles.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.ListView_KnownFiles.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader8})
-        Me.ListView_KnownFiles.Location = New System.Drawing.Point(6, 21)
-        Me.ListView_KnownFiles.Name = "ListView_KnownFiles"
-        Me.ListView_KnownFiles.Size = New System.Drawing.Size(561, 134)
-        Me.ListView_KnownFiles.Sorting = System.Windows.Forms.SortOrder.Ascending
-        Me.ListView_KnownFiles.TabIndex = 3
-        Me.ListView_KnownFiles.UseCompatibleStateImageBehavior = False
-        Me.ListView_KnownFiles.View = System.Windows.Forms.View.Details
-        '
-        'ColumnHeader8
-        '
-        Me.ColumnHeader8.Text = "File"
-        '
         'FormSettings
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -2108,10 +2106,6 @@ Partial Class FormSettings
     Friend WithEvents Panel1 As Panel
     Friend WithEvents Panel13 As Panel
     Friend WithEvents Panel12 As Panel
-    Friend WithEvents Button_SyntaxPath As Button
-    Friend WithEvents TextBox_SyntaxPath As TextBox
-    Friend WithEvents Label15 As Label
-    Friend WithEvents LinkLabel_SyntaxDefault As LinkLabel
     Friend WithEvents CheckBox_CurrentSourceVarAutocomplete As CheckBox
     Friend WithEvents TabPage_Plugins As TabPage
     Friend WithEvents ListView_Plugins As ListView
@@ -2195,4 +2189,8 @@ Partial Class FormSettings
     Friend WithEvents Button_KnownFileAdd As Button
     Friend WithEvents ListView_KnownFiles As ListView
     Friend WithEvents ColumnHeader8 As ColumnHeader
+    Friend WithEvents Label32 As Label
+    Friend WithEvents Button_CustomSyntax As Button
+    Friend WithEvents TextBox_CustomSyntax As TextBox
+    Friend WithEvents LinkLabel_DefaultSyntax As LinkLabel
 End Class

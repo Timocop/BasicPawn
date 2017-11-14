@@ -118,7 +118,7 @@ Public Class ClassTabControl
             If (g_iBeginUpdateCount > 0) Then
                 g_bBeginRequestSyntaxUpdate = True
             Else
-                g_mFormMain.g_ClassSyntaxTools.UpdateTextEditorSyntax()
+                g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.UpdateTextEditorSyntax()
             End If
 
             If (bSelect OrElse m_TabsCount < 2) Then
@@ -219,7 +219,7 @@ Public Class ClassTabControl
                 If (g_iBeginUpdateCount > 0) Then
                     g_bBeginRequestSyntaxUpdate = True
                 Else
-                    g_mFormMain.g_ClassSyntaxTools.UpdateTextEditorSyntax()
+                    g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.UpdateTextEditorSyntax()
                 End If
 
                 If (g_iBeginUpdateCount > 0) Then
@@ -601,7 +601,7 @@ Public Class ClassTabControl
                 If (g_bBeginRequestSyntaxUpdate AndAlso g_iBeginUpdateCount = 0) Then
                     g_bBeginRequestSyntaxUpdate = False
 
-                    g_mFormMain.g_ClassSyntaxTools.UpdateTextEditorSyntax()
+                    g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.UpdateTextEditorSyntax()
                 End If
 
                 If (g_bBeginRequestFullUpdate AndAlso g_iBeginUpdateCount = 0) Then
@@ -641,8 +641,6 @@ Public Class ClassTabControl
         Next
 
         g_mFormMain.g_ClassSyntaxUpdater.StartThread()
-
-        g_mFormMain.g_ClassSyntaxTools.RefreshSyntax()
 
         g_mFormMain.UpdateFormConfigText()
     End Sub

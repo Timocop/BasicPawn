@@ -1476,20 +1476,6 @@ Public Class FormMain
         g_ClassAutocompleteUpdater.StopUpdate()
         g_mUCObjectBrowser.StopUpdate()
 
-        For i = 0 To ClassSyntaxTools.g_SyntaxFiles.Length - 1
-            If (Not String.IsNullOrEmpty(ClassSyntaxTools.g_SyntaxFiles(i).sFile) AndAlso IO.File.Exists(ClassSyntaxTools.g_SyntaxFiles(i).sFile)) Then
-                IO.File.Delete(ClassSyntaxTools.g_SyntaxFiles(i).sFile)
-            End If
-
-            If (Not String.IsNullOrEmpty(ClassSyntaxTools.g_SyntaxFiles(i).sFolder) AndAlso IO.Directory.Exists(ClassSyntaxTools.g_SyntaxFiles(i).sFolder)) Then
-                Try
-                    'Still errors...
-                    IO.Directory.Delete(ClassSyntaxTools.g_SyntaxFiles(i).sFolder, True)
-                Catch ex As Exception
-                End Try
-            End If
-        Next
-
         If (g_ClassCrossAppComunication IsNot Nothing) Then
             g_ClassCrossAppComunication.Dispose()
             g_ClassCrossAppComunication = Nothing

@@ -205,7 +205,7 @@ Public Class FormDebugger
                 TextEditorControlEx_DebuggerSource.Refresh()
                 TextEditorControlEx_DebuggerDiasm.Refresh()
 
-                g_mFormMain.g_ClassSyntaxTools.UpdateTextEditorSyntax()
+                g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.UpdateTextEditorSyntax()
 
                 TextEditorControlEx_DebuggerSource.Document.MarkerStrategy.RemoveAll(Function() True)
 

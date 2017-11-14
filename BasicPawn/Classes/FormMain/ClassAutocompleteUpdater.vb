@@ -337,8 +337,8 @@ Public Class ClassAutocompleteUpdater
             If (sActiveTabIdentifier = sTabIdentifier) Then
                 ClassThread.ExecAsync(g_mFormMain, Sub()
                                                        'Dont move this outside of invoke! Results in "File is already in use!" when aborting the thread... for some reason...
-                                                       g_mFormMain.g_ClassSyntaxTools.UpdateSyntaxFile(ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE.AUTOCOMPLETE)
-                                                       g_mFormMain.g_ClassSyntaxTools.UpdateTextEditorSyntax()
+                                                       g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.UpdateSyntaxFile(ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE.AUTOCOMPLETE)
+                                                       g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.UpdateTextEditorSyntax()
                                                    End Sub)
 
                 ClassThread.ExecAsync(g_mFormMain.g_mUCObjectBrowser, Sub()
