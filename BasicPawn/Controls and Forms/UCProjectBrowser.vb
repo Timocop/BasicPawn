@@ -285,13 +285,17 @@ Public Class UCProjectBrowser
 
             Using mStream = ClassFileStreamWait.Create(g_sProjectFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
                 Using mIni As New ClassIni(mStream)
+                    Dim lContent As New List(Of ClassIni.STRUC_INI_CONTENT)
+
                     For Each mInfo As STRUC_PROJECT_FILE_INFO In GetFiles()
-                        mIni.WriteKeyValue("Project", mInfo.sGUID, mInfo.sFile)
+                        lContent.Add(New ClassIni.STRUC_INI_CONTENT("Project", mInfo.sGUID, mInfo.sFile))
 
                         If (Not String.IsNullOrEmpty(mInfo.sPackedData)) Then
-                            mIni.WriteKeyValue("PackedData", mInfo.sGUID, ClassTools.ClassCrypto.ClassBase.ToBase64(mInfo.sPackedData, System.Text.Encoding.UTF8))
+                            lContent.Add(New ClassIni.STRUC_INI_CONTENT("PackedData", mInfo.sGUID, ClassTools.ClassCrypto.ClassBase.ToBase64(mInfo.sPackedData, System.Text.Encoding.UTF8)))
                         End If
                     Next
+
+                    mIni.WriteKeyValue(lContent.ToArray)
                 End Using
             End Using
 

@@ -248,6 +248,8 @@ Public Class UCStartPage
         Public Sub AddRecent(sFile As String)
             Using mStream = ClassFileStreamWait.Create(m_RecentIni, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
                 Using mIni As New ClassIni(mStream)
+                    Dim lContent As New List(Of ClassIni.STRUC_INI_CONTENT)
+
                     If (IO.File.Exists(m_RecentIni)) Then
                         For Each iItem In mIni.ReadEverything
                             If (iItem.sSection <> RECENT_SECTION) Then
@@ -258,11 +260,13 @@ Public Class UCStartPage
                                 Continue For
                             End If
 
-                            mIni.WriteKeyValue(iItem.sSection, iItem.sKey)
+                            lContent.Add(New ClassIni.STRUC_INI_CONTENT(iItem.sSection, iItem.sKey, Nothing))
                         Next
                     End If
 
-                    mIni.WriteKeyValue(RECENT_SECTION, Guid.NewGuid.ToString, sFile)
+                    lContent.Add(New ClassIni.STRUC_INI_CONTENT(RECENT_SECTION, Guid.NewGuid.ToString, sFile))
+
+                    mIni.WriteKeyValue(lContent.ToArray)
                 End Using
             End Using
         End Sub
@@ -308,6 +312,8 @@ Public Class UCStartPage
 
             Using mStream = ClassFileStreamWait.Create(m_RecentIni, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
                 Using mIni As New ClassIni(mStream)
+                    Dim lContent As New List(Of ClassIni.STRUC_INI_CONTENT)
+
                     For Each iItem In mIni.ReadEverything
                         If (iItem.sSection <> RECENT_SECTION) Then
                             Continue For
@@ -315,7 +321,7 @@ Public Class UCStartPage
 
                         If (Not IO.File.Exists(iItem.sValue.ToLower)) Then
                             'Remove invalid entries from ini
-                            mIni.WriteKeyValue(RECENT_SECTION, iItem.sKey, Nothing)
+                            lContent.Add(New ClassIni.STRUC_INI_CONTENT(RECENT_SECTION, iItem.sKey, Nothing))
                             Continue For
                         End If
 
@@ -325,6 +331,8 @@ Public Class UCStartPage
 
                         lRecentFiles.Add(iItem.sValue.ToLower)
                     Next
+
+                    mIni.WriteKeyValue(lContent.ToArray)
                 End Using
             End Using
 
