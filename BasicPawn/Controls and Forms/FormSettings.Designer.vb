@@ -304,7 +304,7 @@ Partial Class FormSettings
         Me.Panel8.Controls.Add(Me.CheckBox_EntitiesEnableColor)
         Me.Panel8.Controls.Add(Me.CheckBox_EntitiesEnableShowNewEnts)
         Me.Panel8.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel8.Location = New System.Drawing.Point(0, 771)
+        Me.Panel8.Location = New System.Drawing.Point(0, 768)
         Me.Panel8.Name = "Panel8"
         Me.Panel8.Size = New System.Drawing.Size(735, 92)
         Me.Panel8.TabIndex = 25
@@ -386,7 +386,7 @@ Partial Class FormSettings
         Me.Panel5.Controls.Add(Me.CheckBox_WindowsToolTipPopup)
         Me.Panel5.Controls.Add(Me.CheckBox_CaseSensitive)
         Me.Panel5.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel5.Location = New System.Drawing.Point(0, 439)
+        Me.Panel5.Location = New System.Drawing.Point(0, 436)
         Me.Panel5.Name = "Panel5"
         Me.Panel5.Size = New System.Drawing.Size(735, 332)
         Me.Panel5.TabIndex = 22
@@ -578,7 +578,7 @@ Partial Class FormSettings
         Me.Panel6.Controls.Add(Me.CheckBox_DoubleClickMark)
         Me.Panel6.Controls.Add(Me.CheckBox_AutoMark)
         Me.Panel6.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel6.Location = New System.Drawing.Point(0, 371)
+        Me.Panel6.Location = New System.Drawing.Point(0, 368)
         Me.Panel6.Name = "Panel6"
         Me.Panel6.Size = New System.Drawing.Size(735, 68)
         Me.Panel6.TabIndex = 23
@@ -646,14 +646,14 @@ Partial Class FormSettings
         Me.Panel7.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel7.Location = New System.Drawing.Point(0, 211)
         Me.Panel7.Name = "Panel7"
-        Me.Panel7.Size = New System.Drawing.Size(735, 160)
+        Me.Panel7.Size = New System.Drawing.Size(735, 157)
         Me.Panel7.TabIndex = 24
         '
         'LinkLabel_DefaultSyntax
         '
         Me.LinkLabel_DefaultSyntax.AutoSize = True
         Me.LinkLabel_DefaultSyntax.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
-        Me.LinkLabel_DefaultSyntax.Location = New System.Drawing.Point(6, 144)
+        Me.LinkLabel_DefaultSyntax.Location = New System.Drawing.Point(6, 141)
         Me.LinkLabel_DefaultSyntax.Margin = New System.Windows.Forms.Padding(6, 0, 3, 3)
         Me.LinkLabel_DefaultSyntax.Name = "LinkLabel_DefaultSyntax"
         Me.LinkLabel_DefaultSyntax.Size = New System.Drawing.Size(148, 13)
@@ -664,7 +664,7 @@ Partial Class FormSettings
         'Button_CustomSyntax
         '
         Me.Button_CustomSyntax.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button_CustomSyntax.Location = New System.Drawing.Point(700, 119)
+        Me.Button_CustomSyntax.Location = New System.Drawing.Point(700, 116)
         Me.Button_CustomSyntax.Name = "Button_CustomSyntax"
         Me.Button_CustomSyntax.Size = New System.Drawing.Size(32, 23)
         Me.Button_CustomSyntax.TabIndex = 20
@@ -675,7 +675,7 @@ Partial Class FormSettings
         '
         Me.TextBox_CustomSyntax.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TextBox_CustomSyntax.Location = New System.Drawing.Point(6, 119)
+        Me.TextBox_CustomSyntax.Location = New System.Drawing.Point(6, 116)
         Me.TextBox_CustomSyntax.Name = "TextBox_CustomSyntax"
         Me.TextBox_CustomSyntax.Size = New System.Drawing.Size(688, 22)
         Me.TextBox_CustomSyntax.TabIndex = 19
@@ -684,7 +684,7 @@ Partial Class FormSettings
         '
         Me.Label32.AutoSize = True
         Me.Label32.Location = New System.Drawing.Point(6, 100)
-        Me.Label32.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.Label32.Margin = New System.Windows.Forms.Padding(6, 3, 3, 0)
         Me.Label32.Name = "Label32"
         Me.Label32.Size = New System.Drawing.Size(162, 13)
         Me.Label32.TabIndex = 18
