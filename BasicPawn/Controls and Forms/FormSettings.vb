@@ -123,6 +123,7 @@ Public Class FormSettings
 
         'Get all settings
         ClassSettings.LoadSettings()
+        ClassConfigs.ClassKnownConfigs.LoadKnownConfigs()
 
         'General
         CheckBox_AlwaysNewInstance.Checked = ClassSettings.g_iSettingsAlwaysOpenNewInstance
@@ -202,7 +203,7 @@ Public Class FormSettings
                         g_mFormMain.g_ClassTabControl.m_Tab(i).m_ActiveConfig = mConfig
 
                         If (Not g_mFormMain.g_ClassTabControl.m_Tab(i).m_IsUnsaved AndAlso Not g_mFormMain.g_ClassTabControl.m_Tab(i).m_InvalidFile) Then
-                            ClassConfigs.m_KnownConfigByFile(g_mFormMain.g_ClassTabControl.m_Tab(i).m_File) = mConfig
+                            ClassConfigs.ClassKnownConfigs.m_KnownConfigByFile(g_mFormMain.g_ClassTabControl.m_Tab(i).m_File) = mConfig
                         End If
                     Next
 
@@ -210,7 +211,7 @@ Public Class FormSettings
                     g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ActiveConfig = mConfig
 
                     If (Not g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved AndAlso Not g_mFormMain.g_ClassTabControl.m_ActiveTab.m_InvalidFile) Then
-                        ClassConfigs.m_KnownConfigByFile(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File) = mConfig
+                        ClassConfigs.ClassKnownConfigs.m_KnownConfigByFile(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File) = mConfig
                     End If
             End Select
         End If
@@ -221,14 +222,14 @@ Public Class FormSettings
             lConfigNames.Add(mItem.GetName)
         Next
 
-        For Each mKnownConfig In ClassConfigs.GetKnownConfigs
+        For Each mKnownConfig In ClassConfigs.ClassKnownConfigs.GetKnownConfigs
             If (Not lConfigNames.Contains(mKnownConfig.sConfigName)) Then
-                ClassConfigs.m_KnownConfigByFile(mKnownConfig.sFile) = Nothing
+                ClassConfigs.ClassKnownConfigs.m_KnownConfigByFile(mKnownConfig.sFile) = Nothing
                 Continue For
             End If
 
             If (Not IO.File.Exists(mKnownConfig.sFile)) Then
-                ClassConfigs.m_KnownConfigByFile(mKnownConfig.sFile) = Nothing
+                ClassConfigs.ClassKnownConfigs.m_KnownConfigByFile(mKnownConfig.sFile) = Nothing
                 Continue For
             End If
         Next
@@ -267,7 +268,7 @@ Public Class FormSettings
         ClassSettings.g_iSettingsDebuggerEntitiesEnableAutoScroll = CheckBox_EntitiesEnableShowNewEnts.Checked
 
         ClassSettings.SaveSettings()
-
+        ClassConfigs.ClassKnownConfigs.SaveKnownConfigs()
 
         g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnSettingsChanged())
 
@@ -1121,7 +1122,7 @@ Public Class FormSettings
 
                 If (i.ShowDialog = DialogResult.OK) Then
                     For Each sFile As String In i.FileNames
-                        ClassConfigs.m_KnownConfigByFile(sFile) = mConfig
+                        ClassConfigs.ClassKnownConfigs.m_KnownConfigByFile(sFile) = mConfig
                     Next
 
                     RefreshKnownFilesListBox()
@@ -1137,7 +1138,7 @@ Public Class FormSettings
             For Each mListViewItem As ListViewItem In ListView_KnownFiles.SelectedItems
                 Dim sFile As String = CStr(mListViewItem.SubItems(0).Text)
 
-                ClassConfigs.m_KnownConfigByFile(sFile) = Nothing
+                ClassConfigs.ClassKnownConfigs.m_KnownConfigByFile(sFile) = Nothing
             Next
 
             RefreshKnownFilesListBox()
@@ -1156,7 +1157,7 @@ Public Class FormSettings
 
             Dim sName As String = ListBox_Configs.SelectedItems(0).ToString
 
-            For Each mKnownConfig In ClassConfigs.GetKnownConfigs
+            For Each mKnownConfig In ClassConfigs.ClassKnownConfigs.GetKnownConfigs
                 If (mKnownConfig.sConfigName = sName) Then
                     lListViewItems.Add(New ListViewItem(New String() {mKnownConfig.sFile}))
                 End If

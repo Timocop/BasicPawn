@@ -226,6 +226,8 @@ Public Class UCStartPage
 
             Using mStream = ClassFileStreamWait.Create(m_RecentIni, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
                 Using mIni As New ClassIni(mStream)
+                    Dim lContent As New List(Of ClassIni.STRUC_INI_CONTENT)
+
                     For Each iItem In mIni.ReadEverything
                         If (iItem.sSection <> RECENT_SECTION) Then
                             Continue For
@@ -235,8 +237,10 @@ Public Class UCStartPage
                             Continue For
                         End If
 
-                        mIni.WriteKeyValue(iItem.sSection, iItem.sKey)
+                        lContent.Add(New ClassIni.STRUC_INI_CONTENT(iItem.sSection, iItem.sKey, Nothing))
                     Next
+
+                    mIni.WriteKeyValue(lContent.ToArray)
                 End Using
             End Using
         End Sub

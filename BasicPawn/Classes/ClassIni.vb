@@ -109,30 +109,44 @@ Public Class ClassIni
         Throw New ArgumentException("Can't find INI section or key")
     End Function
 
+    Public Sub RemoveKeyValue(sFromSection As String, sFromKey As String)
+        WriteKeyValue({New STRUC_INI_CONTENT(sFromSection, sFromKey, Nothing)})
+    End Sub
+
     Public Sub WriteKeyValue(sFromSection As String, sFromKey As String, Optional sFromValue As String = Nothing)
+        WriteKeyValue({New STRUC_INI_CONTENT(sFromSection, sFromKey, sFromValue)})
+    End Sub
+
+    Public Sub WriteKeyValue(mContent As STRUC_INI_CONTENT)
+        WriteKeyValue({mContent})
+    End Sub
+
+    Public Sub WriteKeyValue(mContent As STRUC_INI_CONTENT())
         Dim lContents As New List(Of STRUC_INI_CONTENT)(ReadEverything())
 
-        Dim bFoundContent As Boolean = False
+        For j = 0 To mContent.Length - 1
+            Dim bFoundContent As Boolean = False
 
-        While True
-            For i = 0 To lContents.Count - 1
-                If (lContents(i).sSection = sFromSection AndAlso lContents(i).sKey = sFromKey) Then
-                    If (sFromValue Is Nothing) Then
-                        lContents.RemoveAt(i)
-                        Continue While
-                    Else
-                        lContents(i) = New STRUC_INI_CONTENT(sFromSection, sFromKey, sFromValue)
-                        bFoundContent = True
+            While True
+                For i = 0 To lContents.Count - 1
+                    If (lContents(i).sSection = mContent(j).sSection AndAlso lContents(i).sKey = mContent(j).sKey) Then
+                        If (mContent(j).sValue Is Nothing) Then
+                            lContents.RemoveAt(i)
+                            Continue While
+                        Else
+                            lContents(i) = mContent(j)
+                            bFoundContent = True
+                        End If
                     End If
-                End If
-            Next
+                Next
 
-            Exit While
-        End While
+                Exit While
+            End While
 
-        If (Not bFoundContent AndAlso sFromValue IsNot Nothing) Then
-            lContents.Add(New STRUC_INI_CONTENT(sFromSection, sFromKey, sFromValue))
-        End If
+            If (Not bFoundContent AndAlso mContent(j).sValue IsNot Nothing) Then
+                lContents.Add(mContent(j))
+            End If
+        Next
 
         'Process write to file
         Dim lSectionNames As New List(Of String)
@@ -149,9 +163,9 @@ Public Class ClassIni
         For Each sSection In lSectionNames
             SB.AppendLine(String.Format("[{0}]", sSection))
 
-            For Each mContent In lContents
-                If (mContent.sSection = sSection) Then
-                    SB.AppendLine(mContent.sKey & "=" & mContent.sValue)
+            For Each mItem In lContents
+                If (mItem.sSection = sSection) Then
+                    SB.AppendLine(mItem.sKey & "=" & mItem.sValue)
                 End If
             Next
         Next

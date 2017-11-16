@@ -775,7 +775,7 @@ Public Class UCProjectBrowser
                 mFormProgress.m_Progress = 0
 
                 For Each sFile In lFiles
-                    Dim mKnownConfig = ClassConfigs.m_KnownConfigByFile(sFile)
+                    Dim mKnownConfig = ClassConfigs.ClassKnownConfigs.m_KnownConfigByFile(sFile)
                     If (mKnownConfig Is Nothing) Then
                         Throw New ArgumentException("No known config found for this file")
                     End If

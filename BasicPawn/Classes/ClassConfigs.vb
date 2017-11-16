@@ -21,28 +21,6 @@ Public Class ClassConfigs
     Private Shared ReadOnly g_sConfigFolder As String = IO.Path.Combine(Application.StartupPath, "configs")
     Private Shared ReadOnly g_sConfigFileExt As String = ".ini"
     Private Shared ReadOnly g_mDefaultConfig As New STRUC_CONFIG_ITEM("Default")
-    Private Shared ReadOnly g_sLastConfigFile As String = IO.Path.Combine(Application.StartupPath, "knownconfigs.ini")
-
-
-    Class STRUC_KNOWN_CONFIG_ITEM
-        Public sFile As String
-        Public sConfigName As String
-
-        Sub New(_File As String, _ConfigName As String)
-            sFile = _File
-            sConfigName = _ConfigName
-        End Sub
-
-        Function FindConfig() As STRUC_CONFIG_ITEM
-            For Each mConfig In GetConfigs(False)
-                If (mConfig.GetName = sConfigName) Then
-                    Return mConfig
-                End If
-            Next
-
-            Return Nothing
-        End Function
-    End Class
 
     Class STRUC_CONFIG_ITEM
         Private g_sName As String = ""
@@ -488,51 +466,6 @@ Public Class ClassConfigs
         End Get
     End Property
 
-    Shared Property m_KnownConfigByFile(sFile As String) As STRUC_CONFIG_ITEM
-        Get
-            Using mStream = ClassFileStreamWait.Create(g_sLastConfigFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
-                Using mIni As New ClassIni(mStream)
-                    Dim sConfigName As String = mIni.ReadKeyValue(sFile.ToLower, "ConfigName", Nothing)
-
-                    If (sConfigName IsNot Nothing) Then
-                        Return LoadConfig(sConfigName)
-                    End If
-                End Using
-            End Using
-
-            Return Nothing
-        End Get
-        Set(value As STRUC_CONFIG_ITEM)
-            Using mStream = ClassFileStreamWait.Create(g_sLastConfigFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
-                Using mIni As New ClassIni(mStream)
-                    If (value Is Nothing OrElse value.IsDefault) Then
-                        mIni.WriteKeyValue(sFile.ToLower, "ConfigName", Nothing)
-                    Else
-                        mIni.WriteKeyValue(sFile.ToLower, "ConfigName", value.GetName)
-                    End If
-                End Using
-            End Using
-        End Set
-    End Property
-
-    Shared Function GetKnownConfigs() As STRUC_KNOWN_CONFIG_ITEM()
-        Dim lKnownConfigs As New List(Of STRUC_KNOWN_CONFIG_ITEM)
-
-        Using mStream = ClassFileStreamWait.Create(g_sLastConfigFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
-            Using mIni As New ClassIni(mStream)
-                For Each sSectionFile As String In mIni.GetSectionNames
-                    Dim sConfigName As String = mIni.ReadKeyValue(sSectionFile, "ConfigName", Nothing)
-
-                    If (sConfigName IsNot Nothing) Then
-                        lKnownConfigs.Add(New STRUC_KNOWN_CONFIG_ITEM(sSectionFile, sConfigName))
-                    End If
-                Next
-            End Using
-        End Using
-
-        Return lKnownConfigs.ToArray
-    End Function
-
     Shared Function SaveConfig(mConfig As STRUC_CONFIG_ITEM) As Boolean
         If (String.IsNullOrEmpty(mConfig.GetName) OrElse mConfig.GetName = m_DefaultConfig.GetName) Then
             Return False
@@ -657,4 +590,91 @@ Public Class ClassConfigs
 
         Return lConfigList.ToArray
     End Function
+
+    Class ClassKnownConfigs
+        Private Shared ReadOnly g_sLastConfigFile As String = IO.Path.Combine(Application.StartupPath, "knownconfigs.ini")
+        Private Shared g_mKnownConfigsDic As New Dictionary(Of String, String)
+
+        Class STRUC_KNOWN_CONFIG_ITEM
+            Public sFile As String
+            Public sConfigName As String
+
+            Sub New(_File As String, _ConfigName As String)
+                sFile = _File
+                sConfigName = _ConfigName
+            End Sub
+
+            Function FindConfig() As STRUC_CONFIG_ITEM
+                For Each mConfig In GetConfigs(False)
+                    If (mConfig.GetName = sConfigName) Then
+                        Return mConfig
+                    End If
+                Next
+
+                Return Nothing
+            End Function
+        End Class
+
+        Public Shared Sub LoadKnownConfigs()
+            g_mKnownConfigsDic.Clear()
+
+            Using mStream = ClassFileStreamWait.Create(g_sLastConfigFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
+                Using mIni As New ClassIni(mStream)
+                    For Each mItem In mIni.ReadEverything
+                        If (mItem.sKey <> "ConfigName") Then
+                            Continue For
+                        End If
+
+                        Dim sFile As String = mItem.sSection
+                        Dim sConfigName As String = mItem.sValue
+
+                        g_mKnownConfigsDic(sFile) = sConfigName
+                    Next
+                End Using
+            End Using
+        End Sub
+
+        Public Shared Sub SaveKnownConfigs()
+            Using mStream = ClassFileStreamWait.Create(g_sLastConfigFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
+                Using mIni As New ClassIni(mStream)
+                    Dim lContent As New List(Of ClassIni.STRUC_INI_CONTENT)
+
+                    For Each mItem In g_mKnownConfigsDic
+                        lContent.Add(New ClassIni.STRUC_INI_CONTENT(mItem.Key, "ConfigName", mItem.Value))
+                    Next
+
+                    mIni.WriteKeyValue(lContent.ToArray)
+                End Using
+            End Using
+        End Sub
+
+        Public Shared Property m_KnownConfigByFile(sFile As String) As STRUC_CONFIG_ITEM
+            Get
+                If (Not g_mKnownConfigsDic.ContainsKey(sFile)) Then
+                    Return Nothing
+                End If
+
+                Dim sConfigName As String = g_mKnownConfigsDic(sFile)
+
+                Return LoadConfig(sConfigName)
+            End Get
+            Set(value As STRUC_CONFIG_ITEM)
+                If (value Is Nothing OrElse value.IsDefault) Then
+                    g_mKnownConfigsDic(sFile) = Nothing
+                Else
+                    g_mKnownConfigsDic(sFile) = value.GetName
+                End If
+            End Set
+        End Property
+
+        Public Shared Function GetKnownConfigs() As STRUC_KNOWN_CONFIG_ITEM()
+            Dim lKnownConfigs As New List(Of STRUC_KNOWN_CONFIG_ITEM)
+
+            For Each mItem In g_mKnownConfigsDic
+                lKnownConfigs.Add(New STRUC_KNOWN_CONFIG_ITEM(mItem.Key, mItem.Value))
+            Next
+
+            Return lKnownConfigs.ToArray
+        End Function
+    End Class
 End Class

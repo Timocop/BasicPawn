@@ -79,7 +79,7 @@ Public Class FormMultiCompiler
                 Dim sCompilerOutput As String = ""
                 Dim iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = ClassSyntaxTools.ENUM_LANGUAGE_TYPE.SOURCEPAWN
 
-                Dim mKnownConfig = ClassConfigs.m_KnownConfigByFile(sSourceFile)
+                Dim mKnownConfig = ClassConfigs.ClassKnownConfigs.m_KnownConfigByFile(sSourceFile)
                 If (mKnownConfig Is Nothing) Then
                     Throw New ArgumentException("No known config found for this file")
                 End If

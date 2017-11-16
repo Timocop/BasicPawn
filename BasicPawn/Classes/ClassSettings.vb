@@ -173,11 +173,15 @@ Public Class ClassSettings
 
         Using mStream = ClassFileStreamWait.Create(g_sWindowInfoFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
             Using mIni As New ClassIni(mStream)
-                mIni.WriteKeyValue(mForm.Name, "X", CStr(mForm.Location.X))
-                mIni.WriteKeyValue(mForm.Name, "Y", CStr(mForm.Location.Y))
-                mIni.WriteKeyValue(mForm.Name, "Maximized", If(mForm.WindowState = FormWindowState.Maximized, "1", "0"))
-                mIni.WriteKeyValue(mForm.Name, "Width", CStr(mForm.Width))
-                mIni.WriteKeyValue(mForm.Name, "Height", CStr(mForm.Height))
+                Dim lContent As New List(Of ClassIni.STRUC_INI_CONTENT) From {
+                    New ClassIni.STRUC_INI_CONTENT(mForm.Name, "X", CStr(mForm.Location.X)),
+                    New ClassIni.STRUC_INI_CONTENT(mForm.Name, "Y", CStr(mForm.Location.Y)),
+                    New ClassIni.STRUC_INI_CONTENT(mForm.Name, "Maximized", If(mForm.WindowState = FormWindowState.Maximized, "1", "0")),
+                    New ClassIni.STRUC_INI_CONTENT(mForm.Name, "Width", CStr(mForm.Width)),
+                    New ClassIni.STRUC_INI_CONTENT(mForm.Name, "Height", CStr(mForm.Height))
+                }
+
+                mIni.WriteKeyValue(lContent.ToArray)
             End Using
         End Using
     End Sub

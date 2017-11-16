@@ -349,7 +349,7 @@ Public Class ClassTabControl
         m_Tab(iIndex).m_IncludeFiles.Clear()
         m_Tab(iIndex).m_FileCachedWriteDate = m_Tab(iIndex).m_FileRealWriteDate
 
-        Dim mKnownConfig = ClassConfigs.m_KnownConfigByFile(sFile)
+        Dim mKnownConfig = ClassConfigs.ClassKnownConfigs.m_KnownConfigByFile(sFile)
         If (mKnownConfig Is Nothing) Then
             While True
                 For Each mConfig In ClassConfigs.GetConfigs(False)

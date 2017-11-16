@@ -72,6 +72,7 @@ Public Class FormMain
 
         'Load Settings 
         ClassSettings.LoadSettings()
+        ClassConfigs.ClassKnownConfigs.LoadKnownConfigs()
 
         'Load source files via Arguments 
         Dim lOpenFileList As New List(Of String)
@@ -1390,11 +1391,15 @@ Public Class FormMain
 
         Using mStream = ClassFileStreamWait.Create(ClassSettings.g_sWindowInfoFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
             Using mIni As New ClassIni(mStream)
-                mIni.WriteKeyValue(Me.Name, "ViewToolbox", If(ToolStripMenuItem_ViewToolbox.Checked, "1", "0"))
-                mIni.WriteKeyValue(Me.Name, "ViewDetails", If(ToolStripMenuItem_ViewDetails.Checked, "1", "0"))
-                mIni.WriteKeyValue(Me.Name, "ViewMinimap", If(ToolStripMenuItem_ViewMinimap.Checked, "1", "0"))
-                mIni.WriteKeyValue(Me.Name, "ToolboxSize", CStr(SplitContainer_ToolboxAndEditor.SplitterDistance))
-                mIni.WriteKeyValue(Me.Name, "DetailsSize", CStr(SplitContainer_ToolboxSourceAndDetails.Height - SplitContainer_ToolboxSourceAndDetails.SplitterDistance))
+                Dim lContent As New List(Of ClassIni.STRUC_INI_CONTENT) From {
+                    New ClassIni.STRUC_INI_CONTENT(Me.Name, "ViewToolbox", If(ToolStripMenuItem_ViewToolbox.Checked, "1", "0")),
+                    New ClassIni.STRUC_INI_CONTENT(Me.Name, "ViewDetails", If(ToolStripMenuItem_ViewDetails.Checked, "1", "0")),
+                    New ClassIni.STRUC_INI_CONTENT(Me.Name, "ViewMinimap", If(ToolStripMenuItem_ViewMinimap.Checked, "1", "0")),
+                    New ClassIni.STRUC_INI_CONTENT(Me.Name, "ToolboxSize", CStr(SplitContainer_ToolboxAndEditor.SplitterDistance)),
+                    New ClassIni.STRUC_INI_CONTENT(Me.Name, "DetailsSize", CStr(SplitContainer_ToolboxSourceAndDetails.Height - SplitContainer_ToolboxSourceAndDetails.SplitterDistance))
+                }
+
+                mIni.WriteKeyValue(lContent.ToArray)
             End Using
         End Using
     End Sub
