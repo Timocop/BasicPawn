@@ -632,7 +632,7 @@ Public Class ClassConfigs
                         Dim sFile As String = mItem.sSection
                         Dim sConfigName As String = mItem.sValue
 
-                        g_mKnownConfigsDic(sFile) = sConfigName
+                        g_mKnownConfigsDic(sFile.ToLower) = sConfigName
                     Next
                 End Using
             End Using
@@ -654,19 +654,19 @@ Public Class ClassConfigs
 
         Public Shared Property m_KnownConfigByFile(sFile As String) As STRUC_CONFIG_ITEM
             Get
-                If (Not g_mKnownConfigsDic.ContainsKey(sFile)) Then
+                If (Not g_mKnownConfigsDic.ContainsKey(sFile.ToLower)) Then
                     Return Nothing
                 End If
 
-                Dim sConfigName As String = g_mKnownConfigsDic(sFile)
+                Dim sConfigName As String = g_mKnownConfigsDic(sFile.ToLower)
 
                 Return LoadConfig(sConfigName)
             End Get
             Set(value As STRUC_CONFIG_ITEM)
                 If (value Is Nothing OrElse value.IsDefault) Then
-                    g_mKnownConfigsDic(sFile) = Nothing
+                    g_mKnownConfigsDic(sFile.ToLower) = Nothing
                 Else
-                    g_mKnownConfigsDic(sFile) = value.GetName
+                    g_mKnownConfigsDic(sFile.ToLower) = value.GetName
                 End If
             End Set
         End Property
