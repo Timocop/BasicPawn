@@ -361,6 +361,14 @@ Public Class FormSettings
     Private Sub LinkLabel_DefaultSyntax_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_DefaultSyntax.LinkClicked
         TextBox_CustomSyntax.Text = ""
     End Sub
+
+    Private Sub LinkLabel_MoreStyles_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_MoreStyles.LinkClicked
+        Try
+            Process.Start("https://github.com/Timocop/BasicPawn/tree/master/Custom%20Syntax%20Styles")
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
 #End Region
 
 #Region "Configs"

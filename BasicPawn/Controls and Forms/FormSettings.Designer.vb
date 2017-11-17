@@ -180,6 +180,7 @@ Partial Class FormSettings
         Me.TableLayoutPanel3 = New System.Windows.Forms.TableLayoutPanel()
         Me.ClassPictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
         Me.Label17 = New System.Windows.Forms.Label()
+        Me.LinkLabel_MoreStyles = New System.Windows.Forms.LinkLabel()
         Me.ContextMenuStrip_Plugins.SuspendLayout()
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Settings.SuspendLayout()
@@ -632,6 +633,7 @@ Partial Class FormSettings
         'Panel7
         '
         Me.Panel7.AutoSize = True
+        Me.Panel7.Controls.Add(Me.LinkLabel_MoreStyles)
         Me.Panel7.Controls.Add(Me.LinkLabel_DefaultSyntax)
         Me.Panel7.Controls.Add(Me.Button_CustomSyntax)
         Me.Panel7.Controls.Add(Me.TextBox_CustomSyntax)
@@ -1969,6 +1971,18 @@ Partial Class FormSettings
         Me.Label17.Text = "Loaded BasicPawn plugins are able to read stored database entries. Make sure all " &
     "installed plugins are from a trustworthy publisher to prevent theft."
         '
+        'LinkLabel_MoreStyles
+        '
+        Me.LinkLabel_MoreStyles.AutoSize = True
+        Me.LinkLabel_MoreStyles.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
+        Me.LinkLabel_MoreStyles.Location = New System.Drawing.Point(163, 141)
+        Me.LinkLabel_MoreStyles.Margin = New System.Windows.Forms.Padding(6, 0, 3, 3)
+        Me.LinkLabel_MoreStyles.Name = "LinkLabel_MoreStyles"
+        Me.LinkLabel_MoreStyles.Size = New System.Drawing.Size(120, 13)
+        Me.LinkLabel_MoreStyles.TabIndex = 22
+        Me.LinkLabel_MoreStyles.TabStop = True
+        Me.LinkLabel_MoreStyles.Text = "Get more syntax styles"
+        '
         'FormSettings
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -2194,4 +2208,5 @@ Partial Class FormSettings
     Friend WithEvents Button_CustomSyntax As Button
     Friend WithEvents TextBox_CustomSyntax As TextBox
     Friend WithEvents LinkLabel_DefaultSyntax As LinkLabel
+    Friend WithEvents LinkLabel_MoreStyles As LinkLabel
 End Class
