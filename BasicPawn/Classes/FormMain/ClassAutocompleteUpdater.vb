@@ -310,7 +310,11 @@ Public Class ClassAutocompleteUpdater
                     ParseAutocomplete_Pre(sRequestedSource, sRequestedSourceFile, CStr(lIncludeFiles(i).Value), sSourceList, lTmpAutocompleteList, iRequestedLangauge)
 
                     ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                           g_mFormMain.ToolStripProgressBar_Autocomplete.Value = Math.Min(CInt(Math.Floor((i / lIncludeFiles.Count) * 50)), 100)
+                                                           Dim iVal = Math.Min(CInt(Math.Floor(((i / lIncludeFiles.Count) * 100) * 0.5)), 100)
+
+                                                           If (iVal > g_mFormMain.ToolStripProgressBar_Autocomplete.Value) Then
+                                                               g_mFormMain.ToolStripProgressBar_Autocomplete.Value = iVal
+                                                           End If
                                                        End Sub)
                 Next
 
@@ -318,7 +322,11 @@ Public Class ClassAutocompleteUpdater
                     ParseAutocomplete_Post(sRequestedSource, sRequestedSourceFile, sSourceList(i)(0), sSourceList(i)(1), lTmpAutocompleteList, iRequestedLangauge)
 
                     ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                           g_mFormMain.ToolStripProgressBar_Autocomplete.Value = Math.Min(CInt(Math.Floor((i / sSourceList.Count) * 50) + 50), 100)
+                                                           Dim iVal = Math.Min(CInt(Math.Floor(((i / sSourceList.Count) * 100) * 0.5) + 50), 100)
+
+                                                           If (iVal > g_mFormMain.ToolStripProgressBar_Autocomplete.Value) Then
+                                                               g_mFormMain.ToolStripProgressBar_Autocomplete.Value = iVal
+                                                           End If
                                                        End Sub)
                 Next
             End If
