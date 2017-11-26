@@ -192,12 +192,13 @@ Public Class UCAutocomplete
 
             If (bSelectedWord) Then
                 If (sAutocompleteArray(i).m_FunctionString.Equals(sText)) Then
-                    Dim mListViewItemData As New ClassListViewItemData(New String() {sAutocompleteArray(i).m_File,
+                    Dim mListViewItemData As New ClassListViewItemData(New String() {sAutocompleteArray(i).m_Filename,
                                                                                     sAutocompleteArray(i).GetTypeFullNames,
                                                                                     sAutocompleteArray(i).m_FunctionString,
                                                                                     sAutocompleteArray(i).m_FullFunctionString})
 
-                    mListViewItemData.g_mData("File") = sAutocompleteArray(i).m_File
+                    mListViewItemData.g_mData("File") = sAutocompleteArray(i).m_Filename
+                    mListViewItemData.g_mData("Path") = sAutocompleteArray(i).m_Path
                     mListViewItemData.g_mData("TypeFullNames") = sAutocompleteArray(i).GetTypeFullNames
                     mListViewItemData.g_mData("FunctionName") = sAutocompleteArray(i).m_FunctionName
                     mListViewItemData.g_mData("FunctionString") = sAutocompleteArray(i).m_FunctionString
@@ -207,14 +208,15 @@ Public Class UCAutocomplete
                     lListViewItemsList.Add(mListViewItemData)
                 End If
             Else
-                If (sAutocompleteArray(i).m_File.Equals(sText, If(ClassSettings.g_iSettingsAutocompleteCaseSensitive, StringComparison.Ordinal, StringComparison.OrdinalIgnoreCase)) OrElse
+                If (sAutocompleteArray(i).m_Filename.Equals(sText, If(ClassSettings.g_iSettingsAutocompleteCaseSensitive, StringComparison.Ordinal, StringComparison.OrdinalIgnoreCase)) OrElse
                             sAutocompleteArray(i).m_FunctionString.IndexOf(sText, If(ClassSettings.g_iSettingsAutocompleteCaseSensitive, StringComparison.Ordinal, StringComparison.OrdinalIgnoreCase)) > -1) Then
-                    Dim mListViewItemData As New ClassListViewItemData(New String() {sAutocompleteArray(i).m_File,
+                    Dim mListViewItemData As New ClassListViewItemData(New String() {sAutocompleteArray(i).m_Filename,
                                                                                     sAutocompleteArray(i).GetTypeFullNames,
                                                                                     sAutocompleteArray(i).m_FunctionString,
                                                                                     sAutocompleteArray(i).m_FullFunctionString})
 
-                    mListViewItemData.g_mData("File") = sAutocompleteArray(i).m_File
+                    mListViewItemData.g_mData("File") = sAutocompleteArray(i).m_Filename
+                    mListViewItemData.g_mData("Path") = sAutocompleteArray(i).m_Path
                     mListViewItemData.g_mData("TypeFullNames") = sAutocompleteArray(i).GetTypeFullNames
                     mListViewItemData.g_mData("FunctionName") = sAutocompleteArray(i).m_FunctionName
                     mListViewItemData.g_mData("FunctionString") = sAutocompleteArray(i).m_FunctionString
@@ -259,6 +261,7 @@ Public Class UCAutocomplete
 
         Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(CStr(mListViewItemData.g_mData("Info")),
                                                                      CStr(mListViewItemData.g_mData("File")),
+                                                                     CStr(mListViewItemData.g_mData("Path")),
                                                                      ClassSyntaxTools.STRUC_AUTOCOMPLETE.ParseTypeFullNames(CStr(mListViewItemData.g_mData("TypeFullNames"))),
                                                                      CStr(mListViewItemData.g_mData("FunctionName")),
                                                                      CStr(mListViewItemData.g_mData("FunctionString")),

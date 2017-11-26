@@ -77,16 +77,26 @@ Public Class ClassSyntaxTools
 
     Public Class STRUC_AUTOCOMPLETE
         Private g_sInfo As String
-        Private g_sFile As String
+        Private g_sFilename As String
+        Private g_sPath As String
         Private g_iType As ENUM_TYPE_FLAGS
         Private g_sFunctionName As String
         Private g_sFunctionString As String
         Private g_sFullFunctionString As String
         Private g_mData As New Dictionary(Of String, Object)
 
-        Public Sub New(sInfo As String, sFile As String, iType As ENUM_TYPE_FLAGS, sFunctionName As String, sFunctionString As String, sFullFunctionString As String)
+        Public Sub New(mAutocomplete As STRUC_AUTOCOMPLETE)
+            Me.New(mAutocomplete.m_Info, mAutocomplete.m_Filename, mAutocomplete.m_Path, mAutocomplete.m_Type, mAutocomplete.m_FunctionName, mAutocomplete.m_FunctionString, mAutocomplete.m_FullFunctionString)
+
+            For Each mItem In mAutocomplete.g_mData
+                g_mData(mItem.Key) = mItem.Value
+            Next
+        End Sub
+
+        Public Sub New(sInfo As String, sFilename As String, sPath As String, iType As ENUM_TYPE_FLAGS, sFunctionName As String, sFunctionString As String, sFullFunctionString As String)
             g_sInfo = sInfo
-            g_sFile = sFile
+            g_sFilename = sFilename
+            g_sPath = sPath
             g_iType = iType
             g_sFunctionName = sFunctionName
             g_sFunctionString = sFunctionString
@@ -102,12 +112,21 @@ Public Class ClassSyntaxTools
             End Set
         End Property
 
-        Property m_File As String
+        Property m_Filename As String
             Get
-                Return g_sFile
+                Return g_sFilename
             End Get
             Set(value As String)
-                g_sFile = value
+                g_sFilename = value
+            End Set
+        End Property
+
+        Property m_Path As String
+            Get
+                Return g_sPath
+            End Get
+            Set(value As String)
+                g_sPath = value
             End Set
         End Property
 

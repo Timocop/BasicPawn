@@ -263,6 +263,7 @@ Public Class ClassDebuggerParser
         mInfoBuilder.AppendLine(" */")
         lAutocomplete.Add(New ClassSyntaxTools.STRUC_AUTOCOMPLETE(mInfoBuilder.ToString,
                                                                   "BasicPawn.exe",
+                                                                  "",
                                                                   ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEBUG,
                                                                   g_sBreakpointName,
                                                                   g_sBreakpointName,
@@ -277,6 +278,7 @@ Public Class ClassDebuggerParser
         mInfoBuilder.AppendLine(" */")
         lAutocomplete.Add(New ClassSyntaxTools.STRUC_AUTOCOMPLETE(mInfoBuilder.ToString,
                                                                   "BasicPawn.exe",
+                                                                  "",
                                                                   ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEBUG,
                                                                   g_sWatcherName,
                                                                   g_sWatcherName,
