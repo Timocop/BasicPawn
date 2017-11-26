@@ -30,25 +30,59 @@ Public Class UCObjectBrowser
         ' This call is required by the designer.
         InitializeComponent()
 
-        ' Add any initialization after the InitializeComponent() call. 
+        ' Add any initialization after the InitializeComponent() call.  
+        TreeView_ObjectBrowser.TreeViewNodeSorter = New ClassAutocompleteTreeNodeSorter
     End Sub
 
-    Private g_lObjectsItems As New List(Of STRUC_OBJECTS_ITEM)
+    Private Shared g_sSourceMainFileExt As String() = {".sp", ".sma", ".pwn", ".p", ".src"}
 
-    Private g_sSourceMainFileExt As String() = {".sp", ".sma", ".pwn", ".p", "BasicPawn.exe", ".src"}
+    Class ClassAutocompleteTreeNodeSorter
+        Implements IComparer
 
-    Class STRUC_OBJECTS_ITEM
-        Public g_sFile As String
-        Public g_sType As String
-        Public g_sName As String
-        Public g_sNodeKey As String
+        Private g_iSortType As ENUM_SORT_TYPE = ENUM_SORT_TYPE.NONE
 
-        Public Sub New(sFile As String, sType As String, sName As String, sNodeKey As String)
-            g_sFile = sFile
-            g_sType = sType
-            g_sName = sName
-            g_sNodeKey = sNodeKey
-        End Sub
+        Enum ENUM_SORT_TYPE
+            ASCENDING
+            MAIN_FILE
+            NONE
+        End Enum
+
+        Property m_SortType As ENUM_SORT_TYPE
+            Get
+                Return g_iSortType
+            End Get
+            Set(value As ENUM_SORT_TYPE)
+                g_iSortType = value
+            End Set
+        End Property
+
+        Public Function Compare(x As Object, y As Object) As Integer Implements IComparer.Compare
+            Select Case (g_iSortType)
+                Case ENUM_SORT_TYPE.ASCENDING
+                    Dim mTreeNodeX = DirectCast(x, TreeNode)
+                    Dim mTreeNodeY = DirectCast(y, TreeNode)
+
+                    Return mTreeNodeX.Text.CompareTo(mTreeNodeY.Text)
+
+                Case ENUM_SORT_TYPE.MAIN_FILE
+                    Dim mTreeNodeX = DirectCast(x, TreeNode)
+
+                    If (mTreeNodeX.Parent IsNot Nothing) Then
+                        Return 1
+                    End If
+
+                    Dim bIsMainFile As Boolean = Array.Exists(g_sSourceMainFileExt, Function(s As String) mTreeNodeX.Text.ToLower.EndsWith(s.ToLower))
+                    If (bIsMainFile) Then
+                        'Move main files to top
+                        Return -1
+                    Else
+                        Return 1
+                    End If
+
+                Case Else
+                    Return 1
+            End Select
+        End Function
     End Class
 
     ReadOnly Property m_IsUpdating As Boolean
@@ -79,9 +113,9 @@ Public Class UCObjectBrowser
 
             If (bWndProcBug) Then
                 ClassThread.ExecEx(Of Object)(Me, Sub()
-                                                    TreeView_ObjectBrowser.Enabled = False
-                                                    TreeView_ObjectBrowser.Visible = False
-                                                End Sub)
+                                                      TreeView_ObjectBrowser.Enabled = False
+                                                      TreeView_ObjectBrowser.Visible = False
+                                                  End Sub)
             Else
                 ClassThread.ExecEx(Of Object)(Me, Sub()
                                                       ClassTools.ClassForms.SuspendDrawing(g_iControlDrawCoutner, TreeView_ObjectBrowser)
@@ -112,17 +146,15 @@ Public Class UCObjectBrowser
                     Dim bIsMainFile As Boolean = Array.Exists(g_sSourceMainFileExt, Function(s As String) sFilename.ToLower.EndsWith(s.ToLower))
 
                     If (Not mFileNodes.ContainsKey(sFilename)) Then
-                        If (bIsMainFile) Then
-                            ClassThread.ExecEx(Of Object)(TreeView_ObjectBrowser, Sub()
-                                                                                      Dim mTreeNode = mFileNodes.Insert(0, sFilename, sFilename)
-                                                                                      mTreeNode.NodeFont = New Font(TreeView_ObjectBrowser.Font, FontStyle.Regular)
-                                                                                  End Sub)
-                        Else
-                            ClassThread.ExecEx(Of Object)(TreeView_ObjectBrowser, Sub()
-                                                                                      Dim mTreeNode = mFileNodes.Add(sFilename, sFilename)
-                                                                                      mTreeNode.NodeFont = New Font(TreeView_ObjectBrowser.Font, FontStyle.Italic)
-                                                                                  End Sub)
-                        End If
+                        ClassThread.ExecEx(Of Object)(TreeView_ObjectBrowser, Sub()
+                                                                                  'TreeView.Sort() seems unreliable. The only thing it does is re-add TreeNodes.
+                                                                                  'Instead we set our custom sorter before adding a TreeNode to the collection.
+                                                                                  Dim mTreeViewSorter = DirectCast(TreeView_ObjectBrowser.TreeViewNodeSorter, ClassAutocompleteTreeNodeSorter)
+                                                                                  mTreeViewSorter.m_SortType = If(bIsMainFile, ClassAutocompleteTreeNodeSorter.ENUM_SORT_TYPE.MAIN_FILE, ClassAutocompleteTreeNodeSorter.ENUM_SORT_TYPE.ASCENDING)
+
+                                                                                  Dim mTreeNode = mFileNodes.Add(sFilename, sFilename)
+                                                                                  mTreeNode.NodeFont = New Font(TreeView_ObjectBrowser.Font, If(bIsMainFile, FontStyle.Regular, FontStyle.Italic))
+                                                                              End Sub)
                     End If
 
                     mTypeNodes = mFileNodes(sFilename).Nodes
@@ -130,14 +162,28 @@ Public Class UCObjectBrowser
                     Dim iTypes As Integer = lAutocompleteList(i).m_Type
                     Dim sTypes As String = If(String.IsNullOrEmpty(lAutocompleteList(i).GetTypeFullNames), "private", lAutocompleteList(i).GetTypeFullNames.ToLower)
                     If (Not mTypeNodes.ContainsKey(sTypes)) Then
-                        ClassThread.ExecEx(Of Object)(TreeView_ObjectBrowser, Sub() mTypeNodes.Add(sTypes, sTypes))
+                        ClassThread.ExecEx(Of Object)(TreeView_ObjectBrowser, Sub()
+                                                                                  'TreeView.Sort() seems unreliable. The only thing it does is re-add TreeNodes.
+                                                                                  'Instead we set our custom sorter before adding a TreeNode to the collection.
+                                                                                  Dim mTreeViewSorter = DirectCast(TreeView_ObjectBrowser.TreeViewNodeSorter, ClassAutocompleteTreeNodeSorter)
+                                                                                  mTreeViewSorter.m_SortType = ClassAutocompleteTreeNodeSorter.ENUM_SORT_TYPE.ASCENDING
+
+                                                                                  mTypeNodes.Add(sTypes, sTypes)
+                                                                              End Sub)
                     End If
 
                     mNameNodes = mTypeNodes(sTypes).Nodes
 
                     Dim sName As String = lAutocompleteList(i).m_FunctionString
                     If (Not mNameNodes.ContainsKey(sName)) Then
-                        ClassThread.ExecEx(Of Object)(TreeView_ObjectBrowser, Sub() mNameNodes.Add(New ClassTreeNodeAutocomplete(sName, sName, sFilename, iTypes, sName)))
+                        ClassThread.ExecEx(Of Object)(TreeView_ObjectBrowser, Sub()
+                                                                                  'TreeView.Sort() seems unreliable. The only thing it does is re-add TreeNodes.
+                                                                                  'Instead we set our custom sorter before adding a TreeNode to the collection.
+                                                                                  Dim mTreeViewSorter = DirectCast(TreeView_ObjectBrowser.TreeViewNodeSorter, ClassAutocompleteTreeNodeSorter)
+                                                                                  mTreeViewSorter.m_SortType = ClassAutocompleteTreeNodeSorter.ENUM_SORT_TYPE.ASCENDING
+
+                                                                                  mNameNodes.Add(New ClassTreeNodeAutocomplete(sName, sName, sFilename, iTypes, sName))
+                                                                              End Sub)
                     End If
                 Next
             End If
@@ -185,14 +231,14 @@ Public Class UCObjectBrowser
 
             If (bWndProcBug) Then
                 ClassThread.ExecEx(Of Object)(TreeView_ObjectBrowser, Sub()
-                                                                        TreeView_ObjectBrowser.Visible = True
-                                                                        TreeView_ObjectBrowser.Enabled = True
-                                                                    End Sub)
+                                                                          TreeView_ObjectBrowser.Enabled = True
+                                                                          TreeView_ObjectBrowser.Visible = True
+                                                                      End Sub)
             Else
                 ClassThread.ExecEx(Of Object)(TreeView_ObjectBrowser, Sub()
-                                                                        ClassTools.ClassForms.ResumeDrawing(g_iControlDrawCoutner, TreeView_ObjectBrowser)
-                                                                        TreeView_ObjectBrowser.Enabled = True
-                                                                    End Sub)
+                                                                          TreeView_ObjectBrowser.Enabled = True
+                                                                          ClassTools.ClassForms.ResumeDrawing(g_iControlDrawCoutner, TreeView_ObjectBrowser)
+                                                                      End Sub)
             End If
         Catch ex As Threading.ThreadAbortException
             Throw
