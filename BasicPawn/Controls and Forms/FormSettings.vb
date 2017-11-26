@@ -154,6 +154,7 @@ Public Class FormSettings
         CheckBox_CurrentSourceVarAutocomplete.Checked = ClassSettings.g_iSettingsVarAutocompleteCurrentSourceOnly
         CheckBox_VarAutocompleteShowObjectBrowser.Checked = ClassSettings.g_iSettingsVarAutocompleteShowObjectBrowser
         CheckBox_SwitchTabToAutocomplete.Checked = ClassSettings.g_iSettingsSwitchTabToAutocomplete
+        CheckBox_OnlyUpdateSyntaxWhenFocused.Checked = ClassSettings.g_iSettingsOnlyUpdateSyntaxWhenFocused
         'Debugger
         CheckBox_CatchExceptions.Checked = ClassSettings.g_iSettingsDebuggerCatchExceptions
         CheckBox_EntitiesEnableColor.Checked = ClassSettings.g_iSettingsDebuggerEntitiesEnableAutoScroll
@@ -262,6 +263,7 @@ Public Class FormSettings
         ClassSettings.g_iSettingsVarAutocompleteCurrentSourceOnly = CheckBox_CurrentSourceVarAutocomplete.Checked
         ClassSettings.g_iSettingsVarAutocompleteShowObjectBrowser = CheckBox_VarAutocompleteShowObjectBrowser.Checked
         ClassSettings.g_iSettingsSwitchTabToAutocomplete = CheckBox_SwitchTabToAutocomplete.Checked
+        ClassSettings.g_iSettingsOnlyUpdateSyntaxWhenFocused = CheckBox_OnlyUpdateSyntaxWhenFocused.Checked
         'Debugger
         ClassSettings.g_iSettingsDebuggerCatchExceptions = CheckBox_CatchExceptions.Checked
         ClassSettings.g_iSettingsDebuggerEntitiesEnableColoring = CheckBox_EntitiesEnableColor.Checked

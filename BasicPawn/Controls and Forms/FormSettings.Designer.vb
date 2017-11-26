@@ -40,6 +40,7 @@ Partial Class FormSettings
         Me.CheckBox_EntitiesEnableColor = New System.Windows.Forms.CheckBox()
         Me.CheckBox_EntitiesEnableShowNewEnts = New System.Windows.Forms.CheckBox()
         Me.Panel5 = New System.Windows.Forms.Panel()
+        Me.CheckBox_OnlyUpdateSyntaxWhenFocused = New System.Windows.Forms.CheckBox()
         Me.CheckBox_WindowsToolTipNewlineMethods = New System.Windows.Forms.CheckBox()
         Me.CheckBox_WindowsToolTipAnimations = New System.Windows.Forms.CheckBox()
         Me.Label1 = New System.Windows.Forms.Label()
@@ -61,6 +62,7 @@ Partial Class FormSettings
         Me.CheckBox_DoubleClickMark = New System.Windows.Forms.CheckBox()
         Me.CheckBox_AutoMark = New System.Windows.Forms.CheckBox()
         Me.Panel7 = New System.Windows.Forms.Panel()
+        Me.LinkLabel_MoreStyles = New System.Windows.Forms.LinkLabel()
         Me.LinkLabel_DefaultSyntax = New System.Windows.Forms.LinkLabel()
         Me.Button_CustomSyntax = New System.Windows.Forms.Button()
         Me.TextBox_CustomSyntax = New System.Windows.Forms.TextBox()
@@ -180,7 +182,6 @@ Partial Class FormSettings
         Me.TableLayoutPanel3 = New System.Windows.Forms.TableLayoutPanel()
         Me.ClassPictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
         Me.Label17 = New System.Windows.Forms.Label()
-        Me.LinkLabel_MoreStyles = New System.Windows.Forms.LinkLabel()
         Me.ContextMenuStrip_Plugins.SuspendLayout()
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Settings.SuspendLayout()
@@ -305,7 +306,7 @@ Partial Class FormSettings
         Me.Panel8.Controls.Add(Me.CheckBox_EntitiesEnableColor)
         Me.Panel8.Controls.Add(Me.CheckBox_EntitiesEnableShowNewEnts)
         Me.Panel8.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel8.Location = New System.Drawing.Point(0, 768)
+        Me.Panel8.Location = New System.Drawing.Point(0, 792)
         Me.Panel8.Name = "Panel8"
         Me.Panel8.Size = New System.Drawing.Size(735, 92)
         Me.Panel8.TabIndex = 25
@@ -371,6 +372,7 @@ Partial Class FormSettings
         'Panel5
         '
         Me.Panel5.AutoSize = True
+        Me.Panel5.Controls.Add(Me.CheckBox_OnlyUpdateSyntaxWhenFocused)
         Me.Panel5.Controls.Add(Me.CheckBox_WindowsToolTipNewlineMethods)
         Me.Panel5.Controls.Add(Me.CheckBox_WindowsToolTipAnimations)
         Me.Panel5.Controls.Add(Me.Label1)
@@ -389,8 +391,20 @@ Partial Class FormSettings
         Me.Panel5.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel5.Location = New System.Drawing.Point(0, 436)
         Me.Panel5.Name = "Panel5"
-        Me.Panel5.Size = New System.Drawing.Size(735, 332)
+        Me.Panel5.Size = New System.Drawing.Size(735, 356)
         Me.Panel5.TabIndex = 22
+        '
+        'CheckBox_OnlyUpdateSyntaxWhenFocused
+        '
+        Me.CheckBox_OnlyUpdateSyntaxWhenFocused.AutoSize = True
+        Me.CheckBox_OnlyUpdateSyntaxWhenFocused.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_OnlyUpdateSyntaxWhenFocused.Location = New System.Drawing.Point(6, 335)
+        Me.CheckBox_OnlyUpdateSyntaxWhenFocused.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_OnlyUpdateSyntaxWhenFocused.Name = "CheckBox_OnlyUpdateSyntaxWhenFocused"
+        Me.CheckBox_OnlyUpdateSyntaxWhenFocused.Size = New System.Drawing.Size(283, 18)
+        Me.CheckBox_OnlyUpdateSyntaxWhenFocused.TabIndex = 23
+        Me.CheckBox_OnlyUpdateSyntaxWhenFocused.Text = "Only update syntax when the window is focused"
+        Me.CheckBox_OnlyUpdateSyntaxWhenFocused.UseVisualStyleBackColor = True
         '
         'CheckBox_WindowsToolTipNewlineMethods
         '
@@ -481,10 +495,10 @@ Partial Class FormSettings
         Me.CheckBox_CurrentSourceVarAutocomplete.Location = New System.Drawing.Point(6, 263)
         Me.CheckBox_CurrentSourceVarAutocomplete.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_CurrentSourceVarAutocomplete.Name = "CheckBox_CurrentSourceVarAutocomplete"
-        Me.CheckBox_CurrentSourceVarAutocomplete.Size = New System.Drawing.Size(504, 18)
+        Me.CheckBox_CurrentSourceVarAutocomplete.Size = New System.Drawing.Size(690, 18)
         Me.CheckBox_CurrentSourceVarAutocomplete.TabIndex = 17
-        Me.CheckBox_CurrentSourceVarAutocomplete.Text = "Only search in the current opened source file for variables used for variable aut" &
-    "ocompletion"
+        Me.CheckBox_CurrentSourceVarAutocomplete.Text = "Only search variables from active tabs (increases parsing speed but wont display " &
+    "variables correctly when working with includes)"
         Me.CheckBox_CurrentSourceVarAutocomplete.UseVisualStyleBackColor = True
         '
         'CheckBox_OnScreenIntelliSense
@@ -650,6 +664,18 @@ Partial Class FormSettings
         Me.Panel7.Name = "Panel7"
         Me.Panel7.Size = New System.Drawing.Size(735, 157)
         Me.Panel7.TabIndex = 24
+        '
+        'LinkLabel_MoreStyles
+        '
+        Me.LinkLabel_MoreStyles.AutoSize = True
+        Me.LinkLabel_MoreStyles.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
+        Me.LinkLabel_MoreStyles.Location = New System.Drawing.Point(163, 141)
+        Me.LinkLabel_MoreStyles.Margin = New System.Windows.Forms.Padding(6, 0, 3, 3)
+        Me.LinkLabel_MoreStyles.Name = "LinkLabel_MoreStyles"
+        Me.LinkLabel_MoreStyles.Size = New System.Drawing.Size(120, 13)
+        Me.LinkLabel_MoreStyles.TabIndex = 22
+        Me.LinkLabel_MoreStyles.TabStop = True
+        Me.LinkLabel_MoreStyles.Text = "Get more syntax styles"
         '
         'LinkLabel_DefaultSyntax
         '
@@ -1971,18 +1997,6 @@ Partial Class FormSettings
         Me.Label17.Text = "Loaded BasicPawn plugins are able to read stored database entries. Make sure all " &
     "installed plugins are from a trustworthy publisher to prevent theft."
         '
-        'LinkLabel_MoreStyles
-        '
-        Me.LinkLabel_MoreStyles.AutoSize = True
-        Me.LinkLabel_MoreStyles.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
-        Me.LinkLabel_MoreStyles.Location = New System.Drawing.Point(163, 141)
-        Me.LinkLabel_MoreStyles.Margin = New System.Windows.Forms.Padding(6, 0, 3, 3)
-        Me.LinkLabel_MoreStyles.Name = "LinkLabel_MoreStyles"
-        Me.LinkLabel_MoreStyles.Size = New System.Drawing.Size(120, 13)
-        Me.LinkLabel_MoreStyles.TabIndex = 22
-        Me.LinkLabel_MoreStyles.TabStop = True
-        Me.LinkLabel_MoreStyles.Text = "Get more syntax styles"
-        '
         'FormSettings
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -2209,4 +2223,5 @@ Partial Class FormSettings
     Friend WithEvents TextBox_CustomSyntax As TextBox
     Friend WithEvents LinkLabel_DefaultSyntax As LinkLabel
     Friend WithEvents LinkLabel_MoreStyles As LinkLabel
+    Friend WithEvents CheckBox_OnlyUpdateSyntaxWhenFocused As CheckBox
 End Class

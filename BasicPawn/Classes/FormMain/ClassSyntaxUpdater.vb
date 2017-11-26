@@ -63,8 +63,10 @@ Public Class ClassSyntaxUpdater
             Threading.Thread.Sleep(500)
 
             Try
+                Dim bIsFormMainFocused As Boolean = (Not ClassSettings.g_iSettingsOnlyUpdateSyntaxWhenFocused OrElse ClassThread.ExecEx(Of Boolean)(g_mFormMain, Function() Form.ActiveForm IsNot Nothing))
+
                 'Update Autocomplete
-                If (g_mFormMain.g_ClassAutocompleteUpdater.g_lFullAutocompleteTabRequests.Count > 0) Then
+                If (bIsFormMainFocused AndAlso g_mFormMain.g_ClassAutocompleteUpdater.g_lFullAutocompleteTabRequests.Count > 0) Then
                     Dim sRequestedTabIdentifier As String = g_mFormMain.g_ClassAutocompleteUpdater.g_lFullAutocompleteTabRequests(0)
                     Dim sActiveTabIdentifier As String = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Identifier)
 
@@ -77,7 +79,7 @@ Public Class ClassSyntaxUpdater
                                                            g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, sRequestedTabIdentifier)
                                                        End Sub)
 
-                ElseIf (dLastFullAutocompleteUpdate < Now) Then
+                ElseIf (bIsFormMainFocused AndAlso dLastFullAutocompleteUpdate < Now) Then
                     dLastFullAutocompleteUpdate = (Now + mFullAutocompleteUpdateDelay)
 
                     ClassThread.ExecAsync(g_mFormMain, Sub()
@@ -86,7 +88,7 @@ Public Class ClassSyntaxUpdater
                 End If
 
                 'Update Variable Autocomplete
-                If (dLastVarAutocompleteUpdate < Now) Then
+                If (bIsFormMainFocused AndAlso dLastVarAutocompleteUpdate < Now) Then
                     dLastVarAutocompleteUpdate = (Now + mVarAutocompleteUpdateDelay)
 
                     ClassThread.ExecAsync(g_mFormMain, Sub()
@@ -95,7 +97,7 @@ Public Class ClassSyntaxUpdater
                 End If
 
                 'Update Foldings
-                If (dLastFoldingUpdate < Now) Then
+                If (bIsFormMainFocused AndAlso dLastFoldingUpdate < Now) Then
                     dLastFoldingUpdate = (Now + mFoldingUpdateDelay)
 
                     ClassThread.ExecAsync(g_mFormMain, Sub()
@@ -103,8 +105,8 @@ Public Class ClassSyntaxUpdater
                                                        End Sub)
                 End If
 
-                'Update Foldings
-                If (dLastTextMinimapDelay < Now) Then
+                'Update document minimap
+                If (bIsFormMainFocused AndAlso dLastTextMinimapDelay < Now) Then
                     dLastTextMinimapDelay = (Now + mTextMinimapDelay)
 
                     ClassThread.ExecAsync(g_mFormMain, Sub()
