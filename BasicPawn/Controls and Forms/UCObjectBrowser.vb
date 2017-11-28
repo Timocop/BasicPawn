@@ -39,49 +39,15 @@ Public Class UCObjectBrowser
     Class ClassAutocompleteTreeNodeSorter
         Implements IComparer
 
-        Private g_iSortType As ENUM_SORT_TYPE = ENUM_SORT_TYPE.NONE
-
-        Enum ENUM_SORT_TYPE
-            ASCENDING
-            MAIN_FILE
-            NONE
-        End Enum
-
-        Property m_SortType As ENUM_SORT_TYPE
-            Get
-                Return g_iSortType
-            End Get
-            Set(value As ENUM_SORT_TYPE)
-                g_iSortType = value
-            End Set
-        End Property
-
         Public Function Compare(x As Object, y As Object) As Integer Implements IComparer.Compare
-            Select Case (g_iSortType)
-                Case ENUM_SORT_TYPE.ASCENDING
-                    Dim mTreeNodeX = DirectCast(x, TreeNode)
-                    Dim mTreeNodeY = DirectCast(y, TreeNode)
+            Dim mTreeNodeX = DirectCast(x, TreeNode)
+            Dim mTreeNodeY = DirectCast(y, TreeNode)
 
-                    Return mTreeNodeX.Text.CompareTo(mTreeNodeY.Text)
+            If (TypeOf mTreeNodeX.Tag Is String AndAlso TypeOf mTreeNodeY.Tag Is String) Then
+                Return CStr(mTreeNodeX.Tag).CompareTo(CStr(mTreeNodeY.Tag))
+            End If
 
-                Case ENUM_SORT_TYPE.MAIN_FILE
-                    Dim mTreeNodeX = DirectCast(x, TreeNode)
-
-                    If (mTreeNodeX.Parent IsNot Nothing) Then
-                        Return 1
-                    End If
-
-                    Dim bIsMainFile As Boolean = Array.Exists(g_sSourceMainFileExt, Function(s As String) mTreeNodeX.Text.ToLower.EndsWith(s.ToLower))
-                    If (bIsMainFile) Then
-                        'Move main files to top
-                        Return -1
-                    Else
-                        Return 1
-                    End If
-
-                Case Else
-                    Return 1
-            End Select
+            Return 1
         End Function
     End Class
 
@@ -147,13 +113,11 @@ Public Class UCObjectBrowser
 
                     If (Not mFileNodes.ContainsKey(sFilename)) Then
                         ClassThread.ExecEx(Of Object)(TreeView_ObjectBrowser, Sub()
-                                                                                  'TreeView.Sort() seems unreliable. The only thing it does is re-add TreeNodes.
-                                                                                  'Instead we set our custom sorter before adding a TreeNode to the collection.
-                                                                                  Dim mTreeViewSorter = DirectCast(TreeView_ObjectBrowser.TreeViewNodeSorter, ClassAutocompleteTreeNodeSorter)
-                                                                                  mTreeViewSorter.m_SortType = If(bIsMainFile, ClassAutocompleteTreeNodeSorter.ENUM_SORT_TYPE.MAIN_FILE, ClassAutocompleteTreeNodeSorter.ENUM_SORT_TYPE.ASCENDING)
-
-                                                                                  Dim mTreeNode = mFileNodes.Add(sFilename, sFilename)
-                                                                                  mTreeNode.NodeFont = New Font(TreeView_ObjectBrowser.Font, If(bIsMainFile, FontStyle.Regular, FontStyle.Italic))
+                                                                                  mFileNodes.Add(New TreeNode(sFilename) With {
+                                                                                      .Name = sFilename,
+                                                                                      .Tag = If(bIsMainFile, "*", "") & sFilename,
+                                                                                      .NodeFont = New Font(TreeView_ObjectBrowser.Font, If(bIsMainFile, FontStyle.Regular, FontStyle.Italic))
+                                                                                  })
                                                                               End Sub)
                     End If
 
@@ -163,12 +127,10 @@ Public Class UCObjectBrowser
                     Dim sTypes As String = If(String.IsNullOrEmpty(lAutocompleteList(i).GetTypeFullNames), "private", lAutocompleteList(i).GetTypeFullNames.ToLower)
                     If (Not mTypeNodes.ContainsKey(sTypes)) Then
                         ClassThread.ExecEx(Of Object)(TreeView_ObjectBrowser, Sub()
-                                                                                  'TreeView.Sort() seems unreliable. The only thing it does is re-add TreeNodes.
-                                                                                  'Instead we set our custom sorter before adding a TreeNode to the collection.
-                                                                                  Dim mTreeViewSorter = DirectCast(TreeView_ObjectBrowser.TreeViewNodeSorter, ClassAutocompleteTreeNodeSorter)
-                                                                                  mTreeViewSorter.m_SortType = ClassAutocompleteTreeNodeSorter.ENUM_SORT_TYPE.ASCENDING
-
-                                                                                  mTypeNodes.Add(sTypes, sTypes)
+                                                                                  mTypeNodes.Add(New TreeNode(sTypes) With {
+                                                                                      .Name = sTypes,
+                                                                                      .Tag = sTypes
+                                                                                  })
                                                                               End Sub)
                     End If
 
@@ -177,12 +139,9 @@ Public Class UCObjectBrowser
                     Dim sName As String = lAutocompleteList(i).m_FunctionString
                     If (Not mNameNodes.ContainsKey(sName)) Then
                         ClassThread.ExecEx(Of Object)(TreeView_ObjectBrowser, Sub()
-                                                                                  'TreeView.Sort() seems unreliable. The only thing it does is re-add TreeNodes.
-                                                                                  'Instead we set our custom sorter before adding a TreeNode to the collection.
-                                                                                  Dim mTreeViewSorter = DirectCast(TreeView_ObjectBrowser.TreeViewNodeSorter, ClassAutocompleteTreeNodeSorter)
-                                                                                  mTreeViewSorter.m_SortType = ClassAutocompleteTreeNodeSorter.ENUM_SORT_TYPE.ASCENDING
-
-                                                                                  mNameNodes.Add(New ClassTreeNodeAutocomplete(sName, sName, sFilename, iTypes, sName))
+                                                                                  mNameNodes.Add(New ClassTreeNodeAutocomplete(sName, sName, sFilename, iTypes, sName) With {
+                                                                                      .Tag = sName
+                                                                                  })
                                                                               End Sub)
                     End If
                 Next
