@@ -20,8 +20,6 @@ Public Class UCObjectBrowser
     Private g_mFormMain As FormMain
     Private g_mUpdateThread As Threading.Thread
 
-    Private g_iControlDrawCoutner As Integer = 0
-
     Public Shared g_bWndProcBug As Boolean = False
 
     Public Sub New(f As FormMain)
@@ -79,12 +77,12 @@ Public Class UCObjectBrowser
 
             If (bWndProcBug) Then
                 ClassThread.ExecEx(Of Object)(Me, Sub()
-                                                      TreeView_ObjectBrowser.Enabled = False
                                                       TreeView_ObjectBrowser.Visible = False
+                                                      TreeView_ObjectBrowser.Enabled = False
                                                   End Sub)
             Else
                 ClassThread.ExecEx(Of Object)(Me, Sub()
-                                                      ClassTools.ClassForms.SuspendDrawing(g_iControlDrawCoutner, TreeView_ObjectBrowser)
+                                                      TreeView_ObjectBrowser.BeginUpdate()
                                                       TreeView_ObjectBrowser.Enabled = False
                                                   End Sub)
             End If
@@ -196,7 +194,7 @@ Public Class UCObjectBrowser
             Else
                 ClassThread.ExecEx(Of Object)(TreeView_ObjectBrowser, Sub()
                                                                           TreeView_ObjectBrowser.Enabled = True
-                                                                          ClassTools.ClassForms.ResumeDrawing(g_iControlDrawCoutner, TreeView_ObjectBrowser)
+                                                                          TreeView_ObjectBrowser.EndUpdate()
                                                                       End Sub)
             End If
         Catch ex As Threading.ThreadAbortException
