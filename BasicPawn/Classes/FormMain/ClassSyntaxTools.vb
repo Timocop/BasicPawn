@@ -358,120 +358,130 @@ Public Class ClassSyntaxTools
     ''' <param name="sSource"></param>
     ''' <returns></returns>
     Public Function FormatCode(sSource As String, iIndentationType As ClassSettings.ENUM_INDENTATION_TYPES, iLanguage As ENUM_LANGUAGE_TYPE) As String
-        Dim mSourceBuilder As New StringBuilder
-        Using mSR As New IO.StringReader(sSource)
-            While True
-                Dim sLine As String = mSR.ReadLine
-                If (sLine Is Nothing) Then
-                    Exit While
-                End If
-
-                mSourceBuilder.AppendLine(sLine.Trim)
-            End While
-        End Using
-        sSource = mSourceBuilder.ToString
-
-        'Get any valid statements ends and put them in a list
-        Dim lValidStateEnds As New List(Of Integer)
-        Dim iExpressions As Integer()() = GetExpressionBetweenCharacters(sSource, "("c, ")"c, 1, iLanguage, True)
-        For Each mMatch As Match In Regex.Matches(sSource, "(?<!\#)(\b(if|while|for)\b\s*(?<End1>\()|\b(?<End2>else(?!\s+\b(if)\b))\b)")
-            If (mMatch.Groups("End1").Success) Then
-                Dim iEndIndex As Integer = mMatch.Groups("End1").Index
-                For i = 0 To iExpressions.Length - 1
-                    If (iEndIndex = iExpressions(i)(0)) Then
-                        lValidStateEnds.Add(iExpressions(i)(1))
+        If (True) Then
+            Dim mSourceBuilder As New StringBuilder
+            Using mSR As New IO.StringReader(sSource)
+                While True
+                    Dim sLine As String = mSR.ReadLine
+                    If (sLine Is Nothing) Then
+                        Exit While
                     End If
-                Next
-            ElseIf (mMatch.Groups("End2").Success) Then
-                Dim iEndIndex As Integer = mMatch.Groups("End2").Index + mMatch.Groups("End2").Length - 1
-                lValidStateEnds.Add(iEndIndex)
-            End If
-        Next
 
-        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iLanguage)
+                    mSourceBuilder.AppendLine(sLine.Trim)
+                End While
+            End Using
+            sSource = mSourceBuilder.ToString
+        End If
 
+        Dim lValidStateEnds As New List(Of Integer)
 
-        Dim iBraceCount As Integer = 0
-        Dim iBracedCount As Integer = 0
+        If (True) Then
+            'Get any valid statements ends and put them in a list
+            Dim iExpressions As Integer()() = GetExpressionBetweenCharacters(sSource, "("c, ")"c, 1, iLanguage, True)
 
-        For i = sSource.Length - 1 - 1 To 0 Step -1
-            Try
-                Select Case (sSource(i))
-                    Case ("("c)
-                        If (Not mSourceAnalysis.m_InNonCode(i)) Then
-                            iBracedCount -= 1
+            For Each mMatch As Match In Regex.Matches(sSource, "(?<!\#)(\b(if|while|for)\b\s*(?<End1>\()|\b(?<End2>else(?!\s+\b(if)\b))\b)")
+                If (mMatch.Groups("End1").Success) Then
+                    Dim iEndIndex As Integer = mMatch.Groups("End1").Index
+                    For i = 0 To iExpressions.Length - 1
+                        If (iEndIndex = iExpressions(i)(0)) Then
+                            lValidStateEnds.Add(iExpressions(i)(1))
                         End If
+                    Next
+                ElseIf (mMatch.Groups("End2").Success) Then
+                    Dim iEndIndex As Integer = mMatch.Groups("End2").Index + mMatch.Groups("End2").Length - 1
+                    lValidStateEnds.Add(iEndIndex)
+                End If
+            Next
+        End If
 
-                    Case (")"c)
-                        If (Not mSourceAnalysis.m_InNonCode(i)) Then
-                            iBracedCount += 1
-                        End If
+        If (True) Then
+            Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iLanguage)
+            Dim mSourceBuilder As New StringBuilder(sSource)
 
-                    Case ("{"c)
-                        If (Not mSourceAnalysis.m_InNonCode(i)) Then
-                            iBraceCount -= 1
-                        End If
+            Dim iBraceCount As Integer = 0
+            Dim iBracedCount As Integer = 0
 
-                    Case ("}"c)
-                        If (Not mSourceAnalysis.m_InNonCode(i)) Then
-                            iBraceCount += 1
-                        End If
-
-                    Case (vbLf(0))
-                        'If (Not mSourceAnalysis.InNonCode(i)) Then 
-
-                        'Inserts tabs (spaces) after statements (if, while, for etc.)
-                        Dim iStatementLevel As Integer = 0
-                        For j = i To sSource.Length - 1
-                            If (Not Regex.IsMatch(sSource(j), "\s")) Then
-                                If (sSource(j) = "{") Then
-                                    iStatementLevel = -1
-                                End If
-
-                                Exit For
+            For i = mSourceBuilder.Length - 1 - 1 To 0 Step -1
+                Try
+                    Select Case (mSourceBuilder(i))
+                        Case ("("c)
+                            If (Not mSourceAnalysis.m_InNonCode(i)) Then
+                                iBracedCount -= 1
                             End If
-                        Next
 
-                        If (iStatementLevel > -1) Then
-                            For j = i - 1 To 0 Step -1
-                                If (mSourceAnalysis.m_InNonCode(j)) Then
-                                    Continue For
-                                End If
+                        Case (")"c)
+                            If (Not mSourceAnalysis.m_InNonCode(i)) Then
+                                iBracedCount += 1
+                            End If
 
-                                If (Not Regex.IsMatch(sSource(j), "\s")) Then
-                                    If (lValidStateEnds.Contains(j)) Then
-                                        iStatementLevel = 1
+                        Case ("{"c)
+                            If (Not mSourceAnalysis.m_InNonCode(i)) Then
+                                iBraceCount -= 1
+                            End If
+
+                        Case ("}"c)
+                            If (Not mSourceAnalysis.m_InNonCode(i)) Then
+                                iBraceCount += 1
+                            End If
+
+                        Case (vbLf(0))
+                            'If (Not mSourceAnalysis.InNonCode(i)) Then 
+
+                            'Inserts tabs (spaces) after statements (if, while, for etc.)
+                            Dim iStatementLevel As Integer = 0
+                            For j = i To mSourceBuilder.Length - 1
+                                If (Not Regex.IsMatch(mSourceBuilder(j), "\s")) Then
+                                    If (mSourceBuilder(j) = "{") Then
+                                        iStatementLevel = -1
                                     End If
 
                                     Exit For
                                 End If
-
-                                If (Not Regex.IsMatch(sSource(j), "[a-zA-Z0-9_\s]")) Then
-                                    Exit For
-                                End If
                             Next
-                        End If
 
-                        'Finish up
-                        Dim iBraceRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
-                        Dim iBraceLevel As Integer = mSourceAnalysis.GetBraceLevel(i + 1 + iBraceCount, iBraceRange)
-                        Select Case (iBraceRange)
-                            Case ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.START, ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END
-                                iBraceLevel -= 1
-                        End Select
+                            If (iStatementLevel > -1) Then
+                                For j = i - 1 To 0 Step -1
+                                    If (mSourceAnalysis.m_InNonCode(j)) Then
+                                        Continue For
+                                    End If
 
-                        sSource = sSource.Insert(i + 1, ClassSettings.BuildIndentation(iBraceLevel +
-                                                                                       If(iBracedCount > 0, iBracedCount + 1, 0) +
-                                                                                       If(iStatementLevel > -1, iStatementLevel, 0), iIndentationType))
+                                    If (Not Regex.IsMatch(mSourceBuilder(j), "\s")) Then
+                                        If (lValidStateEnds.Contains(j)) Then
+                                            iStatementLevel = 1
+                                        End If
 
-                        'End If
-                        iBraceCount = 0
+                                        Exit For
+                                    End If
 
-                End Select
-            Catch ex As Exception
-                ' Ignore random errors
-            End Try
-        Next
+                                    If (Not Regex.IsMatch(mSourceBuilder(j), "[a-zA-Z0-9_\s]")) Then
+                                        Exit For
+                                    End If
+                                Next
+                            End If
+
+                            'Finish up
+                            Dim iBraceRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
+                            Dim iBraceLevel As Integer = mSourceAnalysis.GetBraceLevel(i + 1 + iBraceCount, iBraceRange)
+                            Select Case (iBraceRange)
+                                Case ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.START, ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END
+                                    iBraceLevel -= 1
+                            End Select
+
+                            mSourceBuilder = mSourceBuilder.Insert(i + 1, ClassSettings.BuildIndentation(iBraceLevel +
+                                                                                           If(iBracedCount > 0, iBracedCount + 1, 0) +
+                                                                                           If(iStatementLevel > -1, iStatementLevel, 0), iIndentationType))
+
+                            'End If
+                            iBraceCount = 0
+
+                    End Select
+                Catch ex As Exception
+                    ' Ignore random errors
+                End Try
+            Next
+
+            sSource = mSourceBuilder.ToString
+        End If
 
         Return sSource
     End Function
@@ -1245,6 +1255,8 @@ Public Class ClassSyntaxTools
                                     End If
 
                                     Dim mMatchColl As MatchCollection = Regex.Matches(sFormatedString, "\b(color|bgcolor)\b\s*=\s*""(?<Color>[a-zA-Z]+)""")
+                                    Dim mSyntaxBuilder As New StringBuilder(sFormatedString)
+
                                     For j = mMatchColl.Count - 1 To 0 Step -1
                                         If (Not mMatchColl(j).Success) Then
                                             Continue For
@@ -1263,17 +1275,20 @@ Public Class ClassSyntaxTools
 
                                             Dim sInvColor As String = ColorTranslator.ToHtml(cInvColor)
 
-                                            sFormatedString = sFormatedString.Remove(iColorNameIndex, sColorName.Length)
-                                            sFormatedString = sFormatedString.Insert(iColorNameIndex, sInvColor)
+                                            mSyntaxBuilder = mSyntaxBuilder.Remove(iColorNameIndex, sColorName.Length)
+                                            mSyntaxBuilder = mSyntaxBuilder.Insert(iColorNameIndex, sInvColor)
                                         Catch : End Try
                                     Next
 
+                                    sFormatedString = mSyntaxBuilder.ToString
                                     Exit While
                                 End While
 
                                 'Set escape characters
                                 If (True) Then
                                     Dim mMatchColl As MatchCollection = Regex.Matches(sFormatedString, "\b(escapecharacter)\b\s*=\s*""(?<EscapeChar>(\^|\\))""")
+                                    Dim mSyntaxBuilder As New StringBuilder(sFormatedString)
+
                                     For j = mMatchColl.Count - 1 To 0 Step -1
                                         If (Not mMatchColl(j).Success) Then
                                             Continue For
@@ -1287,10 +1302,12 @@ Public Class ClassSyntaxTools
 
                                             Dim iEscapeCharIndex As Integer = mMatchColl(j).Groups("EscapeChar").Index
 
-                                            sFormatedString = sFormatedString.Remove(iEscapeCharIndex, g_sEscapeCharacters(iLanguage).Length)
-                                            sFormatedString = sFormatedString.Insert(iEscapeCharIndex, g_sEscapeCharacters(iLanguage))
+                                            mSyntaxBuilder = mSyntaxBuilder.Remove(iEscapeCharIndex, g_sEscapeCharacters(iLanguage).Length)
+                                            mSyntaxBuilder = mSyntaxBuilder.Insert(iEscapeCharIndex, g_sEscapeCharacters(iLanguage))
                                         Catch : End Try
                                     Next
+
+                                    sFormatedString = mSyntaxBuilder.ToString
                                 End If
 
                                 g_mTextEditorSyntaxItems(i).sSyntaxText = sFormatedString

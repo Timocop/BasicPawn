@@ -294,18 +294,22 @@ Public Class ClassDebuggerRunner
         ''' </summary>
         ''' <param name="sSource"></param>
         Public Sub FixPreProcessFiles(ByRef sSource As String)
-            Dim fileMatches As MatchCollection = Regex.Matches(sSource, "(?<IsNewline>^\s*){0,1}#file\s+(?<Path>.*?)$", RegexOptions.Multiline)
-            For i = fileMatches.Count - 1 To 0 Step -1
-                Dim sPath As String = fileMatches(i).Groups("Path").Value.Trim.Trim(""""c)
+            Dim mFileMatches As MatchCollection = Regex.Matches(sSource, "(?<IsNewline>^\s*){0,1}#file\s+(?<Path>.*?)$", RegexOptions.Multiline)
+            Dim mSourceBuilder As New Text.StringBuilder(sSource)
 
-                If (fileMatches(i).Groups("IsNewline").Success) Then
-                    sSource = sSource.Remove(fileMatches(i).Index, fileMatches(i).Value.Length)
-                    sSource = sSource.Insert(fileMatches(i).Index, String.Format("#file ""{0}""", sPath))
+            For i = mFileMatches.Count - 1 To 0 Step -1
+                Dim sPath As String = mFileMatches(i).Groups("Path").Value.Trim.Trim(""""c)
+
+                If (mFileMatches(i).Groups("IsNewline").Success) Then
+                    mSourceBuilder = mSourceBuilder.Remove(mFileMatches(i).Index, mFileMatches(i).Value.Length)
+                    mSourceBuilder = mSourceBuilder.Insert(mFileMatches(i).Index, String.Format("#file ""{0}""", sPath))
                 Else
-                    sSource = sSource.Remove(fileMatches(i).Index, fileMatches(i).Value.Length)
-                    sSource = sSource.Insert(fileMatches(i).Index, String.Format("{0}#file ""{1}""", Environment.NewLine, sPath))
+                    mSourceBuilder = mSourceBuilder.Remove(mFileMatches(i).Index, mFileMatches(i).Value.Length)
+                    mSourceBuilder = mSourceBuilder.Insert(mFileMatches(i).Index, String.Format("{0}#file ""{1}""", Environment.NewLine, sPath))
                 End If
             Next
+
+            sSource = mSourceBuilder.ToString
         End Sub
 
         ''' <summary>

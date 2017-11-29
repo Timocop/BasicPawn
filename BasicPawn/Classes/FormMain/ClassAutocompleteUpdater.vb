@@ -705,15 +705,19 @@ Public Class ClassAutocompleteUpdater
             '   public static bla()
             Dim sTypes As String() = {"enum", "funcenum", "functag", "stock", "static", "const", "public", "native", "forward", "typeset", "methodmap", "typedef"}
             Dim mRegMatchCol As MatchCollection = Regex.Matches(sSource, String.Format("^\s*(\b{0}\b)(?<Space>\s*\n\s*)", String.Join("\b|\b", sTypes)), RegexOptions.Multiline)
+            Dim mSourceBuilder As New StringBuilder(sSource)
+
             For i = mRegMatchCol.Count - 1 To 0 Step -1
                 Dim mMatch As Match = mRegMatchCol(i)
                 If (Not mMatch.Groups("Space").Success) Then
                     Continue For
                 End If
 
-                sSource = sSource.Remove(mMatch.Groups("Space").Index, mMatch.Groups("Space").Length)
-                sSource = sSource.Insert(mMatch.Groups("Space").Index, " "c)
+                mSourceBuilder = mSourceBuilder.Remove(mMatch.Groups("Space").Index, mMatch.Groups("Space").Length)
+                mSourceBuilder = mSourceBuilder.Insert(mMatch.Groups("Space").Index, " "c)
             Next
+
+            sSource = mSourceBuilder.ToString
         End If
 
         If (True) Then
@@ -780,10 +784,11 @@ Public Class ClassAutocompleteUpdater
         'Fix function spaces
         If (True) Then
             Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iLanguage)
+            Dim mSourceBuilder As New StringBuilder(sSource)
 
             Dim iParentStart As Integer = 0
             Dim iParentLen As Integer = 0
-            For i = 0 To sSource.Length - 1
+            For i = 0 To mSourceBuilder.Length - 1
                 Dim iParentRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
                 Dim iParentLevel As Integer = mSourceAnalysis.GetParenthesisLevel(i, iParentRange)
                 Select Case (iParentRange)
@@ -805,7 +810,7 @@ Public Class ClassAutocompleteUpdater
                 iParentStart = lBraceLocList(i)(0)
                 iParentLen = lBraceLocList(i)(1)
 
-                Dim sBraceString As String = sSource.Substring(iParentStart, iParentLen)
+                Dim sBraceString As String = mSourceBuilder.ToString(iParentStart, iParentLen)
                 Dim mRegMatchCol As MatchCollection = Regex.Matches(sBraceString, "\s+")
 
                 For ii = mRegMatchCol.Count - 1 To 0 Step -1
@@ -824,9 +829,11 @@ Public Class ClassAutocompleteUpdater
                     sBraceString = sBraceString.Insert(mMatch.Index, " "c)
                 Next
 
-                sSource = sSource.Remove(iParentStart, iParentLen)
-                sSource = sSource.Insert(iParentStart, sBraceString)
+                mSourceBuilder = mSourceBuilder.Remove(iParentStart, iParentLen)
+                mSourceBuilder = mSourceBuilder.Insert(iParentStart, sBraceString)
             Next
+
+            sSource = mSourceBuilder.ToString
         End If
 
 
