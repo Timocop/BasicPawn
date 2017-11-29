@@ -68,7 +68,7 @@ Public Class ClassDebuggerParser
         End If
 
         Dim iListIndex As Integer = 0
-        For Each mMatch As Match In Regex.Matches(sSource, String.Format("\b{0}\b\s*(?<Lenght>)(?<Arguments>\(){1}", g_sBreakpointName, "{0,1}"))
+        For Each mMatch As Match In Regex.Matches(sSource, String.Format("\b{0}\b\s*(?<Length>)(?<Arguments>\(){1}", g_sBreakpointName, "{0,1}"))
             Dim iIndex As Integer = mMatch.Index
             Dim bHasArgument As Boolean = mMatch.Groups("Arguments").Success
 
@@ -89,7 +89,7 @@ Public Class ClassDebuggerParser
                 iLineIndex += 1
             Next
 
-            Dim iLenght As Integer = mMatch.Groups("Lenght").Index - mMatch.Index
+            Dim iLenght As Integer = mMatch.Groups("Length").Index - mMatch.Index
             Dim iTotalLenght As Integer = 0
             Dim sArguments As New StringBuilder
             Dim sTotalFunction As New StringBuilder
@@ -163,7 +163,7 @@ Public Class ClassDebuggerParser
         End If
 
         Dim iListIndex As Integer = 0
-        For Each mMatch As Match In Regex.Matches(sSource, String.Format("\b{0}\b\s*(?<Lenght>)(?<Arguments>\(){1}", g_sWatcherName, "{0,1}"))
+        For Each mMatch As Match In Regex.Matches(sSource, String.Format("\b{0}\b\s*(?<Length>)(?<Arguments>\(){1}", g_sWatcherName, "{0,1}"))
             Dim iIndex As Integer = mMatch.Index
             Dim bHasArgument As Boolean = mMatch.Groups("Arguments").Success
 
@@ -184,7 +184,7 @@ Public Class ClassDebuggerParser
                 iLineIndex += 1
             Next
 
-            Dim iLenght As Integer = mMatch.Groups("Lenght").Index - mMatch.Index
+            Dim iLenght As Integer = mMatch.Groups("Length").Index - mMatch.Index
             Dim iTotalLenght As Integer = 0
             Dim sArguments As New StringBuilder
             Dim sTotalFunction As New StringBuilder
