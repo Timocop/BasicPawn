@@ -44,8 +44,9 @@ Features:
  - [ ] \(Plugin\) Automatic Error Reporting using FTP
 
 ## Screenshots
-![Default Colors](http://i.imgur.com/QigHItn.png)
-![Inverted Colors](http://i.imgur.com/BeHZYE9.png)
-![BasicPawn Debugger](http://i.imgur.com/KofZrsx.png)
-![Unlimited Custom Highlight Colors](http://i.imgur.com/XxhCMwU.png)
-![BasicPawn on Linux Ubuntu](http://i.imgur.com/4pMDRsS.png)
+![Default Colors](https://i.imgur.com/3s0yB2x.png)
+![Inverted Colors](https://i.imgur.com/YRDLsjD.png)
+![Template Wizard](https://i.imgur.com/EvFjh9x.png)
+![BasicPawn Debugger](https://i.imgur.com/UAnC3l7.png)
+![Unlimited Custom Highlight Colors](https://i.imgur.com/T116gfC.png)
+![BasicPawn on Linux Ubuntu](https://i.imgur.com/jpQ0mh5.png)
