@@ -135,57 +135,31 @@ Public Class UCStartPage
         Dim bSomethingSelected As Boolean = False
         Dim bAppendFiles As Boolean = False
 
-        'Close all
-        g_mFormMain.g_ClassTabControl.RemoveAllTabs()
-
         For i = mRecentItems.Length - 1 To 0 Step -1
-            Try
-                If (Not mRecentItems(i).m_Open) Then
-                    Continue For
-                End If
+            If (Not mRecentItems(i).m_Open) Then
+                Continue For
+            End If
 
-                bSomethingSelected = True
-
-                If (mRecentItems(i).m_IsProjectFile) Then
-                    g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile = mRecentItems(i).m_RecentFile
-                    g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(bAppendFiles)
-                    bAppendFiles = True
-                Else
-                    Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
-                    mTab.OpenFileTab(mRecentItems(i).m_RecentFile)
-                    mTab.SelectTab(500)
-                End If
-            Catch ex As Exception
-                ClassExceptionLog.WriteToLogMessageBox(ex)
-            End Try
+            bSomethingSelected = True
+            Exit For
         Next
-
-        If (bSomethingSelected) Then
-            g_mFormMain.g_ClassTabControl.RemoveUnsavedTabsLeft()
-        End If
 
         If (Not bSomethingSelected) Then
             MessageBox.Show("No file selected to open!", "Could not open file", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            Return
         End If
-
-        Me.Hide()
-    End Sub
-
-    Private Sub LinkLabel_Open_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_Open.LinkClicked
-        Dim mRecentItems = g_mClassRecentItems.GetRecentItems
-        Dim bSomethingSelected As Boolean = False
-        Dim bAppendFiles As Boolean = False
 
         Try
             g_mFormMain.g_ClassTabControl.BeginUpdate()
+
+            'Close all
+            g_mFormMain.g_ClassTabControl.RemoveAllTabs()
 
             For i = mRecentItems.Length - 1 To 0 Step -1
                 Try
                     If (Not mRecentItems(i).m_Open) Then
                         Continue For
                     End If
-
-                    bSomethingSelected = True
 
                     If (mRecentItems(i).m_IsProjectFile) Then
                         g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile = mRecentItems(i).m_RecentFile
@@ -201,18 +175,60 @@ Public Class UCStartPage
                 End Try
             Next
 
-            If (bSomethingSelected) Then
-                g_mFormMain.g_ClassTabControl.RemoveUnsavedTabsLeft()
-            End If
+            g_mFormMain.g_ClassTabControl.RemoveUnsavedTabsLeft()
+            Me.Hide()
         Finally
             g_mFormMain.g_ClassTabControl.EndUpdate()
         End Try
+    End Sub
+
+    Private Sub LinkLabel_Open_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_Open.LinkClicked
+        Dim mRecentItems = g_mClassRecentItems.GetRecentItems
+        Dim bSomethingSelected As Boolean = False
+        Dim bAppendFiles As Boolean = False
+
+        For i = mRecentItems.Length - 1 To 0 Step -1
+            If (Not mRecentItems(i).m_Open) Then
+                Continue For
+            End If
+
+            bSomethingSelected = True
+            Exit For
+        Next
 
         If (Not bSomethingSelected) Then
             MessageBox.Show("No file selected to open!", "Could not open file", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            Return
         End If
 
-        Me.Hide()
+        Try
+            g_mFormMain.g_ClassTabControl.BeginUpdate()
+
+            For i = mRecentItems.Length - 1 To 0 Step -1
+                Try
+                    If (Not mRecentItems(i).m_Open) Then
+                        Continue For
+                    End If
+
+                    If (mRecentItems(i).m_IsProjectFile) Then
+                        g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile = mRecentItems(i).m_RecentFile
+                        g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(bAppendFiles)
+                        bAppendFiles = True
+                    Else
+                        Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
+                        mTab.OpenFileTab(mRecentItems(i).m_RecentFile)
+                        mTab.SelectTab(500)
+                    End If
+                Catch ex As Exception
+                    ClassExceptionLog.WriteToLogMessageBox(ex)
+                End Try
+            Next
+
+            g_mFormMain.g_ClassTabControl.RemoveUnsavedTabsLeft()
+            Me.Hide()
+        Finally
+            g_mFormMain.g_ClassTabControl.EndUpdate()
+        End Try
     End Sub
 
     Private Sub ButtonSmall_Close_Click(sender As Object, e As EventArgs) Handles ButtonSmall_Close.Click

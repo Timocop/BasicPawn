@@ -149,12 +149,12 @@ Partial Class UCStartPage
         Me.LinkLabel_OpenNew.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.LinkLabel_OpenNew.AutoSize = True
         Me.LinkLabel_OpenNew.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
-        Me.LinkLabel_OpenNew.Location = New System.Drawing.Point(545, 47)
+        Me.LinkLabel_OpenNew.Location = New System.Drawing.Point(456, 47)
         Me.LinkLabel_OpenNew.Name = "LinkLabel_OpenNew"
-        Me.LinkLabel_OpenNew.Size = New System.Drawing.Size(62, 13)
+        Me.LinkLabel_OpenNew.Size = New System.Drawing.Size(106, 13)
         Me.LinkLabel_OpenNew.TabIndex = 7
         Me.LinkLabel_OpenNew.TabStop = True
-        Me.LinkLabel_OpenNew.Text = "Open New"
+        Me.LinkLabel_OpenNew.Text = "Open selected new"
         Me.ToolTip1.SetToolTip(Me.LinkLabel_OpenNew, "Closes all opened tabs and opens all selected projects")
         '
         'LinkLabel_Open
@@ -162,12 +162,12 @@ Partial Class UCStartPage
         Me.LinkLabel_Open.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.LinkLabel_Open.AutoSize = True
         Me.LinkLabel_Open.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
-        Me.LinkLabel_Open.Location = New System.Drawing.Point(613, 47)
+        Me.LinkLabel_Open.Location = New System.Drawing.Point(568, 47)
         Me.LinkLabel_Open.Name = "LinkLabel_Open"
-        Me.LinkLabel_Open.Size = New System.Drawing.Size(36, 13)
+        Me.LinkLabel_Open.Size = New System.Drawing.Size(81, 13)
         Me.LinkLabel_Open.TabIndex = 6
         Me.LinkLabel_Open.TabStop = True
-        Me.LinkLabel_Open.Text = "Open"
+        Me.LinkLabel_Open.Text = "Open selected"
         Me.ToolTip1.SetToolTip(Me.LinkLabel_Open, "Opens all selected projects")
         '
         'LinkLabel_New
