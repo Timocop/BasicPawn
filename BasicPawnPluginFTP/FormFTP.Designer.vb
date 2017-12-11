@@ -255,7 +255,7 @@ Partial Class FormFTP
         'Button_Cancel
         '
         Me.Button_Cancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button_Cancel.Location = New System.Drawing.Point(296, 13)
+        Me.Button_Cancel.Location = New System.Drawing.Point(377, 13)
         Me.Button_Cancel.Name = "Button_Cancel"
         Me.Button_Cancel.Size = New System.Drawing.Size(75, 23)
         Me.Button_Cancel.TabIndex = 1
@@ -266,7 +266,7 @@ Partial Class FormFTP
         '
         Me.Button_Upload.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_Upload.Enabled = False
-        Me.Button_Upload.Location = New System.Drawing.Point(377, 13)
+        Me.Button_Upload.Location = New System.Drawing.Point(296, 13)
         Me.Button_Upload.Name = "Button_Upload"
         Me.Button_Upload.Size = New System.Drawing.Size(75, 23)
         Me.Button_Upload.TabIndex = 0
