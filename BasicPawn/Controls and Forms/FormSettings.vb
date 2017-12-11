@@ -26,6 +26,8 @@ Public Class FormSettings
     Private g_bConfigSettingsChanged As Boolean = False
     Private g_bComboBoxIgnoreEvent As Boolean = False
 
+    Private g_mListBoxConfigSelectedItem As Object = Nothing
+
     Enum ENUM_CONFIG_TYPE
         ALL
         ACTIVE
@@ -194,8 +196,10 @@ Public Class FormSettings
     Private Sub Button_Apply_Click(sender As Object, e As EventArgs) Handles Button_Apply.Click
         g_bRestoreConfigs = False
 
-        If (ListBox_Configs.SelectedItems.Count > 0) Then
-            Dim sName As String = ListBox_Configs.SelectedItems(0).ToString
+        PromptSaveSelectedConfig()
+
+        If (g_mListBoxConfigSelectedItem IsNot Nothing) Then
+            Dim sName As String = g_mListBoxConfigSelectedItem.ToString
             Dim mConfig = ClassConfigs.LoadConfig(sName)
 
             Select Case (g_iConfigType)
@@ -444,12 +448,18 @@ Public Class FormSettings
 
     Private Sub ListBox_Configs_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListBox_Configs.SelectedIndexChanged
         Try
+            PromptSaveSelectedConfig()
+
             If (ListBox_Configs.SelectedItems.Count < 1) Then
+                g_mListBoxConfigSelectedItem = Nothing
+
                 GroupBox_ConfigSettings.Enabled = False
                 Return
+            Else
+                g_mListBoxConfigSelectedItem = ListBox_Configs.SelectedItems(0)
             End If
 
-            Dim sName As String = ListBox_Configs.SelectedItems(0).ToString
+            Dim sName As String = g_mListBoxConfigSelectedItem.ToString
 
             If (sName = ClassConfigs.m_DefaultConfig.GetName) Then
                 g_bIgnoreChange = True
@@ -743,11 +753,21 @@ Public Class FormSettings
 
     Private Sub Button_SaveConfig_Click(sender As Object, e As EventArgs) Handles Button_SaveConfig.Click
         Try
-            If (ListBox_Configs.SelectedItems.Count < 1) Then
+            SaveSelectedConfig()
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
+    Private Sub Button_ConfigCopy_Click(sender As Object, e As EventArgs) Handles Button_ConfigCopy.Click
+        Try
+            PromptSaveSelectedConfig()
+
+            If (g_mListBoxConfigSelectedItem Is Nothing) Then
                 Return
             End If
 
-            Dim sName As String = ListBox_Configs.SelectedItems(0).ToString
+            Dim sName As String = g_mListBoxConfigSelectedItem.ToString
 
             Dim mConfig As ClassConfigs.STRUC_CONFIG_ITEM = ClassConfigs.LoadConfig(sName)
             If (mConfig Is Nothing) Then
@@ -755,100 +775,21 @@ Public Class FormSettings
                 Return
             End If
 
-            If (CheckBox_ConfigIsDefault.Checked) Then
-                For Each mTmpConfig As ClassConfigs.STRUC_CONFIG_ITEM In ClassConfigs.GetConfigs(False)
-                    If (mTmpConfig.g_bAutoload) Then
-                        mTmpConfig.g_bAutoload = False
-                        mTmpConfig.SaveConfig()
-                    End If
-                Next
+            mConfig.SetName(String.Format("{0} {1}", mConfig.GetName, Guid.NewGuid.ToString))
+
+            If (Not mConfig.SaveConfig) Then
+                MessageBox.Show("Failed to save copy!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Return
             End If
 
-            Dim mCompilerOptionsSP As New ClassConfigs.STRUC_CONFIG_ITEM.CompilerOptions.STRUC_SP_COMPILER_OPTIONS
-            Dim mCompilerOptionsAMXX As New ClassConfigs.STRUC_CONFIG_ITEM.CompilerOptions.STRUC_AMXX_COMPILER_OPTIONS
+            ListBox_Configs.Items.Add(mConfig.GetName)
 
-            'SourcePawn
-            If (True) Then
-                Select Case (ComboBox_COOptimizationLevelSP.SelectedIndex)
-                    Case 1
-                        mCompilerOptionsSP.g_iOptimizationLevel = 0
-                    Case 2
-                        mCompilerOptionsSP.g_iOptimizationLevel = 2
-                End Select
-
-                Select Case (ComboBox_COVerbosityLevelSP.SelectedIndex)
-                    Case 1
-                        mCompilerOptionsSP.g_iVerbosityLevel = 0
-                    Case 2
-                        mCompilerOptionsSP.g_iVerbosityLevel = 1
-                    Case 3
-                        mCompilerOptionsSP.g_iVerbosityLevel = 2
-                End Select
-
-                Select Case (ComboBox_COTreatWarningsAsErrorsSP.SelectedIndex)
-                    Case 1
-                        mCompilerOptionsSP.g_iTreatWarningsAsErrors = 1
-                    Case 2
-                        mCompilerOptionsSP.g_iTreatWarningsAsErrors = 0
-                End Select
-
-                mCompilerOptionsSP.g_lIgnoredWarnings.Clear()
-                ClassConfigs.STRUC_CONFIG_ITEM.CompilerOptions.ParseIgnoredWarnings(TextBoxEx_COIgnoredWarningsSP.m_NoWatermarkText, mCompilerOptionsSP.g_lIgnoredWarnings)
-
-                mCompilerOptionsSP.g_mDefineConstants.Clear()
-                ClassConfigs.STRUC_CONFIG_ITEM.CompilerOptions.ParseDefineConstants(TextBoxEx_CODefineConstantsSP.m_NoWatermarkText, mCompilerOptionsSP.g_mDefineConstants)
+            Dim i As Integer = ListBox_Configs.FindStringExact(mConfig.GetName)
+            If (i > -1) Then
+                ListBox_Configs.SetSelected(i, True)
             End If
 
-            'AMX Mod X
-            If (True) Then
-                Select Case (ComboBox_COSymbolicInformationAMXX.SelectedIndex)
-                    Case 1
-                        mCompilerOptionsAMXX.g_iSymbolicInformation = 0
-                    Case 2
-                        mCompilerOptionsAMXX.g_iSymbolicInformation = 1
-                    Case 3
-                        mCompilerOptionsAMXX.g_iSymbolicInformation = 2
-                    Case 4
-                        mCompilerOptionsAMXX.g_iSymbolicInformation = 3
-                End Select
-
-                Select Case (ComboBox_COVerbosityLevelAMXX.SelectedIndex)
-                    Case 1
-                        mCompilerOptionsAMXX.g_iVerbosityLevel = 0
-                    Case 2
-                        mCompilerOptionsAMXX.g_iVerbosityLevel = 1
-                    Case 3
-                        mCompilerOptionsAMXX.g_iVerbosityLevel = 2
-                End Select
-
-                Select Case (ComboBox_COTreatWarningsAsErrorsAMXX.SelectedIndex)
-                    Case 1
-                        mCompilerOptionsAMXX.g_iTreatWarningsAsErrors = 1
-                    Case 2
-                        mCompilerOptionsAMXX.g_iTreatWarningsAsErrors = 0
-                End Select
-
-                mCompilerOptionsAMXX.g_lIgnoredWarnings.Clear()
-                ClassConfigs.STRUC_CONFIG_ITEM.CompilerOptions.ParseIgnoredWarnings(TextBoxEx_COIgnoredWarningsAMXX.m_NoWatermarkText, mCompilerOptionsAMXX.g_lIgnoredWarnings)
-
-                mCompilerOptionsAMXX.g_mDefineConstants.Clear()
-                ClassConfigs.STRUC_CONFIG_ITEM.CompilerOptions.ParseDefineConstants(TextBoxEx_CODefineConstantsAMXX.m_NoWatermarkText, mCompilerOptionsAMXX.g_mDefineConstants)
-            End If
-
-            ClassConfigs.SaveConfig(New ClassConfigs.STRUC_CONFIG_ITEM(sName,
-                                                                        If(RadioButton_ConfigSettingManual.Checked, ClassSettings.ENUM_COMPILING_TYPE.CONFIG, ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC),
-                                                                        TextBox_IncludeFolder.Text,
-                                                                        TextBox_CompilerPath.Text,
-                                                                        TextBox_OutputFolder.Text,
-                                                                        CheckBox_ConfigIsDefault.Checked,
-                                                                        CType(ComboBox_Language.SelectedIndex, ClassConfigs.STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE),
-                                                                        mCompilerOptionsSP,
-                                                                        mCompilerOptionsAMXX,
-                                                                        TextBox_GameFolder.Text,
-                                                                        TextBox_SourceModFolder.Text,
-                                                                        TextBox_Shell.Text))
-
-            m_ConfigSettingsChanged = False
+            MarkChanged()
 
             g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnConfigChanged())
         Catch ex As Exception
@@ -856,81 +797,55 @@ Public Class FormSettings
         End Try
     End Sub
 
-    Private Sub Button_ConfigCopy_Click(sender As Object, e As EventArgs) Handles Button_ConfigCopy.Click
-        If (ListBox_Configs.SelectedItems.Count < 1) Then
-            Return
-        End If
-
-        Dim sName As String = ListBox_Configs.SelectedItems(0).ToString
-
-        Dim mConfig As ClassConfigs.STRUC_CONFIG_ITEM = ClassConfigs.LoadConfig(sName)
-        If (mConfig Is Nothing) Then
-            MessageBox.Show("Current config not found or default config!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-            Return
-        End If
-
-        mConfig.SetName(String.Format("{0} {1}", mConfig.GetName, Guid.NewGuid.ToString))
-
-        If (Not mConfig.SaveConfig) Then
-            MessageBox.Show("Failed to save copy!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Return
-        End If
-
-        ListBox_Configs.Items.Add(mConfig.GetName)
-
-        Dim i As Integer = ListBox_Configs.FindStringExact(mConfig.GetName)
-        If (i > -1) Then
-            ListBox_Configs.SetSelected(i, True)
-        End If
-
-        MarkChanged()
-
-        g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnConfigChanged())
-    End Sub
-
     Private Sub Button_ConfigRename_Click(sender As Object, e As EventArgs) Handles Button_ConfigRename.Click
-        If (ListBox_Configs.SelectedItems.Count < 1) Then
-            Return
-        End If
+        Try
+            PromptSaveSelectedConfig()
 
-        Dim sName As String = ListBox_Configs.SelectedItems(0).ToString
-        Dim sNewName As String = TextBox_ConfigName.Text
+            If (g_mListBoxConfigSelectedItem Is Nothing) Then
+                Return
+            End If
 
-        If (String.IsNullOrEmpty(sNewName) OrElse ClassConfigs.m_DefaultConfig.GetName = sNewName OrElse sNewName.IndexOfAny(IO.Path.GetInvalidFileNameChars) > -1 OrElse sNewName.IndexOfAny(IO.Path.GetInvalidPathChars) > -1) Then
-            MessageBox.Show("Invalid config name!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-            Return
-        End If
+            Dim sName As String = g_mListBoxConfigSelectedItem.ToString
+            Dim sNewName As String = TextBox_ConfigName.Text
 
-        Dim mConfig As ClassConfigs.STRUC_CONFIG_ITEM = ClassConfigs.LoadConfig(sName)
-        If (mConfig Is Nothing) Then
-            MessageBox.Show("Current config not found or default config!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Return
-        End If
+            If (String.IsNullOrEmpty(sNewName) OrElse ClassConfigs.m_DefaultConfig.GetName = sNewName OrElse sNewName.IndexOfAny(IO.Path.GetInvalidFileNameChars) > -1 OrElse sNewName.IndexOfAny(IO.Path.GetInvalidPathChars) > -1) Then
+                MessageBox.Show("Invalid config name!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                Return
+            End If
 
-        Dim mNewConfig As ClassConfigs.STRUC_CONFIG_ITEM = ClassConfigs.LoadConfig(sNewName)
-        If (mNewConfig IsNot Nothing) Then
-            Select Case (MessageBox.Show("This config name is already used! Overwrite config?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning))
-                Case DialogResult.No
-                    Return
-            End Select
-        End If
+            Dim mConfig As ClassConfigs.STRUC_CONFIG_ITEM = ClassConfigs.LoadConfig(sName)
+            If (mConfig Is Nothing) Then
+                MessageBox.Show("Current config not found or default config!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Return
+            End If
 
-        mConfig.RemoveConfig()
-        mConfig.SetName(sNewName)
-        mConfig.SaveConfig()
+            Dim mNewConfig As ClassConfigs.STRUC_CONFIG_ITEM = ClassConfigs.LoadConfig(sNewName)
+            If (mNewConfig IsNot Nothing) Then
+                Select Case (MessageBox.Show("This config name is already used! Overwrite config?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning))
+                    Case DialogResult.No
+                        Return
+                End Select
+            End If
 
-        ListBox_Configs.Items.Remove(sName)
-        ListBox_Configs.Items.Remove(sNewName)
-        ListBox_Configs.Items.Add(sNewName)
+            mConfig.RemoveConfig()
+            mConfig.SetName(sNewName)
+            mConfig.SaveConfig()
 
-        Dim i As Integer = ListBox_Configs.FindStringExact(sNewName)
-        If (i > -1) Then
-            ListBox_Configs.SetSelected(i, True)
-        End If
+            ListBox_Configs.Items.Remove(sName)
+            ListBox_Configs.Items.Remove(sNewName)
+            ListBox_Configs.Items.Add(sNewName)
 
-        MarkChanged()
+            Dim i As Integer = ListBox_Configs.FindStringExact(sNewName)
+            If (i > -1) Then
+                ListBox_Configs.SetSelected(i, True)
+            End If
 
-        g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnConfigChanged())
+            MarkChanged()
+
+            g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnConfigChanged())
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
     End Sub
 
     Private Sub LinkLabel_ShowShellArguments_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_ShowShellArguments.LinkClicked
@@ -947,6 +862,135 @@ Public Class FormSettings
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
+    End Sub
+
+    Private Function PromptSaveSelectedConfig() As Boolean
+        If (m_ConfigSettingsChanged) Then
+            If (g_mListBoxConfigSelectedItem Is Nothing) Then
+                Return False
+            End If
+
+            Dim sName As String = g_mListBoxConfigSelectedItem.ToString
+
+            Select Case (MessageBox.Show(String.Format("You have made changes to the selected config. Do you want to save the config '{0}'?", sName), "Config changed", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+                Case DialogResult.Yes
+                    SaveSelectedConfig()
+                    Return True
+            End Select
+        End If
+
+        Return False
+    End Function
+
+    Private Sub SaveSelectedConfig()
+        If (g_mListBoxConfigSelectedItem Is Nothing) Then
+            Return
+        End If
+
+        Dim sName As String = g_mListBoxConfigSelectedItem.ToString
+
+        Dim mConfig As ClassConfigs.STRUC_CONFIG_ITEM = ClassConfigs.LoadConfig(sName)
+        If (mConfig Is Nothing) Then
+            MessageBox.Show("Current config not found or default config!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Return
+        End If
+
+        If (CheckBox_ConfigIsDefault.Checked) Then
+            For Each mTmpConfig As ClassConfigs.STRUC_CONFIG_ITEM In ClassConfigs.GetConfigs(False)
+                If (mTmpConfig.g_bAutoload) Then
+                    mTmpConfig.g_bAutoload = False
+                    mTmpConfig.SaveConfig()
+                End If
+            Next
+        End If
+
+        Dim mCompilerOptionsSP As New ClassConfigs.STRUC_CONFIG_ITEM.CompilerOptions.STRUC_SP_COMPILER_OPTIONS
+        Dim mCompilerOptionsAMXX As New ClassConfigs.STRUC_CONFIG_ITEM.CompilerOptions.STRUC_AMXX_COMPILER_OPTIONS
+
+        'SourcePawn
+        If (True) Then
+            Select Case (ComboBox_COOptimizationLevelSP.SelectedIndex)
+                Case 1
+                    mCompilerOptionsSP.g_iOptimizationLevel = 0
+                Case 2
+                    mCompilerOptionsSP.g_iOptimizationLevel = 2
+            End Select
+
+            Select Case (ComboBox_COVerbosityLevelSP.SelectedIndex)
+                Case 1
+                    mCompilerOptionsSP.g_iVerbosityLevel = 0
+                Case 2
+                    mCompilerOptionsSP.g_iVerbosityLevel = 1
+                Case 3
+                    mCompilerOptionsSP.g_iVerbosityLevel = 2
+            End Select
+
+            Select Case (ComboBox_COTreatWarningsAsErrorsSP.SelectedIndex)
+                Case 1
+                    mCompilerOptionsSP.g_iTreatWarningsAsErrors = 1
+                Case 2
+                    mCompilerOptionsSP.g_iTreatWarningsAsErrors = 0
+            End Select
+
+            mCompilerOptionsSP.g_lIgnoredWarnings.Clear()
+            ClassConfigs.STRUC_CONFIG_ITEM.CompilerOptions.ParseIgnoredWarnings(TextBoxEx_COIgnoredWarningsSP.m_NoWatermarkText, mCompilerOptionsSP.g_lIgnoredWarnings)
+
+            mCompilerOptionsSP.g_mDefineConstants.Clear()
+            ClassConfigs.STRUC_CONFIG_ITEM.CompilerOptions.ParseDefineConstants(TextBoxEx_CODefineConstantsSP.m_NoWatermarkText, mCompilerOptionsSP.g_mDefineConstants)
+        End If
+
+        'AMX Mod X
+        If (True) Then
+            Select Case (ComboBox_COSymbolicInformationAMXX.SelectedIndex)
+                Case 1
+                    mCompilerOptionsAMXX.g_iSymbolicInformation = 0
+                Case 2
+                    mCompilerOptionsAMXX.g_iSymbolicInformation = 1
+                Case 3
+                    mCompilerOptionsAMXX.g_iSymbolicInformation = 2
+                Case 4
+                    mCompilerOptionsAMXX.g_iSymbolicInformation = 3
+            End Select
+
+            Select Case (ComboBox_COVerbosityLevelAMXX.SelectedIndex)
+                Case 1
+                    mCompilerOptionsAMXX.g_iVerbosityLevel = 0
+                Case 2
+                    mCompilerOptionsAMXX.g_iVerbosityLevel = 1
+                Case 3
+                    mCompilerOptionsAMXX.g_iVerbosityLevel = 2
+            End Select
+
+            Select Case (ComboBox_COTreatWarningsAsErrorsAMXX.SelectedIndex)
+                Case 1
+                    mCompilerOptionsAMXX.g_iTreatWarningsAsErrors = 1
+                Case 2
+                    mCompilerOptionsAMXX.g_iTreatWarningsAsErrors = 0
+            End Select
+
+            mCompilerOptionsAMXX.g_lIgnoredWarnings.Clear()
+            ClassConfigs.STRUC_CONFIG_ITEM.CompilerOptions.ParseIgnoredWarnings(TextBoxEx_COIgnoredWarningsAMXX.m_NoWatermarkText, mCompilerOptionsAMXX.g_lIgnoredWarnings)
+
+            mCompilerOptionsAMXX.g_mDefineConstants.Clear()
+            ClassConfigs.STRUC_CONFIG_ITEM.CompilerOptions.ParseDefineConstants(TextBoxEx_CODefineConstantsAMXX.m_NoWatermarkText, mCompilerOptionsAMXX.g_mDefineConstants)
+        End If
+
+        ClassConfigs.SaveConfig(New ClassConfigs.STRUC_CONFIG_ITEM(sName,
+                                                                    If(RadioButton_ConfigSettingManual.Checked, ClassSettings.ENUM_COMPILING_TYPE.CONFIG, ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC),
+                                                                    TextBox_IncludeFolder.Text,
+                                                                    TextBox_CompilerPath.Text,
+                                                                    TextBox_OutputFolder.Text,
+                                                                    CheckBox_ConfigIsDefault.Checked,
+                                                                    CType(ComboBox_Language.SelectedIndex, ClassConfigs.STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE),
+                                                                    mCompilerOptionsSP,
+                                                                    mCompilerOptionsAMXX,
+                                                                    TextBox_GameFolder.Text,
+                                                                    TextBox_SourceModFolder.Text,
+                                                                    TextBox_Shell.Text))
+
+        m_ConfigSettingsChanged = False
+
+        g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnConfigChanged())
     End Sub
 
     Private Sub RadioButton_ConfigSettingAutomatic_CheckedChanged(sender As Object, e As EventArgs) Handles RadioButton_ConfigSettingAutomatic.CheckedChanged
@@ -1109,11 +1153,11 @@ Public Class FormSettings
 
     Private Sub Button_KnownFileAdd_Click(sender As Object, e As EventArgs) Handles Button_KnownFileAdd.Click
         Try
-            If (ListBox_Configs.SelectedItems.Count < 1) Then
+            If (g_mListBoxConfigSelectedItem Is Nothing) Then
                 Return
             End If
 
-            Dim sName As String = ListBox_Configs.SelectedItems(0).ToString
+            Dim sName As String = g_mListBoxConfigSelectedItem.ToString
             Dim mConfig As ClassConfigs.STRUC_CONFIG_ITEM = Nothing
 
             For Each mFindConfig In ClassConfigs.GetConfigs(False)
@@ -1159,13 +1203,13 @@ Public Class FormSettings
 
     Public Sub RefreshKnownFilesListBox()
         Try
-            If (ListBox_Configs.SelectedItems.Count < 1) Then
+            If (g_mListBoxConfigSelectedItem Is Nothing) Then
                 Return
             End If
 
             Dim lListViewItems As New List(Of ListViewItem)
 
-            Dim sName As String = ListBox_Configs.SelectedItems(0).ToString
+            Dim sName As String = g_mListBoxConfigSelectedItem.ToString
 
             For Each mKnownConfig In ClassConfigs.ClassKnownConfigs.GetKnownConfigs
                 If (mKnownConfig.sConfigName = sName) Then
@@ -1181,7 +1225,6 @@ Public Class FormSettings
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
-
     End Sub
 #End Region
 
