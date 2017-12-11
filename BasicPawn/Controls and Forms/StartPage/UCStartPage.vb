@@ -114,7 +114,19 @@ Public Class UCStartPage
         End Try
     End Sub
 
-    Private Sub LinkLabel_Close_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_Close.LinkClicked
+    Private Sub LinkLabel_New_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_New.LinkClicked
+        g_mFormMain.g_ClassTabControl.AddTab(True, False, False, False)
+
+        g_mFormMain.PrintInformation("[INFO]", "User created a new source file")
+
+        Me.Hide()
+    End Sub
+
+    Private Sub LinkLabel_NewTemplate_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_NewTemplate.LinkClicked
+        g_mFormMain.g_ClassTabControl.AddTab(True, True, False, False)
+
+        g_mFormMain.PrintInformation("[INFO]", "User created a new source file")
+
         Me.Hide()
     End Sub
 
@@ -200,6 +212,10 @@ Public Class UCStartPage
             MessageBox.Show("No file selected to open!", "Could not open file", MessageBoxButtons.OK, MessageBoxIcon.Information)
         End If
 
+        Me.Hide()
+    End Sub
+
+    Private Sub ButtonSmall_Close_Click(sender As Object, e As EventArgs) Handles ButtonSmall_Close.Click
         Me.Hide()
     End Sub
 

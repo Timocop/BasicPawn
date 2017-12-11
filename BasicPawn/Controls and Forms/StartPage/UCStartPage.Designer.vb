@@ -23,13 +23,16 @@ Partial Class UCStartPage
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(UCStartPage))
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.Panel1 = New System.Windows.Forms.Panel()
         Me.TableLayoutPanel2 = New System.Windows.Forms.TableLayoutPanel()
         Me.Panel_BasicPawnTitle = New System.Windows.Forms.Panel()
+        Me.ButtonSmall_Close = New BasicPawn.ClassButtonSmallDelete()
+        Me.LinkLabel_NewTemplate = New System.Windows.Forms.LinkLabel()
         Me.LinkLabel_OpenNew = New System.Windows.Forms.LinkLabel()
         Me.LinkLabel_Open = New System.Windows.Forms.LinkLabel()
-        Me.LinkLabel_Close = New System.Windows.Forms.LinkLabel()
+        Me.LinkLabel_New = New System.Windows.Forms.LinkLabel()
         Me.Panel_FooterDarkControl = New System.Windows.Forms.Panel()
         Me.ClassPictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
         Me.Label1 = New System.Windows.Forms.Label()
@@ -44,6 +47,7 @@ Partial Class UCStartPage
         Me.Panel1.SuspendLayout()
         Me.TableLayoutPanel2.SuspendLayout()
         Me.Panel_BasicPawnTitle.SuspendLayout()
+        CType(Me.ButtonSmall_Close, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.ClassPictureBoxQuality1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TabControl_RecentProjects.SuspendLayout()
         Me.SuspendLayout()
@@ -98,9 +102,11 @@ Partial Class UCStartPage
         '
         'Panel_BasicPawnTitle
         '
+        Me.Panel_BasicPawnTitle.Controls.Add(Me.ButtonSmall_Close)
+        Me.Panel_BasicPawnTitle.Controls.Add(Me.LinkLabel_NewTemplate)
         Me.Panel_BasicPawnTitle.Controls.Add(Me.LinkLabel_OpenNew)
         Me.Panel_BasicPawnTitle.Controls.Add(Me.LinkLabel_Open)
-        Me.Panel_BasicPawnTitle.Controls.Add(Me.LinkLabel_Close)
+        Me.Panel_BasicPawnTitle.Controls.Add(Me.LinkLabel_New)
         Me.Panel_BasicPawnTitle.Controls.Add(Me.Panel_FooterDarkControl)
         Me.Panel_BasicPawnTitle.Controls.Add(Me.ClassPictureBoxQuality1)
         Me.Panel_BasicPawnTitle.Controls.Add(Me.Label1)
@@ -111,44 +117,71 @@ Partial Class UCStartPage
         Me.Panel_BasicPawnTitle.Size = New System.Drawing.Size(800, 64)
         Me.Panel_BasicPawnTitle.TabIndex = 0
         '
+        'ButtonSmall_Close
+        '
+        Me.ButtonSmall_Close.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ButtonSmall_Close.BackColor = System.Drawing.Color.Transparent
+        Me.ButtonSmall_Close.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.ButtonSmall_Close.Image = CType(resources.GetObject("ButtonSmall_Close.Image"), System.Drawing.Image)
+        Me.ButtonSmall_Close.Location = New System.Drawing.Point(780, 3)
+        Me.ButtonSmall_Close.MaximumSize = New System.Drawing.Size(16, 16)
+        Me.ButtonSmall_Close.MinimumSize = New System.Drawing.Size(16, 16)
+        Me.ButtonSmall_Close.Name = "ButtonSmall_Close"
+        Me.ButtonSmall_Close.Size = New System.Drawing.Size(16, 16)
+        Me.ButtonSmall_Close.TabIndex = 9
+        Me.ButtonSmall_Close.TabStop = False
+        '
+        'LinkLabel_NewTemplate
+        '
+        Me.LinkLabel_NewTemplate.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.LinkLabel_NewTemplate.AutoSize = True
+        Me.LinkLabel_NewTemplate.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
+        Me.LinkLabel_NewTemplate.Location = New System.Drawing.Point(691, 47)
+        Me.LinkLabel_NewTemplate.Name = "LinkLabel_NewTemplate"
+        Me.LinkLabel_NewTemplate.Size = New System.Drawing.Size(105, 13)
+        Me.LinkLabel_NewTemplate.TabIndex = 8
+        Me.LinkLabel_NewTemplate.TabStop = True
+        Me.LinkLabel_NewTemplate.Text = "New from template"
+        Me.ToolTip1.SetToolTip(Me.LinkLabel_NewTemplate, "Creates a new document from a template")
+        '
         'LinkLabel_OpenNew
         '
         Me.LinkLabel_OpenNew.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.LinkLabel_OpenNew.AutoSize = True
         Me.LinkLabel_OpenNew.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
-        Me.LinkLabel_OpenNew.Location = New System.Drawing.Point(600, 47)
+        Me.LinkLabel_OpenNew.Location = New System.Drawing.Point(545, 47)
         Me.LinkLabel_OpenNew.Name = "LinkLabel_OpenNew"
         Me.LinkLabel_OpenNew.Size = New System.Drawing.Size(62, 13)
         Me.LinkLabel_OpenNew.TabIndex = 7
         Me.LinkLabel_OpenNew.TabStop = True
         Me.LinkLabel_OpenNew.Text = "Open New"
-        Me.ToolTip1.SetToolTip(Me.LinkLabel_OpenNew, "Closes all opened tabs and openes all selected projects")
+        Me.ToolTip1.SetToolTip(Me.LinkLabel_OpenNew, "Closes all opened tabs and opens all selected projects")
         '
         'LinkLabel_Open
         '
         Me.LinkLabel_Open.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.LinkLabel_Open.AutoSize = True
         Me.LinkLabel_Open.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
-        Me.LinkLabel_Open.Location = New System.Drawing.Point(668, 47)
+        Me.LinkLabel_Open.Location = New System.Drawing.Point(613, 47)
         Me.LinkLabel_Open.Name = "LinkLabel_Open"
         Me.LinkLabel_Open.Size = New System.Drawing.Size(36, 13)
         Me.LinkLabel_Open.TabIndex = 6
         Me.LinkLabel_Open.TabStop = True
         Me.LinkLabel_Open.Text = "Open"
-        Me.ToolTip1.SetToolTip(Me.LinkLabel_Open, "Openes all selected projects")
+        Me.ToolTip1.SetToolTip(Me.LinkLabel_Open, "Opens all selected projects")
         '
-        'LinkLabel_Close
+        'LinkLabel_New
         '
-        Me.LinkLabel_Close.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.LinkLabel_Close.AutoSize = True
-        Me.LinkLabel_Close.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
-        Me.LinkLabel_Close.Location = New System.Drawing.Point(710, 47)
-        Me.LinkLabel_Close.Name = "LinkLabel_Close"
-        Me.LinkLabel_Close.Size = New System.Drawing.Size(87, 13)
-        Me.LinkLabel_Close.TabIndex = 5
-        Me.LinkLabel_Close.TabStop = True
-        Me.LinkLabel_Close.Text = "Close StartPage"
-        Me.ToolTip1.SetToolTip(Me.LinkLabel_Close, "Closes the StartPage")
+        Me.LinkLabel_New.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.LinkLabel_New.AutoSize = True
+        Me.LinkLabel_New.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
+        Me.LinkLabel_New.Location = New System.Drawing.Point(655, 47)
+        Me.LinkLabel_New.Name = "LinkLabel_New"
+        Me.LinkLabel_New.Size = New System.Drawing.Size(30, 13)
+        Me.LinkLabel_New.TabIndex = 5
+        Me.LinkLabel_New.TabStop = True
+        Me.LinkLabel_New.Text = "New"
+        Me.ToolTip1.SetToolTip(Me.LinkLabel_New, "Creates an empty document")
         '
         'Panel_FooterDarkControl
         '
@@ -252,6 +285,7 @@ Partial Class UCStartPage
         Me.TableLayoutPanel2.ResumeLayout(False)
         Me.Panel_BasicPawnTitle.ResumeLayout(False)
         Me.Panel_BasicPawnTitle.PerformLayout()
+        CType(Me.ButtonSmall_Close, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.ClassPictureBoxQuality1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.TabControl_RecentProjects.ResumeLayout(False)
         Me.ResumeLayout(False)
@@ -269,10 +303,12 @@ Partial Class UCStartPage
     Friend WithEvents Panel_FooterDarkControl2 As Panel
     Friend WithEvents Panel_FooterDarkControl3 As Panel
     Friend WithEvents Timer_DelayUpdate As Timer
-    Friend WithEvents LinkLabel_Close As LinkLabel
+    Friend WithEvents LinkLabel_New As LinkLabel
     Friend WithEvents LinkLabel_Open As LinkLabel
     Friend WithEvents LinkLabel_OpenNew As LinkLabel
     Friend WithEvents TabControl_RecentProjects As ClassTabControlColor
     Friend WithEvents TabPage_RecentFiles As TabPage
     Friend WithEvents TabPage_RecentProjects As TabPage
+    Friend WithEvents ButtonSmall_Close As ClassButtonSmallDelete
+    Friend WithEvents LinkLabel_NewTemplate As LinkLabel
 End Class

@@ -23,6 +23,7 @@ Public Class ClassTabControl
 
     Private g_mFormMain As FormMain
     Private g_bIgnoreOnTabSelected As Boolean = False
+    Private g_bDidInit As Boolean = False
 
     Private g_iControlDrawCoutner As Integer = 0
 
@@ -45,6 +46,12 @@ Public Class ClassTabControl
     End Sub
 
     Public Sub Init()
+        If (g_bDidInit) Then
+            Return
+        End If
+
+        g_bDidInit = True
+
         g_mFormMain.TabControl_SourceTabs.TabPages.Clear()
         AddTab(True)
     End Sub
@@ -97,11 +104,12 @@ Public Class ClassTabControl
         Try
             BeginUpdate()
 
+            Dim mRecycleTab As SourceTabPage = Nothing
+
             'Recycle first unsaved tab
             If (Not bDontRecycleTabs AndAlso m_TabsCount = 1) Then
-                Dim mOldTab = m_Tab(0)
-                If (mOldTab.m_IsUnsaved AndAlso Not mOldTab.m_Changed) Then
-                    Return mOldTab
+                If (m_Tab(0).m_IsUnsaved AndAlso Not m_Tab(0).m_Changed) Then
+                    mRecycleTab = m_Tab(0)
                 End If
             End If
 
@@ -113,16 +121,21 @@ Public Class ClassTabControl
                 mTabPage.m_TextEditor.Document.TextContent = sTemplateSource
             End If
 
-            g_mFormMain.TabControl_SourceTabs.TabPages.Add(mTabPage)
+            If (mRecycleTab Is Nothing) Then
+                g_mFormMain.TabControl_SourceTabs.TabPages.Add(mTabPage)
+            Else
+                g_mFormMain.TabControl_SourceTabs.TabPages.Remove(mRecycleTab)
+                g_mFormMain.TabControl_SourceTabs.TabPages.Insert(0, mTabPage)
+            End If
+
+            If (bSelect OrElse m_TabsCount < 2) Then
+                mTabPage.SelectTab()
+            End If
 
             If (g_iBeginUpdateCount > 0) Then
                 g_bBeginRequestSyntaxUpdate = True
             Else
                 g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.UpdateTextEditorSyntax()
-            End If
-
-            If (bSelect OrElse m_TabsCount < 2) Then
-                SelectTab(m_TabsCount - 1)
             End If
 
             If (m_TabsCount > 1 AndAlso g_mFormMain.g_mUCStartPage.Visible) Then
@@ -290,6 +303,10 @@ Public Class ClassTabControl
         End If
 
         SelectTab(iIndex)
+    End Sub
+
+    Public Sub RenewTab(iIndex As Integer, Optional bIgnoreSavePrompt As Boolean = False)
+        OpenFileTab(iIndex, Nothing, bIgnoreSavePrompt)
     End Sub
 
     ''' <summary>
