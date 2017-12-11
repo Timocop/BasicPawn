@@ -181,7 +181,7 @@ Partial Class UCStartPage
         Me.LinkLabel_New.TabIndex = 5
         Me.LinkLabel_New.TabStop = True
         Me.LinkLabel_New.Text = "New"
-        Me.ToolTip1.SetToolTip(Me.LinkLabel_New, "Creates an empty document")
+        Me.ToolTip1.SetToolTip(Me.LinkLabel_New, "Creates a new empty document")
         '
         'Panel_FooterDarkControl
         '
