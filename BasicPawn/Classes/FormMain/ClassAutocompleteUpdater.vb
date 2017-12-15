@@ -389,6 +389,12 @@ Public Class ClassAutocompleteUpdater
         Catch ex As Threading.ThreadAbortException
             Throw
         Catch ex As Exception
+            ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                   g_mFormMain.ToolStripProgressBar_Autocomplete.ToolTipText = ""
+                                                   g_mFormMain.ToolStripProgressBar_Autocomplete.Value = 100
+                                                   g_mFormMain.ToolStripProgressBar_Autocomplete.Visible = False
+                                               End Sub)
+
             g_mFormMain.PrintInformation("[ERRO]", "Autocomplete update failed! " & ex.Message, False, False)
             ClassExceptionLog.WriteToLog(ex)
         End Try
