@@ -66,7 +66,7 @@ Public Class ClassTextMinimap
             RichTextBoxEx_Minimap.SuspendLayout()
 
             'Replace unprintable - unicode - characters. For some reason it makes the RichTextBox font bold.
-            RichTextBoxEx_Minimap.Text = Regex.Replace(g_sLastText, "[^\u0020-\u007E]+", "?").Replace(vbTab(0), New String(" "c, 4))
+            RichTextBoxEx_Minimap.Text = Regex.Replace(g_sLastText, "[^\u0000-\u007F]+", "?").Replace(vbTab(0), New String(" "c, 4))
 
             RichTextBoxEx_Minimap.ResumeLayout()
         End If
