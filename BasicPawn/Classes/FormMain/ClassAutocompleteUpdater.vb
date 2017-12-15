@@ -2407,57 +2407,120 @@ Public Class ClassAutocompleteUpdater
         If (True) Then
             Dim sRegExTypePattern As String = GetTypeNamesToPattern(lOldVarAutocompleteList)
 
+            Dim sStatementsVar As String = "\b(for)\b"
             Dim sInitTypesPattern As String = "\b(new|decl|static|const)\b" '"public" is already taken care off
             Dim sOldStyleVarPattern As String = String.Format("(?<Init>{0}\s+)(?<IsConst>\b(const)\b\s+){2}((?<Tag>{1})\:\s*(?<Var>\b[a-zA-Z0-9_]+\b)|(?<Var>\b[a-zA-Z0-9_]+\b))($|\W)", sInitTypesPattern, sRegExTypePattern, "{0,1}")
             Dim sNewStyleVarPattern As String = String.Format("(?<IsConst>\b(const)\b\s+){1}(?<Tag>{0})\s+(?<Var>\b[a-zA-Z0-9_]+\b)($|\W)", sRegExTypePattern, "{0,1}")
 
-            Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iLanguage)
+            Dim mSourceList As New List(Of String) From {
+                sSource
+            }
+
+            'Get variables from statements
+            If (True) Then
+                Dim mStatementMatches = Regex.Matches(sSource, String.Format("(?<Name>{0})\s*(?<Start>\()", sStatementsVar))
+                Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iLanguage)
+                Dim mSourceBuilder As StringBuilder
+
+                For Each mMatch As Match In mStatementMatches
+                    mSourceBuilder = New StringBuilder
+
+                    Dim iStartIndex As Integer = mMatch.Groups("Start").Index
+                    Dim iStartLevel As Integer = mSourceAnalysis.GetParenthesisLevel(iStartIndex, Nothing)
+                    Dim bFinished As Boolean = False
+
+                    For i = iStartIndex To sSource.Length - 1
+                        If (mSourceAnalysis.m_InNonCode(i)) Then
+                            Continue For
+                        End If
+
+                        Dim iParentRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
+                        Dim iParentLevel = mSourceAnalysis.GetParenthesisLevel(i, iParentRange)
+
+                        If (iParentLevel < iStartLevel) Then
+                            bFinished = True
+                            Exit For
+                        End If
+
+                        If (iParentLevel = iStartLevel) Then
+                            If (iParentRange <> ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.NONE) Then
+                                Continue For
+                            End If
+                        End If
+
+                        If (iParentLevel > iStartLevel) Then
+                            Select Case (iParentRange)
+                                Case ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.START
+                                    mSourceBuilder.Append("(")
+
+                                Case ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END
+                                    mSourceBuilder.Append(")")
+                            End Select
+
+                            Continue For
+                        End If
+
+                        mSourceBuilder.Append(sSource(i))
+                    Next
+
+                    If (bFinished) Then
+                        If (mSourceBuilder.Length > 0) Then
+                            mSourceList.Add(mSourceBuilder.ToString)
+                        End If
+                    End If
+                Next
+            End If
+
             Dim lCommaLinesList As New List(Of String)
-            Dim mCodeBuilder As New StringBuilder
 
-            'This is the easiest and yet stupiest idea to resolve multi-decls i've ever come up with...
-            For i = 0 To sSource.Length - 1
-                If (i <> sSource.Length - 1) Then
-                    If (mSourceAnalysis.m_InNonCode(i)) Then
+            For j = 0 To mSourceList.Count - 1
+                Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(mSourceList(j), iLanguage)
+                Dim mCodeBuilder As New StringBuilder
+
+                'This is the easiest and yet stupiest idea to resolve multi-decls i've ever come up with...
+                For i = 0 To mSourceList(j).Length - 1
+                    If (i <> mSourceList(j).Length - 1) Then
+                        If (mSourceAnalysis.m_InNonCode(i)) Then
+                            Continue For
+                        End If
+
+                        If (mSourceAnalysis.GetBracketLevel(i, Nothing) > 0) Then
+                            Continue For
+                        End If
+
+                        Dim iParentRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
+                        If (mSourceAnalysis.GetParenthesisLevel(i, iParentRange) > 0) Then
+                            Select Case (iParentRange)
+                                Case ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.START
+                                    mCodeBuilder.Append("(")
+
+                                Case ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END
+                                    mCodeBuilder.Append(")")
+                            End Select
+
+                            Continue For
+                        End If
+                    End If
+
+                    If (mSourceList(j)(i) = ","c OrElse mSourceList(j)(i) = "="c OrElse i = mSourceList(j).Length - 1) Then
+                        Dim sLine As String = mCodeBuilder.ToString.Trim
+
+                        If (Not String.IsNullOrEmpty(sLine)) Then
+                            lCommaLinesList.Add(sLine)
+                        End If
+
+                        mCodeBuilder = New StringBuilder
+
+                        'To make sure the assignment doesnt get parsed as variable
+                        If (mSourceList(j)(i) = "="c) Then
+                            mCodeBuilder.Append(mSourceList(j)(i))
+                        End If
+
                         Continue For
                     End If
 
-                    If (mSourceAnalysis.GetBracketLevel(i, Nothing) > 0) Then
-                        Continue For
-                    End If
-
-                    Dim iParentRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
-                    If (mSourceAnalysis.GetParenthesisLevel(i, iParentRange) > 0) Then
-                        Select Case (iParentRange)
-                            Case ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.START
-                                mCodeBuilder.Append("(")
-
-                            Case ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END
-                                mCodeBuilder.Append(")")
-                        End Select
-
-                        Continue For
-                    End If
-                End If
-
-                If (sSource(i) = ","c OrElse sSource(i) = "="c OrElse i = sSource.Length - 1) Then
-                    Dim sLine As String = mCodeBuilder.ToString.Trim
-
-                    If (Not String.IsNullOrEmpty(sLine)) Then
-                        lCommaLinesList.Add(sLine)
-                    End If
-
-                    mCodeBuilder = New StringBuilder
-
-                    'To make sure the assignment doesnt get parsed as variable
-                    If (sSource(i) = "="c) Then
-                        mCodeBuilder.Append(sSource(i))
-                    End If
-
-                    Continue For
-                End If
-
-                mCodeBuilder.Append(sSource(i))
+                    mCodeBuilder.Append(mSourceList(j)(i))
+                Next
             Next
 
             '0: Not yet found
