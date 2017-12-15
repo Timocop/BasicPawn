@@ -1139,7 +1139,7 @@ Public Class ClassAutocompleteUpdater
                 Next
             End If
 
-            Dim mPossibleEnumMatches As MatchCollection = Regex.Matches(mSourceBuilder.ToString, "^\s*\b(enum)\b\s*((?<Tag>\b[a-zA-Z0-9_]+\b)(\:)(?<Name>\b[a-zA-Z0-9_]+\b)(\(.*?\)){0,1}|(?<Name>\b[a-zA-Z0-9_]+\b)(\:){0,1}(\(.*?\)){0,1}|\(.*?\)|)\s*(?<BraceStart>\{)", RegexOptions.Multiline)
+            Dim mPossibleEnumMatches As MatchCollection = Regex.Matches(mSourceBuilder.ToString, "^\s*\b(enum)\b\s*((?<Tag>\b[a-zA-Z0-9_]+\b)(\:)(?<Name>\b[a-zA-Z0-9_]+\b)\s*(\(.*?\)){0,1}|(?<Name>\b[a-zA-Z0-9_]+\b)(\:){0,1}\s*(\(.*?\)){0,1}|\(.*?\)|)\s*(?<BraceStart>\{)", RegexOptions.Multiline)
             Dim iBraceList As Integer()() = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(mSourceBuilder.ToString, "{"c, "}"c, 1, iLanguage, True)
 
 
