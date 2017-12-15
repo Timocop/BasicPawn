@@ -15,6 +15,8 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 
+Imports System.Text.RegularExpressions
+
 Public Class ClassTextMinimap
     Private g_mFormMain As FormMain
     Private g_sLastText As String = ""
@@ -62,7 +64,10 @@ Public Class ClassTextMinimap
             g_sLastText = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
 
             RichTextBoxEx_Minimap.SuspendLayout()
-            RichTextBoxEx_Minimap.Text = g_sLastText.Replace(vbTab(0), New String(" "c, 4))
+
+            'Replace unprintable - unicode - characters. For some reason it makes the RichTextBox font bold.
+            RichTextBoxEx_Minimap.Text = Regex.Replace(g_sLastText, "[^\u0020-\u007E]+", "?").Replace(vbTab(0), New String(" "c, 4))
+
             RichTextBoxEx_Minimap.ResumeLayout()
         End If
     End Sub
