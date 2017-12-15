@@ -29,4 +29,20 @@ Public Class ClassExceptionLog
         WriteToLog(ex)
         MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
     End Sub
+
+    Public Shared Function GetDebugStackTrace(sText As String) As String
+#If DEBUG Then
+        Dim mStackTrace As New StackTrace(True)
+        If (mStackTrace.FrameCount < 1) Then
+            Return ""
+        End If
+
+        Dim sFile As String = mStackTrace.GetFrame(1).GetFileName
+        Dim iLine As Integer = mStackTrace.GetFrame(1).GetFileLineNumber
+
+        Return String.Format("{0}({1}): {2}", sFile, iLine, sText)
+#Else
+        Throw New ArgumentException("Only available in debug mode")
+#End If
+    End Function
 End Class

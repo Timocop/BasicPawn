@@ -538,6 +538,10 @@ Public Class ClassAutocompleteUpdater
                         mAutocomplete.m_Data("VariableMethodmapName") = sParentMethodmapName
                         mAutocomplete.m_Data("VariableMethodmapMethod") = sParentMethodmapMethodName
 
+#If DEBUG Then
+                        mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Merges all methods to methodmaps"
+#End If
+
                         If (Not lTmpAutoList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString) AndAlso
                                 Not lTmpAutoAddList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
                             lTmpAutoAddList.Add(mAutocomplete)
@@ -613,6 +617,10 @@ Public Class ClassAutocompleteUpdater
 
                         mAutocomplete.m_Data("VariableMethodmapName") = sMethodmapMethodName
                         mAutocomplete.m_Data("VariableMethodmapMethod") = sParentMethodmapMethodName
+
+#If DEBUG Then
+                        mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Merges all methodmaps with parent methodmaps"
+#End If
 
                         If (Not lTmpAutoList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString) AndAlso
                                 Not lTmpAutoAddList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
@@ -872,6 +880,10 @@ Public Class ClassAutocompleteUpdater
 
                 mAutocomplete.m_Data("StructName") = sStructName
 
+#If DEBUG Then
+                mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Get strucs (names only)"
+#End If
+
                 If (Not lNewAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
                     lNewAutocompleteList.Add(mAutocomplete)
                 End If
@@ -915,6 +927,10 @@ Public Class ClassAutocompleteUpdater
                 mAutocomplete.m_Data("EnumName") = sEnumName
                 mAutocomplete.m_Data("EnumIsMethodmap") = True
                 mAutocomplete.m_Data("EnumHidden") = True
+
+#If DEBUG Then
+                mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Get methodmap enums"
+#End If
 
                 If (Not lNewAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
                     lNewAutocompleteList.Add(mAutocomplete)
@@ -960,6 +976,10 @@ Public Class ClassAutocompleteUpdater
                 mAutocomplete.m_Data("EnumIsTypeset") = True
                 mAutocomplete.m_Data("EnumHidden") = True
 
+#If DEBUG Then
+                mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Get typeset enums"
+#End If
+
                 If (Not lNewAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
                     lNewAutocompleteList.Add(mAutocomplete)
                 End If
@@ -1002,6 +1022,10 @@ Public Class ClassAutocompleteUpdater
                 mAutocomplete.m_Data("EnumName") = sEnumName
                 mAutocomplete.m_Data("EnumIsTypedef") = True
                 mAutocomplete.m_Data("EnumHidden") = True
+
+#If DEBUG Then
+                mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Get typedef enums"
+#End If
 
                 If (Not lNewAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
                     lNewAutocompleteList.Add(mAutocomplete)
@@ -1046,6 +1070,10 @@ Public Class ClassAutocompleteUpdater
                 mAutocomplete.m_Data("EnumIsFunctag") = True
                 mAutocomplete.m_Data("EnumHidden") = True
 
+#If DEBUG Then
+                mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Get functag enums"
+#End If
+
                 If (Not lNewAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
                     lNewAutocompleteList.Add(mAutocomplete)
                 End If
@@ -1088,6 +1116,10 @@ Public Class ClassAutocompleteUpdater
                 mAutocomplete.m_Data("EnumName") = sEnumName
                 mAutocomplete.m_Data("EnumIsFuncenum") = True
                 mAutocomplete.m_Data("EnumHidden") = True
+
+#If DEBUG Then
+                mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Get funcenum enums"
+#End If
 
                 If (Not lNewAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
                     lNewAutocompleteList.Add(mAutocomplete)
@@ -1245,6 +1277,10 @@ Public Class ClassAutocompleteUpdater
 
                     mAutocomplete.m_Data("EnumName") = sEnumName
 
+#If DEBUG Then
+                    mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Get enums"
+#End If
+
                     If (Not lNewAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
                         lNewAutocompleteList.Add(mAutocomplete)
                     End If
@@ -1273,6 +1309,10 @@ Public Class ClassAutocompleteUpdater
                     mAutocomplete.m_Data("EnumName") = sEnumName
                     mAutocomplete.m_Data("EnumIsChild") = True
                     mAutocomplete.m_Data("EnumChildName") = sEnumVarName
+
+#If DEBUG Then
+                    mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Get enums"
+#End If
 
                     If (Not lNewAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
                         lNewAutocompleteList.Add(mAutocomplete)
@@ -1353,6 +1393,10 @@ Public Class ClassAutocompleteUpdater
 
                     mAutocomplete.m_Data("DefineName") = sName
                     mAutocomplete.m_Data("DefineArguments") = sBraceText
+
+#If DEBUG Then
+                    mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Get Defines"
+#End If
 
                     If (Not lNewAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
                         lNewAutocompleteList.Add(mAutocomplete)
@@ -1459,6 +1503,10 @@ Public Class ClassAutocompleteUpdater
                 mAutocomplete.m_Data("PublicvarTypes") = sTypes
                 mAutocomplete.m_Data("PublicvarTag") = sTag
                 mAutocomplete.m_Data("PublicvarArrayDim") = sArrayDim
+
+#If DEBUG Then
+                mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Get public global variables"
+#End If
 
                 If (Not lNewAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
                     lNewAutocompleteList.Add(mAutocomplete)
@@ -1644,6 +1692,10 @@ Public Class ClassAutocompleteUpdater
                     mAutocomplete.m_Data("FuncenumVarName") = sEnumVarName
                     mAutocomplete.m_Data("FuncenumFull") = sEnumFull
 
+#If DEBUG Then
+                    mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Get funcenums"
+#End If
+
                     If (Not lNewAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
                         lNewAutocompleteList.Add(mAutocomplete)
                     End If
@@ -1746,6 +1798,10 @@ Public Class ClassAutocompleteUpdater
                     mAutocomplete.m_Data("TypesetName") = sName
                     mAutocomplete.m_Data("TypesetArguments") = sBraceString
 
+#If DEBUG Then
+                    mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Get typesets"
+#End If
+
                     If (Not lNewAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
                         lNewAutocompleteList.Add(mAutocomplete)
                     End If
@@ -1826,6 +1882,10 @@ Public Class ClassAutocompleteUpdater
                     mAutocomplete.m_Data("TypedefName") = sName
                     mAutocomplete.m_Data("TypedefArguments") = String.Format("({0})", sBraceString)
 
+#If DEBUG Then
+                    mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Get typedefs"
+#End If
+
                     If (Not lNewAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
                         lNewAutocompleteList.Add(mAutocomplete)
                     End If
@@ -1846,6 +1906,7 @@ Public Class ClassAutocompleteUpdater
             Dim sName As String
             Dim sFullname As String
             Dim sComment As String
+            Dim iTypes As ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS
 
             Dim mFuncTagMatch As Match
 
@@ -1907,6 +1968,7 @@ Public Class ClassAutocompleteUpdater
                 sName = mMatch.Groups("Name").Value
                 sFullname = mMatch.Groups("Types").Value & sTag & sName & sBraceText
                 sComment = ""
+                iTypes = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ParseTypeNames(sTypes)
 
                 If (Regex.IsMatch(sName, String.Format("(\b{0}\b)", String.Join("\b|\b", ClassSyntaxTools.g_sStatementsArray)))) Then
                     Continue For
@@ -1918,7 +1980,7 @@ Public Class ClassAutocompleteUpdater
 
                 Dim bIsFunctag As Boolean = False
 
-                If (Array.IndexOf(sTypes, "functag") > -1) Then
+                If ((iTypes And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG) = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG) Then
                     While True
                         mFuncTagMatch = Regex.Match(sFullname, "(?<Name>\b[a-zA-Z0-9_]+\b)\s+(?<Tag>\b[a-zA-Z0-9_]+\:\b)*\b(public)\b\s*\(")
                         If (mFuncTagMatch.Success) Then
@@ -1987,10 +2049,24 @@ Public Class ClassAutocompleteUpdater
                     mAutocomplete.m_Data("FunctagTag") = sTag.Trim
                     mAutocomplete.m_Data("FunctagArguments") = sBraceText
 
+#If DEBUG Then
+                    mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Get methods/functags"
+#End If
+
                     If (Not lNewAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
                         lNewAutocompleteList.Add(mAutocomplete)
                     End If
                 Else
+                    'Filter out non-valid method types that 'ParseTypeNames()' may could parse
+                    If (iTypes <> ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.NONE) Then
+                        If ((iTypes And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PUBLIC) <> ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PUBLIC AndAlso
+                            (iTypes And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.NATIVE) <> ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.NATIVE AndAlso
+                            (iTypes And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STOCK) <> ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STOCK AndAlso
+                            (iTypes And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD) <> ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD) Then
+                            Continue For
+                        End If
+                    End If
+
                     Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(sComment,
                                                                                 IO.Path.GetFileName(sFile),
                                                                                 sFile,
@@ -2003,6 +2079,10 @@ Public Class ClassAutocompleteUpdater
                     mAutocomplete.m_Data("MethodType") = String.Join(" ", sTypes)
                     mAutocomplete.m_Data("MethodTag") = sTag.Trim
                     mAutocomplete.m_Data("MethodArguments") = sBraceText
+
+#If DEBUG Then
+                    mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Get methods/functags"
+#End If
 
                     If (Not lNewAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
                         lNewAutocompleteList.Add(mAutocomplete)
@@ -2075,6 +2155,10 @@ Public Class ClassAutocompleteUpdater
                     mAutocomplete.m_Data("MethodmapMethodArguments") = ""
                     mAutocomplete.m_Data("MethodmapMethodIsConstructor") = False
 
+#If DEBUG Then
+                    mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Get methodmaps"
+#End If
+
                     If (Not lNewAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
                         lNewAutocompleteList.Add(mAutocomplete)
                     End If
@@ -2138,6 +2222,10 @@ Public Class ClassAutocompleteUpdater
                         mAutocomplete.m_Data("MethodmapMethodArguments") = ""
                         mAutocomplete.m_Data("MethodmapMethodIsConstructor") = False
 
+#If DEBUG Then
+                        mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Get methodmaps"
+#End If
+
                         If (Not lNewAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
                             lNewAutocompleteList.Add(mAutocomplete)
                         End If
@@ -2176,6 +2264,10 @@ Public Class ClassAutocompleteUpdater
                             mAutocomplete.m_Data("MethodmapMethodArguments") = sBraceString
                             mAutocomplete.m_Data("MethodmapMethodIsConstructor") = True
 
+#If DEBUG Then
+                            mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Get methodmaps"
+#End If
+
                             'Remove all single methodmaps and replace them with the constructor, the enum version needs to stay for autocompletion.
                             lNewAutocompleteList.RemoveAll(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)
 
@@ -2200,6 +2292,10 @@ Public Class ClassAutocompleteUpdater
                             mAutocomplete.m_Data("MethodmapMethodName") = sName
                             mAutocomplete.m_Data("MethodmapMethodArguments") = sBraceString
                             mAutocomplete.m_Data("MethodmapMethodIsConstructor") = False
+
+#If DEBUG Then
+                            mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Get methodmaps"
+#End If
 
                             If (Not lNewAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
                                 lNewAutocompleteList.Add(mAutocomplete)
@@ -2427,6 +2523,10 @@ Public Class ClassAutocompleteUpdater
                             mAutocomplete.m_Data("VariableName") = sVar
                             mAutocomplete.m_Data("VariableTags") = New String() {sTag}
 
+#If DEBUG Then
+                            mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Parse variables"
+#End If
+
                             lNewVarAutocompleteList.Add(mAutocomplete)
                         Else
                             If (Not Regex.IsMatch(mItem.m_FullFunctionString, String.Format("\b{0}\b", Regex.Escape(sTag)))) Then
@@ -2505,6 +2605,10 @@ Public Class ClassAutocompleteUpdater
 
                             mAutocomplete.m_Data("VariableName") = sVar
                             mAutocomplete.m_Data("VariableTags") = New String() {sTag}
+
+#If DEBUG Then
+                            mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Parse variables"
+#End If
 
                             lNewVarAutocompleteList.Add(mAutocomplete)
                         Else
@@ -2591,6 +2695,10 @@ Public Class ClassAutocompleteUpdater
                             mAutocomplete.m_Data("VariableName") = sVar
                             mAutocomplete.m_Data("VariableTags") = New String() {sTag}
 
+#If DEBUG Then
+                            mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Parse variables"
+#End If
+
                             lNewVarAutocompleteList.Add(mAutocomplete)
                         Else
                             If (Not Regex.IsMatch(mItem.m_FullFunctionString, String.Format("\b{0}\b", Regex.Escape(sTag)))) Then
@@ -2674,6 +2782,10 @@ Public Class ClassAutocompleteUpdater
 
                             mAutocomplete.m_Data("VariableName") = sVar
                             mAutocomplete.m_Data("VariableTags") = New String() {sTag}
+
+#If DEBUG Then
+                            mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Parse variables"
+#End If
 
                             lNewVarAutocompleteList.Add(mAutocomplete)
                         Else
@@ -2796,6 +2908,10 @@ Public Class ClassAutocompleteUpdater
                             mAutocomplete.m_Data("VariableName") = sVar
                             mAutocomplete.m_Data("VariableTags") = New String() {sTag}
 
+#If DEBUG Then
+                            mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Parse function argument variables"
+#End If
+
                             lNewVarAutocompleteList.Add(mAutocomplete)
                         Else
                             If (Not Regex.IsMatch(mItem.m_FullFunctionString, String.Format("\b{0}\b", Regex.Escape(sTag)))) Then
@@ -2839,6 +2955,10 @@ Public Class ClassAutocompleteUpdater
 
                             mAutocomplete.m_Data("VariableName") = sVar
                             mAutocomplete.m_Data("VariableTags") = New String() {sTag}
+
+#If DEBUG Then
+                            mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Parse function argument variables"
+#End If
 
                             lNewVarAutocompleteList.Add(mAutocomplete)
                         Else
@@ -2919,6 +3039,10 @@ Public Class ClassAutocompleteUpdater
                     mAutocomplete.m_Data("VariableMethodmapName") = sVariableName
                     mAutocomplete.m_Data("VariableMethodmapMethod") = sMethodmapMethodName
 
+#If DEBUG Then
+                    mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Make methodmaps using variables"
+#End If
+
                     If (Not lNewVarAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString) AndAlso
                                 Not lVarMethodmapList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
                         lVarMethodmapList.Add(mAutocomplete)
@@ -2986,6 +3110,10 @@ Public Class ClassAutocompleteUpdater
 
                     mAutocomplete.m_Data("VariableMethodmapName") = sVariableName
                     mAutocomplete.m_Data("VariableMethodmapMethod") = sMethodmapMethodName
+
+#If DEBUG Then
+                    mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Make methodmaps using methods"
+#End If
 
                     If (Not lNewVarAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString) AndAlso
                                 Not lVarMethodmapList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
