@@ -19,8 +19,24 @@ Imports System.Text.RegularExpressions
 
 Public Class ClassTextMinimap
     Private g_mFormMain As FormMain
-    Private g_sLastText As String = ""
     Private g_mPanel As Panel
+
+    Structure STRUC_FOLDMARKER_INFO
+        Dim iOffset As Integer
+        Dim iLength As Integer
+        Dim bIsFolded As Boolean
+
+        Sub New(_Offset As Integer, _Length As Integer, _IsFolded As Boolean)
+            iOffset = _Offset
+            iLength = _Length
+            bIsFolded = _IsFolded
+        End Sub
+    End Structure
+
+    Private g_sLastText As String = ""
+    Private g_lLastFoldings As New List(Of STRUC_FOLDMARKER_INFO)
+
+    Private g_bRequestUpdate As Boolean = False
 
     Const VIEW_FONT_SIZE = 1
     Const VIEW_WIDTH_OFFSET = 2
@@ -53,23 +69,92 @@ Public Class ClassTextMinimap
         RichTextBoxEx_Minimap.ResumeLayout()
     End Sub
 
-    Public Sub UpdateText()
+    Public Sub UpdateText(bRefresh As Boolean)
         If (Not Me.Visible) Then
             Return
         End If
 
-        'RichTextBox.Text != Document.TextContent?!
-        'Workaround: Cache last TextConent in |g_sLastTexteditorText| instead.
-        If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent <> g_sLastText) Then
+        Dim bChanged As Boolean = False
+        While True
+            'RichTextBox.Text != Document.TextContent?!
+            'Workaround: Cache last TextConent in |g_sLastTexteditorText| instead.
+            If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent <> g_sLastText) Then
+                bChanged = True
+                Exit While
+            End If
+
+            If (True) Then
+                If (g_lLastFoldings.Count <> g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.FoldingManager.FoldMarker.Count) Then
+                    bChanged = True
+                    Exit While
+                End If
+
+                For i = 0 To g_lLastFoldings.Count - 1
+                    If (g_lLastFoldings(i).iOffset = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.FoldingManager.FoldMarker(i).Offset AndAlso
+                            g_lLastFoldings(i).iLength = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.FoldingManager.FoldMarker(i).Length AndAlso
+                            g_lLastFoldings(i).bIsFolded = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.FoldingManager.FoldMarker(i).IsFolded) Then
+                        Continue For
+                    End If
+
+                    bChanged = True
+                    Exit While
+                Next
+            End If
+
+            Exit While
+        End While
+
+        If (bRefresh OrElse g_bRequestUpdate OrElse bChanged) Then
+            g_bRequestUpdate = False
             g_sLastText = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
+
+            g_lLastFoldings.Clear()
+            For Each mFold In g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.FoldingManager.FoldMarker
+                g_lLastFoldings.Add(New STRUC_FOLDMARKER_INFO(mFold.Offset, mFold.Length, mFold.IsFolded))
+            Next
+
+
+            Dim bFoldedIndexes As Boolean() = New Boolean(g_sLastText.Length - 1) {}
+            For Each mFold In g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.FoldingManager.FoldMarker
+                If (Not mFold.IsFolded) Then
+                    Continue For
+                End If
+
+                For i = mFold.Offset To (mFold.Offset + mFold.Length - 1)
+                    bFoldedIndexes(i) = True
+                Next
+            Next
 
             RichTextBoxEx_Minimap.SuspendLayout()
 
+            Dim mMapBuilder As New Text.StringBuilder(g_sLastText.Length)
+            For i = 0 To g_sLastText.Length - 1
+                If (bFoldedIndexes(i)) Then
+                    Continue For
+                End If
+
+                If (AscW(g_sLastText(i)) < 0 OrElse AscW(g_sLastText(i)) > 127) Then
+                    mMapBuilder.Append("?"c)
+                    Continue For
+                End If
+
+                If (g_sLastText(i) = vbTab(0)) Then
+                    mMapBuilder.Append(New String(" "c, 4))
+                    Continue For
+                End If
+
+                mMapBuilder.Append(g_sLastText(i))
+            Next
+
             'Replace unprintable - unicode - characters. For some reason it makes the RichTextBox font bold.
-            RichTextBoxEx_Minimap.Text = Regex.Replace(g_sLastText, "[^\u0000-\u007F]+", "?").Replace(vbTab(0), New String(" "c, 4))
+            RichTextBoxEx_Minimap.Text = mMapBuilder.ToString
 
             RichTextBoxEx_Minimap.ResumeLayout()
         End If
+    End Sub
+
+    Public Sub RequestUpdate()
+        g_bRequestUpdate = True
     End Sub
 
     Public Sub UpdatePosition(bUpdateScrolling As Boolean, bUpdateView As Boolean, bAutoScrollToView As Boolean)
@@ -77,33 +162,66 @@ Public Class ClassTextMinimap
             Return
         End If
 
-        If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TotalNumberOfLines < 1) Then
+        Dim iTotalLines = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TotalNumberOfLines
+        If (iTotalLines < 1) Then
             Return
         End If
 
+        Dim bFoldedLines As Boolean() = New Boolean(iTotalLines - 1) {}
+        For Each mFold In g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.FoldingManager.FoldMarker
+            If (Not mFold.IsFolded) Then
+                Continue For
+            End If
+
+            For i = mFold.StartLine To mFold.EndLine - 1
+                bFoldedLines(i) = True
+            Next
+        Next
+
+        Dim iVisibleLines As Integer = 1
+        For i = 1 To iTotalLines
+            If (bFoldedLines(i - 1)) Then
+                Continue For
+            End If
+
+            iVisibleLines += 1
+        Next
+
         Dim iPointLabelY As Integer = RichTextBoxEx_Minimap.PointToScreen(Point.Empty).Y
         Dim iPointLabelSizeY As Integer = RichTextBoxEx_Minimap.PointToScreen(New Point(RichTextBoxEx_Minimap.Size.Width, RichTextBoxEx_Minimap.Size.Height)).Y
-        Dim miointLabelLineSize As Integer = CInt((iPointLabelSizeY - iPointLabelY) / g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TotalNumberOfLines)
-        If (miointLabelLineSize < 1) Then
+        Dim iPointLabelLineSize As Integer = CInt((iPointLabelSizeY - iPointLabelY) / iVisibleLines)
+        If (iPointLabelLineSize < 1) Then
             Return
         End If
 
         Dim iPointLabelLocalY As Integer = (Cursor.Position.Y - RichTextBoxEx_Minimap.PointToScreen(Point.Empty).Y)
-        Dim iSelectedLine As Integer = CInt(iPointLabelLocalY / miointLabelLineSize)
+        Dim iSelectedLine As Integer = Math.Min(CInt(iPointLabelLocalY / iPointLabelLineSize), iVisibleLines)
         If (iSelectedLine < 0) Then
             Return
         End If
 
         If (bUpdateScrolling) Then
             'Update Scroll
+            For i = 1 To iTotalLines
+                If (i > iSelectedLine) Then
+                    Exit For
+                End If
+
+                If (Not bFoldedLines(i - 1)) Then
+                    Continue For
+                End If
+
+                iSelectedLine += 1
+            Next
+
             g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.CenterViewOn(iSelectedLine, 0)
         End If
 
         If (bUpdateView) Then
             'Update Alpha View
             g_mPanel.SuspendLayout()
-            g_mPanel.Location = New Point(0, CInt(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.TextView.FirstPhysicalLine * miointLabelLineSize))
-            g_mPanel.Size = New Size(VIEW_WIDTH_OFFSET, CInt(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.TextView.VisibleLineCount * miointLabelLineSize))
+            g_mPanel.Location = New Point(0, CInt(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.TextView.FirstPhysicalLine * iPointLabelLineSize))
+            g_mPanel.Size = New Size(VIEW_WIDTH_OFFSET, CInt(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.TextView.VisibleLineCount * iPointLabelLineSize))
             g_mPanel.ResumeLayout()
 
             If (bAutoScrollToView) Then

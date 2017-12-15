@@ -53,11 +53,13 @@ Public Class ClassSyntaxUpdater
         Static mVarAutocompleteUpdateDelay As New TimeSpan(0, 0, 0, 10, 0)
         Static mFoldingUpdateDelay As New TimeSpan(0, 0, 5)
         Static mTextMinimapDelay As New TimeSpan(0, 0, 1)
+        Static mTextMinimapRefreshDelay As New TimeSpan(0, 0, 10)
 
         Dim dLastFullAutocompleteUpdate As Date = (Now + mFullAutocompleteUpdateDelay)
         Dim dLastVarAutocompleteUpdate As Date = (Now + mVarAutocompleteUpdateDelay)
         Dim dLastFoldingUpdate As Date = (Now + mFoldingUpdateDelay)
         Dim dLastTextMinimapDelay As Date = (Now + mTextMinimapDelay)
+        Dim dLastTextMinimapRefreshDelay As Date = (Now + mTextMinimapRefreshDelay)
 
         While True
             Threading.Thread.Sleep(500)
@@ -110,7 +112,17 @@ Public Class ClassSyntaxUpdater
                     dLastTextMinimapDelay = (Now + mTextMinimapDelay)
 
                     ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                           g_mFormMain.g_mUCTextMinimap.UpdateText()
+                                                           g_mFormMain.g_mUCTextMinimap.UpdateText(False)
+                                                           g_mFormMain.g_mUCTextMinimap.UpdatePosition(False, True, False)
+                                                       End Sub)
+                End If
+
+                'Update document minimap refresh
+                If (bIsFormMainFocused AndAlso dLastTextMinimapRefreshDelay < Now) Then
+                    dLastTextMinimapRefreshDelay = (Now + mTextMinimapRefreshDelay)
+
+                    ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                           g_mFormMain.g_mUCTextMinimap.UpdateText(True)
                                                            g_mFormMain.g_mUCTextMinimap.UpdatePosition(False, True, False)
                                                        End Sub)
                 End If

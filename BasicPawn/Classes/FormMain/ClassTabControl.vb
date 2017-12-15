@@ -648,7 +648,7 @@ Public Class ClassTabControl
         g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.m_IntelliSenseFunction = ""
         g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip()
 
-        g_mFormMain.g_mUCTextMinimap.UpdateText()
+        g_mFormMain.g_mUCTextMinimap.UpdateText(False)
         g_mFormMain.g_mUCTextMinimap.UpdatePosition(False, True, True)
 
         g_mFormMain.g_mUCObjectBrowser.StartUpdate()
@@ -746,6 +746,8 @@ Public Class ClassTabControl
 
             AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Document.LineLengthChanged, AddressOf TextEditorControl_DetectLineLenghtChange
             AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Document.LineCountChanged, AddressOf TextEditorControl_DetectLineCountChange
+
+            AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Document.FoldingManager.FoldingsChanged, AddressOf TextEditorControl_FoldingsChanged
         End Sub
 
         Private Sub RemoveHandlers()
@@ -773,6 +775,8 @@ Public Class ClassTabControl
 
             RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Document.LineLengthChanged, AddressOf TextEditorControl_DetectLineLenghtChange
             RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Document.LineCountChanged, AddressOf TextEditorControl_DetectLineCountChange
+
+            RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Document.FoldingManager.FoldingsChanged, AddressOf TextEditorControl_FoldingsChanged
         End Sub
 
         Private Sub CreateTextEditor()
@@ -1514,6 +1518,10 @@ Public Class ClassTabControl
                 Return mFolds
             End Function
         End Class
+
+        Private Sub TextEditorControl_FoldingsChanged(sender As Object, e As EventArgs)
+            g_mFormMain.g_mUCTextMinimap.UpdateText(True)
+        End Sub
 #End Region
 
     End Class
