@@ -257,71 +257,94 @@ Public Class FormFTP
 
                                                                    Try
 
-                                                                       Dim i As Integer
-                                                                       For i = 0 To sFiles.Length - 1
-                                                                           If (Not IO.File.Exists(sFiles(i))) Then
-                                                                               g_mPluginFTP.g_mFormMain.PrintInformation("[ERRO]", String.Format("Could not upload '{0}' because the file does not exist!", sFiles(i)))
-                                                                               Continue For
-                                                                           End If
+                                                                       Dim mFtpClient As Object = Nothing
+                                                                       Try
+                                                                           Select Case (iProtocolType)
+                                                                               Case ENUM_FTP_PROTOCOL_TYPE.FTP
+                                                                                   mFtpClient = New ClassFTP(sHost, sUsername, sPassword)
+                                                                               Case Else
+                                                                                   mFtpClient = New Renci.SshNet.SftpClient(sHost, sUsername, sPassword)
+                                                                           End Select
 
-                                                                           g_mPluginFTP.g_mFormMain.PrintInformation("[INFO]", String.Format("Uploading file '{0}' ({1}/{2}) to '{3}/{4}' using {5}...", sFiles(i), i + 1, sFiles.Length, sHost.TrimEnd("/"c), sDestinationPath.TrimStart("/"c),
+                                                                           Dim i As Integer
+                                                                           For i = 0 To sFiles.Length - 1
+                                                                               If (Not IO.File.Exists(sFiles(i))) Then
+                                                                                   g_mPluginFTP.g_mFormMain.PrintInformation("[ERRO]", String.Format("Could not upload '{0}' because the file does not exist!", sFiles(i)))
+                                                                                   Continue For
+                                                                               End If
+
+                                                                               g_mPluginFTP.g_mFormMain.PrintInformation("[INFO]", String.Format("Uploading file '{0}' ({1}/{2}) to '{3}/{4}' using {5}...", sFiles(i), i + 1, sFiles.Length, sHost.TrimEnd("/"c), sDestinationPath.TrimStart("/"c),
                                                                                                                                        If(iProtocolType = ENUM_FTP_PROTOCOL_TYPE.FTP, "FTP", "SFTP")))
 
-                                                                           Dim sFilename As String = IO.Path.GetFileName(sFiles(i))
-                                                                           Dim sDestinationFile As String = (sDestinationPath.TrimEnd("/"c) & "/" & sFilename)
-                                                                           Dim iFileLength As ULong = CULng(New IO.FileInfo(sFiles(i)).Length)
+                                                                               Dim sFilename As String = IO.Path.GetFileName(sFiles(i))
+                                                                               Dim sDestinationFile As String = (sDestinationPath.TrimEnd("/"c) & "/" & sFilename)
+                                                                               Dim iFileLength As ULong = CULng(New IO.FileInfo(sFiles(i)).Length)
 
-                                                                           ClassThread.ExecEx(Of Object)(Me, Sub()
-                                                                                                                 If (g_mFormProgress IsNot Nothing AndAlso Not g_mFormProgress.IsDisposed) Then
-                                                                                                                     g_mFormProgress.Dispose()
-                                                                                                                     g_mFormProgress = Nothing
-                                                                                                                 End If
+                                                                               ClassThread.ExecEx(Of Object)(Me, Sub()
+                                                                                                                     If (g_mFormProgress IsNot Nothing AndAlso Not g_mFormProgress.IsDisposed) Then
+                                                                                                                         g_mFormProgress.Dispose()
+                                                                                                                         g_mFormProgress = Nothing
+                                                                                                                     End If
 
-                                                                                                                 g_mFormProgress = New FormProgress With {
+                                                                                                                     g_mFormProgress = New FormProgress With {
                                                                                                                      .Text = String.Format("Uploading file ({0}/{1})...", i + 1, sFiles.Length),
                                                                                                                      .m_Progress = 0
                                                                                                                  }
-                                                                                                                 g_mFormProgress.m_CloseAction = (Function()
-                                                                                                                                                      'Ewww quite dirty
-                                                                                                                                                      g_mFormProgress.Text = "Canceling..."
-                                                                                                                                                      bCanceled = True
-                                                                                                                                                      ClassThread.Abort(g_mUploadThread, False)
-                                                                                                                                                      Return True
-                                                                                                                                                  End Function)
-                                                                                                                 g_mFormProgress.Show(Me)
-                                                                                                             End Sub)
+                                                                                                                     g_mFormProgress.m_CloseAction = (Function()
+                                                                                                                                                          'Ewww quite dirty
+                                                                                                                                                          g_mFormProgress.Text = "Canceling..."
+                                                                                                                                                          bCanceled = True
+                                                                                                                                                          ClassThread.Abort(g_mUploadThread, False)
+                                                                                                                                                          Return True
+                                                                                                                                                      End Function)
+                                                                                                                     g_mFormProgress.Show(Me)
+                                                                                                                 End Sub)
 
-                                                                           Dim mUploadAction As Action(Of ULong) = (Sub(iBytesUplaoded As ULong)
-                                                                                                                        Dim iProgress As Integer = ClassTools.ClassMath.ClampInt(CInt((iBytesUplaoded / iFileLength) * 100), 0, 100)
+                                                                               Dim mUploadAction As Action(Of ULong) = (Sub(iBytesUplaoded As ULong)
+                                                                                                                            Dim iProgress As Integer = ClassTools.ClassMath.ClampInt(CInt((iBytesUplaoded / iFileLength) * 100), 0, 100)
 
-                                                                                                                        ClassThread.ExecAsync(Me, Sub()
-                                                                                                                                                      If (g_mFormProgress IsNot Nothing AndAlso Not g_mFormProgress.IsDisposed) Then
-                                                                                                                                                          If (g_mFormProgress.m_Progress <> iProgress) Then
-                                                                                                                                                              g_mFormProgress.m_Progress = iProgress
+                                                                                                                            ClassThread.ExecAsync(Me, Sub()
+                                                                                                                                                          If (g_mFormProgress IsNot Nothing AndAlso Not g_mFormProgress.IsDisposed) Then
+                                                                                                                                                              If (g_mFormProgress.m_Progress <> iProgress) Then
+                                                                                                                                                                  g_mFormProgress.m_Progress = iProgress
+                                                                                                                                                              End If
                                                                                                                                                           End If
-                                                                                                                                                      End If
-                                                                                                                                                  End Sub)
-                                                                                                                    End Sub)
+                                                                                                                                                      End Sub)
+                                                                                                                        End Sub)
 
-                                                                           Select Case (iProtocolType)
-                                                                               Case ENUM_FTP_PROTOCOL_TYPE.FTP
-                                                                                   Dim mClassFTP As New ClassFTP(sHost, sUsername, sPassword)
+                                                                               Select Case (True)
+                                                                                   Case (TypeOf mFtpClient Is ClassFTP)
+                                                                                       Dim mClient = DirectCast(mFtpClient, ClassFTP)
 
-                                                                                   mClassFTP.UploadFile(sFiles(i), sDestinationFile, mUploadAction)
-                                                                               Case Else
-                                                                                   Using mClassSFTP As New Renci.SshNet.SftpClient(sHost, sUsername, sPassword)
-                                                                                       mClassSFTP.Connect()
+                                                                                       mClient.UploadFile(sFiles(i), sDestinationFile, mUploadAction)
+
+                                                                                   Case (TypeOf mFtpClient Is Renci.SshNet.SftpClient)
+                                                                                       Dim mClient = DirectCast(mFtpClient, Renci.SshNet.SftpClient)
+
+                                                                                       If (Not mClient.IsConnected) Then
+                                                                                           mClient.Connect()
+                                                                                       End If
 
                                                                                        Using mStream As New IO.FileStream(sFiles(i), IO.FileMode.Open, IO.FileAccess.Read)
-                                                                                           mClassSFTP.UploadFile(mStream, sDestinationFile, mUploadAction)
+                                                                                           mClient.UploadFile(mStream, sDestinationFile, mUploadAction)
                                                                                        End Using
-                                                                                   End Using
-                                                                           End Select
+                                                                                   Case Else
+                                                                                       Throw New ArgumentException("Invalid FTP client")
+                                                                               End Select
 
-                                                                           g_mPluginFTP.g_mFormMain.PrintInformation("[INFO]", "Upload Success!")
-                                                                       Next
+                                                                               g_mPluginFTP.g_mFormMain.PrintInformation("[INFO]", "Upload Success!")
+                                                                           Next
+                                                                       Finally
+                                                                           If (TypeOf mFtpClient Is Renci.SshNet.SftpClient) Then
+                                                                               Dim mClient = DirectCast(mFtpClient, Renci.SshNet.SftpClient)
+
+                                                                               mClient.Dispose()
+                                                                           End If
+
+                                                                           mFtpClient = Nothing
+                                                                       End Try
                                                                    Finally
-                                                                       ClassThread.ExecAsync(Me, Sub()
+                                                                           ClassThread.ExecAsync(Me, Sub()
                                                                                                      If (g_mFormProgress IsNot Nothing AndAlso Not g_mFormProgress.IsDisposed) Then
                                                                                                          g_mFormProgress.Dispose()
                                                                                                          g_mFormProgress = Nothing
