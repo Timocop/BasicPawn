@@ -224,7 +224,7 @@ Public Class FormDebugger
                         .Checked = True
                     End With
 
-                    Dim marker As New ICSharpCode.TextEditor.Document.TextMarker(mBreakpointItem.iOffset, mBreakpointItem.iTotalLenght, ICSharpCode.TextEditor.Document.TextMarkerType.Underlined, Color.DarkOrange)
+                    Dim marker As New ICSharpCode.TextEditor.Document.TextMarker(mBreakpointItem.iOffset, mBreakpointItem.iTotalLength, ICSharpCode.TextEditor.Document.TextMarkerType.Underlined, Color.DarkOrange)
                     TextEditorControlEx_DebuggerSource.Document.MarkerStrategy.AddMarker(marker)
                 Next
                 ListView_Breakpoints.EndUpdate()
@@ -238,7 +238,7 @@ Public Class FormDebugger
 
                     ListView_Watchers.Items.Add(mListViewItemData)
 
-                    Dim marker As New ICSharpCode.TextEditor.Document.TextMarker(mWatcherItem.iOffset, mWatcherItem.iTotalLenght, ICSharpCode.TextEditor.Document.TextMarkerType.Underlined, Color.DarkOrange)
+                    Dim marker As New ICSharpCode.TextEditor.Document.TextMarker(mWatcherItem.iOffset, mWatcherItem.iTotalLength, ICSharpCode.TextEditor.Document.TextMarkerType.Underlined, Color.DarkOrange)
                     TextEditorControlEx_DebuggerSource.Document.MarkerStrategy.AddMarker(marker)
                 Next
                 ListView_Watchers.EndUpdate()
@@ -375,7 +375,7 @@ Public Class FormDebugger
                 End If
 
                 Dim startLocation As New ICSharpCode.TextEditor.TextLocation(mItem.iIndex, mItem.iLine - 1)
-                Dim endLocation As New ICSharpCode.TextEditor.TextLocation(mItem.iIndex + mItem.iTotalLenght, mItem.iLine - 1)
+                Dim endLocation As New ICSharpCode.TextEditor.TextLocation(mItem.iIndex + mItem.iTotalLength, mItem.iLine - 1)
 
                 TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.Caret.Position = startLocation
                 TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.SelectionManager.SetSelection(startLocation, endLocation)
@@ -413,7 +413,7 @@ Public Class FormDebugger
                 End If
 
                 Dim startLocation As New ICSharpCode.TextEditor.TextLocation(item.iIndex, item.iLine - 1)
-                Dim endLocation As New ICSharpCode.TextEditor.TextLocation(item.iIndex + item.iTotalLenght, item.iLine - 1)
+                Dim endLocation As New ICSharpCode.TextEditor.TextLocation(item.iIndex + item.iTotalLength, item.iLine - 1)
 
                 TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.Caret.Position = startLocation
                 TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.SelectionManager.SetSelection(startLocation, endLocation)
@@ -649,10 +649,10 @@ Public Class FormDebugger
         If (True) Then
             For Each info In g_ClassDebuggerParser.g_lBreakpointList
                 Dim iOffset As Integer = info.iOffset
-                Dim iLenght As Integer = info.iLenght
+                Dim iLength As Integer = info.iLength
                 Dim sGUID As String = info.sGUID
 
-                If (iCaretOffset >= iOffset AndAlso iCaretOffset <= (iOffset + iLenght)) Then
+                If (iCaretOffset >= iOffset AndAlso iCaretOffset <= (iOffset + iLength)) Then
                     'ListView_Breakpoints.Select()
                     TabControl1.SelectTab(0)
 
@@ -684,10 +684,10 @@ Public Class FormDebugger
         If (True) Then
             For Each info In g_ClassDebuggerParser.g_lWatcherList
                 Dim iOffset As Integer = info.iOffset
-                Dim iLenght As Integer = info.iLenght
+                Dim iLength As Integer = info.iLength
                 Dim sGUID As String = info.sGUID
 
-                If (iCaretOffset >= iOffset AndAlso iCaretOffset <= (iOffset + iLenght)) Then
+                If (iCaretOffset >= iOffset AndAlso iCaretOffset <= (iOffset + iLength)) Then
                     'ListView_Watchers.Select()
                     TabControl1.SelectTab(1)
 

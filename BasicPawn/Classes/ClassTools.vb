@@ -40,7 +40,7 @@ Public Class ClassTools
         End Function
 
         ''' <summary>
-        ''' Generate a random string with lenght and custom pattern.
+        ''' Generate a random string with length and custom pattern.
         ''' </summary>
         ''' <param name="length"></param>
         ''' <param name="pattern"></param>

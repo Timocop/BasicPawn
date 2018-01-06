@@ -1922,9 +1922,9 @@ Public Class ClassAutocompleteUpdater
             Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iLanguage)
             Dim sLines As String() = sSource.Split(New String() {vbNewLine, vbLf}, 0)
 
-            If (mSourceAnalysis.m_MaxLenght - 1 > 0) Then
+            If (mSourceAnalysis.m_MaxLength - 1 > 0) Then
                 Dim iLeftBraceRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
-                Dim iLastBraceLevel As Integer = mSourceAnalysis.GetBraceLevel(mSourceAnalysis.m_MaxLenght - 1, iLeftBraceRange)
+                Dim iLastBraceLevel As Integer = mSourceAnalysis.GetBraceLevel(mSourceAnalysis.m_MaxLength - 1, iLeftBraceRange)
                 If (iLastBraceLevel > 0 AndAlso iLeftBraceRange <> ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END) Then
                     g_mFormMain.PrintInformation("[ERRO]", String.Format("Uneven brace level! May lead to syntax parser failures! [LV:{0}] ({1})", iLastBraceLevel, IO.Path.GetFileName(sFile)), False, False)
                 End If

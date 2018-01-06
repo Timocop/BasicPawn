@@ -744,7 +744,7 @@ Public Class ClassTabControl
             AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.SelectionManager.SelectionChanged, AddressOf TextEditorControl_Source_UpdateInfo
             AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.PositionChanged, AddressOf TextEditorControl_Source_UpdateInfo
 
-            AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Document.LineLengthChanged, AddressOf TextEditorControl_DetectLineLenghtChange
+            AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Document.LineLengthChanged, AddressOf TextEditorControl_DetectLineLengthChange
             AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Document.LineCountChanged, AddressOf TextEditorControl_DetectLineCountChange
 
             AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Document.FoldingManager.FoldingsChanged, AddressOf TextEditorControl_FoldingsChanged
@@ -773,7 +773,7 @@ Public Class ClassTabControl
             RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.SelectionManager.SelectionChanged, AddressOf TextEditorControl_Source_UpdateInfo
             RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.PositionChanged, AddressOf TextEditorControl_Source_UpdateInfo
 
-            RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Document.LineLengthChanged, AddressOf TextEditorControl_DetectLineLenghtChange
+            RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Document.LineLengthChanged, AddressOf TextEditorControl_DetectLineLengthChange
             RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Document.LineCountChanged, AddressOf TextEditorControl_DetectLineCountChange
 
             RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Document.FoldingManager.FoldingsChanged, AddressOf TextEditorControl_FoldingsChanged
@@ -1099,7 +1099,7 @@ Public Class ClassTabControl
                     g_mFormMain.g_ClassTabControl.EndUpdate()
                 End Try
             Catch ex As Exception
-                    ClassExceptionLog.WriteToLogMessageBox(ex)
+                ClassExceptionLog.WriteToLogMessageBox(ex)
             End Try
         End Sub
 #End Region
@@ -1344,7 +1344,7 @@ Public Class ClassTabControl
             g_mFormMain.ToolStripStatusLabel_EditorSelectedCount.Text = "S: " & g_mSourceTextEditor.ActiveTextAreaControl.TextArea.SelectionManager.SelectedText.Length
         End Sub
 
-        Private Sub TextEditorControl_DetectLineLenghtChange(sender As Object, e As LineLengthChangeEventArgs)
+        Private Sub TextEditorControl_DetectLineLengthChange(sender As Object, e As LineLengthChangeEventArgs)
             Try
                 Dim iTotalLines As Integer = g_mSourceTextEditor.Document.TotalNumberOfLines
 

@@ -68,7 +68,7 @@ Public Class ClassSyntaxTools
 
         'Check escape chars
         If (g_sEscapeCharacters.Length <> [Enum].GetNames(GetType(ENUM_LANGUAGE_TYPE)).Length) Then
-            Throw New ArgumentException("g_sEscapeCharacters lenght")
+            Throw New ArgumentException("g_sEscapeCharacters length")
         End If
 
         g_mSyntaxProvider = New ClassSyntaxHighlighting.ClassBinarySyntaxModeFileProvider()
@@ -589,22 +589,22 @@ Public Class ClassSyntaxTools
         End Enum
 
         Private g_iStateArray As Integer(,)
-        Private g_iMaxLenght As Integer = 0
+        Private g_iMaxLength As Integer = 0
         Private g_sCacheText As String = ""
 
         Public ReadOnly Property m_InRange(i As Integer) As Boolean
             Get
-                Return (i > -1 AndAlso i < g_iMaxLenght)
+                Return (i > -1 AndAlso i < g_iMaxLength)
             End Get
         End Property
 
         ''' <summary>
-        ''' Gets the max lenght
+        ''' Gets the max length
         ''' </summary>
         ''' <returns></returns>
-        Public ReadOnly Property m_MaxLenght() As Integer
+        Public ReadOnly Property m_MaxLength() As Integer
             Get
-                Return g_iMaxLenght
+                Return g_iMaxLength
             End Get
         End Property
 
@@ -767,7 +767,7 @@ Public Class ClassSyntaxTools
 
         Public Sub New(ByRef sText As String, iLanguage As ENUM_LANGUAGE_TYPE, Optional bIgnorePreprocessor As Boolean = True)
             g_sCacheText = sText
-            g_iMaxLenght = sText.Length
+            g_iMaxLength = sText.Length
 
             g_iStateArray = New Integer(sText.Length, [Enum].GetNames(GetType(ENUM_STATE_TYPES)).Length - 1) {}
 

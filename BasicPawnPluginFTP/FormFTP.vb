@@ -269,7 +269,7 @@ Public Class FormFTP
 
                                                                            Dim sFilename As String = IO.Path.GetFileName(sFiles(i))
                                                                            Dim sDestinationFile As String = (sDestinationPath.TrimEnd("/"c) & "/" & sFilename)
-                                                                           Dim iFileLenght As ULong = CULng(New IO.FileInfo(sFiles(i)).Length)
+                                                                           Dim iFileLength As ULong = CULng(New IO.FileInfo(sFiles(i)).Length)
 
                                                                            ClassThread.ExecEx(Of Object)(Me, Sub()
                                                                                                                  If (g_mFormProgress IsNot Nothing AndAlso Not g_mFormProgress.IsDisposed) Then
@@ -292,7 +292,7 @@ Public Class FormFTP
                                                                                                              End Sub)
 
                                                                            Dim mUploadAction As Action(Of ULong) = (Sub(iBytesUplaoded As ULong)
-                                                                                                                        Dim iProgress As Integer = ClassTools.ClassMath.ClampInt(CInt((iBytesUplaoded / iFileLenght) * 100), 0, 100)
+                                                                                                                        Dim iProgress As Integer = ClassTools.ClassMath.ClampInt(CInt((iBytesUplaoded / iFileLength) * 100), 0, 100)
 
                                                                                                                         ClassThread.ExecAsync(Me, Sub()
                                                                                                                                                       If (g_mFormProgress IsNot Nothing AndAlso Not g_mFormProgress.IsDisposed) Then

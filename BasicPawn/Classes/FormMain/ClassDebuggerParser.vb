@@ -41,8 +41,8 @@ Public Class ClassDebuggerParser
         Dim iLine As Integer
 
         Dim iIndex As Integer
-        Dim iLenght As Integer
-        Dim iTotalLenght As Integer
+        Dim iLength As Integer
+        Dim iTotalLength As Integer
 
         Dim iOffset As Integer
 
@@ -89,15 +89,15 @@ Public Class ClassDebuggerParser
                 iLineIndex += 1
             Next
 
-            Dim iLenght As Integer = mMatch.Groups("Length").Index - mMatch.Index
-            Dim iTotalLenght As Integer = 0
+            Dim iLength As Integer = mMatch.Groups("Length").Index - mMatch.Index
+            Dim iTotalLength As Integer = 0
             Dim sArguments As New StringBuilder
             Dim sTotalFunction As New StringBuilder
 
             Dim iStartLevel As Integer = mSourceAnalysis.GetParenthesisLevel(iIndex, Nothing)
             Dim bGetArguments As Boolean = False
             For i = iIndex To sSource.Length - 1
-                iTotalLenght += 1
+                iTotalLength += 1
 
                 sTotalFunction.Append(sSource(i))
 
@@ -117,7 +117,7 @@ Public Class ClassDebuggerParser
                 End If
             Next
 
-            If (iTotalLenght < 1) Then
+            If (iTotalLength < 1) Then
                 Continue For
             End If
 
@@ -126,8 +126,8 @@ Public Class ClassDebuggerParser
                     .sGUID = g_lBreakpointList(iListIndex).sGUID,
                     .iLine = iLine,
                     .iIndex = iLineIndex,
-                    .iLenght = iLenght,
-                    .iTotalLenght = iTotalLenght,
+                    .iLength = iLength,
+                    .iTotalLength = iTotalLength,
                     .iOffset = iIndex,
                     .sArguments = sArguments.ToString,
                     .sTotalFunction = sTotalFunction.ToString
@@ -137,8 +137,8 @@ Public Class ClassDebuggerParser
                     .sGUID = sGUID,
                     .iLine = iLine,
                     .iIndex = iLineIndex,
-                    .iLenght = iLenght,
-                    .iTotalLenght = iTotalLenght,
+                    .iLength = iLength,
+                    .iTotalLength = iTotalLength,
                     .iOffset = iIndex,
                     .sArguments = sArguments.ToString,
                     .sTotalFunction = sTotalFunction.ToString
@@ -184,15 +184,15 @@ Public Class ClassDebuggerParser
                 iLineIndex += 1
             Next
 
-            Dim iLenght As Integer = mMatch.Groups("Length").Index - mMatch.Index
-            Dim iTotalLenght As Integer = 0
+            Dim iLength As Integer = mMatch.Groups("Length").Index - mMatch.Index
+            Dim iTotalLength As Integer = 0
             Dim sArguments As New StringBuilder
             Dim sTotalFunction As New StringBuilder
 
             Dim iStartLevel As Integer = mSourceAnalysis.GetParenthesisLevel(iIndex, Nothing)
             Dim bGetArguments As Boolean = False
             For i = iIndex To sSource.Length - 1
-                iTotalLenght += 1
+                iTotalLength += 1
 
                 sTotalFunction.Append(sSource(i))
 
@@ -212,7 +212,7 @@ Public Class ClassDebuggerParser
                 End If
             Next
 
-            If (iTotalLenght < 1) Then
+            If (iTotalLength < 1) Then
                 Continue For
             End If
 
@@ -221,8 +221,8 @@ Public Class ClassDebuggerParser
                     .sGUID = g_lWatcherList(iListIndex).sGUID,
                     .iLine = iLine,
                     .iIndex = iLineIndex,
-                    .iLenght = iLenght,
-                    .iTotalLenght = iTotalLenght,
+                    .iLength = iLength,
+                    .iTotalLength = iTotalLength,
                     .iOffset = iIndex,
                     .sArguments = sArguments.ToString,
                     .sTotalFunction = sTotalFunction.ToString
@@ -232,8 +232,8 @@ Public Class ClassDebuggerParser
                     .sGUID = sGUID,
                     .iLine = iLine,
                     .iIndex = iLineIndex,
-                    .iLenght = iLenght,
-                    .iTotalLenght = iTotalLenght,
+                    .iLength = iLength,
+                    .iTotalLength = iTotalLength,
                     .iOffset = iIndex,
                     .sArguments = sArguments.ToString,
                     .sTotalFunction = sTotalFunction.ToString
@@ -611,10 +611,10 @@ Public Class ClassDebuggerParser
 
             If (mActiveTextEditor.ActiveTextAreaControl.SelectionManager.HasSomethingSelected AndAlso mActiveTextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection.Count > 0) Then
                 Dim iOffset As Integer = mActiveTextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection(0).Offset
-                Dim iLenght As Integer = mActiveTextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection(0).Length
+                Dim iLength As Integer = mActiveTextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection(0).Length
 
                 mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
-                mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iOffset + iLenght, ")")
+                mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iOffset + iLength, ")")
                 mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iOffset, String.Format("{0}(", ClassDebuggerParser.g_sBreakpointName))
                 mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
             Else
@@ -640,10 +640,10 @@ Public Class ClassDebuggerParser
                             Dim sSource As String = mActiveTextEditor.ActiveTextAreaControl.Document.TextContent
                             Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
 
-                            Dim iFullLenght As Integer = 0
+                            Dim iFullLength As Integer = 0
                             Dim iStartLevel As Integer = mSourceAnalysis.GetBracketLevel(iStartOffset, Nothing)
                             For i = iStartOffset To sSource.Length - 1
-                                iFullLenght += 1
+                                iFullLength += 1
 
                                 Dim iBracketRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
                                 If (iStartLevel + 1 = mSourceAnalysis.GetBracketLevel(i, iBracketRange) AndAlso
@@ -653,7 +653,7 @@ Public Class ClassDebuggerParser
                             Next
 
                             mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
-                            mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset + iFullLenght, ")")
+                            mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset + iFullLength, ")")
                             mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset, String.Format("{0}(", ClassDebuggerParser.g_sBreakpointName))
                             mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
 
@@ -661,10 +661,10 @@ Public Class ClassDebuggerParser
                             Dim sSource As String = mActiveTextEditor.ActiveTextAreaControl.Document.TextContent
                             Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
 
-                            Dim iFullLenght As Integer = 0
+                            Dim iFullLength As Integer = 0
                             Dim iStartLevel As Integer = mSourceAnalysis.GetParenthesisLevel(iStartOffset, Nothing)
                             For i = iStartOffset To sSource.Length - 1
-                                iFullLenght += 1
+                                iFullLength += 1
 
                                 Dim iParentRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
                                 If (iStartLevel + 1 = mSourceAnalysis.GetParenthesisLevel(i, iParentRange) AndAlso
@@ -674,7 +674,7 @@ Public Class ClassDebuggerParser
                             Next
 
                             mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
-                            mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset + iFullLenght, ")")
+                            mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset + iFullLength, ")")
                             mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset, String.Format("{0}(", ClassDebuggerParser.g_sBreakpointName))
                             mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
 
@@ -715,16 +715,16 @@ Public Class ClassDebuggerParser
 
             For i = debuggerParser.g_lBreakpointList.Count - 1 To 0 Step -1
                 Dim iIndex As Integer = debuggerParser.g_lBreakpointList(i).iOffset
-                Dim iLenght As Integer = debuggerParser.g_lBreakpointList(i).iLenght
-                Dim iTotalLenght As Integer = debuggerParser.g_lBreakpointList(i).iTotalLenght
+                Dim iLength As Integer = debuggerParser.g_lBreakpointList(i).iLength
+                Dim iTotalLength As Integer = debuggerParser.g_lBreakpointList(i).iTotalLength
                 Dim iLine As Integer = debuggerParser.g_lBreakpointList(i).iLine
                 Dim sFullFunction As String = debuggerParser.g_lBreakpointList(i).sArguments
 
-                If (iIndex > iCaretOffset OrElse (iIndex + iLenght) < iCaretOffset) Then
+                If (iIndex > iCaretOffset OrElse (iIndex + iLength) < iCaretOffset) Then
                     Continue For
                 End If
 
-                mActiveTextEditor.Document.Replace(iIndex, iTotalLenght, sFullFunction)
+                mActiveTextEditor.Document.Replace(iIndex, iTotalLength, sFullFunction)
                 If (mActiveTextEditor.Document.TextLength > iIndex AndAlso mActiveTextEditor.Document.TextContent(iIndex) = ";"c) Then
                     mActiveTextEditor.Document.Remove(iIndex, 1)
                 End If
@@ -762,12 +762,12 @@ Public Class ClassDebuggerParser
 
                 For i = debuggerParser.g_lBreakpointList.Count - 1 To 0 Step -1
                     Dim iIndex As Integer = debuggerParser.g_lBreakpointList(i).iOffset
-                    Dim iLenght As Integer = debuggerParser.g_lBreakpointList(i).iLenght
-                    Dim iTotalLenght As Integer = debuggerParser.g_lBreakpointList(i).iTotalLenght
+                    Dim iLength As Integer = debuggerParser.g_lBreakpointList(i).iLength
+                    Dim iTotalLength As Integer = debuggerParser.g_lBreakpointList(i).iTotalLength
                     Dim iLine As Integer = debuggerParser.g_lBreakpointList(i).iLine
                     Dim sFullFunction As String = debuggerParser.g_lBreakpointList(i).sArguments
 
-                    mActiveTextEditor.Document.Replace(iIndex, iTotalLenght, sFullFunction)
+                    mActiveTextEditor.Document.Replace(iIndex, iTotalLength, sFullFunction)
                     If (mActiveTextEditor.Document.TextLength > iIndex AndAlso mActiveTextEditor.Document.TextContent(iIndex) = ";"c) Then
                         mActiveTextEditor.Document.Remove(iIndex, 1)
                     End If
@@ -781,8 +781,8 @@ Public Class ClassDebuggerParser
                         End If
 
                         Dim jIndex As Integer = debuggerParser.g_lBreakpointList(j).iOffset
-                        Dim jTotalLenght As Integer = debuggerParser.g_lBreakpointList(j).iTotalLenght
-                        If (iIndex < jIndex OrElse iIndex > (jIndex + jTotalLenght)) Then
+                        Dim jTotalLength As Integer = debuggerParser.g_lBreakpointList(j).iTotalLength
+                        If (iIndex < jIndex OrElse iIndex > (jIndex + jTotalLength)) Then
                             Continue For
                         End If
 
@@ -824,10 +824,10 @@ Public Class ClassDebuggerParser
 
                 For i = debuggerParser.g_lBreakpointList.Count - 1 To 0 Step -1
                     Dim iIndex As Integer = debuggerParser.g_lBreakpointList(i).iOffset
-                    Dim iTotalLenght As Integer = debuggerParser.g_lBreakpointList(i).iTotalLenght
+                    Dim iTotalLength As Integer = debuggerParser.g_lBreakpointList(i).iTotalLength
                     Dim sFullFunction As String = debuggerParser.g_lBreakpointList(i).sArguments
 
-                    SB.Remove(iIndex, iTotalLenght)
+                    SB.Remove(iIndex, iTotalLength)
                     SB.Insert(iIndex, sFullFunction)
                     If (SB.Length > iIndex AndAlso SB.Chars(iIndex) = ";"c) Then
                         SB.Remove(iIndex, 1)
@@ -840,8 +840,8 @@ Public Class ClassDebuggerParser
                         End If
 
                         Dim jIndex As Integer = debuggerParser.g_lBreakpointList(j).iOffset
-                        Dim jTotalLenght As Integer = debuggerParser.g_lBreakpointList(j).iTotalLenght
-                        If (iIndex < jIndex OrElse iIndex > (jIndex + jTotalLenght)) Then
+                        Dim jTotalLength As Integer = debuggerParser.g_lBreakpointList(j).iTotalLength
+                        If (iIndex < jIndex OrElse iIndex > (jIndex + jTotalLength)) Then
                             Continue For
                         End If
 
@@ -885,11 +885,11 @@ Public Class ClassDebuggerParser
 
             For i = debuggerParser.g_lBreakpointList.Count - 1 To 0 Step -1
                 Dim iIndex As Integer = debuggerParser.g_lBreakpointList(i).iOffset
-                Dim iLenght As Integer = debuggerParser.g_lBreakpointList(i).iLenght
+                Dim iLength As Integer = debuggerParser.g_lBreakpointList(i).iLength
                 Dim sGUID As String = debuggerParser.g_lBreakpointList(i).sGUID
                 Dim sNewName As String = g_sBreakpointName & sGUID.Replace("-", "")
 
-                SB.Remove(iIndex, iLenght)
+                SB.Remove(iIndex, iLength)
                 SB.Insert(iIndex, sNewName)
 
                 SBModules.AppendLine(GenerateModuleCode(sNewName, sGUID, bForceNewSyntax))
@@ -917,10 +917,10 @@ Public Class ClassDebuggerParser
 
             If (mActiveTextEditor.ActiveTextAreaControl.SelectionManager.HasSomethingSelected AndAlso mActiveTextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection.Count > 0) Then
                 Dim iOffset As Integer = mActiveTextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection(0).Offset
-                Dim iLenght As Integer = mActiveTextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection(0).Length
+                Dim iLength As Integer = mActiveTextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection(0).Length
 
                 mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
-                mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iOffset + iLenght, ")")
+                mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iOffset + iLength, ")")
                 mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iOffset, String.Format("{0}(", ClassDebuggerParser.g_sWatcherName))
                 mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
             Else
@@ -946,10 +946,10 @@ Public Class ClassDebuggerParser
                             Dim sSource As String = mActiveTextEditor.ActiveTextAreaControl.Document.TextContent
                             Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
 
-                            Dim iFullLenght As Integer = 0
+                            Dim iFullLength As Integer = 0
                             Dim iStartLevel As Integer = mSourceAnalysis.GetBracketLevel(iStartOffset, Nothing)
                             For i = iStartOffset To sSource.Length - 1
-                                iFullLenght += 1
+                                iFullLength += 1
 
                                 Dim iBracketRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
                                 If (iStartLevel + 1 = mSourceAnalysis.GetBracketLevel(i, iBracketRange) AndAlso
@@ -959,7 +959,7 @@ Public Class ClassDebuggerParser
                             Next
 
                             mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
-                            mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset + iFullLenght, ")")
+                            mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset + iFullLength, ")")
                             mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset, String.Format("{0}(", ClassDebuggerParser.g_sWatcherName))
                             mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
 
@@ -967,10 +967,10 @@ Public Class ClassDebuggerParser
                             Dim sSource As String = mActiveTextEditor.ActiveTextAreaControl.Document.TextContent
                             Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
 
-                            Dim iFullLenght As Integer = 0
+                            Dim iFullLength As Integer = 0
                             Dim iStartLevel As Integer = mSourceAnalysis.GetParenthesisLevel(iStartOffset, Nothing)
                             For i = iStartOffset To sSource.Length - 1
-                                iFullLenght += 1
+                                iFullLength += 1
 
                                 Dim iParentRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
                                 If (iStartLevel + 1 = mSourceAnalysis.GetParenthesisLevel(i, iParentRange) AndAlso
@@ -980,7 +980,7 @@ Public Class ClassDebuggerParser
                             Next
 
                             mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
-                            mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset + iFullLenght, ")")
+                            mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset + iFullLength, ")")
                             mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset, String.Format("{0}(", ClassDebuggerParser.g_sWatcherName))
                             mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
 
@@ -1021,16 +1021,16 @@ Public Class ClassDebuggerParser
 
             For i = debuggerParser.g_lWatcherList.Count - 1 To 0 Step -1
                 Dim iIndex As Integer = debuggerParser.g_lWatcherList(i).iOffset
-                Dim iLenght As Integer = debuggerParser.g_lWatcherList(i).iLenght
-                Dim iTotalLenght As Integer = debuggerParser.g_lWatcherList(i).iTotalLenght
+                Dim iLength As Integer = debuggerParser.g_lWatcherList(i).iLength
+                Dim iTotalLength As Integer = debuggerParser.g_lWatcherList(i).iTotalLength
                 Dim iLine As Integer = debuggerParser.g_lWatcherList(i).iLine
                 Dim sFullFunction As String = debuggerParser.g_lWatcherList(i).sArguments
 
-                If (iIndex > iCaretOffset OrElse (iIndex + iLenght) < iCaretOffset) Then
+                If (iIndex > iCaretOffset OrElse (iIndex + iLength) < iCaretOffset) Then
                     Continue For
                 End If
 
-                mActiveTextEditor.Document.Replace(iIndex, iTotalLenght, sFullFunction)
+                mActiveTextEditor.Document.Replace(iIndex, iTotalLength, sFullFunction)
                 If (mActiveTextEditor.Document.TextLength > iIndex AndAlso mActiveTextEditor.Document.TextContent(iIndex) = ";"c) Then
                     mActiveTextEditor.Document.Remove(iIndex, 1)
                 End If
@@ -1067,17 +1067,17 @@ Public Class ClassDebuggerParser
 
                 For i = debuggerParser.g_lWatcherList.Count - 1 To 0 Step -1
                     Dim iIndex As Integer = debuggerParser.g_lWatcherList(i).iOffset
-                    Dim iLenght As Integer = debuggerParser.g_lWatcherList(i).iLenght
-                    Dim iTotalLenght As Integer = debuggerParser.g_lWatcherList(i).iTotalLenght
+                    Dim iLength As Integer = debuggerParser.g_lWatcherList(i).iLength
+                    Dim iTotalLength As Integer = debuggerParser.g_lWatcherList(i).iTotalLength
                     Dim iLine As Integer = debuggerParser.g_lWatcherList(i).iLine
                     Dim sFullFunction As String = debuggerParser.g_lWatcherList(i).sArguments
 
-                    mActiveTextEditor.Document.Replace(iIndex, iTotalLenght, sFullFunction)
+                    mActiveTextEditor.Document.Replace(iIndex, iTotalLength, sFullFunction)
                     If (mActiveTextEditor.Document.TextLength > iIndex AndAlso mActiveTextEditor.Document.TextContent(iIndex) = ";"c) Then
                         mActiveTextEditor.Document.Remove(iIndex, 1)
                     End If
 
-                    lRemovedWatchers.add(iLine)
+                    lRemovedWatchers.Add(iLine)
 
                     Dim bDoRebuild As Boolean = False
                     For j = debuggerParser.g_lWatcherList.Count - 1 To 0 Step -1
@@ -1086,8 +1086,8 @@ Public Class ClassDebuggerParser
                         End If
 
                         Dim jIndex As Integer = debuggerParser.g_lWatcherList(j).iOffset
-                        Dim jTotalLenght As Integer = debuggerParser.g_lWatcherList(j).iTotalLenght
-                        If (iIndex < jIndex OrElse iIndex > (jIndex + jTotalLenght)) Then
+                        Dim jTotalLength As Integer = debuggerParser.g_lWatcherList(j).iTotalLength
+                        If (iIndex < jIndex OrElse iIndex > (jIndex + jTotalLength)) Then
                             Continue For
                         End If
 
@@ -1129,10 +1129,10 @@ Public Class ClassDebuggerParser
 
                 For i = debuggerParser.g_lWatcherList.Count - 1 To 0 Step -1
                     Dim iIndex As Integer = debuggerParser.g_lWatcherList(i).iOffset
-                    Dim iTotalLenght As Integer = debuggerParser.g_lWatcherList(i).iTotalLenght
+                    Dim iTotalLength As Integer = debuggerParser.g_lWatcherList(i).iTotalLength
                     Dim sFullFunction As String = debuggerParser.g_lWatcherList(i).sArguments
 
-                    SB.Remove(iIndex, iTotalLenght)
+                    SB.Remove(iIndex, iTotalLength)
                     SB.Insert(iIndex, sFullFunction)
                     If (SB.Length > iIndex AndAlso SB.Chars(iIndex) = ";"c) Then
                         SB.Remove(iIndex, 1)
@@ -1145,8 +1145,8 @@ Public Class ClassDebuggerParser
                         End If
 
                         Dim jIndex As Integer = debuggerParser.g_lWatcherList(j).iOffset
-                        Dim jTotalLenght As Integer = debuggerParser.g_lWatcherList(j).iTotalLenght
-                        If (iIndex < jIndex OrElse iIndex > (jIndex + jTotalLenght)) Then
+                        Dim jTotalLength As Integer = debuggerParser.g_lWatcherList(j).iTotalLength
+                        If (iIndex < jIndex OrElse iIndex > (jIndex + jTotalLength)) Then
                             Continue For
                         End If
 
@@ -1190,11 +1190,11 @@ Public Class ClassDebuggerParser
 
             For i = debuggerParser.g_lWatcherList.Count - 1 To 0 Step -1
                 Dim iIndex As Integer = debuggerParser.g_lWatcherList(i).iOffset
-                Dim iLenght As Integer = debuggerParser.g_lWatcherList(i).iLenght
+                Dim iLength As Integer = debuggerParser.g_lWatcherList(i).iLength
                 Dim sGUID As String = debuggerParser.g_lWatcherList(i).sGUID
                 Dim sNewName As String = g_sWatcherName & sGUID.Replace("-", "")
 
-                SB.Remove(iIndex, iLenght)
+                SB.Remove(iIndex, iLength)
                 SB.Insert(iIndex, sNewName)
 
                 SBModules.AppendLine(GenerateModuleCode(sNewName, sGUID, bForceNewSyntax))
