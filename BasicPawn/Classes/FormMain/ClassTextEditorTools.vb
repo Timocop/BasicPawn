@@ -50,7 +50,7 @@ Public Class ClassTextEditorTools
             Return
         End If
 
-        g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.UpdateSyntaxFile(ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE.HIGHLIGHT_WORD)
+        g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.UpdateSyntax(ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE.HIGHLIGHT_WORD)
         g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.UpdateTextEditorSyntax()
     End Sub
 
@@ -80,7 +80,7 @@ Public Class ClassTextEditorTools
             Return
         End If
 
-        g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.UpdateSyntaxFile(ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE.CARET_WORD)
+        g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.UpdateSyntax(ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE.CARET_WORD)
         g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.UpdateTextEditorSyntax()
     End Sub
 
@@ -1258,7 +1258,7 @@ Public Class ClassTextEditorTools
                     toolStripItem.Text = String.Format("{0} {1} {2}", g_sColorTextName, iIndex, "(Visible)")
                 End If
 
-                g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.UpdateSyntaxFile(ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE.HIGHLIGHT_WORD_CUSTOM)
+                g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.UpdateSyntax(ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE.HIGHLIGHT_WORD_CUSTOM)
                 g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.UpdateTextEditorSyntax()
             Catch ex As Exception
                 ClassExceptionLog.WriteToLogMessageBox(ex)

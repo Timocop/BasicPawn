@@ -1040,13 +1040,13 @@ Public Class ClassSyntaxTools
             End If
         End Sub
 
-        Public Sub RenewSyntaxFiles()
+        Public Sub RenewSyntax()
             For i = 0 To g_mTextEditorSyntaxItems.Length - 1
-                RenewSyntaxFiles(CType(i, ENUM_SYNTAX_EDITORS))
+                RenewSyntax(CType(i, ENUM_SYNTAX_EDITORS))
             Next
         End Sub
 
-        Public Sub RenewSyntaxFiles(i As ENUM_SYNTAX_EDITORS)
+        Public Sub RenewSyntax(i As ENUM_SYNTAX_EDITORS)
             Try
                 SyncLock _lock
                     Dim sModSyntaxXML As String
@@ -1066,24 +1066,24 @@ Public Class ClassSyntaxTools
         Public Sub RefreshSyntax()
             RefreshCustomSyntax()
 
-            UpdateSyntaxFile()
+            UpdateSyntax()
             UpdateTextEditorSyntax()
         End Sub
 
-        Public Sub UpdateSyntaxFile()
+        Public Sub UpdateSyntax()
             For j = 0 To [Enum].GetNames(GetType(ENUM_SYNTAX_UPDATE_TYPE)).Length - 1
-                UpdateSyntaxFile(CType(j, ENUM_SYNTAX_UPDATE_TYPE), j = 0)
+                UpdateSyntax(CType(j, ENUM_SYNTAX_UPDATE_TYPE), j = 0)
             Next
         End Sub
 
-        Public Sub UpdateSyntaxFile(iType As ENUM_SYNTAX_UPDATE_TYPE, Optional bRenew As Boolean = False)
+        Public Sub UpdateSyntax(iType As ENUM_SYNTAX_UPDATE_TYPE, Optional bRenew As Boolean = False)
             Try
                 g_ClassSyntaxTools.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnSyntaxUpdate(iType, bRenew))
 
                 SyncLock _lock
                     For i = 0 To g_mTextEditorSyntaxItems.Length - 1
                         If (String.IsNullOrEmpty(g_mTextEditorSyntaxItems(i).sSyntaxText) OrElse bRenew) Then
-                            RenewSyntaxFiles(CType(i, ENUM_SYNTAX_EDITORS))
+                            RenewSyntax(CType(i, ENUM_SYNTAX_EDITORS))
                         End If
 
                         Select Case (i)
@@ -1330,7 +1330,7 @@ Public Class ClassSyntaxTools
 
                     For i = 0 To g_mTextEditorSyntaxItems.Length - 1
                         If (String.IsNullOrEmpty(g_mTextEditorSyntaxItems(i).sSyntaxText)) Then
-                            RenewSyntaxFiles(CType(i, ENUM_SYNTAX_EDITORS))
+                            RenewSyntax(CType(i, ENUM_SYNTAX_EDITORS))
                         End If
                     Next
 
