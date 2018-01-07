@@ -353,11 +353,11 @@ Public Class ClassSyntaxTools
     End Function
 
     ''' <summary>
-    ''' Automatic formats tabs in the code.
+    ''' Automatically indents the source.
     ''' </summary>
     ''' <param name="sSource"></param>
     ''' <returns></returns>
-    Public Function FormatCode(sSource As String, iIndentationType As ClassSettings.ENUM_INDENTATION_TYPES, iLanguage As ENUM_LANGUAGE_TYPE) As String
+    Public Function FormatCodeIndentation(sSource As String, iIndentationType As ClassSettings.ENUM_INDENTATION_TYPES, iLanguage As ENUM_LANGUAGE_TYPE) As String
         If (True) Then
             Dim mSourceBuilder As New StringBuilder
             Using mSR As New IO.StringReader(sSource)
@@ -484,6 +484,75 @@ Public Class ClassSyntaxTools
         End If
 
         Return sSource
+    End Function
+
+    ''' <summary>
+    ''' Trims all ending whitespace from the source.
+    ''' </summary>
+    ''' <param name="sSource"></param>
+    ''' <returns></returns>
+    Public Function FormatCodeTrimEnd(sSource As String) As String
+        Dim mSourceBuilder As New StringBuilder
+
+        Using mSR As New IO.StringReader(sSource)
+            While True
+                Dim sLine As String = mSR.ReadLine
+                If (sLine Is Nothing) Then
+                    Exit While
+                End If
+
+                mSourceBuilder.AppendLine(sLine.TrimEnd)
+            End While
+        End Using
+
+        Return mSourceBuilder.ToString
+    End Function
+
+    ''' <summary>
+    ''' Converts tabs to spaces or mirrored.
+    ''' </summary>
+    ''' <param name="sSource"></param>
+    ''' <param name="iIndentationType"></param>
+    ''' <param name="iLength"></param>
+    ''' <returns></returns>
+    Public Function FormatCodeConvert(sSource As String, iIndentationType As ClassSettings.ENUM_INDENTATION_TYPES, iLength As Integer) As String
+        Dim mSourceBuilder As New StringBuilder
+
+        Using mSR As New IO.StringReader(sSource)
+            While True
+                Dim sLine As String = mSR.ReadLine
+                If (sLine Is Nothing) Then
+                    Exit While
+                End If
+
+                If (iLength < 1) Then
+                    iLength = 4
+                End If
+
+                Select Case (iIndentationType)
+                    Case ClassSettings.ENUM_INDENTATION_TYPES.USE_SETTINGS
+                        If (ClassSettings.g_iSettingsTabsToSpaces > 0) Then
+                            sLine = sLine.Replace(vbTab, New String(" "c, ClassSettings.g_iSettingsTabsToSpaces))
+                        Else
+                            sLine = sLine.Replace(New String(" "c, 4), vbTab)
+                        End If
+
+                    Case ClassSettings.ENUM_INDENTATION_TYPES.TABS
+                        sLine = sLine.Replace(New String(" "c, iLength), vbTab)
+
+                    Case ClassSettings.ENUM_INDENTATION_TYPES.SPACES
+                        sLine = sLine.Replace(vbTab, New String(" "c, iLength))
+
+                    Case Else
+                        Throw New ArgumentException("Invalid indentation type")
+
+                End Select
+
+                mSourceBuilder.AppendLine(sLine)
+            End While
+        End Using
+
+        Return mSourceBuilder.ToString
     End Function
 
     ''' <summary>
