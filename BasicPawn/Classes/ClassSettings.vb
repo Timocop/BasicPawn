@@ -33,6 +33,7 @@ Public Class ClassSettings
     'General
     Public Shared g_iSettingsAlwaysOpenNewInstance As Boolean = False
     Public Shared g_iSettingsAutoShowStartPage As Boolean = True
+    Public Shared g_iSettingsAutoOpenProjectFiles As Boolean = False
     Public Shared g_iSettingsAssociateSourcePawn As Boolean = False
     Public Shared g_iSettingsAssociateAmxModX As Boolean = False
     Public Shared g_iSettingsAssociateIncludes As Boolean = False
@@ -79,6 +80,7 @@ Public Class ClassSettings
                 'Settings
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AlwaysOpenNewInstance", If(g_iSettingsAlwaysOpenNewInstance, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutoShowStartPage", If(g_iSettingsAutoShowStartPage, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutoOpenProjectFiles", If(g_iSettingsAutoOpenProjectFiles, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AssociateSourcePawn", If(g_iSettingsAssociateSourcePawn, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AssociateAmxModX", If(g_iSettingsAssociateAmxModX, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AssociateIncludes", If(g_iSettingsAssociateIncludes, "1", "0")))
@@ -124,6 +126,7 @@ Public Class ClassSettings
                     'Settings
                     g_iSettingsAlwaysOpenNewInstance = (mIni.ReadKeyValue("Editor", "AlwaysOpenNewInstance", "0") <> "0")
                     g_iSettingsAutoShowStartPage = (mIni.ReadKeyValue("Editor", "AutoShowStartPage", "1") <> "0")
+                    g_iSettingsAutoOpenProjectFiles = (mIni.ReadKeyValue("Editor", "AutoOpenProjectFiles", "0") <> "0")
                     g_iSettingsAssociateSourcePawn = (mIni.ReadKeyValue("Editor", "AssociateSourcePawn", "0") <> "0")
                     g_iSettingsAssociateAmxModX = (mIni.ReadKeyValue("Editor", "AssociateAmxModX", "0") <> "0")
                     g_iSettingsAssociateIncludes = (mIni.ReadKeyValue("Editor", "AssociateIncludes", "0") <> "0")

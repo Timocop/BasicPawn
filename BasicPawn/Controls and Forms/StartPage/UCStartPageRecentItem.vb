@@ -103,7 +103,7 @@ Public Class UCStartPageRecentItem
         Try
             If (m_IsProjectFile) Then
                 g_mUCStartPage.g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile = m_RecentFile
-                g_mUCStartPage.g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(False)
+                g_mUCStartPage.g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(False, ClassSettings.g_iSettingsAutoOpenProjectFiles)
             Else
                 Dim mTab = g_mUCStartPage.g_mFormMain.g_ClassTabControl.AddTab()
                 mTab.OpenFileTab(m_RecentFile)

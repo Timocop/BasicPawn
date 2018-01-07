@@ -130,6 +130,7 @@ Public Class FormSettings
         'General
         CheckBox_AlwaysNewInstance.Checked = ClassSettings.g_iSettingsAlwaysOpenNewInstance
         CheckBox_AutoShowStartPage.Checked = ClassSettings.g_iSettingsAutoShowStartPage
+        CheckBox_AutoOpenProjectFiles.Checked = ClassSettings.g_iSettingsAutoOpenProjectFiles
         CheckBox_AssociateSourcePawn.Checked = ClassSettings.g_iSettingsAssociateSourcePawn
         CheckBox_AssociateAmxMod.Checked = ClassSettings.g_iSettingsAssociateAmxModX
         CheckBox_AssociateIncludes.Checked = ClassSettings.g_iSettingsAssociateIncludes
@@ -242,6 +243,7 @@ Public Class FormSettings
         'General
         ClassSettings.g_iSettingsAlwaysOpenNewInstance = CheckBox_AlwaysNewInstance.Checked
         ClassSettings.g_iSettingsAutoShowStartPage = CheckBox_AutoShowStartPage.Checked
+        ClassSettings.g_iSettingsAutoOpenProjectFiles = CheckBox_AutoOpenProjectFiles.Checked
         ClassSettings.g_iSettingsAssociateSourcePawn = CheckBox_AssociateSourcePawn.Checked
         ClassSettings.g_iSettingsAssociateAmxModX = CheckBox_AssociateAmxMod.Checked
         ClassSettings.g_iSettingsAssociateIncludes = CheckBox_AssociateIncludes.Checked

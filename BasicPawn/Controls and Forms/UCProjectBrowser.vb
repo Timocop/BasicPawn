@@ -304,7 +304,7 @@ Public Class UCProjectBrowser
             g_mUCProjectBrowser.g_mFormMain.PrintInformation("[INFO]", "User saved project file: " & g_sProjectFile)
         End Sub
 
-        Public Sub LoadProject(bAppend As Boolean)
+        Public Sub LoadProject(bAppend As Boolean, bOpenProjectFiles As Boolean)
             If (String.IsNullOrEmpty(g_sProjectFile) OrElse Not IO.File.Exists(g_sProjectFile)) Then
                 Throw New ArgumentException("Project file not found")
             End If
@@ -315,6 +315,7 @@ Public Class UCProjectBrowser
                 ClearFiles()
             End If
 
+            Dim lProjectFiles As New List(Of String)
             Dim bDidAppend As Boolean = GetFilesCount() > 0
 
             Using mStream = ClassFileStreamWait.Create(g_sProjectFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
@@ -334,6 +335,9 @@ Public Class UCProjectBrowser
                             .sFile = mItem.sValue,
                             .sPackedData = sPackedData
                         })
+
+                        lProjectFiles.Add(mItem.sValue)
+
                         g_mUCProjectBrowser.g_mFormMain.PrintInformation("[INFO]", vbTab & "Loaded project file: " & mItem.sValue)
                     Next
                 End Using
@@ -341,6 +345,33 @@ Public Class UCProjectBrowser
 
             m_ProjectChanged = bDidAppend
             UpdateListViewInfo()
+
+            If (bOpenProjectFiles) Then
+                Try
+                    g_mUCProjectBrowser.g_mFormMain.g_ClassTabControl.BeginUpdate()
+
+                    For Each sFile As String In lProjectFiles
+                        Try
+                            If (Not IO.File.Exists(sFile)) Then
+                                Select Case (MessageBox.Show(String.Format("File '{0}' does not exist", sFile), "Unable to open file", MessageBoxButtons.OKCancel, MessageBoxIcon.Error))
+                                    Case DialogResult.Cancel
+                                        Exit For
+
+                                    Case Else
+                                        Continue For
+                                End Select
+                            End If
+
+                            Dim mTab = g_mUCProjectBrowser.g_mFormMain.g_ClassTabControl.AddTab()
+                            mTab.OpenFileTab(sFile)
+                        Catch ex As Exception
+                            ClassExceptionLog.WriteToLogMessageBox(ex)
+                        End Try
+                    Next
+                Finally
+                    g_mUCProjectBrowser.g_mFormMain.g_ClassTabControl.EndUpdate()
+                End Try
+            End If
         End Sub
 
         Public Sub CloseProject()

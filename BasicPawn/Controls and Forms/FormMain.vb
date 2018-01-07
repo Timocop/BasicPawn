@@ -305,7 +305,7 @@ Public Class FormMain
             For i = 0 To lOpenFileList.Count - 1
                 If (IO.Path.GetExtension(lOpenFileList(i)).ToLower = UCProjectBrowser.ClassProjectControl.g_sProjectExtension) Then
                     g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile = lOpenFileList(i)
-                    g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(bAppendFiles)
+                    g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(bAppendFiles, ClassSettings.g_iSettingsAutoOpenProjectFiles)
                     bAppendFiles = True
                 End If
             Next
@@ -318,7 +318,7 @@ Public Class FormMain
                     Try
                         If (IO.Path.GetExtension(lOpenFileList(i)).ToLower <> UCProjectBrowser.ClassProjectControl.g_sProjectExtension) Then
                             Dim mTab = g_ClassTabControl.AddTab()
-                            mTab.OpenFileTab(lOpenFileList(i), True)
+                            mTab.OpenFileTab(lOpenFileList(i))
                         End If
                     Catch ex As Exception
                         ClassExceptionLog.WriteToLogMessageBox(ex)
@@ -512,7 +512,6 @@ Public Class FormMain
 
     Private Sub ToolStripMenuItem_FileProjectLoad_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileProjectLoad.Click
         Try
-
             Using i As New OpenFileDialog
                 i.Filter = String.Format("BasicPawn Project|*{0}", UCProjectBrowser.ClassProjectControl.g_sProjectExtension)
                 i.FileName = g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile
@@ -525,7 +524,7 @@ Public Class FormMain
 
                     For Each sProjectFile As String In i.FileNames
                         g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile = sProjectFile
-                        g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(bAppendFiles)
+                        g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(bAppendFiles, ClassSettings.g_iSettingsAutoOpenProjectFiles)
                         bAppendFiles = True
                     Next
                 End If
