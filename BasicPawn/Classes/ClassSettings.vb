@@ -230,6 +230,24 @@ Public Class ClassSettings
                 If (mForm.WindowState = FormWindowState.Normal AndAlso tmpStr IsNot Nothing AndAlso Integer.TryParse(tmpStr, tmpInt)) Then
                     mForm.Height = tmpInt
                 End If
+
+                'Clamp form bounds by current screen bounds
+                Dim mScreen As Screen = Screen.FromControl(mForm)
+
+                If (mScreen IsNot Nothing) Then
+                    If (mForm.Location.X < mScreen.Bounds.X) Then
+                        mForm.Location = New Point(mScreen.Bounds.X, mForm.Location.Y)
+                    End If
+                    If (mForm.Location.Y < mScreen.Bounds.Y) Then
+                        mForm.Location = New Point(mForm.Location.X, mScreen.Bounds.Y)
+                    End If
+                    If (mForm.WindowState = FormWindowState.Normal AndAlso mForm.Location.X + mForm.Width > mScreen.Bounds.Width) Then
+                        mForm.Width = mScreen.Bounds.Width - mForm.Location.X
+                    End If
+                    If (mForm.WindowState = FormWindowState.Normal AndAlso mForm.Location.Y + mForm.Height > mScreen.Bounds.Height) Then
+                        mForm.Height = mScreen.Bounds.Height - mForm.Location.Y
+                    End If
+                End If
             End Using
         End Using
     End Sub
