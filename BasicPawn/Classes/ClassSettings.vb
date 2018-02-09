@@ -181,6 +181,11 @@ Public Class ClassSettings
             Return
         End If
 
+        'Dont save wrong bounds when window is minimized
+        If (mForm.WindowState = FormWindowState.Minimized) Then
+            Return
+        End If
+
         Using mStream = ClassFileStreamWait.Create(g_sWindowInfoFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
             Using mIni As New ClassIni(mStream)
                 Dim lContent As New List(Of ClassIni.STRUC_INI_CONTENT) From {
