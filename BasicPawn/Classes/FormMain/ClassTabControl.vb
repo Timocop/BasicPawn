@@ -117,6 +117,18 @@ Public Class ClassTabControl
                 .m_Changed = False
             }
 
+            While True
+                For Each mConfig In ClassConfigs.GetConfigs(False)
+                    If (mConfig.g_bAutoload) Then
+                        mTabPage.m_ActiveConfig = mConfig
+                        Exit While
+                    End If
+                Next
+
+                mTabPage.m_ActiveConfig = Nothing
+                Exit While
+            End While
+
             If (bShowTemplateWizard) Then
                 mTabPage.m_TextEditor.Document.TextContent = sTemplateSource
             End If
