@@ -20,19 +20,32 @@ Imports System.Text.RegularExpressions
 Public Class ClassUpdate
     Public Shared ReadOnly g_sRSAPublicKeyXML As String = "<RSAKeyValue><Modulus>vhkaxwuw08ufJcXdcCGvXjeF/UTpQzIvfjo+DqUDT6OyrCB5u86t536wSDJawFeMPR9JicrY7eiT8Jy9O7zsu0y3+aaR7nBNw9h7DIGFLsgASKHR5PD2uW1dh3ZilkLCk+eKwEER91MyYm5fEciudrwZbsHRhjsMsHRvuyu231U=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue>"
 
-    Public Shared ReadOnly g_sGithubVersionURL As String = "https://github.com/Timocop/BasicPawn/raw/master/Update%20Depot/CurrentVersion.txt"
-    Public Shared ReadOnly g_sGithubHashURL As String = "https://github.com/Timocop/BasicPawn/raw/master/Update%20Depot/DataHash.txt"
-    Public Shared ReadOnly g_sGithubDataURL As String = "https://github.com/Timocop/BasicPawn/raw/master/Update%20Depot/BasicPawnUpdateSFX.dat"
+    Class STRUC_UPDATE_LOCATIONS
+        Public sLocationInfo As String
+        Public sVersionUrl As String
+        Public sDataHashUrl As String
+        Public sDataUrl As String
+
+        Public Sub New(_LocationInfo As String, _VersionUrl As String, _DataHashUrl As String, _DataUrl As String)
+            sLocationInfo = _LocationInfo
+            sVersionUrl = _VersionUrl
+            sDataHashUrl = _DataHashUrl
+            sDataUrl = _DataUrl
+        End Sub
+    End Class
+
+    Public Shared g_mUpdateLocations As STRUC_UPDATE_LOCATIONS() = {
+        New STRUC_UPDATE_LOCATIONS("github.com",
+                                   "https://github.com/Timocop/BasicPawn/raw/master/Update%20Depot/CurrentVersion.txt",
+                                   "https://github.com/Timocop/BasicPawn/raw/master/Update%20Depot/DataHash.txt",
+                                   "https://github.com/Timocop/BasicPawn/raw/master/Update%20Depot/BasicPawnUpdateSFX.dat"),
+        New STRUC_UPDATE_LOCATIONS("getbasicpawn.spdns.org",
+                                   "http://getbasicpawn.spdns.org/basicpawn_update/CurrentVersion.txt",
+                                   "http://getbasicpawn.spdns.org/basicpawn_update/DataHash.txt",
+                                   "http://getbasicpawn.spdns.org/basicpawn_update/BasicPawnUpdateSFX.dat")
+    }
 
     Public Shared Sub InstallUpdate()
-        If (String.IsNullOrEmpty(g_sGithubHashURL)) Then
-            Throw New ArgumentException("Hash URL empty")
-        End If
-
-        If (String.IsNullOrEmpty(g_sGithubDataURL)) Then
-            Throw New ArgumentException("Data URL empty")
-        End If
-
 #If Not DEBUG Then
         If (Not CheckUpdateAvailable()) Then
             Return
@@ -51,28 +64,53 @@ Public Class ClassUpdate
 
         IO.File.Delete(sDataPath)
 
-        Using mWC As New ClassWebClientEx
-            sHashEncrypted = mWC.DownloadString(g_sGithubHashURL)
+        Dim bSuccess As Boolean = False
 
-            If (String.IsNullOrEmpty(sHashEncrypted)) Then
-                Throw New ArgumentException("Invalid hash")
-            End If
+        For Each mItem In g_mUpdateLocations
+            Try
+                'Test if server files are available
+                Using mWC As New ClassWebClientEx
+                    sHashEncrypted = mWC.DownloadString(mItem.sVersionUrl)
 
-            sHash = ClassTools.ClassCrypto.ClassRSA.Decrypt(sHashEncrypted, g_sRSAPublicKeyXML)
-        End Using
+                    If (String.IsNullOrEmpty(sHashEncrypted)) Then
+                        Throw New ArgumentException("Invalid version")
+                    End If
+                End Using
 
-        Using mWC As New ClassWebClientEx
-            mWC.DownloadFile(g_sGithubDataURL, sDataPath)
+                Using mWC As New ClassWebClientEx
+                    sHashEncrypted = mWC.DownloadString(mItem.sDataHashUrl)
 
-            If (Not IO.File.Exists(sDataPath)) Then
-                Throw New ArgumentException("Files does not exist")
-            End If
+                    If (String.IsNullOrEmpty(sHashEncrypted)) Then
+                        Throw New ArgumentException("Invalid hash")
+                    End If
 
-            sDataHash = ClassTools.ClassCrypto.ClassHash.HashSHA256File(sDataPath)
-        End Using
+                    sHash = ClassTools.ClassCrypto.ClassRSA.Decrypt(sHashEncrypted, g_sRSAPublicKeyXML)
+                End Using
 
-        If (sHash.ToLower <> sDataHash.ToLower) Then
-            Throw New ArgumentException("Hash does not match")
+                Using mWC As New ClassWebClientEx
+                    IO.File.Delete(sDataPath)
+
+                    mWC.DownloadFile(mItem.sDataUrl, sDataPath)
+
+                    If (Not IO.File.Exists(sDataPath)) Then
+                        Throw New ArgumentException("Files does not exist")
+                    End If
+
+                    sDataHash = ClassTools.ClassCrypto.ClassHash.HashSHA256File(sDataPath)
+                End Using
+
+                If (sHash.ToLower <> sDataHash.ToLower) Then
+                    Throw New ArgumentException("Hash does not match")
+                End If
+
+                bSuccess = True
+                Exit For
+            Catch ex As Exception
+            End Try
+        Next
+
+        If (Not bSuccess) Then
+            Throw New ArgumentException("Unable to find update files")
         End If
 
 #If Not DEBUG Then
@@ -101,14 +139,14 @@ Public Class ClassUpdate
 #End If
     End Sub
 
-    Public Shared Function CheckUpdateAvailable() As Boolean
+    Public Shared Function CheckUpdateAvailable(ByRef r_sLocationInfo As String) As Boolean
         Dim sNextVersion = ""
         Dim sCurrentVersion = ""
-        Return CheckUpdateAvailable(sNextVersion, sCurrentVersion)
+        Return CheckUpdateAvailable(r_sLocationInfo, sNextVersion, sCurrentVersion)
     End Function
 
-    Public Shared Function CheckUpdateAvailable(ByRef r_sNextVersion As String, ByRef r_sCurrentVersion As String) As Boolean
-        Dim sNextVersion As String = Regex.Match(GetNextVersion(), "[0-9\.]+").Value
+    Public Shared Function CheckUpdateAvailable(ByRef r_sLocationInfo As String, ByRef r_sNextVersion As String, ByRef r_sCurrentVersion As String) As Boolean
+        Dim sNextVersion As String = Regex.Match(GetNextVersion(r_sLocationInfo), "[0-9\.]+").Value
         Dim sCurrentVersion As String = Regex.Match(GetCurrentVerison(), "[0-9\.]+").Value
 
         r_sNextVersion = sNextVersion
@@ -121,13 +159,20 @@ Public Class ClassUpdate
         Return Application.ProductVersion
     End Function
 
-    Public Shared Function GetNextVersion() As String
-        If (String.IsNullOrEmpty(g_sGithubVersionURL)) Then
-            Throw New ArgumentException("Version URL empty")
-        End If
+    Public Shared Function GetNextVersion(ByRef r_sLocationInfo As String) As String
+        For Each mItem In g_mUpdateLocations
+            Try
+                Using mWC As New ClassWebClientEx
+                    Dim sVersion = mWC.DownloadString(mItem.sVersionUrl)
 
-        Using mWC As New ClassWebClientEx
-            Return mWC.DownloadString(g_sGithubVersionURL)
-        End Using
+                    r_sLocationInfo = mItem.sLocationInfo
+
+                    Return sVersion
+                End Using
+            Catch ex As Exception
+            End Try
+        Next
+
+        Throw New ArgumentException("Unable to find update files")
     End Function
 End Class

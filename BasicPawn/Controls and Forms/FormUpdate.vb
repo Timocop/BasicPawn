@@ -55,6 +55,7 @@ Public Class FormUpdate
 
     Private Sub CheckUpdate()
         Try
+            Dim sLocationInfo As String = "Unknown"
             Dim sNextVersion As String = ""
             Dim sCurrentVersion As String = ""
             Dim bSkipCheck As Boolean = False
@@ -63,18 +64,24 @@ Public Class FormUpdate
             bSkipCheck = True
 #End If
 
-            If (ClassUpdate.CheckUpdateAvailable(sNextVersion, sCurrentVersion) OrElse bSkipCheck) Then
+            If (ClassUpdate.CheckUpdateAvailable(sLocationInfo, sNextVersion, sCurrentVersion) OrElse bSkipCheck) Then
                 ClassThread.ExecEx(Of Object)(Me, Sub()
-                                                    Label_StatusTitle.Text = "A new BasicPawn update is available!" & Environment.NewLine & String.Format("Do you want to update from version {0} to version {1} now?", sCurrentVersion, sNextVersion)
-                                                    Button_Update.Visible = True
+                                                      With New Text.StringBuilder
+                                                          .AppendLine("A new BasicPawn update is available!")
+                                                          .AppendLine(String.Format("(Server: {0})", sLocationInfo))
+                                                          .AppendLine()
+                                                          .AppendLine(String.Format("Do you want to update from version {0} to version {1} now?", sCurrentVersion, sNextVersion))
+                                                          Label_StatusTitle.Text = .ToString
+                                                      End With
+                                                      Button_Update.Visible = True
 
-                                                    ClassPictureBoxQuality_WarnIcon.Visible = True
-                                                    Label_WarnText.Visible = True
-                                                End Sub)
+                                                      ClassPictureBoxQuality_WarnIcon.Visible = True
+                                                      Label_WarnText.Visible = True
+                                                  End Sub)
             Else
                 ClassThread.ExecEx(Of Object)(Me, Sub()
-                                                    Label_StatusTitle.Text = "There are no new updates available!"
-                                                End Sub)
+                                                      Label_StatusTitle.Text = "There are no new updates available!"
+                                                  End Sub)
             End If
 
         Catch ex As Threading.ThreadAbortException

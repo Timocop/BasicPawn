@@ -363,7 +363,7 @@ Public Class FormMain
 #End If
                                                                 Threading.Thread.Sleep(10000)
 
-                                                                If (ClassUpdate.CheckUpdateAvailable()) Then
+                                                                If (ClassUpdate.CheckUpdateAvailable(Nothing)) Then
                                                                     ClassThread.ExecAsync(Me, Sub()
                                                                                                   ToolStripMenuItem_NewUpdate.Visible = True
                                                                                               End Sub)
