@@ -47,9 +47,9 @@ Public Class ClassUpdate
 
     Public Shared Sub InstallUpdate()
 #If Not DEBUG Then
-        If (Not CheckUpdateAvailable()) Then
+        If (Not CheckUpdateAvailable(Nothing)) Then
             Return
-        End If 
+        End If
 #End If
 
 #If DEBUG Then
