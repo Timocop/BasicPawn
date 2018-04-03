@@ -834,7 +834,7 @@ Public Class ClassSyntaxTools
         End Function
 
 
-        Public Sub New(ByRef sText As String, iLanguage As ENUM_LANGUAGE_TYPE, Optional bIgnorePreprocessor As Boolean = True)
+        Public Sub New(sText As String, iLanguage As ENUM_LANGUAGE_TYPE, Optional bIgnorePreprocessor As Boolean = True)
             g_sCacheText = sText
             g_iMaxLength = sText.Length
 

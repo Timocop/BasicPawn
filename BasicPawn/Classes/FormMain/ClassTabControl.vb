@@ -735,6 +735,7 @@ Public Class ClassTabControl
             RemoveHandlers()
 
             AddHandler g_mSourceTextEditor.ProcessCmdKeyEvent, AddressOf TextEditorControl_Source_ProcessCmdKey
+            AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.KeyPress, AddressOf TextEditorControl_Source_AutoCloseChars
 
             AddHandler g_mSourceTextEditor.TextChanged, AddressOf TextEditorControl_Source_TextChanged
 
@@ -764,6 +765,7 @@ Public Class ClassTabControl
 
         Private Sub RemoveHandlers()
             RemoveHandler g_mSourceTextEditor.ProcessCmdKeyEvent, AddressOf TextEditorControl_Source_ProcessCmdKey
+            RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.KeyPress, AddressOf TextEditorControl_Source_AutoCloseChars
 
             RemoveHandler g_mSourceTextEditor.TextChanged, AddressOf TextEditorControl_Source_TextChanged
 
@@ -1121,7 +1123,7 @@ Public Class ClassTabControl
             Try
                 Select Case (iKeys)
 
-                'Duplicate Line/Word
+                    'Duplicate Line/Word
                     Case Keys.Control Or Keys.D
                         bBlock = True
 
@@ -1140,7 +1142,7 @@ Public Class ClassTabControl
 
                         g_mSourceTextEditor.Refresh()
 
-                'Paste Autocomplete
+                    'Paste Autocomplete
                     Case Keys.Control Or Keys.Enter
                         bBlock = True
 
@@ -1311,7 +1313,7 @@ Public Class ClassTabControl
                         g_mSourceTextEditor.Document.UndoStack.EndUndoGroup()
                         g_mSourceTextEditor.Refresh()
 
-                'Autocomplete up
+                    'Autocomplete up
                     Case Keys.Control Or Keys.Up
                         If (g_mFormMain.g_mUCAutocomplete.ListView_AutocompleteList.SelectedItems.Count < 1) Then
                             Return
@@ -1328,7 +1330,7 @@ Public Class ClassTabControl
 
                         bBlock = True
 
-                'Autocomplete Down
+                    'Autocomplete Down
                     Case Keys.Control Or Keys.Down
                         If (g_mFormMain.g_mUCAutocomplete.ListView_AutocompleteList.SelectedItems.Count < 1) Then
                             Return
@@ -1348,6 +1350,55 @@ Public Class ClassTabControl
             Catch ex As Exception
                 ClassExceptionLog.WriteToLogMessageBox(ex)
             End Try
+        End Sub
+
+        Private Sub TextEditorControl_Source_AutoCloseChars(sender As Object, e As KeyPressEventArgs)
+            If (ClassSettings.g_iSettingsAutoCloseStrings) Then
+                Select Case e.KeyChar
+                    Case """"c
+                        Dim iOffset As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Caret.Offset
+                        If (iOffset > 0 AndAlso g_mSourceTextEditor.ActiveTextAreaControl.Document.GetText(iOffset - 1, 1) = ClassSyntaxTools.g_sEscapeCharacters(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)) Then
+                            Exit Select
+                        End If
+
+                        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(g_mSourceTextEditor.ActiveTextAreaControl.Document.TextContent, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
+                        If (mSourceAnalysis.m_InString(iOffset) OrElse mSourceAnalysis.m_InChar(iOffset)) Then
+                            Exit Select
+                        End If
+
+                        g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset, """")
+
+                    Case "'"c
+                        Dim iOffset As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Caret.Offset
+                        If (iOffset > 0 AndAlso g_mSourceTextEditor.ActiveTextAreaControl.Document.GetText(iOffset - 1, 1) = ClassSyntaxTools.g_sEscapeCharacters(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)) Then
+                            Exit Select
+                        End If
+
+                        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(g_mSourceTextEditor.ActiveTextAreaControl.Document.TextContent, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
+                        If (mSourceAnalysis.m_InString(iOffset) OrElse mSourceAnalysis.m_InChar(iOffset)) Then
+                            Exit Select
+                        End If
+
+                        g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset, "'")
+                End Select
+            End If
+
+            If (ClassSettings.g_iSettingsAutoCloseBrackets) Then
+                Select Case e.KeyChar
+                    Case "["c
+                        Dim iOffset As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Caret.Offset
+                        g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset, "]")
+
+                    Case "("c
+                        Dim iOffset As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Caret.Offset
+                        g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset, ")")
+
+                    Case "{"c
+                        Dim iOffset As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Caret.Offset
+                        g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset, "}")
+
+                End Select
+            End If
         End Sub
 
         Private Sub TextEditorControl_Source_UpdateInfo(sender As Object, e As EventArgs)

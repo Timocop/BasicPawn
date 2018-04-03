@@ -60,6 +60,8 @@ Public Class ClassSettings
     Public Shared g_iSettingsVarAutocompleteShowObjectBrowser As Boolean = False
     Public Shared g_iSettingsSwitchTabToAutocomplete As Boolean = True
     Public Shared g_iSettingsOnlyUpdateSyntaxWhenFocused As Boolean = True
+    Public Shared g_iSettingsAutoCloseBrackets As Boolean = True
+    Public Shared g_iSettingsAutoCloseStrings As Boolean = True
     'Debugger
     Public Shared g_iSettingsDebuggerCatchExceptions As Boolean = True
     Public Shared g_iSettingsDebuggerEntitiesEnableColoring As Boolean = True
@@ -107,6 +109,8 @@ Public Class ClassSettings
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "VarAutocompleteShowObjectBrowser", If(g_iSettingsVarAutocompleteShowObjectBrowser, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "SwitchTabToAutocomplete", If(g_iSettingsSwitchTabToAutocomplete, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "OnlyUpdateSyntaxWhenFocused", If(g_iSettingsOnlyUpdateSyntaxWhenFocused, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutoCloseBrackets", If(g_iSettingsAutoCloseBrackets, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutoCloseStrings", If(g_iSettingsAutoCloseStrings, "1", "0")))
                 'Debugger
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Debugger", "CatchExceptions", If(g_iSettingsDebuggerCatchExceptions, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Debugger", "EntitiesColoring", If(g_iSettingsDebuggerEntitiesEnableColoring, "1", "0")))
@@ -163,6 +167,8 @@ Public Class ClassSettings
                     g_iSettingsVarAutocompleteShowObjectBrowser = (mIni.ReadKeyValue("Editor", "VarAutocompleteShowObjectBrowser", "0") <> "0")
                     g_iSettingsSwitchTabToAutocomplete = (mIni.ReadKeyValue("Editor", "SwitchTabToAutocomplete", "1") <> "0")
                     g_iSettingsOnlyUpdateSyntaxWhenFocused = (mIni.ReadKeyValue("Editor", "OnlyUpdateSyntaxWhenFocused", "1") <> "0")
+                    g_iSettingsAutoCloseBrackets = (mIni.ReadKeyValue("Editor", "AutoCloseBrackets", "1") <> "0")
+                    g_iSettingsAutoCloseStrings = (mIni.ReadKeyValue("Editor", "AutoCloseStrings", "1") <> "0")
                     'Debugger
                     g_iSettingsDebuggerCatchExceptions = (mIni.ReadKeyValue("Debugger", "CatchExceptions", "1") <> "0")
                     g_iSettingsDebuggerEntitiesEnableColoring = (mIni.ReadKeyValue("Debugger", "EntitiesColoring", "1") <> "0")

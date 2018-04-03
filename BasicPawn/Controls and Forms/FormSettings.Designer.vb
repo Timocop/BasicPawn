@@ -75,6 +75,7 @@ Partial Class FormSettings
         Me.Label_Font = New System.Windows.Forms.Label()
         Me.CheckBox_InvertedColors = New System.Windows.Forms.CheckBox()
         Me.Panel14 = New System.Windows.Forms.Panel()
+        Me.CheckBox_AutoOpenProjectFiles = New System.Windows.Forms.CheckBox()
         Me.Label30 = New System.Windows.Forms.Label()
         Me.Button_ViewErrorLog = New System.Windows.Forms.Button()
         Me.Button_ClearErrorLog = New System.Windows.Forms.Button()
@@ -182,7 +183,8 @@ Partial Class FormSettings
         Me.TableLayoutPanel3 = New System.Windows.Forms.TableLayoutPanel()
         Me.ClassPictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
         Me.Label17 = New System.Windows.Forms.Label()
-        Me.CheckBox_AutoOpenProjectFiles = New System.Windows.Forms.CheckBox()
+        Me.CheckBox_AutoCloseBrackets = New System.Windows.Forms.CheckBox()
+        Me.CheckBox_AutoCloseStrings = New System.Windows.Forms.CheckBox()
         Me.ContextMenuStrip_Plugins.SuspendLayout()
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Settings.SuspendLayout()
@@ -307,7 +309,7 @@ Partial Class FormSettings
         Me.Panel8.Controls.Add(Me.CheckBox_EntitiesEnableColor)
         Me.Panel8.Controls.Add(Me.CheckBox_EntitiesEnableShowNewEnts)
         Me.Panel8.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel8.Location = New System.Drawing.Point(0, 816)
+        Me.Panel8.Location = New System.Drawing.Point(0, 864)
         Me.Panel8.Name = "Panel8"
         Me.Panel8.Size = New System.Drawing.Size(735, 92)
         Me.Panel8.TabIndex = 25
@@ -373,6 +375,8 @@ Partial Class FormSettings
         'Panel5
         '
         Me.Panel5.AutoSize = True
+        Me.Panel5.Controls.Add(Me.CheckBox_AutoCloseStrings)
+        Me.Panel5.Controls.Add(Me.CheckBox_AutoCloseBrackets)
         Me.Panel5.Controls.Add(Me.CheckBox_OnlyUpdateSyntaxWhenFocused)
         Me.Panel5.Controls.Add(Me.CheckBox_WindowsToolTipNewlineMethods)
         Me.Panel5.Controls.Add(Me.CheckBox_WindowsToolTipAnimations)
@@ -392,7 +396,7 @@ Partial Class FormSettings
         Me.Panel5.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel5.Location = New System.Drawing.Point(0, 460)
         Me.Panel5.Name = "Panel5"
-        Me.Panel5.Size = New System.Drawing.Size(735, 356)
+        Me.Panel5.Size = New System.Drawing.Size(735, 404)
         Me.Panel5.TabIndex = 22
         '
         'CheckBox_OnlyUpdateSyntaxWhenFocused
@@ -815,6 +819,18 @@ Partial Class FormSettings
         Me.Panel14.Name = "Panel14"
         Me.Panel14.Size = New System.Drawing.Size(735, 235)
         Me.Panel14.TabIndex = 26
+        '
+        'CheckBox_AutoOpenProjectFiles
+        '
+        Me.CheckBox_AutoOpenProjectFiles.AutoSize = True
+        Me.CheckBox_AutoOpenProjectFiles.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_AutoOpenProjectFiles.Location = New System.Drawing.Point(6, 70)
+        Me.CheckBox_AutoOpenProjectFiles.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_AutoOpenProjectFiles.Name = "CheckBox_AutoOpenProjectFiles"
+        Me.CheckBox_AutoOpenProjectFiles.Size = New System.Drawing.Size(336, 18)
+        Me.CheckBox_AutoOpenProjectFiles.TabIndex = 29
+        Me.CheckBox_AutoOpenProjectFiles.Text = "Automatically open all project files when opening a project"
+        Me.CheckBox_AutoOpenProjectFiles.UseVisualStyleBackColor = True
         '
         'Label30
         '
@@ -1999,17 +2015,29 @@ Partial Class FormSettings
         Me.Label17.Text = "Loaded BasicPawn plugins are able to read stored database entries. Make sure all " &
     "installed plugins are from a trustworthy publisher to prevent theft."
         '
-        'CheckBox_AutoOpenProjectFiles
+        'CheckBox_AutoCloseBrackets
         '
-        Me.CheckBox_AutoOpenProjectFiles.AutoSize = True
-        Me.CheckBox_AutoOpenProjectFiles.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_AutoOpenProjectFiles.Location = New System.Drawing.Point(6, 70)
-        Me.CheckBox_AutoOpenProjectFiles.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_AutoOpenProjectFiles.Name = "CheckBox_AutoOpenProjectFiles"
-        Me.CheckBox_AutoOpenProjectFiles.Size = New System.Drawing.Size(336, 18)
-        Me.CheckBox_AutoOpenProjectFiles.TabIndex = 29
-        Me.CheckBox_AutoOpenProjectFiles.Text = "Automatically open all project files when opening a project"
-        Me.CheckBox_AutoOpenProjectFiles.UseVisualStyleBackColor = True
+        Me.CheckBox_AutoCloseBrackets.AutoSize = True
+        Me.CheckBox_AutoCloseBrackets.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_AutoCloseBrackets.Location = New System.Drawing.Point(6, 359)
+        Me.CheckBox_AutoCloseBrackets.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_AutoCloseBrackets.Name = "CheckBox_AutoCloseBrackets"
+        Me.CheckBox_AutoCloseBrackets.Size = New System.Drawing.Size(247, 18)
+        Me.CheckBox_AutoCloseBrackets.TabIndex = 24
+        Me.CheckBox_AutoCloseBrackets.Text = "Automatically close brackets while writing"
+        Me.CheckBox_AutoCloseBrackets.UseVisualStyleBackColor = True
+        '
+        'CheckBox_AutoCloseStrings
+        '
+        Me.CheckBox_AutoCloseStrings.AutoSize = True
+        Me.CheckBox_AutoCloseStrings.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_AutoCloseStrings.Location = New System.Drawing.Point(6, 383)
+        Me.CheckBox_AutoCloseStrings.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_AutoCloseStrings.Name = "CheckBox_AutoCloseStrings"
+        Me.CheckBox_AutoCloseStrings.Size = New System.Drawing.Size(239, 18)
+        Me.CheckBox_AutoCloseStrings.TabIndex = 25
+        Me.CheckBox_AutoCloseStrings.Text = "Automatically close strings while writing"
+        Me.CheckBox_AutoCloseStrings.UseVisualStyleBackColor = True
         '
         'FormSettings
         '
@@ -2239,4 +2267,6 @@ Partial Class FormSettings
     Friend WithEvents LinkLabel_MoreStyles As LinkLabel
     Friend WithEvents CheckBox_OnlyUpdateSyntaxWhenFocused As CheckBox
     Friend WithEvents CheckBox_AutoOpenProjectFiles As CheckBox
+    Friend WithEvents CheckBox_AutoCloseBrackets As CheckBox
+    Friend WithEvents CheckBox_AutoCloseStrings As CheckBox
 End Class
