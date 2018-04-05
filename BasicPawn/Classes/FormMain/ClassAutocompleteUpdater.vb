@@ -413,6 +413,7 @@ Public Class ClassAutocompleteUpdater
         mDic("endinput") = "#endinput"
         mDic("endscript") = "#endscript"
         mDic("error") = "#error <message>"
+        mDic("warning") = "#warning <message>"
         mDic("file") = "#file <filepath>"
         mDic("line") = "#line <value>"
         mDic("section") = "#section <name>"
