@@ -172,6 +172,7 @@
                 <Key word="charmax"/>
                 <Key word="ucharmax"/>
                 <Key word="__Pawn"/>
+                <Key word="__LINE__"/>
                 <Key word="debug"/>
             </KeyWords>
             <KeyWords name="GetSet" bold="false" italic="false" color="#DD2867">
