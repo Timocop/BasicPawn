@@ -40,6 +40,8 @@ Partial Class FormSettings
         Me.CheckBox_EntitiesEnableColor = New System.Windows.Forms.CheckBox()
         Me.CheckBox_EntitiesEnableShowNewEnts = New System.Windows.Forms.CheckBox()
         Me.Panel5 = New System.Windows.Forms.Panel()
+        Me.CheckBox_AutoCloseStrings = New System.Windows.Forms.CheckBox()
+        Me.CheckBox_AutoCloseBrackets = New System.Windows.Forms.CheckBox()
         Me.CheckBox_OnlyUpdateSyntaxWhenFocused = New System.Windows.Forms.CheckBox()
         Me.CheckBox_WindowsToolTipNewlineMethods = New System.Windows.Forms.CheckBox()
         Me.CheckBox_WindowsToolTipAnimations = New System.Windows.Forms.CheckBox()
@@ -183,8 +185,7 @@ Partial Class FormSettings
         Me.TableLayoutPanel3 = New System.Windows.Forms.TableLayoutPanel()
         Me.ClassPictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
         Me.Label17 = New System.Windows.Forms.Label()
-        Me.CheckBox_AutoCloseBrackets = New System.Windows.Forms.CheckBox()
-        Me.CheckBox_AutoCloseStrings = New System.Windows.Forms.CheckBox()
+        Me.CheckBox_AutoIndentBrackets = New System.Windows.Forms.CheckBox()
         Me.ContextMenuStrip_Plugins.SuspendLayout()
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Settings.SuspendLayout()
@@ -309,7 +310,7 @@ Partial Class FormSettings
         Me.Panel8.Controls.Add(Me.CheckBox_EntitiesEnableColor)
         Me.Panel8.Controls.Add(Me.CheckBox_EntitiesEnableShowNewEnts)
         Me.Panel8.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel8.Location = New System.Drawing.Point(0, 864)
+        Me.Panel8.Location = New System.Drawing.Point(0, 888)
         Me.Panel8.Name = "Panel8"
         Me.Panel8.Size = New System.Drawing.Size(735, 92)
         Me.Panel8.TabIndex = 25
@@ -375,6 +376,7 @@ Partial Class FormSettings
         'Panel5
         '
         Me.Panel5.AutoSize = True
+        Me.Panel5.Controls.Add(Me.CheckBox_AutoIndentBrackets)
         Me.Panel5.Controls.Add(Me.CheckBox_AutoCloseStrings)
         Me.Panel5.Controls.Add(Me.CheckBox_AutoCloseBrackets)
         Me.Panel5.Controls.Add(Me.CheckBox_OnlyUpdateSyntaxWhenFocused)
@@ -396,8 +398,32 @@ Partial Class FormSettings
         Me.Panel5.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel5.Location = New System.Drawing.Point(0, 460)
         Me.Panel5.Name = "Panel5"
-        Me.Panel5.Size = New System.Drawing.Size(735, 404)
+        Me.Panel5.Size = New System.Drawing.Size(735, 428)
         Me.Panel5.TabIndex = 22
+        '
+        'CheckBox_AutoCloseStrings
+        '
+        Me.CheckBox_AutoCloseStrings.AutoSize = True
+        Me.CheckBox_AutoCloseStrings.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_AutoCloseStrings.Location = New System.Drawing.Point(6, 383)
+        Me.CheckBox_AutoCloseStrings.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_AutoCloseStrings.Name = "CheckBox_AutoCloseStrings"
+        Me.CheckBox_AutoCloseStrings.Size = New System.Drawing.Size(239, 18)
+        Me.CheckBox_AutoCloseStrings.TabIndex = 25
+        Me.CheckBox_AutoCloseStrings.Text = "Automatically close strings while writing"
+        Me.CheckBox_AutoCloseStrings.UseVisualStyleBackColor = True
+        '
+        'CheckBox_AutoCloseBrackets
+        '
+        Me.CheckBox_AutoCloseBrackets.AutoSize = True
+        Me.CheckBox_AutoCloseBrackets.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_AutoCloseBrackets.Location = New System.Drawing.Point(6, 359)
+        Me.CheckBox_AutoCloseBrackets.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_AutoCloseBrackets.Name = "CheckBox_AutoCloseBrackets"
+        Me.CheckBox_AutoCloseBrackets.Size = New System.Drawing.Size(247, 18)
+        Me.CheckBox_AutoCloseBrackets.TabIndex = 24
+        Me.CheckBox_AutoCloseBrackets.Text = "Automatically close brackets while writing"
+        Me.CheckBox_AutoCloseBrackets.UseVisualStyleBackColor = True
         '
         'CheckBox_OnlyUpdateSyntaxWhenFocused
         '
@@ -2015,29 +2041,17 @@ Partial Class FormSettings
         Me.Label17.Text = "Loaded BasicPawn plugins are able to read stored database entries. Make sure all " &
     "installed plugins are from a trustworthy publisher to prevent theft."
         '
-        'CheckBox_AutoCloseBrackets
+        'CheckBox_AutoIndentBrackets
         '
-        Me.CheckBox_AutoCloseBrackets.AutoSize = True
-        Me.CheckBox_AutoCloseBrackets.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_AutoCloseBrackets.Location = New System.Drawing.Point(6, 359)
-        Me.CheckBox_AutoCloseBrackets.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_AutoCloseBrackets.Name = "CheckBox_AutoCloseBrackets"
-        Me.CheckBox_AutoCloseBrackets.Size = New System.Drawing.Size(247, 18)
-        Me.CheckBox_AutoCloseBrackets.TabIndex = 24
-        Me.CheckBox_AutoCloseBrackets.Text = "Automatically close brackets while writing"
-        Me.CheckBox_AutoCloseBrackets.UseVisualStyleBackColor = True
-        '
-        'CheckBox_AutoCloseStrings
-        '
-        Me.CheckBox_AutoCloseStrings.AutoSize = True
-        Me.CheckBox_AutoCloseStrings.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_AutoCloseStrings.Location = New System.Drawing.Point(6, 383)
-        Me.CheckBox_AutoCloseStrings.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_AutoCloseStrings.Name = "CheckBox_AutoCloseStrings"
-        Me.CheckBox_AutoCloseStrings.Size = New System.Drawing.Size(239, 18)
-        Me.CheckBox_AutoCloseStrings.TabIndex = 25
-        Me.CheckBox_AutoCloseStrings.Text = "Automatically close strings while writing"
-        Me.CheckBox_AutoCloseStrings.UseVisualStyleBackColor = True
+        Me.CheckBox_AutoIndentBrackets.AutoSize = True
+        Me.CheckBox_AutoIndentBrackets.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_AutoIndentBrackets.Location = New System.Drawing.Point(6, 407)
+        Me.CheckBox_AutoIndentBrackets.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_AutoIndentBrackets.Name = "CheckBox_AutoIndentBrackets"
+        Me.CheckBox_AutoIndentBrackets.Size = New System.Drawing.Size(236, 18)
+        Me.CheckBox_AutoIndentBrackets.TabIndex = 26
+        Me.CheckBox_AutoIndentBrackets.Text = "Automatically indent brackets on return"
+        Me.CheckBox_AutoIndentBrackets.UseVisualStyleBackColor = True
         '
         'FormSettings
         '
@@ -2269,4 +2283,5 @@ Partial Class FormSettings
     Friend WithEvents CheckBox_AutoOpenProjectFiles As CheckBox
     Friend WithEvents CheckBox_AutoCloseBrackets As CheckBox
     Friend WithEvents CheckBox_AutoCloseStrings As CheckBox
+    Friend WithEvents CheckBox_AutoIndentBrackets As CheckBox
 End Class
