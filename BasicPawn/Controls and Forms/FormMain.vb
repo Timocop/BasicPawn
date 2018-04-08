@@ -54,7 +54,7 @@ Public Class FormMain
     Public Const COMARG_CLOSE_TAB As String = "BasicPawnComServer-CloseTab-04e3632f-5472-42c5-929a-c3e0c2b35324"
     Public Const COMARG_SHOW_PING_FLASH As String = "BasicPawnComServer-ShowPingFlash-04e3632f-5472-42c5-929a-c3e0c2b35324"
 
-    Private g_mPingFlashPanel As ClassPanelAlpha
+    'Private g_mPingFlashPanel As ClassPanelAlpha
     Private g_bFormPostCreate As Boolean = False
     Private g_bFormPostLoad As Boolean = False
     Private g_bIgnoreComboBoxEvent As Boolean = False
@@ -209,15 +209,15 @@ Public Class FormMain
 
         SplitContainer_ToolboxSourceAndDetails.SplitterDistance = (SplitContainer_ToolboxSourceAndDetails.Height - g_iDefaultDetailsSplitterDistance)
 
-        g_mPingFlashPanel = New ClassPanelAlpha With {
-            .Name = "@KeepForeBackColor",
-            .Parent = Me,
-            .Dock = DockStyle.Fill,
-            .m_TransparentBackColor = Color.FromKnownColor(KnownColor.RoyalBlue),
-            .m_Opacity = 0
-        }
-        g_mPingFlashPanel.BringToFront()
-        g_mPingFlashPanel.Visible = False
+        'g_mPingFlashPanel = New ClassPanelAlpha With {
+        '    .Name = "@KeepForeBackColor",
+        '    .Parent = Me,
+        '    .Dock = DockStyle.Fill,
+        '    .m_TransparentBackColor = Color.FromKnownColor(KnownColor.RoyalBlue),
+        '    .m_Opacity = 0
+        '}
+        'g_mPingFlashPanel.BringToFront()
+        'g_mPingFlashPanel.Visible = False
 
         g_bFormPostCreate = True
     End Sub
@@ -253,7 +253,7 @@ Public Class FormMain
                                           End If
 
                                           TabControl_Details.SelectTab(1)
-                                          End If
+                                      End If
                                   End Sub)
     End Sub
 
@@ -504,7 +504,7 @@ Public Class FormMain
             g_mUCProjectBrowser.g_ClassProjectControl.SaveProject()
 
             g_mUCStartPage.g_mClassRecentItems.AddRecent(g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile)
-            ShowPingFlash()
+            'ShowPingFlash()
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
@@ -1637,7 +1637,7 @@ Public Class FormMain
 
                                                   Me.Activate()
 
-                                                  ShowPingFlash()
+                                                  'ShowPingFlash()
                                               End Sub)
             End Select
         Catch ex As Exception
@@ -1702,32 +1702,32 @@ Public Class FormMain
         g_mUCTextMinimap.Visible = (ToolStripMenuItem_ViewMinimap.Checked)
     End Sub
 
-    Public Sub ShowPingFlash()
-        'Wine doesnt support alpha rendering
-        If (ClassTools.ClassOperatingSystem.GetWineVersion() IsNot Nothing) Then
-            Return
-        End If
+    'Public Sub ShowPingFlash()
+    '    'Wine doesnt support alpha rendering
+    '    If (ClassTools.ClassOperatingSystem.GetWineVersion() IsNot Nothing) Then
+    '        Return
+    '    End If
 
-        g_mPingFlashPanel.m_Opacity = 50
-        g_mPingFlashPanel.Visible = True
+    '    g_mPingFlashPanel.m_Opacity = 50
+    '    g_mPingFlashPanel.Visible = True
 
-        Timer_PingFlash.Start()
-    End Sub
+    '    Timer_PingFlash.Start()
+    'End Sub
 
-    Private Sub Timer_PingFlash_Tick(sender As Object, e As EventArgs) Handles Timer_PingFlash.Tick
-        If (g_mPingFlashPanel Is Nothing OrElse g_mPingFlashPanel.IsDisposed) Then
-            Return
-        End If
+    'Private Sub Timer_PingFlash_Tick(sender As Object, e As EventArgs) Handles Timer_PingFlash.Tick
+    '    If (g_mPingFlashPanel Is Nothing OrElse g_mPingFlashPanel.IsDisposed) Then
+    '        Return
+    '    End If
 
-        g_mPingFlashPanel.m_Opacity -= 10
+    '    g_mPingFlashPanel.m_Opacity -= 10
 
-        If (g_mPingFlashPanel.m_Opacity > 0) Then
-            Return
-        End If
+    '    If (g_mPingFlashPanel.m_Opacity > 0) Then
+    '        Return
+    '    End If
 
-        g_mPingFlashPanel.Visible = False
-        Timer_PingFlash.Stop()
-    End Sub
+    '    g_mPingFlashPanel.Visible = False
+    '    Timer_PingFlash.Stop()
+    'End Sub
 
     Private Sub FormMain_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
         CleanUp()

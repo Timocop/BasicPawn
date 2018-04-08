@@ -251,7 +251,7 @@ Public Class UCProjectBrowser
                                 SaveProject()
 
                                 g_mUCProjectBrowser.g_mFormMain.g_mUCStartPage.g_mClassRecentItems.AddRecent(m_ProjectFile)
-                                g_mUCProjectBrowser.g_mFormMain.ShowPingFlash()
+                                'g_mUCProjectBrowser.g_mFormMain.ShowPingFlash()
 
                                 Return False
                             Else
@@ -262,7 +262,7 @@ Public Class UCProjectBrowser
                         SaveProject()
 
                         g_mUCProjectBrowser.g_mFormMain.g_mUCStartPage.g_mClassRecentItems.AddRecent(m_ProjectFile)
-                        g_mUCProjectBrowser.g_mFormMain.ShowPingFlash()
+                        'g_mUCProjectBrowser.g_mFormMain.ShowPingFlash()
 
                         Return False
                     End If
@@ -449,7 +449,7 @@ Public Class UCProjectBrowser
             g_ClassProjectControl.SaveProject()
 
             g_mFormMain.g_mUCStartPage.g_mClassRecentItems.AddRecent(g_ClassProjectControl.m_ProjectFile)
-            g_mFormMain.ShowPingFlash()
+            'g_mFormMain.ShowPingFlash()
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try

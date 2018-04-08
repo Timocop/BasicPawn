@@ -437,7 +437,7 @@ Public Class ClassTabControl
                     m_Tab(iIndex).m_FileCachedWriteDate = m_Tab(iIndex).m_FileRealWriteDate
 
                     g_mFormMain.g_mUCStartPage.g_mClassRecentItems.AddRecent(m_Tab(iIndex).m_File)
-                    g_mFormMain.ShowPingFlash()
+                    'g_mFormMain.ShowPingFlash()
 
                     g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, Nothing)
                 End If
@@ -454,7 +454,7 @@ Public Class ClassTabControl
             m_Tab(iIndex).m_FileCachedWriteDate = m_Tab(iIndex).m_FileRealWriteDate
 
             g_mFormMain.g_mUCStartPage.g_mClassRecentItems.AddRecent(m_Tab(iIndex).m_File)
-            g_mFormMain.ShowPingFlash()
+            'g_mFormMain.ShowPingFlash()
         End If
     End Sub
 
@@ -495,7 +495,7 @@ Public Class ClassTabControl
                             m_Tab(iIndex).m_FileCachedWriteDate = m_Tab(iIndex).m_FileRealWriteDate
 
                             g_mFormMain.g_mUCStartPage.g_mClassRecentItems.AddRecent(m_Tab(iIndex).m_File)
-                            g_mFormMain.ShowPingFlash()
+                            'g_mFormMain.ShowPingFlash()
 
                             Return False
                         Else
@@ -514,7 +514,7 @@ Public Class ClassTabControl
                     m_Tab(iIndex).m_FileCachedWriteDate = m_Tab(iIndex).m_FileRealWriteDate
 
                     g_mFormMain.g_mUCStartPage.g_mClassRecentItems.AddRecent(m_Tab(iIndex).m_File)
-                    g_mFormMain.ShowPingFlash()
+                    'g_mFormMain.ShowPingFlash()
 
                     Return False
                 End If
