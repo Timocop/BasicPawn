@@ -81,7 +81,7 @@ Public Class FormMultiCompiler
 
                 Dim mKnownConfig = ClassConfigs.ClassKnownConfigs.m_KnownConfigByFile(sSourceFile)
                 If (mKnownConfig Is Nothing) Then
-                    Throw New ArgumentException("No known config found for this file")
+                    Throw New ArgumentException(String.Format("No known config found for file '{0}'", sSourceFile))
                 End If
 
                 'We have no other choices here. Get mod type by extension...
