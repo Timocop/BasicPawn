@@ -160,6 +160,7 @@
                 <Key word="typeset"/>
                 <Key word="function"/>
                 <Key word="typedef"/>
+                <Key word="using"/>
             </KeyWords>
             <KeyWords name="SourceModSpecial" bold="true" italic="false" color="Blue">
                 <Key word="EOS"/>

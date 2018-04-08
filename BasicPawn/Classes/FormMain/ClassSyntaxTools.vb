@@ -620,6 +620,7 @@ Public Class ClassSyntaxTools
                 "typeset",
                 "function",
                 "typedef",
+                "using",
  _
                 "break",
                 "continue",
