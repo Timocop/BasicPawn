@@ -60,7 +60,9 @@ Public Class FormDebugger
         g_ClassDebuggerSettings = New ClassDebuggerSettings(Me)
 
         TextEditorControlEx_DebuggerSource.IsReadOnly = True
-        TextEditorControlEx_DebuggerDiasm.IsReadOnly = True
+        RichTextBox_DisasmSource.ReadOnly = True
+
+        RichTextBox_DisasmSource.Font = TextEditorControlEx_DebuggerSource.Font
 
         AddHandler TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.Caret.PositionChanged, AddressOf TextEditorControlEx_DebuggerSource_CaretPositionChanged
 
@@ -200,10 +202,10 @@ Public Class FormDebugger
 
 
                 TextEditorControlEx_DebuggerSource.Document.TextContent = sPreSource
-                TextEditorControlEx_DebuggerDiasm.Document.TextContent = sAsmSource
+                RichTextBox_DisasmSource.Text = sAsmSource
 
                 TextEditorControlEx_DebuggerSource.Refresh()
-                TextEditorControlEx_DebuggerDiasm.Refresh()
+                RichTextBox_DisasmSource.Refresh()
 
                 g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.UpdateTextEditorSyntax()
 

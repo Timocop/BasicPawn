@@ -1063,7 +1063,6 @@ Public Class ClassSyntaxTools
         Enum ENUM_SYNTAX_EDITORS
             MAIN_TEXTEDITOR
             DEBUGGER_SOURCE_TEXTEDITOR
-            DEBUGGER_DIASM_TEXTEDITOR
         End Enum
 
         Class STRUC_SYNTAX_ITEM
@@ -1088,11 +1087,9 @@ Public Class ClassSyntaxTools
         Public Sub New(mClassSyntaxTools As ClassSyntaxTools)
             g_ClassSyntaxTools = mClassSyntaxTools
 
-
             g_mTextEditorSyntaxItems = {
                 New STRUC_SYNTAX_ITEM("SourcePawn-MainTextEditor-" & Guid.NewGuid.ToString),
-                New STRUC_SYNTAX_ITEM("SourcePawn-DebuggerSourceTextEditor-" & Guid.NewGuid.ToString),
-                New STRUC_SYNTAX_ITEM("SourcePawn-DebuggerDiasmTextEditor-" & Guid.NewGuid.ToString)
+                New STRUC_SYNTAX_ITEM("SourcePawn-DebuggerSourceTextEditor-" & Guid.NewGuid.ToString)
             }
 
             If (g_mTextEditorSyntaxItems.Length <> [Enum].GetNames(GetType(ENUM_SYNTAX_EDITORS)).Length) Then
@@ -1126,6 +1123,10 @@ Public Class ClassSyntaxTools
                         sModSyntaxXML = g_sSyntaxXML.Replace(g_sSyntax_SourcePawnMarker, g_mTextEditorSyntaxItems(i).sName)
                     End If
 
+                    'Cleanup
+                    sModSyntaxXML = Regex.Replace(sModSyntaxXML, "^\s*", "", RegexOptions.Multiline)
+                    sModSyntaxXML = Regex.Replace(sModSyntaxXML, "\s*$", "", RegexOptions.Multiline)
+
                     g_mTextEditorSyntaxItems(i).sSyntaxText = sModSyntaxXML
                 End SyncLock
             Catch ex As Exception
@@ -1157,8 +1158,7 @@ Public Class ClassSyntaxTools
                         End If
 
                         Select Case (i)
-                            Case ENUM_SYNTAX_EDITORS.MAIN_TEXTEDITOR,
-                                ENUM_SYNTAX_EDITORS.DEBUGGER_SOURCE_TEXTEDITOR
+                            Case ENUM_SYNTAX_EDITORS.MAIN_TEXTEDITOR, ENUM_SYNTAX_EDITORS.DEBUGGER_SOURCE_TEXTEDITOR
                                 Dim mXmlBuilder As New StringBuilder
 
                                 Dim iHighlightCustomCount As Integer = 0
@@ -1443,12 +1443,6 @@ Public Class ClassSyntaxTools
                                     End If
                                 End If
 
-                            Case ENUM_SYNTAX_EDITORS.DEBUGGER_DIASM_TEXTEDITOR
-                                If (g_ClassSyntaxTools.g_mFormMain.g_mFormDebugger IsNot Nothing AndAlso Not g_ClassSyntaxTools.g_mFormMain.g_mFormDebugger.IsDisposed) Then
-                                    If (g_ClassSyntaxTools.g_mFormMain.g_mFormDebugger.TextEditorControlEx_DebuggerDiasm.Document.HighlightingStrategy.Name <> g_mTextEditorSyntaxItems(i).sName) Then
-                                        g_ClassSyntaxTools.g_mFormMain.g_mFormDebugger.TextEditorControlEx_DebuggerDiasm.SetHighlighting(g_mTextEditorSyntaxItems(i).sName)
-                                    End If
-                                End If
                         End Select
                     Next
                 End SyncLock
