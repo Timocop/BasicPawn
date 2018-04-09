@@ -69,7 +69,6 @@ Public Class FormUpdate
                                                       With New Text.StringBuilder
                                                           .AppendLine("A new BasicPawn update is available!")
                                                           .AppendLine(String.Format("(Server: {0})", sLocationInfo))
-                                                          .AppendLine()
                                                           .AppendLine(String.Format("Do you want to update from version {0} to version {1} now?", sCurrentVersion, sNextVersion))
                                                           Label_StatusTitle.Text = .ToString
                                                       End With
