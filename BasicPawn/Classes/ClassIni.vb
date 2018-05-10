@@ -50,10 +50,15 @@ Public Class ClassIni
 
     Public Sub New(mStream As IO.Stream)
         g_mStream = mStream
-        g_mStreamWriter = New IO.StreamWriter(mStream)
-        g_mStreamReader = New IO.StreamReader(mStream)
 
-        g_mStreamWriter.AutoFlush = True
+        If (g_mStream.CanWrite) Then
+            g_mStreamWriter = New IO.StreamWriter(mStream)
+            g_mStreamWriter.AutoFlush = True
+        End If
+
+        If (g_mStream.CanRead) Then
+            g_mStreamReader = New IO.StreamReader(mStream)
+        End If
     End Sub
 
     ''' <summary>
