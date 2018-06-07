@@ -340,6 +340,49 @@ Public Class ClassCrossAppComunication
         Next
     End Sub
 
+    ''' <summary>
+    ''' Checks if a server exist and is listening.
+    ''' </summary>
+    ''' <param name="bNotMe"></param>
+    ''' <returns></returns>
+    Public Function ServerExist(Optional bNotMe As Boolean = True) As Boolean
+        If (String.IsNullOrEmpty(g_sReceiveServerName)) Then
+            Throw New ArgumentException("Server name is null")
+        End If
+
+        For Each hWnd In ClassWndSearcher.SearchForWindow(Nothing, g_sReceiveServerName)
+            If (bNotMe AndAlso hWnd = g_mReceiveForm.Handle) Then
+                Continue For
+            End If
+
+            Return True
+        Next
+
+        Return False
+    End Function
+
+    ''' <summary>
+    ''' Checks if a server exist and is listening.
+    ''' </summary>
+    ''' <param name="sServerName"></param>
+    ''' <param name="bNotMe"></param>
+    ''' <returns></returns>
+    Public Function ServerExistEx(sServerName As String, Optional bNotMe As Boolean = True) As Boolean
+        If (String.IsNullOrEmpty(sServerName)) Then
+            Throw New ArgumentException("Server name is null")
+        End If
+
+        For Each hWnd In ClassWndSearcher.SearchForWindow(Nothing, sServerName)
+            If (bNotMe AndAlso hWnd = g_mReceiveForm.Handle) Then
+                Continue For
+            End If
+
+            Return True
+        Next
+
+        Return False
+    End Function
+
     Private Sub SendMessageEx(hTargetWinHndl As IntPtr, sMessage As String)
         Dim mCopyDataStruct As New ClassWin32.CopyDataStruct()
         Try

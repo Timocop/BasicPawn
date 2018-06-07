@@ -57,7 +57,7 @@ Public Class FormOpenTabFromInstances
         Dim sProcessName As String = Process.GetCurrentProcess.ProcessName
 
         'Send request to other BasicPawn instances
-        g_mFormMain.g_ClassCrossAppComunication.SendMessage(New ClassCrossAppComunication.ClassMessage(FormMain.COMARG_REQUEST_TABS, g_sCallerIdentifier), False)
+        g_mFormMain.g_ClassCrossAppCom.SendMessage(New ClassCrossAppComunication.ClassMessage(FormMain.COMARG_REQUEST_TABS, g_sCallerIdentifier), False)
     End Sub
 
     Public Sub AddListViewItem(sTabIdentifier As String, iTabIndex As Integer, sTabFile As String, sProcessName As String, iProcessID As Integer, Optional sCallerIdentifier As String = Nothing)
@@ -142,7 +142,7 @@ Public Class FormOpenTabFromInstances
                 Dim sTabIdentifier As String = mTabInfo.Value.sTabIndentifier
                 Dim sFile As String = mTabInfo.Value.sTabFile
 
-                g_mFormMain.g_ClassCrossAppComunication.SendMessage(New ClassCrossAppComunication.ClassMessage(FormMain.COMARG_CLOSE_TAB, CStr(iPID), sTabIdentifier, sFile, CStr(True)), False)
+                g_mFormMain.g_ClassCrossAppCom.SendMessage(New ClassCrossAppComunication.ClassMessage(FormMain.COMARG_CLOSE_TAB, CStr(iPID), sTabIdentifier, sFile, CStr(True)), False)
             End If
         Next
 
@@ -174,7 +174,7 @@ Public Class FormOpenTabFromInstances
         g_mShowDelayThread = New Threading.Thread(Sub()
                                                       Try
                                                           Threading.Thread.Sleep(500)
-                                                          g_mFormMain.g_ClassCrossAppComunication.SendMessage(New ClassCrossAppComunication.ClassMessage(FormMain.COMARG_SHOW_PING_FLASH, CStr(iPID), sTabIndetifier), False)
+                                                          g_mFormMain.g_ClassCrossAppCom.SendMessage(New ClassCrossAppComunication.ClassMessage(FormMain.COMARG_SHOW_PING_FLASH, CStr(iPID), sTabIndetifier), False)
                                                       Catch ex As Threading.ThreadAbortException
                                                           Throw
                                                       Catch ex As Exception

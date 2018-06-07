@@ -28,9 +28,8 @@ Public Class FormMain
     Public g_ClassCustomHighlighting As ClassTextEditorTools.ClassCustomHighlighting
     Public g_ClassPluginController As ClassPluginController
     Public g_ClassSyntaxTools As ClassSyntaxTools
-#Disable Warning IDE1006 ' Naming Styles
-    Public WithEvents g_ClassCrossAppComunication As ClassCrossAppComunication
-#Enable Warning IDE1006 ' Naming Styles
+    Public WithEvents g_ClassCrossAppCom As ClassCrossAppComunication
+    Public WithEvents g_ClassCrossAppComPost As ClassCrossAppComunication
 
     Public g_mUCAutocomplete As UCAutocomplete
     Public g_mUCInformationList As UCInformationList
@@ -48,6 +47,7 @@ Public Class FormMain
     Public g_cDarkFormMenuBackgroundColor As Color = Color.FromArgb(255, 64, 64, 64)
 
     Public Const COMMSG_SERVERNAME As String = "BasicPawnComServer-04e3632f-5472-42c5-929a-c3e0c2b35324"
+    Public Const COMMSG_SERVERNAMEPOST As String = "BasicPawnComServerPost-04e3632f-5472-42c5-929a-c3e0c2b35324"
     Public Const COMARG_OPEN_FILE_BY_PID As String = "BasicPawnComServer-OpenFileByPID-04e3632f-5472-42c5-929a-c3e0c2b35324"
     Public Const COMARG_REQUEST_TABS As String = "BasicPawnComServer-RequestTabs-04e3632f-5472-42c5-929a-c3e0c2b35324"
     Public Const COMARG_REQUEST_TABS_ANSWER As String = "BasicPawnComServer-RequestTabsAnswer-04e3632f-5472-42c5-929a-c3e0c2b35324"
@@ -67,8 +67,8 @@ Public Class FormMain
 
 #Region "GUI Stuff"
     Public Sub New()
-        g_ClassCrossAppComunication = New ClassCrossAppComunication
-        g_ClassCrossAppComunication.Hook(COMMSG_SERVERNAME)
+        g_ClassCrossAppCom = New ClassCrossAppComunication
+        g_ClassCrossAppCom.Hook(COMMSG_SERVERNAME)
 
         'Load Settings 
         ClassSettings.LoadSettings()
@@ -121,12 +121,30 @@ Public Class FormMain
 
                             If (iMasterId <> Process.GetCurrentProcess.Id) Then
                                 Try
-                                    Process.GetProcessById(iMasterId).WaitForInputIdle(5000)
+                                    Const iTimeout As Integer = 10000
+
+                                    Process.GetProcessById(iMasterId).WaitForInputIdle(iTimeout)
+
+                                    Dim mStopWatch As New Stopwatch
+                                    mStopWatch.Start()
+
+                                    'Check if a server is listening
+                                    While True
+                                        If (mStopWatch.Elapsed > New TimeSpan(0, 0, 0, 0, iTimeout)) Then
+                                            Exit While
+                                        End If
+
+                                        If (g_ClassCrossAppCom.ServerExist() AndAlso g_ClassCrossAppCom.ServerExistEx(COMMSG_SERVERNAMEPOST)) Then
+                                            Exit While
+                                        End If
+
+                                        Threading.Thread.Sleep(100)
+                                    End While
 
                                     For i = 0 To lOpenFileList.Count - 1
                                         If (IO.Path.GetExtension(lOpenFileList(i)).ToLower <> UCProjectBrowser.ClassProjectControl.g_sProjectExtension) Then
                                             Dim mMsg As New ClassCrossAppComunication.ClassMessage(COMARG_OPEN_FILE_BY_PID, CStr(iMasterId), lOpenFileList(i))
-                                            g_ClassCrossAppComunication.SendMessage(mMsg)
+                                            g_ClassCrossAppCom.SendMessage(mMsg)
                                         End If
                                     Next
                                 Catch ex As Exception
@@ -220,6 +238,9 @@ Public Class FormMain
         'g_mPingFlashPanel.Visible = False
 
         g_bFormPostCreate = True
+
+        g_ClassCrossAppComPost = New ClassCrossAppComunication
+        g_ClassCrossAppComPost.Hook(COMMSG_SERVERNAMEPOST)
     End Sub
 
     Public Sub UpdateFormConfigText()
@@ -1533,7 +1554,7 @@ Public Class FormMain
         g_mFormOpenTabFromInstances.ShowDialog(Me)
     End Sub
 
-    Private Sub OnMessageReceive(mClassMessage As ClassCrossAppComunication.ClassMessage) Handles g_ClassCrossAppComunication.OnMessageReceive
+    Private Sub OnMessageReceive(mClassMessage As ClassCrossAppComunication.ClassMessage) Handles g_ClassCrossAppCom.OnMessageReceive
         Try
             'Just in case we get a message before the controls have been created
             If (Not g_bFormPostCreate) Then
@@ -1571,7 +1592,7 @@ Public Class FormMain
                         Dim iTabIndex As Integer = g_ClassTabControl.m_Tab(i).m_Index
                         Dim sTabFile As String = g_ClassTabControl.m_Tab(i).m_File
 
-                        g_ClassCrossAppComunication.SendMessage(New ClassCrossAppComunication.ClassMessage(COMARG_REQUEST_TABS_ANSWER, CStr(iPID), sProcessName, sTabIdentifier, CStr(iTabIndex), sTabFile, sCallerIdentifier), False)
+                        g_ClassCrossAppCom.SendMessage(New ClassCrossAppComunication.ClassMessage(COMARG_REQUEST_TABS_ANSWER, CStr(iPID), sProcessName, sTabIdentifier, CStr(iTabIndex), sTabFile, sCallerIdentifier), False)
                     Next
 
                 Case COMARG_REQUEST_TABS_ANSWER
@@ -1746,9 +1767,14 @@ Public Class FormMain
         g_ClassAutocompleteUpdater.StopUpdate()
         g_mUCObjectBrowser.StopUpdate()
 
-        If (g_ClassCrossAppComunication IsNot Nothing) Then
-            g_ClassCrossAppComunication.Dispose()
-            g_ClassCrossAppComunication = Nothing
+        If (g_ClassCrossAppCom IsNot Nothing) Then
+            g_ClassCrossAppCom.Dispose()
+            g_ClassCrossAppCom = Nothing
+        End If
+
+        If (g_ClassCrossAppComPost IsNot Nothing) Then
+            g_ClassCrossAppComPost.Dispose()
+            g_ClassCrossAppComPost = Nothing
         End If
 
         If (g_ClassCustomHighlighting IsNot Nothing) Then
