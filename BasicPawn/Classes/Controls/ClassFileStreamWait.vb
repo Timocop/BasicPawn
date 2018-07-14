@@ -34,6 +34,8 @@ Public Class ClassFileStreamWait
             Try
                 mSteam = New IO.FileStream(sPath, iMode, iAccess)
                 Return mSteam
+            Catch ex As IO.FileNotFoundException
+                Throw
             Catch ex As Exception
                 If (mSteam IsNot Nothing) Then
                     mSteam.Dispose()
