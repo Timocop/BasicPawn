@@ -268,24 +268,24 @@ Public Class ClassSettings
 
     Private Shared Sub SetRegistryKeys()
         If (g_iSettingsAssociateSourcePawn) Then
-            ClassTools.ClassRegistry.SetAssociation("BasicPawn.SourcePawn", ".sp", String.Format("""{0}"" ""%1""", Application.ExecutablePath), Application.ExecutablePath, Application.ExecutablePath)
+            ClassTools.ClassRegistry.SetAssociation("BasicPawn.SourcePawn", ".sp", String.Format("""{0}"" ""%1""", Application.ExecutablePath), Application.ExecutablePath, Application.ExecutablePath, ClassTools.ClassRegistry.ENUM_SELECTION_MODEL.PLAYER)
         Else
             ClassTools.ClassRegistry.RemoveAssociation("BasicPawn.SourcePawn")
         End If
 
         If (g_iSettingsAssociateAmxModX) Then
-            ClassTools.ClassRegistry.SetAssociation("BasicPawn.AmxModX", ".sma", String.Format("""{0}"" ""%1""", Application.ExecutablePath), Application.ExecutablePath, Application.ExecutablePath)
+            ClassTools.ClassRegistry.SetAssociation("BasicPawn.AmxModX", ".sma", String.Format("""{0}"" ""%1""", Application.ExecutablePath), Application.ExecutablePath, Application.ExecutablePath, ClassTools.ClassRegistry.ENUM_SELECTION_MODEL.PLAYER)
         Else
             ClassTools.ClassRegistry.RemoveAssociation("BasicPawn.AmxModX")
         End If
 
         If (g_iSettingsAssociateIncludes) Then
-            ClassTools.ClassRegistry.SetAssociation("BasicPawn.Includes", ".inc", String.Format("""{0}"" ""%1""", Application.ExecutablePath), Application.ExecutablePath, Application.ExecutablePath)
+            ClassTools.ClassRegistry.SetAssociation("BasicPawn.Includes", ".inc", String.Format("""{0}"" ""%1""", Application.ExecutablePath), Application.ExecutablePath, Application.ExecutablePath, ClassTools.ClassRegistry.ENUM_SELECTION_MODEL.PLAYER)
         Else
             ClassTools.ClassRegistry.RemoveAssociation("BasicPawn.Includes")
         End If
 
-        ClassTools.ClassRegistry.SetAssociation("BasicPawn.Project", UCProjectBrowser.ClassProjectControl.g_sProjectExtension, String.Format("""{0}"" ""%1""", Application.ExecutablePath), Application.ExecutablePath, Application.ExecutablePath)
+        ClassTools.ClassRegistry.SetAssociation("BasicPawn.Project", UCProjectBrowser.ClassProjectControl.g_sProjectExtension, String.Format("""{0}"" ""%1""", Application.ExecutablePath), Application.ExecutablePath, Application.ExecutablePath, ClassTools.ClassRegistry.ENUM_SELECTION_MODEL.SINGLE)
     End Sub
 
     Public Class STRUC_SHELL_ARGUMENT_ITEM

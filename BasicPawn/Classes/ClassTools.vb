@@ -679,7 +679,13 @@ Public Class ClassTools
     End Class
 
     Class ClassRegistry
-        Public Shared Sub SetAssociation(sProgID As String, sExtension As String, sCommand As String, sIconFile As String, sDefaultIcon As String)
+        Enum ENUM_SELECTION_MODEL
+            [SINGLE]
+            PLAYER
+            DOCUMENT
+        End Enum
+
+        Public Shared Sub SetAssociation(sProgID As String, sExtension As String, sCommand As String, sIconFile As String, sDefaultIcon As String, iSelectionModel As ENUM_SELECTION_MODEL)
             If (String.IsNullOrEmpty(sProgID)) Then
                 Throw New ArgumentException("ProgID invalid")
             End If
@@ -701,6 +707,17 @@ Public Class ClassTools
                     Using mShellKey = mExtKey.CreateSubKey("Shell")
                         Using mTextKey = mShellKey.CreateSubKey("Open")
                             mTextKey.SetValue("Icon", """" & sIconFile & """")
+
+                            Select Case (iSelectionModel)
+                                Case ENUM_SELECTION_MODEL.SINGLE
+                                    mTextKey.SetValue("MultiSelectModel", "Single")
+                                Case ENUM_SELECTION_MODEL.PLAYER
+                                    mTextKey.SetValue("MultiSelectModel", "Player")
+                                Case ENUM_SELECTION_MODEL.DOCUMENT
+                                    mTextKey.SetValue("MultiSelectModel", "Document")
+                                Case Else
+                                    Throw New ArgumentException("Unknown selection model")
+                            End Select
 
                             Using mCommandKey = mTextKey.CreateSubKey("command")
                                 mCommandKey.SetValue("", sCommand)
