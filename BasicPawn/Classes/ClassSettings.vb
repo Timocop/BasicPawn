@@ -146,9 +146,7 @@ Public Class ClassSettings
                     g_iSettingsInvertColors = (mIni.ReadKeyValue("Editor", "TextEditorInvertColors", "0") <> "0")
                     Dim iTabsToSpaces As Integer = 0
                     If (Integer.TryParse(mIni.ReadKeyValue("Editor", "TextEditorTabsToSpaces", "0"), iTabsToSpaces)) Then
-                        iTabsToSpaces = If(iTabsToSpaces < 0, 0, iTabsToSpaces)
-                        iTabsToSpaces = If(iTabsToSpaces > 100, 100, iTabsToSpaces)
-                        g_iSettingsTabsToSpaces = iTabsToSpaces
+                        g_iSettingsTabsToSpaces = ClassTools.ClassMath.ClampInt(iTabsToSpaces, 0, 100)
                     End If
                     g_sSettingsSyntaxHighlightingPath = mIni.ReadKeyValue("Editor", "TextEditorSyntaxHighlightingPath", "")
                     'Syntax Highligting

@@ -40,6 +40,7 @@ Partial Class FormSettings
         Me.CheckBox_EntitiesEnableColor = New System.Windows.Forms.CheckBox()
         Me.CheckBox_EntitiesEnableShowNewEnts = New System.Windows.Forms.CheckBox()
         Me.Panel5 = New System.Windows.Forms.Panel()
+        Me.CheckBox_AutoIndentBrackets = New System.Windows.Forms.CheckBox()
         Me.CheckBox_AutoCloseStrings = New System.Windows.Forms.CheckBox()
         Me.CheckBox_AutoCloseBrackets = New System.Windows.Forms.CheckBox()
         Me.CheckBox_OnlyUpdateSyntaxWhenFocused = New System.Windows.Forms.CheckBox()
@@ -185,7 +186,6 @@ Partial Class FormSettings
         Me.TableLayoutPanel3 = New System.Windows.Forms.TableLayoutPanel()
         Me.ClassPictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
         Me.Label17 = New System.Windows.Forms.Label()
-        Me.CheckBox_AutoIndentBrackets = New System.Windows.Forms.CheckBox()
         Me.ContextMenuStrip_Plugins.SuspendLayout()
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Settings.SuspendLayout()
@@ -400,6 +400,18 @@ Partial Class FormSettings
         Me.Panel5.Name = "Panel5"
         Me.Panel5.Size = New System.Drawing.Size(735, 428)
         Me.Panel5.TabIndex = 22
+        '
+        'CheckBox_AutoIndentBrackets
+        '
+        Me.CheckBox_AutoIndentBrackets.AutoSize = True
+        Me.CheckBox_AutoIndentBrackets.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_AutoIndentBrackets.Location = New System.Drawing.Point(6, 407)
+        Me.CheckBox_AutoIndentBrackets.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_AutoIndentBrackets.Name = "CheckBox_AutoIndentBrackets"
+        Me.CheckBox_AutoIndentBrackets.Size = New System.Drawing.Size(236, 18)
+        Me.CheckBox_AutoIndentBrackets.TabIndex = 26
+        Me.CheckBox_AutoIndentBrackets.Text = "Automatically indent brackets on return"
+        Me.CheckBox_AutoIndentBrackets.UseVisualStyleBackColor = True
         '
         'CheckBox_AutoCloseStrings
         '
@@ -2040,18 +2052,6 @@ Partial Class FormSettings
         Me.Label17.TabIndex = 3
         Me.Label17.Text = "Loaded BasicPawn plugins are able to read stored database entries. Make sure all " &
     "installed plugins are from a trustworthy publisher to prevent theft."
-        '
-        'CheckBox_AutoIndentBrackets
-        '
-        Me.CheckBox_AutoIndentBrackets.AutoSize = True
-        Me.CheckBox_AutoIndentBrackets.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_AutoIndentBrackets.Location = New System.Drawing.Point(6, 407)
-        Me.CheckBox_AutoIndentBrackets.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_AutoIndentBrackets.Name = "CheckBox_AutoIndentBrackets"
-        Me.CheckBox_AutoIndentBrackets.Size = New System.Drawing.Size(236, 18)
-        Me.CheckBox_AutoIndentBrackets.TabIndex = 26
-        Me.CheckBox_AutoIndentBrackets.Text = "Automatically indent brackets on return"
-        Me.CheckBox_AutoIndentBrackets.UseVisualStyleBackColor = True
         '
         'FormSettings
         '

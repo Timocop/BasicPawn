@@ -164,6 +164,29 @@ Public Class ClassFTP
         Dim bIsDirectory As Boolean
     End Structure
 
+    Public Function PathExist(sPath As String) As Boolean
+        Dim sName As String = Path.GetFileName(sPath)
+        Dim sDirectoryPath As String = sPath
+
+        Dim iIndex As Integer = sDirectoryPath.LastIndexOf("/"c)
+        If (iIndex > -1) Then
+            sDirectoryPath = sPath.Substring(0, iIndex)
+        End If
+
+        'Root
+        If (sName = "" AndAlso sDirectoryPath = "") Then
+            Return True
+        End If
+
+        For Each mItem In GetDirectoryEntries(sDirectoryPath)
+            If (mItem.sName.ToLower = sName.ToLower) Then
+                Return True
+            End If
+        Next
+
+        Return False
+    End Function
+
     Public Function GetDirectoryEntries(sDirectoryPath As String) As STRUC_FTP_FILE_INFO()
         Dim lEntries As New List(Of STRUC_FTP_FILE_INFO)
 

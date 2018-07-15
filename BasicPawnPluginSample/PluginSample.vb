@@ -98,7 +98,7 @@ Public Class PluginSample
                                                                  "Timocop",
                                                                  "A simple sample plugin",
                                                                  Reflection.Assembly.GetExecutingAssembly.GetName.Version.ToString,
-                                                                 Nothing)
+                                                                 "https://github.com/Timocop/BasicPawn")
         End Get
     End Property
 

@@ -1,0 +1,205 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{08D24F1B-0D0B-4649-9788-B2FA23A3EB2A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>BasicPawnPluginAutoErrorReport</RootNamespace>
+    <AssemblyName>BasicPawnPluginAutoErrorReport</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <MyType>Windows</MyType>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DocumentationFile>BasicPawnPluginAutoErrorReport.xml</DocumentationFile>
+    <NoWarn>
+    </NoWarn>
+    <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>BasicPawnPluginAutoErrorReport.xml</DocumentationFile>
+    <NoWarn>
+    </NoWarn>
+    <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionExplicit>On</OptionExplicit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionCompare>Binary</OptionCompare>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionStrict>On</OptionStrict>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionInfer>On</OptionInfer>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="BasicPawn">
+      <HintPath>..\Required Plugin References\BasicPawn.exe</HintPath>
+    </Reference>
+    <Reference Include="BasicPawnPluginInterface">
+      <HintPath>..\Required Plugin References\BasicPawnPluginInterface.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.TextEditor">
+      <HintPath>..\Third Party Binaries\ICSharpCode.TextEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="Renci.SshNet">
+      <HintPath>..\Third Party Binaries\Renci.SshNet.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="FormReportManager\FormReportDetails.Designer.vb">
+      <DependentUpon>FormReportDetails.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FormReportManager\FormReportDetails.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormReportManager\FormReportManager.Designer.vb">
+      <DependentUpon>FormReportManager.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FormReportManager\FormReportManager.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormReportManager\UCReportExceptionItem.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FormReportManager\UCReportItem.Designer.vb">
+      <DependentUpon>UCReportItem.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FormReportManager\UCReportItem.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FormReportManager\UCReportList.Designer.vb">
+      <DependentUpon>UCReportList.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FormReportManager\UCReportList.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FormSettings.Designer.vb">
+      <DependentUpon>FormSettings.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FormSettings.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PluginAutoErrorReport.vb" />
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="FormReportManager\FormReportDetails.resx">
+      <DependentUpon>FormReportDetails.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormReportManager\FormReportManager.resx">
+      <DependentUpon>FormReportManager.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormReportManager\UCReportItem.resx">
+      <DependentUpon>UCReportItem.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormReportManager\UCReportList.resx">
+      <DependentUpon>UCReportList.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormSettings.resx">
+      <DependentUpon>FormSettings.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\miguiresource_500_16x16-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\imageres_5364_16x16-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{94E38DFF-614B-4CBD-B67C-F211BB35CE8B}" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ieframe_36883_16x16-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ieframe_36866_16x16-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\user32_101_16x16-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\user32_103_16x16-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\netshell_1608_16x16-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ieframe_36883_48x48-32.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if "$(ConfigurationName)"=="Debug" (
+copy /Y "$(TargetPath)" "$(SolutionDir)BasicPawn\bin\Debug\plugins\$(TargetFileName)"
+echo         Plugin '$(ProjectName)' copied to BasicPawn main plugin folder!
+)
+
+if "$(ConfigurationName)"=="Release" (
+copy /Y "$(TargetPath)" "$(SolutionDir)Plugin Releases\$(TargetFileName)"
+echo         Plugin '$(ProjectName)' copied to Plugin Releases folder!
+)</PostBuildEvent>
+  </PropertyGroup>
+</Project>

@@ -74,7 +74,7 @@ Partial Class FormFTP
         Me.GroupBox_NewEntry.Controls.Add(Me.Label1)
         Me.GroupBox_NewEntry.Controls.Add(Me.Button_AddEntry)
         Me.GroupBox_NewEntry.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.GroupBox_NewEntry.Location = New System.Drawing.Point(12, 196)
+        Me.GroupBox_NewEntry.Location = New System.Drawing.Point(12, 185)
         Me.GroupBox_NewEntry.Margin = New System.Windows.Forms.Padding(12, 8, 12, 8)
         Me.GroupBox_NewEntry.Name = "GroupBox_NewEntry"
         Me.GroupBox_NewEntry.Size = New System.Drawing.Size(440, 180)
@@ -84,6 +84,8 @@ Partial Class FormFTP
         '
         'TextBox_Host
         '
+        Me.TextBox_Host.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.TextBox_Host.Location = New System.Drawing.Point(125, 81)
         Me.TextBox_Host.Name = "TextBox_Host"
         Me.TextBox_Host.Size = New System.Drawing.Size(309, 22)
@@ -187,7 +189,7 @@ Partial Class FormFTP
         Me.ListView_FtpEntries.HideSelection = False
         Me.ListView_FtpEntries.Location = New System.Drawing.Point(12, 66)
         Me.ListView_FtpEntries.Name = "ListView_FtpEntries"
-        Me.ListView_FtpEntries.Size = New System.Drawing.Size(440, 96)
+        Me.ListView_FtpEntries.Size = New System.Drawing.Size(440, 85)
         Me.ListView_FtpEntries.TabIndex = 1
         Me.ListView_FtpEntries.UseCompatibleStateImageBehavior = False
         Me.ListView_FtpEntries.View = System.Windows.Forms.View.Details
@@ -226,7 +228,7 @@ Partial Class FormFTP
         Me.TableLayoutPanel_Controls.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.TableLayoutPanel_Controls.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.TableLayoutPanel_Controls.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 48.0!))
-        Me.TableLayoutPanel_Controls.Size = New System.Drawing.Size(464, 432)
+        Me.TableLayoutPanel_Controls.Size = New System.Drawing.Size(464, 421)
         Me.TableLayoutPanel_Controls.TabIndex = 2
         '
         'Panel1
@@ -235,7 +237,7 @@ Partial Class FormFTP
         Me.Panel1.Controls.Add(Me.Button_Cancel)
         Me.Panel1.Controls.Add(Me.Button_Upload)
         Me.Panel1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Panel1.Location = New System.Drawing.Point(0, 384)
+        Me.Panel1.Location = New System.Drawing.Point(0, 373)
         Me.Panel1.Margin = New System.Windows.Forms.Padding(0)
         Me.Panel1.Name = "Panel1"
         Me.Panel1.Size = New System.Drawing.Size(464, 48)
@@ -286,7 +288,7 @@ Partial Class FormFTP
         Me.Panel2.Location = New System.Drawing.Point(0, 0)
         Me.Panel2.Margin = New System.Windows.Forms.Padding(0)
         Me.Panel2.Name = "Panel2"
-        Me.Panel2.Size = New System.Drawing.Size(464, 188)
+        Me.Panel2.Size = New System.Drawing.Size(464, 177)
         Me.Panel2.TabIndex = 3
         '
         'Button_SearchUploadFile
@@ -332,7 +334,7 @@ Partial Class FormFTP
         Me.LinkLabel_RemoveItem.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.LinkLabel_RemoveItem.AutoSize = True
         Me.LinkLabel_RemoveItem.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
-        Me.LinkLabel_RemoveItem.Location = New System.Drawing.Point(405, 169)
+        Me.LinkLabel_RemoveItem.Location = New System.Drawing.Point(405, 158)
         Me.LinkLabel_RemoveItem.Name = "LinkLabel_RemoveItem"
         Me.LinkLabel_RemoveItem.Size = New System.Drawing.Size(47, 13)
         Me.LinkLabel_RemoveItem.TabIndex = 3
@@ -343,7 +345,7 @@ Partial Class FormFTP
         '
         Me.CheckBox_MoreDetails.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.CheckBox_MoreDetails.AutoSize = True
-        Me.CheckBox_MoreDetails.Location = New System.Drawing.Point(12, 168)
+        Me.CheckBox_MoreDetails.Location = New System.Drawing.Point(12, 157)
         Me.CheckBox_MoreDetails.Name = "CheckBox_MoreDetails"
         Me.CheckBox_MoreDetails.Size = New System.Drawing.Size(62, 17)
         Me.CheckBox_MoreDetails.TabIndex = 2
@@ -352,15 +354,15 @@ Partial Class FormFTP
         '
         'FormFTP
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(464, 432)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
+        Me.ClientSize = New System.Drawing.Size(464, 421)
         Me.Controls.Add(Me.TableLayoutPanel_Controls)
         Me.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
-        Me.MinimumSize = New System.Drawing.Size(480, 360)
+        Me.MinimumSize = New System.Drawing.Size(480, 420)
         Me.Name = "FormFTP"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Upload to FTP"

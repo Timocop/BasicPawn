@@ -408,6 +408,13 @@ Public Class ClassDebuggerParser
             End Select
         Next
 
+        If (iExpectingState = 3) Then
+            mSMException.mStackTraces = lSMStackTraces.ToArray
+            lSMExceptions.Add(mSMException)
+
+            iExpectingState = 0
+        End If
+
         Return lSMExceptions.ToArray
     End Function
 

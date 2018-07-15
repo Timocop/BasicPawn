@@ -15,7 +15,6 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 
-Imports System.Text.RegularExpressions
 Imports System.Windows.Forms
 Imports BasicPawn
 Imports BasicPawnPluginInterface
@@ -99,9 +98,15 @@ Public Class PluginFTP
         Get
             Return New IPluginInterface.STRUC_PLUGIN_INFORMATION("FTP Plugin",
                                                                  "Timocop",
-                                                                 "Allows uploading files to servers over FTP.",
+                                                                 "Allows uploading files to servers over FTP",
                                                                  Reflection.Assembly.GetExecutingAssembly.GetName.Version.ToString,
-                                                                 Nothing)
+                                                                 "https://github.com/Timocop/BasicPawn")
+        End Get
+    End Property
+
+    Public ReadOnly Property m_PluginEnabled As Boolean Implements IPluginInterface.m_PluginEnabled
+        Get
+            Return (g_ClassPlugin IsNot Nothing)
         End Get
     End Property
 
@@ -112,12 +117,6 @@ Public Class PluginFTP
             OnPluginEnabled(Nothing)
         End If
     End Sub
-
-    Public ReadOnly Property m_PluginEnabled As Boolean Implements IPluginInterface.m_PluginEnabled
-        Get
-            Return (g_ClassPlugin IsNot Nothing)
-        End Get
-    End Property
 
     Public Sub OnPluginEndPost() Implements IPluginInterface.OnPluginEndPost
         If (g_ClassPlugin IsNot Nothing) Then
