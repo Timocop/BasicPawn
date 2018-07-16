@@ -75,4 +75,22 @@ Public Class FormDatabaseInput
     Private Sub Button_Cancel_Click(sender As Object, e As EventArgs) Handles Button_Cancel.Click
         Me.Close()
     End Sub
+
+    Private Sub TextBox_Name_KeyDown(sender As Object, e As KeyEventArgs) Handles TextBox_Name.KeyDown
+        If (e.KeyCode = Keys.Enter) Then
+            Button_Apply.PerformClick()
+        End If
+    End Sub
+
+    Private Sub TextBox_Username_KeyDown(sender As Object, e As KeyEventArgs) Handles TextBox_Username.KeyDown
+        If (e.KeyCode = Keys.Enter) Then
+            Button_Apply.PerformClick()
+        End If
+    End Sub
+
+    Private Sub TextBox_Password_KeyDown(sender As Object, e As KeyEventArgs) Handles TextBox_Password.KeyDown
+        If (e.KeyCode = Keys.Enter) Then
+            Button_Apply.PerformClick()
+        End If
+    End Sub
 End Class

@@ -25,10 +25,10 @@ Partial Class FormDatabaseInput
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormDatabaseInput))
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.Panel_FooterControl = New System.Windows.Forms.Panel()
+        Me.Button_Apply = New System.Windows.Forms.Button()
+        Me.Button_Cancel = New System.Windows.Forms.Button()
         Me.Panel_FooterDarkControl = New System.Windows.Forms.Panel()
         Me.TableLayoutPanel2 = New System.Windows.Forms.TableLayoutPanel()
-        Me.Button_Cancel = New System.Windows.Forms.Button()
-        Me.Button_Apply = New System.Windows.Forms.Button()
         Me.TextBox_Name = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.TextBox_Username = New System.Windows.Forms.TextBox()
@@ -69,6 +69,28 @@ Partial Class FormDatabaseInput
         Me.Panel_FooterControl.Size = New System.Drawing.Size(378, 48)
         Me.Panel_FooterControl.TabIndex = 0
         '
+        'Button_Apply
+        '
+        Me.Button_Apply.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Button_Apply.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.Button_Apply.Location = New System.Drawing.Point(160, 13)
+        Me.Button_Apply.Name = "Button_Apply"
+        Me.Button_Apply.Size = New System.Drawing.Size(100, 23)
+        Me.Button_Apply.TabIndex = 1
+        Me.Button_Apply.Text = "Apply"
+        Me.Button_Apply.UseVisualStyleBackColor = True
+        '
+        'Button_Cancel
+        '
+        Me.Button_Cancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Button_Cancel.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.Button_Cancel.Location = New System.Drawing.Point(266, 13)
+        Me.Button_Cancel.Name = "Button_Cancel"
+        Me.Button_Cancel.Size = New System.Drawing.Size(100, 23)
+        Me.Button_Cancel.TabIndex = 2
+        Me.Button_Cancel.Text = "Cancel"
+        Me.Button_Cancel.UseVisualStyleBackColor = True
+        '
         'Panel_FooterDarkControl
         '
         Me.Panel_FooterDarkControl.BackColor = System.Drawing.SystemColors.ControlDark
@@ -103,28 +125,6 @@ Partial Class FormDatabaseInput
         Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.TableLayoutPanel2.Size = New System.Drawing.Size(378, 155)
         Me.TableLayoutPanel2.TabIndex = 1
-        '
-        'Button_Cancel
-        '
-        Me.Button_Cancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button_Cancel.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_Cancel.Location = New System.Drawing.Point(266, 13)
-        Me.Button_Cancel.Name = "Button_Cancel"
-        Me.Button_Cancel.Size = New System.Drawing.Size(100, 23)
-        Me.Button_Cancel.TabIndex = 2
-        Me.Button_Cancel.Text = "Cancel"
-        Me.Button_Cancel.UseVisualStyleBackColor = True
-        '
-        'Button_Apply
-        '
-        Me.Button_Apply.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button_Apply.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_Apply.Location = New System.Drawing.Point(160, 13)
-        Me.Button_Apply.Name = "Button_Apply"
-        Me.Button_Apply.Size = New System.Drawing.Size(100, 23)
-        Me.Button_Apply.TabIndex = 1
-        Me.Button_Apply.Text = "Apply"
-        Me.Button_Apply.UseVisualStyleBackColor = True
         '
         'TextBox_Name
         '
