@@ -161,6 +161,7 @@ Public Class ClassFTP
         Dim iSize As Long
         Dim dModified As Date
         Dim sName As String
+        Dim sFullName As String
         Dim bIsDirectory As Boolean
     End Structure
 
@@ -220,6 +221,7 @@ Public Class ClassFTP
                         Dim sDate As String = Regex.Replace(mMatch.Groups("Date").Value, "\s+", " ")
                         Dim dModified As Date = Date.ParseExact(sDate, If(sDate.Contains(":"), sDateTimeFormat, sDateFormats), mCulture, DateTimeStyles.None)
                         Dim sName As String = mMatch.Groups("Name").Value
+                        Dim sFullName As String = Path.Combine(sDirectoryPath, sName).Replace("\", "/")
                         Dim bIsDirectory As Boolean = sPermissions.StartsWith("d")
 
                         lEntries.Add(New STRUC_FTP_FILE_INFO With {
@@ -230,6 +232,7 @@ Public Class ClassFTP
                             .iSize = iSize,
                             .dModified = dModified,
                             .sName = sName,
+                            .sFullName = sFullName,
                             .bIsDirectory = bIsDirectory
                         })
                     End While

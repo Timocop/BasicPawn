@@ -180,7 +180,7 @@ Public Class FormReportManager
 
                                                                                  Dim sTmpFile As String = IO.Path.GetTempFileName
                                                                                  Try
-                                                                                     g_mClassFTP.DownloadFile(mItem.sName, sTmpFile)
+                                                                                     g_mClassFTP.DownloadFile(mItem.sFullName, sTmpFile)
 
                                                                                      With New ClassDebuggerParser(Nothing)
                                                                                          lReportExceptionItems.AddRange(.ReadSourceModLogExceptions(IO.File.ReadAllLines(sTmpFile)))
