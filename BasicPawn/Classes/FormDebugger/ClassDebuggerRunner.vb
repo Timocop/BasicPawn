@@ -593,6 +593,13 @@ Public Class ClassDebuggerRunner
                             MessageBox.Show("Could not send command! Game directory does not exist!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         End If
 
+                    Case FormDebuggerStop.ENUM_DIALOG_RESULT.REFRESH_PLUGINS
+                        If (Not String.IsNullOrEmpty(m_GameFolder) AndAlso IO.Directory.Exists(m_GameFolder)) Then
+                            g_mFormDebugger.g_ClassDebuggerRunnerEngine.AcceptCommand(m_GameFolder, "@refreshplugins")
+                        Else
+                            MessageBox.Show("Could not send command! Game directory does not exist!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        End If
+
                     Case FormDebuggerStop.ENUM_DIALOG_RESULT.RESTART_GAME
                         If (Not String.IsNullOrEmpty(m_GameFolder) AndAlso IO.Directory.Exists(m_GameFolder)) Then
                             g_mFormDebugger.g_ClassDebuggerRunnerEngine.AcceptCommand(m_GameFolder, "_restart")

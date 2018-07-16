@@ -22,6 +22,7 @@ Public Class FormDebuggerStop
         RELOAD_MAP
         RESTART_GAME
         UNLOAD_PLUGIN
+        REFRESH_PLUGINS
     End Enum
 
     Private g_mDialogResult As ENUM_DIALOG_RESULT = ENUM_DIALOG_RESULT.DO_NOTHING
@@ -62,6 +63,10 @@ Public Class FormDebuggerStop
 
     Private Sub RadioButton5_CheckedChanged(sender As Object, e As EventArgs) Handles RadioButton5.CheckedChanged
         g_mDialogResult = ENUM_DIALOG_RESULT.RELOAD_MAP
+    End Sub
+
+    Private Sub RadioButton6_CheckedChanged(sender As Object, e As EventArgs) Handles RadioButton6.CheckedChanged
+        g_mDialogResult = ENUM_DIALOG_RESULT.REFRESH_PLUGINS
     End Sub
 
     Private Sub RadioButton3_CheckedChanged(sender As Object, e As EventArgs) Handles RadioButton3.CheckedChanged

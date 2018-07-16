@@ -2,11 +2,11 @@
 
 #include <sourcemod>
 
-#define RELOAD_MAP_DELAY 5
+#define TIMER_DELAY 5
 #define ENTITY_FULL_UPDATE_TIME 60.0
 #define MAXENTITIES 2048
 
-static Handle:g_hReloadMapTimer;
+static Handle:g_hTimer;
 static String:g_sReloadMapName[PLATFORM_MAX_PATH];
 
 enum EntityDebuggerAction
@@ -45,9 +45,16 @@ public OnGameFrame()
 			if(StrContains(sCmd, "@reloadmap") == 0) {
 				GetCurrentMap(g_sReloadMapName, sizeof(g_sReloadMapName));
 				
-				PrintToChatAll("[BPD] Server reloads map in %d seconds...", RELOAD_MAP_DELAY);
+				PrintToChatAll("[BPD] Server reloads map in %d seconds...", TIMER_DELAY);
 				
-				g_hReloadMapTimer = CreateTimer(float(RELOAD_MAP_DELAY), ReloadMapTimer);
+				g_hTimer = CreateTimer(float(TIMER_DELAY), ReloadMapTimer);
+				continue;
+			}
+			
+			if(StrContains(sCmd, "@refreshplugins") == 0) {
+				PrintToChatAll("[BPD] Server refreshes plugins in %d seconds...", TIMER_DELAY);
+				
+				g_hTimer = CreateTimer(float(TIMER_DELAY), RefreshPluginsTimer);
 				continue;
 			}
 			
@@ -137,9 +144,19 @@ public Action:SendPingTimer(Handle:hTimer)
 
 public Action:ReloadMapTimer(Handle:hTimer)
 {
-	if(g_hReloadMapTimer != hTimer)
+	if(g_hTimer != hTimer)
 		return Plugin_Stop;
 	
 	ForceChangeLevel(g_sReloadMapName, "BasicPawn Debugger Command");
+	return Plugin_Stop;
+}
+
+public Action:RefreshPluginsTimer(Handle:hTimer)
+{
+	if(g_hTimer != hTimer)
+		return Plugin_Stop;
+	
+	ServerCommand("sm plugins refresh");
+	PrintToChatAll("[BPD] All plugins refreshed!");
 	return Plugin_Stop;
 }

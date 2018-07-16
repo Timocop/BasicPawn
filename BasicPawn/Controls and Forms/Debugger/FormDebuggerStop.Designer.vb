@@ -38,6 +38,7 @@ Partial Class FormDebuggerStop
         Me.ToolTip_ResultOptions = New System.Windows.Forms.ToolTip(Me.components)
         Me.RadioButton5 = New System.Windows.Forms.RadioButton()
         Me.Class_PictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
+        Me.RadioButton6 = New System.Windows.Forms.RadioButton()
         Me.Panel_FooterControl.SuspendLayout()
         CType(Me.Class_PictureBoxQuality1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -50,7 +51,7 @@ Partial Class FormDebuggerStop
         Me.Panel_FooterControl.Controls.Add(Me.Button_Cancel)
         Me.Panel_FooterControl.Controls.Add(Me.Panel_FooterDarkControl)
         Me.Panel_FooterControl.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.Panel_FooterControl.Location = New System.Drawing.Point(0, 233)
+        Me.Panel_FooterControl.Location = New System.Drawing.Point(0, 250)
         Me.Panel_FooterControl.Name = "Panel_FooterControl"
         Me.Panel_FooterControl.Size = New System.Drawing.Size(344, 48)
         Me.Panel_FooterControl.TabIndex = 0
@@ -142,7 +143,7 @@ Partial Class FormDebuggerStop
         '
         Me.RadioButton3.AutoSize = True
         Me.RadioButton3.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.RadioButton3.Location = New System.Drawing.Point(73, 175)
+        Me.RadioButton3.Location = New System.Drawing.Point(73, 199)
         Me.RadioButton3.Margin = New System.Windows.Forms.Padding(64, 3, 3, 3)
         Me.RadioButton3.Name = "RadioButton3"
         Me.RadioButton3.Size = New System.Drawing.Size(98, 18)
@@ -157,14 +158,14 @@ Partial Class FormDebuggerStop
         '
         Me.RadioButton4.AutoSize = True
         Me.RadioButton4.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.RadioButton4.Location = New System.Drawing.Point(73, 198)
+        Me.RadioButton4.Location = New System.Drawing.Point(73, 222)
         Me.RadioButton4.Margin = New System.Windows.Forms.Padding(64, 3, 3, 3)
         Me.RadioButton4.Name = "RadioButton4"
         Me.RadioButton4.Size = New System.Drawing.Size(106, 18)
         Me.RadioButton4.TabIndex = 6
         Me.RadioButton4.Text = "Unload plugin"
-        Me.ToolTip_ResultOptions.SetToolTip(Me.RadioButton4, "Ends the debugger and unloads the plugin you're currently debugging." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Usefull for" &
-        " quick debugging." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "(BasicPawn debugger runner is required for this to work)")
+        Me.ToolTip_ResultOptions.SetToolTip(Me.RadioButton4, "Ends the debugger and unloads the plugin you're currently debugging." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "(BasicPawn " &
+        "debugger runner is required for this to work)")
         Me.RadioButton4.UseVisualStyleBackColor = True
         '
         'Label2
@@ -204,13 +205,29 @@ Partial Class FormDebuggerStop
         Me.Class_PictureBoxQuality1.TabIndex = 2
         Me.Class_PictureBoxQuality1.TabStop = False
         '
+        'RadioButton6
+        '
+        Me.RadioButton6.AutoSize = True
+        Me.RadioButton6.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.RadioButton6.Location = New System.Drawing.Point(73, 175)
+        Me.RadioButton6.Margin = New System.Windows.Forms.Padding(64, 3, 3, 3)
+        Me.RadioButton6.Name = "RadioButton6"
+        Me.RadioButton6.Size = New System.Drawing.Size(127, 18)
+        Me.RadioButton6.TabIndex = 9
+        Me.RadioButton6.Text = "Refresh all plugins"
+        Me.ToolTip_ResultOptions.SetToolTip(Me.RadioButton6, "Ends the debugging and refreshes all plugins." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Usefull for quick tests. Plugin la" &
+        "te-load checks are required." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "(BasicPawn debugger runner is required for this to" &
+        " work)" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10))
+        Me.RadioButton6.UseVisualStyleBackColor = True
+        '
         'FormDebuggerStop
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.BackColor = System.Drawing.Color.White
         Me.CancelButton = Me.Button_Cancel
-        Me.ClientSize = New System.Drawing.Size(344, 281)
+        Me.ClientSize = New System.Drawing.Size(344, 298)
+        Me.Controls.Add(Me.RadioButton6)
         Me.Controls.Add(Me.RadioButton5)
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.RadioButton4)
@@ -250,4 +267,5 @@ Partial Class FormDebuggerStop
     Friend WithEvents ToolTip_ResultOptions As ToolTip
     Friend WithEvents RadioButton5 As RadioButton
     Friend WithEvents CheckBox_RememberAction As CheckBox
+    Friend WithEvents RadioButton6 As RadioButton
 End Class
