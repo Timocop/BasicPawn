@@ -2,8 +2,12 @@
 
 #include <sourcemod>
 
+#define RELOAD_MAP_DELAY 5
 #define ENTITY_FULL_UPDATE_TIME 60.0
 #define MAXENTITIES 2048
+
+static Handle:g_hReloadMapTimer;
+static String:g_sReloadMapName[PLATFORM_MAX_PATH];
 
 enum EntityDebuggerAction
 {
@@ -39,10 +43,11 @@ public OnGameFrame()
 		static String:sCmd[1024];
 		while(ReadFileLine(hFile, sCmd, sizeof(sCmd))) {
 			if(StrContains(sCmd, "@reloadmap") == 0) {
-				static String:sMapname[PLATFORM_MAX_PATH];
-				GetCurrentMap(sMapname, sizeof(sMapname));
+				GetCurrentMap(g_sReloadMapName, sizeof(g_sReloadMapName));
 				
-				ForceChangeLevel(sMapname, "BasicPawn Debugger Command");
+				PrintToChatAll("[BPD] Server reloads map in %d seconds...", RELOAD_MAP_DELAY);
+				
+				g_hReloadMapTimer = CreateTimer(float(RELOAD_MAP_DELAY), ReloadMapTimer);
 				continue;
 			}
 			
@@ -128,4 +133,13 @@ public Action:SendPingTimer(Handle:hTimer)
 	}
 	
 	return Plugin_Continue;
+}
+
+public Action:ReloadMapTimer(Handle:hTimer)
+{
+	if(g_hReloadMapTimer != hTimer)
+		return Plugin_Stop;
+	
+	ForceChangeLevel(g_sReloadMapName, "BasicPawn Debugger Command");
+	return Plugin_Stop;
 }
