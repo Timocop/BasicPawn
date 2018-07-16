@@ -53,23 +53,24 @@ Partial Class FormReportManager
         'FileToolStripMenuItem
         '
         Me.FileToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CloseToolStripMenuItem})
-        Me.FileToolStripMenuItem.Image = Global.BasicPawnPluginAutoErrorReport.My.Resources.Resources.imageres_5364_16x16_32
+        Me.FileToolStripMenuItem.Image = Global.BasicPawnPluginAutoErrorReport.My.Resources.Resources.imageres_5306_16x16_32
         Me.FileToolStripMenuItem.Name = "FileToolStripMenuItem"
         Me.FileToolStripMenuItem.Size = New System.Drawing.Size(53, 20)
-        Me.FileToolStripMenuItem.Text = "File"
+        Me.FileToolStripMenuItem.Text = "&File"
         '
         'CloseToolStripMenuItem
         '
+        Me.CloseToolStripMenuItem.Image = Global.BasicPawnPluginAutoErrorReport.My.Resources.Resources.imageres_5337_16x16_32
         Me.CloseToolStripMenuItem.Name = "CloseToolStripMenuItem"
-        Me.CloseToolStripMenuItem.Size = New System.Drawing.Size(103, 22)
-        Me.CloseToolStripMenuItem.Text = "Close"
+        Me.CloseToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.CloseToolStripMenuItem.Text = "&Close"
         '
         'GetReportsToolStripMenuItem
         '
         Me.GetReportsToolStripMenuItem.Image = Global.BasicPawnPluginAutoErrorReport.My.Resources.Resources.miguiresource_500_16x16_32
         Me.GetReportsToolStripMenuItem.Name = "GetReportsToolStripMenuItem"
         Me.GetReportsToolStripMenuItem.Size = New System.Drawing.Size(104, 20)
-        Me.GetReportsToolStripMenuItem.Text = "Fetch reports"
+        Me.GetReportsToolStripMenuItem.Text = "Fetch &reports"
         '
         'StatusStrip1
         '
@@ -98,7 +99,7 @@ Partial Class FormReportManager
         'ToolStripSplitButton_ProgressAbort
         '
         Me.ToolStripSplitButton_ProgressAbort.DropDownButtonWidth = 0
-        Me.ToolStripSplitButton_ProgressAbort.Image = Global.BasicPawnPluginAutoErrorReport.My.Resources.Resources.netshell_1608_16x16_32
+        Me.ToolStripSplitButton_ProgressAbort.Image = Global.BasicPawnPluginAutoErrorReport.My.Resources.Resources.imageres_5337_16x16_32
         Me.ToolStripSplitButton_ProgressAbort.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.ToolStripSplitButton_ProgressAbort.Name = "ToolStripSplitButton_ProgressAbort"
         Me.ToolStripSplitButton_ProgressAbort.Size = New System.Drawing.Size(58, 20)

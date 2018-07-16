@@ -35,10 +35,10 @@ Partial Class FormReportDetails
         Me.ColumnHeader3 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader4 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.Panel3 = New System.Windows.Forms.Panel()
+        Me.Button_Close = New System.Windows.Forms.Button()
         Me.Label_Warning = New System.Windows.Forms.Label()
         Me.PictureBox_Warning = New System.Windows.Forms.PictureBox()
         Me.Panel4 = New System.Windows.Forms.Panel()
-        Me.Button_Close = New System.Windows.Forms.Button()
         CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel1.SuspendLayout()
         Me.Panel3.SuspendLayout()
@@ -48,7 +48,6 @@ Partial Class FormReportDetails
         'Label_ExceptionName
         '
         Me.Label_ExceptionName.AutoSize = True
-        Me.Label_ExceptionName.BackColor = System.Drawing.Color.White
         Me.Label_ExceptionName.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label_ExceptionName.Location = New System.Drawing.Point(62, 9)
         Me.Label_ExceptionName.Name = "Label_ExceptionName"
@@ -58,7 +57,6 @@ Partial Class FormReportDetails
         '
         'PictureBox2
         '
-        Me.PictureBox2.BackColor = System.Drawing.Color.White
         Me.PictureBox2.Image = CType(resources.GetObject("PictureBox2.Image"), System.Drawing.Image)
         Me.PictureBox2.Location = New System.Drawing.Point(8, 8)
         Me.PictureBox2.Name = "PictureBox2"
@@ -70,7 +68,6 @@ Partial Class FormReportDetails
         'Label_FileName
         '
         Me.Label_FileName.AutoSize = True
-        Me.Label_FileName.BackColor = System.Drawing.Color.White
         Me.Label_FileName.Location = New System.Drawing.Point(62, 26)
         Me.Label_FileName.Name = "Label_FileName"
         Me.Label_FileName.Size = New System.Drawing.Size(57, 13)
@@ -80,7 +77,6 @@ Partial Class FormReportDetails
         'Label_Date
         '
         Me.Label_Date.AutoSize = True
-        Me.Label_Date.BackColor = System.Drawing.Color.White
         Me.Label_Date.Location = New System.Drawing.Point(62, 39)
         Me.Label_Date.Name = "Label_Date"
         Me.Label_Date.Size = New System.Drawing.Size(31, 13)
@@ -146,25 +142,39 @@ Partial Class FormReportDetails
         '
         'Panel3
         '
+        Me.Panel3.Controls.Add(Me.Button_Close)
         Me.Panel3.Controls.Add(Me.Label_Warning)
         Me.Panel3.Controls.Add(Me.PictureBox_Warning)
         Me.Panel3.Controls.Add(Me.Panel4)
-        Me.Panel3.Controls.Add(Me.Button_Close)
         Me.Panel3.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.Panel3.Location = New System.Drawing.Point(0, 258)
         Me.Panel3.Name = "Panel3"
         Me.Panel3.Size = New System.Drawing.Size(455, 48)
         Me.Panel3.TabIndex = 7
         '
+        'Button_Close
+        '
+        Me.Button_Close.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Button_Close.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.Button_Close.Location = New System.Drawing.Point(368, 13)
+        Me.Button_Close.Name = "Button_Close"
+        Me.Button_Close.Size = New System.Drawing.Size(75, 23)
+        Me.Button_Close.TabIndex = 0
+        Me.Button_Close.Text = "Close"
+        Me.Button_Close.UseVisualStyleBackColor = True
+        '
         'Label_Warning
         '
-        Me.Label_Warning.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.Label_Warning.AutoSize = True
-        Me.Label_Warning.Location = New System.Drawing.Point(34, 16)
+        Me.Label_Warning.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Label_Warning.AutoEllipsis = True
+        Me.Label_Warning.Location = New System.Drawing.Point(34, 3)
         Me.Label_Warning.Name = "Label_Warning"
-        Me.Label_Warning.Size = New System.Drawing.Size(52, 13)
+        Me.Label_Warning.Size = New System.Drawing.Size(328, 36)
         Me.Label_Warning.TabIndex = 3
         Me.Label_Warning.Text = "Warning"
+        Me.Label_Warning.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.Label_Warning.Visible = False
         '
         'PictureBox_Warning
@@ -188,17 +198,6 @@ Partial Class FormReportDetails
         Me.Panel4.Size = New System.Drawing.Size(455, 1)
         Me.Panel4.TabIndex = 1
         '
-        'Button_Close
-        '
-        Me.Button_Close.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button_Close.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_Close.Location = New System.Drawing.Point(368, 13)
-        Me.Button_Close.Name = "Button_Close"
-        Me.Button_Close.Size = New System.Drawing.Size(75, 23)
-        Me.Button_Close.TabIndex = 0
-        Me.Button_Close.Text = "Close"
-        Me.Button_Close.UseVisualStyleBackColor = True
-        '
         'FormReportDetails
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -219,7 +218,6 @@ Partial Class FormReportDetails
         Me.Panel1.ResumeLayout(False)
         Me.Panel1.PerformLayout()
         Me.Panel3.ResumeLayout(False)
-        Me.Panel3.PerformLayout()
         CType(Me.PictureBox_Warning, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 

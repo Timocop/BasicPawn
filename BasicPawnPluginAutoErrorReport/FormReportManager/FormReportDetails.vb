@@ -34,6 +34,8 @@ Public Class FormReportDetails
         Panel2.Name &= "@FooterDarkControl"
         Panel4.Name &= "@FooterDarkControl"
 
+        m_WarningText = ""
+
         Me.Text = mException.sExceptionInfo
 
         Label_ExceptionName.Text = mException.sExceptionInfo
@@ -57,15 +59,31 @@ Public Class FormReportDetails
         Next
         ListView_StackTrace.EndUpdate()
 
+        Const FLAG_NONE = (0 << 1)
+        Const FLAG_FILEDATE = (1 << 1)
+        Const FLAG_FILEMISSING = (2 << 1)
+        Dim iWarningFlag = FLAG_NONE
+
         For i = 0 To mException.mStackTraces.Length - 1
+            If (String.IsNullOrEmpty(mException.mStackTraces(i).sFileName)) Then
+                Continue For
+            End If
+
             If (IO.File.Exists(mException.mStackTraces(i).sFileName)) Then
                 Dim dFileDate As Date = New IO.FileInfo(mException.mStackTraces(i).sFileName).LastWriteTime
 
                 If (dFileDate > mException.dLogDate) Then
-                    m_WarningText = "Some source files are more recent than the report. Stack traces might be inaccurate."
+                    If ((iWarningFlag And FLAG_FILEDATE) <> FLAG_FILEDATE) Then
+                        iWarningFlag = iWarningFlag Or FLAG_FILEDATE
+                        m_WarningText &= If(m_WarningText.Length > 0, Environment.NewLine, "") & "Some source files are newer. Stack traces might be inaccurate."
+                    End If
                 End If
             Else
-                m_WarningText = "Unable to find some source files."
+                If ((iWarningFlag And FLAG_FILEMISSING) <> FLAG_FILEMISSING) Then
+                    iWarningFlag = iWarningFlag Or FLAG_FILEMISSING
+                    m_WarningText &= If(m_WarningText.Length > 0, Environment.NewLine, "") & "Unable to find some source files."
+                End If
+                Exit For
             End If
         Next
     End Sub
@@ -97,7 +115,7 @@ Public Class FormReportDetails
         End Set
     End Property
 
-    Private Sub ListView_StackTrace_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListView_StackTrace.SelectedIndexChanged
+    Private Sub ListView_StackTrace_Click(sender As Object, e As EventArgs) Handles ListView_StackTrace.Click
         If (ListView_StackTrace.SelectedItems.Count < 1) Then
             Return
         End If
@@ -115,7 +133,11 @@ Public Class FormReportDetails
                 Return
             End If
 
-            Dim bGuessTab As Boolean = (Not IO.File.Exists(sFile))
+            Dim bGuessTab As Boolean = False
+            If (Not IO.File.Exists(sFile)) Then
+                bGuessTab = True
+                sFile = IO.Path.GetFileName(sFile)
+            End If
 
             Dim mFormMain = g_mFormReportManager.g_mPluginAutoErrorReport.g_mFormMain
 
@@ -131,7 +153,7 @@ Public Class FormReportDetails
                     If (sTabPath.ToLower = sFile.ToLower OrElse (bGuessTab AndAlso sTabPath.ToLower.EndsWith(sFile.ToLower))) Then
                         Dim iLineNum As Integer = CInt(sLine) - 1
                         If (iLineNum < 0 OrElse iLineNum > mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.Document.TotalNumberOfLines - 1) Then
-                            Return
+                            Exit While
                         End If
 
                         mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.Caret.Line = iLineNum
@@ -148,12 +170,25 @@ Public Class FormReportDetails
                         If (mFormMain.g_ClassTabControl.m_ActiveTabIndex <> i) Then
                             mFormMain.g_ClassTabControl.SelectTab(i)
                         End If
-                        Return
+
+                        Me.TopMost = True
+                        mFormMain.Activate()
+                        Me.TopMost = False
+                        Exit While
                     End If
                 Next
 
                 If (bForceEnd) Then
                     Exit While
+                End If
+
+                If (IO.File.Exists(sFile)) Then
+                    Dim mTab = mFormMain.g_ClassTabControl.AddTab()
+                    mTab.OpenFileTab(sFile)
+                    mTab.SelectTab()
+
+                    bForceEnd = True
+                    Continue While
                 End If
 
                 For Each mInclude As DictionaryEntry In mFormMain.g_ClassTabControl.m_ActiveTab.m_IncludeFilesFull.ToArray
@@ -172,10 +207,31 @@ Public Class FormReportDetails
                     End If
                 Next
 
+                Select Case (MessageBox.Show(String.Format("Could not find file. Do you want to use known files from the configs to find the file?{0}{0}Otherwise open the file manualy and try again.", Environment.NewLine), "Unable to find file", MessageBoxButtons.YesNo, MessageBoxIcon.Error))
+                    Case DialogResult.Yes
+                        For Each mItem In ClassConfigs.ClassKnownConfigs.GetKnownConfigs
+                            Dim sKnownFile As String = mItem.sFile
+
+                            If (Not IO.File.Exists(sKnownFile)) Then
+                                Continue For
+                            End If
+
+                            If (sKnownFile.ToLower = sFile.ToLower OrElse (bGuessTab AndAlso sKnownFile.ToLower.EndsWith(sFile.ToLower))) Then
+                                Dim mTab = mFormMain.g_ClassTabControl.AddTab()
+                                mTab.OpenFileTab(sKnownFile)
+                                mTab.SelectTab()
+
+                                bForceEnd = True
+                                Continue While
+                            End If
+                        Next
+
+                        MessageBox.Show("Could not find file. Please open the file manualy and try again.", "Unable to find file", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                End Select
+
                 Exit While
             End While
 
-            MessageBox.Show("Could not find file. Please open the file manualy and try again.", "Unable to find file", MessageBoxButtons.OK, MessageBoxIcon.Error)
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try

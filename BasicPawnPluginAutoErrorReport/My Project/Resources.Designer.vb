@@ -83,9 +83,19 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
-        Friend ReadOnly Property ieframe_36883_48x48_32() As System.Drawing.Bitmap
+        Friend ReadOnly Property imageres_5306_16x16_32() As System.Drawing.Bitmap
             Get
-                Dim obj As Object = ResourceManager.GetObject("ieframe_36883_48x48_32", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("imageres_5306_16x16_32", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Drawing.Bitmap.
+        '''</summary>
+        Friend ReadOnly Property imageres_5337_16x16_32() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("imageres_5337_16x16_32", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -106,16 +116,6 @@ Namespace My.Resources
         Friend ReadOnly Property miguiresource_500_16x16_32() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("miguiresource_500_16x16_32", resourceCulture)
-                Return CType(obj,System.Drawing.Bitmap)
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized resource of type System.Drawing.Bitmap.
-        '''</summary>
-        Friend ReadOnly Property netshell_1608_16x16_32() As System.Drawing.Bitmap
-            Get
-                Dim obj As Object = ResourceManager.GetObject("netshell_1608_16x16_32", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property

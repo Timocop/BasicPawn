@@ -23,22 +23,22 @@ Partial Class UCReportItem
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(UCReportItem))
-        Me.PictureBox1 = New System.Windows.Forms.PictureBox()
+        Me.PictureBox_Icon = New System.Windows.Forms.PictureBox()
         Me.Label_Title = New System.Windows.Forms.Label()
         Me.Label_File = New System.Windows.Forms.Label()
         Me.Label_Date = New System.Windows.Forms.Label()
-        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.PictureBox_Icon, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
-        'PictureBox1
+        'PictureBox_Icon
         '
-        Me.PictureBox1.Image = CType(resources.GetObject("PictureBox1.Image"), System.Drawing.Image)
-        Me.PictureBox1.Location = New System.Drawing.Point(3, 3)
-        Me.PictureBox1.Name = "PictureBox1"
-        Me.PictureBox1.Size = New System.Drawing.Size(16, 16)
-        Me.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
-        Me.PictureBox1.TabIndex = 0
-        Me.PictureBox1.TabStop = False
+        Me.PictureBox_Icon.Image = CType(resources.GetObject("PictureBox_Icon.Image"), System.Drawing.Image)
+        Me.PictureBox_Icon.Location = New System.Drawing.Point(3, 3)
+        Me.PictureBox_Icon.Name = "PictureBox_Icon"
+        Me.PictureBox_Icon.Size = New System.Drawing.Size(16, 16)
+        Me.PictureBox_Icon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
+        Me.PictureBox_Icon.TabIndex = 0
+        Me.PictureBox_Icon.TabStop = False
         '
         'Label_Title
         '
@@ -75,19 +75,19 @@ Partial Class UCReportItem
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.Controls.Add(Me.Label_File)
         Me.Controls.Add(Me.Label_Title)
-        Me.Controls.Add(Me.PictureBox1)
+        Me.Controls.Add(Me.PictureBox_Icon)
         Me.Controls.Add(Me.Label_Date)
         Me.Cursor = System.Windows.Forms.Cursors.Hand
         Me.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Name = "UCReportItem"
         Me.Size = New System.Drawing.Size(715, 43)
-        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.PictureBox_Icon, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
     End Sub
 
-    Friend WithEvents PictureBox1 As Windows.Forms.PictureBox
+    Friend WithEvents PictureBox_Icon As Windows.Forms.PictureBox
     Friend WithEvents Label_Title As Windows.Forms.Label
     Friend WithEvents Label_File As Windows.Forms.Label
     Friend WithEvents Label_Date As Windows.Forms.Label

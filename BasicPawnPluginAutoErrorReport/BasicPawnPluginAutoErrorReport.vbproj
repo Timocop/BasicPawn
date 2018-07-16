@@ -185,10 +185,10 @@
     <None Include="Resources\user32_103_16x16-32.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\netshell_1608_16x16-32.png" />
+    <None Include="Resources\imageres_5306_16x16-32.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\ieframe_36883_48x48-32.png" />
+    <None Include="Resources\imageres_5337_16x16-32.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>

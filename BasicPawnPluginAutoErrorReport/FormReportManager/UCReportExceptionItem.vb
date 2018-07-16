@@ -24,6 +24,11 @@ Public Class UCReportExceptionItem
 
     Private g_mFormReportDetails As FormReportDetails
 
+    'Designer only
+    Private Sub New()
+        MyBase.New(Nothing)
+    End Sub
+
     Public Sub New(mFormReportManager As FormReportManager, mException As ClassDebuggerParser.STRUC_SM_EXCEPTION)
         MyBase.New(mFormReportManager)
 
@@ -38,7 +43,7 @@ Public Class UCReportExceptionItem
             Label_Date.Text = mException.dLogDate.ToLongDateString
         End If
 
-        PictureBox1.Image = My.Resources.ieframe_36883_16x16_32
+        PictureBox_Icon.Image = My.Resources.ieframe_36883_16x16_32
     End Sub
 
     Private Sub FormButton_Click(sender As Object, e As EventArgs) Handles Me.OnButtonClick
@@ -46,7 +51,7 @@ Public Class UCReportExceptionItem
             g_mFormReportDetails.Activate()
         Else
             g_mFormReportDetails = New FormReportDetails(g_mFormReportManager, g_mException)
-            g_mFormReportDetails.Show(Me)
+            g_mFormReportDetails.Show()
         End If
     End Sub
 

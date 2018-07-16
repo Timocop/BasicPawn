@@ -23,6 +23,11 @@ Public Class UCReportItem
 
     Public g_mFormReportManager As FormReportManager
 
+    'Designer only
+    Private Sub New()
+        Me.New(Nothing)
+    End Sub
+
     Public Sub New(mFormReportManager As FormReportManager)
         Me.New(mFormReportManager, "", "", "", Nothing)
     End Sub
@@ -37,14 +42,14 @@ Public Class UCReportItem
         Label_Title.Text = sTitle
         Label_File.Text = sText
         Label_Date.Text = sDate
-        PictureBox1.Image = mImage
+        PictureBox_Icon.Image = mImage
     End Sub
 
     Private Sub UCReportItem_Load(sender As Object, e As EventArgs) Handles Me.Load
         ClassControlStyle.UpdateControls(Me)
     End Sub
 
-    Private Sub Form_Click(sender As Object, e As EventArgs) Handles Me.Click, Label_Title.Click, Label_File.Click, Label_Date.Click, PictureBox1.Click
+    Private Sub Form_Click(sender As Object, e As EventArgs) Handles Me.Click, Label_Title.Click, Label_File.Click, Label_Date.Click, PictureBox_Icon.Click
         RaiseEvent OnButtonClick(sender, e)
     End Sub
 End Class
