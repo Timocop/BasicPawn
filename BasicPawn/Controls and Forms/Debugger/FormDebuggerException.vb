@@ -86,15 +86,7 @@ Public Class FormDebuggerException
         ListView_StackTrace.EndUpdate()
     End Sub
 
-    Private Sub ListView_StackTrace_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListView_StackTrace.SelectedIndexChanged
-        MarkListViewItem()
-    End Sub
-
-    Private Sub ListView_StackTrace_MouseClick(sender As Object, e As MouseEventArgs) Handles ListView_StackTrace.MouseClick
-        MarkListViewItem()
-    End Sub
-
-    Private Sub MarkListViewItem()
+    Private Sub ListView_StackTrace_Click(sender As Object, e As EventArgs) Handles ListView_StackTrace.Click
         Try
             If (ListView_StackTrace.SelectedItems.Count < 1) Then
                 Return

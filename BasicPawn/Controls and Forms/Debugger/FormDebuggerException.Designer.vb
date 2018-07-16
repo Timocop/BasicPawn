@@ -151,6 +151,7 @@ Partial Class FormDebuggerException
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ListView_StackTrace.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader5, Me.ColumnHeader1, Me.ColumnHeader2, Me.ColumnHeader3, Me.ColumnHeader4})
+        Me.ListView_StackTrace.Cursor = System.Windows.Forms.Cursors.Hand
         Me.ListView_StackTrace.FullRowSelect = True
         Me.ListView_StackTrace.Location = New System.Drawing.Point(12, 187)
         Me.ListView_StackTrace.Margin = New System.Windows.Forms.Padding(3, 9, 3, 3)
@@ -209,9 +210,9 @@ Partial Class FormDebuggerException
         'Class_PictureBoxQuality2
         '
         Me.Class_PictureBoxQuality2.BackColor = System.Drawing.Color.Transparent
-        Me.Class_PictureBoxQuality2.m_HighQuality = True
         Me.Class_PictureBoxQuality2.Image = Global.BasicPawn.My.Resources.Resources.Bmp_Stop
         Me.Class_PictureBoxQuality2.Location = New System.Drawing.Point(34, 109)
+        Me.Class_PictureBoxQuality2.m_HighQuality = True
         Me.Class_PictureBoxQuality2.Margin = New System.Windows.Forms.Padding(3, 12, 3, 3)
         Me.Class_PictureBoxQuality2.Name = "Class_PictureBoxQuality2"
         Me.Class_PictureBoxQuality2.Size = New System.Drawing.Size(36, 36)
@@ -225,8 +226,8 @@ Partial Class FormDebuggerException
         Me.Class_PanelQuality1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
         Me.Class_PanelQuality1.Controls.Add(Me.Label_Title)
         Me.Class_PanelQuality1.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Class_PanelQuality1.m_HighQuality = False
         Me.Class_PanelQuality1.Location = New System.Drawing.Point(0, 0)
+        Me.Class_PanelQuality1.m_HighQuality = False
         Me.Class_PanelQuality1.Name = "Class_PanelQuality1"
         Me.Class_PanelQuality1.Size = New System.Drawing.Size(534, 48)
         Me.Class_PanelQuality1.TabIndex = 2
