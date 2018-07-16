@@ -223,6 +223,17 @@ Public Class PluginAutoErrorReport
             If Not disposedValue Then
                 If disposing Then
                     ' TODO: dispose managed state (managed objects).
+
+                    'Remove Handlers
+                    If (g_mReportMoreManagerMenuItem IsNot Nothing) Then
+                        RemoveHandler g_mReportMoreManagerMenuItem.Click, AddressOf OnReportManagerClick
+                    End If
+
+                    If (g_mReportMoreSettingsMenuItem IsNot Nothing) Then
+                        RemoveHandler g_mReportMoreSettingsMenuItem.Click, AddressOf OnSettingsClick
+                    End If
+
+                    'Remove Controls
                     If (g_mReportMenuSplit IsNot Nothing AndAlso Not g_mReportMenuSplit.IsDisposed) Then
                         g_mReportMenuSplit.Dispose()
                         g_mReportMenuSplit = Nothing

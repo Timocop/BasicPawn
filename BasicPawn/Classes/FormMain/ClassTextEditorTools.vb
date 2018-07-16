@@ -1178,14 +1178,16 @@ Public Class ClassTextEditorTools
                     Continue For
                 End If
 
-                If (g_lHighlightItemList(i).mToolStripItem Is Nothing OrElse g_lHighlightItemList(i).mToolStripItem.IsDisposed) Then
-                    Continue For
+                'Remove Handlers
+                If (g_lHighlightItemList(i).mToolStripItem IsNot Nothing) Then
+                    RemoveHandler g_lHighlightItemList(i).mToolStripItem.Click, AddressOf OnClick
                 End If
 
-                RemoveHandler g_lHighlightItemList(i).mToolStripItem.Click, AddressOf OnClick
-
-                g_lHighlightItemList(i).mToolStripItem.Dispose()
-                g_lHighlightItemList(i).mToolStripItem = Nothing
+                'Remove Controls
+                If (g_lHighlightItemList(i).mToolStripItem IsNot Nothing AndAlso Not g_lHighlightItemList(i).mToolStripItem.IsDisposed) Then
+                    g_lHighlightItemList(i).mToolStripItem.Dispose()
+                    g_lHighlightItemList(i).mToolStripItem = Nothing
+                End If
             Next
 
             g_lHighlightItemList.Clear()

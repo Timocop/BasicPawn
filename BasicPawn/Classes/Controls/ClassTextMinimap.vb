@@ -282,7 +282,8 @@ Public Class ClassTextMinimap
     End Sub
 
     Private Sub CleanUp()
-        If (g_mPanel IsNot Nothing AndAlso Not g_mPanel.IsDisposed) Then
+        'Remove Handlers
+        If (g_mPanel IsNot Nothing) Then
             RemoveHandler g_mPanel.MouseClick, AddressOf Panel_MouseClick
             RemoveHandler g_mPanel.MouseMove, AddressOf Panel_MouseMove
         End If
