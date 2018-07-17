@@ -74,10 +74,10 @@ Partial Class FormFTP
         Me.GroupBox_NewEntry.Controls.Add(Me.Label1)
         Me.GroupBox_NewEntry.Controls.Add(Me.Button_AddEntry)
         Me.GroupBox_NewEntry.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.GroupBox_NewEntry.Location = New System.Drawing.Point(12, 185)
+        Me.GroupBox_NewEntry.Location = New System.Drawing.Point(12, 200)
         Me.GroupBox_NewEntry.Margin = New System.Windows.Forms.Padding(12, 8, 12, 8)
         Me.GroupBox_NewEntry.Name = "GroupBox_NewEntry"
-        Me.GroupBox_NewEntry.Size = New System.Drawing.Size(440, 180)
+        Me.GroupBox_NewEntry.Size = New System.Drawing.Size(440, 165)
         Me.GroupBox_NewEntry.TabIndex = 0
         Me.GroupBox_NewEntry.TabStop = False
         Me.GroupBox_NewEntry.Text = "Add new entry"
@@ -86,7 +86,7 @@ Partial Class FormFTP
         '
         Me.TextBox_Host.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TextBox_Host.Location = New System.Drawing.Point(125, 81)
+        Me.TextBox_Host.Location = New System.Drawing.Point(125, 75)
         Me.TextBox_Host.Name = "TextBox_Host"
         Me.TextBox_Host.Size = New System.Drawing.Size(309, 22)
         Me.TextBox_Host.TabIndex = 9
@@ -94,7 +94,7 @@ Partial Class FormFTP
         'Label5
         '
         Me.Label5.AutoSize = True
-        Me.Label5.Location = New System.Drawing.Point(6, 84)
+        Me.Label5.Location = New System.Drawing.Point(6, 78)
         Me.Label5.Name = "Label5"
         Me.Label5.Size = New System.Drawing.Size(34, 13)
         Me.Label5.TabIndex = 8
@@ -107,7 +107,7 @@ Partial Class FormFTP
         Me.ComboBox_Protocol.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.ComboBox_Protocol.FormattingEnabled = True
         Me.ComboBox_Protocol.Items.AddRange(New Object() {"FTP (Not reommended - Unsecure)", "SFTP"})
-        Me.ComboBox_Protocol.Location = New System.Drawing.Point(125, 54)
+        Me.ComboBox_Protocol.Location = New System.Drawing.Point(125, 48)
         Me.ComboBox_Protocol.Name = "ComboBox_Protocol"
         Me.ComboBox_Protocol.Size = New System.Drawing.Size(309, 21)
         Me.ComboBox_Protocol.TabIndex = 7
@@ -115,7 +115,7 @@ Partial Class FormFTP
         'Label4
         '
         Me.Label4.AutoSize = True
-        Me.Label4.Location = New System.Drawing.Point(6, 57)
+        Me.Label4.Location = New System.Drawing.Point(6, 51)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(53, 13)
         Me.Label4.TabIndex = 6
@@ -124,7 +124,7 @@ Partial Class FormFTP
         'Button_SearchPath
         '
         Me.Button_SearchPath.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button_SearchPath.Location = New System.Drawing.Point(402, 109)
+        Me.Button_SearchPath.Location = New System.Drawing.Point(402, 103)
         Me.Button_SearchPath.Name = "Button_SearchPath"
         Me.Button_SearchPath.Size = New System.Drawing.Size(32, 23)
         Me.Button_SearchPath.TabIndex = 5
@@ -135,7 +135,7 @@ Partial Class FormFTP
         '
         Me.TextBox_DestinationPath.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TextBox_DestinationPath.Location = New System.Drawing.Point(125, 109)
+        Me.TextBox_DestinationPath.Location = New System.Drawing.Point(125, 103)
         Me.TextBox_DestinationPath.Name = "TextBox_DestinationPath"
         Me.TextBox_DestinationPath.Size = New System.Drawing.Size(271, 22)
         Me.TextBox_DestinationPath.TabIndex = 4
@@ -143,7 +143,7 @@ Partial Class FormFTP
         'Label2
         '
         Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(6, 112)
+        Me.Label2.Location = New System.Drawing.Point(6, 106)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(97, 13)
         Me.Label2.TabIndex = 3
@@ -155,7 +155,7 @@ Partial Class FormFTP
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ComboBox_DatabaseEntry.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.ComboBox_DatabaseEntry.FormattingEnabled = True
-        Me.ComboBox_DatabaseEntry.Location = New System.Drawing.Point(125, 27)
+        Me.ComboBox_DatabaseEntry.Location = New System.Drawing.Point(125, 21)
         Me.ComboBox_DatabaseEntry.Name = "ComboBox_DatabaseEntry"
         Me.ComboBox_DatabaseEntry.Size = New System.Drawing.Size(309, 21)
         Me.ComboBox_DatabaseEntry.TabIndex = 2
@@ -163,7 +163,7 @@ Partial Class FormFTP
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(6, 30)
+        Me.Label1.Location = New System.Drawing.Point(6, 24)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(87, 13)
         Me.Label1.TabIndex = 1
@@ -171,8 +171,8 @@ Partial Class FormFTP
         '
         'Button_AddEntry
         '
-        Me.Button_AddEntry.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button_AddEntry.Location = New System.Drawing.Point(359, 151)
+        Me.Button_AddEntry.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Button_AddEntry.Location = New System.Drawing.Point(365, 132)
         Me.Button_AddEntry.Name = "Button_AddEntry"
         Me.Button_AddEntry.Size = New System.Drawing.Size(75, 23)
         Me.Button_AddEntry.TabIndex = 0
@@ -189,7 +189,7 @@ Partial Class FormFTP
         Me.ListView_FtpEntries.HideSelection = False
         Me.ListView_FtpEntries.Location = New System.Drawing.Point(12, 66)
         Me.ListView_FtpEntries.Name = "ListView_FtpEntries"
-        Me.ListView_FtpEntries.Size = New System.Drawing.Size(440, 85)
+        Me.ListView_FtpEntries.Size = New System.Drawing.Size(440, 100)
         Me.ListView_FtpEntries.TabIndex = 1
         Me.ListView_FtpEntries.UseCompatibleStateImageBehavior = False
         Me.ListView_FtpEntries.View = System.Windows.Forms.View.Details
@@ -288,7 +288,7 @@ Partial Class FormFTP
         Me.Panel2.Location = New System.Drawing.Point(0, 0)
         Me.Panel2.Margin = New System.Windows.Forms.Padding(0)
         Me.Panel2.Name = "Panel2"
-        Me.Panel2.Size = New System.Drawing.Size(464, 177)
+        Me.Panel2.Size = New System.Drawing.Size(464, 192)
         Me.Panel2.TabIndex = 3
         '
         'Button_SearchUploadFile
@@ -334,7 +334,7 @@ Partial Class FormFTP
         Me.LinkLabel_RemoveItem.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.LinkLabel_RemoveItem.AutoSize = True
         Me.LinkLabel_RemoveItem.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
-        Me.LinkLabel_RemoveItem.Location = New System.Drawing.Point(405, 158)
+        Me.LinkLabel_RemoveItem.Location = New System.Drawing.Point(405, 173)
         Me.LinkLabel_RemoveItem.Name = "LinkLabel_RemoveItem"
         Me.LinkLabel_RemoveItem.Size = New System.Drawing.Size(47, 13)
         Me.LinkLabel_RemoveItem.TabIndex = 3
@@ -345,7 +345,7 @@ Partial Class FormFTP
         '
         Me.CheckBox_MoreDetails.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.CheckBox_MoreDetails.AutoSize = True
-        Me.CheckBox_MoreDetails.Location = New System.Drawing.Point(12, 157)
+        Me.CheckBox_MoreDetails.Location = New System.Drawing.Point(12, 172)
         Me.CheckBox_MoreDetails.Name = "CheckBox_MoreDetails"
         Me.CheckBox_MoreDetails.Size = New System.Drawing.Size(62, 17)
         Me.CheckBox_MoreDetails.TabIndex = 2

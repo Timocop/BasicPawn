@@ -92,7 +92,7 @@ Partial Class FormSettings
         Me.ListView_FtpEntries.Location = New System.Drawing.Point(9, 22)
         Me.ListView_FtpEntries.Margin = New System.Windows.Forms.Padding(0)
         Me.ListView_FtpEntries.Name = "ListView_FtpEntries"
-        Me.ListView_FtpEntries.Size = New System.Drawing.Size(446, 63)
+        Me.ListView_FtpEntries.Size = New System.Drawing.Size(446, 82)
         Me.ListView_FtpEntries.TabIndex = 2
         Me.ListView_FtpEntries.UseCompatibleStateImageBehavior = False
         Me.ListView_FtpEntries.View = System.Windows.Forms.View.Details
@@ -132,8 +132,6 @@ Partial Class FormSettings
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 64.0!))
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 48.0!))
-        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20.0!))
-        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20.0!))
         Me.TableLayoutPanel1.Size = New System.Drawing.Size(464, 421)
         Me.TableLayoutPanel1.TabIndex = 3
         '
@@ -150,10 +148,10 @@ Partial Class FormSettings
         Me.GroupBox_NewEntry.Controls.Add(Me.Label6)
         Me.GroupBox_NewEntry.Controls.Add(Me.Button_AddEntry)
         Me.GroupBox_NewEntry.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.GroupBox_NewEntry.Location = New System.Drawing.Point(12, 117)
+        Me.GroupBox_NewEntry.Location = New System.Drawing.Point(12, 136)
         Me.GroupBox_NewEntry.Margin = New System.Windows.Forms.Padding(12, 8, 12, 8)
         Me.GroupBox_NewEntry.Name = "GroupBox_NewEntry"
-        Me.GroupBox_NewEntry.Size = New System.Drawing.Size(440, 184)
+        Me.GroupBox_NewEntry.Size = New System.Drawing.Size(440, 165)
         Me.GroupBox_NewEntry.TabIndex = 0
         Me.GroupBox_NewEntry.TabStop = False
         Me.GroupBox_NewEntry.Text = "Add new entry"
@@ -247,8 +245,8 @@ Partial Class FormSettings
         '
         'Button_AddEntry
         '
-        Me.Button_AddEntry.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button_AddEntry.Location = New System.Drawing.Point(359, 158)
+        Me.Button_AddEntry.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Button_AddEntry.Location = New System.Drawing.Point(359, 132)
         Me.Button_AddEntry.Name = "Button_AddEntry"
         Me.Button_AddEntry.Size = New System.Drawing.Size(75, 23)
         Me.Button_AddEntry.TabIndex = 10
@@ -265,7 +263,7 @@ Partial Class FormSettings
         Me.Panel3.Location = New System.Drawing.Point(0, 0)
         Me.Panel3.Margin = New System.Windows.Forms.Padding(0)
         Me.Panel3.Name = "Panel3"
-        Me.Panel3.Size = New System.Drawing.Size(464, 109)
+        Me.Panel3.Size = New System.Drawing.Size(464, 128)
         Me.Panel3.TabIndex = 5
         '
         'LinkLabel_Remove
@@ -273,7 +271,7 @@ Partial Class FormSettings
         Me.LinkLabel_Remove.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.LinkLabel_Remove.AutoSize = True
         Me.LinkLabel_Remove.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
-        Me.LinkLabel_Remove.Location = New System.Drawing.Point(405, 90)
+        Me.LinkLabel_Remove.Location = New System.Drawing.Point(405, 109)
         Me.LinkLabel_Remove.Name = "LinkLabel_Remove"
         Me.LinkLabel_Remove.Size = New System.Drawing.Size(47, 13)
         Me.LinkLabel_Remove.TabIndex = 1
@@ -286,7 +284,7 @@ Partial Class FormSettings
         Me.CheckBox_MoreDetails.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.CheckBox_MoreDetails.AutoSize = True
         Me.CheckBox_MoreDetails.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_MoreDetails.Location = New System.Drawing.Point(12, 88)
+        Me.CheckBox_MoreDetails.Location = New System.Drawing.Point(12, 107)
         Me.CheckBox_MoreDetails.Name = "CheckBox_MoreDetails"
         Me.CheckBox_MoreDetails.Size = New System.Drawing.Size(68, 18)
         Me.CheckBox_MoreDetails.TabIndex = 0
