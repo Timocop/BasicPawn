@@ -55,6 +55,13 @@ Public Class UCReportExceptionItem
         End If
     End Sub
 
+    Public Sub CloseReportForm()
+        If (g_mFormReportDetails IsNot Nothing AndAlso Not g_mFormReportDetails.IsDisposed) Then
+            g_mFormReportDetails.Dispose()
+            g_mFormReportDetails = Nothing
+        End If
+    End Sub
+
     Protected Overrides Sub Dispose(disposing As Boolean)
         If (disposing) Then
             If (g_mFormReportDetails IsNot Nothing AndAlso Not g_mFormReportDetails.IsDisposed) Then

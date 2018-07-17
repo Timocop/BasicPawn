@@ -124,6 +124,21 @@
     <value>132, 17</value>
   </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="CloseReportWindowsToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAIDSURBVDhPrZDJa1NRGMXfsrgQ8xfYUqklYAc6xEUsqVYltrRB0TYIipu6cCd2UXcpQujCWhBF
+        KA1xACeomyCBBiGOkMQSUCuNlMQOvg4xr2n65uF4722wQmJQ8cCPb/Odc757uf+mm7cn8C8U7dsBH+Yy
+        v8V/6yGbI+P32Rz2lwmIJd7/FSUBoigyJEliyLIMWVGgEFRVgcwnIUz1QdlchaZrpQGSKCEej5dFU1Xk
+        w4PIjlWBj/hhGEZpAG1UKKxRZWiaxtB1HVuvfVi6xpEL1mGaZQIUcma5dgptVDIvkPLZiNmEZZk7Actn
+        PcdnBs/jY38v5r0eFEZ9EDNpGLqxDTHTRmrc+hojZovBAoj52OY5j/iu5wheBSYRDQbxxnsKX/r7EA2F
+        fl5gmRY0PoF08DTUQg5ULGBxoOdl5GgHn/CexPqzp+StBmRhA/yFAUSHrrBTTWKmjfLnx0gO2yCtze8E
+        zPZ25S/W7rucCoeRP3MCG4E7pM1E4dEDvO1yMSNTcfwqFvCpuzN7w15/aWVlFal7QaTdLixMTmBt/DrC
+        rc1sqRLccrfrSexQ20zK2WKjHzp3sNn9zdG0kGtrkMdqqp+zX66kRXdHbcblmBUOtycFZ8tQztF0VWhv
+        zE/tr8t6du9xFtcqK9LaWHO3vi4w3WBfmj5g/z5avTfUWbXrD8wc9wPN7l+Oba+UEgAAAABJRU5ErkJg
+        gg==
+</value>
+  </data>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         AAABAA0AMDAQAAEABABoBgAA1gAAACAgEAABAAQA6AIAAD4HAAAYGBAAAQAEAOgBAAAmCgAAEBAQAAEA

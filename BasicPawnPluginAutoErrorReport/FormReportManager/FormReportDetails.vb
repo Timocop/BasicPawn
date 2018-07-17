@@ -188,6 +188,9 @@ Public Class FormReportDetails
                     mTab.SelectTab()
 
                     bForceEnd = True
+                End If
+
+                If (bForceEnd) Then
                     Continue While
                 End If
 
@@ -203,12 +206,17 @@ Public Class FormReportDetails
                         mTab.SelectTab()
 
                         bForceEnd = True
-                        Continue While
                     End If
                 Next
 
+                If (bForceEnd) Then
+                    Continue While
+                End If
+
                 Select Case (MessageBox.Show(String.Format("Could not find file. Do you want to use known files from the configs to find the file?{0}{0}Otherwise open the file manualy and try again.", Environment.NewLine), "Unable to find file", MessageBoxButtons.YesNo, MessageBoxIcon.Error))
                     Case DialogResult.Yes
+                        Dim bFoundFile As Boolean = False
+
                         For Each mItem In ClassConfigs.ClassKnownConfigs.GetKnownConfigs
                             Dim sKnownFile As String = mItem.sFile
 
@@ -222,12 +230,18 @@ Public Class FormReportDetails
                                 mTab.SelectTab()
 
                                 bForceEnd = True
-                                Continue While
+                                bFoundFile = True
                             End If
                         Next
 
-                        MessageBox.Show("Could not find file. Please open the file manualy and try again.", "Unable to find file", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        If (Not bFoundFile) Then
+                            MessageBox.Show("Could not find file. Please open the file manualy and try again.", "Unable to find file", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        End If
                 End Select
+
+                If (bForceEnd) Then
+                    Continue While
+                End If
 
                 Exit While
             End While

@@ -73,6 +73,17 @@ Public Class FormReportManager
         FetchReports()
     End Sub
 
+    Private Sub CloseReportWindowsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CloseReportWindowsToolStripMenuItem.Click
+        For Each mItem In GetItems()
+            Dim mUCReportExceptionItem = TryCast(mItem, UCReportExceptionItem)
+            If (mUCReportExceptionItem Is Nothing) Then
+                Continue For
+            End If
+
+            mUCReportExceptionItem.CloseReportForm()
+        Next
+    End Sub
+
     Public Sub FetchReports()
         If (ClassThread.IsValid(g_mFetchReportsThread)) Then
             Return

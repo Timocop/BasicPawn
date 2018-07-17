@@ -28,49 +28,28 @@ Partial Class FormReportManager
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormReportManager))
         Me.MenuStrip1 = New System.Windows.Forms.MenuStrip()
-        Me.FileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.CloseToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.GetReportsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
         Me.ToolStripProgressBar_Progress = New System.Windows.Forms.ToolStripProgressBar()
         Me.ToolStripStatusLabel_Progress = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.ToolStripSplitButton_ProgressAbort = New System.Windows.Forms.ToolStripSplitButton()
         Me.UcReportList_Reports = New BasicPawnPluginAutoErrorReport.UCReportList()
+        Me.ToolStripSplitButton_ProgressAbort = New System.Windows.Forms.ToolStripSplitButton()
+        Me.FileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.CloseToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.GetReportsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.CloseReportWindowsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.MenuStrip1.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
         'MenuStrip1
         '
-        Me.MenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FileToolStripMenuItem, Me.GetReportsToolStripMenuItem})
+        Me.MenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FileToolStripMenuItem, Me.GetReportsToolStripMenuItem, Me.CloseReportWindowsToolStripMenuItem})
         Me.MenuStrip1.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip1.Name = "MenuStrip1"
         Me.MenuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
         Me.MenuStrip1.Size = New System.Drawing.Size(736, 24)
         Me.MenuStrip1.TabIndex = 0
         Me.MenuStrip1.Text = "MenuStrip1"
-        '
-        'FileToolStripMenuItem
-        '
-        Me.FileToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CloseToolStripMenuItem})
-        Me.FileToolStripMenuItem.Image = Global.BasicPawnPluginAutoErrorReport.My.Resources.Resources.imageres_5306_16x16_32
-        Me.FileToolStripMenuItem.Name = "FileToolStripMenuItem"
-        Me.FileToolStripMenuItem.Size = New System.Drawing.Size(53, 20)
-        Me.FileToolStripMenuItem.Text = "&File"
-        '
-        'CloseToolStripMenuItem
-        '
-        Me.CloseToolStripMenuItem.Image = Global.BasicPawnPluginAutoErrorReport.My.Resources.Resources.imageres_5337_16x16_32
-        Me.CloseToolStripMenuItem.Name = "CloseToolStripMenuItem"
-        Me.CloseToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
-        Me.CloseToolStripMenuItem.Text = "&Close"
-        '
-        'GetReportsToolStripMenuItem
-        '
-        Me.GetReportsToolStripMenuItem.Image = Global.BasicPawnPluginAutoErrorReport.My.Resources.Resources.miguiresource_500_16x16_32
-        Me.GetReportsToolStripMenuItem.Name = "GetReportsToolStripMenuItem"
-        Me.GetReportsToolStripMenuItem.Size = New System.Drawing.Size(104, 20)
-        Me.GetReportsToolStripMenuItem.Text = "Fetch &reports"
         '
         'StatusStrip1
         '
@@ -96,6 +75,16 @@ Partial Class FormReportManager
         Me.ToolStripStatusLabel_Progress.Text = "Loading..."
         Me.ToolStripStatusLabel_Progress.Visible = False
         '
+        'UcReportList_Reports
+        '
+        Me.UcReportList_Reports.AutoScroll = True
+        Me.UcReportList_Reports.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.UcReportList_Reports.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.UcReportList_Reports.Location = New System.Drawing.Point(0, 24)
+        Me.UcReportList_Reports.Name = "UcReportList_Reports"
+        Me.UcReportList_Reports.Size = New System.Drawing.Size(736, 484)
+        Me.UcReportList_Reports.TabIndex = 1
+        '
         'ToolStripSplitButton_ProgressAbort
         '
         Me.ToolStripSplitButton_ProgressAbort.DropDownButtonWidth = 0
@@ -106,14 +95,34 @@ Partial Class FormReportManager
         Me.ToolStripSplitButton_ProgressAbort.Text = "Abort"
         Me.ToolStripSplitButton_ProgressAbort.Visible = False
         '
-        'UcReportList_Reports
+        'FileToolStripMenuItem
         '
-        Me.UcReportList_Reports.AutoScroll = True
-        Me.UcReportList_Reports.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.UcReportList_Reports.Location = New System.Drawing.Point(0, 24)
-        Me.UcReportList_Reports.Name = "UcReportList_Reports"
-        Me.UcReportList_Reports.Size = New System.Drawing.Size(736, 484)
-        Me.UcReportList_Reports.TabIndex = 1
+        Me.FileToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CloseToolStripMenuItem})
+        Me.FileToolStripMenuItem.Image = Global.BasicPawnPluginAutoErrorReport.My.Resources.Resources.imageres_5306_16x16_32
+        Me.FileToolStripMenuItem.Name = "FileToolStripMenuItem"
+        Me.FileToolStripMenuItem.Size = New System.Drawing.Size(53, 20)
+        Me.FileToolStripMenuItem.Text = "&File"
+        '
+        'CloseToolStripMenuItem
+        '
+        Me.CloseToolStripMenuItem.Image = Global.BasicPawnPluginAutoErrorReport.My.Resources.Resources.imageres_5337_16x16_32
+        Me.CloseToolStripMenuItem.Name = "CloseToolStripMenuItem"
+        Me.CloseToolStripMenuItem.Size = New System.Drawing.Size(103, 22)
+        Me.CloseToolStripMenuItem.Text = "&Close"
+        '
+        'GetReportsToolStripMenuItem
+        '
+        Me.GetReportsToolStripMenuItem.Image = Global.BasicPawnPluginAutoErrorReport.My.Resources.Resources.miguiresource_500_16x16_32
+        Me.GetReportsToolStripMenuItem.Name = "GetReportsToolStripMenuItem"
+        Me.GetReportsToolStripMenuItem.Size = New System.Drawing.Size(104, 20)
+        Me.GetReportsToolStripMenuItem.Text = "Fetch &reports"
+        '
+        'CloseReportWindowsToolStripMenuItem
+        '
+        Me.CloseReportWindowsToolStripMenuItem.Image = CType(resources.GetObject("CloseReportWindowsToolStripMenuItem.Image"), System.Drawing.Image)
+        Me.CloseReportWindowsToolStripMenuItem.Name = "CloseReportWindowsToolStripMenuItem"
+        Me.CloseReportWindowsToolStripMenuItem.Size = New System.Drawing.Size(149, 20)
+        Me.CloseReportWindowsToolStripMenuItem.Text = "Close report windows"
         '
         'FormReportManager
         '
@@ -147,4 +156,5 @@ Partial Class FormReportManager
     Friend WithEvents ToolStripProgressBar_Progress As Windows.Forms.ToolStripProgressBar
     Friend WithEvents ToolStripStatusLabel_Progress As Windows.Forms.ToolStripStatusLabel
     Friend WithEvents ToolStripSplitButton_ProgressAbort As Windows.Forms.ToolStripSplitButton
+    Friend WithEvents CloseReportWindowsToolStripMenuItem As Windows.Forms.ToolStripMenuItem
 End Class
