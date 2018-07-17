@@ -16,6 +16,7 @@
 
 
 Public Class ClassSettings
+
 #Region "Settings"
     Enum ENUM_AUTOCOMPLETE_SYNTAX
         SP_MIX
@@ -37,6 +38,7 @@ Public Class ClassSettings
     Public Shared g_iSettingsAssociateSourcePawn As Boolean = False
     Public Shared g_iSettingsAssociateAmxModX As Boolean = False
     Public Shared g_iSettingsAssociateIncludes As Boolean = False
+    Public Shared g_iSettingsAutoHoverScroll As Boolean = False
     'Text Editor
     Public Shared g_iSettingsTextEditorFont As Font = g_iSettingsDefaultEditorFont
     Public Shared g_iSettingsInvertColors As Boolean = False
@@ -69,7 +71,6 @@ Public Class ClassSettings
     Public Shared g_iSettingsDebuggerEntitiesEnableAutoScroll As Boolean = True
 #End Region
 
-
     Enum ENUM_COMPILING_TYPE
         AUTOMATIC
         CONFIG
@@ -87,6 +88,7 @@ Public Class ClassSettings
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AssociateSourcePawn", If(g_iSettingsAssociateSourcePawn, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AssociateAmxModX", If(g_iSettingsAssociateAmxModX, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AssociateIncludes", If(g_iSettingsAssociateIncludes, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutoHoverScroll", If(g_iSettingsAutoHoverScroll, "1", "0")))
                 'Text Editor
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorFont", New FontConverter().ConvertToInvariantString(g_iSettingsTextEditorFont)))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorInvertColors", If(g_iSettingsInvertColors, "1", "0")))
@@ -136,6 +138,7 @@ Public Class ClassSettings
                     g_iSettingsAssociateSourcePawn = (mIni.ReadKeyValue("Editor", "AssociateSourcePawn", "0") <> "0")
                     g_iSettingsAssociateAmxModX = (mIni.ReadKeyValue("Editor", "AssociateAmxModX", "0") <> "0")
                     g_iSettingsAssociateIncludes = (mIni.ReadKeyValue("Editor", "AssociateIncludes", "0") <> "0")
+                    g_iSettingsAutoHoverScroll = (mIni.ReadKeyValue("Editor", "AutoHoverScroll", "1") <> "0")
                     'Text Editor
                     Dim mFont As Font = CType(New FontConverter().ConvertFromInvariantString(mIni.ReadKeyValue("Editor", "TextEditorFont", g_sSettingsDefaultEditorFont)), Font)
                     If (mFont IsNot Nothing AndAlso mFont.Size < 256) Then

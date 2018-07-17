@@ -134,6 +134,7 @@ Public Class FormSettings
         CheckBox_AssociateSourcePawn.Checked = ClassSettings.g_iSettingsAssociateSourcePawn
         CheckBox_AssociateAmxMod.Checked = ClassSettings.g_iSettingsAssociateAmxModX
         CheckBox_AssociateIncludes.Checked = ClassSettings.g_iSettingsAssociateIncludes
+        CheckBox_AutoHoverScroll.Checked = ClassSettings.g_iSettingsAutoHoverScroll
         'Text Editor
         Label_Font.Text = New FontConverter().ConvertToInvariantString(ClassSettings.g_iSettingsTextEditorFont)
         CheckBox_InvertedColors.Checked = ClassSettings.g_iSettingsInvertColors
@@ -250,6 +251,7 @@ Public Class FormSettings
         ClassSettings.g_iSettingsAssociateSourcePawn = CheckBox_AssociateSourcePawn.Checked
         ClassSettings.g_iSettingsAssociateAmxModX = CheckBox_AssociateAmxMod.Checked
         ClassSettings.g_iSettingsAssociateIncludes = CheckBox_AssociateIncludes.Checked
+        ClassSettings.g_iSettingsAutoHoverScroll = CheckBox_AutoHoverScroll.Checked
         'Text Editor
         ClassSettings.g_iSettingsTextEditorFont = CType(New FontConverter().ConvertFromInvariantString(Label_Font.Text), Font)
         ClassSettings.g_iSettingsInvertColors = CheckBox_InvertedColors.Checked

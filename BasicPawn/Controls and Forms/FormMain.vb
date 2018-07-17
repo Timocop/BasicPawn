@@ -167,6 +167,8 @@ Public Class FormMain
         ' This call is required by the designer.
         InitializeComponent()
 
+        InitializeFilter()
+
         ' Add any initialization after the InitializeComponent() call. 
         ImageList_Details.Images.Clear()
         ImageList_Details.Images.Add("0", My.Resources.imageres_5332_16x16)
