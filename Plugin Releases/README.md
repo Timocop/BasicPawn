@@ -1,7 +1,6 @@
 # Information
 All plugin releases will be put here.
 
-# Installation
 ## Download
  * Click any *.dll or *.zip.
  * Right click on 'Raw'.
