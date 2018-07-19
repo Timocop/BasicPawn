@@ -30,13 +30,12 @@ Features:
  - [**.NET Framework (Linux Wine)**](https://appdb.winehq.org/objectManager.php?sClass=application&iId=2586)
 
 ## Plugins
-**Download: Right click -> Save as...**
  - [FTP Plugin](Plugin%20Releases/BasicPawnPluginFTP.dll)
  - [Automatic Error Reporting](Plugin%20Releases/BasicPawnPluginAutoErrorReport.dll)
  - [more...](Plugin%20Releases)
 
 ## Syntax Styles
-**Download: Right click -> Save as...**
+**Download: Raw -> Right click -> Save as...**
  - [Monokai](Custom%20Syntax%20Styles/Monokai.xml)
  - [Visual Studio 2017 Dark](Custom%20Syntax%20Styles/VisualStudio2017_Dark.xml)
  - [more...](Custom%20Syntax%20Styles)
