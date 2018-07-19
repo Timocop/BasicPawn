@@ -1,4 +1,4 @@
-## Information
+# Information
 All custom syntax styles will be put here.
 There needs to be a *.txt file for description and additional information.
 Optionaly a *.png file as thumbnail.
@@ -9,6 +9,6 @@ Should be like this:
  - MyStyle.xml
 
 ## Download
- * Click an *.xml file
- * Right click on 'Raw'
- * Click 'Save as...' to save it to disk
+ * Click any *.xml.
+ * Right click on 'Raw'.
+ * Click 'Save as...' to save it to disk.
