@@ -26,7 +26,7 @@ Public Class PluginAutoErrorReport
 
     Private g_ClassPlugin As ClassPlugin
 
-    Private Shared ReadOnly g_mSpportedVersion As New Version("0.737")
+    Private Shared ReadOnly g_mSpportedVersion As New Version("0.800")
 
 #Region "Unused"
     Public Sub OnPluginLoad(sDLLPath As String) Implements IPluginInterface.OnPluginLoad
