@@ -127,7 +127,7 @@ Public Class FormReportDetails
             End If
 
             Dim sLine As String = CStr(mListViewItemData.g_mData("Line"))
-            Dim sFile As String = CStr(mListViewItemData.g_mData("File"))
+            Dim sFile As String = CStr(mListViewItemData.g_mData("File")).Replace("/"c, "\"c)
 
             If (String.IsNullOrEmpty(sFile)) Then
                 Return
@@ -218,7 +218,7 @@ Public Class FormReportDetails
                         Dim bFoundFile As Boolean = False
 
                         For Each mItem In ClassConfigs.ClassKnownConfigs.GetKnownConfigs
-                            Dim sKnownFile As String = mItem.sFile
+                            Dim sKnownFile As String = mItem.sFile.Replace("/"c, "\"c)
 
                             If (Not IO.File.Exists(sKnownFile)) Then
                                 Continue For

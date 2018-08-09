@@ -36,6 +36,8 @@ Public Class UCInformationList
         End If
 
         Try
+            Dim sSelectedItem As String = ListBox_Information.SelectedItems(0).ToString.Replace("/"c, "\"c)
+
             Dim bForceEnd As Boolean = False
             While True
                 For i = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1
@@ -44,17 +46,9 @@ Public Class UCInformationList
                     End If
 
 
-                    Dim sRegexPath As String = g_mFormMain.g_ClassTabControl.m_Tab(i).m_File.Replace("/"c, "\"c)
+                    Dim sRegexPath As String = Regex.Escape(g_mFormMain.g_ClassTabControl.m_Tab(i).m_File.Replace("/"c, "\"c))
 
-                    Dim lPathNames As New List(Of String)
-                    For Each sName As String In sRegexPath.Split("\"c)
-                        lPathNames.Add(Regex.Escape(sName))
-                    Next
-
-                    sRegexPath = String.Join("[\/|\\]", lPathNames.ToArray)
-
-
-                    Dim regMatch As Match = Regex.Match(ListBox_Information.SelectedItems(0).ToString, String.Format("\b{0}\b\((?<Line>[0-9]+)\)\s\:", sRegexPath), RegexOptions.IgnoreCase)
+                    Dim regMatch As Match = Regex.Match(sSelectedItem, String.Format("\b{0}\b\((?<Line>[0-9]+)\)\s\:", sRegexPath), RegexOptions.IgnoreCase)
                     If (regMatch.Success) Then
                         Dim iLineNum As Integer = CInt(regMatch.Groups("Line").Value) - 1
                         If (iLineNum < 0 OrElse iLineNum > g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.Document.TotalNumberOfLines - 1) Then
@@ -89,17 +83,9 @@ Public Class UCInformationList
                     End If
 
 
-                    Dim sRegexPath As String = CStr(mInclude.Value).Replace("/"c, "\"c)
+                    Dim sRegexPath As String = Regex.Escape(CStr(mInclude.Value).Replace("/"c, "\"c))
 
-                    Dim lPathNames As New List(Of String)
-                    For Each sName As String In sRegexPath.Split("\"c)
-                        lPathNames.Add(Regex.Escape(sName))
-                    Next
-
-                    sRegexPath = String.Join("[\/|\\]", lPathNames.ToArray)
-
-
-                    Dim regMatch As Match = Regex.Match(ListBox_Information.SelectedItems(0).ToString, String.Format("\b{0}\b\((?<Line>[0-9]+)\)\s\:", sRegexPath), RegexOptions.IgnoreCase)
+                    Dim regMatch As Match = Regex.Match(sSelectedItem, String.Format("\b{0}\b\((?<Line>[0-9]+)\)\s\:", sRegexPath), RegexOptions.IgnoreCase)
                     If (Not regMatch.Success) Then
                         Continue For
                     End If
