@@ -25,23 +25,21 @@ Features:
 ## [Third Party Legal Notices](Third%20Party%20Legal%20Notices.txt)
 
 ## Requirements
- - [**.NET Framework 3.5**](https://www.microsoft.com/en-US/download/details.aspx?id=21)
+ - [**.NET Framework 3.5**](https://www.microsoft.com/net/download/dotnet-framework/net35-sp1)
  - [**.NET Framework 3.5 (Linux Wine)**](https://appdb.winehq.org/objectManager.php?sClass=version&iId=10166)
  - [**.NET Framework (Linux Wine)**](https://appdb.winehq.org/objectManager.php?sClass=application&iId=2586)
 
 ## Plugins
- - [FTP Plugin](https://github.com/Timocop/BasicPawn/raw/master/Plugin%20Releases/BasicPawnPluginFTP.dll)
+**Download: Click on 'Download'**
+ - [FTP Plugin](Plugin%20Releases/BasicPawnPluginFTP.dll)
+ - [Automatic Error Reporting](Plugin%20Releases/BasicPawnPluginAutoErrorReport.dll)
  - [more...](Plugin%20Releases)
 
 ## Syntax Styles
- - [Monokai](https://github.com/Timocop/BasicPawn/raw/master/Custom%20Syntax%20Styles/Monokai.xml)
- - [Visual Studio 2017 Dark](https://github.com/Timocop/BasicPawn/raw/master/Custom%20Syntax%20Styles/VisualStudio2017_Dark.xml)
+**Download: Right click on 'Raw' -> Save as...**
+ - [Monokai](Custom%20Syntax%20Styles/Monokai.xml)
+ - [Visual Studio 2017 Dark](Custom%20Syntax%20Styles/VisualStudio2017_Dark.xml)
  - [more...](Custom%20Syntax%20Styles)
-
-## Todo & Done (for v0.8)
- - [x] Better plugin control
- - [x] \(Plugin\) SFTP/FTP Uploader
- - [ ] \(Plugin\) Automatic Error Reporting using FTP
 
 ## Screenshots
 ![Default Colors](https://i.imgur.com/3s0yB2x.png)
