@@ -18,6 +18,8 @@
 Imports System.Security.Cryptography
 Imports System.Text
 
+#Const CHECK_VERSION = True
+
 Module ClassMain
     Sub Main()
         Try
@@ -148,41 +150,77 @@ Module ClassMain
             Console.WriteLine("Checking versions")
             Console.ForegroundColor = ConsoleColor.White
 
+#If CHECK_VERSION Then
             If (New Version(sOldVersion) >= New Version(sNewVersion)) Then
                 Console.WriteLine("No new version")
                 Console.ReadKey()
                 Return
-            End If
+            End If 
+#End If
 
             'Copy files to tmp folder
-            Dim sTmpDirectory As String = IO.Path.Combine(sReleasePath, "TmpUpdateRelease")
-            If (IO.Directory.Exists(sTmpDirectory)) Then
-                IO.Directory.Delete(sTmpDirectory, True)
+            Dim sTmpDirectorySfx As String = IO.Path.Combine(sReleasePath, "TmpUpdateReleaseSfx")
+            Dim sTmpDirectoryZip As String = IO.Path.Combine(sReleasePath, "TmpUpdateReleaseZip")
+            Dim sTmpDirectoryZipSub As String = IO.Path.Combine(sTmpDirectoryZip, "BasicPawn")
+            If (IO.Directory.Exists(sTmpDirectorySfx)) Then
+                IO.Directory.Delete(sTmpDirectorySfx, True)
+            End If
+            If (IO.Directory.Exists(sTmpDirectoryZip)) Then
+                IO.Directory.Delete(sTmpDirectoryZip, True)
+            End If
+            If (IO.Directory.Exists(sTmpDirectoryZipSub)) Then
+                IO.Directory.Delete(sTmpDirectoryZipSub, True)
             End If
 
-            Console.WriteLine(String.Format("Create temp folder '{0}'", sTmpDirectory))
-            IO.Directory.CreateDirectory(sTmpDirectory)
+            Console.WriteLine(String.Format("Create sfx temp folder '{0}'", sTmpDirectorySfx))
+            IO.Directory.CreateDirectory(sTmpDirectorySfx)
+            Console.WriteLine(String.Format("Create zip temp folder '{0}'", sTmpDirectoryZip))
+            IO.Directory.CreateDirectory(sTmpDirectoryZip)
+            Console.WriteLine(String.Format("Create zip-sub temp folder '{0}'", sTmpDirectoryZipSub))
+            IO.Directory.CreateDirectory(sTmpDirectoryZipSub)
 
             Console.ForegroundColor = ConsoleColor.Yellow
             Console.WriteLine(String.Format("Copying files"))
             Console.ForegroundColor = ConsoleColor.White
-            For Each sFile In IO.Directory.GetFiles(sReleasePath)
-                Select Case (IO.Path.GetExtension(sFile).ToLower)
-                    Case ".exe", ".dll"
-                        'Success
-                    Case Else
+            If (True) Then
+                For Each sFile In IO.Directory.GetFiles(sReleasePath)
+                    Select Case (IO.Path.GetExtension(sFile).ToLower)
+                        Case ".exe", ".dll"
+                            'Success
+                        Case Else
+                            Continue For
+                    End Select
+
+                    If (sFile.EndsWith("vshost.exe")) Then
                         Continue For
-                End Select
+                    End If
 
-                If (sFile.EndsWith("vshost.exe")) Then
-                    Continue For
-                End If
+                    IO.File.Copy(sFile, IO.Path.Combine(sTmpDirectorySfx, IO.Path.GetFileName(sFile)))
+                Next
 
-                IO.File.Copy(sFile, IO.Path.Combine(sTmpDirectory, IO.Path.GetFileName(sFile)))
-            Next
+                IO.File.Copy(sLicensePath, IO.Path.Combine(sTmpDirectorySfx, IO.Path.GetFileName(sLicensePath)))
+                IO.File.Copy(sThirdPartyLicensePath, IO.Path.Combine(sTmpDirectorySfx, IO.Path.GetFileName(sThirdPartyLicensePath)))
+            End If
 
-            IO.File.Copy(sLicensePath, IO.Path.Combine(sTmpDirectory, IO.Path.GetFileName(sLicensePath)))
-            IO.File.Copy(sThirdPartyLicensePath, IO.Path.Combine(sTmpDirectory, IO.Path.GetFileName(sThirdPartyLicensePath)))
+            If (True) Then
+                For Each sFile In IO.Directory.GetFiles(sReleasePath)
+                    Select Case (IO.Path.GetExtension(sFile).ToLower)
+                        Case ".exe", ".dll"
+                            'Success
+                        Case Else
+                            Continue For
+                    End Select
+
+                    If (sFile.EndsWith("vshost.exe")) Then
+                        Continue For
+                    End If
+
+                    IO.File.Copy(sFile, IO.Path.Combine(sTmpDirectoryZipSub, IO.Path.GetFileName(sFile)))
+                Next
+
+                IO.File.Copy(sLicensePath, IO.Path.Combine(sTmpDirectoryZipSub, IO.Path.GetFileName(sLicensePath)))
+                IO.File.Copy(sThirdPartyLicensePath, IO.Path.Combine(sTmpDirectoryZipSub, IO.Path.GetFileName(sThirdPartyLicensePath)))
+            End If
 
             'Create SFX file
             Console.ForegroundColor = ConsoleColor.Yellow
@@ -193,8 +231,8 @@ Module ClassMain
 
             Using pProcess As New Process
                 pProcess.StartInfo.FileName = sSevenZipPath
-                pProcess.StartInfo.WorkingDirectory = sTmpDirectory
-                pProcess.StartInfo.Arguments = String.Format("a -sfx7z_sfx ""{0}"" *.*", sUpdateSfxPath)
+                pProcess.StartInfo.WorkingDirectory = sTmpDirectorySfx
+                pProcess.StartInfo.Arguments = String.Format("a -sfx7z_sfx ""{0}""", sUpdateSfxPath)
 
                 pProcess.Start()
                 pProcess.WaitForExit()
@@ -225,8 +263,8 @@ Module ClassMain
 
             Using pProcess As New Process
                 pProcess.StartInfo.FileName = sSevenZipPath
-                pProcess.StartInfo.WorkingDirectory = sTmpDirectory
-                pProcess.StartInfo.Arguments = String.Format("a -tzip ""{0}"" *.*", sUpdateZipPath)
+                pProcess.StartInfo.WorkingDirectory = sTmpDirectoryZip
+                pProcess.StartInfo.Arguments = String.Format("a -tzip ""{0}""", sUpdateZipPath)
 
                 pProcess.Start()
                 pProcess.WaitForExit()
@@ -249,7 +287,8 @@ Module ClassMain
             End Using
 
             Console.WriteLine("Removing temp folder")
-            IO.Directory.Delete(sTmpDirectory, True)
+            IO.Directory.Delete(sTmpDirectorySfx, True)
+            IO.Directory.Delete(sTmpDirectoryZip, True)
 
             'Setup SHA256 and RSA
             Console.ForegroundColor = ConsoleColor.Yellow
