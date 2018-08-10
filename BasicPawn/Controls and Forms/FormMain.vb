@@ -416,9 +416,13 @@ Public Class FormMain
 
         'Save tabs
         For i = 0 To g_ClassTabControl.m_TabsCount - 1
-            If (g_ClassTabControl.PromptSaveTab(i)) Then
-                e.Cancel = True
-            End If
+            Try
+                If (g_ClassTabControl.PromptSaveTab(i)) Then
+                    e.Cancel = True
+                End If
+            Catch ex As Exception
+                ClassExceptionLog.WriteToLogMessageBox(ex)
+            End Try
         Next
 
         'Save projects
@@ -604,27 +608,43 @@ Public Class FormMain
     End Sub
 
     Private Sub ToolStripMenuItem_FileSave_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileSave.Click
-        g_ClassTabControl.SaveFileTab(g_ClassTabControl.m_ActiveTabIndex)
+        Try
+            g_ClassTabControl.SaveFileTab(g_ClassTabControl.m_ActiveTabIndex)
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
     End Sub
 
     Private Sub ToolStripMenuItem_FileSaveAll_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileSaveAll.Click
         For i = g_ClassTabControl.m_TabsCount - 1 To 0 Step -1
-            g_ClassTabControl.SaveFileTab(i)
+            Try
+                g_ClassTabControl.SaveFileTab(i)
+            Catch ex As Exception
+                ClassExceptionLog.WriteToLogMessageBox(ex)
+            End Try
         Next
     End Sub
 
     Private Sub ToolStripMenuItem_FileSaveAs_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileSaveAs.Click
-        g_ClassTabControl.SaveFileTab(g_ClassTabControl.m_ActiveTabIndex, True)
+        Try
+            g_ClassTabControl.SaveFileTab(g_ClassTabControl.m_ActiveTabIndex, True)
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
     End Sub
 
     Private Sub ToolStripMenuItem_FileSaveAsTemp_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileSaveAsTemp.Click
-        Dim sTempFile As String = String.Format("{0}.src", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
-        IO.File.WriteAllText(sTempFile, "")
+        Try
+            Dim sTempFile As String = String.Format("{0}.src", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
+            IO.File.WriteAllText(sTempFile, "")
 
-        g_ClassTabControl.m_ActiveTab.m_File = sTempFile
-        g_ClassTabControl.SaveFileTab(g_ClassTabControl.m_ActiveTabIndex)
+            g_ClassTabControl.m_ActiveTab.m_File = sTempFile
+            g_ClassTabControl.SaveFileTab(g_ClassTabControl.m_ActiveTabIndex)
 
-        g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, Nothing)
+            g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, Nothing)
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
     End Sub
 
     Private Sub ToolStripMenuItem_FileSavePacked_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileSavePacked.Click
@@ -1416,31 +1436,43 @@ Public Class FormMain
     End Sub
 
     Private Sub ToolStripMenuItem_Tabs_Close_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Tabs_Close.Click
-        g_ClassTabControl.RemoveTab(g_ClassTabControl.m_ActiveTabIndex, True)
+        Try
+            g_ClassTabControl.RemoveTab(g_ClassTabControl.m_ActiveTabIndex, True)
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
     End Sub
 
     Private Sub ToolStripMenuItem_Tabs_CloseAllButThis_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Tabs_CloseAllButThis.Click
-        Dim iActiveIndex As Integer = g_ClassTabControl.m_ActiveTabIndex
-
         Try
-            g_ClassTabControl.BeginUpdate()
+            Dim iActiveIndex As Integer = g_ClassTabControl.m_ActiveTabIndex
 
-            For i = g_ClassTabControl.m_TabsCount - 1 To 0 Step -1
-                If (iActiveIndex = i) Then
-                    Continue For
-                End If
+            Try
+                g_ClassTabControl.BeginUpdate()
 
-                If (Not g_ClassTabControl.RemoveTab(i, True, iActiveIndex)) Then
-                    Return
-                End If
-            Next
-        Finally
-            g_ClassTabControl.EndUpdate()
+                For i = g_ClassTabControl.m_TabsCount - 1 To 0 Step -1
+                    If (iActiveIndex = i) Then
+                        Continue For
+                    End If
+
+                    If (Not g_ClassTabControl.RemoveTab(i, True, iActiveIndex)) Then
+                        Return
+                    End If
+                Next
+            Finally
+                g_ClassTabControl.EndUpdate()
+            End Try
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
     End Sub
 
     Private Sub ToolStripMenuItem_Tabs_CloseAll_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Tabs_CloseAll.Click
-        g_ClassTabControl.RemoveAllTabs()
+        Try
+            g_ClassTabControl.RemoveAllTabs()
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
     End Sub
 
     Private Sub ToolStripMenuItem_Tabs_Cut_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Tabs_Cut.Click
@@ -1526,7 +1558,11 @@ Public Class FormMain
     End Sub
 
     Private Sub ToolStripMenuItem_TabClose_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_TabClose.Click
-        g_ClassTabControl.m_ActiveTab.RemoveTab(True)
+        Try
+            g_ClassTabControl.m_ActiveTab.RemoveTab(True)
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
     End Sub
 
     Private Sub ToolStripMenuItem_TabMoveRight_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_TabMoveRight.Click
@@ -1573,9 +1609,13 @@ Public Class FormMain
                     End If
 
                     ClassThread.ExecAsync(Me, Sub()
-                                                  Dim mTab = g_ClassTabControl.AddTab()
-                                                  mTab.OpenFileTab(sFile)
-                                                  mTab.SelectTab(500)
+                                                  Try
+                                                      Dim mTab = g_ClassTabControl.AddTab()
+                                                      mTab.OpenFileTab(sFile)
+                                                      mTab.SelectTab(500)
+                                                  Catch ex As Exception
+                                                      ClassExceptionLog.WriteToLogMessageBox(ex)
+                                                  End Try
 
                                                   If (Me.WindowState = FormWindowState.Minimized) Then
                                                       ClassTools.ClassForms.FormWindowCommand(Me, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
@@ -1620,20 +1660,24 @@ Public Class FormMain
                     End If
 
                     ClassThread.ExecAsync(Me, Sub()
-                                                  Dim mTab = g_ClassTabControl.GetTabByIdentifier(sTabIdentifier)
-                                                  If (mTab Is Nothing) Then
-                                                      Return
-                                                  End If
+                                                  Try
+                                                      Dim mTab = g_ClassTabControl.GetTabByIdentifier(sTabIdentifier)
+                                                      If (mTab Is Nothing) Then
+                                                          Return
+                                                      End If
 
-                                                  If (Not String.IsNullOrEmpty(sFile) AndAlso sFile <> mTab.m_File) Then
-                                                      Return
-                                                  End If
+                                                      If (Not String.IsNullOrEmpty(sFile) AndAlso sFile <> mTab.m_File) Then
+                                                          Return
+                                                      End If
 
-                                                  mTab.RemoveTab(True, g_ClassTabControl.m_ActiveTabIndex)
+                                                      mTab.RemoveTab(True, g_ClassTabControl.m_ActiveTabIndex)
 
-                                                  If (bCloseAppWhenEmpty AndAlso g_ClassTabControl.m_TabsCount = 1 AndAlso g_ClassTabControl.m_ActiveTab.m_IsUnsaved) Then
-                                                      Me.Close()
-                                                  End If
+                                                      If (bCloseAppWhenEmpty AndAlso g_ClassTabControl.m_TabsCount = 1 AndAlso g_ClassTabControl.m_ActiveTab.m_IsUnsaved) Then
+                                                          Me.Close()
+                                                      End If
+                                                  Catch ex As Exception
+                                                      ClassExceptionLog.WriteToLogMessageBox(ex)
+                                                  End Try
                                               End Sub)
 
                 Case COMARG_SHOW_PING_FLASH

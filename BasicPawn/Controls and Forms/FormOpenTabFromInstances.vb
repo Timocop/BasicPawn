@@ -106,51 +106,55 @@ Public Class FormOpenTabFromInstances
     End Sub
 
     Private Sub Button_Open_Click(sender As Object, e As EventArgs) Handles Button_Open.Click
-        Dim bOpenNew As Boolean = CheckBox_NewInstance.Checked
-        Dim bCloseTabs As Boolean = CheckBox_CloseTabs.Checked
+        Try
+            Dim bOpenNew As Boolean = CheckBox_NewInstance.Checked
+            Dim bCloseTabs As Boolean = CheckBox_CloseTabs.Checked
 
-        Dim lFiles As New List(Of String)
+            Dim lFiles As New List(Of String)
 
-        For i = ListView_Instances.CheckedItems.Count - 1 To 0 Step -1
-            Dim mListViewItemData = TryCast(ListView_Instances.CheckedItems(i), ClassListViewItemData)
-            If (mListViewItemData Is Nothing) Then
-                Continue For
-            End If
+            For i = ListView_Instances.CheckedItems.Count - 1 To 0 Step -1
+                Dim mListViewItemData = TryCast(ListView_Instances.CheckedItems(i), ClassListViewItemData)
+                If (mListViewItemData Is Nothing) Then
+                    Continue For
+                End If
 
-            Dim mTabInfo As STRUC_TABINFO_ITEM? = DirectCast(mListViewItemData.g_mData("TabInfo"), STRUC_TABINFO_ITEM?)
+                Dim mTabInfo As STRUC_TABINFO_ITEM? = DirectCast(mListViewItemData.g_mData("TabInfo"), STRUC_TABINFO_ITEM?)
 
-            If (String.IsNullOrEmpty(mTabInfo.Value.sTabFile)) Then
-                MessageBox.Show(String.Format("Invalid file from process id {0} tab index {1}", mTabInfo.Value.iProcessID, mTabInfo.Value.sTabIndex - 1), "Invalid File", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Continue For
-            End If
+                If (String.IsNullOrEmpty(mTabInfo.Value.sTabFile)) Then
+                    MessageBox.Show(String.Format("Invalid file from process id {0} tab index {1}", mTabInfo.Value.iProcessID, mTabInfo.Value.sTabIndex - 1), "Invalid File", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    Continue For
+                End If
 
-            If (Not IO.File.Exists(mTabInfo.Value.sTabFile)) Then
-                MessageBox.Show(String.Format("'{0}' does not exist!", mTabInfo.Value.sTabFile), "File does not exist", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Continue For
-            End If
+                If (Not IO.File.Exists(mTabInfo.Value.sTabFile)) Then
+                    MessageBox.Show(String.Format("'{0}' does not exist!", mTabInfo.Value.sTabFile), "File does not exist", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    Continue For
+                End If
+
+                If (bOpenNew) Then
+                    lFiles.Add("""" & mTabInfo.Value.sTabFile & """")
+                Else
+                    Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
+                    mTab.OpenFileTab(mTabInfo.Value.sTabFile)
+                    mTab.SelectTab(500)
+                End If
+
+                If (bCloseTabs) Then
+                    Dim iPID As Integer = mTabInfo.Value.iProcessID
+                    Dim sTabIdentifier As String = mTabInfo.Value.sTabIndentifier
+                    Dim sFile As String = mTabInfo.Value.sTabFile
+
+                    g_mFormMain.g_ClassCrossAppCom.SendMessage(New ClassCrossAppComunication.ClassMessage(FormMain.COMARG_CLOSE_TAB, CStr(iPID), sTabIdentifier, sFile, CStr(True)), False)
+                End If
+            Next
 
             If (bOpenNew) Then
-                lFiles.Add("""" & mTabInfo.Value.sTabFile & """")
-            Else
-                Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
-                mTab.OpenFileTab(mTabInfo.Value.sTabFile)
-                mTab.SelectTab(500)
+                Process.Start(Application.ExecutablePath, String.Join(" ", {"-newinstance", String.Join(" ", lFiles.ToArray)}))
             End If
 
-            If (bCloseTabs) Then
-                Dim iPID As Integer = mTabInfo.Value.iProcessID
-                Dim sTabIdentifier As String = mTabInfo.Value.sTabIndentifier
-                Dim sFile As String = mTabInfo.Value.sTabFile
-
-                g_mFormMain.g_ClassCrossAppCom.SendMessage(New ClassCrossAppComunication.ClassMessage(FormMain.COMARG_CLOSE_TAB, CStr(iPID), sTabIdentifier, sFile, CStr(True)), False)
-            End If
-        Next
-
-        If (bOpenNew) Then
-            Process.Start(Application.ExecutablePath, String.Join(" ", {"-newinstance", String.Join(" ", lFiles.ToArray)}))
-        End If
-
-        Me.Close()
+            Me.Close()
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
     End Sub
 
     Private Sub ListView_Instances_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListView_Instances.SelectedIndexChanged

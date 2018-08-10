@@ -131,54 +131,58 @@ Public Class UCStartPage
     End Sub
 
     Private Sub LinkLabel_OpenNew_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_OpenNew.LinkClicked
-        Dim mRecentItems = g_mClassRecentItems.GetRecentItems
-        Dim bSomethingSelected As Boolean = False
-        Dim bAppendFiles As Boolean = False
-
-        For i = mRecentItems.Length - 1 To 0 Step -1
-            If (Not mRecentItems(i).m_Open) Then
-                Continue For
-            End If
-
-            bSomethingSelected = True
-            Exit For
-        Next
-
-        If (Not bSomethingSelected) Then
-            MessageBox.Show("No file selected to open!", "Could not open file", MessageBoxButtons.OK, MessageBoxIcon.Information)
-            Return
-        End If
-
         Try
-            g_mFormMain.g_ClassTabControl.BeginUpdate()
-
-            'Close all
-            g_mFormMain.g_ClassTabControl.RemoveAllTabs()
+            Dim mRecentItems = g_mClassRecentItems.GetRecentItems
+            Dim bSomethingSelected As Boolean = False
+            Dim bAppendFiles As Boolean = False
 
             For i = mRecentItems.Length - 1 To 0 Step -1
-                Try
-                    If (Not mRecentItems(i).m_Open) Then
-                        Continue For
-                    End If
+                If (Not mRecentItems(i).m_Open) Then
+                    Continue For
+                End If
 
-                    If (mRecentItems(i).m_IsProjectFile) Then
-                        g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile = mRecentItems(i).m_RecentFile
-                        g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(bAppendFiles, ClassSettings.g_iSettingsAutoOpenProjectFiles)
-                        bAppendFiles = True
-                    Else
-                        Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
-                        mTab.OpenFileTab(mRecentItems(i).m_RecentFile)
-                        mTab.SelectTab(500)
-                    End If
-                Catch ex As Exception
-                    ClassExceptionLog.WriteToLogMessageBox(ex)
-                End Try
+                bSomethingSelected = True
+                Exit For
             Next
 
-            g_mFormMain.g_ClassTabControl.RemoveUnsavedTabsLeft()
-            Me.Hide()
-        Finally
-            g_mFormMain.g_ClassTabControl.EndUpdate()
+            If (Not bSomethingSelected) Then
+                MessageBox.Show("No file selected to open!", "Could not open file", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Return
+            End If
+
+            Try
+                g_mFormMain.g_ClassTabControl.BeginUpdate()
+
+                'Close all
+                g_mFormMain.g_ClassTabControl.RemoveAllTabs()
+
+                For i = mRecentItems.Length - 1 To 0 Step -1
+                    Try
+                        If (Not mRecentItems(i).m_Open) Then
+                            Continue For
+                        End If
+
+                        If (mRecentItems(i).m_IsProjectFile) Then
+                            g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile = mRecentItems(i).m_RecentFile
+                            g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(bAppendFiles, ClassSettings.g_iSettingsAutoOpenProjectFiles)
+                            bAppendFiles = True
+                        Else
+                            Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
+                            mTab.OpenFileTab(mRecentItems(i).m_RecentFile)
+                            mTab.SelectTab(500)
+                        End If
+                    Catch ex As Exception
+                        ClassExceptionLog.WriteToLogMessageBox(ex)
+                    End Try
+                Next
+
+                g_mFormMain.g_ClassTabControl.RemoveUnsavedTabsLeft()
+                Me.Hide()
+            Finally
+                g_mFormMain.g_ClassTabControl.EndUpdate()
+            End Try
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
     End Sub
 

@@ -579,32 +579,36 @@ Public Class ClassTabControl
     End Sub
 
     Public Sub CheckFilesChangedPrompt()
-        For i = 0 To m_TabsCount - 1
-            If (m_Tab(i).m_IsUnsaved OrElse m_Tab(i).m_InvalidFile) Then
-                Continue For
-            End If
+        Try
+            For i = 0 To m_TabsCount - 1
+                If (m_Tab(i).m_IsUnsaved OrElse m_Tab(i).m_InvalidFile) Then
+                    Continue For
+                End If
 
-            If (Not m_Tab(i).m_IsFileNewer) Then
-                Continue For
-            End If
+                If (Not m_Tab(i).m_IsFileNewer) Then
+                    Continue For
+                End If
 
-            Select Case (MessageBox.Show(String.Format("'{0}' in tab '{1}' has been changed! Do you want to reload the tab?", m_Tab(i).m_File, i + 1), "File changed", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
-                Case DialogResult.Yes
-                    While True
-                        If (Not OpenFileTab(i, m_Tab(i).m_File, True)) Then
-                            Select Case (MessageBox.Show("Could not open file", "Error", MessageBoxButtons.RetryCancel))
-                                Case DialogResult.Retry
-                                    Continue While
-                            End Select
-                        End If
+                Select Case (MessageBox.Show(String.Format("'{0}' in tab '{1}' has been changed! Do you want to reload the tab?", m_Tab(i).m_File, i + 1), "File changed", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+                    Case DialogResult.Yes
+                        While True
+                            If (Not OpenFileTab(i, m_Tab(i).m_File, True)) Then
+                                Select Case (MessageBox.Show("Could not open file", "Error", MessageBoxButtons.RetryCancel))
+                                    Case DialogResult.Retry
+                                        Continue While
+                                End Select
+                            End If
 
-                        Exit While
-                    End While
-            End Select
+                            Exit While
+                        End While
+                End Select
 
 
-            m_Tab(i).m_FileCachedWriteDate = m_Tab(i).m_FileRealWriteDate
-        Next
+                m_Tab(i).m_FileCachedWriteDate = m_Tab(i).m_FileRealWriteDate
+            Next
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
     End Sub
 
     Public Function GetTabByCursorPoint() As SourceTabPage

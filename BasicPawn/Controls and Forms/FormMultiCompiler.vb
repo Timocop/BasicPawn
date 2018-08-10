@@ -148,42 +148,50 @@ Public Class FormMultiCompiler
 
                 If (Not bSuccess) Then
                     ClassThread.ExecEx(Of Object)(Me, Sub()
-                                                        With New Text.StringBuilder
-                                                            .AppendLine(String.Format("'{0}' failed to compile!", sSourceFile))
-                                                            .AppendLine("See information tab for more information.")
-                                                            .AppendLine()
-                                                            .AppendLine("Do you want to open the file now?")
+                                                          Try
+                                                              With New Text.StringBuilder
+                                                                  .AppendLine(String.Format("'{0}' failed to compile!", sSourceFile))
+                                                                  .AppendLine("See information tab for more information.")
+                                                                  .AppendLine()
+                                                                  .AppendLine("Do you want to open the file now?")
 
-                                                            Select Case (MessageBox.Show(Me, .ToString, "Compiler failure", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Error))
-                                                                Case DialogResult.Yes
-                                                                    Dim mTab = g_mMainForm.g_ClassTabControl.AddTab()
-                                                                    mTab.OpenFileTab(sSourceFile)
-                                                                    mTab.SelectTab()
+                                                                  Select Case (MessageBox.Show(Me, .ToString, "Compiler failure", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Error))
+                                                                      Case DialogResult.Yes
+                                                                          Dim mTab = g_mMainForm.g_ClassTabControl.AddTab()
+                                                                          mTab.OpenFileTab(sSourceFile)
+                                                                          mTab.SelectTab()
 
-                                                                Case DialogResult.Cancel
-                                                                    bCancel = True
-                                                            End Select
-                                                        End With
-                                                    End Sub)
+                                                                      Case DialogResult.Cancel
+                                                                          bCancel = True
+                                                                  End Select
+                                                              End With
+                                                          Catch ex As Exception
+                                                              ClassExceptionLog.WriteToLogMessageBox(ex)
+                                                          End Try
+                                                      End Sub)
                 ElseIf (bWarning) Then
                     ClassThread.ExecEx(Of Object)(Me, Sub()
-                                                        With New Text.StringBuilder
-                                                            .AppendLine(String.Format("'{0}' has compiler warnings!", sSourceFile))
-                                                            .AppendLine("See information tab for more information.")
-                                                            .AppendLine()
-                                                            .AppendLine("Do you want to open the file now?")
+                                                          Try
+                                                              With New Text.StringBuilder
+                                                                  .AppendLine(String.Format("'{0}' has compiler warnings!", sSourceFile))
+                                                                  .AppendLine("See information tab for more information.")
+                                                                  .AppendLine()
+                                                                  .AppendLine("Do you want to open the file now?")
 
-                                                            Select Case (MessageBox.Show(Me, .ToString, "Compiler warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Exclamation))
-                                                                Case DialogResult.Yes
-                                                                    Dim mTab = g_mMainForm.g_ClassTabControl.AddTab()
-                                                                    mTab.OpenFileTab(sSourceFile)
-                                                                    mTab.SelectTab()
+                                                                  Select Case (MessageBox.Show(Me, .ToString, "Compiler warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Exclamation))
+                                                                      Case DialogResult.Yes
+                                                                          Dim mTab = g_mMainForm.g_ClassTabControl.AddTab()
+                                                                          mTab.OpenFileTab(sSourceFile)
+                                                                          mTab.SelectTab()
 
-                                                                Case DialogResult.Cancel
-                                                                    bCancel = True
-                                                            End Select
-                                                        End With
-                                                    End Sub)
+                                                                      Case DialogResult.Cancel
+                                                                          bCancel = True
+                                                                  End Select
+                                                              End With
+                                                          Catch ex As Exception
+                                                              ClassExceptionLog.WriteToLogMessageBox(ex)
+                                                          End Try
+                                                      End Sub)
                 End If
 
                 If (bCancel) Then
