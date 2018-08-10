@@ -34,7 +34,7 @@ Partial Class FormReportManager
         Me.ToolStripMenuItem_GetReports = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_GetLogs = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_CloseReportWindows = New System.Windows.Forms.ToolStripMenuItem()
-        Me.TabControl1 = New System.Windows.Forms.TabControl()
+        Me.TabControl1 = New BasicPawn.ClassTabControlColor()
         Me.TabPage_Reports = New System.Windows.Forms.TabPage()
         Me.TabPage_Logs = New System.Windows.Forms.TabPage()
         Me.ListView_Logs = New System.Windows.Forms.ListView()
@@ -196,7 +196,7 @@ Partial Class FormReportManager
     Friend WithEvents CloseToolStripMenuItem As Windows.Forms.ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_GetReports As Windows.Forms.ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_CloseReportWindows As Windows.Forms.ToolStripMenuItem
-    Friend WithEvents TabControl1 As Windows.Forms.TabControl
+    Friend WithEvents TabControl1 As BasicPawn.ClassTabControlColor
     Friend WithEvents TabPage_Reports As Windows.Forms.TabPage
     Friend WithEvents TabPage_Logs As Windows.Forms.TabPage
     Friend WithEvents ToolStripMenuItem_GetLogs As Windows.Forms.ToolStripMenuItem

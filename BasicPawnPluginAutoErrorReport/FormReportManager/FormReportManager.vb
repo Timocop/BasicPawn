@@ -20,7 +20,6 @@ Imports System.Windows.Forms
 Imports BasicPawn
 
 Public Class FormReportManager
-
     Private g_mFtpSecureStorage As ClassSecureStorage
     Private g_mSettingsSecureStorage As ClassSecureStorage
 
