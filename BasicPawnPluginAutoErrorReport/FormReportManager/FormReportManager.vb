@@ -20,12 +20,27 @@ Imports System.Windows.Forms
 Imports BasicPawn
 
 Public Class FormReportManager
-    Private g_mFetchReportsThread As Threading.Thread
 
     Private g_mFtpSecureStorage As ClassSecureStorage
     Private g_mSettingsSecureStorage As ClassSecureStorage
 
+    Private g_mClassReports As ClassReports
+    Private g_mClassLogs As ClassLogs
+
     Public g_mPluginAutoErrorReport As PluginAutoErrorReport
+
+    Public g_sGetReportsOrginalText As String = ""
+    Public g_sGetReportsOrginalImage As Image
+    Public g_sGetLogsOrginalText As String = ""
+    Public g_sGetLogsOrginalImage As Image
+
+    Const ICON_FILE = 0
+    Const ICON_WARN = 1
+    Const ICON_ERROR = 2
+
+    Const ERROR_NOERROR = 0
+    Const ERROR_MSGONLY = 1
+    Const ERROR_TOOBIG = 2
 
     Enum ENUM_FTP_PROTOCOL_TYPE
         FTP
@@ -55,26 +70,56 @@ Public Class FormReportManager
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call. 
+        ImageList_Logs.Images.Clear()
+        ImageList_Logs.Images.Add(CStr(ICON_FILE), My.Resources.imageres_5304_16x16_32)
+        ImageList_Logs.Images.Add(CStr(ICON_WARN), My.Resources.user32_101_16x16_32)
+        ImageList_Logs.Images.Add(CStr(ICON_ERROR), My.Resources.user32_103_16x16_32)
+
+        g_sGetReportsOrginalText = ToolStripMenuItem_GetReports.Text
+        g_sGetReportsOrginalImage = ToolStripMenuItem_GetReports.Image
+        g_sGetLogsOrginalText = ToolStripMenuItem_GetLogs.Text
+        g_sGetLogsOrginalImage = ToolStripMenuItem_GetLogs.Image
+
         g_mFtpSecureStorage = New ClassSecureStorage("PluginAutoErrorReportFtpEntries")
         g_mSettingsSecureStorage = New ClassSecureStorage("PluginAutoErrorReportSettings")
+
+        g_mClassReports = New ClassReports(Me)
+        g_mClassLogs = New ClassLogs(Me)
+
+        ClassTools.ClassForms.SetDoubleBufferingAllChilds(Me, True)
+        ClassTools.ClassForms.SetDoubleBufferingUnmanagedAllChilds(Me, True)
     End Sub
 
     Private Sub FormReportManager_Load(sender As Object, e As EventArgs) Handles Me.Load
         ClassControlStyle.UpdateControls(Me)
 
-        FetchReports()
+        g_mClassReports.FetchReports()
+        g_mClassLogs.FetchLogs()
     End Sub
 
     Private Sub CloseToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CloseToolStripMenuItem.Click
         Me.Close()
     End Sub
 
-    Private Sub GetReportsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles GetReportsToolStripMenuItem.Click
-        FetchReports()
+    Private Sub GetReportsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_GetReports.Click
+        If (g_mClassReports.IsFetchingReports) Then
+            g_mClassReports.AbortFetching()
+        Else
+            g_mClassReports.FetchReports()
+        End If
     End Sub
 
-    Private Sub CloseReportWindowsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CloseReportWindowsToolStripMenuItem.Click
-        For Each mItem In GetItems()
+
+    Private Sub ToolStripMenuItem_GetLogs_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_GetLogs.Click
+        If (g_mClassLogs.IsFetchingLogs) Then
+            g_mClassLogs.AbortFetching()
+        Else
+            g_mClassLogs.FetchLogs()
+        End If
+    End Sub
+
+    Private Sub CloseReportWindowsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_CloseReportWindows.Click
+        For Each mItem In g_mClassReports.GetItems()
             Dim mUCReportExceptionItem = TryCast(mItem, UCReportExceptionItem)
             If (mUCReportExceptionItem Is Nothing) Then
                 Continue For
@@ -84,354 +129,749 @@ Public Class FormReportManager
         Next
     End Sub
 
-    Public Sub FetchReports()
-        If (ClassThread.IsValid(g_mFetchReportsThread)) Then
-            Return
-        End If
+    Private Sub ListView_Logs_DoubleClick(sender As Object, e As EventArgs) Handles ListView_Logs.DoubleClick
+        Try
+            If (ListView_Logs.SelectedItems.Count < 1) Then
+                Return
+            End If
 
-        g_mFetchReportsThread = New Threading.Thread(Sub()
-                                                         Try
-                                                             ClassThread.ExecAsync(Me, Sub()
-                                                                                           ToolStripProgressBar_Progress.Visible = True
-                                                                                           ToolStripStatusLabel_Progress.Visible = True
-                                                                                           ToolStripSplitButton_ProgressAbort.Visible = True
-                                                                                           ToolStripStatusLabel_Progress.Text = "Starting thread..."
-                                                                                       End Sub)
+            Dim mListViewItem = TryCast(ListView_Logs.SelectedItems(0), ClassListViewItemData)
+            If (mListViewItem Is Nothing) Then
+                Return
+            End If
 
-                                                             Dim lReportItems As New List(Of Object()) '{sTitle, sMessage, mImage}
-                                                             Dim lReportExceptionItems As New List(Of ClassDebuggerParser.STRUC_SM_EXCEPTION)
-                                                             Dim lFtpEntries As New List(Of STRUC_FTP_ENTRY_ITEM)
+            Dim sTitle As String = CStr(mListViewItem.g_mData("Title"))
+            Dim sRemoteFile As String = CStr(mListViewItem.g_mData("RemoteFile"))
+            Dim sLocalFile As String = CStr(mListViewItem.g_mData("LocalFile"))
+            Dim iDate As Date = New Date(CLng(mListViewItem.g_mData("DateTick")))
+            Dim iSize As Long = CLng(mListViewItem.g_mData("Size"))
+            Dim iErrorIndex As Integer = CInt(mListViewItem.g_mData("ErrorIndex"))
 
-                                                             Dim iMaxFileBytes As Long = (100 * 1024 * 1024)
-                                                             Dim bFilesTooBig As Boolean = False
+            Select Case (iErrorIndex)
+                Case ERROR_NOERROR
+                    If (String.IsNullOrEmpty(sLocalFile) OrElse Not IO.File.Exists(sLocalFile)) Then
+                        Throw New ArgumentException("Unable to open. Could not find local file.")
+                    End If
 
-                                                             g_mFtpSecureStorage.Open()
-                                                             g_mSettingsSecureStorage.Open()
+                    Process.Start("notepad.exe", sLocalFile)
 
-                                                             ClassThread.ExecAsync(Me, Sub() ToolStripStatusLabel_Progress.Text = "Loading servers...")
+                Case ERROR_MSGONLY
+                    Return
 
-                                                             'Load Servers
-                                                             Using mIni As New ClassIni(g_mFtpSecureStorage.m_String(System.Text.Encoding.Default))
-                                                                 For Each sSection As String In mIni.GetSectionNames
-                                                                     Dim sHost As String = mIni.ReadKeyValue(sSection, "Host", Nothing)
-                                                                     Dim sDatabaseEntry As String = mIni.ReadKeyValue(sSection, "DatabaseEntry", Nothing)
-                                                                     Dim sSourceModPath As String = mIni.ReadKeyValue(sSection, "SourceModPath", Nothing)
-                                                                     Dim sProtocol As String = mIni.ReadKeyValue(sSection, "Protocol", "FTP")
+                Case ERROR_TOOBIG
+                    Throw New ArgumentException("Unable to open. This file is too big to fetch.")
 
-                                                                     If (String.IsNullOrEmpty(sHost) OrElse String.IsNullOrEmpty(sDatabaseEntry)) Then
+            End Select
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
+    Class ClassReports
+        Implements IDisposable
+
+        Public g_mFormReportManager As FormReportManager
+
+        Private g_mFetchReportsThread As Threading.Thread
+
+        Public Sub New(mFormReportManager As FormReportManager)
+            g_mFormReportManager = mFormReportManager
+        End Sub
+
+        Public Sub FetchReports()
+            If (ClassThread.IsValid(g_mFetchReportsThread)) Then
+                Return
+            End If
+
+            g_mFetchReportsThread = New Threading.Thread(Sub()
+                                                             Try
+                                                                 ClassThread.ExecAsync(g_mFormReportManager, Sub()
+                                                                                                                 g_mFormReportManager.ToolStripMenuItem_GetReports.Text = "Abort fetching reports"
+                                                                                                                 g_mFormReportManager.ToolStripMenuItem_GetReports.Image = My.Resources.imageres_5337_16x16_32
+                                                                                                             End Sub)
+
+                                                                 Dim lReportItems As New List(Of Object()) '{sTitle, sMessage, mImage}
+                                                                 Dim lReportExceptionItems As New List(Of ClassDebuggerParser.STRUC_SM_EXCEPTION)
+                                                                 Dim lFtpEntries As New List(Of STRUC_FTP_ENTRY_ITEM)
+
+                                                                 Dim iMaxFileBytes As Long = (100 * 1024 * 1024)
+                                                                 Dim bFilesTooBig As Boolean = False
+
+                                                                 g_mFormReportManager.g_mFtpSecureStorage.Open()
+                                                                 g_mFormReportManager.g_mSettingsSecureStorage.Open()
+
+                                                                 'Load Servers
+                                                                 Using mIni As New ClassIni(g_mFormReportManager.g_mFtpSecureStorage.m_String(System.Text.Encoding.Default))
+                                                                     For Each sSection As String In mIni.GetSectionNames
+                                                                         Dim sHost As String = mIni.ReadKeyValue(sSection, "Host", Nothing)
+                                                                         Dim sDatabaseEntry As String = mIni.ReadKeyValue(sSection, "DatabaseEntry", Nothing)
+                                                                         Dim sSourceModPath As String = mIni.ReadKeyValue(sSection, "SourceModPath", Nothing)
+                                                                         Dim sProtocol As String = mIni.ReadKeyValue(sSection, "Protocol", "FTP")
+
+                                                                         If (String.IsNullOrEmpty(sHost) OrElse String.IsNullOrEmpty(sDatabaseEntry)) Then
+                                                                             Continue For
+                                                                         End If
+
+                                                                         Dim iProtocolType As ENUM_FTP_PROTOCOL_TYPE
+                                                                         Select Case (sProtocol)
+                                                                             Case "SFTP"
+                                                                                 iProtocolType = ENUM_FTP_PROTOCOL_TYPE.SFTP
+                                                                             Case Else
+                                                                                 iProtocolType = ENUM_FTP_PROTOCOL_TYPE.FTP
+                                                                         End Select
+
+                                                                         lFtpEntries.Add(New STRUC_FTP_ENTRY_ITEM(sHost, sDatabaseEntry, sSourceModPath, iProtocolType))
+                                                                     Next
+                                                                 End Using
+
+                                                                 'Load Settings
+                                                                 Using mIni As New ClassIni(g_mFormReportManager.g_mSettingsSecureStorage.m_String(System.Text.Encoding.Default))
+                                                                     Dim iMaxFileSize As Integer = 0
+                                                                     If (Integer.TryParse(mIni.ReadKeyValue("Settings", "MaxFileSize", "100"), iMaxFileSize)) Then
+                                                                         iMaxFileBytes = (iMaxFileSize * 1024 * 1024)
+                                                                     End If
+                                                                 End Using
+
+                                                                 'Fetch Reports
+                                                                 For Each mFtpItem In lFtpEntries
+                                                                     Dim g_mClassFTP As ClassFTP = Nothing
+                                                                     Dim g_mClassSFTP As Renci.SshNet.SftpClient = Nothing
+
+                                                                     Dim sLogDirectory As String = IO.Path.Combine(mFtpItem.sSourceModPath, "logs").Replace("\", "/")
+
+                                                                     Try
+                                                                         Dim mDatabaseItem = ClassDatabase.FindDatabaseItemByName(mFtpItem.sDatabaseEntry)
+                                                                         If (mDatabaseItem Is Nothing) Then
+                                                                             Throw New ArgumentException(String.Format("Unable to find database entry: {0}", mFtpItem.sDatabaseEntry))
+                                                                         End If
+
+                                                                         Select Case (mFtpItem.iProtocolType)
+                                                                             Case ENUM_FTP_PROTOCOL_TYPE.FTP
+                                                                                 g_mClassFTP = New ClassFTP(mFtpItem.sHost, mDatabaseItem.m_Username, mDatabaseItem.m_Password)
+
+                                                                                 If (Not g_mClassFTP.PathExist(sLogDirectory)) Then
+                                                                                     Throw New ArgumentException(String.Format("Could not find SourceMod 'logs' directory on: {0}/{1}", mFtpItem.sHost.TrimEnd("/"c), sLogDirectory.TrimStart("/"c)))
+                                                                                 End If
+
+                                                                                 For Each mItem In g_mClassFTP.GetDirectoryEntries(sLogDirectory)
+                                                                                     Select Case (mItem.sName)
+                                                                                         Case ".", ".."
+                                                                                             Continue For
+                                                                                     End Select
+
+                                                                                     If (mItem.bIsDirectory) Then
+                                                                                         Continue For
+                                                                                     End If
+
+                                                                                     Dim sFileExt As String = IO.Path.GetExtension(mItem.sName)
+                                                                                     Dim sFileFullName As String = IO.Path.GetFileName(mItem.sName)
+
+                                                                                     If (sFileExt.ToLower <> ".log" OrElse Not sFileFullName.ToLower.StartsWith("errors_")) Then
+                                                                                         Continue For
+                                                                                     End If
+
+                                                                                     If (mItem.iSize > iMaxFileBytes) Then
+                                                                                         bFilesTooBig = True
+                                                                                         Continue For
+                                                                                     End If
+
+                                                                                     Dim sTmpFile As String = IO.Path.GetTempFileName
+                                                                                     Try
+                                                                                         g_mClassFTP.DownloadFile(mItem.sFullName, sTmpFile)
+
+                                                                                         With New ClassDebuggerParser(Nothing)
+                                                                                             lReportExceptionItems.AddRange(.ReadSourceModLogExceptions(IO.File.ReadAllLines(sTmpFile)))
+                                                                                         End With
+                                                                                     Finally
+                                                                                         IO.File.Delete(sTmpFile)
+                                                                                     End Try
+                                                                                 Next
+
+
+                                                                             Case ENUM_FTP_PROTOCOL_TYPE.SFTP
+                                                                                 g_mClassSFTP = New Renci.SshNet.SftpClient(mFtpItem.sHost, mDatabaseItem.m_Username, mDatabaseItem.m_Password)
+
+                                                                                 If (Not g_mClassSFTP.IsConnected) Then
+                                                                                     g_mClassSFTP.Connect()
+                                                                                 End If
+
+                                                                                 If (Not g_mClassSFTP.Exists(sLogDirectory)) Then
+                                                                                     Throw New ArgumentException(String.Format("Could not find SourceMod 'logs' directory on: {0}/{1}", mFtpItem.sHost.TrimEnd("/"c), sLogDirectory.TrimStart("/"c)))
+                                                                                 End If
+
+                                                                                 For Each mItem In g_mClassSFTP.ListDirectory(sLogDirectory)
+                                                                                     Select Case (mItem.Name)
+                                                                                         Case ".", ".."
+                                                                                             Continue For
+                                                                                     End Select
+
+                                                                                     If (mItem.IsDirectory) Then
+                                                                                         Continue For
+                                                                                     End If
+
+                                                                                     Dim sFileExt As String = IO.Path.GetExtension(mItem.Name)
+                                                                                     Dim sFileFullName As String = IO.Path.GetFileName(mItem.Name)
+
+                                                                                     If (sFileExt.ToLower <> ".log" OrElse Not sFileFullName.ToLower.StartsWith("errors_")) Then
+                                                                                         Continue For
+                                                                                     End If
+
+                                                                                     If (mItem.Length > iMaxFileBytes) Then
+                                                                                         bFilesTooBig = True
+                                                                                         Continue For
+                                                                                     End If
+
+                                                                                     Dim sTmpFile As String = IO.Path.GetTempFileName
+                                                                                     Try
+                                                                                         Using mStream As New IO.FileStream(sTmpFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
+                                                                                             g_mClassSFTP.DownloadFile(mItem.FullName, mStream)
+                                                                                         End Using
+
+                                                                                         With New ClassDebuggerParser(Nothing)
+                                                                                             lReportExceptionItems.AddRange(.ReadSourceModLogExceptions(IO.File.ReadAllLines(sTmpFile)))
+                                                                                         End With
+                                                                                     Finally
+                                                                                         IO.File.Delete(sTmpFile)
+                                                                                     End Try
+                                                                                 Next
+
+                                                                             Case Else
+                                                                                 Throw New ArgumentException("Unknown connection type")
+                                                                         End Select
+                                                                     Catch ex As Threading.ThreadAbortException
+                                                                         Throw
+                                                                     Catch ex As Exception
+                                                                         lReportItems.Add({"Error", ex.Message, My.Resources.user32_103_16x16_32})
+                                                                     Finally
+                                                                         If (g_mClassSFTP IsNot Nothing) Then
+                                                                             g_mClassSFTP.Dispose()
+                                                                             g_mClassSFTP = Nothing
+                                                                         End If
+                                                                     End Try
+                                                                 Next
+
+                                                                 If (bFilesTooBig) Then
+                                                                     lReportItems.Add({"Unable to fetch some reports", String.Format("Some reports are too big to fetch. (max. {0} MB)", iMaxFileBytes / 1024 / 1024), My.Resources.user32_101_16x16_32})
+                                                                 End If
+
+                                                                 If (lReportExceptionItems.Count < 1) Then
+                                                                     lReportItems.Add({"No error reports found", "Congratulations! No error reports have been found!", My.Resources.ieframe_36866_16x16_32})
+                                                                 End If
+
+                                                                 'Remove duplicates
+                                                                 Dim lTmpList As New List(Of ClassDebuggerParser.STRUC_SM_EXCEPTION)
+                                                                 For Each mItem In lReportExceptionItems.ToArray
+                                                                     If (lTmpList.Exists(Function(x As ClassDebuggerParser.STRUC_SM_EXCEPTION)
+                                                                                             If (x.sExceptionInfo <> mItem.sExceptionInfo) Then
+                                                                                                 Return False
+                                                                                             End If
+
+                                                                                             If (x.sBlamingFile <> mItem.sBlamingFile) Then
+                                                                                                 Return False
+                                                                                             End If
+
+                                                                                             If (x.dLogDate <> mItem.dLogDate) Then
+                                                                                                 Return False
+                                                                                             End If
+
+                                                                                             If (x.mStackTraces.Length <> mItem.mStackTraces.Length) Then
+                                                                                                 Return False
+                                                                                             End If
+
+                                                                                             For i = 0 To x.mStackTraces.Length - 1
+                                                                                                 If (x.mStackTraces(i).sFunctionName <> mItem.mStackTraces(i).sFunctionName) Then
+                                                                                                     Return False
+                                                                                                 End If
+
+                                                                                                 If (x.mStackTraces(i).iLine <> mItem.mStackTraces(i).iLine) Then
+                                                                                                     Return False
+                                                                                                 End If
+
+                                                                                                 If (x.mStackTraces(i).sFileName <> mItem.mStackTraces(i).sFileName) Then
+                                                                                                     Return False
+                                                                                                 End If
+
+                                                                                                 If (x.mStackTraces(i).bNativeFault <> mItem.mStackTraces(i).bNativeFault) Then
+                                                                                                     Return False
+                                                                                                 End If
+                                                                                             Next
+
+                                                                                             Return True
+                                                                                         End Function)) Then
                                                                          Continue For
                                                                      End If
 
-                                                                     Dim iProtocolType As ENUM_FTP_PROTOCOL_TYPE
-                                                                     Select Case (sProtocol)
-                                                                         Case "SFTP"
-                                                                             iProtocolType = ENUM_FTP_PROTOCOL_TYPE.SFTP
-                                                                         Case Else
-                                                                             iProtocolType = ENUM_FTP_PROTOCOL_TYPE.FTP
-                                                                     End Select
-
-                                                                     lFtpEntries.Add(New STRUC_FTP_ENTRY_ITEM(sHost, sDatabaseEntry, sSourceModPath, iProtocolType))
+                                                                     lTmpList.Add(mItem)
                                                                  Next
-                                                             End Using
+                                                                 lReportExceptionItems.Clear()
+                                                                 lReportExceptionItems.AddRange(lTmpList)
 
-                                                             ClassThread.ExecAsync(Me, Sub() ToolStripStatusLabel_Progress.Text = "Loading settings...")
+                                                                 'Sort all reports. Top = Newer.
+                                                                 lReportExceptionItems.Sort(Function(x As ClassDebuggerParser.STRUC_SM_EXCEPTION, y As ClassDebuggerParser.STRUC_SM_EXCEPTION)
+                                                                                                Return -(x.dLogDate.CompareTo(y.dLogDate))
+                                                                                            End Function)
 
-                                                             'Load Settings
-                                                             Using mIni As New ClassIni(g_mSettingsSecureStorage.m_String(System.Text.Encoding.Default))
-                                                                 Dim iMaxFileSize As Integer = 0
-                                                                 If (Integer.TryParse(mIni.ReadKeyValue("Settings", "MaxFileSize", "100"), iMaxFileSize)) Then
-                                                                     iMaxFileBytes = (iMaxFileSize * 1024 * 1024)
-                                                                 End If
-                                                             End Using
+                                                                 ClassThread.ExecAsync(g_mFormReportManager, Sub()
+                                                                                                                 g_mFormReportManager.TabPage_Reports.SuspendLayout()
 
-                                                             ClassThread.ExecAsync(Me, Sub() ToolStripStatusLabel_Progress.Text = "Fetching reports...")
+                                                                                                                 CleanReports()
 
-                                                             'Fetch Reports
-                                                             For Each mFtpItem In lFtpEntries
-                                                                 Dim g_mClassFTP As ClassFTP = Nothing
-                                                                 Dim g_mClassSFTP As Renci.SshNet.SftpClient = Nothing
+                                                                                                                 Const iDisplayLimit = 500
+                                                                                                                 Dim iLimit As Integer = iDisplayLimit
 
-                                                                 Dim sLogDirectory As String = IO.Path.Combine(mFtpItem.sSourceModPath, "logs").Replace("\", "/")
+                                                                                                                 For Each mItem In lReportExceptionItems
+                                                                                                                     iLimit -= 1
 
-                                                                 Try
-                                                                     Dim mDatabaseItem = ClassDatabase.FindDatabaseItemByName(mFtpItem.sDatabaseEntry)
-                                                                     If (mDatabaseItem Is Nothing) Then
-                                                                         Throw New ArgumentException(String.Format("Unable to find database entry: {0}", mFtpItem.sDatabaseEntry))
-                                                                     End If
+                                                                                                                     If (iLimit < 0) Then
+                                                                                                                         lReportItems.Add({"Unable to display more reports", String.Format("You can not display more than {0} reports at once", iDisplayLimit), My.Resources.user32_101_16x16_32})
+                                                                                                                         Exit For
+                                                                                                                     End If
 
-                                                                     Select Case (mFtpItem.iProtocolType)
-                                                                         Case ENUM_FTP_PROTOCOL_TYPE.FTP
-                                                                             g_mClassFTP = New ClassFTP(mFtpItem.sHost, mDatabaseItem.m_Username, mDatabaseItem.m_Password)
+                                                                                                                     With New UCReportExceptionItem(g_mFormReportManager, mItem)
+                                                                                                                         .SuspendLayout()
 
-                                                                             If (Not g_mClassFTP.PathExist(sLogDirectory)) Then
-                                                                                 Throw New ArgumentException(String.Format("Could not find SourceMod 'logs' directory on: {0}/{1}", mFtpItem.sHost.TrimEnd("/"c), sLogDirectory.TrimStart("/"c)))
-                                                                             End If
+                                                                                                                         .Parent = g_mFormReportManager.TabPage_Reports
+                                                                                                                         .Dock = DockStyle.Top
+                                                                                                                         .BringToFront()
+                                                                                                                         .Show()
 
-                                                                             For Each mItem In g_mClassFTP.GetDirectoryEntries(sLogDirectory)
-                                                                                 Select Case (mItem.sName)
-                                                                                     Case ".", ".."
-                                                                                         Continue For
-                                                                                 End Select
+                                                                                                                         .ResumeLayout()
+                                                                                                                     End With
+                                                                                                                 Next
 
-                                                                                 If (mItem.bIsDirectory) Then
-                                                                                     Continue For
-                                                                                 End If
+                                                                                                                 For Each mItem In lReportItems
+                                                                                                                     With New UCReportItem(g_mFormReportManager, CStr(mItem(0)), CStr(mItem(1)), "", CType(mItem(2), Image))
+                                                                                                                         .SuspendLayout()
 
-                                                                                 Dim sFileExt As String = IO.Path.GetExtension(mItem.sName)
-                                                                                 Dim sFileFullName As String = IO.Path.GetFileName(mItem.sName)
+                                                                                                                         .Parent = g_mFormReportManager.TabPage_Reports
+                                                                                                                         .Dock = DockStyle.Top
+                                                                                                                         .SendToBack()
+                                                                                                                         .Show()
 
-                                                                                 If (sFileExt.ToLower <> ".log" OrElse Not sFileFullName.ToLower.StartsWith("errors_")) Then
-                                                                                     Continue For
-                                                                                 End If
+                                                                                                                         .ResumeLayout()
+                                                                                                                     End With
+                                                                                                                 Next
 
-                                                                                 If (mItem.iSize > iMaxFileBytes) Then
-                                                                                     bFilesTooBig = True
-                                                                                     Continue For
-                                                                                 End If
+                                                                                                                 g_mFormReportManager.TabPage_Reports.ResumeLayout()
+                                                                                                             End Sub)
 
-                                                                                 Dim sTmpFile As String = IO.Path.GetTempFileName
-                                                                                 Try
-                                                                                     g_mClassFTP.DownloadFile(mItem.sFullName, sTmpFile)
+                                                                 ClassThread.ExecAsync(g_mFormReportManager, Sub()
+                                                                                                                 g_mFormReportManager.ToolStripMenuItem_GetReports.Text = g_mFormReportManager.g_sGetReportsOrginalText
+                                                                                                                 g_mFormReportManager.ToolStripMenuItem_GetReports.Image = g_mFormReportManager.g_sGetReportsOrginalImage
+                                                                                                             End Sub)
+                                                             Catch ex As Threading.ThreadAbortException
+                                                                 Throw
+                                                             Catch ex As Exception
+                                                                 ClassExceptionLog.WriteToLogMessageBox(ex)
 
-                                                                                     With New ClassDebuggerParser(Nothing)
-                                                                                         lReportExceptionItems.AddRange(.ReadSourceModLogExceptions(IO.File.ReadAllLines(sTmpFile)))
-                                                                                     End With
-                                                                                 Finally
-                                                                                     IO.File.Delete(sTmpFile)
-                                                                                 End Try
-                                                                             Next
+                                                                 ClassThread.ExecAsync(g_mFormReportManager, Sub()
+                                                                                                                 g_mFormReportManager.ToolStripMenuItem_GetReports.Text = g_mFormReportManager.g_sGetReportsOrginalText
+                                                                                                                 g_mFormReportManager.ToolStripMenuItem_GetReports.Image = g_mFormReportManager.g_sGetReportsOrginalImage
+                                                                                                             End Sub)
+                                                             End Try
+                                                         End Sub) With {
+                .IsBackground = True
+            }
+            g_mFetchReportsThread.Start()
+        End Sub
 
+        Public Function IsFetchingReports() As Boolean
+            Return ClassThread.IsValid(g_mFetchReportsThread)
+        End Function
 
-                                                                         Case ENUM_FTP_PROTOCOL_TYPE.SFTP
-                                                                             g_mClassSFTP = New Renci.SshNet.SftpClient(mFtpItem.sHost, mDatabaseItem.m_Username, mDatabaseItem.m_Password)
+        Public Sub AbortFetching()
+            ClassThread.Abort(g_mFetchReportsThread)
 
-                                                                             If (Not g_mClassSFTP.IsConnected) Then
-                                                                                 g_mClassSFTP.Connect()
-                                                                             End If
+            g_mFormReportManager.ToolStripMenuItem_GetReports.Text = g_mFormReportManager.g_sGetReportsOrginalText
+            g_mFormReportManager.ToolStripMenuItem_GetReports.Image = g_mFormReportManager.g_sGetReportsOrginalImage
+        End Sub
 
-                                                                             If (Not g_mClassSFTP.Exists(sLogDirectory)) Then
-                                                                                 Throw New ArgumentException(String.Format("Could not find SourceMod 'logs' directory on: {0}/{1}", mFtpItem.sHost.TrimEnd("/"c), sLogDirectory.TrimStart("/"c)))
-                                                                             End If
+        Public Function GetItems() As UCReportItem()
+            Dim lItemList As New List(Of UCReportItem)
 
-                                                                             For Each mItem In g_mClassSFTP.ListDirectory(sLogDirectory)
-                                                                                 Select Case (mItem.Name)
-                                                                                     Case ".", ".."
-                                                                                         Continue For
-                                                                                 End Select
+            For Each mControl As Control In g_mFormReportManager.TabPage_Reports.Controls
+                If (TypeOf mControl Is UCReportItem) Then
+                    lItemList.Add(DirectCast(mControl, UCReportItem))
+                End If
+            Next
 
-                                                                                 If (mItem.IsDirectory) Then
-                                                                                     Continue For
-                                                                                 End If
+            Return lItemList.ToArray
+        End Function
 
-                                                                                 Dim sFileExt As String = IO.Path.GetExtension(mItem.Name)
-                                                                                 Dim sFileFullName As String = IO.Path.GetFileName(mItem.Name)
+        Public Sub CleanReports()
+            g_mFormReportManager.SuspendLayout()
 
-                                                                                 If (sFileExt.ToLower <> ".log" OrElse Not sFileFullName.ToLower.StartsWith("errors_")) Then
-                                                                                     Continue For
-                                                                                 End If
+            For Each mControl As UCReportItem In GetItems()
+                mControl.Dispose()
+            Next
 
-                                                                                 If (mItem.Length > iMaxFileBytes) Then
-                                                                                     bFilesTooBig = True
-                                                                                     Continue For
-                                                                                 End If
+            g_mFormReportManager.ResumeLayout()
+        End Sub
 
-                                                                                 Dim sTmpFile As String = IO.Path.GetTempFileName
-                                                                                 Try
-                                                                                     Using mStream As New IO.FileStream(sTmpFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
-                                                                                         g_mClassSFTP.DownloadFile(mItem.FullName, mStream)
-                                                                                     End Using
+#Region "IDisposable Support"
+        Private disposedValue As Boolean ' To detect redundant calls
 
-                                                                                     With New ClassDebuggerParser(Nothing)
-                                                                                         lReportExceptionItems.AddRange(.ReadSourceModLogExceptions(IO.File.ReadAllLines(sTmpFile)))
-                                                                                     End With
-                                                                                 Finally
-                                                                                     IO.File.Delete(sTmpFile)
-                                                                                 End Try
-                                                                             Next
+        ' IDisposable
+        Protected Overridable Sub Dispose(disposing As Boolean)
+            If Not disposedValue Then
+                If disposing Then
+                    ' TODO: dispose managed state (managed objects).
+                    AbortFetching()
+                End If
 
-                                                                         Case Else
-                                                                             Throw New ArgumentException("Unknown connection type")
-                                                                     End Select
-                                                                 Catch ex As Threading.ThreadAbortException
-                                                                     Throw
-                                                                 Catch ex As Exception
-                                                                     lReportItems.Add({"Error", ex.Message, My.Resources.user32_103_16x16_32})
-                                                                 Finally
-                                                                     If (g_mClassSFTP IsNot Nothing) Then
-                                                                         g_mClassSFTP.Dispose()
-                                                                         g_mClassSFTP = Nothing
-                                                                     End If
-                                                                 End Try
-                                                             Next
-
-                                                             If (bFilesTooBig) Then
-                                                                 lReportItems.Add({"Unable to fetch some reports", String.Format("Some reports are too big too fetch. (max. {0} MB)", iMaxFileBytes / 1024 / 1024), My.Resources.user32_101_16x16_32})
-                                                             End If
-
-                                                             If (lReportExceptionItems.Count < 1) Then
-                                                                 lReportItems.Add({"No error reports found", "Congratulations! No error reports have been found!", My.Resources.ieframe_36866_16x16_32})
-                                                             End If
-
-                                                             ClassThread.ExecAsync(Me, Sub() ToolStripStatusLabel_Progress.Text = "Removing duplicated reports...")
-
-                                                             'Remove duplicates
-                                                             Dim lTmpList As New List(Of ClassDebuggerParser.STRUC_SM_EXCEPTION)
-                                                             For Each mItem In lReportExceptionItems.ToArray
-                                                                 If (lTmpList.Exists(Function(x As ClassDebuggerParser.STRUC_SM_EXCEPTION)
-                                                                                         If (x.sExceptionInfo <> mItem.sExceptionInfo) Then
-                                                                                             Return False
-                                                                                         End If
-
-                                                                                         If (x.sBlamingFile <> mItem.sBlamingFile) Then
-                                                                                             Return False
-                                                                                         End If
-
-                                                                                         If (x.dLogDate <> mItem.dLogDate) Then
-                                                                                             Return False
-                                                                                         End If
-
-                                                                                         If (x.mStackTraces.Length <> mItem.mStackTraces.Length) Then
-                                                                                             Return False
-                                                                                         End If
-
-                                                                                         For i = 0 To x.mStackTraces.Length - 1
-                                                                                             If (x.mStackTraces(i).sFunctionName <> mItem.mStackTraces(i).sFunctionName) Then
-                                                                                                 Return False
-                                                                                             End If
-
-                                                                                             If (x.mStackTraces(i).iLine <> mItem.mStackTraces(i).iLine) Then
-                                                                                                 Return False
-                                                                                             End If
-
-                                                                                             If (x.mStackTraces(i).sFileName <> mItem.mStackTraces(i).sFileName) Then
-                                                                                                 Return False
-                                                                                             End If
-
-                                                                                             If (x.mStackTraces(i).bNativeFault <> mItem.mStackTraces(i).bNativeFault) Then
-                                                                                                 Return False
-                                                                                             End If
-                                                                                         Next
-
-                                                                                         Return True
-                                                                                     End Function)) Then
-                                                                     Continue For
-                                                                 End If
-
-                                                                 lTmpList.Add(mItem)
-                                                             Next
-                                                             lReportExceptionItems.Clear()
-                                                             lReportExceptionItems.AddRange(lTmpList)
-
-                                                             ClassThread.ExecAsync(Me, Sub() ToolStripStatusLabel_Progress.Text = "Sorting reports...")
-
-                                                             'Sort all reports. Top = Newer.
-                                                             lReportExceptionItems.Sort(Function(x As ClassDebuggerParser.STRUC_SM_EXCEPTION, y As ClassDebuggerParser.STRUC_SM_EXCEPTION)
-                                                                                            Return -(x.dLogDate.CompareTo(y.dLogDate))
-                                                                                        End Function)
-
-                                                             ClassThread.ExecAsync(Me, Sub()
-                                                                                           ToolStripStatusLabel_Progress.Text = "Listing reports..."
-
-                                                                                           UcReportList_Reports.SuspendLayout()
-
-                                                                                           CleanReports()
-
-                                                                                           Const iDisplayLimit = 500
-                                                                                           Dim iLimit As Integer = iDisplayLimit
-
-                                                                                           For Each mItem In lReportExceptionItems
-                                                                                               iLimit -= 1
-
-                                                                                               If (iLimit < 0) Then
-                                                                                                   lReportItems.Add({"Unable to display more reports", String.Format("You can not display more than {0} reports at once", iDisplayLimit), My.Resources.user32_101_16x16_32})
-                                                                                                   Exit For
-                                                                                               End If
-
-                                                                                               With New UCReportExceptionItem(Me, mItem)
-                                                                                                   .SuspendLayout()
-
-                                                                                                   .Parent = UcReportList_Reports
-                                                                                                   .Dock = DockStyle.Top
-                                                                                                   .BringToFront()
-                                                                                                   .Show()
-
-                                                                                                   .ResumeLayout()
-                                                                                               End With
-                                                                                           Next
-
-                                                                                           For Each mItem In lReportItems
-                                                                                               With New UCReportItem(Me, CStr(mItem(0)), CStr(mItem(1)), "", CType(mItem(2), Image))
-                                                                                                   .SuspendLayout()
-
-                                                                                                   .Parent = UcReportList_Reports
-                                                                                                   .Dock = DockStyle.Top
-                                                                                                   .SendToBack()
-                                                                                                   .Show()
-
-                                                                                                   .ResumeLayout()
-                                                                                               End With
-                                                                                           Next
-
-                                                                                           UcReportList_Reports.ResumeLayout()
-                                                                                       End Sub)
-
-                                                             ClassThread.ExecAsync(Me, Sub()
-                                                                                           ToolStripProgressBar_Progress.Visible = False
-                                                                                           ToolStripStatusLabel_Progress.Visible = False
-                                                                                           ToolStripSplitButton_ProgressAbort.Visible = False
-                                                                                       End Sub)
-                                                         Catch ex As Threading.ThreadAbortException
-                                                             Throw
-                                                         Catch ex As Exception
-                                                             ClassExceptionLog.WriteToLogMessageBox(ex)
-
-                                                             ClassThread.ExecAsync(Me, Sub()
-                                                                                           ToolStripProgressBar_Progress.Visible = False
-                                                                                           ToolStripStatusLabel_Progress.Visible = False
-                                                                                           ToolStripSplitButton_ProgressAbort.Visible = False
-                                                                                       End Sub)
-                                                         End Try
-                                                     End Sub) With {
-            .IsBackground = True
-        }
-        g_mFetchReportsThread.Start()
-    End Sub
-
-    Public Sub CleanReports()
-        Me.SuspendLayout()
-
-        For Each mControl As UCReportItem In GetItems()
-            mControl.Dispose()
-        Next
-
-        Me.ResumeLayout()
-    End Sub
-
-    Public Function GetItems() As UCReportItem()
-        Dim lItemList As New List(Of UCReportItem)
-
-        For Each mControl As Control In UcReportList_Reports.Controls
-            If (TypeOf mControl Is UCReportItem) Then
-                lItemList.Add(DirectCast(mControl, UCReportItem))
+                ' TODO: free unmanaged resources (unmanaged objects) and override Finalize() below.
+                ' TODO: set large fields to null.
             End If
-        Next
+            disposedValue = True
+        End Sub
 
-        Return lItemList.ToArray
-    End Function
+        ' TODO: override Finalize() only if Dispose(disposing As Boolean) above has code to free unmanaged resources.
+        'Protected Overrides Sub Finalize()
+        '    ' Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
+        '    Dispose(False)
+        '    MyBase.Finalize()
+        'End Sub
 
-    Private Sub ToolStripSplitButton_ProgressAbort_ButtonClick(sender As Object, e As EventArgs) Handles ToolStripSplitButton_ProgressAbort.ButtonClick
-        ClassThread.Abort(g_mFetchReportsThread)
+        ' This code added by Visual Basic to correctly implement the disposable pattern.
+        Public Sub Dispose() Implements IDisposable.Dispose
+            ' Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
+            Dispose(True)
+            ' TODO: uncomment the following line if Finalize() is overridden above.
+            ' GC.SuppressFinalize(Me)
+        End Sub
+#End Region
+    End Class
 
-        ToolStripProgressBar_Progress.Visible = False
-        ToolStripStatusLabel_Progress.Visible = False
-        ToolStripSplitButton_ProgressAbort.Visible = False
-    End Sub
+    Class ClassLogs
+        Implements IDisposable
+
+        Public g_mFormReportManager As FormReportManager
+
+        Private g_mFetchLogsThread As Threading.Thread
+        Private g_lFilesCleanup As New List(Of String)
+
+        Public Sub New(mFormReportManager As FormReportManager)
+            g_mFormReportManager = mFormReportManager
+        End Sub
+
+        Public Sub FetchLogs()
+            If (ClassThread.IsValid(g_mFetchLogsThread)) Then
+                Return
+            End If
+
+            'Cleanup old files
+            For Each sFile As String In g_lFilesCleanup
+                IO.File.Delete(sFile)
+            Next
+            g_lFilesCleanup.Clear()
+
+            'Start new thread
+            g_mFetchLogsThread = New Threading.Thread(Sub()
+                                                          Try
+                                                              ClassThread.ExecAsync(g_mFormReportManager, Sub()
+                                                                                                              g_mFormReportManager.ToolStripMenuItem_GetLogs.Text = "Abort fetching logs"
+                                                                                                              g_mFormReportManager.ToolStripMenuItem_GetLogs.Image = My.Resources.imageres_5337_16x16_32
+                                                                                                          End Sub)
+
+                                                              Const E_TITLE = 0
+                                                              Const E_REMOTEFILE = 1
+                                                              Const E_LOCALFILE = 2
+                                                              Const E_DATETICK = 3
+                                                              Const E_SIZE = 4
+                                                              Const E_ERRORINDEX = 5 'See ERROR_* constants
+
+                                                              Dim lReportItems As New List(Of Object()) '{sTitle, sRemoteFile, sLocalFile, iDateTick, iSize, iErrorIndex} 
+                                                              Dim lFtpEntries As New List(Of STRUC_FTP_ENTRY_ITEM)
+
+                                                              Dim iMaxFileBytes As Long = (100 * 1024 * 1024)
+                                                              Dim bFilesTooBig As Boolean = False
+
+                                                              g_mFormReportManager.g_mFtpSecureStorage.Open()
+                                                              g_mFormReportManager.g_mSettingsSecureStorage.Open()
+
+                                                              'Load Servers
+                                                              Using mIni As New ClassIni(g_mFormReportManager.g_mFtpSecureStorage.m_String(System.Text.Encoding.Default))
+                                                                  For Each sSection As String In mIni.GetSectionNames
+                                                                      Dim sHost As String = mIni.ReadKeyValue(sSection, "Host", Nothing)
+                                                                      Dim sDatabaseEntry As String = mIni.ReadKeyValue(sSection, "DatabaseEntry", Nothing)
+                                                                      Dim sSourceModPath As String = mIni.ReadKeyValue(sSection, "SourceModPath", Nothing)
+                                                                      Dim sProtocol As String = mIni.ReadKeyValue(sSection, "Protocol", "FTP")
+
+                                                                      If (String.IsNullOrEmpty(sHost) OrElse String.IsNullOrEmpty(sDatabaseEntry)) Then
+                                                                          Continue For
+                                                                      End If
+
+                                                                      Dim iProtocolType As ENUM_FTP_PROTOCOL_TYPE
+                                                                      Select Case (sProtocol)
+                                                                          Case "SFTP"
+                                                                              iProtocolType = ENUM_FTP_PROTOCOL_TYPE.SFTP
+                                                                          Case Else
+                                                                              iProtocolType = ENUM_FTP_PROTOCOL_TYPE.FTP
+                                                                      End Select
+
+                                                                      lFtpEntries.Add(New STRUC_FTP_ENTRY_ITEM(sHost, sDatabaseEntry, sSourceModPath, iProtocolType))
+                                                                  Next
+                                                              End Using
+
+                                                              'Load Settings
+                                                              Using mIni As New ClassIni(g_mFormReportManager.g_mSettingsSecureStorage.m_String(System.Text.Encoding.Default))
+                                                                  Dim iMaxFileSize As Integer = 0
+                                                                  If (Integer.TryParse(mIni.ReadKeyValue("Settings", "MaxFileSize", "100"), iMaxFileSize)) Then
+                                                                      iMaxFileBytes = (iMaxFileSize * 1024 * 1024)
+                                                                  End If
+                                                              End Using
+
+                                                              'Fetch Logs
+                                                              For Each mFtpItem In lFtpEntries
+                                                                  Dim g_mClassFTP As ClassFTP = Nothing
+                                                                  Dim g_mClassSFTP As Renci.SshNet.SftpClient = Nothing
+
+                                                                  Dim sLogDirectory As String = IO.Path.Combine(mFtpItem.sSourceModPath, "logs").Replace("\", "/")
+
+                                                                  Try
+                                                                      Dim mDatabaseItem = ClassDatabase.FindDatabaseItemByName(mFtpItem.sDatabaseEntry)
+                                                                      If (mDatabaseItem Is Nothing) Then
+                                                                          Throw New ArgumentException(String.Format("Unable to find database entry: {0}", mFtpItem.sDatabaseEntry))
+                                                                      End If
+
+                                                                      Select Case (mFtpItem.iProtocolType)
+                                                                          Case ENUM_FTP_PROTOCOL_TYPE.FTP
+                                                                              g_mClassFTP = New ClassFTP(mFtpItem.sHost, mDatabaseItem.m_Username, mDatabaseItem.m_Password)
+
+                                                                              If (Not g_mClassFTP.PathExist(sLogDirectory)) Then
+                                                                                  Throw New ArgumentException(String.Format("Could not find SourceMod 'logs' directory on: {0}/{1}", mFtpItem.sHost.TrimEnd("/"c), sLogDirectory.TrimStart("/"c)))
+                                                                              End If
+
+                                                                              For Each mItem In g_mClassFTP.GetDirectoryEntries(sLogDirectory)
+                                                                                  Select Case (mItem.sName)
+                                                                                      Case ".", ".."
+                                                                                          Continue For
+                                                                                  End Select
+
+                                                                                  If (mItem.bIsDirectory) Then
+                                                                                      Continue For
+                                                                                  End If
+
+                                                                                  Dim sFileExt As String = IO.Path.GetExtension(mItem.sName)
+                                                                                  Dim sFileFullName As String = IO.Path.GetFileName(mItem.sName)
+
+                                                                                  If (sFileExt.ToLower <> ".log" AndAlso sFileExt.ToLower <> ".txt") Then
+                                                                                      Continue For
+                                                                                  End If
+
+                                                                                  If (mItem.iSize > iMaxFileBytes) Then
+                                                                                      bFilesTooBig = True
+
+                                                                                      lReportItems.Add({mFtpItem.sHost.TrimEnd("/"c) & mItem.sFullName.TrimStart("/"c), mItem.sFullName, "", mItem.dModified.Ticks, mItem.iSize, ERROR_TOOBIG})
+                                                                                      Continue For
+                                                                                  End If
+
+                                                                                  Dim sTmpFile As String = IO.Path.GetTempFileName
+                                                                                  g_lFilesCleanup.Add(sTmpFile)
+                                                                                  g_mClassFTP.DownloadFile(mItem.sFullName, sTmpFile)
+                                                                                  ApplyNewlineFix(sTmpFile)
+
+                                                                                  lReportItems.Add({mFtpItem.sHost.TrimEnd("/"c) & "/" & mItem.sFullName.TrimStart("/"c), mItem.sFullName, sTmpFile, mItem.dModified.Ticks, mItem.iSize, ERROR_NOERROR})
+                                                                              Next
+
+
+                                                                          Case ENUM_FTP_PROTOCOL_TYPE.SFTP
+                                                                              g_mClassSFTP = New Renci.SshNet.SftpClient(mFtpItem.sHost, mDatabaseItem.m_Username, mDatabaseItem.m_Password)
+
+                                                                              If (Not g_mClassSFTP.IsConnected) Then
+                                                                                  g_mClassSFTP.Connect()
+                                                                              End If
+
+                                                                              If (Not g_mClassSFTP.Exists(sLogDirectory)) Then
+                                                                                  Throw New ArgumentException(String.Format("Could not find SourceMod 'logs' directory on: {0}/{1}", mFtpItem.sHost.TrimEnd("/"c), sLogDirectory.TrimStart("/"c)))
+                                                                              End If
+
+                                                                              For Each mItem In g_mClassSFTP.ListDirectory(sLogDirectory)
+                                                                                  Select Case (mItem.Name)
+                                                                                      Case ".", ".."
+                                                                                          Continue For
+                                                                                  End Select
+
+                                                                                  If (mItem.IsDirectory) Then
+                                                                                      Continue For
+                                                                                  End If
+
+                                                                                  Dim sFileExt As String = IO.Path.GetExtension(mItem.Name)
+                                                                                  Dim sFileFullName As String = IO.Path.GetFileName(mItem.Name)
+
+                                                                                  If (sFileExt.ToLower <> ".log" AndAlso sFileExt.ToLower <> ".txt") Then
+                                                                                      Continue For
+                                                                                  End If
+
+                                                                                  If (mItem.Length > iMaxFileBytes) Then
+                                                                                      bFilesTooBig = True
+
+                                                                                      lReportItems.Add({mFtpItem.sHost.TrimEnd("/"c) & mItem.FullName.TrimStart("/"c), mItem.FullName, "", mItem.Attributes.LastWriteTime.Ticks, mItem.Length, ERROR_TOOBIG})
+                                                                                      Continue For
+                                                                                  End If
+
+                                                                                  Dim sTmpFile As String = IO.Path.GetTempFileName
+                                                                                  g_lFilesCleanup.Add(sTmpFile)
+                                                                                  Using mStream As New IO.FileStream(sTmpFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
+                                                                                      g_mClassSFTP.DownloadFile(mItem.FullName, mStream)
+                                                                                  End Using
+                                                                                  ApplyNewlineFix(sTmpFile)
+
+                                                                                  lReportItems.Add({mFtpItem.sHost.TrimEnd("/"c) & "/" & mItem.FullName.TrimStart("/"c), mItem.FullName, sTmpFile, mItem.Attributes.LastWriteTime.Ticks, mItem.Length, ERROR_NOERROR})
+                                                                              Next
+
+                                                                              If (bFilesTooBig) Then
+                                                                                  lReportItems.Add({String.Format("Unable to fetch some log files. Some log files are too big to fetch. (max. {0} MB)", iMaxFileBytes / 1024 / 1024), "", "", 0, 0, ERROR_MSGONLY})
+                                                                              End If
+
+                                                                          Case Else
+                                                                              Throw New ArgumentException("Unknown connection type")
+                                                                      End Select
+                                                                  Catch ex As Threading.ThreadAbortException
+                                                                      Throw
+                                                                  Catch ex As Exception
+                                                                      lReportItems.Add({"Error: " & ex.Message, "", "", 0, 0, ERROR_MSGONLY})
+                                                                  Finally
+                                                                      If (g_mClassSFTP IsNot Nothing) Then
+                                                                          g_mClassSFTP.Dispose()
+                                                                          g_mClassSFTP = Nothing
+                                                                      End If
+                                                                  End Try
+                                                              Next
+
+                                                              ClassThread.ExecAsync(g_mFormReportManager, Sub()
+                                                                                                              g_mFormReportManager.TabPage_Logs.SuspendLayout()
+                                                                                                              g_mFormReportManager.ListView_Logs.BeginUpdate()
+                                                                                                              g_mFormReportManager.ListView_Logs.Items.Clear()
+
+                                                                                                              For Each mItem In lReportItems
+                                                                                                                  Dim sTitle As String = CStr(mItem(E_TITLE))
+                                                                                                                  Dim sRemoteFile As String = CStr(mItem(E_REMOTEFILE))
+                                                                                                                  Dim sLocalFile As String = CStr(mItem(E_LOCALFILE))
+                                                                                                                  Dim iDate As Date = New Date(CLng(mItem(E_DATETICK)))
+                                                                                                                  Dim iSize As Long = CLng(mItem(E_SIZE))
+                                                                                                                  Dim iErrorIndex As Integer = CInt(mItem(E_ERRORINDEX))
+
+                                                                                                                  Dim iImageIndex As Integer = ICON_FILE
+                                                                                                                  Select Case (iErrorIndex)
+                                                                                                                      Case ERROR_MSGONLY
+                                                                                                                          iImageIndex = ICON_WARN
+
+                                                                                                                      Case ERROR_TOOBIG
+                                                                                                                          iImageIndex = ICON_ERROR
+
+                                                                                                                  End Select
+
+                                                                                                                  Dim mListViewItem As New ClassListViewItemData(New String() {sTitle, ClassTools.ClassStrings.FormatBytes(iSize), iDate.ToString}, CStr(iImageIndex))
+                                                                                                                  mListViewItem.g_mData("Title") = sTitle
+                                                                                                                  mListViewItem.g_mData("RemoteFile") = sRemoteFile
+                                                                                                                  mListViewItem.g_mData("LocalFile") = sLocalFile
+                                                                                                                  mListViewItem.g_mData("DateTick") = iDate.Ticks
+                                                                                                                  mListViewItem.g_mData("Size") = iSize
+                                                                                                                  mListViewItem.g_mData("ErrorIndex") = iErrorIndex
+
+                                                                                                                  g_mFormReportManager.ListView_Logs.Items.Add(mListViewItem)
+                                                                                                              Next
+
+                                                                                                              ClassTools.ClassControls.ClassListView.AutoResizeColumns(g_mFormReportManager.ListView_Logs)
+                                                                                                              g_mFormReportManager.ListView_Logs.EndUpdate()
+                                                                                                              g_mFormReportManager.TabPage_Logs.ResumeLayout()
+                                                                                                          End Sub)
+
+                                                              ClassThread.ExecAsync(g_mFormReportManager, Sub()
+                                                                                                              g_mFormReportManager.ToolStripMenuItem_GetLogs.Text = g_mFormReportManager.g_sGetLogsOrginalText
+                                                                                                              g_mFormReportManager.ToolStripMenuItem_GetLogs.Image = g_mFormReportManager.g_sGetLogsOrginalImage
+                                                                                                          End Sub)
+                                                          Catch ex As Threading.ThreadAbortException
+                                                              Throw
+                                                          Catch ex As Exception
+                                                              ClassExceptionLog.WriteToLogMessageBox(ex)
+
+                                                              ClassThread.ExecAsync(g_mFormReportManager, Sub()
+                                                                                                              g_mFormReportManager.ToolStripMenuItem_GetLogs.Text = g_mFormReportManager.g_sGetLogsOrginalText
+                                                                                                              g_mFormReportManager.ToolStripMenuItem_GetLogs.Image = g_mFormReportManager.g_sGetLogsOrginalImage
+                                                                                                          End Sub)
+                                                          End Try
+                                                      End Sub) With {
+                .IsBackground = True
+            }
+            g_mFetchLogsThread.Start()
+        End Sub
+
+        'Unix newline fix for notepad or other editors that doesnt support it
+        Private Sub ApplyNewlineFix(sPath As String)
+            Dim sText As String = IO.File.ReadAllText(sPath)
+
+            sText = String.Join(Environment.NewLine, sText.Split(New String() {vbNewLine, vbLf}, 0))
+
+            IO.File.WriteAllText(sPath, sText)
+        End Sub
+
+        Public Function IsFetchingLogs() As Boolean
+            Return ClassThread.IsValid(g_mFetchLogsThread)
+        End Function
+
+        Public Sub AbortFetching()
+            ClassThread.Abort(g_mFetchLogsThread)
+
+            g_mFormReportManager.ToolStripMenuItem_GetLogs.Text = g_mFormReportManager.g_sGetLogsOrginalText
+            g_mFormReportManager.ToolStripMenuItem_GetLogs.Image = g_mFormReportManager.g_sGetLogsOrginalImage
+        End Sub
+
+#Region "IDisposable Support"
+        Private disposedValue As Boolean ' To detect redundant calls
+
+        ' IDisposable
+        Protected Overridable Sub Dispose(disposing As Boolean)
+            If Not disposedValue Then
+                If disposing Then
+                    ' TODO: dispose managed state (managed objects).
+                    AbortFetching()
+
+                    'Cleanup old files
+                    For Each sFile As String In g_lFilesCleanup
+                        IO.File.Delete(sFile)
+                    Next
+                    g_lFilesCleanup.Clear()
+                End If
+
+                ' TODO: free unmanaged resources (unmanaged objects) and override Finalize() below.
+                ' TODO: set large fields to null.
+            End If
+            disposedValue = True
+        End Sub
+
+        ' TODO: override Finalize() only if Dispose(disposing As Boolean) above has code to free unmanaged resources.
+        'Protected Overrides Sub Finalize()
+        '    ' Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
+        '    Dispose(False)
+        '    MyBase.Finalize()
+        'End Sub
+
+        ' This code added by Visual Basic to correctly implement the disposable pattern.
+        Public Sub Dispose() Implements IDisposable.Dispose
+            ' Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
+            Dispose(True)
+            ' TODO: uncomment the following line if Finalize() is overridden above.
+            ' GC.SuppressFinalize(Me)
+        End Sub
+#End Region
+
+    End Class
 
     Private Sub FormReportManager_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
         CleanUp()
     End Sub
 
     Private Sub CleanUp()
-        ClassThread.Abort(g_mFetchReportsThread)
+        If (g_mClassReports IsNot Nothing) Then
+            g_mClassReports.Dispose()
+            g_mClassReports = Nothing
+        End If
+
+        If (g_mClassLogs IsNot Nothing) Then
+            g_mClassLogs.Dispose()
+            g_mClassLogs = Nothing
+        End If
     End Sub
 End Class

@@ -121,14 +121,14 @@
   <data name="miguiresource_500_16x16_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\miguiresource_500_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="user32_101_16x16_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\user32_101_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="imageres_5306_16x16_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\imageres_5306_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ieframe_36883_16x16_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ieframe_36883_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="user32_103_16x16_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\user32_103_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="imageres_5337_16x16_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\imageres_5337_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -139,10 +139,10 @@
   <data name="ieframe_36866_16x16_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ieframe_36866_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="user32_103_16x16_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\user32_103_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="user32_101_16x16_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\user32_101_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ieframe_36867_16x16_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ieframe_36867_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="imageres_5304_16x16_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\imageres_5304_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
