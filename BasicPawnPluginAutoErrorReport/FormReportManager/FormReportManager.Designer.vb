@@ -34,6 +34,8 @@ Partial Class FormReportManager
         Me.ToolStripMenuItem_GetReports = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_GetLogs = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_CloseReportWindows = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ImageList_Logs = New System.Windows.Forms.ImageList(Me.components)
+        Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
         Me.TabControl1 = New BasicPawn.ClassTabControlColor()
         Me.TabPage_Reports = New System.Windows.Forms.TabPage()
         Me.TabPage_Logs = New System.Windows.Forms.TabPage()
@@ -41,8 +43,6 @@ Partial Class FormReportManager
         Me.ColumnHeader1 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader2 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader3 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.ImageList_Logs = New System.Windows.Forms.ImageList(Me.components)
-        Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
         Me.MenuStrip1.SuspendLayout()
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Logs.SuspendLayout()
@@ -93,6 +93,20 @@ Partial Class FormReportManager
         Me.ToolStripMenuItem_CloseReportWindows.Name = "ToolStripMenuItem_CloseReportWindows"
         Me.ToolStripMenuItem_CloseReportWindows.Size = New System.Drawing.Size(149, 20)
         Me.ToolStripMenuItem_CloseReportWindows.Text = "Close report windows"
+        '
+        'ImageList_Logs
+        '
+        Me.ImageList_Logs.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit
+        Me.ImageList_Logs.ImageSize = New System.Drawing.Size(16, 16)
+        Me.ImageList_Logs.TransparentColor = System.Drawing.Color.Transparent
+        '
+        'StatusStrip1
+        '
+        Me.StatusStrip1.Location = New System.Drawing.Point(0, 508)
+        Me.StatusStrip1.Name = "StatusStrip1"
+        Me.StatusStrip1.Size = New System.Drawing.Size(736, 22)
+        Me.StatusStrip1.TabIndex = 4
+        Me.StatusStrip1.Text = "StatusStrip1"
         '
         'TabControl1
         '
@@ -154,24 +168,10 @@ Partial Class FormReportManager
         Me.ColumnHeader3.Text = "Date"
         Me.ColumnHeader3.Width = 120
         '
-        'ImageList_Logs
-        '
-        Me.ImageList_Logs.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit
-        Me.ImageList_Logs.ImageSize = New System.Drawing.Size(16, 16)
-        Me.ImageList_Logs.TransparentColor = System.Drawing.Color.Transparent
-        '
-        'StatusStrip1
-        '
-        Me.StatusStrip1.Location = New System.Drawing.Point(0, 508)
-        Me.StatusStrip1.Name = "StatusStrip1"
-        Me.StatusStrip1.Size = New System.Drawing.Size(736, 22)
-        Me.StatusStrip1.TabIndex = 4
-        Me.StatusStrip1.Text = "StatusStrip1"
-        '
         'FormReportManager
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.ClientSize = New System.Drawing.Size(736, 530)
         Me.Controls.Add(Me.TabControl1)
         Me.Controls.Add(Me.StatusStrip1)
