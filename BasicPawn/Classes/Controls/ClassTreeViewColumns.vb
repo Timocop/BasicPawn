@@ -38,6 +38,8 @@ Public Class ClassTreeViewColumns
         End Get
     End Property
 
+    Public Property m_GridView As Boolean
+
     Private Sub TreeView1_Click(sender As Object, e As EventArgs) Handles TreeView1.Click
         Dim mPoint As Point = TreeView1.PointToClient(Control.MousePosition)
         Dim mTreeNode As TreeNode = TreeView1.GetNodeAt(mPoint)
@@ -80,13 +82,17 @@ Public Class ClassTreeViewColumns
             e.Graphics.FillRectangle(New SolidBrush(TreeView1.BackColor), mRect)
         End If
 
-        'e.Graphics.FillRectangle(New SolidBrush(TreeView1.BackColor), mRect)
+        If (m_GridView) Then
+            e.Graphics.DrawRectangle(SystemPens.Control, mRect)
+        End If
 
         For i = 1 To ListView1.Columns.Count - 1
             mRect.Offset(ListView1.Columns(i - 1).Width, 0)
             mRect.Width = ListView1.Columns(i).Width
 
-            'e.Graphics.FillRectangle(New SolidBrush(TreeView1.BackColor), mRect)
+            If (m_GridView) Then
+                e.Graphics.DrawRectangle(SystemPens.Control, mRect)
+            End If
 
             sSubList = TryCast(e.Node.Tag, String())
 

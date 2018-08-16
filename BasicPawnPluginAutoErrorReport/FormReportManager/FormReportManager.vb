@@ -38,6 +38,7 @@ Public Class FormReportManager
     Const ICON_FILE = 0
     Const ICON_WARN = 1
     Const ICON_ERROR = 2
+    Const ICON_ARROW = 3
 
     Const ERROR_NOERROR = 0
     Const ERROR_MSGONLY = 1
@@ -85,6 +86,7 @@ Public Class FormReportManager
         ImageList_Logs.Images.Add(CStr(ICON_FILE), My.Resources.imageres_5304_16x16_32)
         ImageList_Logs.Images.Add(CStr(ICON_WARN), My.Resources.user32_101_16x16_32)
         ImageList_Logs.Images.Add(CStr(ICON_ERROR), My.Resources.user32_103_16x16_32)
+        ImageList_Logs.Images.Add(CStr(ICON_ARROW), My.Resources.netshell_1607_16x16_32)
 
         g_sGetReportsOrginalText = ToolStripMenuItem_GetReports.Text
         g_sGetReportsOrginalImage = ToolStripMenuItem_GetReports.Image
@@ -783,7 +785,7 @@ Public Class FormReportManager
                                                                                                                   Dim mFileNodes As TreeNodeCollection
 
                                                                                                                   If (Not mRootNodes.ContainsKey(sRootNodeName)) Then
-                                                                                                                      mRootNodes.Add(New TreeNode(sRootNodeName) With {
+                                                                                                                      mRootNodes.Add(New TreeNode(sRootNodeName, ICON_ARROW, ICON_ARROW) With {
                                                                                                                         .Name = sRootNodeName
                                                                                                                       })
                                                                                                                   End If
