@@ -675,7 +675,7 @@ Public Class FormReportManager
                                                                                   If (mItem.iSize > iMaxFileBytes) Then
                                                                                       bFilesTooBig = True
 
-                                                                                      lReportItems.Add({mItem.sName, mItem.sFullName, "", mItem.dModified.Ticks, mItem.iSize, ERROR_TOOBIG})
+                                                                                      lReportItems.Add({mItem.sName, mFtpItem.sHost.TrimEnd("\"c) & mItem.sFullName.TrimStart("\"c), "", mItem.dModified.Ticks, mItem.iSize, ERROR_TOOBIG})
                                                                                       Continue For
                                                                                   End If
 
@@ -684,7 +684,7 @@ Public Class FormReportManager
                                                                                   g_mClassFTP.DownloadFile(mItem.sFullName, sTmpFile)
                                                                                   ApplyNewlineFix(sTmpFile)
 
-                                                                                  lReportItems.Add({mItem.sName, mItem.sFullName, sTmpFile, mItem.dModified.Ticks, mItem.iSize, ERROR_NOERROR})
+                                                                                  lReportItems.Add({mItem.sName, mFtpItem.sHost.TrimEnd("\"c) & mItem.sFullName.TrimStart("\"c), sTmpFile, mItem.dModified.Ticks, mItem.iSize, ERROR_NOERROR})
                                                                               Next
 
 
@@ -719,7 +719,7 @@ Public Class FormReportManager
                                                                                   If (mItem.Length > iMaxFileBytes) Then
                                                                                       bFilesTooBig = True
 
-                                                                                      lReportItems.Add({mItem.Name, mItem.FullName, "", mItem.Attributes.LastWriteTime.Ticks, mItem.Length, ERROR_TOOBIG})
+                                                                                      lReportItems.Add({mItem.Name, mFtpItem.sHost.TrimEnd("\"c) & mItem.FullName.TrimStart("\"c), "", mItem.Attributes.LastWriteTime.Ticks, mItem.Length, ERROR_TOOBIG})
                                                                                       Continue For
                                                                                   End If
 
@@ -730,7 +730,7 @@ Public Class FormReportManager
                                                                                   End Using
                                                                                   ApplyNewlineFix(sTmpFile)
 
-                                                                                  lReportItems.Add({mItem.Name, mItem.FullName, sTmpFile, mItem.Attributes.LastWriteTime.Ticks, mItem.Length, ERROR_NOERROR})
+                                                                                  lReportItems.Add({mItem.Name, mFtpItem.sHost.TrimEnd("\"c) & mItem.FullName.TrimStart("\"c), sTmpFile, mItem.Attributes.LastWriteTime.Ticks, mItem.Length, ERROR_NOERROR})
                                                                               Next
 
                                                                               If (bFilesTooBig) Then
