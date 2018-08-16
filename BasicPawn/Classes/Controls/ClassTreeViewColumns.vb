@@ -66,6 +66,9 @@ Public Class ClassTreeViewColumns
         e.DrawDefault = True
 
         Dim mRect As Rectangle = e.Bounds
+        Dim sColumnText As String
+        Dim sSubList As String()
+        Dim iFlags As TextFormatFlags
 
         If ((e.State And TreeNodeStates.Selected) <> 0) Then
             If ((e.State And TreeNodeStates.Focused) <> 0) Then
@@ -85,8 +88,7 @@ Public Class ClassTreeViewColumns
 
             'e.Graphics.FillRectangle(New SolidBrush(TreeView1.BackColor), mRect)
 
-            Dim sColumnText As String
-            Dim sSubList As String() = TryCast(e.Node.Tag, String())
+            sSubList = TryCast(e.Node.Tag, String())
 
             If (sSubList IsNot Nothing AndAlso i <= sSubList.Length) Then
                 sColumnText = sSubList(i - 1)
@@ -94,7 +96,7 @@ Public Class ClassTreeViewColumns
                 sColumnText = ""
             End If
 
-            Dim iFlags As TextFormatFlags = TextFormatFlags.EndEllipsis
+            iFlags = TextFormatFlags.EndEllipsis
 
             Select Case (ListView1.Columns(i).TextAlign)
                 Case HorizontalAlignment.Center
@@ -105,6 +107,7 @@ Public Class ClassTreeViewColumns
 
                 Case HorizontalAlignment.Right
                     iFlags = iFlags Or TextFormatFlags.Right
+
             End Select
 
             mRect.Y += 1
@@ -117,6 +120,5 @@ Public Class ClassTreeViewColumns
 
             mRect.Y -= 1
         Next
-
     End Sub
 End Class

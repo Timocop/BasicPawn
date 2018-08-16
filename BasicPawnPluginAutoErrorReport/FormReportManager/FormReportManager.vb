@@ -753,6 +753,7 @@ Public Class FormReportManager
                                                               ClassThread.ExecAsync(g_mFormReportManager, Sub()
                                                                                                               g_mFormReportManager.TabPage_Logs.SuspendLayout()
                                                                                                               g_mFormReportManager.g_mClassTreeViewColumns.m_TreeView.BeginUpdate()
+                                                                                                              g_mFormReportManager.g_mClassTreeViewColumns.m_TreeView.Nodes.Clear()
 
                                                                                                               For Each mItem In lReportItems
                                                                                                                   Dim sTitle As String = CStr(mItem(E_TITLE))
