@@ -39,13 +39,8 @@ Partial Class FormReportManager
         Me.TabControl1 = New BasicPawn.ClassTabControlColor()
         Me.TabPage_Reports = New System.Windows.Forms.TabPage()
         Me.TabPage_Logs = New System.Windows.Forms.TabPage()
-        Me.ListView_Logs = New System.Windows.Forms.ListView()
-        Me.ColumnHeader1 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.ColumnHeader2 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.ColumnHeader3 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.MenuStrip1.SuspendLayout()
         Me.TabControl1.SuspendLayout()
-        Me.TabPage_Logs.SuspendLayout()
         Me.SuspendLayout()
         '
         'MenuStrip1
@@ -131,7 +126,6 @@ Partial Class FormReportManager
         '
         'TabPage_Logs
         '
-        Me.TabPage_Logs.Controls.Add(Me.ListView_Logs)
         Me.TabPage_Logs.Location = New System.Drawing.Point(4, 22)
         Me.TabPage_Logs.Name = "TabPage_Logs"
         Me.TabPage_Logs.Padding = New System.Windows.Forms.Padding(3)
@@ -139,34 +133,6 @@ Partial Class FormReportManager
         Me.TabPage_Logs.TabIndex = 1
         Me.TabPage_Logs.Text = "Logs"
         Me.TabPage_Logs.UseVisualStyleBackColor = True
-        '
-        'ListView_Logs
-        '
-        Me.ListView_Logs.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1, Me.ColumnHeader2, Me.ColumnHeader3})
-        Me.ListView_Logs.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ListView_Logs.Location = New System.Drawing.Point(3, 3)
-        Me.ListView_Logs.MultiSelect = False
-        Me.ListView_Logs.Name = "ListView_Logs"
-        Me.ListView_Logs.Size = New System.Drawing.Size(722, 452)
-        Me.ListView_Logs.SmallImageList = Me.ImageList_Logs
-        Me.ListView_Logs.Sorting = System.Windows.Forms.SortOrder.Ascending
-        Me.ListView_Logs.TabIndex = 1
-        Me.ListView_Logs.UseCompatibleStateImageBehavior = False
-        Me.ListView_Logs.View = System.Windows.Forms.View.Details
-        '
-        'ColumnHeader1
-        '
-        Me.ColumnHeader1.Text = "File"
-        Me.ColumnHeader1.Width = 500
-        '
-        'ColumnHeader2
-        '
-        Me.ColumnHeader2.Text = "Size"
-        '
-        'ColumnHeader3
-        '
-        Me.ColumnHeader3.Text = "Date"
-        Me.ColumnHeader3.Width = 120
         '
         'FormReportManager
         '
@@ -185,7 +151,6 @@ Partial Class FormReportManager
         Me.MenuStrip1.ResumeLayout(False)
         Me.MenuStrip1.PerformLayout()
         Me.TabControl1.ResumeLayout(False)
-        Me.TabPage_Logs.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -200,10 +165,6 @@ Partial Class FormReportManager
     Friend WithEvents TabPage_Reports As Windows.Forms.TabPage
     Friend WithEvents TabPage_Logs As Windows.Forms.TabPage
     Friend WithEvents ToolStripMenuItem_GetLogs As Windows.Forms.ToolStripMenuItem
-    Friend WithEvents ListView_Logs As Windows.Forms.ListView
-    Friend WithEvents ColumnHeader1 As Windows.Forms.ColumnHeader
-    Friend WithEvents ColumnHeader2 As Windows.Forms.ColumnHeader
-    Friend WithEvents ColumnHeader3 As Windows.Forms.ColumnHeader
     Friend WithEvents ImageList_Logs As Windows.Forms.ImageList
     Friend WithEvents StatusStrip1 As Windows.Forms.StatusStrip
 End Class

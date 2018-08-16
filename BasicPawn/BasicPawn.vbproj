@@ -206,6 +206,12 @@
     <Compile Include="Classes\Controls\ClassHoverScroll.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Classes\Controls\ClassTreeViewColumns.Designer.vb">
+      <DependentUpon>ClassTreeViewColumns.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Classes\Controls\ClassTreeViewColumns.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Classes\Controls\ClassListViewItemData.vb" />
     <Compile Include="Classes\Controls\ClassRichTextBoxFix.vb">
       <SubType>Component</SubType>
@@ -234,6 +240,7 @@
     <Compile Include="Classes\Controls\ClassTextMinimap.vb">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Classes\Controls\ClassTreeNodeData.vb" />
     <Compile Include="Classes\Controls\ClassWebClientEx.vb">
       <SubType>Component</SubType>
     </Compile>
@@ -415,6 +422,9 @@
     <Compile Include="Classes\ClassTools.vb" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Classes\Controls\ClassTreeViewColumns.resx">
+      <DependentUpon>ClassTreeViewColumns.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Classes\Controls\ClassTextMinimap.resx">
       <DependentUpon>ClassTextMinimap.vb</DependentUpon>
     </EmbeddedResource>

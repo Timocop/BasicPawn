@@ -23,6 +23,8 @@ Public Class FormReportManager
     Private g_mFtpSecureStorage As ClassSecureStorage
     Private g_mSettingsSecureStorage As ClassSecureStorage
 
+    Private g_mClassTreeViewColumns As ClassTreeViewColumns
+
     Private g_mClassReports As ClassReports
     Private g_mClassLogs As ClassLogs
 
@@ -69,6 +71,16 @@ Public Class FormReportManager
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call. 
+        g_mClassTreeViewColumns = New ClassTreeViewColumns
+        g_mClassTreeViewColumns.m_TreeView.ImageList = ImageList_Logs
+        g_mClassTreeViewColumns.m_Columns.Add("File", 400)
+        g_mClassTreeViewColumns.m_Columns.Add("Size", 100)
+        g_mClassTreeViewColumns.m_Columns.Add("Date", 100)
+        g_mClassTreeViewColumns.Dock = DockStyle.Fill
+        g_mClassTreeViewColumns.Parent = TabPage_Logs
+
+        AddHandler g_mClassTreeViewColumns.m_TreeView.DoubleClick, AddressOf ClassTreeViewColumns_DoubleClick
+
         ImageList_Logs.Images.Clear()
         ImageList_Logs.Images.Add(CStr(ICON_FILE), My.Resources.imageres_5304_16x16_32)
         ImageList_Logs.Images.Add(CStr(ICON_WARN), My.Resources.user32_101_16x16_32)
@@ -128,23 +140,23 @@ Public Class FormReportManager
         Next
     End Sub
 
-    Private Sub ListView_Logs_DoubleClick(sender As Object, e As EventArgs) Handles ListView_Logs.DoubleClick
+    Private Sub ClassTreeViewColumns_DoubleClick(sender As Object, e As EventArgs)
         Try
-            If (ListView_Logs.SelectedItems.Count < 1) Then
+            If (g_mClassTreeViewColumns.m_TreeView.SelectedNode Is Nothing) Then
                 Return
             End If
 
-            Dim mListViewItem = TryCast(ListView_Logs.SelectedItems(0), ClassListViewItemData)
-            If (mListViewItem Is Nothing) Then
+            Dim mTreeNodeData = TryCast(g_mClassTreeViewColumns.m_TreeView.SelectedNode, ClassTreeNodeData)
+            If (mTreeNodeData Is Nothing) Then
                 Return
             End If
 
-            Dim sTitle As String = CStr(mListViewItem.g_mData("Title"))
-            Dim sRemoteFile As String = CStr(mListViewItem.g_mData("RemoteFile"))
-            Dim sLocalFile As String = CStr(mListViewItem.g_mData("LocalFile"))
-            Dim iDate As Date = New Date(CLng(mListViewItem.g_mData("DateTick")))
-            Dim iSize As Long = CLng(mListViewItem.g_mData("Size"))
-            Dim iErrorIndex As Integer = CInt(mListViewItem.g_mData("ErrorIndex"))
+            Dim sTitle As String = CStr(mTreeNodeData.g_mData("Title"))
+            Dim sRemoteFile As String = CStr(mTreeNodeData.g_mData("RemoteFile"))
+            Dim sLocalFile As String = CStr(mTreeNodeData.g_mData("LocalFile"))
+            Dim iDate As Date = New Date(CLng(mTreeNodeData.g_mData("DateTick")))
+            Dim iSize As Long = CLng(mTreeNodeData.g_mData("Size"))
+            Dim iErrorIndex As Integer = CInt(mTreeNodeData.g_mData("ErrorIndex"))
 
             Select Case (iErrorIndex)
                 Case ERROR_NOERROR
@@ -661,7 +673,7 @@ Public Class FormReportManager
                                                                                   If (mItem.iSize > iMaxFileBytes) Then
                                                                                       bFilesTooBig = True
 
-                                                                                      lReportItems.Add({mFtpItem.sHost.TrimEnd("/"c) & mItem.sFullName.TrimStart("/"c), mItem.sFullName, "", mItem.dModified.Ticks, mItem.iSize, ERROR_TOOBIG})
+                                                                                      lReportItems.Add({mItem.sName, mItem.sFullName, "", mItem.dModified.Ticks, mItem.iSize, ERROR_TOOBIG})
                                                                                       Continue For
                                                                                   End If
 
@@ -670,7 +682,7 @@ Public Class FormReportManager
                                                                                   g_mClassFTP.DownloadFile(mItem.sFullName, sTmpFile)
                                                                                   ApplyNewlineFix(sTmpFile)
 
-                                                                                  lReportItems.Add({mFtpItem.sHost.TrimEnd("/"c) & "/" & mItem.sFullName.TrimStart("/"c), mItem.sFullName, sTmpFile, mItem.dModified.Ticks, mItem.iSize, ERROR_NOERROR})
+                                                                                  lReportItems.Add({mItem.sName, mItem.sFullName, sTmpFile, mItem.dModified.Ticks, mItem.iSize, ERROR_NOERROR})
                                                                               Next
 
 
@@ -705,7 +717,7 @@ Public Class FormReportManager
                                                                                   If (mItem.Length > iMaxFileBytes) Then
                                                                                       bFilesTooBig = True
 
-                                                                                      lReportItems.Add({mFtpItem.sHost.TrimEnd("/"c) & mItem.FullName.TrimStart("/"c), mItem.FullName, "", mItem.Attributes.LastWriteTime.Ticks, mItem.Length, ERROR_TOOBIG})
+                                                                                      lReportItems.Add({mItem.Name, mItem.FullName, "", mItem.Attributes.LastWriteTime.Ticks, mItem.Length, ERROR_TOOBIG})
                                                                                       Continue For
                                                                                   End If
 
@@ -716,7 +728,7 @@ Public Class FormReportManager
                                                                                   End Using
                                                                                   ApplyNewlineFix(sTmpFile)
 
-                                                                                  lReportItems.Add({mFtpItem.sHost.TrimEnd("/"c) & "/" & mItem.FullName.TrimStart("/"c), mItem.FullName, sTmpFile, mItem.Attributes.LastWriteTime.Ticks, mItem.Length, ERROR_NOERROR})
+                                                                                  lReportItems.Add({mItem.Name, mItem.FullName, sTmpFile, mItem.Attributes.LastWriteTime.Ticks, mItem.Length, ERROR_NOERROR})
                                                                               Next
 
                                                                               If (bFilesTooBig) Then
@@ -740,8 +752,7 @@ Public Class FormReportManager
 
                                                               ClassThread.ExecAsync(g_mFormReportManager, Sub()
                                                                                                               g_mFormReportManager.TabPage_Logs.SuspendLayout()
-                                                                                                              g_mFormReportManager.ListView_Logs.BeginUpdate()
-                                                                                                              g_mFormReportManager.ListView_Logs.Items.Clear()
+                                                                                                              g_mFormReportManager.g_mClassTreeViewColumns.m_TreeView.BeginUpdate()
 
                                                                                                               For Each mItem In lReportItems
                                                                                                                   Dim sTitle As String = CStr(mItem(E_TITLE))
@@ -761,19 +772,39 @@ Public Class FormReportManager
 
                                                                                                                   End Select
 
-                                                                                                                  Dim mListViewItem As New ClassListViewItemData(New String() {sTitle, ClassTools.ClassStrings.FormatBytes(iSize), iDate.ToString}, CStr(iImageIndex))
-                                                                                                                  mListViewItem.g_mData("Title") = sTitle
-                                                                                                                  mListViewItem.g_mData("RemoteFile") = sRemoteFile
-                                                                                                                  mListViewItem.g_mData("LocalFile") = sLocalFile
-                                                                                                                  mListViewItem.g_mData("DateTick") = iDate.Ticks
-                                                                                                                  mListViewItem.g_mData("Size") = iSize
-                                                                                                                  mListViewItem.g_mData("ErrorIndex") = iErrorIndex
+                                                                                                                  Dim sRootNodeName As String = "Information"
 
-                                                                                                                  g_mFormReportManager.ListView_Logs.Items.Add(mListViewItem)
+                                                                                                                  If (Not String.IsNullOrEmpty(sRemoteFile)) Then
+                                                                                                                      sRootNodeName = IO.Path.GetDirectoryName(sRemoteFile)
+                                                                                                                  End If
+
+                                                                                                                  Dim mRootNodes As TreeNodeCollection = g_mFormReportManager.g_mClassTreeViewColumns.m_TreeView.Nodes
+                                                                                                                  Dim mFileNodes As TreeNodeCollection
+
+                                                                                                                  If (Not mRootNodes.ContainsKey(sRootNodeName)) Then
+                                                                                                                      mRootNodes.Add(New TreeNode(sRootNodeName) With {
+                                                                                                                        .Name = sRootNodeName
+                                                                                                                      })
+                                                                                                                  End If
+
+                                                                                                                  mFileNodes = mRootNodes(sRootNodeName).Nodes
+
+                                                                                                                  Dim mNode As New ClassTreeNodeData(sTitle, iImageIndex, iImageIndex) With {
+                                                                                                                      .Tag = New String() {ClassTools.ClassStrings.FormatBytes(iSize), iDate.ToString}
+                                                                                                                  }
+                                                                                                                  mNode.g_mData("Title") = sTitle
+                                                                                                                  mNode.g_mData("RemoteFile") = sRemoteFile
+                                                                                                                  mNode.g_mData("LocalFile") = sLocalFile
+                                                                                                                  mNode.g_mData("DateTick") = iDate.Ticks
+                                                                                                                  mNode.g_mData("Size") = iSize
+                                                                                                                  mNode.g_mData("ErrorIndex") = iErrorIndex
+
+                                                                                                                  mFileNodes.Add(mNode)
                                                                                                               Next
 
-                                                                                                              ClassTools.ClassControls.ClassListView.AutoResizeColumns(g_mFormReportManager.ListView_Logs)
-                                                                                                              g_mFormReportManager.ListView_Logs.EndUpdate()
+                                                                                                              g_mFormReportManager.g_mClassTreeViewColumns.m_TreeView.Sort()
+                                                                                                              g_mFormReportManager.g_mClassTreeViewColumns.m_TreeView.ExpandAll()
+                                                                                                              g_mFormReportManager.g_mClassTreeViewColumns.m_TreeView.EndUpdate()
                                                                                                               g_mFormReportManager.TabPage_Logs.ResumeLayout()
                                                                                                           End Sub)
 
@@ -863,6 +894,15 @@ Public Class FormReportManager
     End Sub
 
     Private Sub CleanUp()
+        If (g_mClassTreeViewColumns IsNot Nothing) Then
+            RemoveHandler g_mClassTreeViewColumns.m_TreeView.DoubleClick, AddressOf ClassTreeViewColumns_DoubleClick
+        End If
+
+        If (g_mClassTreeViewColumns IsNot Nothing AndAlso Not g_mClassTreeViewColumns.IsDisposed) Then
+            g_mClassTreeViewColumns.Dispose()
+            g_mClassTreeViewColumns = Nothing
+        End If
+
         If (g_mClassReports IsNot Nothing) Then
             g_mClassReports.Dispose()
             g_mClassReports = Nothing
