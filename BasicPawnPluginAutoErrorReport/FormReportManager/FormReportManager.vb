@@ -792,17 +792,25 @@ Public Class FormReportManager
 
                                                                                                                   mFileNodes = mRootNodes(sRootNodeName).Nodes
 
-                                                                                                                  Dim mNode As New ClassTreeNodeData(sTitle, iImageIndex, iImageIndex) With {
-                                                                                                                      .Tag = New String() {ClassTools.ClassStrings.FormatBytes(iSize), iDate.ToString}
-                                                                                                                  }
-                                                                                                                  mNode.g_mData("Title") = sTitle
-                                                                                                                  mNode.g_mData("RemoteFile") = sRemoteFile
-                                                                                                                  mNode.g_mData("LocalFile") = sLocalFile
-                                                                                                                  mNode.g_mData("DateTick") = iDate.Ticks
-                                                                                                                  mNode.g_mData("Size") = iSize
-                                                                                                                  mNode.g_mData("ErrorIndex") = iErrorIndex
+                                                                                                                  If (Not String.IsNullOrEmpty(sRemoteFile)) Then
+                                                                                                                      Dim mNode As New ClassTreeNodeData(sTitle, iImageIndex, iImageIndex) With {
+                                                                                                                          .Tag = New String() {ClassTools.ClassStrings.FormatBytes(iSize), iDate.ToString}
+                                                                                                                      }
 
-                                                                                                                  mFileNodes.Add(mNode)
+                                                                                                                      mNode.g_mData("Title") = sTitle
+                                                                                                                      mNode.g_mData("RemoteFile") = sRemoteFile
+                                                                                                                      mNode.g_mData("LocalFile") = sLocalFile
+                                                                                                                      mNode.g_mData("DateTick") = iDate.Ticks
+                                                                                                                      mNode.g_mData("Size") = iSize
+                                                                                                                      mNode.g_mData("ErrorIndex") = iErrorIndex
+
+                                                                                                                      mFileNodes.Add(mNode)
+                                                                                                                  Else
+                                                                                                                      Dim mNode As New TreeNode(sTitle, iImageIndex, iImageIndex)
+                                                                                                                      mFileNodes.Add(mNode)
+                                                                                                                  End If
+
+
                                                                                                               Next
 
                                                                                                               g_mFormReportManager.g_mClassTreeViewColumns.m_TreeView.Sort()
