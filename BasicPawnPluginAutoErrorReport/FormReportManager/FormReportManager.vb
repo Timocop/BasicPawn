@@ -775,42 +775,55 @@ Public Class FormReportManager
 
                                                                                                                   End Select
 
-                                                                                                                  Dim sRootNodeName As String = "Information"
+                                                                                                                  Select Case (iErrorIndex)
+                                                                                                                      Case ERROR_MSGONLY
+                                                                                                                          Dim sRootNodeName As String = "Information"
 
-                                                                                                                  If (Not String.IsNullOrEmpty(sRemoteFile)) Then
-                                                                                                                      sRootNodeName = IO.Path.GetDirectoryName(sRemoteFile)
-                                                                                                                  End If
+                                                                                                                          Dim mRootNodes As TreeNodeCollection = g_mFormReportManager.g_mClassTreeViewColumns.m_TreeView.Nodes
+                                                                                                                          Dim mFileNodes As TreeNodeCollection
 
-                                                                                                                  Dim mRootNodes As TreeNodeCollection = g_mFormReportManager.g_mClassTreeViewColumns.m_TreeView.Nodes
-                                                                                                                  Dim mFileNodes As TreeNodeCollection
+                                                                                                                          If (Not mRootNodes.ContainsKey(sRootNodeName)) Then
+                                                                                                                              mRootNodes.Add(New TreeNode(sRootNodeName, ICON_ARROW, ICON_ARROW) With {
+                                                                                                                                .Name = sRootNodeName
+                                                                                                                              })
+                                                                                                                          End If
 
-                                                                                                                  If (Not mRootNodes.ContainsKey(sRootNodeName)) Then
-                                                                                                                      mRootNodes.Add(New TreeNode(sRootNodeName, ICON_ARROW, ICON_ARROW) With {
-                                                                                                                        .Name = sRootNodeName
-                                                                                                                      })
-                                                                                                                  End If
+                                                                                                                          mFileNodes = mRootNodes(sRootNodeName).Nodes
 
-                                                                                                                  mFileNodes = mRootNodes(sRootNodeName).Nodes
+                                                                                                                          mFileNodes.Add(New TreeNode(sTitle, iImageIndex, iImageIndex))
+                                                                                                                      Case Else
 
-                                                                                                                  If (Not String.IsNullOrEmpty(sRemoteFile)) Then
-                                                                                                                      Dim mNode As New ClassTreeNodeData(sTitle, iImageIndex, iImageIndex) With {
-                                                                                                                          .Tag = New String() {ClassTools.ClassStrings.FormatBytes(iSize), iDate.ToString}
-                                                                                                                      }
+                                                                                                                          'Check if the remote path is present, we need that
+                                                                                                                          If (String.IsNullOrEmpty(sRemoteFile)) Then
+                                                                                                                              Continue For
+                                                                                                                          End If
 
-                                                                                                                      mNode.g_mData("Title") = sTitle
-                                                                                                                      mNode.g_mData("RemoteFile") = sRemoteFile
-                                                                                                                      mNode.g_mData("LocalFile") = sLocalFile
-                                                                                                                      mNode.g_mData("DateTick") = iDate.Ticks
-                                                                                                                      mNode.g_mData("Size") = iSize
-                                                                                                                      mNode.g_mData("ErrorIndex") = iErrorIndex
+                                                                                                                          Dim sRootNodeName As String = IO.Path.GetDirectoryName(sRemoteFile)
 
-                                                                                                                      mFileNodes.Add(mNode)
-                                                                                                                  Else
-                                                                                                                      Dim mNode As New TreeNode(sTitle, iImageIndex, iImageIndex)
-                                                                                                                      mFileNodes.Add(mNode)
-                                                                                                                  End If
+                                                                                                                          Dim mRootNodes As TreeNodeCollection = g_mFormReportManager.g_mClassTreeViewColumns.m_TreeView.Nodes
+                                                                                                                          Dim mFileNodes As TreeNodeCollection
 
+                                                                                                                          If (Not mRootNodes.ContainsKey(sRootNodeName)) Then
+                                                                                                                              mRootNodes.Add(New TreeNode(sRootNodeName, ICON_ARROW, ICON_ARROW) With {
+                                                                                                                            .Name = sRootNodeName
+                                                                                                                          })
+                                                                                                                          End If
 
+                                                                                                                          mFileNodes = mRootNodes(sRootNodeName).Nodes
+
+                                                                                                                          Dim mNode As New ClassTreeNodeData(sTitle, iImageIndex, iImageIndex) With {
+                                                                                                                              .Tag = New String() {ClassTools.ClassStrings.FormatBytes(iSize), iDate.ToString}
+                                                                                                                          }
+
+                                                                                                                          mNode.g_mData("Title") = sTitle
+                                                                                                                          mNode.g_mData("RemoteFile") = sRemoteFile
+                                                                                                                          mNode.g_mData("LocalFile") = sLocalFile
+                                                                                                                          mNode.g_mData("DateTick") = iDate.Ticks
+                                                                                                                          mNode.g_mData("Size") = iSize
+                                                                                                                          mNode.g_mData("ErrorIndex") = iErrorIndex
+
+                                                                                                                          mFileNodes.Add(mNode)
+                                                                                                                  End Select
                                                                                                               Next
 
                                                                                                               g_mFormReportManager.g_mClassTreeViewColumns.m_TreeView.Sort()
