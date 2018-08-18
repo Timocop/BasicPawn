@@ -42,7 +42,7 @@ Features:
  - [more...](Custom%20Syntax%20Styles)
 
 ## Support us
-### [Donate](https://www.paypal.me/Extn)
+### [![Donate](https://i.imgur.com/jnnHW0C.jpg)](https://www.paypal.me/Extn)
 
 ## Screenshots
 ![Default Colors](https://i.imgur.com/3s0yB2x.png)
