@@ -41,6 +41,9 @@ Features:
  - [Visual Studio 2017 Dark](Custom%20Syntax%20Styles/VisualStudio2017_Dark.xml)
  - [more...](Custom%20Syntax%20Styles)
 
+## Support us
+![](https://i.imgur.com/jnnHW0C.jpg)
+
 ## Screenshots
 ![Default Colors](https://i.imgur.com/3s0yB2x.png)
 ![Inverted Colors](https://i.imgur.com/YRDLsjD.png)
