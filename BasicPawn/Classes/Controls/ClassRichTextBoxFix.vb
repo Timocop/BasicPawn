@@ -62,7 +62,7 @@ Public Class ClassRichTextBoxFix
             Case WM_MOUSEWHEEL, WM_VSCROLL, WM_HSCROLL
                 MyBase.WndProc(m)
 
-                If ((Control.ModifierKeys And Keys.Control) = Keys.Control) Then
+                If ((Control.ModifierKeys And Keys.Control) <> 0) Then
                     ClassWin32.SendMessage(Me.Handle, EM_SETZOOM, IntPtr.Zero, IntPtr.Zero)
                 End If
 

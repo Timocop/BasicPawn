@@ -238,28 +238,28 @@ Public Class ClassSyntaxTools
         Public Function GetTypeNames() As String()
             Dim lNames As New List(Of String)
 
-            If ((g_iType And ENUM_TYPE_FLAGS.DEBUG) = ENUM_TYPE_FLAGS.DEBUG) Then lNames.Add("debug")
-            If ((g_iType And ENUM_TYPE_FLAGS.DEFINE) = ENUM_TYPE_FLAGS.DEFINE) Then lNames.Add("define")
-            If ((g_iType And ENUM_TYPE_FLAGS.ENUM) = ENUM_TYPE_FLAGS.ENUM) Then lNames.Add("enum")
-            If ((g_iType And ENUM_TYPE_FLAGS.STRUCT) = ENUM_TYPE_FLAGS.STRUCT) Then lNames.Add("struct")
-            If ((g_iType And ENUM_TYPE_FLAGS.METHODMAP) = ENUM_TYPE_FLAGS.METHODMAP) Then lNames.Add("methodmap")
-            If ((g_iType And ENUM_TYPE_FLAGS.FUNCENUM) = ENUM_TYPE_FLAGS.FUNCENUM) Then lNames.Add("funcenum")
-            If ((g_iType And ENUM_TYPE_FLAGS.FUNCTAG) = ENUM_TYPE_FLAGS.FUNCTAG) Then lNames.Add("functag")
-            If ((g_iType And ENUM_TYPE_FLAGS.TYPESET) = ENUM_TYPE_FLAGS.TYPESET) Then lNames.Add("typeset")
-            If ((g_iType And ENUM_TYPE_FLAGS.TYPEDEF) = ENUM_TYPE_FLAGS.TYPEDEF) Then lNames.Add("typedef")
-            If ((g_iType And ENUM_TYPE_FLAGS.STOCK) = ENUM_TYPE_FLAGS.STOCK) Then lNames.Add("stock")
-            If ((g_iType And ENUM_TYPE_FLAGS.STATIC) = ENUM_TYPE_FLAGS.STATIC) Then lNames.Add("static")
-            If ((g_iType And ENUM_TYPE_FLAGS.CONST) = ENUM_TYPE_FLAGS.CONST) Then lNames.Add("const")
-            If ((g_iType And ENUM_TYPE_FLAGS.PUBLIC) = ENUM_TYPE_FLAGS.PUBLIC) Then lNames.Add("public")
-            If ((g_iType And ENUM_TYPE_FLAGS.NATIVE) = ENUM_TYPE_FLAGS.NATIVE) Then lNames.Add("native")
-            If ((g_iType And ENUM_TYPE_FLAGS.FORWARD) = ENUM_TYPE_FLAGS.FORWARD) Then lNames.Add("forward")
-            If ((g_iType And ENUM_TYPE_FLAGS.METHOD) = ENUM_TYPE_FLAGS.METHOD) Then lNames.Add("method")
-            If ((g_iType And ENUM_TYPE_FLAGS.PROPERTY) = ENUM_TYPE_FLAGS.PROPERTY) Then lNames.Add("property")
-            If ((g_iType And ENUM_TYPE_FLAGS.VARIABLE) = ENUM_TYPE_FLAGS.VARIABLE) Then lNames.Add("variable")
-            If ((g_iType And ENUM_TYPE_FLAGS.PUBLICVAR) = ENUM_TYPE_FLAGS.PUBLICVAR) Then lNames.Add("publicvar")
-            If ((g_iType And ENUM_TYPE_FLAGS.FUNCTION) = ENUM_TYPE_FLAGS.FUNCTION) Then lNames.Add("function")
-            If ((g_iType And ENUM_TYPE_FLAGS.PREPROCESSOR) = ENUM_TYPE_FLAGS.PREPROCESSOR) Then lNames.Add("preprocessor")
-            If ((g_iType And ENUM_TYPE_FLAGS.OPERATOR) = ENUM_TYPE_FLAGS.OPERATOR) Then lNames.Add("operator")
+            If ((g_iType And ENUM_TYPE_FLAGS.DEBUG) <> 0) Then lNames.Add("debug")
+            If ((g_iType And ENUM_TYPE_FLAGS.DEFINE) <> 0) Then lNames.Add("define")
+            If ((g_iType And ENUM_TYPE_FLAGS.ENUM) <> 0) Then lNames.Add("enum")
+            If ((g_iType And ENUM_TYPE_FLAGS.STRUCT) <> 0) Then lNames.Add("struct")
+            If ((g_iType And ENUM_TYPE_FLAGS.METHODMAP) <> 0) Then lNames.Add("methodmap")
+            If ((g_iType And ENUM_TYPE_FLAGS.FUNCENUM) <> 0) Then lNames.Add("funcenum")
+            If ((g_iType And ENUM_TYPE_FLAGS.FUNCTAG) <> 0) Then lNames.Add("functag")
+            If ((g_iType And ENUM_TYPE_FLAGS.TYPESET) <> 0) Then lNames.Add("typeset")
+            If ((g_iType And ENUM_TYPE_FLAGS.TYPEDEF) <> 0) Then lNames.Add("typedef")
+            If ((g_iType And ENUM_TYPE_FLAGS.STOCK) <> 0) Then lNames.Add("stock")
+            If ((g_iType And ENUM_TYPE_FLAGS.STATIC) <> 0) Then lNames.Add("static")
+            If ((g_iType And ENUM_TYPE_FLAGS.CONST) <> 0) Then lNames.Add("const")
+            If ((g_iType And ENUM_TYPE_FLAGS.PUBLIC) <> 0) Then lNames.Add("public")
+            If ((g_iType And ENUM_TYPE_FLAGS.NATIVE) <> 0) Then lNames.Add("native")
+            If ((g_iType And ENUM_TYPE_FLAGS.FORWARD) <> 0) Then lNames.Add("forward")
+            If ((g_iType And ENUM_TYPE_FLAGS.METHOD) <> 0) Then lNames.Add("method")
+            If ((g_iType And ENUM_TYPE_FLAGS.PROPERTY) <> 0) Then lNames.Add("property")
+            If ((g_iType And ENUM_TYPE_FLAGS.VARIABLE) <> 0) Then lNames.Add("variable")
+            If ((g_iType And ENUM_TYPE_FLAGS.PUBLICVAR) <> 0) Then lNames.Add("publicvar")
+            If ((g_iType And ENUM_TYPE_FLAGS.FUNCTION) <> 0) Then lNames.Add("function")
+            If ((g_iType And ENUM_TYPE_FLAGS.PREPROCESSOR) <> 0) Then lNames.Add("preprocessor")
+            If ((g_iType And ENUM_TYPE_FLAGS.OPERATOR) <> 0) Then lNames.Add("operator")
 
             Return lNames.ToArray
         End Function
@@ -1232,8 +1232,8 @@ Public Class ClassSyntaxTools
 
                                                         For Each mAutocomplete In mActiveAutocomplete
                                                             Select Case (True)
-                                                                Case (mAutocomplete.m_Type And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEFINE) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEFINE,
-                                                                        (mAutocomplete.m_Type And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PUBLICVAR) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PUBLICVAR
+                                                                Case (mAutocomplete.m_Type And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEFINE) <> 0,
+                                                                        (mAutocomplete.m_Type And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PUBLICVAR) <> 0
                                                                     mXmlBuilder.Append(String.Format("<Key word=""{0}""/>", mAutocomplete.m_FunctionString))
 
                                                             End Select
@@ -1250,7 +1250,7 @@ Public Class ClassSyntaxTools
 
                                                         For Each mAutocomplete In mActiveAutocomplete
                                                             Select Case (True)
-                                                                Case (mAutocomplete.m_Type And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM
+                                                                Case (mAutocomplete.m_Type And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM) <> 0
                                                                     Dim sEnumName As String() = mAutocomplete.m_FunctionString.Split("."c)
                                                                     Select Case (sEnumName.Length)
                                                                         Case 2
@@ -1261,7 +1261,7 @@ Public Class ClassSyntaxTools
                                                                             mXmlBuilder.Append(String.Format("<Key word=""{0}""/>", sEnumName(1)))
                                                                     End Select
 
-                                                                Case (mAutocomplete.m_Type And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP
+                                                                Case (mAutocomplete.m_Type And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) <> 0
                                                                     If (Not lExistList.Contains(mAutocomplete.m_FunctionString)) Then
                                                                         lExistList.Add(mAutocomplete.m_FunctionString)
                                                                     End If
@@ -1279,12 +1279,12 @@ Public Class ClassSyntaxTools
 
                                                         For Each mAutocomplete In mActiveAutocomplete
                                                             Select Case (True)
-                                                                Case (mAutocomplete.m_Type And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STRUCT) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STRUCT
+                                                                Case (mAutocomplete.m_Type And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STRUCT) <> 0
                                                                     If (Not lExistList.Contains(mAutocomplete.m_FunctionString)) Then
                                                                         lExistList.Add(mAutocomplete.m_FunctionString)
                                                                     End If
 
-                                                                Case (mAutocomplete.m_Type And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM
+                                                                Case (mAutocomplete.m_Type And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM) <> 0
                                                                     Dim sEnumName As String() = mAutocomplete.m_FunctionString.Split("."c)
                                                                     Select Case (sEnumName.Length)
                                                                         Case 1, 2
@@ -1293,7 +1293,7 @@ Public Class ClassSyntaxTools
                                                                             End If
                                                                     End Select
 
-                                                                Case (mAutocomplete.m_Type And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) = STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP
+                                                                Case (mAutocomplete.m_Type And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) <> 0
                                                                     If (Not lExistList.Contains(mAutocomplete.m_FunctionString)) Then
                                                                         lExistList.Add(mAutocomplete.m_FunctionString)
                                                                     End If

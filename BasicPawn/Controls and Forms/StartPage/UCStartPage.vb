@@ -442,12 +442,12 @@ Public Class UCStartPage
                 Select Case (True)
                     Case ((Now - New TimeSpan(1, 0, 0, 0)) < mDate)
                         If (bProjectFile) Then
-                            If (Not CBool(iLabelFlags And iLabelFlags_ProjectsToday)) Then
+                            If ((iLabelFlags And iLabelFlags_ProjectsToday) = 0) Then
                                 iLabelFlags = (iLabelFlags Or iLabelFlags_ProjectsToday)
                                 CreateLastModifiedLabel("Today", g_mUCStartPage.TabPage_RecentProjects)
                             End If
                         Else
-                            If (Not CBool(iLabelFlags And iLabelFlags_FilesToday)) Then
+                            If ((iLabelFlags And iLabelFlags_FilesToday) = 0) Then
                                 iLabelFlags = (iLabelFlags Or iLabelFlags_FilesToday)
                                 CreateLastModifiedLabel("Today", g_mUCStartPage.TabPage_RecentFiles)
                             End If
@@ -455,12 +455,12 @@ Public Class UCStartPage
 
                     Case ((Now - New TimeSpan(2, 0, 0, 0)) < mDate)
                         If (bProjectFile) Then
-                            If (Not CBool(iLabelFlags And iLabelFlags_ProjectsYesterday)) Then
+                            If ((iLabelFlags And iLabelFlags_ProjectsYesterday) = 0) Then
                                 iLabelFlags = (iLabelFlags Or iLabelFlags_ProjectsYesterday)
                                 CreateLastModifiedLabel("Yesterday", g_mUCStartPage.TabPage_RecentProjects)
                             End If
                         Else
-                            If (Not CBool(iLabelFlags And iLabelFlags_FilesYesterday)) Then
+                            If ((iLabelFlags And iLabelFlags_FilesYesterday) = 0) Then
                                 iLabelFlags = (iLabelFlags Or iLabelFlags_FilesYesterday)
                                 CreateLastModifiedLabel("Yesterday", g_mUCStartPage.TabPage_RecentFiles)
                             End If
@@ -468,12 +468,12 @@ Public Class UCStartPage
 
                     Case ((Now - New TimeSpan(7, 0, 0, 0)) < mDate)
                         If (bProjectFile) Then
-                            If (Not CBool(iLabelFlags And iLabelFlags_ProjectsWeek)) Then
+                            If ((iLabelFlags And iLabelFlags_ProjectsWeek) = 0) Then
                                 iLabelFlags = (iLabelFlags Or iLabelFlags_ProjectsWeek)
                                 CreateLastModifiedLabel("This Week", g_mUCStartPage.TabPage_RecentProjects)
                             End If
                         Else
-                            If (Not CBool(iLabelFlags And iLabelFlags_FilesWeek)) Then
+                            If ((iLabelFlags And iLabelFlags_FilesWeek) = 0) Then
                                 iLabelFlags = (iLabelFlags Or iLabelFlags_FilesWeek)
                                 CreateLastModifiedLabel("This Week", g_mUCStartPage.TabPage_RecentFiles)
                             End If
@@ -481,12 +481,12 @@ Public Class UCStartPage
 
                     Case ((Now - New TimeSpan(31, 0, 0, 0)) < mDate)
                         If (bProjectFile) Then
-                            If (Not CBool(iLabelFlags And iLabelFlags_ProjectsMonth)) Then
+                            If ((iLabelFlags And iLabelFlags_ProjectsMonth) = 0) Then
                                 iLabelFlags = (iLabelFlags Or iLabelFlags_ProjectsMonth)
                                 CreateLastModifiedLabel("This Month", g_mUCStartPage.TabPage_RecentProjects)
                             End If
                         Else
-                            If (Not CBool(iLabelFlags And iLabelFlags_FilesMonth)) Then
+                            If ((iLabelFlags And iLabelFlags_FilesMonth) = 0) Then
                                 iLabelFlags = (iLabelFlags Or iLabelFlags_FilesMonth)
                                 CreateLastModifiedLabel("This Month", g_mUCStartPage.TabPage_RecentFiles)
                             End If
@@ -494,12 +494,12 @@ Public Class UCStartPage
 
                     Case Else
                         If (bProjectFile) Then
-                            If (Not CBool(iLabelFlags And iLabelFlags_ProjectsOther)) Then
+                            If ((iLabelFlags And iLabelFlags_ProjectsOther) = 0) Then
                                 iLabelFlags = (iLabelFlags Or iLabelFlags_ProjectsOther)
                                 CreateLastModifiedLabel("Last Time", g_mUCStartPage.TabPage_RecentProjects)
                             End If
                         Else
-                            If (Not CBool(iLabelFlags And iLabelFlags_FilesOther)) Then
+                            If ((iLabelFlags And iLabelFlags_FilesOther) = 0) Then
                                 iLabelFlags = (iLabelFlags Or iLabelFlags_FilesOther)
                                 CreateLastModifiedLabel("Last Time", g_mUCStartPage.TabPage_RecentFiles)
                             End If

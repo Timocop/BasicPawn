@@ -73,13 +73,13 @@ Public Class FormReportDetails
                 Dim dFileDate As Date = New IO.FileInfo(mException.mStackTraces(i).sFileName).LastWriteTime
 
                 If (dFileDate > mException.dLogDate) Then
-                    If ((iWarningFlag And FLAG_FILEDATE) <> FLAG_FILEDATE) Then
+                    If ((iWarningFlag And FLAG_FILEDATE) = 0) Then
                         iWarningFlag = iWarningFlag Or FLAG_FILEDATE
                         m_WarningText &= If(m_WarningText.Length > 0, Environment.NewLine, "") & "Some source files are newer. Stack traces might be inaccurate."
                     End If
                 End If
             Else
-                If ((iWarningFlag And FLAG_FILEMISSING) <> FLAG_FILEMISSING) Then
+                If ((iWarningFlag And FLAG_FILEMISSING) = 0) Then
                     iWarningFlag = iWarningFlag Or FLAG_FILEMISSING
                     m_WarningText &= If(m_WarningText.Length > 0, Environment.NewLine, "") & "Unable to find some source files."
                 End If
