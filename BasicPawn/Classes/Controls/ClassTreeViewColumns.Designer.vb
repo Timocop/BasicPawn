@@ -23,7 +23,7 @@ Partial Class ClassTreeViewColumns
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.ListView1 = New System.Windows.Forms.ListView()
-        Me.TreeView1 = New System.Windows.Forms.TreeView()
+        Me.TreeView1 = New ClassTreeViewBuffered()
         Me.SuspendLayout()
         '
         'ListView1
@@ -64,5 +64,5 @@ Partial Class ClassTreeViewColumns
     End Sub
 
     Friend WithEvents ListView1 As ListView
-    Friend WithEvents TreeView1 As TreeView
+    Friend WithEvents TreeView1 As ClassTreeViewBuffered
 End Class

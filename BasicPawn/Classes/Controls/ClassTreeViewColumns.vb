@@ -16,16 +16,6 @@
 
 
 Public Class ClassTreeViewColumns
-    Public Sub New()
-        ' This call is required by the designer.
-        InitializeComponent()
-
-        ' Add any initialization after the InitializeComponent() call.
-
-        ClassTools.ClassForms.SetDoubleBufferingAllChilds(Me, True)
-        ClassTools.ClassForms.SetDoubleBufferingUnmanagedAllChilds(Me, True)
-    End Sub
-
     Public ReadOnly Property m_TreeView() As TreeView
         Get
             Return TreeView1
