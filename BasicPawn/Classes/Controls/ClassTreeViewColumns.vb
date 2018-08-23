@@ -66,7 +66,7 @@ Public Class ClassTreeViewColumns
             If ((e.State And TreeNodeStates.Focused) <> 0) Then
                 e.Graphics.FillRectangle(SystemBrushes.Highlight, mRect)
             Else
-                e.Graphics.FillRectangle(New SolidBrush(TreeView1.BackColor), mRect)
+                e.Graphics.FillRectangle(SystemBrushes.Control, mRect)
             End If
         Else
             e.Graphics.FillRectangle(New SolidBrush(TreeView1.BackColor), mRect)
