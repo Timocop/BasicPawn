@@ -3429,14 +3429,14 @@ Public Class ClassAutocompleteUpdater
                             Continue While
                         End If
 
-                        Dim mMatch As Match = Regex.Match(sLine, "^\s*#(include|tryinclude)\s+(\<(?<PathInc>.*?)\>|""(?<PathFull>.*?)"")\s*$")
+                        Dim mMatch As Match = Regex.Match(sLine, "^\s*#(include|tryinclude)\s+(\<(?<PathInc>.*?)\>|""(?<PathFull>.*?)""|(?<PathFull>.+?))\s*$")
                         If (Not mMatch.Success) Then
                             Continue While
                         End If
 
                         Select Case (True)
                             Case mMatch.Groups("PathInc").Success
-                                sMatchValue = mMatch.Groups("PathInc").Value.Replace("/"c, "\"c)
+                                sMatchValue = mMatch.Groups("PathInc").Value.Trim.Replace("/"c, "\"c)
 
                                 Select Case (True)
                                     Case IO.File.Exists(IO.Path.Combine(sInclude, sMatchValue))
@@ -3474,7 +3474,7 @@ Public Class ClassAutocompleteUpdater
                                 End Select
 
                             Case mMatch.Groups("PathFull").Success
-                                sMatchValue = mMatch.Groups("PathFull").Value.Replace("/"c, "\"c)
+                                sMatchValue = mMatch.Groups("PathFull").Value.Trim.Replace("/"c, "\"c)
 
                                 Select Case (True)
                                     Case sMatchValue.Length > 1 AndAlso sMatchValue(1) = ":"c AndAlso IO.File.Exists(sMatchValue)
