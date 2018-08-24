@@ -770,65 +770,7 @@ Public Class FormMain
 
     Private Sub ToolStripMenuItem_ToolsFormatCodeIndent_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsFormatCodeIndent.Click
         Try
-            If (Not g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.HasSomethingSelected) Then
-                MessageBox.Show("Nothing selected to format!", "Unable to format", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                Return
-            End If
-
-            Dim lRealSourceLines As New List(Of String)
-            Using mSR As New IO.StringReader(g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent)
-                Dim sLine As String
-                While True
-                    sLine = mSR.ReadLine
-                    If (sLine Is Nothing) Then
-                        Exit While
-                    End If
-
-                    lRealSourceLines.Add(sLine)
-                End While
-            End Using
-
-            Dim sFormatedSource As String = g_ClassSyntaxTools.FormatCodeIndentation(g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent, ClassSettings.ENUM_INDENTATION_TYPES.USE_SETTINGS, g_ClassTabControl.m_ActiveTab.m_Language)
-            Dim lFormatedSourceLines As New List(Of String)
-            Using mSR As New IO.StringReader(sFormatedSource)
-                Dim sLine As String
-                While True
-                    sLine = mSR.ReadLine
-                    If (sLine Is Nothing) Then
-                        Exit While
-                    End If
-
-                    lFormatedSourceLines.Add(sLine)
-                End While
-            End Using
-
-            If (lRealSourceLines.Count <> lFormatedSourceLines.Count) Then
-                Throw New ArgumentException("Formated number of lines are not equal with document number of lines")
-            End If
-
-            Try
-                g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.UndoStack.StartUndoGroup()
-
-                For i = lFormatedSourceLines.Count - 1 To 0 Step -1
-                    Dim mLineSeg = g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.GetLineSegment(i)
-                    Dim sLine As String = g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.GetText(mLineSeg.Offset, mLineSeg.Length)
-
-                    If (Not g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.IsSelected(mLineSeg.Offset) AndAlso
-                            Not g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.IsSelected(mLineSeg.Offset + mLineSeg.Length)) Then
-                        Continue For
-                    End If
-
-                    If (sLine = lFormatedSourceLines(i)) Then
-                        Continue For
-                    End If
-
-                    g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.Remove(mLineSeg.Offset, mLineSeg.Length)
-                    g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.Insert(mLineSeg.Offset, lFormatedSourceLines(i))
-                Next
-            Finally
-                g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.UndoStack.EndUndoGroup()
-                g_ClassTabControl.m_ActiveTab.m_TextEditor.Refresh()
-            End Try
+            g_ClassTextEditorTools.FormatCode()
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
@@ -836,65 +778,7 @@ Public Class FormMain
 
     Private Sub ToolStripMenuItem_ToolsFormatCodeTrim_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsFormatCodeTrim.Click
         Try
-            If (Not g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.HasSomethingSelected) Then
-                MessageBox.Show("Nothing selected to format!", "Unable to format", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                Return
-            End If
-
-            Dim lRealSourceLines As New List(Of String)
-            Using mSR As New IO.StringReader(g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent)
-                Dim sLine As String
-                While True
-                    sLine = mSR.ReadLine
-                    If (sLine Is Nothing) Then
-                        Exit While
-                    End If
-
-                    lRealSourceLines.Add(sLine)
-                End While
-            End Using
-
-            Dim sFormatedSource As String = g_ClassSyntaxTools.FormatCodeTrimEnd(g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent)
-            Dim lFormatedSourceLines As New List(Of String)
-            Using mSR As New IO.StringReader(sFormatedSource)
-                Dim sLine As String
-                While True
-                    sLine = mSR.ReadLine
-                    If (sLine Is Nothing) Then
-                        Exit While
-                    End If
-
-                    lFormatedSourceLines.Add(sLine)
-                End While
-            End Using
-
-            If (lRealSourceLines.Count <> lFormatedSourceLines.Count) Then
-                Throw New ArgumentException("Formated number of lines are not equal with document number of lines")
-            End If
-
-            Try
-                g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.UndoStack.StartUndoGroup()
-
-                For i = lFormatedSourceLines.Count - 1 To 0 Step -1
-                    Dim mLineSeg = g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.GetLineSegment(i)
-                    Dim sLine As String = g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.GetText(mLineSeg.Offset, mLineSeg.Length)
-
-                    If (Not g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.IsSelected(mLineSeg.Offset) AndAlso
-                            Not g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.IsSelected(mLineSeg.Offset + mLineSeg.Length)) Then
-                        Continue For
-                    End If
-
-                    If (sLine = lFormatedSourceLines(i)) Then
-                        Continue For
-                    End If
-
-                    g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.Remove(mLineSeg.Offset, mLineSeg.Length)
-                    g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.Insert(mLineSeg.Offset, lFormatedSourceLines(i))
-                Next
-            Finally
-                g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.UndoStack.EndUndoGroup()
-                g_ClassTabControl.m_ActiveTab.m_TextEditor.Refresh()
-            End Try
+            g_ClassTextEditorTools.FormatCodeTrim()
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try

@@ -166,6 +166,8 @@ Partial Class FormMain
         Me.ContextMenuStrip_Config = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.ToolStripMenuItem_EditConfigActiveTab = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_EditConfigAllTabs = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_ToolsFormatCodeIndentAll = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_ToolsFormatCodeTrimAll = New System.Windows.Forms.ToolStripMenuItem()
         Me.ContextMenuStrip_RightClick.SuspendLayout()
         Me.MenuStrip_BasicPawn.SuspendLayout()
         Me.SplitContainer_ToolboxSourceAndDetails.Panel1.SuspendLayout()
@@ -592,14 +594,18 @@ Partial Class FormMain
         '
         'ToolStripMenuItem_ToolsFormatCodeIndent
         '
+        Me.ToolStripMenuItem_ToolsFormatCodeIndent.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_ToolsFormatCodeIndentAll})
         Me.ToolStripMenuItem_ToolsFormatCodeIndent.Name = "ToolStripMenuItem_ToolsFormatCodeIndent"
-        Me.ToolStripMenuItem_ToolsFormatCodeIndent.Size = New System.Drawing.Size(200, 22)
+        Me.ToolStripMenuItem_ToolsFormatCodeIndent.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.R), System.Windows.Forms.Keys)
+        Me.ToolStripMenuItem_ToolsFormatCodeIndent.Size = New System.Drawing.Size(241, 22)
         Me.ToolStripMenuItem_ToolsFormatCodeIndent.Text = "Reindent Code"
         '
         'ToolStripMenuItem_ToolsFormatCodeTrim
         '
+        Me.ToolStripMenuItem_ToolsFormatCodeTrim.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_ToolsFormatCodeTrimAll})
         Me.ToolStripMenuItem_ToolsFormatCodeTrim.Name = "ToolStripMenuItem_ToolsFormatCodeTrim"
-        Me.ToolStripMenuItem_ToolsFormatCodeTrim.Size = New System.Drawing.Size(200, 22)
+        Me.ToolStripMenuItem_ToolsFormatCodeTrim.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.T), System.Windows.Forms.Keys)
+        Me.ToolStripMenuItem_ToolsFormatCodeTrim.Size = New System.Drawing.Size(241, 22)
         Me.ToolStripMenuItem_ToolsFormatCodeTrim.Text = "Trim ending whitespace"
         '
         'ToolStripMenuItem_ToolsConvertTabsSpaces
@@ -1215,6 +1221,22 @@ Partial Class FormMain
         Me.ToolStripMenuItem_EditConfigAllTabs.Size = New System.Drawing.Size(208, 22)
         Me.ToolStripMenuItem_EditConfigAllTabs.Text = "Change config for all tabs..."
         '
+        'ToolStripMenuItem_ToolsFormatCodeIndentAll
+        '
+        Me.ToolStripMenuItem_ToolsFormatCodeIndentAll.Name = "ToolStripMenuItem_ToolsFormatCodeIndentAll"
+        Me.ToolStripMenuItem_ToolsFormatCodeIndentAll.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
+            Or System.Windows.Forms.Keys.R), System.Windows.Forms.Keys)
+        Me.ToolStripMenuItem_ToolsFormatCodeIndentAll.Size = New System.Drawing.Size(229, 22)
+        Me.ToolStripMenuItem_ToolsFormatCodeIndentAll.Text = "All opened tabs"
+        '
+        'ToolStripMenuItem_ToolsFormatCodeTrimAll
+        '
+        Me.ToolStripMenuItem_ToolsFormatCodeTrimAll.Name = "ToolStripMenuItem_ToolsFormatCodeTrimAll"
+        Me.ToolStripMenuItem_ToolsFormatCodeTrimAll.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
+            Or System.Windows.Forms.Keys.T), System.Windows.Forms.Keys)
+        Me.ToolStripMenuItem_ToolsFormatCodeTrimAll.Size = New System.Drawing.Size(229, 22)
+        Me.ToolStripMenuItem_ToolsFormatCodeTrimAll.Text = "All opened tabs"
+        '
         'FormMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -1389,4 +1411,6 @@ Partial Class FormMain
     Friend WithEvents ToolStripMenuItem_ToolsConvertToSpace As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem1 As ToolStripMenuItem
     Friend WithEvents ToolStripTextBox_ToolsConvertSpaceSize As ToolStripTextBox
+    Friend WithEvents ToolStripMenuItem_ToolsFormatCodeIndentAll As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_ToolsFormatCodeTrimAll As ToolStripMenuItem
 End Class

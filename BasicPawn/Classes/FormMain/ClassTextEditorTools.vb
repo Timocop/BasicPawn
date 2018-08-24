@@ -163,6 +163,136 @@ Public Class ClassTextEditorTools
         g_mFormMain.PrintInformation("[INFO]", "All references listed!", False, True, True)
     End Sub
 
+    Public Sub FormatCode()
+        FormatCode(g_mFormMain.g_ClassTabControl.m_ActiveTab)
+    End Sub
+
+    Public Sub FormatCode(mTab As ClassTabControl.SourceTabPage)
+        Dim lRealSourceLines As New List(Of String)
+        Using mSR As New IO.StringReader(mTab.m_TextEditor.Document.TextContent)
+            Dim sLine As String
+            While True
+                sLine = mSR.ReadLine
+                If (sLine Is Nothing) Then
+                    Exit While
+                End If
+
+                lRealSourceLines.Add(sLine)
+            End While
+        End Using
+
+        Dim sFormatedSource As String = g_mFormMain.g_ClassSyntaxTools.FormatCodeIndentation(mTab.m_TextEditor.Document.TextContent, ClassSettings.ENUM_INDENTATION_TYPES.USE_SETTINGS, mTab.m_Language)
+        Dim lFormatedSourceLines As New List(Of String)
+        Using mSR As New IO.StringReader(sFormatedSource)
+            Dim sLine As String
+            While True
+                sLine = mSR.ReadLine
+                If (sLine Is Nothing) Then
+                    Exit While
+                End If
+
+                lFormatedSourceLines.Add(sLine)
+            End While
+        End Using
+
+        If (lRealSourceLines.Count <> lFormatedSourceLines.Count) Then
+            Throw New ArgumentException("Formated number of lines are not equal with document number of lines")
+        End If
+
+        Try
+            mTab.m_TextEditor.Document.UndoStack.StartUndoGroup()
+
+            For i = lFormatedSourceLines.Count - 1 To 0 Step -1
+                Dim mLineSeg = mTab.m_TextEditor.Document.GetLineSegment(i)
+                Dim sLine As String = mTab.m_TextEditor.Document.GetText(mLineSeg.Offset, mLineSeg.Length)
+
+                If (mTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.HasSomethingSelected) Then
+                    If (Not mTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.IsSelected(mLineSeg.Offset) AndAlso
+                            Not mTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.IsSelected(mLineSeg.Offset + mLineSeg.Length)) Then
+                        Continue For
+                    End If
+                End If
+
+                If (sLine = lFormatedSourceLines(i)) Then
+                    Continue For
+                End If
+
+                mTab.m_TextEditor.Document.Remove(mLineSeg.Offset, mLineSeg.Length)
+                mTab.m_TextEditor.Document.Insert(mLineSeg.Offset, lFormatedSourceLines(i))
+            Next
+        Finally
+            mTab.m_TextEditor.Document.UndoStack.EndUndoGroup()
+            mTab.m_TextEditor.Refresh()
+        End Try
+
+        g_mFormMain.PrintInformation("[INFO]", String.Format("Tab {0}({1}) code reindented!", mTab.m_Title, mTab.m_Index), False, True, True)
+    End Sub
+
+    Public Sub FormatCodeTrim()
+        FormatCodeTrim(g_mFormMain.g_ClassTabControl.m_ActiveTab)
+    End Sub
+
+    Public Sub FormatCodeTrim(mTab As ClassTabControl.SourceTabPage)
+        Dim lRealSourceLines As New List(Of String)
+        Using mSR As New IO.StringReader(mTab.m_TextEditor.Document.TextContent)
+            Dim sLine As String
+            While True
+                sLine = mSR.ReadLine
+                If (sLine Is Nothing) Then
+                    Exit While
+                End If
+
+                lRealSourceLines.Add(sLine)
+            End While
+        End Using
+
+        Dim sFormatedSource As String = g_mFormMain.g_ClassSyntaxTools.FormatCodeTrimEnd(mTab.m_TextEditor.Document.TextContent)
+        Dim lFormatedSourceLines As New List(Of String)
+        Using mSR As New IO.StringReader(sFormatedSource)
+            Dim sLine As String
+            While True
+                sLine = mSR.ReadLine
+                If (sLine Is Nothing) Then
+                    Exit While
+                End If
+
+                lFormatedSourceLines.Add(sLine)
+            End While
+        End Using
+
+        If (lRealSourceLines.Count <> lFormatedSourceLines.Count) Then
+            Throw New ArgumentException("Formated number of lines are not equal with document number of lines")
+        End If
+
+        Try
+            mTab.m_TextEditor.Document.UndoStack.StartUndoGroup()
+
+            For i = lFormatedSourceLines.Count - 1 To 0 Step -1
+                Dim mLineSeg = mTab.m_TextEditor.Document.GetLineSegment(i)
+                Dim sLine As String = mTab.m_TextEditor.Document.GetText(mLineSeg.Offset, mLineSeg.Length)
+
+                If (mTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.HasSomethingSelected) Then
+                    If (Not mTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.IsSelected(mLineSeg.Offset) AndAlso
+                            Not mTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.IsSelected(mLineSeg.Offset + mLineSeg.Length)) Then
+                        Continue For
+                    End If
+                End If
+
+                If (sLine = lFormatedSourceLines(i)) Then
+                    Continue For
+                End If
+
+                mTab.m_TextEditor.Document.Remove(mLineSeg.Offset, mLineSeg.Length)
+                mTab.m_TextEditor.Document.Insert(mLineSeg.Offset, lFormatedSourceLines(i))
+            Next
+        Finally
+            mTab.m_TextEditor.Document.UndoStack.EndUndoGroup()
+            mTab.m_TextEditor.Refresh()
+        End Try
+
+        g_mFormMain.PrintInformation("[INFO]", String.Format("Tab {0}({1}) ending whitespace trimmed!", mTab.m_Title, mTab.m_Index), False, True, True)
+    End Sub
+
     ''' <summary>
     ''' Opens a 'Search and Replace' form
     ''' </summary>
