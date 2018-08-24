@@ -34,6 +34,10 @@ Public Class ClassDatabaseListBox
             Return
         End If
 
+        If (Me.Items.Count < 1 OrElse iIndex > Me.Items.Count - 1) Then
+            Return
+        End If
+
         Dim mButtonRect = GetButtonRectangle(iIndex)
 
         If (mButtonRect.Contains(mCurPos)) Then
@@ -51,6 +55,10 @@ Public Class ClassDatabaseListBox
         Dim mCurPos = Me.PointToClient(Cursor.Position)
         Dim iIndex = Me.IndexFromPoint(mCurPos)
         If (iIndex < 0) Then
+            Return
+        End If
+
+        If (Me.Items.Count < 1 OrElse iIndex > Me.Items.Count - 1) Then
             Return
         End If
 
