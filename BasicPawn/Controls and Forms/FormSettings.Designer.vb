@@ -178,12 +178,12 @@ Partial Class FormSettings
         Me.ColumnHeader6 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader7 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.TabPage_Database = New System.Windows.Forms.TabPage()
+        Me.DatabaseListBox_Database = New BasicPawn.ClassDatabaseListBox()
         Me.Button_Refresh = New System.Windows.Forms.Button()
         Me.TableLayoutPanel4 = New System.Windows.Forms.TableLayoutPanel()
         Me.ClassPictureBoxQuality2 = New BasicPawn.ClassPictureBoxQuality()
         Me.Label18 = New System.Windows.Forms.Label()
         Me.Button_AddDatabaseItem = New System.Windows.Forms.Button()
-        Me.DatabaseViewer = New BasicPawn.ClassDatabaseViewer()
         Me.TableLayoutPanel3 = New System.Windows.Forms.TableLayoutPanel()
         Me.ClassPictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
         Me.Label17 = New System.Windows.Forms.Label()
@@ -1944,10 +1944,10 @@ Partial Class FormSettings
         '
         'TabPage_Database
         '
+        Me.TabPage_Database.Controls.Add(Me.DatabaseListBox_Database)
         Me.TabPage_Database.Controls.Add(Me.Button_Refresh)
         Me.TabPage_Database.Controls.Add(Me.TableLayoutPanel4)
         Me.TabPage_Database.Controls.Add(Me.Button_AddDatabaseItem)
-        Me.TabPage_Database.Controls.Add(Me.DatabaseViewer)
         Me.TabPage_Database.Controls.Add(Me.TableLayoutPanel3)
         Me.TabPage_Database.Location = New System.Drawing.Point(4, 22)
         Me.TabPage_Database.Name = "TabPage_Database"
@@ -1956,6 +1956,20 @@ Partial Class FormSettings
         Me.TabPage_Database.TabIndex = 3
         Me.TabPage_Database.Text = "Database"
         Me.TabPage_Database.UseVisualStyleBackColor = True
+        '
+        'DatabaseListBox_Database
+        '
+        Me.DatabaseListBox_Database.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.DatabaseListBox_Database.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable
+        Me.DatabaseListBox_Database.FormattingEnabled = True
+        Me.DatabaseListBox_Database.ItemHeight = 32
+        Me.DatabaseListBox_Database.Location = New System.Drawing.Point(6, 75)
+        Me.DatabaseListBox_Database.Name = "DatabaseListBox_Database"
+        Me.DatabaseListBox_Database.SelectionMode = System.Windows.Forms.SelectionMode.None
+        Me.DatabaseListBox_Database.Size = New System.Drawing.Size(740, 315)
+        Me.DatabaseListBox_Database.TabIndex = 7
         '
         'Button_Refresh
         '
@@ -2015,18 +2029,6 @@ Partial Class FormSettings
         Me.Button_AddDatabaseItem.TabIndex = 4
         Me.Button_AddDatabaseItem.Text = "Add"
         Me.Button_AddDatabaseItem.UseVisualStyleBackColor = True
-        '
-        'DatabaseViewer
-        '
-        Me.DatabaseViewer.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.DatabaseViewer.AutoScroll = True
-        Me.DatabaseViewer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.DatabaseViewer.Location = New System.Drawing.Point(6, 75)
-        Me.DatabaseViewer.Name = "DatabaseViewer"
-        Me.DatabaseViewer.Size = New System.Drawing.Size(740, 312)
-        Me.DatabaseViewer.TabIndex = 3
         '
         'TableLayoutPanel3
         '
@@ -2232,7 +2234,6 @@ Partial Class FormSettings
     Friend WithEvents ClassPictureBoxQuality1 As ClassPictureBoxQuality
     Friend WithEvents Label17 As Label
     Friend WithEvents ClassPictureBoxQuality2 As ClassPictureBoxQuality
-    Friend WithEvents DatabaseViewer As ClassDatabaseViewer
     Friend WithEvents Button_AddDatabaseItem As Button
     Friend WithEvents TableLayoutPanel4 As TableLayoutPanel
     Friend WithEvents Label18 As Label
@@ -2299,4 +2300,5 @@ Partial Class FormSettings
     Friend WithEvents CheckBox_AutoCloseStrings As CheckBox
     Friend WithEvents CheckBox_AutoIndentBrackets As CheckBox
     Friend WithEvents CheckBox_AutoHoverScroll As CheckBox
+    Friend WithEvents DatabaseListBox_Database As ClassDatabaseListBox
 End Class

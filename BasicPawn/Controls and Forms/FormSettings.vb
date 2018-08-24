@@ -14,8 +14,6 @@
 'You should have received a copy Of the GNU General Public License
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
-
-
 Public Class FormSettings
     Private g_mFormMain As FormMain
     Private g_iConfigType As ENUM_CONFIG_TYPE = ENUM_CONFIG_TYPE.ACTIVE
@@ -193,7 +191,7 @@ Public Class FormSettings
         UpdatePluginsListView()
 
         'Fill DatabaseViewer
-        DatabaseViewer.FillFromDatabase()
+        DatabaseListBox_Database.FillFromDatabase()
 
         ClassControlStyle.UpdateControls(Me)
     End Sub
@@ -1382,7 +1380,10 @@ Public Class FormSettings
     Private Sub Button_AddDatabaseItem_Click(sender As Object, e As EventArgs) Handles Button_AddDatabaseItem.Click
         Using i As New FormDatabaseInput()
             If (i.ShowDialog(Me) = DialogResult.OK) Then
-                DatabaseViewer.AddItem(i.m_Name, i.m_Username)
+                DatabaseListBox_Database.BeginUpdate()
+                DatabaseListBox_Database.RemoveItemByName(i.m_Name)
+                DatabaseListBox_Database.Items.Add(New ClassDatabaseListBox.ClassDatabaseItem(i.m_Name, i.m_Username))
+                DatabaseListBox_Database.EndUpdate()
 
                 Dim iItem As New ClassDatabase.STRUC_DATABASE_ITEM(i.m_Name, i.m_Username, i.m_Password)
                 iItem.Save()
@@ -1391,7 +1392,7 @@ Public Class FormSettings
     End Sub
 
     Private Sub Button_Refresh_Click(sender As Object, e As EventArgs) Handles Button_Refresh.Click
-        DatabaseViewer.FillFromDatabase()
+        DatabaseListBox_Database.FillFromDatabase()
     End Sub
 #End Region
 

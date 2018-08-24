@@ -258,17 +258,8 @@
     <Compile Include="Classes\Controls\ClassPanelAlpha.vb">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls and Forms\DatabaseViewer\ClassDatabaseViewer.Designer.vb">
-      <DependentUpon>ClassDatabaseViewer.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Controls and Forms\DatabaseViewer\ClassDatabaseViewer.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls and Forms\DatabaseViewer\ClassDatabaseViewerItem.Designer.vb">
-      <DependentUpon>ClassDatabaseViewerItem.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Controls and Forms\DatabaseViewer\ClassDatabaseViewerItem.vb">
-      <SubType>UserControl</SubType>
+    <Compile Include="Controls and Forms\DatabaseViewer\Classes\ClassDatabaseListBox.vb">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls and Forms\DatabaseViewer\FormDatabaseInput.Designer.vb">
       <DependentUpon>FormDatabaseInput.vb</DependentUpon>
@@ -430,12 +421,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Classes\Controls\ClassTextMinimap.resx">
       <DependentUpon>ClassTextMinimap.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls and Forms\DatabaseViewer\ClassDatabaseViewer.resx">
-      <DependentUpon>ClassDatabaseViewer.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls and Forms\DatabaseViewer\ClassDatabaseViewerItem.resx">
-      <DependentUpon>ClassDatabaseViewerItem.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls and Forms\DatabaseViewer\FormDatabaseInput.resx">
       <DependentUpon>FormDatabaseInput.vb</DependentUpon>
