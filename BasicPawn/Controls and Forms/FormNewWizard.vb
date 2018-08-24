@@ -530,9 +530,11 @@ Public Class FormNewWizard
             mListViewItems.Add(mListViewItem)
         Next
 
+        ListView_Properties.BeginUpdate()
         ListView_Properties.Items.Clear()
         ListView_Properties.Items.AddRange(mListViewItems.ToArray)
         ClassTools.ClassControls.ClassListView.AutoResizeColumns(ListView_Properties)
+        ListView_Properties.EndUpdate()
     End Sub
 
     Private Sub UpdatePreview()

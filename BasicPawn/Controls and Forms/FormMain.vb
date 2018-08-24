@@ -282,8 +282,7 @@ Public Class FormMain
 
     Private Sub ContextMenuStrip_RightClick_Opening(sender As Object, e As CancelEventArgs) Handles ContextMenuStrip_RightClick.Opening
         g_mUCAutocomplete.UpdateAutocomplete("")
-        g_mUCAutocomplete.g_ClassToolTip.m_IntelliSenseFunction = ""
-        g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip()
+        g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip("")
     End Sub
 #End Region
 

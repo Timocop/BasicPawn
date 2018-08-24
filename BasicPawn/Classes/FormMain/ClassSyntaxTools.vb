@@ -404,27 +404,27 @@ Public Class ClassSyntaxTools
             For i = mSourceBuilder.Length - 1 - 1 To 0 Step -1
                 Try
                     Select Case (mSourceBuilder(i))
-                        Case ("("c)
+                        Case "("c
                             If (Not mSourceAnalysis.m_InNonCode(i)) Then
                                 iBracedCount -= 1
                             End If
 
-                        Case (")"c)
+                        Case ")"c
                             If (Not mSourceAnalysis.m_InNonCode(i)) Then
                                 iBracedCount += 1
                             End If
 
-                        Case ("{"c)
+                        Case "{"c
                             If (Not mSourceAnalysis.m_InNonCode(i)) Then
                                 iBraceCount -= 1
                             End If
 
-                        Case ("}"c)
+                        Case "}"c
                             If (Not mSourceAnalysis.m_InNonCode(i)) Then
                                 iBraceCount += 1
                             End If
 
-                        Case (vbLf(0))
+                        Case vbLf(0)
                             'If (Not mSourceAnalysis.InNonCode(i)) Then 
 
                             'Inserts tabs (spaces) after statements (if, while, for etc.)
@@ -778,10 +778,10 @@ Public Class ClassSyntaxTools
 
             If (g_iStateArray(i, ENUM_STATE_TYPES.BRACKET_LEVEL) > 0) Then
                 Select Case (g_sCacheText(i))
-                    Case ("["c)
+                    Case "["c
                         iRange = ENUM_STATE_RANGE.START
 
-                    Case ("]"c)
+                    Case "]"c
                         iRange = ENUM_STATE_RANGE.END
                 End Select
             End If
@@ -799,10 +799,10 @@ Public Class ClassSyntaxTools
 
             If (g_iStateArray(i, ENUM_STATE_TYPES.BRACE_LEVEL) > 0) Then
                 Select Case (g_sCacheText(i))
-                    Case ("{"c)
+                    Case "{"c
                         iRange = ENUM_STATE_RANGE.START
 
-                    Case ("}"c)
+                    Case "}"c
                         iRange = ENUM_STATE_RANGE.END
                 End Select
             End If
@@ -861,7 +861,7 @@ Public Class ClassSyntaxTools
                 g_iStateArray(i, ENUM_STATE_TYPES.IN_PREPROCESSOR) = bInPreprocessor
 
                 Select Case (sText(i))
-                    Case ("#"c)
+                    Case "#"c
                         If (iParenthesisLevel > 0 OrElse iBracketLevel > 0 OrElse iBraceLevel > 0 OrElse bInSingleComment > 0 OrElse bInMultiComment > 0 OrElse bInString > 0 OrElse bInChar > 0) Then
                             Continue For
                         End If
@@ -870,7 +870,7 @@ Public Class ClassSyntaxTools
                         bInPreprocessor = 1
                         g_iStateArray(i, ENUM_STATE_TYPES.IN_PREPROCESSOR) = 1
 
-                    Case ("*"c)
+                    Case "*"c
                         If (bInSingleComment > 0 OrElse bInString > 0 OrElse bInChar > 0) Then
                             Continue For
                         End If
@@ -896,7 +896,7 @@ Public Class ClassSyntaxTools
                             End If
                         End If
 
-                    Case ("/"c)
+                    Case "/"c
                         If (bInMultiComment > 0 OrElse bInString > 0 OrElse bInChar > 0) Then
                             Continue For
                         End If
@@ -909,7 +909,7 @@ Public Class ClassSyntaxTools
                             End If
                         End If
 
-                    Case ("("c)
+                    Case "("c
                         If (Not bIgnorePreprocessor AndAlso bInPreprocessor > 0) Then
                             Continue For
                         End If
@@ -921,7 +921,7 @@ Public Class ClassSyntaxTools
                         iParenthesisLevel += 1
                         g_iStateArray(i, ENUM_STATE_TYPES.PARENTHESIS_LEVEL) = iParenthesisLevel
 
-                    Case (")"c)
+                    Case ")"c
                         If (Not bIgnorePreprocessor AndAlso bInPreprocessor > 0) Then
                             Continue For
                         End If
@@ -933,7 +933,7 @@ Public Class ClassSyntaxTools
                         g_iStateArray(i, ENUM_STATE_TYPES.PARENTHESIS_LEVEL) = iParenthesisLevel
                         iParenthesisLevel -= 1
 
-                    Case ("["c)
+                    Case "["c
                         If (Not bIgnorePreprocessor AndAlso bInPreprocessor > 0) Then
                             Continue For
                         End If
@@ -945,7 +945,7 @@ Public Class ClassSyntaxTools
                         iBracketLevel += 1
                         g_iStateArray(i, ENUM_STATE_TYPES.BRACKET_LEVEL) = iBracketLevel
 
-                    Case ("]"c)
+                    Case "]"c
                         If (Not bIgnorePreprocessor AndAlso bInPreprocessor > 0) Then
                             Continue For
                         End If
@@ -957,7 +957,7 @@ Public Class ClassSyntaxTools
                         g_iStateArray(i, ENUM_STATE_TYPES.BRACKET_LEVEL) = iBracketLevel
                         iBracketLevel -= 1
 
-                    Case ("{"c)
+                    Case "{"c
                         If (Not bIgnorePreprocessor AndAlso bInPreprocessor > 0) Then
                             Continue For
                         End If
@@ -969,7 +969,7 @@ Public Class ClassSyntaxTools
                         iBraceLevel += 1
                         g_iStateArray(i, ENUM_STATE_TYPES.BRACE_LEVEL) = iBraceLevel
 
-                    Case ("}"c)
+                    Case "}"c
                         If (Not bIgnorePreprocessor AndAlso bInPreprocessor > 0) Then
                             Continue For
                         End If
@@ -981,7 +981,7 @@ Public Class ClassSyntaxTools
                         g_iStateArray(i, ENUM_STATE_TYPES.BRACE_LEVEL) = iBraceLevel
                         iBraceLevel -= 1
 
-                    Case ("'"c)
+                    Case "'"c
                         If (Not bIgnorePreprocessor AndAlso bInPreprocessor > 0) Then
                             Continue For
                         End If
@@ -1005,7 +1005,7 @@ Public Class ClassSyntaxTools
                             g_iStateArray(i, ENUM_STATE_TYPES.IN_CHAR) = 1
                         End If
 
-                    Case (""""c)
+                    Case """"c
                         If (Not bIgnorePreprocessor AndAlso bInPreprocessor > 0) Then
                             Continue For
                         End If
@@ -1029,7 +1029,7 @@ Public Class ClassSyntaxTools
                             g_iStateArray(i, ENUM_STATE_TYPES.IN_STRING) = 1
                         End If
 
-                    Case (vbLf(0))
+                    Case vbLf(0)
                         If (bInSingleComment > 0) Then
                             bInSingleComment = 0
                             g_iStateArray(i, ENUM_STATE_TYPES.IN_SINGLE_COMMENT) = bInSingleComment

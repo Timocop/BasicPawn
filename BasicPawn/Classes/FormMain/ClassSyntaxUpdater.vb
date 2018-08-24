@@ -15,6 +15,8 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 
+Imports System.Text.RegularExpressions
+
 Public Class ClassSyntaxUpdater
     Private g_mFormMain As FormMain
     Private g_mSourceSyntaxUpdaterThread As Threading.Thread
@@ -136,12 +138,7 @@ Public Class ClassSyntaxUpdater
                 If (iLastMethodAutoupdateCaretOffset <> iCaretOffset) Then
                     iLastMethodAutoupdateCaretOffset = iCaretOffset
 
-                    If (Not g_mFormMain.g_mUCAutocomplete.UpdateIntelliSense()) Then
-                        ClassThread.ExecAsync(g_mFormMain.g_mUCAutocomplete, Sub()
-                                                                                 g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.m_IntelliSenseFunction = ""
-                                                                                 g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip()
-                                                                             End Sub)
-                    End If
+                    UpdateIntelliSense(iCaretOffset)
                 End If
 
                 'Hide Autocomplete & IntelliSense Tooltips when scrolling 
@@ -159,27 +156,7 @@ Public Class ClassSyntaxUpdater
                 If (iLastAutoupdateCaretOffset2 <> iCaretOffset) Then
                     iLastAutoupdateCaretOffset2 = iCaretOffset
 
-                    If (iCaretOffset > -1 AndAlso iCaretOffset < ClassThread.ExecEx(Of Integer)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.TextLength)) Then
-                        Dim iPosition As Integer = ClassThread.ExecEx(Of Integer)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column)
-                        Dim iLineOffset As Integer = ClassThread.ExecEx(Of Integer)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iCaretOffset).Offset)
-                        Dim iLineLen As Integer = ClassThread.ExecEx(Of Integer)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iCaretOffset).Length)
-
-                        If ((iLineLen - iPosition) > 0) Then
-                            Dim sFunctionName As String = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True, True, True))
-
-                            If (ClassThread.ExecEx(Of Integer)(g_mFormMain.g_mUCAutocomplete, Function() g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete(sFunctionName)) < 1) Then
-                                sFunctionName = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTextEditorTools.GetCaretWord(False, False, False))
-
-                                ClassThread.ExecAsync(g_mFormMain.g_mUCAutocomplete, Sub()
-                                                                                         g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete(sFunctionName)
-                                                                                     End Sub)
-                            End If
-                        End If
-                    End If
-
-                    ClassThread.ExecAsync(g_mFormMain.g_mUCAutocomplete, Sub()
-                                                                             g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip()
-                                                                         End Sub)
+                    UpdateAutocomplete(iCaretOffset)
                 End If
 
                 'Update caret word maker
@@ -201,6 +178,86 @@ Public Class ClassSyntaxUpdater
                 Threading.Thread.Sleep(5000)
             End Try
         End While
+    End Sub
+
+    Private Sub UpdateAutocomplete(iCaretOffset As Integer)
+        If (iCaretOffset > -1 AndAlso iCaretOffset < ClassThread.ExecEx(Of Integer)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.TextLength)) Then
+            Dim iPosition As Integer = ClassThread.ExecEx(Of Integer)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column)
+            Dim iLineOffset As Integer = ClassThread.ExecEx(Of Integer)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iCaretOffset).Offset)
+            Dim iLineLen As Integer = ClassThread.ExecEx(Of Integer)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iCaretOffset).Length)
+
+            If ((iLineLen - iPosition) > 0) Then
+                Dim sFunctionName As String = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True, True, True))
+
+                If (ClassThread.ExecEx(Of Integer)(g_mFormMain.g_mUCAutocomplete, Function() g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete(sFunctionName)) < 1) Then
+                    sFunctionName = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTextEditorTools.GetCaretWord(False, False, False))
+
+                    ClassThread.ExecAsync(g_mFormMain.g_mUCAutocomplete, Sub()
+                                                                             g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete(sFunctionName)
+                                                                         End Sub)
+                End If
+            End If
+        End If
+
+        ClassThread.ExecAsync(g_mFormMain.g_mUCAutocomplete, Sub()
+                                                                 g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip()
+                                                             End Sub)
+    End Sub
+
+    Private Sub UpdateIntelliSense(iCaretOffset As Integer)
+        Dim sTextContent As String = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent)
+        Dim iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = ClassThread.ExecEx(Of ClassSyntaxTools.ENUM_LANGUAGE_TYPE)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
+        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sTextContent, iLanguage)
+
+        If (iCaretOffset < 0 OrElse iCaretOffset > sTextContent.Length - 1) Then
+            ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                   g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip("")
+                                               End Sub)
+            Return
+        End If
+
+        If (Not mSourceAnalysis.m_InRange(iCaretOffset) OrElse
+                        mSourceAnalysis.m_InMultiComment(iCaretOffset) OrElse
+                        mSourceAnalysis.m_InSingleComment(iCaretOffset)) Then
+            ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                   g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip("")
+                                               End Sub)
+            Return
+        End If
+
+        'Create a valid range to read the method name and for performance. 
+        Dim mStringBuilder As New Text.StringBuilder
+        Dim iLastParenthesisRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
+        Dim iLastParenthesis As Integer = mSourceAnalysis.GetParenthesisLevel(iCaretOffset, iLastParenthesisRange)
+        If (iLastParenthesisRange = ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.START) Then
+            iLastParenthesis -= 1
+        End If
+
+        Dim i As Integer
+        For i = iCaretOffset - 1 To 0 Step -1
+            If (mSourceAnalysis.GetBraceLevel(i, Nothing) < 1 OrElse
+                        mSourceAnalysis.GetParenthesisLevel(i, Nothing) < iLastParenthesis - 1) Then
+                Exit For
+            End If
+
+            If (mSourceAnalysis.m_InNonCode(i)) Then
+                Continue For
+            End If
+
+            If (mSourceAnalysis.GetParenthesisLevel(i, Nothing) > iLastParenthesis - 1 OrElse
+                        mSourceAnalysis.GetBracketLevel(i, Nothing) > 0) Then
+                Continue For
+            End If
+
+            mStringBuilder.Append(sTextContent(i))
+        Next
+
+        Dim sTmp As String = StrReverse(mStringBuilder.ToString).Trim
+        Dim sMethodStart As String = Regex.Match(sTmp, "((\b[a-zA-Z0-9_]+\b)(\.){0,1}(\b[a-zA-Z0-9_]+\b){0,1})$").Value
+
+        ClassThread.ExecAsync(g_mFormMain, Sub()
+                                               g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip(sMethodStart)
+                                           End Sub)
     End Sub
 
 End Class

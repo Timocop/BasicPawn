@@ -35,6 +35,9 @@ Public Class UCAutocomplete
         Label_IntelliSense.Name &= "@SetForeColorRoyalBlue"
         Label_Autocomplete.Name &= "@SetForeColorRoyalBlue"
 
+        TextEditorControlEx_IntelliSense.SuspendLayout()
+        TextEditorControlEx_Autocomplete.SuspendLayout()
+
         TextEditorControlEx_IntelliSense.IsReadOnly = True
         TextEditorControlEx_IntelliSense.TextEditorProperties.MouseWheelTextZoom = False
         TextEditorControlEx_IntelliSense.ActiveTextAreaControl.HScrollBar.Visible = False
@@ -68,6 +71,9 @@ Public Class UCAutocomplete
             TextEditorControlEx_IntelliSense.Height += SystemInformation.VerticalScrollBarWidth
             TextEditorControlEx_Autocomplete.Height += SystemInformation.VerticalScrollBarWidth
         End If
+
+        TextEditorControlEx_IntelliSense.ResumeLayout()
+        TextEditorControlEx_Autocomplete.ResumeLayout()
 
         g_ClassToolTip = New ClassToolTip(Me)
 
@@ -118,65 +124,10 @@ Public Class UCAutocomplete
         End Function
     End Class
 
-
-    Public Function UpdateIntelliSense() As Boolean
-        Dim sTextContent As String = ClassThread.ExecEx(Of String)(Me, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent)
-        Dim iCaretOffset As Integer = ClassThread.ExecEx(Of Integer)(Me, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Offset)
-        Dim iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = ClassThread.ExecEx(Of ClassSyntaxTools.ENUM_LANGUAGE_TYPE)(Me, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
-        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sTextContent, iLanguage)
-
-        If (iCaretOffset < 0 OrElse iCaretOffset > sTextContent.Length - 1) Then
-            Return False
-        End If
-
-        If (Not mSourceAnalysis.m_InRange(iCaretOffset) OrElse
-                        mSourceAnalysis.m_InMultiComment(iCaretOffset) OrElse
-                        mSourceAnalysis.m_InSingleComment(iCaretOffset)) Then
-            Return False
-        End If
-
-        'Create a valid range to read the method name and for performance. 
-        Dim mStringBuilder As New StringBuilder
-        Dim iLastParenthesisRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
-        Dim iLastParenthesis As Integer = mSourceAnalysis.GetParenthesisLevel(iCaretOffset, iLastParenthesisRange)
-        If (iLastParenthesisRange = ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.START) Then
-            iLastParenthesis -= 1
-        End If
-
-        Dim i As Integer
-        For i = iCaretOffset - 1 To 0 Step -1
-            If (mSourceAnalysis.GetBraceLevel(i, Nothing) < 1 OrElse
-                        mSourceAnalysis.GetParenthesisLevel(i, Nothing) < iLastParenthesis - 1) Then
-                Exit For
-            End If
-
-            If (mSourceAnalysis.m_InNonCode(i)) Then
-                Continue For
-            End If
-
-            If (mSourceAnalysis.GetParenthesisLevel(i, Nothing) > iLastParenthesis - 1 OrElse
-                        mSourceAnalysis.GetBracketLevel(i, Nothing) > 0) Then
-                Continue For
-            End If
-
-            mStringBuilder.Append(sTextContent(i))
-        Next
-
-        Dim sTmp As String = StrReverse(mStringBuilder.ToString).Trim
-        Dim sMethodStart As String = Regex.Match(sTmp, "((\b[a-zA-Z0-9_]+\b)(\.){0,1}(\b[a-zA-Z0-9_]+\b){0,1})$").Value
-
-        ClassThread.ExecAsync(Me, Sub()
-                                      g_ClassToolTip.m_IntelliSenseFunction = sMethodStart
-                                      g_ClassToolTip.UpdateToolTip()
-                                  End Sub)
-        Return True
-    End Function
-
-
-    Public Function UpdateAutocomplete(sText As String) As Integer
-        If (String.IsNullOrEmpty(sText) OrElse sText.Length < 3 OrElse Regex.IsMatch(sText, "^[0-9]+$")) Then
+    Public Function UpdateAutocomplete(sFunctionName As String) As Integer
+        If (String.IsNullOrEmpty(sFunctionName) OrElse sFunctionName.Length < 3 OrElse Regex.IsMatch(sFunctionName, "^[0-9]+$")) Then
             ListView_AutocompleteList.Items.Clear()
-            ClassTools.ClassControls.ClassListView.AutoResizeColumns(ListView_AutocompleteList)
+
             g_sLastAutocompleteText = ""
             Return 0
         End If
@@ -191,7 +142,7 @@ Public Class UCAutocomplete
             End If
 
             If (bSelectedWord) Then
-                If (sAutocompleteArray(i).m_FunctionString.Equals(sText)) Then
+                If (sAutocompleteArray(i).m_FunctionString.Equals(sFunctionName)) Then
                     Dim mListViewItemData As New ClassListViewItemData(New String() {sAutocompleteArray(i).m_Filename,
                                                                                     sAutocompleteArray(i).GetTypeFullNames,
                                                                                     sAutocompleteArray(i).m_FunctionString,
@@ -208,8 +159,8 @@ Public Class UCAutocomplete
                     lListViewItemsList.Add(mListViewItemData)
                 End If
             Else
-                If (sAutocompleteArray(i).m_Filename.Equals(sText, If(ClassSettings.g_iSettingsAutocompleteCaseSensitive, StringComparison.Ordinal, StringComparison.OrdinalIgnoreCase)) OrElse
-                            sAutocompleteArray(i).m_FunctionString.IndexOf(sText, If(ClassSettings.g_iSettingsAutocompleteCaseSensitive, StringComparison.Ordinal, StringComparison.OrdinalIgnoreCase)) > -1) Then
+                If (sAutocompleteArray(i).m_Filename.Equals(sFunctionName, If(ClassSettings.g_iSettingsAutocompleteCaseSensitive, StringComparison.Ordinal, StringComparison.OrdinalIgnoreCase)) OrElse
+                            sAutocompleteArray(i).m_FunctionString.IndexOf(sFunctionName, If(ClassSettings.g_iSettingsAutocompleteCaseSensitive, StringComparison.Ordinal, StringComparison.OrdinalIgnoreCase)) > -1) Then
                     Dim mListViewItemData As New ClassListViewItemData(New String() {sAutocompleteArray(i).m_Filename,
                                                                                     sAutocompleteArray(i).GetTypeFullNames,
                                                                                     sAutocompleteArray(i).m_FunctionString,
@@ -235,11 +186,11 @@ Public Class UCAutocomplete
         'Sort ascending first then match the closest one.
         g_sLastAutocompleteText = ""
         ListView_AutocompleteList.Sort()
-        g_sLastAutocompleteText = sText
+        g_sLastAutocompleteText = sFunctionName
         ListView_AutocompleteList.Sort()
+        ClassTools.ClassControls.ClassListView.AutoResizeColumns(ListView_AutocompleteList)
         ListView_AutocompleteList.EndUpdate()
 
-        ClassTools.ClassControls.ClassListView.AutoResizeColumns(ListView_AutocompleteList)
 
         If (ListView_AutocompleteList.Items.Count > 0) Then
             ListView_AutocompleteList.Items(0).Selected = True
@@ -293,10 +244,14 @@ Public Class UCAutocomplete
             End Set
         End Property
 
-        Public Sub UpdateToolTip()
+        Public Sub UpdateToolTip(Optional sFunctionName As String = Nothing)
             If (Not ClassSettings.g_iSettingsEnableToolTip) Then
                 g_AutocompleteUC.SplitContainer1.Panel2Collapsed = True
                 Return
+            End If
+
+            If (sFunctionName IsNot Nothing) Then
+                g_sIntelliSenseFunction = sFunctionName
             End If
 
             'Dim sTipTitle As String = ""

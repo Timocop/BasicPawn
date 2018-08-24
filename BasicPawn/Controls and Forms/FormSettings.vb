@@ -1315,9 +1315,11 @@ Public Class FormSettings
                 End Try
             Next
 
+            ListView_Plugins.BeginUpdate()
             ListView_Plugins.Items.Clear()
             ListView_Plugins.Items.AddRange(lListViewItems.ToArray)
             ClassTools.ClassControls.ClassListView.AutoResizeColumns(ListView_Plugins)
+            ListView_Plugins.EndUpdate()
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try

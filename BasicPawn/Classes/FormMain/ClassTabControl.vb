@@ -661,8 +661,7 @@ Public Class ClassTabControl
         g_mFormMain.g_ClassSyntaxUpdater.StopThread()
 
         g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete("")
-        g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.m_IntelliSenseFunction = ""
-        g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip()
+        g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip("")
 
         g_mFormMain.g_mUCTextMinimap.UpdateText(False)
         g_mFormMain.g_mUCTextMinimap.UpdatePosition(False, True, True)
