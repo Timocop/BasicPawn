@@ -22,6 +22,16 @@ Public Class FormSearch
     Private g_mFormMain As FormMain
     Private g_sSearchText As String
 
+    Private g_mExpandedSize As Size = Me.Size
+    Private g_mCollapsedSize As Size = Me.Size
+
+    Private Structure STRUC_SEARCH_RESULTS
+        Dim iLocation As Integer
+        Dim iLength As Integer
+        Dim sFile As String
+        Dim sTabIdentifier As String
+    End Structure
+
     Public Sub New(f As FormMain, Optional sSearchText As String = "")
         g_mFormMain = f
         g_sSearchText = sSearchText
@@ -34,12 +44,26 @@ Public Class FormSearch
         ClassTools.ClassForms.SetDoubleBufferingUnmanagedAllChilds(Me, True)
     End Sub
 
-    Private Structure STRUC_SEARCH_RESULTS
-        Dim iLocation As Integer
-        Dim iLength As Integer
-        Dim sFile As String
-        Dim sTabIdentifier As String
-    End Structure
+    Private Sub SearchForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        TextBox_Search.Text = g_sSearchText
+
+        ClassControlStyle.UpdateControls(Me)
+
+        'Save orginal size
+        g_mExpandedSize = Me.Size
+
+        'Auto shrink form once
+        Me.AutoSize = True
+        Me.AutoSizeMode = AutoSizeMode.GrowAndShrink
+        Dim tmpSize = Me.Size
+        Me.AutoSize = False
+        Me.AutoSizeMode = AutoSizeMode.GrowOnly
+        Me.Size = tmpSize
+        Me.MinimumSize = tmpSize
+
+        'Save collapsed size
+        g_mCollapsedSize = Me.Size
+    End Sub
 
     Private Sub SetTextEditorSelection(mTab As ClassTabControl.SourceTabPage, iOffset As Integer, iLength As Integer, bCaretBeginPos As Boolean)
         If (iOffset + iLength > mTab.m_TextEditor.Document.TextLength) Then
@@ -123,12 +147,6 @@ Public Class FormSearch
 
         Return lResults.ToArray
     End Function
-
-    Private Sub SearchForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        TextBox_Search.Text = g_sSearchText
-
-        ClassControlStyle.UpdateControls(Me)
-    End Sub
 
     Private Sub Button_Search_Click(sender As Object, e As EventArgs) Handles Button_Search.Click
         Dim mResults As STRUC_SEARCH_RESULTS() = DoSearch(False)
@@ -257,7 +275,7 @@ Public Class FormSearch
     End Sub
 
     Private Sub Button_ListAll_Click(sender As Object, e As EventArgs) Handles Button_ListAll.Click
-        ListView_Output.Visible = True
+        ShowListOutput()
 
         Dim mResults As STRUC_SEARCH_RESULTS() = DoSearch(False)
         If (mResults Is Nothing) Then
@@ -317,7 +335,7 @@ Public Class FormSearch
     End Sub
 
     Private Sub Button_ListAllOpenTabs_Click(sender As Object, e As EventArgs) Handles Button_ListAllOpenTabs.Click
-        ListView_Output.Visible = True
+        ShowListOutput()
 
         Dim mResults As STRUC_SEARCH_RESULTS() = DoSearch(True)
         If (mResults Is Nothing) Then
@@ -376,6 +394,13 @@ Public Class FormSearch
         End Try
     End Sub
 
+    Private Sub ShowListOutput()
+        ListView_Output.Visible = True
+
+        If (g_mCollapsedSize = Me.Size) Then
+            Me.Size = g_mExpandedSize
+        End If
+    End Sub
 
     Private Sub TextBox_Search_KeyDown(sender As Object, e As KeyEventArgs) Handles TextBox_Search.KeyDown
         Select Case (e.KeyCode)
