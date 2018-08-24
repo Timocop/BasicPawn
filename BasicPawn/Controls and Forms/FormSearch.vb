@@ -420,7 +420,7 @@ Public Class FormSearch
         End Select
     End Sub
 
-    Private Sub ListView_Output_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListView_Output.SelectedIndexChanged
+    Private Sub ListView_Output_Click(sender As Object, e As EventArgs) Handles ListView_Output.Click
         If (ListView_Output.SelectedItems.Count < 1) Then
             Return
         End If
