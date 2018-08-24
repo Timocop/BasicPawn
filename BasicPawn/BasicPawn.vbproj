@@ -339,16 +339,13 @@
     <Compile Include="Controls and Forms\FormUpdate.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Controls and Forms\StartPage\Classes\ClassRecentListBox.vb">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls and Forms\StartPage\UCStartPage.Designer.vb">
       <DependentUpon>UCStartPage.vb</DependentUpon>
     </Compile>
     <Compile Include="Controls and Forms\StartPage\UCStartPage.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls and Forms\StartPage\UCStartPageRecentItem.Designer.vb">
-      <DependentUpon>UCStartPageRecentItem.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Controls and Forms\StartPage\UCStartPageRecentItem.vb">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls and Forms\UCAutocomplete.Designer.vb">
@@ -463,9 +460,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls and Forms\StartPage\UCStartPage.resx">
       <DependentUpon>UCStartPage.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls and Forms\StartPage\UCStartPageRecentItem.resx">
-      <DependentUpon>UCStartPageRecentItem.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls and Forms\UCAutocomplete.resx">
       <DependentUpon>UCAutocomplete.vb</DependentUpon>

@@ -137,7 +137,7 @@ Public Class UCStartPage
             Dim bAppendFiles As Boolean = False
 
             For i = mRecentItems.Length - 1 To 0 Step -1
-                If (Not mRecentItems(i).m_Open) Then
+                If (Not mRecentItems(i).m_Checked) Then
                     Continue For
                 End If
 
@@ -158,7 +158,7 @@ Public Class UCStartPage
 
                 For i = mRecentItems.Length - 1 To 0 Step -1
                     Try
-                        If (Not mRecentItems(i).m_Open) Then
+                        If (Not mRecentItems(i).m_Checked) Then
                             Continue For
                         End If
 
@@ -192,7 +192,7 @@ Public Class UCStartPage
         Dim bAppendFiles As Boolean = False
 
         For i = mRecentItems.Length - 1 To 0 Step -1
-            If (Not mRecentItems(i).m_Open) Then
+            If (Not mRecentItems(i).m_Checked) Then
                 Continue For
             End If
 
@@ -210,7 +210,7 @@ Public Class UCStartPage
 
             For i = mRecentItems.Length - 1 To 0 Step -1
                 Try
-                    If (Not mRecentItems(i).m_Open) Then
+                    If (Not mRecentItems(i).m_Checked) Then
                         Continue For
                     End If
 
@@ -235,11 +235,76 @@ Public Class UCStartPage
         End Try
     End Sub
 
-    Private Sub ButtonSmall_Close_Click(sender As Object, e As EventArgs) Handles ButtonSmall_Close.Click
-        Me.Hide()
+
+    Private Sub RecentListBox_Files_OnButtonClick(iIndex As Integer) Handles RecentListBox_Files.OnButtonClick
+        Try
+            Dim mItem = TryCast(RecentListBox_Files.Items(iIndex), ClassRecentListBox.ClassRecentItem)
+            If (mItem Is Nothing) Then
+                Return
+            End If
+
+            g_mClassRecentItems.RemoveRecent(mItem.m_RecentFile)
+            RecentListBox_Files.Items.RemoveAt(iIndex)
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
+    Private Sub RecentListBox_Projects_OnButtonClick(iIndex As Integer) Handles RecentListBox_Projects.OnButtonClick
+        Try
+            Dim mItem = TryCast(RecentListBox_Projects.Items(iIndex), ClassRecentListBox.ClassRecentItem)
+            If (mItem Is Nothing) Then
+                Return
+            End If
+
+            g_mClassRecentItems.RemoveRecent(mItem.m_RecentFile)
+            RecentListBox_Projects.Items.RemoveAt(iIndex)
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
     End Sub
 
 
+    Private Sub RecentListBox_Files_OnItemClick(iIndex As Integer) Handles RecentListBox_Files.OnItemClick
+        Try
+            Dim mItem = TryCast(RecentListBox_Files.Items(iIndex), ClassRecentListBox.ClassRecentItem)
+            If (mItem Is Nothing) Then
+                Return
+            End If
+
+            Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
+            mTab.OpenFileTab(mItem.m_RecentFile)
+            mTab.SelectTab()
+
+            g_mFormMain.g_ClassTabControl.RemoveUnsavedTabsLeft()
+
+            Me.Hide()
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
+    Private Sub RecentListBox_Projects_OnItemClick(iIndex As Integer) Handles RecentListBox_Projects.OnItemClick
+        Try
+            Dim mItem = TryCast(RecentListBox_Projects.Items(iIndex), ClassRecentListBox.ClassRecentItem)
+            If (mItem Is Nothing) Then
+                Return
+            End If
+
+            g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile = mItem.m_RecentFile
+            g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(False, ClassSettings.g_iSettingsAutoOpenProjectFiles)
+
+            g_mFormMain.g_ClassTabControl.RemoveUnsavedTabsLeft()
+
+            Me.Hide()
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
+    Private Sub ButtonSmall_Close_Click(sender As Object, e As EventArgs) Handles ButtonSmall_Close.Click
+        Me.Hide()
+    End Sub
 
     Class ClassRecentItems
         Private g_mUCStartPage As UCStartPage
@@ -307,36 +372,22 @@ Public Class UCStartPage
             End Using
         End Sub
 
-        Public Function GetRecentItems() As UCStartPageRecentItem()
-            Dim lRecentItems As New List(Of UCStartPageRecentItem)
+        Public Function GetRecentItems() As ClassRecentListBox.ClassRecentItem()
+            Dim lRecentItems As New List(Of ClassRecentListBox.ClassRecentItem)
 
-            For Each c As Control In g_mUCStartPage.TabPage_RecentFiles.Controls
-                If (TypeOf c Is UCStartPageRecentItem) Then
-                    lRecentItems.Add(DirectCast(c, UCStartPageRecentItem))
+            For Each i As Object In g_mUCStartPage.RecentListBox_Files.Items
+                If (TypeOf i Is ClassRecentListBox.ClassRecentItem) Then
+                    lRecentItems.Add(DirectCast(i, ClassRecentListBox.ClassRecentItem))
                 End If
             Next
 
-            For Each c As Control In g_mUCStartPage.TabPage_RecentProjects.Controls
-                If (TypeOf c Is UCStartPageRecentItem) Then
-                    lRecentItems.Add(DirectCast(c, UCStartPageRecentItem))
+            For Each i As Object In g_mUCStartPage.RecentListBox_Projects.Items
+                If (TypeOf i Is ClassRecentListBox.ClassRecentItem) Then
+                    lRecentItems.Add(DirectCast(i, ClassRecentListBox.ClassRecentItem))
                 End If
             Next
 
             Return lRecentItems.ToArray
-        End Function
-
-        Public Function GetAllItems() As Control()
-            Dim lItems As New List(Of Control)
-
-            For Each c As Control In g_mUCStartPage.TabPage_RecentFiles.Controls
-                lItems.Add(c)
-            Next
-
-            For Each c As Control In g_mUCStartPage.TabPage_RecentProjects.Controls
-                lItems.Add(c)
-            Next
-
-            Return lItems.ToArray
         End Function
 
         Public Function GetRecentFiles() As String()
@@ -401,39 +452,38 @@ Public Class UCStartPage
         End Function
 
         Public Sub ClearRecentItems()
-            g_mUCStartPage.TabPage_RecentFiles.SuspendLayout()
-            g_mUCStartPage.TabPage_RecentProjects.SuspendLayout()
+            g_mUCStartPage.RecentListBox_Files.BeginUpdate()
+            g_mUCStartPage.RecentListBox_Projects.BeginUpdate()
 
-            Dim mRecentItems = GetAllItems()
-            For i = mRecentItems.Length - 1 To 0 Step -1
-                mRecentItems(i).Dispose()
-            Next
+            g_mUCStartPage.RecentListBox_Files.Items.Clear()
+            g_mUCStartPage.RecentListBox_Projects.Items.Clear()
 
-            g_mUCStartPage.TabPage_RecentFiles.ResumeLayout()
-            g_mUCStartPage.TabPage_RecentProjects.ResumeLayout()
+            g_mUCStartPage.RecentListBox_Files.EndUpdate()
+            g_mUCStartPage.RecentListBox_Projects.EndUpdate()
         End Sub
 
         Public Sub RefreshRecentItems()
-            g_mUCStartPage.TabPage_RecentFiles.SuspendLayout()
-            g_mUCStartPage.TabPage_RecentProjects.SuspendLayout()
+            g_mUCStartPage.RecentListBox_Files.BeginUpdate()
+            g_mUCStartPage.RecentListBox_Projects.BeginUpdate()
 
-            ClearRecentItems()
+            g_mUCStartPage.RecentListBox_Files.Items.Clear()
+            g_mUCStartPage.RecentListBox_Projects.Items.Clear()
 
             Dim sRecentFilesSorted As String() = SortFilesByDate(GetRecentFiles())
 
-            Dim iLabelFlags_ProjectsToday As Integer = (1 << 0)
-            Dim iLabelFlags_FilesToday As Integer = (1 << 1)
-            Dim iLabelFlags_ProjectsYesterday As Integer = (1 << 2)
-            Dim iLabelFlags_FilesYesterday As Integer = (1 << 3)
-            Dim iLabelFlags_ProjectsWeek As Integer = (1 << 4)
-            Dim iLabelFlags_FilesWeek As Integer = (1 << 5)
-            Dim iLabelFlags_ProjectsMonth As Integer = (1 << 6)
-            Dim iLabelFlags_FilesMonth As Integer = (1 << 7)
-            Dim iLabelFlags_ProjectsOther As Integer = (1 << 8)
-            Dim iLabelFlags_FilesOther As Integer = (1 << 9)
+            Const LAST_PROJECTS_TODAY As Integer = (1 << 0)
+            Const LAST_PROJECTS_YESTERDAY As Integer = (1 << 1)
+            Const LAST_PROJECTS_WEEK As Integer = (1 << 2)
+            Const LAST_PROJECTS_MONTH As Integer = (1 << 3)
+            Const LAST_PROJECTS_OTHER As Integer = (1 << 4)
+            Const LAST_FILES_TODAY As Integer = (1 << 5)
+            Const LIST_FILES_YESTERDAY As Integer = (1 << 6)
+            Const LAST_FILES_WEEK As Integer = (1 << 7)
+            Const LAST_FILES_MONTH As Integer = (1 << 8)
+            Const LAST_FILES_OTHER As Integer = (1 << 9)
 
 
-            Dim iLabelFlags As Integer = 0
+            Dim iLastFlags As Integer = 0
 
             For Each sFile As String In sRecentFilesSorted
                 Dim mDate As Date = IO.File.GetLastWriteTime(sFile)
@@ -442,107 +492,79 @@ Public Class UCStartPage
                 Select Case (True)
                     Case ((Now - New TimeSpan(1, 0, 0, 0)) < mDate)
                         If (bProjectFile) Then
-                            If ((iLabelFlags And iLabelFlags_ProjectsToday) = 0) Then
-                                iLabelFlags = (iLabelFlags Or iLabelFlags_ProjectsToday)
-                                CreateLastModifiedLabel("Today", g_mUCStartPage.TabPage_RecentProjects)
+                            If ((iLastFlags And LAST_PROJECTS_TODAY) = 0) Then
+                                iLastFlags = (iLastFlags Or LAST_PROJECTS_TODAY)
+                                g_mUCStartPage.RecentListBox_Projects.Items.Add(New ClassRecentListBox.ClassTitleItem("Today"))
                             End If
                         Else
-                            If ((iLabelFlags And iLabelFlags_FilesToday) = 0) Then
-                                iLabelFlags = (iLabelFlags Or iLabelFlags_FilesToday)
-                                CreateLastModifiedLabel("Today", g_mUCStartPage.TabPage_RecentFiles)
+                            If ((iLastFlags And LAST_FILES_TODAY) = 0) Then
+                                iLastFlags = (iLastFlags Or LAST_FILES_TODAY)
+                                g_mUCStartPage.RecentListBox_Files.Items.Add(New ClassRecentListBox.ClassTitleItem("Today"))
                             End If
                         End If
 
                     Case ((Now - New TimeSpan(2, 0, 0, 0)) < mDate)
                         If (bProjectFile) Then
-                            If ((iLabelFlags And iLabelFlags_ProjectsYesterday) = 0) Then
-                                iLabelFlags = (iLabelFlags Or iLabelFlags_ProjectsYesterday)
-                                CreateLastModifiedLabel("Yesterday", g_mUCStartPage.TabPage_RecentProjects)
+                            If ((iLastFlags And LAST_PROJECTS_YESTERDAY) = 0) Then
+                                iLastFlags = (iLastFlags Or LAST_PROJECTS_YESTERDAY)
+                                g_mUCStartPage.RecentListBox_Projects.Items.Add(New ClassRecentListBox.ClassTitleItem("Yesterday"))
                             End If
                         Else
-                            If ((iLabelFlags And iLabelFlags_FilesYesterday) = 0) Then
-                                iLabelFlags = (iLabelFlags Or iLabelFlags_FilesYesterday)
-                                CreateLastModifiedLabel("Yesterday", g_mUCStartPage.TabPage_RecentFiles)
+                            If ((iLastFlags And LIST_FILES_YESTERDAY) = 0) Then
+                                iLastFlags = (iLastFlags Or LIST_FILES_YESTERDAY)
+                                g_mUCStartPage.RecentListBox_Files.Items.Add(New ClassRecentListBox.ClassTitleItem("Yesterday"))
                             End If
                         End If
 
                     Case ((Now - New TimeSpan(7, 0, 0, 0)) < mDate)
                         If (bProjectFile) Then
-                            If ((iLabelFlags And iLabelFlags_ProjectsWeek) = 0) Then
-                                iLabelFlags = (iLabelFlags Or iLabelFlags_ProjectsWeek)
-                                CreateLastModifiedLabel("This Week", g_mUCStartPage.TabPage_RecentProjects)
+                            If ((iLastFlags And LAST_PROJECTS_WEEK) = 0) Then
+                                iLastFlags = (iLastFlags Or LAST_PROJECTS_WEEK)
+                                g_mUCStartPage.RecentListBox_Projects.Items.Add(New ClassRecentListBox.ClassTitleItem("This Week"))
                             End If
                         Else
-                            If ((iLabelFlags And iLabelFlags_FilesWeek) = 0) Then
-                                iLabelFlags = (iLabelFlags Or iLabelFlags_FilesWeek)
-                                CreateLastModifiedLabel("This Week", g_mUCStartPage.TabPage_RecentFiles)
+                            If ((iLastFlags And LAST_FILES_WEEK) = 0) Then
+                                iLastFlags = (iLastFlags Or LAST_FILES_WEEK)
+                                g_mUCStartPage.RecentListBox_Files.Items.Add(New ClassRecentListBox.ClassTitleItem("This Week"))
                             End If
                         End If
 
                     Case ((Now - New TimeSpan(31, 0, 0, 0)) < mDate)
                         If (bProjectFile) Then
-                            If ((iLabelFlags And iLabelFlags_ProjectsMonth) = 0) Then
-                                iLabelFlags = (iLabelFlags Or iLabelFlags_ProjectsMonth)
-                                CreateLastModifiedLabel("This Month", g_mUCStartPage.TabPage_RecentProjects)
+                            If ((iLastFlags And LAST_PROJECTS_MONTH) = 0) Then
+                                iLastFlags = (iLastFlags Or LAST_PROJECTS_MONTH)
+                                g_mUCStartPage.RecentListBox_Projects.Items.Add(New ClassRecentListBox.ClassTitleItem("This Month"))
                             End If
                         Else
-                            If ((iLabelFlags And iLabelFlags_FilesMonth) = 0) Then
-                                iLabelFlags = (iLabelFlags Or iLabelFlags_FilesMonth)
-                                CreateLastModifiedLabel("This Month", g_mUCStartPage.TabPage_RecentFiles)
+                            If ((iLastFlags And LAST_FILES_MONTH) = 0) Then
+                                iLastFlags = (iLastFlags Or LAST_FILES_MONTH)
+                                g_mUCStartPage.RecentListBox_Files.Items.Add(New ClassRecentListBox.ClassTitleItem("This Month"))
                             End If
                         End If
 
                     Case Else
                         If (bProjectFile) Then
-                            If ((iLabelFlags And iLabelFlags_ProjectsOther) = 0) Then
-                                iLabelFlags = (iLabelFlags Or iLabelFlags_ProjectsOther)
-                                CreateLastModifiedLabel("Last Time", g_mUCStartPage.TabPage_RecentProjects)
+                            If ((iLastFlags And LAST_PROJECTS_OTHER) = 0) Then
+                                iLastFlags = (iLastFlags Or LAST_PROJECTS_OTHER)
+                                g_mUCStartPage.RecentListBox_Projects.Items.Add(New ClassRecentListBox.ClassTitleItem("Last Time"))
                             End If
                         Else
-                            If ((iLabelFlags And iLabelFlags_FilesOther) = 0) Then
-                                iLabelFlags = (iLabelFlags Or iLabelFlags_FilesOther)
-                                CreateLastModifiedLabel("Last Time", g_mUCStartPage.TabPage_RecentFiles)
+                            If ((iLastFlags And LAST_FILES_OTHER) = 0) Then
+                                iLastFlags = (iLastFlags Or LAST_FILES_OTHER)
+                                g_mUCStartPage.RecentListBox_Files.Items.Add(New ClassRecentListBox.ClassTitleItem("Last Time"))
                             End If
                         End If
                 End Select
 
-                With New UCStartPageRecentItem(g_mUCStartPage, sFile)
-                    .SuspendLayout()
-
-                    If (bProjectFile) Then
-                        .Parent = g_mUCStartPage.TabPage_RecentProjects
-                    Else
-                        .Parent = g_mUCStartPage.TabPage_RecentFiles
-                    End If
-
-                    .Dock = DockStyle.Top
-                    .BringToFront()
-                    .Show()
-
-                    .ResumeLayout()
-                End With
+                If (bProjectFile) Then
+                    g_mUCStartPage.RecentListBox_Projects.Items.Add(New ClassRecentListBox.ClassRecentItem(sFile))
+                Else
+                    g_mUCStartPage.RecentListBox_Files.Items.Add(New ClassRecentListBox.ClassRecentItem(sFile))
+                End If
             Next
 
-            g_mUCStartPage.TabPage_RecentFiles.ResumeLayout()
-            g_mUCStartPage.TabPage_RecentProjects.ResumeLayout()
-        End Sub
-
-        Private Sub CreateLastModifiedLabel(sText As String, mParent As Control)
-            With New Label
-                .SuspendLayout()
-
-                .Text = sText
-                .Font = New Font(.Font.FontFamily, 12, FontStyle.Bold)
-                .Name &= "@SetForeColorRoyalBlue"
-                .AutoSize = True
-
-                .Parent = mParent
-                .Dock = DockStyle.Top
-                .BringToFront()
-                .Show()
-
-                .ResumeLayout()
-            End With
+            g_mUCStartPage.RecentListBox_Files.EndUpdate()
+            g_mUCStartPage.RecentListBox_Projects.EndUpdate()
         End Sub
     End Class
 

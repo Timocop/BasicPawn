@@ -28,21 +28,23 @@ Partial Class UCStartPage
         Me.Panel1 = New System.Windows.Forms.Panel()
         Me.TableLayoutPanel2 = New System.Windows.Forms.TableLayoutPanel()
         Me.Panel_BasicPawnTitle = New System.Windows.Forms.Panel()
-        Me.ButtonSmall_Close = New BasicPawn.ClassButtonSmallDelete()
         Me.LinkLabel_NewTemplate = New System.Windows.Forms.LinkLabel()
         Me.LinkLabel_OpenNew = New System.Windows.Forms.LinkLabel()
         Me.LinkLabel_Open = New System.Windows.Forms.LinkLabel()
         Me.LinkLabel_New = New System.Windows.Forms.LinkLabel()
         Me.Panel_FooterDarkControl = New System.Windows.Forms.Panel()
-        Me.ClassPictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
         Me.Label1 = New System.Windows.Forms.Label()
-        Me.TabControl_RecentProjects = New BasicPawn.ClassTabControlColor()
-        Me.TabPage_RecentFiles = New System.Windows.Forms.TabPage()
-        Me.TabPage_RecentProjects = New System.Windows.Forms.TabPage()
         Me.Panel_FooterDarkControl2 = New System.Windows.Forms.Panel()
         Me.Panel_FooterDarkControl3 = New System.Windows.Forms.Panel()
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
         Me.Timer_DelayUpdate = New System.Windows.Forms.Timer(Me.components)
+        Me.ButtonSmall_Close = New BasicPawn.ClassButtonSmallDelete()
+        Me.ClassPictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
+        Me.TabControl_RecentProjects = New BasicPawn.ClassTabControlColor()
+        Me.TabPage_RecentFiles = New System.Windows.Forms.TabPage()
+        Me.TabPage_RecentProjects = New System.Windows.Forms.TabPage()
+        Me.RecentListBox_Files = New BasicPawn.ClassRecentListBox()
+        Me.RecentListBox_Projects = New BasicPawn.ClassRecentListBox()
         Me.TableLayoutPanel1.SuspendLayout()
         Me.Panel1.SuspendLayout()
         Me.TableLayoutPanel2.SuspendLayout()
@@ -50,6 +52,8 @@ Partial Class UCStartPage
         CType(Me.ButtonSmall_Close, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.ClassPictureBoxQuality1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TabControl_RecentProjects.SuspendLayout()
+        Me.TabPage_RecentFiles.SuspendLayout()
+        Me.TabPage_RecentProjects.SuspendLayout()
         Me.SuspendLayout()
         '
         'TableLayoutPanel1
@@ -117,20 +121,6 @@ Partial Class UCStartPage
         Me.Panel_BasicPawnTitle.Size = New System.Drawing.Size(800, 64)
         Me.Panel_BasicPawnTitle.TabIndex = 0
         '
-        'ButtonSmall_Close
-        '
-        Me.ButtonSmall_Close.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.ButtonSmall_Close.BackColor = System.Drawing.Color.Transparent
-        Me.ButtonSmall_Close.Cursor = System.Windows.Forms.Cursors.Hand
-        Me.ButtonSmall_Close.Image = CType(resources.GetObject("ButtonSmall_Close.Image"), System.Drawing.Image)
-        Me.ButtonSmall_Close.Location = New System.Drawing.Point(780, 3)
-        Me.ButtonSmall_Close.MaximumSize = New System.Drawing.Size(16, 16)
-        Me.ButtonSmall_Close.MinimumSize = New System.Drawing.Size(16, 16)
-        Me.ButtonSmall_Close.Name = "ButtonSmall_Close"
-        Me.ButtonSmall_Close.Size = New System.Drawing.Size(16, 16)
-        Me.ButtonSmall_Close.TabIndex = 9
-        Me.ButtonSmall_Close.TabStop = False
-        '
         'LinkLabel_NewTemplate
         '
         Me.LinkLabel_NewTemplate.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
@@ -192,17 +182,6 @@ Partial Class UCStartPage
         Me.Panel_FooterDarkControl.Size = New System.Drawing.Size(800, 1)
         Me.Panel_FooterDarkControl.TabIndex = 3
         '
-        'ClassPictureBoxQuality1
-        '
-        Me.ClassPictureBoxQuality1.Image = Global.BasicPawn.My.Resources.Resources.BasicPawn_NoText_PNGx64
-        Me.ClassPictureBoxQuality1.Location = New System.Drawing.Point(3, 3)
-        Me.ClassPictureBoxQuality1.m_HighQuality = True
-        Me.ClassPictureBoxQuality1.Name = "ClassPictureBoxQuality1"
-        Me.ClassPictureBoxQuality1.Size = New System.Drawing.Size(42, 42)
-        Me.ClassPictureBoxQuality1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
-        Me.ClassPictureBoxQuality1.TabIndex = 1
-        Me.ClassPictureBoxQuality1.TabStop = False
-        '
         'Label1
         '
         Me.Label1.Font = New System.Drawing.Font("Segoe UI Semibold", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -212,40 +191,6 @@ Partial Class UCStartPage
         Me.Label1.TabIndex = 0
         Me.Label1.Text = "BasicPawn - StartPage"
         Me.Label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'TabControl_RecentProjects
-        '
-        Me.TabControl_RecentProjects.Controls.Add(Me.TabPage_RecentFiles)
-        Me.TabControl_RecentProjects.Controls.Add(Me.TabPage_RecentProjects)
-        Me.TabControl_RecentProjects.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TabControl_RecentProjects.Location = New System.Drawing.Point(0, 64)
-        Me.TabControl_RecentProjects.Margin = New System.Windows.Forms.Padding(0)
-        Me.TabControl_RecentProjects.Name = "TabControl_RecentProjects"
-        Me.TabControl_RecentProjects.SelectedIndex = 0
-        Me.TabControl_RecentProjects.Size = New System.Drawing.Size(800, 364)
-        Me.TabControl_RecentProjects.TabIndex = 1
-        '
-        'TabPage_RecentFiles
-        '
-        Me.TabPage_RecentFiles.AutoScroll = True
-        Me.TabPage_RecentFiles.Location = New System.Drawing.Point(4, 22)
-        Me.TabPage_RecentFiles.Name = "TabPage_RecentFiles"
-        Me.TabPage_RecentFiles.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage_RecentFiles.Size = New System.Drawing.Size(792, 338)
-        Me.TabPage_RecentFiles.TabIndex = 0
-        Me.TabPage_RecentFiles.Text = "Recent Files"
-        Me.TabPage_RecentFiles.UseVisualStyleBackColor = True
-        '
-        'TabPage_RecentProjects
-        '
-        Me.TabPage_RecentProjects.AutoScroll = True
-        Me.TabPage_RecentProjects.Location = New System.Drawing.Point(4, 22)
-        Me.TabPage_RecentProjects.Name = "TabPage_RecentProjects"
-        Me.TabPage_RecentProjects.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage_RecentProjects.Size = New System.Drawing.Size(792, 338)
-        Me.TabPage_RecentProjects.TabIndex = 1
-        Me.TabPage_RecentProjects.Text = "Recent Projects"
-        Me.TabPage_RecentProjects.UseVisualStyleBackColor = True
         '
         'Panel_FooterDarkControl2
         '
@@ -270,6 +215,91 @@ Partial Class UCStartPage
         'Timer_DelayUpdate
         '
         '
+        'ButtonSmall_Close
+        '
+        Me.ButtonSmall_Close.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ButtonSmall_Close.BackColor = System.Drawing.Color.Transparent
+        Me.ButtonSmall_Close.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.ButtonSmall_Close.Image = CType(resources.GetObject("ButtonSmall_Close.Image"), System.Drawing.Image)
+        Me.ButtonSmall_Close.Location = New System.Drawing.Point(780, 3)
+        Me.ButtonSmall_Close.MaximumSize = New System.Drawing.Size(16, 16)
+        Me.ButtonSmall_Close.MinimumSize = New System.Drawing.Size(16, 16)
+        Me.ButtonSmall_Close.Name = "ButtonSmall_Close"
+        Me.ButtonSmall_Close.Size = New System.Drawing.Size(16, 16)
+        Me.ButtonSmall_Close.TabIndex = 9
+        Me.ButtonSmall_Close.TabStop = False
+        '
+        'ClassPictureBoxQuality1
+        '
+        Me.ClassPictureBoxQuality1.Image = Global.BasicPawn.My.Resources.Resources.BasicPawn_NoText_PNGx64
+        Me.ClassPictureBoxQuality1.Location = New System.Drawing.Point(3, 3)
+        Me.ClassPictureBoxQuality1.m_HighQuality = True
+        Me.ClassPictureBoxQuality1.Name = "ClassPictureBoxQuality1"
+        Me.ClassPictureBoxQuality1.Size = New System.Drawing.Size(42, 42)
+        Me.ClassPictureBoxQuality1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
+        Me.ClassPictureBoxQuality1.TabIndex = 1
+        Me.ClassPictureBoxQuality1.TabStop = False
+        '
+        'TabControl_RecentProjects
+        '
+        Me.TabControl_RecentProjects.Controls.Add(Me.TabPage_RecentFiles)
+        Me.TabControl_RecentProjects.Controls.Add(Me.TabPage_RecentProjects)
+        Me.TabControl_RecentProjects.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TabControl_RecentProjects.Location = New System.Drawing.Point(0, 64)
+        Me.TabControl_RecentProjects.Margin = New System.Windows.Forms.Padding(0)
+        Me.TabControl_RecentProjects.Name = "TabControl_RecentProjects"
+        Me.TabControl_RecentProjects.SelectedIndex = 0
+        Me.TabControl_RecentProjects.Size = New System.Drawing.Size(800, 364)
+        Me.TabControl_RecentProjects.TabIndex = 1
+        '
+        'TabPage_RecentFiles
+        '
+        Me.TabPage_RecentFiles.AutoScroll = True
+        Me.TabPage_RecentFiles.Controls.Add(Me.RecentListBox_Files)
+        Me.TabPage_RecentFiles.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage_RecentFiles.Name = "TabPage_RecentFiles"
+        Me.TabPage_RecentFiles.Padding = New System.Windows.Forms.Padding(3)
+        Me.TabPage_RecentFiles.Size = New System.Drawing.Size(792, 338)
+        Me.TabPage_RecentFiles.TabIndex = 0
+        Me.TabPage_RecentFiles.Text = "Recent Files"
+        Me.TabPage_RecentFiles.UseVisualStyleBackColor = True
+        '
+        'TabPage_RecentProjects
+        '
+        Me.TabPage_RecentProjects.AutoScroll = True
+        Me.TabPage_RecentProjects.Controls.Add(Me.RecentListBox_Projects)
+        Me.TabPage_RecentProjects.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage_RecentProjects.Name = "TabPage_RecentProjects"
+        Me.TabPage_RecentProjects.Padding = New System.Windows.Forms.Padding(3)
+        Me.TabPage_RecentProjects.Size = New System.Drawing.Size(792, 338)
+        Me.TabPage_RecentProjects.TabIndex = 1
+        Me.TabPage_RecentProjects.Text = "Recent Projects"
+        Me.TabPage_RecentProjects.UseVisualStyleBackColor = True
+        '
+        'RecentListBox_Files
+        '
+        Me.RecentListBox_Files.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.RecentListBox_Files.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.RecentListBox_Files.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable
+        Me.RecentListBox_Files.FormattingEnabled = True
+        Me.RecentListBox_Files.ItemHeight = 32
+        Me.RecentListBox_Files.Location = New System.Drawing.Point(3, 3)
+        Me.RecentListBox_Files.Name = "RecentListBox_Files"
+        Me.RecentListBox_Files.Size = New System.Drawing.Size(786, 332)
+        Me.RecentListBox_Files.TabIndex = 0
+        '
+        'RecentListBox_Projects
+        '
+        Me.RecentListBox_Projects.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.RecentListBox_Projects.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.RecentListBox_Projects.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable
+        Me.RecentListBox_Projects.FormattingEnabled = True
+        Me.RecentListBox_Projects.ItemHeight = 32
+        Me.RecentListBox_Projects.Location = New System.Drawing.Point(3, 3)
+        Me.RecentListBox_Projects.Name = "RecentListBox_Projects"
+        Me.RecentListBox_Projects.Size = New System.Drawing.Size(786, 332)
+        Me.RecentListBox_Projects.TabIndex = 0
+        '
         'UCStartPage
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -288,6 +318,8 @@ Partial Class UCStartPage
         CType(Me.ButtonSmall_Close, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.ClassPictureBoxQuality1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.TabControl_RecentProjects.ResumeLayout(False)
+        Me.TabPage_RecentFiles.ResumeLayout(False)
+        Me.TabPage_RecentProjects.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub
@@ -311,4 +343,6 @@ Partial Class UCStartPage
     Friend WithEvents TabPage_RecentProjects As TabPage
     Friend WithEvents ButtonSmall_Close As ClassButtonSmallDelete
     Friend WithEvents LinkLabel_NewTemplate As LinkLabel
+    Friend WithEvents RecentListBox_Files As ClassRecentListBox
+    Friend WithEvents RecentListBox_Projects As ClassRecentListBox
 End Class
