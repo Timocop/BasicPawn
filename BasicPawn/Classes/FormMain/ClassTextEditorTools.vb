@@ -159,15 +159,12 @@ Public Class ClassTextEditorTools
             g_mFormMain.PrintInformation("[INFO]", sRef, False)
         Next
 
-
         g_mFormMain.PrintInformation("[INFO]", "All references listed!", False, True, True)
     End Sub
 
     Public Sub FormatCode()
-        FormatCode(g_mFormMain.g_ClassTabControl.m_ActiveTab)
-    End Sub
+        Dim mTab = g_mFormMain.g_ClassTabControl.m_ActiveTab
 
-    Public Sub FormatCode(mTab As ClassTabControl.SourceTabPage)
         Dim lRealSourceLines As New List(Of String)
         Using mSR As New IO.StringReader(mTab.m_TextEditor.Document.TextContent)
             Dim sLine As String
@@ -225,14 +222,12 @@ Public Class ClassTextEditorTools
             mTab.m_TextEditor.Refresh()
         End Try
 
-        g_mFormMain.PrintInformation("[INFO]", String.Format("Tab {0}({1}) code reindented!", mTab.m_Title, mTab.m_Index), False, True, True)
+        g_mFormMain.PrintInformation("[INFO]", String.Format("Code reindented!", mTab.m_Title, mTab.m_Index), False, True, True)
     End Sub
 
     Public Sub FormatCodeTrim()
-        FormatCodeTrim(g_mFormMain.g_ClassTabControl.m_ActiveTab)
-    End Sub
+        Dim mTab = g_mFormMain.g_ClassTabControl.m_ActiveTab
 
-    Public Sub FormatCodeTrim(mTab As ClassTabControl.SourceTabPage)
         Dim lRealSourceLines As New List(Of String)
         Using mSR As New IO.StringReader(mTab.m_TextEditor.Document.TextContent)
             Dim sLine As String
@@ -290,7 +285,7 @@ Public Class ClassTextEditorTools
             mTab.m_TextEditor.Refresh()
         End Try
 
-        g_mFormMain.PrintInformation("[INFO]", String.Format("Tab {0}({1}) ending whitespace trimmed!", mTab.m_Title, mTab.m_Index), False, True, True)
+        g_mFormMain.PrintInformation("[INFO]", String.Format("Ending whitespace trimmed!", mTab.m_Title, mTab.m_Index), False, True, True)
     End Sub
 
     ''' <summary>
