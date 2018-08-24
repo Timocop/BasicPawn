@@ -15,7 +15,6 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 
-Imports System.Text
 Imports System.Text.RegularExpressions
 
 Public Class UCAutocomplete

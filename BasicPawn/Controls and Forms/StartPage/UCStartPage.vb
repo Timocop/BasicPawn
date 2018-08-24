@@ -83,7 +83,7 @@ Public Class UCStartPage
                     .AutoSize = False
                     .TextAlign = ContentAlignment.MiddleCenter
 
-                    .Parent = TabPage_RecentProjects
+                    .Parent = RecentListBox_Projects
                     .Dock = DockStyle.Fill
                     .Show()
 
@@ -100,7 +100,7 @@ Public Class UCStartPage
                     .AutoSize = False
                     .TextAlign = ContentAlignment.MiddleCenter
 
-                    .Parent = TabPage_RecentFiles
+                    .Parent = RecentListBox_Files
                     .Dock = DockStyle.Fill
                     .Show()
 
