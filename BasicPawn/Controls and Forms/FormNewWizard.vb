@@ -304,7 +304,7 @@ Public Class FormNewWizard
                                             .AddRange(mItemList.mReplace)
 
                                             Dim mItemItemList As New STRUC_LIST_REPLACE.STRUC_LIST_REPLACE_ITEM With {
-                                                .sItemDescription = sItemDescription,
+                                                .sItemDescription = sItemDescription.Trim,
                                                 .sReplace = mItem.sValue.Trim
                                             }
                                             .Add(mItemItemList)
@@ -315,7 +315,7 @@ Public Class FormNewWizard
                                         g_lPropertiesTypeList(sName) = mItemList
                                     Else
                                         Dim mItemItemList As New STRUC_LIST_REPLACE.STRUC_LIST_REPLACE_ITEM With {
-                                            .sItemDescription = sItemDescription,
+                                            .sItemDescription = sItemDescription.Trim,
                                             .sReplace = mItem.sValue.Trim
                                         }
 
