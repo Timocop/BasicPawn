@@ -98,9 +98,6 @@ Public Class FormReportManager
 
         g_mClassReports = New ClassReports(Me)
         g_mClassLogs = New ClassLogs(Me)
-
-        ClassTools.ClassForms.SetDoubleBufferingAllChilds(Me, True)
-        ClassTools.ClassForms.SetDoubleBufferingUnmanagedAllChilds(Me, True)
     End Sub
 
     Private Sub FormReportManager_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -132,14 +129,36 @@ Public Class FormReportManager
     End Sub
 
     Private Sub CloseReportWindowsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_CloseReportWindows.Click
-        For Each mItem In g_mClassReports.GetItems()
-            Dim mUCReportExceptionItem = TryCast(mItem, UCReportExceptionItem)
-            If (mUCReportExceptionItem Is Nothing) Then
-                Continue For
-            End If
+        g_mClassReports.CloseReportForms()
+    End Sub
 
-            mUCReportExceptionItem.CloseReportForm()
+    Private Sub ReportListBox_Reports_Click(sender As Object, e As EventArgs) Handles ReportListBox_Reports.Click
+        If (ReportListBox_Reports.SelectedItems.Count < 1) Then
+            Return
+        End If
+
+        Dim mReportItem = TryCast(ReportListBox_Reports.SelectedItems(0), ClassReportListBox.ClassReportItem)
+        If (mReportItem Is Nothing) Then
+            Return
+        End If
+
+        If (Not mReportItem.m_IsClickable) Then
+            Return
+        End If
+
+        Dim iCount = 0
+        For Each mForm As Form In Application.OpenForms
+            If (TypeOf mForm Is FormReportDetails) Then
+                iCount += 1
+            End If
         Next
+
+        If (iCount > 100) Then
+            MessageBox.Show("Too many 'Report' windows open!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+        Else
+            Dim mFormReportDetails As New FormReportDetails(Me, mReportItem.m_Exception)
+            mFormReportDetails.Show()
+        End If
     End Sub
 
     Private Sub ClassTreeViewColumns_DoubleClick(sender As Object, e As EventArgs)
@@ -425,47 +444,19 @@ Public Class FormReportManager
                                                                                             End Function)
 
                                                                  ClassThread.ExecAsync(g_mFormReportManager, Sub()
-                                                                                                                 g_mFormReportManager.TabPage_Reports.SuspendLayout()
-
-                                                                                                                 CleanReports()
-
-                                                                                                                 Const iDisplayLimit = 500
-                                                                                                                 Dim iLimit As Integer = iDisplayLimit
+                                                                                                                 g_mFormReportManager.ReportListBox_Reports.BeginUpdate()
+                                                                                                                 g_mFormReportManager.ReportListBox_Reports.Items.Clear()
 
                                                                                                                  For Each mItem In lReportExceptionItems
-                                                                                                                     iLimit -= 1
 
-                                                                                                                     If (iLimit < 0) Then
-                                                                                                                         lReportItems.Add({"Unable to display more reports", String.Format("You can not display more than {0} reports at once", iDisplayLimit), My.Resources.user32_101_16x16_32})
-                                                                                                                         Exit For
-                                                                                                                     End If
-
-                                                                                                                     With New UCReportExceptionItem(g_mFormReportManager, mItem)
-                                                                                                                         .SuspendLayout()
-
-                                                                                                                         .Parent = g_mFormReportManager.TabPage_Reports
-                                                                                                                         .Dock = DockStyle.Top
-                                                                                                                         .BringToFront()
-                                                                                                                         .Show()
-
-                                                                                                                         .ResumeLayout()
-                                                                                                                     End With
+                                                                                                                     g_mFormReportManager.ReportListBox_Reports.Items.Add(New ClassReportListBox.ClassReportItem(mItem))
                                                                                                                  Next
 
                                                                                                                  For Each mItem In lReportItems
-                                                                                                                     With New UCReportItem(g_mFormReportManager, CStr(mItem(0)), CStr(mItem(1)), "", CType(mItem(2), Image))
-                                                                                                                         .SuspendLayout()
-
-                                                                                                                         .Parent = g_mFormReportManager.TabPage_Reports
-                                                                                                                         .Dock = DockStyle.Top
-                                                                                                                         .SendToBack()
-                                                                                                                         .Show()
-
-                                                                                                                         .ResumeLayout()
-                                                                                                                     End With
+                                                                                                                     g_mFormReportManager.ReportListBox_Reports.Items.Add(New ClassReportListBox.ClassReportItem(CStr(mItem(0)), CStr(mItem(1)), "", CType(mItem(2), Image), False, Nothing))
                                                                                                                  Next
 
-                                                                                                                 g_mFormReportManager.TabPage_Reports.ResumeLayout()
+                                                                                                                 g_mFormReportManager.ReportListBox_Reports.EndUpdate()
                                                                                                              End Sub)
 
                                                                  ClassThread.ExecAsync(g_mFormReportManager, Sub()
@@ -499,26 +490,18 @@ Public Class FormReportManager
             g_mFormReportManager.ToolStripMenuItem_GetReports.Image = g_mFormReportManager.g_sGetReportsOrginalImage
         End Sub
 
-        Public Function GetItems() As UCReportItem()
-            Dim lItemList As New List(Of UCReportItem)
+        Public Sub CloseReportForms()
+            Dim lForms As New List(Of Form)
 
-            For Each mControl As Control In g_mFormReportManager.TabPage_Reports.Controls
-                If (TypeOf mControl Is UCReportItem) Then
-                    lItemList.Add(DirectCast(mControl, UCReportItem))
+            For Each mForm As Form In Application.OpenForms
+                If (TypeOf mForm Is FormReportDetails) Then
+                    lForms.Add(mForm)
                 End If
             Next
 
-            Return lItemList.ToArray
-        End Function
-
-        Public Sub CleanReports()
-            g_mFormReportManager.SuspendLayout()
-
-            For Each mControl As UCReportItem In GetItems()
-                mControl.Dispose()
+            For Each mForm In lForms
+                mForm.Close()
             Next
-
-            g_mFormReportManager.ResumeLayout()
         End Sub
 
 #Region "IDisposable Support"
@@ -918,6 +901,7 @@ Public Class FormReportManager
     End Sub
 
     Private Sub CleanUp()
+
         If (g_mClassTreeViewColumns IsNot Nothing) Then
             RemoveHandler g_mClassTreeViewColumns.m_TreeView.DoubleClick, AddressOf ClassTreeViewColumns_DoubleClick
         End If
@@ -928,6 +912,8 @@ Public Class FormReportManager
         End If
 
         If (g_mClassReports IsNot Nothing) Then
+            g_mClassReports.CloseReportForms()
+
             g_mClassReports.Dispose()
             g_mClassReports = Nothing
         End If

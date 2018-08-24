@@ -38,9 +38,11 @@ Partial Class FormReportManager
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
         Me.TabControl1 = New BasicPawn.ClassTabControlColor()
         Me.TabPage_Reports = New System.Windows.Forms.TabPage()
+        Me.ReportListBox_Reports = New BasicPawnPluginAutoErrorReport.ClassReportListBox()
         Me.TabPage_Logs = New System.Windows.Forms.TabPage()
         Me.MenuStrip1.SuspendLayout()
         Me.TabControl1.SuspendLayout()
+        Me.TabPage_Reports.SuspendLayout()
         Me.SuspendLayout()
         '
         'MenuStrip1
@@ -116,6 +118,7 @@ Partial Class FormReportManager
         '
         'TabPage_Reports
         '
+        Me.TabPage_Reports.Controls.Add(Me.ReportListBox_Reports)
         Me.TabPage_Reports.Location = New System.Drawing.Point(4, 22)
         Me.TabPage_Reports.Name = "TabPage_Reports"
         Me.TabPage_Reports.Padding = New System.Windows.Forms.Padding(3)
@@ -123,6 +126,18 @@ Partial Class FormReportManager
         Me.TabPage_Reports.TabIndex = 0
         Me.TabPage_Reports.Text = "Reports"
         Me.TabPage_Reports.UseVisualStyleBackColor = True
+        '
+        'ReportListBox_Reports
+        '
+        Me.ReportListBox_Reports.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.ReportListBox_Reports.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ReportListBox_Reports.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable
+        Me.ReportListBox_Reports.FormattingEnabled = True
+        Me.ReportListBox_Reports.ItemHeight = 32
+        Me.ReportListBox_Reports.Location = New System.Drawing.Point(3, 3)
+        Me.ReportListBox_Reports.Name = "ReportListBox_Reports"
+        Me.ReportListBox_Reports.Size = New System.Drawing.Size(722, 452)
+        Me.ReportListBox_Reports.TabIndex = 0
         '
         'TabPage_Logs
         '
@@ -151,6 +166,7 @@ Partial Class FormReportManager
         Me.MenuStrip1.ResumeLayout(False)
         Me.MenuStrip1.PerformLayout()
         Me.TabControl1.ResumeLayout(False)
+        Me.TabPage_Reports.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -167,4 +183,5 @@ Partial Class FormReportManager
     Friend WithEvents ToolStripMenuItem_GetLogs As Windows.Forms.ToolStripMenuItem
     Friend WithEvents ImageList_Logs As Windows.Forms.ImageList
     Friend WithEvents StatusStrip1 As Windows.Forms.StatusStrip
+    Friend WithEvents ReportListBox_Reports As ClassReportListBox
 End Class

@@ -79,6 +79,9 @@
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FormReportManager\Controls\ClassReportListBox.vb">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="FormReportManager\FormReportDetails.Designer.vb">
       <DependentUpon>FormReportDetails.vb</DependentUpon>
     </Compile>
@@ -90,21 +93,6 @@
     </Compile>
     <Compile Include="FormReportManager\FormReportManager.vb">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormReportManager\UCReportExceptionItem.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="FormReportManager\UCReportItem.Designer.vb">
-      <DependentUpon>UCReportItem.vb</DependentUpon>
-    </Compile>
-    <Compile Include="FormReportManager\UCReportItem.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="FormReportManager\UCReportList.Designer.vb">
-      <DependentUpon>UCReportList.vb</DependentUpon>
-    </Compile>
-    <Compile Include="FormReportManager\UCReportList.vb">
-      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="FormSettings.Designer.vb">
       <DependentUpon>FormSettings.vb</DependentUpon>
@@ -135,12 +123,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormReportManager\FormReportManager.resx">
       <DependentUpon>FormReportManager.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FormReportManager\UCReportItem.resx">
-      <DependentUpon>UCReportItem.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FormReportManager\UCReportList.resx">
-      <DependentUpon>UCReportList.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormSettings.resx">
       <DependentUpon>FormSettings.vb</DependentUpon>
