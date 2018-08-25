@@ -33,64 +33,56 @@ Partial Class FormSettings
         Me.ToolStripMenuItem_PluginsDisable = New System.Windows.Forms.ToolStripMenuItem()
         Me.TabControl1 = New BasicPawn.ClassTabControlColor()
         Me.TabPage_Settings = New System.Windows.Forms.TabPage()
-        Me.Panel8 = New System.Windows.Forms.Panel()
-        Me.Label14 = New System.Windows.Forms.Label()
-        Me.Panel4 = New System.Windows.Forms.Panel()
-        Me.CheckBox_CatchExceptions = New System.Windows.Forms.CheckBox()
-        Me.CheckBox_EntitiesEnableColor = New System.Windows.Forms.CheckBox()
-        Me.CheckBox_EntitiesEnableShowNewEnts = New System.Windows.Forms.CheckBox()
-        Me.Panel5 = New System.Windows.Forms.Panel()
-        Me.CheckBox_AutoIndentBrackets = New System.Windows.Forms.CheckBox()
-        Me.CheckBox_AutoCloseStrings = New System.Windows.Forms.CheckBox()
-        Me.CheckBox_AutoCloseBrackets = New System.Windows.Forms.CheckBox()
-        Me.CheckBox_OnlyUpdateSyntaxWhenFocused = New System.Windows.Forms.CheckBox()
-        Me.CheckBox_WindowsToolTipNewlineMethods = New System.Windows.Forms.CheckBox()
-        Me.CheckBox_WindowsToolTipAnimations = New System.Windows.Forms.CheckBox()
-        Me.Label1 = New System.Windows.Forms.Label()
-        Me.CheckBox_SwitchTabToAutocomplete = New System.Windows.Forms.CheckBox()
-        Me.CheckBox_AlwaysLoadDefaultIncludes = New System.Windows.Forms.CheckBox()
-        Me.Panel15 = New System.Windows.Forms.Panel()
-        Me.CheckBox_VarAutocompleteShowObjectBrowser = New System.Windows.Forms.CheckBox()
-        Me.CheckBox_CurrentSourceVarAutocomplete = New System.Windows.Forms.CheckBox()
-        Me.CheckBox_OnScreenIntelliSense = New System.Windows.Forms.CheckBox()
-        Me.CheckBox_FullAutcompleteMethods = New System.Windows.Forms.CheckBox()
-        Me.CheckBox_CommentsMethodIntelliSense = New System.Windows.Forms.CheckBox()
-        Me.CheckBox_CommentsAutocompleteIntelliSense = New System.Windows.Forms.CheckBox()
-        Me.CheckBox_FullAutocompleteReTagging = New System.Windows.Forms.CheckBox()
-        Me.CheckBox_WindowsToolTipPopup = New System.Windows.Forms.CheckBox()
-        Me.CheckBox_CaseSensitive = New System.Windows.Forms.CheckBox()
-        Me.Panel6 = New System.Windows.Forms.Panel()
-        Me.Label7 = New System.Windows.Forms.Label()
-        Me.Panel1 = New System.Windows.Forms.Panel()
-        Me.CheckBox_DoubleClickMark = New System.Windows.Forms.CheckBox()
-        Me.CheckBox_AutoMark = New System.Windows.Forms.CheckBox()
-        Me.Panel7 = New System.Windows.Forms.Panel()
-        Me.LinkLabel_MoreStyles = New System.Windows.Forms.LinkLabel()
-        Me.LinkLabel_DefaultSyntax = New System.Windows.Forms.LinkLabel()
-        Me.Button_CustomSyntax = New System.Windows.Forms.Button()
-        Me.TextBox_CustomSyntax = New System.Windows.Forms.TextBox()
-        Me.Label32 = New System.Windows.Forms.Label()
-        Me.NumericUpDown_TabsToSpaces = New System.Windows.Forms.NumericUpDown()
-        Me.CheckBox_TabsToSpace = New System.Windows.Forms.CheckBox()
-        Me.Label8 = New System.Windows.Forms.Label()
-        Me.Panel3 = New System.Windows.Forms.Panel()
-        Me.Button_Font = New System.Windows.Forms.Button()
-        Me.Label_Font = New System.Windows.Forms.Label()
-        Me.CheckBox_InvertedColors = New System.Windows.Forms.CheckBox()
-        Me.Panel14 = New System.Windows.Forms.Panel()
+        Me.ClassTabControlColor1 = New BasicPawn.ClassTabControlColor()
+        Me.TabPage3 = New System.Windows.Forms.TabPage()
         Me.CheckBox_AutoHoverScroll = New System.Windows.Forms.CheckBox()
         Me.CheckBox_AutoOpenProjectFiles = New System.Windows.Forms.CheckBox()
-        Me.Label30 = New System.Windows.Forms.Label()
-        Me.Button_ViewErrorLog = New System.Windows.Forms.Button()
-        Me.Button_ClearErrorLog = New System.Windows.Forms.Button()
-        Me.CheckBox_AssociateAmxMod = New System.Windows.Forms.CheckBox()
-        Me.CheckBox_AssociateBasicPawnProject = New System.Windows.Forms.CheckBox()
-        Me.CheckBox_AssociateIncludes = New System.Windows.Forms.CheckBox()
-        Me.Label19 = New System.Windows.Forms.Label()
-        Me.CheckBox_AssociateSourcePawn = New System.Windows.Forms.CheckBox()
-        Me.CheckBox_AutoShowStartPage = New System.Windows.Forms.CheckBox()
-        Me.Label16 = New System.Windows.Forms.Label()
         Me.CheckBox_AlwaysNewInstance = New System.Windows.Forms.CheckBox()
+        Me.Label30 = New System.Windows.Forms.Label()
+        Me.CheckBox_AutoShowStartPage = New System.Windows.Forms.CheckBox()
+        Me.Button_ViewErrorLog = New System.Windows.Forms.Button()
+        Me.CheckBox_AssociateSourcePawn = New System.Windows.Forms.CheckBox()
+        Me.Button_ClearErrorLog = New System.Windows.Forms.Button()
+        Me.Label19 = New System.Windows.Forms.Label()
+        Me.CheckBox_AssociateAmxMod = New System.Windows.Forms.CheckBox()
+        Me.CheckBox_AssociateIncludes = New System.Windows.Forms.CheckBox()
+        Me.CheckBox_AssociateBasicPawnProject = New System.Windows.Forms.CheckBox()
+        Me.TabPage4 = New System.Windows.Forms.TabPage()
+        Me.LinkLabel_MoreStyles = New System.Windows.Forms.LinkLabel()
+        Me.Button_Font = New System.Windows.Forms.Button()
+        Me.LinkLabel_DefaultSyntax = New System.Windows.Forms.LinkLabel()
+        Me.CheckBox_InvertedColors = New System.Windows.Forms.CheckBox()
+        Me.Button_CustomSyntax = New System.Windows.Forms.Button()
+        Me.Label_Font = New System.Windows.Forms.Label()
+        Me.TextBox_CustomSyntax = New System.Windows.Forms.TextBox()
+        Me.CheckBox_TabsToSpace = New System.Windows.Forms.CheckBox()
+        Me.Label32 = New System.Windows.Forms.Label()
+        Me.NumericUpDown_TabsToSpaces = New System.Windows.Forms.NumericUpDown()
+        Me.TabPage5 = New System.Windows.Forms.TabPage()
+        Me.CheckBox_DoubleClickMark = New System.Windows.Forms.CheckBox()
+        Me.CheckBox_AutoMark = New System.Windows.Forms.CheckBox()
+        Me.TabPage6 = New System.Windows.Forms.TabPage()
+        Me.CheckBox_AutoIndentBrackets = New System.Windows.Forms.CheckBox()
+        Me.CheckBox_AlwaysLoadDefaultIncludes = New System.Windows.Forms.CheckBox()
+        Me.CheckBox_AutoCloseStrings = New System.Windows.Forms.CheckBox()
+        Me.CheckBox_CaseSensitive = New System.Windows.Forms.CheckBox()
+        Me.CheckBox_AutoCloseBrackets = New System.Windows.Forms.CheckBox()
+        Me.CheckBox_WindowsToolTipPopup = New System.Windows.Forms.CheckBox()
+        Me.CheckBox_OnlyUpdateSyntaxWhenFocused = New System.Windows.Forms.CheckBox()
+        Me.CheckBox_FullAutocompleteReTagging = New System.Windows.Forms.CheckBox()
+        Me.CheckBox_WindowsToolTipNewlineMethods = New System.Windows.Forms.CheckBox()
+        Me.CheckBox_CommentsAutocompleteIntelliSense = New System.Windows.Forms.CheckBox()
+        Me.CheckBox_WindowsToolTipAnimations = New System.Windows.Forms.CheckBox()
+        Me.CheckBox_CommentsMethodIntelliSense = New System.Windows.Forms.CheckBox()
+        Me.CheckBox_FullAutcompleteMethods = New System.Windows.Forms.CheckBox()
+        Me.CheckBox_SwitchTabToAutocomplete = New System.Windows.Forms.CheckBox()
+        Me.CheckBox_OnScreenIntelliSense = New System.Windows.Forms.CheckBox()
+        Me.CheckBox_CurrentSourceVarAutocomplete = New System.Windows.Forms.CheckBox()
+        Me.CheckBox_VarAutocompleteShowObjectBrowser = New System.Windows.Forms.CheckBox()
+        Me.TabPage7 = New System.Windows.Forms.TabPage()
+        Me.CheckBox_CatchExceptions = New System.Windows.Forms.CheckBox()
+        Me.CheckBox_EntitiesEnableShowNewEnts = New System.Windows.Forms.CheckBox()
+        Me.CheckBox_EntitiesEnableColor = New System.Windows.Forms.CheckBox()
         Me.TabPage_Configs = New System.Windows.Forms.TabPage()
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.TableLayoutPanel2 = New System.Windows.Forms.TableLayoutPanel()
@@ -190,12 +182,13 @@ Partial Class FormSettings
         Me.ContextMenuStrip_Plugins.SuspendLayout()
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Settings.SuspendLayout()
-        Me.Panel8.SuspendLayout()
-        Me.Panel5.SuspendLayout()
-        Me.Panel6.SuspendLayout()
-        Me.Panel7.SuspendLayout()
+        Me.ClassTabControlColor1.SuspendLayout()
+        Me.TabPage3.SuspendLayout()
+        Me.TabPage4.SuspendLayout()
         CType(Me.NumericUpDown_TabsToSpaces, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.Panel14.SuspendLayout()
+        Me.TabPage5.SuspendLayout()
+        Me.TabPage6.SuspendLayout()
+        Me.TabPage7.SuspendLayout()
         Me.TabPage_Configs.SuspendLayout()
         Me.TableLayoutPanel1.SuspendLayout()
         Me.TableLayoutPanel2.SuspendLayout()
@@ -224,7 +217,7 @@ Partial Class FormSettings
         Me.Button_Cancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.Button_Cancel.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_Cancel.Location = New System.Drawing.Point(686, 526)
+        Me.Button_Cancel.Location = New System.Drawing.Point(526, 406)
         Me.Button_Cancel.Name = "Button_Cancel"
         Me.Button_Cancel.Size = New System.Drawing.Size(86, 23)
         Me.Button_Cancel.TabIndex = 1
@@ -236,7 +229,7 @@ Partial Class FormSettings
         Me.Button_Apply.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_Apply.DialogResult = System.Windows.Forms.DialogResult.OK
         Me.Button_Apply.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_Apply.Location = New System.Drawing.Point(594, 526)
+        Me.Button_Apply.Location = New System.Drawing.Point(434, 406)
         Me.Button_Apply.Name = "Button_Apply"
         Me.Button_Apply.Size = New System.Drawing.Size(86, 23)
         Me.Button_Apply.TabIndex = 2
@@ -284,587 +277,62 @@ Partial Class FormSettings
         Me.TabControl1.Location = New System.Drawing.Point(12, 12)
         Me.TabControl1.Name = "TabControl1"
         Me.TabControl1.SelectedIndex = 0
-        Me.TabControl1.Size = New System.Drawing.Size(760, 508)
+        Me.TabControl1.Size = New System.Drawing.Size(600, 388)
         Me.TabControl1.TabIndex = 0
         '
         'TabPage_Settings
         '
-        Me.TabPage_Settings.AutoScroll = True
-        Me.TabPage_Settings.Controls.Add(Me.Panel8)
-        Me.TabPage_Settings.Controls.Add(Me.Panel5)
-        Me.TabPage_Settings.Controls.Add(Me.Panel6)
-        Me.TabPage_Settings.Controls.Add(Me.Panel7)
-        Me.TabPage_Settings.Controls.Add(Me.Panel14)
+        Me.TabPage_Settings.Controls.Add(Me.ClassTabControlColor1)
         Me.TabPage_Settings.Location = New System.Drawing.Point(4, 22)
         Me.TabPage_Settings.Name = "TabPage_Settings"
-        Me.TabPage_Settings.Size = New System.Drawing.Size(752, 482)
+        Me.TabPage_Settings.Size = New System.Drawing.Size(592, 362)
         Me.TabPage_Settings.TabIndex = 0
         Me.TabPage_Settings.Text = "Settings"
         Me.TabPage_Settings.UseVisualStyleBackColor = True
         '
-        'Panel8
-        '
-        Me.Panel8.AutoSize = True
-        Me.Panel8.Controls.Add(Me.Label14)
-        Me.Panel8.Controls.Add(Me.Panel4)
-        Me.Panel8.Controls.Add(Me.CheckBox_CatchExceptions)
-        Me.Panel8.Controls.Add(Me.CheckBox_EntitiesEnableColor)
-        Me.Panel8.Controls.Add(Me.CheckBox_EntitiesEnableShowNewEnts)
-        Me.Panel8.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel8.Location = New System.Drawing.Point(0, 912)
-        Me.Panel8.Name = "Panel8"
-        Me.Panel8.Size = New System.Drawing.Size(735, 92)
-        Me.Panel8.TabIndex = 25
-        '
-        'Label14
-        '
-        Me.Label14.AutoSize = True
-        Me.Label14.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Label14.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label14.Location = New System.Drawing.Point(0, 1)
-        Me.Label14.Margin = New System.Windows.Forms.Padding(3)
-        Me.Label14.Name = "Label14"
-        Me.Label14.Padding = New System.Windows.Forms.Padding(6, 3, 0, 0)
-        Me.Label14.Size = New System.Drawing.Size(65, 16)
-        Me.Label14.TabIndex = 18
-        Me.Label14.Text = "Debugger"
-        '
-        'Panel4
-        '
-        Me.Panel4.BackColor = System.Drawing.SystemColors.ControlDark
-        Me.Panel4.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel4.Location = New System.Drawing.Point(0, 0)
-        Me.Panel4.Name = "Panel4"
-        Me.Panel4.Size = New System.Drawing.Size(735, 1)
-        Me.Panel4.TabIndex = 10
-        '
-        'CheckBox_CatchExceptions
-        '
-        Me.CheckBox_CatchExceptions.AutoSize = True
-        Me.CheckBox_CatchExceptions.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_CatchExceptions.Location = New System.Drawing.Point(6, 23)
-        Me.CheckBox_CatchExceptions.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_CatchExceptions.Name = "CheckBox_CatchExceptions"
-        Me.CheckBox_CatchExceptions.Size = New System.Drawing.Size(119, 18)
-        Me.CheckBox_CatchExceptions.TabIndex = 19
-        Me.CheckBox_CatchExceptions.Text = "Catch exceptions"
-        Me.CheckBox_CatchExceptions.UseVisualStyleBackColor = True
-        '
-        'CheckBox_EntitiesEnableColor
-        '
-        Me.CheckBox_EntitiesEnableColor.AutoSize = True
-        Me.CheckBox_EntitiesEnableColor.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_EntitiesEnableColor.Location = New System.Drawing.Point(6, 47)
-        Me.CheckBox_EntitiesEnableColor.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_EntitiesEnableColor.Name = "CheckBox_EntitiesEnableColor"
-        Me.CheckBox_EntitiesEnableColor.Size = New System.Drawing.Size(221, 18)
-        Me.CheckBox_EntitiesEnableColor.TabIndex = 20
-        Me.CheckBox_EntitiesEnableColor.Text = "Colorize created and deleted entities"
-        Me.CheckBox_EntitiesEnableColor.UseVisualStyleBackColor = True
-        '
-        'CheckBox_EntitiesEnableShowNewEnts
-        '
-        Me.CheckBox_EntitiesEnableShowNewEnts.AutoSize = True
-        Me.CheckBox_EntitiesEnableShowNewEnts.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_EntitiesEnableShowNewEnts.Location = New System.Drawing.Point(6, 71)
-        Me.CheckBox_EntitiesEnableShowNewEnts.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_EntitiesEnableShowNewEnts.Name = "CheckBox_EntitiesEnableShowNewEnts"
-        Me.CheckBox_EntitiesEnableShowNewEnts.Size = New System.Drawing.Size(211, 18)
-        Me.CheckBox_EntitiesEnableShowNewEnts.TabIndex = 21
-        Me.CheckBox_EntitiesEnableShowNewEnts.Text = "Automatically scroll to new entities"
-        Me.CheckBox_EntitiesEnableShowNewEnts.UseVisualStyleBackColor = True
-        '
-        'Panel5
-        '
-        Me.Panel5.AutoSize = True
-        Me.Panel5.Controls.Add(Me.CheckBox_AutoIndentBrackets)
-        Me.Panel5.Controls.Add(Me.CheckBox_AutoCloseStrings)
-        Me.Panel5.Controls.Add(Me.CheckBox_AutoCloseBrackets)
-        Me.Panel5.Controls.Add(Me.CheckBox_OnlyUpdateSyntaxWhenFocused)
-        Me.Panel5.Controls.Add(Me.CheckBox_WindowsToolTipNewlineMethods)
-        Me.Panel5.Controls.Add(Me.CheckBox_WindowsToolTipAnimations)
-        Me.Panel5.Controls.Add(Me.Label1)
-        Me.Panel5.Controls.Add(Me.CheckBox_SwitchTabToAutocomplete)
-        Me.Panel5.Controls.Add(Me.CheckBox_AlwaysLoadDefaultIncludes)
-        Me.Panel5.Controls.Add(Me.Panel15)
-        Me.Panel5.Controls.Add(Me.CheckBox_VarAutocompleteShowObjectBrowser)
-        Me.Panel5.Controls.Add(Me.CheckBox_CurrentSourceVarAutocomplete)
-        Me.Panel5.Controls.Add(Me.CheckBox_OnScreenIntelliSense)
-        Me.Panel5.Controls.Add(Me.CheckBox_FullAutcompleteMethods)
-        Me.Panel5.Controls.Add(Me.CheckBox_CommentsMethodIntelliSense)
-        Me.Panel5.Controls.Add(Me.CheckBox_CommentsAutocompleteIntelliSense)
-        Me.Panel5.Controls.Add(Me.CheckBox_FullAutocompleteReTagging)
-        Me.Panel5.Controls.Add(Me.CheckBox_WindowsToolTipPopup)
-        Me.Panel5.Controls.Add(Me.CheckBox_CaseSensitive)
-        Me.Panel5.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel5.Location = New System.Drawing.Point(0, 484)
-        Me.Panel5.Name = "Panel5"
-        Me.Panel5.Size = New System.Drawing.Size(735, 428)
-        Me.Panel5.TabIndex = 22
-        '
-        'CheckBox_AutoIndentBrackets
-        '
-        Me.CheckBox_AutoIndentBrackets.AutoSize = True
-        Me.CheckBox_AutoIndentBrackets.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_AutoIndentBrackets.Location = New System.Drawing.Point(6, 407)
-        Me.CheckBox_AutoIndentBrackets.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_AutoIndentBrackets.Name = "CheckBox_AutoIndentBrackets"
-        Me.CheckBox_AutoIndentBrackets.Size = New System.Drawing.Size(236, 18)
-        Me.CheckBox_AutoIndentBrackets.TabIndex = 26
-        Me.CheckBox_AutoIndentBrackets.Text = "Automatically indent brackets on return"
-        Me.CheckBox_AutoIndentBrackets.UseVisualStyleBackColor = True
-        '
-        'CheckBox_AutoCloseStrings
-        '
-        Me.CheckBox_AutoCloseStrings.AutoSize = True
-        Me.CheckBox_AutoCloseStrings.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_AutoCloseStrings.Location = New System.Drawing.Point(6, 383)
-        Me.CheckBox_AutoCloseStrings.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_AutoCloseStrings.Name = "CheckBox_AutoCloseStrings"
-        Me.CheckBox_AutoCloseStrings.Size = New System.Drawing.Size(239, 18)
-        Me.CheckBox_AutoCloseStrings.TabIndex = 25
-        Me.CheckBox_AutoCloseStrings.Text = "Automatically close strings while writing"
-        Me.CheckBox_AutoCloseStrings.UseVisualStyleBackColor = True
-        '
-        'CheckBox_AutoCloseBrackets
-        '
-        Me.CheckBox_AutoCloseBrackets.AutoSize = True
-        Me.CheckBox_AutoCloseBrackets.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_AutoCloseBrackets.Location = New System.Drawing.Point(6, 359)
-        Me.CheckBox_AutoCloseBrackets.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_AutoCloseBrackets.Name = "CheckBox_AutoCloseBrackets"
-        Me.CheckBox_AutoCloseBrackets.Size = New System.Drawing.Size(247, 18)
-        Me.CheckBox_AutoCloseBrackets.TabIndex = 24
-        Me.CheckBox_AutoCloseBrackets.Text = "Automatically close brackets while writing"
-        Me.CheckBox_AutoCloseBrackets.UseVisualStyleBackColor = True
-        '
-        'CheckBox_OnlyUpdateSyntaxWhenFocused
-        '
-        Me.CheckBox_OnlyUpdateSyntaxWhenFocused.AutoSize = True
-        Me.CheckBox_OnlyUpdateSyntaxWhenFocused.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_OnlyUpdateSyntaxWhenFocused.Location = New System.Drawing.Point(6, 335)
-        Me.CheckBox_OnlyUpdateSyntaxWhenFocused.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_OnlyUpdateSyntaxWhenFocused.Name = "CheckBox_OnlyUpdateSyntaxWhenFocused"
-        Me.CheckBox_OnlyUpdateSyntaxWhenFocused.Size = New System.Drawing.Size(283, 18)
-        Me.CheckBox_OnlyUpdateSyntaxWhenFocused.TabIndex = 23
-        Me.CheckBox_OnlyUpdateSyntaxWhenFocused.Text = "Only update syntax when the window is focused"
-        Me.CheckBox_OnlyUpdateSyntaxWhenFocused.UseVisualStyleBackColor = True
-        '
-        'CheckBox_WindowsToolTipNewlineMethods
-        '
-        Me.CheckBox_WindowsToolTipNewlineMethods.AutoSize = True
-        Me.CheckBox_WindowsToolTipNewlineMethods.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_WindowsToolTipNewlineMethods.Location = New System.Drawing.Point(64, 167)
-        Me.CheckBox_WindowsToolTipNewlineMethods.Margin = New System.Windows.Forms.Padding(64, 3, 3, 3)
-        Me.CheckBox_WindowsToolTipNewlineMethods.Name = "CheckBox_WindowsToolTipNewlineMethods"
-        Me.CheckBox_WindowsToolTipNewlineMethods.Size = New System.Drawing.Size(175, 18)
-        Me.CheckBox_WindowsToolTipNewlineMethods.TabIndex = 22
-        Me.CheckBox_WindowsToolTipNewlineMethods.Text = "Newline method arguments"
-        Me.CheckBox_WindowsToolTipNewlineMethods.UseVisualStyleBackColor = True
-        '
-        'CheckBox_WindowsToolTipAnimations
-        '
-        Me.CheckBox_WindowsToolTipAnimations.AutoSize = True
-        Me.CheckBox_WindowsToolTipAnimations.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_WindowsToolTipAnimations.Location = New System.Drawing.Point(64, 143)
-        Me.CheckBox_WindowsToolTipAnimations.Margin = New System.Windows.Forms.Padding(64, 3, 3, 3)
-        Me.CheckBox_WindowsToolTipAnimations.Name = "CheckBox_WindowsToolTipAnimations"
-        Me.CheckBox_WindowsToolTipAnimations.Size = New System.Drawing.Size(204, 18)
-        Me.CheckBox_WindowsToolTipAnimations.TabIndex = 21
-        Me.CheckBox_WindowsToolTipAnimations.Text = "Smooth tooltip popup movement"
-        Me.CheckBox_WindowsToolTipAnimations.UseVisualStyleBackColor = True
-        '
-        'Label1
-        '
-        Me.Label1.AutoSize = True
-        Me.Label1.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Label1.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label1.Location = New System.Drawing.Point(0, 1)
-        Me.Label1.Margin = New System.Windows.Forms.Padding(3)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Padding = New System.Windows.Forms.Padding(6, 3, 0, 0)
-        Me.Label1.Size = New System.Drawing.Size(161, 16)
-        Me.Label1.TabIndex = 1
-        Me.Label1.Text = "Autocomplete && IntelliSense"
-        '
-        'CheckBox_SwitchTabToAutocomplete
-        '
-        Me.CheckBox_SwitchTabToAutocomplete.AutoSize = True
-        Me.CheckBox_SwitchTabToAutocomplete.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_SwitchTabToAutocomplete.Location = New System.Drawing.Point(6, 311)
-        Me.CheckBox_SwitchTabToAutocomplete.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_SwitchTabToAutocomplete.Name = "CheckBox_SwitchTabToAutocomplete"
-        Me.CheckBox_SwitchTabToAutocomplete.Size = New System.Drawing.Size(326, 18)
-        Me.CheckBox_SwitchTabToAutocomplete.TabIndex = 20
-        Me.CheckBox_SwitchTabToAutocomplete.Text = "Automatically switch tab to 'Autocomplete && IntelliSense'"
-        Me.CheckBox_SwitchTabToAutocomplete.UseVisualStyleBackColor = True
-        '
-        'CheckBox_AlwaysLoadDefaultIncludes
-        '
-        Me.CheckBox_AlwaysLoadDefaultIncludes.AutoSize = True
-        Me.CheckBox_AlwaysLoadDefaultIncludes.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_AlwaysLoadDefaultIncludes.Location = New System.Drawing.Point(6, 23)
-        Me.CheckBox_AlwaysLoadDefaultIncludes.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_AlwaysLoadDefaultIncludes.Name = "CheckBox_AlwaysLoadDefaultIncludes"
-        Me.CheckBox_AlwaysLoadDefaultIncludes.Size = New System.Drawing.Size(198, 18)
-        Me.CheckBox_AlwaysLoadDefaultIncludes.TabIndex = 19
-        Me.CheckBox_AlwaysLoadDefaultIncludes.Text = "Always load default include files"
-        Me.CheckBox_AlwaysLoadDefaultIncludes.UseVisualStyleBackColor = True
-        '
-        'Panel15
-        '
-        Me.Panel15.BackColor = System.Drawing.SystemColors.ControlDark
-        Me.Panel15.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel15.Location = New System.Drawing.Point(0, 0)
-        Me.Panel15.Name = "Panel15"
-        Me.Panel15.Size = New System.Drawing.Size(735, 1)
-        Me.Panel15.TabIndex = 10
-        '
-        'CheckBox_VarAutocompleteShowObjectBrowser
-        '
-        Me.CheckBox_VarAutocompleteShowObjectBrowser.AutoSize = True
-        Me.CheckBox_VarAutocompleteShowObjectBrowser.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_VarAutocompleteShowObjectBrowser.Location = New System.Drawing.Point(6, 287)
-        Me.CheckBox_VarAutocompleteShowObjectBrowser.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_VarAutocompleteShowObjectBrowser.Name = "CheckBox_VarAutocompleteShowObjectBrowser"
-        Me.CheckBox_VarAutocompleteShowObjectBrowser.Size = New System.Drawing.Size(224, 18)
-        Me.CheckBox_VarAutocompleteShowObjectBrowser.TabIndex = 18
-        Me.CheckBox_VarAutocompleteShowObjectBrowser.Text = "Show variables in the Object Browser"
-        Me.CheckBox_VarAutocompleteShowObjectBrowser.UseVisualStyleBackColor = True
-        '
-        'CheckBox_CurrentSourceVarAutocomplete
-        '
-        Me.CheckBox_CurrentSourceVarAutocomplete.AutoSize = True
-        Me.CheckBox_CurrentSourceVarAutocomplete.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_CurrentSourceVarAutocomplete.Location = New System.Drawing.Point(6, 263)
-        Me.CheckBox_CurrentSourceVarAutocomplete.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_CurrentSourceVarAutocomplete.Name = "CheckBox_CurrentSourceVarAutocomplete"
-        Me.CheckBox_CurrentSourceVarAutocomplete.Size = New System.Drawing.Size(690, 18)
-        Me.CheckBox_CurrentSourceVarAutocomplete.TabIndex = 17
-        Me.CheckBox_CurrentSourceVarAutocomplete.Text = "Only search variables from active tabs (increases parsing speed but wont display " &
-    "variables correctly when working with includes)"
-        Me.CheckBox_CurrentSourceVarAutocomplete.UseVisualStyleBackColor = True
-        '
-        'CheckBox_OnScreenIntelliSense
-        '
-        Me.CheckBox_OnScreenIntelliSense.AutoSize = True
-        Me.CheckBox_OnScreenIntelliSense.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_OnScreenIntelliSense.Location = New System.Drawing.Point(6, 47)
-        Me.CheckBox_OnScreenIntelliSense.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_OnScreenIntelliSense.Name = "CheckBox_OnScreenIntelliSense"
-        Me.CheckBox_OnScreenIntelliSense.Size = New System.Drawing.Size(129, 18)
-        Me.CheckBox_OnScreenIntelliSense.TabIndex = 2
-        Me.CheckBox_OnScreenIntelliSense.Text = "Enable IntelliSense"
-        Me.CheckBox_OnScreenIntelliSense.UseVisualStyleBackColor = True
-        '
-        'CheckBox_FullAutcompleteMethods
-        '
-        Me.CheckBox_FullAutcompleteMethods.AutoSize = True
-        Me.CheckBox_FullAutcompleteMethods.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_FullAutcompleteMethods.Location = New System.Drawing.Point(6, 191)
-        Me.CheckBox_FullAutcompleteMethods.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_FullAutcompleteMethods.Name = "CheckBox_FullAutcompleteMethods"
-        Me.CheckBox_FullAutcompleteMethods.Size = New System.Drawing.Size(202, 18)
-        Me.CheckBox_FullAutcompleteMethods.TabIndex = 3
-        Me.CheckBox_FullAutcompleteMethods.Text = "Full autocompletion for methods"
-        Me.CheckBox_FullAutcompleteMethods.UseVisualStyleBackColor = True
-        '
-        'CheckBox_CommentsMethodIntelliSense
-        '
-        Me.CheckBox_CommentsMethodIntelliSense.AutoSize = True
-        Me.CheckBox_CommentsMethodIntelliSense.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_CommentsMethodIntelliSense.Location = New System.Drawing.Point(32, 71)
-        Me.CheckBox_CommentsMethodIntelliSense.Margin = New System.Windows.Forms.Padding(32, 3, 3, 3)
-        Me.CheckBox_CommentsMethodIntelliSense.Name = "CheckBox_CommentsMethodIntelliSense"
-        Me.CheckBox_CommentsMethodIntelliSense.Size = New System.Drawing.Size(319, 18)
-        Me.CheckBox_CommentsMethodIntelliSense.TabIndex = 6
-        Me.CheckBox_CommentsMethodIntelliSense.Text = "Display comments for methods in on-screen IntelliSense"
-        Me.CheckBox_CommentsMethodIntelliSense.UseVisualStyleBackColor = True
-        '
-        'CheckBox_CommentsAutocompleteIntelliSense
-        '
-        Me.CheckBox_CommentsAutocompleteIntelliSense.AutoSize = True
-        Me.CheckBox_CommentsAutocompleteIntelliSense.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_CommentsAutocompleteIntelliSense.Location = New System.Drawing.Point(32, 95)
-        Me.CheckBox_CommentsAutocompleteIntelliSense.Margin = New System.Windows.Forms.Padding(32, 3, 3, 3)
-        Me.CheckBox_CommentsAutocompleteIntelliSense.Name = "CheckBox_CommentsAutocompleteIntelliSense"
-        Me.CheckBox_CommentsAutocompleteIntelliSense.Size = New System.Drawing.Size(356, 18)
-        Me.CheckBox_CommentsAutocompleteIntelliSense.TabIndex = 7
-        Me.CheckBox_CommentsAutocompleteIntelliSense.Text = "Display comments for autocompletion in on-screen IntelliSense"
-        Me.CheckBox_CommentsAutocompleteIntelliSense.UseVisualStyleBackColor = True
-        '
-        'CheckBox_FullAutocompleteReTagging
-        '
-        Me.CheckBox_FullAutocompleteReTagging.AutoSize = True
-        Me.CheckBox_FullAutocompleteReTagging.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_FullAutocompleteReTagging.Location = New System.Drawing.Point(6, 215)
-        Me.CheckBox_FullAutocompleteReTagging.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_FullAutocompleteReTagging.Name = "CheckBox_FullAutocompleteReTagging"
-        Me.CheckBox_FullAutocompleteReTagging.Size = New System.Drawing.Size(415, 18)
-        Me.CheckBox_FullAutocompleteReTagging.TabIndex = 8
-        Me.CheckBox_FullAutocompleteReTagging.Text = "Full autocompletion for enums using re-tagging (SourcePawn <1.6 Syntax)"
-        Me.CheckBox_FullAutocompleteReTagging.UseVisualStyleBackColor = True
-        '
-        'CheckBox_WindowsToolTipPopup
-        '
-        Me.CheckBox_WindowsToolTipPopup.AutoSize = True
-        Me.CheckBox_WindowsToolTipPopup.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_WindowsToolTipPopup.Location = New System.Drawing.Point(32, 119)
-        Me.CheckBox_WindowsToolTipPopup.Margin = New System.Windows.Forms.Padding(32, 3, 3, 3)
-        Me.CheckBox_WindowsToolTipPopup.Name = "CheckBox_WindowsToolTipPopup"
-        Me.CheckBox_WindowsToolTipPopup.Size = New System.Drawing.Size(127, 18)
-        Me.CheckBox_WindowsToolTipPopup.TabIndex = 16
-        Me.CheckBox_WindowsToolTipPopup.Text = "Use tooltip popup"
-        Me.CheckBox_WindowsToolTipPopup.UseVisualStyleBackColor = True
-        '
-        'CheckBox_CaseSensitive
-        '
-        Me.CheckBox_CaseSensitive.AutoSize = True
-        Me.CheckBox_CaseSensitive.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_CaseSensitive.Location = New System.Drawing.Point(6, 239)
-        Me.CheckBox_CaseSensitive.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_CaseSensitive.Name = "CheckBox_CaseSensitive"
-        Me.CheckBox_CaseSensitive.Size = New System.Drawing.Size(103, 18)
-        Me.CheckBox_CaseSensitive.TabIndex = 15
-        Me.CheckBox_CaseSensitive.Text = "Case sensitive"
-        Me.CheckBox_CaseSensitive.UseVisualStyleBackColor = True
-        '
-        'Panel6
-        '
-        Me.Panel6.AutoSize = True
-        Me.Panel6.Controls.Add(Me.Label7)
-        Me.Panel6.Controls.Add(Me.Panel1)
-        Me.Panel6.Controls.Add(Me.CheckBox_DoubleClickMark)
-        Me.Panel6.Controls.Add(Me.CheckBox_AutoMark)
-        Me.Panel6.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel6.Location = New System.Drawing.Point(0, 416)
-        Me.Panel6.Name = "Panel6"
-        Me.Panel6.Size = New System.Drawing.Size(735, 68)
-        Me.Panel6.TabIndex = 23
-        '
-        'Label7
-        '
-        Me.Label7.AutoSize = True
-        Me.Label7.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Label7.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label7.Location = New System.Drawing.Point(0, 1)
-        Me.Label7.Margin = New System.Windows.Forms.Padding(3)
-        Me.Label7.Name = "Label7"
-        Me.Label7.Padding = New System.Windows.Forms.Padding(6, 3, 0, 0)
-        Me.Label7.Size = New System.Drawing.Size(117, 16)
-        Me.Label7.TabIndex = 4
-        Me.Label7.Text = "Syntax Highlighting"
-        '
-        'Panel1
-        '
-        Me.Panel1.BackColor = System.Drawing.SystemColors.ControlDark
-        Me.Panel1.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel1.Location = New System.Drawing.Point(0, 0)
-        Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(735, 1)
-        Me.Panel1.TabIndex = 0
-        '
-        'CheckBox_DoubleClickMark
-        '
-        Me.CheckBox_DoubleClickMark.AutoSize = True
-        Me.CheckBox_DoubleClickMark.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_DoubleClickMark.Location = New System.Drawing.Point(6, 23)
-        Me.CheckBox_DoubleClickMark.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_DoubleClickMark.Name = "CheckBox_DoubleClickMark"
-        Me.CheckBox_DoubleClickMark.Size = New System.Drawing.Size(190, 18)
-        Me.CheckBox_DoubleClickMark.TabIndex = 5
-        Me.CheckBox_DoubleClickMark.Text = "Mark words using double click"
-        Me.CheckBox_DoubleClickMark.UseVisualStyleBackColor = True
-        '
-        'CheckBox_AutoMark
-        '
-        Me.CheckBox_AutoMark.AutoSize = True
-        Me.CheckBox_AutoMark.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_AutoMark.Location = New System.Drawing.Point(6, 47)
-        Me.CheckBox_AutoMark.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_AutoMark.Name = "CheckBox_AutoMark"
-        Me.CheckBox_AutoMark.Size = New System.Drawing.Size(164, 18)
-        Me.CheckBox_AutoMark.TabIndex = 17
-        Me.CheckBox_AutoMark.Text = "Automatically mark words"
-        Me.CheckBox_AutoMark.UseVisualStyleBackColor = True
-        '
-        'Panel7
-        '
-        Me.Panel7.AutoSize = True
-        Me.Panel7.Controls.Add(Me.LinkLabel_MoreStyles)
-        Me.Panel7.Controls.Add(Me.LinkLabel_DefaultSyntax)
-        Me.Panel7.Controls.Add(Me.Button_CustomSyntax)
-        Me.Panel7.Controls.Add(Me.TextBox_CustomSyntax)
-        Me.Panel7.Controls.Add(Me.Label32)
-        Me.Panel7.Controls.Add(Me.NumericUpDown_TabsToSpaces)
-        Me.Panel7.Controls.Add(Me.CheckBox_TabsToSpace)
-        Me.Panel7.Controls.Add(Me.Label8)
-        Me.Panel7.Controls.Add(Me.Panel3)
-        Me.Panel7.Controls.Add(Me.Button_Font)
-        Me.Panel7.Controls.Add(Me.Label_Font)
-        Me.Panel7.Controls.Add(Me.CheckBox_InvertedColors)
-        Me.Panel7.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel7.Location = New System.Drawing.Point(0, 259)
-        Me.Panel7.Name = "Panel7"
-        Me.Panel7.Size = New System.Drawing.Size(735, 157)
-        Me.Panel7.TabIndex = 24
-        '
-        'LinkLabel_MoreStyles
-        '
-        Me.LinkLabel_MoreStyles.AutoSize = True
-        Me.LinkLabel_MoreStyles.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
-        Me.LinkLabel_MoreStyles.Location = New System.Drawing.Point(163, 141)
-        Me.LinkLabel_MoreStyles.Margin = New System.Windows.Forms.Padding(6, 0, 3, 3)
-        Me.LinkLabel_MoreStyles.Name = "LinkLabel_MoreStyles"
-        Me.LinkLabel_MoreStyles.Size = New System.Drawing.Size(120, 13)
-        Me.LinkLabel_MoreStyles.TabIndex = 22
-        Me.LinkLabel_MoreStyles.TabStop = True
-        Me.LinkLabel_MoreStyles.Text = "Get more syntax styles"
-        '
-        'LinkLabel_DefaultSyntax
-        '
-        Me.LinkLabel_DefaultSyntax.AutoSize = True
-        Me.LinkLabel_DefaultSyntax.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
-        Me.LinkLabel_DefaultSyntax.Location = New System.Drawing.Point(6, 141)
-        Me.LinkLabel_DefaultSyntax.Margin = New System.Windows.Forms.Padding(6, 0, 3, 3)
-        Me.LinkLabel_DefaultSyntax.Name = "LinkLabel_DefaultSyntax"
-        Me.LinkLabel_DefaultSyntax.Size = New System.Drawing.Size(148, 13)
-        Me.LinkLabel_DefaultSyntax.TabIndex = 21
-        Me.LinkLabel_DefaultSyntax.TabStop = True
-        Me.LinkLabel_DefaultSyntax.Text = "Default syntax highlighting"
-        '
-        'Button_CustomSyntax
-        '
-        Me.Button_CustomSyntax.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button_CustomSyntax.Location = New System.Drawing.Point(700, 116)
-        Me.Button_CustomSyntax.Name = "Button_CustomSyntax"
-        Me.Button_CustomSyntax.Size = New System.Drawing.Size(32, 23)
-        Me.Button_CustomSyntax.TabIndex = 20
-        Me.Button_CustomSyntax.Text = "..."
-        Me.Button_CustomSyntax.UseVisualStyleBackColor = True
-        '
-        'TextBox_CustomSyntax
-        '
-        Me.TextBox_CustomSyntax.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TextBox_CustomSyntax.Location = New System.Drawing.Point(6, 116)
-        Me.TextBox_CustomSyntax.Name = "TextBox_CustomSyntax"
-        Me.TextBox_CustomSyntax.Size = New System.Drawing.Size(688, 22)
-        Me.TextBox_CustomSyntax.TabIndex = 19
-        '
-        'Label32
-        '
-        Me.Label32.AutoSize = True
-        Me.Label32.Location = New System.Drawing.Point(6, 100)
-        Me.Label32.Margin = New System.Windows.Forms.Padding(6, 3, 3, 0)
-        Me.Label32.Name = "Label32"
-        Me.Label32.Size = New System.Drawing.Size(162, 13)
-        Me.Label32.TabIndex = 18
-        Me.Label32.Text = "Custom syntax highlight path:"
-        '
-        'NumericUpDown_TabsToSpaces
-        '
-        Me.NumericUpDown_TabsToSpaces.Location = New System.Drawing.Point(163, 72)
-        Me.NumericUpDown_TabsToSpaces.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
-        Me.NumericUpDown_TabsToSpaces.Name = "NumericUpDown_TabsToSpaces"
-        Me.NumericUpDown_TabsToSpaces.Size = New System.Drawing.Size(42, 22)
-        Me.NumericUpDown_TabsToSpaces.TabIndex = 15
-        Me.NumericUpDown_TabsToSpaces.Value = New Decimal(New Integer() {4, 0, 0, 0})
-        '
-        'CheckBox_TabsToSpace
-        '
-        Me.CheckBox_TabsToSpace.AutoSize = True
-        Me.CheckBox_TabsToSpace.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_TabsToSpace.Location = New System.Drawing.Point(6, 76)
-        Me.CheckBox_TabsToSpace.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_TabsToSpace.Name = "CheckBox_TabsToSpace"
-        Me.CheckBox_TabsToSpace.Size = New System.Drawing.Size(151, 18)
-        Me.CheckBox_TabsToSpace.TabIndex = 14
-        Me.CheckBox_TabsToSpace.Text = "Convert tabs to spaces:"
-        Me.CheckBox_TabsToSpace.UseVisualStyleBackColor = True
-        '
-        'Label8
-        '
-        Me.Label8.AutoSize = True
-        Me.Label8.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Label8.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label8.Location = New System.Drawing.Point(0, 1)
-        Me.Label8.Margin = New System.Windows.Forms.Padding(3)
-        Me.Label8.Name = "Label8"
-        Me.Label8.Padding = New System.Windows.Forms.Padding(6, 3, 0, 0)
-        Me.Label8.Size = New System.Drawing.Size(68, 16)
-        Me.Label8.TabIndex = 10
-        Me.Label8.Text = "Text Editor"
-        '
-        'Panel3
-        '
-        Me.Panel3.BackColor = System.Drawing.SystemColors.ControlDark
-        Me.Panel3.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel3.Location = New System.Drawing.Point(0, 0)
-        Me.Panel3.Name = "Panel3"
-        Me.Panel3.Size = New System.Drawing.Size(735, 1)
-        Me.Panel3.TabIndex = 9
-        '
-        'Button_Font
-        '
-        Me.Button_Font.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_Font.Location = New System.Drawing.Point(6, 23)
-        Me.Button_Font.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.Button_Font.Name = "Button_Font"
-        Me.Button_Font.Size = New System.Drawing.Size(75, 23)
-        Me.Button_Font.TabIndex = 11
-        Me.Button_Font.Text = "Font"
-        Me.Button_Font.UseVisualStyleBackColor = True
-        '
-        'Label_Font
-        '
-        Me.Label_Font.AutoSize = True
-        Me.Label_Font.Location = New System.Drawing.Point(90, 28)
-        Me.Label_Font.Margin = New System.Windows.Forms.Padding(6, 0, 3, 0)
-        Me.Label_Font.Name = "Label_Font"
-        Me.Label_Font.Size = New System.Drawing.Size(73, 13)
-        Me.Label_Font.TabIndex = 12
-        Me.Label_Font.Text = "Current Font"
-        '
-        'CheckBox_InvertedColors
-        '
-        Me.CheckBox_InvertedColors.AutoSize = True
-        Me.CheckBox_InvertedColors.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_InvertedColors.Location = New System.Drawing.Point(6, 52)
-        Me.CheckBox_InvertedColors.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_InvertedColors.Name = "CheckBox_InvertedColors"
-        Me.CheckBox_InvertedColors.Size = New System.Drawing.Size(134, 18)
-        Me.CheckBox_InvertedColors.TabIndex = 13
-        Me.CheckBox_InvertedColors.Text = "High contrast mode"
-        Me.CheckBox_InvertedColors.UseVisualStyleBackColor = True
-        '
-        'Panel14
-        '
-        Me.Panel14.AutoSize = True
-        Me.Panel14.Controls.Add(Me.CheckBox_AutoHoverScroll)
-        Me.Panel14.Controls.Add(Me.CheckBox_AutoOpenProjectFiles)
-        Me.Panel14.Controls.Add(Me.Label30)
-        Me.Panel14.Controls.Add(Me.Button_ViewErrorLog)
-        Me.Panel14.Controls.Add(Me.Button_ClearErrorLog)
-        Me.Panel14.Controls.Add(Me.CheckBox_AssociateAmxMod)
-        Me.Panel14.Controls.Add(Me.CheckBox_AssociateBasicPawnProject)
-        Me.Panel14.Controls.Add(Me.CheckBox_AssociateIncludes)
-        Me.Panel14.Controls.Add(Me.Label19)
-        Me.Panel14.Controls.Add(Me.CheckBox_AssociateSourcePawn)
-        Me.Panel14.Controls.Add(Me.CheckBox_AutoShowStartPage)
-        Me.Panel14.Controls.Add(Me.Label16)
-        Me.Panel14.Controls.Add(Me.CheckBox_AlwaysNewInstance)
-        Me.Panel14.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel14.Location = New System.Drawing.Point(0, 0)
-        Me.Panel14.Name = "Panel14"
-        Me.Panel14.Size = New System.Drawing.Size(735, 259)
-        Me.Panel14.TabIndex = 26
+        'ClassTabControlColor1
+        '
+        Me.ClassTabControlColor1.Controls.Add(Me.TabPage3)
+        Me.ClassTabControlColor1.Controls.Add(Me.TabPage4)
+        Me.ClassTabControlColor1.Controls.Add(Me.TabPage5)
+        Me.ClassTabControlColor1.Controls.Add(Me.TabPage6)
+        Me.ClassTabControlColor1.Controls.Add(Me.TabPage7)
+        Me.ClassTabControlColor1.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ClassTabControlColor1.Location = New System.Drawing.Point(0, 0)
+        Me.ClassTabControlColor1.Multiline = True
+        Me.ClassTabControlColor1.Name = "ClassTabControlColor1"
+        Me.ClassTabControlColor1.SelectedIndex = 0
+        Me.ClassTabControlColor1.Size = New System.Drawing.Size(592, 362)
+        Me.ClassTabControlColor1.TabIndex = 27
+        '
+        'TabPage3
+        '
+        Me.TabPage3.AutoScroll = True
+        Me.TabPage3.Controls.Add(Me.CheckBox_AutoHoverScroll)
+        Me.TabPage3.Controls.Add(Me.CheckBox_AutoOpenProjectFiles)
+        Me.TabPage3.Controls.Add(Me.CheckBox_AlwaysNewInstance)
+        Me.TabPage3.Controls.Add(Me.Label30)
+        Me.TabPage3.Controls.Add(Me.CheckBox_AutoShowStartPage)
+        Me.TabPage3.Controls.Add(Me.Button_ViewErrorLog)
+        Me.TabPage3.Controls.Add(Me.CheckBox_AssociateSourcePawn)
+        Me.TabPage3.Controls.Add(Me.Button_ClearErrorLog)
+        Me.TabPage3.Controls.Add(Me.Label19)
+        Me.TabPage3.Controls.Add(Me.CheckBox_AssociateAmxMod)
+        Me.TabPage3.Controls.Add(Me.CheckBox_AssociateIncludes)
+        Me.TabPage3.Controls.Add(Me.CheckBox_AssociateBasicPawnProject)
+        Me.TabPage3.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage3.Name = "TabPage3"
+        Me.TabPage3.Padding = New System.Windows.Forms.Padding(3)
+        Me.TabPage3.Size = New System.Drawing.Size(584, 336)
+        Me.TabPage3.TabIndex = 0
+        Me.TabPage3.Text = "General"
+        Me.TabPage3.UseVisualStyleBackColor = True
         '
         'CheckBox_AutoHoverScroll
         '
         Me.CheckBox_AutoHoverScroll.AutoSize = True
         Me.CheckBox_AutoHoverScroll.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_AutoHoverScroll.Location = New System.Drawing.Point(6, 94)
+        Me.CheckBox_AutoHoverScroll.Location = New System.Drawing.Point(6, 75)
         Me.CheckBox_AutoHoverScroll.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_AutoHoverScroll.Name = "CheckBox_AutoHoverScroll"
         Me.CheckBox_AutoHoverScroll.Size = New System.Drawing.Size(191, 18)
@@ -876,7 +344,7 @@ Partial Class FormSettings
         '
         Me.CheckBox_AutoOpenProjectFiles.AutoSize = True
         Me.CheckBox_AutoOpenProjectFiles.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_AutoOpenProjectFiles.Location = New System.Drawing.Point(6, 70)
+        Me.CheckBox_AutoOpenProjectFiles.Location = New System.Drawing.Point(6, 51)
         Me.CheckBox_AutoOpenProjectFiles.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_AutoOpenProjectFiles.Name = "CheckBox_AutoOpenProjectFiles"
         Me.CheckBox_AutoOpenProjectFiles.Size = New System.Drawing.Size(336, 18)
@@ -884,45 +352,103 @@ Partial Class FormSettings
         Me.CheckBox_AutoOpenProjectFiles.Text = "Automatically open all project files when opening a project"
         Me.CheckBox_AutoOpenProjectFiles.UseVisualStyleBackColor = True
         '
+        'CheckBox_AlwaysNewInstance
+        '
+        Me.CheckBox_AlwaysNewInstance.AutoSize = True
+        Me.CheckBox_AlwaysNewInstance.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_AlwaysNewInstance.Location = New System.Drawing.Point(6, 3)
+        Me.CheckBox_AlwaysNewInstance.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_AlwaysNewInstance.Name = "CheckBox_AlwaysNewInstance"
+        Me.CheckBox_AlwaysNewInstance.Size = New System.Drawing.Size(248, 18)
+        Me.CheckBox_AlwaysNewInstance.TabIndex = 19
+        Me.CheckBox_AlwaysNewInstance.Text = "Always open new instance instead of tabs"
+        Me.CheckBox_AlwaysNewInstance.UseVisualStyleBackColor = True
+        '
         'Label30
         '
         Me.Label30.AutoSize = True
-        Me.Label30.Location = New System.Drawing.Point(6, 238)
+        Me.Label30.Location = New System.Drawing.Point(6, 219)
         Me.Label30.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.Label30.Name = "Label30"
         Me.Label30.Size = New System.Drawing.Size(147, 13)
         Me.Label30.TabIndex = 28
         Me.Label30.Text = "Application exception logs:"
         '
+        'CheckBox_AutoShowStartPage
+        '
+        Me.CheckBox_AutoShowStartPage.AutoSize = True
+        Me.CheckBox_AutoShowStartPage.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_AutoShowStartPage.Location = New System.Drawing.Point(6, 27)
+        Me.CheckBox_AutoShowStartPage.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_AutoShowStartPage.Name = "CheckBox_AutoShowStartPage"
+        Me.CheckBox_AutoShowStartPage.Size = New System.Drawing.Size(235, 18)
+        Me.CheckBox_AutoShowStartPage.TabIndex = 20
+        Me.CheckBox_AutoShowStartPage.Text = "Show StartPage when no file is opened"
+        Me.CheckBox_AutoShowStartPage.UseVisualStyleBackColor = True
+        '
         'Button_ViewErrorLog
         '
-        Me.Button_ViewErrorLog.Location = New System.Drawing.Point(315, 233)
+        Me.Button_ViewErrorLog.Location = New System.Drawing.Point(315, 214)
         Me.Button_ViewErrorLog.Name = "Button_ViewErrorLog"
         Me.Button_ViewErrorLog.Size = New System.Drawing.Size(150, 23)
         Me.Button_ViewErrorLog.TabIndex = 27
         Me.Button_ViewErrorLog.Text = "View log"
         Me.Button_ViewErrorLog.UseVisualStyleBackColor = True
         '
+        'CheckBox_AssociateSourcePawn
+        '
+        Me.CheckBox_AssociateSourcePawn.AutoSize = True
+        Me.CheckBox_AssociateSourcePawn.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_AssociateSourcePawn.Location = New System.Drawing.Point(32, 118)
+        Me.CheckBox_AssociateSourcePawn.Margin = New System.Windows.Forms.Padding(32, 3, 3, 3)
+        Me.CheckBox_AssociateSourcePawn.Name = "CheckBox_AssociateSourcePawn"
+        Me.CheckBox_AssociateSourcePawn.Size = New System.Drawing.Size(148, 18)
+        Me.CheckBox_AssociateSourcePawn.TabIndex = 21
+        Me.CheckBox_AssociateSourcePawn.Text = "SourcePawn files (*.sp)"
+        Me.CheckBox_AssociateSourcePawn.UseVisualStyleBackColor = True
+        '
         'Button_ClearErrorLog
         '
-        Me.Button_ClearErrorLog.Location = New System.Drawing.Point(159, 233)
+        Me.Button_ClearErrorLog.Location = New System.Drawing.Point(159, 214)
         Me.Button_ClearErrorLog.Name = "Button_ClearErrorLog"
         Me.Button_ClearErrorLog.Size = New System.Drawing.Size(150, 23)
         Me.Button_ClearErrorLog.TabIndex = 26
         Me.Button_ClearErrorLog.Text = "Clear log (Empty)"
         Me.Button_ClearErrorLog.UseVisualStyleBackColor = True
         '
+        'Label19
+        '
+        Me.Label19.AutoSize = True
+        Me.Label19.Location = New System.Drawing.Point(6, 99)
+        Me.Label19.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.Label19.Name = "Label19"
+        Me.Label19.Size = New System.Drawing.Size(141, 13)
+        Me.Label19.TabIndex = 22
+        Me.Label19.Text = "Associate BasicPawn with:"
+        '
         'CheckBox_AssociateAmxMod
         '
         Me.CheckBox_AssociateAmxMod.AutoSize = True
         Me.CheckBox_AssociateAmxMod.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_AssociateAmxMod.Location = New System.Drawing.Point(32, 161)
+        Me.CheckBox_AssociateAmxMod.Location = New System.Drawing.Point(32, 142)
         Me.CheckBox_AssociateAmxMod.Margin = New System.Windows.Forms.Padding(32, 3, 3, 3)
         Me.CheckBox_AssociateAmxMod.Name = "CheckBox_AssociateAmxMod"
         Me.CheckBox_AssociateAmxMod.Size = New System.Drawing.Size(152, 18)
         Me.CheckBox_AssociateAmxMod.TabIndex = 25
         Me.CheckBox_AssociateAmxMod.Text = "AMX Mod X files (*.sma)"
         Me.CheckBox_AssociateAmxMod.UseVisualStyleBackColor = True
+        '
+        'CheckBox_AssociateIncludes
+        '
+        Me.CheckBox_AssociateIncludes.AutoSize = True
+        Me.CheckBox_AssociateIncludes.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_AssociateIncludes.Location = New System.Drawing.Point(32, 166)
+        Me.CheckBox_AssociateIncludes.Margin = New System.Windows.Forms.Padding(32, 3, 3, 3)
+        Me.CheckBox_AssociateIncludes.Name = "CheckBox_AssociateIncludes"
+        Me.CheckBox_AssociateIncludes.Size = New System.Drawing.Size(126, 18)
+        Me.CheckBox_AssociateIncludes.TabIndex = 23
+        Me.CheckBox_AssociateIncludes.Text = "Include files (*.inc)"
+        Me.CheckBox_AssociateIncludes.UseVisualStyleBackColor = True
         '
         'CheckBox_AssociateBasicPawnProject
         '
@@ -931,7 +457,7 @@ Partial Class FormSettings
         Me.CheckBox_AssociateBasicPawnProject.CheckState = System.Windows.Forms.CheckState.Checked
         Me.CheckBox_AssociateBasicPawnProject.Enabled = False
         Me.CheckBox_AssociateBasicPawnProject.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_AssociateBasicPawnProject.Location = New System.Drawing.Point(32, 209)
+        Me.CheckBox_AssociateBasicPawnProject.Location = New System.Drawing.Point(32, 190)
         Me.CheckBox_AssociateBasicPawnProject.Margin = New System.Windows.Forms.Padding(32, 3, 3, 3)
         Me.CheckBox_AssociateBasicPawnProject.Name = "CheckBox_AssociateBasicPawnProject"
         Me.CheckBox_AssociateBasicPawnProject.Size = New System.Drawing.Size(200, 18)
@@ -939,83 +465,457 @@ Partial Class FormSettings
         Me.CheckBox_AssociateBasicPawnProject.Text = "BasicPawn Project files (*.bpproj)"
         Me.CheckBox_AssociateBasicPawnProject.UseVisualStyleBackColor = True
         '
-        'CheckBox_AssociateIncludes
+        'TabPage4
         '
-        Me.CheckBox_AssociateIncludes.AutoSize = True
-        Me.CheckBox_AssociateIncludes.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_AssociateIncludes.Location = New System.Drawing.Point(32, 185)
-        Me.CheckBox_AssociateIncludes.Margin = New System.Windows.Forms.Padding(32, 3, 3, 3)
-        Me.CheckBox_AssociateIncludes.Name = "CheckBox_AssociateIncludes"
-        Me.CheckBox_AssociateIncludes.Size = New System.Drawing.Size(126, 18)
-        Me.CheckBox_AssociateIncludes.TabIndex = 23
-        Me.CheckBox_AssociateIncludes.Text = "Include files (*.inc)"
-        Me.CheckBox_AssociateIncludes.UseVisualStyleBackColor = True
+        Me.TabPage4.AutoScroll = True
+        Me.TabPage4.Controls.Add(Me.LinkLabel_MoreStyles)
+        Me.TabPage4.Controls.Add(Me.Button_Font)
+        Me.TabPage4.Controls.Add(Me.LinkLabel_DefaultSyntax)
+        Me.TabPage4.Controls.Add(Me.CheckBox_InvertedColors)
+        Me.TabPage4.Controls.Add(Me.Button_CustomSyntax)
+        Me.TabPage4.Controls.Add(Me.Label_Font)
+        Me.TabPage4.Controls.Add(Me.TextBox_CustomSyntax)
+        Me.TabPage4.Controls.Add(Me.CheckBox_TabsToSpace)
+        Me.TabPage4.Controls.Add(Me.Label32)
+        Me.TabPage4.Controls.Add(Me.NumericUpDown_TabsToSpaces)
+        Me.TabPage4.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage4.Name = "TabPage4"
+        Me.TabPage4.Padding = New System.Windows.Forms.Padding(3)
+        Me.TabPage4.Size = New System.Drawing.Size(584, 336)
+        Me.TabPage4.TabIndex = 1
+        Me.TabPage4.Text = "TextEditor"
+        Me.TabPage4.UseVisualStyleBackColor = True
         '
-        'Label19
+        'LinkLabel_MoreStyles
         '
-        Me.Label19.AutoSize = True
-        Me.Label19.Location = New System.Drawing.Point(6, 118)
-        Me.Label19.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.Label19.Name = "Label19"
-        Me.Label19.Size = New System.Drawing.Size(141, 13)
-        Me.Label19.TabIndex = 22
-        Me.Label19.Text = "Associate BasicPawn with:"
+        Me.LinkLabel_MoreStyles.AutoSize = True
+        Me.LinkLabel_MoreStyles.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
+        Me.LinkLabel_MoreStyles.Location = New System.Drawing.Point(163, 121)
+        Me.LinkLabel_MoreStyles.Margin = New System.Windows.Forms.Padding(6, 0, 3, 3)
+        Me.LinkLabel_MoreStyles.Name = "LinkLabel_MoreStyles"
+        Me.LinkLabel_MoreStyles.Size = New System.Drawing.Size(120, 13)
+        Me.LinkLabel_MoreStyles.TabIndex = 22
+        Me.LinkLabel_MoreStyles.TabStop = True
+        Me.LinkLabel_MoreStyles.Text = "Get more syntax styles"
         '
-        'CheckBox_AssociateSourcePawn
+        'Button_Font
         '
-        Me.CheckBox_AssociateSourcePawn.AutoSize = True
-        Me.CheckBox_AssociateSourcePawn.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_AssociateSourcePawn.Location = New System.Drawing.Point(32, 137)
-        Me.CheckBox_AssociateSourcePawn.Margin = New System.Windows.Forms.Padding(32, 3, 3, 3)
-        Me.CheckBox_AssociateSourcePawn.Name = "CheckBox_AssociateSourcePawn"
-        Me.CheckBox_AssociateSourcePawn.Size = New System.Drawing.Size(148, 18)
-        Me.CheckBox_AssociateSourcePawn.TabIndex = 21
-        Me.CheckBox_AssociateSourcePawn.Text = "SourcePawn files (*.sp)"
-        Me.CheckBox_AssociateSourcePawn.UseVisualStyleBackColor = True
+        Me.Button_Font.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.Button_Font.Location = New System.Drawing.Point(6, 3)
+        Me.Button_Font.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.Button_Font.Name = "Button_Font"
+        Me.Button_Font.Size = New System.Drawing.Size(75, 23)
+        Me.Button_Font.TabIndex = 11
+        Me.Button_Font.Text = "Font"
+        Me.Button_Font.UseVisualStyleBackColor = True
         '
-        'CheckBox_AutoShowStartPage
+        'LinkLabel_DefaultSyntax
         '
-        Me.CheckBox_AutoShowStartPage.AutoSize = True
-        Me.CheckBox_AutoShowStartPage.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_AutoShowStartPage.Location = New System.Drawing.Point(6, 46)
-        Me.CheckBox_AutoShowStartPage.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_AutoShowStartPage.Name = "CheckBox_AutoShowStartPage"
-        Me.CheckBox_AutoShowStartPage.Size = New System.Drawing.Size(235, 18)
-        Me.CheckBox_AutoShowStartPage.TabIndex = 20
-        Me.CheckBox_AutoShowStartPage.Text = "Show StartPage when no file is opened"
-        Me.CheckBox_AutoShowStartPage.UseVisualStyleBackColor = True
+        Me.LinkLabel_DefaultSyntax.AutoSize = True
+        Me.LinkLabel_DefaultSyntax.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
+        Me.LinkLabel_DefaultSyntax.Location = New System.Drawing.Point(6, 121)
+        Me.LinkLabel_DefaultSyntax.Margin = New System.Windows.Forms.Padding(6, 0, 3, 3)
+        Me.LinkLabel_DefaultSyntax.Name = "LinkLabel_DefaultSyntax"
+        Me.LinkLabel_DefaultSyntax.Size = New System.Drawing.Size(148, 13)
+        Me.LinkLabel_DefaultSyntax.TabIndex = 21
+        Me.LinkLabel_DefaultSyntax.TabStop = True
+        Me.LinkLabel_DefaultSyntax.Text = "Default syntax highlighting"
         '
-        'Label16
+        'CheckBox_InvertedColors
         '
-        Me.Label16.AutoSize = True
-        Me.Label16.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Label16.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label16.Location = New System.Drawing.Point(0, 0)
-        Me.Label16.Margin = New System.Windows.Forms.Padding(3)
-        Me.Label16.Name = "Label16"
-        Me.Label16.Padding = New System.Windows.Forms.Padding(6, 3, 0, 0)
-        Me.Label16.Size = New System.Drawing.Size(53, 16)
-        Me.Label16.TabIndex = 18
-        Me.Label16.Text = "General"
+        Me.CheckBox_InvertedColors.AutoSize = True
+        Me.CheckBox_InvertedColors.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_InvertedColors.Location = New System.Drawing.Point(6, 32)
+        Me.CheckBox_InvertedColors.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_InvertedColors.Name = "CheckBox_InvertedColors"
+        Me.CheckBox_InvertedColors.Size = New System.Drawing.Size(134, 18)
+        Me.CheckBox_InvertedColors.TabIndex = 13
+        Me.CheckBox_InvertedColors.Text = "High contrast mode"
+        Me.CheckBox_InvertedColors.UseVisualStyleBackColor = True
         '
-        'CheckBox_AlwaysNewInstance
+        'Button_CustomSyntax
         '
-        Me.CheckBox_AlwaysNewInstance.AutoSize = True
-        Me.CheckBox_AlwaysNewInstance.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_AlwaysNewInstance.Location = New System.Drawing.Point(6, 22)
-        Me.CheckBox_AlwaysNewInstance.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_AlwaysNewInstance.Name = "CheckBox_AlwaysNewInstance"
-        Me.CheckBox_AlwaysNewInstance.Size = New System.Drawing.Size(248, 18)
-        Me.CheckBox_AlwaysNewInstance.TabIndex = 19
-        Me.CheckBox_AlwaysNewInstance.Text = "Always open new instance instead of tabs"
-        Me.CheckBox_AlwaysNewInstance.UseVisualStyleBackColor = True
+        Me.Button_CustomSyntax.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Button_CustomSyntax.Location = New System.Drawing.Point(543, 96)
+        Me.Button_CustomSyntax.Name = "Button_CustomSyntax"
+        Me.Button_CustomSyntax.Size = New System.Drawing.Size(32, 23)
+        Me.Button_CustomSyntax.TabIndex = 20
+        Me.Button_CustomSyntax.Text = "..."
+        Me.Button_CustomSyntax.UseVisualStyleBackColor = True
+        '
+        'Label_Font
+        '
+        Me.Label_Font.AutoSize = True
+        Me.Label_Font.Location = New System.Drawing.Point(90, 8)
+        Me.Label_Font.Margin = New System.Windows.Forms.Padding(6, 0, 3, 0)
+        Me.Label_Font.Name = "Label_Font"
+        Me.Label_Font.Size = New System.Drawing.Size(73, 13)
+        Me.Label_Font.TabIndex = 12
+        Me.Label_Font.Text = "Current Font"
+        '
+        'TextBox_CustomSyntax
+        '
+        Me.TextBox_CustomSyntax.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.TextBox_CustomSyntax.Location = New System.Drawing.Point(6, 96)
+        Me.TextBox_CustomSyntax.Name = "TextBox_CustomSyntax"
+        Me.TextBox_CustomSyntax.Size = New System.Drawing.Size(531, 22)
+        Me.TextBox_CustomSyntax.TabIndex = 19
+        '
+        'CheckBox_TabsToSpace
+        '
+        Me.CheckBox_TabsToSpace.AutoSize = True
+        Me.CheckBox_TabsToSpace.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_TabsToSpace.Location = New System.Drawing.Point(6, 56)
+        Me.CheckBox_TabsToSpace.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_TabsToSpace.Name = "CheckBox_TabsToSpace"
+        Me.CheckBox_TabsToSpace.Size = New System.Drawing.Size(151, 18)
+        Me.CheckBox_TabsToSpace.TabIndex = 14
+        Me.CheckBox_TabsToSpace.Text = "Convert tabs to spaces:"
+        Me.CheckBox_TabsToSpace.UseVisualStyleBackColor = True
+        '
+        'Label32
+        '
+        Me.Label32.AutoSize = True
+        Me.Label32.Location = New System.Drawing.Point(6, 80)
+        Me.Label32.Margin = New System.Windows.Forms.Padding(6, 3, 3, 0)
+        Me.Label32.Name = "Label32"
+        Me.Label32.Size = New System.Drawing.Size(162, 13)
+        Me.Label32.TabIndex = 18
+        Me.Label32.Text = "Custom syntax highlight path:"
+        '
+        'NumericUpDown_TabsToSpaces
+        '
+        Me.NumericUpDown_TabsToSpaces.Location = New System.Drawing.Point(163, 52)
+        Me.NumericUpDown_TabsToSpaces.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
+        Me.NumericUpDown_TabsToSpaces.Name = "NumericUpDown_TabsToSpaces"
+        Me.NumericUpDown_TabsToSpaces.Size = New System.Drawing.Size(42, 22)
+        Me.NumericUpDown_TabsToSpaces.TabIndex = 15
+        Me.NumericUpDown_TabsToSpaces.Value = New Decimal(New Integer() {4, 0, 0, 0})
+        '
+        'TabPage5
+        '
+        Me.TabPage5.AutoScroll = True
+        Me.TabPage5.Controls.Add(Me.CheckBox_DoubleClickMark)
+        Me.TabPage5.Controls.Add(Me.CheckBox_AutoMark)
+        Me.TabPage5.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage5.Name = "TabPage5"
+        Me.TabPage5.Size = New System.Drawing.Size(584, 336)
+        Me.TabPage5.TabIndex = 2
+        Me.TabPage5.Text = "Syntax Highlighting"
+        Me.TabPage5.UseVisualStyleBackColor = True
+        '
+        'CheckBox_DoubleClickMark
+        '
+        Me.CheckBox_DoubleClickMark.AutoSize = True
+        Me.CheckBox_DoubleClickMark.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_DoubleClickMark.Location = New System.Drawing.Point(6, 3)
+        Me.CheckBox_DoubleClickMark.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_DoubleClickMark.Name = "CheckBox_DoubleClickMark"
+        Me.CheckBox_DoubleClickMark.Size = New System.Drawing.Size(190, 18)
+        Me.CheckBox_DoubleClickMark.TabIndex = 5
+        Me.CheckBox_DoubleClickMark.Text = "Mark words using double click"
+        Me.CheckBox_DoubleClickMark.UseVisualStyleBackColor = True
+        '
+        'CheckBox_AutoMark
+        '
+        Me.CheckBox_AutoMark.AutoSize = True
+        Me.CheckBox_AutoMark.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_AutoMark.Location = New System.Drawing.Point(6, 27)
+        Me.CheckBox_AutoMark.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_AutoMark.Name = "CheckBox_AutoMark"
+        Me.CheckBox_AutoMark.Size = New System.Drawing.Size(164, 18)
+        Me.CheckBox_AutoMark.TabIndex = 17
+        Me.CheckBox_AutoMark.Text = "Automatically mark words"
+        Me.CheckBox_AutoMark.UseVisualStyleBackColor = True
+        '
+        'TabPage6
+        '
+        Me.TabPage6.AutoScroll = True
+        Me.TabPage6.Controls.Add(Me.CheckBox_AutoIndentBrackets)
+        Me.TabPage6.Controls.Add(Me.CheckBox_AlwaysLoadDefaultIncludes)
+        Me.TabPage6.Controls.Add(Me.CheckBox_AutoCloseStrings)
+        Me.TabPage6.Controls.Add(Me.CheckBox_CaseSensitive)
+        Me.TabPage6.Controls.Add(Me.CheckBox_AutoCloseBrackets)
+        Me.TabPage6.Controls.Add(Me.CheckBox_WindowsToolTipPopup)
+        Me.TabPage6.Controls.Add(Me.CheckBox_OnlyUpdateSyntaxWhenFocused)
+        Me.TabPage6.Controls.Add(Me.CheckBox_FullAutocompleteReTagging)
+        Me.TabPage6.Controls.Add(Me.CheckBox_WindowsToolTipNewlineMethods)
+        Me.TabPage6.Controls.Add(Me.CheckBox_CommentsAutocompleteIntelliSense)
+        Me.TabPage6.Controls.Add(Me.CheckBox_WindowsToolTipAnimations)
+        Me.TabPage6.Controls.Add(Me.CheckBox_CommentsMethodIntelliSense)
+        Me.TabPage6.Controls.Add(Me.CheckBox_FullAutcompleteMethods)
+        Me.TabPage6.Controls.Add(Me.CheckBox_SwitchTabToAutocomplete)
+        Me.TabPage6.Controls.Add(Me.CheckBox_OnScreenIntelliSense)
+        Me.TabPage6.Controls.Add(Me.CheckBox_CurrentSourceVarAutocomplete)
+        Me.TabPage6.Controls.Add(Me.CheckBox_VarAutocompleteShowObjectBrowser)
+        Me.TabPage6.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage6.Name = "TabPage6"
+        Me.TabPage6.Size = New System.Drawing.Size(584, 336)
+        Me.TabPage6.TabIndex = 3
+        Me.TabPage6.Text = "Autocomplete & IntelliSense"
+        Me.TabPage6.UseVisualStyleBackColor = True
+        '
+        'CheckBox_AutoIndentBrackets
+        '
+        Me.CheckBox_AutoIndentBrackets.AutoSize = True
+        Me.CheckBox_AutoIndentBrackets.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_AutoIndentBrackets.Location = New System.Drawing.Point(6, 387)
+        Me.CheckBox_AutoIndentBrackets.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_AutoIndentBrackets.Name = "CheckBox_AutoIndentBrackets"
+        Me.CheckBox_AutoIndentBrackets.Size = New System.Drawing.Size(236, 18)
+        Me.CheckBox_AutoIndentBrackets.TabIndex = 26
+        Me.CheckBox_AutoIndentBrackets.Text = "Automatically indent brackets on return"
+        Me.CheckBox_AutoIndentBrackets.UseVisualStyleBackColor = True
+        '
+        'CheckBox_AlwaysLoadDefaultIncludes
+        '
+        Me.CheckBox_AlwaysLoadDefaultIncludes.AutoSize = True
+        Me.CheckBox_AlwaysLoadDefaultIncludes.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_AlwaysLoadDefaultIncludes.Location = New System.Drawing.Point(6, 3)
+        Me.CheckBox_AlwaysLoadDefaultIncludes.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_AlwaysLoadDefaultIncludes.Name = "CheckBox_AlwaysLoadDefaultIncludes"
+        Me.CheckBox_AlwaysLoadDefaultIncludes.Size = New System.Drawing.Size(198, 18)
+        Me.CheckBox_AlwaysLoadDefaultIncludes.TabIndex = 19
+        Me.CheckBox_AlwaysLoadDefaultIncludes.Text = "Always load default include files"
+        Me.CheckBox_AlwaysLoadDefaultIncludes.UseVisualStyleBackColor = True
+        '
+        'CheckBox_AutoCloseStrings
+        '
+        Me.CheckBox_AutoCloseStrings.AutoSize = True
+        Me.CheckBox_AutoCloseStrings.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_AutoCloseStrings.Location = New System.Drawing.Point(6, 363)
+        Me.CheckBox_AutoCloseStrings.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_AutoCloseStrings.Name = "CheckBox_AutoCloseStrings"
+        Me.CheckBox_AutoCloseStrings.Size = New System.Drawing.Size(239, 18)
+        Me.CheckBox_AutoCloseStrings.TabIndex = 25
+        Me.CheckBox_AutoCloseStrings.Text = "Automatically close strings while writing"
+        Me.CheckBox_AutoCloseStrings.UseVisualStyleBackColor = True
+        '
+        'CheckBox_CaseSensitive
+        '
+        Me.CheckBox_CaseSensitive.AutoSize = True
+        Me.CheckBox_CaseSensitive.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_CaseSensitive.Location = New System.Drawing.Point(6, 219)
+        Me.CheckBox_CaseSensitive.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_CaseSensitive.Name = "CheckBox_CaseSensitive"
+        Me.CheckBox_CaseSensitive.Size = New System.Drawing.Size(103, 18)
+        Me.CheckBox_CaseSensitive.TabIndex = 15
+        Me.CheckBox_CaseSensitive.Text = "Case sensitive"
+        Me.CheckBox_CaseSensitive.UseVisualStyleBackColor = True
+        '
+        'CheckBox_AutoCloseBrackets
+        '
+        Me.CheckBox_AutoCloseBrackets.AutoSize = True
+        Me.CheckBox_AutoCloseBrackets.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_AutoCloseBrackets.Location = New System.Drawing.Point(6, 339)
+        Me.CheckBox_AutoCloseBrackets.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_AutoCloseBrackets.Name = "CheckBox_AutoCloseBrackets"
+        Me.CheckBox_AutoCloseBrackets.Size = New System.Drawing.Size(247, 18)
+        Me.CheckBox_AutoCloseBrackets.TabIndex = 24
+        Me.CheckBox_AutoCloseBrackets.Text = "Automatically close brackets while writing"
+        Me.CheckBox_AutoCloseBrackets.UseVisualStyleBackColor = True
+        '
+        'CheckBox_WindowsToolTipPopup
+        '
+        Me.CheckBox_WindowsToolTipPopup.AutoSize = True
+        Me.CheckBox_WindowsToolTipPopup.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_WindowsToolTipPopup.Location = New System.Drawing.Point(32, 99)
+        Me.CheckBox_WindowsToolTipPopup.Margin = New System.Windows.Forms.Padding(32, 3, 3, 3)
+        Me.CheckBox_WindowsToolTipPopup.Name = "CheckBox_WindowsToolTipPopup"
+        Me.CheckBox_WindowsToolTipPopup.Size = New System.Drawing.Size(127, 18)
+        Me.CheckBox_WindowsToolTipPopup.TabIndex = 16
+        Me.CheckBox_WindowsToolTipPopup.Text = "Use tooltip popup"
+        Me.CheckBox_WindowsToolTipPopup.UseVisualStyleBackColor = True
+        '
+        'CheckBox_OnlyUpdateSyntaxWhenFocused
+        '
+        Me.CheckBox_OnlyUpdateSyntaxWhenFocused.AutoSize = True
+        Me.CheckBox_OnlyUpdateSyntaxWhenFocused.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_OnlyUpdateSyntaxWhenFocused.Location = New System.Drawing.Point(6, 315)
+        Me.CheckBox_OnlyUpdateSyntaxWhenFocused.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_OnlyUpdateSyntaxWhenFocused.Name = "CheckBox_OnlyUpdateSyntaxWhenFocused"
+        Me.CheckBox_OnlyUpdateSyntaxWhenFocused.Size = New System.Drawing.Size(283, 18)
+        Me.CheckBox_OnlyUpdateSyntaxWhenFocused.TabIndex = 23
+        Me.CheckBox_OnlyUpdateSyntaxWhenFocused.Text = "Only update syntax when the window is focused"
+        Me.CheckBox_OnlyUpdateSyntaxWhenFocused.UseVisualStyleBackColor = True
+        '
+        'CheckBox_FullAutocompleteReTagging
+        '
+        Me.CheckBox_FullAutocompleteReTagging.AutoSize = True
+        Me.CheckBox_FullAutocompleteReTagging.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_FullAutocompleteReTagging.Location = New System.Drawing.Point(6, 195)
+        Me.CheckBox_FullAutocompleteReTagging.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_FullAutocompleteReTagging.Name = "CheckBox_FullAutocompleteReTagging"
+        Me.CheckBox_FullAutocompleteReTagging.Size = New System.Drawing.Size(415, 18)
+        Me.CheckBox_FullAutocompleteReTagging.TabIndex = 8
+        Me.CheckBox_FullAutocompleteReTagging.Text = "Full autocompletion for enums using re-tagging (SourcePawn <1.6 Syntax)"
+        Me.CheckBox_FullAutocompleteReTagging.UseVisualStyleBackColor = True
+        '
+        'CheckBox_WindowsToolTipNewlineMethods
+        '
+        Me.CheckBox_WindowsToolTipNewlineMethods.AutoSize = True
+        Me.CheckBox_WindowsToolTipNewlineMethods.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_WindowsToolTipNewlineMethods.Location = New System.Drawing.Point(64, 147)
+        Me.CheckBox_WindowsToolTipNewlineMethods.Margin = New System.Windows.Forms.Padding(64, 3, 3, 3)
+        Me.CheckBox_WindowsToolTipNewlineMethods.Name = "CheckBox_WindowsToolTipNewlineMethods"
+        Me.CheckBox_WindowsToolTipNewlineMethods.Size = New System.Drawing.Size(175, 18)
+        Me.CheckBox_WindowsToolTipNewlineMethods.TabIndex = 22
+        Me.CheckBox_WindowsToolTipNewlineMethods.Text = "Newline method arguments"
+        Me.CheckBox_WindowsToolTipNewlineMethods.UseVisualStyleBackColor = True
+        '
+        'CheckBox_CommentsAutocompleteIntelliSense
+        '
+        Me.CheckBox_CommentsAutocompleteIntelliSense.AutoSize = True
+        Me.CheckBox_CommentsAutocompleteIntelliSense.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_CommentsAutocompleteIntelliSense.Location = New System.Drawing.Point(32, 75)
+        Me.CheckBox_CommentsAutocompleteIntelliSense.Margin = New System.Windows.Forms.Padding(32, 3, 3, 3)
+        Me.CheckBox_CommentsAutocompleteIntelliSense.Name = "CheckBox_CommentsAutocompleteIntelliSense"
+        Me.CheckBox_CommentsAutocompleteIntelliSense.Size = New System.Drawing.Size(356, 18)
+        Me.CheckBox_CommentsAutocompleteIntelliSense.TabIndex = 7
+        Me.CheckBox_CommentsAutocompleteIntelliSense.Text = "Display comments for autocompletion in on-screen IntelliSense"
+        Me.CheckBox_CommentsAutocompleteIntelliSense.UseVisualStyleBackColor = True
+        '
+        'CheckBox_WindowsToolTipAnimations
+        '
+        Me.CheckBox_WindowsToolTipAnimations.AutoSize = True
+        Me.CheckBox_WindowsToolTipAnimations.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_WindowsToolTipAnimations.Location = New System.Drawing.Point(64, 123)
+        Me.CheckBox_WindowsToolTipAnimations.Margin = New System.Windows.Forms.Padding(64, 3, 3, 3)
+        Me.CheckBox_WindowsToolTipAnimations.Name = "CheckBox_WindowsToolTipAnimations"
+        Me.CheckBox_WindowsToolTipAnimations.Size = New System.Drawing.Size(204, 18)
+        Me.CheckBox_WindowsToolTipAnimations.TabIndex = 21
+        Me.CheckBox_WindowsToolTipAnimations.Text = "Smooth tooltip popup movement"
+        Me.CheckBox_WindowsToolTipAnimations.UseVisualStyleBackColor = True
+        '
+        'CheckBox_CommentsMethodIntelliSense
+        '
+        Me.CheckBox_CommentsMethodIntelliSense.AutoSize = True
+        Me.CheckBox_CommentsMethodIntelliSense.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_CommentsMethodIntelliSense.Location = New System.Drawing.Point(32, 51)
+        Me.CheckBox_CommentsMethodIntelliSense.Margin = New System.Windows.Forms.Padding(32, 3, 3, 3)
+        Me.CheckBox_CommentsMethodIntelliSense.Name = "CheckBox_CommentsMethodIntelliSense"
+        Me.CheckBox_CommentsMethodIntelliSense.Size = New System.Drawing.Size(319, 18)
+        Me.CheckBox_CommentsMethodIntelliSense.TabIndex = 6
+        Me.CheckBox_CommentsMethodIntelliSense.Text = "Display comments for methods in on-screen IntelliSense"
+        Me.CheckBox_CommentsMethodIntelliSense.UseVisualStyleBackColor = True
+        '
+        'CheckBox_FullAutcompleteMethods
+        '
+        Me.CheckBox_FullAutcompleteMethods.AutoSize = True
+        Me.CheckBox_FullAutcompleteMethods.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_FullAutcompleteMethods.Location = New System.Drawing.Point(6, 171)
+        Me.CheckBox_FullAutcompleteMethods.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_FullAutcompleteMethods.Name = "CheckBox_FullAutcompleteMethods"
+        Me.CheckBox_FullAutcompleteMethods.Size = New System.Drawing.Size(202, 18)
+        Me.CheckBox_FullAutcompleteMethods.TabIndex = 3
+        Me.CheckBox_FullAutcompleteMethods.Text = "Full autocompletion for methods"
+        Me.CheckBox_FullAutcompleteMethods.UseVisualStyleBackColor = True
+        '
+        'CheckBox_SwitchTabToAutocomplete
+        '
+        Me.CheckBox_SwitchTabToAutocomplete.AutoSize = True
+        Me.CheckBox_SwitchTabToAutocomplete.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_SwitchTabToAutocomplete.Location = New System.Drawing.Point(6, 291)
+        Me.CheckBox_SwitchTabToAutocomplete.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_SwitchTabToAutocomplete.Name = "CheckBox_SwitchTabToAutocomplete"
+        Me.CheckBox_SwitchTabToAutocomplete.Size = New System.Drawing.Size(326, 18)
+        Me.CheckBox_SwitchTabToAutocomplete.TabIndex = 20
+        Me.CheckBox_SwitchTabToAutocomplete.Text = "Automatically switch tab to 'Autocomplete && IntelliSense'"
+        Me.CheckBox_SwitchTabToAutocomplete.UseVisualStyleBackColor = True
+        '
+        'CheckBox_OnScreenIntelliSense
+        '
+        Me.CheckBox_OnScreenIntelliSense.AutoSize = True
+        Me.CheckBox_OnScreenIntelliSense.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_OnScreenIntelliSense.Location = New System.Drawing.Point(6, 27)
+        Me.CheckBox_OnScreenIntelliSense.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_OnScreenIntelliSense.Name = "CheckBox_OnScreenIntelliSense"
+        Me.CheckBox_OnScreenIntelliSense.Size = New System.Drawing.Size(129, 18)
+        Me.CheckBox_OnScreenIntelliSense.TabIndex = 2
+        Me.CheckBox_OnScreenIntelliSense.Text = "Enable IntelliSense"
+        Me.CheckBox_OnScreenIntelliSense.UseVisualStyleBackColor = True
+        '
+        'CheckBox_CurrentSourceVarAutocomplete
+        '
+        Me.CheckBox_CurrentSourceVarAutocomplete.AutoSize = True
+        Me.CheckBox_CurrentSourceVarAutocomplete.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_CurrentSourceVarAutocomplete.Location = New System.Drawing.Point(6, 243)
+        Me.CheckBox_CurrentSourceVarAutocomplete.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_CurrentSourceVarAutocomplete.Name = "CheckBox_CurrentSourceVarAutocomplete"
+        Me.CheckBox_CurrentSourceVarAutocomplete.Size = New System.Drawing.Size(690, 18)
+        Me.CheckBox_CurrentSourceVarAutocomplete.TabIndex = 17
+        Me.CheckBox_CurrentSourceVarAutocomplete.Text = "Only search variables from active tabs (increases parsing speed but wont display " &
+    "variables correctly when working with includes)"
+        Me.CheckBox_CurrentSourceVarAutocomplete.UseVisualStyleBackColor = True
+        '
+        'CheckBox_VarAutocompleteShowObjectBrowser
+        '
+        Me.CheckBox_VarAutocompleteShowObjectBrowser.AutoSize = True
+        Me.CheckBox_VarAutocompleteShowObjectBrowser.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_VarAutocompleteShowObjectBrowser.Location = New System.Drawing.Point(6, 267)
+        Me.CheckBox_VarAutocompleteShowObjectBrowser.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_VarAutocompleteShowObjectBrowser.Name = "CheckBox_VarAutocompleteShowObjectBrowser"
+        Me.CheckBox_VarAutocompleteShowObjectBrowser.Size = New System.Drawing.Size(224, 18)
+        Me.CheckBox_VarAutocompleteShowObjectBrowser.TabIndex = 18
+        Me.CheckBox_VarAutocompleteShowObjectBrowser.Text = "Show variables in the Object Browser"
+        Me.CheckBox_VarAutocompleteShowObjectBrowser.UseVisualStyleBackColor = True
+        '
+        'TabPage7
+        '
+        Me.TabPage7.AutoScroll = True
+        Me.TabPage7.Controls.Add(Me.CheckBox_CatchExceptions)
+        Me.TabPage7.Controls.Add(Me.CheckBox_EntitiesEnableShowNewEnts)
+        Me.TabPage7.Controls.Add(Me.CheckBox_EntitiesEnableColor)
+        Me.TabPage7.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage7.Name = "TabPage7"
+        Me.TabPage7.Size = New System.Drawing.Size(584, 336)
+        Me.TabPage7.TabIndex = 4
+        Me.TabPage7.Text = "Debugger"
+        Me.TabPage7.UseVisualStyleBackColor = True
+        '
+        'CheckBox_CatchExceptions
+        '
+        Me.CheckBox_CatchExceptions.AutoSize = True
+        Me.CheckBox_CatchExceptions.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_CatchExceptions.Location = New System.Drawing.Point(6, 3)
+        Me.CheckBox_CatchExceptions.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_CatchExceptions.Name = "CheckBox_CatchExceptions"
+        Me.CheckBox_CatchExceptions.Size = New System.Drawing.Size(119, 18)
+        Me.CheckBox_CatchExceptions.TabIndex = 19
+        Me.CheckBox_CatchExceptions.Text = "Catch exceptions"
+        Me.CheckBox_CatchExceptions.UseVisualStyleBackColor = True
+        '
+        'CheckBox_EntitiesEnableShowNewEnts
+        '
+        Me.CheckBox_EntitiesEnableShowNewEnts.AutoSize = True
+        Me.CheckBox_EntitiesEnableShowNewEnts.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_EntitiesEnableShowNewEnts.Location = New System.Drawing.Point(6, 51)
+        Me.CheckBox_EntitiesEnableShowNewEnts.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_EntitiesEnableShowNewEnts.Name = "CheckBox_EntitiesEnableShowNewEnts"
+        Me.CheckBox_EntitiesEnableShowNewEnts.Size = New System.Drawing.Size(211, 18)
+        Me.CheckBox_EntitiesEnableShowNewEnts.TabIndex = 21
+        Me.CheckBox_EntitiesEnableShowNewEnts.Text = "Automatically scroll to new entities"
+        Me.CheckBox_EntitiesEnableShowNewEnts.UseVisualStyleBackColor = True
+        '
+        'CheckBox_EntitiesEnableColor
+        '
+        Me.CheckBox_EntitiesEnableColor.AutoSize = True
+        Me.CheckBox_EntitiesEnableColor.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_EntitiesEnableColor.Location = New System.Drawing.Point(6, 27)
+        Me.CheckBox_EntitiesEnableColor.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_EntitiesEnableColor.Name = "CheckBox_EntitiesEnableColor"
+        Me.CheckBox_EntitiesEnableColor.Size = New System.Drawing.Size(221, 18)
+        Me.CheckBox_EntitiesEnableColor.TabIndex = 20
+        Me.CheckBox_EntitiesEnableColor.Text = "Colorize created and deleted entities"
+        Me.CheckBox_EntitiesEnableColor.UseVisualStyleBackColor = True
         '
         'TabPage_Configs
         '
         Me.TabPage_Configs.Controls.Add(Me.TableLayoutPanel1)
         Me.TabPage_Configs.Location = New System.Drawing.Point(4, 22)
         Me.TabPage_Configs.Name = "TabPage_Configs"
-        Me.TabPage_Configs.Size = New System.Drawing.Size(752, 482)
+        Me.TabPage_Configs.Size = New System.Drawing.Size(592, 362)
         Me.TabPage_Configs.TabIndex = 1
         Me.TabPage_Configs.Text = "Configs"
         Me.TabPage_Configs.UseVisualStyleBackColor = True
@@ -1033,7 +933,7 @@ Partial Class FormSettings
         Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
         Me.TableLayoutPanel1.RowCount = 1
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(752, 482)
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(592, 362)
         Me.TableLayoutPanel1.TabIndex = 10
         '
         'TableLayoutPanel2
@@ -1049,7 +949,7 @@ Partial Class FormSettings
         Me.TableLayoutPanel2.RowCount = 2
         Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 100.0!))
         Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.TableLayoutPanel2.Size = New System.Drawing.Size(602, 482)
+        Me.TableLayoutPanel2.Size = New System.Drawing.Size(442, 362)
         Me.TableLayoutPanel2.TabIndex = 8
         '
         'Panel17
@@ -1065,14 +965,14 @@ Partial Class FormSettings
         Me.Panel17.Location = New System.Drawing.Point(0, 0)
         Me.Panel17.Margin = New System.Windows.Forms.Padding(0)
         Me.Panel17.Name = "Panel17"
-        Me.Panel17.Size = New System.Drawing.Size(602, 100)
+        Me.Panel17.Size = New System.Drawing.Size(442, 100)
         Me.Panel17.TabIndex = 0
         '
         'Button_SaveConfig
         '
         Me.Button_SaveConfig.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_SaveConfig.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_SaveConfig.Location = New System.Drawing.Point(471, 74)
+        Me.Button_SaveConfig.Location = New System.Drawing.Point(311, 74)
         Me.Button_SaveConfig.Name = "Button_SaveConfig"
         Me.Button_SaveConfig.Size = New System.Drawing.Size(128, 23)
         Me.Button_SaveConfig.TabIndex = 12
@@ -1092,7 +992,7 @@ Partial Class FormSettings
         '
         Me.Button_ConfigRename.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_ConfigRename.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_ConfigRename.Location = New System.Drawing.Point(237, 44)
+        Me.Button_ConfigRename.Location = New System.Drawing.Point(77, 44)
         Me.Button_ConfigRename.Name = "Button_ConfigRename"
         Me.Button_ConfigRename.Size = New System.Drawing.Size(86, 23)
         Me.Button_ConfigRename.TabIndex = 9
@@ -1105,14 +1005,14 @@ Partial Class FormSettings
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.TextBox_ConfigName.Location = New System.Drawing.Point(3, 16)
         Me.TextBox_ConfigName.Name = "TextBox_ConfigName"
-        Me.TextBox_ConfigName.Size = New System.Drawing.Size(596, 22)
+        Me.TextBox_ConfigName.Size = New System.Drawing.Size(436, 22)
         Me.TextBox_ConfigName.TabIndex = 2
         '
         'Button_ConfigCopy
         '
         Me.Button_ConfigCopy.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_ConfigCopy.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_ConfigCopy.Location = New System.Drawing.Point(329, 44)
+        Me.Button_ConfigCopy.Location = New System.Drawing.Point(169, 44)
         Me.Button_ConfigCopy.Name = "Button_ConfigCopy"
         Me.Button_ConfigCopy.Size = New System.Drawing.Size(86, 23)
         Me.Button_ConfigCopy.TabIndex = 8
@@ -1123,7 +1023,7 @@ Partial Class FormSettings
         '
         Me.Button_ConfigRemove.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_ConfigRemove.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_ConfigRemove.Location = New System.Drawing.Point(513, 44)
+        Me.Button_ConfigRemove.Location = New System.Drawing.Point(353, 44)
         Me.Button_ConfigRemove.Name = "Button_ConfigRemove"
         Me.Button_ConfigRemove.Size = New System.Drawing.Size(86, 23)
         Me.Button_ConfigRemove.TabIndex = 4
@@ -1134,7 +1034,7 @@ Partial Class FormSettings
         '
         Me.Button_ConfigAdd.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_ConfigAdd.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_ConfigAdd.Location = New System.Drawing.Point(421, 44)
+        Me.Button_ConfigAdd.Location = New System.Drawing.Point(261, 44)
         Me.Button_ConfigAdd.Name = "Button_ConfigAdd"
         Me.Button_ConfigAdd.Size = New System.Drawing.Size(86, 23)
         Me.Button_ConfigAdd.TabIndex = 5
@@ -1149,7 +1049,7 @@ Partial Class FormSettings
         Me.Panel2.Location = New System.Drawing.Point(0, 100)
         Me.Panel2.Margin = New System.Windows.Forms.Padding(0)
         Me.Panel2.Name = "Panel2"
-        Me.Panel2.Size = New System.Drawing.Size(602, 382)
+        Me.Panel2.Size = New System.Drawing.Size(442, 262)
         Me.Panel2.TabIndex = 1
         '
         'GroupBox_ConfigSettings
@@ -1162,7 +1062,7 @@ Partial Class FormSettings
         Me.GroupBox_ConfigSettings.Location = New System.Drawing.Point(0, 0)
         Me.GroupBox_ConfigSettings.Margin = New System.Windows.Forms.Padding(0)
         Me.GroupBox_ConfigSettings.Name = "GroupBox_ConfigSettings"
-        Me.GroupBox_ConfigSettings.Size = New System.Drawing.Size(585, 869)
+        Me.GroupBox_ConfigSettings.Size = New System.Drawing.Size(425, 869)
         Me.GroupBox_ConfigSettings.TabIndex = 7
         Me.GroupBox_ConfigSettings.TabStop = False
         Me.GroupBox_ConfigSettings.Text = "Config Settings"
@@ -1178,7 +1078,7 @@ Partial Class FormSettings
         Me.Panel11.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel11.Location = New System.Drawing.Point(3, 786)
         Me.Panel11.Name = "Panel11"
-        Me.Panel11.Size = New System.Drawing.Size(579, 80)
+        Me.Panel11.Size = New System.Drawing.Size(419, 80)
         Me.Panel11.TabIndex = 30
         '
         'Label13
@@ -1200,7 +1100,7 @@ Partial Class FormSettings
         Me.Panel13.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel13.Location = New System.Drawing.Point(0, 0)
         Me.Panel13.Name = "Panel13"
-        Me.Panel13.Size = New System.Drawing.Size(579, 1)
+        Me.Panel13.Size = New System.Drawing.Size(419, 1)
         Me.Panel13.TabIndex = 28
         '
         'Label10
@@ -1219,7 +1119,7 @@ Partial Class FormSettings
         Me.TextBox_Shell.BackColor = System.Drawing.Color.White
         Me.TextBox_Shell.Location = New System.Drawing.Point(3, 36)
         Me.TextBox_Shell.Name = "TextBox_Shell"
-        Me.TextBox_Shell.Size = New System.Drawing.Size(573, 22)
+        Me.TextBox_Shell.Size = New System.Drawing.Size(413, 22)
         Me.TextBox_Shell.TabIndex = 17
         '
         'LinkLabel_ShowShellArguments
@@ -1248,7 +1148,7 @@ Partial Class FormSettings
         Me.Panel10.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel10.Location = New System.Drawing.Point(3, 684)
         Me.Panel10.Name = "Panel10"
-        Me.Panel10.Size = New System.Drawing.Size(579, 102)
+        Me.Panel10.Size = New System.Drawing.Size(419, 102)
         Me.Panel10.TabIndex = 29
         '
         'Label9
@@ -1270,7 +1170,7 @@ Partial Class FormSettings
         Me.Panel12.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel12.Location = New System.Drawing.Point(0, 0)
         Me.Panel12.Name = "Panel12"
-        Me.Panel12.Size = New System.Drawing.Size(579, 1)
+        Me.Panel12.Size = New System.Drawing.Size(419, 1)
         Me.Panel12.TabIndex = 27
         '
         'Label2
@@ -1289,14 +1189,14 @@ Partial Class FormSettings
         Me.TextBox_GameFolder.BackColor = System.Drawing.Color.White
         Me.TextBox_GameFolder.Location = New System.Drawing.Point(3, 36)
         Me.TextBox_GameFolder.Name = "TextBox_GameFolder"
-        Me.TextBox_GameFolder.Size = New System.Drawing.Size(536, 22)
+        Me.TextBox_GameFolder.Size = New System.Drawing.Size(376, 22)
         Me.TextBox_GameFolder.TabIndex = 20
         '
         'Button_GameFolder
         '
         Me.Button_GameFolder.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_GameFolder.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_GameFolder.Location = New System.Drawing.Point(545, 34)
+        Me.Button_GameFolder.Location = New System.Drawing.Point(385, 34)
         Me.Button_GameFolder.Name = "Button_GameFolder"
         Me.Button_GameFolder.Size = New System.Drawing.Size(31, 24)
         Me.Button_GameFolder.TabIndex = 21
@@ -1310,14 +1210,14 @@ Partial Class FormSettings
         Me.TextBox_SourceModFolder.BackColor = System.Drawing.Color.White
         Me.TextBox_SourceModFolder.Location = New System.Drawing.Point(3, 77)
         Me.TextBox_SourceModFolder.Name = "TextBox_SourceModFolder"
-        Me.TextBox_SourceModFolder.Size = New System.Drawing.Size(536, 22)
+        Me.TextBox_SourceModFolder.Size = New System.Drawing.Size(376, 22)
         Me.TextBox_SourceModFolder.TabIndex = 25
         '
         'Button_SourceModFolder
         '
         Me.Button_SourceModFolder.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_SourceModFolder.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_SourceModFolder.Location = New System.Drawing.Point(545, 75)
+        Me.Button_SourceModFolder.Location = New System.Drawing.Point(385, 75)
         Me.Button_SourceModFolder.Name = "Button_SourceModFolder"
         Me.Button_SourceModFolder.Size = New System.Drawing.Size(31, 24)
         Me.Button_SourceModFolder.TabIndex = 26
@@ -1349,7 +1249,7 @@ Partial Class FormSettings
         Me.Panel9.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel9.Location = New System.Drawing.Point(3, 18)
         Me.Panel9.Name = "Panel9"
-        Me.Panel9.Size = New System.Drawing.Size(579, 666)
+        Me.Panel9.Size = New System.Drawing.Size(419, 666)
         Me.Panel9.TabIndex = 28
         '
         'GroupBox3
@@ -1361,7 +1261,7 @@ Partial Class FormSettings
         Me.GroupBox3.Controls.Add(Me.Button_KnownFileRemove)
         Me.GroupBox3.Location = New System.Drawing.Point(3, 473)
         Me.GroupBox3.Name = "GroupBox3"
-        Me.GroupBox3.Size = New System.Drawing.Size(573, 190)
+        Me.GroupBox3.Size = New System.Drawing.Size(413, 190)
         Me.GroupBox3.TabIndex = 29
         Me.GroupBox3.TabStop = False
         Me.GroupBox3.Text = "Known Files"
@@ -1374,7 +1274,7 @@ Partial Class FormSettings
         Me.ListView_KnownFiles.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader8})
         Me.ListView_KnownFiles.Location = New System.Drawing.Point(6, 21)
         Me.ListView_KnownFiles.Name = "ListView_KnownFiles"
-        Me.ListView_KnownFiles.Size = New System.Drawing.Size(561, 134)
+        Me.ListView_KnownFiles.Size = New System.Drawing.Size(401, 134)
         Me.ListView_KnownFiles.Sorting = System.Windows.Forms.SortOrder.Ascending
         Me.ListView_KnownFiles.TabIndex = 3
         Me.ListView_KnownFiles.UseCompatibleStateImageBehavior = False
@@ -1387,7 +1287,7 @@ Partial Class FormSettings
         'Button_KnownFileAdd
         '
         Me.Button_KnownFileAdd.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button_KnownFileAdd.Location = New System.Drawing.Point(389, 161)
+        Me.Button_KnownFileAdd.Location = New System.Drawing.Point(229, 161)
         Me.Button_KnownFileAdd.Name = "Button_KnownFileAdd"
         Me.Button_KnownFileAdd.Size = New System.Drawing.Size(86, 23)
         Me.Button_KnownFileAdd.TabIndex = 2
@@ -1397,7 +1297,7 @@ Partial Class FormSettings
         'Button_KnownFileRemove
         '
         Me.Button_KnownFileRemove.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button_KnownFileRemove.Location = New System.Drawing.Point(481, 161)
+        Me.Button_KnownFileRemove.Location = New System.Drawing.Point(321, 161)
         Me.Button_KnownFileRemove.Name = "Button_KnownFileRemove"
         Me.Button_KnownFileRemove.Size = New System.Drawing.Size(86, 23)
         Me.Button_KnownFileRemove.TabIndex = 1
@@ -1411,7 +1311,7 @@ Partial Class FormSettings
         Me.GroupBox2.Controls.Add(Me.TabControl2)
         Me.GroupBox2.Location = New System.Drawing.Point(3, 275)
         Me.GroupBox2.Name = "GroupBox2"
-        Me.GroupBox2.Size = New System.Drawing.Size(573, 192)
+        Me.GroupBox2.Size = New System.Drawing.Size(413, 192)
         Me.GroupBox2.TabIndex = 28
         Me.GroupBox2.TabStop = False
         Me.GroupBox2.Text = "Compiler Options"
@@ -1424,7 +1324,7 @@ Partial Class FormSettings
         Me.TabControl2.Location = New System.Drawing.Point(3, 18)
         Me.TabControl2.Name = "TabControl2"
         Me.TabControl2.SelectedIndex = 0
-        Me.TabControl2.Size = New System.Drawing.Size(567, 171)
+        Me.TabControl2.Size = New System.Drawing.Size(407, 171)
         Me.TabControl2.TabIndex = 0
         '
         'TabPage1
@@ -1442,7 +1342,7 @@ Partial Class FormSettings
         Me.TabPage1.Location = New System.Drawing.Point(4, 22)
         Me.TabPage1.Name = "TabPage1"
         Me.TabPage1.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage1.Size = New System.Drawing.Size(559, 145)
+        Me.TabPage1.Size = New System.Drawing.Size(399, 145)
         Me.TabPage1.TabIndex = 0
         Me.TabPage1.Text = "SourcePawn"
         Me.TabPage1.UseVisualStyleBackColor = True
@@ -1463,7 +1363,7 @@ Partial Class FormSettings
         Me.TextBoxEx_CODefineConstantsSP.Location = New System.Drawing.Point(198, 115)
         Me.TextBoxEx_CODefineConstantsSP.m_WatermarkText = "sym=val;sym2=val..."
         Me.TextBoxEx_CODefineConstantsSP.Name = "TextBoxEx_CODefineConstantsSP"
-        Me.TextBoxEx_CODefineConstantsSP.Size = New System.Drawing.Size(355, 22)
+        Me.TextBoxEx_CODefineConstantsSP.Size = New System.Drawing.Size(195, 22)
         Me.TextBoxEx_CODefineConstantsSP.TabIndex = 8
         '
         'TextBoxEx_COIgnoredWarningsSP
@@ -1473,7 +1373,7 @@ Partial Class FormSettings
         Me.TextBoxEx_COIgnoredWarningsSP.Location = New System.Drawing.Point(198, 87)
         Me.TextBoxEx_COIgnoredWarningsSP.m_WatermarkText = "100;101..."
         Me.TextBoxEx_COIgnoredWarningsSP.Name = "TextBoxEx_COIgnoredWarningsSP"
-        Me.TextBoxEx_COIgnoredWarningsSP.Size = New System.Drawing.Size(355, 22)
+        Me.TextBoxEx_COIgnoredWarningsSP.Size = New System.Drawing.Size(195, 22)
         Me.TextBoxEx_COIgnoredWarningsSP.TabIndex = 7
         '
         'Label24
@@ -1502,7 +1402,7 @@ Partial Class FormSettings
         Me.ComboBox_COTreatWarningsAsErrorsSP.FormattingEnabled = True
         Me.ComboBox_COTreatWarningsAsErrorsSP.Location = New System.Drawing.Point(198, 60)
         Me.ComboBox_COTreatWarningsAsErrorsSP.Name = "ComboBox_COTreatWarningsAsErrorsSP"
-        Me.ComboBox_COTreatWarningsAsErrorsSP.Size = New System.Drawing.Size(355, 21)
+        Me.ComboBox_COTreatWarningsAsErrorsSP.Size = New System.Drawing.Size(195, 21)
         Me.ComboBox_COTreatWarningsAsErrorsSP.TabIndex = 4
         '
         'Label22
@@ -1522,7 +1422,7 @@ Partial Class FormSettings
         Me.ComboBox_COVerbosityLevelSP.FormattingEnabled = True
         Me.ComboBox_COVerbosityLevelSP.Location = New System.Drawing.Point(198, 33)
         Me.ComboBox_COVerbosityLevelSP.Name = "ComboBox_COVerbosityLevelSP"
-        Me.ComboBox_COVerbosityLevelSP.Size = New System.Drawing.Size(355, 21)
+        Me.ComboBox_COVerbosityLevelSP.Size = New System.Drawing.Size(195, 21)
         Me.ComboBox_COVerbosityLevelSP.TabIndex = 2
         '
         'ComboBox_COOptimizationLevelSP
@@ -1533,7 +1433,7 @@ Partial Class FormSettings
         Me.ComboBox_COOptimizationLevelSP.FormattingEnabled = True
         Me.ComboBox_COOptimizationLevelSP.Location = New System.Drawing.Point(198, 6)
         Me.ComboBox_COOptimizationLevelSP.Name = "ComboBox_COOptimizationLevelSP"
-        Me.ComboBox_COOptimizationLevelSP.Size = New System.Drawing.Size(355, 21)
+        Me.ComboBox_COOptimizationLevelSP.Size = New System.Drawing.Size(195, 21)
         Me.ComboBox_COOptimizationLevelSP.TabIndex = 1
         '
         'Label21
@@ -1678,7 +1578,7 @@ Partial Class FormSettings
         Me.ComboBox_Language.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.ComboBox_Language.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.ComboBox_Language.FormattingEnabled = True
-        Me.ComboBox_Language.Location = New System.Drawing.Point(358, 248)
+        Me.ComboBox_Language.Location = New System.Drawing.Point(198, 248)
         Me.ComboBox_Language.Name = "ComboBox_Language"
         Me.ComboBox_Language.Size = New System.Drawing.Size(212, 21)
         Me.ComboBox_Language.TabIndex = 26
@@ -1703,7 +1603,7 @@ Partial Class FormSettings
         Me.Label3.Location = New System.Drawing.Point(16, 43)
         Me.Label3.Margin = New System.Windows.Forms.Padding(16, 0, 3, 0)
         Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(560, 28)
+        Me.Label3.Size = New System.Drawing.Size(400, 28)
         Me.Label3.TabIndex = 2
         Me.Label3.Text = "Automatically detect compiler path and include folder from currently opened sourc" &
     "e file."
@@ -1760,7 +1660,7 @@ Partial Class FormSettings
         Me.GroupBox1.Controls.Add(Me.Button_OutputFolder)
         Me.GroupBox1.Location = New System.Drawing.Point(3, 74)
         Me.GroupBox1.Name = "GroupBox1"
-        Me.GroupBox1.Size = New System.Drawing.Size(573, 144)
+        Me.GroupBox1.Size = New System.Drawing.Size(413, 144)
         Me.GroupBox1.TabIndex = 24
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "                    "
@@ -1781,14 +1681,14 @@ Partial Class FormSettings
         Me.TextBox_CompilerPath.BackColor = System.Drawing.Color.White
         Me.TextBox_CompilerPath.Location = New System.Drawing.Point(6, 36)
         Me.TextBox_CompilerPath.Name = "TextBox_CompilerPath"
-        Me.TextBox_CompilerPath.Size = New System.Drawing.Size(524, 22)
+        Me.TextBox_CompilerPath.Size = New System.Drawing.Size(364, 22)
         Me.TextBox_CompilerPath.TabIndex = 8
         '
         'Button_Compiler
         '
         Me.Button_Compiler.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_Compiler.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_Compiler.Location = New System.Drawing.Point(536, 34)
+        Me.Button_Compiler.Location = New System.Drawing.Point(376, 34)
         Me.Button_Compiler.Name = "Button_Compiler"
         Me.Button_Compiler.Size = New System.Drawing.Size(31, 24)
         Me.Button_Compiler.TabIndex = 8
@@ -1811,14 +1711,14 @@ Partial Class FormSettings
         Me.TextBox_IncludeFolder.BackColor = System.Drawing.Color.White
         Me.TextBox_IncludeFolder.Location = New System.Drawing.Point(6, 75)
         Me.TextBox_IncludeFolder.Name = "TextBox_IncludeFolder"
-        Me.TextBox_IncludeFolder.Size = New System.Drawing.Size(524, 22)
+        Me.TextBox_IncludeFolder.Size = New System.Drawing.Size(364, 22)
         Me.TextBox_IncludeFolder.TabIndex = 10
         '
         'Button_IncludeFolder
         '
         Me.Button_IncludeFolder.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_IncludeFolder.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_IncludeFolder.Location = New System.Drawing.Point(536, 73)
+        Me.Button_IncludeFolder.Location = New System.Drawing.Point(376, 73)
         Me.Button_IncludeFolder.Name = "Button_IncludeFolder"
         Me.Button_IncludeFolder.Size = New System.Drawing.Size(31, 24)
         Me.Button_IncludeFolder.TabIndex = 11
@@ -1841,14 +1741,14 @@ Partial Class FormSettings
         Me.TextBox_OutputFolder.BackColor = System.Drawing.Color.White
         Me.TextBox_OutputFolder.Location = New System.Drawing.Point(6, 114)
         Me.TextBox_OutputFolder.Name = "TextBox_OutputFolder"
-        Me.TextBox_OutputFolder.Size = New System.Drawing.Size(524, 22)
+        Me.TextBox_OutputFolder.Size = New System.Drawing.Size(364, 22)
         Me.TextBox_OutputFolder.TabIndex = 14
         '
         'Button_OutputFolder
         '
         Me.Button_OutputFolder.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_OutputFolder.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_OutputFolder.Location = New System.Drawing.Point(536, 112)
+        Me.Button_OutputFolder.Location = New System.Drawing.Point(376, 112)
         Me.Button_OutputFolder.Name = "Button_OutputFolder"
         Me.Button_OutputFolder.Size = New System.Drawing.Size(31, 24)
         Me.Button_OutputFolder.TabIndex = 15
@@ -1865,7 +1765,7 @@ Partial Class FormSettings
         Me.ListBox_Configs.ItemHeight = 21
         Me.ListBox_Configs.Location = New System.Drawing.Point(3, 3)
         Me.ListBox_Configs.Name = "ListBox_Configs"
-        Me.ListBox_Configs.Size = New System.Drawing.Size(144, 476)
+        Me.ListBox_Configs.Size = New System.Drawing.Size(144, 356)
         Me.ListBox_Configs.TabIndex = 0
         '
         'TabPage_Plugins
@@ -1875,7 +1775,7 @@ Partial Class FormSettings
         Me.TabPage_Plugins.Location = New System.Drawing.Point(4, 22)
         Me.TabPage_Plugins.Name = "TabPage_Plugins"
         Me.TabPage_Plugins.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage_Plugins.Size = New System.Drawing.Size(752, 482)
+        Me.TabPage_Plugins.Size = New System.Drawing.Size(592, 362)
         Me.TabPage_Plugins.TabIndex = 2
         Me.TabPage_Plugins.Text = "Plugins"
         Me.TabPage_Plugins.UseVisualStyleBackColor = True
@@ -1885,7 +1785,7 @@ Partial Class FormSettings
         Me.LinkLabel_MorePlugins.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.LinkLabel_MorePlugins.AutoSize = True
         Me.LinkLabel_MorePlugins.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
-        Me.LinkLabel_MorePlugins.Location = New System.Drawing.Point(6, 463)
+        Me.LinkLabel_MorePlugins.Location = New System.Drawing.Point(6, 343)
         Me.LinkLabel_MorePlugins.Margin = New System.Windows.Forms.Padding(3)
         Me.LinkLabel_MorePlugins.Name = "LinkLabel_MorePlugins"
         Me.LinkLabel_MorePlugins.Size = New System.Drawing.Size(105, 13)
@@ -1902,7 +1802,7 @@ Partial Class FormSettings
         Me.ListView_Plugins.ContextMenuStrip = Me.ContextMenuStrip_Plugins
         Me.ListView_Plugins.Location = New System.Drawing.Point(6, 6)
         Me.ListView_Plugins.Name = "ListView_Plugins"
-        Me.ListView_Plugins.Size = New System.Drawing.Size(740, 451)
+        Me.ListView_Plugins.Size = New System.Drawing.Size(580, 331)
         Me.ListView_Plugins.TabIndex = 0
         Me.ListView_Plugins.UseCompatibleStateImageBehavior = False
         Me.ListView_Plugins.View = System.Windows.Forms.View.Details
@@ -1952,7 +1852,7 @@ Partial Class FormSettings
         Me.TabPage_Database.Location = New System.Drawing.Point(4, 22)
         Me.TabPage_Database.Name = "TabPage_Database"
         Me.TabPage_Database.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage_Database.Size = New System.Drawing.Size(752, 482)
+        Me.TabPage_Database.Size = New System.Drawing.Size(592, 362)
         Me.TabPage_Database.TabIndex = 3
         Me.TabPage_Database.Text = "Database"
         Me.TabPage_Database.UseVisualStyleBackColor = True
@@ -1968,14 +1868,14 @@ Partial Class FormSettings
         Me.DatabaseListBox_Database.Location = New System.Drawing.Point(6, 75)
         Me.DatabaseListBox_Database.Name = "DatabaseListBox_Database"
         Me.DatabaseListBox_Database.SelectionMode = System.Windows.Forms.SelectionMode.None
-        Me.DatabaseListBox_Database.Size = New System.Drawing.Size(740, 315)
+        Me.DatabaseListBox_Database.Size = New System.Drawing.Size(580, 195)
         Me.DatabaseListBox_Database.TabIndex = 7
         '
         'Button_Refresh
         '
         Me.Button_Refresh.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_Refresh.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_Refresh.Location = New System.Drawing.Point(646, 393)
+        Me.Button_Refresh.Location = New System.Drawing.Point(486, 273)
         Me.Button_Refresh.Name = "Button_Refresh"
         Me.Button_Refresh.Size = New System.Drawing.Size(100, 23)
         Me.Button_Refresh.TabIndex = 6
@@ -1995,7 +1895,7 @@ Partial Class FormSettings
         Me.TableLayoutPanel4.Name = "TableLayoutPanel4"
         Me.TableLayoutPanel4.RowCount = 1
         Me.TableLayoutPanel4.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.TableLayoutPanel4.Size = New System.Drawing.Size(740, 63)
+        Me.TableLayoutPanel4.Size = New System.Drawing.Size(580, 63)
         Me.TableLayoutPanel4.TabIndex = 5
         '
         'ClassPictureBoxQuality2
@@ -2015,7 +1915,7 @@ Partial Class FormSettings
         Me.Label18.Location = New System.Drawing.Point(60, 6)
         Me.Label18.Margin = New System.Windows.Forms.Padding(6)
         Me.Label18.Name = "Label18"
-        Me.Label18.Size = New System.Drawing.Size(664, 26)
+        Me.Label18.Size = New System.Drawing.Size(513, 39)
         Me.Label18.TabIndex = 3
         Me.Label18.Text = resources.GetString("Label18.Text")
         '
@@ -2023,7 +1923,7 @@ Partial Class FormSettings
         '
         Me.Button_AddDatabaseItem.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_AddDatabaseItem.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_AddDatabaseItem.Location = New System.Drawing.Point(540, 393)
+        Me.Button_AddDatabaseItem.Location = New System.Drawing.Point(380, 273)
         Me.Button_AddDatabaseItem.Name = "Button_AddDatabaseItem"
         Me.Button_AddDatabaseItem.Size = New System.Drawing.Size(100, 23)
         Me.Button_AddDatabaseItem.TabIndex = 4
@@ -2039,11 +1939,11 @@ Partial Class FormSettings
         Me.TableLayoutPanel3.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.TableLayoutPanel3.Controls.Add(Me.ClassPictureBoxQuality1, 0, 0)
         Me.TableLayoutPanel3.Controls.Add(Me.Label17, 1, 0)
-        Me.TableLayoutPanel3.Location = New System.Drawing.Point(6, 422)
+        Me.TableLayoutPanel3.Location = New System.Drawing.Point(6, 302)
         Me.TableLayoutPanel3.Name = "TableLayoutPanel3"
         Me.TableLayoutPanel3.RowCount = 1
         Me.TableLayoutPanel3.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.TableLayoutPanel3.Size = New System.Drawing.Size(740, 54)
+        Me.TableLayoutPanel3.Size = New System.Drawing.Size(580, 54)
         Me.TableLayoutPanel3.TabIndex = 1
         '
         'ClassPictureBoxQuality1
@@ -2064,7 +1964,7 @@ Partial Class FormSettings
         Me.Label17.Location = New System.Drawing.Point(44, 6)
         Me.Label17.Margin = New System.Windows.Forms.Padding(6)
         Me.Label17.Name = "Label17"
-        Me.Label17.Size = New System.Drawing.Size(688, 26)
+        Me.Label17.Size = New System.Drawing.Size(518, 26)
         Me.Label17.TabIndex = 3
         Me.Label17.Text = "Loaded BasicPawn plugins are able to read stored database entries. Make sure all " &
     "installed plugins are from a trustworthy publisher to prevent theft."
@@ -2074,7 +1974,7 @@ Partial Class FormSettings
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.CancelButton = Me.Button_Cancel
-        Me.ClientSize = New System.Drawing.Size(784, 561)
+        Me.ClientSize = New System.Drawing.Size(624, 441)
         Me.Controls.Add(Me.Button_Apply)
         Me.Controls.Add(Me.Button_Cancel)
         Me.Controls.Add(Me.TabControl1)
@@ -2082,25 +1982,25 @@ Partial Class FormSettings
         Me.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MinimizeBox = False
-        Me.MinimumSize = New System.Drawing.Size(800, 600)
+        Me.MinimumSize = New System.Drawing.Size(640, 480)
         Me.Name = "FormSettings"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
         Me.Text = "Settings"
         Me.ContextMenuStrip_Plugins.ResumeLayout(False)
         Me.TabControl1.ResumeLayout(False)
         Me.TabPage_Settings.ResumeLayout(False)
-        Me.TabPage_Settings.PerformLayout()
-        Me.Panel8.ResumeLayout(False)
-        Me.Panel8.PerformLayout()
-        Me.Panel5.ResumeLayout(False)
-        Me.Panel5.PerformLayout()
-        Me.Panel6.ResumeLayout(False)
-        Me.Panel6.PerformLayout()
-        Me.Panel7.ResumeLayout(False)
-        Me.Panel7.PerformLayout()
+        Me.ClassTabControlColor1.ResumeLayout(False)
+        Me.TabPage3.ResumeLayout(False)
+        Me.TabPage3.PerformLayout()
+        Me.TabPage4.ResumeLayout(False)
+        Me.TabPage4.PerformLayout()
         CType(Me.NumericUpDown_TabsToSpaces, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.Panel14.ResumeLayout(False)
-        Me.Panel14.PerformLayout()
+        Me.TabPage5.ResumeLayout(False)
+        Me.TabPage5.PerformLayout()
+        Me.TabPage6.ResumeLayout(False)
+        Me.TabPage6.PerformLayout()
+        Me.TabPage7.ResumeLayout(False)
+        Me.TabPage7.PerformLayout()
         Me.TabPage_Configs.ResumeLayout(False)
         Me.TableLayoutPanel1.ResumeLayout(False)
         Me.TableLayoutPanel2.ResumeLayout(False)
@@ -2142,7 +2042,6 @@ Partial Class FormSettings
     Friend WithEvents TabPage_Settings As TabPage
     Friend WithEvents TabPage_Configs As TabPage
     Friend WithEvents CheckBox_OnScreenIntelliSense As CheckBox
-    Friend WithEvents Label1 As Label
     Friend WithEvents Button_Cancel As Button
     Friend WithEvents Button_Apply As Button
     Friend WithEvents Button_ConfigAdd As Button
@@ -2168,13 +2067,11 @@ Partial Class FormSettings
     Friend WithEvents Button_ConfigCopy As Button
     Friend WithEvents Button_ConfigRename As Button
     Friend WithEvents CheckBox_DoubleClickMark As CheckBox
-    Friend WithEvents Label7 As Label
     Friend WithEvents CheckBox_CommentsMethodIntelliSense As CheckBox
     Friend WithEvents CheckBox_CommentsAutocompleteIntelliSense As CheckBox
     Friend WithEvents CheckBox_FullAutocompleteReTagging As CheckBox
     Friend WithEvents Label_Font As Label
     Friend WithEvents Button_Font As Button
-    Friend WithEvents Label8 As Label
     Friend WithEvents CheckBox_InvertedColors As CheckBox
     Friend WithEvents CheckBox_CaseSensitive As CheckBox
     Friend WithEvents CheckBox_WindowsToolTipPopup As CheckBox
@@ -2191,20 +2088,12 @@ Partial Class FormSettings
     Friend WithEvents TextBox_SourceModFolder As TextBox
     Friend WithEvents Label12 As Label
     Friend WithEvents Label13 As Label
-    Friend WithEvents Label14 As Label
     Friend WithEvents CheckBox_EntitiesEnableColor As CheckBox
     Friend WithEvents CheckBox_CatchExceptions As CheckBox
     Friend WithEvents CheckBox_EntitiesEnableShowNewEnts As CheckBox
-    Friend WithEvents Panel8 As Panel
-    Friend WithEvents Panel7 As Panel
-    Friend WithEvents Panel6 As Panel
-    Friend WithEvents Panel5 As Panel
     Friend WithEvents Panel11 As Panel
     Friend WithEvents Panel10 As Panel
     Friend WithEvents Panel9 As Panel
-    Friend WithEvents Panel4 As Panel
-    Friend WithEvents Panel3 As Panel
-    Friend WithEvents Panel1 As Panel
     Friend WithEvents Panel13 As Panel
     Friend WithEvents Panel12 As Panel
     Friend WithEvents CheckBox_CurrentSourceVarAutocomplete As CheckBox
@@ -2216,9 +2105,6 @@ Partial Class FormSettings
     Friend WithEvents ColumnHeader4 As ColumnHeader
     Friend WithEvents ColumnHeader5 As ColumnHeader
     Friend WithEvents ColumnHeader6 As ColumnHeader
-    Friend WithEvents Panel14 As Panel
-    Friend WithEvents Panel15 As Panel
-    Friend WithEvents Label16 As Label
     Friend WithEvents CheckBox_AlwaysNewInstance As CheckBox
     Friend WithEvents CheckBox_VarAutocompleteShowObjectBrowser As CheckBox
     Friend WithEvents CheckBox_AlwaysLoadDefaultIncludes As CheckBox
@@ -2301,4 +2187,10 @@ Partial Class FormSettings
     Friend WithEvents CheckBox_AutoIndentBrackets As CheckBox
     Friend WithEvents CheckBox_AutoHoverScroll As CheckBox
     Friend WithEvents DatabaseListBox_Database As ClassDatabaseListBox
+    Friend WithEvents ClassTabControlColor1 As ClassTabControlColor
+    Friend WithEvents TabPage3 As TabPage
+    Friend WithEvents TabPage4 As TabPage
+    Friend WithEvents TabPage5 As TabPage
+    Friend WithEvents TabPage6 As TabPage
+    Friend WithEvents TabPage7 As TabPage
 End Class
