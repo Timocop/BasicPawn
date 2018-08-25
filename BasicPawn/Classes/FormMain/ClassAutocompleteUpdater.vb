@@ -3429,14 +3429,21 @@ Public Class ClassAutocompleteUpdater
                             Continue While
                         End If
 
-                        Dim mMatch As Match = Regex.Match(sLine, "^\s*#(include|tryinclude)\s+(\<(?<PathInc>.*?)\>|""(?<PathFull>.*?)""|(?<PathFull>.+?))\s*$")
-                        If (Not mMatch.Success) Then
+                        Dim mMatch As Match = Regex.Match(sLine, "^\s*#(include|tryinclude)\s+(?<PathInc>.*?)\s*$")
+                        If (Not mMatch.Groups("PathInc").Success) Then
                             Continue While
                         End If
 
+                        'Remove comments
+                        'TODO: Add better check for detecting comments. Cant use ClassSyntaxSourceAnalysis here since the language is not defined yet...
+                        sMatchValue = mMatch.Groups("PathInc").Value
+                        sMatchValue = Regex.Replace(sMatchValue, "//(.*?)$", "")
+                        sMatchValue = Regex.Replace(sMatchValue, "\/\*(.*?)$", "")
+                        sMatchValue = sMatchValue.Replace("/"c, "\"c).Trim
+
                         Select Case (True)
-                            Case mMatch.Groups("PathInc").Success
-                                sMatchValue = mMatch.Groups("PathInc").Value.Trim.Replace("/"c, "\"c)
+                            Case sMatchValue.StartsWith("<") AndAlso sMatchValue.EndsWith(">")
+                                sMatchValue = sMatchValue.TrimStart("<"c).TrimEnd(">"c)
 
                                 Select Case (True)
                                     Case IO.File.Exists(IO.Path.Combine(sInclude, sMatchValue))
@@ -3444,25 +3451,9 @@ Public Class ClassAutocompleteUpdater
                                     Case IO.File.Exists(IO.Path.Combine(sCompilerPath, sMatchValue))
                                         sCorrectPath = IO.Path.GetFullPath(IO.Path.Combine(sCompilerPath, sMatchValue))
 
-                                    'Case IO.File.Exists(String.Format("{0}.sp", IO.Path.Combine(sInclude, sMatchValue)))
-                                    '    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.sp", IO.Path.Combine(sInclude, sMatchValue)))
-                                    'Case IO.File.Exists(String.Format("{0}.sma", IO.Path.Combine(sInclude, sMatchValue)))
-                                    '    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.sma", IO.Path.Combine(sInclude, sMatchValue)))
-                                    'Case IO.File.Exists(String.Format("{0}.p", IO.Path.Combine(sInclude, sMatchValue)))
-                                    '    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.p", IO.Path.Combine(sInclude, sMatchValue)))
-                                    'Case IO.File.Exists(String.Format("{0}.pwn", IO.Path.Combine(sInclude, sMatchValue)))
-                                    '    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.pwn", IO.Path.Combine(sInclude, sMatchValue)))
                                     Case IO.File.Exists(String.Format("{0}.inc", IO.Path.Combine(sInclude, sMatchValue)))
                                         sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.inc", IO.Path.Combine(sInclude, sMatchValue)))
 
-                                    'Case IO.File.Exists(String.Format("{0}.sp", IO.Path.Combine(sCompilerPath, sMatchValue)))
-                                    '    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.sp", IO.Path.Combine(sCompilerPath, sMatchValue)))
-                                    'Case IO.File.Exists(String.Format("{0}.sma", IO.Path.Combine(sCompilerPath, sMatchValue)))
-                                    '    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.sma", IO.Path.Combine(sCompilerPath, sMatchValue)))
-                                    'Case IO.File.Exists(String.Format("{0}.p", IO.Path.Combine(sCompilerPath, sMatchValue)))
-                                    '    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.p", IO.Path.Combine(sCompilerPath, sMatchValue)))
-                                    'Case IO.File.Exists(String.Format("{0}.pwn", IO.Path.Combine(sCompilerPath, sMatchValue)))
-                                    '    sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.pwn", IO.Path.Combine(sCompilerPath, sMatchValue)))
                                     Case IO.File.Exists(String.Format("{0}.inc", IO.Path.Combine(sCompilerPath, sMatchValue)))
                                         sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.inc", IO.Path.Combine(sCompilerPath, sMatchValue)))
 
@@ -3473,8 +3464,8 @@ Public Class ClassAutocompleteUpdater
                                         Continue While
                                 End Select
 
-                            Case mMatch.Groups("PathFull").Success
-                                sMatchValue = mMatch.Groups("PathFull").Value.Trim.Replace("/"c, "\"c)
+                            Case Else
+                                sMatchValue = sMatchValue.TrimStart(""""c).TrimEnd(""""c)
 
                                 Select Case (True)
                                     Case sMatchValue.Length > 1 AndAlso sMatchValue(1) = ":"c AndAlso IO.File.Exists(sMatchValue)
@@ -3527,8 +3518,6 @@ Public Class ClassAutocompleteUpdater
                                         Continue While
                                 End Select
 
-                            Case Else
-                                Continue While
                         End Select
 
                         If (Not IO.File.Exists(sCorrectPath)) Then
