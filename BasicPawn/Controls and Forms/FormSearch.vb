@@ -116,6 +116,26 @@ Public Class FormSearch
         UpdateViews()
     End Sub
 
+    Private Sub Button_SearchPre_Click(sender As Object, e As EventArgs) Handles Button_SearchPre.Click
+        RadioButton_DirectionUp.Checked = True
+        Button_Search.PerformClick()
+    End Sub
+
+    Private Sub Button_SearchNext_Click(sender As Object, e As EventArgs) Handles Button_SearchNext.Click
+        RadioButton_DirectionDown.Checked = True
+        Button_Search.PerformClick()
+    End Sub
+
+    Private Sub Button_ReplacePre_Click(sender As Object, e As EventArgs) Handles Button_ReplacePre.Click
+        RadioButton_DirectionUp.Checked = True
+        Button_Replace.PerformClick()
+    End Sub
+
+    Private Sub Button_ReplaceNext_Click(sender As Object, e As EventArgs) Handles Button_ReplaceNext.Click
+        RadioButton_DirectionDown.Checked = True
+        Button_Replace.PerformClick()
+    End Sub
+
     Private Sub SetTextEditorSelection(mTab As ClassTabControl.SourceTabPage, iOffset As Integer, iLength As Integer, bCaretBeginPos As Boolean)
         If (iOffset + iLength > mTab.m_TextEditor.Document.TextLength) Then
             Return
@@ -318,9 +338,17 @@ Public Class FormSearch
             Return
         End If
 
-        ToolStripStatusLabel_Status.Text = String.Format("{0} Items replaced!", mResults.Length)
-
         If (mResults.Length < 1) Then
+            ToolStripStatusLabel_Status.Text = String.Format("{0} Items replaced!", 0)
+            Return
+        End If
+
+        Dim iReplaceCount As Integer = 0
+        Dim bSomethingSelected As Boolean = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.HasSomethingSelected
+
+        If (CheckBox_ReplaceInSelection.Checked AndAlso Not bSomethingSelected) Then
+            MessageBox.Show("Nothing has been selected", "Unable to replace", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            ToolStripStatusLabel_Status.Text = String.Format("{0} Items replaced!", 0)
             Return
         End If
 
@@ -330,7 +358,30 @@ Public Class FormSearch
             g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.UndoStack.StartUndoGroup()
 
             For i = mResults.Length - 1 To 0 Step -1
+                If (CheckBox_ReplaceInSelection.Checked) Then
+                    If (Not bSomethingSelected) Then
+                        Exit For
+                    End If
+
+                    Dim iSelectOffset As Integer = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection(0).Offset
+                    Dim iSelectLength As Integer = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection(0).Length
+
+                    If (mResults(i).iLocation < iSelectOffset) Then
+                        Continue For
+                    End If
+
+                    If (mResults(i).iLocation > (iSelectOffset + iSelectLength)) Then
+                        Continue For
+                    End If
+
+                    If ((mResults(i).iLocation + mResults(i).iLength) > (iSelectOffset + iSelectLength)) Then
+                        Continue For
+                    End If
+                End If
+
                 g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.Replace(mResults(i).iLocation, mResults(i).iLength, TextBox_Replace.Text)
+
+                iReplaceCount += 1
             Next
 
             g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.UndoStack.EndUndoGroup()
@@ -338,6 +389,8 @@ Public Class FormSearch
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
+
+        ToolStripStatusLabel_Status.Text = String.Format("{0} Items replaced!", iReplaceCount)
     End Sub
 
     Private Sub Button_ListAll_Click(sender As Object, e As EventArgs) Handles Button_ListAll.Click
