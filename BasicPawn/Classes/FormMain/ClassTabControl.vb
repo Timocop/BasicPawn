@@ -1759,7 +1759,7 @@ Public Class ClassTabControl
                         End If
                     Next
 
-                    'Comapre what changed
+                    'Compare what changed
                     For Each mFold As FoldMarker In Me.m_TextEditor.Document.FoldingManager.FoldMarker
                         Dim mObj(E_MAX) As Object
 
@@ -1781,8 +1781,9 @@ Public Class ClassTabControl
                                 mSavedStates(mFold.Offset) = mObj
                             End If
                         End If
-
                     Next
+
+                    Dim lChangedFolds As New List(Of ClassIni.STRUC_INI_CONTENT)
 
                     'Only write back what changed
                     For Each mItem In mSavedStates
@@ -1796,17 +1797,19 @@ Public Class ClassTabControl
                                     Continue For
                                 End If
 
-                                mIni.WriteKeyValue(Me.m_File.ToLower, CStr(iOffset), If(bState, "1", "0"))
+                                lChangedFolds.Add(New ClassIni.STRUC_INI_CONTENT(Me.m_File.ToLower, CStr(iOffset), If(bState, "1", "0")))
 
                             Case Else
                                 If (bState = bPreState) Then
                                     Continue For
                                 End If
 
-                                mIni.RemoveKeyValue(Me.m_File.ToLower, CStr(iOffset))
+                                lChangedFolds.Add(New ClassIni.STRUC_INI_CONTENT(Me.m_File.ToLower, CStr(iOffset), Nothing))
 
                         End Select
                     Next
+
+                    mIni.WriteKeyValue(lChangedFolds.ToArray)
                 End Using
             End Using
         End Sub
