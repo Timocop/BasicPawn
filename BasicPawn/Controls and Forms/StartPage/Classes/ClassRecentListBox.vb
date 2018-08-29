@@ -19,6 +19,7 @@ Public Class ClassRecentListBox
     Inherits ListBox
 
     Public Event OnItemClick(iIndex As Integer)
+    Public Event OnItemDoubleClick(iIndex As Integer)
     Public Event OnButtonClick(iIndex As Integer)
     Public Event OnCheckBoxClick(iIndex As Integer)
 
@@ -93,6 +94,34 @@ Public Class ClassRecentListBox
 
             Case Else
                 RaiseEvent OnItemClick(iIndex)
+        End Select
+    End Sub
+
+    Private Sub ClassRecentListBox_DoubleClick(sender As Object, e As EventArgs) Handles Me.DoubleClick
+        Dim mCurPos = Me.PointToClient(Cursor.Position)
+        Dim iIndex = Me.IndexFromPoint(mCurPos)
+        If (iIndex < 0) Then
+            Return
+        End If
+
+        If (Me.Items.Count < 1 OrElse iIndex > Me.Items.Count - 1) Then
+            Return
+        End If
+
+        If (TypeOf Me.Items(iIndex) IsNot ClassRecentItem) Then
+            Return
+        End If
+
+        Dim mButtonRect = GetButtonRectangle(iIndex)
+        Dim mCheckBoxRect = GetCheckBoxRectangle(iIndex)
+
+        Select Case (True)
+            Case mButtonRect.Contains(mCurPos)
+            Case mCheckBoxRect.Contains(mCurPos)
+                'Nothing
+
+            Case Else
+                RaiseEvent OnItemDoubleClick(iIndex)
         End Select
     End Sub
 

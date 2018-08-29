@@ -265,7 +265,7 @@ Public Class UCStartPage
     End Sub
 
 
-    Private Sub RecentListBox_Files_OnItemClick(iIndex As Integer) Handles RecentListBox_Files.OnItemClick
+    Private Sub RecentListBox_Files_OnItemDoubleClick(iIndex As Integer) Handles RecentListBox_Files.OnItemDoubleClick
         Try
             Dim mItem = TryCast(RecentListBox_Files.Items(iIndex), ClassRecentListBox.ClassRecentItem)
             If (mItem Is Nothing) Then
@@ -284,7 +284,7 @@ Public Class UCStartPage
         End Try
     End Sub
 
-    Private Sub RecentListBox_Projects_OnItemClick(iIndex As Integer) Handles RecentListBox_Projects.OnItemClick
+    Private Sub RecentListBox_Projects_OnItemDoubleClick(iIndex As Integer) Handles RecentListBox_Projects.OnItemDoubleClick
         Try
             Dim mItem = TryCast(RecentListBox_Projects.Items(iIndex), ClassRecentListBox.ClassRecentItem)
             If (mItem Is Nothing) Then

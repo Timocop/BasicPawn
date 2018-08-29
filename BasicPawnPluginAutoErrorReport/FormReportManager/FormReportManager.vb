@@ -132,7 +132,7 @@ Public Class FormReportManager
         g_mClassReports.CloseReportForms()
     End Sub
 
-    Private Sub ReportListBox_Reports_Click(sender As Object, e As EventArgs) Handles ReportListBox_Reports.Click
+    Private Sub ReportListBox_Reports_DoubleClick(sender As Object, e As EventArgs) Handles ReportListBox_Reports.DoubleClick
         If (ReportListBox_Reports.SelectedItems.Count < 1) Then
             Return
         End If
