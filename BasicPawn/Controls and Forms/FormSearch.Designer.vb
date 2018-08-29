@@ -52,19 +52,19 @@ Partial Class FormSearch
         Me.ColumnHeader4 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.Button_ReplaceNext = New System.Windows.Forms.Button()
+        Me.Button_ReplacePre = New System.Windows.Forms.Button()
+        Me.Button_SearchNext = New System.Windows.Forms.Button()
+        Me.Button_SearchPre = New System.Windows.Forms.Button()
         Me.GroupBox4 = New System.Windows.Forms.GroupBox()
         Me.TrackBar_Transparency = New System.Windows.Forms.TrackBar()
         Me.RadioButton_TransparencyAlways = New System.Windows.Forms.RadioButton()
         Me.RadioButton_TransparencyInactive = New System.Windows.Forms.RadioButton()
         Me.CheckBox_Transparency = New System.Windows.Forms.CheckBox()
         Me.Button_ListAllOpenTabs = New System.Windows.Forms.Button()
-        Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
         Me.GroupBox5 = New System.Windows.Forms.GroupBox()
         Me.CheckBox_ReplaceInSelection = New System.Windows.Forms.CheckBox()
-        Me.Button_SearchPre = New System.Windows.Forms.Button()
-        Me.Button_SearchNext = New System.Windows.Forms.Button()
-        Me.Button_ReplaceNext = New System.Windows.Forms.Button()
-        Me.Button_ReplacePre = New System.Windows.Forms.Button()
+        Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
@@ -377,6 +377,46 @@ Partial Class FormSearch
         Me.Panel1.Size = New System.Drawing.Size(519, 263)
         Me.Panel1.TabIndex = 0
         '
+        'Button_ReplaceNext
+        '
+        Me.Button_ReplaceNext.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.Button_ReplaceNext.Location = New System.Drawing.Point(484, 41)
+        Me.Button_ReplaceNext.Name = "Button_ReplaceNext"
+        Me.Button_ReplaceNext.Size = New System.Drawing.Size(23, 23)
+        Me.Button_ReplaceNext.TabIndex = 20
+        Me.Button_ReplaceNext.Text = ">"
+        Me.Button_ReplaceNext.UseVisualStyleBackColor = True
+        '
+        'Button_ReplacePre
+        '
+        Me.Button_ReplacePre.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.Button_ReplacePre.Location = New System.Drawing.Point(391, 41)
+        Me.Button_ReplacePre.Name = "Button_ReplacePre"
+        Me.Button_ReplacePre.Size = New System.Drawing.Size(23, 23)
+        Me.Button_ReplacePre.TabIndex = 19
+        Me.Button_ReplacePre.Text = "<"
+        Me.Button_ReplacePre.UseVisualStyleBackColor = True
+        '
+        'Button_SearchNext
+        '
+        Me.Button_SearchNext.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.Button_SearchNext.Location = New System.Drawing.Point(484, 12)
+        Me.Button_SearchNext.Name = "Button_SearchNext"
+        Me.Button_SearchNext.Size = New System.Drawing.Size(23, 23)
+        Me.Button_SearchNext.TabIndex = 18
+        Me.Button_SearchNext.Text = ">"
+        Me.Button_SearchNext.UseVisualStyleBackColor = True
+        '
+        'Button_SearchPre
+        '
+        Me.Button_SearchPre.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.Button_SearchPre.Location = New System.Drawing.Point(391, 12)
+        Me.Button_SearchPre.Name = "Button_SearchPre"
+        Me.Button_SearchPre.Size = New System.Drawing.Size(23, 23)
+        Me.Button_SearchPre.TabIndex = 17
+        Me.Button_SearchPre.Text = "<"
+        Me.Button_SearchPre.UseVisualStyleBackColor = True
+        '
         'GroupBox4
         '
         Me.GroupBox4.Controls.Add(Me.TrackBar_Transparency)
@@ -451,12 +491,6 @@ Partial Class FormSearch
         Me.Button_ListAllOpenTabs.Text = "List All in All open tabs"
         Me.Button_ListAllOpenTabs.UseVisualStyleBackColor = True
         '
-        'ToolTip1
-        '
-        Me.ToolTip1.AutoPopDelay = 25000
-        Me.ToolTip1.InitialDelay = 500
-        Me.ToolTip1.ReshowDelay = 100
-        '
         'GroupBox5
         '
         Me.GroupBox5.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
@@ -478,45 +512,11 @@ Partial Class FormSearch
         Me.CheckBox_ReplaceInSelection.Text = "In selection"
         Me.CheckBox_ReplaceInSelection.UseVisualStyleBackColor = True
         '
-        'Button_SearchPre
+        'ToolTip1
         '
-        Me.Button_SearchPre.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_SearchPre.Location = New System.Drawing.Point(391, 12)
-        Me.Button_SearchPre.Name = "Button_SearchPre"
-        Me.Button_SearchPre.Size = New System.Drawing.Size(23, 23)
-        Me.Button_SearchPre.TabIndex = 17
-        Me.Button_SearchPre.Text = "<"
-        Me.Button_SearchPre.UseVisualStyleBackColor = True
-        '
-        'Button_SearchNext
-        '
-        Me.Button_SearchNext.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_SearchNext.Location = New System.Drawing.Point(484, 12)
-        Me.Button_SearchNext.Name = "Button_SearchNext"
-        Me.Button_SearchNext.Size = New System.Drawing.Size(23, 23)
-        Me.Button_SearchNext.TabIndex = 18
-        Me.Button_SearchNext.Text = ">"
-        Me.Button_SearchNext.UseVisualStyleBackColor = True
-        '
-        'Button_ReplaceNext
-        '
-        Me.Button_ReplaceNext.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_ReplaceNext.Location = New System.Drawing.Point(484, 41)
-        Me.Button_ReplaceNext.Name = "Button_ReplaceNext"
-        Me.Button_ReplaceNext.Size = New System.Drawing.Size(23, 23)
-        Me.Button_ReplaceNext.TabIndex = 20
-        Me.Button_ReplaceNext.Text = ">"
-        Me.Button_ReplaceNext.UseVisualStyleBackColor = True
-        '
-        'Button_ReplacePre
-        '
-        Me.Button_ReplacePre.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_ReplacePre.Location = New System.Drawing.Point(391, 41)
-        Me.Button_ReplacePre.Name = "Button_ReplacePre"
-        Me.Button_ReplacePre.Size = New System.Drawing.Size(23, 23)
-        Me.Button_ReplacePre.TabIndex = 19
-        Me.Button_ReplacePre.Text = "<"
-        Me.Button_ReplacePre.UseVisualStyleBackColor = True
+        Me.ToolTip1.AutoPopDelay = 25000
+        Me.ToolTip1.InitialDelay = 500
+        Me.ToolTip1.ReshowDelay = 100
         '
         'FormSearch
         '

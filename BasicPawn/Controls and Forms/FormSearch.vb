@@ -523,6 +523,12 @@ Public Class FormSearch
 
     Private Sub TextBox_Search_KeyDown(sender As Object, e As KeyEventArgs) Handles TextBox_Search.KeyDown
         Select Case (e.KeyCode)
+            Case Keys.Enter
+                e.Handled = True
+                e.SuppressKeyPress = True
+
+                Button_Search.PerformClick()
+
             Case Keys.Up
                 e.Handled = True
                 e.SuppressKeyPress = True
@@ -536,6 +542,30 @@ Public Class FormSearch
 
                 RadioButton_DirectionDown.Checked = True
                 Button_Search.PerformClick()
+        End Select
+    End Sub
+
+    Private Sub TextBox_Replace_KeyDown(sender As Object, e As KeyEventArgs) Handles TextBox_Replace.KeyDown
+        Select Case (e.KeyCode)
+            Case Keys.Enter
+                e.Handled = True
+                e.SuppressKeyPress = True
+
+                Button_Replace.PerformClick()
+
+            Case Keys.Up
+                e.Handled = True
+                e.SuppressKeyPress = True
+
+                RadioButton_DirectionUp.Checked = True
+                Button_Replace.PerformClick()
+
+            Case Keys.Down
+                e.Handled = True
+                e.SuppressKeyPress = True
+
+                RadioButton_DirectionDown.Checked = True
+                Button_Replace.PerformClick()
         End Select
     End Sub
 
