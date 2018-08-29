@@ -91,7 +91,7 @@ Partial Class FormSearch
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.TextBox_Search.Location = New System.Drawing.Point(68, 12)
         Me.TextBox_Search.Name = "TextBox_Search"
-        Me.TextBox_Search.Size = New System.Drawing.Size(317, 22)
+        Me.TextBox_Search.Size = New System.Drawing.Size(305, 22)
         Me.TextBox_Search.TabIndex = 1
         '
         'TextBox_Replace
@@ -100,7 +100,7 @@ Partial Class FormSearch
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.TextBox_Replace.Location = New System.Drawing.Point(68, 40)
         Me.TextBox_Replace.Name = "TextBox_Replace"
-        Me.TextBox_Replace.Size = New System.Drawing.Size(317, 22)
+        Me.TextBox_Replace.Size = New System.Drawing.Size(305, 22)
         Me.TextBox_Replace.TabIndex = 3
         '
         'Label2
@@ -116,9 +116,9 @@ Partial Class FormSearch
         '
         Me.Button_Search.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_Search.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_Search.Location = New System.Drawing.Point(391, 12)
+        Me.Button_Search.Location = New System.Drawing.Point(379, 12)
         Me.Button_Search.Name = "Button_Search"
-        Me.Button_Search.Size = New System.Drawing.Size(116, 23)
+        Me.Button_Search.Size = New System.Drawing.Size(128, 23)
         Me.Button_Search.TabIndex = 4
         Me.Button_Search.Text = "Search"
         Me.ToolTip1.SetToolTip(Me.Button_Search, "Use the keyboard shortcuts UP/DOWN in the 'Search' textbox to search with directi" &
@@ -129,9 +129,9 @@ Partial Class FormSearch
         '
         Me.Button_Replace.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_Replace.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_Replace.Location = New System.Drawing.Point(391, 41)
+        Me.Button_Replace.Location = New System.Drawing.Point(379, 41)
         Me.Button_Replace.Name = "Button_Replace"
-        Me.Button_Replace.Size = New System.Drawing.Size(116, 23)
+        Me.Button_Replace.Size = New System.Drawing.Size(128, 23)
         Me.Button_Replace.TabIndex = 5
         Me.Button_Replace.Text = "Replace"
         Me.Button_Replace.UseVisualStyleBackColor = True
@@ -232,9 +232,9 @@ Partial Class FormSearch
         '
         Me.Button_ReplaceAll.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_ReplaceAll.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_ReplaceAll.Location = New System.Drawing.Point(391, 70)
+        Me.Button_ReplaceAll.Location = New System.Drawing.Point(379, 70)
         Me.Button_ReplaceAll.Name = "Button_ReplaceAll"
-        Me.Button_ReplaceAll.Size = New System.Drawing.Size(116, 23)
+        Me.Button_ReplaceAll.Size = New System.Drawing.Size(128, 23)
         Me.Button_ReplaceAll.TabIndex = 10
         Me.Button_ReplaceAll.Text = "Replace All"
         Me.Button_ReplaceAll.UseVisualStyleBackColor = True
@@ -295,9 +295,9 @@ Partial Class FormSearch
         '
         Me.Button_ListAll.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_ListAll.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_ListAll.Location = New System.Drawing.Point(391, 99)
+        Me.Button_ListAll.Location = New System.Drawing.Point(379, 99)
         Me.Button_ListAll.Name = "Button_ListAll"
-        Me.Button_ListAll.Size = New System.Drawing.Size(116, 23)
+        Me.Button_ListAll.Size = New System.Drawing.Size(128, 23)
         Me.Button_ListAll.TabIndex = 13
         Me.Button_ListAll.Text = "List All"
         Me.Button_ListAll.UseVisualStyleBackColor = True
@@ -379,6 +379,7 @@ Partial Class FormSearch
         '
         'Button_ReplaceNext
         '
+        Me.Button_ReplaceNext.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_ReplaceNext.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.Button_ReplaceNext.Location = New System.Drawing.Point(484, 41)
         Me.Button_ReplaceNext.Name = "Button_ReplaceNext"
@@ -389,8 +390,9 @@ Partial Class FormSearch
         '
         'Button_ReplacePre
         '
+        Me.Button_ReplacePre.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_ReplacePre.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_ReplacePre.Location = New System.Drawing.Point(391, 41)
+        Me.Button_ReplacePre.Location = New System.Drawing.Point(379, 41)
         Me.Button_ReplacePre.Name = "Button_ReplacePre"
         Me.Button_ReplacePre.Size = New System.Drawing.Size(23, 23)
         Me.Button_ReplacePre.TabIndex = 19
@@ -399,6 +401,7 @@ Partial Class FormSearch
         '
         'Button_SearchNext
         '
+        Me.Button_SearchNext.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_SearchNext.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.Button_SearchNext.Location = New System.Drawing.Point(484, 12)
         Me.Button_SearchNext.Name = "Button_SearchNext"
@@ -409,8 +412,9 @@ Partial Class FormSearch
         '
         'Button_SearchPre
         '
+        Me.Button_SearchPre.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_SearchPre.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_SearchPre.Location = New System.Drawing.Point(391, 12)
+        Me.Button_SearchPre.Location = New System.Drawing.Point(379, 12)
         Me.Button_SearchPre.Name = "Button_SearchPre"
         Me.Button_SearchPre.Size = New System.Drawing.Size(23, 23)
         Me.Button_SearchPre.TabIndex = 17
@@ -419,6 +423,7 @@ Partial Class FormSearch
         '
         'GroupBox4
         '
+        Me.GroupBox4.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.GroupBox4.Controls.Add(Me.TrackBar_Transparency)
         Me.GroupBox4.Controls.Add(Me.RadioButton_TransparencyAlways)
         Me.GroupBox4.Controls.Add(Me.RadioButton_TransparencyInactive)
@@ -484,9 +489,9 @@ Partial Class FormSearch
         '
         Me.Button_ListAllOpenTabs.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_ListAllOpenTabs.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_ListAllOpenTabs.Location = New System.Drawing.Point(391, 128)
+        Me.Button_ListAllOpenTabs.Location = New System.Drawing.Point(379, 128)
         Me.Button_ListAllOpenTabs.Name = "Button_ListAllOpenTabs"
-        Me.Button_ListAllOpenTabs.Size = New System.Drawing.Size(116, 36)
+        Me.Button_ListAllOpenTabs.Size = New System.Drawing.Size(128, 36)
         Me.Button_ListAllOpenTabs.TabIndex = 14
         Me.Button_ListAllOpenTabs.Text = "List All in All open tabs"
         Me.Button_ListAllOpenTabs.UseVisualStyleBackColor = True
