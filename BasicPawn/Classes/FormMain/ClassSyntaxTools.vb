@@ -359,17 +359,37 @@ Public Class ClassSyntaxTools
     ''' <returns></returns>
     Public Function FormatCodeIndentation(sSource As String, iIndentationType As ClassSettings.ENUM_INDENTATION_TYPES, iLanguage As ENUM_LANGUAGE_TYPE) As String
         If (True) Then
-            Dim mSourceBuilder As New StringBuilder
-            Using mSR As New IO.StringReader(sSource)
-                While True
-                    Dim sLine As String = mSR.ReadLine
-                    If (sLine Is Nothing) Then
-                        Exit While
+            Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iLanguage)
+            Dim mSourceBuilder As New StringBuilder(sSource)
+
+            'Trim, but skip comments
+            For i = mSourceBuilder.Length - 1 - 1 To 0 Step -1
+                Dim a As Byte
+
+                If (mSourceBuilder(i) = vbLf) Then
+                    a = 1
+                ElseIf (i = 0) Then
+                    a = 0
+                Else
+                    Continue For
+                End If
+
+                If (mSourceAnalysis.m_InMultiComment(i) OrElse mSourceAnalysis.m_InSingleComment(i)) Then
+                    Continue For
+                End If
+
+                For j = i + a To mSourceBuilder.Length - 1
+                    If (mSourceAnalysis.m_InMultiComment(j) OrElse mSourceAnalysis.m_InSingleComment(j)) Then
+                        Exit For
                     End If
 
-                    mSourceBuilder.AppendLine(sLine.Trim)
-                End While
-            End Using
+                    If (mSourceBuilder(j) = vbCr OrElse mSourceBuilder(j) = vbLf OrElse Not Char.IsWhiteSpace(mSourceBuilder(j))) Then
+                        mSourceBuilder = mSourceBuilder.Remove(i + a, j - (i + a))
+                        Exit For
+                    End If
+                Next
+            Next
+
             sSource = mSourceBuilder.ToString
         End If
 
@@ -425,7 +445,21 @@ Public Class ClassSyntaxTools
                             End If
 
                         Case vbLf(0)
-                            'If (Not mSourceAnalysis.InNonCode(i)) Then 
+                            'Dont indent comments
+                            Dim bValid As Boolean = True
+                            For j = i + 1 To mSourceBuilder.Length - 1
+                                If (mSourceAnalysis.m_InMultiComment(j) OrElse mSourceAnalysis.m_InSingleComment(j)) Then
+                                    bValid = False
+                                    Exit For
+                                End If
+
+                                If (mSourceBuilder(j) = vbCr OrElse mSourceBuilder(j) = vbLf OrElse Not Char.IsWhiteSpace(mSourceBuilder(j))) Then
+                                    Exit For
+                                End If
+                            Next
+                            If (Not bValid) Then
+                                Continue For
+                            End If
 
                             'Inserts tabs (spaces) after statements (if, while, for etc.)
                             Dim iStatementLevel As Integer = 0
@@ -467,11 +501,11 @@ Public Class ClassSyntaxTools
                                     iBraceLevel -= 1
                             End Select
 
+                            'Add indentation
                             mSourceBuilder = mSourceBuilder.Insert(i + 1, ClassSettings.BuildIndentation(iBraceLevel +
                                                                                            If(iBracedCount > 0, iBracedCount + 1, 0) +
                                                                                            If(iStatementLevel > -1, iStatementLevel, 0), iIndentationType))
 
-                            'End If
                             iBraceCount = 0
 
                     End Select
