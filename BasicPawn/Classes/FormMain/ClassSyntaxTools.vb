@@ -446,10 +446,11 @@ Public Class ClassSyntaxTools
 
                         Case vbLf(0)
                             'Dont indent comments
-                            Dim bValid As Boolean = True
+                            Dim bContinue As Boolean = False
+
                             For j = i + 1 To mSourceBuilder.Length - 1
                                 If (mSourceAnalysis.m_InMultiComment(j) OrElse mSourceAnalysis.m_InSingleComment(j)) Then
-                                    bValid = False
+                                    bContinue = True
                                     Exit For
                                 End If
 
@@ -457,7 +458,22 @@ Public Class ClassSyntaxTools
                                     Exit For
                                 End If
                             Next
-                            If (Not bValid) Then
+                            If (bContinue) Then
+                                Continue For
+                            End If
+
+                            'Dont indent preprocessor
+                            For j = i + 1 To mSourceBuilder.Length - 1
+                                If (mSourceBuilder(j) = "#"c) Then
+                                    bContinue = True
+                                    Exit For
+                                End If
+
+                                If (mSourceBuilder(j) = vbCr OrElse mSourceBuilder(j) = vbLf OrElse Not Char.IsWhiteSpace(mSourceBuilder(j))) Then
+                                    Exit For
+                                End If
+                            Next
+                            If (bContinue) Then
                                 Continue For
                             End If
 
