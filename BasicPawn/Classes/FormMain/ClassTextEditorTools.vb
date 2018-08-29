@@ -165,6 +165,8 @@ Public Class ClassTextEditorTools
     Public Sub FormatCode()
         Dim mTab = g_mFormMain.g_ClassTabControl.m_ActiveTab
 
+        Dim iChangedLines As Integer = 0
+
         Dim lRealSourceLines As New List(Of String)
         Using mSR As New IO.StringReader(mTab.m_TextEditor.Document.TextContent)
             Dim sLine As String
@@ -216,17 +218,21 @@ Public Class ClassTextEditorTools
 
                 mTab.m_TextEditor.Document.Remove(mLineSeg.Offset, mLineSeg.Length)
                 mTab.m_TextEditor.Document.Insert(mLineSeg.Offset, lFormatedSourceLines(i))
+
+                iChangedLines += 1
             Next
         Finally
             mTab.m_TextEditor.Document.UndoStack.EndUndoGroup()
             mTab.m_TextEditor.Refresh()
         End Try
 
-        g_mFormMain.PrintInformation("[INFO]", String.Format("Code reindented!", mTab.m_Title, mTab.m_Index), False, True, True)
+        g_mFormMain.PrintInformation("[INFO]", String.Format("{0} lines of code reindented!", iChangedLines), False, True, True)
     End Sub
 
     Public Sub FormatCodeTrim()
         Dim mTab = g_mFormMain.g_ClassTabControl.m_ActiveTab
+
+        Dim iChangedLines As Integer = 0
 
         Dim lRealSourceLines As New List(Of String)
         Using mSR As New IO.StringReader(mTab.m_TextEditor.Document.TextContent)
@@ -279,13 +285,15 @@ Public Class ClassTextEditorTools
 
                 mTab.m_TextEditor.Document.Remove(mLineSeg.Offset, mLineSeg.Length)
                 mTab.m_TextEditor.Document.Insert(mLineSeg.Offset, lFormatedSourceLines(i))
+
+                iChangedLines += 1
             Next
         Finally
             mTab.m_TextEditor.Document.UndoStack.EndUndoGroup()
             mTab.m_TextEditor.Refresh()
         End Try
 
-        g_mFormMain.PrintInformation("[INFO]", String.Format("Ending whitespace trimmed!", mTab.m_Title, mTab.m_Index), False, True, True)
+        g_mFormMain.PrintInformation("[INFO]", String.Format("{0} lines with ending whitespace trimmed!", iChangedLines), False, True, True)
     End Sub
 
     ''' <summary>
