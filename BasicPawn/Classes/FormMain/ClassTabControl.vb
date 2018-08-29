@@ -35,6 +35,8 @@ Public Class ClassTabControl
     Private g_bBeginRequestFullUpdate As Boolean = False
     Private g_lBeginRequestFullUpdateTabs As New List(Of SourceTabPage)
 
+    Private Shared g_sFoldingsConfig As String = IO.Path.Combine(Application.StartupPath, "foldings.ini")
+
 
     Public Sub New(f As FormMain)
         g_mFormMain = f
@@ -679,6 +681,22 @@ Public Class ClassTabControl
         g_mFormMain.g_ClassSyntaxUpdater.StartThread()
 
         g_mFormMain.UpdateFormConfigText()
+    End Sub
+
+    Public Sub CleanInvalidSavedFoldStates()
+        Using mStream = ClassFileStreamWait.Create(g_sFoldingsConfig, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
+            Using mIni As New ClassIni(mStream)
+                Dim lRemoveItems As New List(Of ClassIni.STRUC_INI_CONTENT)
+
+                For Each mItem In mIni.ReadEverything
+                    If (String.IsNullOrEmpty(mItem.sSection) OrElse Not IO.File.Exists(mItem.sSection)) Then
+                        lRemoveItems.Add(New ClassIni.STRUC_INI_CONTENT(mItem.sSection, mItem.sKey, Nothing))
+                    End If
+                Next
+
+                mIni.WriteKeyValue(lRemoveItems.ToArray)
+            End Using
+        End Using
     End Sub
 
     Private Sub OnTabSelected(sender As Object, e As EventArgs)
@@ -1719,8 +1737,7 @@ Public Class ClassTabControl
             Const E_MAX = 1
             Dim mSavedStates As New Dictionary(Of Integer, Object()) '{bState, iAction, bChanged}
 
-            Dim sConfigFile As String = IO.Path.Combine(Application.StartupPath, "foldings.ini")
-            Using mStream = ClassFileStreamWait.Create(sConfigFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
+            Using mStream = ClassFileStreamWait.Create(g_sFoldingsConfig, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
                 Using mIni As New ClassIni(mStream)
                     'Push what already exist into a list
                     For Each mItem In mIni.ReadEverything
@@ -1801,8 +1818,7 @@ Public Class ClassTabControl
 
             g_mFoldingStates.Clear()
 
-            Dim sConfigFile As String = IO.Path.Combine(Application.StartupPath, "foldings.ini")
-            Using mStream = ClassFileStreamWait.Create(sConfigFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
+            Using mStream = ClassFileStreamWait.Create(g_sFoldingsConfig, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
                 Using mIni As New ClassIni(mStream)
                     For Each mItem In mIni.ReadEverything
                         If (mItem.sSection.ToLower <> Me.m_File.ToLower) Then

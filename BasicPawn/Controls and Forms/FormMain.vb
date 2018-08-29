@@ -439,6 +439,9 @@ Public Class FormMain
             e.Cancel = True
         End If
 
+        'Cleanup invalid foldings
+        g_ClassTabControl.CleanInvalidSavedFoldStates()
+
         'Save window info
         ClassSettings.SaveWindowInfo(Me)
         SaveViews()
