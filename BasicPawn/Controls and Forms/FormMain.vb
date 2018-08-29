@@ -263,11 +263,6 @@ Public Class FormMain
 
                                       ToolStripStatusLabel_LastInformation.Text = sMessage
 
-                                      If (bEnsureVisible) Then
-                                          'Scroll to item
-                                          g_mUCInformationList.ListBox_Information.TopIndex = iIndex
-                                      End If
-
                                       If (bShowInformationTab) Then
                                           SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed = False
 
@@ -276,6 +271,11 @@ Public Class FormMain
                                           End If
 
                                           TabControl_Details.SelectTab(1)
+                                      End If
+
+                                      If (bEnsureVisible) Then
+                                          'Scroll to item
+                                          g_mUCInformationList.ListBox_Information.TopIndex = iIndex
                                       End If
                                   End Sub)
     End Sub
