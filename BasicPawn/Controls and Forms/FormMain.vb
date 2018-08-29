@@ -283,6 +283,8 @@ Public Class FormMain
     Private Sub ContextMenuStrip_RightClick_Opening(sender As Object, e As CancelEventArgs) Handles ContextMenuStrip_RightClick.Opening
         g_mUCAutocomplete.UpdateAutocomplete("")
         g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip("")
+
+        ToolStripMenuItem_Outline.Enabled = (g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.FoldingManager.FoldMarker.Count > 0)
     End Sub
 #End Region
 
