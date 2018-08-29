@@ -25,6 +25,10 @@ Public Class FormSearch
     Private g_mExpandedSize As Size = Me.Size
     Private g_mCollapsedSize As Size = Me.Size
 
+    Private g_bIgnoreEvent As Boolean = False
+    Private g_bIsFormFocused As Boolean = True
+    Private g_bIsFormClosing As Boolean = False
+
     Private Structure STRUC_SEARCH_RESULTS
         Dim iLocation As Integer
         Dim iLength As Integer
@@ -63,6 +67,53 @@ Public Class FormSearch
 
         'Save collapsed size
         g_mCollapsedSize = Me.Size
+
+        'Load last window info
+        ClassSettings.LoadWindowInfo(Me)
+        LoadViews()
+
+        'Keep size
+        Me.Size = g_mCollapsedSize
+    End Sub
+
+    Private Sub FormSearch_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+        g_bIsFormClosing = True
+
+        'Save window info
+        ClassSettings.SaveWindowInfo(Me)
+        SaveViews()
+    End Sub
+
+    Private Sub CheckBox_Transparency_CheckedChanged(sender As Object, e As EventArgs) Handles CheckBox_Transparency.CheckedChanged
+        If (g_bIgnoreEvent) Then
+            Return
+        End If
+
+        UpdateViews()
+    End Sub
+
+    Private Sub RadioButton_TransparencyInactive_CheckedChanged(sender As Object, e As EventArgs) Handles RadioButton_TransparencyInactive.CheckedChanged
+        If (g_bIgnoreEvent) Then
+            Return
+        End If
+
+        UpdateViews()
+    End Sub
+
+    Private Sub RadioButton_TransparencyAlways_CheckedChanged(sender As Object, e As EventArgs) Handles RadioButton_TransparencyAlways.CheckedChanged
+        If (g_bIgnoreEvent) Then
+            Return
+        End If
+
+        UpdateViews()
+    End Sub
+
+    Private Sub TrackBar_Transparency_Scroll(sender As Object, e As EventArgs) Handles TrackBar_Transparency.Scroll
+        If (g_bIgnoreEvent) Then
+            Return
+        End If
+
+        UpdateViews()
     End Sub
 
     Private Sub SetTextEditorSelection(mTab As ClassTabControl.SourceTabPage, iOffset As Integer, iLength As Integer, bCaretBeginPos As Boolean)
@@ -81,6 +132,21 @@ Public Class FormSearch
         mTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.SetSelection(mLocStart, mLocEnd)
         mTab.m_TextEditor.ActiveTextAreaControl.Caret.Position = If(bCaretBeginPos, mLocStart, mLocEnd)
     End Sub
+
+    Private Function GetTextEditorSelection(mTab As ClassTabControl.SourceTabPage, ByRef r_iOffset As Integer, ByRef r_iLength As Integer) As Boolean
+        If (Not mTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.HasSomethingSelected) Then
+            Return False
+        End If
+
+        For Each i In mTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection
+            r_iOffset = i.Offset
+            r_iLength = i.Length
+
+            Return True
+        Next
+
+        Return False
+    End Function
 
     Private Function GetFullLineByOffset(mTab As ClassTabControl.SourceTabPage, iOffset As Integer) As String
         If (iOffset > mTab.m_TextEditor.Document.TextLength) Then
@@ -450,5 +516,147 @@ Public Class FormSearch
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
+    End Sub
+
+    Public Sub SaveViews()
+        If (String.IsNullOrEmpty(Me.Name)) Then
+            Return
+        End If
+
+        Using mStream = ClassFileStreamWait.Create(ClassSettings.g_sWindowInfoFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
+            Using mIni As New ClassIni(mStream)
+                Dim lContent As New List(Of ClassIni.STRUC_INI_CONTENT) From {
+                    New ClassIni.STRUC_INI_CONTENT(Me.Name, "WholeWord", If(CheckBox_WholeWord.Checked, "1", "0")),
+                    New ClassIni.STRUC_INI_CONTENT(Me.Name, "CaseSensitive", If(CheckBox_CaseSensitive.Checked, "1", "0")),
+                    New ClassIni.STRUC_INI_CONTENT(Me.Name, "Multiline", If(CheckBox_Multiline.Checked, "1", "0")),
+                    New ClassIni.STRUC_INI_CONTENT(Me.Name, "LoopSearch", If(CheckBox_LoopSearch.Checked, "1", "0")),
+                    New ClassIni.STRUC_INI_CONTENT(Me.Name, "Transparency", If(CheckBox_Transparency.Checked, "1", "0")),
+                    New ClassIni.STRUC_INI_CONTENT(Me.Name, "TransparencyInactive", If(RadioButton_TransparencyInactive.Checked, "1", "0")),
+                    New ClassIni.STRUC_INI_CONTENT(Me.Name, "TransparencyValue", CStr(TrackBar_Transparency.Value))
+                }
+
+                mIni.WriteKeyValue(lContent.ToArray)
+            End Using
+        End Using
+    End Sub
+
+    Public Sub LoadViews()
+        If (String.IsNullOrEmpty(Me.Name)) Then
+            Return
+        End If
+
+        Dim tmpStr As String
+        Dim tmpInt As Integer
+
+        Using mStream = ClassFileStreamWait.Create(ClassSettings.g_sWindowInfoFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
+            Using mIni As New ClassIni(mStream)
+                g_bIgnoreEvent = True
+                CheckBox_WholeWord.Checked = (mIni.ReadKeyValue(Me.Name, "WholeWord", "0") <> "0")
+                CheckBox_CaseSensitive.Checked = (mIni.ReadKeyValue(Me.Name, "CaseSensitive", "0") <> "0")
+                CheckBox_Multiline.Checked = (mIni.ReadKeyValue(Me.Name, "Multiline", "0") <> "0")
+                CheckBox_LoopSearch.Checked = (mIni.ReadKeyValue(Me.Name, "LoopSearch", "0") <> "0")
+                CheckBox_Transparency.Checked = (mIni.ReadKeyValue(Me.Name, "Transparency", "1") <> "0")
+
+                If (mIni.ReadKeyValue(Me.Name, "TransparencyInactive", "1") <> "0") Then
+                    RadioButton_TransparencyInactive.Checked = True
+                    RadioButton_TransparencyAlways.Checked = False
+                Else
+                    RadioButton_TransparencyInactive.Checked = False
+                    RadioButton_TransparencyAlways.Checked = True
+                End If
+
+                tmpStr = mIni.ReadKeyValue(Me.Name, "TransparencyValue", Nothing)
+                If (tmpStr IsNot Nothing AndAlso Integer.TryParse(tmpStr, tmpInt)) Then
+                    TrackBar_Transparency.Value = ClassTools.ClassMath.ClampInt(tmpInt, TrackBar_Transparency.Minimum, TrackBar_Transparency.Maximum)
+                End If
+
+                g_bIgnoreEvent = False
+            End Using
+        End Using
+
+        UpdateViews()
+    End Sub
+
+    Public Sub UpdateViews()
+        If (CheckBox_Transparency.Checked) Then
+            If (RadioButton_TransparencyInactive.Checked) Then
+                If (g_bIsFormFocused) Then
+                    Me.Opacity = 1
+                Else
+                    Select Case (TrackBar_Transparency.Value)
+                        Case 1
+                            Me.Opacity = 0.2
+                        Case 2
+                            Me.Opacity = 0.4
+                        Case 3
+                            Me.Opacity = 0.6
+                        Case 4
+                            Me.Opacity = 0.8
+                        Case Else
+                            Me.Opacity = 1
+                    End Select
+                End If
+            Else
+                Select Case (TrackBar_Transparency.Value)
+                    Case 1
+                        Me.Opacity = 0.2
+                    Case 2
+                        Me.Opacity = 0.4
+                    Case 3
+                        Me.Opacity = 0.6
+                    Case 4
+                        Me.Opacity = 0.8
+                    Case Else
+                        Me.Opacity = 1
+                End Select
+            End If
+        Else
+            Me.Opacity = 1
+        End If
+    End Sub
+
+    Const WM_SETFOCUS = &H7
+    Const WM_KILLFOCUS = &H8
+    Const WM_ACTIVATE = &H6
+
+    Const WA_INACTIVE = 0
+    Const WA_ACTIVE = 1
+    Const WA_CLICKACTIVE = 2
+
+    Protected Overrides Sub WndProc(ByRef m As Message)
+        Static bIgnoreEvent As Boolean = False
+
+        MyBase.WndProc(m)
+
+        If (bIgnoreEvent OrElse g_bIsFormClosing) Then
+            Return
+        End If
+
+        bIgnoreEvent = True
+
+        Select Case (m.Msg)
+            Case WM_ACTIVATE
+                If (m.WParam <> New IntPtr(WA_INACTIVE)) Then
+                    g_bIsFormFocused = True
+
+                    UpdateViews()
+                Else
+                    g_bIsFormFocused = False
+
+                    UpdateViews()
+                End If
+
+            Case WM_SETFOCUS
+                g_bIsFormFocused = True
+
+                UpdateViews()
+
+            Case WM_KILLFOCUS
+                g_bIsFormFocused = False
+
+                UpdateViews()
+        End Select
+
+        bIgnoreEvent = False
     End Sub
 End Class
