@@ -850,10 +850,12 @@ Public Class ClassTabControl
 
         Public Sub UpdateFoldings()
             'Read saved fold states when generating new foldings
-            If (Not g_bFoldingStatesLoaded) Then
-                g_bFoldingStatesLoaded = True
+            If (ClassSettings.g_bSettingsRememberFoldings) Then
+                If (Not g_bFoldingStatesLoaded) Then
+                    g_bFoldingStatesLoaded = True
 
-                GetSavedFoldStates()
+                    GetSavedFoldStates()
+                End If
             End If
 
             g_mSourceTextEditor.Document.FoldingManager.UpdateFoldings(Nothing, g_mFoldingStates)
@@ -1822,7 +1824,9 @@ Public Class ClassTabControl
         Private Sub TextEditorControl_FoldingsChanged(sender As Object, e As EventArgs)
             g_mFormMain.g_mUCTextMinimap.UpdateText(True)
 
-            SetSavedFoldStates()
+            If (ClassSettings.g_bSettingsRememberFoldings) Then
+                SetSavedFoldStates()
+            End If
         End Sub
 #End Region
 

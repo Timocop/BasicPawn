@@ -139,6 +139,7 @@ Public Class FormSettings
         CheckBox_TabsToSpace.Checked = (ClassSettings.g_iSettingsTabsToSpaces > 0)
         NumericUpDown_TabsToSpaces.Value = If(ClassSettings.g_iSettingsTabsToSpaces > 0, ClassSettings.g_iSettingsTabsToSpaces, 4)
         TextBox_CustomSyntax.Text = ClassSettings.g_sSettingsSyntaxHighlightingPath
+        CheckBox_RememberFolds.Checked = ClassSettings.g_bSettingsRememberFoldings
         'Syntax Highligting
         CheckBox_DoubleClickMark.Checked = ClassSettings.g_iSettingsDoubleClickMark
         CheckBox_AutoMark.Checked = ClassSettings.g_iSettingsAutoMark
@@ -255,6 +256,7 @@ Public Class FormSettings
         ClassSettings.g_iSettingsInvertColors = CheckBox_InvertedColors.Checked
         ClassSettings.g_iSettingsTabsToSpaces = CInt(If(CheckBox_TabsToSpace.Checked, NumericUpDown_TabsToSpaces.Value, 0))
         ClassSettings.g_sSettingsSyntaxHighlightingPath = TextBox_CustomSyntax.Text
+        ClassSettings.g_bSettingsRememberFoldings = CheckBox_RememberFolds.Checked
         'Syntax Highligting
         ClassSettings.g_iSettingsDoubleClickMark = CheckBox_DoubleClickMark.Checked
         ClassSettings.g_iSettingsAutoMark = CheckBox_AutoMark.Checked

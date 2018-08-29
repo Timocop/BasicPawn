@@ -179,6 +179,7 @@ Partial Class FormSettings
         Me.TableLayoutPanel3 = New System.Windows.Forms.TableLayoutPanel()
         Me.ClassPictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
         Me.Label17 = New System.Windows.Forms.Label()
+        Me.CheckBox_RememberFolds = New System.Windows.Forms.CheckBox()
         Me.ContextMenuStrip_Plugins.SuspendLayout()
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Settings.SuspendLayout()
@@ -468,6 +469,7 @@ Partial Class FormSettings
         'TabPage4
         '
         Me.TabPage4.AutoScroll = True
+        Me.TabPage4.Controls.Add(Me.CheckBox_RememberFolds)
         Me.TabPage4.Controls.Add(Me.LinkLabel_MoreStyles)
         Me.TabPage4.Controls.Add(Me.Button_Font)
         Me.TabPage4.Controls.Add(Me.LinkLabel_DefaultSyntax)
@@ -1460,7 +1462,7 @@ Partial Class FormSettings
         Me.TabPage2.Location = New System.Drawing.Point(4, 22)
         Me.TabPage2.Name = "TabPage2"
         Me.TabPage2.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage2.Size = New System.Drawing.Size(559, 147)
+        Me.TabPage2.Size = New System.Drawing.Size(399, 147)
         Me.TabPage2.TabIndex = 1
         Me.TabPage2.Text = "AMX Mod X"
         Me.TabPage2.UseVisualStyleBackColor = True
@@ -1482,7 +1484,7 @@ Partial Class FormSettings
         Me.ComboBox_COSymbolicInformationAMXX.FormattingEnabled = True
         Me.ComboBox_COSymbolicInformationAMXX.Location = New System.Drawing.Point(198, 6)
         Me.ComboBox_COSymbolicInformationAMXX.Name = "ComboBox_COSymbolicInformationAMXX"
-        Me.ComboBox_COSymbolicInformationAMXX.Size = New System.Drawing.Size(355, 21)
+        Me.ComboBox_COSymbolicInformationAMXX.Size = New System.Drawing.Size(195, 21)
         Me.ComboBox_COSymbolicInformationAMXX.TabIndex = 20
         '
         'Label26
@@ -1501,7 +1503,7 @@ Partial Class FormSettings
         Me.TextBoxEx_CODefineConstantsAMXX.Location = New System.Drawing.Point(198, 115)
         Me.TextBoxEx_CODefineConstantsAMXX.m_WatermarkText = "sym=val;sym2=val..."
         Me.TextBoxEx_CODefineConstantsAMXX.Name = "TextBoxEx_CODefineConstantsAMXX"
-        Me.TextBoxEx_CODefineConstantsAMXX.Size = New System.Drawing.Size(355, 22)
+        Me.TextBoxEx_CODefineConstantsAMXX.Size = New System.Drawing.Size(195, 22)
         Me.TextBoxEx_CODefineConstantsAMXX.TabIndex = 18
         '
         'TextBoxEx_COIgnoredWarningsAMXX
@@ -1511,7 +1513,7 @@ Partial Class FormSettings
         Me.TextBoxEx_COIgnoredWarningsAMXX.Location = New System.Drawing.Point(198, 87)
         Me.TextBoxEx_COIgnoredWarningsAMXX.m_WatermarkText = "100;101..."
         Me.TextBoxEx_COIgnoredWarningsAMXX.Name = "TextBoxEx_COIgnoredWarningsAMXX"
-        Me.TextBoxEx_COIgnoredWarningsAMXX.Size = New System.Drawing.Size(355, 22)
+        Me.TextBoxEx_COIgnoredWarningsAMXX.Size = New System.Drawing.Size(195, 22)
         Me.TextBoxEx_COIgnoredWarningsAMXX.TabIndex = 17
         '
         'Label27
@@ -1540,7 +1542,7 @@ Partial Class FormSettings
         Me.ComboBox_COTreatWarningsAsErrorsAMXX.FormattingEnabled = True
         Me.ComboBox_COTreatWarningsAsErrorsAMXX.Location = New System.Drawing.Point(198, 60)
         Me.ComboBox_COTreatWarningsAsErrorsAMXX.Name = "ComboBox_COTreatWarningsAsErrorsAMXX"
-        Me.ComboBox_COTreatWarningsAsErrorsAMXX.Size = New System.Drawing.Size(355, 21)
+        Me.ComboBox_COTreatWarningsAsErrorsAMXX.Size = New System.Drawing.Size(195, 21)
         Me.ComboBox_COTreatWarningsAsErrorsAMXX.TabIndex = 14
         '
         'Label29
@@ -1560,7 +1562,7 @@ Partial Class FormSettings
         Me.ComboBox_COVerbosityLevelAMXX.FormattingEnabled = True
         Me.ComboBox_COVerbosityLevelAMXX.Location = New System.Drawing.Point(198, 33)
         Me.ComboBox_COVerbosityLevelAMXX.Name = "ComboBox_COVerbosityLevelAMXX"
-        Me.ComboBox_COVerbosityLevelAMXX.Size = New System.Drawing.Size(355, 21)
+        Me.ComboBox_COVerbosityLevelAMXX.Size = New System.Drawing.Size(195, 21)
         Me.ComboBox_COVerbosityLevelAMXX.TabIndex = 12
         '
         'Label20
@@ -1969,6 +1971,17 @@ Partial Class FormSettings
         Me.Label17.Text = "Loaded BasicPawn plugins are able to read stored database entries. Make sure all " &
     "installed plugins are from a trustworthy publisher to prevent theft."
         '
+        'CheckBox_RememberFolds
+        '
+        Me.CheckBox_RememberFolds.AutoSize = True
+        Me.CheckBox_RememberFolds.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_RememberFolds.Location = New System.Drawing.Point(6, 140)
+        Me.CheckBox_RememberFolds.Name = "CheckBox_RememberFolds"
+        Me.CheckBox_RememberFolds.Size = New System.Drawing.Size(132, 18)
+        Me.CheckBox_RememberFolds.TabIndex = 23
+        Me.CheckBox_RememberFolds.Text = "Remember foldings"
+        Me.CheckBox_RememberFolds.UseVisualStyleBackColor = True
+        '
         'FormSettings
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -2193,4 +2206,5 @@ Partial Class FormSettings
     Friend WithEvents TabPage5 As TabPage
     Friend WithEvents TabPage6 As TabPage
     Friend WithEvents TabPage7 As TabPage
+    Friend WithEvents CheckBox_RememberFolds As CheckBox
 End Class

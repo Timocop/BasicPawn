@@ -44,6 +44,7 @@ Public Class ClassSettings
     Public Shared g_iSettingsInvertColors As Boolean = False
     Public Shared g_iSettingsTabsToSpaces As Integer = 0
     Public Shared g_sSettingsSyntaxHighlightingPath As String = ""
+    Public Shared g_bSettingsRememberFoldings As Boolean = True
     'Syntax Highligting
     Public Shared g_iSettingsDoubleClickMark As Boolean = True
     Public Shared g_iSettingsAutoMark As Boolean = True
@@ -94,6 +95,7 @@ Public Class ClassSettings
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorInvertColors", If(g_iSettingsInvertColors, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorTabsToSpaces", CStr(g_iSettingsTabsToSpaces)))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorSyntaxHighlightingPath", g_sSettingsSyntaxHighlightingPath))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorRememberFoldings", If(g_bSettingsRememberFoldings, "1", "0")))
                 'Syntax Highligting
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "DoubleClickMark", If(g_iSettingsDoubleClickMark, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutoMark", If(g_iSettingsAutoMark, "1", "0")))
@@ -152,6 +154,7 @@ Public Class ClassSettings
                         g_iSettingsTabsToSpaces = ClassTools.ClassMath.ClampInt(iTabsToSpaces, 0, 100)
                     End If
                     g_sSettingsSyntaxHighlightingPath = mIni.ReadKeyValue("Editor", "TextEditorSyntaxHighlightingPath", "")
+                    g_bSettingsRememberFoldings = (mIni.ReadKeyValue("Editor", "TextEditorRememberFoldings", "1") <> "0")
                     'Syntax Highligting
                     g_iSettingsDoubleClickMark = (mIni.ReadKeyValue("Editor", "DoubleClickMark", "1") <> "0")
                     g_iSettingsAutoMark = (mIni.ReadKeyValue("Editor", "AutoMark", "1") <> "0")
