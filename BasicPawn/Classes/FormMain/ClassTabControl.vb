@@ -345,6 +345,8 @@ Public Class ClassTabControl
             m_Tab(iIndex).m_IncludeFiles.Clear()
             m_Tab(iIndex).m_FileCachedWriteDate = Now
 
+            m_Tab(iIndex).ClearSavedFoldStates()
+
             m_Tab(iIndex).m_ActiveConfig = Nothing
 
             m_Tab(iIndex).m_ClassLineState.m_IgnoreUpdates = False
@@ -377,6 +379,8 @@ Public Class ClassTabControl
         m_Tab(iIndex).m_AutocompleteItems.Clear()
         m_Tab(iIndex).m_IncludeFiles.Clear()
         m_Tab(iIndex).m_FileCachedWriteDate = m_Tab(iIndex).m_FileRealWriteDate
+
+        m_Tab(iIndex).ClearSavedFoldStates()
 
         Dim mKnownConfig = ClassConfigs.ClassKnownConfigs.m_KnownConfigByFile(sFile)
         If (mKnownConfig Is Nothing) Then
@@ -706,6 +710,8 @@ Public Class ClassTabControl
         Private g_mSourceTextEditor As TextEditorControlEx
         Private g_bHandlersEnabled As Boolean = False
         Private g_mFileCachedWriteDate As Date
+        Private g_mFoldingStates As New Dictionary(Of Integer, Boolean)
+        Private g_bFoldingStatesLoaded As Boolean = False
 
         Public Sub New(f As FormMain)
             g_mFormMain = f
@@ -842,19 +848,15 @@ Public Class ClassTabControl
             Return g_mFormMain.g_ClassTabControl.RemoveTab(m_Index, bPrompSave, iSelectTabIndex)
         End Function
 
-        Protected Overrides Sub Dispose(disposing As Boolean)
-            Try
-                If (disposing) Then
-                    RemoveHandlers()
+        Public Sub UpdateFoldings()
+            'Read saved fold states when generating new foldings
+            If (Not g_bFoldingStatesLoaded) Then
+                g_bFoldingStatesLoaded = True
 
-                    If (g_mSourceTextEditor IsNot Nothing AndAlso Not g_mSourceTextEditor.IsDisposed) Then
-                        g_mSourceTextEditor.Dispose()
-                        g_mSourceTextEditor = Nothing
-                    End If
-                End If
-            Finally
-                MyBase.Dispose(disposing)
-            End Try
+                GetSavedFoldStates()
+            End If
+
+            g_mSourceTextEditor.Document.FoldingManager.UpdateFoldings(Nothing, g_mFoldingStates)
         End Sub
 
         Public Property m_HandlersEnabled As Boolean
@@ -1630,17 +1632,24 @@ Public Class ClassTabControl
             ''' <summary>
             ''' Generates the foldings for our document.
             ''' </summary>
-            ''' <param name="document">The current document.</param>
-            ''' <param name="fileName">The filename of the document.</param>
-            ''' <param name="parseInformation">Extra parse information, not used in this sample.</param>
+            ''' <param name="mDoc">The current document.</param>
+            ''' <param name="sFilename">The filename of the document.</param>
+            ''' <param name="mInfo">Extra parse information, not used in this sample.</param>
             ''' <returns>A list of FoldMarkers.</returns>
-            Public Function GenerateFoldMarkers(document As IDocument, fileName As String, parseInformation As Object) As List(Of FoldMarker) Implements IFoldingStrategy.GenerateFoldMarkers
+            Public Function GenerateFoldMarkers(mDoc As IDocument, sFilename As String, mInfo As Object) As List(Of FoldMarker) Implements IFoldingStrategy.GenerateFoldMarkers
+                Dim mFoldStates = TryCast(mInfo, Dictionary(Of Integer, Boolean))
+
+                'Just create empty dictionary
+                If (mFoldStates Is Nothing) Then
+                    mFoldStates = New Dictionary(Of Integer, Boolean)
+                End If
+
                 Dim mFolds As New List(Of FoldMarker)()
 
                 Dim iMaxLevels As Integer = 0
                 Dim i As Integer = 0
                 While True
-                    i = document.TextContent.IndexOf("{"c, i)
+                    i = mDoc.TextContent.IndexOf("{"c, i)
                     If (i < 0) Then
                         Exit While
                     End If
@@ -1655,31 +1664,37 @@ Public Class ClassTabControl
                 Dim iLevels As Integer() = New Integer(iMaxLevels) {}
                 Dim iCurrentLevel As Integer = 0
 
-                For i = 0 To document.TextContent.Length - 1
-                    Select Case (document.TextContent(i))
-                        Case ("{"c)
+                For i = 0 To mDoc.TextContent.Length - 1
+                    Select Case (mDoc.TextContent(i))
+                        Case "{"c
                             iCurrentLevel += 1
                             If ((iCurrentLevel - 1) < 0) Then
                                 Continue For
                             End If
 
                             iLevels(iCurrentLevel - 1) = If(i > 0, i - 1, i)
-                        Case ("}"c)
+                        Case "}"c
                             iCurrentLevel -= 1
                             If (iCurrentLevel < 0) Then
                                 Continue For
                             End If
 
-                            Dim iLineStart = document.GetLineNumberForOffset(iLevels(iCurrentLevel))
-                            Dim iColumStart = document.GetLineSegment(iLineStart).Length
-                            Dim iLineEnd = document.GetLineNumberForOffset(i)
-                            Dim iColumEnd = document.GetLineSegment(iLineEnd).Length
+                            Dim iLineStart = mDoc.GetLineNumberForOffset(iLevels(iCurrentLevel))
+                            Dim iColumStart = mDoc.GetLineSegment(iLineStart).Length
+                            Dim iLineEnd = mDoc.GetLineNumberForOffset(i)
+                            Dim iColumEnd = mDoc.GetLineSegment(iLineEnd).Length
 
                             If (iLineStart = iLineEnd) Then
                                 Continue For
                             End If
 
-                            mFolds.Add(New FoldMarker(document, iLineStart, iColumStart, iLineEnd, iColumEnd))
+                            Dim mFold = New FoldMarker(mDoc, iLineStart, iColumStart, iLineEnd, iColumEnd)
+
+                            If (mFoldStates.ContainsKey(mFold.Offset)) Then
+                                mFold.IsFolded = mFoldStates(mFold.Offset)
+                            End If
+
+                            mFolds.Add(mFold)
                     End Select
                 Next
 
@@ -1687,11 +1702,144 @@ Public Class ClassTabControl
             End Function
         End Class
 
+        Public Sub ClearSavedFoldStates()
+            g_mFoldingStates.Clear()
+            g_bFoldingStatesLoaded = False
+        End Sub
+
+        Public Sub SetSavedFoldStates()
+            If (String.IsNullOrEmpty(Me.m_File)) Then
+                Return
+            End If
+
+            Const E_STATE = 0
+            Const E_PSTATE = 1
+            Const E_MAX = 1
+            Dim mSavedStates As New Dictionary(Of Integer, Object()) '{bState, iAction, bChanged}
+
+            Dim sConfigFile As String = IO.Path.Combine(Application.StartupPath, "foldings.ini")
+            Using mStream = ClassFileStreamWait.Create(sConfigFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
+                Using mIni As New ClassIni(mStream)
+                    'Push what already exist into a list
+                    For Each mItem In mIni.ReadEverything
+                        If (mItem.sSection.ToLower <> Me.m_File.ToLower) Then
+                            Continue For
+                        End If
+
+                        Dim sOffset As String = mItem.sKey
+                        Dim sState As String = mItem.sValue
+
+                        Dim iOffset As Integer
+                        If (Integer.TryParse(sOffset, iOffset)) Then
+                            Dim mObj(E_MAX) As Object
+
+                            mObj(E_STATE) = False
+                            mObj(E_PSTATE) = (sState = "1")
+
+                            mSavedStates(iOffset) = mObj
+                        End If
+                    Next
+
+                    'Comapre what changed
+                    For Each mFold As FoldMarker In Me.m_TextEditor.Document.FoldingManager.FoldMarker
+                        Dim mObj(E_MAX) As Object
+
+                        If (mSavedStates.ContainsKey(mFold.Offset)) Then
+                            mObj = mSavedStates(mFold.Offset)
+
+                            If (mFold.IsFolded) Then
+                                mObj(E_STATE) = True
+                            Else
+                                mObj(E_STATE) = False
+                            End If
+
+                            mSavedStates(mFold.Offset) = mObj
+                        Else
+                            If (mFold.IsFolded) Then
+                                mObj(E_STATE) = True
+                                mObj(E_PSTATE) = False
+
+                                mSavedStates(mFold.Offset) = mObj
+                            End If
+                        End If
+
+                    Next
+
+                    'Only write back what changed
+                    For Each mItem In mSavedStates
+                        Dim iOffset As Integer = mItem.Key
+                        Dim bState As Boolean = CBool(mItem.Value(E_STATE))
+                        Dim bPreState As Boolean = CBool(mItem.Value(E_PSTATE))
+
+                        Select Case (bState)
+                            Case True
+                                If (bState = bPreState) Then
+                                    Continue For
+                                End If
+
+                                mIni.WriteKeyValue(Me.m_File.ToLower, CStr(iOffset), If(bState, "1", "0"))
+
+                            Case Else
+                                If (bState = bPreState) Then
+                                    Continue For
+                                End If
+
+                                mIni.RemoveKeyValue(Me.m_File.ToLower, CStr(iOffset))
+
+                        End Select
+                    Next
+                End Using
+            End Using
+        End Sub
+
+        Public Sub GetSavedFoldStates()
+            If (String.IsNullOrEmpty(Me.m_File)) Then
+                Return
+            End If
+
+            g_mFoldingStates.Clear()
+
+            Dim sConfigFile As String = IO.Path.Combine(Application.StartupPath, "foldings.ini")
+            Using mStream = ClassFileStreamWait.Create(sConfigFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
+                Using mIni As New ClassIni(mStream)
+                    For Each mItem In mIni.ReadEverything
+                        If (mItem.sSection.ToLower <> Me.m_File.ToLower) Then
+                            Continue For
+                        End If
+
+                        Dim sOffset As String = mItem.sKey
+                        Dim sState As String = mItem.sValue
+
+                        Dim iOffset As Integer
+                        If (Integer.TryParse(sOffset, iOffset)) Then
+                            g_mFoldingStates(iOffset) = (sState = "1")
+                        End If
+                    Next
+                End Using
+            End Using
+        End Sub
+
         Private Sub TextEditorControl_FoldingsChanged(sender As Object, e As EventArgs)
             g_mFormMain.g_mUCTextMinimap.UpdateText(True)
+
+            SetSavedFoldStates()
         End Sub
 #End Region
 
+        Protected Overrides Sub Dispose(disposing As Boolean)
+            Try
+                If (disposing) Then
+                    RemoveHandlers()
+
+                    If (g_mSourceTextEditor IsNot Nothing AndAlso Not g_mSourceTextEditor.IsDisposed) Then
+                        g_mSourceTextEditor.Dispose()
+                        g_mSourceTextEditor = Nothing
+                    End If
+                End If
+            Finally
+                MyBase.Dispose(disposing)
+            End Try
+        End Sub
     End Class
 
 #Region "IDisposable Support"

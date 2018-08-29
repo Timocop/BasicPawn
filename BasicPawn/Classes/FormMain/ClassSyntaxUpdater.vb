@@ -105,7 +105,7 @@ Public Class ClassSyntaxUpdater
                     dLastFoldingUpdate = (Now + mFoldingUpdateDelay)
 
                     ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                           g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.FoldingManager.UpdateFoldings(Nothing, Nothing)
+                                                           g_mFormMain.g_ClassTabControl.m_ActiveTab.UpdateFoldings()
                                                        End Sub)
                 End If
 
