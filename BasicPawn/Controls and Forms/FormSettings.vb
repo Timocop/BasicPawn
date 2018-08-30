@@ -195,6 +195,9 @@ Public Class FormSettings
         DatabaseListBox_Database.FillFromDatabase()
 
         ClassControlStyle.UpdateControls(Me)
+
+        'Load last window info
+        ClassSettings.LoadWindowInfo(Me)
     End Sub
 
     Private Sub Button_Apply_Click(sender As Object, e As EventArgs) Handles Button_Apply.Click
@@ -307,6 +310,9 @@ Public Class FormSettings
         For Each mConfig As ClassConfigs.STRUC_CONFIG_ITEM In g_lRestoreConfigs
             mConfig.SaveConfig()
         Next
+
+        'Save window info
+        ClassSettings.SaveWindowInfo(Me)
     End Sub
 
     Private Sub Button_ClearErrorLog_Click(sender As Object, e As EventArgs) Handles Button_ClearErrorLog.Click
