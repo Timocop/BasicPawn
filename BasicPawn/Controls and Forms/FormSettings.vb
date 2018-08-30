@@ -1250,8 +1250,26 @@ Public Class FormSettings
     End Sub
 
     Private Sub ContextMenuStrip_Plugins_Opening(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles ContextMenuStrip_Plugins.Opening
+        ToolStripMenuItem_OpenUrl.Enabled = (ListView_Plugins.SelectedItems.Count > 0)
         ToolStripMenuItem_PluginsEnable.Enabled = (ListView_Plugins.SelectedItems.Count > 0)
         ToolStripMenuItem_PluginsDisable.Enabled = (ListView_Plugins.SelectedItems.Count > 0)
+    End Sub
+
+    Private Sub ToolStripMenuItem_OpenUrl_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_OpenUrl.Click
+        Try
+            For Each mItem As ListViewItem In ListView_Plugins.SelectedItems
+                Dim sURL As String = mItem.SubItems(5).Text
+
+                If (String.IsNullOrEmpty(sURL) OrElse Not sURL.StartsWith("http")) Then
+                    MessageBox.Show("Unable to open URL", "Invalid URL", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    Continue For
+                End If
+
+                Process.Start(sURL)
+            Next
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
     End Sub
 
     Private Sub ToolStripMenuItem_PluginsEnable_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_PluginsEnable.Click

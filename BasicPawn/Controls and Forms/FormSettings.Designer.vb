@@ -48,6 +48,7 @@ Partial Class FormSettings
         Me.CheckBox_AssociateIncludes = New System.Windows.Forms.CheckBox()
         Me.CheckBox_AssociateBasicPawnProject = New System.Windows.Forms.CheckBox()
         Me.TabPage4 = New System.Windows.Forms.TabPage()
+        Me.CheckBox_RememberFolds = New System.Windows.Forms.CheckBox()
         Me.LinkLabel_MoreStyles = New System.Windows.Forms.LinkLabel()
         Me.Button_Font = New System.Windows.Forms.Button()
         Me.LinkLabel_DefaultSyntax = New System.Windows.Forms.LinkLabel()
@@ -179,7 +180,8 @@ Partial Class FormSettings
         Me.TableLayoutPanel3 = New System.Windows.Forms.TableLayoutPanel()
         Me.ClassPictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
         Me.Label17 = New System.Windows.Forms.Label()
-        Me.CheckBox_RememberFolds = New System.Windows.Forms.CheckBox()
+        Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
+        Me.ToolStripMenuItem_OpenUrl = New System.Windows.Forms.ToolStripMenuItem()
         Me.ContextMenuStrip_Plugins.SuspendLayout()
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Settings.SuspendLayout()
@@ -239,31 +241,31 @@ Partial Class FormSettings
         '
         'ContextMenuStrip_Plugins
         '
-        Me.ContextMenuStrip_Plugins.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_PluginsRefresh, Me.ToolStripSeparator1, Me.ToolStripMenuItem_PluginsEnable, Me.ToolStripMenuItem_PluginsDisable})
+        Me.ContextMenuStrip_Plugins.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_PluginsRefresh, Me.ToolStripSeparator1, Me.ToolStripMenuItem_OpenUrl, Me.ToolStripSeparator2, Me.ToolStripMenuItem_PluginsEnable, Me.ToolStripMenuItem_PluginsDisable})
         Me.ContextMenuStrip_Plugins.Name = "ContextMenuStrip_Plugins"
-        Me.ContextMenuStrip_Plugins.Size = New System.Drawing.Size(114, 76)
+        Me.ContextMenuStrip_Plugins.Size = New System.Drawing.Size(181, 126)
         '
         'ToolStripMenuItem_PluginsRefresh
         '
         Me.ToolStripMenuItem_PluginsRefresh.Name = "ToolStripMenuItem_PluginsRefresh"
-        Me.ToolStripMenuItem_PluginsRefresh.Size = New System.Drawing.Size(113, 22)
+        Me.ToolStripMenuItem_PluginsRefresh.Size = New System.Drawing.Size(180, 22)
         Me.ToolStripMenuItem_PluginsRefresh.Text = "Refresh"
         '
         'ToolStripSeparator1
         '
         Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
-        Me.ToolStripSeparator1.Size = New System.Drawing.Size(110, 6)
+        Me.ToolStripSeparator1.Size = New System.Drawing.Size(177, 6)
         '
         'ToolStripMenuItem_PluginsEnable
         '
         Me.ToolStripMenuItem_PluginsEnable.Name = "ToolStripMenuItem_PluginsEnable"
-        Me.ToolStripMenuItem_PluginsEnable.Size = New System.Drawing.Size(113, 22)
+        Me.ToolStripMenuItem_PluginsEnable.Size = New System.Drawing.Size(180, 22)
         Me.ToolStripMenuItem_PluginsEnable.Text = "Enable"
         '
         'ToolStripMenuItem_PluginsDisable
         '
         Me.ToolStripMenuItem_PluginsDisable.Name = "ToolStripMenuItem_PluginsDisable"
-        Me.ToolStripMenuItem_PluginsDisable.Size = New System.Drawing.Size(113, 22)
+        Me.ToolStripMenuItem_PluginsDisable.Size = New System.Drawing.Size(180, 22)
         Me.ToolStripMenuItem_PluginsDisable.Text = "Disable"
         '
         'TabControl1
@@ -487,6 +489,17 @@ Partial Class FormSettings
         Me.TabPage4.TabIndex = 1
         Me.TabPage4.Text = "TextEditor"
         Me.TabPage4.UseVisualStyleBackColor = True
+        '
+        'CheckBox_RememberFolds
+        '
+        Me.CheckBox_RememberFolds.AutoSize = True
+        Me.CheckBox_RememberFolds.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_RememberFolds.Location = New System.Drawing.Point(6, 140)
+        Me.CheckBox_RememberFolds.Name = "CheckBox_RememberFolds"
+        Me.CheckBox_RememberFolds.Size = New System.Drawing.Size(132, 18)
+        Me.CheckBox_RememberFolds.TabIndex = 23
+        Me.CheckBox_RememberFolds.Text = "Remember foldings"
+        Me.CheckBox_RememberFolds.UseVisualStyleBackColor = True
         '
         'LinkLabel_MoreStyles
         '
@@ -1971,16 +1984,16 @@ Partial Class FormSettings
         Me.Label17.Text = "Loaded BasicPawn plugins are able to read stored database entries. Make sure all " &
     "installed plugins are from a trustworthy publisher to prevent theft."
         '
-        'CheckBox_RememberFolds
+        'ToolStripSeparator2
         '
-        Me.CheckBox_RememberFolds.AutoSize = True
-        Me.CheckBox_RememberFolds.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_RememberFolds.Location = New System.Drawing.Point(6, 140)
-        Me.CheckBox_RememberFolds.Name = "CheckBox_RememberFolds"
-        Me.CheckBox_RememberFolds.Size = New System.Drawing.Size(132, 18)
-        Me.CheckBox_RememberFolds.TabIndex = 23
-        Me.CheckBox_RememberFolds.Text = "Remember foldings"
-        Me.CheckBox_RememberFolds.UseVisualStyleBackColor = True
+        Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
+        Me.ToolStripSeparator2.Size = New System.Drawing.Size(177, 6)
+        '
+        'ToolStripMenuItem_OpenUrl
+        '
+        Me.ToolStripMenuItem_OpenUrl.Name = "ToolStripMenuItem_OpenUrl"
+        Me.ToolStripMenuItem_OpenUrl.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_OpenUrl.Text = "Open URL"
         '
         'FormSettings
         '
@@ -2207,4 +2220,6 @@ Partial Class FormSettings
     Friend WithEvents TabPage6 As TabPage
     Friend WithEvents TabPage7 As TabPage
     Friend WithEvents CheckBox_RememberFolds As CheckBox
+    Friend WithEvents ToolStripMenuItem_OpenUrl As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator2 As ToolStripSeparator
 End Class
