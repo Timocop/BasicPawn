@@ -83,6 +83,11 @@ Public Class ClassAutocompleteUpdater
                                                                             RaiseEvent OnAutocompleteUpdateStarted(iUpdateType)
                                                                             VariableAutocompleteUpdate_Thread(sTabIdentifier)
                                                                         End If
+
+                                                                        If ((iUpdateType And ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) <> 0) Then
+                                                                            FullAutocompleteUpdate_Post_Thread(sTabIdentifier)
+                                                                        End If
+
                                                                     End SyncLock
 
                                                                     RaiseEvent OnAutocompleteUpdateEnd()
@@ -374,20 +379,6 @@ Public Class ClassAutocompleteUpdater
                 End Sub)
             mApplyWatch.Stop()
 
-            'Dont spam the user with UI updates, only on active tabs
-            If (sActiveTabIdentifier = sTabIdentifier) Then
-                ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                       'Dont move this outside of invoke! Results in "File is already in use!" when aborting the thread... for some reason...
-                                                       g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.UpdateSyntax(ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE.AUTOCOMPLETE)
-                                                       g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.UpdateTextEditorSyntax()
-                                                   End Sub)
-
-                ClassThread.ExecAsync(g_mFormMain.g_mUCObjectBrowser, Sub()
-                                                                          g_mFormMain.g_mUCObjectBrowser.StartUpdate()
-                                                                      End Sub)
-            End If
-
-
             ClassThread.ExecAsync(g_mFormMain, Sub()
                                                    g_mFormMain.ToolStripProgressBar_Autocomplete.ToolTipText = ""
                                                    g_mFormMain.ToolStripProgressBar_Autocomplete.Value = 100
@@ -414,6 +405,31 @@ Public Class ClassAutocompleteUpdater
                                                    g_mFormMain.ToolStripProgressBar_Autocomplete.Visible = False
                                                End Sub)
 
+            g_mFormMain.PrintInformation("[ERRO]", "Autocomplete update failed! " & ex.Message, False, False)
+            ClassExceptionLog.WriteToLog(ex)
+        End Try
+    End Sub
+
+    Private Sub FullAutocompleteUpdate_Post_Thread(sTabIdentifier As String)
+        Try
+            Dim sActiveTabIdentifier As String = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Identifier)
+
+            'Dont spam the user with UI updates, only on active tabs
+            If (sActiveTabIdentifier = sTabIdentifier) Then
+                ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                       'Dont move this outside of invoke! Results in "File is already in use!" when aborting the thread... for some reason...
+                                                       g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.UpdateSyntax(ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE.AUTOCOMPLETE)
+                                                       g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.UpdateTextEditorSyntax()
+                                                   End Sub)
+
+                ClassThread.ExecAsync(g_mFormMain.g_mUCObjectBrowser, Sub()
+                                                                          g_mFormMain.g_mUCObjectBrowser.StartUpdate()
+                                                                      End Sub)
+            End If
+
+        Catch ex As Threading.ThreadAbortException
+            Throw
+        Catch ex As Exception
             g_mFormMain.PrintInformation("[ERRO]", "Autocomplete update failed! " & ex.Message, False, False)
             ClassExceptionLog.WriteToLog(ex)
         End Try
