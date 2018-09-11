@@ -24,6 +24,12 @@ Public Class ClassSettings
         SP_1_7
     End Enum
 
+    Enum ENUM_VAR_PARSE_TYPE
+        ALL
+        TAB_AND_INC
+        TAB
+    End Enum
+
     Public Shared g_iSettingsAutocompleteSyntax As ENUM_AUTOCOMPLETE_SYNTAX = ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX
     Public Shared ReadOnly g_iSettingsDefaultEditorFont As Font = New Font("Consolas", 9, FontStyle.Regular)
     Public Shared ReadOnly g_sSettingsDefaultEditorFont As String = New FontConverter().ConvertToInvariantString(g_iSettingsDefaultEditorFont)
@@ -59,8 +65,8 @@ Public Class ClassSettings
     Public Shared g_iSettingsFullMethodAutocomplete As Boolean = False
     Public Shared g_iSettingsFullEnumAutocomplete As Boolean = False
     Public Shared g_iSettingsAutocompleteCaseSensitive As Boolean = True
-    Public Shared g_iSettingsVarAutocompleteCurrentSourceOnly As Boolean = True
-    Public Shared g_iSettingsVarAutocompleteShowObjectBrowser As Boolean = False
+    Public Shared g_iSettingsAutocompleteVarParseType As ENUM_VAR_PARSE_TYPE = ENUM_VAR_PARSE_TYPE.TAB_AND_INC
+    Public Shared g_iSettingsObjectBrowserShowVariables As Boolean = False
     Public Shared g_iSettingsSwitchTabToAutocomplete As Boolean = True
     Public Shared g_iSettingsOnlyUpdateSyntaxWhenFocused As Boolean = True
     Public Shared g_iSettingsAutoCloseBrackets As Boolean = True
@@ -110,8 +116,8 @@ Public Class ClassSettings
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "FullMethodAutocomplete", If(g_iSettingsFullMethodAutocomplete, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "FullEnumAutocomplete", If(g_iSettingsFullEnumAutocomplete, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutocompleteCaseSensitive", If(g_iSettingsAutocompleteCaseSensitive, "1", "0")))
-                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "VarAutocompleteCurrentSourceOnly", If(g_iSettingsVarAutocompleteCurrentSourceOnly, "1", "0")))
-                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "VarAutocompleteShowObjectBrowser", If(g_iSettingsVarAutocompleteShowObjectBrowser, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutocompleteVarParseType", CStr(g_iSettingsAutocompleteVarParseType)))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "ObjectBrowserShowVariables", If(g_iSettingsObjectBrowserShowVariables, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "SwitchTabToAutocomplete", If(g_iSettingsSwitchTabToAutocomplete, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "OnlyUpdateSyntaxWhenFocused", If(g_iSettingsOnlyUpdateSyntaxWhenFocused, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutoCloseBrackets", If(g_iSettingsAutoCloseBrackets, "1", "0")))
@@ -131,6 +137,8 @@ Public Class ClassSettings
 
     Public Shared Sub LoadSettings()
         Try
+            Dim tmpInt As Integer
+
             Using mStream = ClassFileStreamWait.Create(g_sSettingsFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
                 Using mIni As New ClassIni(mStream)
                     'Settings
@@ -148,11 +156,13 @@ Public Class ClassSettings
                     Else
                         g_iSettingsTextEditorFont = g_iSettingsDefaultEditorFont
                     End If
+
                     g_iSettingsInvertColors = (mIni.ReadKeyValue("Editor", "TextEditorInvertColors", "0") <> "0")
-                    Dim iTabsToSpaces As Integer = 0
-                    If (Integer.TryParse(mIni.ReadKeyValue("Editor", "TextEditorTabsToSpaces", "0"), iTabsToSpaces)) Then
-                        g_iSettingsTabsToSpaces = ClassTools.ClassMath.ClampInt(iTabsToSpaces, 0, 100)
+
+                    If (Integer.TryParse(mIni.ReadKeyValue("Editor", "TextEditorTabsToSpaces", "0"), tmpInt)) Then
+                        g_iSettingsTabsToSpaces = ClassTools.ClassMath.ClampInt(tmpInt, 0, 100)
                     End If
+
                     g_sSettingsSyntaxHighlightingPath = mIni.ReadKeyValue("Editor", "TextEditorSyntaxHighlightingPath", "")
                     g_bSettingsRememberFoldings = (mIni.ReadKeyValue("Editor", "TextEditorRememberFoldings", "1") <> "0")
                     'Syntax Highligting
@@ -169,8 +179,12 @@ Public Class ClassSettings
                     g_iSettingsFullMethodAutocomplete = (mIni.ReadKeyValue("Editor", "FullMethodAutocomplete", "0") <> "0")
                     g_iSettingsFullEnumAutocomplete = (mIni.ReadKeyValue("Editor", "FullEnumAutocomplete", "0") <> "0")
                     g_iSettingsAutocompleteCaseSensitive = (mIni.ReadKeyValue("Editor", "AutocompleteCaseSensitive", "1") <> "0")
-                    g_iSettingsVarAutocompleteCurrentSourceOnly = (mIni.ReadKeyValue("Editor", "VarAutocompleteCurrentSourceOnly", "1") <> "0")
-                    g_iSettingsVarAutocompleteShowObjectBrowser = (mIni.ReadKeyValue("Editor", "VarAutocompleteShowObjectBrowser", "0") <> "0")
+
+                    If (Integer.TryParse(mIni.ReadKeyValue("Editor", "AutocompleteVarParseType", CStr(ENUM_VAR_PARSE_TYPE.TAB_AND_INC)), tmpInt)) Then
+                        g_iSettingsAutocompleteVarParseType = CType(ClassTools.ClassMath.ClampInt(tmpInt, 0, [Enum].GetNames(GetType(ENUM_VAR_PARSE_TYPE)).Length - 1), ENUM_VAR_PARSE_TYPE)
+                    End If
+
+                    g_iSettingsObjectBrowserShowVariables = (mIni.ReadKeyValue("Editor", "ObjectBrowserShowVariables", "0") <> "0")
                     g_iSettingsSwitchTabToAutocomplete = (mIni.ReadKeyValue("Editor", "SwitchTabToAutocomplete", "1") <> "0")
                     g_iSettingsOnlyUpdateSyntaxWhenFocused = (mIni.ReadKeyValue("Editor", "OnlyUpdateSyntaxWhenFocused", "1") <> "0")
                     g_iSettingsAutoCloseBrackets = (mIni.ReadKeyValue("Editor", "AutoCloseBrackets", "1") <> "0")

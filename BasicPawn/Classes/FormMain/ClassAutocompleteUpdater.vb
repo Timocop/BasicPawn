@@ -2369,12 +2369,32 @@ Public Class ClassAutocompleteUpdater
             'Parse variables and create methodmaps for variables
             If (True) Then
                 mPreWatch.Start()
-                If (ClassSettings.g_iSettingsVarAutocompleteCurrentSourceOnly) Then
+
+                If (ClassSettings.g_iSettingsAutocompleteVarParseType = ClassSettings.ENUM_VAR_PARSE_TYPE.TAB) Then
                     ParseVariables_Pre(sRequestedSource, sRequestedSourceFile, sRequestedSourceFile, lNewVarAutocompleteList, lOldVarAutocompleteList, iRequestedLangauge)
                 Else
                     Dim mIncludeFiles = mRequestTab.m_IncludeFiles.ToArray
                     For i = 0 To mIncludeFiles.Length - 1
-                        ParseVariables_Pre(sRequestedSource, sRequestedSourceFile, CStr(mIncludeFiles(i).Value), lNewVarAutocompleteList, lOldVarAutocompleteList, iRequestedLangauge)
+                        Select Case (ClassSettings.g_iSettingsAutocompleteVarParseType)
+                            Case ClassSettings.ENUM_VAR_PARSE_TYPE.TAB_AND_INC
+                                Dim bValid As Boolean = False
+
+                                If (sRequestedSourceFile.ToLower = CStr(mIncludeFiles(i).Value).ToLower) Then
+                                    bValid = True
+                                End If
+
+                                Select Case (IO.Path.GetExtension(CStr(mIncludeFiles(i).Value)).ToLower)
+                                    Case ".sp", ".sma", ".p", ".pwn"
+                                        bValid = True
+                                End Select
+
+                                If (bValid) Then
+                                    ParseVariables_Pre(sRequestedSource, sRequestedSourceFile, CStr(mIncludeFiles(i).Value), lNewVarAutocompleteList, lOldVarAutocompleteList, iRequestedLangauge)
+                                End If
+
+                            Case Else
+                                ParseVariables_Pre(sRequestedSource, sRequestedSourceFile, CStr(mIncludeFiles(i).Value), lNewVarAutocompleteList, lOldVarAutocompleteList, iRequestedLangauge)
+                        End Select
                     Next
                 End If
                 mPreWatch.Stop()
@@ -2924,11 +2944,29 @@ Public Class ClassAutocompleteUpdater
                     Continue For
                 End If
 
-                If (ClassSettings.g_iSettingsVarAutocompleteCurrentSourceOnly) Then
-                    If (Not String.IsNullOrEmpty(sActiveSourceFile) AndAlso sActiveSourceFile.ToLower <> mItem.m_Path.ToLower) Then
-                        Continue For
-                    End If
-                End If
+                Select Case (ClassSettings.g_iSettingsAutocompleteVarParseType)
+                    Case ClassSettings.ENUM_VAR_PARSE_TYPE.TAB_AND_INC
+                        Dim bValid As Boolean = False
+
+                        If (String.IsNullOrEmpty(sActiveSourceFile) OrElse sActiveSourceFile.ToLower = mItem.m_Path.ToLower) Then
+                            bValid = True
+                        End If
+
+                        Select Case (IO.Path.GetExtension(mItem.m_Path).ToLower)
+                            Case ".sp", ".sma", ".p", ".pwn"
+                                bValid = True
+                        End Select
+
+                        If (Not bValid) Then
+                            Continue For
+                        End If
+
+                    Case ClassSettings.ENUM_VAR_PARSE_TYPE.TAB
+                        If (Not String.IsNullOrEmpty(sActiveSourceFile) AndAlso sActiveSourceFile.ToLower <> mItem.m_Path.ToLower) Then
+                            Continue For
+                        End If
+                End Select
+
 
                 Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(mItem.m_FullFunctionString, iLanguage)
                 mCodeBuilder = New StringBuilder

@@ -154,8 +154,17 @@ Public Class FormSettings
         CheckBox_FullAutcompleteMethods.Checked = ClassSettings.g_iSettingsFullMethodAutocomplete
         CheckBox_FullAutocompleteReTagging.Checked = ClassSettings.g_iSettingsFullEnumAutocomplete
         CheckBox_CaseSensitive.Checked = ClassSettings.g_iSettingsAutocompleteCaseSensitive
-        CheckBox_CurrentSourceVarAutocomplete.Checked = ClassSettings.g_iSettingsVarAutocompleteCurrentSourceOnly
-        CheckBox_VarAutocompleteShowObjectBrowser.Checked = ClassSettings.g_iSettingsVarAutocompleteShowObjectBrowser
+
+        Select Case (ClassSettings.g_iSettingsAutocompleteVarParseType)
+            Case ClassSettings.ENUM_VAR_PARSE_TYPE.ALL
+                RadioButton_VarParseAll.Checked = True
+            Case ClassSettings.ENUM_VAR_PARSE_TYPE.TAB_AND_INC
+                RadioButton_VarParseTabInc.Checked = True
+            Case Else
+                RadioButton_VarParseTab.Checked = True
+        End Select
+
+        CheckBox_VarAutocompleteShowObjectBrowser.Checked = ClassSettings.g_iSettingsObjectBrowserShowVariables
         CheckBox_SwitchTabToAutocomplete.Checked = ClassSettings.g_iSettingsSwitchTabToAutocomplete
         CheckBox_OnlyUpdateSyntaxWhenFocused.Checked = ClassSettings.g_iSettingsOnlyUpdateSyntaxWhenFocused
         CheckBox_AutoCloseBrackets.Checked = ClassSettings.g_iSettingsAutoCloseBrackets
@@ -274,8 +283,17 @@ Public Class FormSettings
         ClassSettings.g_iSettingsFullMethodAutocomplete = CheckBox_FullAutcompleteMethods.Checked
         ClassSettings.g_iSettingsFullEnumAutocomplete = CheckBox_FullAutocompleteReTagging.Checked
         ClassSettings.g_iSettingsAutocompleteCaseSensitive = CheckBox_CaseSensitive.Checked
-        ClassSettings.g_iSettingsVarAutocompleteCurrentSourceOnly = CheckBox_CurrentSourceVarAutocomplete.Checked
-        ClassSettings.g_iSettingsVarAutocompleteShowObjectBrowser = CheckBox_VarAutocompleteShowObjectBrowser.Checked
+
+        Select Case (True)
+            Case RadioButton_VarParseAll.Checked
+                ClassSettings.g_iSettingsAutocompleteVarParseType = ClassSettings.ENUM_VAR_PARSE_TYPE.ALL
+            Case RadioButton_VarParseTabInc.Checked
+                ClassSettings.g_iSettingsAutocompleteVarParseType = ClassSettings.ENUM_VAR_PARSE_TYPE.TAB_AND_INC
+            Case Else
+                ClassSettings.g_iSettingsAutocompleteVarParseType = ClassSettings.ENUM_VAR_PARSE_TYPE.TAB
+        End Select
+
+        ClassSettings.g_iSettingsObjectBrowserShowVariables = CheckBox_VarAutocompleteShowObjectBrowser.Checked
         ClassSettings.g_iSettingsSwitchTabToAutocomplete = CheckBox_SwitchTabToAutocomplete.Checked
         ClassSettings.g_iSettingsOnlyUpdateSyntaxWhenFocused = CheckBox_OnlyUpdateSyntaxWhenFocused.Checked
         ClassSettings.g_iSettingsAutoCloseBrackets = CheckBox_AutoCloseBrackets.Checked
