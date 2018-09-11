@@ -87,7 +87,7 @@ Public Class ClassSyntaxUpdater
                     dLastFullAutocompleteUpdate = (Now + mFullAutocompleteUpdateDelay)
 
                     ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                           g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, Nothing)
+                                                           g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
                                                        End Sub)
                 End If
 
@@ -96,7 +96,7 @@ Public Class ClassSyntaxUpdater
                     dLastVarAutocompleteUpdate = (Now + mVarAutocompleteUpdateDelay)
 
                     ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                           g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.VARIABLES_AUTOCOMPLETE, Nothing)
+                                                           g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.VARIABLES_AUTOCOMPLETE)
                                                        End Sub)
                 End If
 

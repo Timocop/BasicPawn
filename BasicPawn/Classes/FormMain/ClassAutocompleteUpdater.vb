@@ -44,8 +44,27 @@ Public Class ClassAutocompleteUpdater
     ''' <summary>
     ''' Starts the autocomplete update thread
     ''' </summary>
+    ''' <param name="iUpdateType"></param> 
+    ''' <returns></returns>
+    Public Function StartUpdate(iUpdateType As ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS) As Boolean
+        Return StartUpdate(iUpdateType, "")
+    End Function
+
+    ''' <summary>
+    ''' Starts the autocomplete update thread
+    ''' </summary>
     ''' <param name="iUpdateType"></param>
-    ''' <param name="sTabIdentifier">The tab to request an update. |Nothing| for current active tab.</param>
+    ''' <param name="mTab">The tab to request an update.</param>
+    ''' <returns></returns>
+    Public Function StartUpdate(iUpdateType As ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS, mTab As ClassTabControl.SourceTabPage) As Boolean
+        Return StartUpdate(iUpdateType, If(mTab IsNot Nothing, mTab.m_Identifier, ""))
+    End Function
+
+    ''' <summary>
+    ''' Starts the autocomplete update thread
+    ''' </summary>
+    ''' <param name="iUpdateType"></param>
+    ''' <param name="sTabIdentifier">The tab to request an update.</param>
     ''' <returns></returns>
     Public Function StartUpdate(iUpdateType As ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS, sTabIdentifier As String) As Boolean
         If (String.IsNullOrEmpty(sTabIdentifier)) Then
