@@ -31,12 +31,8 @@
                 <Begin>/*</Begin>
                 <End>*/</End>
             </Span>
-            <Span name="String" bold="false" italic="false" color="#d69d85" stopateol="true" escapecharacter="\">
+            <Span name="String" bold="false" italic="false" color="#d69d85" stopateol="false" escapecharacter="\">
                 <Begin>"</Begin>
-                <End>"</End>
-            </Span>
-            <Span name="MultiLineString" bold="false" italic="false" color="#d69d85" stopateol="false" escapecharacter='"'>
-                <Begin>@@"</Begin>
                 <End>"</End>
             </Span>
             <Span name="Char" bold="false" italic="false" color="#d69d85" stopateol="true" escapecharacter="\">
