@@ -162,7 +162,7 @@ Public Class ClassAutocompleteUpdater
             End If
 
             ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                   g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.ToolTipText = "(Parsing methods) " & IO.Path.GetFileName(sRequestedSourceFile)
+                                                   g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.ToolTipText = "(Parsing: Full) " & IO.Path.GetFileName(sRequestedSourceFile)
                                                    g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = True
                                                End Sub)
 
@@ -2367,7 +2367,7 @@ Public Class ClassAutocompleteUpdater
             End If
 
             ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                   g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.ToolTipText = "(Parsing variables) " & IO.Path.GetFileName(sRequestedSourceFile)
+                                                   g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.ToolTipText = "(Parsing: Variables) " & IO.Path.GetFileName(sRequestedSourceFile)
                                                    g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = True
                                                End Sub)
             Dim mPreWatch As New Stopwatch
