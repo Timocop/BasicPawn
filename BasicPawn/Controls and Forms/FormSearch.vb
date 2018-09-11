@@ -34,6 +34,7 @@ Public Class FormSearch
         Dim iLength As Integer
         Dim sFile As String
         Dim sTabIdentifier As String
+        Dim mMatch As Match
     End Structure
 
     Public Sub New(f As FormMain, Optional sSearchText As String = "")
@@ -194,8 +195,10 @@ Public Class FormSearch
         End If
 
         Dim mRegex As Regex
+        Dim bNormalMode As Boolean = RadioButton_ModeNormal.Checked
+
         Try
-            Select Case (RadioButton_ModeNormal.Checked)
+            Select Case (bNormalMode)
                 Case True
                     mRegex = New Regex(If(CheckBox_WholeWord.Checked, "\b", "") & Regex.Escape(TextBox_Search.Text) & If(CheckBox_WholeWord.Checked, "\b", ""), If(CheckBox_CaseSensitive.Checked, RegexOptions.None, RegexOptions.IgnoreCase))
                 Case Else
@@ -216,7 +219,8 @@ Public Class FormSearch
                         .iLocation = mMatch.Index,
                         .iLength = mMatch.Length,
                         .sFile = g_mFormMain.g_ClassTabControl.m_Tab(i).m_File,
-                        .sTabIdentifier = g_mFormMain.g_ClassTabControl.m_Tab(i).m_Identifier
+                        .sTabIdentifier = g_mFormMain.g_ClassTabControl.m_Tab(i).m_Identifier,
+                        .mMatch = If(bNormalMode, Nothing, mMatch)
                     })
                 Next
             Next
@@ -226,7 +230,8 @@ Public Class FormSearch
                     .iLocation = mMatch.Index,
                     .iLength = mMatch.Length,
                     .sFile = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File,
-                    .sTabIdentifier = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Identifier
+                    .sTabIdentifier = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Identifier,
+                    .mMatch = If(bNormalMode, Nothing, mMatch)
                 })
             Next
         End If
@@ -306,20 +311,36 @@ Public Class FormSearch
             If (RadioButton_DirectionUp.Checked) Then
                 For i = mResults.Length - 1 To 0 Step -1
                     If (mResults(i).iLocation < iOffset - mResults(i).iLength) Then
-                        g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.Replace(mResults(i).iLocation, mResults(i).iLength, TextBox_Replace.Text)
+                        Dim sReplace As String
+
+                        If (mResults(i).mMatch IsNot Nothing) Then
+                            sReplace = mResults(i).mMatch.Result(TextBox_Replace.Text)
+                        Else
+                            sReplace = TextBox_Replace.Text
+                        End If
+
+                        g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.Replace(mResults(i).iLocation, mResults(i).iLength, sReplace)
                         g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Refresh()
 
-                        SetTextEditorSelection(g_mFormMain.g_ClassTabControl.m_ActiveTab, mResults(i).iLocation, TextBox_Replace.Text.Length, True)
+                        SetTextEditorSelection(g_mFormMain.g_ClassTabControl.m_ActiveTab, mResults(i).iLocation, sReplace.Length, True)
                         Return
                     End If
                 Next
             Else
                 For i = 0 To mResults.Length - 1
                     If (mResults(i).iLocation >= iOffset) Then
-                        g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.Replace(mResults(i).iLocation, mResults(i).iLength, TextBox_Replace.Text)
+                        Dim sReplace As String
+
+                        If (mResults(i).mMatch IsNot Nothing) Then
+                            sReplace = mResults(i).mMatch.Result(TextBox_Replace.Text)
+                        Else
+                            sReplace = TextBox_Replace.Text
+                        End If
+
+                        g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.Replace(mResults(i).iLocation, mResults(i).iLength, sReplace)
                         g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Refresh()
 
-                        SetTextEditorSelection(g_mFormMain.g_ClassTabControl.m_ActiveTab, mResults(i).iLocation, TextBox_Replace.Text.Length, False)
+                        SetTextEditorSelection(g_mFormMain.g_ClassTabControl.m_ActiveTab, mResults(i).iLocation, sReplace.Length, False)
                         Return
                     End If
                 Next
@@ -379,7 +400,15 @@ Public Class FormSearch
                     End If
                 End If
 
-                g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.Replace(mResults(i).iLocation, mResults(i).iLength, TextBox_Replace.Text)
+                Dim sReplace As String
+
+                If (mResults(i).mMatch IsNot Nothing) Then
+                    sReplace = mResults(i).mMatch.Result(TextBox_Replace.Text)
+                Else
+                    sReplace = TextBox_Replace.Text
+                End If
+
+                g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.Replace(mResults(i).iLocation, mResults(i).iLength, sReplace)
 
                 iReplaceCount += 1
             Next
@@ -442,6 +471,7 @@ Public Class FormSearch
                 mListViewItemData.g_mData("Location") = mItem.iLocation
                 mListViewItemData.g_mData("Length") = mItem.iLength
                 mListViewItemData.g_mData("TabIdentifier") = mItem.sTabIdentifier
+                mListViewItemData.g_mData("Match") = mItem.mMatch
 
                 ListView_Output.Items.Add(mListViewItemData)
             Next
@@ -502,6 +532,7 @@ Public Class FormSearch
                 mListViewItemData.g_mData("Location") = mItem.iLocation
                 mListViewItemData.g_mData("Length") = mItem.iLength
                 mListViewItemData.g_mData("TabIdentifier") = mItem.sTabIdentifier
+                mListViewItemData.g_mData("Match") = mItem.mMatch
 
                 ListView_Output.Items.Add(mListViewItemData)
             Next
