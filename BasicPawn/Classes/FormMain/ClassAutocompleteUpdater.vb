@@ -73,22 +73,27 @@ Public Class ClassAutocompleteUpdater
 
         If (Not ClassThread.IsValid(g_mAutocompleteUpdaterThread)) Then
             g_mAutocompleteUpdaterThread = New Threading.Thread(Sub()
-                                                                    SyncLock _lock
-                                                                        If ((iUpdateType And ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) <> 0) Then
-                                                                            RaiseEvent OnAutocompleteUpdateStarted(iUpdateType)
-                                                                            FullAutocompleteUpdate_Thread(sTabIdentifier)
-                                                                        End If
+                                                                    Try
+                                                                        SyncLock _lock
+                                                                            If ((iUpdateType And ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) <> 0) Then
+                                                                                RaiseEvent OnAutocompleteUpdateStarted(iUpdateType)
+                                                                                FullAutocompleteUpdate_Thread(sTabIdentifier)
+                                                                            End If
 
-                                                                        If ((iUpdateType And ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.VARIABLES_AUTOCOMPLETE) <> 0) Then
-                                                                            RaiseEvent OnAutocompleteUpdateStarted(iUpdateType)
-                                                                            VariableAutocompleteUpdate_Thread(sTabIdentifier)
-                                                                        End If
+                                                                            If ((iUpdateType And ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.VARIABLES_AUTOCOMPLETE) <> 0) Then
+                                                                                RaiseEvent OnAutocompleteUpdateStarted(iUpdateType)
+                                                                                VariableAutocompleteUpdate_Thread(sTabIdentifier)
+                                                                            End If
 
-                                                                        If ((iUpdateType And ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) <> 0) Then
-                                                                            FullAutocompleteUpdate_Post_Thread(sTabIdentifier)
-                                                                        End If
-
-                                                                    End SyncLock
+                                                                            If ((iUpdateType And ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) <> 0) Then
+                                                                                FullAutocompleteUpdate_Post_Thread(sTabIdentifier)
+                                                                            End If
+                                                                        End SyncLock
+                                                                    Catch ex As Threading.ThreadAbortException
+                                                                        Throw
+                                                                    Catch ex As Exception
+                                                                        ClassExceptionLog.WriteToLog(ex)
+                                                                    End Try
 
                                                                     RaiseEvent OnAutocompleteUpdateEnd()
                                                                 End Sub) With {
@@ -128,16 +133,13 @@ Public Class ClassAutocompleteUpdater
 
     Private Sub FullAutocompleteUpdate_Thread(sTabIdentifier As String)
         Try
-            'g_mFormMain.PrintInformation("[INFO]", "Autocomplete update started...")
-
             Dim sActiveTabIdentifier As String = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Identifier)
             Dim mTabs As ClassTabControl.SourceTabPage() = ClassThread.ExecEx(Of ClassTabControl.SourceTabPage())(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.GetAllTabs())
             Dim mRequestTab As ClassTabControl.SourceTabPage = ClassThread.ExecEx(Of ClassTabControl.SourceTabPage)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.GetTabByIdentifier(sTabIdentifier))
             If (mRequestTab Is Nothing) Then
                 ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                       g_mFormMain.ToolStripProgressBar_Autocomplete.ToolTipText = ""
-                                                       g_mFormMain.ToolStripProgressBar_Autocomplete.Value = 100
-                                                       g_mFormMain.ToolStripProgressBar_Autocomplete.Visible = False
+                                                       g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.ToolTipText = ""
+                                                       g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = False
                                                    End Sub)
 
                 g_mFormMain.PrintInformation("[WARN]", "Autocomplete update failed! Could not get tab!", False, False)
@@ -151,9 +153,8 @@ Public Class ClassAutocompleteUpdater
 
             If (String.IsNullOrEmpty(sRequestedSourceFile) OrElse Not IO.File.Exists(sRequestedSourceFile)) Then
                 ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                       g_mFormMain.ToolStripProgressBar_Autocomplete.ToolTipText = ""
-                                                       g_mFormMain.ToolStripProgressBar_Autocomplete.Value = 100
-                                                       g_mFormMain.ToolStripProgressBar_Autocomplete.Visible = False
+                                                       g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.ToolTipText = ""
+                                                       g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = False
                                                    End Sub)
 
                 g_mFormMain.PrintInformation("[ERRO]", "Autocomplete update failed! Could not get current source file!", False, False)
@@ -161,9 +162,8 @@ Public Class ClassAutocompleteUpdater
             End If
 
             ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                   g_mFormMain.ToolStripProgressBar_Autocomplete.ToolTipText = IO.Path.GetFileName(sRequestedSourceFile)
-                                                   g_mFormMain.ToolStripProgressBar_Autocomplete.Value = 0
-                                                   g_mFormMain.ToolStripProgressBar_Autocomplete.Visible = True
+                                                   g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.ToolTipText = "(Parsing methods) " & IO.Path.GetFileName(sRequestedSourceFile)
+                                                   g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = True
                                                End Sub)
 
             Dim lNewAutocompleteList As New ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
@@ -339,28 +339,12 @@ Public Class ClassAutocompleteUpdater
                 Dim i As Integer
                 For i = 0 To lIncludeFiles.Count - 1
                     ParseAutocomplete_Pre(sRequestedSource, sRequestedSourceFile, CStr(lIncludeFiles(i).Value), sSourceList, lNewAutocompleteList, iRequestedLangauge)
-
-                    ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                           Dim iVal = Math.Min(CInt(Math.Floor(((i / lIncludeFiles.Count) * 100) * 0.5)), 100)
-
-                                                           If (iVal > g_mFormMain.ToolStripProgressBar_Autocomplete.Value) Then
-                                                               g_mFormMain.ToolStripProgressBar_Autocomplete.Value = iVal
-                                                           End If
-                                                       End Sub)
                 Next
                 mPreWatch.Stop()
 
                 mPostWatch.Start()
                 For i = 0 To sSourceList.Count - 1
                     ParseAutocomplete_Post(sRequestedSource, sRequestedSourceFile, sSourceList(i)(0), sSourceList(i)(1), lNewAutocompleteList, iRequestedLangauge)
-
-                    ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                           Dim iVal = Math.Min(CInt(Math.Floor(((i / sSourceList.Count) * 100) * 0.5) + 50), 100)
-
-                                                           If (iVal > g_mFormMain.ToolStripProgressBar_Autocomplete.Value) Then
-                                                               g_mFormMain.ToolStripProgressBar_Autocomplete.Value = iVal
-                                                           End If
-                                                       End Sub)
                 Next
                 mPostWatch.Stop()
             End If
@@ -380,9 +364,8 @@ Public Class ClassAutocompleteUpdater
             mApplyWatch.Stop()
 
             ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                   g_mFormMain.ToolStripProgressBar_Autocomplete.ToolTipText = ""
-                                                   g_mFormMain.ToolStripProgressBar_Autocomplete.Value = 100
-                                                   g_mFormMain.ToolStripProgressBar_Autocomplete.Visible = False
+                                                   g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.ToolTipText = ""
+                                                   g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = False
                                                End Sub)
 
             lNewAutocompleteList = Nothing
@@ -395,14 +378,12 @@ Public Class ClassAutocompleteUpdater
             g_mFormMain.PrintInformation("[DEBG]", vbTab & "Finalize: " & mFinalizeWatch.Elapsed.ToString)
             g_mFormMain.PrintInformation("[DEBG]", vbTab & "Apply: " & mApplyWatch.Elapsed.ToString)
 #End If
-            'g_mFormMain.PrintInformation("[INFO]", "Autocomplete update finished!")
         Catch ex As Threading.ThreadAbortException
             Throw
         Catch ex As Exception
             ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                   g_mFormMain.ToolStripProgressBar_Autocomplete.ToolTipText = ""
-                                                   g_mFormMain.ToolStripProgressBar_Autocomplete.Value = 100
-                                                   g_mFormMain.ToolStripProgressBar_Autocomplete.Visible = False
+                                                   g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.ToolTipText = ""
+                                                   g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = False
                                                End Sub)
 
             g_mFormMain.PrintInformation("[ERRO]", "Autocomplete update failed! " & ex.Message, False, False)
@@ -2354,7 +2335,10 @@ Public Class ClassAutocompleteUpdater
         Try
             Dim mRequestTab As ClassTabControl.SourceTabPage = ClassThread.ExecEx(Of ClassTabControl.SourceTabPage)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.GetTabByIdentifier(sTabIdentifier))
             If (mRequestTab Is Nothing) Then
-                'g_mFormMain.PrintInformation("[WARN]", "Variable autocomplete update failed! Could not get tab!", False, False)
+                ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                       g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.ToolTipText = ""
+                                                       g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = False
+                                                   End Sub)
                 Return
             End If
 
@@ -2362,9 +2346,11 @@ Public Class ClassAutocompleteUpdater
             Dim iRequestedLangauge As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = mRequestTab.m_Language
             Dim sRequestedSource As String = ClassThread.ExecEx(Of String)(mRequestTab, Function() mRequestTab.m_TextEditor.Document.TextContent)
 
-            'g_mFormMain.PrintInformation("[INFO]", "Variable autocomplete update started...")
             If (String.IsNullOrEmpty(sRequestedSourceFile) OrElse Not IO.File.Exists(sRequestedSourceFile)) Then
-                'g_mFormMain.PrintInformation("[ERRO]", "Variable autocomplete update failed! Could not get current source file!")
+                ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                       g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.ToolTipText = ""
+                                                       g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = False
+                                                   End Sub)
                 Return
             End If
 
@@ -2373,9 +2359,17 @@ Public Class ClassAutocompleteUpdater
 
             'No autocomplete entries?
             If (lOldVarAutocompleteList.Count < 1) Then
+                ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                       g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.ToolTipText = ""
+                                                       g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = False
+                                                   End Sub)
                 Return
             End If
 
+            ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                   g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.ToolTipText = "(Parsing variables) " & IO.Path.GetFileName(sRequestedSourceFile)
+                                                   g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = True
+                                               End Sub)
             Dim mPreWatch As New Stopwatch
             Dim mPostWatch As New Stopwatch
             Dim mApplyWatch As New Stopwatch
@@ -2428,6 +2422,11 @@ Public Class ClassAutocompleteUpdater
                 End Sub)
             mApplyWatch.Stop()
 
+            ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                   g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.ToolTipText = ""
+                                                   g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = False
+                                               End Sub)
+
             lNewVarAutocompleteList = Nothing
 
 #If DEBUG AndAlso PROFILE_AUTOCOMPLETE Then
@@ -2437,10 +2436,15 @@ Public Class ClassAutocompleteUpdater
             g_mFormMain.PrintInformation("[DEBG]", vbTab & "Post: " & mPostWatch.Elapsed.ToString)
             g_mFormMain.PrintInformation("[DEBG]", vbTab & "Apply: " & mApplyWatch.Elapsed.ToString)
 #End If
-            'g_mFormMain.PrintInformation("[INFO]", "Variable autocomplete update finished!")
+
         Catch ex As Threading.ThreadAbortException
             Throw
         Catch ex As Exception
+            ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                   g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.ToolTipText = ""
+                                                   g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = False
+                                               End Sub)
+
             g_mFormMain.PrintInformation("[ERRO]", "Variable autocomplete update failed! " & ex.Message, False, False)
             ClassExceptionLog.WriteToLog(ex)
         End Try

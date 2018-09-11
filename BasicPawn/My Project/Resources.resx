@@ -117,12 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="imageres_5356_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\imageres_5356_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="imageres_5351_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\imageres_5351_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="imageres_5368_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\imageres_5368_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Debugger_CommandRunnerEngineOld" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Debugger_CommandRunnerEngine.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
@@ -136,8 +136,8 @@
   <data name="imageres_5338_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\imageres_5338_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Template_SourcePawnOldPlugin" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Template_SourcePawnOldPlugin.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;iso-8859-1</value>
+  <data name="Debugger_BreakpointModuleNew" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Debugger_BreakpointModuleNew.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
   <data name="Bmp_Design" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Design.jpg;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -145,8 +145,8 @@
   <data name="imageres_5341_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\imageres_5341_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Bmp_DriveEncryption" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\imageres_5381_64x64-32.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Template_AMXModXModuleInclude" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Template_AMXModXModuleInclude.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
   <data name="imageres_5306_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\imageres_5306_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -157,9 +157,6 @@
   <data name="imageres_5348_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\imageres_5348_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="imageres_5313_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\imageres_5313_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Debugger_BreakpointModuleOld" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Debugger_BreakpointModuleOld.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
@@ -169,38 +166,35 @@
   <data name="imageres_5312_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\imageres_5312_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="imageres_5313_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\imageres_5313_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="imageres_5320_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\imageres_5320_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Debugger_WatcherModuleOld" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Debugger_WatcherModuleOld.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="Template_SourcePawnOldSharedPluginInclude" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Template_SourcePawnOldSharedPluginInclude.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
   <data name="Template_AMXModXInclude" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Template_AMXModXInclude.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-  <data name="imageres_5315_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\imageres_5315_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="imageres_5316_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\imageres_5316_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="imageres_5357_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\imageres_5357_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="imageres_5311_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\imageres_5311_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="imageres_5326_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\imageres_5326_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Ico_Folder" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\imageres_3.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Template_SourcePawnNewPlugin" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Template_SourcePawnNewPlugin.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
-  </data>
-  <data name="Template_AMXModXModuleInclude" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Template_AMXModXModuleInclude.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
-  </data>
-  <data name="Template_SourcePawnNewExtensionInclude" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Template_SourcePawnNewExtensionInclude.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  <data name="BasicPawn_NoText_PNGx64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BasicPawn_NoText_PNGx64.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="BasicPawnRedTop" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\BasicPawnRedTop.jpg;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Debugger_BreakpointModuleNew" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Debugger_BreakpointModuleNew.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  <data name="imageres_5326_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\imageres_5326_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Template_SourcePawnOldExtensionInclude" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Template_SourcePawnOldExtensionInclude.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
@@ -208,11 +202,14 @@
   <data name="Bmp_Network" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\098.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="BasicPawn_NoText_PNGx64" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\BasicPawn_NoText_PNGx64.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Template_SourcePawnNewPlugin" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Template_SourcePawnNewPlugin.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-  <data name="imageres_5320_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\imageres_5320_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Template_AMXModXPlugin" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Template_AMXModXPlugin.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="imageres_5357_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\imageres_5357_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="imageres_5304_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\imageres_5304_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -220,11 +217,14 @@
   <data name="imageres_5372_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\imageres_5372_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="imageres_5339_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\imageres_5339_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Ico_Folder" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\imageres_3.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="imageres_5311_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\imageres_5311_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="imageres_5356_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\imageres_5356_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="imageres_5321_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\imageres_5321_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Bmp_ShieldWarn" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\072.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -241,11 +241,8 @@
   <data name="imageres_5333_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\imageres_5333_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Template_AMXModXPlugin" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Template_AMXModXPlugin.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
-  </data>
-  <data name="Template_SourcePawnOldSharedPluginInclude" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Template_SourcePawnOldSharedPluginInclude.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  <data name="Template_SourcePawnNewExtensionInclude" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Template_SourcePawnNewExtensionInclude.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
   <data name="imageres_5364_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\imageres_5364_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -259,17 +256,17 @@
   <data name="Bmp_ButtonDeleteDefault" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ieframe_589.bmp;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Template_AMXModXLibraryInclude" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Template_AMXModXLibraryInclude.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  <data name="imageres_5360_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\imageres_5360_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Debugger_WatcherModuleNew" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Debugger_WatcherModuleNew.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-  <data name="imageres_5360_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\imageres_5360_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="imageres_5339_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\imageres_5339_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="imageres_5318_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\imageres_5318_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Bmp_DriveEncryption" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\imageres_5381_64x64-32.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="imageres_5343_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\imageres_5343_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -280,6 +277,9 @@
   <data name="Template_Include" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Template_Include.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
+  <data name="Template_SourcePawnOldPlugin" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Template_SourcePawnOldPlugin.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;iso-8859-1</value>
+  </data>
   <data name="Bmp_ButtonDeleteHover" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ieframe_590.bmp;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -289,22 +289,26 @@
   <data name="Bmp_Warn" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\155.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="imageres_5301_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\imageres_5301_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Template_AMXModXLibraryInclude" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Template_AMXModXLibraryInclude.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-  <data name="imageres_5316_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\imageres_5316_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="SourcePawn_Syntax" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\SourcePawn_Syntax.xml;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  <data name="imageres_5318_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\imageres_5318_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="imageres_5332_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\imageres_5332_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="imageres_5368_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\imageres_5368_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="SourcePawn_Syntax" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SourcePawn_Syntax.xml;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-  <data name="imageres_5321_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\imageres_5321_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="imageres_5315_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\imageres_5315_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="imageres_5301_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\imageres_5301_16x16-32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="aero_busy" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\aero_busy.gif;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

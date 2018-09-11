@@ -63,6 +63,16 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
+        Public ReadOnly Property aero_busy() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("aero_busy", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Drawing.Bitmap.
+        '''</summary>
         Public ReadOnly Property BasicPawn_NoText_PNGx64() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("BasicPawn_NoText_PNGx64", resourceCulture)
@@ -233,8 +243,12 @@ Namespace My.Resources
         '''
         '''#include &lt;sourcemod&gt;
         '''
+        '''#define TIMER_DELAY 5
         '''#define ENTITY_FULL_UPDATE_TIME 60.0
         '''#define MAXENTITIES 2048
+        '''
+        '''static Handle:g_hTimer;
+        '''static String:g_sReloadMapName[PLATFORM_MAX_PATH];
         '''
         '''enum EntityDebuggerAction
         '''{
@@ -251,12 +265,7 @@ Namespace My.Resources
         '''	url = &quot;&quot;
         '''};
         '''
-        '''public OnPluginStart()
-        '''{
-        '''	CreateTimer(1.0, SendPingTimer, INVALID_HANDLE, TIMER_REPEAT);
-        '''}
-        '''
-        '''public OnGameFrame() [rest of string was truncated]&quot;;.
+        '''public OnPlugin [rest of string was truncated]&quot;;.
         '''</summary>
         Public ReadOnly Property Debugger_CommandRunnerEngineOld() As String
             Get
