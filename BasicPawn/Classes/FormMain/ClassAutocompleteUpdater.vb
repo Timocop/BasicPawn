@@ -162,8 +162,10 @@ Public Class ClassAutocompleteUpdater
             End If
 
             ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                   g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.ToolTipText = "(Parsing: Full) " & IO.Path.GetFileName(sRequestedSourceFile)
-                                                   g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = True
+                                                   If (g_mFormMain.ToolStripMenuItem_ViewProgressAni.Checked) Then
+                                                       g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.ToolTipText = "(Parsing: Full) " & IO.Path.GetFileName(sRequestedSourceFile)
+                                                       g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = True
+                                                   End If
                                                End Sub)
 
             Dim lNewAutocompleteList As New ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
@@ -2367,8 +2369,10 @@ Public Class ClassAutocompleteUpdater
             End If
 
             ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                   g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.ToolTipText = "(Parsing: Variables) " & IO.Path.GetFileName(sRequestedSourceFile)
-                                                   g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = True
+                                                   If (g_mFormMain.ToolStripMenuItem_ViewProgressAni.Checked) Then
+                                                       g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.ToolTipText = "(Parsing: Variables) " & IO.Path.GetFileName(sRequestedSourceFile)
+                                                       g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = True
+                                                   End If
                                                End Sub)
             Dim mPreWatch As New Stopwatch
             Dim mPostWatch As New Stopwatch

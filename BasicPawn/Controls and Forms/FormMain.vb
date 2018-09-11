@@ -748,6 +748,15 @@ Public Class FormMain
         UpdateViews()
         SaveViews()
     End Sub
+
+    Private Sub ToolStripMenuItem_ViewProgressAni_CheckedChanged(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ViewProgressAni.CheckedChanged
+        If (g_bIgnoreCheckedChangedEvent) Then
+            Return
+        End If
+
+        UpdateViews()
+        SaveViews()
+    End Sub
 #End Region
 
 #Region "MenuStrip_Tools"
@@ -1611,6 +1620,7 @@ Public Class FormMain
                     New ClassIni.STRUC_INI_CONTENT(Me.Name, "ViewToolbox", If(ToolStripMenuItem_ViewToolbox.Checked, "1", "0")),
                     New ClassIni.STRUC_INI_CONTENT(Me.Name, "ViewDetails", If(ToolStripMenuItem_ViewDetails.Checked, "1", "0")),
                     New ClassIni.STRUC_INI_CONTENT(Me.Name, "ViewMinimap", If(ToolStripMenuItem_ViewMinimap.Checked, "1", "0")),
+                    New ClassIni.STRUC_INI_CONTENT(Me.Name, "ViewProgressAni", If(ToolStripMenuItem_ViewProgressAni.Checked, "1", "0")),
                     New ClassIni.STRUC_INI_CONTENT(Me.Name, "ToolboxSize", CStr(SplitContainer_ToolboxAndEditor.SplitterDistance)),
                     New ClassIni.STRUC_INI_CONTENT(Me.Name, "DetailsSize", CStr(SplitContainer_ToolboxSourceAndDetails.Height - SplitContainer_ToolboxSourceAndDetails.SplitterDistance))
                 }
@@ -1634,6 +1644,7 @@ Public Class FormMain
                 ToolStripMenuItem_ViewToolbox.Checked = (mIni.ReadKeyValue(Me.Name, "ViewToolbox", "1") <> "0")
                 ToolStripMenuItem_ViewDetails.Checked = (mIni.ReadKeyValue(Me.Name, "ViewDetails", "1") <> "0")
                 ToolStripMenuItem_ViewMinimap.Checked = (mIni.ReadKeyValue(Me.Name, "ViewMinimap", "1") <> "0")
+                ToolStripMenuItem_ViewProgressAni.Checked = (mIni.ReadKeyValue(Me.Name, "ViewProgressAni", "1") <> "0")
                 g_bIgnoreCheckedChangedEvent = False
 
                 tmpStr = mIni.ReadKeyValue(Me.Name, "ToolboxSize", Nothing)
@@ -1655,6 +1666,7 @@ Public Class FormMain
         SplitContainer_ToolboxAndEditor.Panel1Collapsed = (Not ToolStripMenuItem_ViewToolbox.Checked)
         SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed = (Not ToolStripMenuItem_ViewDetails.Checked)
         g_mUCTextMinimap.Visible = (ToolStripMenuItem_ViewMinimap.Checked)
+        ToolStripStatusLabel_AutocompleteProgress.Visible = If(ToolStripMenuItem_ViewProgressAni.Checked, ToolStripStatusLabel_AutocompleteProgress.Visible, False)
     End Sub
 
     'Public Sub ShowPingFlash()
