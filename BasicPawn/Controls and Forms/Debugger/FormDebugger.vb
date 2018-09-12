@@ -452,9 +452,9 @@ Public Class FormDebugger
     ''' <param name="bNoErrorPrompt">If true, no error messagebox will be shown on error.</param>
     Public Sub CleanupDebuggerTempFiles(bNoPrompt As Boolean, bNoErrorPrompt As Boolean)
         'Make sure there are debugger files, otherwise dont cleanup
-        If (Not String.IsNullOrEmpty(g_ClassDebuggerRunner.m_GameFolder) AndAlso IO.Directory.Exists(g_ClassDebuggerRunner.m_GameFolder)) Then
+        If (Not String.IsNullOrEmpty(g_ClassDebuggerRunner.m_ServerFolder) AndAlso IO.Directory.Exists(g_ClassDebuggerRunner.m_ServerFolder)) Then
             While True
-                For Each sFile As String In IO.Directory.GetFiles(g_ClassDebuggerRunner.m_GameFolder)
+                For Each sFile As String In IO.Directory.GetFiles(g_ClassDebuggerRunner.m_ServerFolder)
                     If (Not IO.File.Exists(sFile)) Then
                         Continue For
                     End If
@@ -475,8 +475,8 @@ Public Class FormDebugger
 
         Select Case (If(bNoPrompt, DialogResult.Yes, MessageBox.Show("Cleanup BasicPawn Debugger temporary files?", "Information", MessageBoxButtons.YesNo, MessageBoxIcon.Question)))
             Case DialogResult.Yes
-                If (Not String.IsNullOrEmpty(g_ClassDebuggerRunner.m_GameFolder) AndAlso IO.Directory.Exists(g_ClassDebuggerRunner.m_GameFolder)) Then
-                    For Each sFile As String In IO.Directory.GetFiles(g_ClassDebuggerRunner.m_GameFolder)
+                If (Not String.IsNullOrEmpty(g_ClassDebuggerRunner.m_ServerFolder) AndAlso IO.Directory.Exists(g_ClassDebuggerRunner.m_ServerFolder)) Then
+                    For Each sFile As String In IO.Directory.GetFiles(g_ClassDebuggerRunner.m_ServerFolder)
                         If (Not IO.File.Exists(sFile)) Then
                             Continue For
                         End If

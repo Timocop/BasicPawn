@@ -376,7 +376,8 @@ Public Class ClassConfigs
         Public g_mCompilerOptionsSP As New CompilerOptions.STRUC_SP_COMPILER_OPTIONS
         Public g_mCompilerOptionsAMXX As New CompilerOptions.STRUC_AMXX_COMPILER_OPTIONS
         'Debugging
-        Public g_sDebugGameFolder As String = ""
+        Public g_sDebugClientFolder As String = ""
+        Public g_sDebugServerFolder As String = ""
         Public g_sDebugSourceModFolder As String = ""
         'Misc
         Public g_sExecuteShell As String = ""
@@ -388,7 +389,7 @@ Public Class ClassConfigs
         Public Sub New(sName As String,
                        iCompilingType As ClassSettings.ENUM_COMPILING_TYPE, sIncludeFolders As String, sCompilerPath As String, sOutputFolder As String, bAutoload As Boolean, iLanguage As ENUM_LANGUAGE_DETECT_TYPE,
                        mCompilerOptionsSP As CompilerOptions.STRUC_SP_COMPILER_OPTIONS, mCompilerOptionsAMXX As CompilerOptions.STRUC_AMXX_COMPILER_OPTIONS,
-                       sDebugGameFolder As String, sDebugSourceModFolder As String,
+                       sDebugClientFolder As String, sDebugServerFolder As String, sDebugSourceModFolder As String,
                        sExecuteShell As String)
 
             g_sName = sName
@@ -403,7 +404,8 @@ Public Class ClassConfigs
             g_mCompilerOptionsSP = mCompilerOptionsSP
             g_mCompilerOptionsAMXX = mCompilerOptionsAMXX
             'Debugging
-            g_sDebugGameFolder = sDebugGameFolder
+            g_sDebugClientFolder = sDebugClientFolder
+            g_sDebugServerFolder = sDebugServerFolder
             g_sDebugSourceModFolder = sDebugSourceModFolder
             'Misc
             g_sExecuteShell = sExecuteShell
@@ -494,7 +496,8 @@ Public Class ClassConfigs
                 mConfig.g_mCompilerOptionsAMXX.SaveToIni(lContent)
 
                 'Debugging
-                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Config", "DebugGameDirectory", mConfig.g_sDebugGameFolder))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Config", "DebugClientDirectory", mConfig.g_sDebugClientFolder))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Config", "DebugServerDirectory", mConfig.g_sDebugServerFolder))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Config", "DebugSourceModDirectory", mConfig.g_sDebugSourceModFolder))
 
                 'Misc
@@ -541,7 +544,8 @@ Public Class ClassConfigs
                 mCompilerOptionsAMXModX.LoadFromIni(mIni)
 
                 'Debugging
-                Dim sDebugGameFolder As String = mIni.ReadKeyValue("Config", "DebugGameDirectory", "")
+                Dim sDebugClientFolder As String = mIni.ReadKeyValue("Config", "DebugClientDirectory", "")
+                Dim sDebugServerFolder As String = mIni.ReadKeyValue("Config", "DebugServerDirectory", "")
                 Dim sDebugSourceModFolder As String = mIni.ReadKeyValue("Config", "DebugSourceModDirectory", "")
 
                 'Misc
@@ -549,7 +553,7 @@ Public Class ClassConfigs
 
                 Return New STRUC_CONFIG_ITEM(sName, iCompilingType, sOpenIncludeFolders, sCompilerPath, sOutputFolder, bIsDefault, CType(iLanguage, STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE),
                                          mCompilerOptionsSourcePawn, mCompilerOptionsAMXModX,
-                                         sDebugGameFolder, sDebugSourceModFolder,
+                                         sDebugClientFolder, sDebugServerFolder, sDebugSourceModFolder,
                                          sExecuteShell)
             End Using
         End Using

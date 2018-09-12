@@ -62,7 +62,8 @@ Public Class ClassDebuggerRunner
     Private g_sLatestDebuggerPlugin As String = ""
     Private g_sLatestDebuggerRunnerPlugin As String = ""
 
-    Private g_sGameFolder As String = ""
+    Private g_sClientFolder As String = ""
+    Private g_sServerFolder As String = ""
     Private g_sSourceModFolder As String = ""
     Private g_sCurrentSourceFile As String = ""
     Private g_sCurrentSource As String = ""
@@ -98,9 +99,15 @@ Public Class ClassDebuggerRunner
         g_ClassPreProcess = New ClassPreProcess(Me)
     End Sub
 
-    Public ReadOnly Property m_GameFolder As String
+    Public ReadOnly Property m_ClientFolder As String
         Get
-            Return g_sGameFolder
+            Return g_sClientFolder
+        End Get
+    End Property
+
+    Public ReadOnly Property m_ServerFolder As String
+        Get
+            Return g_sServerFolder
         End Get
     End Property
 
@@ -154,19 +161,22 @@ Public Class ClassDebuggerRunner
             If (g_bSuspendGame <> value) Then
                 g_bSuspendGame = value
 
+                Dim sClientParentFolder As String = IO.Directory.GetParent(m_ClientFolder).FullName
+                Dim sServerParentFolder As String = IO.Directory.GetParent(m_ServerFolder).FullName
+
                 For Each mProcess As Process In Process.GetProcesses
                     Try
-                        If (mProcess.HasExited OrElse mProcess.Id = Process.GetCurrentProcess.Id) Then
+                        If (mProcess.Id = Process.GetCurrentProcess.Id) Then
                             Continue For
                         End If
 
                         Dim sFullPath As String = IO.Path.GetFullPath(mProcess.MainModule.FileName)
-
                         If (sFullPath.ToLower = IO.Path.GetFullPath(Application.ExecutablePath).ToLower) Then
                             Continue For
                         End If
 
-                        If (sFullPath.ToLower.StartsWith(m_GameFolder.ToLower)) Then
+                        If ((sClientParentFolder IsNot Nothing AndAlso sClientParentFolder.Length > 3 AndAlso sFullPath.ToLower.StartsWith(sClientParentFolder.ToLower)) OrElse
+                                    (sServerParentFolder IsNot Nothing AndAlso sServerParentFolder.Length > 3 AndAlso sFullPath.ToLower.StartsWith(sServerParentFolder.ToLower))) Then
                             If (value) Then
                                 WinNative.SuspendProcess(mProcess)
                             Else
@@ -195,7 +205,7 @@ Public Class ClassDebuggerRunner
             End If
 
             Dim sIgnoreExt As String = ClassDebuggerParser.g_sDebuggerBreakpointIgnoreExt
-            Dim sFile As String = IO.Path.Combine(m_GameFolder, sGUID & sIgnoreExt)
+            Dim sFile As String = IO.Path.Combine(m_ServerFolder, sGUID & sIgnoreExt)
 
             Return IO.File.Exists(sFile)
         End Get
@@ -205,7 +215,7 @@ Public Class ClassDebuggerRunner
             End If
 
             Dim sIgnoreExt As String = ClassDebuggerParser.g_sDebuggerBreakpointIgnoreExt
-            Dim sFile As String = IO.Path.Combine(m_GameFolder, sGUID & sIgnoreExt)
+            Dim sFile As String = IO.Path.Combine(m_ServerFolder, sGUID & sIgnoreExt)
 
             If (value) Then
                 IO.File.WriteAllText(sFile, "")
@@ -226,7 +236,8 @@ Public Class ClassDebuggerRunner
 
         g_sCurrentSourceFile = g_mFormDebugger.g_mFormMain.g_ClassTabControl.m_Tab(iIndex).m_File
         g_sCurrentSource = g_mFormDebugger.g_mFormMain.g_ClassTabControl.m_Tab(iIndex).m_TextEditor.Document.TextContent
-        g_sGameFolder = g_mFormDebugger.g_mFormMain.g_ClassTabControl.m_Tab(iIndex).m_ActiveConfig.g_sDebugGameFolder
+        g_sClientFolder = g_mFormDebugger.g_mFormMain.g_ClassTabControl.m_Tab(iIndex).m_ActiveConfig.g_sDebugClientFolder
+        g_sServerFolder = g_mFormDebugger.g_mFormMain.g_ClassTabControl.m_Tab(iIndex).m_ActiveConfig.g_sDebugServerFolder
         g_sSourceModFolder = g_mFormDebugger.g_mFormMain.g_ClassTabControl.m_Tab(iIndex).m_ActiveConfig.g_sDebugSourceModFolder
         g_mCurrentConfig = g_mFormDebugger.g_mFormMain.g_ClassTabControl.m_Tab(iIndex).m_ActiveConfig
     End Sub
@@ -419,20 +430,28 @@ Public Class ClassDebuggerRunner
             m_PluginIdentity = Guid.NewGuid.ToString
 
             'Check game and sourcemod directorys 
-            Dim sGameDir As String = m_GameFolder
-            Dim sSMDir As String = m_SourceModFolder
-            If (Not IO.Directory.Exists(sGameDir)) Then
-                Throw New ArgumentException("Invalid game directory")
+            Dim sClientFolder As String = m_ClientFolder
+            Dim sServerFolder As String = m_ServerFolder
+            Dim sModFolder As String = m_SourceModFolder
+            If (Not IO.Directory.Exists(sClientFolder)) Then
+                Throw New ArgumentException("Invalid client directory")
             End If
-            If (Not IO.Directory.Exists(sSMDir)) Then
+            If (Not IO.Directory.Exists(sServerFolder)) Then
+                Throw New ArgumentException("Invalid server directory")
+            End If
+            If (Not IO.Directory.Exists(sModFolder)) Then
                 Throw New ArgumentException("Invalid SourceMod directory")
             End If
 
             'TODO: May add AMX Mod X support?
-            Dim sGameConfig As String = IO.Path.Combine(sGameDir, "gameinfo.txt")
-            Dim sSourceModBin As String = IO.Path.Combine(sSMDir, "bin\sourcemod_mm.dll")
-            If (Not IO.File.Exists(sGameConfig)) Then
-                Throw New ArgumentException("Invalid game directory")
+            Dim sClientInfo As String = IO.Path.Combine(sClientFolder, "gameinfo.txt")
+            Dim sServerInfo As String = IO.Path.Combine(sServerFolder, "gameinfo.txt")
+            Dim sSourceModBin As String = IO.Path.Combine(sModFolder, "bin\sourcemod_mm.dll")
+            If (Not IO.File.Exists(sClientInfo)) Then
+                Throw New ArgumentException("Invalid client directory")
+            End If
+            If (Not IO.File.Exists(sServerInfo)) Then
+                Throw New ArgumentException("Invalid server directory")
             End If
             If (Not IO.File.Exists(sSourceModBin)) Then
                 Throw New ArgumentException("Invalid SourceMod directory")
@@ -442,7 +461,7 @@ Public Class ClassDebuggerRunner
             g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Starting I/O communicator..."
 
             'Setup I/O events
-            CreateFileSystemWatcher(sGameDir)
+            CreateFileSystemWatcher(sServerFolder)
 
             'Setup listview entities updater 
             ClassThread.Abort(g_mListViewEntitiesUpdaterThread)
@@ -564,7 +583,9 @@ Public Class ClassDebuggerRunner
                                 'Do nothing? Yea lets do nothing here...
 
                     Case FormDebuggerStop.ENUM_DIALOG_RESULT.TERMINATE_GAME
-                        If (Not String.IsNullOrEmpty(m_GameFolder) AndAlso IO.Directory.Exists(m_GameFolder)) Then
+                        If (Not String.IsNullOrEmpty(m_ClientFolder) AndAlso IO.Directory.Exists(m_ClientFolder)) Then
+                            Dim sClientParentFolder As String = IO.Directory.GetParent(m_ClientFolder).FullName
+
                             For Each proc As Process In Process.GetProcesses
                                 Try
                                     If (proc.Id = Process.GetCurrentProcess.Id) Then
@@ -572,12 +593,34 @@ Public Class ClassDebuggerRunner
                                     End If
 
                                     Dim sFullPath As String = IO.Path.GetFullPath(proc.MainModule.FileName)
-
                                     If (sFullPath.ToLower = Application.ExecutablePath.ToLower) Then
                                         Continue For
                                     End If
 
-                                    If (sFullPath.ToLower.StartsWith(m_GameFolder.ToLower)) Then
+                                    If (sFullPath.ToLower.StartsWith(sClientParentFolder.ToLower)) Then
+                                        proc.Kill()
+                                    End If
+                                Catch ex As Exception
+                                    'Ignore access denied
+                                End Try
+                            Next
+                        End If
+
+                        If (Not String.IsNullOrEmpty(m_ServerFolder) AndAlso IO.Directory.Exists(m_ServerFolder)) Then
+                            Dim sServerParentFolder As String = IO.Directory.GetParent(m_ServerFolder).FullName
+
+                            For Each proc As Process In Process.GetProcesses
+                                Try
+                                    If (proc.Id = Process.GetCurrentProcess.Id) Then
+                                        Continue For
+                                    End If
+
+                                    Dim sFullPath As String = IO.Path.GetFullPath(proc.MainModule.FileName)
+                                    If (sFullPath.ToLower = Application.ExecutablePath.ToLower) Then
+                                        Continue For
+                                    End If
+
+                                    If (sFullPath.ToLower.StartsWith(sServerParentFolder.ToLower)) Then
                                         proc.Kill()
                                     End If
                                 Catch ex As Exception
@@ -587,33 +630,33 @@ Public Class ClassDebuggerRunner
                         End If
 
                     Case FormDebuggerStop.ENUM_DIALOG_RESULT.RELOAD_MAP
-                        If (Not String.IsNullOrEmpty(m_GameFolder) AndAlso IO.Directory.Exists(m_GameFolder)) Then
-                            g_mFormDebugger.g_ClassDebuggerRunnerEngine.AcceptCommand(m_GameFolder, "@reloadmap")
+                        If (Not String.IsNullOrEmpty(m_ServerFolder) AndAlso IO.Directory.Exists(m_ServerFolder)) Then
+                            g_mFormDebugger.g_ClassDebuggerRunnerEngine.AcceptCommand(m_ServerFolder, "@reloadmap")
                         Else
                             MessageBox.Show("Could not send command! Game directory does not exist!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         End If
 
                     Case FormDebuggerStop.ENUM_DIALOG_RESULT.REFRESH_PLUGINS
-                        If (Not String.IsNullOrEmpty(m_GameFolder) AndAlso IO.Directory.Exists(m_GameFolder)) Then
-                            g_mFormDebugger.g_ClassDebuggerRunnerEngine.AcceptCommand(m_GameFolder, "@refreshplugins")
+                        If (Not String.IsNullOrEmpty(m_ServerFolder) AndAlso IO.Directory.Exists(m_ServerFolder)) Then
+                            g_mFormDebugger.g_ClassDebuggerRunnerEngine.AcceptCommand(m_ServerFolder, "@refreshplugins")
                         Else
                             MessageBox.Show("Could not send command! Game directory does not exist!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         End If
 
                     Case FormDebuggerStop.ENUM_DIALOG_RESULT.RESTART_GAME
-                        If (Not String.IsNullOrEmpty(m_GameFolder) AndAlso IO.Directory.Exists(m_GameFolder)) Then
-                            g_mFormDebugger.g_ClassDebuggerRunnerEngine.AcceptCommand(m_GameFolder, "_restart")
+                        If (Not String.IsNullOrEmpty(m_ServerFolder) AndAlso IO.Directory.Exists(m_ServerFolder)) Then
+                            g_mFormDebugger.g_ClassDebuggerRunnerEngine.AcceptCommand(m_ServerFolder, "_restart")
                         Else
                             MessageBox.Show("Could not send command! Game directory does not exist!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         End If
 
                     Case FormDebuggerStop.ENUM_DIALOG_RESULT.UNLOAD_PLUGIN
-                        If (Not String.IsNullOrEmpty(m_GameFolder) AndAlso IO.Directory.Exists(m_GameFolder)) Then
+                        If (Not String.IsNullOrEmpty(m_ServerFolder) AndAlso IO.Directory.Exists(m_ServerFolder)) Then
                             With New Text.StringBuilder
                                 .AppendLine(String.Format("sm plugins unload {0}", IO.Path.GetFileName(g_sLatestDebuggerPlugin)))
                                 .AppendLine(String.Format("sm plugins unload {0}", IO.Path.GetFileName(g_sLatestDebuggerRunnerPlugin)))
 
-                                g_mFormDebugger.g_ClassDebuggerRunnerEngine.AcceptCommand(m_GameFolder, .ToString)
+                                g_mFormDebugger.g_ClassDebuggerRunnerEngine.AcceptCommand(m_ServerFolder, .ToString)
                             End With
                         Else
                             MessageBox.Show("Could not send command! Game directory does not exist!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -682,9 +725,9 @@ Public Class ClassDebuggerRunner
             End If
 
             If (Not String.IsNullOrEmpty(g_mActiveBreakpointValue.sGUID)) Then
-                Dim sGameDir As String = m_GameFolder
-                Dim sContinueFile As String = IO.Path.Combine(sGameDir, g_mActiveBreakpointValue.sGUID & ClassDebuggerParser.g_sDebuggerBreakpointContinueExt.ToLower)
-                Dim sContinueVarFile As String = IO.Path.Combine(sGameDir, g_mActiveBreakpointValue.sGUID & ClassDebuggerParser.g_sDebuggerBreakpointContinueVarExt.ToLower)
+                Dim sServerFolder As String = m_ServerFolder
+                Dim sContinueFile As String = IO.Path.Combine(sServerFolder, g_mActiveBreakpointValue.sGUID & ClassDebuggerParser.g_sDebuggerBreakpointContinueExt.ToLower)
+                Dim sContinueVarFile As String = IO.Path.Combine(sServerFolder, g_mActiveBreakpointValue.sGUID & ClassDebuggerParser.g_sDebuggerBreakpointContinueVarExt.ToLower)
 
                 If (g_mActiveBreakpointValue.bReturnCustomValue) Then
                     Select Case (g_mActiveBreakpointValue.mValueType)

@@ -534,7 +534,8 @@ Public Class FormSettings
                     ListView_KnownFiles.Items.Clear()
 
                     'Debugging
-                    TextBox_GameFolder.Text = ""
+                    TextBox_ClientFolder.Text = ""
+                    TextBox_ServerFolder.Text = ""
                     TextBox_SourceModFolder.Text = ""
 
                     'Misc
@@ -585,7 +586,8 @@ Public Class FormSettings
                 ListView_KnownFiles.Items.Clear()
 
                 'Debugging
-                TextBox_GameFolder.Text = ""
+                TextBox_ClientFolder.Text = ""
+                TextBox_ServerFolder.Text = ""
                 TextBox_SourceModFolder.Text = ""
 
                 'Misc
@@ -687,7 +689,8 @@ Public Class FormSettings
                 RefreshKnownFilesListBox()
 
                 'Debugging
-                TextBox_GameFolder.Text = mConfig.g_sDebugGameFolder
+                TextBox_ClientFolder.Text = mConfig.g_sDebugClientFolder
+                TextBox_ServerFolder.Text = mConfig.g_sDebugServerFolder
                 TextBox_SourceModFolder.Text = mConfig.g_sDebugSourceModFolder
 
                 'Misc
@@ -755,17 +758,32 @@ Public Class FormSettings
         End Using
     End Sub
 
-    Private Sub Button_GameFolder_Click(sender As Object, e As EventArgs) Handles Button_GameFolder.Click
+    Private Sub Button_ClientFolder_Click(sender As Object, e As EventArgs) Handles Button_ClientFolder.Click
         Using i As New FolderBrowserDialog
             If (i.ShowDialog = DialogResult.OK) Then
                 Dim sGameConfig As String = IO.Path.Combine(i.SelectedPath, "gameinfo.txt")
 
                 If (Not IO.File.Exists(sGameConfig)) Then
-                    MessageBox.Show("Invalid game directory! Game info not found!", "Invalid game directory", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    MessageBox.Show("Invalid game directory! Game info not found!", "Invalid client directory", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Return
                 End If
 
-                TextBox_GameFolder.Text = i.SelectedPath
+                TextBox_ClientFolder.Text = i.SelectedPath
+            End If
+        End Using
+    End Sub
+
+    Private Sub Button_ServerFolder_Click(sender As Object, e As EventArgs) Handles Button_ServerFolder.Click
+        Using i As New FolderBrowserDialog
+            If (i.ShowDialog = DialogResult.OK) Then
+                Dim sGameConfig As String = IO.Path.Combine(i.SelectedPath, "gameinfo.txt")
+
+                If (Not IO.File.Exists(sGameConfig)) Then
+                    MessageBox.Show("Invalid game directory! Game info not found!", "Invalid server directory", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    Return
+                End If
+
+                TextBox_ServerFolder.Text = i.SelectedPath
             End If
         End Using
     End Sub
@@ -1018,7 +1036,8 @@ Public Class FormSettings
                                                                     CType(ComboBox_Language.SelectedIndex, ClassConfigs.STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE),
                                                                     mCompilerOptionsSP,
                                                                     mCompilerOptionsAMXX,
-                                                                    TextBox_GameFolder.Text,
+                                                                    TextBox_ClientFolder.Text,
+                                                                    TextBox_ServerFolder.Text,
                                                                     TextBox_SourceModFolder.Text,
                                                                     TextBox_Shell.Text))
 
@@ -1057,7 +1076,12 @@ Public Class FormSettings
         MarkChanged()
     End Sub
 
-    Private Sub TextBox_GameFolder_TextChanged(sender As Object, e As EventArgs) Handles TextBox_GameFolder.TextChanged
+    Private Sub TextBox_ClientFolder_TextChanged(sender As Object, e As EventArgs) Handles TextBox_ClientFolder.TextChanged
+        m_ConfigSettingsChanged = True
+        MarkChanged()
+    End Sub
+
+    Private Sub TextBox_ServerFolder_TextChanged(sender As Object, e As EventArgs) Handles TextBox_ServerFolder.TextChanged
         m_ConfigSettingsChanged = True
         MarkChanged()
     End Sub
