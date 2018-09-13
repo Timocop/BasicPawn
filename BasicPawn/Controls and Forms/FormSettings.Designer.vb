@@ -227,7 +227,7 @@ Partial Class FormSettings
         Me.Button_Cancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.Button_Cancel.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_Cancel.Location = New System.Drawing.Point(526, 406)
+        Me.Button_Cancel.Location = New System.Drawing.Point(982, 669)
         Me.Button_Cancel.Name = "Button_Cancel"
         Me.Button_Cancel.Size = New System.Drawing.Size(86, 23)
         Me.Button_Cancel.TabIndex = 1
@@ -239,7 +239,7 @@ Partial Class FormSettings
         Me.Button_Apply.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_Apply.DialogResult = System.Windows.Forms.DialogResult.OK
         Me.Button_Apply.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_Apply.Location = New System.Drawing.Point(434, 406)
+        Me.Button_Apply.Location = New System.Drawing.Point(890, 669)
         Me.Button_Apply.Name = "Button_Apply"
         Me.Button_Apply.Size = New System.Drawing.Size(86, 23)
         Me.Button_Apply.TabIndex = 2
@@ -298,7 +298,7 @@ Partial Class FormSettings
         Me.TabControl1.Location = New System.Drawing.Point(12, 12)
         Me.TabControl1.Name = "TabControl1"
         Me.TabControl1.SelectedIndex = 0
-        Me.TabControl1.Size = New System.Drawing.Size(600, 388)
+        Me.TabControl1.Size = New System.Drawing.Size(1056, 651)
         Me.TabControl1.TabIndex = 0
         '
         'TabPage_Settings
@@ -306,7 +306,7 @@ Partial Class FormSettings
         Me.TabPage_Settings.Controls.Add(Me.ClassTabControlColor1)
         Me.TabPage_Settings.Location = New System.Drawing.Point(4, 22)
         Me.TabPage_Settings.Name = "TabPage_Settings"
-        Me.TabPage_Settings.Size = New System.Drawing.Size(592, 362)
+        Me.TabPage_Settings.Size = New System.Drawing.Size(1048, 625)
         Me.TabPage_Settings.TabIndex = 0
         Me.TabPage_Settings.Text = "Settings"
         Me.TabPage_Settings.UseVisualStyleBackColor = True
@@ -323,7 +323,7 @@ Partial Class FormSettings
         Me.ClassTabControlColor1.Multiline = True
         Me.ClassTabControlColor1.Name = "ClassTabControlColor1"
         Me.ClassTabControlColor1.SelectedIndex = 0
-        Me.ClassTabControlColor1.Size = New System.Drawing.Size(592, 362)
+        Me.ClassTabControlColor1.Size = New System.Drawing.Size(1048, 625)
         Me.ClassTabControlColor1.TabIndex = 27
         '
         'TabPage3
@@ -344,7 +344,7 @@ Partial Class FormSettings
         Me.TabPage3.Location = New System.Drawing.Point(4, 22)
         Me.TabPage3.Name = "TabPage3"
         Me.TabPage3.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage3.Size = New System.Drawing.Size(584, 336)
+        Me.TabPage3.Size = New System.Drawing.Size(1040, 599)
         Me.TabPage3.TabIndex = 0
         Me.TabPage3.Text = "General"
         Me.TabPage3.UseVisualStyleBackColor = True
@@ -503,7 +503,7 @@ Partial Class FormSettings
         Me.TabPage4.Location = New System.Drawing.Point(4, 22)
         Me.TabPage4.Name = "TabPage4"
         Me.TabPage4.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage4.Size = New System.Drawing.Size(584, 336)
+        Me.TabPage4.Size = New System.Drawing.Size(1040, 599)
         Me.TabPage4.TabIndex = 1
         Me.TabPage4.Text = "TextEditor"
         Me.TabPage4.UseVisualStyleBackColor = True
@@ -569,7 +569,7 @@ Partial Class FormSettings
         'Button_CustomSyntax
         '
         Me.Button_CustomSyntax.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button_CustomSyntax.Location = New System.Drawing.Point(543, 96)
+        Me.Button_CustomSyntax.Location = New System.Drawing.Point(999, 96)
         Me.Button_CustomSyntax.Name = "Button_CustomSyntax"
         Me.Button_CustomSyntax.Size = New System.Drawing.Size(32, 23)
         Me.Button_CustomSyntax.TabIndex = 20
@@ -592,7 +592,7 @@ Partial Class FormSettings
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.TextBox_CustomSyntax.Location = New System.Drawing.Point(6, 96)
         Me.TextBox_CustomSyntax.Name = "TextBox_CustomSyntax"
-        Me.TextBox_CustomSyntax.Size = New System.Drawing.Size(531, 22)
+        Me.TextBox_CustomSyntax.Size = New System.Drawing.Size(987, 22)
         Me.TextBox_CustomSyntax.TabIndex = 19
         '
         'CheckBox_TabsToSpace
@@ -633,7 +633,7 @@ Partial Class FormSettings
         Me.TabPage5.Controls.Add(Me.CheckBox_AutoMark)
         Me.TabPage5.Location = New System.Drawing.Point(4, 22)
         Me.TabPage5.Name = "TabPage5"
-        Me.TabPage5.Size = New System.Drawing.Size(584, 336)
+        Me.TabPage5.Size = New System.Drawing.Size(1040, 599)
         Me.TabPage5.TabIndex = 2
         Me.TabPage5.Text = "Syntax Highlighting"
         Me.TabPage5.UseVisualStyleBackColor = True
@@ -684,7 +684,7 @@ Partial Class FormSettings
         Me.TabPage6.Controls.Add(Me.CheckBox_VarAutocompleteShowObjectBrowser)
         Me.TabPage6.Location = New System.Drawing.Point(4, 22)
         Me.TabPage6.Name = "TabPage6"
-        Me.TabPage6.Size = New System.Drawing.Size(584, 336)
+        Me.TabPage6.Size = New System.Drawing.Size(1040, 599)
         Me.TabPage6.TabIndex = 3
         Me.TabPage6.Text = "Autocomplete & IntelliSense"
         Me.TabPage6.UseVisualStyleBackColor = True
@@ -933,7 +933,7 @@ Partial Class FormSettings
         Me.TabPage7.Controls.Add(Me.CheckBox_EntitiesEnableColor)
         Me.TabPage7.Location = New System.Drawing.Point(4, 22)
         Me.TabPage7.Name = "TabPage7"
-        Me.TabPage7.Size = New System.Drawing.Size(584, 336)
+        Me.TabPage7.Size = New System.Drawing.Size(1040, 599)
         Me.TabPage7.TabIndex = 4
         Me.TabPage7.Text = "Debugger"
         Me.TabPage7.UseVisualStyleBackColor = True
@@ -2071,7 +2071,7 @@ Partial Class FormSettings
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.CancelButton = Me.Button_Cancel
-        Me.ClientSize = New System.Drawing.Size(624, 441)
+        Me.ClientSize = New System.Drawing.Size(1080, 704)
         Me.Controls.Add(Me.Button_Apply)
         Me.Controls.Add(Me.Button_Cancel)
         Me.Controls.Add(Me.TabControl1)
