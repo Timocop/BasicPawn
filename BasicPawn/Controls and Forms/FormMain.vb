@@ -1833,5 +1833,22 @@ Public Class FormMain
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
     End Sub
+
+    Private Sub TabControl_SourceTabs_MouseClick(sender As Object, e As MouseEventArgs) Handles TabControl_SourceTabs.MouseClick
+        Try
+            If (e.Button <> MouseButtons.Middle) Then
+                Return
+            End If
+
+            Dim mTab = g_ClassTabControl.GetTabByCursorPoint()
+            If (mTab Is Nothing) Then
+                Return
+            End If
+
+            mTab.RemoveTab(True)
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
 #End Region
 End Class
