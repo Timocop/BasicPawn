@@ -780,6 +780,7 @@ Public Class ClassTabControl
             AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.KeyUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
 
             AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_Source_SwitchToAutocompleteTab
+            AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_MouseClick
 
             AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.SelectionManager.SelectionChanged, AddressOf TextEditorControl_Source_UpdateInfo
             AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.PositionChanged, AddressOf TextEditorControl_Source_UpdateInfo
@@ -810,6 +811,7 @@ Public Class ClassTabControl
             RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.KeyUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
 
             RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_Source_SwitchToAutocompleteTab
+            RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_MouseClick
 
             RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.SelectionManager.SelectionChanged, AddressOf TextEditorControl_Source_UpdateInfo
             RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.PositionChanged, AddressOf TextEditorControl_Source_UpdateInfo
@@ -1639,6 +1641,34 @@ Public Class ClassTabControl
             Catch ex As Exception
                 ClassExceptionLog.WriteToLogMessageBox(ex)
             End Try
+        End Sub
+
+        Private Sub TextEditorControl_MouseClick(sender As Object, e As MouseEventArgs)
+            Dim iOldIndex As Integer = m_Index
+            Dim iNewIndex As Integer = 0
+
+            Select Case (e.Button)
+                Case MouseButtons.XButton1
+                    iNewIndex = iOldIndex - 1
+
+                    If (iNewIndex < 0) Then
+                        iNewIndex = g_mFormMain.g_ClassTabControl.m_TabsCount - 1
+                    End If
+
+                Case MouseButtons.XButton2
+                    iNewIndex = iOldIndex + 1
+
+                    If (iNewIndex > g_mFormMain.g_ClassTabControl.m_TabsCount - 1) Then
+                        iNewIndex = 0
+                    End If
+
+                Case Else
+                    Return
+            End Select
+
+            If (iOldIndex <> iNewIndex) Then
+                g_mFormMain.g_ClassTabControl.SelectTab(iNewIndex)
+            End If
         End Sub
 #End Region
 
