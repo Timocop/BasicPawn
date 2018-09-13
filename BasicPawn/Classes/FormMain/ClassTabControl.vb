@@ -1384,7 +1384,7 @@ Public Class ClassTabControl
 
                         Dim iOffset As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Caret.Offset
                         Dim iLenght As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.TextLength
-                        If (iOffset < 1) Then
+                        If (iOffset - 1 < 0 OrElse iOffset > iLenght - 1) Then
                             Exit Select
                         End If
 
@@ -1397,21 +1397,39 @@ Public Class ClassTabControl
                         Try
                             g_mSourceTextEditor.Document.UndoStack.StartUndoGroup()
 
-                            If (iOffset > iLenght - 1 OrElse g_mSourceTextEditor.ActiveTextAreaControl.Document.GetCharAt(iOffset) <> "}"c) Then
-                                g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset, "}")
+                            Dim bPushNewline As Boolean = False
+
+                            If (g_mSourceTextEditor.ActiveTextAreaControl.Document.GetCharAt(iOffset) <> "}"c) Then
+                                Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(g_mSourceTextEditor.ActiveTextAreaControl.Document.TextContent, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
+
+                                'Check if some end braces are missing. If so, add one.
+                                Dim iRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
+                                Dim iBraceLevel As Integer = mSourceAnalysis.GetBraceLevel(mSourceAnalysis.m_MaxLength - 1, iRange)
+                                If (iRange = ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END) Then
+                                    iBraceLevel -= 1
+                                End If
+
+                                If (iBraceLevel > 0) Then
+                                    g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset, "}")
+                                    bPushNewline = True
+                                End If
+                            Else
+                                bPushNewline = True
                             End If
 
                             With New ICSharpCode.TextEditor.Actions.Return
                                 .Execute(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea)
                             End With
 
-                            Dim mLastCaretLocation = g_mSourceTextEditor.ActiveTextAreaControl.Caret.Position
+                            If (bPushNewline) Then
+                                Dim mLastCaretLocation = g_mSourceTextEditor.ActiveTextAreaControl.Caret.Position
 
-                            With New ICSharpCode.TextEditor.Actions.Return
-                                .Execute(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea)
-                            End With
+                                With New ICSharpCode.TextEditor.Actions.Return
+                                    .Execute(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea)
+                                End With
 
-                            g_mSourceTextEditor.ActiveTextAreaControl.Caret.Position = mLastCaretLocation
+                                g_mSourceTextEditor.ActiveTextAreaControl.Caret.Position = mLastCaretLocation
+                            End If
 
                             With New ICSharpCode.TextEditor.Actions.Tab
                                 .Execute(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea)
