@@ -156,12 +156,7 @@ Public Class FormDebugger
 
 
                 g_ClassDebuggerRunner.g_ClassPreProcess.FixPreProcessFiles(sPreSource)
-                'Replace the temp source file with the currently opened one
-                sPreSource = Regex.Replace(sPreSource,
-                                       String.Format("^\s*\#file ""{0}""\s*$", Regex.Escape(g_sLastPreProcessSourceFile)),
-                                       String.Format("#file ""{0}""", If(String.IsNullOrEmpty(g_ClassDebuggerRunner.m_CurrentSourceFile), "Unnamed", g_ClassDebuggerRunner.m_CurrentSourceFile)),
-                                       RegexOptions.IgnoreCase Or RegexOptions.Multiline)
-
+                g_ClassDebuggerRunner.g_ClassPreProcess.FixPreProcessFilePaths(sPreSource, g_sLastPreProcessSourceFile, If(String.IsNullOrEmpty(g_ClassDebuggerRunner.m_CurrentSourceFile), "Unnamed", g_ClassDebuggerRunner.m_CurrentSourceFile))
                 g_ClassDebuggerRunner.g_ClassPreProcess.AnalysisSourceLines(sPreSource)
                 g_ClassDebuggerParser.UpdateBreakpoints(sPreSource, False, g_iLanguage)
                 g_ClassDebuggerParser.UpdateWatchers(sPreSource, False, g_iLanguage)
@@ -791,6 +786,6 @@ Public Class FormDebugger
             Return
         End If
 
-        ToolStripStatusLabel_NoConnection.Visible = True
+        g_ClassDebuggerRunner.SetDebuggerStatusConnection(True)
     End Sub
 End Class

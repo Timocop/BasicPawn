@@ -158,38 +158,45 @@ Public Class ClassDebuggerRunner
             Return g_bSuspendGame
         End Get
         Set(value As Boolean)
-            If (g_bSuspendGame <> value) Then
-                g_bSuspendGame = value
-
-                Dim sClientParentFolder As String = IO.Directory.GetParent(m_ClientFolder).FullName
-                Dim sServerParentFolder As String = IO.Directory.GetParent(m_ServerFolder).FullName
-
-                For Each mProcess As Process In Process.GetProcesses
-                    Try
-                        If (mProcess.Id = Process.GetCurrentProcess.Id) Then
-                            Continue For
-                        End If
-
-                        Dim sFullPath As String = IO.Path.GetFullPath(mProcess.MainModule.FileName)
-                        If (sFullPath.ToLower = IO.Path.GetFullPath(Application.ExecutablePath).ToLower) Then
-                            Continue For
-                        End If
-
-                        If ((sClientParentFolder IsNot Nothing AndAlso sClientParentFolder.Length > 3 AndAlso sFullPath.ToLower.StartsWith(sClientParentFolder.ToLower)) OrElse
-                                    (sServerParentFolder IsNot Nothing AndAlso sServerParentFolder.Length > 3 AndAlso sFullPath.ToLower.StartsWith(sServerParentFolder.ToLower))) Then
-                            If (value) Then
-                                WinNative.SuspendProcess(mProcess)
-                            Else
-                                WinNative.ResumeProcess(mProcess)
-                            End If
-                        End If
-                    Catch ex As Exception
-                        'Ignore access denied from AVs and co.
-                    End Try
-                Next
-            Else
-                g_bSuspendGame = value
+            If (g_bSuspendGame = value) Then
+                Return
             End If
+
+            g_bSuspendGame = value
+
+            Dim sClientParentFolder As String = Nothing
+            Dim sServerParentFolder As String = Nothing
+
+            For Each mProcess As Process In Process.GetProcesses
+                Try
+                    If (mProcess.Id = Process.GetCurrentProcess.Id) Then
+                        Continue For
+                    End If
+
+                    Dim sFullPath As String = IO.Path.GetFullPath(mProcess.MainModule.FileName)
+                    If (sFullPath.ToLower = IO.Path.GetFullPath(Application.ExecutablePath).ToLower) Then
+                        Continue For
+                    End If
+
+                    If (sClientParentFolder Is Nothing AndAlso Not String.IsNullOrEmpty(m_ClientFolder)) Then
+                        sClientParentFolder = IO.Directory.GetParent(m_ClientFolder).FullName
+                    End If
+                    If (sServerParentFolder Is Nothing AndAlso Not String.IsNullOrEmpty(m_ServerFolder)) Then
+                        sServerParentFolder = IO.Directory.GetParent(m_ServerFolder).FullName
+                    End If
+
+                    If ((sClientParentFolder IsNot Nothing AndAlso sClientParentFolder.Length > 3 AndAlso sFullPath.ToLower.StartsWith(sClientParentFolder.ToLower)) OrElse
+                                    (sServerParentFolder IsNot Nothing AndAlso sServerParentFolder.Length > 3 AndAlso sFullPath.ToLower.StartsWith(sServerParentFolder.ToLower))) Then
+                        If (g_bSuspendGame) Then
+                            WinNative.SuspendProcess(mProcess)
+                        Else
+                            WinNative.ResumeProcess(mProcess)
+                        End If
+                    End If
+                Catch ex As Exception
+                    'Ignore access denied from AVs and co.
+                End Try
+            Next
         End Set
     End Property
 
@@ -224,6 +231,22 @@ Public Class ClassDebuggerRunner
             End If
         End Set
     End Property
+
+    Public Sub SetDebuggerWindowActive(f As Form)
+        If (f.WindowState = FormWindowState.Minimized) Then
+            ClassTools.ClassForms.FormWindowCommand(f, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
+        End If
+        f.Activate()
+    End Sub
+
+    Public Sub SetDebuggerStatusConnection(bConnected As Boolean)
+        g_mFormDebugger.ToolStripStatusLabel_NoConnection.Visible = bConnected
+    End Sub
+
+    Public Sub SetDebuggerStatus(sText As String, cColor As Color)
+        g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = sText
+        g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = cColor
+    End Sub
 
     ''' <summary>
     ''' Updates the source from the debug tab. 
@@ -296,7 +319,6 @@ Public Class ClassDebuggerRunner
 
         ''' <summary>
         ''' Fixes some of the #file errors made by the compiler.
-        ''' WARN: Pre-Process source only!
         ''' 
         '''         MyFunc()#file "MySource.sp"
         '''     should be
@@ -324,8 +346,20 @@ Public Class ClassDebuggerRunner
         End Sub
 
         ''' <summary>
+        ''' Fixes old #file paths to new ones.
+        ''' </summary>
+        ''' <param name="sSource"></param>
+        ''' <param name="sOldFile"></param>
+        ''' <param name="sNewFile"></param>
+        Public Sub FixPreProcessFilePaths(ByRef sSource As String, sOldFile As String, sNewFile As String)
+            sSource = Regex.Replace(sSource,
+                                      String.Format("^\s*\#file ""{0}""\s*$", Regex.Escape(sOldFile)),
+                                      String.Format("#file ""{0}""", sNewFile),
+                                      RegexOptions.IgnoreCase Or RegexOptions.Multiline)
+        End Sub
+
+        ''' <summary>
         ''' Analysis the source code to get all real lines and files.
-        ''' WARN: Pre-Process source only!
         ''' </summary>
         ''' <param name="sSource"></param>
         Public Sub AnalysisSourceLines(sSource As String)
@@ -374,7 +408,6 @@ Public Class ClassDebuggerRunner
 
         ''' <summary>
         ''' Makes the Pre-Process source ready for compiling.
-        ''' WARN: Pre-Process source only!
         ''' </summary>
         ''' <param name="sSource"></param>
         Public Sub FinishSource(ByRef sSource As String)
@@ -422,9 +455,8 @@ Public Class ClassDebuggerRunner
                 Return True
             End If
 
-            g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Starting debugger..."
-            g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Orange
-            g_mFormDebugger.ToolStripStatusLabel_NoConnection.Visible = False
+            SetDebuggerStatus("Status: Starting debugger...", Color.Orange)
+            SetDebuggerStatusConnection(False)
 
             'Set unique plugin identity
             m_PluginIdentity = Guid.NewGuid.ToString
@@ -458,7 +490,8 @@ Public Class ClassDebuggerRunner
             End If
 
 
-            g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Starting I/O communicator..."
+            SetDebuggerStatus("Status: Starting I/O communicator...", Color.Orange)
+
 
             'Setup I/O events
             CreateFileSystemWatcher(sServerFolder)
@@ -473,7 +506,8 @@ Public Class ClassDebuggerRunner
             g_mListViewEntitiesUpdaterThread.Start()
 
 
-            g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Compiling plugin and BasicPawn modules..."
+            SetDebuggerStatus("Status: Compiling plugin and BasicPawn modules...", Color.Orange)
+
 
             'Export debugger cmd runner engine
             If (True) Then
@@ -529,9 +563,8 @@ Public Class ClassDebuggerRunner
 
             g_mFormDebugger.Timer_ConnectionCheck.Start()
 
-            g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Debugger running! (Reload the map or enter 'sm plugins refresh' into the console to load all new plugins)"
-            g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Green
-            g_mFormDebugger.ToolStripStatusLabel_NoConnection.Visible = False
+            SetDebuggerStatus("Status: Debugger running! (Reload the map or enter 'sm plugins refresh' into the console to load all new plugins)", Color.Green)
+            SetDebuggerStatusConnection(False)
 
             'Make sure other async threads doenst fuckup everthing
             SyncLock g_mFileSystemWatcherLock
@@ -546,9 +579,8 @@ Public Class ClassDebuggerRunner
 
             StopDebugging(True)
 
-            g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Error! " & ex.Message
-            g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Red
-            g_mFormDebugger.ToolStripStatusLabel_NoConnection.Visible = False
+            SetDebuggerStatus("Status: Error! " & ex.Message, Color.Red)
+            SetDebuggerStatusConnection(False)
 
             Return False
         End Try
@@ -583,51 +615,39 @@ Public Class ClassDebuggerRunner
                                 'Do nothing? Yea lets do nothing here...
 
                     Case FormDebuggerStop.ENUM_DIALOG_RESULT.TERMINATE_GAME
-                        If (Not String.IsNullOrEmpty(m_ClientFolder) AndAlso IO.Directory.Exists(m_ClientFolder)) Then
-                            Dim sClientParentFolder As String = IO.Directory.GetParent(m_ClientFolder).FullName
+                        Dim sClientParentFolder As String = Nothing
+                        Dim sServerParentFolder As String = Nothing
 
-                            For Each proc As Process In Process.GetProcesses
-                                Try
-                                    If (proc.Id = Process.GetCurrentProcess.Id) Then
-                                        Continue For
-                                    End If
+                        For Each proc As Process In Process.GetProcesses
+                            Try
+                                If (proc.Id = Process.GetCurrentProcess.Id) Then
+                                    Continue For
+                                End If
 
-                                    Dim sFullPath As String = IO.Path.GetFullPath(proc.MainModule.FileName)
-                                    If (sFullPath.ToLower = Application.ExecutablePath.ToLower) Then
-                                        Continue For
-                                    End If
+                                Dim sFullPath As String = IO.Path.GetFullPath(proc.MainModule.FileName)
+                                If (sFullPath.ToLower = Application.ExecutablePath.ToLower) Then
+                                    Continue For
+                                End If
 
-                                    If (sFullPath.ToLower.StartsWith(sClientParentFolder.ToLower)) Then
+                                If (sClientParentFolder Is Nothing AndAlso Not String.IsNullOrEmpty(m_ClientFolder)) Then
+                                    sClientParentFolder = IO.Directory.GetParent(m_ClientFolder).FullName
+                                End If
+
+                                If (sServerParentFolder Is Nothing AndAlso Not String.IsNullOrEmpty(m_ServerFolder)) Then
+                                    sServerParentFolder = IO.Directory.GetParent(m_ServerFolder).FullName
+                                End If
+
+                                Select Case (True)
+                                    Case (sClientParentFolder IsNot Nothing AndAlso sClientParentFolder.Length > 3 AndAlso sFullPath.ToLower.StartsWith(sClientParentFolder.ToLower))
                                         proc.Kill()
-                                    End If
-                                Catch ex As Exception
-                                    'Ignore access denied
-                                End Try
-                            Next
-                        End If
 
-                        If (Not String.IsNullOrEmpty(m_ServerFolder) AndAlso IO.Directory.Exists(m_ServerFolder)) Then
-                            Dim sServerParentFolder As String = IO.Directory.GetParent(m_ServerFolder).FullName
-
-                            For Each proc As Process In Process.GetProcesses
-                                Try
-                                    If (proc.Id = Process.GetCurrentProcess.Id) Then
-                                        Continue For
-                                    End If
-
-                                    Dim sFullPath As String = IO.Path.GetFullPath(proc.MainModule.FileName)
-                                    If (sFullPath.ToLower = Application.ExecutablePath.ToLower) Then
-                                        Continue For
-                                    End If
-
-                                    If (sFullPath.ToLower.StartsWith(sServerParentFolder.ToLower)) Then
+                                    Case (sServerParentFolder IsNot Nothing AndAlso sServerParentFolder.Length > 3 AndAlso sFullPath.ToLower.StartsWith(sServerParentFolder.ToLower))
                                         proc.Kill()
-                                    End If
-                                Catch ex As Exception
-                                    'Ignore access denied
-                                End Try
-                            Next
-                        End If
+                                End Select
+                            Catch ex As Exception
+                                'Ignore access denied
+                            End Try
+                        Next
 
                     Case FormDebuggerStop.ENUM_DIALOG_RESULT.RELOAD_MAP
                         If (Not String.IsNullOrEmpty(m_ServerFolder) AndAlso IO.Directory.Exists(m_ServerFolder)) Then
@@ -699,17 +719,15 @@ Public Class ClassDebuggerRunner
 
             g_mFormDebugger.Timer_ConnectionCheck.Stop()
 
-            g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Debugger stopped!"
-            g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Red
-            g_mFormDebugger.ToolStripStatusLabel_NoConnection.Visible = False
+            SetDebuggerStatus("Status: Debugger stopped!", Color.Red)
+            SetDebuggerStatusConnection(False)
 
             g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnDebuggerDebugStop())
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
 
-            g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Error! " & ex.Message
-            g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Red
-            g_mFormDebugger.ToolStripStatusLabel_NoConnection.Visible = False
+            SetDebuggerStatus("Status: Error! " & ex.Message, Color.Red)
+            SetDebuggerStatusConnection(False)
         End Try
 
         Return True
@@ -769,17 +787,15 @@ Public Class ClassDebuggerRunner
 
             g_mFormDebugger.Timer_ConnectionCheck.Start()
 
-            g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Debugger running!"
-            g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Green
-            g_mFormDebugger.ToolStripStatusLabel_NoConnection.Visible = False
+            SetDebuggerStatus("Status: Debugger running!", Color.Green)
+            SetDebuggerStatusConnection(False)
 
             g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnDebuggerDebugStart())
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
 
-            g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Error! " & ex.Message
-            g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Red
-            g_mFormDebugger.ToolStripStatusLabel_NoConnection.Visible = False
+            SetDebuggerStatus("Status: Error! " & ex.Message, Color.Red)
+            SetDebuggerStatusConnection(False)
         End Try
     End Sub
 
@@ -803,17 +819,15 @@ Public Class ClassDebuggerRunner
 
             g_mFormDebugger.Timer_ConnectionCheck.Stop()
 
-            g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Debugger awaiting input..."
-            g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Orange
-            g_mFormDebugger.ToolStripStatusLabel_NoConnection.Visible = False
+            SetDebuggerStatus("Status: Debugger awaiting input...", Color.Orange)
+            SetDebuggerStatusConnection(False)
 
             g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnDebuggerDebugPause())
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
 
-            g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Error! " & ex.Message
-            g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Red
-            g_mFormDebugger.ToolStripStatusLabel_NoConnection.Visible = False
+            SetDebuggerStatus("Status: Error! " & ex.Message, Color.Red)
+            SetDebuggerStatusConnection(False)
         End Try
     End Sub
 
@@ -996,14 +1010,9 @@ Public Class ClassDebuggerRunner
 
                                                            UpdateBreakpointListView()
 
-                                                           g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Debugger awaiting input..."
-                                                           g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Orange
-                                                           g_mFormDebugger.ToolStripStatusLabel_NoConnection.Visible = False
-
-                                                           If (g_mFormDebugger.WindowState = FormWindowState.Minimized) Then
-                                                               ClassTools.ClassForms.FormWindowCommand(g_mFormDebugger, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
-                                                           End If
-                                                           g_mFormDebugger.Activate()
+                                                           SetDebuggerStatus("Status: Debugger awaiting input...", Color.Orange)
+                                                           SetDebuggerStatusConnection(False)
+                                                           SetDebuggerWindowActive(g_mFormDebugger)
 
                                                            g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnDebuggerDebugPause())
                                                        End Sub)
@@ -1289,7 +1298,7 @@ Public Class ClassDebuggerRunner
             End If
 
             ClassThread.ExecAsync(g_mFormDebugger, Sub()
-                                                       g_mFormDebugger.ToolStripStatusLabel_NoConnection.Visible = False
+                                                       SetDebuggerStatusConnection(False)
 
                                                        g_mFormDebugger.Timer_ConnectionCheck.Stop()
                                                        g_mFormDebugger.Timer_ConnectionCheck.Start()
@@ -1448,22 +1457,12 @@ Public Class ClassDebuggerRunner
 
                                                                    UpdateBreakpointListView()
 
-                                                                   g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Debugger awaiting input..."
-                                                                   g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Orange
-
-
-                                                                   If (g_mFormDebugger.WindowState = FormWindowState.Minimized) Then
-                                                                       ClassTools.ClassForms.FormWindowCommand(g_mFormDebugger, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
-                                                                   End If
-                                                                   g_mFormDebugger.Activate()
+                                                                   SetDebuggerStatus("Status: Debugger awaiting input...", Color.Orange)
+                                                                   SetDebuggerWindowActive(g_mFormDebugger)
 
                                                                    g_mFormDebuggerException = New FormDebuggerException(g_mFormDebugger, sFile, smExceptions(i))
                                                                    g_mFormDebuggerException.Show(g_mFormDebugger)
-
-                                                                   If (g_mFormDebuggerException.WindowState = FormWindowState.Minimized) Then
-                                                                       ClassTools.ClassForms.FormWindowCommand(g_mFormDebuggerException, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
-                                                                   End If
-                                                                   g_mFormDebuggerException.Activate()
+                                                                   SetDebuggerWindowActive(g_mFormDebuggerException)
 
                                                                    g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnDebuggerDebugPause())
                                                                End Sub)
@@ -1503,21 +1502,12 @@ Public Class ClassDebuggerRunner
 
                                                                    UpdateBreakpointListView()
 
-                                                                   g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Debugger awaiting input..."
-                                                                   g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Orange
-
-                                                                   If (g_mFormDebugger.WindowState = FormWindowState.Minimized) Then
-                                                                       ClassTools.ClassForms.FormWindowCommand(g_mFormDebugger, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
-                                                                   End If
-                                                                   g_mFormDebugger.Activate()
+                                                                   SetDebuggerStatus("Status: Debugger awaiting input...", Color.Orange)
+                                                                   SetDebuggerWindowActive(g_mFormDebugger)
 
                                                                    g_mFormDebuggerCriticalPopupException = New FormDebuggerCriticalPopup(g_mFormDebugger, "Unknown SourceMod Exception", "The debugger caught unknown exceptions!", String.Join(Environment.NewLine, sLines))
                                                                    g_mFormDebuggerCriticalPopupException.Show(g_mFormDebugger)
-
-                                                                   If (g_mFormDebuggerCriticalPopupException.WindowState = FormWindowState.Minimized) Then
-                                                                       ClassTools.ClassForms.FormWindowCommand(g_mFormDebuggerCriticalPopupException, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
-                                                                   End If
-                                                                   g_mFormDebuggerCriticalPopupException.Activate()
+                                                                   SetDebuggerWindowActive(g_mFormDebuggerCriticalPopupException)
 
                                                                    g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnDebuggerDebugPause())
                                                                End Sub)
@@ -1614,21 +1604,12 @@ Public Class ClassDebuggerRunner
 
                                                                UpdateBreakpointListView()
 
-                                                               g_mFormDebugger.ToolStripStatusLabel_DebugState.Text = "Status: Debugger awaiting input..."
-                                                               g_mFormDebugger.ToolStripStatusLabel_DebugState.BackColor = Color.Orange
-
-                                                               If (g_mFormDebugger.WindowState = FormWindowState.Minimized) Then
-                                                                   ClassTools.ClassForms.FormWindowCommand(g_mFormDebugger, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
-                                                               End If
-                                                               g_mFormDebugger.Activate()
+                                                               SetDebuggerStatus("Status: Debugger awaiting input...", Color.Orange)
+                                                               SetDebuggerWindowActive(g_mFormDebugger)
 
                                                                g_mFormDebuggerCriticalPopupFatalException = New FormDebuggerCriticalPopup(g_mFormDebugger, "SourceMod Fatal Error", "The debugger caught fatal errors!", String.Join(Environment.NewLine, sLines))
                                                                g_mFormDebuggerCriticalPopupFatalException.Show(g_mFormDebugger)
-
-                                                               If (g_mFormDebuggerCriticalPopupFatalException.WindowState = FormWindowState.Minimized) Then
-                                                                   ClassTools.ClassForms.FormWindowCommand(g_mFormDebuggerCriticalPopupFatalException, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
-                                                               End If
-                                                               g_mFormDebuggerCriticalPopupFatalException.Activate()
+                                                               SetDebuggerWindowActive(g_mFormDebuggerCriticalPopupFatalException)
 
                                                                g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnDebuggerDebugPause())
                                                            End Sub)
