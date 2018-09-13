@@ -464,7 +464,7 @@ Public Class FormDebugger
                 Return
             End While
         ElseIf (Not bNoErrorPrompt) Then
-            MessageBox.Show("Invalid game directory", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Invalid server directory", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Return
         End If
 
@@ -487,7 +487,7 @@ Public Class FormDebugger
                         End Try
                     Next
                 ElseIf (Not bNoErrorPrompt) Then
-                    MessageBox.Show("Invalid game directory", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    MessageBox.Show("Invalid server directory", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 End If
         End Select
     End Sub

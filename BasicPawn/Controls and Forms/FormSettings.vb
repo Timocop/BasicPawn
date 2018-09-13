@@ -764,7 +764,7 @@ Public Class FormSettings
                 Dim sGameConfig As String = IO.Path.Combine(i.SelectedPath, "gameinfo.txt")
 
                 If (Not IO.File.Exists(sGameConfig)) Then
-                    MessageBox.Show("Invalid game directory! Game info not found!", "Invalid client directory", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    MessageBox.Show("Invalid client directory! Game info not found!", "Invalid client directory", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Return
                 End If
 
@@ -779,7 +779,7 @@ Public Class FormSettings
                 Dim sGameConfig As String = IO.Path.Combine(i.SelectedPath, "gameinfo.txt")
 
                 If (Not IO.File.Exists(sGameConfig)) Then
-                    MessageBox.Show("Invalid game directory! Game info not found!", "Invalid server directory", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    MessageBox.Show("Invalid server directory! Game info not found!", "Invalid server directory", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Return
                 End If
 
