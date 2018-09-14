@@ -170,10 +170,6 @@ Public Class FormSettings
         CheckBox_AutoCloseBrackets.Checked = ClassSettings.g_iSettingsAutoCloseBrackets
         CheckBox_AutoCloseStrings.Checked = ClassSettings.g_iSettingsAutoCloseStrings
         CheckBox_AutoIndentBrackets.Checked = ClassSettings.g_iSettingsAutoIndentBrackets
-        'Debugger
-        CheckBox_CatchExceptions.Checked = ClassSettings.g_iSettingsDebuggerCatchExceptions
-        CheckBox_EntitiesEnableColor.Checked = ClassSettings.g_iSettingsDebuggerEntitiesEnableAutoScroll
-        CheckBox_EntitiesEnableShowNewEnts.Checked = ClassSettings.g_iSettingsDebuggerEntitiesEnableAutoScroll
 
         'Get restore-point configs 
         For Each mConfig As ClassConfigs.STRUC_CONFIG_ITEM In ClassConfigs.GetConfigs(False)
@@ -299,10 +295,6 @@ Public Class FormSettings
         ClassSettings.g_iSettingsAutoCloseBrackets = CheckBox_AutoCloseBrackets.Checked
         ClassSettings.g_iSettingsAutoCloseStrings = CheckBox_AutoCloseStrings.Checked
         ClassSettings.g_iSettingsAutoIndentBrackets = CheckBox_AutoIndentBrackets.Checked
-        'Debugger
-        ClassSettings.g_iSettingsDebuggerCatchExceptions = CheckBox_CatchExceptions.Checked
-        ClassSettings.g_iSettingsDebuggerEntitiesEnableColoring = CheckBox_EntitiesEnableColor.Checked
-        ClassSettings.g_iSettingsDebuggerEntitiesEnableAutoScroll = CheckBox_EntitiesEnableShowNewEnts.Checked
 
         ClassSettings.SaveSettings()
         ClassConfigs.ClassKnownConfigs.SaveKnownConfigs()

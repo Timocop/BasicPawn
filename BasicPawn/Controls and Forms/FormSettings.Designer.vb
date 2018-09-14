@@ -85,10 +85,6 @@ Partial Class FormSettings
         Me.CheckBox_SwitchTabToAutocomplete = New System.Windows.Forms.CheckBox()
         Me.CheckBox_OnScreenIntelliSense = New System.Windows.Forms.CheckBox()
         Me.CheckBox_VarAutocompleteShowObjectBrowser = New System.Windows.Forms.CheckBox()
-        Me.TabPage7 = New System.Windows.Forms.TabPage()
-        Me.CheckBox_CatchExceptions = New System.Windows.Forms.CheckBox()
-        Me.CheckBox_EntitiesEnableShowNewEnts = New System.Windows.Forms.CheckBox()
-        Me.CheckBox_EntitiesEnableColor = New System.Windows.Forms.CheckBox()
         Me.TabPage_Configs = New System.Windows.Forms.TabPage()
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.TableLayoutPanel2 = New System.Windows.Forms.TableLayoutPanel()
@@ -198,7 +194,6 @@ Partial Class FormSettings
         Me.TabPage5.SuspendLayout()
         Me.TabPage6.SuspendLayout()
         Me.GroupBox4.SuspendLayout()
-        Me.TabPage7.SuspendLayout()
         Me.TabPage_Configs.SuspendLayout()
         Me.TableLayoutPanel1.SuspendLayout()
         Me.TableLayoutPanel2.SuspendLayout()
@@ -317,7 +312,6 @@ Partial Class FormSettings
         Me.ClassTabControlColor1.Controls.Add(Me.TabPage4)
         Me.ClassTabControlColor1.Controls.Add(Me.TabPage5)
         Me.ClassTabControlColor1.Controls.Add(Me.TabPage6)
-        Me.ClassTabControlColor1.Controls.Add(Me.TabPage7)
         Me.ClassTabControlColor1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ClassTabControlColor1.Location = New System.Drawing.Point(0, 0)
         Me.ClassTabControlColor1.Multiline = True
@@ -930,55 +924,6 @@ Partial Class FormSettings
         Me.CheckBox_VarAutocompleteShowObjectBrowser.TabIndex = 18
         Me.CheckBox_VarAutocompleteShowObjectBrowser.Text = "Show variables in the Object Browser"
         Me.CheckBox_VarAutocompleteShowObjectBrowser.UseVisualStyleBackColor = True
-        '
-        'TabPage7
-        '
-        Me.TabPage7.AutoScroll = True
-        Me.TabPage7.Controls.Add(Me.CheckBox_CatchExceptions)
-        Me.TabPage7.Controls.Add(Me.CheckBox_EntitiesEnableShowNewEnts)
-        Me.TabPage7.Controls.Add(Me.CheckBox_EntitiesEnableColor)
-        Me.TabPage7.Location = New System.Drawing.Point(4, 22)
-        Me.TabPage7.Name = "TabPage7"
-        Me.TabPage7.Size = New System.Drawing.Size(744, 456)
-        Me.TabPage7.TabIndex = 4
-        Me.TabPage7.Text = "Debugger"
-        Me.TabPage7.UseVisualStyleBackColor = True
-        '
-        'CheckBox_CatchExceptions
-        '
-        Me.CheckBox_CatchExceptions.AutoSize = True
-        Me.CheckBox_CatchExceptions.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_CatchExceptions.Location = New System.Drawing.Point(6, 3)
-        Me.CheckBox_CatchExceptions.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_CatchExceptions.Name = "CheckBox_CatchExceptions"
-        Me.CheckBox_CatchExceptions.Size = New System.Drawing.Size(119, 18)
-        Me.CheckBox_CatchExceptions.TabIndex = 19
-        Me.CheckBox_CatchExceptions.Text = "Catch exceptions"
-        Me.CheckBox_CatchExceptions.UseVisualStyleBackColor = True
-        '
-        'CheckBox_EntitiesEnableShowNewEnts
-        '
-        Me.CheckBox_EntitiesEnableShowNewEnts.AutoSize = True
-        Me.CheckBox_EntitiesEnableShowNewEnts.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_EntitiesEnableShowNewEnts.Location = New System.Drawing.Point(6, 51)
-        Me.CheckBox_EntitiesEnableShowNewEnts.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_EntitiesEnableShowNewEnts.Name = "CheckBox_EntitiesEnableShowNewEnts"
-        Me.CheckBox_EntitiesEnableShowNewEnts.Size = New System.Drawing.Size(211, 18)
-        Me.CheckBox_EntitiesEnableShowNewEnts.TabIndex = 21
-        Me.CheckBox_EntitiesEnableShowNewEnts.Text = "Automatically scroll to new entities"
-        Me.CheckBox_EntitiesEnableShowNewEnts.UseVisualStyleBackColor = True
-        '
-        'CheckBox_EntitiesEnableColor
-        '
-        Me.CheckBox_EntitiesEnableColor.AutoSize = True
-        Me.CheckBox_EntitiesEnableColor.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_EntitiesEnableColor.Location = New System.Drawing.Point(6, 27)
-        Me.CheckBox_EntitiesEnableColor.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_EntitiesEnableColor.Name = "CheckBox_EntitiesEnableColor"
-        Me.CheckBox_EntitiesEnableColor.Size = New System.Drawing.Size(221, 18)
-        Me.CheckBox_EntitiesEnableColor.TabIndex = 20
-        Me.CheckBox_EntitiesEnableColor.Text = "Colorize created and deleted entities"
-        Me.CheckBox_EntitiesEnableColor.UseVisualStyleBackColor = True
         '
         'TabPage_Configs
         '
@@ -2106,8 +2051,6 @@ Partial Class FormSettings
         Me.TabPage6.PerformLayout()
         Me.GroupBox4.ResumeLayout(False)
         Me.GroupBox4.PerformLayout()
-        Me.TabPage7.ResumeLayout(False)
-        Me.TabPage7.PerformLayout()
         Me.TabPage_Configs.ResumeLayout(False)
         Me.TableLayoutPanel1.ResumeLayout(False)
         Me.TableLayoutPanel2.ResumeLayout(False)
@@ -2195,9 +2138,6 @@ Partial Class FormSettings
     Friend WithEvents TextBox_SourceModFolder As TextBox
     Friend WithEvents Label12 As Label
     Friend WithEvents Label13 As Label
-    Friend WithEvents CheckBox_EntitiesEnableColor As CheckBox
-    Friend WithEvents CheckBox_CatchExceptions As CheckBox
-    Friend WithEvents CheckBox_EntitiesEnableShowNewEnts As CheckBox
     Friend WithEvents Panel11 As Panel
     Friend WithEvents Panel10 As Panel
     Friend WithEvents Panel9 As Panel
@@ -2298,7 +2238,6 @@ Partial Class FormSettings
     Friend WithEvents TabPage4 As TabPage
     Friend WithEvents TabPage5 As TabPage
     Friend WithEvents TabPage6 As TabPage
-    Friend WithEvents TabPage7 As TabPage
     Friend WithEvents CheckBox_RememberFolds As CheckBox
     Friend WithEvents ToolStripMenuItem_OpenUrl As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator2 As ToolStripSeparator

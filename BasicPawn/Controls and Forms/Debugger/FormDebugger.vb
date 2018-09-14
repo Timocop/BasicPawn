@@ -23,7 +23,6 @@ Public Class FormDebugger
     Public g_ClassDebuggerParser As ClassDebuggerParser
     Public g_ClassDebuggerRunnerEngine As ClassDebuggerParser.ClassRunnerEngine
     Public g_ClassDebuggerRunner As ClassDebuggerRunner
-    Public g_ClassDebuggerSettings As ClassDebuggerSettings
 
     Public g_sLastPreProcessSourceFile As String = ""
     Public g_iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = ClassSyntaxTools.ENUM_LANGUAGE_TYPE.SOURCEPAWN
@@ -32,6 +31,7 @@ Public Class FormDebugger
     Public g_bListViewEnableClickSelect As Boolean = True
 
     Private g_bPostLoad As Boolean = False
+    Private g_bIgnoreCheckedChangedEvent As Boolean = False
 
     Public Sub New(f As FormMain, mDebugTab As ClassTabControl.SourceTabPage)
         Me.New(f, mDebugTab.m_Identifier)
@@ -56,7 +56,6 @@ Public Class FormDebugger
         g_ClassDebuggerParser = New ClassDebuggerParser(g_mFormMain)
         g_ClassDebuggerRunnerEngine = New ClassDebuggerParser.ClassRunnerEngine
         g_ClassDebuggerRunner = New ClassDebuggerRunner(Me)
-        g_ClassDebuggerSettings = New ClassDebuggerSettings(Me)
 
         TextEditorControlEx_DebuggerSource.IsReadOnly = True
         RichTextBox_DisasmSource.ReadOnly = True
@@ -80,6 +79,7 @@ Public Class FormDebugger
 
         'Load window info
         ClassSettings.LoadWindowInfo(Me)
+        LoadViews()
 
         g_bPostLoad = True
     End Sub
@@ -439,6 +439,7 @@ Public Class FormDebugger
     Private Sub FormDebugger_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
         'Save window info
         ClassSettings.SaveWindowInfo(Me)
+        SaveViews()
 
         g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM)
                                                                If (Not j.mPluginInterface.OnDebuggerEnd(Me)) Then
@@ -731,51 +732,90 @@ Public Class FormDebugger
     End Sub
 
 #Region "ToolStrip Settings"
-    Class ClassDebuggerSettings
-        Private g_mFormDebugger As FormDebugger
-        Public g_bIgnoreSaveing As Boolean = False
-
-        Public Sub New(f As FormDebugger)
-            g_mFormDebugger = f
-        End Sub
-
-        Public Sub SaveSettings()
-            If (g_bIgnoreSaveing) Then
-                Return
-            End If
-
-            ClassSettings.g_iSettingsDebuggerCatchExceptions = g_mFormDebugger.ToolStripMenuItem_SettingsCatchExceptions.Checked
-            ClassSettings.g_iSettingsDebuggerEntitiesEnableColoring = g_mFormDebugger.ToolStripMenuItem_EntitiesEnableColor.Checked
-            ClassSettings.g_iSettingsDebuggerEntitiesEnableAutoScroll = g_mFormDebugger.ToolStripMenuItem_EntitiesEnableShowNewEnts.Checked
-        End Sub
-
-        Public Sub LoadSettings()
-            g_bIgnoreSaveing = True
-
-            g_mFormDebugger.ToolStripMenuItem_SettingsCatchExceptions.Checked = ClassSettings.g_iSettingsDebuggerCatchExceptions
-            g_mFormDebugger.ToolStripMenuItem_EntitiesEnableColor.Checked = ClassSettings.g_iSettingsDebuggerEntitiesEnableColoring
-            g_mFormDebugger.ToolStripMenuItem_EntitiesEnableShowNewEnts.Checked = ClassSettings.g_iSettingsDebuggerEntitiesEnableAutoScroll
-
-            g_bIgnoreSaveing = False
-        End Sub
-    End Class
-
     Private Sub ToolStripMenuItem_SettingsCatchExceptions_CheckedChanged(sender As Object, e As EventArgs) Handles ToolStripMenuItem_SettingsCatchExceptions.CheckedChanged
-        g_ClassDebuggerSettings.SaveSettings()
+        If (g_bIgnoreCheckedChangedEvent) Then
+            Return
+        End If
+
+        SaveViews()
+        UpdateViews()
     End Sub
 
     Private Sub ToolStripMenuItem_EntitiesEnableColor_CheckedChanged(sender As Object, e As EventArgs) Handles ToolStripMenuItem_EntitiesEnableColor.CheckedChanged
-        g_ClassDebuggerSettings.SaveSettings()
+        If (g_bIgnoreCheckedChangedEvent) Then
+            Return
+        End If
+
+        SaveViews()
+        UpdateViews()
     End Sub
 
     Private Sub ToolStripMenuItem_EntitiesEnableShowNewEnts_CheckedChanged(sender As Object, e As EventArgs) Handles ToolStripMenuItem_EntitiesEnableShowNewEnts.CheckedChanged
-        g_ClassDebuggerSettings.SaveSettings()
-    End Sub
+        If (g_bIgnoreCheckedChangedEvent) Then
+            Return
+        End If
 
-    Private Sub ToolStripMenuItem_Tools_DropDownOpened(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Tools.DropDownOpened
-        g_ClassDebuggerSettings.LoadSettings()
+        SaveViews()
+        UpdateViews()
     End Sub
 #End Region
+
+    Public Sub SaveViews()
+        If (String.IsNullOrEmpty(Me.Name)) Then
+            Return
+        End If
+
+        Using mStream = ClassFileStreamWait.Create(ClassSettings.g_sWindowInfoFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
+            Using mIni As New ClassIni(mStream)
+                Dim lContent As New List(Of ClassIni.STRUC_INI_CONTENT) From {
+                    New ClassIni.STRUC_INI_CONTENT(Me.Name, "SettingsCatchExceptions", If(ToolStripMenuItem_SettingsCatchExceptions.Checked, "1", "0")),
+                    New ClassIni.STRUC_INI_CONTENT(Me.Name, "EntitiesEnableColor", If(ToolStripMenuItem_EntitiesEnableColor.Checked, "1", "0")),
+                    New ClassIni.STRUC_INI_CONTENT(Me.Name, "EntitiesEnableShowNewEnts", If(ToolStripMenuItem_EntitiesEnableShowNewEnts.Checked, "1", "0")),
+                    New ClassIni.STRUC_INI_CONTENT(Me.Name, "EditorDistance", CStr(SplitContainer1.SplitterDistance)),
+                    New ClassIni.STRUC_INI_CONTENT(Me.Name, "InfotmationDistance", CStr(SplitContainer2.Height - SplitContainer2.SplitterDistance))
+                }
+
+                mIni.WriteKeyValue(lContent.ToArray)
+            End Using
+        End Using
+    End Sub
+
+    Public Sub LoadViews()
+        If (String.IsNullOrEmpty(Me.Name)) Then
+            Return
+        End If
+
+        Dim tmpStr As String
+        Dim tmpInt As Integer
+
+        Using mStream = ClassFileStreamWait.Create(ClassSettings.g_sWindowInfoFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
+            Using mIni As New ClassIni(mStream)
+                g_bIgnoreCheckedChangedEvent = True
+                ToolStripMenuItem_SettingsCatchExceptions.Checked = (mIni.ReadKeyValue(Me.Name, "SettingsCatchExceptions", "1") <> "0")
+                ToolStripMenuItem_EntitiesEnableColor.Checked = (mIni.ReadKeyValue(Me.Name, "EntitiesEnableColor", "1") <> "0")
+                ToolStripMenuItem_EntitiesEnableShowNewEnts.Checked = (mIni.ReadKeyValue(Me.Name, "EntitiesEnableShowNewEnts", "1") <> "0")
+                g_bIgnoreCheckedChangedEvent = False
+
+                tmpStr = mIni.ReadKeyValue(Me.Name, "EditorDistance", Nothing)
+                If (tmpStr IsNot Nothing AndAlso Integer.TryParse(tmpStr, tmpInt) AndAlso tmpInt > -1) Then
+                    SplitContainer1.SplitterDistance = tmpInt
+                End If
+
+                tmpStr = mIni.ReadKeyValue(Me.Name, "InfotmationDistance", Nothing)
+                If (tmpStr IsNot Nothing AndAlso Integer.TryParse(tmpStr, tmpInt) AndAlso (SplitContainer2.Height - tmpInt) > -1) Then
+                    SplitContainer2.SplitterDistance = (SplitContainer2.Height - tmpInt)
+                End If
+            End Using
+        End Using
+
+        UpdateViews()
+    End Sub
+
+    Public Sub UpdateViews()
+        g_ClassDebuggerRunner.g_ClassSettings.m_SettingsCatchExceptions = ToolStripMenuItem_SettingsCatchExceptions.Checked
+        g_ClassDebuggerRunner.g_ClassSettings.m_EntitiesEnableColor = ToolStripMenuItem_EntitiesEnableColor.Checked
+        g_ClassDebuggerRunner.g_ClassSettings.m_EntitiesEnableShowNewEnts = ToolStripMenuItem_EntitiesEnableShowNewEnts.Checked
+    End Sub
 
     Private Sub FormDebugger_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
         CleanUp()

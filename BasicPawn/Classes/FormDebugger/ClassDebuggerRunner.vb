@@ -26,6 +26,7 @@ Public Class ClassDebuggerRunner
     Public g_mFormDebugger As FormDebugger
 
     Public g_ClassPreProcess As ClassPreProcess
+    Public g_ClassSettings As ClassSettings
 
     Private g_mFormDebuggerException As FormDebuggerException
     Private g_mFormDebuggerCriticalPopupException As FormDebuggerCriticalPopup
@@ -97,6 +98,7 @@ Public Class ClassDebuggerRunner
         UpdateSourceFromTab()
 
         g_ClassPreProcess = New ClassPreProcess(Me)
+        g_ClassSettings = New ClassSettings
     End Sub
 
     Public ReadOnly Property m_ClientFolder As String
@@ -309,6 +311,39 @@ Public Class ClassDebuggerRunner
             Next
         End If
     End Sub
+
+    Public Class ClassSettings
+        Private g_bSettingsCatchExceptions As Boolean = True
+        Private g_bEntitiesEnableColor As Boolean = True
+        Private g_bEntitiesEnableShowNewEnts As Boolean = True
+
+        Property m_SettingsCatchExceptions As Boolean
+            Get
+                Return g_bSettingsCatchExceptions
+            End Get
+            Set(value As Boolean)
+                g_bSettingsCatchExceptions = value
+            End Set
+        End Property
+
+        Property m_EntitiesEnableColor As Boolean
+            Get
+                Return g_bEntitiesEnableColor
+            End Get
+            Set(value As Boolean)
+                g_bEntitiesEnableColor = value
+            End Set
+        End Property
+
+        Property m_EntitiesEnableShowNewEnts As Boolean
+            Get
+                Return g_bEntitiesEnableShowNewEnts
+            End Get
+            Set(value As Boolean)
+                g_bEntitiesEnableShowNewEnts = value
+            End Set
+        End Property
+    End Class
 
     Public Class ClassPreProcess
         Private g_ClassDebuggerRunner As ClassDebuggerRunner
@@ -1216,11 +1251,11 @@ Public Class ClassDebuggerRunner
                                                                                              mListViewItemData.g_mData("Classname") = sClassname
                                                                                              mListViewItemData.g_mData("Ticks") = iDateTicks
 
-                                                                                             If (ClassSettings.g_iSettingsDebuggerEntitiesEnableColoring) Then
+                                                                                             If (g_ClassSettings.m_EntitiesEnableColor) Then
                                                                                                  mListViewItemData.BackColor = Color.Green
                                                                                              End If
 
-                                                                                             If (ClassSettings.g_iSettingsDebuggerEntitiesEnableAutoScroll) Then
+                                                                                             If (g_ClassSettings.m_EntitiesEnableShowNewEnts) Then
                                                                                                  mListViewItemData.Selected = True
                                                                                                  mListViewItemData.EnsureVisible()
                                                                                              End If
@@ -1251,7 +1286,7 @@ Public Class ClassDebuggerRunner
                                                                                              mListViewItemData.g_mData("Classname") = "-"
                                                                                              mListViewItemData.g_mData("Ticks") = iDateTicks
 
-                                                                                             If (ClassSettings.g_iSettingsDebuggerEntitiesEnableColoring) Then
+                                                                                             If (g_ClassSettings.m_EntitiesEnableColor) Then
                                                                                                  mListViewItemData.BackColor = Color.Red
                                                                                              End If
                                                                                          End If
@@ -1374,7 +1409,7 @@ Public Class ClassDebuggerRunner
             Dim sFileFullName As String = IO.Path.GetFileName(sFile)
             Dim dDate As Date = Now
 
-            If (Not ClassSettings.g_iSettingsDebuggerCatchExceptions OrElse sFileExt.ToLower <> ".log" OrElse Not sFileFullName.ToLower.StartsWith("errors_")) Then
+            If (Not g_ClassSettings.m_SettingsCatchExceptions OrElse sFileExt.ToLower <> ".log" OrElse Not sFileFullName.ToLower.StartsWith("errors_")) Then
                 Return
             End If
 
@@ -1538,7 +1573,7 @@ Public Class ClassDebuggerRunner
 
             Dim sFileFullName As String = IO.Path.GetFileName(sFile)
 
-            If (Not ClassSettings.g_iSettingsDebuggerCatchExceptions OrElse sFileFullName.ToLower <> "sourcemod_fatal.log") Then
+            If (Not g_ClassSettings.m_SettingsCatchExceptions OrElse sFileFullName.ToLower <> "sourcemod_fatal.log") Then
                 Return
             End If
 
