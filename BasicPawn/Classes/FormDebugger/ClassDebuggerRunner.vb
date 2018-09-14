@@ -490,6 +490,7 @@ Public Class ClassDebuggerRunner
                 Return True
             End If
 
+            g_mFormDebugger.PrintInformation("[INFO]", "Starting debugger...", False, True)
             SetDebuggerStatus("Status: Starting debugger...", Color.Orange)
             SetDebuggerStatusConnection(False)
 
@@ -525,6 +526,7 @@ Public Class ClassDebuggerRunner
             End If
 
 
+            g_mFormDebugger.PrintInformation("[INFO]", "Starting I/O communicator...", False, True)
             SetDebuggerStatus("Status: Starting I/O communicator...", Color.Orange)
 
 
@@ -541,6 +543,7 @@ Public Class ClassDebuggerRunner
             g_mListViewEntitiesUpdaterThread.Start()
 
 
+            g_mFormDebugger.PrintInformation("[INFO]", "Compiling plugin and BasicPawn modules...", False, True)
             SetDebuggerStatus("Status: Compiling plugin and BasicPawn modules...", Color.Orange)
 
 
@@ -598,7 +601,11 @@ Public Class ClassDebuggerRunner
 
             g_mFormDebugger.Timer_ConnectionCheck.Start()
 
-            SetDebuggerStatus("Status: Debugger running! (Reload the map or enter 'sm plugins refresh' into the console to load all new plugins)", Color.Green)
+            g_mFormDebugger.PrintInformation("[INFO]", "Debugger running and listening!", False, False)
+            g_mFormDebugger.PrintInformation("[INFO]", " - Reload the map or enter 'sm plugins refresh' into the servers console to load all new/changed plugins.", False, False)
+            g_mFormDebugger.PrintInformation("[INFO]", " - Change the client's 'cl_timeout' cvar to increase the auto-disconnect countdown when server is not responding. If necessary.", False, False)
+            g_mFormDebugger.PrintInformation("[INFO]", New String("~"c, 50), False, True)
+            SetDebuggerStatus("Status: Debugger running!", Color.Green)
             SetDebuggerStatusConnection(False)
 
             'Make sure other async threads doenst fuckup everthing
@@ -614,6 +621,7 @@ Public Class ClassDebuggerRunner
 
             StopDebugging(True)
 
+            g_mFormDebugger.PrintInformation("[ERRO]", "Error! " & ex.Message, False, True)
             SetDebuggerStatus("Status: Error! " & ex.Message, Color.Red)
             SetDebuggerStatusConnection(False)
 
@@ -754,6 +762,8 @@ Public Class ClassDebuggerRunner
 
             g_mFormDebugger.Timer_ConnectionCheck.Stop()
 
+            g_mFormDebugger.PrintInformation("[INFO]", "Debugger stopped!", False, False)
+            g_mFormDebugger.PrintInformation("[INFO]", New String("~"c, 50), False, True)
             SetDebuggerStatus("Status: Debugger stopped!", Color.Red)
             SetDebuggerStatusConnection(False)
 
@@ -761,6 +771,7 @@ Public Class ClassDebuggerRunner
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
 
+            g_mFormDebugger.PrintInformation("[ERRO]", "Error! " & ex.Message, False, True)
             SetDebuggerStatus("Status: Error! " & ex.Message, Color.Red)
             SetDebuggerStatusConnection(False)
         End Try
@@ -822,6 +833,7 @@ Public Class ClassDebuggerRunner
 
             g_mFormDebugger.Timer_ConnectionCheck.Start()
 
+            g_mFormDebugger.PrintInformation("[INFO]", "Debugger running!", False, True)
             SetDebuggerStatus("Status: Debugger running!", Color.Green)
             SetDebuggerStatusConnection(False)
 
@@ -829,6 +841,7 @@ Public Class ClassDebuggerRunner
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
 
+            g_mFormDebugger.PrintInformation("[ERRO]", "Error! " & ex.Message, False, True)
             SetDebuggerStatus("Status: Error! " & ex.Message, Color.Red)
             SetDebuggerStatusConnection(False)
         End Try
@@ -854,6 +867,8 @@ Public Class ClassDebuggerRunner
 
             g_mFormDebugger.Timer_ConnectionCheck.Stop()
 
+            g_mFormDebugger.PrintInformation("[INFO]", "Debugger paused!", False, False)
+            g_mFormDebugger.PrintInformation("[INFO]", "Debugger awaiting input...", False, True)
             SetDebuggerStatus("Status: Debugger awaiting input...", Color.Orange)
             SetDebuggerStatusConnection(False)
 
@@ -861,6 +876,7 @@ Public Class ClassDebuggerRunner
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
 
+            g_mFormDebugger.PrintInformation("[ERRO]", "Error! " & ex.Message, False, True)
             SetDebuggerStatus("Status: Error! " & ex.Message, Color.Red)
             SetDebuggerStatusConnection(False)
         End Try
@@ -1045,6 +1061,8 @@ Public Class ClassDebuggerRunner
 
                                                            UpdateBreakpointListView()
 
+                                                           g_mFormDebugger.PrintInformation("[INFO]", "Breakpoint reached!", False, False)
+                                                           g_mFormDebugger.PrintInformation("[INFO]", "Debugger awaiting input...", False, True)
                                                            SetDebuggerStatus("Status: Debugger awaiting input...", Color.Orange)
                                                            SetDebuggerStatusConnection(False)
                                                            SetDebuggerWindowActive(g_mFormDebugger)
@@ -1492,6 +1510,8 @@ Public Class ClassDebuggerRunner
 
                                                                    UpdateBreakpointListView()
 
+                                                                   g_mFormDebugger.PrintInformation("[INFO]", "SourceMod exception caught!", False, False)
+                                                                   g_mFormDebugger.PrintInformation("[INFO]", "Debugger awaiting input...", False, True)
                                                                    SetDebuggerStatus("Status: Debugger awaiting input...", Color.Orange)
                                                                    SetDebuggerWindowActive(g_mFormDebugger)
 
@@ -1536,6 +1556,8 @@ Public Class ClassDebuggerRunner
 
                                                                    UpdateBreakpointListView()
 
+                                                                   g_mFormDebugger.PrintInformation("[INFO]", "Unknown SourceMod exception caught!", False, False)
+                                                                   g_mFormDebugger.PrintInformation("[INFO]", "Debugger awaiting input...", False, True)
                                                                    SetDebuggerStatus("Status: Debugger awaiting input...", Color.Orange)
                                                                    SetDebuggerWindowActive(g_mFormDebugger)
 
@@ -1638,6 +1660,8 @@ Public Class ClassDebuggerRunner
 
                                                                UpdateBreakpointListView()
 
+                                                               g_mFormDebugger.PrintInformation("[INFO]", "Fatal SourceMod exception caught!", False, False)
+                                                               g_mFormDebugger.PrintInformation("[INFO]", "Debugger awaiting input...", False, True)
                                                                SetDebuggerStatus("Status: Debugger awaiting input...", Color.Orange)
                                                                SetDebuggerWindowActive(g_mFormDebugger)
 

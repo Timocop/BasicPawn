@@ -69,6 +69,8 @@ Public Class FormDebugger
     End Sub
 
     Private Sub FormDebugger_Load(sender As Object, e As EventArgs) Handles Me.Load
+        PrintInformation("[INFO]", "Starting debugger...", False, True)
+
         If (Not RefreshSource()) Then
             MessageBox.Show("Could not open debugger. See information tab for more information.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Me.Dispose()
@@ -101,6 +103,8 @@ Public Class FormDebugger
 
     Private Function RefreshSource() As Boolean
         Try
+            PrintInformation("[INFO]", "Refreshing source...", False, True)
+
             Using mFormProgress As New FormProgress
                 mFormProgress.Text = "BasicPawn Debugger - Generating source..."
                 If (g_bPostLoad) Then
@@ -123,6 +127,7 @@ Public Class FormDebugger
 
 
                 Dim iCompilerType As ClassTextEditorTools.ENUM_COMPILER_TYPE = ClassTextEditorTools.ENUM_COMPILER_TYPE.UNKNOWN
+                Dim sCompilerOutput As String = ""
 
                 'Create Pre-Process source
                 Dim sPreSource As String = g_mFormMain.g_ClassTextEditorTools.GetCompilerPreProcessCode(g_ClassDebuggerRunner.m_CurrentSource,
@@ -135,11 +140,18 @@ Public Class FormDebugger
                                                                                                         Nothing,
                                                                                                         If(String.IsNullOrEmpty(g_ClassDebuggerRunner.m_CurrentSourceFile), "Unnamed", g_ClassDebuggerRunner.m_CurrentSourceFile),
                                                                                                         True,
-                                                                                                        Nothing,
+                                                                                                        sCompilerOutput,
                                                                                                         iCompilerType)
+
                 If (String.IsNullOrEmpty(sPreSource)) Then
                     Throw New ArgumentException("Invalid source")
                 End If
+
+                PrintInformation("[INFO]", "Pre-Processing source output:", False, False)
+                For Each sLine In sCompilerOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
+                    PrintInformation("[INFO]", vbTab & sLine, False, False)
+                Next
+                PrintInformation("[INFO]", New String("~"c, 50), False, True)
 
 
                 mFormProgress.m_Progress = 20
@@ -186,6 +198,8 @@ Public Class FormDebugger
                 End With
 
                 iCompilerType = ClassTextEditorTools.ENUM_COMPILER_TYPE.UNKNOWN
+                sCompilerOutput = ""
+
 
                 Dim sAsmSource As String = g_mFormMain.g_ClassTextEditorTools.GetCompilerAssemblyCode(True,
                                                                                                       sAsmLstSource,
@@ -196,8 +210,9 @@ Public Class FormDebugger
                                                                                                       Nothing,
                                                                                                       Nothing,
                                                                                                       True,
-                                                                                                      Nothing,
+                                                                                                      sCompilerOutput,
                                                                                                       iCompilerType)
+
                 If (String.IsNullOrEmpty(sAsmSource)) Then
                     Throw New ArgumentException("Invalid source")
                 End If
@@ -205,6 +220,12 @@ Public Class FormDebugger
                 If (iCompilerType <> ClassTextEditorTools.ENUM_COMPILER_TYPE.SOURCEPAWN) Then
                     Throw New ArgumentException("Unsupported compiler")
                 End If
+
+                PrintInformation("[INFO]", "DIASM source output:", False, False)
+                For Each sLine In sCompilerOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
+                    PrintInformation("[INFO]", vbTab & sLine, False, False)
+                Next
+                PrintInformation("[INFO]", New String("~"c, 50), False, True)
 
 
                 mFormProgress.m_Progress = 60
