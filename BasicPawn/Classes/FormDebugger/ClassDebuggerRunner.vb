@@ -1127,13 +1127,6 @@ Public Class ClassDebuggerRunner
             End While
             mStopWatch.Stop()
 
-            Try
-                IO.File.Delete(sFile)
-            Catch ex As Threading.ThreadAbortException
-                Throw
-            Catch ex As Exception
-            End Try
-
             Dim sInteger As String
             Dim sFloat As String
             Dim sCount As String
