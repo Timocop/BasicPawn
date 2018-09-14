@@ -1013,10 +1013,10 @@ Public Class ClassDebuggerRunner
                                                            SetDebuggerStatus("Status: Debugger awaiting input...", Color.Orange)
                                                            SetDebuggerStatusConnection(False)
                                                            SetDebuggerWindowActive(g_mFormDebugger)
-
-                                                           g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnDebuggerDebugPause())
                                                        End Sub)
             End SyncLock
+
+            g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnDebuggerDebugPause())
         Catch ex As Threading.ThreadAbortException
             Throw
         Catch ex As ObjectDisposedException
@@ -1463,11 +1463,10 @@ Public Class ClassDebuggerRunner
                                                                    g_mFormDebuggerException = New FormDebuggerException(g_mFormDebugger, sFile, smExceptions(i))
                                                                    g_mFormDebuggerException.Show(g_mFormDebugger)
                                                                    SetDebuggerWindowActive(g_mFormDebuggerException)
-
-                                                                   g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnDebuggerDebugPause())
                                                                End Sub)
-
                     End SyncLock
+
+                    g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnDebuggerDebugPause())
 
                     Exit For
                 Next
@@ -1508,10 +1507,10 @@ Public Class ClassDebuggerRunner
                                                                    g_mFormDebuggerCriticalPopupException = New FormDebuggerCriticalPopup(g_mFormDebugger, "Unknown SourceMod Exception", "The debugger caught unknown exceptions!", String.Join(Environment.NewLine, sLines))
                                                                    g_mFormDebuggerCriticalPopupException.Show(g_mFormDebugger)
                                                                    SetDebuggerWindowActive(g_mFormDebuggerCriticalPopupException)
-
-                                                                   g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnDebuggerDebugPause())
                                                                End Sub)
                     End SyncLock
+
+                    g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnDebuggerDebugPause())
                 End If
             End If
         Catch ex As Threading.ThreadAbortException
@@ -1610,10 +1609,10 @@ Public Class ClassDebuggerRunner
                                                                g_mFormDebuggerCriticalPopupFatalException = New FormDebuggerCriticalPopup(g_mFormDebugger, "SourceMod Fatal Error", "The debugger caught fatal errors!", String.Join(Environment.NewLine, sLines))
                                                                g_mFormDebuggerCriticalPopupFatalException.Show(g_mFormDebugger)
                                                                SetDebuggerWindowActive(g_mFormDebuggerCriticalPopupFatalException)
-
-                                                               g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnDebuggerDebugPause())
                                                            End Sub)
                 End SyncLock
+
+                g_mFormDebugger.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnDebuggerDebugPause())
             End If
         Catch ex As Threading.ThreadAbortException
             Throw
