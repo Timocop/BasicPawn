@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class FormDebugger
     Inherits System.Windows.Forms.Form
 
     'Das Formular überschreibt den Löschvorgang, um die Komponentenliste zu bereinigen.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If (disposing) Then
@@ -24,7 +24,7 @@ Partial Class FormDebugger
     'Hinweis: Die folgende Prozedur ist für den Windows Form-Designer erforderlich.
     'Das Bearbeiten ist mit dem Windows Form-Designer möglich.  
     'Das Bearbeiten mit dem Code-Editor ist nicht möglich.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormDebugger))
@@ -50,12 +50,6 @@ Partial Class FormDebugger
         Me.ToolStripMenuItem_DebugStop = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_DebugRefresh = New System.Windows.Forms.ToolStripMenuItem()
         Me.SplitContainer1 = New System.Windows.Forms.SplitContainer()
-        Me.ContextMenuStrip_Breakpoints = New System.Windows.Forms.ContextMenuStrip(Me.components)
-        Me.ToolStripMenuItem_BreakpointsEnableAll = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripMenuItem_BreakpointsDisableAll = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
-        Me.ToolStripMenuItem_BreakpointsSetValues = New System.Windows.Forms.ToolStripMenuItem()
-        Me.Timer_ConnectionCheck = New System.Windows.Forms.Timer(Me.components)
         Me.TabControl2 = New BasicPawn.ClassTabControlColor()
         Me.TabPage_Source = New System.Windows.Forms.TabPage()
         Me.TextEditorControlEx_DebuggerSource = New BasicPawn.TextEditorControlEx()
@@ -67,6 +61,11 @@ Partial Class FormDebugger
         Me.ColumnHeader1 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader2 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader4 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.ContextMenuStrip_Breakpoints = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.ToolStripMenuItem_BreakpointsEnableAll = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_BreakpointsDisableAll = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
+        Me.ToolStripMenuItem_BreakpointsSetValues = New System.Windows.Forms.ToolStripMenuItem()
         Me.TabPage_Watchers = New System.Windows.Forms.TabPage()
         Me.ListView_Watchers = New System.Windows.Forms.ListView()
         Me.ColumnHeader3 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
@@ -78,19 +77,29 @@ Partial Class FormDebugger
         Me.ColumnHeader8 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader9 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader10 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.Timer_ConnectionCheck = New System.Windows.Forms.Timer(Me.components)
+        Me.SplitContainer2 = New System.Windows.Forms.SplitContainer()
+        Me.ClassTabControlColor1 = New BasicPawn.ClassTabControlColor()
+        Me.TabPage1 = New System.Windows.Forms.TabPage()
+        Me.ListBox_Information = New System.Windows.Forms.ListBox()
         Me.StatusStrip_BPDebugger.SuspendLayout()
         Me.MenuStrip_BPDebugger.SuspendLayout()
         Me.SplitContainer1.Panel1.SuspendLayout()
         Me.SplitContainer1.Panel2.SuspendLayout()
         Me.SplitContainer1.SuspendLayout()
-        Me.ContextMenuStrip_Breakpoints.SuspendLayout()
         Me.TabControl2.SuspendLayout()
         Me.TabPage_Source.SuspendLayout()
         Me.TabPage_Diasm.SuspendLayout()
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Breakpoints.SuspendLayout()
+        Me.ContextMenuStrip_Breakpoints.SuspendLayout()
         Me.TabPage_Watchers.SuspendLayout()
         Me.TabPage_Entities.SuspendLayout()
+        Me.SplitContainer2.Panel1.SuspendLayout()
+        Me.SplitContainer2.Panel2.SuspendLayout()
+        Me.SplitContainer2.SuspendLayout()
+        Me.ClassTabControlColor1.SuspendLayout()
+        Me.TabPage1.SuspendLayout()
         Me.SuspendLayout()
         '
         'StatusStrip_BPDebugger
@@ -263,7 +272,7 @@ Partial Class FormDebugger
         '
         'SplitContainer1.Panel1
         '
-        Me.SplitContainer1.Panel1.Controls.Add(Me.TabControl2)
+        Me.SplitContainer1.Panel1.Controls.Add(Me.SplitContainer2)
         '
         'SplitContainer1.Panel2
         '
@@ -271,41 +280,6 @@ Partial Class FormDebugger
         Me.SplitContainer1.Size = New System.Drawing.Size(1008, 683)
         Me.SplitContainer1.SplitterDistance = 715
         Me.SplitContainer1.TabIndex = 0
-        '
-        'ContextMenuStrip_Breakpoints
-        '
-        Me.ContextMenuStrip_Breakpoints.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_BreakpointsEnableAll, Me.ToolStripMenuItem_BreakpointsDisableAll, Me.ToolStripSeparator1, Me.ToolStripMenuItem_BreakpointsSetValues})
-        Me.ContextMenuStrip_Breakpoints.Name = "ContextMenuStrip_Breakpoints"
-        Me.ContextMenuStrip_Breakpoints.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
-        Me.ContextMenuStrip_Breakpoints.ShowImageMargin = False
-        Me.ContextMenuStrip_Breakpoints.Size = New System.Drawing.Size(200, 76)
-        '
-        'ToolStripMenuItem_BreakpointsEnableAll
-        '
-        Me.ToolStripMenuItem_BreakpointsEnableAll.Name = "ToolStripMenuItem_BreakpointsEnableAll"
-        Me.ToolStripMenuItem_BreakpointsEnableAll.Size = New System.Drawing.Size(199, 22)
-        Me.ToolStripMenuItem_BreakpointsEnableAll.Text = "Enable all breakpoints"
-        '
-        'ToolStripMenuItem_BreakpointsDisableAll
-        '
-        Me.ToolStripMenuItem_BreakpointsDisableAll.Name = "ToolStripMenuItem_BreakpointsDisableAll"
-        Me.ToolStripMenuItem_BreakpointsDisableAll.Size = New System.Drawing.Size(199, 22)
-        Me.ToolStripMenuItem_BreakpointsDisableAll.Text = "Disable all breakpoints"
-        '
-        'ToolStripSeparator1
-        '
-        Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
-        Me.ToolStripSeparator1.Size = New System.Drawing.Size(196, 6)
-        '
-        'ToolStripMenuItem_BreakpointsSetValues
-        '
-        Me.ToolStripMenuItem_BreakpointsSetValues.Name = "ToolStripMenuItem_BreakpointsSetValues"
-        Me.ToolStripMenuItem_BreakpointsSetValues.Size = New System.Drawing.Size(199, 22)
-        Me.ToolStripMenuItem_BreakpointsSetValues.Text = "Set active breakpoint value..."
-        '
-        'Timer_ConnectionCheck
-        '
-        Me.Timer_ConnectionCheck.Interval = 10000
         '
         'TabControl2
         '
@@ -315,7 +289,7 @@ Partial Class FormDebugger
         Me.TabControl2.Location = New System.Drawing.Point(0, 0)
         Me.TabControl2.Name = "TabControl2"
         Me.TabControl2.SelectedIndex = 0
-        Me.TabControl2.Size = New System.Drawing.Size(715, 683)
+        Me.TabControl2.Size = New System.Drawing.Size(715, 508)
         Me.TabControl2.TabIndex = 1
         '
         'TabPage_Source
@@ -323,7 +297,7 @@ Partial Class FormDebugger
         Me.TabPage_Source.Controls.Add(Me.TextEditorControlEx_DebuggerSource)
         Me.TabPage_Source.Location = New System.Drawing.Point(4, 22)
         Me.TabPage_Source.Name = "TabPage_Source"
-        Me.TabPage_Source.Size = New System.Drawing.Size(707, 657)
+        Me.TabPage_Source.Size = New System.Drawing.Size(707, 482)
         Me.TabPage_Source.TabIndex = 0
         Me.TabPage_Source.Text = "Source"
         '
@@ -337,7 +311,7 @@ Partial Class FormDebugger
         Me.TextEditorControlEx_DebuggerSource.ShowMatchingBracket = False
         Me.TextEditorControlEx_DebuggerSource.ShowTabs = True
         Me.TextEditorControlEx_DebuggerSource.ShowVRuler = False
-        Me.TextEditorControlEx_DebuggerSource.Size = New System.Drawing.Size(707, 657)
+        Me.TextEditorControlEx_DebuggerSource.Size = New System.Drawing.Size(707, 482)
         Me.TextEditorControlEx_DebuggerSource.TabIndex = 0
         Me.TextEditorControlEx_DebuggerSource.Text = "Packed Source"
         '
@@ -415,6 +389,37 @@ Partial Class FormDebugger
         '
         Me.ColumnHeader4.Text = "Value"
         Me.ColumnHeader4.Width = 100
+        '
+        'ContextMenuStrip_Breakpoints
+        '
+        Me.ContextMenuStrip_Breakpoints.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_BreakpointsEnableAll, Me.ToolStripMenuItem_BreakpointsDisableAll, Me.ToolStripSeparator1, Me.ToolStripMenuItem_BreakpointsSetValues})
+        Me.ContextMenuStrip_Breakpoints.Name = "ContextMenuStrip_Breakpoints"
+        Me.ContextMenuStrip_Breakpoints.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
+        Me.ContextMenuStrip_Breakpoints.ShowImageMargin = False
+        Me.ContextMenuStrip_Breakpoints.Size = New System.Drawing.Size(200, 76)
+        '
+        'ToolStripMenuItem_BreakpointsEnableAll
+        '
+        Me.ToolStripMenuItem_BreakpointsEnableAll.Name = "ToolStripMenuItem_BreakpointsEnableAll"
+        Me.ToolStripMenuItem_BreakpointsEnableAll.Size = New System.Drawing.Size(199, 22)
+        Me.ToolStripMenuItem_BreakpointsEnableAll.Text = "Enable all breakpoints"
+        '
+        'ToolStripMenuItem_BreakpointsDisableAll
+        '
+        Me.ToolStripMenuItem_BreakpointsDisableAll.Name = "ToolStripMenuItem_BreakpointsDisableAll"
+        Me.ToolStripMenuItem_BreakpointsDisableAll.Size = New System.Drawing.Size(199, 22)
+        Me.ToolStripMenuItem_BreakpointsDisableAll.Text = "Disable all breakpoints"
+        '
+        'ToolStripSeparator1
+        '
+        Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
+        Me.ToolStripSeparator1.Size = New System.Drawing.Size(196, 6)
+        '
+        'ToolStripMenuItem_BreakpointsSetValues
+        '
+        Me.ToolStripMenuItem_BreakpointsSetValues.Name = "ToolStripMenuItem_BreakpointsSetValues"
+        Me.ToolStripMenuItem_BreakpointsSetValues.Size = New System.Drawing.Size(199, 22)
+        Me.ToolStripMenuItem_BreakpointsSetValues.Text = "Set active breakpoint value..."
         '
         'TabPage_Watchers
         '
@@ -496,6 +501,58 @@ Partial Class FormDebugger
         Me.ColumnHeader10.Text = "Classname"
         Me.ColumnHeader10.Width = 175
         '
+        'Timer_ConnectionCheck
+        '
+        Me.Timer_ConnectionCheck.Interval = 10000
+        '
+        'SplitContainer2
+        '
+        Me.SplitContainer2.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.SplitContainer2.Location = New System.Drawing.Point(0, 0)
+        Me.SplitContainer2.Name = "SplitContainer2"
+        Me.SplitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal
+        '
+        'SplitContainer2.Panel1
+        '
+        Me.SplitContainer2.Panel1.Controls.Add(Me.TabControl2)
+        '
+        'SplitContainer2.Panel2
+        '
+        Me.SplitContainer2.Panel2.Controls.Add(Me.ClassTabControlColor1)
+        Me.SplitContainer2.Size = New System.Drawing.Size(715, 683)
+        Me.SplitContainer2.SplitterDistance = 508
+        Me.SplitContainer2.TabIndex = 2
+        '
+        'ClassTabControlColor1
+        '
+        Me.ClassTabControlColor1.Controls.Add(Me.TabPage1)
+        Me.ClassTabControlColor1.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ClassTabControlColor1.Location = New System.Drawing.Point(0, 0)
+        Me.ClassTabControlColor1.Name = "ClassTabControlColor1"
+        Me.ClassTabControlColor1.SelectedIndex = 0
+        Me.ClassTabControlColor1.Size = New System.Drawing.Size(715, 171)
+        Me.ClassTabControlColor1.TabIndex = 0
+        '
+        'TabPage1
+        '
+        Me.TabPage1.Controls.Add(Me.ListBox_Information)
+        Me.TabPage1.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage1.Name = "TabPage1"
+        Me.TabPage1.Padding = New System.Windows.Forms.Padding(3)
+        Me.TabPage1.Size = New System.Drawing.Size(707, 145)
+        Me.TabPage1.TabIndex = 0
+        Me.TabPage1.Text = "Information"
+        Me.TabPage1.UseVisualStyleBackColor = True
+        '
+        'ListBox_Information
+        '
+        Me.ListBox_Information.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ListBox_Information.FormattingEnabled = True
+        Me.ListBox_Information.Location = New System.Drawing.Point(3, 3)
+        Me.ListBox_Information.Name = "ListBox_Information"
+        Me.ListBox_Information.Size = New System.Drawing.Size(701, 139)
+        Me.ListBox_Information.TabIndex = 0
+        '
         'FormDebugger
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -517,14 +574,19 @@ Partial Class FormDebugger
         Me.SplitContainer1.Panel1.ResumeLayout(False)
         Me.SplitContainer1.Panel2.ResumeLayout(False)
         Me.SplitContainer1.ResumeLayout(False)
-        Me.ContextMenuStrip_Breakpoints.ResumeLayout(False)
         Me.TabControl2.ResumeLayout(False)
         Me.TabPage_Source.ResumeLayout(False)
         Me.TabPage_Diasm.ResumeLayout(False)
         Me.TabControl1.ResumeLayout(False)
         Me.TabPage_Breakpoints.ResumeLayout(False)
+        Me.ContextMenuStrip_Breakpoints.ResumeLayout(False)
         Me.TabPage_Watchers.ResumeLayout(False)
         Me.TabPage_Entities.ResumeLayout(False)
+        Me.SplitContainer2.Panel1.ResumeLayout(False)
+        Me.SplitContainer2.Panel2.ResumeLayout(False)
+        Me.SplitContainer2.ResumeLayout(False)
+        Me.ClassTabControlColor1.ResumeLayout(False)
+        Me.TabPage1.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -580,4 +642,8 @@ Partial Class FormDebugger
     Friend WithEvents ToolStripStatusLabel_NoConnection As ToolStripStatusLabel
     Friend WithEvents Timer_ConnectionCheck As Timer
     Friend WithEvents RichTextBox_DisasmSource As RichTextBox
+    Friend WithEvents SplitContainer2 As SplitContainer
+    Friend WithEvents ClassTabControlColor1 As ClassTabControlColor
+    Friend WithEvents TabPage1 As TabPage
+    Friend WithEvents ListBox_Information As ListBox
 End Class

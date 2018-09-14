@@ -15,7 +15,6 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 
-Imports System.Text.RegularExpressions
 
 Public Class FormDebugger
     Public g_mFormMain As FormMain
@@ -83,6 +82,21 @@ Public Class FormDebugger
         ClassSettings.LoadWindowInfo(Me)
 
         g_bPostLoad = True
+    End Sub
+
+    Public Sub PrintInformation(sType As String, sMessage As String, Optional bClear As Boolean = False, Optional bEnsureVisible As Boolean = False)
+        ClassThread.ExecAsync(Me, Sub()
+                                      If (bClear) Then
+                                          ListBox_Information.Items.Clear()
+                                      End If
+
+                                      Dim iIndex = ListBox_Information.Items.Add(String.Format("{0} ({1}) {2}", sType, Now.ToString, sMessage))
+
+                                      If (bEnsureVisible) Then
+                                          'Scroll to item
+                                          ListBox_Information.TopIndex = iIndex
+                                      End If
+                                  End Sub)
     End Sub
 
     Private Function RefreshSource() As Boolean
