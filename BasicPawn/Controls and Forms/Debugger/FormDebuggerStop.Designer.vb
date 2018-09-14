@@ -37,8 +37,8 @@ Partial Class FormDebuggerStop
         Me.Label2 = New System.Windows.Forms.Label()
         Me.ToolTip_ResultOptions = New System.Windows.Forms.ToolTip(Me.components)
         Me.RadioButton5 = New System.Windows.Forms.RadioButton()
-        Me.Class_PictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
         Me.RadioButton6 = New System.Windows.Forms.RadioButton()
+        Me.Class_PictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
         Me.Panel_FooterControl.SuspendLayout()
         CType(Me.Class_PictureBoxQuality1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -132,11 +132,11 @@ Partial Class FormDebuggerStop
         Me.RadioButton2.Location = New System.Drawing.Point(73, 99)
         Me.RadioButton2.Margin = New System.Windows.Forms.Padding(64, 3, 3, 3)
         Me.RadioButton2.Name = "RadioButton2"
-        Me.RadioButton2.Size = New System.Drawing.Size(111, 18)
+        Me.RadioButton2.Size = New System.Drawing.Size(145, 18)
         Me.RadioButton2.TabIndex = 4
-        Me.RadioButton2.Text = "Terminate game"
-        Me.ToolTip_ResultOptions.SetToolTip(Me.RadioButton2, "Ends the debugger and terminates the game." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "You need to re-open the game on next " &
-        "debugging.")
+        Me.RadioButton2.Text = "Terminate client/server"
+        Me.ToolTip_ResultOptions.SetToolTip(Me.RadioButton2, "Ends the debugger and terminates both client and server." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "You need to re-open the" &
+        " game on next debugging.")
         Me.RadioButton2.UseVisualStyleBackColor = True
         '
         'RadioButton3
@@ -146,12 +146,12 @@ Partial Class FormDebuggerStop
         Me.RadioButton3.Location = New System.Drawing.Point(73, 199)
         Me.RadioButton3.Margin = New System.Windows.Forms.Padding(64, 3, 3, 3)
         Me.RadioButton3.Name = "RadioButton3"
-        Me.RadioButton3.Size = New System.Drawing.Size(98, 18)
+        Me.RadioButton3.Size = New System.Drawing.Size(100, 18)
         Me.RadioButton3.TabIndex = 5
-        Me.RadioButton3.Text = "Restart game"
-        Me.ToolTip_ResultOptions.SetToolTip(Me.RadioButton3, "Ends the debugging and restarts the game using the '_restart' command." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Usefull w" &
-        "hen cleaning up maps or memory." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "(BasicPawn debugger runner is required for this" &
-        " to work)" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10))
+        Me.RadioButton3.Text = "Restart server"
+        Me.ToolTip_ResultOptions.SetToolTip(Me.RadioButton3, "Ends the debugging and restarts the server using the '_restart' command." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Usefull" &
+        " when cleaning up maps or memory." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "(BasicPawn debugger runner is required for th" &
+        "is to work)" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10))
         Me.RadioButton3.UseVisualStyleBackColor = True
         '
         'RadioButton4
@@ -194,17 +194,6 @@ Partial Class FormDebuggerStop
         "equired for this to work)" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10))
         Me.RadioButton5.UseVisualStyleBackColor = True
         '
-        'Class_PictureBoxQuality1
-        '
-        Me.Class_PictureBoxQuality1.Image = Global.BasicPawn.My.Resources.Resources.Bmp_Stop
-        Me.Class_PictureBoxQuality1.Location = New System.Drawing.Point(12, 12)
-        Me.Class_PictureBoxQuality1.m_HighQuality = True
-        Me.Class_PictureBoxQuality1.Name = "Class_PictureBoxQuality1"
-        Me.Class_PictureBoxQuality1.Size = New System.Drawing.Size(48, 48)
-        Me.Class_PictureBoxQuality1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
-        Me.Class_PictureBoxQuality1.TabIndex = 2
-        Me.Class_PictureBoxQuality1.TabStop = False
-        '
         'RadioButton6
         '
         Me.RadioButton6.AutoSize = True
@@ -219,6 +208,17 @@ Partial Class FormDebuggerStop
         "te-load checks are required." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "(BasicPawn debugger runner is required for this to" &
         " work)" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10))
         Me.RadioButton6.UseVisualStyleBackColor = True
+        '
+        'Class_PictureBoxQuality1
+        '
+        Me.Class_PictureBoxQuality1.Image = Global.BasicPawn.My.Resources.Resources.Bmp_Stop
+        Me.Class_PictureBoxQuality1.Location = New System.Drawing.Point(12, 12)
+        Me.Class_PictureBoxQuality1.m_HighQuality = True
+        Me.Class_PictureBoxQuality1.Name = "Class_PictureBoxQuality1"
+        Me.Class_PictureBoxQuality1.Size = New System.Drawing.Size(48, 48)
+        Me.Class_PictureBoxQuality1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
+        Me.Class_PictureBoxQuality1.TabIndex = 2
+        Me.Class_PictureBoxQuality1.TabStop = False
         '
         'FormDebuggerStop
         '

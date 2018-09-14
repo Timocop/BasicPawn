@@ -604,9 +604,9 @@ Public Class ClassDebuggerRunner
 
             g_mFormDebugger.Timer_ConnectionCheck.Start()
 
-            g_mFormDebugger.PrintInformation("[INFO]", "Debugger running and listening!", False, False)
-            g_mFormDebugger.PrintInformation("[INFO]", " - Reload the map or enter 'sm plugins refresh' into the servers console to load all new/changed plugins.", False, False)
-            g_mFormDebugger.PrintInformation("[INFO]", " - Change the client's 'cl_timeout' cvar to increase the auto-disconnect countdown when server is not responding. If necessary.", False, False)
+            g_mFormDebugger.PrintInformation("[INFO]", "Debugger running!", False, False)
+            g_mFormDebugger.PrintInformation("[INFO]", " - Reload the map or enter 'sm plugins refresh' into the server's console to load all new/changed plugins.", False, False)
+            g_mFormDebugger.PrintInformation("[INFO]", " - Enter 'cl_timeout 0' into the client's console to disable the auto-disconnect countdown when the server is not responding. If necessary.", False, False)
             g_mFormDebugger.PrintInformation("[INFO]", New String("~"c, 50), False, True)
             SetDebuggerStatus("Status: Debugger running!", Color.Green)
             SetDebuggerStatusConnection(False)
