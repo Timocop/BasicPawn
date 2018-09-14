@@ -1,5 +1,10 @@
 stock any {FunctionName}(any val=0)
 {
+	if(!FileExists("{DebuggerIdentifier}.running.bpdebug"))
+	{
+		return val;
+	}
+	
 	static int iCount;
 	iCount++;
 

@@ -60,6 +60,7 @@ Public Class ClassDebuggerRunner
 
     Private g_bSuspendGame As Boolean = False
 
+    Private g_sDebuggerIdentifier As String = Guid.NewGuid.ToString
     Private g_sLatestDebuggerPlugin As String = ""
     Private g_sLatestDebuggerRunnerPlugin As String = ""
 
@@ -525,10 +526,14 @@ Public Class ClassDebuggerRunner
                 Throw New ArgumentException("Invalid SourceMod directory")
             End If
 
+            g_mFormDebugger.PrintInformation("[INFO]", "Generate new debugger identifier...", False, True)
+            SetDebuggerStatus("Status: Generate new debugger identifier...", Color.Orange)
+
+            'Generate new debugger identifier, so plugins know they are not being debugged anymore.
+            SetDebuggerIdentifier(False)
 
             g_mFormDebugger.PrintInformation("[INFO]", "Starting I/O communicator...", False, True)
             SetDebuggerStatus("Status: Starting I/O communicator...", Color.Orange)
-
 
             'Setup I/O events
             CreateFileSystemWatcher(sServerFolder)
@@ -542,16 +547,14 @@ Public Class ClassDebuggerRunner
             }
             g_mListViewEntitiesUpdaterThread.Start()
 
-
             g_mFormDebugger.PrintInformation("[INFO]", "Compiling plugin and BasicPawn modules...", False, True)
             SetDebuggerStatus("Status: Compiling plugin and BasicPawn modules...", Color.Orange)
-
 
             'Export debugger cmd runner engine
             If (True) Then
                 Dim iCompilerType As ClassTextEditorTools.ENUM_COMPILER_TYPE = ClassTextEditorTools.ENUM_COMPILER_TYPE.UNKNOWN
 
-                Dim sSource As String = g_mFormDebugger.g_ClassDebuggerRunnerEngine.GenerateRunnerEngine(False)
+                Dim sSource As String = g_mFormDebugger.g_ClassDebuggerRunnerEngine.GenerateRunnerEngine(g_sDebuggerIdentifier, False)
                 Dim sOutputFile As String = IO.Path.Combine(m_SourceModFolder, String.Format("plugins\BasicPawnDebugCmdRunEngine-{0}.unk", Guid.NewGuid.ToString))
                 g_sLatestDebuggerRunnerPlugin = sOutputFile
 
@@ -576,13 +579,13 @@ Public Class ClassDebuggerRunner
 
                 g_mFormDebugger.g_ClassDebuggerParser.UpdateBreakpoints(sSource, True, g_mFormDebugger.g_iLanguage)
                 With New ClassDebuggerParser.ClassBreakpoints(g_mFormDebugger.g_mFormMain)
-                    .CompilerReady(sSource, g_mFormDebugger.g_ClassDebuggerParser, g_mFormDebugger.g_iLanguage)
+                    .CompilerReady(sSource, g_sDebuggerIdentifier, g_mFormDebugger.g_ClassDebuggerParser, g_mFormDebugger.g_iLanguage)
                 End With
                 g_mFormDebugger.g_ClassDebuggerParser.UpdateBreakpoints(g_mFormDebugger.TextEditorControlEx_DebuggerSource.Document.TextContent, True, g_mFormDebugger.g_iLanguage)
 
                 g_mFormDebugger.g_ClassDebuggerParser.UpdateWatchers(sSource, True, g_mFormDebugger.g_iLanguage)
                 With New ClassDebuggerParser.ClassWatchers(g_mFormDebugger.g_mFormMain)
-                    .CompilerReady(sSource, g_mFormDebugger.g_ClassDebuggerParser, g_mFormDebugger.g_iLanguage)
+                    .CompilerReady(sSource, g_sDebuggerIdentifier, g_mFormDebugger.g_ClassDebuggerParser, g_mFormDebugger.g_iLanguage)
                 End With
                 g_mFormDebugger.g_ClassDebuggerParser.UpdateWatchers(g_mFormDebugger.TextEditorControlEx_DebuggerSource.Document.TextContent, True, g_mFormDebugger.g_iLanguage)
 
@@ -726,6 +729,9 @@ Public Class ClassDebuggerRunner
                         End If
                 End Select
             End If
+
+            'Generate new debugger identifier, so plugins know they are not being debugged anymore.
+            SetDebuggerIdentifier(True)
 
             'Remove I/O events
             RemoveFileSystemWatcher()
@@ -880,6 +886,24 @@ Public Class ClassDebuggerRunner
             SetDebuggerStatus("Status: Error! " & ex.Message, Color.Red)
             SetDebuggerStatusConnection(False)
         End Try
+    End Sub
+
+    Public Sub SetDebuggerIdentifier(bRemoveOnly As Boolean)
+        Dim sDebuggerIdentifierExt As String = ClassDebuggerParser.g_sDebuggerIdentifierExt
+        Dim sOldFile As String = IO.Path.Combine(m_ServerFolder, g_sDebuggerIdentifier & sDebuggerIdentifierExt)
+
+        If (IO.File.Exists(sOldFile)) Then
+            IO.File.Delete(sOldFile)
+        End If
+
+        If (bRemoveOnly) Then
+            Return
+        End If
+
+        g_sDebuggerIdentifier = Guid.NewGuid.ToString
+
+        Dim sNewFile As String = IO.Path.Combine(m_ServerFolder, g_sDebuggerIdentifier & sDebuggerIdentifierExt)
+        IO.File.WriteAllText(sNewFile, "")
     End Sub
 
     ''' <summary>

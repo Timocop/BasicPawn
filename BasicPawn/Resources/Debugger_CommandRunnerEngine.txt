@@ -108,15 +108,15 @@ public OnGameFrame()
 		}
 		
 		if(!IsStackEmpty(hEntStack)) {
-			new Handle:hEntFile = OpenFile("{IndentifierGUID}.entities.bpdebug", "w");
+			new Handle:hEntFile;
+			while((hEntFile = OpenFile("{IndentifierGUID}.entities.bpdebug", "w")) == INVALID_HANDLE) {}
 			
-			while(hEntFile != INVALID_HANDLE && !IsStackEmpty(hEntStack)) {
+			while(!IsStackEmpty(hEntStack)) {
 				PopStackString(hEntStack, sBuffer, sizeof(sBuffer));
 				WriteFileLine(hEntFile, sBuffer);
 			}
 			
-			if(hEntFile != INVALID_HANDLE)
-				CloseHandle(hEntFile);
+			CloseHandle(hEntFile);
 		}
 		
 		CloseHandle(hEntStack);
@@ -129,9 +129,8 @@ public Action:SendPingTimer(Handle:hTimer)
 {
 	for(; /* Ping to BasicPawn Debugger */ ;)
 	{
-		new Handle:hFile = OpenFile("{IndentifierGUID}.ping.bpdebug", "w");
-		if(hFile == INVALID_HANDLE)
-			break;
+		new Handle:hFile;
+		while((hFile = OpenFile("{IndentifierGUID}.ping.bpdebug", "w")) == INVALID_HANDLE) {}
 		
 		WriteFileString(hFile, "1", false);
 		

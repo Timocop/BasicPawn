@@ -1,5 +1,10 @@
 stock any {FunctionName}(any val=0)
 {
+	if(!FileExists("{DebuggerIdentifier}.running.bpdebug"))
+	{
+		return val;
+	}
+	
 	if(FileExists("{IndentifierGUID}.ignore.bpdebug"))
 	{
 		return val;
@@ -15,6 +20,11 @@ stock any {FunctionName}(any val=0)
 	
 	for(;;)
 	{
+		if(!FileExists("{DebuggerIdentifier}.running.bpdebug"))
+		{
+			break;
+		}
+		
 		if(FileExists("{IndentifierGUID}.continue.bpdebug"))
 		{
 			DeleteFile("{IndentifierGUID}.continue.bpdebug");

@@ -25,6 +25,7 @@ Public Class ClassDebuggerParser
     Public Event OnWatchersUpdate()
 
     Public Shared g_sDebuggerFilesExt As String = ".bpdebug"
+    Public Shared g_sDebuggerIdentifierExt As String = ".running" & g_sDebuggerFilesExt
 
     Public Shared g_sBreakpointName As String = "BPDBreakpoint"
     Public Shared g_sDebuggerBreakpointIgnoreExt As String = ".ignore" & g_sDebuggerFilesExt 'If exist, the breakpoint is disabled
@@ -575,7 +576,7 @@ Public Class ClassDebuggerParser
         ''' </summary>
         ''' <param name="bNewSyntax"></param>
         ''' <returns></returns>
-        Public Function GenerateRunnerEngine(bNewSyntax As Boolean) As String
+        Public Function GenerateRunnerEngine(sDebuggerIdentifier As String, bNewSyntax As Boolean) As String
             Dim SB As New StringBuilder
 
             If (bNewSyntax) Then
@@ -585,6 +586,7 @@ Public Class ClassDebuggerParser
                 SB.AppendLine(My.Resources.Debugger_CommandRunnerEngineOld)
             End If
 
+            SB.Replace("{DebuggerIdentifier}", sDebuggerIdentifier)
             SB.Replace("{IndentifierGUID}", g_sDebuggerRunnerGuid)
 
             Return SB.ToString
@@ -869,7 +871,7 @@ Public Class ClassDebuggerParser
             sSource = SB.ToString
         End Sub
 
-        Public Function GenerateModuleCode(sFunctionName As String, sIndentifierGUID As String, bNewSyntax As Boolean) As String
+        Public Function GenerateModuleCode(sDebuggerIdentifier As String, sFunctionName As String, sIndentifierGUID As String, bNewSyntax As Boolean) As String
             Dim SB As New StringBuilder
 
             If (bNewSyntax) Then
@@ -878,13 +880,14 @@ Public Class ClassDebuggerParser
                 SB.AppendLine(My.Resources.Debugger_BreakpointModuleOld)
             End If
 
+            SB.Replace("{DebuggerIdentifier}", sDebuggerIdentifier)
             SB.Replace("{FunctionName}", sFunctionName)
             SB.Replace("{IndentifierGUID}", sIndentifierGUID)
 
             Return SB.ToString
         End Function
 
-        Public Sub CompilerReady(ByRef sSource As String, debuggerParser As ClassDebuggerParser, iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE)
+        Public Sub CompilerReady(ByRef sSource As String, sDebuggerIdentifier As String, debuggerParser As ClassDebuggerParser, iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE)
             Dim SB As New StringBuilder(sSource)
             Dim SBModules As New StringBuilder()
 
@@ -899,7 +902,7 @@ Public Class ClassDebuggerParser
                 SB.Remove(iIndex, iLength)
                 SB.Insert(iIndex, sNewName)
 
-                SBModules.AppendLine(GenerateModuleCode(sNewName, sGUID, bForceNewSyntax))
+                SBModules.AppendLine(GenerateModuleCode(sDebuggerIdentifier, sNewName, sGUID, bForceNewSyntax))
             Next
 
             SB.AppendLine()
@@ -1174,7 +1177,7 @@ Public Class ClassDebuggerParser
             sSource = SB.ToString
         End Sub
 
-        Public Function GenerateModuleCode(sFunctionName As String, sIndentifierGUID As String, bNewSyntax As Boolean) As String
+        Public Function GenerateModuleCode(sDebuggerIdentifier As String, sFunctionName As String, sIndentifierGUID As String, bNewSyntax As Boolean) As String
             Dim SB As New StringBuilder
 
             If (bNewSyntax) Then
@@ -1183,13 +1186,14 @@ Public Class ClassDebuggerParser
                 SB.AppendLine(My.Resources.Debugger_WatcherModuleOld)
             End If
 
+            SB.Replace("{DebuggerIdentifier}", sDebuggerIdentifier)
             SB.Replace("{FunctionName}", sFunctionName)
             SB.Replace("{IndentifierGUID}", sIndentifierGUID)
 
             Return SB.ToString
         End Function
 
-        Public Sub CompilerReady(ByRef sSource As String, debuggerParser As ClassDebuggerParser, iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE)
+        Public Sub CompilerReady(ByRef sSource As String, sDebuggerIdentifier As String, debuggerParser As ClassDebuggerParser, iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE)
             Dim SB As New StringBuilder(sSource)
             Dim SBModules As New StringBuilder()
 
@@ -1204,7 +1208,7 @@ Public Class ClassDebuggerParser
                 SB.Remove(iIndex, iLength)
                 SB.Insert(iIndex, sNewName)
 
-                SBModules.AppendLine(GenerateModuleCode(sNewName, sGUID, bForceNewSyntax))
+                SBModules.AppendLine(GenerateModuleCode(sDebuggerIdentifier, sNewName, sGUID, bForceNewSyntax))
             Next
 
             SB.AppendLine()
