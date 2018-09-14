@@ -5,9 +5,8 @@ stock any:{FunctionName}(any:val=0)
 		return val;
 	}
 	
-	new Handle:hTriggerFile = OpenFile("{IndentifierGUID}.trigger.bpdebug", "w");
-	if(hTriggerFile == INVALID_HANDLE)
-		return val;
+	new Handle:hTriggerFile;
+	while((hTriggerFile = OpenFile("{IndentifierGUID}.trigger.bpdebug", "w")) == INVALID_HANDLE) {}
 	
 	WriteFileLine(hTriggerFile, "i:%d", val);
 	WriteFileLine(hTriggerFile, "f:%f", val);
