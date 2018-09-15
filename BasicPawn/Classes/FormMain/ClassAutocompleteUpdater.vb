@@ -16,6 +16,7 @@
 
 #Const SEARCH_EVERYWHERE = False
 #Const PROFILE_AUTOCOMPLETE = False
+#Const DUMP_TO_FILE = False
 
 Imports System.Text
 Imports System.Text.RegularExpressions
@@ -362,6 +363,24 @@ Public Class ClassAutocompleteUpdater
                 Sub()
                     mRequestTab.m_AutocompleteItems.RemoveAll(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = 0)
                     mRequestTab.m_AutocompleteItems.AddRange(lNewAutocompleteList.ToArray)
+
+#If DUMP_TO_FILE Then
+                    If (True) Then
+                        Dim mSB As New StringBuilder
+
+                        For Each mItem In lNewAutocompleteList.ToArray
+                            mSB.AppendLine(mItem.m_Filename)
+
+                            For Each sKey In mItem.m_Data.Keys
+                                mSB.AppendLine(vbTab & sKey & "=" & mItem.m_Data(sKey).ToString)
+                            Next
+                        Next
+
+                        Dim sDumpDir As String = IO.Path.Combine(Application.StartupPath, "DUMP")
+                        IO.Directory.CreateDirectory(sDumpDir)
+                        IO.File.WriteAllText(IO.Path.Combine(sDumpDir, "full.txt"), mSB.ToString)
+                    End If
+#End If
                 End Sub)
             mApplyWatch.Stop()
 
@@ -2423,6 +2442,24 @@ Public Class ClassAutocompleteUpdater
                 Sub()
                     mRequestTab.m_AutocompleteItems.RemoveAll(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> 0)
                     mRequestTab.m_AutocompleteItems.AddRange(lNewVarAutocompleteList.ToArray)
+
+#If DUMP_TO_FILE Then
+                    If (True) Then
+                        Dim mSB As New StringBuilder
+
+                        For Each mItem In lNewVarAutocompleteList.ToArray
+                            mSB.AppendLine(mItem.m_Filename)
+
+                            For Each sKey In mItem.m_Data.Keys
+                                mSB.AppendLine(vbTab & sKey & "=" & mItem.m_Data(sKey).ToString)
+                            Next
+                        Next
+
+                        Dim sDumpDir As String = IO.Path.Combine(Application.StartupPath, "DUMP")
+                        IO.Directory.CreateDirectory(sDumpDir)
+                        IO.File.WriteAllText(IO.Path.Combine(sDumpDir, "var.txt"), mSB.ToString)
+                    End If
+#End If
                 End Sub)
             mApplyWatch.Stop()
 
@@ -3152,28 +3189,41 @@ Public Class ClassAutocompleteUpdater
                     Continue For
                 End If
 
-                For Each mMethodmapItem In lOldVarAutocompleteList
-                    If ((mMethodmapItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) = 0 OrElse
+                Dim lTargetTags As New Stack(Of String)
+                For Each sTag In sVariableTags
+                    lTargetTags.Push(sTag)
+                Next
+
+                While (lTargetTags.Count <> 0)
+                    Dim sTargetTag As String = lTargetTags.Pop
+
+                    For Each mMethodmapItem In lOldVarAutocompleteList
+                        If ((mMethodmapItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) = 0 OrElse
                                 Not mMethodmapItem.m_FunctionString.Contains("."c)) Then
-                        Continue For
-                    End If
+                            Continue For
+                        End If
 
-                    'TODO: Dont use yet, make methodmap parsing more efficent first
-                    'If ((mMethodmapItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STATIC) <> 0) Then
-                    '    Continue For
-                    'End If
+                        'TODO: Dont use yet, make methodmap parsing more efficent first
+                        'If ((mMethodmapItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STATIC) <> 0) Then
+                        '    Continue For
+                        'End If
 
-                    Dim sMethodmapName As String = CStr(mMethodmapItem.m_Data("MethodmapName"))
-                    Dim sMethodmapMethodName As String = CStr(mMethodmapItem.m_Data("MethodmapMethodName"))
-                    If (String.IsNullOrEmpty(sMethodmapName) OrElse String.IsNullOrEmpty(sMethodmapMethodName)) Then
-                        Continue For
-                    End If
+                        Dim sMethodmapName As String = CStr(mMethodmapItem.m_Data("MethodmapName"))
+                        Dim sMethodmapMethodName As String = CStr(mMethodmapItem.m_Data("MethodmapMethodName"))
+                        Dim sMethodmapParentName As String = CStr(mMethodmapItem.m_Data("MethodmapParentName"))
+                        If (String.IsNullOrEmpty(sMethodmapName) OrElse String.IsNullOrEmpty(sMethodmapMethodName)) Then
+                            Continue For
+                        End If
 
-                    If (Array.IndexOf(sVariableTags, sMethodmapName) = -1) Then
-                        Continue For
-                    End If
+                        If (sTargetTag <> sMethodmapName) Then
+                            Continue For
+                        End If
 
-                    Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(mMethodmapItem.m_Info,
+                        If (Not String.IsNullOrEmpty(sMethodmapParentName)) Then
+                            lTargetTags.Push(sMethodmapParentName)
+                        End If
+
+                        Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(mMethodmapItem.m_Info,
                                                                                 mVariableItem.m_Filename,
                                                                                 mVariableItem.m_Path,
                                                                                 (ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE Or mMethodmapItem.m_Type) And Not ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP,
@@ -3181,25 +3231,26 @@ Public Class ClassAutocompleteUpdater
                                                                                 String.Format("{0}.{1}", sVariableName, sMethodmapMethodName),
                                                                                 mMethodmapItem.m_FullFunctionString)
 
-                    mAutocomplete.m_Data("VariableName") = sVariableName
-                    mAutocomplete.m_Data("VariableTags") = sVariableTags
+                        mAutocomplete.m_Data("VariableName") = sVariableName
+                        mAutocomplete.m_Data("VariableTags") = sVariableTags
 
-                    For Each mData In mMethodmapItem.m_Data
-                        mAutocomplete.m_Data(mData.Key) = mData.Value
-                    Next
+                        For Each mData In mMethodmapItem.m_Data
+                            mAutocomplete.m_Data(mData.Key) = mData.Value
+                        Next
 
-                    mAutocomplete.m_Data("VariableMethodmapName") = sVariableName
-                    mAutocomplete.m_Data("VariableMethodmapMethod") = sMethodmapMethodName
+                        mAutocomplete.m_Data("VariableMethodmapName") = sVariableName
+                        mAutocomplete.m_Data("VariableMethodmapMethod") = sMethodmapMethodName
 
 #If DEBUG Then
-                    mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Make methodmaps using variables"
+                        mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Make methodmaps using variables"
 #End If
 
-                    If (Not lNewVarAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString) AndAlso
+                        If (Not lNewVarAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString) AndAlso
                                 Not lVarMethodmapList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
-                        lVarMethodmapList.Add(mAutocomplete)
-                    End If
-                Next
+                            lVarMethodmapList.Add(mAutocomplete)
+                        End If
+                    Next
+                End While
             Next
 
             lNewVarAutocompleteList.AddRange(lVarMethodmapList.ToArray)
@@ -3224,54 +3275,66 @@ Public Class ClassAutocompleteUpdater
                     Continue For
                 End If
 
-                For Each mMethodmapItem In lOldVarAutocompleteList
-                    If ((mMethodmapItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) = 0 OrElse
-                                Not mMethodmapItem.m_FunctionString.Contains("."c)) Then
-                        Continue For
-                    End If
+                Dim lTargetTags As New Stack(Of String)
+                lTargetTags.Push(sVariableTag)
 
-                    'TODO: Dont use yet, make methodmap parsing more efficent first
-                    'If ((mMethodmapItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STATIC) <> 0) Then
-                    '    Continue For
-                    'End If
+                While (lTargetTags.Count <> 0)
+                    Dim sTargetTag As String = lTargetTags.Pop
 
-                    Dim sMethodmapName As String = CStr(mMethodmapItem.m_Data("MethodmapName"))
-                    Dim sMethodmapMethodName As String = CStr(mMethodmapItem.m_Data("MethodmapMethodName"))
-                    If (String.IsNullOrEmpty(sMethodmapName) OrElse String.IsNullOrEmpty(sMethodmapMethodName)) Then
-                        Continue For
-                    End If
+                    For Each mMethodmapItem In lOldVarAutocompleteList
+                        If ((mMethodmapItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) = 0 OrElse
+                                    Not mMethodmapItem.m_FunctionString.Contains("."c)) Then
+                            Continue For
+                        End If
 
-                    If (sVariableTag <> sMethodmapName) Then
-                        Continue For
-                    End If
+                        'TODO: Dont use yet, make methodmap parsing more efficent first
+                        'If ((mMethodmapItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STATIC) <> 0) Then
+                        '    Continue For
+                        'End If
 
-                    Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(mMethodmapItem.m_Info,
-                                                                                mVariableItem.m_Filename,
-                                                                                mVariableItem.m_Path,
-                                                                                (ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE Or mMethodmapItem.m_Type) And Not ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP,
-                                                                                sMethodmapMethodName,
-                                                                                String.Format("{0}.{1}", sVariableName, sMethodmapMethodName),
-                                                                                mMethodmapItem.m_FullFunctionString)
+                        Dim sMethodmapName As String = CStr(mMethodmapItem.m_Data("MethodmapName"))
+                        Dim sMethodmapMethodName As String = CStr(mMethodmapItem.m_Data("MethodmapMethodName"))
+                        Dim sMethodmapParentName As String = CStr(mMethodmapItem.m_Data("MethodmapParentName"))
+                        If (String.IsNullOrEmpty(sMethodmapName) OrElse String.IsNullOrEmpty(sMethodmapMethodName)) Then
+                            Continue For
+                        End If
 
-                    mAutocomplete.m_Data("VariableName") = sVariableName
-                    mAutocomplete.m_Data("VariableTags") = New String() {sVariableTag}
+                        If (sTargetTag <> sMethodmapName) Then
+                            Continue For
+                        End If
 
-                    For Each mData In mMethodmapItem.m_Data
-                        mAutocomplete.m_Data(mData.Key) = mData.Value
-                    Next
+                        If (Not String.IsNullOrEmpty(sMethodmapParentName)) Then
+                            lTargetTags.Push(sMethodmapParentName)
+                        End If
 
-                    mAutocomplete.m_Data("VariableMethodmapName") = sVariableName
-                    mAutocomplete.m_Data("VariableMethodmapMethod") = sMethodmapMethodName
+                        Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(mMethodmapItem.m_Info,
+                                                                                    mVariableItem.m_Filename,
+                                                                                    mVariableItem.m_Path,
+                                                                                    (ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE Or mMethodmapItem.m_Type) And Not ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP,
+                                                                                    sMethodmapMethodName,
+                                                                                    String.Format("{0}.{1}", sVariableName, sMethodmapMethodName),
+                                                                                    mMethodmapItem.m_FullFunctionString)
+
+                        mAutocomplete.m_Data("VariableName") = sVariableName
+                        mAutocomplete.m_Data("VariableTags") = New String() {sVariableTag}
+
+                        For Each mData In mMethodmapItem.m_Data
+                            mAutocomplete.m_Data(mData.Key) = mData.Value
+                        Next
+
+                        mAutocomplete.m_Data("VariableMethodmapName") = sVariableName
+                        mAutocomplete.m_Data("VariableMethodmapMethod") = sMethodmapMethodName
 
 #If DEBUG Then
-                    mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Make methodmaps using methods"
+                        mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Make methodmaps using methods"
 #End If
 
-                    If (Not lNewVarAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString) AndAlso
-                                Not lVarMethodmapList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
-                        lVarMethodmapList.Add(mAutocomplete)
-                    End If
-                Next
+                        If (Not lNewVarAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString) AndAlso
+                                    Not lVarMethodmapList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
+                            lVarMethodmapList.Add(mAutocomplete)
+                        End If
+                    Next
+                End While
             Next
 
             lNewVarAutocompleteList.AddRange(lVarMethodmapList.ToArray)
