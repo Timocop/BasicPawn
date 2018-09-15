@@ -3189,6 +3189,7 @@ Public Class ClassAutocompleteUpdater
                     Continue For
                 End If
 
+                Dim lSkipTags As New List(Of String)
                 Dim lTargetTags As New Stack(Of String)
                 For Each sTag In sVariableTags
                     lTargetTags.Push(sTag)
@@ -3196,6 +3197,10 @@ Public Class ClassAutocompleteUpdater
 
                 While (lTargetTags.Count <> 0)
                     Dim sTargetTag As String = lTargetTags.Pop
+
+                    If (lSkipTags.Contains(sTargetTag)) Then
+                        Continue While
+                    End If
 
                     For Each mMethodmapItem In lOldVarAutocompleteList
                         If ((mMethodmapItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) = 0 OrElse
@@ -3221,6 +3226,7 @@ Public Class ClassAutocompleteUpdater
 
                         If (Not String.IsNullOrEmpty(sMethodmapParentName)) Then
                             lTargetTags.Push(sMethodmapParentName)
+                            lSkipTags.Add(sTargetTag)
                         End If
 
                         Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(mMethodmapItem.m_Info,
@@ -3275,11 +3281,16 @@ Public Class ClassAutocompleteUpdater
                     Continue For
                 End If
 
+                Dim lSkipTags As New List(Of String)
                 Dim lTargetTags As New Stack(Of String)
                 lTargetTags.Push(sVariableTag)
 
                 While (lTargetTags.Count <> 0)
                     Dim sTargetTag As String = lTargetTags.Pop
+
+                    If (lSkipTags.Contains(sTargetTag)) Then
+                        Continue While
+                    End If
 
                     For Each mMethodmapItem In lOldVarAutocompleteList
                         If ((mMethodmapItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) = 0 OrElse
@@ -3305,6 +3316,7 @@ Public Class ClassAutocompleteUpdater
 
                         If (Not String.IsNullOrEmpty(sMethodmapParentName)) Then
                             lTargetTags.Push(sMethodmapParentName)
+                            lSkipTags.Add(sTargetTag)
                         End If
 
                         Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(mMethodmapItem.m_Info,
