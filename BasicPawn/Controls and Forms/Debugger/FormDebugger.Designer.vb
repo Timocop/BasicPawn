@@ -70,6 +70,10 @@ Partial Class FormDebugger
         Me.ToolStripMenuItem_BreakpointsDisableAll = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_BreakpointsSetValues = New System.Windows.Forms.ToolStripMenuItem()
+        Me.TabPage_Asserts = New System.Windows.Forms.TabPage()
+        Me.ListView_Asserts = New System.Windows.Forms.ListView()
+        Me.ColumnHeader11 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.ColumnHeader12 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.TabPage_Watchers = New System.Windows.Forms.TabPage()
         Me.ListView_Watchers = New System.Windows.Forms.ListView()
         Me.ColumnHeader3 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
@@ -82,10 +86,6 @@ Partial Class FormDebugger
         Me.ColumnHeader9 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader10 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.Timer_ConnectionCheck = New System.Windows.Forms.Timer(Me.components)
-        Me.TabPage_Asserts = New System.Windows.Forms.TabPage()
-        Me.ListView_Asserts = New System.Windows.Forms.ListView()
-        Me.ColumnHeader11 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.ColumnHeader12 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.StatusStrip_BPDebugger.SuspendLayout()
         Me.MenuStrip_BPDebugger.SuspendLayout()
         Me.SplitContainer1.Panel1.SuspendLayout()
@@ -102,9 +102,9 @@ Partial Class FormDebugger
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Breakpoints.SuspendLayout()
         Me.ContextMenuStrip_Breakpoints.SuspendLayout()
+        Me.TabPage_Asserts.SuspendLayout()
         Me.TabPage_Watchers.SuspendLayout()
         Me.TabPage_Entities.SuspendLayout()
-        Me.TabPage_Asserts.SuspendLayout()
         Me.SuspendLayout()
         '
         'StatusStrip_BPDebugger
@@ -386,6 +386,7 @@ Partial Class FormDebugger
         '
         Me.ListBox_Information.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ListBox_Information.FormattingEnabled = True
+        Me.ListBox_Information.HorizontalScrollbar = True
         Me.ListBox_Information.Location = New System.Drawing.Point(3, 3)
         Me.ListBox_Information.Name = "ListBox_Information"
         Me.ListBox_Information.Size = New System.Drawing.Size(701, 139)
@@ -475,6 +476,40 @@ Partial Class FormDebugger
         Me.ToolStripMenuItem_BreakpointsSetValues.Size = New System.Drawing.Size(199, 22)
         Me.ToolStripMenuItem_BreakpointsSetValues.Text = "Set active breakpoint value..."
         '
+        'TabPage_Asserts
+        '
+        Me.TabPage_Asserts.Controls.Add(Me.ListView_Asserts)
+        Me.TabPage_Asserts.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage_Asserts.Name = "TabPage_Asserts"
+        Me.TabPage_Asserts.Size = New System.Drawing.Size(281, 657)
+        Me.TabPage_Asserts.TabIndex = 3
+        Me.TabPage_Asserts.Text = "Asserts"
+        Me.TabPage_Asserts.UseVisualStyleBackColor = True
+        '
+        'ListView_Asserts
+        '
+        Me.ListView_Asserts.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader11, Me.ColumnHeader12})
+        Me.ListView_Asserts.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ListView_Asserts.FullRowSelect = True
+        Me.ListView_Asserts.HideSelection = False
+        Me.ListView_Asserts.Location = New System.Drawing.Point(0, 0)
+        Me.ListView_Asserts.MultiSelect = False
+        Me.ListView_Asserts.Name = "ListView_Asserts"
+        Me.ListView_Asserts.Size = New System.Drawing.Size(281, 657)
+        Me.ListView_Asserts.TabIndex = 1
+        Me.ListView_Asserts.UseCompatibleStateImageBehavior = False
+        Me.ListView_Asserts.View = System.Windows.Forms.View.Details
+        '
+        'ColumnHeader11
+        '
+        Me.ColumnHeader11.Text = "Line"
+        Me.ColumnHeader11.Width = 50
+        '
+        'ColumnHeader12
+        '
+        Me.ColumnHeader12.Text = "Assert"
+        Me.ColumnHeader12.Width = 200
+        '
         'TabPage_Watchers
         '
         Me.TabPage_Watchers.Controls.Add(Me.ListView_Watchers)
@@ -559,40 +594,6 @@ Partial Class FormDebugger
         '
         Me.Timer_ConnectionCheck.Interval = 10000
         '
-        'TabPage_Asserts
-        '
-        Me.TabPage_Asserts.Controls.Add(Me.ListView_Asserts)
-        Me.TabPage_Asserts.Location = New System.Drawing.Point(4, 22)
-        Me.TabPage_Asserts.Name = "TabPage_Asserts"
-        Me.TabPage_Asserts.Size = New System.Drawing.Size(281, 657)
-        Me.TabPage_Asserts.TabIndex = 3
-        Me.TabPage_Asserts.Text = "Asserts"
-        Me.TabPage_Asserts.UseVisualStyleBackColor = True
-        '
-        'ListView_Asserts
-        '
-        Me.ListView_Asserts.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader11, Me.ColumnHeader12})
-        Me.ListView_Asserts.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ListView_Asserts.FullRowSelect = True
-        Me.ListView_Asserts.HideSelection = False
-        Me.ListView_Asserts.Location = New System.Drawing.Point(0, 0)
-        Me.ListView_Asserts.MultiSelect = False
-        Me.ListView_Asserts.Name = "ListView_Asserts"
-        Me.ListView_Asserts.Size = New System.Drawing.Size(281, 657)
-        Me.ListView_Asserts.TabIndex = 1
-        Me.ListView_Asserts.UseCompatibleStateImageBehavior = False
-        Me.ListView_Asserts.View = System.Windows.Forms.View.Details
-        '
-        'ColumnHeader11
-        '
-        Me.ColumnHeader11.Text = "Line"
-        Me.ColumnHeader11.Width = 50
-        '
-        'ColumnHeader12
-        '
-        Me.ColumnHeader12.Text = "Assert"
-        Me.ColumnHeader12.Width = 200
-        '
         'FormDebugger
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -625,9 +626,9 @@ Partial Class FormDebugger
         Me.TabControl1.ResumeLayout(False)
         Me.TabPage_Breakpoints.ResumeLayout(False)
         Me.ContextMenuStrip_Breakpoints.ResumeLayout(False)
+        Me.TabPage_Asserts.ResumeLayout(False)
         Me.TabPage_Watchers.ResumeLayout(False)
         Me.TabPage_Entities.ResumeLayout(False)
-        Me.TabPage_Asserts.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
