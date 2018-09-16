@@ -86,6 +86,7 @@ Partial Class FormDebugger
         Me.ColumnHeader9 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader10 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.Timer_ConnectionCheck = New System.Windows.Forms.Timer(Me.components)
+        Me.ColumnHeader13 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.StatusStrip_BPDebugger.SuspendLayout()
         Me.MenuStrip_BPDebugger.SuspendLayout()
         Me.SplitContainer1.Panel1.SuspendLayout()
@@ -488,7 +489,7 @@ Partial Class FormDebugger
         '
         'ListView_Asserts
         '
-        Me.ListView_Asserts.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader11, Me.ColumnHeader12})
+        Me.ListView_Asserts.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader11, Me.ColumnHeader12, Me.ColumnHeader13})
         Me.ListView_Asserts.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ListView_Asserts.FullRowSelect = True
         Me.ListView_Asserts.HideSelection = False
@@ -508,7 +509,7 @@ Partial Class FormDebugger
         'ColumnHeader12
         '
         Me.ColumnHeader12.Text = "Assert"
-        Me.ColumnHeader12.Width = 200
+        Me.ColumnHeader12.Width = 100
         '
         'TabPage_Watchers
         '
@@ -593,6 +594,11 @@ Partial Class FormDebugger
         'Timer_ConnectionCheck
         '
         Me.Timer_ConnectionCheck.Interval = 10000
+        '
+        'ColumnHeader13
+        '
+        Me.ColumnHeader13.Text = "Value"
+        Me.ColumnHeader13.Width = 100
         '
         'FormDebugger
         '
@@ -692,4 +698,5 @@ Partial Class FormDebugger
     Friend WithEvents ListView_Asserts As ListView
     Friend WithEvents ColumnHeader11 As ColumnHeader
     Friend WithEvents ColumnHeader12 As ColumnHeader
+    Friend WithEvents ColumnHeader13 As ColumnHeader
 End Class

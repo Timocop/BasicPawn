@@ -17,6 +17,10 @@ stock any {FunctionName}(any val=0, char ...)
 	
 	Handle hTriggerFile;
 	while((hTriggerFile = OpenFile("{IndentifierGUID}.trigger.bpdebug", "w")) == INVALID_HANDLE) {}
+	
+	WriteFileLine(hTriggerFile, "i:%d", val);
+	WriteFileLine(hTriggerFile, "f:%f", val);
+	FlushFile(hTriggerFile);
 	CloseHandle(hTriggerFile);
 	
 	for(;;)

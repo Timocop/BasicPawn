@@ -96,6 +96,8 @@ Public Class ClassDebuggerRunner
 
     Structure STRUC_ACTIVE_ASSERT_INFORMATION
         Dim sGUID As String
+        Dim sOrginalIntegerValue As String
+        Dim sOrginalFloatValue As String
     End Structure
     Public g_mActiveAssertInfo As STRUC_ACTIVE_ASSERT_INFORMATION
 
@@ -178,7 +180,7 @@ Public Class ClassDebuggerRunner
 
             For Each mProcess As Process In Process.GetProcesses
                 Try
-                    If (mProcess.Id = Process.GetCurrentProcess.Id) Then
+                    If (mProcess.HasExited OrElse mProcess.Id = Process.GetCurrentProcess.Id) Then
                         Continue For
                     End If
 
@@ -329,6 +331,8 @@ Public Class ClassDebuggerRunner
                 Else
                     mListViewItemData.BackColor = ClassControlStyle.g_cDarkControlColor.mLightBackground
                 End If
+
+                mListViewItemData.SubItems(2).Text = ""
             Next
         Else
             For i = 0 To g_mFormDebugger.ListView_Asserts.Items.Count - 1
@@ -343,6 +347,8 @@ Public Class ClassDebuggerRunner
                     mListViewItemData.Selected = False
 
                     g_mFormDebugger.TabControl1.SelectTab(g_mFormDebugger.TabPage_Asserts)
+
+                    mListViewItemData.SubItems(2).Text = String.Format("i:{0} | f:{1}", g_mActiveAssertInfo.sOrginalIntegerValue, g_mActiveAssertInfo.sOrginalFloatValue.Replace(",", "."))
                 End If
             Next
         End If
@@ -714,13 +720,13 @@ Public Class ClassDebuggerRunner
                         Dim sClientParentFolder As String = Nothing
                         Dim sServerParentFolder As String = Nothing
 
-                        For Each proc As Process In Process.GetProcesses
+                        For Each mProcess As Process In Process.GetProcesses
                             Try
-                                If (proc.Id = Process.GetCurrentProcess.Id) Then
+                                If (mProcess.HasExited OrElse mProcess.Id = Process.GetCurrentProcess.Id) Then
                                     Continue For
                                 End If
 
-                                Dim sFullPath As String = IO.Path.GetFullPath(proc.MainModule.FileName)
+                                Dim sFullPath As String = IO.Path.GetFullPath(mProcess.MainModule.FileName)
                                 If (sFullPath.ToLower = Application.ExecutablePath.ToLower) Then
                                     Continue For
                                 End If
@@ -735,10 +741,10 @@ Public Class ClassDebuggerRunner
 
                                 Select Case (True)
                                     Case (sClientParentFolder IsNot Nothing AndAlso sClientParentFolder.Length > 3 AndAlso sFullPath.ToLower.StartsWith(sClientParentFolder.ToLower))
-                                        proc.Kill()
+                                        mProcess.Kill()
 
                                     Case (sServerParentFolder IsNot Nothing AndAlso sServerParentFolder.Length > 3 AndAlso sFullPath.ToLower.StartsWith(sServerParentFolder.ToLower))
-                                        proc.Kill()
+                                        mProcess.Kill()
                                 End Select
                             Catch ex As Exception
                                 'Ignore access denied
@@ -1147,7 +1153,9 @@ Public Class ClassDebuggerRunner
                     .sOrginalFloatValue = sFloat
                 }
                 g_mActiveAssertInfo = New STRUC_ACTIVE_ASSERT_INFORMATION With {
-                    .sGUID = ""
+                    .sGUID = "",
+                    .sOrginalIntegerValue = "-1",
+                    .sOrginalFloatValue = "-1.0"
                 }
 
                 'INFO: Dont use 'Invoke' it deadlocks on FileSystemWatcher.Dispose, use async 'BeginInvoke' instead.
@@ -1287,12 +1295,45 @@ Public Class ClassDebuggerRunner
                 Return
             End If
 
+
+            Dim sLines As String() = New String() {}
+
+            Dim mStopWatch As New Stopwatch
+            mStopWatch.Start()
+            While True
+                Try
+                    If (mStopWatch.ElapsedMilliseconds > 2500) Then
+                        mStopWatch.Stop()
+                        Return
+                    End If
+
+                    sLines = IO.File.ReadAllLines(sFile) 'Tools.StringReadLinesEnd(sFile, 3) 'IO.File.ReadAllLines(sFile)
+
+                    Exit While
+                Catch ex As Threading.ThreadAbortException
+                    Throw
+                Catch ex As Exception
+                End Try
+            End While
+            mStopWatch.Stop()
+
             Try
                 IO.File.Delete(sFile)
             Catch ex As Threading.ThreadAbortException
                 Throw
             Catch ex As Exception
             End Try
+
+            Dim sInteger As String
+            Dim sFloat As String
+            If (sLines.Length < 2) Then
+                sInteger = "-1"
+                sFloat = "-1.0"
+            Else
+                sInteger = sLines(0).Remove(0, "i:".Length)
+                sFloat = sLines(1).Remove(0, "f:".Length)
+            End If
+
 
             'Make sure other async threads doenst fuckup everthing
             SyncLock g_mFileSystemWatcherLock
@@ -1309,7 +1350,9 @@ Public Class ClassDebuggerRunner
                     .sOrginalFloatValue = "-1.0"
                 }
                 g_mActiveAssertInfo = New STRUC_ACTIVE_ASSERT_INFORMATION With {
-                    .sGUID = sGUID
+                    .sGUID = sGUID,
+                    .sOrginalIntegerValue = sInteger,
+                    .sOrginalFloatValue = sFloat
                 }
 
                 'INFO: Dont use 'Invoke' it deadlocks on FileSystemWatcher.Dispose, use async 'BeginInvoke' instead.
