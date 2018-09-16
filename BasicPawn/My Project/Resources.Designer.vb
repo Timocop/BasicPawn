@@ -181,16 +181,84 @@ Namespace My.Resources
         End Property
         
         '''<summary>
-        '''  Looks up a localized string similar to stock any {FunctionName}(any val=0)
+        '''  Looks up a localized string similar to stock any {FunctionName}(any val=0, char ...)
         '''{
+        '''	if(!FileExists(&quot;{DebuggerIdentifier}.running.bpdebug&quot;))
+        '''	{
+        '''		return val;
+        '''	}
+        '''	
         '''	if(FileExists(&quot;{IndentifierGUID}.ignore.bpdebug&quot;))
         '''	{
         '''		return val;
         '''	}
         '''	
-        '''	Handle hTriggerFile = OpenFile(&quot;{IndentifierGUID}.trigger.bpdebug&quot;, &quot;w&quot;);
-        '''	if(hTriggerFile == INVALID_HANDLE)
+        '''	Handle hTriggerFile;
+        '''	while((hTriggerFile = OpenFile(&quot;{IndentifierGUID}.trigger.bpdebug&quot;, &quot;w&quot;)) == INVALID_HANDLE) {}
+        '''	CloseHandle(hTriggerFile);
+        '''	
+        '''	for(;;)
+        '''	{
+        '''		if(!FileExists(&quot;{DebuggerIdentifier}.running.bpdebug&quot;))
+        '''		{
+        '''			break;
+        '''		}
+        '''		
+        '''		if(FileExists(&quot;{IndentifierGUID}.continue.bpde [rest of string was truncated]&quot;;.
+        '''</summary>
+        Public ReadOnly Property Debugger_AssertModuleNew() As String
+            Get
+                Return ResourceManager.GetString("Debugger_AssertModuleNew", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to stock any:{FunctionName}(any:val=0, String:...)
+        '''{
+        '''	if(!FileExists(&quot;{DebuggerIdentifier}.running.bpdebug&quot;))
+        '''	{
         '''		return val;
+        '''	}
+        '''	
+        '''	if(FileExists(&quot;{IndentifierGUID}.ignore.bpdebug&quot;))
+        '''	{
+        '''		return val;
+        '''	}
+        '''	
+        '''	Handle hTriggerFile;
+        '''	while((hTriggerFile = OpenFile(&quot;{IndentifierGUID}.trigger.bpdebug&quot;, &quot;w&quot;)) == INVALID_HANDLE) {}
+        '''	CloseHandle(hTriggerFile);
+        '''	
+        '''	for(;;)
+        '''	{
+        '''		if(!FileExists(&quot;{DebuggerIdentifier}.running.bpdebug&quot;))
+        '''		{
+        '''			break;
+        '''		}
+        '''		
+        '''		if(FileExists(&quot;{IndentifierGUID}.continue.bp [rest of string was truncated]&quot;;.
+        '''</summary>
+        Public ReadOnly Property Debugger_AssertModuleOld() As String
+            Get
+                Return ResourceManager.GetString("Debugger_AssertModuleOld", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to stock any {FunctionName}(any val=0)
+        '''{
+        '''	if(!FileExists(&quot;{DebuggerIdentifier}.running.bpdebug&quot;))
+        '''	{
+        '''		return val;
+        '''	}
+        '''	
+        '''	if(FileExists(&quot;{IndentifierGUID}.ignore.bpdebug&quot;))
+        '''	{
+        '''		return val;
+        '''	}
+        '''	
+        '''	Handle hTriggerFile;
+        '''	while((hTriggerFile = OpenFile(&quot;{IndentifierGUID}.trigger.bpdebug&quot;, &quot;w&quot;)) == INVALID_HANDLE) {}
         '''	
         '''	WriteFileLine(hTriggerFile, &quot;i:%d&quot;, val);
         '''	WriteFileLine(hTriggerFile, &quot;f:%f&quot;, val);
@@ -199,9 +267,7 @@ Namespace My.Resources
         '''	
         '''	for(;;)
         '''	{
-        '''		if(FileExists(&quot;{IndentifierGUID}.continue.bpdebug&quot;))
-        '''		{
-        '''			DeleteFile(&quot;{IndentifierGUID}.continu [rest of string was truncated]&quot;;.
+        '''		if(!FileExists(&quot;{Debug [rest of string was truncated]&quot;;.
         '''</summary>
         Public ReadOnly Property Debugger_BreakpointModuleNew() As String
             Get
@@ -212,14 +278,18 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized string similar to stock any:{FunctionName}(any:val=0)
         '''{
+        '''	if(!FileExists(&quot;{DebuggerIdentifier}.running.bpdebug&quot;))
+        '''	{
+        '''		return val;
+        '''	}
+        '''	
         '''	if(FileExists(&quot;{IndentifierGUID}.ignore.bpdebug&quot;))
         '''	{
         '''		return val;
         '''	}
         '''	
-        '''	new Handle:hTriggerFile = OpenFile(&quot;{IndentifierGUID}.trigger.bpdebug&quot;, &quot;w&quot;);
-        '''	if(hTriggerFile == INVALID_HANDLE)
-        '''		return val;
+        '''	new Handle:hTriggerFile;
+        '''	while((hTriggerFile = OpenFile(&quot;{IndentifierGUID}.trigger.bpdebug&quot;, &quot;w&quot;)) == INVALID_HANDLE) {}
         '''	
         '''	WriteFileLine(hTriggerFile, &quot;i:%d&quot;, val);
         '''	WriteFileLine(hTriggerFile, &quot;f:%f&quot;, val);
@@ -228,9 +298,7 @@ Namespace My.Resources
         '''	
         '''	for(;;)
         '''	{
-        '''		if(FileExists(&quot;{IndentifierGUID}.continue.bpdebug&quot;))
-        '''		{
-        '''			DeleteFile(&quot;{IndentifierGUID}.con [rest of string was truncated]&quot;;.
+        '''		if(!FileExists(&quot;{D [rest of string was truncated]&quot;;.
         '''</summary>
         Public ReadOnly Property Debugger_BreakpointModuleOld() As String
             Get
@@ -276,12 +344,16 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized string similar to stock any {FunctionName}(any val=0)
         '''{
+        '''	if(!FileExists(&quot;{DebuggerIdentifier}.running.bpdebug&quot;))
+        '''	{
+        '''		return val;
+        '''	}
+        '''	
         '''	static int iCount;
         '''	iCount++;
         '''
-        '''	Handle hValFile = OpenFile(&quot;{IndentifierGUID}.value.bpdebug&quot;, &quot;w&quot;);
-        '''	if(hValFile == INVALID_HANDLE)
-        '''		return val;
+        '''	Handle hValFile;
+        '''	while((hValFile = OpenFile(&quot;{IndentifierGUID}.value.bpdebug&quot;, &quot;w&quot;)) == INVALID_HANDLE) {}
         '''	
         '''	WriteFileLine(hValFile, &quot;i:%d&quot;, val);
         '''	WriteFileLine(hValFile, &quot;f:%f&quot;, val);
@@ -301,12 +373,16 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized string similar to stock any:{FunctionName}(any:val=0)
         '''{
+        '''	if(!FileExists(&quot;{DebuggerIdentifier}.running.bpdebug&quot;))
+        '''	{
+        '''		return val;
+        '''	}
+        '''	
         '''	static iCount;
         '''	iCount++;
         '''
-        '''	new Handle:hValFile = OpenFile(&quot;{IndentifierGUID}.value.bpdebug&quot;, &quot;w&quot;);
-        '''	if(hValFile == INVALID_HANDLE)
-        '''		return val;
+        '''	new Handle:hValFile;
+        '''	while((hValFile = OpenFile(&quot;{IndentifierGUID}.value.bpdebug&quot;, &quot;w&quot;)) == INVALID_HANDLE) {}
         '''	
         '''	WriteFileLine(hValFile, &quot;i:%d&quot;, val);
         '''	WriteFileLine(hValFile, &quot;f:%f&quot;, val);

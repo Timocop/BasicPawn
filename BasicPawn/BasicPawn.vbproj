@@ -576,6 +576,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="BasicPawnIcon.ico" />
+    <None Include="Resources\Debugger_AssertModuleOld.txt" />
+    <None Include="Resources\Debugger_AssertModuleNew.txt" />
     <None Include="Resources\aero_busy.gif" />
     <None Include="Resources\imageres_5321_16x16-32.png" />
     <None Include="Resources\Template_AMXModXInclude.txt" />

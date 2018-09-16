@@ -23,6 +23,7 @@ Public Class ClassDebuggerParser
 
     Public Event OnBreakpointsUpdate()
     Public Event OnWatchersUpdate()
+    Public Event OnAssertsUpdate()
 
     Public Shared g_sDebuggerFilesExt As String = ".bpdebug"
     Public Shared g_sDebuggerIdentifierExt As String = ".running" & g_sDebuggerFilesExt
@@ -35,6 +36,11 @@ Public Class ClassDebuggerParser
 
     Public Shared g_sWatcherName As String = "BPDWatcher"
     Public Shared g_sDebuggerWatcherValueExt As String = ".value" & g_sDebuggerFilesExt
+
+    Public Shared g_sAssertName As String = "BPDAssert"
+    Public Shared g_sDebuggerAssertTriggerExt As String = ".trigger" & g_sDebuggerFilesExt 'If exist, BasicPawn knows this assert has been triggered
+    Public Shared g_sDebuggerAssertContinueExt As String = ".continue" & g_sDebuggerFilesExt 'If exist, the assert will continue
+
 
     Structure STRUC_DEBUGGER_ITEM
         Dim sGUID As String
@@ -52,6 +58,7 @@ Public Class ClassDebuggerParser
     End Structure
     Public g_lBreakpointList As New List(Of STRUC_DEBUGGER_ITEM)
     Public g_lWatcherList As New List(Of STRUC_DEBUGGER_ITEM)
+    Public g_lAssertList As New List(Of STRUC_DEBUGGER_ITEM)
 
     Public Sub New(f As FormMain)
         g_mFormMain = f
@@ -248,6 +255,101 @@ Public Class ClassDebuggerParser
     End Sub
 
     ''' <summary>
+    ''' Updates the breakpoint list.
+    ''' </summary>
+    ''' <param name="sSource"></param>
+    Public Sub UpdateAsserts(sSource As String, bKeepIdentity As Boolean, iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE)
+        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iLanguage)
+
+        If (Not bKeepIdentity) Then
+            g_lAssertList.Clear()
+        End If
+
+        Dim iListIndex As Integer = 0
+        For Each mMatch As Match In Regex.Matches(sSource, String.Format("\b{0}\b\s*(?<Length>)(?<Arguments>\(){1}", g_sAssertName, "{0,1}"))
+            Dim iIndex As Integer = mMatch.Index
+            Dim bHasArgument As Boolean = mMatch.Groups("Arguments").Success
+
+            If (mSourceAnalysis.m_InNonCode(iIndex) OrElse Not bHasArgument) Then
+                Continue For
+            End If
+
+            Dim iArgumentIndex As Integer = mMatch.Groups("Arguments").Index
+
+            Dim sGUID As String = Guid.NewGuid.ToString
+            Dim iLine As Integer = sSource.Substring(0, mMatch.Index).Split(New String() {vbLf}, 0).Length
+            Dim iLineIndex As Integer = 0
+            For i = iIndex - 1 To 0 Step -1
+                If (sSource(i) = vbLf) Then
+                    Exit For
+                End If
+
+                iLineIndex += 1
+            Next
+
+            Dim iLength As Integer = mMatch.Groups("Length").Index - mMatch.Index
+            Dim iTotalLength As Integer = 0
+            Dim sArguments As New StringBuilder
+            Dim sTotalFunction As New StringBuilder
+
+            Dim iStartLevel As Integer = mSourceAnalysis.GetParenthesisLevel(iIndex, Nothing)
+            Dim bGetArguments As Boolean = False
+            For i = iIndex To sSource.Length - 1
+                iTotalLength += 1
+
+                sTotalFunction.Append(sSource(i))
+
+                Dim iParentRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
+                If (iStartLevel + 1 = mSourceAnalysis.GetParenthesisLevel(i, iParentRange) AndAlso
+                            iParentRange = ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END) Then
+                    bGetArguments = False
+                    Exit For
+                End If
+
+                If (bGetArguments) Then
+                    sArguments.Append(sSource(i))
+                End If
+
+                If (i = iArgumentIndex) Then
+                    bGetArguments = True
+                End If
+            Next
+
+            If (iTotalLength < 1) Then
+                Continue For
+            End If
+
+            If (bKeepIdentity) Then
+                g_lAssertList(iListIndex) = New STRUC_DEBUGGER_ITEM With {
+                    .sGUID = g_lAssertList(iListIndex).sGUID,
+                    .iLine = iLine,
+                    .iIndex = iLineIndex,
+                    .iLength = iLength,
+                    .iTotalLength = iTotalLength,
+                    .iOffset = iIndex,
+                    .sArguments = sArguments.ToString,
+                    .sTotalFunction = sTotalFunction.ToString
+                }
+            Else
+                g_lAssertList.Add(New STRUC_DEBUGGER_ITEM With {
+                    .sGUID = sGUID,
+                    .iLine = iLine,
+                    .iIndex = iLineIndex,
+                    .iLength = iLength,
+                    .iTotalLength = iTotalLength,
+                    .iOffset = iIndex,
+                    .sArguments = sArguments.ToString,
+                    .sTotalFunction = sTotalFunction.ToString
+                })
+            End If
+
+            iListIndex += 1
+        Next
+
+        RaiseEvent OnAssertsUpdate()
+    End Sub
+
+    ''' <summary>
     ''' Gets a list of usefull autocompletes
     ''' </summary>
     ''' <returns></returns>
@@ -256,7 +358,7 @@ Public Class ClassDebuggerParser
         Dim mInfoBuilder As New StringBuilder
 
         mInfoBuilder.AppendLine("/**")
-        mInfoBuilder.AppendLine(" * Pauses the plugin until manually resumed. Also shows the current position in the BasicPawn Debugger.")
+        mInfoBuilder.AppendLine(" * Pauses the plugin until manually resumed and shows the current position in the BasicPawn Debugger.")
         mInfoBuilder.AppendLine(" * Optionaly you can return a custom non-array value.")
         mInfoBuilder.AppendLine(" *")
         mInfoBuilder.AppendLine(" * WARN: Do not use this in 'float-to-float' comparisons.")
@@ -268,7 +370,7 @@ Public Class ClassDebuggerParser
                                                                   ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEBUG,
                                                                   g_sBreakpointName,
                                                                   g_sBreakpointName,
-                                                                  String.Format("any:{0}(any:val=0)", g_sBreakpointName)))
+                                                                  String.Format("any {0}(any val = 0)", g_sBreakpointName)))
 
         mInfoBuilder.Length = 0
         mInfoBuilder.AppendLine("/**")
@@ -283,7 +385,22 @@ Public Class ClassDebuggerParser
                                                                   ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEBUG,
                                                                   g_sWatcherName,
                                                                   g_sWatcherName,
-                                                                  String.Format("any:{0}(any:val=0)", g_sWatcherName)))
+                                                                  String.Format("any {0}(any val = 0)", g_sWatcherName)))
+
+        mInfoBuilder.Length = 0
+        mInfoBuilder.AppendLine("/**")
+        mInfoBuilder.AppendLine(" * Checks for a condition; if the condition is false, it pauses the plugin until manually resumed and shows the current position in the BasicPawn Debugger.")
+        mInfoBuilder.AppendLine(" *")
+        mInfoBuilder.AppendLine(" * WARN: Do not use this in 'float-to-float' comparisons.")
+        mInfoBuilder.AppendLine(" *       The operator will see the 'any' type as non-float and parse it incorrectly.")
+        mInfoBuilder.AppendLine(" */")
+        lAutocomplete.Add(New ClassSyntaxTools.STRUC_AUTOCOMPLETE(mInfoBuilder.ToString,
+                                                                  "BasicPawn.exe",
+                                                                  "",
+                                                                  ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEBUG,
+                                                                  g_sAssertName,
+                                                                  g_sAssertName,
+                                                                  String.Format("{0}(any val = 0, char ...)", g_sAssertName)))
 
         Return lAutocomplete.ToArray
     End Function
@@ -419,128 +536,29 @@ Public Class ClassDebuggerParser
         Return lSMExceptions.ToArray
     End Function
 
-    '''' <summary>
-    '''' Reads all sourcemod exceptions from a fatal log.
-    '''' </summary>
-    '''' <param name="sLogLines"></param>
-    '''' <returns></returns>
-    'Public Function ReadSourceModLogMemoryLeaks(sLogLines As String()) As STRUC_SM_FATAL_EXCEPTION()
-    '    Dim iExpectingState As Integer = 0
-
-    '    Dim smException As New STRUC_SM_FATAL_EXCEPTION
-
-    '    Dim smExceptionsList As New List(Of STRUC_SM_FATAL_EXCEPTION)
-    '    Dim smStackTraceList As New List(Of Object())
-
-    '    For i = 0 To sLogLines.Length - 1
-    '        Dim mExceptionInfo As Match = Regex.Match(sLogLines(i), "^L (?<Date>[0-9]+\/[0-9]+\/[0-9]+ \- [0-9]+\:[0-9]+\:[0-9]+)\: \[SM\] MEMORY LEAK DETECTED IN PLUGIN \(file ""(?<File>.*?)""\)$")
-    '        If (mExceptionInfo.Success) Then
-    '            If (iExpectingState = 3) Then
-    '                smException.sMiscInformation = smStackTraceList.ToArray
-    '                smExceptionsList.Add(smException)
-
-    '                iExpectingState = 0
-    '            End If
-
-    '            smException = New STRUC_SM_FATAL_EXCEPTION
-    '            smStackTraceList = New List(Of Object())
-
-    '            Dim sDate As String = mExceptionInfo.Groups("Date").Value
-    '            Dim sMessage As String = "Memory leak detected"
-    '            Dim sFile As String = mExceptionInfo.Groups("File").Value
-
-    '            Dim dDate As Date
-    '            If (Not Date.TryParseExact(sDate.Trim, "MM/dd/yyyy - HH:mm:ss", Globalization.CultureInfo.InvariantCulture, Globalization.DateTimeStyles.None, dDate)) Then
-    '                Continue For
-    '            End If
-
-    '            smException.sBlamingFile = sFile
-    '            smException.sExceptionInfo = sMessage.Trim
-    '            smException.dLogDate = dDate
-
-    '            iExpectingState = 1
-    '            Continue For
-    '        End If
-
-    '        Select Case (iExpectingState)
-    '            Case 1 'Expecting: [SM] Blaming
-    '                Dim mBlamingInfo As Match = Regex.Match(sLogLines(i), "^L (?<Date>[0-9]+\/[0-9]+\/[0-9]+) \- (?<Time>[0-9]+\:[0-9]+\:[0-9]+)\: \[SM\] Blaming\:(?<File>.*?)$")
-    '                If (mBlamingInfo.Success) Then
-    '                    Dim sFile As String = mBlamingInfo.Groups("File").Value
-
-    '                    smException.sBlamingFile = sFile.Trim
-
-    '                    iExpectingState = 2
-    '                Else
-    '                    iExpectingState = 0
-    '                End If
-
-    '            Case 2 'Expecting: [SM] Call stack trace:
-    '                Dim mStackTraceInfo As Match = Regex.Match(sLogLines(i), "^L (?<Date>[0-9]+\/[0-9]+\/[0-9]+) \- (?<Time>[0-9]+\:[0-9]+\:[0-9]+)\: \[SM\] Call stack trace\:\s*$")
-    '                If (mStackTraceInfo.Success) Then
-    '                    iExpectingState = 3
-    '                Else
-    '                    iExpectingState = 0
-    '                End If
-
-    '            Case 3 'Expecting: [SM]   [0] ... 
-    '                Dim mMoreStackTraceInfo As Match = Regex.Match(sLogLines(i),
-    '                                                               "(" &
-    '                                                               "(?<PluginFault>^L (?<Date>[0-9]+\/[0-9]+\/[0-9]+) \- (?<Time>[0-9]+\:[0-9]+\:[0-9]+)\: \[SM\]   \[[0-9]+\] Line (?<Line>[0-9]+), (?<File>.*?)\:\:(?<Function>.*?)$)" &
-    '                                                               "|" &
-    '                                                               "(?<NativeFault>^L (?<Date>[0-9]+\/[0-9]+\/[0-9]+) \- (?<Time>[0-9]+\:[0-9]+\:[0-9]+)\: \[SM\]   \[[0-9]+\] (?<Function>.*?)$)" &
-    '                                                               ")")
-
-    '                Select Case (True)
-    '                    Case mMoreStackTraceInfo.Groups("PluginFault").Success
-    '                        Dim iLine As Integer = CInt(mMoreStackTraceInfo.Groups("Line").Value.Trim)
-    '                        Dim sFile As String = mMoreStackTraceInfo.Groups("File").Value.Trim
-    '                        Dim sFunction As String = mMoreStackTraceInfo.Groups("Function").Value.Trim
-
-    '                        smStackTraceList.Add(New STRUC_SM_EXCEPTION_STACK_TRACE() With {
-    '                                             .iLine = iLine,
-    '                                             .sFileName = sFile,
-    '                                             .m_FunctionName = sFunction,
-    '                                             .bNativeFault = False})
-
-    '                    Case mMoreStackTraceInfo.Groups("NativeFault").Success
-    '                        Dim sFunction As String = mMoreStackTraceInfo.Groups("Function").Value.Trim
-
-    '                        smStackTraceList.Add(New STRUC_SM_EXCEPTION_STACK_TRACE() With {
-    '                                             .iLine = -1,
-    '                                             .sFileName = "",
-    '                                             .m_FunctionName = sFunction,
-    '                                             .bNativeFault = True})
-
-    '                    Case Else
-    '                        smException.mStackTrace = smStackTraceList.ToArray
-    '                        smExceptionsList.Add(smException)
-
-    '                        iExpectingState = 0
-    '                End Select
-    '        End Select
-    '    Next
-
-    '    Return smExceptionsList.ToArray
-    'End Function
-
     Public Sub CleanupDebugPlaceholder(ByRef sSource As String, iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE)
         'TODO: Add more debug placeholder
         With New ClassBreakpoints(g_mFormMain)
-            .RemoveAllBreakpoints(sSource, iLanguage)
+            .RemoveAll(sSource, iLanguage)
         End With
         With New ClassWatchers(g_mFormMain)
-            .RemoveAllWatchers(sSource, iLanguage)
+            .RemoveAll(sSource, iLanguage)
+        End With
+        With New ClassAsserts(g_mFormMain)
+            .RemoveAll(sSource, iLanguage)
         End With
     End Sub
 
     Public Sub CleanupDebugPlaceholder(mFormMain As FormMain)
         'TODO: Add more debug placeholder
         With New ClassBreakpoints(g_mFormMain)
-            .TextEditorRemoveAllBreakpoints()
+            .TextEditorRemoveAll()
         End With
         With New ClassWatchers(g_mFormMain)
-            .TextEditorRemoveAllWatchers()
+            .TextEditorRemoveAll()
+        End With
+        With New ClassAsserts(g_mFormMain)
+            .TextEditorRemoveAll()
         End With
     End Sub
 
@@ -548,7 +566,8 @@ Public Class ClassDebuggerParser
         'TODO: Add more debug placeholder
         Return New List(Of String) From {
             g_sBreakpointName,
-            g_sWatcherName
+            g_sWatcherName,
+            g_sAssertName
         }.ToArray
     End Function
 
@@ -615,7 +634,7 @@ Public Class ClassDebuggerParser
         ''' <summary>
         ''' Inserts one breakpoint using the caret position in the text editor
         ''' </summary>
-        Public Sub TextEditorInsertBreakpointAtCaret()
+        Public Sub TextEditorInsertAtCaret()
             Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
 
             If (mActiveTextEditor.ActiveTextAreaControl.SelectionManager.HasSomethingSelected AndAlso mActiveTextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection.Count > 0) Then
@@ -704,7 +723,7 @@ Public Class ClassDebuggerParser
         ''' <summary>
         ''' Removes one breakpoint using the caret position in the text editor
         ''' </summary>
-        Public Sub TextEditorRemoveBreakpointAtCaret()
+        Public Sub TextEditorRemoveAtCaret()
             Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
             Dim sCaretWord As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True, False, False)
 
@@ -757,7 +776,7 @@ Public Class ClassDebuggerParser
         ''' <summary>
         ''' Removes all available breakpoints in the text editor
         ''' </summary>
-        Public Sub TextEditorRemoveAllBreakpoints()
+        Public Sub TextEditorRemoveAll()
             Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
             mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
 
@@ -824,7 +843,7 @@ Public Class ClassDebuggerParser
         ''' Removes all available breakpoints in the source
         ''' </summary>
         ''' <param name="sSource"></param>
-        Public Sub RemoveAllBreakpoints(ByRef sSource As String, iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE)
+        Public Sub RemoveAll(ByRef sSource As String, iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE)
             Dim SB As New StringBuilder(sSource)
 
             Dim debuggerParser As New ClassDebuggerParser(g_mFormMain)
@@ -922,7 +941,7 @@ Public Class ClassDebuggerParser
         ''' <summary>
         ''' Inserts one watcher using the caret position in the text editor
         ''' </summary>
-        Public Sub TextEditorInsertWatcherAtCaret()
+        Public Sub TextEditorInsertAtCaret()
             Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
 
             If (mActiveTextEditor.ActiveTextAreaControl.SelectionManager.HasSomethingSelected AndAlso mActiveTextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection.Count > 0) Then
@@ -1011,7 +1030,7 @@ Public Class ClassDebuggerParser
         ''' <summary>
         ''' Removes one watcher using the caret position in the text editor
         ''' </summary>
-        Public Sub TextEditorRemoveWatcherAtCaret()
+        Public Sub TextEditorRemoveAtCaret()
             Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
             Dim sCaretWord As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True, False, False)
 
@@ -1063,7 +1082,7 @@ Public Class ClassDebuggerParser
         ''' <summary>
         ''' Removes all available watchers in the text editor
         ''' </summary>
-        Public Sub TextEditorRemoveAllWatchers()
+        Public Sub TextEditorRemoveAll()
             Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
             mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
 
@@ -1130,7 +1149,7 @@ Public Class ClassDebuggerParser
         ''' Removes all available watchers in the source
         ''' </summary>
         ''' <param name="sSource"></param>
-        Public Sub RemoveAllWatchers(ByRef sSource As String, iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE)
+        Public Sub RemoveAll(ByRef sSource As String, iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE)
             Dim SB As New StringBuilder(sSource)
 
             Dim debuggerParser As New ClassDebuggerParser(g_mFormMain)
@@ -1217,4 +1236,311 @@ Public Class ClassDebuggerParser
             sSource = SB.ToString
         End Sub
     End Class
+
+    Class ClassAsserts
+        Private g_mFormMain As FormMain
+
+        Public Sub New(f As FormMain)
+            g_mFormMain = f
+        End Sub
+
+        ''' <summary>
+        ''' Inserts one watcher using the caret position in the text editor
+        ''' </summary>
+        Public Sub TextEditorInsertAtCaret()
+            Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
+
+            If (mActiveTextEditor.ActiveTextAreaControl.SelectionManager.HasSomethingSelected AndAlso mActiveTextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection.Count > 0) Then
+                Dim iOffset As Integer = mActiveTextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection(0).Offset
+                Dim iLength As Integer = mActiveTextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection(0).Length
+
+                mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
+                mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iOffset + iLength, ")")
+                mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iOffset, String.Format("{0}(", ClassDebuggerParser.g_sAssertName))
+                mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
+            Else
+                Dim sCaretWord As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True, False, False)
+
+                If (String.IsNullOrEmpty(sCaretWord)) Then
+                    Dim iOffset As Integer = mActiveTextEditor.ActiveTextAreaControl.Caret.Offset
+                    mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iOffset, String.Format("{0}();", ClassDebuggerParser.g_sAssertName))
+                Else
+                    Dim iOffset As Integer = mActiveTextEditor.ActiveTextAreaControl.Caret.Offset
+
+                    For Each m As Match In Regex.Matches(mActiveTextEditor.ActiveTextAreaControl.Document.TextContent, String.Format("(?<Word>\b{0}\b)((?<Function>\s*\()|(?<Array>\s*\[)|)", Regex.Escape(sCaretWord)))
+                        Dim iStartOffset As Integer = m.Groups("Word").Index
+                        Dim iStartLen As Integer = m.Groups("Word").Value.Length
+                        Dim bIsFunction As Boolean = m.Groups("Function").Success
+                        Dim bIsArray As Boolean = m.Groups("Array").Success
+
+                        If (iOffset < iStartOffset OrElse iOffset > (iStartOffset + iStartLen)) Then
+                            Continue For
+                        End If
+
+                        If (bIsArray) Then
+                            Dim sSource As String = mActiveTextEditor.ActiveTextAreaControl.Document.TextContent
+                            Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
+
+                            Dim iFullLength As Integer = 0
+                            Dim iStartLevel As Integer = mSourceAnalysis.GetBracketLevel(iStartOffset, Nothing)
+                            For i = iStartOffset To sSource.Length - 1
+                                iFullLength += 1
+
+                                Dim iBracketRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
+                                If (iStartLevel + 1 = mSourceAnalysis.GetBracketLevel(i, iBracketRange) AndAlso
+                                            iBracketRange = ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END) Then
+                                    Exit For
+                                End If
+                            Next
+
+                            mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
+                            mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset + iFullLength, ")")
+                            mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset, String.Format("{0}(", ClassDebuggerParser.g_sAssertName))
+                            mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
+
+                        ElseIf (bIsFunction) Then
+                            Dim sSource As String = mActiveTextEditor.ActiveTextAreaControl.Document.TextContent
+                            Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
+
+                            Dim iFullLength As Integer = 0
+                            Dim iStartLevel As Integer = mSourceAnalysis.GetParenthesisLevel(iStartOffset, Nothing)
+                            For i = iStartOffset To sSource.Length - 1
+                                iFullLength += 1
+
+                                Dim iParentRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
+                                If (iStartLevel + 1 = mSourceAnalysis.GetParenthesisLevel(i, iParentRange) AndAlso
+                                            iParentRange = ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END) Then
+                                    Exit For
+                                End If
+                            Next
+
+                            mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
+                            mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset + iFullLength, ")")
+                            mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset, String.Format("{0}(", ClassDebuggerParser.g_sAssertName))
+                            mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
+
+                        Else
+                            mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
+                            mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset + iStartLen, ")")
+                            mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset, String.Format("{0}(", ClassDebuggerParser.g_sAssertName))
+                            mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
+                        End If
+                    Next
+                End If
+            End If
+
+            mActiveTextEditor.Refresh()
+            g_mFormMain.PrintInformation("[INFO]", "A Assert has been added!")
+        End Sub
+
+        ''' <summary>
+        ''' Removes one assert using the caret position in the text editor
+        ''' </summary>
+        Public Sub TextEditorRemoveAtCaret()
+            Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
+            Dim sCaretWord As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True, False, False)
+
+            If (sCaretWord <> ClassDebuggerParser.g_sAssertName) Then
+                g_mFormMain.PrintInformation("[ERROR]", "This is not a valid assert!")
+                Return
+            End If
+
+            Dim iCaretOffset As Integer = mActiveTextEditor.ActiveTextAreaControl.TextArea.Caret.Offset
+
+            mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
+
+            Dim debuggerParser As New ClassDebuggerParser(g_mFormMain)
+            debuggerParser.UpdateAsserts(mActiveTextEditor.Document.TextContent, False, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
+
+            Dim lRemovedAsserts As New List(Of Integer)
+
+            For i = debuggerParser.g_lAssertList.Count - 1 To 0 Step -1
+                Dim iIndex As Integer = debuggerParser.g_lAssertList(i).iOffset
+                Dim iLength As Integer = debuggerParser.g_lAssertList(i).iLength
+                Dim iTotalLength As Integer = debuggerParser.g_lAssertList(i).iTotalLength
+                Dim iLine As Integer = debuggerParser.g_lAssertList(i).iLine
+                Dim sFullFunction As String = debuggerParser.g_lAssertList(i).sArguments
+
+                If (iIndex > iCaretOffset OrElse (iIndex + iLength) < iCaretOffset) Then
+                    Continue For
+                End If
+
+                mActiveTextEditor.Document.Replace(iIndex, iTotalLength, sFullFunction)
+                If (mActiveTextEditor.Document.TextLength > iIndex AndAlso mActiveTextEditor.Document.TextContent(iIndex) = ";"c) Then
+                    mActiveTextEditor.Document.Remove(iIndex, 1)
+                End If
+
+                lRemovedAsserts.Add(iLine)
+
+                Exit For
+            Next
+
+            lRemovedAsserts.Reverse()
+            For Each i As Integer In lRemovedAsserts
+                g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Assert removed at line: {0}", i))
+            Next
+
+            mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
+
+            mActiveTextEditor.Refresh()
+        End Sub
+
+        ''' <summary>
+        ''' Removes all available asserts in the text editor
+        ''' </summary>
+        Public Sub TextEditorRemoveAll()
+            Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
+            mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
+
+            g_mFormMain.PrintInformation("[INFO]", "Removing all debugger asserts...")
+
+            Dim lRemovedAsserts As New List(Of Integer)
+
+            Dim debuggerParser As New ClassDebuggerParser(g_mFormMain)
+            While True
+                debuggerParser.UpdateAsserts(mActiveTextEditor.Document.TextContent, False, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
+
+                For i = debuggerParser.g_lAssertList.Count - 1 To 0 Step -1
+                    Dim iIndex As Integer = debuggerParser.g_lAssertList(i).iOffset
+                    Dim iLength As Integer = debuggerParser.g_lAssertList(i).iLength
+                    Dim iTotalLength As Integer = debuggerParser.g_lAssertList(i).iTotalLength
+                    Dim iLine As Integer = debuggerParser.g_lAssertList(i).iLine
+                    Dim sFullFunction As String = debuggerParser.g_lAssertList(i).sArguments
+
+                    mActiveTextEditor.Document.Replace(iIndex, iTotalLength, sFullFunction)
+                    If (mActiveTextEditor.Document.TextLength > iIndex AndAlso mActiveTextEditor.Document.TextContent(iIndex) = ";"c) Then
+                        mActiveTextEditor.Document.Remove(iIndex, 1)
+                    End If
+
+                    lRemovedAsserts.Add(iLine)
+
+                    Dim bDoRebuild As Boolean = False
+                    For j = debuggerParser.g_lAssertList.Count - 1 To 0 Step -1
+                        If (i = j) Then
+                            Continue For
+                        End If
+
+                        Dim jIndex As Integer = debuggerParser.g_lAssertList(j).iOffset
+                        Dim jTotalLength As Integer = debuggerParser.g_lAssertList(j).iTotalLength
+                        If (iIndex < jIndex OrElse iIndex > (jIndex + jTotalLength)) Then
+                            Continue For
+                        End If
+
+                        bDoRebuild = True
+                        Exit For
+                    Next
+
+                    If (bDoRebuild) Then
+                        Continue While
+                    Else
+                        Continue For
+                    End If
+                Next
+
+                Exit While
+            End While
+
+            lRemovedAsserts.Reverse()
+            For Each i As Integer In lRemovedAsserts
+                g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Assert removed at line: {0}", i))
+            Next
+
+            mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
+
+            mActiveTextEditor.Refresh()
+            g_mFormMain.PrintInformation("[INFO]", "All debugger asserts removed!")
+        End Sub
+
+        ''' <summary>
+        ''' Removes all available asserts in the source
+        ''' </summary>
+        ''' <param name="sSource"></param>
+        Public Sub RemoveAll(ByRef sSource As String, iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE)
+            Dim SB As New StringBuilder(sSource)
+
+            Dim debuggerParser As New ClassDebuggerParser(g_mFormMain)
+            While True
+                debuggerParser.UpdateAsserts(SB.ToString, False, iLanguage)
+
+                For i = debuggerParser.g_lAssertList.Count - 1 To 0 Step -1
+                    Dim iIndex As Integer = debuggerParser.g_lAssertList(i).iOffset
+                    Dim iTotalLength As Integer = debuggerParser.g_lAssertList(i).iTotalLength
+                    Dim sFullFunction As String = debuggerParser.g_lAssertList(i).sArguments
+
+                    SB.Remove(iIndex, iTotalLength)
+                    SB.Insert(iIndex, sFullFunction)
+                    If (SB.Length > iIndex AndAlso SB.Chars(iIndex) = ";"c) Then
+                        SB.Remove(iIndex, 1)
+                    End If
+
+                    Dim bDoRebuild As Boolean = False
+                    For j = debuggerParser.g_lAssertList.Count - 1 To 0 Step -1
+                        If (i = j) Then
+                            Continue For
+                        End If
+
+                        Dim jIndex As Integer = debuggerParser.g_lAssertList(j).iOffset
+                        Dim jTotalLength As Integer = debuggerParser.g_lAssertList(j).iTotalLength
+                        If (iIndex < jIndex OrElse iIndex > (jIndex + jTotalLength)) Then
+                            Continue For
+                        End If
+
+                        bDoRebuild = True
+                        Exit For
+                    Next
+
+                    If (bDoRebuild) Then
+                        Continue While
+                    Else
+                        Continue For
+                    End If
+                Next
+
+                Exit While
+            End While
+
+            sSource = SB.ToString
+        End Sub
+
+        Public Function GenerateModuleCode(sDebuggerIdentifier As String, sFunctionName As String, sIndentifierGUID As String, bNewSyntax As Boolean) As String
+            Dim SB As New StringBuilder
+
+            If (bNewSyntax) Then
+                SB.AppendLine(My.Resources.Debugger_AssertModuleNew)
+            Else
+                SB.AppendLine(My.Resources.Debugger_AssertModuleOld)
+            End If
+
+            SB.Replace("{DebuggerIdentifier}", sDebuggerIdentifier)
+            SB.Replace("{FunctionName}", sFunctionName)
+            SB.Replace("{IndentifierGUID}", sIndentifierGUID)
+
+            Return SB.ToString
+        End Function
+
+        Public Sub CompilerReady(ByRef sSource As String, sDebuggerIdentifier As String, debuggerParser As ClassDebuggerParser, iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE)
+            Dim SB As New StringBuilder(sSource)
+            Dim SBModules As New StringBuilder()
+
+            Dim bForceNewSyntax As Boolean = (g_mFormMain.g_ClassSyntaxTools.HasNewDeclsPragma(sSource, iLanguage) <> -1)
+
+            For i = debuggerParser.g_lAssertList.Count - 1 To 0 Step -1
+                Dim iIndex As Integer = debuggerParser.g_lAssertList(i).iOffset
+                Dim iLength As Integer = debuggerParser.g_lAssertList(i).iLength
+                Dim sGUID As String = debuggerParser.g_lAssertList(i).sGUID
+                Dim sNewName As String = g_sAssertName & sGUID.Replace("-", "")
+
+                SB.Remove(iIndex, iLength)
+                SB.Insert(iIndex, sNewName)
+
+                SBModules.AppendLine(GenerateModuleCode(sDebuggerIdentifier, sNewName, sGUID, bForceNewSyntax))
+            Next
+
+            SB.AppendLine()
+            SB.AppendLine(SBModules.ToString)
+
+            sSource = SB.ToString
+        End Sub
+    End Class
+
 End Class

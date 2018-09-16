@@ -50,11 +50,15 @@ Partial Class FormDebugger
         Me.ToolStripMenuItem_DebugStop = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_DebugRefresh = New System.Windows.Forms.ToolStripMenuItem()
         Me.SplitContainer1 = New System.Windows.Forms.SplitContainer()
+        Me.SplitContainer2 = New System.Windows.Forms.SplitContainer()
         Me.TabControl2 = New BasicPawn.ClassTabControlColor()
         Me.TabPage_Source = New System.Windows.Forms.TabPage()
         Me.TextEditorControlEx_DebuggerSource = New BasicPawn.TextEditorControlEx()
         Me.TabPage_Diasm = New System.Windows.Forms.TabPage()
         Me.RichTextBox_DisasmSource = New System.Windows.Forms.RichTextBox()
+        Me.ClassTabControlColor1 = New BasicPawn.ClassTabControlColor()
+        Me.TabPage1 = New System.Windows.Forms.TabPage()
+        Me.ListBox_Information = New System.Windows.Forms.ListBox()
         Me.TabControl1 = New BasicPawn.ClassTabControlColor()
         Me.TabPage_Breakpoints = New System.Windows.Forms.TabPage()
         Me.ListView_Breakpoints = New System.Windows.Forms.ListView()
@@ -78,28 +82,29 @@ Partial Class FormDebugger
         Me.ColumnHeader9 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader10 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.Timer_ConnectionCheck = New System.Windows.Forms.Timer(Me.components)
-        Me.SplitContainer2 = New System.Windows.Forms.SplitContainer()
-        Me.ClassTabControlColor1 = New BasicPawn.ClassTabControlColor()
-        Me.TabPage1 = New System.Windows.Forms.TabPage()
-        Me.ListBox_Information = New System.Windows.Forms.ListBox()
+        Me.TabPage_Asserts = New System.Windows.Forms.TabPage()
+        Me.ListView_Asserts = New System.Windows.Forms.ListView()
+        Me.ColumnHeader11 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.ColumnHeader12 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.StatusStrip_BPDebugger.SuspendLayout()
         Me.MenuStrip_BPDebugger.SuspendLayout()
         Me.SplitContainer1.Panel1.SuspendLayout()
         Me.SplitContainer1.Panel2.SuspendLayout()
         Me.SplitContainer1.SuspendLayout()
+        Me.SplitContainer2.Panel1.SuspendLayout()
+        Me.SplitContainer2.Panel2.SuspendLayout()
+        Me.SplitContainer2.SuspendLayout()
         Me.TabControl2.SuspendLayout()
         Me.TabPage_Source.SuspendLayout()
         Me.TabPage_Diasm.SuspendLayout()
+        Me.ClassTabControlColor1.SuspendLayout()
+        Me.TabPage1.SuspendLayout()
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Breakpoints.SuspendLayout()
         Me.ContextMenuStrip_Breakpoints.SuspendLayout()
         Me.TabPage_Watchers.SuspendLayout()
         Me.TabPage_Entities.SuspendLayout()
-        Me.SplitContainer2.Panel1.SuspendLayout()
-        Me.SplitContainer2.Panel2.SuspendLayout()
-        Me.SplitContainer2.SuspendLayout()
-        Me.ClassTabControlColor1.SuspendLayout()
-        Me.TabPage1.SuspendLayout()
+        Me.TabPage_Asserts.SuspendLayout()
         Me.SuspendLayout()
         '
         'StatusStrip_BPDebugger
@@ -281,6 +286,24 @@ Partial Class FormDebugger
         Me.SplitContainer1.SplitterDistance = 715
         Me.SplitContainer1.TabIndex = 0
         '
+        'SplitContainer2
+        '
+        Me.SplitContainer2.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.SplitContainer2.Location = New System.Drawing.Point(0, 0)
+        Me.SplitContainer2.Name = "SplitContainer2"
+        Me.SplitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal
+        '
+        'SplitContainer2.Panel1
+        '
+        Me.SplitContainer2.Panel1.Controls.Add(Me.TabControl2)
+        '
+        'SplitContainer2.Panel2
+        '
+        Me.SplitContainer2.Panel2.Controls.Add(Me.ClassTabControlColor1)
+        Me.SplitContainer2.Size = New System.Drawing.Size(715, 683)
+        Me.SplitContainer2.SplitterDistance = 508
+        Me.SplitContainer2.TabIndex = 2
+        '
         'TabControl2
         '
         Me.TabControl2.Controls.Add(Me.TabPage_Source)
@@ -320,7 +343,7 @@ Partial Class FormDebugger
         Me.TabPage_Diasm.Controls.Add(Me.RichTextBox_DisasmSource)
         Me.TabPage_Diasm.Location = New System.Drawing.Point(4, 22)
         Me.TabPage_Diasm.Name = "TabPage_Diasm"
-        Me.TabPage_Diasm.Size = New System.Drawing.Size(707, 657)
+        Me.TabPage_Diasm.Size = New System.Drawing.Size(707, 482)
         Me.TabPage_Diasm.TabIndex = 1
         Me.TabPage_Diasm.Text = "DIASM"
         '
@@ -333,14 +356,45 @@ Partial Class FormDebugger
         Me.RichTextBox_DisasmSource.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.RichTextBox_DisasmSource.Location = New System.Drawing.Point(0, 0)
         Me.RichTextBox_DisasmSource.Name = "RichTextBox_DisasmSource"
-        Me.RichTextBox_DisasmSource.Size = New System.Drawing.Size(707, 657)
+        Me.RichTextBox_DisasmSource.Size = New System.Drawing.Size(707, 482)
         Me.RichTextBox_DisasmSource.TabIndex = 0
         Me.RichTextBox_DisasmSource.Text = ""
         Me.RichTextBox_DisasmSource.WordWrap = False
         '
+        'ClassTabControlColor1
+        '
+        Me.ClassTabControlColor1.Controls.Add(Me.TabPage1)
+        Me.ClassTabControlColor1.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ClassTabControlColor1.Location = New System.Drawing.Point(0, 0)
+        Me.ClassTabControlColor1.Name = "ClassTabControlColor1"
+        Me.ClassTabControlColor1.SelectedIndex = 0
+        Me.ClassTabControlColor1.Size = New System.Drawing.Size(715, 171)
+        Me.ClassTabControlColor1.TabIndex = 0
+        '
+        'TabPage1
+        '
+        Me.TabPage1.Controls.Add(Me.ListBox_Information)
+        Me.TabPage1.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage1.Name = "TabPage1"
+        Me.TabPage1.Padding = New System.Windows.Forms.Padding(3)
+        Me.TabPage1.Size = New System.Drawing.Size(707, 145)
+        Me.TabPage1.TabIndex = 0
+        Me.TabPage1.Text = "Information"
+        Me.TabPage1.UseVisualStyleBackColor = True
+        '
+        'ListBox_Information
+        '
+        Me.ListBox_Information.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ListBox_Information.FormattingEnabled = True
+        Me.ListBox_Information.Location = New System.Drawing.Point(3, 3)
+        Me.ListBox_Information.Name = "ListBox_Information"
+        Me.ListBox_Information.Size = New System.Drawing.Size(701, 139)
+        Me.ListBox_Information.TabIndex = 0
+        '
         'TabControl1
         '
         Me.TabControl1.Controls.Add(Me.TabPage_Breakpoints)
+        Me.TabControl1.Controls.Add(Me.TabPage_Asserts)
         Me.TabControl1.Controls.Add(Me.TabPage_Watchers)
         Me.TabControl1.Controls.Add(Me.TabPage_Entities)
         Me.TabControl1.Dock = System.Windows.Forms.DockStyle.Fill
@@ -451,13 +505,13 @@ Partial Class FormDebugger
         '
         'ColumnHeader5
         '
-        Me.ColumnHeader5.Text = "Watching"
-        Me.ColumnHeader5.Width = 100
+        Me.ColumnHeader5.Text = "Watcher"
+        Me.ColumnHeader5.Width = 75
         '
         'ColumnHeader6
         '
         Me.ColumnHeader6.Text = "Value"
-        Me.ColumnHeader6.Width = 100
+        Me.ColumnHeader6.Width = 75
         '
         'ColumnHeader7
         '
@@ -505,53 +559,39 @@ Partial Class FormDebugger
         '
         Me.Timer_ConnectionCheck.Interval = 10000
         '
-        'SplitContainer2
+        'TabPage_Asserts
         '
-        Me.SplitContainer2.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.SplitContainer2.Location = New System.Drawing.Point(0, 0)
-        Me.SplitContainer2.Name = "SplitContainer2"
-        Me.SplitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal
+        Me.TabPage_Asserts.Controls.Add(Me.ListView_Asserts)
+        Me.TabPage_Asserts.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage_Asserts.Name = "TabPage_Asserts"
+        Me.TabPage_Asserts.Size = New System.Drawing.Size(281, 657)
+        Me.TabPage_Asserts.TabIndex = 3
+        Me.TabPage_Asserts.Text = "Asserts"
+        Me.TabPage_Asserts.UseVisualStyleBackColor = True
         '
-        'SplitContainer2.Panel1
+        'ListView_Asserts
         '
-        Me.SplitContainer2.Panel1.Controls.Add(Me.TabControl2)
+        Me.ListView_Asserts.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader11, Me.ColumnHeader12})
+        Me.ListView_Asserts.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ListView_Asserts.FullRowSelect = True
+        Me.ListView_Asserts.HideSelection = False
+        Me.ListView_Asserts.Location = New System.Drawing.Point(0, 0)
+        Me.ListView_Asserts.MultiSelect = False
+        Me.ListView_Asserts.Name = "ListView_Asserts"
+        Me.ListView_Asserts.Size = New System.Drawing.Size(281, 657)
+        Me.ListView_Asserts.TabIndex = 1
+        Me.ListView_Asserts.UseCompatibleStateImageBehavior = False
+        Me.ListView_Asserts.View = System.Windows.Forms.View.Details
         '
-        'SplitContainer2.Panel2
+        'ColumnHeader11
         '
-        Me.SplitContainer2.Panel2.Controls.Add(Me.ClassTabControlColor1)
-        Me.SplitContainer2.Size = New System.Drawing.Size(715, 683)
-        Me.SplitContainer2.SplitterDistance = 508
-        Me.SplitContainer2.TabIndex = 2
+        Me.ColumnHeader11.Text = "Line"
+        Me.ColumnHeader11.Width = 50
         '
-        'ClassTabControlColor1
+        'ColumnHeader12
         '
-        Me.ClassTabControlColor1.Controls.Add(Me.TabPage1)
-        Me.ClassTabControlColor1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ClassTabControlColor1.Location = New System.Drawing.Point(0, 0)
-        Me.ClassTabControlColor1.Name = "ClassTabControlColor1"
-        Me.ClassTabControlColor1.SelectedIndex = 0
-        Me.ClassTabControlColor1.Size = New System.Drawing.Size(715, 171)
-        Me.ClassTabControlColor1.TabIndex = 0
-        '
-        'TabPage1
-        '
-        Me.TabPage1.Controls.Add(Me.ListBox_Information)
-        Me.TabPage1.Location = New System.Drawing.Point(4, 22)
-        Me.TabPage1.Name = "TabPage1"
-        Me.TabPage1.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage1.Size = New System.Drawing.Size(707, 145)
-        Me.TabPage1.TabIndex = 0
-        Me.TabPage1.Text = "Information"
-        Me.TabPage1.UseVisualStyleBackColor = True
-        '
-        'ListBox_Information
-        '
-        Me.ListBox_Information.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ListBox_Information.FormattingEnabled = True
-        Me.ListBox_Information.Location = New System.Drawing.Point(3, 3)
-        Me.ListBox_Information.Name = "ListBox_Information"
-        Me.ListBox_Information.Size = New System.Drawing.Size(701, 139)
-        Me.ListBox_Information.TabIndex = 0
+        Me.ColumnHeader12.Text = "Assert"
+        Me.ColumnHeader12.Width = 200
         '
         'FormDebugger
         '
@@ -574,19 +614,20 @@ Partial Class FormDebugger
         Me.SplitContainer1.Panel1.ResumeLayout(False)
         Me.SplitContainer1.Panel2.ResumeLayout(False)
         Me.SplitContainer1.ResumeLayout(False)
+        Me.SplitContainer2.Panel1.ResumeLayout(False)
+        Me.SplitContainer2.Panel2.ResumeLayout(False)
+        Me.SplitContainer2.ResumeLayout(False)
         Me.TabControl2.ResumeLayout(False)
         Me.TabPage_Source.ResumeLayout(False)
         Me.TabPage_Diasm.ResumeLayout(False)
+        Me.ClassTabControlColor1.ResumeLayout(False)
+        Me.TabPage1.ResumeLayout(False)
         Me.TabControl1.ResumeLayout(False)
         Me.TabPage_Breakpoints.ResumeLayout(False)
         Me.ContextMenuStrip_Breakpoints.ResumeLayout(False)
         Me.TabPage_Watchers.ResumeLayout(False)
         Me.TabPage_Entities.ResumeLayout(False)
-        Me.SplitContainer2.Panel1.ResumeLayout(False)
-        Me.SplitContainer2.Panel2.ResumeLayout(False)
-        Me.SplitContainer2.ResumeLayout(False)
-        Me.ClassTabControlColor1.ResumeLayout(False)
-        Me.TabPage1.ResumeLayout(False)
+        Me.TabPage_Asserts.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -646,4 +687,8 @@ Partial Class FormDebugger
     Friend WithEvents ClassTabControlColor1 As ClassTabControlColor
     Friend WithEvents TabPage1 As TabPage
     Friend WithEvents ListBox_Information As ListBox
+    Friend WithEvents TabPage_Asserts As TabPage
+    Friend WithEvents ListView_Asserts As ListView
+    Friend WithEvents ColumnHeader11 As ColumnHeader
+    Friend WithEvents ColumnHeader12 As ColumnHeader
 End Class

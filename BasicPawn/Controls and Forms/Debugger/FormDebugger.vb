@@ -186,6 +186,7 @@ Public Class FormDebugger
                 g_ClassDebuggerRunner.g_ClassPreProcess.AnalysisSourceLines(sPreSource)
                 g_ClassDebuggerParser.UpdateBreakpoints(sPreSource, False, g_iLanguage)
                 g_ClassDebuggerParser.UpdateWatchers(sPreSource, False, g_iLanguage)
+                g_ClassDebuggerParser.UpdateAsserts(sPreSource, False, g_iLanguage)
 
 
                 mFormProgress.m_Progress = 40
@@ -246,34 +247,54 @@ Public Class FormDebugger
 
 
                 'Add breakpoints
-                ListView_Breakpoints.BeginUpdate()
-                ListView_Breakpoints.Items.Clear()
-                For Each mBreakpointItem In g_ClassDebuggerParser.g_lBreakpointList
-                    Dim mListViewItemData As New ClassListViewItemData(New String() {mBreakpointItem.iLine.ToString, mBreakpointItem.sArguments, ""})
-                    mListViewItemData.g_mData("GUID") = mBreakpointItem.sGUID
+                If (True) Then
+                    ListView_Breakpoints.BeginUpdate()
+                    ListView_Breakpoints.Items.Clear()
+                    For Each mBreakpointItem In g_ClassDebuggerParser.g_lBreakpointList
+                        Dim mListViewItemData As New ClassListViewItemData(New String() {mBreakpointItem.iLine.ToString, mBreakpointItem.sArguments, ""})
+                        mListViewItemData.g_mData("GUID") = mBreakpointItem.sGUID
 
-                    With ListView_Breakpoints.Items.Add(mListViewItemData)
-                        .Checked = True
-                    End With
+                        With ListView_Breakpoints.Items.Add(mListViewItemData)
+                            .Checked = True
+                        End With
 
-                    Dim marker As New ICSharpCode.TextEditor.Document.TextMarker(mBreakpointItem.iOffset, mBreakpointItem.iTotalLength, ICSharpCode.TextEditor.Document.TextMarkerType.Underlined, Color.DarkOrange)
-                    TextEditorControlEx_DebuggerSource.Document.MarkerStrategy.AddMarker(marker)
-                Next
-                ListView_Breakpoints.EndUpdate()
+                        Dim marker As New ICSharpCode.TextEditor.Document.TextMarker(mBreakpointItem.iOffset, mBreakpointItem.iTotalLength, ICSharpCode.TextEditor.Document.TextMarkerType.Underlined, Color.DarkOrange)
+                        TextEditorControlEx_DebuggerSource.Document.MarkerStrategy.AddMarker(marker)
+                    Next
+                    ListView_Breakpoints.EndUpdate()
+                End If
 
                 'Add watchers
-                ListView_Watchers.BeginUpdate()
-                ListView_Watchers.Items.Clear()
-                For Each mWatcherItem In g_ClassDebuggerParser.g_lWatcherList
-                    Dim mListViewItemData As New ClassListViewItemData(New String() {mWatcherItem.iLine.ToString, mWatcherItem.sArguments, "", "0"})
-                    mListViewItemData.g_mData("GUID") = mWatcherItem.sGUID
+                If (True) Then
+                    ListView_Watchers.BeginUpdate()
+                    ListView_Watchers.Items.Clear()
+                    For Each mWatcherItem In g_ClassDebuggerParser.g_lWatcherList
+                        Dim mListViewItemData As New ClassListViewItemData(New String() {mWatcherItem.iLine.ToString, mWatcherItem.sArguments, "", "0"})
+                        mListViewItemData.g_mData("GUID") = mWatcherItem.sGUID
 
-                    ListView_Watchers.Items.Add(mListViewItemData)
+                        ListView_Watchers.Items.Add(mListViewItemData)
 
-                    Dim marker As New ICSharpCode.TextEditor.Document.TextMarker(mWatcherItem.iOffset, mWatcherItem.iTotalLength, ICSharpCode.TextEditor.Document.TextMarkerType.Underlined, Color.DarkOrange)
-                    TextEditorControlEx_DebuggerSource.Document.MarkerStrategy.AddMarker(marker)
-                Next
-                ListView_Watchers.EndUpdate()
+                        Dim marker As New ICSharpCode.TextEditor.Document.TextMarker(mWatcherItem.iOffset, mWatcherItem.iTotalLength, ICSharpCode.TextEditor.Document.TextMarkerType.Underlined, Color.DarkOrange)
+                        TextEditorControlEx_DebuggerSource.Document.MarkerStrategy.AddMarker(marker)
+                    Next
+                    ListView_Watchers.EndUpdate()
+                End If
+
+                'Add asserts
+                If (True) Then
+                    ListView_Asserts.BeginUpdate()
+                    ListView_Asserts.Items.Clear()
+                    For Each mAssertItem In g_ClassDebuggerParser.g_lAssertList
+                        Dim mListViewItemData As New ClassListViewItemData(New String() {mAssertItem.iLine.ToString, mAssertItem.sArguments, "", "0"})
+                        mListViewItemData.g_mData("GUID") = mAssertItem.sGUID
+
+                        ListView_Asserts.Items.Add(mListViewItemData)
+
+                        Dim marker As New ICSharpCode.TextEditor.Document.TextMarker(mAssertItem.iOffset, mAssertItem.iTotalLength, ICSharpCode.TextEditor.Document.TextMarkerType.Underlined, Color.DarkOrange)
+                        TextEditorControlEx_DebuggerSource.Document.MarkerStrategy.AddMarker(marker)
+                    Next
+                    ListView_Asserts.EndUpdate()
+                End If
 
                 'Add entities
                 ListView_Entities.BeginUpdate()
@@ -361,8 +382,6 @@ Public Class FormDebugger
         End Try
     End Sub
 
-
-
 #Region "Highlight ListView Pleaceholders"
     Private Sub ListView_Breakpoints_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListView_Breakpoints.SelectedIndexChanged
         MarkSelectedBreakpoint()
@@ -378,6 +397,14 @@ Public Class FormDebugger
 
     Private Sub ListView_Watchers_MouseClick(sender As Object, e As MouseEventArgs) Handles ListView_Watchers.MouseClick
         MarkSelectedWatcher()
+    End Sub
+
+    Private Sub ListView_Asserts_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListView_Asserts.SelectedIndexChanged
+        MarkSelectedAssert()
+    End Sub
+
+    Private Sub ListView_Asserts_MouseClick(sender As Object, e As MouseEventArgs) Handles ListView_Asserts.MouseClick
+        MarkSelectedAssert()
     End Sub
 #End Region
 
@@ -440,6 +467,44 @@ Public Class FormDebugger
             Dim sGUID As String = CStr(mListViewItemData.g_mData("GUID"))
 
             For Each item In g_ClassDebuggerParser.g_lWatcherList
+                If (item.sGUID <> sGUID) Then
+                    Continue For
+                End If
+
+                Dim startLocation As New ICSharpCode.TextEditor.TextLocation(item.iIndex, item.iLine - 1)
+                Dim endLocation As New ICSharpCode.TextEditor.TextLocation(item.iIndex + item.iTotalLength, item.iLine - 1)
+
+                TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.Caret.Position = startLocation
+                TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.SelectionManager.SetSelection(startLocation, endLocation)
+
+                Exit For
+            Next
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
+    ''' <summary>
+    ''' Mark selected debugger watchers using the ListView
+    ''' </summary>
+    Public Sub MarkSelectedAssert()
+        Try
+            If (Not g_bListViewEnableClickSelect) Then
+                Return
+            End If
+
+            If (ListView_Asserts.SelectedItems.Count < 1) Then
+                Return
+            End If
+
+            Dim mListViewItemData = TryCast(ListView_Asserts.SelectedItems(0), ClassListViewItemData)
+            If (mListViewItemData Is Nothing) Then
+                Return
+            End If
+
+            Dim sGUID As String = CStr(mListViewItemData.g_mData("GUID"))
+
+            For Each item In g_ClassDebuggerParser.g_lAssertList
                 If (item.sGUID <> sGUID) Then
                     Continue For
                 End If
@@ -555,19 +620,19 @@ Public Class FormDebugger
 
     Private Sub ToolStripMenuItem_BreakpointsSetValues_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_BreakpointsSetValues.Click
         Try
-            If (String.IsNullOrEmpty(g_ClassDebuggerRunner.g_mActiveBreakpointValue.sGUID)) Then
+            If (String.IsNullOrEmpty(g_ClassDebuggerRunner.g_mActiveBreakpointInfo.sGUID)) Then
                 MessageBox.Show("There is currently no active breakpoint!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 Return
             End If
 
             Using i As New FormDebuggerBreakpointSetValue
-                If (g_ClassDebuggerRunner.g_mActiveBreakpointValue.bReturnCustomValue) Then
-                    Select Case (g_ClassDebuggerRunner.g_mActiveBreakpointValue.mValueType)
+                If (g_ClassDebuggerRunner.g_mActiveBreakpointInfo.bReturnCustomValue) Then
+                    Select Case (g_ClassDebuggerRunner.g_mActiveBreakpointInfo.mValueType)
                         Case ClassDebuggerRunner.ENUM_BREAKPOINT_VALUE_TYPE.INTEGER
                             i.RadioButton_TypeInteger.Checked = True
 
                             Dim iInt As Decimal
-                            If (Not Decimal.TryParse(g_ClassDebuggerRunner.g_mActiveBreakpointValue.sIntegerValue, iInt)) Then
+                            If (Not Decimal.TryParse(g_ClassDebuggerRunner.g_mActiveBreakpointInfo.sIntegerValue, iInt)) Then
                                 iInt = 0
                             End If
 
@@ -576,7 +641,7 @@ Public Class FormDebugger
                             i.RadioButton_TypeFloatingPoint.Checked = True
 
                             Dim iFloat As Decimal
-                            If (Not Decimal.TryParse(g_ClassDebuggerRunner.g_mActiveBreakpointValue.sFloatValue.Replace(".", ","), iFloat)) Then
+                            If (Not Decimal.TryParse(g_ClassDebuggerRunner.g_mActiveBreakpointInfo.sFloatValue.Replace(".", ","), iFloat)) Then
                                 iFloat = 0
                             End If
 
@@ -585,48 +650,48 @@ Public Class FormDebugger
                 Else
                     Dim iOrgInt As Decimal
                     Dim iOrgFloat As Decimal
-                    If (Not Decimal.TryParse(g_ClassDebuggerRunner.g_mActiveBreakpointValue.sOrginalIntegerValue, iOrgInt)) Then
+                    If (Not Decimal.TryParse(g_ClassDebuggerRunner.g_mActiveBreakpointInfo.sOrginalIntegerValue, iOrgInt)) Then
                         iOrgInt = 0
                     End If
-                    If (Not Decimal.TryParse(g_ClassDebuggerRunner.g_mActiveBreakpointValue.sOrginalFloatValue.Replace(".", ","), iOrgFloat)) Then
+                    If (Not Decimal.TryParse(g_ClassDebuggerRunner.g_mActiveBreakpointInfo.sOrginalFloatValue.Replace(".", ","), iOrgFloat)) Then
                         iOrgFloat = 0.0D
                     End If
 
                     If (iOrgInt <> 0 AndAlso iOrgFloat = 0.0) Then
                         i.RadioButton_TypeInteger.Checked = True
-                        i.NumericUpDown_BreakpointValue.Value = CDec(g_ClassDebuggerRunner.g_mActiveBreakpointValue.sOrginalIntegerValue)
+                        i.NumericUpDown_BreakpointValue.Value = CDec(g_ClassDebuggerRunner.g_mActiveBreakpointInfo.sOrginalIntegerValue)
                     ElseIf (iOrgInt = 0 AndAlso iOrgFloat = 0.0) Then
                         i.RadioButton_TypeInteger.Checked = True
-                        i.NumericUpDown_BreakpointValue.Value = CDec(g_ClassDebuggerRunner.g_mActiveBreakpointValue.sOrginalIntegerValue)
+                        i.NumericUpDown_BreakpointValue.Value = CDec(g_ClassDebuggerRunner.g_mActiveBreakpointInfo.sOrginalIntegerValue)
                     Else
                         i.RadioButton_TypeFloatingPoint.Checked = True
-                        i.NumericUpDown_BreakpointValue.Value = CDec(g_ClassDebuggerRunner.g_mActiveBreakpointValue.sOrginalFloatValue.Replace(".", ","))
+                        i.NumericUpDown_BreakpointValue.Value = CDec(g_ClassDebuggerRunner.g_mActiveBreakpointInfo.sOrginalFloatValue.Replace(".", ","))
                     End If
                 End If
 
                 Select Case (i.ShowDialog(Me))
                     Case DialogResult.OK
-                        g_ClassDebuggerRunner.g_mActiveBreakpointValue.bReturnCustomValue = True
+                        g_ClassDebuggerRunner.g_mActiveBreakpointInfo.bReturnCustomValue = True
 
                         Select Case (True)
                             Case i.RadioButton_TypeInteger.Checked
-                                g_ClassDebuggerRunner.g_mActiveBreakpointValue.mValueType = ClassDebuggerRunner.ENUM_BREAKPOINT_VALUE_TYPE.INTEGER
-                                g_ClassDebuggerRunner.g_mActiveBreakpointValue.sIntegerValue = Math.Round(i.NumericUpDown_BreakpointValue.Value).ToString
-                                g_ClassDebuggerRunner.g_mActiveBreakpointValue.sFloatValue = "0.0"
+                                g_ClassDebuggerRunner.g_mActiveBreakpointInfo.mValueType = ClassDebuggerRunner.ENUM_BREAKPOINT_VALUE_TYPE.INTEGER
+                                g_ClassDebuggerRunner.g_mActiveBreakpointInfo.sIntegerValue = Math.Round(i.NumericUpDown_BreakpointValue.Value).ToString
+                                g_ClassDebuggerRunner.g_mActiveBreakpointInfo.sFloatValue = "0.0"
                             Case Else
-                                g_ClassDebuggerRunner.g_mActiveBreakpointValue.mValueType = ClassDebuggerRunner.ENUM_BREAKPOINT_VALUE_TYPE.FLOAT
-                                g_ClassDebuggerRunner.g_mActiveBreakpointValue.sIntegerValue = "0"
-                                g_ClassDebuggerRunner.g_mActiveBreakpointValue.sFloatValue = i.NumericUpDown_BreakpointValue.Value.ToString.Replace(",", ".")
+                                g_ClassDebuggerRunner.g_mActiveBreakpointInfo.mValueType = ClassDebuggerRunner.ENUM_BREAKPOINT_VALUE_TYPE.FLOAT
+                                g_ClassDebuggerRunner.g_mActiveBreakpointInfo.sIntegerValue = "0"
+                                g_ClassDebuggerRunner.g_mActiveBreakpointInfo.sFloatValue = i.NumericUpDown_BreakpointValue.Value.ToString.Replace(",", ".")
                         End Select
 
                         'Update values in the ListView
-                        g_ClassDebuggerRunner.UpdateBreakpointListView()
+                        g_ClassDebuggerRunner.UpdateListViewBreakpointItems()
 
                     Case DialogResult.Abort
-                        g_ClassDebuggerRunner.g_mActiveBreakpointValue.bReturnCustomValue = False
+                        g_ClassDebuggerRunner.g_mActiveBreakpointInfo.bReturnCustomValue = False
 
                         'Update values in the ListView
-                        g_ClassDebuggerRunner.UpdateBreakpointListView()
+                        g_ClassDebuggerRunner.UpdateListViewBreakpointItems()
                 End Select
             End Using
         Catch ex As Exception
@@ -686,8 +751,7 @@ Public Class FormDebugger
                 Dim sGUID As String = info.sGUID
 
                 If (iCaretOffset >= iOffset AndAlso iCaretOffset <= (iOffset + iLength)) Then
-                    'ListView_Breakpoints.Select()
-                    TabControl1.SelectTab(0)
+                    TabControl1.SelectTab(TabPage_Breakpoints)
 
                     ListView_Breakpoints.BeginUpdate()
                     For i = 0 To ListView_Breakpoints.Items.Count - 1
@@ -721,8 +785,7 @@ Public Class FormDebugger
                 Dim sGUID As String = info.sGUID
 
                 If (iCaretOffset >= iOffset AndAlso iCaretOffset <= (iOffset + iLength)) Then
-                    'ListView_Watchers.Select()
-                    TabControl1.SelectTab(1)
+                    TabControl1.SelectTab(TabPage_Watchers)
 
                     ListView_Watchers.BeginUpdate()
                     For i = 0 To ListView_Watchers.Items.Count - 1
@@ -742,6 +805,40 @@ Public Class FormDebugger
                         End If
                     Next
                     ListView_Watchers.EndUpdate()
+
+                    Exit For
+                End If
+            Next
+        End If
+
+        'Mark asserts
+        If (True) Then
+            For Each info In g_ClassDebuggerParser.g_lAssertList
+                Dim iOffset As Integer = info.iOffset
+                Dim iLength As Integer = info.iLength
+                Dim sGUID As String = info.sGUID
+
+                If (iCaretOffset >= iOffset AndAlso iCaretOffset <= (iOffset + iLength)) Then
+                    TabControl1.SelectTab(TabPage_Asserts)
+
+                    ListView_Asserts.BeginUpdate()
+                    For i = 0 To ListView_Asserts.Items.Count - 1
+                        ListView_Asserts.Items(i).Selected = False
+                    Next
+
+                    For i = 0 To ListView_Asserts.Items.Count - 1
+                        Dim mListViewItemData = TryCast(ListView_Asserts.Items(i), ClassListViewItemData)
+                        If (mListViewItemData Is Nothing) Then
+                            Continue For
+                        End If
+
+                        If (CStr(mListViewItemData.g_mData("GUID")) = sGUID) Then
+                            mListViewItemData.Selected = True
+                            mListViewItemData.EnsureVisible()
+                            Exit For
+                        End If
+                    Next
+                    ListView_Asserts.EndUpdate()
 
                     Exit For
                 End If

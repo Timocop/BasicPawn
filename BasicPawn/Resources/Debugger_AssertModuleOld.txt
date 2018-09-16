@@ -1,0 +1,37 @@
+stock any:{FunctionName}(any:val=0, String:...)
+{
+	if(val > 0)
+	{
+		return val;
+	}
+
+	if(!FileExists("{DebuggerIdentifier}.running.bpdebug"))
+	{
+		return val;
+	}
+	
+	if(FileExists("{IndentifierGUID}.ignore.bpdebug"))
+	{
+		return val;
+	}
+	
+	new Handle:hTriggerFile;
+	while((hTriggerFile = OpenFile("{IndentifierGUID}.trigger.bpdebug", "w")) == INVALID_HANDLE) {}
+	CloseHandle(hTriggerFile);
+	
+	for(;;)
+	{
+		if(!FileExists("{DebuggerIdentifier}.running.bpdebug"))
+		{
+			break;
+		}
+		
+		if(FileExists("{IndentifierGUID}.continue.bpdebug"))
+		{
+			DeleteFile("{IndentifierGUID}.continue.bpdebug");
+			break;
+		}
+	}
+	
+	return val;
+}
