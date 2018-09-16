@@ -94,6 +94,11 @@ Public Class ClassDebuggerRunner
     End Structure
     Public g_mActiveBreakpointInfo As STRUC_ACTIVE_BREAKPOINT_INFORMATION
 
+    Structure STRUC_ACTIVE_ASSERT_INFORMATION
+        Dim sGUID As String
+    End Structure
+    Public g_mActiveAssertInfo As STRUC_ACTIVE_ASSERT_INFORMATION
+
     Public Sub New(f As FormDebugger)
         g_mFormDebugger = f
 
@@ -270,10 +275,10 @@ Public Class ClassDebuggerRunner
     End Sub
 
     ''' <summary>
-    ''' Updates the current breaks in the ListView
+    ''' Updates the current info items in the ListView
     ''' WARN: UI elements!
     ''' </summary>
-    Public Sub UpdateListViewBreakpointItems()
+    Public Sub UpdateListViewInfoItems()
         If (String.IsNullOrEmpty(g_mActiveBreakpointInfo.sGUID)) Then
             For i = 0 To g_mFormDebugger.ListView_Breakpoints.Items.Count - 1
                 Dim mListViewItemData = TryCast(g_mFormDebugger.ListView_Breakpoints.Items(i), ClassListViewItemData)
@@ -288,19 +293,6 @@ Public Class ClassDebuggerRunner
                 End If
 
                 mListViewItemData.SubItems(2).Text = ""
-            Next
-
-            For i = 0 To g_mFormDebugger.ListView_Asserts.Items.Count - 1
-                Dim mListViewItemData = TryCast(g_mFormDebugger.ListView_Asserts.Items(i), ClassListViewItemData)
-                If (mListViewItemData Is Nothing) Then
-                    Continue For
-                End If
-
-                If (ClassControlStyle.m_IsInvertedColors) Then
-                    mListViewItemData.BackColor = ClassControlStyle.g_cDarkControlColor.mDarkBackground
-                Else
-                    mListViewItemData.BackColor = ClassControlStyle.g_cDarkControlColor.mLightBackground
-                End If
             Next
         Else
             For i = 0 To g_mFormDebugger.ListView_Breakpoints.Items.Count - 1
@@ -323,14 +315,29 @@ Public Class ClassDebuggerRunner
                     End If
                 End If
             Next
+        End If
 
+        If (String.IsNullOrEmpty(g_mActiveAssertInfo.sGUID)) Then
             For i = 0 To g_mFormDebugger.ListView_Asserts.Items.Count - 1
                 Dim mListViewItemData = TryCast(g_mFormDebugger.ListView_Asserts.Items(i), ClassListViewItemData)
                 If (mListViewItemData Is Nothing) Then
                     Continue For
                 End If
 
-                If (g_mActiveBreakpointInfo.sGUID = CStr(mListViewItemData.g_mData("GUID"))) Then
+                If (ClassControlStyle.m_IsInvertedColors) Then
+                    mListViewItemData.BackColor = ClassControlStyle.g_cDarkControlColor.mDarkBackground
+                Else
+                    mListViewItemData.BackColor = ClassControlStyle.g_cDarkControlColor.mLightBackground
+                End If
+            Next
+        Else
+            For i = 0 To g_mFormDebugger.ListView_Asserts.Items.Count - 1
+                Dim mListViewItemData = TryCast(g_mFormDebugger.ListView_Asserts.Items(i), ClassListViewItemData)
+                If (mListViewItemData Is Nothing) Then
+                    Continue For
+                End If
+
+                If (g_mActiveAssertInfo.sGUID = CStr(mListViewItemData.g_mData("GUID"))) Then
                     mListViewItemData.BackColor = Color.Red
                     mListViewItemData.Selected = True
                     mListViewItemData.Selected = False
@@ -656,6 +663,7 @@ Public Class ClassDebuggerRunner
             'Make sure other async threads doenst fuckup everthing
             SyncLock g_mFileSystemWatcherLock
                 g_mActiveBreakpointInfo.sGUID = ""
+                g_mActiveAssertInfo.sGUID = ""
                 m_DebuggingState = ENUM_DEBUGGING_STATE.STARTED
                 m_SuspendGame = False
             End SyncLock
@@ -802,11 +810,12 @@ Public Class ClassDebuggerRunner
             'Make sure other async threads doenst fuckup everthing
             SyncLock g_mFileSystemWatcherLock
                 g_mActiveBreakpointInfo.sGUID = ""
+                g_mActiveAssertInfo.sGUID = ""
                 m_DebuggingState = ENUM_DEBUGGING_STATE.STOPPED
                 m_SuspendGame = False
             End SyncLock
 
-            UpdateListViewBreakpointItems()
+            UpdateListViewInfoItems()
 
             g_mFormDebugger.Timer_ConnectionCheck.Stop()
 
@@ -836,6 +845,7 @@ Public Class ClassDebuggerRunner
                 Return
             End If
 
+            'Send breakpoint info
             If (Not String.IsNullOrEmpty(g_mActiveBreakpointInfo.sGUID)) Then
                 Dim sServerFolder As String = m_ServerFolder
                 Dim sContinueFile As String = IO.Path.Combine(sServerFolder, g_mActiveBreakpointInfo.sGUID & ClassDebuggerParser.g_sDebuggerBreakpointContinueExt.ToLower)
@@ -851,6 +861,14 @@ Public Class ClassDebuggerRunner
                 Else
                     IO.File.WriteAllText(sContinueFile, "")
                 End If
+            End If
+
+            'Send assert info
+            If (Not String.IsNullOrEmpty(g_mActiveAssertInfo.sGUID)) Then
+                Dim sServerFolder As String = m_ServerFolder
+                Dim sContinueFile As String = IO.Path.Combine(sServerFolder, g_mActiveAssertInfo.sGUID & ClassDebuggerParser.g_sDebuggerAssertContinueExt.ToLower)
+
+                IO.File.WriteAllText(sContinueFile, "")
             End If
 
             'Close any forms
@@ -872,11 +890,12 @@ Public Class ClassDebuggerRunner
             'Make sure other async threads doenst fuckup everthing
             SyncLock g_mFileSystemWatcherLock
                 g_mActiveBreakpointInfo.sGUID = ""
+                g_mActiveAssertInfo.sGUID = ""
                 m_DebuggingState = ENUM_DEBUGGING_STATE.STARTED
                 m_SuspendGame = False
             End SyncLock
 
-            UpdateListViewBreakpointItems()
+            UpdateListViewInfoItems()
 
             g_mFormDebugger.Timer_ConnectionCheck.Start()
 
@@ -910,7 +929,7 @@ Public Class ClassDebuggerRunner
                 m_DebuggingState = ENUM_DEBUGGING_STATE.PAUSED
             End SyncLock
 
-            UpdateListViewBreakpointItems()
+            UpdateListViewInfoItems()
 
             g_mFormDebugger.Timer_ConnectionCheck.Stop()
 
@@ -1127,6 +1146,9 @@ Public Class ClassDebuggerRunner
                     .sOrginalIntegerValue = sInteger,
                     .sOrginalFloatValue = sFloat
                 }
+                g_mActiveAssertInfo = New STRUC_ACTIVE_ASSERT_INFORMATION With {
+                    .sGUID = ""
+                }
 
                 'INFO: Dont use 'Invoke' it deadlocks on FileSystemWatcher.Dispose, use async 'BeginInvoke' instead.
                 ClassThread.ExecAsync(g_mFormDebugger, Sub()
@@ -1134,7 +1156,7 @@ Public Class ClassDebuggerRunner
                                                                Return
                                                            End If
 
-                                                           UpdateListViewBreakpointItems()
+                                                           UpdateListViewInfoItems()
 
                                                            g_mFormDebugger.PrintInformation("[INFO]", "Breakpoint reached!", False, False)
                                                            g_mFormDebugger.PrintInformation("[INFO]", "Debugger awaiting input...", False, True)
@@ -1278,13 +1300,16 @@ Public Class ClassDebuggerRunner
                 m_DebuggingState = ENUM_DEBUGGING_STATE.PAUSED
 
                 g_mActiveBreakpointInfo = New STRUC_ACTIVE_BREAKPOINT_INFORMATION With {
-                    .sGUID = sGUID,
+                    .sGUID = "",
                     .bReturnCustomValue = False,
                     .mValueType = ENUM_BREAKPOINT_VALUE_TYPE.INTEGER,
                     .sIntegerValue = "-1",
                     .sFloatValue = "-1.0",
                     .sOrginalIntegerValue = "-1",
                     .sOrginalFloatValue = "-1.0"
+                }
+                g_mActiveAssertInfo = New STRUC_ACTIVE_ASSERT_INFORMATION With {
+                    .sGUID = sGUID
                 }
 
                 'INFO: Dont use 'Invoke' it deadlocks on FileSystemWatcher.Dispose, use async 'BeginInvoke' instead.
@@ -1293,7 +1318,7 @@ Public Class ClassDebuggerRunner
                                                                Return
                                                            End If
 
-                                                           UpdateListViewBreakpointItems()
+                                                           UpdateListViewInfoItems()
 
                                                            g_mFormDebugger.PrintInformation("[INFO]", "Assert reached!", False, False)
                                                            g_mFormDebugger.PrintInformation("[INFO]", "Debugger awaiting input...", False, True)
@@ -1651,7 +1676,7 @@ Public Class ClassDebuggerRunner
                                                                        Return
                                                                    End If
 
-                                                                   UpdateListViewBreakpointItems()
+                                                                   UpdateListViewInfoItems()
 
                                                                    g_mFormDebugger.PrintInformation("[INFO]", "SourceMod exception caught!", False, False)
                                                                    g_mFormDebugger.PrintInformation("[INFO]", "Debugger awaiting input...", False, True)
@@ -1697,7 +1722,7 @@ Public Class ClassDebuggerRunner
                                                                        Return
                                                                    End If
 
-                                                                   UpdateListViewBreakpointItems()
+                                                                   UpdateListViewInfoItems()
 
                                                                    g_mFormDebugger.PrintInformation("[INFO]", "Unknown SourceMod exception caught!", False, False)
                                                                    g_mFormDebugger.PrintInformation("[INFO]", "Debugger awaiting input...", False, True)
@@ -1801,7 +1826,7 @@ Public Class ClassDebuggerRunner
                                                                    Return
                                                                End If
 
-                                                               UpdateListViewBreakpointItems()
+                                                               UpdateListViewInfoItems()
 
                                                                g_mFormDebugger.PrintInformation("[INFO]", "Fatal SourceMod exception caught!", False, False)
                                                                g_mFormDebugger.PrintInformation("[INFO]", "Debugger awaiting input...", False, True)

@@ -685,13 +685,13 @@ Public Class FormDebugger
                         End Select
 
                         'Update values in the ListView
-                        g_ClassDebuggerRunner.UpdateListViewBreakpointItems()
+                        g_ClassDebuggerRunner.UpdateListViewInfoItems()
 
                     Case DialogResult.Abort
                         g_ClassDebuggerRunner.g_mActiveBreakpointInfo.bReturnCustomValue = False
 
                         'Update values in the ListView
-                        g_ClassDebuggerRunner.UpdateListViewBreakpointItems()
+                        g_ClassDebuggerRunner.UpdateListViewInfoItems()
                 End Select
             End Using
         Catch ex As Exception
