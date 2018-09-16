@@ -74,6 +74,10 @@ Partial Class FormDebugger
         Me.ListView_Asserts = New System.Windows.Forms.ListView()
         Me.ColumnHeader11 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader12 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.ColumnHeader13 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.ColumnHeader14 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.ContextMenuStrip_Asserts = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.ToolStripMenuItem_AssertAction = New System.Windows.Forms.ToolStripMenuItem()
         Me.TabPage_Watchers = New System.Windows.Forms.TabPage()
         Me.ListView_Watchers = New System.Windows.Forms.ListView()
         Me.ColumnHeader3 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
@@ -86,7 +90,6 @@ Partial Class FormDebugger
         Me.ColumnHeader9 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader10 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.Timer_ConnectionCheck = New System.Windows.Forms.Timer(Me.components)
-        Me.ColumnHeader13 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.StatusStrip_BPDebugger.SuspendLayout()
         Me.MenuStrip_BPDebugger.SuspendLayout()
         Me.SplitContainer1.Panel1.SuspendLayout()
@@ -104,6 +107,7 @@ Partial Class FormDebugger
         Me.TabPage_Breakpoints.SuspendLayout()
         Me.ContextMenuStrip_Breakpoints.SuspendLayout()
         Me.TabPage_Asserts.SuspendLayout()
+        Me.ContextMenuStrip_Asserts.SuspendLayout()
         Me.TabPage_Watchers.SuspendLayout()
         Me.TabPage_Entities.SuspendLayout()
         Me.SuspendLayout()
@@ -489,7 +493,8 @@ Partial Class FormDebugger
         '
         'ListView_Asserts
         '
-        Me.ListView_Asserts.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader11, Me.ColumnHeader12, Me.ColumnHeader13})
+        Me.ListView_Asserts.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader11, Me.ColumnHeader12, Me.ColumnHeader13, Me.ColumnHeader14})
+        Me.ListView_Asserts.ContextMenuStrip = Me.ContextMenuStrip_Asserts
         Me.ListView_Asserts.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ListView_Asserts.FullRowSelect = True
         Me.ListView_Asserts.HideSelection = False
@@ -509,7 +514,31 @@ Partial Class FormDebugger
         'ColumnHeader12
         '
         Me.ColumnHeader12.Text = "Assert"
-        Me.ColumnHeader12.Width = 100
+        Me.ColumnHeader12.Width = 75
+        '
+        'ColumnHeader13
+        '
+        Me.ColumnHeader13.Text = "Value"
+        Me.ColumnHeader13.Width = 75
+        '
+        'ColumnHeader14
+        '
+        Me.ColumnHeader14.Text = "Action"
+        Me.ColumnHeader14.Width = 50
+        '
+        'ContextMenuStrip_Asserts
+        '
+        Me.ContextMenuStrip_Asserts.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_AssertAction})
+        Me.ContextMenuStrip_Asserts.Name = "ContextMenuStrip_Asserts"
+        Me.ContextMenuStrip_Asserts.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
+        Me.ContextMenuStrip_Asserts.ShowImageMargin = False
+        Me.ContextMenuStrip_Asserts.Size = New System.Drawing.Size(183, 26)
+        '
+        'ToolStripMenuItem_AssertAction
+        '
+        Me.ToolStripMenuItem_AssertAction.Name = "ToolStripMenuItem_AssertAction"
+        Me.ToolStripMenuItem_AssertAction.Size = New System.Drawing.Size(182, 22)
+        Me.ToolStripMenuItem_AssertAction.Text = "Set active asserts action..."
         '
         'TabPage_Watchers
         '
@@ -595,11 +624,6 @@ Partial Class FormDebugger
         '
         Me.Timer_ConnectionCheck.Interval = 10000
         '
-        'ColumnHeader13
-        '
-        Me.ColumnHeader13.Text = "Value"
-        Me.ColumnHeader13.Width = 100
-        '
         'FormDebugger
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -633,6 +657,7 @@ Partial Class FormDebugger
         Me.TabPage_Breakpoints.ResumeLayout(False)
         Me.ContextMenuStrip_Breakpoints.ResumeLayout(False)
         Me.TabPage_Asserts.ResumeLayout(False)
+        Me.ContextMenuStrip_Asserts.ResumeLayout(False)
         Me.TabPage_Watchers.ResumeLayout(False)
         Me.TabPage_Entities.ResumeLayout(False)
         Me.ResumeLayout(False)
@@ -699,4 +724,7 @@ Partial Class FormDebugger
     Friend WithEvents ColumnHeader11 As ColumnHeader
     Friend WithEvents ColumnHeader12 As ColumnHeader
     Friend WithEvents ColumnHeader13 As ColumnHeader
+    Friend WithEvents ColumnHeader14 As ColumnHeader
+    Friend WithEvents ContextMenuStrip_Asserts As ContextMenuStrip
+    Friend WithEvents ToolStripMenuItem_AssertAction As ToolStripMenuItem
 End Class

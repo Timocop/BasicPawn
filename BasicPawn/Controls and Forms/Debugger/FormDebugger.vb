@@ -285,7 +285,7 @@ Public Class FormDebugger
                     ListView_Asserts.BeginUpdate()
                     ListView_Asserts.Items.Clear()
                     For Each mAssertItem In g_ClassDebuggerParser.g_lAssertList
-                        Dim mListViewItemData As New ClassListViewItemData(New String() {mAssertItem.iLine.ToString, mAssertItem.sArguments, "", "0"})
+                        Dim mListViewItemData As New ClassListViewItemData(New String() {mAssertItem.iLine.ToString, mAssertItem.sArguments, "", ""})
                         mListViewItemData.g_mData("GUID") = mAssertItem.sGUID
 
                         ListView_Asserts.Items.Add(mListViewItemData)
@@ -694,6 +694,38 @@ Public Class FormDebugger
                         g_ClassDebuggerRunner.UpdateListViewInfoItems()
                 End Select
             End Using
+        Catch ex As Exception
+            'TODO: Add better handle read support.
+            '      For some reason saving a handle as float, it becomes massive. The int doesnt.
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
+    Private Sub ToolStripMenuItem_AssertAction_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_AssertAction.Click
+        Try
+            If (String.IsNullOrEmpty(g_ClassDebuggerRunner.g_mActiveAssertInfo.sGUID)) Then
+                MessageBox.Show("There is currently no active assert!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Return
+            End If
+
+            Dim mSB As New Text.StringBuilder
+            mSB.AppendLine("Select assert action:")
+            mSB.AppendLine()
+            mSB.AppendLine("Abort - Abort execution of the plugin")
+            mSB.AppendLine("Retry - Abort current call stack")
+            mSB.AppendLine("Ignore - Ignore assert and continue (Default)")
+
+            Select Case (MessageBox.Show(mSB.ToString, "Assert action", MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Question))
+                Case DialogResult.Abort
+                    g_ClassDebuggerRunner.g_mActiveAssertInfo.iActionType = ClassDebuggerRunner.ENUM_ASSERT_ACTION_TYPE.FAIL
+                Case DialogResult.Retry
+                    g_ClassDebuggerRunner.g_mActiveAssertInfo.iActionType = ClassDebuggerRunner.ENUM_ASSERT_ACTION_TYPE.ERROR
+                Case Else
+                    g_ClassDebuggerRunner.g_mActiveAssertInfo.iActionType = ClassDebuggerRunner.ENUM_ASSERT_ACTION_TYPE.IGNORE
+            End Select
+
+            'Update values in the ListView
+            g_ClassDebuggerRunner.UpdateListViewInfoItems()
         Catch ex As Exception
             'TODO: Add better handle read support.
             '      For some reason saving a handle as float, it becomes massive. The int doesnt.

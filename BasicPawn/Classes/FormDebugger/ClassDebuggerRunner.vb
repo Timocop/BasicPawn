@@ -94,8 +94,15 @@ Public Class ClassDebuggerRunner
     End Structure
     Public g_mActiveBreakpointInfo As STRUC_ACTIVE_BREAKPOINT_INFORMATION
 
+    Enum ENUM_ASSERT_ACTION_TYPE
+        IGNORE
+        [ERROR]
+        FAIL
+    End Enum
+
     Structure STRUC_ACTIVE_ASSERT_INFORMATION
         Dim sGUID As String
+        Dim iActionType As ENUM_ASSERT_ACTION_TYPE
         Dim sOrginalIntegerValue As String
         Dim sOrginalFloatValue As String
     End Structure
@@ -333,6 +340,7 @@ Public Class ClassDebuggerRunner
                 End If
 
                 mListViewItemData.SubItems(2).Text = ""
+                mListViewItemData.SubItems(3).Text = ""
             Next
         Else
             For i = 0 To g_mFormDebugger.ListView_Asserts.Items.Count - 1
@@ -349,6 +357,15 @@ Public Class ClassDebuggerRunner
                     g_mFormDebugger.TabControl1.SelectTab(g_mFormDebugger.TabPage_Asserts)
 
                     mListViewItemData.SubItems(2).Text = String.Format("i:{0} | f:{1}", g_mActiveAssertInfo.sOrginalIntegerValue, g_mActiveAssertInfo.sOrginalFloatValue.Replace(",", "."))
+
+                    Select Case (g_mActiveAssertInfo.iActionType)
+                        Case ENUM_ASSERT_ACTION_TYPE.ERROR
+                            mListViewItemData.SubItems(3).Text = "Error"
+                        Case ENUM_ASSERT_ACTION_TYPE.FAIL
+                            mListViewItemData.SubItems(3).Text = "Fail"
+                        Case Else
+                            mListViewItemData.SubItems(3).Text = "Ignore"
+                    End Select
                 End If
             Next
         End If
@@ -873,8 +890,17 @@ Public Class ClassDebuggerRunner
             If (Not String.IsNullOrEmpty(g_mActiveAssertInfo.sGUID)) Then
                 Dim sServerFolder As String = m_ServerFolder
                 Dim sContinueFile As String = IO.Path.Combine(sServerFolder, g_mActiveAssertInfo.sGUID & ClassDebuggerParser.g_sDebuggerAssertContinueExt.ToLower)
+                Dim sAbortFile As String = IO.Path.Combine(sServerFolder, g_mActiveAssertInfo.sGUID & ClassDebuggerParser.g_sDebuggerAssertContinueErrorExt.ToLower)
+                Dim sFailFile As String = IO.Path.Combine(sServerFolder, g_mActiveAssertInfo.sGUID & ClassDebuggerParser.g_sDebuggerAssertContinueFailExt.ToLower)
 
-                IO.File.WriteAllText(sContinueFile, "")
+                Select Case (g_mActiveAssertInfo.iActionType)
+                    Case ENUM_ASSERT_ACTION_TYPE.ERROR
+                        IO.File.WriteAllText(sAbortFile, "")
+                    Case ENUM_ASSERT_ACTION_TYPE.FAIL
+                        IO.File.WriteAllText(sFailFile, "")
+                    Case Else
+                        IO.File.WriteAllText(sContinueFile, "")
+                End Select
             End If
 
             'Close any forms
@@ -1154,6 +1180,7 @@ Public Class ClassDebuggerRunner
                 }
                 g_mActiveAssertInfo = New STRUC_ACTIVE_ASSERT_INFORMATION With {
                     .sGUID = "",
+                    .iActionType = ENUM_ASSERT_ACTION_TYPE.IGNORE,
                     .sOrginalIntegerValue = "-1",
                     .sOrginalFloatValue = "-1.0"
                 }
@@ -1351,6 +1378,7 @@ Public Class ClassDebuggerRunner
                 }
                 g_mActiveAssertInfo = New STRUC_ACTIVE_ASSERT_INFORMATION With {
                     .sGUID = sGUID,
+                    .iActionType = ENUM_ASSERT_ACTION_TYPE.IGNORE,
                     .sOrginalIntegerValue = sInteger,
                     .sOrginalFloatValue = sFloat
                 }

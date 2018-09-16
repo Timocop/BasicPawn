@@ -40,6 +40,8 @@ Public Class ClassDebuggerParser
     Public Shared g_sAssertName As String = "BPDAssert"
     Public Shared g_sDebuggerAssertTriggerExt As String = ".trigger" & g_sDebuggerFilesExt 'If exist, BasicPawn knows this assert has been triggered
     Public Shared g_sDebuggerAssertContinueExt As String = ".continue" & g_sDebuggerFilesExt 'If exist, the assert will continue
+    Public Shared g_sDebuggerAssertContinueErrorExt As String = ".continuee" & g_sDebuggerFilesExt 'If exist, the assert will throw an error
+    Public Shared g_sDebuggerAssertContinueFailExt As String = ".continuef" & g_sDebuggerFilesExt 'If exist, the assert will fail and stop the plugin
 
 
     Structure STRUC_DEBUGGER_ITEM

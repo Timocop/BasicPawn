@@ -101,7 +101,7 @@ Public Class FormDebuggerException
 
             iDebugLine -= 1
 
-            If (iDebugLine < 0) Then
+            If (iDebugLine < 0 OrElse iDebugLine > g_mFormDebugger.TextEditorControlEx_DebuggerSource.Document.TotalNumberOfLines - 1) Then
                 Return
             End If
 

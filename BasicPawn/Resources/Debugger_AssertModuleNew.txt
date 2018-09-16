@@ -32,7 +32,29 @@ stock any {FunctionName}(any val=0, char ...)
 		
 		if(FileExists("{IndentifierGUID}.continue.bpdebug"))
 		{
-			DeleteFile("{IndentifierGUID}.continue.bpdebug");
+			DeleteFile("{IndentifierGUID}.continue.bpdebug"); 
+			DeleteFile("{IndentifierGUID}.continuee.bpdebug");
+			DeleteFile("{IndentifierGUID}.continuef.bpdebug");
+			break;
+		}
+		
+		if(FileExists("{IndentifierGUID}.continuee.bpdebug"))
+		{
+			DeleteFile("{IndentifierGUID}.continue.bpdebug"); 
+			DeleteFile("{IndentifierGUID}.continuee.bpdebug");
+			DeleteFile("{IndentifierGUID}.continuef.bpdebug");
+			
+			ThrowError("BasicPawn Debugger Assert action: Abort");
+			break;
+		}
+		
+		if(FileExists("{IndentifierGUID}.continuef.bpdebug"))
+		{
+			DeleteFile("{IndentifierGUID}.continue.bpdebug"); 
+			DeleteFile("{IndentifierGUID}.continuee.bpdebug");
+			DeleteFile("{IndentifierGUID}.continuef.bpdebug");
+			
+			SetFailState("BasicPawn Debugger Assert action: Fail");
 			break;
 		}
 	}
