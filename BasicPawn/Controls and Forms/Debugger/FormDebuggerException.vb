@@ -73,7 +73,7 @@ Public Class FormDebuggerException
                                                           stackTrace.sFunctionName})
 
                 mListViewItemData.g_mData("Index") = iIndex
-                mListViewItemData.g_mData("Line") = stackTrace.iLine
+                mListViewItemData.g_mData("Line") = -1
                 mListViewItemData.g_mData("RealLine") = iRealLine
                 mListViewItemData.g_mData("File") = sFile
                 mListViewItemData.g_mData("FunctionName") = stackTrace.sFunctionName
