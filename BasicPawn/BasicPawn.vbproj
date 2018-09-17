@@ -267,6 +267,12 @@
     <Compile Include="Controls and Forms\DatabaseViewer\FormDatabaseInput.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Controls and Forms\Debugger\FormDebuggerAssertSetAction.Designer.vb">
+      <DependentUpon>FormDebuggerAssertSetAction.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controls and Forms\Debugger\FormDebuggerAssertSetAction.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Controls and Forms\Debugger\FormDebuggerBreakpointSetValue.Designer.vb">
       <DependentUpon>FormDebuggerBreakpointSetValue.vb</DependentUpon>
     </Compile>
@@ -422,6 +428,9 @@
     <EmbeddedResource Include="Controls and Forms\DatabaseViewer\FormDatabaseInput.resx">
       <DependentUpon>FormDatabaseInput.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls and Forms\Debugger\FormDebuggerAssertSetAction.resx">
+      <DependentUpon>FormDebuggerAssertSetAction.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls and Forms\Debugger\FormDebuggerBreakpointSetValue.resx">
       <DependentUpon>FormDebuggerBreakpointSetValue.vb</DependentUpon>
     </EmbeddedResource>
@@ -576,6 +585,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="BasicPawnIcon.ico" />
+    <None Include="Resources\user32_101_48x48-32.png" />
     <None Include="Resources\Debugger_AssertModuleOld.txt" />
     <None Include="Resources\Debugger_AssertModuleNew.txt" />
     <None Include="Resources\aero_busy.gif" />

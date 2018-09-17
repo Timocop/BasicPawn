@@ -183,6 +183,11 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized string similar to stock any {FunctionName}(any val=0, char ...)
         '''{
+        '''	if(val &gt; 0)
+        '''	{
+        '''		return val;
+        '''	}
+        '''
         '''	if(!FileExists(&quot;{DebuggerIdentifier}.running.bpdebug&quot;))
         '''	{
         '''		return val;
@@ -195,16 +200,11 @@ Namespace My.Resources
         '''	
         '''	Handle hTriggerFile;
         '''	while((hTriggerFile = OpenFile(&quot;{IndentifierGUID}.trigger.bpdebug&quot;, &quot;w&quot;)) == INVALID_HANDLE) {}
-        '''	CloseHandle(hTriggerFile);
         '''	
-        '''	for(;;)
-        '''	{
-        '''		if(!FileExists(&quot;{DebuggerIdentifier}.running.bpdebug&quot;))
-        '''		{
-        '''			break;
-        '''		}
-        '''		
-        '''		if(FileExists(&quot;{IndentifierGUID}.continue.bpde [rest of string was truncated]&quot;;.
+        '''	WriteFileLine(hTriggerFile, &quot;i:%d&quot;, val);
+        '''	WriteFileLine(hTriggerFile, &quot;f:%f&quot;, val);
+        '''	FlushFile(hTriggerFile);
+        '''	CloseHandle(hTrigger [rest of string was truncated]&quot;;.
         '''</summary>
         Public ReadOnly Property Debugger_AssertModuleNew() As String
             Get
@@ -215,6 +215,11 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized string similar to stock any:{FunctionName}(any:val=0, String:...)
         '''{
+        '''	if(val &gt; 0)
+        '''	{
+        '''		return val;
+        '''	}
+        '''
         '''	if(!FileExists(&quot;{DebuggerIdentifier}.running.bpdebug&quot;))
         '''	{
         '''		return val;
@@ -225,18 +230,13 @@ Namespace My.Resources
         '''		return val;
         '''	}
         '''	
-        '''	Handle hTriggerFile;
+        '''	new Handle:hTriggerFile;
         '''	while((hTriggerFile = OpenFile(&quot;{IndentifierGUID}.trigger.bpdebug&quot;, &quot;w&quot;)) == INVALID_HANDLE) {}
-        '''	CloseHandle(hTriggerFile);
         '''	
-        '''	for(;;)
-        '''	{
-        '''		if(!FileExists(&quot;{DebuggerIdentifier}.running.bpdebug&quot;))
-        '''		{
-        '''			break;
-        '''		}
-        '''		
-        '''		if(FileExists(&quot;{IndentifierGUID}.continue.bp [rest of string was truncated]&quot;;.
+        '''	WriteFileLine(hTriggerFile, &quot;i:%d&quot;, val);
+        '''	WriteFileLine(hTriggerFile, &quot;f:%f&quot;, val);
+        '''	FlushFile(hTriggerFile);
+        '''	CloseHandle(hT [rest of string was truncated]&quot;;.
         '''</summary>
         Public ReadOnly Property Debugger_AssertModuleOld() As String
             Get
@@ -974,6 +974,16 @@ Namespace My.Resources
         Public ReadOnly Property Template_SourcePawnOldSharedPluginInclude() As String
             Get
                 Return ResourceManager.GetString("Template_SourcePawnOldSharedPluginInclude", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Drawing.Bitmap.
+        '''</summary>
+        Public ReadOnly Property user32_101_48x48_32() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("user32_101_48x48_32", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
     End Module

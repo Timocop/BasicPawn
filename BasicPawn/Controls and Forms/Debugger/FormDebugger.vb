@@ -708,24 +708,22 @@ Public Class FormDebugger
                 Return
             End If
 
-            Dim mSB As New Text.StringBuilder
-            mSB.AppendLine("Select assert action:")
-            mSB.AppendLine()
-            mSB.AppendLine("Abort - Abort execution of the plugin")
-            mSB.AppendLine("Retry - Abort current call stack")
-            mSB.AppendLine("Ignore - Ignore assert and continue (Default)")
+            Using i As New FormDebuggerAssertSetAction
+                Select Case (i.ShowDialog(Me))
+                    Case DialogResult.OK
+                        Select Case (i.m_Action)
+                            Case FormDebuggerAssertSetAction.ENUM_ACTION.FAIL
+                                g_ClassDebuggerRunner.g_mActiveAssertInfo.iActionType = ClassDebuggerRunner.ENUM_ASSERT_ACTION_TYPE.FAIL
+                            Case FormDebuggerAssertSetAction.ENUM_ACTION.ERROR
+                                g_ClassDebuggerRunner.g_mActiveAssertInfo.iActionType = ClassDebuggerRunner.ENUM_ASSERT_ACTION_TYPE.ERROR
+                            Case Else
+                                g_ClassDebuggerRunner.g_mActiveAssertInfo.iActionType = ClassDebuggerRunner.ENUM_ASSERT_ACTION_TYPE.IGNORE
+                        End Select
 
-            Select Case (MessageBox.Show(mSB.ToString, "Assert action", MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Question))
-                Case DialogResult.Abort
-                    g_ClassDebuggerRunner.g_mActiveAssertInfo.iActionType = ClassDebuggerRunner.ENUM_ASSERT_ACTION_TYPE.FAIL
-                Case DialogResult.Retry
-                    g_ClassDebuggerRunner.g_mActiveAssertInfo.iActionType = ClassDebuggerRunner.ENUM_ASSERT_ACTION_TYPE.ERROR
-                Case Else
-                    g_ClassDebuggerRunner.g_mActiveAssertInfo.iActionType = ClassDebuggerRunner.ENUM_ASSERT_ACTION_TYPE.IGNORE
-            End Select
-
-            'Update values in the ListView
-            g_ClassDebuggerRunner.UpdateListViewInfoItems()
+                        'Update values in the ListView
+                        g_ClassDebuggerRunner.UpdateListViewInfoItems()
+                End Select
+            End Using
         Catch ex As Exception
             'TODO: Add better handle read support.
             '      For some reason saving a handle as float, it becomes massive. The int doesnt.
