@@ -345,6 +345,9 @@
     <Compile Include="Controls and Forms\FormUpdate.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Controls and Forms\Main\Classes\ClassAutocompleteListBox.vb">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls and Forms\StartPage\Classes\ClassRecentListBox.vb">
       <SubType>Component</SubType>
     </Compile>
@@ -354,10 +357,10 @@
     <Compile Include="Controls and Forms\StartPage\UCStartPage.vb">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls and Forms\UCAutocomplete.Designer.vb">
+    <Compile Include="Controls and Forms\Main\UCAutocomplete.Designer.vb">
       <DependentUpon>UCAutocomplete.vb</DependentUpon>
     </Compile>
-    <Compile Include="Controls and Forms\UCAutocomplete.vb">
+    <Compile Include="Controls and Forms\Main\UCAutocomplete.vb">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls and Forms\FormMain.vb">
@@ -367,22 +370,22 @@
       <DependentUpon>FormMain.vb</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Controls and Forms\UCInformationList.Designer.vb">
+    <Compile Include="Controls and Forms\Main\UCInformationList.Designer.vb">
       <DependentUpon>UCInformationList.vb</DependentUpon>
     </Compile>
-    <Compile Include="Controls and Forms\UCInformationList.vb">
+    <Compile Include="Controls and Forms\Main\UCInformationList.vb">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls and Forms\UCObjectBrowser.Designer.vb">
+    <Compile Include="Controls and Forms\Main\UCObjectBrowser.Designer.vb">
       <DependentUpon>UCObjectBrowser.vb</DependentUpon>
     </Compile>
-    <Compile Include="Controls and Forms\UCObjectBrowser.vb">
+    <Compile Include="Controls and Forms\Main\UCObjectBrowser.vb">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls and Forms\UCProjectBrowser.Designer.vb">
+    <Compile Include="Controls and Forms\Main\UCProjectBrowser.Designer.vb">
       <DependentUpon>UCProjectBrowser.vb</DependentUpon>
     </Compile>
-    <Compile Include="Controls and Forms\UCProjectBrowser.vb">
+    <Compile Include="Controls and Forms\Main\UCProjectBrowser.vb">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
@@ -470,20 +473,20 @@
     <EmbeddedResource Include="Controls and Forms\StartPage\UCStartPage.resx">
       <DependentUpon>UCStartPage.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls and Forms\UCAutocomplete.resx">
+    <EmbeddedResource Include="Controls and Forms\Main\UCAutocomplete.resx">
       <DependentUpon>UCAutocomplete.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls and Forms\FormMain.resx">
       <DependentUpon>FormMain.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls and Forms\UCInformationList.resx">
+    <EmbeddedResource Include="Controls and Forms\Main\UCInformationList.resx">
       <DependentUpon>UCInformationList.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls and Forms\UCObjectBrowser.resx">
+    <EmbeddedResource Include="Controls and Forms\Main\UCObjectBrowser.resx">
       <DependentUpon>UCObjectBrowser.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls and Forms\UCProjectBrowser.resx">
+    <EmbeddedResource Include="Controls and Forms\Main\UCProjectBrowser.resx">
       <DependentUpon>UCProjectBrowser.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
