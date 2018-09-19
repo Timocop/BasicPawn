@@ -311,8 +311,7 @@ Public Class UCObjectBrowser
                         Return
                     End If
 
-                    g_mFormMain.g_ClassTextEditorTools.ListReferences(e.Node.Text)
-
+                    g_mFormMain.g_ClassTextEditorTools.ListReferences(e.Node.Text, True)
             End Select
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
@@ -372,7 +371,7 @@ Public Class UCObjectBrowser
                 Return
             End If
 
-            g_mFormMain.g_ClassTextEditorTools.ListReferences(TreeView_ObjectBrowser.SelectedNode.Text)
+            g_mFormMain.g_ClassTextEditorTools.ListReferences(TreeView_ObjectBrowser.SelectedNode.Text, True)
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try

@@ -87,8 +87,9 @@ Public Class ClassTextEditorTools
     ''' <summary>
     ''' Lists all references of a word from current opeened source and all include files.
     ''' </summary>
-    ''' <param name="sText">Word to search, otherwise it will get the word under the caret</param>
-    Public Sub ListReferences(Optional sText As String = Nothing)
+    ''' <param name="sText">Word to search, otherwise if empty or |Nothing| it will get the word under the caret.</param>
+    ''' <param name="bIgnoreNonCode">If true, ignores all matches in comments and strings.</param>
+    Public Sub ListReferences(sText As String, bIgnoreNonCode As Boolean)
         Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
 
         Dim sWord As String
@@ -120,46 +121,56 @@ Public Class ClassTextEditorTools
                 Continue For
             End If
 
+            Dim sSource As String
+
             If (CStr(mInclude.Value).ToLower = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File.ToLower) Then
-                Dim iLineCount As Integer = 0
-                Using mSR As New IO.StringReader(mActiveTextEditor.Document.TextContent)
-                    While True
-                        Dim sLine As String = mSR.ReadLine
-                        If (sLine Is Nothing) Then
-                            Exit While
-                        End If
-
-                        iLineCount += 1
-
-                        If (sLine.Contains(sWord) AndAlso Regex.IsMatch(sLine, String.Format("\b{0}\b", Regex.Escape(sWord)))) Then
-                            lRefList.Add(vbTab & String.Format("Reference found: {0}({1}) : {2}", CStr(mInclude.Value), iLineCount, sLine.Trim))
-                        End If
-                    End While
-                End Using
+                sSource = mActiveTextEditor.Document.TextContent
             Else
-                Dim iLineCount As Integer = 0
-                Using SR As New IO.StreamReader(CStr(mInclude.Value))
-                    While True
-                        Dim sLine As String = SR.ReadLine
-                        If (sLine Is Nothing) Then
-                            Exit While
-                        End If
-
-                        iLineCount += 1
-
-                        If (sLine.Contains(sWord) AndAlso Regex.IsMatch(sLine, String.Format("\b{0}\b", Regex.Escape(sWord)))) Then
-                            lRefList.Add(vbTab & String.Format("Reference found: {0}({1}) : {2}", CStr(mInclude.Value), iLineCount, sLine.Trim))
-                        End If
-                    End While
-                End Using
+                sSource = IO.File.ReadAllText(CStr(mInclude.Value))
             End If
+
+            Dim mSourceAnalysis As ClassSyntaxTools.ClassSyntaxSourceAnalysis
+
+            If (bIgnoreNonCode) Then
+                mSourceAnalysis = New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
+            Else
+                mSourceAnalysis = Nothing
+            End If
+
+            Dim iLine As Integer = 0
+            Using mSR As New IO.StringReader(sSource)
+                While True
+                    Dim sLine As String = mSR.ReadLine
+                    If (sLine Is Nothing) Then
+                        Exit While
+                    End If
+
+                    iLine += 1
+
+                    If (Not sLine.Contains(sWord)) Then
+                        Continue While
+                    End If
+
+                    For Each mMatch As Match In Regex.Matches(sLine, String.Format("\b{0}\b", Regex.Escape(sWord)))
+                        If (mSourceAnalysis IsNot Nothing) Then
+                            'Get index from line and from match to check if its inside non-code area
+                            Dim iIndex = mSourceAnalysis.GetIndexFromLine(iLine - 1)
+                            If (iIndex < 0 OrElse mSourceAnalysis.m_InNonCode(iIndex + mMatch.Index)) Then
+                                Continue For
+                            End If
+                        End If
+
+                        lRefList.Add(vbTab & String.Format("Reference found: {0}({1}) : {2}", CStr(mInclude.Value), iLine, sLine.Trim))
+                    Next
+                End While
+            End Using
         Next
 
         For Each sRef As String In lRefList
             g_mFormMain.PrintInformation("[INFO]", sRef, False)
         Next
 
-        g_mFormMain.PrintInformation("[INFO]", "All references listed!", False, True, True)
+        g_mFormMain.PrintInformation("[INFO]", String.Format("{0} references listed!", lRefList.Count), False, True, True)
     End Sub
 
     Public Sub FormatCode()
