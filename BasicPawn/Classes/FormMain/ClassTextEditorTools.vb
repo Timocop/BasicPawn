@@ -453,7 +453,7 @@ Public Class ClassTextEditorTools
                 g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed = False
                 g_mFormMain.SplitContainer_ToolboxSourceAndDetails.SplitterDistance = g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Height - 200
             End If
-            g_mFormMain.TabControl_Details.SelectTab(1)
+            g_mFormMain.TabControl_Details.SelectTab(g_mFormMain.TabPage_Information)
 
             g_mFormMain.PrintInformation("[INFO]", "Compiling source started!", False, False, True)
 
@@ -753,7 +753,7 @@ Public Class ClassTextEditorTools
                 g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed = False
                 g_mFormMain.SplitContainer_ToolboxSourceAndDetails.SplitterDistance = g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Height - 200
             End If
-            g_mFormMain.TabControl_Details.SelectTab(1)
+            g_mFormMain.TabControl_Details.SelectTab(g_mFormMain.TabPage_Information)
 
             g_mFormMain.PrintInformation("[INFO]", "Pre-Processing source started!", False, False, True)
 
@@ -1053,7 +1053,7 @@ Public Class ClassTextEditorTools
                 g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed = False
                 g_mFormMain.SplitContainer_ToolboxSourceAndDetails.SplitterDistance = g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Height - 200
             End If
-            g_mFormMain.TabControl_Details.SelectTab(1)
+            g_mFormMain.TabControl_Details.SelectTab(g_mFormMain.TabPage_Information)
 
             g_mFormMain.PrintInformation("[INFO]", "DIASM source started!", False, False, True)
 

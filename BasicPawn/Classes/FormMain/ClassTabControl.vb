@@ -1344,6 +1344,8 @@ Public Class ClassTabControl
 
                     'Autocomplete up
                     Case Keys.Control Or Keys.Up
+                        SwitchToAutocompleteTab()
+
                         If (g_mFormMain.g_mUCAutocomplete.ListBox_Autocomplete.SelectedItems.Count < 1) Then
                             Return
                         End If
@@ -1359,6 +1361,8 @@ Public Class ClassTabControl
 
                     'Autocomplete Down
                     Case Keys.Control Or Keys.Down
+                        SwitchToAutocompleteTab()
+
                         If (g_mFormMain.g_mUCAutocomplete.ListBox_Autocomplete.SelectedItems.Count < 1) Then
                             Return
                         End If
@@ -1614,24 +1618,11 @@ Public Class ClassTabControl
 
         Private Sub TextEditorControl_Source_SwitchToAutocompleteTab(sender As Object, e As MouseEventArgs)
             Try
-                If (Not ClassSettings.g_iSettingsSwitchTabToAutocomplete) Then
-                    Return
-                End If
-
                 If (e.Button <> MouseButtons.Left) Then
                     Return
                 End If
 
-                If (g_mFormMain.g_mUCAutocomplete.ListBox_Autocomplete.Items.Count < 1 OrElse
-                            g_mFormMain.TabControl_Details.TabPages.IndexOf(g_mFormMain.TabControl_Details.SelectedTab) = 0) Then
-                    Return
-                End If
-
-                g_mFormMain.TabControl_Details.SuspendLayout()
-                g_mFormMain.TabControl_Details.Enabled = False
-                g_mFormMain.TabControl_Details.SelectTab(0)
-                g_mFormMain.TabControl_Details.Enabled = True
-                g_mFormMain.TabControl_Details.ResumeLayout()
+                SwitchToAutocompleteTab()
             Catch ex As Exception
                 ClassExceptionLog.WriteToLogMessageBox(ex)
             End Try
@@ -1683,6 +1674,23 @@ Public Class ClassTabControl
             If (iOldIndex <> iNewIndex) Then
                 g_mFormMain.g_ClassTabControl.SelectTab(iNewIndex)
             End If
+        End Sub
+
+        Private Sub SwitchToAutocompleteTab()
+            If (Not ClassSettings.g_iSettingsSwitchTabToAutocomplete) Then
+                Return
+            End If
+
+            If (g_mFormMain.g_mUCAutocomplete.ListBox_Autocomplete.Items.Count < 1 OrElse
+                        g_mFormMain.TabControl_Details.SelectedTab.TabIndex = g_mFormMain.TabPage_Autocomplete.TabIndex) Then
+                Return
+            End If
+
+            g_mFormMain.TabControl_Details.SuspendLayout()
+            g_mFormMain.TabControl_Details.Enabled = False
+            g_mFormMain.TabControl_Details.SelectTab(g_mFormMain.TabPage_Autocomplete)
+            g_mFormMain.TabControl_Details.Enabled = True
+            g_mFormMain.TabControl_Details.ResumeLayout()
         End Sub
 #End Region
 

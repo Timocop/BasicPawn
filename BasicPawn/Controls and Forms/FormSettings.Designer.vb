@@ -36,7 +36,7 @@ Partial Class FormSettings
         Me.TabControl1 = New BasicPawn.ClassTabControlColor()
         Me.TabPage_Settings = New System.Windows.Forms.TabPage()
         Me.ClassTabControlColor1 = New BasicPawn.ClassTabControlColor()
-        Me.TabPage3 = New System.Windows.Forms.TabPage()
+        Me.TabPage_General = New System.Windows.Forms.TabPage()
         Me.CheckBox_AutoHoverScroll = New System.Windows.Forms.CheckBox()
         Me.CheckBox_AutoOpenProjectFiles = New System.Windows.Forms.CheckBox()
         Me.CheckBox_AlwaysNewInstance = New System.Windows.Forms.CheckBox()
@@ -49,7 +49,7 @@ Partial Class FormSettings
         Me.CheckBox_AssociateAmxMod = New System.Windows.Forms.CheckBox()
         Me.CheckBox_AssociateIncludes = New System.Windows.Forms.CheckBox()
         Me.CheckBox_AssociateBasicPawnProject = New System.Windows.Forms.CheckBox()
-        Me.TabPage4 = New System.Windows.Forms.TabPage()
+        Me.TabPage_Editor = New System.Windows.Forms.TabPage()
         Me.CheckBox_RememberFolds = New System.Windows.Forms.CheckBox()
         Me.LinkLabel_MoreStyles = New System.Windows.Forms.LinkLabel()
         Me.Button_Font = New System.Windows.Forms.Button()
@@ -61,10 +61,10 @@ Partial Class FormSettings
         Me.CheckBox_TabsToSpace = New System.Windows.Forms.CheckBox()
         Me.Label32 = New System.Windows.Forms.Label()
         Me.NumericUpDown_TabsToSpaces = New System.Windows.Forms.NumericUpDown()
-        Me.TabPage5 = New System.Windows.Forms.TabPage()
+        Me.TabPage_Syntax = New System.Windows.Forms.TabPage()
         Me.CheckBox_DoubleClickMark = New System.Windows.Forms.CheckBox()
         Me.CheckBox_AutoMark = New System.Windows.Forms.CheckBox()
-        Me.TabPage6 = New System.Windows.Forms.TabPage()
+        Me.TabPage_Autocomplete = New System.Windows.Forms.TabPage()
         Me.GroupBox4 = New System.Windows.Forms.GroupBox()
         Me.RadioButton_VarParseTab = New System.Windows.Forms.RadioButton()
         Me.RadioButton_VarParseTabInc = New System.Windows.Forms.RadioButton()
@@ -188,11 +188,11 @@ Partial Class FormSettings
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Settings.SuspendLayout()
         Me.ClassTabControlColor1.SuspendLayout()
-        Me.TabPage3.SuspendLayout()
-        Me.TabPage4.SuspendLayout()
+        Me.TabPage_General.SuspendLayout()
+        Me.TabPage_Editor.SuspendLayout()
         CType(Me.NumericUpDown_TabsToSpaces, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.TabPage5.SuspendLayout()
-        Me.TabPage6.SuspendLayout()
+        Me.TabPage_Syntax.SuspendLayout()
+        Me.TabPage_Autocomplete.SuspendLayout()
         Me.GroupBox4.SuspendLayout()
         Me.TabPage_Configs.SuspendLayout()
         Me.TableLayoutPanel1.SuspendLayout()
@@ -308,10 +308,10 @@ Partial Class FormSettings
         '
         'ClassTabControlColor1
         '
-        Me.ClassTabControlColor1.Controls.Add(Me.TabPage3)
-        Me.ClassTabControlColor1.Controls.Add(Me.TabPage4)
-        Me.ClassTabControlColor1.Controls.Add(Me.TabPage5)
-        Me.ClassTabControlColor1.Controls.Add(Me.TabPage6)
+        Me.ClassTabControlColor1.Controls.Add(Me.TabPage_General)
+        Me.ClassTabControlColor1.Controls.Add(Me.TabPage_Editor)
+        Me.ClassTabControlColor1.Controls.Add(Me.TabPage_Syntax)
+        Me.ClassTabControlColor1.Controls.Add(Me.TabPage_Autocomplete)
         Me.ClassTabControlColor1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ClassTabControlColor1.Location = New System.Drawing.Point(0, 0)
         Me.ClassTabControlColor1.Multiline = True
@@ -320,28 +320,28 @@ Partial Class FormSettings
         Me.ClassTabControlColor1.Size = New System.Drawing.Size(752, 482)
         Me.ClassTabControlColor1.TabIndex = 27
         '
-        'TabPage3
+        'TabPage_General
         '
-        Me.TabPage3.AutoScroll = True
-        Me.TabPage3.Controls.Add(Me.CheckBox_AutoHoverScroll)
-        Me.TabPage3.Controls.Add(Me.CheckBox_AutoOpenProjectFiles)
-        Me.TabPage3.Controls.Add(Me.CheckBox_AlwaysNewInstance)
-        Me.TabPage3.Controls.Add(Me.Label30)
-        Me.TabPage3.Controls.Add(Me.CheckBox_AutoShowStartPage)
-        Me.TabPage3.Controls.Add(Me.Button_ViewErrorLog)
-        Me.TabPage3.Controls.Add(Me.CheckBox_AssociateSourcePawn)
-        Me.TabPage3.Controls.Add(Me.Button_ClearErrorLog)
-        Me.TabPage3.Controls.Add(Me.Label19)
-        Me.TabPage3.Controls.Add(Me.CheckBox_AssociateAmxMod)
-        Me.TabPage3.Controls.Add(Me.CheckBox_AssociateIncludes)
-        Me.TabPage3.Controls.Add(Me.CheckBox_AssociateBasicPawnProject)
-        Me.TabPage3.Location = New System.Drawing.Point(4, 22)
-        Me.TabPage3.Name = "TabPage3"
-        Me.TabPage3.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage3.Size = New System.Drawing.Size(744, 456)
-        Me.TabPage3.TabIndex = 0
-        Me.TabPage3.Text = "General"
-        Me.TabPage3.UseVisualStyleBackColor = True
+        Me.TabPage_General.AutoScroll = True
+        Me.TabPage_General.Controls.Add(Me.CheckBox_AutoHoverScroll)
+        Me.TabPage_General.Controls.Add(Me.CheckBox_AutoOpenProjectFiles)
+        Me.TabPage_General.Controls.Add(Me.CheckBox_AlwaysNewInstance)
+        Me.TabPage_General.Controls.Add(Me.Label30)
+        Me.TabPage_General.Controls.Add(Me.CheckBox_AutoShowStartPage)
+        Me.TabPage_General.Controls.Add(Me.Button_ViewErrorLog)
+        Me.TabPage_General.Controls.Add(Me.CheckBox_AssociateSourcePawn)
+        Me.TabPage_General.Controls.Add(Me.Button_ClearErrorLog)
+        Me.TabPage_General.Controls.Add(Me.Label19)
+        Me.TabPage_General.Controls.Add(Me.CheckBox_AssociateAmxMod)
+        Me.TabPage_General.Controls.Add(Me.CheckBox_AssociateIncludes)
+        Me.TabPage_General.Controls.Add(Me.CheckBox_AssociateBasicPawnProject)
+        Me.TabPage_General.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage_General.Name = "TabPage_General"
+        Me.TabPage_General.Padding = New System.Windows.Forms.Padding(3)
+        Me.TabPage_General.Size = New System.Drawing.Size(744, 456)
+        Me.TabPage_General.TabIndex = 0
+        Me.TabPage_General.Text = "General"
+        Me.TabPage_General.UseVisualStyleBackColor = True
         '
         'CheckBox_AutoHoverScroll
         '
@@ -482,27 +482,27 @@ Partial Class FormSettings
         Me.CheckBox_AssociateBasicPawnProject.Text = "BasicPawn Project files (*.bpproj)"
         Me.CheckBox_AssociateBasicPawnProject.UseVisualStyleBackColor = True
         '
-        'TabPage4
+        'TabPage_Editor
         '
-        Me.TabPage4.AutoScroll = True
-        Me.TabPage4.Controls.Add(Me.CheckBox_RememberFolds)
-        Me.TabPage4.Controls.Add(Me.LinkLabel_MoreStyles)
-        Me.TabPage4.Controls.Add(Me.Button_Font)
-        Me.TabPage4.Controls.Add(Me.LinkLabel_DefaultSyntax)
-        Me.TabPage4.Controls.Add(Me.CheckBox_InvertedColors)
-        Me.TabPage4.Controls.Add(Me.Button_CustomSyntax)
-        Me.TabPage4.Controls.Add(Me.Label_Font)
-        Me.TabPage4.Controls.Add(Me.TextBox_CustomSyntax)
-        Me.TabPage4.Controls.Add(Me.CheckBox_TabsToSpace)
-        Me.TabPage4.Controls.Add(Me.Label32)
-        Me.TabPage4.Controls.Add(Me.NumericUpDown_TabsToSpaces)
-        Me.TabPage4.Location = New System.Drawing.Point(4, 22)
-        Me.TabPage4.Name = "TabPage4"
-        Me.TabPage4.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage4.Size = New System.Drawing.Size(744, 456)
-        Me.TabPage4.TabIndex = 1
-        Me.TabPage4.Text = "TextEditor"
-        Me.TabPage4.UseVisualStyleBackColor = True
+        Me.TabPage_Editor.AutoScroll = True
+        Me.TabPage_Editor.Controls.Add(Me.CheckBox_RememberFolds)
+        Me.TabPage_Editor.Controls.Add(Me.LinkLabel_MoreStyles)
+        Me.TabPage_Editor.Controls.Add(Me.Button_Font)
+        Me.TabPage_Editor.Controls.Add(Me.LinkLabel_DefaultSyntax)
+        Me.TabPage_Editor.Controls.Add(Me.CheckBox_InvertedColors)
+        Me.TabPage_Editor.Controls.Add(Me.Button_CustomSyntax)
+        Me.TabPage_Editor.Controls.Add(Me.Label_Font)
+        Me.TabPage_Editor.Controls.Add(Me.TextBox_CustomSyntax)
+        Me.TabPage_Editor.Controls.Add(Me.CheckBox_TabsToSpace)
+        Me.TabPage_Editor.Controls.Add(Me.Label32)
+        Me.TabPage_Editor.Controls.Add(Me.NumericUpDown_TabsToSpaces)
+        Me.TabPage_Editor.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage_Editor.Name = "TabPage_Editor"
+        Me.TabPage_Editor.Padding = New System.Windows.Forms.Padding(3)
+        Me.TabPage_Editor.Size = New System.Drawing.Size(744, 456)
+        Me.TabPage_Editor.TabIndex = 1
+        Me.TabPage_Editor.Text = "TextEditor"
+        Me.TabPage_Editor.UseVisualStyleBackColor = True
         '
         'CheckBox_RememberFolds
         '
@@ -623,17 +623,17 @@ Partial Class FormSettings
         Me.NumericUpDown_TabsToSpaces.TabIndex = 15
         Me.NumericUpDown_TabsToSpaces.Value = New Decimal(New Integer() {4, 0, 0, 0})
         '
-        'TabPage5
+        'TabPage_Syntax
         '
-        Me.TabPage5.AutoScroll = True
-        Me.TabPage5.Controls.Add(Me.CheckBox_DoubleClickMark)
-        Me.TabPage5.Controls.Add(Me.CheckBox_AutoMark)
-        Me.TabPage5.Location = New System.Drawing.Point(4, 22)
-        Me.TabPage5.Name = "TabPage5"
-        Me.TabPage5.Size = New System.Drawing.Size(744, 456)
-        Me.TabPage5.TabIndex = 2
-        Me.TabPage5.Text = "Syntax Highlighting"
-        Me.TabPage5.UseVisualStyleBackColor = True
+        Me.TabPage_Syntax.AutoScroll = True
+        Me.TabPage_Syntax.Controls.Add(Me.CheckBox_DoubleClickMark)
+        Me.TabPage_Syntax.Controls.Add(Me.CheckBox_AutoMark)
+        Me.TabPage_Syntax.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage_Syntax.Name = "TabPage_Syntax"
+        Me.TabPage_Syntax.Size = New System.Drawing.Size(744, 456)
+        Me.TabPage_Syntax.TabIndex = 2
+        Me.TabPage_Syntax.Text = "Syntax Highlighting"
+        Me.TabPage_Syntax.UseVisualStyleBackColor = True
         '
         'CheckBox_DoubleClickMark
         '
@@ -659,32 +659,32 @@ Partial Class FormSettings
         Me.CheckBox_AutoMark.Text = "Automatically mark words"
         Me.CheckBox_AutoMark.UseVisualStyleBackColor = True
         '
-        'TabPage6
+        'TabPage_Autocomplete
         '
-        Me.TabPage6.AutoScroll = True
-        Me.TabPage6.Controls.Add(Me.GroupBox4)
-        Me.TabPage6.Controls.Add(Me.CheckBox_AutoIndentBrackets)
-        Me.TabPage6.Controls.Add(Me.CheckBox_AlwaysLoadDefaultIncludes)
-        Me.TabPage6.Controls.Add(Me.CheckBox_AutoCloseStrings)
-        Me.TabPage6.Controls.Add(Me.CheckBox_CaseSensitive)
-        Me.TabPage6.Controls.Add(Me.CheckBox_AutoCloseBrackets)
-        Me.TabPage6.Controls.Add(Me.CheckBox_WindowsToolTipPopup)
-        Me.TabPage6.Controls.Add(Me.CheckBox_OnlyUpdateSyntaxWhenFocused)
-        Me.TabPage6.Controls.Add(Me.CheckBox_FullAutocompleteReTagging)
-        Me.TabPage6.Controls.Add(Me.CheckBox_WindowsToolTipNewlineMethods)
-        Me.TabPage6.Controls.Add(Me.CheckBox_CommentsAutocompleteIntelliSense)
-        Me.TabPage6.Controls.Add(Me.CheckBox_WindowsToolTipAnimations)
-        Me.TabPage6.Controls.Add(Me.CheckBox_CommentsMethodIntelliSense)
-        Me.TabPage6.Controls.Add(Me.CheckBox_FullAutcompleteMethods)
-        Me.TabPage6.Controls.Add(Me.CheckBox_SwitchTabToAutocomplete)
-        Me.TabPage6.Controls.Add(Me.CheckBox_OnScreenIntelliSense)
-        Me.TabPage6.Controls.Add(Me.CheckBox_VarAutocompleteShowObjectBrowser)
-        Me.TabPage6.Location = New System.Drawing.Point(4, 22)
-        Me.TabPage6.Name = "TabPage6"
-        Me.TabPage6.Size = New System.Drawing.Size(744, 456)
-        Me.TabPage6.TabIndex = 3
-        Me.TabPage6.Text = "Autocomplete & IntelliSense"
-        Me.TabPage6.UseVisualStyleBackColor = True
+        Me.TabPage_Autocomplete.AutoScroll = True
+        Me.TabPage_Autocomplete.Controls.Add(Me.GroupBox4)
+        Me.TabPage_Autocomplete.Controls.Add(Me.CheckBox_AutoIndentBrackets)
+        Me.TabPage_Autocomplete.Controls.Add(Me.CheckBox_AlwaysLoadDefaultIncludes)
+        Me.TabPage_Autocomplete.Controls.Add(Me.CheckBox_AutoCloseStrings)
+        Me.TabPage_Autocomplete.Controls.Add(Me.CheckBox_CaseSensitive)
+        Me.TabPage_Autocomplete.Controls.Add(Me.CheckBox_AutoCloseBrackets)
+        Me.TabPage_Autocomplete.Controls.Add(Me.CheckBox_WindowsToolTipPopup)
+        Me.TabPage_Autocomplete.Controls.Add(Me.CheckBox_OnlyUpdateSyntaxWhenFocused)
+        Me.TabPage_Autocomplete.Controls.Add(Me.CheckBox_FullAutocompleteReTagging)
+        Me.TabPage_Autocomplete.Controls.Add(Me.CheckBox_WindowsToolTipNewlineMethods)
+        Me.TabPage_Autocomplete.Controls.Add(Me.CheckBox_CommentsAutocompleteIntelliSense)
+        Me.TabPage_Autocomplete.Controls.Add(Me.CheckBox_WindowsToolTipAnimations)
+        Me.TabPage_Autocomplete.Controls.Add(Me.CheckBox_CommentsMethodIntelliSense)
+        Me.TabPage_Autocomplete.Controls.Add(Me.CheckBox_FullAutcompleteMethods)
+        Me.TabPage_Autocomplete.Controls.Add(Me.CheckBox_SwitchTabToAutocomplete)
+        Me.TabPage_Autocomplete.Controls.Add(Me.CheckBox_OnScreenIntelliSense)
+        Me.TabPage_Autocomplete.Controls.Add(Me.CheckBox_VarAutocompleteShowObjectBrowser)
+        Me.TabPage_Autocomplete.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage_Autocomplete.Name = "TabPage_Autocomplete"
+        Me.TabPage_Autocomplete.Size = New System.Drawing.Size(744, 456)
+        Me.TabPage_Autocomplete.TabIndex = 3
+        Me.TabPage_Autocomplete.Text = "Autocomplete & IntelliSense"
+        Me.TabPage_Autocomplete.UseVisualStyleBackColor = True
         '
         'GroupBox4
         '
@@ -2040,15 +2040,15 @@ Partial Class FormSettings
         Me.TabControl1.ResumeLayout(False)
         Me.TabPage_Settings.ResumeLayout(False)
         Me.ClassTabControlColor1.ResumeLayout(False)
-        Me.TabPage3.ResumeLayout(False)
-        Me.TabPage3.PerformLayout()
-        Me.TabPage4.ResumeLayout(False)
-        Me.TabPage4.PerformLayout()
+        Me.TabPage_General.ResumeLayout(False)
+        Me.TabPage_General.PerformLayout()
+        Me.TabPage_Editor.ResumeLayout(False)
+        Me.TabPage_Editor.PerformLayout()
         CType(Me.NumericUpDown_TabsToSpaces, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.TabPage5.ResumeLayout(False)
-        Me.TabPage5.PerformLayout()
-        Me.TabPage6.ResumeLayout(False)
-        Me.TabPage6.PerformLayout()
+        Me.TabPage_Syntax.ResumeLayout(False)
+        Me.TabPage_Syntax.PerformLayout()
+        Me.TabPage_Autocomplete.ResumeLayout(False)
+        Me.TabPage_Autocomplete.PerformLayout()
         Me.GroupBox4.ResumeLayout(False)
         Me.GroupBox4.PerformLayout()
         Me.TabPage_Configs.ResumeLayout(False)
@@ -2234,10 +2234,10 @@ Partial Class FormSettings
     Friend WithEvents CheckBox_AutoHoverScroll As CheckBox
     Friend WithEvents DatabaseListBox_Database As ClassDatabaseListBox
     Friend WithEvents ClassTabControlColor1 As ClassTabControlColor
-    Friend WithEvents TabPage3 As TabPage
-    Friend WithEvents TabPage4 As TabPage
-    Friend WithEvents TabPage5 As TabPage
-    Friend WithEvents TabPage6 As TabPage
+    Friend WithEvents TabPage_General As TabPage
+    Friend WithEvents TabPage_Editor As TabPage
+    Friend WithEvents TabPage_Syntax As TabPage
+    Friend WithEvents TabPage_Autocomplete As TabPage
     Friend WithEvents CheckBox_RememberFolds As CheckBox
     Friend WithEvents ToolStripMenuItem_OpenUrl As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator2 As ToolStripSeparator

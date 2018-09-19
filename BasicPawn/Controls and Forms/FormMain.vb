@@ -270,7 +270,7 @@ Public Class FormMain
                                               SplitContainer_ToolboxSourceAndDetails.SplitterDistance = (SplitContainer_ToolboxSourceAndDetails.Height - g_iDefaultDetailsSplitterDistance)
                                           End If
 
-                                          TabControl_Details.SelectTab(1)
+                                          TabControl_Details.SelectTab(TabPage_Information)
                                       End If
 
                                       If (bEnsureVisible) Then
@@ -1021,7 +1021,7 @@ Public Class FormMain
             SplitContainer_ToolboxSourceAndDetails.SplitterDistance = (SplitContainer_ToolboxSourceAndDetails.Height - g_iDefaultDetailsSplitterDistance)
         End If
 
-        TabControl_Details.SelectTab(1)
+        TabControl_Details.SelectTab(TabPage_Information)
     End Sub
 
     Private Sub ToolStripMenuItem_ToolsClearInformationLog_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsClearInformationLog.Click
@@ -1063,7 +1063,7 @@ Public Class FormMain
             SplitContainer_ToolboxSourceAndDetails.SplitterDistance = (SplitContainer_ToolboxSourceAndDetails.Height - g_iDefaultDetailsSplitterDistance)
         End If
 
-        TabControl_Details.SelectTab(0)
+        TabControl_Details.SelectTab(TabPage_Autocomplete)
     End Sub
 
     Private Sub ToolStripMenuItem_ListReferences_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ListReferences.Click
@@ -1265,7 +1265,8 @@ Public Class FormMain
 
     Private Sub ToolStripMenuItem_EditConfigActiveTab_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_EditConfigActiveTab.Click
         Using i As New FormSettings(Me, FormSettings.ENUM_CONFIG_TYPE.ACTIVE)
-            i.TabControl1.SelectTab(1)
+            i.TabControl1.SelectTab(i.TabPage_Configs)
+
             If (i.ShowDialog(Me) = DialogResult.OK) Then
                 UpdateFormConfigText()
 
@@ -1289,7 +1290,8 @@ Public Class FormMain
     Private Sub ToolStripMenuItem_EditConfigAllTabs_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_EditConfigAllTabs.Click
 
         Using i As New FormSettings(Me, FormSettings.ENUM_CONFIG_TYPE.ALL)
-            i.TabControl1.SelectTab(1)
+            i.TabControl1.SelectTab(i.TabPage_Configs)
+
             If (i.ShowDialog(Me) = DialogResult.OK) Then
                 UpdateFormConfigText()
 
