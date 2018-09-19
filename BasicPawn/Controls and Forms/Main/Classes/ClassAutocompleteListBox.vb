@@ -134,6 +134,7 @@ Public Class ClassAutocompleteListBox
 
         ''' <summary>
         ''' Computes Levenshtein distance
+        ''' https://www.dotnetperls.com/levenshtein
         ''' </summary>
         ''' <param name="s"></param>
         ''' <param name="t"></param>
