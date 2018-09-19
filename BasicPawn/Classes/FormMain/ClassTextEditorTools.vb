@@ -301,9 +301,26 @@ Public Class ClassTextEditorTools
     ''' </summary>
     ''' <param name="sSearchText"></param>
     Public Sub ShowSearchAndReplace(sSearchText As String)
-        Dim iFormCount As Integer = 0
+        'Check single instance
         For Each c As Form In Application.OpenForms
-            If (TypeOf c Is FormSearch) Then
+            Dim f = TryCast(c, FormSearch)
+            If (f Is Nothing) Then
+                Continue For
+            End If
+
+            If (Not f.m_SingleInstance) Then
+                Continue For
+            End If
+
+            f.m_SearchText = sSearchText
+            f.Activate()
+            Return
+        Next
+
+        'Count forms
+        Dim iFormCount As Integer = 0
+        For Each f As Form In Application.OpenForms
+            If (TypeOf f Is FormSearch) Then
                 iFormCount += 1
             End If
         Next

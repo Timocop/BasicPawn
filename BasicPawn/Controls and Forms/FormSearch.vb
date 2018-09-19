@@ -49,6 +49,30 @@ Public Class FormSearch
         ClassTools.ClassForms.SetDoubleBufferingUnmanagedAllChilds(Me, True)
     End Sub
 
+    ReadOnly Property m_SingleInstance As Boolean
+        Get
+            Return CheckBox_SingleInstance.Checked
+        End Get
+    End Property
+
+    Property m_SearchText As String
+        Get
+            Return TextBox_Search.Text
+        End Get
+        Set(value As String)
+            TextBox_Search.Text = value
+        End Set
+    End Property
+
+    Property m_ReplaceText As String
+        Get
+            Return TextBox_Replace.Text
+        End Get
+        Set(value As String)
+            TextBox_Replace.Text = value
+        End Set
+    End Property
+
     Private Sub SearchForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         TextBox_Search.Text = g_sSearchText
 
@@ -646,7 +670,8 @@ Public Class FormSearch
                     New ClassIni.STRUC_INI_CONTENT(Me.Name, "LoopSearch", If(CheckBox_LoopSearch.Checked, "1", "0")),
                     New ClassIni.STRUC_INI_CONTENT(Me.Name, "Transparency", If(CheckBox_Transparency.Checked, "1", "0")),
                     New ClassIni.STRUC_INI_CONTENT(Me.Name, "TransparencyInactive", If(RadioButton_TransparencyInactive.Checked, "1", "0")),
-                    New ClassIni.STRUC_INI_CONTENT(Me.Name, "TransparencyValue", CStr(TrackBar_Transparency.Value))
+                    New ClassIni.STRUC_INI_CONTENT(Me.Name, "TransparencyValue", CStr(TrackBar_Transparency.Value)),
+                    New ClassIni.STRUC_INI_CONTENT(Me.Name, "ModeNormal", If(RadioButton_ModeNormal.Checked, "1", "0"))
                 }
 
                 mIni.WriteKeyValue(lContent.ToArray)
@@ -682,6 +707,12 @@ Public Class FormSearch
                 tmpStr = mIni.ReadKeyValue(Me.Name, "TransparencyValue", Nothing)
                 If (tmpStr IsNot Nothing AndAlso Integer.TryParse(tmpStr, tmpInt)) Then
                     TrackBar_Transparency.Value = ClassTools.ClassMath.ClampInt(tmpInt, TrackBar_Transparency.Minimum, TrackBar_Transparency.Maximum)
+                End If
+
+                If (mIni.ReadKeyValue(Me.Name, "ModeNormal", "1") <> "0") Then
+                    RadioButton_ModeNormal.Checked = True
+                Else
+                    RadioButton_ModeRegEx.Checked = True
                 End If
 
                 g_bIgnoreEvent = False

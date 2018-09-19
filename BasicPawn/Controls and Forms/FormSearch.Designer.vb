@@ -65,6 +65,7 @@ Partial Class FormSearch
         Me.GroupBox5 = New System.Windows.Forms.GroupBox()
         Me.CheckBox_ReplaceInSelection = New System.Windows.Forms.CheckBox()
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
+        Me.CheckBox_SingleInstance = New System.Windows.Forms.CheckBox()
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
@@ -352,6 +353,7 @@ Partial Class FormSearch
         '
         'Panel1
         '
+        Me.Panel1.Controls.Add(Me.CheckBox_SingleInstance)
         Me.Panel1.Controls.Add(Me.Button_ReplaceNext)
         Me.Panel1.Controls.Add(Me.Button_ReplacePre)
         Me.Panel1.Controls.Add(Me.Button_SearchNext)
@@ -523,6 +525,20 @@ Partial Class FormSearch
         Me.ToolTip1.InitialDelay = 500
         Me.ToolTip1.ReshowDelay = 100
         '
+        'CheckBox_SingleInstance
+        '
+        Me.CheckBox_SingleInstance.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.CheckBox_SingleInstance.AutoSize = True
+        Me.CheckBox_SingleInstance.Checked = True
+        Me.CheckBox_SingleInstance.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.CheckBox_SingleInstance.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_SingleInstance.Location = New System.Drawing.Point(397, 170)
+        Me.CheckBox_SingleInstance.Name = "CheckBox_SingleInstance"
+        Me.CheckBox_SingleInstance.Size = New System.Drawing.Size(110, 18)
+        Me.CheckBox_SingleInstance.TabIndex = 21
+        Me.CheckBox_SingleInstance.Text = "Single instance"
+        Me.CheckBox_SingleInstance.UseVisualStyleBackColor = True
+        '
         'FormSearch
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -598,4 +614,5 @@ Partial Class FormSearch
     Friend WithEvents Button_SearchNext As Button
     Friend WithEvents Button_ReplaceNext As Button
     Friend WithEvents Button_ReplacePre As Button
+    Friend WithEvents CheckBox_SingleInstance As CheckBox
 End Class
