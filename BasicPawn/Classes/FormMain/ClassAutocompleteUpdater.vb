@@ -14,9 +14,9 @@
 'You should have received a copy Of the GNU General Public License
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
-#Const SEARCH_EVERYWHERE = False
-#Const PROFILE_AUTOCOMPLETE = False
-#Const DUMP_TO_FILE = False
+#Const SEARCH_EVERYWHERE = (DEBUG AndAlso False)
+#Const PROFILE_AUTOCOMPLETE = (DEBUG AndAlso False)
+#Const DUMP_TO_FILE = (DEBUG AndAlso True)
 
 Imports System.Text
 Imports System.Text.RegularExpressions

@@ -319,4 +319,43 @@
   <data name="user32_101_48x48_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\user32_101_48x48-32.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="IntelliSenseClass_32x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\IntelliSenseClass_32x.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IntelliSenseEnumerator_32x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\IntelliSenseEnumerator_32x.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IntelliSenseEnumItem_32x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\IntelliSenseEnumItem_32x.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IntelliSenseEvent_32x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\IntelliSenseEvent_32x.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IntelliSenseField_32x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\IntelliSenseField_32x.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IntelliSenseInterface_32x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\IntelliSenseInterface_32x.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IntelliSenseKeyword_32x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\IntelliSenseKeyword_32x.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IntelliSenseMethod_32x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\IntelliSenseMethod_32x.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IntelliSenseMisc_32x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\IntelliSenseMisc_32x.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IntelliSenseNamespace_32x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\IntelliSenseNamespace_32x.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IntelliSenseProperty_32x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\IntelliSenseProperty_32x.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IntelliSenseString_32x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\IntelliSenseString_32x.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IntelliSenseVariable_32x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\IntelliSenseVariable_32x.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

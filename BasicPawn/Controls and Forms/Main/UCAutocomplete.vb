@@ -79,148 +79,64 @@ Public Class UCAutocomplete
         'Set double buffering to avoid annonying flickers when collapsing/showing SplitContainer panels
         ClassTools.ClassForms.SetDoubleBufferingAllChilds(Me, True)
         ClassTools.ClassForms.SetDoubleBufferingUnmanagedAllChilds(Me, True)
-
-        ListView_AutocompleteList.ListViewItemSorter = New ListViewItemComparer(Me, 2)
-        ListView_AutocompleteList.Sorting = SortOrder.Ascending
     End Sub
 
     Private Sub UCAutocomplete_Load(sender As Object, e As EventArgs) Handles Me.Load
         g_bControlLoaded = True
     End Sub
 
-    Class ListViewItemComparer
-        Implements IComparer
-
-        Private g_mUCAutocomplete As UCAutocomplete
-        Private g_Collum As Integer
-
-        Public Sub New(c As UCAutocomplete)
-            g_mUCAutocomplete = c
-            g_Collum = 0
-        End Sub
-
-        Public Sub New(c As UCAutocomplete, mCollum As Integer)
-            g_mUCAutocomplete = c
-            g_Collum = mCollum
-        End Sub
-
-        Private Function IComparer_Compare(x As Object, y As Object) As Integer Implements IComparer.Compare
-            If (g_mUCAutocomplete.g_sLastAutocompleteText.Length > 0) Then
-                Dim mItemX As ListViewItem = DirectCast(x, ListViewItem)
-                Dim mItemY As ListViewItem = DirectCast(y, ListViewItem)
-
-                Dim iItemXIndex As Integer = mItemX.SubItems(g_Collum).Text.IndexOf(g_mUCAutocomplete.g_sLastAutocompleteText, If(ClassSettings.g_iSettingsAutocompleteCaseSensitive, StringComparison.Ordinal, StringComparison.OrdinalIgnoreCase))
-                Dim iItemYIndex As Integer = mItemY.SubItems(g_Collum).Text.IndexOf(g_mUCAutocomplete.g_sLastAutocompleteText, If(ClassSettings.g_iSettingsAutocompleteCaseSensitive, StringComparison.Ordinal, StringComparison.OrdinalIgnoreCase))
-
-                Return iItemXIndex.CompareTo(iItemYIndex)
-            Else
-                Dim mItemX As ListViewItem = DirectCast(x, ListViewItem)
-                Dim mItemY As ListViewItem = DirectCast(y, ListViewItem)
-
-                Return String.Compare(mItemX.SubItems(g_Collum).Text, mItemY.SubItems(g_Collum).Text, If(ClassSettings.g_iSettingsAutocompleteCaseSensitive, StringComparison.Ordinal, StringComparison.OrdinalIgnoreCase))
-            End If
-
-        End Function
-    End Class
-
     Public Function UpdateAutocomplete(sFunctionName As String) As Integer
         If (String.IsNullOrEmpty(sFunctionName) OrElse sFunctionName.Length < 3 OrElse Regex.IsMatch(sFunctionName, "^[0-9]+$")) Then
-            ListView_AutocompleteList.Items.Clear()
+            ListBox_Autocomplete.Items.Clear()
 
             g_sLastAutocompleteText = ""
             Return 0
         End If
 
         Dim bSelectedWord As Boolean = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.SelectionManager.HasSomethingSelected
-        Dim lListViewItemsList As New List(Of ClassListViewItemData)
+        Dim mSortedAutocomplete As New ClassAutocompleteListBox.ClassSortedAutocomplete(ListBox_Autocomplete)
 
-        Dim sAutocompleteArray As ClassSyntaxTools.STRUC_AUTOCOMPLETE() = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_AutocompleteItems.ToArray
-        For i = 0 To sAutocompleteArray.Length - 1
-            If (sAutocompleteArray(i).m_Data.ContainsKey("EnumHidden")) Then
+        Dim mAutocompleteArray As ClassSyntaxTools.STRUC_AUTOCOMPLETE() = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_AutocompleteItems.ToArray
+        For i = 0 To mAutocompleteArray.Length - 1
+            If (mAutocompleteArray(i).m_Data.ContainsKey("EnumHidden")) Then
                 Continue For
             End If
 
             If (bSelectedWord) Then
-                If (sAutocompleteArray(i).m_FunctionString.Equals(sFunctionName)) Then
-                    Dim mListViewItemData As New ClassListViewItemData(New String() {sAutocompleteArray(i).m_Filename,
-                                                                                    sAutocompleteArray(i).GetTypeFullNames,
-                                                                                    sAutocompleteArray(i).m_FunctionString,
-                                                                                    sAutocompleteArray(i).m_FullFunctionString})
-
-                    mListViewItemData.g_mData("File") = sAutocompleteArray(i).m_Filename
-                    mListViewItemData.g_mData("Path") = sAutocompleteArray(i).m_Path
-                    mListViewItemData.g_mData("TypeFullNames") = sAutocompleteArray(i).GetTypeFullNames
-                    mListViewItemData.g_mData("FunctionName") = sAutocompleteArray(i).m_FunctionName
-                    mListViewItemData.g_mData("FunctionString") = sAutocompleteArray(i).m_FunctionString
-                    mListViewItemData.g_mData("FullFunctionString") = sAutocompleteArray(i).m_FullFunctionString
-                    mListViewItemData.g_mData("Info") = sAutocompleteArray(i).m_Info
-
-                    lListViewItemsList.Add(mListViewItemData)
+                If (mAutocompleteArray(i).m_FunctionString.Equals(sFunctionName)) Then
+                    mSortedAutocomplete.Add(sFunctionName, mAutocompleteArray(i))
                 End If
             Else
-                If (sAutocompleteArray(i).m_Filename.Equals(sFunctionName, If(ClassSettings.g_iSettingsAutocompleteCaseSensitive, StringComparison.Ordinal, StringComparison.OrdinalIgnoreCase)) OrElse
-                            sAutocompleteArray(i).m_FunctionString.IndexOf(sFunctionName, If(ClassSettings.g_iSettingsAutocompleteCaseSensitive, StringComparison.Ordinal, StringComparison.OrdinalIgnoreCase)) > -1) Then
-                    Dim mListViewItemData As New ClassListViewItemData(New String() {sAutocompleteArray(i).m_Filename,
-                                                                                    sAutocompleteArray(i).GetTypeFullNames,
-                                                                                    sAutocompleteArray(i).m_FunctionString,
-                                                                                    sAutocompleteArray(i).m_FullFunctionString})
-
-                    mListViewItemData.g_mData("File") = sAutocompleteArray(i).m_Filename
-                    mListViewItemData.g_mData("Path") = sAutocompleteArray(i).m_Path
-                    mListViewItemData.g_mData("TypeFullNames") = sAutocompleteArray(i).GetTypeFullNames
-                    mListViewItemData.g_mData("FunctionName") = sAutocompleteArray(i).m_FunctionName
-                    mListViewItemData.g_mData("FunctionString") = sAutocompleteArray(i).m_FunctionString
-                    mListViewItemData.g_mData("FullFunctionString") = sAutocompleteArray(i).m_FullFunctionString
-                    mListViewItemData.g_mData("Info") = sAutocompleteArray(i).m_Info
-
-                    lListViewItemsList.Add(mListViewItemData)
+                If (mAutocompleteArray(i).m_Filename.Equals(sFunctionName, If(ClassSettings.g_iSettingsAutocompleteCaseSensitive, StringComparison.Ordinal, StringComparison.OrdinalIgnoreCase)) OrElse
+                            mAutocompleteArray(i).m_FunctionString.IndexOf(sFunctionName, If(ClassSettings.g_iSettingsAutocompleteCaseSensitive, StringComparison.Ordinal, StringComparison.OrdinalIgnoreCase)) > -1) Then
+                    mSortedAutocomplete.Add(sFunctionName, mAutocompleteArray(i))
                 End If
             End If
         Next
 
-        ListView_AutocompleteList.BeginUpdate()
-        ListView_AutocompleteList.Items.Clear()
-        ListView_AutocompleteList.Items.AddRange(lListViewItemsList.ToArray)
+        mSortedAutocomplete.PushToListBox()
 
-        'Sort ascending first then match the closest one.
-        g_sLastAutocompleteText = ""
-        ListView_AutocompleteList.Sort()
-        g_sLastAutocompleteText = sFunctionName
-        ListView_AutocompleteList.Sort()
-        ClassTools.ClassControls.ClassListView.AutoResizeColumns(ListView_AutocompleteList)
-        ListView_AutocompleteList.EndUpdate()
-
-
-        If (ListView_AutocompleteList.Items.Count > 0) Then
-            ListView_AutocompleteList.Items(0).Selected = True
-            ListView_AutocompleteList.Items(0).EnsureVisible()
+        If (ListBox_Autocomplete.Items.Count > 0) Then
+            ListBox_Autocomplete.SelectedIndex = 0
         End If
 
-        Return ListView_AutocompleteList.Items.Count
+        Return ListBox_Autocomplete.Items.Count
     End Function
 
     Public Function GetSelectedItem() As ClassSyntaxTools.STRUC_AUTOCOMPLETE
-        If (ListView_AutocompleteList.SelectedItems.Count < 1) Then
+        If (ListBox_Autocomplete.SelectedItems.Count < 1) Then
             Return Nothing
         End If
 
-        Dim mListViewItemData = TryCast(ListView_AutocompleteList.SelectedItems(0), ClassListViewItemData)
-        If (mListViewItemData Is Nothing) Then
+        Dim mAutocompleteItem = TryCast(ListBox_Autocomplete.SelectedItems(0), ClassAutocompleteListBox.ClassAutocompleteItem)
+        If (mAutocompleteItem Is Nothing) Then
             Return Nothing
         End If
 
-        Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(CStr(mListViewItemData.g_mData("Info")),
-                                                                     CStr(mListViewItemData.g_mData("File")),
-                                                                     CStr(mListViewItemData.g_mData("Path")),
-                                                                     ClassSyntaxTools.STRUC_AUTOCOMPLETE.ParseTypeFullNames(CStr(mListViewItemData.g_mData("TypeFullNames"))),
-                                                                     CStr(mListViewItemData.g_mData("FunctionName")),
-                                                                     CStr(mListViewItemData.g_mData("FunctionString")),
-                                                                     CStr(mListViewItemData.g_mData("FullFunctionString")))
-
-        Return mAutocomplete
+        Return mAutocompleteItem.m_Autocomplete
     End Function
 
-    Private Sub ListView_AutocompleteList_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListView_AutocompleteList.SelectedIndexChanged
+    Private Sub ListBox_Autocomplete_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListBox_Autocomplete.SelectedIndexChanged
         g_ClassToolTip.UpdateToolTip()
     End Sub
 
@@ -352,16 +268,16 @@ Public Class UCAutocomplete
             End If
 
             'Autocomplete
-            If (g_AutocompleteUC.ListView_AutocompleteList.SelectedItems.Count > 0 AndAlso
-                        TypeOf g_AutocompleteUC.ListView_AutocompleteList.SelectedItems(0) Is ClassListViewItemData) Then
-                Dim mListViewItemData = DirectCast(g_AutocompleteUC.ListView_AutocompleteList.SelectedItems(0), ClassListViewItemData)
+            If (g_AutocompleteUC.ListBox_Autocomplete.SelectedItems.Count > 0 AndAlso
+                        TypeOf g_AutocompleteUC.ListBox_Autocomplete.SelectedItems(0) Is ClassAutocompleteListBox.ClassAutocompleteItem) Then
+                Dim mAutocompleteItem = DirectCast(g_AutocompleteUC.ListBox_Autocomplete.SelectedItems(0), ClassAutocompleteListBox.ClassAutocompleteItem)
 
                 If (ClassSettings.g_iSettingsUseWindowsToolTip) Then
                     SB_TipText_AutocompleteToolTip.AppendLine("Autocomplete:")
                 End If
 
-                Dim sName As String = Regex.Replace(CStr(mListViewItemData.g_mData("FullFunctionString")).Trim, vbTab, New String(" "c, iTabSize))
-                Dim sNameToolTip As String = Regex.Replace(CStr(mListViewItemData.g_mData("FullFunctionString")).Trim, vbTab, New String(" "c, iTabSize))
+                Dim sName As String = Regex.Replace(mAutocompleteItem.m_Autocomplete.m_FullFunctionString.Trim, vbTab, New String(" "c, iTabSize))
+                Dim sNameToolTip As String = Regex.Replace(mAutocompleteItem.m_Autocomplete.m_FullFunctionString.Trim, vbTab, New String(" "c, iTabSize))
                 If (ClassSettings.g_iSettingsUseWindowsToolTip AndAlso ClassSettings.g_iSettingsUseWindowsToolTipNewlineMethods) Then
                     Dim sNewlineDistance As Integer = sNameToolTip.IndexOf("("c)
 
@@ -377,7 +293,7 @@ Public Class UCAutocomplete
                     End If
                 End If
 
-                Dim sComment As String = Regex.Replace(CStr(mListViewItemData.g_mData("Info")).Trim, String.Format("(^|{0})", vbTab), New String(" "c, iTabSize), RegexOptions.Multiline)
+                Dim sComment As String = Regex.Replace(mAutocompleteItem.m_Autocomplete.m_Info.Trim, String.Format("(^|{0})", vbTab), New String(" "c, iTabSize), RegexOptions.Multiline)
 
                 SB_TipText_Autocomplete.AppendLine(sName)
                 SB_TipText_AutocompleteToolTip.AppendLine(sNameToolTip)

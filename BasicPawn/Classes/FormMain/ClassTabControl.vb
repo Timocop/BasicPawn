@@ -1344,34 +1344,30 @@ Public Class ClassTabControl
 
                     'Autocomplete up
                     Case Keys.Control Or Keys.Up
-                        If (g_mFormMain.g_mUCAutocomplete.ListView_AutocompleteList.SelectedItems.Count < 1) Then
+                        If (g_mFormMain.g_mUCAutocomplete.ListBox_Autocomplete.SelectedItems.Count < 1) Then
                             Return
                         End If
 
-                        Dim iListViewCount As Integer = g_mFormMain.g_mUCAutocomplete.ListView_AutocompleteList.Items.Count
+                        Dim iCount As Integer = g_mFormMain.g_mUCAutocomplete.ListBox_Autocomplete.Items.Count
+                        Dim iNewIndex As Integer = g_mFormMain.g_mUCAutocomplete.ListBox_Autocomplete.SelectedIndices(0) - 1
 
-                        Dim iNewIndex As Integer = g_mFormMain.g_mUCAutocomplete.ListView_AutocompleteList.SelectedItems(0).Index - 1
-
-                        If (iNewIndex > -1 AndAlso iNewIndex < iListViewCount) Then
-                            g_mFormMain.g_mUCAutocomplete.ListView_AutocompleteList.Items(iNewIndex).Selected = True
-                            g_mFormMain.g_mUCAutocomplete.ListView_AutocompleteList.Items(iNewIndex).EnsureVisible()
+                        If (iNewIndex > -1 AndAlso iNewIndex < iCount) Then
+                            g_mFormMain.g_mUCAutocomplete.ListBox_Autocomplete.SelectedIndex = iNewIndex
                         End If
 
                         bBlock = True
 
                     'Autocomplete Down
                     Case Keys.Control Or Keys.Down
-                        If (g_mFormMain.g_mUCAutocomplete.ListView_AutocompleteList.SelectedItems.Count < 1) Then
+                        If (g_mFormMain.g_mUCAutocomplete.ListBox_Autocomplete.SelectedItems.Count < 1) Then
                             Return
                         End If
 
-                        Dim iListViewCount As Integer = g_mFormMain.g_mUCAutocomplete.ListView_AutocompleteList.Items.Count
+                        Dim iCount As Integer = g_mFormMain.g_mUCAutocomplete.ListBox_Autocomplete.Items.Count
+                        Dim iNewIndex As Integer = g_mFormMain.g_mUCAutocomplete.ListBox_Autocomplete.SelectedIndices(0) + 1
 
-                        Dim iNewIndex As Integer = g_mFormMain.g_mUCAutocomplete.ListView_AutocompleteList.SelectedItems(0).Index + 1
-
-                        If (iNewIndex > -1 AndAlso iNewIndex < iListViewCount) Then
-                            g_mFormMain.g_mUCAutocomplete.ListView_AutocompleteList.Items(iNewIndex).Selected = True
-                            g_mFormMain.g_mUCAutocomplete.ListView_AutocompleteList.Items(iNewIndex).EnsureVisible()
+                        If (iNewIndex > -1 AndAlso iNewIndex < iCount) Then
+                            g_mFormMain.g_mUCAutocomplete.ListBox_Autocomplete.SelectedIndex = iNewIndex
                         End If
 
                         bBlock = True
@@ -1626,7 +1622,7 @@ Public Class ClassTabControl
                     Return
                 End If
 
-                If (g_mFormMain.g_mUCAutocomplete.ListView_AutocompleteList.Items.Count < 1 OrElse
+                If (g_mFormMain.g_mUCAutocomplete.ListBox_Autocomplete.Items.Count < 1 OrElse
                             g_mFormMain.TabControl_Details.TabPages.IndexOf(g_mFormMain.TabControl_Details.SelectedTab) = 0) Then
                     Return
                 End If

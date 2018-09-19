@@ -23,13 +23,9 @@ Partial Class UCAutocomplete
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Me.ListView_AutocompleteList = New System.Windows.Forms.ListView()
-        Me.ColumnHeader1 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.ColumnHeader4 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.ColumnHeader2 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.ColumnHeader3 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
         Me.SplitContainer1 = New System.Windows.Forms.SplitContainer()
+        Me.ListBox_Autocomplete = New BasicPawn.ClassAutocompleteListBox()
         Me.SplitContainer2 = New System.Windows.Forms.SplitContainer()
         Me.Panel_IntelliSense = New System.Windows.Forms.Panel()
         Me.TextEditorControlEx_IntelliSense = New BasicPawn.TextEditorControlEx()
@@ -46,42 +42,6 @@ Partial Class UCAutocomplete
         Me.Panel_IntelliSense.SuspendLayout()
         Me.Panel_Autocomplete.SuspendLayout()
         Me.SuspendLayout()
-        '
-        'ListView_AutocompleteList
-        '
-        Me.ListView_AutocompleteList.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.ListView_AutocompleteList.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1, Me.ColumnHeader4, Me.ColumnHeader2, Me.ColumnHeader3})
-        Me.ListView_AutocompleteList.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ListView_AutocompleteList.FullRowSelect = True
-        Me.ListView_AutocompleteList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None
-        Me.ListView_AutocompleteList.HideSelection = False
-        Me.ListView_AutocompleteList.Location = New System.Drawing.Point(0, 0)
-        Me.ListView_AutocompleteList.MultiSelect = False
-        Me.ListView_AutocompleteList.Name = "ListView_AutocompleteList"
-        Me.ListView_AutocompleteList.Size = New System.Drawing.Size(376, 161)
-        Me.ListView_AutocompleteList.TabIndex = 0
-        Me.ListView_AutocompleteList.UseCompatibleStateImageBehavior = False
-        Me.ListView_AutocompleteList.View = System.Windows.Forms.View.Details
-        '
-        'ColumnHeader1
-        '
-        Me.ColumnHeader1.Text = "File"
-        Me.ColumnHeader1.Width = 137
-        '
-        'ColumnHeader4
-        '
-        Me.ColumnHeader4.Text = "Type"
-        Me.ColumnHeader4.Width = 89
-        '
-        'ColumnHeader2
-        '
-        Me.ColumnHeader2.Text = "Name"
-        Me.ColumnHeader2.Width = 169
-        '
-        'ColumnHeader3
-        '
-        Me.ColumnHeader3.Text = "Full Name"
-        Me.ColumnHeader3.Width = 398
         '
         'ToolTip1
         '
@@ -100,7 +60,7 @@ Partial Class UCAutocomplete
         '
         'SplitContainer1.Panel1
         '
-        Me.SplitContainer1.Panel1.Controls.Add(Me.ListView_AutocompleteList)
+        Me.SplitContainer1.Panel1.Controls.Add(Me.ListBox_Autocomplete)
         '
         'SplitContainer1.Panel2
         '
@@ -108,6 +68,18 @@ Partial Class UCAutocomplete
         Me.SplitContainer1.Size = New System.Drawing.Size(799, 161)
         Me.SplitContainer1.SplitterDistance = 376
         Me.SplitContainer1.TabIndex = 1
+        '
+        'ListBox_Autocomplete
+        '
+        Me.ListBox_Autocomplete.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.ListBox_Autocomplete.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ListBox_Autocomplete.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable
+        Me.ListBox_Autocomplete.FormattingEnabled = True
+        Me.ListBox_Autocomplete.ItemHeight = 16
+        Me.ListBox_Autocomplete.Location = New System.Drawing.Point(0, 0)
+        Me.ListBox_Autocomplete.Name = "ListBox_Autocomplete"
+        Me.ListBox_Autocomplete.Size = New System.Drawing.Size(376, 161)
+        Me.ListBox_Autocomplete.TabIndex = 0
         '
         'SplitContainer2
         '
@@ -227,12 +199,6 @@ Partial Class UCAutocomplete
         Me.ResumeLayout(False)
 
     End Sub
-
-    Friend WithEvents ListView_AutocompleteList As ListView
-    Friend WithEvents ColumnHeader1 As ColumnHeader
-    Friend WithEvents ColumnHeader2 As ColumnHeader
-    Friend WithEvents ColumnHeader3 As ColumnHeader
-    Friend WithEvents ColumnHeader4 As ColumnHeader
     Friend WithEvents ToolTip1 As ToolTip
     Friend WithEvents SplitContainer1 As SplitContainer
     Friend WithEvents SplitContainer2 As SplitContainer
@@ -242,4 +208,5 @@ Partial Class UCAutocomplete
     Friend WithEvents Label_Autocomplete As Label
     Friend WithEvents TextEditorControlEx_Autocomplete As TextEditorControlEx
     Friend WithEvents TextEditorControlEx_IntelliSense As TextEditorControlEx
+    Friend WithEvents ListBox_Autocomplete As ClassAutocompleteListBox
 End Class

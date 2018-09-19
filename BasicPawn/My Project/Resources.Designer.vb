@@ -750,6 +750,136 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized resource of type System.Drawing.Bitmap.
+        '''</summary>
+        Public ReadOnly Property IntelliSenseClass_32x() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("IntelliSenseClass_32x", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Drawing.Bitmap.
+        '''</summary>
+        Public ReadOnly Property IntelliSenseEnumerator_32x() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("IntelliSenseEnumerator_32x", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Drawing.Bitmap.
+        '''</summary>
+        Public ReadOnly Property IntelliSenseEnumItem_32x() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("IntelliSenseEnumItem_32x", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Drawing.Bitmap.
+        '''</summary>
+        Public ReadOnly Property IntelliSenseEvent_32x() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("IntelliSenseEvent_32x", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Drawing.Bitmap.
+        '''</summary>
+        Public ReadOnly Property IntelliSenseField_32x() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("IntelliSenseField_32x", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Drawing.Bitmap.
+        '''</summary>
+        Public ReadOnly Property IntelliSenseInterface_32x() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("IntelliSenseInterface_32x", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Drawing.Bitmap.
+        '''</summary>
+        Public ReadOnly Property IntelliSenseKeyword_32x() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("IntelliSenseKeyword_32x", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Drawing.Bitmap.
+        '''</summary>
+        Public ReadOnly Property IntelliSenseMethod_32x() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("IntelliSenseMethod_32x", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Drawing.Bitmap.
+        '''</summary>
+        Public ReadOnly Property IntelliSenseMisc_32x() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("IntelliSenseMisc_32x", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Drawing.Bitmap.
+        '''</summary>
+        Public ReadOnly Property IntelliSenseNamespace_32x() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("IntelliSenseNamespace_32x", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Drawing.Bitmap.
+        '''</summary>
+        Public ReadOnly Property IntelliSenseProperty_32x() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("IntelliSenseProperty_32x", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Drawing.Bitmap.
+        '''</summary>
+        Public ReadOnly Property IntelliSenseString_32x() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("IntelliSenseString_32x", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Drawing.Bitmap.
+        '''</summary>
+        Public ReadOnly Property IntelliSenseVariable_32x() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("IntelliSenseVariable_32x", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot;?&gt;
         '''&lt;SyntaxDefinition name=&quot;SourcePawn-04e3632f-5472-42c5-929a-c3e0c2b35324&quot; extensions=&quot;.sp&quot;&gt;
         '''    &lt;Environment&gt;

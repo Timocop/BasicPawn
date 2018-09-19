@@ -588,6 +588,19 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="BasicPawnIcon.ico" />
+    <None Include="Resources\IntelliSenseVariable_32x.png" />
+    <None Include="Resources\IntelliSenseString_32x.png" />
+    <None Include="Resources\IntelliSenseProperty_32x.png" />
+    <None Include="Resources\IntelliSenseNamespace_32x.png" />
+    <None Include="Resources\IntelliSenseMisc_32x.png" />
+    <None Include="Resources\IntelliSenseMethod_32x.png" />
+    <None Include="Resources\IntelliSenseKeyword_32x.png" />
+    <None Include="Resources\IntelliSenseInterface_32x.png" />
+    <None Include="Resources\IntelliSenseField_32x.png" />
+    <None Include="Resources\IntelliSenseEvent_32x.png" />
+    <None Include="Resources\IntelliSenseEnumItem_32x.png" />
+    <None Include="Resources\IntelliSenseEnumerator_32x.png" />
+    <None Include="Resources\IntelliSenseClass_32x.png" />
     <None Include="Resources\user32_101_48x48-32.png" />
     <None Include="Resources\Debugger_AssertModuleOld.txt" />
     <None Include="Resources\Debugger_AssertModuleNew.txt" />
