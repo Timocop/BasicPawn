@@ -372,7 +372,11 @@ Public Class ClassAutocompleteUpdater
                             mSB.AppendLine(mItem.m_Filename)
 
                             For Each sKey In mItem.m_Data.Keys
-                                mSB.AppendLine(vbTab & sKey & "=" & mItem.m_Data(sKey).ToString)
+                                If (TypeOf mItem.m_Data(sKey) Is String()) Then
+                                    mSB.AppendLine(vbTab & sKey & "=" & String.Join(", ", CType(mItem.m_Data(sKey), String())))
+                                Else
+                                    mSB.AppendLine(vbTab & sKey & "=" & mItem.m_Data(sKey).ToString)
+                                End If
                             Next
                         Next
 
@@ -2451,7 +2455,11 @@ Public Class ClassAutocompleteUpdater
                             mSB.AppendLine(mItem.m_Filename)
 
                             For Each sKey In mItem.m_Data.Keys
-                                mSB.AppendLine(vbTab & sKey & "=" & mItem.m_Data(sKey).ToString)
+                                If (TypeOf mItem.m_Data(sKey) Is String()) Then
+                                    mSB.AppendLine(vbTab & sKey & "=" & String.Join(", ", CType(mItem.m_Data(sKey), String())))
+                                Else
+                                    mSB.AppendLine(vbTab & sKey & "=" & mItem.m_Data(sKey).ToString)
+                                End If
                             Next
                         Next
 
