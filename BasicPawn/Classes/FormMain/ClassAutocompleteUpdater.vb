@@ -2517,8 +2517,8 @@ Public Class ClassAutocompleteUpdater
 
             Dim sStatementsVar As String = "\b(for)\b"
             Dim sInitTypesPattern As String = "\b(new|decl|static|const)\b" '"public" is already taken care off
-            Dim sOldStyleVarPattern As String = String.Format("(?<Init>{0}\s+)(?<IsConst>\b(const)\b\s+){2}((?<Tag>{1})\:\s*(?<Var>\b[a-zA-Z0-9_]+\b)|(?<Var>\b[a-zA-Z0-9_]+\b))($|\W)", sInitTypesPattern, sRegExTypePattern, "{0,1}")
-            Dim sNewStyleVarPattern As String = String.Format("(?<IsConst>\b(const)\b\s+){1}(?<Tag>{0})\s+(?<Var>\b[a-zA-Z0-9_]+\b)($|\W)", sRegExTypePattern, "{0,1}")
+            Dim sOldStyleVarPattern As String = String.Format("(?<Init>{0}\s+)(?<IsConst>\b(const)\b\s+){2}((?<Tag>{1})\:\s*(?<Var>\b[a-zA-Z0-9_]+\b)|(?<Var>\b[a-zA-Z0-9_]+\b))\s*((?<End>$)|(?<IsFunc>\()|(?<More>\W))", sInitTypesPattern, sRegExTypePattern, "{0,1}")
+            Dim sNewStyleVarPattern As String = String.Format("(?<IsConst>\b(const)\b\s+){1}(?<Tag>{0})\s+(?<Var>\b[a-zA-Z0-9_]+\b)\s*((?<End>$)|(?<IsFunc>\()|(?<More>\W))", sRegExTypePattern, "{0,1}")
 
             Dim mSourceList As New List(Of String) From {
                 sSource
@@ -2645,7 +2645,7 @@ Public Class ClassAutocompleteUpdater
                             Exit Select
                         End If
 
-                        Dim mMatch As Match = Regex.Match(sLine, String.Format("^((?<Tag>{0})\:\s*)*(?<Var>\b[a-zA-Z_][a-zA-Z0-9_]*\b)((?<End>$)|(?<IsFunc>\()|(?<IsMethodmap>\.)|(?<IsTag>\:)|(?<More>\W))", sRegExTypePattern))
+                        Dim mMatch As Match = Regex.Match(sLine, String.Format("^((?<Tag>{0})\:\s*)*(?<Var>\b[a-zA-Z_][a-zA-Z0-9_]*\b)\s*((?<End>$)|(?<IsFunc>\()|(?<IsMethodmap>\.)|(?<IsTag>\:)|(?<More>\W))", sRegExTypePattern))
                         Dim sTag As String = mMatch.Groups("Tag").Value.Trim
                         Dim sVar As String = mMatch.Groups("Var").Value.Trim
 
@@ -2724,7 +2724,7 @@ Public Class ClassAutocompleteUpdater
                             Exit Select
                         End If
 
-                        Dim mMatch As Match = Regex.Match(sLine, String.Format("^(?<Tag>{0}\s+)*(?<Var>\b[a-zA-Z_][a-zA-Z0-9_]*\b)((?<End>$)|(?<IsFunc>\()|(?<IsMethodmap>\.)|(?<IsTag>\:)|(?<More>\W))", sRegExTypePattern))
+                        Dim mMatch As Match = Regex.Match(sLine, String.Format("^(?<Tag>{0}\s+)*(?<Var>\b[a-zA-Z_][a-zA-Z0-9_]*\b)\s*((?<End>$)|(?<IsFunc>\()|(?<IsMethodmap>\.)|(?<IsTag>\:)|(?<More>\W))", sRegExTypePattern))
                         Dim sTag As String = mMatch.Groups("Tag").Value.Trim
                         Dim sVar As String = mMatch.Groups("Var").Value.Trim
 
@@ -2817,6 +2817,7 @@ Public Class ClassAutocompleteUpdater
                         Dim sTag As String = mMatch.Groups("Tag").Value.Trim
                         Dim sVar As String = mMatch.Groups("Var").Value.Trim
                         Dim bIsConst As Boolean = mMatch.Groups("IsConst").Success
+                        Dim bIsFunc As Boolean = mMatch.Groups("IsFunc").Success
 
                         If (iLastInitIndex < iIndex) Then
                             iLastInitIndex = iIndex
@@ -2824,6 +2825,10 @@ Public Class ClassAutocompleteUpdater
                         End If
 
                         sLastTag = Nothing
+
+                        If (bIsFunc) Then
+                            Continue For
+                        End If
 
                         If (g_mFormMain.g_ClassSyntaxTools.IsForbiddenVariableName(sVar)) Then
                             Continue For
@@ -2903,6 +2908,7 @@ Public Class ClassAutocompleteUpdater
                         Dim sTag As String = mMatch.Groups("Tag").Value.Trim
                         Dim sVar As String = mMatch.Groups("Var").Value.Trim
                         Dim bIsConst As Boolean = mMatch.Groups("IsConst").Success
+                        Dim bIsFunc As Boolean = mMatch.Groups("IsFunc").Success
 
                         If (iLastInitIndex < iIndex) Then
                             iLastInitIndex = iIndex
@@ -2910,6 +2916,10 @@ Public Class ClassAutocompleteUpdater
                         End If
 
                         sLastTag = Nothing
+
+                        If (bIsFunc) Then
+                            Continue For
+                        End If
 
                         If (String.IsNullOrEmpty(sTag)) Then
                             Continue For
