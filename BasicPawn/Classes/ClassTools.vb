@@ -201,7 +201,6 @@ Public Class ClassTools
 
             Return iBytes.ToString("0.##") & " " & sNames(i)
         End Function
-
     End Class
 
     Class ClassControls

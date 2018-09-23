@@ -52,6 +52,7 @@ Partial Class FormSearch
         Me.ColumnHeader4 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.CheckBox_SingleInstance = New System.Windows.Forms.CheckBox()
         Me.Button_ReplaceNext = New System.Windows.Forms.Button()
         Me.Button_ReplacePre = New System.Windows.Forms.Button()
         Me.Button_SearchNext = New System.Windows.Forms.Button()
@@ -61,11 +62,13 @@ Partial Class FormSearch
         Me.RadioButton_TransparencyAlways = New System.Windows.Forms.RadioButton()
         Me.RadioButton_TransparencyInactive = New System.Windows.Forms.RadioButton()
         Me.CheckBox_Transparency = New System.Windows.Forms.CheckBox()
-        Me.Button_ListAllOpenTabs = New System.Windows.Forms.Button()
         Me.GroupBox5 = New System.Windows.Forms.GroupBox()
         Me.CheckBox_ReplaceInSelection = New System.Windows.Forms.CheckBox()
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
-        Me.CheckBox_SingleInstance = New System.Windows.Forms.CheckBox()
+        Me.GroupBox6 = New System.Windows.Forms.GroupBox()
+        Me.RadioButton_ListTypeCurrent = New System.Windows.Forms.RadioButton()
+        Me.RadioButton_ListTypeTabs = New System.Windows.Forms.RadioButton()
+        Me.RadioButton_ListTypeIncludes = New System.Windows.Forms.RadioButton()
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
@@ -75,6 +78,7 @@ Partial Class FormSearch
         Me.GroupBox4.SuspendLayout()
         CType(Me.TrackBar_Transparency, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox5.SuspendLayout()
+        Me.GroupBox6.SuspendLayout()
         Me.SuspendLayout()
         '
         'Label1
@@ -309,10 +313,10 @@ Partial Class FormSearch
         Me.ListView_Output.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ListView_Output.FullRowSelect = True
         Me.ListView_Output.HideSelection = False
-        Me.ListView_Output.Location = New System.Drawing.Point(3, 266)
+        Me.ListView_Output.Location = New System.Drawing.Point(3, 311)
         Me.ListView_Output.MultiSelect = False
         Me.ListView_Output.Name = "ListView_Output"
-        Me.ListView_Output.Size = New System.Drawing.Size(513, 171)
+        Me.ListView_Output.Size = New System.Drawing.Size(513, 126)
         Me.ListView_Output.TabIndex = 14
         Me.ListView_Output.UseCompatibleStateImageBehavior = False
         Me.ListView_Output.View = System.Windows.Forms.View.Details
@@ -346,20 +350,20 @@ Partial Class FormSearch
         Me.TableLayoutPanel1.Location = New System.Drawing.Point(0, 0)
         Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
         Me.TableLayoutPanel1.RowCount = 2
-        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 263.0!))
+        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 308.0!))
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.TableLayoutPanel1.Size = New System.Drawing.Size(519, 440)
         Me.TableLayoutPanel1.TabIndex = 15
         '
         'Panel1
         '
+        Me.Panel1.Controls.Add(Me.GroupBox6)
         Me.Panel1.Controls.Add(Me.CheckBox_SingleInstance)
         Me.Panel1.Controls.Add(Me.Button_ReplaceNext)
         Me.Panel1.Controls.Add(Me.Button_ReplacePre)
         Me.Panel1.Controls.Add(Me.Button_SearchNext)
         Me.Panel1.Controls.Add(Me.Button_SearchPre)
         Me.Panel1.Controls.Add(Me.GroupBox4)
-        Me.Panel1.Controls.Add(Me.Button_ListAllOpenTabs)
         Me.Panel1.Controls.Add(Me.Label1)
         Me.Panel1.Controls.Add(Me.TextBox_Search)
         Me.Panel1.Controls.Add(Me.Button_ListAll)
@@ -376,8 +380,21 @@ Partial Class FormSearch
         Me.Panel1.Location = New System.Drawing.Point(0, 0)
         Me.Panel1.Margin = New System.Windows.Forms.Padding(0)
         Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(519, 263)
+        Me.Panel1.Size = New System.Drawing.Size(519, 308)
         Me.Panel1.TabIndex = 0
+        '
+        'CheckBox_SingleInstance
+        '
+        Me.CheckBox_SingleInstance.AutoSize = True
+        Me.CheckBox_SingleInstance.Checked = True
+        Me.CheckBox_SingleInstance.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.CheckBox_SingleInstance.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_SingleInstance.Location = New System.Drawing.Point(12, 287)
+        Me.CheckBox_SingleInstance.Name = "CheckBox_SingleInstance"
+        Me.CheckBox_SingleInstance.Size = New System.Drawing.Size(110, 18)
+        Me.CheckBox_SingleInstance.TabIndex = 21
+        Me.CheckBox_SingleInstance.Text = "Single instance"
+        Me.CheckBox_SingleInstance.UseVisualStyleBackColor = True
         '
         'Button_ReplaceNext
         '
@@ -430,7 +447,7 @@ Partial Class FormSearch
         Me.GroupBox4.Controls.Add(Me.RadioButton_TransparencyAlways)
         Me.GroupBox4.Controls.Add(Me.RadioButton_TransparencyInactive)
         Me.GroupBox4.Controls.Add(Me.CheckBox_Transparency)
-        Me.GroupBox4.Location = New System.Drawing.Point(276, 184)
+        Me.GroupBox4.Location = New System.Drawing.Point(276, 226)
         Me.GroupBox4.Name = "GroupBox4"
         Me.GroupBox4.Size = New System.Drawing.Size(231, 73)
         Me.GroupBox4.TabIndex = 15
@@ -487,17 +504,6 @@ Partial Class FormSearch
         Me.CheckBox_Transparency.Text = "Transparency"
         Me.CheckBox_Transparency.UseVisualStyleBackColor = True
         '
-        'Button_ListAllOpenTabs
-        '
-        Me.Button_ListAllOpenTabs.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button_ListAllOpenTabs.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_ListAllOpenTabs.Location = New System.Drawing.Point(379, 128)
-        Me.Button_ListAllOpenTabs.Name = "Button_ListAllOpenTabs"
-        Me.Button_ListAllOpenTabs.Size = New System.Drawing.Size(128, 36)
-        Me.Button_ListAllOpenTabs.TabIndex = 14
-        Me.Button_ListAllOpenTabs.Text = "List All in All open tabs"
-        Me.Button_ListAllOpenTabs.UseVisualStyleBackColor = True
-        '
         'GroupBox5
         '
         Me.GroupBox5.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
@@ -525,19 +531,50 @@ Partial Class FormSearch
         Me.ToolTip1.InitialDelay = 500
         Me.ToolTip1.ReshowDelay = 100
         '
-        'CheckBox_SingleInstance
+        'GroupBox6
         '
-        Me.CheckBox_SingleInstance.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.CheckBox_SingleInstance.AutoSize = True
-        Me.CheckBox_SingleInstance.Checked = True
-        Me.CheckBox_SingleInstance.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.CheckBox_SingleInstance.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_SingleInstance.Location = New System.Drawing.Point(397, 170)
-        Me.CheckBox_SingleInstance.Name = "CheckBox_SingleInstance"
-        Me.CheckBox_SingleInstance.Size = New System.Drawing.Size(110, 18)
-        Me.CheckBox_SingleInstance.TabIndex = 21
-        Me.CheckBox_SingleInstance.Text = "Single instance"
-        Me.CheckBox_SingleInstance.UseVisualStyleBackColor = True
+        Me.GroupBox6.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.GroupBox6.Controls.Add(Me.RadioButton_ListTypeIncludes)
+        Me.GroupBox6.Controls.Add(Me.RadioButton_ListTypeTabs)
+        Me.GroupBox6.Controls.Add(Me.RadioButton_ListTypeCurrent)
+        Me.GroupBox6.Location = New System.Drawing.Point(379, 128)
+        Me.GroupBox6.Name = "GroupBox6"
+        Me.GroupBox6.Size = New System.Drawing.Size(128, 92)
+        Me.GroupBox6.TabIndex = 23
+        Me.GroupBox6.TabStop = False
+        Me.GroupBox6.Text = "List all type"
+        '
+        'RadioButton_ListTypeCurrent
+        '
+        Me.RadioButton_ListTypeCurrent.AutoSize = True
+        Me.RadioButton_ListTypeCurrent.Checked = True
+        Me.RadioButton_ListTypeCurrent.Location = New System.Drawing.Point(6, 21)
+        Me.RadioButton_ListTypeCurrent.Name = "RadioButton_ListTypeCurrent"
+        Me.RadioButton_ListTypeCurrent.Size = New System.Drawing.Size(84, 17)
+        Me.RadioButton_ListTypeCurrent.TabIndex = 0
+        Me.RadioButton_ListTypeCurrent.TabStop = True
+        Me.RadioButton_ListTypeCurrent.Text = "Current tab"
+        Me.RadioButton_ListTypeCurrent.UseVisualStyleBackColor = True
+        '
+        'RadioButton_ListTypeTabs
+        '
+        Me.RadioButton_ListTypeTabs.AutoSize = True
+        Me.RadioButton_ListTypeTabs.Location = New System.Drawing.Point(6, 44)
+        Me.RadioButton_ListTypeTabs.Name = "RadioButton_ListTypeTabs"
+        Me.RadioButton_ListTypeTabs.Size = New System.Drawing.Size(106, 17)
+        Me.RadioButton_ListTypeTabs.TabIndex = 1
+        Me.RadioButton_ListTypeTabs.Text = "All opened tabs"
+        Me.RadioButton_ListTypeTabs.UseVisualStyleBackColor = True
+        '
+        'RadioButton_ListTypeIncludes
+        '
+        Me.RadioButton_ListTypeIncludes.AutoSize = True
+        Me.RadioButton_ListTypeIncludes.Location = New System.Drawing.Point(6, 67)
+        Me.RadioButton_ListTypeIncludes.Name = "RadioButton_ListTypeIncludes"
+        Me.RadioButton_ListTypeIncludes.Size = New System.Drawing.Size(103, 17)
+        Me.RadioButton_ListTypeIncludes.TabIndex = 2
+        Me.RadioButton_ListTypeIncludes.Text = "All include files"
+        Me.RadioButton_ListTypeIncludes.UseVisualStyleBackColor = True
         '
         'FormSearch
         '
@@ -568,6 +605,8 @@ Partial Class FormSearch
         CType(Me.TrackBar_Transparency, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupBox5.ResumeLayout(False)
         Me.GroupBox5.PerformLayout()
+        Me.GroupBox6.ResumeLayout(False)
+        Me.GroupBox6.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -600,7 +639,6 @@ Partial Class FormSearch
     Friend WithEvents TableLayoutPanel1 As TableLayoutPanel
     Friend WithEvents Panel1 As Panel
     Friend WithEvents ColumnHeader3 As ColumnHeader
-    Friend WithEvents Button_ListAllOpenTabs As Button
     Friend WithEvents ColumnHeader4 As ColumnHeader
     Friend WithEvents ToolTip1 As ToolTip
     Friend WithEvents GroupBox4 As GroupBox
@@ -615,4 +653,8 @@ Partial Class FormSearch
     Friend WithEvents Button_ReplaceNext As Button
     Friend WithEvents Button_ReplacePre As Button
     Friend WithEvents CheckBox_SingleInstance As CheckBox
+    Friend WithEvents GroupBox6 As GroupBox
+    Friend WithEvents RadioButton_ListTypeIncludes As RadioButton
+    Friend WithEvents RadioButton_ListTypeTabs As RadioButton
+    Friend WithEvents RadioButton_ListTypeCurrent As RadioButton
 End Class

@@ -302,6 +302,20 @@ Public Class ClassTabControl
         Return -1
     End Function
 
+    Public Function GetTabByFile(sFile As String) As ClassTabControl.SourceTabPage
+        If (String.IsNullOrEmpty(sFile)) Then
+            Return Nothing
+        End If
+
+        For i = 0 To m_TabsCount - 1
+            If (Not m_Tab(i).m_IsUnsaved AndAlso m_Tab(i).m_File.ToLower = sFile.ToLower) Then
+                Return m_Tab(i)
+            End If
+        Next
+
+        Return Nothing
+    End Function
+
     Private Sub OnSwitchTabDelay(sender As Object, e As EventArgs) Handles g_mTimer.Tick
         g_mTimer.Stop()
 
