@@ -64,7 +64,7 @@ Public Class ClassSettings
     Public Shared g_iSettingsUseWindowsToolTipNewlineMethods As Boolean = True
     Public Shared g_iSettingsFullMethodAutocomplete As Boolean = False
     Public Shared g_iSettingsFullEnumAutocomplete As Boolean = False
-    Public Shared g_iSettingsAutocompleteCaseSensitive As Boolean = True
+    Public Shared g_iSettingsAutocompleteCaseSensitive As Boolean = False
     Public Shared g_iSettingsAutocompleteVarParseType As ENUM_VAR_PARSE_TYPE = ENUM_VAR_PARSE_TYPE.TAB_AND_INC
     Public Shared g_iSettingsObjectBrowserShowVariables As Boolean = False
     Public Shared g_iSettingsSwitchTabToAutocomplete As Boolean = True
@@ -170,7 +170,7 @@ Public Class ClassSettings
                     g_iSettingsUseWindowsToolTipNewlineMethods = (mIni.ReadKeyValue("Editor", "UseWindowsToolTipNewlineMethods", "1") <> "0")
                     g_iSettingsFullMethodAutocomplete = (mIni.ReadKeyValue("Editor", "FullMethodAutocomplete", "0") <> "0")
                     g_iSettingsFullEnumAutocomplete = (mIni.ReadKeyValue("Editor", "FullEnumAutocomplete", "0") <> "0")
-                    g_iSettingsAutocompleteCaseSensitive = (mIni.ReadKeyValue("Editor", "AutocompleteCaseSensitive", "1") <> "0")
+                    g_iSettingsAutocompleteCaseSensitive = (mIni.ReadKeyValue("Editor", "AutocompleteCaseSensitive", "0") <> "0")
 
                     If (Integer.TryParse(mIni.ReadKeyValue("Editor", "AutocompleteVarParseType", CStr(ENUM_VAR_PARSE_TYPE.TAB_AND_INC)), tmpInt)) Then
                         g_iSettingsAutocompleteVarParseType = CType(ClassTools.ClassMath.ClampInt(tmpInt, 0, [Enum].GetNames(GetType(ENUM_VAR_PARSE_TYPE)).Length - 1), ENUM_VAR_PARSE_TYPE)
