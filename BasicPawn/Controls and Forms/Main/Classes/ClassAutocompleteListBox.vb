@@ -81,7 +81,8 @@ Public Class ClassAutocompleteListBox
 
         If (Me.SelectedIndex = e.Index) Then
             If (ClassControlStyle.m_IsInvertedColors) Then
-                e.Graphics.FillRectangle(New SolidBrush(Color.DimGray), e.Bounds)
+                'Darker Color.RoyalBlue. Orginal Color.RoyalBlue: Color.FromArgb(65, 105, 150) 
+                e.Graphics.FillRectangle(New SolidBrush(Color.FromArgb(36, 59, 127)), e.Bounds)
             Else
                 e.Graphics.FillRectangle(New SolidBrush(Color.LightBlue), e.Bounds)
             End If
