@@ -714,7 +714,7 @@ Public Class ClassSyntaxTools
 
         Public ReadOnly Property m_InRange(i As Integer) As Boolean
             Get
-                Return (i > -1 AndAlso i < g_iMaxLength)
+                Return (i > -1 AndAlso i < g_iStateArray.Length)
             End Get
         End Property
 
@@ -877,7 +877,9 @@ Public Class ClassSyntaxTools
 
                         If (iLineCount >= iLine) Then
                             If (i + 1 > g_sCacheText.Length - 1) Then
-                                Return -1
+                                'Get the length even if its longer than the g_sCacheTest length.
+                                'g_iStateArray should have +1 more length.
+                                Return g_sCacheText.Length
                             Else
                                 Return i + 1
                             End If
@@ -893,6 +895,7 @@ Public Class ClassSyntaxTools
             g_sCacheText = sText
             g_iMaxLength = sText.Length
 
+            'Init g_iStateArray with +1 index.
             g_iStateArray = New Integer(sText.Length, [Enum].GetNames(GetType(ENUM_STATE_TYPES)).Length - 1) {}
 
             Dim iParenthesisLevel As Integer = 0 '() 

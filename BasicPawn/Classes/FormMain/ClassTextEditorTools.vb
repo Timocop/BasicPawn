@@ -155,7 +155,7 @@ Public Class ClassTextEditorTools
                         If (mSourceAnalysis IsNot Nothing) Then
                             'Get index from line and from match to check if its inside non-code area
                             Dim iIndex = mSourceAnalysis.GetIndexFromLine(iLine - 1)
-                            If (iIndex < 0 OrElse mSourceAnalysis.m_InNonCode(iIndex + mMatch.Index)) Then
+                            If (iIndex < 0 OrElse Not mSourceAnalysis.m_InRange(iIndex + mMatch.Index) OrElse mSourceAnalysis.m_InNonCode(iIndex + mMatch.Index)) Then
                                 Continue For
                             End If
                         End If
