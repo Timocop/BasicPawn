@@ -807,10 +807,10 @@ Public Class ClassSyntaxTools
 
             If (g_iStateArray(i, ENUM_STATE_TYPES.PARENTHESIS_LEVEL) > 0) Then
                 Select Case (g_sCacheText(i))
-                    Case ("("c)
+                    Case "("c
                         iRange = ENUM_STATE_RANGE.START
 
-                    Case (")"c)
+                    Case ")"c
                         iRange = ENUM_STATE_RANGE.END
                 End Select
             End If
@@ -876,7 +876,11 @@ Public Class ClassSyntaxTools
                         iLineCount += 1
 
                         If (iLineCount >= iLine) Then
-                            Return If(i + 1 > g_sCacheText.Length - 1, -1, i + 1)
+                            If (i + 1 > g_sCacheText.Length - 1) Then
+                                Return -1
+                            Else
+                                Return i + 1
+                            End If
                         End If
                 End Select
             Next
