@@ -133,7 +133,15 @@ Public Class ClassSyntaxUpdater
                 Dim iCaretOffset As Integer = ClassThread.ExecEx(Of Integer)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Offset)
                 Dim iCaretPos As Point = ClassThread.ExecEx(Of Point)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.ScreenPosition)
 
-                'Update Method Autoupdate 
+                'Update Autocomplete
+                Static iLastAutoupdateCaretOffset2 As Integer = -1
+                If (iLastAutoupdateCaretOffset2 <> iCaretOffset) Then
+                    iLastAutoupdateCaretOffset2 = iCaretOffset
+
+                    UpdateAutocomplete(iCaretOffset)
+                End If
+
+                'Update IntelliSense 
                 Static iLastMethodAutoupdateCaretOffset As Integer = -1
                 If (iLastMethodAutoupdateCaretOffset <> iCaretOffset) Then
                     iLastMethodAutoupdateCaretOffset = iCaretOffset
@@ -149,14 +157,6 @@ Public Class ClassSyntaxUpdater
                     ClassThread.ExecAsync(g_mFormMain.g_mUCAutocomplete, Sub()
                                                                              g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTipFormLocation()
                                                                          End Sub)
-                End If
-
-                'Update Autocomplete
-                Static iLastAutoupdateCaretOffset2 As Integer = -1
-                If (iLastAutoupdateCaretOffset2 <> iCaretOffset) Then
-                    iLastAutoupdateCaretOffset2 = iCaretOffset
-
-                    UpdateAutocomplete(iCaretOffset)
                 End If
 
                 'Update caret word maker
