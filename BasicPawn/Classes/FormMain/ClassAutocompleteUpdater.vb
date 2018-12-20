@@ -3946,6 +3946,7 @@ Public Class ClassAutocompleteUpdater
 
             Dim mDic As New Dictionary(Of String, String)
             Dim mDicOp As New Dictionary(Of String, String)
+            Dim mDicConst As New Dictionary(Of String, String)
 
             'Pawn
             mDic("assert") = "#assert"
@@ -4005,11 +4006,33 @@ Public Class ClassAutocompleteUpdater
             mDicOp("state") = "state <symbol>"
             mDicOp("tagof") = "tagof <symbol>"
 
+            mDicOp("delete") = "delete <symbol>"
+            mDicOp("view_as") = "view_as<type>(symbol)"
+
+            'Constants 
+            mDicConst("true") = "true"
+            mDicConst("false") = "false"
+            mDicConst("EOS") = "EOS"
+            mDicConst("INVALID_FUNCTION") = "INVALID_FUNCTION"
+            mDicConst("cellbits") = "cellbits"
+            mDicConst("cellmax") = "cellmax"
+            mDicConst("cellmin") = "cellmin"
+            mDicConst("charbits") = "charbits"
+            mDicConst("charmin") = "charmin"
+            mDicConst("charmax") = "charmax"
+            mDicConst("ucharmax") = "ucharmax"
+            mDicConst("__Pawn") = "__Pawn"
+            mDicConst("__LINE__") = "__LINE__"
+
             For Each mItem In mDic
                 lTmpAutoList.Add(New ClassSyntaxTools.STRUC_AUTOCOMPLETE("", "compiler.exe", "", ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PREPROCESSOR, mItem.Key, mItem.Key, mItem.Value))
             Next
 
             For Each mItem In mDicOp
+                lTmpAutoList.Add(New ClassSyntaxTools.STRUC_AUTOCOMPLETE("", "compiler.exe", "", ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.OPERATOR, mItem.Key, mItem.Key, mItem.Value))
+            Next
+
+            For Each mItem In mDicConst
                 lTmpAutoList.Add(New ClassSyntaxTools.STRUC_AUTOCOMPLETE("", "compiler.exe", "", ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.OPERATOR, mItem.Key, mItem.Key, mItem.Value))
             Next
 
