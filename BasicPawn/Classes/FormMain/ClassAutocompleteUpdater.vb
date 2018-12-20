@@ -3817,7 +3817,7 @@ Public Class ClassAutocompleteUpdater
                 '           bla()
                 'To:
                 '   public static bla()
-                Dim sTypes As String() = {"enum", "funcenum", "functag", "stock", "static", "const", "public", "native", "forward", "typeset", "methodmap", "typedef"}
+                Dim sTypes As String() = {"enum", "struct", "funcenum", "functag", "stock", "static", "const", "public", "native", "forward", "typeset", "methodmap", "typedef"}
                 Dim mRegMatchCol As MatchCollection = Regex.Matches(sSource, String.Format("^\s*(\b{0}\b)(?<Space>\s*\n\s*)", String.Join("\b|\b", sTypes)), RegexOptions.Multiline)
                 Dim mSourceBuilder As New StringBuilder(sSource)
 
@@ -3838,8 +3838,9 @@ Public Class ClassAutocompleteUpdater
                 Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iLanguage)
                 Dim mSourceBuilder As New StringBuilder(sSource)
 
-                'Collapse new lines in statements with parenthesis e.g: MyStuff(MyArg1,
-                '                                                               MyArg2)
+                'Collapse new lines in statements with parenthesis e.g:
+                'MyStuff(MyArg1,
+                '        MyArg2)
                 For i = mSourceBuilder.Length - 1 To 0 Step -1
                     Select Case (mSourceBuilder(i))
                         Case vbLf(0)
