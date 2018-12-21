@@ -1050,6 +1050,7 @@ Public Class ClassAutocompleteUpdater
             Dim mAutocompletePre As New ClassAutocompletePre(Me)
 
             mAutocompletePre.ParseStructs(mParseInfo)
+            mAutocompletePre.ParseEnumStructs(mParseInfo)
             mAutocompletePre.ParseMethodmapEnums(mParseInfo)
             mAutocompletePre.ParseTypesetEnums(mParseInfo)
             mAutocompletePre.ParseTypedefEnums(mParseInfo)
@@ -1174,7 +1175,58 @@ Public Class ClassAutocompleteUpdater
                         mAutocomplete.m_Data("StructName") = sStructName
 
 #If DEBUG Then
-                        mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Get strucs (names only)"
+                        mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Get structs (names only)"
+#End If
+
+                        If (Not mParseInfo.lNewAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
+                            mParseInfo.lNewAutocompleteList.Add(mAutocomplete)
+                        End If
+                    Next
+                End If
+            End Sub
+
+            ''' <summary>
+            ''' Parse enum structs as enums.
+            ''' SourcePawn +1.7 only.
+            ''' </summary>
+            ''' <param name="mParseInfo"></param>
+            Public Sub ParseEnumStructs(mParseInfo As STRUC_AUTOCOMPLETE_PARSE_PRE_INFO)
+                If (mParseInfo.sSource.Contains("enum") AndAlso mParseInfo.sSource.Contains("struct")) Then
+                    Dim mSourceBuilder As New StringBuilder(mParseInfo.sSource.Length)
+
+                    If (True) Then
+                        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(mParseInfo.sSource, mParseInfo.iLanguage)
+
+                        For i = 0 To mParseInfo.sSource.Length - 1
+                            mSourceBuilder.Append(If(mSourceAnalysis.m_InNonCode(i), " "c, mParseInfo.sSource(i)))
+                        Next
+                    End If
+
+                    Dim mPossibleEnumStructMatches As MatchCollection = Regex.Matches(mSourceBuilder.ToString, "^\s*\b(enum)\b\s+\b(struct)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)", RegexOptions.Multiline)
+
+                    Dim mMatch As Match
+
+                    For i = 0 To mPossibleEnumStructMatches.Count - 1
+                        mMatch = mPossibleEnumStructMatches(i)
+
+                        If (Not mMatch.Success) Then
+                            Continue For
+                        End If
+
+                        Dim sEnumStructName As String = mMatch.Groups("Name").Value
+
+                        Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE("",
+                                                                                    IO.Path.GetFileName(mParseInfo.sFile),
+                                                                                    mParseInfo.sFile,
+                                                                                    ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM,
+                                                                                    sEnumStructName,
+                                                                                    sEnumStructName,
+                                                                                    "enum struct " & sEnumStructName)
+
+                        mAutocomplete.m_Data("EnumName") = sEnumStructName
+
+#If DEBUG Then
+                        mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Get enum structs (names only)"
 #End If
 
                         If (Not mParseInfo.lNewAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
