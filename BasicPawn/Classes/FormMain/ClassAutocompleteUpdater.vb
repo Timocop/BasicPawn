@@ -1221,9 +1221,11 @@ Public Class ClassAutocompleteUpdater
                                                                                     ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM,
                                                                                     sEnumStructName,
                                                                                     sEnumStructName,
-                                                                                    "enum struct " & sEnumStructName)
+                                                                                    "enum " & sEnumStructName)
 
                         mAutocomplete.m_Data("EnumName") = sEnumStructName
+                        mAutocomplete.m_Data("EnumIsEnumStruct") = True
+                        mAutocomplete.m_Data("EnumHidden") = True
 
 #If DEBUG Then
                         mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Get enum structs (names only)"
