@@ -342,20 +342,20 @@ Public Class ClassAutocompleteUpdater
                 mPreWatch.Start()
                 Dim i As Integer
                 For i = 0 To lIncludeFiles.Count - 1
-                    mParser.ParseAutocompletePre(g_mFormMain, sRequestedSource, sRequestedSourceFile, CStr(lIncludeFiles(i).Value), sSourceList, lNewAutocompleteList, iRequestedLangauge)
+                    mParser.ProcessAutocompletePre(g_mFormMain, sRequestedSource, sRequestedSourceFile, CStr(lIncludeFiles(i).Value), sSourceList, lNewAutocompleteList, iRequestedLangauge)
                 Next
                 mPreWatch.Stop()
 
                 mPostWatch.Start()
                 For i = 0 To sSourceList.Count - 1
-                    mParser.ParseAutocompletePost(g_mFormMain, sRequestedSource, sRequestedSourceFile, sSourceList(i)(0), sSourceList(i)(1), lNewAutocompleteList, iRequestedLangauge)
+                    mParser.ProcessAutocompletePost(g_mFormMain, sRequestedSource, sRequestedSourceFile, sSourceList(i)(0), sSourceList(i)(1), lNewAutocompleteList, iRequestedLangauge)
                 Next
                 mPostWatch.Stop()
             End If
 
             'Finalize
             mFinalizeWatch.Start()
-            mParser.ParseAutocompleteFinalize(g_mFormMain, lNewAutocompleteList)
+            mParser.ProcessAutocompleteFinalize(g_mFormMain, lNewAutocompleteList)
             mFinalizeWatch.Stop()
 
             'Save everything and update syntax 
@@ -396,7 +396,7 @@ Public Class ClassAutocompleteUpdater
 
             lNewAutocompleteList = Nothing
 
-#If DEBUG AndAlso PROFILE_AUTOCOMPLETE Then
+#If PROFILE_AUTOCOMPLETE Then
             g_mFormMain.PrintInformation("[DEBG]", "Autocomplete update finished!")
             g_mFormMain.PrintInformation("[DEBG]", vbTab & "Times:")
             g_mFormMain.PrintInformation("[DEBG]", vbTab & "Pre: " & mPreWatch.Elapsed.ToString)
@@ -495,7 +495,7 @@ Public Class ClassAutocompleteUpdater
                 mPreWatch.Start()
 
                 If (ClassSettings.g_iSettingsAutocompleteVarParseType = ClassSettings.ENUM_VAR_PARSE_TYPE.TAB) Then
-                    mParser.ParseVariablePre(g_mFormMain, sRequestedSource, sRequestedSourceFile, sRequestedSourceFile, lNewVarAutocompleteList, lOldVarAutocompleteList, iRequestedLangauge)
+                    mParser.ProcessVariablePre(g_mFormMain, sRequestedSource, sRequestedSourceFile, sRequestedSourceFile, lNewVarAutocompleteList, lOldVarAutocompleteList, iRequestedLangauge)
                 Else
                     Dim mIncludeFiles = mRequestTab.m_IncludeFiles.ToArray
                     For i = 0 To mIncludeFiles.Length - 1
@@ -513,18 +513,18 @@ Public Class ClassAutocompleteUpdater
                                 End Select
 
                                 If (bValid) Then
-                                    mParser.ParseVariablePre(g_mFormMain, sRequestedSource, sRequestedSourceFile, CStr(mIncludeFiles(i).Value), lNewVarAutocompleteList, lOldVarAutocompleteList, iRequestedLangauge)
+                                    mParser.ProcessVariablePre(g_mFormMain, sRequestedSource, sRequestedSourceFile, CStr(mIncludeFiles(i).Value), lNewVarAutocompleteList, lOldVarAutocompleteList, iRequestedLangauge)
                                 End If
 
                             Case Else
-                                mParser.ParseVariablePre(g_mFormMain, sRequestedSource, sRequestedSourceFile, CStr(mIncludeFiles(i).Value), lNewVarAutocompleteList, lOldVarAutocompleteList, iRequestedLangauge)
+                                mParser.ProcessVariablePre(g_mFormMain, sRequestedSource, sRequestedSourceFile, CStr(mIncludeFiles(i).Value), lNewVarAutocompleteList, lOldVarAutocompleteList, iRequestedLangauge)
                         End Select
                     Next
                 End If
                 mPreWatch.Stop()
 
                 mPostWatch.Start()
-                mParser.ParseVariablePost(g_mFormMain, sRequestedSource, sRequestedSourceFile, lNewVarAutocompleteList, lOldVarAutocompleteList, iRequestedLangauge)
+                mParser.ProcessVariablePost(g_mFormMain, sRequestedSource, sRequestedSourceFile, lNewVarAutocompleteList, lOldVarAutocompleteList, iRequestedLangauge)
                 mPostWatch.Stop()
             End If
 
@@ -565,7 +565,7 @@ Public Class ClassAutocompleteUpdater
 
             lNewVarAutocompleteList = Nothing
 
-#If DEBUG AndAlso PROFILE_AUTOCOMPLETE Then
+#If PROFILE_AUTOCOMPLETE Then
             g_mFormMain.PrintInformation("[DEBG]", "Variable Autocomplete update finished!")
             g_mFormMain.PrintInformation("[DEBG]", vbTab & "Times:")
             g_mFormMain.PrintInformation("[DEBG]", vbTab & "Pre: " & mPreWatch.Elapsed.ToString)
@@ -1029,7 +1029,7 @@ Public Class ClassAutocompleteUpdater
             End Sub
         End Class
 
-        Public Sub ParseAutocompletePre(mFormMain As FormMain,
+        Public Sub ProcessAutocompletePre(mFormMain As FormMain,
                                                 sActiveSource As String,
                                                 sActiveSourceFile As String,
                                                 sFile As String,
@@ -1061,7 +1061,7 @@ Public Class ClassAutocompleteUpdater
             sSourceList.Add(New String() {sFile, sSource})
         End Sub
 
-        Public Sub ParseAutocompletePost(mFormMain As FormMain,
+        Public Sub ProcessAutocompletePost(mFormMain As FormMain,
                                                     sActiveSource As String,
                                                     sActiveSourceFile As String,
                                                     ByRef sFile As String,
@@ -1079,9 +1079,10 @@ Public Class ClassAutocompleteUpdater
             mAutocompletePost.ParseTypedefs(mFormMain, mParseInfo)
             mAutocompletePost.ParseMethodsAndFunctags(mFormMain, mParseInfo)
             mAutocompletePost.ParseMethodmaps(mFormMain, mParseInfo)
+            mAutocompletePost.ParseEnumStructs(mFormMain, mParseInfo)
         End Sub
 
-        Public Sub ParseAutocompleteFinalize(mFormMain As FormMain,
+        Public Sub ProcessAutocompleteFinalize(mFormMain As FormMain,
                                                     lTmpAutoList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE))
 
             Dim mAutocompleteFinalize As New ClassAutocompleteFinalize(Me)
@@ -1090,7 +1091,7 @@ Public Class ClassAutocompleteUpdater
             mAutocompleteFinalize.ProcessMethodmapParentMethodmaps(mFormMain, lTmpAutoList)
         End Sub
 
-        Public Sub ParseVariablePre(mFormMain As FormMain,
+        Public Sub ProcessVariablePre(mFormMain As FormMain,
                                                 sActiveSource As String,
                                                 sActiveSourceFile As String,
                                                 ByRef sFile As String,
@@ -1112,7 +1113,7 @@ Public Class ClassAutocompleteUpdater
             mVariablePre.ParseVariables(mFormMain, mParseInfo)
         End Sub
 
-        Public Sub ParseVariablePost(mFormMain As FormMain,
+        Public Sub ProcessVariablePost(mFormMain As FormMain,
                                             sActiveSource As String,
                                             sActiveSourceFile As String,
                                             ByRef lNewVarAutocompleteList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE),
@@ -1126,6 +1127,12 @@ Public Class ClassAutocompleteUpdater
 
             mVariablePost.GenerateMethodmapVariables(mFormMain, mParseInfo)
             mVariablePost.GenerateMethodmapMethods(mFormMain, mParseInfo)
+            mVariablePost.GenerateMethodmapInlineMethods(mFormMain, mParseInfo)
+            mVariablePost.GenerateMethodmapFields(mFormMain, mParseInfo)
+            mVariablePost.GenerateEnumStructVariables(mFormMain, mParseInfo)
+            mVariablePost.GenerateEnumStructMethods(mFormMain, mParseInfo)
+            mVariablePost.GenerateEnumStructInlineMethods(mFormMain, mParseInfo)
+            mVariablePost.GenerateEnumStructFields(mFormMain, mParseInfo)
         End Sub
 
         Private Class ClassAutocompletePre
@@ -2631,7 +2638,7 @@ Public Class ClassAutocompleteUpdater
                                 Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(sComment,
                                                                                             IO.Path.GetFileName(mParseInfo.sFile),
                                                                                             mParseInfo.sFile,
-                                                                                            ClassSyntaxTools.STRUC_AUTOCOMPLETE.ParseTypeFullNames(sType) Or ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP,
+                                                                                            ClassSyntaxTools.STRUC_AUTOCOMPLETE.ParseTypeFullNames(sType) Or ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PROPERTY Or ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP,
                                                                                             sName,
                                                                                             String.Format("{0}.{1}", sMethodMapName, sName),
                                                                                             String.Format("methodmap {0} {1}{2}{3} = {4} {5}", sType, sMethodMapName, sMethodMapParentingName, If(sMethodMapHasParent, " < " & sMethodMapParentName, ""), sTag, sName))
@@ -2702,10 +2709,15 @@ Public Class ClassAutocompleteUpdater
                                     Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(sComment,
                                                                                                 IO.Path.GetFileName(mParseInfo.sFile),
                                                                                                 mParseInfo.sFile,
-                                                                                                ClassSyntaxTools.STRUC_AUTOCOMPLETE.ParseTypeFullNames(sType) Or ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP,
+                                                                                                ClassSyntaxTools.STRUC_AUTOCOMPLETE.ParseTypeFullNames(sType) Or ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.INLINE_METHOD Or ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP,
                                                                                                 sName,
                                                                                                 String.Format("{0}.{1}", sMethodMapName, sName),
                                                                                                 String.Format("methodmap {0} {1}{2} = {3} {4}{5}", sType, sMethodMapName, If(sMethodMapHasParent, " < " & sMethodMapParentName, ""), sTag, sName, sBraceString))
+
+                                    mAutocomplete.m_Data("InlineMethodName") = sName
+                                    mAutocomplete.m_Data("InlineMethodType") = sType
+                                    mAutocomplete.m_Data("InlineMethodTag") = sTag
+                                    mAutocomplete.m_Data("InlineMethodArguments") = sBraceString
 
                                     mAutocomplete.m_Data("MethodmapName") = sMethodMapName
                                     mAutocomplete.m_Data("MethodmapParentName") = sMethodMapParentName
@@ -2727,6 +2739,220 @@ Public Class ClassAutocompleteUpdater
                                 End If
                             End If
                         Next
+                    Next
+                End If
+            End Sub
+
+            ''' <summary>
+            ''' Parse enum structs and its entries.
+            ''' SourcePawn +1.7 only.
+            ''' </summary>
+            ''' <param name="mFormMain"></param>
+            ''' <param name="mParseInfo"></param>
+            Public Sub ParseEnumStructs(mFormMain As FormMain, mParseInfo As STRUC_AUTOCOMPLETE_PARSE_POST_INFO)
+                If ((ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7 OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX) AndAlso
+                            mParseInfo.sSource.Contains("enum") AndAlso mParseInfo.sSource.Contains("struct")) Then
+                    Dim sRegExTypePattern As String = g_ClassParse.GetTypeNamesToPattern(mParseInfo.lNewAutocompleteList)
+
+                    Dim mPossibleMethodmapMatches As MatchCollection = Regex.Matches(mParseInfo.sSource, "^\s*\b(enum)\b\s+\b(struct)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)\s*(?<BraceStart>\{)", RegexOptions.Multiline)
+                    Dim iBraceList As Integer()() = mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(mParseInfo.sSource, "{"c, "}"c, 1, mParseInfo.iLanguage, True)
+
+                    Dim mMatch As Match
+
+                    Dim bIsValid As Boolean
+                    Dim sEnumStructSource As String
+                    Dim iBraceIndex As Integer
+
+                    Dim sEnumStructName As String
+
+                    For i = 0 To mPossibleMethodmapMatches.Count - 1
+                        mMatch = mPossibleMethodmapMatches(i)
+                        If (Not mMatch.Success) Then
+                            Continue For
+                        End If
+
+                        bIsValid = False
+                        sEnumStructSource = ""
+                        iBraceIndex = mMatch.Groups("BraceStart").Index
+                        For ii = 0 To iBraceList.Length - 1
+                            If (iBraceIndex = iBraceList(ii)(0)) Then
+                                sEnumStructSource = mParseInfo.sSource.Substring(iBraceList(ii)(0) + 1, iBraceList(ii)(1) - iBraceList(ii)(0) - 1)
+                                bIsValid = True
+                                Exit For
+                            End If
+                        Next
+                        If (Not bIsValid) Then
+                            Continue For
+                        End If
+
+                        sEnumStructName = mMatch.Groups("Name").Value
+
+                        If (True) Then
+                            Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE("",
+                                                                                        IO.Path.GetFileName(mParseInfo.sFile),
+                                                                                        mParseInfo.sFile,
+                                                                                        ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM_STRUCT,
+                                                                                        sEnumStructName,
+                                                                                        sEnumStructName,
+                                                                                        "enum struct " & sEnumStructName)
+
+                            mAutocomplete.m_Data("EnumStructName") = sEnumStructName
+                            mAutocomplete.m_Data("EnumStructFieldTag") = ""
+                            mAutocomplete.m_Data("EnumStructFieldName") = ""
+                            mAutocomplete.m_Data("EnumStructMethodTag") = ""
+                            mAutocomplete.m_Data("EnumStructMethodName") = ""
+                            mAutocomplete.m_Data("EnumStructMethodArguments") = ""
+
+#If DEBUG Then
+                            mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Get enum structs"
+#End If
+
+                            If (Not mParseInfo.lNewAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
+                                mParseInfo.lNewAutocompleteList.Add(mAutocomplete)
+                            End If
+                        End If
+
+                        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sEnumStructSource, mParseInfo.iLanguage)
+                        Dim iMethodmapBraceList As Integer()() = mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(sEnumStructSource, "("c, ")"c, 1, mParseInfo.iLanguage, True)
+
+                        'Get fields
+                        If (True) Then
+                            Dim SB As New StringBuilder
+
+                            'Remove everthing we dont need
+                            For j = 0 To sEnumStructSource.Length - 1
+                                If (mSourceAnalysis.m_InNonCode(j) OrElse mSourceAnalysis.m_InPreprocessor(j)) Then
+                                    SB.Append(" ")
+                                    Continue For
+                                End If
+
+                                Dim jj As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
+                                If ((mSourceAnalysis.GetBraceLevel(j, jj) > 0 AndAlso jj = ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.NONE) OrElse
+                                            (mSourceAnalysis.GetBracketLevel(j, jj) > 0 AndAlso jj = ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.NONE) OrElse
+                                            (mSourceAnalysis.GetParenthesisLevel(j, jj) > 0 AndAlso jj = ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.NONE)) Then
+                                    SB.Append(" ")
+                                    Continue For
+                                End If
+
+                                SB.Append(sEnumStructSource(j))
+                            Next
+
+                            Dim mFieldMatches As MatchCollection = Regex.Matches(SB.ToString,
+                                                                              String.Format("^\s*(?<Tag>\b({0})\b\s)\s*(?<Name>\b[a-zA-Z0-9_]+\b)\s*(?<IsMethod>\(){1}", sRegExTypePattern, "{0,1}"),
+                                                                              RegexOptions.Multiline)
+
+
+                            For ii = 0 To mFieldMatches.Count - 1
+                                If (mFieldMatches(ii).Groups("IsMethod").Success) Then
+                                    Continue For
+                                End If
+
+                                Dim sTag As String = mFieldMatches(ii).Groups("Tag").Value.Trim
+                                Dim sName As String = mFieldMatches(ii).Groups("Name").Value
+
+                                Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE("",
+                                                                                                 IO.Path.GetFileName(mParseInfo.sFile),
+                                                                                                 mParseInfo.sFile,
+                                                                                                 ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FIELD Or ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM_STRUCT,
+                                                                                                 sName,
+                                                                                                 String.Format("{0}.{1}", sEnumStructName, sName),
+                                                                                                 String.Format("enum struct {0} = {1} {2}", sEnumStructName, sTag, sName))
+
+                                mAutocomplete.m_Data("EnumStructName") = sEnumStructName
+                                mAutocomplete.m_Data("EnumStructFieldTag") = sTag
+                                mAutocomplete.m_Data("EnumStructFieldName") = sName
+                                mAutocomplete.m_Data("EnumStructMethodTag") = ""
+                                mAutocomplete.m_Data("EnumStructMethodName") = ""
+                                mAutocomplete.m_Data("EnumStructMethodArguments") = ""
+
+#If DEBUG Then
+                                mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Get enum structs"
+#End If
+
+                                If (Not mParseInfo.lNewAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
+                                    mParseInfo.lNewAutocompleteList.Add(mAutocomplete)
+                                End If
+                            Next
+                        End If
+
+                        'Get methods
+                        If (True) Then
+                            Dim mMethodMatches As MatchCollection = Regex.Matches(sEnumStructSource,
+                                                                             String.Format("^\s*(?<Type>)(?<Tag>\b({0})\b)\s+(?<Name>\b[a-zA-Z0-9_]+\b)\s*(?<BraceStart>\()", sRegExTypePattern),
+                                                                             RegexOptions.Multiline)
+
+                            Dim SB As StringBuilder
+
+                            For ii = 0 To mMethodMatches.Count - 1
+                                If (mSourceAnalysis.m_InNonCode(mMethodMatches(ii).Groups("Type").Index)) Then
+                                    Continue For
+                                End If
+
+                                SB = New StringBuilder
+                                For iii = mMethodMatches(ii).Groups("Type").Index - 1 To 0 Step -1
+                                    Select Case (sEnumStructSource(iii))
+                                        Case " "c, vbTab(0), vbLf(0), vbCr(0)
+                                            SB.Append(sEnumStructSource(iii))
+                                        Case Else
+                                            If (Not mSourceAnalysis.m_InMultiComment(iii) AndAlso Not mSourceAnalysis.m_InSingleComment(iii) AndAlso Not mSourceAnalysis.m_InPreprocessor(iii)) Then
+                                                Exit For
+                                            End If
+
+                                            SB.Append(sEnumStructSource(iii))
+                                    End Select
+                                Next
+
+                                Dim sComment As String = StrReverse(SB.ToString)
+                                sComment = Regex.Replace(sComment, "^\s+", "", RegexOptions.Multiline)
+                                sComment = Regex.Replace(sComment, "\s+$", "", RegexOptions.Multiline)
+                                Dim sTag As String = mMethodMatches(ii).Groups("Tag").Value.Trim
+                                Dim sName As String = mMethodMatches(ii).Groups("Name").Value
+
+                                Dim iBraceStart As Integer = mMethodMatches(ii).Groups("BraceStart").Index
+                                Dim sBraceString As String = Nothing
+
+                                For iii = 0 To iMethodmapBraceList.Length - 1
+                                    If (iBraceStart = iMethodmapBraceList(iii)(0)) Then
+                                        sBraceString = sEnumStructSource.Substring(iMethodmapBraceList(iii)(0), iMethodmapBraceList(iii)(1) - iMethodmapBraceList(iii)(0) + 1)
+                                        Exit For
+                                    End If
+                                Next
+
+                                If (String.IsNullOrEmpty(sBraceString)) Then
+                                    Continue For
+                                End If
+
+
+                                Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(sComment,
+                                                                                                    IO.Path.GetFileName(mParseInfo.sFile),
+                                                                                                    mParseInfo.sFile,
+                                                                                                    ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.INLINE_METHOD Or ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM_STRUCT,
+                                                                                                    sName,
+                                                                                                    String.Format("{0}.{1}", sEnumStructName, sName),
+                                                                                                    String.Format("enum struct {0} = {1} {2}{3}", sEnumStructName, sTag, sName, sBraceString))
+
+                                mAutocomplete.m_Data("InlineMethodName") = sName
+                                mAutocomplete.m_Data("InlineMethodType") = ""
+                                mAutocomplete.m_Data("InlineMethodTag") = sTag
+                                mAutocomplete.m_Data("InlineMethodArguments") = sBraceString
+
+                                mAutocomplete.m_Data("EnumStructName") = sEnumStructName
+                                mAutocomplete.m_Data("EnumStructFieldTag") = ""
+                                mAutocomplete.m_Data("EnumStructFieldName") = ""
+                                mAutocomplete.m_Data("EnumStructMethodTag") = sTag
+                                mAutocomplete.m_Data("EnumStructMethodName") = sName
+                                mAutocomplete.m_Data("EnumStructMethodArguments") = sBraceString
+
+#If DEBUG Then
+                                mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Get enum structs"
+#End If
+
+                                If (Not mParseInfo.lNewAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
+                                    mParseInfo.lNewAutocompleteList.Add(mAutocomplete)
+                                End If
+                            Next
+                        End If
+
                     Next
                 End If
             End Sub
@@ -3077,11 +3303,12 @@ Public Class ClassAutocompleteUpdater
 
                                 If (mParseInfo.lOldVarAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE)
                                                                                   If ((x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> 0 OrElse
-                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD) <> 0 OrElse
-                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM) <> 0 OrElse
-                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG) <> 0 OrElse
-                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF) <> 0 OrElse
-                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) <> 0) Then
+                                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FIELD) <> 0 OrElse
+                                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD) <> 0 OrElse
+                                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM) <> 0 OrElse
+                                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG) <> 0 OrElse
+                                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF) <> 0 OrElse
+                                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) <> 0) Then
                                                                                       Return False
                                                                                   End If
 
@@ -3156,11 +3383,12 @@ Public Class ClassAutocompleteUpdater
 
                                 If (mParseInfo.lOldVarAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE)
                                                                                   If ((x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> 0 OrElse
-                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD) <> 0 OrElse
-                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM) <> 0 OrElse
-                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG) <> 0 OrElse
-                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF) <> 0 OrElse
-                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) <> 0) Then
+                                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FIELD) <> 0 OrElse
+                                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD) <> 0 OrElse
+                                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM) <> 0 OrElse
+                                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG) <> 0 OrElse
+                                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF) <> 0 OrElse
+                                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) <> 0) Then
                                                                                       Return False
                                                                                   End If
 
@@ -3254,11 +3482,12 @@ Public Class ClassAutocompleteUpdater
 
                                 If (mParseInfo.lOldVarAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE)
                                                                                   If ((x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> 0 OrElse
-                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD) <> 0 OrElse
-                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM) <> 0 OrElse
-                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG) <> 0 OrElse
-                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF) <> 0 OrElse
-                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) <> 0) Then
+                                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FIELD) <> 0 OrElse
+                                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD) <> 0 OrElse
+                                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM) <> 0 OrElse
+                                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG) <> 0 OrElse
+                                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF) <> 0 OrElse
+                                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) <> 0) Then
                                                                                       Return False
                                                                                   End If
 
@@ -3349,11 +3578,12 @@ Public Class ClassAutocompleteUpdater
 
                                 If (mParseInfo.lOldVarAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE)
                                                                                   If ((x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> 0 OrElse
-                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD) <> 0 OrElse
-                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM) <> 0 OrElse
-                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG) <> 0 OrElse
-                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF) <> 0 OrElse
-                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) <> 0) Then
+                                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FIELD) <> 0 OrElse
+                                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD) <> 0 OrElse
+                                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM) <> 0 OrElse
+                                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG) <> 0 OrElse
+                                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF) <> 0 OrElse
+                                                                                            (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) <> 0) Then
                                                                                       Return False
                                                                                   End If
 
@@ -3714,24 +3944,24 @@ Public Class ClassAutocompleteUpdater
                 If (ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7) Then
                     Dim lVarMethodmapList As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
 
-                    For Each mVariableItem In mParseInfo.lOldVarAutocompleteList
-                        If ((mVariableItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> 0) Then
+                    For Each mMethodItem In mParseInfo.lOldVarAutocompleteList
+                        If ((mMethodItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> 0) Then
                             Continue For
                         End If
 
-                        If ((mVariableItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHOD) = 0) Then
+                        If ((mMethodItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHOD) = 0) Then
                             Continue For
                         End If
 
-                        Dim sVariableName As String = CStr(mVariableItem.m_Data("MethodName"))
-                        Dim sVariableTag As String = CStr(mVariableItem.m_Data("MethodTag"))
-                        If (String.IsNullOrEmpty(sVariableName)) Then
+                        Dim sMethodName As String = CStr(mMethodItem.m_Data("MethodName"))
+                        Dim sMethodTag As String = CStr(mMethodItem.m_Data("MethodTag"))
+                        If (String.IsNullOrEmpty(sMethodName)) Then
                             Continue For
                         End If
 
                         Dim lSkipTags As New List(Of String)
                         Dim lTargetTags As New Stack(Of String)
-                        lTargetTags.Push(sVariableTag)
+                        lTargetTags.Push(sMethodTag)
 
                         While (lTargetTags.Count <> 0)
                             Dim sTargetTag As String = lTargetTags.Pop
@@ -3768,25 +3998,664 @@ Public Class ClassAutocompleteUpdater
                                 End If
 
                                 Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(mMethodmapItem.m_Info,
-                                                                                            mVariableItem.m_Filename,
-                                                                                            mVariableItem.m_Path,
+                                                                                            mMethodItem.m_Filename,
+                                                                                            mMethodItem.m_Path,
                                                                                             (ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE Or mMethodmapItem.m_Type) And Not ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP,
                                                                                             sMethodmapMethodName,
-                                                                                            String.Format("{0}.{1}", sVariableName, sMethodmapMethodName),
+                                                                                            String.Format("{0}.{1}", sMethodName, sMethodmapMethodName),
                                                                                             mMethodmapItem.m_FullFunctionString)
 
-                                mAutocomplete.m_Data("VariableName") = sVariableName
-                                mAutocomplete.m_Data("VariableTags") = New String() {sVariableTag}
+                                mAutocomplete.m_Data("VariableName") = sMethodName
+                                mAutocomplete.m_Data("VariableTags") = New String() {sMethodTag}
 
                                 For Each mData In mMethodmapItem.m_Data
                                     mAutocomplete.m_Data(mData.Key) = mData.Value
                                 Next
 
-                                mAutocomplete.m_Data("VariableMethodmapName") = sVariableName
+                                mAutocomplete.m_Data("VariableMethodmapName") = sMethodName
                                 mAutocomplete.m_Data("VariableMethodmapMethod") = sMethodmapMethodName
 
 #If DEBUG Then
                                 mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Make methodmaps using methods"
+#End If
+
+                                If (Not mParseInfo.lNewVarAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString) AndAlso
+                                            Not lVarMethodmapList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
+                                    lVarMethodmapList.Add(mAutocomplete)
+                                End If
+                            Next
+                        End While
+                    Next
+
+                    mParseInfo.lNewVarAutocompleteList.AddRange(lVarMethodmapList.ToArray)
+                End If
+            End Sub
+
+            ''' <summary>
+            ''' Generates combined methodmap methods.
+            ''' SourcePawn +1.7 only.
+            ''' </summary>
+            ''' <param name="mFormMain"></param>
+            ''' <param name="mParseInfo"></param>
+            Public Sub GenerateMethodmapInlineMethods(mFormMain As FormMain, mParseInfo As STRUC_VARIABLE_PARSE_POST_INFO)
+                If (ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7) Then
+                    Dim lVarMethodmapList As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
+
+                    For Each mInlineMethodItem In mParseInfo.lOldVarAutocompleteList
+                        If ((mInlineMethodItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> 0) Then
+                            Continue For
+                        End If
+
+                        'Dont add our own inline methods again.
+                        If ((mInlineMethodItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) <> 0) Then
+                            Continue For
+                        End If
+
+                        If ((mInlineMethodItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.INLINE_METHOD) = 0) Then
+                            Continue For
+                        End If
+
+                        Dim sInlineMethodName As String = CStr(mInlineMethodItem.m_Data("InlineMethodName"))
+                        Dim sInlineMethodTag As String = CStr(mInlineMethodItem.m_Data("InlineMethodTag"))
+                        If (String.IsNullOrEmpty(sInlineMethodName)) Then
+                            Continue For
+                        End If
+
+                        Dim lSkipTags As New List(Of String)
+                        Dim lTargetTags As New Stack(Of String)
+                        lTargetTags.Push(sInlineMethodTag)
+
+                        While (lTargetTags.Count <> 0)
+                            Dim sTargetTag As String = lTargetTags.Pop
+
+                            If (lSkipTags.Contains(sTargetTag)) Then
+                                Continue While
+                            End If
+
+                            For Each mMethodmapItem In mParseInfo.lOldVarAutocompleteList
+                                If ((mMethodmapItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) = 0 OrElse
+                                            Not mMethodmapItem.m_FunctionString.Contains("."c)) Then
+                                    Continue For
+                                End If
+
+                                'TODO: Dont use yet, make methodmap parsing more efficent first
+                                'If ((mMethodmapItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STATIC) <> 0) Then
+                                '    Continue For
+                                'End If
+
+                                Dim sMethodmapName As String = CStr(mMethodmapItem.m_Data("MethodmapName"))
+                                Dim sMethodmapMethodName As String = CStr(mMethodmapItem.m_Data("MethodmapMethodName"))
+                                Dim sMethodmapParentName As String = CStr(mMethodmapItem.m_Data("MethodmapParentName"))
+                                If (String.IsNullOrEmpty(sMethodmapName) OrElse String.IsNullOrEmpty(sMethodmapMethodName)) Then
+                                    Continue For
+                                End If
+
+                                If (sTargetTag <> sMethodmapName) Then
+                                    Continue For
+                                End If
+
+                                If (Not String.IsNullOrEmpty(sMethodmapParentName)) Then
+                                    lTargetTags.Push(sMethodmapParentName)
+                                    lSkipTags.Add(sTargetTag)
+                                End If
+
+                                Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(mMethodmapItem.m_Info,
+                                                                                            mInlineMethodItem.m_Filename,
+                                                                                            mInlineMethodItem.m_Path,
+                                                                                            (ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE Or mMethodmapItem.m_Type) And Not ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP,
+                                                                                            sMethodmapMethodName,
+                                                                                            String.Format("{0}.{1}", sInlineMethodName, sMethodmapMethodName),
+                                                                                            mMethodmapItem.m_FullFunctionString)
+
+                                mAutocomplete.m_Data("VariableName") = sInlineMethodName
+                                mAutocomplete.m_Data("VariableTags") = New String() {sInlineMethodTag}
+
+                                For Each mData In mMethodmapItem.m_Data
+                                    mAutocomplete.m_Data(mData.Key) = mData.Value
+                                Next
+
+                                mAutocomplete.m_Data("VariableMethodmapName") = sInlineMethodName
+                                mAutocomplete.m_Data("VariableMethodmapMethod") = sMethodmapMethodName
+
+#If DEBUG Then
+                                mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Make methodmaps using inline-methods"
+#End If
+
+                                If (Not mParseInfo.lNewVarAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString) AndAlso
+                                            Not lVarMethodmapList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
+                                    lVarMethodmapList.Add(mAutocomplete)
+                                End If
+                            Next
+                        End While
+                    Next
+
+                    mParseInfo.lNewVarAutocompleteList.AddRange(lVarMethodmapList.ToArray)
+                End If
+            End Sub
+
+            ''' <summary>
+            ''' Generates combined methodmap methods.
+            ''' SourcePawn +1.7 only.
+            ''' </summary>
+            ''' <param name="mFormMain"></param>
+            ''' <param name="mParseInfo"></param>
+            Public Sub GenerateMethodmapFields(mFormMain As FormMain, mParseInfo As STRUC_VARIABLE_PARSE_POST_INFO)
+                If (ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7) Then
+                    Dim lVarMethodmapList As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
+
+                    For Each mFieldItem In mParseInfo.lOldVarAutocompleteList
+                        If ((mFieldItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> 0) Then
+                            Continue For
+                        End If
+
+                        If ((mFieldItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FIELD) = 0) Then
+                            Continue For
+                        End If
+
+                        Dim sFieldName As String = CStr(mFieldItem.m_Data("EnumStructFieldName"))
+                        Dim sFieldTag As String = CStr(mFieldItem.m_Data("EnumStructFieldTag"))
+                        If (String.IsNullOrEmpty(sFieldName)) Then
+                            Continue For
+                        End If
+
+                        Dim lSkipTags As New List(Of String)
+                        Dim lTargetTags As New Stack(Of String)
+                        lTargetTags.Push(sFieldTag)
+
+                        While (lTargetTags.Count <> 0)
+                            Dim sTargetTag As String = lTargetTags.Pop
+
+                            If (lSkipTags.Contains(sTargetTag)) Then
+                                Continue While
+                            End If
+
+                            For Each mMethodmapItem In mParseInfo.lOldVarAutocompleteList
+                                If ((mMethodmapItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) = 0 OrElse
+                                            Not mMethodmapItem.m_FunctionString.Contains("."c)) Then
+                                    Continue For
+                                End If
+
+                                'TODO: Dont use yet, make methodmap parsing more efficent first
+                                'If ((mMethodmapItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STATIC) <> 0) Then
+                                '    Continue For
+                                'End If
+
+                                Dim sMethodmapName As String = CStr(mMethodmapItem.m_Data("MethodmapName"))
+                                Dim sMethodmapMethodName As String = CStr(mMethodmapItem.m_Data("MethodmapMethodName"))
+                                Dim sMethodmapParentName As String = CStr(mMethodmapItem.m_Data("MethodmapParentName"))
+                                If (String.IsNullOrEmpty(sMethodmapName) OrElse String.IsNullOrEmpty(sMethodmapMethodName)) Then
+                                    Continue For
+                                End If
+
+                                If (sTargetTag <> sMethodmapName) Then
+                                    Continue For
+                                End If
+
+                                If (Not String.IsNullOrEmpty(sMethodmapParentName)) Then
+                                    lTargetTags.Push(sMethodmapParentName)
+                                    lSkipTags.Add(sTargetTag)
+                                End If
+
+                                Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(mMethodmapItem.m_Info,
+                                                                                            mFieldItem.m_Filename,
+                                                                                            mFieldItem.m_Path,
+                                                                                            (ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE Or mMethodmapItem.m_Type) And Not ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP,
+                                                                                            sMethodmapMethodName,
+                                                                                            String.Format("{0}.{1}", sFieldName, sMethodmapMethodName),
+                                                                                            mMethodmapItem.m_FullFunctionString)
+
+                                mAutocomplete.m_Data("VariableName") = sFieldName
+                                mAutocomplete.m_Data("VariableTags") = New String() {sFieldTag}
+
+                                For Each mData In mMethodmapItem.m_Data
+                                    mAutocomplete.m_Data(mData.Key) = mData.Value
+                                Next
+
+                                mAutocomplete.m_Data("VariableMethodmapName") = sFieldName
+                                mAutocomplete.m_Data("VariableMethodmapMethod") = sMethodmapMethodName
+
+#If DEBUG Then
+                                mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Make methodmaps using fields"
+#End If
+
+                                If (Not mParseInfo.lNewVarAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString) AndAlso
+                                            Not lVarMethodmapList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
+                                    lVarMethodmapList.Add(mAutocomplete)
+                                End If
+                            Next
+                        End While
+                    Next
+
+                    mParseInfo.lNewVarAutocompleteList.AddRange(lVarMethodmapList.ToArray)
+                End If
+            End Sub
+
+
+            ''' <summary>
+            ''' Generates combined methodmap variables.
+            ''' SourcePawn +1.7 only.
+            ''' </summary>
+            ''' <param name="mFormMain"></param>
+            ''' <param name="mParseInfo"></param>
+            Public Sub GenerateEnumStructVariables(mFormMain As FormMain, mParseInfo As STRUC_VARIABLE_PARSE_POST_INFO)
+                If (ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7) Then
+                    Dim lVarEnumStructList As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
+
+                    For Each mVariableItem In mParseInfo.lNewVarAutocompleteList
+                        If ((mVariableItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = 0) Then
+                            Continue For
+                        End If
+
+                        Dim sVariableName As String = CStr(mVariableItem.m_Data("VariableName"))
+                        Dim sVariableTags As String() = CType(mVariableItem.m_Data("VariableTags"), String())
+                        If (String.IsNullOrEmpty(sVariableName)) Then
+                            Continue For
+                        End If
+
+                        Dim lSkipTags As New List(Of String)
+                        Dim lTargetTags As New Stack(Of String)
+                        For Each sTag In sVariableTags
+                            lTargetTags.Push(sTag)
+                        Next
+
+                        While (lTargetTags.Count <> 0)
+                            Dim sTargetTag As String = lTargetTags.Pop
+
+                            If (lSkipTags.Contains(sTargetTag)) Then
+                                Continue While
+                            End If
+
+                            For Each mEnumStructItem In mParseInfo.lOldVarAutocompleteList
+                                If ((mEnumStructItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM_STRUCT) = 0 OrElse
+                                        Not mEnumStructItem.m_FunctionString.Contains("."c)) Then
+                                    Continue For
+                                End If
+
+                                'TODO: Dont use yet, make enum struct parsing more efficent first
+                                'If ((mEnumStructItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STATIC) <> 0) Then
+                                '    Continue For
+                                'End If
+
+                                Dim sEnumStructName As String = CStr(mEnumStructItem.m_Data("EnumStructName"))
+                                Dim sEnumStructFieldName As String = CStr(mEnumStructItem.m_Data("EnumStructFieldName"))
+                                Dim sEnumStructMethodName As String = CStr(mEnumStructItem.m_Data("EnumStructMethodName"))
+                                Dim sEnumStructTargetName As String
+                                Dim bIsField As Boolean = False
+
+                                If ((mEnumStructItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FIELD) <> 0) Then
+                                    sEnumStructTargetName = sEnumStructFieldName
+                                    bIsField = True
+                                Else
+                                    sEnumStructTargetName = sEnumStructMethodName
+                                    bIsField = False
+                                End If
+
+                                If (String.IsNullOrEmpty(sEnumStructTargetName)) Then
+                                    Throw New ArgumentException("Invalid enum struct field/method name")
+                                End If
+
+                                If (String.IsNullOrEmpty(sEnumStructName) OrElse String.IsNullOrEmpty(sEnumStructTargetName)) Then
+                                    Continue For
+                                End If
+
+                                If (sTargetTag <> sEnumStructName) Then
+                                    Continue For
+                                End If
+
+                                lSkipTags.Add(sTargetTag)
+
+                                Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(mEnumStructItem.m_Info,
+                                                                                        mVariableItem.m_Filename,
+                                                                                        mVariableItem.m_Path,
+                                                                                        (ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE Or mEnumStructItem.m_Type) And Not ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM_STRUCT,
+                                                                                        sEnumStructTargetName,
+                                                                                        String.Format("{0}.{1}", sVariableName, sEnumStructTargetName),
+                                                                                        mEnumStructItem.m_FullFunctionString)
+
+                                mAutocomplete.m_Data("VariableName") = sVariableName
+                                mAutocomplete.m_Data("VariableTags") = sVariableTags
+
+                                For Each mData In mEnumStructItem.m_Data
+                                    mAutocomplete.m_Data(mData.Key) = mData.Value
+                                Next
+
+                                mAutocomplete.m_Data("VariableEnumStructName") = sVariableName
+                                mAutocomplete.m_Data("VariableEnumStructField") = If(bIsField, sEnumStructTargetName, "")
+                                mAutocomplete.m_Data("VariableEnumStructMethod") = If(bIsField, "", sEnumStructTargetName)
+
+#If DEBUG Then
+                                mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Make enum structs using variables"
+#End If
+
+                                If (Not mParseInfo.lNewVarAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString) AndAlso
+                                        Not lVarEnumStructList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
+                                    lVarEnumStructList.Add(mAutocomplete)
+                                End If
+                            Next
+                        End While
+                    Next
+
+                    mParseInfo.lNewVarAutocompleteList.AddRange(lVarEnumStructList.ToArray)
+                End If
+            End Sub
+
+            ''' <summary>
+            ''' Generates combined enum struct methods.
+            ''' SourcePawn +1.7 only.
+            ''' </summary>
+            ''' <param name="mFormMain"></param>
+            ''' <param name="mParseInfo"></param>
+            Public Sub GenerateEnumStructMethods(mFormMain As FormMain, mParseInfo As STRUC_VARIABLE_PARSE_POST_INFO)
+                If (ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7) Then
+                    Dim lVarEnumStructList As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
+
+                    For Each mMethodItem In mParseInfo.lOldVarAutocompleteList
+                        If ((mMethodItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> 0) Then
+                            Continue For
+                        End If
+
+                        If ((mMethodItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHOD) = 0) Then
+                            Continue For
+                        End If
+
+                        Dim sMethodName As String = CStr(mMethodItem.m_Data("MethodName"))
+                        Dim sMethodTag As String = CStr(mMethodItem.m_Data("MethodTag"))
+                        If (String.IsNullOrEmpty(sMethodName)) Then
+                            Continue For
+                        End If
+
+                        Dim lSkipTags As New List(Of String)
+                        Dim lTargetTags As New Stack(Of String)
+                        lTargetTags.Push(sMethodTag)
+
+                        While (lTargetTags.Count <> 0)
+                            Dim sTargetTag As String = lTargetTags.Pop
+
+                            If (lSkipTags.Contains(sTargetTag)) Then
+                                Continue While
+                            End If
+
+                            For Each mEnumStructItem In mParseInfo.lOldVarAutocompleteList
+                                If ((mEnumStructItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM_STRUCT) = 0 OrElse
+                                            Not mEnumStructItem.m_FunctionString.Contains("."c)) Then
+                                    Continue For
+                                End If
+
+                                'TODO: Dont use yet, make methodmap parsing more efficent first
+                                'If ((mMethodmapItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STATIC) <> 0) Then
+                                '    Continue For
+                                'End If
+
+                                Dim sEnumStructName As String = CStr(mEnumStructItem.m_Data("EnumStructName"))
+                                Dim sEnumStructFieldName As String = CStr(mEnumStructItem.m_Data("EnumStructFieldName"))
+                                Dim sEnumStructMethodName As String = CStr(mEnumStructItem.m_Data("EnumStructMethodName"))
+                                Dim sEnumStructTargetName As String
+                                Dim bIsField As Boolean = False
+
+                                If ((mEnumStructItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FIELD) <> 0) Then
+                                    sEnumStructTargetName = sEnumStructFieldName
+                                    bIsField = True
+                                Else
+                                    sEnumStructTargetName = sEnumStructMethodName
+                                    bIsField = False
+                                End If
+
+                                If (String.IsNullOrEmpty(sEnumStructTargetName)) Then
+                                    Throw New ArgumentException("Invalid enum struct field/method name")
+                                End If
+
+                                If (String.IsNullOrEmpty(sEnumStructName) OrElse String.IsNullOrEmpty(sEnumStructTargetName)) Then
+                                    Continue For
+                                End If
+
+                                If (sTargetTag <> sEnumStructName) Then
+                                    Continue For
+                                End If
+
+                                lSkipTags.Add(sTargetTag)
+
+                                Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(mEnumStructItem.m_Info,
+                                                                                            mMethodItem.m_Filename,
+                                                                                            mMethodItem.m_Path,
+                                                                                            (ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE Or mEnumStructItem.m_Type) And Not ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP,
+                                                                                            sEnumStructTargetName,
+                                                                                            String.Format("{0}.{1}", sMethodName, sEnumStructTargetName),
+                                                                                            mEnumStructItem.m_FullFunctionString)
+
+                                mAutocomplete.m_Data("VariableName") = sMethodName
+                                mAutocomplete.m_Data("VariableTags") = New String() {sMethodTag}
+
+                                For Each mData In mEnumStructItem.m_Data
+                                    mAutocomplete.m_Data(mData.Key) = mData.Value
+                                Next
+
+                                mAutocomplete.m_Data("VariableEnumStructName") = sMethodName
+                                mAutocomplete.m_Data("VariableEnumStructField") = If(bIsField, sEnumStructTargetName, "")
+                                mAutocomplete.m_Data("VariableEnumStructMethod") = If(bIsField, "", sEnumStructTargetName)
+
+#If DEBUG Then
+                                mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Make enum structs using methods"
+#End If
+
+                                If (Not mParseInfo.lNewVarAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString) AndAlso
+                                            Not lVarEnumStructList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
+                                    lVarEnumStructList.Add(mAutocomplete)
+                                End If
+                            Next
+                        End While
+                    Next
+
+                    mParseInfo.lNewVarAutocompleteList.AddRange(lVarEnumStructList.ToArray)
+                End If
+            End Sub
+
+            ''' <summary>
+            ''' Generates combined methodmap methods.
+            ''' SourcePawn +1.7 only.
+            ''' </summary>
+            ''' <param name="mFormMain"></param>
+            ''' <param name="mParseInfo"></param>
+            Public Sub GenerateEnumStructInlineMethods(mFormMain As FormMain, mParseInfo As STRUC_VARIABLE_PARSE_POST_INFO)
+                If (ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7) Then
+                    Dim lVarMethodmapList As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
+
+                    For Each mInlineMethodItem In mParseInfo.lOldVarAutocompleteList
+                        If ((mInlineMethodItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> 0) Then
+                            Continue For
+                        End If
+
+                        'Dont add our own inline methods again.
+                        If ((mInlineMethodItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM_STRUCT) <> 0) Then
+                            Continue For
+                        End If
+
+                        If ((mInlineMethodItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.INLINE_METHOD) = 0) Then
+                            Continue For
+                        End If
+
+                        Dim sInlineMethodName As String = CStr(mInlineMethodItem.m_Data("InlineMethodName"))
+                        Dim sInlineMethodTag As String = CStr(mInlineMethodItem.m_Data("InlineMethodTag"))
+                        If (String.IsNullOrEmpty(sInlineMethodName)) Then
+                            Continue For
+                        End If
+
+                        Dim lSkipTags As New List(Of String)
+                        Dim lTargetTags As New Stack(Of String)
+                        lTargetTags.Push(sInlineMethodTag)
+
+                        While (lTargetTags.Count <> 0)
+                            Dim sTargetTag As String = lTargetTags.Pop
+
+                            If (lSkipTags.Contains(sTargetTag)) Then
+                                Continue While
+                            End If
+
+                            For Each mEnumStructItem In mParseInfo.lOldVarAutocompleteList
+                                If ((mEnumStructItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM_STRUCT) = 0 OrElse
+                                            Not mEnumStructItem.m_FunctionString.Contains("."c)) Then
+                                    Continue For
+                                End If
+
+                                'TODO: Dont use yet, make methodmap parsing more efficent first
+                                'If ((mMethodmapItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STATIC) <> 0) Then
+                                '    Continue For
+                                'End If
+
+                                Dim sEnumStructName As String = CStr(mEnumStructItem.m_Data("EnumStructName"))
+                                Dim sEnumStructFieldName As String = CStr(mEnumStructItem.m_Data("EnumStructFieldName"))
+                                Dim sEnumStructMethodName As String = CStr(mEnumStructItem.m_Data("EnumStructMethodName"))
+                                Dim sEnumStructTargetName As String
+                                Dim bIsField As Boolean = False
+
+                                If ((mEnumStructItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FIELD) <> 0) Then
+                                    sEnumStructTargetName = sEnumStructFieldName
+                                    bIsField = True
+                                Else
+                                    sEnumStructTargetName = sEnumStructMethodName
+                                    bIsField = False
+                                End If
+
+                                If (String.IsNullOrEmpty(sEnumStructTargetName)) Then
+                                    Throw New ArgumentException("Invalid enum struct field/method name")
+                                End If
+
+                                If (String.IsNullOrEmpty(sEnumStructName) OrElse String.IsNullOrEmpty(sEnumStructTargetName)) Then
+                                    Continue For
+                                End If
+
+                                If (sTargetTag <> sEnumStructName) Then
+                                    Continue For
+                                End If
+
+                                lSkipTags.Add(sTargetTag)
+
+                                Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(mEnumStructItem.m_Info,
+                                                                                            mInlineMethodItem.m_Filename,
+                                                                                            mInlineMethodItem.m_Path,
+                                                                                            (ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE Or mEnumStructItem.m_Type) And Not ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM_STRUCT,
+                                                                                            sEnumStructTargetName,
+                                                                                            String.Format("{0}.{1}", sInlineMethodName, sEnumStructTargetName),
+                                                                                            mEnumStructItem.m_FullFunctionString)
+
+                                mAutocomplete.m_Data("VariableName") = sInlineMethodName
+                                mAutocomplete.m_Data("VariableTags") = New String() {sInlineMethodTag}
+
+                                For Each mData In mEnumStructItem.m_Data
+                                    mAutocomplete.m_Data(mData.Key) = mData.Value
+                                Next
+
+                                mAutocomplete.m_Data("VariableEnumStructName") = sEnumStructTargetName
+                                mAutocomplete.m_Data("VariableEnumStructField") = If(bIsField, sEnumStructTargetName, "")
+                                mAutocomplete.m_Data("VariableEnumStructMethod") = If(bIsField, "", sEnumStructTargetName)
+
+#If DEBUG Then
+                                mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Make enum structs using inline-methods"
+#End If
+
+                                If (Not mParseInfo.lNewVarAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString) AndAlso
+                                            Not lVarMethodmapList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
+                                    lVarMethodmapList.Add(mAutocomplete)
+                                End If
+                            Next
+                        End While
+                    Next
+
+                    mParseInfo.lNewVarAutocompleteList.AddRange(lVarMethodmapList.ToArray)
+                End If
+            End Sub
+
+            ''' <summary>
+            ''' Generates combined methodmap methods.
+            ''' SourcePawn +1.7 only.
+            ''' </summary>
+            ''' <param name="mFormMain"></param>
+            ''' <param name="mParseInfo"></param>
+            Public Sub GenerateEnumStructFields(mFormMain As FormMain, mParseInfo As STRUC_VARIABLE_PARSE_POST_INFO)
+                If (ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7) Then
+                    Dim lVarMethodmapList As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
+
+                    For Each mFieldItem In mParseInfo.lOldVarAutocompleteList
+                        If ((mFieldItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> 0) Then
+                            Continue For
+                        End If
+
+                        If ((mFieldItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FIELD) = 0) Then
+                            Continue For
+                        End If
+
+                        Dim sFieldName As String = CStr(mFieldItem.m_Data("EnumStructFieldName"))
+                        Dim sFieldTag As String = CStr(mFieldItem.m_Data("EnumStructFieldTag"))
+                        If (String.IsNullOrEmpty(sFieldName)) Then
+                            Continue For
+                        End If
+
+                        Dim lSkipTags As New List(Of String)
+                        Dim lTargetTags As New Stack(Of String)
+                        lTargetTags.Push(sFieldTag)
+
+                        While (lTargetTags.Count <> 0)
+                            Dim sTargetTag As String = lTargetTags.Pop
+
+                            If (lSkipTags.Contains(sTargetTag)) Then
+                                Continue While
+                            End If
+
+                            For Each mEnumStructItem In mParseInfo.lOldVarAutocompleteList
+                                If ((mEnumStructItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM_STRUCT) = 0 OrElse
+                                            Not mEnumStructItem.m_FunctionString.Contains("."c)) Then
+                                    Continue For
+                                End If
+
+                                'TODO: Dont use yet, make methodmap parsing more efficent first
+                                'If ((mMethodmapItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STATIC) <> 0) Then
+                                '    Continue For
+                                'End If
+
+                                Dim sEnumStructName As String = CStr(mEnumStructItem.m_Data("EnumStructName"))
+                                Dim sEnumStructFieldName As String = CStr(mEnumStructItem.m_Data("EnumStructFieldName"))
+                                Dim sEnumStructMethodName As String = CStr(mEnumStructItem.m_Data("EnumStructMethodName"))
+                                Dim sEnumStructTargetName As String
+                                Dim bIsField As Boolean = False
+
+                                If ((mEnumStructItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FIELD) <> 0) Then
+                                    sEnumStructTargetName = sEnumStructFieldName
+                                    bIsField = True
+                                Else
+                                    sEnumStructTargetName = sEnumStructMethodName
+                                    bIsField = False
+                                End If
+
+                                If (String.IsNullOrEmpty(sEnumStructTargetName)) Then
+                                    Throw New ArgumentException("Invalid enum struct field/method name")
+                                End If
+
+                                If (sTargetTag <> sEnumStructName) Then
+                                    Continue For
+                                End If
+
+                                lSkipTags.Add(sTargetTag)
+
+                                Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(mEnumStructItem.m_Info,
+                                                                                            mFieldItem.m_Filename,
+                                                                                            mFieldItem.m_Path,
+                                                                                            (ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE Or mEnumStructItem.m_Type) And Not ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM_STRUCT,
+                                                                                            sEnumStructTargetName,
+                                                                                            String.Format("{0}.{1}", sFieldName, sEnumStructTargetName),
+                                                                                            mEnumStructItem.m_FullFunctionString)
+
+                                mAutocomplete.m_Data("VariableName") = sFieldName
+                                mAutocomplete.m_Data("VariableTags") = New String() {sFieldTag}
+
+                                For Each mData In mEnumStructItem.m_Data
+                                    mAutocomplete.m_Data(mData.Key) = mData.Value
+                                Next
+
+                                mAutocomplete.m_Data("VariableEnumStructName") = sEnumStructTargetName
+                                mAutocomplete.m_Data("VariableEnumStructField") = If(bIsField, sEnumStructTargetName, "")
+                                mAutocomplete.m_Data("VariableEnumStructMethod") = If(bIsField, "", sEnumStructTargetName)
+
+#If DEBUG Then
+                                mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Make enum structs using fields"
 #End If
 
                                 If (Not mParseInfo.lNewVarAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString) AndAlso

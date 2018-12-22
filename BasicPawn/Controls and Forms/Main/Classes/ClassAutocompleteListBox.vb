@@ -14,6 +14,9 @@
 'You should have received a copy Of the GNU General Public License
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
+#Const DUMP_TO_FILE = (DEBUG AndAlso True)
+
+Imports System.Text
 
 Public Class ClassAutocompleteListBox
     Inherits ListBox
@@ -190,6 +193,28 @@ Public Class ClassAutocompleteListBox
                 g_ClassAutocompleteListBox.Items.Add(New ClassAutocompleteItem(mItem.Value))
             Next
 
+#If DUMP_TO_FILE Then
+            If (True) Then
+                Dim mSB As New StringBuilder
+
+                For Each mItem In g_lSortedList
+                    mSB.AppendLine(mItem.Value.m_Filename)
+
+                    For Each sKey In mItem.Value.m_Data.Keys
+                        If (TypeOf mItem.Value.m_Data(sKey) Is String()) Then
+                            mSB.AppendLine(vbTab & sKey & "=" & String.Join(", ", CType(mItem.Value.m_Data(sKey), String())))
+                        Else
+                            mSB.AppendLine(vbTab & sKey & "=" & mItem.Value.m_Data(sKey).ToString)
+                        End If
+                    Next
+                Next
+
+                Dim sDumpDir As String = IO.Path.Combine(Application.StartupPath, "DUMP")
+                IO.Directory.CreateDirectory(sDumpDir)
+                IO.File.WriteAllText(IO.Path.Combine(sDumpDir, "info.txt"), mSB.ToString)
+            End If
+#End If
+
             g_ClassAutocompleteListBox.EndUpdate()
         End Sub
 
@@ -232,6 +257,18 @@ Public Class ClassAutocompleteListBox
                     End If
                 End If
 
+                If (_Autocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM_STRUCT) <> 0 Then
+                    If (Not _Autocomplete.m_FunctionString.Contains("."c)) Then
+                        m_Icon = ENUM_ICONS.ICO_INTERFACE
+                        Exit While
+                    End If
+                End If
+
+                If ((_Autocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FIELD) <> 0) Then
+                    m_Icon = ENUM_ICONS.ICO_FIELD
+                    Exit While
+                End If
+
                 If (_Autocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM) <> 0 Then
                     If (_Autocomplete.m_FunctionString.Contains("."c)) Then
                         m_Icon = ENUM_ICONS.ICO_ENUMITEM
@@ -271,6 +308,7 @@ Public Class ClassAutocompleteListBox
                 End If
 
                 If (_Autocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHOD) <> 0 OrElse
+                        (_Autocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.INLINE_METHOD) <> 0 OrElse
                         (_Autocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PUBLIC) <> 0 OrElse
                         (_Autocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.NATIVE) <> 0 OrElse
                         (_Autocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STOCK) <> 0 OrElse

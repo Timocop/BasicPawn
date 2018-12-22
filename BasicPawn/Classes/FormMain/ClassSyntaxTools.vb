@@ -196,6 +196,9 @@ Public Class ClassSyntaxTools
             STRUCT = (1 << 19)
             PREPROCESSOR = (1 << 20)
             [OPERATOR] = (1 << 21)
+            ENUM_STRUCT = (1 << 22)
+            FIELD = (1 << 23)
+            INLINE_METHOD = (1 << 24)
         End Enum
 
         Public Shared Function ParseTypeFullNames(sStr As String) As ENUM_TYPE_FLAGS
@@ -211,6 +214,7 @@ Public Class ClassSyntaxTools
                     Case "define" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.DEFINE)
                     Case "enum" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.ENUM)
                     Case "struct" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.STRUCT)
+                    Case "enum-struct" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.ENUM_STRUCT)
                     Case "methodmap" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.METHODMAP)
                     Case "funcenum" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.FUNCENUM)
                     Case "functag" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.FUNCTAG)
@@ -229,6 +233,8 @@ Public Class ClassSyntaxTools
                     Case "function" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.FUNCTION)
                     Case "preprocessor" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.PREPROCESSOR)
                     Case "operator" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.OPERATOR)
+                    Case "field" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.FIELD)
+                    Case "inline-method" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.INLINE_METHOD)
                 End Select
             Next
 
@@ -242,6 +248,7 @@ Public Class ClassSyntaxTools
             If ((g_iType And ENUM_TYPE_FLAGS.DEFINE) <> 0) Then lNames.Add("define")
             If ((g_iType And ENUM_TYPE_FLAGS.ENUM) <> 0) Then lNames.Add("enum")
             If ((g_iType And ENUM_TYPE_FLAGS.STRUCT) <> 0) Then lNames.Add("struct")
+            If ((g_iType And ENUM_TYPE_FLAGS.ENUM_STRUCT) <> 0) Then lNames.Add("enum-struct")
             If ((g_iType And ENUM_TYPE_FLAGS.METHODMAP) <> 0) Then lNames.Add("methodmap")
             If ((g_iType And ENUM_TYPE_FLAGS.FUNCENUM) <> 0) Then lNames.Add("funcenum")
             If ((g_iType And ENUM_TYPE_FLAGS.FUNCTAG) <> 0) Then lNames.Add("functag")
@@ -260,6 +267,8 @@ Public Class ClassSyntaxTools
             If ((g_iType And ENUM_TYPE_FLAGS.FUNCTION) <> 0) Then lNames.Add("function")
             If ((g_iType And ENUM_TYPE_FLAGS.PREPROCESSOR) <> 0) Then lNames.Add("preprocessor")
             If ((g_iType And ENUM_TYPE_FLAGS.OPERATOR) <> 0) Then lNames.Add("operator")
+            If ((g_iType And ENUM_TYPE_FLAGS.FIELD) <> 0) Then lNames.Add("field")
+            If ((g_iType And ENUM_TYPE_FLAGS.INLINE_METHOD) <> 0) Then lNames.Add("inline-method")
 
             Return lNames.ToArray
         End Function
