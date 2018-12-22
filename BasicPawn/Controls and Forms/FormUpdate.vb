@@ -43,6 +43,11 @@ Public Class FormUpdate
     End Sub
 
     Private Sub Button_Update_Click(sender As Object, e As EventArgs) Handles Button_Update.Click
+        Select Case (MessageBox.Show("All BasicPawn instances will be closed and all your unsaved work will be lost!" & Environment.NewLine & Environment.NewLine & "Do you want to continue?", "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning))
+            Case DialogResult.Cancel
+                Return
+        End Select
+
         If (ClassThread.IsValid(g_mUpdateThread)) Then
             Return
         End If
