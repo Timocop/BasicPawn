@@ -101,6 +101,10 @@
                 <Key word="goto"/>
                 <Key word="return"/>
             </KeyWords>
+            <KeyWords name="TypesDef" bold="true" italic="false" color="#569cd6">
+                <Key word="enum"/>
+                <Key word="struct"/>
+            </KeyWords>
             <KeyWords name="ValueTypes" bold="true" italic="false" color="#4ec9b0">
                 <Key word="bool"/>
                 <Key word="byte"/>
@@ -108,14 +112,12 @@
                 <Key word="String"/>
                 <Key word="decimal"/>
                 <Key word="double"/>
-                <Key word="enum"/>
                 <Key word="float"/>
                 <Key word="Float"/>
                 <Key word="int"/>
                 <Key word="long"/>
                 <Key word="sbyte"/>
                 <Key word="short"/>
-                <Key word="struct"/>
                 <Key word="uint"/>
                 <Key word="ushort"/>
                 <Key word="ulong"/>
@@ -237,12 +239,12 @@
                 <End>*/</End>
             </Span>
             <Span name="String" bold="false" italic="false" color="#9b9b9b" stopateol="false" escapecharacter="\">
-                <Begin>"</Begin>
-                <End>"</End>
+				<Begin>"</Begin>
+				<End>"</End>
             </Span>
             <Span name="Char" bold="false" italic="false" color="#9b9b9b" stopateol="true" escapecharacter="\">
-                <Begin>&apos;</Begin>
-                <End>&apos;</End>
+				<Begin>&apos;</Begin>
+				<End>&apos;</End>
             </Span>
             <KeyWords name="PreprocessorDirectives" bold="true" italic="false" color="#9b9b9b">
                 <Key word="if"/>
