@@ -1213,7 +1213,7 @@ Public Class ClassTabControl
 
                                 'Only analize from 0 to offset, saves performance.
                                 Dim sOffsetText As String = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetText(0, iOffset)
-                                Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sOffsetText, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language, False)
+                                Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sOffsetText, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language, True)
 
                                 'Generate full function if the caret is out of scope, not inside a array/method and not in preprocessor.
                                 Dim bGenerateFull As Boolean = True

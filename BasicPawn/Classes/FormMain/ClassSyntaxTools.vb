@@ -315,7 +315,7 @@ Public Class ClassSyntaxTools
     ''' <param name="sCharOpen"></param>
     ''' <param name="sCharClose"></param>
     ''' <param name="iTargetEndScopeLevel"></param>
-    ''' <param name="bInvalidCodeCheck">If true, it will ignore all Non-Code stuff like strings, comments etc.</param>
+    ''' <param name="bInvalidCodeCheck">If true, it will ignore preprocessor directives and all non-code like strings, comments etc.</param>
     ''' <returns></returns>
     Public Function GetExpressionBetweenCharacters(sExpression As String, sCharOpen As Char, sCharClose As Char, iTargetEndScopeLevel As Integer, iLanguage As ENUM_LANGUAGE_TYPE, Optional bInvalidCodeCheck As Boolean = False) As Integer()()
         Dim iCurrentLevel As Integer = 0
@@ -332,6 +332,11 @@ Public Class ClassSyntaxTools
         For i = 0 To sExpression.Length - 1
             If (mSourceAnalysis IsNot Nothing AndAlso bInvalidCodeCheck) Then
                 If (mSourceAnalysis.m_InNonCode(i)) Then
+                    Continue For
+                End If
+
+                'Ignore possible malformed preprocessor directives.
+                If (mSourceAnalysis.m_InPreprocessor(i)) Then
                     Continue For
                 End If
             End If
@@ -899,8 +904,13 @@ Public Class ClassSyntaxTools
             Return -1
         End Function
 
-
-        Public Sub New(sText As String, iLanguage As ENUM_LANGUAGE_TYPE, Optional bIgnorePreprocessor As Boolean = True)
+        ''' <summary>
+        ''' Analizes source.
+        ''' </summary>
+        ''' <param name="sText"></param>
+        ''' <param name="iLanguage"></param>
+        ''' <param name="bIgnorePreprocessor">Doesnt analize preprocessor directives if true, false otherwise.</param>
+        Public Sub New(sText As String, iLanguage As ENUM_LANGUAGE_TYPE, Optional bIgnorePreprocessor As Boolean = False)
             g_sCacheText = sText
             g_iMaxLength = sText.Length
 
@@ -910,6 +920,9 @@ Public Class ClassSyntaxTools
             Dim iParenthesisLevel As Integer = 0 '() 
             Dim iBracketLevel As Integer = 0 '[] 
             Dim iBraceLevel As Integer = 0 '{} 
+            Dim iParenthesisLevelPreSave As Integer = 0 '() 'Save/load before/after preprocessor
+            Dim iBracketLevelPreSave As Integer = 0 '[] 'Save/load before/after preprocessor
+            Dim iBraceLevelPreSave As Integer = 0 '{} 'Save/load before/after preprocessor
             Dim bInSingleComment As Integer = 0
             Dim bInMultiComment As Integer = 0
             Dim bInString As Integer = 0
@@ -935,6 +948,11 @@ Public Class ClassSyntaxTools
                         '/*
                         bInPreprocessor = 1
                         g_iStateArray(i, ENUM_STATE_TYPES.IN_PREPROCESSOR) = 1
+
+                        'Preprocessor directives can be malformed, reset level after we are dont with it.
+                        iParenthesisLevelPreSave = iParenthesisLevel
+                        iBracketLevelPreSave = iBracketLevel
+                        iBraceLevelPreSave = iBraceLevel
 
                     Case "*"c
                         If (bInSingleComment > 0 OrElse bInString > 0 OrElse bInChar > 0) Then
@@ -976,7 +994,7 @@ Public Class ClassSyntaxTools
                         End If
 
                     Case "("c
-                        If (Not bIgnorePreprocessor AndAlso bInPreprocessor > 0) Then
+                        If (bIgnorePreprocessor AndAlso bInPreprocessor > 0) Then
                             Continue For
                         End If
 
@@ -988,7 +1006,7 @@ Public Class ClassSyntaxTools
                         g_iStateArray(i, ENUM_STATE_TYPES.PARENTHESIS_LEVEL) = iParenthesisLevel
 
                     Case ")"c
-                        If (Not bIgnorePreprocessor AndAlso bInPreprocessor > 0) Then
+                        If (bIgnorePreprocessor AndAlso bInPreprocessor > 0) Then
                             Continue For
                         End If
 
@@ -1000,7 +1018,7 @@ Public Class ClassSyntaxTools
                         iParenthesisLevel -= 1
 
                     Case "["c
-                        If (Not bIgnorePreprocessor AndAlso bInPreprocessor > 0) Then
+                        If (bIgnorePreprocessor AndAlso bInPreprocessor > 0) Then
                             Continue For
                         End If
 
@@ -1012,7 +1030,7 @@ Public Class ClassSyntaxTools
                         g_iStateArray(i, ENUM_STATE_TYPES.BRACKET_LEVEL) = iBracketLevel
 
                     Case "]"c
-                        If (Not bIgnorePreprocessor AndAlso bInPreprocessor > 0) Then
+                        If (bIgnorePreprocessor AndAlso bInPreprocessor > 0) Then
                             Continue For
                         End If
 
@@ -1024,7 +1042,7 @@ Public Class ClassSyntaxTools
                         iBracketLevel -= 1
 
                     Case "{"c
-                        If (Not bIgnorePreprocessor AndAlso bInPreprocessor > 0) Then
+                        If (bIgnorePreprocessor AndAlso bInPreprocessor > 0) Then
                             Continue For
                         End If
 
@@ -1036,7 +1054,7 @@ Public Class ClassSyntaxTools
                         g_iStateArray(i, ENUM_STATE_TYPES.BRACE_LEVEL) = iBraceLevel
 
                     Case "}"c
-                        If (Not bIgnorePreprocessor AndAlso bInPreprocessor > 0) Then
+                        If (bIgnorePreprocessor AndAlso bInPreprocessor > 0) Then
                             Continue For
                         End If
 
@@ -1048,7 +1066,7 @@ Public Class ClassSyntaxTools
                         iBraceLevel -= 1
 
                     Case "'"c
-                        If (Not bIgnorePreprocessor AndAlso bInPreprocessor > 0) Then
+                        If (bIgnorePreprocessor AndAlso bInPreprocessor > 0) Then
                             Continue For
                         End If
 
@@ -1072,7 +1090,7 @@ Public Class ClassSyntaxTools
                         End If
 
                     Case """"c
-                        If (Not bIgnorePreprocessor AndAlso bInPreprocessor > 0) Then
+                        If (bIgnorePreprocessor AndAlso bInPreprocessor > 0) Then
                             Continue For
                         End If
 
@@ -1104,6 +1122,11 @@ Public Class ClassSyntaxTools
                         If (bInPreprocessor > 0) Then
                             bInPreprocessor = 0
                             g_iStateArray(i, ENUM_STATE_TYPES.IN_PREPROCESSOR) = bInPreprocessor
+
+                            'Preprocessor directives can be malformed, reset level after we are dont with it.
+                            iParenthesisLevel = iParenthesisLevelPreSave
+                            iBracketLevel = iBracketLevelPreSave
+                            iBraceLevel = iBraceLevelPreSave
                         End If
 
                     Case Else
