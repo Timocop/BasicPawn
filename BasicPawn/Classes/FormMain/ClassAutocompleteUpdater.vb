@@ -1738,10 +1738,6 @@ Public Class ClassAutocompleteUpdater
                     Dim sFullName As String
                     Dim sName As String
 
-                    Dim iBraceList As Integer()()
-
-                    Dim sBraceText As String
-
                     Using mSR As New IO.StringReader(mParseInfo.sSource)
                         While True
                             sLine = mSR.ReadLine
@@ -1753,7 +1749,7 @@ Public Class ClassAutocompleteUpdater
                                 Continue While
                             End If
 
-                            mMatch = Regex.Match(sLine, "(?<FullDefine>^\s*#define\s+(?<Name>\b[a-zA-Z0-9_]+\b)\s*)(?<Arguments>\()*")
+                            mMatch = Regex.Match(sLine, "(?<FullDefine>^\s*#define\s+(?<Name>\b[a-zA-Z0-9_]+\b))")
                             If (Not mMatch.Success) Then
                                 Continue While
                             End If
@@ -1762,22 +1758,8 @@ Public Class ClassAutocompleteUpdater
                             sName = mMatch.Groups("Name").Value
                             sFullDefine = mMatch.Groups("FullDefine").Value
 
-                            If (mMatch.Groups("Arguments").Success) Then
-                                iBraceList = mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(sLine, "("c, ")"c, 1, mParseInfo.iLanguage, True)
-                                If (iBraceList.Length < 1) Then
-                                    Continue While
-                                End If
-
-                                sBraceText = sLine.Substring(iBraceList(0)(0), iBraceList(0)(1) - iBraceList(0)(0) + 1)
-
-                                sFullDefine = Regex.Match(sLine, String.Format("{0}{1}(.*?)$", Regex.Escape(sFullDefine), Regex.Escape(sBraceText))).Value
-                                sFullName = sFullDefine
-                            Else
-                                sBraceText = ""
-
-                                sFullDefine = Regex.Match(sLine, String.Format("{0}(.*?)$", Regex.Escape(sFullDefine))).Value
-                                sFullName = sFullDefine
-                            End If
+                            sFullDefine = Regex.Match(sLine, String.Format("{0}(.*?)$", Regex.Escape(sFullDefine))).Value
+                            sFullName = sFullDefine
 
                             sFullName = sFullName.Replace(vbTab, " ")
 
@@ -1790,7 +1772,6 @@ Public Class ClassAutocompleteUpdater
                                                                                         sFullName)
 
                             mAutocomplete.m_Data("DefineName") = sName
-                            mAutocomplete.m_Data("DefineArguments") = sBraceText
 
 #If DEBUG Then
                             mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Get Defines"
