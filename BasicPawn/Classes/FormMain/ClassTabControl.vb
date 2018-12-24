@@ -1211,26 +1211,87 @@ Public Class ClassTabControl
                                 iLineLen = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iOffset).Length
                                 iLineNum = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iOffset).LineNumber
 
-                                'Only analize from 0 to offset, saves performance.
-                                Dim sOffsetText As String = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetText(0, iOffset)
-                                Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sOffsetText, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language, True)
+                                Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(g_mSourceTextEditor.ActiveTextAreaControl.Document.TextContent, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language, True)
 
                                 'Generate full function if the caret is out of scope, not inside a array/method and not in preprocessor.
                                 Dim bGenerateFull As Boolean = True
+                                Dim bGenerateSingle As Boolean = False
+                                Dim bGenerateSingleBraceLoc As Integer = 0
 
-                                If (mSourceAnalysis.m_MaxLength - 1 > -1) Then
+                                If (iOffset - 1 > -1) Then
                                     Dim iStateRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
-                                    Dim bInBrace As Boolean = (mSourceAnalysis.GetBraceLevel(mSourceAnalysis.m_MaxLength - 1, iStateRange) > 0 AndAlso iStateRange <> ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END)
-                                    Dim bInBracket As Boolean = (mSourceAnalysis.GetBracketLevel(mSourceAnalysis.m_MaxLength - 1, iStateRange) > 0 AndAlso iStateRange <> ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END)
-                                    Dim bInParenthesis As Boolean = (mSourceAnalysis.GetParenthesisLevel(mSourceAnalysis.m_MaxLength - 1, iStateRange) > 0 AndAlso iStateRange <> ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END)
-                                    Dim bInPreprocessor As Boolean = mSourceAnalysis.m_InPreprocessor(mSourceAnalysis.m_MaxLength - 1)
+                                    Dim bInBrace As Boolean = (mSourceAnalysis.GetBraceLevel(iOffset - 1, iStateRange) > 0 AndAlso iStateRange <> ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END)
+                                    Dim bInBracket As Boolean = (mSourceAnalysis.GetBracketLevel(iOffset - 1, iStateRange) > 0 AndAlso iStateRange <> ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END)
+                                    Dim bInParenthesis As Boolean = (mSourceAnalysis.GetParenthesisLevel(iOffset - 1, iStateRange) > 0 AndAlso iStateRange <> ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END)
+                                    Dim bInPreprocessor As Boolean = mSourceAnalysis.m_InPreprocessor(iOffset - 1)
 
                                     bGenerateFull = (Not bInBrace AndAlso Not bInBracket AndAlso Not bInParenthesis AndAlso Not bInPreprocessor)
                                 End If
 
+                                'Check for function starting brace. If found, only replace line if needed.
+                                If (True) Then
+                                    Dim bBraceFound As Boolean = False
+
+                                    'Search backwards
+                                    For i = iLineOffset + iLineLen - 1 To iLineOffset Step -1
+                                        If (mSourceAnalysis.m_InNonCode(i)) Then
+                                            Continue For
+                                        End If
+
+                                        Dim iChar As Char = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetCharAt(i)
+
+                                        If (Char.IsWhiteSpace(iChar)) Then
+                                            Continue For
+                                        End If
+
+                                        If (iChar = "{"c) Then
+                                            bBraceFound = True
+                                            bGenerateSingleBraceLoc = -1
+                                        End If
+
+                                        Exit For
+                                    Next
+
+                                    'Search forward
+                                    For i = iLineOffset + iLineLen To g_mSourceTextEditor.ActiveTextAreaControl.Document.TextLength - 1
+                                        If (mSourceAnalysis.m_InNonCode(i)) Then
+                                            Continue For
+                                        End If
+
+                                        Dim iChar As Char = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetCharAt(i)
+
+                                        If (Char.IsWhiteSpace(iChar)) Then
+                                            Continue For
+                                        End If
+
+                                        If (iChar = "{"c) Then
+                                            bBraceFound = True
+                                            bGenerateSingleBraceLoc = 1
+                                        End If
+
+                                        Exit For
+                                    Next
+
+                                    bGenerateSingle = bBraceFound
+                                End If
+
                                 Select Case (True)
                                     Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD) <> 0
-                                        If (bGenerateFull) Then
+                                        If (bGenerateSingle) Then
+                                            Dim iLineOffsetNum As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Offset
+                                            Dim iLineLenNum As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Length
+                                            g_mSourceTextEditor.ActiveTextAreaControl.Document.Remove(iLineOffsetNum, iLineLenNum)
+
+                                            Dim sIndentation As String = ClassSettings.BuildIndentation(1, ClassSettings.ENUM_INDENTATION_TYPES.USE_SETTINGS)
+
+                                            Dim sNewInput As String = "public " & mAutocomplete.m_FullFunctionString.Remove(0, "forward".Length).Trim & If(bGenerateSingleBraceLoc = -1, " {", "")
+
+                                            g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iLineOffsetNum, sNewInput)
+
+                                            iPosition = g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column
+                                            g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = iPosition + sNewInput.Length
+
+                                        ElseIf (bGenerateFull) Then
                                             Dim iLineOffsetNum As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Offset
                                             Dim iLineLenNum As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Length
                                             g_mSourceTextEditor.ActiveTextAreaControl.Document.Remove(iLineOffsetNum, iLineLenNum)
@@ -1262,7 +1323,21 @@ Public Class ClassTabControl
                                              (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG) <> 0,
                                              (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) <> 0,
                                              (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF) <> 0
-                                        If (bGenerateFull) Then
+                                        If (bGenerateSingle) Then
+                                            Dim iLineOffsetNum As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Offset
+                                            Dim iLineLenNum As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Length
+                                            g_mSourceTextEditor.ActiveTextAreaControl.Document.Remove(iLineOffsetNum, iLineLenNum)
+
+                                            Dim sIndentation As String = ClassSettings.BuildIndentation(1, ClassSettings.ENUM_INDENTATION_TYPES.USE_SETTINGS)
+
+                                            Dim sNewInput As String = mAutocomplete.m_FunctionString.Trim & If(bGenerateSingleBraceLoc = -1, " {", "")
+
+                                            g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iLineOffsetNum, sNewInput)
+
+                                            iPosition = g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column
+                                            g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = iPosition + sNewInput.Length
+
+                                        ElseIf (bGenerateFull) Then
                                             Dim iLineOffsetNum As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Offset
                                             Dim iLineLenNum As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Length
                                             g_mSourceTextEditor.ActiveTextAreaControl.Document.Remove(iLineOffsetNum, iLineLenNum)
