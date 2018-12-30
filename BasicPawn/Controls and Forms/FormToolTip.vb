@@ -39,6 +39,7 @@ Public Class FormToolTip
         TextEditorControl_ToolTip.ActiveTextAreaControl.AutoSize = False
         TextEditorControl_ToolTip.ActiveTextAreaControl.HScrollBar.Visible = False
         TextEditorControl_ToolTip.ActiveTextAreaControl.VScrollBar.Visible = False
+        TextEditorControl_ToolTip.ActiveTextAreaControl.DoHandleMousewheel = False
 
         'Fix shitty disabled scrollbars side effects...
         If (True) Then
@@ -55,17 +56,6 @@ Public Class FormToolTip
 
             TextEditorControl_ToolTip.Width += SystemInformation.VerticalScrollBarWidth
             TextEditorControl_ToolTip.Height += SystemInformation.HorizontalScrollBarHeight
-        End If
-
-        If (ClassTools.ClassOperatingSystem.GetWineVersion Is Nothing) Then
-            'Block the Text Editor, but still make it visible
-            Dim mAlphaPanel As New ClassPanelAlpha With {
-                .Parent = Me,
-                .Dock = DockStyle.Fill,
-                .m_Opacity = 0,
-                .m_TransparentBackColor = Color.White
-            }
-            mAlphaPanel.BringToFront()
         End If
 
         ClassTools.ClassForms.SetDoubleBufferingAllChilds(Me, True)
@@ -96,12 +86,6 @@ Public Class FormToolTip
             Timer_Move.Interval = g_iIdleSpeed
         End If
     End Sub
-
-    Protected Overrides ReadOnly Property ShowWithoutActivation As Boolean
-        Get
-            Return True
-        End Get
-    End Property
 
     Protected Overrides Sub OnVisibleChanged(e As EventArgs)
         MyBase.OnVisibleChanged(e)
@@ -165,4 +149,44 @@ Public Class FormToolTip
         Me.ResumeLayout()
         Me.Refresh()
     End Sub
+
+#Region "Form focus"
+    Protected Overrides ReadOnly Property ShowWithoutActivation As Boolean
+        Get
+            Return True
+        End Get
+    End Property
+
+    Const WS_EX_NOACTIVATE As Integer = &H8000000
+    Const WS_EX_TOOLWINDOW As Integer = &H80
+
+    Protected Overrides ReadOnly Property CreateParams As CreateParams
+        Get
+            Dim baseParams As CreateParams = MyBase.CreateParams
+            baseParams.ExStyle = baseParams.ExStyle Or (WS_EX_NOACTIVATE Or WS_EX_TOOLWINDOW)
+            Return baseParams
+        End Get
+    End Property
+
+    Const WM_MOUSEACTIVATE As Integer = &H21
+    Const MA_NOACTIVATEANDEAT As Integer = &H4
+
+    Const WM_SETFOCUS As Integer = &H7
+    Const WM_KILLFOCUS As Integer = &H8
+
+    Protected Overrides Sub WndProc(ByRef m As Message)
+        Select Case (m.Msg)
+            Case WM_SETFOCUS
+                m.Msg = WM_KILLFOCUS
+                MyBase.WndProc(m)
+
+            Case WM_MOUSEACTIVATE
+                m.Result = New IntPtr(MA_NOACTIVATEANDEAT)
+                Return
+
+            Case Else
+                MyBase.WndProc(m)
+        End Select
+    End Sub
+#End Region
 End Class
