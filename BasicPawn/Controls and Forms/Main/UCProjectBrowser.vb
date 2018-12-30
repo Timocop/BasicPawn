@@ -402,22 +402,14 @@ Public Class UCProjectBrowser
                         Throw New ArgumentException(String.Format("File '{0}' does not exist", mInfo.sFile))
                     End If
 
-                    Dim bFound As Boolean = False
-                    For i = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1
-                        If (Not g_mFormMain.g_ClassTabControl.m_Tab(i).m_IsUnsaved AndAlso g_mFormMain.g_ClassTabControl.m_Tab(i).m_File.ToLower = mInfo.sFile.ToLower) Then
-                            If (g_mFormMain.g_ClassTabControl.m_ActiveTabIndex <> i) Then
-                                g_mFormMain.g_ClassTabControl.SelectTab(i)
-                            End If
+                    Dim mTab = g_mFormMain.g_ClassTabControl.GetTabByFile(mInfo.sFile)
+                    If (mTab IsNot Nothing) Then
+                        mTab.SelectTab(500)
 
-                            bFound = True
-                            Exit For
-                        End If
-                    Next
-                    If (bFound) Then
                         Continue For
                     End If
 
-                    Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
+                    mTab = g_mFormMain.g_ClassTabControl.AddTab()
                     mTab.OpenFileTab(mInfo.sFile)
                     mTab.SelectTab(500)
                 Next
@@ -564,17 +556,14 @@ Public Class UCProjectBrowser
                 Throw New ArgumentException(String.Format("File '{0}' does not exist", mInfo.sFile))
             End If
 
-            For i = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1
-                If (Not g_mFormMain.g_ClassTabControl.m_Tab(i).m_IsUnsaved AndAlso g_mFormMain.g_ClassTabControl.m_Tab(i).m_File.ToLower = mInfo.sFile.ToLower) Then
-                    If (g_mFormMain.g_ClassTabControl.m_ActiveTabIndex <> i) Then
-                        g_mFormMain.g_ClassTabControl.SelectTab(i)
-                    End If
+            Dim mTab = g_mFormMain.g_ClassTabControl.GetTabByFile(mInfo.sFile)
+            If (mTab IsNot Nothing) Then
+                mTab.SelectTab(500)
 
-                    Return
-                End If
-            Next
+                Return
+            End If
 
-            Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
+            mTab = g_mFormMain.g_ClassTabControl.AddTab()
             mTab.OpenFileTab(mInfo.sFile)
             mTab.SelectTab()
 

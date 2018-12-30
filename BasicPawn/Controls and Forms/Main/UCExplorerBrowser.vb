@@ -101,14 +101,46 @@ Public Class UCExplorerBrowser
     End Sub
 
     Private Sub ListView_ExplorerFiles_DoubleClick(sender As Object, e As EventArgs) Handles ListView_ExplorerFiles.DoubleClick
-        OpenSelectedExplorer()
+        Try
+            If (ListView_ExplorerFiles.SelectedItems.Count < 1) Then
+                Return
+            End If
+
+            Dim mListViewItemData = TryCast(ListView_ExplorerFiles.SelectedItems(0), ClassListViewItemData)
+            If (mListViewItemData Is Nothing) Then
+                Return
+            End If
+
+            Dim sPath As String = CStr(mListViewItemData.g_mData("Path"))
+            If (String.IsNullOrEmpty(sPath)) Then
+                Throw New IO.DirectoryNotFoundException("Invalid path")
+            End If
+
+            Select Case (True)
+                Case IO.File.Exists(sPath)
+                    Dim mTab = g_mFormMain.g_ClassTabControl.GetTabByFile(sPath)
+                    If (mTab IsNot Nothing) Then
+                        mTab.SelectTab()
+
+                        Return
+                    End If
+
+                    mTab = g_mFormMain.g_ClassTabControl.AddTab()
+                    mTab.OpenFileTab(sPath)
+                    mTab.SelectTab()
+
+                Case IO.Directory.Exists(sPath)
+                    GoToExplorer(sPath)
+
+                Case Else
+                    Throw New IO.DirectoryNotFoundException("Invalid path")
+            End Select
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
     End Sub
 
     Private Sub ToolStripMenuItem_OpenFile_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_OpenFile.Click
-        OpenSelectedExplorer()
-    End Sub
-
-    Public Sub OpenSelectedExplorer()
         Try
             If (ListView_ExplorerFiles.SelectedItems.Count < 1) Then
                 Return
@@ -131,8 +163,9 @@ Public Class UCExplorerBrowser
                     Select Case (True)
                         Case IO.File.Exists(sPath)
                             Dim mTab = g_mFormMain.g_ClassTabControl.GetTabByFile(sPath)
-                            If (mTab IsNot Nothing AndAlso Not mTab.m_IsActive) Then
+                            If (mTab IsNot Nothing) Then
                                 mTab.SelectTab(500)
+
                                 Continue For
                             End If
 
