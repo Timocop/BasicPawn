@@ -123,7 +123,6 @@ Partial Class UCExplorerBrowser
         Me.ToolStripTextBox_Path.Name = "ToolStripTextBox_Path"
         Me.ToolStripTextBox_Path.ReadOnly = True
         Me.ToolStripTextBox_Path.Size = New System.Drawing.Size(100, 24)
-        Me.ToolStripTextBox_Path.TextBoxTextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'TextboxWatermark_Search
         '
