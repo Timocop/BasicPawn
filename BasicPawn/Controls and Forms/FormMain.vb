@@ -35,6 +35,7 @@ Public Class FormMain
     Public g_mUCInformationList As UCInformationList
     Public g_mUCObjectBrowser As UCObjectBrowser
     Public g_mUCProjectBrowser As UCProjectBrowser
+    Public g_mUCExplorerBrowser As UCExplorerBrowser
     Public g_mFormToolTip As FormToolTip
     Public g_mFormDebugger As FormDebugger
     Public g_mFormOpenTabFromInstances As FormOpenTabFromInstances
@@ -207,6 +208,12 @@ Public Class FormMain
             .Dock = DockStyle.Fill
         }
         g_mUCProjectBrowser.Show()
+
+        g_mUCExplorerBrowser = New UCExplorerBrowser(Me) With {
+            .Parent = TabPage_ExplorerBrowser,
+            .Dock = DockStyle.Fill
+        }
+        g_mUCExplorerBrowser.Show()
 
         g_mFormToolTip = New FormToolTip(Me) With {
             .Owner = Me

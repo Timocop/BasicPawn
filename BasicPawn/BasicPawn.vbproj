@@ -348,6 +348,12 @@
     <Compile Include="Controls and Forms\Main\Classes\ClassAutocompleteListBox.vb">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls and Forms\Main\UCExplorerBrowser.Designer.vb">
+      <DependentUpon>UCExplorerBrowser.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controls and Forms\Main\UCExplorerBrowser.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Controls and Forms\StartPage\Classes\ClassRecentListBox.vb">
       <SubType>Component</SubType>
     </Compile>
@@ -470,6 +476,9 @@
     <EmbeddedResource Include="Controls and Forms\FormUpdate.resx">
       <DependentUpon>FormUpdate.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls and Forms\Main\UCExplorerBrowser.resx">
+      <DependentUpon>UCExplorerBrowser.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls and Forms\StartPage\UCStartPage.resx">
       <DependentUpon>UCStartPage.vb</DependentUpon>
     </EmbeddedResource>
@@ -588,6 +597,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="BasicPawnIcon.ico" />
+    <None Include="Resources\imageres_5325_16x16-32.png" />
     <None Include="Resources\IntelliSenseVariable_32x.png" />
     <None Include="Resources\IntelliSenseString_32x.png" />
     <None Include="Resources\IntelliSenseProperty_32x.png" />

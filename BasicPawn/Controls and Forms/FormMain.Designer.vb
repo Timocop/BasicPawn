@@ -47,6 +47,10 @@ Partial Class FormMain
         Me.ToolStripMenuItem_DebuggerWatcherInsert = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_DebuggerWatcherRemove = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_DebuggerWatcherRemoveAll = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_DebuggerAsserts = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_DebuggerAssertInsert = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_DebuggerAssertRemove = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_DebuggerAssertRemoveAll = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_HightlightCustom = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Comment = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator11 = New System.Windows.Forms.ToolStripSeparator()
@@ -136,8 +140,9 @@ Partial Class FormMain
         Me.SplitContainer_ToolboxSourceAndDetails = New System.Windows.Forms.SplitContainer()
         Me.SplitContainer_ToolboxAndEditor = New System.Windows.Forms.SplitContainer()
         Me.TabControl_Toolbox = New BasicPawn.ClassTabControlColor()
-        Me.TabPage_ObjectBrowser = New System.Windows.Forms.TabPage()
+        Me.TabPage_ExplorerBrowser = New System.Windows.Forms.TabPage()
         Me.TabPage_ProjectBrowser = New System.Windows.Forms.TabPage()
+        Me.TabPage_ObjectBrowser = New System.Windows.Forms.TabPage()
         Me.TabControl_SourceTabs = New BasicPawn.ClassTabControlColor()
         Me.ContextMenuStrip_Tabs = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.ToolStripMenuItem_Tabs_Close = New System.Windows.Forms.ToolStripMenuItem()
@@ -168,10 +173,6 @@ Partial Class FormMain
         Me.ContextMenuStrip_Config = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.ToolStripMenuItem_EditConfigActiveTab = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_EditConfigAllTabs = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripMenuItem_DebuggerAsserts = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripMenuItem_DebuggerAssertInsert = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripMenuItem_DebuggerAssertRemove = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripMenuItem_DebuggerAssertRemoveAll = New System.Windows.Forms.ToolStripMenuItem()
         Me.ContextMenuStrip_RightClick.SuspendLayout()
         Me.MenuStrip_BasicPawn.SuspendLayout()
         Me.SplitContainer_ToolboxSourceAndDetails.Panel1.SuspendLayout()
@@ -193,7 +194,7 @@ Partial Class FormMain
         Me.ContextMenuStrip_RightClick.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_Mark, Me.ToolStripMenuItem_ListReferences, Me.ToolStripSeparator6, Me.ToolStripMenuItem_Cut, Me.ToolStripMenuItem_Copy, Me.ToolStripMenuItem_Paste, Me.ToolStripMenuItem_Delete, Me.ToolStripMenuItem_SelectAll, Me.ToolStripSeparator1, Me.ToolStripMenuItem_Debugger, Me.ToolStripMenuItem_HightlightCustom, Me.ToolStripMenuItem_Comment, Me.ToolStripSeparator11, Me.ToolStripMenuItem_Outline})
         Me.ContextMenuStrip_RightClick.Name = "ContextMenuStrip1"
         Me.ContextMenuStrip_RightClick.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
-        Me.ContextMenuStrip_RightClick.Size = New System.Drawing.Size(187, 286)
+        Me.ContextMenuStrip_RightClick.Size = New System.Drawing.Size(187, 264)
         '
         'ToolStripMenuItem_Mark
         '
@@ -266,7 +267,7 @@ Partial Class FormMain
         '
         Me.ToolStripMenuItem_DebuggerBreakpoints.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_DebuggerBreakpointInsert, Me.ToolStripMenuItem_DebuggerBreakpointRemove, Me.ToolStripMenuItem_DebuggerBreakpointRemoveAll})
         Me.ToolStripMenuItem_DebuggerBreakpoints.Name = "ToolStripMenuItem_DebuggerBreakpoints"
-        Me.ToolStripMenuItem_DebuggerBreakpoints.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_DebuggerBreakpoints.Size = New System.Drawing.Size(136, 22)
         Me.ToolStripMenuItem_DebuggerBreakpoints.Text = "Breakpoints"
         '
         'ToolStripMenuItem_DebuggerBreakpointInsert
@@ -291,7 +292,7 @@ Partial Class FormMain
         '
         Me.ToolStripMenuItem_DebuggerWatchers.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_DebuggerWatcherInsert, Me.ToolStripMenuItem_DebuggerWatcherRemove, Me.ToolStripMenuItem_DebuggerWatcherRemoveAll})
         Me.ToolStripMenuItem_DebuggerWatchers.Name = "ToolStripMenuItem_DebuggerWatchers"
-        Me.ToolStripMenuItem_DebuggerWatchers.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_DebuggerWatchers.Size = New System.Drawing.Size(136, 22)
         Me.ToolStripMenuItem_DebuggerWatchers.Text = "Watchers"
         '
         'ToolStripMenuItem_DebuggerWatcherInsert
@@ -311,6 +312,31 @@ Partial Class FormMain
         Me.ToolStripMenuItem_DebuggerWatcherRemoveAll.Name = "ToolStripMenuItem_DebuggerWatcherRemoveAll"
         Me.ToolStripMenuItem_DebuggerWatcherRemoveAll.Size = New System.Drawing.Size(182, 22)
         Me.ToolStripMenuItem_DebuggerWatcherRemoveAll.Text = "Remove all watchers"
+        '
+        'ToolStripMenuItem_DebuggerAsserts
+        '
+        Me.ToolStripMenuItem_DebuggerAsserts.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_DebuggerAssertInsert, Me.ToolStripMenuItem_DebuggerAssertRemove, Me.ToolStripMenuItem_DebuggerAssertRemoveAll})
+        Me.ToolStripMenuItem_DebuggerAsserts.Name = "ToolStripMenuItem_DebuggerAsserts"
+        Me.ToolStripMenuItem_DebuggerAsserts.Size = New System.Drawing.Size(136, 22)
+        Me.ToolStripMenuItem_DebuggerAsserts.Text = "Asserts"
+        '
+        'ToolStripMenuItem_DebuggerAssertInsert
+        '
+        Me.ToolStripMenuItem_DebuggerAssertInsert.Name = "ToolStripMenuItem_DebuggerAssertInsert"
+        Me.ToolStripMenuItem_DebuggerAssertInsert.Size = New System.Drawing.Size(170, 22)
+        Me.ToolStripMenuItem_DebuggerAssertInsert.Text = "Insert assert"
+        '
+        'ToolStripMenuItem_DebuggerAssertRemove
+        '
+        Me.ToolStripMenuItem_DebuggerAssertRemove.Name = "ToolStripMenuItem_DebuggerAssertRemove"
+        Me.ToolStripMenuItem_DebuggerAssertRemove.Size = New System.Drawing.Size(170, 22)
+        Me.ToolStripMenuItem_DebuggerAssertRemove.Text = "Remove assert"
+        '
+        'ToolStripMenuItem_DebuggerAssertRemoveAll
+        '
+        Me.ToolStripMenuItem_DebuggerAssertRemoveAll.Name = "ToolStripMenuItem_DebuggerAssertRemoveAll"
+        Me.ToolStripMenuItem_DebuggerAssertRemoveAll.Size = New System.Drawing.Size(170, 22)
+        Me.ToolStripMenuItem_DebuggerAssertRemoveAll.Text = "Remove all asserts"
         '
         'ToolStripMenuItem_HightlightCustom
         '
@@ -988,14 +1014,34 @@ Partial Class FormMain
         '
         Me.TabControl_Toolbox.Controls.Add(Me.TabPage_ObjectBrowser)
         Me.TabControl_Toolbox.Controls.Add(Me.TabPage_ProjectBrowser)
+        Me.TabControl_Toolbox.Controls.Add(Me.TabPage_ExplorerBrowser)
         Me.TabControl_Toolbox.Dock = System.Windows.Forms.DockStyle.Fill
         Me.TabControl_Toolbox.Location = New System.Drawing.Point(0, 0)
         Me.TabControl_Toolbox.Margin = New System.Windows.Forms.Padding(0)
+        Me.TabControl_Toolbox.Multiline = True
         Me.TabControl_Toolbox.Name = "TabControl_Toolbox"
         Me.TabControl_Toolbox.Padding = New System.Drawing.Point(0, 0)
         Me.TabControl_Toolbox.SelectedIndex = 0
         Me.TabControl_Toolbox.Size = New System.Drawing.Size(200, 500)
         Me.TabControl_Toolbox.TabIndex = 0
+        '
+        'TabPage_ExplorerBrowser
+        '
+        Me.TabPage_ExplorerBrowser.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage_ExplorerBrowser.Name = "TabPage_ExplorerBrowser"
+        Me.TabPage_ExplorerBrowser.Size = New System.Drawing.Size(192, 474)
+        Me.TabPage_ExplorerBrowser.TabIndex = 2
+        Me.TabPage_ExplorerBrowser.Text = "Explorer"
+        Me.TabPage_ExplorerBrowser.UseVisualStyleBackColor = True
+        '
+        'TabPage_ProjectBrowser
+        '
+        Me.TabPage_ProjectBrowser.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage_ProjectBrowser.Name = "TabPage_ProjectBrowser"
+        Me.TabPage_ProjectBrowser.Size = New System.Drawing.Size(192, 474)
+        Me.TabPage_ProjectBrowser.TabIndex = 1
+        Me.TabPage_ProjectBrowser.Text = "Project"
+        Me.TabPage_ProjectBrowser.UseVisualStyleBackColor = True
         '
         'TabPage_ObjectBrowser
         '
@@ -1006,15 +1052,6 @@ Partial Class FormMain
         Me.TabPage_ObjectBrowser.TabIndex = 0
         Me.TabPage_ObjectBrowser.Text = "Object Browser"
         Me.TabPage_ObjectBrowser.UseVisualStyleBackColor = True
-        '
-        'TabPage_ProjectBrowser
-        '
-        Me.TabPage_ProjectBrowser.Location = New System.Drawing.Point(4, 22)
-        Me.TabPage_ProjectBrowser.Name = "TabPage_ProjectBrowser"
-        Me.TabPage_ProjectBrowser.Size = New System.Drawing.Size(192, 474)
-        Me.TabPage_ProjectBrowser.TabIndex = 1
-        Me.TabPage_ProjectBrowser.Text = "Project Browser"
-        Me.TabPage_ProjectBrowser.UseVisualStyleBackColor = True
         '
         'TabControl_SourceTabs
         '
@@ -1238,31 +1275,6 @@ Partial Class FormMain
         Me.ToolStripMenuItem_EditConfigAllTabs.Size = New System.Drawing.Size(208, 22)
         Me.ToolStripMenuItem_EditConfigAllTabs.Text = "Change config for all tabs..."
         '
-        'ToolStripMenuItem_DebuggerAsserts
-        '
-        Me.ToolStripMenuItem_DebuggerAsserts.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_DebuggerAssertInsert, Me.ToolStripMenuItem_DebuggerAssertRemove, Me.ToolStripMenuItem_DebuggerAssertRemoveAll})
-        Me.ToolStripMenuItem_DebuggerAsserts.Name = "ToolStripMenuItem_DebuggerAsserts"
-        Me.ToolStripMenuItem_DebuggerAsserts.Size = New System.Drawing.Size(180, 22)
-        Me.ToolStripMenuItem_DebuggerAsserts.Text = "Asserts"
-        '
-        'ToolStripMenuItem_DebuggerAssertInsert
-        '
-        Me.ToolStripMenuItem_DebuggerAssertInsert.Name = "ToolStripMenuItem_DebuggerAssertInsert"
-        Me.ToolStripMenuItem_DebuggerAssertInsert.Size = New System.Drawing.Size(180, 22)
-        Me.ToolStripMenuItem_DebuggerAssertInsert.Text = "Insert assert"
-        '
-        'ToolStripMenuItem_DebuggerAssertRemove
-        '
-        Me.ToolStripMenuItem_DebuggerAssertRemove.Name = "ToolStripMenuItem_DebuggerAssertRemove"
-        Me.ToolStripMenuItem_DebuggerAssertRemove.Size = New System.Drawing.Size(180, 22)
-        Me.ToolStripMenuItem_DebuggerAssertRemove.Text = "Remove assert"
-        '
-        'ToolStripMenuItem_DebuggerAssertRemoveAll
-        '
-        Me.ToolStripMenuItem_DebuggerAssertRemoveAll.Name = "ToolStripMenuItem_DebuggerAssertRemoveAll"
-        Me.ToolStripMenuItem_DebuggerAssertRemoveAll.Size = New System.Drawing.Size(180, 22)
-        Me.ToolStripMenuItem_DebuggerAssertRemoveAll.Text = "Remove all asserts"
-        '
         'FormMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -1443,4 +1455,5 @@ Partial Class FormMain
     Friend WithEvents ToolStripMenuItem_DebuggerAssertInsert As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_DebuggerAssertRemove As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_DebuggerAssertRemoveAll As ToolStripMenuItem
+    Friend WithEvents TabPage_ExplorerBrowser As TabPage
 End Class
