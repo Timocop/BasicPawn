@@ -169,7 +169,7 @@ Public Class UCStartPage
                         Else
                             Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
                             mTab.OpenFileTab(mRecentItems(i).m_RecentFile)
-                            mTab.SelectTab(500)
+                            mTab.SelectTab(ClassTabControl.DEFAULT_SELECT_TAB_DELAY)
                         End If
                     Catch ex As Exception
                         ClassExceptionLog.WriteToLogMessageBox(ex)
@@ -221,7 +221,7 @@ Public Class UCStartPage
                     Else
                         Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
                         mTab.OpenFileTab(mRecentItems(i).m_RecentFile)
-                        mTab.SelectTab(500)
+                        mTab.SelectTab(ClassTabControl.DEFAULT_SELECT_TAB_DELAY)
                     End If
                 Catch ex As Exception
                     ClassExceptionLog.WriteToLogMessageBox(ex)

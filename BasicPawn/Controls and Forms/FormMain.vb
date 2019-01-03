@@ -603,7 +603,7 @@ Public Class FormMain
                             Try
                                 Dim mTab = g_ClassTabControl.AddTab()
                                 mTab.OpenFileTab(sFile)
-                                mTab.SelectTab(500)
+                                mTab.SelectTab(ClassTabControl.DEFAULT_SELECT_TAB_DELAY)
                             Catch ex As Exception
                                 ClassExceptionLog.WriteToLogMessageBox(ex)
                             End Try
@@ -1540,7 +1540,7 @@ Public Class FormMain
                                                   Try
                                                       Dim mTab = g_ClassTabControl.AddTab()
                                                       mTab.OpenFileTab(sFile)
-                                                      mTab.SelectTab(500)
+                                                      mTab.SelectTab(ClassTabControl.DEFAULT_SELECT_TAB_DELAY)
                                                   Catch ex As Exception
                                                       ClassExceptionLog.WriteToLogMessageBox(ex)
                                                   End Try

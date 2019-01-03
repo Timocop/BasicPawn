@@ -37,6 +37,8 @@ Public Class ClassTabControl
 
     Private Shared g_sFoldingsConfig As String = IO.Path.Combine(Application.StartupPath, "foldings.ini")
 
+    Public Const DEFAULT_SELECT_TAB_DELAY = 100
+
 
     Public Sub New(f As FormMain)
         g_mFormMain = f
@@ -1148,7 +1150,7 @@ Public Class ClassTabControl
 
                         Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
                         mTab.OpenFileTab(sFile)
-                        mTab.SelectTab(500)
+                        mTab.SelectTab(ClassTabControl.DEFAULT_SELECT_TAB_DELAY)
                     Next
                 Finally
                     g_mFormMain.g_ClassTabControl.EndUpdate()

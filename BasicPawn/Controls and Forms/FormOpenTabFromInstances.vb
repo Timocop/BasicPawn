@@ -135,7 +135,7 @@ Public Class FormOpenTabFromInstances
                 Else
                     Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
                     mTab.OpenFileTab(mTabInfo.Value.sTabFile)
-                    mTab.SelectTab(500)
+                    mTab.SelectTab(ClassTabControl.DEFAULT_SELECT_TAB_DELAY)
                 End If
 
                 If (bCloseTabs) Then

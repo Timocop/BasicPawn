@@ -162,11 +162,11 @@ Public Class UCExplorerBrowser
                         Case IO.File.Exists(sPath)
                             Dim mTab = g_mFormMain.g_ClassTabControl.GetTabByFile(sPath)
                             If (mTab IsNot Nothing) Then
-                                mTab.SelectTab(500)
+                                mTab.SelectTab(ClassTabControl.DEFAULT_SELECT_TAB_DELAY)
                             Else
                                 mTab = g_mFormMain.g_ClassTabControl.AddTab()
                                 mTab.OpenFileTab(sPath)
-                                mTab.SelectTab(500)
+                                mTab.SelectTab(ClassTabControl.DEFAULT_SELECT_TAB_DELAY)
                             End If
 
                         Case IO.Directory.Exists(sPath)

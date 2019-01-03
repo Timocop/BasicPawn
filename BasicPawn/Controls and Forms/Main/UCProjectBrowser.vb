@@ -404,11 +404,11 @@ Public Class UCProjectBrowser
 
                     Dim mTab = g_mFormMain.g_ClassTabControl.GetTabByFile(mInfo.sFile)
                     If (mTab IsNot Nothing) Then
-                        mTab.SelectTab(500)
+                        mTab.SelectTab(ClassTabControl.DEFAULT_SELECT_TAB_DELAY)
                     Else
                         mTab = g_mFormMain.g_ClassTabControl.AddTab()
                         mTab.OpenFileTab(mInfo.sFile)
-                        mTab.SelectTab(500)
+                        mTab.SelectTab(ClassTabControl.DEFAULT_SELECT_TAB_DELAY)
                     End If
 
                 Next

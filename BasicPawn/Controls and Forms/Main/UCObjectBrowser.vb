@@ -346,11 +346,11 @@ Public Class UCObjectBrowser
 
                     Dim mTab = g_mFormMain.g_ClassTabControl.GetTabByFile(CStr(mInclude.Value))
                     If (mTab IsNot Nothing) Then
-                        mTab.SelectTab(500)
+                        mTab.SelectTab(ClassTabControl.DEFAULT_SELECT_TAB_DELAY)
                     Else
                         mTab = g_mFormMain.g_ClassTabControl.AddTab()
                         mTab.OpenFileTab(CStr(mInclude.Value))
-                        mTab.SelectTab(500)
+                        mTab.SelectTab(ClassTabControl.DEFAULT_SELECT_TAB_DELAY)
                     End If
                 Next
             Finally
