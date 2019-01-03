@@ -121,13 +121,11 @@ Public Class UCExplorerBrowser
                     Dim mTab = g_mFormMain.g_ClassTabControl.GetTabByFile(sPath)
                     If (mTab IsNot Nothing) Then
                         mTab.SelectTab()
-
-                        Return
+                    Else
+                        mTab = g_mFormMain.g_ClassTabControl.AddTab()
+                        mTab.OpenFileTab(sPath)
+                        mTab.SelectTab()
                     End If
-
-                    mTab = g_mFormMain.g_ClassTabControl.AddTab()
-                    mTab.OpenFileTab(sPath)
-                    mTab.SelectTab()
 
                 Case IO.Directory.Exists(sPath)
                     GoToExplorer(sPath)
@@ -165,13 +163,11 @@ Public Class UCExplorerBrowser
                             Dim mTab = g_mFormMain.g_ClassTabControl.GetTabByFile(sPath)
                             If (mTab IsNot Nothing) Then
                                 mTab.SelectTab(500)
-
-                                Continue For
+                            Else
+                                mTab = g_mFormMain.g_ClassTabControl.AddTab()
+                                mTab.OpenFileTab(sPath)
+                                mTab.SelectTab(500)
                             End If
-
-                            mTab = g_mFormMain.g_ClassTabControl.AddTab()
-                            mTab.OpenFileTab(sPath)
-                            mTab.SelectTab(500)
 
                         Case IO.Directory.Exists(sPath)
                             GoToExplorer(sPath)

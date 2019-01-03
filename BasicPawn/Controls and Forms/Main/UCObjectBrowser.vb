@@ -336,30 +336,26 @@ Public Class UCObjectBrowser
                 Return
             End If
 
-            For Each mInclude As DictionaryEntry In g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IncludeFiles.ToArray
-                If (IO.Path.GetFileName(CStr(mInclude.Value)).ToLower <> TreeView_ObjectBrowser.SelectedNode.Text.ToLower) Then
-                    Continue For
-                End If
+            Try
+                g_mFormMain.g_ClassTabControl.BeginUpdate()
 
-                Dim bFound As Boolean = False
-                For i = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1
-                    If (Not g_mFormMain.g_ClassTabControl.m_Tab(i).m_IsUnsaved AndAlso g_mFormMain.g_ClassTabControl.m_Tab(i).m_File.ToLower = CStr(mInclude.Value).ToLower) Then
-                        If (g_mFormMain.g_ClassTabControl.m_ActiveTabIndex <> i) Then
-                            g_mFormMain.g_ClassTabControl.SelectTab(i)
-                        End If
+                For Each mInclude As DictionaryEntry In g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IncludeFiles.ToArray
+                    If (IO.Path.GetFileName(CStr(mInclude.Value)).ToLower <> TreeView_ObjectBrowser.SelectedNode.Text.ToLower) Then
+                        Continue For
+                    End If
 
-                        bFound = True
-                        Exit For
+                    Dim mTab = g_mFormMain.g_ClassTabControl.GetTabByFile(CStr(mInclude.Value))
+                    If (mTab IsNot Nothing) Then
+                        mTab.SelectTab(500)
+                    Else
+                        mTab = g_mFormMain.g_ClassTabControl.AddTab()
+                        mTab.OpenFileTab(CStr(mInclude.Value))
+                        mTab.SelectTab(500)
                     End If
                 Next
-                If (bFound) Then
-                    Continue For
-                End If
-
-                Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
-                mTab.OpenFileTab(CStr(mInclude.Value))
-                mTab.SelectTab(500)
-            Next
+            Finally
+                g_mFormMain.g_ClassTabControl.EndUpdate()
+            End Try
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try

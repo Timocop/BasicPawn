@@ -405,13 +405,12 @@ Public Class UCProjectBrowser
                     Dim mTab = g_mFormMain.g_ClassTabControl.GetTabByFile(mInfo.sFile)
                     If (mTab IsNot Nothing) Then
                         mTab.SelectTab(500)
-
-                        Continue For
+                    Else
+                        mTab = g_mFormMain.g_ClassTabControl.AddTab()
+                        mTab.OpenFileTab(mInfo.sFile)
+                        mTab.SelectTab(500)
                     End If
 
-                    mTab = g_mFormMain.g_ClassTabControl.AddTab()
-                    mTab.OpenFileTab(mInfo.sFile)
-                    mTab.SelectTab(500)
                 Next
 
                 g_mFormMain.g_ClassTabControl.RemoveUnsavedTabsLeft()
@@ -558,14 +557,12 @@ Public Class UCProjectBrowser
 
             Dim mTab = g_mFormMain.g_ClassTabControl.GetTabByFile(mInfo.sFile)
             If (mTab IsNot Nothing) Then
-                mTab.SelectTab(500)
-
-                Return
+                mTab.SelectTab()
+            Else
+                mTab = g_mFormMain.g_ClassTabControl.AddTab()
+                mTab.OpenFileTab(mInfo.sFile)
+                mTab.SelectTab()
             End If
-
-            mTab = g_mFormMain.g_ClassTabControl.AddTab()
-            mTab.OpenFileTab(mInfo.sFile)
-            mTab.SelectTab()
 
             g_mFormMain.g_ClassTabControl.RemoveUnsavedTabsLeft()
         Catch ex As Exception
