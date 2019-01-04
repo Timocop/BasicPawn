@@ -20,6 +20,8 @@ Public Class UCExplorerBrowser
     Private g_mFormMain As FormMain
     Private g_sExplorerPath As String = ""
 
+    Private g_bIgnoreCheckedChangedEvent As Boolean = False
+
     Property m_ExplorerPath As String
         Get
             Return g_sExplorerPath
@@ -42,6 +44,8 @@ Public Class UCExplorerBrowser
         ImageList_ExplorerBrowser.Images.Clear()
         ImageList_ExplorerBrowser.Images.Add("0", My.Resources.Ico_Rtf)
         ImageList_ExplorerBrowser.Images.Add("1", My.Resources.Ico_Folder)
+
+        LoadViews()
     End Sub
 
     Private Sub TextboxWatermark_Search_KeyDown(sender As Object, e As KeyEventArgs) Handles TextboxWatermark_Search.KeyDown
@@ -184,6 +188,20 @@ Public Class UCExplorerBrowser
         End Try
     End Sub
 
+    Private Sub ToolStripMenuItem_Filter_CheckedChanged(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Filter.CheckedChanged
+        If (g_bIgnoreCheckedChangedEvent) Then
+            Return
+        End If
+
+        Try
+            RefreshExplorer()
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+
+        SaveViews()
+    End Sub
+
     Public Sub GoToExplorer(sPath As String)
         If (String.IsNullOrEmpty(sPath)) Then
             Throw New ArgumentException("Path empty")
@@ -210,37 +228,51 @@ Public Class UCExplorerBrowser
             Throw New IO.DirectoryNotFoundException("Directory not found")
         End If
 
-        ListView_ExplorerFiles.BeginUpdate()
+        Dim bFilter As Boolean = ToolStripMenuItem_Filter.Checked
 
-        For Each sDirectory As String In IO.Directory.GetDirectories(m_ExplorerPath)
-            If (Not IO.Directory.Exists(sDirectory)) Then
-                Continue For
-            End If
+        Try
+            ListView_ExplorerFiles.BeginUpdate()
 
-            Dim sName As String = New IO.DirectoryInfo(sDirectory).Name
+            For Each sDirectory As String In IO.Directory.GetDirectories(m_ExplorerPath)
+                If (Not IO.Directory.Exists(sDirectory)) Then
+                    Continue For
+                End If
 
-            Dim mItem As New ClassListViewItemData(sName, "1")
+                Dim sName As String = New IO.DirectoryInfo(sDirectory).Name
 
-            mItem.g_mData("Path") = sDirectory
+                Dim mItem As New ClassListViewItemData(sName, "1")
 
-            ListView_ExplorerFiles.Items.Add(mItem)
-        Next
+                mItem.g_mData("Path") = sDirectory
 
-        For Each sFile As String In IO.Directory.GetFiles(m_ExplorerPath)
-            If (Not IO.File.Exists(sFile)) Then
-                Continue For
-            End If
+                ListView_ExplorerFiles.Items.Add(mItem)
+            Next
 
-            Dim sName As String = New IO.FileInfo(sFile).Name
+            For Each sFile As String In IO.Directory.GetFiles(m_ExplorerPath)
+                If (Not IO.File.Exists(sFile)) Then
+                    Continue For
+                End If
 
-            Dim mItem As New ClassListViewItemData(sName, "0")
+                If (bFilter) Then
+                    Select Case (IO.Path.GetExtension(sFile))
+                        Case ".sp", ".sma", ".p", ".pwn", ".inc"
+                            'Allow
 
-            mItem.g_mData("Path") = sFile
+                        Case Else
+                            Continue For
+                    End Select
+                End If
 
-            ListView_ExplorerFiles.Items.Add(mItem)
-        Next
+                Dim sName As String = New IO.FileInfo(sFile).Name
 
-        ListView_ExplorerFiles.EndUpdate()
+                Dim mItem As New ClassListViewItemData(sName, "0")
+
+                mItem.g_mData("Path") = sFile
+
+                ListView_ExplorerFiles.Items.Add(mItem)
+            Next
+        Finally
+            ListView_ExplorerFiles.EndUpdate()
+        End Try
     End Sub
 
     Public Sub HomeExplorer()
@@ -258,5 +290,36 @@ Public Class UCExplorerBrowser
         End If
 
         GoToExplorer(IO.Path.GetFullPath(IO.Path.Combine(m_ExplorerPath, "..")))
+    End Sub
+
+
+    Public Sub SaveViews()
+        If (String.IsNullOrEmpty(Me.Name)) Then
+            Return
+        End If
+
+        Using mStream = ClassFileStreamWait.Create(ClassSettings.g_sWindowInfoFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
+            Using mIni As New ClassIni(mStream)
+                Dim lContent As New List(Of ClassIni.STRUC_INI_CONTENT) From {
+                    New ClassIni.STRUC_INI_CONTENT(Me.Name, "FilterSourcesIncludes", If(ToolStripMenuItem_Filter.Checked, "1", "0"))
+                }
+
+                mIni.WriteKeyValue(lContent.ToArray)
+            End Using
+        End Using
+    End Sub
+
+    Public Sub LoadViews()
+        If (String.IsNullOrEmpty(Me.Name)) Then
+            Return
+        End If
+
+        Using mStream = ClassFileStreamWait.Create(ClassSettings.g_sWindowInfoFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
+            Using mIni As New ClassIni(mStream)
+                g_bIgnoreCheckedChangedEvent = True
+                ToolStripMenuItem_Filter.Checked = (mIni.ReadKeyValue(Me.Name, "FilterSourcesIncludes", "1") <> "0")
+                g_bIgnoreCheckedChangedEvent = False
+            End Using
+        End Using
     End Sub
 End Class

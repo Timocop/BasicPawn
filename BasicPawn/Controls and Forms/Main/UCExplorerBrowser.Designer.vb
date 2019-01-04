@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class UCExplorerBrowser
     Inherits System.Windows.Forms.UserControl
 
     'UserControl overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If disposing AndAlso components IsNot Nothing Then
@@ -20,7 +20,7 @@ Partial Class UCExplorerBrowser
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Me.ListView_ExplorerFiles = New System.Windows.Forms.ListView()
@@ -34,6 +34,8 @@ Partial Class UCExplorerBrowser
         Me.ToolStripMenuItem_Refresh = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripTextBox_Path = New System.Windows.Forms.ToolStripTextBox()
         Me.TextboxWatermark_Search = New BasicPawn.ClassTextboxWatermark()
+        Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
+        Me.ToolStripMenuItem_Filter = New System.Windows.Forms.ToolStripMenuItem()
         Me.ContextMenuStrip_ExplorerBrowser.SuspendLayout()
         Me.MenuStrip_ExplorerBrowser.SuspendLayout()
         Me.SuspendLayout()
@@ -60,16 +62,16 @@ Partial Class UCExplorerBrowser
         '
         'ContextMenuStrip_ExplorerBrowser
         '
-        Me.ContextMenuStrip_ExplorerBrowser.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_OpenFile})
+        Me.ContextMenuStrip_ExplorerBrowser.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_OpenFile, Me.ToolStripSeparator1, Me.ToolStripMenuItem_Filter})
         Me.ContextMenuStrip_ExplorerBrowser.Name = "ContextMenuStrip_ExplorerBrowser"
         Me.ContextMenuStrip_ExplorerBrowser.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
-        Me.ContextMenuStrip_ExplorerBrowser.Size = New System.Drawing.Size(104, 26)
+        Me.ContextMenuStrip_ExplorerBrowser.Size = New System.Drawing.Size(214, 76)
         '
         'ToolStripMenuItem_OpenFile
         '
         Me.ToolStripMenuItem_OpenFile.Image = Global.BasicPawn.My.Resources.Resources.imageres_5338_16x16
         Me.ToolStripMenuItem_OpenFile.Name = "ToolStripMenuItem_OpenFile"
-        Me.ToolStripMenuItem_OpenFile.Size = New System.Drawing.Size(103, 22)
+        Me.ToolStripMenuItem_OpenFile.Size = New System.Drawing.Size(213, 22)
         Me.ToolStripMenuItem_OpenFile.Text = "Open"
         '
         'ImageList_ExplorerBrowser
@@ -134,6 +136,18 @@ Partial Class UCExplorerBrowser
         Me.TextboxWatermark_Search.Size = New System.Drawing.Size(269, 22)
         Me.TextboxWatermark_Search.TabIndex = 0
         '
+        'ToolStripSeparator1
+        '
+        Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
+        Me.ToolStripSeparator1.Size = New System.Drawing.Size(210, 6)
+        '
+        'ToolStripMenuItem_Filter
+        '
+        Me.ToolStripMenuItem_Filter.CheckOnClick = True
+        Me.ToolStripMenuItem_Filter.Name = "ToolStripMenuItem_Filter"
+        Me.ToolStripMenuItem_Filter.Size = New System.Drawing.Size(213, 22)
+        Me.ToolStripMenuItem_Filter.Text = "Filter sources and includes"
+        '
         'UCExplorerBrowser
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -164,4 +178,6 @@ Partial Class UCExplorerBrowser
     Friend WithEvents ContextMenuStrip_ExplorerBrowser As ContextMenuStrip
     Friend WithEvents ToolStripMenuItem_OpenFile As ToolStripMenuItem
     Public WithEvents ListView_ExplorerFiles As ListView
+    Friend WithEvents ToolStripSeparator1 As ToolStripSeparator
+    Friend WithEvents ToolStripMenuItem_Filter As ToolStripMenuItem
 End Class

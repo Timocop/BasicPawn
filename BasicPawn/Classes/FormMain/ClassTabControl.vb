@@ -1837,6 +1837,7 @@ Public Class ClassTabControl
                     If (i < 0) Then
                         Exit While
                     End If
+
                     i += 1
                     iMaxLevels += 1
                 End While
