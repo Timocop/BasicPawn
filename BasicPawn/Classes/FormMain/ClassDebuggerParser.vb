@@ -428,11 +428,16 @@ Public Class ClassDebuggerParser
         Dim mMiscInformation As Object()
     End Structure
 
+
     ''' <summary>
     ''' Reads all sourcemod exceptions from a log.
     ''' </summary>
-    ''' <param name="sLogLines"></param>
+    ''' <param name="sLog"></param>
     ''' <returns></returns>
+    Public Function ReadSourceModLogExceptions(sLog As String) As STRUC_SM_EXCEPTION()
+        Return ReadSourceModLogExceptions(sLog.Split(New String() {Environment.NewLine, vbLf}, 0))
+    End Function
+
     Public Function ReadSourceModLogExceptions(sLogLines As String()) As STRUC_SM_EXCEPTION()
         Dim iExpectingState As Integer = 0
 
@@ -442,6 +447,11 @@ Public Class ClassDebuggerParser
         Dim lSMStackTraces As New List(Of STRUC_SM_EXCEPTION_STACK_TRACE)
 
         For i = 0 To sLogLines.Length - 1
+            'Ignore empty lines
+            If (sLogLines(i).Trim.Length < 1) Then
+                Continue For
+            End If
+
             Dim mExceptionInfo As Match = Regex.Match(sLogLines(i), "^L (?<Date>[0-9]+\/[0-9]+\/[0-9]+ \- [0-9]+\:[0-9]+\:[0-9]+)\: \[SM\] Exception reported\:(?<Message>.*?)$")
             If (mExceptionInfo.Success) Then
                 If (iExpectingState = 3) Then
