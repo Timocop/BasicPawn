@@ -27,6 +27,8 @@ Partial Class UCExplorerBrowser
         Me.ColumnHeader1 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ContextMenuStrip_ExplorerBrowser = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.ToolStripMenuItem_OpenFile = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
+        Me.ToolStripMenuItem_Filter = New System.Windows.Forms.ToolStripMenuItem()
         Me.ImageList_ExplorerBrowser = New System.Windows.Forms.ImageList(Me.components)
         Me.MenuStrip_ExplorerBrowser = New System.Windows.Forms.MenuStrip()
         Me.ToolStripMenuItem_DirectoryUp = New System.Windows.Forms.ToolStripMenuItem()
@@ -34,8 +36,6 @@ Partial Class UCExplorerBrowser
         Me.ToolStripMenuItem_Refresh = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripTextBox_Path = New System.Windows.Forms.ToolStripTextBox()
         Me.TextboxWatermark_Search = New BasicPawn.ClassTextboxWatermark()
-        Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
-        Me.ToolStripMenuItem_Filter = New System.Windows.Forms.ToolStripMenuItem()
         Me.ContextMenuStrip_ExplorerBrowser.SuspendLayout()
         Me.MenuStrip_ExplorerBrowser.SuspendLayout()
         Me.SuspendLayout()
@@ -65,7 +65,7 @@ Partial Class UCExplorerBrowser
         Me.ContextMenuStrip_ExplorerBrowser.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_OpenFile, Me.ToolStripSeparator1, Me.ToolStripMenuItem_Filter})
         Me.ContextMenuStrip_ExplorerBrowser.Name = "ContextMenuStrip_ExplorerBrowser"
         Me.ContextMenuStrip_ExplorerBrowser.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
-        Me.ContextMenuStrip_ExplorerBrowser.Size = New System.Drawing.Size(214, 76)
+        Me.ContextMenuStrip_ExplorerBrowser.Size = New System.Drawing.Size(214, 54)
         '
         'ToolStripMenuItem_OpenFile
         '
@@ -73,6 +73,18 @@ Partial Class UCExplorerBrowser
         Me.ToolStripMenuItem_OpenFile.Name = "ToolStripMenuItem_OpenFile"
         Me.ToolStripMenuItem_OpenFile.Size = New System.Drawing.Size(213, 22)
         Me.ToolStripMenuItem_OpenFile.Text = "Open"
+        '
+        'ToolStripSeparator1
+        '
+        Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
+        Me.ToolStripSeparator1.Size = New System.Drawing.Size(210, 6)
+        '
+        'ToolStripMenuItem_Filter
+        '
+        Me.ToolStripMenuItem_Filter.CheckOnClick = True
+        Me.ToolStripMenuItem_Filter.Name = "ToolStripMenuItem_Filter"
+        Me.ToolStripMenuItem_Filter.Size = New System.Drawing.Size(213, 22)
+        Me.ToolStripMenuItem_Filter.Text = "Filter sources and includes"
         '
         'ImageList_ExplorerBrowser
         '
@@ -113,7 +125,7 @@ Partial Class UCExplorerBrowser
         'ToolStripMenuItem_Refresh
         '
         Me.ToolStripMenuItem_Refresh.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.ToolStripMenuItem_Refresh.Image = Global.BasicPawn.My.Resources.Resources.imageres_5311_16x16
+        Me.ToolStripMenuItem_Refresh.Image = Global.BasicPawn.My.Resources.Resources.shell32_16739_16x16_32
         Me.ToolStripMenuItem_Refresh.Name = "ToolStripMenuItem_Refresh"
         Me.ToolStripMenuItem_Refresh.Size = New System.Drawing.Size(28, 24)
         Me.ToolStripMenuItem_Refresh.Text = "Refresh"
@@ -135,18 +147,6 @@ Partial Class UCExplorerBrowser
         Me.TextboxWatermark_Search.Name = "TextboxWatermark_Search"
         Me.TextboxWatermark_Search.Size = New System.Drawing.Size(269, 22)
         Me.TextboxWatermark_Search.TabIndex = 0
-        '
-        'ToolStripSeparator1
-        '
-        Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
-        Me.ToolStripSeparator1.Size = New System.Drawing.Size(210, 6)
-        '
-        'ToolStripMenuItem_Filter
-        '
-        Me.ToolStripMenuItem_Filter.CheckOnClick = True
-        Me.ToolStripMenuItem_Filter.Name = "ToolStripMenuItem_Filter"
-        Me.ToolStripMenuItem_Filter.Size = New System.Drawing.Size(213, 22)
-        Me.ToolStripMenuItem_Filter.Text = "Filter sources and includes"
         '
         'UCExplorerBrowser
         '

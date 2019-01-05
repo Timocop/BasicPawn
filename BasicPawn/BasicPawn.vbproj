@@ -597,7 +597,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="BasicPawnIcon.ico" />
-    <None Include="Resources\imageres_5325_16x16-32.png" />
+    <None Include="Resources\shell32_16761_16x16-32.png" />
+    <None Include="Resources\shell32_16763_16x16-32.png" />
+    <None Include="Resources\shell32_16762_16x16-32.png" />
+    <None Include="Resources\shell32_16739_16x16-32.png" />
     <None Include="Resources\IntelliSenseVariable_32x.png" />
     <None Include="Resources\IntelliSenseString_32x.png" />
     <None Include="Resources\IntelliSenseProperty_32x.png" />

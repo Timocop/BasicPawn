@@ -140,9 +140,9 @@ Partial Class FormMain
         Me.SplitContainer_ToolboxSourceAndDetails = New System.Windows.Forms.SplitContainer()
         Me.SplitContainer_ToolboxAndEditor = New System.Windows.Forms.SplitContainer()
         Me.TabControl_Toolbox = New BasicPawn.ClassTabControlColor()
-        Me.TabPage_ExplorerBrowser = New System.Windows.Forms.TabPage()
-        Me.TabPage_ProjectBrowser = New System.Windows.Forms.TabPage()
         Me.TabPage_ObjectBrowser = New System.Windows.Forms.TabPage()
+        Me.TabPage_ProjectBrowser = New System.Windows.Forms.TabPage()
+        Me.TabPage_ExplorerBrowser = New System.Windows.Forms.TabPage()
         Me.TabControl_SourceTabs = New BasicPawn.ClassTabControlColor()
         Me.ContextMenuStrip_Tabs = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.ToolStripMenuItem_Tabs_Close = New System.Windows.Forms.ToolStripMenuItem()
@@ -217,7 +217,7 @@ Partial Class FormMain
         '
         'ToolStripMenuItem_Cut
         '
-        Me.ToolStripMenuItem_Cut.Image = CType(resources.GetObject("ToolStripMenuItem_Cut.Image"), System.Drawing.Image)
+        Me.ToolStripMenuItem_Cut.Image = Global.BasicPawn.My.Resources.Resources.shell32_16762_16x16_32
         Me.ToolStripMenuItem_Cut.Name = "ToolStripMenuItem_Cut"
         Me.ToolStripMenuItem_Cut.Size = New System.Drawing.Size(186, 22)
         Me.ToolStripMenuItem_Cut.Text = "Cut"
@@ -231,7 +231,7 @@ Partial Class FormMain
         '
         'ToolStripMenuItem_Paste
         '
-        Me.ToolStripMenuItem_Paste.Image = CType(resources.GetObject("ToolStripMenuItem_Paste.Image"), System.Drawing.Image)
+        Me.ToolStripMenuItem_Paste.Image = Global.BasicPawn.My.Resources.Resources.shell32_16763_16x16_32
         Me.ToolStripMenuItem_Paste.Name = "ToolStripMenuItem_Paste"
         Me.ToolStripMenuItem_Paste.Size = New System.Drawing.Size(186, 22)
         Me.ToolStripMenuItem_Paste.Text = "Paste"
@@ -458,7 +458,7 @@ Partial Class FormMain
         '
         'ToolStripMenuItem_FileSave
         '
-        Me.ToolStripMenuItem_FileSave.Image = CType(resources.GetObject("ToolStripMenuItem_FileSave.Image"), System.Drawing.Image)
+        Me.ToolStripMenuItem_FileSave.Image = Global.BasicPawn.My.Resources.Resources.shell32_16761_16x16_32
         Me.ToolStripMenuItem_FileSave.Name = "ToolStripMenuItem_FileSave"
         Me.ToolStripMenuItem_FileSave.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.S), System.Windows.Forms.Keys)
         Me.ToolStripMenuItem_FileSave.Size = New System.Drawing.Size(290, 22)
@@ -467,7 +467,6 @@ Partial Class FormMain
         '
         'ToolStripMenuItem_FileSaveAll
         '
-        Me.ToolStripMenuItem_FileSaveAll.Image = Global.BasicPawn.My.Resources.Resources.imageres_5303_16x16
         Me.ToolStripMenuItem_FileSaveAll.Name = "ToolStripMenuItem_FileSaveAll"
         Me.ToolStripMenuItem_FileSaveAll.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
             Or System.Windows.Forms.Keys.S), System.Windows.Forms.Keys)
@@ -477,7 +476,6 @@ Partial Class FormMain
         '
         'ToolStripMenuItem_FileSaveAs
         '
-        Me.ToolStripMenuItem_FileSaveAs.Image = CType(resources.GetObject("ToolStripMenuItem_FileSaveAs.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_FileSaveAs.Name = "ToolStripMenuItem_FileSaveAs"
         Me.ToolStripMenuItem_FileSaveAs.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Alt) _
             Or System.Windows.Forms.Keys.S), System.Windows.Forms.Keys)
@@ -487,7 +485,6 @@ Partial Class FormMain
         '
         'ToolStripMenuItem_FileSaveAsTemp
         '
-        Me.ToolStripMenuItem_FileSaveAsTemp.Image = Global.BasicPawn.My.Resources.Resources.imageres_5303_16x16
         Me.ToolStripMenuItem_FileSaveAsTemp.Name = "ToolStripMenuItem_FileSaveAsTemp"
         Me.ToolStripMenuItem_FileSaveAsTemp.Size = New System.Drawing.Size(290, 22)
         Me.ToolStripMenuItem_FileSaveAsTemp.Text = "Save as &temporary"
@@ -1025,14 +1022,15 @@ Partial Class FormMain
         Me.TabControl_Toolbox.Size = New System.Drawing.Size(200, 500)
         Me.TabControl_Toolbox.TabIndex = 0
         '
-        'TabPage_ExplorerBrowser
+        'TabPage_ObjectBrowser
         '
-        Me.TabPage_ExplorerBrowser.Location = New System.Drawing.Point(4, 22)
-        Me.TabPage_ExplorerBrowser.Name = "TabPage_ExplorerBrowser"
-        Me.TabPage_ExplorerBrowser.Size = New System.Drawing.Size(192, 474)
-        Me.TabPage_ExplorerBrowser.TabIndex = 2
-        Me.TabPage_ExplorerBrowser.Text = "Explorer"
-        Me.TabPage_ExplorerBrowser.UseVisualStyleBackColor = True
+        Me.TabPage_ObjectBrowser.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage_ObjectBrowser.Margin = New System.Windows.Forms.Padding(0)
+        Me.TabPage_ObjectBrowser.Name = "TabPage_ObjectBrowser"
+        Me.TabPage_ObjectBrowser.Size = New System.Drawing.Size(192, 474)
+        Me.TabPage_ObjectBrowser.TabIndex = 0
+        Me.TabPage_ObjectBrowser.Text = "Object Browser"
+        Me.TabPage_ObjectBrowser.UseVisualStyleBackColor = True
         '
         'TabPage_ProjectBrowser
         '
@@ -1043,15 +1041,14 @@ Partial Class FormMain
         Me.TabPage_ProjectBrowser.Text = "Project"
         Me.TabPage_ProjectBrowser.UseVisualStyleBackColor = True
         '
-        'TabPage_ObjectBrowser
+        'TabPage_ExplorerBrowser
         '
-        Me.TabPage_ObjectBrowser.Location = New System.Drawing.Point(4, 22)
-        Me.TabPage_ObjectBrowser.Margin = New System.Windows.Forms.Padding(0)
-        Me.TabPage_ObjectBrowser.Name = "TabPage_ObjectBrowser"
-        Me.TabPage_ObjectBrowser.Size = New System.Drawing.Size(192, 474)
-        Me.TabPage_ObjectBrowser.TabIndex = 0
-        Me.TabPage_ObjectBrowser.Text = "Object Browser"
-        Me.TabPage_ObjectBrowser.UseVisualStyleBackColor = True
+        Me.TabPage_ExplorerBrowser.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage_ExplorerBrowser.Name = "TabPage_ExplorerBrowser"
+        Me.TabPage_ExplorerBrowser.Size = New System.Drawing.Size(192, 474)
+        Me.TabPage_ExplorerBrowser.TabIndex = 2
+        Me.TabPage_ExplorerBrowser.Text = "Explorer"
+        Me.TabPage_ExplorerBrowser.UseVisualStyleBackColor = True
         '
         'TabControl_SourceTabs
         '
@@ -1101,14 +1098,14 @@ Partial Class FormMain
         '
         'ToolStripMenuItem_Tabs_Cut
         '
-        Me.ToolStripMenuItem_Tabs_Cut.Image = Global.BasicPawn.My.Resources.Resources.imageres_5314_16x16
+        Me.ToolStripMenuItem_Tabs_Cut.Image = Global.BasicPawn.My.Resources.Resources.shell32_16762_16x16_32
         Me.ToolStripMenuItem_Tabs_Cut.Name = "ToolStripMenuItem_Tabs_Cut"
         Me.ToolStripMenuItem_Tabs_Cut.Size = New System.Drawing.Size(178, 22)
         Me.ToolStripMenuItem_Tabs_Cut.Text = "Cut"
         '
         'ToolStripMenuItem_Tabs_Insert
         '
-        Me.ToolStripMenuItem_Tabs_Insert.Image = Global.BasicPawn.My.Resources.Resources.imageres_5301_16x16
+        Me.ToolStripMenuItem_Tabs_Insert.Image = Global.BasicPawn.My.Resources.Resources.shell32_16763_16x16_32
         Me.ToolStripMenuItem_Tabs_Insert.Name = "ToolStripMenuItem_Tabs_Insert"
         Me.ToolStripMenuItem_Tabs_Insert.Size = New System.Drawing.Size(178, 22)
         Me.ToolStripMenuItem_Tabs_Insert.Text = "Insert"
