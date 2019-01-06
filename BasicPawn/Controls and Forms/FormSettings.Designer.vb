@@ -245,10 +245,12 @@ Partial Class FormSettings
         '
         Me.ContextMenuStrip_Plugins.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_PluginsRefresh, Me.ToolStripSeparator1, Me.ToolStripMenuItem_OpenUrl, Me.ToolStripSeparator2, Me.ToolStripMenuItem_PluginsEnable, Me.ToolStripMenuItem_PluginsDisable})
         Me.ContextMenuStrip_Plugins.Name = "ContextMenuStrip_Plugins"
+        Me.ContextMenuStrip_Plugins.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
         Me.ContextMenuStrip_Plugins.Size = New System.Drawing.Size(128, 104)
         '
         'ToolStripMenuItem_PluginsRefresh
         '
+        Me.ToolStripMenuItem_PluginsRefresh.Image = Global.BasicPawn.My.Resources.Resources.shell32_16739_16x16_32
         Me.ToolStripMenuItem_PluginsRefresh.Name = "ToolStripMenuItem_PluginsRefresh"
         Me.ToolStripMenuItem_PluginsRefresh.Size = New System.Drawing.Size(127, 22)
         Me.ToolStripMenuItem_PluginsRefresh.Text = "Refresh"
@@ -260,6 +262,7 @@ Partial Class FormSettings
         '
         'ToolStripMenuItem_OpenUrl
         '
+        Me.ToolStripMenuItem_OpenUrl.Image = Global.BasicPawn.My.Resources.Resources.imageres_5316_16x16
         Me.ToolStripMenuItem_OpenUrl.Name = "ToolStripMenuItem_OpenUrl"
         Me.ToolStripMenuItem_OpenUrl.Size = New System.Drawing.Size(127, 22)
         Me.ToolStripMenuItem_OpenUrl.Text = "Open URL"

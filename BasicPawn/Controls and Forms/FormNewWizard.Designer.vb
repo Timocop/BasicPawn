@@ -70,6 +70,7 @@ Partial Class FormNewWizard
         '
         Me.ContextMenuStrip_TreeView.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_OpenDir, Me.ToolStripSeparator1, Me.ToolStripMenuItem_DelTemplate})
         Me.ContextMenuStrip_TreeView.Name = "ContextMenuStrip_TreeView"
+        Me.ContextMenuStrip_TreeView.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
         Me.ContextMenuStrip_TreeView.ShowImageMargin = False
         Me.ContextMenuStrip_TreeView.Size = New System.Drawing.Size(157, 54)
         '
@@ -146,6 +147,7 @@ Partial Class FormNewWizard
         '
         Me.ContextMenuStrip_Properties.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripComboBox_SetProperty})
         Me.ContextMenuStrip_Properties.Name = "ContextMenuStrip_Properties"
+        Me.ContextMenuStrip_Properties.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
         Me.ContextMenuStrip_Properties.ShowImageMargin = False
         Me.ContextMenuStrip_Properties.ShowItemToolTips = False
         Me.ContextMenuStrip_Properties.Size = New System.Drawing.Size(211, 27)
