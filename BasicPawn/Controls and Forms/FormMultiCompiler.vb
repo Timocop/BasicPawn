@@ -79,13 +79,13 @@ Public Class FormMultiCompiler
                 Dim sCompilerOutput As String = ""
                 Dim iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = ClassSyntaxTools.ENUM_LANGUAGE_TYPE.SOURCEPAWN
 
-                Dim mKnownConfig = ClassConfigs.ClassKnownConfigs.m_KnownConfigByFile(sSourceFile)
-                If (mKnownConfig Is Nothing) Then
-                    Throw New ArgumentException(String.Format("No known config found for file '{0}'", sSourceFile))
+                Dim mConfig = ClassConfigs.FindOptimalConfigForFile(sSourceFile, Nothing)
+                If (mConfig Is Nothing) Then
+                    Throw New ArgumentException(String.Format("Could not find config for file '{0}'.{1}Make sure BasicPawn can find a config for this file using 'Known files' or 'Default config paths' in configs.", sSourceFile, Environment.NewLine))
                 End If
 
                 'We have no other choices here. Get mod type by extension...
-                If (mKnownConfig.g_iLanguage = ClassConfigs.STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE.AUTO_DETECT) Then
+                If (mConfig.g_iLanguage = ClassConfigs.STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE.AUTO_DETECT) Then
                     Select Case (IO.Path.GetExtension(sSourceFile).ToLower)
                         Case ".sp"
                             iLanguage = ClassSyntaxTools.ENUM_LANGUAGE_TYPE.SOURCEPAWN
@@ -103,7 +103,7 @@ Public Class FormMultiCompiler
                             End Select
                     End Select
                 Else
-                    Select Case (mKnownConfig.g_iLanguage)
+                    Select Case (mConfig.g_iLanguage)
                         Case ClassConfigs.STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE.SOURCEPAWN
                             iLanguage = ClassSyntaxTools.ENUM_LANGUAGE_TYPE.SOURCEPAWN
 
@@ -116,7 +116,7 @@ Public Class FormMultiCompiler
                 End If
 
 
-                Dim sOutputFile As String = IO.Path.Combine(mKnownConfig.g_sOutputFolder, String.Format("{0}.unk", IO.Path.GetFileNameWithoutExtension(sSourceFile)))
+                Dim sOutputFile As String = IO.Path.Combine(mConfig.g_sOutputFolder, String.Format("{0}.unk", IO.Path.GetFileNameWithoutExtension(sSourceFile)))
                 Dim bSuccess As Boolean = ClassThread.ExecEx(Of Boolean)(Me, Function()
                                                                                  If (g_bCleanDebuggerPlaceholder) Then
                                                                                      With New ClassDebuggerParser(g_mMainForm)
@@ -129,10 +129,10 @@ Public Class FormMultiCompiler
                                                                                  Return g_mMainForm.g_ClassTextEditorTools.CompileSource(g_bTestingOnly,
                                                                                                                                        sSource,
                                                                                                                                        sOutputFile,
-                                                                                                                                       mKnownConfig,
+                                                                                                                                       mConfig,
                                                                                                                                        IO.Path.GetDirectoryName(sSourceFile),
-                                                                                                                                       mKnownConfig.g_sCompilerPath,
-                                                                                                                                       mKnownConfig.g_sIncludeFolders,
+                                                                                                                                       mConfig.g_sCompilerPath,
+                                                                                                                                       mConfig.g_sIncludeFolders,
                                                                                                                                        sSourceFile,
                                                                                                                                        True,
                                                                                                                                        sCompilerOutput)

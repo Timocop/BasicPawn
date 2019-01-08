@@ -1299,7 +1299,6 @@ Public Class FormMain
     End Sub
 
     Private Sub ToolStripMenuItem_EditConfigAllTabs_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_EditConfigAllTabs.Click
-
         Using i As New FormSettings(Me, FormSettings.ENUM_CONFIG_TYPE.ALL)
             i.TabControl1.SelectTab(i.TabPage_Configs)
 
@@ -1323,6 +1322,49 @@ Public Class FormMain
         End Using
     End Sub
 
+    Private Sub ToolStripMenuItem_FindOptimalConfigActiveTab_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FindOptimalConfigActiveTab.Click
+        Dim mTab = g_ClassTabControl.m_ActiveTab
+        If (mTab.m_IsUnsaved OrElse mTab.m_InvalidFile) Then
+            Return
+        End If
+
+        Dim i As ClassConfigs.ENUM_OPTIMAL_CONFIG
+        Dim mConfig = ClassConfigs.FindOptimalConfigForFile(mTab.m_File, i)
+
+        'Only change config if we found one.
+        If (i = ClassConfigs.ENUM_OPTIMAL_CONFIG.NONE) Then
+            MessageBox.Show(String.Format("Could not find optimal config for tab '{0} ({1})'", mTab.m_Title, mTab.m_Index))
+        Else
+            mTab.m_ActiveConfig = mConfig
+
+            g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
+        End If
+
+        UpdateFormConfigText()
+    End Sub
+
+    Private Sub ToolStripMenuItem_FindOptimalConfigAllTabs_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FindOptimalConfigAllTabs.Click
+        For Each mTab In g_ClassTabControl.GetAllTabs
+            If (mTab.m_IsUnsaved OrElse mTab.m_InvalidFile) Then
+                Continue For
+            End If
+
+            Dim i As ClassConfigs.ENUM_OPTIMAL_CONFIG
+            Dim mConfig = ClassConfigs.FindOptimalConfigForFile(mTab.m_File, i)
+
+            'Only change config if we found one.
+            If (i = ClassConfigs.ENUM_OPTIMAL_CONFIG.NONE) Then
+                MessageBox.Show(String.Format("Could not find optimal config for tab '{0} ({1})'", mTab.m_Title, mTab.m_Index))
+            Else
+                mTab.m_ActiveConfig = mConfig
+
+                g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, mTab)
+            End If
+        Next
+
+        UpdateFormConfigText()
+    End Sub
+
 #End Region
 
 #Region "ContextMenuStrip_Tabs"
@@ -1330,7 +1372,7 @@ Public Class FormMain
         Dim mTab As ClassTabControl.SourceTabPage = g_ClassTabControl.GetTabByIdentifier(g_sTabsClipboardIdentifier)
 
         ToolStripMenuItem_Tabs_Insert.Enabled = (mTab IsNot Nothing)
-        ToolStripMenuItem_Tabs_Insert.Text = If(mTab IsNot Nothing, String.Format("Insert ({0})", mTab.m_Title), "Insert")
+        ToolStripMenuItem_Tabs_Insert.Text = If(mTab IsNot Nothing, String.Format("Insert '{0}'", mTab.m_Title), "Insert")
 
         Dim mPointTab = g_ClassTabControl.GetTabByCursorPoint()
         If (mPointTab Is Nothing) Then

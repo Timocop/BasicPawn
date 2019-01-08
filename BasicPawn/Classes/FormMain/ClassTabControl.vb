@@ -122,7 +122,7 @@ Public Class ClassTabControl
             }
 
             While True
-                For Each mConfig In ClassConfigs.GetConfigs(False)
+                For Each mConfig In ClassConfigs.GetConfigs()
                     If (mConfig.g_bAutoload) Then
                         mTabPage.m_ActiveConfig = mConfig
                         Exit While
@@ -400,22 +400,7 @@ Public Class ClassTabControl
 
         m_Tab(iIndex).ClearSavedFoldStates()
 
-        Dim mKnownConfig = ClassConfigs.ClassKnownConfigs.m_KnownConfigByFile(sFile)
-        If (mKnownConfig Is Nothing) Then
-            While True
-                For Each mConfig In ClassConfigs.GetConfigs(False)
-                    If (mConfig.g_bAutoload) Then
-                        m_Tab(iIndex).m_ActiveConfig = mConfig
-                        Exit While
-                    End If
-                Next
-
-                m_Tab(iIndex).m_ActiveConfig = Nothing
-                Exit While
-            End While
-        Else
-            m_Tab(iIndex).m_ActiveConfig = mKnownConfig
-        End If
+        m_Tab(iIndex).m_ActiveConfig = ClassConfigs.FindOptimalConfigForFile(sFile, Nothing)
 
         m_Tab(iIndex).m_ClassLineState.m_IgnoreUpdates = False
 
@@ -496,7 +481,7 @@ Public Class ClassTabControl
             Return False
         End If
 
-        Select Case (If(bAlwaysYes, DialogResult.Yes, MessageBox.Show(String.Format("Do you want to save your work? ({0})", m_Tab(iIndex).m_Title), "Information", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question)))
+        Select Case (If(bAlwaysYes, DialogResult.Yes, MessageBox.Show(String.Format("Do you want to save your work? '{0} ({1})'", m_Tab(iIndex).m_Title, iIndex), "Information", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question)))
             Case DialogResult.Yes
                 If (bIsUnsaved) Then
                     Using i As New SaveFileDialog

@@ -371,6 +371,7 @@ Public Class ClassConfigs
         Public g_sCompilerPath As String = ""
         Public g_sOutputFolder As String = ""
         Public g_bAutoload As Boolean = False
+        Public g_sDefaultPaths As String = ""
         Public g_iLanguage As ENUM_LANGUAGE_DETECT_TYPE = ENUM_LANGUAGE_DETECT_TYPE.AUTO_DETECT
         'Compiler Options
         Public g_mCompilerOptionsSP As New CompilerOptions.STRUC_SP_COMPILER_OPTIONS
@@ -387,7 +388,7 @@ Public Class ClassConfigs
         End Sub
 
         Public Sub New(sName As String,
-                       iCompilingType As ClassSettings.ENUM_COMPILING_TYPE, sIncludeFolders As String, sCompilerPath As String, sOutputFolder As String, bAutoload As Boolean, iLanguage As ENUM_LANGUAGE_DETECT_TYPE,
+                       iCompilingType As ClassSettings.ENUM_COMPILING_TYPE, sIncludeFolders As String, sCompilerPath As String, sOutputFolder As String, bAutoload As Boolean, sDefaultPaths As String, iLanguage As ENUM_LANGUAGE_DETECT_TYPE,
                        mCompilerOptionsSP As CompilerOptions.STRUC_SP_COMPILER_OPTIONS, mCompilerOptionsAMXX As CompilerOptions.STRUC_AMXX_COMPILER_OPTIONS,
                        sDebugClientFolder As String, sDebugServerFolder As String, sDebugSourceModFolder As String,
                        sExecuteShell As String)
@@ -399,6 +400,7 @@ Public Class ClassConfigs
             g_sCompilerPath = sCompilerPath
             g_sOutputFolder = sOutputFolder
             g_bAutoload = bAutoload
+            g_sDefaultPaths = sDefaultPaths
             g_iLanguage = iLanguage
             'Compiler Options
             g_mCompilerOptionsSP = mCompilerOptionsSP
@@ -489,6 +491,7 @@ Public Class ClassConfigs
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Config", "IncludeDirectory", mConfig.g_sIncludeFolders))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Config", "OutputDirectory", mConfig.g_sOutputFolder))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Config", "Autoload", If(mConfig.g_bAutoload, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Config", "DefaultPaths", CStr(mConfig.g_sDefaultPaths)))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Config", "ModType", CStr(mConfig.g_iLanguage)))
 
                 'Compiler Options
@@ -529,6 +532,7 @@ Public Class ClassConfigs
                 Dim sCompilerPath As String = mIni.ReadKeyValue("Config", "CompilerPath", "")
                 Dim sOutputFolder As String = mIni.ReadKeyValue("Config", "OutputDirectory", "")
                 Dim bIsDefault As Boolean = (mIni.ReadKeyValue("Config", "Autoload", "0") <> "0")
+                Dim sDefaultPaths As String = mIni.ReadKeyValue("Config", "DefaultPaths", "")
                 Dim sLanguage As String = mIni.ReadKeyValue("Config", "ModType", CStr(STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE.AUTO_DETECT))
                 Dim iLanguage As Integer
                 If (Integer.TryParse(sLanguage, iLanguage)) Then
@@ -551,7 +555,7 @@ Public Class ClassConfigs
                 'Misc
                 Dim sExecuteShell As String = mIni.ReadKeyValue("Config", "ExecuteShell", "")
 
-                Return New STRUC_CONFIG_ITEM(sName, iCompilingType, sOpenIncludeFolders, sCompilerPath, sOutputFolder, bIsDefault, CType(iLanguage, STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE),
+                Return New STRUC_CONFIG_ITEM(sName, iCompilingType, sOpenIncludeFolders, sCompilerPath, sOutputFolder, bIsDefault, sDefaultPaths, CType(iLanguage, STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE),
                                          mCompilerOptionsSourcePawn, mCompilerOptionsAMXModX,
                                          sDebugClientFolder, sDebugServerFolder, sDebugSourceModFolder,
                                          sExecuteShell)
@@ -574,7 +578,7 @@ Public Class ClassConfigs
         Return False
     End Function
 
-    Shared Function GetConfigs(bIncludeDefault As Boolean) As STRUC_CONFIG_ITEM()
+    Shared Function GetConfigs() As STRUC_CONFIG_ITEM()
         Dim lConfigList As New List(Of STRUC_CONFIG_ITEM) From {
             m_DefaultConfig
         }
@@ -599,6 +603,63 @@ Public Class ClassConfigs
         Return lConfigList.ToArray
     End Function
 
+    Shared Function FindConfigUsingDefaultPaths(sFile As String) As STRUC_CONFIG_ITEM
+        For Each mConfig In GetConfigs()
+            For Each sAssignPath As String In mConfig.g_sDefaultPaths.Split(";"c)
+                If (String.IsNullOrEmpty(sAssignPath)) Then
+                    Continue For
+                End If
+
+                If (sFile.ToLower.StartsWith(sAssignPath.ToLower)) Then
+                    Return mConfig
+                End If
+            Next
+        Next
+
+        Return Nothing
+    End Function
+
+    Enum ENUM_OPTIMAL_CONFIG
+        NONE
+        ASSIGN_PATH
+        KNOWN_CONFIG
+    End Enum
+
+    ''' <summary>
+    ''' Finds the optimal config from a file using 'Known configs' and 'Default config paths'.
+    ''' </summary>
+    ''' <param name="sFile"></param>
+    ''' <param name="r_OptimalConfig"></param>
+    ''' <returns></returns>
+    Shared Function FindOptimalConfigForFile(sFile As String, ByRef r_OptimalConfig As ENUM_OPTIMAL_CONFIG) As STRUC_CONFIG_ITEM
+        r_OptimalConfig = ENUM_OPTIMAL_CONFIG.NONE
+
+        Dim mConfig As ClassConfigs.STRUC_CONFIG_ITEM = ClassConfigs.FindConfigUsingDefaultPaths(sFile)
+        If (mConfig IsNot Nothing) Then
+            r_OptimalConfig = ENUM_OPTIMAL_CONFIG.ASSIGN_PATH
+            Return mConfig
+        Else
+            mConfig = ClassConfigs.ClassKnownConfigs.m_KnownConfigByFile(sFile)
+            If (mConfig Is Nothing) Then
+                While True
+                    For Each mConfig In ClassConfigs.GetConfigs()
+                        If (mConfig.g_bAutoload) Then
+                            r_OptimalConfig = ENUM_OPTIMAL_CONFIG.KNOWN_CONFIG
+                            Return mConfig
+                        End If
+                    Next
+
+                    Return Nothing
+                End While
+            Else
+                r_OptimalConfig = ENUM_OPTIMAL_CONFIG.KNOWN_CONFIG
+                Return mConfig
+            End If
+        End If
+
+        Return Nothing
+    End Function
+
     Class ClassKnownConfigs
         Private Shared ReadOnly g_sLastConfigFile As String = IO.Path.Combine(Application.StartupPath, "knownconfigs.ini")
         Private Shared g_mKnownConfigsDic As New Dictionary(Of String, String)
@@ -613,7 +674,7 @@ Public Class ClassConfigs
             End Sub
 
             Function FindConfig() As STRUC_CONFIG_ITEM
-                For Each mConfig In GetConfigs(False)
+                For Each mConfig In GetConfigs()
                     If (mConfig.GetName = sConfigName) Then
                         Return mConfig
                     End If

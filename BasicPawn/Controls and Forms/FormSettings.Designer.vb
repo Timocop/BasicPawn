@@ -146,13 +146,10 @@ Partial Class FormSettings
         Me.ComboBox_COTreatWarningsAsErrorsAMXX = New System.Windows.Forms.ComboBox()
         Me.Label29 = New System.Windows.Forms.Label()
         Me.ComboBox_COVerbosityLevelAMXX = New System.Windows.Forms.ComboBox()
-        Me.Label20 = New System.Windows.Forms.Label()
-        Me.ComboBox_Language = New System.Windows.Forms.ComboBox()
         Me.Label11 = New System.Windows.Forms.Label()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.RadioButton_ConfigSettingAutomatic = New System.Windows.Forms.RadioButton()
         Me.RadioButton_ConfigSettingManual = New System.Windows.Forms.RadioButton()
-        Me.CheckBox_ConfigIsDefault = New System.Windows.Forms.CheckBox()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.Label4 = New System.Windows.Forms.Label()
         Me.TextBox_CompilerPath = New System.Windows.Forms.TextBox()
@@ -184,6 +181,12 @@ Partial Class FormSettings
         Me.TableLayoutPanel3 = New System.Windows.Forms.TableLayoutPanel()
         Me.ClassPictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
         Me.Label17 = New System.Windows.Forms.Label()
+        Me.CheckBox_ConfigIsDefault = New System.Windows.Forms.CheckBox()
+        Me.ComboBox_Language = New System.Windows.Forms.ComboBox()
+        Me.Label20 = New System.Windows.Forms.Label()
+        Me.Button_AutoAssignPaths = New System.Windows.Forms.Button()
+        Me.TextBox_AutoAssignPaths = New System.Windows.Forms.TextBox()
+        Me.Label7 = New System.Windows.Forms.Label()
         Me.ContextMenuStrip_Plugins.SuspendLayout()
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Settings.SuspendLayout()
@@ -1080,7 +1083,7 @@ Partial Class FormSettings
         Me.GroupBox_ConfigSettings.Location = New System.Drawing.Point(0, 0)
         Me.GroupBox_ConfigSettings.Margin = New System.Windows.Forms.Padding(0)
         Me.GroupBox_ConfigSettings.Name = "GroupBox_ConfigSettings"
-        Me.GroupBox_ConfigSettings.Size = New System.Drawing.Size(585, 910)
+        Me.GroupBox_ConfigSettings.Size = New System.Drawing.Size(585, 950)
         Me.GroupBox_ConfigSettings.TabIndex = 7
         Me.GroupBox_ConfigSettings.TabStop = False
         Me.GroupBox_ConfigSettings.Text = "Config Settings"
@@ -1094,7 +1097,7 @@ Partial Class FormSettings
         Me.Panel11.Controls.Add(Me.TextBox_Shell)
         Me.Panel11.Controls.Add(Me.LinkLabel_ShowShellArguments)
         Me.Panel11.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel11.Location = New System.Drawing.Point(3, 827)
+        Me.Panel11.Location = New System.Drawing.Point(3, 867)
         Me.Panel11.Name = "Panel11"
         Me.Panel11.Size = New System.Drawing.Size(579, 80)
         Me.Panel11.TabIndex = 30
@@ -1167,7 +1170,7 @@ Partial Class FormSettings
         Me.Panel10.Controls.Add(Me.Button_SourceModFolder)
         Me.Panel10.Controls.Add(Me.Label12)
         Me.Panel10.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel10.Location = New System.Drawing.Point(3, 684)
+        Me.Panel10.Location = New System.Drawing.Point(3, 724)
         Me.Panel10.Name = "Panel10"
         Me.Panel10.Size = New System.Drawing.Size(579, 143)
         Me.Panel10.TabIndex = 29
@@ -1287,7 +1290,10 @@ Partial Class FormSettings
         'Panel9
         '
         Me.Panel9.AutoSize = True
+        Me.Panel9.Controls.Add(Me.Label7)
         Me.Panel9.Controls.Add(Me.GroupBox3)
+        Me.Panel9.Controls.Add(Me.TextBox_AutoAssignPaths)
+        Me.Panel9.Controls.Add(Me.Button_AutoAssignPaths)
         Me.Panel9.Controls.Add(Me.GroupBox2)
         Me.Panel9.Controls.Add(Me.Label20)
         Me.Panel9.Controls.Add(Me.ComboBox_Language)
@@ -1300,7 +1306,7 @@ Partial Class FormSettings
         Me.Panel9.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel9.Location = New System.Drawing.Point(3, 18)
         Me.Panel9.Name = "Panel9"
-        Me.Panel9.Size = New System.Drawing.Size(579, 666)
+        Me.Panel9.Size = New System.Drawing.Size(579, 706)
         Me.Panel9.TabIndex = 28
         '
         'GroupBox3
@@ -1310,7 +1316,7 @@ Partial Class FormSettings
         Me.GroupBox3.Controls.Add(Me.ListView_KnownFiles)
         Me.GroupBox3.Controls.Add(Me.Button_KnownFileAdd)
         Me.GroupBox3.Controls.Add(Me.Button_KnownFileRemove)
-        Me.GroupBox3.Location = New System.Drawing.Point(3, 473)
+        Me.GroupBox3.Location = New System.Drawing.Point(3, 513)
         Me.GroupBox3.Name = "GroupBox3"
         Me.GroupBox3.Size = New System.Drawing.Size(573, 190)
         Me.GroupBox3.TabIndex = 29
@@ -1362,9 +1368,9 @@ Partial Class FormSettings
         Me.GroupBox2.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.GroupBox2.Controls.Add(Me.TabControl2)
-        Me.GroupBox2.Location = New System.Drawing.Point(3, 275)
+        Me.GroupBox2.Location = New System.Drawing.Point(3, 316)
         Me.GroupBox2.Name = "GroupBox2"
-        Me.GroupBox2.Size = New System.Drawing.Size(573, 192)
+        Me.GroupBox2.Size = New System.Drawing.Size(573, 191)
         Me.GroupBox2.TabIndex = 28
         Me.GroupBox2.TabStop = False
         Me.GroupBox2.Text = "Compiler Options"
@@ -1377,7 +1383,7 @@ Partial Class FormSettings
         Me.TabControl2.Location = New System.Drawing.Point(3, 18)
         Me.TabControl2.Name = "TabControl2"
         Me.TabControl2.SelectedIndex = 0
-        Me.TabControl2.Size = New System.Drawing.Size(567, 171)
+        Me.TabControl2.Size = New System.Drawing.Size(567, 170)
         Me.TabControl2.TabIndex = 0
         '
         'TabPage1
@@ -1395,7 +1401,7 @@ Partial Class FormSettings
         Me.TabPage1.Location = New System.Drawing.Point(4, 22)
         Me.TabPage1.Name = "TabPage1"
         Me.TabPage1.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage1.Size = New System.Drawing.Size(559, 145)
+        Me.TabPage1.Size = New System.Drawing.Size(559, 144)
         Me.TabPage1.TabIndex = 0
         Me.TabPage1.Text = "SourcePawn"
         Me.TabPage1.UseVisualStyleBackColor = True
@@ -1513,7 +1519,7 @@ Partial Class FormSettings
         Me.TabPage2.Location = New System.Drawing.Point(4, 22)
         Me.TabPage2.Name = "TabPage2"
         Me.TabPage2.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage2.Size = New System.Drawing.Size(559, 147)
+        Me.TabPage2.Size = New System.Drawing.Size(559, 146)
         Me.TabPage2.TabIndex = 1
         Me.TabPage2.Text = "AMX Mod X"
         Me.TabPage2.UseVisualStyleBackColor = True
@@ -1616,26 +1622,6 @@ Partial Class FormSettings
         Me.ComboBox_COVerbosityLevelAMXX.Size = New System.Drawing.Size(355, 21)
         Me.ComboBox_COVerbosityLevelAMXX.TabIndex = 12
         '
-        'Label20
-        '
-        Me.Label20.AutoSize = True
-        Me.Label20.Location = New System.Drawing.Point(3, 251)
-        Me.Label20.Name = "Label20"
-        Me.Label20.Size = New System.Drawing.Size(61, 13)
-        Me.Label20.TabIndex = 27
-        Me.Label20.Text = "Language:"
-        '
-        'ComboBox_Language
-        '
-        Me.ComboBox_Language.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.ComboBox_Language.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.ComboBox_Language.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.ComboBox_Language.FormattingEnabled = True
-        Me.ComboBox_Language.Location = New System.Drawing.Point(358, 248)
-        Me.ComboBox_Language.Name = "ComboBox_Language"
-        Me.ComboBox_Language.Size = New System.Drawing.Size(212, 21)
-        Me.ComboBox_Language.TabIndex = 26
-        '
         'Label11
         '
         Me.Label11.AutoSize = True
@@ -1685,18 +1671,6 @@ Partial Class FormSettings
         Me.RadioButton_ConfigSettingManual.Size = New System.Drawing.Size(70, 18)
         Me.RadioButton_ConfigSettingManual.TabIndex = 1
         Me.RadioButton_ConfigSettingManual.Text = "Manual"
-        '
-        'CheckBox_ConfigIsDefault
-        '
-        Me.CheckBox_ConfigIsDefault.AutoSize = True
-        Me.CheckBox_ConfigIsDefault.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_ConfigIsDefault.Location = New System.Drawing.Point(6, 224)
-        Me.CheckBox_ConfigIsDefault.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_ConfigIsDefault.Name = "CheckBox_ConfigIsDefault"
-        Me.CheckBox_ConfigIsDefault.Size = New System.Drawing.Size(160, 18)
-        Me.CheckBox_ConfigIsDefault.TabIndex = 25
-        Me.CheckBox_ConfigIsDefault.Text = "Set this config as default"
-        Me.CheckBox_ConfigIsDefault.UseVisualStyleBackColor = True
         '
         'GroupBox1
         '
@@ -2022,6 +1996,68 @@ Partial Class FormSettings
         Me.Label17.Text = "Loaded BasicPawn plugins are able to read stored database entries. Make sure all " &
     "installed plugins are from a trustworthy publisher to prevent theft."
         '
+        'CheckBox_ConfigIsDefault
+        '
+        Me.CheckBox_ConfigIsDefault.AutoSize = True
+        Me.CheckBox_ConfigIsDefault.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_ConfigIsDefault.Location = New System.Drawing.Point(6, 224)
+        Me.CheckBox_ConfigIsDefault.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_ConfigIsDefault.Name = "CheckBox_ConfigIsDefault"
+        Me.CheckBox_ConfigIsDefault.Size = New System.Drawing.Size(160, 18)
+        Me.CheckBox_ConfigIsDefault.TabIndex = 25
+        Me.CheckBox_ConfigIsDefault.Text = "Set this config as default"
+        Me.CheckBox_ConfigIsDefault.UseVisualStyleBackColor = True
+        '
+        'ComboBox_Language
+        '
+        Me.ComboBox_Language.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ComboBox_Language.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.ComboBox_Language.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.ComboBox_Language.FormattingEnabled = True
+        Me.ComboBox_Language.Location = New System.Drawing.Point(361, 289)
+        Me.ComboBox_Language.Name = "ComboBox_Language"
+        Me.ComboBox_Language.Size = New System.Drawing.Size(212, 21)
+        Me.ComboBox_Language.TabIndex = 26
+        '
+        'Label20
+        '
+        Me.Label20.AutoSize = True
+        Me.Label20.Location = New System.Drawing.Point(3, 292)
+        Me.Label20.Name = "Label20"
+        Me.Label20.Size = New System.Drawing.Size(61, 13)
+        Me.Label20.TabIndex = 27
+        Me.Label20.Text = "Language:"
+        '
+        'Button_AutoAssignPaths
+        '
+        Me.Button_AutoAssignPaths.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Button_AutoAssignPaths.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.Button_AutoAssignPaths.Location = New System.Drawing.Point(542, 259)
+        Me.Button_AutoAssignPaths.Name = "Button_AutoAssignPaths"
+        Me.Button_AutoAssignPaths.Size = New System.Drawing.Size(31, 24)
+        Me.Button_AutoAssignPaths.TabIndex = 18
+        Me.Button_AutoAssignPaths.Text = "..."
+        Me.Button_AutoAssignPaths.UseVisualStyleBackColor = True
+        '
+        'TextBox_AutoAssignPaths
+        '
+        Me.TextBox_AutoAssignPaths.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.TextBox_AutoAssignPaths.BackColor = System.Drawing.Color.White
+        Me.TextBox_AutoAssignPaths.Location = New System.Drawing.Point(6, 261)
+        Me.TextBox_AutoAssignPaths.Name = "TextBox_AutoAssignPaths"
+        Me.TextBox_AutoAssignPaths.Size = New System.Drawing.Size(530, 22)
+        Me.TextBox_AutoAssignPaths.TabIndex = 17
+        '
+        'Label7
+        '
+        Me.Label7.AutoSize = True
+        Me.Label7.Location = New System.Drawing.Point(3, 245)
+        Me.Label7.Name = "Label7"
+        Me.Label7.Size = New System.Drawing.Size(197, 13)
+        Me.Label7.TabIndex = 16
+        Me.Label7.Text = "Default config paths (Seperate by ';'):"
+        '
         'FormSettings
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -2163,7 +2199,6 @@ Partial Class FormSettings
     Friend WithEvents Panel17 As Panel
     Friend WithEvents Panel2 As Panel
     Friend WithEvents GroupBox1 As GroupBox
-    Friend WithEvents CheckBox_ConfigIsDefault As CheckBox
     Friend WithEvents TabPage_Database As TabPage
     Friend WithEvents TableLayoutPanel3 As TableLayoutPanel
     Friend WithEvents ClassPictureBoxQuality1 As ClassPictureBoxQuality
@@ -2182,8 +2217,6 @@ Partial Class FormSettings
     Friend WithEvents CheckBox_AssociateIncludes As CheckBox
     Friend WithEvents CheckBox_AssociateBasicPawnProject As CheckBox
     Friend WithEvents CheckBox_AssociateAmxMod As CheckBox
-    Friend WithEvents Label20 As Label
-    Friend WithEvents ComboBox_Language As ComboBox
     Friend WithEvents ContextMenuStrip_Plugins As ContextMenuStrip
     Friend WithEvents ToolStripMenuItem_PluginsRefresh As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator1 As ToolStripSeparator
@@ -2251,4 +2284,10 @@ Partial Class FormSettings
     Friend WithEvents Label1 As Label
     Friend WithEvents TextBox_ClientFolder As TextBox
     Friend WithEvents Button_ClientFolder As Button
+    Friend WithEvents Label7 As Label
+    Friend WithEvents TextBox_AutoAssignPaths As TextBox
+    Friend WithEvents Button_AutoAssignPaths As Button
+    Friend WithEvents Label20 As Label
+    Friend WithEvents ComboBox_Language As ComboBox
+    Friend WithEvents CheckBox_ConfigIsDefault As CheckBox
 End Class

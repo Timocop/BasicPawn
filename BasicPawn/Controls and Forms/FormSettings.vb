@@ -172,7 +172,7 @@ Public Class FormSettings
         CheckBox_AutoIndentBrackets.Checked = ClassSettings.g_iSettingsAutoIndentBrackets
 
         'Get restore-point configs 
-        For Each mConfig As ClassConfigs.STRUC_CONFIG_ITEM In ClassConfigs.GetConfigs(False)
+        For Each mConfig As ClassConfigs.STRUC_CONFIG_ITEM In ClassConfigs.GetConfigs()
             g_lRestoreConfigs.Add(mConfig)
         Next
         g_bRestoreConfigs = True
@@ -221,6 +221,14 @@ Public Class FormSettings
 
                         If (Not g_mFormMain.g_ClassTabControl.m_Tab(i).m_IsUnsaved AndAlso Not g_mFormMain.g_ClassTabControl.m_Tab(i).m_InvalidFile) Then
                             ClassConfigs.ClassKnownConfigs.m_KnownConfigByFile(g_mFormMain.g_ClassTabControl.m_Tab(i).m_File) = mConfig
+
+                            'Only assign optimal config if a config has been found.
+                            Dim j As ClassConfigs.ENUM_OPTIMAL_CONFIG
+                            Dim mOptimalConfig = ClassConfigs.FindOptimalConfigForFile(g_mFormMain.g_ClassTabControl.m_Tab(i).m_File, j)
+                            If (j <> ClassConfigs.ENUM_OPTIMAL_CONFIG.NONE) Then
+                                g_mFormMain.g_ClassTabControl.m_Tab(i).m_ActiveConfig = mOptimalConfig
+                                ClassConfigs.ClassKnownConfigs.m_KnownConfigByFile(g_mFormMain.g_ClassTabControl.m_Tab(i).m_File) = mOptimalConfig
+                            End If
                         End If
                     Next
 
@@ -229,13 +237,21 @@ Public Class FormSettings
 
                     If (Not g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved AndAlso Not g_mFormMain.g_ClassTabControl.m_ActiveTab.m_InvalidFile) Then
                         ClassConfigs.ClassKnownConfigs.m_KnownConfigByFile(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File) = mConfig
+
+                        'Only assign optimal config if a config has been found.
+                        Dim j As ClassConfigs.ENUM_OPTIMAL_CONFIG
+                        Dim mOptimalConfig = ClassConfigs.FindOptimalConfigForFile(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File, j)
+                        If (j <> ClassConfigs.ENUM_OPTIMAL_CONFIG.NONE) Then
+                            g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ActiveConfig = mOptimalConfig
+                            ClassConfigs.ClassKnownConfigs.m_KnownConfigByFile(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File) = mOptimalConfig
+                        End If
                     End If
             End Select
         End If
 
         'Cleanup invalid files from known configs
         Dim lConfigNames As New List(Of String)
-        For Each mItem In ClassConfigs.GetConfigs(False)
+        For Each mItem In ClassConfigs.GetConfigs()
             lConfigNames.Add(mItem.GetName)
         Next
 
@@ -250,6 +266,40 @@ Public Class FormSettings
                 Continue For
             End If
         Next
+
+        'Check default config paths collisions
+        If (True) Then
+            Dim mConfigs = ClassConfigs.GetConfigs
+
+            For Each mConfig In mConfigs
+                Dim sDefaultConfigPaths As String() = mConfig.g_sDefaultPaths.Split(";"c)
+
+                For Each mCompConfig In mConfigs
+                    'Ignore same config
+                    If (mConfig.GetName = mCompConfig.GetName) Then
+                        Continue For
+                    End If
+
+                    Dim sCompDefaultConfigPaths As String() = mCompConfig.g_sDefaultPaths.Split(";"c)
+
+                    For Each sPath As String In sDefaultConfigPaths
+                        If (String.IsNullOrEmpty(sPath)) Then
+                            Continue For
+                        End If
+
+                        For Each sCompPath As String In sCompDefaultConfigPaths
+                            If (String.IsNullOrEmpty(sCompPath)) Then
+                                Continue For
+                            End If
+
+                            If (sPath.ToLower.StartsWith(sCompPath.ToLower)) Then
+                                MessageBox.Show(String.Format("Some default config paths collide with other configs!{0}{0}Config '{1}' collides with '{2}'.", Environment.NewLine, mConfig.GetName, mCompConfig.GetName), "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                            End If
+                        Next
+                    Next
+                Next
+            Next
+        End If
 
         'General
         ClassSettings.g_iSettingsAlwaysOpenNewInstance = CheckBox_AlwaysNewInstance.Checked
@@ -313,7 +363,7 @@ Public Class FormSettings
             Return
         End If
 
-        For Each mConfig As ClassConfigs.STRUC_CONFIG_ITEM In ClassConfigs.GetConfigs(False)
+        For Each mConfig As ClassConfigs.STRUC_CONFIG_ITEM In ClassConfigs.GetConfigs()
             mConfig.RemoveConfig()
         Next
 
@@ -465,7 +515,7 @@ Public Class FormSettings
         ListBox_Configs.BeginUpdate()
         ListBox_Configs.Items.Clear()
 
-        For Each mConfig As ClassConfigs.STRUC_CONFIG_ITEM In ClassConfigs.GetConfigs(True)
+        For Each mConfig As ClassConfigs.STRUC_CONFIG_ITEM In ClassConfigs.GetConfigs()
             ListBox_Configs.Items.Add(mConfig.GetName)
         Next
 
@@ -503,6 +553,7 @@ Public Class FormSettings
                     TextBox_IncludeFolder.Text = ""
                     TextBox_OutputFolder.Text = ""
                     CheckBox_ConfigIsDefault.Checked = False
+                    TextBox_AutoAssignPaths.Text = ""
                     ComboBox_Language.SelectedIndex = 0
                     If (True) Then
                         'Compiler Options
@@ -555,6 +606,7 @@ Public Class FormSettings
                 TextBox_IncludeFolder.Text = ""
                 TextBox_OutputFolder.Text = ""
                 CheckBox_ConfigIsDefault.Checked = False
+                TextBox_AutoAssignPaths.Text = ""
                 ComboBox_Language.SelectedIndex = 0
                 If (True) Then
                     'Compiler Options
@@ -607,6 +659,7 @@ Public Class FormSettings
                 TextBox_IncludeFolder.Text = mConfig.g_sIncludeFolders
                 TextBox_OutputFolder.Text = mConfig.g_sOutputFolder
                 CheckBox_ConfigIsDefault.Checked = mConfig.g_bAutoload
+                TextBox_AutoAssignPaths.Text = mConfig.g_sDefaultPaths
                 ComboBox_Language.SelectedIndex = mConfig.g_iLanguage
 
                 'Compiler Options
@@ -739,11 +792,34 @@ Public Class FormSettings
                 If (String.IsNullOrEmpty(TextBox_IncludeFolder.Text)) Then
                     TextBox_IncludeFolder.Text = i.SelectedPath
                 Else
-                    Select Case MessageBox.Show("Replace already existing include paths with this one? Otherwise the selected path will be addded to other already existing include paths.", "Replace or add include paths", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                    Select Case MessageBox.Show("Replace already existing paths with this one? Otherwise the selected path will be addded to other already existing paths.", "Replace or add paths", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
                         Case DialogResult.Yes
                             TextBox_IncludeFolder.Text = i.SelectedPath
                         Case Else
                             TextBox_IncludeFolder.Text &= ";"c & i.SelectedPath
+                    End Select
+                End If
+            End If
+        End Using
+    End Sub
+
+    Private Sub Button_AutoAssignPaths_Click(sender As Object, e As EventArgs) Handles Button_AutoAssignPaths.Click
+        Using i As New FolderBrowserDialog
+            If (String.IsNullOrEmpty(TextBox_AutoAssignPaths.Text)) Then
+                i.SelectedPath = IO.Path.GetDirectoryName(TextBox_CompilerPath.Text)
+            Else
+                i.SelectedPath = TextBox_AutoAssignPaths.Text.Split(";"c)(0)
+            End If
+
+            If (i.ShowDialog = DialogResult.OK) Then
+                If (String.IsNullOrEmpty(TextBox_AutoAssignPaths.Text)) Then
+                    TextBox_AutoAssignPaths.Text = i.SelectedPath
+                Else
+                    Select Case MessageBox.Show("Replace already existing paths with this one? Otherwise the selected path will be addded to other already existing paths.", "Replace or add paths", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                        Case DialogResult.Yes
+                            TextBox_AutoAssignPaths.Text = i.SelectedPath
+                        Case Else
+                            TextBox_AutoAssignPaths.Text &= ";"c & i.SelectedPath
                     End Select
                 End If
             End If
@@ -940,7 +1016,7 @@ Public Class FormSettings
         End If
 
         If (CheckBox_ConfigIsDefault.Checked) Then
-            For Each mTmpConfig As ClassConfigs.STRUC_CONFIG_ITEM In ClassConfigs.GetConfigs(False)
+            For Each mTmpConfig As ClassConfigs.STRUC_CONFIG_ITEM In ClassConfigs.GetConfigs()
                 If (mTmpConfig.g_bAutoload) Then
                     mTmpConfig.g_bAutoload = False
                     mTmpConfig.SaveConfig()
@@ -1025,6 +1101,7 @@ Public Class FormSettings
                                                                     TextBox_CompilerPath.Text,
                                                                     TextBox_OutputFolder.Text,
                                                                     CheckBox_ConfigIsDefault.Checked,
+                                                                    TextBox_AutoAssignPaths.Text,
                                                                     CType(ComboBox_Language.SelectedIndex, ClassConfigs.STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE),
                                                                     mCompilerOptionsSP,
                                                                     mCompilerOptionsAMXX,
@@ -1059,6 +1136,11 @@ Public Class FormSettings
     End Sub
 
     Private Sub TextBox_OutputFolder_TextChanged(sender As Object, e As EventArgs) Handles TextBox_OutputFolder.TextChanged
+        m_ConfigSettingsChanged = True
+        MarkChanged()
+    End Sub
+
+    Private Sub TextBox_AutoAssignPaths_TextChanged(sender As Object, e As EventArgs) Handles TextBox_AutoAssignPaths.TextChanged
         m_ConfigSettingsChanged = True
         MarkChanged()
     End Sub
@@ -1210,7 +1292,7 @@ Public Class FormSettings
             Dim sName As String = g_mListBoxConfigSelectedItem.ToString
             Dim mConfig As ClassConfigs.STRUC_CONFIG_ITEM = Nothing
 
-            For Each mFindConfig In ClassConfigs.GetConfigs(False)
+            For Each mFindConfig In ClassConfigs.GetConfigs()
                 If (mFindConfig.GetName = sName) Then
                     mConfig = mFindConfig
                     Exit For

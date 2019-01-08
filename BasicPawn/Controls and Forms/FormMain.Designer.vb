@@ -173,6 +173,9 @@ Partial Class FormMain
         Me.ContextMenuStrip_Config = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.ToolStripMenuItem_EditConfigActiveTab = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_EditConfigAllTabs = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator19 = New System.Windows.Forms.ToolStripSeparator()
+        Me.ToolStripMenuItem_FindOptimalConfigActiveTab = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_FindOptimalConfigAllTabs = New System.Windows.Forms.ToolStripMenuItem()
         Me.ContextMenuStrip_RightClick.SuspendLayout()
         Me.MenuStrip_BasicPawn.SuspendLayout()
         Me.SplitContainer_ToolboxSourceAndDetails.Panel1.SuspendLayout()
@@ -1254,23 +1257,41 @@ Partial Class FormMain
         '
         'ContextMenuStrip_Config
         '
-        Me.ContextMenuStrip_Config.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_EditConfigActiveTab, Me.ToolStripMenuItem_EditConfigAllTabs})
+        Me.ContextMenuStrip_Config.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_EditConfigActiveTab, Me.ToolStripMenuItem_EditConfigAllTabs, Me.ToolStripSeparator19, Me.ToolStripMenuItem_FindOptimalConfigActiveTab, Me.ToolStripMenuItem_FindOptimalConfigAllTabs})
         Me.ContextMenuStrip_Config.Name = "ContextMenuStrip_Config"
         Me.ContextMenuStrip_Config.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
-        Me.ContextMenuStrip_Config.ShowImageMargin = False
-        Me.ContextMenuStrip_Config.Size = New System.Drawing.Size(209, 48)
+        Me.ContextMenuStrip_Config.Size = New System.Drawing.Size(251, 120)
         '
         'ToolStripMenuItem_EditConfigActiveTab
         '
+        Me.ToolStripMenuItem_EditConfigActiveTab.Image = Global.BasicPawn.My.Resources.Resources.imageres_5364_16x16
         Me.ToolStripMenuItem_EditConfigActiveTab.Name = "ToolStripMenuItem_EditConfigActiveTab"
-        Me.ToolStripMenuItem_EditConfigActiveTab.Size = New System.Drawing.Size(208, 22)
+        Me.ToolStripMenuItem_EditConfigActiveTab.Size = New System.Drawing.Size(250, 22)
         Me.ToolStripMenuItem_EditConfigActiveTab.Text = "Change config for active tab..."
         '
         'ToolStripMenuItem_EditConfigAllTabs
         '
         Me.ToolStripMenuItem_EditConfigAllTabs.Name = "ToolStripMenuItem_EditConfigAllTabs"
-        Me.ToolStripMenuItem_EditConfigAllTabs.Size = New System.Drawing.Size(208, 22)
+        Me.ToolStripMenuItem_EditConfigAllTabs.Size = New System.Drawing.Size(250, 22)
         Me.ToolStripMenuItem_EditConfigAllTabs.Text = "Change config for all tabs..."
+        '
+        'ToolStripSeparator19
+        '
+        Me.ToolStripSeparator19.Name = "ToolStripSeparator19"
+        Me.ToolStripSeparator19.Size = New System.Drawing.Size(247, 6)
+        '
+        'ToolStripMenuItem_FindOptimalConfigActiveTab
+        '
+        Me.ToolStripMenuItem_FindOptimalConfigActiveTab.Image = Global.BasicPawn.My.Resources.Resources.imageres_5332_16x16
+        Me.ToolStripMenuItem_FindOptimalConfigActiveTab.Name = "ToolStripMenuItem_FindOptimalConfigActiveTab"
+        Me.ToolStripMenuItem_FindOptimalConfigActiveTab.Size = New System.Drawing.Size(250, 22)
+        Me.ToolStripMenuItem_FindOptimalConfigActiveTab.Text = "Find optimal config for active tab"
+        '
+        'ToolStripMenuItem_FindOptimalConfigAllTabs
+        '
+        Me.ToolStripMenuItem_FindOptimalConfigAllTabs.Name = "ToolStripMenuItem_FindOptimalConfigAllTabs"
+        Me.ToolStripMenuItem_FindOptimalConfigAllTabs.Size = New System.Drawing.Size(250, 22)
+        Me.ToolStripMenuItem_FindOptimalConfigAllTabs.Text = "Find optimal config for all tabs"
         '
         'FormMain
         '
@@ -1453,4 +1474,7 @@ Partial Class FormMain
     Friend WithEvents ToolStripMenuItem_DebuggerAssertRemove As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_DebuggerAssertRemoveAll As ToolStripMenuItem
     Friend WithEvents TabPage_ExplorerBrowser As TabPage
+    Friend WithEvents ToolStripSeparator19 As ToolStripSeparator
+    Friend WithEvents ToolStripMenuItem_FindOptimalConfigActiveTab As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_FindOptimalConfigAllTabs As ToolStripMenuItem
 End Class

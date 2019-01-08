@@ -796,12 +796,12 @@ Public Class UCProjectBrowser
                 mFormProgress.m_Progress = 0
 
                 For Each sFile In lFiles
-                    Dim mKnownConfig = ClassConfigs.ClassKnownConfigs.m_KnownConfigByFile(sFile)
-                    If (mKnownConfig Is Nothing) Then
-                        Throw New ArgumentException("No known config found for this file")
+                    Dim mConfig = ClassConfigs.FindOptimalConfigForFile(sFile, Nothing)
+                    If (mConfig Is Nothing) Then
+                        Throw New ArgumentException(String.Format("Could not find config for file '{0}'.{1}Make sure BasicPawn can find a config for this file using 'Known files' or 'Default config paths' in configs.", sFile, Environment.NewLine))
                     End If
 
-                    Dim sShell As String = mKnownConfig.g_sExecuteShell
+                    Dim sShell As String = mConfig.g_sExecuteShell
 
                     For Each mArg In ClassSettings.GetShellArguments(g_mFormMain, sFile)
                         sShell = sShell.Replace(mArg.g_sMarker, mArg.g_sArgument)
