@@ -150,7 +150,7 @@ Public Class FormMultiCompiler
                     ClassThread.ExecEx(Of Object)(Me, Sub()
                                                           Try
                                                               With New Text.StringBuilder
-                                                                  .AppendLine(String.Format("'{0}' failed to compile!", sSourceFile))
+                                                                  .AppendFormat("'{0}' failed to compile!", sSourceFile).AppendLine()
                                                                   .AppendLine("See information tab for more information.")
                                                                   .AppendLine()
                                                                   .AppendLine("Do you want to open the file now?")
@@ -173,7 +173,7 @@ Public Class FormMultiCompiler
                     ClassThread.ExecEx(Of Object)(Me, Sub()
                                                           Try
                                                               With New Text.StringBuilder
-                                                                  .AppendLine(String.Format("'{0}' has compiler warnings!", sSourceFile))
+                                                                  .AppendFormat("'{0}' has compiler warnings!", sSourceFile).AppendLine()
                                                                   .AppendLine("See information tab for more information.")
                                                                   .AppendLine()
                                                                   .AppendLine("Do you want to open the file now?")

@@ -509,7 +509,7 @@ Public Class ClassDebuggerRunner
                 Throw New ArgumentException("Plugin identity invalid")
             End If
 
-            Dim sourceFinished As New Text.StringBuilder
+            Dim SB As New Text.StringBuilder
 
             Dim sLine As String = ""
             Using mSR As New IO.StringReader(sSource)
@@ -520,22 +520,22 @@ Public Class ClassDebuggerRunner
                     End If
 
                     If (Regex.IsMatch(sLine, "#line\s+(?<Line>[0-9]+)")) Then
-                        sourceFinished.AppendLine("")
+                        SB.AppendLine()
                         Continue While
                     End If
 
                     If (Regex.IsMatch(sLine, "#file\s+(?<Path>.*?)$")) Then
-                        sourceFinished.AppendLine("")
+                        SB.AppendLine()
                         Continue While
                     End If
 
-                    sourceFinished.AppendLine(sLine)
+                    SB.AppendLine(sLine)
                 End While
             End Using
 
-            sourceFinished.AppendLine(String.Format("#file ""{0}""", g_ClassDebuggerRunner.m_PluginIdentity))
+            SB.AppendFormat("#file ""{0}""", g_ClassDebuggerRunner.m_PluginIdentity).AppendLine()
 
-            sSource = sourceFinished.ToString
+            sSource = SB.ToString
         End Sub
     End Class
 
@@ -792,8 +792,8 @@ Public Class ClassDebuggerRunner
                     Case FormDebuggerStop.ENUM_DIALOG_RESULT.UNLOAD_PLUGIN
                         If (Not String.IsNullOrEmpty(m_ServerFolder) AndAlso IO.Directory.Exists(m_ServerFolder)) Then
                             With New Text.StringBuilder
-                                .AppendLine(String.Format("sm plugins unload {0}", IO.Path.GetFileName(g_sLatestDebuggerPlugin)))
-                                .AppendLine(String.Format("sm plugins unload {0}", IO.Path.GetFileName(g_sLatestDebuggerRunnerPlugin)))
+                                .AppendFormat("sm plugins unload {0}", IO.Path.GetFileName(g_sLatestDebuggerPlugin)).AppendLine()
+                                .AppendFormat("sm plugins unload {0}", IO.Path.GetFileName(g_sLatestDebuggerRunnerPlugin)).AppendLine()
 
                                 g_mFormDebugger.g_ClassDebuggerRunnerEngine.AcceptCommand(m_ServerFolder, .ToString)
                             End With

@@ -1316,7 +1316,7 @@ Public Class ClassSyntaxTools
                                                         mXmlBuilder.Append(g_sSyntaxHighlightCaretMarker)
 
                                                         If (Not String.IsNullOrEmpty(g_sCaretWord) AndAlso ClassSettings.g_iSettingsAutoMark) Then
-                                                            mXmlBuilder.Append(String.Format("<Key word=""{0}""/>", g_sCaretWord))
+                                                            mXmlBuilder.AppendFormat("<Key word=""{0}""/>", g_sCaretWord)
                                                         End If
 
                                                         mXmlBuilder.AppendLine()
@@ -1331,7 +1331,7 @@ Public Class ClassSyntaxTools
                                                         mXmlBuilder.Append(g_sSyntaxHighlightWordMarker)
 
                                                         If (Not String.IsNullOrEmpty(g_sHighlightWord)) Then
-                                                            mXmlBuilder.Append(String.Format("<Key word=""{0}""/>", g_sHighlightWord))
+                                                            mXmlBuilder.AppendFormat("<Key word=""{0}""/>", g_sHighlightWord)
                                                         End If
 
                                                         mXmlBuilder.AppendLine()
@@ -1348,7 +1348,7 @@ Public Class ClassSyntaxTools
                                                         Dim menuItem = g_ClassSyntaxTools.g_mFormMain.g_ClassCustomHighlighting.m_HightlightItems()
 
                                                         If (menuItem(iHighlightCustomCount) IsNot Nothing AndAlso Not String.IsNullOrEmpty(menuItem(iHighlightCustomCount).sWord)) Then
-                                                            mXmlBuilder.Append(String.Format("<Key word=""{0}""/>", menuItem(iHighlightCustomCount).sWord))
+                                                            mXmlBuilder.AppendFormat("<Key word=""{0}""/>", menuItem(iHighlightCustomCount).sWord)
                                                         End If
 
                                                         mXmlBuilder.AppendLine()
@@ -1366,7 +1366,7 @@ Public Class ClassSyntaxTools
                                                             Select Case (True)
                                                                 Case (mAutocomplete.m_Type And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEFINE) <> 0,
                                                                         (mAutocomplete.m_Type And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PUBLICVAR) <> 0
-                                                                    mXmlBuilder.Append(String.Format("<Key word=""{0}""/>", mAutocomplete.m_FunctionString))
+                                                                    mXmlBuilder.AppendFormat("<Key word=""{0}""/>", mAutocomplete.m_FunctionString)
 
                                                             End Select
                                                         Next
@@ -1390,7 +1390,7 @@ Public Class ClassSyntaxTools
                                                                                 lExistList.Add(sEnumName(0))
                                                                             End If
 
-                                                                            mXmlBuilder.Append(String.Format("<Key word=""{0}""/>", sEnumName(1)))
+                                                                            mXmlBuilder.AppendFormat("<Key word=""{0}""/>", sEnumName(1))
                                                                     End Select
 
                                                                 Case (mAutocomplete.m_Type And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) <> 0
@@ -1433,7 +1433,7 @@ Public Class ClassSyntaxTools
                                                         Next
 
                                                         For Each s In lExistList
-                                                            mXmlBuilder.Append(String.Format("<Key word=""{0}""/>", s))
+                                                            mXmlBuilder.AppendFormat("<Key word=""{0}""/>", s)
                                                         Next
 
                                                         mXmlBuilder.AppendLine()

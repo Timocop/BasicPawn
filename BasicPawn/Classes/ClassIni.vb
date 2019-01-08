@@ -166,7 +166,7 @@ Public Class ClassIni
         'Sort items and write to file
         Dim SB As New Text.StringBuilder
         For Each sSection In lSectionNames
-            SB.AppendLine(String.Format("[{0}]", sSection))
+            SB.AppendFormat("[{0}]", sSection).AppendLine()
 
             For Each mItem In lContents
                 If (mItem.sSection = sSection) Then

@@ -18,11 +18,12 @@ Public Class ClassExceptionLog
     Public Shared ReadOnly g_sLogName As String = IO.Path.Combine(Application.StartupPath, "application_error.log")
 
     Public Shared Sub WriteToLog(ex As Exception)
-        Dim SB As New Text.StringBuilder
-        SB.AppendLine(String.Format("[{0}]", Now.ToString))
-        SB.AppendLine(ex.ToString)
+        With New Text.StringBuilder
+            .AppendFormat("[{0}]", Now.ToString).AppendLine()
+            .AppendLine(ex.ToString)
 
-        IO.File.AppendAllText(g_sLogName, SB.ToString)
+            IO.File.AppendAllText(g_sLogName, .ToString)
+        End With
     End Sub
 
     Public Shared Sub WriteToLogMessageBox(ex As Exception)

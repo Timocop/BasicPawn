@@ -363,13 +363,14 @@ Public Class FormSettings
                             End If
 
                             If (sPath.ToLower.StartsWith(sCompPath.ToLower)) Then
-                                Dim mMsgBuilder As New Text.StringBuilder()
-                                mMsgBuilder.AppendLine("Some default config paths collide with other configs!")
-                                mMsgBuilder.AppendLine()
-                                mMsgBuilder.AppendLine()
-                                mMsgBuilder.AppendFormat("Config '{1}' collides with '{2}'.", mConfig.GetName, mCompConfig.GetName).AppendLine()
+                                With New Text.StringBuilder()
+                                    .AppendLine("Some default config paths collide with other configs!")
+                                    .AppendLine()
+                                    .AppendLine()
+                                    .AppendFormat("Config '{1}' collides with '{2}'.", mConfig.GetName, mCompConfig.GetName).AppendLine()
 
-                                MessageBox.Show(mMsgBuilder.ToString, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                                    MessageBox.Show(.ToString, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                                End With
                             End If
                         Next
                     Next
@@ -383,26 +384,27 @@ Public Class FormSettings
                 Dim mCurrentVersion As New Version
                 Dim mSyntaxVersion As New Version
                 If (g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.CheckSyntaxVersion(mCurrentVersion, mSyntaxVersion)) Then
-                    Dim mMsgBuilder As New Text.StringBuilder()
-                    mMsgBuilder.AppendLine("Your custom syntax highlighting file seems to be out-of-date.")
-                    mMsgBuilder.AppendLine("Do you want to open the download page now?")
-                    mMsgBuilder.AppendLine()
-                    mMsgBuilder.AppendFormat("Your version is v{0}. Required version is v{1}.", mSyntaxVersion.ToString, mCurrentVersion.ToString).AppendLine()
-                    mMsgBuilder.AppendLine()
-                    mMsgBuilder.AppendLine("Click YES to go to the BasicPawn syntax download page.")
-                    mMsgBuilder.AppendLine("Click CANCEL to suppress this warning.")
+                    With New Text.StringBuilder()
+                        .AppendLine("Your custom syntax highlighting file seems to be out-of-date.")
+                        .AppendLine("Do you want to open the download page now?")
+                        .AppendLine()
+                        .AppendFormat("Your version is v{0}. Required version is v{1}.", mSyntaxVersion.ToString, mCurrentVersion.ToString).AppendLine()
+                        .AppendLine()
+                        .AppendLine("Click YES to go to the BasicPawn syntax download page.")
+                        .AppendLine("Click CANCEL to suppress this warning.")
 
-                    Select Case (MessageBox.Show(mMsgBuilder.ToString, "Syntax out-of-date", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning))
-                        Case DialogResult.Yes
-                            Try
-                                Process.Start("https://github.com/Timocop/BasicPawn/tree/master/Custom%20Syntax%20Styles")
-                            Catch ex As Exception
-                                ClassExceptionLog.WriteToLogMessageBox(ex)
-                            End Try
+                        Select Case (MessageBox.Show(.ToString, "Syntax out-of-date", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning))
+                            Case DialogResult.Yes
+                                Try
+                                    Process.Start("https://github.com/Timocop/BasicPawn/tree/master/Custom%20Syntax%20Styles")
+                                Catch ex As Exception
+                                    ClassExceptionLog.WriteToLogMessageBox(ex)
+                                End Try
 
-                        Case DialogResult.Cancel
-                            bSuppressSyntaxVersionCheck = True
-                    End Select
+                            Case DialogResult.Cancel
+                                bSuppressSyntaxVersionCheck = True
+                        End Select
+                    End With
                 End If
             End If
         End If
@@ -1011,7 +1013,7 @@ Public Class FormSettings
             SB.AppendLine()
 
             For Each iItem In ClassSettings.GetShellArguments(g_mFormMain, Nothing)
-                SB.AppendLine(String.Format("{0} - {1}", iItem.g_sMarker, iItem.g_sArgumentName))
+                SB.AppendFormat("{0} - {1}", iItem.g_sMarker, iItem.g_sArgumentName).AppendLine()
             Next
 
             MessageBox.Show(SB.ToString, "Information", MessageBoxButtons.OK)
@@ -1526,7 +1528,7 @@ Public Class FormSettings
                         End If
 
                         With New Text.StringBuilder
-                            .AppendLine(String.Format("Could not change plugin state of plugin '{0}' with reason:", mPlugin.sFile))
+                            .AppendFormat("Could not change plugin state of plugin '{0}' with reason:", mPlugin.sFile).AppendLine()
                             .AppendLine()
                             .AppendLine(sReason)
 

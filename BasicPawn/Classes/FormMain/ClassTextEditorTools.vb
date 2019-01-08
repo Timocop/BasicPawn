@@ -469,7 +469,7 @@ Public Class ClassTextEditorTools
 
             If (Not String.IsNullOrEmpty(sEmulateSourceFile)) Then
                 With New Text.StringBuilder
-                    .AppendLine(String.Format("#file ""{0}""", sEmulateSourceFile))
+                    .AppendFormat("#file ""{0}""", sEmulateSourceFile).AppendLine()
                     .AppendLine("#line 0")
                     .AppendLine(sSource)
 
@@ -769,7 +769,7 @@ Public Class ClassTextEditorTools
 
             If (Not String.IsNullOrEmpty(sEmulateSourceFile)) Then
                 With New Text.StringBuilder
-                    .AppendLine(String.Format("#file ""{0}""", sEmulateSourceFile))
+                    .AppendFormat("#file ""{0}""", sEmulateSourceFile).AppendLine()
                     .AppendLine("#line 0")
                     .AppendLine(sSource)
 
@@ -1069,7 +1069,7 @@ Public Class ClassTextEditorTools
 
             If (Not String.IsNullOrEmpty(sEmulateSourceFile)) Then
                 With New Text.StringBuilder
-                    .AppendLine(String.Format("#file ""{0}""", sEmulateSourceFile))
+                    .AppendFormat("#file ""{0}""", sEmulateSourceFile).AppendLine()
                     .AppendLine("#line 0")
                     .AppendLine(sSource)
 

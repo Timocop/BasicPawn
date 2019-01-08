@@ -883,9 +883,9 @@ Public Class UCProjectBrowser
                     With New Text.StringBuilder
                         .AppendLine("Do you want to replace the path in the project file to the extracted path?")
                         .AppendLine()
-                        .AppendLine(String.Format("'{0}'", mInfo.sFile))
+                        .AppendFormat("'{0}'", mInfo.sFile).AppendLine()
                         .AppendLine("to")
-                        .AppendLine(String.Format("'{0}'", sNewPath))
+                        .AppendFormat("'{0}'", sNewPath).AppendLine()
 
                         Select Case (MessageBox.Show(.ToString, "Replace path", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
                             Case DialogResult.Yes

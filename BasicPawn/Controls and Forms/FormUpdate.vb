@@ -73,8 +73,8 @@ Public Class FormUpdate
                 ClassThread.ExecEx(Of Object)(Me, Sub()
                                                       With New Text.StringBuilder
                                                           .AppendLine("A new BasicPawn update is available!")
-                                                          .AppendLine(String.Format("(Server: {0})", sLocationInfo))
-                                                          .AppendLine(String.Format("Do you want to update from version {0} to version {1} now?", sCurrentVersion, sNextVersion))
+                                                          .AppendFormat("(Server: {0})", sLocationInfo).AppendLine()
+                                                          .AppendFormat("Do you want to update from version {0} to version {1} now?", sCurrentVersion, sNextVersion).AppendLine()
                                                           Label_StatusTitle.Text = .ToString
                                                       End With
                                                       Button_Update.Visible = True
