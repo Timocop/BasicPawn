@@ -33,13 +33,15 @@ Public Class ClassSyntaxTools
     Public Shared g_sSyntaxXML As String = My.Resources.SourcePawn_Syntax
     Public Shared g_mSyntaxProvider As ClassSyntaxHighlighting.ClassBinarySyntaxModeFileProvider
 
-    Public Shared g_sSyntax_HighlightCaretMarker As String = "<!-- [DO NOT EDIT | HIGHLIGHT CARET MARKER] -->"
-    Public Shared g_sSyntax_HighlightWordMarker As String = "<!-- [DO NOT EDIT | HIGHLIGHT WORD MARKER] -->"
-    Public Shared g_sSyntax_HighlightWordCustomMarker As String = "<!-- [DO NOT EDIT | HIGHLIGHT WORD CUSTOM MARKER] -->"
-    Public Shared g_sSyntax_HighlightDefineMarker As String = "<!-- [DO NOT EDIT | DEFINE MARKER] -->"
-    Public Shared g_sSyntax_HighlightEnumMarker As String = "<!-- [DO NOT EDIT | ENUM MARKER] -->"
-    Public Shared g_sSyntax_HighlightEnum2Marker As String = "<!-- [DO NOT EDIT | ENUM2 MARKER] -->"
-    Public Shared g_sSyntax_SourcePawnMarker As String = "SourcePawn-04e3632f-5472-42c5-929a-c3e0c2b35324"
+    Public Shared ReadOnly g_sSyntaxHighlightCaretMarker As String = "<!-- [DO NOT EDIT | HIGHLIGHT CARET MARKER] -->"
+    Public Shared ReadOnly g_sSyntaxHighlightWordMarker As String = "<!-- [DO NOT EDIT | HIGHLIGHT WORD MARKER] -->"
+    Public Shared ReadOnly g_sSyntaxHighlightWordCustomMarker As String = "<!-- [DO NOT EDIT | HIGHLIGHT WORD CUSTOM MARKER] -->"
+    Public Shared ReadOnly g_sSyntaxHighlightDefineMarker As String = "<!-- [DO NOT EDIT | DEFINE MARKER] -->"
+    Public Shared ReadOnly g_sSyntaxHighlightEnumMarker As String = "<!-- [DO NOT EDIT | ENUM MARKER] -->"
+    Public Shared ReadOnly g_sSyntaxHighlightEnum2Marker As String = "<!-- [DO NOT EDIT | ENUM2 MARKER] -->"
+    Public Shared ReadOnly g_sSyntaxSourcePawnMarker As String = "SourcePawn-04e3632f-5472-42c5-929a-c3e0c2b35324"
+
+    Public Shared ReadOnly g_mSyntaxRequiredVersion As New Version("1.0")
 
     Enum ENUM_LANGUAGE_TYPE
         SOURCEPAWN
@@ -1207,9 +1209,9 @@ Public Class ClassSyntaxTools
                 SyncLock _lock
                     Dim sModSyntaxXML As String
                     If (Not String.IsNullOrEmpty(g_sCustomSyntaxText)) Then
-                        sModSyntaxXML = g_sCustomSyntaxText.Replace(g_sSyntax_SourcePawnMarker, g_mTextEditorSyntaxItems(i).sName)
+                        sModSyntaxXML = g_sCustomSyntaxText.Replace(g_sSyntaxSourcePawnMarker, g_mTextEditorSyntaxItems(i).sName)
                     Else
-                        sModSyntaxXML = g_sSyntaxXML.Replace(g_sSyntax_SourcePawnMarker, g_mTextEditorSyntaxItems(i).sName)
+                        sModSyntaxXML = g_sSyntaxXML.Replace(g_sSyntaxSourcePawnMarker, g_mTextEditorSyntaxItems(i).sName)
                     End If
 
                     'Cleanup
@@ -1235,6 +1237,47 @@ Public Class ClassSyntaxTools
                 UpdateSyntax(CType(j, ENUM_SYNTAX_UPDATE_TYPE), j = 0)
             Next
         End Sub
+
+        ''' <summary>
+        ''' Checks the syntax version. If true, the syntax file requires an update, false otherwise.
+        ''' </summary>
+        ''' <param name="r_CurrentVersion"></param>
+        ''' <param name="r_SyntaxVersion"></param>
+        ''' <returns></returns>
+        Public Function CheckSyntaxVersion(ByRef r_CurrentVersion As Version, ByRef r_SyntaxVersion As Version) As Boolean
+            r_CurrentVersion = g_mSyntaxRequiredVersion
+            r_SyntaxVersion = New Version(0, 0)
+
+            Dim mVersion = GetSyntaxVersion()
+            If (mVersion Is Nothing) Then
+                Return False
+            End If
+
+            r_SyntaxVersion = mVersion
+
+            If (mVersion = New Version(0, 0) OrElse g_mSyntaxRequiredVersion > mVersion) Then
+                Return True
+            End If
+
+            Return False
+        End Function
+
+        Public Function GetSyntaxVersion() As Version
+            If (Not String.IsNullOrEmpty(ClassSettings.g_sSettingsSyntaxHighlightingPath) AndAlso
+                       IO.File.Exists(ClassSettings.g_sSettingsSyntaxHighlightingPath) AndAlso
+                       IO.Path.GetExtension(ClassSettings.g_sSettingsSyntaxHighlightingPath).ToLower = ".xml") Then
+                Dim sContent = IO.File.ReadAllText(ClassSettings.g_sSettingsSyntaxHighlightingPath)
+                Dim mMatch As Match = Regex.Match(sContent, "\<\!\-\-\s*\<SyntaxVersion\>\s*(?<Version>[0-9\.]+)\s*\<\/SyntaxVersion\>\s*\-\-\>", RegexOptions.IgnoreCase Or RegexOptions.Multiline)
+
+                If (mMatch.Groups("Version").Success) Then
+                    Return New Version(mMatch.Groups("Version").Value)
+                Else
+                    Return New Version(0, 0)
+                End If
+            Else
+                Return Nothing
+            End If
+        End Function
 
         Public Sub UpdateSyntax(iType As ENUM_SYNTAX_UPDATE_TYPE, Optional bRenew As Boolean = False)
             Try
@@ -1268,9 +1311,9 @@ Public Class ClassSyntaxTools
                                         Select Case (iType)
                                             Case ENUM_SYNTAX_UPDATE_TYPE.CARET_WORD
                                                 If (i = ENUM_SYNTAX_EDITORS.MAIN_TEXTEDITOR) Then
-                                                    If (sLine.Contains(g_sSyntax_HighlightCaretMarker)) Then
+                                                    If (sLine.Contains(g_sSyntaxHighlightCaretMarker)) Then
 
-                                                        mXmlBuilder.Append(g_sSyntax_HighlightCaretMarker)
+                                                        mXmlBuilder.Append(g_sSyntaxHighlightCaretMarker)
 
                                                         If (Not String.IsNullOrEmpty(g_sCaretWord) AndAlso ClassSettings.g_iSettingsAutoMark) Then
                                                             mXmlBuilder.Append(String.Format("<Key word=""{0}""/>", g_sCaretWord))
@@ -1283,9 +1326,9 @@ Public Class ClassSyntaxTools
 
                                             Case ENUM_SYNTAX_UPDATE_TYPE.HIGHLIGHT_WORD
                                                 If (i = ENUM_SYNTAX_EDITORS.MAIN_TEXTEDITOR) Then
-                                                    If (sLine.Contains(g_sSyntax_HighlightWordMarker)) Then
+                                                    If (sLine.Contains(g_sSyntaxHighlightWordMarker)) Then
 
-                                                        mXmlBuilder.Append(g_sSyntax_HighlightWordMarker)
+                                                        mXmlBuilder.Append(g_sSyntaxHighlightWordMarker)
 
                                                         If (Not String.IsNullOrEmpty(g_sHighlightWord)) Then
                                                             mXmlBuilder.Append(String.Format("<Key word=""{0}""/>", g_sHighlightWord))
@@ -1298,8 +1341,8 @@ Public Class ClassSyntaxTools
 
                                             Case ENUM_SYNTAX_UPDATE_TYPE.HIGHLIGHT_WORD_CUSTOM
                                                 If (i = ENUM_SYNTAX_EDITORS.MAIN_TEXTEDITOR) Then
-                                                    If (sLine.Contains(g_sSyntax_HighlightWordCustomMarker)) Then
-                                                        mXmlBuilder.Append(g_sSyntax_HighlightWordCustomMarker)
+                                                    If (sLine.Contains(g_sSyntaxHighlightWordCustomMarker)) Then
+                                                        mXmlBuilder.Append(g_sSyntaxHighlightWordCustomMarker)
 
                                                         g_ClassSyntaxTools.g_mFormMain.g_ClassCustomHighlighting.Add(iHighlightCustomCount)
                                                         Dim menuItem = g_ClassSyntaxTools.g_mFormMain.g_ClassCustomHighlighting.m_HightlightItems()
@@ -1316,8 +1359,8 @@ Public Class ClassSyntaxTools
 
                                             Case ENUM_SYNTAX_UPDATE_TYPE.AUTOCOMPLETE
                                                 If (i = ENUM_SYNTAX_EDITORS.MAIN_TEXTEDITOR OrElse i = ENUM_SYNTAX_EDITORS.DEBUGGER_SOURCE_TEXTEDITOR) Then
-                                                    If (sLine.Contains(g_sSyntax_HighlightDefineMarker)) Then
-                                                        mXmlBuilder.Append(g_sSyntax_HighlightDefineMarker)
+                                                    If (sLine.Contains(g_sSyntaxHighlightDefineMarker)) Then
+                                                        mXmlBuilder.Append(g_sSyntaxHighlightDefineMarker)
 
                                                         For Each mAutocomplete In mActiveAutocomplete
                                                             Select Case (True)
@@ -1332,8 +1375,8 @@ Public Class ClassSyntaxTools
                                                         Continue While
                                                     End If
 
-                                                    If (sLine.Contains(g_sSyntax_HighlightEnumMarker)) Then
-                                                        mXmlBuilder.Append(g_sSyntax_HighlightEnumMarker)
+                                                    If (sLine.Contains(g_sSyntaxHighlightEnumMarker)) Then
+                                                        mXmlBuilder.Append(g_sSyntaxHighlightEnumMarker)
 
                                                         Dim lExistList As New List(Of String)
 
@@ -1361,8 +1404,8 @@ Public Class ClassSyntaxTools
                                                         Continue While
                                                     End If
 
-                                                    If (sLine.Contains(g_sSyntax_HighlightEnum2Marker)) Then
-                                                        mXmlBuilder.Append(g_sSyntax_HighlightEnum2Marker)
+                                                    If (sLine.Contains(g_sSyntaxHighlightEnum2Marker)) Then
+                                                        mXmlBuilder.Append(g_sSyntaxHighlightEnum2Marker)
 
                                                         Dim lExistList As New List(Of String)
 

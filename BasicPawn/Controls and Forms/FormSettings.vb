@@ -26,6 +26,8 @@ Public Class FormSettings
 
     Private g_mListBoxConfigSelectedItem As Object = Nothing
 
+    Private Shared bSuppressSyntaxVersionCheck As Boolean = False
+
     Enum ENUM_CONFIG_TYPE
         ALL
         ACTIVE
@@ -267,40 +269,6 @@ Public Class FormSettings
             End If
         Next
 
-        'Check default config paths collisions
-        If (True) Then
-            Dim mConfigs = ClassConfigs.GetConfigs
-
-            For Each mConfig In mConfigs
-                Dim sDefaultConfigPaths As String() = mConfig.g_sDefaultPaths.Split(";"c)
-
-                For Each mCompConfig In mConfigs
-                    'Ignore same config
-                    If (mConfig.GetName = mCompConfig.GetName) Then
-                        Continue For
-                    End If
-
-                    Dim sCompDefaultConfigPaths As String() = mCompConfig.g_sDefaultPaths.Split(";"c)
-
-                    For Each sPath As String In sDefaultConfigPaths
-                        If (String.IsNullOrEmpty(sPath)) Then
-                            Continue For
-                        End If
-
-                        For Each sCompPath As String In sCompDefaultConfigPaths
-                            If (String.IsNullOrEmpty(sCompPath)) Then
-                                Continue For
-                            End If
-
-                            If (sPath.ToLower.StartsWith(sCompPath.ToLower)) Then
-                                MessageBox.Show(String.Format("Some default config paths collide with other configs!{0}{0}Config '{1}' collides with '{2}'.", Environment.NewLine, mConfig.GetName, mCompConfig.GetName), "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-                            End If
-                        Next
-                    Next
-                Next
-            Next
-        End If
-
         'General
         ClassSettings.g_iSettingsAlwaysOpenNewInstance = CheckBox_AlwaysNewInstance.Checked
         ClassSettings.g_iSettingsAutoShowStartPage = CheckBox_AutoShowStartPage.Checked
@@ -359,17 +327,85 @@ Public Class FormSettings
     End Sub
 
     Private Sub FormSettings_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
-        If (Not g_bRestoreConfigs) Then
-            Return
+        If (g_bRestoreConfigs) Then
+            For Each mConfig As ClassConfigs.STRUC_CONFIG_ITEM In ClassConfigs.GetConfigs()
+                mConfig.RemoveConfig()
+            Next
+
+            For Each mConfig As ClassConfigs.STRUC_CONFIG_ITEM In g_lRestoreConfigs
+                mConfig.SaveConfig()
+            Next
         End If
 
-        For Each mConfig As ClassConfigs.STRUC_CONFIG_ITEM In ClassConfigs.GetConfigs()
-            mConfig.RemoveConfig()
-        Next
+        'Check default config paths collisions
+        If (True) Then
+            Dim mConfigs = ClassConfigs.GetConfigs
 
-        For Each mConfig As ClassConfigs.STRUC_CONFIG_ITEM In g_lRestoreConfigs
-            mConfig.SaveConfig()
-        Next
+            For Each mConfig In mConfigs
+                Dim sDefaultConfigPaths As String() = mConfig.g_sDefaultPaths.Split(";"c)
+
+                For Each mCompConfig In mConfigs
+                    'Ignore same config
+                    If (mConfig.GetName = mCompConfig.GetName) Then
+                        Continue For
+                    End If
+
+                    Dim sCompDefaultConfigPaths As String() = mCompConfig.g_sDefaultPaths.Split(";"c)
+
+                    For Each sPath As String In sDefaultConfigPaths
+                        If (String.IsNullOrEmpty(sPath)) Then
+                            Continue For
+                        End If
+
+                        For Each sCompPath As String In sCompDefaultConfigPaths
+                            If (String.IsNullOrEmpty(sCompPath)) Then
+                                Continue For
+                            End If
+
+                            If (sPath.ToLower.StartsWith(sCompPath.ToLower)) Then
+                                Dim mMsgBuilder As New Text.StringBuilder()
+                                mMsgBuilder.AppendLine("Some default config paths collide with other configs!")
+                                mMsgBuilder.AppendLine()
+                                mMsgBuilder.AppendLine()
+                                mMsgBuilder.AppendFormat("Config '{1}' collides with '{2}'.", mConfig.GetName, mCompConfig.GetName).AppendLine()
+
+                                MessageBox.Show(mMsgBuilder.ToString, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                            End If
+                        Next
+                    Next
+                Next
+            Next
+        End If
+
+        'Check for outdated syntax highlight files
+        If (True) Then
+            If (Not bSuppressSyntaxVersionCheck) Then
+                Dim mCurrentVersion As New Version
+                Dim mSyntaxVersion As New Version
+                If (g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.CheckSyntaxVersion(mCurrentVersion, mSyntaxVersion)) Then
+                    Dim mMsgBuilder As New Text.StringBuilder()
+                    mMsgBuilder.AppendLine("Your custom syntax highlighting file seems to be out-of-date.")
+                    mMsgBuilder.AppendLine("Do you want to open the download page now?")
+                    mMsgBuilder.AppendLine()
+                    mMsgBuilder.AppendFormat("Your version is v{0}. Required version is v{1}.", mSyntaxVersion.ToString, mCurrentVersion.ToString).AppendLine()
+                    mMsgBuilder.AppendLine()
+                    mMsgBuilder.AppendLine("Click YES to go to the BasicPawn syntax download page.")
+                    mMsgBuilder.AppendLine("Click CANCEL to suppress this warning.")
+
+                    Select Case (MessageBox.Show(mMsgBuilder.ToString, "Syntax out-of-date", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning))
+                        Case DialogResult.Yes
+                            Try
+                                Process.Start("https://github.com/Timocop/BasicPawn/tree/master/Custom%20Syntax%20Styles")
+                            Catch ex As Exception
+                                ClassExceptionLog.WriteToLogMessageBox(ex)
+                            End Try
+
+                        Case DialogResult.Cancel
+                            bSuppressSyntaxVersionCheck = True
+                    End Select
+                End If
+            End If
+        End If
 
         'Save window info
         ClassSettings.SaveWindowInfo(Me)
