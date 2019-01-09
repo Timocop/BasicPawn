@@ -1473,6 +1473,10 @@ Public Class ClassSyntaxTools
 
                                             If (cInvColor.R = 0 AndAlso cInvColor.G = 0 AndAlso cInvColor.B = 0) Then
                                                 cInvColor = g_ClassSyntaxTools.g_mFormMain.g_cDarkTextEditorBackgroundColor
+                                            Else
+                                                cInvColor = Color.FromArgb(CInt(Math.Ceiling(cInvColor.R * 0.85)),
+                                                                           CInt(Math.Ceiling(cInvColor.G * 0.85)),
+                                                                           CInt(Math.Ceiling(cInvColor.B * 0.85)))
                                             End If
 
                                             Dim sInvColor As String = ColorTranslator.ToHtml(cInvColor)

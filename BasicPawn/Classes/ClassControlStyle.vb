@@ -38,10 +38,10 @@ Public Class ClassControlStyle
         End Sub
     End Class
 
-    Public Shared g_cDarkTextEditorColor As New STRUC_CONTROL_COLORS(Color.Black, Color.White, Color.LightGray, Color.FromArgb(255, 26, 26, 26))
-    Public Shared g_cDarkControlColor As New STRUC_CONTROL_COLORS(Color.Black, Color.White, Color.LightGray, Color.FromArgb(255, 24, 24, 24))
-    Public Shared g_cDarkPanelColor As New STRUC_CONTROL_COLORS(Color.Black, Color.White, Color.LightGray, Color.FromArgb(255, 32, 32, 32))
-    Public Shared g_cDarkFormColor As New STRUC_CONTROL_COLORS(Color.Black, Color.White, Color.LightGray, Color.FromArgb(255, 48, 48, 48))
+    Public Shared g_cDarkTextEditorColor As New STRUC_CONTROL_COLORS(Color.Black, Color.White, Color.LightGray, Color.FromArgb(255, 32, 32, 32))
+    Public Shared g_cDarkControlColor As New STRUC_CONTROL_COLORS(Color.Black, Color.White, Color.LightGray, Color.FromArgb(255, 26, 26, 26))
+    Public Shared g_cDarkPanelColor As New STRUC_CONTROL_COLORS(Color.Black, Color.White, Color.LightGray, Color.FromArgb(255, 34, 34, 34))
+    Public Shared g_cDarkFormColor As New STRUC_CONTROL_COLORS(Color.Black, Color.White, Color.LightGray, Color.FromArgb(255, 38, 38, 38))
     Public Shared g_cDarkMenuColor As New STRUC_CONTROL_COLORS(Color.Black, Color.White, Color.LightGray, Color.FromArgb(255, 64, 64, 64))
 
     ''' <summary>

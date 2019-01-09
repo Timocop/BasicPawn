@@ -42,7 +42,7 @@ Public Class FormMain
     Public g_mUCStartPage As UCStartPage
     Public g_mUCTextMinimap As ClassTextMinimap
 
-    Public g_cDarkTextEditorBackgroundColor As Color = Color.FromArgb(255, 26, 26, 26)
+    Public g_cDarkTextEditorBackgroundColor As Color = Color.FromArgb(255, 32, 32, 32)
     Public g_cDarkFormDetailsBackgroundColor As Color = Color.FromArgb(255, 24, 24, 24)
     Public g_cDarkFormBackgroundColor As Color = Color.FromArgb(255, 48, 48, 48)
     Public g_cDarkFormMenuBackgroundColor As Color = Color.FromArgb(255, 64, 64, 64)
