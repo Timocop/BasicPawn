@@ -117,11 +117,14 @@ Partial Class FormSettings
         Me.Button_SourceModFolder = New System.Windows.Forms.Button()
         Me.Label12 = New System.Windows.Forms.Label()
         Me.Panel9 = New System.Windows.Forms.Panel()
+        Me.Label7 = New System.Windows.Forms.Label()
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
         Me.ListView_KnownFiles = New System.Windows.Forms.ListView()
         Me.ColumnHeader8 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.Button_KnownFileAdd = New System.Windows.Forms.Button()
         Me.Button_KnownFileRemove = New System.Windows.Forms.Button()
+        Me.TextBox_AutoAssignPaths = New System.Windows.Forms.TextBox()
+        Me.Button_AutoAssignPaths = New System.Windows.Forms.Button()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
         Me.TabControl2 = New BasicPawn.ClassTabControlColor()
         Me.TabPage1 = New System.Windows.Forms.TabPage()
@@ -146,10 +149,13 @@ Partial Class FormSettings
         Me.ComboBox_COTreatWarningsAsErrorsAMXX = New System.Windows.Forms.ComboBox()
         Me.Label29 = New System.Windows.Forms.Label()
         Me.ComboBox_COVerbosityLevelAMXX = New System.Windows.Forms.ComboBox()
+        Me.Label20 = New System.Windows.Forms.Label()
+        Me.ComboBox_Language = New System.Windows.Forms.ComboBox()
         Me.Label11 = New System.Windows.Forms.Label()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.RadioButton_ConfigSettingAutomatic = New System.Windows.Forms.RadioButton()
         Me.RadioButton_ConfigSettingManual = New System.Windows.Forms.RadioButton()
+        Me.CheckBox_ConfigIsDefault = New System.Windows.Forms.CheckBox()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.Label4 = New System.Windows.Forms.Label()
         Me.TextBox_CompilerPath = New System.Windows.Forms.TextBox()
@@ -181,12 +187,7 @@ Partial Class FormSettings
         Me.TableLayoutPanel3 = New System.Windows.Forms.TableLayoutPanel()
         Me.ClassPictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
         Me.Label17 = New System.Windows.Forms.Label()
-        Me.CheckBox_ConfigIsDefault = New System.Windows.Forms.CheckBox()
-        Me.ComboBox_Language = New System.Windows.Forms.ComboBox()
-        Me.Label20 = New System.Windows.Forms.Label()
-        Me.Button_AutoAssignPaths = New System.Windows.Forms.Button()
-        Me.TextBox_AutoAssignPaths = New System.Windows.Forms.TextBox()
-        Me.Label7 = New System.Windows.Forms.Label()
+        Me.CheckBox_WindowsToolTipDisplayTop = New System.Windows.Forms.CheckBox()
         Me.ContextMenuStrip_Plugins.SuspendLayout()
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Settings.SuspendLayout()
@@ -668,6 +669,7 @@ Partial Class FormSettings
         'TabPage_Autocomplete
         '
         Me.TabPage_Autocomplete.AutoScroll = True
+        Me.TabPage_Autocomplete.Controls.Add(Me.CheckBox_WindowsToolTipDisplayTop)
         Me.TabPage_Autocomplete.Controls.Add(Me.GroupBox4)
         Me.TabPage_Autocomplete.Controls.Add(Me.CheckBox_AutoIndentBrackets)
         Me.TabPage_Autocomplete.Controls.Add(Me.CheckBox_AlwaysLoadDefaultIncludes)
@@ -697,7 +699,7 @@ Partial Class FormSettings
         Me.GroupBox4.Controls.Add(Me.RadioButton_VarParseTab)
         Me.GroupBox4.Controls.Add(Me.RadioButton_VarParseTabInc)
         Me.GroupBox4.Controls.Add(Me.RadioButton_VarParseAll)
-        Me.GroupBox4.Location = New System.Drawing.Point(6, 387)
+        Me.GroupBox4.Location = New System.Drawing.Point(6, 411)
         Me.GroupBox4.Name = "GroupBox4"
         Me.GroupBox4.Size = New System.Drawing.Size(459, 92)
         Me.GroupBox4.TabIndex = 27
@@ -743,7 +745,7 @@ Partial Class FormSettings
         '
         Me.CheckBox_AutoIndentBrackets.AutoSize = True
         Me.CheckBox_AutoIndentBrackets.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_AutoIndentBrackets.Location = New System.Drawing.Point(6, 363)
+        Me.CheckBox_AutoIndentBrackets.Location = New System.Drawing.Point(6, 387)
         Me.CheckBox_AutoIndentBrackets.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_AutoIndentBrackets.Name = "CheckBox_AutoIndentBrackets"
         Me.CheckBox_AutoIndentBrackets.Size = New System.Drawing.Size(236, 18)
@@ -767,7 +769,7 @@ Partial Class FormSettings
         '
         Me.CheckBox_AutoCloseStrings.AutoSize = True
         Me.CheckBox_AutoCloseStrings.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_AutoCloseStrings.Location = New System.Drawing.Point(6, 339)
+        Me.CheckBox_AutoCloseStrings.Location = New System.Drawing.Point(6, 363)
         Me.CheckBox_AutoCloseStrings.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_AutoCloseStrings.Name = "CheckBox_AutoCloseStrings"
         Me.CheckBox_AutoCloseStrings.Size = New System.Drawing.Size(239, 18)
@@ -779,7 +781,7 @@ Partial Class FormSettings
         '
         Me.CheckBox_CaseSensitive.AutoSize = True
         Me.CheckBox_CaseSensitive.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_CaseSensitive.Location = New System.Drawing.Point(6, 219)
+        Me.CheckBox_CaseSensitive.Location = New System.Drawing.Point(6, 243)
         Me.CheckBox_CaseSensitive.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_CaseSensitive.Name = "CheckBox_CaseSensitive"
         Me.CheckBox_CaseSensitive.Size = New System.Drawing.Size(103, 18)
@@ -791,7 +793,7 @@ Partial Class FormSettings
         '
         Me.CheckBox_AutoCloseBrackets.AutoSize = True
         Me.CheckBox_AutoCloseBrackets.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_AutoCloseBrackets.Location = New System.Drawing.Point(6, 315)
+        Me.CheckBox_AutoCloseBrackets.Location = New System.Drawing.Point(6, 339)
         Me.CheckBox_AutoCloseBrackets.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_AutoCloseBrackets.Name = "CheckBox_AutoCloseBrackets"
         Me.CheckBox_AutoCloseBrackets.Size = New System.Drawing.Size(247, 18)
@@ -815,7 +817,7 @@ Partial Class FormSettings
         '
         Me.CheckBox_OnlyUpdateSyntaxWhenFocused.AutoSize = True
         Me.CheckBox_OnlyUpdateSyntaxWhenFocused.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_OnlyUpdateSyntaxWhenFocused.Location = New System.Drawing.Point(6, 291)
+        Me.CheckBox_OnlyUpdateSyntaxWhenFocused.Location = New System.Drawing.Point(6, 315)
         Me.CheckBox_OnlyUpdateSyntaxWhenFocused.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_OnlyUpdateSyntaxWhenFocused.Name = "CheckBox_OnlyUpdateSyntaxWhenFocused"
         Me.CheckBox_OnlyUpdateSyntaxWhenFocused.Size = New System.Drawing.Size(283, 18)
@@ -827,7 +829,7 @@ Partial Class FormSettings
         '
         Me.CheckBox_FullAutocompleteReTagging.AutoSize = True
         Me.CheckBox_FullAutocompleteReTagging.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_FullAutocompleteReTagging.Location = New System.Drawing.Point(6, 195)
+        Me.CheckBox_FullAutocompleteReTagging.Location = New System.Drawing.Point(6, 219)
         Me.CheckBox_FullAutocompleteReTagging.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_FullAutocompleteReTagging.Name = "CheckBox_FullAutocompleteReTagging"
         Me.CheckBox_FullAutocompleteReTagging.Size = New System.Drawing.Size(415, 18)
@@ -887,7 +889,7 @@ Partial Class FormSettings
         '
         Me.CheckBox_FullAutcompleteMethods.AutoSize = True
         Me.CheckBox_FullAutcompleteMethods.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_FullAutcompleteMethods.Location = New System.Drawing.Point(6, 171)
+        Me.CheckBox_FullAutcompleteMethods.Location = New System.Drawing.Point(6, 195)
         Me.CheckBox_FullAutcompleteMethods.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_FullAutcompleteMethods.Name = "CheckBox_FullAutcompleteMethods"
         Me.CheckBox_FullAutcompleteMethods.Size = New System.Drawing.Size(202, 18)
@@ -899,7 +901,7 @@ Partial Class FormSettings
         '
         Me.CheckBox_SwitchTabToAutocomplete.AutoSize = True
         Me.CheckBox_SwitchTabToAutocomplete.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_SwitchTabToAutocomplete.Location = New System.Drawing.Point(6, 267)
+        Me.CheckBox_SwitchTabToAutocomplete.Location = New System.Drawing.Point(6, 291)
         Me.CheckBox_SwitchTabToAutocomplete.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_SwitchTabToAutocomplete.Name = "CheckBox_SwitchTabToAutocomplete"
         Me.CheckBox_SwitchTabToAutocomplete.Size = New System.Drawing.Size(326, 18)
@@ -923,7 +925,7 @@ Partial Class FormSettings
         '
         Me.CheckBox_VarAutocompleteShowObjectBrowser.AutoSize = True
         Me.CheckBox_VarAutocompleteShowObjectBrowser.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_VarAutocompleteShowObjectBrowser.Location = New System.Drawing.Point(6, 243)
+        Me.CheckBox_VarAutocompleteShowObjectBrowser.Location = New System.Drawing.Point(6, 267)
         Me.CheckBox_VarAutocompleteShowObjectBrowser.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_VarAutocompleteShowObjectBrowser.Name = "CheckBox_VarAutocompleteShowObjectBrowser"
         Me.CheckBox_VarAutocompleteShowObjectBrowser.Size = New System.Drawing.Size(224, 18)
@@ -1309,6 +1311,15 @@ Partial Class FormSettings
         Me.Panel9.Size = New System.Drawing.Size(579, 706)
         Me.Panel9.TabIndex = 28
         '
+        'Label7
+        '
+        Me.Label7.AutoSize = True
+        Me.Label7.Location = New System.Drawing.Point(3, 245)
+        Me.Label7.Name = "Label7"
+        Me.Label7.Size = New System.Drawing.Size(197, 13)
+        Me.Label7.TabIndex = 16
+        Me.Label7.Text = "Default config paths (Seperate by ';'):"
+        '
         'GroupBox3
         '
         Me.GroupBox3.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
@@ -1362,6 +1373,27 @@ Partial Class FormSettings
         Me.Button_KnownFileRemove.TabIndex = 1
         Me.Button_KnownFileRemove.Text = "Remove"
         Me.Button_KnownFileRemove.UseVisualStyleBackColor = True
+        '
+        'TextBox_AutoAssignPaths
+        '
+        Me.TextBox_AutoAssignPaths.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.TextBox_AutoAssignPaths.BackColor = System.Drawing.Color.White
+        Me.TextBox_AutoAssignPaths.Location = New System.Drawing.Point(6, 261)
+        Me.TextBox_AutoAssignPaths.Name = "TextBox_AutoAssignPaths"
+        Me.TextBox_AutoAssignPaths.Size = New System.Drawing.Size(530, 22)
+        Me.TextBox_AutoAssignPaths.TabIndex = 17
+        '
+        'Button_AutoAssignPaths
+        '
+        Me.Button_AutoAssignPaths.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Button_AutoAssignPaths.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.Button_AutoAssignPaths.Location = New System.Drawing.Point(542, 259)
+        Me.Button_AutoAssignPaths.Name = "Button_AutoAssignPaths"
+        Me.Button_AutoAssignPaths.Size = New System.Drawing.Size(31, 24)
+        Me.Button_AutoAssignPaths.TabIndex = 18
+        Me.Button_AutoAssignPaths.Text = "..."
+        Me.Button_AutoAssignPaths.UseVisualStyleBackColor = True
         '
         'GroupBox2
         '
@@ -1622,6 +1654,26 @@ Partial Class FormSettings
         Me.ComboBox_COVerbosityLevelAMXX.Size = New System.Drawing.Size(355, 21)
         Me.ComboBox_COVerbosityLevelAMXX.TabIndex = 12
         '
+        'Label20
+        '
+        Me.Label20.AutoSize = True
+        Me.Label20.Location = New System.Drawing.Point(3, 292)
+        Me.Label20.Name = "Label20"
+        Me.Label20.Size = New System.Drawing.Size(61, 13)
+        Me.Label20.TabIndex = 27
+        Me.Label20.Text = "Language:"
+        '
+        'ComboBox_Language
+        '
+        Me.ComboBox_Language.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ComboBox_Language.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.ComboBox_Language.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.ComboBox_Language.FormattingEnabled = True
+        Me.ComboBox_Language.Location = New System.Drawing.Point(361, 289)
+        Me.ComboBox_Language.Name = "ComboBox_Language"
+        Me.ComboBox_Language.Size = New System.Drawing.Size(212, 21)
+        Me.ComboBox_Language.TabIndex = 26
+        '
         'Label11
         '
         Me.Label11.AutoSize = True
@@ -1671,6 +1723,18 @@ Partial Class FormSettings
         Me.RadioButton_ConfigSettingManual.Size = New System.Drawing.Size(70, 18)
         Me.RadioButton_ConfigSettingManual.TabIndex = 1
         Me.RadioButton_ConfigSettingManual.Text = "Manual"
+        '
+        'CheckBox_ConfigIsDefault
+        '
+        Me.CheckBox_ConfigIsDefault.AutoSize = True
+        Me.CheckBox_ConfigIsDefault.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_ConfigIsDefault.Location = New System.Drawing.Point(6, 224)
+        Me.CheckBox_ConfigIsDefault.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_ConfigIsDefault.Name = "CheckBox_ConfigIsDefault"
+        Me.CheckBox_ConfigIsDefault.Size = New System.Drawing.Size(160, 18)
+        Me.CheckBox_ConfigIsDefault.TabIndex = 25
+        Me.CheckBox_ConfigIsDefault.Text = "Set this config as default"
+        Me.CheckBox_ConfigIsDefault.UseVisualStyleBackColor = True
         '
         'GroupBox1
         '
@@ -1996,67 +2060,17 @@ Partial Class FormSettings
         Me.Label17.Text = "Loaded BasicPawn plugins are able to read stored database entries. Make sure all " &
     "installed plugins are from a trustworthy publisher to prevent theft."
         '
-        'CheckBox_ConfigIsDefault
+        'CheckBox_WindowsToolTipDisplayTop
         '
-        Me.CheckBox_ConfigIsDefault.AutoSize = True
-        Me.CheckBox_ConfigIsDefault.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_ConfigIsDefault.Location = New System.Drawing.Point(6, 224)
-        Me.CheckBox_ConfigIsDefault.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_ConfigIsDefault.Name = "CheckBox_ConfigIsDefault"
-        Me.CheckBox_ConfigIsDefault.Size = New System.Drawing.Size(160, 18)
-        Me.CheckBox_ConfigIsDefault.TabIndex = 25
-        Me.CheckBox_ConfigIsDefault.Text = "Set this config as default"
-        Me.CheckBox_ConfigIsDefault.UseVisualStyleBackColor = True
-        '
-        'ComboBox_Language
-        '
-        Me.ComboBox_Language.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.ComboBox_Language.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.ComboBox_Language.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.ComboBox_Language.FormattingEnabled = True
-        Me.ComboBox_Language.Location = New System.Drawing.Point(361, 289)
-        Me.ComboBox_Language.Name = "ComboBox_Language"
-        Me.ComboBox_Language.Size = New System.Drawing.Size(212, 21)
-        Me.ComboBox_Language.TabIndex = 26
-        '
-        'Label20
-        '
-        Me.Label20.AutoSize = True
-        Me.Label20.Location = New System.Drawing.Point(3, 292)
-        Me.Label20.Name = "Label20"
-        Me.Label20.Size = New System.Drawing.Size(61, 13)
-        Me.Label20.TabIndex = 27
-        Me.Label20.Text = "Language:"
-        '
-        'Button_AutoAssignPaths
-        '
-        Me.Button_AutoAssignPaths.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button_AutoAssignPaths.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_AutoAssignPaths.Location = New System.Drawing.Point(542, 259)
-        Me.Button_AutoAssignPaths.Name = "Button_AutoAssignPaths"
-        Me.Button_AutoAssignPaths.Size = New System.Drawing.Size(31, 24)
-        Me.Button_AutoAssignPaths.TabIndex = 18
-        Me.Button_AutoAssignPaths.Text = "..."
-        Me.Button_AutoAssignPaths.UseVisualStyleBackColor = True
-        '
-        'TextBox_AutoAssignPaths
-        '
-        Me.TextBox_AutoAssignPaths.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TextBox_AutoAssignPaths.BackColor = System.Drawing.Color.White
-        Me.TextBox_AutoAssignPaths.Location = New System.Drawing.Point(6, 261)
-        Me.TextBox_AutoAssignPaths.Name = "TextBox_AutoAssignPaths"
-        Me.TextBox_AutoAssignPaths.Size = New System.Drawing.Size(530, 22)
-        Me.TextBox_AutoAssignPaths.TabIndex = 17
-        '
-        'Label7
-        '
-        Me.Label7.AutoSize = True
-        Me.Label7.Location = New System.Drawing.Point(3, 245)
-        Me.Label7.Name = "Label7"
-        Me.Label7.Size = New System.Drawing.Size(197, 13)
-        Me.Label7.TabIndex = 16
-        Me.Label7.Text = "Default config paths (Seperate by ';'):"
+        Me.CheckBox_WindowsToolTipDisplayTop.AutoSize = True
+        Me.CheckBox_WindowsToolTipDisplayTop.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_WindowsToolTipDisplayTop.Location = New System.Drawing.Point(64, 171)
+        Me.CheckBox_WindowsToolTipDisplayTop.Margin = New System.Windows.Forms.Padding(64, 3, 3, 3)
+        Me.CheckBox_WindowsToolTipDisplayTop.Name = "CheckBox_WindowsToolTipDisplayTop"
+        Me.CheckBox_WindowsToolTipDisplayTop.Size = New System.Drawing.Size(210, 18)
+        Me.CheckBox_WindowsToolTipDisplayTop.TabIndex = 28
+        Me.CheckBox_WindowsToolTipDisplayTop.Text = "Display tooltip above caret instead"
+        Me.CheckBox_WindowsToolTipDisplayTop.UseVisualStyleBackColor = True
         '
         'FormSettings
         '
@@ -2290,4 +2304,5 @@ Partial Class FormSettings
     Friend WithEvents Label20 As Label
     Friend WithEvents ComboBox_Language As ComboBox
     Friend WithEvents CheckBox_ConfigIsDefault As CheckBox
+    Friend WithEvents CheckBox_WindowsToolTipDisplayTop As CheckBox
 End Class

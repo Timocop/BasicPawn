@@ -103,31 +103,69 @@ Public Class FormToolTip
         End If
 
         While True
-            If (g_mMoveLocation.Y < 500 AndAlso
-                    (mCursorPoint.X + g_iSizeSpace > mLocation.X AndAlso mCursorPoint.Y + g_iSizeSpace > mLocation.Y AndAlso
-                        mCursorPoint.X < mLocation.X + Me.Width + g_iSizeSpace AndAlso mCursorPoint.Y < mLocation.Y + Me.Height + g_iSizeSpace)) Then
-                g_mMoveLocation.Y += g_iMoveStep
+            If (ClassSettings.g_iSettingsUseWindowsToolTipDisplayTop) Then
+                Const MAX_MOVE = -500
+                Const MIN_MOVE = 0
 
-                mLocation = New Point(g_mLocation.X, g_mLocation.Y + g_mMoveLocation.Y)
+                If (g_mMoveLocation.Y > MAX_MOVE AndAlso
+                        (mCursorPoint.X + g_iSizeSpace > mLocation.X AndAlso mCursorPoint.Y + g_iSizeSpace > mLocation.Y AndAlso
+                            mCursorPoint.X < mLocation.X + Me.Width + g_iSizeSpace AndAlso mCursorPoint.Y < mLocation.Y + Me.Height + g_iSizeSpace)) Then
+                    g_mMoveLocation.Y -= g_iMoveStep
+                    g_mMoveLocation.Y = Math.Max(g_mMoveLocation.Y, MAX_MOVE)
 
-                bMoved = True
+                    mLocation = New Point(g_mLocation.X, g_mLocation.Y + g_mMoveLocation.Y)
 
-                If (bInstant) Then
-                    Continue While
+                    bMoved = True
+
+                    If (bInstant) Then
+                        Continue While
+                    End If
+
+                ElseIf (g_mMoveLocation.Y < MIN_MOVE AndAlso
+                            Not (mCursorPoint.X + g_iSizeSpace + g_iMoveStep > mLocation.X AndAlso mCursorPoint.Y + g_iSizeSpace + g_iMoveStep > mLocation.Y AndAlso
+                                    mCursorPoint.X < mLocation.X + Me.Width + g_iSizeSpace + g_iMoveStep AndAlso mCursorPoint.Y < mLocation.Y + Me.Height + g_iSizeSpace + g_iMoveStep)) Then
+                    g_mMoveLocation.Y += g_iMoveStep
+                    g_mMoveLocation.Y = Math.Min(g_mMoveLocation.Y, MIN_MOVE)
+
+                    mLocation = New Point(g_mLocation.X, g_mLocation.Y + g_mMoveLocation.Y)
+
+                    bMoved = True
+
+                    If (bInstant) Then
+                        Continue While
+                    End If
                 End If
+            Else
+                Const MAX_MOVE = 500
+                Const MIN_MOVE = 0
 
-            ElseIf (g_mMoveLocation.Y > 0 AndAlso
-                        Not (mCursorPoint.X + g_iSizeSpace + g_iMoveStep > mLocation.X AndAlso mCursorPoint.Y + g_iSizeSpace + g_iMoveStep > mLocation.Y AndAlso
-                                mCursorPoint.X < mLocation.X + Me.Width + g_iSizeSpace + g_iMoveStep AndAlso mCursorPoint.Y < mLocation.Y + Me.Height + g_iSizeSpace + g_iMoveStep)) Then
-                g_mMoveLocation.Y -= g_iMoveStep
-                g_mMoveLocation.Y = Math.Max(g_mMoveLocation.Y, 0)
+                If (g_mMoveLocation.Y < MAX_MOVE AndAlso
+                        (mCursorPoint.X + g_iSizeSpace > mLocation.X AndAlso mCursorPoint.Y + g_iSizeSpace > mLocation.Y AndAlso
+                            mCursorPoint.X < mLocation.X + Me.Width + g_iSizeSpace AndAlso mCursorPoint.Y < mLocation.Y + Me.Height + g_iSizeSpace)) Then
+                    g_mMoveLocation.Y += g_iMoveStep
+                    g_mMoveLocation.Y = Math.Min(g_mMoveLocation.Y, MAX_MOVE)
 
-                mLocation = New Point(g_mLocation.X, g_mLocation.Y + g_mMoveLocation.Y)
+                    mLocation = New Point(g_mLocation.X, g_mLocation.Y + g_mMoveLocation.Y)
 
-                bMoved = True
+                    bMoved = True
 
-                If (bInstant) Then
-                    Continue While
+                    If (bInstant) Then
+                        Continue While
+                    End If
+
+                ElseIf (g_mMoveLocation.Y > MIN_MOVE AndAlso
+                            Not (mCursorPoint.X + g_iSizeSpace + g_iMoveStep > mLocation.X AndAlso mCursorPoint.Y + g_iSizeSpace + g_iMoveStep > mLocation.Y AndAlso
+                                    mCursorPoint.X < mLocation.X + Me.Width + g_iSizeSpace + g_iMoveStep AndAlso mCursorPoint.Y < mLocation.Y + Me.Height + g_iSizeSpace + g_iMoveStep)) Then
+                    g_mMoveLocation.Y -= g_iMoveStep
+                    g_mMoveLocation.Y = Math.Max(g_mMoveLocation.Y, MIN_MOVE)
+
+                    mLocation = New Point(g_mLocation.X, g_mLocation.Y + g_mMoveLocation.Y)
+
+                    bMoved = True
+
+                    If (bInstant) Then
+                        Continue While
+                    End If
                 End If
             End If
 

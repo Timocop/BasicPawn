@@ -62,6 +62,7 @@ Public Class ClassSettings
     Public Shared g_iSettingsUseWindowsToolTip As Boolean = False
     Public Shared g_iSettingsUseWindowsToolTipAnimations As Boolean = True
     Public Shared g_iSettingsUseWindowsToolTipNewlineMethods As Boolean = True
+    Public Shared g_iSettingsUseWindowsToolTipDisplayTop As Boolean = True
     Public Shared g_iSettingsFullMethodAutocomplete As Boolean = False
     Public Shared g_iSettingsFullEnumAutocomplete As Boolean = False
     Public Shared g_iSettingsAutocompleteCaseSensitive As Boolean = False
@@ -109,6 +110,7 @@ Public Class ClassSettings
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "UseWindowsToolTip", If(g_iSettingsUseWindowsToolTip, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "UseWindowsToolTipAnimations", If(g_iSettingsUseWindowsToolTipAnimations, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "UseWindowsToolTipNewlineMethods", If(g_iSettingsUseWindowsToolTipNewlineMethods, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "UseWindowsToolTipDisplayTop", If(g_iSettingsUseWindowsToolTipDisplayTop, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "FullMethodAutocomplete", If(g_iSettingsFullMethodAutocomplete, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "FullEnumAutocomplete", If(g_iSettingsFullEnumAutocomplete, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutocompleteCaseSensitive", If(g_iSettingsAutocompleteCaseSensitive, "1", "0")))
@@ -168,6 +170,7 @@ Public Class ClassSettings
                     g_iSettingsUseWindowsToolTip = (mIni.ReadKeyValue("Editor", "UseWindowsToolTip", "0") <> "0")
                     g_iSettingsUseWindowsToolTipAnimations = (mIni.ReadKeyValue("Editor", "UseWindowsToolTipAnimations", "1") <> "0")
                     g_iSettingsUseWindowsToolTipNewlineMethods = (mIni.ReadKeyValue("Editor", "UseWindowsToolTipNewlineMethods", "1") <> "0")
+                    g_iSettingsUseWindowsToolTipDisplayTop = (mIni.ReadKeyValue("Editor", "UseWindowsToolTipDisplayTop", "1") <> "0")
                     g_iSettingsFullMethodAutocomplete = (mIni.ReadKeyValue("Editor", "FullMethodAutocomplete", "0") <> "0")
                     g_iSettingsFullEnumAutocomplete = (mIni.ReadKeyValue("Editor", "FullEnumAutocomplete", "0") <> "0")
                     g_iSettingsAutocompleteCaseSensitive = (mIni.ReadKeyValue("Editor", "AutocompleteCaseSensitive", "0") <> "0")

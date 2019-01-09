@@ -364,14 +364,31 @@ Public Class UCAutocomplete
                 Dim iWTabSpace As Integer = 0
                 Dim iHTabSpace As Integer = 6
 
-                Dim iNewLocation As New Point(iX + iWTabSpace, iY + iHTabSpace + iFontH)
+                Dim iNewLocation As Point
                 Dim bOutsideEditor As Boolean = False
-                If (iNewLocation.X < iEditorX OrElse iNewLocation.X > (iEditorX + iEditorW)) Then
-                    bOutsideEditor = True
+
+                If (ClassSettings.g_iSettingsUseWindowsToolTipDisplayTop) Then
+                    Dim iHeight = g_AutocompleteUC.g_mFormMain.g_mFormToolTip.Height
+
+                    iNewLocation = New Point(iX + iWTabSpace, iY - iHeight - iHTabSpace)
+
+                    If (iNewLocation.X < iEditorX OrElse iNewLocation.X > (iEditorX + iEditorW)) Then
+                        bOutsideEditor = True
+                    End If
+                    If (iNewLocation.Y + iHeight < iEditorY OrElse iNewLocation.Y + iHeight > (iEditorY + iEditorH)) Then
+                        bOutsideEditor = True
+                    End If
+                Else
+                    iNewLocation = New Point(iX + iWTabSpace, iY + iHTabSpace + iFontH)
+
+                    If (iNewLocation.X < iEditorX OrElse iNewLocation.X > (iEditorX + iEditorW)) Then
+                        bOutsideEditor = True
+                    End If
+                    If (iNewLocation.Y < iEditorY OrElse iNewLocation.Y > (iEditorY + iEditorH)) Then
+                        bOutsideEditor = True
+                    End If
                 End If
-                If (iNewLocation.Y < iEditorY OrElse iNewLocation.Y > (iEditorY + iEditorH)) Then
-                    bOutsideEditor = True
-                End If
+
 
                 If (Not bOutsideEditor AndAlso g_AutocompleteUC.g_mFormMain.g_mFormToolTip.TextEditorControl_ToolTip.Document.TextLength > 0) Then
                     g_AutocompleteUC.g_mFormMain.g_mFormToolTip.m_Location = iNewLocation
