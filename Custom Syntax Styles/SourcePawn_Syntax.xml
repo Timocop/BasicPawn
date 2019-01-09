@@ -38,7 +38,7 @@
 				<End>'</End>
 			</Span>
 			<MarkPrevious bold="true" italic="false" color="MidnightBlue">(</MarkPrevious>
-			<MarkFollowing markmarker="true" bold="true" italic="false" color="DarkOrange">#</MarkFollowing>
+			<MarkFollowing markmarker="true" bold="true" italic="false" color="Brown">#</MarkFollowing>
 			<KeyWords name="CaretWords" color="MidnightBlue" bgcolor="LightBlue">
 				<!-- [DO NOT EDIT | HIGHLIGHT CARET MARKER] -->
 			</KeyWords>
@@ -183,7 +183,7 @@
 				<Key word="null" />
 				<Key word="value" />
 			</KeyWords>
-			<KeyWords name="DebuggerPrefixes" bold="false" italic="true" color="Orange">
+			<KeyWords name="DebuggerPrefixes" bold="false" italic="true" color="DarkOrange">
 				<Key word="BPDBreakpoint" />
 				<Key word="BPDWatcher" />
 				<Key word="BPDAssert" />

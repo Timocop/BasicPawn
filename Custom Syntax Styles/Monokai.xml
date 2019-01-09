@@ -183,7 +183,7 @@
 				<Key word="null" />
 				<Key word="value" />
 			</KeyWords>
-			<KeyWords name="DebuggerPrefixes" bold="false" italic="true" color="Orange">
+			<KeyWords name="DebuggerPrefixes" bold="false" italic="true" color="DarkOrange">
 				<Key word="BPDBreakpoint" />
 				<Key word="BPDWatcher" />
 				<Key word="BPDAssert" />
