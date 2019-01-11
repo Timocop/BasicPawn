@@ -25,24 +25,28 @@ Public Class ClassUpdate
         Public sVersionUrl As String
         Public sDataHashUrl As String
         Public sDataUrl As String
+        Public sUserAgent As String
 
-        Public Sub New(_LocationInfo As String, _VersionUrl As String, _DataHashUrl As String, _DataUrl As String)
+        Public Sub New(_LocationInfo As String, _VersionUrl As String, _DataHashUrl As String, _DataUrl As String, _UserAgent As String)
             sLocationInfo = _LocationInfo
             sVersionUrl = _VersionUrl
             sDataHashUrl = _DataHashUrl
             sDataUrl = _DataUrl
+            sUserAgent = _UserAgent
         End Sub
     End Class
 
     Public Shared g_mUpdateLocations As STRUC_UPDATE_LOCATIONS() = {
-        New STRUC_UPDATE_LOCATIONS("github.com",
-                                   "https://github.com/Timocop/BasicPawn/raw/master/Update%20Depot/CurrentVersion.txt",
-                                   "https://github.com/Timocop/BasicPawn/raw/master/Update%20Depot/DataHash.txt",
-                                   "https://github.com/Timocop/BasicPawn/raw/master/Update%20Depot/BasicPawnUpdateSFX.dat"),
         New STRUC_UPDATE_LOCATIONS("getbasicpawn.spdns.org",
                                    "http://getbasicpawn.spdns.org/basicpawn_update/CurrentVersion.txt",
                                    "http://getbasicpawn.spdns.org/basicpawn_update/DataHash.txt",
-                                   "http://getbasicpawn.spdns.org/basicpawn_update/BasicPawnUpdateSFX.dat")
+                                   "http://getbasicpawn.spdns.org/basicpawn_update/BasicPawnUpdateSFX.dat",
+                                   String.Format("BasicPawn/{0} (ompatible; Windows NT)", Application.ProductVersion)),
+        New STRUC_UPDATE_LOCATIONS("github.com",
+                                   "https://raw.githubusercontent.com/Timocop/BasicPawn/master/Update%20Depot/CurrentVersion.txt",
+                                   "https://raw.githubusercontent.com/Timocop/BasicPawn/master/Update%20Depot/DataHash.txt",
+                                   "https://raw.githubusercontent.com/Timocop/BasicPawn/master/Update%20Depot/BasicPawnUpdateSFX.dat",
+                                   String.Format("BasicPawn/{0} (ompatible; Windows NT)", Application.ProductVersion))
     }
 
     Public Shared Sub InstallUpdate()
@@ -70,33 +74,39 @@ Public Class ClassUpdate
             Try
                 'Test if server files are available
                 Using mWC As New ClassWebClientEx
-                    sHashEncrypted = mWC.DownloadString(mItem.sVersionUrl)
-
-                    If (String.IsNullOrEmpty(sHashEncrypted)) Then
-                        Throw New ArgumentException("Invalid version")
-                    End If
-                End Using
-
-                Using mWC As New ClassWebClientEx
-                    sHashEncrypted = mWC.DownloadString(mItem.sDataHashUrl)
-
-                    If (String.IsNullOrEmpty(sHashEncrypted)) Then
-                        Throw New ArgumentException("Invalid hash")
+                    If (Not String.IsNullOrEmpty(mItem.sUserAgent)) Then
+                        mWC.Headers("User-Agent") = mItem.sUserAgent
                     End If
 
-                    sHash = ClassTools.ClassCrypto.ClassRSA.Decrypt(sHashEncrypted, g_sRSAPublicKeyXML)
-                End Using
+                    If (True) Then
+                        sHashEncrypted = mWC.DownloadString(mItem.sVersionUrl)
 
-                Using mWC As New ClassWebClientEx
-                    IO.File.Delete(sDataPath)
-
-                    mWC.DownloadFile(mItem.sDataUrl, sDataPath)
-
-                    If (Not IO.File.Exists(sDataPath)) Then
-                        Throw New ArgumentException("Files does not exist")
+                        If (String.IsNullOrEmpty(sHashEncrypted)) Then
+                            Throw New ArgumentException("Invalid version")
+                        End If
                     End If
 
-                    sDataHash = ClassTools.ClassCrypto.ClassHash.HashSHA256File(sDataPath)
+                    If (True) Then
+                        sHashEncrypted = mWC.DownloadString(mItem.sDataHashUrl)
+
+                        If (String.IsNullOrEmpty(sHashEncrypted)) Then
+                            Throw New ArgumentException("Invalid hash")
+                        End If
+
+                        sHash = ClassTools.ClassCrypto.ClassRSA.Decrypt(sHashEncrypted, g_sRSAPublicKeyXML)
+                    End If
+
+                    If (True) Then
+                        IO.File.Delete(sDataPath)
+
+                        mWC.DownloadFile(mItem.sDataUrl, sDataPath)
+
+                        If (Not IO.File.Exists(sDataPath)) Then
+                            Throw New ArgumentException("Files does not exist")
+                        End If
+
+                        sDataHash = ClassTools.ClassCrypto.ClassHash.HashSHA256File(sDataPath)
+                    End If
                 End Using
 
                 If (sHash.ToLower <> sDataHash.ToLower) Then
@@ -163,6 +173,10 @@ Public Class ClassUpdate
         For Each mItem In g_mUpdateLocations
             Try
                 Using mWC As New ClassWebClientEx
+                    If (Not String.IsNullOrEmpty(mItem.sUserAgent)) Then
+                        mWC.Headers("User-Agent") = mItem.sUserAgent
+                    End If
+
                     Dim sVersion = mWC.DownloadString(mItem.sVersionUrl)
 
                     r_sLocationInfo = mItem.sLocationInfo
