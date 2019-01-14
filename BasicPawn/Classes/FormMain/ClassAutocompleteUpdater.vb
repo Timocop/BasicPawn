@@ -484,7 +484,7 @@ Public Class ClassAutocompleteUpdater
                                                    End If
                                                End Sub)
             Dim mPreWatch As New Stopwatch
-            Dim mPostWatch As New Stopwatch
+            Dim mFinalizeWatch As New Stopwatch
             Dim mApplyWatch As New Stopwatch
 
             Dim lNewVarAutocompleteList As New ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
@@ -523,9 +523,9 @@ Public Class ClassAutocompleteUpdater
                 End If
                 mPreWatch.Stop()
 
-                mPostWatch.Start()
-                mParser.ProcessVariablePost(g_mFormMain, sRequestedSource, sRequestedSourceFile, lNewVarAutocompleteList, lOldVarAutocompleteList, iRequestedLangauge)
-                mPostWatch.Stop()
+                mFinalizeWatch.Start()
+                mParser.ProcessVariableFinalize(g_mFormMain, sRequestedSource, sRequestedSourceFile, lNewVarAutocompleteList, lOldVarAutocompleteList, iRequestedLangauge)
+                mFinalizeWatch.Stop()
             End If
 
             mApplyWatch.Start()
@@ -569,7 +569,7 @@ Public Class ClassAutocompleteUpdater
             g_mFormMain.PrintInformation("[DEBG]", "Variable Autocomplete update finished!")
             g_mFormMain.PrintInformation("[DEBG]", vbTab & "Times:")
             g_mFormMain.PrintInformation("[DEBG]", vbTab & "Pre: " & mPreWatch.Elapsed.ToString)
-            g_mFormMain.PrintInformation("[DEBG]", vbTab & "Post: " & mPostWatch.Elapsed.ToString)
+            g_mFormMain.PrintInformation("[DEBG]", vbTab & "Finalize: " & mFinalizeWatch.Elapsed.ToString)
             g_mFormMain.PrintInformation("[DEBG]", vbTab & "Apply: " & mApplyWatch.Elapsed.ToString)
 #End If
 
@@ -1089,6 +1089,8 @@ Public Class ClassAutocompleteUpdater
 
             mAutocompleteFinalize.ProcessMethodmapParentMethods(mFormMain, lTmpAutoList)
             mAutocompleteFinalize.ProcessMethodmapParentMethodmaps(mFormMain, lTmpAutoList)
+            mAutocompleteFinalize.GenerateMethodmapThis(mFormMain, lTmpAutoList)
+            mAutocompleteFinalize.GenerateEnumStructThis(mFormMain, lTmpAutoList)
         End Sub
 
         Public Sub ProcessVariablePre(mFormMain As FormMain,
@@ -1113,7 +1115,7 @@ Public Class ClassAutocompleteUpdater
             mVariablePre.ParseVariables(mFormMain, mParseInfo)
         End Sub
 
-        Public Sub ProcessVariablePost(mFormMain As FormMain,
+        Public Sub ProcessVariableFinalize(mFormMain As FormMain,
                                             sActiveSource As String,
                                             sActiveSourceFile As String,
                                             ByRef lNewVarAutocompleteList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE),
@@ -1121,18 +1123,18 @@ Public Class ClassAutocompleteUpdater
                                             iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE)
 
             Dim mParseInfo As New STRUC_VARIABLE_PARSE_POST_INFO(sActiveSource, sActiveSourceFile, lNewVarAutocompleteList, lOldVarAutocompleteList, iLanguage)
-            Dim mVariablePost As New ClassVariablePost(Me)
+            Dim mVariableFinalize As New ClassVariableFinalize(Me)
 
-            mVariablePost.ParseFunctionArguments(mFormMain, mParseInfo)
+            mVariableFinalize.ParseFunctionArguments(mFormMain, mParseInfo)
 
-            mVariablePost.GenerateMethodmapVariables(mFormMain, mParseInfo)
-            mVariablePost.GenerateMethodmapMethods(mFormMain, mParseInfo)
-            mVariablePost.GenerateMethodmapInlineMethods(mFormMain, mParseInfo)
-            mVariablePost.GenerateMethodmapFields(mFormMain, mParseInfo)
-            mVariablePost.GenerateEnumStructVariables(mFormMain, mParseInfo)
-            mVariablePost.GenerateEnumStructMethods(mFormMain, mParseInfo)
-            mVariablePost.GenerateEnumStructInlineMethods(mFormMain, mParseInfo)
-            mVariablePost.GenerateEnumStructFields(mFormMain, mParseInfo)
+            mVariableFinalize.GenerateMethodmapVariables(mFormMain, mParseInfo)
+            mVariableFinalize.GenerateMethodmapMethods(mFormMain, mParseInfo)
+            mVariableFinalize.GenerateMethodmapInlineMethods(mFormMain, mParseInfo)
+            mVariableFinalize.GenerateMethodmapFields(mFormMain, mParseInfo)
+            mVariableFinalize.GenerateEnumStructVariables(mFormMain, mParseInfo)
+            mVariableFinalize.GenerateEnumStructMethods(mFormMain, mParseInfo)
+            mVariableFinalize.GenerateEnumStructInlineMethods(mFormMain, mParseInfo)
+            mVariableFinalize.GenerateEnumStructFields(mFormMain, mParseInfo)
         End Sub
 
         Private Class ClassAutocompletePre
@@ -3118,6 +3120,120 @@ Public Class ClassAutocompleteUpdater
 
                 lTmpAutoList.AddRange(lTmpAutoAddList.ToArray)
             End Sub
+
+            ''' <summary>
+            ''' Generates combined methodmap 'this' keywords.
+            ''' </summary>
+            ''' <param name="mFormMain"></param>
+            ''' <param name="lTmpAutoList"></param>
+            Public Sub GenerateMethodmapThis(mFormMain As FormMain, lTmpAutoList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE))
+                'Merging:
+                '     methodmap Test1 : Handle {...}
+                '   to
+                '       this.Close
+                Dim lTmpAutoAddList As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
+
+                For i = lTmpAutoList.Count - 1 To 0 Step -1
+                    If ((lTmpAutoList(i).m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) = 0 OrElse
+                                    Not lTmpAutoList(i).m_FunctionString.Contains("."c)) Then
+                        Continue For
+                    End If
+
+                    Dim sMethodmapMethodName As String = CStr(lTmpAutoList(i).m_Data("MethodmapMethodName"))
+                    Dim sMethodmapMethodTag As String = CStr(lTmpAutoList(i).m_Data("MethodmapMethodTag"))
+                    If (String.IsNullOrEmpty(sMethodmapMethodName) OrElse String.IsNullOrEmpty(sMethodmapMethodTag)) Then
+                        Continue For
+                    End If
+
+                    Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(lTmpAutoList(i).m_Info,
+                                                                                      lTmpAutoList(i).m_Filename,
+                                                                                      lTmpAutoList(i).m_Path,
+                                                                                      lTmpAutoList(i).m_Type,
+                                                                                      sMethodmapMethodName,
+                                                                                      String.Format("this.{0}", sMethodmapMethodName),
+                                                                                      lTmpAutoList(i).m_FullFunctionString)
+
+                    For Each mData In lTmpAutoList(i).m_Data
+                        mAutocomplete.m_Data(mData.Key) = mData.Value
+                    Next
+
+                    mAutocomplete.m_Data("IsThis") = True
+
+#If DEBUG Then
+                    mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Generates combined methodmap 'this' keywords"
+#End If
+
+                    If (Not lTmpAutoList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString) AndAlso
+                                Not lTmpAutoAddList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
+                        lTmpAutoAddList.Add(mAutocomplete)
+                    End If
+                Next
+
+                lTmpAutoList.AddRange(lTmpAutoAddList.ToArray)
+            End Sub
+
+            ''' <summary>
+            ''' Generates combined enum struct 'this' keywords.
+            ''' </summary>
+            ''' <param name="mFormMain"></param>
+            ''' <param name="lTmpAutoList"></param>
+            Public Sub GenerateEnumStructThis(mFormMain As FormMain, lTmpAutoList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE))
+                'Merging:
+                '     enum struct Test1 { int Value; }
+                '   to
+                '       this.Value
+                Dim lTmpAutoAddList As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
+
+                For i = lTmpAutoList.Count - 1 To 0 Step -1
+                    If ((lTmpAutoList(i).m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM_STRUCT) = 0 OrElse
+                                            Not lTmpAutoList(i).m_FunctionString.Contains("."c)) Then
+                        Continue For
+                    End If
+
+                    Dim sEnumStructName As String = CStr(lTmpAutoList(i).m_Data("EnumStructName"))
+                    Dim sEnumStructFieldName As String = CStr(lTmpAutoList(i).m_Data("EnumStructFieldName"))
+                    Dim sEnumStructMethodName As String = CStr(lTmpAutoList(i).m_Data("EnumStructMethodName"))
+                    Dim sEnumStructTargetName As String
+                    Dim bIsField As Boolean = False
+
+                    If ((lTmpAutoList(i).m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FIELD) <> 0) Then
+                        sEnumStructTargetName = sEnumStructFieldName
+                        bIsField = True
+                    Else
+                        sEnumStructTargetName = sEnumStructMethodName
+                        bIsField = False
+                    End If
+
+                    If (String.IsNullOrEmpty(sEnumStructTargetName)) Then
+                        Throw New ArgumentException("Invalid enum struct field/method name")
+                    End If
+
+                    Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(lTmpAutoList(i).m_Info,
+                                                                                      lTmpAutoList(i).m_Filename,
+                                                                                      lTmpAutoList(i).m_Path,
+                                                                                      lTmpAutoList(i).m_Type,
+                                                                                      sEnumStructTargetName,
+                                                                                      String.Format("this.{0}", sEnumStructTargetName),
+                                                                                      lTmpAutoList(i).m_FullFunctionString)
+
+                    For Each mData In lTmpAutoList(i).m_Data
+                        mAutocomplete.m_Data(mData.Key) = mData.Value
+                    Next
+
+                    mAutocomplete.m_Data("IsThis") = True
+
+#If DEBUG Then
+                    mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Generates combined enum struct 'this' keywords"
+#End If
+
+                    If (Not lTmpAutoList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString) AndAlso
+                                Not lTmpAutoAddList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
+                        lTmpAutoAddList.Add(mAutocomplete)
+                    End If
+                Next
+
+                lTmpAutoList.AddRange(lTmpAutoAddList.ToArray)
+            End Sub
         End Class
 
         Private Class ClassVariablePre
@@ -3624,6 +3740,16 @@ Public Class ClassAutocompleteUpdater
         End Class
 
         Private Class ClassVariablePost
+            Public g_ClassParse As ClassParser
+
+            Sub New(_ClassParse As ClassParser)
+                g_ClassParse = _ClassParse
+            End Sub
+
+
+        End Class
+
+        Private Class ClassVariableFinalize
             Public g_ClassParse As ClassParser
 
             Private Structure STRUC_PARSE_ARGUMENT_ITEM

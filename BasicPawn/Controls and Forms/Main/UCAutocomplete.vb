@@ -93,6 +93,7 @@ Public Class UCAutocomplete
             Return 0
         End If
 
+        Dim sFunctionNames As String() = sFunctionName.Split("."c)
         Dim bSelectedWord As Boolean = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.SelectionManager.HasSomethingSelected
         Dim mSortedAutocomplete As New ClassAutocompleteListBox.ClassSortedAutocomplete(ListBox_Autocomplete)
 
@@ -100,6 +101,16 @@ Public Class UCAutocomplete
         For i = 0 To mAutocompleteArray.Length - 1
             If (mAutocompleteArray(i).m_Data.ContainsKey("EnumHidden")) Then
                 Continue For
+            End If
+
+            If (mAutocompleteArray(i).m_Data.ContainsKey("IsThis")) Then
+                If (sFunctionNames.Length <> 2) Then
+                    Continue For
+                End If
+
+                If (sFunctionNames(0) <> "this") Then
+                    Continue For
+                End If
             End If
 
             If (bSelectedWord) Then
