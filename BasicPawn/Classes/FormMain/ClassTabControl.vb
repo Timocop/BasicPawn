@@ -1705,9 +1705,9 @@ Public Class ClassTabControl
                     sFunctionName = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(False, False, False)
 
                     g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete(sFunctionName)
-                Else
-                    g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip()
                 End If
+
+                g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip()
             Catch ex As Exception
                 ClassExceptionLog.WriteToLogMessageBox(ex)
             End Try

@@ -243,30 +243,86 @@ Public Class UCAutocomplete
                     sIntelliSenseFunction = sIntelliSenseFunction.Remove(0, 1)
                 End If
 
+                Dim sIntelliSenseFunctionNames As String() = sIntelliSenseFunction.Split("."c)
                 Dim bIsMethodMap As Boolean = sIntelliSenseFunction.Contains("."c)
+
+                Dim sFile As String = g_AutocompleteUC.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File
+
+                Dim iCurrentScopeIndex As Integer = -1
+
+                'If 'this' keyword find out the type 
+                If (sIntelliSenseFunctionNames.Length = 2 AndAlso sIntelliSenseFunctionNames(0) = "this") Then
+                    Dim sTextContent As String = g_AutocompleteUC.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
+                    Dim iCaretOffset As Integer = g_AutocompleteUC.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Offset
+                    Dim iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = g_AutocompleteUC.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language
+                    Dim iBraceList As Integer()() = g_AutocompleteUC.g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(sTextContent, "{"c, "}"c, 1, iLanguage, True)
+
+                    'Get current scope index
+                    For i = 0 To iBraceList.Length - 1
+                        If (iCaretOffset < iBraceList(i)(0) OrElse iCaretOffset > iBraceList(i)(1)) Then
+                            Continue For
+                        End If
+
+                        iCurrentScopeIndex = i
+                        Exit For
+                    Next
+                End If
+
 
                 Dim lAlreadyShownList As New List(Of String)
 
                 Dim bPrintedInfo As Boolean = False
                 Dim iPrintedItems As Integer = 0
                 Dim iMaxPrintedItems As Integer = 3
-                Dim sAutocompleteArray As ClassSyntaxTools.STRUC_AUTOCOMPLETE() = g_AutocompleteUC.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_AutocompleteItems.ToArray
-                For i = 0 To sAutocompleteArray.Length - 1
-                    If ((sAutocompleteArray(i).m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> 0 AndAlso Not bIsMethodMap) Then
+                Dim mAutocompleteArray As ClassSyntaxTools.STRUC_AUTOCOMPLETE() = g_AutocompleteUC.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_AutocompleteItems.ToArray
+                For i = 0 To mAutocompleteArray.Length - 1
+                    If ((mAutocompleteArray(i).m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> 0 AndAlso Not bIsMethodMap) Then
                         Continue For
                     End If
 
-                    If (sAutocompleteArray(i).m_Data.ContainsKey("EnumHidden")) Then
+                    If (mAutocompleteArray(i).m_Data.ContainsKey("EnumHidden")) Then
                         Continue For
+                    End If
+
+                    If (mAutocompleteArray(i).m_Data.ContainsKey("IsThis")) Then
+                        If (iCurrentScopeIndex < 0) Then
+                            Continue For
+                        End If
+
+                        If ((mAutocompleteArray(i).m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) <> 0) Then
+                            Dim iScopeIndex As Integer = CInt(mAutocompleteArray(i).m_Data("@MethodmapScopeIndex"))
+                            Dim sScopeFile As String = CStr(mAutocompleteArray(i).m_Data("@MethodmapScopeFile"))
+
+                            If (iScopeIndex <> iCurrentScopeIndex) Then
+                                Continue For
+                            End If
+
+                            If (sScopeFile.ToLower <> sFile.ToLower) Then
+                                Continue For
+                            End If
+                        End If
+
+                        If ((mAutocompleteArray(i).m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM_STRUCT) <> 0) Then
+                            Dim iScopeIndex As Integer = CInt(mAutocompleteArray(i).m_Data("@EnumStructScopeIndex"))
+                            Dim sScopeFile As String = CStr(mAutocompleteArray(i).m_Data("@EnumStructScopeFile"))
+
+                            If (iScopeIndex <> iCurrentScopeIndex) Then
+                                Continue For
+                            End If
+
+                            If (sScopeFile.ToLower <> sFile.ToLower) Then
+                                Continue For
+                            End If
+                        End If
                     End If
 
                     If (bIsMethodMap) Then
-                        If (Not sAutocompleteArray(i).m_FunctionString.Equals(sIntelliSenseFunction)) Then
+                        If (Not mAutocompleteArray(i).m_FunctionString.Equals(sIntelliSenseFunction)) Then
                             Continue For
                         End If
                     Else
-                        If (Not sAutocompleteArray(i).m_FunctionString.Contains(sIntelliSenseFunction) OrElse
-                                    Not Regex.IsMatch(sAutocompleteArray(i).m_FunctionString, String.Format("{0}\b{1}\b", If(bIsMethodMapEnd, "(\.)", ""), Regex.Escape(sIntelliSenseFunction)))) Then
+                        If (Not mAutocompleteArray(i).m_FunctionString.Contains(sIntelliSenseFunction) OrElse
+                                    Not Regex.IsMatch(mAutocompleteArray(i).m_FunctionString, String.Format("{0}\b{1}\b", If(bIsMethodMapEnd, "(\.)", ""), Regex.Escape(sIntelliSenseFunction)))) Then
                             Continue For
                         End If
                     End If
@@ -277,8 +333,8 @@ Public Class UCAutocomplete
                         SB_TipText_IntelliSenseToolTip.AppendLine("IntelliSense:")
                     End If
 
-                    Dim sName As String = Regex.Replace(sAutocompleteArray(i).m_FullFunctionString.Trim, vbTab, New String(" "c, iTabSize))
-                    Dim sNameToolTip As String = Regex.Replace(sAutocompleteArray(i).m_FullFunctionString.Trim, vbTab, New String(" "c, iTabSize))
+                    Dim sName As String = Regex.Replace(mAutocompleteArray(i).m_FullFunctionString.Trim, vbTab, New String(" "c, iTabSize))
+                    Dim sNameToolTip As String = Regex.Replace(mAutocompleteArray(i).m_FullFunctionString.Trim, vbTab, New String(" "c, iTabSize))
 
                     If (lAlreadyShownList.Contains(sName)) Then
                         Continue For
@@ -301,7 +357,7 @@ Public Class UCAutocomplete
                         End If
                     End If
 
-                    Dim sComment As String = Regex.Replace(sAutocompleteArray(i).m_Info.Trim, String.Format("(^|{0})", vbTab), New String(" "c, iTabSize), RegexOptions.Multiline)
+                    Dim sComment As String = Regex.Replace(mAutocompleteArray(i).m_Info.Trim, String.Format("(^|{0})", vbTab), New String(" "c, iTabSize), RegexOptions.Multiline)
 
                     SB_TipText_IntelliSense.AppendLine(sName)
                     If (ClassSettings.g_iSettingsToolTipMethodComments AndAlso Not String.IsNullOrEmpty(sComment.Trim)) Then

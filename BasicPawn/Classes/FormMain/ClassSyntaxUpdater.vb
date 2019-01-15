@@ -134,25 +134,25 @@ Public Class ClassSyntaxUpdater
                 Dim iCaretPos As Point = ClassThread.ExecEx(Of Point)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.ScreenPosition)
 
                 'Update Autocomplete
-                Static iLastAutoupdateCaretOffset2 As Integer = -1
-                If (iLastAutoupdateCaretOffset2 <> iCaretOffset) Then
-                    iLastAutoupdateCaretOffset2 = iCaretOffset
+                Static iLastAutoupdateCaretOffset As Integer = -1
+                If (iLastAutoupdateCaretOffset <> iCaretOffset) Then
+                    iLastAutoupdateCaretOffset = iCaretOffset
 
                     UpdateAutocomplete(iCaretOffset)
                 End If
 
                 'Update IntelliSense 
-                Static iLastMethodAutoupdateCaretOffset As Integer = -1
-                If (iLastMethodAutoupdateCaretOffset <> iCaretOffset) Then
-                    iLastMethodAutoupdateCaretOffset = iCaretOffset
+                Static iLastIntelliSenseCaretOffset As Integer = -1
+                If (iLastIntelliSenseCaretOffset <> iCaretOffset) Then
+                    iLastIntelliSenseCaretOffset = iCaretOffset
 
                     UpdateIntelliSense(iCaretOffset)
                 End If
 
                 'Hide Autocomplete & IntelliSense Tooltips when scrolling 
-                Static iLastAutoupdateCaretPos As Point
-                If (iLastAutoupdateCaretPos <> iCaretPos) Then
-                    iLastAutoupdateCaretPos = iCaretPos
+                Static iLastToolTipCaretPos As Point
+                If (iLastToolTipCaretPos <> iCaretPos) Then
+                    iLastToolTipCaretPos = iCaretPos
 
                     ClassThread.ExecAsync(g_mFormMain.g_mUCAutocomplete, Sub()
                                                                              g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTipFormLocation()
@@ -181,22 +181,22 @@ Public Class ClassSyntaxUpdater
     End Sub
 
     Private Sub UpdateAutocomplete(iCaretOffset As Integer)
-        If (iCaretOffset > -1 AndAlso iCaretOffset < ClassThread.ExecEx(Of Integer)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.TextLength)) Then
-            Dim iPosition As Integer = ClassThread.ExecEx(Of Integer)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column)
-            Dim iLineOffset As Integer = ClassThread.ExecEx(Of Integer)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iCaretOffset).Offset)
-            Dim iLineLen As Integer = ClassThread.ExecEx(Of Integer)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iCaretOffset).Length)
+        Dim iTextLenght As Integer = ClassThread.ExecEx(Of Integer)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.TextLength)
 
-            If ((iLineLen - iPosition) > 0) Then
-                Dim sFunctionName As String = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True, True, True))
+        If (iCaretOffset > -1 AndAlso iCaretOffset < iTextLenght) Then
+            Dim sFunctionName As String = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True, True, True))
 
-                If (ClassThread.ExecEx(Of Integer)(g_mFormMain.g_mUCAutocomplete, Function() g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete(sFunctionName)) < 1) Then
-                    sFunctionName = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTextEditorTools.GetCaretWord(False, False, False))
+            If (ClassThread.ExecEx(Of Integer)(g_mFormMain.g_mUCAutocomplete, Function() g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete(sFunctionName)) < 1) Then
+                sFunctionName = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTextEditorTools.GetCaretWord(False, False, False))
 
-                    ClassThread.ExecAsync(g_mFormMain.g_mUCAutocomplete, Sub()
-                                                                             g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete(sFunctionName)
-                                                                         End Sub)
-                End If
+                ClassThread.ExecAsync(g_mFormMain.g_mUCAutocomplete, Sub()
+                                                                         g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete(sFunctionName)
+                                                                     End Sub)
             End If
+        Else
+            ClassThread.ExecAsync(g_mFormMain.g_mUCAutocomplete, Sub()
+                                                                     g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete("")
+                                                                 End Sub)
         End If
 
         ClassThread.ExecAsync(g_mFormMain.g_mUCAutocomplete, Sub()
