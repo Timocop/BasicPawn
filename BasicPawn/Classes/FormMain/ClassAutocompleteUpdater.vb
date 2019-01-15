@@ -1089,6 +1089,7 @@ Public Class ClassAutocompleteUpdater
 
             mAutocompleteFinalize.ProcessMethodmapParentMethods(mFormMain, lTmpAutoList)
             mAutocompleteFinalize.ProcessMethodmapParentMethodmaps(mFormMain, lTmpAutoList)
+
             mAutocompleteFinalize.GenerateMethodmapThis(mFormMain, lTmpAutoList)
             mAutocompleteFinalize.GenerateEnumStructThis(mFormMain, lTmpAutoList)
         End Sub
@@ -2511,6 +2512,7 @@ Public Class ClassAutocompleteUpdater
 
                     Dim mPossibleMethodmapMatches As MatchCollection = Regex.Matches(mParseInfo.sSource, "^\s*\b(methodmap)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)(?<ParentingName>\s+\b[a-zA-Z0-9_]+\b){0,1}(?<FullParent>\s*\<\s*(?<Parent>\b[a-zA-Z0-9_]+\b)){0,1}\s*(?<BraceStart>\{)", RegexOptions.Multiline)
                     Dim iBraceList As Integer()() = mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(mParseInfo.sSource, "{"c, "}"c, 1, mParseInfo.iLanguage, True)
+                    Dim iScopeIndex As Integer = -1
 
                     Dim mMatch As Match
 
@@ -2536,6 +2538,8 @@ Public Class ClassAutocompleteUpdater
                         For ii = 0 To iBraceList.Length - 1
                             If (iBraceIndex = iBraceList(ii)(0)) Then
                                 sMethodmapSource = mParseInfo.sSource.Substring(iBraceList(ii)(0) + 1, iBraceList(ii)(1) - iBraceList(ii)(0) - 1)
+                                iScopeIndex = ii
+
                                 bIsValid = True
                                 Exit For
                             End If
@@ -2558,6 +2562,10 @@ Public Class ClassAutocompleteUpdater
                                                                                         sMethodMapName,
                                                                                         sMethodMapName,
                                                                                         "methodmap " & sMethodMapName & sMethodMapFullParentName)
+
+                            'Root information. Childs should have always same information as root entry.
+                            mAutocomplete.m_Data("@MethodmapScopeIndex") = iScopeIndex
+                            mAutocomplete.m_Data("@MethodmapScopeFile") = mParseInfo.sFile
 
                             mAutocomplete.m_Data("MethodmapName") = sMethodMapName
                             mAutocomplete.m_Data("MethodmapParentName") = sMethodMapParentName
@@ -2626,6 +2634,10 @@ Public Class ClassAutocompleteUpdater
                                                                                             String.Format("{0}.{1}", sMethodMapName, sName),
                                                                                             String.Format("methodmap {0} {1}{2}{3} = {4} {5}", sType, sMethodMapName, sMethodMapParentingName, If(sMethodMapHasParent, " < " & sMethodMapParentName, ""), sTag, sName))
 
+                                'Root information. Childs should have always same information as root entry.
+                                mAutocomplete.m_Data("@MethodmapScopeIndex") = iScopeIndex
+                                mAutocomplete.m_Data("@MethodmapScopeFile") = mParseInfo.sFile
+
                                 mAutocomplete.m_Data("MethodmapName") = sMethodMapName
                                 mAutocomplete.m_Data("MethodmapParentName") = sMethodMapParentName
                                 mAutocomplete.m_Data("MethodmapParentingName") = sMethodMapParentingName
@@ -2668,6 +2680,10 @@ Public Class ClassAutocompleteUpdater
                                                                                                 sMethodMapName,
                                                                                                 String.Format("methodmap {0}{1} = {2}{3}", sMethodMapName, If(sMethodMapHasParent, " < " & sMethodMapParentName, ""), sMethodMapName, sBraceString))
 
+                                    'Root information. Childs should have always same information as root entry.
+                                    mAutocomplete.m_Data("@MethodmapScopeIndex") = iScopeIndex
+                                    mAutocomplete.m_Data("@MethodmapScopeFile") = mParseInfo.sFile
+
                                     mAutocomplete.m_Data("MethodmapName") = sMethodMapName
                                     mAutocomplete.m_Data("MethodmapParentName") = sMethodMapParentName
                                     mAutocomplete.m_Data("MethodmapParentingName") = sMethodMapParentingName
@@ -2696,6 +2712,10 @@ Public Class ClassAutocompleteUpdater
                                                                                                 sName,
                                                                                                 String.Format("{0}.{1}", sMethodMapName, sName),
                                                                                                 String.Format("methodmap {0} {1}{2} = {3} {4}{5}", sType, sMethodMapName, If(sMethodMapHasParent, " < " & sMethodMapParentName, ""), sTag, sName, sBraceString))
+
+                                    'Root information. Childs should have always same information as root entry.
+                                    mAutocomplete.m_Data("@MethodmapScopeIndex") = iScopeIndex
+                                    mAutocomplete.m_Data("@MethodmapScopeFile") = mParseInfo.sFile
 
                                     mAutocomplete.m_Data("InlineMethodName") = sName
                                     mAutocomplete.m_Data("InlineMethodType") = sType
@@ -2739,6 +2759,7 @@ Public Class ClassAutocompleteUpdater
 
                     Dim mPossibleMethodmapMatches As MatchCollection = Regex.Matches(mParseInfo.sSource, "^\s*\b(enum)\b\s+\b(struct)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)\s*(?<BraceStart>\{)", RegexOptions.Multiline)
                     Dim iBraceList As Integer()() = mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(mParseInfo.sSource, "{"c, "}"c, 1, mParseInfo.iLanguage, True)
+                    Dim iScopeIndex As Integer = -1
 
                     Dim mMatch As Match
 
@@ -2760,6 +2781,8 @@ Public Class ClassAutocompleteUpdater
                         For ii = 0 To iBraceList.Length - 1
                             If (iBraceIndex = iBraceList(ii)(0)) Then
                                 sEnumStructSource = mParseInfo.sSource.Substring(iBraceList(ii)(0) + 1, iBraceList(ii)(1) - iBraceList(ii)(0) - 1)
+                                iScopeIndex = ii
+
                                 bIsValid = True
                                 Exit For
                             End If
@@ -2778,6 +2801,10 @@ Public Class ClassAutocompleteUpdater
                                                                                         sEnumStructName,
                                                                                         sEnumStructName,
                                                                                         "enum struct " & sEnumStructName)
+
+                            'Root information. Childs should have always same information as root entry.
+                            mAutocomplete.m_Data("@EnumStructScopeIndex") = iScopeIndex
+                            mAutocomplete.m_Data("@EnumStructScopeFile") = mParseInfo.sFile
 
                             mAutocomplete.m_Data("EnumStructName") = sEnumStructName
                             mAutocomplete.m_Data("EnumStructFieldTag") = ""
@@ -2840,6 +2867,10 @@ Public Class ClassAutocompleteUpdater
                                                                                                  sName,
                                                                                                  String.Format("{0}.{1}", sEnumStructName, sName),
                                                                                                  String.Format("enum struct {0} = {1} {2}", sEnumStructName, sTag, sName))
+
+                                'Root information. Childs should have always same information as root entry.
+                                mAutocomplete.m_Data("@EnumStructScopeIndex") = iScopeIndex
+                                mAutocomplete.m_Data("@EnumStructScopeFile") = mParseInfo.sFile
 
                                 mAutocomplete.m_Data("EnumStructName") = sEnumStructName
                                 mAutocomplete.m_Data("EnumStructFieldTag") = sTag
@@ -2918,6 +2949,10 @@ Public Class ClassAutocompleteUpdater
                                 mAutocomplete.m_Data("InlineMethodType") = ""
                                 mAutocomplete.m_Data("InlineMethodTag") = sTag
                                 mAutocomplete.m_Data("InlineMethodArguments") = sBraceString
+
+                                'Root information. Childs should have always same information as root entry.
+                                mAutocomplete.m_Data("@EnumStructScopeIndex") = iScopeIndex
+                                mAutocomplete.m_Data("@EnumStructScopeFile") = mParseInfo.sFile
 
                                 mAutocomplete.m_Data("EnumStructName") = sEnumStructName
                                 mAutocomplete.m_Data("EnumStructFieldTag") = ""
@@ -3016,6 +3051,13 @@ Public Class ClassAutocompleteUpdater
                                 mAutocomplete.m_Data(mData.Key) = mData.Value
                             Next
 
+                            'Keep root information
+                            For Each mData In lTmpAutoList(i).m_Data
+                                If (mData.Key.StartsWith("@"c)) Then
+                                    mAutocomplete.m_Data(mData.Key) = mData.Value
+                                End If
+                            Next
+
                             mAutocomplete.m_Data("VariableMethodmapName") = sParentMethodmapName
                             mAutocomplete.m_Data("VariableMethodmapMethod") = sParentMethodmapMethodName
 
@@ -3099,6 +3141,13 @@ Public Class ClassAutocompleteUpdater
 
                             For Each mData In lTmpAutoList(ii).m_Data
                                 mAutocomplete.m_Data(mData.Key) = mData.Value
+                            Next
+
+                            'Keep root info
+                            For Each mData In lTmpAutoList(i).m_Data
+                                If (mData.Key.StartsWith("@"c)) Then
+                                    mAutocomplete.m_Data(mData.Key) = mData.Value
+                                End If
                             Next
 
                             mAutocomplete.m_Data("VariableMethodmapName") = sMethodmapMethodName
@@ -4022,6 +4071,13 @@ Public Class ClassAutocompleteUpdater
                                     mAutocomplete.m_Data(mData.Key) = mData.Value
                                 Next
 
+                                'Keep root information
+                                For Each mData In mVariableItem.m_Data
+                                    If (mData.Key.StartsWith("@"c)) Then
+                                        mAutocomplete.m_Data(mData.Key) = mData.Value
+                                    End If
+                                Next
+
                                 mAutocomplete.m_Data("VariableMethodmapName") = sVariableName
                                 mAutocomplete.m_Data("VariableMethodmapMethod") = sMethodmapMethodName
 
@@ -4117,6 +4173,13 @@ Public Class ClassAutocompleteUpdater
 
                                 For Each mData In mMethodmapItem.m_Data
                                     mAutocomplete.m_Data(mData.Key) = mData.Value
+                                Next
+
+                                'Keep root information
+                                For Each mData In mMethodItem.m_Data
+                                    If (mData.Key.StartsWith("@"c)) Then
+                                        mAutocomplete.m_Data(mData.Key) = mData.Value
+                                    End If
                                 Next
 
                                 mAutocomplete.m_Data("VariableMethodmapName") = sMethodName
@@ -4221,6 +4284,13 @@ Public Class ClassAutocompleteUpdater
                                     mAutocomplete.m_Data(mData.Key) = mData.Value
                                 Next
 
+                                'Keep root information
+                                For Each mData In mInlineMethodItem.m_Data
+                                    If (mData.Key.StartsWith("@"c)) Then
+                                        mAutocomplete.m_Data(mData.Key) = mData.Value
+                                    End If
+                                Next
+
                                 mAutocomplete.m_Data("VariableMethodmapName") = sInlineMethodName
                                 mAutocomplete.m_Data("VariableMethodmapMethod") = sMethodmapMethodName
 
@@ -4316,6 +4386,13 @@ Public Class ClassAutocompleteUpdater
 
                                 For Each mData In mMethodmapItem.m_Data
                                     mAutocomplete.m_Data(mData.Key) = mData.Value
+                                Next
+
+                                'Keep root information
+                                For Each mData In mFieldItem.m_Data
+                                    If (mData.Key.StartsWith("@"c)) Then
+                                        mAutocomplete.m_Data(mData.Key) = mData.Value
+                                    End If
                                 Next
 
                                 mAutocomplete.m_Data("VariableMethodmapName") = sFieldName
@@ -4426,6 +4503,13 @@ Public Class ClassAutocompleteUpdater
                                     mAutocomplete.m_Data(mData.Key) = mData.Value
                                 Next
 
+                                'Keep root information
+                                For Each mData In mVariableItem.m_Data
+                                    If (mData.Key.StartsWith("@"c)) Then
+                                        mAutocomplete.m_Data(mData.Key) = mData.Value
+                                    End If
+                                Next
+
                                 mAutocomplete.m_Data("VariableEnumStructName") = sVariableName
                                 mAutocomplete.m_Data("VariableEnumStructField") = If(bIsField, sEnumStructTargetName, "")
                                 mAutocomplete.m_Data("VariableEnumStructMethod") = If(bIsField, "", sEnumStructTargetName)
@@ -4534,6 +4618,13 @@ Public Class ClassAutocompleteUpdater
 
                                 For Each mData In mEnumStructItem.m_Data
                                     mAutocomplete.m_Data(mData.Key) = mData.Value
+                                Next
+
+                                'Keep root information
+                                For Each mData In mMethodItem.m_Data
+                                    If (mData.Key.StartsWith("@"c)) Then
+                                        mAutocomplete.m_Data(mData.Key) = mData.Value
+                                    End If
                                 Next
 
                                 mAutocomplete.m_Data("VariableEnumStructName") = sMethodName
@@ -4651,6 +4742,13 @@ Public Class ClassAutocompleteUpdater
                                     mAutocomplete.m_Data(mData.Key) = mData.Value
                                 Next
 
+                                'Keep root information
+                                For Each mData In mInlineMethodItem.m_Data
+                                    If (mData.Key.StartsWith("@"c)) Then
+                                        mAutocomplete.m_Data(mData.Key) = mData.Value
+                                    End If
+                                Next
+
                                 mAutocomplete.m_Data("VariableEnumStructName") = sEnumStructTargetName
                                 mAutocomplete.m_Data("VariableEnumStructField") = If(bIsField, sEnumStructTargetName, "")
                                 mAutocomplete.m_Data("VariableEnumStructMethod") = If(bIsField, "", sEnumStructTargetName)
@@ -4755,6 +4853,13 @@ Public Class ClassAutocompleteUpdater
 
                                 For Each mData In mEnumStructItem.m_Data
                                     mAutocomplete.m_Data(mData.Key) = mData.Value
+                                Next
+
+                                'Keep root information
+                                For Each mData In mFieldItem.m_Data
+                                    If (mData.Key.StartsWith("@"c)) Then
+                                        mAutocomplete.m_Data(mData.Key) = mData.Value
+                                    End If
                                 Next
 
                                 mAutocomplete.m_Data("VariableEnumStructName") = sEnumStructTargetName

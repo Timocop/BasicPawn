@@ -93,9 +93,33 @@ Public Class UCAutocomplete
             Return 0
         End If
 
-        Dim sFunctionNames As String() = sFunctionName.Split("."c)
+        Dim sFile As String = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File
         Dim bSelectedWord As Boolean = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.SelectionManager.HasSomethingSelected
+
+        Dim sFunctionNames As String() = sFunctionName.Split("."c)
         Dim mSortedAutocomplete As New ClassAutocompleteListBox.ClassSortedAutocomplete(ListBox_Autocomplete)
+
+
+        Dim iCurrentScopeIndex As Integer = -1
+
+        'If 'this' keyword find out the type 
+        If (sFunctionNames.Length = 2 AndAlso sFunctionNames(0) = "this") Then
+            Dim sTextContent As String = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
+            Dim iCaretOffset As Integer = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Offset
+            Dim iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language
+            Dim iBraceList As Integer()() = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(sTextContent, "{"c, "}"c, 1, iLanguage, True)
+
+            'Get current scope index
+            For i = 0 To iBraceList.Length - 1
+                If (iCaretOffset < iBraceList(i)(0) OrElse iCaretOffset > iBraceList(i)(1)) Then
+                    Continue For
+                End If
+
+                iCurrentScopeIndex = i
+                Exit For
+            Next
+        End If
+
 
         Dim mAutocompleteArray As ClassSyntaxTools.STRUC_AUTOCOMPLETE() = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_AutocompleteItems.ToArray
         For i = 0 To mAutocompleteArray.Length - 1
@@ -104,12 +128,34 @@ Public Class UCAutocomplete
             End If
 
             If (mAutocompleteArray(i).m_Data.ContainsKey("IsThis")) Then
-                If (sFunctionNames.Length <> 2) Then
+                If (iCurrentScopeIndex < 0) Then
                     Continue For
                 End If
 
-                If (sFunctionNames(0) <> "this") Then
-                    Continue For
+                If ((mAutocompleteArray(i).m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) <> 0) Then
+                    Dim iScopeIndex As Integer = CInt(mAutocompleteArray(i).m_Data("@MethodmapScopeIndex"))
+                    Dim sScopeFile As String = CStr(mAutocompleteArray(i).m_Data("@MethodmapScopeFile"))
+
+                    If (iScopeIndex <> iCurrentScopeIndex) Then
+                        Continue For
+                    End If
+
+                    If (sScopeFile.ToLower <> sFile.ToLower) Then
+                        Continue For
+                    End If
+                End If
+
+                If ((mAutocompleteArray(i).m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM_STRUCT) <> 0) Then
+                    Dim iScopeIndex As Integer = CInt(mAutocompleteArray(i).m_Data("@EnumStructScopeIndex"))
+                    Dim sScopeFile As String = CStr(mAutocompleteArray(i).m_Data("@EnumStructScopeFile"))
+
+                    If (iScopeIndex <> iCurrentScopeIndex) Then
+                        Continue For
+                    End If
+
+                    If (sScopeFile.ToLower <> sFile.ToLower) Then
+                        Continue For
+                    End If
                 End If
             End If
 
