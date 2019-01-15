@@ -169,6 +169,13 @@ Public Class ClassAutocompleteUpdater
                                                    End If
                                                End Sub)
 
+            Dim mIncludeWatch As New Stopwatch
+            Dim mLanguageWatch As New Stopwatch
+            Dim mPreWatch As New Stopwatch
+            Dim mPostWatch As New Stopwatch
+            Dim mFinalizeWatch As New Stopwatch
+            Dim mApplyWatch As New Stopwatch
+
             Dim lNewAutocompleteList As New ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
             Dim mParser As New ClassParser()
 
@@ -178,6 +185,7 @@ Public Class ClassAutocompleteUpdater
             Dim lIncludeFiles As New List(Of DictionaryEntry)
             Dim lIncludeFilesFull As New List(Of DictionaryEntry)
 
+            mIncludeWatch.Start()
             For Each sInclude In GetIncludeFiles(mRequestedConfig, sRequestedSource, sRequestedSourceFile, sRequestedSourceFile)
                 lIncludeFiles.Add(New DictionaryEntry(sTabIdentifier, sInclude))
             Next
@@ -262,11 +270,13 @@ Public Class ClassAutocompleteUpdater
                     mRequestTab.m_IncludeFilesFull.Clear()
                     mRequestTab.m_IncludeFilesFull.AddRange(lIncludeFilesFull.ToArray)
                 End Sub)
+            mIncludeWatch.Stop()
 
             'Add preprocessor stuff
             lNewAutocompleteList.AddRange(mParser.GetPreprocessorKeywords(lIncludeFilesFull.ToArray))
 
             'Detect current mod type...
+            mLanguageWatch.Start()
             If (mRequestedConfig.g_iLanguage = ClassConfigs.STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE.AUTO_DETECT) Then
                 Dim iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = CType(-1, ClassSyntaxTools.ENUM_LANGUAGE_TYPE)
 
@@ -326,14 +336,10 @@ Public Class ClassAutocompleteUpdater
                         iRequestedLangauge = ClassSyntaxTools.ENUM_LANGUAGE_TYPE.AMXMODX
                 End Select
             End If
+            mLanguageWatch.Stop()
 
             'Set mod type
             mRequestTab.m_Language = iRequestedLangauge
-
-            Dim mPreWatch As New Stopwatch
-            Dim mPostWatch As New Stopwatch
-            Dim mFinalizeWatch As New Stopwatch
-            Dim mApplyWatch As New Stopwatch
 
             'Parse everything. Methods etc.
             If (True) Then
@@ -398,7 +404,9 @@ Public Class ClassAutocompleteUpdater
 
 #If PROFILE_AUTOCOMPLETE Then
             g_mFormMain.PrintInformation("[DEBG]", "Autocomplete update finished!")
-            g_mFormMain.PrintInformation("[DEBG]", vbTab & "Times:")
+            g_mFormMain.PrintInformation("[DEBG]", "Times:")
+            g_mFormMain.PrintInformation("[DEBG]", vbTab & "Includes: " & mIncludeWatch.Elapsed.ToString)
+            g_mFormMain.PrintInformation("[DEBG]", vbTab & "Language: " & mLanguageWatch.Elapsed.ToString)
             g_mFormMain.PrintInformation("[DEBG]", vbTab & "Pre: " & mPreWatch.Elapsed.ToString)
             g_mFormMain.PrintInformation("[DEBG]", vbTab & "Post: " & mPostWatch.Elapsed.ToString)
             g_mFormMain.PrintInformation("[DEBG]", vbTab & "Finalize: " & mFinalizeWatch.Elapsed.ToString)
@@ -3194,6 +3202,9 @@ Public Class ClassAutocompleteUpdater
                         Continue For
                     End If
 
+                    Dim iMethodmapScopeIndex As Integer = CInt(lTmpAutoList(i).m_Data("@MethodmapScopeIndex"))
+                    Dim sMethodmapScopeFile As String = CStr(lTmpAutoList(i).m_Data("@MethodmapScopeFile"))
+
                     Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(lTmpAutoList(i).m_Info,
                                                                                       lTmpAutoList(i).m_Filename,
                                                                                       lTmpAutoList(i).m_Path,
@@ -3212,8 +3223,12 @@ Public Class ClassAutocompleteUpdater
                     mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Generates combined methodmap 'this' keywords"
 #End If
 
-                    If (Not lTmpAutoList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString) AndAlso
-                                Not lTmpAutoAddList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
+                    If (Not lTmpAutoList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString AndAlso
+                                                                                                            CInt(x.m_Data("@MethodmapScopeIndex")) = iMethodmapScopeIndex AndAlso
+                                                                                                            CStr(x.m_Data("@MethodmapScopeFile")) = sMethodmapScopeFile) AndAlso
+                                Not lTmpAutoAddList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString AndAlso
+                                                                                                                        CInt(x.m_Data("@MethodmapScopeIndex")) = iMethodmapScopeIndex AndAlso
+                                                                                                                        CStr(x.m_Data("@MethodmapScopeFile")) = sMethodmapScopeFile)) Then
                         lTmpAutoAddList.Add(mAutocomplete)
                     End If
                 Next
@@ -3257,6 +3272,9 @@ Public Class ClassAutocompleteUpdater
                         Throw New ArgumentException("Invalid enum struct field/method name")
                     End If
 
+                    Dim iEnumStructScopeIndex As Integer = CInt(lTmpAutoList(i).m_Data("@EnumStructScopeIndex"))
+                    Dim sEnumStructScopeFile As String = CStr(lTmpAutoList(i).m_Data("@EnumStructScopeFile"))
+
                     Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(lTmpAutoList(i).m_Info,
                                                                                       lTmpAutoList(i).m_Filename,
                                                                                       lTmpAutoList(i).m_Path,
@@ -3275,8 +3293,12 @@ Public Class ClassAutocompleteUpdater
                     mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Generates combined enum struct 'this' keywords"
 #End If
 
-                    If (Not lTmpAutoList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString) AndAlso
-                                Not lTmpAutoAddList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
+                    If (Not lTmpAutoList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString AndAlso
+                                                                                                            CInt(x.m_Data("@EnumStructScopeIndex")) = iEnumStructScopeIndex AndAlso
+                                                                                                            CStr(x.m_Data("@EnumStructScopeFile")) = sEnumStructScopeFile) AndAlso
+                                Not lTmpAutoAddList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString AndAlso
+                                                                                                                        CInt(x.m_Data("@EnumStructScopeIndex")) = iEnumStructScopeIndex AndAlso
+                                                                                                                        CStr(x.m_Data("@EnumStructScopeFile")) = sEnumStructScopeFile)) Then
                         lTmpAutoAddList.Add(mAutocomplete)
                     End If
                 Next
