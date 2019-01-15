@@ -15,7 +15,7 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 #Const SEARCH_EVERYWHERE = (DEBUG AndAlso False)
-#Const PROFILE_AUTOCOMPLETE = (DEBUG AndAlso False)
+#Const PROFILE_AUTOCOMPLETE = (DEBUG AndAlso True)
 #Const DUMP_TO_FILE = (DEBUG AndAlso True)
 
 Imports System.Text
