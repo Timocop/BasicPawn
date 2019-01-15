@@ -381,11 +381,10 @@ Public Class ClassSyntaxTools
             'Trim, but skip comments
             For i = mSourceBuilder.Length - 1 - 1 To 0 Step -1
                 Dim a As Byte
-
-                If (mSourceBuilder(i) = vbLf) Then
-                    a = 1
-                ElseIf (i = 0) Then
+                If (i = 0) Then
                     a = 0
+                ElseIf (mSourceBuilder(i) = vbLf(0)) Then
+                    a = 1
                 Else
                     Continue For
                 End If
@@ -407,27 +406,6 @@ Public Class ClassSyntaxTools
             Next
 
             sSource = mSourceBuilder.ToString
-        End If
-
-        Dim lValidStateEnds As New List(Of Integer)
-
-        If (True) Then
-            'Get any valid statements ends and put them in a list
-            Dim iExpressions As Integer()() = GetExpressionBetweenCharacters(sSource, "("c, ")"c, 1, iLanguage, True)
-
-            For Each mMatch As Match In Regex.Matches(sSource, "(?<!\#)(\b(if|while|for)\b\s*(?<End1>\()|\b(?<End2>else(?!\s+\b(if)\b))\b)")
-                If (mMatch.Groups("End1").Success) Then
-                    Dim iEndIndex As Integer = mMatch.Groups("End1").Index
-                    For i = 0 To iExpressions.Length - 1
-                        If (iEndIndex = iExpressions(i)(0)) Then
-                            lValidStateEnds.Add(iExpressions(i)(1))
-                        End If
-                    Next
-                ElseIf (mMatch.Groups("End2").Success) Then
-                    Dim iEndIndex As Integer = mMatch.Groups("End2").Index + mMatch.Groups("End2").Length - 1
-                    lValidStateEnds.Add(iEndIndex)
-                End If
-            Next
         End If
 
         If (True) Then
@@ -460,85 +438,77 @@ Public Class ClassSyntaxTools
                                 iBraceCount += 1
                             End If
 
-                        Case vbLf(0)
-                            'Dont indent comments
-                            Dim bContinue As Boolean = False
-
-                            For j = i + 1 To mSourceBuilder.Length - 1
-                                If (mSourceAnalysis.m_InMultiComment(j) OrElse mSourceAnalysis.m_InSingleComment(j)) Then
-                                    bContinue = True
-                                    Exit For
+                        Case Else
+                            If (i = 0 OrElse mSourceBuilder(i) = vbLf(0)) Then
+                                Dim a As Byte
+                                If (i = 0) Then
+                                    a = 0
+                                Else
+                                    a = 1
                                 End If
 
-                                If (mSourceBuilder(j) = vbCr OrElse mSourceBuilder(j) = vbLf OrElse Not Char.IsWhiteSpace(mSourceBuilder(j))) Then
-                                    Exit For
-                                End If
-                            Next
-                            If (bContinue) Then
-                                Continue For
-                            End If
+                                Dim bContinue As Boolean = False
 
-                            'Dont indent preprocessor
-                            For j = i + 1 To mSourceBuilder.Length - 1
-                                If (mSourceBuilder(j) = "#"c) Then
-                                    bContinue = True
-                                    Exit For
-                                End If
-
-                                If (mSourceBuilder(j) = vbCr OrElse mSourceBuilder(j) = vbLf OrElse Not Char.IsWhiteSpace(mSourceBuilder(j))) Then
-                                    Exit For
-                                End If
-                            Next
-                            If (bContinue) Then
-                                Continue For
-                            End If
-
-                            'Inserts tabs (spaces) after statements (if, while, for etc.)
-                            Dim iStatementLevel As Integer = 0
-                            For j = i To mSourceBuilder.Length - 1
-                                If (Not Regex.IsMatch(mSourceBuilder(j), "\s")) Then
-                                    If (mSourceBuilder(j) = "{") Then
-                                        iStatementLevel = -1
-                                    End If
-
-                                    Exit For
-                                End If
-                            Next
-
-                            If (iStatementLevel > -1) Then
-                                For j = i - 1 To 0 Step -1
-                                    If (mSourceAnalysis.m_InNonCode(j)) Then
-                                        Continue For
-                                    End If
-
-                                    If (Not Regex.IsMatch(mSourceBuilder(j), "\s")) Then
-                                        If (lValidStateEnds.Contains(j)) Then
-                                            iStatementLevel = 1
-                                        End If
-
+                                'Dont indent comments
+                                For j = i + a To mSourceBuilder.Length - 1
+                                    If (mSourceAnalysis.m_InMultiComment(j) OrElse mSourceAnalysis.m_InSingleComment(j)) Then
+                                        bContinue = True
                                         Exit For
                                     End If
 
-                                    If (Not Regex.IsMatch(mSourceBuilder(j), "[a-zA-Z0-9_\s]")) Then
+                                    If (mSourceBuilder(j) = vbCr OrElse mSourceBuilder(j) = vbLf OrElse Not Char.IsWhiteSpace(mSourceBuilder(j))) Then
                                         Exit For
                                     End If
                                 Next
+                                If (bContinue) Then
+                                    Continue For
+                                End If
+
+                                Dim iPreprocessorLevel As Integer = 0
+
+                                'Dont indent preprocessor. Only after escape-newline.
+                                For j = i + a To mSourceBuilder.Length - 1
+                                    If (mSourceAnalysis.m_InPreprocessor(j)) Then
+                                        If (mSourceBuilder(j) = "#"c) Then
+                                            bContinue = True
+                                            Exit For
+                                        End If
+
+                                        iPreprocessorLevel = 1
+                                        Exit For
+                                    End If
+
+                                    If (mSourceBuilder(j) = vbCr OrElse mSourceBuilder(j) = vbLf OrElse Not Char.IsWhiteSpace(mSourceBuilder(j))) Then
+                                        Exit For
+                                    End If
+                                Next
+                                If (bContinue) Then
+                                    Continue For
+                                End If
+
+                                'Finish up
+                                Dim iBraceRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
+                                Dim iBraceLevel As Integer = mSourceAnalysis.GetBraceLevel(i + 1 + iBraceCount, iBraceRange)
+                                Select Case (iBraceRange)
+                                    Case ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.START, ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END
+                                        iBraceLevel -= 1
+                                End Select
+
+                                'Add indentation 
+                                Dim iIndentLength As Integer = iBraceLevel
+
+                                If (iBracedCount > 0) Then
+                                    iIndentLength += (iBracedCount + 1)
+                                End If
+
+                                If (iPreprocessorLevel > 0) Then
+                                    iIndentLength = 1
+                                End If
+
+                                mSourceBuilder = mSourceBuilder.Insert(i + 1, ClassSettings.BuildIndentation(iIndentLength, iIndentationType))
+
+                                iBraceCount = 0
                             End If
-
-                            'Finish up
-                            Dim iBraceRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
-                            Dim iBraceLevel As Integer = mSourceAnalysis.GetBraceLevel(i + 1 + iBraceCount, iBraceRange)
-                            Select Case (iBraceRange)
-                                Case ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.START, ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END
-                                    iBraceLevel -= 1
-                            End Select
-
-                            'Add indentation
-                            mSourceBuilder = mSourceBuilder.Insert(i + 1, ClassSettings.BuildIndentation(iBraceLevel +
-                                                                                           If(iBracedCount > 0, iBracedCount + 1, 0) +
-                                                                                           If(iStatementLevel > -1, iStatementLevel, 0), iIndentationType))
-
-                            iBraceCount = 0
 
                     End Select
                 Catch ex As Exception
@@ -943,18 +913,19 @@ Public Class ClassSyntaxTools
 
                 Select Case (sText(i))
                     Case "#"c
-                        If (iParenthesisLevel > 0 OrElse iBracketLevel > 0 OrElse iBraceLevel > 0 OrElse bInSingleComment > 0 OrElse bInMultiComment > 0 OrElse bInString > 0 OrElse bInChar > 0) Then
+                        If (iParenthesisLevel > 0 OrElse iBracketLevel > 0 OrElse bInSingleComment > 0 OrElse bInMultiComment > 0 OrElse bInString > 0 OrElse bInChar > 0) Then
                             Continue For
                         End If
 
-                        '/*
+                        If (bInPreprocessor < 1) Then
+                            'Preprocessor directives can be malformed, reset level after we are done with it.
+                            iParenthesisLevelPreSave = iParenthesisLevel
+                            iBracketLevelPreSave = iBracketLevel
+                            iBraceLevelPreSave = iBraceLevel
+                        End If
+
                         bInPreprocessor = 1
                         g_iStateArray(i, ENUM_STATE_TYPES.IN_PREPROCESSOR) = 1
-
-                        'Preprocessor directives can be malformed, reset level after we are dont with it.
-                        iParenthesisLevelPreSave = iParenthesisLevel
-                        iBracketLevelPreSave = iBracketLevel
-                        iBraceLevelPreSave = iBraceLevel
 
                     Case "*"c
                         If (bInSingleComment > 0 OrElse bInString > 0 OrElse bInChar > 0) Then
@@ -1116,12 +1087,31 @@ Public Class ClassSyntaxTools
                         End If
 
                     Case vbLf(0)
+                        Dim bEscapeNewline As Boolean = False
+
+                        For j = i - 1 To 0 Step -1
+                            If (sText(j) = vbLf(0)) Then
+                                Exit For
+                            End If
+
+                            If (Char.IsWhiteSpace(sText(j))) Then
+                                Continue For
+                            End If
+
+                            If (sText(j) <> "\"c) Then
+                                Continue For
+                            End If
+
+                            bEscapeNewline = True
+                            Exit For
+                        Next
+
                         If (bInSingleComment > 0) Then
                             bInSingleComment = 0
                             g_iStateArray(i, ENUM_STATE_TYPES.IN_SINGLE_COMMENT) = bInSingleComment
                         End If
 
-                        If (bInPreprocessor > 0) Then
+                        If (bInPreprocessor > 0 AndAlso Not bEscapeNewline) Then
                             bInPreprocessor = 0
                             g_iStateArray(i, ENUM_STATE_TYPES.IN_PREPROCESSOR) = bInPreprocessor
 
