@@ -575,7 +575,7 @@ Public Class ClassAutocompleteUpdater
 
 #If PROFILE_AUTOCOMPLETE Then
             g_mFormMain.PrintInformation("[DEBG]", "Variable Autocomplete update finished!")
-            g_mFormMain.PrintInformation("[DEBG]", vbTab & "Times:")
+            g_mFormMain.PrintInformation("[DEBG]", "Times:")
             g_mFormMain.PrintInformation("[DEBG]", vbTab & "Pre: " & mPreWatch.Elapsed.ToString)
             g_mFormMain.PrintInformation("[DEBG]", vbTab & "Finalize: " & mFinalizeWatch.Elapsed.ToString)
             g_mFormMain.PrintInformation("[DEBG]", vbTab & "Apply: " & mApplyWatch.Elapsed.ToString)
@@ -941,6 +941,7 @@ Public Class ClassAutocompleteUpdater
     Class ClassParser
         Private Class STRUC_AUTOCOMPLETE_PARSE_PRE_INFO
             Public sSource As String
+            Public sSourceCode As String
             Public sActiveSource As String
             Public sActiveSourceFile As String
             Public sFile As String
@@ -949,6 +950,7 @@ Public Class ClassAutocompleteUpdater
             Public iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE
 
             Sub New(_Source As String,
+                    _SourceCode As String,
                     _ActiveSource As String,
                     _ActiveSourceFile As String,
                     _File As String,
@@ -957,6 +959,7 @@ Public Class ClassAutocompleteUpdater
                     _Language As ClassSyntaxTools.ENUM_LANGUAGE_TYPE)
 
                 sSource = _Source
+                sSourceCode = _SourceCode
                 sActiveSource = _ActiveSource
                 sActiveSourceFile = _ActiveSourceFile
                 sFile = _File
@@ -1054,7 +1057,16 @@ Public Class ClassAutocompleteUpdater
             CleanUpNewLinesSource(sSource, iLanguage)
             CleanupFunctionSpacesSource(sSource, iLanguage)
 
-            Dim mParseInfo As New STRUC_AUTOCOMPLETE_PARSE_PRE_INFO(sSource, sActiveSource, sActiveSourceFile, sFile, sSourceList, lNewAutocompleteList, iLanguage)
+            Dim mSourceCode As New StringBuilder(sSource.Length)
+            If (True) Then
+                Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iLanguage)
+
+                For i = 0 To sSource.Length - 1
+                    mSourceCode.Append(If(mSourceAnalysis.m_InNonCode(i), " "c, sSource(i)))
+                Next
+            End If
+
+            Dim mParseInfo As New STRUC_AUTOCOMPLETE_PARSE_PRE_INFO(sSource, mSourceCode.ToString, sActiveSource, sActiveSourceFile, sFile, sSourceList, lNewAutocompleteList, iLanguage)
             Dim mAutocompletePre As New ClassAutocompletePre(Me)
 
             mAutocompletePre.ParseStructs(mParseInfo)
@@ -1159,17 +1171,7 @@ Public Class ClassAutocompleteUpdater
             ''' <param name="mParseInfo"></param>
             Public Sub ParseStructs(mParseInfo As STRUC_AUTOCOMPLETE_PARSE_PRE_INFO)
                 If (mParseInfo.sSource.Contains("struct")) Then
-                    Dim mSourceBuilder As New StringBuilder(mParseInfo.sSource.Length)
-
-                    If (True) Then
-                        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(mParseInfo.sSource, mParseInfo.iLanguage)
-
-                        For i = 0 To mParseInfo.sSource.Length - 1
-                            mSourceBuilder.Append(If(mSourceAnalysis.m_InNonCode(i), " "c, mParseInfo.sSource(i)))
-                        Next
-                    End If
-
-                    Dim mPossibleStructMatches As MatchCollection = Regex.Matches(mSourceBuilder.ToString, "^\s*\b(struct)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)", RegexOptions.Multiline)
+                    Dim mPossibleStructMatches As MatchCollection = Regex.Matches(mParseInfo.sSourceCode, "^\s*\b(struct)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)", RegexOptions.Multiline)
 
                     Dim mMatch As Match
 
@@ -1210,17 +1212,7 @@ Public Class ClassAutocompleteUpdater
             ''' <param name="mParseInfo"></param>
             Public Sub ParseEnumStructs(mParseInfo As STRUC_AUTOCOMPLETE_PARSE_PRE_INFO)
                 If (mParseInfo.sSource.Contains("enum") AndAlso mParseInfo.sSource.Contains("struct")) Then
-                    Dim mSourceBuilder As New StringBuilder(mParseInfo.sSource.Length)
-
-                    If (True) Then
-                        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(mParseInfo.sSource, mParseInfo.iLanguage)
-
-                        For i = 0 To mParseInfo.sSource.Length - 1
-                            mSourceBuilder.Append(If(mSourceAnalysis.m_InNonCode(i), " "c, mParseInfo.sSource(i)))
-                        Next
-                    End If
-
-                    Dim mPossibleEnumStructMatches As MatchCollection = Regex.Matches(mSourceBuilder.ToString, "^\s*\b(enum)\b\s+\b(struct)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)", RegexOptions.Multiline)
+                    Dim mPossibleEnumStructMatches As MatchCollection = Regex.Matches(mParseInfo.sSourceCode, "^\s*\b(enum)\b\s+\b(struct)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)", RegexOptions.Multiline)
 
                     Dim mMatch As Match
 
@@ -1264,17 +1256,7 @@ Public Class ClassAutocompleteUpdater
             Public Sub ParseMethodmapEnums(mParseInfo As STRUC_AUTOCOMPLETE_PARSE_PRE_INFO)
                 If ((ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7 OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX) AndAlso
                             mParseInfo.sSource.Contains("methodmap")) Then
-                    Dim mSourceBuilder As New StringBuilder(mParseInfo.sSource.Length)
-
-                    If (True) Then
-                        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(mParseInfo.sSource, mParseInfo.iLanguage)
-
-                        For i = 0 To mParseInfo.sSource.Length - 1
-                            mSourceBuilder.Append(If(mSourceAnalysis.m_InNonCode(i), " "c, mParseInfo.sSource(i)))
-                        Next
-                    End If
-
-                    Dim mPossibleEnumMatches As MatchCollection = Regex.Matches(mSourceBuilder.ToString, "^\s*\b(methodmap)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)", RegexOptions.Multiline)
+                    Dim mPossibleEnumMatches As MatchCollection = Regex.Matches(mParseInfo.sSourceCode, "^\s*\b(methodmap)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)", RegexOptions.Multiline)
 
                     Dim mMatch As Match
 
@@ -1318,17 +1300,7 @@ Public Class ClassAutocompleteUpdater
             Public Sub ParseTypesetEnums(mParseInfo As STRUC_AUTOCOMPLETE_PARSE_PRE_INFO)
                 If ((ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7 OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX) AndAlso
                             mParseInfo.sSource.Contains("typeset")) Then
-                    Dim mSourceBuilder As New StringBuilder(mParseInfo.sSource.Length)
-
-                    If (True) Then
-                        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(mParseInfo.sSource, mParseInfo.iLanguage)
-
-                        For i = 0 To mParseInfo.sSource.Length - 1
-                            mSourceBuilder.Append(If(mSourceAnalysis.m_InNonCode(i), " "c, mParseInfo.sSource(i)))
-                        Next
-                    End If
-
-                    Dim mPossibleEnumMatches As MatchCollection = Regex.Matches(mSourceBuilder.ToString, "^\s*\b(typeset)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)", RegexOptions.Multiline)
+                    Dim mPossibleEnumMatches As MatchCollection = Regex.Matches(mParseInfo.sSourceCode, "^\s*\b(typeset)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)", RegexOptions.Multiline)
 
                     Dim mMatch As Match
 
@@ -1372,17 +1344,7 @@ Public Class ClassAutocompleteUpdater
             Public Sub ParseTypedefEnums(mParseInfo As STRUC_AUTOCOMPLETE_PARSE_PRE_INFO)
                 If ((ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7 OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX) AndAlso
                             mParseInfo.sSource.Contains("typedef")) Then
-                    Dim mSourceBuilder As New StringBuilder(mParseInfo.sSource.Length)
-
-                    If (True) Then
-                        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(mParseInfo.sSource, mParseInfo.iLanguage)
-
-                        For i = 0 To mParseInfo.sSource.Length - 1
-                            mSourceBuilder.Append(If(mSourceAnalysis.m_InNonCode(i), " "c, mParseInfo.sSource(i)))
-                        Next
-                    End If
-
-                    Dim mPossibleEnumMatches As MatchCollection = Regex.Matches(mSourceBuilder.ToString, "^\s*\b(typedef)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)", RegexOptions.Multiline)
+                    Dim mPossibleEnumMatches As MatchCollection = Regex.Matches(mParseInfo.sSourceCode, "^\s*\b(typedef)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)", RegexOptions.Multiline)
 
                     Dim mMatch As Match
 
@@ -1426,17 +1388,7 @@ Public Class ClassAutocompleteUpdater
             Public Sub ParseFunctagEnums(mParseInfo As STRUC_AUTOCOMPLETE_PARSE_PRE_INFO)
                 If ((ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_6 OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX) AndAlso
                             mParseInfo.sSource.Contains("functag")) Then
-                    Dim mSourceBuilder As New StringBuilder(mParseInfo.sSource.Length)
-
-                    If (True) Then
-                        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(mParseInfo.sSource, mParseInfo.iLanguage)
-
-                        For i = 0 To mParseInfo.sSource.Length - 1
-                            mSourceBuilder.Append(If(mSourceAnalysis.m_InNonCode(i), " "c, mParseInfo.sSource(i)))
-                        Next
-                    End If
-
-                    Dim mPossibleEnumMatches As MatchCollection = Regex.Matches(mSourceBuilder.ToString, "^\s*\b(functag)\b\s+\b(public)\b\s+(?<Tag>\b[a-zA-Z0-9_]+\b\s+|\b[a-zA-Z0-9_]+\b\:\s*|)(?<Name>\b[a-zA-Z0-9_]+\b)\s*\(", RegexOptions.Multiline)
+                    Dim mPossibleEnumMatches As MatchCollection = Regex.Matches(mParseInfo.sSourceCode, "^\s*\b(functag)\b\s+\b(public)\b\s+(?<Tag>\b[a-zA-Z0-9_]+\b\s+|\b[a-zA-Z0-9_]+\b\:\s*|)(?<Name>\b[a-zA-Z0-9_]+\b)\s*\(", RegexOptions.Multiline)
 
                     Dim mMatch As Match
 
@@ -1480,17 +1432,7 @@ Public Class ClassAutocompleteUpdater
             Public Sub ParseFuncenumEnums(mParseInfo As STRUC_AUTOCOMPLETE_PARSE_PRE_INFO)
                 If ((ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_6 OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX) AndAlso
                             mParseInfo.sSource.Contains("funcenum")) Then
-                    Dim mSourceBuilder As New StringBuilder(mParseInfo.sSource.Length)
-
-                    If (True) Then
-                        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(mParseInfo.sSource, mParseInfo.iLanguage)
-
-                        For i = 0 To mParseInfo.sSource.Length - 1
-                            mSourceBuilder.Append(If(mSourceAnalysis.m_InNonCode(i), " "c, mParseInfo.sSource(i)))
-                        Next
-                    End If
-
-                    Dim mPossibleEnumMatches As MatchCollection = Regex.Matches(mSourceBuilder.ToString, "^\s*\b(funcenum)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)", RegexOptions.Multiline)
+                    Dim mPossibleEnumMatches As MatchCollection = Regex.Matches(mParseInfo.sSourceCode, "^\s*\b(funcenum)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)", RegexOptions.Multiline)
 
                     Dim mMatch As Match
 
@@ -1533,18 +1475,9 @@ Public Class ClassAutocompleteUpdater
             ''' <param name="mParseInfo"></param>
             Public Sub ParseEnums(mFormMain As FormMain, mParseInfo As STRUC_AUTOCOMPLETE_PARSE_PRE_INFO)
                 If (mParseInfo.sSource.Contains("enum")) Then
-                    Dim mSourceBuilder As New StringBuilder(mParseInfo.sSource.Length)
 
-                    If (True) Then
-                        Dim mSourceAnalysis2 As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(mParseInfo.sSource, mParseInfo.iLanguage)
-
-                        For i = 0 To mParseInfo.sSource.Length - 1
-                            mSourceBuilder.Append(If(mSourceAnalysis2.m_InNonCode(i), " "c, mParseInfo.sSource(i)))
-                        Next
-                    End If
-
-                    Dim mPossibleEnumMatches As MatchCollection = Regex.Matches(mSourceBuilder.ToString, "^\s*\b(enum)\b\s*((?<Tag>\b[a-zA-Z0-9_]+\b)(\:)(?<Name>\b[a-zA-Z0-9_]+\b)\s*(\(.*?\)){0,1}|(?<Name>\b[a-zA-Z0-9_]+\b)(\:){0,1}\s*(\(.*?\)){0,1}|\(.*?\)|)\s*(?<BraceStart>\{)", RegexOptions.Multiline)
-                    Dim iBraceList As Integer()() = mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(mSourceBuilder.ToString, "{"c, "}"c, 1, mParseInfo.iLanguage, True)
+                    Dim mPossibleEnumMatches As MatchCollection = Regex.Matches(mParseInfo.sSourceCode, "^\s*\b(enum)\b\s*((?<Tag>\b[a-zA-Z0-9_]+\b)(\:)(?<Name>\b[a-zA-Z0-9_]+\b)\s*(\(.*?\)){0,1}|(?<Name>\b[a-zA-Z0-9_]+\b)(\:){0,1}\s*(\(.*?\)){0,1}|\(.*?\)|)\s*(?<BraceStart>\{)", RegexOptions.Multiline)
+                    Dim iBraceList As Integer()() = mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(mParseInfo.sSourceCode, "{"c, "}"c, 1, mParseInfo.iLanguage, True)
 
 
                     Dim mMatch As Match
@@ -1583,7 +1516,7 @@ Public Class ClassAutocompleteUpdater
                         iBraceIndex = mMatch.Groups("BraceStart").Index
                         For ii = 0 To iBraceList.Length - 1
                             If (iBraceIndex = iBraceList(ii)(0)) Then
-                                sEnumSource = mSourceBuilder.ToString.Substring(iBraceList(ii)(0) + 1, iBraceList(ii)(1) - iBraceList(ii)(0) - 1)
+                                sEnumSource = mParseInfo.sSourceCode.Substring(iBraceList(ii)(0) + 1, iBraceList(ii)(1) - iBraceList(ii)(0) - 1)
                                 bIsValid = True
                                 Exit For
                             End If
