@@ -58,8 +58,8 @@ Public Class FormToolTip
             TextEditorControl_ToolTip.Height += SystemInformation.HorizontalScrollBarHeight
         End If
 
-        ClassTools.ClassForms.SetDoubleBufferingAllChilds(Me, True)
-        ClassTools.ClassForms.SetDoubleBufferingUnmanagedAllChilds(Me, True)
+        ClassTools.ClassForms.SetDoubleBuffering(Me, True)
+        ClassTools.ClassForms.SetDoubleBufferingUnmanaged(Me, True)
 
         ClassControlStyle.UpdateControls(Me)
     End Sub
@@ -79,8 +79,36 @@ Public Class FormToolTip
         End Set
     End Property
 
+    Property m_Text As String
+        Get
+            Return TextEditorControl_ToolTip.Document.TextContent
+        End Get
+        Set(value As String)
+            If (TextEditorControl_ToolTip.Document.TextContent = value) Then
+                Return
+            End If
+
+            'TODO: Find better method to fix editor flickering when resizing.
+            Dim bWasVisible As Boolean = Me.Visible
+            Me.Visible = False
+
+            TextEditorControl_ToolTip.Document.TextContent = value
+
+            UpdateSize()
+            MoveWindow(Point.Empty, True)
+
+            Me.Visible = bWasVisible
+        End Set
+    End Property
+
+    ReadOnly Property m_TextLength As Integer
+        Get
+            Return TextEditorControl_ToolTip.Document.TextLength
+        End Get
+    End Property
+
     Private Sub Timer_Move_Tick(sender As Object, e As EventArgs) Handles Timer_Move.Tick
-        If (Form.ActiveForm Is g_mFormMain AndAlso MoveWindow(Me.Location, Not ClassSettings.g_iSettingsUseWindowsToolTipAnimations)) Then
+        If (Form.ActiveForm Is g_mFormMain AndAlso MoveWindow(Point.Empty, Not ClassSettings.g_iSettingsUseWindowsToolTipAnimations)) Then
             Timer_Move.Interval = g_iMoveSpeed
         Else
             Timer_Move.Interval = g_iIdleSpeed
@@ -94,6 +122,9 @@ Public Class FormToolTip
     End Sub
 
     Private Function MoveWindow(mStartLocation As Point, bInstant As Boolean) As Boolean
+        Const MAX_MOVE = 500
+        Const MIN_MOVE = 0
+
         Dim bMoved As Boolean = False
 
         Dim mCursorPoint As Point = Cursor.Position
@@ -104,16 +135,13 @@ Public Class FormToolTip
 
         While True
             If (ClassSettings.g_iSettingsUseWindowsToolTipDisplayTop) Then
-                Const MAX_MOVE = -500
-                Const MIN_MOVE = 0
-
-                If (g_mMoveLocation.Y > MAX_MOVE AndAlso
+                If (g_mMoveLocation.Y < MAX_MOVE AndAlso
                         (mCursorPoint.X + g_iSizeSpace > mLocation.X AndAlso mCursorPoint.Y + g_iSizeSpace > mLocation.Y AndAlso
                             mCursorPoint.X < mLocation.X + Me.Width + g_iSizeSpace AndAlso mCursorPoint.Y < mLocation.Y + Me.Height + g_iSizeSpace)) Then
-                    g_mMoveLocation.Y -= g_iMoveStep
-                    g_mMoveLocation.Y = Math.Max(g_mMoveLocation.Y, MAX_MOVE)
+                    g_mMoveLocation.Y += g_iMoveStep
+                    g_mMoveLocation.Y = ClassTools.ClassMath.ClampInt(g_mMoveLocation.Y, MIN_MOVE, MAX_MOVE)
 
-                    mLocation = New Point(g_mLocation.X, g_mLocation.Y + g_mMoveLocation.Y)
+                    mLocation = New Point(g_mLocation.X, g_mLocation.Y - g_mMoveLocation.Y)
 
                     bMoved = True
 
@@ -121,13 +149,13 @@ Public Class FormToolTip
                         Continue While
                     End If
 
-                ElseIf (g_mMoveLocation.Y < MIN_MOVE AndAlso
+                ElseIf (g_mMoveLocation.Y > MIN_MOVE AndAlso
                             Not (mCursorPoint.X + g_iSizeSpace + g_iMoveStep > mLocation.X AndAlso mCursorPoint.Y + g_iSizeSpace + g_iMoveStep > mLocation.Y AndAlso
                                     mCursorPoint.X < mLocation.X + Me.Width + g_iSizeSpace + g_iMoveStep AndAlso mCursorPoint.Y < mLocation.Y + Me.Height + g_iSizeSpace + g_iMoveStep)) Then
-                    g_mMoveLocation.Y += g_iMoveStep
-                    g_mMoveLocation.Y = Math.Min(g_mMoveLocation.Y, MIN_MOVE)
+                    g_mMoveLocation.Y -= g_iMoveStep
+                    g_mMoveLocation.Y = ClassTools.ClassMath.ClampInt(g_mMoveLocation.Y, MIN_MOVE, MAX_MOVE)
 
-                    mLocation = New Point(g_mLocation.X, g_mLocation.Y + g_mMoveLocation.Y)
+                    mLocation = New Point(g_mLocation.X, g_mLocation.Y - g_mMoveLocation.Y)
 
                     bMoved = True
 
@@ -136,14 +164,11 @@ Public Class FormToolTip
                     End If
                 End If
             Else
-                Const MAX_MOVE = 500
-                Const MIN_MOVE = 0
-
                 If (g_mMoveLocation.Y < MAX_MOVE AndAlso
                         (mCursorPoint.X + g_iSizeSpace > mLocation.X AndAlso mCursorPoint.Y + g_iSizeSpace > mLocation.Y AndAlso
                             mCursorPoint.X < mLocation.X + Me.Width + g_iSizeSpace AndAlso mCursorPoint.Y < mLocation.Y + Me.Height + g_iSizeSpace)) Then
                     g_mMoveLocation.Y += g_iMoveStep
-                    g_mMoveLocation.Y = Math.Min(g_mMoveLocation.Y, MAX_MOVE)
+                    g_mMoveLocation.Y = ClassTools.ClassMath.ClampInt(g_mMoveLocation.Y, MIN_MOVE, MAX_MOVE)
 
                     mLocation = New Point(g_mLocation.X, g_mLocation.Y + g_mMoveLocation.Y)
 
@@ -157,7 +182,7 @@ Public Class FormToolTip
                             Not (mCursorPoint.X + g_iSizeSpace + g_iMoveStep > mLocation.X AndAlso mCursorPoint.Y + g_iSizeSpace + g_iMoveStep > mLocation.Y AndAlso
                                     mCursorPoint.X < mLocation.X + Me.Width + g_iSizeSpace + g_iMoveStep AndAlso mCursorPoint.Y < mLocation.Y + Me.Height + g_iSizeSpace + g_iMoveStep)) Then
                     g_mMoveLocation.Y -= g_iMoveStep
-                    g_mMoveLocation.Y = Math.Max(g_mMoveLocation.Y, MIN_MOVE)
+                    g_mMoveLocation.Y = ClassTools.ClassMath.ClampInt(g_mMoveLocation.Y, MIN_MOVE, MAX_MOVE)
 
                     mLocation = New Point(g_mLocation.X, g_mLocation.Y + g_mMoveLocation.Y)
 
@@ -177,15 +202,10 @@ Public Class FormToolTip
         Return bMoved
     End Function
 
-    Private Sub TextEditorControl_ToolTip_TextChanged(sender As Object, e As EventArgs) Handles TextEditorControl_ToolTip.TextChanged
+    Private Sub UpdateSize()
         'TODO: Better DPI, Border detection, or size in general
-        Me.SuspendLayout()
-
         Dim textSize = TextRenderer.MeasureText(TextEditorControl_ToolTip.Document.TextContent, New Font(TextEditorControl_ToolTip.ActiveTextAreaControl.Font, FontStyle.Bold))
         Me.Size = New Size(CInt(textSize.Width * 1.1), CInt(textSize.Height * 1.1))
-
-        Me.ResumeLayout()
-        Me.Refresh()
     End Sub
 
 #Region "Form focus"

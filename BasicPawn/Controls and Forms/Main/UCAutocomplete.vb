@@ -422,10 +422,10 @@ Public Class UCAutocomplete
                 'UpdateToolTipFormLocation()
 
                 If (ClassSettings.g_iSettingsUseWindowsToolTip) Then
-                    g_AutocompleteUC.g_mFormMain.g_mFormToolTip.TextEditorControl_ToolTip.Document.TextContent = SB_TipText_IntelliSenseToolTip.ToString & SB_TipText_AutocompleteToolTip.ToString
+                    g_AutocompleteUC.g_mFormMain.g_mFormToolTip.m_Text = SB_TipText_IntelliSenseToolTip.ToString & SB_TipText_AutocompleteToolTip.ToString
                 Else
-                    If (g_AutocompleteUC.g_mFormMain.g_mFormToolTip.TextEditorControl_ToolTip.Document.TextLength > 0) Then
-                        g_AutocompleteUC.g_mFormMain.g_mFormToolTip.TextEditorControl_ToolTip.Document.TextContent = ""
+                    If (g_AutocompleteUC.g_mFormMain.g_mFormToolTip.m_TextLength > 0) Then
+                        g_AutocompleteUC.g_mFormMain.g_mFormToolTip.m_Text = ""
                     End If
                 End If
 
@@ -503,7 +503,7 @@ Public Class UCAutocomplete
                 End If
 
 
-                If (Not bOutsideEditor AndAlso g_AutocompleteUC.g_mFormMain.g_mFormToolTip.TextEditorControl_ToolTip.Document.TextLength > 0) Then
+                If (Not bOutsideEditor AndAlso g_AutocompleteUC.g_mFormMain.g_mFormToolTip.m_TextLength > 0) Then
                     g_AutocompleteUC.g_mFormMain.g_mFormToolTip.m_Location = iNewLocation
 
                     If (Not g_AutocompleteUC.g_mFormMain.g_mFormToolTip.Visible) Then
