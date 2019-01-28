@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- <SyntaxVersion>1.0</SyntaxVersion> -->
+<SyntaxDefinition name="SourcePawn-04e3632f-5472-42c5-929a-c3e0c2b35324" extensions=".sp">
+	<Environment>
+		<Default color="#dcdcdc" bgcolor="#1e1e1e" />
+		<Selection color="#1e1e1e" bgcolor="#3399ff" />
+		<VRuler color="#333333" />
+		<InvalidLines color="Red" />
+		<CaretMarker color="#333333" />
+		<LineNumbers color="#2b91af" bgcolor="#1e1e1e" />
+		<FoldLine color="#d7dde8" bgcolor="#1e1e1e" />
+		<FoldMarker color="#d7dde8" bgcolor="#1e1e1e" />
+		<SelectedFoldLine color="#333333" bgcolor="#1e1e1e" />
+		<EOLMarkers color="#333333" />
+		<SpaceMarkers color="#333333" />
+		<TabMarkers color="#333333" />
+	</Environment>
+	<Properties>
+		<Property name="LineComment" value="//" />
+	</Properties>
+	<Digits name="Digits" bold="false" italic="false" color="#b5cea8" />
+	<RuleSets>
+		<RuleSet ignorecase="false">
+			<Delimiters>&amp;&lt;&gt;~!%^*()-+=|\#/{}[]:;"' ,	.?</Delimiters>
+			<Span name="LineComment" rule="CommentMarkerSet" bold="false" italic="false" color="#57a64a" stopateol="true">
+				<Begin>//</Begin>
+			</Span>
+			<Span name="BlockComment" rule="CommentMarkerSet" bold="false" italic="false" color="#57a64a" stopateol="false">
+				<Begin>/*</Begin>
+				<End>*/</End>
+			</Span>
+			<Span name="String" bold="false" italic="false" color="#d69d85" stopateol="false" escapecharacter="\">
+				<Begin>"</Begin>
+				<End>"</End>
+			</Span>
+			<Span name="Char" bold="false" italic="false" color="#d69d85" stopateol="true" escapecharacter="\">
+				<Begin>'</Begin>
+				<End>'</End>
+			</Span>
+			<MarkPrevious bold="true" italic="false" color="#dcdcdc">(</MarkPrevious>
+			<MarkFollowing markmarker="true" bold="true" italic="false" color="#9b9b9b">#</MarkFollowing>
+			<KeyWords name="CaretWords" color="#adc0d3" bgcolor="#0e4583">
+				<!-- [DO NOT EDIT | HIGHLIGHT CARET MARKER] -->
+			</KeyWords>
+			<KeyWords name="Punctuation" bold="false" italic="false" color="#b4b4b4">
+				<Key word="?" />
+				<Key word="," />
+				<Key word="." />
+				<Key word=";" />
+				<Key word="(" />
+				<Key word=")" />
+				<Key word="[" />
+				<Key word="]" />
+				<Key word="{" />
+				<Key word="}" />
+				<Key word="+" />
+				<Key word="-" />
+				<Key word="/" />
+				<Key word="%" />
+				<Key word="*" />
+				<Key word="&lt;" />
+				<Key word="&gt;" />
+				<Key word="^" />
+				<Key word="=" />
+				<Key word="~" />
+				<Key word="!" />
+				<Key word="|" />
+				<Key word="&amp;" />
+			</KeyWords>
+			<KeyWords name="OperatorKeywords" bold="true" italic="false" color="#569cd6">
+				<Key word="as" />
+				<Key word="is" />
+				<Key word="new" />
+				<Key word="decl" />
+				<Key word="sizeof" />
+				<Key word="typeof" />
+				<Key word="true" />
+				<Key word="false" />
+				<Key word="stackalloc" />
+				<Key word="delete" />
+				<Key word="view_as" />
+			</KeyWords>
+			<KeyWords name="SelectionStatements" bold="true" italic="false" color="#569cd6">
+				<Key word="else" />
+				<Key word="if" />
+				<Key word="switch" />
+				<Key word="case" />
+				<Key word="default" />
+			</KeyWords>
+			<KeyWords name="IterationStatements" bold="true" italic="false" color="#569cd6">
+				<Key word="do" />
+				<Key word="for" />
+				<Key word="foreach" />
+				<Key word="in" />
+				<Key word="while" />
+			</KeyWords>
+			<KeyWords name="JumpStatements" bold="true" italic="false" color="#569cd6">
+				<Key word="break" />
+				<Key word="continue" />
+				<Key word="goto" />
+				<Key word="return" />
+			</KeyWords>
+			<KeyWords name="TypesDef" bold="true" italic="false" color="#569cd6">
+				<Key word="enum" />
+				<Key word="struct" />
+			</KeyWords>
+			<KeyWords name="ValueTypes" bold="true" italic="false" color="#569cd6">
+				<Key word="bool" />
+				<Key word="byte" />
+				<Key word="char" />
+				<Key word="String" />
+				<Key word="decimal" />
+				<Key word="double" />
+				<Key word="float" />
+				<Key word="Float" />
+				<Key word="int" />
+				<Key word="long" />
+				<Key word="sbyte" />
+				<Key word="short" />
+				<Key word="uint" />
+				<Key word="ushort" />
+				<Key word="ulong" />
+				<Key word="any" />
+				<Key word="object" />
+				<Key word="Function" />
+				<Key word="null_t" />
+				<Key word="nullfunc_t" />
+				<Key word="__nullable__" />
+			</KeyWords>
+			<KeyWords name="Void" bold="false" italic="false" color="#569cd6">
+				<Key word="void" />
+			</KeyWords>
+			<KeyWords name="ConversionKeyWords" bold="true" italic="false" color="#569cd6">
+				<Key word="operator" />
+			</KeyWords>
+			<KeyWords name="Modifiers" bold="false" italic="false" color="#569cd6">
+				<Key word="const" />
+				<Key word="static" />
+			</KeyWords>
+			<KeyWords name="AccessModifiers" bold="true" italic="false" color="#569cd6">
+				<Key word="public" />
+				<Key word="stock" />
+				<Key word="forward" />
+				<Key word="native" />
+				<Key word="protected" />
+				<Key word="private" />
+				<Key word="internal" />
+			</KeyWords>
+			<KeyWords name="SourceModOneSix" bold="true" italic="false" color="#569cd6">
+				<Key word="funcenum" />
+				<Key word="functag" />
+			</KeyWords>
+			<KeyWords name="SourceModOneSeven" bold="true" italic="false" color="#569cd6">
+				<Key word="methodmap" />
+				<Key word="property" />
+				<Key word="this" />
+				<Key word="typeset" />
+				<Key word="function" />
+				<Key word="typedef" />
+				<Key word="using" />
+			</KeyWords>
+			<KeyWords name="SourceModSpecial" bold="true" italic="false" color="#569cd6">
+				<Key word="EOS" />
+				<Key word="INVALID_FUNCTION" />
+				<Key word="cellbits" />
+				<Key word="cellmax" />
+				<Key word="cellmin" />
+				<Key word="charbits" />
+				<Key word="charmin" />
+				<Key word="charmax" />
+				<Key word="ucharmax" />
+				<Key word="__Pawn" />
+				<Key word="__LINE__" />
+				<Key word="debug" />
+			</KeyWords>
+			<KeyWords name="GetSet" bold="false" italic="false" color="#569cd6">
+				<Key word="get" />
+				<Key word="set" />
+				<Key word="add" />
+				<Key word="remove" />
+			</KeyWords>
+			<KeyWords name="Literals" bold="true" italic="false" color="#dcdcdc">
+				<Key word="null" />
+				<Key word="value" />
+			</KeyWords>
+			<KeyWords name="DebuggerPrefixes" bold="false" italic="true" color="DarkOrange">
+				<Key word="BPDBreakpoint" />
+				<Key word="BPDWatcher" />
+				<Key word="BPDAssert" />
+			</KeyWords>
+			<KeyWords name="DefineWords" bold="true" italic="false" color="#bd63c5">
+				<!-- [DO NOT EDIT | DEFINE MARKER] -->
+			</KeyWords>
+			<KeyWords name="Enum1Words" bold="false" italic="false" color="#b8d7a3">
+				<!-- [DO NOT EDIT | ENUM MARKER] -->
+			</KeyWords>
+			<KeyWords name="Enum2Words" bold="true" italic="false" color="#4ec9b0">
+				<!-- [DO NOT EDIT | ENUM2 MARKER] -->
+			</KeyWords>
+			<KeyWords name="HighlightWords" color="#c0d3ad" bgcolor="#48830e">
+				<!-- [DO NOT EDIT | HIGHLIGHT WORD MARKER] -->
+			</KeyWords>
+			<!-- Put as many as you want -->
+			<KeyWords name="HighlightWordsCustom_Green" color="#1e1e1e" bgcolor="#57a64a">
+				<!-- [DO NOT EDIT | HIGHLIGHT WORD CUSTOM MARKER] -->
+			</KeyWords>
+			<KeyWords name="HighlightWordsCustom_Red" color="#1e1e1e" bgcolor="#d69d85">
+				<!-- [DO NOT EDIT | HIGHLIGHT WORD CUSTOM MARKER] -->
+			</KeyWords>
+			<KeyWords name="HighlightWordsCustom_Blue" color="#1e1e1e" bgcolor="#569cd6">
+				<!-- [DO NOT EDIT | HIGHLIGHT WORD CUSTOM MARKER] -->
+			</KeyWords>
+		</RuleSet>
+		<RuleSet name="CommentMarkerSet" ignorecase="false">
+			<Delimiters>&lt;&gt;~!@%^*()-+=|\#/{}[]:;"' ,	.?</Delimiters>
+			<KeyWords name="ErrorWords" bold="true" italic="false" color="Red">
+				<Key word="TODO" />
+				<Key word="FIXME" />
+				<Key word="CRITICAL" />
+			</KeyWords>
+			<KeyWords name="WarningWords" bold="true" italic="false" color="Orange">
+				<Key word="HACK" />
+				<Key word="UNDONE" />
+				<Key word="WARNING" />
+			</KeyWords>
+			<KeyWords name="InformationWords" bold="true" italic="false" color="#569cd6">
+				<Key word="QUESTION" />
+				<Key word="INFO" />
+			</KeyWords>
+		</RuleSet>
+	</RuleSets>
+</SyntaxDefinition>
