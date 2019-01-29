@@ -185,6 +185,16 @@ Public Class ClassSyntaxUpdater
         Dim iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = ClassThread.ExecEx(Of ClassSyntaxTools.ENUM_LANGUAGE_TYPE)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
         Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sTextContent, iLanguage)
 
+        iCaretOffset = Math.Min(iCaretOffset, sTextContent.Length - 1)
+
+        If (iCaretOffset < 0) Then
+            ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                   g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete("")
+                                                   g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip()
+                                               End Sub)
+            Return
+        End If
+
         If (Not mSourceAnalysis.m_InRange(iCaretOffset) OrElse
                         mSourceAnalysis.m_InString(iCaretOffset) OrElse
                         mSourceAnalysis.m_InChar(iCaretOffset) OrElse
@@ -197,19 +207,13 @@ Public Class ClassSyntaxUpdater
             Return
         End If
 
-        If (iCaretOffset > -1 AndAlso iCaretOffset < sTextContent.Length) Then
-            Dim sFunctionName As String = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True, True, True))
+        Dim sFunctionName As String = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True, True, True))
 
-            If (ClassThread.ExecEx(Of Integer)(g_mFormMain.g_mUCAutocomplete, Function() g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete(sFunctionName)) < 1) Then
-                sFunctionName = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTextEditorTools.GetCaretWord(False, False, False))
+        If (ClassThread.ExecEx(Of Integer)(g_mFormMain.g_mUCAutocomplete, Function() g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete(sFunctionName)) < 1) Then
+            sFunctionName = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTextEditorTools.GetCaretWord(False, False, False))
 
-                ClassThread.ExecAsync(g_mFormMain.g_mUCAutocomplete, Sub()
-                                                                         g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete(sFunctionName)
-                                                                     End Sub)
-            End If
-        Else
             ClassThread.ExecAsync(g_mFormMain.g_mUCAutocomplete, Sub()
-                                                                     g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete("")
+                                                                     g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete(sFunctionName)
                                                                  End Sub)
         End If
 
@@ -223,7 +227,9 @@ Public Class ClassSyntaxUpdater
         Dim iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = ClassThread.ExecEx(Of ClassSyntaxTools.ENUM_LANGUAGE_TYPE)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
         Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sTextContent, iLanguage)
 
-        If (iCaretOffset < 0 OrElse iCaretOffset > sTextContent.Length - 1) Then
+        iCaretOffset = Math.Min(iCaretOffset, sTextContent.Length - 1)
+
+        If (iCaretOffset < 0) Then
             ClassThread.ExecAsync(g_mFormMain, Sub()
                                                    g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip("")
                                                End Sub)
