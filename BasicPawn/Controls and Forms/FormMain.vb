@@ -1330,15 +1330,17 @@ Public Class FormMain
         End If
 
         Dim i As ClassConfigs.ENUM_OPTIMAL_CONFIG
-        Dim mConfig = ClassConfigs.FindOptimalConfigForFile(mTab.m_File, False, i)
+        Dim mConfig = ClassConfigs.FindOptimalConfigForFile(mTab.m_File, True, i)
 
         'Only change config if we found one.
         If (i = ClassConfigs.ENUM_OPTIMAL_CONFIG.NONE) Then
-            MessageBox.Show(String.Format("Could not find optimal config for tab '{0} ({1})'", mTab.m_Title, mTab.m_Index))
+            PrintInformation("[WARN]", String.Format("No optimal config found for tab '{0} ({1})'", mTab.m_Title, mTab.m_Index), False, True, True)
         Else
             mTab.m_ActiveConfig = mConfig
 
             g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
+
+            PrintInformation("[INFO]", String.Format("Optimal config found for tab '{0} ({1})': {2}", mTab.m_Title, mTab.m_Index, mConfig.GetName), False, True, True)
         End If
 
         UpdateFormConfigText()
@@ -1351,15 +1353,17 @@ Public Class FormMain
             End If
 
             Dim i As ClassConfigs.ENUM_OPTIMAL_CONFIG
-            Dim mConfig = ClassConfigs.FindOptimalConfigForFile(mTab.m_File, False, i)
+            Dim mConfig = ClassConfigs.FindOptimalConfigForFile(mTab.m_File, True, i)
 
             'Only change config if we found one.
             If (i = ClassConfigs.ENUM_OPTIMAL_CONFIG.NONE) Then
-                MessageBox.Show(String.Format("Could not find optimal config for tab '{0} ({1})'", mTab.m_Title, mTab.m_Index))
+                PrintInformation("[WARN]", String.Format("No optimal config found for tab '{0} ({1})'", mTab.m_Title, mTab.m_Index), False, True, True)
             Else
                 mTab.m_ActiveConfig = mConfig
 
                 g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, mTab)
+
+                PrintInformation("[INFO]", String.Format("Optimal config found for tab '{0} ({1})': {2}", mTab.m_Title, mTab.m_Index, mConfig.GetName), False, True, True)
             End If
         Next
 
