@@ -369,7 +369,7 @@ Public Class FormSettings
                                     .AppendLine("Some default config paths collide with other configs!")
                                     .AppendLine()
                                     .AppendLine()
-                                    .AppendFormat("Config '{1}' collides with '{2}'.", mConfig.GetName, mCompConfig.GetName).AppendLine()
+                                    .AppendFormat("Config '{0}' collides with '{1}'.", mConfig.GetName, mCompConfig.GetName).AppendLine()
 
                                     MessageBox.Show(.ToString, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                                 End With
