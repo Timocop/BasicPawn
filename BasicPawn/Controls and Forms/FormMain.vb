@@ -1330,7 +1330,7 @@ Public Class FormMain
         End If
 
         Dim i As ClassConfigs.ENUM_OPTIMAL_CONFIG
-        Dim mConfig = ClassConfigs.FindOptimalConfigForFile(mTab.m_File, i)
+        Dim mConfig = ClassConfigs.FindOptimalConfigForFile(mTab.m_File, False, i)
 
         'Only change config if we found one.
         If (i = ClassConfigs.ENUM_OPTIMAL_CONFIG.NONE) Then
@@ -1351,7 +1351,7 @@ Public Class FormMain
             End If
 
             Dim i As ClassConfigs.ENUM_OPTIMAL_CONFIG
-            Dim mConfig = ClassConfigs.FindOptimalConfigForFile(mTab.m_File, i)
+            Dim mConfig = ClassConfigs.FindOptimalConfigForFile(mTab.m_File, False, i)
 
             'Only change config if we found one.
             If (i = ClassConfigs.ENUM_OPTIMAL_CONFIG.NONE) Then

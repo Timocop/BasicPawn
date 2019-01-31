@@ -631,30 +631,38 @@ Public Class ClassConfigs
     ''' <param name="sFile"></param>
     ''' <param name="r_OptimalConfig"></param>
     ''' <returns></returns>
-    Shared Function FindOptimalConfigForFile(sFile As String, ByRef r_OptimalConfig As ENUM_OPTIMAL_CONFIG) As STRUC_CONFIG_ITEM
+    Shared Function FindOptimalConfigForFile(sFile As String, bForceDefaultPath As Boolean, ByRef r_OptimalConfig As ENUM_OPTIMAL_CONFIG) As STRUC_CONFIG_ITEM
         r_OptimalConfig = ENUM_OPTIMAL_CONFIG.NONE
 
-        Dim mConfig As ClassConfigs.STRUC_CONFIG_ITEM = ClassConfigs.FindConfigUsingDefaultPaths(sFile)
-        If (mConfig IsNot Nothing) Then
-            r_OptimalConfig = ENUM_OPTIMAL_CONFIG.ASSIGN_PATH
-            Return mConfig
-        Else
-            mConfig = ClassConfigs.ClassKnownConfigs.m_KnownConfigByFile(sFile)
-            If (mConfig Is Nothing) Then
-                While True
-                    For Each mConfig In ClassConfigs.GetConfigs()
-                        If (mConfig.g_bAutoload) Then
-                            r_OptimalConfig = ENUM_OPTIMAL_CONFIG.KNOWN_CONFIG
-                            Return mConfig
-                        End If
-                    Next
+        Dim mConfig As STRUC_CONFIG_ITEM
 
-                    Return Nothing
-                End While
-            Else
-                r_OptimalConfig = ENUM_OPTIMAL_CONFIG.KNOWN_CONFIG
+        If (bForceDefaultPath) Then
+            mConfig = ClassConfigs.FindConfigUsingDefaultPaths(sFile)
+            If (mConfig IsNot Nothing) Then
+                r_OptimalConfig = ENUM_OPTIMAL_CONFIG.ASSIGN_PATH
                 Return mConfig
             End If
+        End If
+
+        mConfig = ClassConfigs.ClassKnownConfigs.m_KnownConfigByFile(sFile)
+        If (mConfig Is Nothing) Then
+            'Try find config from default config paths first...
+            mConfig = ClassConfigs.FindConfigUsingDefaultPaths(sFile)
+            If (mConfig IsNot Nothing) Then
+                r_OptimalConfig = ENUM_OPTIMAL_CONFIG.ASSIGN_PATH
+                Return mConfig
+            End If
+
+            '...then find config by default config (autoload)
+            For Each mSavedConfig In ClassConfigs.GetConfigs()
+                If (mSavedConfig.g_bAutoload) Then
+                    r_OptimalConfig = ENUM_OPTIMAL_CONFIG.KNOWN_CONFIG
+                    Return mSavedConfig
+                End If
+            Next
+        Else
+            r_OptimalConfig = ENUM_OPTIMAL_CONFIG.KNOWN_CONFIG
+            Return mConfig
         End If
 
         Return Nothing

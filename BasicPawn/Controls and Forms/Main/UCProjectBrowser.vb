@@ -796,7 +796,7 @@ Public Class UCProjectBrowser
                 mFormProgress.m_Progress = 0
 
                 For Each sFile In lFiles
-                    Dim mConfig = ClassConfigs.FindOptimalConfigForFile(sFile, Nothing)
+                    Dim mConfig = ClassConfigs.FindOptimalConfigForFile(sFile, False, Nothing)
                     If (mConfig Is Nothing) Then
                         Throw New ArgumentException(String.Format("Could not find config for file '{0}'.{1}Make sure BasicPawn can find a config for this file using 'Known files' or 'Default config paths' in configs.", sFile, Environment.NewLine))
                     End If

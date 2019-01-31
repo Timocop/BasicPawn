@@ -400,7 +400,7 @@ Public Class ClassTabControl
 
         m_Tab(iIndex).ClearSavedFoldStates()
 
-        m_Tab(iIndex).m_ActiveConfig = ClassConfigs.FindOptimalConfigForFile(sFile, Nothing)
+        m_Tab(iIndex).m_ActiveConfig = ClassConfigs.FindOptimalConfigForFile(sFile, False, Nothing)
 
         m_Tab(iIndex).m_ClassLineState.m_IgnoreUpdates = False
 

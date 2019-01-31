@@ -227,7 +227,7 @@ Public Class FormSettings
 
                             'Only assign optimal config if a config has been found.
                             Dim j As ClassConfigs.ENUM_OPTIMAL_CONFIG
-                            Dim mOptimalConfig = ClassConfigs.FindOptimalConfigForFile(g_mFormMain.g_ClassTabControl.m_Tab(i).m_File, j)
+                            Dim mOptimalConfig = ClassConfigs.FindOptimalConfigForFile(g_mFormMain.g_ClassTabControl.m_Tab(i).m_File, False, j)
                             If (j <> ClassConfigs.ENUM_OPTIMAL_CONFIG.NONE) Then
                                 g_mFormMain.g_ClassTabControl.m_Tab(i).m_ActiveConfig = mOptimalConfig
                                 ClassConfigs.ClassKnownConfigs.m_KnownConfigByFile(g_mFormMain.g_ClassTabControl.m_Tab(i).m_File) = mOptimalConfig
@@ -243,7 +243,7 @@ Public Class FormSettings
 
                         'Only assign optimal config if a config has been found.
                         Dim j As ClassConfigs.ENUM_OPTIMAL_CONFIG
-                        Dim mOptimalConfig = ClassConfigs.FindOptimalConfigForFile(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File, j)
+                        Dim mOptimalConfig = ClassConfigs.FindOptimalConfigForFile(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File, False, j)
                         If (j <> ClassConfigs.ENUM_OPTIMAL_CONFIG.NONE) Then
                             g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ActiveConfig = mOptimalConfig
                             ClassConfigs.ClassKnownConfigs.m_KnownConfigByFile(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File) = mOptimalConfig

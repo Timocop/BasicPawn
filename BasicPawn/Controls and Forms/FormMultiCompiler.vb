@@ -79,7 +79,7 @@ Public Class FormMultiCompiler
                 Dim sCompilerOutput As String = ""
                 Dim iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = ClassSyntaxTools.ENUM_LANGUAGE_TYPE.SOURCEPAWN
 
-                Dim mConfig = ClassConfigs.FindOptimalConfigForFile(sSourceFile, Nothing)
+                Dim mConfig = ClassConfigs.FindOptimalConfigForFile(sSourceFile, False, Nothing)
                 If (mConfig Is Nothing) Then
                     Throw New ArgumentException(String.Format("Could not find config for file '{0}'.{1}Make sure BasicPawn can find a config for this file using 'Known files' or 'Default config paths' in configs.", sSourceFile, Environment.NewLine))
                 End If
