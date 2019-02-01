@@ -65,6 +65,7 @@ Partial Class FormSettings
         Me.CheckBox_DoubleClickMark = New System.Windows.Forms.CheckBox()
         Me.CheckBox_AutoMark = New System.Windows.Forms.CheckBox()
         Me.TabPage_Autocomplete = New System.Windows.Forms.TabPage()
+        Me.CheckBox_WindowsToolTipDisplayTop = New System.Windows.Forms.CheckBox()
         Me.GroupBox4 = New System.Windows.Forms.GroupBox()
         Me.RadioButton_VarParseTab = New System.Windows.Forms.RadioButton()
         Me.RadioButton_VarParseTabInc = New System.Windows.Forms.RadioButton()
@@ -187,7 +188,9 @@ Partial Class FormSettings
         Me.TableLayoutPanel3 = New System.Windows.Forms.TableLayoutPanel()
         Me.ClassPictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
         Me.Label17 = New System.Windows.Forms.Label()
-        Me.CheckBox_WindowsToolTipDisplayTop = New System.Windows.Forms.CheckBox()
+        Me.Label8 = New System.Windows.Forms.Label()
+        Me.NumericUpDown_ThreadUpdateRate = New System.Windows.Forms.NumericUpDown()
+        Me.Label14 = New System.Windows.Forms.Label()
         Me.ContextMenuStrip_Plugins.SuspendLayout()
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Settings.SuspendLayout()
@@ -219,6 +222,7 @@ Partial Class FormSettings
         CType(Me.ClassPictureBoxQuality2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TableLayoutPanel3.SuspendLayout()
         CType(Me.ClassPictureBoxQuality1, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.NumericUpDown_ThreadUpdateRate, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'Button_Cancel
@@ -492,6 +496,9 @@ Partial Class FormSettings
         'TabPage_Editor
         '
         Me.TabPage_Editor.AutoScroll = True
+        Me.TabPage_Editor.Controls.Add(Me.Label14)
+        Me.TabPage_Editor.Controls.Add(Me.NumericUpDown_ThreadUpdateRate)
+        Me.TabPage_Editor.Controls.Add(Me.Label8)
         Me.TabPage_Editor.Controls.Add(Me.CheckBox_RememberFolds)
         Me.TabPage_Editor.Controls.Add(Me.LinkLabel_MoreStyles)
         Me.TabPage_Editor.Controls.Add(Me.Button_Font)
@@ -693,6 +700,18 @@ Partial Class FormSettings
         Me.TabPage_Autocomplete.TabIndex = 3
         Me.TabPage_Autocomplete.Text = "Autocomplete & IntelliSense"
         Me.TabPage_Autocomplete.UseVisualStyleBackColor = True
+        '
+        'CheckBox_WindowsToolTipDisplayTop
+        '
+        Me.CheckBox_WindowsToolTipDisplayTop.AutoSize = True
+        Me.CheckBox_WindowsToolTipDisplayTop.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_WindowsToolTipDisplayTop.Location = New System.Drawing.Point(64, 171)
+        Me.CheckBox_WindowsToolTipDisplayTop.Margin = New System.Windows.Forms.Padding(64, 3, 3, 3)
+        Me.CheckBox_WindowsToolTipDisplayTop.Name = "CheckBox_WindowsToolTipDisplayTop"
+        Me.CheckBox_WindowsToolTipDisplayTop.Size = New System.Drawing.Size(210, 18)
+        Me.CheckBox_WindowsToolTipDisplayTop.TabIndex = 28
+        Me.CheckBox_WindowsToolTipDisplayTop.Text = "Display tooltip above caret instead"
+        Me.CheckBox_WindowsToolTipDisplayTop.UseVisualStyleBackColor = True
         '
         'GroupBox4
         '
@@ -2060,17 +2079,34 @@ Partial Class FormSettings
         Me.Label17.Text = "Loaded BasicPawn plugins are able to read stored database entries. Make sure all " &
     "installed plugins are from a trustworthy publisher to prevent theft."
         '
-        'CheckBox_WindowsToolTipDisplayTop
+        'Label8
         '
-        Me.CheckBox_WindowsToolTipDisplayTop.AutoSize = True
-        Me.CheckBox_WindowsToolTipDisplayTop.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_WindowsToolTipDisplayTop.Location = New System.Drawing.Point(64, 171)
-        Me.CheckBox_WindowsToolTipDisplayTop.Margin = New System.Windows.Forms.Padding(64, 3, 3, 3)
-        Me.CheckBox_WindowsToolTipDisplayTop.Name = "CheckBox_WindowsToolTipDisplayTop"
-        Me.CheckBox_WindowsToolTipDisplayTop.Size = New System.Drawing.Size(210, 18)
-        Me.CheckBox_WindowsToolTipDisplayTop.TabIndex = 28
-        Me.CheckBox_WindowsToolTipDisplayTop.Text = "Display tooltip above caret instead"
-        Me.CheckBox_WindowsToolTipDisplayTop.UseVisualStyleBackColor = True
+        Me.Label8.AutoSize = True
+        Me.Label8.Location = New System.Drawing.Point(9, 164)
+        Me.Label8.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.Label8.Name = "Label8"
+        Me.Label8.Size = New System.Drawing.Size(108, 13)
+        Me.Label8.TabIndex = 24
+        Me.Label8.Text = "Thread update rate:"
+        '
+        'NumericUpDown_ThreadUpdateRate
+        '
+        Me.NumericUpDown_ThreadUpdateRate.Location = New System.Drawing.Point(123, 162)
+        Me.NumericUpDown_ThreadUpdateRate.Maximum = New Decimal(New Integer() {2500, 0, 0, 0})
+        Me.NumericUpDown_ThreadUpdateRate.Minimum = New Decimal(New Integer() {100, 0, 0, 0})
+        Me.NumericUpDown_ThreadUpdateRate.Name = "NumericUpDown_ThreadUpdateRate"
+        Me.NumericUpDown_ThreadUpdateRate.Size = New System.Drawing.Size(64, 22)
+        Me.NumericUpDown_ThreadUpdateRate.TabIndex = 25
+        Me.NumericUpDown_ThreadUpdateRate.Value = New Decimal(New Integer() {500, 0, 0, 0})
+        '
+        'Label14
+        '
+        Me.Label14.AutoSize = True
+        Me.Label14.Location = New System.Drawing.Point(193, 164)
+        Me.Label14.Name = "Label14"
+        Me.Label14.Size = New System.Drawing.Size(21, 13)
+        Me.Label14.TabIndex = 26
+        Me.Label14.Text = "ms"
         '
         'FormSettings
         '
@@ -2137,6 +2173,7 @@ Partial Class FormSettings
         Me.TableLayoutPanel3.ResumeLayout(False)
         Me.TableLayoutPanel3.PerformLayout()
         CType(Me.ClassPictureBoxQuality1, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.NumericUpDown_ThreadUpdateRate, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
     End Sub
@@ -2305,4 +2342,7 @@ Partial Class FormSettings
     Friend WithEvents ComboBox_Language As ComboBox
     Friend WithEvents CheckBox_ConfigIsDefault As CheckBox
     Friend WithEvents CheckBox_WindowsToolTipDisplayTop As CheckBox
+    Friend WithEvents NumericUpDown_ThreadUpdateRate As NumericUpDown
+    Friend WithEvents Label8 As Label
+    Friend WithEvents Label14 As Label
 End Class

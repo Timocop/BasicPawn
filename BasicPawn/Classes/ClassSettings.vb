@@ -51,6 +51,7 @@ Public Class ClassSettings
     Public Shared g_iSettingsTabsToSpaces As Integer = 0
     Public Shared g_sSettingsSyntaxHighlightingPath As String = ""
     Public Shared g_bSettingsRememberFoldings As Boolean = True
+    Public Shared g_iSettingsThreadUpdateRate As Integer = 500
     'Syntax Highligting
     Public Shared g_iSettingsDoubleClickMark As Boolean = True
     Public Shared g_iSettingsAutoMark As Boolean = True
@@ -99,6 +100,7 @@ Public Class ClassSettings
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorTabsToSpaces", CStr(g_iSettingsTabsToSpaces)))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorSyntaxHighlightingPath", g_sSettingsSyntaxHighlightingPath))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorRememberFoldings", If(g_bSettingsRememberFoldings, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorThreadUpdateRate", CStr(g_iSettingsThreadUpdateRate)))
                 'Syntax Highligting
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "DoubleClickMark", If(g_iSettingsDoubleClickMark, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutoMark", If(g_iSettingsAutoMark, "1", "0")))
@@ -159,6 +161,10 @@ Public Class ClassSettings
 
                     g_sSettingsSyntaxHighlightingPath = mIni.ReadKeyValue("Editor", "TextEditorSyntaxHighlightingPath", "")
                     g_bSettingsRememberFoldings = (mIni.ReadKeyValue("Editor", "TextEditorRememberFoldings", "1") <> "0")
+
+                    If (Integer.TryParse(mIni.ReadKeyValue("Editor", "TextEditorThreadUpdateRate", "500"), tmpInt)) Then
+                        g_iSettingsThreadUpdateRate = ClassTools.ClassMath.ClampInt(tmpInt, 100, 2500)
+                    End If
                     'Syntax Highligting
                     g_iSettingsDoubleClickMark = (mIni.ReadKeyValue("Editor", "DoubleClickMark", "1") <> "0")
                     g_iSettingsAutoMark = (mIni.ReadKeyValue("Editor", "AutoMark", "1") <> "0")

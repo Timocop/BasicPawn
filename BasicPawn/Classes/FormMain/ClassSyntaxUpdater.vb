@@ -56,15 +56,17 @@ Public Class ClassSyntaxUpdater
         Static mFoldingUpdateDelay As New TimeSpan(0, 0, 5)
         Static mTextMinimapDelay As New TimeSpan(0, 0, 1)
         Static mTextMinimapRefreshDelay As New TimeSpan(0, 0, 10)
+        Static mMarkCaretWordDelay As New TimeSpan(0, 0, 1)
 
         Dim dLastFullAutocompleteUpdate As Date = (Now + mFullAutocompleteUpdateDelay)
         Dim dLastVarAutocompleteUpdate As Date = (Now + mVarAutocompleteUpdateDelay)
         Dim dLastFoldingUpdate As Date = (Now + mFoldingUpdateDelay)
         Dim dLastTextMinimapDelay As Date = (Now + mTextMinimapDelay)
         Dim dLastTextMinimapRefreshDelay As Date = (Now + mTextMinimapRefreshDelay)
+        Dim dLastMarkCaretWordDelay As Date = (Now + mMarkCaretWordDelay)
 
         While True
-            Threading.Thread.Sleep(500)
+            Threading.Thread.Sleep(ClassSettings.g_iSettingsThreadUpdateRate)
 
             Try
                 Dim bIsFormMainFocused As Boolean = (Not ClassSettings.g_iSettingsOnlyUpdateSyntaxWhenFocused OrElse ClassThread.ExecEx(Of Boolean)(g_mFormMain, Function() Form.ActiveForm IsNot Nothing))
@@ -161,8 +163,9 @@ Public Class ClassSyntaxUpdater
 
                 'Update caret word maker
                 Static iLastAutoupdateCaretOffset3 As Integer = -1
-                If (iLastAutoupdateCaretOffset3 <> iCaretOffset) Then
+                If (iLastAutoupdateCaretOffset3 <> iCaretOffset AndAlso dLastMarkCaretWordDelay < Now) Then
                     iLastAutoupdateCaretOffset3 = iCaretOffset
+                    dLastMarkCaretWordDelay = (Now + mMarkCaretWordDelay)
 
                     If (ClassSettings.g_iSettingsAutoMark) Then
                         ClassThread.ExecAsync(g_mFormMain, Sub()
