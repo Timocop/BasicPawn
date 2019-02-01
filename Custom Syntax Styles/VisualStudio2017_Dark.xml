@@ -179,9 +179,8 @@
 				<Key word="add" />
 				<Key word="remove" />
 			</KeyWords>
-			<KeyWords name="Literals" bold="true" italic="false" color="#dcdcdc">
+			<KeyWords name="Literals" bold="true" italic="false" color="#569cd6">
 				<Key word="null" />
-				<Key word="value" />
 			</KeyWords>
 			<KeyWords name="DebuggerPrefixes" bold="false" italic="true" color="DarkOrange">
 				<Key word="BPDBreakpoint" />
