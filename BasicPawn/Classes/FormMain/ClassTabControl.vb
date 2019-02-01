@@ -1378,7 +1378,7 @@ Public Class ClassTabControl
                                             (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM_STRUCT) <> 0,
                                             (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> 0,
                                             (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.OPERATOR) <> 0
-                                        If (mAutocomplete.m_FunctionString.IndexOf("."c) > -1 AndAlso sCaretFunctionName.IndexOf("."c) > -1 AndAlso Not sCaretFunctionName.StartsWith(mAutocomplete.m_FunctionString)) Then
+                                        If (mAutocomplete.m_FunctionString.IndexOf("."c) > -1 AndAlso sCaretFunctionName.IndexOf("."c) > -1) Then
                                             Dim sParenthesis As String = ""
                                             If (mAutocomplete.m_FullFunctionString.Contains("("c) AndAlso mAutocomplete.m_FullFunctionString.Contains(")"c)) Then
                                                 sParenthesis = "()"
