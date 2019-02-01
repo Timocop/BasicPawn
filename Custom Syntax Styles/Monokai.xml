@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- <SyntaxVersion>1.0</SyntaxVersion> -->
+<!-- <SyntaxVersion>1.1</SyntaxVersion> -->
 <SyntaxDefinition name="SourcePawn-04e3632f-5472-42c5-929a-c3e0c2b35324" extensions=".sp">
 	<Environment>
 		<Default color="#D9E8F7" bgcolor="#292929" />
@@ -74,11 +74,16 @@
 				<Key word="decl" />
 				<Key word="sizeof" />
 				<Key word="typeof" />
+				<Key word="tagof" />
 				<Key word="true" />
 				<Key word="false" />
 				<Key word="stackalloc" />
 				<Key word="delete" />
 				<Key word="view_as" />
+			</KeyWords>
+			<KeyWords name="PreprocessorOperatorKeywords" bold="true" italic="false" color="#AC6D6A">
+				<Key word="defined" />
+				<Key word="state" />
 			</KeyWords>
 			<KeyWords name="SelectionStatements" bold="true" italic="false" color="#DD2867">
 				<Key word="else" />
