@@ -83,7 +83,6 @@
 			</KeyWords>
 			<KeyWords name="PreprocessorOperatorKeywords" bold="true" italic="false" color="Brown">
 				<Key word="defined" />
-				<Key word="state" />
 			</KeyWords>
 			<KeyWords name="SelectionStatements" bold="true" italic="false" color="Blue">
 				<Key word="else" />
@@ -91,6 +90,7 @@
 				<Key word="switch" />
 				<Key word="case" />
 				<Key word="default" />
+				<Key word="state" />
 			</KeyWords>
 			<KeyWords name="IterationStatements" bold="true" italic="false" color="Blue">
 				<Key word="do" />
