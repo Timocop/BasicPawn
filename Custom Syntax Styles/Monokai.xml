@@ -181,7 +181,6 @@
 			</KeyWords>
 			<KeyWords name="Literals" bold="true" italic="false" color="#DD2867">
 				<Key word="null" />
-				<Key word="value" />
 			</KeyWords>
 			<KeyWords name="DebuggerPrefixes" bold="false" italic="true" color="DarkOrange">
 				<Key word="BPDBreakpoint" />
