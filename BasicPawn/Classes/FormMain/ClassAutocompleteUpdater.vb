@@ -5096,6 +5096,7 @@ Public Class ClassAutocompleteUpdater
             mDicOp("sizeof") = "sizeof <symbol>"
             mDicOp("state") = "state <symbol>"
             mDicOp("tagof") = "tagof <symbol>"
+            mDicOp("cellsof") = "cellsof <symbol>"
 
             mDicOp("delete") = "delete <symbol>"
             mDicOp("view_as") = "view_as<type>(symbol)"

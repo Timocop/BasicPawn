@@ -75,6 +75,7 @@
 				<Key word="sizeof" />
 				<Key word="typeof" />
 				<Key word="tagof" />
+				<Key word="cellsof" />
 				<Key word="true" />
 				<Key word="false" />
 				<Key word="stackalloc" />
@@ -91,6 +92,7 @@
 				<Key word="case" />
 				<Key word="default" />
 				<Key word="state" />
+				<Key word="exit" />
 			</KeyWords>
 			<KeyWords name="IterationStatements" bold="true" italic="false" color="#569cd6">
 				<Key word="do" />
