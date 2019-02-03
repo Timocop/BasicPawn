@@ -120,8 +120,24 @@
   <metadata name="ContextMenuStrip_Plugins.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
+  <metadata name="ToolTip_Info.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>212, 17</value>
+  </metadata>
+  <data name="LinkLabel_ThreadUpdateRateHelp.ToolTip" xml:space="preserve">
+    <value>Sets how fast the thread updates. A lower value means it is updating faster and a hight value slower.
+Some functions in the thread still have hardcoded minimum timings to ensure good performance.
+The thread controls following functionalty:
+* On-screen tooltip
+* Autocomplete &amp; IntelliSense
+* Word highlighting
+* Scheduled autocompletion tasks
+* Folding
+* Document minimap
+
+NOTE: Only lower this value if you want faster reaction time.</value>
+  </data>
   <data name="Label18.Text" xml:space="preserve">
-    <value>Databases can help to organize sensitive login information such as FTP access. All database entries are encrypted and bound to your Windows account to prevent other users to access your login information.</value>
+    <value>Databases can help to organize sensitive login information such as FTP credentials. All database entries are encrypted and bound to your Windows account to prevent other users to access your login information.</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

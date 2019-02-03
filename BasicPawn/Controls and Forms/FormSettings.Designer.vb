@@ -33,6 +33,10 @@ Partial Class FormSettings
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_PluginsEnable = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_PluginsDisable = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolTip_Info = New System.Windows.Forms.ToolTip(Me.components)
+        Me.LinkLabel_ThreadUpdateRateHelp = New System.Windows.Forms.LinkLabel()
+        Me.LinkLabel_FullAutocompleteReTaggingHelp = New System.Windows.Forms.LinkLabel()
+        Me.LinkLabel_DefaultConfigPathsHelp = New System.Windows.Forms.LinkLabel()
         Me.TabControl1 = New BasicPawn.ClassTabControlColor()
         Me.TabPage_Settings = New System.Windows.Forms.TabPage()
         Me.ClassTabControlColor1 = New BasicPawn.ClassTabControlColor()
@@ -50,6 +54,9 @@ Partial Class FormSettings
         Me.CheckBox_AssociateIncludes = New System.Windows.Forms.CheckBox()
         Me.CheckBox_AssociateBasicPawnProject = New System.Windows.Forms.CheckBox()
         Me.TabPage_Editor = New System.Windows.Forms.TabPage()
+        Me.Label14 = New System.Windows.Forms.Label()
+        Me.NumericUpDown_ThreadUpdateRate = New System.Windows.Forms.NumericUpDown()
+        Me.Label8 = New System.Windows.Forms.Label()
         Me.CheckBox_RememberFolds = New System.Windows.Forms.CheckBox()
         Me.LinkLabel_MoreStyles = New System.Windows.Forms.LinkLabel()
         Me.Button_Font = New System.Windows.Forms.Button()
@@ -188,15 +195,13 @@ Partial Class FormSettings
         Me.TableLayoutPanel3 = New System.Windows.Forms.TableLayoutPanel()
         Me.ClassPictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
         Me.Label17 = New System.Windows.Forms.Label()
-        Me.Label8 = New System.Windows.Forms.Label()
-        Me.NumericUpDown_ThreadUpdateRate = New System.Windows.Forms.NumericUpDown()
-        Me.Label14 = New System.Windows.Forms.Label()
         Me.ContextMenuStrip_Plugins.SuspendLayout()
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Settings.SuspendLayout()
         Me.ClassTabControlColor1.SuspendLayout()
         Me.TabPage_General.SuspendLayout()
         Me.TabPage_Editor.SuspendLayout()
+        CType(Me.NumericUpDown_ThreadUpdateRate, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.NumericUpDown_TabsToSpaces, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TabPage_Syntax.SuspendLayout()
         Me.TabPage_Autocomplete.SuspendLayout()
@@ -222,7 +227,6 @@ Partial Class FormSettings
         CType(Me.ClassPictureBoxQuality2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TableLayoutPanel3.SuspendLayout()
         CType(Me.ClassPictureBoxQuality1, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.NumericUpDown_ThreadUpdateRate, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'Button_Cancel
@@ -291,6 +295,50 @@ Partial Class FormSettings
         Me.ToolStripMenuItem_PluginsDisable.Name = "ToolStripMenuItem_PluginsDisable"
         Me.ToolStripMenuItem_PluginsDisable.Size = New System.Drawing.Size(127, 22)
         Me.ToolStripMenuItem_PluginsDisable.Text = "Disable"
+        '
+        'ToolTip_Info
+        '
+        Me.ToolTip_Info.AutoPopDelay = 30000
+        Me.ToolTip_Info.InitialDelay = 500
+        Me.ToolTip_Info.IsBalloon = True
+        Me.ToolTip_Info.ReshowDelay = 100
+        Me.ToolTip_Info.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info
+        Me.ToolTip_Info.ToolTipTitle = "Information"
+        '
+        'LinkLabel_ThreadUpdateRateHelp
+        '
+        Me.LinkLabel_ThreadUpdateRateHelp.AutoSize = True
+        Me.LinkLabel_ThreadUpdateRateHelp.Location = New System.Drawing.Point(220, 164)
+        Me.LinkLabel_ThreadUpdateRateHelp.Name = "LinkLabel_ThreadUpdateRateHelp"
+        Me.LinkLabel_ThreadUpdateRateHelp.Size = New System.Drawing.Size(12, 13)
+        Me.LinkLabel_ThreadUpdateRateHelp.TabIndex = 27
+        Me.LinkLabel_ThreadUpdateRateHelp.TabStop = True
+        Me.LinkLabel_ThreadUpdateRateHelp.Text = "?"
+        Me.ToolTip_Info.SetToolTip(Me.LinkLabel_ThreadUpdateRateHelp, resources.GetString("LinkLabel_ThreadUpdateRateHelp.ToolTip"))
+        '
+        'LinkLabel_FullAutocompleteReTaggingHelp
+        '
+        Me.LinkLabel_FullAutocompleteReTaggingHelp.AutoSize = True
+        Me.LinkLabel_FullAutocompleteReTaggingHelp.Location = New System.Drawing.Point(293, 221)
+        Me.LinkLabel_FullAutocompleteReTaggingHelp.Name = "LinkLabel_FullAutocompleteReTaggingHelp"
+        Me.LinkLabel_FullAutocompleteReTaggingHelp.Size = New System.Drawing.Size(12, 13)
+        Me.LinkLabel_FullAutocompleteReTaggingHelp.TabIndex = 29
+        Me.LinkLabel_FullAutocompleteReTaggingHelp.TabStop = True
+        Me.LinkLabel_FullAutocompleteReTaggingHelp.Text = "?"
+        Me.ToolTip_Info.SetToolTip(Me.LinkLabel_FullAutocompleteReTaggingHelp, "Make enums look more ""strongly typed"" using re-tagging." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Eg. 'Enum:Name' instead " &
+        "of 'Name'." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "NOTE: This can not be used with SourcePawn transitional syntax.")
+        '
+        'LinkLabel_DefaultConfigPathsHelp
+        '
+        Me.LinkLabel_DefaultConfigPathsHelp.AutoSize = True
+        Me.LinkLabel_DefaultConfigPathsHelp.Location = New System.Drawing.Point(206, 245)
+        Me.LinkLabel_DefaultConfigPathsHelp.Name = "LinkLabel_DefaultConfigPathsHelp"
+        Me.LinkLabel_DefaultConfigPathsHelp.Size = New System.Drawing.Size(12, 13)
+        Me.LinkLabel_DefaultConfigPathsHelp.TabIndex = 30
+        Me.LinkLabel_DefaultConfigPathsHelp.TabStop = True
+        Me.LinkLabel_DefaultConfigPathsHelp.Text = "?"
+        Me.ToolTip_Info.SetToolTip(Me.LinkLabel_DefaultConfigPathsHelp, "Opening a file from those paths will automatically switch to this config." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Howeve" &
+        "r, files in 'Known files' overwrite this behaviour.")
         '
         'TabControl1
         '
@@ -361,9 +409,9 @@ Partial Class FormSettings
         Me.CheckBox_AutoHoverScroll.Location = New System.Drawing.Point(6, 75)
         Me.CheckBox_AutoHoverScroll.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_AutoHoverScroll.Name = "CheckBox_AutoHoverScroll"
-        Me.CheckBox_AutoHoverScroll.Size = New System.Drawing.Size(191, 18)
+        Me.CheckBox_AutoHoverScroll.Size = New System.Drawing.Size(233, 18)
         Me.CheckBox_AutoHoverScroll.TabIndex = 30
-        Me.CheckBox_AutoHoverScroll.Text = "Scroll controls on mouse hover"
+        Me.CheckBox_AutoHoverScroll.Text = "Scroll inactive controls on mouse hover"
         Me.CheckBox_AutoHoverScroll.UseVisualStyleBackColor = True
         '
         'CheckBox_AutoOpenProjectFiles
@@ -496,6 +544,7 @@ Partial Class FormSettings
         'TabPage_Editor
         '
         Me.TabPage_Editor.AutoScroll = True
+        Me.TabPage_Editor.Controls.Add(Me.LinkLabel_ThreadUpdateRateHelp)
         Me.TabPage_Editor.Controls.Add(Me.Label14)
         Me.TabPage_Editor.Controls.Add(Me.NumericUpDown_ThreadUpdateRate)
         Me.TabPage_Editor.Controls.Add(Me.Label8)
@@ -517,6 +566,35 @@ Partial Class FormSettings
         Me.TabPage_Editor.TabIndex = 1
         Me.TabPage_Editor.Text = "TextEditor"
         Me.TabPage_Editor.UseVisualStyleBackColor = True
+        '
+        'Label14
+        '
+        Me.Label14.AutoSize = True
+        Me.Label14.Location = New System.Drawing.Point(193, 164)
+        Me.Label14.Name = "Label14"
+        Me.Label14.Size = New System.Drawing.Size(21, 13)
+        Me.Label14.TabIndex = 26
+        Me.Label14.Text = "ms"
+        '
+        'NumericUpDown_ThreadUpdateRate
+        '
+        Me.NumericUpDown_ThreadUpdateRate.Location = New System.Drawing.Point(123, 162)
+        Me.NumericUpDown_ThreadUpdateRate.Maximum = New Decimal(New Integer() {2500, 0, 0, 0})
+        Me.NumericUpDown_ThreadUpdateRate.Minimum = New Decimal(New Integer() {100, 0, 0, 0})
+        Me.NumericUpDown_ThreadUpdateRate.Name = "NumericUpDown_ThreadUpdateRate"
+        Me.NumericUpDown_ThreadUpdateRate.Size = New System.Drawing.Size(64, 22)
+        Me.NumericUpDown_ThreadUpdateRate.TabIndex = 25
+        Me.NumericUpDown_ThreadUpdateRate.Value = New Decimal(New Integer() {500, 0, 0, 0})
+        '
+        'Label8
+        '
+        Me.Label8.AutoSize = True
+        Me.Label8.Location = New System.Drawing.Point(9, 164)
+        Me.Label8.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.Label8.Name = "Label8"
+        Me.Label8.Size = New System.Drawing.Size(108, 13)
+        Me.Label8.TabIndex = 24
+        Me.Label8.Text = "Thread update rate:"
         '
         'CheckBox_RememberFolds
         '
@@ -676,6 +754,7 @@ Partial Class FormSettings
         'TabPage_Autocomplete
         '
         Me.TabPage_Autocomplete.AutoScroll = True
+        Me.TabPage_Autocomplete.Controls.Add(Me.LinkLabel_FullAutocompleteReTaggingHelp)
         Me.TabPage_Autocomplete.Controls.Add(Me.CheckBox_WindowsToolTipDisplayTop)
         Me.TabPage_Autocomplete.Controls.Add(Me.GroupBox4)
         Me.TabPage_Autocomplete.Controls.Add(Me.CheckBox_AutoIndentBrackets)
@@ -708,9 +787,9 @@ Partial Class FormSettings
         Me.CheckBox_WindowsToolTipDisplayTop.Location = New System.Drawing.Point(64, 171)
         Me.CheckBox_WindowsToolTipDisplayTop.Margin = New System.Windows.Forms.Padding(64, 3, 3, 3)
         Me.CheckBox_WindowsToolTipDisplayTop.Name = "CheckBox_WindowsToolTipDisplayTop"
-        Me.CheckBox_WindowsToolTipDisplayTop.Size = New System.Drawing.Size(210, 18)
+        Me.CheckBox_WindowsToolTipDisplayTop.Size = New System.Drawing.Size(169, 18)
         Me.CheckBox_WindowsToolTipDisplayTop.TabIndex = 28
-        Me.CheckBox_WindowsToolTipDisplayTop.Text = "Display tooltip above caret instead"
+        Me.CheckBox_WindowsToolTipDisplayTop.Text = "Display tooltip above caret"
         Me.CheckBox_WindowsToolTipDisplayTop.UseVisualStyleBackColor = True
         '
         'GroupBox4
@@ -851,9 +930,9 @@ Partial Class FormSettings
         Me.CheckBox_FullAutocompleteReTagging.Location = New System.Drawing.Point(6, 219)
         Me.CheckBox_FullAutocompleteReTagging.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_FullAutocompleteReTagging.Name = "CheckBox_FullAutocompleteReTagging"
-        Me.CheckBox_FullAutocompleteReTagging.Size = New System.Drawing.Size(415, 18)
+        Me.CheckBox_FullAutocompleteReTagging.Size = New System.Drawing.Size(281, 18)
         Me.CheckBox_FullAutocompleteReTagging.TabIndex = 8
-        Me.CheckBox_FullAutocompleteReTagging.Text = "Full autocompletion for enums using re-tagging (SourcePawn <1.6 Syntax)"
+        Me.CheckBox_FullAutocompleteReTagging.Text = "Full autocompletion for enums using re-tagging"
         Me.CheckBox_FullAutocompleteReTagging.UseVisualStyleBackColor = True
         '
         'CheckBox_WindowsToolTipNewlineMethods
@@ -1311,6 +1390,7 @@ Partial Class FormSettings
         'Panel9
         '
         Me.Panel9.AutoSize = True
+        Me.Panel9.Controls.Add(Me.LinkLabel_DefaultConfigPathsHelp)
         Me.Panel9.Controls.Add(Me.Label7)
         Me.Panel9.Controls.Add(Me.GroupBox3)
         Me.Panel9.Controls.Add(Me.TextBox_AutoAssignPaths)
@@ -2025,7 +2105,7 @@ Partial Class FormSettings
         Me.Label18.Location = New System.Drawing.Point(60, 6)
         Me.Label18.Margin = New System.Windows.Forms.Padding(6)
         Me.Label18.Name = "Label18"
-        Me.Label18.Size = New System.Drawing.Size(664, 26)
+        Me.Label18.Size = New System.Drawing.Size(674, 26)
         Me.Label18.TabIndex = 3
         Me.Label18.Text = resources.GetString("Label18.Text")
         '
@@ -2079,35 +2159,6 @@ Partial Class FormSettings
         Me.Label17.Text = "Loaded BasicPawn plugins are able to read stored database entries. Make sure all " &
     "installed plugins are from a trustworthy publisher to prevent theft."
         '
-        'Label8
-        '
-        Me.Label8.AutoSize = True
-        Me.Label8.Location = New System.Drawing.Point(9, 164)
-        Me.Label8.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.Label8.Name = "Label8"
-        Me.Label8.Size = New System.Drawing.Size(108, 13)
-        Me.Label8.TabIndex = 24
-        Me.Label8.Text = "Thread update rate:"
-        '
-        'NumericUpDown_ThreadUpdateRate
-        '
-        Me.NumericUpDown_ThreadUpdateRate.Location = New System.Drawing.Point(123, 162)
-        Me.NumericUpDown_ThreadUpdateRate.Maximum = New Decimal(New Integer() {2500, 0, 0, 0})
-        Me.NumericUpDown_ThreadUpdateRate.Minimum = New Decimal(New Integer() {100, 0, 0, 0})
-        Me.NumericUpDown_ThreadUpdateRate.Name = "NumericUpDown_ThreadUpdateRate"
-        Me.NumericUpDown_ThreadUpdateRate.Size = New System.Drawing.Size(64, 22)
-        Me.NumericUpDown_ThreadUpdateRate.TabIndex = 25
-        Me.NumericUpDown_ThreadUpdateRate.Value = New Decimal(New Integer() {500, 0, 0, 0})
-        '
-        'Label14
-        '
-        Me.Label14.AutoSize = True
-        Me.Label14.Location = New System.Drawing.Point(193, 164)
-        Me.Label14.Name = "Label14"
-        Me.Label14.Size = New System.Drawing.Size(21, 13)
-        Me.Label14.TabIndex = 26
-        Me.Label14.Text = "ms"
-        '
         'FormSettings
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -2133,6 +2184,7 @@ Partial Class FormSettings
         Me.TabPage_General.PerformLayout()
         Me.TabPage_Editor.ResumeLayout(False)
         Me.TabPage_Editor.PerformLayout()
+        CType(Me.NumericUpDown_ThreadUpdateRate, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.NumericUpDown_TabsToSpaces, System.ComponentModel.ISupportInitialize).EndInit()
         Me.TabPage_Syntax.ResumeLayout(False)
         Me.TabPage_Syntax.PerformLayout()
@@ -2173,7 +2225,6 @@ Partial Class FormSettings
         Me.TableLayoutPanel3.ResumeLayout(False)
         Me.TableLayoutPanel3.PerformLayout()
         CType(Me.ClassPictureBoxQuality1, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.NumericUpDown_ThreadUpdateRate, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
     End Sub
@@ -2345,4 +2396,8 @@ Partial Class FormSettings
     Friend WithEvents NumericUpDown_ThreadUpdateRate As NumericUpDown
     Friend WithEvents Label8 As Label
     Friend WithEvents Label14 As Label
+    Friend WithEvents LinkLabel_ThreadUpdateRateHelp As LinkLabel
+    Friend WithEvents ToolTip_Info As ToolTip
+    Friend WithEvents LinkLabel_DefaultConfigPathsHelp As LinkLabel
+    Friend WithEvents LinkLabel_FullAutocompleteReTaggingHelp As LinkLabel
 End Class
