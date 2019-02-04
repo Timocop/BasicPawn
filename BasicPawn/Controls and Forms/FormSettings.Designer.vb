@@ -308,7 +308,7 @@ Partial Class FormSettings
         'LinkLabel_ThreadUpdateRateHelp
         '
         Me.LinkLabel_ThreadUpdateRateHelp.AutoSize = True
-        Me.LinkLabel_ThreadUpdateRateHelp.Location = New System.Drawing.Point(220, 164)
+        Me.LinkLabel_ThreadUpdateRateHelp.Location = New System.Drawing.Point(285, 164)
         Me.LinkLabel_ThreadUpdateRateHelp.Name = "LinkLabel_ThreadUpdateRateHelp"
         Me.LinkLabel_ThreadUpdateRateHelp.Size = New System.Drawing.Size(12, 13)
         Me.LinkLabel_ThreadUpdateRateHelp.TabIndex = 27
@@ -319,7 +319,7 @@ Partial Class FormSettings
         'LinkLabel_FullAutocompleteReTaggingHelp
         '
         Me.LinkLabel_FullAutocompleteReTaggingHelp.AutoSize = True
-        Me.LinkLabel_FullAutocompleteReTaggingHelp.Location = New System.Drawing.Point(293, 221)
+        Me.LinkLabel_FullAutocompleteReTaggingHelp.Location = New System.Drawing.Point(290, 221)
         Me.LinkLabel_FullAutocompleteReTaggingHelp.Name = "LinkLabel_FullAutocompleteReTaggingHelp"
         Me.LinkLabel_FullAutocompleteReTaggingHelp.Size = New System.Drawing.Size(12, 13)
         Me.LinkLabel_FullAutocompleteReTaggingHelp.TabIndex = 29
@@ -570,7 +570,7 @@ Partial Class FormSettings
         'Label14
         '
         Me.Label14.AutoSize = True
-        Me.Label14.Location = New System.Drawing.Point(193, 164)
+        Me.Label14.Location = New System.Drawing.Point(258, 164)
         Me.Label14.Name = "Label14"
         Me.Label14.Size = New System.Drawing.Size(21, 13)
         Me.Label14.TabIndex = 26
@@ -578,7 +578,7 @@ Partial Class FormSettings
         '
         'NumericUpDown_ThreadUpdateRate
         '
-        Me.NumericUpDown_ThreadUpdateRate.Location = New System.Drawing.Point(123, 162)
+        Me.NumericUpDown_ThreadUpdateRate.Location = New System.Drawing.Point(188, 162)
         Me.NumericUpDown_ThreadUpdateRate.Maximum = New Decimal(New Integer() {2500, 0, 0, 0})
         Me.NumericUpDown_ThreadUpdateRate.Minimum = New Decimal(New Integer() {100, 0, 0, 0})
         Me.NumericUpDown_ThreadUpdateRate.Name = "NumericUpDown_ThreadUpdateRate"
@@ -592,9 +592,9 @@ Partial Class FormSettings
         Me.Label8.Location = New System.Drawing.Point(9, 164)
         Me.Label8.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.Label8.Name = "Label8"
-        Me.Label8.Size = New System.Drawing.Size(108, 13)
+        Me.Label8.Size = New System.Drawing.Size(173, 13)
         Me.Label8.TabIndex = 24
-        Me.Label8.Text = "Thread update rate:"
+        Me.Label8.Text = "Background thread update rate:"
         '
         'CheckBox_RememberFolds
         '

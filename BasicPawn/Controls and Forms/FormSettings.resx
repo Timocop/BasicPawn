@@ -124,9 +124,9 @@
     <value>212, 17</value>
   </metadata>
   <data name="LinkLabel_ThreadUpdateRateHelp.ToolTip" xml:space="preserve">
-    <value>Sets how fast the thread updates. A lower value means it is updating faster and a hight value slower.
-Some functions in the thread still have hardcoded minimum timings to ensure good performance.
-The thread controls following functionalty:
+    <value>Sets how fast the background thread updates. A lower value means it is updating faster and a higher value slower.
+Some functions in the background thread will still have hardcoded minimum timings to ensure good performance.
+The background thread controls following functionality:
 * On-screen tooltip
 * Autocomplete &amp; IntelliSense
 * Word highlighting
