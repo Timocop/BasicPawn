@@ -2262,7 +2262,21 @@ Public Class ClassAutocompleteUpdater
                 Dim mRegMatch2 As Match
 
                 Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(mParseInfo.sSource, mParseInfo.iLanguage)
-                Dim sLines As String() = mParseInfo.sSource.Split(New String() {vbNewLine, vbLf}, 0)
+
+                'Remove any array brackets from method types for regex match
+                Dim mRegexSource As New Text.StringBuilder(mParseInfo.sSource.Length)
+                For j = 0 To mParseInfo.sSource.Length - 1
+                    If (mSourceAnalysis.GetBraceLevel(j, Nothing) < 1 AndAlso mSourceAnalysis.GetParenthesisLevel(j, Nothing) < 1) Then
+                        If (mSourceAnalysis.GetBracketLevel(j, Nothing) > 0) Then
+                            mRegexSource.Append(" "c)
+                            Continue For
+                        End If
+                    End If
+
+                    mRegexSource.Append(mParseInfo.sSource(j))
+                Next
+
+                Dim sLines As String() = mRegexSource.ToString.Split(New String() {vbNewLine, vbLf}, 0)
 
                 If (mSourceAnalysis.m_MaxLength - 1 > 0) Then
                     Dim iLeftBraceRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
@@ -2530,7 +2544,20 @@ Public Class ClassAutocompleteUpdater
                         Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sMethodmapSource, mParseInfo.iLanguage)
                         Dim iMethodmapBraceList As Integer()() = mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(sMethodmapSource, "("c, ")"c, 1, mParseInfo.iLanguage, True)
 
-                        Dim mMethodMatches As MatchCollection = Regex.Matches(sMethodmapSource,
+                        'Remove any array brackets from method types for regex match
+                        Dim mRegexSource As New Text.StringBuilder(sMethodmapSource.Length)
+                        For j = 0 To sMethodmapSource.Length - 1
+                            If (mSourceAnalysis.GetBraceLevel(j, Nothing) < 1 AndAlso mSourceAnalysis.GetParenthesisLevel(j, Nothing) < 1) Then
+                                If (mSourceAnalysis.GetBracketLevel(j, Nothing) > 0) Then
+                                    mRegexSource.Append(" "c)
+                                    Continue For
+                                End If
+                            End If
+
+                            mRegexSource.Append(sMethodmapSource(j))
+                        Next
+
+                        Dim mMethodMatches As MatchCollection = Regex.Matches(mRegexSource.ToString,
                                                                               String.Format("^\s*(?<Type>\b(property|public\s+(static\s*){2}(native\s*){4}|public)\b)\s+((?<Tag>\b({0})\b\s)\s*(?<Name>\b[a-zA-Z0-9_]+\b)|(?<Constructor>\b{1}\b)|(?<Name>\b[a-zA-Z0-9_]+\b))\s*(?<BraceStart>\(){3}", sRegExTypePattern, sMethodMapName, "{0,1}", "{0,1}", "{0,1}"),
                                                                               RegexOptions.Multiline)
 
@@ -2832,7 +2859,20 @@ Public Class ClassAutocompleteUpdater
 
                         'Get methods
                         If (True) Then
-                            Dim mMethodMatches As MatchCollection = Regex.Matches(sEnumStructSource,
+                            'Remove any array brackets from method types for regex match
+                            Dim mRegexSource As New Text.StringBuilder(sEnumStructSource.Length)
+                            For j = 0 To sEnumStructSource.Length - 1
+                                If (mSourceAnalysis.GetBraceLevel(j, Nothing) < 1 AndAlso mSourceAnalysis.GetParenthesisLevel(j, Nothing) < 1) Then
+                                    If (mSourceAnalysis.GetBracketLevel(j, Nothing) > 0) Then
+                                        mRegexSource.Append(" "c)
+                                        Continue For
+                                    End If
+                                End If
+
+                                mRegexSource.Append(sEnumStructSource(j))
+                            Next
+
+                            Dim mMethodMatches As MatchCollection = Regex.Matches(mRegexSource.ToString,
                                                                              String.Format("^\s*(?<Type>)(?<Tag>\b({0})\b)\s+(?<Name>\b[a-zA-Z0-9_]+\b)\s*(?<BraceStart>\()", sRegExTypePattern),
                                                                              RegexOptions.Multiline)
 
