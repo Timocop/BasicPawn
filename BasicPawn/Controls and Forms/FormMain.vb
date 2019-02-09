@@ -49,11 +49,12 @@ Public Class FormMain
 
     Public Const COMMSG_SERVERNAME As String = "BasicPawnComServer-04e3632f-5472-42c5-929a-c3e0c2b35324"
     Public Const COMMSG_SERVERNAMEPOST As String = "BasicPawnComServerPost-04e3632f-5472-42c5-929a-c3e0c2b35324"
-    Public Const COMARG_OPEN_FILE_BY_PID As String = "BasicPawnComServer-OpenFileByPID-04e3632f-5472-42c5-929a-c3e0c2b35324"
+    Public Const COMARG_OPEN_FILE As String = "BasicPawnComServer-OpenFile-04e3632f-5472-42c5-929a-c3e0c2b35324"
     Public Const COMARG_REQUEST_TABS As String = "BasicPawnComServer-RequestTabs-04e3632f-5472-42c5-929a-c3e0c2b35324"
-    Public Const COMARG_REQUEST_TABS_ANSWER As String = "BasicPawnComServer-RequestTabsAnswer-04e3632f-5472-42c5-929a-c3e0c2b35324"
+    Public Const COMARG_REQUEST_TABS_CALLBACK As String = "BasicPawnComServer-RequestTabsCallback-04e3632f-5472-42c5-929a-c3e0c2b35324"
     Public Const COMARG_CLOSE_TAB As String = "BasicPawnComServer-CloseTab-04e3632f-5472-42c5-929a-c3e0c2b35324"
-    Public Const COMARG_SHOW_PING_FLASH As String = "BasicPawnComServer-ShowPingFlash-04e3632f-5472-42c5-929a-c3e0c2b35324"
+    Public Const COMARG_CLOSE_APP As String = "BasicPawnComServer-CloseApp-04e3632f-5472-42c5-929a-c3e0c2b35324"
+    Public Const COMARG_ACTIVATE_FORM_OR_TAB As String = "BasicPawnComServer-ActivateFormOrTab-04e3632f-5472-42c5-929a-c3e0c2b35324"
 
     'Private g_mPingFlashPanel As ClassPanelAlpha
     Private g_bFormPostCreate As Boolean = False
@@ -144,7 +145,7 @@ Public Class FormMain
 
                                     For i = 0 To lOpenFileList.Count - 1
                                         If (IO.Path.GetExtension(lOpenFileList(i)).ToLower <> UCProjectBrowser.ClassProjectControl.g_sProjectExtension) Then
-                                            Dim mMsg As New ClassCrossAppComunication.ClassMessage(COMARG_OPEN_FILE_BY_PID, CStr(iMasterId), lOpenFileList(i))
+                                            Dim mMsg As New ClassCrossAppComunication.ClassMessage(COMARG_OPEN_FILE, CStr(iMasterId), lOpenFileList(i))
                                             g_ClassCrossAppCom.SendMessage(mMsg)
                                         End If
                                     Next
@@ -702,8 +703,12 @@ Public Class FormMain
     End Sub
 
     Private Sub ToolStripMenuItem_FileLoadTabs_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileLoadTabs.Click
+        If (g_mFormOpenTabFromInstances IsNot Nothing AndAlso Not g_mFormOpenTabFromInstances.IsDisposed) Then
+            Return
+        End If
+
         g_mFormOpenTabFromInstances = New FormOpenTabFromInstances(Me)
-        g_mFormOpenTabFromInstances.ShowDialog(Me)
+        g_mFormOpenTabFromInstances.Show(Me)
     End Sub
 
     Private Sub ToolStripMenuItem_FileStartPage_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileStartPage.Click
@@ -1563,8 +1568,12 @@ Public Class FormMain
     End Sub
 
     Private Sub ToolStripMenuItem_TabOpenInstance_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_TabOpenInstance.Click
+        If (g_mFormOpenTabFromInstances IsNot Nothing AndAlso Not g_mFormOpenTabFromInstances.IsDisposed) Then
+            Return
+        End If
+
         g_mFormOpenTabFromInstances = New FormOpenTabFromInstances(Me)
-        g_mFormOpenTabFromInstances.ShowDialog(Me)
+        g_mFormOpenTabFromInstances.Show(Me)
     End Sub
 
     Private Sub OnMessageReceive(mClassMessage As ClassCrossAppComunication.ClassMessage) Handles g_ClassCrossAppCom.OnMessageReceive
@@ -1575,14 +1584,15 @@ Public Class FormMain
             End If
 
             Select Case (mClassMessage.m_MessageName)
-                Case COMARG_OPEN_FILE_BY_PID
-                    Dim iPID As Integer = CInt(mClassMessage.m_Messages(0))
+                Case COMARG_OPEN_FILE
+                    Dim iProcessId As Integer = CInt(mClassMessage.m_Messages(0))
                     Dim sFile As String = mClassMessage.m_Messages(1)
 
-                    If (iPID <> Process.GetCurrentProcess.Id) Then
+                    If (iProcessId <> Process.GetCurrentProcess.Id) Then
                         Return
                     End If
 
+                    'Avoid infinite-loop when calling itself
                     ClassThread.ExecAsync(Me, Sub()
                                                   Try
                                                       Dim mTab = g_ClassTabControl.AddTab()
@@ -1602,38 +1612,64 @@ Public Class FormMain
                 Case COMARG_REQUEST_TABS
                     Dim sCallerIdentifier As String = mClassMessage.m_Messages(0)
 
-                    For i = 0 To g_ClassTabControl.m_TabsCount - 1
-                        Dim iPID As Integer = Process.GetCurrentProcess.Id
-                        Dim sProcessName As String = Process.GetCurrentProcess.ProcessName
-                        Dim sTabIdentifier As String = g_ClassTabControl.m_Tab(i).m_Identifier
-                        Dim iTabIndex As Integer = g_ClassTabControl.m_Tab(i).m_Index
-                        Dim sTabFile As String = g_ClassTabControl.m_Tab(i).m_File
+                    Dim iProcessId As Integer = Process.GetCurrentProcess.Id
+                    Dim sProcessName As String = Process.GetCurrentProcess.ProcessName
 
-                        g_ClassCrossAppCom.SendMessage(New ClassCrossAppComunication.ClassMessage(COMARG_REQUEST_TABS_ANSWER, CStr(iPID), sProcessName, sTabIdentifier, CStr(iTabIndex), sTabFile, sCallerIdentifier), False)
-                    Next
+                    Using mIni As New ClassIni
+                        Dim lContents As New List(Of ClassIni.STRUC_INI_CONTENT)
 
-                Case COMARG_REQUEST_TABS_ANSWER
-                    Dim iPID As Integer = CInt(mClassMessage.m_Messages(0))
+                        For i = 0 To g_ClassTabControl.m_TabsCount - 1
+                            Dim sTabIdentifier As String = g_ClassTabControl.m_Tab(i).m_Identifier
+                            Dim iTabIndex As Integer = g_ClassTabControl.m_Tab(i).m_Index
+                            Dim sTabFile As String = g_ClassTabControl.m_Tab(i).m_File
+
+                            lContents.Add(New ClassIni.STRUC_INI_CONTENT(sTabIdentifier, "Index", CStr(iTabIndex)))
+                            lContents.Add(New ClassIni.STRUC_INI_CONTENT(sTabIdentifier, "File", sTabFile))
+                        Next
+
+                        mIni.WriteKeyValue(lContents.ToArray)
+
+                        g_ClassCrossAppCom.SendMessage(New ClassCrossAppComunication.ClassMessage(COMARG_REQUEST_TABS_CALLBACK, CStr(iProcessId), sProcessName, sCallerIdentifier, mIni.ExportToString), False)
+                    End Using
+
+                Case COMARG_REQUEST_TABS_CALLBACK
+                    Dim iProcessId As Integer = CInt(mClassMessage.m_Messages(0))
                     Dim sProcessName As String = mClassMessage.m_Messages(1)
-                    Dim sTabIdentifier As String = mClassMessage.m_Messages(2)
-                    Dim iTabIndex As Integer = CInt(mClassMessage.m_Messages(3))
-                    Dim sTabFile As String = mClassMessage.m_Messages(4)
-                    Dim sCallerIdentifier As String = mClassMessage.m_Messages(5)
+                    Dim sCallerIdentifier As String = mClassMessage.m_Messages(2)
+                    Dim sIniContent As String = mClassMessage.m_Messages(3)
 
-                    If (g_mFormOpenTabFromInstances IsNot Nothing AndAlso Not g_mFormOpenTabFromInstances.IsDisposed) Then
-                        g_mFormOpenTabFromInstances.AddListViewItem(sTabIdentifier, iTabIndex, sTabFile, sProcessName, iPID, sCallerIdentifier)
+                    'Ignore callback if form is not open
+                    If (g_mFormOpenTabFromInstances Is Nothing OrElse g_mFormOpenTabFromInstances.IsDisposed) Then
+                        Return
                     End If
 
+                    Try
+                        g_mFormOpenTabFromInstances.TreeViewColumns_Instances.m_TreeView.BeginUpdate()
+
+                        Using mIni As New ClassIni(sIniContent)
+                            For Each sSection As String In mIni.GetSectionNames
+                                Dim sTabIdentifier As String = sSection
+                                Dim iTabIndex As Integer = CInt(mIni.ReadKeyValue(sSection, "Index"))
+                                Dim sTabFile As String = mIni.ReadKeyValue(sSection, "File")
+
+                                g_mFormOpenTabFromInstances.AddTreeViewItem(sTabIdentifier, iTabIndex, sTabFile, sProcessName, iProcessId, sCallerIdentifier)
+                            Next
+                        End Using
+                    Finally
+                        g_mFormOpenTabFromInstances.TreeViewColumns_Instances.m_TreeView.EndUpdate()
+                    End Try
+
                 Case COMARG_CLOSE_TAB
-                    Dim iPID As Integer = CInt(mClassMessage.m_Messages(0))
+                    Dim iProcessId As Integer = CInt(mClassMessage.m_Messages(0))
                     Dim sTabIdentifier As String = mClassMessage.m_Messages(1)
                     Dim sFile As String = mClassMessage.m_Messages(2)
                     Dim bCloseAppWhenEmpty As Boolean = CBool(mClassMessage.m_Messages(3))
 
-                    If (iPID <> Process.GetCurrentProcess.Id) Then
+                    If (iProcessId <> Process.GetCurrentProcess.Id) Then
                         Return
                     End If
 
+                    'Avoid infinite-loop when calling itself
                     ClassThread.ExecAsync(Me, Sub()
                                                   Try
                                                       Dim mTab = g_ClassTabControl.GetTabByIdentifier(sTabIdentifier)
@@ -1655,14 +1691,31 @@ Public Class FormMain
                                                   End Try
                                               End Sub)
 
-                Case COMARG_SHOW_PING_FLASH
-                    Dim iPID As Integer = CInt(mClassMessage.m_Messages(0))
-                    Dim sTabIdentifier As String = mClassMessage.m_Messages(1)
+                Case COMARG_CLOSE_APP
+                    Dim iProcessId As Integer = CInt(mClassMessage.m_Messages(0))
 
-                    If (iPID <> Process.GetCurrentProcess.Id) Then
+                    If (iProcessId <> Process.GetCurrentProcess.Id) Then
                         Return
                     End If
 
+                    'Avoid infinite-loop when calling itself
+                    ClassThread.ExecAsync(Me, Sub()
+                                                  Try
+                                                      Me.Close()
+                                                  Catch ex As Exception
+                                                      ClassExceptionLog.WriteToLogMessageBox(ex)
+                                                  End Try
+                                              End Sub)
+
+                Case COMARG_ACTIVATE_FORM_OR_TAB
+                    Dim iProcessId As Integer = CInt(mClassMessage.m_Messages(0))
+                    Dim sTabIdentifier As String = mClassMessage.m_Messages(1)
+
+                    If (iProcessId <> Process.GetCurrentProcess.Id) Then
+                        Return
+                    End If
+
+                    'Avoid infinite-loop when calling itself
                     ClassThread.ExecAsync(Me, Sub()
                                                   If (Not String.IsNullOrEmpty(sTabIdentifier)) Then
                                                       Dim mTab = g_ClassTabControl.GetTabByIdentifier(sTabIdentifier)
