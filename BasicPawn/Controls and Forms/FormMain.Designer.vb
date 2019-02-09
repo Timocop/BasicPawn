@@ -132,11 +132,11 @@ Partial Class FormMain
         Me.ToolStripMenuItem_HelpGithub = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator14 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_HelpAbout = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripMenuItem_NewUpdate = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_TabClose = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_TabMoveRight = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_TabMoveLeft = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_TabOpenInstance = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_NewUpdate = New System.Windows.Forms.ToolStripMenuItem()
         Me.SplitContainer_ToolboxSourceAndDetails = New System.Windows.Forms.SplitContainer()
         Me.SplitContainer_ToolboxAndEditor = New System.Windows.Forms.SplitContainer()
         Me.TabControl_Toolbox = New BasicPawn.ClassTabControlColor()
@@ -393,7 +393,7 @@ Partial Class FormMain
         '
         'MenuStrip_BasicPawn
         '
-        Me.MenuStrip_BasicPawn.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_File, Me.ToolStripMenuItem_View, Me.ToolStripMenuItem_Tools, Me.ToolStripMenuItem_Undo, Me.ToolStripMenuItem_Redo, Me.ToolStripMenuItem_Build, Me.ToolStripMenuItem_Test, Me.ToolStripMenuItem_Debug, Me.ToolStripMenuItem_Shell, Me.ToolStripMenuItem_Help, Me.ToolStripMenuItem_NewUpdate, Me.ToolStripMenuItem_TabClose, Me.ToolStripMenuItem_TabMoveRight, Me.ToolStripMenuItem_TabMoveLeft, Me.ToolStripMenuItem_TabOpenInstance})
+        Me.MenuStrip_BasicPawn.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_File, Me.ToolStripMenuItem_View, Me.ToolStripMenuItem_Tools, Me.ToolStripMenuItem_Undo, Me.ToolStripMenuItem_Redo, Me.ToolStripMenuItem_Build, Me.ToolStripMenuItem_Test, Me.ToolStripMenuItem_Debug, Me.ToolStripMenuItem_Shell, Me.ToolStripMenuItem_Help, Me.ToolStripMenuItem_TabClose, Me.ToolStripMenuItem_TabMoveRight, Me.ToolStripMenuItem_TabMoveLeft, Me.ToolStripMenuItem_TabOpenInstance, Me.ToolStripMenuItem_NewUpdate})
         Me.MenuStrip_BasicPawn.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip_BasicPawn.Name = "MenuStrip_BasicPawn"
         Me.MenuStrip_BasicPawn.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
@@ -913,14 +913,6 @@ Partial Class FormMain
         Me.ToolStripMenuItem_HelpAbout.Size = New System.Drawing.Size(170, 22)
         Me.ToolStripMenuItem_HelpAbout.Text = "About"
         '
-        'ToolStripMenuItem_NewUpdate
-        '
-        Me.ToolStripMenuItem_NewUpdate.Image = CType(resources.GetObject("ToolStripMenuItem_NewUpdate.Image"), System.Drawing.Image)
-        Me.ToolStripMenuItem_NewUpdate.Name = "ToolStripMenuItem_NewUpdate"
-        Me.ToolStripMenuItem_NewUpdate.Size = New System.Drawing.Size(151, 20)
-        Me.ToolStripMenuItem_NewUpdate.Text = "New update available!"
-        Me.ToolStripMenuItem_NewUpdate.Visible = False
-        '
         'ToolStripMenuItem_TabClose
         '
         Me.ToolStripMenuItem_TabClose.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
@@ -970,6 +962,16 @@ Partial Class FormMain
         Me.ToolStripMenuItem_TabOpenInstance.Size = New System.Drawing.Size(18, 20)
         Me.ToolStripMenuItem_TabOpenInstance.Text = "v"
         Me.ToolStripMenuItem_TabOpenInstance.ToolTipText = "Open from Instances"
+        '
+        'ToolStripMenuItem_NewUpdate
+        '
+        Me.ToolStripMenuItem_NewUpdate.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
+        Me.ToolStripMenuItem_NewUpdate.Image = Global.BasicPawn.My.Resources.Resources.shell32_16739_16x16_32
+        Me.ToolStripMenuItem_NewUpdate.Name = "ToolStripMenuItem_NewUpdate"
+        Me.ToolStripMenuItem_NewUpdate.Size = New System.Drawing.Size(99, 20)
+        Me.ToolStripMenuItem_NewUpdate.Text = "Update now"
+        Me.ToolStripMenuItem_NewUpdate.ToolTipText = "A new BasicPawn version is available"
+        Me.ToolStripMenuItem_NewUpdate.Visible = False
         '
         'SplitContainer_ToolboxSourceAndDetails
         '
@@ -1260,7 +1262,7 @@ Partial Class FormMain
         Me.ContextMenuStrip_Config.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_EditConfigActiveTab, Me.ToolStripMenuItem_EditConfigAllTabs, Me.ToolStripSeparator19, Me.ToolStripMenuItem_FindOptimalConfigActiveTab, Me.ToolStripMenuItem_FindOptimalConfigAllTabs})
         Me.ContextMenuStrip_Config.Name = "ContextMenuStrip_Config"
         Me.ContextMenuStrip_Config.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
-        Me.ContextMenuStrip_Config.Size = New System.Drawing.Size(251, 120)
+        Me.ContextMenuStrip_Config.Size = New System.Drawing.Size(251, 98)
         '
         'ToolStripMenuItem_EditConfigActiveTab
         '

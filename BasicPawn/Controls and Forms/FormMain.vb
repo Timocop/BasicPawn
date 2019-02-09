@@ -388,15 +388,19 @@ Public Class FormMain
 
         Dim mCheckUpdasteThread As New Threading.Thread(Sub()
                                                             Try
-#If DEBUG Then
-                                                                ClassThread.ExecAsync(Me, Sub()
-                                                                                              ToolStripMenuItem_NewUpdate.Visible = True
-                                                                                          End Sub)
-#End If
-                                                                Threading.Thread.Sleep(10000)
+                                                                Dim bForceUpdate As Boolean = False
 
-                                                                If (ClassUpdate.CheckUpdateAvailable(Nothing)) Then
+#If DEBUG Then
+                                                                bForceUpdate = True
+                                                                Threading.Thread.Sleep(2500)
+#Else
+                                                                Threading.Thread.Sleep(10000)
+#End If
+
+
+                                                                If (bForceUpdate OrElse ClassUpdate.CheckUpdateAvailable(Nothing)) Then
                                                                     ClassThread.ExecAsync(Me, Sub()
+                                                                                                  'Make update button visible
                                                                                                   ToolStripMenuItem_NewUpdate.Visible = True
                                                                                               End Sub)
                                                                 End If
