@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class FormOpenTabFromInstances
+Partial Class FormInstanceManager
     Inherits System.Windows.Forms.Form
 
     'Das Formular überschreibt den Löschvorgang, um die Komponentenliste zu bereinigen.
@@ -27,7 +27,7 @@ Partial Class FormOpenTabFromInstances
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormOpenTabFromInstances))
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormInstanceManager))
         Me.Panel_FooterControl = New System.Windows.Forms.Panel()
         Me.Button_Close = New System.Windows.Forms.Button()
         Me.Panel_FooterDarkControl = New System.Windows.Forms.Panel()

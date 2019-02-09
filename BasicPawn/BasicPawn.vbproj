@@ -315,10 +315,10 @@
     <Compile Include="Controls and Forms\FormNewWizard.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Controls and Forms\FormOpenTabFromInstances.Designer.vb">
-      <DependentUpon>FormOpenTabFromInstances.vb</DependentUpon>
+    <Compile Include="Controls and Forms\FormInstanceManager.Designer.vb">
+      <DependentUpon>FormInstanceManager.vb</DependentUpon>
     </Compile>
-    <Compile Include="Controls and Forms\FormOpenTabFromInstances.vb">
+    <Compile Include="Controls and Forms\FormInstanceManager.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Controls and Forms\FormProgress.Designer.vb">
@@ -461,8 +461,8 @@
     <EmbeddedResource Include="Controls and Forms\FormNewWizard.resx">
       <DependentUpon>FormNewWizard.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls and Forms\FormOpenTabFromInstances.resx">
-      <DependentUpon>FormOpenTabFromInstances.vb</DependentUpon>
+    <EmbeddedResource Include="Controls and Forms\FormInstanceManager.resx">
+      <DependentUpon>FormInstanceManager.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls and Forms\FormProgress.resx">
       <DependentUpon>FormProgress.vb</DependentUpon>

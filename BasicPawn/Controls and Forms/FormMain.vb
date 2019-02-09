@@ -38,7 +38,7 @@ Public Class FormMain
     Public g_mUCExplorerBrowser As UCExplorerBrowser
     Public g_mFormToolTip As FormToolTip
     Public g_mFormDebugger As FormDebugger
-    Public g_mFormOpenTabFromInstances As FormOpenTabFromInstances
+    Public g_mFormInstanceManager As FormInstanceManager
     Public g_mUCStartPage As UCStartPage
     Public g_mUCTextMinimap As ClassTextMinimap
 
@@ -707,12 +707,12 @@ Public Class FormMain
     End Sub
 
     Private Sub ToolStripMenuItem_FileLoadTabs_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileLoadTabs.Click
-        If (g_mFormOpenTabFromInstances IsNot Nothing AndAlso Not g_mFormOpenTabFromInstances.IsDisposed) Then
+        If (g_mFormInstanceManager IsNot Nothing AndAlso Not g_mFormInstanceManager.IsDisposed) Then
             Return
         End If
 
-        g_mFormOpenTabFromInstances = New FormOpenTabFromInstances(Me)
-        g_mFormOpenTabFromInstances.Show(Me)
+        g_mFormInstanceManager = New FormInstanceManager(Me)
+        g_mFormInstanceManager.Show(Me)
     End Sub
 
     Private Sub ToolStripMenuItem_FileStartPage_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileStartPage.Click
@@ -1572,12 +1572,12 @@ Public Class FormMain
     End Sub
 
     Private Sub ToolStripMenuItem_TabOpenInstance_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_TabOpenInstance.Click
-        If (g_mFormOpenTabFromInstances IsNot Nothing AndAlso Not g_mFormOpenTabFromInstances.IsDisposed) Then
+        If (g_mFormInstanceManager IsNot Nothing AndAlso Not g_mFormInstanceManager.IsDisposed) Then
             Return
         End If
 
-        g_mFormOpenTabFromInstances = New FormOpenTabFromInstances(Me)
-        g_mFormOpenTabFromInstances.Show(Me)
+        g_mFormInstanceManager = New FormInstanceManager(Me)
+        g_mFormInstanceManager.Show(Me)
     End Sub
 
     Private Sub OnMessageReceive(mClassMessage As ClassCrossAppComunication.ClassMessage) Handles g_ClassCrossAppCom.OnMessageReceive
@@ -1643,12 +1643,12 @@ Public Class FormMain
                     Dim sIniContent As String = mClassMessage.m_Messages(3)
 
                     'Ignore callback if form is not open
-                    If (g_mFormOpenTabFromInstances Is Nothing OrElse g_mFormOpenTabFromInstances.IsDisposed) Then
+                    If (g_mFormInstanceManager Is Nothing OrElse g_mFormInstanceManager.IsDisposed) Then
                         Return
                     End If
 
                     Try
-                        g_mFormOpenTabFromInstances.TreeViewColumns_Instances.m_TreeView.BeginUpdate()
+                        g_mFormInstanceManager.TreeViewColumns_Instances.m_TreeView.BeginUpdate()
 
                         Using mIni As New ClassIni(sIniContent)
                             For Each sSection As String In mIni.GetSectionNames
@@ -1656,11 +1656,11 @@ Public Class FormMain
                                 Dim iTabIndex As Integer = CInt(mIni.ReadKeyValue(sSection, "Index"))
                                 Dim sTabFile As String = mIni.ReadKeyValue(sSection, "File")
 
-                                g_mFormOpenTabFromInstances.AddTreeViewItem(sTabIdentifier, iTabIndex, sTabFile, sProcessName, iProcessId, sCallerIdentifier)
+                                g_mFormInstanceManager.AddTreeViewItem(sTabIdentifier, iTabIndex, sTabFile, sProcessName, iProcessId, sCallerIdentifier)
                             Next
                         End Using
                     Finally
-                        g_mFormOpenTabFromInstances.TreeViewColumns_Instances.m_TreeView.EndUpdate()
+                        g_mFormInstanceManager.TreeViewColumns_Instances.m_TreeView.EndUpdate()
                     End Try
 
                 Case COMARG_CLOSE_TAB
@@ -1838,10 +1838,10 @@ Public Class FormMain
     Private Sub CleanUp()
         g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnPluginEndPost())
 
-        If (g_mFormOpenTabFromInstances IsNot Nothing AndAlso Not g_mFormOpenTabFromInstances.IsDisposed) Then
-            g_mFormOpenTabFromInstances.Close()
-            g_mFormOpenTabFromInstances.Dispose()
-            g_mFormOpenTabFromInstances = Nothing
+        If (g_mFormInstanceManager IsNot Nothing AndAlso Not g_mFormInstanceManager.IsDisposed) Then
+            g_mFormInstanceManager.Close()
+            g_mFormInstanceManager.Dispose()
+            g_mFormInstanceManager = Nothing
         End If
 
         g_ClassSyntaxUpdater.StopThread()

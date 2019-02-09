@@ -15,7 +15,7 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 
-Public Class FormOpenTabFromInstances
+Public Class FormInstanceManager
     Private g_mFormMain As FormMain
 
     Private g_sCallerIdentifier As String = Guid.NewGuid.ToString
