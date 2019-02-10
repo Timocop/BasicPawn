@@ -209,6 +209,8 @@ Public Class FormInstanceManager
     Private Sub ContextMenuStrip_Instances_Opening(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles ContextMenuStrip_Instances.Opening
         ClassControlStyle.UpdateControls(ContextMenuStrip_Instances)
 
+        ToolStripMenuItem_CheckAll.Enabled = (TreeViewColumns_Instances.m_TreeView.SelectedNode IsNot Nothing AndAlso
+                                                                TypeOf TreeViewColumns_Instances.m_TreeView.SelectedNode Is ClassTreeNodeInstance)
         ToolStripMenuItem_UncheckAll.Enabled = (FindCheckedAllNodes(TreeViewColumns_Instances.m_TreeView.Nodes).Length > 0)
 
         ToolStripMenuItem_CopyChecked.Enabled = (FindCheckedFileNodes(TreeViewColumns_Instances.m_TreeView.Nodes).Length > 0 AndAlso
@@ -225,6 +227,23 @@ Public Class FormInstanceManager
 
     Private Sub ToolStripMenuItem_Refresh_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Refresh.Click
         RefreshList()
+    End Sub
+
+    Private Sub ToolStripMenuItem_CheckAll_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_CheckAll.Click
+        If (TreeViewColumns_Instances.m_TreeView.SelectedNode Is Nothing) Then
+            Return
+        End If
+
+        Dim mTreeNode As ClassTreeNodeInstance = TryCast(TreeViewColumns_Instances.m_TreeView.SelectedNode, ClassTreeNodeInstance)
+        If (mTreeNode Is Nothing) Then
+            Return
+        End If
+
+        For Each i As TreeNode In mTreeNode.Nodes
+            If (Not i.Checked) Then
+                i.Checked = True
+            End If
+        Next
     End Sub
 
     Private Sub ToolStripMenuItem_UncheckAll_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_UncheckAll.Click

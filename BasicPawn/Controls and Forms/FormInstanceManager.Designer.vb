@@ -40,15 +40,16 @@ Partial Class FormInstanceManager
         Me.ImageList_Instances = New System.Windows.Forms.ImageList(Me.components)
         Me.ContextMenuStrip_Instances = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.ToolStripMenuItem_Refresh = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_CheckAll = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_UncheckAll = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_CopyChecked = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_MoveChecked = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_PopoutChecked = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_CloseChecked = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_CloseInstChecked = New System.Windows.Forms.ToolStripMenuItem()
         Me.TreeViewColumns_Instances = New BasicPawn.ClassTreeViewColumns()
-        Me.ToolStripMenuItem_PopoutChecked = New System.Windows.Forms.ToolStripMenuItem()
         Me.Panel_FooterControl.SuspendLayout()
         Me.ContextMenuStrip_Instances.SuspendLayout()
         Me.SuspendLayout()
@@ -134,7 +135,7 @@ Partial Class FormInstanceManager
         '
         'ContextMenuStrip_Instances
         '
-        Me.ContextMenuStrip_Instances.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_Refresh, Me.ToolStripMenuItem_UncheckAll, Me.ToolStripSeparator1, Me.ToolStripMenuItem_CopyChecked, Me.ToolStripMenuItem_MoveChecked, Me.ToolStripMenuItem_PopoutChecked, Me.ToolStripMenuItem_CloseChecked, Me.ToolStripSeparator2, Me.ToolStripMenuItem_CloseInstChecked})
+        Me.ContextMenuStrip_Instances.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_Refresh, Me.ToolStripMenuItem_CheckAll, Me.ToolStripMenuItem_UncheckAll, Me.ToolStripSeparator1, Me.ToolStripMenuItem_CopyChecked, Me.ToolStripMenuItem_MoveChecked, Me.ToolStripMenuItem_PopoutChecked, Me.ToolStripMenuItem_CloseChecked, Me.ToolStripSeparator2, Me.ToolStripMenuItem_CloseInstChecked})
         Me.ContextMenuStrip_Instances.Name = "ContextMenuStrip_Instances"
         Me.ContextMenuStrip_Instances.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
         Me.ContextMenuStrip_Instances.Size = New System.Drawing.Size(207, 192)
@@ -146,8 +147,16 @@ Partial Class FormInstanceManager
         Me.ToolStripMenuItem_Refresh.Size = New System.Drawing.Size(206, 22)
         Me.ToolStripMenuItem_Refresh.Text = "Refresh"
         '
+        'ToolStripMenuItem_CheckAll
+        '
+        Me.ToolStripMenuItem_CheckAll.Image = Global.BasicPawn.My.Resources.Resources.imageres_5367_16x16
+        Me.ToolStripMenuItem_CheckAll.Name = "ToolStripMenuItem_CheckAll"
+        Me.ToolStripMenuItem_CheckAll.Size = New System.Drawing.Size(206, 22)
+        Me.ToolStripMenuItem_CheckAll.Text = "Check all in instance"
+        '
         'ToolStripMenuItem_UncheckAll
         '
+        Me.ToolStripMenuItem_UncheckAll.Image = Global.BasicPawn.My.Resources.Resources.imageres_5383_16x16_32
         Me.ToolStripMenuItem_UncheckAll.Name = "ToolStripMenuItem_UncheckAll"
         Me.ToolStripMenuItem_UncheckAll.Size = New System.Drawing.Size(206, 22)
         Me.ToolStripMenuItem_UncheckAll.Text = "Uncheck all"
@@ -170,6 +179,13 @@ Partial Class FormInstanceManager
         Me.ToolStripMenuItem_MoveChecked.Name = "ToolStripMenuItem_MoveChecked"
         Me.ToolStripMenuItem_MoveChecked.Size = New System.Drawing.Size(206, 22)
         Me.ToolStripMenuItem_MoveChecked.Text = "Move checked items to..."
+        '
+        'ToolStripMenuItem_PopoutChecked
+        '
+        Me.ToolStripMenuItem_PopoutChecked.Image = Global.BasicPawn.My.Resources.Resources.imageres_5333_16x16
+        Me.ToolStripMenuItem_PopoutChecked.Name = "ToolStripMenuItem_PopoutChecked"
+        Me.ToolStripMenuItem_PopoutChecked.Size = New System.Drawing.Size(206, 22)
+        Me.ToolStripMenuItem_PopoutChecked.Text = "Popout checked items"
         '
         'ToolStripMenuItem_CloseChecked
         '
@@ -201,13 +217,6 @@ Partial Class FormInstanceManager
         Me.TreeViewColumns_Instances.Name = "TreeViewColumns_Instances"
         Me.TreeViewColumns_Instances.Size = New System.Drawing.Size(600, 320)
         Me.TreeViewColumns_Instances.TabIndex = 6
-        '
-        'ToolStripMenuItem_PopoutChecked
-        '
-        Me.ToolStripMenuItem_PopoutChecked.Image = Global.BasicPawn.My.Resources.Resources.imageres_5333_16x16
-        Me.ToolStripMenuItem_PopoutChecked.Name = "ToolStripMenuItem_PopoutChecked"
-        Me.ToolStripMenuItem_PopoutChecked.Size = New System.Drawing.Size(206, 22)
-        Me.ToolStripMenuItem_PopoutChecked.Text = "Popout checked items"
         '
         'FormInstanceManager
         '
@@ -254,4 +263,5 @@ Partial Class FormInstanceManager
     Friend WithEvents ToolStripMenuItem_CloseInstChecked As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_Refresh As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_PopoutChecked As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_CheckAll As ToolStripMenuItem
 End Class

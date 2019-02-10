@@ -752,6 +752,16 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
+        Public ReadOnly Property imageres_5383_16x16() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("imageres_5383_16x16", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Drawing.Bitmap.
+        '''</summary>
         Public ReadOnly Property IntelliSenseClass_32x() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("IntelliSenseClass_32x", resourceCulture)
@@ -920,17 +930,18 @@ Namespace My.Resources
         End Property
         
         '''<summary>
-        '''  Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot;?&gt;
+        '''  Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+        '''&lt;!-- &lt;SyntaxVersion&gt;1.1&lt;/SyntaxVersion&gt; --&gt;
         '''&lt;SyntaxDefinition name=&quot;SourcePawn-04e3632f-5472-42c5-929a-c3e0c2b35324&quot; extensions=&quot;.sp&quot;&gt;
-        '''    &lt;Environment&gt;
-        '''        &lt;Default color=&quot;Black&quot; bgcolor=&quot;White&quot;/&gt;
-        '''        &lt;Selection color=&quot;White&quot; bgcolor=&quot;RoyalBlue&quot;/&gt;
-        '''        &lt;VRuler color=&quot;DarkGray&quot;/&gt;
-        '''        &lt;InvalidLines color=&quot;Red&quot;/&gt;
-        '''        &lt;CaretMarker color=&quot;LightCyan&quot;/&gt;
-        '''        &lt;LineNumbers color=&quot;Gray&quot; bgcolor=&quot;White&quot;/&gt;
-        '''        &lt;FoldLine color=&quot;LightGray&quot; bgcolor=&quot;White&quot;/&gt;
-        '''        &lt;FoldMarker color=&quot;DarkGray&quot; bgcolor=&quot;Whi [rest of string was truncated]&quot;;.
+        '''	&lt;Environment&gt;
+        '''		&lt;Default color=&quot;Black&quot; bgcolor=&quot;White&quot; /&gt;
+        '''		&lt;Selection color=&quot;White&quot; bgcolor=&quot;RoyalBlue&quot; /&gt;
+        '''		&lt;VRuler color=&quot;DarkGray&quot; /&gt;
+        '''		&lt;InvalidLines color=&quot;Red&quot; /&gt;
+        '''		&lt;CaretMarker color=&quot;LightCyan&quot; /&gt;
+        '''		&lt;LineNumbers color=&quot;Gray&quot; bgcolor=&quot;White&quot; /&gt;
+        '''		&lt;FoldLine color=&quot;LightGray&quot; bgcolor=&quot;White&quot; /&gt;
+        '''		&lt;FoldMarker color=&quot;Dark [rest of string was truncated]&quot;;.
         '''</summary>
         Public ReadOnly Property SourcePawn_Syntax() As String
             Get
