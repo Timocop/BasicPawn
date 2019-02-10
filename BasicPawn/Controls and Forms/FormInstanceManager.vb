@@ -217,6 +217,7 @@ Public Class FormInstanceManager
         ToolStripMenuItem_MoveChecked.Enabled = (FindCheckedFileNodes(TreeViewColumns_Instances.m_TreeView.Nodes).Length > 0 AndAlso
                                                                 TreeViewColumns_Instances.m_TreeView.SelectedNode IsNot Nothing AndAlso
                                                                 TypeOf TreeViewColumns_Instances.m_TreeView.SelectedNode Is ClassTreeNodeInstance)
+        ToolStripMenuItem_PopoutChecked.Enabled = (FindCheckedFileNodes(TreeViewColumns_Instances.m_TreeView.Nodes).Length > 0)
         ToolStripMenuItem_CloseChecked.Enabled = (FindCheckedFileNodes(TreeViewColumns_Instances.m_TreeView.Nodes).Length > 0)
 
         ToolStripMenuItem_CloseInstChecked.Enabled = (FindCheckedInstanceNodes(TreeViewColumns_Instances.m_TreeView.Nodes).Length > 0)
@@ -288,6 +289,34 @@ Public Class FormInstanceManager
                 g_mFormMain.g_ClassCrossAppCom.SendMessage(New ClassCrossAppComunication.ClassMessage(FormMain.COMARG_OPEN_FILE, CStr(mSelectedNode.m_ProcessId), mFileNode.m_TabFile), False)
                 g_mFormMain.g_ClassCrossAppCom.SendMessage(New ClassCrossAppComunication.ClassMessage(FormMain.COMARG_CLOSE_TAB, CStr(mFileNode.m_ProcessId), mFileNode.m_TabIndentifier, "", CStr(False)), False)
             Next
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
+    Private Sub ToolStripMenuItem_PopoutChecked_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_PopoutChecked.Click
+        Try
+            Dim lFiles As New List(Of String)
+
+            For Each mFileNode In FindCheckedFileNodes(TreeViewColumns_Instances.m_TreeView.Nodes)
+                If (String.IsNullOrEmpty(mFileNode.m_TabFile)) Then
+                    MessageBox.Show(String.Format("Invalid file from process id {0} tab index {1}", mFileNode.m_ProcessId, mFileNode.m_TabIndex - 1), "Invalid File", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    Continue For
+                End If
+
+                If (Not IO.File.Exists(mFileNode.m_TabFile)) Then
+                    MessageBox.Show(String.Format("'{0}' does not exist!", mFileNode.m_TabFile), "File does not exist", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    Continue For
+                End If
+
+                lFiles.Add(String.Format("""{0}""", mFileNode.m_TabFile))
+            Next
+
+            If (lFiles.Count < 1) Then
+                Return
+            End If
+
+            Process.Start(Application.ExecutablePath, String.Join(" ", {"-newinstance", String.Join(" ", lFiles.ToArray)}))
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try

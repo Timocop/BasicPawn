@@ -33,7 +33,6 @@ Partial Class FormInstanceManager
         Me.Panel_FooterDarkControl = New System.Windows.Forms.Panel()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.LinkLabel_Refresh = New System.Windows.Forms.LinkLabel()
-        Me.TreeViewColumns_Instances = New BasicPawn.ClassTreeViewColumns()
         Me.ColumnHeader1 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader2 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader3 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
@@ -48,6 +47,8 @@ Partial Class FormInstanceManager
         Me.ToolStripMenuItem_CloseChecked = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_CloseInstChecked = New System.Windows.Forms.ToolStripMenuItem()
+        Me.TreeViewColumns_Instances = New BasicPawn.ClassTreeViewColumns()
+        Me.ToolStripMenuItem_PopoutChecked = New System.Windows.Forms.ToolStripMenuItem()
         Me.Panel_FooterControl.SuspendLayout()
         Me.ContextMenuStrip_Instances.SuspendLayout()
         Me.SuspendLayout()
@@ -105,18 +106,6 @@ Partial Class FormInstanceManager
         Me.LinkLabel_Refresh.TabStop = True
         Me.LinkLabel_Refresh.Text = "Refresh"
         '
-        'TreeViewColumns_Instances
-        '
-        Me.TreeViewColumns_Instances.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TreeViewColumns_Instances.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.TreeViewColumns_Instances.Location = New System.Drawing.Point(12, 48)
-        Me.TreeViewColumns_Instances.m_GridView = False
-        Me.TreeViewColumns_Instances.Name = "TreeViewColumns_Instances"
-        Me.TreeViewColumns_Instances.Size = New System.Drawing.Size(600, 320)
-        Me.TreeViewColumns_Instances.TabIndex = 6
-        '
         'ColumnHeader1
         '
         Me.ColumnHeader1.DisplayIndex = 0
@@ -145,10 +134,10 @@ Partial Class FormInstanceManager
         '
         'ContextMenuStrip_Instances
         '
-        Me.ContextMenuStrip_Instances.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_Refresh, Me.ToolStripMenuItem_UncheckAll, Me.ToolStripSeparator1, Me.ToolStripMenuItem_CopyChecked, Me.ToolStripMenuItem_MoveChecked, Me.ToolStripMenuItem_CloseChecked, Me.ToolStripSeparator2, Me.ToolStripMenuItem_CloseInstChecked})
+        Me.ContextMenuStrip_Instances.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_Refresh, Me.ToolStripMenuItem_UncheckAll, Me.ToolStripSeparator1, Me.ToolStripMenuItem_CopyChecked, Me.ToolStripMenuItem_MoveChecked, Me.ToolStripMenuItem_PopoutChecked, Me.ToolStripMenuItem_CloseChecked, Me.ToolStripSeparator2, Me.ToolStripMenuItem_CloseInstChecked})
         Me.ContextMenuStrip_Instances.Name = "ContextMenuStrip_Instances"
         Me.ContextMenuStrip_Instances.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
-        Me.ContextMenuStrip_Instances.Size = New System.Drawing.Size(207, 148)
+        Me.ContextMenuStrip_Instances.Size = New System.Drawing.Size(207, 192)
         '
         'ToolStripMenuItem_Refresh
         '
@@ -201,7 +190,26 @@ Partial Class FormInstanceManager
         Me.ToolStripMenuItem_CloseInstChecked.Size = New System.Drawing.Size(206, 22)
         Me.ToolStripMenuItem_CloseInstChecked.Text = "Close checked instances"
         '
-        'FormOpenTabFromInstances
+        'TreeViewColumns_Instances
+        '
+        Me.TreeViewColumns_Instances.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.TreeViewColumns_Instances.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.TreeViewColumns_Instances.Location = New System.Drawing.Point(12, 48)
+        Me.TreeViewColumns_Instances.m_GridView = False
+        Me.TreeViewColumns_Instances.Name = "TreeViewColumns_Instances"
+        Me.TreeViewColumns_Instances.Size = New System.Drawing.Size(600, 320)
+        Me.TreeViewColumns_Instances.TabIndex = 6
+        '
+        'ToolStripMenuItem_PopoutChecked
+        '
+        Me.ToolStripMenuItem_PopoutChecked.Image = Global.BasicPawn.My.Resources.Resources.imageres_5333_16x16
+        Me.ToolStripMenuItem_PopoutChecked.Name = "ToolStripMenuItem_PopoutChecked"
+        Me.ToolStripMenuItem_PopoutChecked.Size = New System.Drawing.Size(206, 22)
+        Me.ToolStripMenuItem_PopoutChecked.Text = "Popout checked items"
+        '
+        'FormInstanceManager
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
@@ -214,7 +222,7 @@ Partial Class FormInstanceManager
         Me.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ForeColor = System.Drawing.Color.Black
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
-        Me.Name = "FormOpenTabFromInstances"
+        Me.Name = "FormInstanceManager"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Instance Manager"
         Me.TopMost = True
@@ -245,4 +253,5 @@ Partial Class FormInstanceManager
     Friend WithEvents ToolStripSeparator2 As ToolStripSeparator
     Friend WithEvents ToolStripMenuItem_CloseInstChecked As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_Refresh As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_PopoutChecked As ToolStripMenuItem
 End Class
