@@ -101,7 +101,7 @@ Partial Class UCProjectBrowser
         '
         'ToolStripMenuItem_ProjectSave
         '
-        Me.ToolStripMenuItem_ProjectSave.Image = Global.BasicPawn.My.Resources.Resources.shell32_16761_16x16_32
+        Me.ToolStripMenuItem_ProjectSave.Image = Global.BasicPawn.My.Resources.Resources.shell32_16761_16x16
         Me.ToolStripMenuItem_ProjectSave.Name = "ToolStripMenuItem_ProjectSave"
         Me.ToolStripMenuItem_ProjectSave.Size = New System.Drawing.Size(183, 22)
         Me.ToolStripMenuItem_ProjectSave.Text = "Save Project"
@@ -113,7 +113,7 @@ Partial Class UCProjectBrowser
         '
         'ToolStripMenuItem_Cut
         '
-        Me.ToolStripMenuItem_Cut.Image = Global.BasicPawn.My.Resources.Resources.shell32_16762_16x16_32
+        Me.ToolStripMenuItem_Cut.Image = Global.BasicPawn.My.Resources.Resources.shell32_16762_16x16
         Me.ToolStripMenuItem_Cut.Name = "ToolStripMenuItem_Cut"
         Me.ToolStripMenuItem_Cut.Size = New System.Drawing.Size(183, 22)
         Me.ToolStripMenuItem_Cut.Text = "Cut"
@@ -127,7 +127,7 @@ Partial Class UCProjectBrowser
         '
         'ToolStripMenuItem_Paste
         '
-        Me.ToolStripMenuItem_Paste.Image = Global.BasicPawn.My.Resources.Resources.shell32_16763_16x16_32
+        Me.ToolStripMenuItem_Paste.Image = Global.BasicPawn.My.Resources.Resources.shell32_16763_16x16
         Me.ToolStripMenuItem_Paste.Name = "ToolStripMenuItem_Paste"
         Me.ToolStripMenuItem_Paste.Size = New System.Drawing.Size(183, 22)
         Me.ToolStripMenuItem_Paste.Text = "Paste"

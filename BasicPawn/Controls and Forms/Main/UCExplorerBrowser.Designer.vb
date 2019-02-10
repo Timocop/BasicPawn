@@ -125,7 +125,7 @@ Partial Class UCExplorerBrowser
         'ToolStripMenuItem_Refresh
         '
         Me.ToolStripMenuItem_Refresh.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.ToolStripMenuItem_Refresh.Image = Global.BasicPawn.My.Resources.Resources.shell32_16739_16x16_32
+        Me.ToolStripMenuItem_Refresh.Image = Global.BasicPawn.My.Resources.Resources.shell32_16739_16x16
         Me.ToolStripMenuItem_Refresh.Name = "ToolStripMenuItem_Refresh"
         Me.ToolStripMenuItem_Refresh.Size = New System.Drawing.Size(28, 24)
         Me.ToolStripMenuItem_Refresh.Text = "Refresh"

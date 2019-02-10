@@ -142,7 +142,7 @@ Partial Class FormInstanceManager
         '
         'ToolStripMenuItem_Refresh
         '
-        Me.ToolStripMenuItem_Refresh.Image = Global.BasicPawn.My.Resources.Resources.shell32_16739_16x16_32
+        Me.ToolStripMenuItem_Refresh.Image = Global.BasicPawn.My.Resources.Resources.shell32_16739_16x16
         Me.ToolStripMenuItem_Refresh.Name = "ToolStripMenuItem_Refresh"
         Me.ToolStripMenuItem_Refresh.Size = New System.Drawing.Size(206, 22)
         Me.ToolStripMenuItem_Refresh.Text = "Refresh"
@@ -156,7 +156,7 @@ Partial Class FormInstanceManager
         '
         'ToolStripMenuItem_UncheckAll
         '
-        Me.ToolStripMenuItem_UncheckAll.Image = Global.BasicPawn.My.Resources.Resources.imageres_5383_16x16_32
+        Me.ToolStripMenuItem_UncheckAll.Image = Global.BasicPawn.My.Resources.Resources.imageres_5383_16x16
         Me.ToolStripMenuItem_UncheckAll.Name = "ToolStripMenuItem_UncheckAll"
         Me.ToolStripMenuItem_UncheckAll.Size = New System.Drawing.Size(206, 22)
         Me.ToolStripMenuItem_UncheckAll.Text = "Uncheck all"
@@ -175,7 +175,7 @@ Partial Class FormInstanceManager
         '
         'ToolStripMenuItem_MoveChecked
         '
-        Me.ToolStripMenuItem_MoveChecked.Image = Global.BasicPawn.My.Resources.Resources.shell32_16762_16x16_32
+        Me.ToolStripMenuItem_MoveChecked.Image = Global.BasicPawn.My.Resources.Resources.shell32_16762_16x16
         Me.ToolStripMenuItem_MoveChecked.Name = "ToolStripMenuItem_MoveChecked"
         Me.ToolStripMenuItem_MoveChecked.Size = New System.Drawing.Size(206, 22)
         Me.ToolStripMenuItem_MoveChecked.Text = "Move checked items to..."

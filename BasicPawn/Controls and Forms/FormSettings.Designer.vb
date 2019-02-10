@@ -262,7 +262,7 @@ Partial Class FormSettings
         '
         'ToolStripMenuItem_PluginsRefresh
         '
-        Me.ToolStripMenuItem_PluginsRefresh.Image = Global.BasicPawn.My.Resources.Resources.shell32_16739_16x16_32
+        Me.ToolStripMenuItem_PluginsRefresh.Image = Global.BasicPawn.My.Resources.Resources.shell32_16739_16x16
         Me.ToolStripMenuItem_PluginsRefresh.Name = "ToolStripMenuItem_PluginsRefresh"
         Me.ToolStripMenuItem_PluginsRefresh.Size = New System.Drawing.Size(127, 22)
         Me.ToolStripMenuItem_PluginsRefresh.Text = "Refresh"

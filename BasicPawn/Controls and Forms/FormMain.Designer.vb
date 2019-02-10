@@ -220,7 +220,7 @@ Partial Class FormMain
         '
         'ToolStripMenuItem_Cut
         '
-        Me.ToolStripMenuItem_Cut.Image = Global.BasicPawn.My.Resources.Resources.shell32_16762_16x16_32
+        Me.ToolStripMenuItem_Cut.Image = Global.BasicPawn.My.Resources.Resources.shell32_16762_16x16
         Me.ToolStripMenuItem_Cut.Name = "ToolStripMenuItem_Cut"
         Me.ToolStripMenuItem_Cut.Size = New System.Drawing.Size(186, 22)
         Me.ToolStripMenuItem_Cut.Text = "Cut"
@@ -234,7 +234,7 @@ Partial Class FormMain
         '
         'ToolStripMenuItem_Paste
         '
-        Me.ToolStripMenuItem_Paste.Image = Global.BasicPawn.My.Resources.Resources.shell32_16763_16x16_32
+        Me.ToolStripMenuItem_Paste.Image = Global.BasicPawn.My.Resources.Resources.shell32_16763_16x16
         Me.ToolStripMenuItem_Paste.Name = "ToolStripMenuItem_Paste"
         Me.ToolStripMenuItem_Paste.Size = New System.Drawing.Size(186, 22)
         Me.ToolStripMenuItem_Paste.Text = "Paste"
@@ -461,7 +461,7 @@ Partial Class FormMain
         '
         'ToolStripMenuItem_FileSave
         '
-        Me.ToolStripMenuItem_FileSave.Image = Global.BasicPawn.My.Resources.Resources.shell32_16761_16x16_32
+        Me.ToolStripMenuItem_FileSave.Image = Global.BasicPawn.My.Resources.Resources.shell32_16761_16x16
         Me.ToolStripMenuItem_FileSave.Name = "ToolStripMenuItem_FileSave"
         Me.ToolStripMenuItem_FileSave.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.S), System.Windows.Forms.Keys)
         Me.ToolStripMenuItem_FileSave.Size = New System.Drawing.Size(290, 22)
@@ -966,7 +966,7 @@ Partial Class FormMain
         'ToolStripMenuItem_NewUpdate
         '
         Me.ToolStripMenuItem_NewUpdate.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
-        Me.ToolStripMenuItem_NewUpdate.Image = Global.BasicPawn.My.Resources.Resources.shell32_16739_16x16_32
+        Me.ToolStripMenuItem_NewUpdate.Image = Global.BasicPawn.My.Resources.Resources.shell32_16739_16x16
         Me.ToolStripMenuItem_NewUpdate.Name = "ToolStripMenuItem_NewUpdate"
         Me.ToolStripMenuItem_NewUpdate.Size = New System.Drawing.Size(99, 20)
         Me.ToolStripMenuItem_NewUpdate.Text = "Update now"
@@ -1103,14 +1103,14 @@ Partial Class FormMain
         '
         'ToolStripMenuItem_Tabs_Cut
         '
-        Me.ToolStripMenuItem_Tabs_Cut.Image = Global.BasicPawn.My.Resources.Resources.shell32_16762_16x16_32
+        Me.ToolStripMenuItem_Tabs_Cut.Image = Global.BasicPawn.My.Resources.Resources.shell32_16762_16x16
         Me.ToolStripMenuItem_Tabs_Cut.Name = "ToolStripMenuItem_Tabs_Cut"
         Me.ToolStripMenuItem_Tabs_Cut.Size = New System.Drawing.Size(178, 22)
         Me.ToolStripMenuItem_Tabs_Cut.Text = "Cut"
         '
         'ToolStripMenuItem_Tabs_Insert
         '
-        Me.ToolStripMenuItem_Tabs_Insert.Image = Global.BasicPawn.My.Resources.Resources.shell32_16763_16x16_32
+        Me.ToolStripMenuItem_Tabs_Insert.Image = Global.BasicPawn.My.Resources.Resources.shell32_16763_16x16
         Me.ToolStripMenuItem_Tabs_Insert.Name = "ToolStripMenuItem_Tabs_Insert"
         Me.ToolStripMenuItem_Tabs_Insert.Size = New System.Drawing.Size(178, 22)
         Me.ToolStripMenuItem_Tabs_Insert.Text = "Insert"

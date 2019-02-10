@@ -97,7 +97,7 @@ Partial Class FormDebuggerAssertSetAction
         '
         'ClassPictureBoxQuality1
         '
-        Me.ClassPictureBoxQuality1.Image = Global.BasicPawn.My.Resources.Resources.user32_101_48x48_32
+        Me.ClassPictureBoxQuality1.Image = Global.BasicPawn.My.Resources.Resources.user32_101_48x48
         Me.ClassPictureBoxQuality1.Location = New System.Drawing.Point(12, 12)
         Me.ClassPictureBoxQuality1.m_HighQuality = True
         Me.ClassPictureBoxQuality1.Name = "ClassPictureBoxQuality1"
