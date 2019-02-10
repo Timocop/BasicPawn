@@ -178,36 +178,17 @@ Public Class FormInstanceManager
     End Sub
 
     Private Sub TreeViewColumns_Instances_NodeMouseDoubleClick(sender As Object, e As TreeNodeMouseClickEventArgs)
-        Dim mTreeNode As TreeNode = TreeViewColumns_Instances.m_TreeView.SelectedNode
+        If (TreeViewColumns_Instances.m_TreeView.SelectedNode Is Nothing) Then
+            Return
+        End If
+
+        Dim mTreeNode As ClassTreeNodeFile = TryCast(TreeViewColumns_Instances.m_TreeView.SelectedNode, ClassTreeNodeFile)
         If (mTreeNode Is Nothing) Then
             Return
         End If
 
-        Dim iProcessId As Integer
-        Dim sTabIdentifier As String
-
-        Select Case (True)
-            Case (TypeOf mTreeNode Is ClassTreeNodeInstance)
-                Dim mTreeNodeInstance As ClassTreeNodeInstance = TryCast(mTreeNode, ClassTreeNodeInstance)
-                If (mTreeNodeInstance Is Nothing) Then
-                    Return
-                End If
-
-                iProcessId = mTreeNodeInstance.m_ProcessId
-                sTabIdentifier = ""
-
-            Case (TypeOf mTreeNode Is ClassTreeNodeFile)
-                Dim mTreeNodeFile As ClassTreeNodeFile = TryCast(mTreeNode, ClassTreeNodeFile)
-                If (mTreeNodeFile Is Nothing) Then
-                    Return
-                End If
-
-                iProcessId = mTreeNodeFile.m_ProcessId
-                sTabIdentifier = mTreeNodeFile.m_TabIndentifier
-
-            Case Else
-                Return
-        End Select
+        Dim iProcessId As Integer = mTreeNode.m_ProcessId
+        Dim sTabIdentifier As String = mTreeNode.m_TabIndentifier
 
         ClassThread.Abort(g_mShowDelayThread)
 
