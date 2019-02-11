@@ -729,7 +729,7 @@ Public Class ClassDebuggerParser
             End If
 
             mActiveTextEditor.Refresh()
-            g_mFormMain.PrintInformation("[INFO]", "A Breakpoint has been added!")
+            g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", "A Breakpoint has been added!")
         End Sub
 
         ''' <summary>
@@ -740,7 +740,7 @@ Public Class ClassDebuggerParser
             Dim sCaretWord As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True, False, False)
 
             If (sCaretWord <> ClassDebuggerParser.g_sBreakpointName) Then
-                g_mFormMain.PrintInformation("[ERROR]", "This is not a valid breakpoint!")
+                g_mFormMain.g_mUCInformationList.PrintInformation("[ERROR]", "This is not a valid breakpoint!")
                 Return
             End If
 
@@ -776,8 +776,7 @@ Public Class ClassDebuggerParser
 
             lRemovedBreakpoints.Reverse()
             For Each i As Integer In lRemovedBreakpoints
-                g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Breakpoint removed at line: {0}", i))
-
+                g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", vbTab & String.Format("Breakpoint removed at line: {0}", i))
             Next
 
             mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
@@ -792,7 +791,7 @@ Public Class ClassDebuggerParser
             Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
             mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
 
-            g_mFormMain.PrintInformation("[INFO]", "Removing all debugger breakpoints...")
+            g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", "Removing all debugger breakpoints...")
 
             Dim lRemovedBreakpoints As New List(Of Integer)
 
@@ -842,13 +841,13 @@ Public Class ClassDebuggerParser
 
             lRemovedBreakpoints.Reverse()
             For Each i As Integer In lRemovedBreakpoints
-                g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Breakpoint removed at line: {0}", i))
+                g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", vbTab & String.Format("Breakpoint removed at line: {0}", i))
             Next
 
             mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
 
             mActiveTextEditor.Refresh()
-            g_mFormMain.PrintInformation("[INFO]", "All debugger breakpoints removed!")
+            g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", "All debugger breakpoints removed!")
         End Sub
 
         ''' <summary>
@@ -1036,7 +1035,7 @@ Public Class ClassDebuggerParser
             End If
 
             mActiveTextEditor.Refresh()
-            g_mFormMain.PrintInformation("[INFO]", "A Watcher has been added!")
+            g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", "A Watcher has been added!")
         End Sub
 
         ''' <summary>
@@ -1047,7 +1046,7 @@ Public Class ClassDebuggerParser
             Dim sCaretWord As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True, False, False)
 
             If (sCaretWord <> ClassDebuggerParser.g_sWatcherName) Then
-                g_mFormMain.PrintInformation("[ERROR]", "This is not a valid watcher!")
+                g_mFormMain.g_mUCInformationList.PrintInformation("[ERROR]", "This is not a valid watcher!")
                 Return
             End If
 
@@ -1083,7 +1082,7 @@ Public Class ClassDebuggerParser
 
             lRemovedWatchers.Reverse()
             For Each i As Integer In lRemovedWatchers
-                g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Watcher removed at line: {0}", i))
+                g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", vbTab & String.Format("Watcher removed at line: {0}", i))
             Next
 
             mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
@@ -1098,7 +1097,7 @@ Public Class ClassDebuggerParser
             Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
             mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
 
-            g_mFormMain.PrintInformation("[INFO]", "Removing all debugger watcher...")
+            g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", "Removing all debugger watcher...")
 
             Dim lRemovedWatchers As New List(Of Integer)
 
@@ -1148,13 +1147,13 @@ Public Class ClassDebuggerParser
 
             lRemovedWatchers.Reverse()
             For Each i As Integer In lRemovedWatchers
-                g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Watcher removed at line: {0}", i))
+                g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", vbTab & String.Format("Watcher removed at line: {0}", i))
             Next
 
             mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
 
             mActiveTextEditor.Refresh()
-            g_mFormMain.PrintInformation("[INFO]", "All debugger watchers removed!")
+            g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", "All debugger watchers removed!")
         End Sub
 
         ''' <summary>
@@ -1342,7 +1341,7 @@ Public Class ClassDebuggerParser
             End If
 
             mActiveTextEditor.Refresh()
-            g_mFormMain.PrintInformation("[INFO]", "A Assert has been added!")
+            g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", "A Assert has been added!")
         End Sub
 
         ''' <summary>
@@ -1353,7 +1352,7 @@ Public Class ClassDebuggerParser
             Dim sCaretWord As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True, False, False)
 
             If (sCaretWord <> ClassDebuggerParser.g_sAssertName) Then
-                g_mFormMain.PrintInformation("[ERROR]", "This is not a valid assert!")
+                g_mFormMain.g_mUCInformationList.PrintInformation("[ERROR]", "This is not a valid assert!")
                 Return
             End If
 
@@ -1389,7 +1388,7 @@ Public Class ClassDebuggerParser
 
             lRemovedAsserts.Reverse()
             For Each i As Integer In lRemovedAsserts
-                g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Assert removed at line: {0}", i))
+                g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", vbTab & String.Format("Assert removed at line: {0}", i))
             Next
 
             mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
@@ -1404,7 +1403,7 @@ Public Class ClassDebuggerParser
             Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
             mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
 
-            g_mFormMain.PrintInformation("[INFO]", "Removing all debugger asserts...")
+            g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", "Removing all debugger asserts...")
 
             Dim lRemovedAsserts As New List(Of Integer)
 
@@ -1454,13 +1453,13 @@ Public Class ClassDebuggerParser
 
             lRemovedAsserts.Reverse()
             For Each i As Integer In lRemovedAsserts
-                g_mFormMain.PrintInformation("[INFO]", vbTab & String.Format("Assert removed at line: {0}", i))
+                g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", vbTab & String.Format("Assert removed at line: {0}", i))
             Next
 
             mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
 
             mActiveTextEditor.Refresh()
-            g_mFormMain.PrintInformation("[INFO]", "All debugger asserts removed!")
+            g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", "All debugger asserts removed!")
         End Sub
 
         ''' <summary>

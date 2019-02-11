@@ -380,7 +380,7 @@ Public Class ClassTabControl
                 g_mFormMain.g_mUCStartPage.Hide()
             End If
 
-            g_mFormMain.PrintInformation("[INFO]", "User created a new source file")
+            g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", "User created a new source file")
             Return False
         End If
 
@@ -415,7 +415,9 @@ Public Class ClassTabControl
             g_mFormMain.g_mUCStartPage.Hide()
         End If
 
-        g_mFormMain.PrintInformation("[INFO]", "User opened a new file: " & sFile)
+        Dim mData As New Dictionary(Of String, Object)
+        mData(g_mFormMain.g_mUCInformationList.INFO_DATA_OPEN_PATH) = sFile
+        g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", "User opened a new file: " & sFile, mData)
         Return True
     End Function
 
@@ -438,7 +440,10 @@ Public Class ClassTabControl
                     m_Tab(iIndex).m_ClassLineState.SaveStates(m_Tab(iIndex).m_TextEditor)
                     m_Tab(iIndex).m_TextEditor.Refresh()
 
-                    g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & m_Tab(iIndex).m_File)
+                    Dim mData As New Dictionary(Of String, Object)
+                    mData(g_mFormMain.g_mUCInformationList.INFO_DATA_OPEN_PATH) = m_Tab(iIndex).m_File
+                    g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", "User saved file to: " & m_Tab(iIndex).m_File, mData)
+
                     IO.File.WriteAllText(m_Tab(iIndex).m_File, m_Tab(iIndex).m_TextEditor.Document.TextContent)
 
                     m_Tab(iIndex).m_FileCachedWriteDate = m_Tab(iIndex).m_FileRealWriteDate
@@ -455,7 +460,10 @@ Public Class ClassTabControl
             m_Tab(iIndex).m_ClassLineState.SaveStates(m_Tab(iIndex).m_TextEditor)
             m_Tab(iIndex).m_TextEditor.Refresh()
 
-            g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & m_Tab(iIndex).m_File)
+            Dim mData As New Dictionary(Of String, Object)
+            mData(g_mFormMain.g_mUCInformationList.INFO_DATA_OPEN_PATH) = m_Tab(iIndex).m_File
+            g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", "User saved file to: " & m_Tab(iIndex).m_File, mData)
+
             IO.File.WriteAllText(m_Tab(iIndex).m_File, m_Tab(iIndex).m_TextEditor.Document.TextContent)
 
             m_Tab(iIndex).m_FileCachedWriteDate = m_Tab(iIndex).m_FileRealWriteDate
@@ -496,7 +504,10 @@ Public Class ClassTabControl
                             m_Tab(iIndex).m_ClassLineState.SaveStates(m_Tab(iIndex).m_TextEditor)
                             m_Tab(iIndex).m_TextEditor.Refresh()
 
-                            g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & m_Tab(iIndex).m_File)
+                            Dim mData As New Dictionary(Of String, Object)
+                            mData(g_mFormMain.g_mUCInformationList.INFO_DATA_OPEN_PATH) = m_Tab(iIndex).m_File
+                            g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", "User saved file to: " & m_Tab(iIndex).m_File, mData)
+
                             IO.File.WriteAllText(m_Tab(iIndex).m_File, m_Tab(iIndex).m_TextEditor.Document.TextContent)
 
                             m_Tab(iIndex).m_FileCachedWriteDate = m_Tab(iIndex).m_FileRealWriteDate
@@ -515,7 +526,10 @@ Public Class ClassTabControl
                     m_Tab(iIndex).m_ClassLineState.SaveStates(m_Tab(iIndex).m_TextEditor)
                     m_Tab(iIndex).m_TextEditor.Refresh()
 
-                    g_mFormMain.PrintInformation("[INFO]", "User saved file to: " & m_Tab(iIndex).m_File)
+                    Dim mData As New Dictionary(Of String, Object)
+                    mData(g_mFormMain.g_mUCInformationList.INFO_DATA_OPEN_PATH) = m_Tab(iIndex).m_File
+                    g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", "User saved file to: " & m_Tab(iIndex).m_File, mData)
+
                     IO.File.WriteAllText(m_Tab(iIndex).m_File, m_Tab(iIndex).m_TextEditor.Document.TextContent)
 
                     m_Tab(iIndex).m_FileCachedWriteDate = m_Tab(iIndex).m_FileRealWriteDate

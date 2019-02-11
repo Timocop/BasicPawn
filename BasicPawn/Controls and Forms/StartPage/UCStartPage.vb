@@ -117,7 +117,7 @@ Public Class UCStartPage
     Private Sub LinkLabel_New_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_New.LinkClicked
         g_mFormMain.g_ClassTabControl.AddTab(True, False, False, False)
 
-        g_mFormMain.PrintInformation("[INFO]", "User created a new source file")
+        g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", "User created a new source file")
 
         Me.Hide()
     End Sub
@@ -125,7 +125,7 @@ Public Class UCStartPage
     Private Sub LinkLabel_NewTemplate_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_NewTemplate.LinkClicked
         g_mFormMain.g_ClassTabControl.AddTab(True, True, False, False)
 
-        g_mFormMain.PrintInformation("[INFO]", "User created a new source file")
+        g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", "User created a new source file")
 
         Me.Hide()
     End Sub

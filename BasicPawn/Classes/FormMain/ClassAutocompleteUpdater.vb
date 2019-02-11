@@ -143,7 +143,7 @@ Public Class ClassAutocompleteUpdater
                                                        g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = False
                                                    End Sub)
 
-                g_mFormMain.PrintInformation("[WARN]", "Autocomplete update failed! Could not get tab!", False, False)
+                g_mFormMain.g_mUCInformationList.PrintInformation("[WARN]", "Autocomplete update failed! Could not get tab!", False, False)
                 Return
             End If
 
@@ -158,7 +158,7 @@ Public Class ClassAutocompleteUpdater
                                                        g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = False
                                                    End Sub)
 
-                g_mFormMain.PrintInformation("[ERRO]", "Autocomplete update failed! Could not get current source file!", False, False)
+                g_mFormMain.g_mUCInformationList.PrintInformation("[ERRO]", "Autocomplete update failed! Could not get current source file!", False, False)
                 Return
             End If
 
@@ -311,16 +311,16 @@ Public Class ClassAutocompleteUpdater
                 If (iRequestedLangauge <> iLanguage) Then
                     Select Case (iLanguage)
                         Case ClassSyntaxTools.ENUM_LANGUAGE_TYPE.SOURCEPAWN
-                            g_mFormMain.PrintInformation("[INFO]", String.Format("Auto-Detected language: SourcePawn ({0})", IO.Path.GetFileName(sRequestedSourceFile)))
+                            g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", String.Format("Auto-Detected language: SourcePawn ({0})", IO.Path.GetFileName(sRequestedSourceFile)))
 
                         Case ClassSyntaxTools.ENUM_LANGUAGE_TYPE.AMXMODX
-                            g_mFormMain.PrintInformation("[INFO]", String.Format("Auto-Detected language: AMX Mod X ({0})", IO.Path.GetFileName(sRequestedSourceFile)))
+                            g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", String.Format("Auto-Detected language: AMX Mod X ({0})", IO.Path.GetFileName(sRequestedSourceFile)))
 
                         Case ClassSyntaxTools.ENUM_LANGUAGE_TYPE.PAWN
-                            g_mFormMain.PrintInformation("[INFO]", String.Format("Auto-Detected language: Pawn ({0})", IO.Path.GetFileName(sRequestedSourceFile)))
+                            g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", String.Format("Auto-Detected language: Pawn ({0})", IO.Path.GetFileName(sRequestedSourceFile)))
 
                         Case Else
-                            g_mFormMain.PrintInformation("[WARN]", String.Format("Auto-Detected language: Unknown ({0})", IO.Path.GetFileName(sRequestedSourceFile)))
+                            g_mFormMain.g_mUCInformationList.PrintInformation("[WARN]", String.Format("Auto-Detected language: Unknown ({0})", IO.Path.GetFileName(sRequestedSourceFile)))
                     End Select
                 End If
 
@@ -403,14 +403,14 @@ Public Class ClassAutocompleteUpdater
             lNewAutocompleteList = Nothing
 
 #If PROFILE_AUTOCOMPLETE Then
-            g_mFormMain.PrintInformation("[DEBG]", "Autocomplete update finished!")
-            g_mFormMain.PrintInformation("[DEBG]", "Times:")
-            g_mFormMain.PrintInformation("[DEBG]", vbTab & "Includes: " & mIncludeWatch.Elapsed.ToString)
-            g_mFormMain.PrintInformation("[DEBG]", vbTab & "Language: " & mLanguageWatch.Elapsed.ToString)
-            g_mFormMain.PrintInformation("[DEBG]", vbTab & "Pre: " & mPreWatch.Elapsed.ToString)
-            g_mFormMain.PrintInformation("[DEBG]", vbTab & "Post: " & mPostWatch.Elapsed.ToString)
-            g_mFormMain.PrintInformation("[DEBG]", vbTab & "Finalize: " & mFinalizeWatch.Elapsed.ToString)
-            g_mFormMain.PrintInformation("[DEBG]", vbTab & "Apply: " & mApplyWatch.Elapsed.ToString)
+            g_mFormMain.g_mUCInformationList.PrintInformation("[DEBG]", "Autocomplete update finished!")
+            g_mFormMain.g_mUCInformationList.PrintInformation("[DEBG]", "Times:")
+            g_mFormMain.g_mUCInformationList.PrintInformation("[DEBG]", vbTab & "Includes: " & mIncludeWatch.Elapsed.ToString)
+            g_mFormMain.g_mUCInformationList.PrintInformation("[DEBG]", vbTab & "Language: " & mLanguageWatch.Elapsed.ToString)
+            g_mFormMain.g_mUCInformationList.PrintInformation("[DEBG]", vbTab & "Pre: " & mPreWatch.Elapsed.ToString)
+            g_mFormMain.g_mUCInformationList.PrintInformation("[DEBG]", vbTab & "Post: " & mPostWatch.Elapsed.ToString)
+            g_mFormMain.g_mUCInformationList.PrintInformation("[DEBG]", vbTab & "Finalize: " & mFinalizeWatch.Elapsed.ToString)
+            g_mFormMain.g_mUCInformationList.PrintInformation("[DEBG]", vbTab & "Apply: " & mApplyWatch.Elapsed.ToString)
 #End If
         Catch ex As Threading.ThreadAbortException
             Throw
@@ -420,7 +420,7 @@ Public Class ClassAutocompleteUpdater
                                                    g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = False
                                                End Sub)
 
-            g_mFormMain.PrintInformation("[ERRO]", "Autocomplete update failed! " & ex.Message, False, False)
+            g_mFormMain.g_mUCInformationList.PrintInformation("[ERRO]", "Autocomplete update failed! " & ex.Message, False, False)
             ClassExceptionLog.WriteToLog(ex)
         End Try
     End Sub
@@ -445,7 +445,7 @@ Public Class ClassAutocompleteUpdater
         Catch ex As Threading.ThreadAbortException
             Throw
         Catch ex As Exception
-            g_mFormMain.PrintInformation("[ERRO]", "Autocomplete update failed! " & ex.Message, False, False)
+            g_mFormMain.g_mUCInformationList.PrintInformation("[ERRO]", "Autocomplete update failed! " & ex.Message, False, False)
             ClassExceptionLog.WriteToLog(ex)
         End Try
     End Sub
@@ -574,11 +574,11 @@ Public Class ClassAutocompleteUpdater
             lNewVarAutocompleteList = Nothing
 
 #If PROFILE_AUTOCOMPLETE Then
-            g_mFormMain.PrintInformation("[DEBG]", "Variable Autocomplete update finished!")
-            g_mFormMain.PrintInformation("[DEBG]", "Times:")
-            g_mFormMain.PrintInformation("[DEBG]", vbTab & "Pre: " & mPreWatch.Elapsed.ToString)
-            g_mFormMain.PrintInformation("[DEBG]", vbTab & "Finalize: " & mFinalizeWatch.Elapsed.ToString)
-            g_mFormMain.PrintInformation("[DEBG]", vbTab & "Apply: " & mApplyWatch.Elapsed.ToString)
+            g_mFormMain.g_mUCInformationList.PrintInformation("[DEBG]", "Variable Autocomplete update finished!")
+            g_mFormMain.g_mUCInformationList.PrintInformation("[DEBG]", "Times:")
+            g_mFormMain.g_mUCInformationList.PrintInformation("[DEBG]", vbTab & "Pre: " & mPreWatch.Elapsed.ToString)
+            g_mFormMain.g_mUCInformationList.PrintInformation("[DEBG]", vbTab & "Finalize: " & mFinalizeWatch.Elapsed.ToString)
+            g_mFormMain.g_mUCInformationList.PrintInformation("[DEBG]", vbTab & "Apply: " & mApplyWatch.Elapsed.ToString)
 #End If
 
         Catch ex As Threading.ThreadAbortException
@@ -589,7 +589,7 @@ Public Class ClassAutocompleteUpdater
                                                    g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = False
                                                End Sub)
 
-            g_mFormMain.PrintInformation("[ERRO]", "Variable autocomplete update failed! " & ex.Message, False, False)
+            g_mFormMain.g_mUCInformationList.PrintInformation("[ERRO]", "Variable autocomplete update failed! " & ex.Message, False, False)
             ClassExceptionLog.WriteToLog(ex)
         End Try
     End Sub
@@ -618,7 +618,7 @@ Public Class ClassAutocompleteUpdater
                 Dim sIncludePaths As String
                 If (mConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                     If (String.IsNullOrEmpty(sActiveSourceFile) OrElse Not IO.File.Exists(sActiveSourceFile)) Then
-                        g_mFormMain.PrintInformation("[ERRO]", "Could not read includes! Could not get current source file!", False, False)
+                        g_mFormMain.g_mUCInformationList.PrintInformation("[ERRO]", "Could not read includes! Could not get current source file!", False, False)
                         Exit While
                     End If
                     sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(sActiveSourceFile), "include")
@@ -667,7 +667,7 @@ Public Class ClassAutocompleteUpdater
                 Continue For
             End If
 
-            g_mFormMain.PrintInformation("[ERRO]", String.Format("Could not read include: {0}", i.Key), False, False)
+            g_mFormMain.g_mUCInformationList.PrintInformation("[ERRO]", String.Format("Could not read include: {0}", i.Key), False, False)
         Next
 
         Return lList.ToArray
@@ -700,7 +700,7 @@ Public Class ClassAutocompleteUpdater
         Next
 
         If (iMaxDirectoryDepth < 1) Then
-            g_mFormMain.PrintInformation("[ERRO]", "Max recursive directory search depth reached!", False, False)
+            g_mFormMain.g_mUCInformationList.PrintInformation("[ERRO]", "Max recursive directory search depth reached!", False, False)
             Return
         End If
 
@@ -755,7 +755,7 @@ Public Class ClassAutocompleteUpdater
             Dim sIncludePaths As String
             If (mConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                 If (String.IsNullOrEmpty(sActiveSourceFile) OrElse Not IO.File.Exists(sActiveSourceFile)) Then
-                    g_mFormMain.PrintInformation("[ERRO]", "Could not read includes! Could not get current source file!", False, False)
+                    g_mFormMain.g_mUCInformationList.PrintInformation("[ERRO]", "Could not read includes! Could not get current source file!", False, False)
                     Exit While
                 End If
                 sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(sActiveSourceFile), "include")
@@ -767,7 +767,7 @@ Public Class ClassAutocompleteUpdater
             Dim sCompilerPath As String
             If (mConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                 If (String.IsNullOrEmpty(sActiveSourceFile) OrElse Not IO.File.Exists(sActiveSourceFile)) Then
-                    g_mFormMain.PrintInformation("[ERRO]", "Could not read includes! Could not get current source file!", False, False)
+                    g_mFormMain.g_mUCInformationList.PrintInformation("[ERRO]", "Could not read includes! Could not get current source file!", False, False)
                     Exit While
                 End If
                 sCompilerPath = IO.Path.GetDirectoryName(sActiveSourceFile)
@@ -1629,7 +1629,7 @@ Public Class ClassAutocompleteUpdater
 
                             mMatch2 = Regex.Match(sEnumFull, "^\s*(?<Tag>\b[a-zA-Z0-9_]+\b:)*(?<Name>\b[a-zA-Z0-9_]+\b)")
                             If (Not mMatch2.Groups("Name").Success) Then
-                                mFormMain.PrintInformation("[WARN]", String.Format("Failed to resolve type 'Enum': enum {0} {1}", sEnumName, sEnumFull), False, False)
+                                mFormMain.g_mUCInformationList.PrintInformation("[WARN]", String.Format("Failed to resolve type 'Enum': enum {0} {1}", sEnumName, sEnumFull), False, False)
                                 Continue For
                             End If
 
@@ -2001,7 +2001,7 @@ Public Class ClassAutocompleteUpdater
 
                             Dim regMatch As Match = Regex.Match(sEnumFull, "^\s*(?<Tag>\b[a-zA-Z0-9_]+\b:)*(?<Name>\b[a-zA-Z0-9_]+\b)")
                             If (Not regMatch.Groups("Name").Success) Then
-                                mFormMain.PrintInformation("[WARN]", String.Format("Failed to resolve type 'Enum': enum {0} {1}", sEnumName, sEnumFull), False, False)
+                                mFormMain.g_mUCInformationList.PrintInformation("[WARN]", String.Format("Failed to resolve type 'Enum': enum {0} {1}", sEnumName, sEnumFull), False, False)
                                 Continue For
                             End If
 
@@ -2282,7 +2282,7 @@ Public Class ClassAutocompleteUpdater
                     Dim iLeftBraceRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
                     Dim iLastBraceLevel As Integer = mSourceAnalysis.GetBraceLevel(mSourceAnalysis.m_MaxLength - 1, iLeftBraceRange)
                     If (iLastBraceLevel > 0 AndAlso iLeftBraceRange <> ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END) Then
-                        mFormMain.PrintInformation("[ERRO]", String.Format("Uneven brace level! May lead to syntax parser failures! [LV:{0}] ({1})", iLastBraceLevel, IO.Path.GetFileName(mParseInfo.sFile)), False, False)
+                        mFormMain.g_mUCInformationList.PrintInformation("[ERRO]", String.Format("Uneven brace level! May lead to syntax parser failures! [LV:{0}] ({1})", iLastBraceLevel, IO.Path.GetFileName(mParseInfo.sFile)), False, False)
                     End If
                 End If
 

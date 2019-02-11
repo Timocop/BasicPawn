@@ -56,6 +56,8 @@ Public Class FormMain
     Public Const COMARG_CLOSE_APP As String = "BasicPawnComServer-CloseApp-04e3632f-5472-42c5-929a-c3e0c2b35324"
     Public Const COMARG_ACTIVATE_FORM_OR_TAB As String = "BasicPawnComServer-ActivateFormOrTab-04e3632f-5472-42c5-929a-c3e0c2b35324"
 
+    Public ReadOnly g_iDefaultDetailsSplitterDistance As Integer = 150
+
     'Private g_mPingFlashPanel As ClassPanelAlpha
     Private g_bFormPostCreate As Boolean = False
     Private g_bFormPostLoad As Boolean = False
@@ -64,7 +66,6 @@ Public Class FormMain
     Private g_sTabsClipboardIdentifier As String = ""
     Private g_mTabControlDragTab As ClassTabControl.SourceTabPage = Nothing
     Private g_mTabControlDragPoint As Point = Point.Empty
-    Private g_iDefaultDetailsSplitterDistance As Integer = 150
 
 
 #Region "GUI Stuff"
@@ -255,37 +256,6 @@ Public Class FormMain
 
     Public Sub UpdateFormConfigText()
         ToolStripStatusLabel_CurrentConfig.Text = "Config: " & g_ClassTabControl.m_ActiveTab.m_ActiveConfig.GetName
-    End Sub
-
-    Public Sub PrintInformation(sType As String, sMessage As String, Optional bClear As Boolean = False, Optional bShowInformationTab As Boolean = False, Optional bEnsureVisible As Boolean = False)
-        ClassThread.ExecAsync(Me, Sub()
-                                      If (g_mUCInformationList Is Nothing) Then
-                                          Return
-                                      End If
-
-                                      If (bClear) Then
-                                          g_mUCInformationList.ListBox_Information.Items.Clear()
-                                      End If
-
-                                      Dim iIndex = g_mUCInformationList.ListBox_Information.Items.Add(String.Format("{0} ({1}) {2}", sType, Now.ToString, sMessage))
-
-                                      ToolStripStatusLabel_LastInformation.Text = sMessage
-
-                                      If (bShowInformationTab) Then
-                                          SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed = False
-
-                                          If (SplitContainer_ToolboxSourceAndDetails.SplitterDistance > (SplitContainer_ToolboxSourceAndDetails.Height - g_iDefaultDetailsSplitterDistance)) Then
-                                              SplitContainer_ToolboxSourceAndDetails.SplitterDistance = (SplitContainer_ToolboxSourceAndDetails.Height - g_iDefaultDetailsSplitterDistance)
-                                          End If
-
-                                          TabControl_Details.SelectTab(TabPage_Information)
-                                      End If
-
-                                      If (bEnsureVisible) Then
-                                          'Scroll to item
-                                          g_mUCInformationList.ListBox_Information.TopIndex = iIndex
-                                      End If
-                                  End Sub)
     End Sub
 
     Private Sub ContextMenuStrip_RightClick_Opening(sender As Object, e As CancelEventArgs) Handles ContextMenuStrip_RightClick.Opening
@@ -522,13 +492,13 @@ Public Class FormMain
     Private Sub ToolStripMenuItem_FileNew_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileNew.Click
         g_ClassTabControl.AddTab(True, False, False, True)
 
-        PrintInformation("[INFO]", "User created a new source file")
+        g_mUCInformationList.PrintInformation("[INFO]", "User created a new source file")
     End Sub
 
     Private Sub ToolStripMenuItem_FileNewWizard_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileNewWizard.Click
         g_ClassTabControl.AddTab(True, True, False, True)
 
-        PrintInformation("[INFO]", "User created a new source file")
+        g_mUCInformationList.PrintInformation("[INFO]", "User created a new source file")
     End Sub
 
     Private Sub ToolStripMenuItem_FileProjectSave_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileProjectSave.Click
@@ -1041,7 +1011,7 @@ Public Class FormMain
     End Sub
 
     Private Sub ToolStripMenuItem_ToolsClearInformationLog_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsClearInformationLog.Click
-        PrintInformation("[INFO]", "Information log cleaned!", True, True)
+        g_mUCInformationList.PrintInformation("[INFO]", "Information log cleaned!", True, True)
     End Sub
 
     Private Sub ToolStripMenuItem_ToolsAutocompleteUpdate_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsAutocompleteUpdate.Click
@@ -1343,13 +1313,13 @@ Public Class FormMain
 
         'Only change config if we found one.
         If (i = ClassConfigs.ENUM_OPTIMAL_CONFIG.NONE) Then
-            PrintInformation("[WARN]", String.Format("No optimal config found for tab '{0} ({1})'", mTab.m_Title, mTab.m_Index), False, True, True)
+            g_mUCInformationList.PrintInformation("[WARN]", String.Format("No optimal config found for tab '{0} ({1})'", mTab.m_Title, mTab.m_Index), False, True, True)
         Else
             mTab.m_ActiveConfig = mConfig
 
             g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
 
-            PrintInformation("[INFO]", String.Format("Optimal config found for tab '{0} ({1})': {2}", mTab.m_Title, mTab.m_Index, mConfig.GetName), False, True, True)
+            g_mUCInformationList.PrintInformation("[INFO]", String.Format("Optimal config found for tab '{0} ({1})': {2}", mTab.m_Title, mTab.m_Index, mConfig.GetName), False, True, True)
         End If
 
         UpdateFormConfigText()
@@ -1366,13 +1336,13 @@ Public Class FormMain
 
             'Only change config if we found one.
             If (i = ClassConfigs.ENUM_OPTIMAL_CONFIG.NONE) Then
-                PrintInformation("[WARN]", String.Format("No optimal config found for tab '{0} ({1})'", mTab.m_Title, mTab.m_Index), False, True, True)
+                g_mUCInformationList.PrintInformation("[WARN]", String.Format("No optimal config found for tab '{0} ({1})'", mTab.m_Title, mTab.m_Index), False, True, True)
             Else
                 mTab.m_ActiveConfig = mConfig
 
                 g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, mTab)
 
-                PrintInformation("[INFO]", String.Format("Optimal config found for tab '{0} ({1})': {2}", mTab.m_Title, mTab.m_Index, mConfig.GetName), False, True, True)
+                g_mUCInformationList.PrintInformation("[INFO]", String.Format("Optimal config found for tab '{0} ({1})': {2}", mTab.m_Title, mTab.m_Index, mConfig.GetName), False, True, True)
             End If
         Next
 

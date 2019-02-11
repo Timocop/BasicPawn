@@ -301,7 +301,10 @@ Public Class UCProjectBrowser
 
             m_ProjectChanged = False
             UpdateListViewInfo()
-            g_mUCProjectBrowser.g_mFormMain.PrintInformation("[INFO]", "User saved project file: " & g_sProjectFile)
+
+            Dim mData As New Dictionary(Of String, Object)
+            mData(g_mUCProjectBrowser.g_mFormMain.g_mUCInformationList.INFO_DATA_OPEN_PATH) = g_sProjectFile
+            g_mUCProjectBrowser.g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", "User saved project file: " & g_sProjectFile, mData)
         End Sub
 
         Public Sub LoadProject(bAppend As Boolean, bOpenProjectFiles As Boolean)
@@ -309,7 +312,11 @@ Public Class UCProjectBrowser
                 Throw New ArgumentException("Project file not found")
             End If
 
-            g_mUCProjectBrowser.g_mFormMain.PrintInformation("[INFO]", "User loaded project file: " & g_sProjectFile)
+            If (True) Then
+                Dim mData As New Dictionary(Of String, Object)
+                mData(g_mUCProjectBrowser.g_mFormMain.g_mUCInformationList.INFO_DATA_OPEN_PATH) = g_sProjectFile
+                g_mUCProjectBrowser.g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", "User loaded project file: " & g_sProjectFile, mData)
+            End If
 
             If (Not bAppend) Then
                 ClearFiles()
@@ -338,7 +345,9 @@ Public Class UCProjectBrowser
 
                         lProjectFiles.Add(mItem.sValue)
 
-                        g_mUCProjectBrowser.g_mFormMain.PrintInformation("[INFO]", vbTab & "Loaded project file: " & mItem.sValue)
+                        Dim mData As New Dictionary(Of String, Object)
+                        mData(g_mUCProjectBrowser.g_mFormMain.g_mUCInformationList.INFO_DATA_OPEN_PATH) = mItem.sValue
+                        g_mUCProjectBrowser.g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", vbTab & "Loaded project file: " & mItem.sValue, mData)
                     Next
                 End Using
             End Using
