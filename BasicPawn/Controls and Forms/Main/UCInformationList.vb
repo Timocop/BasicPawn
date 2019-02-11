@@ -38,14 +38,14 @@ Public Class UCInformationList
         PrintInformation(sType, sMessage, Nothing, bClear, bShowInformationTab, bEnsureVisible)
     End Sub
 
-    Public Sub PrintInformation(sType As String, sMessage As String, mData As Dictionary(Of String, Object), Optional bClear As Boolean = False, Optional bShowInformationTab As Boolean = False, Optional bEnsureVisible As Boolean = False)
+    Public Sub PrintInformation(sType As String, sMessage As String, mAction As ClassListBoxItemAction.IAction, Optional bClear As Boolean = False, Optional bShowInformationTab As Boolean = False, Optional bEnsureVisible As Boolean = False)
         ClassThread.ExecAsync(Me, Sub()
                                       If (bClear) Then
                                           ListBox_Information.Items.Clear()
                                       End If
 
-                                      Dim mItem As New ClassListBoxItemData(String.Format("{0} ({1})", sType, Now.ToString), sMessage) With {
-                                          .m_Data = mData
+                                      Dim mItem As New ClassListBoxItemAction(String.Format("{0} ({1})", sType, Now.ToString), sMessage) With {
+                                          .m_Action = mAction
                                       }
 
                                       Dim iIndex = ListBox_Information.Items.Add(mItem)
@@ -69,23 +69,29 @@ Public Class UCInformationList
                                   End Sub)
     End Sub
 
-    Public Sub ParseFromCompilerOutput(sOutputLine As String, mData As Dictionary(Of String, Object))
+    Public Function ParseFromCompilerOutput(sOutputLine As String) As ClassListBoxItemAction.STRUC_ACTION_GOTO
         Dim mMatch As Match = Regex.Match(sOutputLine, "^(?<File>.+?)\((?<Line>([0-9]+)|(?<LineStart>[0-9]+)\s*--\s*(?<LineEnd>[0-9]+))\)\s*:", RegexOptions.IgnoreCase)
         If (mMatch.Success) Then
-            mData(INFO_DATA_FIND_PATH) = mMatch.Groups("File").Value.Replace("/"c, "\"c)
+            Dim sFile As String = mMatch.Groups("File").Value.Replace("/"c, "\"c)
 
             If (mMatch.Groups("Line").Success) Then
-                mData(INFO_DATA_FIND_LINES) = New Integer() {
+                Dim iLines As Integer() = New Integer() {
                     CInt(mMatch.Groups("Line").Value)
                 }
+
+                Return New ClassListBoxItemAction.STRUC_ACTION_GOTO(sFile, iLines)
             ElseIf (mMatch.Groups("LineStart").Success AndAlso mMatch.Groups("LineEnd").Success) Then
-                mData(INFO_DATA_FIND_LINES) = New Integer() {
+                Dim iLines As Integer() = New Integer() {
                     CInt(mMatch.Groups("LineStart").Value),
                     CInt(mMatch.Groups("LineEnd").Value)
                 }
+
+                Return New ClassListBoxItemAction.STRUC_ACTION_GOTO(sFile, iLines)
             End If
         End If
-    End Sub
+
+        Return Nothing
+    End Function
 
     Private Sub ListBox_Information_DoubleClick(sender As Object, e As EventArgs) Handles ListBox_Information.DoubleClick
         ItemAction(ENUM_ITEM_ACTION.AUTO)
@@ -148,46 +154,56 @@ Public Class UCInformationList
             Return
         End If
 
-        Dim mSelectedItem As ClassListBoxItemData = TryCast(ListBox_Information.SelectedItems(0), ClassListBoxItemData)
+        Dim mSelectedItem As ClassListBoxItemAction = TryCast(ListBox_Information.SelectedItems(0), ClassListBoxItemAction)
         If (mSelectedItem Is Nothing) Then
             Return
         End If
 
-        'We have no data to work with, end here
-        If (mSelectedItem.m_Data Is Nothing) Then
+        'Theres no action
+        If (mSelectedItem.m_Action Is Nothing) Then
             Return
         End If
 
         'Open path in explorer
         If (iAction = ENUM_ITEM_ACTION.AUTO OrElse iAction = ENUM_ITEM_ACTION.OPEN) Then
-            If (mSelectedItem.m_Data.ContainsKey(INFO_DATA_OPEN_PATH)) Then
-                Dim sPath As String = CStr(mSelectedItem.m_Data(INFO_DATA_OPEN_PATH))
-                If (String.IsNullOrEmpty(sPath)) Then
+            If (TypeOf mSelectedItem.m_Action Is ClassListBoxItemAction.STRUC_ACTION_OPEN) Then
+                Dim mAction = DirectCast(mSelectedItem.m_Action, ClassListBoxItemAction.STRUC_ACTION_OPEN)
+
+                If (String.IsNullOrEmpty(mAction.m_Path)) Then
                     MessageBox.Show("Invalid path", "Unable to open path", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Return
                 End If
 
                 Select Case (True)
-                    Case (IO.File.Exists(sPath))
-                        Dim sFile As String = IO.Path.GetFullPath(sPath)
+                    Case (IO.File.Exists(mAction.m_Path))
+                        Dim sFile As String = IO.Path.GetFullPath(mAction.m_Path)
 
                         Process.Start("explorer.exe", String.Format("/select,""{0}""", sFile))
-                    Case (IO.Directory.Exists(sPath))
-                        Dim sDir As String = IO.Path.GetFullPath(sPath)
+                    Case (IO.Directory.Exists(mAction.m_Path))
+                        Dim sDir As String = IO.Path.GetFullPath(mAction.m_Path)
 
                         Process.Start("explorer.exe", sDir)
 
                     Case Else
-                        MessageBox.Show(String.Format("Could not find path '{0}'!", sPath), "Unable to open path", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        MessageBox.Show(String.Format("Could not find path '{0}'!", mAction.m_Path), "Unable to open path", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 End Select
             End If
         End If
 
         'Goto line number if path is open in a tab or includes
         If (iAction = ENUM_ITEM_ACTION.AUTO OrElse iAction = ENUM_ITEM_ACTION.GOTO) Then
-            If (mSelectedItem.m_Data.ContainsKey(INFO_DATA_FIND_PATH) AndAlso mSelectedItem.m_Data.ContainsKey(INFO_DATA_FIND_LINES)) Then
-                Dim sPath As String = CStr(mSelectedItem.m_Data(INFO_DATA_FIND_PATH))
-                Dim iLines As Integer() = CType(mSelectedItem.m_Data(INFO_DATA_FIND_LINES), Integer())
+            If (TypeOf mSelectedItem.m_Action Is ClassListBoxItemAction.STRUC_ACTION_GOTO) Then
+                Dim mAction = DirectCast(mSelectedItem.m_Action, ClassListBoxItemAction.STRUC_ACTION_GOTO)
+
+                If (String.IsNullOrEmpty(mAction.m_Path)) Then
+                    MessageBox.Show("Invalid path", "Unable to open path", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    Return
+                End If
+
+                If (mAction.m_Lines.Length < 1) Then
+                    MessageBox.Show("Invalid lines", "Unable to open path", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    Return
+                End If
 
                 Dim bForceEnd As Boolean = False
                 While True
@@ -198,8 +214,8 @@ Public Class UCInformationList
 
                         Dim sFile As String = g_mFormMain.g_ClassTabControl.m_Tab(i).m_File.Replace("/"c, "\"c)
 
-                        If (sFile.ToLower.EndsWith(sPath.ToLower)) Then
-                            Dim iLineNum As Integer = ClassTools.ClassMath.ClampInt(0, g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.Document.TotalNumberOfLines - 1, iLines(0) - 1)
+                        If (sFile.ToLower.EndsWith(mAction.m_Path.ToLower)) Then
+                            Dim iLineNum As Integer = ClassTools.ClassMath.ClampInt(0, g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.Document.TotalNumberOfLines - 1, mAction.m_Lines(0) - 1)
 
                             g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.Caret.Line = iLineNum
                             g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.Caret.Column = 0
@@ -231,7 +247,7 @@ Public Class UCInformationList
 
                         Dim sFile As String = CStr(mInclude.Value).Replace("/"c, "\"c)
 
-                        If (sFile.ToLower.EndsWith(sPath.ToLower)) Then
+                        If (sFile.ToLower.EndsWith(mAction.m_Path.ToLower)) Then
                             Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
                             mTab.OpenFileTab(CStr(mInclude.Value))
                             mTab.SelectTab()
@@ -244,7 +260,7 @@ Public Class UCInformationList
                     Exit While
                 End While
 
-                MessageBox.Show(String.Format("Could not find path '{0}'!", sPath), "Unable to open path", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(String.Format("Could not find path '{0}'!", mAction.m_Path), "Unable to open path", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
         End If
     End Sub
@@ -284,7 +300,7 @@ Public Class UCInformationList
             End Select
 
             For Each mItem As Object In lItems.ToArray
-                Dim mListBoxItem As ClassListBoxItemData = TryCast(mItem, ClassListBoxItemData)
+                Dim mListBoxItem As ClassListBoxItemAction = TryCast(mItem, ClassListBoxItemAction)
                 If (mListBoxItem Is Nothing) Then
                     Continue For
                 End If
@@ -316,11 +332,36 @@ Public Class UCInformationList
     End Sub
 
 
-    Class ClassListBoxItemData
+    Class ClassListBoxItemAction
+        Interface IAction
+        End Interface
+
+        Class STRUC_ACTION_OPEN
+            Implements IAction
+
+            Property m_Path As String
+
+            Sub New(_Path As String)
+                m_Path = _Path
+            End Sub
+        End Class
+
+        Class STRUC_ACTION_GOTO
+            Implements IAction
+
+            Property m_Path As String
+            Property m_Lines As Integer()
+
+            Sub New(_Path As String, _Lines As Integer())
+                m_Path = _Path
+                m_Lines = _Lines
+            End Sub
+        End Class
+
         Property m_Info As String
         Property m_Message As String
         Property m_Text As String
-        Property m_Data As Dictionary(Of String, Object)
+        Property m_Action As IAction = Nothing
 
         Sub New(_Info As String, _Message As String)
             Me.m_Info = _Info
@@ -337,12 +378,18 @@ Public Class UCInformationList
         End Function
 
         Public Overrides Function ToString() As String
-            If (m_Data IsNot Nothing AndAlso m_Data.Count > 0) Then
-                'Add somekind of 'link' symbol: Ꝉ
-                Return m_Text & " " & ChrW(&HA748)
-            Else
-                Return m_Text
-            End If
+            Select Case (True)
+                Case (TypeOf m_Action Is STRUC_ACTION_OPEN)
+                    'Add somekind of 'link' symbol: Ꝉ
+                    Return m_Text & " " & ChrW(&HA748)
+
+                Case (TypeOf m_Action Is STRUC_ACTION_GOTO)
+                    'Add somekind of 'link' symbol: ←
+                    Return m_Text & " " & ChrW(&H2190)
+
+                Case Else
+                    Return m_Text
+            End Select
         End Function
     End Class
 
@@ -359,18 +406,18 @@ Public Class UCInformationList
                 Exit While
             End If
 
-            Dim mSelectedItem As ClassListBoxItemData = TryCast(ListBox_Information.SelectedItems(0), ClassListBoxItemData)
+            Dim mSelectedItem As ClassListBoxItemAction = TryCast(ListBox_Information.SelectedItems(0), ClassListBoxItemAction)
             If (mSelectedItem Is Nothing) Then
                 Exit While
             End If
 
             'We have no data to work with, end here
-            If (mSelectedItem.m_Data Is Nothing) Then
+            If (mSelectedItem.m_Action Is Nothing) Then
                 Exit While
             End If
 
-            ToolStripMenuItem_OpenExplorer.Enabled = (mSelectedItem.m_Data.ContainsKey(INFO_DATA_OPEN_PATH))
-            ToolStripMenuItem_GotoLine.Enabled = (mSelectedItem.m_Data.ContainsKey(INFO_DATA_FIND_PATH) AndAlso mSelectedItem.m_Data.ContainsKey(INFO_DATA_FIND_LINES))
+            ToolStripMenuItem_OpenExplorer.Enabled = (TypeOf mSelectedItem.m_Action Is ClassListBoxItemAction.STRUC_ACTION_OPEN)
+            ToolStripMenuItem_GotoLine.Enabled = (TypeOf mSelectedItem.m_Action Is ClassListBoxItemAction.STRUC_ACTION_GOTO)
 
             Exit While
         End While
