@@ -24,8 +24,8 @@ Public Class ClassPluginController
 
     Structure STRUC_PLUGIN_ITEM
         Dim sFile As String
-        Dim mPluginInformation As BasicPawnPluginInterface.IPluginInterface.STRUC_PLUGIN_INFORMATION
-        Dim mPluginInterface As BasicPawnPluginInterface.IPluginInterface
+        Dim mPluginInformation As BasicPawnPluginInterface.IPluginInterfaceV2.STRUC_PLUGIN_INFORMATION
+        Dim mPluginInterface As BasicPawnPluginInterface.IPluginInterfaceV2
     End Structure
     Private g_lPlugins As New List(Of STRUC_PLUGIN_ITEM)
 
@@ -105,18 +105,18 @@ Public Class ClassPluginController
         Next
     End Sub
 
-    Public Function LoadPlugin(sFile As String) As BasicPawnPluginInterface.IPluginInterface
+    Public Function LoadPlugin(sFile As String) As BasicPawnPluginInterface.IPluginInterfaceV2
         Try
             Dim mAssembly = Reflection.Assembly.LoadFile(sFile)
 
             For Each mType In mAssembly.GetTypes
                 Try
-                    If (Not GetType(BasicPawnPluginInterface.IPluginInterface).IsAssignableFrom(mType)) Then
+                    If (Not GetType(BasicPawnPluginInterface.IPluginInterfaceV2).IsAssignableFrom(mType)) Then
                         Continue For
                     End If
 
                     Dim mInstance As Object = mAssembly.CreateInstance(mType.FullName)
-                    Dim mPlugin = DirectCast(mInstance, BasicPawnPluginInterface.IPluginInterface)
+                    Dim mPlugin = DirectCast(mInstance, BasicPawnPluginInterface.IPluginInterfaceV2)
 
                     g_lPlugins.Add(New STRUC_PLUGIN_ITEM With {
                         .mPluginInformation = mPlugin.m_PluginInformation,

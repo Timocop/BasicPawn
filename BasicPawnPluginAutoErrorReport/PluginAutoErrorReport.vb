@@ -20,7 +20,7 @@ Imports BasicPawn
 Imports BasicPawnPluginInterface
 
 Public Class PluginAutoErrorReport
-    Implements IPluginInterface
+    Implements IPluginInterfaceV2
 
     Public g_mFormMain As FormMain
 
@@ -29,74 +29,74 @@ Public Class PluginAutoErrorReport
     Private Shared ReadOnly g_mSpportedVersion As New Version("0.801")
 
 #Region "Unused"
-    Public Sub OnPluginLoad(sDLLPath As String) Implements IPluginInterface.OnPluginLoad
+    Public Sub OnPluginLoad(sDLLPath As String) Implements IPluginInterfaceV2.OnPluginLoad
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnSettingsChanged() Implements IPluginInterface.OnSettingsChanged
+    Public Sub OnSettingsChanged() Implements IPluginInterfaceV2.OnSettingsChanged
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnConfigChanged() Implements IPluginInterface.OnConfigChanged
+    Public Sub OnConfigChanged() Implements IPluginInterfaceV2.OnConfigChanged
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnEditorSyntaxUpdate() Implements IPluginInterface.OnEditorSyntaxUpdate
+    Public Sub OnEditorSyntaxUpdate() Implements IPluginInterfaceV2.OnEditorSyntaxUpdate
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnEditorSyntaxUpdateEnd() Implements IPluginInterface.OnEditorSyntaxUpdateEnd
+    Public Sub OnEditorSyntaxUpdateEnd() Implements IPluginInterfaceV2.OnEditorSyntaxUpdateEnd
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnSyntaxUpdate(iType As Integer, bForceFromMemory As Boolean) Implements IPluginInterface.OnSyntaxUpdate
+    Public Sub OnSyntaxUpdate(iType As Integer, bForceFromMemory As Boolean) Implements IPluginInterfaceV2.OnSyntaxUpdate
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnSyntaxUpdateEnd(iType As Integer, bForceFromMemory As Boolean) Implements IPluginInterface.OnSyntaxUpdateEnd
+    Public Sub OnSyntaxUpdateEnd(iType As Integer, bForceFromMemory As Boolean) Implements IPluginInterfaceV2.OnSyntaxUpdateEnd
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnFormColorUpdate() Implements IPluginInterface.OnFormColorUpdate
+    Public Sub OnFormColorUpdate() Implements IPluginInterfaceV2.OnFormColorUpdate
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnDebuggerStart(mFormDebugger As Object) Implements IPluginInterface.OnDebuggerStart
+    Public Sub OnDebuggerStart(mFormDebugger As Object) Implements IPluginInterfaceV2.OnDebuggerStart
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnDebuggerRefresh(mFormDebugger As Object) Implements IPluginInterface.OnDebuggerRefresh
+    Public Sub OnDebuggerRefresh(mFormDebugger As Object) Implements IPluginInterfaceV2.OnDebuggerRefresh
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnDebuggerEndPost(mFormDebugger As Object) Implements IPluginInterface.OnDebuggerEndPost
+    Public Sub OnDebuggerEndPost(mFormDebugger As Object) Implements IPluginInterfaceV2.OnDebuggerEndPost
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnDebuggerDebugStart() Implements IPluginInterface.OnDebuggerDebugStart
+    Public Sub OnDebuggerDebugStart() Implements IPluginInterfaceV2.OnDebuggerDebugStart
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnDebuggerDebugPause() Implements IPluginInterface.OnDebuggerDebugPause
+    Public Sub OnDebuggerDebugPause() Implements IPluginInterfaceV2.OnDebuggerDebugPause
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnDebuggerDebugStop() Implements IPluginInterface.OnDebuggerDebugStop
+    Public Sub OnDebuggerDebugStop() Implements IPluginInterfaceV2.OnDebuggerDebugStop
         Throw New NotImplementedException()
     End Sub
 
-    Public Function OnPluginEnd() As Boolean Implements IPluginInterface.OnPluginEnd
+    Public Function OnPluginEnd() As Boolean Implements IPluginInterfaceV2.OnPluginEnd
         Throw New NotImplementedException()
     End Function
 
-    Public Function OnDebuggerEnd(mFormDebugger As Object) As Boolean Implements IPluginInterface.OnDebuggerEnd
+    Public Function OnDebuggerEnd(mFormDebugger As Object) As Boolean Implements IPluginInterfaceV2.OnDebuggerEnd
         Throw New NotImplementedException()
     End Function
 #End Region
 
-    Public ReadOnly Property m_PluginInformation As IPluginInterface.STRUC_PLUGIN_INFORMATION Implements IPluginInterface.m_PluginInformation
+    Public ReadOnly Property m_PluginInformation As IPluginInterfaceV2.STRUC_PLUGIN_INFORMATION Implements IPluginInterfaceV2.m_PluginInformation
         Get
-            Return New IPluginInterface.STRUC_PLUGIN_INFORMATION("Automatic Error Reporting Plugin",
+            Return New IPluginInterfaceV2.STRUC_PLUGIN_INFORMATION("Automatic Error Reporting Plugin",
                                                                  "Timocop",
                                                                  "Allows automatic error reporting over FTP",
                                                                  Reflection.Assembly.GetExecutingAssembly.GetName.Version.ToString,
@@ -104,13 +104,13 @@ Public Class PluginAutoErrorReport
         End Get
     End Property
 
-    Public ReadOnly Property m_PluginEnabled As Boolean Implements IPluginInterface.m_PluginEnabled
+    Public ReadOnly Property m_PluginEnabled As Boolean Implements IPluginInterfaceV2.m_PluginEnabled
         Get
             Return (g_ClassPlugin IsNot Nothing)
         End Get
     End Property
 
-    Public Sub OnPluginStart(mFormMain As Object, bEnabled As Boolean) Implements IPluginInterface.OnPluginStart
+    Public Sub OnPluginStart(mFormMain As Object, bEnabled As Boolean) Implements IPluginInterfaceV2.OnPluginStart
         g_mFormMain = DirectCast(mFormMain, FormMain)
 
         If (bEnabled) Then
@@ -118,11 +118,11 @@ Public Class PluginAutoErrorReport
         End If
     End Sub
 
-    Public Sub OnPluginEndPost() Implements IPluginInterface.OnPluginEndPost
+    Public Sub OnPluginEndPost() Implements IPluginInterfaceV2.OnPluginEndPost
         Throw New NotImplementedException()
     End Sub
 
-    Public Function OnPluginEnabled(ByRef sReason As String) As Boolean Implements IPluginInterface.OnPluginEnabled
+    Public Function OnPluginEnabled(ByRef sReason As String) As Boolean Implements IPluginInterfaceV2.OnPluginEnabled
 #If Not DEBUG Then
         If (New Version(Application.ProductVersion) < g_mSpportedVersion) Then
             sReason = String.Format("Unsupported BasicPawn version! Required is version v{0}.", g_mSpportedVersion.ToString)
@@ -137,7 +137,7 @@ Public Class PluginAutoErrorReport
         Return True
     End Function
 
-    Public Function OnPluginDisabled(ByRef sReason As String) As Boolean Implements IPluginInterface.OnPluginDisabled
+    Public Function OnPluginDisabled(ByRef sReason As String) As Boolean Implements IPluginInterfaceV2.OnPluginDisabled
         If (g_ClassPlugin IsNot Nothing) Then
             g_ClassPlugin.Dispose()
             g_ClassPlugin = Nothing
