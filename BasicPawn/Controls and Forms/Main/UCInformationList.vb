@@ -93,6 +93,16 @@ Public Class UCInformationList
         Return Nothing
     End Function
 
+    Private Sub ListBox_Information_KeyUp(sender As Object, e As KeyEventArgs) Handles ListBox_Information.KeyUp
+        If (e.Control AndAlso e.KeyCode = Keys.C) Then
+            If (e.Shift) Then
+                ItemsContentAction(ENUM_COPY_ACTION.COPY, ENUM_COPY_SELECTION.SELECTED, ENUM_COPY_TYPE.FULL)
+            Else
+                ItemsContentAction(ENUM_COPY_ACTION.COPY, ENUM_COPY_SELECTION.SELECTED, ENUM_COPY_TYPE.MIN)
+            End If
+        End If
+    End Sub
+
     Private Sub ListBox_Information_DoubleClick(sender As Object, e As EventArgs) Handles ListBox_Information.DoubleClick
         ItemAction(ENUM_ITEM_ACTION.AUTO)
     End Sub

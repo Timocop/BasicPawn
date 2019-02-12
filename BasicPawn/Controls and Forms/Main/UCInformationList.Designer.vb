@@ -64,20 +64,20 @@ Partial Class UCInformationList
         Me.ContextMenuStrip_Information.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_OpenExplorer, Me.ToolStripMenuItem_GotoLine, Me.ToolStripSeparator1, Me.ToolStripMenuItem_OpenNotepad, Me.ToolStripMenuItem_Copy})
         Me.ContextMenuStrip_Information.Name = "ContextMenuStrip_Information"
         Me.ContextMenuStrip_Information.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
-        Me.ContextMenuStrip_Information.Size = New System.Drawing.Size(181, 120)
+        Me.ContextMenuStrip_Information.Size = New System.Drawing.Size(166, 98)
         '
         'ToolStripMenuItem_OpenExplorer
         '
         Me.ToolStripMenuItem_OpenExplorer.Image = Global.BasicPawn.My.Resources.Resources.imageres_5304_16x16
         Me.ToolStripMenuItem_OpenExplorer.Name = "ToolStripMenuItem_OpenExplorer"
-        Me.ToolStripMenuItem_OpenExplorer.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_OpenExplorer.Size = New System.Drawing.Size(165, 22)
         Me.ToolStripMenuItem_OpenExplorer.Text = "Open in Explorer"
         '
         'ToolStripMenuItem_GotoLine
         '
         Me.ToolStripMenuItem_GotoLine.Image = Global.BasicPawn.My.Resources.Resources.imageres_5302_16x16
         Me.ToolStripMenuItem_GotoLine.Name = "ToolStripMenuItem_GotoLine"
-        Me.ToolStripMenuItem_GotoLine.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_GotoLine.Size = New System.Drawing.Size(165, 22)
         Me.ToolStripMenuItem_GotoLine.Text = "Goto line"
         '
         'ToolStripSeparator1
@@ -143,7 +143,7 @@ Partial Class UCInformationList
         '
         Me.ToolStripMenuItem_CopyAll.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_CopyAllFull, Me.ToolStripMenuItem_CopyAllMin})
         Me.ToolStripMenuItem_CopyAll.Name = "ToolStripMenuItem_CopyAll"
-        Me.ToolStripMenuItem_CopyAll.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_CopyAll.Size = New System.Drawing.Size(118, 22)
         Me.ToolStripMenuItem_CopyAll.Text = "All"
         '
         'ToolStripMenuItem_CopyAllFull
@@ -162,19 +162,19 @@ Partial Class UCInformationList
         '
         Me.ToolStripMenuItem_CopySelected.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_CopySelectedFull, Me.ToolStripMenuItem_CopySelectedMin})
         Me.ToolStripMenuItem_CopySelected.Name = "ToolStripMenuItem_CopySelected"
-        Me.ToolStripMenuItem_CopySelected.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_CopySelected.Size = New System.Drawing.Size(118, 22)
         Me.ToolStripMenuItem_CopySelected.Text = "Selected"
         '
         'ToolStripMenuItem_CopySelectedFull
         '
         Me.ToolStripMenuItem_CopySelectedFull.Name = "ToolStripMenuItem_CopySelectedFull"
-        Me.ToolStripMenuItem_CopySelectedFull.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_CopySelectedFull.Size = New System.Drawing.Size(118, 22)
         Me.ToolStripMenuItem_CopySelectedFull.Text = "Full"
         '
         'ToolStripMenuItem_CopySelectedMin
         '
         Me.ToolStripMenuItem_CopySelectedMin.Name = "ToolStripMenuItem_CopySelectedMin"
-        Me.ToolStripMenuItem_CopySelectedMin.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_CopySelectedMin.Size = New System.Drawing.Size(118, 22)
         Me.ToolStripMenuItem_CopySelectedMin.Text = "Minimal"
         '
         'UCInformationList
