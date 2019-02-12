@@ -269,12 +269,12 @@ Public Class FormFTP
                                                                            Dim i As Integer
                                                                            For i = 0 To sFiles.Length - 1
                                                                                If (Not IO.File.Exists(sFiles(i))) Then
-                                                                                   g_mPluginFTP.g_mFormMain.PrintInformation("[ERRO]", String.Format("Could not upload '{0}' because the file does not exist!", sFiles(i)))
+                                                                                   g_mPluginFTP.g_mFormMain.g_mUCInformationList.PrintInformation("[ERRO]", String.Format("Could not upload '{0}' because the file does not exist!", sFiles(i)))
                                                                                    Continue For
                                                                                End If
 
-                                                                               g_mPluginFTP.g_mFormMain.PrintInformation("[INFO]", String.Format("Uploading file '{0}' ({1}/{2}) to '{3}/{4}' using {5}...", sFiles(i), i + 1, sFiles.Length, sHost.TrimEnd("/"c), sDestinationPath.TrimStart("/"c),
-                                                                                                                                       If(iProtocolType = ENUM_FTP_PROTOCOL_TYPE.FTP, "FTP", "SFTP")))
+                                                                               g_mPluginFTP.g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", String.Format("Uploading file '{0}' ({1}/{2}) to '{3}/{4}' using {5}...", sFiles(i), i + 1, sFiles.Length, sHost.TrimEnd("/"c), sDestinationPath.TrimStart("/"c),
+                                                                                                                                       If(iProtocolType = ENUM_FTP_PROTOCOL_TYPE.FTP, "FTP", "SFTP")), New UCInformationList.ClassListBoxItemAction.STRUC_ACTION_OPEN(sFiles(i)))
 
                                                                                Dim sFilename As String = IO.Path.GetFileName(sFiles(i))
                                                                                Dim sDestinationFile As String = (sDestinationPath.TrimEnd("/"c) & "/" & sFilename)
@@ -332,7 +332,7 @@ Public Class FormFTP
                                                                                        Throw New ArgumentException("Invalid FTP client")
                                                                                End Select
 
-                                                                               g_mPluginFTP.g_mFormMain.PrintInformation("[INFO]", "Upload Success!")
+                                                                               g_mPluginFTP.g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", "Upload Success!")
                                                                            Next
                                                                        Finally
                                                                            If (TypeOf mFtpClient Is Renci.SshNet.SftpClient) Then
@@ -355,14 +355,14 @@ Public Class FormFTP
                                                                    ClassThread.ExecAsync(Me, Sub() Me.Close())
                                                                Catch ex As Threading.ThreadAbortException
                                                                    If (bCanceled) Then
-                                                                       g_mPluginFTP.g_mFormMain.PrintInformation("[ERRO]", "Upload canceled!")
+                                                                       g_mPluginFTP.g_mFormMain.g_mUCInformationList.PrintInformation("[ERRO]", "Upload canceled!")
 
                                                                        ClassThread.ExecAsync(Me, Sub() Me.Close())
                                                                    End If
 
                                                                    Throw
                                                                Catch ex As Exception
-                                                                   g_mPluginFTP.g_mFormMain.PrintInformation("[ERRO]", "Upload failed!")
+                                                                   g_mPluginFTP.g_mFormMain.g_mUCInformationList.PrintInformation("[ERRO]", "Upload failed!")
 
                                                                    ClassExceptionLog.WriteToLogMessageBox(ex)
 
