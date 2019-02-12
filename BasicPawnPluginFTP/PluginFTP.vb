@@ -26,8 +26,6 @@ Public Class PluginFTP
 
     Private g_ClassPlugin As ClassPlugin
 
-    Private Shared ReadOnly g_mSpportedVersion As New Version("0.800")
-
 #Region "Unused"
     Public Sub OnPluginLoad(sDLLPath As String) Implements IPluginInterfaceV2.OnPluginLoad
         Throw New NotImplementedException()
@@ -126,13 +124,6 @@ Public Class PluginFTP
     End Sub
 
     Public Function OnPluginEnabled(ByRef sReason As String) As Boolean Implements IPluginInterfaceV2.OnPluginEnabled
-#If Not DEBUG Then
-        If (New Version(Application.ProductVersion) < g_mSpportedVersion) Then
-            sReason = String.Format("Unsupported BasicPawn version! Required is version v{0}.", g_mSpportedVersion.ToString)
-            Return False
-        End If
-#End If
-
         If (g_ClassPlugin Is Nothing) Then
             g_ClassPlugin = New ClassPlugin(Me)
         End If

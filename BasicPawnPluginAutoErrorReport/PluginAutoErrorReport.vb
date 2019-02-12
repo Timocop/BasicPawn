@@ -26,8 +26,6 @@ Public Class PluginAutoErrorReport
 
     Private g_ClassPlugin As ClassPlugin
 
-    Private Shared ReadOnly g_mSpportedVersion As New Version("0.801")
-
 #Region "Unused"
     Public Sub OnPluginLoad(sDLLPath As String) Implements IPluginInterfaceV2.OnPluginLoad
         Throw New NotImplementedException()
@@ -97,10 +95,10 @@ Public Class PluginAutoErrorReport
     Public ReadOnly Property m_PluginInformation As IPluginInterfaceV2.STRUC_PLUGIN_INFORMATION Implements IPluginInterfaceV2.m_PluginInformation
         Get
             Return New IPluginInterfaceV2.STRUC_PLUGIN_INFORMATION("Automatic Error Reporting Plugin",
-                                                                 "Timocop",
-                                                                 "Allows automatic error reporting over FTP",
-                                                                 Reflection.Assembly.GetExecutingAssembly.GetName.Version.ToString,
-                                                                 "https://github.com/Timocop/BasicPawn")
+                                                                     "Timocop",
+                                                                     "Allows automatic error reporting over FTP",
+                                                                     Reflection.Assembly.GetExecutingAssembly.GetName.Version.ToString,
+                                                                     "https://github.com/Timocop/BasicPawn")
         End Get
     End Property
 
@@ -123,13 +121,6 @@ Public Class PluginAutoErrorReport
     End Sub
 
     Public Function OnPluginEnabled(ByRef sReason As String) As Boolean Implements IPluginInterfaceV2.OnPluginEnabled
-#If Not DEBUG Then
-        If (New Version(Application.ProductVersion) < g_mSpportedVersion) Then
-            sReason = String.Format("Unsupported BasicPawn version! Required is version v{0}.", g_mSpportedVersion.ToString)
-            Return False
-        End If
-#End If
-
         If (g_ClassPlugin Is Nothing) Then
             g_ClassPlugin = New ClassPlugin(Me)
         End If
