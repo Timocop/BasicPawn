@@ -597,6 +597,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="BasicPawnIcon.ico" />
+    <None Include="Resources\netshell_1610_16x16-32.png" />
+    <None Include="Resources\netshell_1608_16x16-32.png" />
+    <None Include="Resources\netshell_1607_16x16-32.png" />
     <None Include="Resources\imageres_5383_16x16-32.png" />
     <None Include="Resources\shell32_16761_16x16-32.png" />
     <None Include="Resources\shell32_16763_16x16-32.png" />

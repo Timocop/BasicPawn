@@ -184,7 +184,8 @@ Partial Class FormSettings
         Me.ColumnHeader4 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader5 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader6 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.ColumnHeader7 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.ColumnHeader9 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.ImageList_Plugins = New System.Windows.Forms.ImageList(Me.components)
         Me.TabPage_Database = New System.Windows.Forms.TabPage()
         Me.DatabaseListBox_Database = New BasicPawn.ClassDatabaseListBox()
         Me.Button_Refresh = New System.Windows.Forms.Button()
@@ -1988,11 +1989,12 @@ Partial Class FormSettings
         Me.ListView_Plugins.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.ListView_Plugins.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1, Me.ColumnHeader2, Me.ColumnHeader3, Me.ColumnHeader4, Me.ColumnHeader5, Me.ColumnHeader6, Me.ColumnHeader7})
+        Me.ListView_Plugins.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1, Me.ColumnHeader2, Me.ColumnHeader3, Me.ColumnHeader4, Me.ColumnHeader5, Me.ColumnHeader6, Me.ColumnHeader9})
         Me.ListView_Plugins.ContextMenuStrip = Me.ContextMenuStrip_Plugins
         Me.ListView_Plugins.Location = New System.Drawing.Point(6, 6)
         Me.ListView_Plugins.Name = "ListView_Plugins"
         Me.ListView_Plugins.Size = New System.Drawing.Size(740, 449)
+        Me.ListView_Plugins.SmallImageList = Me.ImageList_Plugins
         Me.ListView_Plugins.TabIndex = 0
         Me.ListView_Plugins.UseCompatibleStateImageBehavior = False
         Me.ListView_Plugins.View = System.Windows.Forms.View.Details
@@ -2027,10 +2029,16 @@ Partial Class FormSettings
         Me.ColumnHeader6.Text = "URL"
         Me.ColumnHeader6.Width = 75
         '
-        'ColumnHeader7
+        'ColumnHeader9
         '
-        Me.ColumnHeader7.Text = "Enabled"
-        Me.ColumnHeader7.Width = 75
+        Me.ColumnHeader9.Text = "Error"
+        Me.ColumnHeader9.Width = 200
+        '
+        'ImageList_Plugins
+        '
+        Me.ImageList_Plugins.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit
+        Me.ImageList_Plugins.ImageSize = New System.Drawing.Size(16, 16)
+        Me.ImageList_Plugins.TransparentColor = System.Drawing.Color.Transparent
         '
         'TabPage_Database
         '
@@ -2324,7 +2332,6 @@ Partial Class FormSettings
     Friend WithEvents ToolStripSeparator1 As ToolStripSeparator
     Friend WithEvents ToolStripMenuItem_PluginsEnable As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_PluginsDisable As ToolStripMenuItem
-    Friend WithEvents ColumnHeader7 As ColumnHeader
     Friend WithEvents GroupBox2 As GroupBox
     Friend WithEvents TabControl2 As ClassTabControlColor
     Friend WithEvents TabPage1 As TabPage
@@ -2400,4 +2407,6 @@ Partial Class FormSettings
     Friend WithEvents ToolTip_Info As ToolTip
     Friend WithEvents LinkLabel_DefaultConfigPathsHelp As LinkLabel
     Friend WithEvents LinkLabel_FullAutocompleteReTaggingHelp As LinkLabel
+    Friend WithEvents ColumnHeader9 As ColumnHeader
+    Friend WithEvents ImageList_Plugins As ImageList
 End Class

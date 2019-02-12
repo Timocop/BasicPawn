@@ -136,6 +136,9 @@ The background thread controls following functionality:
 
 NOTE: Only lower this value if you want faster reaction time.</value>
   </data>
+  <metadata name="ImageList_Plugins.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>331, 17</value>
+  </metadata>
   <data name="Label18.Text" xml:space="preserve">
     <value>Databases can help to organize sensitive login information such as FTP credentials. All database entries are encrypted and bound to your Windows account to prevent other users to access your login information.</value>
   </data>

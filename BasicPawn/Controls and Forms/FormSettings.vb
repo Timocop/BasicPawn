@@ -33,6 +33,11 @@ Public Class FormSettings
         ACTIVE
     End Enum
 
+    Enum ENUM_PLUGIN_IMAGE_STATE
+        ENABLED
+        DISABLED
+    End Enum
+
     Public Sub New(f As FormMain, iConfigType As ENUM_CONFIG_TYPE)
         g_mFormMain = f
         g_iConfigType = iConfigType
@@ -40,6 +45,11 @@ Public Class FormSettings
 
         ' This call is required by the designer.
         InitializeComponent()
+
+        ' Add any initialization after the InitializeComponent() call. 
+        ImageList_Plugins.Images.Clear()
+        ImageList_Plugins.Images.Add(CStr(ENUM_PLUGIN_IMAGE_STATE.ENABLED), My.Resources.netshell_1610_16x16)
+        ImageList_Plugins.Images.Add(CStr(ENUM_PLUGIN_IMAGE_STATE.DISABLED), My.Resources.netshell_1608_16x16)
 
         Select Case (iConfigType)
             Case ENUM_CONFIG_TYPE.ALL
@@ -49,7 +59,6 @@ Public Class FormSettings
                 TabPage_Configs.Text &= " (Active Tab)"
         End Select
 
-        ' Add any initialization after the InitializeComponent() call. 
         g_bComboBoxIgnoreEvent = True
         ComboBox_Language.Items.Clear()
         ComboBox_Language.Items.Add("Auto-detect")
@@ -1457,9 +1466,10 @@ Public Class FormSettings
     Private Sub UpdatePluginsListView()
         Try
             Dim lListViewItems As New List(Of ListViewItem)
+
             For Each mPlugin In g_mFormMain.g_ClassPluginController.m_Plugins
                 Try
-                    Dim sEnabled As String = If(mPlugin.mPluginInterface.m_PluginEnabled, "Yes", "")
+                    Dim iPluginState As ENUM_PLUGIN_IMAGE_STATE = If(mPlugin.mPluginInterface.m_PluginEnabled, ENUM_PLUGIN_IMAGE_STATE.ENABLED, ENUM_PLUGIN_IMAGE_STATE.DISABLED)
 
                     If (mPlugin.mPluginInformation Is Nothing) Then
                         lListViewItems.Add(New ListViewItem(New String() {
@@ -1469,8 +1479,8 @@ Public Class FormSettings
                                                             "-",
                                                             "-",
                                                             "-",
-                                                            sEnabled
-                                                       }))
+                                                            ""
+                                                       }, CStr(iPluginState)))
                     Else
                         lListViewItems.Add(New ListViewItem(New String() {
                                                                     IO.Path.GetFileName(mPlugin.sFile),
@@ -1479,8 +1489,8 @@ Public Class FormSettings
                                                                     mPlugin.mPluginInformation.sDescription,
                                                                     mPlugin.mPluginInformation.sVersion,
                                                                     mPlugin.mPluginInformation.sURL,
-                                                                    sEnabled
-                                                               }))
+                                                                    ""
+                                                               }, CStr(iPluginState)))
                     End If
                 Catch ex As Exception
                     lListViewItems.Add(New ListViewItem(New String() {
@@ -1490,11 +1500,23 @@ Public Class FormSettings
                                                                     "-",
                                                                     "-",
                                                                     "-",
-                                                                    String.Format("Error - {0}", ex.Message)
-                                                               }))
+                                                                    ex.Message
+                                                               }, CStr(ENUM_PLUGIN_IMAGE_STATE.ENABLED)))
 
                     ClassExceptionLog.WriteToLogMessageBox(ex)
                 End Try
+            Next
+
+            For Each mPlugin In g_mFormMain.g_ClassPluginController.m_FailPlugins
+                lListViewItems.Add(New ListViewItem(New String() {
+                                                    IO.Path.GetFileName(mPlugin.sFile),
+                                                    "-",
+                                                    "-",
+                                                    "-",
+                                                    "-",
+                                                    "-",
+                                                    mPlugin.mException.Message
+                                                }, CStr(ENUM_PLUGIN_IMAGE_STATE.DISABLED)))
             Next
 
             ListView_Plugins.BeginUpdate()

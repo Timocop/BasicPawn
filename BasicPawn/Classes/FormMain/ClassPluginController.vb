@@ -18,6 +18,8 @@
 Public Class ClassPluginController
     Private g_mFormMain As FormMain
 
+    Private g_bPluginsLoaded As Boolean = False
+
     Public Sub New(f As FormMain)
         g_mFormMain = f
     End Sub
@@ -29,9 +31,21 @@ Public Class ClassPluginController
     End Structure
     Private g_lPlugins As New List(Of STRUC_PLUGIN_ITEM)
 
+    Structure STRUC_PLUGIN_FAIL_ITEM
+        Dim sFile As String
+        Dim mException As Exception
+    End Structure
+    Private g_lFailPlugins As New List(Of STRUC_PLUGIN_FAIL_ITEM)
+
     ReadOnly Property m_Plugins As STRUC_PLUGIN_ITEM()
         Get
             Return g_lPlugins.ToArray
+        End Get
+    End Property
+
+    ReadOnly Property m_FailPlugins As STRUC_PLUGIN_FAIL_ITEM()
+        Get
+            Return g_lFailPlugins.ToArray
         End Get
     End Property
 
@@ -105,38 +119,13 @@ Public Class ClassPluginController
         Next
     End Sub
 
-    Public Function LoadPlugin(sFile As String) As BasicPawnPluginInterface.IPluginInterfaceV2
-        Try
-            Dim mAssembly = Reflection.Assembly.LoadFile(sFile)
-
-            For Each mType In mAssembly.GetTypes
-                Try
-                    If (Not GetType(BasicPawnPluginInterface.IPluginInterfaceV2).IsAssignableFrom(mType)) Then
-                        Continue For
-                    End If
-
-                    Dim mInstance As Object = mAssembly.CreateInstance(mType.FullName)
-                    Dim mPlugin = DirectCast(mInstance, BasicPawnPluginInterface.IPluginInterfaceV2)
-
-                    g_lPlugins.Add(New STRUC_PLUGIN_ITEM With {
-                        .mPluginInformation = mPlugin.m_PluginInformation,
-                        .mPluginInterface = mPlugin,
-                        .sFile = sFile
-                    })
-
-                    Return mPlugin
-                Catch ex As Exception
-                    ClassExceptionLog.WriteToLogMessageBox(ex)
-                End Try
-            Next
-        Catch ex As Exception
-            ClassExceptionLog.WriteToLogMessageBox(ex)
-        End Try
-
-        Return Nothing
-    End Function
-
     Public Sub LoadPlugins(sPluginDirectory As String)
+        If (g_bPluginsLoaded) Then
+            Throw New ArgumentException("Plugins can only be loaded once")
+        End If
+
+        g_bPluginsLoaded = True
+
         If (Not IO.Directory.Exists(sPluginDirectory)) Then
             IO.Directory.CreateDirectory(sPluginDirectory)
         End If
@@ -148,12 +137,52 @@ Public Class ClassPluginController
                     Continue For
                 End If
 
-                mPlugin.OnPluginLoad(sPluginFile)
-            Catch ex As NotImplementedException
-                'Ignore
+                Try
+                    mPlugin.OnPluginLoad(sPluginFile)
+                Catch ex As NotImplementedException
+                    'Ignore
+                Catch ex As Exception
+                    ClassExceptionLog.WriteToLogMessageBox(ex)
+                End Try
             Catch ex As Exception
-                ClassExceptionLog.WriteToLogMessageBox(ex)
+                g_mFormMain.g_mUCInformationList.PrintInformation("[ERRO]", String.Format("Plugin '{0}' could not be loaded! Outdated? Exception: {1}", IO.Path.GetFileName(sPluginFile), ex.Message))
             End Try
         Next
     End Sub
+
+    Private Function LoadPlugin(sFile As String) As BasicPawnPluginInterface.IPluginInterfaceV2
+        Dim mAssembly = Reflection.Assembly.LoadFile(sFile)
+
+        If (mAssembly Is Nothing) Then
+            Return Nothing
+        End If
+
+        Try
+            For Each mType In mAssembly.GetTypes
+                If (Not GetType(BasicPawnPluginInterface.IPluginInterfaceV2).IsAssignableFrom(mType)) Then
+                    Continue For
+                End If
+
+                Dim mInstance As Object = mAssembly.CreateInstance(mType.FullName)
+                Dim mPlugin = DirectCast(mInstance, BasicPawnPluginInterface.IPluginInterfaceV2)
+
+                g_lPlugins.Add(New STRUC_PLUGIN_ITEM With {
+                    .mPluginInformation = mPlugin.m_PluginInformation,
+                    .mPluginInterface = mPlugin,
+                    .sFile = sFile
+                })
+
+                Return mPlugin
+            Next
+        Catch ex As Exception
+            g_lFailPlugins.Add(New STRUC_PLUGIN_FAIL_ITEM() With {
+                .sFile = sFile,
+                .mException = ex
+            })
+
+            Throw
+        End Try
+
+        Return Nothing
+    End Function
 End Class
