@@ -69,24 +69,31 @@ Public Class UCInformationList
                                   End Sub)
     End Sub
 
-    Public Function ParseFromCompilerOutput(sOutputLine As String) As ClassListBoxItemAction.STRUC_ACTION_GOTO
+    Public Function ParseFromCompilerOutput(sFile As String, sOutputLine As String) As ClassListBoxItemAction.STRUC_ACTION_GOTO
         Dim mMatch As Match = Regex.Match(sOutputLine, "^(?<File>.+?)\((?<Line>([0-9]+)|(?<LineStart>[0-9]+)\s*--\s*(?<LineEnd>[0-9]+))\)\s*:", RegexOptions.IgnoreCase)
         If (mMatch.Success) Then
-            Dim sFile As String = mMatch.Groups("File").Value.Replace("/"c, "\"c)
+            Dim sOutputFile As String = mMatch.Groups("File").Value.Replace("/"c, "\"c)
+
+            'Try to make an absolute path from source file and compiler output.
+            If (Not String.IsNullOrEmpty(sFile)) Then
+                If (IO.Path.GetFullPath(sOutputFile).ToLower <> sOutputFile.ToLower) Then
+                    sOutputFile = IO.Path.Combine(IO.Path.GetDirectoryName(sFile), sOutputFile)
+                End If
+            End If
 
             If (mMatch.Groups("Line").Success) Then
                 Dim iLines As Integer() = New Integer() {
                     CInt(mMatch.Groups("Line").Value)
                 }
 
-                Return New ClassListBoxItemAction.STRUC_ACTION_GOTO(sFile, iLines)
+                Return New ClassListBoxItemAction.STRUC_ACTION_GOTO(sOutputFile, iLines)
             ElseIf (mMatch.Groups("LineStart").Success AndAlso mMatch.Groups("LineEnd").Success) Then
                 Dim iLines As Integer() = New Integer() {
                     CInt(mMatch.Groups("LineStart").Value),
                     CInt(mMatch.Groups("LineEnd").Value)
                 }
 
-                Return New ClassListBoxItemAction.STRUC_ACTION_GOTO(sFile, iLines)
+                Return New ClassListBoxItemAction.STRUC_ACTION_GOTO(sOutputFile, iLines)
             End If
         End If
 
@@ -224,6 +231,7 @@ Public Class UCInformationList
 
                         Dim sFile As String = g_mFormMain.g_ClassTabControl.m_Tab(i).m_File.Replace("/"c, "\"c)
 
+                        'Try to find using absolute and relative path
                         If (sFile.ToLower.EndsWith(mAction.m_Path.ToLower)) Then
                             Dim iLineNum As Integer = ClassTools.ClassMath.ClampInt(0, g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.Document.TotalNumberOfLines - 1, mAction.m_Lines(0) - 1)
 
@@ -257,6 +265,7 @@ Public Class UCInformationList
 
                         Dim sFile As String = CStr(mInclude.Value).Replace("/"c, "\"c)
 
+                        'Try to find using absolute and relative path
                         If (sFile.ToLower.EndsWith(mAction.m_Path.ToLower)) Then
                             Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
                             mTab.OpenFileTab(CStr(mInclude.Value))

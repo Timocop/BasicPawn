@@ -683,7 +683,7 @@ Public Class ClassTextEditorTools
 
             sLines = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
             For i = 0 To sLines.Length - 1
-                g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", vbTab & sLines(i), g_mFormMain.g_mUCInformationList.ParseFromCompilerOutput(sLines(i)))
+                g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", vbTab & sLines(i), g_mFormMain.g_mUCInformationList.ParseFromCompilerOutput(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File, sLines(i)))
             Next
 
             sCompilerOutput = String.Join(Environment.NewLine, sLines)
@@ -977,7 +977,7 @@ Public Class ClassTextEditorTools
 
             sLines = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
             For i = 0 To sLines.Length - 1
-                g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", vbTab & sLines(i), g_mFormMain.g_mUCInformationList.ParseFromCompilerOutput(sLines(i)))
+                g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", vbTab & sLines(i), g_mFormMain.g_mUCInformationList.ParseFromCompilerOutput(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File, sLines(i)))
             Next
 
             sCompilerOutput = String.Join(Environment.NewLine, sLines)
@@ -1260,7 +1260,7 @@ Public Class ClassTextEditorTools
 
             sLines = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
             For i = 0 To sLines.Length - 1
-                g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", vbTab & sLines(i), g_mFormMain.g_mUCInformationList.ParseFromCompilerOutput(sLines(i)))
+                g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", vbTab & sLines(i), g_mFormMain.g_mUCInformationList.ParseFromCompilerOutput(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File, sLines(i)))
             Next
 
             sCompilerOutput = String.Join(Environment.NewLine, sLines)
