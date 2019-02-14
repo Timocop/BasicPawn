@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class UCInformationList
     Inherits System.Windows.Forms.UserControl
 
     'UserControl überschreibt den Löschvorgang, um die Komponentenliste zu bereinigen.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If disposing AndAlso components IsNot Nothing Then
@@ -20,10 +20,9 @@ Partial Class UCInformationList
     'Hinweis: Die folgende Prozedur ist für den Windows Form-Designer erforderlich.
     'Das Bearbeiten ist mit dem Windows Form-Designer möglich.  
     'Das Bearbeiten mit dem Code-Editor ist nicht möglich.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Me.ListBox_Information = New System.Windows.Forms.ListBox()
         Me.ContextMenuStrip_Information = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.ToolStripMenuItem_OpenExplorer = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_GotoLine = New System.Windows.Forms.ToolStripMenuItem()
@@ -42,22 +41,9 @@ Partial Class UCInformationList
         Me.ToolStripMenuItem_CopySelected = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_CopySelectedFull = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_CopySelectedMin = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ListBox_Information = New BasicPawn.ClassInformationListBox()
         Me.ContextMenuStrip_Information.SuspendLayout()
         Me.SuspendLayout()
-        '
-        'ListBox_Information
-        '
-        Me.ListBox_Information.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.ListBox_Information.ContextMenuStrip = Me.ContextMenuStrip_Information
-        Me.ListBox_Information.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ListBox_Information.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.ListBox_Information.FormattingEnabled = True
-        Me.ListBox_Information.HorizontalScrollbar = True
-        Me.ListBox_Information.Location = New System.Drawing.Point(0, 0)
-        Me.ListBox_Information.Name = "ListBox_Information"
-        Me.ListBox_Information.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
-        Me.ListBox_Information.Size = New System.Drawing.Size(532, 178)
-        Me.ListBox_Information.TabIndex = 0
         '
         'ContextMenuStrip_Information
         '
@@ -177,6 +163,22 @@ Partial Class UCInformationList
         Me.ToolStripMenuItem_CopySelectedMin.Size = New System.Drawing.Size(118, 22)
         Me.ToolStripMenuItem_CopySelectedMin.Text = "Minimal"
         '
+        'ListBox_Information
+        '
+        Me.ListBox_Information.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.ListBox_Information.ContextMenuStrip = Me.ContextMenuStrip_Information
+        Me.ListBox_Information.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ListBox_Information.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable
+        Me.ListBox_Information.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.ListBox_Information.FormattingEnabled = True
+        Me.ListBox_Information.HorizontalScrollbar = True
+        Me.ListBox_Information.ItemHeight = 16
+        Me.ListBox_Information.Location = New System.Drawing.Point(0, 0)
+        Me.ListBox_Information.Name = "ListBox_Information"
+        Me.ListBox_Information.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
+        Me.ListBox_Information.Size = New System.Drawing.Size(532, 178)
+        Me.ListBox_Information.TabIndex = 0
+        '
         'UCInformationList
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -188,8 +190,6 @@ Partial Class UCInformationList
         Me.ResumeLayout(False)
 
     End Sub
-
-    Friend WithEvents ListBox_Information As ListBox
     Friend WithEvents ContextMenuStrip_Information As ContextMenuStrip
     Friend WithEvents ToolStripMenuItem_OpenNotepad As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_Copy As ToolStripMenuItem
@@ -208,4 +208,5 @@ Partial Class UCInformationList
     Friend WithEvents ToolStripMenuItem_CopySelected As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_CopySelectedFull As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_CopySelectedMin As ToolStripMenuItem
+    Friend WithEvents ListBox_Information As ClassInformationListBox
 End Class

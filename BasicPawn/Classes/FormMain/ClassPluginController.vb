@@ -145,7 +145,7 @@ Public Class ClassPluginController
                     ClassExceptionLog.WriteToLogMessageBox(ex)
                 End Try
             Catch ex As Exception
-                g_mFormMain.g_mUCInformationList.PrintInformation("[ERRO]", String.Format("Plugin '{0}' could not be loaded! Outdated? Exception: {1}", IO.Path.GetFileName(sPluginFile), ex.Message))
+                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, String.Format("Plugin '{0}' could not be loaded! Outdated? Exception: {1}", IO.Path.GetFileName(sPluginFile), ex.Message))
             End Try
         Next
     End Sub

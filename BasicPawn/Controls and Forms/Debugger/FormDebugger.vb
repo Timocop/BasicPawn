@@ -69,7 +69,7 @@ Public Class FormDebugger
     End Sub
 
     Private Sub FormDebugger_Load(sender As Object, e As EventArgs) Handles Me.Load
-        PrintInformation("[INFO]", "Starting debugger...", False, True)
+        PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "Starting debugger...", False, True)
 
         If (Not RefreshSource()) Then
             MessageBox.Show("Could not open debugger. See information tab for more information.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -86,13 +86,18 @@ Public Class FormDebugger
         g_bPostLoad = True
     End Sub
 
-    Public Sub PrintInformation(sType As String, sMessage As String, Optional bClear As Boolean = False, Optional bEnsureVisible As Boolean = False)
+    Public Sub PrintInformation(iIcon As ClassInformationListBox.ENUM_ICONS, sText As String, Optional bClear As Boolean = False, Optional bEnsureVisible As Boolean = False)
         ClassThread.ExecAsync(Me, Sub()
                                       If (bClear) Then
                                           ListBox_Information.Items.Clear()
                                       End If
 
-                                      Dim iIndex = ListBox_Information.Items.Add(String.Format("{0} ({1}) {2}", sType, Now.ToString, sMessage))
+                                      'Tabs are not displayed correctly with TextRenderer. Replace them with spaces
+                                      sText = sText.Replace(vbTab, New String(" "c, 4))
+
+                                      Dim mItem As New ClassInformationListBox.ClassInformationItem(iIcon, Now, sText)
+
+                                      Dim iIndex = ListBox_Information.Items.Add(mItem)
 
                                       If (bEnsureVisible) Then
                                           'Scroll to item
@@ -103,7 +108,7 @@ Public Class FormDebugger
 
     Private Function RefreshSource() As Boolean
         Try
-            PrintInformation("[INFO]", "Refreshing source...", False, True)
+            PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "Refreshing source...", False, True)
 
             Using mFormProgress As New FormProgress
                 mFormProgress.Text = "BasicPawn Debugger - Generating source..."
@@ -147,11 +152,11 @@ Public Class FormDebugger
                     Throw New ArgumentException("Invalid source")
                 End If
 
-                PrintInformation("[INFO]", "Pre-Processing source output:", False, False)
+                PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "Pre-Processing source output:", False, False)
                 For Each sLine In sCompilerOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
-                    PrintInformation("[INFO]", vbTab & sLine, False, False)
+                    PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, vbTab & sLine, False, False)
                 Next
-                PrintInformation("[INFO]", New String("~"c, 50), False, True)
+                PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, New String("~"c, 50), False, True)
 
 
                 mFormProgress.m_Progress = 20
@@ -222,11 +227,11 @@ Public Class FormDebugger
                     Throw New ArgumentException("Unsupported compiler")
                 End If
 
-                PrintInformation("[INFO]", "DIASM source output:", False, False)
+                PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "DIASM source output:", False, False)
                 For Each sLine In sCompilerOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
-                    PrintInformation("[INFO]", vbTab & sLine, False, False)
+                    PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, vbTab & sLine, False, False)
                 Next
-                PrintInformation("[INFO]", New String("~"c, 50), False, True)
+                PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, New String("~"c, 50), False, True)
 
 
                 mFormProgress.m_Progress = 60

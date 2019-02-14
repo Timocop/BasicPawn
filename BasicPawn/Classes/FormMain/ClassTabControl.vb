@@ -380,7 +380,7 @@ Public Class ClassTabControl
                 g_mFormMain.g_mUCStartPage.Hide()
             End If
 
-            g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", "User created a new source file")
+            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "User created a new source file")
             Return False
         End If
 
@@ -415,7 +415,7 @@ Public Class ClassTabControl
             g_mFormMain.g_mUCStartPage.Hide()
         End If
 
-        g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", "User opened a new file: " & sFile, New UCInformationList.ClassListBoxItemAction.STRUC_ACTION_OPEN(sFile))
+        g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "User opened a new file: " & sFile, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(sFile))
         Return True
     End Function
 
@@ -438,7 +438,7 @@ Public Class ClassTabControl
                     m_Tab(iIndex).m_ClassLineState.SaveStates(m_Tab(iIndex).m_TextEditor)
                     m_Tab(iIndex).m_TextEditor.Refresh()
 
-                    g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", "User saved file to: " & m_Tab(iIndex).m_File, New UCInformationList.ClassListBoxItemAction.STRUC_ACTION_OPEN(m_Tab(iIndex).m_File))
+                    g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "User saved file to: " & m_Tab(iIndex).m_File, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(m_Tab(iIndex).m_File))
 
                     IO.File.WriteAllText(m_Tab(iIndex).m_File, m_Tab(iIndex).m_TextEditor.Document.TextContent)
 
@@ -456,7 +456,7 @@ Public Class ClassTabControl
             m_Tab(iIndex).m_ClassLineState.SaveStates(m_Tab(iIndex).m_TextEditor)
             m_Tab(iIndex).m_TextEditor.Refresh()
 
-            g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", "User saved file to: " & m_Tab(iIndex).m_File, New UCInformationList.ClassListBoxItemAction.STRUC_ACTION_OPEN(m_Tab(iIndex).m_File))
+            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "User saved file to: " & m_Tab(iIndex).m_File, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(m_Tab(iIndex).m_File))
 
             IO.File.WriteAllText(m_Tab(iIndex).m_File, m_Tab(iIndex).m_TextEditor.Document.TextContent)
 
@@ -498,7 +498,7 @@ Public Class ClassTabControl
                             m_Tab(iIndex).m_ClassLineState.SaveStates(m_Tab(iIndex).m_TextEditor)
                             m_Tab(iIndex).m_TextEditor.Refresh()
 
-                            g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", "User saved file to: " & m_Tab(iIndex).m_File, New UCInformationList.ClassListBoxItemAction.STRUC_ACTION_OPEN(m_Tab(iIndex).m_File))
+                            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "User saved file to: " & m_Tab(iIndex).m_File, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(m_Tab(iIndex).m_File))
 
                             IO.File.WriteAllText(m_Tab(iIndex).m_File, m_Tab(iIndex).m_TextEditor.Document.TextContent)
 
@@ -518,7 +518,7 @@ Public Class ClassTabControl
                     m_Tab(iIndex).m_ClassLineState.SaveStates(m_Tab(iIndex).m_TextEditor)
                     m_Tab(iIndex).m_TextEditor.Refresh()
 
-                    g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", "User saved file to: " & m_Tab(iIndex).m_File, New UCInformationList.ClassListBoxItemAction.STRUC_ACTION_OPEN(m_Tab(iIndex).m_File))
+                    g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "User saved file to: " & m_Tab(iIndex).m_File, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(m_Tab(iIndex).m_File))
 
                     IO.File.WriteAllText(m_Tab(iIndex).m_File, m_Tab(iIndex).m_TextEditor.Document.TextContent)
 

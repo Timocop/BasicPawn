@@ -302,7 +302,7 @@ Public Class UCProjectBrowser
             m_ProjectChanged = False
             UpdateListViewInfo()
 
-            g_mUCProjectBrowser.g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", "User saved project file: " & g_sProjectFile, New UCInformationList.ClassListBoxItemAction.STRUC_ACTION_OPEN(g_sProjectFile))
+            g_mUCProjectBrowser.g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "User saved project file: " & g_sProjectFile, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(g_sProjectFile))
         End Sub
 
         Public Sub LoadProject(bAppend As Boolean, bOpenProjectFiles As Boolean)
@@ -310,7 +310,7 @@ Public Class UCProjectBrowser
                 Throw New ArgumentException("Project file not found")
             End If
 
-            g_mUCProjectBrowser.g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", "User loaded project file: " & g_sProjectFile, New UCInformationList.ClassListBoxItemAction.STRUC_ACTION_OPEN(g_sProjectFile))
+            g_mUCProjectBrowser.g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "User loaded project file: " & g_sProjectFile, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(g_sProjectFile))
 
             If (Not bAppend) Then
                 ClearFiles()
@@ -339,7 +339,7 @@ Public Class UCProjectBrowser
 
                         lProjectFiles.Add(mItem.sValue)
 
-                        g_mUCProjectBrowser.g_mFormMain.g_mUCInformationList.PrintInformation("[INFO]", vbTab & "Loaded project file: " & mItem.sValue, New UCInformationList.ClassListBoxItemAction.STRUC_ACTION_OPEN(mItem.sValue))
+                        g_mUCProjectBrowser.g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, vbTab & "Loaded project file: " & mItem.sValue, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(mItem.sValue))
                     Next
                 End Using
             End Using

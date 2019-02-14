@@ -36,7 +36,6 @@ Public Class ClassAutocompleteListBox
         ICO_STRING
         ICO_VARIABLE
     End Enum
-
     Private g_mIcons([Enum].GetNames(GetType(ENUM_ICONS)).Length - 1) As Image
 
     Public Sub New()

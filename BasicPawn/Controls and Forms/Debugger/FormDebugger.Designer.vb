@@ -58,7 +58,7 @@ Partial Class FormDebugger
         Me.RichTextBox_DisasmSource = New System.Windows.Forms.RichTextBox()
         Me.ClassTabControlColor1 = New BasicPawn.ClassTabControlColor()
         Me.TabPage1 = New System.Windows.Forms.TabPage()
-        Me.ListBox_Information = New System.Windows.Forms.ListBox()
+        Me.ListBox_Information = New ClassInformationListBox()
         Me.TabControl1 = New BasicPawn.ClassTabControlColor()
         Me.TabPage_Breakpoints = New System.Windows.Forms.TabPage()
         Me.ListView_Breakpoints = New System.Windows.Forms.ListView()
@@ -718,7 +718,7 @@ Partial Class FormDebugger
     Friend WithEvents SplitContainer2 As SplitContainer
     Friend WithEvents ClassTabControlColor1 As ClassTabControlColor
     Friend WithEvents TabPage1 As TabPage
-    Friend WithEvents ListBox_Information As ListBox
+    Friend WithEvents ListBox_Information As ClassInformationListBox
     Friend WithEvents TabPage_Asserts As TabPage
     Friend WithEvents ListView_Asserts As ListView
     Friend WithEvents ColumnHeader11 As ColumnHeader

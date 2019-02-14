@@ -348,6 +348,9 @@
     <Compile Include="Controls and Forms\Main\Classes\ClassAutocompleteListBox.vb">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls and Forms\Main\Classes\ClassInformationListBox.vb">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls and Forms\Main\UCExplorerBrowser.Designer.vb">
       <DependentUpon>UCExplorerBrowser.vb</DependentUpon>
     </Compile>
@@ -597,6 +600,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="BasicPawnIcon.ico" />
+    <None Include="Resources\user32_104_16x16-32.png" />
+    <None Include="Resources\user32_103_16x16-32.png" />
+    <None Include="Resources\user32_102_16x16-32.png" />
+    <None Include="Resources\user32_101_16x16-32.png" />
     <None Include="Resources\netshell_1610_16x16-32.png" />
     <None Include="Resources\netshell_1608_16x16-32.png" />
     <None Include="Resources\netshell_1607_16x16-32.png" />

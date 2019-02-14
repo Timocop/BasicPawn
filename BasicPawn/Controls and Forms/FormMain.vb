@@ -492,13 +492,13 @@ Public Class FormMain
     Private Sub ToolStripMenuItem_FileNew_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileNew.Click
         g_ClassTabControl.AddTab(True, False, False, True)
 
-        g_mUCInformationList.PrintInformation("[INFO]", "User created a new source file")
+        g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "User created a new source file")
     End Sub
 
     Private Sub ToolStripMenuItem_FileNewWizard_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileNewWizard.Click
         g_ClassTabControl.AddTab(True, True, False, True)
 
-        g_mUCInformationList.PrintInformation("[INFO]", "User created a new source file")
+        g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "User created a new source file")
     End Sub
 
     Private Sub ToolStripMenuItem_FileProjectSave_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileProjectSave.Click
@@ -1011,7 +1011,7 @@ Public Class FormMain
     End Sub
 
     Private Sub ToolStripMenuItem_ToolsClearInformationLog_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsClearInformationLog.Click
-        g_mUCInformationList.PrintInformation("[INFO]", "Information log cleaned!", True, True)
+        g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "Information log cleaned!", True, True)
     End Sub
 
     Private Sub ToolStripMenuItem_ToolsAutocompleteUpdate_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsAutocompleteUpdate.Click
@@ -1313,13 +1313,13 @@ Public Class FormMain
 
         'Only change config if we found one.
         If (i = ClassConfigs.ENUM_OPTIMAL_CONFIG.NONE) Then
-            g_mUCInformationList.PrintInformation("[WARN]", String.Format("No optimal config found for tab '{0} ({1})'", mTab.m_Title, mTab.m_Index), False, True, True)
+            g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_WARNING, String.Format("No optimal config found for tab '{0} ({1})'", mTab.m_Title, mTab.m_Index), False, True, True)
         Else
             mTab.m_ActiveConfig = mConfig
 
             g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
 
-            g_mUCInformationList.PrintInformation("[INFO]", String.Format("Optimal config found for tab '{0} ({1})': {2}", mTab.m_Title, mTab.m_Index, mConfig.GetName), False, True, True)
+            g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("Optimal config found for tab '{0} ({1})': {2}", mTab.m_Title, mTab.m_Index, mConfig.GetName), False, True, True)
         End If
 
         UpdateFormConfigText()
@@ -1336,13 +1336,13 @@ Public Class FormMain
 
             'Only change config if we found one.
             If (i = ClassConfigs.ENUM_OPTIMAL_CONFIG.NONE) Then
-                g_mUCInformationList.PrintInformation("[WARN]", String.Format("No optimal config found for tab '{0} ({1})'", mTab.m_Title, mTab.m_Index), False, True, True)
+                g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_WARNING, String.Format("No optimal config found for tab '{0} ({1})'", mTab.m_Title, mTab.m_Index), False, True, True)
             Else
                 mTab.m_ActiveConfig = mConfig
 
                 g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, mTab)
 
-                g_mUCInformationList.PrintInformation("[INFO]", String.Format("Optimal config found for tab '{0} ({1})': {2}", mTab.m_Title, mTab.m_Index, mConfig.GetName), False, True, True)
+                g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("Optimal config found for tab '{0} ({1})': {2}", mTab.m_Title, mTab.m_Index, mConfig.GetName), False, True, True)
             End If
         Next
 

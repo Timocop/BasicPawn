@@ -21,10 +21,6 @@ Imports ICSharpCode.TextEditor
 Public Class UCInformationList
     Private g_mFormMain As FormMain
 
-    Public ReadOnly INFO_DATA_OPEN_PATH As String = "OpenPath" 'Open absolute path
-    Public ReadOnly INFO_DATA_FIND_PATH As String = "FindPath" 'Find absolute/relative path in open tabs/includes
-    Public ReadOnly INFO_DATA_FIND_LINES As String = "FindLines" 'Find lines. {Line} or {LineStart, LineEnd}.
-
     Public Sub New(f As FormMain)
 
         ' This call is required by the designer.
@@ -32,25 +28,32 @@ Public Class UCInformationList
 
         ' Add any initialization after the InitializeComponent() call.
         g_mFormMain = f
+
+        'Set double buffering to avoid annonying flickers
+        ClassTools.ClassForms.SetDoubleBufferingAllChilds(Me, True)
+        ClassTools.ClassForms.SetDoubleBufferingUnmanagedAllChilds(Me, True)
     End Sub
 
-    Public Sub PrintInformation(sType As String, sMessage As String, Optional bClear As Boolean = False, Optional bShowInformationTab As Boolean = False, Optional bEnsureVisible As Boolean = False)
-        PrintInformation(sType, sMessage, Nothing, bClear, bShowInformationTab, bEnsureVisible)
+    Public Sub PrintInformation(iIcon As ClassInformationListBox.ENUM_ICONS, sText As String, Optional bClear As Boolean = False, Optional bShowInformationTab As Boolean = False, Optional bEnsureVisible As Boolean = False)
+        PrintInformation(iIcon, sText, Nothing, bClear, bShowInformationTab, bEnsureVisible)
     End Sub
 
-    Public Sub PrintInformation(sType As String, sMessage As String, mAction As ClassListBoxItemAction.IAction, Optional bClear As Boolean = False, Optional bShowInformationTab As Boolean = False, Optional bEnsureVisible As Boolean = False)
+    Public Sub PrintInformation(iIcon As ClassInformationListBox.ENUM_ICONS, sText As String, mAction As ClassListBoxItemAction.ClassActions.IAction, Optional bClear As Boolean = False, Optional bShowInformationTab As Boolean = False, Optional bEnsureVisible As Boolean = False)
         ClassThread.ExecAsync(Me, Sub()
                                       If (bClear) Then
                                           ListBox_Information.Items.Clear()
                                       End If
 
-                                      Dim mItem As New ClassListBoxItemAction(String.Format("{0} ({1})", sType, Now.ToString), sMessage) With {
+                                      'Tabs are not displayed correctly with TextRenderer. Replace them with spaces
+                                      sText = sText.Replace(vbTab, New String(" "c, 4))
+
+                                      Dim mItem As New ClassListBoxItemAction(iIcon, Now, sText) With {
                                           .m_Action = mAction
                                       }
 
                                       Dim iIndex = ListBox_Information.Items.Add(mItem)
 
-                                      g_mFormMain.ToolStripStatusLabel_LastInformation.Text = sMessage
+                                      g_mFormMain.ToolStripStatusLabel_LastInformation.Text = sText
 
                                       If (bShowInformationTab) Then
                                           g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed = False
@@ -69,7 +72,7 @@ Public Class UCInformationList
                                   End Sub)
     End Sub
 
-    Public Function ParseFromCompilerOutput(sFile As String, sOutputLine As String) As ClassListBoxItemAction.STRUC_ACTION_GOTO
+    Public Function ParseFromCompilerOutput(sFile As String, sOutputLine As String) As ClassListBoxItemAction.ClassActions.STRUC_ACTION_GOTO
         Dim mMatch As Match = Regex.Match(sOutputLine, "^(?<File>.+?)\((?<Line>([0-9]+)|(?<LineStart>[0-9]+)\s*--\s*(?<LineEnd>[0-9]+))\)\s*:", RegexOptions.IgnoreCase)
         If (mMatch.Success) Then
             Dim sOutputFile As String = mMatch.Groups("File").Value.Replace("/"c, "\"c)
@@ -86,19 +89,49 @@ Public Class UCInformationList
                     CInt(mMatch.Groups("Line").Value)
                 }
 
-                Return New ClassListBoxItemAction.STRUC_ACTION_GOTO(sOutputFile, iLines)
+                Return New ClassListBoxItemAction.ClassActions.STRUC_ACTION_GOTO(sOutputFile, iLines)
             ElseIf (mMatch.Groups("LineStart").Success AndAlso mMatch.Groups("LineEnd").Success) Then
                 Dim iLines As Integer() = New Integer() {
                     CInt(mMatch.Groups("LineStart").Value),
                     CInt(mMatch.Groups("LineEnd").Value)
                 }
 
-                Return New ClassListBoxItemAction.STRUC_ACTION_GOTO(sOutputFile, iLines)
+                Return New ClassListBoxItemAction.ClassActions.STRUC_ACTION_GOTO(sOutputFile, iLines)
             End If
         End If
 
         Return Nothing
     End Function
+
+    Private Sub ContextMenuStrip_Information_Opening(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles ContextMenuStrip_Information.Opening
+        ToolStripMenuItem_OpenExplorer.Enabled = False
+        ToolStripMenuItem_GotoLine.Enabled = False
+
+        While True
+            If (ListBox_Information.SelectedItems.Count <> 1) Then
+                Exit While
+            End If
+
+            If (ListBox_Information.SelectedItems(0) Is Nothing) Then
+                Exit While
+            End If
+
+            Dim mSelectedItem As ClassListBoxItemAction = TryCast(ListBox_Information.SelectedItems(0), ClassListBoxItemAction)
+            If (mSelectedItem Is Nothing) Then
+                Exit While
+            End If
+
+            'We have no data to work with, end here
+            If (mSelectedItem.m_Action Is Nothing) Then
+                Exit While
+            End If
+
+            ToolStripMenuItem_OpenExplorer.Enabled = (TypeOf mSelectedItem.m_Action Is ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN)
+            ToolStripMenuItem_GotoLine.Enabled = (TypeOf mSelectedItem.m_Action Is ClassListBoxItemAction.ClassActions.STRUC_ACTION_GOTO)
+
+            Exit While
+        End While
+    End Sub
 
     Private Sub ListBox_Information_KeyUp(sender As Object, e As KeyEventArgs) Handles ListBox_Information.KeyUp
         If (e.Control AndAlso e.KeyCode = Keys.C) Then
@@ -183,8 +216,8 @@ Public Class UCInformationList
 
         'Open path in explorer
         If (iAction = ENUM_ITEM_ACTION.AUTO OrElse iAction = ENUM_ITEM_ACTION.OPEN) Then
-            If (TypeOf mSelectedItem.m_Action Is ClassListBoxItemAction.STRUC_ACTION_OPEN) Then
-                Dim mAction = DirectCast(mSelectedItem.m_Action, ClassListBoxItemAction.STRUC_ACTION_OPEN)
+            If (TypeOf mSelectedItem.m_Action Is ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN) Then
+                Dim mAction = DirectCast(mSelectedItem.m_Action, ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN)
 
                 If (String.IsNullOrEmpty(mAction.m_Path)) Then
                     MessageBox.Show("Invalid path", "Unable to open path", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -209,8 +242,8 @@ Public Class UCInformationList
 
         'Goto line number if path is open in a tab or includes
         If (iAction = ENUM_ITEM_ACTION.AUTO OrElse iAction = ENUM_ITEM_ACTION.GOTO) Then
-            If (TypeOf mSelectedItem.m_Action Is ClassListBoxItemAction.STRUC_ACTION_GOTO) Then
-                Dim mAction = DirectCast(mSelectedItem.m_Action, ClassListBoxItemAction.STRUC_ACTION_GOTO)
+            If (TypeOf mSelectedItem.m_Action Is ClassListBoxItemAction.ClassActions.STRUC_ACTION_GOTO) Then
+                Dim mAction = DirectCast(mSelectedItem.m_Action, ClassListBoxItemAction.ClassActions.STRUC_ACTION_GOTO)
 
                 If (String.IsNullOrEmpty(mAction.m_Path)) Then
                     MessageBox.Show("Invalid path", "Unable to open path", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -352,93 +385,59 @@ Public Class UCInformationList
 
 
     Class ClassListBoxItemAction
-        Interface IAction
-        End Interface
+        Inherits ClassInformationListBox.ClassInformationItem
 
-        Class STRUC_ACTION_OPEN
-            Implements IAction
+        Class ClassActions
+            Interface IAction
+            End Interface
 
-            Property m_Path As String
+            Class STRUC_ACTION_OPEN
+                Implements IAction
 
-            Sub New(_Path As String)
-                m_Path = _Path
-            End Sub
+                Property m_Path As String
+
+                Sub New(_Path As String)
+                    m_Path = _Path
+                End Sub
+            End Class
+
+            Class STRUC_ACTION_GOTO
+                Implements IAction
+
+                Property m_Path As String
+                Property m_Lines As Integer()
+
+                Sub New(_Path As String, _Lines As Integer())
+                    m_Path = _Path
+                    m_Lines = _Lines
+                End Sub
+            End Class
         End Class
 
-        Class STRUC_ACTION_GOTO
-            Implements IAction
+        Property m_Action As ClassActions.IAction = Nothing
 
-            Property m_Path As String
-            Property m_Lines As Integer()
-
-            Sub New(_Path As String, _Lines As Integer())
-                m_Path = _Path
-                m_Lines = _Lines
-            End Sub
-        End Class
-
-        Property m_Info As String
-        Property m_Message As String
-        Property m_Text As String
-        Property m_Action As IAction = Nothing
-
-        Sub New(_Info As String, _Message As String)
-            Me.m_Info = _Info
-            Me.m_Message = _Message
-            Me.m_Text = String.Format("{0} {1}", _Info, _Message)
+        Public Sub New(_Icon As ClassInformationListBox.ENUM_ICONS, _Time As Date, _Text As String)
+            MyBase.New(_Icon, _Time, _Text)
         End Sub
 
         Public Function ToStringFull() As String
-            Return m_Text
+            Return String.Format("[{0}] {1}", m_Time.ToString, m_Text)
         End Function
 
         Public Function ToStringMinimal() As String
-            Return m_Message
+            Return m_Text
         End Function
 
-        Public Overrides Function ToString() As String
+        Public Overrides Function GetDrawIcon() As Image
             Select Case (True)
-                Case (TypeOf m_Action Is STRUC_ACTION_OPEN)
-                    'Add somekind of 'link' symbol: Ꝉ
-                    Return m_Text & " " & ChrW(&HA748)
+                Case (TypeOf m_Action Is ClassActions.STRUC_ACTION_OPEN)
+                    Return My.Resources.imageres_5304_16x16
 
-                Case (TypeOf m_Action Is STRUC_ACTION_GOTO)
-                    'Add somekind of 'link' symbol: ←
-                    Return m_Text & " " & ChrW(&H2190)
-
-                Case Else
-                    Return m_Text
+                Case (TypeOf m_Action Is ClassActions.STRUC_ACTION_GOTO)
+                    Return My.Resources.imageres_5302_16x16
             End Select
+
+            Return MyBase.GetDrawIcon()
         End Function
     End Class
-
-    Private Sub ContextMenuStrip_Information_Opening(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles ContextMenuStrip_Information.Opening
-        ToolStripMenuItem_OpenExplorer.Enabled = False
-        ToolStripMenuItem_GotoLine.Enabled = False
-
-        While True
-            If (ListBox_Information.SelectedItems.Count <> 1) Then
-                Exit While
-            End If
-
-            If (ListBox_Information.SelectedItems(0) Is Nothing) Then
-                Exit While
-            End If
-
-            Dim mSelectedItem As ClassListBoxItemAction = TryCast(ListBox_Information.SelectedItems(0), ClassListBoxItemAction)
-            If (mSelectedItem Is Nothing) Then
-                Exit While
-            End If
-
-            'We have no data to work with, end here
-            If (mSelectedItem.m_Action Is Nothing) Then
-                Exit While
-            End If
-
-            ToolStripMenuItem_OpenExplorer.Enabled = (TypeOf mSelectedItem.m_Action Is ClassListBoxItemAction.STRUC_ACTION_OPEN)
-            ToolStripMenuItem_GotoLine.Enabled = (TypeOf mSelectedItem.m_Action Is ClassListBoxItemAction.STRUC_ACTION_GOTO)
-
-            Exit While
-        End While
-    End Sub
 End Class
