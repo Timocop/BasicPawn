@@ -339,7 +339,7 @@ Public Class UCProjectBrowser
 
                         lProjectFiles.Add(mItem.sValue)
 
-                        g_mUCProjectBrowser.g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, vbTab & "Loaded project file: " & mItem.sValue, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(mItem.sValue))
+                        g_mUCProjectBrowser.g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & "Loaded project file: " & mItem.sValue, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(mItem.sValue))
                     Next
                 End Using
             End Using

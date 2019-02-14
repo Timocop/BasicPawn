@@ -776,7 +776,7 @@ Public Class ClassDebuggerParser
 
             lRemovedBreakpoints.Reverse()
             For Each i As Integer In lRemovedBreakpoints
-                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, vbTab & String.Format("Breakpoint removed at line: {0}", i))
+                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & String.Format("Breakpoint removed at line: {0}", i))
             Next
 
             mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
@@ -841,7 +841,7 @@ Public Class ClassDebuggerParser
 
             lRemovedBreakpoints.Reverse()
             For Each i As Integer In lRemovedBreakpoints
-                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, vbTab & String.Format("Breakpoint removed at line: {0}", i))
+                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & String.Format("Breakpoint removed at line: {0}", i))
             Next
 
             mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
@@ -1082,7 +1082,7 @@ Public Class ClassDebuggerParser
 
             lRemovedWatchers.Reverse()
             For Each i As Integer In lRemovedWatchers
-                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, vbTab & String.Format("Watcher removed at line: {0}", i))
+                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & String.Format("Watcher removed at line: {0}", i))
             Next
 
             mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
@@ -1147,7 +1147,7 @@ Public Class ClassDebuggerParser
 
             lRemovedWatchers.Reverse()
             For Each i As Integer In lRemovedWatchers
-                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, vbTab & String.Format("Watcher removed at line: {0}", i))
+                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & String.Format("Watcher removed at line: {0}", i))
             Next
 
             mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
@@ -1388,7 +1388,7 @@ Public Class ClassDebuggerParser
 
             lRemovedAsserts.Reverse()
             For Each i As Integer In lRemovedAsserts
-                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, vbTab & String.Format("Assert removed at line: {0}", i))
+                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & String.Format("Assert removed at line: {0}", i))
             Next
 
             mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
@@ -1453,7 +1453,7 @@ Public Class ClassDebuggerParser
 
             lRemovedAsserts.Reverse()
             For Each i As Integer In lRemovedAsserts
-                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, vbTab & String.Format("Assert removed at line: {0}", i))
+                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & String.Format("Assert removed at line: {0}", i))
             Next
 
             mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()

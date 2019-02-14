@@ -179,7 +179,7 @@ Public Class ClassTextEditorTools
             Dim iLine As Integer = CInt(i(E_REFLIST_LINE))
             Dim sMsg As String = CStr(i(E_REFLIST_MSG))
 
-            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, sMsg, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_GOTO(sFile, New Integer() {iLine}), False)
+            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, sMsg, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_GOTO(sFile, New Integer() {iLine}), False)
         Next
 
         g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("{0} references listed!", lRefList.Count), False, True, True)
@@ -683,7 +683,7 @@ Public Class ClassTextEditorTools
 
             sLines = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
             For i = 0 To sLines.Length - 1
-                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, vbTab & sLines(i), g_mFormMain.g_mUCInformationList.ParseFromCompilerOutput(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File, sLines(i)))
+                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & sLines(i), g_mFormMain.g_mUCInformationList.ParseFromCompilerOutput(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File, sLines(i)))
             Next
 
             sCompilerOutput = String.Join(Environment.NewLine, sLines)
@@ -730,7 +730,7 @@ Public Class ClassTextEditorTools
                 End Select
 
                 If (Not bTesting) Then
-                    g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, vbTab & String.Format("Saved compiled source: {0}", sOutputFile), New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(sOutputFile))
+                    g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & String.Format("Saved compiled source: {0}", sOutputFile), New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(sOutputFile))
                 End If
             End If
 
@@ -977,7 +977,7 @@ Public Class ClassTextEditorTools
 
             sLines = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
             For i = 0 To sLines.Length - 1
-                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, vbTab & sLines(i), g_mFormMain.g_mUCInformationList.ParseFromCompilerOutput(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File, sLines(i)))
+                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & sLines(i), g_mFormMain.g_mUCInformationList.ParseFromCompilerOutput(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File, sLines(i)))
             Next
 
             sCompilerOutput = String.Join(Environment.NewLine, sLines)
@@ -1260,7 +1260,7 @@ Public Class ClassTextEditorTools
 
             sLines = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
             For i = 0 To sLines.Length - 1
-                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, vbTab & sLines(i), g_mFormMain.g_mUCInformationList.ParseFromCompilerOutput(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File, sLines(i)))
+                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & sLines(i), g_mFormMain.g_mUCInformationList.ParseFromCompilerOutput(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File, sLines(i)))
             Next
 
             sCompilerOutput = String.Join(Environment.NewLine, sLines)
@@ -1274,7 +1274,7 @@ Public Class ClassTextEditorTools
             End If
 
             If (Not bTesting) Then
-                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, vbTab & String.Format("Saved DIASM source: {0}", sOutputFile), New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(sOutputFile))
+                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & String.Format("Saved DIASM source: {0}", sOutputFile), New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(sOutputFile))
             End If
 
             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "DIASM source finished!", False, False, True)

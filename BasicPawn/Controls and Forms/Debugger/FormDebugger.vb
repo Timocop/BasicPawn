@@ -154,7 +154,7 @@ Public Class FormDebugger
 
                 PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "Pre-Processing source output:", False, False)
                 For Each sLine In sCompilerOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
-                    PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, vbTab & sLine, False, False)
+                    PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & sLine, False, False)
                 Next
                 PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, New String("~"c, 50), False, True)
 
@@ -229,7 +229,7 @@ Public Class FormDebugger
 
                 PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "DIASM source output:", False, False)
                 For Each sLine In sCompilerOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
-                    PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, vbTab & sLine, False, False)
+                    PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & sLine, False, False)
                 Next
                 PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, New String("~"c, 50), False, True)
 

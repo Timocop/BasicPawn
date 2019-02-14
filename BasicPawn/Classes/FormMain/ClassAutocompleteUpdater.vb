@@ -405,12 +405,12 @@ Public Class ClassAutocompleteUpdater
 #If PROFILE_AUTOCOMPLETE Then
             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_DEBUG, "Autocomplete update finished!")
             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_DEBUG, "Times:")
-            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_DEBUG, vbTab & "Includes: " & mIncludeWatch.Elapsed.ToString)
-            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_DEBUG, vbTab & "Language: " & mLanguageWatch.Elapsed.ToString)
-            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_DEBUG, vbTab & "Pre: " & mPreWatch.Elapsed.ToString)
-            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_DEBUG, vbTab & "Post: " & mPostWatch.Elapsed.ToString)
-            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_DEBUG, vbTab & "Finalize: " & mFinalizeWatch.Elapsed.ToString)
-            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_DEBUG, vbTab & "Apply: " & mApplyWatch.Elapsed.ToString)
+            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & "Includes: " & mIncludeWatch.Elapsed.ToString)
+            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & "Language: " & mLanguageWatch.Elapsed.ToString)
+            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & "Pre: " & mPreWatch.Elapsed.ToString)
+            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & "Post: " & mPostWatch.Elapsed.ToString)
+            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & "Finalize: " & mFinalizeWatch.Elapsed.ToString)
+            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & "Apply: " & mApplyWatch.Elapsed.ToString)
 #End If
         Catch ex As Threading.ThreadAbortException
             Throw
@@ -576,9 +576,9 @@ Public Class ClassAutocompleteUpdater
 #If PROFILE_AUTOCOMPLETE Then
             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_DEBUG, "Variable Autocomplete update finished!")
             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_DEBUG, "Times:")
-            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_DEBUG, vbTab & "Pre: " & mPreWatch.Elapsed.ToString)
-            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_DEBUG, vbTab & "Finalize: " & mFinalizeWatch.Elapsed.ToString)
-            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_DEBUG, vbTab & "Apply: " & mApplyWatch.Elapsed.ToString)
+            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & "Pre: " & mPreWatch.Elapsed.ToString)
+            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & "Finalize: " & mFinalizeWatch.Elapsed.ToString)
+            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & "Apply: " & mApplyWatch.Elapsed.ToString)
 #End If
 
         Catch ex As Threading.ThreadAbortException
