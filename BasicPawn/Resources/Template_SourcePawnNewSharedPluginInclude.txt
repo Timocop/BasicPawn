@@ -54,7 +54,7 @@
 [Properties]
 $IncludeDescription,Description						=My library
 $IncludeName,Library name							=my_library
-$SharedPluginName,Library name						=my_library
+$SharedPluginName,Plugin name						=my_library
 $SharedPluginFilename,Plugin filename				=my_library.smx
 ?OptionalNatives,Optional natives					=
 ?OptionalNatives,Optional natives					=%0%
