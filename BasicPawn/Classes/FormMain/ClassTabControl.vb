@@ -1154,7 +1154,6 @@ Public Class ClassTabControl
         Private Sub TextEditorControl_Source_ProcessCmdKey(ByRef bBlock As Boolean, ByRef iMsg As Message, iKeys As Keys)
             Try
                 Select Case (iKeys)
-
                     'Duplicate Line/Word
                     Case Keys.Control Or Keys.D
                         bBlock = True
@@ -1175,8 +1174,11 @@ Public Class ClassTabControl
                         g_mSourceTextEditor.Refresh()
 
                     'Paste Autocomplete
-                    Case Keys.Control Or Keys.Enter
+                    Case (Keys.Control Or Keys.Enter),
+                         (Keys.Shift Or Keys.Control Or Keys.Enter)
                         bBlock = True
+
+                        Dim bSpecialAction As Boolean = ((iKeys And Keys.Shift) <> 0)
 
                         Try
                             g_mSourceTextEditor.Document.UndoStack.StartUndoGroup()
@@ -1268,7 +1270,7 @@ Public Class ClassTabControl
 
                                 Select Case (True)
                                     Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FORWARD) <> 0
-                                        If (bGenerateSingle) Then
+                                        If (bGenerateSingle AndAlso Not bSpecialAction) Then
                                             Dim iLineOffsetNum As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Offset
                                             Dim iLineLenNum As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Length
                                             g_mSourceTextEditor.ActiveTextAreaControl.Document.Remove(iLineOffsetNum, iLineLenNum)
@@ -1282,7 +1284,7 @@ Public Class ClassTabControl
                                             iPosition = g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column
                                             g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = iPosition + sNewInput.Length
 
-                                        ElseIf (bGenerateFull) Then
+                                        ElseIf (bGenerateFull AndAlso Not bSpecialAction) Then
                                             Dim iLineOffsetNum As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Offset
                                             Dim iLineLenNum As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Length
                                             g_mSourceTextEditor.ActiveTextAreaControl.Document.Remove(iLineOffsetNum, iLineLenNum)
@@ -1314,7 +1316,7 @@ Public Class ClassTabControl
                                              (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG) <> 0,
                                              (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) <> 0,
                                              (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF) <> 0
-                                        If (bGenerateSingle) Then
+                                        If (bGenerateSingle AndAlso Not bSpecialAction) Then
                                             Dim iLineOffsetNum As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Offset
                                             Dim iLineLenNum As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Length
                                             g_mSourceTextEditor.ActiveTextAreaControl.Document.Remove(iLineOffsetNum, iLineLenNum)
@@ -1328,7 +1330,7 @@ Public Class ClassTabControl
                                             iPosition = g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column
                                             g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = iPosition + sNewInput.Length
 
-                                        ElseIf (bGenerateFull) Then
+                                        ElseIf (bGenerateFull AndAlso Not bSpecialAction) Then
                                             Dim iLineOffsetNum As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Offset
                                             Dim iLineLenNum As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetLineSegment(iLineNum).Length
                                             g_mSourceTextEditor.ActiveTextAreaControl.Document.Remove(iLineOffsetNum, iLineLenNum)
@@ -1366,7 +1368,7 @@ Public Class ClassTabControl
 
                                     Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM) <> 0,
                                                 (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STRUCT) <> 0
-                                        If (ClassSettings.g_iSettingsFullEnumAutocomplete OrElse mAutocomplete.m_FunctionString.IndexOf("."c) < 0) Then
+                                        If ((ClassSettings.g_iSettingsFullEnumAutocomplete AndAlso Not bSpecialAction) OrElse mAutocomplete.m_FunctionString.IndexOf("."c) < 0) Then
                                             g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset, mAutocomplete.m_FunctionString.Replace("."c, ":"c))
 
                                             iPosition = g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column
@@ -1382,7 +1384,7 @@ Public Class ClassTabControl
                                             (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM_STRUCT) <> 0,
                                             (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> 0,
                                             (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.OPERATOR) <> 0
-                                        If (mAutocomplete.m_FunctionString.IndexOf("."c) > -1 AndAlso sCaretFunctionName.IndexOf("."c) > -1) Then
+                                        If (mAutocomplete.m_FunctionString.IndexOf("."c) > -1 AndAlso sCaretFunctionName.IndexOf("."c) > -1 AndAlso Not bSpecialAction) Then
                                             Dim sParenthesis As String = ""
                                             If (mAutocomplete.m_FullFunctionString.Contains("("c) AndAlso mAutocomplete.m_FullFunctionString.Contains(")"c)) Then
                                                 sParenthesis = "()"
@@ -1422,7 +1424,7 @@ Public Class ClassTabControl
                                         g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = sNewInput.Length
 
                                     Case Else
-                                        If (ClassSettings.g_iSettingsFullMethodAutocomplete) Then
+                                        If (ClassSettings.g_iSettingsFullMethodAutocomplete AndAlso Not bSpecialAction) Then
                                             Dim sNewInput As String = mAutocomplete.m_FullFunctionString.Remove(0, Regex.Match(mAutocomplete.m_FullFunctionString, "^(?<Useless>.*?)(\b[a-zA-Z0-9_]+\b)\s*(\()").Groups("Useless").Length)
                                             g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset, sNewInput)
 
