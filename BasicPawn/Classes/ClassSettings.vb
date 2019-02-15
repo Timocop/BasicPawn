@@ -360,7 +360,7 @@ Public Class ClassSettings
         sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%includes%", "Include folders", mFormMain.g_ClassTabControl.m_ActiveTab.m_ActiveConfig.g_sIncludeFolders))
         sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%compiler%", "Compiler path", mFormMain.g_ClassTabControl.m_ActiveTab.m_ActiveConfig.g_sCompilerPath))
         sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%output%", "Output folder", mFormMain.g_ClassTabControl.m_ActiveTab.m_ActiveConfig.g_sOutputFolder))
-        sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%currentdir%", "BasicPawn statup folder", Application.StartupPath))
+        sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%currentdir%", "BasicPawn startup folder", Application.StartupPath))
 
         Return sShellList.ToArray
     End Function
