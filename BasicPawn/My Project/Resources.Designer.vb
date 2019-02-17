@@ -970,6 +970,26 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+        '''&lt;!-- &lt;SyntaxVersion&gt;1.2&lt;/SyntaxVersion&gt; --&gt;
+        '''&lt;SyntaxDefinition name=&quot;SourcePawn-04e3632f-5472-42c5-929a-c3e0c2b35324&quot; extensions=&quot;.sp&quot;&gt;
+        '''	&lt;Environment&gt;
+        '''		&lt;Default color=&quot;Black&quot; bgcolor=&quot;White&quot; /&gt;
+        '''		&lt;Selection color=&quot;White&quot; bgcolor=&quot;RoyalBlue&quot; /&gt;
+        '''		&lt;VRuler color=&quot;DarkGray&quot; /&gt;
+        '''		&lt;InvalidLines color=&quot;Red&quot; /&gt;
+        '''		&lt;CaretMarker color=&quot;LightCyan&quot; /&gt;
+        '''		&lt;LineNumbers color=&quot;Gray&quot; bgcolor=&quot;White&quot; /&gt;
+        '''		&lt;FoldLine color=&quot;LightGray&quot; bgcolor=&quot;White&quot; /&gt;
+        '''		&lt;FoldMarker color=&quot;Dark [rest of string was truncated]&quot;;.
+        '''</summary>
+        Public ReadOnly Property SourcePawn_SyntaxDark() As String
+            Get
+                Return ResourceManager.GetString("SourcePawn_SyntaxDark", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to ; WARNING
         '''; This file should not be read/overwritten by standard ini parsers!
         ''';

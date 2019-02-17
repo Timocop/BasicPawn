@@ -31,6 +31,7 @@ Public Class ClassSyntaxTools
     Public Shared g_sCaretWord As String = ""
 
     Public Shared g_sSyntaxXML As String = My.Resources.SourcePawn_Syntax
+    Public Shared g_sSyntaxDarkXML As String = My.Resources.SourcePawn_SyntaxDark
     Public Shared g_mSyntaxProvider As ClassSyntaxHighlighting.ClassBinarySyntaxModeFileProvider
 
     Public Shared ReadOnly g_sSyntaxHighlightCaretMarker As String = "<!-- [DO NOT EDIT | HIGHLIGHT CARET MARKER] -->"
@@ -1201,7 +1202,11 @@ Public Class ClassSyntaxTools
                     If (Not String.IsNullOrEmpty(g_sCustomSyntaxText)) Then
                         sModSyntaxXML = g_sCustomSyntaxText.Replace(g_sSyntaxSourcePawnMarker, g_mTextEditorSyntaxItems(i).sName)
                     Else
-                        sModSyntaxXML = g_sSyntaxXML.Replace(g_sSyntaxSourcePawnMarker, g_mTextEditorSyntaxItems(i).sName)
+                        If (ClassSettings.g_iSettingsInvertColors) Then
+                            sModSyntaxXML = g_sSyntaxDarkXML.Replace(g_sSyntaxSourcePawnMarker, g_mTextEditorSyntaxItems(i).sName)
+                        Else
+                            sModSyntaxXML = g_sSyntaxXML.Replace(g_sSyntaxSourcePawnMarker, g_mTextEditorSyntaxItems(i).sName)
+                        End If
                     End If
 
                     'Cleanup
@@ -1438,46 +1443,6 @@ Public Class ClassSyntaxTools
                                 End Using
 
                                 Dim sFormatedString As String = mXmlBuilder.ToString
-
-                                'Invert colors of the syntax file. But only for the default syntax file.
-                                While (ClassSettings.g_iSettingsInvertColors)
-                                    If (Not String.IsNullOrEmpty(g_sCustomSyntaxText)) Then
-                                        Exit While
-                                    End If
-
-                                    Dim mMatchColl As MatchCollection = Regex.Matches(sFormatedString, "\b(color|bgcolor)\b\s*=\s*""(?<Color>[a-zA-Z]+)""")
-                                    Dim mSyntaxBuilder As New StringBuilder(sFormatedString)
-
-                                    For j = mMatchColl.Count - 1 To 0 Step -1
-                                        If (Not mMatchColl(j).Success) Then
-                                            Continue For
-                                        End If
-
-                                        Try
-                                            Dim sColorName As String = mMatchColl(j).Groups("Color").Value
-                                            Dim iColorNameIndex As Integer = mMatchColl(j).Groups("Color").Index
-                                            Dim cConv As Color = ColorTranslator.FromHtml(sColorName)
-
-                                            Dim cInvColor As Color = ClassControlStyle.InvertColor(cConv)
-
-                                            If (cInvColor.R = 0 AndAlso cInvColor.G = 0 AndAlso cInvColor.B = 0) Then
-                                                cInvColor = g_ClassSyntaxTools.g_mFormMain.g_cDarkTextEditorBackgroundColor
-                                            Else
-                                                cInvColor = Color.FromArgb(CInt(Math.Ceiling(cInvColor.R * 0.85)),
-                                                                           CInt(Math.Ceiling(cInvColor.G * 0.85)),
-                                                                           CInt(Math.Ceiling(cInvColor.B * 0.85)))
-                                            End If
-
-                                            Dim sInvColor As String = ColorTranslator.ToHtml(cInvColor)
-
-                                            mSyntaxBuilder = mSyntaxBuilder.Remove(iColorNameIndex, sColorName.Length)
-                                            mSyntaxBuilder = mSyntaxBuilder.Insert(iColorNameIndex, sInvColor)
-                                        Catch : End Try
-                                    Next
-
-                                    sFormatedString = mSyntaxBuilder.ToString
-                                    Exit While
-                                End While
 
                                 'Set escape characters
                                 If (True) Then

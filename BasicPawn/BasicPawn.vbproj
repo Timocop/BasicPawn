@@ -600,6 +600,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="BasicPawnIcon.ico" />
+    <None Include="Resources\SourcePawn_SyntaxDark.xml" />
     <None Include="Resources\user32_104_16x16-32.png" />
     <None Include="Resources\user32_103_16x16-32.png" />
     <None Include="Resources\user32_102_16x16-32.png" />
