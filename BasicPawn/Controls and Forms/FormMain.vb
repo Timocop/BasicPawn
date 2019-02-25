@@ -760,10 +760,17 @@ Public Class FormMain
                     g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
                     g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.IndentationSize = If(ClassSettings.g_iSettingsTabsToSpaces > 0, ClassSettings.g_iSettingsTabsToSpaces, 4)
                     g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.ConvertTabsToSpaces = (ClassSettings.g_iSettingsTabsToSpaces > 0)
+                    g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.IsIconBarVisible = ClassSettings.g_bSettingsIconBar
                     g_ClassTabControl.m_Tab(j).m_TextEditor.Refresh()
                 Next
 
+                For j = 0 To g_ClassTabControl.m_TabsCount - 1
+                    g_ClassLineState.UpdateStates(g_ClassTabControl.m_Tab(j).m_TextEditor)
+                    g_ClassLineState.LimitStates(g_ClassTabControl.m_Tab(j).m_TextEditor)
+                Next
+
                 g_ClassSyntaxTools.UpdateFormColors()
+
             End If
         End Using
     End Sub
@@ -1270,7 +1277,13 @@ Public Class FormMain
                     g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
                     g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.IndentationSize = If(ClassSettings.g_iSettingsTabsToSpaces > 0, ClassSettings.g_iSettingsTabsToSpaces, 4)
                     g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.ConvertTabsToSpaces = (ClassSettings.g_iSettingsTabsToSpaces > 0)
+                    g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.IsIconBarVisible = ClassSettings.g_bSettingsIconBar
                     g_ClassTabControl.m_Tab(j).m_TextEditor.Refresh()
+                Next
+
+                For j = 0 To g_ClassTabControl.m_TabsCount - 1
+                    g_ClassLineState.UpdateStates(g_ClassTabControl.m_Tab(j).m_TextEditor)
+                    g_ClassLineState.LimitStates(g_ClassTabControl.m_Tab(j).m_TextEditor)
                 Next
 
                 g_ClassSyntaxTools.UpdateFormColors()
@@ -1294,7 +1307,13 @@ Public Class FormMain
                     g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
                     g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.IndentationSize = If(ClassSettings.g_iSettingsTabsToSpaces > 0, ClassSettings.g_iSettingsTabsToSpaces, 4)
                     g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.ConvertTabsToSpaces = (ClassSettings.g_iSettingsTabsToSpaces > 0)
+                    g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.IsIconBarVisible = ClassSettings.g_bSettingsIconBar
                     g_ClassTabControl.m_Tab(j).m_TextEditor.Refresh()
+                Next
+
+                For j = 0 To g_ClassTabControl.m_TabsCount - 1
+                    g_ClassLineState.UpdateStates(g_ClassTabControl.m_Tab(j).m_TextEditor)
+                    g_ClassLineState.LimitStates(g_ClassTabControl.m_Tab(j).m_TextEditor)
                 Next
 
                 g_ClassSyntaxTools.UpdateFormColors()

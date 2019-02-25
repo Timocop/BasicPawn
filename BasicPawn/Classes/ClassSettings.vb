@@ -30,6 +30,12 @@ Public Class ClassSettings
         TAB
     End Enum
 
+    Enum ENUM_LINE_STATE_TYPE
+        NONE
+        CHANGED_AND_SAVED
+        CHANGED
+    End Enum
+
     Public Shared g_iSettingsAutocompleteSyntax As ENUM_AUTOCOMPLETE_SYNTAX = ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX
     Public Shared ReadOnly g_iSettingsDefaultEditorFont As Font = New Font("Consolas", 9, FontStyle.Regular)
     Public Shared ReadOnly g_sSettingsDefaultEditorFont As String = New FontConverter().ConvertToInvariantString(g_iSettingsDefaultEditorFont)
@@ -52,6 +58,9 @@ Public Class ClassSettings
     Public Shared g_sSettingsSyntaxHighlightingPath As String = ""
     Public Shared g_bSettingsRememberFoldings As Boolean = True
     Public Shared g_iSettingsThreadUpdateRate As Integer = 500
+    Public Shared g_bSettingsIconBar As Boolean = True
+    Public Shared g_iSettingsIconLineStateMax As Integer = 1000
+    Public Shared g_iSettingsIconLineStateType As ENUM_LINE_STATE_TYPE = ENUM_LINE_STATE_TYPE.CHANGED
     'Syntax Highligting
     Public Shared g_iSettingsDoubleClickMark As Boolean = True
     Public Shared g_iSettingsAutoMark As Boolean = True
@@ -101,6 +110,9 @@ Public Class ClassSettings
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorSyntaxHighlightingPath", g_sSettingsSyntaxHighlightingPath))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorRememberFoldings", If(g_bSettingsRememberFoldings, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorThreadUpdateRate", CStr(g_iSettingsThreadUpdateRate)))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorIconBar", If(g_bSettingsIconBar, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorIconBarLineStateMax", CStr(g_iSettingsIconLineStateMax)))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorIconBarLineStateType", CStr(g_iSettingsIconLineStateType)))
                 'Syntax Highligting
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "DoubleClickMark", If(g_iSettingsDoubleClickMark, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutoMark", If(g_iSettingsAutoMark, "1", "0")))
@@ -165,6 +177,17 @@ Public Class ClassSettings
                     If (Integer.TryParse(mIni.ReadKeyValue("Editor", "TextEditorThreadUpdateRate", "500"), tmpInt)) Then
                         g_iSettingsThreadUpdateRate = ClassTools.ClassMath.ClampInt(tmpInt, 100, 2500)
                     End If
+
+                    g_bSettingsIconBar = (mIni.ReadKeyValue("Editor", "TextEditorIconBar", "1") <> "0")
+
+                    If (Integer.TryParse(mIni.ReadKeyValue("Editor", "TextEditorIconBarLineStateMax", "1000"), tmpInt)) Then
+                        g_iSettingsIconLineStateMax = ClassTools.ClassMath.ClampInt(tmpInt, 0, 99999)
+                    End If
+
+                    If (Integer.TryParse(mIni.ReadKeyValue("Editor", "TextEditorIconBarLineStateType", CStr(ENUM_LINE_STATE_TYPE.CHANGED)), tmpInt)) Then
+                        g_iSettingsIconLineStateType = CType(ClassTools.ClassMath.ClampInt(tmpInt, 0, [Enum].GetNames(GetType(ENUM_LINE_STATE_TYPE)).Length - 1), ENUM_LINE_STATE_TYPE)
+                    End If
+
                     'Syntax Highligting
                     g_iSettingsDoubleClickMark = (mIni.ReadKeyValue("Editor", "DoubleClickMark", "1") <> "0")
                     g_iSettingsAutoMark = (mIni.ReadKeyValue("Editor", "AutoMark", "1") <> "0")

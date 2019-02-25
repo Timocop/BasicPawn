@@ -152,6 +152,19 @@ Public Class FormSettings
         TextBox_CustomSyntax.Text = ClassSettings.g_sSettingsSyntaxHighlightingPath
         CheckBox_RememberFolds.Checked = ClassSettings.g_bSettingsRememberFoldings
         NumericUpDown_ThreadUpdateRate.Value = ClassSettings.g_iSettingsThreadUpdateRate
+        CheckBox_IconBar.Checked = ClassSettings.g_bSettingsIconBar
+
+        Select Case (ClassSettings.g_iSettingsIconLineStateType)
+            Case ClassSettings.ENUM_LINE_STATE_TYPE.NONE
+                RadioButton_LineStateNone.Checked = True
+            Case ClassSettings.ENUM_LINE_STATE_TYPE.CHANGED_AND_SAVED
+                RadioButton_LineStateChangedSaved.Checked = True
+            Case Else
+                RadioButton_LineStateChanged.Checked = True
+        End Select
+
+        NumericUpDown_LineStateCount.Value = ClassSettings.g_iSettingsIconLineStateMax
+
         'Syntax Highligting
         CheckBox_DoubleClickMark.Checked = ClassSettings.g_iSettingsDoubleClickMark
         CheckBox_AutoMark.Checked = ClassSettings.g_iSettingsAutoMark
@@ -295,6 +308,19 @@ Public Class FormSettings
         ClassSettings.g_sSettingsSyntaxHighlightingPath = TextBox_CustomSyntax.Text
         ClassSettings.g_bSettingsRememberFoldings = CheckBox_RememberFolds.Checked
         ClassSettings.g_iSettingsThreadUpdateRate = CInt(NumericUpDown_ThreadUpdateRate.Value)
+        ClassSettings.g_bSettingsIconBar = CheckBox_IconBar.Checked
+
+        Select Case (True)
+            Case RadioButton_LineStateNone.Checked
+                ClassSettings.g_iSettingsIconLineStateType = ClassSettings.ENUM_LINE_STATE_TYPE.NONE
+            Case RadioButton_LineStateChangedSaved.Checked
+                ClassSettings.g_iSettingsIconLineStateType = ClassSettings.ENUM_LINE_STATE_TYPE.CHANGED_AND_SAVED
+            Case Else
+                ClassSettings.g_iSettingsIconLineStateType = ClassSettings.ENUM_LINE_STATE_TYPE.CHANGED
+        End Select
+
+        ClassSettings.g_iSettingsIconLineStateMax = CInt(NumericUpDown_LineStateCount.Value)
+
         'Syntax Highligting
         ClassSettings.g_iSettingsDoubleClickMark = CheckBox_DoubleClickMark.Checked
         ClassSettings.g_iSettingsAutoMark = CheckBox_AutoMark.Checked

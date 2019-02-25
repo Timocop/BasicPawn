@@ -37,6 +37,7 @@ Partial Class FormSettings
         Me.LinkLabel_ThreadUpdateRateHelp = New System.Windows.Forms.LinkLabel()
         Me.LinkLabel_FullAutocompleteReTaggingHelp = New System.Windows.Forms.LinkLabel()
         Me.LinkLabel_DefaultConfigPathsHelp = New System.Windows.Forms.LinkLabel()
+        Me.ImageList_Plugins = New System.Windows.Forms.ImageList(Me.components)
         Me.TabControl1 = New BasicPawn.ClassTabControlColor()
         Me.TabPage_Settings = New System.Windows.Forms.TabPage()
         Me.ClassTabControlColor1 = New BasicPawn.ClassTabControlColor()
@@ -54,6 +55,14 @@ Partial Class FormSettings
         Me.CheckBox_AssociateIncludes = New System.Windows.Forms.CheckBox()
         Me.CheckBox_AssociateBasicPawnProject = New System.Windows.Forms.CheckBox()
         Me.TabPage_Editor = New System.Windows.Forms.TabPage()
+        Me.Label16 = New System.Windows.Forms.Label()
+        Me.NumericUpDown_LineStateCount = New System.Windows.Forms.NumericUpDown()
+        Me.Label15 = New System.Windows.Forms.Label()
+        Me.GroupBox5 = New System.Windows.Forms.GroupBox()
+        Me.RadioButton_LineStateChanged = New System.Windows.Forms.RadioButton()
+        Me.RadioButton_LineStateChangedSaved = New System.Windows.Forms.RadioButton()
+        Me.RadioButton_LineStateNone = New System.Windows.Forms.RadioButton()
+        Me.CheckBox_IconBar = New System.Windows.Forms.CheckBox()
         Me.Label14 = New System.Windows.Forms.Label()
         Me.NumericUpDown_ThreadUpdateRate = New System.Windows.Forms.NumericUpDown()
         Me.Label8 = New System.Windows.Forms.Label()
@@ -185,7 +194,6 @@ Partial Class FormSettings
         Me.ColumnHeader5 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader6 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader9 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.ImageList_Plugins = New System.Windows.Forms.ImageList(Me.components)
         Me.TabPage_Database = New System.Windows.Forms.TabPage()
         Me.DatabaseListBox_Database = New BasicPawn.ClassDatabaseListBox()
         Me.Button_Refresh = New System.Windows.Forms.Button()
@@ -202,6 +210,8 @@ Partial Class FormSettings
         Me.ClassTabControlColor1.SuspendLayout()
         Me.TabPage_General.SuspendLayout()
         Me.TabPage_Editor.SuspendLayout()
+        CType(Me.NumericUpDown_LineStateCount, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.GroupBox5.SuspendLayout()
         CType(Me.NumericUpDown_ThreadUpdateRate, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.NumericUpDown_TabsToSpaces, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TabPage_Syntax.SuspendLayout()
@@ -309,7 +319,7 @@ Partial Class FormSettings
         'LinkLabel_ThreadUpdateRateHelp
         '
         Me.LinkLabel_ThreadUpdateRateHelp.AutoSize = True
-        Me.LinkLabel_ThreadUpdateRateHelp.Location = New System.Drawing.Point(285, 164)
+        Me.LinkLabel_ThreadUpdateRateHelp.Location = New System.Drawing.Point(285, 167)
         Me.LinkLabel_ThreadUpdateRateHelp.Name = "LinkLabel_ThreadUpdateRateHelp"
         Me.LinkLabel_ThreadUpdateRateHelp.Size = New System.Drawing.Size(12, 13)
         Me.LinkLabel_ThreadUpdateRateHelp.TabIndex = 27
@@ -340,6 +350,12 @@ Partial Class FormSettings
         Me.LinkLabel_DefaultConfigPathsHelp.Text = "?"
         Me.ToolTip_Info.SetToolTip(Me.LinkLabel_DefaultConfigPathsHelp, "Opening a file from those paths will automatically switch to this config." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Howeve" &
         "r, files in 'Known files' overwrite this behaviour.")
+        '
+        'ImageList_Plugins
+        '
+        Me.ImageList_Plugins.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit
+        Me.ImageList_Plugins.ImageSize = New System.Drawing.Size(16, 16)
+        Me.ImageList_Plugins.TransparentColor = System.Drawing.Color.Transparent
         '
         'TabControl1
         '
@@ -545,6 +561,11 @@ Partial Class FormSettings
         'TabPage_Editor
         '
         Me.TabPage_Editor.AutoScroll = True
+        Me.TabPage_Editor.Controls.Add(Me.Label16)
+        Me.TabPage_Editor.Controls.Add(Me.NumericUpDown_LineStateCount)
+        Me.TabPage_Editor.Controls.Add(Me.Label15)
+        Me.TabPage_Editor.Controls.Add(Me.GroupBox5)
+        Me.TabPage_Editor.Controls.Add(Me.CheckBox_IconBar)
         Me.TabPage_Editor.Controls.Add(Me.LinkLabel_ThreadUpdateRateHelp)
         Me.TabPage_Editor.Controls.Add(Me.Label14)
         Me.TabPage_Editor.Controls.Add(Me.NumericUpDown_ThreadUpdateRate)
@@ -568,10 +589,95 @@ Partial Class FormSettings
         Me.TabPage_Editor.Text = "TextEditor"
         Me.TabPage_Editor.UseVisualStyleBackColor = True
         '
+        'Label16
+        '
+        Me.Label16.AutoSize = True
+        Me.Label16.Location = New System.Drawing.Point(230, 316)
+        Me.Label16.Name = "Label16"
+        Me.Label16.Size = New System.Drawing.Size(79, 13)
+        Me.Label16.TabIndex = 32
+        Me.Label16.Text = "(0 to show all)"
+        '
+        'NumericUpDown_LineStateCount
+        '
+        Me.NumericUpDown_LineStateCount.Location = New System.Drawing.Point(160, 314)
+        Me.NumericUpDown_LineStateCount.Maximum = New Decimal(New Integer() {99999, 0, 0, 0})
+        Me.NumericUpDown_LineStateCount.Name = "NumericUpDown_LineStateCount"
+        Me.NumericUpDown_LineStateCount.Size = New System.Drawing.Size(64, 22)
+        Me.NumericUpDown_LineStateCount.TabIndex = 31
+        Me.NumericUpDown_LineStateCount.Value = New Decimal(New Integer() {1000, 0, 0, 0})
+        '
+        'Label15
+        '
+        Me.Label15.AutoSize = True
+        Me.Label15.Location = New System.Drawing.Point(35, 316)
+        Me.Label15.Margin = New System.Windows.Forms.Padding(32, 6, 3, 6)
+        Me.Label15.Name = "Label15"
+        Me.Label15.Size = New System.Drawing.Size(119, 13)
+        Me.Label15.TabIndex = 30
+        Me.Label15.Text = "Max line state history:"
+        '
+        'GroupBox5
+        '
+        Me.GroupBox5.Controls.Add(Me.RadioButton_LineStateChanged)
+        Me.GroupBox5.Controls.Add(Me.RadioButton_LineStateChangedSaved)
+        Me.GroupBox5.Controls.Add(Me.RadioButton_LineStateNone)
+        Me.GroupBox5.Location = New System.Drawing.Point(35, 213)
+        Me.GroupBox5.Margin = New System.Windows.Forms.Padding(32, 3, 3, 3)
+        Me.GroupBox5.Name = "GroupBox5"
+        Me.GroupBox5.Size = New System.Drawing.Size(338, 94)
+        Me.GroupBox5.TabIndex = 29
+        Me.GroupBox5.TabStop = False
+        Me.GroupBox5.Text = "Line state style"
+        '
+        'RadioButton_LineStateChanged
+        '
+        Me.RadioButton_LineStateChanged.AutoSize = True
+        Me.RadioButton_LineStateChanged.Location = New System.Drawing.Point(6, 67)
+        Me.RadioButton_LineStateChanged.Name = "RadioButton_LineStateChanged"
+        Me.RadioButton_LineStateChanged.Size = New System.Drawing.Size(97, 17)
+        Me.RadioButton_LineStateChanged.TabIndex = 32
+        Me.RadioButton_LineStateChanged.TabStop = True
+        Me.RadioButton_LineStateChanged.Text = "Changed only"
+        Me.RadioButton_LineStateChanged.UseVisualStyleBackColor = True
+        '
+        'RadioButton_LineStateChangedSaved
+        '
+        Me.RadioButton_LineStateChangedSaved.AutoSize = True
+        Me.RadioButton_LineStateChangedSaved.Location = New System.Drawing.Point(6, 44)
+        Me.RadioButton_LineStateChangedSaved.Name = "RadioButton_LineStateChangedSaved"
+        Me.RadioButton_LineStateChangedSaved.Size = New System.Drawing.Size(128, 17)
+        Me.RadioButton_LineStateChangedSaved.TabIndex = 31
+        Me.RadioButton_LineStateChangedSaved.TabStop = True
+        Me.RadioButton_LineStateChangedSaved.Text = "Changed and Saved"
+        Me.RadioButton_LineStateChangedSaved.UseVisualStyleBackColor = True
+        '
+        'RadioButton_LineStateNone
+        '
+        Me.RadioButton_LineStateNone.AutoSize = True
+        Me.RadioButton_LineStateNone.Location = New System.Drawing.Point(6, 21)
+        Me.RadioButton_LineStateNone.Name = "RadioButton_LineStateNone"
+        Me.RadioButton_LineStateNone.Size = New System.Drawing.Size(53, 17)
+        Me.RadioButton_LineStateNone.TabIndex = 30
+        Me.RadioButton_LineStateNone.TabStop = True
+        Me.RadioButton_LineStateNone.Text = "None"
+        Me.RadioButton_LineStateNone.UseVisualStyleBackColor = True
+        '
+        'CheckBox_IconBar
+        '
+        Me.CheckBox_IconBar.AutoSize = True
+        Me.CheckBox_IconBar.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_IconBar.Location = New System.Drawing.Point(6, 189)
+        Me.CheckBox_IconBar.Name = "CheckBox_IconBar"
+        Me.CheckBox_IconBar.Size = New System.Drawing.Size(95, 18)
+        Me.CheckBox_IconBar.TabIndex = 28
+        Me.CheckBox_IconBar.Text = "Icon sidebar"
+        Me.CheckBox_IconBar.UseVisualStyleBackColor = True
+        '
         'Label14
         '
         Me.Label14.AutoSize = True
-        Me.Label14.Location = New System.Drawing.Point(258, 164)
+        Me.Label14.Location = New System.Drawing.Point(258, 167)
         Me.Label14.Name = "Label14"
         Me.Label14.Size = New System.Drawing.Size(21, 13)
         Me.Label14.TabIndex = 26
@@ -579,7 +685,7 @@ Partial Class FormSettings
         '
         'NumericUpDown_ThreadUpdateRate
         '
-        Me.NumericUpDown_ThreadUpdateRate.Location = New System.Drawing.Point(188, 162)
+        Me.NumericUpDown_ThreadUpdateRate.Location = New System.Drawing.Point(188, 165)
         Me.NumericUpDown_ThreadUpdateRate.Maximum = New Decimal(New Integer() {2500, 0, 0, 0})
         Me.NumericUpDown_ThreadUpdateRate.Minimum = New Decimal(New Integer() {100, 0, 0, 0})
         Me.NumericUpDown_ThreadUpdateRate.Name = "NumericUpDown_ThreadUpdateRate"
@@ -590,8 +696,8 @@ Partial Class FormSettings
         'Label8
         '
         Me.Label8.AutoSize = True
-        Me.Label8.Location = New System.Drawing.Point(9, 164)
-        Me.Label8.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.Label8.Location = New System.Drawing.Point(9, 167)
+        Me.Label8.Margin = New System.Windows.Forms.Padding(6, 6, 3, 6)
         Me.Label8.Name = "Label8"
         Me.Label8.Size = New System.Drawing.Size(173, 13)
         Me.Label8.TabIndex = 24
@@ -2034,12 +2140,6 @@ Partial Class FormSettings
         Me.ColumnHeader9.Text = "Error"
         Me.ColumnHeader9.Width = 200
         '
-        'ImageList_Plugins
-        '
-        Me.ImageList_Plugins.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit
-        Me.ImageList_Plugins.ImageSize = New System.Drawing.Size(16, 16)
-        Me.ImageList_Plugins.TransparentColor = System.Drawing.Color.Transparent
-        '
         'TabPage_Database
         '
         Me.TabPage_Database.Controls.Add(Me.DatabaseListBox_Database)
@@ -2192,6 +2292,9 @@ Partial Class FormSettings
         Me.TabPage_General.PerformLayout()
         Me.TabPage_Editor.ResumeLayout(False)
         Me.TabPage_Editor.PerformLayout()
+        CType(Me.NumericUpDown_LineStateCount, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.GroupBox5.ResumeLayout(False)
+        Me.GroupBox5.PerformLayout()
         CType(Me.NumericUpDown_ThreadUpdateRate, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.NumericUpDown_TabsToSpaces, System.ComponentModel.ISupportInitialize).EndInit()
         Me.TabPage_Syntax.ResumeLayout(False)
@@ -2409,4 +2512,12 @@ Partial Class FormSettings
     Friend WithEvents LinkLabel_FullAutocompleteReTaggingHelp As LinkLabel
     Friend WithEvents ColumnHeader9 As ColumnHeader
     Friend WithEvents ImageList_Plugins As ImageList
+    Friend WithEvents CheckBox_IconBar As CheckBox
+    Friend WithEvents GroupBox5 As GroupBox
+    Friend WithEvents RadioButton_LineStateChanged As RadioButton
+    Friend WithEvents RadioButton_LineStateChangedSaved As RadioButton
+    Friend WithEvents RadioButton_LineStateNone As RadioButton
+    Friend WithEvents NumericUpDown_LineStateCount As NumericUpDown
+    Friend WithEvents Label15 As Label
+    Friend WithEvents Label16 As Label
 End Class

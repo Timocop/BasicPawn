@@ -1486,75 +1486,87 @@ Public Class ClassTextEditorTools
 
         Property m_IgnoreUpdates As Boolean
 
-        Property m_LineStateMarks(mTextEditor As TextEditorControlEx) As LineStateBookmark()
+        ReadOnly Property m_LineStateMarks(mTextEditor As TextEditorControlEx) As LineStateMark()
             Get
-                Dim lBookmarks As New List(Of LineStateBookmark)
+                Dim lMarks As New List(Of LineStateMark)
 
                 For i = 0 To mTextEditor.Document.BookmarkManager.Marks.Count - 1
-                    If (TypeOf mTextEditor.Document.BookmarkManager.Marks(i) Is LineStateBookmark) Then
-                        lBookmarks.Add(DirectCast(mTextEditor.Document.BookmarkManager.Marks(i), LineStateBookmark))
+                    If (TypeOf mTextEditor.Document.BookmarkManager.Marks(i) IsNot LineStateMark) Then
+                        Continue For
                     End If
+
+                    lMarks.Add(DirectCast(mTextEditor.Document.BookmarkManager.Marks(i), LineStateMark))
                 Next
 
-                Return lBookmarks.ToArray
+                Return lMarks.ToArray
             End Get
-            Set(value As LineStateBookmark())
-                ClearStates(mTextEditor)
-
-
-                If (value Is Nothing) Then
-                    Return
-                End If
-
-                For i = 0 To value.Length - 1
-                    mTextEditor.Document.BookmarkManager.AddMark(value(i))
-                Next
-            End Set
         End Property
 
-        Property m_LineState(mTextEditor As TextEditorControlEx, iIndex As Integer) As LineStateBookmark.ENUM_BOOKMARK_TYPE
+        Property m_LineState(mTextEditor As TextEditorControlEx, iIndex As Integer) As LineStateMark.ENUM_STATE
             Get
-                For Each item In mTextEditor.Document.BookmarkManager.Marks
-                    Dim lineStateBookmark As LineStateBookmark = TryCast(item, LineStateBookmark)
-                    If (lineStateBookmark Is Nothing OrElse lineStateBookmark.Anchor.IsDeleted) Then
+                For Each mMark In mTextEditor.Document.BookmarkManager.Marks
+                    Dim mLineStateMark As LineStateMark = TryCast(mMark, LineStateMark)
+                    If (mLineStateMark Is Nothing OrElse mLineStateMark.Anchor.IsDeleted) Then
                         Continue For
                     End If
 
-                    If (lineStateBookmark.LineNumber <> iIndex) Then
+                    If (mLineStateMark.LineNumber <> iIndex) Then
                         Continue For
                     End If
 
-                    Return lineStateBookmark.m_Type
+                    Return mLineStateMark.m_Type
                 Next
 
-                Return LineStateBookmark.ENUM_BOOKMARK_TYPE.NONE
+                Return LineStateMark.ENUM_STATE.NONE
             End Get
-            Set(value As LineStateBookmark.ENUM_BOOKMARK_TYPE)
+            Set(value As LineStateMark.ENUM_STATE)
                 If (m_IgnoreUpdates) Then
-                    mTextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, iIndex))
-                    mTextEditor.Document.CommitUpdate()
                     Return
                 End If
 
-                For Each item In mTextEditor.Document.BookmarkManager.Marks
-                    Dim lineStateBookmark As LineStateBookmark = TryCast(item, LineStateBookmark)
-                    If (lineStateBookmark Is Nothing OrElse lineStateBookmark.Anchor.IsDeleted) Then
+                For i = mTextEditor.Document.BookmarkManager.Marks.Count - 1 To 0 Step -1
+                    Dim mLineStateMark As LineStateMark = TryCast(mTextEditor.Document.BookmarkManager.Marks(i), LineStateMark)
+                    If (mLineStateMark Is Nothing OrElse mLineStateMark.Anchor.IsDeleted) Then
                         Continue For
                     End If
 
-                    If (lineStateBookmark.LineNumber <> iIndex) Then
+                    If (mLineStateMark.LineNumber <> iIndex) Then
                         Continue For
                     End If
 
-                    lineStateBookmark.m_Type = value
+                    Select Case (ClassSettings.g_iSettingsIconLineStateType)
+                        Case ClassSettings.ENUM_LINE_STATE_TYPE.CHANGED_AND_SAVED
+                            mLineStateMark.m_Type = value
+
+                        Case ClassSettings.ENUM_LINE_STATE_TYPE.CHANGED
+                            'Remove saved
+                            If (mLineStateMark.m_Type = LineStateMark.ENUM_STATE.SAVED) Then
+                                mTextEditor.Document.BookmarkManager.RemoveMark(mLineStateMark)
+                            Else
+                                mLineStateMark.m_Type = value
+                            End If
+
+                        Case ClassSettings.ENUM_LINE_STATE_TYPE.NONE
+                            mTextEditor.Document.BookmarkManager.RemoveMark(mLineStateMark)
+                    End Select
+
+                    mTextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, iIndex))
+
+                    LimitStates(mTextEditor)
                     Return
                 Next
 
-                Dim mBookmark As New LineStateBookmark(mTextEditor.Document, New TextLocation(0, iIndex), True, LineStateBookmark.ENUM_BOOKMARK_TYPE.CHANGED)
-                mTextEditor.Document.BookmarkManager.AddMark(mBookmark)
+                If (ClassSettings.g_iSettingsIconLineStateType = ClassSettings.ENUM_LINE_STATE_TYPE.NONE) Then
+                    Return
+                End If
+
+                Dim mNewMark As New LineStateMark(mTextEditor.Document, New TextLocation(0, iIndex), True, LineStateMark.ENUM_STATE.CHANGED)
+                mTextEditor.Document.BookmarkManager.AddMark(mNewMark)
+                mTextEditor.m_LineStatesHistory.Enqueue(mNewMark)
 
                 mTextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, iIndex))
-                mTextEditor.Document.CommitUpdate()
+
+                LimitStates(mTextEditor)
             End Set
         End Property
 
@@ -1562,34 +1574,61 @@ Public Class ClassTextEditorTools
         ''' Change all 'changed' states to 'saved'.
         ''' </summary>
         Public Sub SaveStates(mTextEditor As TextEditorControlEx)
-            For Each item In mTextEditor.Document.BookmarkManager.Marks
-                Dim lineStateBookmark As LineStateBookmark = TryCast(item, LineStateBookmark)
-                If (lineStateBookmark Is Nothing) Then
+            For i = mTextEditor.Document.BookmarkManager.Marks.Count - 1 To 0 Step -1
+                Dim mLineStateMark As LineStateMark = TryCast(mTextEditor.Document.BookmarkManager.Marks(i), LineStateMark)
+                If (mLineStateMark Is Nothing) Then
                     Continue For
                 End If
 
-                If (lineStateBookmark.m_Type = LineStateBookmark.ENUM_BOOKMARK_TYPE.CHANGED) Then
-                    lineStateBookmark.m_Type = LineStateBookmark.ENUM_BOOKMARK_TYPE.SAVED
+                Select Case (ClassSettings.g_iSettingsIconLineStateType)
+                    Case ClassSettings.ENUM_LINE_STATE_TYPE.NONE
+                        mTextEditor.Document.BookmarkManager.RemoveMark(mLineStateMark)
+                        mTextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, mLineStateMark.LineNumber))
 
-                    mTextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, lineStateBookmark.LineNumber))
-                End If
+                    Case ClassSettings.ENUM_LINE_STATE_TYPE.CHANGED_AND_SAVED
+                        If (mLineStateMark.m_Type = LineStateMark.ENUM_STATE.CHANGED) Then
+                            mLineStateMark.m_Type = LineStateMark.ENUM_STATE.SAVED
+                            mTextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, mLineStateMark.LineNumber))
+                        End If
+
+                    Case ClassSettings.ENUM_LINE_STATE_TYPE.CHANGED
+                        If (mLineStateMark.m_Type = LineStateMark.ENUM_STATE.CHANGED) Then
+                            mTextEditor.Document.BookmarkManager.RemoveMark(mLineStateMark)
+                            mTextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, mLineStateMark.LineNumber))
+                        End If
+                End Select
             Next
-
-            mTextEditor.Document.CommitUpdate()
         End Sub
 
         ''' <summary>
-        ''' Change all 'changed' states to 'saved'.
+        ''' Updates all line states by settings.
         ''' </summary>
-        Public Sub SaveStates(ByRef arrStateBookmarks As LineStateBookmark())
-            If (arrStateBookmarks Is Nothing) Then
-                Return
-            End If
-
-            For i = 0 To arrStateBookmarks.Length - 1
-                If (arrStateBookmarks(i).m_Type = LineStateBookmark.ENUM_BOOKMARK_TYPE.CHANGED) Then
-                    arrStateBookmarks(i).m_Type = LineStateBookmark.ENUM_BOOKMARK_TYPE.SAVED
+        ''' <param name="mTextEditor"></param>
+        Public Sub UpdateStates(mTextEditor As TextEditorControlEx)
+            For i = mTextEditor.Document.BookmarkManager.Marks.Count - 1 To 0 Step -1
+                Dim mLineStateMark As LineStateMark = TryCast(mTextEditor.Document.BookmarkManager.Marks(i), LineStateMark)
+                If (mLineStateMark Is Nothing) Then
+                    Continue For
                 End If
+
+                'Remove already invalid/removed marks
+                If (mLineStateMark.Anchor.IsDeleted) Then
+                    mTextEditor.Document.BookmarkManager.RemoveMark(mLineStateMark)
+                    Continue For
+                End If
+
+                Select Case (ClassSettings.g_iSettingsIconLineStateType)
+                    Case ClassSettings.ENUM_LINE_STATE_TYPE.CHANGED
+                        If (mLineStateMark.m_Type = LineStateMark.ENUM_STATE.SAVED) Then
+                            mTextEditor.Document.BookmarkManager.RemoveMark(mLineStateMark)
+                            mTextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, mLineStateMark.LineNumber))
+                        End If
+
+                    Case ClassSettings.ENUM_LINE_STATE_TYPE.NONE
+                        mTextEditor.Document.BookmarkManager.RemoveMark(mLineStateMark)
+                        mTextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, mLineStateMark.LineNumber))
+
+                End Select
             Next
         End Sub
 
@@ -1597,62 +1636,84 @@ Public Class ClassTextEditorTools
         ''' Clear all line states. Like on loading or new source.
         ''' </summary>
         Public Sub ClearStates(mTextEditor As TextEditorControlEx)
-            mTextEditor.Document.BookmarkManager.RemoveMarks(Function(mBookmark As Bookmark) TypeOf mBookmark Is LineStateBookmark)
+            mTextEditor.Document.BookmarkManager.RemoveMarks(Function(mBookmark As Bookmark) TypeOf mBookmark Is LineStateMark)
+        End Sub
+
+        ''' <summary>
+        ''' Limits all line states by settings. To avoid overdrawing.
+        ''' </summary>
+        ''' <param name="mTextEditor"></param>
+        Public Sub LimitStates(mTextEditor As TextEditorControlEx)
+            If (ClassSettings.g_iSettingsIconLineStateMax < 1) Then
+                Return
+            End If
+
+            While (mTextEditor.m_LineStatesHistory.Count > ClassSettings.g_iSettingsIconLineStateMax)
+                Dim mLineStateMark As LineStateMark = mTextEditor.m_LineStatesHistory.Dequeue
+                If (mLineStateMark Is Nothing) Then
+                    Continue While
+                End If
+
+                'Remove already invalid/removed marks
+                If (mLineStateMark.Anchor.IsDeleted) Then
+                    mTextEditor.Document.BookmarkManager.RemoveMark(mLineStateMark)
+                    Continue While
+                End If
+
+                mTextEditor.Document.BookmarkManager.RemoveMark(mLineStateMark)
+                mTextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, mLineStateMark.LineNumber))
+            End While
         End Sub
 
         ''' <summary>
         ''' Custom bookmark to display custom icons in the iconbar.
         ''' </summary>
-        Public Class LineStateBookmark
+        Public Class LineStateMark
             Inherits Bookmark
 
-            Enum ENUM_BOOKMARK_TYPE
+            Enum ENUM_STATE
                 NONE
                 CHANGED
                 SAVED
             End Enum
 
-            Private g_sIdentifier As String = Guid.NewGuid.ToString
+            Property m_Type As ENUM_STATE
+            ReadOnly Property m_Id As String
 
-            Property m_Type As ENUM_BOOKMARK_TYPE
-
-            Public Sub New(iDocument As IDocument, textLocation As TextLocation, bEnabled As Boolean, iType As ENUM_BOOKMARK_TYPE)
+            Public Sub New(iDocument As IDocument, textLocation As TextLocation, bEnabled As Boolean, iType As ENUM_STATE)
                 MyBase.New(iDocument, textLocation, bEnabled)
                 Me.m_Type = iType
+                Me.m_Id = Guid.NewGuid.ToString
             End Sub
 
             Public Overrides ReadOnly Property CanToggle As Boolean
                 Get
                     Return False
-                    'Return MyBase.CanToggle
                 End Get
             End Property
 
             Protected Overrides Sub OnIsEnabledChanged(e As EventArgs)
-                IsEnabled = True
-                'MyBase.OnIsEnabledChanged(e)
+                Me.IsEnabled = True
             End Sub
 
             ''' <summary>
             ''' Lets override the bookmarks drawing, so we can show our custom coloring!
             ''' The bookmark is the only real icon we can change.
             ''' </summary>
-            ''' <param name="iconBarMargin"></param>
-            ''' <param name="iGraphics"></param>
-            ''' <param name="iPoint"></param>
-            Public Overrides Sub Draw(iconBarMargin As IconBarMargin, iGraphics As Graphics, iPoint As Point)
-                'Dim num As Integer = margin.TextArea.TextView.FontHeight / 8
-                'Dim r As Rectangle = New Rectangle(1, p.Y + num, margin.DrawingPosition.Width - 4, margin.TextArea.TextView.FontHeight - num * 2)
-                Dim calcFontHeight As Integer = CInt(iconBarMargin.TextArea.TextView.FontHeight / 32)
-                Dim r As New Rectangle(CInt(iconBarMargin.DrawingPosition.Width / 1.25),
-                                        iPoint.Y + calcFontHeight,
-                                        iconBarMargin.DrawingPosition.Width - 4,
-                                        iconBarMargin.TextArea.TextView.FontHeight - calcFontHeight * 2)
+            ''' <param name="mIconBarMargin"></param>
+            ''' <param name="mGraphics"></param>
+            ''' <param name="mPoint"></param>
+            Public Overrides Sub Draw(mIconBarMargin As IconBarMargin, mGraphics As Graphics, mPoint As Point)
+                Dim iFontHeight As Integer = CInt(mIconBarMargin.TextArea.TextView.FontHeight / 32)
+                Dim mRect As New Rectangle(CInt(mIconBarMargin.DrawingPosition.Width / 1.25),
+                                        mPoint.Y + iFontHeight,
+                                        mIconBarMargin.DrawingPosition.Width - 4,
+                                        mIconBarMargin.TextArea.TextView.FontHeight - iFontHeight * 2)
 
-                Dim iColor As Color = If(m_Type = ENUM_BOOKMARK_TYPE.CHANGED, Color.Orange, Color.Green)
+                Dim iColor As Color = If(m_Type = ENUM_STATE.CHANGED, Color.Orange, Color.Green)
 
-                Using mBrush As New Drawing2D.LinearGradientBrush(New Point(r.Left, r.Top), New Point(r.Right, r.Bottom), iColor, iColor)
-                    iGraphics.FillRectangle(mBrush, r)
+                Using mBrush As New Drawing2D.LinearGradientBrush(New Point(mRect.Left, mRect.Top), New Point(mRect.Right, mRect.Bottom), iColor, iColor)
+                    mGraphics.FillRectangle(mBrush, mRect)
                 End Using
             End Sub
         End Class

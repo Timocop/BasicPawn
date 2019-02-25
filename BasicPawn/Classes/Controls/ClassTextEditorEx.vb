@@ -22,6 +22,8 @@ Imports ICSharpCode.TextEditor.Document
 Public Class TextEditorControlEx
     Inherits TextEditorControl
 
+    Property m_LineStatesHistory As New Queue(Of ClassTextEditorTools.ClassLineState.LineStateMark)
+
     Public Event ProcessCmdKeyEvent(ByRef bBlock As Boolean, ByRef iMsg As Message, iKeys As Keys)
 
     Protected Overrides Function ProcessCmdKey(ByRef msg As Message, e As Keys) As Boolean
