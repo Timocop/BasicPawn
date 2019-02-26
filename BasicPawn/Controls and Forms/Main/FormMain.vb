@@ -749,28 +749,7 @@ Public Class FormMain
     Private Sub ToolStripMenuItem_ToolsSettingsAndConfigs_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsSettingsAndConfigs.Click
         Using i As New FormSettings(Me, FormSettings.ENUM_CONFIG_TYPE.ACTIVE)
             If (i.ShowDialog(Me) = DialogResult.OK) Then
-                UpdateFormConfigText()
-
-                g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
-                For j = 0 To g_ClassTabControl.m_TabsCount - 1
-                    g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, g_ClassTabControl.m_Tab(j))
-                Next
-
-                For j = 0 To g_ClassTabControl.m_TabsCount - 1
-                    g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
-                    g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.IndentationSize = If(ClassSettings.g_iSettingsTabsToSpaces > 0, ClassSettings.g_iSettingsTabsToSpaces, 4)
-                    g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.ConvertTabsToSpaces = (ClassSettings.g_iSettingsTabsToSpaces > 0)
-                    g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.IsIconBarVisible = ClassSettings.g_bSettingsIconBar
-                    g_ClassTabControl.m_Tab(j).m_TextEditor.Refresh()
-                Next
-
-                For j = 0 To g_ClassTabControl.m_TabsCount - 1
-                    g_ClassLineState.UpdateStates(g_ClassTabControl.m_Tab(j).m_TextEditor)
-                    g_ClassLineState.LimitStates(g_ClassTabControl.m_Tab(j).m_TextEditor)
-                Next
-
-                g_ClassSyntaxTools.UpdateFormColors()
-
+                i.ApplySettings()
             End If
         End Using
     End Sub
@@ -1266,27 +1245,7 @@ Public Class FormMain
             i.TabControl1.SelectTab(i.TabPage_Configs)
 
             If (i.ShowDialog(Me) = DialogResult.OK) Then
-                UpdateFormConfigText()
-
-                g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
-                For j = 0 To g_ClassTabControl.m_TabsCount - 1
-                    g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, g_ClassTabControl.m_Tab(j))
-                Next
-
-                For j = 0 To g_ClassTabControl.m_TabsCount - 1
-                    g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
-                    g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.IndentationSize = If(ClassSettings.g_iSettingsTabsToSpaces > 0, ClassSettings.g_iSettingsTabsToSpaces, 4)
-                    g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.ConvertTabsToSpaces = (ClassSettings.g_iSettingsTabsToSpaces > 0)
-                    g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.IsIconBarVisible = ClassSettings.g_bSettingsIconBar
-                    g_ClassTabControl.m_Tab(j).m_TextEditor.Refresh()
-                Next
-
-                For j = 0 To g_ClassTabControl.m_TabsCount - 1
-                    g_ClassLineState.UpdateStates(g_ClassTabControl.m_Tab(j).m_TextEditor)
-                    g_ClassLineState.LimitStates(g_ClassTabControl.m_Tab(j).m_TextEditor)
-                Next
-
-                g_ClassSyntaxTools.UpdateFormColors()
+                i.ApplySettings()
             End If
         End Using
     End Sub
@@ -1296,27 +1255,7 @@ Public Class FormMain
             i.TabControl1.SelectTab(i.TabPage_Configs)
 
             If (i.ShowDialog(Me) = DialogResult.OK) Then
-                UpdateFormConfigText()
-
-                g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
-                For j = 0 To g_ClassTabControl.m_TabsCount - 1
-                    g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, g_ClassTabControl.m_Tab(j))
-                Next
-
-                For j = 0 To g_ClassTabControl.m_TabsCount - 1
-                    g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
-                    g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.IndentationSize = If(ClassSettings.g_iSettingsTabsToSpaces > 0, ClassSettings.g_iSettingsTabsToSpaces, 4)
-                    g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.ConvertTabsToSpaces = (ClassSettings.g_iSettingsTabsToSpaces > 0)
-                    g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.IsIconBarVisible = ClassSettings.g_bSettingsIconBar
-                    g_ClassTabControl.m_Tab(j).m_TextEditor.Refresh()
-                Next
-
-                For j = 0 To g_ClassTabControl.m_TabsCount - 1
-                    g_ClassLineState.UpdateStates(g_ClassTabControl.m_Tab(j).m_TextEditor)
-                    g_ClassLineState.LimitStates(g_ClassTabControl.m_Tab(j).m_TextEditor)
-                Next
-
-                g_ClassSyntaxTools.UpdateFormColors()
+                i.ApplySettings()
             End If
         End Using
     End Sub

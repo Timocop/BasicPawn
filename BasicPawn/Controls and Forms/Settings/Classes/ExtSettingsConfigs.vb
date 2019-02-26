@@ -14,44 +14,10 @@
 'You should have received a copy Of the GNU General Public License
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
-Public Class FormSettings
-    Private g_mFormMain As FormMain
-    Private g_iConfigType As ENUM_CONFIG_TYPE = ENUM_CONFIG_TYPE.ACTIVE
 
-    Private g_lRestoreConfigs As New List(Of ClassConfigs.STRUC_CONFIG_ITEM)
-    Private g_bRestoreConfigs As Boolean = False
-    Private g_bIgnoreChange As Boolean = False
-    Private g_bConfigSettingsChanged As Boolean = False
-    Private g_bComboBoxIgnoreEvent As Boolean = False
-
-    Private g_mListBoxConfigSelectedItem As Object = Nothing
-
-    Private Shared bSuppressSyntaxVersionCheck As Boolean = False
-
-    Enum ENUM_CONFIG_TYPE
-        ALL
-        ACTIVE
-    End Enum
-
-    Enum ENUM_PLUGIN_IMAGE_STATE
-        ENABLED
-        DISABLED
-    End Enum
-
-    Public Sub New(f As FormMain, iConfigType As ENUM_CONFIG_TYPE)
-        g_mFormMain = f
-        g_iConfigType = iConfigType
-        g_bIgnoreChange = True
-
-        ' This call is required by the designer.
-        InitializeComponent()
-
-        ' Add any initialization after the InitializeComponent() call. 
-        ImageList_Plugins.Images.Clear()
-        ImageList_Plugins.Images.Add(CStr(ENUM_PLUGIN_IMAGE_STATE.ENABLED), My.Resources.netshell_1610_16x16)
-        ImageList_Plugins.Images.Add(CStr(ENUM_PLUGIN_IMAGE_STATE.DISABLED), My.Resources.netshell_1608_16x16)
-
-        Select Case (iConfigType)
+Partial Public Class FormSettings
+    Private Sub Init_Configs()
+        Select Case (g_iConfigType)
             Case ENUM_CONFIG_TYPE.ALL
                 TabPage_Configs.Text &= " (All Tabs)"
 
@@ -59,13 +25,16 @@ Public Class FormSettings
                 TabPage_Configs.Text &= " (Active Tab)"
         End Select
 
-        g_bComboBoxIgnoreEvent = True
-        ComboBox_Language.Items.Clear()
-        ComboBox_Language.Items.Add("Auto-detect")
-        ComboBox_Language.Items.Add("SourcePawn")
-        ComboBox_Language.Items.Add("AMX Mod X")
-        ComboBox_Language.SelectedIndex = 0
-        g_bComboBoxIgnoreEvent = False
+        'Language
+        If (True) Then
+            g_bComboBoxIgnoreEvent = True
+            ComboBox_Language.Items.Clear()
+            ComboBox_Language.Items.Add("Auto-detect")
+            ComboBox_Language.Items.Add("SourcePawn")
+            ComboBox_Language.Items.Add("AMX Mod X")
+            ComboBox_Language.SelectedIndex = 0
+            g_bComboBoxIgnoreEvent = False
+        End If
 
         'SourceMod
         If (True) Then
@@ -114,89 +83,9 @@ Public Class FormSettings
         If (ComboBox_Language.Items.Count <> [Enum].GetNames(GetType(ClassConfigs.STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE)).Length) Then
             Throw New ArgumentException("ComboBox_Language range")
         End If
-
-        Me.Size = Me.MinimumSize
-
-        ClassTools.ClassForms.SetDoubleBufferingAllChilds(Me, True)
-        ClassTools.ClassForms.SetDoubleBufferingUnmanagedAllChilds(Me, True)
-
-        g_bIgnoreChange = False
-        m_ConfigSettingsChanged = False
     End Sub
 
-#Region "Load/Save/General"
-    Private Sub SettingsForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        'List all configs
-        UpdateConfigListBox()
-
-        'Update log button text
-        UpdateErrorLogSize()
-
-        'Get all settings
-        ClassSettings.LoadSettings()
-        ClassConfigs.ClassKnownConfigs.LoadKnownConfigs()
-
-        'General
-        CheckBox_AlwaysNewInstance.Checked = ClassSettings.g_iSettingsAlwaysOpenNewInstance
-        CheckBox_AutoShowStartPage.Checked = ClassSettings.g_iSettingsAutoShowStartPage
-        CheckBox_AutoOpenProjectFiles.Checked = ClassSettings.g_iSettingsAutoOpenProjectFiles
-        CheckBox_AssociateSourcePawn.Checked = ClassSettings.g_iSettingsAssociateSourcePawn
-        CheckBox_AssociateAmxMod.Checked = ClassSettings.g_iSettingsAssociateAmxModX
-        CheckBox_AssociateIncludes.Checked = ClassSettings.g_iSettingsAssociateIncludes
-        CheckBox_AutoHoverScroll.Checked = ClassSettings.g_iSettingsAutoHoverScroll
-        'Text Editor
-        Label_Font.Text = New FontConverter().ConvertToInvariantString(ClassSettings.g_iSettingsTextEditorFont)
-        CheckBox_InvertedColors.Checked = ClassSettings.g_iSettingsInvertColors
-        CheckBox_TabsToSpace.Checked = (ClassSettings.g_iSettingsTabsToSpaces > 0)
-        NumericUpDown_TabsToSpaces.Value = If(ClassSettings.g_iSettingsTabsToSpaces > 0, ClassSettings.g_iSettingsTabsToSpaces, 4)
-        TextBox_CustomSyntax.Text = ClassSettings.g_sSettingsSyntaxHighlightingPath
-        CheckBox_RememberFolds.Checked = ClassSettings.g_bSettingsRememberFoldings
-        NumericUpDown_ThreadUpdateRate.Value = ClassSettings.g_iSettingsThreadUpdateRate
-        CheckBox_IconBar.Checked = ClassSettings.g_bSettingsIconBar
-
-        Select Case (ClassSettings.g_iSettingsIconLineStateType)
-            Case ClassSettings.ENUM_LINE_STATE_TYPE.NONE
-                RadioButton_LineStateNone.Checked = True
-            Case ClassSettings.ENUM_LINE_STATE_TYPE.CHANGED_AND_SAVED
-                RadioButton_LineStateChangedSaved.Checked = True
-            Case Else
-                RadioButton_LineStateChanged.Checked = True
-        End Select
-
-        NumericUpDown_LineStateCount.Value = ClassSettings.g_iSettingsIconLineStateMax
-
-        'Syntax Highligting
-        CheckBox_DoubleClickMark.Checked = ClassSettings.g_iSettingsDoubleClickMark
-        CheckBox_AutoMark.Checked = ClassSettings.g_iSettingsAutoMark
-        'Autocomplete
-        CheckBox_AlwaysLoadDefaultIncludes.Checked = ClassSettings.g_iSettingsAlwaysLoadDefaultIncludes
-        CheckBox_OnScreenIntelliSense.Checked = ClassSettings.g_iSettingsEnableToolTip
-        CheckBox_CommentsMethodIntelliSense.Checked = ClassSettings.g_iSettingsToolTipMethodComments
-        CheckBox_CommentsAutocompleteIntelliSense.Checked = ClassSettings.g_iSettingsToolTipAutocompleteComments
-        CheckBox_WindowsToolTipPopup.Checked = ClassSettings.g_iSettingsUseWindowsToolTip
-        CheckBox_WindowsToolTipAnimations.Checked = ClassSettings.g_iSettingsUseWindowsToolTipAnimations
-        CheckBox_WindowsToolTipNewlineMethods.Checked = ClassSettings.g_iSettingsUseWindowsToolTipNewlineMethods
-        CheckBox_WindowsToolTipDisplayTop.Checked = ClassSettings.g_iSettingsUseWindowsToolTipDisplayTop
-        CheckBox_FullAutcompleteMethods.Checked = ClassSettings.g_iSettingsFullMethodAutocomplete
-        CheckBox_FullAutocompleteReTagging.Checked = ClassSettings.g_iSettingsFullEnumAutocomplete
-        CheckBox_CaseSensitive.Checked = ClassSettings.g_iSettingsAutocompleteCaseSensitive
-
-        Select Case (ClassSettings.g_iSettingsAutocompleteVarParseType)
-            Case ClassSettings.ENUM_VAR_PARSE_TYPE.ALL
-                RadioButton_VarParseAll.Checked = True
-            Case ClassSettings.ENUM_VAR_PARSE_TYPE.TAB_AND_INC
-                RadioButton_VarParseTabInc.Checked = True
-            Case Else
-                RadioButton_VarParseTab.Checked = True
-        End Select
-
-        CheckBox_VarAutocompleteShowObjectBrowser.Checked = ClassSettings.g_iSettingsObjectBrowserShowVariables
-        CheckBox_SwitchTabToAutocomplete.Checked = ClassSettings.g_iSettingsSwitchTabToAutocomplete
-        CheckBox_OnlyUpdateSyntaxWhenFocused.Checked = ClassSettings.g_iSettingsOnlyUpdateSyntaxWhenFocused
-        CheckBox_AutoCloseBrackets.Checked = ClassSettings.g_iSettingsAutoCloseBrackets
-        CheckBox_AutoCloseStrings.Checked = ClassSettings.g_iSettingsAutoCloseStrings
-        CheckBox_AutoIndentBrackets.Checked = ClassSettings.g_iSettingsAutoIndentBrackets
-
+    Private Sub Load_Configs()
         'Get restore-point configs 
         For Each mConfig As ClassConfigs.STRUC_CONFIG_ITEM In ClassConfigs.GetConfigs()
             g_lRestoreConfigs.Add(mConfig)
@@ -217,21 +106,9 @@ Public Class FormSettings
         If (Not mCurrentConfig.ConfigExist AndAlso Not mCurrentConfig.IsDefault) Then
             MessageBox.Show("Current config not found!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
         End If
-
-
-        'List plugins
-        UpdatePluginsListView()
-
-        'Fill DatabaseViewer
-        DatabaseListBox_Database.FillFromDatabase()
-
-        ClassControlStyle.UpdateControls(Me)
-
-        'Load last window info
-        ClassSettings.LoadWindowInfo(Me)
     End Sub
 
-    Private Sub Button_Apply_Click(sender As Object, e As EventArgs) Handles Button_Apply.Click
+    Private Sub Apply_Configs()
         g_bRestoreConfigs = False
 
         PromptSaveSelectedConfig()
@@ -292,80 +169,9 @@ Public Class FormSettings
                 Continue For
             End If
         Next
-
-        'General
-        ClassSettings.g_iSettingsAlwaysOpenNewInstance = CheckBox_AlwaysNewInstance.Checked
-        ClassSettings.g_iSettingsAutoShowStartPage = CheckBox_AutoShowStartPage.Checked
-        ClassSettings.g_iSettingsAutoOpenProjectFiles = CheckBox_AutoOpenProjectFiles.Checked
-        ClassSettings.g_iSettingsAssociateSourcePawn = CheckBox_AssociateSourcePawn.Checked
-        ClassSettings.g_iSettingsAssociateAmxModX = CheckBox_AssociateAmxMod.Checked
-        ClassSettings.g_iSettingsAssociateIncludes = CheckBox_AssociateIncludes.Checked
-        ClassSettings.g_iSettingsAutoHoverScroll = CheckBox_AutoHoverScroll.Checked
-        'Text Editor
-        ClassSettings.g_iSettingsTextEditorFont = CType(New FontConverter().ConvertFromInvariantString(Label_Font.Text), Font)
-        ClassSettings.g_iSettingsInvertColors = CheckBox_InvertedColors.Checked
-        ClassSettings.g_iSettingsTabsToSpaces = CInt(If(CheckBox_TabsToSpace.Checked, NumericUpDown_TabsToSpaces.Value, 0))
-        ClassSettings.g_sSettingsSyntaxHighlightingPath = TextBox_CustomSyntax.Text
-        ClassSettings.g_bSettingsRememberFoldings = CheckBox_RememberFolds.Checked
-        ClassSettings.g_iSettingsThreadUpdateRate = CInt(NumericUpDown_ThreadUpdateRate.Value)
-        ClassSettings.g_bSettingsIconBar = CheckBox_IconBar.Checked
-
-        Select Case (True)
-            Case RadioButton_LineStateNone.Checked
-                ClassSettings.g_iSettingsIconLineStateType = ClassSettings.ENUM_LINE_STATE_TYPE.NONE
-            Case RadioButton_LineStateChangedSaved.Checked
-                ClassSettings.g_iSettingsIconLineStateType = ClassSettings.ENUM_LINE_STATE_TYPE.CHANGED_AND_SAVED
-            Case Else
-                ClassSettings.g_iSettingsIconLineStateType = ClassSettings.ENUM_LINE_STATE_TYPE.CHANGED
-        End Select
-
-        ClassSettings.g_iSettingsIconLineStateMax = CInt(NumericUpDown_LineStateCount.Value)
-
-        'Syntax Highligting
-        ClassSettings.g_iSettingsDoubleClickMark = CheckBox_DoubleClickMark.Checked
-        ClassSettings.g_iSettingsAutoMark = CheckBox_AutoMark.Checked
-        'Autocomplete
-        ClassSettings.g_iSettingsAlwaysLoadDefaultIncludes = CheckBox_AlwaysLoadDefaultIncludes.Checked
-        ClassSettings.g_iSettingsEnableToolTip = CheckBox_OnScreenIntelliSense.Checked
-        ClassSettings.g_iSettingsToolTipMethodComments = CheckBox_CommentsMethodIntelliSense.Checked
-        ClassSettings.g_iSettingsToolTipAutocompleteComments = CheckBox_CommentsAutocompleteIntelliSense.Checked
-        ClassSettings.g_iSettingsUseWindowsToolTip = CheckBox_WindowsToolTipPopup.Checked
-        ClassSettings.g_iSettingsUseWindowsToolTipAnimations = CheckBox_WindowsToolTipAnimations.Checked
-        ClassSettings.g_iSettingsUseWindowsToolTipNewlineMethods = CheckBox_WindowsToolTipNewlineMethods.Checked
-        ClassSettings.g_iSettingsUseWindowsToolTipDisplayTop = CheckBox_WindowsToolTipDisplayTop.Checked
-        ClassSettings.g_iSettingsFullMethodAutocomplete = CheckBox_FullAutcompleteMethods.Checked
-        ClassSettings.g_iSettingsFullEnumAutocomplete = CheckBox_FullAutocompleteReTagging.Checked
-        ClassSettings.g_iSettingsAutocompleteCaseSensitive = CheckBox_CaseSensitive.Checked
-
-        Select Case (True)
-            Case RadioButton_VarParseAll.Checked
-                ClassSettings.g_iSettingsAutocompleteVarParseType = ClassSettings.ENUM_VAR_PARSE_TYPE.ALL
-            Case RadioButton_VarParseTabInc.Checked
-                ClassSettings.g_iSettingsAutocompleteVarParseType = ClassSettings.ENUM_VAR_PARSE_TYPE.TAB_AND_INC
-            Case Else
-                ClassSettings.g_iSettingsAutocompleteVarParseType = ClassSettings.ENUM_VAR_PARSE_TYPE.TAB
-        End Select
-
-        ClassSettings.g_iSettingsObjectBrowserShowVariables = CheckBox_VarAutocompleteShowObjectBrowser.Checked
-        ClassSettings.g_iSettingsSwitchTabToAutocomplete = CheckBox_SwitchTabToAutocomplete.Checked
-        ClassSettings.g_iSettingsOnlyUpdateSyntaxWhenFocused = CheckBox_OnlyUpdateSyntaxWhenFocused.Checked
-        ClassSettings.g_iSettingsAutoCloseBrackets = CheckBox_AutoCloseBrackets.Checked
-        ClassSettings.g_iSettingsAutoCloseStrings = CheckBox_AutoCloseStrings.Checked
-        ClassSettings.g_iSettingsAutoIndentBrackets = CheckBox_AutoIndentBrackets.Checked
-
-        ClassSettings.SaveSettings()
-        ClassConfigs.ClassKnownConfigs.SaveKnownConfigs()
-
-        g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnSettingsChanged())
-
-        Me.Close()
     End Sub
 
-    Private Sub Button_Cancel_Click(sender As Object, e As EventArgs) Handles Button_Cancel.Click
-        Me.Close()
-    End Sub
-
-    Private Sub FormSettings_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+    Private Sub FormClosing_Configs()
         If (g_bRestoreConfigs) Then
             For Each mConfig As ClassConfigs.STRUC_CONFIG_ITEM In ClassConfigs.GetConfigs()
                 mConfig.RemoveConfig()
@@ -417,120 +223,36 @@ Public Class FormSettings
             Next
         End If
 
-        'Check for outdated syntax highlight files
-        If (True) Then
-            If (Not bSuppressSyntaxVersionCheck) Then
-                Dim mCurrentVersion As New Version
-                Dim mSyntaxVersion As New Version
-                If (g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.CheckSyntaxVersion(mCurrentVersion, mSyntaxVersion)) Then
-                    With New Text.StringBuilder()
-                        .AppendLine("Your custom syntax highlighting file seems to be out-of-date.")
-                        .AppendLine("Do you want to open the download page now?")
-                        .AppendLine()
-                        .AppendFormat("Your version is v{0}. Required version is v{1}.", mSyntaxVersion.ToString, mCurrentVersion.ToString).AppendLine()
-                        .AppendLine()
-                        .AppendLine("Click YES to go to the BasicPawn syntax download page.")
-                        .AppendLine("Click CANCEL to suppress this warning.")
+        'Check for outdated syntax highlight files 
+        If (Not bSuppressSyntaxVersionCheck) Then
+            Dim mCurrentVersion As New Version
+            Dim mSyntaxVersion As New Version
+            If (g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.CheckSyntaxVersion(mCurrentVersion, mSyntaxVersion)) Then
+                With New Text.StringBuilder()
+                    .AppendLine("Your custom syntax highlighting file seems to be out-of-date.")
+                    .AppendLine("Do you want to open the download page now?")
+                    .AppendLine()
+                    .AppendFormat("Your version is v{0}. Required version is v{1}.", mSyntaxVersion.ToString, mCurrentVersion.ToString).AppendLine()
+                    .AppendLine()
+                    .AppendLine("Click YES to go to the BasicPawn syntax download page.")
+                    .AppendLine("Click CANCEL to suppress this warning.")
 
-                        Select Case (MessageBox.Show(.ToString, "Syntax out-of-date", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning))
-                            Case DialogResult.Yes
-                                Try
-                                    Process.Start("https://github.com/Timocop/BasicPawn/tree/master/Custom%20Syntax%20Styles")
-                                Catch ex As Exception
-                                    ClassExceptionLog.WriteToLogMessageBox(ex)
-                                End Try
+                    Select Case (MessageBox.Show(.ToString, "Syntax out-of-date", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning))
+                        Case DialogResult.Yes
+                            Try
+                                Process.Start("https://github.com/Timocop/BasicPawn/tree/master/Custom%20Syntax%20Styles")
+                            Catch ex As Exception
+                                ClassExceptionLog.WriteToLogMessageBox(ex)
+                            End Try
 
-                            Case DialogResult.Cancel
-                                bSuppressSyntaxVersionCheck = True
-                        End Select
-                    End With
-                End If
+                        Case DialogResult.Cancel
+                            bSuppressSyntaxVersionCheck = True
+                    End Select
+                End With
             End If
         End If
-
-        'Save window info
-        ClassSettings.SaveWindowInfo(Me)
     End Sub
 
-    Private Sub Button_ClearErrorLog_Click(sender As Object, e As EventArgs) Handles Button_ClearErrorLog.Click
-        Try
-            If (IO.File.Exists(ClassExceptionLog.g_sLogName)) Then
-                IO.File.Delete(ClassExceptionLog.g_sLogName)
-            End If
-        Catch ex As Exception
-            ClassExceptionLog.WriteToLogMessageBox(ex)
-        Finally
-            UpdateErrorLogSize()
-        End Try
-    End Sub
-
-    Private Sub Button_ViewErrorLog_Click(sender As Object, e As EventArgs) Handles Button_ViewErrorLog.Click
-        Try
-            If (Not IO.File.Exists(ClassExceptionLog.g_sLogName)) Then
-                MessageBox.Show("Log file does not exist", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                Return
-            End If
-
-            Process.Start("notepad", String.Format("""{0}""", ClassExceptionLog.g_sLogName))
-        Catch ex As Exception
-            ClassExceptionLog.WriteToLogMessageBox(ex)
-        Finally
-            UpdateErrorLogSize()
-        End Try
-    End Sub
-
-    Private Sub UpdateErrorLogSize()
-        Try
-            Dim mLogInfo As New IO.FileInfo(ClassExceptionLog.g_sLogName)
-
-            If (Not mLogInfo.Exists) Then
-                Button_ClearErrorLog.Text = "Clear log (Empty)"
-                Return
-            End If
-
-            Button_ClearErrorLog.Text = String.Format("Clear log ({0})", ClassTools.ClassStrings.FormatBytes(mLogInfo.Length))
-        Catch ex As Exception
-            ClassExceptionLog.WriteToLogMessageBox(ex)
-        End Try
-    End Sub
-#End Region
-
-#Region "Settings"
-    Private Sub Button_Font_Click(sender As Object, e As EventArgs) Handles Button_Font.Click
-        Using i As New FontDialog()
-            i.Font = CType(New FontConverter().ConvertFromInvariantString(Label_Font.Text), Font)
-
-            If (i.ShowDialog = DialogResult.OK) Then
-                Label_Font.Text = New FontConverter().ConvertToInvariantString(i.Font)
-            End If
-        End Using
-    End Sub
-
-    Private Sub Button_CustomSyntax_Click(sender As Object, e As EventArgs) Handles Button_CustomSyntax.Click
-        Using i As New OpenFileDialog
-            i.Filter = "Syntax highlighting XSHD file|*.xml"
-            i.FileName = TextBox_CustomSyntax.Text
-
-            If (i.ShowDialog = DialogResult.OK) Then
-                TextBox_CustomSyntax.Text = i.FileName
-            End If
-        End Using
-    End Sub
-
-    Private Sub LinkLabel_DefaultSyntax_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_DefaultSyntax.LinkClicked
-        TextBox_CustomSyntax.Text = ""
-    End Sub
-
-    Private Sub LinkLabel_MoreStyles_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_MoreStyles.LinkClicked
-        Try
-            Process.Start("https://github.com/Timocop/BasicPawn/tree/master/Custom%20Syntax%20Styles")
-        Catch ex As Exception
-            ClassExceptionLog.WriteToLogMessageBox(ex)
-        End Try
-    End Sub
-#End Region
-
-#Region "Configs"
     Private Property m_ConfigSettingsChanged As Boolean
         Get
             Return g_bConfigSettingsChanged
@@ -1435,197 +1157,4 @@ Public Class FormSettings
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
     End Sub
-#End Region
-
-#Region "Plugins"
-    Private Sub ToolStripMenuItem_PluginsRefresh_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_PluginsRefresh.Click
-        UpdatePluginsListView()
-    End Sub
-
-    Private Sub ContextMenuStrip_Plugins_Opening(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles ContextMenuStrip_Plugins.Opening
-        ToolStripMenuItem_OpenUrl.Enabled = (ListView_Plugins.SelectedItems.Count > 0)
-        ToolStripMenuItem_PluginsEnable.Enabled = (ListView_Plugins.SelectedItems.Count > 0)
-        ToolStripMenuItem_PluginsDisable.Enabled = (ListView_Plugins.SelectedItems.Count > 0)
-    End Sub
-
-    Private Sub ToolStripMenuItem_OpenUrl_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_OpenUrl.Click
-        Try
-            For Each mItem As ListViewItem In ListView_Plugins.SelectedItems
-                Dim sURL As String = mItem.SubItems(5).Text
-
-                If (String.IsNullOrEmpty(sURL) OrElse Not sURL.StartsWith("http")) Then
-                    MessageBox.Show("Unable to open URL", "Invalid URL", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    Continue For
-                End If
-
-                Process.Start(sURL)
-            Next
-        Catch ex As Exception
-            ClassExceptionLog.WriteToLogMessageBox(ex)
-        End Try
-    End Sub
-
-    Private Sub ToolStripMenuItem_PluginsEnable_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_PluginsEnable.Click
-        Try
-            For Each mItem As ListViewItem In ListView_Plugins.SelectedItems
-                SetPluginState(mItem.SubItems(0).Text, True)
-            Next
-        Catch ex As Exception
-            ClassExceptionLog.WriteToLogMessageBox(ex)
-        End Try
-
-        UpdatePluginsListView()
-    End Sub
-
-    Private Sub ToolStripMenuItem_PluginsDisable_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_PluginsDisable.Click
-        Try
-            For Each mItem As ListViewItem In ListView_Plugins.SelectedItems
-                SetPluginState(mItem.SubItems(0).Text, False)
-            Next
-        Catch ex As Exception
-            ClassExceptionLog.WriteToLogMessageBox(ex)
-        End Try
-
-        UpdatePluginsListView()
-    End Sub
-
-    Private Sub UpdatePluginsListView()
-        Try
-            Dim lListViewItems As New List(Of ListViewItem)
-
-            For Each mPlugin In g_mFormMain.g_ClassPluginController.m_Plugins
-                Try
-                    Dim iPluginState As ENUM_PLUGIN_IMAGE_STATE = If(mPlugin.mPluginInterface.m_PluginEnabled, ENUM_PLUGIN_IMAGE_STATE.ENABLED, ENUM_PLUGIN_IMAGE_STATE.DISABLED)
-
-                    If (mPlugin.mPluginInformation Is Nothing) Then
-                        lListViewItems.Add(New ListViewItem(New String() {
-                                                            IO.Path.GetFileName(mPlugin.sFile),
-                                                            "-",
-                                                            "-",
-                                                            "-",
-                                                            "-",
-                                                            "-",
-                                                            ""
-                                                       }, CStr(iPluginState)))
-                    Else
-                        lListViewItems.Add(New ListViewItem(New String() {
-                                                                    IO.Path.GetFileName(mPlugin.sFile),
-                                                                    mPlugin.mPluginInformation.sName,
-                                                                    mPlugin.mPluginInformation.sAuthor,
-                                                                    mPlugin.mPluginInformation.sDescription,
-                                                                    mPlugin.mPluginInformation.sVersion,
-                                                                    mPlugin.mPluginInformation.sURL,
-                                                                    ""
-                                                               }, CStr(iPluginState)))
-                    End If
-                Catch ex As Exception
-                    lListViewItems.Add(New ListViewItem(New String() {
-                                                                    IO.Path.GetFileName(mPlugin.sFile),
-                                                                    "-",
-                                                                    "-",
-                                                                    "-",
-                                                                    "-",
-                                                                    "-",
-                                                                    ex.Message
-                                                               }, CStr(ENUM_PLUGIN_IMAGE_STATE.ENABLED)))
-
-                    ClassExceptionLog.WriteToLogMessageBox(ex)
-                End Try
-            Next
-
-            For Each mPlugin In g_mFormMain.g_ClassPluginController.m_FailPlugins
-                lListViewItems.Add(New ListViewItem(New String() {
-                                                    IO.Path.GetFileName(mPlugin.sFile),
-                                                    "-",
-                                                    "-",
-                                                    "-",
-                                                    "-",
-                                                    "-",
-                                                    mPlugin.mException.Message
-                                                }, CStr(ENUM_PLUGIN_IMAGE_STATE.DISABLED)))
-            Next
-
-            ListView_Plugins.BeginUpdate()
-            ListView_Plugins.Items.Clear()
-            ListView_Plugins.Items.AddRange(lListViewItems.ToArray)
-            ClassTools.ClassControls.ClassListView.AutoResizeColumns(ListView_Plugins)
-            ListView_Plugins.EndUpdate()
-        Catch ex As Exception
-            ClassExceptionLog.WriteToLogMessageBox(ex)
-        End Try
-    End Sub
-
-    Private Sub SetPluginState(sFilename As String, bEnable As Boolean)
-        Try
-            For Each mPlugin In g_mFormMain.g_ClassPluginController.m_Plugins
-                If (IO.Path.GetFileName(mPlugin.sFile).ToLower <> sFilename.ToLower) Then
-                    Continue For
-                End If
-
-                While True
-                    Dim bSuccess As Boolean = False
-                    Dim sReason As String = ""
-
-                    If (bEnable) Then
-                        bSuccess = mPlugin.mPluginInterface.OnPluginEnabled(sReason)
-                    Else
-                        bSuccess = mPlugin.mPluginInterface.OnPluginDisabled(sReason)
-                    End If
-
-                    If (bSuccess) Then
-                        g_mFormMain.g_ClassPluginController.m_PluginEnabledByConfig(mPlugin) = bEnable
-                    Else
-                        If (String.IsNullOrEmpty(sReason)) Then
-                            sReason = "Unknown"
-                        End If
-
-                        With New Text.StringBuilder
-                            .AppendFormat("Could not change plugin state of plugin '{0}' with reason:", mPlugin.sFile).AppendLine()
-                            .AppendLine()
-                            .AppendLine(sReason)
-
-                            Select Case (MessageBox.Show(.ToString, "Chould not change plugin state", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error))
-                                Case DialogResult.Retry
-                                    Continue While
-                            End Select
-                        End With
-                    End If
-
-                    Exit While
-                End While
-            Next
-        Catch ex As Exception
-            ClassExceptionLog.WriteToLogMessageBox(ex)
-        End Try
-    End Sub
-
-    Private Sub LinkLabel_MorePlugins_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_MorePlugins.LinkClicked
-        Try
-            Process.Start("https://github.com/Timocop/BasicPawn/tree/master/Plugin%20Releases")
-        Catch ex As Exception
-            ClassExceptionLog.WriteToLogMessageBox(ex)
-        End Try
-    End Sub
-#End Region
-
-#Region "Database"
-    Private Sub Button_AddDatabaseItem_Click(sender As Object, e As EventArgs) Handles Button_AddDatabaseItem.Click
-        Using i As New FormDatabaseInput()
-            If (i.ShowDialog(Me) = DialogResult.OK) Then
-                DatabaseListBox_Database.BeginUpdate()
-                DatabaseListBox_Database.RemoveItemByName(i.m_Name)
-                DatabaseListBox_Database.Items.Add(New ClassDatabaseListBox.ClassDatabaseItem(i.m_Name, i.m_Username))
-                DatabaseListBox_Database.EndUpdate()
-
-                Dim iItem As New ClassDatabase.STRUC_DATABASE_ITEM(i.m_Name, i.m_Username, i.m_Password)
-                iItem.Save()
-            End If
-        End Using
-    End Sub
-
-    Private Sub Button_Refresh_Click(sender As Object, e As EventArgs) Handles Button_Refresh.Click
-        DatabaseListBox_Database.FillFromDatabase()
-    End Sub
-#End Region
-
 End Class
