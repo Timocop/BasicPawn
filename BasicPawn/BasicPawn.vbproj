@@ -247,14 +247,14 @@
     <Compile Include="Classes\Controls\ClassWebClientEx.vb">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Classes\FormDebugger\ClassDebuggerRunner.vb" />
-    <Compile Include="Classes\FormMain\ClassAutocompleteUpdater.vb" />
-    <Compile Include="Classes\FormMain\ClassDebuggerParser.vb" />
-    <Compile Include="Classes\FormMain\ClassSyntaxTools.vb" />
-    <Compile Include="Classes\FormMain\ClassSyntaxUpdater.vb" />
-    <Compile Include="Classes\FormMain\ClassTabControl.vb" />
-    <Compile Include="Classes\FormMain\ClassTextEditorTools.vb" />
-    <Compile Include="Classes\FormMain\ClassPluginController.vb" />
+    <Compile Include="Controls and Forms\Debugger\Classes\ClassDebuggerRunner.vb" />
+    <Compile Include="Controls and Forms\Main\Classes\ClassAutocompleteUpdater.vb" />
+    <Compile Include="Controls and Forms\Main\Classes\ClassDebuggerParser.vb" />
+    <Compile Include="Controls and Forms\Main\Classes\ClassSyntaxTools.vb" />
+    <Compile Include="Controls and Forms\Main\Classes\ClassSyntaxUpdater.vb" />
+    <Compile Include="Controls and Forms\Main\Classes\ClassTabControl.vb" />
+    <Compile Include="Controls and Forms\Main\Classes\ClassTextEditorTools.vb" />
+    <Compile Include="Controls and Forms\Main\Classes\ClassPluginController.vb" />
     <Compile Include="Classes\Controls\ClassPanelAlpha.vb">
       <SubType>Component</SubType>
     </Compile>
