@@ -351,6 +351,54 @@
     <Compile Include="Controls and Forms\Main\Classes\ClassInformationListBox.vb">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls and Forms\Main\Extensions\ExtMainDragDrop.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls and Forms\Main\Extensions\ExtMainMenuBuild.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls and Forms\Main\Extensions\ExtMainMenuConfigs.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls and Forms\Main\Extensions\ExtMainMenuDebug.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls and Forms\Main\Extensions\ExtMainMenuFile.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls and Forms\Main\Extensions\ExtMainMenuHelp.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls and Forms\Main\Extensions\ExtMainMenuNewUpdate.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls and Forms\Main\Extensions\ExtMainMenuRedo.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls and Forms\Main\Extensions\ExtMainMenuShell.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls and Forms\Main\Extensions\ExtMainMenuTest.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls and Forms\Main\Extensions\ExtMainMenuTools.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls and Forms\Main\Extensions\ExtMainMenuUndo.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls and Forms\Main\Extensions\ExtMainMenuView.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls and Forms\Main\Extensions\ExtMainMessages.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls and Forms\Main\Extensions\ExtMainRightClick.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls and Forms\Main\Extensions\ExtMainTabs.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Controls and Forms\Main\UCExplorerBrowser.Designer.vb">
       <DependentUpon>UCExplorerBrowser.vb</DependentUpon>
     </Compile>
