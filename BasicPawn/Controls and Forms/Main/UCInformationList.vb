@@ -73,7 +73,7 @@ Public Class UCInformationList
     End Sub
 
     Public Function ParseFromCompilerOutput(sFile As String, sOutputLine As String) As ClassListBoxItemAction.ClassActions.STRUC_ACTION_GOTO
-        Dim mMatch As Match = Regex.Match(sOutputLine, "^(?<File>.+?)\((?<Line>([0-9]+)|(?<LineStart>[0-9]+)\s*--\s*(?<LineEnd>[0-9]+))\)\s*:", RegexOptions.IgnoreCase)
+        Dim mMatch As Match = Regex.Match(sOutputLine, "^(?<File>.+?)\(((?<Line>[0-9]+)|(?<LineStart>[0-9]+)\s*--\s*(?<LineEnd>[0-9]+))\)\s*:", RegexOptions.IgnoreCase)
         If (mMatch.Success) Then
             Dim sOutputFile As String = mMatch.Groups("File").Value.Replace("/"c, "\"c)
 
