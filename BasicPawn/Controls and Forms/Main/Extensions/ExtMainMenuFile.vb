@@ -44,7 +44,6 @@ Partial Public Class FormMain
             g_mUCProjectBrowser.g_ClassProjectControl.SaveProject()
 
             g_mUCStartPage.g_mClassRecentItems.AddRecent(g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile)
-            'ShowPingFlash()
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try

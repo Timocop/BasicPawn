@@ -55,14 +55,16 @@ Public Class UCInformationList
 
                                       g_mFormMain.ToolStripStatusLabel_LastInformation.Text = sText
 
-                                      If (bShowInformationTab) Then
+                                      If (bShowInformationTab AndAlso g_mFormMain.ToolStripMenuItem_ViewDetails.Checked) Then
                                           g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed = False
 
                                           If (g_mFormMain.SplitContainer_ToolboxSourceAndDetails.SplitterDistance > (g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Height - g_mFormMain.g_iDefaultDetailsSplitterDistance)) Then
                                               g_mFormMain.SplitContainer_ToolboxSourceAndDetails.SplitterDistance = (g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Height - g_mFormMain.g_iDefaultDetailsSplitterDistance)
                                           End If
 
-                                          g_mFormMain.TabControl_Details.SelectTab(g_mFormMain.TabPage_Information)
+                                          If (g_mFormMain.TabControl_Details.SelectedTab IsNot g_mFormMain.TabPage_Information) Then
+                                              g_mFormMain.TabControl_Details.SelectTab(g_mFormMain.TabPage_Information)
+                                          End If
                                       End If
 
                                       If (bEnsureVisible) Then

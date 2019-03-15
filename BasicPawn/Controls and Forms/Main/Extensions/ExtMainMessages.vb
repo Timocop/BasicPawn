@@ -171,8 +171,6 @@ Partial Public Class FormMain
                                                   End If
 
                                                   Me.Activate()
-
-                                                  'ShowPingFlash()
                                               End Sub)
             End Select
         Catch ex As Exception

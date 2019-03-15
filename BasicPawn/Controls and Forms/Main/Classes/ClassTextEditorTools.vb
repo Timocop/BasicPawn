@@ -489,13 +489,7 @@ Public Class ClassTextEditorTools
                 End With
             End If
 
-            If (g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed) Then
-                g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed = False
-                g_mFormMain.SplitContainer_ToolboxSourceAndDetails.SplitterDistance = g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Height - 200
-            End If
-            g_mFormMain.TabControl_Details.SelectTab(g_mFormMain.TabPage_Information)
-
-            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "Compiling source started!", False, False, True)
+            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "Compiling source started!", False, True, True)
 
             Dim iExitCode As Integer = 0
             Dim sOutput As String = ""
@@ -789,13 +783,7 @@ Public Class ClassTextEditorTools
                 End With
             End If
 
-            If (g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed) Then
-                g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed = False
-                g_mFormMain.SplitContainer_ToolboxSourceAndDetails.SplitterDistance = g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Height - 200
-            End If
-            g_mFormMain.TabControl_Details.SelectTab(g_mFormMain.TabPage_Information)
-
-            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "Pre-Processing source started!", False, False, True)
+            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "Pre-Processing source started!", False, True, True)
 
             Dim sMarkStart As String = Guid.NewGuid.ToString
             Dim sMarkEnd As String = Guid.NewGuid.ToString
@@ -1089,13 +1077,7 @@ Public Class ClassTextEditorTools
                 End With
             End If
 
-            If (g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed) Then
-                g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed = False
-                g_mFormMain.SplitContainer_ToolboxSourceAndDetails.SplitterDistance = g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Height - 200
-            End If
-            g_mFormMain.TabControl_Details.SelectTab(g_mFormMain.TabPage_Information)
-
-            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "DIASM source started!", False, False, True)
+            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "DIASM source started!", False, True, True)
 
             Dim iExitCode As Integer = 0
             Dim sOutput As String = ""

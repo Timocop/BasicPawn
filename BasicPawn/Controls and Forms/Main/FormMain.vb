@@ -527,33 +527,6 @@ Public Class FormMain
         ToolStripStatusLabel_AutocompleteProgress.Visible = If(ToolStripMenuItem_ViewProgressAni.Checked, ToolStripStatusLabel_AutocompleteProgress.Visible, False)
     End Sub
 
-    'Public Sub ShowPingFlash()
-    '    'Wine doesnt support alpha rendering
-    '    If (ClassTools.ClassOperatingSystem.GetWineVersion() IsNot Nothing) Then
-    '        Return
-    '    End If
-
-    '    g_mPingFlashPanel.m_Opacity = 50
-    '    g_mPingFlashPanel.Visible = True
-
-    '    Timer_PingFlash.Start()
-    'End Sub
-
-    'Private Sub Timer_PingFlash_Tick(sender As Object, e As EventArgs) Handles Timer_PingFlash.Tick
-    '    If (g_mPingFlashPanel Is Nothing OrElse g_mPingFlashPanel.IsDisposed) Then
-    '        Return
-    '    End If
-
-    '    g_mPingFlashPanel.m_Opacity -= 10
-
-    '    If (g_mPingFlashPanel.m_Opacity > 0) Then
-    '        Return
-    '    End If
-
-    '    g_mPingFlashPanel.Visible = False
-    '    Timer_PingFlash.Stop()
-    'End Sub
-
     Private Sub FormMain_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
         CleanUp()
     End Sub

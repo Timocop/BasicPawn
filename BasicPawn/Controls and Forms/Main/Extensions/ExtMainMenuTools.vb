@@ -259,13 +259,17 @@ Partial Public Class FormMain
     End Sub
 
     Private Sub ToolStripMenuItem_ToolsShowInformation_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsShowInformation.Click
-        SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed = False
+        If (ToolStripMenuItem_ViewDetails.Checked) Then
+            SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed = False
 
-        If (SplitContainer_ToolboxSourceAndDetails.SplitterDistance > (SplitContainer_ToolboxSourceAndDetails.Height - g_iDefaultDetailsSplitterDistance)) Then
-            SplitContainer_ToolboxSourceAndDetails.SplitterDistance = (SplitContainer_ToolboxSourceAndDetails.Height - g_iDefaultDetailsSplitterDistance)
+            If (SplitContainer_ToolboxSourceAndDetails.SplitterDistance > (SplitContainer_ToolboxSourceAndDetails.Height - g_iDefaultDetailsSplitterDistance)) Then
+                SplitContainer_ToolboxSourceAndDetails.SplitterDistance = (SplitContainer_ToolboxSourceAndDetails.Height - g_iDefaultDetailsSplitterDistance)
+            End If
+
+            If (TabControl_Details.SelectedTab IsNot TabPage_Information) Then
+                TabControl_Details.SelectTab(TabPage_Information)
+            End If
         End If
-
-        TabControl_Details.SelectTab(TabPage_Information)
     End Sub
 
     Private Sub ToolStripMenuItem_ToolsClearInformationLog_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsClearInformationLog.Click
@@ -301,13 +305,17 @@ Partial Public Class FormMain
     End Sub
 
     Private Sub ToolStripMenuItem_ToolsAutocompleteShowAutocomplete_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsAutocompleteShowAutocomplete.Click
-        SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed = False
+        If (ToolStripMenuItem_ViewDetails.Checked) Then
+            SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed = False
 
-        If (SplitContainer_ToolboxSourceAndDetails.SplitterDistance > (SplitContainer_ToolboxSourceAndDetails.Height - g_iDefaultDetailsSplitterDistance)) Then
-            SplitContainer_ToolboxSourceAndDetails.SplitterDistance = (SplitContainer_ToolboxSourceAndDetails.Height - g_iDefaultDetailsSplitterDistance)
+            If (SplitContainer_ToolboxSourceAndDetails.SplitterDistance > (SplitContainer_ToolboxSourceAndDetails.Height - g_iDefaultDetailsSplitterDistance)) Then
+                SplitContainer_ToolboxSourceAndDetails.SplitterDistance = (SplitContainer_ToolboxSourceAndDetails.Height - g_iDefaultDetailsSplitterDistance)
+            End If
+
+            If (TabControl_Details.SelectedTab IsNot TabPage_Autocomplete) Then
+                TabControl_Details.SelectTab(TabPage_Autocomplete)
+            End If
         End If
-
-        TabControl_Details.SelectTab(TabPage_Autocomplete)
     End Sub
 
     Private Sub ToolStripMenuItem_ListReferences_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ListReferences.Click
