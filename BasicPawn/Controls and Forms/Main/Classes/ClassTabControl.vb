@@ -428,7 +428,9 @@ Public Class ClassTabControl
         If (bSaveAs OrElse m_Tab(iIndex).m_IsUnsaved OrElse m_Tab(iIndex).m_InvalidFile) Then
             Using i As New SaveFileDialog
                 i.Filter = "All supported files|*.sp;*.inc;*.sma|SourcePawn|*.sp|Include|*.inc|AMX Mod X|*.sma|Pawn (Not fully supported)|*.pwn;*.p|All files|*.*"
-                i.FileName = m_Tab(iIndex).m_File
+
+                i.InitialDirectory = If(String.IsNullOrEmpty(m_Tab(iIndex).m_File), "", IO.Path.GetDirectoryName(m_Tab(iIndex).m_File))
+                i.FileName = IO.Path.GetFileName(m_Tab(iIndex).m_File)
 
                 If (i.ShowDialog = DialogResult.OK) Then
                     m_Tab(iIndex).m_FileCachedWriteDate = Date.MaxValue
@@ -486,7 +488,9 @@ Public Class ClassTabControl
                 If (bIsUnsaved) Then
                     Using i As New SaveFileDialog
                         i.Filter = "All supported files|*.sp;*.inc;*.sma|SourcePawn|*.sp|Include|*.inc|AMX Mod X|*.sma|Pawn (Not fully supported)|*.pwn;*.p|All files|*.*"
-                        i.FileName = m_Tab(iIndex).m_File
+
+                        i.InitialDirectory = If(String.IsNullOrEmpty(m_Tab(iIndex).m_File), "", IO.Path.GetDirectoryName(m_Tab(iIndex).m_File))
+                        i.FileName = IO.Path.GetFileName(m_Tab(iIndex).m_File)
 
                         If (i.ShowDialog = DialogResult.OK) Then
                             m_Tab(iIndex).m_FileCachedWriteDate = Date.MaxValue

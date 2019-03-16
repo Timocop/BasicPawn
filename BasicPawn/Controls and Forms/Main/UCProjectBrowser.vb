@@ -157,7 +157,8 @@ Public Class UCProjectBrowser
 
         Public Function ExtractFileDataDialog(mInfo As STRUC_PROJECT_FILE_INFO, ByRef r_sNewPath As String) As Boolean
             Using i As New SaveFileDialog
-                i.FileName = mInfo.sFile
+                i.InitialDirectory = If(String.IsNullOrEmpty(mInfo.sFile), "", IO.Path.GetDirectoryName(mInfo.sFile))
+                i.FileName = IO.Path.GetFileName(mInfo.sFile)
 
                 If (i.ShowDialog() = DialogResult.OK) Then
                     r_sNewPath = i.FileName
@@ -244,7 +245,9 @@ Public Class UCProjectBrowser
                     If (Not m_ProjectOpened) Then
                         Using i As New SaveFileDialog
                             i.Filter = String.Format("BasicPawn Project|*{0}", UCProjectBrowser.ClassProjectControl.g_sProjectExtension)
-                            i.FileName = m_ProjectFile
+
+                            i.InitialDirectory = If(String.IsNullOrEmpty(m_ProjectFile), "", IO.Path.GetDirectoryName(m_ProjectFile))
+                            i.FileName = IO.Path.GetFileName(m_ProjectFile)
 
                             If (i.ShowDialog = DialogResult.OK) Then
                                 m_ProjectFile = i.FileName
@@ -426,7 +429,9 @@ Public Class UCProjectBrowser
             If (String.IsNullOrEmpty(g_ClassProjectControl.m_ProjectFile)) Then
                 Using i As New SaveFileDialog
                     i.Filter = String.Format("BasicPawn Project|*{0}", ClassProjectControl.g_sProjectExtension)
-                    i.FileName = g_ClassProjectControl.m_ProjectFile
+
+                    i.InitialDirectory = If(String.IsNullOrEmpty(g_ClassProjectControl.m_ProjectFile), "", IO.Path.GetDirectoryName(g_ClassProjectControl.m_ProjectFile))
+                    i.FileName = IO.Path.GetFileName(g_ClassProjectControl.m_ProjectFile)
 
                     If (i.ShowDialog = DialogResult.OK) Then
                         g_ClassProjectControl.m_ProjectFile = i.FileName

@@ -557,7 +557,9 @@ Partial Public Class FormSettings
     Private Sub Button_Compiler_Click(sender As Object, e As EventArgs) Handles Button_Compiler.Click
         Using i As New OpenFileDialog
             i.Filter = "SourcePawn Compiler|spcomp.exe|AMX Mod X Compiler|amxxpc.exe|Small Compiler|sc.exe|Pawn Compiler|pawncc.exe|Executables|*.exe"
-            i.FileName = TextBox_CompilerPath.Text
+
+            i.InitialDirectory = If(String.IsNullOrEmpty(TextBox_CompilerPath.Text), "", IO.Path.GetDirectoryName(TextBox_CompilerPath.Text))
+            i.FileName = IO.Path.GetFileName(TextBox_CompilerPath.Text)
 
             If (i.ShowDialog = DialogResult.OK) Then
                 TextBox_CompilerPath.Text = i.FileName

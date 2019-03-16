@@ -32,7 +32,9 @@ Partial Public Class FormMain
         Try
             Using i As New SaveFileDialog
                 i.Filter = String.Format("BasicPawn Project|*{0}", UCProjectBrowser.ClassProjectControl.g_sProjectExtension)
-                i.FileName = g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile
+
+                i.InitialDirectory = If(String.IsNullOrEmpty(g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile), "", IO.Path.GetDirectoryName(g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile))
+                i.FileName = IO.Path.GetFileName(g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile)
 
                 If (i.ShowDialog = DialogResult.OK) Then
                     g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile = i.FileName
@@ -53,8 +55,10 @@ Partial Public Class FormMain
         Try
             Using i As New OpenFileDialog
                 i.Filter = String.Format("BasicPawn Project|*{0}", UCProjectBrowser.ClassProjectControl.g_sProjectExtension)
-                i.FileName = g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile
                 i.Multiselect = True
+
+                i.InitialDirectory = If(String.IsNullOrEmpty(g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile), "", IO.Path.GetDirectoryName(g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile))
+                i.FileName = IO.Path.GetFileName(g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile)
 
                 If (i.ShowDialog = DialogResult.OK) Then
                     Dim bAppendFiles As Boolean = False
@@ -93,8 +97,10 @@ Partial Public Class FormMain
         Try
             Using i As New OpenFileDialog
                 i.Filter = "All supported files|*.sp;*.inc;*.sma|SourcePawn|*.sp|Include|*.inc|AMX Mod X|*.sma|Pawn (Not fully supported)|*.pwn;*.p|All files|*.*"
-                i.FileName = g_ClassTabControl.m_ActiveTab.m_File
                 i.Multiselect = True
+
+                i.InitialDirectory = If(String.IsNullOrEmpty(g_ClassTabControl.m_ActiveTab.m_File), "", IO.Path.GetDirectoryName(g_ClassTabControl.m_ActiveTab.m_File))
+                i.FileName = IO.Path.GetFileName(g_ClassTabControl.m_ActiveTab.m_File)
 
                 If (i.ShowDialog = DialogResult.OK) Then
                     Try
@@ -191,7 +197,11 @@ Partial Public Class FormMain
 
             Using i As New SaveFileDialog
                 i.Filter = "All supported files|*.sp;*.inc;*.sma|SourcePawn|*.sp|Include|*.inc|AMX Mod X|*.sma|Pawn (Not fully supported)|*.pwn;*.p|All files|*.*"
-                i.FileName = IO.Path.Combine(IO.Path.GetDirectoryName(g_ClassTabControl.m_ActiveTab.m_File), String.Format("{0}.packed{1}", IO.Path.GetFileNameWithoutExtension(g_ClassTabControl.m_ActiveTab.m_File), IO.Path.GetExtension(g_ClassTabControl.m_ActiveTab.m_File)))
+
+                Dim sDialogPath As String = IO.Path.Combine(IO.Path.GetDirectoryName(g_ClassTabControl.m_ActiveTab.m_File), String.Format("{0}.packed{1}", IO.Path.GetFileNameWithoutExtension(g_ClassTabControl.m_ActiveTab.m_File), IO.Path.GetExtension(g_ClassTabControl.m_ActiveTab.m_File)))
+
+                i.InitialDirectory = If(String.IsNullOrEmpty(sDialogPath), "", IO.Path.GetDirectoryName(sDialogPath))
+                i.FileName = IO.Path.GetFileName(sDialogPath)
 
                 If (i.ShowDialog = DialogResult.OK) Then
                     IO.File.WriteAllText(i.FileName, sPreSource)

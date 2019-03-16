@@ -70,14 +70,20 @@ Partial Public Class FormSettings
     End Sub
 
     Private Sub Button_CustomSyntax_Click(sender As Object, e As EventArgs) Handles Button_CustomSyntax.Click
-        Using i As New OpenFileDialog
-            i.Filter = "Syntax highlighting XSHD file|*.xml"
-            i.FileName = TextBox_CustomSyntax.Text
+        Try
+            Using i As New OpenFileDialog
+                i.Filter = "Syntax highlighting XSHD file|*.xml"
 
-            If (i.ShowDialog = DialogResult.OK) Then
-                TextBox_CustomSyntax.Text = i.FileName
-            End If
-        End Using
+                i.InitialDirectory = If(String.IsNullOrEmpty(TextBox_CustomSyntax.Text), "", IO.Path.GetDirectoryName(TextBox_CustomSyntax.Text))
+                i.FileName = IO.Path.GetFileName(TextBox_CustomSyntax.Text)
+
+                If (i.ShowDialog = DialogResult.OK) Then
+                    TextBox_CustomSyntax.Text = i.FileName
+                End If
+            End Using
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
     End Sub
 
     Private Sub LinkLabel_DefaultSyntax_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_DefaultSyntax.LinkClicked
