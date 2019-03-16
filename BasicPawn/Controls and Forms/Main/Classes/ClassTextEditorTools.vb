@@ -603,7 +603,14 @@ Public Class ClassTextEditorTools
                     End If
 
                     If (mConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                        sOutputFile = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), String.Format("compiled\{0}.unk", IO.Path.GetFileNameWithoutExtension(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)))
+                        Dim sOutputDir As String = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "compiled")
+
+                        If (Not IO.Directory.Exists(sOutputDir)) Then
+                            IO.Directory.CreateDirectory(sOutputDir)
+                        End If
+
+                        sOutputFile = IO.Path.Combine(sOutputDir, String.Format("{0}.unk", IO.Path.GetFileNameWithoutExtension(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)))
+
                     Else
                         If (Not IO.Directory.Exists(mConfig.g_sOutputFolder)) Then
                             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Compiling failed! Invalid output directory!", False, False, True)
