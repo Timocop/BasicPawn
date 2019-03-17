@@ -45,9 +45,4 @@ Features:
 ### [![Donate](https://i.imgur.com/jnnHW0C.jpg)](https://www.paypal.me/Extn)
 
 ## Screenshots
-![Default Colors](https://i.imgur.com/3s0yB2x.png)
-![Inverted Colors](https://i.imgur.com/YRDLsjD.png)
-![Template Wizard](https://i.imgur.com/EvFjh9x.png)
-![BasicPawn Debugger](https://i.imgur.com/UAnC3l7.png)
-![Unlimited Custom Highlight Colors](https://i.imgur.com/T116gfC.png)
-![BasicPawn on Linux Ubuntu](https://i.imgur.com/jpQ0mh5.png)
+![](https://i.imgur.com/wWrKGTl.png)
