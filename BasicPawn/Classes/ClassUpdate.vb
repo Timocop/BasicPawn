@@ -41,12 +41,12 @@ Public Class ClassUpdate
                                    "http://getbasicpawn.spdns.org/basicpawn_update/CurrentVersion.txt",
                                    "http://getbasicpawn.spdns.org/basicpawn_update/DataHash.txt",
                                    "http://getbasicpawn.spdns.org/basicpawn_update/BasicPawnUpdateSFX.dat",
-                                   String.Format("BasicPawn/{0} (ompatible; Windows NT)", Application.ProductVersion)),
+                                   String.Format("BasicPawn/{0} (compatible; Windows NT)", Application.ProductVersion)),
         New STRUC_UPDATE_LOCATIONS("github.com",
                                    "https://raw.githubusercontent.com/Timocop/BasicPawn/master/Update%20Depot/CurrentVersion.txt",
                                    "https://raw.githubusercontent.com/Timocop/BasicPawn/master/Update%20Depot/DataHash.txt",
                                    "https://raw.githubusercontent.com/Timocop/BasicPawn/master/Update%20Depot/BasicPawnUpdateSFX.dat",
-                                   String.Format("BasicPawn/{0} (ompatible; Windows NT)", Application.ProductVersion))
+                                   String.Format("BasicPawn/{0} (compatible; Windows NT)", Application.ProductVersion))
     }
 
     Public Shared Sub InstallUpdate()
