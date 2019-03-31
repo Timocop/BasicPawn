@@ -142,7 +142,7 @@ Public Class FormMultiCompiler
                     g_lCompiledFiles.Add(sOutputFile)
                 End If
 
-                Dim bWarning As Boolean = Regex.Match(sCompilerOutput, "\s+[0-9]+\s+\b(Warning|Warnings)\b\.").Success
+                Dim bWarning As Boolean = Regex.Match(sCompilerOutput, "^\s*[0-9]+\s+\b(Warning|Warnings)\b\.\s*$", RegexOptions.Multiline).Success
 
                 Dim bCancel As Boolean = False
 
@@ -169,6 +169,7 @@ Public Class FormMultiCompiler
                                                               ClassExceptionLog.WriteToLogMessageBox(ex)
                                                           End Try
                                                       End Sub)
+
                 ElseIf (bWarning) Then
                     ClassThread.ExecEx(Of Object)(Me, Sub()
                                                           Try

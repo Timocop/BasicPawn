@@ -115,6 +115,8 @@ Partial Class FormMain
         Me.ToolStripMenuItem_Undo = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Redo = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Build = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_BuildCurrent = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_BuildAll = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Test = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Debug = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Shell = New System.Windows.Forms.ToolStripMenuItem()
@@ -123,6 +125,7 @@ Partial Class FormMain
         Me.ToolStripMenuItem_HelpSpecialControlsAutocompleteUp = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_HelpSpecialControlsAutocompleteDown = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_HelpSpecialControlsAutocompletePaste = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_HelpSpecialControlsAutocompletePasteSpecial = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_HelpSpecialControlsMoveSelected = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_HelpSpecialControlsCopySelected = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_HelpSpecialControlsDupLine = New System.Windows.Forms.ToolStripMenuItem()
@@ -176,7 +179,8 @@ Partial Class FormMain
         Me.ToolStripSeparator19 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_FindOptimalConfigActiveTab = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_FindOptimalConfigAllTabs = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripMenuItem_HelpSpecialControlsAutocompletePasteSpecial = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_TestCurrent = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_TestAll = New System.Windows.Forms.ToolStripMenuItem()
         Me.ContextMenuStrip_RightClick.SuspendLayout()
         Me.MenuStrip_BasicPawn.SuspendLayout()
         Me.SplitContainer_ToolboxSourceAndDetails.Panel1.SuspendLayout()
@@ -788,17 +792,32 @@ Partial Class FormMain
         '
         'ToolStripMenuItem_Build
         '
+        Me.ToolStripMenuItem_Build.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_BuildCurrent, Me.ToolStripMenuItem_BuildAll})
         Me.ToolStripMenuItem_Build.Image = CType(resources.GetObject("ToolStripMenuItem_Build.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_Build.Name = "ToolStripMenuItem_Build"
-        Me.ToolStripMenuItem_Build.ShortcutKeys = System.Windows.Forms.Keys.F3
         Me.ToolStripMenuItem_Build.Size = New System.Drawing.Size(62, 20)
         Me.ToolStripMenuItem_Build.Text = "&Build"
         '
+        'ToolStripMenuItem_BuildCurrent
+        '
+        Me.ToolStripMenuItem_BuildCurrent.Image = Global.BasicPawn.My.Resources.Resources.imageres_5343_16x16
+        Me.ToolStripMenuItem_BuildCurrent.Name = "ToolStripMenuItem_BuildCurrent"
+        Me.ToolStripMenuItem_BuildCurrent.ShortcutKeys = System.Windows.Forms.Keys.F3
+        Me.ToolStripMenuItem_BuildCurrent.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_BuildCurrent.Text = "Build current"
+        '
+        'ToolStripMenuItem_BuildAll
+        '
+        Me.ToolStripMenuItem_BuildAll.Name = "ToolStripMenuItem_BuildAll"
+        Me.ToolStripMenuItem_BuildAll.ShortcutKeys = CType((System.Windows.Forms.Keys.Shift Or System.Windows.Forms.Keys.F3), System.Windows.Forms.Keys)
+        Me.ToolStripMenuItem_BuildAll.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_BuildAll.Text = "Build all"
+        '
         'ToolStripMenuItem_Test
         '
+        Me.ToolStripMenuItem_Test.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_TestCurrent, Me.ToolStripMenuItem_TestAll})
         Me.ToolStripMenuItem_Test.Image = CType(resources.GetObject("ToolStripMenuItem_Test.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_Test.Name = "ToolStripMenuItem_Test"
-        Me.ToolStripMenuItem_Test.ShortcutKeys = System.Windows.Forms.Keys.F4
         Me.ToolStripMenuItem_Test.Size = New System.Drawing.Size(56, 20)
         Me.ToolStripMenuItem_Test.Text = "&Test"
         '
@@ -831,7 +850,7 @@ Partial Class FormMain
         Me.ToolStripMenuItem_HelpSpecialControls.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_HelpSpecialControlsAutocompleteUp, Me.ToolStripMenuItem_HelpSpecialControlsAutocompleteDown, Me.ToolStripMenuItem_HelpSpecialControlsAutocompletePaste, Me.ToolStripMenuItem_HelpSpecialControlsAutocompletePasteSpecial, Me.ToolStripMenuItem_HelpSpecialControlsMoveSelected, Me.ToolStripMenuItem_HelpSpecialControlsCopySelected, Me.ToolStripMenuItem_HelpSpecialControlsDupLine, Me.ToolStripMenuItem_HelpSpecialControlsCommentLines})
         Me.ToolStripMenuItem_HelpSpecialControls.Image = CType(resources.GetObject("ToolStripMenuItem_HelpSpecialControls.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_HelpSpecialControls.Name = "ToolStripMenuItem_HelpSpecialControls"
-        Me.ToolStripMenuItem_HelpSpecialControls.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_HelpSpecialControls.Size = New System.Drawing.Size(170, 22)
         Me.ToolStripMenuItem_HelpSpecialControls.Text = "Special Controls"
         '
         'ToolStripMenuItem_HelpSpecialControlsAutocompleteUp
@@ -854,6 +873,13 @@ Partial Class FormMain
         Me.ToolStripMenuItem_HelpSpecialControlsAutocompletePaste.ShortcutKeyDisplayString = "Ctrl+Enter"
         Me.ToolStripMenuItem_HelpSpecialControlsAutocompletePaste.Size = New System.Drawing.Size(314, 22)
         Me.ToolStripMenuItem_HelpSpecialControlsAutocompletePaste.Text = "Autocomplete Paste"
+        '
+        'ToolStripMenuItem_HelpSpecialControlsAutocompletePasteSpecial
+        '
+        Me.ToolStripMenuItem_HelpSpecialControlsAutocompletePasteSpecial.Name = "ToolStripMenuItem_HelpSpecialControlsAutocompletePasteSpecial"
+        Me.ToolStripMenuItem_HelpSpecialControlsAutocompletePasteSpecial.ShortcutKeyDisplayString = "Ctrl+Shift+Enter"
+        Me.ToolStripMenuItem_HelpSpecialControlsAutocompletePasteSpecial.Size = New System.Drawing.Size(314, 22)
+        Me.ToolStripMenuItem_HelpSpecialControlsAutocompletePasteSpecial.Text = "Autocomplete Paste Special"
         '
         'ToolStripMenuItem_HelpSpecialControlsMoveSelected
         '
@@ -886,32 +912,32 @@ Partial Class FormMain
         'ToolStripSeparator15
         '
         Me.ToolStripSeparator15.Name = "ToolStripSeparator15"
-        Me.ToolStripSeparator15.Size = New System.Drawing.Size(177, 6)
+        Me.ToolStripSeparator15.Size = New System.Drawing.Size(167, 6)
         '
         'ToolStripMenuItem_HelpCheckUpdates
         '
         Me.ToolStripMenuItem_HelpCheckUpdates.Image = Global.BasicPawn.My.Resources.Resources.imageres_5332_16x16
         Me.ToolStripMenuItem_HelpCheckUpdates.Name = "ToolStripMenuItem_HelpCheckUpdates"
-        Me.ToolStripMenuItem_HelpCheckUpdates.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_HelpCheckUpdates.Size = New System.Drawing.Size(170, 22)
         Me.ToolStripMenuItem_HelpCheckUpdates.Text = "Check for updates"
         '
         'ToolStripMenuItem_HelpGithub
         '
         Me.ToolStripMenuItem_HelpGithub.Image = Global.BasicPawn.My.Resources.Resources.imageres_5316_16x16
         Me.ToolStripMenuItem_HelpGithub.Name = "ToolStripMenuItem_HelpGithub"
-        Me.ToolStripMenuItem_HelpGithub.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_HelpGithub.Size = New System.Drawing.Size(170, 22)
         Me.ToolStripMenuItem_HelpGithub.Text = "View on Github"
         '
         'ToolStripSeparator14
         '
         Me.ToolStripSeparator14.Name = "ToolStripSeparator14"
-        Me.ToolStripSeparator14.Size = New System.Drawing.Size(177, 6)
+        Me.ToolStripSeparator14.Size = New System.Drawing.Size(167, 6)
         '
         'ToolStripMenuItem_HelpAbout
         '
         Me.ToolStripMenuItem_HelpAbout.Image = CType(resources.GetObject("ToolStripMenuItem_HelpAbout.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_HelpAbout.Name = "ToolStripMenuItem_HelpAbout"
-        Me.ToolStripMenuItem_HelpAbout.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_HelpAbout.Size = New System.Drawing.Size(170, 22)
         Me.ToolStripMenuItem_HelpAbout.Text = "About"
         '
         'ToolStripMenuItem_TabClose
@@ -1296,12 +1322,20 @@ Partial Class FormMain
         Me.ToolStripMenuItem_FindOptimalConfigAllTabs.Size = New System.Drawing.Size(250, 22)
         Me.ToolStripMenuItem_FindOptimalConfigAllTabs.Text = "Find optimal config for all tabs"
         '
-        'ToolStripMenuItem_HelpSpecialControlsAutocompletePasteSpecial
+        'ToolStripMenuItem_TestCurrent
         '
-        Me.ToolStripMenuItem_HelpSpecialControlsAutocompletePasteSpecial.Name = "ToolStripMenuItem_HelpSpecialControlsAutocompletePasteSpecial"
-        Me.ToolStripMenuItem_HelpSpecialControlsAutocompletePasteSpecial.ShortcutKeyDisplayString = "Ctrl+Shift+Enter"
-        Me.ToolStripMenuItem_HelpSpecialControlsAutocompletePasteSpecial.Size = New System.Drawing.Size(314, 22)
-        Me.ToolStripMenuItem_HelpSpecialControlsAutocompletePasteSpecial.Text = "Autocomplete Paste Special"
+        Me.ToolStripMenuItem_TestCurrent.Image = Global.BasicPawn.My.Resources.Resources.imageres_5343_16x16
+        Me.ToolStripMenuItem_TestCurrent.Name = "ToolStripMenuItem_TestCurrent"
+        Me.ToolStripMenuItem_TestCurrent.ShortcutKeys = System.Windows.Forms.Keys.F4
+        Me.ToolStripMenuItem_TestCurrent.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_TestCurrent.Text = "Test current"
+        '
+        'ToolStripMenuItem_TestAll
+        '
+        Me.ToolStripMenuItem_TestAll.Name = "ToolStripMenuItem_TestAll"
+        Me.ToolStripMenuItem_TestAll.ShortcutKeys = CType((System.Windows.Forms.Keys.Shift Or System.Windows.Forms.Keys.F4), System.Windows.Forms.Keys)
+        Me.ToolStripMenuItem_TestAll.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_TestAll.Text = "Test all"
         '
         'FormMain
         '
@@ -1488,4 +1522,8 @@ Partial Class FormMain
     Friend WithEvents ToolStripMenuItem_FindOptimalConfigActiveTab As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_FindOptimalConfigAllTabs As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_HelpSpecialControlsAutocompletePasteSpecial As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_BuildCurrent As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_BuildAll As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_TestCurrent As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_TestAll As ToolStripMenuItem
 End Class

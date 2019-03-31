@@ -38,6 +38,15 @@ Public Class FormProgress
         End If
     End Sub
 
+    Property m_ProgressMax As Integer
+        Get
+            Return ProgressBar_Progress.Maximum
+        End Get
+        Set(value As Integer)
+            ProgressBar_Progress.Maximum = value
+        End Set
+    End Property
+
     Property m_Progress As Integer
         Get
             Return ProgressBar_Progress.Value
