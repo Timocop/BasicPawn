@@ -64,6 +64,7 @@ Public Class ClassSettings
     'Syntax Highligting
     Public Shared g_iSettingsDoubleClickMark As Boolean = True
     Public Shared g_iSettingsAutoMark As Boolean = True
+    Public Shared g_iSettingsPublicAsDefineColor As Boolean = True
     'Autocomplete
     Public Shared g_iSettingsAlwaysLoadDefaultIncludes As Boolean = True
     Public Shared g_iSettingsEnableToolTip As Boolean = True
@@ -116,6 +117,7 @@ Public Class ClassSettings
                 'Syntax Highligting
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "DoubleClickMark", If(g_iSettingsDoubleClickMark, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutoMark", If(g_iSettingsAutoMark, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "PublicAsDefineColor", If(g_iSettingsPublicAsDefineColor, "1", "0")))
                 'Autocomplete
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AlwaysLoadDefaultIncludes", If(g_iSettingsAlwaysLoadDefaultIncludes, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutocompleteToolTip", If(g_iSettingsEnableToolTip, "1", "0")))
@@ -191,6 +193,7 @@ Public Class ClassSettings
                     'Syntax Highligting
                     g_iSettingsDoubleClickMark = (mIni.ReadKeyValue("Editor", "DoubleClickMark", "1") <> "0")
                     g_iSettingsAutoMark = (mIni.ReadKeyValue("Editor", "AutoMark", "1") <> "0")
+                    g_iSettingsPublicAsDefineColor = (mIni.ReadKeyValue("Editor", "PublicAsDefineColor", "1") <> "0")
                     'Autocomplete
                     g_iSettingsAlwaysLoadDefaultIncludes = (mIni.ReadKeyValue("Editor", "AlwaysLoadDefaultIncludes", "1") <> "0")
                     g_iSettingsEnableToolTip = (mIni.ReadKeyValue("Editor", "AutocompleteToolTip", "1") <> "0")

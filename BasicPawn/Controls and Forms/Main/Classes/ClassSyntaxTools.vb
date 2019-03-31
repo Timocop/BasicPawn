@@ -1359,7 +1359,8 @@ Public Class ClassSyntaxTools
 
                                                         For Each mAutocomplete In mActiveAutocomplete
                                                             Select Case (True)
-                                                                Case (mAutocomplete.m_Type And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEFINE) <> 0
+                                                                Case (mAutocomplete.m_Type And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEFINE) <> 0,
+                                                                     (ClassSettings.g_iSettingsPublicAsDefineColor AndAlso (mAutocomplete.m_Type And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PUBLICVAR) <> 0)
                                                                     mXmlBuilder.AppendFormat("<Key word=""{0}""/>", mAutocomplete.m_FunctionString)
 
                                                             End Select

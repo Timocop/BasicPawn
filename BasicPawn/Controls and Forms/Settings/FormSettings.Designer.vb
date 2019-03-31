@@ -34,6 +34,9 @@ Partial Class FormSettings
         Me.ToolStripMenuItem_PluginsEnable = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_PluginsDisable = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolTip_Info = New System.Windows.Forms.ToolTip(Me.components)
+        Me.LinkLabel_ThreadUpdateRateHelp = New System.Windows.Forms.LinkLabel()
+        Me.LinkLabel_FullAutocompleteReTaggingHelp = New System.Windows.Forms.LinkLabel()
+        Me.LinkLabel_DefaultConfigPathsHelp = New System.Windows.Forms.LinkLabel()
         Me.ImageList_Plugins = New System.Windows.Forms.ImageList(Me.components)
         Me.TabControl1 = New BasicPawn.ClassTabControlColor()
         Me.TabPage_Settings = New System.Windows.Forms.TabPage()
@@ -60,7 +63,6 @@ Partial Class FormSettings
         Me.Label8 = New System.Windows.Forms.Label()
         Me.NumericUpDown_ThreadUpdateRate = New System.Windows.Forms.NumericUpDown()
         Me.Label14 = New System.Windows.Forms.Label()
-        Me.LinkLabel_ThreadUpdateRateHelp = New System.Windows.Forms.LinkLabel()
         Me.GroupBox11 = New System.Windows.Forms.GroupBox()
         Me.CheckBox_IconBar = New System.Windows.Forms.CheckBox()
         Me.GroupBox5 = New System.Windows.Forms.GroupBox()
@@ -83,6 +85,8 @@ Partial Class FormSettings
         Me.LinkLabel_MoreStyles = New System.Windows.Forms.LinkLabel()
         Me.CheckBox_RememberFolds = New System.Windows.Forms.CheckBox()
         Me.TabPage_Syntax = New System.Windows.Forms.TabPage()
+        Me.GroupBox22 = New System.Windows.Forms.GroupBox()
+        Me.CheckBox_PublicAsDefineColor = New System.Windows.Forms.CheckBox()
         Me.GroupBox13 = New System.Windows.Forms.GroupBox()
         Me.CheckBox_DoubleClickMark = New System.Windows.Forms.CheckBox()
         Me.CheckBox_AutoMark = New System.Windows.Forms.CheckBox()
@@ -101,7 +105,6 @@ Partial Class FormSettings
         Me.GroupBox15 = New System.Windows.Forms.GroupBox()
         Me.CheckBox_FullAutcompleteMethods = New System.Windows.Forms.CheckBox()
         Me.CheckBox_FullAutocompleteReTagging = New System.Windows.Forms.CheckBox()
-        Me.LinkLabel_FullAutocompleteReTaggingHelp = New System.Windows.Forms.LinkLabel()
         Me.CheckBox_AutoIndentBrackets = New System.Windows.Forms.CheckBox()
         Me.CheckBox_CaseSensitive = New System.Windows.Forms.CheckBox()
         Me.CheckBox_AutoCloseStrings = New System.Windows.Forms.CheckBox()
@@ -142,7 +145,6 @@ Partial Class FormSettings
         Me.Button_SourceModFolder = New System.Windows.Forms.Button()
         Me.Label12 = New System.Windows.Forms.Label()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
-        Me.LinkLabel_DefaultConfigPathsHelp = New System.Windows.Forms.LinkLabel()
         Me.Label7 = New System.Windows.Forms.Label()
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
         Me.ListView_KnownFiles = New System.Windows.Forms.ListView()
@@ -230,6 +232,7 @@ Partial Class FormSettings
         Me.GroupBox10.SuspendLayout()
         CType(Me.NumericUpDown_TabsToSpaces, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TabPage_Syntax.SuspendLayout()
+        Me.GroupBox22.SuspendLayout()
         Me.GroupBox13.SuspendLayout()
         Me.TabPage_Autocomplete.SuspendLayout()
         Me.GroupBox17.SuspendLayout()
@@ -336,6 +339,41 @@ Partial Class FormSettings
         Me.ToolTip_Info.ReshowDelay = 100
         Me.ToolTip_Info.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info
         Me.ToolTip_Info.ToolTipTitle = "Information"
+        '
+        'LinkLabel_ThreadUpdateRateHelp
+        '
+        Me.LinkLabel_ThreadUpdateRateHelp.AutoSize = True
+        Me.LinkLabel_ThreadUpdateRateHelp.Location = New System.Drawing.Point(285, 24)
+        Me.LinkLabel_ThreadUpdateRateHelp.Name = "LinkLabel_ThreadUpdateRateHelp"
+        Me.LinkLabel_ThreadUpdateRateHelp.Size = New System.Drawing.Size(12, 13)
+        Me.LinkLabel_ThreadUpdateRateHelp.TabIndex = 27
+        Me.LinkLabel_ThreadUpdateRateHelp.TabStop = True
+        Me.LinkLabel_ThreadUpdateRateHelp.Text = "?"
+        Me.ToolTip_Info.SetToolTip(Me.LinkLabel_ThreadUpdateRateHelp, resources.GetString("LinkLabel_ThreadUpdateRateHelp.ToolTip"))
+        '
+        'LinkLabel_FullAutocompleteReTaggingHelp
+        '
+        Me.LinkLabel_FullAutocompleteReTaggingHelp.AutoSize = True
+        Me.LinkLabel_FullAutocompleteReTaggingHelp.Location = New System.Drawing.Point(293, 47)
+        Me.LinkLabel_FullAutocompleteReTaggingHelp.Name = "LinkLabel_FullAutocompleteReTaggingHelp"
+        Me.LinkLabel_FullAutocompleteReTaggingHelp.Size = New System.Drawing.Size(12, 13)
+        Me.LinkLabel_FullAutocompleteReTaggingHelp.TabIndex = 29
+        Me.LinkLabel_FullAutocompleteReTaggingHelp.TabStop = True
+        Me.LinkLabel_FullAutocompleteReTaggingHelp.Text = "?"
+        Me.ToolTip_Info.SetToolTip(Me.LinkLabel_FullAutocompleteReTaggingHelp, "Make enums look more ""strongly typed"" using re-tagging." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Eg. 'Enum:Name' instead " &
+        "of 'Name'." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "NOTE: This can not be used with SourcePawn transitional syntax.")
+        '
+        'LinkLabel_DefaultConfigPathsHelp
+        '
+        Me.LinkLabel_DefaultConfigPathsHelp.AutoSize = True
+        Me.LinkLabel_DefaultConfigPathsHelp.Location = New System.Drawing.Point(209, 244)
+        Me.LinkLabel_DefaultConfigPathsHelp.Name = "LinkLabel_DefaultConfigPathsHelp"
+        Me.LinkLabel_DefaultConfigPathsHelp.Size = New System.Drawing.Size(12, 13)
+        Me.LinkLabel_DefaultConfigPathsHelp.TabIndex = 44
+        Me.LinkLabel_DefaultConfigPathsHelp.TabStop = True
+        Me.LinkLabel_DefaultConfigPathsHelp.Text = "?"
+        Me.ToolTip_Info.SetToolTip(Me.LinkLabel_DefaultConfigPathsHelp, "Opening a file from those paths will automatically switch to this config." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Howeve" &
+        "r, files in 'Known files' overwrite this behaviour.")
         '
         'ImageList_Plugins
         '
@@ -645,17 +683,6 @@ Partial Class FormSettings
         Me.Label14.TabIndex = 26
         Me.Label14.Text = "ms"
         '
-        'LinkLabel_ThreadUpdateRateHelp
-        '
-        Me.LinkLabel_ThreadUpdateRateHelp.AutoSize = True
-        Me.LinkLabel_ThreadUpdateRateHelp.Location = New System.Drawing.Point(285, 24)
-        Me.LinkLabel_ThreadUpdateRateHelp.Name = "LinkLabel_ThreadUpdateRateHelp"
-        Me.LinkLabel_ThreadUpdateRateHelp.Size = New System.Drawing.Size(12, 13)
-        Me.LinkLabel_ThreadUpdateRateHelp.TabIndex = 27
-        Me.LinkLabel_ThreadUpdateRateHelp.TabStop = True
-        Me.LinkLabel_ThreadUpdateRateHelp.Text = "?"
-        Me.ToolTip_Info.SetToolTip(Me.LinkLabel_ThreadUpdateRateHelp, resources.GetString("LinkLabel_ThreadUpdateRateHelp.ToolTip"))
-        '
         'GroupBox11
         '
         Me.GroupBox11.Controls.Add(Me.CheckBox_IconBar)
@@ -901,6 +928,7 @@ Partial Class FormSettings
         'TabPage_Syntax
         '
         Me.TabPage_Syntax.AutoScroll = True
+        Me.TabPage_Syntax.Controls.Add(Me.GroupBox22)
         Me.TabPage_Syntax.Controls.Add(Me.GroupBox13)
         Me.TabPage_Syntax.Location = New System.Drawing.Point(4, 22)
         Me.TabPage_Syntax.Name = "TabPage_Syntax"
@@ -909,6 +937,29 @@ Partial Class FormSettings
         Me.TabPage_Syntax.TabIndex = 2
         Me.TabPage_Syntax.Text = "Syntax Highlighting"
         Me.TabPage_Syntax.UseVisualStyleBackColor = True
+        '
+        'GroupBox22
+        '
+        Me.GroupBox22.Controls.Add(Me.CheckBox_PublicAsDefineColor)
+        Me.GroupBox22.Dock = System.Windows.Forms.DockStyle.Top
+        Me.GroupBox22.Location = New System.Drawing.Point(6, 81)
+        Me.GroupBox22.Name = "GroupBox22"
+        Me.GroupBox22.Size = New System.Drawing.Size(732, 56)
+        Me.GroupBox22.TabIndex = 19
+        Me.GroupBox22.TabStop = False
+        Me.GroupBox22.Text = "Highlighting Behaviour"
+        '
+        'CheckBox_PublicAsDefineColor
+        '
+        Me.CheckBox_PublicAsDefineColor.AutoSize = True
+        Me.CheckBox_PublicAsDefineColor.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_PublicAsDefineColor.Location = New System.Drawing.Point(9, 21)
+        Me.CheckBox_PublicAsDefineColor.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_PublicAsDefineColor.Name = "CheckBox_PublicAsDefineColor"
+        Me.CheckBox_PublicAsDefineColor.Size = New System.Drawing.Size(339, 18)
+        Me.CheckBox_PublicAsDefineColor.TabIndex = 18
+        Me.CheckBox_PublicAsDefineColor.Text = "Public variable highlighting (uses define highlighting color)"
+        Me.CheckBox_PublicAsDefineColor.UseVisualStyleBackColor = True
         '
         'GroupBox13
         '
@@ -920,7 +971,7 @@ Partial Class FormSettings
         Me.GroupBox13.Size = New System.Drawing.Size(732, 75)
         Me.GroupBox13.TabIndex = 18
         Me.GroupBox13.TabStop = False
-        Me.GroupBox13.Text = "Word Marks"
+        Me.GroupBox13.Text = "Word Highlighting"
         '
         'CheckBox_DoubleClickMark
         '
@@ -929,9 +980,9 @@ Partial Class FormSettings
         Me.CheckBox_DoubleClickMark.Location = New System.Drawing.Point(9, 21)
         Me.CheckBox_DoubleClickMark.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_DoubleClickMark.Name = "CheckBox_DoubleClickMark"
-        Me.CheckBox_DoubleClickMark.Size = New System.Drawing.Size(190, 18)
+        Me.CheckBox_DoubleClickMark.Size = New System.Drawing.Size(217, 18)
         Me.CheckBox_DoubleClickMark.TabIndex = 5
-        Me.CheckBox_DoubleClickMark.Text = "Mark words using double click"
+        Me.CheckBox_DoubleClickMark.Text = "Hightlight words using double click"
         Me.CheckBox_DoubleClickMark.UseVisualStyleBackColor = True
         '
         'CheckBox_AutoMark
@@ -941,9 +992,9 @@ Partial Class FormSettings
         Me.CheckBox_AutoMark.Location = New System.Drawing.Point(9, 45)
         Me.CheckBox_AutoMark.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_AutoMark.Name = "CheckBox_AutoMark"
-        Me.CheckBox_AutoMark.Size = New System.Drawing.Size(164, 18)
+        Me.CheckBox_AutoMark.Size = New System.Drawing.Size(187, 18)
         Me.CheckBox_AutoMark.TabIndex = 17
-        Me.CheckBox_AutoMark.Text = "Automatically mark words"
+        Me.CheckBox_AutoMark.Text = "Automatically highlight words"
         Me.CheckBox_AutoMark.UseVisualStyleBackColor = True
         '
         'TabPage_Autocomplete
@@ -1137,18 +1188,6 @@ Partial Class FormSettings
         Me.CheckBox_FullAutocompleteReTagging.TabIndex = 8
         Me.CheckBox_FullAutocompleteReTagging.Text = "Full autocompletion for enums using re-tagging"
         Me.CheckBox_FullAutocompleteReTagging.UseVisualStyleBackColor = True
-        '
-        'LinkLabel_FullAutocompleteReTaggingHelp
-        '
-        Me.LinkLabel_FullAutocompleteReTaggingHelp.AutoSize = True
-        Me.LinkLabel_FullAutocompleteReTaggingHelp.Location = New System.Drawing.Point(293, 47)
-        Me.LinkLabel_FullAutocompleteReTaggingHelp.Name = "LinkLabel_FullAutocompleteReTaggingHelp"
-        Me.LinkLabel_FullAutocompleteReTaggingHelp.Size = New System.Drawing.Size(12, 13)
-        Me.LinkLabel_FullAutocompleteReTaggingHelp.TabIndex = 29
-        Me.LinkLabel_FullAutocompleteReTaggingHelp.TabStop = True
-        Me.LinkLabel_FullAutocompleteReTaggingHelp.Text = "?"
-        Me.ToolTip_Info.SetToolTip(Me.LinkLabel_FullAutocompleteReTaggingHelp, "Make enums look more ""strongly typed"" using re-tagging." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Eg. 'Enum:Name' instead " &
-        "of 'Name'." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "NOTE: This can not be used with SourcePawn transitional syntax.")
         '
         'CheckBox_AutoIndentBrackets
         '
@@ -1626,18 +1665,6 @@ Partial Class FormSettings
         Me.GroupBox1.TabIndex = 8
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "General"
-        '
-        'LinkLabel_DefaultConfigPathsHelp
-        '
-        Me.LinkLabel_DefaultConfigPathsHelp.AutoSize = True
-        Me.LinkLabel_DefaultConfigPathsHelp.Location = New System.Drawing.Point(209, 244)
-        Me.LinkLabel_DefaultConfigPathsHelp.Name = "LinkLabel_DefaultConfigPathsHelp"
-        Me.LinkLabel_DefaultConfigPathsHelp.Size = New System.Drawing.Size(12, 13)
-        Me.LinkLabel_DefaultConfigPathsHelp.TabIndex = 44
-        Me.LinkLabel_DefaultConfigPathsHelp.TabStop = True
-        Me.LinkLabel_DefaultConfigPathsHelp.Text = "?"
-        Me.ToolTip_Info.SetToolTip(Me.LinkLabel_DefaultConfigPathsHelp, "Opening a file from those paths will automatically switch to this config." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Howeve" &
-        "r, files in 'Known files' overwrite this behaviour.")
         '
         'Label7
         '
@@ -2419,6 +2446,8 @@ Partial Class FormSettings
         Me.GroupBox10.PerformLayout()
         CType(Me.NumericUpDown_TabsToSpaces, System.ComponentModel.ISupportInitialize).EndInit()
         Me.TabPage_Syntax.ResumeLayout(False)
+        Me.GroupBox22.ResumeLayout(False)
+        Me.GroupBox22.PerformLayout()
         Me.GroupBox13.ResumeLayout(False)
         Me.GroupBox13.PerformLayout()
         Me.TabPage_Autocomplete.ResumeLayout(False)
@@ -2658,4 +2687,6 @@ Partial Class FormSettings
     Friend WithEvents TextBox_SourceModFolder As TextBox
     Friend WithEvents Button_SourceModFolder As Button
     Friend WithEvents Label12 As Label
+    Friend WithEvents GroupBox22 As GroupBox
+    Friend WithEvents CheckBox_PublicAsDefineColor As CheckBox
 End Class
