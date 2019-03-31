@@ -1202,9 +1202,9 @@ Public Class ClassTabControl
 
                             Dim mAutocomplete As ClassSyntaxTools.STRUC_AUTOCOMPLETE = g_mFormMain.g_mUCAutocomplete.GetSelectedItem()
 
-                            'Force fully autocomplete when using as accessor: functags, typedefs 
                             Select Case (sCaretFunctionType)
                                 Case ":"
+                                    'Force fully autocomplete when using as accessor: functags, typedefs 
                                     Dim sCallbackName As String = sCaretFunctionName
 
                                     If (String.IsNullOrEmpty(sCallbackName)) Then
@@ -1259,6 +1259,28 @@ Public Class ClassTabControl
 
                                                 Return
                                         End Select
+                                    Next
+
+                                Case "@"
+                                    'Execute command
+                                    Dim sCommandName As String = sCaretFunctionAccessor
+                                    Dim sCommandArg As String = sCaretFunctionName
+
+                                    If (String.IsNullOrEmpty(sCommandName)) Then
+                                        Exit Select
+                                    End If
+
+                                    For Each mItem In ClassTextEditorTools.ClassTestEditorCommands.m_Commands
+                                        If (mItem.m_Command.ToLower <> sCommandName.ToLower) Then
+                                            Continue For
+                                        End If
+
+                                        'Remove caret function name from text editor
+                                        g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = iPosition - sCaretFunctionFullNameLeft.Length
+                                        g_mSourceTextEditor.ActiveTextAreaControl.Document.Remove(iOffset - sCaretFunctionFullNameLeft.Length, sCaretFunctionFullName.Length)
+
+                                        mItem.Execute(sCommandArg)
+                                        Return
                                     Next
                             End Select
 
@@ -1492,6 +1514,14 @@ Public Class ClassTabControl
                                         g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iLineOffsetNum, sNewInput)
 
                                         g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = sNewInput.Length
+
+                                    Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.COMMAND) <> 0
+                                        Dim sCommand As String = String.Format("{0}@", mAutocomplete.m_FunctionString)
+
+                                        g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset, sCommand)
+
+                                        iPosition = g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column
+                                        g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = iPosition + sCommand.Length
 
                                     Case Else
                                         If (ClassSettings.g_iSettingsFullMethodAutocomplete AndAlso Not bSpecialAction) Then

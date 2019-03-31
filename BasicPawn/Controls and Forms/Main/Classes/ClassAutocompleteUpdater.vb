@@ -275,6 +275,9 @@ Public Class ClassAutocompleteUpdater
             'Add preprocessor stuff
             lNewAutocompleteList.AddRange(mParser.GetPreprocessorKeywords(lIncludeFilesFull.ToArray))
 
+            'Add preprocessor stuff
+            lNewAutocompleteList.AddRange(mParser.GetTextEditorCommands())
+
             'Detect current mod type...
             mLanguageWatch.Start()
             If (mRequestedConfig.g_iLanguage = ClassConfigs.STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE.AUTO_DETECT) Then
@@ -5166,6 +5169,16 @@ Public Class ClassAutocompleteUpdater
 
             For Each mItem In mDicConst
                 lTmpAutoList.Add(New ClassSyntaxTools.STRUC_AUTOCOMPLETE("", "compiler.exe", "", ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.OPERATOR, mItem.Key, mItem.Key, mItem.Value))
+            Next
+
+            Return lTmpAutoList.ToArray
+        End Function
+
+        Public Function GetTextEditorCommands() As ClassSyntaxTools.STRUC_AUTOCOMPLETE()
+            Dim lTmpAutoList As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
+
+            For Each mItem In ClassTextEditorTools.ClassTestEditorCommands.m_Commands
+                lTmpAutoList.Add(New ClassSyntaxTools.STRUC_AUTOCOMPLETE("", "BasicPawn.exe", "", ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.COMMAND, mItem.m_Command, mItem.m_Command, mItem.m_Command))
             Next
 
             Return lTmpAutoList.ToArray

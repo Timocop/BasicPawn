@@ -16,6 +16,7 @@
 
 
 Imports System.Text.RegularExpressions
+Imports BasicPawn
 Imports ICSharpCode.TextEditor
 Imports ICSharpCode.TextEditor.Document
 
@@ -1714,13 +1715,13 @@ Public Class ClassTextEditorTools
     Class ClassTestEditorCommands
         Private g_mFormMain As FormMain
 
-        Private g_lCommands As New List(Of ITextEditorCommand)
+        Private Shared g_lCommands As New ClassSyncList(Of ITextEditorCommand)
 
         Public Sub New(f As FormMain)
             g_mFormMain = f
         End Sub
 
-        ReadOnly Property m_Commands As List(Of ITextEditorCommand)
+        Shared ReadOnly Property m_Commands As ClassSyncList(Of ITextEditorCommand)
             Get
                 Return g_lCommands
             End Get
@@ -1740,7 +1741,7 @@ Public Class ClassTextEditorTools
         Public Interface ITextEditorCommand
             ReadOnly Property m_Command As String
 
-            Sub Execute()
+            Sub Execute(sArg As String)
         End Interface
     End Class
 End Class

@@ -202,6 +202,7 @@ Public Class ClassSyntaxTools
             ENUM_STRUCT = (1 << 22)
             FIELD = (1 << 23)
             INLINE_METHOD = (1 << 24)
+            COMMAND = (1 << 25)
         End Enum
 
         Public Shared Function ParseTypeFullNames(sStr As String) As ENUM_TYPE_FLAGS
@@ -238,6 +239,7 @@ Public Class ClassSyntaxTools
                     Case "operator" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.OPERATOR)
                     Case "field" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.FIELD)
                     Case "inline-method" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.INLINE_METHOD)
+                    Case "command" : mTypes = (mTypes Or ENUM_TYPE_FLAGS.COMMAND)
                 End Select
             Next
 
@@ -272,6 +274,7 @@ Public Class ClassSyntaxTools
             If ((g_iType And ENUM_TYPE_FLAGS.OPERATOR) <> 0) Then lNames.Add("operator")
             If ((g_iType And ENUM_TYPE_FLAGS.FIELD) <> 0) Then lNames.Add("field")
             If ((g_iType And ENUM_TYPE_FLAGS.INLINE_METHOD) <> 0) Then lNames.Add("inline-method")
+            If ((g_iType And ENUM_TYPE_FLAGS.COMMAND) <> 0) Then lNames.Add("command")
 
             Return lNames.ToArray
         End Function
