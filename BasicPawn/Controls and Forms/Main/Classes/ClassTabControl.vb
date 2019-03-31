@@ -1190,13 +1190,75 @@ Public Class ClassTabControl
                             Dim iLineLen As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iOffset).Length
                             Dim iLineNum As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iOffset).LineNumber
 
-                            Dim sCaretFunctionName As String = Regex.Match(g_mSourceTextEditor.ActiveTextAreaControl.Document.GetText(iLineOffset, iPosition), "(\b[a-zA-Z0-9_]+\b(\.|\:){0,1}(\b[a-zA-Z0-9_]+\b){0,1})$").Value
+                            Dim sCaretFunctionMatch As Match = Regex.Match(g_mSourceTextEditor.ActiveTextAreaControl.Document.GetText(iLineOffset, iPosition), "((?<Accessor>\b[a-zA-Z0-9_]+\b)(?<Type>\.|\:|\@){0,1}(?<Name>\b[a-zA-Z0-9_]+\b){0,1})$")
+
+                            Dim sCaretFunctionFullName As String = sCaretFunctionMatch.Value
+                            Dim sCaretFunctionAccessor As String = If(sCaretFunctionMatch.Groups("Accessor").Success, sCaretFunctionMatch.Groups("Accessor").Value, "")
+                            Dim sCaretFunctionType As String = If(sCaretFunctionMatch.Groups("Type").Success, sCaretFunctionMatch.Groups("Type").Value, "")
+                            Dim sCaretFunctionName As String = If(sCaretFunctionMatch.Groups("Name").Success, sCaretFunctionMatch.Groups("Name").Value, "")
+
                             Dim mAutocomplete As ClassSyntaxTools.STRUC_AUTOCOMPLETE = g_mFormMain.g_mUCAutocomplete.GetSelectedItem()
+
+                            'Force fully autocomplete when using as accessor: funcenums, functags, typesets, typedefs 
+                            Select Case (sCaretFunctionType)
+                                Case ":"
+                                    If (String.IsNullOrEmpty(sCaretFunctionName)) Then
+                                        Exit Select
+                                    End If
+
+                                    For Each mItem In m_AutocompleteItems
+                                        If (Not mItem.m_FunctionName.Equals(sCaretFunctionAccessor, If(ClassSettings.g_iSettingsAutocompleteCaseSensitive, StringComparison.Ordinal, StringComparison.OrdinalIgnoreCase))) Then
+                                            Continue For
+                                        End If
+
+                                        Select Case (True)
+                                            Case (mItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM) <> 0,
+                                                         (mItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG) <> 0,
+                                                         (mItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) <> 0,
+                                                         (mItem.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF) <> 0
+                                                'Remove caret function name from text editor
+                                                g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = iPosition - sCaretFunctionFullName.Length
+                                                g_mSourceTextEditor.ActiveTextAreaControl.Document.Remove(iOffset - sCaretFunctionFullName.Length, sCaretFunctionFullName.Length)
+
+                                                'Re-read ceverything since text changed
+                                                iOffset = g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.Offset
+                                                iPosition = g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column
+                                                iLineOffset = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iOffset).Offset
+                                                iLineLen = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iOffset).Length
+                                                iLineNum = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iOffset).LineNumber
+
+                                                g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset, sCaretFunctionName)
+
+                                                Dim sIndentation As String = ClassSettings.BuildIndentation(1, ClassSettings.ENUM_INDENTATION_TYPES.USE_SETTINGS)
+
+                                                Dim sPublicFunction As String
+                                                sPublicFunction = mItem.m_FunctionString.Trim
+                                                sPublicFunction = Regex.Replace(sPublicFunction, "\b" & Regex.Escape(sCaretFunctionAccessor) & "\b\s*\(", sCaretFunctionName & "(", RegexOptions.IgnoreCase)
+
+                                                Dim sNewInput As String
+                                                With New Text.StringBuilder
+                                                    .AppendLine()
+                                                    .AppendLine(sPublicFunction)
+                                                    .AppendLine("{")
+                                                    .AppendLine(sIndentation)
+                                                    .AppendLine("}")
+                                                    sNewInput = .ToString
+                                                End With
+
+                                                g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(g_mSourceTextEditor.ActiveTextAreaControl.Document.TextLength, sNewInput)
+
+                                                iPosition = g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column
+                                                g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = iPosition + sCaretFunctionName.Length
+
+                                                Return
+                                        End Select
+                                    Next
+                            End Select
 
                             If (mAutocomplete IsNot Nothing) Then
                                 'Remove caret function name from text editor
-                                g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = iPosition - sCaretFunctionName.Length
-                                g_mSourceTextEditor.ActiveTextAreaControl.Document.Remove(iOffset - sCaretFunctionName.Length, sCaretFunctionName.Length)
+                                g_mSourceTextEditor.ActiveTextAreaControl.Caret.Column = iPosition - sCaretFunctionFullName.Length
+                                g_mSourceTextEditor.ActiveTextAreaControl.Document.Remove(iOffset - sCaretFunctionFullName.Length, sCaretFunctionFullName.Length)
 
                                 'Re-read ceverything since text changed
                                 iOffset = g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.Offset
@@ -1385,14 +1447,14 @@ Public Class ClassTabControl
                                             (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM_STRUCT) <> 0,
                                             (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> 0,
                                             (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.OPERATOR) <> 0
-                                        If (mAutocomplete.m_FunctionString.IndexOf("."c) > -1 AndAlso sCaretFunctionName.IndexOf("."c) > -1 AndAlso Not bSpecialAction) Then
+                                        If (mAutocomplete.m_FunctionString.IndexOf("."c) > -1 AndAlso sCaretFunctionFullName.IndexOf("."c) > -1 AndAlso Not bSpecialAction) Then
                                             Dim sParenthesis As String = ""
                                             If (mAutocomplete.m_FullFunctionString.Contains("("c) AndAlso mAutocomplete.m_FullFunctionString.Contains(")"c)) Then
                                                 sParenthesis = "()"
                                             End If
 
                                             Dim sNewInput As String = String.Format("{0}.{1}{2}",
-                                                                                    sCaretFunctionName.Remove(sCaretFunctionName.LastIndexOf("."c), sCaretFunctionName.Length - sCaretFunctionName.LastIndexOf("."c)),
+                                                                                    sCaretFunctionFullName.Remove(sCaretFunctionFullName.LastIndexOf("."c), sCaretFunctionFullName.Length - sCaretFunctionFullName.LastIndexOf("."c)),
                                                                                     mAutocomplete.m_FunctionString.Remove(0, mAutocomplete.m_FunctionString.IndexOf("."c) + 1),
                                                                                     sParenthesis)
                                             g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset, sNewInput)

@@ -1707,4 +1707,40 @@ Public Class ClassTextEditorTools
             End Sub
         End Class
     End Class
+
+    ''' <summary>
+    ''' Class for text editor custom commands.
+    ''' </summary>
+    Class ClassTestEditorCommands
+        Private g_mFormMain As FormMain
+
+        Private g_lCommands As New List(Of ITextEditorCommand)
+
+        Public Sub New(f As FormMain)
+            g_mFormMain = f
+        End Sub
+
+        ReadOnly Property m_Commands As List(Of ITextEditorCommand)
+            Get
+                Return g_lCommands
+            End Get
+        End Property
+
+        Public Function AddCommand(mCmd As ITextEditorCommand) As Boolean
+            For Each mItem In g_lCommands
+                If (mItem.m_Command.ToLower = mCmd.m_Command.ToLower) Then
+                    Return False
+                End If
+            Next
+
+            g_lCommands.Add(mCmd)
+            Return True
+        End Function
+
+        Public Interface ITextEditorCommand
+            ReadOnly Property m_Command As String
+
+            Sub Execute()
+        End Interface
+    End Class
 End Class

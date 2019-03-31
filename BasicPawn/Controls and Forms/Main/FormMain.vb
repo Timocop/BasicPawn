@@ -26,6 +26,7 @@ Public Class FormMain
     Public g_ClassTextEditorTools As ClassTextEditorTools
     Public g_ClassLineState As ClassTextEditorTools.ClassLineState
     Public g_ClassCustomHighlighting As ClassTextEditorTools.ClassCustomHighlighting
+    Public g_ClassTextEditorCommands As ClassTextEditorTools.ClassTestEditorCommands
     Public g_ClassPluginController As ClassPluginController
     Public g_ClassSyntaxTools As ClassSyntaxTools
     Public WithEvents g_ClassCrossAppCom As ClassCrossAppComunication
@@ -181,6 +182,7 @@ Public Class FormMain
         g_ClassTextEditorTools = New ClassTextEditorTools(Me)
         g_ClassLineState = New ClassTextEditorTools.ClassLineState(Me)
         g_ClassCustomHighlighting = New ClassTextEditorTools.ClassCustomHighlighting(Me)
+        g_ClassTextEditorCommands = New ClassTextEditorTools.ClassTestEditorCommands(Me)
         g_ClassPluginController = New ClassPluginController(Me)
         g_ClassSyntaxTools = New ClassSyntaxTools(Me)
 
