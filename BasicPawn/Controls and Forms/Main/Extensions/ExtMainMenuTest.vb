@@ -22,8 +22,8 @@ Partial Public Class FormMain
         Try
             Using mProgress As New FormProgress
                 mProgress.Text = "Testing..."
-                mProgress.m_Progress = 0
                 mProgress.Show(Me)
+                mProgress.m_Progress = 0
 
                 Dim sSource As String = g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
 
@@ -52,9 +52,9 @@ Partial Public Class FormMain
         Try
             Using mProgress As New FormProgress
                 mProgress.Text = "Testing..."
+                mProgress.Show(Me)
                 mProgress.m_ProgressMax = g_ClassTabControl.m_TabsCount
                 mProgress.m_Progress = 0
-                mProgress.Show(Me)
 
                 For Each mTab In g_ClassTabControl.GetAllTabs
                     Dim sSource As String = mTab.m_TextEditor.Document.TextContent
