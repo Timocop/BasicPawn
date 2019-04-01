@@ -244,6 +244,12 @@ Public Class ClassAutocompleteListBox
             m_Autocomplete = _Autocomplete
 
             While True
+                'TODO: Add custom command icon instead of namespace
+                If (_Autocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.COMMAND) <> 0 Then
+                    m_Icon = ENUM_ICONS.ICO_NAMESPACE
+                    Exit While
+                End If
+
                 If (_Autocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PROPERTY) <> 0 Then
                     m_Icon = ENUM_ICONS.ICO_PROPERTY
                     Exit While
