@@ -119,8 +119,8 @@ Public Class FormDebugger
                 End If
                 mFormProgress.m_Progress = 0
 
-
-                If (g_mFormMain.g_ClassTabControl.GetTabIndexByIdentifier(g_sDebugTabIdentifier) < 0) Then
+                Dim mTab = g_mFormMain.g_ClassTabControl.GetTabByIdentifier(g_sDebugTabIdentifier)
+                If (mTab Is Nothing) Then
                     Throw New ArgumentException("Tab does not exist")
                 End If
 
@@ -135,7 +135,9 @@ Public Class FormDebugger
                 Dim sCompilerOutput As String = ""
 
                 'Create Pre-Process source
-                Dim sPreSource As String = g_mFormMain.g_ClassTextEditorTools.GetCompilerPreProcessCode(g_ClassDebuggerRunner.m_CurrentSource,
+                Dim sPreSource As String = g_mFormMain.g_ClassTextEditorTools.GetCompilerPreProcessCode(mTab,
+                                                                                                        g_ClassDebuggerRunner.m_CurrentSourceFile,
+                                                                                                        g_ClassDebuggerRunner.m_CurrentSource,
                                                                                                         True,
                                                                                                         True,
                                                                                                         g_sLastPreProcessSourceFile,
@@ -207,8 +209,10 @@ Public Class FormDebugger
                 sCompilerOutput = ""
 
 
-                Dim sAsmSource As String = g_mFormMain.g_ClassTextEditorTools.GetCompilerAssemblyCode(True,
+                Dim sAsmSource As String = g_mFormMain.g_ClassTextEditorTools.GetCompilerAssemblyCode(mTab,
+                                                                                                      g_sLastPreProcessSourceFile,
                                                                                                       sAsmLstSource,
+                                                                                                      True,
                                                                                                       Nothing,
                                                                                                       g_ClassDebuggerRunner.m_CurrentConfig,
                                                                                                       IO.Path.GetDirectoryName(g_sLastPreProcessSourceFile),

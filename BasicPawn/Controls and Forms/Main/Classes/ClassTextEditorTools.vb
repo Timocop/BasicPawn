@@ -460,8 +460,10 @@ Public Class ClassTextEditorTools
     ''' <param name="sCompilerOutput">The compiler output.</param>
     ''' <param name="iCompilerType"></param>
     ''' <returns>True on success, false otherwise.</returns>
-    Public Function CompileSource(bTesting As Boolean,
+    Public Function CompileSource(mTab As ClassTabControl.SourceTabPage,
+                                  sFile As String,
                                   sSource As String,
+                                  bTesting As Boolean,
                                   ByRef sOutputFile As String,
                                   Optional mConfig As ClassConfigs.STRUC_CONFIG_ITEM = Nothing,
                                   Optional sWorkingDirectory As String = Nothing,
@@ -472,12 +474,16 @@ Public Class ClassTextEditorTools
                                   ByRef Optional sCompilerOutput As String = Nothing,
                                   ByRef Optional iCompilerType As ENUM_COMPILER_TYPE = ENUM_COMPILER_TYPE.UNKNOWN) As Boolean
         Try
+            If (mTab Is Nothing) Then
+                mTab = g_mFormMain.g_ClassTabControl.m_ActiveTab
+            End If
+
             If (sSource Is Nothing) Then
-                sSource = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
+                sSource = mTab.m_TextEditor.Document.TextContent
             End If
 
             If (mConfig Is Nothing) Then
-                mConfig = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ActiveConfig
+                mConfig = mTab.m_ActiveConfig
             End If
 
             If (Not String.IsNullOrEmpty(sEmulateSourceFile)) Then
@@ -499,38 +505,44 @@ Public Class ClassTextEditorTools
             'Check compiler
             If (sCompilerPath Is Nothing) Then
                 If (mConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved AndAlso
-                                g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True, True)) Then
-                        g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Compiling failed! Could not get current source file!", False, False, True)
-                        Return False
-                    End If
+                    Dim sFilePath As String = sFile
 
-                    If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved) Then
-                        g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Compiling failed! Could not get current source file!", False, False, True)
-                        Return False
+                    If (String.IsNullOrEmpty(sFilePath)) Then
+                        If (mTab.m_IsUnsaved AndAlso
+                                    g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True, True)) Then
+                            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Compiling failed! Could not get current source file!", False, False, True)
+                            Return False
+                        End If
+
+                        If (mTab.m_IsUnsaved) Then
+                            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Compiling failed! Could not get current source file!", False, False, True)
+                            Return False
+                        End If
+
+                        sFilePath = mTab.m_File
                     End If
 
                     While True
                         'SourcePawn
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "spcomp.exe")
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(sFilePath), "spcomp.exe")
                         If (IO.File.Exists(sCompilerPath)) Then
                             Exit While
                         End If
 
                         'AMX Mod X
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "amxxpc.exe")
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(sFilePath), "amxxpc.exe")
                         If (IO.File.Exists(sCompilerPath)) Then
                             Exit While
                         End If
 
                         'Small
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "sc.exe")
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(sFilePath), "sc.exe")
                         If (IO.File.Exists(sCompilerPath)) Then
                             Exit While
                         End If
 
                         'Pawn
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "pawncc.exe")
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(sFilePath), "pawncc.exe")
                         If (IO.File.Exists(sCompilerPath)) Then
                             Exit While
                         End If
@@ -555,18 +567,24 @@ Public Class ClassTextEditorTools
             'Check include path
             If (sIncludePaths Is Nothing) Then
                 If (mConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved AndAlso
-                                g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True, True)) Then
-                        g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Compiling failed! Could not get current source file!", False, False, True)
-                        Return False
+                    Dim sFilePath As String = sFile
+
+                    If (String.IsNullOrEmpty(sFilePath)) Then
+                        If (mTab.m_IsUnsaved AndAlso
+                                    g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True, True)) Then
+                            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Compiling failed! Could not get current source file!", False, False, True)
+                            Return False
+                        End If
+
+                        If (mTab.m_IsUnsaved) Then
+                            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Compiling failed! Could not get current source file!", False, False, True)
+                            Return False
+                        End If
+
+                        sFilePath = mTab.m_File
                     End If
 
-                    If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved) Then
-                        g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Compiling failed! Could not get current source file!", False, False, True)
-                        Return False
-                    End If
-
-                    sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "include")
+                    sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(sFilePath), "include")
                     If (Not IO.Directory.Exists(sIncludePaths)) Then
                         g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Compiling failed! Include path can not be found!", False, False, True)
                         Return False
@@ -592,32 +610,38 @@ Public Class ClassTextEditorTools
             'Set output path
             If (Not bTesting) Then
                 If (String.IsNullOrEmpty(sOutputFile)) Then
-                    If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved AndAlso
-                                g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True, True)) Then
-                        g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Compiling failed! Could not get current source file!", False, False, True)
-                        Return False
-                    End If
+                    Dim sFilePath As String = sFile
 
-                    If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved) Then
-                        g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Compiling failed! Could not get current source file!", False, False, True)
-                        Return False
+                    If (String.IsNullOrEmpty(sFilePath)) Then
+                        If (mTab.m_IsUnsaved AndAlso
+                                    g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True, True)) Then
+                            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Compiling failed! Could not get current source file!", False, False, True)
+                            Return False
+                        End If
+
+                        If (mTab.m_IsUnsaved) Then
+                            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Compiling failed! Could not get current source file!", False, False, True)
+                            Return False
+                        End If
+
+                        sFilePath = mTab.m_File
                     End If
 
                     If (mConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                        Dim sOutputDir As String = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "compiled")
+                        Dim sOutputDir As String = IO.Path.Combine(IO.Path.GetDirectoryName(sFilePath), "compiled")
 
                         If (Not IO.Directory.Exists(sOutputDir)) Then
                             IO.Directory.CreateDirectory(sOutputDir)
                         End If
 
-                        sOutputFile = IO.Path.Combine(sOutputDir, String.Format("{0}.unk", IO.Path.GetFileNameWithoutExtension(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)))
+                        sOutputFile = IO.Path.Combine(sOutputDir, String.Format("{0}.unk", IO.Path.GetFileNameWithoutExtension(sFilePath)))
 
                     Else
                         If (Not IO.Directory.Exists(mConfig.g_sOutputFolder)) Then
                             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Compiling failed! Invalid output directory!", False, False, True)
                             Return False
                         End If
-                        sOutputFile = IO.Path.Combine(mConfig.g_sOutputFolder, String.Format("{0}.unk", IO.Path.GetFileNameWithoutExtension(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)))
+                        sOutputFile = IO.Path.Combine(mConfig.g_sOutputFolder, String.Format("{0}.unk", IO.Path.GetFileNameWithoutExtension(sFilePath)))
                     End If
                 End If
             End If
@@ -760,7 +784,9 @@ Public Class ClassTextEditorTools
     ''' <param name="sCompilerOutput">The compiler output.</param>
     ''' <param name="iCompilerType"></param>
     ''' <returns>New source on success, |Nothing| in otherwise.</returns>
-    Public Function GetCompilerPreProcessCode(sSource As String,
+    Public Function GetCompilerPreProcessCode(mTab As ClassTabControl.SourceTabPage,
+                                              sFile As String,
+                                              sSource As String,
                                               bCleanUpSourcemodDuplicate As Boolean,
                                               bCleanupForCompile As Boolean,
                                               ByRef sTempOutputFile As String,
@@ -773,12 +799,16 @@ Public Class ClassTextEditorTools
                                               ByRef Optional sCompilerOutput As String = Nothing,
                                               ByRef Optional iCompilerType As ENUM_COMPILER_TYPE = ENUM_COMPILER_TYPE.UNKNOWN) As String
         Try
+            If (mTab Is Nothing) Then
+                mTab = g_mFormMain.g_ClassTabControl.m_ActiveTab
+            End If
+
             If (sSource Is Nothing) Then
-                sSource = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
+                sSource = mTab.m_TextEditor.Document.TextContent
             End If
 
             If (mConfig Is Nothing) Then
-                mConfig = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ActiveConfig
+                mConfig = mTab.m_ActiveConfig
             End If
 
             If (Not String.IsNullOrEmpty(sEmulateSourceFile)) Then
@@ -805,38 +835,44 @@ Public Class ClassTextEditorTools
             'Check compiler
             If (sCompilerPath Is Nothing) Then
                 If (mConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved AndAlso
-                                g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True, True)) Then
-                        g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Pre-Processing failed! Could not get current source file!", False, False, True)
-                        Return Nothing
-                    End If
+                    Dim sFilePath As String = sFile
 
-                    If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved) Then
-                        g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Pre-Processing failed! Could not get current source file!", False, False, True)
-                        Return Nothing
+                    If (String.IsNullOrEmpty(sFilePath)) Then
+                        If (mTab.m_IsUnsaved AndAlso
+                              g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True, True)) Then
+                            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Pre-Processing failed! Could not get current source file!", False, False, True)
+                            Return Nothing
+                        End If
+
+                        If (mTab.m_IsUnsaved) Then
+                            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Pre-Processing failed! Could not get current source file!", False, False, True)
+                            Return Nothing
+                        End If
+
+                        sFilePath = mTab.m_File
                     End If
 
                     While True
                         'SourcePawn
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "spcomp.exe")
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(sFilePath), "spcomp.exe")
                         If (IO.File.Exists(sCompilerPath)) Then
                             Exit While
                         End If
 
                         'AMX Mod X
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "amxxpc.exe")
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(sFilePath), "amxxpc.exe")
                         If (IO.File.Exists(sCompilerPath)) Then
                             Exit While
                         End If
 
                         'Small
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "sc.exe")
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(sFilePath), "sc.exe")
                         If (IO.File.Exists(sCompilerPath)) Then
                             Exit While
                         End If
 
                         'Pawn
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "pawncc.exe")
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(sFilePath), "pawncc.exe")
                         If (IO.File.Exists(sCompilerPath)) Then
                             Exit While
                         End If
@@ -861,18 +897,24 @@ Public Class ClassTextEditorTools
             'Check include path
             If (sIncludePaths Is Nothing) Then
                 If (mConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved AndAlso
-                                g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True, True)) Then
-                        g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Pre-Processing failed! Could not get current source file!", False, False, True)
-                        Return Nothing
+                    Dim sFilePath As String = sFile
+
+                    If (String.IsNullOrEmpty(sFilePath)) Then
+                        If (mTab.m_IsUnsaved AndAlso
+                                    g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True, True)) Then
+                            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Pre-Processing failed! Could not get current source file!", False, False, True)
+                            Return Nothing
+                        End If
+
+                        If (mTab.m_IsUnsaved) Then
+                            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Pre-Processing failed! Could not get current source file!", False, False, True)
+                            Return Nothing
+                        End If
+
+                        sFilePath = mTab.m_File
                     End If
 
-                    If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved) Then
-                        g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Pre-Processing failed! Could not get current source file!", False, False, True)
-                        Return Nothing
-                    End If
-
-                    sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "include")
+                    sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(sFilePath), "include")
                     If (Not IO.Directory.Exists(sIncludePaths)) Then
                         g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Pre-Processing failed! Include path can not be found!", False, False, True)
                         Return Nothing
@@ -1055,8 +1097,10 @@ Public Class ClassTextEditorTools
     ''' <param name="sCompilerOutput">The compiler output.</param>
     ''' <param name="iCompilerType"></param>
     ''' <returns>New assembly on success, |Nothing| otherwise.</returns>
-    Public Function GetCompilerAssemblyCode(bTesting As Boolean,
+    Public Function GetCompilerAssemblyCode(mTab As ClassTabControl.SourceTabPage,
+                                            sFile As String,
                                             sSource As String,
+                                            bTesting As Boolean,
                                             ByRef sOutputFile As String,
                                             Optional mConfig As ClassConfigs.STRUC_CONFIG_ITEM = Nothing,
                                             Optional sWorkingDirectory As String = Nothing,
@@ -1067,12 +1111,16 @@ Public Class ClassTextEditorTools
                                             ByRef Optional sCompilerOutput As String = Nothing,
                                             ByRef Optional iCompilerType As ENUM_COMPILER_TYPE = ENUM_COMPILER_TYPE.UNKNOWN) As String
         Try
+            If (mTab IsNot Nothing) Then
+                mTab = g_mFormMain.g_ClassTabControl.m_ActiveTab
+            End If
+
             If (sSource Is Nothing) Then
-                sSource = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
+                sSource = mTab.m_TextEditor.Document.TextContent
             End If
 
             If (mConfig Is Nothing) Then
-                mConfig = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_ActiveConfig
+                mConfig = mTab.m_ActiveConfig
             End If
 
             If (Not String.IsNullOrEmpty(sEmulateSourceFile)) Then
@@ -1094,38 +1142,44 @@ Public Class ClassTextEditorTools
             'Check compiler
             If (sCompilerPath Is Nothing) Then
                 If (mConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved AndAlso
-                                g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True, True)) Then
-                        g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "DIASM failed! Could not get current source file!", False, False, True)
-                        Return Nothing
-                    End If
+                    Dim sFilePath As String = sFile
 
-                    If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved) Then
-                        g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "DIASM failed! Could not get current source file!", False, False, True)
-                        Return Nothing
+                    If (String.IsNullOrEmpty(sFilePath)) Then
+                        If (mTab.m_IsUnsaved AndAlso
+                                    g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True, True)) Then
+                            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "DIASM failed! Could not get current source file!", False, False, True)
+                            Return Nothing
+                        End If
+
+                        If (mTab.m_IsUnsaved) Then
+                            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "DIASM failed! Could not get current source file!", False, False, True)
+                            Return Nothing
+                        End If
+
+                        sFilePath = mTab.m_File
                     End If
 
                     While True
                         'SourcePawn
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "spcomp.exe")
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(sFilePath), "spcomp.exe")
                         If (IO.File.Exists(sCompilerPath)) Then
                             Exit While
                         End If
 
                         'AMX Mod X
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "amxxpc.exe")
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(sFilePath), "amxxpc.exe")
                         If (IO.File.Exists(sCompilerPath)) Then
                             Exit While
                         End If
 
                         'Small
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "sc.exe")
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(sFilePath), "sc.exe")
                         If (IO.File.Exists(sCompilerPath)) Then
                             Exit While
                         End If
 
                         'Pawn
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "pawncc.exe")
+                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(sFilePath), "pawncc.exe")
                         If (IO.File.Exists(sCompilerPath)) Then
                             Exit While
                         End If
@@ -1150,18 +1204,25 @@ Public Class ClassTextEditorTools
             'Check include path
             If (sIncludePaths Is Nothing) Then
                 If (mConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved AndAlso
-                                g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True, True)) Then
-                        g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "DIASM failed! Could not get current source file!", False, False, True)
-                        Return Nothing
+                    Dim sFilePath As String = sFile
+
+                    If (String.IsNullOrEmpty(sFilePath)) Then
+                        If (mTab.m_IsUnsaved AndAlso
+                                    g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True, True)) Then
+                            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "DIASM failed! Could not get current source file!", False, False, True)
+                            Return Nothing
+                        End If
+
+                        If (mTab.m_IsUnsaved) Then
+                            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "DIASM failed! Could not get current source file!", False, False, True)
+                            Return Nothing
+                        End If
+
+                        sFilePath = mTab.m_File
                     End If
 
-                    If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved) Then
-                        g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "DIASM failed! Could not get current source file!", False, False, True)
-                        Return Nothing
-                    End If
 
-                    sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File), "include")
+                    sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(sFilePath), "include")
                     If (Not IO.Directory.Exists(sIncludePaths)) Then
                         g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "DIASM failed! Include path can not be found!", False, False, True)
                         Return Nothing

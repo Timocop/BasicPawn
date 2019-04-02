@@ -126,16 +126,18 @@ Public Class FormMultiCompiler
                                                                                      End With
                                                                                  End If
 
-                                                                                 Return g_mMainForm.g_ClassTextEditorTools.CompileSource(g_bTestingOnly,
-                                                                                                                                       sSource,
-                                                                                                                                       sOutputFile,
-                                                                                                                                       mConfig,
-                                                                                                                                       IO.Path.GetDirectoryName(sSourceFile),
-                                                                                                                                       mConfig.g_sCompilerPath,
-                                                                                                                                       mConfig.g_sIncludeFolders,
-                                                                                                                                       sSourceFile,
-                                                                                                                                       True,
-                                                                                                                                       sCompilerOutput)
+                                                                                 Return g_mMainForm.g_ClassTextEditorTools.CompileSource(Nothing,
+                                                                                                                                           sSourceFile,
+                                                                                                                                           sSource,
+                                                                                                                                           g_bTestingOnly,
+                                                                                                                                           sOutputFile,
+                                                                                                                                           mConfig,
+                                                                                                                                           IO.Path.GetDirectoryName(sSourceFile),
+                                                                                                                                           Nothing,
+                                                                                                                                           Nothing,
+                                                                                                                                           sSourceFile,
+                                                                                                                                           True,
+                                                                                                                                           sCompilerOutput)
                                                                              End Function)
 
                 If (bSuccess AndAlso IO.File.Exists(sOutputFile)) Then

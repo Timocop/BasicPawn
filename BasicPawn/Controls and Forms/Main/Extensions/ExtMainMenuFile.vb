@@ -181,7 +181,7 @@ Partial Public Class FormMain
             End If
 
             Dim sTempFile As String = ""
-            Dim sPreSource As String = g_ClassTextEditorTools.GetCompilerPreProcessCode(sSource, True, True, sTempFile, Nothing, If(sSourceFile Is Nothing, Nothing, IO.Path.GetDirectoryName(sSourceFile)), Nothing, Nothing, sSourceFile)
+            Dim sPreSource As String = g_ClassTextEditorTools.GetCompilerPreProcessCode(Nothing, Nothing, sSource, True, True, sTempFile, Nothing, If(sSourceFile Is Nothing, Nothing, IO.Path.GetDirectoryName(sSourceFile)), Nothing, Nothing, sSourceFile)
             If (String.IsNullOrEmpty(sPreSource)) Then
                 MessageBox.Show("Could not export packed source. See information tab for more information.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Return
