@@ -360,9 +360,6 @@
     <Compile Include="Controls and Forms\Main\Extensions\ExtMainMenuConfigs.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Controls and Forms\Main\Extensions\ExtMainMenuDebug.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Controls and Forms\Main\Extensions\ExtMainMenuFile.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -664,6 +661,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="BasicPawnIcon.ico" />
+    <None Include="Resources\imageres_5362_16x16-32.png" />
     <None Include="Resources\SourcePawn_SyntaxDark.xml" />
     <None Include="Resources\user32_104_16x16-32.png" />
     <None Include="Resources\user32_103_16x16-32.png" />

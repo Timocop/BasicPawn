@@ -712,6 +712,16 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
+        Public ReadOnly Property imageres_5362_16x16() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("imageres_5362_16x16", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Drawing.Bitmap.
+        '''</summary>
         Public ReadOnly Property imageres_5364_16x16() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("imageres_5364_16x16", resourceCulture)
@@ -974,14 +984,14 @@ Namespace My.Resources
         '''&lt;!-- &lt;SyntaxVersion&gt;1.2&lt;/SyntaxVersion&gt; --&gt;
         '''&lt;SyntaxDefinition name=&quot;SourcePawn-04e3632f-5472-42c5-929a-c3e0c2b35324&quot; extensions=&quot;.sp&quot;&gt;
         '''	&lt;Environment&gt;
-        '''		&lt;Default color=&quot;Black&quot; bgcolor=&quot;White&quot; /&gt;
-        '''		&lt;Selection color=&quot;White&quot; bgcolor=&quot;RoyalBlue&quot; /&gt;
-        '''		&lt;VRuler color=&quot;DarkGray&quot; /&gt;
+        '''		&lt;Default color=&quot;#dcdcdc&quot; bgcolor=&quot;#1e1e1e&quot; /&gt;
+        '''		&lt;Selection color=&quot;#1e1e1e&quot; bgcolor=&quot;#3399ff&quot; /&gt;
+        '''		&lt;VRuler color=&quot;#333333&quot; /&gt;
         '''		&lt;InvalidLines color=&quot;Red&quot; /&gt;
-        '''		&lt;CaretMarker color=&quot;LightCyan&quot; /&gt;
-        '''		&lt;LineNumbers color=&quot;Gray&quot; bgcolor=&quot;White&quot; /&gt;
-        '''		&lt;FoldLine color=&quot;LightGray&quot; bgcolor=&quot;White&quot; /&gt;
-        '''		&lt;FoldMarker color=&quot;Dark [rest of string was truncated]&quot;;.
+        '''		&lt;CaretMarker color=&quot;#333333&quot; /&gt;
+        '''		&lt;LineNumbers color=&quot;#2b91af&quot; bgcolor=&quot;#1e1e1e&quot; /&gt;
+        '''		&lt;FoldLine color=&quot;#d7dde8&quot; bgcolor=&quot;#1e1e1e&quot; /&gt;
+        '''		&lt;FoldMarker color [rest of string was truncated]&quot;;.
         '''</summary>
         Public ReadOnly Property SourcePawn_SyntaxDark() As String
             Get

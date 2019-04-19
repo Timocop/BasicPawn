@@ -118,4 +118,30 @@ Partial Public Class FormMain
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
     End Sub
+
+    Private Sub ToolStripMenuItem_TestDebug_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_TestDebug.Click
+        Try
+            If (g_mFormDebugger Is Nothing OrElse g_mFormDebugger.IsDisposed) Then
+                Try
+                    g_mFormDebugger = New FormDebugger(Me, g_ClassTabControl.m_ActiveTab)
+                    g_mFormDebugger.Show()
+                Catch ex As Exception
+                    ClassExceptionLog.WriteToLogMessageBox(ex)
+
+                    If (g_mFormDebugger IsNot Nothing AndAlso Not g_mFormDebugger.IsDisposed) Then
+                        g_mFormDebugger.Dispose()
+                        g_mFormDebugger = Nothing
+                    End If
+                End Try
+            Else
+                If (g_mFormDebugger.WindowState = FormWindowState.Minimized) Then
+                    ClassTools.ClassForms.FormWindowCommand(g_mFormDebugger, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
+                End If
+
+                g_mFormDebugger.Activate()
+            End If
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
 End Class
