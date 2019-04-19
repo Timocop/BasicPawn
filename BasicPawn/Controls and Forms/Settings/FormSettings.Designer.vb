@@ -34,7 +34,6 @@ Partial Class FormSettings
         Me.ToolStripMenuItem_PluginsEnable = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_PluginsDisable = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolTip_Info = New System.Windows.Forms.ToolTip(Me.components)
-        Me.LinkLabel_ThreadUpdateRateHelp = New System.Windows.Forms.LinkLabel()
         Me.LinkLabel_FullAutocompleteReTaggingHelp = New System.Windows.Forms.LinkLabel()
         Me.LinkLabel_DefaultConfigPathsHelp = New System.Windows.Forms.LinkLabel()
         Me.ImageList_Plugins = New System.Windows.Forms.ImageList(Me.components)
@@ -59,10 +58,6 @@ Partial Class FormSettings
         Me.CheckBox_AutoHoverScroll = New System.Windows.Forms.CheckBox()
         Me.CheckBox_AutoShowStartPage = New System.Windows.Forms.CheckBox()
         Me.TabPage_Editor = New System.Windows.Forms.TabPage()
-        Me.GroupBox12 = New System.Windows.Forms.GroupBox()
-        Me.Label8 = New System.Windows.Forms.Label()
-        Me.NumericUpDown_ThreadUpdateRate = New System.Windows.Forms.NumericUpDown()
-        Me.Label14 = New System.Windows.Forms.Label()
         Me.GroupBox11 = New System.Windows.Forms.GroupBox()
         Me.CheckBox_IconBar = New System.Windows.Forms.CheckBox()
         Me.GroupBox5 = New System.Windows.Forms.GroupBox()
@@ -75,7 +70,6 @@ Partial Class FormSettings
         Me.GroupBox10 = New System.Windows.Forms.GroupBox()
         Me.Button_Font = New System.Windows.Forms.Button()
         Me.Label_Font = New System.Windows.Forms.Label()
-        Me.CheckBox_InvertedColors = New System.Windows.Forms.CheckBox()
         Me.NumericUpDown_TabsToSpaces = New System.Windows.Forms.NumericUpDown()
         Me.Label32 = New System.Windows.Forms.Label()
         Me.CheckBox_TabsToSpace = New System.Windows.Forms.CheckBox()
@@ -214,6 +208,13 @@ Partial Class FormSettings
         Me.TableLayoutPanel3 = New System.Windows.Forms.TableLayoutPanel()
         Me.ClassPictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
         Me.Label17 = New System.Windows.Forms.Label()
+        Me.GroupBox23 = New System.Windows.Forms.GroupBox()
+        Me.CheckBox_InvertedColors = New System.Windows.Forms.CheckBox()
+        Me.GroupBox12 = New System.Windows.Forms.GroupBox()
+        Me.Label8 = New System.Windows.Forms.Label()
+        Me.NumericUpDown_ThreadUpdateRate = New System.Windows.Forms.NumericUpDown()
+        Me.Label14 = New System.Windows.Forms.Label()
+        Me.LinkLabel_ThreadUpdateRateHelp = New System.Windows.Forms.LinkLabel()
         Me.ContextMenuStrip_Plugins.SuspendLayout()
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Settings.SuspendLayout()
@@ -224,8 +225,6 @@ Partial Class FormSettings
         Me.GroupBox7.SuspendLayout()
         Me.GroupBox6.SuspendLayout()
         Me.TabPage_Editor.SuspendLayout()
-        Me.GroupBox12.SuspendLayout()
-        CType(Me.NumericUpDown_ThreadUpdateRate, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox11.SuspendLayout()
         Me.GroupBox5.SuspendLayout()
         CType(Me.NumericUpDown_LineStateCount, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -262,6 +261,9 @@ Partial Class FormSettings
         CType(Me.ClassPictureBoxQuality2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TableLayoutPanel3.SuspendLayout()
         CType(Me.ClassPictureBoxQuality1, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.GroupBox23.SuspendLayout()
+        Me.GroupBox12.SuspendLayout()
+        CType(Me.NumericUpDown_ThreadUpdateRate, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'Button_Cancel
@@ -340,17 +342,6 @@ Partial Class FormSettings
         Me.ToolTip_Info.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info
         Me.ToolTip_Info.ToolTipTitle = "Information"
         '
-        'LinkLabel_ThreadUpdateRateHelp
-        '
-        Me.LinkLabel_ThreadUpdateRateHelp.AutoSize = True
-        Me.LinkLabel_ThreadUpdateRateHelp.Location = New System.Drawing.Point(285, 24)
-        Me.LinkLabel_ThreadUpdateRateHelp.Name = "LinkLabel_ThreadUpdateRateHelp"
-        Me.LinkLabel_ThreadUpdateRateHelp.Size = New System.Drawing.Size(12, 13)
-        Me.LinkLabel_ThreadUpdateRateHelp.TabIndex = 27
-        Me.LinkLabel_ThreadUpdateRateHelp.TabStop = True
-        Me.LinkLabel_ThreadUpdateRateHelp.Text = "?"
-        Me.ToolTip_Info.SetToolTip(Me.LinkLabel_ThreadUpdateRateHelp, resources.GetString("LinkLabel_ThreadUpdateRateHelp.ToolTip"))
-        '
         'LinkLabel_FullAutocompleteReTaggingHelp
         '
         Me.LinkLabel_FullAutocompleteReTaggingHelp.AutoSize = True
@@ -391,6 +382,7 @@ Partial Class FormSettings
         Me.TabControl1.Controls.Add(Me.TabPage_Plugins)
         Me.TabControl1.Controls.Add(Me.TabPage_Database)
         Me.TabControl1.Location = New System.Drawing.Point(12, 12)
+        Me.TabControl1.m_TabPageAdjustEnabled = True
         Me.TabControl1.Name = "TabControl1"
         Me.TabControl1.SelectedIndex = 0
         Me.TabControl1.Size = New System.Drawing.Size(760, 1008)
@@ -399,9 +391,9 @@ Partial Class FormSettings
         'TabPage_Settings
         '
         Me.TabPage_Settings.Controls.Add(Me.ClassTabControlColor1)
-        Me.TabPage_Settings.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage_Settings.Location = New System.Drawing.Point(1, 21)
         Me.TabPage_Settings.Name = "TabPage_Settings"
-        Me.TabPage_Settings.Size = New System.Drawing.Size(752, 982)
+        Me.TabPage_Settings.Size = New System.Drawing.Size(756, 984)
         Me.TabPage_Settings.TabIndex = 0
         Me.TabPage_Settings.Text = "Settings"
         Me.TabPage_Settings.UseVisualStyleBackColor = True
@@ -414,23 +406,26 @@ Partial Class FormSettings
         Me.ClassTabControlColor1.Controls.Add(Me.TabPage_Autocomplete)
         Me.ClassTabControlColor1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ClassTabControlColor1.Location = New System.Drawing.Point(0, 0)
+        Me.ClassTabControlColor1.m_TabPageAdjustEnabled = True
         Me.ClassTabControlColor1.Multiline = True
         Me.ClassTabControlColor1.Name = "ClassTabControlColor1"
         Me.ClassTabControlColor1.SelectedIndex = 0
-        Me.ClassTabControlColor1.Size = New System.Drawing.Size(752, 982)
+        Me.ClassTabControlColor1.Size = New System.Drawing.Size(756, 984)
         Me.ClassTabControlColor1.TabIndex = 27
         '
         'TabPage_General
         '
         Me.TabPage_General.AutoScroll = True
         Me.TabPage_General.Controls.Add(Me.GroupBox9)
+        Me.TabPage_General.Controls.Add(Me.GroupBox12)
         Me.TabPage_General.Controls.Add(Me.GroupBox8)
         Me.TabPage_General.Controls.Add(Me.GroupBox7)
         Me.TabPage_General.Controls.Add(Me.GroupBox6)
-        Me.TabPage_General.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage_General.Controls.Add(Me.GroupBox23)
+        Me.TabPage_General.Location = New System.Drawing.Point(1, 21)
         Me.TabPage_General.Name = "TabPage_General"
         Me.TabPage_General.Padding = New System.Windows.Forms.Padding(6)
-        Me.TabPage_General.Size = New System.Drawing.Size(744, 956)
+        Me.TabPage_General.Size = New System.Drawing.Size(752, 960)
         Me.TabPage_General.TabIndex = 0
         Me.TabPage_General.Text = "General"
         Me.TabPage_General.UseVisualStyleBackColor = True
@@ -441,9 +436,9 @@ Partial Class FormSettings
         Me.GroupBox9.Controls.Add(Me.Button_ClearErrorLog)
         Me.GroupBox9.Controls.Add(Me.Button_ViewErrorLog)
         Me.GroupBox9.Dock = System.Windows.Forms.DockStyle.Top
-        Me.GroupBox9.Location = New System.Drawing.Point(6, 305)
+        Me.GroupBox9.Location = New System.Drawing.Point(6, 415)
         Me.GroupBox9.Name = "GroupBox9"
-        Me.GroupBox9.Size = New System.Drawing.Size(732, 59)
+        Me.GroupBox9.Size = New System.Drawing.Size(740, 59)
         Me.GroupBox9.TabIndex = 34
         Me.GroupBox9.TabStop = False
         Me.GroupBox9.Text = "Application Exceptions"
@@ -486,9 +481,9 @@ Partial Class FormSettings
         Me.GroupBox8.Controls.Add(Me.CheckBox_AssociateAmxMod)
         Me.GroupBox8.Controls.Add(Me.CheckBox_AssociateSourcePawn)
         Me.GroupBox8.Dock = System.Windows.Forms.DockStyle.Top
-        Me.GroupBox8.Location = New System.Drawing.Point(6, 161)
+        Me.GroupBox8.Location = New System.Drawing.Point(6, 215)
         Me.GroupBox8.Name = "GroupBox8"
-        Me.GroupBox8.Size = New System.Drawing.Size(732, 144)
+        Me.GroupBox8.Size = New System.Drawing.Size(740, 144)
         Me.GroupBox8.TabIndex = 33
         Me.GroupBox8.TabStop = False
         Me.GroupBox8.Text = "File Association"
@@ -558,9 +553,9 @@ Partial Class FormSettings
         '
         Me.GroupBox7.Controls.Add(Me.CheckBox_AutoOpenProjectFiles)
         Me.GroupBox7.Dock = System.Windows.Forms.DockStyle.Top
-        Me.GroupBox7.Location = New System.Drawing.Point(6, 108)
+        Me.GroupBox7.Location = New System.Drawing.Point(6, 162)
         Me.GroupBox7.Name = "GroupBox7"
-        Me.GroupBox7.Size = New System.Drawing.Size(732, 53)
+        Me.GroupBox7.Size = New System.Drawing.Size(740, 53)
         Me.GroupBox7.TabIndex = 32
         Me.GroupBox7.TabStop = False
         Me.GroupBox7.Text = "Projects"
@@ -583,9 +578,9 @@ Partial Class FormSettings
         Me.GroupBox6.Controls.Add(Me.CheckBox_AutoHoverScroll)
         Me.GroupBox6.Controls.Add(Me.CheckBox_AutoShowStartPage)
         Me.GroupBox6.Dock = System.Windows.Forms.DockStyle.Top
-        Me.GroupBox6.Location = New System.Drawing.Point(6, 6)
+        Me.GroupBox6.Location = New System.Drawing.Point(6, 60)
         Me.GroupBox6.Name = "GroupBox6"
-        Me.GroupBox6.Size = New System.Drawing.Size(732, 102)
+        Me.GroupBox6.Size = New System.Drawing.Size(740, 102)
         Me.GroupBox6.TabIndex = 31
         Me.GroupBox6.TabStop = False
         Me.GroupBox6.Text = "Behaviour"
@@ -629,59 +624,15 @@ Partial Class FormSettings
         'TabPage_Editor
         '
         Me.TabPage_Editor.AutoScroll = True
-        Me.TabPage_Editor.Controls.Add(Me.GroupBox12)
         Me.TabPage_Editor.Controls.Add(Me.GroupBox11)
         Me.TabPage_Editor.Controls.Add(Me.GroupBox10)
-        Me.TabPage_Editor.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage_Editor.Location = New System.Drawing.Point(1, 21)
         Me.TabPage_Editor.Name = "TabPage_Editor"
         Me.TabPage_Editor.Padding = New System.Windows.Forms.Padding(6)
-        Me.TabPage_Editor.Size = New System.Drawing.Size(744, 956)
+        Me.TabPage_Editor.Size = New System.Drawing.Size(752, 960)
         Me.TabPage_Editor.TabIndex = 1
         Me.TabPage_Editor.Text = "TextEditor"
         Me.TabPage_Editor.UseVisualStyleBackColor = True
-        '
-        'GroupBox12
-        '
-        Me.GroupBox12.Controls.Add(Me.Label8)
-        Me.GroupBox12.Controls.Add(Me.NumericUpDown_ThreadUpdateRate)
-        Me.GroupBox12.Controls.Add(Me.Label14)
-        Me.GroupBox12.Controls.Add(Me.LinkLabel_ThreadUpdateRateHelp)
-        Me.GroupBox12.Dock = System.Windows.Forms.DockStyle.Top
-        Me.GroupBox12.Location = New System.Drawing.Point(6, 373)
-        Me.GroupBox12.Name = "GroupBox12"
-        Me.GroupBox12.Size = New System.Drawing.Size(732, 56)
-        Me.GroupBox12.TabIndex = 35
-        Me.GroupBox12.TabStop = False
-        Me.GroupBox12.Text = "Threading"
-        '
-        'Label8
-        '
-        Me.Label8.AutoSize = True
-        Me.Label8.Location = New System.Drawing.Point(9, 24)
-        Me.Label8.Margin = New System.Windows.Forms.Padding(6, 6, 3, 6)
-        Me.Label8.Name = "Label8"
-        Me.Label8.Size = New System.Drawing.Size(173, 13)
-        Me.Label8.TabIndex = 24
-        Me.Label8.Text = "Background thread update rate:"
-        '
-        'NumericUpDown_ThreadUpdateRate
-        '
-        Me.NumericUpDown_ThreadUpdateRate.Location = New System.Drawing.Point(185, 19)
-        Me.NumericUpDown_ThreadUpdateRate.Maximum = New Decimal(New Integer() {2500, 0, 0, 0})
-        Me.NumericUpDown_ThreadUpdateRate.Minimum = New Decimal(New Integer() {100, 0, 0, 0})
-        Me.NumericUpDown_ThreadUpdateRate.Name = "NumericUpDown_ThreadUpdateRate"
-        Me.NumericUpDown_ThreadUpdateRate.Size = New System.Drawing.Size(64, 22)
-        Me.NumericUpDown_ThreadUpdateRate.TabIndex = 25
-        Me.NumericUpDown_ThreadUpdateRate.Value = New Decimal(New Integer() {500, 0, 0, 0})
-        '
-        'Label14
-        '
-        Me.Label14.AutoSize = True
-        Me.Label14.Location = New System.Drawing.Point(258, 24)
-        Me.Label14.Name = "Label14"
-        Me.Label14.Size = New System.Drawing.Size(21, 13)
-        Me.Label14.TabIndex = 26
-        Me.Label14.Text = "ms"
         '
         'GroupBox11
         '
@@ -691,9 +642,9 @@ Partial Class FormSettings
         Me.GroupBox11.Controls.Add(Me.Label15)
         Me.GroupBox11.Controls.Add(Me.NumericUpDown_LineStateCount)
         Me.GroupBox11.Dock = System.Windows.Forms.DockStyle.Top
-        Me.GroupBox11.Location = New System.Drawing.Point(6, 193)
+        Me.GroupBox11.Location = New System.Drawing.Point(6, 167)
         Me.GroupBox11.Name = "GroupBox11"
-        Me.GroupBox11.Size = New System.Drawing.Size(732, 180)
+        Me.GroupBox11.Size = New System.Drawing.Size(740, 180)
         Me.GroupBox11.TabIndex = 34
         Me.GroupBox11.TabStop = False
         Me.GroupBox11.Text = "Icon Sidebar"
@@ -788,7 +739,6 @@ Partial Class FormSettings
         '
         Me.GroupBox10.Controls.Add(Me.Button_Font)
         Me.GroupBox10.Controls.Add(Me.Label_Font)
-        Me.GroupBox10.Controls.Add(Me.CheckBox_InvertedColors)
         Me.GroupBox10.Controls.Add(Me.NumericUpDown_TabsToSpaces)
         Me.GroupBox10.Controls.Add(Me.Label32)
         Me.GroupBox10.Controls.Add(Me.CheckBox_TabsToSpace)
@@ -800,7 +750,7 @@ Partial Class FormSettings
         Me.GroupBox10.Dock = System.Windows.Forms.DockStyle.Top
         Me.GroupBox10.Location = New System.Drawing.Point(6, 6)
         Me.GroupBox10.Name = "GroupBox10"
-        Me.GroupBox10.Size = New System.Drawing.Size(732, 187)
+        Me.GroupBox10.Size = New System.Drawing.Size(740, 161)
         Me.GroupBox10.TabIndex = 33
         Me.GroupBox10.TabStop = False
         Me.GroupBox10.Text = "Editor"
@@ -826,21 +776,9 @@ Partial Class FormSettings
         Me.Label_Font.TabIndex = 12
         Me.Label_Font.Text = "Current Font"
         '
-        'CheckBox_InvertedColors
-        '
-        Me.CheckBox_InvertedColors.AutoSize = True
-        Me.CheckBox_InvertedColors.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_InvertedColors.Location = New System.Drawing.Point(9, 50)
-        Me.CheckBox_InvertedColors.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_InvertedColors.Name = "CheckBox_InvertedColors"
-        Me.CheckBox_InvertedColors.Size = New System.Drawing.Size(134, 18)
-        Me.CheckBox_InvertedColors.TabIndex = 13
-        Me.CheckBox_InvertedColors.Text = "High contrast mode"
-        Me.CheckBox_InvertedColors.UseVisualStyleBackColor = True
-        '
         'NumericUpDown_TabsToSpaces
         '
-        Me.NumericUpDown_TabsToSpaces.Location = New System.Drawing.Point(166, 70)
+        Me.NumericUpDown_TabsToSpaces.Location = New System.Drawing.Point(166, 46)
         Me.NumericUpDown_TabsToSpaces.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
         Me.NumericUpDown_TabsToSpaces.Name = "NumericUpDown_TabsToSpaces"
         Me.NumericUpDown_TabsToSpaces.Size = New System.Drawing.Size(42, 22)
@@ -850,7 +788,7 @@ Partial Class FormSettings
         'Label32
         '
         Me.Label32.AutoSize = True
-        Me.Label32.Location = New System.Drawing.Point(9, 98)
+        Me.Label32.Location = New System.Drawing.Point(9, 74)
         Me.Label32.Margin = New System.Windows.Forms.Padding(6, 3, 3, 0)
         Me.Label32.Name = "Label32"
         Me.Label32.Size = New System.Drawing.Size(162, 13)
@@ -861,7 +799,7 @@ Partial Class FormSettings
         '
         Me.CheckBox_TabsToSpace.AutoSize = True
         Me.CheckBox_TabsToSpace.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_TabsToSpace.Location = New System.Drawing.Point(9, 74)
+        Me.CheckBox_TabsToSpace.Location = New System.Drawing.Point(9, 50)
         Me.CheckBox_TabsToSpace.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_TabsToSpace.Name = "CheckBox_TabsToSpace"
         Me.CheckBox_TabsToSpace.Size = New System.Drawing.Size(151, 18)
@@ -873,16 +811,16 @@ Partial Class FormSettings
         '
         Me.TextBox_CustomSyntax.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TextBox_CustomSyntax.Location = New System.Drawing.Point(9, 114)
+        Me.TextBox_CustomSyntax.Location = New System.Drawing.Point(9, 90)
         Me.TextBox_CustomSyntax.Name = "TextBox_CustomSyntax"
-        Me.TextBox_CustomSyntax.Size = New System.Drawing.Size(679, 22)
+        Me.TextBox_CustomSyntax.Size = New System.Drawing.Size(687, 22)
         Me.TextBox_CustomSyntax.TabIndex = 19
         '
         'Button_CustomSyntax
         '
         Me.Button_CustomSyntax.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_CustomSyntax.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_CustomSyntax.Location = New System.Drawing.Point(694, 114)
+        Me.Button_CustomSyntax.Location = New System.Drawing.Point(702, 90)
         Me.Button_CustomSyntax.Name = "Button_CustomSyntax"
         Me.Button_CustomSyntax.Size = New System.Drawing.Size(32, 23)
         Me.Button_CustomSyntax.TabIndex = 20
@@ -893,7 +831,7 @@ Partial Class FormSettings
         '
         Me.LinkLabel_DefaultSyntax.AutoSize = True
         Me.LinkLabel_DefaultSyntax.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
-        Me.LinkLabel_DefaultSyntax.Location = New System.Drawing.Point(9, 139)
+        Me.LinkLabel_DefaultSyntax.Location = New System.Drawing.Point(9, 115)
         Me.LinkLabel_DefaultSyntax.Margin = New System.Windows.Forms.Padding(6, 0, 3, 3)
         Me.LinkLabel_DefaultSyntax.Name = "LinkLabel_DefaultSyntax"
         Me.LinkLabel_DefaultSyntax.Size = New System.Drawing.Size(148, 13)
@@ -905,7 +843,7 @@ Partial Class FormSettings
         '
         Me.LinkLabel_MoreStyles.AutoSize = True
         Me.LinkLabel_MoreStyles.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
-        Me.LinkLabel_MoreStyles.Location = New System.Drawing.Point(166, 139)
+        Me.LinkLabel_MoreStyles.Location = New System.Drawing.Point(166, 115)
         Me.LinkLabel_MoreStyles.Margin = New System.Windows.Forms.Padding(6, 0, 3, 3)
         Me.LinkLabel_MoreStyles.Name = "LinkLabel_MoreStyles"
         Me.LinkLabel_MoreStyles.Size = New System.Drawing.Size(120, 13)
@@ -917,7 +855,7 @@ Partial Class FormSettings
         '
         Me.CheckBox_RememberFolds.AutoSize = True
         Me.CheckBox_RememberFolds.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_RememberFolds.Location = New System.Drawing.Point(9, 158)
+        Me.CheckBox_RememberFolds.Location = New System.Drawing.Point(9, 134)
         Me.CheckBox_RememberFolds.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_RememberFolds.Name = "CheckBox_RememberFolds"
         Me.CheckBox_RememberFolds.Size = New System.Drawing.Size(132, 18)
@@ -930,10 +868,10 @@ Partial Class FormSettings
         Me.TabPage_Syntax.AutoScroll = True
         Me.TabPage_Syntax.Controls.Add(Me.GroupBox22)
         Me.TabPage_Syntax.Controls.Add(Me.GroupBox13)
-        Me.TabPage_Syntax.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage_Syntax.Location = New System.Drawing.Point(1, 21)
         Me.TabPage_Syntax.Name = "TabPage_Syntax"
         Me.TabPage_Syntax.Padding = New System.Windows.Forms.Padding(6)
-        Me.TabPage_Syntax.Size = New System.Drawing.Size(744, 956)
+        Me.TabPage_Syntax.Size = New System.Drawing.Size(752, 960)
         Me.TabPage_Syntax.TabIndex = 2
         Me.TabPage_Syntax.Text = "Syntax Highlighting"
         Me.TabPage_Syntax.UseVisualStyleBackColor = True
@@ -944,10 +882,10 @@ Partial Class FormSettings
         Me.GroupBox22.Dock = System.Windows.Forms.DockStyle.Top
         Me.GroupBox22.Location = New System.Drawing.Point(6, 81)
         Me.GroupBox22.Name = "GroupBox22"
-        Me.GroupBox22.Size = New System.Drawing.Size(732, 56)
+        Me.GroupBox22.Size = New System.Drawing.Size(740, 56)
         Me.GroupBox22.TabIndex = 19
         Me.GroupBox22.TabStop = False
-        Me.GroupBox22.Text = "Highlighting Behaviour"
+        Me.GroupBox22.Text = "Highlighting"
         '
         'CheckBox_PublicAsDefineColor
         '
@@ -956,9 +894,9 @@ Partial Class FormSettings
         Me.CheckBox_PublicAsDefineColor.Location = New System.Drawing.Point(9, 21)
         Me.CheckBox_PublicAsDefineColor.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_PublicAsDefineColor.Name = "CheckBox_PublicAsDefineColor"
-        Me.CheckBox_PublicAsDefineColor.Size = New System.Drawing.Size(339, 18)
+        Me.CheckBox_PublicAsDefineColor.Size = New System.Drawing.Size(232, 18)
         Me.CheckBox_PublicAsDefineColor.TabIndex = 18
-        Me.CheckBox_PublicAsDefineColor.Text = "Public variable highlighting (uses define highlighting color)"
+        Me.CheckBox_PublicAsDefineColor.Text = "Additional public variable highlighting"
         Me.CheckBox_PublicAsDefineColor.UseVisualStyleBackColor = True
         '
         'GroupBox13
@@ -968,7 +906,7 @@ Partial Class FormSettings
         Me.GroupBox13.Dock = System.Windows.Forms.DockStyle.Top
         Me.GroupBox13.Location = New System.Drawing.Point(6, 6)
         Me.GroupBox13.Name = "GroupBox13"
-        Me.GroupBox13.Size = New System.Drawing.Size(732, 75)
+        Me.GroupBox13.Size = New System.Drawing.Size(740, 75)
         Me.GroupBox13.TabIndex = 18
         Me.GroupBox13.TabStop = False
         Me.GroupBox13.Text = "Word Highlighting"
@@ -1004,10 +942,10 @@ Partial Class FormSettings
         Me.TabPage_Autocomplete.Controls.Add(Me.GroupBox16)
         Me.TabPage_Autocomplete.Controls.Add(Me.GroupBox15)
         Me.TabPage_Autocomplete.Controls.Add(Me.GroupBox14)
-        Me.TabPage_Autocomplete.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage_Autocomplete.Location = New System.Drawing.Point(1, 21)
         Me.TabPage_Autocomplete.Name = "TabPage_Autocomplete"
         Me.TabPage_Autocomplete.Padding = New System.Windows.Forms.Padding(6)
-        Me.TabPage_Autocomplete.Size = New System.Drawing.Size(744, 956)
+        Me.TabPage_Autocomplete.Size = New System.Drawing.Size(752, 960)
         Me.TabPage_Autocomplete.TabIndex = 3
         Me.TabPage_Autocomplete.Text = "Autocomplete & IntelliSense"
         Me.TabPage_Autocomplete.UseVisualStyleBackColor = True
@@ -1018,7 +956,7 @@ Partial Class FormSettings
         Me.GroupBox17.Dock = System.Windows.Forms.DockStyle.Top
         Me.GroupBox17.Location = New System.Drawing.Point(6, 594)
         Me.GroupBox17.Name = "GroupBox17"
-        Me.GroupBox17.Size = New System.Drawing.Size(732, 51)
+        Me.GroupBox17.Size = New System.Drawing.Size(740, 51)
         Me.GroupBox17.TabIndex = 33
         Me.GroupBox17.TabStop = False
         Me.GroupBox17.Text = "Object Browser"
@@ -1044,7 +982,7 @@ Partial Class FormSettings
         Me.GroupBox16.Dock = System.Windows.Forms.DockStyle.Top
         Me.GroupBox16.Location = New System.Drawing.Point(6, 374)
         Me.GroupBox16.Name = "GroupBox16"
-        Me.GroupBox16.Size = New System.Drawing.Size(732, 220)
+        Me.GroupBox16.Size = New System.Drawing.Size(740, 220)
         Me.GroupBox16.TabIndex = 32
         Me.GroupBox16.TabStop = False
         Me.GroupBox16.Text = "IntelliSense"
@@ -1160,7 +1098,7 @@ Partial Class FormSettings
         Me.GroupBox15.Dock = System.Windows.Forms.DockStyle.Top
         Me.GroupBox15.Location = New System.Drawing.Point(6, 176)
         Me.GroupBox15.Name = "GroupBox15"
-        Me.GroupBox15.Size = New System.Drawing.Size(732, 198)
+        Me.GroupBox15.Size = New System.Drawing.Size(740, 198)
         Me.GroupBox15.TabIndex = 31
         Me.GroupBox15.TabStop = False
         Me.GroupBox15.Text = "Autocompletion"
@@ -1257,10 +1195,10 @@ Partial Class FormSettings
         Me.GroupBox14.Dock = System.Windows.Forms.DockStyle.Top
         Me.GroupBox14.Location = New System.Drawing.Point(6, 6)
         Me.GroupBox14.Name = "GroupBox14"
-        Me.GroupBox14.Size = New System.Drawing.Size(732, 170)
+        Me.GroupBox14.Size = New System.Drawing.Size(740, 170)
         Me.GroupBox14.TabIndex = 30
         Me.GroupBox14.TabStop = False
-        Me.GroupBox14.Text = "Parsing Behaviour"
+        Me.GroupBox14.Text = "Syntax Parsing"
         '
         'CheckBox_AlwaysLoadDefaultIncludes
         '
@@ -1296,13 +1234,13 @@ Partial Class FormSettings
         Me.GroupBox4.Size = New System.Drawing.Size(437, 92)
         Me.GroupBox4.TabIndex = 27
         Me.GroupBox4.TabStop = False
-        Me.GroupBox4.Text = "Variable parsing behaviour"
+        Me.GroupBox4.Text = "Variable Parsing Behaviour"
         '
         'RadioButton_VarParseTab
         '
         Me.RadioButton_VarParseTab.AutoSize = True
         Me.RadioButton_VarParseTab.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.RadioButton_VarParseTab.Location = New System.Drawing.Point(6, 67)
+        Me.RadioButton_VarParseTab.Location = New System.Drawing.Point(6, 21)
         Me.RadioButton_VarParseTab.Name = "RadioButton_VarParseTab"
         Me.RadioButton_VarParseTab.Size = New System.Drawing.Size(192, 18)
         Me.RadioButton_VarParseTab.TabIndex = 2
@@ -1326,7 +1264,7 @@ Partial Class FormSettings
         '
         Me.RadioButton_VarParseAll.AutoSize = True
         Me.RadioButton_VarParseAll.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.RadioButton_VarParseAll.Location = New System.Drawing.Point(6, 21)
+        Me.RadioButton_VarParseAll.Location = New System.Drawing.Point(6, 68)
         Me.RadioButton_VarParseAll.Name = "RadioButton_VarParseAll"
         Me.RadioButton_VarParseAll.Size = New System.Drawing.Size(180, 18)
         Me.RadioButton_VarParseAll.TabIndex = 0
@@ -1336,9 +1274,9 @@ Partial Class FormSettings
         'TabPage_Configs
         '
         Me.TabPage_Configs.Controls.Add(Me.TableLayoutPanel1)
-        Me.TabPage_Configs.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage_Configs.Location = New System.Drawing.Point(1, 21)
         Me.TabPage_Configs.Name = "TabPage_Configs"
-        Me.TabPage_Configs.Size = New System.Drawing.Size(752, 982)
+        Me.TabPage_Configs.Size = New System.Drawing.Size(756, 984)
         Me.TabPage_Configs.TabIndex = 1
         Me.TabPage_Configs.Text = "Configs"
         Me.TabPage_Configs.UseVisualStyleBackColor = True
@@ -1356,7 +1294,7 @@ Partial Class FormSettings
         Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
         Me.TableLayoutPanel1.RowCount = 1
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(752, 982)
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(756, 984)
         Me.TableLayoutPanel1.TabIndex = 10
         '
         'TableLayoutPanel2
@@ -1372,7 +1310,7 @@ Partial Class FormSettings
         Me.TableLayoutPanel2.RowCount = 2
         Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 100.0!))
         Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.TableLayoutPanel2.Size = New System.Drawing.Size(602, 982)
+        Me.TableLayoutPanel2.Size = New System.Drawing.Size(606, 984)
         Me.TableLayoutPanel2.TabIndex = 8
         '
         'Panel17
@@ -1388,14 +1326,14 @@ Partial Class FormSettings
         Me.Panel17.Location = New System.Drawing.Point(0, 0)
         Me.Panel17.Margin = New System.Windows.Forms.Padding(0)
         Me.Panel17.Name = "Panel17"
-        Me.Panel17.Size = New System.Drawing.Size(602, 100)
+        Me.Panel17.Size = New System.Drawing.Size(606, 100)
         Me.Panel17.TabIndex = 0
         '
         'Button_SaveConfig
         '
         Me.Button_SaveConfig.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_SaveConfig.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_SaveConfig.Location = New System.Drawing.Point(471, 74)
+        Me.Button_SaveConfig.Location = New System.Drawing.Point(475, 74)
         Me.Button_SaveConfig.Name = "Button_SaveConfig"
         Me.Button_SaveConfig.Size = New System.Drawing.Size(128, 23)
         Me.Button_SaveConfig.TabIndex = 12
@@ -1415,7 +1353,7 @@ Partial Class FormSettings
         '
         Me.Button_ConfigRename.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_ConfigRename.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_ConfigRename.Location = New System.Drawing.Point(237, 44)
+        Me.Button_ConfigRename.Location = New System.Drawing.Point(241, 44)
         Me.Button_ConfigRename.Name = "Button_ConfigRename"
         Me.Button_ConfigRename.Size = New System.Drawing.Size(86, 23)
         Me.Button_ConfigRename.TabIndex = 9
@@ -1428,14 +1366,14 @@ Partial Class FormSettings
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.TextBox_ConfigName.Location = New System.Drawing.Point(3, 16)
         Me.TextBox_ConfigName.Name = "TextBox_ConfigName"
-        Me.TextBox_ConfigName.Size = New System.Drawing.Size(596, 22)
+        Me.TextBox_ConfigName.Size = New System.Drawing.Size(600, 22)
         Me.TextBox_ConfigName.TabIndex = 2
         '
         'Button_ConfigCopy
         '
         Me.Button_ConfigCopy.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_ConfigCopy.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_ConfigCopy.Location = New System.Drawing.Point(329, 44)
+        Me.Button_ConfigCopy.Location = New System.Drawing.Point(333, 44)
         Me.Button_ConfigCopy.Name = "Button_ConfigCopy"
         Me.Button_ConfigCopy.Size = New System.Drawing.Size(86, 23)
         Me.Button_ConfigCopy.TabIndex = 8
@@ -1446,7 +1384,7 @@ Partial Class FormSettings
         '
         Me.Button_ConfigRemove.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_ConfigRemove.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_ConfigRemove.Location = New System.Drawing.Point(513, 44)
+        Me.Button_ConfigRemove.Location = New System.Drawing.Point(517, 44)
         Me.Button_ConfigRemove.Name = "Button_ConfigRemove"
         Me.Button_ConfigRemove.Size = New System.Drawing.Size(86, 23)
         Me.Button_ConfigRemove.TabIndex = 4
@@ -1457,7 +1395,7 @@ Partial Class FormSettings
         '
         Me.Button_ConfigAdd.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_ConfigAdd.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_ConfigAdd.Location = New System.Drawing.Point(421, 44)
+        Me.Button_ConfigAdd.Location = New System.Drawing.Point(425, 44)
         Me.Button_ConfigAdd.Name = "Button_ConfigAdd"
         Me.Button_ConfigAdd.Size = New System.Drawing.Size(86, 23)
         Me.Button_ConfigAdd.TabIndex = 5
@@ -1472,7 +1410,7 @@ Partial Class FormSettings
         Me.Panel2.Location = New System.Drawing.Point(0, 100)
         Me.Panel2.Margin = New System.Windows.Forms.Padding(0)
         Me.Panel2.Name = "Panel2"
-        Me.Panel2.Size = New System.Drawing.Size(602, 882)
+        Me.Panel2.Size = New System.Drawing.Size(606, 884)
         Me.Panel2.TabIndex = 1
         '
         'GroupBox_ConfigSettings
@@ -1485,7 +1423,7 @@ Partial Class FormSettings
         Me.GroupBox_ConfigSettings.Location = New System.Drawing.Point(0, 0)
         Me.GroupBox_ConfigSettings.Margin = New System.Windows.Forms.Padding(0)
         Me.GroupBox_ConfigSettings.Name = "GroupBox_ConfigSettings"
-        Me.GroupBox_ConfigSettings.Size = New System.Drawing.Size(585, 978)
+        Me.GroupBox_ConfigSettings.Size = New System.Drawing.Size(589, 978)
         Me.GroupBox_ConfigSettings.TabIndex = 7
         Me.GroupBox_ConfigSettings.TabStop = False
         Me.GroupBox_ConfigSettings.Text = "Config Settings"
@@ -1498,7 +1436,7 @@ Partial Class FormSettings
         Me.GroupBox21.Dock = System.Windows.Forms.DockStyle.Top
         Me.GroupBox21.Location = New System.Drawing.Point(3, 875)
         Me.GroupBox21.Name = "GroupBox21"
-        Me.GroupBox21.Size = New System.Drawing.Size(579, 100)
+        Me.GroupBox21.Size = New System.Drawing.Size(583, 100)
         Me.GroupBox21.TabIndex = 29
         Me.GroupBox21.TabStop = False
         Me.GroupBox21.Text = "Misc"
@@ -1519,7 +1457,7 @@ Partial Class FormSettings
         Me.TextBox_Shell.BackColor = System.Drawing.Color.White
         Me.TextBox_Shell.Location = New System.Drawing.Point(6, 34)
         Me.TextBox_Shell.Name = "TextBox_Shell"
-        Me.TextBox_Shell.Size = New System.Drawing.Size(567, 22)
+        Me.TextBox_Shell.Size = New System.Drawing.Size(571, 22)
         Me.TextBox_Shell.TabIndex = 29
         '
         'LinkLabel_ShowShellArguments
@@ -1548,7 +1486,7 @@ Partial Class FormSettings
         Me.GroupBox20.Dock = System.Windows.Forms.DockStyle.Top
         Me.GroupBox20.Location = New System.Drawing.Point(3, 728)
         Me.GroupBox20.Name = "GroupBox20"
-        Me.GroupBox20.Size = New System.Drawing.Size(579, 147)
+        Me.GroupBox20.Size = New System.Drawing.Size(583, 147)
         Me.GroupBox20.TabIndex = 45
         Me.GroupBox20.TabStop = False
         Me.GroupBox20.Text = "Debugging"
@@ -1569,14 +1507,14 @@ Partial Class FormSettings
         Me.TextBox_ClientFolder.BackColor = System.Drawing.Color.White
         Me.TextBox_ClientFolder.Location = New System.Drawing.Point(6, 34)
         Me.TextBox_ClientFolder.Name = "TextBox_ClientFolder"
-        Me.TextBox_ClientFolder.Size = New System.Drawing.Size(530, 22)
+        Me.TextBox_ClientFolder.Size = New System.Drawing.Size(534, 22)
         Me.TextBox_ClientFolder.TabIndex = 39
         '
         'Button_ClientFolder
         '
         Me.Button_ClientFolder.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_ClientFolder.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_ClientFolder.Location = New System.Drawing.Point(542, 31)
+        Me.Button_ClientFolder.Location = New System.Drawing.Point(546, 31)
         Me.Button_ClientFolder.Name = "Button_ClientFolder"
         Me.Button_ClientFolder.Size = New System.Drawing.Size(31, 24)
         Me.Button_ClientFolder.TabIndex = 40
@@ -1599,14 +1537,14 @@ Partial Class FormSettings
         Me.TextBox_ServerFolder.BackColor = System.Drawing.Color.White
         Me.TextBox_ServerFolder.Location = New System.Drawing.Point(6, 75)
         Me.TextBox_ServerFolder.Name = "TextBox_ServerFolder"
-        Me.TextBox_ServerFolder.Size = New System.Drawing.Size(530, 22)
+        Me.TextBox_ServerFolder.Size = New System.Drawing.Size(534, 22)
         Me.TextBox_ServerFolder.TabIndex = 32
         '
         'Button_ServerFolder
         '
         Me.Button_ServerFolder.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_ServerFolder.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_ServerFolder.Location = New System.Drawing.Point(542, 72)
+        Me.Button_ServerFolder.Location = New System.Drawing.Point(546, 72)
         Me.Button_ServerFolder.Name = "Button_ServerFolder"
         Me.Button_ServerFolder.Size = New System.Drawing.Size(31, 24)
         Me.Button_ServerFolder.TabIndex = 33
@@ -1620,14 +1558,14 @@ Partial Class FormSettings
         Me.TextBox_SourceModFolder.BackColor = System.Drawing.Color.White
         Me.TextBox_SourceModFolder.Location = New System.Drawing.Point(6, 116)
         Me.TextBox_SourceModFolder.Name = "TextBox_SourceModFolder"
-        Me.TextBox_SourceModFolder.Size = New System.Drawing.Size(530, 22)
+        Me.TextBox_SourceModFolder.Size = New System.Drawing.Size(534, 22)
         Me.TextBox_SourceModFolder.TabIndex = 36
         '
         'Button_SourceModFolder
         '
         Me.Button_SourceModFolder.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_SourceModFolder.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_SourceModFolder.Location = New System.Drawing.Point(542, 113)
+        Me.Button_SourceModFolder.Location = New System.Drawing.Point(546, 113)
         Me.Button_SourceModFolder.Name = "Button_SourceModFolder"
         Me.Button_SourceModFolder.Size = New System.Drawing.Size(31, 24)
         Me.Button_SourceModFolder.TabIndex = 37
@@ -1661,7 +1599,7 @@ Partial Class FormSettings
         Me.GroupBox1.Dock = System.Windows.Forms.DockStyle.Top
         Me.GroupBox1.Location = New System.Drawing.Point(3, 18)
         Me.GroupBox1.Name = "GroupBox1"
-        Me.GroupBox1.Size = New System.Drawing.Size(579, 710)
+        Me.GroupBox1.Size = New System.Drawing.Size(583, 710)
         Me.GroupBox1.TabIndex = 8
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "General"
@@ -1684,7 +1622,7 @@ Partial Class FormSettings
         Me.GroupBox3.Controls.Add(Me.Button_KnownFileRemove)
         Me.GroupBox3.Location = New System.Drawing.Point(6, 512)
         Me.GroupBox3.Name = "GroupBox3"
-        Me.GroupBox3.Size = New System.Drawing.Size(567, 190)
+        Me.GroupBox3.Size = New System.Drawing.Size(571, 190)
         Me.GroupBox3.TabIndex = 43
         Me.GroupBox3.TabStop = False
         Me.GroupBox3.Text = "Known Files"
@@ -1697,7 +1635,7 @@ Partial Class FormSettings
         Me.ListView_KnownFiles.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader8})
         Me.ListView_KnownFiles.Location = New System.Drawing.Point(6, 21)
         Me.ListView_KnownFiles.Name = "ListView_KnownFiles"
-        Me.ListView_KnownFiles.Size = New System.Drawing.Size(555, 134)
+        Me.ListView_KnownFiles.Size = New System.Drawing.Size(559, 134)
         Me.ListView_KnownFiles.Sorting = System.Windows.Forms.SortOrder.Ascending
         Me.ListView_KnownFiles.TabIndex = 3
         Me.ListView_KnownFiles.UseCompatibleStateImageBehavior = False
@@ -1711,7 +1649,7 @@ Partial Class FormSettings
         '
         Me.Button_KnownFileAdd.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_KnownFileAdd.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_KnownFileAdd.Location = New System.Drawing.Point(383, 161)
+        Me.Button_KnownFileAdd.Location = New System.Drawing.Point(387, 161)
         Me.Button_KnownFileAdd.Name = "Button_KnownFileAdd"
         Me.Button_KnownFileAdd.Size = New System.Drawing.Size(86, 23)
         Me.Button_KnownFileAdd.TabIndex = 2
@@ -1722,7 +1660,7 @@ Partial Class FormSettings
         '
         Me.Button_KnownFileRemove.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_KnownFileRemove.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_KnownFileRemove.Location = New System.Drawing.Point(475, 161)
+        Me.Button_KnownFileRemove.Location = New System.Drawing.Point(479, 161)
         Me.Button_KnownFileRemove.Name = "Button_KnownFileRemove"
         Me.Button_KnownFileRemove.Size = New System.Drawing.Size(86, 23)
         Me.Button_KnownFileRemove.TabIndex = 1
@@ -1736,14 +1674,14 @@ Partial Class FormSettings
         Me.TextBox_AutoAssignPaths.BackColor = System.Drawing.Color.White
         Me.TextBox_AutoAssignPaths.Location = New System.Drawing.Point(9, 260)
         Me.TextBox_AutoAssignPaths.Name = "TextBox_AutoAssignPaths"
-        Me.TextBox_AutoAssignPaths.Size = New System.Drawing.Size(527, 22)
+        Me.TextBox_AutoAssignPaths.Size = New System.Drawing.Size(531, 22)
         Me.TextBox_AutoAssignPaths.TabIndex = 35
         '
         'Button_AutoAssignPaths
         '
         Me.Button_AutoAssignPaths.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_AutoAssignPaths.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_AutoAssignPaths.Location = New System.Drawing.Point(542, 258)
+        Me.Button_AutoAssignPaths.Location = New System.Drawing.Point(546, 258)
         Me.Button_AutoAssignPaths.Name = "Button_AutoAssignPaths"
         Me.Button_AutoAssignPaths.Size = New System.Drawing.Size(31, 24)
         Me.Button_AutoAssignPaths.TabIndex = 36
@@ -1757,7 +1695,7 @@ Partial Class FormSettings
         Me.GroupBox2.Controls.Add(Me.TabControl2)
         Me.GroupBox2.Location = New System.Drawing.Point(6, 315)
         Me.GroupBox2.Name = "GroupBox2"
-        Me.GroupBox2.Size = New System.Drawing.Size(567, 191)
+        Me.GroupBox2.Size = New System.Drawing.Size(571, 191)
         Me.GroupBox2.TabIndex = 42
         Me.GroupBox2.TabStop = False
         Me.GroupBox2.Text = "Compiler Options"
@@ -1768,9 +1706,10 @@ Partial Class FormSettings
         Me.TabControl2.Controls.Add(Me.TabPage2)
         Me.TabControl2.Dock = System.Windows.Forms.DockStyle.Fill
         Me.TabControl2.Location = New System.Drawing.Point(3, 18)
+        Me.TabControl2.m_TabPageAdjustEnabled = True
         Me.TabControl2.Name = "TabControl2"
         Me.TabControl2.SelectedIndex = 0
-        Me.TabControl2.Size = New System.Drawing.Size(561, 170)
+        Me.TabControl2.Size = New System.Drawing.Size(565, 170)
         Me.TabControl2.TabIndex = 0
         '
         'TabPage1
@@ -1785,10 +1724,10 @@ Partial Class FormSettings
         Me.TabPage1.Controls.Add(Me.ComboBox_COVerbosityLevelSP)
         Me.TabPage1.Controls.Add(Me.ComboBox_COOptimizationLevelSP)
         Me.TabPage1.Controls.Add(Me.Label21)
-        Me.TabPage1.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage1.Location = New System.Drawing.Point(1, 21)
         Me.TabPage1.Name = "TabPage1"
         Me.TabPage1.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage1.Size = New System.Drawing.Size(553, 144)
+        Me.TabPage1.Size = New System.Drawing.Size(561, 146)
         Me.TabPage1.TabIndex = 0
         Me.TabPage1.Text = "SourcePawn"
         Me.TabPage1.UseVisualStyleBackColor = True
@@ -1809,7 +1748,7 @@ Partial Class FormSettings
         Me.TextBoxEx_CODefineConstantsSP.Location = New System.Drawing.Point(198, 115)
         Me.TextBoxEx_CODefineConstantsSP.m_WatermarkText = "sym=val;sym2=val..."
         Me.TextBoxEx_CODefineConstantsSP.Name = "TextBoxEx_CODefineConstantsSP"
-        Me.TextBoxEx_CODefineConstantsSP.Size = New System.Drawing.Size(349, 22)
+        Me.TextBoxEx_CODefineConstantsSP.Size = New System.Drawing.Size(357, 22)
         Me.TextBoxEx_CODefineConstantsSP.TabIndex = 8
         '
         'TextBoxEx_COIgnoredWarningsSP
@@ -1819,7 +1758,7 @@ Partial Class FormSettings
         Me.TextBoxEx_COIgnoredWarningsSP.Location = New System.Drawing.Point(198, 87)
         Me.TextBoxEx_COIgnoredWarningsSP.m_WatermarkText = "100;101..."
         Me.TextBoxEx_COIgnoredWarningsSP.Name = "TextBoxEx_COIgnoredWarningsSP"
-        Me.TextBoxEx_COIgnoredWarningsSP.Size = New System.Drawing.Size(349, 22)
+        Me.TextBoxEx_COIgnoredWarningsSP.Size = New System.Drawing.Size(357, 22)
         Me.TextBoxEx_COIgnoredWarningsSP.TabIndex = 7
         '
         'Label24
@@ -1848,7 +1787,7 @@ Partial Class FormSettings
         Me.ComboBox_COTreatWarningsAsErrorsSP.FormattingEnabled = True
         Me.ComboBox_COTreatWarningsAsErrorsSP.Location = New System.Drawing.Point(198, 60)
         Me.ComboBox_COTreatWarningsAsErrorsSP.Name = "ComboBox_COTreatWarningsAsErrorsSP"
-        Me.ComboBox_COTreatWarningsAsErrorsSP.Size = New System.Drawing.Size(349, 21)
+        Me.ComboBox_COTreatWarningsAsErrorsSP.Size = New System.Drawing.Size(357, 21)
         Me.ComboBox_COTreatWarningsAsErrorsSP.TabIndex = 4
         '
         'Label22
@@ -1868,7 +1807,7 @@ Partial Class FormSettings
         Me.ComboBox_COVerbosityLevelSP.FormattingEnabled = True
         Me.ComboBox_COVerbosityLevelSP.Location = New System.Drawing.Point(198, 33)
         Me.ComboBox_COVerbosityLevelSP.Name = "ComboBox_COVerbosityLevelSP"
-        Me.ComboBox_COVerbosityLevelSP.Size = New System.Drawing.Size(349, 21)
+        Me.ComboBox_COVerbosityLevelSP.Size = New System.Drawing.Size(357, 21)
         Me.ComboBox_COVerbosityLevelSP.TabIndex = 2
         '
         'ComboBox_COOptimizationLevelSP
@@ -1879,7 +1818,7 @@ Partial Class FormSettings
         Me.ComboBox_COOptimizationLevelSP.FormattingEnabled = True
         Me.ComboBox_COOptimizationLevelSP.Location = New System.Drawing.Point(198, 6)
         Me.ComboBox_COOptimizationLevelSP.Name = "ComboBox_COOptimizationLevelSP"
-        Me.ComboBox_COOptimizationLevelSP.Size = New System.Drawing.Size(349, 21)
+        Me.ComboBox_COOptimizationLevelSP.Size = New System.Drawing.Size(357, 21)
         Me.ComboBox_COOptimizationLevelSP.TabIndex = 1
         '
         'Label21
@@ -1903,10 +1842,10 @@ Partial Class FormSettings
         Me.TabPage2.Controls.Add(Me.ComboBox_COTreatWarningsAsErrorsAMXX)
         Me.TabPage2.Controls.Add(Me.Label29)
         Me.TabPage2.Controls.Add(Me.ComboBox_COVerbosityLevelAMXX)
-        Me.TabPage2.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage2.Location = New System.Drawing.Point(1, 21)
         Me.TabPage2.Name = "TabPage2"
         Me.TabPage2.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage2.Size = New System.Drawing.Size(553, 146)
+        Me.TabPage2.Size = New System.Drawing.Size(557, 148)
         Me.TabPage2.TabIndex = 1
         Me.TabPage2.Text = "AMX Mod X"
         Me.TabPage2.UseVisualStyleBackColor = True
@@ -1928,7 +1867,7 @@ Partial Class FormSettings
         Me.ComboBox_COSymbolicInformationAMXX.FormattingEnabled = True
         Me.ComboBox_COSymbolicInformationAMXX.Location = New System.Drawing.Point(198, 6)
         Me.ComboBox_COSymbolicInformationAMXX.Name = "ComboBox_COSymbolicInformationAMXX"
-        Me.ComboBox_COSymbolicInformationAMXX.Size = New System.Drawing.Size(349, 21)
+        Me.ComboBox_COSymbolicInformationAMXX.Size = New System.Drawing.Size(353, 21)
         Me.ComboBox_COSymbolicInformationAMXX.TabIndex = 20
         '
         'Label26
@@ -1947,7 +1886,7 @@ Partial Class FormSettings
         Me.TextBoxEx_CODefineConstantsAMXX.Location = New System.Drawing.Point(198, 115)
         Me.TextBoxEx_CODefineConstantsAMXX.m_WatermarkText = "sym=val;sym2=val..."
         Me.TextBoxEx_CODefineConstantsAMXX.Name = "TextBoxEx_CODefineConstantsAMXX"
-        Me.TextBoxEx_CODefineConstantsAMXX.Size = New System.Drawing.Size(349, 22)
+        Me.TextBoxEx_CODefineConstantsAMXX.Size = New System.Drawing.Size(353, 22)
         Me.TextBoxEx_CODefineConstantsAMXX.TabIndex = 18
         '
         'TextBoxEx_COIgnoredWarningsAMXX
@@ -1957,7 +1896,7 @@ Partial Class FormSettings
         Me.TextBoxEx_COIgnoredWarningsAMXX.Location = New System.Drawing.Point(198, 87)
         Me.TextBoxEx_COIgnoredWarningsAMXX.m_WatermarkText = "100;101..."
         Me.TextBoxEx_COIgnoredWarningsAMXX.Name = "TextBoxEx_COIgnoredWarningsAMXX"
-        Me.TextBoxEx_COIgnoredWarningsAMXX.Size = New System.Drawing.Size(349, 22)
+        Me.TextBoxEx_COIgnoredWarningsAMXX.Size = New System.Drawing.Size(353, 22)
         Me.TextBoxEx_COIgnoredWarningsAMXX.TabIndex = 17
         '
         'Label27
@@ -1986,7 +1925,7 @@ Partial Class FormSettings
         Me.ComboBox_COTreatWarningsAsErrorsAMXX.FormattingEnabled = True
         Me.ComboBox_COTreatWarningsAsErrorsAMXX.Location = New System.Drawing.Point(198, 60)
         Me.ComboBox_COTreatWarningsAsErrorsAMXX.Name = "ComboBox_COTreatWarningsAsErrorsAMXX"
-        Me.ComboBox_COTreatWarningsAsErrorsAMXX.Size = New System.Drawing.Size(349, 21)
+        Me.ComboBox_COTreatWarningsAsErrorsAMXX.Size = New System.Drawing.Size(353, 21)
         Me.ComboBox_COTreatWarningsAsErrorsAMXX.TabIndex = 14
         '
         'Label29
@@ -2006,7 +1945,7 @@ Partial Class FormSettings
         Me.ComboBox_COVerbosityLevelAMXX.FormattingEnabled = True
         Me.ComboBox_COVerbosityLevelAMXX.Location = New System.Drawing.Point(198, 33)
         Me.ComboBox_COVerbosityLevelAMXX.Name = "ComboBox_COVerbosityLevelAMXX"
-        Me.ComboBox_COVerbosityLevelAMXX.Size = New System.Drawing.Size(349, 21)
+        Me.ComboBox_COVerbosityLevelAMXX.Size = New System.Drawing.Size(353, 21)
         Me.ComboBox_COVerbosityLevelAMXX.TabIndex = 12
         '
         'Label20
@@ -2024,7 +1963,7 @@ Partial Class FormSettings
         Me.ComboBox_Language.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.ComboBox_Language.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.ComboBox_Language.FormattingEnabled = True
-        Me.ComboBox_Language.Location = New System.Drawing.Point(361, 288)
+        Me.ComboBox_Language.Location = New System.Drawing.Point(365, 288)
         Me.ComboBox_Language.Name = "ComboBox_Language"
         Me.ComboBox_Language.Size = New System.Drawing.Size(212, 21)
         Me.ComboBox_Language.TabIndex = 40
@@ -2036,7 +1975,7 @@ Partial Class FormSettings
         Me.Label3.Location = New System.Drawing.Point(19, 42)
         Me.Label3.Margin = New System.Windows.Forms.Padding(16, 0, 3, 0)
         Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(554, 28)
+        Me.Label3.Size = New System.Drawing.Size(558, 28)
         Me.Label3.TabIndex = 33
         Me.Label3.Text = "Automatically detect compiler path and include folder from currently opened sourc" &
     "e file."
@@ -2093,7 +2032,7 @@ Partial Class FormSettings
         Me.GroupBox19.Controls.Add(Me.Button_OutputFolder)
         Me.GroupBox19.Location = New System.Drawing.Point(6, 73)
         Me.GroupBox19.Name = "GroupBox19"
-        Me.GroupBox19.Size = New System.Drawing.Size(567, 144)
+        Me.GroupBox19.Size = New System.Drawing.Size(571, 144)
         Me.GroupBox19.TabIndex = 38
         Me.GroupBox19.TabStop = False
         Me.GroupBox19.Text = "                    "
@@ -2114,14 +2053,14 @@ Partial Class FormSettings
         Me.TextBox_CompilerPath.BackColor = System.Drawing.Color.White
         Me.TextBox_CompilerPath.Location = New System.Drawing.Point(6, 36)
         Me.TextBox_CompilerPath.Name = "TextBox_CompilerPath"
-        Me.TextBox_CompilerPath.Size = New System.Drawing.Size(518, 22)
+        Me.TextBox_CompilerPath.Size = New System.Drawing.Size(522, 22)
         Me.TextBox_CompilerPath.TabIndex = 8
         '
         'Button_Compiler
         '
         Me.Button_Compiler.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_Compiler.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_Compiler.Location = New System.Drawing.Point(530, 34)
+        Me.Button_Compiler.Location = New System.Drawing.Point(534, 34)
         Me.Button_Compiler.Name = "Button_Compiler"
         Me.Button_Compiler.Size = New System.Drawing.Size(31, 24)
         Me.Button_Compiler.TabIndex = 8
@@ -2144,14 +2083,14 @@ Partial Class FormSettings
         Me.TextBox_IncludeFolder.BackColor = System.Drawing.Color.White
         Me.TextBox_IncludeFolder.Location = New System.Drawing.Point(6, 75)
         Me.TextBox_IncludeFolder.Name = "TextBox_IncludeFolder"
-        Me.TextBox_IncludeFolder.Size = New System.Drawing.Size(518, 22)
+        Me.TextBox_IncludeFolder.Size = New System.Drawing.Size(522, 22)
         Me.TextBox_IncludeFolder.TabIndex = 10
         '
         'Button_IncludeFolder
         '
         Me.Button_IncludeFolder.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_IncludeFolder.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_IncludeFolder.Location = New System.Drawing.Point(530, 73)
+        Me.Button_IncludeFolder.Location = New System.Drawing.Point(534, 73)
         Me.Button_IncludeFolder.Name = "Button_IncludeFolder"
         Me.Button_IncludeFolder.Size = New System.Drawing.Size(31, 24)
         Me.Button_IncludeFolder.TabIndex = 11
@@ -2174,14 +2113,14 @@ Partial Class FormSettings
         Me.TextBox_OutputFolder.BackColor = System.Drawing.Color.White
         Me.TextBox_OutputFolder.Location = New System.Drawing.Point(6, 114)
         Me.TextBox_OutputFolder.Name = "TextBox_OutputFolder"
-        Me.TextBox_OutputFolder.Size = New System.Drawing.Size(518, 22)
+        Me.TextBox_OutputFolder.Size = New System.Drawing.Size(522, 22)
         Me.TextBox_OutputFolder.TabIndex = 14
         '
         'Button_OutputFolder
         '
         Me.Button_OutputFolder.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_OutputFolder.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_OutputFolder.Location = New System.Drawing.Point(530, 112)
+        Me.Button_OutputFolder.Location = New System.Drawing.Point(534, 112)
         Me.Button_OutputFolder.Name = "Button_OutputFolder"
         Me.Button_OutputFolder.Size = New System.Drawing.Size(31, 24)
         Me.Button_OutputFolder.TabIndex = 15
@@ -2198,17 +2137,17 @@ Partial Class FormSettings
         Me.ListBox_Configs.ItemHeight = 21
         Me.ListBox_Configs.Location = New System.Drawing.Point(3, 3)
         Me.ListBox_Configs.Name = "ListBox_Configs"
-        Me.ListBox_Configs.Size = New System.Drawing.Size(144, 976)
+        Me.ListBox_Configs.Size = New System.Drawing.Size(144, 978)
         Me.ListBox_Configs.TabIndex = 0
         '
         'TabPage_Plugins
         '
         Me.TabPage_Plugins.Controls.Add(Me.LinkLabel_MorePlugins)
         Me.TabPage_Plugins.Controls.Add(Me.ListView_Plugins)
-        Me.TabPage_Plugins.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage_Plugins.Location = New System.Drawing.Point(1, 21)
         Me.TabPage_Plugins.Name = "TabPage_Plugins"
         Me.TabPage_Plugins.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage_Plugins.Size = New System.Drawing.Size(752, 982)
+        Me.TabPage_Plugins.Size = New System.Drawing.Size(756, 984)
         Me.TabPage_Plugins.TabIndex = 2
         Me.TabPage_Plugins.Text = "Plugins"
         Me.TabPage_Plugins.UseVisualStyleBackColor = True
@@ -2283,10 +2222,10 @@ Partial Class FormSettings
         Me.TabPage_Database.Controls.Add(Me.TableLayoutPanel4)
         Me.TabPage_Database.Controls.Add(Me.Button_AddDatabaseItem)
         Me.TabPage_Database.Controls.Add(Me.TableLayoutPanel3)
-        Me.TabPage_Database.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage_Database.Location = New System.Drawing.Point(1, 21)
         Me.TabPage_Database.Name = "TabPage_Database"
         Me.TabPage_Database.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage_Database.Size = New System.Drawing.Size(752, 982)
+        Me.TabPage_Database.Size = New System.Drawing.Size(756, 984)
         Me.TabPage_Database.TabIndex = 3
         Me.TabPage_Database.Text = "Database"
         Me.TabPage_Database.UseVisualStyleBackColor = True
@@ -2403,6 +2342,83 @@ Partial Class FormSettings
         Me.Label17.Text = "Loaded BasicPawn plugins are able to read stored database entries. Make sure all " &
     "installed plugins are from a trustworthy publisher to prevent theft."
         '
+        'GroupBox23
+        '
+        Me.GroupBox23.Controls.Add(Me.CheckBox_InvertedColors)
+        Me.GroupBox23.Dock = System.Windows.Forms.DockStyle.Top
+        Me.GroupBox23.Location = New System.Drawing.Point(6, 6)
+        Me.GroupBox23.Name = "GroupBox23"
+        Me.GroupBox23.Size = New System.Drawing.Size(740, 54)
+        Me.GroupBox23.TabIndex = 35
+        Me.GroupBox23.TabStop = False
+        Me.GroupBox23.Text = "User Interface"
+        '
+        'CheckBox_InvertedColors
+        '
+        Me.CheckBox_InvertedColors.AutoSize = True
+        Me.CheckBox_InvertedColors.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_InvertedColors.Location = New System.Drawing.Point(9, 21)
+        Me.CheckBox_InvertedColors.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_InvertedColors.Name = "CheckBox_InvertedColors"
+        Me.CheckBox_InvertedColors.Size = New System.Drawing.Size(134, 18)
+        Me.CheckBox_InvertedColors.TabIndex = 14
+        Me.CheckBox_InvertedColors.Text = "High contrast mode"
+        Me.CheckBox_InvertedColors.UseVisualStyleBackColor = True
+        '
+        'GroupBox12
+        '
+        Me.GroupBox12.Controls.Add(Me.Label8)
+        Me.GroupBox12.Controls.Add(Me.NumericUpDown_ThreadUpdateRate)
+        Me.GroupBox12.Controls.Add(Me.Label14)
+        Me.GroupBox12.Controls.Add(Me.LinkLabel_ThreadUpdateRateHelp)
+        Me.GroupBox12.Dock = System.Windows.Forms.DockStyle.Top
+        Me.GroupBox12.Location = New System.Drawing.Point(6, 359)
+        Me.GroupBox12.Name = "GroupBox12"
+        Me.GroupBox12.Size = New System.Drawing.Size(740, 56)
+        Me.GroupBox12.TabIndex = 36
+        Me.GroupBox12.TabStop = False
+        Me.GroupBox12.Text = "Threading"
+        '
+        'Label8
+        '
+        Me.Label8.AutoSize = True
+        Me.Label8.Location = New System.Drawing.Point(9, 24)
+        Me.Label8.Margin = New System.Windows.Forms.Padding(6, 6, 3, 6)
+        Me.Label8.Name = "Label8"
+        Me.Label8.Size = New System.Drawing.Size(173, 13)
+        Me.Label8.TabIndex = 24
+        Me.Label8.Text = "Background thread update rate:"
+        '
+        'NumericUpDown_ThreadUpdateRate
+        '
+        Me.NumericUpDown_ThreadUpdateRate.Location = New System.Drawing.Point(185, 19)
+        Me.NumericUpDown_ThreadUpdateRate.Maximum = New Decimal(New Integer() {2500, 0, 0, 0})
+        Me.NumericUpDown_ThreadUpdateRate.Minimum = New Decimal(New Integer() {100, 0, 0, 0})
+        Me.NumericUpDown_ThreadUpdateRate.Name = "NumericUpDown_ThreadUpdateRate"
+        Me.NumericUpDown_ThreadUpdateRate.Size = New System.Drawing.Size(64, 22)
+        Me.NumericUpDown_ThreadUpdateRate.TabIndex = 25
+        Me.NumericUpDown_ThreadUpdateRate.Value = New Decimal(New Integer() {500, 0, 0, 0})
+        '
+        'Label14
+        '
+        Me.Label14.AutoSize = True
+        Me.Label14.Location = New System.Drawing.Point(258, 24)
+        Me.Label14.Name = "Label14"
+        Me.Label14.Size = New System.Drawing.Size(21, 13)
+        Me.Label14.TabIndex = 26
+        Me.Label14.Text = "ms"
+        '
+        'LinkLabel_ThreadUpdateRateHelp
+        '
+        Me.LinkLabel_ThreadUpdateRateHelp.AutoSize = True
+        Me.LinkLabel_ThreadUpdateRateHelp.Location = New System.Drawing.Point(285, 24)
+        Me.LinkLabel_ThreadUpdateRateHelp.Name = "LinkLabel_ThreadUpdateRateHelp"
+        Me.LinkLabel_ThreadUpdateRateHelp.Size = New System.Drawing.Size(12, 13)
+        Me.LinkLabel_ThreadUpdateRateHelp.TabIndex = 27
+        Me.LinkLabel_ThreadUpdateRateHelp.TabStop = True
+        Me.LinkLabel_ThreadUpdateRateHelp.Text = "?"
+        Me.ToolTip_Info.SetToolTip(Me.LinkLabel_ThreadUpdateRateHelp, resources.GetString("LinkLabel_ThreadUpdateRateHelp.ToolTip"))
+        '
         'FormSettings
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -2434,9 +2450,6 @@ Partial Class FormSettings
         Me.GroupBox6.ResumeLayout(False)
         Me.GroupBox6.PerformLayout()
         Me.TabPage_Editor.ResumeLayout(False)
-        Me.GroupBox12.ResumeLayout(False)
-        Me.GroupBox12.PerformLayout()
-        CType(Me.NumericUpDown_ThreadUpdateRate, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupBox11.ResumeLayout(False)
         Me.GroupBox11.PerformLayout()
         Me.GroupBox5.ResumeLayout(False)
@@ -2495,6 +2508,11 @@ Partial Class FormSettings
         Me.TableLayoutPanel3.ResumeLayout(False)
         Me.TableLayoutPanel3.PerformLayout()
         CType(Me.ClassPictureBoxQuality1, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.GroupBox23.ResumeLayout(False)
+        Me.GroupBox23.PerformLayout()
+        Me.GroupBox12.ResumeLayout(False)
+        Me.GroupBox12.PerformLayout()
+        CType(Me.NumericUpDown_ThreadUpdateRate, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
     End Sub
@@ -2521,7 +2539,6 @@ Partial Class FormSettings
     Friend WithEvents CheckBox_FullAutocompleteReTagging As CheckBox
     Friend WithEvents Label_Font As Label
     Friend WithEvents Button_Font As Button
-    Friend WithEvents CheckBox_InvertedColors As CheckBox
     Friend WithEvents CheckBox_CaseSensitive As CheckBox
     Friend WithEvents CheckBox_WindowsToolTipPopup As CheckBox
     Friend WithEvents CheckBox_AutoMark As CheckBox
@@ -2594,10 +2611,6 @@ Partial Class FormSettings
     Friend WithEvents RadioButton_VarParseTabInc As RadioButton
     Friend WithEvents RadioButton_VarParseAll As RadioButton
     Friend WithEvents CheckBox_WindowsToolTipDisplayTop As CheckBox
-    Friend WithEvents NumericUpDown_ThreadUpdateRate As NumericUpDown
-    Friend WithEvents Label8 As Label
-    Friend WithEvents Label14 As Label
-    Friend WithEvents LinkLabel_ThreadUpdateRateHelp As LinkLabel
     Friend WithEvents ToolTip_Info As ToolTip
     Friend WithEvents LinkLabel_FullAutocompleteReTaggingHelp As LinkLabel
     Friend WithEvents ColumnHeader9 As ColumnHeader
@@ -2616,7 +2629,6 @@ Partial Class FormSettings
     Friend WithEvents GroupBox9 As GroupBox
     Friend WithEvents GroupBox10 As GroupBox
     Friend WithEvents GroupBox11 As GroupBox
-    Friend WithEvents GroupBox12 As GroupBox
     Friend WithEvents GroupBox13 As GroupBox
     Friend WithEvents GroupBox14 As GroupBox
     Friend WithEvents GroupBox16 As GroupBox
@@ -2689,4 +2701,11 @@ Partial Class FormSettings
     Friend WithEvents Label12 As Label
     Friend WithEvents GroupBox22 As GroupBox
     Friend WithEvents CheckBox_PublicAsDefineColor As CheckBox
+    Friend WithEvents GroupBox23 As GroupBox
+    Friend WithEvents CheckBox_InvertedColors As CheckBox
+    Friend WithEvents GroupBox12 As GroupBox
+    Friend WithEvents Label8 As Label
+    Friend WithEvents NumericUpDown_ThreadUpdateRate As NumericUpDown
+    Friend WithEvents Label14 As Label
+    Friend WithEvents LinkLabel_ThreadUpdateRateHelp As LinkLabel
 End Class

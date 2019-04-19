@@ -17,6 +17,7 @@
 
 Partial Public Class FormSettings
     Private Sub Load_General()
+        CheckBox_InvertedColors.Checked = ClassSettings.g_iSettingsInvertColors
         CheckBox_AlwaysNewInstance.Checked = ClassSettings.g_iSettingsAlwaysOpenNewInstance
         CheckBox_AutoShowStartPage.Checked = ClassSettings.g_iSettingsAutoShowStartPage
         CheckBox_AutoOpenProjectFiles.Checked = ClassSettings.g_iSettingsAutoOpenProjectFiles
@@ -24,9 +25,11 @@ Partial Public Class FormSettings
         CheckBox_AssociateAmxMod.Checked = ClassSettings.g_iSettingsAssociateAmxModX
         CheckBox_AssociateIncludes.Checked = ClassSettings.g_iSettingsAssociateIncludes
         CheckBox_AutoHoverScroll.Checked = ClassSettings.g_iSettingsAutoHoverScroll
+        NumericUpDown_ThreadUpdateRate.Value = ClassSettings.g_iSettingsThreadUpdateRate
     End Sub
 
     Private Sub Apply_General()
+        ClassSettings.g_iSettingsInvertColors = CheckBox_InvertedColors.Checked
         ClassSettings.g_iSettingsAlwaysOpenNewInstance = CheckBox_AlwaysNewInstance.Checked
         ClassSettings.g_iSettingsAutoShowStartPage = CheckBox_AutoShowStartPage.Checked
         ClassSettings.g_iSettingsAutoOpenProjectFiles = CheckBox_AutoOpenProjectFiles.Checked
@@ -34,6 +37,7 @@ Partial Public Class FormSettings
         ClassSettings.g_iSettingsAssociateAmxModX = CheckBox_AssociateAmxMod.Checked
         ClassSettings.g_iSettingsAssociateIncludes = CheckBox_AssociateIncludes.Checked
         ClassSettings.g_iSettingsAutoHoverScroll = CheckBox_AutoHoverScroll.Checked
+        ClassSettings.g_iSettingsThreadUpdateRate = CInt(NumericUpDown_ThreadUpdateRate.Value)
     End Sub
 
     Private Sub Button_ClearErrorLog_Click(sender As Object, e As EventArgs) Handles Button_ClearErrorLog.Click

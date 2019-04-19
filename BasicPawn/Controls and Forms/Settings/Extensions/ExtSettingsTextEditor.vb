@@ -18,12 +18,10 @@
 Partial Public Class FormSettings
     Private Sub Load_TextEditor()
         Label_Font.Text = New FontConverter().ConvertToInvariantString(ClassSettings.g_iSettingsTextEditorFont)
-        CheckBox_InvertedColors.Checked = ClassSettings.g_iSettingsInvertColors
         CheckBox_TabsToSpace.Checked = (ClassSettings.g_iSettingsTabsToSpaces > 0)
         NumericUpDown_TabsToSpaces.Value = If(ClassSettings.g_iSettingsTabsToSpaces > 0, ClassSettings.g_iSettingsTabsToSpaces, 4)
         TextBox_CustomSyntax.Text = ClassSettings.g_sSettingsSyntaxHighlightingPath
         CheckBox_RememberFolds.Checked = ClassSettings.g_bSettingsRememberFoldings
-        NumericUpDown_ThreadUpdateRate.Value = ClassSettings.g_iSettingsThreadUpdateRate
         CheckBox_IconBar.Checked = ClassSettings.g_bSettingsIconBar
 
         Select Case (ClassSettings.g_iSettingsIconLineStateType)
@@ -40,11 +38,9 @@ Partial Public Class FormSettings
 
     Private Sub Apply_TextEditor()
         ClassSettings.g_iSettingsTextEditorFont = CType(New FontConverter().ConvertFromInvariantString(Label_Font.Text), Font)
-        ClassSettings.g_iSettingsInvertColors = CheckBox_InvertedColors.Checked
         ClassSettings.g_iSettingsTabsToSpaces = CInt(If(CheckBox_TabsToSpace.Checked, NumericUpDown_TabsToSpaces.Value, 0))
         ClassSettings.g_sSettingsSyntaxHighlightingPath = TextBox_CustomSyntax.Text
         ClassSettings.g_bSettingsRememberFoldings = CheckBox_RememberFolds.Checked
-        ClassSettings.g_iSettingsThreadUpdateRate = CInt(NumericUpDown_ThreadUpdateRate.Value)
         ClassSettings.g_bSettingsIconBar = CheckBox_IconBar.Checked
 
         Select Case (True)
