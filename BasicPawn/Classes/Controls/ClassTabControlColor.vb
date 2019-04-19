@@ -76,7 +76,7 @@ Public Class ClassTabControlColor
         End If
 
         mTabRec = e.Bounds
-        mTabRec = New Rectangle(mTabRec.X + 2, mTabRec.Y + 2, mTabRec.Width - 4, mTabRec.Height - 4)
+        mTabRec = New Rectangle(mTabRec.X + 2, mTabRec.Y + 2, mTabRec.Width - 2, mTabRec.Height - 2)
         e.Graphics.DrawString(Me.TabPages(e.Index).Text, mTabFont, mTabFore, mTabRec, New StringFormat())
     End Sub
 
