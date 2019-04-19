@@ -115,6 +115,14 @@ Public Class UCProjectBrowser
             Next
         End Sub
 
+        Public Sub BeginUpdate()
+            g_mUCProjectBrowser.ListView_ProjectFiles.BeginUpdate()
+        End Sub
+
+        Public Sub EndUpdate()
+            g_mUCProjectBrowser.ListView_ProjectFiles.EndUpdate()
+        End Sub
+
         Public Sub AddFile(mInfo As STRUC_PROJECT_FILE_INFO)
             Dim mListViewItemData As New ClassListViewItemData(New String() {IO.Path.GetFileName(mInfo.sFile), mInfo.sFile, If(String.IsNullOrEmpty(mInfo.sPackedData), "-", "Yes")}) With {
                 .ToolTipText = mInfo.sFile & If(String.IsNullOrEmpty(mInfo.sPackedData), "", Environment.NewLine & "(Packed)")
@@ -176,18 +184,24 @@ Public Class UCProjectBrowser
         End Sub
 
         Public Sub RemoveFileAll(sFile As String)
-            For i = g_mUCProjectBrowser.ListView_ProjectFiles.Items.Count - 1 To 0 Step -1
-                Dim mListViewItemData = TryCast(g_mUCProjectBrowser.ListView_ProjectFiles.Items(i), ClassListViewItemData)
-                If (mListViewItemData Is Nothing) Then
-                    Continue For
-                End If
+            Try
+                BeginUpdate()
 
-                Dim mInfo = DirectCast(mListViewItemData.g_mData("Info"), STRUC_PROJECT_FILE_INFO)
+                For i = g_mUCProjectBrowser.ListView_ProjectFiles.Items.Count - 1 To 0 Step -1
+                    Dim mListViewItemData = TryCast(g_mUCProjectBrowser.ListView_ProjectFiles.Items(i), ClassListViewItemData)
+                    If (mListViewItemData Is Nothing) Then
+                        Continue For
+                    End If
 
-                If (mInfo.sFile.ToLower = sFile.ToLower) Then
-                    g_mUCProjectBrowser.ListView_ProjectFiles.Items.RemoveAt(i)
-                End If
-            Next
+                    Dim mInfo = DirectCast(mListViewItemData.g_mData("Info"), STRUC_PROJECT_FILE_INFO)
+
+                    If (mInfo.sFile.ToLower = sFile.ToLower) Then
+                        g_mUCProjectBrowser.ListView_ProjectFiles.Items.RemoveAt(i)
+                    End If
+                Next
+            Finally
+                EndUpdate()
+            End Try
 
             m_ProjectChanged = True
         End Sub
@@ -322,26 +336,32 @@ Public Class UCProjectBrowser
 
             Using mStream = ClassFileStreamWait.Create(g_sProjectFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
                 Using mIni As New ClassIni(mStream)
-                    For Each mItem In mIni.ReadEverything
-                        If (mItem.sSection <> "Project") Then
-                            Continue For
-                        End If
+                    Try
+                        BeginUpdate()
 
-                        Dim sPackedData As String = mIni.ReadKeyValue("PackedData", mItem.sKey, Nothing)
-                        If (Not String.IsNullOrEmpty(sPackedData)) Then
-                            sPackedData = ClassTools.ClassCrypto.ClassBase.FromBase64(sPackedData, System.Text.Encoding.UTF8)
-                        End If
+                        For Each mItem In mIni.ReadEverything
+                            If (mItem.sSection <> "Project") Then
+                                Continue For
+                            End If
 
-                        AddFile(New STRUC_PROJECT_FILE_INFO With {
-                            .sGUID = mItem.sKey,
-                            .sFile = mItem.sValue,
-                            .sPackedData = sPackedData
-                        })
+                            Dim sPackedData As String = mIni.ReadKeyValue("PackedData", mItem.sKey, Nothing)
+                            If (Not String.IsNullOrEmpty(sPackedData)) Then
+                                sPackedData = ClassTools.ClassCrypto.ClassBase.FromBase64(sPackedData, System.Text.Encoding.UTF8)
+                            End If
 
-                        lProjectFiles.Add(mItem.sValue)
+                            AddFile(New STRUC_PROJECT_FILE_INFO With {
+                                .sGUID = mItem.sKey,
+                                .sFile = mItem.sValue,
+                                .sPackedData = sPackedData
+                            })
 
-                        g_mUCProjectBrowser.g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & "Loaded project file: " & mItem.sValue, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(mItem.sValue))
-                    Next
+                            lProjectFiles.Add(mItem.sValue)
+
+                            g_mUCProjectBrowser.g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & "Loaded project file: " & mItem.sValue, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(mItem.sValue))
+                        Next
+                    Finally
+                        EndUpdate()
+                    End Try
                 End Using
             End Using
 
@@ -457,21 +477,27 @@ Public Class UCProjectBrowser
 
             g_lClipboardFiles.Clear()
 
-            For i = ListView_ProjectFiles.SelectedItems.Count - 1 To 0 Step -1
-                Dim mListViewItemData = TryCast(ListView_ProjectFiles.SelectedItems(i), ClassListViewItemData)
-                If (mListViewItemData Is Nothing) Then
-                    Continue For
-                End If
+            Try
+                g_ClassProjectControl.BeginUpdate()
 
-                Dim mInfo = DirectCast(mListViewItemData.g_mData("Info"), ClassProjectControl.STRUC_PROJECT_FILE_INFO)
-                Dim iIndex As Integer = ListView_ProjectFiles.SelectedItems(i).Index
+                For i = ListView_ProjectFiles.SelectedItems.Count - 1 To 0 Step -1
+                    Dim mListViewItemData = TryCast(ListView_ProjectFiles.SelectedItems(i), ClassListViewItemData)
+                    If (mListViewItemData Is Nothing) Then
+                        Continue For
+                    End If
 
-                mInfo.sGUID = Nothing
+                    Dim mInfo = DirectCast(mListViewItemData.g_mData("Info"), ClassProjectControl.STRUC_PROJECT_FILE_INFO)
+                    Dim iIndex As Integer = ListView_ProjectFiles.SelectedItems(i).Index
 
-                g_lClipboardFiles.Add(mInfo)
+                    mInfo.sGUID = Nothing
 
-                g_ClassProjectControl.RemoveFileAt(iIndex)
-            Next
+                    g_lClipboardFiles.Add(mInfo)
+
+                    g_ClassProjectControl.RemoveFileAt(iIndex)
+                Next
+            Finally
+                g_ClassProjectControl.EndUpdate()
+            End Try
 
             g_lClipboardFiles.Reverse()
         Catch ex As Exception
@@ -511,13 +537,25 @@ Public Class UCProjectBrowser
             If (ListView_ProjectFiles.SelectedItems.Count > 0) Then
                 Dim iIndex As Integer = ListView_ProjectFiles.SelectedItems(0).Index
 
-                For i = g_lClipboardFiles.Count - 1 To 0 Step -1
-                    g_ClassProjectControl.InsertFile(iIndex, g_lClipboardFiles(i))
-                Next
+                Try
+                    g_ClassProjectControl.BeginUpdate()
+
+                    For i = g_lClipboardFiles.Count - 1 To 0 Step -1
+                        g_ClassProjectControl.InsertFile(iIndex, g_lClipboardFiles(i))
+                    Next
+                Finally
+                    g_ClassProjectControl.EndUpdate()
+                End Try
             Else
-                For i = 0 To g_lClipboardFiles.Count - 1
-                    g_ClassProjectControl.AddFile(g_lClipboardFiles(i))
-                Next
+                Try
+                    g_ClassProjectControl.BeginUpdate()
+
+                    For i = 0 To g_lClipboardFiles.Count - 1
+                        g_ClassProjectControl.AddFile(g_lClipboardFiles(i))
+                    Next
+                Finally
+                    g_ClassProjectControl.EndUpdate()
+                End Try
             End If
 
             g_lClipboardFiles.Clear()
@@ -532,11 +570,17 @@ Public Class UCProjectBrowser
                 Return
             End If
 
-            For i = ListView_ProjectFiles.SelectedItems.Count - 1 To 0 Step -1
-                Dim iIndex As Integer = ListView_ProjectFiles.SelectedItems(i).Index
+            Try
+                g_ClassProjectControl.BeginUpdate()
 
-                g_ClassProjectControl.RemoveFileAt(iIndex)
-            Next
+                For i = ListView_ProjectFiles.SelectedItems.Count - 1 To 0 Step -1
+                    Dim iIndex As Integer = ListView_ProjectFiles.SelectedItems(i).Index
+
+                    g_ClassProjectControl.RemoveFileAt(iIndex)
+                Next
+            Finally
+                g_ClassProjectControl.EndUpdate()
+            End Try
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
@@ -591,21 +635,27 @@ Public Class UCProjectBrowser
 
     Private Sub ToolStripMenuItem_AddNewTabs_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_AddNewTabs.Click
         Try
-            For i = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1
-                If (g_mFormMain.g_ClassTabControl.m_Tab(i).m_IsUnsaved) Then
-                    Continue For
-                End If
+            Try
+                g_ClassProjectControl.BeginUpdate()
 
-                If (g_ClassProjectControl.IsFileInProject(g_mFormMain.g_ClassTabControl.m_Tab(i).m_File)) Then
-                    Continue For
-                End If
+                For i = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1
+                    If (g_mFormMain.g_ClassTabControl.m_Tab(i).m_IsUnsaved) Then
+                        Continue For
+                    End If
 
-                g_ClassProjectControl.AddFile(New ClassProjectControl.STRUC_PROJECT_FILE_INFO With {
-                    .sGUID = Nothing,
-                    .sFile = g_mFormMain.g_ClassTabControl.m_Tab(i).m_File,
-                    .sPackedData = Nothing
-                })
-            Next
+                    If (g_ClassProjectControl.IsFileInProject(g_mFormMain.g_ClassTabControl.m_Tab(i).m_File)) Then
+                        Continue For
+                    End If
+
+                    g_ClassProjectControl.AddFile(New ClassProjectControl.STRUC_PROJECT_FILE_INFO With {
+                        .sGUID = Nothing,
+                        .sFile = g_mFormMain.g_ClassTabControl.m_Tab(i).m_File,
+                        .sPackedData = Nothing
+                    })
+                Next
+            Finally
+                g_ClassProjectControl.EndUpdate()
+            End Try
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
@@ -613,17 +663,23 @@ Public Class UCProjectBrowser
 
     Private Sub ToolStripMenuItem_AddAllTabs_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_AddAllTabs.Click
         Try
-            For i = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1
-                If (g_mFormMain.g_ClassTabControl.m_Tab(i).m_IsUnsaved) Then
-                    Continue For
-                End If
+            Try
+                g_ClassProjectControl.BeginUpdate()
 
-                g_ClassProjectControl.AddFile(New ClassProjectControl.STRUC_PROJECT_FILE_INFO With {
-                    .sGUID = Nothing,
-                    .sFile = g_mFormMain.g_ClassTabControl.m_Tab(i).m_File,
-                    .sPackedData = Nothing
-                })
-            Next
+                For i = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1
+                    If (g_mFormMain.g_ClassTabControl.m_Tab(i).m_IsUnsaved) Then
+                        Continue For
+                    End If
+
+                    g_ClassProjectControl.AddFile(New ClassProjectControl.STRUC_PROJECT_FILE_INFO With {
+                        .sGUID = Nothing,
+                        .sFile = g_mFormMain.g_ClassTabControl.m_Tab(i).m_File,
+                        .sPackedData = Nothing
+                    })
+                Next
+            Finally
+                g_ClassProjectControl.EndUpdate()
+            End Try
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
@@ -636,13 +692,19 @@ Public Class UCProjectBrowser
                 i.Multiselect = True
 
                 If (i.ShowDialog = DialogResult.OK) Then
-                    For Each sFile As String In i.FileNames
-                        g_ClassProjectControl.AddFile(New ClassProjectControl.STRUC_PROJECT_FILE_INFO With {
-                            .sGUID = Nothing,
-                            .sFile = sFile,
-                            .sPackedData = Nothing
-                        })
-                    Next
+                    Try
+                        g_ClassProjectControl.BeginUpdate()
+
+                        For Each sFile As String In i.FileNames
+                            g_ClassProjectControl.AddFile(New ClassProjectControl.STRUC_PROJECT_FILE_INFO With {
+                                .sGUID = Nothing,
+                                .sFile = sFile,
+                                .sPackedData = Nothing
+                            })
+                        Next
+                    Finally
+                        g_ClassProjectControl.EndUpdate()
+                    End Try
                 End If
             End Using
         Catch ex As Exception
@@ -976,17 +1038,23 @@ Public Class UCProjectBrowser
                 Return
             End If
 
-            For Each sFile As String In sFiles
-                If (Not IO.File.Exists(sFile)) Then
-                    Continue For
-                End If
+            Try
+                g_ClassProjectControl.BeginUpdate()
 
-                g_ClassProjectControl.AddFile(New ClassProjectControl.STRUC_PROJECT_FILE_INFO With {
-                    .sGUID = Nothing,
-                    .sFile = sFile,
-                    .sPackedData = Nothing
-                })
-            Next
+                For Each sFile As String In sFiles
+                    If (Not IO.File.Exists(sFile)) Then
+                        Continue For
+                    End If
+
+                    g_ClassProjectControl.AddFile(New ClassProjectControl.STRUC_PROJECT_FILE_INFO With {
+                        .sGUID = Nothing,
+                        .sFile = sFile,
+                        .sPackedData = Nothing
+                    })
+                Next
+            Finally
+                g_ClassProjectControl.EndUpdate()
+            End Try
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
