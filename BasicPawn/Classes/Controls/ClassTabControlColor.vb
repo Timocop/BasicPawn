@@ -15,6 +15,8 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 
+Imports System.Runtime.InteropServices
+
 Public Class ClassTabControlColor
     Inherits ClassTabControlFix
 
@@ -76,5 +78,43 @@ Public Class ClassTabControlColor
         mTabRec = e.Bounds
         mTabRec = New Rectangle(mTabRec.X + 2, mTabRec.Y + 2, mTabRec.Width - 4, mTabRec.Height - 4)
         e.Graphics.DrawString(Me.TabPages(e.Index).Text, mTabFont, mTabFore, mTabRec, New StringFormat())
+    End Sub
+
+    'Mimic padding to minimize weird edge color effects.
+    Property m_TabPageAdjustEnabled As Boolean = True
+    Property m_TabPageAdjustRectangle As New RECT(-3, -1, 3, 3)
+
+    Private Const TCM_FIRST As Integer = &H1300
+    Private Const TCM_ADJUSTRECT As UInteger = (TCM_FIRST + 40)
+
+    Public Structure RECT
+        Public Left As Integer
+        Public Top As Integer
+        Public Right As Integer
+        Public Bottom As Integer
+
+        Sub New(_Left As Integer, _Top As Integer, _Right As Integer, _Bottom As Integer)
+            Left = _Left
+            Top = _Top
+            Right = _Right
+            Bottom = _Bottom
+        End Sub
+    End Structure
+
+    Protected Overrides Sub WndProc(ByRef m As Message)
+        If (m_TabPageAdjustEnabled) Then
+            If (m.Msg = TCM_ADJUSTRECT) Then
+                Dim mRect As RECT = DirectCast(m.GetLParam(GetType(RECT)), RECT)
+
+                mRect.Left += m_TabPageAdjustRectangle.Left
+                mRect.Right += m_TabPageAdjustRectangle.Right
+                mRect.Top += m_TabPageAdjustRectangle.Top
+                mRect.Bottom += m_TabPageAdjustRectangle.Bottom
+
+                Marshal.StructureToPtr(mRect, m.LParam, True)
+            End If
+        End If
+
+        MyBase.WndProc(m)
     End Sub
 End Class
