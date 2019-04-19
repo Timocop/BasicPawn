@@ -44,6 +44,7 @@ Public Class ClassSettings
     Public Shared ReadOnly g_sSettingsFile As String = IO.Path.Combine(Application.StartupPath, "settings.ini")
     Public Shared ReadOnly g_sWindowInfoFile As String = IO.Path.Combine(Application.StartupPath, "windowinfo.ini")
     'General
+    Public Shared g_iSettingsInvertColors As Boolean = False
     Public Shared g_iSettingsAlwaysOpenNewInstance As Boolean = False
     Public Shared g_iSettingsAutoShowStartPage As Boolean = True
     Public Shared g_iSettingsAutoOpenProjectFiles As Boolean = False
@@ -51,13 +52,12 @@ Public Class ClassSettings
     Public Shared g_iSettingsAssociateAmxModX As Boolean = False
     Public Shared g_iSettingsAssociateIncludes As Boolean = False
     Public Shared g_iSettingsAutoHoverScroll As Boolean = False
+    Public Shared g_iSettingsThreadUpdateRate As Integer = 500
     'Text Editor
     Public Shared g_iSettingsTextEditorFont As Font = g_iSettingsDefaultEditorFont
-    Public Shared g_iSettingsInvertColors As Boolean = False
     Public Shared g_iSettingsTabsToSpaces As Integer = 0
     Public Shared g_sSettingsSyntaxHighlightingPath As String = ""
     Public Shared g_bSettingsRememberFoldings As Boolean = True
-    Public Shared g_iSettingsThreadUpdateRate As Integer = 500
     Public Shared g_bSettingsIconBar As Boolean = True
     Public Shared g_iSettingsIconLineStateMax As Integer = 1000
     Public Shared g_iSettingsIconLineStateType As ENUM_LINE_STATE_TYPE = ENUM_LINE_STATE_TYPE.CHANGED
@@ -97,6 +97,7 @@ Public Class ClassSettings
                 Dim lContent As New List(Of ClassIni.STRUC_INI_CONTENT)
 
                 'Settings
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorInvertColors", If(g_iSettingsInvertColors, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AlwaysOpenNewInstance", If(g_iSettingsAlwaysOpenNewInstance, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutoShowStartPage", If(g_iSettingsAutoShowStartPage, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutoOpenProjectFiles", If(g_iSettingsAutoOpenProjectFiles, "1", "0")))
@@ -104,13 +105,12 @@ Public Class ClassSettings
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AssociateAmxModX", If(g_iSettingsAssociateAmxModX, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AssociateIncludes", If(g_iSettingsAssociateIncludes, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutoHoverScroll", If(g_iSettingsAutoHoverScroll, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorThreadUpdateRate", CStr(g_iSettingsThreadUpdateRate)))
                 'Text Editor
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorFont", New FontConverter().ConvertToInvariantString(g_iSettingsTextEditorFont)))
-                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorInvertColors", If(g_iSettingsInvertColors, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorTabsToSpaces", CStr(g_iSettingsTabsToSpaces)))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorSyntaxHighlightingPath", g_sSettingsSyntaxHighlightingPath))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorRememberFoldings", If(g_bSettingsRememberFoldings, "1", "0")))
-                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorThreadUpdateRate", CStr(g_iSettingsThreadUpdateRate)))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorIconBar", If(g_bSettingsIconBar, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorIconBarLineStateMax", CStr(g_iSettingsIconLineStateMax)))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorIconBarLineStateType", CStr(g_iSettingsIconLineStateType)))
@@ -151,7 +151,8 @@ Public Class ClassSettings
 
             Using mStream = ClassFileStreamWait.Create(g_sSettingsFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
                 Using mIni As New ClassIni(mStream)
-                    'Settings
+                    'Settings 
+                    g_iSettingsInvertColors = (mIni.ReadKeyValue("Editor", "TextEditorInvertColors", "0") <> "0")
                     g_iSettingsAlwaysOpenNewInstance = (mIni.ReadKeyValue("Editor", "AlwaysOpenNewInstance", "0") <> "0")
                     g_iSettingsAutoShowStartPage = (mIni.ReadKeyValue("Editor", "AutoShowStartPage", "1") <> "0")
                     g_iSettingsAutoOpenProjectFiles = (mIni.ReadKeyValue("Editor", "AutoOpenProjectFiles", "0") <> "0")
@@ -159,6 +160,11 @@ Public Class ClassSettings
                     g_iSettingsAssociateAmxModX = (mIni.ReadKeyValue("Editor", "AssociateAmxModX", "0") <> "0")
                     g_iSettingsAssociateIncludes = (mIni.ReadKeyValue("Editor", "AssociateIncludes", "0") <> "0")
                     g_iSettingsAutoHoverScroll = (mIni.ReadKeyValue("Editor", "AutoHoverScroll", "1") <> "0")
+
+                    If (Integer.TryParse(mIni.ReadKeyValue("Editor", "TextEditorThreadUpdateRate", "500"), tmpInt)) Then
+                        g_iSettingsThreadUpdateRate = ClassTools.ClassMath.ClampInt(tmpInt, 100, 2500)
+                    End If
+
                     'Text Editor
                     Dim mFont As Font = CType(New FontConverter().ConvertFromInvariantString(mIni.ReadKeyValue("Editor", "TextEditorFont", g_sSettingsDefaultEditorFont)), Font)
                     If (mFont IsNot Nothing AndAlso mFont.Size < 256) Then
@@ -167,18 +173,12 @@ Public Class ClassSettings
                         g_iSettingsTextEditorFont = g_iSettingsDefaultEditorFont
                     End If
 
-                    g_iSettingsInvertColors = (mIni.ReadKeyValue("Editor", "TextEditorInvertColors", "0") <> "0")
-
                     If (Integer.TryParse(mIni.ReadKeyValue("Editor", "TextEditorTabsToSpaces", "0"), tmpInt)) Then
                         g_iSettingsTabsToSpaces = ClassTools.ClassMath.ClampInt(tmpInt, 0, 100)
                     End If
 
                     g_sSettingsSyntaxHighlightingPath = mIni.ReadKeyValue("Editor", "TextEditorSyntaxHighlightingPath", "")
                     g_bSettingsRememberFoldings = (mIni.ReadKeyValue("Editor", "TextEditorRememberFoldings", "1") <> "0")
-
-                    If (Integer.TryParse(mIni.ReadKeyValue("Editor", "TextEditorThreadUpdateRate", "500"), tmpInt)) Then
-                        g_iSettingsThreadUpdateRate = ClassTools.ClassMath.ClampInt(tmpInt, 100, 2500)
-                    End If
 
                     g_bSettingsIconBar = (mIni.ReadKeyValue("Editor", "TextEditorIconBar", "1") <> "0")
 
