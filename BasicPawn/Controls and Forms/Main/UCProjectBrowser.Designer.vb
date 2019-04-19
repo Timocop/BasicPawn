@@ -44,7 +44,6 @@ Partial Class UCProjectBrowser
         Me.ToolStripMenuItem_DeletePack = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_AddTab = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripMenuItem_AddNewTabs = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_AddAllTabs = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_AddFiles = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
@@ -87,10 +86,10 @@ Partial Class UCProjectBrowser
         '
         'ContextMenuStrip_ProjectFiles
         '
-        Me.ContextMenuStrip_ProjectFiles.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_Open, Me.ToolStripMenuItem_ProjectSave, Me.ToolStripSeparator1, Me.ToolStripMenuItem_Cut, Me.ToolStripMenuItem_Copy, Me.ToolStripMenuItem_Paste, Me.ToolStripSeparator4, Me.ToolStripMenuItem_CompileAll, Me.ToolStripMenuItem_TestAll, Me.ToolStripMenuItem_ShellAll, Me.ToolStripSeparator3, Me.ToolStripMenuItem_PackFile, Me.ToolStripMenuItem_ExtractFile, Me.ToolStripMenuItem_DeletePack, Me.ToolStripSeparator5, Me.ToolStripMenuItem_AddTab, Me.ToolStripMenuItem_AddNewTabs, Me.ToolStripMenuItem_AddAllTabs, Me.ToolStripMenuItem_AddFiles, Me.ToolStripSeparator2, Me.ToolStripMenuItem_Exlcude})
+        Me.ContextMenuStrip_ProjectFiles.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_Open, Me.ToolStripMenuItem_ProjectSave, Me.ToolStripSeparator1, Me.ToolStripMenuItem_Cut, Me.ToolStripMenuItem_Copy, Me.ToolStripMenuItem_Paste, Me.ToolStripSeparator4, Me.ToolStripMenuItem_CompileAll, Me.ToolStripMenuItem_TestAll, Me.ToolStripMenuItem_ShellAll, Me.ToolStripSeparator3, Me.ToolStripMenuItem_PackFile, Me.ToolStripMenuItem_ExtractFile, Me.ToolStripMenuItem_DeletePack, Me.ToolStripSeparator5, Me.ToolStripMenuItem_AddTab, Me.ToolStripMenuItem_AddAllTabs, Me.ToolStripMenuItem_AddFiles, Me.ToolStripSeparator2, Me.ToolStripMenuItem_Exlcude})
         Me.ContextMenuStrip_ProjectFiles.Name = "ContextMenuStrip_ProjectFiles"
         Me.ContextMenuStrip_ProjectFiles.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
-        Me.ContextMenuStrip_ProjectFiles.Size = New System.Drawing.Size(184, 408)
+        Me.ContextMenuStrip_ProjectFiles.Size = New System.Drawing.Size(184, 364)
         '
         'ToolStripMenuItem_Open
         '
@@ -200,13 +199,6 @@ Partial Class UCProjectBrowser
         Me.ToolStripMenuItem_AddTab.Text = "Add this tab"
         Me.ToolStripMenuItem_AddTab.ToolTipText = "Adds the current tab to the project"
         '
-        'ToolStripMenuItem_AddNewTabs
-        '
-        Me.ToolStripMenuItem_AddNewTabs.Name = "ToolStripMenuItem_AddNewTabs"
-        Me.ToolStripMenuItem_AddNewTabs.Size = New System.Drawing.Size(183, 22)
-        Me.ToolStripMenuItem_AddNewTabs.Text = "Add new tabs"
-        Me.ToolStripMenuItem_AddNewTabs.ToolTipText = "Adds all new tabs to the project."
-        '
         'ToolStripMenuItem_AddAllTabs
         '
         Me.ToolStripMenuItem_AddAllTabs.Name = "ToolStripMenuItem_AddAllTabs"
@@ -274,7 +266,6 @@ Partial Class UCProjectBrowser
     Public WithEvents ToolStripMenuItem_AddTab As ToolStripMenuItem
     Public WithEvents ToolStripMenuItem_AddAllTabs As ToolStripMenuItem
     Public WithEvents ToolStripMenuItem_AddFiles As ToolStripMenuItem
-    Public WithEvents ToolStripMenuItem_AddNewTabs As ToolStripMenuItem
     Public WithEvents ToolStripMenuItem_ProjectSave As ToolStripMenuItem
     Public WithEvents ToolStripSeparator4 As ToolStripSeparator
     Public WithEvents ToolStripMenuItem_CompileAll As ToolStripMenuItem

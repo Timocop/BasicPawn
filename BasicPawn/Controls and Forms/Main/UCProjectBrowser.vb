@@ -623,39 +623,15 @@ Public Class UCProjectBrowser
                 Return
             End If
 
+            If (g_ClassProjectControl.IsFileInProject(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
+                Return
+            End If
+
             g_ClassProjectControl.AddFile(New ClassProjectControl.STRUC_PROJECT_FILE_INFO With {
                     .sGUID = Nothing,
                     .sFile = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File,
                     .sPackedData = Nothing
                 })
-        Catch ex As Exception
-            ClassExceptionLog.WriteToLogMessageBox(ex)
-        End Try
-    End Sub
-
-    Private Sub ToolStripMenuItem_AddNewTabs_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_AddNewTabs.Click
-        Try
-            Try
-                g_ClassProjectControl.BeginUpdate()
-
-                For i = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1
-                    If (g_mFormMain.g_ClassTabControl.m_Tab(i).m_IsUnsaved) Then
-                        Continue For
-                    End If
-
-                    If (g_ClassProjectControl.IsFileInProject(g_mFormMain.g_ClassTabControl.m_Tab(i).m_File)) Then
-                        Continue For
-                    End If
-
-                    g_ClassProjectControl.AddFile(New ClassProjectControl.STRUC_PROJECT_FILE_INFO With {
-                        .sGUID = Nothing,
-                        .sFile = g_mFormMain.g_ClassTabControl.m_Tab(i).m_File,
-                        .sPackedData = Nothing
-                    })
-                Next
-            Finally
-                g_ClassProjectControl.EndUpdate()
-            End Try
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
@@ -668,6 +644,10 @@ Public Class UCProjectBrowser
 
                 For i = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1
                     If (g_mFormMain.g_ClassTabControl.m_Tab(i).m_IsUnsaved) Then
+                        Continue For
+                    End If
+
+                    If (g_ClassProjectControl.IsFileInProject(g_mFormMain.g_ClassTabControl.m_Tab(i).m_File)) Then
                         Continue For
                     End If
 
@@ -696,6 +676,10 @@ Public Class UCProjectBrowser
                         g_ClassProjectControl.BeginUpdate()
 
                         For Each sFile As String In i.FileNames
+                            If (g_ClassProjectControl.IsFileInProject(sFile)) Then
+                                Continue For
+                            End If
+
                             g_ClassProjectControl.AddFile(New ClassProjectControl.STRUC_PROJECT_FILE_INFO With {
                                 .sGUID = Nothing,
                                 .sFile = sFile,
@@ -1043,6 +1027,10 @@ Public Class UCProjectBrowser
 
                 For Each sFile As String In sFiles
                     If (Not IO.File.Exists(sFile)) Then
+                        Continue For
+                    End If
+
+                    If (g_ClassProjectControl.IsFileInProject(sFile)) Then
                         Continue For
                     End If
 
