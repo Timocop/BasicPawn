@@ -32,16 +32,31 @@ Public Class ClassTabControlColor
             Return
         End If
 
+        Const TAB_HEIGHT_OFFSET = 2
+
         Dim mTabFont As Font
         Dim mTabBack As Brush
         Dim mTabFore As Brush
 
-        Dim mTabRec As Rectangle
+        Dim mTabRec As Rectangle = Me.GetTabRect(e.Index)
 
-        Dim r As Rectangle = Me.GetTabRect(Me.TabPages.Count - 1)
-        e.Graphics.FillRectangle(New SolidBrush(ClassControlStyle.g_cDarkFormColor.mDarkBackground), New RectangleF(r.X + r.Width, r.Y - 5, Me.Width - (r.X + r.Width) + 5, r.Height + 5))
+        'Paint tab-bar
+        If (e.Index = Me.TabPages.Count - 1) Then
+            e.Graphics.FillRectangle(New SolidBrush(ClassControlStyle.g_cDarkFormColor.mDarkBackground),
+                                     New RectangleF(mTabRec.X + mTabRec.Width, mTabRec.Y - TAB_HEIGHT_OFFSET, Me.Width - (mTabRec.X + mTabRec.Width) + 5, mTabRec.Height + TAB_HEIGHT_OFFSET))
 
-        If e.Index = Me.SelectedIndex Then
+        ElseIf (Me.Multiline) Then
+            'Check if tab-warp
+            If (e.Index + 1 <= Me.TabPages.Count - 1) Then
+                Dim mTabNextRec As Rectangle = Me.GetTabRect(e.Index + 1)
+                If (mTabRec.Y <> mTabNextRec.Y) Then
+                    e.Graphics.FillRectangle(New SolidBrush(ClassControlStyle.g_cDarkFormColor.mDarkBackground),
+                                             New RectangleF(mTabRec.X + mTabRec.Width, mTabRec.Y - TAB_HEIGHT_OFFSET, Me.Width - (mTabRec.X + mTabRec.Width) + 5, mTabRec.Height + TAB_HEIGHT_OFFSET))
+                End If
+            End If
+        End If
+
+        If (e.Index = Me.SelectedIndex) Then
             mTabFont = e.Font 'New Font(e.Font, FontStyle.Bold)
             mTabBack = New Drawing2D.LinearGradientBrush(e.Bounds, ClassControlStyle.g_cDarkControlColor.mDarkBackground, ClassControlStyle.g_cDarkControlColor.mDarkBackground, Drawing2D.LinearGradientMode.BackwardDiagonal)
             mTabFore = Brushes.White
@@ -59,7 +74,7 @@ Public Class ClassTabControlColor
         End If
 
         mTabRec = e.Bounds
-        mTabRec = New Rectangle(mTabRec.X + 2, mTabRec.Y + 2, mTabRec.Width - 2, mTabRec.Height - 2)
+        mTabRec = New Rectangle(mTabRec.X + 2, mTabRec.Y + 2, mTabRec.Width - 4, mTabRec.Height - 4)
         e.Graphics.DrawString(Me.TabPages(e.Index).Text, mTabFont, mTabFore, mTabRec, New StringFormat())
     End Sub
 End Class
