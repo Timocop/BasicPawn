@@ -82,7 +82,8 @@ Public Class ClassTabControlColor
 
     'Mimic padding to minimize weird edge color effects.
     Property m_TabPageAdjustEnabled As Boolean = True
-    Property m_TabPageAdjustRectangle As New RECT(-3, -1, 3, 3)
+    Property m_TabPageNormalAdjustRectangle As New RECT(-3, -1, 1, 1)
+    Property m_TabPageOwnerDrawAdjustRectangle As New RECT(-3, -1, 3, 3)
 
     Private Const TCM_FIRST As Integer = &H1300
     Private Const TCM_ADJUSTRECT As UInteger = (TCM_FIRST + 40)
@@ -106,10 +107,17 @@ Public Class ClassTabControlColor
             If (m.Msg = TCM_ADJUSTRECT) Then
                 Dim mRect As RECT = DirectCast(m.GetLParam(GetType(RECT)), RECT)
 
-                mRect.Left += m_TabPageAdjustRectangle.Left
-                mRect.Right += m_TabPageAdjustRectangle.Right
-                mRect.Top += m_TabPageAdjustRectangle.Top
-                mRect.Bottom += m_TabPageAdjustRectangle.Bottom
+                If (Me.DrawMode = TabDrawMode.Normal) Then
+                    mRect.Left += m_TabPageNormalAdjustRectangle.Left
+                    mRect.Right += m_TabPageNormalAdjustRectangle.Right
+                    mRect.Top += m_TabPageNormalAdjustRectangle.Top
+                    mRect.Bottom += m_TabPageNormalAdjustRectangle.Bottom
+                Else
+                    mRect.Left += m_TabPageOwnerDrawAdjustRectangle.Left
+                    mRect.Right += m_TabPageOwnerDrawAdjustRectangle.Right
+                    mRect.Top += m_TabPageOwnerDrawAdjustRectangle.Top
+                    mRect.Bottom += m_TabPageOwnerDrawAdjustRectangle.Bottom
+                End If
 
                 Marshal.StructureToPtr(mRect, m.LParam, True)
             End If
