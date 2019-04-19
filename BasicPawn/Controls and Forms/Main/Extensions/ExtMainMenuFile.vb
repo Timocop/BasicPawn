@@ -222,6 +222,10 @@ Partial Public Class FormMain
     End Sub
 
     Private Sub ToolStripMenuItem_FileStartPage_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileStartPage.Click
+        'Disable IntelliSense tooltip when StartPage is showing.
+        g_mUCAutocomplete.UpdateAutocomplete("")
+        g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip()
+
         g_mUCStartPage.Show()
     End Sub
 
