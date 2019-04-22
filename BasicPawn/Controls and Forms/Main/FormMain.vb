@@ -16,8 +16,6 @@
 
 
 Imports System.ComponentModel
-Imports System.Text
-Imports System.Text.RegularExpressions
 
 Public Class FormMain
     Public g_ClassTabControl As ClassTabControl
@@ -59,7 +57,6 @@ Public Class FormMain
 
     Public ReadOnly g_iDefaultDetailsSplitterDistance As Integer = 150
 
-    'Private g_mPingFlashPanel As ClassPanelAlpha
     Private g_bFormPostCreate As Boolean = False
     Private g_bFormPostLoad As Boolean = False
     Private g_bIgnoreComboBoxEvent As Boolean = False
@@ -237,16 +234,6 @@ Public Class FormMain
         g_mUCTextMinimap.Show()
 
         SplitContainer_ToolboxSourceAndDetails.SplitterDistance = (SplitContainer_ToolboxSourceAndDetails.Height - g_iDefaultDetailsSplitterDistance)
-
-        'g_mPingFlashPanel = New ClassPanelAlpha With {
-        '    .Name = "@KeepForeBackColor",
-        '    .Parent = Me,
-        '    .Dock = DockStyle.Fill,
-        '    .m_TransparentBackColor = Color.FromKnownColor(KnownColor.RoyalBlue),
-        '    .m_Opacity = 0
-        '}
-        'g_mPingFlashPanel.BringToFront()
-        'g_mPingFlashPanel.Visible = False
 
         g_bFormPostCreate = True
 
