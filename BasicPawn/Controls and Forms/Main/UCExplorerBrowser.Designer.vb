@@ -94,7 +94,7 @@ Partial Class UCExplorerBrowser
         '
         'MenuStrip_ExplorerBrowser
         '
-        Me.MenuStrip_ExplorerBrowser.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_DirectoryUp, Me.ToolStripMenuItem_Home, Me.ToolStripMenuItem_Refresh, Me.ToolStripTextBox_Path})
+        Me.MenuStrip_ExplorerBrowser.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_Home, Me.ToolStripMenuItem_DirectoryUp, Me.ToolStripMenuItem_Refresh, Me.ToolStripTextBox_Path})
         Me.MenuStrip_ExplorerBrowser.Location = New System.Drawing.Point(0, 22)
         Me.MenuStrip_ExplorerBrowser.Name = "MenuStrip_ExplorerBrowser"
         Me.MenuStrip_ExplorerBrowser.Padding = New System.Windows.Forms.Padding(0)
