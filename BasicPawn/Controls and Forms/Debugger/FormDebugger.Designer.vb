@@ -58,7 +58,7 @@ Partial Class FormDebugger
         Me.RichTextBox_DisasmSource = New System.Windows.Forms.RichTextBox()
         Me.ClassTabControlColor1 = New BasicPawn.ClassTabControlColor()
         Me.TabPage1 = New System.Windows.Forms.TabPage()
-        Me.ListBox_Information = New ClassInformationListBox()
+        Me.ListBox_Information = New BasicPawn.ClassInformationListBox()
         Me.TabControl1 = New BasicPawn.ClassTabControlColor()
         Me.TabPage_Breakpoints = New System.Windows.Forms.TabPage()
         Me.ListView_Breakpoints = New System.Windows.Forms.ListView()
@@ -315,6 +315,7 @@ Partial Class FormDebugger
         Me.TabControl2.Controls.Add(Me.TabPage_Diasm)
         Me.TabControl2.Dock = System.Windows.Forms.DockStyle.Fill
         Me.TabControl2.Location = New System.Drawing.Point(0, 0)
+        Me.TabControl2.m_TabPageAdjustEnabled = True
         Me.TabControl2.Name = "TabControl2"
         Me.TabControl2.SelectedIndex = 0
         Me.TabControl2.Size = New System.Drawing.Size(715, 508)
@@ -323,9 +324,9 @@ Partial Class FormDebugger
         'TabPage_Source
         '
         Me.TabPage_Source.Controls.Add(Me.TextEditorControlEx_DebuggerSource)
-        Me.TabPage_Source.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage_Source.Location = New System.Drawing.Point(1, 21)
         Me.TabPage_Source.Name = "TabPage_Source"
-        Me.TabPage_Source.Size = New System.Drawing.Size(707, 482)
+        Me.TabPage_Source.Size = New System.Drawing.Size(711, 484)
         Me.TabPage_Source.TabIndex = 0
         Me.TabPage_Source.Text = "Source"
         '
@@ -339,16 +340,16 @@ Partial Class FormDebugger
         Me.TextEditorControlEx_DebuggerSource.ShowMatchingBracket = False
         Me.TextEditorControlEx_DebuggerSource.ShowTabs = True
         Me.TextEditorControlEx_DebuggerSource.ShowVRuler = False
-        Me.TextEditorControlEx_DebuggerSource.Size = New System.Drawing.Size(707, 482)
+        Me.TextEditorControlEx_DebuggerSource.Size = New System.Drawing.Size(711, 484)
         Me.TextEditorControlEx_DebuggerSource.TabIndex = 0
         Me.TextEditorControlEx_DebuggerSource.Text = "Packed Source"
         '
         'TabPage_Diasm
         '
         Me.TabPage_Diasm.Controls.Add(Me.RichTextBox_DisasmSource)
-        Me.TabPage_Diasm.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage_Diasm.Location = New System.Drawing.Point(1, 21)
         Me.TabPage_Diasm.Name = "TabPage_Diasm"
-        Me.TabPage_Diasm.Size = New System.Drawing.Size(707, 482)
+        Me.TabPage_Diasm.Size = New System.Drawing.Size(711, 484)
         Me.TabPage_Diasm.TabIndex = 1
         Me.TabPage_Diasm.Text = "DIASM"
         '
@@ -361,7 +362,7 @@ Partial Class FormDebugger
         Me.RichTextBox_DisasmSource.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.RichTextBox_DisasmSource.Location = New System.Drawing.Point(0, 0)
         Me.RichTextBox_DisasmSource.Name = "RichTextBox_DisasmSource"
-        Me.RichTextBox_DisasmSource.Size = New System.Drawing.Size(707, 482)
+        Me.RichTextBox_DisasmSource.Size = New System.Drawing.Size(711, 484)
         Me.RichTextBox_DisasmSource.TabIndex = 0
         Me.RichTextBox_DisasmSource.Text = ""
         Me.RichTextBox_DisasmSource.WordWrap = False
@@ -371,6 +372,7 @@ Partial Class FormDebugger
         Me.ClassTabControlColor1.Controls.Add(Me.TabPage1)
         Me.ClassTabControlColor1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ClassTabControlColor1.Location = New System.Drawing.Point(0, 0)
+        Me.ClassTabControlColor1.m_TabPageAdjustEnabled = True
         Me.ClassTabControlColor1.Name = "ClassTabControlColor1"
         Me.ClassTabControlColor1.SelectedIndex = 0
         Me.ClassTabControlColor1.Size = New System.Drawing.Size(715, 171)
@@ -379,10 +381,9 @@ Partial Class FormDebugger
         'TabPage1
         '
         Me.TabPage1.Controls.Add(Me.ListBox_Information)
-        Me.TabPage1.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage1.Location = New System.Drawing.Point(1, 21)
         Me.TabPage1.Name = "TabPage1"
-        Me.TabPage1.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage1.Size = New System.Drawing.Size(707, 145)
+        Me.TabPage1.Size = New System.Drawing.Size(711, 147)
         Me.TabPage1.TabIndex = 0
         Me.TabPage1.Text = "Information"
         Me.TabPage1.UseVisualStyleBackColor = True
@@ -390,11 +391,13 @@ Partial Class FormDebugger
         'ListBox_Information
         '
         Me.ListBox_Information.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ListBox_Information.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable
         Me.ListBox_Information.FormattingEnabled = True
         Me.ListBox_Information.HorizontalScrollbar = True
-        Me.ListBox_Information.Location = New System.Drawing.Point(3, 3)
+        Me.ListBox_Information.ItemHeight = 16
+        Me.ListBox_Information.Location = New System.Drawing.Point(0, 0)
         Me.ListBox_Information.Name = "ListBox_Information"
-        Me.ListBox_Information.Size = New System.Drawing.Size(701, 139)
+        Me.ListBox_Information.Size = New System.Drawing.Size(711, 147)
         Me.ListBox_Information.TabIndex = 0
         '
         'TabControl1
@@ -405,6 +408,7 @@ Partial Class FormDebugger
         Me.TabControl1.Controls.Add(Me.TabPage_Entities)
         Me.TabControl1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.TabControl1.Location = New System.Drawing.Point(0, 0)
+        Me.TabControl1.m_TabPageAdjustEnabled = True
         Me.TabControl1.Name = "TabControl1"
         Me.TabControl1.SelectedIndex = 0
         Me.TabControl1.Size = New System.Drawing.Size(289, 683)
@@ -413,9 +417,9 @@ Partial Class FormDebugger
         'TabPage_Breakpoints
         '
         Me.TabPage_Breakpoints.Controls.Add(Me.ListView_Breakpoints)
-        Me.TabPage_Breakpoints.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage_Breakpoints.Location = New System.Drawing.Point(1, 21)
         Me.TabPage_Breakpoints.Name = "TabPage_Breakpoints"
-        Me.TabPage_Breakpoints.Size = New System.Drawing.Size(281, 657)
+        Me.TabPage_Breakpoints.Size = New System.Drawing.Size(285, 659)
         Me.TabPage_Breakpoints.TabIndex = 0
         Me.TabPage_Breakpoints.Text = "Breakpoints"
         '
@@ -430,7 +434,7 @@ Partial Class FormDebugger
         Me.ListView_Breakpoints.Location = New System.Drawing.Point(0, 0)
         Me.ListView_Breakpoints.MultiSelect = False
         Me.ListView_Breakpoints.Name = "ListView_Breakpoints"
-        Me.ListView_Breakpoints.Size = New System.Drawing.Size(281, 657)
+        Me.ListView_Breakpoints.Size = New System.Drawing.Size(285, 659)
         Me.ListView_Breakpoints.TabIndex = 0
         Me.ListView_Breakpoints.UseCompatibleStateImageBehavior = False
         Me.ListView_Breakpoints.View = System.Windows.Forms.View.Details
@@ -484,9 +488,9 @@ Partial Class FormDebugger
         'TabPage_Asserts
         '
         Me.TabPage_Asserts.Controls.Add(Me.ListView_Asserts)
-        Me.TabPage_Asserts.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage_Asserts.Location = New System.Drawing.Point(1, 21)
         Me.TabPage_Asserts.Name = "TabPage_Asserts"
-        Me.TabPage_Asserts.Size = New System.Drawing.Size(281, 657)
+        Me.TabPage_Asserts.Size = New System.Drawing.Size(285, 659)
         Me.TabPage_Asserts.TabIndex = 3
         Me.TabPage_Asserts.Text = "Asserts"
         Me.TabPage_Asserts.UseVisualStyleBackColor = True
@@ -501,7 +505,7 @@ Partial Class FormDebugger
         Me.ListView_Asserts.Location = New System.Drawing.Point(0, 0)
         Me.ListView_Asserts.MultiSelect = False
         Me.ListView_Asserts.Name = "ListView_Asserts"
-        Me.ListView_Asserts.Size = New System.Drawing.Size(281, 657)
+        Me.ListView_Asserts.Size = New System.Drawing.Size(285, 659)
         Me.ListView_Asserts.TabIndex = 1
         Me.ListView_Asserts.UseCompatibleStateImageBehavior = False
         Me.ListView_Asserts.View = System.Windows.Forms.View.Details
@@ -543,9 +547,9 @@ Partial Class FormDebugger
         'TabPage_Watchers
         '
         Me.TabPage_Watchers.Controls.Add(Me.ListView_Watchers)
-        Me.TabPage_Watchers.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage_Watchers.Location = New System.Drawing.Point(1, 21)
         Me.TabPage_Watchers.Name = "TabPage_Watchers"
-        Me.TabPage_Watchers.Size = New System.Drawing.Size(281, 657)
+        Me.TabPage_Watchers.Size = New System.Drawing.Size(285, 659)
         Me.TabPage_Watchers.TabIndex = 1
         Me.TabPage_Watchers.Text = "Watcher"
         '
@@ -558,7 +562,7 @@ Partial Class FormDebugger
         Me.ListView_Watchers.Location = New System.Drawing.Point(0, 0)
         Me.ListView_Watchers.MultiSelect = False
         Me.ListView_Watchers.Name = "ListView_Watchers"
-        Me.ListView_Watchers.Size = New System.Drawing.Size(281, 657)
+        Me.ListView_Watchers.Size = New System.Drawing.Size(285, 659)
         Me.ListView_Watchers.TabIndex = 0
         Me.ListView_Watchers.UseCompatibleStateImageBehavior = False
         Me.ListView_Watchers.View = System.Windows.Forms.View.Details
@@ -586,9 +590,9 @@ Partial Class FormDebugger
         'TabPage_Entities
         '
         Me.TabPage_Entities.Controls.Add(Me.ListView_Entities)
-        Me.TabPage_Entities.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage_Entities.Location = New System.Drawing.Point(1, 21)
         Me.TabPage_Entities.Name = "TabPage_Entities"
-        Me.TabPage_Entities.Size = New System.Drawing.Size(281, 657)
+        Me.TabPage_Entities.Size = New System.Drawing.Size(285, 659)
         Me.TabPage_Entities.TabIndex = 2
         Me.TabPage_Entities.Text = "Entities"
         '
@@ -600,7 +604,7 @@ Partial Class FormDebugger
         Me.ListView_Entities.Location = New System.Drawing.Point(0, 0)
         Me.ListView_Entities.MultiSelect = False
         Me.ListView_Entities.Name = "ListView_Entities"
-        Me.ListView_Entities.Size = New System.Drawing.Size(281, 657)
+        Me.ListView_Entities.Size = New System.Drawing.Size(285, 659)
         Me.ListView_Entities.TabIndex = 0
         Me.ListView_Entities.UseCompatibleStateImageBehavior = False
         Me.ListView_Entities.View = System.Windows.Forms.View.Details

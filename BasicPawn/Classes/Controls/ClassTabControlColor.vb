@@ -80,10 +80,17 @@ Public Class ClassTabControlColor
         e.Graphics.DrawString(Me.TabPages(e.Index).Text, mTabFont, mTabFore, mTabRec, New StringFormat())
     End Sub
 
-    'Mimic padding to minimize weird edge color effects.
+    ''' <summary>
+    ''' Mimic padding for TabPages to minimize weird edge color effect.
+    ''' </summary>
+    ''' <returns></returns>
     Property m_TabPageAdjustEnabled As Boolean = True
-    Property m_TabPageNormalAdjustRectangle As New RECT(-3, -1, 1, 1)
-    Property m_TabPageOwnerDrawAdjustRectangle As New RECT(-3, -1, 3, 3)
+
+    <ComponentModel.Browsable(False)>
+    ReadOnly Property m_TabPageNormalAdjustRectangle As New RECT(-3, -1, 1, 1)
+
+    <ComponentModel.Browsable(False)>
+    ReadOnly Property m_TabPageOwnerDrawAdjustRectangle As New RECT(-3, -1, 3, 3)
 
     Private Const TCM_FIRST As Integer = &H1300
     Private Const TCM_ADJUSTRECT As UInteger = (TCM_FIRST + 40)
