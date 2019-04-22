@@ -827,26 +827,26 @@ Partial Class FormMain
         Me.ToolStripMenuItem_TestCurrent.Image = Global.BasicPawn.My.Resources.Resources.imageres_5343_16x16
         Me.ToolStripMenuItem_TestCurrent.Name = "ToolStripMenuItem_TestCurrent"
         Me.ToolStripMenuItem_TestCurrent.ShortcutKeys = System.Windows.Forms.Keys.F4
-        Me.ToolStripMenuItem_TestCurrent.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_TestCurrent.Size = New System.Drawing.Size(161, 22)
         Me.ToolStripMenuItem_TestCurrent.Text = "Test current"
         '
         'ToolStripMenuItem_TestAll
         '
         Me.ToolStripMenuItem_TestAll.Name = "ToolStripMenuItem_TestAll"
         Me.ToolStripMenuItem_TestAll.ShortcutKeys = CType((System.Windows.Forms.Keys.Shift Or System.Windows.Forms.Keys.F4), System.Windows.Forms.Keys)
-        Me.ToolStripMenuItem_TestAll.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_TestAll.Size = New System.Drawing.Size(161, 22)
         Me.ToolStripMenuItem_TestAll.Text = "Test all"
         '
         'ToolStripSeparator20
         '
         Me.ToolStripSeparator20.Name = "ToolStripSeparator20"
-        Me.ToolStripSeparator20.Size = New System.Drawing.Size(177, 6)
+        Me.ToolStripSeparator20.Size = New System.Drawing.Size(158, 6)
         '
         'ToolStripMenuItem_TestDebug
         '
         Me.ToolStripMenuItem_TestDebug.Image = Global.BasicPawn.My.Resources.Resources.imageres_5362_16x16
         Me.ToolStripMenuItem_TestDebug.Name = "ToolStripMenuItem_TestDebug"
-        Me.ToolStripMenuItem_TestDebug.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_TestDebug.Size = New System.Drawing.Size(161, 22)
         Me.ToolStripMenuItem_TestDebug.Text = "Debug"
         '
         'ToolStripMenuItem_Shell
@@ -1066,6 +1066,7 @@ Partial Class FormMain
         Me.TabControl_Toolbox.Controls.Add(Me.TabPage_ExplorerBrowser)
         Me.TabControl_Toolbox.Dock = System.Windows.Forms.DockStyle.Fill
         Me.TabControl_Toolbox.Location = New System.Drawing.Point(0, 0)
+        Me.TabControl_Toolbox.m_TabPageAdjustEnabled = True
         Me.TabControl_Toolbox.Margin = New System.Windows.Forms.Padding(0)
         Me.TabControl_Toolbox.Multiline = True
         Me.TabControl_Toolbox.Name = "TabControl_Toolbox"
@@ -1076,28 +1077,28 @@ Partial Class FormMain
         '
         'TabPage_ObjectBrowser
         '
-        Me.TabPage_ObjectBrowser.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage_ObjectBrowser.Location = New System.Drawing.Point(1, 21)
         Me.TabPage_ObjectBrowser.Margin = New System.Windows.Forms.Padding(0)
         Me.TabPage_ObjectBrowser.Name = "TabPage_ObjectBrowser"
-        Me.TabPage_ObjectBrowser.Size = New System.Drawing.Size(192, 474)
+        Me.TabPage_ObjectBrowser.Size = New System.Drawing.Size(196, 476)
         Me.TabPage_ObjectBrowser.TabIndex = 0
         Me.TabPage_ObjectBrowser.Text = "Object Browser"
         Me.TabPage_ObjectBrowser.UseVisualStyleBackColor = True
         '
         'TabPage_ProjectBrowser
         '
-        Me.TabPage_ProjectBrowser.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage_ProjectBrowser.Location = New System.Drawing.Point(1, 21)
         Me.TabPage_ProjectBrowser.Name = "TabPage_ProjectBrowser"
-        Me.TabPage_ProjectBrowser.Size = New System.Drawing.Size(192, 474)
+        Me.TabPage_ProjectBrowser.Size = New System.Drawing.Size(196, 476)
         Me.TabPage_ProjectBrowser.TabIndex = 1
         Me.TabPage_ProjectBrowser.Text = "Project"
         Me.TabPage_ProjectBrowser.UseVisualStyleBackColor = True
         '
         'TabPage_ExplorerBrowser
         '
-        Me.TabPage_ExplorerBrowser.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage_ExplorerBrowser.Location = New System.Drawing.Point(1, 21)
         Me.TabPage_ExplorerBrowser.Name = "TabPage_ExplorerBrowser"
-        Me.TabPage_ExplorerBrowser.Size = New System.Drawing.Size(192, 474)
+        Me.TabPage_ExplorerBrowser.Size = New System.Drawing.Size(196, 476)
         Me.TabPage_ExplorerBrowser.TabIndex = 2
         Me.TabPage_ExplorerBrowser.Text = "Explorer"
         Me.TabPage_ExplorerBrowser.UseVisualStyleBackColor = True
@@ -1109,6 +1110,7 @@ Partial Class FormMain
         Me.TabControl_SourceTabs.Controls.Add(Me.TabPage1)
         Me.TabControl_SourceTabs.Dock = System.Windows.Forms.DockStyle.Fill
         Me.TabControl_SourceTabs.Location = New System.Drawing.Point(0, 0)
+        Me.TabControl_SourceTabs.m_TabPageAdjustEnabled = True
         Me.TabControl_SourceTabs.Margin = New System.Windows.Forms.Padding(0)
         Me.TabControl_SourceTabs.Name = "TabControl_SourceTabs"
         Me.TabControl_SourceTabs.Padding = New System.Drawing.Point(0, 0)
@@ -1183,10 +1185,10 @@ Partial Class FormMain
         '
         'TabPage1
         '
-        Me.TabPage1.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage1.Location = New System.Drawing.Point(1, 21)
         Me.TabPage1.Margin = New System.Windows.Forms.Padding(0)
         Me.TabPage1.Name = "TabPage1"
-        Me.TabPage1.Size = New System.Drawing.Size(796, 474)
+        Me.TabPage1.Size = New System.Drawing.Size(800, 476)
         Me.TabPage1.TabIndex = 0
         Me.TabPage1.Text = "New*"
         Me.TabPage1.UseVisualStyleBackColor = True
@@ -1198,6 +1200,7 @@ Partial Class FormMain
         Me.TabControl_Details.Dock = System.Windows.Forms.DockStyle.Fill
         Me.TabControl_Details.ImageList = Me.ImageList_Details
         Me.TabControl_Details.Location = New System.Drawing.Point(0, 0)
+        Me.TabControl_Details.m_TabPageAdjustEnabled = True
         Me.TabControl_Details.Name = "TabControl_Details"
         Me.TabControl_Details.SelectedIndex = 0
         Me.TabControl_Details.Size = New System.Drawing.Size(1008, 179)
@@ -1206,10 +1209,9 @@ Partial Class FormMain
         'TabPage_Autocomplete
         '
         Me.TabPage_Autocomplete.ImageIndex = 1
-        Me.TabPage_Autocomplete.Location = New System.Drawing.Point(4, 23)
+        Me.TabPage_Autocomplete.Location = New System.Drawing.Point(1, 22)
         Me.TabPage_Autocomplete.Name = "TabPage_Autocomplete"
-        Me.TabPage_Autocomplete.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage_Autocomplete.Size = New System.Drawing.Size(1000, 152)
+        Me.TabPage_Autocomplete.Size = New System.Drawing.Size(1004, 154)
         Me.TabPage_Autocomplete.TabIndex = 0
         Me.TabPage_Autocomplete.Text = "Autocomplete & IntelliSense"
         Me.TabPage_Autocomplete.UseVisualStyleBackColor = True
@@ -1217,10 +1219,9 @@ Partial Class FormMain
         'TabPage_Information
         '
         Me.TabPage_Information.ImageIndex = 0
-        Me.TabPage_Information.Location = New System.Drawing.Point(4, 23)
+        Me.TabPage_Information.Location = New System.Drawing.Point(1, 22)
         Me.TabPage_Information.Name = "TabPage_Information"
-        Me.TabPage_Information.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage_Information.Size = New System.Drawing.Size(1000, 152)
+        Me.TabPage_Information.Size = New System.Drawing.Size(1004, 154)
         Me.TabPage_Information.TabIndex = 1
         Me.TabPage_Information.Text = "Information"
         Me.TabPage_Information.UseVisualStyleBackColor = True
