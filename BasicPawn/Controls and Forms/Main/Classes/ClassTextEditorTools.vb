@@ -508,8 +508,13 @@ Public Class ClassTextEditorTools
                     Dim sFilePath As String = sFile
 
                     If (String.IsNullOrEmpty(sFilePath)) Then
+                        If (mTab.m_Index < 0) Then
+                            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Compiling failed! Could not get current source file!", False, False, True)
+                            Return False
+                        End If
+
                         If (mTab.m_IsUnsaved AndAlso
-                                    g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True, True)) Then
+                                    g_mFormMain.g_ClassTabControl.PromptSaveTab(mTab.m_Index, False, True, True)) Then
                             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Compiling failed! Could not get current source file!", False, False, True)
                             Return False
                         End If
@@ -570,8 +575,13 @@ Public Class ClassTextEditorTools
                     Dim sFilePath As String = sFile
 
                     If (String.IsNullOrEmpty(sFilePath)) Then
+                        If (mTab.m_Index < 0) Then
+                            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Compiling failed! Could not get current source file!", False, False, True)
+                            Return False
+                        End If
+
                         If (mTab.m_IsUnsaved AndAlso
-                                    g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True, True)) Then
+                                        g_mFormMain.g_ClassTabControl.PromptSaveTab(mTab.m_Index, False, True, True)) Then
                             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Compiling failed! Could not get current source file!", False, False, True)
                             Return False
                         End If
@@ -613,8 +623,13 @@ Public Class ClassTextEditorTools
                     Dim sFilePath As String = sFile
 
                     If (String.IsNullOrEmpty(sFilePath)) Then
+                        If (mTab.m_Index < 0) Then
+                            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Compiling failed! Could not get current source file!", False, False, True)
+                            Return False
+                        End If
+
                         If (mTab.m_IsUnsaved AndAlso
-                                    g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True, True)) Then
+                                    g_mFormMain.g_ClassTabControl.PromptSaveTab(mTab.m_Index, False, True, True)) Then
                             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Compiling failed! Could not get current source file!", False, False, True)
                             Return False
                         End If
@@ -709,7 +724,7 @@ Public Class ClassTextEditorTools
 
             sLines = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
             For i = 0 To sLines.Length - 1
-                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & sLines(i), g_mFormMain.g_mUCInformationList.ParseFromCompilerOutput(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File, sLines(i)))
+                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & sLines(i), g_mFormMain.g_mUCInformationList.ParseFromCompilerOutput(mTab.m_File, sLines(i)))
             Next
 
             sCompilerOutput = String.Join(Environment.NewLine, sLines)
@@ -838,8 +853,13 @@ Public Class ClassTextEditorTools
                     Dim sFilePath As String = sFile
 
                     If (String.IsNullOrEmpty(sFilePath)) Then
+                        If (mTab.m_Index < 0) Then
+                            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Pre-Processing failed! Could not get current source file!", False, False, True)
+                            Return Nothing
+                        End If
+
                         If (mTab.m_IsUnsaved AndAlso
-                              g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True, True)) Then
+                                    g_mFormMain.g_ClassTabControl.PromptSaveTab(mTab.m_Index, False, True, True)) Then
                             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Pre-Processing failed! Could not get current source file!", False, False, True)
                             Return Nothing
                         End If
@@ -900,8 +920,13 @@ Public Class ClassTextEditorTools
                     Dim sFilePath As String = sFile
 
                     If (String.IsNullOrEmpty(sFilePath)) Then
+                        If (mTab.m_Index < 0) Then
+                            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Pre-Processing failed! Could not get current source file!", False, False, True)
+                            Return Nothing
+                        End If
+
                         If (mTab.m_IsUnsaved AndAlso
-                                    g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True, True)) Then
+                                        g_mFormMain.g_ClassTabControl.PromptSaveTab(mTab.m_Index, False, True, True)) Then
                             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Pre-Processing failed! Could not get current source file!", False, False, True)
                             Return Nothing
                         End If
@@ -1015,7 +1040,7 @@ Public Class ClassTextEditorTools
 
             sLines = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
             For i = 0 To sLines.Length - 1
-                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & sLines(i), g_mFormMain.g_mUCInformationList.ParseFromCompilerOutput(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File, sLines(i)))
+                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & sLines(i), g_mFormMain.g_mUCInformationList.ParseFromCompilerOutput(mTab.m_File, sLines(i)))
             Next
 
             sCompilerOutput = String.Join(Environment.NewLine, sLines)
@@ -1207,8 +1232,13 @@ Public Class ClassTextEditorTools
                     Dim sFilePath As String = sFile
 
                     If (String.IsNullOrEmpty(sFilePath)) Then
+                        If (mTab.m_Index < 0) Then
+                            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "DIASM failed! Could not get current source file!", False, False, True)
+                            Return Nothing
+                        End If
+
                         If (mTab.m_IsUnsaved AndAlso
-                                    g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True, True)) Then
+                                    g_mFormMain.g_ClassTabControl.PromptSaveTab(mTab.m_Index, False, True, True)) Then
                             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "DIASM failed! Could not get current source file!", False, False, True)
                             Return Nothing
                         End If
@@ -1311,7 +1341,7 @@ Public Class ClassTextEditorTools
 
             sLines = sOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
             For i = 0 To sLines.Length - 1
-                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & sLines(i), g_mFormMain.g_mUCInformationList.ParseFromCompilerOutput(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File, sLines(i)))
+                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & sLines(i), g_mFormMain.g_mUCInformationList.ParseFromCompilerOutput(mTab.m_File, sLines(i)))
             Next
 
             sCompilerOutput = String.Join(Environment.NewLine, sLines)
