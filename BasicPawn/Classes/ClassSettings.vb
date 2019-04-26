@@ -329,18 +329,6 @@ Public Class ClassSettings
         ClassTools.ClassRegistry.SetAssociation("BasicPawn.Project", UCProjectBrowser.ClassProjectControl.g_sProjectExtension, String.Format("""{0}"" ""%1""", Application.ExecutablePath), Application.ExecutablePath, Application.ExecutablePath, ClassTools.ClassRegistry.ENUM_SELECTION_MODEL.SINGLE)
     End Sub
 
-    Public Class STRUC_SHELL_ARGUMENT_ITEM
-        Public g_sMarker As String = ""
-        Public g_sArgumentName As String = ""
-        Public g_sArgument As String = ""
-
-        Public Sub New(sMarker As String, sArgName As String, sArgument As String)
-            g_sMarker = sMarker
-            g_sArgumentName = sArgName
-            g_sArgument = sArgument
-        End Sub
-    End Class
-
     Enum ENUM_INDENTATION_TYPES
         USE_SETTINGS
         TABS
@@ -366,28 +354,5 @@ Public Class ClassSettings
                 Throw New ArgumentException("Invalid indentation type")
 
         End Select
-    End Function
-
-    ''' <summary>
-    ''' Gets all available shell arguments
-    ''' </summary>
-    ''' <returns></returns>
-    Public Shared Function GetShellArguments(mFormMain As FormMain, sFile As String) As STRUC_SHELL_ARGUMENT_ITEM()
-        'TODO: Add more shell arguments
-        Dim sShellList As New List(Of STRUC_SHELL_ARGUMENT_ITEM)
-
-        If (String.IsNullOrEmpty(sFile)) Then
-            sFile = mFormMain.g_ClassTabControl.m_ActiveTab.m_File
-        End If
-
-        sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%input%", "Current opened source file", sFile))
-        sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%inputfilename%", "Current opened source filename", If(String.IsNullOrEmpty(sFile), "", IO.Path.GetFileNameWithoutExtension(sFile))))
-        sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%inputfolder%", "Current opened source file folder", If(String.IsNullOrEmpty(sFile), "", IO.Path.GetDirectoryName(sFile))))
-        sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%includes%", "Include folders", mFormMain.g_ClassTabControl.m_ActiveTab.m_ActiveConfig.g_sIncludeFolders))
-        sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%compiler%", "Compiler path", mFormMain.g_ClassTabControl.m_ActiveTab.m_ActiveConfig.g_sCompilerPath))
-        sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%output%", "Output folder", mFormMain.g_ClassTabControl.m_ActiveTab.m_ActiveConfig.g_sOutputFolder))
-        sShellList.Add(New STRUC_SHELL_ARGUMENT_ITEM("%currentdir%", "BasicPawn startup folder", Application.StartupPath))
-
-        Return sShellList.ToArray
     End Function
 End Class

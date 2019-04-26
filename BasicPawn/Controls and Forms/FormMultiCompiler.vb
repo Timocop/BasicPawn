@@ -130,6 +130,7 @@ Public Class FormMultiCompiler
                                                                                                                                            sSourceFile,
                                                                                                                                            sSource,
                                                                                                                                            g_bTestingOnly,
+                                                                                                                                           True,
                                                                                                                                            sOutputFile,
                                                                                                                                            mConfig,
                                                                                                                                            IO.Path.GetDirectoryName(sSourceFile),

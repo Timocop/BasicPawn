@@ -717,7 +717,6 @@ Public Class UCProjectBrowser
 
         ToolStripMenuItem_CompileAll.Enabled = (ListView_ProjectFiles.SelectedItems.Count > 0)
         ToolStripMenuItem_TestAll.Enabled = (ListView_ProjectFiles.SelectedItems.Count > 0)
-        ToolStripMenuItem_ShellAll.Enabled = (ListView_ProjectFiles.SelectedItems.Count > 0)
 
         ToolStripMenuItem_PackFile.Enabled = (ListView_ProjectFiles.SelectedItems.Count > 0)
         ToolStripMenuItem_ExtractFile.Enabled = bPackedSelected
@@ -813,61 +812,6 @@ Public Class UCProjectBrowser
 
             Using i As New FormMultiCompiler(g_mFormMain, lFiles.ToArray, True, False)
                 i.ShowDialog(g_mFormMain)
-            End Using
-        Catch ex As Exception
-            ClassExceptionLog.WriteToLogMessageBox(ex)
-        End Try
-    End Sub
-
-    Private Sub ToolStripMenuItem_ShellAll_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ShellAll.Click
-        Try
-            If (ListView_ProjectFiles.SelectedItems.Count < 1) Then
-                Return
-            End If
-
-            Dim lFiles As New List(Of String)
-
-            For Each mListViewItem As ListViewItem In ListView_ProjectFiles.SelectedItems
-                Dim mListViewItemData = TryCast(mListViewItem, ClassListViewItemData)
-                If (mListViewItemData Is Nothing) Then
-                    Continue For
-                End If
-
-                Dim mInfo = DirectCast(mListViewItemData.g_mData("Info"), ClassProjectControl.STRUC_PROJECT_FILE_INFO)
-
-                lFiles.Add(mInfo.sFile)
-            Next
-
-            Using mFormProgress As New FormProgress
-                mFormProgress.Text = "Executing shell..."
-                mFormProgress.ProgressBar_Progress.Maximum = lFiles.Count
-                mFormProgress.Show(Me)
-                mFormProgress.m_Progress = 0
-
-                For Each sFile In lFiles
-                    Dim mConfig = ClassConfigs.FindOptimalConfigForFile(sFile, False, Nothing)
-                    If (mConfig Is Nothing) Then
-                        Throw New ArgumentException(String.Format("Could not find config for file '{0}'.{1}Make sure BasicPawn can find a config for this file using 'Known files' or 'Default config paths' in configs.", sFile, Environment.NewLine))
-                    End If
-
-                    Dim sShell As String = mConfig.g_sExecuteShell
-
-                    For Each mArg In ClassSettings.GetShellArguments(g_mFormMain, sFile)
-                        sShell = sShell.Replace(mArg.g_sMarker, mArg.g_sArgument)
-                    Next
-
-                    Try
-                        If (String.IsNullOrEmpty(sShell)) Then
-                            Throw New ArgumentException("Shell is empty")
-                        End If
-
-                        Shell(sShell, AppWinStyle.NormalFocus)
-                    Catch ex As Exception
-                        MessageBox.Show(ex.Message & Environment.NewLine & Environment.NewLine & sShell, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    End Try
-
-                    mFormProgress.m_Progress += 1
-                Next
             End Using
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)

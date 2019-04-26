@@ -381,7 +381,8 @@ Public Class ClassConfigs
         Public g_sDebugServerFolder As String = ""
         Public g_sDebugSourceModFolder As String = ""
         'Misc
-        Public g_sExecuteShell As String = ""
+        Public g_sBuildEventPreCmd As String = ""
+        Public g_sBuildEventPostCmd As String = ""
 
         Public Sub New(sName As String)
             g_sName = sName
@@ -391,7 +392,7 @@ Public Class ClassConfigs
                        iCompilingType As ClassSettings.ENUM_COMPILING_TYPE, sIncludeFolders As String, sCompilerPath As String, sOutputFolder As String, bAutoload As Boolean, sDefaultPaths As String, iLanguage As ENUM_LANGUAGE_DETECT_TYPE,
                        mCompilerOptionsSP As CompilerOptions.STRUC_SP_COMPILER_OPTIONS, mCompilerOptionsAMXX As CompilerOptions.STRUC_AMXX_COMPILER_OPTIONS,
                        sDebugClientFolder As String, sDebugServerFolder As String, sDebugSourceModFolder As String,
-                       sExecuteShell As String)
+                       sBuildEventPreCmd As String, sBuildEventPostCmd As String)
 
             g_sName = sName
             'General
@@ -410,7 +411,8 @@ Public Class ClassConfigs
             g_sDebugServerFolder = sDebugServerFolder
             g_sDebugSourceModFolder = sDebugSourceModFolder
             'Misc
-            g_sExecuteShell = sExecuteShell
+            g_sBuildEventPreCmd = sBuildEventPreCmd
+            g_sBuildEventPostCmd = sBuildEventPostCmd
         End Sub
 
         Public Sub SetName(sName As String)
@@ -504,7 +506,8 @@ Public Class ClassConfigs
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Config", "DebugSourceModDirectory", mConfig.g_sDebugSourceModFolder))
 
                 'Misc
-                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Config", "ExecuteShell", mConfig.g_sExecuteShell))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Config", "BuildEventPreCmd", ClassTools.ClassCrypto.ClassBase.ToBase64(mConfig.g_sBuildEventPreCmd, Text.Encoding.UTF8)))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Config", "BuildEventPostCmd", ClassTools.ClassCrypto.ClassBase.ToBase64(mConfig.g_sBuildEventPostCmd, Text.Encoding.UTF8)))
 
                 mIni.WriteKeyValue(lContent.ToArray)
             End Using
@@ -553,12 +556,13 @@ Public Class ClassConfigs
                 Dim sDebugSourceModFolder As String = mIni.ReadKeyValue("Config", "DebugSourceModDirectory", "")
 
                 'Misc
-                Dim sExecuteShell As String = mIni.ReadKeyValue("Config", "ExecuteShell", "")
+                Dim sBuildEventPreCmd As String = ClassTools.ClassCrypto.ClassBase.TryFromBase64(mIni.ReadKeyValue("Config", "BuildEventPreCmd", ""), Text.Encoding.UTF8, "")
+                Dim sBuildEventPostCmd As String = ClassTools.ClassCrypto.ClassBase.TryFromBase64(mIni.ReadKeyValue("Config", "BuildEventPostCmd", ""), Text.Encoding.UTF8, "")
 
                 Return New STRUC_CONFIG_ITEM(sName, iCompilingType, sOpenIncludeFolders, sCompilerPath, sOutputFolder, bIsDefault, sDefaultPaths, CType(iLanguage, STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE),
                                          mCompilerOptionsSourcePawn, mCompilerOptionsAMXModX,
                                          sDebugClientFolder, sDebugServerFolder, sDebugSourceModFolder,
-                                         sExecuteShell)
+                                         sBuildEventPreCmd, sBuildEventPostCmd)
             End Using
         End Using
     End Function

@@ -83,6 +83,17 @@ Partial Public Class FormSettings
         If (ComboBox_Language.Items.Count <> [Enum].GetNames(GetType(ClassConfigs.STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE)).Length) Then
             Throw New ArgumentException("ComboBox_Language range")
         End If
+
+        'Show macros
+        Dim mMacroInfo As New Text.StringBuilder
+        Dim mBuildEvents = New ClassTextEditorTools.ClassCompilerBuildEvents(Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, False, Nothing)
+
+        For Each mMacro In mBuildEvents.m_BuildMacros
+            mMacroInfo.AppendFormat("%{0}% - {1}", mMacro.sMacro, mMacro.sDescription).AppendLine()
+        Next
+
+        ToolTip_MacroInfo.SetToolTip(LinkLabel_PreMacroHelp, mMacroInfo.ToString)
+        ToolTip_MacroInfo.SetToolTip(LinkLabel_PostMacroHelp, mMacroInfo.ToString)
     End Sub
 
     Private Sub Load_Configs()
@@ -381,7 +392,8 @@ Partial Public Class FormSettings
                     TextBox_SourceModFolder.Text = ""
 
                     'Misc
-                    TextBox_Shell.Text = ""
+                    TextBox_PreBuildCmd.Text = ""
+                    TextBox_PostBuildCmd.Text = ""
                 End If
 
                 g_bIgnoreChange = False
@@ -434,7 +446,8 @@ Partial Public Class FormSettings
                 TextBox_SourceModFolder.Text = ""
 
                 'Misc
-                TextBox_Shell.Text = ""
+                TextBox_PreBuildCmd.Text = ""
+                TextBox_PostBuildCmd.Text = ""
             End If
 
             g_bIgnoreChange = False
@@ -537,8 +550,9 @@ Partial Public Class FormSettings
                 TextBox_ServerFolder.Text = mConfig.g_sDebugServerFolder
                 TextBox_SourceModFolder.Text = mConfig.g_sDebugSourceModFolder
 
-                'Misc
-                TextBox_Shell.Text = mConfig.g_sExecuteShell
+                'Misc 
+                TextBox_PreBuildCmd.Text = mConfig.g_sBuildEventPreCmd
+                TextBox_PostBuildCmd.Text = mConfig.g_sBuildEventPostCmd
             End If
 
             g_bIgnoreChange = False
@@ -769,22 +783,6 @@ Partial Public Class FormSettings
         End Try
     End Sub
 
-    Private Sub LinkLabel_ShowShellArguments_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_ShowShellArguments.LinkClicked
-        Try
-            Dim SB As New Text.StringBuilder
-            SB.AppendLine("All available shell arguments:")
-            SB.AppendLine()
-
-            For Each iItem In ClassSettings.GetShellArguments(g_mFormMain, Nothing)
-                SB.AppendFormat("{0} - {1}", iItem.g_sMarker, iItem.g_sArgumentName).AppendLine()
-            Next
-
-            MessageBox.Show(SB.ToString, "Information", MessageBoxButtons.OK)
-        Catch ex As Exception
-            ClassExceptionLog.WriteToLogMessageBox(ex)
-        End Try
-    End Sub
-
     Private Function PromptSaveSelectedConfig() As Boolean
         If (m_ConfigSettingsChanged) Then
             If (g_mListBoxConfigSelectedItem Is Nothing) Then
@@ -909,7 +907,8 @@ Partial Public Class FormSettings
                                                                     TextBox_ClientFolder.Text,
                                                                     TextBox_ServerFolder.Text,
                                                                     TextBox_SourceModFolder.Text,
-                                                                    TextBox_Shell.Text))
+                                                                    TextBox_PreBuildCmd.Text,
+                                                                    TextBox_PostBuildCmd.Text))
 
         m_ConfigSettingsChanged = False
 
@@ -966,7 +965,12 @@ Partial Public Class FormSettings
         MarkChanged()
     End Sub
 
-    Private Sub TextBox_Shell_TextChanged(sender As Object, e As EventArgs) Handles TextBox_Shell.TextChanged
+    Private Sub TextBox_PreBuildSource_TextChanged(sender As Object, e As EventArgs) Handles TextBox_PreBuildCmd.TextChanged
+        m_ConfigSettingsChanged = True
+        MarkChanged()
+    End Sub
+
+    Private Sub TextBox_PostBuildSource_TextChanged(sender As Object, e As EventArgs) Handles TextBox_PostBuildCmd.TextChanged
         m_ConfigSettingsChanged = True
         MarkChanged()
     End Sub

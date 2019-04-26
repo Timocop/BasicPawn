@@ -34,9 +34,11 @@ Partial Class FormSettings
         Me.ToolStripMenuItem_PluginsEnable = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_PluginsDisable = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolTip_Info = New System.Windows.Forms.ToolTip(Me.components)
+        Me.LinkLabel_ThreadUpdateRateHelp = New System.Windows.Forms.LinkLabel()
         Me.LinkLabel_FullAutocompleteReTaggingHelp = New System.Windows.Forms.LinkLabel()
         Me.LinkLabel_DefaultConfigPathsHelp = New System.Windows.Forms.LinkLabel()
         Me.ImageList_Plugins = New System.Windows.Forms.ImageList(Me.components)
+        Me.ToolTip_MacroInfo = New System.Windows.Forms.ToolTip(Me.components)
         Me.TabControl1 = New BasicPawn.ClassTabControlColor()
         Me.TabPage_Settings = New System.Windows.Forms.TabPage()
         Me.ClassTabControlColor1 = New BasicPawn.ClassTabControlColor()
@@ -45,6 +47,10 @@ Partial Class FormSettings
         Me.Label30 = New System.Windows.Forms.Label()
         Me.Button_ClearErrorLog = New System.Windows.Forms.Button()
         Me.Button_ViewErrorLog = New System.Windows.Forms.Button()
+        Me.GroupBox12 = New System.Windows.Forms.GroupBox()
+        Me.Label8 = New System.Windows.Forms.Label()
+        Me.NumericUpDown_ThreadUpdateRate = New System.Windows.Forms.NumericUpDown()
+        Me.Label14 = New System.Windows.Forms.Label()
         Me.GroupBox8 = New System.Windows.Forms.GroupBox()
         Me.Label19 = New System.Windows.Forms.Label()
         Me.CheckBox_AssociateBasicPawnProject = New System.Windows.Forms.CheckBox()
@@ -57,6 +63,8 @@ Partial Class FormSettings
         Me.CheckBox_AlwaysNewInstance = New System.Windows.Forms.CheckBox()
         Me.CheckBox_AutoHoverScroll = New System.Windows.Forms.CheckBox()
         Me.CheckBox_AutoShowStartPage = New System.Windows.Forms.CheckBox()
+        Me.GroupBox23 = New System.Windows.Forms.GroupBox()
+        Me.CheckBox_InvertedColors = New System.Windows.Forms.CheckBox()
         Me.TabPage_Editor = New System.Windows.Forms.TabPage()
         Me.GroupBox11 = New System.Windows.Forms.GroupBox()
         Me.CheckBox_IconBar = New System.Windows.Forms.CheckBox()
@@ -125,9 +133,12 @@ Partial Class FormSettings
         Me.Panel2 = New System.Windows.Forms.Panel()
         Me.GroupBox_ConfigSettings = New System.Windows.Forms.GroupBox()
         Me.GroupBox21 = New System.Windows.Forms.GroupBox()
+        Me.LinkLabel_PostMacroHelp = New System.Windows.Forms.LinkLabel()
+        Me.LinkLabel_PreMacroHelp = New System.Windows.Forms.LinkLabel()
+        Me.TextBox_PostBuildCmd = New System.Windows.Forms.TextBox()
         Me.Label10 = New System.Windows.Forms.Label()
-        Me.TextBox_Shell = New System.Windows.Forms.TextBox()
-        Me.LinkLabel_ShowShellArguments = New System.Windows.Forms.LinkLabel()
+        Me.TextBox_PreBuildCmd = New System.Windows.Forms.TextBox()
+        Me.Label9 = New System.Windows.Forms.Label()
         Me.GroupBox20 = New System.Windows.Forms.GroupBox()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.TextBox_ClientFolder = New System.Windows.Forms.TextBox()
@@ -208,22 +219,18 @@ Partial Class FormSettings
         Me.TableLayoutPanel3 = New System.Windows.Forms.TableLayoutPanel()
         Me.ClassPictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
         Me.Label17 = New System.Windows.Forms.Label()
-        Me.GroupBox23 = New System.Windows.Forms.GroupBox()
-        Me.CheckBox_InvertedColors = New System.Windows.Forms.CheckBox()
-        Me.GroupBox12 = New System.Windows.Forms.GroupBox()
-        Me.Label8 = New System.Windows.Forms.Label()
-        Me.NumericUpDown_ThreadUpdateRate = New System.Windows.Forms.NumericUpDown()
-        Me.Label14 = New System.Windows.Forms.Label()
-        Me.LinkLabel_ThreadUpdateRateHelp = New System.Windows.Forms.LinkLabel()
         Me.ContextMenuStrip_Plugins.SuspendLayout()
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Settings.SuspendLayout()
         Me.ClassTabControlColor1.SuspendLayout()
         Me.TabPage_General.SuspendLayout()
         Me.GroupBox9.SuspendLayout()
+        Me.GroupBox12.SuspendLayout()
+        CType(Me.NumericUpDown_ThreadUpdateRate, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox8.SuspendLayout()
         Me.GroupBox7.SuspendLayout()
         Me.GroupBox6.SuspendLayout()
+        Me.GroupBox23.SuspendLayout()
         Me.TabPage_Editor.SuspendLayout()
         Me.GroupBox11.SuspendLayout()
         Me.GroupBox5.SuspendLayout()
@@ -261,9 +268,6 @@ Partial Class FormSettings
         CType(Me.ClassPictureBoxQuality2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TableLayoutPanel3.SuspendLayout()
         CType(Me.ClassPictureBoxQuality1, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.GroupBox23.SuspendLayout()
-        Me.GroupBox12.SuspendLayout()
-        CType(Me.NumericUpDown_ThreadUpdateRate, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'Button_Cancel
@@ -342,6 +346,17 @@ Partial Class FormSettings
         Me.ToolTip_Info.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info
         Me.ToolTip_Info.ToolTipTitle = "Information"
         '
+        'LinkLabel_ThreadUpdateRateHelp
+        '
+        Me.LinkLabel_ThreadUpdateRateHelp.AutoSize = True
+        Me.LinkLabel_ThreadUpdateRateHelp.Location = New System.Drawing.Point(285, 24)
+        Me.LinkLabel_ThreadUpdateRateHelp.Name = "LinkLabel_ThreadUpdateRateHelp"
+        Me.LinkLabel_ThreadUpdateRateHelp.Size = New System.Drawing.Size(12, 13)
+        Me.LinkLabel_ThreadUpdateRateHelp.TabIndex = 27
+        Me.LinkLabel_ThreadUpdateRateHelp.TabStop = True
+        Me.LinkLabel_ThreadUpdateRateHelp.Text = "?"
+        Me.ToolTip_Info.SetToolTip(Me.LinkLabel_ThreadUpdateRateHelp, resources.GetString("LinkLabel_ThreadUpdateRateHelp.ToolTip"))
+        '
         'LinkLabel_FullAutocompleteReTaggingHelp
         '
         Me.LinkLabel_FullAutocompleteReTaggingHelp.AutoSize = True
@@ -371,6 +386,15 @@ Partial Class FormSettings
         Me.ImageList_Plugins.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit
         Me.ImageList_Plugins.ImageSize = New System.Drawing.Size(16, 16)
         Me.ImageList_Plugins.TransparentColor = System.Drawing.Color.Transparent
+        '
+        'ToolTip_MacroInfo
+        '
+        Me.ToolTip_MacroInfo.AutoPopDelay = 30000
+        Me.ToolTip_MacroInfo.InitialDelay = 500
+        Me.ToolTip_MacroInfo.IsBalloon = True
+        Me.ToolTip_MacroInfo.ReshowDelay = 100
+        Me.ToolTip_MacroInfo.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info
+        Me.ToolTip_MacroInfo.ToolTipTitle = "Macro Information"
         '
         'TabControl1
         '
@@ -472,6 +496,49 @@ Partial Class FormSettings
         Me.Button_ViewErrorLog.TabIndex = 27
         Me.Button_ViewErrorLog.Text = "View log"
         Me.Button_ViewErrorLog.UseVisualStyleBackColor = True
+        '
+        'GroupBox12
+        '
+        Me.GroupBox12.Controls.Add(Me.Label8)
+        Me.GroupBox12.Controls.Add(Me.NumericUpDown_ThreadUpdateRate)
+        Me.GroupBox12.Controls.Add(Me.Label14)
+        Me.GroupBox12.Controls.Add(Me.LinkLabel_ThreadUpdateRateHelp)
+        Me.GroupBox12.Dock = System.Windows.Forms.DockStyle.Top
+        Me.GroupBox12.Location = New System.Drawing.Point(6, 359)
+        Me.GroupBox12.Name = "GroupBox12"
+        Me.GroupBox12.Size = New System.Drawing.Size(740, 56)
+        Me.GroupBox12.TabIndex = 36
+        Me.GroupBox12.TabStop = False
+        Me.GroupBox12.Text = "Threading"
+        '
+        'Label8
+        '
+        Me.Label8.AutoSize = True
+        Me.Label8.Location = New System.Drawing.Point(9, 24)
+        Me.Label8.Margin = New System.Windows.Forms.Padding(6, 6, 3, 6)
+        Me.Label8.Name = "Label8"
+        Me.Label8.Size = New System.Drawing.Size(173, 13)
+        Me.Label8.TabIndex = 24
+        Me.Label8.Text = "Background thread update rate:"
+        '
+        'NumericUpDown_ThreadUpdateRate
+        '
+        Me.NumericUpDown_ThreadUpdateRate.Location = New System.Drawing.Point(185, 19)
+        Me.NumericUpDown_ThreadUpdateRate.Maximum = New Decimal(New Integer() {2500, 0, 0, 0})
+        Me.NumericUpDown_ThreadUpdateRate.Minimum = New Decimal(New Integer() {100, 0, 0, 0})
+        Me.NumericUpDown_ThreadUpdateRate.Name = "NumericUpDown_ThreadUpdateRate"
+        Me.NumericUpDown_ThreadUpdateRate.Size = New System.Drawing.Size(64, 22)
+        Me.NumericUpDown_ThreadUpdateRate.TabIndex = 25
+        Me.NumericUpDown_ThreadUpdateRate.Value = New Decimal(New Integer() {500, 0, 0, 0})
+        '
+        'Label14
+        '
+        Me.Label14.AutoSize = True
+        Me.Label14.Location = New System.Drawing.Point(258, 24)
+        Me.Label14.Name = "Label14"
+        Me.Label14.Size = New System.Drawing.Size(21, 13)
+        Me.Label14.TabIndex = 26
+        Me.Label14.Text = "ms"
         '
         'GroupBox8
         '
@@ -620,6 +687,29 @@ Partial Class FormSettings
         Me.CheckBox_AutoShowStartPage.TabIndex = 20
         Me.CheckBox_AutoShowStartPage.Text = "Show StartPage when no file is opened"
         Me.CheckBox_AutoShowStartPage.UseVisualStyleBackColor = True
+        '
+        'GroupBox23
+        '
+        Me.GroupBox23.Controls.Add(Me.CheckBox_InvertedColors)
+        Me.GroupBox23.Dock = System.Windows.Forms.DockStyle.Top
+        Me.GroupBox23.Location = New System.Drawing.Point(6, 6)
+        Me.GroupBox23.Name = "GroupBox23"
+        Me.GroupBox23.Size = New System.Drawing.Size(740, 54)
+        Me.GroupBox23.TabIndex = 35
+        Me.GroupBox23.TabStop = False
+        Me.GroupBox23.Text = "User Interface"
+        '
+        'CheckBox_InvertedColors
+        '
+        Me.CheckBox_InvertedColors.AutoSize = True
+        Me.CheckBox_InvertedColors.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_InvertedColors.Location = New System.Drawing.Point(9, 21)
+        Me.CheckBox_InvertedColors.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_InvertedColors.Name = "CheckBox_InvertedColors"
+        Me.CheckBox_InvertedColors.Size = New System.Drawing.Size(134, 18)
+        Me.CheckBox_InvertedColors.TabIndex = 14
+        Me.CheckBox_InvertedColors.Text = "High contrast mode"
+        Me.CheckBox_InvertedColors.UseVisualStyleBackColor = True
         '
         'TabPage_Editor
         '
@@ -1423,54 +1513,90 @@ Partial Class FormSettings
         Me.GroupBox_ConfigSettings.Location = New System.Drawing.Point(0, 0)
         Me.GroupBox_ConfigSettings.Margin = New System.Windows.Forms.Padding(0)
         Me.GroupBox_ConfigSettings.Name = "GroupBox_ConfigSettings"
-        Me.GroupBox_ConfigSettings.Size = New System.Drawing.Size(589, 978)
+        Me.GroupBox_ConfigSettings.Size = New System.Drawing.Size(589, 1246)
         Me.GroupBox_ConfigSettings.TabIndex = 7
         Me.GroupBox_ConfigSettings.TabStop = False
         Me.GroupBox_ConfigSettings.Text = "Config Settings"
         '
         'GroupBox21
         '
+        Me.GroupBox21.Controls.Add(Me.LinkLabel_PostMacroHelp)
+        Me.GroupBox21.Controls.Add(Me.LinkLabel_PreMacroHelp)
+        Me.GroupBox21.Controls.Add(Me.TextBox_PostBuildCmd)
         Me.GroupBox21.Controls.Add(Me.Label10)
-        Me.GroupBox21.Controls.Add(Me.TextBox_Shell)
-        Me.GroupBox21.Controls.Add(Me.LinkLabel_ShowShellArguments)
+        Me.GroupBox21.Controls.Add(Me.TextBox_PreBuildCmd)
+        Me.GroupBox21.Controls.Add(Me.Label9)
         Me.GroupBox21.Dock = System.Windows.Forms.DockStyle.Top
         Me.GroupBox21.Location = New System.Drawing.Point(3, 875)
         Me.GroupBox21.Name = "GroupBox21"
-        Me.GroupBox21.Size = New System.Drawing.Size(583, 100)
+        Me.GroupBox21.Size = New System.Drawing.Size(583, 368)
         Me.GroupBox21.TabIndex = 29
         Me.GroupBox21.TabStop = False
         Me.GroupBox21.Text = "Misc"
         '
+        'LinkLabel_PostMacroHelp
+        '
+        Me.LinkLabel_PostMacroHelp.AutoSize = True
+        Me.LinkLabel_PostMacroHelp.Location = New System.Drawing.Point(181, 187)
+        Me.LinkLabel_PostMacroHelp.Name = "LinkLabel_PostMacroHelp"
+        Me.LinkLabel_PostMacroHelp.Size = New System.Drawing.Size(12, 13)
+        Me.LinkLabel_PostMacroHelp.TabIndex = 36
+        Me.LinkLabel_PostMacroHelp.TabStop = True
+        Me.LinkLabel_PostMacroHelp.Text = "?"
+        '
+        'LinkLabel_PreMacroHelp
+        '
+        Me.LinkLabel_PreMacroHelp.AutoSize = True
+        Me.LinkLabel_PreMacroHelp.Location = New System.Drawing.Point(175, 18)
+        Me.LinkLabel_PreMacroHelp.Name = "LinkLabel_PreMacroHelp"
+        Me.LinkLabel_PreMacroHelp.Size = New System.Drawing.Size(12, 13)
+        Me.LinkLabel_PreMacroHelp.TabIndex = 35
+        Me.LinkLabel_PreMacroHelp.TabStop = True
+        Me.LinkLabel_PreMacroHelp.Text = "?"
+        '
+        'TextBox_PostBuildCmd
+        '
+        Me.TextBox_PostBuildCmd.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.TextBox_PostBuildCmd.BackColor = System.Drawing.Color.White
+        Me.TextBox_PostBuildCmd.Location = New System.Drawing.Point(6, 203)
+        Me.TextBox_PostBuildCmd.Multiline = True
+        Me.TextBox_PostBuildCmd.Name = "TextBox_PostBuildCmd"
+        Me.TextBox_PostBuildCmd.ScrollBars = System.Windows.Forms.ScrollBars.Both
+        Me.TextBox_PostBuildCmd.Size = New System.Drawing.Size(571, 150)
+        Me.TextBox_PostBuildCmd.TabIndex = 34
+        Me.TextBox_PostBuildCmd.WordWrap = False
+        '
         'Label10
         '
         Me.Label10.AutoSize = True
-        Me.Label10.Location = New System.Drawing.Point(6, 18)
+        Me.Label10.Location = New System.Drawing.Point(6, 187)
         Me.Label10.Name = "Label10"
-        Me.Label10.Size = New System.Drawing.Size(77, 13)
-        Me.Label10.TabIndex = 28
-        Me.Label10.Text = "Execute Shell:"
+        Me.Label10.Size = New System.Drawing.Size(169, 13)
+        Me.Label10.TabIndex = 33
+        Me.Label10.Text = "Post-build event command line:"
         '
-        'TextBox_Shell
+        'TextBox_PreBuildCmd
         '
-        Me.TextBox_Shell.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.TextBox_PreBuildCmd.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TextBox_Shell.BackColor = System.Drawing.Color.White
-        Me.TextBox_Shell.Location = New System.Drawing.Point(6, 34)
-        Me.TextBox_Shell.Name = "TextBox_Shell"
-        Me.TextBox_Shell.Size = New System.Drawing.Size(571, 22)
-        Me.TextBox_Shell.TabIndex = 29
+        Me.TextBox_PreBuildCmd.BackColor = System.Drawing.Color.White
+        Me.TextBox_PreBuildCmd.Location = New System.Drawing.Point(6, 34)
+        Me.TextBox_PreBuildCmd.Multiline = True
+        Me.TextBox_PreBuildCmd.Name = "TextBox_PreBuildCmd"
+        Me.TextBox_PreBuildCmd.ScrollBars = System.Windows.Forms.ScrollBars.Both
+        Me.TextBox_PreBuildCmd.Size = New System.Drawing.Size(571, 150)
+        Me.TextBox_PreBuildCmd.TabIndex = 32
+        Me.TextBox_PreBuildCmd.WordWrap = False
         '
-        'LinkLabel_ShowShellArguments
+        'Label9
         '
-        Me.LinkLabel_ShowShellArguments.AutoSize = True
-        Me.LinkLabel_ShowShellArguments.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
-        Me.LinkLabel_ShowShellArguments.Location = New System.Drawing.Point(6, 59)
-        Me.LinkLabel_ShowShellArguments.Margin = New System.Windows.Forms.Padding(3, 0, 3, 6)
-        Me.LinkLabel_ShowShellArguments.Name = "LinkLabel_ShowShellArguments"
-        Me.LinkLabel_ShowShellArguments.Size = New System.Drawing.Size(136, 13)
-        Me.LinkLabel_ShowShellArguments.TabIndex = 30
-        Me.LinkLabel_ShowShellArguments.TabStop = True
-        Me.LinkLabel_ShowShellArguments.Text = "Show all shell arguments"
+        Me.Label9.AutoSize = True
+        Me.Label9.Location = New System.Drawing.Point(6, 18)
+        Me.Label9.Name = "Label9"
+        Me.Label9.Size = New System.Drawing.Size(163, 13)
+        Me.Label9.TabIndex = 31
+        Me.Label9.Text = "Pre-build event command line:"
         '
         'GroupBox20
         '
@@ -1845,7 +1971,7 @@ Partial Class FormSettings
         Me.TabPage2.Location = New System.Drawing.Point(1, 21)
         Me.TabPage2.Name = "TabPage2"
         Me.TabPage2.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage2.Size = New System.Drawing.Size(557, 148)
+        Me.TabPage2.Size = New System.Drawing.Size(561, 148)
         Me.TabPage2.TabIndex = 1
         Me.TabPage2.Text = "AMX Mod X"
         Me.TabPage2.UseVisualStyleBackColor = True
@@ -1867,7 +1993,7 @@ Partial Class FormSettings
         Me.ComboBox_COSymbolicInformationAMXX.FormattingEnabled = True
         Me.ComboBox_COSymbolicInformationAMXX.Location = New System.Drawing.Point(198, 6)
         Me.ComboBox_COSymbolicInformationAMXX.Name = "ComboBox_COSymbolicInformationAMXX"
-        Me.ComboBox_COSymbolicInformationAMXX.Size = New System.Drawing.Size(353, 21)
+        Me.ComboBox_COSymbolicInformationAMXX.Size = New System.Drawing.Size(357, 21)
         Me.ComboBox_COSymbolicInformationAMXX.TabIndex = 20
         '
         'Label26
@@ -1886,7 +2012,7 @@ Partial Class FormSettings
         Me.TextBoxEx_CODefineConstantsAMXX.Location = New System.Drawing.Point(198, 115)
         Me.TextBoxEx_CODefineConstantsAMXX.m_WatermarkText = "sym=val;sym2=val..."
         Me.TextBoxEx_CODefineConstantsAMXX.Name = "TextBoxEx_CODefineConstantsAMXX"
-        Me.TextBoxEx_CODefineConstantsAMXX.Size = New System.Drawing.Size(353, 22)
+        Me.TextBoxEx_CODefineConstantsAMXX.Size = New System.Drawing.Size(357, 22)
         Me.TextBoxEx_CODefineConstantsAMXX.TabIndex = 18
         '
         'TextBoxEx_COIgnoredWarningsAMXX
@@ -1896,7 +2022,7 @@ Partial Class FormSettings
         Me.TextBoxEx_COIgnoredWarningsAMXX.Location = New System.Drawing.Point(198, 87)
         Me.TextBoxEx_COIgnoredWarningsAMXX.m_WatermarkText = "100;101..."
         Me.TextBoxEx_COIgnoredWarningsAMXX.Name = "TextBoxEx_COIgnoredWarningsAMXX"
-        Me.TextBoxEx_COIgnoredWarningsAMXX.Size = New System.Drawing.Size(353, 22)
+        Me.TextBoxEx_COIgnoredWarningsAMXX.Size = New System.Drawing.Size(357, 22)
         Me.TextBoxEx_COIgnoredWarningsAMXX.TabIndex = 17
         '
         'Label27
@@ -1925,7 +2051,7 @@ Partial Class FormSettings
         Me.ComboBox_COTreatWarningsAsErrorsAMXX.FormattingEnabled = True
         Me.ComboBox_COTreatWarningsAsErrorsAMXX.Location = New System.Drawing.Point(198, 60)
         Me.ComboBox_COTreatWarningsAsErrorsAMXX.Name = "ComboBox_COTreatWarningsAsErrorsAMXX"
-        Me.ComboBox_COTreatWarningsAsErrorsAMXX.Size = New System.Drawing.Size(353, 21)
+        Me.ComboBox_COTreatWarningsAsErrorsAMXX.Size = New System.Drawing.Size(357, 21)
         Me.ComboBox_COTreatWarningsAsErrorsAMXX.TabIndex = 14
         '
         'Label29
@@ -1945,7 +2071,7 @@ Partial Class FormSettings
         Me.ComboBox_COVerbosityLevelAMXX.FormattingEnabled = True
         Me.ComboBox_COVerbosityLevelAMXX.Location = New System.Drawing.Point(198, 33)
         Me.ComboBox_COVerbosityLevelAMXX.Name = "ComboBox_COVerbosityLevelAMXX"
-        Me.ComboBox_COVerbosityLevelAMXX.Size = New System.Drawing.Size(353, 21)
+        Me.ComboBox_COVerbosityLevelAMXX.Size = New System.Drawing.Size(357, 21)
         Me.ComboBox_COVerbosityLevelAMXX.TabIndex = 12
         '
         'Label20
@@ -2342,83 +2468,6 @@ Partial Class FormSettings
         Me.Label17.Text = "Loaded BasicPawn plugins are able to read stored database entries. Make sure all " &
     "installed plugins are from a trustworthy publisher to prevent theft."
         '
-        'GroupBox23
-        '
-        Me.GroupBox23.Controls.Add(Me.CheckBox_InvertedColors)
-        Me.GroupBox23.Dock = System.Windows.Forms.DockStyle.Top
-        Me.GroupBox23.Location = New System.Drawing.Point(6, 6)
-        Me.GroupBox23.Name = "GroupBox23"
-        Me.GroupBox23.Size = New System.Drawing.Size(740, 54)
-        Me.GroupBox23.TabIndex = 35
-        Me.GroupBox23.TabStop = False
-        Me.GroupBox23.Text = "User Interface"
-        '
-        'CheckBox_InvertedColors
-        '
-        Me.CheckBox_InvertedColors.AutoSize = True
-        Me.CheckBox_InvertedColors.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_InvertedColors.Location = New System.Drawing.Point(9, 21)
-        Me.CheckBox_InvertedColors.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_InvertedColors.Name = "CheckBox_InvertedColors"
-        Me.CheckBox_InvertedColors.Size = New System.Drawing.Size(134, 18)
-        Me.CheckBox_InvertedColors.TabIndex = 14
-        Me.CheckBox_InvertedColors.Text = "High contrast mode"
-        Me.CheckBox_InvertedColors.UseVisualStyleBackColor = True
-        '
-        'GroupBox12
-        '
-        Me.GroupBox12.Controls.Add(Me.Label8)
-        Me.GroupBox12.Controls.Add(Me.NumericUpDown_ThreadUpdateRate)
-        Me.GroupBox12.Controls.Add(Me.Label14)
-        Me.GroupBox12.Controls.Add(Me.LinkLabel_ThreadUpdateRateHelp)
-        Me.GroupBox12.Dock = System.Windows.Forms.DockStyle.Top
-        Me.GroupBox12.Location = New System.Drawing.Point(6, 359)
-        Me.GroupBox12.Name = "GroupBox12"
-        Me.GroupBox12.Size = New System.Drawing.Size(740, 56)
-        Me.GroupBox12.TabIndex = 36
-        Me.GroupBox12.TabStop = False
-        Me.GroupBox12.Text = "Threading"
-        '
-        'Label8
-        '
-        Me.Label8.AutoSize = True
-        Me.Label8.Location = New System.Drawing.Point(9, 24)
-        Me.Label8.Margin = New System.Windows.Forms.Padding(6, 6, 3, 6)
-        Me.Label8.Name = "Label8"
-        Me.Label8.Size = New System.Drawing.Size(173, 13)
-        Me.Label8.TabIndex = 24
-        Me.Label8.Text = "Background thread update rate:"
-        '
-        'NumericUpDown_ThreadUpdateRate
-        '
-        Me.NumericUpDown_ThreadUpdateRate.Location = New System.Drawing.Point(185, 19)
-        Me.NumericUpDown_ThreadUpdateRate.Maximum = New Decimal(New Integer() {2500, 0, 0, 0})
-        Me.NumericUpDown_ThreadUpdateRate.Minimum = New Decimal(New Integer() {100, 0, 0, 0})
-        Me.NumericUpDown_ThreadUpdateRate.Name = "NumericUpDown_ThreadUpdateRate"
-        Me.NumericUpDown_ThreadUpdateRate.Size = New System.Drawing.Size(64, 22)
-        Me.NumericUpDown_ThreadUpdateRate.TabIndex = 25
-        Me.NumericUpDown_ThreadUpdateRate.Value = New Decimal(New Integer() {500, 0, 0, 0})
-        '
-        'Label14
-        '
-        Me.Label14.AutoSize = True
-        Me.Label14.Location = New System.Drawing.Point(258, 24)
-        Me.Label14.Name = "Label14"
-        Me.Label14.Size = New System.Drawing.Size(21, 13)
-        Me.Label14.TabIndex = 26
-        Me.Label14.Text = "ms"
-        '
-        'LinkLabel_ThreadUpdateRateHelp
-        '
-        Me.LinkLabel_ThreadUpdateRateHelp.AutoSize = True
-        Me.LinkLabel_ThreadUpdateRateHelp.Location = New System.Drawing.Point(285, 24)
-        Me.LinkLabel_ThreadUpdateRateHelp.Name = "LinkLabel_ThreadUpdateRateHelp"
-        Me.LinkLabel_ThreadUpdateRateHelp.Size = New System.Drawing.Size(12, 13)
-        Me.LinkLabel_ThreadUpdateRateHelp.TabIndex = 27
-        Me.LinkLabel_ThreadUpdateRateHelp.TabStop = True
-        Me.LinkLabel_ThreadUpdateRateHelp.Text = "?"
-        Me.ToolTip_Info.SetToolTip(Me.LinkLabel_ThreadUpdateRateHelp, resources.GetString("LinkLabel_ThreadUpdateRateHelp.ToolTip"))
-        '
         'FormSettings
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -2443,12 +2492,17 @@ Partial Class FormSettings
         Me.TabPage_General.ResumeLayout(False)
         Me.GroupBox9.ResumeLayout(False)
         Me.GroupBox9.PerformLayout()
+        Me.GroupBox12.ResumeLayout(False)
+        Me.GroupBox12.PerformLayout()
+        CType(Me.NumericUpDown_ThreadUpdateRate, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupBox8.ResumeLayout(False)
         Me.GroupBox8.PerformLayout()
         Me.GroupBox7.ResumeLayout(False)
         Me.GroupBox7.PerformLayout()
         Me.GroupBox6.ResumeLayout(False)
         Me.GroupBox6.PerformLayout()
+        Me.GroupBox23.ResumeLayout(False)
+        Me.GroupBox23.PerformLayout()
         Me.TabPage_Editor.ResumeLayout(False)
         Me.GroupBox11.ResumeLayout(False)
         Me.GroupBox11.PerformLayout()
@@ -2508,11 +2562,6 @@ Partial Class FormSettings
         Me.TableLayoutPanel3.ResumeLayout(False)
         Me.TableLayoutPanel3.PerformLayout()
         CType(Me.ClassPictureBoxQuality1, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.GroupBox23.ResumeLayout(False)
-        Me.GroupBox23.PerformLayout()
-        Me.GroupBox12.ResumeLayout(False)
-        Me.GroupBox12.PerformLayout()
-        CType(Me.NumericUpDown_ThreadUpdateRate, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
     End Sub
@@ -2686,9 +2735,6 @@ Partial Class FormSettings
     Friend WithEvents TextBox_OutputFolder As TextBox
     Friend WithEvents Button_OutputFolder As Button
     Friend WithEvents GroupBox21 As GroupBox
-    Friend WithEvents Label10 As Label
-    Friend WithEvents TextBox_Shell As TextBox
-    Friend WithEvents LinkLabel_ShowShellArguments As LinkLabel
     Friend WithEvents GroupBox20 As GroupBox
     Friend WithEvents Label1 As Label
     Friend WithEvents TextBox_ClientFolder As TextBox
@@ -2708,4 +2754,11 @@ Partial Class FormSettings
     Friend WithEvents NumericUpDown_ThreadUpdateRate As NumericUpDown
     Friend WithEvents Label14 As Label
     Friend WithEvents LinkLabel_ThreadUpdateRateHelp As LinkLabel
+    Friend WithEvents TextBox_PostBuildCmd As TextBox
+    Friend WithEvents Label10 As Label
+    Friend WithEvents TextBox_PreBuildCmd As TextBox
+    Friend WithEvents Label9 As Label
+    Friend WithEvents ToolTip_MacroInfo As ToolTip
+    Friend WithEvents LinkLabel_PostMacroHelp As LinkLabel
+    Friend WithEvents LinkLabel_PreMacroHelp As LinkLabel
 End Class

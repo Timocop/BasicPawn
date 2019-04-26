@@ -464,6 +464,7 @@ Public Class ClassTextEditorTools
                                   sFile As String,
                                   sSource As String,
                                   bTesting As Boolean,
+                                  bBuildEvents As Boolean,
                                   ByRef sOutputFile As String,
                                   Optional mConfig As ClassConfigs.STRUC_CONFIG_ITEM = Nothing,
                                   Optional sWorkingDirectory As String = Nothing,
@@ -711,6 +712,29 @@ Public Class ClassTextEditorTools
                 End Select
             End If
 
+            Dim mBuildEvents As ClassTextEditorTools.ClassCompilerBuildEvents = Nothing
+
+            If (bBuildEvents) Then
+                mBuildEvents = New ClassTextEditorTools.ClassCompilerBuildEvents(mConfig, mTab.m_File, mConfig.g_sIncludeFolders, mConfig.g_sCompilerPath, mConfig.g_sOutputFolder, bTesting, sWorkingDirectory)
+            End If
+
+            'Execute pre-build events
+            If (mBuildEvents IsNot Nothing AndAlso Not String.IsNullOrEmpty(mBuildEvents.m_PreBuildCmd)) Then
+                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "Executing pre-build event...", False, False, True)
+
+                Dim iBuildEventExitCode As Integer = -1
+                Dim sBuildEventOutput As String = ""
+
+                mBuildEvents.ExecPre(iBuildEventExitCode, sBuildEventOutput)
+
+                Dim sOutputLines = sBuildEventOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
+                For i = 0 To sOutputLines.Length - 1
+                    g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & sOutputLines(i), False, False, True)
+                Next
+
+                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "Completed pre-build event with exit code: " & iBuildEventExitCode, False, False, True)
+            End If
+
             'Compile 
             If (String.IsNullOrEmpty(sWorkingDirectory) OrElse Not IO.Directory.Exists(sWorkingDirectory)) Then
                 ClassTools.ClassProcess.ExecuteProgram(sCompilerPath, String.Join(" "c, lArguments.ToArray), iExitCode, sOutput)
@@ -773,6 +797,23 @@ Public Class ClassTextEditorTools
                 If (Not bTesting) Then
                     g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & String.Format("Saved compiled source: {0}", sOutputFile), New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(sOutputFile))
                 End If
+            End If
+
+            'Execute post-build events
+            If (mBuildEvents IsNot Nothing AndAlso Not String.IsNullOrEmpty(mBuildEvents.m_PostBuildCmd)) Then
+                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "Executing post-build event...", False, False, True)
+
+                Dim iBuildEventExitCode As Integer = -1
+                Dim sBuildEventOutput As String = ""
+
+                mBuildEvents.ExecPost(iBuildEventExitCode, sBuildEventOutput)
+
+                Dim sOutputLines = sBuildEventOutput.Split(New String() {Environment.NewLine, vbLf}, 0)
+                For i = 0 To sOutputLines.Length - 1
+                    g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & sOutputLines(i), False, False, True)
+                Next
+
+                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "Completed post-build event with exit code: " & iBuildEventExitCode, False, False, True)
             End If
 
             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "Compiling source finished!", False, False, True)
@@ -1834,5 +1875,108 @@ Public Class ClassTextEditorTools
 
             Sub Execute(sArg As String)
         End Interface
+    End Class
+
+    Class ClassCompilerBuildEvents
+        Public Class STRUC_BUILD_MACRO
+            Public sMacro As String = ""
+            Public sDescription As String = ""
+            Public sInput As String = ""
+
+            Public Sub New(_Macro As String, _Description As String, _Input As String)
+                sMacro = _Macro
+                sDescription = _Description
+                sInput = _Input
+            End Sub
+        End Class
+
+        ReadOnly Property m_BuildMacros As New List(Of STRUC_BUILD_MACRO)
+
+        ReadOnly Property m_File As String
+        ReadOnly Property m_IncludePath As String
+        ReadOnly Property m_CompilerPath As String
+        ReadOnly Property m_OutputPath As String
+        ReadOnly Property m_Testing As Boolean
+        ReadOnly Property m_WorkingDirectory As String
+
+        ReadOnly Property m_PreBuildCmd As String
+        ReadOnly Property m_PostBuildCmd As String
+
+        Sub New(mConfig As ClassConfigs.STRUC_CONFIG_ITEM, _File As String, _IncludePath As String, _CompilerPath As String, _OutputPath As String, _Testing As Boolean, _WorkingDirectory As String)
+            Me.New(mConfig.g_sBuildEventPreCmd, mConfig.g_sBuildEventPostCmd, _File, _IncludePath, _CompilerPath, _OutputPath, _Testing, _WorkingDirectory)
+        End Sub
+
+        Sub New(_BuildEventPreCmd As String, _BuildEventPostCmd As String, _File As String, _IncludePath As String, _CompilerPath As String, _OutputPath As String, _Testing As Boolean, _WorkingDirectory As String)
+            m_PreBuildCmd = _BuildEventPreCmd
+            m_PostBuildCmd = _BuildEventPostCmd
+
+            m_File = _File
+            m_IncludePath = _IncludePath
+            m_CompilerPath = _CompilerPath
+            m_OutputPath = _OutputPath
+            m_Testing = _Testing
+            m_WorkingDirectory = _WorkingDirectory
+
+            RebuildMacros()
+        End Sub
+
+        Public Sub RebuildMacros()
+            m_BuildMacros.Clear()
+
+            m_BuildMacros.Add(New STRUC_BUILD_MACRO("bp_source_file", "Source file", m_File))
+            m_BuildMacros.Add(New STRUC_BUILD_MACRO("bp_source_filename", "Source filename", If(String.IsNullOrEmpty(m_File), "", IO.Path.GetFileNameWithoutExtension(m_File))))
+            m_BuildMacros.Add(New STRUC_BUILD_MACRO("bp_source_fileext", "Source file extension", If(String.IsNullOrEmpty(m_File), "", IO.Path.GetExtension(m_File))))
+            m_BuildMacros.Add(New STRUC_BUILD_MACRO("bp_source_directory", "Source directory", If(String.IsNullOrEmpty(m_File), "", IO.Path.GetDirectoryName(m_File))))
+
+            m_BuildMacros.Add(New STRUC_BUILD_MACRO("bp_conf_includes", "Include folders (seperated by ';')", m_IncludePath))
+            m_BuildMacros.Add(New STRUC_BUILD_MACRO("bp_conf_compiler", "Compiler path", m_CompilerPath))
+            m_BuildMacros.Add(New STRUC_BUILD_MACRO("bp_conf_output", "Output path", m_OutputPath))
+
+            m_BuildMacros.Add(New STRUC_BUILD_MACRO("bp_startdir", "BasicPawn startup directory", Application.StartupPath))
+            m_BuildMacros.Add(New STRUC_BUILD_MACRO("bp_testing", "True if testing only, false if building binary", If(m_Testing, "true", "false")))
+        End Sub
+
+        Public Sub ExecPre(ByRef r_iExitCode As Integer, ByRef r_sOutput As String)
+            Dim sBatFile As String = BuildBatch(m_PreBuildCmd)
+
+            BuildProcess(sBatFile, r_iExitCode, r_sOutput)
+
+            IO.File.Delete(sBatFile)
+        End Sub
+
+        Public Sub ExecPost(ByRef r_iExitCode As Integer, ByRef r_sOutput As String)
+            Dim sBatFile As String = BuildBatch(m_PostBuildCmd)
+
+            BuildProcess(sBatFile, r_iExitCode, r_sOutput)
+
+            IO.File.Delete(sBatFile)
+        End Sub
+
+        Private Function BuildBatch(sCmd As String) As String
+            Dim sBatFile As String = IO.Path.Combine(IO.Path.GetTempPath(), Guid.NewGuid.ToString & ".bat")
+
+            'Make command line output cleaner by adding '@echo off'
+            'The user can turn it back on with '@echo on'
+            Dim mCmd As New Text.StringBuilder
+            mCmd.AppendLine("@echo off")
+            mCmd.AppendLine(sCmd)
+
+            IO.File.WriteAllText(sBatFile, mCmd.ToString)
+
+            Return sBatFile
+        End Function
+
+        Private Sub BuildProcess(sBatFile As String, ByRef r_iExitCode As Integer, ByRef r_sOutput As String)
+            r_iExitCode = -1
+            r_sOutput = ""
+
+            Dim mMacros As New Dictionary(Of String, String)
+
+            For Each mMacro In m_BuildMacros
+                mMacros(mMacro.sMacro) = mMacro.sInput
+            Next
+
+            ClassTools.ClassProcess.ExecuteProgram("cmd.exe", String.Format("/c ""{0}""", sBatFile), m_WorkingDirectory, mMacros, r_iExitCode, r_sOutput)
+        End Sub
     End Class
 End Class

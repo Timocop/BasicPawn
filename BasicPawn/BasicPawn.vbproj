@@ -372,9 +372,6 @@
     <Compile Include="Controls and Forms\Main\Extensions\ExtMainMenuRedo.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Controls and Forms\Main\Extensions\ExtMainMenuShell.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Controls and Forms\Main\Extensions\ExtMainMenuTest.vb">
       <SubType>Form</SubType>
     </Compile>

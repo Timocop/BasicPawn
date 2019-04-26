@@ -55,53 +55,38 @@ Public Class ClassTools
     End Class
 
     Class ClassProcess
-        ''' <summary>
-        ''' Executes a program and receives exit code and output.
-        ''' </summary>
-        ''' <param name="sPath"></param>
-        ''' <param name="sArguments"></param>
-        ''' <param name="r_ExitCode"></param>
-        ''' <param name="r_Output"></param>
         Public Shared Sub ExecuteProgram(sPath As String, sArguments As String, ByRef r_ExitCode As Integer, ByRef r_Output As String)
-            r_ExitCode = 0
-            r_Output = ""
-
-            Using i As New Process
-                i.StartInfo.CreateNoWindow = True
-                i.StartInfo.RedirectStandardOutput = True
-                i.StartInfo.UseShellExecute = False
-                i.StartInfo.FileName = sPath
-                i.StartInfo.Arguments = sArguments
-                i.StartInfo.WorkingDirectory = IO.Path.GetDirectoryName(sPath)
-                i.Start()
-                r_Output = i.StandardOutput.ReadToEnd
-                i.WaitForExit()
-                r_ExitCode = i.ExitCode
-            End Using
+            ExecuteProgram(sPath, sArguments, IO.Path.GetDirectoryName(sPath), r_ExitCode, r_Output)
         End Sub
 
-        ''' <summary>
-        ''' Executes a program and receives exit code and output.
-        ''' </summary>
-        ''' <param name="sPath"></param>
-        ''' <param name="sArguments"></param>
-        ''' <param name="sWorkingDirectory"></param>
-        ''' <param name="r_ExitCode"></param>
-        ''' <param name="r_Output"></param>
         Public Shared Sub ExecuteProgram(sPath As String, sArguments As String, sWorkingDirectory As String, ByRef r_ExitCode As Integer, ByRef r_Output As String)
+            ExecuteProgram(sPath, sArguments, sWorkingDirectory, Nothing, r_ExitCode, r_Output)
+        End Sub
+
+        Public Shared Sub ExecuteProgram(sPath As String, sArguments As String, sWorkingDirectory As String, mEnvironmentVariables As Dictionary(Of String, String), ByRef r_ExitCode As Integer, ByRef r_Output As String)
             r_ExitCode = 0
             r_Output = ""
 
             Using i As New Process
-                i.StartInfo.CreateNoWindow = True
-                i.StartInfo.RedirectStandardOutput = True
-                i.StartInfo.UseShellExecute = False
                 i.StartInfo.FileName = sPath
                 i.StartInfo.Arguments = sArguments
                 i.StartInfo.WorkingDirectory = sWorkingDirectory
+
+                i.StartInfo.UseShellExecute = False
+                i.StartInfo.CreateNoWindow = True
+                i.StartInfo.RedirectStandardOutput = True
+
+                If (mEnvironmentVariables IsNot Nothing) Then
+                    For Each mVar In mEnvironmentVariables
+                        i.StartInfo.EnvironmentVariables(mVar.Key) = mVar.Value
+                    Next
+                End If
+
                 i.Start()
-                r_Output = i.StandardOutput.ReadToEnd
                 i.WaitForExit()
+
+
+                r_Output = i.StandardOutput.ReadToEnd
                 r_ExitCode = i.ExitCode
             End Using
         End Sub
@@ -503,6 +488,23 @@ Public Class ClassTools
             Public Shared Function FromBase64Ex(sText As String) As Byte()
                 Return Convert.FromBase64String(sText)
             End Function
+
+            Public Shared Function TryFromBase64(sText As String, i As Text.Encoding, sDefault As String) As String
+                Try
+                    Return FromBase64(sText, i)
+                Catch ex As Exception
+                    Return sDefault
+                End Try
+            End Function
+
+            Public Shared Function TryFromBase64(sText As String, iDefault As Byte()) As Byte()
+                Try
+                    Return FromBase64Ex(sText)
+                Catch ex As Exception
+                    Return iDefault
+                End Try
+            End Function
+
         End Class
 
         Class ClassHash
