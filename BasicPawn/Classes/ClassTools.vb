@@ -508,31 +508,50 @@ Public Class ClassTools
         End Class
 
         Class ClassHash
-            Public Shared Function HashSHA256File(sFile As String) As String
-                Dim iHash As Byte()
-                With New StringBuilder
-                    Dim sTemp As String = ""
+            Public Shared Function SHA256StringHash(sText As String) As String
+                Dim iHash() As Byte
+                Dim sResult As New StringBuilder
+                Dim sTemp As String = ""
 
-                    Using mHash As New SHA256Managed()
-                        Using mFS As New IO.FileStream(sFile, IO.FileMode.Open, IO.FileAccess.Read)
-                            mHash.ComputeHash(mFS)
-                        End Using
+                Using mHash As New SHA256Managed()
+                    iHash = mHash.ComputeHash(Encoding.UTF8.GetBytes(sText))
 
-                        iHash = mHash.Hash
+                    For ii As Integer = 0 To iHash.Length - 1
+                        sTemp = Convert.ToString(iHash(ii), 16)
+                        If (sTemp.Length = 1) Then
+                            sTemp = "0" & sTemp
+                        End If
+                        sResult.Append(sTemp)
+                    Next
 
-                        For ii As Integer = 0 To iHash.Length - 1
-                            sTemp = Convert.ToString(iHash(ii), 16)
-                            If (sTemp.Length = 1) Then
-                                sTemp = "0" & sTemp
-                            End If
-                            .Append(sTemp)
-                        Next
+                    mHash.Clear()
+                End Using
 
-                        mHash.Clear()
+                Return sResult.ToString
+            End Function
+
+            Public Shared Function SHA256FileHash(sFile As String) As String
+                Dim iHash() As Byte
+                Dim sResult As New StringBuilder
+                Dim sTemp As String = ""
+
+                Using mHash As New SHA256Managed()
+                    Using mFS As New IO.FileStream(sFile, IO.FileMode.Open, IO.FileAccess.Read)
+                        iHash = mHash.ComputeHash(mFS)
                     End Using
 
-                    Return .ToString
-                End With
+                    For ii As Integer = 0 To iHash.Length - 1
+                        sTemp = Convert.ToString(iHash(ii), 16)
+                        If (sTemp.Length = 1) Then
+                            sTemp = "0" & sTemp
+                        End If
+                        sResult.Append(sTemp)
+                    Next
+
+                    mHash.Clear()
+                End Using
+
+                Return sResult.ToString
             End Function
         End Class
 

@@ -105,7 +105,7 @@ Public Class ClassUpdate
                             Throw New ArgumentException("Files does not exist")
                         End If
 
-                        sDataHash = ClassTools.ClassCrypto.ClassHash.HashSHA256File(sDataPath)
+                        sDataHash = ClassTools.ClassCrypto.ClassHash.SHA256FileHash(sDataPath)
                     End If
                 End Using
 

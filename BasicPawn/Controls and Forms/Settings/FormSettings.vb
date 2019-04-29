@@ -121,9 +121,9 @@ Public Class FormSettings
     Public Sub ApplySettings()
         g_mFormMain.UpdateFormConfigText()
 
-        g_mFormMain.g_ClassAutocompleteUpdater.StartUpdateSchedule(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
+        g_mFormMain.g_ClassAutocompleteUpdater.StartUpdateSchedule(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, "", ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS.FORCE_UPDATE)
         For j = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1
-            g_mFormMain.g_ClassAutocompleteUpdater.StartUpdateSchedule(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, g_mFormMain.g_ClassTabControl.m_Tab(j))
+            g_mFormMain.g_ClassAutocompleteUpdater.StartUpdateSchedule(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, g_mFormMain.g_ClassTabControl.m_Tab(j), ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS.FORCE_UPDATE)
         Next
 
         For j = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1

@@ -26,7 +26,17 @@ Public Class ClassAutocompleteUpdater
     Private g_mAutocompleteUpdaterThread As Threading.Thread
     Private _lock As New Object
 
-    Public g_lFullAutocompleteTabRequests As New ClassSyncList(Of String)
+    Class STRUC_AUTOCOMPLETE_TAB_REQUEST_ITEM
+        Public sTabIdentifier As String
+        Public iOptionFlags As ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS
+
+        Sub New(_TabIdentifier As String, _OptionFlags As ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS)
+            sTabIdentifier = _TabIdentifier
+            iOptionFlags = _OptionFlags
+        End Sub
+    End Class
+
+    Public g_lFullAutocompleteTabRequests As New ClassSyncList(Of STRUC_AUTOCOMPLETE_TAB_REQUEST_ITEM)
 
     Public Event OnAutocompleteUpdateStarted(iUpdateType As ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS)
     Public Event OnAutocompleteUpdateEnd()
@@ -42,23 +52,25 @@ Public Class ClassAutocompleteUpdater
         VARIABLES_AUTOCOMPLETE = (1 << 1)
     End Enum
 
-    ''' <summary>
-    ''' Starts the autocomplete update thread.
-    ''' </summary>
-    ''' <param name="iUpdateType"></param>
-    ''' <param name="mTab"></param>
-    ''' <returns></returns>
-    Public Function StartUpdate(iUpdateType As ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS, mTab As ClassTabControl.SourceTabPage) As Boolean
-        Return StartUpdate(iUpdateType, If(mTab IsNot Nothing, mTab.m_Identifier, ""))
-    End Function
+    Enum ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS
+        NOONE = 0
+        FORCE_UPDATE = (1 << 0)
+        FORCE_SCHEDULE = (1 << 1)
+    End Enum
 
     ''' <summary>
     ''' Starts the autocomplete update thread.
-    ''' </summary>
-    ''' <param name="iUpdateType"></param>
-    ''' <param name="sTabIdentifier"></param>
+    ''' </summary> 
     ''' <returns></returns>
-    Public Function StartUpdate(iUpdateType As ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS, sTabIdentifier As String) As Boolean
+    Public Function StartUpdate(iUpdateType As ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS) As Boolean
+        Return StartUpdate(iUpdateType, "", ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS.NOONE)
+    End Function
+
+    Public Function StartUpdate(iUpdateType As ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS, mTab As ClassTabControl.SourceTabPage, iOptionFlags As ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS) As Boolean
+        Return StartUpdate(iUpdateType, If(mTab IsNot Nothing, mTab.m_Identifier, ""), iOptionFlags)
+    End Function
+
+    Public Function StartUpdate(iUpdateType As ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS, sTabIdentifier As String, iOptionFlags As ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS) As Boolean
         If (String.IsNullOrEmpty(sTabIdentifier)) Then
             sTabIdentifier = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Identifier
         End If
@@ -69,16 +81,16 @@ Public Class ClassAutocompleteUpdater
                                                                         SyncLock _lock
                                                                             If ((iUpdateType And ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) <> 0) Then
                                                                                 RaiseEvent OnAutocompleteUpdateStarted(iUpdateType)
-                                                                                FullAutocompleteUpdate_Thread(sTabIdentifier)
+                                                                                FullAutocompleteUpdate_Thread(sTabIdentifier, iOptionFlags)
                                                                             End If
 
                                                                             If ((iUpdateType And ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.VARIABLES_AUTOCOMPLETE) <> 0) Then
                                                                                 RaiseEvent OnAutocompleteUpdateStarted(iUpdateType)
-                                                                                VariableAutocompleteUpdate_Thread(sTabIdentifier)
+                                                                                VariableAutocompleteUpdate_Thread(sTabIdentifier, iOptionFlags)
                                                                             End If
 
                                                                             If ((iUpdateType And ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) <> 0) Then
-                                                                                FullAutocompleteUpdate_Post_Thread(sTabIdentifier)
+                                                                                FullAutocompleteUpdate_Post_Thread(sTabIdentifier, iOptionFlags)
                                                                             End If
                                                                         End SyncLock
                                                                     Catch ex As Threading.ThreadAbortException
@@ -102,40 +114,38 @@ Public Class ClassAutocompleteUpdater
 
     ''' <summary>
     ''' Starts the autocomplete update thread. Adds task to background thread if thread is already running.
-    ''' </summary>
-    ''' <param name="iUpdateType"></param> 
+    ''' </summary> 
     ''' <returns></returns>
     Public Function StartUpdateSchedule(iUpdateType As ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS) As Boolean
-        Return StartUpdateSchedule(iUpdateType, "")
+        Return StartUpdateSchedule(iUpdateType, "", ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS.NOONE)
     End Function
 
-    ''' <summary>
-    ''' Starts the autocomplete update thread. Adds task to background thread if thread is already running.
-    ''' </summary>
-    ''' <param name="iUpdateType"></param>
-    ''' <param name="mTab">The tab to request an update.</param>
-    ''' <returns></returns>
-    Public Function StartUpdateSchedule(iUpdateType As ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS, mTab As ClassTabControl.SourceTabPage) As Boolean
-        Return StartUpdateSchedule(iUpdateType, If(mTab IsNot Nothing, mTab.m_Identifier, ""))
+    Public Function StartUpdateSchedule(iUpdateType As ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS, mTab As ClassTabControl.SourceTabPage, iOptionFlags As ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS) As Boolean
+        Return StartUpdateSchedule(iUpdateType, If(mTab IsNot Nothing, mTab.m_Identifier, ""), iOptionFlags)
     End Function
 
-    ''' <summary>
-    ''' Starts the autocomplete update thread. Adds task to background thread if thread is already running.
-    ''' </summary>
-    ''' <param name="iUpdateType"></param>
-    ''' <param name="sTabIdentifier">The tab to request an update.</param>
-    ''' <returns></returns>
-    Public Function StartUpdateSchedule(iUpdateType As ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS, sTabIdentifier As String) As Boolean
-        If (StartUpdate(iUpdateType, sTabIdentifier)) Then
+    Public Function StartUpdateSchedule(iUpdateType As ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS, sTabIdentifier As String, iOptionFlags As ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS) As Boolean
+        If (StartUpdate(iUpdateType, sTabIdentifier, iOptionFlags)) Then
             If ((iUpdateType And ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) <> 0) Then
-                g_lFullAutocompleteTabRequests.Remove(sTabIdentifier)
+                Dim mTabRequest = g_lFullAutocompleteTabRequests.Find(Function(i As STRUC_AUTOCOMPLETE_TAB_REQUEST_ITEM)
+                                                                          Return (i.sTabIdentifier = sTabIdentifier AndAlso i.iOptionFlags = iOptionFlags)
+                                                                      End Function)
+
+                If (mTabRequest IsNot Nothing) Then
+                    g_lFullAutocompleteTabRequests.Remove(mTabRequest)
+                End If
             End If
 
             Return True
         Else
             If ((iUpdateType And ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) <> 0) Then
-                If (Not g_lFullAutocompleteTabRequests.Contains(sTabIdentifier)) Then
-                    g_lFullAutocompleteTabRequests.Add(sTabIdentifier)
+                Dim mTabRequest = g_lFullAutocompleteTabRequests.Find(Function(i As STRUC_AUTOCOMPLETE_TAB_REQUEST_ITEM)
+                                                                          Return (i.sTabIdentifier = sTabIdentifier AndAlso i.iOptionFlags = iOptionFlags)
+                                                                      End Function)
+
+                'Add when no request has been found OR the option flags is enforcing it
+                If ((iOptionFlags And ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS.FORCE_SCHEDULE) <> 0 OrElse mTabRequest Is Nothing) Then
+                    g_lFullAutocompleteTabRequests.Add(New STRUC_AUTOCOMPLETE_TAB_REQUEST_ITEM(sTabIdentifier, iOptionFlags))
                 End If
             End If
 
@@ -152,7 +162,7 @@ Public Class ClassAutocompleteUpdater
         ClassThread.Abort(g_mAutocompleteUpdaterThread)
     End Sub
 
-    Private Sub FullAutocompleteUpdate_Thread(sTabIdentifier As String)
+    Private Sub FullAutocompleteUpdate_Thread(sTabIdentifier As String, iOptionFlags As ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS)
         Try
             Dim sActiveTabIdentifier As String = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Identifier)
             Dim mTabs As ClassTabControl.SourceTabPage() = ClassThread.ExecEx(Of ClassTabControl.SourceTabPage())(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.GetAllTabs())
@@ -198,9 +208,6 @@ Public Class ClassAutocompleteUpdater
 
             Dim lNewAutocompleteList As New ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
             Dim mParser As New ClassParser()
-
-            'Add debugger placeholder variables and methods
-            lNewAutocompleteList.AddRange((New ClassDebuggerParser(g_mFormMain)).GetDebuggerAutocomplete)
 
             Dim lIncludeFiles As New List(Of DictionaryEntry)
             Dim lIncludeFilesFull As New List(Of DictionaryEntry)
@@ -292,12 +299,6 @@ Public Class ClassAutocompleteUpdater
                 End Sub)
             mIncludeWatch.Stop()
 
-            'Add preprocessor stuff
-            lNewAutocompleteList.AddRange(mParser.GetPreprocessorKeywords(lIncludeFilesFull.ToArray))
-
-            'Add preprocessor stuff
-            lNewAutocompleteList.AddRange(mParser.GetTextEditorCommands())
-
             'Detect current mod type...
             mLanguageWatch.Start()
             If (mRequestedConfig.g_iLanguage = ClassConfigs.STRUC_CONFIG_ITEM.ENUM_LANGUAGE_DETECT_TYPE.AUTO_DETECT) Then
@@ -363,6 +364,32 @@ Public Class ClassAutocompleteUpdater
 
             'Set mod type
             mRequestTab.m_Language = iRequestedLangauge
+
+            'Only update autocomplete if files have changed.
+            If ((iOptionFlags And ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS.FORCE_UPDATE) = 0) Then
+                Const E_IDENTIFIERKEY = "FullAutocomplete"
+
+                Dim sAutocompleteIdentifier As String = ""
+                If (CheckAutocompleteIdentifier(E_IDENTIFIERKEY, mRequestTab, sAutocompleteIdentifier)) Then
+                    ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                           g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.ToolTipText = ""
+                                                           g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = False
+                                                       End Sub)
+
+                    Return
+                End If
+
+                mRequestTab.m_AutocompleteIdentifier(E_IDENTIFIERKEY) = sAutocompleteIdentifier
+            End If
+
+            'Add debugger placeholder variables and methods
+            lNewAutocompleteList.AddRange((New ClassDebuggerParser(g_mFormMain)).GetDebuggerAutocomplete)
+
+            'Add preprocessor stuff
+            lNewAutocompleteList.AddRange(mParser.GetPreprocessorKeywords(lIncludeFilesFull.ToArray))
+
+            'Add editor cmd stuff
+            lNewAutocompleteList.AddRange(mParser.GetTextEditorCommands())
 
             'Parse everything. Methods etc.
             If (True) Then
@@ -448,32 +475,7 @@ Public Class ClassAutocompleteUpdater
         End Try
     End Sub
 
-    Private Sub FullAutocompleteUpdate_Post_Thread(sTabIdentifier As String)
-        Try
-            Dim sActiveTabIdentifier As String = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Identifier)
-
-            'Dont spam the user with UI updates, only on active tabs
-            If (sActiveTabIdentifier = sTabIdentifier) Then
-                ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                       'Dont move this outside of invoke! Results in "File is already in use!" when aborting the thread... for some reason...
-                                                       g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.UpdateSyntax(ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE.AUTOCOMPLETE)
-                                                       g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.UpdateTextEditorSyntax()
-                                                   End Sub)
-
-                ClassThread.ExecAsync(g_mFormMain.g_mUCObjectBrowser, Sub()
-                                                                          g_mFormMain.g_mUCObjectBrowser.StartUpdate()
-                                                                      End Sub)
-            End If
-
-        Catch ex As Threading.ThreadAbortException
-            Throw
-        Catch ex As Exception
-            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Autocomplete update failed! " & ex.Message, False, False)
-            ClassExceptionLog.WriteToLog(ex)
-        End Try
-    End Sub
-
-    Private Sub VariableAutocompleteUpdate_Thread(sTabIdentifier As String)
+    Private Sub VariableAutocompleteUpdate_Thread(sTabIdentifier As String, iOptionFlags As ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS)
         Try
             Dim mRequestTab As ClassTabControl.SourceTabPage = ClassThread.ExecEx(Of ClassTabControl.SourceTabPage)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.GetTabByIdentifier(sTabIdentifier))
             If (mRequestTab Is Nothing) Then
@@ -520,6 +522,22 @@ Public Class ClassAutocompleteUpdater
 
             Dim lNewVarAutocompleteList As New ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
             Dim mParser As New ClassParser
+
+            'Only update autocomplete if files have changed.
+            If ((iOptionFlags And ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS.FORCE_UPDATE) = 0) Then
+                Const E_IDENTIFIERKEY = "VarAutocomplete"
+
+                Dim sAutocompleteIdentifier As String = ""
+                If (CheckAutocompleteIdentifier(E_IDENTIFIERKEY, mRequestTab, sAutocompleteIdentifier)) Then
+                    ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                           g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.ToolTipText = ""
+                                                           g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = False
+                                                       End Sub)
+                    Return
+                End If
+
+                mRequestTab.m_AutocompleteIdentifier(E_IDENTIFIERKEY) = sAutocompleteIdentifier
+            End If
 
             'Parse variables and create methodmaps for variables
             If (True) Then
@@ -616,6 +634,57 @@ Public Class ClassAutocompleteUpdater
             ClassExceptionLog.WriteToLog(ex)
         End Try
     End Sub
+
+    Private Sub FullAutocompleteUpdate_Post_Thread(sTabIdentifier As String, iOptionFlags As ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS)
+        Try
+            Dim sActiveTabIdentifier As String = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Identifier)
+
+            'Dont spam the user with UI updates, only on active tabs
+            If (sActiveTabIdentifier = sTabIdentifier) Then
+                ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                       'Dont move this outside of invoke! Results in "File is already in use!" when aborting the thread... for some reason...
+                                                       g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.UpdateSyntax(ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE.AUTOCOMPLETE)
+                                                       g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.UpdateTextEditorSyntax()
+                                                   End Sub)
+
+                ClassThread.ExecAsync(g_mFormMain.g_mUCObjectBrowser, Sub()
+                                                                          g_mFormMain.g_mUCObjectBrowser.StartUpdate()
+                                                                      End Sub)
+            End If
+
+        Catch ex As Threading.ThreadAbortException
+            Throw
+        Catch ex As Exception
+            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Autocomplete update failed! " & ex.Message, False, False)
+            ClassExceptionLog.WriteToLog(ex)
+        End Try
+    End Sub
+
+    Private Function CheckAutocompleteIdentifier(sKey As String, mTab As ClassTabControl.SourceTabPage, ByRef sAutocompleteIdentifier As String) As Boolean
+        sAutocompleteIdentifier = ""
+
+        Dim lIdentifierBuilder As New List(Of String)
+        lIdentifierBuilder.Add(CStr(mTab.m_Language))
+        lIdentifierBuilder.Add(mTab.m_ActiveConfig.GetName)
+        lIdentifierBuilder.Add(mTab.m_TextEditor.Document.TextContent)
+
+        For Each mInclude As DictionaryEntry In mTab.m_IncludeFiles
+            If (Not IO.File.Exists(CStr(mInclude.Value))) Then
+                Continue For
+            End If
+
+            lIdentifierBuilder.Add(IO.File.GetLastWriteTime(CStr(mInclude.Value)).ToString)
+        Next
+
+        sAutocompleteIdentifier = String.Join("|", lIdentifierBuilder.ToArray)
+        sAutocompleteIdentifier = ClassTools.ClassCrypto.ClassHash.SHA256StringHash(sAutocompleteIdentifier)
+
+        If (mTab.m_AutocompleteIdentifier.ContainsKey(sKey)) Then
+            Return (mTab.m_AutocompleteIdentifier(sKey) = sAutocompleteIdentifier)
+        End If
+
+        Return False
+    End Function
 
     ''' <summary>
     ''' Gets all include files from a file

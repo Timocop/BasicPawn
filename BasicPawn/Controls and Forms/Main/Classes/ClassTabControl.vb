@@ -680,7 +680,7 @@ Public Class ClassTabControl
         g_mFormMain.g_mUCObjectBrowser.StartUpdate()
 
         For i = 0 To mTabs.Length - 1
-            g_mFormMain.g_ClassAutocompleteUpdater.StartUpdateSchedule(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, mTabs(i))
+            g_mFormMain.g_ClassAutocompleteUpdater.StartUpdateSchedule(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, mTabs(i), ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS.NOONE)
         Next
 
         g_mFormMain.g_ClassSyntaxUpdater.StartThread()
@@ -725,6 +725,7 @@ Public Class ClassTabControl
 
         Private g_sFile As String = ""
         Private g_mAutocompleteItems As New ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
+        Private g_mAutocompleteIdentifier As New Dictionary(Of String, String)
         Private g_mIncludeFiles As New ClassSyncList(Of DictionaryEntry) '{sTabIdentifier-Ref, IncludeFile}
         Private g_mIncludeFilesFull As New ClassSyncList(Of DictionaryEntry) '{sTabIdentifier-Ref, IncludeFile}
         Private g_mActiveConfig As ClassConfigs.STRUC_CONFIG_ITEM = ClassConfigs.m_DefaultConfig
@@ -971,6 +972,12 @@ Public Class ClassTabControl
         Public ReadOnly Property m_AutocompleteItems As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
             Get
                 Return g_mAutocompleteItems
+            End Get
+        End Property
+
+        Public ReadOnly Property m_AutocompleteIdentifier As Dictionary(Of String, String)
+            Get
+                Return g_mAutocompleteIdentifier
             End Get
         End Property
 

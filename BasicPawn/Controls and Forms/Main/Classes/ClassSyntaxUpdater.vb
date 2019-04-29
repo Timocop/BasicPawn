@@ -73,16 +73,16 @@ Public Class ClassSyntaxUpdater
 
                 'Update Autocomplete
                 If (bIsFormMainFocused AndAlso g_mFormMain.g_ClassAutocompleteUpdater.g_lFullAutocompleteTabRequests.Count > 0) Then
-                    Dim sRequestedTabIdentifier As String = g_mFormMain.g_ClassAutocompleteUpdater.g_lFullAutocompleteTabRequests(0)
+                    Dim sRequestedTabIdentifier As String = g_mFormMain.g_ClassAutocompleteUpdater.g_lFullAutocompleteTabRequests(0).sTabIdentifier
                     Dim sActiveTabIdentifier As String = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Identifier)
 
                     'Active tabs have higher priority to update
-                    If (g_mFormMain.g_ClassAutocompleteUpdater.g_lFullAutocompleteTabRequests.Contains(sActiveTabIdentifier)) Then
+                    If (g_mFormMain.g_ClassAutocompleteUpdater.g_lFullAutocompleteTabRequests.Exists(Function(a As ClassAutocompleteUpdater.STRUC_AUTOCOMPLETE_TAB_REQUEST_ITEM) a.sTabIdentifier = sActiveTabIdentifier)) Then
                         sRequestedTabIdentifier = sActiveTabIdentifier
                     End If
 
                     ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                           g_mFormMain.g_ClassAutocompleteUpdater.StartUpdateSchedule(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, sRequestedTabIdentifier)
+                                                           g_mFormMain.g_ClassAutocompleteUpdater.StartUpdateSchedule(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, sRequestedTabIdentifier, ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS.NOONE)
                                                        End Sub)
 
                 ElseIf (bIsFormMainFocused AndAlso dLastFullAutocompleteUpdate < Now) Then
