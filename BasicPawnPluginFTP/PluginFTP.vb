@@ -146,6 +146,7 @@ Public Class PluginFTP
         Public g_mPluginFTP As PluginFTP
 
         Private g_mFtpMenuSplit As ToolStripSeparator
+        Private g_mFtpMenuBuildSplit As ToolStripSeparator
         Private g_mFtpMenuItem As ToolStripMenuItem
         Private g_mFtpCompileItem As ToolStripMenuItem
         Private g_mFtpCompileAllItem As ToolStripMenuItem
@@ -166,9 +167,10 @@ Public Class PluginFTP
             AddHandler g_mFtpMenuItem.Click, AddressOf OnMenuItemClick
 
             If (True) Then
+                g_mFtpMenuBuildSplit = New ToolStripSeparator
                 g_mFtpCompileItem = New ToolStripMenuItem("Upload", My.Resources.imageres_5340_16x16)
 
-                g_mPluginFTP.g_mFormMain.ToolStripMenuItem_Build.DropDownItems.Add(g_mFtpMenuSplit)
+                g_mPluginFTP.g_mFormMain.ToolStripMenuItem_Build.DropDownItems.Add(g_mFtpMenuBuildSplit)
                 g_mPluginFTP.g_mFormMain.ToolStripMenuItem_Build.DropDownItems.Add(g_mFtpCompileItem)
 
                 RemoveHandler g_mFtpCompileItem.Click, AddressOf OnCompileItemClick
@@ -298,6 +300,11 @@ Public Class PluginFTP
                     If (g_mFtpMenuSplit IsNot Nothing AndAlso Not g_mFtpMenuSplit.IsDisposed) Then
                         g_mFtpMenuSplit.Dispose()
                         g_mFtpMenuSplit = Nothing
+                    End If
+
+                    If (g_mFtpMenuBuildSplit IsNot Nothing AndAlso Not g_mFtpMenuBuildSplit.IsDisposed) Then
+                        g_mFtpMenuBuildSplit.Dispose()
+                        g_mFtpMenuBuildSplit = Nothing
                     End If
 
                     If (g_mFtpMenuItem IsNot Nothing AndAlso Not g_mFtpMenuItem.IsDisposed) Then
