@@ -159,7 +159,7 @@ Partial Public Class FormMain
             g_ClassTabControl.m_ActiveTab.m_File = sTempFile
             g_ClassTabControl.SaveFileTab(g_ClassTabControl.m_ActiveTabIndex)
 
-            g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
+            g_ClassAutocompleteUpdater.StartUpdateSchedule(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try

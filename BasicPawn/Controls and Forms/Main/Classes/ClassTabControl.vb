@@ -448,7 +448,7 @@ Public Class ClassTabControl
 
                     g_mFormMain.g_mUCStartPage.g_mClassRecentItems.AddRecent(m_Tab(iIndex).m_File)
 
-                    g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
+                    g_mFormMain.g_ClassAutocompleteUpdater.StartUpdateSchedule(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
                 End If
             End Using
         Else
@@ -680,7 +680,7 @@ Public Class ClassTabControl
         g_mFormMain.g_mUCObjectBrowser.StartUpdate()
 
         For i = 0 To mTabs.Length - 1
-            g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, mTabs(i))
+            g_mFormMain.g_ClassAutocompleteUpdater.StartUpdateSchedule(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, mTabs(i))
         Next
 
         g_mFormMain.g_ClassSyntaxUpdater.StartThread()

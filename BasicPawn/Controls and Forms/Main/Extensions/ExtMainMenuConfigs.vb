@@ -61,7 +61,7 @@ Partial Public Class FormMain
         Else
             mTab.m_ActiveConfig = mConfig
 
-            g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
+            g_ClassAutocompleteUpdater.StartUpdateSchedule(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
 
             g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("Optimal config found for tab '{0} ({1})': {2}", mTab.m_Title, mTab.m_Index, mConfig.GetName), False, True, True)
         End If
@@ -84,7 +84,7 @@ Partial Public Class FormMain
             Else
                 mTab.m_ActiveConfig = mConfig
 
-                g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, mTab)
+                g_ClassAutocompleteUpdater.StartUpdateSchedule(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, mTab)
 
                 g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("Optimal config found for tab '{0} ({1})': {2}", mTab.m_Title, mTab.m_Index, mConfig.GetName), False, True, True)
             End If

@@ -82,14 +82,14 @@ Public Class ClassSyntaxUpdater
                     End If
 
                     ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                           g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, sRequestedTabIdentifier)
+                                                           g_mFormMain.g_ClassAutocompleteUpdater.StartUpdateSchedule(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, sRequestedTabIdentifier)
                                                        End Sub)
 
                 ElseIf (bIsFormMainFocused AndAlso dLastFullAutocompleteUpdate < Now) Then
                     dLastFullAutocompleteUpdate = (Now + mFullAutocompleteUpdateDelay)
 
                     ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                           g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
+                                                           g_mFormMain.g_ClassAutocompleteUpdater.StartUpdateSchedule(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
                                                        End Sub)
                 End If
 
@@ -98,7 +98,7 @@ Public Class ClassSyntaxUpdater
                     dLastVarAutocompleteUpdate = (Now + mVarAutocompleteUpdateDelay)
 
                     ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                           g_mFormMain.g_ClassAutocompleteUpdater.StartUpdate(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.VARIABLES_AUTOCOMPLETE)
+                                                           g_mFormMain.g_ClassAutocompleteUpdater.StartUpdateSchedule(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.VARIABLES_AUTOCOMPLETE)
                                                        End Sub)
                 End If
 

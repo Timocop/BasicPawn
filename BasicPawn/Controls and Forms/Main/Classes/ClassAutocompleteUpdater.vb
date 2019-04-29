@@ -43,29 +43,20 @@ Public Class ClassAutocompleteUpdater
     End Enum
 
     ''' <summary>
-    ''' Starts the autocomplete update thread
-    ''' </summary>
-    ''' <param name="iUpdateType"></param> 
-    ''' <returns></returns>
-    Public Function StartUpdate(iUpdateType As ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS) As Boolean
-        Return StartUpdate(iUpdateType, "")
-    End Function
-
-    ''' <summary>
-    ''' Starts the autocomplete update thread
+    ''' Starts the autocomplete update thread.
     ''' </summary>
     ''' <param name="iUpdateType"></param>
-    ''' <param name="mTab">The tab to request an update.</param>
+    ''' <param name="mTab"></param>
     ''' <returns></returns>
     Public Function StartUpdate(iUpdateType As ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS, mTab As ClassTabControl.SourceTabPage) As Boolean
         Return StartUpdate(iUpdateType, If(mTab IsNot Nothing, mTab.m_Identifier, ""))
     End Function
 
     ''' <summary>
-    ''' Starts the autocomplete update thread
+    ''' Starts the autocomplete update thread.
     ''' </summary>
     ''' <param name="iUpdateType"></param>
-    ''' <param name="sTabIdentifier">The tab to request an update.</param>
+    ''' <param name="sTabIdentifier"></param>
     ''' <returns></returns>
     Public Function StartUpdate(iUpdateType As ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS, sTabIdentifier As String) As Boolean
         If (String.IsNullOrEmpty(sTabIdentifier)) Then
@@ -103,16 +94,45 @@ Public Class ClassAutocompleteUpdater
             }
             g_mAutocompleteUpdaterThread.Start()
 
+            Return True
+        Else
+            Return False
+        End If
+    End Function
+
+    ''' <summary>
+    ''' Starts the autocomplete update thread. Adds task to background thread if thread is already running.
+    ''' </summary>
+    ''' <param name="iUpdateType"></param> 
+    ''' <returns></returns>
+    Public Function StartUpdateSchedule(iUpdateType As ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS) As Boolean
+        Return StartUpdateSchedule(iUpdateType, "")
+    End Function
+
+    ''' <summary>
+    ''' Starts the autocomplete update thread. Adds task to background thread if thread is already running.
+    ''' </summary>
+    ''' <param name="iUpdateType"></param>
+    ''' <param name="mTab">The tab to request an update.</param>
+    ''' <returns></returns>
+    Public Function StartUpdateSchedule(iUpdateType As ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS, mTab As ClassTabControl.SourceTabPage) As Boolean
+        Return StartUpdateSchedule(iUpdateType, If(mTab IsNot Nothing, mTab.m_Identifier, ""))
+    End Function
+
+    ''' <summary>
+    ''' Starts the autocomplete update thread. Adds task to background thread if thread is already running.
+    ''' </summary>
+    ''' <param name="iUpdateType"></param>
+    ''' <param name="sTabIdentifier">The tab to request an update.</param>
+    ''' <returns></returns>
+    Public Function StartUpdateSchedule(iUpdateType As ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS, sTabIdentifier As String) As Boolean
+        If (StartUpdate(iUpdateType, sTabIdentifier)) Then
             If ((iUpdateType And ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) <> 0) Then
                 g_lFullAutocompleteTabRequests.Remove(sTabIdentifier)
             End If
 
             Return True
         Else
-            'If (g_lFullAutocompleteTabRequests.Count < 1) Then
-            '    g_mFormMain.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "Could not start autocomplete update thread, it's already running!", False, False)
-            'End If
-
             If ((iUpdateType And ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) <> 0) Then
                 If (Not g_lFullAutocompleteTabRequests.Contains(sTabIdentifier)) Then
                     g_lFullAutocompleteTabRequests.Add(sTabIdentifier)
