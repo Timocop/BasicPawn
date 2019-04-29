@@ -165,11 +165,11 @@ Public Class PluginFTP
             RemoveHandler g_mFtpMenuItem.Click, AddressOf OnMenuItemClick
             AddHandler g_mFtpMenuItem.Click, AddressOf OnMenuItemClick
 
-            Dim iBuildIndex As Integer = g_mPluginFTP.g_mFormMain.MenuStrip_BasicPawn.Items.IndexOf(g_mPluginFTP.g_mFormMain.ToolStripMenuItem_Build)
-            If (iBuildIndex > -1) Then
+            If (True) Then
                 g_mFtpCompileItem = New ToolStripMenuItem("Upload", My.Resources.imageres_5340_16x16)
 
-                g_mPluginFTP.g_mFormMain.MenuStrip_BasicPawn.Items.Insert(iBuildIndex, g_mFtpCompileItem)
+                g_mPluginFTP.g_mFormMain.ToolStripMenuItem_Build.DropDownItems.Add(g_mFtpMenuSplit)
+                g_mPluginFTP.g_mFormMain.ToolStripMenuItem_Build.DropDownItems.Add(g_mFtpCompileItem)
 
                 RemoveHandler g_mFtpCompileItem.Click, AddressOf OnCompileItemClick
                 AddHandler g_mFtpCompileItem.Click, AddressOf OnCompileItemClick
