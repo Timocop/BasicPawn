@@ -20,6 +20,7 @@ Imports ICSharpCode.TextEditor
 
 Public Class UCInformationList
     Private g_mFormMain As FormMain
+    Private g_ClassActions As ClassActions
 
     Public Sub New(f As FormMain)
 
@@ -28,6 +29,8 @@ Public Class UCInformationList
 
         ' Add any initialization after the InitializeComponent() call.
         g_mFormMain = f
+
+        g_ClassActions = New ClassActions(Me)
 
         'Set double buffering to avoid annonying flickers
         ClassTools.ClassForms.SetDoubleBufferingAllChilds(Me, True)
@@ -385,6 +388,12 @@ Public Class UCInformationList
         End Try
     End Sub
 
+    Private Sub CleanUp()
+        If (g_ClassActions IsNot Nothing) Then
+            g_ClassActions.Dispose()
+            g_ClassActions = Nothing
+        End If
+    End Sub
 
     Class ClassListBoxItemAction
         Inherits ClassInformationListBox.ClassInformationItem
@@ -441,5 +450,110 @@ Public Class UCInformationList
 
             Return MyBase.GetDrawIcon()
         End Function
+    End Class
+
+    Class ClassActions
+        Implements IDisposable
+
+        Private g_mUCInformationList As UCInformationList
+
+        Sub New(f As UCInformationList)
+            g_mUCInformationList = f
+
+            RemoveHandler g_mUCInformationList.g_mFormMain.g_ClassTabControl.OnTextEditorTabDetailsAction, AddressOf OnTextEditorTabDetailsAction
+            RemoveHandler g_mUCInformationList.g_mFormMain.g_ClassTabControl.OnTextEditorTabDetailsMove, AddressOf OnTextEditorTabDetailsMove
+
+            AddHandler g_mUCInformationList.g_mFormMain.g_ClassTabControl.OnTextEditorTabDetailsAction, AddressOf OnTextEditorTabDetailsAction
+            AddHandler g_mUCInformationList.g_mFormMain.g_ClassTabControl.OnTextEditorTabDetailsMove, AddressOf OnTextEditorTabDetailsMove
+        End Sub
+
+        Public Sub OnTextEditorTabDetailsAction(mTab As ClassTabControl.SourceTabPage, iDetailsTabIndex As Integer, bIsSpecialAction As Boolean, iKeys As Keys)
+            If (iDetailsTabIndex <> g_mUCInformationList.g_mFormMain.TabPage_Information.TabIndex) Then
+                Return
+            End If
+
+            If (bIsSpecialAction) Then
+                g_mUCInformationList.ItemAction(ENUM_ITEM_ACTION.OPEN)
+            Else
+                g_mUCInformationList.ItemAction(ENUM_ITEM_ACTION.GOTO)
+            End If
+        End Sub
+
+        Public Sub OnTextEditorTabDetailsMove(mTab As ClassTabControl.SourceTabPage, iDetailsTabIndex As Integer, iDirection As Integer, iKeys As Keys)
+            If (iDetailsTabIndex <> g_mUCInformationList.g_mFormMain.TabPage_Information.TabIndex) Then
+                Return
+            End If
+
+            If (iDirection = 0) Then
+                Return
+            End If
+
+            Static iLastCount As Integer = 0
+            If (g_mUCInformationList.ListBox_Information.Items.Count < 1) Then
+                Return
+            End If
+
+            Dim bCountChanged = (g_mUCInformationList.ListBox_Information.Items.Count <> iLastCount)
+            iLastCount = g_mUCInformationList.ListBox_Information.Items.Count
+
+            If (bCountChanged OrElse g_mUCInformationList.ListBox_Information.SelectedItems.Count < 1) Then
+                g_mUCInformationList.ListBox_Information.SelectedIndices.Clear()
+                g_mUCInformationList.ListBox_Information.SelectedIndex = (g_mUCInformationList.ListBox_Information.Items.Count - 1)
+            End If
+
+            'What? Mmh...
+            If (g_mUCInformationList.ListBox_Information.SelectedItems.Count < 1) Then
+                Return
+            End If
+
+            Dim iCount As Integer = g_mUCInformationList.ListBox_Information.Items.Count
+            Dim iNewIndex As Integer = g_mUCInformationList.ListBox_Information.SelectedIndices(0) + iDirection
+
+            If (iNewIndex > -1 AndAlso iNewIndex < iCount) Then
+                g_mUCInformationList.ListBox_Information.SelectedIndices.Clear()
+                g_mUCInformationList.ListBox_Information.SelectedIndex = iNewIndex
+
+                'Fix last line hiding behind scrollbar :(
+                If (iNewIndex = iCount - 1) Then
+                    g_mUCInformationList.ListBox_Information.TopIndex = iNewIndex
+                End If
+            End If
+        End Sub
+
+#Region "IDisposable Support"
+        Private disposedValue As Boolean ' To detect redundant calls
+
+        ' IDisposable
+        Protected Overridable Sub Dispose(disposing As Boolean)
+            If Not disposedValue Then
+                If disposing Then
+                    ' TODO: dispose managed state (managed objects).
+                    If (g_mUCInformationList.g_mFormMain.g_ClassTabControl IsNot Nothing) Then
+                        RemoveHandler g_mUCInformationList.g_mFormMain.g_ClassTabControl.OnTextEditorTabDetailsAction, AddressOf OnTextEditorTabDetailsAction
+                        RemoveHandler g_mUCInformationList.g_mFormMain.g_ClassTabControl.OnTextEditorTabDetailsMove, AddressOf OnTextEditorTabDetailsMove
+                    End If
+                End If
+
+                ' TODO: free unmanaged resources (unmanaged objects) and override Finalize() below.
+                ' TODO: set large fields to null.
+            End If
+            disposedValue = True
+        End Sub
+
+        ' TODO: override Finalize() only if Dispose(disposing As Boolean) above has code to free unmanaged resources.
+        'Protected Overrides Sub Finalize()
+        '    ' Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
+        '    Dispose(False)
+        '    MyBase.Finalize()
+        'End Sub
+
+        ' This code added by Visual Basic to correctly implement the disposable pattern.
+        Public Sub Dispose() Implements IDisposable.Dispose
+            ' Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
+            Dispose(True)
+            ' TODO: uncomment the following line if Finalize() is overridden above.
+            ' GC.SuppressFinalize(Me)
+        End Sub
+#End Region
     End Class
 End Class
