@@ -85,6 +85,14 @@ Partial Public Class FormMain
         End Try
     End Sub
 
+    Private Sub ToolStripMenuItem_FileClose_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileClose.Click
+        Try
+            g_ClassTabControl.RemoveTab(g_ClassTabControl.m_ActiveTabIndex, True)
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
     Private Sub ToolStripMenuItem_FileCloseAll_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileCloseAll.Click
         Try
             g_ClassTabControl.RemoveAllTabs()
