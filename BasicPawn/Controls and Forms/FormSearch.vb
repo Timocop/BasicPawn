@@ -825,4 +825,14 @@ Public Class FormSearch
         bIgnoreEvent = False
     End Sub
 #End Region
+
+    Protected Overrides Function ProcessCmdKey(ByRef msg As Message, keyData As Keys) As Boolean
+        If (keyData = Keys.Escape) Then
+            Me.Close()
+
+            Return True
+        End If
+
+        Return MyBase.ProcessCmdKey(msg, keyData)
+    End Function
 End Class

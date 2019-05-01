@@ -52,6 +52,10 @@ Partial Class FormSearch
         Me.ColumnHeader4 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.GroupBox6 = New System.Windows.Forms.GroupBox()
+        Me.RadioButton_ListTypeIncludes = New System.Windows.Forms.RadioButton()
+        Me.RadioButton_ListTypeTabs = New System.Windows.Forms.RadioButton()
+        Me.RadioButton_ListTypeCurrent = New System.Windows.Forms.RadioButton()
         Me.CheckBox_SingleInstance = New System.Windows.Forms.CheckBox()
         Me.Button_ReplaceNext = New System.Windows.Forms.Button()
         Me.Button_ReplacePre = New System.Windows.Forms.Button()
@@ -65,20 +69,16 @@ Partial Class FormSearch
         Me.GroupBox5 = New System.Windows.Forms.GroupBox()
         Me.CheckBox_ReplaceInSelection = New System.Windows.Forms.CheckBox()
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
-        Me.GroupBox6 = New System.Windows.Forms.GroupBox()
-        Me.RadioButton_ListTypeCurrent = New System.Windows.Forms.RadioButton()
-        Me.RadioButton_ListTypeTabs = New System.Windows.Forms.RadioButton()
-        Me.RadioButton_ListTypeIncludes = New System.Windows.Forms.RadioButton()
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         Me.TableLayoutPanel1.SuspendLayout()
         Me.Panel1.SuspendLayout()
+        Me.GroupBox6.SuspendLayout()
         Me.GroupBox4.SuspendLayout()
         CType(Me.TrackBar_Transparency, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox5.SuspendLayout()
-        Me.GroupBox6.SuspendLayout()
         Me.SuspendLayout()
         '
         'Label1
@@ -383,6 +383,51 @@ Partial Class FormSearch
         Me.Panel1.Size = New System.Drawing.Size(519, 308)
         Me.Panel1.TabIndex = 0
         '
+        'GroupBox6
+        '
+        Me.GroupBox6.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.GroupBox6.Controls.Add(Me.RadioButton_ListTypeIncludes)
+        Me.GroupBox6.Controls.Add(Me.RadioButton_ListTypeTabs)
+        Me.GroupBox6.Controls.Add(Me.RadioButton_ListTypeCurrent)
+        Me.GroupBox6.Location = New System.Drawing.Point(379, 128)
+        Me.GroupBox6.Name = "GroupBox6"
+        Me.GroupBox6.Size = New System.Drawing.Size(128, 92)
+        Me.GroupBox6.TabIndex = 23
+        Me.GroupBox6.TabStop = False
+        Me.GroupBox6.Text = "List all type"
+        '
+        'RadioButton_ListTypeIncludes
+        '
+        Me.RadioButton_ListTypeIncludes.AutoSize = True
+        Me.RadioButton_ListTypeIncludes.Location = New System.Drawing.Point(6, 67)
+        Me.RadioButton_ListTypeIncludes.Name = "RadioButton_ListTypeIncludes"
+        Me.RadioButton_ListTypeIncludes.Size = New System.Drawing.Size(103, 17)
+        Me.RadioButton_ListTypeIncludes.TabIndex = 2
+        Me.RadioButton_ListTypeIncludes.Text = "All include files"
+        Me.RadioButton_ListTypeIncludes.UseVisualStyleBackColor = True
+        '
+        'RadioButton_ListTypeTabs
+        '
+        Me.RadioButton_ListTypeTabs.AutoSize = True
+        Me.RadioButton_ListTypeTabs.Location = New System.Drawing.Point(6, 44)
+        Me.RadioButton_ListTypeTabs.Name = "RadioButton_ListTypeTabs"
+        Me.RadioButton_ListTypeTabs.Size = New System.Drawing.Size(106, 17)
+        Me.RadioButton_ListTypeTabs.TabIndex = 1
+        Me.RadioButton_ListTypeTabs.Text = "All opened tabs"
+        Me.RadioButton_ListTypeTabs.UseVisualStyleBackColor = True
+        '
+        'RadioButton_ListTypeCurrent
+        '
+        Me.RadioButton_ListTypeCurrent.AutoSize = True
+        Me.RadioButton_ListTypeCurrent.Checked = True
+        Me.RadioButton_ListTypeCurrent.Location = New System.Drawing.Point(6, 21)
+        Me.RadioButton_ListTypeCurrent.Name = "RadioButton_ListTypeCurrent"
+        Me.RadioButton_ListTypeCurrent.Size = New System.Drawing.Size(84, 17)
+        Me.RadioButton_ListTypeCurrent.TabIndex = 0
+        Me.RadioButton_ListTypeCurrent.TabStop = True
+        Me.RadioButton_ListTypeCurrent.Text = "Current tab"
+        Me.RadioButton_ListTypeCurrent.UseVisualStyleBackColor = True
+        '
         'CheckBox_SingleInstance
         '
         Me.CheckBox_SingleInstance.AutoSize = True
@@ -531,51 +576,6 @@ Partial Class FormSearch
         Me.ToolTip1.InitialDelay = 500
         Me.ToolTip1.ReshowDelay = 100
         '
-        'GroupBox6
-        '
-        Me.GroupBox6.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.GroupBox6.Controls.Add(Me.RadioButton_ListTypeIncludes)
-        Me.GroupBox6.Controls.Add(Me.RadioButton_ListTypeTabs)
-        Me.GroupBox6.Controls.Add(Me.RadioButton_ListTypeCurrent)
-        Me.GroupBox6.Location = New System.Drawing.Point(379, 128)
-        Me.GroupBox6.Name = "GroupBox6"
-        Me.GroupBox6.Size = New System.Drawing.Size(128, 92)
-        Me.GroupBox6.TabIndex = 23
-        Me.GroupBox6.TabStop = False
-        Me.GroupBox6.Text = "List all type"
-        '
-        'RadioButton_ListTypeCurrent
-        '
-        Me.RadioButton_ListTypeCurrent.AutoSize = True
-        Me.RadioButton_ListTypeCurrent.Checked = True
-        Me.RadioButton_ListTypeCurrent.Location = New System.Drawing.Point(6, 21)
-        Me.RadioButton_ListTypeCurrent.Name = "RadioButton_ListTypeCurrent"
-        Me.RadioButton_ListTypeCurrent.Size = New System.Drawing.Size(84, 17)
-        Me.RadioButton_ListTypeCurrent.TabIndex = 0
-        Me.RadioButton_ListTypeCurrent.TabStop = True
-        Me.RadioButton_ListTypeCurrent.Text = "Current tab"
-        Me.RadioButton_ListTypeCurrent.UseVisualStyleBackColor = True
-        '
-        'RadioButton_ListTypeTabs
-        '
-        Me.RadioButton_ListTypeTabs.AutoSize = True
-        Me.RadioButton_ListTypeTabs.Location = New System.Drawing.Point(6, 44)
-        Me.RadioButton_ListTypeTabs.Name = "RadioButton_ListTypeTabs"
-        Me.RadioButton_ListTypeTabs.Size = New System.Drawing.Size(106, 17)
-        Me.RadioButton_ListTypeTabs.TabIndex = 1
-        Me.RadioButton_ListTypeTabs.Text = "All opened tabs"
-        Me.RadioButton_ListTypeTabs.UseVisualStyleBackColor = True
-        '
-        'RadioButton_ListTypeIncludes
-        '
-        Me.RadioButton_ListTypeIncludes.AutoSize = True
-        Me.RadioButton_ListTypeIncludes.Location = New System.Drawing.Point(6, 67)
-        Me.RadioButton_ListTypeIncludes.Name = "RadioButton_ListTypeIncludes"
-        Me.RadioButton_ListTypeIncludes.Size = New System.Drawing.Size(103, 17)
-        Me.RadioButton_ListTypeIncludes.TabIndex = 2
-        Me.RadioButton_ListTypeIncludes.Text = "All include files"
-        Me.RadioButton_ListTypeIncludes.UseVisualStyleBackColor = True
-        '
         'FormSearch
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -600,13 +600,13 @@ Partial Class FormSearch
         Me.TableLayoutPanel1.ResumeLayout(False)
         Me.Panel1.ResumeLayout(False)
         Me.Panel1.PerformLayout()
+        Me.GroupBox6.ResumeLayout(False)
+        Me.GroupBox6.PerformLayout()
         Me.GroupBox4.ResumeLayout(False)
         Me.GroupBox4.PerformLayout()
         CType(Me.TrackBar_Transparency, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupBox5.ResumeLayout(False)
         Me.GroupBox5.PerformLayout()
-        Me.GroupBox6.ResumeLayout(False)
-        Me.GroupBox6.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
