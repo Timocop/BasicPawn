@@ -48,6 +48,8 @@ Public Class ClassTabControl
         RaiseEvent OnTextEditorTabDetailsMove(mTab, iDetailsTabIndex, iDirection, iKeys)
     End Sub
 
+    Public Event OnTextEditorFullUpdate(mTab As SourceTabPage())
+
 
     Public Sub New(f As FormMain)
         g_mFormMain = f
@@ -687,6 +689,8 @@ Public Class ClassTabControl
         g_mFormMain.g_mUCTextMinimap.UpdatePosition(False, True, True)
 
         g_mFormMain.g_mUCObjectBrowser.StartUpdate()
+
+        RaiseEvent OnTextEditorFullUpdate(mTabs)
 
         For i = 0 To mTabs.Length - 1
             g_mFormMain.g_ClassAutocompleteUpdater.StartUpdateSchedule(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, mTabs(i), ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS.NOONE)
