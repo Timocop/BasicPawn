@@ -1304,6 +1304,32 @@ Public Class ClassTabControl
 
             If (ClassSettings.g_iSettingsAutoCloseStrings) Then
                 Select Case True
+                    Case (sLastAutoClosedKey = """" AndAlso e.KeyChar = """"c)
+                        Dim iOffset As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Caret.Offset
+                        Dim iLenght As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.TextLength
+                        If (iOffset > iLenght - 1) Then
+                            Exit Select
+                        End If
+
+                        If (g_mSourceTextEditor.ActiveTextAreaControl.Document.GetCharAt(iOffset) <> """"c) Then
+                            Exit Select
+                        End If
+
+                        g_mSourceTextEditor.ActiveTextAreaControl.Document.Remove(iOffset, 1)
+
+                    Case (sLastAutoClosedKey = "'" AndAlso e.KeyChar = "'"c)
+                        Dim iOffset As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Caret.Offset
+                        Dim iLenght As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.TextLength
+                        If (iOffset > iLenght - 1) Then
+                            Exit Select
+                        End If
+
+                        If (g_mSourceTextEditor.ActiveTextAreaControl.Document.GetCharAt(iOffset) <> "'"c) Then
+                            Exit Select
+                        End If
+
+                        g_mSourceTextEditor.ActiveTextAreaControl.Document.Remove(iOffset, 1)
+
                     Case (e.KeyChar = """"c)
                         Dim iOffset As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Caret.Offset
                         If (iOffset > 0 AndAlso g_mSourceTextEditor.ActiveTextAreaControl.Document.GetText(iOffset - 1, 1) = ClassSyntaxTools.g_sEscapeCharacters(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)) Then
@@ -1317,6 +1343,9 @@ Public Class ClassTabControl
 
                         g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset, """")
 
+                        sLastAutoClosedKey = """"c
+                        bLastAutoCloseKeySet = True
+
                     Case (e.KeyChar = "'"c)
                         Dim iOffset As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Caret.Offset
                         If (iOffset > 0 AndAlso g_mSourceTextEditor.ActiveTextAreaControl.Document.GetText(iOffset - 1, 1) = ClassSyntaxTools.g_sEscapeCharacters(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)) Then
@@ -1329,6 +1358,9 @@ Public Class ClassTabControl
                         End If
 
                         g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset, "'")
+
+                        sLastAutoClosedKey = "'"c
+                        bLastAutoCloseKeySet = True
                 End Select
             End If
 
