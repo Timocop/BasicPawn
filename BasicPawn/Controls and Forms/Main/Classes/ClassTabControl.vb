@@ -1194,17 +1194,18 @@ Public Class ClassTabControl
 
                         g_mSourceTextEditor.Refresh()
 
-                    'Paste Autocomplete
+                    'Details primary/secondary action
                     Case (Keys.Control Or Keys.Enter),
-                         (Keys.Shift Or Keys.Control Or Keys.Enter)
+                            (Keys.Shift Or Keys.Control Or Keys.Enter)
                         bBlock = True
 
                         Dim bSpecialAction As Boolean = ((iKeys And Keys.Shift) <> 0)
 
                         g_mFormMain.g_ClassTabControl.__OnTextEditorTabDetailsAction(Me, g_mFormMain.TabControl_Details.SelectedIndex, bSpecialAction, iKeys)
 
-                    Case Keys.Control Or Keys.Left,
-                            Keys.Control Or Keys.Right
+                    'Details tab navigation
+                    Case (Keys.Control Or Keys.Left),
+                           (Keys.Control Or Keys.Right)
                         bBlock = True
 
                         Dim iNewIndex As Integer
@@ -1221,17 +1222,41 @@ Public Class ClassTabControl
                         g_mFormMain.TabControl_Details.Enabled = True
                         g_mFormMain.TabControl_Details.ResumeLayout()
 
-                    'Autocomplete up
-                    Case Keys.Control Or Keys.Up
+                    'Tab navigation
+                    Case (Keys.Shift Or Keys.Control Or Keys.Left),
+                           (Keys.Shift Or Keys.Control Or Keys.Right)
                         bBlock = True
 
-                        g_mFormMain.g_ClassTabControl.__OnTextEditorTabDetailsMove(Me, g_mFormMain.TabControl_Details.SelectedIndex, -1, iKeys)
+                        Dim iOldIndex As Integer = m_Index
+                        Dim iNewIndex As Integer = 0
 
-                    'Autocomplete Down
-                    Case Keys.Control Or Keys.Down
+                        Select Case (iKeys = (Keys.Shift Or Keys.Control Or Keys.Left))
+                            Case True
+                                iNewIndex = iOldIndex - 1
+
+                                If (iNewIndex < 0) Then
+                                    iNewIndex = g_mFormMain.g_ClassTabControl.m_TabsCount - 1
+                                End If
+
+                            Case Else
+                                iNewIndex = iOldIndex + 1
+
+                                If (iNewIndex > g_mFormMain.g_ClassTabControl.m_TabsCount - 1) Then
+                                    iNewIndex = 0
+                                End If
+                        End Select
+
+                        If (iOldIndex <> iNewIndex) Then
+                            g_mFormMain.g_ClassTabControl.SelectTab(iNewIndex)
+                        End If
+
+                    'Details navigation up
+                    Case (Keys.Control Or Keys.Up),
+                            (Keys.Control Or Keys.Down)
                         bBlock = True
 
-                        g_mFormMain.g_ClassTabControl.__OnTextEditorTabDetailsMove(Me, g_mFormMain.TabControl_Details.SelectedIndex, 1, iKeys)
+                        Dim iDirection As Integer = If(iKeys = (Keys.Control Or Keys.Up), -1, 1)
+                        g_mFormMain.g_ClassTabControl.__OnTextEditorTabDetailsMove(Me, g_mFormMain.TabControl_Details.SelectedIndex, iDirection, iKeys)
 
                     'Auto-Indent Brackets
                     Case Keys.Enter
