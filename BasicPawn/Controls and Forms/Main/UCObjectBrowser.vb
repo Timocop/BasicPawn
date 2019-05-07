@@ -105,6 +105,16 @@ Public Class UCObjectBrowser
                         End If
                     End If
 
+                    'Dont display hidden enums
+                    If (lAutocompleteList(i).m_Data.ContainsKey("EnumHidden")) Then
+                        Continue For
+                    End If
+
+                    'Dont display 'this'
+                    If (lAutocompleteList(i).m_Data.ContainsKey("IsThis")) Then
+                        Continue For
+                    End If
+
                     'Add missing nodes
                     Dim sFilename As String = lAutocompleteList(i).m_Filename
                     Dim bIsMainFile As Boolean = Array.Exists(g_sSourceMainFileExt, Function(s As String) sFilename.ToLower.EndsWith(s.ToLower))
