@@ -592,14 +592,14 @@ Public Class FormReportManager
                                                                                                               g_mFormReportManager.ToolStripMenuItem_GetLogs.Image = My.Resources.imageres_5337_16x16_32
                                                                                                           End Sub)
 
-                                                              Const E_TITLE = 0
-                                                              Const E_REMOTEFILE = 1
-                                                              Const E_LOCALFILE = 2
-                                                              Const E_DATETICK = 3
-                                                              Const E_SIZE = 4
-                                                              Const E_ERRORINDEX = 5 'See ERROR_* constants
+                                                              Const C_REPORTITEMS_TITLE = "Title"
+                                                              Const C_REPORTITEMS_REMOTEFILE = "RemoteFile"
+                                                              Const C_REPORTITEMS_LOCALFILE = "LocalFile"
+                                                              Const C_REPORTITEMS_DATETICK = "DateTick"
+                                                              Const C_REPORTITEMS_SIZE = "Size"
+                                                              Const C_REPORTITEMS_ERRORINDEX = "ErrorIndex" 'See ERROR_* constants
 
-                                                              Dim lReportItems As New List(Of Object()) '{sTitle, sRemoteFile, sLocalFile, iDateTick, iSize, iErrorIndex} 
+                                                              Dim lReportItems As New List(Of Dictionary(Of String, Object)) 'See keys: C_REPORTITEMS_*
                                                               Dim lFtpEntries As New List(Of STRUC_FTP_ENTRY_ITEM)
 
                                                               Dim iMaxFileBytes As Long = (100 * 1024 * 1024)
@@ -681,7 +681,15 @@ Public Class FormReportManager
                                                                                   If (mItem.iSize > iMaxFileBytes) Then
                                                                                       bFilesTooBig = True
 
-                                                                                      lReportItems.Add({mItem.sName, mFtpItem.sHost.TrimEnd("\"c) & mItem.sFullName.TrimStart("\"c), "", mItem.dModified.Ticks, mItem.iSize, ERROR_TOOBIG})
+                                                                                      Dim mReportItemDic As New Dictionary(Of String, Object)
+                                                                                      mReportItemDic(C_REPORTITEMS_TITLE) = mItem.sName
+                                                                                      mReportItemDic(C_REPORTITEMS_REMOTEFILE) = mFtpItem.sHost.TrimEnd("\"c) & mItem.sFullName.TrimStart("\"c)
+                                                                                      mReportItemDic(C_REPORTITEMS_LOCALFILE) = ""
+                                                                                      mReportItemDic(C_REPORTITEMS_DATETICK) = mItem.dModified.Ticks
+                                                                                      mReportItemDic(C_REPORTITEMS_SIZE) = mItem.iSize
+                                                                                      mReportItemDic(C_REPORTITEMS_ERRORINDEX) = ERROR_TOOBIG
+
+                                                                                      lReportItems.Add(mReportItemDic)
                                                                                       Continue For
                                                                                   End If
 
@@ -690,7 +698,17 @@ Public Class FormReportManager
                                                                                   g_mClassFTP.DownloadFile(mItem.sFullName, sTmpFile)
                                                                                   ApplyNewlineFix(sTmpFile)
 
-                                                                                  lReportItems.Add({mItem.sName, mFtpItem.sHost.TrimEnd("\"c) & mItem.sFullName.TrimStart("\"c), sTmpFile, mItem.dModified.Ticks, mItem.iSize, ERROR_NOERROR})
+                                                                                  If (True) Then
+                                                                                      Dim mReportItemDic As New Dictionary(Of String, Object)
+                                                                                      mReportItemDic(C_REPORTITEMS_TITLE) = mItem.sName
+                                                                                      mReportItemDic(C_REPORTITEMS_REMOTEFILE) = mFtpItem.sHost.TrimEnd("\"c) & mItem.sFullName.TrimStart("\"c)
+                                                                                      mReportItemDic(C_REPORTITEMS_LOCALFILE) = sTmpFile
+                                                                                      mReportItemDic(C_REPORTITEMS_DATETICK) = mItem.dModified.Ticks
+                                                                                      mReportItemDic(C_REPORTITEMS_SIZE) = mItem.iSize
+                                                                                      mReportItemDic(C_REPORTITEMS_ERRORINDEX) = ERROR_NOERROR
+
+                                                                                      lReportItems.Add(mReportItemDic)
+                                                                                  End If
                                                                               Next
 
 
@@ -725,7 +743,15 @@ Public Class FormReportManager
                                                                                   If (mItem.Length > iMaxFileBytes) Then
                                                                                       bFilesTooBig = True
 
-                                                                                      lReportItems.Add({mItem.Name, mFtpItem.sHost.TrimEnd("\"c) & mItem.FullName.TrimStart("\"c), "", mItem.Attributes.LastWriteTime.Ticks, mItem.Length, ERROR_TOOBIG})
+                                                                                      Dim mReportItemDic As New Dictionary(Of String, Object)
+                                                                                      mReportItemDic(C_REPORTITEMS_TITLE) = mItem.Name
+                                                                                      mReportItemDic(C_REPORTITEMS_REMOTEFILE) = mFtpItem.sHost.TrimEnd("\"c) & mItem.FullName.TrimStart("\"c)
+                                                                                      mReportItemDic(C_REPORTITEMS_LOCALFILE) = ""
+                                                                                      mReportItemDic(C_REPORTITEMS_DATETICK) = mItem.Attributes.LastWriteTime.Ticks
+                                                                                      mReportItemDic(C_REPORTITEMS_SIZE) = mItem.Length
+                                                                                      mReportItemDic(C_REPORTITEMS_ERRORINDEX) = ERROR_TOOBIG
+
+                                                                                      lReportItems.Add(mReportItemDic)
                                                                                       Continue For
                                                                                   End If
 
@@ -736,11 +762,29 @@ Public Class FormReportManager
                                                                                   End Using
                                                                                   ApplyNewlineFix(sTmpFile)
 
-                                                                                  lReportItems.Add({mItem.Name, mFtpItem.sHost.TrimEnd("\"c) & mItem.FullName.TrimStart("\"c), sTmpFile, mItem.Attributes.LastWriteTime.Ticks, mItem.Length, ERROR_NOERROR})
+                                                                                  If (True) Then
+                                                                                      Dim mReportItemDic As New Dictionary(Of String, Object)
+                                                                                      mReportItemDic(C_REPORTITEMS_TITLE) = mItem.Name
+                                                                                      mReportItemDic(C_REPORTITEMS_REMOTEFILE) = mFtpItem.sHost.TrimEnd("\"c) & mItem.FullName.TrimStart("\"c)
+                                                                                      mReportItemDic(C_REPORTITEMS_LOCALFILE) = sTmpFile
+                                                                                      mReportItemDic(C_REPORTITEMS_DATETICK) = mItem.Attributes.LastWriteTime.Ticks
+                                                                                      mReportItemDic(C_REPORTITEMS_SIZE) = mItem.Length
+                                                                                      mReportItemDic(C_REPORTITEMS_ERRORINDEX) = ERROR_NOERROR
+
+                                                                                      lReportItems.Add(mReportItemDic)
+                                                                                  End If
                                                                               Next
 
                                                                               If (bFilesTooBig) Then
-                                                                                  lReportItems.Add({String.Format("Unable to fetch some log files. Some log files are too big to fetch. (max. {0} MB)", iMaxFileBytes / 1024 / 1024), "", "", 0, 0, ERROR_MSGONLY})
+                                                                                  Dim mReportItemDic As New Dictionary(Of String, Object)
+                                                                                  mReportItemDic(C_REPORTITEMS_TITLE) = String.Format("Unable to fetch some log files. Some log files are too big to fetch. (max. {0} MB)", iMaxFileBytes / 1024 / 1024)
+                                                                                  mReportItemDic(C_REPORTITEMS_REMOTEFILE) = ""
+                                                                                  mReportItemDic(C_REPORTITEMS_LOCALFILE) = ""
+                                                                                  mReportItemDic(C_REPORTITEMS_DATETICK) = 0
+                                                                                  mReportItemDic(C_REPORTITEMS_SIZE) = 0
+                                                                                  mReportItemDic(C_REPORTITEMS_ERRORINDEX) = ERROR_MSGONLY
+
+                                                                                  lReportItems.Add(mReportItemDic)
                                                                               End If
 
                                                                           Case Else
@@ -749,7 +793,15 @@ Public Class FormReportManager
                                                                   Catch ex As Threading.ThreadAbortException
                                                                       Throw
                                                                   Catch ex As Exception
-                                                                      lReportItems.Add({"Error: " & ex.Message, "", "", 0, 0, ERROR_MSGONLY})
+                                                                      Dim mReportItemDic As New Dictionary(Of String, Object)
+                                                                      mReportItemDic(C_REPORTITEMS_TITLE) = "Error: " & ex.Message
+                                                                      mReportItemDic(C_REPORTITEMS_REMOTEFILE) = ""
+                                                                      mReportItemDic(C_REPORTITEMS_LOCALFILE) = ""
+                                                                      mReportItemDic(C_REPORTITEMS_DATETICK) = 0
+                                                                      mReportItemDic(C_REPORTITEMS_SIZE) = 0
+                                                                      mReportItemDic(C_REPORTITEMS_ERRORINDEX) = ERROR_MSGONLY
+
+                                                                      lReportItems.Add(mReportItemDic)
                                                                   Finally
                                                                       If (g_mClassSFTP IsNot Nothing) Then
                                                                           g_mClassSFTP.Dispose()
@@ -764,12 +816,12 @@ Public Class FormReportManager
                                                                                                               g_mFormReportManager.g_mClassTreeViewColumns.m_TreeView.Nodes.Clear()
 
                                                                                                               For Each mItem In lReportItems
-                                                                                                                  Dim sTitle As String = CStr(mItem(E_TITLE))
-                                                                                                                  Dim sRemoteFile As String = CStr(mItem(E_REMOTEFILE))
-                                                                                                                  Dim sLocalFile As String = CStr(mItem(E_LOCALFILE))
-                                                                                                                  Dim iDate As Date = New Date(CLng(mItem(E_DATETICK)))
-                                                                                                                  Dim iSize As Long = CLng(mItem(E_SIZE))
-                                                                                                                  Dim iErrorIndex As Integer = CInt(mItem(E_ERRORINDEX))
+                                                                                                                  Dim sTitle As String = CStr(mItem(C_REPORTITEMS_TITLE))
+                                                                                                                  Dim sRemoteFile As String = CStr(mItem(C_REPORTITEMS_REMOTEFILE))
+                                                                                                                  Dim sLocalFile As String = CStr(mItem(C_REPORTITEMS_LOCALFILE))
+                                                                                                                  Dim iDate As Date = New Date(CLng(mItem(C_REPORTITEMS_DATETICK)))
+                                                                                                                  Dim iSize As Long = CLng(mItem(C_REPORTITEMS_SIZE))
+                                                                                                                  Dim iErrorIndex As Integer = CInt(mItem(C_REPORTITEMS_ERRORINDEX))
 
                                                                                                                   Dim iImageIndex As Integer = ICON_FILE
                                                                                                                   Select Case (iErrorIndex)
