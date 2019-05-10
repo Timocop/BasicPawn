@@ -20,7 +20,7 @@ Imports System.ComponentModel
 Public Class FormMain
     Public g_ClassTabControl As ClassTabControl
     Public g_ClassSyntaxUpdater As ClassSyntaxUpdater
-    Public g_ClassAutocompleteUpdater As ClassAutocompleteUpdater
+    Public g_ClassSyntaxParser As ClassSyntaxParser
     Public g_ClassTextEditorTools As ClassTextEditorTools
     Public g_ClassLineState As ClassTextEditorTools.ClassLineState
     Public g_ClassCustomHighlighting As ClassTextEditorTools.ClassCustomHighlighting
@@ -182,7 +182,7 @@ Public Class FormMain
 
         g_ClassTabControl = New ClassTabControl(Me)
         g_ClassSyntaxUpdater = New ClassSyntaxUpdater(Me)
-        g_ClassAutocompleteUpdater = New ClassAutocompleteUpdater(Me)
+        g_ClassSyntaxParser = New ClassSyntaxParser(Me)
         g_ClassTextEditorTools = New ClassTextEditorTools(Me)
         g_ClassLineState = New ClassTextEditorTools.ClassLineState(Me)
         g_ClassCustomHighlighting = New ClassTextEditorTools.ClassCustomHighlighting(Me)
@@ -314,9 +314,9 @@ Public Class FormMain
         End If
 
         'Update Autocomplete 
-        g_ClassAutocompleteUpdater.StartUpdateSchedule(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
+        g_ClassSyntaxParser.StartUpdateSchedule(ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS.ALL)
         For j = 0 To g_ClassTabControl.m_TabsCount - 1
-            g_ClassAutocompleteUpdater.StartUpdateSchedule(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, g_ClassTabControl.m_Tab(j), ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS.NOONE)
+            g_ClassSyntaxParser.StartUpdateSchedule(ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS.ALL, g_ClassTabControl.m_Tab(j), ClassSyntaxParser.ENUM_PARSE_OPTIONS_FLAGS.NOONE)
         Next
 
         'UpdateTextEditorControl1Colors()
@@ -537,7 +537,7 @@ Public Class FormMain
         End If
 
         g_ClassSyntaxUpdater.StopThread()
-        g_ClassAutocompleteUpdater.StopUpdate()
+        g_ClassSyntaxParser.StopUpdate()
         g_mUCObjectBrowser.StopUpdate()
 
         If (g_ClassCrossAppCom IsNot Nothing) Then

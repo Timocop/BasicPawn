@@ -248,7 +248,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls and Forms\Debugger\Classes\ClassDebuggerRunner.vb" />
-    <Compile Include="Controls and Forms\Main\Classes\ClassAutocompleteUpdater.vb" />
+    <Compile Include="Controls and Forms\Main\Classes\ClassSyntaxParser.vb" />
     <Compile Include="Controls and Forms\Main\Classes\ClassDebuggerParser.vb" />
     <Compile Include="Controls and Forms\Main\Classes\ClassSyntaxTools.vb" />
     <Compile Include="Controls and Forms\Main\Classes\ClassSyntaxUpdater.vb" />
@@ -575,6 +575,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls and Forms\Settings\FormSettings.resx">
       <DependentUpon>FormSettings.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -51,16 +51,16 @@ Public Class ClassSyntaxUpdater
     ''' The main thread to update all kinds of stuff.
     ''' </summary>
     Private Sub SourceSyntaxUpdater_Thread()
-        Static mFullAutocompleteUpdateDelay As New TimeSpan(0, 0, 1, 0, 0)
-        Static mVarAutocompleteUpdateDelay As New TimeSpan(0, 0, 0, 10, 0)
+        Static mFullSyntaxParseDelay As New TimeSpan(0, 0, 1, 0, 0)
+        Static mVarSyntaxParseDelay As New TimeSpan(0, 0, 0, 10, 0)
         Static mFoldingUpdateDelay As New TimeSpan(0, 0, 5)
         Static mTextMinimapDelay As New TimeSpan(0, 0, 1)
         Static mTextMinimapRefreshDelay As New TimeSpan(0, 0, 10)
         Static mMarkCaretWordDelay As New TimeSpan(0, 0, 1)
 
-        Dim dLastFullAutocompleteUpdate As Date = (Now + mFullAutocompleteUpdateDelay)
-        Dim dLastVarAutocompleteUpdate As Date = (Now + mVarAutocompleteUpdateDelay)
-        Dim dLastFoldingUpdate As Date = (Now + mFoldingUpdateDelay)
+        Dim dLastFullSyntaxParseDelay As Date = (Now + mFullSyntaxParseDelay)
+        Dim dLastVarSyntaxParseDelay As Date = (Now + mVarSyntaxParseDelay)
+        Dim dLastFoldingUpdateDelay As Date = (Now + mFoldingUpdateDelay)
         Dim dLastTextMinimapDelay As Date = (Now + mTextMinimapDelay)
         Dim dLastTextMinimapRefreshDelay As Date = (Now + mTextMinimapRefreshDelay)
         Dim dLastMarkCaretWordDelay As Date = (Now + mMarkCaretWordDelay)
@@ -72,39 +72,39 @@ Public Class ClassSyntaxUpdater
                 Dim bIsFormMainFocused As Boolean = (Not ClassSettings.g_iSettingsOnlyUpdateSyntaxWhenFocused OrElse ClassThread.ExecEx(Of Boolean)(g_mFormMain, Function() Form.ActiveForm IsNot Nothing))
 
                 'Update Autocomplete
-                If (bIsFormMainFocused AndAlso g_mFormMain.g_ClassAutocompleteUpdater.g_lFullAutocompleteTabRequests.Count > 0) Then
-                    Dim sRequestedTabIdentifier As String = g_mFormMain.g_ClassAutocompleteUpdater.g_lFullAutocompleteTabRequests(0).sTabIdentifier
+                If (bIsFormMainFocused AndAlso g_mFormMain.g_ClassSyntaxParser.g_lFullSyntaxParseRequests.Count > 0) Then
+                    Dim sRequestedTabIdentifier As String = g_mFormMain.g_ClassSyntaxParser.g_lFullSyntaxParseRequests(0).sTabIdentifier
                     Dim sActiveTabIdentifier As String = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Identifier)
 
                     'Active tabs have higher priority to update
-                    If (g_mFormMain.g_ClassAutocompleteUpdater.g_lFullAutocompleteTabRequests.Exists(Function(a As ClassAutocompleteUpdater.STRUC_AUTOCOMPLETE_TAB_REQUEST_ITEM) a.sTabIdentifier = sActiveTabIdentifier)) Then
+                    If (g_mFormMain.g_ClassSyntaxParser.g_lFullSyntaxParseRequests.Exists(Function(a As ClassSyntaxParser.STRUC_SYNTAX_PARSE_TAB_REQUEST) a.sTabIdentifier = sActiveTabIdentifier)) Then
                         sRequestedTabIdentifier = sActiveTabIdentifier
                     End If
 
                     ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                           g_mFormMain.g_ClassAutocompleteUpdater.StartUpdateSchedule(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, sRequestedTabIdentifier, ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS.NOONE)
+                                                           g_mFormMain.g_ClassSyntaxParser.StartUpdateSchedule(ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS.ALL, sRequestedTabIdentifier, ClassSyntaxParser.ENUM_PARSE_OPTIONS_FLAGS.NOONE)
                                                        End Sub)
 
-                ElseIf (bIsFormMainFocused AndAlso dLastFullAutocompleteUpdate < Now) Then
-                    dLastFullAutocompleteUpdate = (Now + mFullAutocompleteUpdateDelay)
+                ElseIf (bIsFormMainFocused AndAlso dLastFullSyntaxParseDelay < Now) Then
+                    dLastFullSyntaxParseDelay = (Now + mFullSyntaxParseDelay)
 
                     ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                           g_mFormMain.g_ClassAutocompleteUpdater.StartUpdateSchedule(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
+                                                           g_mFormMain.g_ClassSyntaxParser.StartUpdateSchedule(ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS.ALL)
                                                        End Sub)
                 End If
 
                 'Update Variable Autocomplete
-                If (bIsFormMainFocused AndAlso dLastVarAutocompleteUpdate < Now) Then
-                    dLastVarAutocompleteUpdate = (Now + mVarAutocompleteUpdateDelay)
+                If (bIsFormMainFocused AndAlso dLastVarSyntaxParseDelay < Now) Then
+                    dLastVarSyntaxParseDelay = (Now + mVarSyntaxParseDelay)
 
                     ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                           g_mFormMain.g_ClassAutocompleteUpdater.StartUpdateSchedule(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.VARIABLES_AUTOCOMPLETE)
+                                                           g_mFormMain.g_ClassSyntaxParser.StartUpdateSchedule(ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS.VAR_PARSE)
                                                        End Sub)
                 End If
 
                 'Update Foldings
-                If (bIsFormMainFocused AndAlso dLastFoldingUpdate < Now) Then
-                    dLastFoldingUpdate = (Now + mFoldingUpdateDelay)
+                If (bIsFormMainFocused AndAlso dLastFoldingUpdateDelay < Now) Then
+                    dLastFoldingUpdateDelay = (Now + mFoldingUpdateDelay)
 
                     ClassThread.ExecAsync(g_mFormMain, Sub()
                                                            g_mFormMain.g_ClassTabControl.m_ActiveTab.UpdateFoldings()

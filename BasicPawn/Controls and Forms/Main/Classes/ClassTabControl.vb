@@ -459,7 +459,7 @@ Public Class ClassTabControl
 
                     g_mFormMain.g_mUCStartPage.g_mClassRecentItems.AddRecent(m_Tab(iIndex).m_File)
 
-                    g_mFormMain.g_ClassAutocompleteUpdater.StartUpdateSchedule(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL)
+                    g_mFormMain.g_ClassSyntaxParser.StartUpdateSchedule(ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS.ALL)
                 End If
             End Using
         Else
@@ -693,7 +693,7 @@ Public Class ClassTabControl
         RaiseEvent OnTextEditorFullUpdate(mTabs)
 
         For i = 0 To mTabs.Length - 1
-            g_mFormMain.g_ClassAutocompleteUpdater.StartUpdateSchedule(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, mTabs(i), ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS.NOONE)
+            g_mFormMain.g_ClassSyntaxParser.StartUpdateSchedule(ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS.ALL, mTabs(i), ClassSyntaxParser.ENUM_PARSE_OPTIONS_FLAGS.NOONE)
         Next
 
         g_mFormMain.g_ClassSyntaxUpdater.StartThread()
@@ -1203,6 +1203,14 @@ Public Class ClassTabControl
 
                         g_mFormMain.g_ClassTabControl.__OnTextEditorTabDetailsAction(Me, g_mFormMain.TabControl_Details.SelectedIndex, bSpecialAction, iKeys)
 
+                    'Details navigation up
+                    Case (Keys.Control Or Keys.Up),
+                            (Keys.Control Or Keys.Down)
+                        bBlock = True
+
+                        Dim iDirection As Integer = If(iKeys = (Keys.Control Or Keys.Up), -1, 1)
+                        g_mFormMain.g_ClassTabControl.__OnTextEditorTabDetailsMove(Me, g_mFormMain.TabControl_Details.SelectedIndex, iDirection, iKeys)
+
                     'Details tab navigation
                     Case (Keys.Control Or Keys.Left),
                            (Keys.Control Or Keys.Right)
@@ -1249,14 +1257,6 @@ Public Class ClassTabControl
                         If (iOldIndex <> iNewIndex) Then
                             g_mFormMain.g_ClassTabControl.SelectTab(iNewIndex)
                         End If
-
-                    'Details navigation up
-                    Case (Keys.Control Or Keys.Up),
-                            (Keys.Control Or Keys.Down)
-                        bBlock = True
-
-                        Dim iDirection As Integer = If(iKeys = (Keys.Control Or Keys.Up), -1, 1)
-                        g_mFormMain.g_ClassTabControl.__OnTextEditorTabDetailsMove(Me, g_mFormMain.TabControl_Details.SelectedIndex, iDirection, iKeys)
 
                     'Auto-Indent Brackets
                     Case Keys.Enter

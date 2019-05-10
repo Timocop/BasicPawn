@@ -18,7 +18,7 @@
 Public Class ClassSettings
 
 #Region "Settings"
-    Enum ENUM_AUTOCOMPLETE_SYNTAX
+    Enum ENUM_ENFORCE_SYNTAX
         SP_MIX
         SP_1_6
         SP_1_7
@@ -36,7 +36,7 @@ Public Class ClassSettings
         CHANGED
     End Enum
 
-    Public Shared g_iSettingsAutocompleteSyntax As ENUM_AUTOCOMPLETE_SYNTAX = ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX
+    Public Shared g_iSettingsEnforceSyntax As ENUM_ENFORCE_SYNTAX = ENUM_ENFORCE_SYNTAX.SP_MIX
     Public Shared ReadOnly g_iSettingsDefaultEditorFont As Font = New Font("Consolas", 9, FontStyle.Regular)
     Public Shared ReadOnly g_sSettingsDefaultEditorFont As String = New FontConverter().ConvertToInvariantString(g_iSettingsDefaultEditorFont)
 

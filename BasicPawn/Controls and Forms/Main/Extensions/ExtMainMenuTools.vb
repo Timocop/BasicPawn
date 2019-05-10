@@ -277,13 +277,13 @@ Partial Public Class FormMain
     End Sub
 
     Private Sub ToolStripMenuItem_ToolsAutocompleteUpdate_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsAutocompleteUpdate.Click
-        g_ClassAutocompleteUpdater.StartUpdateSchedule(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, "", ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS.FORCE_UPDATE)
+        g_ClassSyntaxParser.StartUpdateSchedule(ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS.ALL, "", ClassSyntaxParser.ENUM_PARSE_OPTIONS_FLAGS.FORCE_UPDATE)
     End Sub
 
     Private Sub ToolStripMenuItem_ToolsAutocompleteUpdateAll_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsAutocompleteUpdateAll.Click
-        g_ClassAutocompleteUpdater.StartUpdateSchedule(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, "", ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS.FORCE_UPDATE)
+        g_ClassSyntaxParser.StartUpdateSchedule(ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS.ALL, "", ClassSyntaxParser.ENUM_PARSE_OPTIONS_FLAGS.FORCE_UPDATE)
         For j = 0 To g_ClassTabControl.m_TabsCount - 1
-            g_ClassAutocompleteUpdater.StartUpdateSchedule(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, g_ClassTabControl.m_Tab(j), ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS.FORCE_UPDATE)
+            g_ClassSyntaxParser.StartUpdateSchedule(ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS.ALL, g_ClassTabControl.m_Tab(j), ClassSyntaxParser.ENUM_PARSE_OPTIONS_FLAGS.FORCE_UPDATE)
         Next
     End Sub
 
@@ -294,14 +294,14 @@ Partial Public Class FormMain
 
         Select Case (ToolStripComboBox_ToolsAutocompleteSyntax.SelectedIndex)
             Case 0
-                ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX
+                ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_MIX
             Case 1
-                ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_6
+                ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_6
             Case 2
-                ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7
+                ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_7
         End Select
 
-        g_ClassAutocompleteUpdater.StartUpdateSchedule(ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.ALL, "", ClassAutocompleteUpdater.ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS.FORCE_UPDATE)
+        g_ClassSyntaxParser.StartUpdateSchedule(ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS.ALL, "", ClassSyntaxParser.ENUM_PARSE_OPTIONS_FLAGS.FORCE_UPDATE)
     End Sub
 
     Private Sub ToolStripMenuItem_ToolsAutocompleteShowAutocomplete_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsAutocompleteShowAutocomplete.Click

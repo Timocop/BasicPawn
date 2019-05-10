@@ -25,8 +25,6 @@ Public Class ClassSyntaxTools
 
     Public g_ClassSyntaxHighlighting As ClassSyntaxHighlighting
 
-    Public Shared g_sStatementsArray As String() = {"if", "else", "for", "while", "do", "switch"}
-
     Public Shared g_sHighlightWord As String = ""
     Public Shared g_sCaretWord As String = ""
 

@@ -15,96 +15,96 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 #Const SEARCH_EVERYWHERE = (DEBUG AndAlso False)
-#Const PROFILE_AUTOCOMPLETE = (DEBUG AndAlso False)
+#Const PROFILE_PARSING = (DEBUG AndAlso False)
 #Const DUMP_TO_FILE = (DEBUG AndAlso True)
 
 Imports System.Text
 Imports System.Text.RegularExpressions
 
-Public Class ClassAutocompleteUpdater
+Public Class ClassSyntaxParser
     Private g_mFormMain As FormMain
-    Private g_mAutocompleteUpdaterThread As Threading.Thread
+    Private g_mSyntaxParsingThread As Threading.Thread
     Private _lock As New Object
 
-    Class STRUC_AUTOCOMPLETE_TAB_REQUEST_ITEM
+    Class STRUC_SYNTAX_PARSE_TAB_REQUEST
         Public sTabIdentifier As String
-        Public iOptionFlags As ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS
+        Public iOptionFlags As ENUM_PARSE_OPTIONS_FLAGS
 
-        Sub New(_TabIdentifier As String, _OptionFlags As ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS)
+        Sub New(_TabIdentifier As String, _OptionFlags As ENUM_PARSE_OPTIONS_FLAGS)
             sTabIdentifier = _TabIdentifier
             iOptionFlags = _OptionFlags
         End Sub
     End Class
 
-    Public g_lFullAutocompleteTabRequests As New ClassSyncList(Of STRUC_AUTOCOMPLETE_TAB_REQUEST_ITEM)
+    Public g_lFullSyntaxParseRequests As New ClassSyncList(Of STRUC_SYNTAX_PARSE_TAB_REQUEST)
 
-    Public Event OnAutocompleteUpdateStarted(iUpdateType As ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS)
-    Public Event OnAutocompleteUpdateEnd()
-    Public Event OnAutocompleteUpdateAbort()
+    Public Event OnSyntaxParseStarted(iUpdateType As ENUM_PARSE_TYPE_FLAGS)
+    Public Event OnSyntaxParseEnd()
+    Public Event OnSyntaxParseAbort()
 
     Public Sub New(f As FormMain)
         g_mFormMain = f
     End Sub
 
-    Enum ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS
+    Enum ENUM_PARSE_TYPE_FLAGS
         ALL = -1
-        FULL_AUTOCOMPLETE = (1 << 0)
-        VARIABLES_AUTOCOMPLETE = (1 << 1)
+        FULL_PARSE = (1 << 0)
+        VAR_PARSE = (1 << 1)
     End Enum
 
-    Enum ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS
+    Enum ENUM_PARSE_OPTIONS_FLAGS
         NOONE = 0
         FORCE_UPDATE = (1 << 0)
         FORCE_SCHEDULE = (1 << 1)
     End Enum
 
     ''' <summary>
-    ''' Starts the autocomplete update thread.
+    ''' Starts the syntax parse thread.
     ''' </summary> 
     ''' <returns></returns>
-    Public Function StartUpdate(iUpdateType As ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS) As Boolean
-        Return StartUpdate(iUpdateType, "", ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS.NOONE)
+    Public Function StartUpdate(iUpdateType As ENUM_PARSE_TYPE_FLAGS) As Boolean
+        Return StartUpdate(iUpdateType, "", ENUM_PARSE_OPTIONS_FLAGS.NOONE)
     End Function
 
-    Public Function StartUpdate(iUpdateType As ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS, mTab As ClassTabControl.SourceTabPage, iOptionFlags As ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS) As Boolean
+    Public Function StartUpdate(iUpdateType As ENUM_PARSE_TYPE_FLAGS, mTab As ClassTabControl.SourceTabPage, iOptionFlags As ENUM_PARSE_OPTIONS_FLAGS) As Boolean
         Return StartUpdate(iUpdateType, If(mTab IsNot Nothing, mTab.m_Identifier, ""), iOptionFlags)
     End Function
 
-    Public Function StartUpdate(iUpdateType As ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS, sTabIdentifier As String, iOptionFlags As ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS) As Boolean
+    Public Function StartUpdate(iUpdateType As ENUM_PARSE_TYPE_FLAGS, sTabIdentifier As String, iOptionFlags As ENUM_PARSE_OPTIONS_FLAGS) As Boolean
         If (String.IsNullOrEmpty(sTabIdentifier)) Then
             sTabIdentifier = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Identifier
         End If
 
-        If (Not ClassThread.IsValid(g_mAutocompleteUpdaterThread)) Then
-            g_mAutocompleteUpdaterThread = New Threading.Thread(Sub()
-                                                                    Try
-                                                                        SyncLock _lock
-                                                                            If ((iUpdateType And ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) <> 0) Then
-                                                                                RaiseEvent OnAutocompleteUpdateStarted(iUpdateType)
-                                                                                FullAutocompleteUpdate_Thread(sTabIdentifier, iOptionFlags)
-                                                                            End If
+        If (Not ClassThread.IsValid(g_mSyntaxParsingThread)) Then
+            g_mSyntaxParsingThread = New Threading.Thread(Sub()
+                                                              Try
+                                                                  SyncLock _lock
+                                                                      If ((iUpdateType And ENUM_PARSE_TYPE_FLAGS.FULL_PARSE) <> 0) Then
+                                                                          RaiseEvent OnSyntaxParseStarted(iUpdateType)
+                                                                          FullSyntaxParse_Thread(sTabIdentifier, iOptionFlags)
+                                                                      End If
 
-                                                                            If ((iUpdateType And ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.VARIABLES_AUTOCOMPLETE) <> 0) Then
-                                                                                RaiseEvent OnAutocompleteUpdateStarted(iUpdateType)
-                                                                                VariableAutocompleteUpdate_Thread(sTabIdentifier, iOptionFlags)
-                                                                            End If
+                                                                      If ((iUpdateType And ENUM_PARSE_TYPE_FLAGS.VAR_PARSE) <> 0) Then
+                                                                          RaiseEvent OnSyntaxParseStarted(iUpdateType)
+                                                                          VarSyntaxParse_Thread(sTabIdentifier, iOptionFlags)
+                                                                      End If
 
-                                                                            If ((iUpdateType And ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) <> 0) Then
-                                                                                FullAutocompleteUpdate_Post_Thread(sTabIdentifier, iOptionFlags)
-                                                                            End If
-                                                                        End SyncLock
-                                                                    Catch ex As Threading.ThreadAbortException
-                                                                        Throw
-                                                                    Catch ex As Exception
-                                                                        ClassExceptionLog.WriteToLog(ex)
-                                                                    End Try
+                                                                      If ((iUpdateType And ENUM_PARSE_TYPE_FLAGS.FULL_PARSE) <> 0) Then
+                                                                          FullSyntaxParse_Post_Thread(sTabIdentifier, iOptionFlags)
+                                                                      End If
+                                                                  End SyncLock
+                                                              Catch ex As Threading.ThreadAbortException
+                                                                  Throw
+                                                              Catch ex As Exception
+                                                                  ClassExceptionLog.WriteToLog(ex)
+                                                              End Try
 
-                                                                    RaiseEvent OnAutocompleteUpdateEnd()
-                                                                End Sub) With {
+                                                              RaiseEvent OnSyntaxParseEnd()
+                                                          End Sub) With {
                 .Priority = Threading.ThreadPriority.Lowest,
                 .IsBackground = True
             }
-            g_mAutocompleteUpdaterThread.Start()
+            g_mSyntaxParsingThread.Start()
 
             Return True
         Else
@@ -113,39 +113,39 @@ Public Class ClassAutocompleteUpdater
     End Function
 
     ''' <summary>
-    ''' Starts the autocomplete update thread. Adds task to background thread if thread is already running.
+    ''' Starts the syntax parse thread. Adds task to background thread if thread is already running.
     ''' </summary> 
     ''' <returns></returns>
-    Public Function StartUpdateSchedule(iUpdateType As ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS) As Boolean
-        Return StartUpdateSchedule(iUpdateType, "", ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS.NOONE)
+    Public Function StartUpdateSchedule(iUpdateType As ENUM_PARSE_TYPE_FLAGS) As Boolean
+        Return StartUpdateSchedule(iUpdateType, "", ENUM_PARSE_OPTIONS_FLAGS.NOONE)
     End Function
 
-    Public Function StartUpdateSchedule(iUpdateType As ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS, mTab As ClassTabControl.SourceTabPage, iOptionFlags As ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS) As Boolean
+    Public Function StartUpdateSchedule(iUpdateType As ENUM_PARSE_TYPE_FLAGS, mTab As ClassTabControl.SourceTabPage, iOptionFlags As ENUM_PARSE_OPTIONS_FLAGS) As Boolean
         Return StartUpdateSchedule(iUpdateType, If(mTab IsNot Nothing, mTab.m_Identifier, ""), iOptionFlags)
     End Function
 
-    Public Function StartUpdateSchedule(iUpdateType As ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS, sTabIdentifier As String, iOptionFlags As ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS) As Boolean
+    Public Function StartUpdateSchedule(iUpdateType As ENUM_PARSE_TYPE_FLAGS, sTabIdentifier As String, iOptionFlags As ENUM_PARSE_OPTIONS_FLAGS) As Boolean
         If (StartUpdate(iUpdateType, sTabIdentifier, iOptionFlags)) Then
-            If ((iUpdateType And ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) <> 0) Then
-                Dim mTabRequest = g_lFullAutocompleteTabRequests.Find(Function(i As STRUC_AUTOCOMPLETE_TAB_REQUEST_ITEM)
-                                                                          Return (i.sTabIdentifier = sTabIdentifier AndAlso i.iOptionFlags = iOptionFlags)
-                                                                      End Function)
+            If ((iUpdateType And ENUM_PARSE_TYPE_FLAGS.FULL_PARSE) <> 0) Then
+                Dim mTabRequest = g_lFullSyntaxParseRequests.Find(Function(i As STRUC_SYNTAX_PARSE_TAB_REQUEST)
+                                                                      Return (i.sTabIdentifier = sTabIdentifier AndAlso i.iOptionFlags = iOptionFlags)
+                                                                  End Function)
 
                 If (mTabRequest IsNot Nothing) Then
-                    g_lFullAutocompleteTabRequests.Remove(mTabRequest)
+                    g_lFullSyntaxParseRequests.Remove(mTabRequest)
                 End If
             End If
 
             Return True
         Else
-            If ((iUpdateType And ENUM_AUTOCOMPLETE_UPDATE_TYPE_FLAGS.FULL_AUTOCOMPLETE) <> 0) Then
-                Dim mTabRequest = g_lFullAutocompleteTabRequests.Find(Function(i As STRUC_AUTOCOMPLETE_TAB_REQUEST_ITEM)
-                                                                          Return (i.sTabIdentifier = sTabIdentifier AndAlso i.iOptionFlags = iOptionFlags)
-                                                                      End Function)
+            If ((iUpdateType And ENUM_PARSE_TYPE_FLAGS.FULL_PARSE) <> 0) Then
+                Dim mTabRequest = g_lFullSyntaxParseRequests.Find(Function(i As STRUC_SYNTAX_PARSE_TAB_REQUEST)
+                                                                      Return (i.sTabIdentifier = sTabIdentifier AndAlso i.iOptionFlags = iOptionFlags)
+                                                                  End Function)
 
                 'Add when no request has been found OR the option flags is enforcing it
-                If ((iOptionFlags And ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS.FORCE_SCHEDULE) <> 0 OrElse mTabRequest Is Nothing) Then
-                    g_lFullAutocompleteTabRequests.Add(New STRUC_AUTOCOMPLETE_TAB_REQUEST_ITEM(sTabIdentifier, iOptionFlags))
+                If ((iOptionFlags And ENUM_PARSE_OPTIONS_FLAGS.FORCE_SCHEDULE) <> 0 OrElse mTabRequest Is Nothing) Then
+                    g_lFullSyntaxParseRequests.Add(New STRUC_SYNTAX_PARSE_TAB_REQUEST(sTabIdentifier, iOptionFlags))
                 End If
             End If
 
@@ -154,15 +154,15 @@ Public Class ClassAutocompleteUpdater
     End Function
 
     ''' <summary>
-    ''' Stops the autocomplete update thread
+    ''' Stops the syntax parse thread
     ''' </summary>
     Public Sub StopUpdate()
-        RaiseEvent OnAutocompleteUpdateAbort()
+        RaiseEvent OnSyntaxParseAbort()
 
-        ClassThread.Abort(g_mAutocompleteUpdaterThread)
+        ClassThread.Abort(g_mSyntaxParsingThread)
     End Sub
 
-    Private Sub FullAutocompleteUpdate_Thread(sTabIdentifier As String, iOptionFlags As ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS)
+    Private Sub FullSyntaxParse_Thread(sTabIdentifier As String, iOptionFlags As ENUM_PARSE_OPTIONS_FLAGS)
         Try
             Dim sActiveTabIdentifier As String = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Identifier)
             Dim mTabs As ClassTabControl.SourceTabPage() = ClassThread.ExecEx(Of ClassTabControl.SourceTabPage())(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.GetAllTabs())
@@ -173,7 +173,7 @@ Public Class ClassAutocompleteUpdater
                                                        g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = False
                                                    End Sub)
 
-                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_WARNING, "Autocomplete update failed! Could not get tab!", False, False)
+                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_WARNING, "Syntax parsing failed! Could not get tab!", False, False)
                 Return
             End If
 
@@ -188,7 +188,7 @@ Public Class ClassAutocompleteUpdater
                                                        g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = False
                                                    End Sub)
 
-                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Autocomplete update failed! Could not get current source file!", False, False)
+                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Syntax parsing failed! Could not get current source file!", False, False)
                 Return
             End If
 
@@ -365,12 +365,12 @@ Public Class ClassAutocompleteUpdater
             'Set mod type
             mRequestTab.m_Language = iRequestedLangauge
 
-            'Only update autocomplete if files have changed.
-            If ((iOptionFlags And ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS.FORCE_UPDATE) = 0) Then
-                Const E_IDENTIFIERKEY = "FullAutocomplete"
+            'Only update syntax parse if files have changed.
+            If ((iOptionFlags And ENUM_PARSE_OPTIONS_FLAGS.FORCE_UPDATE) = 0) Then
+                Const C_IDENTIFIERKEY = "FullSyntaxParse"
 
                 Dim sAutocompleteIdentifier As String = ""
-                If (CheckAutocompleteIdentifier(E_IDENTIFIERKEY, mRequestTab, sAutocompleteIdentifier)) Then
+                If (CheckAutocompleteIdentifier(C_IDENTIFIERKEY, mRequestTab, sAutocompleteIdentifier)) Then
                     ClassThread.ExecAsync(g_mFormMain, Sub()
                                                            g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.ToolTipText = ""
                                                            g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = False
@@ -379,7 +379,7 @@ Public Class ClassAutocompleteUpdater
                     Return
                 End If
 
-                mRequestTab.m_AutocompleteIdentifier(E_IDENTIFIERKEY) = sAutocompleteIdentifier
+                mRequestTab.m_AutocompleteIdentifier(C_IDENTIFIERKEY) = sAutocompleteIdentifier
             End If
 
             'Add debugger placeholder variables and methods
@@ -398,20 +398,20 @@ Public Class ClassAutocompleteUpdater
                 mPreWatch.Start()
                 Dim i As Integer
                 For i = 0 To lIncludeFiles.Count - 1
-                    mParser.ProcessAutocompletePre(g_mFormMain, sRequestedSource, sRequestedSourceFile, CStr(lIncludeFiles(i).Value), sSourceList, lNewAutocompleteList, iRequestedLangauge)
+                    mParser.ProcessFullSyntaxPre(g_mFormMain, sRequestedSource, sRequestedSourceFile, CStr(lIncludeFiles(i).Value), sSourceList, lNewAutocompleteList, iRequestedLangauge)
                 Next
                 mPreWatch.Stop()
 
                 mPostWatch.Start()
                 For i = 0 To sSourceList.Count - 1
-                    mParser.ProcessAutocompletePost(g_mFormMain, sRequestedSource, sRequestedSourceFile, sSourceList(i)(0), sSourceList(i)(1), lNewAutocompleteList, iRequestedLangauge)
+                    mParser.ProcessFullSyntaxPost(g_mFormMain, sRequestedSource, sRequestedSourceFile, sSourceList(i)(0), sSourceList(i)(1), lNewAutocompleteList, iRequestedLangauge)
                 Next
                 mPostWatch.Stop()
             End If
 
             'Finalize
             mFinalizeWatch.Start()
-            mParser.ProcessAutocompleteFinalize(g_mFormMain, lNewAutocompleteList)
+            mParser.ProcessFullSyntaxFinalize(g_mFormMain, lNewAutocompleteList)
             mFinalizeWatch.Stop()
 
             'Save everything and update syntax 
@@ -452,8 +452,8 @@ Public Class ClassAutocompleteUpdater
 
             lNewAutocompleteList = Nothing
 
-#If PROFILE_AUTOCOMPLETE Then
-            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_DEBUG, "Autocomplete update finished!")
+#If PROFILE_PARSING Then
+            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_DEBUG, "Syntax parsing finished!")
             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_DEBUG, "Times:")
             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & "Includes: " & mIncludeWatch.Elapsed.ToString)
             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & "Language: " & mLanguageWatch.Elapsed.ToString)
@@ -470,12 +470,12 @@ Public Class ClassAutocompleteUpdater
                                                    g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = False
                                                End Sub)
 
-            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Autocomplete update failed! " & ex.Message, False, False)
+            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Syntax parsing failed! " & ex.Message, False, False)
             ClassExceptionLog.WriteToLog(ex)
         End Try
     End Sub
 
-    Private Sub VariableAutocompleteUpdate_Thread(sTabIdentifier As String, iOptionFlags As ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS)
+    Private Sub VarSyntaxParse_Thread(sTabIdentifier As String, iOptionFlags As ENUM_PARSE_OPTIONS_FLAGS)
         Try
             Dim mRequestTab As ClassTabControl.SourceTabPage = ClassThread.ExecEx(Of ClassTabControl.SourceTabPage)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.GetTabByIdentifier(sTabIdentifier))
             If (mRequestTab Is Nothing) Then
@@ -523,12 +523,12 @@ Public Class ClassAutocompleteUpdater
             Dim lNewVarAutocompleteList As New ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
             Dim mParser As New ClassParser
 
-            'Only update autocomplete if files have changed.
-            If ((iOptionFlags And ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS.FORCE_UPDATE) = 0) Then
-                Const E_IDENTIFIERKEY = "VarAutocomplete"
+            'Only update syntax if files have changed.
+            If ((iOptionFlags And ENUM_PARSE_OPTIONS_FLAGS.FORCE_UPDATE) = 0) Then
+                Const C_IDENTIFIERKEY = "VarSyntaxParse"
 
                 Dim sAutocompleteIdentifier As String = ""
-                If (CheckAutocompleteIdentifier(E_IDENTIFIERKEY, mRequestTab, sAutocompleteIdentifier)) Then
+                If (CheckAutocompleteIdentifier(C_IDENTIFIERKEY, mRequestTab, sAutocompleteIdentifier)) Then
                     ClassThread.ExecAsync(g_mFormMain, Sub()
                                                            g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.ToolTipText = ""
                                                            g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = False
@@ -536,7 +536,7 @@ Public Class ClassAutocompleteUpdater
                     Return
                 End If
 
-                mRequestTab.m_AutocompleteIdentifier(E_IDENTIFIERKEY) = sAutocompleteIdentifier
+                mRequestTab.m_AutocompleteIdentifier(C_IDENTIFIERKEY) = sAutocompleteIdentifier
             End If
 
             'Parse variables and create methodmaps for variables
@@ -544,7 +544,7 @@ Public Class ClassAutocompleteUpdater
                 mPreWatch.Start()
 
                 If (ClassSettings.g_iSettingsAutocompleteVarParseType = ClassSettings.ENUM_VAR_PARSE_TYPE.TAB) Then
-                    mParser.ProcessVariablePre(g_mFormMain, sRequestedSource, sRequestedSourceFile, sRequestedSourceFile, lNewVarAutocompleteList, lOldVarAutocompleteList, iRequestedLangauge)
+                    mParser.ProcessVarSyntaxPre(g_mFormMain, sRequestedSource, sRequestedSourceFile, sRequestedSourceFile, lNewVarAutocompleteList, lOldVarAutocompleteList, iRequestedLangauge)
                 Else
                     Dim mIncludeFiles = mRequestTab.m_IncludeFiles.ToArray
                     For i = 0 To mIncludeFiles.Length - 1
@@ -562,18 +562,18 @@ Public Class ClassAutocompleteUpdater
                                 End Select
 
                                 If (bValid) Then
-                                    mParser.ProcessVariablePre(g_mFormMain, sRequestedSource, sRequestedSourceFile, CStr(mIncludeFiles(i).Value), lNewVarAutocompleteList, lOldVarAutocompleteList, iRequestedLangauge)
+                                    mParser.ProcessVarSyntaxPre(g_mFormMain, sRequestedSource, sRequestedSourceFile, CStr(mIncludeFiles(i).Value), lNewVarAutocompleteList, lOldVarAutocompleteList, iRequestedLangauge)
                                 End If
 
                             Case Else
-                                mParser.ProcessVariablePre(g_mFormMain, sRequestedSource, sRequestedSourceFile, CStr(mIncludeFiles(i).Value), lNewVarAutocompleteList, lOldVarAutocompleteList, iRequestedLangauge)
+                                mParser.ProcessVarSyntaxPre(g_mFormMain, sRequestedSource, sRequestedSourceFile, CStr(mIncludeFiles(i).Value), lNewVarAutocompleteList, lOldVarAutocompleteList, iRequestedLangauge)
                         End Select
                     Next
                 End If
                 mPreWatch.Stop()
 
                 mFinalizeWatch.Start()
-                mParser.ProcessVariableFinalize(g_mFormMain, sRequestedSource, sRequestedSourceFile, lNewVarAutocompleteList, lOldVarAutocompleteList, iRequestedLangauge)
+                mParser.ProcessVarSyntaxFinalize(g_mFormMain, sRequestedSource, sRequestedSourceFile, lNewVarAutocompleteList, lOldVarAutocompleteList, iRequestedLangauge)
                 mFinalizeWatch.Stop()
             End If
 
@@ -614,8 +614,8 @@ Public Class ClassAutocompleteUpdater
 
             lNewVarAutocompleteList = Nothing
 
-#If PROFILE_AUTOCOMPLETE Then
-            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_DEBUG, "Variable Autocomplete update finished!")
+#If PROFILE_PARSING Then
+            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_DEBUG, "Variable syntax parsing finished!")
             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_DEBUG, "Times:")
             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & "Pre: " & mPreWatch.Elapsed.ToString)
             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & "Finalize: " & mFinalizeWatch.Elapsed.ToString)
@@ -630,12 +630,12 @@ Public Class ClassAutocompleteUpdater
                                                    g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = False
                                                End Sub)
 
-            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Variable autocomplete update failed! " & ex.Message, False, False)
+            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Variable syntax parsing failed! " & ex.Message, False, False)
             ClassExceptionLog.WriteToLog(ex)
         End Try
     End Sub
 
-    Private Sub FullAutocompleteUpdate_Post_Thread(sTabIdentifier As String, iOptionFlags As ENUM_AUTOCOMPLETE_UPDATE_OPTIONS_FLAGS)
+    Private Sub FullSyntaxParse_Post_Thread(sTabIdentifier As String, iOptionFlags As ENUM_PARSE_OPTIONS_FLAGS)
         Try
             Dim sActiveTabIdentifier As String = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Identifier)
 
@@ -655,7 +655,7 @@ Public Class ClassAutocompleteUpdater
         Catch ex As Threading.ThreadAbortException
             Throw
         Catch ex As Exception
-            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Autocomplete update failed! " & ex.Message, False, False)
+            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Syntax parsing failed! " & ex.Message, False, False)
             ClassExceptionLog.WriteToLog(ex)
         End Try
     End Sub
@@ -1132,7 +1132,7 @@ Public Class ClassAutocompleteUpdater
             End Sub
         End Class
 
-        Public Sub ProcessAutocompletePre(mFormMain As FormMain,
+        Public Sub ProcessFullSyntaxPre(mFormMain As FormMain,
                                                 sActiveSource As String,
                                                 sActiveSourceFile As String,
                                                 sFile As String,
@@ -1159,7 +1159,7 @@ Public Class ClassAutocompleteUpdater
             End If
 
             Dim mParseInfo As New STRUC_AUTOCOMPLETE_PARSE_PRE_INFO(sSource, mSourceCode.ToString, sActiveSource, sActiveSourceFile, sFile, sSourceList, lNewAutocompleteList, iLanguage)
-            Dim mAutocompletePre As New ClassAutocompletePre(Me)
+            Dim mAutocompletePre As New ClassFullSyntaxPre(Me)
 
             mAutocompletePre.ParseStructs(mParseInfo)
             mAutocompletePre.ParseEnumStructs(mParseInfo)
@@ -1173,7 +1173,7 @@ Public Class ClassAutocompleteUpdater
             sSourceList.Add(New String() {sFile, sSource})
         End Sub
 
-        Public Sub ProcessAutocompletePost(mFormMain As FormMain,
+        Public Sub ProcessFullSyntaxPost(mFormMain As FormMain,
                                                     sActiveSource As String,
                                                     sActiveSourceFile As String,
                                                     ByRef sFile As String,
@@ -1182,7 +1182,7 @@ Public Class ClassAutocompleteUpdater
                                                     iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE)
 
             Dim mParseInfo As New STRUC_AUTOCOMPLETE_PARSE_POST_INFO(sActiveSource, sActiveSourceFile, sFile, sSource, lNewAutocompleteList, iLanguage)
-            Dim mAutocompletePost As New ClassAutocompletePost(Me)
+            Dim mAutocompletePost As New ClassFullSyntaxPost(Me)
 
             mAutocompletePost.ParseDefines(mFormMain, mParseInfo)
             mAutocompletePost.ParsePublicVariables(mFormMain, mParseInfo)
@@ -1194,10 +1194,10 @@ Public Class ClassAutocompleteUpdater
             mAutocompletePost.ParseEnumStructs(mFormMain, mParseInfo)
         End Sub
 
-        Public Sub ProcessAutocompleteFinalize(mFormMain As FormMain,
+        Public Sub ProcessFullSyntaxFinalize(mFormMain As FormMain,
                                                     lTmpAutoList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE))
 
-            Dim mAutocompleteFinalize As New ClassAutocompleteFinalize(Me)
+            Dim mAutocompleteFinalize As New ClassFullSyntaxFinalize(Me)
 
             mAutocompleteFinalize.ProcessMethodmapParentMethods(mFormMain, lTmpAutoList)
             mAutocompleteFinalize.ProcessMethodmapParentMethodmaps(mFormMain, lTmpAutoList)
@@ -1206,7 +1206,7 @@ Public Class ClassAutocompleteUpdater
             mAutocompleteFinalize.GenerateEnumStructThis(mFormMain, lTmpAutoList)
         End Sub
 
-        Public Sub ProcessVariablePre(mFormMain As FormMain,
+        Public Sub ProcessVarSyntaxPre(mFormMain As FormMain,
                                                 sActiveSource As String,
                                                 sActiveSourceFile As String,
                                                 ByRef sFile As String,
@@ -1223,12 +1223,12 @@ Public Class ClassAutocompleteUpdater
             CleanUpNewLinesSource(sSource, iLanguage)
 
             Dim mParseInfo As New STRUC_VARIABLE_PARSE_PRE_INFO(sSource, sActiveSource, sActiveSourceFile, sFile, lNewVarAutocompleteList, lOldVarAutocompleteList, iLanguage)
-            Dim mVariablePre As New ClassVariablePre(Me)
+            Dim mVariablePre As New ClassVarSyntaxPre(Me)
 
             mVariablePre.ParseVariables(mFormMain, mParseInfo)
         End Sub
 
-        Public Sub ProcessVariableFinalize(mFormMain As FormMain,
+        Public Sub ProcessVarSyntaxFinalize(mFormMain As FormMain,
                                             sActiveSource As String,
                                             sActiveSourceFile As String,
                                             ByRef lNewVarAutocompleteList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE),
@@ -1236,7 +1236,7 @@ Public Class ClassAutocompleteUpdater
                                             iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE)
 
             Dim mParseInfo As New STRUC_VARIABLE_PARSE_POST_INFO(sActiveSource, sActiveSourceFile, lNewVarAutocompleteList, lOldVarAutocompleteList, iLanguage)
-            Dim mVariableFinalize As New ClassVariableFinalize(Me)
+            Dim mVariableFinalize As New ClassVarSyntaxFinalize(Me)
 
             mVariableFinalize.ParseFunctionArguments(mFormMain, mParseInfo)
 
@@ -1250,7 +1250,7 @@ Public Class ClassAutocompleteUpdater
             mVariableFinalize.GenerateEnumStructFields(mFormMain, mParseInfo)
         End Sub
 
-        Private Class ClassAutocompletePre
+        Private Class ClassFullSyntaxPre
             Public g_ClassParse As ClassParser
 
             Sub New(_ClassParse As ClassParser)
@@ -1346,7 +1346,7 @@ Public Class ClassAutocompleteUpdater
             ''' </summary>
             ''' <param name="mParseInfo"></param>
             Public Sub ParseMethodmapEnums(mParseInfo As STRUC_AUTOCOMPLETE_PARSE_PRE_INFO)
-                If ((ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7 OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX) AndAlso
+                If ((ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_7 OrElse ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_MIX) AndAlso
                             mParseInfo.sSource.Contains("methodmap")) Then
                     Dim mPossibleEnumMatches As MatchCollection = Regex.Matches(mParseInfo.sSourceCode, "^\s*\b(methodmap)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)", RegexOptions.Multiline)
 
@@ -1390,7 +1390,7 @@ Public Class ClassAutocompleteUpdater
             ''' </summary>
             ''' <param name="mParseInfo"></param>
             Public Sub ParseTypesetEnums(mParseInfo As STRUC_AUTOCOMPLETE_PARSE_PRE_INFO)
-                If ((ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7 OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX) AndAlso
+                If ((ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_7 OrElse ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_MIX) AndAlso
                             mParseInfo.sSource.Contains("typeset")) Then
                     Dim mPossibleEnumMatches As MatchCollection = Regex.Matches(mParseInfo.sSourceCode, "^\s*\b(typeset)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)", RegexOptions.Multiline)
 
@@ -1434,7 +1434,7 @@ Public Class ClassAutocompleteUpdater
             ''' </summary>
             ''' <param name="mParseInfo"></param>
             Public Sub ParseTypedefEnums(mParseInfo As STRUC_AUTOCOMPLETE_PARSE_PRE_INFO)
-                If ((ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7 OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX) AndAlso
+                If ((ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_7 OrElse ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_MIX) AndAlso
                             mParseInfo.sSource.Contains("typedef")) Then
                     Dim mPossibleEnumMatches As MatchCollection = Regex.Matches(mParseInfo.sSourceCode, "^\s*\b(typedef)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)", RegexOptions.Multiline)
 
@@ -1478,7 +1478,7 @@ Public Class ClassAutocompleteUpdater
             ''' </summary>
             ''' <param name="mParseInfo"></param>
             Public Sub ParseFunctagEnums(mParseInfo As STRUC_AUTOCOMPLETE_PARSE_PRE_INFO)
-                If ((ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_6 OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX) AndAlso
+                If ((ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_6 OrElse ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_MIX) AndAlso
                             mParseInfo.sSource.Contains("functag")) Then
                     Dim mPossibleEnumMatches As MatchCollection = Regex.Matches(mParseInfo.sSourceCode, "^\s*\b(functag)\b\s+\b(public)\b\s+(?<Tag>\b[a-zA-Z0-9_]+\b\s+|\b[a-zA-Z0-9_]+\b\:\s*|)(?<Name>\b[a-zA-Z0-9_]+\b)\s*\(", RegexOptions.Multiline)
 
@@ -1522,7 +1522,7 @@ Public Class ClassAutocompleteUpdater
             ''' </summary>
             ''' <param name="mParseInfo"></param>
             Public Sub ParseFuncenumEnums(mParseInfo As STRUC_AUTOCOMPLETE_PARSE_PRE_INFO)
-                If ((ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_6 OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX) AndAlso
+                If ((ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_6 OrElse ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_MIX) AndAlso
                             mParseInfo.sSource.Contains("funcenum")) Then
                     Dim mPossibleEnumMatches As MatchCollection = Regex.Matches(mParseInfo.sSourceCode, "^\s*\b(funcenum)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)", RegexOptions.Multiline)
 
@@ -1752,7 +1752,7 @@ Public Class ClassAutocompleteUpdater
             End Sub
         End Class
 
-        Private Class ClassAutocompletePost
+        Private Class ClassFullSyntaxPost
             Public g_ClassParse As ClassParser
 
             Sub New(_ClassParse As ClassParser)
@@ -1858,7 +1858,7 @@ Public Class ClassAutocompleteUpdater
                         'SP 1.7 +Tags
                         mMatch = Regex.Match(sLines(i), String.Format("^\s*(?<Types>public(\b[a-zA-Z0-9_ ]+\b)*)\s+(?<Tag>\b{0}\b(\[\s*\])*\s)\s*(?<Name>\b[a-zA-Z0-9_]+\b)(?<Other>(.*?))$", sRegExTypePattern))
                         If (Not mMatch.Success) Then
-                            If (ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7) Then
+                            If (ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_7) Then
                                 Continue For
                             End If
 
@@ -1872,7 +1872,7 @@ Public Class ClassAutocompleteUpdater
                                 End If
                             End If
                         Else
-                            If (ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_6) Then
+                            If (ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_6) Then
                                 Continue For
                             End If
                         End If
@@ -1933,7 +1933,7 @@ Public Class ClassAutocompleteUpdater
             ''' <param name="mFormMain"></param>
             ''' <param name="mParseInfo"></param>
             Public Sub ParseFuncenums(mFormMain As FormMain, mParseInfo As STRUC_AUTOCOMPLETE_PARSE_POST_INFO)
-                If ((ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_6 OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX) AndAlso
+                If ((ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_6 OrElse ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_MIX) AndAlso
                             mParseInfo.sSource.Contains("funcenum")) Then
                     Dim mPossibleEnumMatches As MatchCollection = Regex.Matches(mParseInfo.sSource, "^\s*\b(funcenum)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)\s*(?<BraceStart>\{)", RegexOptions.Multiline)
                     Dim iBraceList As Integer()() = mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(mParseInfo.sSource, "{"c, "}"c, 1, mParseInfo.iLanguage, True)
@@ -2130,7 +2130,7 @@ Public Class ClassAutocompleteUpdater
             ''' <param name="mFormMain"></param>
             ''' <param name="mParseInfo"></param>
             Public Sub ParseTypesets(mFormMain As FormMain, mParseInfo As STRUC_AUTOCOMPLETE_PARSE_POST_INFO)
-                If ((ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7 OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX) AndAlso
+                If ((ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_7 OrElse ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_MIX) AndAlso
                             mParseInfo.sSource.Contains("typeset")) Then
                     Dim sRegExTypePattern As String = g_ClassParse.GetTypeNamesToPattern(mParseInfo.lNewAutocompleteList)
 
@@ -2244,7 +2244,7 @@ Public Class ClassAutocompleteUpdater
             ''' <param name="mFormMain"></param>
             ''' <param name="mParseInfo"></param>
             Public Sub ParseTypedefs(mFormMain As FormMain, mParseInfo As STRUC_AUTOCOMPLETE_PARSE_POST_INFO)
-                If ((ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7 OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX) AndAlso
+                If ((ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_7 OrElse ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_MIX) AndAlso
                             mParseInfo.sSource.Contains("typedef")) Then
                     Dim sRegExTypePattern As String = g_ClassParse.GetTypeNamesToPattern(mParseInfo.lNewAutocompleteList)
 
@@ -2398,7 +2398,7 @@ Public Class ClassAutocompleteUpdater
                     'SP 1.7 +Tags
                     mMatch = Regex.Match(sLines(i), String.Format("^\s*(?<Types>[a-zA-Z0-9_ ]*)(?<Tag>\b{0}\b\s)\s*(?<Name>\b[a-zA-Z0-9_]+\b)\s*{1}(?<IsFunc>\s*;){2}", sRegExTypePattern, Regex.Escape(sBraceText), "{0,1}"))
                     If (Not mMatch.Success) Then
-                        If (ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7) Then
+                        If (ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_7) Then
                             Continue For
                         End If
 
@@ -2412,7 +2412,7 @@ Public Class ClassAutocompleteUpdater
                             End If
                         End If
                     Else
-                        If (ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_6) Then
+                        If (ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_6) Then
                             Continue For
                         End If
                     End If
@@ -2424,7 +2424,7 @@ Public Class ClassAutocompleteUpdater
                     sComment = ""
                     iTypes = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ParseTypeNames(sTypes)
 
-                    If (Regex.IsMatch(sName, String.Format("(\b{0}\b)", String.Join("\b|\b", ClassSyntaxTools.g_sStatementsArray)))) Then
+                    If (mFormMain.g_ClassSyntaxTools.IsForbiddenVariableName(sName)) Then
                         Continue For
                     End If
 
@@ -2553,7 +2553,7 @@ Public Class ClassAutocompleteUpdater
             ''' <param name="mFormMain"></param>
             ''' <param name="mParseInfo"></param>
             Public Sub ParseMethodmaps(mFormMain As FormMain, mParseInfo As STRUC_AUTOCOMPLETE_PARSE_POST_INFO)
-                If ((ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7 OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX) AndAlso
+                If ((ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_7 OrElse ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_MIX) AndAlso
                             mParseInfo.sSource.Contains("methodmap")) Then
                     Dim sRegExTypePattern As String = g_ClassParse.GetTypeNamesToPattern(mParseInfo.lNewAutocompleteList)
 
@@ -2813,7 +2813,7 @@ Public Class ClassAutocompleteUpdater
             ''' <param name="mFormMain"></param>
             ''' <param name="mParseInfo"></param>
             Public Sub ParseEnumStructs(mFormMain As FormMain, mParseInfo As STRUC_AUTOCOMPLETE_PARSE_POST_INFO)
-                If ((ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7 OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX) AndAlso
+                If ((ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_7 OrElse ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_MIX) AndAlso
                             mParseInfo.sSource.Contains("enum") AndAlso mParseInfo.sSource.Contains("struct")) Then
                     Dim sRegExTypePattern As String = g_ClassParse.GetTypeNamesToPattern(mParseInfo.lNewAutocompleteList)
 
@@ -3049,7 +3049,7 @@ Public Class ClassAutocompleteUpdater
             End Sub
         End Class
 
-        Private Class ClassAutocompleteFinalize
+        Private Class ClassFullSyntaxFinalize
             Public g_ClassParse As ClassParser
 
             Sub New(_ClassParse As ClassParser)
@@ -3372,7 +3372,7 @@ Public Class ClassAutocompleteUpdater
             End Sub
         End Class
 
-        Private Class ClassVariablePre
+        Private Class ClassVarSyntaxPre
             Public g_ClassParse As ClassParser
 
             Sub New(_ClassParse As ClassParser)
@@ -3514,7 +3514,7 @@ Public Class ClassAutocompleteUpdater
                     For Each sLine As String In lCommaLinesList
                         Select Case (iLastInitStyle)
                             Case 1 'Old Style
-                                If (ClassSettings.g_iSettingsAutocompleteSyntax <> ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX AndAlso ClassSettings.g_iSettingsAutocompleteSyntax <> ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_6) Then
+                                If (ClassSettings.g_iSettingsEnforceSyntax <> ClassSettings.ENUM_ENFORCE_SYNTAX.SP_MIX AndAlso ClassSettings.g_iSettingsEnforceSyntax <> ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_6) Then
                                     Exit Select
                                 End If
 
@@ -3597,7 +3597,7 @@ Public Class ClassAutocompleteUpdater
                                 End If
 
                             Case 2 'New Style
-                                If (ClassSettings.g_iSettingsAutocompleteSyntax <> ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX AndAlso ClassSettings.g_iSettingsAutocompleteSyntax <> ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7) Then
+                                If (ClassSettings.g_iSettingsEnforceSyntax <> ClassSettings.ENUM_ENFORCE_SYNTAX.SP_MIX AndAlso ClassSettings.g_iSettingsEnforceSyntax <> ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_7) Then
                                     Exit Select
                                 End If
 
@@ -3691,7 +3691,7 @@ Public Class ClassAutocompleteUpdater
                         End If
 
 
-                        If (ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_6) Then
+                        If (ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_6) Then
                             For Each mMatch As Match In Regex.Matches(sLine, sOldStyleVarPattern)
                                 Dim iIndex As Integer = mMatch.Groups("Var").Index
                                 Dim sInit As String = mMatch.Groups("Init").Value.Trim
@@ -3786,7 +3786,7 @@ Public Class ClassAutocompleteUpdater
                             Next
                         End If
 
-                        If (ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7) Then
+                        If (ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_7) Then
                             For Each mMatch As Match In Regex.Matches(sLine, sNewStyleVarPattern)
                                 Dim iIndex As Integer = mMatch.Groups("Var").Index
                                 Dim sInit As String = mMatch.Groups("Init").Value.Trim
@@ -3887,7 +3887,7 @@ Public Class ClassAutocompleteUpdater
             End Sub
         End Class
 
-        Private Class ClassVariablePost
+        Private Class ClassVarSyntaxPost
             Public g_ClassParse As ClassParser
 
             Sub New(_ClassParse As ClassParser)
@@ -3897,7 +3897,7 @@ Public Class ClassAutocompleteUpdater
 
         End Class
 
-        Private Class ClassVariableFinalize
+        Private Class ClassVarSyntaxFinalize
             Public g_ClassParse As ClassParser
 
             Private Structure STRUC_PARSE_ARGUMENT_ITEM
@@ -3996,7 +3996,7 @@ Public Class ClassAutocompleteUpdater
 
                 For Each mArg As STRUC_PARSE_ARGUMENT_ITEM In lArgList
                     'Old style
-                    If (ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_6) Then
+                    If (ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_6) Then
                         Dim mMatch As Match = Regex.Match(mArg.sArgument, String.Format("(?<OneSevenTag>\b{0}\b\s+)*((?<Tag>\b{1}\b)\:\s*)*(?<Var>\b[a-zA-Z_][a-zA-Z0-9_]*\b)$", sRegExTypePattern, sRegExTypePattern))
                         Dim sTag As String = If(String.IsNullOrEmpty(mMatch.Groups("Tag").Value), "int", mMatch.Groups("Tag").Value).Trim
                         Dim sVar As String = mMatch.Groups("Var").Value.Trim
@@ -4045,7 +4045,7 @@ Public Class ClassAutocompleteUpdater
                     End If
 
                     'New style
-                    If (ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7) Then
+                    If (ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_7) Then
                         Dim mMatch As Match = Regex.Match(mArg.sArgument, String.Format("(?<Tag>\b{0}\b)\s+(?<Var>\b[a-zA-Z_][a-zA-Z0-9_]*\b)$", sRegExTypePattern))
                         Dim sTag As String = If(String.IsNullOrEmpty(mMatch.Groups("Tag").Value), "int", mMatch.Groups("Tag").Value).Trim
                         Dim sVar As String = mMatch.Groups("Var").Value.Trim
@@ -4101,7 +4101,7 @@ Public Class ClassAutocompleteUpdater
             ''' <param name="mFormMain"></param>
             ''' <param name="mParseInfo"></param>
             Public Sub GenerateMethodmapVariables(mFormMain As FormMain, mParseInfo As STRUC_VARIABLE_PARSE_POST_INFO)
-                If (ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7) Then
+                If (ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_7) Then
                     Dim lVarMethodmapList As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
 
                     For Each mVariableItem In mParseInfo.lNewVarAutocompleteList
@@ -4203,7 +4203,7 @@ Public Class ClassAutocompleteUpdater
             ''' <param name="mFormMain"></param>
             ''' <param name="mParseInfo"></param>
             Public Sub GenerateMethodmapMethods(mFormMain As FormMain, mParseInfo As STRUC_VARIABLE_PARSE_POST_INFO)
-                If (ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7) Then
+                If (ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_7) Then
                     Dim lVarMethodmapList As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
 
                     For Each mMethodItem In mParseInfo.lOldVarAutocompleteList
@@ -4307,7 +4307,7 @@ Public Class ClassAutocompleteUpdater
             ''' <param name="mFormMain"></param>
             ''' <param name="mParseInfo"></param>
             Public Sub GenerateMethodmapInlineMethods(mFormMain As FormMain, mParseInfo As STRUC_VARIABLE_PARSE_POST_INFO)
-                If (ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7) Then
+                If (ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_7) Then
                     Dim lVarMethodmapList As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
 
                     For Each mInlineMethodItem In mParseInfo.lOldVarAutocompleteList
@@ -4416,7 +4416,7 @@ Public Class ClassAutocompleteUpdater
             ''' <param name="mFormMain"></param>
             ''' <param name="mParseInfo"></param>
             Public Sub GenerateMethodmapFields(mFormMain As FormMain, mParseInfo As STRUC_VARIABLE_PARSE_POST_INFO)
-                If (ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7) Then
+                If (ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_7) Then
                     Dim lVarMethodmapList As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
 
                     For Each mFieldItem In mParseInfo.lOldVarAutocompleteList
@@ -4521,7 +4521,7 @@ Public Class ClassAutocompleteUpdater
             ''' <param name="mFormMain"></param>
             ''' <param name="mParseInfo"></param>
             Public Sub GenerateEnumStructVariables(mFormMain As FormMain, mParseInfo As STRUC_VARIABLE_PARSE_POST_INFO)
-                If (ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7) Then
+                If (ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_7) Then
                     Dim lVarEnumStructList As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
 
                     For Each mVariableItem In mParseInfo.lNewVarAutocompleteList
@@ -4636,7 +4636,7 @@ Public Class ClassAutocompleteUpdater
             ''' <param name="mFormMain"></param>
             ''' <param name="mParseInfo"></param>
             Public Sub GenerateEnumStructMethods(mFormMain As FormMain, mParseInfo As STRUC_VARIABLE_PARSE_POST_INFO)
-                If (ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7) Then
+                If (ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_7) Then
                     Dim lVarEnumStructList As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
 
                     For Each mMethodItem In mParseInfo.lOldVarAutocompleteList
@@ -4753,7 +4753,7 @@ Public Class ClassAutocompleteUpdater
             ''' <param name="mFormMain"></param>
             ''' <param name="mParseInfo"></param>
             Public Sub GenerateEnumStructInlineMethods(mFormMain As FormMain, mParseInfo As STRUC_VARIABLE_PARSE_POST_INFO)
-                If (ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7) Then
+                If (ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_7) Then
                     Dim lVarMethodmapList As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
 
                     For Each mInlineMethodItem In mParseInfo.lOldVarAutocompleteList
@@ -4875,7 +4875,7 @@ Public Class ClassAutocompleteUpdater
             ''' <param name="mFormMain"></param>
             ''' <param name="mParseInfo"></param>
             Public Sub GenerateEnumStructFields(mFormMain As FormMain, mParseInfo As STRUC_VARIABLE_PARSE_POST_INFO)
-                If (ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsAutocompleteSyntax = ClassSettings.ENUM_AUTOCOMPLETE_SYNTAX.SP_1_7) Then
+                If (ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_7) Then
                     Dim lVarMethodmapList As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
 
                     For Each mFieldItem In mParseInfo.lOldVarAutocompleteList
