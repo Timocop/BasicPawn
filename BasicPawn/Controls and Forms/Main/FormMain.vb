@@ -96,7 +96,10 @@ Public Class FormMain
                 If (Not ClassSettings.g_iSettingsAlwaysOpenNewInstance AndAlso Array.IndexOf(Environment.GetCommandLineArgs, "-newinstance") = -1) Then
                     Dim pBasicPawnProc As Process() = Process.GetProcessesByName(IO.Path.GetFileNameWithoutExtension(Application.ExecutablePath))
                     If (pBasicPawnProc.Length > 0) Then
-                        Dim lInstances As New List(Of Object()) '{ProcessId, StartTime.Ticks}
+                        Const C_INSTANCES_PID = "Pid"
+                        Const C_INSTANCES_TICKS = "Tick"
+
+                        Dim lInstances As New List(Of Dictionary(Of String, Object)) 'See keys: C_INSTANCES_*
 
                         For Each pProcess As Process In pBasicPawnProc
                             Try
@@ -104,19 +107,23 @@ Public Class FormMain
                                     Continue For
                                 End If
 
-                                lInstances.Add(New Object() {pProcess.Id, pProcess.StartTime.Ticks})
+                                Dim mInstancesDic As New Dictionary(Of String, Object)
+                                mInstancesDic(C_INSTANCES_PID) = pProcess.Id
+                                mInstancesDic(C_INSTANCES_TICKS) = pProcess.StartTime.Ticks
+
+                                lInstances.Add(mInstancesDic)
                             Catch ex As Exception
                                 'Ignore random exceptions
                             End Try
                         Next
 
                         'Takes care of the ticks sorting. If there are instances with the same ticks it should sort always the same.
-                        lInstances.Sort(Function(x As Object(), y As Object())
-                                            Return CLng(x(1)).CompareTo(CLng(y(1)))
+                        lInstances.Sort(Function(x As Dictionary(Of String, Object), y As Dictionary(Of String, Object))
+                                            Return CLng(x(C_INSTANCES_TICKS)).CompareTo(CLng(y(C_INSTANCES_TICKS)))
                                         End Function)
 
                         If (lInstances.Count > 0) Then
-                            Dim iMasterId As Integer = CInt(lInstances(0)(0))
+                            Dim iMasterId As Integer = CInt(lInstances(0)(C_INSTANCES_PID))
 
                             If (iMasterId <> Process.GetCurrentProcess.Id) Then
                                 Try

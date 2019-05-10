@@ -427,7 +427,10 @@ Public Class UCStartPage
         End Function
 
         Public Function SortFilesByDate(sFiles As String()) As String()
-            Dim lRecentFiles As New List(Of Object()) ' {sFile, iDateTick}
+            Const C_RECENTFILES_FILE = "File"
+            Const C_RECENTFILES_DATETICK = "DateTick"
+
+            Dim lRecentFiles As New List(Of Dictionary(Of String, Object)) 'See keys: C_RECENTFILES_*
 
             For Each sFile As String In sFiles
                 If (Not IO.File.Exists(sFile)) Then
@@ -436,16 +439,23 @@ Public Class UCStartPage
 
                 Dim dDate As Date = IO.File.GetLastWriteTime(sFile)
 
-                lRecentFiles.Add(New Object() {sFile.ToLower, dDate.Ticks})
+                Dim mRecentFilesDic As New Dictionary(Of String, Object)
+                mRecentFilesDic(C_RECENTFILES_FILE) = sFile.ToLower
+                mRecentFilesDic(C_RECENTFILES_DATETICK) = dDate.Ticks
+
+                lRecentFiles.Add(mRecentFilesDic)
             Next
 
-            lRecentFiles.Sort(Function(x As Object(), y As Object())
-                                  Return -CLng(x(1)).CompareTo(CLng(y(1)))
+            lRecentFiles.Sort(Function(x As Dictionary(Of String, Object), y As Dictionary(Of String, Object))
+                                  Return -CLng(x(C_RECENTFILES_DATETICK)).CompareTo(CLng(y(C_RECENTFILES_DATETICK)))
                               End Function)
 
             Dim lRecentFilesSorted As New List(Of String)
-            For Each iItem In lRecentFiles
-                lRecentFilesSorted.Add(CStr(iItem(0)))
+
+            For Each mItem In lRecentFiles
+                Dim sFile As String = CStr(mItem(C_RECENTFILES_FILE))
+
+                lRecentFilesSorted.Add(sFile)
             Next
 
             Return lRecentFilesSorted.ToArray

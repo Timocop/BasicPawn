@@ -115,11 +115,11 @@ Public Class ClassTextEditorTools
 
         Dim mIncludeFiles As DictionaryEntry() = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IncludeFiles.ToArray
 
-        Dim E_REFLIST_FILE = 0
-        Dim E_REFLIST_LINE = 1
-        Dim E_REFLIST_MSG = 2
+        Const C_REFLIST_FILE = "File"
+        Const C_REFLIST_LINE = "Line"
+        Const C_REFLIST_MSG = "Msg"
 
-        Dim lRefList As New List(Of Object()) ' {File, Line, Message}
+        Dim lRefList As New List(Of Dictionary(Of String, Object)) 'See keys: C_REFLIST_*
 
         For Each mInclude As DictionaryEntry In mIncludeFiles
             If (Not IO.File.Exists(CStr(mInclude.Value))) Then
@@ -165,20 +165,21 @@ Public Class ClassTextEditorTools
                             End If
                         End If
 
-                        lRefList.Add(New Object() {
-                                         CStr(mInclude.Value),
-                                         iLine,
-                                         vbTab & String.Format("Reference found: {0}({1}) : {2}", CStr(mInclude.Value), iLine, sLine.Trim)
-                        })
+                        Dim mRefListDic As New Dictionary(Of String, Object)
+                        mRefListDic(C_REFLIST_FILE) = CStr(mInclude.Value)
+                        mRefListDic(C_REFLIST_LINE) = iLine
+                        mRefListDic(C_REFLIST_MSG) = vbTab & String.Format("Reference found: {0}({1}) : {2}", CStr(mInclude.Value), iLine, sLine.Trim)
+
+                        lRefList.Add(mRefListDic)
                     Next
                 End While
             End Using
         Next
 
-        For Each i As Object() In lRefList
-            Dim sFile As String = CStr(i(E_REFLIST_FILE))
-            Dim iLine As Integer = CInt(i(E_REFLIST_LINE))
-            Dim sMsg As String = CStr(i(E_REFLIST_MSG))
+        For Each mItem In lRefList
+            Dim sFile As String = CStr(mItem(C_REFLIST_FILE))
+            Dim iLine As Integer = CInt(mItem(C_REFLIST_LINE))
+            Dim sMsg As String = CStr(mItem(C_REFLIST_MSG))
 
             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, sMsg, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_GOTO(sFile, New Integer() {iLine}), False)
         Next
