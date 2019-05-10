@@ -222,7 +222,11 @@ Public Class FormReportManager
                                                                                                                  g_mFormReportManager.ToolStripMenuItem_GetReports.Image = My.Resources.imageres_5337_16x16_32
                                                                                                              End Sub)
 
-                                                                 Dim lReportItems As New List(Of Object()) '{sTitle, sMessage, mImage}
+                                                                 Const C_REPORTITEMS_TITLE = "Title"
+                                                                 Const C_REPORTITEMS_MESSAGE = "Message"
+                                                                 Const C_REPORTITEMS_IMAGE = "Image"
+
+                                                                 Dim lReportItems As New List(Of Dictionary(Of String, Object)) 'See keys: C_REPORTITEMS_*
                                                                  Dim lReportExceptionItems As New List(Of ClassDebuggerParser.STRUC_SM_EXCEPTION)
                                                                  Dim lFtpEntries As New List(Of STRUC_FTP_ENTRY_ITEM)
 
@@ -373,7 +377,12 @@ Public Class FormReportManager
                                                                      Catch ex As Threading.ThreadAbortException
                                                                          Throw
                                                                      Catch ex As Exception
-                                                                         lReportItems.Add({"Error", ex.Message, My.Resources.user32_103_16x16_32})
+                                                                         Dim mReportItemsDic As New Dictionary(Of String, Object)
+                                                                         mReportItemsDic(C_REPORTITEMS_TITLE) = "Error"
+                                                                         mReportItemsDic(C_REPORTITEMS_MESSAGE) = ex.Message
+                                                                         mReportItemsDic(C_REPORTITEMS_IMAGE) = My.Resources.user32_103_16x16_32
+
+                                                                         lReportItems.Add(mReportItemsDic)
                                                                      Finally
                                                                          If (g_mClassSFTP IsNot Nothing) Then
                                                                              g_mClassSFTP.Dispose()
@@ -383,11 +392,21 @@ Public Class FormReportManager
                                                                  Next
 
                                                                  If (bFilesTooBig) Then
-                                                                     lReportItems.Add({"Unable to fetch some reports", String.Format("Some reports are too big to fetch. (max. {0} MB)", iMaxFileBytes / 1024 / 1024), My.Resources.user32_101_16x16_32})
+                                                                     Dim mReportItemsDic As New Dictionary(Of String, Object)
+                                                                     mReportItemsDic(C_REPORTITEMS_TITLE) = "Unable to fetch some reports"
+                                                                     mReportItemsDic(C_REPORTITEMS_MESSAGE) = String.Format("Some reports are too big to fetch. (max. {0} MB)", iMaxFileBytes / 1024 / 1024)
+                                                                     mReportItemsDic(C_REPORTITEMS_IMAGE) = My.Resources.user32_101_16x16_32
+
+                                                                     lReportItems.Add(mReportItemsDic)
                                                                  End If
 
                                                                  If (lReportExceptionItems.Count < 1) Then
-                                                                     lReportItems.Add({"No error reports found", "Congratulations! No error reports have been found!", My.Resources.ieframe_36866_16x16_32})
+                                                                     Dim mReportItemsDic As New Dictionary(Of String, Object)
+                                                                     mReportItemsDic(C_REPORTITEMS_TITLE) = "No error reports found"
+                                                                     mReportItemsDic(C_REPORTITEMS_MESSAGE) = "Congratulations! No error reports have been found!"
+                                                                     mReportItemsDic(C_REPORTITEMS_IMAGE) = My.Resources.ieframe_36866_16x16_32
+
+                                                                     lReportItems.Add(mReportItemsDic)
                                                                  End If
 
                                                                  'Remove duplicates
@@ -452,8 +471,12 @@ Public Class FormReportManager
                                                                                                                      g_mFormReportManager.ReportListBox_Reports.Items.Add(New ClassReportListBox.ClassReportItem(mItem))
                                                                                                                  Next
 
-                                                                                                                 For Each mItem In lReportItems
-                                                                                                                     g_mFormReportManager.ReportListBox_Reports.Items.Add(New ClassReportListBox.ClassReportItem(CStr(mItem(0)), CStr(mItem(1)), "", CType(mItem(2), Image), False, Nothing))
+                                                                                                                 For Each mReportItemsDic In lReportItems
+                                                                                                                     Dim sTitle As String = CStr(mReportItemsDic(C_REPORTITEMS_TITLE))
+                                                                                                                     Dim sMessage As String = CStr(mReportItemsDic(C_REPORTITEMS_MESSAGE))
+                                                                                                                     Dim mImage As Image = CType(mReportItemsDic(C_REPORTITEMS_IMAGE), Image)
+
+                                                                                                                     g_mFormReportManager.ReportListBox_Reports.Items.Add(New ClassReportListBox.ClassReportItem(sTitle, sMessage, "", mImage, False, Nothing))
                                                                                                                  Next
 
                                                                                                                  g_mFormReportManager.ReportListBox_Reports.EndUpdate()
