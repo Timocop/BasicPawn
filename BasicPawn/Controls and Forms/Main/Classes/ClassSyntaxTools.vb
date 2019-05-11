@@ -507,6 +507,10 @@ Public Class ClassSyntaxTools
                                     iIndentLength = 1
                                 End If
 
+                                If (iIndentLength < 0) Then
+                                    iIndentLength = 0
+                                End If
+
                                 mSourceBuilder = mSourceBuilder.Insert(i + 1, ClassSettings.BuildIndentation(iIndentLength, iIndentationType))
 
                                 iBraceCount = 0
@@ -1091,6 +1095,7 @@ Public Class ClassSyntaxTools
                     Case vbLf(0)
                         Dim bEscapeNewline As Boolean = False
 
+                        'Detect escape newline
                         For j = i - 1 To 0 Step -1
                             If (sText(j) = vbLf(0)) Then
                                 Exit For
@@ -1100,11 +1105,11 @@ Public Class ClassSyntaxTools
                                 Continue For
                             End If
 
-                            If (sText(j) <> "\"c) Then
-                                Continue For
+                            If (sText(j) = "\"c) Then
+                                bEscapeNewline = True
+                                Exit For
                             End If
 
-                            bEscapeNewline = True
                             Exit For
                         Next
 
@@ -1117,7 +1122,7 @@ Public Class ClassSyntaxTools
                             bInPreprocessor = 0
                             g_iStateArray(i, ENUM_STATE_TYPES.IN_PREPROCESSOR) = bInPreprocessor
 
-                            'Preprocessor directives can be malformed, reset level after we are dont with it.
+                            'Preprocessor directives can be malformed, reset level after we are done with it.
                             iParenthesisLevel = iParenthesisLevelPreSave
                             iBracketLevel = iBracketLevelPreSave
                             iBraceLevel = iBraceLevelPreSave
