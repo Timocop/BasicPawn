@@ -1212,33 +1212,37 @@ Public Class ClassTabControl
                         g_mFormMain.g_ClassTabControl.__OnTextEditorTabDetailsMove(Me, g_mFormMain.TabControl_Details.SelectedIndex, iDirection, iKeys)
 
                     'Details tab navigation
-                    Case (Keys.Control Or Keys.Left),
-                           (Keys.Control Or Keys.Right)
+                    Case (Keys.Shift Or Keys.Control Or Keys.Left),
+                           (Keys.Shift Or Keys.Control Or Keys.Right)
                         bBlock = True
 
                         Dim iNewIndex As Integer
 
-                        If (iKeys = (Keys.Control Or Keys.Left)) Then
+                        If (iKeys = (Keys.Shift Or Keys.Control Or Keys.Left)) Then
                             iNewIndex = ClassTools.ClassMath.ClampInt(g_mFormMain.TabControl_Details.SelectedIndex - 1, 0, g_mFormMain.TabControl_Details.TabCount - 1)
                         Else
                             iNewIndex = ClassTools.ClassMath.ClampInt(g_mFormMain.TabControl_Details.SelectedIndex + 1, 0, g_mFormMain.TabControl_Details.TabCount - 1)
                         End If
 
-                        g_mFormMain.TabControl_Details.SuspendLayout()
-                        g_mFormMain.TabControl_Details.Enabled = False
-                        g_mFormMain.TabControl_Details.SelectTab(iNewIndex)
-                        g_mFormMain.TabControl_Details.Enabled = True
-                        g_mFormMain.TabControl_Details.ResumeLayout()
+                        If (g_mFormMain.TabControl_Details.SelectedIndex <> iNewIndex) Then
+                            'Make control not auto-selected
+                            'TODO: Fix flicker in dark-mode.
+                            g_mFormMain.TabControl_Details.SuspendLayout()
+                            g_mFormMain.TabControl_Details.Enabled = False
+                            g_mFormMain.TabControl_Details.SelectTab(iNewIndex)
+                            g_mFormMain.TabControl_Details.Enabled = True
+                            g_mFormMain.TabControl_Details.ResumeLayout()
+                        End If
 
                     'Tab navigation
-                    Case (Keys.Shift Or Keys.Control Or Keys.Left),
-                           (Keys.Shift Or Keys.Control Or Keys.Right)
+                    Case (Keys.Alt Or Keys.Control Or Keys.Left),
+                           (Keys.Alt Or Keys.Control Or Keys.Right)
                         bBlock = True
 
                         Dim iOldIndex As Integer = m_Index
                         Dim iNewIndex As Integer = 0
 
-                        Select Case (iKeys = (Keys.Shift Or Keys.Control Or Keys.Left))
+                        Select Case (iKeys = (Keys.Alt Or Keys.Control Or Keys.Left))
                             Case True
                                 iNewIndex = iOldIndex - 1
 
@@ -1592,6 +1596,8 @@ Public Class ClassTabControl
                 Return
             End If
 
+            'Make control not auto-selected
+            'TODO: Fix flicker in dark-mode.
             g_mFormMain.TabControl_Details.SuspendLayout()
             g_mFormMain.TabControl_Details.Enabled = False
             g_mFormMain.TabControl_Details.SelectTab(g_mFormMain.TabPage_Autocomplete)
