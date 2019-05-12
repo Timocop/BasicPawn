@@ -83,10 +83,12 @@ Public Class ClassTools
                 End If
 
                 i.Start()
+
+                'Read 'StandartOutput' before 'WaitForExit'. The compiler tends to "wait" forever for something sometimes.
+                r_Output = i.StandardOutput.ReadToEnd
+
                 i.WaitForExit()
 
-
-                r_Output = i.StandardOutput.ReadToEnd
                 r_ExitCode = i.ExitCode
             End Using
         End Sub
