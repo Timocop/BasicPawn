@@ -127,8 +127,9 @@ Public Class ClassSyntaxParser
     Public Function StartUpdateSchedule(iUpdateType As ENUM_PARSE_TYPE_FLAGS, sTabIdentifier As String, iOptionFlags As ENUM_PARSE_OPTIONS_FLAGS) As Boolean
         If (StartUpdate(iUpdateType, sTabIdentifier, iOptionFlags)) Then
             If ((iUpdateType And ENUM_PARSE_TYPE_FLAGS.FULL_PARSE) <> 0) Then
+                'Remove next tab request
                 Dim mTabRequest = g_lFullSyntaxParseRequests.Find(Function(i As STRUC_SYNTAX_PARSE_TAB_REQUEST)
-                                                                      Return (i.sTabIdentifier = sTabIdentifier AndAlso i.iOptionFlags = iOptionFlags)
+                                                                      Return (i.sTabIdentifier = sTabIdentifier)
                                                                   End Function)
 
                 If (mTabRequest IsNot Nothing) Then
