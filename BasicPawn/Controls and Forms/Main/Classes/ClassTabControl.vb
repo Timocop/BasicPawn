@@ -1212,13 +1212,13 @@ Public Class ClassTabControl
                         g_mFormMain.g_ClassTabControl.__OnTextEditorTabDetailsMove(Me, g_mFormMain.TabControl_Details.SelectedIndex, iDirection, iKeys)
 
                     'Details tab navigation
-                    Case (Keys.Shift Or Keys.Control Or Keys.Left),
-                           (Keys.Shift Or Keys.Control Or Keys.Right)
+                    Case (Keys.Alt Or Keys.Control Or Keys.Left),
+                           (Keys.Alt Or Keys.Control Or Keys.Right)
                         bBlock = True
 
                         Dim iNewIndex As Integer
 
-                        If (iKeys = (Keys.Shift Or Keys.Control Or Keys.Left)) Then
+                        If (iKeys = (Keys.Alt Or Keys.Control Or Keys.Left)) Then
                             iNewIndex = ClassTools.ClassMath.ClampInt(g_mFormMain.TabControl_Details.SelectedIndex - 1, 0, g_mFormMain.TabControl_Details.TabCount - 1)
                         Else
                             iNewIndex = ClassTools.ClassMath.ClampInt(g_mFormMain.TabControl_Details.SelectedIndex + 1, 0, g_mFormMain.TabControl_Details.TabCount - 1)
@@ -1232,34 +1232,6 @@ Public Class ClassTabControl
                             g_mFormMain.TabControl_Details.SelectTab(iNewIndex)
                             g_mFormMain.TabControl_Details.Enabled = True
                             g_mFormMain.TabControl_Details.ResumeLayout()
-                        End If
-
-                    'Tab navigation
-                    Case (Keys.Alt Or Keys.Control Or Keys.Left),
-                           (Keys.Alt Or Keys.Control Or Keys.Right)
-                        bBlock = True
-
-                        Dim iOldIndex As Integer = m_Index
-                        Dim iNewIndex As Integer = 0
-
-                        Select Case (iKeys = (Keys.Alt Or Keys.Control Or Keys.Left))
-                            Case True
-                                iNewIndex = iOldIndex - 1
-
-                                If (iNewIndex < 0) Then
-                                    iNewIndex = g_mFormMain.g_ClassTabControl.m_TabsCount - 1
-                                End If
-
-                            Case Else
-                                iNewIndex = iOldIndex + 1
-
-                                If (iNewIndex > g_mFormMain.g_ClassTabControl.m_TabsCount - 1) Then
-                                    iNewIndex = 0
-                                End If
-                        End Select
-
-                        If (iOldIndex <> iNewIndex) Then
-                            g_mFormMain.g_ClassTabControl.SelectTab(iNewIndex)
                         End If
 
                     'Auto-Indent Brackets
