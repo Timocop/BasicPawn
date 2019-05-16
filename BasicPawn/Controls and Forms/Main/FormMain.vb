@@ -391,9 +391,13 @@ Public Class FormMain
         Next
 
         'Save projects
-        If (g_mUCProjectBrowser.g_ClassProjectControl.PrompSaveProject()) Then
-            e.Cancel = True
-        End If
+        Try
+            If (g_mUCProjectBrowser.g_ClassProjectControl.PrompSaveProject()) Then
+                e.Cancel = True
+            End If
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
 
         'Close debugger 
         If (g_mFormDebugger IsNot Nothing AndAlso Not g_mFormDebugger.IsDisposed) Then
