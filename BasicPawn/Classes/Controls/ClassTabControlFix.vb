@@ -32,4 +32,48 @@ Public Class ClassTabControlFix
         Me.Multiline = False
         Me.ResumeLayout()
     End Sub
+
+    Public Sub SelectTabNoFocus(sTabPageName As String)
+        If (sTabPageName Is Nothing) Then
+            Throw New ArgumentNullException("TabPage name null")
+        End If
+
+        Dim mTabPage As TabPage = Me.TabPages(sTabPageName)
+        SelectTabNoFocus(mTabPage)
+    End Sub
+
+    Public Sub SelectTabNoFocus(iIndex As Integer)
+        If (iIndex < 0 OrElse iIndex > Me.TabCount - 1) Then
+            Throw New ArgumentException("index out of range")
+        End If
+
+        Dim mTabPage As TabPage = Me.TabPages(iIndex)
+        SelectTabNoFocus(mTabPage)
+    End Sub
+
+    ''' <summary>
+    ''' Selects a tab  without focusing it.
+    ''' </summary>
+    ''' <param name="mTabPage"></param>
+    Public Sub SelectTabNoFocus(mTabPage As TabPage)
+        Dim mParentForm = Me.FindForm
+
+        If (mParentForm IsNot Nothing) Then
+            'See: https://stackoverflow.com/a/439606
+            Dim mFocusedControl As Control = mParentForm
+            Dim mContainer = TryCast(mFocusedControl, IContainerControl)
+
+            While (mContainer IsNot Nothing)
+                mFocusedControl = mContainer.ActiveControl
+                mContainer = TryCast(mFocusedControl, IContainerControl)
+            End While
+
+            Me.SelectTab(mTabPage)
+            mFocusedControl.Focus()
+
+            Return
+        End If
+
+        Me.SelectTab(mTabPage)
+    End Sub
 End Class

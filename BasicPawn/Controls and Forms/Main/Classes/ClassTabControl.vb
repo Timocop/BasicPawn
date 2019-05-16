@@ -1225,13 +1225,8 @@ Public Class ClassTabControl
                         End If
 
                         If (g_mFormMain.TabControl_Details.SelectedIndex <> iNewIndex) Then
-                            'Make control not auto-selected
-                            'TODO: Fix flicker in dark-mode.
-                            g_mFormMain.TabControl_Details.SuspendLayout()
-                            g_mFormMain.TabControl_Details.Enabled = False
-                            g_mFormMain.TabControl_Details.SelectTab(iNewIndex)
-                            g_mFormMain.TabControl_Details.Enabled = True
-                            g_mFormMain.TabControl_Details.ResumeLayout()
+                            'Make control not auto-selected 
+                            g_mFormMain.TabControl_Details.SelectTabNoFocus(iNewIndex)
                         End If
 
                     'Auto-Indent Brackets
@@ -1568,13 +1563,8 @@ Public Class ClassTabControl
                 Return
             End If
 
-            'Make control not auto-selected
-            'TODO: Fix flicker in dark-mode.
-            g_mFormMain.TabControl_Details.SuspendLayout()
-            g_mFormMain.TabControl_Details.Enabled = False
-            g_mFormMain.TabControl_Details.SelectTab(g_mFormMain.TabPage_Autocomplete)
-            g_mFormMain.TabControl_Details.Enabled = True
-            g_mFormMain.TabControl_Details.ResumeLayout()
+            'Make control not auto-selected 
+            g_mFormMain.TabControl_Details.SelectTabNoFocus(g_mFormMain.TabPage_Autocomplete)
         End Sub
 #End Region
 
