@@ -665,15 +665,21 @@ Public Class ClassSyntaxParser
         sAutocompleteIdentifier = ""
 
         Dim lIdentifierBuilder As New List(Of String)
+
+        'Add tab information
         lIdentifierBuilder.Add(CStr(mTab.m_Language))
         lIdentifierBuilder.Add(mTab.m_ActiveConfig.GetName)
         lIdentifierBuilder.Add(mTab.m_TextEditor.Document.TextContent)
 
         For Each mInclude As DictionaryEntry In mTab.m_IncludeFiles
+            'Add file path
+            lIdentifierBuilder.Add(CStr(mInclude.Value))
+
             If (Not IO.File.Exists(CStr(mInclude.Value))) Then
                 Continue For
             End If
 
+            'Add file last write time
             lIdentifierBuilder.Add(IO.File.GetLastWriteTime(CStr(mInclude.Value)).ToString)
         Next
 
