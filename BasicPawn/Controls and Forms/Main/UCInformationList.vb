@@ -201,125 +201,129 @@ Public Class UCInformationList
     End Enum
 
     Private Sub ItemAction(iAction As ENUM_ITEM_ACTION)
-        If (ListBox_Information.SelectedItems.Count < 1) Then
-            Return
-        End If
-
-        If (ListBox_Information.SelectedItems(0) Is Nothing) Then
-            Return
-        End If
-
-        Dim mSelectedItem As ClassListBoxItemAction = TryCast(ListBox_Information.SelectedItems(0), ClassListBoxItemAction)
-        If (mSelectedItem Is Nothing) Then
-            Return
-        End If
-
-        'Theres no action
-        If (mSelectedItem.m_Action Is Nothing) Then
-            Return
-        End If
-
-        'Open path in explorer
-        If (iAction = ENUM_ITEM_ACTION.AUTO OrElse iAction = ENUM_ITEM_ACTION.OPEN) Then
-            If (TypeOf mSelectedItem.m_Action Is ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN) Then
-                Dim mAction = DirectCast(mSelectedItem.m_Action, ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN)
-
-                If (String.IsNullOrEmpty(mAction.m_Path)) Then
-                    MessageBox.Show("Invalid path", "Unable to open path", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    Return
-                End If
-
-                Select Case (True)
-                    Case (IO.File.Exists(mAction.m_Path))
-                        Dim sFile As String = IO.Path.GetFullPath(mAction.m_Path)
-
-                        Process.Start("explorer.exe", String.Format("/select,""{0}""", sFile))
-                    Case (IO.Directory.Exists(mAction.m_Path))
-                        Dim sDir As String = IO.Path.GetFullPath(mAction.m_Path)
-
-                        Process.Start("explorer.exe", sDir)
-
-                    Case Else
-                        MessageBox.Show(String.Format("Could not find path '{0}'!", mAction.m_Path), "Unable to open path", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                End Select
+        Try
+            If (ListBox_Information.SelectedItems.Count < 1) Then
+                Return
             End If
-        End If
 
-        'Goto line number if path is open in a tab or includes
-        If (iAction = ENUM_ITEM_ACTION.AUTO OrElse iAction = ENUM_ITEM_ACTION.GOTO) Then
-            If (TypeOf mSelectedItem.m_Action Is ClassListBoxItemAction.ClassActions.STRUC_ACTION_GOTO) Then
-                Dim mAction = DirectCast(mSelectedItem.m_Action, ClassListBoxItemAction.ClassActions.STRUC_ACTION_GOTO)
+            If (ListBox_Information.SelectedItems(0) Is Nothing) Then
+                Return
+            End If
 
-                If (String.IsNullOrEmpty(mAction.m_Path)) Then
-                    MessageBox.Show("Invalid path", "Unable to open path", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    Return
-                End If
+            Dim mSelectedItem As ClassListBoxItemAction = TryCast(ListBox_Information.SelectedItems(0), ClassListBoxItemAction)
+            If (mSelectedItem Is Nothing) Then
+                Return
+            End If
 
-                If (mAction.m_Lines.Length < 1) Then
-                    MessageBox.Show("Invalid lines", "Unable to open path", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    Return
-                End If
+            'Theres no action
+            If (mSelectedItem.m_Action Is Nothing) Then
+                Return
+            End If
 
-                Dim bForceEnd As Boolean = False
-                While True
-                    For i = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1
-                        If (g_mFormMain.g_ClassTabControl.m_Tab(i).m_IsUnsaved OrElse g_mFormMain.g_ClassTabControl.m_Tab(i).m_InvalidFile) Then
-                            Continue For
-                        End If
+            'Open path in explorer
+            If (iAction = ENUM_ITEM_ACTION.AUTO OrElse iAction = ENUM_ITEM_ACTION.OPEN) Then
+                If (TypeOf mSelectedItem.m_Action Is ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN) Then
+                    Dim mAction = DirectCast(mSelectedItem.m_Action, ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN)
 
-                        Dim sFile As String = g_mFormMain.g_ClassTabControl.m_Tab(i).m_File.Replace("/"c, "\"c)
-
-                        'Try to find using absolute and relative path
-                        If (sFile.ToLower.EndsWith(mAction.m_Path.ToLower)) Then
-                            Dim iLineNum As Integer = ClassTools.ClassMath.ClampInt(0, g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.Document.TotalNumberOfLines - 1, mAction.m_Lines(0) - 1)
-
-                            g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.Caret.Line = iLineNum
-                            g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.Caret.Column = 0
-                            g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.SelectionManager.ClearSelection()
-
-                            Dim iLineLen As Integer = g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.Document.GetLineSegment(iLineNum).Length
-
-                            Dim iStart As New TextLocation(0, iLineNum)
-                            Dim iEnd As New TextLocation(iLineLen, iLineNum)
-
-                            g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.SelectionManager.SetSelection(iStart, iEnd)
-
-                            If (g_mFormMain.g_ClassTabControl.m_ActiveTabIndex <> i) Then
-                                g_mFormMain.g_ClassTabControl.SelectTab(i)
-                            End If
-
-                            Return
-                        End If
-                    Next
-
-                    If (bForceEnd) Then
-                        Exit While
+                    If (String.IsNullOrEmpty(mAction.m_Path)) Then
+                        MessageBox.Show("Invalid path", "Unable to open path", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        Return
                     End If
 
-                    For Each mInclude As DictionaryEntry In g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IncludeFilesFull.ToArray
-                        If (String.IsNullOrEmpty(CStr(mInclude.Value)) OrElse Not IO.File.Exists(CStr(mInclude.Value))) Then
-                            Continue For
-                        End If
+                    Select Case (True)
+                        Case (IO.File.Exists(mAction.m_Path))
+                            Dim sFile As String = IO.Path.GetFullPath(mAction.m_Path)
 
-                        Dim sFile As String = CStr(mInclude.Value).Replace("/"c, "\"c)
+                            Process.Start("explorer.exe", String.Format("/select,""{0}""", sFile))
+                        Case (IO.Directory.Exists(mAction.m_Path))
+                            Dim sDir As String = IO.Path.GetFullPath(mAction.m_Path)
 
-                        'Try to find using absolute and relative path
-                        If (sFile.ToLower.EndsWith(mAction.m_Path.ToLower)) Then
-                            Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
-                            mTab.OpenFileTab(CStr(mInclude.Value))
-                            mTab.SelectTab()
+                            Process.Start("explorer.exe", sDir)
 
-                            bForceEnd = True
-                            Continue While
-                        End If
-                    Next
-
-                    Exit While
-                End While
-
-                MessageBox.Show(String.Format("Could not find path '{0}'!", mAction.m_Path), "Unable to open path", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        Case Else
+                            MessageBox.Show(String.Format("Could not find path '{0}'!", mAction.m_Path), "Unable to open path", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    End Select
+                End If
             End If
-        End If
+
+            'Goto line number if path is open in a tab or includes
+            If (iAction = ENUM_ITEM_ACTION.AUTO OrElse iAction = ENUM_ITEM_ACTION.GOTO) Then
+                If (TypeOf mSelectedItem.m_Action Is ClassListBoxItemAction.ClassActions.STRUC_ACTION_GOTO) Then
+                    Dim mAction = DirectCast(mSelectedItem.m_Action, ClassListBoxItemAction.ClassActions.STRUC_ACTION_GOTO)
+
+                    If (String.IsNullOrEmpty(mAction.m_Path)) Then
+                        MessageBox.Show("Invalid path", "Unable to open path", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        Return
+                    End If
+
+                    If (mAction.m_Lines.Length < 1) Then
+                        MessageBox.Show("Invalid lines", "Unable to open path", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        Return
+                    End If
+
+                    Dim bForceEnd As Boolean = False
+                    While True
+                        For i = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1
+                            If (g_mFormMain.g_ClassTabControl.m_Tab(i).m_IsUnsaved OrElse g_mFormMain.g_ClassTabControl.m_Tab(i).m_InvalidFile) Then
+                                Continue For
+                            End If
+
+                            Dim sFile As String = g_mFormMain.g_ClassTabControl.m_Tab(i).m_File.Replace("/"c, "\"c)
+
+                            'Try to find using absolute and relative path
+                            If (sFile.ToLower.EndsWith(mAction.m_Path.ToLower)) Then
+                                Dim iLineNum As Integer = ClassTools.ClassMath.ClampInt(0, g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.Document.TotalNumberOfLines - 1, mAction.m_Lines(0) - 1)
+
+                                g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.Caret.Line = iLineNum
+                                g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.Caret.Column = 0
+                                g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.SelectionManager.ClearSelection()
+
+                                Dim iLineLen As Integer = g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.Document.GetLineSegment(iLineNum).Length
+
+                                Dim iStart As New TextLocation(0, iLineNum)
+                                Dim iEnd As New TextLocation(iLineLen, iLineNum)
+
+                                g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.SelectionManager.SetSelection(iStart, iEnd)
+
+                                If (g_mFormMain.g_ClassTabControl.m_ActiveTabIndex <> i) Then
+                                    g_mFormMain.g_ClassTabControl.SelectTab(i)
+                                End If
+
+                                Return
+                            End If
+                        Next
+
+                        If (bForceEnd) Then
+                            Exit While
+                        End If
+
+                        For Each mInclude As DictionaryEntry In g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IncludeFilesFull.ToArray
+                            If (String.IsNullOrEmpty(CStr(mInclude.Value)) OrElse Not IO.File.Exists(CStr(mInclude.Value))) Then
+                                Continue For
+                            End If
+
+                            Dim sFile As String = CStr(mInclude.Value).Replace("/"c, "\"c)
+
+                            'Try to find using absolute and relative path
+                            If (sFile.ToLower.EndsWith(mAction.m_Path.ToLower)) Then
+                                Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
+                                mTab.OpenFileTab(CStr(mInclude.Value))
+                                mTab.SelectTab()
+
+                                bForceEnd = True
+                                Continue While
+                            End If
+                        Next
+
+                        Exit While
+                    End While
+
+                    MessageBox.Show(String.Format("Could not find path '{0}'!", mAction.m_Path), "Unable to open path", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                End If
+            End If
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
     End Sub
 
 

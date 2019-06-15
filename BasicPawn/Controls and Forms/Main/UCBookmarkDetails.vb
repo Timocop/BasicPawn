@@ -22,6 +22,7 @@ Public Class UCBookmarkDetails
     Private g_mFormMain As FormMain
 
     Public g_ClassBookmarks As ClassBookmarks
+    Public g_ClassActions As ClassActions
 
     Public Sub New(f As FormMain)
         g_mFormMain = f
@@ -34,8 +35,11 @@ Public Class UCBookmarkDetails
         ImageList_Bookmarks.Images.Add("0", My.Resources.Pin_16x16_32)
         ImageList_Bookmarks.Images.Add("1", My.Resources.Unpin_16x16_32)
 
+
         g_ClassBookmarks = New ClassBookmarks(Me)
         g_ClassBookmarks.RefreshBookmarks()
+
+        g_ClassActions = New ClassActions(Me)
 
         AddHandler g_ClassBookmarks.OnBookmarksUpdated, AddressOf OnBookmarksUpdated
         AddHandler g_mFormMain.g_ClassTabControl.OnTabFullUpdate, AddressOf OnTabFullUpdate
@@ -43,6 +47,10 @@ Public Class UCBookmarkDetails
     End Sub
 
     Property m_ShowLocalTabsOnly As Boolean
+
+    Private Sub ToolStripMenuItem_Goto_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Goto.Click
+        BookmarkGotoSelected()
+    End Sub
 
     Private Sub ToolStripMenuItem_AddBookmark_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_AddBookmark.Click
         Try
@@ -363,10 +371,103 @@ Public Class UCBookmarkDetails
             RemoveHandler g_ClassBookmarks.OnBookmarksUpdated, AddressOf OnBookmarksUpdated
         End If
 
+        If (g_ClassActions IsNot Nothing) Then
+            g_ClassActions.Dispose()
+            g_ClassActions = Nothing
+        End If
+
         If (g_ClassBookmarks IsNot Nothing) Then
             g_ClassBookmarks.Dispose()
             g_ClassBookmarks = Nothing
         End If
+    End Sub
+
+    Private Sub BookmarkGotoSelected()
+        Try
+            If (ListView_Bookmarks.SelectedItems.Count < 1) Then
+                Return
+            End If
+
+            Dim mLvItem = TryCast(ListView_Bookmarks.SelectedItems(0), ClassListViewItemData)
+            If (mLvItem Is Nothing) Then
+                Return
+            End If
+
+            Dim sName As String = CStr(mLvItem.g_mData("Name"))
+            Dim sFile As String = CStr(mLvItem.g_mData("File"))
+            Dim iLine As Integer = CInt(mLvItem.g_mData("Line"))
+
+            If (String.IsNullOrEmpty(sFile)) Then
+                MessageBox.Show("Invalid path", "Unable to open path", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Return
+            End If
+
+            If (iLine < 0) Then
+                MessageBox.Show("Invalid line", "Unable to open path", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Return
+            End If
+
+            Dim bForceEnd As Boolean = False
+            While True
+                For i = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1
+                    If (g_mFormMain.g_ClassTabControl.m_Tab(i).m_IsUnsaved OrElse g_mFormMain.g_ClassTabControl.m_Tab(i).m_InvalidFile) Then
+                        Continue For
+                    End If
+
+                    Dim sTabFile As String = g_mFormMain.g_ClassTabControl.m_Tab(i).m_File.Replace("/"c, "\"c)
+
+                    'Try to find using absolute and relative path
+                    If (sTabFile.ToLower.EndsWith(sFile.ToLower)) Then
+                        Dim iLineNum As Integer = ClassTools.ClassMath.ClampInt(0, g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.Document.TotalNumberOfLines - 1, iLine)
+
+                        g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.Caret.Line = iLineNum
+                        g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.Caret.Column = 0
+                        g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.SelectionManager.ClearSelection()
+
+                        Dim iLineLen As Integer = g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.Document.GetLineSegment(iLineNum).Length
+
+                        Dim iStart As New TextLocation(0, iLineNum)
+                        Dim iEnd As New TextLocation(iLineLen, iLineNum)
+
+                        g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.SelectionManager.SetSelection(iStart, iEnd)
+
+                        If (g_mFormMain.g_ClassTabControl.m_ActiveTabIndex <> i) Then
+                            g_mFormMain.g_ClassTabControl.SelectTab(i)
+                        End If
+
+                        Return
+                    End If
+                Next
+
+                If (bForceEnd) Then
+                    Exit While
+                End If
+
+                For Each mInclude As DictionaryEntry In g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IncludeFilesFull.ToArray
+                    If (String.IsNullOrEmpty(CStr(mInclude.Value)) OrElse Not IO.File.Exists(CStr(mInclude.Value))) Then
+                        Continue For
+                    End If
+
+                    Dim sIncFile As String = CStr(mInclude.Value).Replace("/"c, "\"c)
+
+                    'Try to find using absolute and relative path
+                    If (sIncFile.ToLower.EndsWith(sFile.ToLower)) Then
+                        Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
+                        mTab.OpenFileTab(CStr(mInclude.Value))
+                        mTab.SelectTab()
+
+                        bForceEnd = True
+                        Continue While
+                    End If
+                Next
+
+                Exit While
+            End While
+
+            MessageBox.Show(String.Format("Could not find path '{0}'!", sFile), "Unable to open path", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
     End Sub
 
     Class ClassBookmarks
@@ -529,6 +630,101 @@ Public Class UCBookmarkDetails
                     If (g_mBookmarkWatcher IsNot Nothing) Then
                         g_mBookmarkWatcher.Dispose()
                         g_mBookmarkWatcher = Nothing
+                    End If
+                End If
+
+                ' TODO: free unmanaged resources (unmanaged objects) and override Finalize() below.
+                ' TODO: set large fields to null.
+            End If
+            disposedValue = True
+        End Sub
+
+        ' TODO: override Finalize() only if Dispose(disposing As Boolean) above has code to free unmanaged resources.
+        'Protected Overrides Sub Finalize()
+        '    ' Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
+        '    Dispose(False)
+        '    MyBase.Finalize()
+        'End Sub
+
+        ' This code added by Visual Basic to correctly implement the disposable pattern.
+        Public Sub Dispose() Implements IDisposable.Dispose
+            ' Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
+            Dispose(True)
+            ' TODO: uncomment the following line if Finalize() is overridden above.
+            ' GC.SuppressFinalize(Me)
+        End Sub
+#End Region
+    End Class
+
+    Class ClassActions
+        Implements IDisposable
+
+        Private g_mUCBookmarkDetails As UCBookmarkDetails
+
+        Sub New(f As UCBookmarkDetails)
+            g_mUCBookmarkDetails = f
+
+            AddHandler g_mUCBookmarkDetails.g_mFormMain.g_ClassTabControl.OnTextEditorTabDetailsAction, AddressOf OnTextEditorTabDetailsAction
+            AddHandler g_mUCBookmarkDetails.g_mFormMain.g_ClassTabControl.OnTextEditorTabDetailsMove, AddressOf OnTextEditorTabDetailsMove
+        End Sub
+
+        Public Sub OnTextEditorTabDetailsAction(mTab As ClassTabControl.SourceTabPage, iDetailsTabIndex As Integer, bIsSpecialAction As Boolean, iKeys As Keys)
+            If (iDetailsTabIndex <> g_mUCBookmarkDetails.g_mFormMain.TabPage_Bookmarks.TabIndex) Then
+                Return
+            End If
+
+            g_mUCBookmarkDetails.BookmarkGotoSelected()
+        End Sub
+
+        Public Sub OnTextEditorTabDetailsMove(mTab As ClassTabControl.SourceTabPage, iDetailsTabIndex As Integer, iDirection As Integer, iKeys As Keys)
+            'Check if the tab is actualy selected, if not, return
+            If (iDetailsTabIndex <> g_mUCBookmarkDetails.g_mFormMain.TabPage_Bookmarks.TabIndex) Then
+                Return
+            End If
+
+            If (iDirection = 0) Then
+                Return
+            End If
+
+            Static iLastCount As Integer = 0
+            If (g_mUCBookmarkDetails.ListView_Bookmarks.Items.Count < 1) Then
+                Return
+            End If
+
+            Dim bCountChanged = (g_mUCBookmarkDetails.ListView_Bookmarks.Items.Count <> iLastCount)
+            iLastCount = g_mUCBookmarkDetails.ListView_Bookmarks.Items.Count
+
+            If (bCountChanged OrElse g_mUCBookmarkDetails.ListView_Bookmarks.SelectedItems.Count < 1) Then
+                g_mUCBookmarkDetails.ListView_Bookmarks.SelectedIndices.Clear()
+                g_mUCBookmarkDetails.ListView_Bookmarks.Items(g_mUCBookmarkDetails.ListView_Bookmarks.Items.Count - 1).Selected = True
+            End If
+
+            'What? Mmh...
+            If (g_mUCBookmarkDetails.ListView_Bookmarks.SelectedItems.Count < 1) Then
+                Return
+            End If
+
+            Dim iCount As Integer = g_mUCBookmarkDetails.ListView_Bookmarks.Items.Count
+            Dim iNewIndex As Integer = g_mUCBookmarkDetails.ListView_Bookmarks.SelectedIndices(0) + iDirection
+
+            If (iNewIndex > -1 AndAlso iNewIndex < iCount) Then
+                g_mUCBookmarkDetails.ListView_Bookmarks.SelectedIndices.Clear()
+                g_mUCBookmarkDetails.ListView_Bookmarks.Items(iNewIndex).Selected = True
+            End If
+        End Sub
+
+
+#Region "IDisposable Support"
+        Private disposedValue As Boolean ' To detect redundant calls
+
+        ' IDisposable
+        Protected Overridable Sub Dispose(disposing As Boolean)
+            If Not disposedValue Then
+                If disposing Then
+                    ' TODO: dispose managed state (managed objects).
+                    If (g_mUCBookmarkDetails.g_mFormMain.g_ClassTabControl IsNot Nothing) Then
+                        RemoveHandler g_mUCBookmarkDetails.g_mFormMain.g_ClassTabControl.OnTextEditorTabDetailsAction, AddressOf OnTextEditorTabDetailsAction
+                        RemoveHandler g_mUCBookmarkDetails.g_mFormMain.g_ClassTabControl.OnTextEditorTabDetailsMove, AddressOf OnTextEditorTabDetailsMove
                     End If
                 End If
 

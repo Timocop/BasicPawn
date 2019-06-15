@@ -31,8 +31,6 @@ Partial Class UCBookmarkDetails
         Me.ColumnHeader1 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader2 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader3 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.ImageList_Bookmarks = New System.Windows.Forms.ImageList(Me.components)
-        Me.ToolTip_Menu = New System.Windows.Forms.ToolTip(Me.components)
         Me.ContextMenuStrip_Bookmarks = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.ToolStripMenuItem_AddBookmark = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_EditBookmark = New System.Windows.Forms.ToolStripMenuItem()
@@ -41,6 +39,10 @@ Partial Class UCBookmarkDetails
         Me.ToolStripMenuItem_RefreshBookmark = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_LocalBookmarksOnly = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ImageList_Bookmarks = New System.Windows.Forms.ImageList(Me.components)
+        Me.ToolTip_Menu = New System.Windows.Forms.ToolTip(Me.components)
+        Me.ToolStripMenuItem_Goto = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
         Me.ContextMenuStrip_Bookmarks.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -50,6 +52,8 @@ Partial Class UCBookmarkDetails
         Me.ListView_Bookmarks.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1, Me.ColumnHeader2, Me.ColumnHeader3})
         Me.ListView_Bookmarks.ContextMenuStrip = Me.ContextMenuStrip_Bookmarks
         Me.ListView_Bookmarks.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ListView_Bookmarks.FullRowSelect = True
+        Me.ListView_Bookmarks.HideSelection = False
         Me.ListView_Bookmarks.Location = New System.Drawing.Point(0, 0)
         Me.ListView_Bookmarks.Name = "ListView_Bookmarks"
         Me.ListView_Bookmarks.Size = New System.Drawing.Size(600, 200)
@@ -74,17 +78,11 @@ Partial Class UCBookmarkDetails
         Me.ColumnHeader3.Text = "Line"
         Me.ColumnHeader3.Width = 50
         '
-        'ImageList_Bookmarks
-        '
-        Me.ImageList_Bookmarks.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit
-        Me.ImageList_Bookmarks.ImageSize = New System.Drawing.Size(16, 16)
-        Me.ImageList_Bookmarks.TransparentColor = System.Drawing.Color.Transparent
-        '
         'ContextMenuStrip_Bookmarks
         '
-        Me.ContextMenuStrip_Bookmarks.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_AddBookmark, Me.ToolStripMenuItem_EditBookmark, Me.ToolStripMenuItem_RemoveBookmark, Me.ToolStripSeparator1, Me.ToolStripMenuItem_RefreshBookmark, Me.ToolStripSeparator2, Me.ToolStripMenuItem_LocalBookmarksOnly})
+        Me.ContextMenuStrip_Bookmarks.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_Goto, Me.ToolStripSeparator3, Me.ToolStripMenuItem_AddBookmark, Me.ToolStripMenuItem_EditBookmark, Me.ToolStripMenuItem_RemoveBookmark, Me.ToolStripSeparator1, Me.ToolStripMenuItem_RefreshBookmark, Me.ToolStripSeparator2, Me.ToolStripMenuItem_LocalBookmarksOnly})
         Me.ContextMenuStrip_Bookmarks.Name = "ContextMenuStrip_Bookmarks"
-        Me.ContextMenuStrip_Bookmarks.Size = New System.Drawing.Size(220, 148)
+        Me.ContextMenuStrip_Bookmarks.Size = New System.Drawing.Size(220, 176)
         '
         'ToolStripMenuItem_AddBookmark
         '
@@ -131,6 +129,24 @@ Partial Class UCBookmarkDetails
         Me.ToolStripMenuItem_LocalBookmarksOnly.Size = New System.Drawing.Size(219, 22)
         Me.ToolStripMenuItem_LocalBookmarksOnly.Text = "Show local bookmarks only"
         '
+        'ImageList_Bookmarks
+        '
+        Me.ImageList_Bookmarks.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit
+        Me.ImageList_Bookmarks.ImageSize = New System.Drawing.Size(16, 16)
+        Me.ImageList_Bookmarks.TransparentColor = System.Drawing.Color.Transparent
+        '
+        'ToolStripMenuItem_Goto
+        '
+        Me.ToolStripMenuItem_Goto.Image = Global.BasicPawn.My.Resources.Resources.imageres_5302_16x16
+        Me.ToolStripMenuItem_Goto.Name = "ToolStripMenuItem_Goto"
+        Me.ToolStripMenuItem_Goto.Size = New System.Drawing.Size(219, 22)
+        Me.ToolStripMenuItem_Goto.Text = "Goto line"
+        '
+        'ToolStripSeparator3
+        '
+        Me.ToolStripSeparator3.Name = "ToolStripSeparator3"
+        Me.ToolStripSeparator3.Size = New System.Drawing.Size(216, 6)
+        '
         'UCBookmarkDetails
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -158,4 +174,6 @@ Partial Class UCBookmarkDetails
     Friend WithEvents ToolStripMenuItem_RefreshBookmark As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator2 As ToolStripSeparator
     Friend WithEvents ToolStripMenuItem_LocalBookmarksOnly As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_Goto As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator3 As ToolStripSeparator
 End Class
