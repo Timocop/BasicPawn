@@ -587,6 +587,7 @@ Partial Class FormSearch
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MaximizeBox = False
         Me.Name = "FormSearch"
+        Me.ShowInTaskbar = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
         Me.Text = "Search & Replace"
         Me.GroupBox1.ResumeLayout(False)
