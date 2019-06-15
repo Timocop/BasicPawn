@@ -57,7 +57,6 @@ Public Class ClassTabControl
     Public Sub New(f As FormMain)
         g_mFormMain = f
 
-        RemoveHandler g_mFormMain.TabControl_SourceTabs.SelectedIndexChanged, AddressOf OnTabSelected
         AddHandler g_mFormMain.TabControl_SourceTabs.SelectedIndexChanged, AddressOf OnTabSelected
 
         g_mTimer = New Timer

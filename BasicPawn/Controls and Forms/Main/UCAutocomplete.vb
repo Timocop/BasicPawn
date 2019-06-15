@@ -540,9 +540,6 @@ Public Class UCAutocomplete
         Sub New(f As UCAutocomplete)
             g_mUCAutocomplete = f
 
-            RemoveHandler g_mUCAutocomplete.g_mFormMain.g_ClassTabControl.OnTextEditorTabDetailsAction, AddressOf OnTextEditorTabDetailsAction
-            RemoveHandler g_mUCAutocomplete.g_mFormMain.g_ClassTabControl.OnTextEditorTabDetailsMove, AddressOf OnTextEditorTabDetailsMove
-
             AddHandler g_mUCAutocomplete.g_mFormMain.g_ClassTabControl.OnTextEditorTabDetailsAction, AddressOf OnTextEditorTabDetailsAction
             AddHandler g_mUCAutocomplete.g_mFormMain.g_ClassTabControl.OnTextEditorTabDetailsMove, AddressOf OnTextEditorTabDetailsMove
         End Sub

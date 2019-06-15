@@ -464,9 +464,6 @@ Public Class UCInformationList
         Sub New(f As UCInformationList)
             g_mUCInformationList = f
 
-            RemoveHandler g_mUCInformationList.g_mFormMain.g_ClassTabControl.OnTextEditorTabDetailsAction, AddressOf OnTextEditorTabDetailsAction
-            RemoveHandler g_mUCInformationList.g_mFormMain.g_ClassTabControl.OnTextEditorTabDetailsMove, AddressOf OnTextEditorTabDetailsMove
-
             AddHandler g_mUCInformationList.g_mFormMain.g_ClassTabControl.OnTextEditorTabDetailsAction, AddressOf OnTextEditorTabDetailsAction
             AddHandler g_mUCInformationList.g_mFormMain.g_ClassTabControl.OnTextEditorTabDetailsMove, AddressOf OnTextEditorTabDetailsMove
         End Sub
