@@ -1597,6 +1597,53 @@ Public Class ClassTextEditorTools
 #End Region
     End Class
 
+
+    Class ClassBookmarkMark
+        Inherits Bookmark
+
+        ReadOnly Property m_Id As String
+        ReadOnly Property m_Name As String
+        ReadOnly Property m_CreatedTimestamp As Date
+
+        Public Sub New(iDocument As IDocument, mTextLocation As TextLocation, sName As String)
+            MyBase.New(Nothing, mTextLocation, True)
+            Me.m_Id = Guid.NewGuid.ToString
+            Me.m_Name = sName
+            Me.m_CreatedTimestamp = Now
+        End Sub
+
+        Public Sub New(iDocument As IDocument, mTextLocation As TextLocation, mCreateTimestamp As Date, sName As String)
+            Me.New(Nothing, mTextLocation, sName)
+            Me.m_CreatedTimestamp = mCreateTimestamp
+        End Sub
+
+        Public Overrides ReadOnly Property CanToggle As Boolean
+            Get
+                Return False
+            End Get
+        End Property
+
+        Protected Overrides Sub OnIsEnabledChanged(e As EventArgs)
+            Me.IsEnabled = True
+        End Sub
+
+        ''' <summary>
+        ''' Lets override the bookmarks drawing, so we can show our custom coloring!
+        ''' The bookmark is the only real icon we can change.
+        ''' </summary>
+        ''' <param name="mIconBarMargin"></param>
+        ''' <param name="mGraphics"></param>
+        ''' <param name="mPoint"></param>
+        Public Overrides Sub Draw(mIconBarMargin As IconBarMargin, mGraphics As Graphics, mPoint As Point)
+            Dim mRect As New Rectangle(1,
+                                    mPoint.Y + 1,
+                                    mIconBarMargin.DrawingPosition.Width - 2,
+                                    mIconBarMargin.TextArea.TextView.FontHeight - 2)
+
+            mGraphics.DrawImage(My.Resources.Unpin_16x16_32, mRect)
+        End Sub
+    End Class
+
     ''' <summary>
     ''' Class for custom text editor iconbar icons if a line has been changed/saved.
     ''' </summary>
@@ -1683,7 +1730,7 @@ Public Class ClassTextEditorTools
                     Return
                 End If
 
-                Dim mNewMark As New LineStateMark(mTextEditor.Document, New TextLocation(0, iIndex), True, LineStateMark.ENUM_STATE.CHANGED)
+                Dim mNewMark As New LineStateMark(mTextEditor.Document, New TextLocation(0, iIndex), LineStateMark.ENUM_STATE.CHANGED)
                 mTextEditor.Document.BookmarkManager.AddMark(mNewMark)
                 mTextEditor.m_LineStatesHistory.Enqueue(mNewMark)
 
@@ -1803,8 +1850,8 @@ Public Class ClassTextEditorTools
             Property m_Type As ENUM_STATE
             ReadOnly Property m_Id As String
 
-            Public Sub New(iDocument As IDocument, textLocation As TextLocation, bEnabled As Boolean, iType As ENUM_STATE)
-                MyBase.New(iDocument, textLocation, bEnabled)
+            Public Sub New(iDocument As IDocument, textLocation As TextLocation, iType As ENUM_STATE)
+                MyBase.New(iDocument, textLocation, True)
                 Me.m_Type = iType
                 Me.m_Id = Guid.NewGuid.ToString
             End Sub

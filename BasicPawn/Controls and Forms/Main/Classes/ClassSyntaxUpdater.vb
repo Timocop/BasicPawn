@@ -21,6 +21,8 @@ Public Class ClassSyntaxUpdater
     Private g_mFormMain As FormMain
     Private g_mSourceSyntaxUpdaterThread As Threading.Thread
 
+    Public Event OnSyntaxUpdate(bIsFormMainFocused As Boolean, iCaretOffset As Integer, mCaretPos As Point)
+
     Public Sub New(f As FormMain)
         g_mFormMain = f
     End Sub
@@ -70,6 +72,9 @@ Public Class ClassSyntaxUpdater
 
             Try
                 Dim bIsFormMainFocused As Boolean = (Not ClassSettings.g_iSettingsOnlyUpdateSyntaxWhenFocused OrElse ClassThread.ExecEx(Of Boolean)(g_mFormMain, Function() Form.ActiveForm IsNot Nothing))
+
+                Dim iCaretOffset As Integer = ClassThread.ExecEx(Of Integer)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Offset)
+                Dim mCaretPos As Point = ClassThread.ExecEx(Of Point)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.ScreenPosition)
 
                 'Update Autocomplete
                 If (bIsFormMainFocused AndAlso g_mFormMain.g_ClassSyntaxParser.g_lFullSyntaxParseRequests.Count > 0) Then
@@ -131,10 +136,6 @@ Public Class ClassSyntaxUpdater
                                                        End Sub)
                 End If
 
-
-                Dim iCaretOffset As Integer = ClassThread.ExecEx(Of Integer)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Offset)
-                Dim iCaretPos As Point = ClassThread.ExecEx(Of Point)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.ScreenPosition)
-
                 'Update Autocomplete
                 Static iLastAutoupdateCaretOffset As Integer = -1
                 If (iLastAutoupdateCaretOffset <> iCaretOffset) Then
@@ -153,8 +154,8 @@ Public Class ClassSyntaxUpdater
 
                 'Hide Autocomplete & IntelliSense Tooltips when scrolling 
                 Static iLastToolTipCaretPos As Point
-                If (iLastToolTipCaretPos <> iCaretPos) Then
-                    iLastToolTipCaretPos = iCaretPos
+                If (iLastToolTipCaretPos <> mCaretPos) Then
+                    iLastToolTipCaretPos = mCaretPos
 
                     ClassThread.ExecAsync(g_mFormMain.g_mUCAutocomplete, Sub()
                                                                              g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTipFormLocation()
@@ -174,6 +175,7 @@ Public Class ClassSyntaxUpdater
                     End If
                 End If
 
+                RaiseEvent OnSyntaxUpdate(bIsFormMainFocused, iCaretOffset, mCaretPos)
             Catch ex As Threading.ThreadAbortException
                 Throw
             Catch ex As Exception

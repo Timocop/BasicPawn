@@ -38,6 +38,12 @@ Public Class ClassTabControl
 
     Public Const DEFAULT_SELECT_TAB_DELAY = 100
 
+    Public Event OnTabAdded(mTab As SourceTabPage)
+    Public Event OnTabRemoved(mTab As SourceTabPage)
+    Public Event OnTabOpen(mTab As SourceTabPage, sPath As String)
+    Public Event OnTabSaved(mTab As SourceTabPage, sOldPath As String, sNewPath As String)
+    Public Event OnTabFullUpdate(mTab As SourceTabPage())
+
     Public Event OnTextEditorTabDetailsAction(mTab As SourceTabPage, iDetailsTabIndex As Integer, bIsSpecialAction As Boolean, iKeys As Keys)
     Public Sub __OnTextEditorTabDetailsAction(mTab As SourceTabPage, iDetailsTabIndex As Integer, bIsSpecialAction As Boolean, iKeys As Keys)
         RaiseEvent OnTextEditorTabDetailsAction(mTab, iDetailsTabIndex, bIsSpecialAction, iKeys)
@@ -47,9 +53,6 @@ Public Class ClassTabControl
     Public Sub __OnTextEditorTabDetailsMove(mTab As SourceTabPage, iDetailsTabIndex As Integer, iDirection As Integer, iKeys As Keys)
         RaiseEvent OnTextEditorTabDetailsMove(mTab, iDetailsTabIndex, iDirection, iKeys)
     End Sub
-
-    Public Event OnTextEditorFullUpdate(mTab As SourceTabPage())
-
 
     Public Sub New(f As FormMain)
         g_mFormMain = f
@@ -92,6 +95,12 @@ Public Class ClassTabControl
     ReadOnly Property m_TabsCount As Integer
         Get
             Return g_mFormMain.TabControl_SourceTabs.TabCount
+        End Get
+    End Property
+
+    ReadOnly Property m_IsInitalized As Boolean
+        Get
+            Return g_bDidInit
         End Get
     End Property
 
@@ -169,6 +178,8 @@ Public Class ClassTabControl
                 g_mFormMain.g_mUCStartPage.Hide()
             End If
 
+            RaiseEvent OnTabAdded(mTabPage)
+
             Return mTabPage
         Finally
             EndUpdate()
@@ -182,6 +193,8 @@ Public Class ClassTabControl
             If (bPrompSave AndAlso PromptSaveTab(iIndex)) Then
                 Return False
             End If
+
+            RaiseEvent OnTabRemoved(m_Tab(iIndex))
 
             Dim mTabPage = m_Tab(iIndex)
             mTabPage.Dispose()
@@ -391,6 +404,8 @@ Public Class ClassTabControl
                 g_mFormMain.g_mUCStartPage.Hide()
             End If
 
+            RaiseEvent OnTabOpen(m_Tab(iIndex), m_Tab(iIndex).m_File)
+
             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "User created a new source file")
             Return False
         End If
@@ -426,6 +441,8 @@ Public Class ClassTabControl
             g_mFormMain.g_mUCStartPage.Hide()
         End If
 
+        RaiseEvent OnTabOpen(m_Tab(iIndex), m_Tab(iIndex).m_File)
+
         g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "User opened a new file: " & sFile, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(sFile))
         Return True
     End Function
@@ -437,6 +454,8 @@ Public Class ClassTabControl
     ''' <param name="bSaveAs">Force to use a new file using SaveFileDialog</param>
     Public Sub SaveFileTab(iIndex As Integer, Optional bSaveAs As Boolean = False)
         If (bSaveAs OrElse m_Tab(iIndex).m_IsUnsaved OrElse m_Tab(iIndex).m_InvalidFile) Then
+            Dim sOldFile As String = If(m_Tab(iIndex).m_IsUnsaved OrElse m_Tab(iIndex).m_InvalidFile, "", m_Tab(iIndex).m_File)
+
             Using i As New SaveFileDialog
                 i.Filter = "All supported files|*.sp;*.inc;*.sma|SourcePawn|*.sp|Include|*.inc|AMX Mod X|*.sma|Pawn (Not fully supported)|*.pwn;*.p|All files|*.*"
 
@@ -460,6 +479,8 @@ Public Class ClassTabControl
                     g_mFormMain.g_mUCStartPage.g_mClassRecentItems.AddRecent(m_Tab(iIndex).m_File)
 
                     g_mFormMain.g_ClassSyntaxParser.StartUpdateSchedule(ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS.ALL)
+
+                    RaiseEvent OnTabSaved(m_Tab(iIndex), sOldFile, i.FileName)
                 End If
             End Using
         Else
@@ -475,6 +496,8 @@ Public Class ClassTabControl
             m_Tab(iIndex).m_FileCachedWriteDate = m_Tab(iIndex).m_FileRealWriteDate
 
             g_mFormMain.g_mUCStartPage.g_mClassRecentItems.AddRecent(m_Tab(iIndex).m_File)
+
+            RaiseEvent OnTabSaved(m_Tab(iIndex), "", m_Tab(iIndex).m_File)
         End If
     End Sub
 
@@ -487,6 +510,7 @@ Public Class ClassTabControl
     ''' <returns>False if saved, otherwise canceled.</returns>
     Public Function PromptSaveTab(iIndex As Integer, Optional bAlwaysPrompt As Boolean = False, Optional bAlwaysYes As Boolean = False, Optional bAlwaysSaveUnsaved As Boolean = False) As Boolean
         Dim bIsUnsaved As Boolean = (m_Tab(iIndex).m_IsUnsaved OrElse m_Tab(iIndex).m_InvalidFile)
+        Dim sOldFile As String = If(m_Tab(iIndex).m_IsUnsaved OrElse m_Tab(iIndex).m_InvalidFile, "", m_Tab(iIndex).m_File)
 
         If (bAlwaysPrompt OrElse m_Tab(iIndex).m_Changed OrElse (bAlwaysSaveUnsaved AndAlso bIsUnsaved)) Then
             'Continue
@@ -519,6 +543,8 @@ Public Class ClassTabControl
 
                             g_mFormMain.g_mUCStartPage.g_mClassRecentItems.AddRecent(m_Tab(iIndex).m_File)
 
+                            RaiseEvent OnTabSaved(m_Tab(iIndex), sOldFile, m_Tab(iIndex).m_File)
+
                             Return False
                         Else
                             Return True
@@ -537,6 +563,8 @@ Public Class ClassTabControl
                     m_Tab(iIndex).m_FileCachedWriteDate = m_Tab(iIndex).m_FileRealWriteDate
 
                     g_mFormMain.g_mUCStartPage.g_mClassRecentItems.AddRecent(m_Tab(iIndex).m_File)
+
+                    RaiseEvent OnTabSaved(m_Tab(iIndex), sOldFile, m_Tab(iIndex).m_File)
 
                     Return False
                 End If
@@ -690,7 +718,7 @@ Public Class ClassTabControl
 
         g_mFormMain.g_mUCObjectBrowser.StartUpdate()
 
-        RaiseEvent OnTextEditorFullUpdate(mTabs)
+        RaiseEvent OnTabFullUpdate(mTabs)
 
         For i = 0 To mTabs.Length - 1
             g_mFormMain.g_ClassSyntaxParser.StartUpdateSchedule(ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS.ALL, mTabs(i), ClassSyntaxParser.ENUM_PARSE_OPTIONS_FLAGS.NOONE)

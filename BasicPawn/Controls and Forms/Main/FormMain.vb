@@ -32,6 +32,7 @@ Public Class FormMain
 
     Public g_mUCAutocomplete As UCAutocomplete
     Public g_mUCInformationList As UCInformationList
+    Public g_mUCBookmarkDetails As UCBookmarkDetails
     Public g_mUCObjectBrowser As UCObjectBrowser
     Public g_mUCProjectBrowser As UCProjectBrowser
     Public g_mUCExplorerBrowser As UCExplorerBrowser
@@ -177,8 +178,13 @@ Public Class FormMain
 
         ' Add any initialization after the InitializeComponent() call. 
         ImageList_Details.Images.Clear()
-        ImageList_Details.Images.Add("0", My.Resources.imageres_5332_16x16)
-        ImageList_Details.Images.Add("1", My.Resources.imageres_5333_16x16)
+        ImageList_Details.Images.Add("0", My.Resources.imageres_5333_16x16)
+        ImageList_Details.Images.Add("1", My.Resources.imageres_5332_16x16)
+        ImageList_Details.Images.Add("2", My.Resources.imageres_5354_16x16)
+
+        TabPage_Autocomplete.ImageKey = "0"
+        TabPage_Information.ImageKey = "1"
+        TabPage_Bookmarks.ImageKey = "2"
 
         g_ClassTabControl = New ClassTabControl(Me)
         g_ClassSyntaxUpdater = New ClassSyntaxUpdater(Me)
@@ -202,6 +208,12 @@ Public Class FormMain
             .Dock = DockStyle.Fill
         }
         g_mUCInformationList.Show()
+
+        g_mUCBookmarkDetails = New UCBookmarkDetails(Me) With {
+            .Parent = TabPage_Bookmarks,
+            .Dock = DockStyle.Fill
+        }
+        g_mUCBookmarkDetails.Show()
 
         g_mUCObjectBrowser = New UCObjectBrowser(Me) With {
             .Parent = TabPage_ObjectBrowser,

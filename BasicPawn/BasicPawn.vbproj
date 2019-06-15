@@ -460,6 +460,12 @@
     <Compile Include="Controls and Forms\Main\UCProjectBrowser.vb">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Controls and Forms\Main\UCBookmarkDetails.Designer.vb">
+      <DependentUpon>UCBookmarkDetails.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controls and Forms\Main\UCBookmarkDetails.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -541,6 +547,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls and Forms\FormUpdate.resx">
       <DependentUpon>FormUpdate.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls and Forms\Main\UCBookmarkDetails.resx">
+      <DependentUpon>UCBookmarkDetails.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls and Forms\Main\UCExplorerBrowser.resx">
       <DependentUpon>UCExplorerBrowser.vb</DependentUpon>
@@ -659,6 +668,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="BasicPawnIcon.ico" />
+    <None Include="Resources\Unpin_16x16-32.png" />
+    <None Include="Resources\UAC_16x16-32.png" />
+    <None Include="Resources\Search_16x16-32.png" />
+    <None Include="Resources\Pin_16x16-32.png" />
+    <None Include="Resources\Close_16x16-32.png" />
+    <None Include="Resources\imageres_5376_16x16-32.png" />
+    <None Include="Resources\imageres_5354_16x16-32.png" />
     <None Include="Resources\imageres_5362_16x16-32.png" />
     <None Include="Resources\SourcePawn_SyntaxDark.xml" />
     <None Include="Resources\user32_104_16x16-32.png" />
