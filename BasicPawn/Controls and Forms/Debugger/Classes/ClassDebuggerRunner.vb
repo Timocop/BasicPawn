@@ -57,11 +57,12 @@ Public Class ClassDebuggerRunner
     End Enum
     Private g_mDebuggingState As ENUM_DEBUGGING_STATE = ENUM_DEBUGGING_STATE.STOPPED
 
-    Private g_sPluginIdentity As String = ""
+    Private g_sPluginIdentifier As String = ""
+    Private g_sDebugTabIdentifier As String = ""
+    Private g_sDebuggerIdentifier As String = Guid.NewGuid.ToString
 
     Private g_bSuspendGame As Boolean = False
 
-    Private g_sDebuggerIdentifier As String = Guid.NewGuid.ToString
     Private g_sLatestDebuggerPlugin As String = ""
     Private g_sLatestDebuggerRunnerPlugin As String = ""
 
@@ -108,8 +109,10 @@ Public Class ClassDebuggerRunner
     End Structure
     Public g_mActiveAssertInfo As STRUC_ACTIVE_ASSERT_INFORMATION
 
-    Public Sub New(f As FormDebugger)
+    Public Sub New(f As FormDebugger, sDebugTabIdentifier As String)
         g_mFormDebugger = f
+
+        g_sDebugTabIdentifier = sDebugTabIdentifier
 
         UpdateSourceFromTab()
 
@@ -153,13 +156,19 @@ Public Class ClassDebuggerRunner
         End Get
     End Property
 
-    Public Property m_PluginIdentity As String
+    Public Property m_PluginIdentifier As String
         Get
-            Return g_sPluginIdentity
+            Return g_sPluginIdentifier
         End Get
         Set(value As String)
-            g_sPluginIdentity = value
+            g_sPluginIdentifier = value
         End Set
+    End Property
+
+    Public ReadOnly Property m_DebugTabIdentifier As String
+        Get
+            Return g_sDebugTabIdentifier
+        End Get
     End Property
 
     Public Property m_DebuggingState As ENUM_DEBUGGING_STATE
@@ -270,7 +279,7 @@ Public Class ClassDebuggerRunner
     ''' Updates the source from the debug tab. 
     ''' </summary>
     Public Sub UpdateSourceFromTab()
-        Dim iIndex As Integer = g_mFormDebugger.g_mFormMain.g_ClassTabControl.GetTabIndexByIdentifier(g_mFormDebugger.g_sDebugTabIdentifier)
+        Dim iIndex As Integer = g_mFormDebugger.g_mFormMain.g_ClassTabControl.GetTabIndexByIdentifier(m_DebugTabIdentifier)
         If (iIndex < 0) Then
             Throw New ArgumentException("Tab does not exist")
         End If
@@ -505,7 +514,7 @@ Public Class ClassDebuggerRunner
         ''' </summary>
         ''' <param name="sSource"></param>
         Public Sub FinishSource(ByRef sSource As String)
-            If (String.IsNullOrEmpty(g_ClassDebuggerRunner.m_PluginIdentity)) Then
+            If (String.IsNullOrEmpty(g_ClassDebuggerRunner.m_PluginIdentifier)) Then
                 Throw New ArgumentException("Plugin identity invalid")
             End If
 
@@ -533,7 +542,7 @@ Public Class ClassDebuggerRunner
                 End While
             End Using
 
-            SB.AppendFormat("#file ""{0}""", g_ClassDebuggerRunner.m_PluginIdentity).AppendLine()
+            SB.AppendFormat("#file ""{0}""", g_ClassDebuggerRunner.m_PluginIdentifier).AppendLine()
 
             sSource = SB.ToString
         End Sub
@@ -554,9 +563,9 @@ Public Class ClassDebuggerRunner
             SetDebuggerStatusConnection(False)
 
             'Set unique plugin identity
-            m_PluginIdentity = Guid.NewGuid.ToString
+            m_PluginIdentifier = Guid.NewGuid.ToString
 
-            Dim mTab = g_mFormDebugger.g_mFormMain.g_ClassTabControl.GetTabByIdentifier(g_mFormDebugger.g_sDebugTabIdentifier)
+            Dim mTab = g_mFormDebugger.g_mFormMain.g_ClassTabControl.GetTabByIdentifier(m_DebugTabIdentifier)
             If (mTab Is Nothing) Then
                 Throw New ArgumentException("Tab does not exist")
             End If

@@ -51,7 +51,7 @@ Public Class FormDebuggerException
                     sFile = info.sFile
                 End If
 
-                If (stackTrace.sFileName = g_mFormDebugger.g_ClassDebuggerRunner.m_PluginIdentity) Then
+                If (stackTrace.sFileName = g_mFormDebugger.g_ClassDebuggerRunner.m_PluginIdentifier) Then
                     Dim mListViewItemData As New ClassListViewItemData(New String() {
                                                               CStr(iIndex),
                                                               CStr(stackTrace.iLine),

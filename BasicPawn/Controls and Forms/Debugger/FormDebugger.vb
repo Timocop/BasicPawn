@@ -18,7 +18,6 @@
 
 Public Class FormDebugger
     Public g_mFormMain As FormMain
-    Public g_sDebugTabIdentifier As String = ""
 
     Public g_ClassDebuggerParser As ClassDebuggerParser
     Public g_ClassDebuggerRunnerEngine As ClassDebuggerParser.ClassRunnerEngine
@@ -39,9 +38,8 @@ Public Class FormDebugger
 
     Public Sub New(f As FormMain, sDebugTabIdentifier As String)
         g_mFormMain = f
-        g_sDebugTabIdentifier = sDebugTabIdentifier
 
-        If (g_mFormMain.g_ClassTabControl.GetTabIndexByIdentifier(g_sDebugTabIdentifier) < 0) Then
+        If (g_mFormMain.g_ClassTabControl.GetTabIndexByIdentifier(sDebugTabIdentifier) < 0) Then
             Throw New ArgumentException("Tab does not exist")
         End If
 
@@ -55,7 +53,7 @@ Public Class FormDebugger
 
         g_ClassDebuggerParser = New ClassDebuggerParser(g_mFormMain)
         g_ClassDebuggerRunnerEngine = New ClassDebuggerParser.ClassRunnerEngine
-        g_ClassDebuggerRunner = New ClassDebuggerRunner(Me)
+        g_ClassDebuggerRunner = New ClassDebuggerRunner(Me, sDebugTabIdentifier)
 
         TextEditorControlEx_DebuggerSource.IsReadOnly = True
         RichTextBox_DisasmSource.ReadOnly = True
@@ -119,7 +117,7 @@ Public Class FormDebugger
                 End If
                 mFormProgress.m_Progress = 0
 
-                Dim mTab = g_mFormMain.g_ClassTabControl.GetTabByIdentifier(g_sDebugTabIdentifier)
+                Dim mTab = g_mFormMain.g_ClassTabControl.GetTabByIdentifier(g_ClassDebuggerRunner.m_DebugTabIdentifier)
                 If (mTab Is Nothing) Then
                     Throw New ArgumentException("Tab does not exist")
                 End If
