@@ -145,13 +145,16 @@ Public Class FormSettings
         Try
             Dim sLastSelected As String = ComboBox_DatabaseEntry.Text
 
-            ComboBox_DatabaseEntry.BeginUpdate()
-            ComboBox_DatabaseEntry.Items.Clear()
+            Try
+                ComboBox_DatabaseEntry.BeginUpdate()
+                ComboBox_DatabaseEntry.Items.Clear()
 
-            For Each mItem In ClassDatabase.GetDatabaseItems
-                ComboBox_DatabaseEntry.Items.Add(mItem.m_Name)
-            Next
-            ComboBox_DatabaseEntry.EndUpdate()
+                For Each mItem In ClassDatabase.GetDatabaseItems
+                    ComboBox_DatabaseEntry.Items.Add(mItem.m_Name)
+                Next
+            Finally
+                ComboBox_DatabaseEntry.EndUpdate()
+            End Try
 
             Dim iIndex As Integer = ComboBox_DatabaseEntry.Items.IndexOf(sLastSelected)
             If (iIndex > -1) Then

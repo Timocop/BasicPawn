@@ -255,10 +255,11 @@ Public Class FormDebugger
                 mFormProgress.m_Progress = 80
 
 
-                'Add breakpoints
-                If (True) Then
+                'Add breakpoints 
+                Try
                     ListView_Breakpoints.BeginUpdate()
                     ListView_Breakpoints.Items.Clear()
+
                     For Each mBreakpointItem In g_ClassDebuggerParser.g_lBreakpointList
                         Dim mListViewItemData As New ClassListViewItemData(New String() {mBreakpointItem.iLine.ToString, mBreakpointItem.sArguments, ""})
                         mListViewItemData.g_mData("GUID") = mBreakpointItem.sGUID
@@ -270,13 +271,15 @@ Public Class FormDebugger
                         Dim marker As New ICSharpCode.TextEditor.Document.TextMarker(mBreakpointItem.iOffset, mBreakpointItem.iTotalLength, ICSharpCode.TextEditor.Document.TextMarkerType.Underlined, Color.DarkOrange)
                         TextEditorControlEx_DebuggerSource.Document.MarkerStrategy.AddMarker(marker)
                     Next
+                Finally
                     ListView_Breakpoints.EndUpdate()
-                End If
+                End Try
 
-                'Add watchers
-                If (True) Then
+                'Add watchers 
+                Try
                     ListView_Watchers.BeginUpdate()
                     ListView_Watchers.Items.Clear()
+
                     For Each mWatcherItem In g_ClassDebuggerParser.g_lWatcherList
                         Dim mListViewItemData As New ClassListViewItemData(New String() {mWatcherItem.iLine.ToString, mWatcherItem.sArguments, "", "0"})
                         mListViewItemData.g_mData("GUID") = mWatcherItem.sGUID
@@ -286,13 +289,15 @@ Public Class FormDebugger
                         Dim marker As New ICSharpCode.TextEditor.Document.TextMarker(mWatcherItem.iOffset, mWatcherItem.iTotalLength, ICSharpCode.TextEditor.Document.TextMarkerType.Underlined, Color.DarkOrange)
                         TextEditorControlEx_DebuggerSource.Document.MarkerStrategy.AddMarker(marker)
                     Next
+                Finally
                     ListView_Watchers.EndUpdate()
-                End If
+                End Try
 
-                'Add asserts
-                If (True) Then
+                'Add asserts 
+                Try
                     ListView_Asserts.BeginUpdate()
                     ListView_Asserts.Items.Clear()
+
                     For Each mAssertItem In g_ClassDebuggerParser.g_lAssertList
                         Dim mListViewItemData As New ClassListViewItemData(New String() {mAssertItem.iLine.ToString, mAssertItem.sArguments, "", ""})
                         mListViewItemData.g_mData("GUID") = mAssertItem.sGUID
@@ -302,8 +307,9 @@ Public Class FormDebugger
                         Dim marker As New ICSharpCode.TextEditor.Document.TextMarker(mAssertItem.iOffset, mAssertItem.iTotalLength, ICSharpCode.TextEditor.Document.TextMarkerType.Underlined, Color.DarkOrange)
                         TextEditorControlEx_DebuggerSource.Document.MarkerStrategy.AddMarker(marker)
                     Next
+                Finally
                     ListView_Asserts.EndUpdate()
-                End If
+                End Try
 
                 'Add entities
                 ListView_Entities.BeginUpdate()
@@ -792,24 +798,28 @@ Public Class FormDebugger
                 If (iCaretOffset >= iOffset AndAlso iCaretOffset <= (iOffset + iLength)) Then
                     TabControl1.SelectTab(TabPage_Breakpoints)
 
-                    ListView_Breakpoints.BeginUpdate()
-                    For i = 0 To ListView_Breakpoints.Items.Count - 1
-                        ListView_Breakpoints.Items(i).Selected = False
-                    Next
+                    Try
+                        ListView_Breakpoints.BeginUpdate()
 
-                    For i = 0 To ListView_Breakpoints.Items.Count - 1
-                        Dim mListViewItemData = TryCast(ListView_Breakpoints.Items(i), ClassListViewItemData)
-                        If (mListViewItemData Is Nothing) Then
-                            Continue For
-                        End If
+                        For i = 0 To ListView_Breakpoints.Items.Count - 1
+                            ListView_Breakpoints.Items(i).Selected = False
+                        Next
 
-                        If (CStr(mListViewItemData.g_mData("GUID")) = sGUID) Then
-                            mListViewItemData.Selected = True
-                            mListViewItemData.EnsureVisible()
-                            Exit For
-                        End If
-                    Next
-                    ListView_Breakpoints.EndUpdate()
+                        For i = 0 To ListView_Breakpoints.Items.Count - 1
+                            Dim mListViewItemData = TryCast(ListView_Breakpoints.Items(i), ClassListViewItemData)
+                            If (mListViewItemData Is Nothing) Then
+                                Continue For
+                            End If
+
+                            If (CStr(mListViewItemData.g_mData("GUID")) = sGUID) Then
+                                mListViewItemData.Selected = True
+                                mListViewItemData.EnsureVisible()
+                                Exit For
+                            End If
+                        Next
+                    Finally
+                        ListView_Breakpoints.EndUpdate()
+                    End Try
 
                     Exit For
                 End If
@@ -826,24 +836,28 @@ Public Class FormDebugger
                 If (iCaretOffset >= iOffset AndAlso iCaretOffset <= (iOffset + iLength)) Then
                     TabControl1.SelectTab(TabPage_Watchers)
 
-                    ListView_Watchers.BeginUpdate()
-                    For i = 0 To ListView_Watchers.Items.Count - 1
-                        ListView_Watchers.Items(i).Selected = False
-                    Next
+                    Try
+                        ListView_Watchers.BeginUpdate()
 
-                    For i = 0 To ListView_Watchers.Items.Count - 1
-                        Dim mListViewItemData = TryCast(ListView_Watchers.Items(i), ClassListViewItemData)
-                        If (mListViewItemData Is Nothing) Then
-                            Continue For
-                        End If
+                        For i = 0 To ListView_Watchers.Items.Count - 1
+                            ListView_Watchers.Items(i).Selected = False
+                        Next
 
-                        If (CStr(mListViewItemData.g_mData("GUID")) = sGUID) Then
-                            mListViewItemData.Selected = True
-                            mListViewItemData.EnsureVisible()
-                            Exit For
-                        End If
-                    Next
-                    ListView_Watchers.EndUpdate()
+                        For i = 0 To ListView_Watchers.Items.Count - 1
+                            Dim mListViewItemData = TryCast(ListView_Watchers.Items(i), ClassListViewItemData)
+                            If (mListViewItemData Is Nothing) Then
+                                Continue For
+                            End If
+
+                            If (CStr(mListViewItemData.g_mData("GUID")) = sGUID) Then
+                                mListViewItemData.Selected = True
+                                mListViewItemData.EnsureVisible()
+                                Exit For
+                            End If
+                        Next
+                    Finally
+                        ListView_Watchers.EndUpdate()
+                    End Try
 
                     Exit For
                 End If
@@ -860,24 +874,28 @@ Public Class FormDebugger
                 If (iCaretOffset >= iOffset AndAlso iCaretOffset <= (iOffset + iLength)) Then
                     TabControl1.SelectTab(TabPage_Asserts)
 
-                    ListView_Asserts.BeginUpdate()
-                    For i = 0 To ListView_Asserts.Items.Count - 1
-                        ListView_Asserts.Items(i).Selected = False
-                    Next
+                    Try
+                        ListView_Asserts.BeginUpdate()
 
-                    For i = 0 To ListView_Asserts.Items.Count - 1
-                        Dim mListViewItemData = TryCast(ListView_Asserts.Items(i), ClassListViewItemData)
-                        If (mListViewItemData Is Nothing) Then
-                            Continue For
-                        End If
+                        For i = 0 To ListView_Asserts.Items.Count - 1
+                            ListView_Asserts.Items(i).Selected = False
+                        Next
 
-                        If (CStr(mListViewItemData.g_mData("GUID")) = sGUID) Then
-                            mListViewItemData.Selected = True
-                            mListViewItemData.EnsureVisible()
-                            Exit For
-                        End If
-                    Next
-                    ListView_Asserts.EndUpdate()
+                        For i = 0 To ListView_Asserts.Items.Count - 1
+                            Dim mListViewItemData = TryCast(ListView_Asserts.Items(i), ClassListViewItemData)
+                            If (mListViewItemData Is Nothing) Then
+                                Continue For
+                            End If
+
+                            If (CStr(mListViewItemData.g_mData("GUID")) = sGUID) Then
+                                mListViewItemData.Selected = True
+                                mListViewItemData.EnsureVisible()
+                                Exit For
+                            End If
+                        Next
+                    Finally
+                        ListView_Asserts.EndUpdate()
+                    End Try
 
                     Exit For
                 End If

@@ -37,53 +37,57 @@ Public Class FormDebuggerException
         Label_ExceptionInfo.Text = "Exception: " & smException.sExceptionInfo
         Label_Date.Text = "Date: " & smException.dLogDate.ToString
 
-        ListView_StackTrace.BeginUpdate()
-        Dim iIndex As Integer = 0
-        For Each stackTrace In smException.mStackTraces
-            Dim iRealLine As Integer = -1
-            Dim sFile As String = ""
+        Try
+            ListView_StackTrace.BeginUpdate()
 
-            If (stackTrace.iLine > -1 AndAlso stackTrace.iLine < g_mFormDebugger.g_ClassDebuggerRunner.g_mSourceLinesInfo.Length) Then
-                Dim info = g_mFormDebugger.g_ClassDebuggerRunner.g_mSourceLinesInfo(stackTrace.iLine)
-                iRealLine = info.iRealLine - 1
-                sFile = info.sFile
-            End If
+            Dim iIndex As Integer = 0
+            For Each stackTrace In smException.mStackTraces
+                Dim iRealLine As Integer = -1
+                Dim sFile As String = ""
 
-            If (stackTrace.sFileName = g_mFormDebugger.g_ClassDebuggerRunner.m_PluginIdentity) Then
-                Dim mListViewItemData As New ClassListViewItemData(New String() {
-                                                          CStr(iIndex),
-                                                          CStr(stackTrace.iLine),
-                                                          CStr(iRealLine),
-                                                          sFile,
-                                                          stackTrace.sFunctionName})
+                If (stackTrace.iLine > -1 AndAlso stackTrace.iLine < g_mFormDebugger.g_ClassDebuggerRunner.g_mSourceLinesInfo.Length) Then
+                    Dim info = g_mFormDebugger.g_ClassDebuggerRunner.g_mSourceLinesInfo(stackTrace.iLine)
+                    iRealLine = info.iRealLine - 1
+                    sFile = info.sFile
+                End If
 
-                mListViewItemData.g_mData("Index") = iIndex
-                mListViewItemData.g_mData("Line") = stackTrace.iLine
-                mListViewItemData.g_mData("RealLine") = iRealLine
-                mListViewItemData.g_mData("File") = sFile
-                mListViewItemData.g_mData("FunctionName") = stackTrace.sFunctionName
+                If (stackTrace.sFileName = g_mFormDebugger.g_ClassDebuggerRunner.m_PluginIdentity) Then
+                    Dim mListViewItemData As New ClassListViewItemData(New String() {
+                                                              CStr(iIndex),
+                                                              CStr(stackTrace.iLine),
+                                                              CStr(iRealLine),
+                                                              sFile,
+                                                              stackTrace.sFunctionName})
 
-                ListView_StackTrace.Items.Add(mListViewItemData)
-            Else
-                Dim mListViewItemData As New ClassListViewItemData(New String() {
-                                                          CStr(iIndex),
-                                                          "-1",
-                                                          CStr(iRealLine),
-                                                          sFile,
-                                                          stackTrace.sFunctionName})
+                    mListViewItemData.g_mData("Index") = iIndex
+                    mListViewItemData.g_mData("Line") = stackTrace.iLine
+                    mListViewItemData.g_mData("RealLine") = iRealLine
+                    mListViewItemData.g_mData("File") = sFile
+                    mListViewItemData.g_mData("FunctionName") = stackTrace.sFunctionName
 
-                mListViewItemData.g_mData("Index") = iIndex
-                mListViewItemData.g_mData("Line") = -1
-                mListViewItemData.g_mData("RealLine") = iRealLine
-                mListViewItemData.g_mData("File") = sFile
-                mListViewItemData.g_mData("FunctionName") = stackTrace.sFunctionName
+                    ListView_StackTrace.Items.Add(mListViewItemData)
+                Else
+                    Dim mListViewItemData As New ClassListViewItemData(New String() {
+                                                              CStr(iIndex),
+                                                              "-1",
+                                                              CStr(iRealLine),
+                                                              sFile,
+                                                              stackTrace.sFunctionName})
 
-                ListView_StackTrace.Items.Add(mListViewItemData)
-            End If
+                    mListViewItemData.g_mData("Index") = iIndex
+                    mListViewItemData.g_mData("Line") = -1
+                    mListViewItemData.g_mData("RealLine") = iRealLine
+                    mListViewItemData.g_mData("File") = sFile
+                    mListViewItemData.g_mData("FunctionName") = stackTrace.sFunctionName
 
-            iIndex += 1
-        Next
-        ListView_StackTrace.EndUpdate()
+                    ListView_StackTrace.Items.Add(mListViewItemData)
+                End If
+
+                iIndex += 1
+            Next
+        Finally
+            ListView_StackTrace.EndUpdate()
+        End Try
     End Sub
 
     Private Sub ListView_StackTrace_Click(sender As Object, e As EventArgs) Handles ListView_StackTrace.Click

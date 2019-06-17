@@ -292,8 +292,6 @@ Public Class UCBookmarkDetails
             Next
         Next
 
-        ListView_Bookmarks.BeginUpdate()
-
         'Remove non-existent from old
         Dim mLvDatRemove = lLvDataExistItems.FindAll(Function(x As ClassListViewItemData)
                                                          Dim sNameX As String = CStr(x.g_mData("Name"))
@@ -305,20 +303,27 @@ Public Class UCBookmarkDetails
                                                                                            End Function)
 
                                                      End Function)
-        For i = 0 To mLvDatRemove.Count - 1
-            ListView_Bookmarks.Items.Remove(mLvDatRemove(i))
-        Next
 
-        'Add new items
-        For i = 0 To lLvDataAddItems.Count - 1
-            Dim mLvItem = New ClassListViewItemData(New String() {lLvDataAddItems(i).sName, lLvDataAddItems(i).sFile, CStr(lLvDataAddItems(i).iLine + 1)}, "1")
-            mLvItem.g_mData("Name") = lLvDataAddItems(i).sName
-            mLvItem.g_mData("File") = lLvDataAddItems(i).sFile
-            mLvItem.g_mData("Line") = lLvDataAddItems(i).iLine
-            ListView_Bookmarks.Items.Add(mLvItem)
-        Next
+        If (mLvDatRemove.Count > 0 OrElse lLvDataAddItems.Count > 0) Then
+            Try
+                ListView_Bookmarks.BeginUpdate()
 
-        ListView_Bookmarks.EndUpdate()
+                For i = 0 To mLvDatRemove.Count - 1
+                    ListView_Bookmarks.Items.Remove(mLvDatRemove(i))
+                Next
+
+                'Add new items
+                For i = 0 To lLvDataAddItems.Count - 1
+                    Dim mLvItem = New ClassListViewItemData(New String() {lLvDataAddItems(i).sName, lLvDataAddItems(i).sFile, CStr(lLvDataAddItems(i).iLine + 1)}, "1")
+                    mLvItem.g_mData("Name") = lLvDataAddItems(i).sName
+                    mLvItem.g_mData("File") = lLvDataAddItems(i).sFile
+                    mLvItem.g_mData("Line") = lLvDataAddItems(i).iLine
+                    ListView_Bookmarks.Items.Add(mLvItem)
+                Next
+            Finally
+                ListView_Bookmarks.EndUpdate()
+            End Try
+        End If
     End Sub
 
     Private Sub OnBookmarksUpdated()

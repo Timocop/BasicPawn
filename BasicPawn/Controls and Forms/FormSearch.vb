@@ -381,29 +381,32 @@ Public Class FormSearch
         End If
 
         Try
-            ListView_Output.BeginUpdate()
-            ListView_Output.Items.Clear()
-            For Each mItem In mResults
-                Dim mListViewItemData As New ClassListViewItemData(New String() {
-                                                                   IO.Path.GetFileName(mItem.sFile),
-                                                                   CStr(mItem.iLine + 1),
-                                                                   mItem.sText,
-                                                                   mItem.sFile})
+            Try
+                ListView_Output.BeginUpdate()
+                ListView_Output.Items.Clear()
+                For Each mItem In mResults
+                    Dim mListViewItemData As New ClassListViewItemData(New String() {
+                                                                       IO.Path.GetFileName(mItem.sFile),
+                                                                       CStr(mItem.iLine + 1),
+                                                                       mItem.sText,
+                                                                       mItem.sFile})
 
-                mListViewItemData.g_mData("Filename") = IO.Path.GetFileName(mItem.sFile)
-                mListViewItemData.g_mData("Text") = mItem.sText
-                mListViewItemData.g_mData("Line") = mItem.iLine
-                mListViewItemData.g_mData("File") = mItem.sFile
-                mListViewItemData.g_mData("Location") = mItem.iLocation
-                mListViewItemData.g_mData("Length") = mItem.iLength
-                mListViewItemData.g_mData("TabIdentifier") = mItem.sTabIdentifier
-                mListViewItemData.g_mData("Match") = mItem.mMatch
+                    mListViewItemData.g_mData("Filename") = IO.Path.GetFileName(mItem.sFile)
+                    mListViewItemData.g_mData("Text") = mItem.sText
+                    mListViewItemData.g_mData("Line") = mItem.iLine
+                    mListViewItemData.g_mData("File") = mItem.sFile
+                    mListViewItemData.g_mData("Location") = mItem.iLocation
+                    mListViewItemData.g_mData("Length") = mItem.iLength
+                    mListViewItemData.g_mData("TabIdentifier") = mItem.sTabIdentifier
+                    mListViewItemData.g_mData("Match") = mItem.mMatch
 
-                ListView_Output.Items.Add(mListViewItemData)
-            Next
+                    ListView_Output.Items.Add(mListViewItemData)
+                Next
 
-            ClassTools.ClassControls.ClassListView.AutoResizeColumns(ListView_Output)
-            ListView_Output.EndUpdate()
+                ClassTools.ClassControls.ClassListView.AutoResizeColumns(ListView_Output)
+            Finally
+                ListView_Output.EndUpdate()
+            End Try
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try

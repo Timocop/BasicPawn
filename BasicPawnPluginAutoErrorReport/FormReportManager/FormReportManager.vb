@@ -463,23 +463,25 @@ Public Class FormReportManager
                                                                                             End Function)
 
                                                                  ClassThread.ExecAsync(g_mFormReportManager, Sub()
-                                                                                                                 g_mFormReportManager.ReportListBox_Reports.BeginUpdate()
-                                                                                                                 g_mFormReportManager.ReportListBox_Reports.Items.Clear()
+                                                                                                                 Try
+                                                                                                                     g_mFormReportManager.ReportListBox_Reports.BeginUpdate()
+                                                                                                                     g_mFormReportManager.ReportListBox_Reports.Items.Clear()
 
-                                                                                                                 For Each mItem In lReportExceptionItems
+                                                                                                                     For Each mItem In lReportExceptionItems
 
-                                                                                                                     g_mFormReportManager.ReportListBox_Reports.Items.Add(New ClassReportListBox.ClassReportItem(mItem))
-                                                                                                                 Next
+                                                                                                                         g_mFormReportManager.ReportListBox_Reports.Items.Add(New ClassReportListBox.ClassReportItem(mItem))
+                                                                                                                     Next
 
-                                                                                                                 For Each mReportItemsDic In lReportItems
-                                                                                                                     Dim sTitle As String = CStr(mReportItemsDic(C_REPORTITEMS_TITLE))
-                                                                                                                     Dim sMessage As String = CStr(mReportItemsDic(C_REPORTITEMS_MESSAGE))
-                                                                                                                     Dim mImage As Image = CType(mReportItemsDic(C_REPORTITEMS_IMAGE), Image)
+                                                                                                                     For Each mReportItemsDic In lReportItems
+                                                                                                                         Dim sTitle As String = CStr(mReportItemsDic(C_REPORTITEMS_TITLE))
+                                                                                                                         Dim sMessage As String = CStr(mReportItemsDic(C_REPORTITEMS_MESSAGE))
+                                                                                                                         Dim mImage As Image = CType(mReportItemsDic(C_REPORTITEMS_IMAGE), Image)
 
-                                                                                                                     g_mFormReportManager.ReportListBox_Reports.Items.Add(New ClassReportListBox.ClassReportItem(sTitle, sMessage, "", mImage, False, Nothing))
-                                                                                                                 Next
-
-                                                                                                                 g_mFormReportManager.ReportListBox_Reports.EndUpdate()
+                                                                                                                         g_mFormReportManager.ReportListBox_Reports.Items.Add(New ClassReportListBox.ClassReportItem(sTitle, sMessage, "", mImage, False, Nothing))
+                                                                                                                     Next
+                                                                                                                 Finally
+                                                                                                                     g_mFormReportManager.ReportListBox_Reports.EndUpdate()
+                                                                                                                 End Try
                                                                                                              End Sub)
 
                                                                  ClassThread.ExecAsync(g_mFormReportManager, Sub()
@@ -811,83 +813,86 @@ Public Class FormReportManager
                                                               Next
 
                                                               ClassThread.ExecAsync(g_mFormReportManager, Sub()
-                                                                                                              g_mFormReportManager.TabPage_Logs.SuspendLayout()
-                                                                                                              g_mFormReportManager.g_mClassTreeViewColumns.m_TreeView.BeginUpdate()
-                                                                                                              g_mFormReportManager.g_mClassTreeViewColumns.m_TreeView.Nodes.Clear()
+                                                                                                              Try
+                                                                                                                  g_mFormReportManager.TabPage_Logs.SuspendLayout()
+                                                                                                                  g_mFormReportManager.g_mClassTreeViewColumns.m_TreeView.BeginUpdate()
+                                                                                                                  g_mFormReportManager.g_mClassTreeViewColumns.m_TreeView.Nodes.Clear()
 
-                                                                                                              For Each mItem In lReportItems
-                                                                                                                  Dim sTitle As String = CStr(mItem(C_REPORTITEMS_TITLE))
-                                                                                                                  Dim sRemoteFile As String = CStr(mItem(C_REPORTITEMS_REMOTEFILE))
-                                                                                                                  Dim sLocalFile As String = CStr(mItem(C_REPORTITEMS_LOCALFILE))
-                                                                                                                  Dim iDate As Date = New Date(CLng(mItem(C_REPORTITEMS_DATETICK)))
-                                                                                                                  Dim iSize As Long = CLng(mItem(C_REPORTITEMS_SIZE))
-                                                                                                                  Dim iErrorIndex As Integer = CInt(mItem(C_REPORTITEMS_ERRORINDEX))
+                                                                                                                  For Each mItem In lReportItems
+                                                                                                                      Dim sTitle As String = CStr(mItem(C_REPORTITEMS_TITLE))
+                                                                                                                      Dim sRemoteFile As String = CStr(mItem(C_REPORTITEMS_REMOTEFILE))
+                                                                                                                      Dim sLocalFile As String = CStr(mItem(C_REPORTITEMS_LOCALFILE))
+                                                                                                                      Dim iDate As Date = New Date(CLng(mItem(C_REPORTITEMS_DATETICK)))
+                                                                                                                      Dim iSize As Long = CLng(mItem(C_REPORTITEMS_SIZE))
+                                                                                                                      Dim iErrorIndex As Integer = CInt(mItem(C_REPORTITEMS_ERRORINDEX))
 
-                                                                                                                  Dim iImageIndex As Integer = ICON_FILE
-                                                                                                                  Select Case (iErrorIndex)
-                                                                                                                      Case ERROR_MSGONLY
-                                                                                                                          iImageIndex = ICON_WARN
+                                                                                                                      Dim iImageIndex As Integer = ICON_FILE
+                                                                                                                      Select Case (iErrorIndex)
+                                                                                                                          Case ERROR_MSGONLY
+                                                                                                                              iImageIndex = ICON_WARN
 
-                                                                                                                      Case ERROR_TOOBIG
-                                                                                                                          iImageIndex = ICON_ERROR
+                                                                                                                          Case ERROR_TOOBIG
+                                                                                                                              iImageIndex = ICON_ERROR
 
-                                                                                                                  End Select
+                                                                                                                      End Select
 
-                                                                                                                  Select Case (iErrorIndex)
-                                                                                                                      Case ERROR_MSGONLY
-                                                                                                                          Dim sRootNodeName As String = "Information"
+                                                                                                                      Select Case (iErrorIndex)
+                                                                                                                          Case ERROR_MSGONLY
+                                                                                                                              Dim sRootNodeName As String = "Information"
 
-                                                                                                                          Dim mRootNodes As TreeNodeCollection = g_mFormReportManager.g_mClassTreeViewColumns.m_TreeView.Nodes
-                                                                                                                          Dim mFileNodes As TreeNodeCollection
+                                                                                                                              Dim mRootNodes As TreeNodeCollection = g_mFormReportManager.g_mClassTreeViewColumns.m_TreeView.Nodes
+                                                                                                                              Dim mFileNodes As TreeNodeCollection
 
-                                                                                                                          If (Not mRootNodes.ContainsKey(sRootNodeName)) Then
-                                                                                                                              mRootNodes.Add(New TreeNode(sRootNodeName, ICON_ARROW, ICON_ARROW) With {
+                                                                                                                              If (Not mRootNodes.ContainsKey(sRootNodeName)) Then
+                                                                                                                                  mRootNodes.Add(New TreeNode(sRootNodeName, ICON_ARROW, ICON_ARROW) With {
+                                                                                                                                    .Name = sRootNodeName
+                                                                                                                                  })
+                                                                                                                              End If
+
+                                                                                                                              mFileNodes = mRootNodes(sRootNodeName).Nodes
+
+                                                                                                                              mFileNodes.Add(New TreeNode(sTitle, iImageIndex, iImageIndex))
+                                                                                                                          Case Else
+
+                                                                                                                              'Check if the remote path is present, we need that
+                                                                                                                              If (String.IsNullOrEmpty(sRemoteFile)) Then
+                                                                                                                                  Continue For
+                                                                                                                              End If
+
+                                                                                                                              Dim sRootNodeName As String = IO.Path.GetDirectoryName(sRemoteFile)
+
+                                                                                                                              Dim mRootNodes As TreeNodeCollection = g_mFormReportManager.g_mClassTreeViewColumns.m_TreeView.Nodes
+                                                                                                                              Dim mFileNodes As TreeNodeCollection
+
+                                                                                                                              If (Not mRootNodes.ContainsKey(sRootNodeName)) Then
+                                                                                                                                  mRootNodes.Add(New TreeNode(sRootNodeName, ICON_ARROW, ICON_ARROW) With {
                                                                                                                                 .Name = sRootNodeName
                                                                                                                               })
-                                                                                                                          End If
+                                                                                                                              End If
 
-                                                                                                                          mFileNodes = mRootNodes(sRootNodeName).Nodes
+                                                                                                                              mFileNodes = mRootNodes(sRootNodeName).Nodes
 
-                                                                                                                          mFileNodes.Add(New TreeNode(sTitle, iImageIndex, iImageIndex))
-                                                                                                                      Case Else
+                                                                                                                              Dim mNode As New ClassTreeNodeData(sTitle, iImageIndex, iImageIndex) With {
+                                                                                                                                  .Tag = New String() {ClassTools.ClassStrings.FormatBytes(iSize), iDate.ToString}
+                                                                                                                              }
 
-                                                                                                                          'Check if the remote path is present, we need that
-                                                                                                                          If (String.IsNullOrEmpty(sRemoteFile)) Then
-                                                                                                                              Continue For
-                                                                                                                          End If
+                                                                                                                              mNode.g_mData("Title") = sTitle
+                                                                                                                              mNode.g_mData("RemoteFile") = sRemoteFile
+                                                                                                                              mNode.g_mData("LocalFile") = sLocalFile
+                                                                                                                              mNode.g_mData("DateTick") = iDate.Ticks
+                                                                                                                              mNode.g_mData("Size") = iSize
+                                                                                                                              mNode.g_mData("ErrorIndex") = iErrorIndex
 
-                                                                                                                          Dim sRootNodeName As String = IO.Path.GetDirectoryName(sRemoteFile)
+                                                                                                                              mFileNodes.Add(mNode)
+                                                                                                                      End Select
+                                                                                                                  Next
 
-                                                                                                                          Dim mRootNodes As TreeNodeCollection = g_mFormReportManager.g_mClassTreeViewColumns.m_TreeView.Nodes
-                                                                                                                          Dim mFileNodes As TreeNodeCollection
-
-                                                                                                                          If (Not mRootNodes.ContainsKey(sRootNodeName)) Then
-                                                                                                                              mRootNodes.Add(New TreeNode(sRootNodeName, ICON_ARROW, ICON_ARROW) With {
-                                                                                                                            .Name = sRootNodeName
-                                                                                                                          })
-                                                                                                                          End If
-
-                                                                                                                          mFileNodes = mRootNodes(sRootNodeName).Nodes
-
-                                                                                                                          Dim mNode As New ClassTreeNodeData(sTitle, iImageIndex, iImageIndex) With {
-                                                                                                                              .Tag = New String() {ClassTools.ClassStrings.FormatBytes(iSize), iDate.ToString}
-                                                                                                                          }
-
-                                                                                                                          mNode.g_mData("Title") = sTitle
-                                                                                                                          mNode.g_mData("RemoteFile") = sRemoteFile
-                                                                                                                          mNode.g_mData("LocalFile") = sLocalFile
-                                                                                                                          mNode.g_mData("DateTick") = iDate.Ticks
-                                                                                                                          mNode.g_mData("Size") = iSize
-                                                                                                                          mNode.g_mData("ErrorIndex") = iErrorIndex
-
-                                                                                                                          mFileNodes.Add(mNode)
-                                                                                                                  End Select
-                                                                                                              Next
-
-                                                                                                              g_mFormReportManager.g_mClassTreeViewColumns.m_TreeView.Sort()
-                                                                                                              g_mFormReportManager.g_mClassTreeViewColumns.m_TreeView.ExpandAll()
-                                                                                                              g_mFormReportManager.g_mClassTreeViewColumns.m_TreeView.EndUpdate()
-                                                                                                              g_mFormReportManager.TabPage_Logs.ResumeLayout()
+                                                                                                                  g_mFormReportManager.g_mClassTreeViewColumns.m_TreeView.Sort()
+                                                                                                                  g_mFormReportManager.g_mClassTreeViewColumns.m_TreeView.ExpandAll()
+                                                                                                              Finally
+                                                                                                                  g_mFormReportManager.g_mClassTreeViewColumns.m_TreeView.EndUpdate()
+                                                                                                                  g_mFormReportManager.TabPage_Logs.ResumeLayout()
+                                                                                                              End Try
                                                                                                           End Sub)
 
                                                               ClassThread.ExecAsync(g_mFormReportManager, Sub()

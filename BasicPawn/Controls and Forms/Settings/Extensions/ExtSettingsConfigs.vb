@@ -322,14 +322,16 @@ Partial Public Class FormSettings
     ''' Updates the configs in the ListBox
     ''' </summary>
     Private Sub UpdateConfigListBox()
-        ListBox_Configs.BeginUpdate()
-        ListBox_Configs.Items.Clear()
+        Try
+            ListBox_Configs.BeginUpdate()
+            ListBox_Configs.Items.Clear()
 
-        For Each mConfig As ClassConfigs.STRUC_CONFIG_ITEM In ClassConfigs.GetConfigs()
-            ListBox_Configs.Items.Add(mConfig.GetName)
-        Next
-
-        ListBox_Configs.EndUpdate()
+            For Each mConfig As ClassConfigs.STRUC_CONFIG_ITEM In ClassConfigs.GetConfigs()
+                ListBox_Configs.Items.Add(mConfig.GetName)
+            Next
+        Finally
+            ListBox_Configs.EndUpdate()
+        End Try
     End Sub
 
     Private Sub ListBox_Configs_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListBox_Configs.SelectedIndexChanged

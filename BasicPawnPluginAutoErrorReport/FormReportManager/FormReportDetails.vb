@@ -42,22 +42,26 @@ Public Class FormReportDetails
         Label_FileName.Text = mException.sBlamingFile
         Label_Date.Text = mException.dLogDate.ToLongDateString & " - " & mException.dLogDate.ToShortTimeString
 
-        ListView_StackTrace.BeginUpdate()
-        For i = 0 To mException.mStackTraces.Length - 1
-            Dim mListViewItemData As New ClassListViewItemData(New String() {
-                                                         CStr(i),
-                                                         CStr(mException.mStackTraces(i).iLine),
-                                                         mException.mStackTraces(i).sFileName,
-                                                         mException.mStackTraces(i).sFunctionName})
+        Try
+            ListView_StackTrace.BeginUpdate()
 
-            mListViewItemData.g_mData("Index") = i
-            mListViewItemData.g_mData("Line") = mException.mStackTraces(i).iLine
-            mListViewItemData.g_mData("File") = mException.mStackTraces(i).sFileName
-            mListViewItemData.g_mData("FunctionName") = mException.mStackTraces(i).sFunctionName
+            For i = 0 To mException.mStackTraces.Length - 1
+                Dim mListViewItemData As New ClassListViewItemData(New String() {
+                                                             CStr(i),
+                                                             CStr(mException.mStackTraces(i).iLine),
+                                                             mException.mStackTraces(i).sFileName,
+                                                             mException.mStackTraces(i).sFunctionName})
 
-            ListView_StackTrace.Items.Add(mListViewItemData)
-        Next
-        ListView_StackTrace.EndUpdate()
+                mListViewItemData.g_mData("Index") = i
+                mListViewItemData.g_mData("Line") = mException.mStackTraces(i).iLine
+                mListViewItemData.g_mData("File") = mException.mStackTraces(i).sFileName
+                mListViewItemData.g_mData("FunctionName") = mException.mStackTraces(i).sFunctionName
+
+                ListView_StackTrace.Items.Add(mListViewItemData)
+            Next
+        Finally
+            ListView_StackTrace.EndUpdate()
+        End Try
 
         Const FLAG_NONE = (0 << 1)
         Const FLAG_FILEDATE = (1 << 1)

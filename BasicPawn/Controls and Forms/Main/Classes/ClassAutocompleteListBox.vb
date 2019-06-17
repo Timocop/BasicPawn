@@ -185,36 +185,38 @@ Public Class ClassAutocompleteListBox
         End Function
 
         Public Sub PushToListBox()
-            g_ClassAutocompleteListBox.BeginUpdate()
-            g_ClassAutocompleteListBox.Items.Clear()
-
-            For Each mItem In g_lSortedList
-                g_ClassAutocompleteListBox.Items.Add(New ClassAutocompleteItem(mItem.Value))
-            Next
-
-#If DUMP_TO_FILE Then
-            If (True) Then
-                Dim mSB As New StringBuilder
+            Try
+                g_ClassAutocompleteListBox.BeginUpdate()
+                g_ClassAutocompleteListBox.Items.Clear()
 
                 For Each mItem In g_lSortedList
-                    mSB.AppendLine(mItem.Value.m_Filename)
-
-                    For Each sKey In mItem.Value.m_Data.Keys
-                        If (TypeOf mItem.Value.m_Data(sKey) Is String()) Then
-                            mSB.AppendLine(vbTab & sKey & "=" & String.Join(", ", CType(mItem.Value.m_Data(sKey), String())))
-                        Else
-                            mSB.AppendLine(vbTab & sKey & "=" & mItem.Value.m_Data(sKey).ToString)
-                        End If
-                    Next
+                    g_ClassAutocompleteListBox.Items.Add(New ClassAutocompleteItem(mItem.Value))
                 Next
 
-                Dim sDumpDir As String = IO.Path.Combine(Application.StartupPath, "DUMP")
-                IO.Directory.CreateDirectory(sDumpDir)
-                IO.File.WriteAllText(IO.Path.Combine(sDumpDir, "info.txt"), mSB.ToString)
-            End If
-#End If
+#If DUMP_TO_FILE Then
+                If (True) Then
+                    Dim mSB As New StringBuilder
 
-            g_ClassAutocompleteListBox.EndUpdate()
+                    For Each mItem In g_lSortedList
+                        mSB.AppendLine(mItem.Value.m_Filename)
+
+                        For Each sKey In mItem.Value.m_Data.Keys
+                            If (TypeOf mItem.Value.m_Data(sKey) Is String()) Then
+                                mSB.AppendLine(vbTab & sKey & "=" & String.Join(", ", CType(mItem.Value.m_Data(sKey), String())))
+                            Else
+                                mSB.AppendLine(vbTab & sKey & "=" & mItem.Value.m_Data(sKey).ToString)
+                            End If
+                        Next
+                    Next
+
+                    Dim sDumpDir As String = IO.Path.Combine(Application.StartupPath, "DUMP")
+                    IO.Directory.CreateDirectory(sDumpDir)
+                    IO.File.WriteAllText(IO.Path.Combine(sDumpDir, "info.txt"), mSB.ToString)
+                End If
+#End If
+            Finally
+                g_ClassAutocompleteListBox.EndUpdate()
+            End Try
         End Sub
 
         Class ClassDupKeyComparer
