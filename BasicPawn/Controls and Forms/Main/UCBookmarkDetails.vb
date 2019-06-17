@@ -185,6 +185,10 @@ Public Class UCBookmarkDetails
         RefreshBookmarkIconBar()
     End Sub
 
+    Private Sub ListView_Bookmarks_DoubleClick(sender As Object, e As EventArgs) Handles ListView_Bookmarks.DoubleClick
+        BookmarkGotoSelected()
+    End Sub
+
     Public Sub RefreshBookmarkIconBar()
         RefreshBookmarkIconBar(g_mFormMain.g_ClassTabControl.m_ActiveTab)
     End Sub
@@ -702,6 +706,7 @@ Public Class UCBookmarkDetails
             If (bCountChanged OrElse g_mUCBookmarkDetails.ListView_Bookmarks.SelectedItems.Count < 1) Then
                 g_mUCBookmarkDetails.ListView_Bookmarks.SelectedIndices.Clear()
                 g_mUCBookmarkDetails.ListView_Bookmarks.Items(g_mUCBookmarkDetails.ListView_Bookmarks.Items.Count - 1).Selected = True
+                g_mUCBookmarkDetails.ListView_Bookmarks.Items(g_mUCBookmarkDetails.ListView_Bookmarks.Items.Count - 1).EnsureVisible()
             End If
 
             'What? Mmh...
@@ -715,6 +720,7 @@ Public Class UCBookmarkDetails
             If (iNewIndex > -1 AndAlso iNewIndex < iCount) Then
                 g_mUCBookmarkDetails.ListView_Bookmarks.SelectedIndices.Clear()
                 g_mUCBookmarkDetails.ListView_Bookmarks.Items(iNewIndex).Selected = True
+                g_mUCBookmarkDetails.ListView_Bookmarks.Items(iNewIndex).EnsureVisible()
             End If
         End Sub
 

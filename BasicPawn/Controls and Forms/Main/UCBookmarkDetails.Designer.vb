@@ -32,6 +32,8 @@ Partial Class UCBookmarkDetails
         Me.ColumnHeader2 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader3 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ContextMenuStrip_Bookmarks = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.ToolStripMenuItem_Goto = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_AddBookmark = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_EditBookmark = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_RemoveBookmark = New System.Windows.Forms.ToolStripMenuItem()
@@ -40,9 +42,6 @@ Partial Class UCBookmarkDetails
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_LocalBookmarksOnly = New System.Windows.Forms.ToolStripMenuItem()
         Me.ImageList_Bookmarks = New System.Windows.Forms.ImageList(Me.components)
-        Me.ToolTip_Menu = New System.Windows.Forms.ToolTip(Me.components)
-        Me.ToolStripMenuItem_Goto = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
         Me.ContextMenuStrip_Bookmarks.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -84,49 +83,61 @@ Partial Class UCBookmarkDetails
         Me.ContextMenuStrip_Bookmarks.Name = "ContextMenuStrip_Bookmarks"
         Me.ContextMenuStrip_Bookmarks.Size = New System.Drawing.Size(220, 176)
         '
+        'ToolStripMenuItem_Goto
+        '
+        Me.ToolStripMenuItem_Goto.Image = Global.BasicPawn.My.Resources.Resources.imageres_5302_16x16
+        Me.ToolStripMenuItem_Goto.Name = "ToolStripMenuItem_Goto"
+        Me.ToolStripMenuItem_Goto.Size = New System.Drawing.Size(247, 22)
+        Me.ToolStripMenuItem_Goto.Text = "Goto line"
+        '
+        'ToolStripSeparator3
+        '
+        Me.ToolStripSeparator3.Name = "ToolStripSeparator3"
+        Me.ToolStripSeparator3.Size = New System.Drawing.Size(244, 6)
+        '
         'ToolStripMenuItem_AddBookmark
         '
         Me.ToolStripMenuItem_AddBookmark.Image = Global.BasicPawn.My.Resources.Resources.imageres_5376_16x16
         Me.ToolStripMenuItem_AddBookmark.Name = "ToolStripMenuItem_AddBookmark"
+        Me.ToolStripMenuItem_AddBookmark.ShortcutKeyDisplayString = "Ctrl+K"
         Me.ToolStripMenuItem_AddBookmark.Size = New System.Drawing.Size(219, 22)
         Me.ToolStripMenuItem_AddBookmark.Text = "Add bookmark"
         '
         'ToolStripMenuItem_EditBookmark
         '
-        Me.ToolStripMenuItem_EditBookmark.Image = Global.BasicPawn.My.Resources.Resources.imageres_5350_16x16
         Me.ToolStripMenuItem_EditBookmark.Name = "ToolStripMenuItem_EditBookmark"
-        Me.ToolStripMenuItem_EditBookmark.Size = New System.Drawing.Size(219, 22)
+        Me.ToolStripMenuItem_EditBookmark.Size = New System.Drawing.Size(247, 22)
         Me.ToolStripMenuItem_EditBookmark.Text = "Edit bookmark"
         '
         'ToolStripMenuItem_RemoveBookmark
         '
-        Me.ToolStripMenuItem_RemoveBookmark.Image = Global.BasicPawn.My.Resources.Resources.imageres_5337_16x16
         Me.ToolStripMenuItem_RemoveBookmark.Name = "ToolStripMenuItem_RemoveBookmark"
+        Me.ToolStripMenuItem_RemoveBookmark.ShortcutKeyDisplayString = ""
         Me.ToolStripMenuItem_RemoveBookmark.Size = New System.Drawing.Size(219, 22)
         Me.ToolStripMenuItem_RemoveBookmark.Text = "Remove bookmark"
         '
         'ToolStripSeparator1
         '
         Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
-        Me.ToolStripSeparator1.Size = New System.Drawing.Size(216, 6)
+        Me.ToolStripSeparator1.Size = New System.Drawing.Size(244, 6)
         '
         'ToolStripMenuItem_RefreshBookmark
         '
         Me.ToolStripMenuItem_RefreshBookmark.Image = Global.BasicPawn.My.Resources.Resources.shell32_16739_16x16
         Me.ToolStripMenuItem_RefreshBookmark.Name = "ToolStripMenuItem_RefreshBookmark"
-        Me.ToolStripMenuItem_RefreshBookmark.Size = New System.Drawing.Size(219, 22)
+        Me.ToolStripMenuItem_RefreshBookmark.Size = New System.Drawing.Size(247, 22)
         Me.ToolStripMenuItem_RefreshBookmark.Text = "Refresh"
         '
         'ToolStripSeparator2
         '
         Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
-        Me.ToolStripSeparator2.Size = New System.Drawing.Size(216, 6)
+        Me.ToolStripSeparator2.Size = New System.Drawing.Size(244, 6)
         '
         'ToolStripMenuItem_LocalBookmarksOnly
         '
         Me.ToolStripMenuItem_LocalBookmarksOnly.CheckOnClick = True
         Me.ToolStripMenuItem_LocalBookmarksOnly.Name = "ToolStripMenuItem_LocalBookmarksOnly"
-        Me.ToolStripMenuItem_LocalBookmarksOnly.Size = New System.Drawing.Size(219, 22)
+        Me.ToolStripMenuItem_LocalBookmarksOnly.Size = New System.Drawing.Size(247, 22)
         Me.ToolStripMenuItem_LocalBookmarksOnly.Text = "Show local bookmarks only"
         '
         'ImageList_Bookmarks
@@ -134,18 +145,6 @@ Partial Class UCBookmarkDetails
         Me.ImageList_Bookmarks.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit
         Me.ImageList_Bookmarks.ImageSize = New System.Drawing.Size(16, 16)
         Me.ImageList_Bookmarks.TransparentColor = System.Drawing.Color.Transparent
-        '
-        'ToolStripMenuItem_Goto
-        '
-        Me.ToolStripMenuItem_Goto.Image = Global.BasicPawn.My.Resources.Resources.imageres_5302_16x16
-        Me.ToolStripMenuItem_Goto.Name = "ToolStripMenuItem_Goto"
-        Me.ToolStripMenuItem_Goto.Size = New System.Drawing.Size(219, 22)
-        Me.ToolStripMenuItem_Goto.Text = "Goto line"
-        '
-        'ToolStripSeparator3
-        '
-        Me.ToolStripSeparator3.Name = "ToolStripSeparator3"
-        Me.ToolStripSeparator3.Size = New System.Drawing.Size(216, 6)
         '
         'UCBookmarkDetails
         '
@@ -164,7 +163,6 @@ Partial Class UCBookmarkDetails
     Friend WithEvents ColumnHeader1 As ColumnHeader
     Friend WithEvents ColumnHeader2 As ColumnHeader
     Friend WithEvents ColumnHeader3 As ColumnHeader
-    Friend WithEvents ToolTip_Menu As ToolTip
     Friend WithEvents ImageList_Bookmarks As ImageList
     Friend WithEvents ContextMenuStrip_Bookmarks As ContextMenuStrip
     Friend WithEvents ToolStripMenuItem_AddBookmark As ToolStripMenuItem

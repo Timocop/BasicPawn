@@ -343,4 +343,22 @@ Partial Public Class FormMain
 
         ToolStripMenuItem_ToolsAutocompleteCurrentMod.Text = String.Format("Current language: {0}", sLanguage)
     End Sub
+
+    Private Sub ToolStripMenuItem_BookmarksAdd_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_BookmarksAdd.Click
+        g_mUCBookmarkDetails.ToolStripMenuItem_AddBookmark.PerformClick()
+    End Sub
+
+    Private Sub ToolStripMenuItem_BookmarksShow_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_BookmarksShow.Click
+        If (ToolStripMenuItem_ViewDetails.Checked) Then
+            SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed = False
+
+            If (SplitContainer_ToolboxSourceAndDetails.SplitterDistance > (SplitContainer_ToolboxSourceAndDetails.Height - g_iDefaultDetailsSplitterDistance)) Then
+                SplitContainer_ToolboxSourceAndDetails.SplitterDistance = (SplitContainer_ToolboxSourceAndDetails.Height - g_iDefaultDetailsSplitterDistance)
+            End If
+
+            If (TabControl_Details.SelectedTab IsNot TabPage_Bookmarks) Then
+                TabControl_Details.SelectTab(TabPage_Bookmarks)
+            End If
+        End If
+    End Sub
 End Class
