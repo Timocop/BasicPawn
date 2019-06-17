@@ -63,10 +63,10 @@ Public Class UCBookmarkDetails
             Dim iCaretLine As Integer = mTab.m_TextEditor.ActiveTextAreaControl.Caret.Line
 
             Dim mInputTitle As New Text.StringBuilder
-            mInputTitle.AppendFormat("Creating a bookmark at line {0}.", iCaretLine).AppendLine()
+            mInputTitle.AppendFormat("Creating a bookmark at line {0}.", iCaretLine + 1).AppendLine()
             mInputTitle.AppendLine("Enter a name for the new bookmark:")
 
-            Dim sName As String = InputBox(mInputTitle.ToString, "Create Bookmark", "Bookmark-" & iCaretLine)
+            Dim sName As String = InputBox(mInputTitle.ToString, "Create Bookmark", "Bookmark-" & iCaretLine + 1)
             If (String.IsNullOrEmpty(sName)) Then
                 Return
             End If
@@ -97,7 +97,7 @@ Public Class UCBookmarkDetails
             Dim iLine As Integer = CInt(mLvItem.g_mData("Line"))
 
             Dim mInputTitle As New Text.StringBuilder
-            mInputTitle.AppendFormat("Editing a bookmark at line {0}.", iLine).AppendLine()
+            mInputTitle.AppendFormat("Editing a bookmark at line {0}.", iLine + 1).AppendLine()
             mInputTitle.AppendLine("Enter a name for the existing bookmark:")
 
             Dim sNewName As String = InputBox(mInputTitle.ToString, "Edit Bookmark", sName)
