@@ -135,8 +135,8 @@ Public Class FormSettings
         Next
 
         For j = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1
-            g_mFormMain.g_ClassLineState.UpdateStates(g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor)
-            g_mFormMain.g_ClassLineState.LimitStates(g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor)
+            g_mFormMain.g_ClassTabControl.m_Tab(j).g_ClassLineState.UpdateStates()
+            g_mFormMain.g_ClassTabControl.m_Tab(j).g_ClassLineState.LimitStates()
         Next
 
         g_mFormMain.g_ClassSyntaxTools.UpdateFormColors()

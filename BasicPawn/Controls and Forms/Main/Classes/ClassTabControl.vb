@@ -15,6 +15,7 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 
+Imports ICSharpCode.TextEditor
 Imports ICSharpCode.TextEditor.Document
 
 Public Class ClassTabControl
@@ -375,7 +376,7 @@ Public Class ClassTabControl
         End If
 
         If (String.IsNullOrEmpty(sFile) OrElse Not IO.File.Exists(sFile)) Then
-            m_Tab(iIndex).m_ClassLineState.m_IgnoreUpdates = True
+            m_Tab(iIndex).g_ClassLineState.BeginIgnore()
 
             m_Tab(iIndex).m_FileCachedWriteDate = Date.MaxValue
             m_Tab(iIndex).m_File = ""
@@ -390,7 +391,7 @@ Public Class ClassTabControl
 
             m_Tab(iIndex).m_ActiveConfig = Nothing
 
-            m_Tab(iIndex).m_ClassLineState.m_IgnoreUpdates = False
+            m_Tab(iIndex).g_ClassLineState.EndIgnore()
 
             If (g_iBeginUpdateCount > 0) Then
                 g_bBeginRequestFullUpdate = True
@@ -412,7 +413,7 @@ Public Class ClassTabControl
 
         Dim sFileText As String = IO.File.ReadAllText(sFile)
 
-        m_Tab(iIndex).m_ClassLineState.m_IgnoreUpdates = True
+        m_Tab(iIndex).g_ClassLineState.BeginIgnore()
 
         m_Tab(iIndex).m_FileCachedWriteDate = Date.MaxValue
         m_Tab(iIndex).m_File = sFile
@@ -427,7 +428,7 @@ Public Class ClassTabControl
 
         m_Tab(iIndex).m_ActiveConfig = ClassConfigs.FindOptimalConfigForFile(sFile, False, Nothing)
 
-        m_Tab(iIndex).m_ClassLineState.m_IgnoreUpdates = False
+        m_Tab(iIndex).g_ClassLineState.EndIgnore()
 
         If (g_iBeginUpdateCount > 0) Then
             g_bBeginRequestFullUpdate = True
@@ -466,7 +467,7 @@ Public Class ClassTabControl
                     m_Tab(iIndex).m_File = i.FileName
 
                     m_Tab(iIndex).m_Changed = False
-                    m_Tab(iIndex).m_ClassLineState.SaveStates(m_Tab(iIndex).m_TextEditor)
+                    m_Tab(iIndex).g_ClassLineState.SaveStates()
                     m_Tab(iIndex).m_TextEditor.Refresh()
 
                     g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "User saved file to: " & m_Tab(iIndex).m_File, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(m_Tab(iIndex).m_File))
@@ -485,7 +486,7 @@ Public Class ClassTabControl
         Else
             m_Tab(iIndex).m_FileCachedWriteDate = Date.MaxValue
             m_Tab(iIndex).m_Changed = False
-            m_Tab(iIndex).m_ClassLineState.SaveStates(m_Tab(iIndex).m_TextEditor)
+            m_Tab(iIndex).g_ClassLineState.SaveStates()
             m_Tab(iIndex).m_TextEditor.Refresh()
 
             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "User saved file to: " & m_Tab(iIndex).m_File, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(m_Tab(iIndex).m_File))
@@ -531,7 +532,7 @@ Public Class ClassTabControl
                             m_Tab(iIndex).m_File = i.FileName
 
                             m_Tab(iIndex).m_Changed = False
-                            m_Tab(iIndex).m_ClassLineState.SaveStates(m_Tab(iIndex).m_TextEditor)
+                            m_Tab(iIndex).g_ClassLineState.SaveStates()
                             m_Tab(iIndex).m_TextEditor.Refresh()
 
                             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "User saved file to: " & m_Tab(iIndex).m_File, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(m_Tab(iIndex).m_File))
@@ -552,7 +553,7 @@ Public Class ClassTabControl
                 Else
                     m_Tab(iIndex).m_FileCachedWriteDate = Date.MaxValue
                     m_Tab(iIndex).m_Changed = False
-                    m_Tab(iIndex).m_ClassLineState.SaveStates(m_Tab(iIndex).m_TextEditor)
+                    m_Tab(iIndex).g_ClassLineState.SaveStates()
                     m_Tab(iIndex).m_TextEditor.Refresh()
 
                     g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "User saved file to: " & m_Tab(iIndex).m_File, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(m_Tab(iIndex).m_File))
@@ -776,11 +777,13 @@ Public Class ClassTabControl
         Private g_mFileCachedWriteDate As Date
 
         Public g_ClassFoldings As ClassFoldings
+        Public g_ClassLineState As ClassLineState
 
         Public Sub New(f As FormMain)
             g_mFormMain = f
 
             g_ClassFoldings = New ClassFoldings(Me)
+            g_ClassLineState = New ClassLineState(Me)
 
             CreateTextEditor()
 
@@ -792,6 +795,7 @@ Public Class ClassTabControl
             m_Title = sText
 
             g_ClassFoldings = New ClassFoldings(Me)
+            g_ClassLineState = New ClassLineState(Me)
 
             CreateTextEditor()
 
@@ -804,6 +808,7 @@ Public Class ClassTabControl
             m_Changed = bChanged
 
             g_ClassFoldings = New ClassFoldings(Me)
+            g_ClassLineState = New ClassLineState(Me)
 
             CreateTextEditor()
 
@@ -1070,12 +1075,6 @@ Public Class ClassTabControl
                     UpdateToolTip()
                 End If
             End Set
-        End Property
-
-        Public ReadOnly Property m_ClassLineState As ClassTextEditorTools.ClassLineState
-            Get
-                Return g_mFormMain.g_ClassLineState
-            End Get
         End Property
 
         Public ReadOnly Property m_Index As Integer
@@ -1477,7 +1476,7 @@ Public Class ClassTabControl
                     Return
                 End If
 
-                m_ClassLineState.m_LineState(g_mSourceTextEditor, e.LineSegment.LineNumber) = ClassTextEditorTools.ClassLineState.LineStateMark.ENUM_STATE.CHANGED
+                g_ClassLineState.m_LineState(e.LineSegment.LineNumber) = ClassTextEditorTools.LineStateMark.ENUM_STATE.CHANGED
             Catch ex As Exception
                 ClassExceptionLog.WriteToLogMessageBox(ex)
             End Try
@@ -1493,7 +1492,7 @@ Public Class ClassTabControl
                             Return
                         End If
 
-                        m_ClassLineState.m_LineState(g_mSourceTextEditor, e.LineStart + i) = ClassTextEditorTools.ClassLineState.LineStateMark.ENUM_STATE.CHANGED
+                        g_ClassLineState.m_LineState(e.LineStart + i) = ClassTextEditorTools.LineStateMark.ENUM_STATE.CHANGED
                     Next
                 End If
             Catch ex As Exception
@@ -1606,8 +1605,7 @@ Public Class ClassTabControl
         End Sub
 #End Region
 
-#Region "TextEditor Folding Code"
-
+#Region "TextEditor Folding"
         Class ClassFoldings
             Private g_mSourceTabPage As SourceTabPage
 
@@ -1839,6 +1837,208 @@ Public Class ClassTabControl
                 g_ClassFoldings.SetSavedFoldStates()
             End If
         End Sub
+#End Region
+
+#Region "TextEditor Line States"
+        Class ClassLineState
+            Private g_mSourceTabPage As SourceTabPage
+
+            Private g_iIgnoreCount As Integer = 0
+            Private g_qLineStateHistory As New Queue(Of ClassTextEditorTools.LineStateMark)
+
+            Public Sub New(f As SourceTabPage)
+                g_mSourceTabPage = f
+            End Sub
+
+            Public Sub BeginIgnore()
+                g_iIgnoreCount += 1
+            End Sub
+
+            Public Sub EndIgnore()
+                g_iIgnoreCount -= 1
+
+                If (g_iIgnoreCount < 0) Then
+                    g_iIgnoreCount = 0
+                End If
+            End Sub
+
+            ReadOnly Property m_LineStateMarks() As ClassTextEditorTools.LineStateMark()
+                Get
+                    Dim lMarks As New List(Of ClassTextEditorTools.LineStateMark)
+
+                    For i = 0 To g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.Marks.Count - 1
+                        If (TypeOf g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.Marks(i) IsNot ClassTextEditorTools.LineStateMark) Then
+                            Continue For
+                        End If
+
+                        lMarks.Add(DirectCast(g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.Marks(i), ClassTextEditorTools.LineStateMark))
+                    Next
+
+                    Return lMarks.ToArray
+                End Get
+            End Property
+
+            Property m_LineState(iIndex As Integer) As ClassTextEditorTools.LineStateMark.ENUM_STATE
+                Get
+                    For Each mMark In g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.Marks
+                        Dim mLineStateMark = TryCast(mMark, ClassTextEditorTools.LineStateMark)
+                        If (mLineStateMark Is Nothing OrElse mLineStateMark.Anchor.IsDeleted) Then
+                            Continue For
+                        End If
+
+                        If (mLineStateMark.LineNumber <> iIndex) Then
+                            Continue For
+                        End If
+
+                        Return mLineStateMark.m_Type
+                    Next
+
+                    Return ClassTextEditorTools.LineStateMark.ENUM_STATE.NONE
+                End Get
+                Set(value As ClassTextEditorTools.LineStateMark.ENUM_STATE)
+                    If (g_iIgnoreCount > 0) Then
+                        Return
+                    End If
+
+                    For i = g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.Marks.Count - 1 To 0 Step -1
+                        Dim mLineStateMark = TryCast(g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.Marks(i), ClassTextEditorTools.LineStateMark)
+                        If (mLineStateMark Is Nothing OrElse mLineStateMark.Anchor.IsDeleted) Then
+                            Continue For
+                        End If
+
+                        If (mLineStateMark.LineNumber <> iIndex) Then
+                            Continue For
+                        End If
+
+                        Select Case (ClassSettings.g_iSettingsIconLineStateType)
+                            Case ClassSettings.ENUM_LINE_STATE_TYPE.CHANGED_AND_SAVED
+                                mLineStateMark.m_Type = value
+
+                            Case ClassSettings.ENUM_LINE_STATE_TYPE.CHANGED
+                                'Remove saved
+                                If (mLineStateMark.m_Type = ClassTextEditorTools.LineStateMark.ENUM_STATE.SAVED) Then
+                                    g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.RemoveMark(mLineStateMark)
+                                Else
+                                    mLineStateMark.m_Type = value
+                                End If
+
+                            Case ClassSettings.ENUM_LINE_STATE_TYPE.NONE
+                                g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.RemoveMark(mLineStateMark)
+                        End Select
+
+                        g_mSourceTabPage.m_TextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, iIndex))
+
+                        LimitStates()
+                        Return
+                    Next
+
+                    If (ClassSettings.g_iSettingsIconLineStateType = ClassSettings.ENUM_LINE_STATE_TYPE.NONE) Then
+                        Return
+                    End If
+
+                    Dim mNewMark As New ClassTextEditorTools.LineStateMark(g_mSourceTabPage.m_TextEditor.Document, New TextLocation(0, iIndex), ClassTextEditorTools.LineStateMark.ENUM_STATE.CHANGED)
+                    g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.AddMark(mNewMark)
+                    g_qLineStateHistory.Enqueue(mNewMark)
+
+                    g_mSourceTabPage.m_TextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, iIndex))
+
+                    LimitStates()
+                End Set
+            End Property
+
+            ''' <summary>
+            ''' Change all 'changed' states to 'saved'.
+            ''' </summary>
+            Public Sub SaveStates()
+                For i = g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.Marks.Count - 1 To 0 Step -1
+                    Dim mLineStateMark As ClassTextEditorTools.LineStateMark = TryCast(g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.Marks(i), ClassTextEditorTools.LineStateMark)
+                    If (mLineStateMark Is Nothing) Then
+                        Continue For
+                    End If
+
+                    Select Case (ClassSettings.g_iSettingsIconLineStateType)
+                        Case ClassSettings.ENUM_LINE_STATE_TYPE.NONE
+                            g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.RemoveMark(mLineStateMark)
+                            g_mSourceTabPage.m_TextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, mLineStateMark.LineNumber))
+
+                        Case ClassSettings.ENUM_LINE_STATE_TYPE.CHANGED_AND_SAVED
+                            If (mLineStateMark.m_Type = ClassTextEditorTools.LineStateMark.ENUM_STATE.CHANGED) Then
+                                mLineStateMark.m_Type = ClassTextEditorTools.LineStateMark.ENUM_STATE.SAVED
+                                g_mSourceTabPage.m_TextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, mLineStateMark.LineNumber))
+                            End If
+
+                        Case ClassSettings.ENUM_LINE_STATE_TYPE.CHANGED
+                            If (mLineStateMark.m_Type = ClassTextEditorTools.LineStateMark.ENUM_STATE.CHANGED) Then
+                                g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.RemoveMark(mLineStateMark)
+                                g_mSourceTabPage.m_TextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, mLineStateMark.LineNumber))
+                            End If
+                    End Select
+                Next
+            End Sub
+
+            ''' <summary>
+            ''' Updates all line states by settings.
+            ''' </summary> 
+            Public Sub UpdateStates()
+                For i = g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.Marks.Count - 1 To 0 Step -1
+                    Dim mLineStateMark = TryCast(g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.Marks(i), ClassTextEditorTools.LineStateMark)
+                    If (mLineStateMark Is Nothing) Then
+                        Continue For
+                    End If
+
+                    'Remove already invalid/removed marks
+                    If (mLineStateMark.Anchor.IsDeleted) Then
+                        g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.RemoveMark(mLineStateMark)
+                        Continue For
+                    End If
+
+                    Select Case (ClassSettings.g_iSettingsIconLineStateType)
+                        Case ClassSettings.ENUM_LINE_STATE_TYPE.CHANGED
+                            If (mLineStateMark.m_Type = ClassTextEditorTools.LineStateMark.ENUM_STATE.SAVED) Then
+                                g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.RemoveMark(mLineStateMark)
+                                g_mSourceTabPage.m_TextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, mLineStateMark.LineNumber))
+                            End If
+
+                        Case ClassSettings.ENUM_LINE_STATE_TYPE.NONE
+                            g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.RemoveMark(mLineStateMark)
+                            g_mSourceTabPage.m_TextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, mLineStateMark.LineNumber))
+
+                    End Select
+                Next
+            End Sub
+
+            ''' <summary>
+            ''' Clear all line states. Like on loading or new source.
+            ''' </summary>
+            Public Sub ClearStates()
+                g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.RemoveMarks(Function(mBookmark As Bookmark) TypeOf mBookmark Is ClassTextEditorTools.LineStateMark)
+            End Sub
+
+            ''' <summary>
+            ''' Limits all line states by settings. To avoid overdrawing.
+            ''' </summary> 
+            Public Sub LimitStates()
+                If (ClassSettings.g_iSettingsIconLineStateMax < 1) Then
+                    Return
+                End If
+
+                While (g_qLineStateHistory.Count > ClassSettings.g_iSettingsIconLineStateMax)
+                    Dim mLineStateMark = g_qLineStateHistory.Dequeue
+                    If (mLineStateMark Is Nothing) Then
+                        Continue While
+                    End If
+
+                    'Remove already invalid/removed marks
+                    If (mLineStateMark.Anchor.IsDeleted) Then
+                        g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.RemoveMark(mLineStateMark)
+                        Continue While
+                    End If
+
+                    g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.RemoveMark(mLineStateMark)
+                    g_mSourceTabPage.m_TextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, mLineStateMark.LineNumber))
+                End While
+            End Sub
+        End Class
 #End Region
 
         Protected Overrides Sub Dispose(disposing As Boolean)

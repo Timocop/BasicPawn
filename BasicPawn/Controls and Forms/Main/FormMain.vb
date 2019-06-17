@@ -22,7 +22,6 @@ Public Class FormMain
     Public g_ClassSyntaxUpdater As ClassSyntaxUpdater
     Public g_ClassSyntaxParser As ClassSyntaxParser
     Public g_ClassTextEditorTools As ClassTextEditorTools
-    Public g_ClassLineState As ClassTextEditorTools.ClassLineState
     Public g_ClassCustomHighlighting As ClassTextEditorTools.ClassCustomHighlighting
     Public g_ClassTextEditorCommands As ClassTextEditorTools.ClassTestEditorCommands
     Public g_ClassPluginController As ClassPluginController
@@ -190,7 +189,6 @@ Public Class FormMain
         g_ClassSyntaxUpdater = New ClassSyntaxUpdater(Me)
         g_ClassSyntaxParser = New ClassSyntaxParser(Me)
         g_ClassTextEditorTools = New ClassTextEditorTools(Me)
-        g_ClassLineState = New ClassTextEditorTools.ClassLineState(Me)
         g_ClassCustomHighlighting = New ClassTextEditorTools.ClassCustomHighlighting(Me)
         g_ClassTextEditorCommands = New ClassTextEditorTools.ClassTestEditorCommands(Me)
         g_ClassPluginController = New ClassPluginController(Me)
