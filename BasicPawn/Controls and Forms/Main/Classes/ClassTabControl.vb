@@ -1927,6 +1927,7 @@ Public Class ClassTabControl
                         End Select
 
                         g_mSourceTabPage.m_TextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, iIndex))
+                        g_mSourceTabPage.m_TextEditor.Document.CommitUpdate()
 
                         LimitStates()
                         Return
@@ -1941,6 +1942,7 @@ Public Class ClassTabControl
                     g_qLineStateHistory.Enqueue(mNewMark)
 
                     g_mSourceTabPage.m_TextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, iIndex))
+                    g_mSourceTabPage.m_TextEditor.Document.CommitUpdate()
 
                     LimitStates()
                 End Set
@@ -1974,6 +1976,8 @@ Public Class ClassTabControl
                             End If
                     End Select
                 Next
+
+                g_mSourceTabPage.m_TextEditor.Document.CommitUpdate()
             End Sub
 
             ''' <summary>
@@ -2005,6 +2009,8 @@ Public Class ClassTabControl
 
                     End Select
                 Next
+
+                g_mSourceTabPage.m_TextEditor.Document.CommitUpdate()
             End Sub
 
             ''' <summary>
@@ -2037,6 +2043,8 @@ Public Class ClassTabControl
                     g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.RemoveMark(mLineStateMark)
                     g_mSourceTabPage.m_TextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, mLineStateMark.LineNumber))
                 End While
+
+                g_mSourceTabPage.m_TextEditor.Document.CommitUpdate()
             End Sub
         End Class
 #End Region

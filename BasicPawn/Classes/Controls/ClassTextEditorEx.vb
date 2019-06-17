@@ -132,6 +132,8 @@ Public Class TextEditorControlEx
                     mTextArea.EndUpdate()
                 Next
                 mTextArea.AutoClearSelection = False
+                mTextArea.Document.CommitUpdate()
+
                 mTextArea.Caret.UpdateCaretPosition()
             Else
                 Dim mLine As LineSegment = mTextArea.Document.GetLineSegmentForOffset(mTextArea.Caret.Offset)
@@ -141,6 +143,8 @@ Public Class TextEditorControlEx
 
                 mTextArea.Document.UpdateQueue.Clear()
                 mTextArea.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, mLine.LineNumber))
+                mTextArea.Document.CommitUpdate()
+
                 mTextArea.Caret.UpdateCaretPosition()
 
                 mTextArea.EndUpdate()
