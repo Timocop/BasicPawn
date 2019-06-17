@@ -766,8 +766,8 @@ Public Class ClassTabControl
         Private g_sFile As String = ""
         Private g_mAutocompleteItems As New ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
         Private g_mAutocompleteIdentifier As New Dictionary(Of String, String)
-        Private g_mIncludeFiles As New ClassSyncList(Of DictionaryEntry) '{sTabIdentifier-Ref, IncludeFile}
-        Private g_mIncludeFilesFull As New ClassSyncList(Of DictionaryEntry) '{sTabIdentifier-Ref, IncludeFile}
+        Private g_mIncludeFiles As New ClassSyncList(Of KeyValuePair(Of String, String)) '{sTabIdentifier-Ref, IncludeFile}
+        Private g_mIncludeFilesFull As New ClassSyncList(Of KeyValuePair(Of String, String)) '{sTabIdentifier-Ref, IncludeFile}
         Private g_mActiveConfig As ClassConfigs.STRUC_CONFIG_ITEM = ClassConfigs.m_DefaultConfig
         Private g_iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = ClassSyntaxTools.ENUM_LANGUAGE_TYPE.SOURCEPAWN
         Private g_bHasReferenceIncludes As Boolean = False
@@ -1023,13 +1023,13 @@ Public Class ClassTabControl
             End Get
         End Property
 
-        Public ReadOnly Property m_IncludeFiles As ClassSyncList(Of DictionaryEntry)
+        Public ReadOnly Property m_IncludeFiles As ClassSyncList(Of KeyValuePair(Of String, String))
             Get
                 Return g_mIncludeFiles
             End Get
         End Property
 
-        Public ReadOnly Property m_IncludeFilesFull As ClassSyncList(Of DictionaryEntry)
+        Public ReadOnly Property m_IncludeFilesFull As ClassSyncList(Of KeyValuePair(Of String, String))
             Get
                 Return g_mIncludeFilesFull
             End Get
@@ -1068,7 +1068,7 @@ Public Class ClassTabControl
             Set(value As Boolean)
                 If (g_bHasReferenceIncludes <> value) Then
                     g_bHasReferenceIncludes = value
-                    Text = g_sText
+                    Me.Text = g_sText
 
                     UpdateToolTip()
                 End If

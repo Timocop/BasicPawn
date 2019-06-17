@@ -349,17 +349,17 @@ Public Class UCObjectBrowser
             Try
                 g_mFormMain.g_ClassTabControl.BeginUpdate()
 
-                For Each mInclude As DictionaryEntry In g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IncludeFiles.ToArray
-                    If (IO.Path.GetFileName(CStr(mInclude.Value)).ToLower <> TreeView_ObjectBrowser.SelectedNode.Text.ToLower) Then
+                For Each mInclude In g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IncludeFiles.ToArray
+                    If (IO.Path.GetFileName(mInclude.Value).ToLower <> TreeView_ObjectBrowser.SelectedNode.Text.ToLower) Then
                         Continue For
                     End If
 
-                    Dim mTab = g_mFormMain.g_ClassTabControl.GetTabByFile(CStr(mInclude.Value))
+                    Dim mTab = g_mFormMain.g_ClassTabControl.GetTabByFile(mInclude.Value)
                     If (mTab IsNot Nothing) Then
                         mTab.SelectTab(ClassTabControl.DEFAULT_SELECT_TAB_DELAY)
                     Else
                         mTab = g_mFormMain.g_ClassTabControl.AddTab()
-                        mTab.OpenFileTab(CStr(mInclude.Value))
+                        mTab.OpenFileTab(mInclude.Value)
                         mTab.SelectTab(ClassTabControl.DEFAULT_SELECT_TAB_DELAY)
                     End If
                 Next

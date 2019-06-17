@@ -639,21 +639,21 @@ Public Class FormSearch
                 Next
 
             Case ENUM_SEARCH_TYPE.ALL_INCLUDES
-                Dim mIncludeFiles As DictionaryEntry() = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IncludeFiles.ToArray
+                Dim mIncludeFiles = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IncludeFiles.ToArray
 
-                For Each mInclude As DictionaryEntry In mIncludeFiles
-                    If (Not IO.File.Exists(CStr(mInclude.Value))) Then
+                For Each mInclude In mIncludeFiles
+                    If (Not IO.File.Exists(mInclude.Value)) Then
                         Continue For
                     End If
 
                     Dim sSource As String
                     Dim sTabIdentifier As String = ""
 
-                    If (CStr(mInclude.Value).ToLower = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File.ToLower) Then
+                    If (mInclude.Value.ToLower = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File.ToLower) Then
                         sSource = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
                         sTabIdentifier = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Identifier
                     Else
-                        sSource = IO.File.ReadAllText(CStr(mInclude.Value))
+                        sSource = IO.File.ReadAllText(mInclude.Value)
                     End If
 
                     For Each mMatch As Match In mRegex.Matches(sSource)
@@ -662,7 +662,7 @@ Public Class FormSearch
                             .iLocation = mMatch.Index,
                             .iLength = mMatch.Length,
                             .iLine = GetLineByIndex(sSource, mMatch.Index),
-                            .sFile = CStr(mInclude.Value),
+                            .sFile = mInclude.Value,
                             .sTabIdentifier = sTabIdentifier,
                             .mMatch = If(bNormalMode, Nothing, mMatch)
                         })

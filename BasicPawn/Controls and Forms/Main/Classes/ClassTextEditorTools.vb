@@ -113,7 +113,7 @@ Public Class ClassTextEditorTools
 
         g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("Listing references of: {0}", sWord), False, True, True)
 
-        Dim mIncludeFiles As DictionaryEntry() = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IncludeFiles.ToArray
+        Dim mIncludeFiles = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IncludeFiles.ToArray
 
         Const C_REFLIST_FILE = "File"
         Const C_REFLIST_LINE = "Line"
@@ -121,17 +121,17 @@ Public Class ClassTextEditorTools
 
         Dim lRefList As New List(Of Dictionary(Of String, Object)) 'See keys: C_REFLIST_*
 
-        For Each mInclude As DictionaryEntry In mIncludeFiles
-            If (Not IO.File.Exists(CStr(mInclude.Value))) Then
+        For Each mInclude In mIncludeFiles
+            If (Not IO.File.Exists(mInclude.Value)) Then
                 Continue For
             End If
 
             Dim sSource As String
 
-            If (CStr(mInclude.Value).ToLower = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File.ToLower) Then
+            If (mInclude.Value.ToLower = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File.ToLower) Then
                 sSource = mActiveTextEditor.Document.TextContent
             Else
-                sSource = IO.File.ReadAllText(CStr(mInclude.Value))
+                sSource = IO.File.ReadAllText(mInclude.Value)
             End If
 
             Dim mSourceAnalysis As ClassSyntaxTools.ClassSyntaxSourceAnalysis
@@ -166,9 +166,9 @@ Public Class ClassTextEditorTools
                         End If
 
                         Dim mRefListDic As New Dictionary(Of String, Object)
-                        mRefListDic(C_REFLIST_FILE) = CStr(mInclude.Value)
+                        mRefListDic(C_REFLIST_FILE) = mInclude.Value
                         mRefListDic(C_REFLIST_LINE) = iLine
-                        mRefListDic(C_REFLIST_MSG) = vbTab & String.Format("Reference found: {0}({1}) : {2}", CStr(mInclude.Value), iLine, sLine.Trim)
+                        mRefListDic(C_REFLIST_MSG) = vbTab & String.Format("Reference found: {0}({1}) : {2}", mInclude.Value, iLine, sLine.Trim)
 
                         lRefList.Add(mRefListDic)
                     Next

@@ -210,15 +210,15 @@ Public Class ClassSyntaxParser
             Dim lNewAutocompleteList As New ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
             Dim mParser As New ClassParser()
 
-            Dim lIncludeFiles As New List(Of DictionaryEntry)
-            Dim lIncludeFilesFull As New List(Of DictionaryEntry)
+            Dim lIncludeFiles As New List(Of KeyValuePair(Of String, String))
+            Dim lIncludeFilesFull As New List(Of KeyValuePair(Of String, String))
 
             mIncludeWatch.Start()
             For Each sInclude In GetIncludeFiles(mRequestedConfig, sRequestedSource, sRequestedSourceFile, sRequestedSourceFile)
-                lIncludeFiles.Add(New DictionaryEntry(sTabIdentifier, sInclude))
+                lIncludeFiles.Add(New KeyValuePair(Of String, String)(sTabIdentifier, sInclude))
             Next
             For Each sInclude In GetIncludeFiles(mRequestedConfig, sRequestedSource, sRequestedSourceFile, sRequestedSourceFile, True)
-                lIncludeFilesFull.Add(New DictionaryEntry(sTabIdentifier, sInclude))
+                lIncludeFilesFull.Add(New KeyValuePair(Of String, String)(sTabIdentifier, sInclude))
             Next
 
             'Find main tab of include tabs
@@ -240,17 +240,17 @@ Public Class ClassSyntaxParser
                     End If
 
                     Dim sOtherTabIdentifier As String = mTabs(i).m_Identifier
-                    Dim mIncludes As DictionaryEntry() = mTabs(i).m_IncludeFiles.ToArray
+                    Dim mIncludes = mTabs(i).m_IncludeFiles.ToArray
                     Dim bIsMain As Boolean = False
 
                     Dim j As Integer
                     For j = 0 To mIncludes.Length - 1
                         'Only check orginal includes, skip other ones
-                        If (CStr(mIncludes(j).Key) <> sOtherTabIdentifier) Then
+                        If (mIncludes(j).Key <> sOtherTabIdentifier) Then
                             Continue For
                         End If
 
-                        If (CStr(mIncludes(j).Value).ToLower <> sRequestedSourceFile.ToLower) Then
+                        If (mIncludes(j).Value.ToLower <> sRequestedSourceFile.ToLower) Then
                             Continue For
                         End If
 
@@ -264,17 +264,17 @@ Public Class ClassSyntaxParser
 
                     For j = 0 To mIncludes.Length - 1
                         'Only check orginal includes, skip other ones
-                        If (CStr(mIncludes(j).Key) <> sOtherTabIdentifier) Then
+                        If (mIncludes(j).Key <> sOtherTabIdentifier) Then
                             Continue For
                         End If
 
-                        If (Not lIncludeFiles.Exists(Function(x As DictionaryEntry) CStr(x.Value).ToLower = CStr(mIncludes(j).Value).ToLower)) Then
-                            lIncludeFiles.Add(New DictionaryEntry(sOtherTabIdentifier, mIncludes(j).Value))
+                        If (Not lIncludeFiles.Exists(Function(x As KeyValuePair(Of String, String)) x.Value.ToLower = mIncludes(j).Value.ToLower)) Then
+                            lIncludeFiles.Add(New KeyValuePair(Of String, String)(sOtherTabIdentifier, mIncludes(j).Value))
                             bRefIncludeAdded = True
                         End If
 
-                        If (Not lIncludeFilesFull.Exists(Function(x As DictionaryEntry) CStr(x.Value).ToLower = CStr(mIncludes(j).Value).ToLower)) Then
-                            lIncludeFilesFull.Add(New DictionaryEntry(sOtherTabIdentifier, mIncludes(j).Value))
+                        If (Not lIncludeFilesFull.Exists(Function(x As KeyValuePair(Of String, String)) x.Value.ToLower = mIncludes(j).Value.ToLower)) Then
+                            lIncludeFilesFull.Add(New KeyValuePair(Of String, String)(sOtherTabIdentifier, mIncludes(j).Value))
                             bRefIncludeAdded = True
                         End If
                     Next
@@ -307,7 +307,7 @@ Public Class ClassSyntaxParser
 
                 For i = 0 To lIncludeFiles.Count - 1
                     '... by includes
-                    Select Case (IO.Path.GetFileName(CStr(lIncludeFiles(i).Value)).ToLower)
+                    Select Case (IO.Path.GetFileName(lIncludeFiles(i).Value).ToLower)
                         Case "sourcemod.inc"
                             iLanguage = ClassSyntaxTools.ENUM_LANGUAGE_TYPE.SOURCEPAWN
                             Exit For
@@ -318,7 +318,7 @@ Public Class ClassSyntaxParser
                     End Select
 
                     '... by extension
-                    Select Case (IO.Path.GetExtension(CStr(lIncludeFiles(i).Value)).ToLower)
+                    Select Case (IO.Path.GetExtension(lIncludeFiles(i).Value).ToLower)
                         Case ".sp"
                             iLanguage = ClassSyntaxTools.ENUM_LANGUAGE_TYPE.SOURCEPAWN
                             Exit For
@@ -399,7 +399,7 @@ Public Class ClassSyntaxParser
                 mPreWatch.Start()
                 Dim i As Integer
                 For i = 0 To lIncludeFiles.Count - 1
-                    mParser.ProcessFullSyntaxPre(g_mFormMain, sRequestedSource, sRequestedSourceFile, CStr(lIncludeFiles(i).Value), sSourceList, lNewAutocompleteList, iRequestedLangauge)
+                    mParser.ProcessFullSyntaxPre(g_mFormMain, sRequestedSource, sRequestedSourceFile, lIncludeFiles(i).Value, sSourceList, lNewAutocompleteList, iRequestedLangauge)
                 Next
                 mPreWatch.Stop()
 
@@ -553,21 +553,21 @@ Public Class ClassSyntaxParser
                             Case ClassSettings.ENUM_VAR_PARSE_TYPE.TAB_AND_INC
                                 Dim bValid As Boolean = False
 
-                                If (sRequestedSourceFile.ToLower = CStr(mIncludeFiles(i).Value).ToLower) Then
+                                If (sRequestedSourceFile.ToLower = mIncludeFiles(i).Value.ToLower) Then
                                     bValid = True
                                 End If
 
-                                Select Case (IO.Path.GetExtension(CStr(mIncludeFiles(i).Value)).ToLower)
+                                Select Case (IO.Path.GetExtension(mIncludeFiles(i).Value).ToLower)
                                     Case ".sp", ".sma", ".p", ".pwn"
                                         bValid = True
                                 End Select
 
                                 If (bValid) Then
-                                    mParser.ProcessVarSyntaxPre(g_mFormMain, sRequestedSource, sRequestedSourceFile, CStr(mIncludeFiles(i).Value), lNewVarAutocompleteList, lOldVarAutocompleteList, iRequestedLangauge)
+                                    mParser.ProcessVarSyntaxPre(g_mFormMain, sRequestedSource, sRequestedSourceFile, (mIncludeFiles(i).Value), lNewVarAutocompleteList, lOldVarAutocompleteList, iRequestedLangauge)
                                 End If
 
                             Case Else
-                                mParser.ProcessVarSyntaxPre(g_mFormMain, sRequestedSource, sRequestedSourceFile, CStr(mIncludeFiles(i).Value), lNewVarAutocompleteList, lOldVarAutocompleteList, iRequestedLangauge)
+                                mParser.ProcessVarSyntaxPre(g_mFormMain, sRequestedSource, sRequestedSourceFile, (mIncludeFiles(i).Value), lNewVarAutocompleteList, lOldVarAutocompleteList, iRequestedLangauge)
                         End Select
                     Next
                 End If
@@ -671,16 +671,16 @@ Public Class ClassSyntaxParser
         lIdentifierBuilder.Add(mTab.m_ActiveConfig.GetName)
         lIdentifierBuilder.Add(mTab.m_TextEditor.Document.TextContent)
 
-        For Each mInclude As DictionaryEntry In mTab.m_IncludeFiles
+        For Each mInclude In mTab.m_IncludeFiles
             'Add file path
-            lIdentifierBuilder.Add(CStr(mInclude.Value))
+            lIdentifierBuilder.Add(mInclude.Value)
 
-            If (Not IO.File.Exists(CStr(mInclude.Value))) Then
+            If (Not IO.File.Exists(mInclude.Value)) Then
                 Continue For
             End If
 
             'Add file last write time
-            lIdentifierBuilder.Add(IO.File.GetLastWriteTime(CStr(mInclude.Value)).ToString)
+            lIdentifierBuilder.Add(IO.File.GetLastWriteTime(mInclude.Value).ToString)
         Next
 
         sAutocompleteIdentifier = String.Join("|", lIdentifierBuilder.ToArray)
@@ -5183,7 +5183,7 @@ Public Class ClassSyntaxParser
             Return lNames.ToArray
         End Function
 
-        Public Function GetPreprocessorKeywords(mIncludes As DictionaryEntry()) As ClassSyntaxTools.STRUC_AUTOCOMPLETE()
+        Public Function GetPreprocessorKeywords(mIncludes As KeyValuePair(Of String, String)()) As ClassSyntaxTools.STRUC_AUTOCOMPLETE()
             Dim lTmpAutoList As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
 
             Dim mDic As New Dictionary(Of String, String)
@@ -5236,8 +5236,8 @@ Public Class ClassSyntaxParser
             mDic("pragma newdecls optional") = "#pragma newdecls <required/optional>"
 
             For i = 0 To mIncludes.Length - 1
-                Dim sKey As String = String.Format("include <{0}>", IO.Path.GetFileNameWithoutExtension(CStr(mIncludes(i).Value)))
-                Dim sValue As String = String.Format("#include <{0}>", IO.Path.GetFileNameWithoutExtension(CStr(mIncludes(i).Value)))
+                Dim sKey As String = String.Format("include <{0}>", IO.Path.GetFileNameWithoutExtension(mIncludes(i).Value))
+                Dim sValue As String = String.Format("#include <{0}>", IO.Path.GetFileNameWithoutExtension(mIncludes(i).Value))
                 mDic(sKey) = sValue
             Next
 

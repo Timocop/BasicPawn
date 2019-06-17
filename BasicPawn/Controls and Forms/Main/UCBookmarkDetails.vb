@@ -443,17 +443,17 @@ Public Class UCBookmarkDetails
                     Exit While
                 End If
 
-                For Each mInclude As DictionaryEntry In g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IncludeFilesFull.ToArray
-                    If (String.IsNullOrEmpty(CStr(mInclude.Value)) OrElse Not IO.File.Exists(CStr(mInclude.Value))) Then
+                For Each mInclude In g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IncludeFilesFull.ToArray
+                    If (String.IsNullOrEmpty(mInclude.Value) OrElse Not IO.File.Exists(mInclude.Value)) Then
                         Continue For
                     End If
 
-                    Dim sIncFile As String = CStr(mInclude.Value).Replace("/"c, "\"c)
+                    Dim sIncFile As String = mInclude.Value.Replace("/"c, "\"c)
 
                     'Try to find using absolute and relative path
                     If (sIncFile.ToLower.EndsWith(sFile.ToLower)) Then
                         Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
-                        mTab.OpenFileTab(CStr(mInclude.Value))
+                        mTab.OpenFileTab(mInclude.Value)
                         mTab.SelectTab()
 
                         bForceEnd = True

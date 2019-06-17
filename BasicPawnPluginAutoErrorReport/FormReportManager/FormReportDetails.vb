@@ -194,7 +194,7 @@ Public Class FormReportDetails
                     Continue While
                 End If
 
-                For Each mInclude As DictionaryEntry In mFormMain.g_ClassTabControl.m_ActiveTab.m_IncludeFilesFull.ToArray
+                For Each mInclude In mFormMain.g_ClassTabControl.m_ActiveTab.m_IncludeFilesFull.ToArray
                     If (String.IsNullOrEmpty(CStr(mInclude.Value)) OrElse Not IO.File.Exists(CStr(mInclude.Value))) Then
                         Continue For
                     End If
