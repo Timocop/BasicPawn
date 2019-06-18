@@ -70,9 +70,10 @@ Public Class ClassDebuggerTools
     ''' </summary>
     Class ClassRunnerEngine
         Public g_sDebuggerRunnerGuid As String = Guid.NewGuid.ToString
-        Public Shared g_sDebuggerRunnerCmdFileExt As String = ".cmd" & g_sDebuggerFilesExt
-        Public Shared g_sDebuggerRunnerEntityFileExt As String = ".entities" & g_sDebuggerFilesExt
-        Public Shared g_sDebuggerRunnerPingExt As String = ".ping" & g_sDebuggerFilesExt
+
+        Public Shared ReadOnly g_sDebuggerRunnerCmdFileExt As String = ".cmd" & g_sDebuggerFilesExt
+        Public Shared ReadOnly g_sDebuggerRunnerEntityFileExt As String = ".entities" & g_sDebuggerFilesExt
+        Public Shared ReadOnly g_sDebuggerRunnerPingExt As String = ".ping" & g_sDebuggerFilesExt
 
         ''' <summary>
         ''' Generates a engine source which can be used to accept commands, when its running.
