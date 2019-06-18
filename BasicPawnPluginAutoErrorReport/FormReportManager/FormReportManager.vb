@@ -227,7 +227,7 @@ Public Class FormReportManager
                                                                  Const C_REPORTITEMS_IMAGE = "Image"
 
                                                                  Dim lReportItems As New List(Of Dictionary(Of String, Object)) 'See keys: C_REPORTITEMS_*
-                                                                 Dim lReportExceptionItems As New List(Of ClassDebuggerParser.STRUC_SM_EXCEPTION)
+                                                                 Dim lReportExceptionItems As New List(Of ClassDebuggerTools.STRUC_SM_EXCEPTION)
                                                                  Dim lFtpEntries As New List(Of STRUC_FTP_ENTRY_ITEM)
 
                                                                  Dim iMaxFileBytes As Long = (100 * 1024 * 1024)
@@ -315,9 +315,7 @@ Public Class FormReportManager
                                                                                      Try
                                                                                          g_mClassFTP.DownloadFile(mItem.sFullName, sTmpFile)
 
-                                                                                         With New ClassDebuggerParser(Nothing)
-                                                                                             lReportExceptionItems.AddRange(.ReadSourceModLogExceptions(IO.File.ReadAllLines(sTmpFile)))
-                                                                                         End With
+                                                                                         ClassDebuggerTools.ClassDebuggerHelpers.ReadSourceModLogExceptions(IO.File.ReadAllLines(sTmpFile))
                                                                                      Finally
                                                                                          IO.File.Delete(sTmpFile)
                                                                                      End Try
@@ -363,9 +361,7 @@ Public Class FormReportManager
                                                                                              g_mClassSFTP.DownloadFile(mItem.FullName, mStream)
                                                                                          End Using
 
-                                                                                         With New ClassDebuggerParser(Nothing)
-                                                                                             lReportExceptionItems.AddRange(.ReadSourceModLogExceptions(IO.File.ReadAllLines(sTmpFile)))
-                                                                                         End With
+                                                                                         ClassDebuggerTools.ClassDebuggerHelpers.ReadSourceModLogExceptions(IO.File.ReadAllLines(sTmpFile))
                                                                                      Finally
                                                                                          IO.File.Delete(sTmpFile)
                                                                                      End Try
@@ -410,9 +406,9 @@ Public Class FormReportManager
                                                                  End If
 
                                                                  'Remove duplicates
-                                                                 Dim lTmpList As New List(Of ClassDebuggerParser.STRUC_SM_EXCEPTION)
+                                                                 Dim lTmpList As New List(Of ClassDebuggerTools.STRUC_SM_EXCEPTION)
                                                                  For Each mItem In lReportExceptionItems.ToArray
-                                                                     If (lTmpList.Exists(Function(x As ClassDebuggerParser.STRUC_SM_EXCEPTION)
+                                                                     If (lTmpList.Exists(Function(x As ClassDebuggerTools.STRUC_SM_EXCEPTION)
                                                                                              If (x.sExceptionInfo <> mItem.sExceptionInfo) Then
                                                                                                  Return False
                                                                                              End If
@@ -458,7 +454,7 @@ Public Class FormReportManager
                                                                  lReportExceptionItems.AddRange(lTmpList)
 
                                                                  'Sort all reports. Top = Newer.
-                                                                 lReportExceptionItems.Sort(Function(x As ClassDebuggerParser.STRUC_SM_EXCEPTION, y As ClassDebuggerParser.STRUC_SM_EXCEPTION)
+                                                                 lReportExceptionItems.Sort(Function(x As ClassDebuggerTools.STRUC_SM_EXCEPTION, y As ClassDebuggerTools.STRUC_SM_EXCEPTION)
                                                                                                 Return -(x.dLogDate.CompareTo(y.dLogDate))
                                                                                             End Function)
 

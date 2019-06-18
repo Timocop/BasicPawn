@@ -208,11 +208,9 @@ Public Class PluginFTP
             Try
                 Dim sSource As String = g_mPluginFTP.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
 
-                With New ClassDebuggerParser(g_mPluginFTP.g_mFormMain)
-                    If (.HasDebugPlaceholder(sSource)) Then
-                        .CleanupDebugPlaceholder(sSource, g_mPluginFTP.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
-                    End If
-                End With
+                If (ClassDebuggerTools.ClassDebuggerHelpers.HasDebugPlaceholder(sSource)) Then
+                    ClassDebuggerTools.ClassDebuggerHelpers.CleanupDebugPlaceholder(sSource, g_mPluginFTP.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
+                End If
 
                 Dim sSourceFile As String = Nothing
                 If (Not g_mPluginFTP.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved AndAlso Not g_mPluginFTP.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_InvalidFile) Then

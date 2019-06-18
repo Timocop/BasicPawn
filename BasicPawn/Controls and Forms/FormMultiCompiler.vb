@@ -119,11 +119,9 @@ Public Class FormMultiCompiler
                 Dim sOutputFile As String = IO.Path.Combine(mConfig.g_sOutputFolder, String.Format("{0}.unk", IO.Path.GetFileNameWithoutExtension(sSourceFile)))
                 Dim bSuccess As Boolean = ClassThread.ExecEx(Of Boolean)(Me, Function()
                                                                                  If (g_bCleanDebuggerPlaceholder) Then
-                                                                                     With New ClassDebuggerParser(g_mMainForm)
-                                                                                         If (.HasDebugPlaceholder(sSource)) Then
-                                                                                             Call .CleanupDebugPlaceholder(sSource, iLanguage)
-                                                                                         End If
-                                                                                     End With
+                                                                                     If (ClassDebuggerTools.ClassDebuggerHelpers.HasDebugPlaceholder(sSource)) Then
+                                                                                         ClassDebuggerTools.ClassDebuggerHelpers.CleanupDebugPlaceholder(sSource, iLanguage)
+                                                                                     End If
                                                                                  End If
 
                                                                                  Return g_mMainForm.g_ClassTextEditorTools.CompileSource(Nothing,

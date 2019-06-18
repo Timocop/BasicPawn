@@ -238,7 +238,7 @@ Public Class ClassDebuggerRunner
                 Throw New ArgumentException("Guid empty")
             End If
 
-            Dim sIgnoreExt As String = ClassDebuggerParser.g_sDebuggerBreakpointIgnoreExt
+            Dim sIgnoreExt As String = ClassDebuggerTools.g_sDebuggerBreakpointIgnoreExt
             Dim sFile As String = IO.Path.Combine(m_ServerFolder, sGUID & sIgnoreExt)
 
             Return IO.File.Exists(sFile)
@@ -248,7 +248,7 @@ Public Class ClassDebuggerRunner
                 Throw New ArgumentException("Guid empty")
             End If
 
-            Dim sIgnoreExt As String = ClassDebuggerParser.g_sDebuggerBreakpointIgnoreExt
+            Dim sIgnoreExt As String = ClassDebuggerTools.g_sDebuggerBreakpointIgnoreExt
             Dim sFile As String = IO.Path.Combine(m_ServerFolder, sGUID & sIgnoreExt)
 
             If (value) Then
@@ -652,27 +652,21 @@ Public Class ClassDebuggerRunner
                 g_sLatestDebuggerPlugin = sOutputFile
 
                 If (True) Then
-                    g_mFormDebugger.g_ClassDebuggerParser.UpdateBreakpoints(sSource, True, g_mFormDebugger.g_iLanguage)
-                    With New ClassDebuggerParser.ClassBreakpoints(g_mFormDebugger.g_mFormMain)
-                        .CompilerReady(sSource, g_sDebuggerIdentifier, g_mFormDebugger.g_ClassDebuggerParser, g_mFormDebugger.g_iLanguage)
-                    End With
-                    g_mFormDebugger.g_ClassDebuggerParser.UpdateBreakpoints(g_mFormDebugger.TextEditorControlEx_DebuggerSource.Document.TextContent, True, g_mFormDebugger.g_iLanguage)
+                    g_mFormDebugger.g_ClassDebuggerEntries.UpdateBreakpoints(sSource, True, g_mFormDebugger.g_iLanguage)
+                    Call (New ClassDebuggerTools.ClassDebuggerEntries.ClassBreakpointEntry).CompilerReady(sSource, g_sDebuggerIdentifier, g_mFormDebugger.g_ClassDebuggerEntries, g_mFormDebugger.g_iLanguage)
+                    g_mFormDebugger.g_ClassDebuggerEntries.UpdateBreakpoints(g_mFormDebugger.TextEditorControlEx_DebuggerSource.Document.TextContent, True, g_mFormDebugger.g_iLanguage)
                 End If
 
                 If (True) Then
-                    g_mFormDebugger.g_ClassDebuggerParser.UpdateWatchers(sSource, True, g_mFormDebugger.g_iLanguage)
-                    With New ClassDebuggerParser.ClassWatchers(g_mFormDebugger.g_mFormMain)
-                        .CompilerReady(sSource, g_sDebuggerIdentifier, g_mFormDebugger.g_ClassDebuggerParser, g_mFormDebugger.g_iLanguage)
-                    End With
-                    g_mFormDebugger.g_ClassDebuggerParser.UpdateWatchers(g_mFormDebugger.TextEditorControlEx_DebuggerSource.Document.TextContent, True, g_mFormDebugger.g_iLanguage)
+                    g_mFormDebugger.g_ClassDebuggerEntries.UpdateWatchers(sSource, True, g_mFormDebugger.g_iLanguage)
+                    Call (New ClassDebuggerTools.ClassDebuggerEntries.ClassWatcherEntry).CompilerReady(sSource, g_sDebuggerIdentifier, g_mFormDebugger.g_ClassDebuggerEntries, g_mFormDebugger.g_iLanguage)
+                    g_mFormDebugger.g_ClassDebuggerEntries.UpdateWatchers(g_mFormDebugger.TextEditorControlEx_DebuggerSource.Document.TextContent, True, g_mFormDebugger.g_iLanguage)
                 End If
 
                 If (True) Then
-                    g_mFormDebugger.g_ClassDebuggerParser.UpdateAsserts(sSource, True, g_mFormDebugger.g_iLanguage)
-                    With New ClassDebuggerParser.ClassAsserts(g_mFormDebugger.g_mFormMain)
-                        .CompilerReady(sSource, g_sDebuggerIdentifier, g_mFormDebugger.g_ClassDebuggerParser, g_mFormDebugger.g_iLanguage)
-                    End With
-                    g_mFormDebugger.g_ClassDebuggerParser.UpdateAsserts(g_mFormDebugger.TextEditorControlEx_DebuggerSource.Document.TextContent, True, g_mFormDebugger.g_iLanguage)
+                    g_mFormDebugger.g_ClassDebuggerEntries.UpdateAsserts(sSource, True, g_mFormDebugger.g_iLanguage)
+                    Call (New ClassDebuggerTools.ClassDebuggerEntries.ClassAssetEntry).CompilerReady(sSource, g_sDebuggerIdentifier, g_mFormDebugger.g_ClassDebuggerEntries, g_mFormDebugger.g_iLanguage)
+                    g_mFormDebugger.g_ClassDebuggerEntries.UpdateAsserts(g_mFormDebugger.TextEditorControlEx_DebuggerSource.Document.TextContent, True, g_mFormDebugger.g_iLanguage)
                 End If
 
                 g_ClassPreProcess.FinishSource(sSource)
@@ -885,8 +879,8 @@ Public Class ClassDebuggerRunner
             'Send breakpoint info
             If (Not String.IsNullOrEmpty(g_mActiveBreakpointInfo.sGUID)) Then
                 Dim sServerFolder As String = m_ServerFolder
-                Dim sContinueFile As String = IO.Path.Combine(sServerFolder, g_mActiveBreakpointInfo.sGUID & ClassDebuggerParser.g_sDebuggerBreakpointContinueExt.ToLower)
-                Dim sContinueVarFile As String = IO.Path.Combine(sServerFolder, g_mActiveBreakpointInfo.sGUID & ClassDebuggerParser.g_sDebuggerBreakpointContinueVarExt.ToLower)
+                Dim sContinueFile As String = IO.Path.Combine(sServerFolder, g_mActiveBreakpointInfo.sGUID & ClassDebuggerTools.g_sDebuggerBreakpointContinueExt.ToLower)
+                Dim sContinueVarFile As String = IO.Path.Combine(sServerFolder, g_mActiveBreakpointInfo.sGUID & ClassDebuggerTools.g_sDebuggerBreakpointContinueVarExt.ToLower)
 
                 If (g_mActiveBreakpointInfo.bReturnCustomValue) Then
                     Select Case (g_mActiveBreakpointInfo.mValueType)
@@ -903,9 +897,9 @@ Public Class ClassDebuggerRunner
             'Send assert info
             If (Not String.IsNullOrEmpty(g_mActiveAssertInfo.sGUID)) Then
                 Dim sServerFolder As String = m_ServerFolder
-                Dim sContinueFile As String = IO.Path.Combine(sServerFolder, g_mActiveAssertInfo.sGUID & ClassDebuggerParser.g_sDebuggerAssertContinueExt.ToLower)
-                Dim sAbortFile As String = IO.Path.Combine(sServerFolder, g_mActiveAssertInfo.sGUID & ClassDebuggerParser.g_sDebuggerAssertContinueErrorExt.ToLower)
-                Dim sFailFile As String = IO.Path.Combine(sServerFolder, g_mActiveAssertInfo.sGUID & ClassDebuggerParser.g_sDebuggerAssertContinueFailExt.ToLower)
+                Dim sContinueFile As String = IO.Path.Combine(sServerFolder, g_mActiveAssertInfo.sGUID & ClassDebuggerTools.g_sDebuggerAssertContinueExt.ToLower)
+                Dim sAbortFile As String = IO.Path.Combine(sServerFolder, g_mActiveAssertInfo.sGUID & ClassDebuggerTools.g_sDebuggerAssertContinueErrorExt.ToLower)
+                Dim sFailFile As String = IO.Path.Combine(sServerFolder, g_mActiveAssertInfo.sGUID & ClassDebuggerTools.g_sDebuggerAssertContinueFailExt.ToLower)
 
                 Select Case (g_mActiveAssertInfo.iActionType)
                     Case ENUM_ASSERT_ACTION_TYPE.ERROR
@@ -995,7 +989,7 @@ Public Class ClassDebuggerRunner
     End Sub
 
     Public Sub SetDebuggerIdentifier(bRemoveOnly As Boolean)
-        Dim sDebuggerIdentifierExt As String = ClassDebuggerParser.g_sDebuggerIdentifierExt
+        Dim sDebuggerIdentifierExt As String = ClassDebuggerTools.g_sDebuggerIdentifierExt
         Dim sOldFile As String = IO.Path.Combine(m_ServerFolder, g_sDebuggerIdentifier & sDebuggerIdentifierExt)
 
         If (IO.File.Exists(sOldFile)) Then
@@ -1126,17 +1120,17 @@ Public Class ClassDebuggerRunner
             End If
 
             Dim sFileExt As String = IO.Path.GetExtension(sFile)
-            If (sFileExt.ToLower <> ClassDebuggerParser.g_sDebuggerFilesExt.ToLower OrElse Not sFile.ToLower.EndsWith(ClassDebuggerParser.g_sDebuggerBreakpointTriggerExt.ToLower)) Then
+            If (sFileExt.ToLower <> ClassDebuggerTools.g_sDebuggerFilesExt.ToLower OrElse Not sFile.ToLower.EndsWith(ClassDebuggerTools.g_sDebuggerBreakpointTriggerExt.ToLower)) Then
                 Return
             End If
 
 
-            Dim sGUID As String = IO.Path.GetFileName(sFile).ToLower.Replace(ClassDebuggerParser.g_sDebuggerBreakpointTriggerExt.ToLower, "")
+            Dim sGUID As String = IO.Path.GetFileName(sFile).ToLower.Replace(ClassDebuggerTools.g_sDebuggerBreakpointTriggerExt.ToLower, "")
             If (String.IsNullOrEmpty(sGUID) OrElse sGUID.Trim.Length = 0) Then
                 Return
             End If
 
-            If (Not g_mFormDebugger.g_ClassDebuggerParser.g_lBreakpointList.Exists(Function(i As ClassDebuggerParser.STRUC_DEBUGGER_ITEM) i.sGUID = sGUID)) Then
+            If (Not g_mFormDebugger.g_ClassDebuggerEntries.g_lBreakpointList.Exists(Function(i As ClassDebuggerTools.ClassDebuggerEntries.STRUC_DEBUGGER_ITEM) i.sGUID = sGUID)) Then
                 Return
             End If
 
@@ -1238,17 +1232,17 @@ Public Class ClassDebuggerRunner
             End If
 
             Dim sFileExt As String = IO.Path.GetExtension(sFile)
-            If (sFileExt.ToLower <> ClassDebuggerParser.g_sDebuggerFilesExt.ToLower OrElse Not sFile.ToLower.EndsWith(ClassDebuggerParser.g_sDebuggerWatcherValueExt.ToLower)) Then
+            If (sFileExt.ToLower <> ClassDebuggerTools.g_sDebuggerFilesExt.ToLower OrElse Not sFile.ToLower.EndsWith(ClassDebuggerTools.g_sDebuggerWatcherValueExt.ToLower)) Then
                 Return
             End If
 
 
-            Dim sGUID As String = IO.Path.GetFileName(sFile).ToLower.Replace(ClassDebuggerParser.g_sDebuggerWatcherValueExt.ToLower, "")
+            Dim sGUID As String = IO.Path.GetFileName(sFile).ToLower.Replace(ClassDebuggerTools.g_sDebuggerWatcherValueExt.ToLower, "")
             If (String.IsNullOrEmpty(sGUID) OrElse sGUID.Trim.Length = 0) Then
                 Return
             End If
 
-            If (Not g_mFormDebugger.g_ClassDebuggerParser.g_lWatcherList.Exists(Function(i As ClassDebuggerParser.STRUC_DEBUGGER_ITEM) i.sGUID = sGUID)) Then
+            If (Not g_mFormDebugger.g_ClassDebuggerEntries.g_lWatcherList.Exists(Function(i As ClassDebuggerTools.ClassDebuggerEntries.STRUC_DEBUGGER_ITEM) i.sGUID = sGUID)) Then
                 Return
             End If
 
@@ -1322,17 +1316,17 @@ Public Class ClassDebuggerRunner
             End If
 
             Dim sFileExt As String = IO.Path.GetExtension(sFile)
-            If (sFileExt.ToLower <> ClassDebuggerParser.g_sDebuggerFilesExt.ToLower OrElse Not sFile.ToLower.EndsWith(ClassDebuggerParser.g_sDebuggerAssertTriggerExt.ToLower)) Then
+            If (sFileExt.ToLower <> ClassDebuggerTools.g_sDebuggerFilesExt.ToLower OrElse Not sFile.ToLower.EndsWith(ClassDebuggerTools.g_sDebuggerAssertTriggerExt.ToLower)) Then
                 Return
             End If
 
 
-            Dim sGUID As String = IO.Path.GetFileName(sFile).ToLower.Replace(ClassDebuggerParser.g_sDebuggerAssertTriggerExt.ToLower, "")
+            Dim sGUID As String = IO.Path.GetFileName(sFile).ToLower.Replace(ClassDebuggerTools.g_sDebuggerAssertTriggerExt.ToLower, "")
             If (String.IsNullOrEmpty(sGUID) OrElse sGUID.Trim.Length = 0) Then
                 Return
             End If
 
-            If (Not g_mFormDebugger.g_ClassDebuggerParser.g_lAssertList.Exists(Function(i As ClassDebuggerParser.STRUC_DEBUGGER_ITEM) i.sGUID = sGUID)) Then
+            If (Not g_mFormDebugger.g_ClassDebuggerEntries.g_lAssertList.Exists(Function(i As ClassDebuggerTools.ClassDebuggerEntries.STRUC_DEBUGGER_ITEM) i.sGUID = sGUID)) Then
                 Return
             End If
 
@@ -1441,12 +1435,12 @@ Public Class ClassDebuggerRunner
             End If
 
             Dim sFileExt As String = IO.Path.GetExtension(sFile)
-            If (sFileExt.ToLower <> ClassDebuggerParser.g_sDebuggerFilesExt.ToLower OrElse Not sFile.ToLower.EndsWith(ClassDebuggerParser.ClassRunnerEngine.g_sDebuggerRunnerEntityFileExt.ToLower)) Then
+            If (sFileExt.ToLower <> ClassDebuggerTools.g_sDebuggerFilesExt.ToLower OrElse Not sFile.ToLower.EndsWith(ClassDebuggerTools.ClassRunnerEngine.g_sDebuggerRunnerEntityFileExt.ToLower)) Then
                 Return
             End If
 
 
-            Dim sGUID As String = IO.Path.GetFileName(sFile).ToLower.Replace(ClassDebuggerParser.ClassRunnerEngine.g_sDebuggerRunnerEntityFileExt.ToLower, "")
+            Dim sGUID As String = IO.Path.GetFileName(sFile).ToLower.Replace(ClassDebuggerTools.ClassRunnerEngine.g_sDebuggerRunnerEntityFileExt.ToLower, "")
             If (String.IsNullOrEmpty(sGUID) OrElse sGUID.Trim.Length = 0) Then
                 Return
             End If
@@ -1589,12 +1583,12 @@ Public Class ClassDebuggerRunner
             End If
 
             Dim sFileExt As String = IO.Path.GetExtension(sFile)
-            If (sFileExt.ToLower <> ClassDebuggerParser.g_sDebuggerFilesExt.ToLower OrElse Not sFile.ToLower.EndsWith(ClassDebuggerParser.ClassRunnerEngine.g_sDebuggerRunnerPingExt.ToLower)) Then
+            If (sFileExt.ToLower <> ClassDebuggerTools.g_sDebuggerFilesExt.ToLower OrElse Not sFile.ToLower.EndsWith(ClassDebuggerTools.ClassRunnerEngine.g_sDebuggerRunnerPingExt.ToLower)) Then
                 Return
             End If
 
 
-            Dim sGUID As String = IO.Path.GetFileName(sFile).ToLower.Replace(ClassDebuggerParser.ClassRunnerEngine.g_sDebuggerRunnerPingExt.ToLower, "")
+            Dim sGUID As String = IO.Path.GetFileName(sFile).ToLower.Replace(ClassDebuggerTools.ClassRunnerEngine.g_sDebuggerRunnerPingExt.ToLower, "")
             If (String.IsNullOrEmpty(sGUID) OrElse sGUID.Trim.Length = 0) Then
                 Return
             End If
@@ -1727,7 +1721,7 @@ Public Class ClassDebuggerRunner
 
                 Dim sSMXFileName As String = IO.Path.GetFileName(g_sLatestDebuggerPlugin)
 
-                Dim smExceptions = g_mFormDebugger.g_ClassDebuggerParser.ReadSourceModLogExceptions(sLines)
+                Dim smExceptions = ClassDebuggerTools.ClassDebuggerHelpers.ReadSourceModLogExceptions(sLines)
                 Dim i As Integer
                 For i = smExceptions.Length - 1 To 0 Step -1
                     Dim sBlameFile As String = smExceptions(i).sBlamingFile

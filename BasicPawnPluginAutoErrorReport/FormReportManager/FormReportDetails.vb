@@ -21,9 +21,9 @@ Imports ICSharpCode.TextEditor
 
 Public Class FormReportDetails
     Public g_mFormReportManager As FormReportManager
-    Public g_mException As ClassDebuggerParser.STRUC_SM_EXCEPTION
+    Public g_mException As ClassDebuggerTools.STRUC_SM_EXCEPTION
 
-    Public Sub New(mFormReportManager As FormReportManager, mException As ClassDebuggerParser.STRUC_SM_EXCEPTION)
+    Public Sub New(mFormReportManager As FormReportManager, mException As ClassDebuggerTools.STRUC_SM_EXCEPTION)
         g_mFormReportManager = mFormReportManager
         g_mException = mException
 

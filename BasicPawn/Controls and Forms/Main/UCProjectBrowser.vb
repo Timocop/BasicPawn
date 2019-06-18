@@ -37,7 +37,7 @@ Public Class UCProjectBrowser
         Private g_sProjectFile As String = ""
         Private g_bProjectChanged As Boolean = False
 
-        Public Shared g_sProjectExtension As String = ".bpproj"
+        Public Shared ReadOnly g_sProjectExtension As String = ".bpproj"
 
         Structure STRUC_PROJECT_FILE_INFO
             Dim sGUID As String

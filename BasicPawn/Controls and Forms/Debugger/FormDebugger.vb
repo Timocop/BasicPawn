@@ -19,8 +19,9 @@
 Public Class FormDebugger
     Public g_mFormMain As FormMain
 
-    Public g_ClassDebuggerParser As ClassDebuggerParser
-    Public g_ClassDebuggerRunnerEngine As ClassDebuggerParser.ClassRunnerEngine
+    Public g_ClassDebuggerParser As ClassDebuggerTools
+    Public g_ClassDebuggerEntries As ClassDebuggerTools.ClassDebuggerEntries
+    Public g_ClassDebuggerRunnerEngine As ClassDebuggerTools.ClassRunnerEngine
     Public g_ClassDebuggerRunner As ClassDebuggerRunner
 
     Public g_sLastPreProcessSourceFile As String = ""
@@ -51,8 +52,9 @@ Public Class FormDebugger
         ToolStripStatusLabel_NoConnection.Name &= "@KeepBackColor"
         StatusStrip_BPDebugger.Name &= "@NoCustomRenderer"
 
-        g_ClassDebuggerParser = New ClassDebuggerParser(g_mFormMain)
-        g_ClassDebuggerRunnerEngine = New ClassDebuggerParser.ClassRunnerEngine
+        g_ClassDebuggerParser = New ClassDebuggerTools(Me)
+        g_ClassDebuggerEntries = New ClassDebuggerTools.ClassDebuggerEntries
+        g_ClassDebuggerRunnerEngine = New ClassDebuggerTools.ClassRunnerEngine
         g_ClassDebuggerRunner = New ClassDebuggerRunner(Me, sDebugTabIdentifier)
 
         TextEditorControlEx_DebuggerSource.IsReadOnly = True
@@ -189,9 +191,9 @@ Public Class FormDebugger
                 g_ClassDebuggerRunner.g_ClassPreProcess.FixPreProcessFiles(sPreSource)
                 g_ClassDebuggerRunner.g_ClassPreProcess.FixPreProcessFilePaths(sPreSource, g_sLastPreProcessSourceFile, If(String.IsNullOrEmpty(g_ClassDebuggerRunner.m_CurrentSourceFile), "Unnamed", g_ClassDebuggerRunner.m_CurrentSourceFile))
                 g_ClassDebuggerRunner.g_ClassPreProcess.AnalysisSourceLines(sPreSource)
-                g_ClassDebuggerParser.UpdateBreakpoints(sPreSource, False, g_iLanguage)
-                g_ClassDebuggerParser.UpdateWatchers(sPreSource, False, g_iLanguage)
-                g_ClassDebuggerParser.UpdateAsserts(sPreSource, False, g_iLanguage)
+                g_ClassDebuggerEntries.UpdateBreakpoints(sPreSource, False, g_iLanguage)
+                g_ClassDebuggerEntries.UpdateWatchers(sPreSource, False, g_iLanguage)
+                g_ClassDebuggerEntries.UpdateAsserts(sPreSource, False, g_iLanguage)
 
 
                 mFormProgress.m_Progress = 40
@@ -199,9 +201,8 @@ Public Class FormDebugger
 
                 'Create DIASM code
                 Dim sAsmLstSource As String = sPreSource
-                With New ClassDebuggerParser(g_mFormMain)
-                    .CleanupDebugPlaceholder(sAsmLstSource, g_iLanguage)
-                End With
+
+                ClassDebuggerTools.ClassDebuggerHelpers.CleanupDebugPlaceholder(sAsmLstSource, g_iLanguage)
 
                 iCompilerType = ClassTextEditorTools.ENUM_COMPILER_TYPE.UNKNOWN
                 sCompilerOutput = ""
@@ -258,7 +259,7 @@ Public Class FormDebugger
                     ListView_Breakpoints.BeginUpdate()
                     ListView_Breakpoints.Items.Clear()
 
-                    For Each mBreakpointItem In g_ClassDebuggerParser.g_lBreakpointList
+                    For Each mBreakpointItem In g_ClassDebuggerEntries.g_lBreakpointList
                         Dim mListViewItemData As New ClassListViewItemData(New String() {mBreakpointItem.iLine.ToString, mBreakpointItem.sArguments, ""})
                         mListViewItemData.g_mData("GUID") = mBreakpointItem.sGUID
 
@@ -278,7 +279,7 @@ Public Class FormDebugger
                     ListView_Watchers.BeginUpdate()
                     ListView_Watchers.Items.Clear()
 
-                    For Each mWatcherItem In g_ClassDebuggerParser.g_lWatcherList
+                    For Each mWatcherItem In g_ClassDebuggerEntries.g_lWatcherList
                         Dim mListViewItemData As New ClassListViewItemData(New String() {mWatcherItem.iLine.ToString, mWatcherItem.sArguments, "", "0"})
                         mListViewItemData.g_mData("GUID") = mWatcherItem.sGUID
 
@@ -296,7 +297,7 @@ Public Class FormDebugger
                     ListView_Asserts.BeginUpdate()
                     ListView_Asserts.Items.Clear()
 
-                    For Each mAssertItem In g_ClassDebuggerParser.g_lAssertList
+                    For Each mAssertItem In g_ClassDebuggerEntries.g_lAssertList
                         Dim mListViewItemData As New ClassListViewItemData(New String() {mAssertItem.iLine.ToString, mAssertItem.sArguments, "", ""})
                         mListViewItemData.g_mData("GUID") = mAssertItem.sGUID
 
@@ -441,7 +442,7 @@ Public Class FormDebugger
 
             Dim sGUID As String = CStr(mListViewItemData.g_mData("GUID"))
 
-            For Each mItem In g_ClassDebuggerParser.g_lBreakpointList
+            For Each mItem In g_ClassDebuggerEntries.g_lBreakpointList
                 If (mItem.sGUID <> sGUID) Then
                     Continue For
                 End If
@@ -479,7 +480,7 @@ Public Class FormDebugger
 
             Dim sGUID As String = CStr(mListViewItemData.g_mData("GUID"))
 
-            For Each item In g_ClassDebuggerParser.g_lWatcherList
+            For Each item In g_ClassDebuggerEntries.g_lWatcherList
                 If (item.sGUID <> sGUID) Then
                     Continue For
                 End If
@@ -517,7 +518,7 @@ Public Class FormDebugger
 
             Dim sGUID As String = CStr(mListViewItemData.g_mData("GUID"))
 
-            For Each item In g_ClassDebuggerParser.g_lAssertList
+            For Each item In g_ClassDebuggerEntries.g_lAssertList
                 If (item.sGUID <> sGUID) Then
                     Continue For
                 End If
@@ -568,7 +569,7 @@ Public Class FormDebugger
                         Continue For
                     End If
 
-                    If (IO.Path.GetExtension(sFile).ToLower <> ClassDebuggerParser.g_sDebuggerFilesExt.ToLower) Then
+                    If (IO.Path.GetExtension(sFile).ToLower <> ClassDebuggerTools.g_sDebuggerFilesExt.ToLower) Then
                         Continue For
                     End If
 
@@ -590,7 +591,7 @@ Public Class FormDebugger
                             Continue For
                         End If
 
-                        If (IO.Path.GetExtension(sFile).ToLower <> ClassDebuggerParser.g_sDebuggerFilesExt.ToLower) Then
+                        If (IO.Path.GetExtension(sFile).ToLower <> ClassDebuggerTools.g_sDebuggerFilesExt.ToLower) Then
                             Continue For
                         End If
 
@@ -788,7 +789,7 @@ Public Class FormDebugger
 
         'Mark breakpoints
         If (True) Then
-            For Each info In g_ClassDebuggerParser.g_lBreakpointList
+            For Each info In g_ClassDebuggerEntries.g_lBreakpointList
                 Dim iOffset As Integer = info.iOffset
                 Dim iLength As Integer = info.iLength
                 Dim sGUID As String = info.sGUID
@@ -826,7 +827,7 @@ Public Class FormDebugger
 
         'Mark watchers
         If (True) Then
-            For Each info In g_ClassDebuggerParser.g_lWatcherList
+            For Each info In g_ClassDebuggerEntries.g_lWatcherList
                 Dim iOffset As Integer = info.iOffset
                 Dim iLength As Integer = info.iLength
                 Dim sGUID As String = info.sGUID
@@ -864,7 +865,7 @@ Public Class FormDebugger
 
         'Mark asserts
         If (True) Then
-            For Each info In g_ClassDebuggerParser.g_lAssertList
+            For Each info In g_ClassDebuggerEntries.g_lAssertList
                 Dim iOffset As Integer = info.iOffset
                 Dim iLength As Integer = info.iLength
                 Dim sGUID As String = info.sGUID

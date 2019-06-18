@@ -24,13 +24,13 @@ Public Class ClassSyntaxTools
     Private g_mFormMain As FormMain
 
     Public g_ClassSyntaxHighlighting As ClassSyntaxHighlighting
+    Public g_mSyntaxProvider As ClassSyntaxHighlighting.ClassBinarySyntaxModeFileProvider
 
     Public Shared g_sHighlightWord As String = ""
     Public Shared g_sCaretWord As String = ""
 
-    Public Shared g_sSyntaxXML As String = My.Resources.SourcePawn_Syntax
-    Public Shared g_sSyntaxDarkXML As String = My.Resources.SourcePawn_SyntaxDark
-    Public Shared g_mSyntaxProvider As ClassSyntaxHighlighting.ClassBinarySyntaxModeFileProvider
+    Public Shared ReadOnly g_sSyntaxXML As String = My.Resources.SourcePawn_Syntax
+    Public Shared ReadOnly g_sSyntaxDarkXML As String = My.Resources.SourcePawn_SyntaxDark
 
     Public Shared ReadOnly g_sSyntaxHighlightCaretMarker As String = "<!-- [DO NOT EDIT | HIGHLIGHT CARET MARKER] -->"
     Public Shared ReadOnly g_sSyntaxHighlightWordMarker As String = "<!-- [DO NOT EDIT | HIGHLIGHT WORD MARKER] -->"
@@ -311,376 +311,6 @@ Public Class ClassSyntaxTools
 
         g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnFormColorUpdate())
     End Sub
-
-    ''' <summary>
-    ''' Gets the expression between characters e.g if "()": MyFunc(MyArgs) => MyArgs
-    ''' </summary>
-    ''' <param name="sExpression"></param>
-    ''' <param name="sCharOpen"></param>
-    ''' <param name="sCharClose"></param>
-    ''' <param name="iTargetEndScopeLevel"></param>
-    ''' <param name="bInvalidCodeCheck">If true, it will ignore preprocessor directives and all non-code like strings, comments etc.</param>
-    ''' <returns></returns>
-    Public Function GetExpressionBetweenCharacters(sExpression As String, sCharOpen As Char, sCharClose As Char, iTargetEndScopeLevel As Integer, iLanguage As ENUM_LANGUAGE_TYPE, Optional bInvalidCodeCheck As Boolean = False) As Integer()()
-        Dim iCurrentLevel As Integer = 0
-        Dim sExpressionsList As New List(Of Integer())
-        Dim bWasOpen As Boolean = False
-
-        Dim iStartLoc As Integer = 0
-
-        Dim mSourceAnalysis As ClassSyntaxSourceAnalysis = Nothing
-        If (bInvalidCodeCheck) Then
-            mSourceAnalysis = New ClassSyntaxSourceAnalysis(sExpression, iLanguage)
-        End If
-
-        For i = 0 To sExpression.Length - 1
-            If (mSourceAnalysis IsNot Nothing AndAlso bInvalidCodeCheck) Then
-                If (mSourceAnalysis.m_InNonCode(i)) Then
-                    Continue For
-                End If
-
-                'Ignore possible malformed preprocessor directives.
-                If (mSourceAnalysis.m_InPreprocessor(i)) Then
-                    Continue For
-                End If
-            End If
-
-            If (sExpression(i) = sCharOpen) Then
-                iCurrentLevel += 1
-            End If
-
-            If (Not bWasOpen AndAlso iCurrentLevel >= iTargetEndScopeLevel) Then
-                iStartLoc = i
-                bWasOpen = True
-            End If
-
-            If (sExpression(i) = sCharClose) Then
-                iCurrentLevel -= 1
-                If (iCurrentLevel <= 0) Then
-                    iCurrentLevel = 0
-                End If
-            End If
-
-            If (bWasOpen AndAlso iCurrentLevel < iTargetEndScopeLevel) Then
-                sExpressionsList.Add({iStartLoc, i})
-                bWasOpen = False
-            End If
-        Next
-
-        Return sExpressionsList.ToArray
-    End Function
-
-    ''' <summary>
-    ''' Automatically indents the source.
-    ''' </summary>
-    ''' <param name="sSource"></param>
-    ''' <returns></returns>
-    Public Function FormatCodeIndentation(sSource As String, iIndentationType As ClassSettings.ENUM_INDENTATION_TYPES, iLanguage As ENUM_LANGUAGE_TYPE) As String
-        If (True) Then
-            Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iLanguage)
-            Dim mSourceBuilder As New StringBuilder(sSource)
-
-            'Trim, but skip comments
-            For i = mSourceBuilder.Length - 1 - 1 To 0 Step -1
-                Dim a As Byte
-                If (i = 0) Then
-                    a = 0
-                ElseIf (mSourceBuilder(i) = vbLf(0)) Then
-                    a = 1
-                Else
-                    Continue For
-                End If
-
-                If (mSourceAnalysis.m_InMultiComment(i) OrElse mSourceAnalysis.m_InSingleComment(i)) Then
-                    Continue For
-                End If
-
-                For j = i + a To mSourceBuilder.Length - 1
-                    If (mSourceAnalysis.m_InMultiComment(j) OrElse mSourceAnalysis.m_InSingleComment(j)) Then
-                        Exit For
-                    End If
-
-                    If (mSourceBuilder(j) = vbCr OrElse mSourceBuilder(j) = vbLf OrElse Not Char.IsWhiteSpace(mSourceBuilder(j))) Then
-                        mSourceBuilder = mSourceBuilder.Remove(i + a, j - (i + a))
-                        Exit For
-                    End If
-                Next
-            Next
-
-            sSource = mSourceBuilder.ToString
-        End If
-
-        If (True) Then
-            Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iLanguage)
-            Dim mSourceBuilder As New StringBuilder(sSource)
-
-            Dim iBraceCount As Integer = 0
-            Dim iBracedCount As Integer = 0
-
-            For i = mSourceBuilder.Length - 1 - 1 To 0 Step -1
-                Try
-                    Select Case (mSourceBuilder(i))
-                        Case "("c
-                            If (Not mSourceAnalysis.m_InNonCode(i)) Then
-                                iBracedCount -= 1
-                            End If
-
-                        Case ")"c
-                            If (Not mSourceAnalysis.m_InNonCode(i)) Then
-                                iBracedCount += 1
-                            End If
-
-                        Case "{"c
-                            If (Not mSourceAnalysis.m_InNonCode(i)) Then
-                                iBraceCount -= 1
-                            End If
-
-                        Case "}"c
-                            If (Not mSourceAnalysis.m_InNonCode(i)) Then
-                                iBraceCount += 1
-                            End If
-
-                        Case Else
-                            If (i = 0 OrElse mSourceBuilder(i) = vbLf(0)) Then
-                                Dim a As Byte
-                                If (i = 0) Then
-                                    a = 0
-                                Else
-                                    a = 1
-                                End If
-
-                                Dim bContinue As Boolean = False
-
-                                'Dont indent comments
-                                For j = i + a To mSourceBuilder.Length - 1
-                                    If (mSourceAnalysis.m_InMultiComment(j) OrElse mSourceAnalysis.m_InSingleComment(j)) Then
-                                        bContinue = True
-                                        Exit For
-                                    End If
-
-                                    If (mSourceBuilder(j) = vbCr OrElse mSourceBuilder(j) = vbLf OrElse Not Char.IsWhiteSpace(mSourceBuilder(j))) Then
-                                        Exit For
-                                    End If
-                                Next
-                                If (bContinue) Then
-                                    Continue For
-                                End If
-
-                                Dim iPreprocessorLevel As Integer = 0
-
-                                'Dont indent preprocessor. Only after escape-newline.
-                                For j = i + a To mSourceBuilder.Length - 1
-                                    If (mSourceAnalysis.m_InPreprocessor(j)) Then
-                                        If (mSourceBuilder(j) = "#"c) Then
-                                            bContinue = True
-                                            Exit For
-                                        End If
-
-                                        iPreprocessorLevel = 1
-                                        Exit For
-                                    End If
-
-                                    If (mSourceBuilder(j) = vbCr OrElse mSourceBuilder(j) = vbLf OrElse Not Char.IsWhiteSpace(mSourceBuilder(j))) Then
-                                        Exit For
-                                    End If
-                                Next
-                                If (bContinue) Then
-                                    Continue For
-                                End If
-
-                                'Finish up
-                                Dim iBraceRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
-                                Dim iBraceLevel As Integer = mSourceAnalysis.GetBraceLevel(i + 1 + iBraceCount, iBraceRange)
-                                Select Case (iBraceRange)
-                                    Case ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.START, ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END
-                                        iBraceLevel -= 1
-                                End Select
-
-                                'Add indentation 
-                                Dim iIndentLength As Integer = iBraceLevel
-
-                                If (iBracedCount > 0) Then
-                                    iIndentLength += (iBracedCount + 1)
-                                End If
-
-                                If (iPreprocessorLevel > 0) Then
-                                    iIndentLength = 1
-                                End If
-
-                                If (iIndentLength < 0) Then
-                                    iIndentLength = 0
-                                End If
-
-                                mSourceBuilder = mSourceBuilder.Insert(i + 1, ClassSettings.BuildIndentation(iIndentLength, iIndentationType))
-
-                                iBraceCount = 0
-                            End If
-
-                    End Select
-                Catch ex As Exception
-                    ' Ignore random errors
-                End Try
-            Next
-
-            sSource = mSourceBuilder.ToString
-        End If
-
-        Return sSource
-    End Function
-
-    ''' <summary>
-    ''' Trims all ending whitespace from the source.
-    ''' </summary>
-    ''' <param name="sSource"></param>
-    ''' <returns></returns>
-    Public Function FormatCodeTrimEnd(sSource As String) As String
-        Dim mSourceBuilder As New StringBuilder
-
-        Using mSR As New IO.StringReader(sSource)
-            While True
-                Dim sLine As String = mSR.ReadLine
-                If (sLine Is Nothing) Then
-                    Exit While
-                End If
-
-                mSourceBuilder.AppendLine(sLine.TrimEnd)
-            End While
-        End Using
-
-        Return mSourceBuilder.ToString
-    End Function
-
-    ''' <summary>
-    ''' Converts tabs to spaces or mirrored.
-    ''' </summary>
-    ''' <param name="sSource"></param>
-    ''' <param name="iIndentationType"></param>
-    ''' <param name="iLength"></param>
-    ''' <returns></returns>
-    Public Function FormatCodeConvert(sSource As String, iIndentationType As ClassSettings.ENUM_INDENTATION_TYPES, iLength As Integer) As String
-        Dim mSourceBuilder As New StringBuilder
-
-        Using mSR As New IO.StringReader(sSource)
-            While True
-                Dim sLine As String = mSR.ReadLine
-                If (sLine Is Nothing) Then
-                    Exit While
-                End If
-
-                If (iLength < 1) Then
-                    iLength = 4
-                End If
-
-                Select Case (iIndentationType)
-                    Case ClassSettings.ENUM_INDENTATION_TYPES.USE_SETTINGS
-                        If (ClassSettings.g_iSettingsTabsToSpaces > 0) Then
-                            sLine = sLine.Replace(vbTab, New String(" "c, ClassSettings.g_iSettingsTabsToSpaces))
-                        Else
-                            sLine = sLine.Replace(New String(" "c, 4), vbTab)
-                        End If
-
-                    Case ClassSettings.ENUM_INDENTATION_TYPES.TABS
-                        sLine = sLine.Replace(New String(" "c, iLength), vbTab)
-
-                    Case ClassSettings.ENUM_INDENTATION_TYPES.SPACES
-                        sLine = sLine.Replace(vbTab, New String(" "c, iLength))
-
-                    Case Else
-                        Throw New ArgumentException("Invalid indentation type")
-
-                End Select
-
-                mSourceBuilder.AppendLine(sLine)
-            End While
-        End Using
-
-        Return mSourceBuilder.ToString
-    End Function
-
-    ''' <summary>
-    ''' Checks if the source requires new decls and returns the offset.
-    ''' NOTE: High false positive rate.
-    ''' Returns -1 if not found.
-    ''' </summary>
-    ''' <param name="sSource"></param>
-    ''' <param name="bIgnoreChecks"></param>
-    ''' <returns>The offset in the source, -1 if not found.</returns>
-    Public Function HasNewDeclsPragma(sSource As String, iLanguage As ENUM_LANGUAGE_TYPE, Optional bIgnoreChecks As Boolean = True) As Integer
-        'TODO: Add better check
-        Dim sRegexPattern As String = "\#\b(pragma)\b(\s+|\s*(\\*)\s*)\b(newdecls)\b(\s+|\s*(\\*)\s*)\b(required)\b"
-
-        If (bIgnoreChecks) Then
-            For Each match As Match In Regex.Matches(sSource, sRegexPattern, RegexOptions.Multiline)
-                Return match.Index
-            Next
-        Else
-            Dim mSourceAnalysis As New ClassSyntaxSourceAnalysis(sSource, iLanguage)
-            For Each match As Match In Regex.Matches(sSource, sRegexPattern, RegexOptions.Multiline)
-                If (mSourceAnalysis.m_InNonCode(match.Index)) Then
-                    Continue For
-                End If
-
-                Return match.Index
-            Next
-        End If
-
-        Return -1
-    End Function
-
-    ''' <summary>
-    ''' Checks if the name is a forbidden name.
-    ''' </summary>
-    ''' <param name="sName"></param>
-    ''' <returns></returns>
-    Public Function IsForbiddenVariableName(sName As String) As Boolean
-        Static sBadNames As String() = New String() {
-                "const",
-                "static",
-                "new",
-                "decl",
-                "if",
-                "for",
-                "else",
-                "case",
-                "switch",
-                "default",
-                "while",
-                "do",
-                "enum",
- _
-                "stock",
-                "public",
-                "private",
-                "forward",
-                "native",
-                "funcenum",
-                "functag",
- _
-                "methodmap",
-                "property",
-                "this",
-                "typeset",
-                "function",
-                "typedef",
-                "using",
- _
-                "break",
-                "continue",
-                "goto",
-                "return",
- _
-                "true",
-                "false",
-                "null",
- _
-                "delete",
-                "sizeof",
-                "typeof",
-                "view_as"
-            }
-
-        Return Array.Exists(sBadNames, Function(s As String) s = sName)
-    End Function
 
     Public Class ClassSyntaxSourceAnalysis
         Enum ENUM_STATE_TYPES
@@ -1576,5 +1206,378 @@ Public Class ClassSyntaxTools
                 Throw New ArgumentException("Syntax mode does not exist. Expected: " & mSyntaxMode.Name)
             End Function
         End Class
+    End Class
+
+    Class ClassSyntaxHelpers
+        ''' <summary>
+        ''' Gets the expression between characters e.g if "()": MyFunc(MyArgs) => MyArgs
+        ''' </summary>
+        ''' <param name="sExpression"></param>
+        ''' <param name="sCharOpen"></param>
+        ''' <param name="sCharClose"></param>
+        ''' <param name="iTargetEndScopeLevel"></param>
+        ''' <param name="bInvalidCodeCheck">If true, it will ignore preprocessor directives and all non-code like strings, comments etc.</param>
+        ''' <returns></returns>
+        Public Shared Function GetExpressionBetweenCharacters(sExpression As String, sCharOpen As Char, sCharClose As Char, iTargetEndScopeLevel As Integer, iLanguage As ENUM_LANGUAGE_TYPE, Optional bInvalidCodeCheck As Boolean = False) As Integer()()
+            Dim iCurrentLevel As Integer = 0
+            Dim sExpressionsList As New List(Of Integer())
+            Dim bWasOpen As Boolean = False
+
+            Dim iStartLoc As Integer = 0
+
+            Dim mSourceAnalysis As ClassSyntaxSourceAnalysis = Nothing
+            If (bInvalidCodeCheck) Then
+                mSourceAnalysis = New ClassSyntaxSourceAnalysis(sExpression, iLanguage)
+            End If
+
+            For i = 0 To sExpression.Length - 1
+                If (mSourceAnalysis IsNot Nothing AndAlso bInvalidCodeCheck) Then
+                    If (mSourceAnalysis.m_InNonCode(i)) Then
+                        Continue For
+                    End If
+
+                    'Ignore possible malformed preprocessor directives.
+                    If (mSourceAnalysis.m_InPreprocessor(i)) Then
+                        Continue For
+                    End If
+                End If
+
+                If (sExpression(i) = sCharOpen) Then
+                    iCurrentLevel += 1
+                End If
+
+                If (Not bWasOpen AndAlso iCurrentLevel >= iTargetEndScopeLevel) Then
+                    iStartLoc = i
+                    bWasOpen = True
+                End If
+
+                If (sExpression(i) = sCharClose) Then
+                    iCurrentLevel -= 1
+                    If (iCurrentLevel <= 0) Then
+                        iCurrentLevel = 0
+                    End If
+                End If
+
+                If (bWasOpen AndAlso iCurrentLevel < iTargetEndScopeLevel) Then
+                    sExpressionsList.Add({iStartLoc, i})
+                    bWasOpen = False
+                End If
+            Next
+
+            Return sExpressionsList.ToArray
+        End Function
+
+        ''' <summary>
+        ''' Automatically indents the source.
+        ''' </summary>
+        ''' <param name="sSource"></param>
+        ''' <returns></returns>
+        Public Shared Function FormatCodeIndentation(sSource As String, iIndentationType As ClassSettings.ENUM_INDENTATION_TYPES, iLanguage As ENUM_LANGUAGE_TYPE) As String
+            If (True) Then
+                Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iLanguage)
+                Dim mSourceBuilder As New StringBuilder(sSource)
+
+                'Trim, but skip comments
+                For i = mSourceBuilder.Length - 1 - 1 To 0 Step -1
+                    Dim a As Byte
+                    If (i = 0) Then
+                        a = 0
+                    ElseIf (mSourceBuilder(i) = vbLf(0)) Then
+                        a = 1
+                    Else
+                        Continue For
+                    End If
+
+                    If (mSourceAnalysis.m_InMultiComment(i) OrElse mSourceAnalysis.m_InSingleComment(i)) Then
+                        Continue For
+                    End If
+
+                    For j = i + a To mSourceBuilder.Length - 1
+                        If (mSourceAnalysis.m_InMultiComment(j) OrElse mSourceAnalysis.m_InSingleComment(j)) Then
+                            Exit For
+                        End If
+
+                        If (mSourceBuilder(j) = vbCr OrElse mSourceBuilder(j) = vbLf OrElse Not Char.IsWhiteSpace(mSourceBuilder(j))) Then
+                            mSourceBuilder = mSourceBuilder.Remove(i + a, j - (i + a))
+                            Exit For
+                        End If
+                    Next
+                Next
+
+                sSource = mSourceBuilder.ToString
+            End If
+
+            If (True) Then
+                Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iLanguage)
+                Dim mSourceBuilder As New StringBuilder(sSource)
+
+                Dim iBraceCount As Integer = 0
+                Dim iBracedCount As Integer = 0
+
+                For i = mSourceBuilder.Length - 1 - 1 To 0 Step -1
+                    Try
+                        Select Case (mSourceBuilder(i))
+                            Case "("c
+                                If (Not mSourceAnalysis.m_InNonCode(i)) Then
+                                    iBracedCount -= 1
+                                End If
+
+                            Case ")"c
+                                If (Not mSourceAnalysis.m_InNonCode(i)) Then
+                                    iBracedCount += 1
+                                End If
+
+                            Case "{"c
+                                If (Not mSourceAnalysis.m_InNonCode(i)) Then
+                                    iBraceCount -= 1
+                                End If
+
+                            Case "}"c
+                                If (Not mSourceAnalysis.m_InNonCode(i)) Then
+                                    iBraceCount += 1
+                                End If
+
+                            Case Else
+                                If (i = 0 OrElse mSourceBuilder(i) = vbLf(0)) Then
+                                    Dim a As Byte
+                                    If (i = 0) Then
+                                        a = 0
+                                    Else
+                                        a = 1
+                                    End If
+
+                                    Dim bContinue As Boolean = False
+
+                                    'Dont indent comments
+                                    For j = i + a To mSourceBuilder.Length - 1
+                                        If (mSourceAnalysis.m_InMultiComment(j) OrElse mSourceAnalysis.m_InSingleComment(j)) Then
+                                            bContinue = True
+                                            Exit For
+                                        End If
+
+                                        If (mSourceBuilder(j) = vbCr OrElse mSourceBuilder(j) = vbLf OrElse Not Char.IsWhiteSpace(mSourceBuilder(j))) Then
+                                            Exit For
+                                        End If
+                                    Next
+                                    If (bContinue) Then
+                                        Continue For
+                                    End If
+
+                                    Dim iPreprocessorLevel As Integer = 0
+
+                                    'Dont indent preprocessor. Only after escape-newline.
+                                    For j = i + a To mSourceBuilder.Length - 1
+                                        If (mSourceAnalysis.m_InPreprocessor(j)) Then
+                                            If (mSourceBuilder(j) = "#"c) Then
+                                                bContinue = True
+                                                Exit For
+                                            End If
+
+                                            iPreprocessorLevel = 1
+                                            Exit For
+                                        End If
+
+                                        If (mSourceBuilder(j) = vbCr OrElse mSourceBuilder(j) = vbLf OrElse Not Char.IsWhiteSpace(mSourceBuilder(j))) Then
+                                            Exit For
+                                        End If
+                                    Next
+                                    If (bContinue) Then
+                                        Continue For
+                                    End If
+
+                                    'Finish up
+                                    Dim iBraceRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
+                                    Dim iBraceLevel As Integer = mSourceAnalysis.GetBraceLevel(i + 1 + iBraceCount, iBraceRange)
+                                    Select Case (iBraceRange)
+                                        Case ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.START, ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END
+                                            iBraceLevel -= 1
+                                    End Select
+
+                                    'Add indentation 
+                                    Dim iIndentLength As Integer = iBraceLevel
+
+                                    If (iBracedCount > 0) Then
+                                        iIndentLength += (iBracedCount + 1)
+                                    End If
+
+                                    If (iPreprocessorLevel > 0) Then
+                                        iIndentLength = 1
+                                    End If
+
+                                    If (iIndentLength < 0) Then
+                                        iIndentLength = 0
+                                    End If
+
+                                    mSourceBuilder = mSourceBuilder.Insert(i + 1, ClassSettings.BuildIndentation(iIndentLength, iIndentationType))
+
+                                    iBraceCount = 0
+                                End If
+
+                        End Select
+                    Catch ex As Exception
+                        ' Ignore random errors
+                    End Try
+                Next
+
+                sSource = mSourceBuilder.ToString
+            End If
+
+            Return sSource
+        End Function
+
+        ''' <summary>
+        ''' Trims all ending whitespace from the source.
+        ''' </summary>
+        ''' <param name="sSource"></param>
+        ''' <returns></returns>
+        Public Shared Function FormatCodeTrimEnd(sSource As String) As String
+            Dim mSourceBuilder As New StringBuilder
+
+            Using mSR As New IO.StringReader(sSource)
+                While True
+                    Dim sLine As String = mSR.ReadLine
+                    If (sLine Is Nothing) Then
+                        Exit While
+                    End If
+
+                    mSourceBuilder.AppendLine(sLine.TrimEnd)
+                End While
+            End Using
+
+            Return mSourceBuilder.ToString
+        End Function
+
+        ''' <summary>
+        ''' Converts tabs to spaces or mirrored.
+        ''' </summary>
+        ''' <param name="sSource"></param>
+        ''' <param name="iIndentationType"></param>
+        ''' <param name="iLength"></param>
+        ''' <returns></returns>
+        Public Shared Function FormatCodeConvert(sSource As String, iIndentationType As ClassSettings.ENUM_INDENTATION_TYPES, iLength As Integer) As String
+            Dim mSourceBuilder As New StringBuilder
+
+            Using mSR As New IO.StringReader(sSource)
+                While True
+                    Dim sLine As String = mSR.ReadLine
+                    If (sLine Is Nothing) Then
+                        Exit While
+                    End If
+
+                    If (iLength < 1) Then
+                        iLength = 4
+                    End If
+
+                    Select Case (iIndentationType)
+                        Case ClassSettings.ENUM_INDENTATION_TYPES.USE_SETTINGS
+                            If (ClassSettings.g_iSettingsTabsToSpaces > 0) Then
+                                sLine = sLine.Replace(vbTab, New String(" "c, ClassSettings.g_iSettingsTabsToSpaces))
+                            Else
+                                sLine = sLine.Replace(New String(" "c, 4), vbTab)
+                            End If
+
+                        Case ClassSettings.ENUM_INDENTATION_TYPES.TABS
+                            sLine = sLine.Replace(New String(" "c, iLength), vbTab)
+
+                        Case ClassSettings.ENUM_INDENTATION_TYPES.SPACES
+                            sLine = sLine.Replace(vbTab, New String(" "c, iLength))
+
+                        Case Else
+                            Throw New ArgumentException("Invalid indentation type")
+
+                    End Select
+
+                    mSourceBuilder.AppendLine(sLine)
+                End While
+            End Using
+
+            Return mSourceBuilder.ToString
+        End Function
+
+        ''' <summary>
+        ''' Checks if the source requires new decls and returns the offset.
+        ''' NOTE: High false positive rate.
+        ''' Returns -1 if not found.
+        ''' </summary>
+        ''' <param name="sSource"></param>
+        ''' <param name="bIgnoreChecks"></param>
+        ''' <returns>The offset in the source, -1 if not found.</returns>
+        Public Shared Function HasNewDeclsPragma(sSource As String, iLanguage As ENUM_LANGUAGE_TYPE, Optional bIgnoreChecks As Boolean = True) As Integer
+            'TODO: Add better check
+            Dim sRegexPattern As String = "\#\b(pragma)\b(\s+|\s*(\\*)\s*)\b(newdecls)\b(\s+|\s*(\\*)\s*)\b(required)\b"
+
+            If (bIgnoreChecks) Then
+                For Each match As Match In Regex.Matches(sSource, sRegexPattern, RegexOptions.Multiline)
+                    Return match.Index
+                Next
+            Else
+                Dim mSourceAnalysis As New ClassSyntaxSourceAnalysis(sSource, iLanguage)
+                For Each match As Match In Regex.Matches(sSource, sRegexPattern, RegexOptions.Multiline)
+                    If (mSourceAnalysis.m_InNonCode(match.Index)) Then
+                        Continue For
+                    End If
+
+                    Return match.Index
+                Next
+            End If
+
+            Return -1
+        End Function
+
+        ''' <summary>
+        ''' Checks if the name is a forbidden name.
+        ''' </summary>
+        ''' <param name="sName"></param>
+        ''' <returns></returns>
+        Public Shared Function IsForbiddenVariableName(sName As String) As Boolean
+            Static sBadNames As String() = New String() {
+                "const",
+                "static",
+                "new",
+                "decl",
+                "if",
+                "for",
+                "else",
+                "case",
+                "switch",
+                "default",
+                "while",
+                "do",
+                "enum",
+ _
+                "stock",
+                "public",
+                "private",
+                "forward",
+                "native",
+                "funcenum",
+                "functag",
+ _
+                "methodmap",
+                "property",
+                "this",
+                "typeset",
+                "function",
+                "typedef",
+                "using",
+ _
+                "break",
+                "continue",
+                "goto",
+                "return",
+ _
+                "true",
+                "false",
+                "null",
+ _
+                "delete",
+                "sizeof",
+                "typeof",
+                "view_as"
+            }
+
+            Return Array.Exists(sBadNames, Function(s As String) s = sName)
+        End Function
+
     End Class
 End Class

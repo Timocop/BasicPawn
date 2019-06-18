@@ -69,56 +69,38 @@ Partial Public Class FormMain
     End Sub
 
     Private Sub ToolStripMenuItem_DebuggerBreakpointInsert_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_DebuggerBreakpointInsert.Click
-        With New ClassDebuggerParser.ClassBreakpoints(Me)
-            .TextEditorInsertAtCaret()
-        End With
+        Call (New ClassDebuggerTools.ClassDebuggerEntries.ClassBreakpointEntry).TextEditorInsertAtCaret(Me)
     End Sub
 
     Private Sub ToolStripMenuItem_DebuggerBreakpointRemove_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_DebuggerBreakpointRemove.Click
-        With New ClassDebuggerParser.ClassBreakpoints(Me)
-            .TextEditorRemoveAtCaret()
-        End With
+        Call (New ClassDebuggerTools.ClassDebuggerEntries.ClassBreakpointEntry).TextEditorRemoveAtCaret(Me)
     End Sub
 
     Private Sub ToolStripMenuItem_DebuggerBreakpointRemoveAll_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_DebuggerBreakpointRemoveAll.Click
-        With New ClassDebuggerParser.ClassBreakpoints(Me)
-            .TextEditorRemoveAll()
-        End With
+        Call (New ClassDebuggerTools.ClassDebuggerEntries.ClassBreakpointEntry).TextEditorRemoveAll(Me)
     End Sub
 
     Private Sub ToolStripMenuItem_DebuggerWatcherInsert_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_DebuggerWatcherInsert.Click
-        With New ClassDebuggerParser.ClassWatchers(Me)
-            .TextEditorInsertAtCaret()
-        End With
+        Call (New ClassDebuggerTools.ClassDebuggerEntries.ClassWatcherEntry).TextEditorInsertAtCaret(Me)
     End Sub
 
     Private Sub ToolStripMenuItem_DebuggerWatcherRemove_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_DebuggerWatcherRemove.Click
-        With New ClassDebuggerParser.ClassWatchers(Me)
-            .TextEditorRemoveAtCaret()
-        End With
+        Call (New ClassDebuggerTools.ClassDebuggerEntries.ClassWatcherEntry).TextEditorRemoveAtCaret(Me)
     End Sub
 
     Private Sub ToolStripMenuItem_DebuggerWatcherRemoveAll_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_DebuggerWatcherRemoveAll.Click
-        With New ClassDebuggerParser.ClassWatchers(Me)
-            .TextEditorRemoveAll()
-        End With
+        Call (New ClassDebuggerTools.ClassDebuggerEntries.ClassWatcherEntry).TextEditorRemoveAll(Me)
     End Sub
 
     Private Sub ToolStripMenuItem_DebuggerAssertInsert_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_DebuggerAssertInsert.Click
-        With New ClassDebuggerParser.ClassAsserts(Me)
-            .TextEditorInsertAtCaret()
-        End With
+        Call (New ClassDebuggerTools.ClassDebuggerEntries.ClassAssetEntry).TextEditorInsertAtCaret(Me)
     End Sub
 
     Private Sub ToolStripMenuItem_DebuggerAssertRemove_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_DebuggerAssertRemove.Click
-        With New ClassDebuggerParser.ClassAsserts(Me)
-            .TextEditorRemoveAtCaret()
-        End With
+        Call (New ClassDebuggerTools.ClassDebuggerEntries.ClassAssetEntry).TextEditorRemoveAtCaret(Me)
     End Sub
 
     Private Sub ToolStripMenuItem_DebuggerAssertRemoveAll_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_DebuggerAssertRemoveAll.Click
-        With New ClassDebuggerParser.ClassAsserts(Me)
-            .TextEditorRemoveAll()
-        End With
+        Call (New ClassDebuggerTools.ClassDebuggerEntries.ClassAssetEntry).TextEditorRemoveAll(Me)
     End Sub
 End Class

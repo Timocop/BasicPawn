@@ -249,7 +249,7 @@
     </Compile>
     <Compile Include="Controls and Forms\Debugger\Classes\ClassDebuggerRunner.vb" />
     <Compile Include="Controls and Forms\Main\Classes\ClassSyntaxParser.vb" />
-    <Compile Include="Controls and Forms\Main\Classes\ClassDebuggerParser.vb" />
+    <Compile Include="Controls and Forms\Debugger\Classes\ClassDebuggerTools.vb" />
     <Compile Include="Controls and Forms\Main\Classes\ClassSyntaxTools.vb" />
     <Compile Include="Controls and Forms\Main\Classes\ClassSyntaxUpdater.vb" />
     <Compile Include="Controls and Forms\Main\Classes\ClassTabControl.vb" />

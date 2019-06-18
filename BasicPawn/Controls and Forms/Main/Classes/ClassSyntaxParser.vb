@@ -384,7 +384,7 @@ Public Class ClassSyntaxParser
             End If
 
             'Add debugger placeholder variables and methods
-            lNewAutocompleteList.AddRange((New ClassDebuggerParser(g_mFormMain)).GetDebuggerAutocomplete)
+            lNewAutocompleteList.AddRange(ClassDebuggerTools.ClassDebuggerHelpers.GetDebuggerAutocomplete)
 
             'Add preprocessor stuff
             lNewAutocompleteList.AddRange(mParser.GetPreprocessorKeywords(lIncludeFilesFull.ToArray))
@@ -1576,7 +1576,7 @@ Public Class ClassSyntaxParser
                 If (mParseInfo.sSource.Contains("enum")) Then
 
                     Dim mPossibleEnumMatches As MatchCollection = Regex.Matches(mParseInfo.sSourceCode, "^\s*\b(enum)\b\s*((?<Tag>\b[a-zA-Z0-9_]+\b)(\:)(?<Name>\b[a-zA-Z0-9_]+\b)\s*(\(.*?\)){0,1}|(?<Name>\b[a-zA-Z0-9_]+\b)(\:){0,1}\s*(\(.*?\)){0,1}|\(.*?\)|)\s*(?<BraceStart>\{)", RegexOptions.Multiline)
-                    Dim iBraceList As Integer()() = mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(mParseInfo.sSourceCode, "{"c, "}"c, 1, mParseInfo.iLanguage, True)
+                    Dim iBraceList As Integer()() = ClassSyntaxTools.ClassSyntaxHelpers.GetExpressionBetweenCharacters(mParseInfo.sSourceCode, "{"c, "}"c, 1, mParseInfo.iLanguage, True)
 
 
                     Dim mMatch As Match
@@ -1900,7 +1900,7 @@ Public Class ClassSyntaxParser
 
                         Dim sArrayDim As String = ""
                         If (IsArray) Then
-                            iBracketList = mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(sOther, "["c, "]"c, 1, mParseInfo.iLanguage, True)
+                            iBracketList = ClassSyntaxTools.ClassSyntaxHelpers.GetExpressionBetweenCharacters(sOther, "["c, "]"c, 1, mParseInfo.iLanguage, True)
                             For j = 0 To iBracketList.Length - 1
                                 sArrayDim &= sOther.Substring(iBracketList(j)(0), iBracketList(j)(1) - iBracketList(j)(0) + 1)
                             Next
@@ -1943,7 +1943,7 @@ Public Class ClassSyntaxParser
                 If ((ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_6 OrElse ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_MIX) AndAlso
                             mParseInfo.sSource.Contains("funcenum")) Then
                     Dim mPossibleEnumMatches As MatchCollection = Regex.Matches(mParseInfo.sSource, "^\s*\b(funcenum)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)\s*(?<BraceStart>\{)", RegexOptions.Multiline)
-                    Dim iBraceList As Integer()() = mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(mParseInfo.sSource, "{"c, "}"c, 1, mParseInfo.iLanguage, True)
+                    Dim iBraceList As Integer()() = ClassSyntaxTools.ClassSyntaxHelpers.GetExpressionBetweenCharacters(mParseInfo.sSource, "{"c, "}"c, 1, mParseInfo.iLanguage, True)
 
                     Dim mMatch As Match
 
@@ -2142,7 +2142,7 @@ Public Class ClassSyntaxParser
                     Dim sRegExTypePattern As String = g_ClassParse.GetTypeNamesToPattern(mParseInfo.lNewAutocompleteList)
 
                     Dim mPossibleMethodmapMatches As MatchCollection = Regex.Matches(mParseInfo.sSource, "^\s*\b(typeset)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)\s*(?<BraceStart>\{)", RegexOptions.Multiline)
-                    Dim iBraceList As Integer()() = mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(mParseInfo.sSource, "{"c, "}"c, 1, mParseInfo.iLanguage, True)
+                    Dim iBraceList As Integer()() = ClassSyntaxTools.ClassSyntaxHelpers.GetExpressionBetweenCharacters(mParseInfo.sSource, "{"c, "}"c, 1, mParseInfo.iLanguage, True)
 
                     Dim mMatch As Match
 
@@ -2175,7 +2175,7 @@ Public Class ClassSyntaxParser
                         sName = mMatch.Groups("Name").Value
 
                         Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sMethodmapSource, mParseInfo.iLanguage)
-                        Dim iMethodmapBraceList As Integer()() = mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(sMethodmapSource, "("c, ")"c, 1, mParseInfo.iLanguage, True)
+                        Dim iMethodmapBraceList As Integer()() = ClassSyntaxTools.ClassSyntaxHelpers.GetExpressionBetweenCharacters(sMethodmapSource, "("c, ")"c, 1, mParseInfo.iLanguage, True)
 
                         Dim mMethodMatches As MatchCollection = Regex.Matches(sMethodmapSource, String.Format("^\s*(?<Type>\b(function)\b)\s+(?<Tag>\b({0})\b)\s*(?<BraceStart>\()", sRegExTypePattern), RegexOptions.Multiline)
 
@@ -2256,7 +2256,7 @@ Public Class ClassSyntaxParser
                     Dim sRegExTypePattern As String = g_ClassParse.GetTypeNamesToPattern(mParseInfo.lNewAutocompleteList)
 
                     Dim mPossibleMethodmapMatches As MatchCollection = Regex.Matches(mParseInfo.sSource, String.Format("^\s*\b(typedef)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)\s+=\s+\b(function)\b\s+(?<Tag>\b({0})\b)\s*(?<BraceStart>\()", sRegExTypePattern), RegexOptions.Multiline)
-                    Dim iBraceList As Integer()() = mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(mParseInfo.sSource, "("c, ")"c, 1, mParseInfo.iLanguage, True)
+                    Dim iBraceList As Integer()() = ClassSyntaxTools.ClassSyntaxHelpers.GetExpressionBetweenCharacters(mParseInfo.sSource, "("c, ")"c, 1, mParseInfo.iLanguage, True)
 
                     Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(mParseInfo.sSource, mParseInfo.iLanguage)
 
@@ -2395,7 +2395,7 @@ Public Class ClassSyntaxParser
                         Continue For
                     End If
 
-                    iBraceList = mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(sLines(i), "("c, ")"c, 1, mParseInfo.iLanguage, True)
+                    iBraceList = ClassSyntaxTools.ClassSyntaxHelpers.GetExpressionBetweenCharacters(sLines(i), "("c, ")"c, 1, mParseInfo.iLanguage, True)
                     If (iBraceList.Length < 1) Then
                         Continue For
                     End If
@@ -2431,7 +2431,7 @@ Public Class ClassSyntaxParser
                     sComment = ""
                     iTypes = ClassSyntaxTools.STRUC_AUTOCOMPLETE.ParseTypeNames(sTypes)
 
-                    If (mFormMain.g_ClassSyntaxTools.IsForbiddenVariableName(sName)) Then
+                    If (ClassSyntaxTools.ClassSyntaxHelpers.IsForbiddenVariableName(sName)) Then
                         Continue For
                     End If
 
@@ -2565,7 +2565,7 @@ Public Class ClassSyntaxParser
                     Dim sRegExTypePattern As String = g_ClassParse.GetTypeNamesToPattern(mParseInfo.lNewAutocompleteList)
 
                     Dim mPossibleMethodmapMatches As MatchCollection = Regex.Matches(mParseInfo.sSource, "^\s*\b(methodmap)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)(?<ParentingName>\s+\b[a-zA-Z0-9_]+\b){0,1}(?<FullParent>\s*\<\s*(?<Parent>\b[a-zA-Z0-9_]+\b)){0,1}\s*(?<BraceStart>\{)", RegexOptions.Multiline)
-                    Dim iBraceList As Integer()() = mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(mParseInfo.sSource, "{"c, "}"c, 1, mParseInfo.iLanguage, True)
+                    Dim iBraceList As Integer()() = ClassSyntaxTools.ClassSyntaxHelpers.GetExpressionBetweenCharacters(mParseInfo.sSource, "{"c, "}"c, 1, mParseInfo.iLanguage, True)
                     Dim iScopeIndex As Integer = -1
 
                     Dim mMatch As Match
@@ -2641,7 +2641,7 @@ Public Class ClassSyntaxParser
                         End If
 
                         Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sMethodmapSource, mParseInfo.iLanguage)
-                        Dim iMethodmapBraceList As Integer()() = mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(sMethodmapSource, "("c, ")"c, 1, mParseInfo.iLanguage, True)
+                        Dim iMethodmapBraceList As Integer()() = ClassSyntaxTools.ClassSyntaxHelpers.GetExpressionBetweenCharacters(sMethodmapSource, "("c, ")"c, 1, mParseInfo.iLanguage, True)
 
                         'Remove any array brackets from method types for regex match
                         Dim mRegexSource As New Text.StringBuilder(sMethodmapSource.Length)
@@ -2825,7 +2825,7 @@ Public Class ClassSyntaxParser
                     Dim sRegExTypePattern As String = g_ClassParse.GetTypeNamesToPattern(mParseInfo.lNewAutocompleteList)
 
                     Dim mPossibleMethodmapMatches As MatchCollection = Regex.Matches(mParseInfo.sSource, "^\s*\b(enum)\b\s+\b(struct)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)\s*(?<BraceStart>\{)", RegexOptions.Multiline)
-                    Dim iBraceList As Integer()() = mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(mParseInfo.sSource, "{"c, "}"c, 1, mParseInfo.iLanguage, True)
+                    Dim iBraceList As Integer()() = ClassSyntaxTools.ClassSyntaxHelpers.GetExpressionBetweenCharacters(mParseInfo.sSource, "{"c, "}"c, 1, mParseInfo.iLanguage, True)
                     Dim iScopeIndex As Integer = -1
 
                     Dim mMatch As Match
@@ -2890,7 +2890,7 @@ Public Class ClassSyntaxParser
                         End If
 
                         Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sEnumStructSource, mParseInfo.iLanguage)
-                        Dim iMethodmapBraceList As Integer()() = mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(sEnumStructSource, "("c, ")"c, 1, mParseInfo.iLanguage, True)
+                        Dim iMethodmapBraceList As Integer()() = ClassSyntaxTools.ClassSyntaxHelpers.GetExpressionBetweenCharacters(sEnumStructSource, "("c, ")"c, 1, mParseInfo.iLanguage, True)
 
                         'Get fields
                         If (True) Then
@@ -3533,7 +3533,7 @@ Public Class ClassSyntaxParser
                                     Exit Select
                                 End If
 
-                                If (mFormMain.g_ClassSyntaxTools.IsForbiddenVariableName(sVar)) Then
+                                If (ClassSyntaxTools.ClassSyntaxHelpers.IsForbiddenVariableName(sVar)) Then
                                     Exit Select
                                 End If
 
@@ -3616,7 +3616,7 @@ Public Class ClassSyntaxParser
                                     Exit Select
                                 End If
 
-                                If (mFormMain.g_ClassSyntaxTools.IsForbiddenVariableName(sVar)) Then
+                                If (ClassSyntaxTools.ClassSyntaxHelpers.IsForbiddenVariableName(sVar)) Then
                                     Exit Select
                                 End If
 
@@ -3718,7 +3718,7 @@ Public Class ClassSyntaxParser
                                     Continue For
                                 End If
 
-                                If (mFormMain.g_ClassSyntaxTools.IsForbiddenVariableName(sVar)) Then
+                                If (ClassSyntaxTools.ClassSyntaxHelpers.IsForbiddenVariableName(sVar)) Then
                                     Continue For
                                 End If
 
@@ -3817,7 +3817,7 @@ Public Class ClassSyntaxParser
                                     Continue For
                                 End If
 
-                                If (mFormMain.g_ClassSyntaxTools.IsForbiddenVariableName(sVar)) Then
+                                If (ClassSyntaxTools.ClassSyntaxHelpers.IsForbiddenVariableName(sVar)) Then
                                     Continue For
                                 End If
 
@@ -4009,7 +4009,7 @@ Public Class ClassSyntaxParser
                         Dim sVar As String = mMatch.Groups("Var").Value.Trim
                         Dim bIsOneSeven As Boolean = mMatch.Groups("OneSevenTag").Success
 
-                        If (Not bIsOneSeven AndAlso mMatch.Success AndAlso mMatch.Groups("Var").Success AndAlso Not mFormMain.g_ClassSyntaxTools.IsForbiddenVariableName(sVar)) Then
+                        If (Not bIsOneSeven AndAlso mMatch.Success AndAlso mMatch.Groups("Var").Success AndAlso Not ClassSyntaxTools.ClassSyntaxHelpers.IsForbiddenVariableName(sVar)) Then
                             Dim sTmpFile As String = IO.Path.GetFileName(mArg.sFile)
                             Dim mItem As ClassSyntaxTools.STRUC_AUTOCOMPLETE = mParseInfo.lNewVarAutocompleteList.Find(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Filename.ToLower = sTmpFile.ToLower AndAlso x.m_FunctionString = sVar AndAlso (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> 0)
                             If (mItem Is Nothing) Then
@@ -4057,7 +4057,7 @@ Public Class ClassSyntaxParser
                         Dim sTag As String = If(String.IsNullOrEmpty(mMatch.Groups("Tag").Value), "int", mMatch.Groups("Tag").Value).Trim
                         Dim sVar As String = mMatch.Groups("Var").Value.Trim
 
-                        If (mMatch.Success AndAlso mMatch.Groups("Var").Success AndAlso Not mFormMain.g_ClassSyntaxTools.IsForbiddenVariableName(sVar)) Then
+                        If (mMatch.Success AndAlso mMatch.Groups("Var").Success AndAlso Not ClassSyntaxTools.ClassSyntaxHelpers.IsForbiddenVariableName(sVar)) Then
                             Dim sTmpFile As String = IO.Path.GetFileName(mArg.sFile)
                             Dim mItem As ClassSyntaxTools.STRUC_AUTOCOMPLETE = mParseInfo.lNewVarAutocompleteList.Find(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Filename.ToLower = sTmpFile.ToLower AndAlso x.m_FunctionString = sVar AndAlso (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> 0)
                             If (mItem Is Nothing) Then

@@ -27,11 +27,9 @@ Partial Public Class FormMain
 
                 Dim sSource As String = g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
 
-                With New ClassDebuggerParser(Me)
-                    If (.HasDebugPlaceholder(sSource)) Then
-                        .CleanupDebugPlaceholder(sSource, g_ClassTabControl.m_ActiveTab.m_Language)
-                    End If
-                End With
+                If (ClassDebuggerTools.ClassDebuggerHelpers.HasDebugPlaceholder(sSource)) Then
+                    ClassDebuggerTools.ClassDebuggerHelpers.CleanupDebugPlaceholder(sSource, g_ClassTabControl.m_ActiveTab.m_Language)
+                End If
 
                 Dim sSourceFile As String = Nothing
                 If (Not g_ClassTabControl.m_ActiveTab.m_IsUnsaved AndAlso Not g_ClassTabControl.m_ActiveTab.m_InvalidFile) Then
@@ -59,11 +57,9 @@ Partial Public Class FormMain
                 For Each mTab In g_ClassTabControl.GetAllTabs
                     Dim sSource As String = mTab.m_TextEditor.Document.TextContent
 
-                    With New ClassDebuggerParser(Me)
-                        If (.HasDebugPlaceholder(sSource)) Then
-                            .CleanupDebugPlaceholder(sSource, mTab.m_Language)
-                        End If
-                    End With
+                    If (ClassDebuggerTools.ClassDebuggerHelpers.HasDebugPlaceholder(sSource)) Then
+                        ClassDebuggerTools.ClassDebuggerHelpers.CleanupDebugPlaceholder(sSource, mTab.m_Language)
+                    End If
 
                     Dim sSourceFile As String = Nothing
                     If (Not mTab.m_IsUnsaved AndAlso Not mTab.m_InvalidFile) Then

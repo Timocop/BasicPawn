@@ -109,7 +109,7 @@ Public Class UCAutocomplete
             Dim sTextContent As String = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
             Dim iCaretOffset As Integer = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Offset
             Dim iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language
-            Dim iBraceList As Integer()() = g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(sTextContent, "{"c, "}"c, 1, iLanguage, True)
+            Dim iBraceList As Integer()() = ClassSyntaxTools.ClassSyntaxHelpers.GetExpressionBetweenCharacters(sTextContent, "{"c, "}"c, 1, iLanguage, True)
 
             'Get current scope index
             For i = 0 To iBraceList.Length - 1
@@ -264,7 +264,7 @@ Public Class UCAutocomplete
                     Dim sTextContent As String = g_AutocompleteUC.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
                     Dim iCaretOffset As Integer = g_AutocompleteUC.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Offset
                     Dim iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = g_AutocompleteUC.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language
-                    Dim iBraceList As Integer()() = g_AutocompleteUC.g_mFormMain.g_ClassSyntaxTools.GetExpressionBetweenCharacters(sTextContent, "{"c, "}"c, 1, iLanguage, True)
+                    Dim iBraceList As Integer()() = ClassSyntaxTools.ClassSyntaxHelpers.GetExpressionBetweenCharacters(sTextContent, "{"c, "}"c, 1, iLanguage, True)
 
                     'Get current scope index
                     For i = 0 To iBraceList.Length - 1

@@ -83,9 +83,9 @@ Public Class ClassReportListBox
         Property m_Date As String
         Property m_Image As Image
         Property m_IsClickable As Boolean
-        Property m_Exception As ClassDebuggerParser.STRUC_SM_EXCEPTION
+        Property m_Exception As ClassDebuggerTools.STRUC_SM_EXCEPTION
 
-        Public Sub New(_Title As String, _Text As String, _Date As String, _Image As Image, _IsClickable As Boolean, _Exception As ClassDebuggerParser.STRUC_SM_EXCEPTION)
+        Public Sub New(_Title As String, _Text As String, _Date As String, _Image As Image, _IsClickable As Boolean, _Exception As ClassDebuggerTools.STRUC_SM_EXCEPTION)
             m_Title = _Title
             m_Text = _Text
             m_Date = _Date
@@ -94,7 +94,7 @@ Public Class ClassReportListBox
             m_Exception = _Exception
         End Sub
 
-        Public Sub New(_Exception As ClassDebuggerParser.STRUC_SM_EXCEPTION)
+        Public Sub New(_Exception As ClassDebuggerTools.STRUC_SM_EXCEPTION)
             m_Title = _Exception.sExceptionInfo
             m_Text = _Exception.sBlamingFile
 

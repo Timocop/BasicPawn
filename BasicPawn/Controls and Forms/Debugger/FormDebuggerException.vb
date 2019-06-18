@@ -21,7 +21,7 @@ Public Class FormDebuggerException
 
     Private Const MAX_LINES_TO_LIST = 100
 
-    Public Sub New(mFormDebugger As FormDebugger, sLogFile As String, smException As ClassDebuggerParser.STRUC_SM_EXCEPTION)
+    Public Sub New(mFormDebugger As FormDebugger, sLogFile As String, smException As ClassDebuggerTools.STRUC_SM_EXCEPTION)
 
         ' This call is required by the designer.
         InitializeComponent()
