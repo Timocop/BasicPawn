@@ -354,6 +354,9 @@
     <Compile Include="Controls and Forms\Main\Extensions\ExtMainDragDrop.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Controls and Forms\Main\Extensions\ExtMainMenuEdit.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Controls and Forms\Main\Extensions\ExtMainMenuBuild.vb">
       <SubType>Form</SubType>
     </Compile>

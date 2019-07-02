@@ -1200,25 +1200,6 @@ Public Class ClassTabControl
         Private Sub TextEditorControl_Source_ProcessCmdKey(ByRef bBlock As Boolean, ByRef iMsg As Message, iKeys As Keys)
             Try
                 Select Case (iKeys)
-                    'Duplicate Line/Word
-                    Case Keys.Control Or Keys.D
-                        bBlock = True
-
-                        If (g_mSourceTextEditor.ActiveTextAreaControl.SelectionManager.HasSomethingSelected) Then
-                            Dim sText As String = g_mSourceTextEditor.ActiveTextAreaControl.SelectionManager.SelectedText
-                            Dim iCaretOffset As Integer = g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.Offset
-
-                            g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iCaretOffset, sText)
-                        Else
-                            Dim iCaretOffset As Integer = g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.Offset
-                            Dim iLineOffset As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iCaretOffset).Offset
-                            Dim iLineLen As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iCaretOffset).Length
-
-                            g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iLineOffset, g_mSourceTextEditor.ActiveTextAreaControl.Document.GetText(iLineOffset, iLineLen) & Environment.NewLine)
-                        End If
-
-                        g_mSourceTextEditor.Refresh()
-
                     'Details primary/secondary action
                     Case (Keys.Control Or Keys.Enter),
                             (Keys.Shift Or Keys.Control Or Keys.Enter)

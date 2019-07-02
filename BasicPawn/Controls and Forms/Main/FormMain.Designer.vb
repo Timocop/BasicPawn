@@ -83,6 +83,17 @@ Partial Class FormMain
         Me.ToolStripMenuItem_FileOpenFolder = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_FileExit = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_Edit = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_EditUndo = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_EditRedo = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator22 = New System.Windows.Forms.ToolStripSeparator()
+        Me.ToolStripMenuItem_EditCut = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_EditCopy = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_EditPaste = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_EditDelete = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_EditSelectAll = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator23 = New System.Windows.Forms.ToolStripSeparator()
+        Me.ToolStripMenuItem_EditDupLine = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_View = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_ViewToolbox = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_ViewDetails = New System.Windows.Forms.ToolStripMenuItem()
@@ -112,6 +123,8 @@ Partial Class FormMain
         Me.ToolStripMenuItem_ToolsAutocompleteShowAutocomplete = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Bookmarks = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_BookmarksAdd = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator21 = New System.Windows.Forms.ToolStripSeparator()
+        Me.ToolStripMenuItem_BookmarksShow = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator4 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_ToolsShowInformation = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_ToolsClearInformationLog = New System.Windows.Forms.ToolStripMenuItem()
@@ -133,7 +146,6 @@ Partial Class FormMain
         Me.ToolStripMenuItem_HelpControlsDetailsSecAction = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_HelpControlsMoveSelected = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_HelpControlsCopySelected = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripMenuItem_HelpControlsDupLine = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator15 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_HelpCheckUpdates = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_HelpGithub = New System.Windows.Forms.ToolStripMenuItem()
@@ -184,8 +196,8 @@ Partial Class FormMain
         Me.ToolStripSeparator19 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_FindOptimalConfigActiveTab = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_FindOptimalConfigAllTabs = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripSeparator21 = New System.Windows.Forms.ToolStripSeparator()
-        Me.ToolStripMenuItem_BookmarksShow = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_EditLineUp = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_EditLineDown = New System.Windows.Forms.ToolStripMenuItem()
         Me.ContextMenuStrip_RightClick.SuspendLayout()
         Me.MenuStrip_BasicPawn.SuspendLayout()
         Me.SplitContainer_ToolboxSourceAndDetails.Panel1.SuspendLayout()
@@ -235,7 +247,6 @@ Partial Class FormMain
         Me.ToolStripMenuItem_Cut.Image = Global.BasicPawn.My.Resources.Resources.shell32_16762_16x16
         Me.ToolStripMenuItem_Cut.Name = "ToolStripMenuItem_Cut"
         Me.ToolStripMenuItem_Cut.ShortcutKeyDisplayString = "Ctrl+X"
-        Me.ToolStripMenuItem_Cut.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.X), System.Windows.Forms.Keys)
         Me.ToolStripMenuItem_Cut.Size = New System.Drawing.Size(255, 22)
         Me.ToolStripMenuItem_Cut.Text = "Cut"
         '
@@ -244,7 +255,6 @@ Partial Class FormMain
         Me.ToolStripMenuItem_Copy.Image = CType(resources.GetObject("ToolStripMenuItem_Copy.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_Copy.Name = "ToolStripMenuItem_Copy"
         Me.ToolStripMenuItem_Copy.ShortcutKeyDisplayString = "Ctrl+C"
-        Me.ToolStripMenuItem_Copy.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.C), System.Windows.Forms.Keys)
         Me.ToolStripMenuItem_Copy.Size = New System.Drawing.Size(255, 22)
         Me.ToolStripMenuItem_Copy.Text = "Copy"
         '
@@ -253,7 +263,6 @@ Partial Class FormMain
         Me.ToolStripMenuItem_Paste.Image = Global.BasicPawn.My.Resources.Resources.shell32_16763_16x16
         Me.ToolStripMenuItem_Paste.Name = "ToolStripMenuItem_Paste"
         Me.ToolStripMenuItem_Paste.ShortcutKeyDisplayString = "Ctrl+V"
-        Me.ToolStripMenuItem_Paste.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.V), System.Windows.Forms.Keys)
         Me.ToolStripMenuItem_Paste.Size = New System.Drawing.Size(255, 22)
         Me.ToolStripMenuItem_Paste.Text = "Paste"
         '
@@ -414,7 +423,7 @@ Partial Class FormMain
         '
         'MenuStrip_BasicPawn
         '
-        Me.MenuStrip_BasicPawn.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_File, Me.ToolStripMenuItem_View, Me.ToolStripMenuItem_Tools, Me.ToolStripMenuItem_Undo, Me.ToolStripMenuItem_Redo, Me.ToolStripMenuItem_Build, Me.ToolStripMenuItem_Test, Me.ToolStripMenuItem_Help, Me.ToolStripMenuItem_TabClose, Me.ToolStripMenuItem_TabMoveRight, Me.ToolStripMenuItem_TabMoveLeft, Me.ToolStripMenuItem_TabOpenInstance, Me.ToolStripMenuItem_NewUpdate})
+        Me.MenuStrip_BasicPawn.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_File, Me.ToolStripMenuItem_Edit, Me.ToolStripMenuItem_View, Me.ToolStripMenuItem_Tools, Me.ToolStripMenuItem_Undo, Me.ToolStripMenuItem_Redo, Me.ToolStripMenuItem_Build, Me.ToolStripMenuItem_Test, Me.ToolStripMenuItem_Help, Me.ToolStripMenuItem_TabClose, Me.ToolStripMenuItem_TabMoveRight, Me.ToolStripMenuItem_TabMoveLeft, Me.ToolStripMenuItem_TabOpenInstance, Me.ToolStripMenuItem_NewUpdate})
         Me.MenuStrip_BasicPawn.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip_BasicPawn.Name = "MenuStrip_BasicPawn"
         Me.MenuStrip_BasicPawn.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
@@ -604,6 +613,88 @@ Partial Class FormMain
         Me.ToolStripMenuItem_FileExit.Size = New System.Drawing.Size(260, 22)
         Me.ToolStripMenuItem_FileExit.Text = "Exit"
         Me.ToolStripMenuItem_FileExit.ToolTipText = "Quits BasicPawn"
+        '
+        'ToolStripMenuItem_Edit
+        '
+        Me.ToolStripMenuItem_Edit.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_EditUndo, Me.ToolStripMenuItem_EditRedo, Me.ToolStripSeparator22, Me.ToolStripMenuItem_EditCut, Me.ToolStripMenuItem_EditCopy, Me.ToolStripMenuItem_EditPaste, Me.ToolStripMenuItem_EditDelete, Me.ToolStripMenuItem_EditSelectAll, Me.ToolStripSeparator23, Me.ToolStripMenuItem_EditDupLine, Me.ToolStripMenuItem_EditLineUp, Me.ToolStripMenuItem_EditLineDown})
+        Me.ToolStripMenuItem_Edit.Image = Global.BasicPawn.My.Resources.Resources.imageres_5350_16x16
+        Me.ToolStripMenuItem_Edit.Name = "ToolStripMenuItem_Edit"
+        Me.ToolStripMenuItem_Edit.Size = New System.Drawing.Size(55, 20)
+        Me.ToolStripMenuItem_Edit.Text = "Edit"
+        '
+        'ToolStripMenuItem_EditUndo
+        '
+        Me.ToolStripMenuItem_EditUndo.Image = Global.BasicPawn.My.Resources.Resources.imageres_5315_16x16
+        Me.ToolStripMenuItem_EditUndo.Name = "ToolStripMenuItem_EditUndo"
+        Me.ToolStripMenuItem_EditUndo.ShortcutKeyDisplayString = "Ctrl+Z"
+        Me.ToolStripMenuItem_EditUndo.Size = New System.Drawing.Size(260, 22)
+        Me.ToolStripMenuItem_EditUndo.Text = "Undo"
+        '
+        'ToolStripMenuItem_EditRedo
+        '
+        Me.ToolStripMenuItem_EditRedo.Image = Global.BasicPawn.My.Resources.Resources.imageres_5311_16x16
+        Me.ToolStripMenuItem_EditRedo.Name = "ToolStripMenuItem_EditRedo"
+        Me.ToolStripMenuItem_EditRedo.ShortcutKeyDisplayString = "Ctrl+Y"
+        Me.ToolStripMenuItem_EditRedo.Size = New System.Drawing.Size(260, 22)
+        Me.ToolStripMenuItem_EditRedo.Text = "Redo"
+        '
+        'ToolStripSeparator22
+        '
+        Me.ToolStripSeparator22.Name = "ToolStripSeparator22"
+        Me.ToolStripSeparator22.Size = New System.Drawing.Size(257, 6)
+        '
+        'ToolStripMenuItem_EditCut
+        '
+        Me.ToolStripMenuItem_EditCut.Image = Global.BasicPawn.My.Resources.Resources.shell32_16762_16x16
+        Me.ToolStripMenuItem_EditCut.Name = "ToolStripMenuItem_EditCut"
+        Me.ToolStripMenuItem_EditCut.ShortcutKeyDisplayString = "Ctrl+X"
+        Me.ToolStripMenuItem_EditCut.Size = New System.Drawing.Size(260, 22)
+        Me.ToolStripMenuItem_EditCut.Text = "Cut"
+        '
+        'ToolStripMenuItem_EditCopy
+        '
+        Me.ToolStripMenuItem_EditCopy.Image = Global.BasicPawn.My.Resources.Resources.imageres_5306_16x16
+        Me.ToolStripMenuItem_EditCopy.Name = "ToolStripMenuItem_EditCopy"
+        Me.ToolStripMenuItem_EditCopy.ShortcutKeyDisplayString = "Ctrl+C"
+        Me.ToolStripMenuItem_EditCopy.Size = New System.Drawing.Size(260, 22)
+        Me.ToolStripMenuItem_EditCopy.Text = "Copy"
+        '
+        'ToolStripMenuItem_EditPaste
+        '
+        Me.ToolStripMenuItem_EditPaste.Image = Global.BasicPawn.My.Resources.Resources.shell32_16763_16x16
+        Me.ToolStripMenuItem_EditPaste.Name = "ToolStripMenuItem_EditPaste"
+        Me.ToolStripMenuItem_EditPaste.ShortcutKeyDisplayString = "Ctrl+V"
+        Me.ToolStripMenuItem_EditPaste.Size = New System.Drawing.Size(260, 22)
+        Me.ToolStripMenuItem_EditPaste.Text = "Paste"
+        '
+        'ToolStripMenuItem_EditDelete
+        '
+        Me.ToolStripMenuItem_EditDelete.Image = Global.BasicPawn.My.Resources.Resources.imageres_5337_16x16
+        Me.ToolStripMenuItem_EditDelete.Name = "ToolStripMenuItem_EditDelete"
+        Me.ToolStripMenuItem_EditDelete.ShortcutKeyDisplayString = "Del"
+        Me.ToolStripMenuItem_EditDelete.Size = New System.Drawing.Size(260, 22)
+        Me.ToolStripMenuItem_EditDelete.Text = "Delete"
+        '
+        'ToolStripMenuItem_EditSelectAll
+        '
+        Me.ToolStripMenuItem_EditSelectAll.Image = Global.BasicPawn.My.Resources.Resources.imageres_5312_16x16
+        Me.ToolStripMenuItem_EditSelectAll.Name = "ToolStripMenuItem_EditSelectAll"
+        Me.ToolStripMenuItem_EditSelectAll.ShortcutKeyDisplayString = "Ctrl+A"
+        Me.ToolStripMenuItem_EditSelectAll.Size = New System.Drawing.Size(260, 22)
+        Me.ToolStripMenuItem_EditSelectAll.Text = "Select all"
+        '
+        'ToolStripSeparator23
+        '
+        Me.ToolStripSeparator23.Name = "ToolStripSeparator23"
+        Me.ToolStripSeparator23.Size = New System.Drawing.Size(257, 6)
+        '
+        'ToolStripMenuItem_EditDupLine
+        '
+        Me.ToolStripMenuItem_EditDupLine.Name = "ToolStripMenuItem_EditDupLine"
+        Me.ToolStripMenuItem_EditDupLine.ShortcutKeyDisplayString = "Ctrl+D"
+        Me.ToolStripMenuItem_EditDupLine.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.D), System.Windows.Forms.Keys)
+        Me.ToolStripMenuItem_EditDupLine.Size = New System.Drawing.Size(260, 22)
+        Me.ToolStripMenuItem_EditDupLine.Text = "Duplicate Line/Selected"
         '
         'ToolStripMenuItem_View
         '
@@ -814,6 +905,18 @@ Partial Class FormMain
         Me.ToolStripMenuItem_BookmarksAdd.Size = New System.Drawing.Size(194, 22)
         Me.ToolStripMenuItem_BookmarksAdd.Text = "Add bookmark"
         '
+        'ToolStripSeparator21
+        '
+        Me.ToolStripSeparator21.Name = "ToolStripSeparator21"
+        Me.ToolStripSeparator21.Size = New System.Drawing.Size(191, 6)
+        '
+        'ToolStripMenuItem_BookmarksShow
+        '
+        Me.ToolStripMenuItem_BookmarksShow.Image = Global.BasicPawn.My.Resources.Resources.imageres_5350_16x16
+        Me.ToolStripMenuItem_BookmarksShow.Name = "ToolStripMenuItem_BookmarksShow"
+        Me.ToolStripMenuItem_BookmarksShow.Size = New System.Drawing.Size(194, 22)
+        Me.ToolStripMenuItem_BookmarksShow.Text = "Show Bookmarks"
+        '
         'ToolStripSeparator4
         '
         Me.ToolStripSeparator4.Name = "ToolStripSeparator4"
@@ -915,10 +1018,10 @@ Partial Class FormMain
         '
         'ToolStripMenuItem_HelpControls
         '
-        Me.ToolStripMenuItem_HelpControls.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_HelpControlsTabNav, Me.ToolStripMenuItem_HelpControlsDetailsNav, Me.ToolStripMenuItem_HelpControlsDetailsPrimAction, Me.ToolStripMenuItem_HelpControlsDetailsSecAction, Me.ToolStripMenuItem_HelpControlsMoveSelected, Me.ToolStripMenuItem_HelpControlsCopySelected, Me.ToolStripMenuItem_HelpControlsDupLine})
+        Me.ToolStripMenuItem_HelpControls.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_HelpControlsTabNav, Me.ToolStripMenuItem_HelpControlsDetailsNav, Me.ToolStripMenuItem_HelpControlsDetailsPrimAction, Me.ToolStripMenuItem_HelpControlsDetailsSecAction, Me.ToolStripMenuItem_HelpControlsMoveSelected, Me.ToolStripMenuItem_HelpControlsCopySelected})
         Me.ToolStripMenuItem_HelpControls.Image = CType(resources.GetObject("ToolStripMenuItem_HelpControls.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_HelpControls.Name = "ToolStripMenuItem_HelpControls"
-        Me.ToolStripMenuItem_HelpControls.Size = New System.Drawing.Size(170, 22)
+        Me.ToolStripMenuItem_HelpControls.Size = New System.Drawing.Size(180, 22)
         Me.ToolStripMenuItem_HelpControls.Text = "Special Controls"
         '
         'ToolStripMenuItem_HelpControlsTabNav
@@ -963,42 +1066,35 @@ Partial Class FormMain
         Me.ToolStripMenuItem_HelpControlsCopySelected.Size = New System.Drawing.Size(465, 22)
         Me.ToolStripMenuItem_HelpControlsCopySelected.Text = "Copy Selected"
         '
-        'ToolStripMenuItem_HelpControlsDupLine
-        '
-        Me.ToolStripMenuItem_HelpControlsDupLine.Name = "ToolStripMenuItem_HelpControlsDupLine"
-        Me.ToolStripMenuItem_HelpControlsDupLine.ShortcutKeyDisplayString = "Ctrl+D"
-        Me.ToolStripMenuItem_HelpControlsDupLine.Size = New System.Drawing.Size(465, 22)
-        Me.ToolStripMenuItem_HelpControlsDupLine.Text = "Duplicate Line/Selected"
-        '
         'ToolStripSeparator15
         '
         Me.ToolStripSeparator15.Name = "ToolStripSeparator15"
-        Me.ToolStripSeparator15.Size = New System.Drawing.Size(167, 6)
+        Me.ToolStripSeparator15.Size = New System.Drawing.Size(177, 6)
         '
         'ToolStripMenuItem_HelpCheckUpdates
         '
         Me.ToolStripMenuItem_HelpCheckUpdates.Image = Global.BasicPawn.My.Resources.Resources.imageres_5332_16x16
         Me.ToolStripMenuItem_HelpCheckUpdates.Name = "ToolStripMenuItem_HelpCheckUpdates"
-        Me.ToolStripMenuItem_HelpCheckUpdates.Size = New System.Drawing.Size(170, 22)
+        Me.ToolStripMenuItem_HelpCheckUpdates.Size = New System.Drawing.Size(180, 22)
         Me.ToolStripMenuItem_HelpCheckUpdates.Text = "Check for updates"
         '
         'ToolStripMenuItem_HelpGithub
         '
         Me.ToolStripMenuItem_HelpGithub.Image = Global.BasicPawn.My.Resources.Resources.imageres_5316_16x16
         Me.ToolStripMenuItem_HelpGithub.Name = "ToolStripMenuItem_HelpGithub"
-        Me.ToolStripMenuItem_HelpGithub.Size = New System.Drawing.Size(170, 22)
+        Me.ToolStripMenuItem_HelpGithub.Size = New System.Drawing.Size(180, 22)
         Me.ToolStripMenuItem_HelpGithub.Text = "View on Github"
         '
         'ToolStripSeparator14
         '
         Me.ToolStripSeparator14.Name = "ToolStripSeparator14"
-        Me.ToolStripSeparator14.Size = New System.Drawing.Size(167, 6)
+        Me.ToolStripSeparator14.Size = New System.Drawing.Size(177, 6)
         '
         'ToolStripMenuItem_HelpAbout
         '
         Me.ToolStripMenuItem_HelpAbout.Image = CType(resources.GetObject("ToolStripMenuItem_HelpAbout.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_HelpAbout.Name = "ToolStripMenuItem_HelpAbout"
-        Me.ToolStripMenuItem_HelpAbout.Size = New System.Drawing.Size(170, 22)
+        Me.ToolStripMenuItem_HelpAbout.Size = New System.Drawing.Size(180, 22)
         Me.ToolStripMenuItem_HelpAbout.Text = "About"
         '
         'ToolStripMenuItem_TabClose
@@ -1392,17 +1488,23 @@ Partial Class FormMain
         Me.ToolStripMenuItem_FindOptimalConfigAllTabs.Size = New System.Drawing.Size(250, 22)
         Me.ToolStripMenuItem_FindOptimalConfigAllTabs.Text = "Find optimal config for all tabs"
         '
-        'ToolStripSeparator21
+        'ToolStripMenuItem_EditLineUp
         '
-        Me.ToolStripSeparator21.Name = "ToolStripSeparator21"
-        Me.ToolStripSeparator21.Size = New System.Drawing.Size(191, 6)
+        Me.ToolStripMenuItem_EditLineUp.Name = "ToolStripMenuItem_EditLineUp"
+        Me.ToolStripMenuItem_EditLineUp.ShortcutKeyDisplayString = "Ctrl+Shift+Up"
+        Me.ToolStripMenuItem_EditLineUp.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
+            Or System.Windows.Forms.Keys.Up), System.Windows.Forms.Keys)
+        Me.ToolStripMenuItem_EditLineUp.Size = New System.Drawing.Size(260, 22)
+        Me.ToolStripMenuItem_EditLineUp.Text = "Move Line Up"
         '
-        'ToolStripMenuItem_BookmarksShow
+        'ToolStripMenuItem_EditLineDown
         '
-        Me.ToolStripMenuItem_BookmarksShow.Image = Global.BasicPawn.My.Resources.Resources.imageres_5350_16x16
-        Me.ToolStripMenuItem_BookmarksShow.Name = "ToolStripMenuItem_BookmarksShow"
-        Me.ToolStripMenuItem_BookmarksShow.Size = New System.Drawing.Size(194, 22)
-        Me.ToolStripMenuItem_BookmarksShow.Text = "Show Bookmarks"
+        Me.ToolStripMenuItem_EditLineDown.Name = "ToolStripMenuItem_EditLineDown"
+        Me.ToolStripMenuItem_EditLineDown.ShortcutKeyDisplayString = "Ctrl+Shift+Down"
+        Me.ToolStripMenuItem_EditLineDown.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
+            Or System.Windows.Forms.Keys.Down), System.Windows.Forms.Keys)
+        Me.ToolStripMenuItem_EditLineDown.Size = New System.Drawing.Size(260, 22)
+        Me.ToolStripMenuItem_EditLineDown.Text = "Move Line Down"
         '
         'FormMain
         '
@@ -1472,7 +1574,6 @@ Partial Class FormMain
     Friend WithEvents SplitContainer_ToolboxAndEditor As SplitContainer
     Friend WithEvents TabPage_ObjectBrowser As TabPage
     Friend WithEvents ToolStripMenuItem_ToolsSearchReplace As ToolStripMenuItem
-    Friend WithEvents ToolStripMenuItem_HelpControlsDupLine As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator5 As ToolStripSeparator
     Friend WithEvents ToolStripSeparator4 As ToolStripSeparator
     Friend WithEvents ToolStripStatusLabel_AppVersion As ToolStripStatusLabel
@@ -1598,4 +1699,17 @@ Partial Class FormMain
     Friend WithEvents ToolStripMenuItem_BookmarksAdd As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator21 As ToolStripSeparator
     Friend WithEvents ToolStripMenuItem_BookmarksShow As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_Edit As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_EditUndo As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_EditRedo As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator22 As ToolStripSeparator
+    Friend WithEvents ToolStripMenuItem_EditCut As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_EditCopy As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_EditPaste As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_EditDelete As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_EditSelectAll As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator23 As ToolStripSeparator
+    Friend WithEvents ToolStripMenuItem_EditDupLine As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_EditLineUp As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_EditLineDown As ToolStripMenuItem
 End Class

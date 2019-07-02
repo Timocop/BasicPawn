@@ -45,6 +45,94 @@ Public Class TextEditorControlEx
         Return MyBase.ProcessCmdKey(msg, e)
     End Function
 
+    Public Class MoveSelectedLine
+        Inherits AbstractEditAction
+
+        Enum ENUM_DIRECTION
+            UP = 1
+            DOWN = -1
+        End Enum
+
+        Property m_Direction As ENUM_DIRECTION
+
+        Public Overrides Sub Execute(mTextArea As TextArea)
+            If (mTextArea.Document.ReadOnly) Then
+                Return
+            End If
+
+            If (m_Direction <> ENUM_DIRECTION.UP AndAlso m_Direction <> ENUM_DIRECTION.DOWN) Then
+                Return
+            End If
+
+            Dim mSelection As ISelection
+            Dim iSelectionDelimiterLength As Integer = 0
+
+            If (mTextArea.SelectionManager.HasSomethingSelected) Then
+                Dim mStartPosition = mTextArea.SelectionManager.SelectionCollection(0).StartPosition
+                Dim mEndPosition = mTextArea.SelectionManager.SelectionCollection(0).EndPosition
+                Dim mLineSegment = mTextArea.Document.GetLineSegment(mEndPosition.Line)
+
+                mSelection = New DefaultSelection(mTextArea.Document, New TextLocation(0, mStartPosition.Line), New TextLocation(mLineSegment.Length, mLineSegment.LineNumber))
+                iSelectionDelimiterLength = mLineSegment.DelimiterLength
+            Else
+                Dim iCaretOffset As Integer = mTextArea.Caret.Offset
+                Dim mLineSegment = mTextArea.Document.GetLineSegmentForOffset(iCaretOffset)
+
+                mSelection = New DefaultSelection(mTextArea.Document, New TextLocation(0, mLineSegment.LineNumber), New TextLocation(mLineSegment.Length, mLineSegment.LineNumber))
+                iSelectionDelimiterLength = mLineSegment.DelimiterLength
+            End If
+
+            Dim iTargetLine As Integer = mSelection.StartPosition.Line - m_Direction
+            If (iTargetLine < 0 OrElse iTargetLine > mTextArea.Document.TotalNumberOfLines - 1) Then
+                Return
+            End If
+
+            Dim iTargetLineLength = (mSelection.Length + iSelectionDelimiterLength)
+            If ((mSelection.Offset + iTargetLineLength) > mTextArea.Document.TextLength) Then
+                Return
+            End If
+
+            Dim sLine = mTextArea.Document.GetText(mSelection.Offset, iTargetLineLength)
+            If (sLine.Length = 0) Then
+                Return
+            End If
+
+            If (iSelectionDelimiterLength = 0) Then
+                sLine &= Environment.NewLine
+            End If
+
+            Try
+                mTextArea.BeginUpdate()
+
+                mTextArea.Document.UndoStack.StartUndoGroup()
+                mTextArea.Document.Remove(mSelection.Offset, iTargetLineLength)
+
+                If (iTargetLine < 0 OrElse iTargetLine > mTextArea.Document.TotalNumberOfLines - 1) Then
+                    Dim mInsertLineSegment = mTextArea.Document.GetLineSegment(mTextArea.Document.TotalNumberOfLines - 1)
+                    mTextArea.Document.Insert(mInsertLineSegment.Offset, Environment.NewLine & sLine)
+                Else
+                    Dim mInsertLineSegment = mTextArea.Document.GetLineSegment(iTargetLine)
+                    mTextArea.Document.Insert(mInsertLineSegment.Offset, sLine)
+                End If
+
+                mTextArea.Document.UndoStack.EndUndoGroup()
+            Finally
+                mTextArea.EndUpdate()
+            End Try
+
+            'TODO: Fix extended selection glitches e.g via ShiftCaretLeft(), ShiftCaretRight()
+            mTextArea.SelectionManager.SetSelection(New TextLocation(0, mSelection.StartPosition.Line - m_Direction),
+                                                        New TextLocation(mTextArea.Document.GetLineSegment(mSelection.EndPosition.Line - m_Direction).Length, mSelection.EndPosition.Line - m_Direction))
+            mTextArea.Caret.Position = mTextArea.Caret.ValidatePosition(mTextArea.SelectionManager.SelectionCollection(0).EndPosition)
+            mTextArea.Caret.UpdateCaretPosition()
+
+            mTextArea.AutoClearSelection = False
+
+            mTextArea.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.WholeTextArea))
+            mTextArea.Document.CommitUpdate()
+        End Sub
+    End Class
+
     Public Class FixedShiftTab
         Inherits AbstractEditAction
 
@@ -132,7 +220,6 @@ Public Class TextEditorControlEx
                     mTextArea.EndUpdate()
                 Next
                 mTextArea.AutoClearSelection = False
-                mTextArea.Document.CommitUpdate()
 
                 mTextArea.Caret.UpdateCaretPosition()
             Else
@@ -143,7 +230,6 @@ Public Class TextEditorControlEx
 
                 mTextArea.Document.UpdateQueue.Clear()
                 mTextArea.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, mLine.LineNumber))
-                mTextArea.Document.CommitUpdate()
 
                 mTextArea.Caret.UpdateCaretPosition()
 
