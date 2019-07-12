@@ -348,6 +348,32 @@ Partial Public Class FormMain
         g_mUCBookmarkDetails.ToolStripMenuItem_AddBookmark.PerformClick()
     End Sub
 
+    Private Sub ToolStripMenuItem_BookmarksRemoveLines_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_BookmarksRemoveLines.Click
+        Try
+            Dim mTab = g_ClassTabControl.m_ActiveTab
+            If (mTab.m_IsUnsaved) Then
+                Return
+            End If
+
+            Dim iCaretLine = mTab.m_TextEditor.ActiveTextAreaControl.Caret.Line
+
+            For Each mBookmark In g_mUCBookmarkDetails.g_ClassBookmarks.GetBookmarks(mTab.m_File)
+                If (mBookmark.iLine <> iCaretLine) Then
+                    Continue For
+                End If
+
+                g_mUCBookmarkDetails.g_ClassBookmarks.RemoveBookmark(mBookmark)
+                g_mUCBookmarkDetails.g_ClassBookmarks.RefreshBookmarks()
+
+                g_mUCBookmarkDetails.RefreshBookmarkList()
+                g_mUCBookmarkDetails.RefreshBookmarkIconBar()
+                Exit For
+            Next
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
     Private Sub ToolStripMenuItem_BookmarksShow_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_BookmarksShow.Click
         If (ToolStripMenuItem_ViewDetails.Checked) Then
             SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed = False
