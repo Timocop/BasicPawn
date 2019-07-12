@@ -44,6 +44,9 @@ Public Class UCBookmarkDetails
         AddHandler g_ClassBookmarks.OnBookmarksUpdated, AddressOf OnBookmarksUpdated
         AddHandler g_mFormMain.g_ClassTabControl.OnTabFullUpdate, AddressOf OnTabFullUpdate
         AddHandler g_mFormMain.g_ClassSyntaxUpdater.OnSyntaxUpdate, AddressOf OnSyntaxUpdate
+
+        'Set double buffering to avoid annonying flickers
+        ClassTools.ClassForms.SetDoubleBufferingAllChilds(Me, True)
     End Sub
 
     Property m_ShowLocalTabsOnly As Boolean
@@ -188,6 +191,65 @@ Public Class UCBookmarkDetails
     Private Sub ListView_Bookmarks_DoubleClick(sender As Object, e As EventArgs) Handles ListView_Bookmarks.DoubleClick
         BookmarkGotoSelected()
     End Sub
+
+    Private Sub ListView_Bookmarks_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListView_Bookmarks.SelectedIndexChanged
+        UpdateListViewColors()
+    End Sub
+
+    Private Sub ListView_Bookmarks_Invalidated(sender As Object, e As InvalidateEventArgs) Handles ListView_Bookmarks.Invalidated
+        Static bIgnoreEvent As Boolean = False
+        Static mLastBackColor As Color = Color.White
+        Static mLastForeColor As Color = Color.Black
+
+        If (bIgnoreEvent) Then
+            Return
+        End If
+
+        If (ListView_Bookmarks.BackColor <> mLastBackColor OrElse ListView_Bookmarks.ForeColor <> mLastForeColor) Then
+            mLastBackColor = ListView_Bookmarks.BackColor
+            mLastForeColor = ListView_Bookmarks.ForeColor
+
+            bIgnoreEvent = True
+            UpdateListViewColors()
+            bIgnoreEvent = False
+        End If
+    End Sub
+
+    Private Sub UpdateListViewColors()
+        Try
+            ListView_Bookmarks.SuspendLayout()
+
+            For i = 0 To ListView_Bookmarks.Items.Count - 1
+                If (ListView_Bookmarks.Items(i).ForeColor <> ListView_Bookmarks.ForeColor OrElse
+                            ListView_Bookmarks.Items(i).BackColor <> ListView_Bookmarks.BackColor) Then
+                    ListView_Bookmarks.Items(i).ForeColor = ListView_Bookmarks.ForeColor
+                    ListView_Bookmarks.Items(i).BackColor = ListView_Bookmarks.BackColor
+                End If
+            Next
+
+            Dim mForeColor As Color
+            Dim mBackColor As Color
+            If (ClassControlStyle.m_IsInvertedColors) Then
+                'Darker Color.RoyalBlue. Orginal Color.RoyalBlue: Color.FromArgb(65, 105, 150) 
+                mForeColor = Color.White
+                mBackColor = Color.FromArgb(36, 59, 127)
+            Else
+                mForeColor = Color.Black
+                mBackColor = Color.LightBlue
+            End If
+
+            For Each i As Integer In ListView_Bookmarks.SelectedIndices
+                If (ListView_Bookmarks.Items(i).ForeColor <> mForeColor OrElse
+                         ListView_Bookmarks.Items(i).BackColor <> mBackColor) Then
+                    ListView_Bookmarks.Items(i).ForeColor = mForeColor
+                    ListView_Bookmarks.Items(i).BackColor = mBackColor
+                End If
+            Next
+        Finally
+            ListView_Bookmarks.ResumeLayout()
+        End Try
+    End Sub
+
 
     Public Sub RefreshBookmarkIconBar()
         RefreshBookmarkIconBar(g_mFormMain.g_ClassTabControl.m_ActiveTab)
