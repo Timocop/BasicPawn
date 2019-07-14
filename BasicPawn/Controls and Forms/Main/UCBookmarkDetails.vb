@@ -514,6 +514,18 @@ Public Class UCBookmarkDetails
                     Exit While
                 End If
 
+                If (IO.File.Exists(sFile)) Then
+                    Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
+                    mTab.OpenFileTab(sFile)
+                    mTab.SelectTab()
+
+                    bForceEnd = True
+                End If
+
+                If (bForceEnd) Then
+                    Continue While
+                End If
+
                 For Each mInclude In g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IncludeFilesFull.ToArray
                     If (String.IsNullOrEmpty(mInclude.Value) OrElse Not IO.File.Exists(mInclude.Value)) Then
                         Continue For
