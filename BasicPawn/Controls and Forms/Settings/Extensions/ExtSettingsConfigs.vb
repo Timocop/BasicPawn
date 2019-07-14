@@ -1129,7 +1129,7 @@ Partial Public Class FormSettings
     Private Sub Button_KnownFileRemove_Click(sender As Object, e As EventArgs) Handles Button_KnownFileRemove.Click
         Try
             For Each mListViewItem As ListViewItem In ListView_KnownFiles.SelectedItems
-                Dim sFile As String = CStr(mListViewItem.SubItems(0).Text)
+                Dim sFile As String = mListViewItem.SubItems(0).Text
 
                 ClassConfigs.ClassKnownConfigs.m_KnownConfigByFile(sFile) = Nothing
             Next

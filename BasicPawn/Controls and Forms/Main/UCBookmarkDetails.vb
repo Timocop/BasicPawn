@@ -635,7 +635,7 @@ Public Class UCBookmarkDetails
             Dim lBookmarks As New List(Of STRUC_BOOKMARK)
 
             For Each mItem In mTab.m_IncludeFiles
-                lBookmarks.AddRange(g_mBookmarkCache.FindAll(Function(x As STRUC_BOOKMARK) x.sFile.ToLower = CStr(mItem.Value).ToLower))
+                lBookmarks.AddRange(g_mBookmarkCache.FindAll(Function(x As STRUC_BOOKMARK) x.sFile.ToLower = mItem.Value.ToLower))
             Next
 
             Return lBookmarks.ToArray

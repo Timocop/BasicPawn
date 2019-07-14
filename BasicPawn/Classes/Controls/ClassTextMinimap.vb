@@ -220,8 +220,8 @@ Public Class ClassTextMinimap
         If (bUpdateView) Then
             'Update Alpha View
             g_mPanel.SuspendLayout()
-            g_mPanel.Location = New Point(0, CInt(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.TextView.FirstPhysicalLine * iPointLabelLineSize))
-            g_mPanel.Size = New Size(VIEW_WIDTH_OFFSET, CInt(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.TextView.VisibleLineCount * iPointLabelLineSize))
+            g_mPanel.Location = New Point(0, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.TextView.FirstPhysicalLine * iPointLabelLineSize)
+            g_mPanel.Size = New Size(VIEW_WIDTH_OFFSET, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.TextView.VisibleLineCount * iPointLabelLineSize)
             g_mPanel.ResumeLayout()
 
             If (bAutoScrollToView) Then

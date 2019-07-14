@@ -199,14 +199,14 @@ Public Class FormReportDetails
                 End If
 
                 For Each mInclude In mFormMain.g_ClassTabControl.m_ActiveTab.m_IncludeFilesFull.ToArray
-                    If (String.IsNullOrEmpty(CStr(mInclude.Value)) OrElse Not IO.File.Exists(CStr(mInclude.Value))) Then
+                    If (String.IsNullOrEmpty(mInclude.Value) OrElse Not IO.File.Exists(mInclude.Value)) Then
                         Continue For
                     End If
 
-                    Dim sIncludePath As String = CStr(mInclude.Value).Replace("/"c, "\"c)
+                    Dim sIncludePath As String = mInclude.Value.Replace("/"c, "\"c)
                     If (sIncludePath.ToLower = sFile.ToLower OrElse (bGuessTab AndAlso sIncludePath.ToLower.EndsWith(sFile.ToLower))) Then
                         Dim mTab = mFormMain.g_ClassTabControl.AddTab()
-                        mTab.OpenFileTab(CStr(mInclude.Value))
+                        mTab.OpenFileTab(mInclude.Value)
                         mTab.SelectTab()
 
                         bForceEnd = True

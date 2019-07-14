@@ -493,7 +493,7 @@ Public Class ClassConfigs
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Config", "IncludeDirectory", mConfig.g_sIncludeFolders))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Config", "OutputDirectory", mConfig.g_sOutputFolder))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Config", "Autoload", If(mConfig.g_bAutoload, "1", "0")))
-                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Config", "DefaultPaths", CStr(mConfig.g_sDefaultPaths)))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Config", "DefaultPaths", mConfig.g_sDefaultPaths))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Config", "ModType", CStr(mConfig.g_iLanguage)))
 
                 'Compiler Options
