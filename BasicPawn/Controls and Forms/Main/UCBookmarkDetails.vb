@@ -21,8 +21,12 @@ Imports ICSharpCode.TextEditor.Document
 Public Class UCBookmarkDetails
     Private g_mFormMain As FormMain
 
+    Private g_bLoaded As Boolean = False
+
     Public g_ClassBookmarks As ClassBookmarks
     Public g_ClassActions As ClassActions
+
+    Property m_ShowLocalTabsOnly As Boolean
 
     Public Sub New(f As FormMain)
         g_mFormMain = f
@@ -49,7 +53,9 @@ Public Class UCBookmarkDetails
         ClassTools.ClassForms.SetDoubleBufferingAllChilds(Me, True)
     End Sub
 
-    Property m_ShowLocalTabsOnly As Boolean
+    Private Sub UCBookmarkDetails_Load(sender As Object, e As EventArgs) Handles Me.Load
+        g_bLoaded = True
+    End Sub
 
     Private Sub ToolStripMenuItem_Goto_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Goto.Click
         BookmarkGotoSelected()
@@ -201,7 +207,7 @@ Public Class UCBookmarkDetails
         Static mLastBackColor As Color = Color.White
         Static mLastForeColor As Color = Color.Black
 
-        If (bIgnoreEvent) Then
+        If (Not g_bLoaded OrElse bIgnoreEvent) Then
             Return
         End If
 
@@ -216,6 +222,10 @@ Public Class UCBookmarkDetails
     End Sub
 
     Private Sub UpdateListViewColors()
+        If (ListView_Bookmarks.Items.Count < 1) Then
+            Return
+        End If
+
         Try
             ListView_Bookmarks.SuspendLayout()
 
