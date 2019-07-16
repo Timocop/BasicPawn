@@ -1276,23 +1276,17 @@ Public Class ClassTabControl
                                 bPushNewline = True
                             End If
 
-                            With New ICSharpCode.TextEditor.Actions.Return
-                                .Execute(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea)
-                            End With
+                            Call (New ICSharpCode.TextEditor.Actions.Return).Execute(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea)
 
                             If (bPushNewline) Then
                                 Dim mLastCaretLocation = g_mSourceTextEditor.ActiveTextAreaControl.Caret.Position
 
-                                With New ICSharpCode.TextEditor.Actions.Return
-                                    .Execute(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea)
-                                End With
+                                Call (New ICSharpCode.TextEditor.Actions.Return).Execute(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea)
 
                                 g_mSourceTextEditor.ActiveTextAreaControl.Caret.Position = mLastCaretLocation
                             End If
 
-                            With New ICSharpCode.TextEditor.Actions.Tab
-                                .Execute(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea)
-                            End With
+                            Call (New ICSharpCode.TextEditor.Actions.Tab).Execute(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea)
                         Finally
                             g_mSourceTextEditor.Document.UndoStack.EndUndoGroup()
                             g_mSourceTextEditor.Refresh()

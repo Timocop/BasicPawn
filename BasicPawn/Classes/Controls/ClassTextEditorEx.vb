@@ -34,10 +34,8 @@ Public Class TextEditorControlEx
         End If
 
         If (e = (Keys.LButton Or Keys.Back Or Keys.Shift)) Then
-            'Block the default glitchy ShiftTab version and use this instead.
-            With New FixedShiftTab
-                .Execute(Me.ActiveTextAreaControl.TextArea)
-            End With
+            'Block the default glitchy ShiftTab version and use this instead. 
+            Call (New FixedShiftTab).Execute(Me.ActiveTextAreaControl.TextArea)
 
             Return True
         End If

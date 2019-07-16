@@ -197,9 +197,7 @@ Partial Public Class FormMain
                 Throw New ArgumentException("Last Pre-Process source invalid")
             End If
 
-            With New ClassDebuggerRunner.ClassPreProcess(Nothing)
-                .FixPreProcessFiles(sPreSource)
-            End With
+            Call (New ClassDebuggerRunner.ClassPreProcess(Nothing)).FixPreProcessFiles(sPreSource)
 
             Using i As New SaveFileDialog
                 i.Filter = "All supported files|*.sp;*.inc;*.sma|SourcePawn|*.sp|Include|*.inc|AMX Mod X|*.sma|Pawn (Not fully supported)|*.pwn;*.p|All files|*.*"

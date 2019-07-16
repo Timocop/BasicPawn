@@ -49,9 +49,7 @@ Partial Public Class FormMain
     End Sub
 
     Private Sub ToolStripMenuItem_OutlineToggleAll_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_OutlineToggleAll.Click
-        With New ICSharpCode.TextEditor.Actions.ToggleAllFoldings
-            .Execute(g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea)
-        End With
+        Call (New ICSharpCode.TextEditor.Actions.ToggleAllFoldings).Execute(g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea)
     End Sub
 
     Private Sub ToolStripMenuItem_OutlineCollapseAll_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_OutlineCollapseAll.Click
@@ -63,9 +61,7 @@ Partial Public Class FormMain
     End Sub
 
     Private Sub ToolStripMenuItem_Comment_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Comment.Click
-        With New ICSharpCode.TextEditor.Actions.ToggleComment
-            .Execute(g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea)
-        End With
+        Call (New ICSharpCode.TextEditor.Actions.ToggleComment).Execute(g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea)
     End Sub
 
     Private Sub ToolStripMenuItem_DebuggerBreakpointInsert_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_DebuggerBreakpointInsert.Click
