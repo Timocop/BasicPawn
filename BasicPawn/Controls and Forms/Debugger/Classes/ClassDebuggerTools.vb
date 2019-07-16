@@ -794,7 +794,8 @@ Public Class ClassDebuggerTools
                     End If
                 End If
 
-                mActiveTextEditor.Refresh()
+                mActiveTextEditor.InvalidateTextArea()
+
                 mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("A {0} has been added!", sMsgPointName))
             End Sub
 
@@ -808,51 +809,10 @@ Public Class ClassDebuggerTools
 
                 Dim iCaretOffset As Integer = mActiveTextEditor.ActiveTextAreaControl.TextArea.Caret.Offset
 
-                mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
+                Try
+                    mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
 
-                Dim lRemovedBreakpoints As New List(Of Integer)
-
-                For i = lPointList.Count - 1 To 0 Step -1
-                    Dim iIndex As Integer = lPointList(i).iOffset
-                    Dim iLength As Integer = lPointList(i).iLength
-                    Dim iTotalLength As Integer = lPointList(i).iTotalLength
-                    Dim iLine As Integer = lPointList(i).iLine
-                    Dim sFullFunction As String = lPointList(i).sArguments
-
-                    If (iIndex > iCaretOffset OrElse (iIndex + iLength) < iCaretOffset) Then
-                        Continue For
-                    End If
-
-                    mActiveTextEditor.Document.Replace(iIndex, iTotalLength, sFullFunction)
-                    If (mActiveTextEditor.Document.TextLength > iIndex AndAlso mActiveTextEditor.Document.TextContent(iIndex) = ";"c) Then
-                        mActiveTextEditor.Document.Remove(iIndex, 1)
-                    End If
-
-                    lRemovedBreakpoints.Add(iLine)
-
-                    Exit For
-                Next
-
-                lRemovedBreakpoints.Reverse()
-                For Each i As Integer In lRemovedBreakpoints
-                    mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & String.Format("{0} removed at line: {1}", sMsgPointName, i))
-                Next
-
-                mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
-
-                mActiveTextEditor.Refresh()
-            End Sub
-
-            Public Shared Sub TextEditorRemoveAll(mFormMain As FormMain, mActiveTextEditor As TextEditorControlEx, mAction As Action(Of String, ClassSyntaxTools.ENUM_LANGUAGE_TYPE, List(Of STRUC_DEBUGGER_ITEM)), sMsgPointName As String)
-                mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
-
-                mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("Removing all debugger {0}s...", sMsgPointName))
-
-                Dim lRemovedBreakpoints As New List(Of Integer)
-
-                While True
-                    Dim lPointList As New List(Of STRUC_DEBUGGER_ITEM)
-                    mAction.Invoke(mActiveTextEditor.Document.TextContent, mFormMain.g_ClassTabControl.m_ActiveTab.m_Language, lPointList)
+                    Dim lRemovedBreakpoints As New List(Of Integer)
 
                     For i = lPointList.Count - 1 To 0 Step -1
                         Dim iIndex As Integer = lPointList(i).iOffset
@@ -861,6 +821,10 @@ Public Class ClassDebuggerTools
                         Dim iLine As Integer = lPointList(i).iLine
                         Dim sFullFunction As String = lPointList(i).sArguments
 
+                        If (iIndex > iCaretOffset OrElse (iIndex + iLength) < iCaretOffset) Then
+                            Continue For
+                        End If
+
                         mActiveTextEditor.Document.Replace(iIndex, iTotalLength, sFullFunction)
                         If (mActiveTextEditor.Document.TextLength > iIndex AndAlso mActiveTextEditor.Document.TextContent(iIndex) = ";"c) Then
                             mActiveTextEditor.Document.Remove(iIndex, 1)
@@ -868,40 +832,82 @@ Public Class ClassDebuggerTools
 
                         lRemovedBreakpoints.Add(iLine)
 
-                        Dim bDoRebuild As Boolean = False
-                        For j = lPointList.Count - 1 To 0 Step -1
-                            If (i = j) Then
-                                Continue For
-                            End If
-
-                            Dim jIndex As Integer = lPointList(j).iOffset
-                            Dim jTotalLength As Integer = lPointList(j).iTotalLength
-                            If (iIndex < jIndex OrElse iIndex > (jIndex + jTotalLength)) Then
-                                Continue For
-                            End If
-
-                            bDoRebuild = True
-                            Exit For
-                        Next
-
-                        If (bDoRebuild) Then
-                            Continue While
-                        Else
-                            Continue For
-                        End If
+                        Exit For
                     Next
 
-                    Exit While
-                End While
+                    lRemovedBreakpoints.Reverse()
+                    For Each i As Integer In lRemovedBreakpoints
+                        mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & String.Format("{0} removed at line: {1}", sMsgPointName, i))
+                    Next
+                Finally
+                    mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
 
-                lRemovedBreakpoints.Reverse()
-                For Each i As Integer In lRemovedBreakpoints
-                    mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & String.Format("{0} removed at line: {1}", sMsgPointName, i))
-                Next
+                    mActiveTextEditor.InvalidateTextArea()
+                End Try
+            End Sub
 
-                mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
+            Public Shared Sub TextEditorRemoveAll(mFormMain As FormMain, mActiveTextEditor As TextEditorControlEx, mAction As Action(Of String, ClassSyntaxTools.ENUM_LANGUAGE_TYPE, List(Of STRUC_DEBUGGER_ITEM)), sMsgPointName As String)
+                Try
+                    mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
 
-                mActiveTextEditor.Refresh()
+                    mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("Removing all debugger {0}s...", sMsgPointName))
+
+                    Dim lRemovedBreakpoints As New List(Of Integer)
+
+                    While True
+                        Dim lPointList As New List(Of STRUC_DEBUGGER_ITEM)
+                        mAction.Invoke(mActiveTextEditor.Document.TextContent, mFormMain.g_ClassTabControl.m_ActiveTab.m_Language, lPointList)
+
+                        For i = lPointList.Count - 1 To 0 Step -1
+                            Dim iIndex As Integer = lPointList(i).iOffset
+                            Dim iLength As Integer = lPointList(i).iLength
+                            Dim iTotalLength As Integer = lPointList(i).iTotalLength
+                            Dim iLine As Integer = lPointList(i).iLine
+                            Dim sFullFunction As String = lPointList(i).sArguments
+
+                            mActiveTextEditor.Document.Replace(iIndex, iTotalLength, sFullFunction)
+                            If (mActiveTextEditor.Document.TextLength > iIndex AndAlso mActiveTextEditor.Document.TextContent(iIndex) = ";"c) Then
+                                mActiveTextEditor.Document.Remove(iIndex, 1)
+                            End If
+
+                            lRemovedBreakpoints.Add(iLine)
+
+                            Dim bDoRebuild As Boolean = False
+                            For j = lPointList.Count - 1 To 0 Step -1
+                                If (i = j) Then
+                                    Continue For
+                                End If
+
+                                Dim jIndex As Integer = lPointList(j).iOffset
+                                Dim jTotalLength As Integer = lPointList(j).iTotalLength
+                                If (iIndex < jIndex OrElse iIndex > (jIndex + jTotalLength)) Then
+                                    Continue For
+                                End If
+
+                                bDoRebuild = True
+                                Exit For
+                            Next
+
+                            If (bDoRebuild) Then
+                                Continue While
+                            Else
+                                Continue For
+                            End If
+                        Next
+
+                        Exit While
+                    End While
+
+                    lRemovedBreakpoints.Reverse()
+                    For Each i As Integer In lRemovedBreakpoints
+                        mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & String.Format("{0} removed at line: {1}", sMsgPointName, i))
+                    Next
+                Finally
+                    mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
+
+                    mActiveTextEditor.InvalidateTextArea()
+                End Try
+
                 mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("All debugger {0}s removed!", sMsgPointName))
             End Sub
 

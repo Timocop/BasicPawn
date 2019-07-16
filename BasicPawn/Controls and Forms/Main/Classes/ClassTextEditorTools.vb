@@ -248,7 +248,8 @@ Public Class ClassTextEditorTools
             Next
         Finally
             mTab.m_TextEditor.Document.UndoStack.EndUndoGroup()
-            mTab.m_TextEditor.Refresh()
+
+            mTab.m_TextEditor.InvalidateTextArea()
         End Try
 
         g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("{0} lines of code reindented!", iChangedLines), False, True, True)
@@ -315,7 +316,8 @@ Public Class ClassTextEditorTools
             Next
         Finally
             mTab.m_TextEditor.Document.UndoStack.EndUndoGroup()
-            mTab.m_TextEditor.Refresh()
+
+            mTab.m_TextEditor.InvalidateTextArea()
         End Try
 
         g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("{0} lines with ending whitespace trimmed!", iChangedLines), False, True, True)

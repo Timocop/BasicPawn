@@ -468,7 +468,8 @@ Public Class ClassTabControl
 
                     m_Tab(iIndex).m_Changed = False
                     m_Tab(iIndex).g_ClassLineState.SaveStates()
-                    m_Tab(iIndex).m_TextEditor.Refresh()
+
+                    m_Tab(iIndex).m_TextEditor.InvalidateTextArea()
 
                     g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "User saved file to: " & m_Tab(iIndex).m_File, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(m_Tab(iIndex).m_File))
 
@@ -487,7 +488,8 @@ Public Class ClassTabControl
             m_Tab(iIndex).m_FileCachedWriteDate = Date.MaxValue
             m_Tab(iIndex).m_Changed = False
             m_Tab(iIndex).g_ClassLineState.SaveStates()
-            m_Tab(iIndex).m_TextEditor.Refresh()
+
+            m_Tab(iIndex).m_TextEditor.InvalidateTextArea()
 
             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "User saved file to: " & m_Tab(iIndex).m_File, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(m_Tab(iIndex).m_File))
 
@@ -533,7 +535,8 @@ Public Class ClassTabControl
 
                             m_Tab(iIndex).m_Changed = False
                             m_Tab(iIndex).g_ClassLineState.SaveStates()
-                            m_Tab(iIndex).m_TextEditor.Refresh()
+
+                            m_Tab(iIndex).m_TextEditor.InvalidateTextArea()
 
                             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "User saved file to: " & m_Tab(iIndex).m_File, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(m_Tab(iIndex).m_File))
 
@@ -554,7 +557,8 @@ Public Class ClassTabControl
                     m_Tab(iIndex).m_FileCachedWriteDate = Date.MaxValue
                     m_Tab(iIndex).m_Changed = False
                     m_Tab(iIndex).g_ClassLineState.SaveStates()
-                    m_Tab(iIndex).m_TextEditor.Refresh()
+
+                    m_Tab(iIndex).m_TextEditor.InvalidateTextArea()
 
                     g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "User saved file to: " & m_Tab(iIndex).m_File, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(m_Tab(iIndex).m_File))
 
@@ -1289,7 +1293,8 @@ Public Class ClassTabControl
                             Call (New ICSharpCode.TextEditor.Actions.Tab).Execute(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea)
                         Finally
                             g_mSourceTextEditor.Document.UndoStack.EndUndoGroup()
-                            g_mSourceTextEditor.Refresh()
+
+                            g_mSourceTextEditor.InvalidateTextArea()
                         End Try
                 End Select
             Catch ex As Exception

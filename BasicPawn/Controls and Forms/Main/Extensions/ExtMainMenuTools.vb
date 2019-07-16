@@ -101,7 +101,8 @@ Partial Public Class FormMain
                 Next
             Finally
                 g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.UndoStack.EndUndoGroup()
-                g_ClassTabControl.m_ActiveTab.m_TextEditor.Refresh()
+
+                g_ClassTabControl.m_ActiveTab.m_TextEditor.InvalidateTextArea()
             End Try
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
@@ -172,7 +173,8 @@ Partial Public Class FormMain
                 Next
             Finally
                 g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.UndoStack.EndUndoGroup()
-                g_ClassTabControl.m_ActiveTab.m_TextEditor.Refresh()
+
+                g_ClassTabControl.m_ActiveTab.m_TextEditor.InvalidateTextArea()
             End Try
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
@@ -243,7 +245,8 @@ Partial Public Class FormMain
                 Next
             Finally
                 g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.UndoStack.EndUndoGroup()
-                g_ClassTabControl.m_ActiveTab.m_TextEditor.Refresh()
+
+                g_ClassTabControl.m_ActiveTab.m_TextEditor.InvalidateTextArea()
             End Try
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)

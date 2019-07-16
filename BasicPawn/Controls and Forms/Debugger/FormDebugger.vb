@@ -243,8 +243,9 @@ Public Class FormDebugger
                 TextEditorControlEx_DebuggerSource.Document.TextContent = sPreSource
                 RichTextBox_DisasmSource.Text = sAsmSource
 
-                TextEditorControlEx_DebuggerSource.Refresh()
-                RichTextBox_DisasmSource.Refresh()
+                TextEditorControlEx_DebuggerSource.InvalidateTextArea()
+
+                RichTextBox_DisasmSource.Invalidate()
 
                 g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.UpdateTextEditorSyntax()
 

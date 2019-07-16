@@ -445,7 +445,8 @@ Public Class UCAutocomplete
                 If (SB_TipText_IntelliSense.Length > 0) Then
                     g_AutocompleteUC.SplitContainer2.Panel1Collapsed = False
                     g_AutocompleteUC.TextEditorControlEx_IntelliSense.Text = SB_TipText_IntelliSense.ToString
-                    g_AutocompleteUC.TextEditorControlEx_IntelliSense.Refresh()
+
+                    g_AutocompleteUC.TextEditorControlEx_IntelliSense.InvalidateTextArea()
                 Else
                     g_AutocompleteUC.SplitContainer2.Panel1Collapsed = True
                 End If
@@ -453,7 +454,8 @@ Public Class UCAutocomplete
                 If (SB_TipText_Autocomplete.Length > 0) Then
                     g_AutocompleteUC.SplitContainer2.Panel2Collapsed = False
                     g_AutocompleteUC.TextEditorControlEx_Autocomplete.Text = SB_TipText_Autocomplete.ToString
-                    g_AutocompleteUC.TextEditorControlEx_Autocomplete.Refresh()
+
+                    g_AutocompleteUC.TextEditorControlEx_Autocomplete.InvalidateTextArea()
                 Else
                     g_AutocompleteUC.SplitContainer2.Panel2Collapsed = True
                 End If
@@ -517,7 +519,7 @@ Public Class UCAutocomplete
 
                     If (Not g_AutocompleteUC.g_mFormMain.g_mFormToolTip.Visible) Then
                         g_AutocompleteUC.g_mFormMain.g_mFormToolTip.Visible = True
-                        g_AutocompleteUC.g_mFormMain.g_mFormToolTip.Refresh()
+                        g_AutocompleteUC.g_mFormMain.g_mFormToolTip.Invalidate()
                     End If
                 Else
                     If (g_AutocompleteUC.g_mFormMain.g_mFormToolTip.Visible) Then
@@ -911,7 +913,8 @@ Public Class UCAutocomplete
                 End If
             Finally
                 mTab.m_TextEditor.Document.UndoStack.EndUndoGroup()
-                mTab.m_TextEditor.Refresh()
+
+                mTab.m_TextEditor.InvalidateTextArea()
             End Try
         End Sub
 

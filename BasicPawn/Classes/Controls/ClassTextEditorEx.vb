@@ -43,6 +43,11 @@ Public Class TextEditorControlEx
         Return MyBase.ProcessCmdKey(msg, e)
     End Function
 
+    Public Sub InvalidateTextArea()
+        Me.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.WholeTextArea))
+        Me.Document.CommitUpdate()
+    End Sub
+
     Public Class MoveSelectedLine
         Inherits AbstractEditAction
 

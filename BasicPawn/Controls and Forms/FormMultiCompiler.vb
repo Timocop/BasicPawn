@@ -201,7 +201,7 @@ Public Class FormMultiCompiler
                 End If
 
                 ClassThread.ExecEx(Of Object)(ProgressBar_Compiled, Sub() ProgressBar_Compiled.Increment(1))
-                ClassThread.ExecEx(Of Object)(Me, Sub() Me.Refresh())
+                ClassThread.ExecEx(Of Object)(Me, Sub() Me.Invalidate())
             Next
 
             ClassThread.ExecAsync(Me, Sub() Me.Close())

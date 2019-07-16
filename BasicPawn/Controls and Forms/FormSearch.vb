@@ -250,7 +250,8 @@ Public Class FormSearch
                         End If
 
                         g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.Replace(mResults(i).iLocation, mResults(i).iLength, sReplace)
-                        g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Refresh()
+
+                        g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.InvalidateTextArea()
 
                         SetTextEditorSelection(g_mFormMain.g_ClassTabControl.m_ActiveTab, mResults(i).iLocation, sReplace.Length, True)
                         Return
@@ -268,7 +269,8 @@ Public Class FormSearch
                         End If
 
                         g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.Replace(mResults(i).iLocation, mResults(i).iLength, sReplace)
-                        g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Refresh()
+
+                        g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.InvalidateTextArea()
 
                         SetTextEditorSelection(g_mFormMain.g_ClassTabControl.m_ActiveTab, mResults(i).iLocation, sReplace.Length, False)
                         Return
@@ -303,9 +305,9 @@ Public Class FormSearch
             Return
         End If
 
-        Try
-            Dim iOffset As Integer = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Caret.Offset
+        Dim iOffset As Integer = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Caret.Offset
 
+        Try
             g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.UndoStack.StartUndoGroup()
 
             For i = mResults.Length - 1 To 0 Step -1
@@ -342,11 +344,12 @@ Public Class FormSearch
 
                 iReplaceCount += 1
             Next
-
-            g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.UndoStack.EndUndoGroup()
-            g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Refresh()
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
+        Finally
+            g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.UndoStack.EndUndoGroup()
+
+            g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.InvalidateTextArea()
         End Try
 
         ToolStripStatusLabel_Status.Text = String.Format("{0} Items replaced!", iReplaceCount)

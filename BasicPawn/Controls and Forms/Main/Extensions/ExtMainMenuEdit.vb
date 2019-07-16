@@ -58,7 +58,7 @@ Partial Public Class FormMain
             g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.Insert(iLineOffset, g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.GetText(iLineOffset, iLineLen) & Environment.NewLine)
         End If
 
-        g_ClassTabControl.m_ActiveTab.m_TextEditor.Refresh()
+        g_ClassTabControl.m_ActiveTab.m_TextEditor.InvalidateTextArea()
     End Sub
 
     Private Sub ToolStripMenuItem_EditLineUp_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_EditLineUp.Click

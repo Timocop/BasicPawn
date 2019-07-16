@@ -1079,14 +1079,14 @@ Partial Public Class FormSettings
     Public Sub MarkChanged()
         If (Not g_bIgnoreChange AndAlso Not TabPage_Configs.Text.EndsWith("*"c)) Then
             TabPage_Configs.Text = TabPage_Configs.Text & "*"
-            TabControl1.Refresh()
+            TabControl1.Invalidate()
         End If
     End Sub
 
     Public Sub ResetChanged()
         If (TabPage_Configs.Text.EndsWith("*"c)) Then
             TabPage_Configs.Text = TabPage_Configs.Text.TrimEnd("*"c)
-            TabControl1.Refresh()
+            TabControl1.Invalidate()
         End If
     End Sub
 

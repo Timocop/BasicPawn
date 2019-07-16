@@ -61,7 +61,7 @@ Public Class FormProgress
             ProgressBar_Progress.Value = value
             ProgressBar_Progress.Maximum = tmpInt
 
-            Me.Refresh()
+            Me.Invalidate()
         End Set
     End Property
 
