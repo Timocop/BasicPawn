@@ -49,13 +49,13 @@ Partial Public Class FormMain
             Dim sText As String = g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.SelectedText
             Dim iCaretOffset As Integer = g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Offset
 
-            g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.Insert(iCaretOffset, sText)
+            g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.Insert(iCaretOffset, sText)
         Else
             Dim iCaretOffset As Integer = g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Offset
-            Dim iLineOffset As Integer = g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iCaretOffset).Offset
-            Dim iLineLen As Integer = g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iCaretOffset).Length
+            Dim iLineOffset As Integer = g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.GetLineSegmentForOffset(iCaretOffset).Offset
+            Dim iLineLen As Integer = g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.GetLineSegmentForOffset(iCaretOffset).Length
 
-            g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.Insert(iLineOffset, g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Document.GetText(iLineOffset, iLineLen) & Environment.NewLine)
+            g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.Insert(iLineOffset, g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.GetText(iLineOffset, iLineLen) & Environment.NewLine)
         End If
 
         g_ClassTabControl.m_ActiveTab.m_TextEditor.InvalidateTextArea()

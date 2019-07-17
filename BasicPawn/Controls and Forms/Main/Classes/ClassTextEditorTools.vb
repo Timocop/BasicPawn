@@ -371,8 +371,8 @@ Public Class ClassTextEditorTools
 
         Dim iOffset As Integer = mActiveTextEditor.ActiveTextAreaControl.TextArea.Caret.Offset
         Dim iPosition As Integer = mActiveTextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column
-        Dim iLineOffset As Integer = mActiveTextEditor.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iOffset).Offset
-        Dim iLineLen As Integer = mActiveTextEditor.ActiveTextAreaControl.Document.GetLineSegmentForOffset(iOffset).Length
+        Dim iLineOffset As Integer = mActiveTextEditor.Document.GetLineSegmentForOffset(iOffset).Offset
+        Dim iLineLen As Integer = mActiveTextEditor.Document.GetLineSegmentForOffset(iOffset).Length
 
         Dim sWordLeft As String = ""
         Dim sWordRight As String = ""

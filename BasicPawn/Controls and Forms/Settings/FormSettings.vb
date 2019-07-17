@@ -127,10 +127,10 @@ Public Class FormSettings
         Next
 
         For j = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1
-            g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
-            g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.IndentationSize = If(ClassSettings.g_iSettingsTabsToSpaces > 0, ClassSettings.g_iSettingsTabsToSpaces, 4)
-            g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.ConvertTabsToSpaces = (ClassSettings.g_iSettingsTabsToSpaces > 0)
-            g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.Document.TextEditorProperties.IsIconBarVisible = ClassSettings.g_bSettingsIconBar
+            g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
+            g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.TextEditorProperties.IndentationSize = If(ClassSettings.g_iSettingsTabsToSpaces > 0, ClassSettings.g_iSettingsTabsToSpaces, 4)
+            g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.TextEditorProperties.ConvertTabsToSpaces = (ClassSettings.g_iSettingsTabsToSpaces > 0)
+            g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.TextEditorProperties.IsIconBarVisible = ClassSettings.g_bSettingsIconBar
 
             g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.InvalidateTextArea()
         Next

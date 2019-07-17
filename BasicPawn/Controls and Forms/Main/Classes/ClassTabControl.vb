@@ -897,10 +897,10 @@ Public Class ClassTabControl
             g_mSourceTextEditor.Margin = New Padding(0)
             g_mSourceTextEditor.Padding = New Padding(0)
 
-            g_mSourceTextEditor.Document.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
-            g_mSourceTextEditor.Document.TextEditorProperties.IndentationSize = If(ClassSettings.g_iSettingsTabsToSpaces > 0, ClassSettings.g_iSettingsTabsToSpaces, 4)
-            g_mSourceTextEditor.Document.TextEditorProperties.ConvertTabsToSpaces = (ClassSettings.g_iSettingsTabsToSpaces > 0)
-            g_mSourceTextEditor.Document.TextEditorProperties.IsIconBarVisible = ClassSettings.g_bSettingsIconBar
+            g_mSourceTextEditor.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
+            g_mSourceTextEditor.TextEditorProperties.IndentationSize = If(ClassSettings.g_iSettingsTabsToSpaces > 0, ClassSettings.g_iSettingsTabsToSpaces, 4)
+            g_mSourceTextEditor.TextEditorProperties.ConvertTabsToSpaces = (ClassSettings.g_iSettingsTabsToSpaces > 0)
+            g_mSourceTextEditor.TextEditorProperties.IsIconBarVisible = ClassSettings.g_bSettingsIconBar
 
             g_mSourceTextEditor.Parent = Me
             g_mSourceTextEditor.Dock = DockStyle.Fill
@@ -1246,12 +1246,12 @@ Public Class ClassTabControl
                         End If
 
                         Dim iOffset As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Caret.Offset
-                        Dim iLenght As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.TextLength
+                        Dim iLenght As Integer = g_mSourceTextEditor.Document.TextLength
                         If (iOffset - 1 < 0 OrElse iOffset > iLenght - 1) Then
                             Exit Select
                         End If
 
-                        If (g_mSourceTextEditor.ActiveTextAreaControl.Document.GetCharAt(iOffset - 1) <> "{"c) Then
+                        If (g_mSourceTextEditor.Document.GetCharAt(iOffset - 1) <> "{"c) Then
                             Exit Select
                         End If
 
@@ -1262,8 +1262,8 @@ Public Class ClassTabControl
 
                             Dim bPushNewline As Boolean = False
 
-                            If (g_mSourceTextEditor.ActiveTextAreaControl.Document.GetCharAt(iOffset) <> "}"c) Then
-                                Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(g_mSourceTextEditor.ActiveTextAreaControl.Document.TextContent, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
+                            If (g_mSourceTextEditor.Document.GetCharAt(iOffset) <> "}"c) Then
+                                Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(g_mSourceTextEditor.Document.TextContent, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
 
                                 'Check if some end braces are missing. If so, add one.
                                 Dim iRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
@@ -1273,7 +1273,7 @@ Public Class ClassTabControl
                                 End If
 
                                 If (iBraceLevel > 0) Then
-                                    g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset, "}")
+                                    g_mSourceTextEditor.Document.Insert(iOffset, "}")
                                     bPushNewline = True
                                 End If
                             Else
@@ -1311,58 +1311,58 @@ Public Class ClassTabControl
                 Select Case True
                     Case (sLastAutoClosedKey = """" AndAlso e.KeyChar = """"c)
                         Dim iOffset As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Caret.Offset
-                        Dim iLenght As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.TextLength
+                        Dim iLenght As Integer = g_mSourceTextEditor.Document.TextLength
                         If (iOffset > iLenght - 1) Then
                             Exit Select
                         End If
 
-                        If (g_mSourceTextEditor.ActiveTextAreaControl.Document.GetCharAt(iOffset) <> """"c) Then
+                        If (g_mSourceTextEditor.Document.GetCharAt(iOffset) <> """"c) Then
                             Exit Select
                         End If
 
-                        g_mSourceTextEditor.ActiveTextAreaControl.Document.Remove(iOffset, 1)
+                        g_mSourceTextEditor.Document.Remove(iOffset, 1)
 
                     Case (sLastAutoClosedKey = "'" AndAlso e.KeyChar = "'"c)
                         Dim iOffset As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Caret.Offset
-                        Dim iLenght As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.TextLength
+                        Dim iLenght As Integer = g_mSourceTextEditor.Document.TextLength
                         If (iOffset > iLenght - 1) Then
                             Exit Select
                         End If
 
-                        If (g_mSourceTextEditor.ActiveTextAreaControl.Document.GetCharAt(iOffset) <> "'"c) Then
+                        If (g_mSourceTextEditor.Document.GetCharAt(iOffset) <> "'"c) Then
                             Exit Select
                         End If
 
-                        g_mSourceTextEditor.ActiveTextAreaControl.Document.Remove(iOffset, 1)
+                        g_mSourceTextEditor.Document.Remove(iOffset, 1)
 
                     Case (e.KeyChar = """"c)
                         Dim iOffset As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Caret.Offset
-                        If (iOffset > 0 AndAlso g_mSourceTextEditor.ActiveTextAreaControl.Document.GetText(iOffset - 1, 1) = ClassSyntaxTools.g_sEscapeCharacters(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)) Then
+                        If (iOffset > 0 AndAlso g_mSourceTextEditor.Document.GetText(iOffset - 1, 1) = ClassSyntaxTools.g_sEscapeCharacters(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)) Then
                             Exit Select
                         End If
 
-                        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(g_mSourceTextEditor.ActiveTextAreaControl.Document.TextContent, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
+                        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(g_mSourceTextEditor.Document.TextContent, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
                         If (mSourceAnalysis.m_InString(iOffset) OrElse mSourceAnalysis.m_InChar(iOffset)) Then
                             Exit Select
                         End If
 
-                        g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset, """")
+                        g_mSourceTextEditor.Document.Insert(iOffset, """")
 
                         sLastAutoClosedKey = """"c
                         bLastAutoCloseKeySet = True
 
                     Case (e.KeyChar = "'"c)
                         Dim iOffset As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Caret.Offset
-                        If (iOffset > 0 AndAlso g_mSourceTextEditor.ActiveTextAreaControl.Document.GetText(iOffset - 1, 1) = ClassSyntaxTools.g_sEscapeCharacters(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)) Then
+                        If (iOffset > 0 AndAlso g_mSourceTextEditor.Document.GetText(iOffset - 1, 1) = ClassSyntaxTools.g_sEscapeCharacters(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)) Then
                             Exit Select
                         End If
 
-                        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(g_mSourceTextEditor.ActiveTextAreaControl.Document.TextContent, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
+                        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(g_mSourceTextEditor.Document.TextContent, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
                         If (mSourceAnalysis.m_InString(iOffset) OrElse mSourceAnalysis.m_InChar(iOffset)) Then
                             Exit Select
                         End If
 
-                        g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset, "'")
+                        g_mSourceTextEditor.Document.Insert(iOffset, "'")
 
                         sLastAutoClosedKey = "'"c
                         bLastAutoCloseKeySet = True
@@ -1373,60 +1373,60 @@ Public Class ClassTabControl
                 Select Case True
                     Case (sLastAutoClosedKey = "[" AndAlso e.KeyChar = "]"c)
                         Dim iOffset As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Caret.Offset
-                        Dim iLenght As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.TextLength
+                        Dim iLenght As Integer = g_mSourceTextEditor.Document.TextLength
                         If (iOffset > iLenght - 1) Then
                             Exit Select
                         End If
 
-                        If (g_mSourceTextEditor.ActiveTextAreaControl.Document.GetCharAt(iOffset) <> "]"c) Then
+                        If (g_mSourceTextEditor.Document.GetCharAt(iOffset) <> "]"c) Then
                             Exit Select
                         End If
 
-                        g_mSourceTextEditor.ActiveTextAreaControl.Document.Remove(iOffset, 1)
+                        g_mSourceTextEditor.Document.Remove(iOffset, 1)
 
                     Case (sLastAutoClosedKey = "(" AndAlso e.KeyChar = ")"c)
                         Dim iOffset As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Caret.Offset
-                        Dim iLenght As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.TextLength
+                        Dim iLenght As Integer = g_mSourceTextEditor.Document.TextLength
                         If (iOffset > iLenght - 1) Then
                             Exit Select
                         End If
 
-                        If (g_mSourceTextEditor.ActiveTextAreaControl.Document.GetCharAt(iOffset) <> ")"c) Then
+                        If (g_mSourceTextEditor.Document.GetCharAt(iOffset) <> ")"c) Then
                             Exit Select
                         End If
 
-                        g_mSourceTextEditor.ActiveTextAreaControl.Document.Remove(iOffset, 1)
+                        g_mSourceTextEditor.Document.Remove(iOffset, 1)
 
                     Case (sLastAutoClosedKey = "{" AndAlso e.KeyChar = "}"c)
                         Dim iOffset As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Caret.Offset
-                        Dim iLenght As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Document.TextLength
+                        Dim iLenght As Integer = g_mSourceTextEditor.Document.TextLength
                         If (iOffset > iLenght - 1) Then
                             Exit Select
                         End If
 
-                        If (g_mSourceTextEditor.ActiveTextAreaControl.Document.GetCharAt(iOffset) <> "}"c) Then
+                        If (g_mSourceTextEditor.Document.GetCharAt(iOffset) <> "}"c) Then
                             Exit Select
                         End If
 
-                        g_mSourceTextEditor.ActiveTextAreaControl.Document.Remove(iOffset, 1)
+                        g_mSourceTextEditor.Document.Remove(iOffset, 1)
 
                     Case (e.KeyChar = "["c)
                         Dim iOffset As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Caret.Offset
-                        g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset, "]")
+                        g_mSourceTextEditor.Document.Insert(iOffset, "]")
 
                         sLastAutoClosedKey = "["c
                         bLastAutoCloseKeySet = True
 
                     Case (e.KeyChar = "("c)
                         Dim iOffset As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Caret.Offset
-                        g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset, ")")
+                        g_mSourceTextEditor.Document.Insert(iOffset, ")")
 
                         sLastAutoClosedKey = "("c
                         bLastAutoCloseKeySet = True
 
                     Case (e.KeyChar = "{"c)
                         Dim iOffset As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Caret.Offset
-                        g_mSourceTextEditor.ActiveTextAreaControl.Document.Insert(iOffset, "}")
+                        g_mSourceTextEditor.Document.Insert(iOffset, "}")
 
                         sLastAutoClosedKey = "{"c
                         bLastAutoCloseKeySet = True

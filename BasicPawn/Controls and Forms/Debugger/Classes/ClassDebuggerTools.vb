@@ -719,20 +719,20 @@ Public Class ClassDebuggerTools
                     Dim iOffset As Integer = mActiveTextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection(0).Offset
                     Dim iLength As Integer = mActiveTextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection(0).Length
 
-                    mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
-                    mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iOffset + iLength, ")")
-                    mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iOffset, String.Format("{0}(", sPointName))
-                    mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
+                    mActiveTextEditor.Document.UndoStack.StartUndoGroup()
+                    mActiveTextEditor.Document.Insert(iOffset + iLength, ")")
+                    mActiveTextEditor.Document.Insert(iOffset, String.Format("{0}(", sPointName))
+                    mActiveTextEditor.Document.UndoStack.EndUndoGroup()
                 Else
                     Dim sCaretWord As String = mFormMain.g_ClassTextEditorTools.GetCaretWord(True, False, True)
 
                     If (String.IsNullOrEmpty(sCaretWord)) Then
                         Dim iOffset As Integer = mActiveTextEditor.ActiveTextAreaControl.Caret.Offset
-                        mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iOffset, String.Format("{0}();", sPointName))
+                        mActiveTextEditor.Document.Insert(iOffset, String.Format("{0}();", sPointName))
                     Else
                         Dim iOffset As Integer = mActiveTextEditor.ActiveTextAreaControl.Caret.Offset
 
-                        For Each m As Match In Regex.Matches(mActiveTextEditor.ActiveTextAreaControl.Document.TextContent, String.Format("(?<Word>\b{0}\b)((?<Function>\s*\()|(?<Array>\s*\[)|)", Regex.Escape(sCaretWord)))
+                        For Each m As Match In Regex.Matches(mActiveTextEditor.Document.TextContent, String.Format("(?<Word>\b{0}\b)((?<Function>\s*\()|(?<Array>\s*\[)|)", Regex.Escape(sCaretWord)))
                             Dim iStartOffset As Integer = m.Groups("Word").Index
                             Dim iStartLen As Integer = m.Groups("Word").Value.Length
                             Dim bIsFunction As Boolean = m.Groups("Function").Success
@@ -743,7 +743,7 @@ Public Class ClassDebuggerTools
                             End If
 
                             If (bIsArray) Then
-                                Dim sSource As String = mActiveTextEditor.ActiveTextAreaControl.Document.TextContent
+                                Dim sSource As String = mActiveTextEditor.Document.TextContent
                                 Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
 
                                 Dim iFullLength As Integer = 0
@@ -758,13 +758,13 @@ Public Class ClassDebuggerTools
                                     End If
                                 Next
 
-                                mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
-                                mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset + iFullLength, ")")
-                                mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset, String.Format("{0}(", sPointName))
-                                mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
+                                mActiveTextEditor.Document.UndoStack.StartUndoGroup()
+                                mActiveTextEditor.Document.Insert(iStartOffset + iFullLength, ")")
+                                mActiveTextEditor.Document.Insert(iStartOffset, String.Format("{0}(", sPointName))
+                                mActiveTextEditor.Document.UndoStack.EndUndoGroup()
 
                             ElseIf (bIsFunction) Then
-                                Dim sSource As String = mActiveTextEditor.ActiveTextAreaControl.Document.TextContent
+                                Dim sSource As String = mActiveTextEditor.Document.TextContent
                                 Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
 
                                 Dim iFullLength As Integer = 0
@@ -779,16 +779,16 @@ Public Class ClassDebuggerTools
                                     End If
                                 Next
 
-                                mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
-                                mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset + iFullLength, ")")
-                                mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset, String.Format("{0}(", sPointName))
-                                mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
+                                mActiveTextEditor.Document.UndoStack.StartUndoGroup()
+                                mActiveTextEditor.Document.Insert(iStartOffset + iFullLength, ")")
+                                mActiveTextEditor.Document.Insert(iStartOffset, String.Format("{0}(", sPointName))
+                                mActiveTextEditor.Document.UndoStack.EndUndoGroup()
 
                             Else
-                                mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
-                                mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset + iStartLen, ")")
-                                mActiveTextEditor.ActiveTextAreaControl.Document.Insert(iStartOffset, String.Format("{0}(", sPointName))
-                                mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
+                                mActiveTextEditor.Document.UndoStack.StartUndoGroup()
+                                mActiveTextEditor.Document.Insert(iStartOffset + iStartLen, ")")
+                                mActiveTextEditor.Document.Insert(iStartOffset, String.Format("{0}(", sPointName))
+                                mActiveTextEditor.Document.UndoStack.EndUndoGroup()
                             End If
                         Next
                     End If
@@ -810,7 +810,7 @@ Public Class ClassDebuggerTools
                 Dim iCaretOffset As Integer = mActiveTextEditor.ActiveTextAreaControl.TextArea.Caret.Offset
 
                 Try
-                    mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
+                    mActiveTextEditor.Document.UndoStack.StartUndoGroup()
 
                     Dim lRemovedBreakpoints As New List(Of Integer)
 
@@ -840,7 +840,7 @@ Public Class ClassDebuggerTools
                         mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & String.Format("{0} removed at line: {1}", sMsgPointName, i))
                     Next
                 Finally
-                    mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
+                    mActiveTextEditor.Document.UndoStack.EndUndoGroup()
 
                     mActiveTextEditor.InvalidateTextArea()
                 End Try
@@ -848,7 +848,7 @@ Public Class ClassDebuggerTools
 
             Public Shared Sub TextEditorRemoveAll(mFormMain As FormMain, mActiveTextEditor As TextEditorControlEx, mAction As Action(Of String, ClassSyntaxTools.ENUM_LANGUAGE_TYPE, List(Of STRUC_DEBUGGER_ITEM)), sMsgPointName As String)
                 Try
-                    mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.StartUndoGroup()
+                    mActiveTextEditor.Document.UndoStack.StartUndoGroup()
 
                     mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("Removing all debugger {0}s...", sMsgPointName))
 
@@ -903,7 +903,7 @@ Public Class ClassDebuggerTools
                         mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & String.Format("{0} removed at line: {1}", sMsgPointName, i))
                     Next
                 Finally
-                    mActiveTextEditor.ActiveTextAreaControl.Document.UndoStack.EndUndoGroup()
+                    mActiveTextEditor.Document.UndoStack.EndUndoGroup()
 
                     mActiveTextEditor.InvalidateTextArea()
                 End Try
