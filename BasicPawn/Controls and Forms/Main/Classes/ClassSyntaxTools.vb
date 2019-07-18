@@ -24,7 +24,6 @@ Public Class ClassSyntaxTools
     Private g_mFormMain As FormMain
 
     Public g_ClassSyntaxHighlighting As ClassSyntaxHighlighting
-    Public g_mSyntaxProvider As ClassSyntaxHighlighting.ClassBinarySyntaxModeFileProvider
 
     Public Shared g_sHighlightWord As String = ""
     Public Shared g_sCaretWord As String = ""
@@ -71,9 +70,6 @@ Public Class ClassSyntaxTools
         If (g_sEscapeCharacters.Length <> [Enum].GetNames(GetType(ENUM_LANGUAGE_TYPE)).Length) Then
             Throw New ArgumentException("g_sEscapeCharacters length")
         End If
-
-        g_mSyntaxProvider = New ClassSyntaxHighlighting.ClassBinarySyntaxModeFileProvider()
-        HighlightingManager.Manager.AddSyntaxModeFileProvider(g_mSyntaxProvider)
     End Sub
 
     Public Class STRUC_AUTOCOMPLETE
@@ -780,24 +776,53 @@ Public Class ClassSyntaxTools
 
         Enum ENUM_SYNTAX_EDITORS
             MAIN_TEXTEDITOR
+            MAIN_TOOLTIPS
             DEBUGGER_SOURCE_TEXTEDITOR
         End Enum
 
         Class STRUC_SYNTAX_ITEM
-            Public sName As String
-
-            Public mSyntaxMode As SyntaxMode
-            Public sSyntaxText As String
+            Private g_sSyntaxText As String
 
             Public Sub New(_Name As String)
-                sName = _Name
+                m_Name = _Name
 
-                mSyntaxMode = New SyntaxMode(String.Format("{0}.sp", Guid.NewGuid.ToString), sName, ".sp")
-                sSyntaxText = ""
+                m_SyntaxMode = New SyntaxMode(String.Format("{0}.sp", Guid.NewGuid.ToString), m_Name, ".sp")
+                g_sSyntaxText = ""
+            End Sub
+
+            Public Property m_Name As String
+
+            Property m_SyntaxMode As SyntaxMode
+
+            Property m_SyntaxText As String
+                Get
+                    Return g_sSyntaxText
+                End Get
+                Set(value As String)
+                    If (g_sSyntaxText = value) Then
+                        Return
+                    End If
+
+                    g_sSyntaxText = value
+                    m_SyntaxChanged = True
+                End Set
+            End Property
+
+            Property m_SyntaxChanged As Boolean = False
+
+            Public Sub GenerateNewHighlightStrategy()
+                Dim mHighlightStrategy = GetHighlightingStrategy()
+
+                HighlightingManager.Manager.HighlightingDefinitions(mHighlightStrategy.Name) = mHighlightStrategy
+                mHighlightStrategy.ResolveReferences()
             End Sub
 
             Public Function ToXmlReader() As XmlTextReader
-                Return New XmlTextReader(New IO.StringReader(sSyntaxText))
+                Return New XmlTextReader(New IO.StringReader(g_sSyntaxText))
+            End Function
+
+            Public Function GetHighlightingStrategy() As DefaultHighlightingStrategy
+                Return HighlightingDefinitionParser.Parse(m_SyntaxMode, Me.ToXmlReader)
             End Function
         End Class
         Public Shared g_mTextEditorSyntaxItems As STRUC_SYNTAX_ITEM()
@@ -807,6 +832,7 @@ Public Class ClassSyntaxTools
 
             g_mTextEditorSyntaxItems = {
                 New STRUC_SYNTAX_ITEM("SourcePawn-MainTextEditor-" & Guid.NewGuid.ToString),
+                New STRUC_SYNTAX_ITEM("SourcePawn-MainToolTips-" & Guid.NewGuid.ToString),
                 New STRUC_SYNTAX_ITEM("SourcePawn-DebuggerSourceTextEditor-" & Guid.NewGuid.ToString)
             }
 
@@ -836,12 +862,12 @@ Public Class ClassSyntaxTools
                 SyncLock _lock
                     Dim sModSyntaxXML As String
                     If (Not String.IsNullOrEmpty(g_sCustomSyntaxText)) Then
-                        sModSyntaxXML = g_sCustomSyntaxText.Replace(g_sSyntaxSourcePawnMarker, g_mTextEditorSyntaxItems(i).sName)
+                        sModSyntaxXML = g_sCustomSyntaxText.Replace(g_sSyntaxSourcePawnMarker, g_mTextEditorSyntaxItems(i).m_Name)
                     Else
                         If (ClassSettings.g_iSettingsInvertColors) Then
-                            sModSyntaxXML = g_sSyntaxDarkXML.Replace(g_sSyntaxSourcePawnMarker, g_mTextEditorSyntaxItems(i).sName)
+                            sModSyntaxXML = g_sSyntaxDarkXML.Replace(g_sSyntaxSourcePawnMarker, g_mTextEditorSyntaxItems(i).m_Name)
                         Else
-                            sModSyntaxXML = g_sSyntaxXML.Replace(g_sSyntaxSourcePawnMarker, g_mTextEditorSyntaxItems(i).sName)
+                            sModSyntaxXML = g_sSyntaxXML.Replace(g_sSyntaxSourcePawnMarker, g_mTextEditorSyntaxItems(i).m_Name)
                         End If
                     End If
 
@@ -849,7 +875,7 @@ Public Class ClassSyntaxTools
                     sModSyntaxXML = Regex.Replace(sModSyntaxXML, "^\s*", "", RegexOptions.Multiline)
                     sModSyntaxXML = Regex.Replace(sModSyntaxXML, "\s*$", "", RegexOptions.Multiline)
 
-                    g_mTextEditorSyntaxItems(i).sSyntaxText = sModSyntaxXML
+                    g_mTextEditorSyntaxItems(i).m_SyntaxText = sModSyntaxXML
                 End SyncLock
             Catch ex As Exception
                 ClassExceptionLog.WriteToLogMessageBox(ex)
@@ -865,7 +891,7 @@ Public Class ClassSyntaxTools
 
         Public Sub UpdateSyntax()
             For j = 0 To [Enum].GetNames(GetType(ENUM_SYNTAX_UPDATE_TYPE)).Length - 1
-                UpdateSyntax(CType(j, ENUM_SYNTAX_UPDATE_TYPE), j = 0)
+                UpdateSyntax(CType(j, ENUM_SYNTAX_UPDATE_TYPE), j = ENUM_SYNTAX_UPDATE_TYPE.NONE)
             Next
         End Sub
 
@@ -916,199 +942,213 @@ Public Class ClassSyntaxTools
 
                 SyncLock _lock
                     For i = 0 To g_mTextEditorSyntaxItems.Length - 1
-                        If (String.IsNullOrEmpty(g_mTextEditorSyntaxItems(i).sSyntaxText) OrElse bRenew) Then
+                        Select Case (iType)
+                            Case ENUM_SYNTAX_UPDATE_TYPE.CARET_WORD
+                                If (i <> ENUM_SYNTAX_EDITORS.MAIN_TEXTEDITOR) Then
+                                    Continue For
+                                End If
+                            Case ENUM_SYNTAX_UPDATE_TYPE.HIGHLIGHT_WORD
+                                If (i <> ENUM_SYNTAX_EDITORS.MAIN_TEXTEDITOR) Then
+                                    Continue For
+                                End If
+                            Case ENUM_SYNTAX_UPDATE_TYPE.HIGHLIGHT_WORD_CUSTOM
+                                If (i <> ENUM_SYNTAX_EDITORS.MAIN_TEXTEDITOR) Then
+                                    Continue For
+                                End If
+                            Case ENUM_SYNTAX_UPDATE_TYPE.AUTOCOMPLETE
+                                If (i <> ENUM_SYNTAX_EDITORS.MAIN_TEXTEDITOR AndAlso i <> ENUM_SYNTAX_EDITORS.MAIN_TOOLTIPS AndAlso i <> ENUM_SYNTAX_EDITORS.DEBUGGER_SOURCE_TEXTEDITOR) Then
+                                    Continue For
+                                End If
+                        End Select
+
+                        If (String.IsNullOrEmpty(g_mTextEditorSyntaxItems(i).m_SyntaxText) OrElse bRenew) Then
                             RenewSyntax(CType(i, ENUM_SYNTAX_EDITORS))
                         End If
 
-                        Select Case (i)
-                            Case ENUM_SYNTAX_EDITORS.MAIN_TEXTEDITOR, ENUM_SYNTAX_EDITORS.DEBUGGER_SOURCE_TEXTEDITOR
-                                Dim mXmlBuilder As New StringBuilder
+                        Dim mXmlBuilder As New StringBuilder
 
-                                Dim iHighlightCustomCount As Integer = 0
+                        Dim iHighlightCustomCount As Integer = 0
 
-                                Dim mActiveTab As ClassTabControl.SourceTabPage = g_ClassSyntaxTools.g_mFormMain.g_ClassTabControl.m_ActiveTab
-                                Dim mActiveAutocomplete As STRUC_AUTOCOMPLETE() = mActiveTab.m_AutocompleteItems.ToArray
-                                Dim iLanguage As ENUM_LANGUAGE_TYPE = mActiveTab.m_Language
+                        Dim mActiveTab As ClassTabControl.SourceTabPage = g_ClassSyntaxTools.g_mFormMain.g_ClassTabControl.m_ActiveTab
+                        Dim mActiveAutocomplete As STRUC_AUTOCOMPLETE() = mActiveTab.m_AutocompleteItems.ToArray
+                        Dim iLanguage As ENUM_LANGUAGE_TYPE = mActiveTab.m_Language
 
-                                Using mSR As New IO.StringReader(g_mTextEditorSyntaxItems(i).sSyntaxText)
-                                    Dim sLine As String
+                        Using mSR As New IO.StringReader(g_mTextEditorSyntaxItems(i).m_SyntaxText)
+                            Dim sLine As String
 
-                                    While True
-                                        sLine = mSR.ReadLine
-                                        If (sLine Is Nothing) Then
-                                            Exit While
-                                        End If
-
-                                        Select Case (iType)
-                                            Case ENUM_SYNTAX_UPDATE_TYPE.CARET_WORD
-                                                If (i = ENUM_SYNTAX_EDITORS.MAIN_TEXTEDITOR) Then
-                                                    If (sLine.Contains(g_sSyntaxHighlightCaretMarker)) Then
-
-                                                        mXmlBuilder.Append(g_sSyntaxHighlightCaretMarker)
-
-                                                        If (Not String.IsNullOrEmpty(g_sCaretWord) AndAlso ClassSettings.g_iSettingsAutoMark) Then
-                                                            mXmlBuilder.AppendFormat("<Key word=""{0}""/>", g_sCaretWord)
-                                                        End If
-
-                                                        mXmlBuilder.AppendLine()
-                                                        Continue While
-                                                    End If
-                                                End If
-
-                                            Case ENUM_SYNTAX_UPDATE_TYPE.HIGHLIGHT_WORD
-                                                If (i = ENUM_SYNTAX_EDITORS.MAIN_TEXTEDITOR) Then
-                                                    If (sLine.Contains(g_sSyntaxHighlightWordMarker)) Then
-
-                                                        mXmlBuilder.Append(g_sSyntaxHighlightWordMarker)
-
-                                                        If (Not String.IsNullOrEmpty(g_sHighlightWord)) Then
-                                                            mXmlBuilder.AppendFormat("<Key word=""{0}""/>", g_sHighlightWord)
-                                                        End If
-
-                                                        mXmlBuilder.AppendLine()
-                                                        Continue While
-                                                    End If
-                                                End If
-
-                                            Case ENUM_SYNTAX_UPDATE_TYPE.HIGHLIGHT_WORD_CUSTOM
-                                                If (i = ENUM_SYNTAX_EDITORS.MAIN_TEXTEDITOR) Then
-                                                    If (sLine.Contains(g_sSyntaxHighlightWordCustomMarker)) Then
-                                                        mXmlBuilder.Append(g_sSyntaxHighlightWordCustomMarker)
-
-                                                        g_ClassSyntaxTools.g_mFormMain.g_ClassCustomHighlighting.Add(iHighlightCustomCount)
-                                                        Dim menuItem = g_ClassSyntaxTools.g_mFormMain.g_ClassCustomHighlighting.m_HightlightItems()
-
-                                                        If (menuItem(iHighlightCustomCount) IsNot Nothing AndAlso Not String.IsNullOrEmpty(menuItem(iHighlightCustomCount).sWord)) Then
-                                                            mXmlBuilder.AppendFormat("<Key word=""{0}""/>", menuItem(iHighlightCustomCount).sWord)
-                                                        End If
-
-                                                        mXmlBuilder.AppendLine()
-                                                        iHighlightCustomCount += 1
-                                                        Continue While
-                                                    End If
-                                                End If
-
-                                            Case ENUM_SYNTAX_UPDATE_TYPE.AUTOCOMPLETE
-                                                If (i = ENUM_SYNTAX_EDITORS.MAIN_TEXTEDITOR OrElse i = ENUM_SYNTAX_EDITORS.DEBUGGER_SOURCE_TEXTEDITOR) Then
-                                                    If (sLine.Contains(g_sSyntaxHighlightDefineMarker)) Then
-                                                        mXmlBuilder.Append(g_sSyntaxHighlightDefineMarker)
-
-                                                        For Each mAutocomplete In mActiveAutocomplete
-                                                            Select Case (True)
-                                                                Case (mAutocomplete.m_Type And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEFINE) <> 0,
-                                                                     (ClassSettings.g_iSettingsPublicAsDefineColor AndAlso (mAutocomplete.m_Type And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PUBLICVAR) <> 0)
-                                                                    mXmlBuilder.AppendFormat("<Key word=""{0}""/>", mAutocomplete.m_FunctionString)
-
-                                                            End Select
-                                                        Next
-
-                                                        mXmlBuilder.AppendLine()
-                                                        Continue While
-                                                    End If
-
-                                                    If (sLine.Contains(g_sSyntaxHighlightEnumMarker)) Then
-                                                        mXmlBuilder.Append(g_sSyntaxHighlightEnumMarker)
-
-                                                        Dim lExistList As New List(Of String)
-
-                                                        For Each mAutocomplete In mActiveAutocomplete
-                                                            Select Case (True)
-                                                                Case (mAutocomplete.m_Type And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM) <> 0
-                                                                    Dim sEnumName As String() = mAutocomplete.m_FunctionString.Split("."c)
-                                                                    Select Case (sEnumName.Length)
-                                                                        Case 2
-                                                                            If (Not lExistList.Contains(sEnumName(0))) Then
-                                                                                lExistList.Add(sEnumName(0))
-                                                                            End If
-
-                                                                            mXmlBuilder.AppendFormat("<Key word=""{0}""/>", sEnumName(1))
-                                                                    End Select
-
-                                                                Case (mAutocomplete.m_Type And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) <> 0
-                                                                    If (Not lExistList.Contains(mAutocomplete.m_FunctionString)) Then
-                                                                        lExistList.Add(mAutocomplete.m_FunctionString)
-                                                                    End If
-                                                            End Select
-                                                        Next
-
-                                                        mXmlBuilder.AppendLine()
-                                                        Continue While
-                                                    End If
-
-                                                    If (sLine.Contains(g_sSyntaxHighlightEnum2Marker)) Then
-                                                        mXmlBuilder.Append(g_sSyntaxHighlightEnum2Marker)
-
-                                                        Dim lExistList As New List(Of String)
-
-                                                        For Each mAutocomplete In mActiveAutocomplete
-                                                            Select Case (True)
-                                                                Case (mAutocomplete.m_Type And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STRUCT) <> 0
-                                                                    If (Not lExistList.Contains(mAutocomplete.m_FunctionString)) Then
-                                                                        lExistList.Add(mAutocomplete.m_FunctionString)
-                                                                    End If
-
-                                                                Case (mAutocomplete.m_Type And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM) <> 0
-                                                                    Dim sEnumName As String() = mAutocomplete.m_FunctionString.Split("."c)
-                                                                    Select Case (sEnumName.Length)
-                                                                        Case 1, 2
-                                                                            If (Not lExistList.Contains(sEnumName(0))) Then
-                                                                                lExistList.Add(sEnumName(0))
-                                                                            End If
-                                                                    End Select
-
-                                                                Case (mAutocomplete.m_Type And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) <> 0
-                                                                    If (Not lExistList.Contains(mAutocomplete.m_FunctionString)) Then
-                                                                        lExistList.Add(mAutocomplete.m_FunctionString)
-                                                                    End If
-                                                            End Select
-                                                        Next
-
-                                                        For Each s In lExistList
-                                                            mXmlBuilder.AppendFormat("<Key word=""{0}""/>", s)
-                                                        Next
-
-                                                        mXmlBuilder.AppendLine()
-                                                        Continue While
-                                                    End If
-                                                End If
-                                        End Select
-
-                                        If (Not String.IsNullOrEmpty(sLine.Trim)) Then
-                                            mXmlBuilder.AppendLine(sLine.Trim)
-                                        End If
-                                    End While
-                                End Using
-
-                                Dim sFormatedString As String = mXmlBuilder.ToString
-
-                                'Set escape characters
-                                If (True) Then
-                                    Dim mMatchColl As MatchCollection = Regex.Matches(sFormatedString, "\b(escapecharacter)\b\s*=\s*""(?<EscapeChar>(\^|\\))""")
-                                    Dim mSyntaxBuilder As New StringBuilder(sFormatedString)
-
-                                    For j = mMatchColl.Count - 1 To 0 Step -1
-                                        If (Not mMatchColl(j).Success) Then
-                                            Continue For
-                                        End If
-
-                                        Try
-                                            Dim sEscapeChar As String = mMatchColl(j).Groups("EscapeChar").Value
-                                            If (sEscapeChar = g_sEscapeCharacters(iLanguage)) Then
-                                                Continue For
-                                            End If
-
-                                            Dim iEscapeCharIndex As Integer = mMatchColl(j).Groups("EscapeChar").Index
-
-                                            mSyntaxBuilder = mSyntaxBuilder.Remove(iEscapeCharIndex, g_sEscapeCharacters(iLanguage).Length)
-                                            mSyntaxBuilder = mSyntaxBuilder.Insert(iEscapeCharIndex, g_sEscapeCharacters(iLanguage))
-                                        Catch : End Try
-                                    Next
-
-                                    sFormatedString = mSyntaxBuilder.ToString
+                            While True
+                                sLine = mSR.ReadLine
+                                If (sLine Is Nothing) Then
+                                    Exit While
                                 End If
 
-                                g_mTextEditorSyntaxItems(i).sSyntaxText = sFormatedString
-                        End Select
+                                Select Case (iType)
+                                    Case ENUM_SYNTAX_UPDATE_TYPE.CARET_WORD
+                                        If (sLine.Contains(g_sSyntaxHighlightCaretMarker)) Then
+                                            mXmlBuilder.Append(g_sSyntaxHighlightCaretMarker)
+
+                                            If (Not String.IsNullOrEmpty(g_sCaretWord) AndAlso ClassSettings.g_iSettingsAutoMark) Then
+                                                mXmlBuilder.AppendFormat("<Key word=""{0}""/>", g_sCaretWord)
+                                            End If
+
+                                            mXmlBuilder.AppendLine()
+                                            Continue While
+                                        End If
+
+                                    Case ENUM_SYNTAX_UPDATE_TYPE.HIGHLIGHT_WORD
+                                        If (sLine.Contains(g_sSyntaxHighlightWordMarker)) Then
+                                            mXmlBuilder.Append(g_sSyntaxHighlightWordMarker)
+
+                                            If (Not String.IsNullOrEmpty(g_sHighlightWord)) Then
+                                                mXmlBuilder.AppendFormat("<Key word=""{0}""/>", g_sHighlightWord)
+                                            End If
+
+                                            mXmlBuilder.AppendLine()
+                                            Continue While
+                                        End If
+
+                                    Case ENUM_SYNTAX_UPDATE_TYPE.HIGHLIGHT_WORD_CUSTOM
+                                        If (sLine.Contains(g_sSyntaxHighlightWordCustomMarker)) Then
+                                            mXmlBuilder.Append(g_sSyntaxHighlightWordCustomMarker)
+
+                                            g_ClassSyntaxTools.g_mFormMain.g_ClassCustomHighlighting.Add(iHighlightCustomCount)
+                                            Dim menuItem = g_ClassSyntaxTools.g_mFormMain.g_ClassCustomHighlighting.m_HightlightItems()
+
+                                            If (menuItem(iHighlightCustomCount) IsNot Nothing AndAlso Not String.IsNullOrEmpty(menuItem(iHighlightCustomCount).sWord)) Then
+                                                mXmlBuilder.AppendFormat("<Key word=""{0}""/>", menuItem(iHighlightCustomCount).sWord)
+                                            End If
+
+                                            mXmlBuilder.AppendLine()
+                                            iHighlightCustomCount += 1
+                                            Continue While
+                                        End If
+
+                                    Case ENUM_SYNTAX_UPDATE_TYPE.AUTOCOMPLETE
+                                        If (sLine.Contains(g_sSyntaxHighlightDefineMarker)) Then
+                                            mXmlBuilder.Append(g_sSyntaxHighlightDefineMarker)
+
+                                            For Each mAutocomplete In mActiveAutocomplete
+                                                Select Case (True)
+                                                    Case (mAutocomplete.m_Type And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEFINE) <> 0,
+                                                                 (ClassSettings.g_iSettingsPublicAsDefineColor AndAlso (mAutocomplete.m_Type And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PUBLICVAR) <> 0)
+                                                        mXmlBuilder.AppendFormat("<Key word=""{0}""/>", mAutocomplete.m_FunctionString)
+
+                                                End Select
+                                            Next
+
+                                            mXmlBuilder.AppendLine()
+                                            Continue While
+                                        End If
+
+                                        If (sLine.Contains(g_sSyntaxHighlightEnumMarker)) Then
+                                            mXmlBuilder.Append(g_sSyntaxHighlightEnumMarker)
+
+                                            Dim lExistList As New List(Of String)
+
+                                            For Each mAutocomplete In mActiveAutocomplete
+                                                Select Case (True)
+                                                    Case (mAutocomplete.m_Type And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM) <> 0
+                                                        Dim sEnumName As String() = mAutocomplete.m_FunctionString.Split("."c)
+                                                        Select Case (sEnumName.Length)
+                                                            Case 2
+                                                                If (Not lExistList.Contains(sEnumName(0))) Then
+                                                                    lExistList.Add(sEnumName(0))
+                                                                End If
+
+                                                                mXmlBuilder.AppendFormat("<Key word=""{0}""/>", sEnumName(1))
+                                                        End Select
+
+                                                    Case (mAutocomplete.m_Type And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) <> 0
+                                                        If (mAutocomplete.m_FunctionString.Contains(".")) Then
+                                                            Continue For
+                                                        End If
+
+                                                        If (Not lExistList.Contains(mAutocomplete.m_FunctionString)) Then
+                                                            lExistList.Add(mAutocomplete.m_FunctionString)
+                                                        End If
+                                                End Select
+                                            Next
+
+                                            mXmlBuilder.AppendLine()
+                                            Continue While
+                                        End If
+
+                                        If (sLine.Contains(g_sSyntaxHighlightEnum2Marker)) Then
+                                            mXmlBuilder.Append(g_sSyntaxHighlightEnum2Marker)
+
+                                            Dim lExistList As New List(Of String)
+
+                                            For Each mAutocomplete In mActiveAutocomplete
+                                                Select Case (True)
+                                                    Case (mAutocomplete.m_Type And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STRUCT) <> 0
+                                                        If (Not lExistList.Contains(mAutocomplete.m_FunctionString)) Then
+                                                            lExistList.Add(mAutocomplete.m_FunctionString)
+                                                        End If
+
+                                                    Case (mAutocomplete.m_Type And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM) <> 0
+                                                        Dim sEnumName As String() = mAutocomplete.m_FunctionString.Split("."c)
+                                                        Select Case (sEnumName.Length)
+                                                            Case 1, 2
+                                                                If (Not lExistList.Contains(sEnumName(0))) Then
+                                                                    lExistList.Add(sEnumName(0))
+                                                                End If
+                                                        End Select
+
+                                                    Case (mAutocomplete.m_Type And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) <> 0
+                                                        If (mAutocomplete.m_FunctionString.Contains(".")) Then
+                                                            Continue For
+                                                        End If
+
+                                                        If (Not lExistList.Contains(mAutocomplete.m_FunctionString)) Then
+                                                            lExistList.Add(mAutocomplete.m_FunctionString)
+                                                        End If
+                                                End Select
+                                            Next
+
+                                            For Each s In lExistList
+                                                mXmlBuilder.AppendFormat("<Key word=""{0}""/>", s)
+                                            Next
+
+                                            mXmlBuilder.AppendLine()
+                                            Continue While
+                                        End If
+                                End Select
+
+                                If (Not String.IsNullOrEmpty(sLine.Trim)) Then
+                                    mXmlBuilder.AppendLine(sLine.Trim)
+                                End If
+                            End While
+                        End Using
+
+                        Dim sFormatedString As String = mXmlBuilder.ToString
+
+                        'Set escape characters
+                        If (True) Then
+                            Dim mMatchColl As MatchCollection = Regex.Matches(sFormatedString, "\b(escapecharacter)\b\s*=\s*""(?<EscapeChar>(\^|\\))""")
+                            Dim mSyntaxBuilder As New StringBuilder(sFormatedString)
+
+                            For j = mMatchColl.Count - 1 To 0 Step -1
+                                If (Not mMatchColl(j).Success) Then
+                                    Continue For
+                                End If
+
+                                Try
+                                    Dim sEscapeChar As String = mMatchColl(j).Groups("EscapeChar").Value
+                                    If (sEscapeChar = g_sEscapeCharacters(iLanguage)) Then
+                                        Continue For
+                                    End If
+
+                                    Dim iEscapeCharIndex As Integer = mMatchColl(j).Groups("EscapeChar").Index
+
+                                    mSyntaxBuilder = mSyntaxBuilder.Remove(iEscapeCharIndex, g_sEscapeCharacters(iLanguage).Length)
+                                    mSyntaxBuilder = mSyntaxBuilder.Insert(iEscapeCharIndex, g_sEscapeCharacters(iLanguage))
+                                Catch : End Try
+                            Next
+
+                            sFormatedString = mSyntaxBuilder.ToString
+                        End If
+
+                        g_mTextEditorSyntaxItems(i).m_SyntaxText = sFormatedString
                     Next
                 End SyncLock
 
@@ -1126,20 +1166,23 @@ Public Class ClassSyntaxTools
                     g_ClassSyntaxTools.g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnEditorSyntaxUpdate())
 
                     For i = 0 To g_mTextEditorSyntaxItems.Length - 1
-                        If (String.IsNullOrEmpty(g_mTextEditorSyntaxItems(i).sSyntaxText)) Then
+                        If (String.IsNullOrEmpty(g_mTextEditorSyntaxItems(i).m_SyntaxText)) Then
                             RenewSyntax(CType(i, ENUM_SYNTAX_EDITORS))
                         End If
                     Next
 
-                    HighlightingManager.Manager.ReloadSyntaxModes()
-
                     For i = 0 To g_mTextEditorSyntaxItems.Length - 1
+                        If (g_mTextEditorSyntaxItems(i).m_SyntaxChanged) Then
+                            g_mTextEditorSyntaxItems(i).GenerateNewHighlightStrategy()
+                        End If
+
                         Select Case (i)
                             Case ENUM_SYNTAX_EDITORS.MAIN_TEXTEDITOR
                                 For j = 0 To g_ClassSyntaxTools.g_mFormMain.g_ClassTabControl.m_TabsCount - 1
                                     If (j = g_ClassSyntaxTools.g_mFormMain.g_ClassTabControl.m_ActiveTabIndex) Then
-                                        If (g_ClassSyntaxTools.g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.Document.HighlightingStrategy.Name <> g_mTextEditorSyntaxItems(i).sName) Then
-                                            g_ClassSyntaxTools.g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.SetHighlighting(g_mTextEditorSyntaxItems(i).sName)
+                                        If (g_mTextEditorSyntaxItems(i).m_SyntaxChanged OrElse
+                                                    g_ClassSyntaxTools.g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.Document.HighlightingStrategy.Name <> g_mTextEditorSyntaxItems(i).m_Name) Then
+                                            g_ClassSyntaxTools.g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.SetHighlighting(g_mTextEditorSyntaxItems(i).m_Name)
                                         End If
                                     Else
                                         If (g_ClassSyntaxTools.g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.Document.HighlightingStrategy.Name <> "Default") Then
@@ -1148,64 +1191,42 @@ Public Class ClassSyntaxTools
                                     End If
                                 Next
 
-                                If (g_ClassSyntaxTools.g_mFormMain.g_mFormToolTip.TextEditorControl_ToolTip.Document.HighlightingStrategy.Name <> g_mTextEditorSyntaxItems(i).sName) Then
-                                    g_ClassSyntaxTools.g_mFormMain.g_mFormToolTip.TextEditorControl_ToolTip.SetHighlighting(g_mTextEditorSyntaxItems(i).sName)
+                            Case ENUM_SYNTAX_EDITORS.MAIN_TOOLTIPS
+                                If (g_mTextEditorSyntaxItems(i).m_SyntaxChanged OrElse
+                                            g_ClassSyntaxTools.g_mFormMain.g_mFormToolTip.TextEditorControl_ToolTip.Document.HighlightingStrategy.Name <> g_mTextEditorSyntaxItems(i).m_Name) Then
+                                    g_ClassSyntaxTools.g_mFormMain.g_mFormToolTip.TextEditorControl_ToolTip.SetHighlighting(g_mTextEditorSyntaxItems(i).m_Name)
                                     g_ClassSyntaxTools.g_mFormMain.g_mFormToolTip.TextEditorControl_ToolTip.Font = New Font(g_ClassSyntaxTools.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Font.FontFamily, 8, FontStyle.Regular)
                                 End If
 
-                                If (g_ClassSyntaxTools.g_mFormMain.g_mUCAutocomplete.TextEditorControlEx_IntelliSense.Document.HighlightingStrategy.Name <> g_mTextEditorSyntaxItems(i).sName) Then
-                                    g_ClassSyntaxTools.g_mFormMain.g_mUCAutocomplete.TextEditorControlEx_IntelliSense.SetHighlighting(g_mTextEditorSyntaxItems(i).sName)
+                                If (g_mTextEditorSyntaxItems(i).m_SyntaxChanged OrElse
+                                            g_ClassSyntaxTools.g_mFormMain.g_mUCAutocomplete.TextEditorControlEx_IntelliSense.Document.HighlightingStrategy.Name <> g_mTextEditorSyntaxItems(i).m_Name) Then
+                                    g_ClassSyntaxTools.g_mFormMain.g_mUCAutocomplete.TextEditorControlEx_IntelliSense.SetHighlighting(g_mTextEditorSyntaxItems(i).m_Name)
                                     g_ClassSyntaxTools.g_mFormMain.g_mUCAutocomplete.TextEditorControlEx_IntelliSense.Font = New Font(g_ClassSyntaxTools.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Font.FontFamily, 8, FontStyle.Regular)
                                 End If
 
-                                If (g_ClassSyntaxTools.g_mFormMain.g_mUCAutocomplete.TextEditorControlEx_Autocomplete.Document.HighlightingStrategy.Name <> g_mTextEditorSyntaxItems(i).sName) Then
-                                    g_ClassSyntaxTools.g_mFormMain.g_mUCAutocomplete.TextEditorControlEx_Autocomplete.SetHighlighting(g_mTextEditorSyntaxItems(i).sName)
+                                If (g_mTextEditorSyntaxItems(i).m_SyntaxChanged OrElse
+                                            g_ClassSyntaxTools.g_mFormMain.g_mUCAutocomplete.TextEditorControlEx_Autocomplete.Document.HighlightingStrategy.Name <> g_mTextEditorSyntaxItems(i).m_Name) Then
+                                    g_ClassSyntaxTools.g_mFormMain.g_mUCAutocomplete.TextEditorControlEx_Autocomplete.SetHighlighting(g_mTextEditorSyntaxItems(i).m_Name)
                                     g_ClassSyntaxTools.g_mFormMain.g_mUCAutocomplete.TextEditorControlEx_Autocomplete.Font = New Font(g_ClassSyntaxTools.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Font.FontFamily, 8, FontStyle.Regular)
                                 End If
 
                             Case ENUM_SYNTAX_EDITORS.DEBUGGER_SOURCE_TEXTEDITOR
                                 If (g_ClassSyntaxTools.g_mFormMain.g_mFormDebugger IsNot Nothing AndAlso Not g_ClassSyntaxTools.g_mFormMain.g_mFormDebugger.IsDisposed) Then
-                                    If (g_ClassSyntaxTools.g_mFormMain.g_mFormDebugger.TextEditorControlEx_DebuggerSource.Document.HighlightingStrategy.Name <> g_mTextEditorSyntaxItems(i).sName) Then
-                                        g_ClassSyntaxTools.g_mFormMain.g_mFormDebugger.TextEditorControlEx_DebuggerSource.SetHighlighting(g_mTextEditorSyntaxItems(i).sName)
+                                    If (g_mTextEditorSyntaxItems(i).m_SyntaxChanged OrElse
+                                                g_ClassSyntaxTools.g_mFormMain.g_mFormDebugger.TextEditorControlEx_DebuggerSource.Document.HighlightingStrategy.Name <> g_mTextEditorSyntaxItems(i).m_Name) Then
+                                        g_ClassSyntaxTools.g_mFormMain.g_mFormDebugger.TextEditorControlEx_DebuggerSource.SetHighlighting(g_mTextEditorSyntaxItems(i).m_Name)
                                     End If
                                 End If
 
                         End Select
+
+                        g_mTextEditorSyntaxItems(i).m_SyntaxChanged = False
                     Next
                 End SyncLock
             Catch ex As Exception
                 ClassExceptionLog.WriteToLogMessageBox(ex)
             End Try
         End Sub
-
-        Class ClassBinarySyntaxModeFileProvider
-            Implements ISyntaxModeFileProvider
-
-            Public ReadOnly Property SyntaxModes As ICollection(Of SyntaxMode) Implements ISyntaxModeFileProvider.SyntaxModes
-                Get
-                    Dim lSyntaxModes As New List(Of SyntaxMode)
-
-                    For i = 0 To g_mTextEditorSyntaxItems.Length - 1
-                        lSyntaxModes.Add(g_mTextEditorSyntaxItems(i).mSyntaxMode)
-                    Next
-
-                    Return lSyntaxModes.ToArray
-                End Get
-            End Property
-
-            Public Sub UpdateSyntaxModeList() Implements ISyntaxModeFileProvider.UpdateSyntaxModeList
-            End Sub
-
-            Public Function GetSyntaxModeFile(mSyntaxMode As SyntaxMode) As XmlTextReader Implements ISyntaxModeFileProvider.GetSyntaxModeFile
-                For i = 0 To g_mTextEditorSyntaxItems.Length - 1
-                    If (mSyntaxMode.Name = g_mTextEditorSyntaxItems(i).sName) Then
-                        Return g_mTextEditorSyntaxItems(i).ToXmlReader
-                    End If
-                Next
-
-                Throw New ArgumentException("Syntax mode does not exist. Expected: " & mSyntaxMode.Name)
-            End Function
-        End Class
     End Class
 
     Class ClassSyntaxHelpers
