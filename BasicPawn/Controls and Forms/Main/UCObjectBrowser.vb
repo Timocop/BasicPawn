@@ -19,6 +19,7 @@
 Public Class UCObjectBrowser
     Private g_mFormMain As FormMain
     Private g_mUpdateThread As Threading.Thread
+    Private g_mUpdateThreadAbortAsync As New Queue(Of IAsyncResult)
 
     Public Shared g_bWndProcBug As Boolean = False
 
@@ -69,11 +70,16 @@ Public Class UCObjectBrowser
 
     Public Sub StopUpdate()
         ClassThread.Abort(g_mUpdateThread)
+
+        While (g_mUpdateThreadAbortAsync.Count > 0)
+            ClassThread.ExecAsyncEnd(Of Object)(TreeView_ObjectBrowser, g_mUpdateThreadAbortAsync.Dequeue)
+        End While
     End Sub
 
     Private Sub UpdateTreeViewThread()
         Try
             Dim bWndProcBug As Boolean = g_bWndProcBug
+            Dim bThreadAbort As Boolean = False
 
             Try
                 If (bWndProcBug) Then
@@ -196,17 +202,30 @@ Public Class UCObjectBrowser
                 End If
 
                 lAutocompleteList = Nothing
+
+            Catch ex As Threading.ThreadAbortException
+                bThreadAbort = True
+                Throw
             Finally
+                'Make sure we are not accessing the UI thread when aborting the thread. The Ui thread is probably already suspended, thus, deadlock.
+                'Instead wait in UI thread until async ends.
                 If (bWndProcBug) Then
-                    ClassThread.ExecEx(Of Object)(TreeView_ObjectBrowser, Sub()
-                                                                              TreeView_ObjectBrowser.Enabled = True
-                                                                              TreeView_ObjectBrowser.Visible = True
-                                                                          End Sub)
+                    g_mUpdateThreadAbortAsync.Enqueue(ClassThread.ExecAsync(TreeView_ObjectBrowser, Sub()
+                                                                                                        TreeView_ObjectBrowser.Enabled = True
+                                                                                                        TreeView_ObjectBrowser.Visible = True
+                                                                                                    End Sub))
                 Else
-                    ClassThread.ExecEx(Of Object)(TreeView_ObjectBrowser, Sub()
-                                                                              TreeView_ObjectBrowser.Enabled = True
-                                                                              TreeView_ObjectBrowser.EndUpdate()
-                                                                          End Sub)
+                    g_mUpdateThreadAbortAsync.Enqueue(ClassThread.ExecAsync(TreeView_ObjectBrowser, Sub()
+                                                                                                        TreeView_ObjectBrowser.Enabled = True
+                                                                                                        TreeView_ObjectBrowser.EndUpdate()
+                                                                                                    End Sub))
+                End If
+
+                If (Not bThreadAbort) Then
+                    'Wait here for completion when thread ends normaly
+                    While (g_mUpdateThreadAbortAsync.Count > 0)
+                        ClassThread.ExecAsyncEnd(Of Object)(TreeView_ObjectBrowser, g_mUpdateThreadAbortAsync.Dequeue)
+                    End While
                 End If
             End Try
         Catch ex As Threading.ThreadAbortException

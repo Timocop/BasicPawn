@@ -85,21 +85,18 @@ Public Class ClassThread
     ''' <param name="mControl"></param>
     ''' <param name="mDelegate"></param>
     ''' <param name="mParam"></param>
-    Public Shared Sub ExecAsync(mControl As Control, mDelegate As [Delegate], ParamArray mParam() As Object)
-        mControl.BeginInvoke(mDelegate, mParam)
-    End Sub
+    Public Shared Function ExecAsync(mControl As Control, mDelegate As [Delegate], ParamArray mParam() As Object) As IAsyncResult
+        Return mControl.BeginInvoke(mDelegate, mParam)
+    End Function
 
     ''' <summary>
-    ''' Invokes a async thread-safe delegate with 'Control.InvokeRequired' check.
+    ''' Waits for a async invoke and returns the value.
     ''' </summary>
+    ''' <typeparam name="T"></typeparam>
     ''' <param name="mControl"></param>
-    ''' <param name="mDelegate"></param>
-    ''' <param name="mParam"></param>
-    Public Shared Sub ExecAsyncEx(mControl As Control, mDelegate As [Delegate], ParamArray mParam() As Object)
-        If (mControl.InvokeRequired) Then
-            mControl.BeginInvoke(mDelegate, mParam)
-        Else
-            mDelegate.DynamicInvoke(mParam)
-        End If
-    End Sub
+    ''' <param name="mAsyncResult"></param>
+    ''' <returns></returns>
+    Public Shared Function ExecAsyncEnd(Of T)(mControl As Control, mAsyncResult As IAsyncResult) As T
+        Return DirectCast(mControl.EndInvoke(mAsyncResult), T)
+    End Function
 End Class
