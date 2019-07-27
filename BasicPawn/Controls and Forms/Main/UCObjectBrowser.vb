@@ -16,6 +16,8 @@
 
 
 
+Imports ICSharpCode.TextEditor
+
 Public Class UCObjectBrowser
     Private g_mFormMain As FormMain
     Private g_mUpdateThread As Threading.Thread
@@ -125,8 +127,10 @@ Public Class UCObjectBrowser
                             Continue For
                         End If
 
+                        Dim mAutocomplete = lAutocompleteList(i)
+
                         'Add missing nodes
-                        Dim sFilename As String = lAutocompleteList(i).m_Filename
+                        Dim sFilename As String = mAutocomplete.m_Filename
                         Dim bIsMainFile As Boolean = Array.Exists(g_sSourceMainFileExt, Function(s As String) sFilename.ToLower.EndsWith(s.ToLower))
 
                         If (Not mFileNodes.ContainsKey(sFilename)) Then
@@ -141,8 +145,8 @@ Public Class UCObjectBrowser
 
                         mTypeNodes = mFileNodes(sFilename).Nodes
 
-                        Dim iTypes As Integer = lAutocompleteList(i).m_Type
-                        Dim sTypes As String = If(String.IsNullOrEmpty(lAutocompleteList(i).GetTypeFullNames), "private", lAutocompleteList(i).GetTypeFullNames.ToLower)
+                        Dim iTypes As Integer = mAutocomplete.m_Type
+                        Dim sTypes As String = If(String.IsNullOrEmpty(mAutocomplete.GetTypeFullNames), "private", mAutocomplete.GetTypeFullNames.ToLower)
                         If (Not mTypeNodes.ContainsKey(sTypes)) Then
                             ClassThread.ExecEx(Of Object)(TreeView_ObjectBrowser, Sub()
                                                                                       mTypeNodes.Add(New TreeNode(sTypes) With {
@@ -154,10 +158,10 @@ Public Class UCObjectBrowser
 
                         mNameNodes = mTypeNodes(sTypes).Nodes
 
-                        Dim sName As String = lAutocompleteList(i).m_FunctionString
+                        Dim sName As String = mAutocomplete.m_FunctionString
                         If (Not mNameNodes.ContainsKey(sName)) Then
                             ClassThread.ExecEx(Of Object)(TreeView_ObjectBrowser, Sub()
-                                                                                      mNameNodes.Add(New ClassTreeNodeAutocomplete(sName, sName, sFilename, iTypes, sName) With {
+                                                                                      mNameNodes.Add(New ClassTreeNodeAutocomplete(sName, sName, mAutocomplete) With {
                                                                                           .Tag = sName
                                                                                       })
                                                                                   End Sub)
@@ -188,7 +192,7 @@ Public Class UCObjectBrowser
                                     Continue For
                                 End If
 
-                                If (Not lAutocompleteList.Exists(Function(m As ClassSyntaxTools.STRUC_AUTOCOMPLETE) m.m_Filename = mTreeNodeAutocomplete.g_sFile AndAlso m.m_Type = mTreeNodeAutocomplete.g_iType AndAlso m.m_FunctionString = mTreeNodeAutocomplete.g_sFunction)) Then
+                                If (Not lAutocompleteList.Exists(Function(m As ClassSyntaxTools.STRUC_AUTOCOMPLETE) m.m_Filename = mTreeNodeAutocomplete.m_Autocomplete.m_Filename AndAlso m.m_Type = mTreeNodeAutocomplete.m_Autocomplete.m_Type AndAlso m.m_FunctionString = mTreeNodeAutocomplete.m_Autocomplete.m_FunctionString)) Then
                                     ClassThread.ExecEx(Of Object)(TreeView_ObjectBrowser, Sub() mNameNodes(l).Remove())
                                 End If
                             Next
@@ -243,20 +247,14 @@ Public Class UCObjectBrowser
     Class ClassTreeNodeAutocomplete
         Inherits TreeNode
 
-        Public g_sFile As String
-        Public g_iType As Integer
-        Public g_sFunction As String
+        Public Sub New(sText As String, sKey As String, mAutocomplete As ClassSyntaxTools.STRUC_AUTOCOMPLETE)
+            Me.Text = sText
+            Me.Name = sKey
 
-        Public Sub New(sText As String, sKey As String, sFile As String, iType As Integer, sFunction As String)
-            Text = sText
-            Name = sKey
-
-            g_sFile = sFile
-            g_iType = iType
-            g_sFunction = sFunction
+            m_Autocomplete = mAutocomplete
         End Sub
 
-
+        ReadOnly Property m_Autocomplete As ClassSyntaxTools.STRUC_AUTOCOMPLETE
     End Class
 
     Private Sub TextboxWatermark_Search_KeyDown(sender As Object, e As KeyEventArgs) Handles TextboxWatermark_Search.KeyDown
@@ -347,7 +345,7 @@ Public Class UCObjectBrowser
                         Return
                     End If
 
-                    g_mFormMain.g_ClassTextEditorTools.ListReferences(e.Node.Text, True)
+                    FindSelectedNodeDefinition()
             End Select
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
@@ -363,6 +361,7 @@ Public Class UCObjectBrowser
 
         ToolStripMenuItem_OpenFile.Enabled = (TreeView_ObjectBrowser.SelectedNode.Level = 0)
         ToolStripMenuItem_ListReferences.Enabled = (TreeView_ObjectBrowser.SelectedNode.Level = 2 AndAlso System.Text.RegularExpressions.Regex.IsMatch(TreeView_ObjectBrowser.SelectedNode.Text, "^[a-zA-Z0-9_]+$"))
+        ToolStripMenuItem_FindDefinition.Enabled = (TreeView_ObjectBrowser.SelectedNode.Level = 2)
         ToolStripMenuItem_Copy.Enabled = (TreeView_ObjectBrowser.SelectedNode.Level = 2 OrElse TreeView_ObjectBrowser.SelectedNode.Level = 0)
     End Sub
 
@@ -409,6 +408,10 @@ Public Class UCObjectBrowser
         End Try
     End Sub
 
+    Private Sub ToolStripMenuItem_FindDefinition_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FindDefinition.Click
+        FindSelectedNodeDefinition()
+    End Sub
+
     Private Sub ToolStripMenuItem_Copy_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Copy.Click
         Try
             If (TreeView_ObjectBrowser.SelectedNode Is Nothing) Then
@@ -441,6 +444,60 @@ Public Class UCObjectBrowser
 
     Private Sub ToolStripMenuItem_CollapseAll_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_CollapseAll.Click
         TreeView_ObjectBrowser.CollapseAll()
+    End Sub
+
+    Private Sub FindSelectedNodeDefinition()
+        Try
+            If (TreeView_ObjectBrowser.SelectedNode Is Nothing OrElse TreeView_ObjectBrowser.SelectedNode.Level <> 2) Then
+                Return
+            End If
+
+            Dim mAutocomplete = TryCast(TreeView_ObjectBrowser.SelectedNode, ClassTreeNodeAutocomplete)
+            If (mAutocomplete Is Nothing) Then
+                Return
+            End If
+
+            Dim sWord As String = mAutocomplete.m_Autocomplete.m_FunctionName
+
+            Dim mDefinition As New KeyValuePair(Of String, Integer)
+            If (Not g_mFormMain.g_ClassTextEditorTools.FindDefinition(mAutocomplete.m_Autocomplete, mDefinition)) Then
+                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, String.Format("Could not find definition of '{0}'!", sWord), False, True, True)
+                Return
+            End If
+
+            'If not, check if file exist and search for tab
+            If (IO.File.Exists(mDefinition.Key)) Then
+                Dim mTab = g_mFormMain.g_ClassTabControl.GetTabByFile(mDefinition.Key)
+
+                'If that also fails, just open the file
+                If (mTab Is Nothing) Then
+                    mTab = g_mFormMain.g_ClassTabControl.AddTab()
+                    mTab.OpenFileTab(mDefinition.Key)
+                    mTab.SelectTab()
+                ElseIf (Not mTab.m_IsActive) Then
+                    mTab.SelectTab()
+                End If
+
+                Dim iLineNum As Integer = ClassTools.ClassMath.ClampInt(0, mTab.m_TextEditor.Document.TotalNumberOfLines - 1, mDefinition.Value - 1)
+                Dim iLineLen As Integer = mTab.m_TextEditor.Document.GetLineSegment(iLineNum).Length
+
+                Dim iStart As New TextLocation(0, iLineNum)
+                Dim iEnd As New TextLocation(iLineLen, iLineNum)
+
+                mTab.m_TextEditor.ActiveTextAreaControl.Caret.Position = iStart
+                mTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.ClearSelection()
+                mTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.SetSelection(iStart, iEnd)
+                mTab.m_TextEditor.ActiveTextAreaControl.CenterViewOn(iLineNum, 10)
+
+                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("Found definition of '{0}': {1}({2})", sWord, mDefinition.Key, mDefinition.Value),
+                                                      New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_GOTO(mDefinition.Key, {mDefinition.Value}),
+                                                      False, True, True)
+            Else
+                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, String.Format("Could not find definition of '{0}'! Could not find file!", sWord), False, True, True)
+            End If
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
     End Sub
 
     Class ClassTreeViewFix

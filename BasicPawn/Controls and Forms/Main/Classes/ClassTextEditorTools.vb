@@ -193,6 +193,12 @@ Public Class ClassTextEditorTools
         Return FindDefinition(mTab, sText, mDefinition)
     End Function
 
+    Public Function FindDefinition(mAutocomplete As ClassSyntaxTools.STRUC_AUTOCOMPLETE, ByRef mDefinition As KeyValuePair(Of String, Integer)) As Boolean
+        Dim mTab = g_mFormMain.g_ClassTabControl.m_ActiveTab
+
+        Return FindDefinition(mTab, mAutocomplete, mDefinition)
+    End Function
+
     Public Function FindDefinition(mTab As ClassTabControl.SourceTabPage, sText As String, ByRef mDefinition As KeyValuePair(Of String, Integer)) As Boolean
         Dim sFunctionName As String
 
@@ -294,6 +300,10 @@ Public Class ClassTextEditorTools
             Next
         End If
 
+        Return FindDefinition(mTab, mAutocomplete, mDefinition)
+    End Function
+
+    Public Function FindDefinition(mTab As ClassTabControl.SourceTabPage, mAutocomplete As ClassSyntaxTools.STRUC_AUTOCOMPLETE, ByRef mDefinition As KeyValuePair(Of String, Integer)) As Boolean
         If (mAutocomplete Is Nothing) Then
             Return False
         End If

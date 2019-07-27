@@ -31,8 +31,8 @@ Partial Class UCExplorerBrowser
         Me.ToolStripMenuItem_Filter = New System.Windows.Forms.ToolStripMenuItem()
         Me.ImageList_ExplorerBrowser = New System.Windows.Forms.ImageList(Me.components)
         Me.MenuStrip_ExplorerBrowser = New System.Windows.Forms.MenuStrip()
-        Me.ToolStripMenuItem_DirectoryUp = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Home = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_DirectoryUp = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Refresh = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripTextBox_Path = New System.Windows.Forms.ToolStripTextBox()
         Me.TextboxWatermark_Search = New BasicPawn.ClassTextboxWatermark()
@@ -46,7 +46,6 @@ Partial Class UCExplorerBrowser
         Me.ListView_ExplorerFiles.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1})
         Me.ListView_ExplorerFiles.ContextMenuStrip = Me.ContextMenuStrip_ExplorerBrowser
         Me.ListView_ExplorerFiles.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ListView_ExplorerFiles.HideSelection = False
         Me.ListView_ExplorerFiles.Location = New System.Drawing.Point(0, 46)
         Me.ListView_ExplorerFiles.Name = "ListView_ExplorerFiles"
         Me.ListView_ExplorerFiles.Size = New System.Drawing.Size(269, 610)
@@ -104,15 +103,6 @@ Partial Class UCExplorerBrowser
         Me.MenuStrip_ExplorerBrowser.TabIndex = 2
         Me.MenuStrip_ExplorerBrowser.Text = "MenuStrip1"
         '
-        'ToolStripMenuItem_DirectoryUp
-        '
-        Me.ToolStripMenuItem_DirectoryUp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.ToolStripMenuItem_DirectoryUp.Image = Global.BasicPawn.My.Resources.Resources.imageres_5339_16x16
-        Me.ToolStripMenuItem_DirectoryUp.Name = "ToolStripMenuItem_DirectoryUp"
-        Me.ToolStripMenuItem_DirectoryUp.Size = New System.Drawing.Size(28, 24)
-        Me.ToolStripMenuItem_DirectoryUp.Text = "Directory up"
-        Me.ToolStripMenuItem_DirectoryUp.ToolTipText = "Directory up"
-        '
         'ToolStripMenuItem_Home
         '
         Me.ToolStripMenuItem_Home.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
@@ -121,6 +111,15 @@ Partial Class UCExplorerBrowser
         Me.ToolStripMenuItem_Home.Size = New System.Drawing.Size(28, 24)
         Me.ToolStripMenuItem_Home.Text = "Home"
         Me.ToolStripMenuItem_Home.ToolTipText = "Home"
+        '
+        'ToolStripMenuItem_DirectoryUp
+        '
+        Me.ToolStripMenuItem_DirectoryUp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.ToolStripMenuItem_DirectoryUp.Image = Global.BasicPawn.My.Resources.Resources.imageres_5339_16x16
+        Me.ToolStripMenuItem_DirectoryUp.Name = "ToolStripMenuItem_DirectoryUp"
+        Me.ToolStripMenuItem_DirectoryUp.Size = New System.Drawing.Size(28, 24)
+        Me.ToolStripMenuItem_DirectoryUp.Text = "Directory up"
+        Me.ToolStripMenuItem_DirectoryUp.ToolTipText = "Directory up"
         '
         'ToolStripMenuItem_Refresh
         '
