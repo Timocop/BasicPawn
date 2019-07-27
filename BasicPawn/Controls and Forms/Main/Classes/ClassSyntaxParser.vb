@@ -1898,6 +1898,7 @@ Public Class ClassSyntaxParser
                     Dim sAnchorName As String
 
                     Dim sLines As String() = mParseInfo.sSource.Split(New String() {vbNewLine, vbLf}, 0)
+                    Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(mParseInfo.sSource, mParseInfo.iLanguage)
 
                     For i = 0 To sLines.Length - 1
                         If (Not sLines(i).Contains("#define")) Then
@@ -1906,6 +1907,11 @@ Public Class ClassSyntaxParser
 
                         mMatch = Regex.Match(sLines(i), "(?<FullDefine>^\s*#define\s+(?<Name>\b[a-zA-Z0-9_]+\b))")
                         If (Not mMatch.Success) Then
+                            Continue For
+                        End If
+
+                        Dim iIndex = mSourceAnalysis.GetIndexFromLine(i)
+                        If (mSourceAnalysis.m_InNonCode(mMatch.Index + iIndex)) Then
                             Continue For
                         End If
 
@@ -1921,7 +1927,15 @@ Public Class ClassSyntaxParser
                         sAnchorName = "#define"
                         iAnchorIndex = 0
                         For ii = 0 To i - 1
-                            iAnchorIndex += Regex.Matches(sLines(ii), sAnchorName).Count
+                            For Each mAnchorMatch As Match In Regex.Matches(sLines(ii), sAnchorName)
+                                Dim iAnchorOffset = mSourceAnalysis.GetIndexFromLine(ii) + mAnchorMatch.Index
+
+                                If (mSourceAnalysis.m_InNonCode(iAnchorOffset)) Then
+                                    Continue For
+                                End If
+
+                                iAnchorIndex += 1
+                            Next
                         Next
 
                         Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE("",
@@ -1980,11 +1994,6 @@ Public Class ClassSyntaxParser
                             Continue For
                         End If
 
-                        Dim iIndex = mSourceAnalysis.GetIndexFromLine(i)
-                        If (iIndex < 0 OrElse mSourceAnalysis.GetBraceLevel(iIndex, Nothing) > 0 OrElse mSourceAnalysis.m_InNonCode(iIndex)) Then
-                            Continue For
-                        End If
-
                         'SP 1.7 +Tags
                         mMatch = Regex.Match(sLines(i), String.Format("^\s*(?<Types>public(\b[a-zA-Z0-9_ ]+\b)*)\s+(?<Tag>\b{0}\b(\[\s*\])*\s)\s*(?<Name>\b[a-zA-Z0-9_]+\b)(?<Other>(.*?))$", sRegExTypePattern))
                         If (Not mMatch.Success) Then
@@ -2005,6 +2014,11 @@ Public Class ClassSyntaxParser
                             If (ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_6) Then
                                 Continue For
                             End If
+                        End If
+
+                        Dim iIndex = mSourceAnalysis.GetIndexFromLine(i)
+                        If (iIndex < 0 OrElse mSourceAnalysis.GetBraceLevel(mMatch.Index + iIndex, Nothing) > 0 OrElse mSourceAnalysis.m_InNonCode(mMatch.Index + iIndex)) Then
+                            Continue For
                         End If
 
                         sFullName = ""
@@ -2035,7 +2049,15 @@ Public Class ClassSyntaxParser
                         sAnchorName = "public"
                         iAnchorIndex = 0
                         For ii = 0 To i - 1
-                            iAnchorIndex += Regex.Matches(sLines(ii), sAnchorName).Count
+                            For Each mAnchorMatch As Match In Regex.Matches(sLines(ii), sAnchorName)
+                                Dim iAnchorOffset = mSourceAnalysis.GetIndexFromLine(ii) + mAnchorMatch.Index
+
+                                If (mSourceAnalysis.m_InNonCode(iAnchorOffset)) Then
+                                    Continue For
+                                End If
+
+                                iAnchorIndex += 1
+                            Next
                         Next
 
                         Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(sComment,
@@ -2572,11 +2594,6 @@ Public Class ClassSyntaxParser
                         Continue For
                     End If
 
-                    Dim iIndex = mSourceAnalysis.GetIndexFromLine(i)
-                    If (iIndex < 0 OrElse mSourceAnalysis.GetBraceLevel(iIndex, Nothing) > 0 OrElse mSourceAnalysis.m_InNonCode(iIndex)) Then
-                        Continue For
-                    End If
-
                     iBraceList = ClassSyntaxTools.ClassSyntaxHelpers.GetExpressionBetweenCharacters(sLines(i), "("c, ")"c, 1, mParseInfo.iLanguage, True)
                     If (iBraceList.Length < 1) Then
                         Continue For
@@ -2604,6 +2621,11 @@ Public Class ClassSyntaxParser
                         If (ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_6) Then
                             Continue For
                         End If
+                    End If
+
+                    Dim iIndex = mSourceAnalysis.GetIndexFromLine(i)
+                    If (iIndex < 0 OrElse mSourceAnalysis.GetBraceLevel(mMatch.Index + iIndex, Nothing) > 0 OrElse mSourceAnalysis.m_InNonCode(mMatch.Index + iIndex)) Then
+                        Continue For
                     End If
 
                     sTypes = mMatch.Groups("Types").Value.Split(New Char() {" "c}, StringSplitOptions.RemoveEmptyEntries)
@@ -2683,7 +2705,15 @@ Public Class ClassSyntaxParser
                         sAnchorName = "functag"
                         iAnchorIndex = 0
                         For ii = 0 To i - 1
-                            iAnchorIndex += Regex.Matches(sLines(ii), sAnchorName).Count
+                            For Each mAnchorMatch As Match In Regex.Matches(sLines(ii), sAnchorName)
+                                Dim iAnchorOffset = mSourceAnalysis.GetIndexFromLine(ii) + mAnchorMatch.Index
+
+                                If (mSourceAnalysis.m_InNonCode(iAnchorOffset)) Then
+                                    Continue For
+                                End If
+
+                                iAnchorIndex += 1
+                            Next
                         Next
 
                         Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(sComment,
@@ -2737,7 +2767,15 @@ Public Class ClassSyntaxParser
 
                         iAnchorIndex = 0
                         For ii = 0 To i - 1
-                            iAnchorIndex += Regex.Matches(sLines(ii), sAnchorName).Count
+                            For Each mAnchorMatch As Match In Regex.Matches(sLines(ii), Regex.Escape(sAnchorName))
+                                Dim iAnchorOffset = mSourceAnalysis.GetIndexFromLine(ii) + mAnchorMatch.Index
+
+                                If (mSourceAnalysis.m_InNonCode(iAnchorOffset)) Then
+                                    Continue For
+                                End If
+
+                                iAnchorIndex += 1
+                            Next
                         Next
 
                         Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(sComment,

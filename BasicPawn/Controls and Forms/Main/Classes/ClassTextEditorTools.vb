@@ -387,8 +387,31 @@ Public Class ClassTextEditorTools
                 Return False
             End If
 
-            Dim iOffset = mMatches(iAnchorIndex).Index
+            Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, mTab.m_Language)
+
+            Dim iOffset As Integer = 0
             Dim iLine As Integer = 1
+            Dim iSearchAnchorIndex As Integer = 0
+            Dim bSuccess As Boolean = False
+
+            For i = 0 To mMatches.Count - 1
+                'We should ignore anchors in non-code parts
+                If (mSourceAnalysis.m_InNonCode(mMatches(i).Index)) Then
+                    Continue For
+                End If
+
+                If (iSearchAnchorIndex > iAnchorIndex) Then
+                    Exit For
+                End If
+
+                iSearchAnchorIndex += 1
+                iOffset = mMatches(i).Index
+                bSuccess = True
+            Next
+
+            If (Not bSuccess) Then
+                Return False
+            End If
 
             For i = 0 To iOffset
                 If (sSource(i) = vbLf(0)) Then
