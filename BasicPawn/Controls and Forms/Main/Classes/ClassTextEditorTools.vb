@@ -382,7 +382,7 @@ Public Class ClassTextEditorTools
 
             Dim sSource As String
 
-            If (sAnchorFile.ToLower = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File.ToLower) Then
+            If (sAnchorFile.ToLower = mTab.m_File.ToLower) Then
                 sSource = mTab.m_TextEditor.Document.TextContent
             Else
                 sSource = IO.File.ReadAllText(sAnchorFile)
@@ -392,8 +392,8 @@ Public Class ClassTextEditorTools
                 Return False
             End If
 
-            Dim mMatches = Regex.Matches(sSource, String.Format("\b({0})\b", Regex.Escape(sAnchorName)))
-            If (mMatches.Count < 0 OrElse iAnchorIndex > mMatches.Count - 1) Then
+            Dim mAnchorMatches = Regex.Matches(sSource, String.Format("\b({0})\b", Regex.Escape(sAnchorName)))
+            If (mAnchorMatches.Count < 0 OrElse iAnchorIndex > mAnchorMatches.Count - 1) Then
                 Return False
             End If
 
@@ -404,9 +404,9 @@ Public Class ClassTextEditorTools
             Dim iSearchAnchorIndex As Integer = 0
             Dim bSuccess As Boolean = False
 
-            For i = 0 To mMatches.Count - 1
+            For i = 0 To mAnchorMatches.Count - 1
                 'We should ignore anchors in non-code parts.
-                If (mSourceAnalysis.m_InNonCode(mMatches(i).Index)) Then
+                If (mSourceAnalysis.m_InNonCode(mAnchorMatches(i).Index)) Then
                     Continue For
                 End If
 
@@ -415,7 +415,7 @@ Public Class ClassTextEditorTools
                 End If
 
                 iSearchAnchorIndex += 1
-                iOffset = mMatches(i).Index
+                iOffset = mAnchorMatches(i).Index
                 bSuccess = True
             Next
 
