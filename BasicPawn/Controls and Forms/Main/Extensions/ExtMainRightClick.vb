@@ -15,9 +15,70 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 
+Imports ICSharpCode.TextEditor
+
 Partial Public Class FormMain
     Private Sub ToolStripMenuItem_Mark_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Mark.Click
         g_ClassTextEditorTools.MarkSelectedWord()
+    End Sub
+
+    Private Sub ToolStripMenuItem_ListReferences_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ListReferences.Click
+        Try
+            g_ClassTextEditorTools.ListReferences(Nothing, True)
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
+    Private Sub ToolStripMenuItem_FindDefinition_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FindDefinition.Click
+        Try
+            Dim sWord = g_ClassTextEditorTools.GetCaretWord(True, True, True)
+            If (String.IsNullOrEmpty(sWord)) Then
+                g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Could not find definition! Nothing valid selected!", False, True, True)
+                Return
+            End If
+
+            Dim mTab = g_ClassTabControl.m_ActiveTab
+
+            Dim mDefinition As New KeyValuePair(Of String, Integer)
+            If (Not g_ClassTextEditorTools.FindDefinition(mTab, sWord, mDefinition)) Then
+                g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, String.Format("Could not find definition of '{0}'!", sWord), False, True, True)
+                Return
+            End If
+
+            'If not, check if file exist and search for tab
+            If (IO.File.Exists(mDefinition.Key)) Then
+                mTab = g_ClassTabControl.GetTabByFile(mDefinition.Key)
+
+                'If that also fails, just open the file
+                If (mTab Is Nothing) Then
+                    mTab = g_ClassTabControl.AddTab()
+                    mTab.OpenFileTab(mDefinition.Key)
+                    mTab.SelectTab()
+                ElseIf (Not mTab.m_IsActive) Then
+                    mTab.SelectTab()
+                End If
+
+                Dim iLineNum As Integer = ClassTools.ClassMath.ClampInt(0, mTab.m_TextEditor.Document.TotalNumberOfLines - 1, mDefinition.Value - 1)
+                Dim iLineLen As Integer = mTab.m_TextEditor.Document.GetLineSegment(iLineNum).Length
+
+                Dim iStart As New TextLocation(0, iLineNum)
+                Dim iEnd As New TextLocation(iLineLen, iLineNum)
+
+                mTab.m_TextEditor.ActiveTextAreaControl.Caret.Position = iStart
+                mTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.ClearSelection()
+                mTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.SetSelection(iStart, iEnd)
+                mTab.m_TextEditor.ActiveTextAreaControl.CenterViewOn(iLineNum, 10)
+
+                g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("Found definition of '{0}': {1}({2})", sWord, mDefinition.Key, mDefinition.Value),
+                                                      New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_GOTO(mDefinition.Key, {mDefinition.Value}),
+                                                      False, True, True)
+            Else
+                g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, String.Format("Could not find definition of '{0}'! Could not find file!", sWord), False, True, True)
+            End If
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
     End Sub
 
     Private Sub ToolStripMenuItem_Cut_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Cut.Click

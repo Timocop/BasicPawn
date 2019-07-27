@@ -415,7 +415,7 @@ Public Class ClassTools
 
                 If (i = 0) Then
                     NativeWinAPI.SendMessage(c.Handle, NativeWinAPI.WM_SETREDRAW, True, 0)
-                    c.Invalidate(True)
+                    c.Refresh()
                 End If
             End If
         End Sub

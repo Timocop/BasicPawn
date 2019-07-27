@@ -321,14 +321,6 @@ Partial Public Class FormMain
         End If
     End Sub
 
-    Private Sub ToolStripMenuItem_ListReferences_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ListReferences.Click
-        Try
-            g_ClassTextEditorTools.ListReferences(Nothing, True)
-        Catch ex As Exception
-            ClassExceptionLog.WriteToLogMessageBox(ex)
-        End Try
-    End Sub
-
     Private Sub ToolStripMenuItem_ToolsAutocomplete_DropDownOpening(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsAutocomplete.DropDownOpening
         Dim sLanguage As String
 
