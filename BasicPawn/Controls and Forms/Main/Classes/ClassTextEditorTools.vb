@@ -382,7 +382,7 @@ Public Class ClassTextEditorTools
                 Return False
             End If
 
-            Dim mMatches = Regex.Matches(sSource, Regex.Escape(sAnchorName))
+            Dim mMatches = Regex.Matches(sSource, String.Format("\b({0})\b", Regex.Escape(sAnchorName)))
             If (mMatches.Count < 0 OrElse iAnchorIndex > mMatches.Count - 1) Then
                 Return False
             End If
