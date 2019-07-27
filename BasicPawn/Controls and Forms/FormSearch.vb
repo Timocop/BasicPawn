@@ -526,11 +526,12 @@ Public Class FormSearch
         Dim iLineColumStart As Integer = iOffset - mTab.m_TextEditor.Document.GetLineSegmentForOffset(iOffset).Offset
         Dim iLineColumEnd As Integer = iOffset + iLength - mTab.m_TextEditor.Document.GetLineSegmentForOffset(iOffset + iLength).Offset
 
-        Dim mLocStart As New TextLocation(iLineColumStart, iLineLenStart)
-        Dim mLocEnd As New TextLocation(iLineColumEnd, iLineLenEnd)
+        Dim mStartLoc As New TextLocation(iLineColumStart, iLineLenStart)
+        Dim mEndLoc As New TextLocation(iLineColumEnd, iLineLenEnd)
 
-        mTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.SetSelection(mLocStart, mLocEnd)
-        mTab.m_TextEditor.ActiveTextAreaControl.Caret.Position = If(bCaretBeginPos, mLocStart, mLocEnd)
+        mTab.m_TextEditor.ActiveTextAreaControl.Caret.Position = If(bCaretBeginPos, mStartLoc, mEndLoc)
+        mTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.SetSelection(mStartLoc, mEndLoc)
+        mTab.m_TextEditor.ActiveTextAreaControl.CenterViewOn(If(bCaretBeginPos, mStartLoc.Line, mEndLoc.Line), 10)
     End Sub
 
     ''' <summary>

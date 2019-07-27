@@ -481,12 +481,12 @@ Public Class UCObjectBrowser
                 Dim iLineNum As Integer = ClassTools.ClassMath.ClampInt(0, mTab.m_TextEditor.Document.TotalNumberOfLines - 1, mDefinition.Value - 1)
                 Dim iLineLen As Integer = mTab.m_TextEditor.Document.GetLineSegment(iLineNum).Length
 
-                Dim iStart As New TextLocation(0, iLineNum)
-                Dim iEnd As New TextLocation(iLineLen, iLineNum)
+                Dim mStartLoc As New TextLocation(0, iLineNum)
+                Dim mEndLoc As New TextLocation(iLineLen, iLineNum)
 
-                mTab.m_TextEditor.ActiveTextAreaControl.Caret.Position = iStart
+                mTab.m_TextEditor.ActiveTextAreaControl.Caret.Position = mStartLoc
                 mTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.ClearSelection()
-                mTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.SetSelection(iStart, iEnd)
+                mTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.SetSelection(mStartLoc, mEndLoc)
                 mTab.m_TextEditor.ActiveTextAreaControl.CenterViewOn(iLineNum, 10)
 
                 g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("Found definition of '{0}': {1}({2})", sWord, mDefinition.Key, mDefinition.Value),

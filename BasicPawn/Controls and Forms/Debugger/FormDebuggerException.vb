@@ -111,11 +111,13 @@ Public Class FormDebuggerException
 
             Dim iLineLen As Integer = g_mFormDebugger.TextEditorControlEx_DebuggerSource.Document.GetLineSegment(iDebugLine).Length
 
-            Dim startLocation As New ICSharpCode.TextEditor.TextLocation(0, iDebugLine)
-            Dim endLocation As New ICSharpCode.TextEditor.TextLocation(iLineLen, iDebugLine)
+            Dim mStartLoc As New ICSharpCode.TextEditor.TextLocation(0, iDebugLine)
+            Dim mEndLoc As New ICSharpCode.TextEditor.TextLocation(iLineLen, iDebugLine)
 
-            g_mFormDebugger.TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.Caret.Position = startLocation
-            g_mFormDebugger.TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.SelectionManager.SetSelection(startLocation, endLocation)
+            g_mFormDebugger.TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.Caret.Position = mStartLoc
+            g_mFormDebugger.TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.SelectionManager.ClearSelection()
+            g_mFormDebugger.TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.SelectionManager.SetSelection(mStartLoc, mEndLoc)
+            g_mFormDebugger.TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.CenterViewOn(iDebugLine, 10)
         Catch ex As Exception
         End Try
     End Sub

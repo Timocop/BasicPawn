@@ -500,19 +500,17 @@ Public Class UCBookmarkDetails
                     'Try to find using absolute and relative path
                     If (sTabFile.ToLower.EndsWith(sFile.ToLower)) Then
                         Dim iLineNum As Integer = ClassTools.ClassMath.ClampInt(0, g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.Document.TotalNumberOfLines - 1, iLine)
-
-                        g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.Caret.Line = iLineNum
-                        g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.Caret.Column = 0
-                        g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.SelectionManager.ClearSelection()
-
                         Dim iLineLen As Integer = g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.Document.GetLineSegment(iLineNum).Length
 
-                        Dim iStart As New TextLocation(0, iLineNum)
-                        Dim iEnd As New TextLocation(iLineLen, iLineNum)
+                        Dim mStartLoc As New TextLocation(0, iLineNum)
+                        Dim mEndLoc As New TextLocation(iLineLen, iLineNum)
 
-                        g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.SelectionManager.SetSelection(iStart, iEnd)
+                        g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.Caret.Position = mStartLoc
+                        g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.SelectionManager.ClearSelection()
+                        g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.SelectionManager.SetSelection(mStartLoc, mEndLoc)
+                        g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.CenterViewOn(iLineNum, 10)
 
-                        If (g_mFormMain.g_ClassTabControl.m_ActiveTabIndex <> i) Then
+                        If (Not g_mFormMain.g_ClassTabControl.m_Tab(i).m_IsActive) Then
                             g_mFormMain.g_ClassTabControl.SelectTab(i)
                         End If
 

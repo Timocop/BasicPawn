@@ -155,21 +155,16 @@ Public Class FormReportDetails
                     Dim sTabPath As String = mFormMain.g_ClassTabControl.m_Tab(i).m_File.Replace("/"c, "\"c)
 
                     If (sTabPath.ToLower = sFile.ToLower OrElse (bGuessTab AndAlso sTabPath.ToLower.EndsWith(sFile.ToLower))) Then
-                        Dim iLineNum As Integer = CInt(sLine) - 1
-                        If (iLineNum < 0 OrElse iLineNum > mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.Document.TotalNumberOfLines - 1) Then
-                            Exit While
-                        End If
-
-                        mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.Caret.Line = iLineNum
-                        mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.Caret.Column = 0
-                        mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.SelectionManager.ClearSelection()
-
+                        Dim iLineNum As Integer = ClassTools.ClassMath.ClampInt(0, mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.Document.TotalNumberOfLines - 1, CInt(sLine) - 1)
                         Dim iLineLen As Integer = mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.Document.GetLineSegment(iLineNum).Length
 
-                        Dim iStart As New TextLocation(0, iLineNum)
-                        Dim iEnd As New TextLocation(iLineLen, iLineNum)
+                        Dim mStartLoc As New TextLocation(0, iLineNum)
+                        Dim mEndLoc As New TextLocation(iLineLen, iLineNum)
 
-                        mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.SelectionManager.SetSelection(iStart, iEnd)
+                        mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.Caret.Position = mStartLoc
+                        mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.SelectionManager.ClearSelection()
+                        mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.SelectionManager.SetSelection(mStartLoc, mEndLoc)
+                        mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.CenterViewOn(iLineNum, 10)
 
                         If (mFormMain.g_ClassTabControl.m_ActiveTabIndex <> i) Then
                             mFormMain.g_ClassTabControl.SelectTab(i)

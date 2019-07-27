@@ -448,11 +448,15 @@ Public Class FormDebugger
                     Continue For
                 End If
 
-                Dim startLocation As New ICSharpCode.TextEditor.TextLocation(mItem.iIndex, mItem.iLine - 1)
-                Dim endLocation As New ICSharpCode.TextEditor.TextLocation(mItem.iIndex + mItem.iTotalLength, mItem.iLine - 1)
+                Dim iLine As Integer = mItem.iLine - 1
 
-                TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.Caret.Position = startLocation
-                TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.SelectionManager.SetSelection(startLocation, endLocation)
+                Dim mStartLoc As New ICSharpCode.TextEditor.TextLocation(mItem.iIndex, iLine)
+                Dim mEndLoc As New ICSharpCode.TextEditor.TextLocation(mItem.iIndex + mItem.iTotalLength, iLine)
+
+                TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.Caret.Position = mStartLoc
+                TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.SelectionManager.ClearSelection()
+                TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.SelectionManager.SetSelection(mStartLoc, mEndLoc)
+                TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.CenterViewOn(iLine, 10)
 
                 Exit For
             Next
@@ -486,11 +490,15 @@ Public Class FormDebugger
                     Continue For
                 End If
 
-                Dim startLocation As New ICSharpCode.TextEditor.TextLocation(item.iIndex, item.iLine - 1)
-                Dim endLocation As New ICSharpCode.TextEditor.TextLocation(item.iIndex + item.iTotalLength, item.iLine - 1)
+                Dim iLine As Integer = item.iLine - 1
 
-                TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.Caret.Position = startLocation
-                TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.SelectionManager.SetSelection(startLocation, endLocation)
+                Dim mStartLoc As New ICSharpCode.TextEditor.TextLocation(item.iIndex, iLine)
+                Dim mEndLoc As New ICSharpCode.TextEditor.TextLocation(item.iIndex + item.iTotalLength, iLine)
+
+                TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.Caret.Position = mStartLoc
+                TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.SelectionManager.ClearSelection()
+                TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.SelectionManager.SetSelection(mStartLoc, mEndLoc)
+                TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.CenterViewOn(iLine, 10)
 
                 Exit For
             Next
@@ -524,11 +532,15 @@ Public Class FormDebugger
                     Continue For
                 End If
 
-                Dim startLocation As New ICSharpCode.TextEditor.TextLocation(item.iIndex, item.iLine - 1)
-                Dim endLocation As New ICSharpCode.TextEditor.TextLocation(item.iIndex + item.iTotalLength, item.iLine - 1)
+                Dim iLine As Integer = item.iLine - 1
 
-                TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.Caret.Position = startLocation
-                TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.SelectionManager.SetSelection(startLocation, endLocation)
+                Dim mStartLoc As New ICSharpCode.TextEditor.TextLocation(item.iIndex, iLine)
+                Dim mEndLoc As New ICSharpCode.TextEditor.TextLocation(item.iIndex + item.iTotalLength, iLine)
+
+                TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.Caret.Position = mStartLoc
+                TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.SelectionManager.ClearSelection()
+                TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.SelectionManager.SetSelection(mStartLoc, mEndLoc)
+                TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.CenterViewOn(iLine, 10)
 
                 Exit For
             Next
