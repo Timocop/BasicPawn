@@ -31,6 +31,7 @@ Partial Class FormMain
         Me.ContextMenuStrip_RightClick = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.ToolStripMenuItem_Mark = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_ListReferences = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_FindDefinition = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator6 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_Cut = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Copy = New System.Windows.Forms.ToolStripMenuItem()
@@ -199,7 +200,6 @@ Partial Class FormMain
         Me.ToolStripSeparator19 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_FindOptimalConfigActiveTab = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_FindOptimalConfigAllTabs = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripMenuItem_FindDefinition = New System.Windows.Forms.ToolStripMenuItem()
         Me.ContextMenuStrip_RightClick.SuspendLayout()
         Me.MenuStrip_BasicPawn.SuspendLayout()
         Me.SplitContainer_ToolboxSourceAndDetails.Panel1.SuspendLayout()
@@ -238,6 +238,16 @@ Partial Class FormMain
         Me.ToolStripMenuItem_ListReferences.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.L), System.Windows.Forms.Keys)
         Me.ToolStripMenuItem_ListReferences.Size = New System.Drawing.Size(255, 22)
         Me.ToolStripMenuItem_ListReferences.Text = "List references"
+        '
+        'ToolStripMenuItem_FindDefinition
+        '
+        Me.ToolStripMenuItem_FindDefinition.Image = Global.BasicPawn.My.Resources.Resources.imageres_5357_16x16
+        Me.ToolStripMenuItem_FindDefinition.Name = "ToolStripMenuItem_FindDefinition"
+        Me.ToolStripMenuItem_FindDefinition.ShortcutKeyDisplayString = "Ctrl+Shift+L"
+        Me.ToolStripMenuItem_FindDefinition.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
+            Or System.Windows.Forms.Keys.L), System.Windows.Forms.Keys)
+        Me.ToolStripMenuItem_FindDefinition.Size = New System.Drawing.Size(255, 22)
+        Me.ToolStripMenuItem_FindDefinition.Text = "Find definition"
         '
         'ToolStripSeparator6
         '
@@ -1516,13 +1526,6 @@ Partial Class FormMain
         Me.ToolStripMenuItem_FindOptimalConfigAllTabs.Name = "ToolStripMenuItem_FindOptimalConfigAllTabs"
         Me.ToolStripMenuItem_FindOptimalConfigAllTabs.Size = New System.Drawing.Size(250, 22)
         Me.ToolStripMenuItem_FindOptimalConfigAllTabs.Text = "Find optimal config for all tabs"
-        '
-        'ToolStripMenuItem_FindDefinition
-        '
-        Me.ToolStripMenuItem_FindDefinition.Image = Global.BasicPawn.My.Resources.Resources.imageres_5357_16x16
-        Me.ToolStripMenuItem_FindDefinition.Name = "ToolStripMenuItem_FindDefinition"
-        Me.ToolStripMenuItem_FindDefinition.Size = New System.Drawing.Size(255, 22)
-        Me.ToolStripMenuItem_FindDefinition.Text = "Find definition"
         '
         'FormMain
         '
