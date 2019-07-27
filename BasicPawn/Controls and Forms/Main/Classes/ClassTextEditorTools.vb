@@ -395,7 +395,7 @@ Public Class ClassTextEditorTools
             Dim bSuccess As Boolean = False
 
             For i = 0 To mMatches.Count - 1
-                'We should ignore anchors in non-code parts
+                'We should ignore anchors in non-code parts.
                 If (mSourceAnalysis.m_InNonCode(mMatches(i).Index)) Then
                     Continue For
                 End If
@@ -409,6 +409,7 @@ Public Class ClassTextEditorTools
                 bSuccess = True
             Next
 
+            'If we didnt find anything, abort.
             If (Not bSuccess) Then
                 Return False
             End If
