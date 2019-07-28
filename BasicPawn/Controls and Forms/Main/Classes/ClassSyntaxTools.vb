@@ -1179,7 +1179,7 @@ Public Class ClassSyntaxTools
                         Select Case (i)
                             Case ENUM_SYNTAX_EDITORS.MAIN_TEXTEDITOR
                                 For j = 0 To g_ClassSyntaxTools.g_mFormMain.g_ClassTabControl.m_TabsCount - 1
-                                    If (j = g_ClassSyntaxTools.g_mFormMain.g_ClassTabControl.m_ActiveTabIndex) Then
+                                    If (g_ClassSyntaxTools.g_mFormMain.g_ClassTabControl.m_Tab(j).m_IsActive) Then
                                         If (g_mTextEditorSyntaxItems(i).m_SyntaxChanged OrElse
                                                     g_ClassSyntaxTools.g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.Document.HighlightingStrategy.Name <> g_mTextEditorSyntaxItems(i).m_Name) Then
                                             g_ClassSyntaxTools.g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.SetHighlighting(g_mTextEditorSyntaxItems(i).m_Name)

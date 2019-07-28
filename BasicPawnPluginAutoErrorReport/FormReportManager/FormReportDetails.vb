@@ -166,8 +166,8 @@ Public Class FormReportDetails
                         mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.SelectionManager.SetSelection(mStartLoc, mEndLoc)
                         mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.CenterViewOn(iLineNum, 10)
 
-                        If (mFormMain.g_ClassTabControl.m_ActiveTabIndex <> i) Then
-                            mFormMain.g_ClassTabControl.SelectTab(i)
+                        If (Not mFormMain.g_ClassTabControl.m_Tab(i).m_IsActive) Then
+                            mFormMain.g_ClassTabControl.m_Tab(i).SelectTab()
                         End If
 
                         Me.TopMost = True

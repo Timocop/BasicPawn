@@ -511,7 +511,7 @@ Public Class UCBookmarkDetails
                         g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.ActiveTextAreaControl.CenterViewOn(iLineNum, 10)
 
                         If (Not g_mFormMain.g_ClassTabControl.m_Tab(i).m_IsActive) Then
-                            g_mFormMain.g_ClassTabControl.SelectTab(i)
+                            g_mFormMain.g_ClassTabControl.m_Tab(i).SelectTab()
                         End If
 
                         Return
