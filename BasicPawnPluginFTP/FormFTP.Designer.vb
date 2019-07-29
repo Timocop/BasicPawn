@@ -172,7 +172,7 @@ Partial Class FormFTP
         'Button_AddEntry
         '
         Me.Button_AddEntry.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button_AddEntry.Location = New System.Drawing.Point(365, 132)
+        Me.Button_AddEntry.Location = New System.Drawing.Point(359, 132)
         Me.Button_AddEntry.Name = "Button_AddEntry"
         Me.Button_AddEntry.Size = New System.Drawing.Size(75, 23)
         Me.Button_AddEntry.TabIndex = 0
@@ -356,6 +356,7 @@ Partial Class FormFTP
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
+        Me.BackColor = System.Drawing.Color.White
         Me.ClientSize = New System.Drawing.Size(464, 421)
         Me.Controls.Add(Me.TableLayoutPanel_Controls)
         Me.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))

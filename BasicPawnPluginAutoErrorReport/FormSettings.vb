@@ -80,12 +80,6 @@ Public Class FormSettings
         Me.Close()
     End Sub
 
-    Private Sub Button_Apply_Click(sender As Object, e As EventArgs) Handles Button_Apply.Click
-        SaveSettings()
-
-        Me.Close()
-    End Sub
-
     Private Sub LinkLabel_Remove_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_Remove.LinkClicked
         Try
             If (ListView_FtpEntries.SelectedItems.Count < 1) Then
@@ -106,6 +100,7 @@ Public Class FormSettings
             Next
 
             FillListView()
+            SaveSettings()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -136,6 +131,7 @@ Public Class FormSettings
             g_lFtpEntries.Add(New STRUC_FTP_ENTRY_ITEM(sHost, sDatabaseEntry, sSourceModPath, iProtocol))
 
             FillListView()
+            SaveSettings()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try

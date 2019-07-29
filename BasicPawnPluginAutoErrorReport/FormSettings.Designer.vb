@@ -53,7 +53,6 @@ Partial Class FormSettings
         Me.NumericUpDown_MaxFileSize = New System.Windows.Forms.NumericUpDown()
         Me.Label_MaxFileSize = New System.Windows.Forms.Label()
         Me.Panel5 = New System.Windows.Forms.Panel()
-        Me.Button_Apply = New System.Windows.Forms.Button()
         Me.Button_Close = New System.Windows.Forms.Button()
         Me.TableLayoutPanel1.SuspendLayout()
         Me.GroupBox_NewEntry.SuspendLayout()
@@ -324,7 +323,6 @@ Partial Class FormSettings
         '
         'Panel5
         '
-        Me.Panel5.Controls.Add(Me.Button_Apply)
         Me.Panel5.Controls.Add(Me.Button_Close)
         Me.Panel5.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Panel5.Location = New System.Drawing.Point(0, 373)
@@ -332,16 +330,6 @@ Partial Class FormSettings
         Me.Panel5.Name = "Panel5"
         Me.Panel5.Size = New System.Drawing.Size(464, 48)
         Me.Panel5.TabIndex = 7
-        '
-        'Button_Apply
-        '
-        Me.Button_Apply.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button_Apply.Location = New System.Drawing.Point(296, 13)
-        Me.Button_Apply.Name = "Button_Apply"
-        Me.Button_Apply.Size = New System.Drawing.Size(75, 23)
-        Me.Button_Apply.TabIndex = 5
-        Me.Button_Apply.Text = "Apply"
-        Me.Button_Apply.UseVisualStyleBackColor = True
         '
         'Button_Close
         '
@@ -403,7 +391,6 @@ Partial Class FormSettings
     Friend WithEvents Label6 As Windows.Forms.Label
     Friend WithEvents Button_AddEntry As Windows.Forms.Button
     Friend WithEvents Button_Close As Windows.Forms.Button
-    Friend WithEvents Button_Apply As Windows.Forms.Button
     Friend WithEvents Label_MaxFileSize As Windows.Forms.Label
     Friend WithEvents NumericUpDown_MaxFileSize As Windows.Forms.NumericUpDown
     Friend WithEvents Panel3 As Windows.Forms.Panel

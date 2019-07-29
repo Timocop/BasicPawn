@@ -68,7 +68,7 @@ Public Class FormFTP
 
         g_mSecureStorage = New ClassSecureStorage("PluginFtpEntries")
 
-        LoadData()
+        LoadSettings()
         FillListView()
     End Sub
 
@@ -115,7 +115,7 @@ Public Class FormFTP
             Next
 
             FillListView()
-            SaveData()
+            SaveSettings()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -413,7 +413,7 @@ Public Class FormFTP
             g_lFtpEntries.Add(New STRUC_FTP_ENTRY_ITEM(sHost, sDatabaseEntry, sDestinationPath, iProtocol))
 
             FillListView()
-            SaveData()
+            SaveSettings()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -427,7 +427,7 @@ Public Class FormFTP
         CleanUp()
     End Sub
 
-    Private Sub LoadData()
+    Private Sub LoadSettings()
         Try
             g_lFtpEntries.Clear()
 
@@ -460,7 +460,7 @@ Public Class FormFTP
         End Try
     End Sub
 
-    Private Sub SaveData()
+    Private Sub SaveSettings()
         Try
             Using mIni As New ClassIni
                 For Each mFtpItem In g_lFtpEntries.ToArray
