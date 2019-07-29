@@ -315,7 +315,7 @@ Public Class FormReportManager
                                                                                      Try
                                                                                          g_mClassFTP.DownloadFile(mItem.sFullName, sTmpFile)
 
-                                                                                         ClassDebuggerTools.ClassDebuggerHelpers.ReadSourceModLogExceptions(IO.File.ReadAllLines(sTmpFile))
+                                                                                         lReportExceptionItems.AddRange(ClassDebuggerTools.ClassDebuggerHelpers.ReadSourceModLogExceptions(IO.File.ReadAllLines(sTmpFile)))
                                                                                      Finally
                                                                                          IO.File.Delete(sTmpFile)
                                                                                      End Try
@@ -361,7 +361,7 @@ Public Class FormReportManager
                                                                                              g_mClassSFTP.DownloadFile(mItem.FullName, mStream)
                                                                                          End Using
 
-                                                                                         ClassDebuggerTools.ClassDebuggerHelpers.ReadSourceModLogExceptions(IO.File.ReadAllLines(sTmpFile))
+                                                                                         lReportExceptionItems.AddRange(ClassDebuggerTools.ClassDebuggerHelpers.ReadSourceModLogExceptions(IO.File.ReadAllLines(sTmpFile)))
                                                                                      Finally
                                                                                          IO.File.Delete(sTmpFile)
                                                                                      End Try
