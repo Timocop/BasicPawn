@@ -21,6 +21,7 @@ Imports ICSharpCode.TextEditor.Document
 Public Class UCBookmarkDetails
     Private g_mFormMain As FormMain
 
+    Private g_mSelectedItemsQueue As New Queue(Of ListViewItem)
     Private g_bLoaded As Boolean = False
 
     Public g_ClassBookmarks As ClassBookmarks
@@ -50,7 +51,7 @@ Public Class UCBookmarkDetails
         AddHandler g_mFormMain.g_ClassSyntaxUpdater.OnSyntaxUpdate, AddressOf OnSyntaxUpdate
 
         'Set double buffering to avoid annonying flickers
-        ClassTools.ClassForms.SetDoubleBufferingAllChilds(Me, True)
+        ClassTools.ClassForms.SetDoubleBuffering(ListView_Bookmarks, True)
     End Sub
 
     Private Sub UCBookmarkDetails_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -222,20 +223,24 @@ Public Class UCBookmarkDetails
     End Sub
 
     Private Sub UpdateListViewColors()
-        If (ListView_Bookmarks.Items.Count < 1) Then
+        If (g_mSelectedItemsQueue.Count < 1 AndAlso ListView_Bookmarks.Items.Count < 1) Then
             Return
         End If
 
         Try
             ListView_Bookmarks.SuspendLayout()
 
-            For i = 0 To ListView_Bookmarks.Items.Count - 1
-                If (ListView_Bookmarks.Items(i).ForeColor <> ListView_Bookmarks.ForeColor OrElse
-                            ListView_Bookmarks.Items(i).BackColor <> ListView_Bookmarks.BackColor) Then
-                    ListView_Bookmarks.Items(i).ForeColor = ListView_Bookmarks.ForeColor
-                    ListView_Bookmarks.Items(i).BackColor = ListView_Bookmarks.BackColor
-                End If
-            Next
+            While (g_mSelectedItemsQueue.Count > 0)
+                Dim mItem = g_mSelectedItemsQueue.Dequeue
+
+                'Reset to parent color
+                mItem.ForeColor = Color.Empty
+                mItem.BackColor = Color.Empty
+            End While
+
+            If (ListView_Bookmarks.SelectedIndices.Count < 1) Then
+                Return
+            End If
 
             Dim mForeColor As Color
             Dim mBackColor As Color
@@ -253,13 +258,14 @@ Public Class UCBookmarkDetails
                          ListView_Bookmarks.Items(i).BackColor <> mBackColor) Then
                     ListView_Bookmarks.Items(i).ForeColor = mForeColor
                     ListView_Bookmarks.Items(i).BackColor = mBackColor
+
+                    g_mSelectedItemsQueue.Enqueue(ListView_Bookmarks.Items(i))
                 End If
             Next
         Finally
             ListView_Bookmarks.ResumeLayout()
         End Try
     End Sub
-
 
     Public Sub RefreshBookmarkIconBar()
         RefreshBookmarkIconBar(g_mFormMain.g_ClassTabControl.m_ActiveTab)

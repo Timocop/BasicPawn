@@ -21,6 +21,8 @@ Public Class UCExplorerBrowser
     Private g_sExplorerPath As String = ""
 
     Private g_bIgnoreCheckedChangedEvent As Boolean = False
+    Private g_mSelectedItemsQueue As New Queue(Of ListViewItem)
+    Private g_bLoaded As Boolean = False
 
     Property m_ExplorerPath As String
         Get
@@ -48,6 +50,12 @@ Public Class UCExplorerBrowser
         ImageList_ExplorerBrowser.Images.Add("1", My.Resources.Ico_Folder)
 
         LoadViews()
+
+        ClassTools.ClassForms.SetDoubleBuffering(ListView_ExplorerFiles, True)
+    End Sub
+
+    Private Sub UCExplorerBrowser_Load(sender As Object, e As EventArgs) Handles Me.Load
+        g_bLoaded = True
     End Sub
 
     Private Sub TextboxWatermark_Search_KeyDown(sender As Object, e As KeyEventArgs) Handles TextboxWatermark_Search.KeyDown
@@ -202,6 +210,74 @@ Public Class UCExplorerBrowser
         End Try
 
         SaveViews()
+    End Sub
+
+    Private Sub ListView_ExplorerFiles_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListView_ExplorerFiles.SelectedIndexChanged
+        UpdateListViewColors()
+    End Sub
+
+    Private Sub ListView_ExplorerFiles_Invalidated(sender As Object, e As InvalidateEventArgs) Handles ListView_ExplorerFiles.Invalidated
+        Static bIgnoreEvent As Boolean = False
+        Static mLastBackColor As Color = Color.White
+        Static mLastForeColor As Color = Color.Black
+
+        If (Not g_bLoaded OrElse bIgnoreEvent) Then
+            Return
+        End If
+
+        If (ListView_ExplorerFiles.BackColor <> mLastBackColor OrElse ListView_ExplorerFiles.ForeColor <> mLastForeColor) Then
+            mLastBackColor = ListView_ExplorerFiles.BackColor
+            mLastForeColor = ListView_ExplorerFiles.ForeColor
+
+            bIgnoreEvent = True
+            UpdateListViewColors()
+            bIgnoreEvent = False
+        End If
+    End Sub
+
+    Private Sub UpdateListViewColors()
+        If (g_mSelectedItemsQueue.Count < 1 AndAlso ListView_ExplorerFiles.Items.Count < 1) Then
+            Return
+        End If
+
+        Try
+            ListView_ExplorerFiles.SuspendLayout()
+
+            While (g_mSelectedItemsQueue.Count > 0)
+                Dim mItem = g_mSelectedItemsQueue.Dequeue
+
+                'Reset to parent color
+                mItem.ForeColor = Color.Empty
+                mItem.BackColor = Color.Empty
+            End While
+
+            If (ListView_ExplorerFiles.SelectedIndices.Count < 1) Then
+                Return
+            End If
+
+            Dim mForeColor As Color
+            Dim mBackColor As Color
+            If (ClassControlStyle.m_IsInvertedColors) Then
+                'Darker Color.RoyalBlue. Orginal Color.RoyalBlue: Color.FromArgb(65, 105, 150) 
+                mForeColor = Color.White
+                mBackColor = Color.FromArgb(36, 59, 127)
+            Else
+                mForeColor = Color.Black
+                mBackColor = Color.LightBlue
+            End If
+
+            For Each i As Integer In ListView_ExplorerFiles.SelectedIndices
+                If (ListView_ExplorerFiles.Items(i).ForeColor <> mForeColor OrElse
+                         ListView_ExplorerFiles.Items(i).BackColor <> mBackColor) Then
+                    ListView_ExplorerFiles.Items(i).ForeColor = mForeColor
+                    ListView_ExplorerFiles.Items(i).BackColor = mBackColor
+
+                    g_mSelectedItemsQueue.Enqueue(ListView_ExplorerFiles.Items(i))
+                End If
+            Next
+        Finally
+            ListView_ExplorerFiles.ResumeLayout()
+        End Try
     End Sub
 
     Public Sub GoToExplorer(sPath As String)

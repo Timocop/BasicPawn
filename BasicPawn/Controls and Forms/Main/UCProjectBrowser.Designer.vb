@@ -58,6 +58,7 @@ Partial Class UCProjectBrowser
         Me.ListView_ProjectFiles.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1, Me.ColumnHeader2, Me.ColumnHeader3})
         Me.ListView_ProjectFiles.ContextMenuStrip = Me.ContextMenuStrip_ProjectFiles
         Me.ListView_ProjectFiles.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ListView_ProjectFiles.FullRowSelect = True
         Me.ListView_ProjectFiles.Location = New System.Drawing.Point(0, 22)
         Me.ListView_ProjectFiles.Margin = New System.Windows.Forms.Padding(0)
         Me.ListView_ProjectFiles.Name = "ListView_ProjectFiles"

@@ -20,6 +20,8 @@ Public Class UCProjectBrowser
     Public g_ClassProjectControl As ClassProjectControl
 
     Private g_lClipboardFiles As New List(Of ClassProjectControl.STRUC_PROJECT_FILE_INFO)
+    Private g_mSelectedItemsQueue As New Queue(Of ListViewItem)
+    Private g_bLoaded As Boolean = False
 
     Public Sub New(f As FormMain)
         g_mFormMain = f
@@ -29,6 +31,12 @@ Public Class UCProjectBrowser
 
         ' Add any initialization after the InitializeComponent() call.
         g_ClassProjectControl = New ClassProjectControl(Me)
+
+        ClassTools.ClassForms.SetDoubleBuffering(ListView_ProjectFiles, True)
+    End Sub
+
+    Private Sub UCProjectBrowser_Load(sender As Object, e As EventArgs) Handles Me.Load
+        g_bLoaded = True
     End Sub
 
     Class ClassProjectControl
@@ -927,6 +935,74 @@ Public Class UCProjectBrowser
             g_ClassProjectControl.UpdateListViewInfo()
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
+    Private Sub ListView_ProjectFiles_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListView_ProjectFiles.SelectedIndexChanged
+        UpdateListViewColors()
+    End Sub
+
+    Private Sub ListView_ProjectFiles_Invalidated(sender As Object, e As InvalidateEventArgs) Handles ListView_ProjectFiles.Invalidated
+        Static bIgnoreEvent As Boolean = False
+        Static mLastBackColor As Color = Color.White
+        Static mLastForeColor As Color = Color.Black
+
+        If (Not g_bLoaded OrElse bIgnoreEvent) Then
+            Return
+        End If
+
+        If (ListView_ProjectFiles.BackColor <> mLastBackColor OrElse ListView_ProjectFiles.ForeColor <> mLastForeColor) Then
+            mLastBackColor = ListView_ProjectFiles.BackColor
+            mLastForeColor = ListView_ProjectFiles.ForeColor
+
+            bIgnoreEvent = True
+            UpdateListViewColors()
+            bIgnoreEvent = False
+        End If
+    End Sub
+
+    Private Sub UpdateListViewColors()
+        If (g_mSelectedItemsQueue.Count < 1 AndAlso ListView_ProjectFiles.Items.Count < 1) Then
+            Return
+        End If
+
+        Try
+            ListView_ProjectFiles.SuspendLayout()
+
+            While (g_mSelectedItemsQueue.Count > 0)
+                Dim mItem = g_mSelectedItemsQueue.Dequeue
+
+                'Reset to parent color
+                mItem.ForeColor = Color.Empty
+                mItem.BackColor = Color.Empty
+            End While
+
+            If (ListView_ProjectFiles.SelectedIndices.Count < 1) Then
+                Return
+            End If
+
+            Dim mForeColor As Color
+            Dim mBackColor As Color
+            If (ClassControlStyle.m_IsInvertedColors) Then
+                'Darker Color.RoyalBlue. Orginal Color.RoyalBlue: Color.FromArgb(65, 105, 150) 
+                mForeColor = Color.White
+                mBackColor = Color.FromArgb(36, 59, 127)
+            Else
+                mForeColor = Color.Black
+                mBackColor = Color.LightBlue
+            End If
+
+            For Each i As Integer In ListView_ProjectFiles.SelectedIndices
+                If (ListView_ProjectFiles.Items(i).ForeColor <> mForeColor OrElse
+                         ListView_ProjectFiles.Items(i).BackColor <> mBackColor) Then
+                    ListView_ProjectFiles.Items(i).ForeColor = mForeColor
+                    ListView_ProjectFiles.Items(i).BackColor = mBackColor
+
+                    g_mSelectedItemsQueue.Enqueue(ListView_ProjectFiles.Items(i))
+                End If
+            Next
+        Finally
+            ListView_ProjectFiles.ResumeLayout()
         End Try
     End Sub
 

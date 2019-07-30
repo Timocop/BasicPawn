@@ -46,6 +46,7 @@ Partial Class UCExplorerBrowser
         Me.ListView_ExplorerFiles.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1})
         Me.ListView_ExplorerFiles.ContextMenuStrip = Me.ContextMenuStrip_ExplorerBrowser
         Me.ListView_ExplorerFiles.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ListView_ExplorerFiles.FullRowSelect = True
         Me.ListView_ExplorerFiles.Location = New System.Drawing.Point(0, 46)
         Me.ListView_ExplorerFiles.Name = "ListView_ExplorerFiles"
         Me.ListView_ExplorerFiles.Size = New System.Drawing.Size(269, 610)

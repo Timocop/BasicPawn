@@ -44,6 +44,7 @@ Partial Class UCObjectBrowser
         Me.TreeView_ObjectBrowser.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.TreeView_ObjectBrowser.Dock = System.Windows.Forms.DockStyle.Fill
         Me.TreeView_ObjectBrowser.ForeColor = System.Drawing.Color.Black
+        Me.TreeView_ObjectBrowser.FullRowSelect = True
         Me.TreeView_ObjectBrowser.Location = New System.Drawing.Point(0, 22)
         Me.TreeView_ObjectBrowser.Name = "TreeView_ObjectBrowser"
         Me.TreeView_ObjectBrowser.Size = New System.Drawing.Size(269, 634)

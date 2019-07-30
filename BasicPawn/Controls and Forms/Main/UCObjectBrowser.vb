@@ -23,7 +23,11 @@ Public Class UCObjectBrowser
     Private g_mUpdateThread As Threading.Thread
     Private g_bUpdateThreadUIUpdateCount As Integer = 0
 
+    Private g_mSelectedItemsQueue As New Queue(Of TreeNode)
+    Private g_bLoaded As Boolean = False
+
     Public Shared g_bWndProcBug As Boolean = False
+    Private Shared g_sSourceMainFileExt As String() = {".sp", ".sma", ".pwn", ".p", ".src"}
 
     Public Sub New(f As FormMain)
         g_mFormMain = f
@@ -33,9 +37,13 @@ Public Class UCObjectBrowser
 
         ' Add any initialization after the InitializeComponent() call.  
         TreeView_ObjectBrowser.TreeViewNodeSorter = New ClassAutocompleteTreeNodeSorter
+
+        ClassTools.ClassForms.SetDoubleBuffering(TreeView_ObjectBrowser, True)
     End Sub
 
-    Private Shared g_sSourceMainFileExt As String() = {".sp", ".sma", ".pwn", ".p", ".src"}
+    Private Sub UCObjectBrowser_Load(sender As Object, e As EventArgs) Handles Me.Load
+        g_bLoaded = True
+    End Sub
 
     Class ClassAutocompleteTreeNodeSorter
         Implements IComparer
@@ -497,6 +505,72 @@ Public Class UCObjectBrowser
             End If
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
+    Private Sub TreeView_ObjectBrowser_AfterSelect(sender As Object, e As TreeViewEventArgs) Handles TreeView_ObjectBrowser.AfterSelect
+        UpdateListViewColors()
+    End Sub
+
+    Private Sub TreeView_ObjectBrowser_Invalidated(sender As Object, e As InvalidateEventArgs) Handles TreeView_ObjectBrowser.Invalidated
+        Static bIgnoreEvent As Boolean = False
+        Static mLastBackColor As Color = Color.White
+        Static mLastForeColor As Color = Color.Black
+
+        If (Not g_bLoaded OrElse bIgnoreEvent) Then
+            Return
+        End If
+
+        If (TreeView_ObjectBrowser.BackColor <> mLastBackColor OrElse TreeView_ObjectBrowser.ForeColor <> mLastForeColor) Then
+            mLastBackColor = TreeView_ObjectBrowser.BackColor
+            mLastForeColor = TreeView_ObjectBrowser.ForeColor
+
+            bIgnoreEvent = True
+            UpdateListViewColors()
+            bIgnoreEvent = False
+        End If
+    End Sub
+
+    Private Sub UpdateListViewColors()
+        If (g_mSelectedItemsQueue.Count < 1 AndAlso TreeView_ObjectBrowser.Nodes.Count < 1) Then
+            Return
+        End If
+
+        Try
+            TreeView_ObjectBrowser.SuspendLayout()
+
+            While (g_mSelectedItemsQueue.Count > 0)
+                Dim mItem = g_mSelectedItemsQueue.Dequeue
+
+                'Reset to parent color
+                mItem.ForeColor = Color.Empty
+                mItem.BackColor = Color.Empty
+            End While
+
+            If (TreeView_ObjectBrowser.SelectedNode Is Nothing) Then
+                Return
+            End If
+
+            Dim mForeColor As Color
+            Dim mBackColor As Color
+            If (ClassControlStyle.m_IsInvertedColors) Then
+                'Darker Color.RoyalBlue. Orginal Color.RoyalBlue: Color.FromArgb(65, 105, 150) 
+                mForeColor = Color.White
+                mBackColor = Color.FromArgb(36, 59, 127)
+            Else
+                mForeColor = Color.Black
+                mBackColor = Color.LightBlue
+            End If
+
+            If (TreeView_ObjectBrowser.SelectedNode.ForeColor <> mForeColor OrElse
+                     TreeView_ObjectBrowser.SelectedNode.BackColor <> mBackColor) Then
+                TreeView_ObjectBrowser.SelectedNode.ForeColor = mForeColor
+                TreeView_ObjectBrowser.SelectedNode.BackColor = mBackColor
+
+                g_mSelectedItemsQueue.Enqueue(TreeView_ObjectBrowser.SelectedNode)
+            End If
+        Finally
+            TreeView_ObjectBrowser.ResumeLayout()
         End Try
     End Sub
 
