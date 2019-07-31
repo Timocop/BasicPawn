@@ -108,6 +108,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="PluginInfo.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="FormFTP.resx">

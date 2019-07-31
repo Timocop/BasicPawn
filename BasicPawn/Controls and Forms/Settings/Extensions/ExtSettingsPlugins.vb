@@ -118,15 +118,27 @@ Partial Public Class FormSettings
             Next
 
             For Each mPlugin In g_mFormMain.g_ClassPluginController.m_FailPlugins
-                lListViewItems.Add(New ListViewItem(New String() {
-                                                    IO.Path.GetFileName(mPlugin.sFile),
-                                                    "-",
-                                                    "-",
-                                                    "-",
-                                                    "-",
-                                                    "-",
-                                                    mPlugin.mException.Message
-                                                }, CStr(ENUM_PLUGIN_IMAGE_STATE.DISABLED)))
+                If (mPlugin.mPluginInformation Is Nothing) Then
+                    lListViewItems.Add(New ListViewItem(New String() {
+                                                            IO.Path.GetFileName(mPlugin.sFile),
+                                                            "-",
+                                                            "-",
+                                                            "-",
+                                                            "-",
+                                                            "-",
+                                                            mPlugin.mException.Message
+                                                       }, CStr(ENUM_PLUGIN_IMAGE_STATE.DISABLED)))
+                Else
+                    lListViewItems.Add(New ListViewItem(New String() {
+                                                                    IO.Path.GetFileName(mPlugin.sFile),
+                                                                    mPlugin.mPluginInformation.sName,
+                                                                    mPlugin.mPluginInformation.sAuthor,
+                                                                    mPlugin.mPluginInformation.sDescription,
+                                                                    mPlugin.mPluginInformation.sVersion,
+                                                                    mPlugin.mPluginInformation.sURL,
+                                                                    mPlugin.mException.Message
+                                                               }, CStr(ENUM_PLUGIN_IMAGE_STATE.DISABLED)))
+                End If
             Next
 
             ListView_Plugins.BeginUpdate()
@@ -177,6 +189,15 @@ Partial Public Class FormSettings
 
                     Exit While
                 End While
+            Next
+
+            For Each mPlugin In g_mFormMain.g_ClassPluginController.m_FailPlugins
+                If (IO.Path.GetFileName(mPlugin.sFile).ToLower <> sFilename.ToLower) Then
+                    Continue For
+                End If
+
+                MessageBox.Show("Unable to change plugin state. Plugin failed to load.", "Chould not change plugin state", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Exit For
             Next
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)

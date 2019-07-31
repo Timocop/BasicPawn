@@ -15,6 +15,9 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 
+Imports System.Reflection
+Imports BasicPawnPluginInterface
+
 Public Class ClassPluginController
     Private g_mFormMain As FormMain
 
@@ -26,13 +29,14 @@ Public Class ClassPluginController
 
     Structure STRUC_PLUGIN_ITEM
         Dim sFile As String
-        Dim mPluginInformation As BasicPawnPluginInterface.IPluginInterfaceV6.STRUC_PLUGIN_INFORMATION
-        Dim mPluginInterface As BasicPawnPluginInterface.IPluginInterfaceV6
+        Dim mPluginInformation As IPluginInfoInterface.STRUC_PLUGIN_INFORMATION
+        Dim mPluginInterface As IPluginInterfaceV7
     End Structure
     Private g_lPlugins As New List(Of STRUC_PLUGIN_ITEM)
 
     Structure STRUC_PLUGIN_FAIL_ITEM
         Dim sFile As String
+        Dim mPluginInformation As IPluginInfoInterface.STRUC_PLUGIN_INFORMATION
         Dim mException As Exception
     End Structure
     Private g_lFailPlugins As New List(Of STRUC_PLUGIN_FAIL_ITEM)
@@ -48,6 +52,18 @@ Public Class ClassPluginController
             Return g_lFailPlugins.ToArray
         End Get
     End Property
+
+    Public Function GetPluginInfo(mPluginInterface As IPluginInterfaceV7) As IPluginInfoInterface.STRUC_PLUGIN_INFORMATION
+        For Each mPlugin In m_Plugins
+            If (mPluginInterface IsNot mPlugin.mPluginInterface) Then
+                Continue For
+            End If
+
+            Return mPlugin.mPluginInformation
+        Next
+
+        Return Nothing
+    End Function
 
     Public Property m_PluginEnabledByConfig(mPlugin As STRUC_PLUGIN_ITEM) As Boolean
         Get
@@ -145,38 +161,58 @@ Public Class ClassPluginController
                     ClassExceptionLog.WriteToLogMessageBox(ex)
                 End Try
             Catch ex As Exception
-                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, String.Format("Plugin '{0}' could not be loaded! Outdated? Exception: {1}", IO.Path.GetFileName(sPluginFile), ex.Message))
+                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, String.Format("Plugin '{0}' could not be loaded! Exception: {1}", IO.Path.GetFileName(sPluginFile), ex.Message))
             End Try
         Next
     End Sub
 
-    Private Function LoadPlugin(sFile As String) As BasicPawnPluginInterface.IPluginInterfaceV6
-        Dim mAssembly = Reflection.Assembly.LoadFile(sFile)
+    Private Function LoadPlugin(sFile As String) As IPluginInterfaceV7
+        Dim mAssembly = Assembly.LoadFile(sFile)
 
         If (mAssembly Is Nothing) Then
             Return Nothing
         End If
 
+        Dim mPluginInfo As IPluginInfoInterface = Nothing
+
         Try
-            For Each mType In mAssembly.GetTypes
-                If (Not GetType(BasicPawnPluginInterface.IPluginInterfaceV6).IsAssignableFrom(mType)) Then
+            'Find info first
+            For Each mType In GetValidTypes(mAssembly)
+                If (Not GetType(IPluginInfoInterface).IsAssignableFrom(mType)) Then
                     Continue For
                 End If
 
-                Dim mInstance As Object = mAssembly.CreateInstance(mType.FullName)
-                Dim mPlugin = DirectCast(mInstance, BasicPawnPluginInterface.IPluginInterfaceV6)
+                mPluginInfo = DirectCast(mAssembly.CreateInstance(mType.FullName), IPluginInfoInterface)
+                Exit For
+            Next
+
+            If (mPluginInfo Is Nothing) Then
+                Throw New ArgumentException("Unable to load plugin. IPluginInfoInterface not found.")
+            End If
+
+            'Find plugin stuff
+            For Each mType In GetValidTypes(mAssembly)
+                If (Not GetType(IPluginInterfaceV7).IsAssignableFrom(mType)) Then
+                    Continue For
+                End If
+
+                Dim mPlugin = DirectCast(mAssembly.CreateInstance(mType.FullName), IPluginInterfaceV7)
 
                 g_lPlugins.Add(New STRUC_PLUGIN_ITEM With {
-                    .mPluginInformation = mPlugin.m_PluginInformation,
+                    .mPluginInformation = mPluginInfo.m_PluginInformation,
                     .mPluginInterface = mPlugin,
                     .sFile = sFile
                 })
 
                 Return mPlugin
             Next
+
+            Throw New ArgumentException("Unable to load plugin. IPluginInterface not found. Probably outdated plugin.")
+
         Catch ex As Exception
             g_lFailPlugins.Add(New STRUC_PLUGIN_FAIL_ITEM() With {
                 .sFile = sFile,
+                .mPluginInformation = If(mPluginInfo IsNot Nothing, mPluginInfo.m_PluginInformation, New IPluginInfoInterface.STRUC_PLUGIN_INFORMATION("", "", "", "", "")),
                 .mException = ex
             })
 
@@ -184,5 +220,23 @@ Public Class ClassPluginController
         End Try
 
         Return Nothing
+    End Function
+
+    Private Function GetValidTypes(mAssembly As Assembly) As Type()
+        Try
+            Return mAssembly.GetTypes()
+        Catch e As ReflectionTypeLoadException
+            Dim lTypes As New List(Of Type)
+
+            For Each mType In e.Types
+                If (mType Is Nothing) Then
+                    Continue For
+                End If
+
+                lTypes.Add(mType)
+            Next
+
+            Return lTypes.ToArray
+        End Try
     End Function
 End Class
