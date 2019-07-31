@@ -4658,8 +4658,12 @@ Public Class ClassSyntaxParser
                                 mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Make methodmaps using variables"
 #End If
 
-                                If (Not mParseInfo.lNewVarAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString) AndAlso
-                                        Not lVarMethodmapList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
+                                If (Not mParseInfo.lNewVarAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString AndAlso
+                                                                                      CStr(x.m_Data("MethodmapName")) = sMethodmapName AndAlso
+                                                                                      CStr(x.m_Data("MethodmapMethodName")) = sMethodmapMethodName) AndAlso
+                                        Not lVarMethodmapList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString AndAlso
+                                                                                      CStr(x.m_Data("MethodmapName")) = sMethodmapName AndAlso
+                                                                                      CStr(x.m_Data("MethodmapMethodName")) = sMethodmapMethodName)) Then
                                     lVarMethodmapList.Add(mAutocomplete)
                                 End If
                             Next
@@ -5091,8 +5095,14 @@ Public Class ClassSyntaxParser
                                 mAutocomplete.m_Data("DataSet-" & ClassExceptionLog.GetDebugStackTrace("")) = "Make enum structs using variables"
 #End If
 
-                                If (Not mParseInfo.lNewVarAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString) AndAlso
-                                        Not lVarEnumStructList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString)) Then
+                                If (Not mParseInfo.lNewVarAutocompleteList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString AndAlso
+                                                                                      CStr(x.m_Data("EnumStructName")) = sEnumStructName AndAlso
+                                                                                      CStr(x.m_Data("EnumStructFieldName")) = sEnumStructFieldName AndAlso
+                                                                                      CStr(x.m_Data("EnumStructMethodName")) = sEnumStructMethodName) AndAlso
+                                        Not lVarEnumStructList.Exists(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) x.m_Type = mAutocomplete.m_Type AndAlso x.m_FunctionString = mAutocomplete.m_FunctionString AndAlso
+                                                                                      CStr(x.m_Data("EnumStructName")) = sEnumStructName AndAlso
+                                                                                      CStr(x.m_Data("EnumStructFieldName")) = sEnumStructFieldName AndAlso
+                                                                                      CStr(x.m_Data("EnumStructMethodName")) = sEnumStructMethodName)) Then
                                     lVarEnumStructList.Add(mAutocomplete)
                                 End If
                             Next

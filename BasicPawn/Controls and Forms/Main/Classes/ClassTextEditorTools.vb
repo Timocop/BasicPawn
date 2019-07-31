@@ -26,6 +26,18 @@ Imports ICSharpCode.TextEditor.Document
 Public Class ClassTextEditorTools
     Private g_mFormMain As FormMain
 
+    Structure STRUC_DEFINITION_ITEM
+        Public sFile As String
+        Public iLine As Integer
+        Public mAutocomplete As ClassSyntaxTools.STRUC_AUTOCOMPLETE
+
+        Sub New(_File As String, _Line As Integer, _Autocomplete As ClassSyntaxTools.STRUC_AUTOCOMPLETE)
+            sFile = _File
+            iLine = _Line
+            mAutocomplete = _Autocomplete
+        End Sub
+    End Structure
+
     Public Sub New(f As FormMain)
         g_mFormMain = f
     End Sub
@@ -168,7 +180,7 @@ Public Class ClassTextEditorTools
                         Dim mRefListDic As New Dictionary(Of String, Object)
                         mRefListDic(C_REFLIST_FILE) = mInclude.Value
                         mRefListDic(C_REFLIST_LINE) = iLine
-                        mRefListDic(C_REFLIST_MSG) = vbTab & String.Format("Reference found: {0}({1}) : {2}", mInclude.Value, iLine, sLine.Trim)
+                        mRefListDic(C_REFLIST_MSG) = vbTab & String.Format("{0}({1}): {2}", mInclude.Value, iLine, sLine.Trim)
 
                         lRefList.Add(mRefListDic)
                     Next
@@ -181,25 +193,19 @@ Public Class ClassTextEditorTools
             Dim iLine As Integer = CInt(mItem(C_REFLIST_LINE))
             Dim sMsg As String = CStr(mItem(C_REFLIST_MSG))
 
-            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, sMsg, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_GOTO(sFile, New Integer() {iLine}), False)
+            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, sMsg, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_GOTO(sFile, New Integer() {iLine}))
         Next
 
-        g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("{0} references listed!", lRefList.Count), False, True, True)
+        g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("{0} reference{1} found!", lRefList.Count, If(lRefList.Count > 1, "s", "")), False, True, True)
     End Sub
 
-    Public Function FindDefinition(sText As String, ByRef mDefinition As KeyValuePair(Of String, Integer)) As Boolean
+    Public Function FindDefinition(sText As String, ByRef mDefinitions As STRUC_DEFINITION_ITEM()) As Boolean
         Dim mTab = g_mFormMain.g_ClassTabControl.m_ActiveTab
 
-        Return FindDefinition(mTab, sText, mDefinition)
+        Return FindDefinition(mTab, sText, mDefinitions)
     End Function
 
-    Public Function FindDefinition(mAutocomplete As ClassSyntaxTools.STRUC_AUTOCOMPLETE, ByRef mDefinition As KeyValuePair(Of String, Integer)) As Boolean
-        Dim mTab = g_mFormMain.g_ClassTabControl.m_ActiveTab
-
-        Return FindDefinition(mTab, mAutocomplete, mDefinition)
-    End Function
-
-    Public Function FindDefinition(mTab As ClassTabControl.SourceTabPage, sText As String, ByRef mDefinition As KeyValuePair(Of String, Integer)) As Boolean
+    Public Function FindDefinition(mTab As ClassTabControl.SourceTabPage, sText As String, ByRef mDefinitions As STRUC_DEFINITION_ITEM()) As Boolean
         Dim sFunctionName As String
 
         If (Not String.IsNullOrEmpty(sText)) Then
@@ -238,13 +244,20 @@ Public Class ClassTextEditorTools
         End If
 
         Dim sFile As String = mTab.m_File
-        Dim mAutocomplete As ClassSyntaxTools.STRUC_AUTOCOMPLETE = Nothing
-
+        Dim lFoundAutocomplete As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
         Dim mAutocompleteArray As ClassSyntaxTools.STRUC_AUTOCOMPLETE() = mTab.m_AutocompleteItems.ToArray
-        If (mAutocomplete Is Nothing) Then
+
+        If (lFoundAutocomplete.Count < 1) Then
             For i = 0 To mAutocompleteArray.Length - 1
                 If (mAutocompleteArray(i).m_Data.ContainsKey("EnumHidden")) Then
                     Continue For
+                End If
+
+                'Ignore constructors just go straight to methodmap
+                If ((mAutocompleteArray(i).m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) <> 0) Then
+                    If (CBool(mAutocompleteArray(i).m_Data("MethodmapMethodIsConstructor"))) Then
+                        Continue For
+                    End If
                 End If
 
                 If (mAutocompleteArray(i).m_Data.ContainsKey("IsThis")) Then
@@ -280,161 +293,170 @@ Public Class ClassTextEditorTools
                 End If
 
                 If (mAutocompleteArray(i).m_FunctionString.Equals(sFunctionName)) Then
-                    mAutocomplete = mAutocompleteArray(i)
-                    Exit For
+                    lFoundAutocomplete.Add(mAutocompleteArray(i))
                 End If
             Next
         End If
 
         'Find enums, methodmaps, struct enums etc.
-        If (mAutocomplete Is Nothing) Then
+        If (lFoundAutocomplete.Count < 1) Then
             For i = 0 To mAutocompleteArray.Length - 1
                 If ((mAutocompleteArray(i).m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM) = 0) Then
                     Continue For
                 End If
 
                 If (mAutocompleteArray(i).m_FunctionName.Equals(sFunctionName)) Then
-                    mAutocomplete = mAutocompleteArray(i)
-                    Exit For
+                    lFoundAutocomplete.Add(mAutocompleteArray(i))
                 End If
             Next
         End If
+
+        Dim lDefinitions As New List(Of STRUC_DEFINITION_ITEM)
+        For Each mAutocomplete In lFoundAutocomplete
+            Dim mDefinition As STRUC_DEFINITION_ITEM = Nothing
+
+            If (FindDefinition(mTab, mAutocomplete, mDefinition)) Then
+                lDefinitions.Add(mDefinition)
+            End If
+        Next
+
+        mDefinitions = lDefinitions.ToArray
+        Return (lDefinitions.Count > 0)
+    End Function
+
+    Public Function FindDefinition(mAutocomplete As ClassSyntaxTools.STRUC_AUTOCOMPLETE, ByRef mDefinition As STRUC_DEFINITION_ITEM) As Boolean
+        Dim mTab = g_mFormMain.g_ClassTabControl.m_ActiveTab
 
         Return FindDefinition(mTab, mAutocomplete, mDefinition)
     End Function
 
-    Public Function FindDefinition(mTab As ClassTabControl.SourceTabPage, mAutocomplete As ClassSyntaxTools.STRUC_AUTOCOMPLETE, ByRef mDefinition As KeyValuePair(Of String, Integer)) As Boolean
+    Public Function FindDefinition(mTab As ClassTabControl.SourceTabPage, mAutocomplete As ClassSyntaxTools.STRUC_AUTOCOMPLETE, ByRef mDefinition As STRUC_DEFINITION_ITEM) As Boolean
         If (mAutocomplete Is Nothing) Then
             Return False
         End If
 
-        While True
-            Dim sAnchorName As String
-            Dim iAnchorIndex As Integer
-            Dim sAnchorFile As String
+        Dim sAnchorName As String
+        Dim iAnchorIndex As Integer
+        Dim sAnchorFile As String
 
-            Select Case (True)
-                Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEFINE) <> 0
-                    sAnchorName = CStr(mAutocomplete.m_Data("DefineAnchorName"))
-                    iAnchorIndex = CInt(mAutocomplete.m_Data("DefineAnchorIndex"))
-                    sAnchorFile = CStr(mAutocomplete.m_Data("DefineAnchorFile"))
+        Select Case (True)
+            Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEFINE) <> 0
+                sAnchorName = CStr(mAutocomplete.m_Data("DefineAnchorName"))
+                iAnchorIndex = CInt(mAutocomplete.m_Data("DefineAnchorIndex"))
+                sAnchorFile = CStr(mAutocomplete.m_Data("DefineAnchorFile"))
 
-                Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM) <> 0
-                    sAnchorName = CStr(mAutocomplete.m_Data("EnumAnchorName"))
-                    iAnchorIndex = CInt(mAutocomplete.m_Data("EnumAnchorIndex"))
-                    sAnchorFile = CStr(mAutocomplete.m_Data("EnumAnchorFile"))
+            Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM) <> 0
+                sAnchorName = CStr(mAutocomplete.m_Data("EnumAnchorName"))
+                iAnchorIndex = CInt(mAutocomplete.m_Data("EnumAnchorIndex"))
+                sAnchorFile = CStr(mAutocomplete.m_Data("EnumAnchorFile"))
 
-                Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STRUCT) <> 0
-                    sAnchorName = CStr(mAutocomplete.m_Data("StructAnchorName"))
-                    iAnchorIndex = CInt(mAutocomplete.m_Data("StructAnchorIndex"))
-                    sAnchorFile = CStr(mAutocomplete.m_Data("StructAnchorFile"))
+            Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STRUCT) <> 0
+                sAnchorName = CStr(mAutocomplete.m_Data("StructAnchorName"))
+                iAnchorIndex = CInt(mAutocomplete.m_Data("StructAnchorIndex"))
+                sAnchorFile = CStr(mAutocomplete.m_Data("StructAnchorFile"))
 
-                Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PUBLICVAR) <> 0
-                    sAnchorName = CStr(mAutocomplete.m_Data("PublicAnchorName"))
-                    iAnchorIndex = CInt(mAutocomplete.m_Data("PublicAnchorIndex"))
-                    sAnchorFile = CStr(mAutocomplete.m_Data("PublicAnchorFile"))
+            Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PUBLICVAR) <> 0
+                sAnchorName = CStr(mAutocomplete.m_Data("PublicAnchorName"))
+                iAnchorIndex = CInt(mAutocomplete.m_Data("PublicAnchorIndex"))
+                sAnchorFile = CStr(mAutocomplete.m_Data("PublicAnchorFile"))
 
-                Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM) <> 0
-                    sAnchorName = CStr(mAutocomplete.m_Data("FuncenumAnchorName"))
-                    iAnchorIndex = CInt(mAutocomplete.m_Data("FuncenumAnchorIndex"))
-                    sAnchorFile = CStr(mAutocomplete.m_Data("FuncenumAnchorFile"))
+            Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM) <> 0
+                sAnchorName = CStr(mAutocomplete.m_Data("FuncenumAnchorName"))
+                iAnchorIndex = CInt(mAutocomplete.m_Data("FuncenumAnchorIndex"))
+                sAnchorFile = CStr(mAutocomplete.m_Data("FuncenumAnchorFile"))
 
-                Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) <> 0
-                    sAnchorName = CStr(mAutocomplete.m_Data("TypesetAnchorName"))
-                    iAnchorIndex = CInt(mAutocomplete.m_Data("TypesetAnchorIndex"))
-                    sAnchorFile = CStr(mAutocomplete.m_Data("TypesetAnchorFile"))
+            Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) <> 0
+                sAnchorName = CStr(mAutocomplete.m_Data("TypesetAnchorName"))
+                iAnchorIndex = CInt(mAutocomplete.m_Data("TypesetAnchorIndex"))
+                sAnchorFile = CStr(mAutocomplete.m_Data("TypesetAnchorFile"))
 
-                Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF) <> 0
-                    sAnchorName = CStr(mAutocomplete.m_Data("TypedefAnchorName"))
-                    iAnchorIndex = CInt(mAutocomplete.m_Data("TypedefAnchorIndex"))
-                    sAnchorFile = CStr(mAutocomplete.m_Data("TypedefAnchorFile"))
+            Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF) <> 0
+                sAnchorName = CStr(mAutocomplete.m_Data("TypedefAnchorName"))
+                iAnchorIndex = CInt(mAutocomplete.m_Data("TypedefAnchorIndex"))
+                sAnchorFile = CStr(mAutocomplete.m_Data("TypedefAnchorFile"))
 
-                Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG) <> 0
-                    sAnchorName = CStr(mAutocomplete.m_Data("FunctagAnchorName"))
-                    iAnchorIndex = CInt(mAutocomplete.m_Data("FunctagAnchorIndex"))
-                    sAnchorFile = CStr(mAutocomplete.m_Data("FunctagAnchorFile"))
+            Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG) <> 0
+                sAnchorName = CStr(mAutocomplete.m_Data("FunctagAnchorName"))
+                iAnchorIndex = CInt(mAutocomplete.m_Data("FunctagAnchorIndex"))
+                sAnchorFile = CStr(mAutocomplete.m_Data("FunctagAnchorFile"))
 
-                Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHOD) <> 0
-                    sAnchorName = CStr(mAutocomplete.m_Data("MethodAnchorName"))
-                    iAnchorIndex = CInt(mAutocomplete.m_Data("MethodAnchorIndex"))
-                    sAnchorFile = CStr(mAutocomplete.m_Data("MethodAnchorFile"))
+            Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHOD) <> 0
+                sAnchorName = CStr(mAutocomplete.m_Data("MethodAnchorName"))
+                iAnchorIndex = CInt(mAutocomplete.m_Data("MethodAnchorIndex"))
+                sAnchorFile = CStr(mAutocomplete.m_Data("MethodAnchorFile"))
 
-                Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) <> 0,
+            Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) <> 0,
                             (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> 0 AndAlso mAutocomplete.m_Data.ContainsKey("VariableMethodmapName")
-                    sAnchorName = CStr(mAutocomplete.m_Data("MethodmapAnchorName"))
-                    iAnchorIndex = CInt(mAutocomplete.m_Data("MethodmapAnchorIndex"))
-                    sAnchorFile = CStr(mAutocomplete.m_Data("MethodmapAnchorFile"))
+                sAnchorName = CStr(mAutocomplete.m_Data("MethodmapAnchorName"))
+                iAnchorIndex = CInt(mAutocomplete.m_Data("MethodmapAnchorIndex"))
+                sAnchorFile = CStr(mAutocomplete.m_Data("MethodmapAnchorFile"))
 
-                Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM_STRUCT) <> 0,
+            Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM_STRUCT) <> 0,
                             (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> 0 AndAlso mAutocomplete.m_Data.ContainsKey("VariableEnumStructName")
-                    sAnchorName = CStr(mAutocomplete.m_Data("EnumStructAnchorName"))
-                    iAnchorIndex = CInt(mAutocomplete.m_Data("EnumStructAnchorIndex"))
-                    sAnchorFile = CStr(mAutocomplete.m_Data("EnumStructAnchorFile"))
+                sAnchorName = CStr(mAutocomplete.m_Data("EnumStructAnchorName"))
+                iAnchorIndex = CInt(mAutocomplete.m_Data("EnumStructAnchorIndex"))
+                sAnchorFile = CStr(mAutocomplete.m_Data("EnumStructAnchorFile"))
 
-                Case Else
-                    'Nothing found? Lets to next step then...
-                    Exit While
-            End Select
-
-            If (Not IO.File.Exists(sAnchorFile)) Then
+            Case Else
                 Return False
+        End Select
+
+        If (Not IO.File.Exists(sAnchorFile)) Then
+            Return False
+        End If
+
+        Dim sSource As String
+
+        If (sAnchorFile.ToLower = mTab.m_File.ToLower) Then
+            sSource = mTab.m_TextEditor.Document.TextContent
+        Else
+            sSource = IO.File.ReadAllText(sAnchorFile)
+        End If
+
+        If (iAnchorIndex < 0) Then
+            Return False
+        End If
+
+        Dim mAnchorMatches = Regex.Matches(sSource, String.Format("\b({0})\b", Regex.Escape(sAnchorName)))
+        If (mAnchorMatches.Count < 0 OrElse iAnchorIndex > mAnchorMatches.Count - 1) Then
+            Return False
+        End If
+
+        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, mTab.m_Language)
+
+        Dim iOffset As Integer = 0
+        Dim iLine As Integer = 1
+        Dim iSearchAnchorIndex As Integer = 0
+        Dim bSuccess As Boolean = False
+
+        For i = 0 To mAnchorMatches.Count - 1
+            'We should ignore anchors in non-code parts.
+            If (mSourceAnalysis.m_InNonCode(mAnchorMatches(i).Index)) Then
+                Continue For
             End If
 
-            Dim sSource As String
-
-            If (sAnchorFile.ToLower = mTab.m_File.ToLower) Then
-                sSource = mTab.m_TextEditor.Document.TextContent
-            Else
-                sSource = IO.File.ReadAllText(sAnchorFile)
+            If (iSearchAnchorIndex > iAnchorIndex) Then
+                Exit For
             End If
 
-            If (iAnchorIndex < 0) Then
-                Return False
+            iSearchAnchorIndex += 1
+            iOffset = mAnchorMatches(i).Index
+            bSuccess = True
+        Next
+
+        'If we didnt find anything, abort.
+        If (Not bSuccess) Then
+            Return False
+        End If
+
+        For i = 0 To iOffset
+            If (sSource(i) = vbLf(0)) Then
+                iLine += 1
             End If
+        Next
 
-            Dim mAnchorMatches = Regex.Matches(sSource, String.Format("\b({0})\b", Regex.Escape(sAnchorName)))
-            If (mAnchorMatches.Count < 0 OrElse iAnchorIndex > mAnchorMatches.Count - 1) Then
-                Return False
-            End If
-
-            Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, mTab.m_Language)
-
-            Dim iOffset As Integer = 0
-            Dim iLine As Integer = 1
-            Dim iSearchAnchorIndex As Integer = 0
-            Dim bSuccess As Boolean = False
-
-            For i = 0 To mAnchorMatches.Count - 1
-                'We should ignore anchors in non-code parts.
-                If (mSourceAnalysis.m_InNonCode(mAnchorMatches(i).Index)) Then
-                    Continue For
-                End If
-
-                If (iSearchAnchorIndex > iAnchorIndex) Then
-                    Exit For
-                End If
-
-                iSearchAnchorIndex += 1
-                iOffset = mAnchorMatches(i).Index
-                bSuccess = True
-            Next
-
-            'If we didnt find anything, abort.
-            If (Not bSuccess) Then
-                Return False
-            End If
-
-            For i = 0 To iOffset
-                If (sSource(i) = vbLf(0)) Then
-                    iLine += 1
-                End If
-            Next
-
-            mDefinition = New KeyValuePair(Of String, Integer)(sAnchorFile, iLine)
-            Return True
-        End While
-
-        Return False
+        mDefinition = New STRUC_DEFINITION_ITEM(sAnchorFile, iLine, mAutocomplete)
+        Return True
     End Function
 
     Public Sub FormatCode()

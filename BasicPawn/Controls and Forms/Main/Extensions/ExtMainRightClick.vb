@@ -40,43 +40,57 @@ Partial Public Class FormMain
 
             Dim mTab = g_ClassTabControl.m_ActiveTab
 
-            Dim mDefinition As New KeyValuePair(Of String, Integer)
-            If (Not g_ClassTextEditorTools.FindDefinition(mTab, sWord, mDefinition)) Then
+            Dim mDefinitions As ClassTextEditorTools.STRUC_DEFINITION_ITEM() = Nothing
+            If (Not g_ClassTextEditorTools.FindDefinition(mTab, sWord, mDefinitions)) Then
                 g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, String.Format("Could not find definition of '{0}'!", sWord), False, True, True)
                 Return
             End If
 
-            'If not, check if file exist and search for tab
-            If (IO.File.Exists(mDefinition.Key)) Then
-                mTab = g_ClassTabControl.GetTabByFile(mDefinition.Key)
 
-                'If that also fails, just open the file
-                If (mTab Is Nothing) Then
-                    mTab = g_ClassTabControl.AddTab()
-                    mTab.OpenFileTab(mDefinition.Key)
-                    mTab.SelectTab()
+            If (mDefinitions.Length = 1) Then
+                Dim mDefinition = mDefinitions(0)
+
+                'If not, check if file exist and search for tab
+                If (IO.File.Exists(mDefinition.sFile)) Then
+                    mTab = g_ClassTabControl.GetTabByFile(mDefinition.sFile)
+
+                    'If that also fails, just open the file
+                    If (mTab Is Nothing) Then
+                        mTab = g_ClassTabControl.AddTab()
+                        mTab.OpenFileTab(mDefinition.sFile)
+                        mTab.SelectTab()
+                    End If
+
+                    Dim iLineNum As Integer = ClassTools.ClassMath.ClampInt(0, mTab.m_TextEditor.Document.TotalNumberOfLines - 1, mDefinition.iLine - 1)
+                    Dim iLineLen As Integer = mTab.m_TextEditor.Document.GetLineSegment(iLineNum).Length
+
+                    Dim mStartLoc As New TextLocation(0, iLineNum)
+                    Dim mEndLoc As New TextLocation(iLineLen, iLineNum)
+
+                    mTab.m_TextEditor.ActiveTextAreaControl.Caret.Position = mStartLoc
+                    mTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.ClearSelection()
+                    mTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.SetSelection(mStartLoc, mEndLoc)
+                    mTab.m_TextEditor.ActiveTextAreaControl.CenterViewOn(iLineNum, 10)
+
+                    If (Not mTab.m_IsActive) Then
+                        mTab.SelectTab()
+                    End If
+
+                    g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("Listing definitions of '{0}':", sWord))
+                    g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & String.Format("{0}({1}): {2}", mDefinition.sFile, mDefinition.iLine, mDefinition.mAutocomplete.m_FullFunctionString),
+                                                      New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_GOTO(mDefinition.sFile, {mDefinition.iLine}))
+                    g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("{0} definition found!", 1), False, True, True)
+                Else
+                    g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, String.Format("Could not find definition of '{0}'! Could not find file!", sWord), False, True, True)
                 End If
-
-                Dim iLineNum As Integer = ClassTools.ClassMath.ClampInt(0, mTab.m_TextEditor.Document.TotalNumberOfLines - 1, mDefinition.Value - 1)
-                Dim iLineLen As Integer = mTab.m_TextEditor.Document.GetLineSegment(iLineNum).Length
-
-                Dim mStartLoc As New TextLocation(0, iLineNum)
-                Dim mEndLoc As New TextLocation(iLineLen, iLineNum)
-
-                mTab.m_TextEditor.ActiveTextAreaControl.Caret.Position = mStartLoc
-                mTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.ClearSelection()
-                mTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.SetSelection(mStartLoc, mEndLoc)
-                mTab.m_TextEditor.ActiveTextAreaControl.CenterViewOn(iLineNum, 10)
-
-                If (Not mTab.m_IsActive) Then
-                    mTab.SelectTab()
-                End If
-
-                g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("Found definition of '{0}': {1}({2})", sWord, mDefinition.Key, mDefinition.Value),
-                                                      New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_GOTO(mDefinition.Key, {mDefinition.Value}),
-                                                      False, True, True)
             Else
-                g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, String.Format("Could not find definition of '{0}'! Could not find file!", sWord), False, True, True)
+                g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("Listing definitions of '{0}':", sWord))
+
+                For Each mDefinition In mDefinitions
+                    g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & String.Format("{0}({1}): {2}", mDefinition.sFile, mDefinition.iLine, mDefinition.mAutocomplete.m_FullFunctionString),
+                                                      New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_GOTO(mDefinition.sFile, {mDefinition.iLine}))
+                Next
+                g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("{0} definition{1} found!", mDefinitions.Length, If(mDefinitions.Length > 1, "s", "")), False, True, True)
             End If
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
