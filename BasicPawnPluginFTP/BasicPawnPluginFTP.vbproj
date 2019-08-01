@@ -143,7 +143,8 @@ echo         Plugin '$(ProjectName)' copied to BasicPawn main plugin folder!
 )
 
 if "$(ConfigurationName)"=="Release" (
-copy /Y "$(TargetPath)" "$(SolutionDir)Plugin Releases\$(TargetFileName)"
+mkdir "$(SolutionDir)Plugin Releases\$(ProjectName)"
+copy /Y "$(TargetPath)" "$(SolutionDir)Plugin Releases\$(ProjectName)\$(TargetFileName)"
 echo         Plugin '$(ProjectName)' copied to Plugin Releases folder!
 )</PostBuildEvent>
   </PropertyGroup>

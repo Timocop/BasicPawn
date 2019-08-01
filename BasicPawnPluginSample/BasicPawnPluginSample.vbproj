@@ -170,7 +170,14 @@
     <PostBuildEvent>if "$(ConfigurationName)"=="Debug" (
 copy /Y "$(TargetPath)" "$(SolutionDir)BasicPawn\bin\Debug\plugins\$(TargetFileName)"
 echo         Plugin '$(ProjectName)' copied to BasicPawn main plugin folder!
-)</PostBuildEvent>
+)
+
+if "$(ConfigurationName)"=="Release" (
+mkdir "$(SolutionDir)Plugin Releases\$(ProjectName)"
+copy /Y "$(TargetPath)" "$(SolutionDir)Plugin Releases\$(ProjectName)\$(TargetFileName)"
+echo         Plugin '$(ProjectName)' copied to Plugin Releases folder!
+)
+</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
