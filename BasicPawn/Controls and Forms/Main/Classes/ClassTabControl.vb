@@ -709,9 +709,6 @@ Public Class ClassTabControl
     End Sub
 
     Public Sub FullUpdate(mTabs As SourceTabPage())
-        'Stop all threads
-        'TODO: For some reason it locks the *.xshd file, need fix! 
-        'FIX: Using 'UpdateSyntaxFile' in the UI thread seems to solve this problem... but why, im using |SyncLock|, |Using| etc.?!
         g_mFormMain.g_ClassSyntaxUpdater.StopThread()
 
         g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete("")
@@ -719,6 +716,10 @@ Public Class ClassTabControl
 
         g_mFormMain.g_mUCTextMinimap.UpdateText(False)
         g_mFormMain.g_mUCTextMinimap.UpdatePosition(False, True, True)
+
+        For i = 0 To mTabs.Length - 1
+            mTabs(i).UpdateFoldings()
+        Next
 
         g_mFormMain.g_mUCObjectBrowser.StartUpdate()
 
