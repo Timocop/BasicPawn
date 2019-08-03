@@ -693,6 +693,7 @@ Public Class ClassTabControl
 
                 If (g_bBeginRequestFullUpdate AndAlso g_iBeginUpdateCount = 0) Then
                     g_bBeginRequestFullUpdate = False
+
                     Dim mTabs = g_lBeginRequestFullUpdateTabs.ToArray
                     g_lBeginRequestFullUpdateTabs.Clear()
 
@@ -718,6 +719,10 @@ Public Class ClassTabControl
         g_mFormMain.g_mUCTextMinimap.UpdatePosition(False, True, True)
 
         For i = 0 To mTabs.Length - 1
+            If (mTabs(i).IsDisposed) Then
+                Continue For
+            End If
+
             mTabs(i).UpdateFoldings()
         Next
 
@@ -726,6 +731,10 @@ Public Class ClassTabControl
         RaiseEvent OnTabFullUpdate(mTabs)
 
         For i = 0 To mTabs.Length - 1
+            If (mTabs(i).IsDisposed) Then
+                Continue For
+            End If
+
             g_mFormMain.g_ClassSyntaxParser.StartUpdateSchedule(ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS.ALL, mTabs(i), ClassSyntaxParser.ENUM_PARSE_OPTIONS_FLAGS.NOONE)
         Next
 
