@@ -31,8 +31,8 @@ Features:
 
 ## Plugins
 **Download: Click on 'Download'**
- - [FTP Plugin](Plugin%20Releases/BasicPawnPluginFTP.dll)
- - [Automatic Error Reporting](Plugin%20Releases/BasicPawnPluginAutoErrorReport.dll)
+ - [FTP Plugin](Plugin%20Releases/BasicPawnPluginFTP)
+ - [Automatic Error Reporting](Plugin%20Releases/BasicPawnPluginAutoErrorReport)
  - [more...](Plugin%20Releases)
 
 ## Syntax Styles
