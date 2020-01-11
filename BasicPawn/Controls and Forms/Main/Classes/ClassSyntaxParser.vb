@@ -700,9 +700,8 @@ Public Class ClassSyntaxParser
     ''' <returns>Array if include file paths</returns>
     Public Function GetIncludeFiles(mConfig As ClassConfigs.STRUC_CONFIG_ITEM, sActiveSource As String, sActiveSourceFile As String, sPath As String, Optional bFindAll As Boolean = False, Optional iMaxDirectoryDepth As Integer = 10) As String()
         Dim lList As New List(Of String)
-        Dim lLoadedIncludes As New Dictionary(Of String, Boolean)
 
-        GetIncludeFilesRecursive(mConfig, sActiveSource, sActiveSourceFile, sPath, lList, lLoadedIncludes)
+        GetIncludeFilesRecursive(mConfig, sActiveSource, sActiveSourceFile, sPath, lList)
 
         If (bFindAll) Then
             While True
@@ -742,7 +741,7 @@ Public Class ClassSyntaxParser
 #End If
 
 #If SEARCH_EVERYWHERE Then
-                GetIncludeFilesRecursiveAll(IO.Path.GetDirectoryName(sActiveSourceFile), lList, lLoadedIncludes, iMaxDirectoryDepth)
+                GetIncludeFilesRecursiveAll(IO.Path.GetDirectoryName(sActiveSourceFile), lList, iMaxDirectoryDepth)
 #End If
 
                 For Each sInclude As String In sIncludePaths.Split(";"c)
@@ -750,29 +749,21 @@ Public Class ClassSyntaxParser
                         Continue For
                     End If
 
-                    GetIncludeFilesRecursiveAll(mConfig, sInclude, lList, lLoadedIncludes, iMaxDirectoryDepth)
+                    GetIncludeFilesRecursiveAll(mConfig, sInclude, sInclude, lList, iMaxDirectoryDepth)
                 Next
 
 #If SEARCH_EVERYWHERE Then
-                GetIncludeFilesRecursiveAll(sCompilerPath, lList, lLoadedIncludes, iMaxDirectoryDepth)
+                GetIncludeFilesRecursiveAll(sCompilerPath, lList, iMaxDirectoryDepth)
 #End If
 
                 Exit While
             End While
         End If
 
-        For Each i In lLoadedIncludes
-            If (i.Value) Then
-                Continue For
-            End If
-
-            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, String.Format("Could not read include: {0}", i.Key), False, False)
-        Next
-
         Return lList.ToArray
     End Function
 
-    Private Sub GetIncludeFilesRecursiveAll(mConfig As ClassConfigs.STRUC_CONFIG_ITEM, sInclude As String, ByRef lList As List(Of String), lLoadedIncludes As Dictionary(Of String, Boolean), iMaxDirectoryDepth As Integer)
+    Private Sub GetIncludeFilesRecursiveAll(mConfig As ClassConfigs.STRUC_CONFIG_ITEM, sBaseInclude As String, sInclude As String, ByRef lList As List(Of String), iMaxDirectoryDepth As Integer)
         Dim sFiles As String()
         Dim sDirectories As String()
 
@@ -780,21 +771,17 @@ Public Class ClassSyntaxParser
         sDirectories = IO.Directory.GetDirectories(sInclude)
 
         For Each i As String In sFiles
-            Dim sFileName As String = IO.Path.GetFileNameWithoutExtension(i)
-
             If (Not IO.File.Exists(i)) Then
                 Continue For
             End If
 
             If (lList.Contains(i.ToLower)) Then
-                lLoadedIncludes(sFileName.ToLower) = True
                 Continue For
             End If
 
             Select Case (IO.Path.GetExtension(i).ToLower)
                 Case ".sp", ".sma", ".p", ".pwn", ".inc"
                     lList.Add(i.ToLower)
-                    lLoadedIncludes(sFileName.ToLower) = True
             End Select
         Next
 
@@ -804,41 +791,31 @@ Public Class ClassSyntaxParser
         End If
 
         For Each i As String In sDirectories
-            GetIncludeFilesRecursiveAll(mConfig, i, lList, lLoadedIncludes, iMaxDirectoryDepth - 1)
+            GetIncludeFilesRecursiveAll(mConfig, sBaseInclude, i, lList, iMaxDirectoryDepth - 1)
         Next
     End Sub
 
-    Private Sub GetIncludeFilesRecursive(mConfig As ClassConfigs.STRUC_CONFIG_ITEM, sActiveSource As String, sActiveSourceFile As String, sPath As String, ByRef lList As List(Of String), lLoadedIncludes As Dictionary(Of String, Boolean))
+    Private Sub GetIncludeFilesRecursive(mConfig As ClassConfigs.STRUC_CONFIG_ITEM, sActiveSource As String, sActiveSourceFile As String, sPath As String, ByRef lList As List(Of String))
         Dim sSource As String
-
-        Dim sFileName As String = IO.Path.GetFileNameWithoutExtension(sPath)
 
         If (sActiveSourceFile.ToLower = sPath.ToLower) Then
             If (lList.Contains(sPath.ToLower)) Then
-                lLoadedIncludes(sFileName.ToLower) = True
                 Return
             End If
 
             lList.Add(sPath.ToLower)
-            lLoadedIncludes(sFileName.ToLower) = True
 
             sSource = sActiveSource
         Else
             If (Not IO.File.Exists(sPath)) Then
-                If (Not lLoadedIncludes.ContainsKey(sFileName.ToLower)) Then
-                    lLoadedIncludes(sFileName.ToLower) = False
-                End If
-
                 Return
             End If
 
             If (lList.Contains(sPath.ToLower)) Then
-                lLoadedIncludes(sFileName.ToLower) = True
                 Return
             End If
 
             lList.Add(sPath.ToLower)
-            lLoadedIncludes(sFileName.ToLower) = True
 
             sSource = IO.File.ReadAllText(sPath)
         End If
@@ -954,9 +931,6 @@ Public Class ClassSyntaxParser
                                         sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.inc", IO.Path.Combine(sCompilerPath, sMatchValue)))
 
                                     Case Else
-                                        If (Not lLoadedIncludes.ContainsKey(sMatchValue.ToLower)) Then
-                                            lLoadedIncludes(sMatchValue.ToLower) = False
-                                        End If
                                         Continue While
                                 End Select
 
@@ -1008,9 +982,6 @@ Public Class ClassSyntaxParser
                                         sCorrectPath = IO.Path.GetFullPath(String.Format("{0}.inc", IO.Path.Combine(sCompilerPath, sMatchValue)))
 
                                     Case Else
-                                        If (Not lLoadedIncludes.ContainsKey(sMatchValue.ToLower)) Then
-                                            lLoadedIncludes(sMatchValue.ToLower) = False
-                                        End If
                                         Continue While
                                 End Select
 
@@ -1033,7 +1004,7 @@ Public Class ClassSyntaxParser
         End While
 
         For i = 0 To lPathList.Count - 1
-            GetIncludeFilesRecursive(mConfig, sActiveSource, sActiveSourceFile, lPathList(i), lList, lLoadedIncludes)
+            GetIncludeFilesRecursive(mConfig, sActiveSource, sActiveSourceFile, lPathList(i), lList)
         Next
     End Sub
 
