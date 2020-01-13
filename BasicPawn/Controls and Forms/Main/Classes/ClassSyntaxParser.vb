@@ -392,6 +392,9 @@ Public Class ClassSyntaxParser
             'Add editor cmd stuff
             lNewAutocompleteList.AddRange(mParser.GetTextEditorCommands())
 
+            'Add config defines
+            lNewAutocompleteList.AddRange(mParser.GetConfigDefines(mRequestedConfig, iRequestedLangauge))
+
             'Parse everything. Methods etc.
             If (True) Then
                 Dim sSourceList As New ClassSyncList(Of String())
@@ -5735,6 +5738,34 @@ Public Class ClassSyntaxParser
 
             For Each mItem In ClassTextEditorTools.ClassTestEditorCommands.m_Commands
                 lTmpAutoList.Add(New ClassSyntaxTools.STRUC_AUTOCOMPLETE("", "BasicPawn.exe", "", ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.COMMAND, mItem.m_Command, mItem.m_Command, mItem.m_Command))
+            Next
+
+            Return lTmpAutoList.ToArray
+        End Function
+
+        ''' <summary>
+        ''' Gets config defined constants
+        ''' </summary>
+        ''' <param name="mConfig"></param>
+        ''' <param name="iLanguage">Target language, -1 for all.</param>
+        ''' <returns></returns>
+        Public Function GetConfigDefines(mConfig As ClassConfigs.STRUC_CONFIG_ITEM, iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE) As ClassSyntaxTools.STRUC_AUTOCOMPLETE()
+            Dim lTmpAutoList As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
+            Dim lDefineList As New List(Of KeyValuePair(Of String, String))
+
+            If (iLanguage = -1 OrElse
+                    iLanguage = ClassSyntaxTools.ENUM_LANGUAGE_TYPE.SOURCEPAWN) Then
+                lDefineList.AddRange(mConfig.g_mCompilerOptionsSP.g_mDefineConstants)
+            End If
+
+            If (iLanguage = -1 OrElse
+                    iLanguage = ClassSyntaxTools.ENUM_LANGUAGE_TYPE.AMXMODX OrElse
+                    iLanguage = ClassSyntaxTools.ENUM_LANGUAGE_TYPE.PAWN) Then
+                lDefineList.AddRange(mConfig.g_mCompilerOptionsAMXX.g_mDefineConstants)
+            End If
+
+            For Each mDefine In lDefineList
+                lTmpAutoList.Add(New ClassSyntaxTools.STRUC_AUTOCOMPLETE("", "BasicPawn.exe", "", ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEFINE, mDefine.Key, mDefine.Key, String.Format("const {0}={1}", mDefine.Key, mDefine.Value)))
             Next
 
             Return lTmpAutoList.ToArray

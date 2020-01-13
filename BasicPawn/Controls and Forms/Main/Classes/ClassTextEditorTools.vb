@@ -341,58 +341,102 @@ Public Class ClassTextEditorTools
 
         Select Case (True)
             Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEFINE) <> 0
+                If (Not mAutocomplete.m_Data.ContainsKey("DefineAnchorName")) Then
+                    Return False
+                End If
+
                 sAnchorName = CStr(mAutocomplete.m_Data("DefineAnchorName"))
                 iAnchorIndex = CInt(mAutocomplete.m_Data("DefineAnchorIndex"))
                 sAnchorFile = CStr(mAutocomplete.m_Data("DefineAnchorFile"))
 
             Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM) <> 0
+                If (Not mAutocomplete.m_Data.ContainsKey("EnumAnchorName")) Then
+                    Return False
+                End If
+
                 sAnchorName = CStr(mAutocomplete.m_Data("EnumAnchorName"))
                 iAnchorIndex = CInt(mAutocomplete.m_Data("EnumAnchorIndex"))
                 sAnchorFile = CStr(mAutocomplete.m_Data("EnumAnchorFile"))
 
             Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STRUCT) <> 0
+                If (Not mAutocomplete.m_Data.ContainsKey("StructAnchorName")) Then
+                    Return False
+                End If
+
                 sAnchorName = CStr(mAutocomplete.m_Data("StructAnchorName"))
                 iAnchorIndex = CInt(mAutocomplete.m_Data("StructAnchorIndex"))
                 sAnchorFile = CStr(mAutocomplete.m_Data("StructAnchorFile"))
 
             Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PUBLICVAR) <> 0
+                If (Not mAutocomplete.m_Data.ContainsKey("PublicAnchorName")) Then
+                    Return False
+                End If
+
                 sAnchorName = CStr(mAutocomplete.m_Data("PublicAnchorName"))
                 iAnchorIndex = CInt(mAutocomplete.m_Data("PublicAnchorIndex"))
                 sAnchorFile = CStr(mAutocomplete.m_Data("PublicAnchorFile"))
 
             Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM) <> 0
+                If (Not mAutocomplete.m_Data.ContainsKey("FuncenumAnchorName")) Then
+                    Return False
+                End If
+
                 sAnchorName = CStr(mAutocomplete.m_Data("FuncenumAnchorName"))
                 iAnchorIndex = CInt(mAutocomplete.m_Data("FuncenumAnchorIndex"))
                 sAnchorFile = CStr(mAutocomplete.m_Data("FuncenumAnchorFile"))
 
             Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) <> 0
+                If (Not mAutocomplete.m_Data.ContainsKey("TypesetAnchorName")) Then
+                    Return False
+                End If
+
                 sAnchorName = CStr(mAutocomplete.m_Data("TypesetAnchorName"))
                 iAnchorIndex = CInt(mAutocomplete.m_Data("TypesetAnchorIndex"))
                 sAnchorFile = CStr(mAutocomplete.m_Data("TypesetAnchorFile"))
 
             Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF) <> 0
+                If (Not mAutocomplete.m_Data.ContainsKey("TypedefAnchorName")) Then
+                    Return False
+                End If
+
                 sAnchorName = CStr(mAutocomplete.m_Data("TypedefAnchorName"))
                 iAnchorIndex = CInt(mAutocomplete.m_Data("TypedefAnchorIndex"))
                 sAnchorFile = CStr(mAutocomplete.m_Data("TypedefAnchorFile"))
 
             Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG) <> 0
+                If (Not mAutocomplete.m_Data.ContainsKey("FunctagAnchorName")) Then
+                    Return False
+                End If
+
                 sAnchorName = CStr(mAutocomplete.m_Data("FunctagAnchorName"))
                 iAnchorIndex = CInt(mAutocomplete.m_Data("FunctagAnchorIndex"))
                 sAnchorFile = CStr(mAutocomplete.m_Data("FunctagAnchorFile"))
 
             Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHOD) <> 0
+                If (Not mAutocomplete.m_Data.ContainsKey("MethodAnchorName")) Then
+                    Return False
+                End If
+
                 sAnchorName = CStr(mAutocomplete.m_Data("MethodAnchorName"))
                 iAnchorIndex = CInt(mAutocomplete.m_Data("MethodAnchorIndex"))
                 sAnchorFile = CStr(mAutocomplete.m_Data("MethodAnchorFile"))
 
             Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) <> 0,
                             (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> 0 AndAlso mAutocomplete.m_Data.ContainsKey("VariableMethodmapName")
+                If (Not mAutocomplete.m_Data.ContainsKey("MethodmapAnchorName")) Then
+                    Return False
+                End If
+
                 sAnchorName = CStr(mAutocomplete.m_Data("MethodmapAnchorName"))
                 iAnchorIndex = CInt(mAutocomplete.m_Data("MethodmapAnchorIndex"))
                 sAnchorFile = CStr(mAutocomplete.m_Data("MethodmapAnchorFile"))
 
             Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM_STRUCT) <> 0,
                             (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> 0 AndAlso mAutocomplete.m_Data.ContainsKey("VariableEnumStructName")
+                If (Not mAutocomplete.m_Data.ContainsKey("EnumStructAnchorName")) Then
+                    Return False
+                End If
+
                 sAnchorName = CStr(mAutocomplete.m_Data("EnumStructAnchorName"))
                 iAnchorIndex = CInt(mAutocomplete.m_Data("EnumStructAnchorIndex"))
                 sAnchorFile = CStr(mAutocomplete.m_Data("EnumStructAnchorFile"))
