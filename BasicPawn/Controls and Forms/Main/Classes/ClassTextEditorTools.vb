@@ -26,7 +26,19 @@ Imports ICSharpCode.TextEditor.Document
 Public Class ClassTextEditorTools
     Private g_mFormMain As FormMain
 
-    Structure STRUC_DEFINITION_ITEM
+    Class STRUC_REFERENCE_ITEM
+        Public sFile As String
+        Public iLine As Integer
+        Public sLine As String
+
+        Sub New(_File As String, _Line As Integer, _strLine As String)
+            sFile = _File
+            iLine = _Line
+            sLine = _strLine
+        End Sub
+    End Class
+
+    Class STRUC_DEFINITION_ITEM
         Public sFile As String
         Public iLine As Integer
         Public mAutocomplete As ClassSyntaxTools.STRUC_AUTOCOMPLETE
@@ -36,7 +48,21 @@ Public Class ClassTextEditorTools
             iLine = _Line
             mAutocomplete = _Autocomplete
         End Sub
-    End Structure
+    End Class
+
+    Enum ENUM_REFERENCE_ERROR_CODE
+        INVALID_FILE = -2
+        INVALID_INPUT = -1
+        NO_RESULT = 0
+        NO_ERROR = 1
+    End Enum
+
+    Enum ENUM_DEFINITION_ERROR_CODE
+        INVALID_FILE = -2
+        INVALID_INPUT = -1
+        NO_RESULT = 0
+        NO_ERROR = 1
+    End Enum
 
     Public Sub New(f As FormMain)
         g_mFormMain = f
@@ -98,40 +124,32 @@ Public Class ClassTextEditorTools
     End Sub
 
     ''' <summary>
-    ''' Lists all references of a word from current opeened source and all include files.
+    ''' Finds all references of a word from current opened source and all include files.
     ''' </summary>
     ''' <param name="sText">Word to search, otherwise if empty or |Nothing| it will get the word under the caret.</param>
     ''' <param name="bIgnoreNonCode">If true, ignores all matches in comments and strings.</param>
-    Public Sub ListReferences(sText As String, bIgnoreNonCode As Boolean)
-        Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
+    Public Function FindReferences(ByRef sText As String, bIgnoreNonCode As Boolean, ByRef mReferences As STRUC_REFERENCE_ITEM()) As ENUM_REFERENCE_ERROR_CODE
+        Dim mTab = g_mFormMain.g_ClassTabControl.m_ActiveTab
 
-        Dim sWord As String
+        Return FindReferences(mTab, sText, bIgnoreNonCode, mReferences)
+    End Function
 
-        If (Not String.IsNullOrEmpty(sText)) Then
-            sWord = sText
-        Else
-            sWord = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(False, False, False)
+    Public Function FindReferences(mTab As ClassTabControl.SourceTabPage, ByRef sText As String, bIgnoreNonCode As Boolean, ByRef mReferences As STRUC_REFERENCE_ITEM()) As ENUM_REFERENCE_ERROR_CODE
+        If (String.IsNullOrEmpty(sText)) Then
+            sText = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(False, False, False)
         End If
 
-        If (String.IsNullOrEmpty(sWord)) Then
-            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Can't check references! Nothing valid selected!", False, True, True)
-            Return
+        If (String.IsNullOrEmpty(sText)) Then
+            Return ENUM_REFERENCE_ERROR_CODE.INVALID_INPUT
         End If
 
-        If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved OrElse g_mFormMain.g_ClassTabControl.m_ActiveTab.m_InvalidFile) Then
-            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Can't check references! Could not get current source file!", False, True, True)
-            Return
+        If (mTab.m_IsUnsaved OrElse mTab.m_InvalidFile) Then
+            Return ENUM_REFERENCE_ERROR_CODE.INVALID_FILE
         End If
 
-        g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("Listing references of: {0}", sWord), False, True, True)
+        Dim mIncludeFiles = mTab.m_IncludeFiles.ToArray
 
-        Dim mIncludeFiles = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IncludeFiles.ToArray
-
-        Const C_REFLIST_FILE = "File"
-        Const C_REFLIST_LINE = "Line"
-        Const C_REFLIST_MSG = "Msg"
-
-        Dim lRefList As New List(Of Dictionary(Of String, Object)) 'See keys: C_REFLIST_*
+        Dim lRefList As New List(Of STRUC_REFERENCE_ITEM)
 
         For Each mInclude In mIncludeFiles
             If (Not IO.File.Exists(mInclude.Value)) Then
@@ -140,8 +158,8 @@ Public Class ClassTextEditorTools
 
             Dim sSource As String
 
-            If (mInclude.Value.ToLower = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File.ToLower) Then
-                sSource = mActiveTextEditor.Document.TextContent
+            If (mInclude.Value.ToLower = mTab.m_File.ToLower) Then
+                sSource = mTab.m_TextEditor.Document.TextContent
             Else
                 sSource = IO.File.ReadAllText(mInclude.Value)
             End If
@@ -149,7 +167,7 @@ Public Class ClassTextEditorTools
             Dim mSourceAnalysis As ClassSyntaxTools.ClassSyntaxSourceAnalysis
 
             If (bIgnoreNonCode) Then
-                mSourceAnalysis = New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
+                mSourceAnalysis = New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, mTab.m_Language)
             Else
                 mSourceAnalysis = Nothing
             End If
@@ -164,11 +182,11 @@ Public Class ClassTextEditorTools
 
                     iLine += 1
 
-                    If (Not sLine.Contains(sWord)) Then
+                    If (Not sLine.Contains(sText)) Then
                         Continue While
                     End If
 
-                    For Each mMatch As Match In Regex.Matches(sLine, String.Format("\b{0}\b", Regex.Escape(sWord)))
+                    For Each mMatch As Match In Regex.Matches(sLine, String.Format("\b{0}\b", Regex.Escape(sText)))
                         If (mSourceAnalysis IsNot Nothing) Then
                             'Get index from line and from match to check if its inside non-code area
                             Dim iIndex = mSourceAnalysis.GetIndexFromLine(iLine - 1)
@@ -177,52 +195,36 @@ Public Class ClassTextEditorTools
                             End If
                         End If
 
-                        Dim mRefListDic As New Dictionary(Of String, Object)
-                        mRefListDic(C_REFLIST_FILE) = mInclude.Value
-                        mRefListDic(C_REFLIST_LINE) = iLine
-                        mRefListDic(C_REFLIST_MSG) = vbTab & String.Format("{0}({1}): {2}", mInclude.Value, iLine, sLine.Trim)
-
-                        lRefList.Add(mRefListDic)
+                        lRefList.Add(New STRUC_REFERENCE_ITEM(mInclude.Value, iLine, sLine.Trim))
                     Next
                 End While
             End Using
         Next
 
-        For Each mItem In lRefList
-            Dim sFile As String = CStr(mItem(C_REFLIST_FILE))
-            Dim iLine As Integer = CInt(mItem(C_REFLIST_LINE))
-            Dim sMsg As String = CStr(mItem(C_REFLIST_MSG))
+        mReferences = lRefList.ToArray
+        Return ENUM_REFERENCE_ERROR_CODE.NO_ERROR
+    End Function
 
-            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, sMsg, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_GOTO(sFile, New Integer() {iLine}))
-        Next
-
-        g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("{0} reference{1} found!", lRefList.Count, If(lRefList.Count > 1, "s", "")), False, True, True)
-    End Sub
-
-    Public Function FindDefinition(sText As String, ByRef mDefinitions As STRUC_DEFINITION_ITEM()) As Boolean
+    Public Function FindDefinition(ByRef sText As String, ByRef mDefinitions As STRUC_DEFINITION_ITEM()) As ENUM_DEFINITION_ERROR_CODE
         Dim mTab = g_mFormMain.g_ClassTabControl.m_ActiveTab
 
         Return FindDefinition(mTab, sText, mDefinitions)
     End Function
 
-    Public Function FindDefinition(mTab As ClassTabControl.SourceTabPage, sText As String, ByRef mDefinitions As STRUC_DEFINITION_ITEM()) As Boolean
-        Dim sFunctionName As String
-
-        If (Not String.IsNullOrEmpty(sText)) Then
-            sFunctionName = sText
-        Else
-            sFunctionName = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(False, False, False)
+    Public Function FindDefinition(mTab As ClassTabControl.SourceTabPage, ByRef sText As String, ByRef mDefinitions As STRUC_DEFINITION_ITEM()) As ENUM_DEFINITION_ERROR_CODE
+        If (String.IsNullOrEmpty(sText)) Then
+            sText = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True, True, True)
         End If
 
-        If (String.IsNullOrEmpty(sFunctionName)) Then
-            Return False
+        If (String.IsNullOrEmpty(sText)) Then
+            Return ENUM_DEFINITION_ERROR_CODE.INVALID_INPUT
         End If
 
         If (mTab.m_IsUnsaved OrElse mTab.m_InvalidFile) Then
-            Return False
+            Return ENUM_DEFINITION_ERROR_CODE.INVALID_FILE
         End If
 
-        Dim sFunctionNames As String() = sFunctionName.Split("."c)
+        Dim sFunctionNames As String() = sText.Split("."c)
         Dim iCurrentScopeIndex As Integer = -1
 
         'If 'this' keyword find out the type 
@@ -292,7 +294,7 @@ Public Class ClassTextEditorTools
                     End If
                 End If
 
-                If (mAutocompleteArray(i).m_FunctionString.Equals(sFunctionName)) Then
+                If (mAutocompleteArray(i).m_FunctionString.Equals(sText)) Then
                     lFoundAutocomplete.Add(mAutocompleteArray(i))
                 End If
             Next
@@ -305,7 +307,7 @@ Public Class ClassTextEditorTools
                     Continue For
                 End If
 
-                If (mAutocompleteArray(i).m_FunctionName.Equals(sFunctionName)) Then
+                If (mAutocompleteArray(i).m_FunctionName.Equals(sText)) Then
                     lFoundAutocomplete.Add(mAutocompleteArray(i))
                 End If
             Next
@@ -315,24 +317,24 @@ Public Class ClassTextEditorTools
         For Each mAutocomplete In lFoundAutocomplete
             Dim mDefinition As STRUC_DEFINITION_ITEM = Nothing
 
-            If (FindDefinition(mTab, mAutocomplete, mDefinition)) Then
+            If (FindDefinition(mTab, mAutocomplete, mDefinition) = ENUM_DEFINITION_ERROR_CODE.NO_ERROR) Then
                 lDefinitions.Add(mDefinition)
             End If
         Next
 
         mDefinitions = lDefinitions.ToArray
-        Return (lDefinitions.Count > 0)
+        Return ENUM_DEFINITION_ERROR_CODE.NO_ERROR
     End Function
 
-    Public Function FindDefinition(mAutocomplete As ClassSyntaxTools.STRUC_AUTOCOMPLETE, ByRef mDefinition As STRUC_DEFINITION_ITEM) As Boolean
+    Public Function FindDefinition(mAutocomplete As ClassSyntaxTools.STRUC_AUTOCOMPLETE, ByRef mDefinition As STRUC_DEFINITION_ITEM) As ENUM_DEFINITION_ERROR_CODE
         Dim mTab = g_mFormMain.g_ClassTabControl.m_ActiveTab
 
         Return FindDefinition(mTab, mAutocomplete, mDefinition)
     End Function
 
-    Public Function FindDefinition(mTab As ClassTabControl.SourceTabPage, mAutocomplete As ClassSyntaxTools.STRUC_AUTOCOMPLETE, ByRef mDefinition As STRUC_DEFINITION_ITEM) As Boolean
+    Public Function FindDefinition(mTab As ClassTabControl.SourceTabPage, mAutocomplete As ClassSyntaxTools.STRUC_AUTOCOMPLETE, ByRef mDefinition As STRUC_DEFINITION_ITEM) As ENUM_DEFINITION_ERROR_CODE
         If (mAutocomplete Is Nothing) Then
-            Return False
+            Return ENUM_DEFINITION_ERROR_CODE.INVALID_INPUT
         End If
 
         Dim sAnchorName As String
@@ -342,7 +344,7 @@ Public Class ClassTextEditorTools
         Select Case (True)
             Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEFINE) <> 0
                 If (Not mAutocomplete.m_Data.ContainsKey("DefineAnchorName")) Then
-                    Return False
+                    Return ENUM_DEFINITION_ERROR_CODE.NO_RESULT
                 End If
 
                 sAnchorName = CStr(mAutocomplete.m_Data("DefineAnchorName"))
@@ -351,7 +353,7 @@ Public Class ClassTextEditorTools
 
             Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM) <> 0
                 If (Not mAutocomplete.m_Data.ContainsKey("EnumAnchorName")) Then
-                    Return False
+                    Return ENUM_DEFINITION_ERROR_CODE.NO_RESULT
                 End If
 
                 sAnchorName = CStr(mAutocomplete.m_Data("EnumAnchorName"))
@@ -360,7 +362,7 @@ Public Class ClassTextEditorTools
 
             Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STRUCT) <> 0
                 If (Not mAutocomplete.m_Data.ContainsKey("StructAnchorName")) Then
-                    Return False
+                    Return ENUM_DEFINITION_ERROR_CODE.NO_RESULT
                 End If
 
                 sAnchorName = CStr(mAutocomplete.m_Data("StructAnchorName"))
@@ -369,7 +371,7 @@ Public Class ClassTextEditorTools
 
             Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PUBLICVAR) <> 0
                 If (Not mAutocomplete.m_Data.ContainsKey("PublicAnchorName")) Then
-                    Return False
+                    Return ENUM_DEFINITION_ERROR_CODE.NO_RESULT
                 End If
 
                 sAnchorName = CStr(mAutocomplete.m_Data("PublicAnchorName"))
@@ -378,7 +380,7 @@ Public Class ClassTextEditorTools
 
             Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM) <> 0
                 If (Not mAutocomplete.m_Data.ContainsKey("FuncenumAnchorName")) Then
-                    Return False
+                    Return ENUM_DEFINITION_ERROR_CODE.NO_RESULT
                 End If
 
                 sAnchorName = CStr(mAutocomplete.m_Data("FuncenumAnchorName"))
@@ -387,7 +389,7 @@ Public Class ClassTextEditorTools
 
             Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) <> 0
                 If (Not mAutocomplete.m_Data.ContainsKey("TypesetAnchorName")) Then
-                    Return False
+                    Return ENUM_DEFINITION_ERROR_CODE.NO_RESULT
                 End If
 
                 sAnchorName = CStr(mAutocomplete.m_Data("TypesetAnchorName"))
@@ -396,7 +398,7 @@ Public Class ClassTextEditorTools
 
             Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF) <> 0
                 If (Not mAutocomplete.m_Data.ContainsKey("TypedefAnchorName")) Then
-                    Return False
+                    Return ENUM_DEFINITION_ERROR_CODE.NO_RESULT
                 End If
 
                 sAnchorName = CStr(mAutocomplete.m_Data("TypedefAnchorName"))
@@ -405,7 +407,7 @@ Public Class ClassTextEditorTools
 
             Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG) <> 0
                 If (Not mAutocomplete.m_Data.ContainsKey("FunctagAnchorName")) Then
-                    Return False
+                    Return ENUM_DEFINITION_ERROR_CODE.NO_RESULT
                 End If
 
                 sAnchorName = CStr(mAutocomplete.m_Data("FunctagAnchorName"))
@@ -414,7 +416,7 @@ Public Class ClassTextEditorTools
 
             Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHOD) <> 0
                 If (Not mAutocomplete.m_Data.ContainsKey("MethodAnchorName")) Then
-                    Return False
+                    Return ENUM_DEFINITION_ERROR_CODE.NO_RESULT
                 End If
 
                 sAnchorName = CStr(mAutocomplete.m_Data("MethodAnchorName"))
@@ -424,7 +426,7 @@ Public Class ClassTextEditorTools
             Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.METHODMAP) <> 0,
                             (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> 0 AndAlso mAutocomplete.m_Data.ContainsKey("VariableMethodmapName")
                 If (Not mAutocomplete.m_Data.ContainsKey("MethodmapAnchorName")) Then
-                    Return False
+                    Return ENUM_DEFINITION_ERROR_CODE.NO_RESULT
                 End If
 
                 sAnchorName = CStr(mAutocomplete.m_Data("MethodmapAnchorName"))
@@ -434,7 +436,7 @@ Public Class ClassTextEditorTools
             Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM_STRUCT) <> 0,
                             (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> 0 AndAlso mAutocomplete.m_Data.ContainsKey("VariableEnumStructName")
                 If (Not mAutocomplete.m_Data.ContainsKey("EnumStructAnchorName")) Then
-                    Return False
+                    Return ENUM_DEFINITION_ERROR_CODE.NO_RESULT
                 End If
 
                 sAnchorName = CStr(mAutocomplete.m_Data("EnumStructAnchorName"))
@@ -442,11 +444,11 @@ Public Class ClassTextEditorTools
                 sAnchorFile = CStr(mAutocomplete.m_Data("EnumStructAnchorFile"))
 
             Case Else
-                Return False
+                Return ENUM_DEFINITION_ERROR_CODE.NO_RESULT
         End Select
 
         If (Not IO.File.Exists(sAnchorFile)) Then
-            Return False
+            Return ENUM_DEFINITION_ERROR_CODE.INVALID_FILE
         End If
 
         Dim sSource As String
@@ -458,12 +460,12 @@ Public Class ClassTextEditorTools
         End If
 
         If (iAnchorIndex < 0) Then
-            Return False
+            Return ENUM_DEFINITION_ERROR_CODE.NO_RESULT
         End If
 
         Dim mAnchorMatches = Regex.Matches(sSource, String.Format("\b({0})\b", Regex.Escape(sAnchorName)))
         If (mAnchorMatches.Count < 0 OrElse iAnchorIndex > mAnchorMatches.Count - 1) Then
-            Return False
+            Return ENUM_DEFINITION_ERROR_CODE.NO_RESULT
         End If
 
         Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, mTab.m_Language)
@@ -490,7 +492,7 @@ Public Class ClassTextEditorTools
 
         'If we didnt find anything, abort.
         If (Not bSuccess) Then
-            Return False
+            Return ENUM_DEFINITION_ERROR_CODE.NO_RESULT
         End If
 
         For i = 0 To iOffset
@@ -500,7 +502,7 @@ Public Class ClassTextEditorTools
         Next
 
         mDefinition = New STRUC_DEFINITION_ITEM(sAnchorFile, iLine, mAutocomplete)
-        Return True
+        Return ENUM_DEFINITION_ERROR_CODE.NO_ERROR
     End Function
 
     Public Sub FormatCode()

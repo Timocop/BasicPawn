@@ -24,7 +24,29 @@ Partial Public Class FormMain
 
     Private Sub ToolStripMenuItem_ListReferences_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ListReferences.Click
         Try
-            g_ClassTextEditorTools.ListReferences(Nothing, True)
+            Dim sWord As String = Nothing
+            Dim mReferences As ClassTextEditorTools.STRUC_REFERENCE_ITEM() = Nothing
+            Select Case (g_ClassTextEditorTools.FindReferences(sWord, True, mReferences))
+                Case ClassTextEditorTools.ENUM_REFERENCE_ERROR_CODE.INVALID_FILE
+                    g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, String.Format("Could not find references of '{0}'! Could not get current source file!", sWord), False, True, True)
+                    Return
+                Case ClassTextEditorTools.ENUM_REFERENCE_ERROR_CODE.INVALID_INPUT
+                    g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, String.Format("Could not find references of '{0}'! Nothing valid selected!", sWord), False, True, True)
+                    Return
+                Case ClassTextEditorTools.ENUM_REFERENCE_ERROR_CODE.NO_RESULT
+                    g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, String.Format("Could not find references of '{0}'!", sWord), False, True, True)
+                    Return
+            End Select
+
+            g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("Listing references of: {0}", sWord), False, True, True)
+
+            For Each mItem In mReferences
+                Dim sMsg = (vbTab & String.Format("{0}({1}): {2}", mItem.sFile, mItem.iLine, mItem.sLine))
+
+                g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, sMsg, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_GOTO(mItem.sFile, New Integer() {mItem.iLine}))
+            Next
+
+            g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("{0} reference{1} found!", mReferences.Length, If(mReferences.Length <> 1, "s", "")), False, True, True)
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
@@ -40,19 +62,21 @@ Partial Public Class FormMain
 
     Private Sub FindDefinition(bNewTab As Boolean)
         Try
-            Dim sWord = g_ClassTextEditorTools.GetCaretWord(True, True, True)
-            If (String.IsNullOrEmpty(sWord)) Then
-                g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Could not find definition! Nothing valid selected!", False, True, True)
-                Return
-            End If
-
             Dim mTab = g_ClassTabControl.m_ActiveTab
 
+            Dim sWord As String = Nothing
             Dim mDefinitions As ClassTextEditorTools.STRUC_DEFINITION_ITEM() = Nothing
-            If (Not g_ClassTextEditorTools.FindDefinition(mTab, sWord, mDefinitions)) Then
-                g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, String.Format("Could not find definition of '{0}'!", sWord), False, True, True)
-                Return
-            End If
+            Select Case (g_ClassTextEditorTools.FindDefinition(mTab, sWord, mDefinitions))
+                Case ClassTextEditorTools.ENUM_DEFINITION_ERROR_CODE.INVALID_FILE
+                    g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, String.Format("Could not find definition of '{0}'! Could not get current source file!", sWord), False, True, True)
+                    Return
+                Case ClassTextEditorTools.ENUM_DEFINITION_ERROR_CODE.INVALID_INPUT
+                    g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, String.Format("Could not find definition of '{0}'! Nothing valid selected!", sWord), False, True, True)
+                    Return
+                Case ClassTextEditorTools.ENUM_DEFINITION_ERROR_CODE.NO_RESULT
+                    g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, String.Format("Could not find definition of '{0}'!", sWord), False, True, True)
+                    Return
+            End Select
 
             If (mDefinitions.Length > 0) Then
                 Dim mDefinition = mDefinitions(0)
@@ -88,20 +112,18 @@ Partial Public Class FormMain
                     End If
 
                     g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("Listing definitions of '{0}':", sWord))
-                    g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & String.Format("{0}({1}): {2}", mDefinition.sFile, mDefinition.iLine, mDefinition.mAutocomplete.m_FullFunctionString),
+
+                    For Each mDefinition In mDefinitions
+                        g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & String.Format("{0}({1}): {2}", mDefinition.sFile, mDefinition.iLine, mDefinition.mAutocomplete.m_FullFunctionString),
                                                       New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_GOTO(mDefinition.sFile, {mDefinition.iLine}))
-                    g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("{0} definition found!", 1), False, True, True)
+                    Next
+
+                    g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("{0} definition{1} found!", mDefinitions.Length, If(mDefinitions.Length <> 1, "s", "")), False, True, True)
                 Else
-                    g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, String.Format("Could not find definition of '{0}'! Could not find file!", sWord), False, True, True)
+                    g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, String.Format("Could not find definition of '{0}'! Could not find file '{1}'!", sWord, mDefinition.sFile), False, True, True)
                 End If
             Else
-                g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("Listing definitions of '{0}':", sWord))
-
-                For Each mDefinition In mDefinitions
-                    g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & String.Format("{0}({1}): {2}", mDefinition.sFile, mDefinition.iLine, mDefinition.mAutocomplete.m_FullFunctionString),
-                                                      New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_GOTO(mDefinition.sFile, {mDefinition.iLine}))
-                Next
-                g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("{0} definition{1} found!", mDefinitions.Length, If(mDefinitions.Length > 1, "s", "")), False, True, True)
+                g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, String.Format("Could not find definition of '{0}'!", sWord), False, True, True)
             End If
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
