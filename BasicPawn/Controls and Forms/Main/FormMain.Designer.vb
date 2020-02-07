@@ -200,6 +200,7 @@ Partial Class FormMain
         Me.ToolStripSeparator19 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_FindOptimalConfigActiveTab = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_FindOptimalConfigAllTabs = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_PeekDefinition = New System.Windows.Forms.ToolStripMenuItem()
         Me.ContextMenuStrip_RightClick.SuspendLayout()
         Me.MenuStrip_BasicPawn.SuspendLayout()
         Me.SplitContainer_ToolboxSourceAndDetails.Panel1.SuspendLayout()
@@ -218,10 +219,10 @@ Partial Class FormMain
         '
         'ContextMenuStrip_RightClick
         '
-        Me.ContextMenuStrip_RightClick.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_Mark, Me.ToolStripMenuItem_ListReferences, Me.ToolStripMenuItem_FindDefinition, Me.ToolStripSeparator6, Me.ToolStripMenuItem_Cut, Me.ToolStripMenuItem_Copy, Me.ToolStripMenuItem_Paste, Me.ToolStripMenuItem_Delete, Me.ToolStripMenuItem_SelectAll, Me.ToolStripSeparator1, Me.ToolStripMenuItem_Debugger, Me.ToolStripMenuItem_HightlightCustom, Me.ToolStripMenuItem_Comment, Me.ToolStripSeparator11, Me.ToolStripMenuItem_Outline})
+        Me.ContextMenuStrip_RightClick.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_Mark, Me.ToolStripMenuItem_ListReferences, Me.ToolStripMenuItem_FindDefinition, Me.ToolStripMenuItem_PeekDefinition, Me.ToolStripSeparator6, Me.ToolStripMenuItem_Cut, Me.ToolStripMenuItem_Copy, Me.ToolStripMenuItem_Paste, Me.ToolStripMenuItem_Delete, Me.ToolStripMenuItem_SelectAll, Me.ToolStripSeparator1, Me.ToolStripMenuItem_Debugger, Me.ToolStripMenuItem_HightlightCustom, Me.ToolStripMenuItem_Comment, Me.ToolStripSeparator11, Me.ToolStripMenuItem_Outline})
         Me.ContextMenuStrip_RightClick.Name = "ContextMenuStrip1"
         Me.ContextMenuStrip_RightClick.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
-        Me.ContextMenuStrip_RightClick.Size = New System.Drawing.Size(256, 308)
+        Me.ContextMenuStrip_RightClick.Size = New System.Drawing.Size(256, 330)
         '
         'ToolStripMenuItem_Mark
         '
@@ -738,33 +739,33 @@ Partial Class FormMain
         '
         Me.ToolStripMenuItem_ViewToolbox.CheckOnClick = True
         Me.ToolStripMenuItem_ViewToolbox.Name = "ToolStripMenuItem_ViewToolbox"
-        Me.ToolStripMenuItem_ViewToolbox.Size = New System.Drawing.Size(207, 22)
+        Me.ToolStripMenuItem_ViewToolbox.Size = New System.Drawing.Size(208, 22)
         Me.ToolStripMenuItem_ViewToolbox.Text = "Toolbox"
         '
         'ToolStripMenuItem_ViewDetails
         '
         Me.ToolStripMenuItem_ViewDetails.CheckOnClick = True
         Me.ToolStripMenuItem_ViewDetails.Name = "ToolStripMenuItem_ViewDetails"
-        Me.ToolStripMenuItem_ViewDetails.Size = New System.Drawing.Size(207, 22)
+        Me.ToolStripMenuItem_ViewDetails.Size = New System.Drawing.Size(208, 22)
         Me.ToolStripMenuItem_ViewDetails.Text = "Details"
         '
         'ToolStripMenuItem_ViewMinimap
         '
         Me.ToolStripMenuItem_ViewMinimap.CheckOnClick = True
         Me.ToolStripMenuItem_ViewMinimap.Name = "ToolStripMenuItem_ViewMinimap"
-        Me.ToolStripMenuItem_ViewMinimap.Size = New System.Drawing.Size(207, 22)
+        Me.ToolStripMenuItem_ViewMinimap.Size = New System.Drawing.Size(208, 22)
         Me.ToolStripMenuItem_ViewMinimap.Text = "Document Minimap"
         '
         'ToolStripSeparator18
         '
         Me.ToolStripSeparator18.Name = "ToolStripSeparator18"
-        Me.ToolStripSeparator18.Size = New System.Drawing.Size(204, 6)
+        Me.ToolStripSeparator18.Size = New System.Drawing.Size(205, 6)
         '
         'ToolStripMenuItem_ViewProgressAni
         '
         Me.ToolStripMenuItem_ViewProgressAni.CheckOnClick = True
         Me.ToolStripMenuItem_ViewProgressAni.Name = "ToolStripMenuItem_ViewProgressAni"
-        Me.ToolStripMenuItem_ViewProgressAni.Size = New System.Drawing.Size(207, 22)
+        Me.ToolStripMenuItem_ViewProgressAni.Size = New System.Drawing.Size(208, 22)
         Me.ToolStripMenuItem_ViewProgressAni.Text = "Syntax parsing animation"
         '
         'ToolStripMenuItem_Tools
@@ -772,7 +773,7 @@ Partial Class FormMain
         Me.ToolStripMenuItem_Tools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_ToolsSettingsAndConfigs, Me.ToolStripSeparator3, Me.ToolStripMenuItem_ToolsFormatCode, Me.ToolStripMenuItem_ToolsConvertTabsSpaces, Me.ToolStripMenuItem_ToolsSearchReplace, Me.ToolStripMenuItem_ToolsAutocomplete, Me.ToolStripMenuItem_Bookmarks, Me.ToolStripSeparator4, Me.ToolStripMenuItem_ToolsShowInformation, Me.ToolStripMenuItem_ToolsClearInformationLog})
         Me.ToolStripMenuItem_Tools.Image = CType(resources.GetObject("ToolStripMenuItem_Tools.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_Tools.Name = "ToolStripMenuItem_Tools"
-        Me.ToolStripMenuItem_Tools.Size = New System.Drawing.Size(63, 20)
+        Me.ToolStripMenuItem_Tools.Size = New System.Drawing.Size(62, 20)
         Me.ToolStripMenuItem_Tools.Text = "T&ools"
         '
         'ToolStripMenuItem_ToolsSettingsAndConfigs
@@ -800,7 +801,7 @@ Partial Class FormMain
         Me.ToolStripMenuItem_ToolsFormatCodeIndent.Name = "ToolStripMenuItem_ToolsFormatCodeIndent"
         Me.ToolStripMenuItem_ToolsFormatCodeIndent.ShortcutKeyDisplayString = "Ctrl+R"
         Me.ToolStripMenuItem_ToolsFormatCodeIndent.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.R), System.Windows.Forms.Keys)
-        Me.ToolStripMenuItem_ToolsFormatCodeIndent.Size = New System.Drawing.Size(241, 22)
+        Me.ToolStripMenuItem_ToolsFormatCodeIndent.Size = New System.Drawing.Size(239, 22)
         Me.ToolStripMenuItem_ToolsFormatCodeIndent.Text = "Reindent Code"
         '
         'ToolStripMenuItem_ToolsFormatCodeTrim
@@ -808,7 +809,7 @@ Partial Class FormMain
         Me.ToolStripMenuItem_ToolsFormatCodeTrim.Name = "ToolStripMenuItem_ToolsFormatCodeTrim"
         Me.ToolStripMenuItem_ToolsFormatCodeTrim.ShortcutKeyDisplayString = "Ctrl+T"
         Me.ToolStripMenuItem_ToolsFormatCodeTrim.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.T), System.Windows.Forms.Keys)
-        Me.ToolStripMenuItem_ToolsFormatCodeTrim.Size = New System.Drawing.Size(241, 22)
+        Me.ToolStripMenuItem_ToolsFormatCodeTrim.Size = New System.Drawing.Size(239, 22)
         Me.ToolStripMenuItem_ToolsFormatCodeTrim.Text = "Trim ending whitespace"
         '
         'ToolStripMenuItem_ToolsConvertTabsSpaces
@@ -1017,7 +1018,7 @@ Partial Class FormMain
         Me.ToolStripMenuItem_Test.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_TestCurrent, Me.ToolStripMenuItem_TestAll, Me.ToolStripSeparator20, Me.ToolStripMenuItem_TestDebug})
         Me.ToolStripMenuItem_Test.Image = CType(resources.GetObject("ToolStripMenuItem_Test.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_Test.Name = "ToolStripMenuItem_Test"
-        Me.ToolStripMenuItem_Test.Size = New System.Drawing.Size(56, 20)
+        Me.ToolStripMenuItem_Test.Size = New System.Drawing.Size(55, 20)
         Me.ToolStripMenuItem_Test.Text = "&Test"
         '
         'ToolStripMenuItem_TestCurrent
@@ -1025,26 +1026,26 @@ Partial Class FormMain
         Me.ToolStripMenuItem_TestCurrent.Image = Global.BasicPawn.My.Resources.Resources.imageres_5343_16x16
         Me.ToolStripMenuItem_TestCurrent.Name = "ToolStripMenuItem_TestCurrent"
         Me.ToolStripMenuItem_TestCurrent.ShortcutKeys = System.Windows.Forms.Keys.F4
-        Me.ToolStripMenuItem_TestCurrent.Size = New System.Drawing.Size(161, 22)
+        Me.ToolStripMenuItem_TestCurrent.Size = New System.Drawing.Size(160, 22)
         Me.ToolStripMenuItem_TestCurrent.Text = "Test current"
         '
         'ToolStripMenuItem_TestAll
         '
         Me.ToolStripMenuItem_TestAll.Name = "ToolStripMenuItem_TestAll"
         Me.ToolStripMenuItem_TestAll.ShortcutKeys = CType((System.Windows.Forms.Keys.Shift Or System.Windows.Forms.Keys.F4), System.Windows.Forms.Keys)
-        Me.ToolStripMenuItem_TestAll.Size = New System.Drawing.Size(161, 22)
+        Me.ToolStripMenuItem_TestAll.Size = New System.Drawing.Size(160, 22)
         Me.ToolStripMenuItem_TestAll.Text = "Test all"
         '
         'ToolStripSeparator20
         '
         Me.ToolStripSeparator20.Name = "ToolStripSeparator20"
-        Me.ToolStripSeparator20.Size = New System.Drawing.Size(158, 6)
+        Me.ToolStripSeparator20.Size = New System.Drawing.Size(157, 6)
         '
         'ToolStripMenuItem_TestDebug
         '
         Me.ToolStripMenuItem_TestDebug.Image = Global.BasicPawn.My.Resources.Resources.imageres_5362_16x16
         Me.ToolStripMenuItem_TestDebug.Name = "ToolStripMenuItem_TestDebug"
-        Me.ToolStripMenuItem_TestDebug.Size = New System.Drawing.Size(161, 22)
+        Me.ToolStripMenuItem_TestDebug.Size = New System.Drawing.Size(160, 22)
         Me.ToolStripMenuItem_TestDebug.Text = "Debug"
         '
         'ToolStripMenuItem_Help
@@ -1067,42 +1068,42 @@ Partial Class FormMain
         '
         Me.ToolStripMenuItem_HelpControlsTabNav.Name = "ToolStripMenuItem_HelpControlsTabNav"
         Me.ToolStripMenuItem_HelpControlsTabNav.ShortcutKeyDisplayString = "Ctrl+PageUp; Ctrl+PageDown"
-        Me.ToolStripMenuItem_HelpControlsTabNav.Size = New System.Drawing.Size(465, 22)
+        Me.ToolStripMenuItem_HelpControlsTabNav.Size = New System.Drawing.Size(464, 22)
         Me.ToolStripMenuItem_HelpControlsTabNav.Text = "Tab Navigation"
         '
         'ToolStripMenuItem_HelpControlsDetailsNav
         '
         Me.ToolStripMenuItem_HelpControlsDetailsNav.Name = "ToolStripMenuItem_HelpControlsDetailsNav"
         Me.ToolStripMenuItem_HelpControlsDetailsNav.ShortcutKeyDisplayString = "Ctrl+Up; Ctrl+Down; Ctrl+Alt+Left; Ctrl+Alt+Right"
-        Me.ToolStripMenuItem_HelpControlsDetailsNav.Size = New System.Drawing.Size(465, 22)
+        Me.ToolStripMenuItem_HelpControlsDetailsNav.Size = New System.Drawing.Size(464, 22)
         Me.ToolStripMenuItem_HelpControlsDetailsNav.Text = "Details Tab Navigation"
         '
         'ToolStripMenuItem_HelpControlsDetailsPrimAction
         '
         Me.ToolStripMenuItem_HelpControlsDetailsPrimAction.Name = "ToolStripMenuItem_HelpControlsDetailsPrimAction"
         Me.ToolStripMenuItem_HelpControlsDetailsPrimAction.ShortcutKeyDisplayString = "Ctrl+Enter"
-        Me.ToolStripMenuItem_HelpControlsDetailsPrimAction.Size = New System.Drawing.Size(465, 22)
+        Me.ToolStripMenuItem_HelpControlsDetailsPrimAction.Size = New System.Drawing.Size(464, 22)
         Me.ToolStripMenuItem_HelpControlsDetailsPrimAction.Text = "Details Tab Primary Action"
         '
         'ToolStripMenuItem_HelpControlsDetailsSecAction
         '
         Me.ToolStripMenuItem_HelpControlsDetailsSecAction.Name = "ToolStripMenuItem_HelpControlsDetailsSecAction"
         Me.ToolStripMenuItem_HelpControlsDetailsSecAction.ShortcutKeyDisplayString = "Ctrl+Shift+Enter"
-        Me.ToolStripMenuItem_HelpControlsDetailsSecAction.Size = New System.Drawing.Size(465, 22)
+        Me.ToolStripMenuItem_HelpControlsDetailsSecAction.Size = New System.Drawing.Size(464, 22)
         Me.ToolStripMenuItem_HelpControlsDetailsSecAction.Text = "Details Tab Secondary Action"
         '
         'ToolStripMenuItem_HelpControlsMoveSelected
         '
         Me.ToolStripMenuItem_HelpControlsMoveSelected.Name = "ToolStripMenuItem_HelpControlsMoveSelected"
         Me.ToolStripMenuItem_HelpControlsMoveSelected.ShortcutKeyDisplayString = "Drag"
-        Me.ToolStripMenuItem_HelpControlsMoveSelected.Size = New System.Drawing.Size(465, 22)
+        Me.ToolStripMenuItem_HelpControlsMoveSelected.Size = New System.Drawing.Size(464, 22)
         Me.ToolStripMenuItem_HelpControlsMoveSelected.Text = "Move Selected"
         '
         'ToolStripMenuItem_HelpControlsCopySelected
         '
         Me.ToolStripMenuItem_HelpControlsCopySelected.Name = "ToolStripMenuItem_HelpControlsCopySelected"
         Me.ToolStripMenuItem_HelpControlsCopySelected.ShortcutKeyDisplayString = "Ctrl+Drag"
-        Me.ToolStripMenuItem_HelpControlsCopySelected.Size = New System.Drawing.Size(465, 22)
+        Me.ToolStripMenuItem_HelpControlsCopySelected.Size = New System.Drawing.Size(464, 22)
         Me.ToolStripMenuItem_HelpControlsCopySelected.Text = "Copy Selected"
         '
         'ToolStripSeparator15
@@ -1527,6 +1528,16 @@ Partial Class FormMain
         Me.ToolStripMenuItem_FindOptimalConfigAllTabs.Size = New System.Drawing.Size(250, 22)
         Me.ToolStripMenuItem_FindOptimalConfigAllTabs.Text = "Find optimal config for all tabs"
         '
+        'ToolStripMenuItem_PeekDefinition
+        '
+        Me.ToolStripMenuItem_PeekDefinition.Image = Global.BasicPawn.My.Resources.Resources.imageres_5320_16x16
+        Me.ToolStripMenuItem_PeekDefinition.Name = "ToolStripMenuItem_PeekDefinition"
+        Me.ToolStripMenuItem_PeekDefinition.ShortcutKeyDisplayString = "Ctrl+Alt+L"
+        Me.ToolStripMenuItem_PeekDefinition.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Alt) _
+            Or System.Windows.Forms.Keys.L), System.Windows.Forms.Keys)
+        Me.ToolStripMenuItem_PeekDefinition.Size = New System.Drawing.Size(255, 22)
+        Me.ToolStripMenuItem_PeekDefinition.Text = "Peek definition"
+        '
         'FormMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -1735,4 +1746,5 @@ Partial Class FormMain
     Friend WithEvents ToolStripMenuItem_EditLineDown As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_BookmarksRemoveLines As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_FindDefinition As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_PeekDefinition As ToolStripMenuItem
 End Class

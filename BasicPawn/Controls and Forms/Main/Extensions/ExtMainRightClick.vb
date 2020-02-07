@@ -31,6 +31,14 @@ Partial Public Class FormMain
     End Sub
 
     Private Sub ToolStripMenuItem_FindDefinition_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FindDefinition.Click
+        FindDefinition(False)
+    End Sub
+
+    Private Sub ToolStripMenuItem_PeekDefinition_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_PeekDefinition.Click
+        FindDefinition(True)
+    End Sub
+
+    Private Sub FindDefinition(bNewTab As Boolean)
         Try
             Dim sWord = g_ClassTextEditorTools.GetCaretWord(True, True, True)
             If (String.IsNullOrEmpty(sWord)) Then
@@ -46,13 +54,16 @@ Partial Public Class FormMain
                 Return
             End If
 
-
-            If (mDefinitions.Length = 1) Then
+            If (mDefinitions.Length > 0) Then
                 Dim mDefinition = mDefinitions(0)
 
                 'If not, check if file exist and search for tab
                 If (IO.File.Exists(mDefinition.sFile)) Then
-                    mTab = g_ClassTabControl.GetTabByFile(mDefinition.sFile)
+                    If (bNewTab) Then
+                        mTab = Nothing
+                    Else
+                        mTab = g_ClassTabControl.GetTabByFile(mDefinition.sFile)
+                    End If
 
                     'If that also fails, just open the file
                     If (mTab Is Nothing) Then
