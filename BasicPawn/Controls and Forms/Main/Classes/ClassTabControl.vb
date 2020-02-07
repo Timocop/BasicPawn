@@ -854,6 +854,8 @@ Public Class ClassTabControl
             AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_Source_SwitchToAutocompleteTab
             AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_MouseClick
 
+            AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_PeekDefinition
+
             AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.SelectionManager.SelectionChanged, AddressOf TextEditorControl_Source_UpdateInfo
             AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.PositionChanged, AddressOf TextEditorControl_Source_UpdateInfo
 
@@ -885,6 +887,8 @@ Public Class ClassTabControl
             RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.KeyPress, AddressOf TextEditorControl_Source_SwitchToAutocompleteTabKeyPress
             RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_Source_SwitchToAutocompleteTab
             RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_MouseClick
+
+            RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_PeekDefinition
 
             RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.SelectionManager.SelectionChanged, AddressOf TextEditorControl_Source_UpdateInfo
             RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.PositionChanged, AddressOf TextEditorControl_Source_UpdateInfo
@@ -1579,6 +1583,15 @@ Public Class ClassTabControl
             If (iOldIndex <> iNewIndex) Then
                 g_mFormMain.g_ClassTabControl.SelectTab(iNewIndex)
             End If
+        End Sub
+
+        Private Sub TextEditorControl_PeekDefinition(sender As Object, e As MouseEventArgs)
+            If (Control.ModifierKeys <> Keys.Control OrElse e.Button <> MouseButtons.Left) Then
+                Return
+            End If
+
+            'Assume we moved the caret after the click
+            g_mFormMain.ToolStripMenuItem_PeekDefinition.PerformClick()
         End Sub
 
         Private Sub SwitchToAutocompleteTab()
