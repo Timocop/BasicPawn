@@ -16,6 +16,7 @@
 
 
 Imports System.Text.RegularExpressions
+Imports ICSharpCode.TextEditor
 
 Public Class UCAutocomplete
     Private g_mFormMain As FormMain
@@ -197,6 +198,95 @@ Public Class UCAutocomplete
 
     Private Sub ListBox_Autocomplete_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListBox_Autocomplete.SelectedIndexChanged
         g_ClassToolTip.UpdateToolTip()
+    End Sub
+
+    Private Sub ContextMenuStrip_Autocomplete_Opening(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles ContextMenuStrip_Autocomplete.Opening
+        Dim mAutocomplete = GetSelectedItem()
+
+        ToolStripMenuItem_FindDefinition.Enabled = (mAutocomplete IsNot Nothing)
+        ToolStripMenuItem_PeekDefinition.Enabled = (mAutocomplete IsNot Nothing)
+    End Sub
+
+    Private Sub ListBox_Autocomplete_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles ListBox_Autocomplete.MouseDoubleClick
+        FindSelectedDefinition(False)
+    End Sub
+
+    Private Sub ToolStripMenuItem_FindDefinition_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FindDefinition.Click
+        FindSelectedDefinition(False)
+    End Sub
+
+    Private Sub ToolStripMenuItem_PeekDefinition_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_PeekDefinition.Click
+        FindSelectedDefinition(True)
+    End Sub
+
+    Private Sub FindSelectedDefinition(bForceNewTab As Boolean)
+        Try
+            Dim mAutocomplete = GetSelectedItem()
+            If (mAutocomplete Is Nothing) Then
+                Return
+            End If
+
+            Dim sWord As String = mAutocomplete.m_FunctionName
+
+            Dim mDefinition As ClassTextEditorTools.STRUC_DEFINITION_ITEM = Nothing
+            Select Case (g_mFormMain.g_ClassTextEditorTools.FindDefinition(mAutocomplete, mDefinition))
+                Case ClassTextEditorTools.ENUM_DEFINITION_ERROR_CODE.INVALID_FILE
+                    g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, String.Format("Could not find definition of '{0}'! Could not get current source file!", sWord), False, True, True)
+                    Return
+                Case ClassTextEditorTools.ENUM_DEFINITION_ERROR_CODE.INVALID_INPUT
+                    g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, String.Format("Could not find definition of '{0}'! Nothing valid selected!", sWord), False, True, True)
+                    Return
+                Case ClassTextEditorTools.ENUM_DEFINITION_ERROR_CODE.NO_RESULT
+                    g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, String.Format("Could not find definition of '{0}'!", sWord), False, True, True)
+                    Return
+            End Select
+
+            If (mDefinition IsNot Nothing) Then
+                'If not, check if file exist and search for tab
+                If (IO.File.Exists(mDefinition.sFile)) Then
+                    Dim mTab As ClassTabControl.SourceTabPage = Nothing
+
+                    If (Not bForceNewTab) Then
+                        mTab = g_mFormMain.g_ClassTabControl.GetTabByFile(mDefinition.sFile)
+                    End If
+
+                    'If that also fails, just open the file
+                    If (mTab Is Nothing) Then
+                        mTab = g_mFormMain.g_ClassTabControl.AddTab()
+                        mTab.OpenFileTab(mDefinition.sFile)
+                        mTab.SelectTab()
+                    End If
+
+                    Dim iLineNum As Integer = ClassTools.ClassMath.ClampInt(0, mTab.m_TextEditor.Document.TotalNumberOfLines - 1, mDefinition.iLine - 1)
+                    Dim iLineLen As Integer = mTab.m_TextEditor.Document.GetLineSegment(iLineNum).Length
+
+                    Dim mStartLoc As New TextLocation(0, iLineNum)
+                    Dim mEndLoc As New TextLocation(iLineLen, iLineNum)
+
+                    mTab.m_TextEditor.ActiveTextAreaControl.Caret.Position = mStartLoc
+                    mTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.ClearSelection()
+                    mTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.SetSelection(mStartLoc, mEndLoc)
+                    mTab.m_TextEditor.ActiveTextAreaControl.CenterViewOn(iLineNum, 10)
+
+                    If (Not mTab.m_IsActive) Then
+                        mTab.SelectTab()
+                    End If
+
+                    g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("Listing definitions of '{0}':", sWord))
+
+                    g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & String.Format("{0}({1}): {2}", mDefinition.sFile, mDefinition.iLine, mDefinition.mAutocomplete.m_FullFunctionString),
+                                                          New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_GOTO(mDefinition.sFile, {mDefinition.iLine}))
+
+                    g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("{0} definition found!", 1), False, True, True)
+                Else
+                    g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, String.Format("Could not find definition of '{0}'! Could not find file '{1}'!", sWord, mDefinition.sFile), False, True, True)
+                End If
+            Else
+                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, String.Format("Could not find definition of '{0}'!", sWord), False, True, True)
+            End If
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
     End Sub
 
     Private Sub CleanUp()
@@ -976,4 +1066,5 @@ Public Class UCAutocomplete
         End Sub
 #End Region
     End Class
+
 End Class

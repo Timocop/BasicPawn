@@ -32,6 +32,7 @@ Partial Class FormMain
         Me.ToolStripMenuItem_Mark = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_ListReferences = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_FindDefinition = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_PeekDefinition = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator6 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_Cut = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Copy = New System.Windows.Forms.ToolStripMenuItem()
@@ -200,7 +201,7 @@ Partial Class FormMain
         Me.ToolStripSeparator19 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_FindOptimalConfigActiveTab = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_FindOptimalConfigAllTabs = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripMenuItem_PeekDefinition = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator24 = New System.Windows.Forms.ToolStripSeparator()
         Me.ContextMenuStrip_RightClick.SuspendLayout()
         Me.MenuStrip_BasicPawn.SuspendLayout()
         Me.SplitContainer_ToolboxSourceAndDetails.Panel1.SuspendLayout()
@@ -219,10 +220,10 @@ Partial Class FormMain
         '
         'ContextMenuStrip_RightClick
         '
-        Me.ContextMenuStrip_RightClick.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_Mark, Me.ToolStripMenuItem_ListReferences, Me.ToolStripMenuItem_FindDefinition, Me.ToolStripMenuItem_PeekDefinition, Me.ToolStripSeparator6, Me.ToolStripMenuItem_Cut, Me.ToolStripMenuItem_Copy, Me.ToolStripMenuItem_Paste, Me.ToolStripMenuItem_Delete, Me.ToolStripMenuItem_SelectAll, Me.ToolStripSeparator1, Me.ToolStripMenuItem_Debugger, Me.ToolStripMenuItem_HightlightCustom, Me.ToolStripMenuItem_Comment, Me.ToolStripSeparator11, Me.ToolStripMenuItem_Outline})
+        Me.ContextMenuStrip_RightClick.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_Mark, Me.ToolStripSeparator24, Me.ToolStripMenuItem_ListReferences, Me.ToolStripMenuItem_FindDefinition, Me.ToolStripMenuItem_PeekDefinition, Me.ToolStripSeparator6, Me.ToolStripMenuItem_Cut, Me.ToolStripMenuItem_Copy, Me.ToolStripMenuItem_Paste, Me.ToolStripMenuItem_Delete, Me.ToolStripMenuItem_SelectAll, Me.ToolStripSeparator1, Me.ToolStripMenuItem_Debugger, Me.ToolStripMenuItem_HightlightCustom, Me.ToolStripMenuItem_Comment, Me.ToolStripSeparator11, Me.ToolStripMenuItem_Outline})
         Me.ContextMenuStrip_RightClick.Name = "ContextMenuStrip1"
         Me.ContextMenuStrip_RightClick.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
-        Me.ContextMenuStrip_RightClick.Size = New System.Drawing.Size(256, 330)
+        Me.ContextMenuStrip_RightClick.Size = New System.Drawing.Size(256, 314)
         '
         'ToolStripMenuItem_Mark
         '
@@ -249,6 +250,15 @@ Partial Class FormMain
             Or System.Windows.Forms.Keys.L), System.Windows.Forms.Keys)
         Me.ToolStripMenuItem_FindDefinition.Size = New System.Drawing.Size(255, 22)
         Me.ToolStripMenuItem_FindDefinition.Text = "Find definition"
+        '
+        'ToolStripMenuItem_PeekDefinition
+        '
+        Me.ToolStripMenuItem_PeekDefinition.Name = "ToolStripMenuItem_PeekDefinition"
+        Me.ToolStripMenuItem_PeekDefinition.ShortcutKeyDisplayString = "Ctrl+Alt+L"
+        Me.ToolStripMenuItem_PeekDefinition.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Alt) _
+            Or System.Windows.Forms.Keys.L), System.Windows.Forms.Keys)
+        Me.ToolStripMenuItem_PeekDefinition.Size = New System.Drawing.Size(255, 22)
+        Me.ToolStripMenuItem_PeekDefinition.Text = "Peek definition"
         '
         'ToolStripSeparator6
         '
@@ -1528,15 +1538,10 @@ Partial Class FormMain
         Me.ToolStripMenuItem_FindOptimalConfigAllTabs.Size = New System.Drawing.Size(250, 22)
         Me.ToolStripMenuItem_FindOptimalConfigAllTabs.Text = "Find optimal config for all tabs"
         '
-        'ToolStripMenuItem_PeekDefinition
+        'ToolStripSeparator24
         '
-        Me.ToolStripMenuItem_PeekDefinition.Image = Global.BasicPawn.My.Resources.Resources.imageres_5320_16x16
-        Me.ToolStripMenuItem_PeekDefinition.Name = "ToolStripMenuItem_PeekDefinition"
-        Me.ToolStripMenuItem_PeekDefinition.ShortcutKeyDisplayString = "Ctrl+Alt+L"
-        Me.ToolStripMenuItem_PeekDefinition.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Alt) _
-            Or System.Windows.Forms.Keys.L), System.Windows.Forms.Keys)
-        Me.ToolStripMenuItem_PeekDefinition.Size = New System.Drawing.Size(255, 22)
-        Me.ToolStripMenuItem_PeekDefinition.Text = "Peek definition"
+        Me.ToolStripSeparator24.Name = "ToolStripSeparator24"
+        Me.ToolStripSeparator24.Size = New System.Drawing.Size(252, 6)
         '
         'FormMain
         '
@@ -1747,4 +1752,5 @@ Partial Class FormMain
     Friend WithEvents ToolStripMenuItem_BookmarksRemoveLines As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_FindDefinition As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_PeekDefinition As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator24 As ToolStripSeparator
 End Class

@@ -30,6 +30,9 @@ Partial Class UCAutocomplete
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
         Me.SplitContainer1 = New System.Windows.Forms.SplitContainer()
         Me.ListBox_Autocomplete = New BasicPawn.ClassAutocompleteListBox()
+        Me.ContextMenuStrip_Autocomplete = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.ToolStripMenuItem_FindDefinition = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_PeekDefinition = New System.Windows.Forms.ToolStripMenuItem()
         Me.SplitContainer2 = New System.Windows.Forms.SplitContainer()
         Me.Panel_IntelliSense = New System.Windows.Forms.Panel()
         Me.TextEditorControlEx_IntelliSense = New BasicPawn.TextEditorControlEx()
@@ -40,6 +43,7 @@ Partial Class UCAutocomplete
         Me.SplitContainer1.Panel1.SuspendLayout()
         Me.SplitContainer1.Panel2.SuspendLayout()
         Me.SplitContainer1.SuspendLayout()
+        Me.ContextMenuStrip_Autocomplete.SuspendLayout()
         Me.SplitContainer2.Panel1.SuspendLayout()
         Me.SplitContainer2.Panel2.SuspendLayout()
         Me.SplitContainer2.SuspendLayout()
@@ -76,6 +80,7 @@ Partial Class UCAutocomplete
         'ListBox_Autocomplete
         '
         Me.ListBox_Autocomplete.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.ListBox_Autocomplete.ContextMenuStrip = Me.ContextMenuStrip_Autocomplete
         Me.ListBox_Autocomplete.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ListBox_Autocomplete.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable
         Me.ListBox_Autocomplete.FormattingEnabled = True
@@ -84,6 +89,26 @@ Partial Class UCAutocomplete
         Me.ListBox_Autocomplete.Name = "ListBox_Autocomplete"
         Me.ListBox_Autocomplete.Size = New System.Drawing.Size(376, 161)
         Me.ListBox_Autocomplete.TabIndex = 0
+        '
+        'ContextMenuStrip_Autocomplete
+        '
+        Me.ContextMenuStrip_Autocomplete.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_FindDefinition, Me.ToolStripMenuItem_PeekDefinition})
+        Me.ContextMenuStrip_Autocomplete.Name = "ContextMenuStrip_Autocomplete"
+        Me.ContextMenuStrip_Autocomplete.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
+        Me.ContextMenuStrip_Autocomplete.Size = New System.Drawing.Size(181, 70)
+        '
+        'ToolStripMenuItem_FindDefinition
+        '
+        Me.ToolStripMenuItem_FindDefinition.Image = Global.BasicPawn.My.Resources.Resources.imageres_5357_16x16
+        Me.ToolStripMenuItem_FindDefinition.Name = "ToolStripMenuItem_FindDefinition"
+        Me.ToolStripMenuItem_FindDefinition.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_FindDefinition.Text = "Find definition"
+        '
+        'ToolStripMenuItem_PeekDefinition
+        '
+        Me.ToolStripMenuItem_PeekDefinition.Name = "ToolStripMenuItem_PeekDefinition"
+        Me.ToolStripMenuItem_PeekDefinition.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_PeekDefinition.Text = "Peek definition"
         '
         'SplitContainer2
         '
@@ -193,6 +218,7 @@ Partial Class UCAutocomplete
         Me.SplitContainer1.Panel1.ResumeLayout(False)
         Me.SplitContainer1.Panel2.ResumeLayout(False)
         Me.SplitContainer1.ResumeLayout(False)
+        Me.ContextMenuStrip_Autocomplete.ResumeLayout(False)
         Me.SplitContainer2.Panel1.ResumeLayout(False)
         Me.SplitContainer2.Panel2.ResumeLayout(False)
         Me.SplitContainer2.ResumeLayout(False)
@@ -213,4 +239,7 @@ Partial Class UCAutocomplete
     Friend WithEvents TextEditorControlEx_Autocomplete As TextEditorControlEx
     Friend WithEvents TextEditorControlEx_IntelliSense As TextEditorControlEx
     Friend WithEvents ListBox_Autocomplete As ClassAutocompleteListBox
+    Friend WithEvents ContextMenuStrip_Autocomplete As ContextMenuStrip
+    Friend WithEvents ToolStripMenuItem_FindDefinition As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_PeekDefinition As ToolStripMenuItem
 End Class

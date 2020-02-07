@@ -502,7 +502,7 @@ Public Class UCObjectBrowser
                     Return
             End Select
 
-            If (mDefinition Is Nothing) Then
+            If (mDefinition IsNot Nothing) Then
                 'If not, check if file exist and search for tab
                 If (IO.File.Exists(mDefinition.sFile)) Then
                     Dim mTab = g_mFormMain.g_ClassTabControl.GetTabByFile(mDefinition.sFile)
