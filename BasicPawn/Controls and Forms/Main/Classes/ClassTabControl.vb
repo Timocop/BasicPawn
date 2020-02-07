@@ -1591,7 +1591,7 @@ Public Class ClassTabControl
             End If
 
             'Assume we moved the caret after the click
-            g_mFormMain.ToolStripMenuItem_PeekDefinition.PerformClick()
+            g_mFormMain.ToolStripMenuItem_FindDefinition.PerformClick()
         End Sub
 
         Private Sub SwitchToAutocompleteTab()

@@ -23,6 +23,18 @@ Partial Public Class FormMain
     End Sub
 
     Private Sub ToolStripMenuItem_ListReferences_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ListReferences.Click
+        FindReferences()
+    End Sub
+
+    Private Sub ToolStripMenuItem_FindDefinition_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FindDefinition.Click
+        FindDefinition(False)
+    End Sub
+
+    Private Sub ToolStripMenuItem_PeekDefinition_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_PeekDefinition.Click
+        FindDefinition(True)
+    End Sub
+
+    Private Sub FindReferences()
         Try
             Dim sWord As String = Nothing
             Dim mReferences As ClassTextEditorTools.STRUC_REFERENCE_ITEM() = Nothing
@@ -52,15 +64,7 @@ Partial Public Class FormMain
         End Try
     End Sub
 
-    Private Sub ToolStripMenuItem_FindDefinition_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FindDefinition.Click
-        FindDefinition(False)
-    End Sub
-
-    Private Sub ToolStripMenuItem_PeekDefinition_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_PeekDefinition.Click
-        FindDefinition(True)
-    End Sub
-
-    Private Sub FindDefinition(bNewTab As Boolean)
+    Private Sub FindDefinition(bForceNewTab As Boolean)
         Try
             Dim mTab = g_ClassTabControl.m_ActiveTab
 
@@ -75,6 +79,9 @@ Partial Public Class FormMain
                     Return
                 Case ClassTextEditorTools.ENUM_DEFINITION_ERROR_CODE.NO_RESULT
                     g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, String.Format("Could not find definition of '{0}'!", sWord), False, True, True)
+
+                    'If the definition is not found - like variables - list references.
+                    FindReferences()
                     Return
             End Select
 
@@ -83,7 +90,7 @@ Partial Public Class FormMain
 
                 'If not, check if file exist and search for tab
                 If (IO.File.Exists(mDefinition.sFile)) Then
-                    If (bNewTab) Then
+                    If (bForceNewTab) Then
                         mTab = Nothing
                     Else
                         mTab = g_ClassTabControl.GetTabByFile(mDefinition.sFile)
@@ -124,6 +131,9 @@ Partial Public Class FormMain
                 End If
             Else
                 g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, String.Format("Could not find definition of '{0}'!", sWord), False, True, True)
+
+                'If the definition is not found - like variables - list references.
+                FindReferences()
             End If
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
