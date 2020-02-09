@@ -388,6 +388,7 @@ Public Class ClassTabControl
             m_Tab(iIndex).m_FileCachedWriteDate = Now
 
             m_Tab(iIndex).g_ClassFoldings.ClearSavedFoldStates()
+            m_Tab(iIndex).g_ClassLineState.ClearStates()
 
             m_Tab(iIndex).m_ActiveConfig = Nothing
 
@@ -425,6 +426,7 @@ Public Class ClassTabControl
         m_Tab(iIndex).m_FileCachedWriteDate = m_Tab(iIndex).m_FileRealWriteDate
 
         m_Tab(iIndex).g_ClassFoldings.ClearSavedFoldStates()
+        m_Tab(iIndex).g_ClassLineState.ClearStates()
 
         m_Tab(iIndex).m_ActiveConfig = ClassConfigs.FindOptimalConfigForFile(sFile, False, Nothing)
 
