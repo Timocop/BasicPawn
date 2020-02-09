@@ -643,7 +643,16 @@ Public Class ClassTabControl
                     Continue For
                 End If
 
-                Select Case (MessageBox.Show(String.Format("'{0}' in tab '{1}' has been changed! Do you want to reload the tab?", m_Tab(i).m_File, i + 1), "File changed", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+                Dim sMessage As New Text.StringBuilder
+                sMessage.AppendFormat("'{0}' in tab '{1}' has been changed! Do you want to reload the tab?", m_Tab(i).m_File, i + 1)
+
+                If (m_Tab(i).m_Changed) Then
+                    sMessage.AppendLine()
+                    sMessage.AppendLine()
+                    sMessage.AppendFormat("The tab you are trying to reload has unsaved content and will be lost!")
+                End If
+
+                Select Case (MessageBox.Show(sMessage.ToString, "File changed", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
                     Case DialogResult.Yes
                         While True
                             If (Not OpenFileTab(i, m_Tab(i).m_File, True)) Then
