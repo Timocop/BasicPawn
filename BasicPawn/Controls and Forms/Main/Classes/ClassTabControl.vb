@@ -15,6 +15,7 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 
+Imports BasicPawn
 Imports ICSharpCode.TextEditor
 Imports ICSharpCode.TextEditor.Document
 
@@ -72,6 +73,8 @@ Public Class ClassTabControl
 
         g_mFormMain.TabControl_SourceTabs.TabPages.Clear()
         AddTab(True)
+
+        AddHandler g_mFormMain.g_ClassSyntaxParser.OnSyntaxParseSuccess, AddressOf OnTabSyntaxParseSuccess
     End Sub
 
     ReadOnly Property m_ActiveTab As SourceTabPage
@@ -721,8 +724,6 @@ Public Class ClassTabControl
     End Sub
 
     Public Sub FullUpdate(mTabs As SourceTabPage())
-        g_mFormMain.g_ClassSyntaxUpdater.StopThread()
-
         g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete("")
         g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip("")
 
@@ -737,8 +738,6 @@ Public Class ClassTabControl
             mTabs(i).UpdateFoldings()
         Next
 
-        g_mFormMain.g_mUCObjectBrowser.StartUpdate()
-
         RaiseEvent OnTabFullUpdate(mTabs)
 
         For i = 0 To mTabs.Length - 1
@@ -749,7 +748,8 @@ Public Class ClassTabControl
             g_mFormMain.g_ClassSyntaxParser.StartUpdateSchedule(ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS.ALL, mTabs(i), ClassSyntaxParser.ENUM_PARSE_OPTIONS_FLAGS.NOONE)
         Next
 
-        g_mFormMain.g_ClassSyntaxUpdater.StartThread()
+        g_mFormMain.g_mUCObjectBrowser.StartUpdate()
+        g_mFormMain.g_ClassSyntaxUpdater.ResetDelays()
 
         g_mFormMain.UpdateFormConfigText()
     End Sub
@@ -780,24 +780,57 @@ Public Class ClassTabControl
         g_bIgnoreOnTabSelected = False
     End Sub
 
+    Private Sub OnTabSyntaxParseSuccess(iUpdateType As ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS, sTabIdentifier As String, iOptionFlags As ClassSyntaxParser.ENUM_PARSE_OPTIONS_FLAGS)
+        Try
+            If ((iUpdateType And ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS.FULL_PARSE) = 0) Then
+                Return
+            End If
+
+            Dim sActiveTabIdentifier As String = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Identifier)
+            If (sActiveTabIdentifier <> sTabIdentifier) Then
+                Return
+            End If
+
+            ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                       g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.UpdateSyntax(ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE.AUTOCOMPLETE)
+                                                       g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.UpdateTextEditorSyntax()
+                                                   End Sub)
+
+            ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                   g_mFormMain.g_mUCObjectBrowser.StartUpdate()
+                                               End Sub)
+        Catch ex As Threading.ThreadAbortException
+            Throw
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLog(ex)
+        End Try
+    End Sub
+
     Public Class SourceTabPage
         Inherits TabPage
 
         Private g_mFormMain As FormMain
 
+        Enum ENUM_AUTOCOMPLETE_TYPE
+            FULL
+            VARIABLE
+        End Enum
+
         Private g_sText As String = "Unnamed"
         Private g_bTextChanged As Boolean = False
         Private g_sIdentifier As String = Guid.NewGuid.ToString
-
         Private g_sFile As String = ""
+
         Private g_mAutocompleteItems As New ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
-        Private g_mAutocompleteIdentifier As New Dictionary(Of String, String)
+        Private g_mAutocompleteIdentifier As New Dictionary(Of ClassSyntaxParser.ENUM_PARSE_TYPES, String)
         Private g_mIncludeFiles As New ClassSyncList(Of KeyValuePair(Of String, String)) '{sTabIdentifier-Ref, IncludeFile}
         Private g_mIncludeFilesFull As New ClassSyncList(Of KeyValuePair(Of String, String)) '{sTabIdentifier-Ref, IncludeFile}
+
         Private g_mActiveConfig As ClassConfigs.STRUC_CONFIG_ITEM = ClassConfigs.m_DefaultConfig
         Private g_iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = ClassSyntaxTools.ENUM_LANGUAGE_TYPE.SOURCEPAWN
-        Private g_bHasReferenceIncludes As Boolean = False
+
         Private g_mSourceTextEditor As TextEditorControlEx
+        Private g_bHasReferenceIncludes As Boolean = False
         Private g_bHandlersEnabled As Boolean = False
         Private g_mFileCachedWriteDate As Date
 
@@ -1048,7 +1081,7 @@ Public Class ClassTabControl
             End Get
         End Property
 
-        Public ReadOnly Property m_AutocompleteIdentifier As Dictionary(Of String, String)
+        Public ReadOnly Property m_AutocompleteIdentifier As Dictionary(Of ClassSyntaxParser.ENUM_PARSE_TYPES, String)
             Get
                 Return g_mAutocompleteIdentifier
             End Get
@@ -2088,6 +2121,10 @@ Public Class ClassTabControl
             If disposing Then
                 ' TODO: dispose managed state (managed objects).
                 RemoveHandler g_mFormMain.TabControl_SourceTabs.SelectedIndexChanged, AddressOf OnTabSelected
+
+                If (g_mFormMain.g_ClassSyntaxParser IsNot Nothing) Then
+                    RemoveHandler g_mFormMain.g_ClassSyntaxParser.OnSyntaxParseSuccess, AddressOf OnTabSyntaxParseSuccess
+                End If
 
                 If (g_mTimer IsNot Nothing) Then
                     g_mTimer.Dispose()

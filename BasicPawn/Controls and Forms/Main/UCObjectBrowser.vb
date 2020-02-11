@@ -66,9 +66,9 @@ Public Class UCObjectBrowser
         End Get
     End Property
 
-    Public Sub StartUpdate()
+    Public Function StartUpdate() As Boolean
         If (ClassThread.IsValid(g_mUpdateThread)) Then
-            Return
+            Return False
         End If
 
         g_mUpdateThread = New Threading.Thread(AddressOf UpdateTreeViewThread) With {
@@ -76,7 +76,9 @@ Public Class UCObjectBrowser
                 .IsBackground = True
             }
         g_mUpdateThread.Start()
-    End Sub
+
+        Return True
+    End Function
 
     Public Sub StopUpdate()
         ClassThread.Abort(g_mUpdateThread)

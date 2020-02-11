@@ -173,9 +173,9 @@ Public Class FormMain
         ' This call is required by the designer.
         InitializeComponent()
 
+        ' Add any initialization after the InitializeComponent() call. 
         InitializeFilter()
 
-        ' Add any initialization after the InitializeComponent() call. 
         ImageList_Details.Images.Clear()
         ImageList_Details.Images.Add("0", My.Resources.imageres_5333_16x16)
         ImageList_Details.Images.Add("1", My.Resources.imageres_5332_16x16)
@@ -184,6 +184,11 @@ Public Class FormMain
         TabPage_Autocomplete.ImageKey = "0"
         TabPage_Information.ImageKey = "1"
         TabPage_Bookmarks.ImageKey = "2"
+
+        'Some control init
+        g_bIgnoreComboBoxEvent = True
+        ToolStripComboBox_ToolsAutocompleteSyntax.SelectedIndex = 0
+        g_bIgnoreComboBoxEvent = False
 
         g_ClassTabControl = New ClassTabControl(Me)
         g_ClassSyntaxUpdater = New ClassSyntaxUpdater(Me)
@@ -266,11 +271,6 @@ Public Class FormMain
                                                              Application.ProductVersion,
                                                              If(sWineVersion IsNot Nothing, "| Running on Wine " & sWineVersion, ""),
                                                              If(bMonoRuntime, "| Running on Mono (Unsupported!)", "")).Trim
-
-        'Some control init
-        g_bIgnoreComboBoxEvent = True
-        ToolStripComboBox_ToolsAutocompleteSyntax.SelectedIndex = 0
-        g_bIgnoreComboBoxEvent = False
 
         'Clean tabs
         g_ClassTabControl.Init()
@@ -613,5 +613,31 @@ Public Class FormMain
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
+    End Sub
+
+    Private Sub Timer_SyntaxAnimation_Tick(sender As Object, e As EventArgs) Handles Timer_SyntaxAnimation.Tick
+        Try
+            Timer_SyntaxAnimation.Stop()
+
+            If (Not g_bFormPostLoad) Then
+                Return
+            End If
+
+            Dim iThreadCount = g_ClassSyntaxParser.GetAliveThreadCount()
+            If (ToolStripMenuItem_ViewProgressAni.Checked AndAlso iThreadCount > 0) Then
+                ToolStripStatusLabel_AutocompleteProgress.ToolTipText = String.Format("Parsing syntax {0}/{1}", iThreadCount, iThreadCount + g_ClassSyntaxParser.g_lFullSyntaxParseRequests.Count)
+                ToolStripStatusLabel_AutocompleteProgress.Visible = True
+            Else
+                If (ToolStripStatusLabel_AutocompleteProgress.Visible) Then
+                    ToolStripStatusLabel_AutocompleteProgress.ToolTipText = ""
+                    ToolStripStatusLabel_AutocompleteProgress.Visible = False
+                End If
+            End If
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        Finally
+            Timer_SyntaxAnimation.Start()
+        End Try
+
     End Sub
 End Class

@@ -20,6 +20,7 @@ Imports System.Text.RegularExpressions
 Public Class ClassSyntaxUpdater
     Private g_mFormMain As FormMain
     Private g_mSourceSyntaxUpdaterThread As Threading.Thread
+    Private g_bResetThreadDelays As Boolean = False
 
     Public Event OnSyntaxUpdate(bIsFormMainFocused As Boolean, iCaretOffset As Integer, mCaretPos As Point)
 
@@ -49,10 +50,15 @@ Public Class ClassSyntaxUpdater
         ClassThread.Abort(g_mSourceSyntaxUpdaterThread)
     End Sub
 
+    Public Sub ResetDelays()
+        g_bResetThreadDelays = True
+    End Sub
+
     ''' <summary>
     ''' The main thread to update all kinds of stuff.
     ''' </summary>
     Private Sub SourceSyntaxUpdater_Thread()
+        Static mRequestSyntaxParseDelay As New TimeSpan(0, 0, 0, 1, 0)
         Static mFullSyntaxParseDelay As New TimeSpan(0, 0, 1, 0, 0)
         Static mVarSyntaxParseDelay As New TimeSpan(0, 0, 0, 10, 0)
         Static mFoldingUpdateDelay As New TimeSpan(0, 0, 5)
@@ -60,128 +66,139 @@ Public Class ClassSyntaxUpdater
         Static mTextMinimapRefreshDelay As New TimeSpan(0, 0, 10)
         Static mMarkCaretWordDelay As New TimeSpan(0, 0, 1)
 
-        Dim dLastFullSyntaxParseDelay As Date = (Now + mFullSyntaxParseDelay)
-        Dim dLastVarSyntaxParseDelay As Date = (Now + mVarSyntaxParseDelay)
-        Dim dLastFoldingUpdateDelay As Date = (Now + mFoldingUpdateDelay)
-        Dim dLastTextMinimapDelay As Date = (Now + mTextMinimapDelay)
-        Dim dLastTextMinimapRefreshDelay As Date = (Now + mTextMinimapRefreshDelay)
-        Dim dLastMarkCaretWordDelay As Date = (Now + mMarkCaretWordDelay)
-
         While True
-            Threading.Thread.Sleep(ClassSettings.g_iSettingsThreadUpdateRate)
+            Dim dLastRequestSyntaxParseDelay As Date = (Now + mRequestSyntaxParseDelay)
+            Dim dLastFullSyntaxParseDelay As Date = (Now + mFullSyntaxParseDelay)
+            Dim dLastVarSyntaxParseDelay As Date = (Now + mVarSyntaxParseDelay)
+            Dim dLastFoldingUpdateDelay As Date = (Now + mFoldingUpdateDelay)
+            Dim dLastTextMinimapDelay As Date = (Now + mTextMinimapDelay)
+            Dim dLastTextMinimapRefreshDelay As Date = (Now + mTextMinimapRefreshDelay)
+            Dim dLastMarkCaretWordDelay As Date = (Now + mMarkCaretWordDelay)
 
-            Try
-                Dim bIsFormMainFocused As Boolean = (Not ClassSettings.g_iSettingsOnlyUpdateSyntaxWhenFocused OrElse ClassThread.ExecEx(Of Boolean)(g_mFormMain, Function() Form.ActiveForm IsNot Nothing))
+            g_bResetThreadDelays = False
 
-                Dim iCaretOffset As Integer = ClassThread.ExecEx(Of Integer)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Offset)
-                Dim mCaretPos As Point = ClassThread.ExecEx(Of Point)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.ScreenPosition)
+            While True
+                If (g_bResetThreadDelays) Then
+                    Exit While
+                End If
 
-                'Update Autocomplete
-                If (bIsFormMainFocused AndAlso g_mFormMain.g_ClassSyntaxParser.g_lFullSyntaxParseRequests.Count > 0) Then
-                    Dim sRequestedTabIdentifier As String = g_mFormMain.g_ClassSyntaxParser.g_lFullSyntaxParseRequests(0).sTabIdentifier
+                Threading.Thread.Sleep(ClassSettings.g_iSettingsThreadUpdateRate)
+
+                Try
+                    Dim bIsFormMainFocused As Boolean = (Not ClassSettings.g_iSettingsOnlyUpdateSyntaxWhenFocused OrElse ClassThread.ExecEx(Of Boolean)(g_mFormMain, Function() Form.ActiveForm IsNot Nothing))
+
                     Dim sActiveTabIdentifier As String = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Identifier)
+                    Dim iCaretOffset As Integer = ClassThread.ExecEx(Of Integer)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Offset)
+                    Dim mCaretPos As Point = ClassThread.ExecEx(Of Point)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.ScreenPosition)
 
-                    'Active tabs have higher priority to update
-                    If (g_mFormMain.g_ClassSyntaxParser.g_lFullSyntaxParseRequests.Exists(Function(a As ClassSyntaxParser.STRUC_SYNTAX_PARSE_TAB_REQUEST) a.sTabIdentifier = sActiveTabIdentifier)) Then
-                        sRequestedTabIdentifier = sActiveTabIdentifier
-                    End If
+                    'Update Autocomplete
+                    If (dLastRequestSyntaxParseDelay < Now AndAlso bIsFormMainFocused AndAlso g_mFormMain.g_ClassSyntaxParser.g_lFullSyntaxParseRequests.Count > 0) Then
+                        dLastRequestSyntaxParseDelay = (Now + mRequestSyntaxParseDelay)
 
-                    ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                           g_mFormMain.g_ClassSyntaxParser.StartUpdateSchedule(ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS.ALL, sRequestedTabIdentifier, ClassSyntaxParser.ENUM_PARSE_OPTIONS_FLAGS.NOONE)
-                                                       End Sub)
+                        Dim sRequestedTabIdentifier As String = g_mFormMain.g_ClassSyntaxParser.g_lFullSyntaxParseRequests(0).sTabIdentifier
 
-                ElseIf (bIsFormMainFocused AndAlso dLastFullSyntaxParseDelay < Now) Then
-                    dLastFullSyntaxParseDelay = (Now + mFullSyntaxParseDelay)
+                        'Active tabs have higher priority to update
+                        If (g_mFormMain.g_ClassSyntaxParser.g_lFullSyntaxParseRequests.Exists(Function(a As ClassSyntaxParser.STRUC_SYNTAX_PARSE_TAB_REQUEST) a.sTabIdentifier = sActiveTabIdentifier)) Then
+                            sRequestedTabIdentifier = sActiveTabIdentifier
+                        End If
 
-                    ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                           g_mFormMain.g_ClassSyntaxParser.StartUpdateSchedule(ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS.ALL)
-                                                       End Sub)
-                End If
-
-                'Update Variable Autocomplete
-                If (bIsFormMainFocused AndAlso dLastVarSyntaxParseDelay < Now) Then
-                    dLastVarSyntaxParseDelay = (Now + mVarSyntaxParseDelay)
-
-                    ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                           g_mFormMain.g_ClassSyntaxParser.StartUpdateSchedule(ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS.VAR_PARSE)
-                                                       End Sub)
-                End If
-
-                'Update Foldings
-                If (bIsFormMainFocused AndAlso dLastFoldingUpdateDelay < Now) Then
-                    dLastFoldingUpdateDelay = (Now + mFoldingUpdateDelay)
-
-                    ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                           g_mFormMain.g_ClassTabControl.m_ActiveTab.UpdateFoldings()
-                                                       End Sub)
-                End If
-
-                'Update document minimap
-                If (bIsFormMainFocused AndAlso dLastTextMinimapDelay < Now) Then
-                    dLastTextMinimapDelay = (Now + mTextMinimapDelay)
-
-                    ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                           g_mFormMain.g_mUCTextMinimap.UpdateText(False)
-                                                           g_mFormMain.g_mUCTextMinimap.UpdatePosition(False, True, False)
-                                                       End Sub)
-                End If
-
-                'Update document minimap refresh
-                If (bIsFormMainFocused AndAlso dLastTextMinimapRefreshDelay < Now) Then
-                    dLastTextMinimapRefreshDelay = (Now + mTextMinimapRefreshDelay)
-
-                    ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                           g_mFormMain.g_mUCTextMinimap.UpdateText(True)
-                                                           g_mFormMain.g_mUCTextMinimap.UpdatePosition(False, True, False)
-                                                       End Sub)
-                End If
-
-                'Update Autocomplete
-                Static iLastAutoupdateCaretOffset As Integer = -1
-                If (iLastAutoupdateCaretOffset <> iCaretOffset) Then
-                    iLastAutoupdateCaretOffset = iCaretOffset
-
-                    UpdateAutocomplete(iCaretOffset)
-                End If
-
-                'Update IntelliSense 
-                Static iLastIntelliSenseCaretOffset As Integer = -1
-                If (iLastIntelliSenseCaretOffset <> iCaretOffset) Then
-                    iLastIntelliSenseCaretOffset = iCaretOffset
-
-                    UpdateIntelliSense(iCaretOffset)
-                End If
-
-                'Hide Autocomplete & IntelliSense Tooltips when scrolling 
-                Static iLastToolTipCaretPos As Point
-                If (iLastToolTipCaretPos <> mCaretPos) Then
-                    iLastToolTipCaretPos = mCaretPos
-
-                    ClassThread.ExecAsync(g_mFormMain.g_mUCAutocomplete, Sub()
-                                                                             g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTipFormLocation()
-                                                                         End Sub)
-                End If
-
-                'Update caret word maker
-                Static iLastAutoupdateCaretOffset3 As Integer = -1
-                If (iLastAutoupdateCaretOffset3 <> iCaretOffset AndAlso dLastMarkCaretWordDelay < Now) Then
-                    iLastAutoupdateCaretOffset3 = iCaretOffset
-                    dLastMarkCaretWordDelay = (Now + mMarkCaretWordDelay)
-
-                    If (ClassSettings.g_iSettingsAutoMark) Then
                         ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                               g_mFormMain.g_ClassTextEditorTools.MarkCaretWord()
+                                                               g_mFormMain.g_ClassSyntaxParser.StartUpdateSchedule(ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS.ALL, sRequestedTabIdentifier, ClassSyntaxParser.ENUM_PARSE_OPTIONS_FLAGS.NOONE)
+                                                           End Sub)
+
+                    ElseIf (dLastFullSyntaxParseDelay < Now AndAlso bIsFormMainFocused) Then
+                        dLastFullSyntaxParseDelay = (Now + mFullSyntaxParseDelay)
+
+                        ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                               g_mFormMain.g_ClassSyntaxParser.StartUpdateSchedule(ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS.ALL)
                                                            End Sub)
                     End If
-                End If
 
-                RaiseEvent OnSyntaxUpdate(bIsFormMainFocused, iCaretOffset, mCaretPos)
-            Catch ex As Threading.ThreadAbortException
-                Throw
-            Catch ex As Exception
-                ClassExceptionLog.WriteToLogMessageBox(ex)
-                Threading.Thread.Sleep(5000)
-            End Try
+                    'Update Variable Autocomplete
+                    If (dLastVarSyntaxParseDelay < Now AndAlso bIsFormMainFocused) Then
+                        dLastVarSyntaxParseDelay = (Now + mVarSyntaxParseDelay)
+
+                        ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                               g_mFormMain.g_ClassSyntaxParser.StartUpdateSchedule(ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS.VAR_PARSE)
+                                                           End Sub)
+                    End If
+
+                    'Update Foldings
+                    If (dLastFoldingUpdateDelay < Now AndAlso bIsFormMainFocused) Then
+                        dLastFoldingUpdateDelay = (Now + mFoldingUpdateDelay)
+
+                        ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                               g_mFormMain.g_ClassTabControl.m_ActiveTab.UpdateFoldings()
+                                                           End Sub)
+                    End If
+
+                    'Update document minimap
+                    If (dLastTextMinimapDelay < Now AndAlso bIsFormMainFocused) Then
+                        dLastTextMinimapDelay = (Now + mTextMinimapDelay)
+
+                        ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                               g_mFormMain.g_mUCTextMinimap.UpdateText(False)
+                                                               g_mFormMain.g_mUCTextMinimap.UpdatePosition(False, True, False)
+                                                           End Sub)
+                    End If
+
+                    'Update document minimap refresh
+                    If (dLastTextMinimapRefreshDelay < Now AndAlso bIsFormMainFocused) Then
+                        dLastTextMinimapRefreshDelay = (Now + mTextMinimapRefreshDelay)
+
+                        ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                               g_mFormMain.g_mUCTextMinimap.UpdateText(True)
+                                                               g_mFormMain.g_mUCTextMinimap.UpdatePosition(False, True, False)
+                                                           End Sub)
+                    End If
+
+                    'Update Autocomplete
+                    Static iLastAutoupdateCaretOffset As Integer = -1
+                    If (iLastAutoupdateCaretOffset <> iCaretOffset) Then
+                        iLastAutoupdateCaretOffset = iCaretOffset
+
+                        UpdateAutocomplete(iCaretOffset)
+                    End If
+
+                    'Update IntelliSense 
+                    Static iLastIntelliSenseCaretOffset As Integer = -1
+                    If (iLastIntelliSenseCaretOffset <> iCaretOffset) Then
+                        iLastIntelliSenseCaretOffset = iCaretOffset
+
+                        UpdateIntelliSense(iCaretOffset)
+                    End If
+
+                    'Hide Autocomplete & IntelliSense Tooltips when scrolling 
+                    Static iLastToolTipCaretPos As Point
+                    If (iLastToolTipCaretPos <> mCaretPos) Then
+                        iLastToolTipCaretPos = mCaretPos
+
+                        ClassThread.ExecAsync(g_mFormMain.g_mUCAutocomplete, Sub()
+                                                                                 g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTipFormLocation()
+                                                                             End Sub)
+                    End If
+
+                    'Update caret word maker
+                    Static iLastAutoupdateCaretOffset3 As Integer = -1
+                    If (dLastMarkCaretWordDelay < Now AndAlso iLastAutoupdateCaretOffset3 <> iCaretOffset) Then
+                        iLastAutoupdateCaretOffset3 = iCaretOffset
+                        dLastMarkCaretWordDelay = (Now + mMarkCaretWordDelay)
+
+                        If (ClassSettings.g_iSettingsAutoMark) Then
+                            ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                                   g_mFormMain.g_ClassTextEditorTools.MarkCaretWord()
+                                                               End Sub)
+                        End If
+                    End If
+
+                    RaiseEvent OnSyntaxUpdate(bIsFormMainFocused, iCaretOffset, mCaretPos)
+                Catch ex As Threading.ThreadAbortException
+                    Throw
+                Catch ex As Exception
+                    ClassExceptionLog.WriteToLogMessageBox(ex)
+                    Threading.Thread.Sleep(5000)
+                End Try
+            End While
         End While
     End Sub
 

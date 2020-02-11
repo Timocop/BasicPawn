@@ -23,7 +23,7 @@ Imports System.Text.RegularExpressions
 
 Public Class ClassSyntaxParser
     Private g_mFormMain As FormMain
-    Private g_mSyntaxParsingThread As Threading.Thread
+    Private g_mSyntaxParsingThreads As New ClassSyncList(Of KeyValuePair(Of String, Threading.Thread))
     Private _lock As New Object
 
     Class STRUC_SYNTAX_PARSE_TAB_REQUEST
@@ -39,12 +39,18 @@ Public Class ClassSyntaxParser
     Public g_lFullSyntaxParseRequests As New ClassSyncList(Of STRUC_SYNTAX_PARSE_TAB_REQUEST)
 
     Public Event OnSyntaxParseStarted(iUpdateType As ENUM_PARSE_TYPE_FLAGS)
+    Public Event OnSyntaxParseSuccess(iUpdateType As ENUM_PARSE_TYPE_FLAGS, sTabIdentifier As String, iOptionFlags As ENUM_PARSE_OPTIONS_FLAGS)
     Public Event OnSyntaxParseEnd()
     Public Event OnSyntaxParseAbort()
 
     Public Sub New(f As FormMain)
         g_mFormMain = f
     End Sub
+
+    Enum ENUM_PARSE_TYPES
+        FULL
+        VARIABLE
+    End Enum
 
     Enum ENUM_PARSE_TYPE_FLAGS
         ALL = -1
@@ -75,41 +81,51 @@ Public Class ClassSyntaxParser
             sTabIdentifier = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Identifier
         End If
 
-        If (Not ClassThread.IsValid(g_mSyntaxParsingThread)) Then
-            g_mSyntaxParsingThread = New Threading.Thread(Sub()
-                                                              Try
-                                                                  SyncLock _lock
-                                                                      If ((iUpdateType And ENUM_PARSE_TYPE_FLAGS.FULL_PARSE) <> 0) Then
-                                                                          RaiseEvent OnSyntaxParseStarted(iUpdateType)
-                                                                          FullSyntaxParse_Thread(sTabIdentifier, iOptionFlags)
-                                                                      End If
-
-                                                                      If ((iUpdateType And ENUM_PARSE_TYPE_FLAGS.VAR_PARSE) <> 0) Then
-                                                                          RaiseEvent OnSyntaxParseStarted(iUpdateType)
-                                                                          VarSyntaxParse_Thread(sTabIdentifier, iOptionFlags)
-                                                                      End If
-
-                                                                      If ((iUpdateType And ENUM_PARSE_TYPE_FLAGS.FULL_PARSE) <> 0) Then
-                                                                          FullSyntaxParse_Post_Thread(sTabIdentifier, iOptionFlags)
-                                                                      End If
-                                                                  End SyncLock
-                                                              Catch ex As Threading.ThreadAbortException
-                                                                  Throw
-                                                              Catch ex As Exception
-                                                                  ClassExceptionLog.WriteToLog(ex)
-                                                              End Try
-
-                                                              RaiseEvent OnSyntaxParseEnd()
-                                                          End Sub) With {
-                .Priority = Threading.ThreadPriority.Lowest,
-                .IsBackground = True
-            }
-            g_mSyntaxParsingThread.Start()
-
-            Return True
-        Else
+        Dim iThreadCount = GetAliveThreadCount()
+        If (iThreadCount > Math.Max(Environment.ProcessorCount / 2, 0)) Then
             Return False
         End If
+
+        If (g_mSyntaxParsingThreads.Exists(Function(x As KeyValuePair(Of String, Threading.Thread))
+                                               Return x.Key = sTabIdentifier
+                                           End Function)) Then
+            Return False
+        End If
+
+        Dim mSyntaxParsingThread As New Threading.Thread(Sub()
+                                                             Try
+                                                                 Try
+                                                                     If ((iUpdateType And ENUM_PARSE_TYPE_FLAGS.FULL_PARSE) <> 0) Then
+                                                                         RaiseEvent OnSyntaxParseStarted(iUpdateType)
+                                                                         FullSyntaxParse_Thread(sTabIdentifier, iOptionFlags)
+                                                                     End If
+
+                                                                     If ((iUpdateType And ENUM_PARSE_TYPE_FLAGS.VAR_PARSE) <> 0) Then
+                                                                         RaiseEvent OnSyntaxParseStarted(iUpdateType)
+                                                                         VarSyntaxParse_Thread(sTabIdentifier, iOptionFlags)
+                                                                     End If
+
+                                                                     RaiseEvent OnSyntaxParseSuccess(iUpdateType, sTabIdentifier, iOptionFlags)
+                                                                 Catch ex As Threading.ThreadAbortException
+                                                                     Throw
+                                                                 Catch ex As Exception
+                                                                     ClassExceptionLog.WriteToLog(ex)
+                                                                 End Try
+
+                                                                 RaiseEvent OnSyntaxParseEnd()
+                                                             Finally
+                                                                 g_mSyntaxParsingThreads.RemoveAll(Function(x As KeyValuePair(Of String, Threading.Thread))
+                                                                                                       Return x.Key = sTabIdentifier
+                                                                                                   End Function)
+                                                             End Try
+                                                         End Sub) With {
+            .Priority = Threading.ThreadPriority.Lowest,
+            .IsBackground = True
+        }
+        g_mSyntaxParsingThreads.Add(New KeyValuePair(Of String, Threading.Thread)(sTabIdentifier, mSyntaxParsingThread))
+        mSyntaxParsingThread.Start()
+
+        Return True
     End Function
 
     ''' <summary>
@@ -154,13 +170,19 @@ Public Class ClassSyntaxParser
         End If
     End Function
 
+    Public Function GetAliveThreadCount() As Integer
+        Return g_mSyntaxParsingThreads.Count
+    End Function
+
     ''' <summary>
     ''' Stops the syntax parse thread
     ''' </summary>
     Public Sub StopUpdate()
         RaiseEvent OnSyntaxParseAbort()
 
-        ClassThread.Abort(g_mSyntaxParsingThread)
+        For Each mKey In g_mSyntaxParsingThreads.ToArray
+            ClassThread.Abort(mKey.Value)
+        Next
     End Sub
 
     Private Sub FullSyntaxParse_Thread(sTabIdentifier As String, iOptionFlags As ENUM_PARSE_OPTIONS_FLAGS)
@@ -169,11 +191,6 @@ Public Class ClassSyntaxParser
             Dim mTabs As ClassTabControl.SourceTabPage() = ClassThread.ExecEx(Of ClassTabControl.SourceTabPage())(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.GetAllTabs())
             Dim mRequestTab As ClassTabControl.SourceTabPage = ClassThread.ExecEx(Of ClassTabControl.SourceTabPage)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.GetTabByIdentifier(sTabIdentifier))
             If (mRequestTab Is Nothing) Then
-                ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                       g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.ToolTipText = ""
-                                                       g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = False
-                                                   End Sub)
-
                 g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_WARNING, "Syntax parsing failed! Could not get tab!", False, False)
                 Return
             End If
@@ -184,21 +201,9 @@ Public Class ClassSyntaxParser
             Dim mRequestedConfig As ClassConfigs.STRUC_CONFIG_ITEM = ClassThread.ExecEx(Of ClassConfigs.STRUC_CONFIG_ITEM)(mRequestTab, Function() mRequestTab.m_ActiveConfig)
 
             If (String.IsNullOrEmpty(sRequestedSourceFile) OrElse Not IO.File.Exists(sRequestedSourceFile)) Then
-                ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                       g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.ToolTipText = ""
-                                                       g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = False
-                                                   End Sub)
-
                 g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Syntax parsing failed! Could not get current source file!", False, False)
                 Return
             End If
-
-            ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                   If (g_mFormMain.ToolStripMenuItem_ViewProgressAni.Checked) Then
-                                                       g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.ToolTipText = "(Parsing: Full) " & IO.Path.GetFileName(sRequestedSourceFile)
-                                                       g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = True
-                                                   End If
-                                               End Sub)
 
             Dim mIncludeWatch As New Stopwatch
             Dim mLanguageWatch As New Stopwatch
@@ -368,19 +373,12 @@ Public Class ClassSyntaxParser
 
             'Only update syntax parse if files have changed.
             If ((iOptionFlags And ENUM_PARSE_OPTIONS_FLAGS.FORCE_UPDATE) = 0) Then
-                Const C_IDENTIFIERKEY = "FullSyntaxParse"
-
                 Dim sAutocompleteIdentifier As String = ""
-                If (CheckAutocompleteIdentifier(C_IDENTIFIERKEY, mRequestTab, sAutocompleteIdentifier)) Then
-                    ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                           g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.ToolTipText = ""
-                                                           g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = False
-                                                       End Sub)
-
+                If (CheckAutocompleteIdentifier(ENUM_PARSE_TYPES.FULL, mRequestTab, sAutocompleteIdentifier)) Then
                     Return
                 End If
 
-                mRequestTab.m_AutocompleteIdentifier(C_IDENTIFIERKEY) = sAutocompleteIdentifier
+                mRequestTab.m_AutocompleteIdentifier(ENUM_PARSE_TYPES.FULL) = sAutocompleteIdentifier
             End If
 
             'Add debugger placeholder variables and methods
@@ -441,20 +439,16 @@ Public Class ClassSyntaxParser
                             Next
                         Next
 
-                        Dim sDumpDir As String = IO.Path.Combine(Application.StartupPath, "DUMP")
-                        IO.Directory.CreateDirectory(sDumpDir)
-                        IO.File.WriteAllText(IO.Path.Combine(sDumpDir, "full.txt"), mSB.ToString)
+                        SyncLock _lock
+                            Dim sDumpDir As String = IO.Path.Combine(Application.StartupPath, "DUMP")
+                            IO.Directory.CreateDirectory(sDumpDir)
+                            IO.File.WriteAllText(IO.Path.Combine(sDumpDir, "full.txt"), mSB.ToString)
+                        End SyncLock
                     End If
 #End If
                 End Sub)
             mApplyWatch.Stop()
 
-            ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                   g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.ToolTipText = ""
-                                                   g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = False
-                                               End Sub)
-
-            lNewAutocompleteList = Nothing
 
 #If PROFILE_PARSING Then
             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_DEBUG, "Syntax parsing finished!")
@@ -469,11 +463,6 @@ Public Class ClassSyntaxParser
         Catch ex As Threading.ThreadAbortException
             Throw
         Catch ex As Exception
-            ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                   g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.ToolTipText = ""
-                                                   g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = False
-                                               End Sub)
-
             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Syntax parsing failed! " & ex.Message, False, False)
             ClassExceptionLog.WriteToLog(ex)
         End Try
@@ -483,10 +472,6 @@ Public Class ClassSyntaxParser
         Try
             Dim mRequestTab As ClassTabControl.SourceTabPage = ClassThread.ExecEx(Of ClassTabControl.SourceTabPage)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.GetTabByIdentifier(sTabIdentifier))
             If (mRequestTab Is Nothing) Then
-                ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                       g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.ToolTipText = ""
-                                                       g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = False
-                                                   End Sub)
                 Return
             End If
 
@@ -495,10 +480,6 @@ Public Class ClassSyntaxParser
             Dim sRequestedSource As String = ClassThread.ExecEx(Of String)(mRequestTab, Function() mRequestTab.m_TextEditor.Document.TextContent)
 
             If (String.IsNullOrEmpty(sRequestedSourceFile) OrElse Not IO.File.Exists(sRequestedSourceFile)) Then
-                ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                       g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.ToolTipText = ""
-                                                       g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = False
-                                                   End Sub)
                 Return
             End If
 
@@ -507,19 +488,9 @@ Public Class ClassSyntaxParser
 
             'No autocomplete entries?
             If (lOldVarAutocompleteList.Count < 1) Then
-                ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                       g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.ToolTipText = ""
-                                                       g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = False
-                                                   End Sub)
                 Return
             End If
 
-            ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                   If (g_mFormMain.ToolStripMenuItem_ViewProgressAni.Checked) Then
-                                                       g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.ToolTipText = "(Parsing: Variables) " & IO.Path.GetFileName(sRequestedSourceFile)
-                                                       g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = True
-                                                   End If
-                                               End Sub)
             Dim mPreWatch As New Stopwatch
             Dim mFinalizeWatch As New Stopwatch
             Dim mApplyWatch As New Stopwatch
@@ -529,18 +500,12 @@ Public Class ClassSyntaxParser
 
             'Only update syntax if files have changed.
             If ((iOptionFlags And ENUM_PARSE_OPTIONS_FLAGS.FORCE_UPDATE) = 0) Then
-                Const C_IDENTIFIERKEY = "VarSyntaxParse"
-
                 Dim sAutocompleteIdentifier As String = ""
-                If (CheckAutocompleteIdentifier(C_IDENTIFIERKEY, mRequestTab, sAutocompleteIdentifier)) Then
-                    ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                           g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.ToolTipText = ""
-                                                           g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = False
-                                                       End Sub)
+                If (CheckAutocompleteIdentifier(ENUM_PARSE_TYPES.VARIABLE, mRequestTab, sAutocompleteIdentifier)) Then
                     Return
                 End If
 
-                mRequestTab.m_AutocompleteIdentifier(C_IDENTIFIERKEY) = sAutocompleteIdentifier
+                mRequestTab.m_AutocompleteIdentifier(ENUM_PARSE_TYPES.VARIABLE) = sAutocompleteIdentifier
             End If
 
             'Parse variables and create methodmaps for variables
@@ -603,20 +568,16 @@ Public Class ClassSyntaxParser
                             Next
                         Next
 
-                        Dim sDumpDir As String = IO.Path.Combine(Application.StartupPath, "DUMP")
-                        IO.Directory.CreateDirectory(sDumpDir)
-                        IO.File.WriteAllText(IO.Path.Combine(sDumpDir, "var.txt"), mSB.ToString)
+                        SyncLock _lock
+                            Dim sDumpDir As String = IO.Path.Combine(Application.StartupPath, "DUMP")
+                            IO.Directory.CreateDirectory(sDumpDir)
+                            IO.File.WriteAllText(IO.Path.Combine(sDumpDir, "var.txt"), mSB.ToString)
+                        End SyncLock
                     End If
 #End If
                 End Sub)
             mApplyWatch.Stop()
 
-            ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                   g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.ToolTipText = ""
-                                                   g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = False
-                                               End Sub)
-
-            lNewVarAutocompleteList = Nothing
 
 #If PROFILE_PARSING Then
             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_DEBUG, "Variable syntax parsing finished!")
@@ -629,42 +590,12 @@ Public Class ClassSyntaxParser
         Catch ex As Threading.ThreadAbortException
             Throw
         Catch ex As Exception
-            ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                   g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.ToolTipText = ""
-                                                   g_mFormMain.ToolStripStatusLabel_AutocompleteProgress.Visible = False
-                                               End Sub)
-
             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Variable syntax parsing failed! " & ex.Message, False, False)
             ClassExceptionLog.WriteToLog(ex)
         End Try
     End Sub
 
-    Private Sub FullSyntaxParse_Post_Thread(sTabIdentifier As String, iOptionFlags As ENUM_PARSE_OPTIONS_FLAGS)
-        Try
-            Dim sActiveTabIdentifier As String = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Identifier)
-
-            'Dont spam the user with UI updates, only on active tabs
-            If (sActiveTabIdentifier = sTabIdentifier) Then
-                ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                       'Dont move this outside of invoke! Results in "File is already in use!" when aborting the thread... for some reason...
-                                                       g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.UpdateSyntax(ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE.AUTOCOMPLETE)
-                                                       g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.UpdateTextEditorSyntax()
-                                                   End Sub)
-
-                ClassThread.ExecAsync(g_mFormMain.g_mUCObjectBrowser, Sub()
-                                                                          g_mFormMain.g_mUCObjectBrowser.StartUpdate()
-                                                                      End Sub)
-            End If
-
-        Catch ex As Threading.ThreadAbortException
-            Throw
-        Catch ex As Exception
-            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Syntax parsing failed! " & ex.Message, False, False)
-            ClassExceptionLog.WriteToLog(ex)
-        End Try
-    End Sub
-
-    Private Function CheckAutocompleteIdentifier(sKey As String, mTab As ClassTabControl.SourceTabPage, ByRef sAutocompleteIdentifier As String) As Boolean
+    Public Function CheckAutocompleteIdentifier(iType As ENUM_PARSE_TYPES, mTab As ClassTabControl.SourceTabPage, ByRef sAutocompleteIdentifier As String) As Boolean
         sAutocompleteIdentifier = ""
 
         Dim lIdentifierBuilder As New List(Of String)
@@ -674,7 +605,7 @@ Public Class ClassSyntaxParser
         lIdentifierBuilder.Add(mTab.m_ActiveConfig.GetName)
         lIdentifierBuilder.Add(mTab.m_TextEditor.Document.TextContent)
 
-        For Each mInclude In mTab.m_IncludeFiles
+        For Each mInclude In mTab.m_IncludeFiles.ToArray
             'Add file path
             lIdentifierBuilder.Add(mInclude.Value)
 
@@ -689,8 +620,8 @@ Public Class ClassSyntaxParser
         sAutocompleteIdentifier = String.Join("|", lIdentifierBuilder.ToArray)
         sAutocompleteIdentifier = ClassTools.ClassCrypto.ClassHash.SHA256StringHash(sAutocompleteIdentifier)
 
-        If (mTab.m_AutocompleteIdentifier.ContainsKey(sKey)) Then
-            Return (mTab.m_AutocompleteIdentifier(sKey) = sAutocompleteIdentifier)
+        If (mTab.m_AutocompleteIdentifier.ContainsKey(iType)) Then
+            Return (mTab.m_AutocompleteIdentifier(iType) = sAutocompleteIdentifier)
         End If
 
         Return False

@@ -30,6 +30,7 @@ Partial Class FormMain
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormMain))
         Me.ContextMenuStrip_RightClick = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.ToolStripMenuItem_Mark = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator24 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_ListReferences = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_FindDefinition = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_PeekDefinition = New System.Windows.Forms.ToolStripMenuItem()
@@ -201,7 +202,7 @@ Partial Class FormMain
         Me.ToolStripSeparator19 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_FindOptimalConfigActiveTab = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_FindOptimalConfigAllTabs = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripSeparator24 = New System.Windows.Forms.ToolStripSeparator()
+        Me.Timer_SyntaxAnimation = New System.Windows.Forms.Timer(Me.components)
         Me.ContextMenuStrip_RightClick.SuspendLayout()
         Me.MenuStrip_BasicPawn.SuspendLayout()
         Me.SplitContainer_ToolboxSourceAndDetails.Panel1.SuspendLayout()
@@ -231,6 +232,11 @@ Partial Class FormMain
         Me.ToolStripMenuItem_Mark.Name = "ToolStripMenuItem_Mark"
         Me.ToolStripMenuItem_Mark.Size = New System.Drawing.Size(255, 22)
         Me.ToolStripMenuItem_Mark.Text = "Mark"
+        '
+        'ToolStripSeparator24
+        '
+        Me.ToolStripSeparator24.Name = "ToolStripSeparator24"
+        Me.ToolStripSeparator24.Size = New System.Drawing.Size(252, 6)
         '
         'ToolStripMenuItem_ListReferences
         '
@@ -1538,10 +1544,10 @@ Partial Class FormMain
         Me.ToolStripMenuItem_FindOptimalConfigAllTabs.Size = New System.Drawing.Size(250, 22)
         Me.ToolStripMenuItem_FindOptimalConfigAllTabs.Text = "Find optimal config for all tabs"
         '
-        'ToolStripSeparator24
+        'Timer_SyntaxAnimation
         '
-        Me.ToolStripSeparator24.Name = "ToolStripSeparator24"
-        Me.ToolStripSeparator24.Size = New System.Drawing.Size(252, 6)
+        Me.Timer_SyntaxAnimation.Enabled = True
+        Me.Timer_SyntaxAnimation.Interval = 1000
         '
         'FormMain
         '
@@ -1753,4 +1759,5 @@ Partial Class FormMain
     Friend WithEvents ToolStripMenuItem_FindDefinition As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_PeekDefinition As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator24 As ToolStripSeparator
+    Friend WithEvents Timer_SyntaxAnimation As Timer
 End Class
