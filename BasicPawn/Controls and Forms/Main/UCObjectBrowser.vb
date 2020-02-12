@@ -401,6 +401,35 @@ Public Class UCObjectBrowser
         End Try
     End Sub
 
+    Private Sub ToolStripMenuItem_OpenSources_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_OpenSources.Click
+        Try
+            g_mFormMain.g_ClassTabControl.BeginUpdate()
+
+            For Each mNode As TreeNode In TreeView_ObjectBrowser.Nodes
+                If (Not Array.Exists(g_sSourceMainFileExt, Function(s As String) mNode.Text.ToLower.EndsWith(s.ToLower))) Then
+                    Continue For
+                End If
+
+                For Each mInclude In g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IncludesGroup.m_IncludeFiles.ToArray
+                    If (IO.Path.GetFileName(mInclude.Value).ToLower <> mNode.Text.ToLower) Then
+                        Continue For
+                    End If
+
+                    Dim mTab = g_mFormMain.g_ClassTabControl.GetTabByFile(mInclude.Value)
+                    If (mTab IsNot Nothing) Then
+                        mTab.SelectTab(ClassTabControl.DEFAULT_SELECT_TAB_DELAY)
+                    Else
+                        mTab = g_mFormMain.g_ClassTabControl.AddTab()
+                        mTab.OpenFileTab(mInclude.Value)
+                        mTab.SelectTab(ClassTabControl.DEFAULT_SELECT_TAB_DELAY)
+                    End If
+                Next
+            Next
+        Finally
+            g_mFormMain.g_ClassTabControl.EndUpdate()
+        End Try
+    End Sub
+
     Private Sub ToolStripMenuItem_ListReferences_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ListReferences.Click
         Try
             If (TreeView_ObjectBrowser.SelectedNode Is Nothing OrElse TreeView_ObjectBrowser.SelectedNode.Level <> 2) Then
