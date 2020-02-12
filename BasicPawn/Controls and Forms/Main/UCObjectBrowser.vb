@@ -38,27 +38,14 @@ Public Class UCObjectBrowser
         ' Add any initialization after the InitializeComponent() call.  
         TreeView_ObjectBrowser.TreeViewNodeSorter = New ClassAutocompleteTreeNodeSorter
 
+        AddHandler g_mFormMain.g_ClassSyntaxParser.OnSyntaxParseSuccess, AddressOf OnSyntaxParseSuccess
+
         ClassTools.ClassForms.SetDoubleBuffering(TreeView_ObjectBrowser, True)
     End Sub
 
     Private Sub UCObjectBrowser_Load(sender As Object, e As EventArgs) Handles Me.Load
         g_bLoaded = True
     End Sub
-
-    Class ClassAutocompleteTreeNodeSorter
-        Implements IComparer
-
-        Public Function Compare(x As Object, y As Object) As Integer Implements IComparer.Compare
-            Dim mTreeNodeX = DirectCast(x, TreeNode)
-            Dim mTreeNodeY = DirectCast(y, TreeNode)
-
-            If (TypeOf mTreeNodeX.Tag Is String AndAlso TypeOf mTreeNodeY.Tag Is String) Then
-                Return CStr(mTreeNodeX.Tag).CompareTo(CStr(mTreeNodeY.Tag))
-            End If
-
-            Return 1
-        End Function
-    End Class
 
     ReadOnly Property m_IsUpdating As Boolean
         Get
@@ -254,18 +241,26 @@ Public Class UCObjectBrowser
         End Try
     End Sub
 
-    Class ClassTreeNodeAutocomplete
-        Inherits TreeNode
+    Private Sub OnSyntaxParseSuccess(iUpdateType As ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS, sTabIdentifier As String, iOptionFlags As ClassSyntaxParser.ENUM_PARSE_OPTIONS_FLAGS)
+        Try
+            If ((iUpdateType And ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS.FULL_PARSE) = 0) Then
+                Return
+            End If
 
-        Public Sub New(sText As String, sKey As String, mAutocomplete As ClassSyntaxTools.STRUC_AUTOCOMPLETE)
-            Me.Text = sText
-            Me.Name = sKey
+            Dim sActiveTabIdentifier As String = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Identifier)
+            If (sActiveTabIdentifier <> sTabIdentifier) Then
+                Return
+            End If
 
-            m_Autocomplete = mAutocomplete
-        End Sub
-
-        ReadOnly Property m_Autocomplete As ClassSyntaxTools.STRUC_AUTOCOMPLETE
-    End Class
+            ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                   g_mFormMain.g_mUCObjectBrowser.StartUpdate()
+                                               End Sub)
+        Catch ex As Threading.ThreadAbortException
+            Throw
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLog(ex)
+        End Try
+    End Sub
 
     Private Sub TextboxWatermark_Search_KeyDown(sender As Object, e As KeyEventArgs) Handles TextboxWatermark_Search.KeyDown
         If (e.KeyCode <> Keys.Enter) Then
@@ -613,6 +608,40 @@ Public Class UCObjectBrowser
             TreeView_ObjectBrowser.ResumeLayout()
         End Try
     End Sub
+
+    Private Sub CleanUp()
+        If (g_mFormMain.g_ClassSyntaxParser IsNot Nothing) Then
+            RemoveHandler g_mFormMain.g_ClassSyntaxParser.OnSyntaxParseSuccess, AddressOf OnSyntaxParseSuccess
+        End If
+    End Sub
+
+    Class ClassAutocompleteTreeNodeSorter
+        Implements IComparer
+
+        Public Function Compare(x As Object, y As Object) As Integer Implements IComparer.Compare
+            Dim mTreeNodeX = DirectCast(x, TreeNode)
+            Dim mTreeNodeY = DirectCast(y, TreeNode)
+
+            If (TypeOf mTreeNodeX.Tag Is String AndAlso TypeOf mTreeNodeY.Tag Is String) Then
+                Return CStr(mTreeNodeX.Tag).CompareTo(CStr(mTreeNodeY.Tag))
+            End If
+
+            Return 1
+        End Function
+    End Class
+
+    Class ClassTreeNodeAutocomplete
+        Inherits TreeNode
+
+        Public Sub New(sText As String, sKey As String, mAutocomplete As ClassSyntaxTools.STRUC_AUTOCOMPLETE)
+            Me.Text = sText
+            Me.Name = sKey
+
+            m_Autocomplete = mAutocomplete
+        End Sub
+
+        ReadOnly Property m_Autocomplete As ClassSyntaxTools.STRUC_AUTOCOMPLETE
+    End Class
 
     Class ClassTreeViewFix
         Inherits TreeView

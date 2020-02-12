@@ -6,6 +6,10 @@ Partial Class UCObjectBrowser
     <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
+            If (disposing) Then
+                CleanUp()
+            End If
+
             If disposing AndAlso components IsNot Nothing Then
                 components.Dispose()
             End If

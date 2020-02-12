@@ -747,7 +747,6 @@ Public Class ClassTabControl
             g_mFormMain.g_ClassSyntaxParser.StartUpdateSchedule(ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS.ALL, mTabs(i), ClassSyntaxParser.ENUM_PARSE_OPTIONS_FLAGS.NOONE)
         Next
 
-        g_mFormMain.g_mUCObjectBrowser.StartUpdate()
         g_mFormMain.g_ClassSyntaxUpdater.ResetDelays()
 
         g_mFormMain.UpdateFormConfigText()
@@ -791,12 +790,8 @@ Public Class ClassTabControl
             End If
 
             ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                       g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.UpdateSyntax(ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE.AUTOCOMPLETE)
-                                                       g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.UpdateTextEditorSyntax()
-                                                   End Sub)
-
-            ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                   g_mFormMain.g_mUCObjectBrowser.StartUpdate()
+                                                   g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.UpdateSyntax(ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE.AUTOCOMPLETE)
+                                                   g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.UpdateTextEditorSyntax()
                                                End Sub)
         Catch ex As Threading.ThreadAbortException
             Throw
@@ -809,11 +804,6 @@ Public Class ClassTabControl
         Inherits TabPage
 
         Private g_mFormMain As FormMain
-
-        Enum ENUM_AUTOCOMPLETE_TYPE
-            FULL
-            VARIABLE
-        End Enum
 
         Private g_sText As String = "Unnamed"
         Private g_bTextChanged As Boolean = False
