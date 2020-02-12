@@ -646,7 +646,7 @@ Public Class FormSearch
                 Next
 
             Case ENUM_SEARCH_TYPE.ALL_INCLUDES
-                Dim mIncludeFiles = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IncludeFiles.ToArray
+                Dim mIncludeFiles = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IncludesGroup.m_IncludeFiles.ToArray
 
                 For Each mInclude In mIncludeFiles
                     If (Not IO.File.Exists(mInclude.Value)) Then

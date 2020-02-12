@@ -87,7 +87,6 @@ Public Class ClassSyntaxUpdater
                 Try
                     Dim bIsFormMainFocused As Boolean = (Not ClassSettings.g_iSettingsOnlyUpdateSyntaxWhenFocused OrElse ClassThread.ExecEx(Of Boolean)(g_mFormMain, Function() Form.ActiveForm IsNot Nothing))
 
-                    Dim sActiveTabIdentifier As String = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Identifier)
                     Dim iCaretOffset As Integer = ClassThread.ExecEx(Of Integer)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Offset)
                     Dim mCaretPos As Point = ClassThread.ExecEx(Of Point)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.ScreenPosition)
 
@@ -95,6 +94,7 @@ Public Class ClassSyntaxUpdater
                     If (dLastRequestSyntaxParseDelay < Now AndAlso bIsFormMainFocused AndAlso g_mFormMain.g_ClassSyntaxParser.g_lFullSyntaxParseRequests.Count > 0) Then
                         dLastRequestSyntaxParseDelay = (Now + mRequestSyntaxParseDelay)
 
+                        Dim sActiveTabIdentifier As String = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Identifier)
                         Dim sRequestedTabIdentifier As String = g_mFormMain.g_ClassSyntaxParser.g_lFullSyntaxParseRequests(0).sTabIdentifier
 
                         'Active tabs have higher priority to update

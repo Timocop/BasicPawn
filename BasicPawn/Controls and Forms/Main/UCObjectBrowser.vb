@@ -112,7 +112,7 @@ Public Class UCObjectBrowser
                 Dim mActiveTab As ClassTabControl.SourceTabPage = ClassThread.ExecEx(Of ClassTabControl.SourceTabPage)(Me, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab)
 
                 Dim lAutocompleteList As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
-                lAutocompleteList.AddRange(mActiveTab.m_AutocompleteItems.ToArray)
+                lAutocompleteList.AddRange(mActiveTab.m_AutocompleteGroup.m_AutocompleteItems.ToArray)
 
                 If (True) Then
                     Dim mFileNodes As TreeNodeCollection = ClassThread.ExecEx(Of TreeNodeCollection)(TreeView_ObjectBrowser, Function() TreeView_ObjectBrowser.Nodes)
@@ -384,7 +384,7 @@ Public Class UCObjectBrowser
             Try
                 g_mFormMain.g_ClassTabControl.BeginUpdate()
 
-                For Each mInclude In g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IncludeFiles.ToArray
+                For Each mInclude In g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IncludesGroup.m_IncludeFiles.ToArray
                     If (IO.Path.GetFileName(mInclude.Value).ToLower <> TreeView_ObjectBrowser.SelectedNode.Text.ToLower) Then
                         Continue For
                     End If

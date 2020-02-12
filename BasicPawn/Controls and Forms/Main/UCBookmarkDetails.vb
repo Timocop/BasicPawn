@@ -540,7 +540,7 @@ Public Class UCBookmarkDetails
                     Continue While
                 End If
 
-                For Each mInclude In g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IncludeFilesFull.ToArray
+                For Each mInclude In g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IncludesGroup.m_IncludeFilesFull.ToArray
                     If (String.IsNullOrEmpty(mInclude.Value) OrElse Not IO.File.Exists(mInclude.Value)) Then
                         Continue For
                     End If
@@ -648,7 +648,7 @@ Public Class UCBookmarkDetails
         Public Function GetBookmarks(mTab As ClassTabControl.SourceTabPage) As STRUC_BOOKMARK()
             Dim lBookmarks As New List(Of STRUC_BOOKMARK)
 
-            For Each mItem In mTab.m_IncludeFiles.ToArray
+            For Each mItem In mTab.m_IncludesGroup.m_IncludeFiles.ToArray
                 lBookmarks.AddRange(g_mBookmarkCache.FindAll(Function(x As STRUC_BOOKMARK) x.sFile.ToLower = mItem.Value.ToLower))
             Next
 

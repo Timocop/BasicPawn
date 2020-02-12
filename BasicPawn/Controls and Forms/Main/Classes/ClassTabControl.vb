@@ -15,7 +15,6 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 
-Imports BasicPawn
 Imports ICSharpCode.TextEditor
 Imports ICSharpCode.TextEditor.Document
 
@@ -386,8 +385,8 @@ Public Class ClassTabControl
             m_Tab(iIndex).m_TextEditor.Document.TextContent = ""
 
             m_Tab(iIndex).m_Changed = False
-            m_Tab(iIndex).m_AutocompleteItems.Clear()
-            m_Tab(iIndex).m_IncludeFiles.Clear()
+            m_Tab(iIndex).m_AutocompleteGroup.m_AutocompleteItems.Clear()
+            m_Tab(iIndex).m_IncludesGroup.m_IncludeFiles.Clear()
             m_Tab(iIndex).m_FileCachedWriteDate = Now
 
             m_Tab(iIndex).g_ClassFoldings.ClearSavedFoldStates()
@@ -424,8 +423,8 @@ Public Class ClassTabControl
         m_Tab(iIndex).m_TextEditor.Document.TextContent = sFileText
 
         m_Tab(iIndex).m_Changed = False
-        m_Tab(iIndex).m_AutocompleteItems.Clear()
-        m_Tab(iIndex).m_IncludeFiles.Clear()
+        m_Tab(iIndex).m_AutocompleteGroup.m_AutocompleteItems.Clear()
+        m_Tab(iIndex).m_IncludesGroup.m_IncludeFiles.Clear()
         m_Tab(iIndex).m_FileCachedWriteDate = m_Tab(iIndex).m_FileRealWriteDate
 
         m_Tab(iIndex).g_ClassFoldings.ClearSavedFoldStates()
@@ -821,10 +820,8 @@ Public Class ClassTabControl
         Private g_sIdentifier As String = Guid.NewGuid.ToString
         Private g_sFile As String = ""
 
-        Private g_mAutocompleteItems As New ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
-        Private g_mAutocompleteIdentifier As New Dictionary(Of ClassSyntaxParser.ENUM_PARSE_TYPES, String)
-        Private g_mIncludeFiles As New ClassSyncList(Of KeyValuePair(Of String, String)) '{sTabIdentifier-Ref, IncludeFile}
-        Private g_mIncludeFilesFull As New ClassSyncList(Of KeyValuePair(Of String, String)) '{sTabIdentifier-Ref, IncludeFile}
+        Private g_mAutocompleteGroup As STRUC_AUTOCOMPLETE_GROUP
+        Private g_mIncludesGroup As STRUC_INCLUDES_GROUP
 
         Private g_mActiveConfig As ClassConfigs.STRUC_CONFIG_ITEM = ClassConfigs.m_DefaultConfig
         Private g_iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = ClassSyntaxTools.ENUM_LANGUAGE_TYPE.SOURCEPAWN
@@ -840,6 +837,8 @@ Public Class ClassTabControl
         Public Sub New(f As FormMain)
             g_mFormMain = f
 
+            g_mAutocompleteGroup = New STRUC_AUTOCOMPLETE_GROUP(Me)
+            g_mIncludesGroup = New STRUC_INCLUDES_GROUP(Me)
             g_ClassFoldings = New ClassFoldings(Me)
             g_ClassLineState = New ClassLineState(Me)
 
@@ -850,10 +849,13 @@ Public Class ClassTabControl
 
         Public Sub New(f As FormMain, sText As String)
             g_mFormMain = f
-            m_Title = sText
 
+            g_mAutocompleteGroup = New STRUC_AUTOCOMPLETE_GROUP(Me)
+            g_mIncludesGroup = New STRUC_INCLUDES_GROUP(Me)
             g_ClassFoldings = New ClassFoldings(Me)
             g_ClassLineState = New ClassLineState(Me)
+
+            m_Title = sText
 
             CreateTextEditor()
 
@@ -862,11 +864,14 @@ Public Class ClassTabControl
 
         Public Sub New(f As FormMain, sText As String, bChanged As Boolean)
             g_mFormMain = f
-            m_Title = sText
-            m_Changed = bChanged
 
+            g_mAutocompleteGroup = New STRUC_AUTOCOMPLETE_GROUP(Me)
+            g_mIncludesGroup = New STRUC_INCLUDES_GROUP(Me)
             g_ClassFoldings = New ClassFoldings(Me)
             g_ClassLineState = New ClassLineState(Me)
+
+            m_Title = sText
+            m_Changed = bChanged
 
             CreateTextEditor()
 
@@ -1075,27 +1080,15 @@ Public Class ClassTabControl
             End Get
         End Property
 
-        Public ReadOnly Property m_AutocompleteItems As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
+        Public ReadOnly Property m_AutocompleteGroup As STRUC_AUTOCOMPLETE_GROUP
             Get
-                Return g_mAutocompleteItems
+                Return g_mAutocompleteGroup
             End Get
         End Property
 
-        Public ReadOnly Property m_AutocompleteIdentifier As Dictionary(Of ClassSyntaxParser.ENUM_PARSE_TYPES, String)
+        Public ReadOnly Property m_IncludesGroup As STRUC_INCLUDES_GROUP
             Get
-                Return g_mAutocompleteIdentifier
-            End Get
-        End Property
-
-        Public ReadOnly Property m_IncludeFiles As ClassSyncList(Of KeyValuePair(Of String, String))
-            Get
-                Return g_mIncludeFiles
-            End Get
-        End Property
-
-        Public ReadOnly Property m_IncludeFilesFull As ClassSyncList(Of KeyValuePair(Of String, String))
-            Get
-                Return g_mIncludeFilesFull
+                Return g_mIncludesGroup
             End Get
         End Property
 
@@ -1203,6 +1196,89 @@ Public Class ClassTabControl
             g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTipFormLocation()
             g_mFormMain.g_mUCTextMinimap.UpdatePosition(False, True, True)
         End Sub
+
+        Public Class STRUC_AUTOCOMPLETE_GROUP
+            Private g_mSourceTabPage As ClassTabControl.SourceTabPage
+
+            Private g_mAutocompleteItems As New ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
+            Private g_mAutocompleteIdentifier As New Dictionary(Of ENUM_AUTOCOMPLETE_TYPE, String)
+
+            Enum ENUM_AUTOCOMPLETE_TYPE
+                FULL
+                VARIABLE
+            End Enum
+
+            Public Sub New(mTab As ClassTabControl.SourceTabPage)
+                g_mSourceTabPage = mTab
+            End Sub
+
+            ReadOnly Property m_AutocompleteItems As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
+                Get
+                    Return g_mAutocompleteItems
+                End Get
+            End Property
+
+            ReadOnly Property m_AutocompleteIdentifier As Dictionary(Of ENUM_AUTOCOMPLETE_TYPE, String)
+                Get
+                    Return g_mAutocompleteIdentifier
+                End Get
+            End Property
+
+            Public Function CheckAutocompleteIdentifier(iType As ENUM_AUTOCOMPLETE_TYPE, ByRef sAutocompleteIdentifier As String) As Boolean
+                sAutocompleteIdentifier = ""
+
+                Dim lIdentifierBuilder As New List(Of String)
+
+                'Add tab information
+                lIdentifierBuilder.Add(CStr(g_mSourceTabPage.m_Language))
+                lIdentifierBuilder.Add(g_mSourceTabPage.m_ActiveConfig.GetName)
+                lIdentifierBuilder.Add(g_mSourceTabPage.m_TextEditor.Document.TextContent)
+
+                For Each mInclude In g_mSourceTabPage.m_IncludesGroup.m_IncludeFiles.ToArray
+                    'Add file path
+                    lIdentifierBuilder.Add(mInclude.Value)
+
+                    If (Not IO.File.Exists(mInclude.Value)) Then
+                        Continue For
+                    End If
+
+                    'Add file last write time
+                    lIdentifierBuilder.Add(IO.File.GetLastWriteTime(mInclude.Value).ToString)
+                Next
+
+                sAutocompleteIdentifier = String.Join("|", lIdentifierBuilder.ToArray)
+                sAutocompleteIdentifier = ClassTools.ClassCrypto.ClassHash.SHA256StringHash(sAutocompleteIdentifier)
+
+                If (m_AutocompleteIdentifier.ContainsKey(iType)) Then
+                    Return (m_AutocompleteIdentifier(iType) = sAutocompleteIdentifier)
+                End If
+
+                Return False
+            End Function
+        End Class
+
+        Public Class STRUC_INCLUDES_GROUP
+            Private g_mSourceTabPage As ClassTabControl.SourceTabPage
+
+            Private g_mIncludeFiles As New ClassSyncList(Of KeyValuePair(Of String, String)) '{sTabIdentifier-Ref, IncludeFile}
+            Private g_mIncludeFilesFull As New ClassSyncList(Of KeyValuePair(Of String, String)) '{sTabIdentifier-Ref, IncludeFile}
+
+            Public Sub New(mTab As ClassTabControl.SourceTabPage)
+                g_mSourceTabPage = mTab
+            End Sub
+
+            ReadOnly Property m_IncludeFiles As ClassSyncList(Of KeyValuePair(Of String, String))
+                Get
+                    Return g_mIncludeFiles
+                End Get
+            End Property
+
+            ReadOnly Property m_IncludeFilesFull As ClassSyncList(Of KeyValuePair(Of String, String))
+                Get
+                    Return g_mIncludeFilesFull
+                End Get
+            End Property
+        End Class
 
 #Region "Drag & Drop"
         Private Sub TextEditorControl_Source_DragEnter(sender As Object, e As DragEventArgs)

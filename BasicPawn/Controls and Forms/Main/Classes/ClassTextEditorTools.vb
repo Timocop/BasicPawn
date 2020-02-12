@@ -147,7 +147,7 @@ Public Class ClassTextEditorTools
             Return ENUM_REFERENCE_ERROR_CODE.INVALID_FILE
         End If
 
-        Dim mIncludeFiles = mTab.m_IncludeFiles.ToArray
+        Dim mIncludeFiles = mTab.m_IncludesGroup.m_IncludeFiles.ToArray
 
         Dim lRefList As New List(Of STRUC_REFERENCE_ITEM)
 
@@ -247,7 +247,7 @@ Public Class ClassTextEditorTools
 
         Dim sFile As String = mTab.m_File
         Dim lFoundAutocomplete As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
-        Dim mAutocompleteArray As ClassSyntaxTools.STRUC_AUTOCOMPLETE() = mTab.m_AutocompleteItems.ToArray
+        Dim mAutocompleteArray As ClassSyntaxTools.STRUC_AUTOCOMPLETE() = mTab.m_AutocompleteGroup.m_AutocompleteItems.ToArray
 
         If (lFoundAutocomplete.Count < 1) Then
             For i = 0 To mAutocompleteArray.Length - 1

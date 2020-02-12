@@ -47,11 +47,6 @@ Public Class ClassSyntaxParser
         g_mFormMain = f
     End Sub
 
-    Enum ENUM_PARSE_TYPES
-        FULL
-        VARIABLE
-    End Enum
-
     Enum ENUM_PARSE_TYPE_FLAGS
         ALL = -1
         FULL_PARSE = (1 << 0)
@@ -240,12 +235,12 @@ Public Class ClassSyntaxParser
                         Continue For
                     End If
 
-                    If (mTabs(i).m_IncludeFiles.Count < 1) Then
+                    If (mTabs(i).m_IncludesGroup.m_IncludeFiles.Count < 1) Then
                         Continue For
                     End If
 
                     Dim sOtherTabIdentifier As String = mTabs(i).m_Identifier
-                    Dim mIncludes = mTabs(i).m_IncludeFiles.ToArray
+                    Dim mIncludes = mTabs(i).m_IncludesGroup.m_IncludeFiles.ToArray
                     Dim bIsMain As Boolean = False
 
                     Dim j As Integer
@@ -292,16 +287,16 @@ Public Class ClassSyntaxParser
             End If
 
             'Save includes first, they wont be modified below this anyways
-            mRequestTab.m_IncludeFiles.DoSync(
+            mRequestTab.m_IncludesGroup.m_IncludeFiles.DoSync(
                 Sub()
-                    mRequestTab.m_IncludeFiles.Clear()
-                    mRequestTab.m_IncludeFiles.AddRange(lIncludeFiles.ToArray)
+                    mRequestTab.m_IncludesGroup.m_IncludeFiles.Clear()
+                    mRequestTab.m_IncludesGroup.m_IncludeFiles.AddRange(lIncludeFiles.ToArray)
                 End Sub)
 
-            mRequestTab.m_IncludeFilesFull.DoSync(
+            mRequestTab.m_IncludesGroup.m_IncludeFilesFull.DoSync(
                 Sub()
-                    mRequestTab.m_IncludeFilesFull.Clear()
-                    mRequestTab.m_IncludeFilesFull.AddRange(lIncludeFilesFull.ToArray)
+                    mRequestTab.m_IncludesGroup.m_IncludeFilesFull.Clear()
+                    mRequestTab.m_IncludesGroup.m_IncludeFilesFull.AddRange(lIncludeFilesFull.ToArray)
                 End Sub)
             mIncludeWatch.Stop()
 
@@ -374,11 +369,11 @@ Public Class ClassSyntaxParser
             'Only update syntax parse if files have changed.
             If ((iOptionFlags And ENUM_PARSE_OPTIONS_FLAGS.FORCE_UPDATE) = 0) Then
                 Dim sAutocompleteIdentifier As String = ""
-                If (CheckAutocompleteIdentifier(ENUM_PARSE_TYPES.FULL, mRequestTab, sAutocompleteIdentifier)) Then
+                If (mRequestTab.m_AutocompleteGroup.CheckAutocompleteIdentifier(ClassTabControl.SourceTabPage.STRUC_AUTOCOMPLETE_GROUP.ENUM_AUTOCOMPLETE_TYPE.FULL, sAutocompleteIdentifier)) Then
                     Return
                 End If
 
-                mRequestTab.m_AutocompleteIdentifier(ENUM_PARSE_TYPES.FULL) = sAutocompleteIdentifier
+                mRequestTab.m_AutocompleteGroup.m_AutocompleteIdentifier(ClassTabControl.SourceTabPage.STRUC_AUTOCOMPLETE_GROUP.ENUM_AUTOCOMPLETE_TYPE.FULL) = sAutocompleteIdentifier
             End If
 
             'Add debugger placeholder variables and methods
@@ -418,10 +413,10 @@ Public Class ClassSyntaxParser
 
             'Save everything and update syntax 
             mApplyWatch.Start()
-            mRequestTab.m_AutocompleteItems.DoSync(
+            mRequestTab.m_AutocompleteGroup.m_AutocompleteItems.DoSync(
                 Sub()
-                    mRequestTab.m_AutocompleteItems.RemoveAll(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = 0)
-                    mRequestTab.m_AutocompleteItems.AddRange(lNewAutocompleteList.ToArray)
+                    mRequestTab.m_AutocompleteGroup.m_AutocompleteItems.RemoveAll(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = 0)
+                    mRequestTab.m_AutocompleteGroup.m_AutocompleteItems.AddRange(lNewAutocompleteList.ToArray)
 
 #If DUMP_TO_FILE Then
                     If (True) Then
@@ -484,7 +479,7 @@ Public Class ClassSyntaxParser
             End If
 
             Dim lOldVarAutocompleteList As New ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
-            lOldVarAutocompleteList.AddRange(mRequestTab.m_AutocompleteItems.ToArray)
+            lOldVarAutocompleteList.AddRange(mRequestTab.m_AutocompleteGroup.m_AutocompleteItems.ToArray)
 
             'No autocomplete entries?
             If (lOldVarAutocompleteList.Count < 1) Then
@@ -501,11 +496,11 @@ Public Class ClassSyntaxParser
             'Only update syntax if files have changed.
             If ((iOptionFlags And ENUM_PARSE_OPTIONS_FLAGS.FORCE_UPDATE) = 0) Then
                 Dim sAutocompleteIdentifier As String = ""
-                If (CheckAutocompleteIdentifier(ENUM_PARSE_TYPES.VARIABLE, mRequestTab, sAutocompleteIdentifier)) Then
+                If (mRequestTab.m_AutocompleteGroup.CheckAutocompleteIdentifier(ClassTabControl.SourceTabPage.STRUC_AUTOCOMPLETE_GROUP.ENUM_AUTOCOMPLETE_TYPE.VARIABLE, sAutocompleteIdentifier)) Then
                     Return
                 End If
 
-                mRequestTab.m_AutocompleteIdentifier(ENUM_PARSE_TYPES.VARIABLE) = sAutocompleteIdentifier
+                mRequestTab.m_AutocompleteGroup.m_AutocompleteIdentifier(ClassTabControl.SourceTabPage.STRUC_AUTOCOMPLETE_GROUP.ENUM_AUTOCOMPLETE_TYPE.VARIABLE) = sAutocompleteIdentifier
             End If
 
             'Parse variables and create methodmaps for variables
@@ -515,7 +510,7 @@ Public Class ClassSyntaxParser
                 If (ClassSettings.g_iSettingsAutocompleteVarParseType = ClassSettings.ENUM_VAR_PARSE_TYPE.TAB) Then
                     mParser.ProcessVarSyntaxPre(g_mFormMain, sRequestedSource, sRequestedSourceFile, sRequestedSourceFile, lNewVarAutocompleteList, lOldVarAutocompleteList, iRequestedLangauge)
                 Else
-                    Dim mIncludeFiles = mRequestTab.m_IncludeFiles.ToArray
+                    Dim mIncludeFiles = mRequestTab.m_IncludesGroup.m_IncludeFiles.ToArray
                     For i = 0 To mIncludeFiles.Length - 1
                         Select Case (ClassSettings.g_iSettingsAutocompleteVarParseType)
                             Case ClassSettings.ENUM_VAR_PARSE_TYPE.TAB_AND_INC
@@ -547,10 +542,10 @@ Public Class ClassSyntaxParser
             End If
 
             mApplyWatch.Start()
-            mRequestTab.m_AutocompleteItems.DoSync(
+            mRequestTab.m_AutocompleteGroup.m_AutocompleteItems.DoSync(
                 Sub()
-                    mRequestTab.m_AutocompleteItems.RemoveAll(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> 0)
-                    mRequestTab.m_AutocompleteItems.AddRange(lNewVarAutocompleteList.ToArray)
+                    mRequestTab.m_AutocompleteGroup.m_AutocompleteItems.RemoveAll(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> 0)
+                    mRequestTab.m_AutocompleteGroup.m_AutocompleteItems.AddRange(lNewVarAutocompleteList.ToArray)
 
 #If DUMP_TO_FILE Then
                     If (True) Then
@@ -594,38 +589,6 @@ Public Class ClassSyntaxParser
             ClassExceptionLog.WriteToLog(ex)
         End Try
     End Sub
-
-    Public Function CheckAutocompleteIdentifier(iType As ENUM_PARSE_TYPES, mTab As ClassTabControl.SourceTabPage, ByRef sAutocompleteIdentifier As String) As Boolean
-        sAutocompleteIdentifier = ""
-
-        Dim lIdentifierBuilder As New List(Of String)
-
-        'Add tab information
-        lIdentifierBuilder.Add(CStr(mTab.m_Language))
-        lIdentifierBuilder.Add(mTab.m_ActiveConfig.GetName)
-        lIdentifierBuilder.Add(mTab.m_TextEditor.Document.TextContent)
-
-        For Each mInclude In mTab.m_IncludeFiles.ToArray
-            'Add file path
-            lIdentifierBuilder.Add(mInclude.Value)
-
-            If (Not IO.File.Exists(mInclude.Value)) Then
-                Continue For
-            End If
-
-            'Add file last write time
-            lIdentifierBuilder.Add(IO.File.GetLastWriteTime(mInclude.Value).ToString)
-        Next
-
-        sAutocompleteIdentifier = String.Join("|", lIdentifierBuilder.ToArray)
-        sAutocompleteIdentifier = ClassTools.ClassCrypto.ClassHash.SHA256StringHash(sAutocompleteIdentifier)
-
-        If (mTab.m_AutocompleteIdentifier.ContainsKey(iType)) Then
-            Return (mTab.m_AutocompleteIdentifier(iType) = sAutocompleteIdentifier)
-        End If
-
-        Return False
-    End Function
 
     ''' <summary>
     ''' Gets all include files from a file

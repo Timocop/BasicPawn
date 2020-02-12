@@ -124,7 +124,7 @@ Public Class UCAutocomplete
         End If
 
 
-        Dim mAutocompleteArray As ClassSyntaxTools.STRUC_AUTOCOMPLETE() = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_AutocompleteItems.ToArray
+        Dim mAutocompleteArray As ClassSyntaxTools.STRUC_AUTOCOMPLETE() = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_AutocompleteGroup.m_AutocompleteItems.ToArray
         For i = 0 To mAutocompleteArray.Length - 1
             If (mAutocompleteArray(i).m_Data.ContainsKey("EnumHidden")) Then
                 Continue For
@@ -373,7 +373,7 @@ Public Class UCAutocomplete
                 Dim bPrintedInfo As Boolean = False
                 Dim iPrintedItems As Integer = 0
                 Dim iMaxPrintedItems As Integer = 3
-                Dim mAutocompleteArray As ClassSyntaxTools.STRUC_AUTOCOMPLETE() = g_AutocompleteUC.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_AutocompleteItems.ToArray
+                Dim mAutocompleteArray As ClassSyntaxTools.STRUC_AUTOCOMPLETE() = g_AutocompleteUC.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_AutocompleteGroup.m_AutocompleteItems.ToArray
                 For i = 0 To mAutocompleteArray.Length - 1
                     If ((mAutocompleteArray(i).m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> 0 AndAlso Not bIsMethodMap) Then
                         Continue For
@@ -673,17 +673,17 @@ Public Class UCAutocomplete
                         End If
 
                         'Reverse order so we get first funenum/typeset
-                        For i = mTab.m_AutocompleteItems.Count - 1 To 0 Step -1
-                            If (Not mTab.m_AutocompleteItems(i).m_FunctionName.Equals(sCaretFunctionAccessor, If(ClassSettings.g_iSettingsAutocompleteCaseSensitive, StringComparison.Ordinal, StringComparison.OrdinalIgnoreCase))) Then
+                        For i = mTab.m_AutocompleteGroup.m_AutocompleteItems.Count - 1 To 0 Step -1
+                            If (Not mTab.m_AutocompleteGroup.m_AutocompleteItems(i).m_FunctionName.Equals(sCaretFunctionAccessor, If(ClassSettings.g_iSettingsAutocompleteCaseSensitive, StringComparison.Ordinal, StringComparison.OrdinalIgnoreCase))) Then
                                 Continue For
                             End If
 
                             'TODO: Add better funcenum, typeset detection? Since they can have multiple sets of callbacks.
                             Select Case (True)
-                                Case (mTab.m_AutocompleteItems(i).m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG) <> 0,
-                                            (mTab.m_AutocompleteItems(i).m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM) <> 0,
-                                             (mTab.m_AutocompleteItems(i).m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF) <> 0,
-                                             (mTab.m_AutocompleteItems(i).m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) <> 0
+                                Case (mTab.m_AutocompleteGroup.m_AutocompleteItems(i).m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG) <> 0,
+                                            (mTab.m_AutocompleteGroup.m_AutocompleteItems(i).m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM) <> 0,
+                                             (mTab.m_AutocompleteGroup.m_AutocompleteItems(i).m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPEDEF) <> 0,
+                                             (mTab.m_AutocompleteGroup.m_AutocompleteItems(i).m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.TYPESET) <> 0
                                     'Remove caret function name from text editor
                                     mTab.m_TextEditor.ActiveTextAreaControl.Caret.Column = iPosition - sCaretFunctionFullNameLeft.Length
                                     mTab.m_TextEditor.Document.Remove(iOffset - sCaretFunctionFullNameLeft.Length, sCaretFunctionFullName.Length)
@@ -700,7 +700,7 @@ Public Class UCAutocomplete
                                     Dim sIndentation As String = ClassSettings.BuildIndentation(1, ClassSettings.ENUM_INDENTATION_TYPES.USE_SETTINGS)
 
                                     Dim sPublicFunction As String
-                                    sPublicFunction = mTab.m_AutocompleteItems(i).m_FunctionString.Trim
+                                    sPublicFunction = mTab.m_AutocompleteGroup.m_AutocompleteItems(i).m_FunctionString.Trim
                                     sPublicFunction = Regex.Replace(sPublicFunction, "\b" & Regex.Escape(sCaretFunctionAccessor) & "\b\s*\(", sCallbackName & "(", RegexOptions.IgnoreCase)
 
                                     Dim sNewInput As String
