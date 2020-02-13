@@ -149,7 +149,7 @@ Public Class UCProjectBrowser
 
                 Dim mInfo = DirectCast(mListViewItemData.g_mData("Info"), STRUC_PROJECT_FILE_INFO)
 
-                mListViewItem.SubItems(0).Text = IO.Path.GetFileName(mInfo.sFile)
+                mListViewItem.SubItems(0).Text = CreateTreeFilename(mInfo.sFile, mInfo.bIsRelative)
                 mListViewItem.SubItems(1).Text = mInfo.sFile
                 mListViewItem.SubItems(2).Text = If(String.IsNullOrEmpty(mInfo.sPackedData), "-", "Yes")
                 mListViewItem.SubItems(3).Text = If(mInfo.bIsRelative, "Yes", "-")
@@ -167,7 +167,7 @@ Public Class UCProjectBrowser
 
         Public Sub AddFile(mInfo As STRUC_PROJECT_FILE_INFO)
             Dim mListViewItemData As New ClassListViewItemData(New String() {
-                                                               IO.Path.GetFileName(mInfo.sFile),
+                                                               CreateTreeFilename(mInfo.sFile, mInfo.bIsRelative),
                                                                mInfo.sFile,
                                                                If(String.IsNullOrEmpty(mInfo.sPackedData), "-", "Yes"),
                                                                If(mInfo.bIsRelative, "Yes", "-")}) With {
@@ -189,7 +189,7 @@ Public Class UCProjectBrowser
 
         Public Sub InsertFile(iIndex As Integer, mInfo As STRUC_PROJECT_FILE_INFO)
             Dim mListViewItemData As New ClassListViewItemData(New String() {
-                                                               IO.Path.GetFileName(mInfo.sFile),
+                                                               CreateTreeFilename(mInfo.sFile, mInfo.bIsRelative),
                                                                mInfo.sFile,
                                                                If(String.IsNullOrEmpty(mInfo.sPackedData), "-", "Yes"),
                                                                If(mInfo.bIsRelative, "Yes", "-")}) With {
@@ -481,6 +481,26 @@ Public Class UCProjectBrowser
                 End Try
             End If
         End Sub
+
+        Private Function CreateTreeFilename(sFile As String, bIsRelative As Boolean) As String
+            If (Not bIsRelative) Then
+                Return IO.Path.GetFileName(sFile)
+            End If
+
+            Dim sProjectDirectory As String = IO.Path.GetDirectoryName(m_ProjectFile).TrimEnd("\"c) & "\"c
+            If (sFile.ToLower.StartsWith(sProjectDirectory.ToLower)) Then
+                sFile = sFile.Remove(0, sProjectDirectory.Length)
+            Else
+                Return IO.Path.GetFileName(sFile)
+            End If
+
+            Dim sFileSplit = sFile.Replace("/"c, "\"c).Split("\"c)
+            For i = 0 To sFileSplit.Length - 2
+                sFileSplit(i) = "."
+            Next
+
+            Return String.Join("\", sFileSplit)
+        End Function
 
         Public Sub RefreshRelativeFiles()
             Dim sRecursiveFiles As String() = GetRecursiveFilesFromProject()
