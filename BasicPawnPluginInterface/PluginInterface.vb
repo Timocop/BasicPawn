@@ -15,7 +15,7 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 
-Public Interface IPluginInterfaceV7
+Public Interface IPluginInterfaceV8
 
 #Region "Main"
     ''' <summary>
