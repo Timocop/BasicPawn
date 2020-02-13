@@ -141,7 +141,17 @@ Public Class ClassUpdate
         Next
 #End If
 
-        Process.Start(sDataPath)
+        Dim sBatchFile As String = IO.Path.Combine(Application.StartupPath, "InstallUpdate.bat")
+
+        Dim sUpdateBatch As New Text.StringBuilder
+        sUpdateBatch.AppendLine("@echo off")
+        sUpdateBatch.AppendFormat("start /w """" ""{0}""", sDataPath).AppendLine() 'Run 7zip SFX and wait
+        sUpdateBatch.AppendFormat("start """" ""{0}""", Application.ExecutablePath).AppendLine() 'Run BasicPawn but do not wait
+        sUpdateBatch.AppendFormat("del ""{0}""", sBatchFile).AppendLine() 'KMS 
+
+        IO.File.WriteAllText(sBatchFile, sUpdateBatch.ToString)
+
+        ClassTools.ClassProcess.ExecuteProgram(sBatchFile, "", Nothing, Nothing)
 
 #If Not DEBUG Then
         Process.GetCurrentProcess.Kill()
