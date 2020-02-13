@@ -638,6 +638,5 @@ Public Class FormMain
         Finally
             Timer_SyntaxAnimation.Start()
         End Try
-
     End Sub
 End Class

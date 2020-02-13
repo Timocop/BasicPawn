@@ -78,7 +78,7 @@ Partial Class FormMain
         Me.ToolStripSeparator7 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_FileStartPage = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_FileProjectLoad = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripMenuItem_FileProjectSave = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_FileProjectSaveAs = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_FileProjectClose = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator10 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_FileSavePacked = New System.Windows.Forms.ToolStripMenuItem()
@@ -203,6 +203,7 @@ Partial Class FormMain
         Me.ToolStripMenuItem_FindOptimalConfigActiveTab = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_FindOptimalConfigAllTabs = New System.Windows.Forms.ToolStripMenuItem()
         Me.Timer_SyntaxAnimation = New System.Windows.Forms.Timer(Me.components)
+        Me.ToolStripMenuItem_FileProjectSave = New System.Windows.Forms.ToolStripMenuItem()
         Me.ContextMenuStrip_RightClick.SuspendLayout()
         Me.MenuStrip_BasicPawn.SuspendLayout()
         Me.SplitContainer_ToolboxSourceAndDetails.Panel1.SuspendLayout()
@@ -463,7 +464,7 @@ Partial Class FormMain
         '
         'ToolStripMenuItem_File
         '
-        Me.ToolStripMenuItem_File.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_FileNew, Me.ToolStripMenuItem_FileNewWizard, Me.ToolStripMenuItem_FileOpen, Me.ToolStripMenuItem_FileLoadTabs, Me.ToolStripMenuItem_FileClose, Me.ToolStripMenuItem_FileCloseAll, Me.ToolStripSeparator9, Me.ToolStripMenuItem_FileSave, Me.ToolStripMenuItem_FileSaveAll, Me.ToolStripMenuItem_FileSaveAs, Me.ToolStripMenuItem_FileSaveAsTemp, Me.ToolStripSeparator7, Me.ToolStripMenuItem_FileStartPage, Me.ToolStripMenuItem_FileProjectLoad, Me.ToolStripMenuItem_FileProjectSave, Me.ToolStripMenuItem_FileProjectClose, Me.ToolStripSeparator10, Me.ToolStripMenuItem_FileSavePacked, Me.ToolStripSeparator8, Me.ToolStripMenuItem_FileOpenFolder, Me.ToolStripSeparator2, Me.ToolStripMenuItem_FileExit})
+        Me.ToolStripMenuItem_File.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_FileNew, Me.ToolStripMenuItem_FileNewWizard, Me.ToolStripMenuItem_FileOpen, Me.ToolStripMenuItem_FileLoadTabs, Me.ToolStripMenuItem_FileClose, Me.ToolStripMenuItem_FileCloseAll, Me.ToolStripSeparator9, Me.ToolStripMenuItem_FileSave, Me.ToolStripMenuItem_FileSaveAll, Me.ToolStripMenuItem_FileSaveAs, Me.ToolStripMenuItem_FileSaveAsTemp, Me.ToolStripSeparator7, Me.ToolStripMenuItem_FileStartPage, Me.ToolStripMenuItem_FileProjectLoad, Me.ToolStripMenuItem_FileProjectSave, Me.ToolStripMenuItem_FileProjectSaveAs, Me.ToolStripMenuItem_FileProjectClose, Me.ToolStripSeparator10, Me.ToolStripMenuItem_FileSavePacked, Me.ToolStripSeparator8, Me.ToolStripMenuItem_FileOpenFolder, Me.ToolStripSeparator2, Me.ToolStripMenuItem_FileExit})
         Me.ToolStripMenuItem_File.Image = CType(resources.GetObject("ToolStripMenuItem_File.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_File.Name = "ToolStripMenuItem_File"
         Me.ToolStripMenuItem_File.Size = New System.Drawing.Size(53, 20)
@@ -590,12 +591,11 @@ Partial Class FormMain
         Me.ToolStripMenuItem_FileProjectLoad.Size = New System.Drawing.Size(260, 22)
         Me.ToolStripMenuItem_FileProjectLoad.Text = "Load Project"
         '
-        'ToolStripMenuItem_FileProjectSave
+        'ToolStripMenuItem_FileProjectSaveAs
         '
-        Me.ToolStripMenuItem_FileProjectSave.Image = Global.BasicPawn.My.Resources.Resources.imageres_5304_16x16
-        Me.ToolStripMenuItem_FileProjectSave.Name = "ToolStripMenuItem_FileProjectSave"
-        Me.ToolStripMenuItem_FileProjectSave.Size = New System.Drawing.Size(260, 22)
-        Me.ToolStripMenuItem_FileProjectSave.Text = "Save Project as..."
+        Me.ToolStripMenuItem_FileProjectSaveAs.Name = "ToolStripMenuItem_FileProjectSaveAs"
+        Me.ToolStripMenuItem_FileProjectSaveAs.Size = New System.Drawing.Size(260, 22)
+        Me.ToolStripMenuItem_FileProjectSaveAs.Text = "Save Project as..."
         '
         'ToolStripMenuItem_FileProjectClose
         '
@@ -1549,6 +1549,13 @@ Partial Class FormMain
         Me.Timer_SyntaxAnimation.Enabled = True
         Me.Timer_SyntaxAnimation.Interval = 1000
         '
+        'ToolStripMenuItem_FileProjectSave
+        '
+        Me.ToolStripMenuItem_FileProjectSave.Image = Global.BasicPawn.My.Resources.Resources.imageres_5304_16x16
+        Me.ToolStripMenuItem_FileProjectSave.Name = "ToolStripMenuItem_FileProjectSave"
+        Me.ToolStripMenuItem_FileProjectSave.Size = New System.Drawing.Size(260, 22)
+        Me.ToolStripMenuItem_FileProjectSave.Text = "Save Project"
+        '
         'FormMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -1648,7 +1655,7 @@ Partial Class FormMain
     Friend WithEvents ToolStripMenuItem_FileStartPage As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_OutlineCollapseAll As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_OutlineExpandAll As ToolStripMenuItem
-    Friend WithEvents ToolStripMenuItem_FileProjectSave As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_FileProjectSaveAs As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_FileProjectLoad As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_FileCloseAll As ToolStripMenuItem
     Friend WithEvents ToolStripStatusLabel_Project As ToolStripStatusLabel
@@ -1760,4 +1767,5 @@ Partial Class FormMain
     Friend WithEvents ToolStripMenuItem_PeekDefinition As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator24 As ToolStripSeparator
     Friend WithEvents Timer_SyntaxAnimation As Timer
+    Friend WithEvents ToolStripMenuItem_FileProjectSave As ToolStripMenuItem
 End Class

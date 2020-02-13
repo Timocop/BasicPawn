@@ -44,6 +44,8 @@ Public Class UCProjectBrowser
 
         Private g_sProjectFile As String = ""
         Private g_bProjectChanged As Boolean = False
+        Private g_bProjectRelativeEnabled As Boolean = True
+        Private g_ProjectRelativeNoInclude As Boolean = True
 
         Public Shared ReadOnly g_sProjectExtension As String = ".bpproj"
 
@@ -51,6 +53,7 @@ Public Class UCProjectBrowser
             Dim sGUID As String
             Dim sFile As String
             Dim sPackedData As String
+            Dim bIsRelative As Boolean
         End Structure
 
         Public Sub New(f As UCProjectBrowser)
@@ -62,15 +65,12 @@ Public Class UCProjectBrowser
                 Return g_sProjectFile
             End Get
             Set(value As String)
-                If (g_sProjectFile.ToLower <> value.ToLower) Then
-                    m_ProjectChanged = False
+                If (g_sProjectFile.ToLower = value.ToLower) Then
+                    Return
                 End If
 
                 g_sProjectFile = value
-
-                If (Not m_ProjectOpened) Then
-                    m_ProjectChanged = False
-                End If
+                m_ProjectChanged = False
 
                 UpdateStatusLabel()
             End Set
@@ -93,17 +93,50 @@ Public Class UCProjectBrowser
             End Set
         End Property
 
+        Public Property m_ProjectRelativeEnabled As Boolean
+            Get
+                Return g_bProjectRelativeEnabled
+            End Get
+            Set(value As Boolean)
+                If (g_bProjectRelativeEnabled = value) Then
+                    Return
+                End If
+
+                g_bProjectRelativeEnabled = value
+                m_ProjectChanged = True
+            End Set
+        End Property
+
+        Public Property m_ProjectRelativeNoInclude As Boolean
+            Get
+                Return g_ProjectRelativeNoInclude
+            End Get
+            Set(value As Boolean)
+                If (g_ProjectRelativeNoInclude = value) Then
+                    Return
+                End If
+
+                g_ProjectRelativeNoInclude = value
+                m_ProjectChanged = True
+            End Set
+        End Property
+
         Public Sub UpdateStatusLabel()
-            g_mUCProjectBrowser.g_mFormMain.TabPage_ProjectBrowser.Text = g_mUCProjectBrowser.g_mFormMain.TabPage_ProjectBrowser.Text.TrimEnd("*"c) & If(m_ProjectChanged, "*", "")
+            Dim sNewTabPageText As String = g_mUCProjectBrowser.g_mFormMain.TabPage_ProjectBrowser.Text.TrimEnd("*"c) & If(m_ProjectChanged, "*", "")
+            If (g_mUCProjectBrowser.g_mFormMain.TabPage_ProjectBrowser.Text <> sNewTabPageText) Then
+                g_mUCProjectBrowser.g_mFormMain.TabPage_ProjectBrowser.Text = sNewTabPageText
+            End If
 
             If (Not String.IsNullOrEmpty(g_sProjectFile)) Then
                 g_mUCProjectBrowser.g_mFormMain.ToolStripStatusLabel_Project.Text = String.Format("Project: {0}{1}", IO.Path.GetFileNameWithoutExtension(g_sProjectFile), If(m_ProjectChanged, "*", ""))
                 g_mUCProjectBrowser.g_mFormMain.ToolStripStatusLabel_Project.ToolTipText = g_sProjectFile
                 g_mUCProjectBrowser.g_mFormMain.ToolStripStatusLabel_Project.Visible = True
             Else
-                g_mUCProjectBrowser.g_mFormMain.ToolStripStatusLabel_Project.Visible = False
-                g_mUCProjectBrowser.g_mFormMain.ToolStripStatusLabel_Project.Text = ""
-                g_mUCProjectBrowser.g_mFormMain.ToolStripStatusLabel_Project.ToolTipText = ""
+                If (g_mUCProjectBrowser.g_mFormMain.ToolStripStatusLabel_Project.Visible) Then
+                    g_mUCProjectBrowser.g_mFormMain.ToolStripStatusLabel_Project.Visible = False
+                    g_mUCProjectBrowser.g_mFormMain.ToolStripStatusLabel_Project.Text = ""
+                    g_mUCProjectBrowser.g_mFormMain.ToolStripStatusLabel_Project.ToolTipText = ""
+                End If
             End If
         End Sub
 
@@ -119,7 +152,8 @@ Public Class UCProjectBrowser
                 mListViewItem.SubItems(0).Text = IO.Path.GetFileName(mInfo.sFile)
                 mListViewItem.SubItems(1).Text = mInfo.sFile
                 mListViewItem.SubItems(2).Text = If(String.IsNullOrEmpty(mInfo.sPackedData), "-", "Yes")
-                mListViewItem.ToolTipText = mInfo.sFile & If(String.IsNullOrEmpty(mInfo.sPackedData), "", Environment.NewLine & "(Packed)")
+                mListViewItem.SubItems(3).Text = If(mInfo.bIsRelative, "Yes", "-")
+                mListViewItem.ToolTipText = mInfo.sFile & If(String.IsNullOrEmpty(mInfo.sPackedData), "", Environment.NewLine & "(Is packed)") & If(mInfo.bIsRelative, Environment.NewLine & "(Is relative path)", "")
             Next
         End Sub
 
@@ -132,8 +166,12 @@ Public Class UCProjectBrowser
         End Sub
 
         Public Sub AddFile(mInfo As STRUC_PROJECT_FILE_INFO)
-            Dim mListViewItemData As New ClassListViewItemData(New String() {IO.Path.GetFileName(mInfo.sFile), mInfo.sFile, If(String.IsNullOrEmpty(mInfo.sPackedData), "-", "Yes")}) With {
-                .ToolTipText = mInfo.sFile & If(String.IsNullOrEmpty(mInfo.sPackedData), "", Environment.NewLine & "(Packed)")
+            Dim mListViewItemData As New ClassListViewItemData(New String() {
+                                                               IO.Path.GetFileName(mInfo.sFile),
+                                                               mInfo.sFile,
+                                                               If(String.IsNullOrEmpty(mInfo.sPackedData), "-", "Yes"),
+                                                               If(mInfo.bIsRelative, "Yes", "-")}) With {
+                .ToolTipText = mInfo.sFile & If(String.IsNullOrEmpty(mInfo.sPackedData), "", Environment.NewLine & "(Is packed)") & If(mInfo.bIsRelative, Environment.NewLine & "(Is relative path)", "")
             }
 
             If (String.IsNullOrEmpty(mInfo.sGUID)) Then
@@ -148,8 +186,12 @@ Public Class UCProjectBrowser
         End Sub
 
         Public Sub InsertFile(iIndex As Integer, mInfo As STRUC_PROJECT_FILE_INFO)
-            Dim mListViewItemData As New ClassListViewItemData(New String() {IO.Path.GetFileName(mInfo.sFile), mInfo.sFile, If(String.IsNullOrEmpty(mInfo.sPackedData), "-", "Yes")}) With {
-                .ToolTipText = mInfo.sFile & If(String.IsNullOrEmpty(mInfo.sPackedData), "", Environment.NewLine & "(Packed)")
+            Dim mListViewItemData As New ClassListViewItemData(New String() {
+                                                               IO.Path.GetFileName(mInfo.sFile),
+                                                               mInfo.sFile,
+                                                               If(String.IsNullOrEmpty(mInfo.sPackedData), "-", "Yes"),
+                                                               If(mInfo.bIsRelative, "Yes", "-")}) With {
+                .ToolTipText = mInfo.sFile & If(String.IsNullOrEmpty(mInfo.sPackedData), "", Environment.NewLine & "(Is packed)") & If(mInfo.bIsRelative, Environment.NewLine & "(Is relative path)", "")
             }
 
             If (String.IsNullOrEmpty(mInfo.sGUID)) Then
@@ -191,7 +233,7 @@ Public Class UCProjectBrowser
             IO.File.WriteAllText(sFile, mInfo.sPackedData)
         End Sub
 
-        Public Sub RemoveFileAll(sFile As String)
+        Public Sub RemoveFileAll(sFile As String, bRelativeOnly As Boolean)
             Try
                 BeginUpdate()
 
@@ -203,15 +245,21 @@ Public Class UCProjectBrowser
 
                     Dim mInfo = DirectCast(mListViewItemData.g_mData("Info"), STRUC_PROJECT_FILE_INFO)
 
+                    If (bRelativeOnly) Then
+                        If (Not mInfo.bIsRelative) Then
+                            Continue For
+                        End If
+                    End If
+
                     If (mInfo.sFile.ToLower = sFile.ToLower) Then
                         g_mUCProjectBrowser.ListView_ProjectFiles.Items.RemoveAt(i)
+
+                        m_ProjectChanged = True
                     End If
                 Next
             Finally
                 EndUpdate()
             End Try
-
-            m_ProjectChanged = True
         End Sub
 
         Public Sub RemoveFileAt(iIndex As Integer)
@@ -241,8 +289,14 @@ Public Class UCProjectBrowser
             Return lFileList.ToArray
         End Function
 
-        Public Function IsFileInProject(sFile As String) As Boolean
+        Public Function IsFileInProject(sFile As String, bRelativePathOnly As Boolean) As Boolean
             For Each mInfo As STRUC_PROJECT_FILE_INFO In GetFiles()
+                If (bRelativePathOnly) Then
+                    If (Not mInfo.bIsRelative) Then
+                        Continue For
+                    End If
+                End If
+
                 If (mInfo.sFile.ToLower = sFile.ToLower) Then
                     Return True
                 End If
@@ -310,7 +364,14 @@ Public Class UCProjectBrowser
                 Using mIni As New ClassIni(mStream)
                     Dim lContent As New List(Of ClassIni.STRUC_INI_CONTENT)
 
+                    lContent.Add(New ClassIni.STRUC_INI_CONTENT("ProjectOptions", "RelativeProject", If(m_ProjectRelativeEnabled, "1", "0")))
+                    lContent.Add(New ClassIni.STRUC_INI_CONTENT("ProjectOptions", "RelativeNoIncludes", If(m_ProjectRelativeNoInclude, "1", "0")))
+
                     For Each mInfo As STRUC_PROJECT_FILE_INFO In GetFiles()
+                        If (mInfo.bIsRelative) Then
+                            Continue For
+                        End If
+
                         lContent.Add(New ClassIni.STRUC_INI_CONTENT("Project", mInfo.sGUID, mInfo.sFile))
 
                         If (Not String.IsNullOrEmpty(mInfo.sPackedData)) Then
@@ -330,7 +391,7 @@ Public Class UCProjectBrowser
 
         Public Sub LoadProject(bAppend As Boolean, bOpenProjectFiles As Boolean)
             If (String.IsNullOrEmpty(g_sProjectFile) OrElse Not IO.File.Exists(g_sProjectFile)) Then
-                Throw New ArgumentException("Project file not found")
+                Throw New ArgumentException(String.Format("Project file '{0}' not found", g_sProjectFile))
             End If
 
             g_mUCProjectBrowser.g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "User loaded project file: " & g_sProjectFile, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(g_sProjectFile))
@@ -340,38 +401,79 @@ Public Class UCProjectBrowser
             End If
 
             Dim lProjectFiles As New List(Of String)
-            Dim bDidAppend As Boolean = GetFilesCount() > 0
+            Dim bDidAppend As Boolean = (GetFilesCount() > 0)
 
+            'Read absolute paths
             Using mStream = ClassFileStreamWait.Create(g_sProjectFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
                 Using mIni As New ClassIni(mStream)
                     Try
                         BeginUpdate()
 
+                        m_ProjectRelativeEnabled = If(mIni.ReadKeyValue("ProjectOptions", "RelativeProject", "1") <> "0", True, False)
+                        m_ProjectRelativeNoInclude = If(mIni.ReadKeyValue("ProjectOptions", "RelativeNoIncludes", "1") <> "0", True, False)
+
                         For Each mItem In mIni.ReadEverything
-                            If (mItem.sSection <> "Project") Then
-                                Continue For
-                            End If
+                            Select Case (mItem.sSection)
+                                Case "Project"
+                                    Dim sPackedData As String = mIni.ReadKeyValue("PackedData", mItem.sKey, Nothing)
+                                    If (Not String.IsNullOrEmpty(sPackedData)) Then
+                                        sPackedData = ClassTools.ClassCrypto.ClassBase.FromBase64(sPackedData, System.Text.Encoding.UTF8)
+                                    End If
 
-                            Dim sPackedData As String = mIni.ReadKeyValue("PackedData", mItem.sKey, Nothing)
-                            If (Not String.IsNullOrEmpty(sPackedData)) Then
-                                sPackedData = ClassTools.ClassCrypto.ClassBase.FromBase64(sPackedData, System.Text.Encoding.UTF8)
-                            End If
+                                    AddFile(New STRUC_PROJECT_FILE_INFO With {
+                                        .sGUID = mItem.sKey,
+                                        .sFile = mItem.sValue,
+                                        .sPackedData = sPackedData,
+                                        .bIsRelative = False
+                                    })
 
-                            AddFile(New STRUC_PROJECT_FILE_INFO With {
-                                .sGUID = mItem.sKey,
-                                .sFile = mItem.sValue,
-                                .sPackedData = sPackedData
-                            })
+                                    lProjectFiles.Add(mItem.sValue)
 
-                            lProjectFiles.Add(mItem.sValue)
-
-                            g_mUCProjectBrowser.g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & "Loaded project file: " & mItem.sValue, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(mItem.sValue))
+                                    g_mUCProjectBrowser.g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & "Loaded project file: " & mItem.sValue, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(mItem.sValue))
+                            End Select
                         Next
                     Finally
                         EndUpdate()
                     End Try
                 End Using
             End Using
+
+            'Read relative paths  
+            If (m_ProjectRelativeEnabled) Then
+                Dim sRecursiveFiles As String() = GetRecursiveFilesFromProject()
+                If (sRecursiveFiles IsNot Nothing) Then
+                    Try
+                        BeginUpdate()
+
+                        For Each sFile As String In sRecursiveFiles
+                            If (m_ProjectRelativeNoInclude) Then
+                                Select Case (IO.Path.GetExtension(sFile).ToLower)
+                                    Case ".inc"
+                                        Continue For
+                                End Select
+                            End If
+
+                            'Never append relative paths
+                            If (IsFileInProject(sFile, True)) Then
+                                Continue For
+                            End If
+
+                            AddFile(New STRUC_PROJECT_FILE_INFO With {
+                                .sGUID = Nothing,
+                                .sFile = sFile,
+                                .sPackedData = Nothing,
+                                .bIsRelative = True
+                            })
+
+                            lProjectFiles.Add(sFile)
+
+                            g_mUCProjectBrowser.g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & "Loaded relative project file: " & sFile, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(sFile))
+                        Next
+                    Finally
+                        EndUpdate()
+                    End Try
+                End If
+            End If
 
             m_ProjectChanged = bDidAppend
             UpdateListViewInfo()
@@ -404,11 +506,109 @@ Public Class UCProjectBrowser
             End If
         End Sub
 
+        Public Sub RefreshRelativeFiles()
+            Dim sRecursiveFiles As String() = GetRecursiveFilesFromProject()
+            Dim mProjectFiles = GetFiles()
+
+            Try
+                BeginUpdate()
+
+                If (m_ProjectRelativeEnabled) Then
+                    For Each sFile As String In sRecursiveFiles
+                        If (m_ProjectRelativeNoInclude) Then
+                            Select Case (IO.Path.GetExtension(sFile).ToLower)
+                                Case ".inc"
+                                    Continue For
+                            End Select
+                        End If
+
+                        If (IsFileInProject(sFile, True)) Then
+                            Continue For
+                        End If
+
+                        AddFile(New STRUC_PROJECT_FILE_INFO With {
+                              .sGUID = Nothing,
+                              .sFile = sFile,
+                              .sPackedData = Nothing,
+                              .bIsRelative = True
+                          })
+
+                        g_mUCProjectBrowser.g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & "Loaded relative project file: " & sFile, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(sFile))
+                    Next
+                End If
+
+                For Each mInfo In mProjectFiles
+                    If (Not mInfo.bIsRelative) Then
+                        Continue For
+                    End If
+
+                    If (Not m_ProjectRelativeEnabled) Then
+                        RemoveFileAll(mInfo.sFile, True)
+                        Continue For
+                    End If
+
+                    If (m_ProjectRelativeNoInclude) Then
+                        Select Case (IO.Path.GetExtension(mInfo.sFile).ToLower)
+                            Case ".inc"
+                                RemoveFileAll(mInfo.sFile, True)
+                                Continue For
+                        End Select
+                    End If
+
+                    If (Not Array.Exists(sRecursiveFiles, Function(a As String) a.ToLower = mInfo.sFile.ToLower)) Then
+                        RemoveFileAll(mInfo.sFile, True)
+                        Continue For
+                    End If
+                Next
+            Finally
+                EndUpdate()
+            End Try
+        End Sub
+
         Public Sub CloseProject()
             ClearFiles()
             m_ProjectFile = ""
 
             m_ProjectChanged = False
+        End Sub
+
+        Private Function GetRecursiveFilesFromProject() As String()
+            If (String.IsNullOrEmpty(m_ProjectFile) OrElse Not IO.File.Exists(m_ProjectFile)) Then
+                Return Nothing
+            End If
+
+            Dim lList As New List(Of String)
+            GetRecursiveFiles(IO.Path.GetDirectoryName(m_ProjectFile), lList, 10)
+
+            Return lList.ToArray
+        End Function
+
+        Private Sub GetRecursiveFiles(sDirectory As String, ByRef lList As List(Of String), iMaxDirectoryDepth As Integer)
+            Dim sFiles As String() = IO.Directory.GetFiles(sDirectory)
+            Dim sDirectories As String() = IO.Directory.GetDirectories(sDirectory)
+
+            For Each i As String In sFiles
+                If (Not IO.File.Exists(i)) Then
+                    Continue For
+                End If
+
+                If (lList.Contains(i.ToLower)) Then
+                    Continue For
+                End If
+
+                Select Case (IO.Path.GetExtension(i).ToLower)
+                    Case ".sp", ".sma", ".p", ".pwn", ".inc"
+                        lList.Add(i.ToLower)
+                End Select
+            Next
+
+            If (iMaxDirectoryDepth < 1) Then
+                Return
+            End If
+
+            For Each i As String In sDirectories
+                GetRecursiveFiles(i, lList, iMaxDirectoryDepth - 1)
+            Next
         End Sub
     End Class
 
@@ -452,29 +652,20 @@ Public Class UCProjectBrowser
         End Try
     End Sub
 
+    Private Sub ToolStripMenuItem_ProjectLoad_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ProjectLoad.Click
+        g_mFormMain.ToolStripMenuItem_FileProjectLoad.PerformClick()
+    End Sub
+
     Private Sub ToolStripMenuItem_ProjectSave_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ProjectSave.Click
-        Try
-            If (String.IsNullOrEmpty(g_ClassProjectControl.m_ProjectFile)) Then
-                Using i As New SaveFileDialog
-                    i.Filter = String.Format("BasicPawn Project|*{0}", ClassProjectControl.g_sProjectExtension)
+        g_mFormMain.ToolStripMenuItem_FileProjectSave.PerformClick()
+    End Sub
 
-                    i.InitialDirectory = If(String.IsNullOrEmpty(g_ClassProjectControl.m_ProjectFile), "", IO.Path.GetDirectoryName(g_ClassProjectControl.m_ProjectFile))
-                    i.FileName = IO.Path.GetFileName(g_ClassProjectControl.m_ProjectFile)
+    Private Sub ToolStripMenuItem_ProjectSaveAs_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ProjectSaveAs.Click
+        g_mFormMain.ToolStripMenuItem_FileProjectSaveAs.PerformClick()
+    End Sub
 
-                    If (i.ShowDialog = DialogResult.OK) Then
-                        g_ClassProjectControl.m_ProjectFile = i.FileName
-                    Else
-                        Return
-                    End If
-                End Using
-            End If
-
-            g_ClassProjectControl.SaveProject()
-
-            g_mFormMain.g_mUCStartPage.g_mClassRecentItems.AddRecent(g_ClassProjectControl.m_ProjectFile)
-        Catch ex As Exception
-            ClassExceptionLog.WriteToLogMessageBox(ex)
-        End Try
+    Private Sub ToolStripMenuItem_ProjectClose_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ProjectClose.Click
+        g_mFormMain.ToolStripMenuItem_FileProjectClose.PerformClick()
     End Sub
 
     Private Sub ToolStripMenuItem_Cut_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Cut.Click
@@ -631,7 +822,7 @@ Public Class UCProjectBrowser
                 Return
             End If
 
-            If (g_ClassProjectControl.IsFileInProject(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File)) Then
+            If (g_ClassProjectControl.IsFileInProject(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File, False)) Then
                 Return
             End If
 
@@ -655,7 +846,7 @@ Public Class UCProjectBrowser
                         Continue For
                     End If
 
-                    If (g_ClassProjectControl.IsFileInProject(g_mFormMain.g_ClassTabControl.m_Tab(i).m_File)) Then
+                    If (g_ClassProjectControl.IsFileInProject(g_mFormMain.g_ClassTabControl.m_Tab(i).m_File, False)) Then
                         Continue For
                     End If
 
@@ -684,7 +875,7 @@ Public Class UCProjectBrowser
                         g_ClassProjectControl.BeginUpdate()
 
                         For Each sFile As String In i.FileNames
-                            If (g_ClassProjectControl.IsFileInProject(sFile)) Then
+                            If (g_ClassProjectControl.IsFileInProject(sFile, False)) Then
                                 Continue For
                             End If
 
@@ -714,6 +905,9 @@ Public Class UCProjectBrowser
             End If
 
             Dim mInfo = DirectCast(mListViewItemData.g_mData("Info"), ClassProjectControl.STRUC_PROJECT_FILE_INFO)
+            If (mInfo.bIsRelative) Then
+                Continue For
+            End If
 
             If (Not String.IsNullOrEmpty(mInfo.sPackedData)) Then
                 bPackedSelected = True
@@ -735,6 +929,9 @@ Public Class UCProjectBrowser
         ToolStripMenuItem_Paste.Enabled = (g_lClipboardFiles.Count > 0)
 
         ToolStripMenuItem_AddTab.Enabled = (Not g_mFormMain.g_ClassTabControl.m_ActiveTab.m_IsUnsaved)
+
+        ToolStripMenuItem_RelativeEnable.Checked = g_ClassProjectControl.m_ProjectRelativeEnabled
+        ToolStripMenuItem_RelativeNoIncludes.Checked = g_ClassProjectControl.m_ProjectRelativeNoInclude
 
         ToolStripMenuItem_Exlcude.Enabled = (ListView_ProjectFiles.SelectedItems.Count > 0)
     End Sub
@@ -840,7 +1037,12 @@ Public Class UCProjectBrowser
 
                 Dim mInfo = DirectCast(mListViewItemData.g_mData("Info"), ClassProjectControl.STRUC_PROJECT_FILE_INFO)
                 If (Not IO.File.Exists(mInfo.sFile)) Then
-                    Throw New ArgumentException("File does not exist")
+                    Throw New ArgumentException(String.Format("File '{0}' does not exist", mInfo.sFile))
+                End If
+
+                If (mInfo.bIsRelative) Then
+                    MessageBox.Show(String.Format("File '{0}' is relative and can not be packed!", mInfo.sFile), "Unable to pack", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                    Continue For
                 End If
 
                 g_ClassProjectControl.PackFileData(mInfo)
@@ -869,9 +1071,13 @@ Public Class UCProjectBrowser
                 End If
 
                 Dim mInfo = DirectCast(mListViewItemData.g_mData("Info"), ClassProjectControl.STRUC_PROJECT_FILE_INFO)
-
                 If (String.IsNullOrEmpty(mInfo.sPackedData)) Then
-                    MessageBox.Show("This file is not packed!", "Unable to extract", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                    MessageBox.Show(String.Format("File '{0}' is not packed!", mInfo.sFile), "Unable to extract", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                    Continue For
+                End If
+
+                If (mInfo.bIsRelative) Then
+                    MessageBox.Show(String.Format("File '{0}' is relative and can not be extracted!", mInfo.sFile), "Unable to extract", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                     Continue For
                 End If
 
@@ -933,6 +1139,32 @@ Public Class UCProjectBrowser
             Next
 
             g_ClassProjectControl.UpdateListViewInfo()
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
+    Private Sub ToolStripMenuItem_RelativeRefresh_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_RelativeRefresh.Click
+        Try
+            g_ClassProjectControl.RefreshRelativeFiles()
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
+    Private Sub ToolStripMenuItem_RelativeEnable_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_RelativeEnable.Click
+        Try
+            g_ClassProjectControl.m_ProjectRelativeEnabled = ToolStripMenuItem_RelativeEnable.Checked
+            g_ClassProjectControl.RefreshRelativeFiles()
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
+    Private Sub ToolStripMenuItem_RelativeNoIncludes_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_RelativeNoIncludes.Click
+        Try
+            g_ClassProjectControl.m_ProjectRelativeNoInclude = ToolStripMenuItem_RelativeNoIncludes.Checked
+            g_ClassProjectControl.RefreshRelativeFiles()
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
@@ -1050,7 +1282,7 @@ Public Class UCProjectBrowser
                         Continue For
                     End If
 
-                    If (g_ClassProjectControl.IsFileInProject(sFile)) Then
+                    If (g_ClassProjectControl.IsFileInProject(sFile, False)) Then
                         Continue For
                     End If
 
