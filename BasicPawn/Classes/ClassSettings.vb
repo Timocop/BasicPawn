@@ -84,6 +84,7 @@ Public Class ClassSettings
     Public Shared g_iSettingsAutoCloseBrackets As Boolean = True
     Public Shared g_iSettingsAutoCloseStrings As Boolean = True
     Public Shared g_iSettingsAutoIndentBrackets As Boolean = True
+    Public Shared g_iSettingsMaxParsingThreads As Integer = Math.Max(1, CInt(Environment.ProcessorCount / 2))
 #End Region
 
     Enum ENUM_COMPILING_TYPE
@@ -137,6 +138,7 @@ Public Class ClassSettings
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutoCloseBrackets", If(g_iSettingsAutoCloseBrackets, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutoCloseStrings", If(g_iSettingsAutoCloseStrings, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutoIndentBrackets", If(g_iSettingsAutoIndentBrackets, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "MaxParsingThreads", CStr(g_iSettingsMaxParsingThreads)))
 
                 mIni.WriteKeyValue(lContent.ToArray)
 
@@ -217,6 +219,10 @@ Public Class ClassSettings
                     g_iSettingsAutoCloseBrackets = (mIni.ReadKeyValue("Editor", "AutoCloseBrackets", "1") <> "0")
                     g_iSettingsAutoCloseStrings = (mIni.ReadKeyValue("Editor", "AutoCloseStrings", "1") <> "0")
                     g_iSettingsAutoIndentBrackets = (mIni.ReadKeyValue("Editor", "AutoIndentBrackets", "1") <> "0")
+
+                    If (Integer.TryParse(mIni.ReadKeyValue("Editor", "MaxParsingThreads", CStr(CInt(Environment.ProcessorCount / 2))), tmpInt)) Then
+                        g_iSettingsMaxParsingThreads = ClassTools.ClassMath.ClampInt(tmpInt, 1, Environment.ProcessorCount)
+                    End If
 
                     SetRegistryKeys()
                 End Using

@@ -44,6 +44,7 @@ Partial Public Class FormSettings
         CheckBox_AutoCloseBrackets.Checked = ClassSettings.g_iSettingsAutoCloseBrackets
         CheckBox_AutoCloseStrings.Checked = ClassSettings.g_iSettingsAutoCloseStrings
         CheckBox_AutoIndentBrackets.Checked = ClassSettings.g_iSettingsAutoIndentBrackets
+        NumericUpDown_MaxParseThreads.Value = ClassSettings.g_iSettingsMaxParsingThreads
     End Sub
 
     Private Sub Apply_AutocompleteIntelliSense()
@@ -74,5 +75,6 @@ Partial Public Class FormSettings
         ClassSettings.g_iSettingsAutoCloseBrackets = CheckBox_AutoCloseBrackets.Checked
         ClassSettings.g_iSettingsAutoCloseStrings = CheckBox_AutoCloseStrings.Checked
         ClassSettings.g_iSettingsAutoIndentBrackets = CheckBox_AutoIndentBrackets.Checked
+        ClassSettings.g_iSettingsMaxParsingThreads = CInt(NumericUpDown_MaxParseThreads.Value)
     End Sub
 End Class

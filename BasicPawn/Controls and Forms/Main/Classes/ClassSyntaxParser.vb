@@ -77,7 +77,7 @@ Public Class ClassSyntaxParser
         End If
 
         Dim iThreadCount = GetAliveThreadCount()
-        If (iThreadCount > Math.Max(Environment.ProcessorCount / 2, 0)) Then
+        If (iThreadCount > ClassSettings.g_iSettingsMaxParsingThreads - 1) Then
             Return False
         End If
 

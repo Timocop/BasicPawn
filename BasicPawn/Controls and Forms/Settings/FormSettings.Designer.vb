@@ -219,6 +219,8 @@ Partial Class FormSettings
         Me.TableLayoutPanel3 = New System.Windows.Forms.TableLayoutPanel()
         Me.ClassPictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
         Me.Label17 = New System.Windows.Forms.Label()
+        Me.Label11 = New System.Windows.Forms.Label()
+        Me.NumericUpDown_MaxParseThreads = New System.Windows.Forms.NumericUpDown()
         Me.ContextMenuStrip_Plugins.SuspendLayout()
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Settings.SuspendLayout()
@@ -268,6 +270,7 @@ Partial Class FormSettings
         CType(Me.ClassPictureBoxQuality2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TableLayoutPanel3.SuspendLayout()
         CType(Me.ClassPictureBoxQuality1, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.NumericUpDown_MaxParseThreads, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'Button_Cancel
@@ -517,7 +520,7 @@ Partial Class FormSettings
         Me.Label8.Location = New System.Drawing.Point(9, 24)
         Me.Label8.Margin = New System.Windows.Forms.Padding(6, 6, 3, 6)
         Me.Label8.Name = "Label8"
-        Me.Label8.Size = New System.Drawing.Size(173, 13)
+        Me.Label8.Size = New System.Drawing.Size(172, 13)
         Me.Label8.TabIndex = 24
         Me.Label8.Text = "Background thread update rate:"
         '
@@ -561,7 +564,7 @@ Partial Class FormSettings
         Me.Label19.Location = New System.Drawing.Point(9, 21)
         Me.Label19.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.Label19.Name = "Label19"
-        Me.Label19.Size = New System.Drawing.Size(141, 13)
+        Me.Label19.Size = New System.Drawing.Size(140, 13)
         Me.Label19.TabIndex = 22
         Me.Label19.Text = "Associate BasicPawn with:"
         '
@@ -575,7 +578,7 @@ Partial Class FormSettings
         Me.CheckBox_AssociateBasicPawnProject.Location = New System.Drawing.Point(35, 112)
         Me.CheckBox_AssociateBasicPawnProject.Margin = New System.Windows.Forms.Padding(32, 3, 3, 3)
         Me.CheckBox_AssociateBasicPawnProject.Name = "CheckBox_AssociateBasicPawnProject"
-        Me.CheckBox_AssociateBasicPawnProject.Size = New System.Drawing.Size(200, 18)
+        Me.CheckBox_AssociateBasicPawnProject.Size = New System.Drawing.Size(199, 18)
         Me.CheckBox_AssociateBasicPawnProject.TabIndex = 24
         Me.CheckBox_AssociateBasicPawnProject.Text = "BasicPawn Project files (*.bpproj)"
         Me.CheckBox_AssociateBasicPawnProject.UseVisualStyleBackColor = True
@@ -1044,7 +1047,7 @@ Partial Class FormSettings
         '
         Me.GroupBox17.Controls.Add(Me.CheckBox_VarAutocompleteShowObjectBrowser)
         Me.GroupBox17.Dock = System.Windows.Forms.DockStyle.Top
-        Me.GroupBox17.Location = New System.Drawing.Point(6, 594)
+        Me.GroupBox17.Location = New System.Drawing.Point(6, 620)
         Me.GroupBox17.Name = "GroupBox17"
         Me.GroupBox17.Size = New System.Drawing.Size(740, 51)
         Me.GroupBox17.TabIndex = 33
@@ -1058,7 +1061,7 @@ Partial Class FormSettings
         Me.CheckBox_VarAutocompleteShowObjectBrowser.Location = New System.Drawing.Point(9, 21)
         Me.CheckBox_VarAutocompleteShowObjectBrowser.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_VarAutocompleteShowObjectBrowser.Name = "CheckBox_VarAutocompleteShowObjectBrowser"
-        Me.CheckBox_VarAutocompleteShowObjectBrowser.Size = New System.Drawing.Size(224, 18)
+        Me.CheckBox_VarAutocompleteShowObjectBrowser.Size = New System.Drawing.Size(223, 18)
         Me.CheckBox_VarAutocompleteShowObjectBrowser.TabIndex = 18
         Me.CheckBox_VarAutocompleteShowObjectBrowser.Text = "Show variables in the Object Browser"
         Me.CheckBox_VarAutocompleteShowObjectBrowser.UseVisualStyleBackColor = True
@@ -1070,7 +1073,7 @@ Partial Class FormSettings
         Me.GroupBox16.Controls.Add(Me.CheckBox_CommentsMethodIntelliSense)
         Me.GroupBox16.Controls.Add(Me.CheckBox_CommentsAutocompleteIntelliSense)
         Me.GroupBox16.Dock = System.Windows.Forms.DockStyle.Top
-        Me.GroupBox16.Location = New System.Drawing.Point(6, 374)
+        Me.GroupBox16.Location = New System.Drawing.Point(6, 400)
         Me.GroupBox16.Name = "GroupBox16"
         Me.GroupBox16.Size = New System.Drawing.Size(740, 220)
         Me.GroupBox16.TabIndex = 32
@@ -1186,7 +1189,7 @@ Partial Class FormSettings
         Me.GroupBox15.Controls.Add(Me.CheckBox_SwitchTabToAutocomplete)
         Me.GroupBox15.Controls.Add(Me.CheckBox_AutoCloseBrackets)
         Me.GroupBox15.Dock = System.Windows.Forms.DockStyle.Top
-        Me.GroupBox15.Location = New System.Drawing.Point(6, 176)
+        Me.GroupBox15.Location = New System.Drawing.Point(6, 202)
         Me.GroupBox15.Name = "GroupBox15"
         Me.GroupBox15.Size = New System.Drawing.Size(740, 198)
         Me.GroupBox15.TabIndex = 31
@@ -1279,13 +1282,15 @@ Partial Class FormSettings
         '
         'GroupBox14
         '
+        Me.GroupBox14.Controls.Add(Me.NumericUpDown_MaxParseThreads)
+        Me.GroupBox14.Controls.Add(Me.Label11)
         Me.GroupBox14.Controls.Add(Me.CheckBox_AlwaysLoadDefaultIncludes)
         Me.GroupBox14.Controls.Add(Me.CheckBox_OnlyUpdateSyntaxWhenFocused)
         Me.GroupBox14.Controls.Add(Me.GroupBox4)
         Me.GroupBox14.Dock = System.Windows.Forms.DockStyle.Top
         Me.GroupBox14.Location = New System.Drawing.Point(6, 6)
         Me.GroupBox14.Name = "GroupBox14"
-        Me.GroupBox14.Size = New System.Drawing.Size(740, 170)
+        Me.GroupBox14.Size = New System.Drawing.Size(740, 196)
         Me.GroupBox14.TabIndex = 30
         Me.GroupBox14.TabStop = False
         Me.GroupBox14.Text = "Syntax Parsing"
@@ -1759,6 +1764,7 @@ Partial Class FormSettings
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ListView_KnownFiles.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader8})
+        Me.ListView_KnownFiles.HideSelection = False
         Me.ListView_KnownFiles.Location = New System.Drawing.Point(6, 21)
         Me.ListView_KnownFiles.Name = "ListView_KnownFiles"
         Me.ListView_KnownFiles.Size = New System.Drawing.Size(559, 134)
@@ -1901,7 +1907,7 @@ Partial Class FormSettings
         Me.Label23.AutoSize = True
         Me.Label23.Location = New System.Drawing.Point(6, 63)
         Me.Label23.Name = "Label23"
-        Me.Label23.Size = New System.Drawing.Size(129, 13)
+        Me.Label23.Size = New System.Drawing.Size(130, 13)
         Me.Label23.TabIndex = 5
         Me.Label23.Text = "Treat warnings as errors"
         '
@@ -2039,7 +2045,7 @@ Partial Class FormSettings
         Me.Label28.AutoSize = True
         Me.Label28.Location = New System.Drawing.Point(6, 63)
         Me.Label28.Name = "Label28"
-        Me.Label28.Size = New System.Drawing.Size(129, 13)
+        Me.Label28.Size = New System.Drawing.Size(130, 13)
         Me.Label28.TabIndex = 15
         Me.Label28.Text = "Treat warnings as errors"
         '
@@ -2298,6 +2304,7 @@ Partial Class FormSettings
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ListView_Plugins.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1, Me.ColumnHeader2, Me.ColumnHeader3, Me.ColumnHeader4, Me.ColumnHeader5, Me.ColumnHeader6, Me.ColumnHeader9})
         Me.ListView_Plugins.ContextMenuStrip = Me.ContextMenuStrip_Plugins
+        Me.ListView_Plugins.HideSelection = False
         Me.ListView_Plugins.Location = New System.Drawing.Point(6, 6)
         Me.ListView_Plugins.Name = "ListView_Plugins"
         Me.ListView_Plugins.Size = New System.Drawing.Size(740, 951)
@@ -2414,7 +2421,7 @@ Partial Class FormSettings
         Me.Label18.Location = New System.Drawing.Point(60, 6)
         Me.Label18.Margin = New System.Windows.Forms.Padding(6)
         Me.Label18.Name = "Label18"
-        Me.Label18.Size = New System.Drawing.Size(674, 26)
+        Me.Label18.Size = New System.Drawing.Size(672, 26)
         Me.Label18.TabIndex = 3
         Me.Label18.Text = resources.GetString("Label18.Text")
         '
@@ -2463,10 +2470,27 @@ Partial Class FormSettings
         Me.Label17.Location = New System.Drawing.Point(44, 6)
         Me.Label17.Margin = New System.Windows.Forms.Padding(6)
         Me.Label17.Name = "Label17"
-        Me.Label17.Size = New System.Drawing.Size(688, 26)
+        Me.Label17.Size = New System.Drawing.Size(687, 26)
         Me.Label17.TabIndex = 3
         Me.Label17.Text = "Loaded BasicPawn plugins are able to read stored database entries. Make sure all " &
     "installed plugins are from a trustworthy publisher to prevent theft."
+        '
+        'Label11
+        '
+        Me.Label11.AutoSize = True
+        Me.Label11.Location = New System.Drawing.Point(9, 170)
+        Me.Label11.Margin = New System.Windows.Forms.Padding(6, 6, 3, 6)
+        Me.Label11.Name = "Label11"
+        Me.Label11.Size = New System.Drawing.Size(143, 13)
+        Me.Label11.TabIndex = 28
+        Me.Label11.Text = "Maximum parsing threads:"
+        '
+        'NumericUpDown_MaxParseThreads
+        '
+        Me.NumericUpDown_MaxParseThreads.Location = New System.Drawing.Point(158, 168)
+        Me.NumericUpDown_MaxParseThreads.Name = "NumericUpDown_MaxParseThreads"
+        Me.NumericUpDown_MaxParseThreads.Size = New System.Drawing.Size(46, 22)
+        Me.NumericUpDown_MaxParseThreads.TabIndex = 29
         '
         'FormSettings
         '
@@ -2562,6 +2586,7 @@ Partial Class FormSettings
         Me.TableLayoutPanel3.ResumeLayout(False)
         Me.TableLayoutPanel3.PerformLayout()
         CType(Me.ClassPictureBoxQuality1, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.NumericUpDown_MaxParseThreads, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
     End Sub
@@ -2761,4 +2786,6 @@ Partial Class FormSettings
     Friend WithEvents ToolTip_MacroInfo As ToolTip
     Friend WithEvents LinkLabel_PostMacroHelp As LinkLabel
     Friend WithEvents LinkLabel_PreMacroHelp As LinkLabel
+    Friend WithEvents NumericUpDown_MaxParseThreads As NumericUpDown
+    Friend WithEvents Label11 As Label
 End Class
