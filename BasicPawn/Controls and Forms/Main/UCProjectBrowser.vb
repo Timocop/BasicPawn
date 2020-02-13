@@ -182,7 +182,9 @@ Public Class UCProjectBrowser
 
             g_mUCProjectBrowser.ListView_ProjectFiles.Items.Add(mListViewItemData)
 
-            m_ProjectChanged = True
+            If (Not mInfo.bIsRelative) Then
+                m_ProjectChanged = True
+            End If
         End Sub
 
         Public Sub InsertFile(iIndex As Integer, mInfo As STRUC_PROJECT_FILE_INFO)
@@ -202,10 +204,16 @@ Public Class UCProjectBrowser
 
             g_mUCProjectBrowser.ListView_ProjectFiles.Items.Insert(iIndex, mListViewItemData)
 
-            m_ProjectChanged = True
+            If (Not mInfo.bIsRelative) Then
+                m_ProjectChanged = True
+            End If
         End Sub
 
         Public Sub PackFileData(ByRef mInfo As STRUC_PROJECT_FILE_INFO)
+            If (mInfo.bIsRelative) Then
+                Return
+            End If
+
             Dim sText As String = IO.File.ReadAllText(mInfo.sFile)
 
             mInfo.sPackedData = sText
@@ -254,7 +262,9 @@ Public Class UCProjectBrowser
                     If (mInfo.sFile.ToLower = sFile.ToLower) Then
                         g_mUCProjectBrowser.ListView_ProjectFiles.Items.RemoveAt(i)
 
-                        m_ProjectChanged = True
+                        If (Not mInfo.bIsRelative) Then
+                            m_ProjectChanged = True
+                        End If
                     End If
                 Next
             Finally
@@ -358,6 +368,8 @@ Public Class UCProjectBrowser
                 Throw New ArgumentException("Project file path empty")
             End If
 
+            g_mUCProjectBrowser.g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "User saved project file: " & g_sProjectFile, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(g_sProjectFile))
+
             IO.File.WriteAllText(g_sProjectFile, "")
 
             Using mStream = ClassFileStreamWait.Create(g_sProjectFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
@@ -383,10 +395,10 @@ Public Class UCProjectBrowser
                 End Using
             End Using
 
-            m_ProjectChanged = False
+            RefreshRelativeFiles()
             UpdateListViewInfo()
+            m_ProjectChanged = False
 
-            g_mUCProjectBrowser.g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "User saved project file: " & g_sProjectFile, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(g_sProjectFile))
         End Sub
 
         Public Sub LoadProject(bAppend As Boolean, bOpenProjectFiles As Boolean)
@@ -438,45 +450,9 @@ Public Class UCProjectBrowser
                 End Using
             End Using
 
-            'Read relative paths  
-            If (m_ProjectRelativeEnabled) Then
-                Dim sRecursiveFiles As String() = GetRecursiveFilesFromProject()
-                If (sRecursiveFiles IsNot Nothing) Then
-                    Try
-                        BeginUpdate()
-
-                        For Each sFile As String In sRecursiveFiles
-                            If (m_ProjectRelativeNoInclude) Then
-                                Select Case (IO.Path.GetExtension(sFile).ToLower)
-                                    Case ".inc"
-                                        Continue For
-                                End Select
-                            End If
-
-                            'Never append relative paths
-                            If (IsFileInProject(sFile, True)) Then
-                                Continue For
-                            End If
-
-                            AddFile(New STRUC_PROJECT_FILE_INFO With {
-                                .sGUID = Nothing,
-                                .sFile = sFile,
-                                .sPackedData = Nothing,
-                                .bIsRelative = True
-                            })
-
-                            lProjectFiles.Add(sFile)
-
-                            g_mUCProjectBrowser.g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & "Loaded relative project file: " & sFile, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(sFile))
-                        Next
-                    Finally
-                        EndUpdate()
-                    End Try
-                End If
-            End If
-
-            m_ProjectChanged = bDidAppend
+            RefreshRelativeFiles()
             UpdateListViewInfo()
+            m_ProjectChanged = bDidAppend
 
             If (bOpenProjectFiles) Then
                 Try
