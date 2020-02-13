@@ -790,7 +790,9 @@ Public Class ClassTextEditorTools
                                   Optional mConfig As ClassConfigs.STRUC_CONFIG_ITEM = Nothing,
                                   Optional sWorkingDirectory As String = Nothing,
                                   Optional sCompilerPath As String = Nothing,
+                                  Optional sCompilerSearchPath As String = Nothing,
                                   Optional sIncludePaths As String = Nothing,
+                                  Optional sIncludeSearchPath As String = Nothing,
                                   Optional sEmulateSourceFile As String = Nothing,
                                   Optional bUseCustomCompilerOptions As Boolean = True,
                                   ByRef Optional sCompilerOutput As String = Nothing,
@@ -849,27 +851,32 @@ Public Class ClassTextEditorTools
                         sFilePath = mTab.m_File
                     End If
 
+                    Dim sFileDirectory As String = IO.Path.GetDirectoryName(sFilePath)
+                    If (Not String.IsNullOrEmpty(sCompilerSearchPath)) Then
+                        sFileDirectory = sCompilerSearchPath
+                    End If
+
                     While True
                         'SourcePawn
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(sFilePath), "spcomp.exe")
+                        sCompilerPath = IO.Path.Combine(sFileDirectory, "spcomp.exe")
                         If (IO.File.Exists(sCompilerPath)) Then
                             Exit While
                         End If
 
                         'AMX Mod X
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(sFilePath), "amxxpc.exe")
+                        sCompilerPath = IO.Path.Combine(sFileDirectory, "amxxpc.exe")
                         If (IO.File.Exists(sCompilerPath)) Then
                             Exit While
                         End If
 
                         'Small
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(sFilePath), "sc.exe")
+                        sCompilerPath = IO.Path.Combine(sFileDirectory, "sc.exe")
                         If (IO.File.Exists(sCompilerPath)) Then
                             Exit While
                         End If
 
                         'Pawn
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(sFilePath), "pawncc.exe")
+                        sCompilerPath = IO.Path.Combine(sFileDirectory, "pawncc.exe")
                         If (IO.File.Exists(sCompilerPath)) Then
                             Exit While
                         End If
@@ -916,7 +923,12 @@ Public Class ClassTextEditorTools
                         sFilePath = mTab.m_File
                     End If
 
-                    sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(sFilePath), "include")
+                    Dim sFileDirectory As String = IO.Path.GetDirectoryName(sFilePath)
+                    If (Not String.IsNullOrEmpty(sIncludeSearchPath)) Then
+                        sFileDirectory = sIncludeSearchPath
+                    End If
+
+                    sIncludePaths = IO.Path.Combine(sFileDirectory, "include")
                     If (Not IO.Directory.Exists(sIncludePaths)) Then
                         g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Compiling failed! Include path can not be found!", False, False, True)
                         Return False
@@ -1170,7 +1182,9 @@ Public Class ClassTextEditorTools
                                               Optional mConfig As ClassConfigs.STRUC_CONFIG_ITEM = Nothing,
                                               Optional sWorkingDirectory As String = Nothing,
                                               Optional sCompilerPath As String = Nothing,
+                                              Optional sCompilerSearchPath As String = Nothing,
                                               Optional sIncludePaths As String = Nothing,
+                                              Optional sIncludeSearchPath As String = Nothing,
                                               Optional sEmulateSourceFile As String = Nothing,
                                               Optional bUseCustomCompilerOptions As Boolean = True,
                                               ByRef Optional sCompilerOutput As String = Nothing,
@@ -1234,27 +1248,32 @@ Public Class ClassTextEditorTools
                         sFilePath = mTab.m_File
                     End If
 
+                    Dim sFileDirectory As String = IO.Path.GetDirectoryName(sFilePath)
+                    If (Not String.IsNullOrEmpty(sCompilerSearchPath)) Then
+                        sFileDirectory = sCompilerSearchPath
+                    End If
+
                     While True
                         'SourcePawn
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(sFilePath), "spcomp.exe")
+                        sCompilerPath = IO.Path.Combine(sFileDirectory, "spcomp.exe")
                         If (IO.File.Exists(sCompilerPath)) Then
                             Exit While
                         End If
 
                         'AMX Mod X
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(sFilePath), "amxxpc.exe")
+                        sCompilerPath = IO.Path.Combine(sFileDirectory, "amxxpc.exe")
                         If (IO.File.Exists(sCompilerPath)) Then
                             Exit While
                         End If
 
                         'Small
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(sFilePath), "sc.exe")
+                        sCompilerPath = IO.Path.Combine(sFileDirectory, "sc.exe")
                         If (IO.File.Exists(sCompilerPath)) Then
                             Exit While
                         End If
 
                         'Pawn
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(sFilePath), "pawncc.exe")
+                        sCompilerPath = IO.Path.Combine(sFileDirectory, "pawncc.exe")
                         If (IO.File.Exists(sCompilerPath)) Then
                             Exit While
                         End If
@@ -1301,7 +1320,12 @@ Public Class ClassTextEditorTools
                         sFilePath = mTab.m_File
                     End If
 
-                    sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(sFilePath), "include")
+                    Dim sFileDirectory As String = IO.Path.GetDirectoryName(sFilePath)
+                    If (Not String.IsNullOrEmpty(sIncludeSearchPath)) Then
+                        sFileDirectory = sIncludeSearchPath
+                    End If
+
+                    sIncludePaths = IO.Path.Combine(sFileDirectory, "include")
                     If (Not IO.Directory.Exists(sIncludePaths)) Then
                         g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Pre-Processing failed! Include path can not be found!", False, False, True)
                         Return Nothing
@@ -1492,7 +1516,9 @@ Public Class ClassTextEditorTools
                                             Optional mConfig As ClassConfigs.STRUC_CONFIG_ITEM = Nothing,
                                             Optional sWorkingDirectory As String = Nothing,
                                             Optional sCompilerPath As String = Nothing,
+                                            Optional sCompilerSearchPath As String = Nothing,
                                             Optional sIncludePaths As String = Nothing,
+                                            Optional sIncludeSearchPath As String = Nothing,
                                             Optional sEmulateSourceFile As String = Nothing,
                                             Optional bUseCustomCompilerOptions As Boolean = True,
                                             ByRef Optional sCompilerOutput As String = Nothing,
@@ -1546,27 +1572,32 @@ Public Class ClassTextEditorTools
                         sFilePath = mTab.m_File
                     End If
 
+                    Dim sFileDirectory As String = IO.Path.GetDirectoryName(sFilePath)
+                    If (Not String.IsNullOrEmpty(sCompilerSearchPath)) Then
+                        sFileDirectory = sCompilerSearchPath
+                    End If
+
                     While True
                         'SourcePawn
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(sFilePath), "spcomp.exe")
+                        sCompilerPath = IO.Path.Combine(sFileDirectory, "spcomp.exe")
                         If (IO.File.Exists(sCompilerPath)) Then
                             Exit While
                         End If
 
                         'AMX Mod X
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(sFilePath), "amxxpc.exe")
+                        sCompilerPath = IO.Path.Combine(sFileDirectory, "amxxpc.exe")
                         If (IO.File.Exists(sCompilerPath)) Then
                             Exit While
                         End If
 
                         'Small
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(sFilePath), "sc.exe")
+                        sCompilerPath = IO.Path.Combine(sFileDirectory, "sc.exe")
                         If (IO.File.Exists(sCompilerPath)) Then
                             Exit While
                         End If
 
                         'Pawn
-                        sCompilerPath = IO.Path.Combine(IO.Path.GetDirectoryName(sFilePath), "pawncc.exe")
+                        sCompilerPath = IO.Path.Combine(sFileDirectory, "pawncc.exe")
                         If (IO.File.Exists(sCompilerPath)) Then
                             Exit While
                         End If
@@ -1613,8 +1644,12 @@ Public Class ClassTextEditorTools
                         sFilePath = mTab.m_File
                     End If
 
+                    Dim sFileDirectory As String = IO.Path.GetDirectoryName(sFilePath)
+                    If (Not String.IsNullOrEmpty(sIncludeSearchPath)) Then
+                        sFileDirectory = sIncludeSearchPath
+                    End If
 
-                    sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(sFilePath), "include")
+                    sIncludePaths = IO.Path.Combine(sFileDirectory, "include")
                     If (Not IO.Directory.Exists(sIncludePaths)) Then
                         g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "DIASM failed! Include path can not be found!", False, False, True)
                         Return Nothing

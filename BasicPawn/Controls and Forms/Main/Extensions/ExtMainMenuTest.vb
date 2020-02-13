@@ -37,7 +37,19 @@ Partial Public Class FormMain
                 End If
 
                 Dim sOutputFile As String = ""
-                g_ClassTextEditorTools.CompileSource(Nothing, Nothing, sSource, True, True, sOutputFile, Nothing, If(sSourceFile Is Nothing, Nothing, IO.Path.GetDirectoryName(sSourceFile)), Nothing, Nothing, sSourceFile)
+                g_ClassTextEditorTools.CompileSource(Nothing,
+                                                     Nothing,
+                                                     sSource,
+                                                     True,
+                                                     True,
+                                                     sOutputFile,
+                                                     Nothing,
+                                                     If(sSourceFile Is Nothing, Nothing, IO.Path.GetDirectoryName(sSourceFile)),
+                                                     Nothing,
+                                                     Nothing,
+                                                     Nothing,
+                                                     Nothing,
+                                                     sSourceFile)
 
                 mProgress.m_Progress = 100
             End Using
@@ -68,7 +80,21 @@ Partial Public Class FormMain
 
                     Dim sOutputFile As String = ""
                     Dim sCompilerOutput As String = ""
-                    Dim bSuccess = g_ClassTextEditorTools.CompileSource(mTab, Nothing, sSource, True, True, sOutputFile, mTab.m_ActiveConfig, If(sSourceFile Is Nothing, Nothing, IO.Path.GetDirectoryName(sSourceFile)), Nothing, Nothing, sSourceFile, True, sCompilerOutput)
+                    Dim bSuccess = g_ClassTextEditorTools.CompileSource(mTab,
+                                                                        Nothing,
+                                                                        sSource,
+                                                                        True,
+                                                                        True,
+                                                                        sOutputFile,
+                                                                        mTab.m_ActiveConfig,
+                                                                        If(sSourceFile Is Nothing, Nothing, IO.Path.GetDirectoryName(sSourceFile)),
+                                                                        Nothing,
+                                                                        Nothing,
+                                                                        Nothing,
+                                                                        Nothing,
+                                                                        sSourceFile,
+                                                                        True,
+                                                                        sCompilerOutput)
 
                     Dim bWarning As Boolean = Regex.Match(sCompilerOutput, "^\s*[0-9]+\s+\b(Warning|Warnings)\b\.\s*$", RegexOptions.Multiline).Success
 

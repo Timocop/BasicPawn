@@ -284,6 +284,11 @@ Public Class ClassDebuggerRunner
             Throw New ArgumentException("Tab does not exist")
         End If
 
+        If (g_mFormDebugger.g_mFormMain.g_ClassTabControl.m_Tab(iIndex).m_IsUnsaved OrElse
+                    g_mFormDebugger.g_mFormMain.g_ClassTabControl.m_Tab(iIndex).m_InvalidFile) Then
+            Throw New ArgumentException("Invalid tab source file")
+        End If
+
         g_sCurrentSourceFile = g_mFormDebugger.g_mFormMain.g_ClassTabControl.m_Tab(iIndex).m_File
         g_sCurrentSource = g_mFormDebugger.g_mFormMain.g_ClassTabControl.m_Tab(iIndex).m_TextEditor.Document.TextContent
         g_sClientFolder = g_mFormDebugger.g_mFormMain.g_ClassTabControl.m_Tab(iIndex).m_ActiveConfig.g_sDebugClientFolder
@@ -632,7 +637,22 @@ Public Class ClassDebuggerRunner
                 Dim sOutputFile As String = IO.Path.Combine(m_SourceModFolder, String.Format("plugins\BasicPawnDebugCmdRunEngine-{0}.unk", Guid.NewGuid.ToString))
                 g_sLatestDebuggerRunnerPlugin = sOutputFile
 
-                If (Not g_mFormDebugger.g_mFormMain.g_ClassTextEditorTools.CompileSource(mTab, m_CurrentSourceFile, sSource, False, False, sOutputFile, m_CurrentConfig, Nothing, Nothing, Nothing, Nothing, True, Nothing, iCompilerType)) Then
+                If (Not g_mFormDebugger.g_mFormMain.g_ClassTextEditorTools.CompileSource(mTab,
+                                                                                         m_CurrentSourceFile,
+                                                                                         sSource,
+                                                                                         False,
+                                                                                         False,
+                                                                                         sOutputFile,
+                                                                                         m_CurrentConfig,
+                                                                                         Nothing,
+                                                                                         Nothing,
+                                                                                         Nothing,
+                                                                                         Nothing,
+                                                                                         Nothing,
+                                                                                         Nothing,
+                                                                                         True,
+                                                                                         Nothing,
+                                                                                         iCompilerType)) Then
                     Throw New ArgumentException("Compiler failure! See information tab for more information. (BasicPawn Debug Cmd Runner Engine)")
                 End If
 
@@ -671,7 +691,22 @@ Public Class ClassDebuggerRunner
 
                 g_ClassPreProcess.FinishSource(sSource)
 
-                If (Not g_mFormDebugger.g_mFormMain.g_ClassTextEditorTools.CompileSource(mTab, m_CurrentSourceFile, sSource, False, False, sOutputFile, m_CurrentConfig, Nothing, Nothing, Nothing, Nothing, True, Nothing, iCompilerType)) Then
+                If (Not g_mFormDebugger.g_mFormMain.g_ClassTextEditorTools.CompileSource(mTab,
+                                                                                         m_CurrentSourceFile,
+                                                                                         sSource,
+                                                                                         False,
+                                                                                         False,
+                                                                                         sOutputFile,
+                                                                                         m_CurrentConfig,
+                                                                                         Nothing,
+                                                                                         Nothing,
+                                                                                         Nothing,
+                                                                                         Nothing,
+                                                                                         Nothing,
+                                                                                         Nothing,
+                                                                                         True,
+                                                                                         Nothing,
+                                                                                         iCompilerType)) Then
                     Throw New ArgumentException("Compiler failure! See information tab for more information. (BasicPawn Debug Main Plugin)")
                 End If
 

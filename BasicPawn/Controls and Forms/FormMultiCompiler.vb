@@ -134,6 +134,8 @@ Public Class FormMultiCompiler
                                                                                                                                            IO.Path.GetDirectoryName(sSourceFile),
                                                                                                                                            Nothing,
                                                                                                                                            Nothing,
+                                                                                                                                           Nothing,
+                                                                                                                                           Nothing,
                                                                                                                                            sSourceFile,
                                                                                                                                            True,
                                                                                                                                            sCompilerOutput)

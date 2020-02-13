@@ -119,13 +119,14 @@ Public Class FormDebugger
                 End If
                 mFormProgress.m_Progress = 0
 
+                g_ClassDebuggerRunner.UpdateSourceFromTab()
+
                 Dim mTab = g_mFormMain.g_ClassTabControl.GetTabByIdentifier(g_ClassDebuggerRunner.m_DebugTabIdentifier)
                 If (mTab Is Nothing) Then
                     Throw New ArgumentException("Tab does not exist")
                 End If
 
-                g_ClassDebuggerRunner.UpdateSourceFromTab()
-                Me.Text = String.Format("BasicPawn Debugger ({0})", If(String.IsNullOrEmpty(g_ClassDebuggerRunner.m_CurrentSourceFile), "Unnamed", IO.Path.GetFileName(g_ClassDebuggerRunner.m_CurrentSourceFile)))
+                Me.Text = String.Format("BasicPawn Debugger ({0})", IO.Path.GetFileName(g_ClassDebuggerRunner.m_CurrentSourceFile))
 
 
                 mFormProgress.m_Progress = 10
@@ -145,7 +146,9 @@ Public Class FormDebugger
                                                                                                         Nothing,
                                                                                                         Nothing,
                                                                                                         Nothing,
-                                                                                                        If(String.IsNullOrEmpty(g_ClassDebuggerRunner.m_CurrentSourceFile), "Unnamed", g_ClassDebuggerRunner.m_CurrentSourceFile),
+                                                                                                        Nothing,
+                                                                                                        Nothing,
+                                                                                                        g_ClassDebuggerRunner.m_CurrentSourceFile,
                                                                                                         True,
                                                                                                         sCompilerOutput,
                                                                                                         iCompilerType)
@@ -189,7 +192,7 @@ Public Class FormDebugger
 
 
                 g_ClassDebuggerRunner.g_ClassPreProcess.FixPreProcessFiles(sPreSource)
-                g_ClassDebuggerRunner.g_ClassPreProcess.FixPreProcessFilePaths(sPreSource, g_sLastPreProcessSourceFile, If(String.IsNullOrEmpty(g_ClassDebuggerRunner.m_CurrentSourceFile), "Unnamed", g_ClassDebuggerRunner.m_CurrentSourceFile))
+                g_ClassDebuggerRunner.g_ClassPreProcess.FixPreProcessFilePaths(sPreSource, g_sLastPreProcessSourceFile, g_ClassDebuggerRunner.m_CurrentSourceFile)
                 g_ClassDebuggerRunner.g_ClassPreProcess.AnalysisSourceLines(sPreSource)
                 g_ClassDebuggerEntries.UpdateBreakpoints(sPreSource, False, g_iLanguage)
                 g_ClassDebuggerEntries.UpdateWatchers(sPreSource, False, g_iLanguage)
@@ -216,7 +219,9 @@ Public Class FormDebugger
                                                                                                       g_ClassDebuggerRunner.m_CurrentConfig,
                                                                                                       IO.Path.GetDirectoryName(g_sLastPreProcessSourceFile),
                                                                                                       Nothing,
+                                                                                                      IO.Path.GetDirectoryName(g_ClassDebuggerRunner.m_CurrentSourceFile),
                                                                                                       Nothing,
+                                                                                                      IO.Path.GetDirectoryName(g_ClassDebuggerRunner.m_CurrentSourceFile),
                                                                                                       Nothing,
                                                                                                       True,
                                                                                                       sCompilerOutput,
