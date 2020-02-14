@@ -241,10 +241,10 @@ Public Class FormReportManager
                                                                      For Each sSection As String In mIni.GetSectionNames
                                                                          Dim sHost As String = mIni.ReadKeyValue(sSection, "Host", Nothing)
                                                                          Dim sDatabaseEntry As String = mIni.ReadKeyValue(sSection, "DatabaseEntry", Nothing)
-                                                                         Dim sSourceModPath As String = mIni.ReadKeyValue(sSection, "SourceModPath", Nothing)
+                                                                         Dim sSourceModPath As String = mIni.ReadKeyValue(sSection, "DestinationPath", Nothing)
                                                                          Dim sProtocol As String = mIni.ReadKeyValue(sSection, "Protocol", "FTP")
 
-                                                                         If (String.IsNullOrEmpty(sHost) OrElse String.IsNullOrEmpty(sDatabaseEntry)) Then
+                                                                         If (String.IsNullOrEmpty(sHost) OrElse String.IsNullOrEmpty(sDatabaseEntry) OrElse String.IsNullOrEmpty(sSourceModPath)) Then
                                                                              Continue For
                                                                          End If
 
@@ -637,10 +637,10 @@ Public Class FormReportManager
                                                                   For Each sSection As String In mIni.GetSectionNames
                                                                       Dim sHost As String = mIni.ReadKeyValue(sSection, "Host", Nothing)
                                                                       Dim sDatabaseEntry As String = mIni.ReadKeyValue(sSection, "DatabaseEntry", Nothing)
-                                                                      Dim sSourceModPath As String = mIni.ReadKeyValue(sSection, "SourceModPath", Nothing)
+                                                                      Dim sSourceModPath As String = mIni.ReadKeyValue(sSection, "DestinationPath", Nothing)
                                                                       Dim sProtocol As String = mIni.ReadKeyValue(sSection, "Protocol", "FTP")
 
-                                                                      If (String.IsNullOrEmpty(sHost) OrElse String.IsNullOrEmpty(sDatabaseEntry)) Then
+                                                                      If (String.IsNullOrEmpty(sHost) OrElse String.IsNullOrEmpty(sDatabaseEntry) OrElse String.IsNullOrEmpty(sSourceModPath)) Then
                                                                           Continue For
                                                                       End If
 

@@ -22,31 +22,10 @@ Public Class FormFTP
     Private g_mPluginFTP As PluginFTP
 
     Private g_mSecureStorage As ClassSecureStorage
-    Private g_lFtpEntries As New List(Of STRUC_FTP_ENTRY_ITEM)
 
     Private g_mUploadThread As Threading.Thread
     Private g_mFormProgress As FormProgress
-
-    Enum ENUM_FTP_PROTOCOL_TYPE
-        FTP
-        SFTP
-    End Enum
-
-    Structure STRUC_FTP_ENTRY_ITEM
-        Dim sGUID As String
-        Dim sHost As String
-        Dim sDatabaseEntry As String
-        Dim sDestinationPath As String
-        Dim iProtocolType As ENUM_FTP_PROTOCOL_TYPE
-
-        Sub New(_Host As String, _DatabaseEntry As String, _DestinationPath As String, _ProtocolType As ENUM_FTP_PROTOCOL_TYPE)
-            sGUID = Guid.NewGuid.ToString
-            sHost = _Host
-            sDatabaseEntry = _DatabaseEntry
-            sDestinationPath = _DestinationPath
-            iProtocolType = _ProtocolType
-        End Sub
-    End Structure
+    Private g_mUCFtpDatabase As UCFtpPathDatabase
 
     Public Sub New(mPluginFTP As PluginFTP, sFile As String)
         Me.New(mPluginFTP, New String() {sFile})
@@ -60,20 +39,32 @@ Public Class FormFTP
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call. 
+        g_mUCFtpDatabase = New UCFtpPathDatabase With {
+            .Parent = Panel_FtpDatabase,
+            .Dock = DockStyle.Fill
+        }
+        g_mUCFtpDatabase.Show()
+
         TextBox_UploadFile.Multiline = True
         TextBox_UploadFile.Text = String.Join(";"c, sFiles)
-        GroupBox_NewEntry.Visible = False
-        ComboBox_Protocol.SelectedIndex = 0
+
         Me.AutoSize = True
 
         g_mSecureStorage = New ClassSecureStorage("PluginFtpEntries")
-
-        LoadSettings()
-        FillListView()
     End Sub
 
     Private Sub FormFTP_Load(sender As Object, e As EventArgs) Handles Me.Load
         ClassControlStyle.UpdateControls(Me)
+
+        LoadSettings()
+    End Sub
+
+    Private Sub FormFTP_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+        SaveSettings()
+    End Sub
+
+    Private Sub FormFTP_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
+        CleanUp()
     End Sub
 
     Private Sub Button_SearchUploadFile_Click(sender As Object, e As EventArgs) Handles Button_SearchUploadFile.Click
@@ -86,136 +77,21 @@ Public Class FormFTP
         End Using
     End Sub
 
-    Private Sub ListView_FtpEntries_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListView_FtpEntries.SelectedIndexChanged
-        Button_Upload.Enabled = (ListView_FtpEntries.SelectedItems.Count > 0)
-        Button_Browse.Enabled = (ListView_FtpEntries.SelectedItems.Count > 0)
-    End Sub
-
-    Private Sub ListView_FtpEntries_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles ListView_FtpEntries.MouseDoubleClick
-        Button_Upload.PerformClick()
-    End Sub
-
-    Private Sub LinkLabel_RemoveItem_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_RemoveItem.LinkClicked
+    Private Sub Button_Browse_Click(sender As Object, e As EventArgs) Handles Button_Browse.Click
         Try
-            If (ListView_FtpEntries.SelectedItems.Count < 1) Then
-                Throw New ArgumentException("Nothing selected to remove")
+            Dim mFtpItem = g_mUCFtpDatabase.GetSelectedEntry
+            If (mFtpItem Is Nothing) Then
+                Throw New ArgumentException("Unable to find entry")
             End If
 
-            For i = 0 To ListView_FtpEntries.SelectedItems.Count - 1
-                Dim mListViewItemData = TryCast(ListView_FtpEntries.SelectedItems(i), ClassListViewItemData)
-                If (mListViewItemData Is Nothing) Then
-                    Throw New ArgumentException("Invalid type")
-                End If
-
-                Dim sGUID As String = CStr(mListViewItemData.g_mData("GUID"))
-
-                g_lFtpEntries.RemoveAll(Function(x As STRUC_FTP_ENTRY_ITEM)
-                                            Return x.sGUID = sGUID
-                                        End Function)
-            Next
-
-            FillListView()
-            SaveSettings()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End Try
-    End Sub
-
-    Private Sub CheckBox_MoreDetails_CheckedChanged(sender As Object, e As EventArgs) Handles CheckBox_MoreDetails.CheckedChanged
-        GroupBox_NewEntry.Visible = CheckBox_MoreDetails.Checked
-    End Sub
-
-    Private Sub ComboBox_DatabaseEntry_DropDown(sender As Object, e As EventArgs) Handles ComboBox_DatabaseEntry.DropDown
-        Try
-            Dim sLastSelected As String = ComboBox_DatabaseEntry.Text
-
-            Try
-                ComboBox_DatabaseEntry.BeginUpdate()
-                ComboBox_DatabaseEntry.Items.Clear()
-
-                For Each mItem In ClassDatabase.GetDatabaseItems
-                    ComboBox_DatabaseEntry.Items.Add(mItem.m_Name)
-                Next
-            Finally
-                ComboBox_DatabaseEntry.EndUpdate()
-            End Try
-
-            Dim iIndex As Integer = ComboBox_DatabaseEntry.Items.IndexOf(sLastSelected)
-            If (iIndex > -1) Then
-                ComboBox_DatabaseEntry.SelectedIndex = iIndex
-            End If
-        Catch ex As Exception
-            ClassExceptionLog.WriteToLogMessageBox(ex)
-        End Try
-    End Sub
-
-    Private Sub Button_SearchPath_Click(sender As Object, e As EventArgs) Handles Button_SearchPath.Click
-        Try
-            Dim sDatabaseEntry As String = ComboBox_DatabaseEntry.Text
-            If (String.IsNullOrEmpty(sDatabaseEntry)) Then
-                Throw New ArgumentException("Invalid database entry")
-            End If
-
-            Dim sHost As String = TextBox_Host.Text
-            If (String.IsNullOrEmpty(sHost)) Then
-                Throw New ArgumentException("Invalid host")
-            End If
-
-            Dim iProtocol As ENUM_FTP_PROTOCOL_TYPE
-            Select Case (ComboBox_Protocol.SelectedIndex)
-                Case 0
-                    iProtocol = ENUM_FTP_PROTOCOL_TYPE.FTP
-                Case Else
-                    iProtocol = ENUM_FTP_PROTOCOL_TYPE.SFTP
-            End Select
-
-            Dim mDatabaseItem = ClassDatabase.FindDatabaseItemByName(sDatabaseEntry)
+            Dim mDatabaseItem = ClassDatabase.FindDatabaseItemByName(mFtpItem.sDatabaseEntry)
             If (mDatabaseItem Is Nothing) Then
                 Throw New ArgumentException("Unable to find database entry")
             End If
 
-            Dim sUsername As String = mDatabaseItem.m_Username
-            Dim sPassword As String = mDatabaseItem.m_Password
-
-            Using i As New FormFileDialogFTP(FormFileDialogFTP.ENUM_DIALOG_TYPE.OPEN_DIRECTORY, CType(iProtocol, FormFileDialogFTP.ENUM_FTP_PROTOCOL_TYPE), sHost, sUsername, sPassword, "")
-                If (i.ShowDialog = DialogResult.OK) Then
-                    TextBox_DestinationPath.Text = i.m_CurrentPath
-                Else
-                    Return
-                End If
+            Using i As New FormFileDialogFTP(FormFileDialogFTP.ENUM_DIALOG_TYPE.OPEN_DIRECTORY, CType(mFtpItem.iProtocolType, FormFileDialogFTP.ENUM_FTP_PROTOCOL_TYPE), mFtpItem.sHost, mDatabaseItem.m_Username, mDatabaseItem.m_Password, "")
+                i.ShowDialog()
             End Using
-        Catch ex As Exception
-            ClassExceptionLog.WriteToLogMessageBox(ex)
-        End Try
-    End Sub
-
-    Private Sub Button_Browse_Click(sender As Object, e As EventArgs) Handles Button_Browse.Click
-        Try
-            If (ListView_FtpEntries.SelectedItems.Count < 1) Then
-                Return
-            End If
-
-            Dim mListViewItemData = TryCast(ListView_FtpEntries.SelectedItems(0), ClassListViewItemData)
-            If (mListViewItemData Is Nothing) Then
-                Return
-            End If
-
-            Dim sGUID As String = CStr(mListViewItemData.g_mData("GUID"))
-
-            For Each mFtpItem In g_lFtpEntries.ToArray
-                If (mFtpItem.sGUID = sGUID) Then
-                    Dim mDatabaseItem = ClassDatabase.FindDatabaseItemByName(mFtpItem.sDatabaseEntry)
-                    If (mDatabaseItem Is Nothing) Then
-                        Throw New ArgumentException("Unable to find database entry")
-                    End If
-
-                    Using i As New FormFileDialogFTP(FormFileDialogFTP.ENUM_DIALOG_TYPE.OPEN_DIRECTORY, CType(mFtpItem.iProtocolType, FormFileDialogFTP.ENUM_FTP_PROTOCOL_TYPE), mFtpItem.sHost, mDatabaseItem.m_Username, mDatabaseItem.m_Password, "")
-                        i.ShowDialog()
-                    End Using
-
-                    Exit For
-                End If
-            Next
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
@@ -227,32 +103,24 @@ Public Class FormFTP
         End If
 
         Try
-            If (ListView_FtpEntries.SelectedItems.Count < 1) Then
-                Return
+            Dim mFtpItem = g_mUCFtpDatabase.GetSelectedEntry
+            If (mFtpItem Is Nothing) Then
+                Throw New ArgumentException("Unable to find entry")
             End If
 
-            Dim mListViewItemData = TryCast(ListView_FtpEntries.SelectedItems(0), ClassListViewItemData)
-            If (mListViewItemData Is Nothing) Then
-                Return
+            Dim mDatabaseItem = ClassDatabase.FindDatabaseItemByName(mFtpItem.sDatabaseEntry)
+            If (mDatabaseItem Is Nothing) Then
+                Throw New ArgumentException("Unable to find database entry")
             End If
 
-            Dim sGUID As String = CStr(mListViewItemData.g_mData("GUID"))
+            Dim sFiles As String() = TextBox_UploadFile.Text.Split(";"c)
+            Dim iProtocolType As UCFtpPathDatabase.ENUM_FTP_PROTOCOL_TYPE = mFtpItem.iProtocolType
+            Dim sHost As String = mFtpItem.sHost
+            Dim sDestinationPath As String = mFtpItem.sDestinationPath
+            Dim sUsername As String = mDatabaseItem.m_Username
+            Dim sPassword As String = mDatabaseItem.m_Password
 
-            For Each mFtpItem In g_lFtpEntries.ToArray
-                If (mFtpItem.sGUID = sGUID) Then
-                    Dim mDatabaseItem = ClassDatabase.FindDatabaseItemByName(mFtpItem.sDatabaseEntry)
-                    If (mDatabaseItem Is Nothing) Then
-                        Throw New ArgumentException("Unable to find database entry")
-                    End If
-
-                    Dim sFiles As String() = TextBox_UploadFile.Text.Split(";"c)
-                    Dim iProtocolType As ENUM_FTP_PROTOCOL_TYPE = mFtpItem.iProtocolType
-                    Dim sHost As String = mFtpItem.sHost
-                    Dim sDestinationPath As String = mFtpItem.sDestinationPath
-                    Dim sUsername As String = mDatabaseItem.m_Username
-                    Dim sPassword As String = mDatabaseItem.m_Password
-
-                    g_mUploadThread = New Threading.Thread(
+            g_mUploadThread = New Threading.Thread(
                         Sub()
                             Dim bCanceled As Boolean = False
 
@@ -264,7 +132,7 @@ Public Class FormFTP
                                     Dim mFtpClient As Object = Nothing
                                     Try
                                         Select Case (iProtocolType)
-                                            Case ENUM_FTP_PROTOCOL_TYPE.FTP
+                                            Case UCFtpPathDatabase.ENUM_FTP_PROTOCOL_TYPE.FTP
                                                 mFtpClient = New ClassFTP(sHost, sUsername, sPassword)
                                             Case Else
                                                 mFtpClient = New Renci.SshNet.SftpClient(sHost, sUsername, sPassword)
@@ -277,8 +145,14 @@ Public Class FormFTP
                                                 Continue For
                                             End If
 
-                                            g_mPluginFTP.g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("Uploading file '{0}' ({1}/{2}) to '{3}/{4}' using {5}...", sFiles(i), i + 1, sFiles.Length, sHost.TrimEnd("/"c), sDestinationPath.TrimStart("/"c),
-                                                                                                                                       If(iProtocolType = ENUM_FTP_PROTOCOL_TYPE.FTP, "FTP", "SFTP")), New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(sFiles(i)))
+                                            g_mPluginFTP.g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO,
+                                                                                                           String.Format("Uploading file '{0}' ({1}/{2}) to '{3}/{4}' using {5}...",
+                                                                                                                         sFiles(i), i + 1,
+                                                                                                                         sFiles.Length,
+                                                                                                                         sHost.TrimEnd("/"c),
+                                                                                                                         sDestinationPath.TrimStart("/"c),
+                                                                                                                         If(iProtocolType = UCFtpPathDatabase.ENUM_FTP_PROTOCOL_TYPE.FTP, "FTP", "SFTP")),
+                                                                                                           New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(sFiles(i)))
 
                                             Dim sFilename As String = IO.Path.GetFileName(sFiles(i))
                                             Dim sDestinationFile As String = (sDestinationPath.TrimEnd("/"c) & "/" & sFilename)
@@ -376,46 +250,9 @@ Public Class FormFTP
                         .IsBackground = True,
                         .Priority = Threading.ThreadPriority.Lowest
                     }
-                    g_mUploadThread.Start()
-
-                    Exit For
-                End If
-            Next
-
-
+            g_mUploadThread.Start()
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
-        End Try
-    End Sub
-
-    Private Sub Button_AddEntry_Click(sender As Object, e As EventArgs) Handles Button_AddEntry.Click
-        Try
-            Dim sDatabaseEntry As String = ComboBox_DatabaseEntry.Text
-            If (String.IsNullOrEmpty(sDatabaseEntry)) Then
-                Throw New ArgumentException("Invalid database entry")
-            End If
-
-            Dim sHost As String = TextBox_Host.Text
-            If (String.IsNullOrEmpty(sHost)) Then
-                Throw New ArgumentException("Invalid host")
-            End If
-
-            Dim sDestinationPath As String = TextBox_DestinationPath.Text
-
-            Dim iProtocol As ENUM_FTP_PROTOCOL_TYPE
-            Select Case (ComboBox_Protocol.SelectedIndex)
-                Case 0
-                    iProtocol = ENUM_FTP_PROTOCOL_TYPE.FTP
-                Case Else
-                    iProtocol = ENUM_FTP_PROTOCOL_TYPE.SFTP
-            End Select
-
-            g_lFtpEntries.Add(New STRUC_FTP_ENTRY_ITEM(sHost, sDatabaseEntry, sDestinationPath, iProtocol))
-
-            FillListView()
-            SaveSettings()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
 
@@ -423,37 +260,13 @@ Public Class FormFTP
         Me.Close()
     End Sub
 
-    Private Sub FormFTP_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
-        CleanUp()
-    End Sub
-
     Private Sub LoadSettings()
         Try
-            g_lFtpEntries.Clear()
-
             g_mSecureStorage.Open()
 
             Using mIni As New ClassIni(g_mSecureStorage.m_String(System.Text.Encoding.Default))
-                For Each sSection As String In mIni.GetSectionNames
-                    Dim sHost As String = mIni.ReadKeyValue(sSection, "Host", Nothing)
-                    Dim sDatabaseEntry As String = mIni.ReadKeyValue(sSection, "DatabaseEntry", Nothing)
-                    Dim sDestinationPath As String = mIni.ReadKeyValue(sSection, "DestinationPath", Nothing)
-                    Dim sProtocol As String = mIni.ReadKeyValue(sSection, "Protocol", "FTP")
-
-                    If (String.IsNullOrEmpty(sHost) OrElse String.IsNullOrEmpty(sDatabaseEntry)) Then
-                        Continue For
-                    End If
-
-                    Dim iProtocolType As ENUM_FTP_PROTOCOL_TYPE
-                    Select Case (sProtocol)
-                        Case "SFTP"
-                            iProtocolType = ENUM_FTP_PROTOCOL_TYPE.SFTP
-                        Case Else
-                            iProtocolType = ENUM_FTP_PROTOCOL_TYPE.FTP
-                    End Select
-
-                    g_lFtpEntries.Add(New STRUC_FTP_ENTRY_ITEM(sHost, sDatabaseEntry, sDestinationPath, iProtocolType))
-                Next
+                g_mUCFtpDatabase.LoadSettings(mIni)
+                g_mUCFtpDatabase.RefreshListView()
             End Using
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
@@ -463,14 +276,7 @@ Public Class FormFTP
     Private Sub SaveSettings()
         Try
             Using mIni As New ClassIni
-                For Each mFtpItem In g_lFtpEntries.ToArray
-                    Dim sSection As String = Guid.NewGuid.ToString
-
-                    mIni.WriteKeyValue(sSection, "Host", mFtpItem.sHost)
-                    mIni.WriteKeyValue(sSection, "DatabaseEntry", mFtpItem.sDatabaseEntry)
-                    mIni.WriteKeyValue(sSection, "DestinationPath", mFtpItem.sDestinationPath)
-                    mIni.WriteKeyValue(sSection, "Protocol", If(mFtpItem.iProtocolType = ENUM_FTP_PROTOCOL_TYPE.FTP, "FTP", "SFTP"))
-                Next
+                g_mUCFtpDatabase.SaveSettings(mIni)
 
                 g_mSecureStorage.m_String(System.Text.Encoding.Default) = mIni.ExportToString
             End Using
@@ -479,21 +285,6 @@ Public Class FormFTP
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
-    End Sub
-
-    Private Sub FillListView()
-        Dim lListViewItems As New List(Of ListViewItem)
-        For Each mFtpItem In g_lFtpEntries.ToArray
-            Dim mListViewItemData = New ClassListViewItemData(New String() {mFtpItem.sDatabaseEntry, mFtpItem.sHost, mFtpItem.sDestinationPath, If(mFtpItem.iProtocolType = ENUM_FTP_PROTOCOL_TYPE.FTP, "FTP", "SFTP")})
-            mListViewItemData.g_mData("GUID") = mFtpItem.sGUID
-            lListViewItems.Add(mListViewItemData)
-        Next
-
-        ListView_FtpEntries.BeginUpdate()
-        ListView_FtpEntries.Items.Clear()
-        ListView_FtpEntries.Items.AddRange(lListViewItems.ToArray)
-        ClassTools.ClassControls.ClassListView.AutoResizeColumns(ListView_FtpEntries)
-        ListView_FtpEntries.EndUpdate()
     End Sub
 
     Private Sub CleanUp()

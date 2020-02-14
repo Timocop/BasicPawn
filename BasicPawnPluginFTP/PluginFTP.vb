@@ -208,7 +208,19 @@ Public Class PluginFTP
                 End If
 
                 Dim sOutputFile As String = ""
-                g_mPluginFTP.g_mFormMain.g_ClassTextEditorTools.CompileSource(Nothing, Nothing, sSource, False, False, sOutputFile, Nothing, If(sSourceFile Is Nothing, Nothing, IO.Path.GetDirectoryName(sSourceFile)), Nothing, Nothing, sSourceFile)
+                g_mPluginFTP.g_mFormMain.g_ClassTextEditorTools.CompileSource(Nothing,
+                                                                              Nothing,
+                                                                              sSource,
+                                                                              False,
+                                                                              False,
+                                                                              sOutputFile,
+                                                                              Nothing,
+                                                                              If(sSourceFile Is Nothing, Nothing, IO.Path.GetDirectoryName(sSourceFile)),
+                                                                              Nothing,
+                                                                              Nothing,
+                                                                              Nothing,
+                                                                              Nothing,
+                                                                              sSourceFile)
 
                 Using i As New FormFTP(g_mPluginFTP, sOutputFile)
                     i.ShowDialog(g_mPluginFTP.g_mFormMain)
