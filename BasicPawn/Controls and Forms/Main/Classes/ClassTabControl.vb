@@ -372,7 +372,7 @@ Public Class ClassTabControl
     ''' <param name="sFile"></param>
     ''' <param name="bIgnoreSavePrompt">If true, the new file will be opened without prompting to save the changed source</param>
     ''' <returns></returns>
-    Public Function OpenFileTab(iIndex As Integer, sFile As String, Optional bIgnoreSavePrompt As Boolean = False) As Boolean
+    Public Function OpenFileTab(iIndex As Integer, sFile As String, Optional bIgnoreSavePrompt As Boolean = False, Optional bKeepView As Boolean = True) As Boolean
         If (Not bIgnoreSavePrompt AndAlso PromptSaveTab(iIndex)) Then
             Return False
         End If
@@ -416,6 +416,10 @@ Public Class ClassTabControl
 
         Dim sFileText As String = IO.File.ReadAllText(sFile)
 
+        'Try to keep current view
+        Dim iCaretLine = m_Tab(iIndex).m_TextEditor.ActiveTextAreaControl.Caret.Line
+        Dim iCaretColumn = m_Tab(iIndex).m_TextEditor.ActiveTextAreaControl.Caret.Column
+
         m_Tab(iIndex).g_ClassLineState.BeginIgnore()
 
         m_Tab(iIndex).m_FileCachedWriteDate = Date.MaxValue
@@ -443,6 +447,14 @@ Public Class ClassTabControl
 
         If (g_mFormMain.g_mUCStartPage.Visible) Then
             g_mFormMain.g_mUCStartPage.Hide()
+        End If
+
+        If (bKeepView) Then
+            Dim mCaretPos = m_Tab(iIndex).m_TextEditor.ActiveTextAreaControl.Caret.ValidatePosition(New TextLocation(iCaretColumn, iCaretLine))
+            m_Tab(iIndex).m_TextEditor.ActiveTextAreaControl.Caret.Position = mCaretPos
+            m_Tab(iIndex).m_TextEditor.ActiveTextAreaControl.Caret.UpdateCaretPosition()
+
+            m_Tab(iIndex).m_TextEditor.ActiveTextAreaControl.CenterViewOn(mCaretPos.Line, 10)
         End If
 
         RaiseEvent OnTabOpen(m_Tab(iIndex), m_Tab(iIndex).m_File)
