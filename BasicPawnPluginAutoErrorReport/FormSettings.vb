@@ -24,6 +24,7 @@ Public Class FormSettings
     Private g_mFtpSecureStorage As ClassSecureStorage
     Private g_mSettingsSecureStorage As ClassSecureStorage
     Private g_mUCFtpDatabase As UCFtpPathDatabase
+    Private g_bDatabaseLoaded As Boolean = False
 
     Public Sub New(mPluginAutoErrorReport As PluginAutoErrorReport)
         g_mPluginAutoErrorReport = mPluginAutoErrorReport
@@ -184,6 +185,8 @@ Public Class FormSettings
                     NumericUpDown_MaxFileSize.Value = ClassTools.ClassMath.ClampInt(iMaxFileSize, CInt(NumericUpDown_MaxFileSize.Minimum), CInt(NumericUpDown_MaxFileSize.Maximum))
                 End If
             End Using
+
+            g_bDatabaseLoaded = True
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
@@ -191,6 +194,10 @@ Public Class FormSettings
 
     Private Sub SaveSettings()
         Try
+            If (Not g_bDatabaseLoaded) Then
+                Return
+            End If
+
             'Save Servers
             Using mIni As New ClassIni
                 g_mUCFtpDatabase.SaveSettings(mIni)

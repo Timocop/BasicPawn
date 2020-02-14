@@ -26,6 +26,7 @@ Public Class FormFTP
     Private g_mUploadThread As Threading.Thread
     Private g_mFormProgress As FormProgress
     Private g_mUCFtpDatabase As UCFtpPathDatabase
+    Private g_bDatabaseLoaded As Boolean = False
 
     Public Sub New(mPluginFTP As PluginFTP, sFile As String)
         Me.New(mPluginFTP, New String() {sFile})
@@ -268,6 +269,8 @@ Public Class FormFTP
                 g_mUCFtpDatabase.LoadSettings(mIni)
                 g_mUCFtpDatabase.RefreshListView()
             End Using
+
+            g_bDatabaseLoaded = True
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
@@ -275,6 +278,10 @@ Public Class FormFTP
 
     Private Sub SaveSettings()
         Try
+            If (Not g_bDatabaseLoaded) Then
+                Return
+            End If
+
             Using mIni As New ClassIni
                 g_mUCFtpDatabase.SaveSettings(mIni)
 
