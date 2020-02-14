@@ -12,7 +12,7 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyDescription("A lightweight SourcePawn Editor")>
 <Assembly: AssemblyCompany("TheTimocop")>
 <Assembly: AssemblyProduct("BasicPawn")>
-<Assembly: AssemblyCopyright("Copyright © TheTimocop 2018")>
+<Assembly: AssemblyCopyright("Copyright © TheTimocop 2020")>
 <Assembly: AssemblyTrademark("BasicPawn")>
 
 <Assembly: ComVisible(False)>

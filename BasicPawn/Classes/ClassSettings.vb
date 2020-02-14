@@ -1,5 +1,5 @@
 ﻿'BasicPawn
-'Copyright(C) 2018 TheTimocop
+'Copyright(C) 2020 TheTimocop
 
 'This program Is free software: you can redistribute it And/Or modify
 'it under the terms Of the GNU General Public License As published by
