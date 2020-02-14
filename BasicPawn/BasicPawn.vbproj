@@ -469,10 +469,10 @@
     <Compile Include="Controls and Forms\Main\UCBookmarkDetails.vb">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls and Forms\UCFtpPathDatabase.Designer.vb">
+    <Compile Include="Classes\Controls\UCFtpPathDatabase.Designer.vb">
       <DependentUpon>UCFtpPathDatabase.vb</DependentUpon>
     </Compile>
-    <Compile Include="Controls and Forms\UCFtpPathDatabase.vb">
+    <Compile Include="Classes\Controls\UCFtpPathDatabase.vb">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
@@ -582,7 +582,7 @@
     <EmbeddedResource Include="Controls and Forms\Main\UCProjectBrowser.resx">
       <DependentUpon>UCProjectBrowser.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls and Forms\UCFtpPathDatabase.resx">
+    <EmbeddedResource Include="Classes\Controls\UCFtpPathDatabase.resx">
       <DependentUpon>UCFtpPathDatabase.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
