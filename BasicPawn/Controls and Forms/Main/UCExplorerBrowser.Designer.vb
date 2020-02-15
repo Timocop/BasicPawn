@@ -107,7 +107,7 @@ Partial Class UCExplorerBrowser
         'ToolStripMenuItem_Home
         '
         Me.ToolStripMenuItem_Home.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.ToolStripMenuItem_Home.Image = Global.BasicPawn.My.Resources.Resources.imageres_5304_16x16
+        Me.ToolStripMenuItem_Home.Image = Global.BasicPawn.My.Resources.Resources.imageres_5303_16x16
         Me.ToolStripMenuItem_Home.Name = "ToolStripMenuItem_Home"
         Me.ToolStripMenuItem_Home.Size = New System.Drawing.Size(28, 24)
         Me.ToolStripMenuItem_Home.Text = "Home"

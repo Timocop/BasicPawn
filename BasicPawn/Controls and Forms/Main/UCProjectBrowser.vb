@@ -131,12 +131,16 @@ Public Class UCProjectBrowser
                 g_mUCProjectBrowser.g_mFormMain.ToolStripStatusLabel_Project.Text = String.Format("Project: {0}{1}", IO.Path.GetFileNameWithoutExtension(g_sProjectFile), If(m_ProjectChanged, "*", ""))
                 g_mUCProjectBrowser.g_mFormMain.ToolStripStatusLabel_Project.ToolTipText = g_sProjectFile
                 g_mUCProjectBrowser.g_mFormMain.ToolStripStatusLabel_Project.Visible = True
+
+                g_mUCProjectBrowser.ToolStripTextBox_MenuProjectPath.Text = g_sProjectFile
             Else
                 If (g_mUCProjectBrowser.g_mFormMain.ToolStripStatusLabel_Project.Visible) Then
                     g_mUCProjectBrowser.g_mFormMain.ToolStripStatusLabel_Project.Visible = False
                     g_mUCProjectBrowser.g_mFormMain.ToolStripStatusLabel_Project.Text = ""
                     g_mUCProjectBrowser.g_mFormMain.ToolStripStatusLabel_Project.ToolTipText = ""
                 End If
+
+                g_mUCProjectBrowser.ToolStripTextBox_MenuProjectPath.Text = ""
             End If
         End Sub
 
@@ -607,6 +611,14 @@ Public Class UCProjectBrowser
             Next
         End Sub
     End Class
+
+    Private Sub ToolStripMenuItem_MenuProjectLoad_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_MenuProjectLoad.Click
+        g_mFormMain.ToolStripMenuItem_FileProjectLoad.PerformClick()
+    End Sub
+
+    Private Sub ToolStripMenuItem_MenuProjectSave_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_MenuProjectSave.Click
+        g_mFormMain.ToolStripMenuItem_FileProjectSave.PerformClick()
+    End Sub
 
     Private Sub ToolStripMenuItem_Open_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Open.Click
         Try
