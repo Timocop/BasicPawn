@@ -24,6 +24,9 @@ Imports System.Text.RegularExpressions
 Public Class ClassSyntaxParser
     Private g_mFormMain As FormMain
     Private g_mSyntaxParsingThreads As New ClassSyncList(Of KeyValuePair(Of String, Threading.Thread))
+
+    Private g_lUpdateRequests As New ClassSyncList(Of STRUC_SYNTAX_PARSE_TAB_REQUEST)
+
     Private _lock As New Object
 
     Class STRUC_SYNTAX_PARSE_TAB_REQUEST
@@ -36,16 +39,22 @@ Public Class ClassSyntaxParser
         End Sub
     End Class
 
-    Public g_lFullSyntaxParseRequests As New ClassSyncList(Of STRUC_SYNTAX_PARSE_TAB_REQUEST)
-
-    Public Event OnSyntaxParseStarted(iUpdateType As ENUM_PARSE_TYPE_FLAGS)
-    Public Event OnSyntaxParseSuccess(iUpdateType As ENUM_PARSE_TYPE_FLAGS, sTabIdentifier As String, iOptionFlags As ENUM_PARSE_OPTIONS_FLAGS)
+    Public Event OnSyntaxParseStarted(iUpdateType As ENUM_PARSE_TYPE_FLAGS, sTabIdentifier As String, iOptionFlags As ENUM_PARSE_OPTIONS_FLAGS)
+    Public Event OnSyntaxParseSuccess(iUpdateType As ENUM_PARSE_TYPE_FLAGS, sTabIdentifier As String, iOptionFlags As ENUM_PARSE_OPTIONS_FLAGS, iFullParseError As ENUM_PARSE_ERROR, iVarParseError As ENUM_PARSE_ERROR)
     Public Event OnSyntaxParseEnd()
     Public Event OnSyntaxParseAbort()
 
     Public Sub New(f As FormMain)
         g_mFormMain = f
     End Sub
+
+    Enum ENUM_PARSE_ERROR
+        INVALID_TAB
+        INVALID_FILE
+        [ERROR]
+        UNCHANGED = 0
+        UPDATED
+    End Enum
 
     Enum ENUM_PARSE_TYPE_FLAGS
         ALL = -1
@@ -58,6 +67,12 @@ Public Class ClassSyntaxParser
         FORCE_UPDATE = (1 << 0)
         FORCE_SCHEDULE = (1 << 1)
     End Enum
+
+    ReadOnly Property m_UpdateRequests As ClassSyncList(Of STRUC_SYNTAX_PARSE_TAB_REQUEST)
+        Get
+            Return g_lUpdateRequests
+        End Get
+    End Property
 
     ''' <summary>
     ''' Starts the syntax parse thread.
@@ -90,17 +105,20 @@ Public Class ClassSyntaxParser
         Dim mSyntaxParsingThread As New Threading.Thread(Sub()
                                                              Try
                                                                  Try
+                                                                     Dim iFullParseError As ENUM_PARSE_ERROR = ENUM_PARSE_ERROR.UNCHANGED
+                                                                     Dim iVarParseError As ENUM_PARSE_ERROR = ENUM_PARSE_ERROR.UNCHANGED
+
                                                                      If ((iUpdateType And ENUM_PARSE_TYPE_FLAGS.FULL_PARSE) <> 0) Then
-                                                                         RaiseEvent OnSyntaxParseStarted(iUpdateType)
-                                                                         FullSyntaxParse_Thread(sTabIdentifier, iOptionFlags)
+                                                                         RaiseEvent OnSyntaxParseStarted(iUpdateType, sTabIdentifier, iOptionFlags)
+                                                                         iFullParseError = FullSyntaxParse_Thread(sTabIdentifier, iOptionFlags)
                                                                      End If
 
                                                                      If ((iUpdateType And ENUM_PARSE_TYPE_FLAGS.VAR_PARSE) <> 0) Then
-                                                                         RaiseEvent OnSyntaxParseStarted(iUpdateType)
-                                                                         VarSyntaxParse_Thread(sTabIdentifier, iOptionFlags)
+                                                                         RaiseEvent OnSyntaxParseStarted(iUpdateType, sTabIdentifier, iOptionFlags)
+                                                                         iVarParseError = VarSyntaxParse_Thread(sTabIdentifier, iOptionFlags)
                                                                      End If
 
-                                                                     RaiseEvent OnSyntaxParseSuccess(iUpdateType, sTabIdentifier, iOptionFlags)
+                                                                     RaiseEvent OnSyntaxParseSuccess(iUpdateType, sTabIdentifier, iOptionFlags, iFullParseError, iVarParseError)
                                                                  Catch ex As Threading.ThreadAbortException
                                                                      Throw
                                                                  Catch ex As Exception
@@ -139,25 +157,25 @@ Public Class ClassSyntaxParser
         If (StartUpdate(iUpdateType, sTabIdentifier, iOptionFlags)) Then
             If ((iUpdateType And ENUM_PARSE_TYPE_FLAGS.FULL_PARSE) <> 0) Then
                 'Remove next tab request
-                Dim mTabRequest = g_lFullSyntaxParseRequests.Find(Function(i As STRUC_SYNTAX_PARSE_TAB_REQUEST)
-                                                                      Return (i.sTabIdentifier = sTabIdentifier)
-                                                                  End Function)
+                Dim mTabRequest = g_lUpdateRequests.Find(Function(i As STRUC_SYNTAX_PARSE_TAB_REQUEST)
+                                                             Return (i.sTabIdentifier = sTabIdentifier)
+                                                         End Function)
 
                 If (mTabRequest IsNot Nothing) Then
-                    g_lFullSyntaxParseRequests.Remove(mTabRequest)
+                    g_lUpdateRequests.Remove(mTabRequest)
                 End If
             End If
 
             Return True
         Else
             If ((iUpdateType And ENUM_PARSE_TYPE_FLAGS.FULL_PARSE) <> 0) Then
-                Dim mTabRequest = g_lFullSyntaxParseRequests.Find(Function(i As STRUC_SYNTAX_PARSE_TAB_REQUEST)
-                                                                      Return (i.sTabIdentifier = sTabIdentifier AndAlso i.iOptionFlags = iOptionFlags)
-                                                                  End Function)
+                Dim mTabRequest = g_lUpdateRequests.Find(Function(i As STRUC_SYNTAX_PARSE_TAB_REQUEST)
+                                                             Return (i.sTabIdentifier = sTabIdentifier AndAlso i.iOptionFlags = iOptionFlags)
+                                                         End Function)
 
                 'Add when no request has been found OR the option flags is enforcing it
                 If ((iOptionFlags And ENUM_PARSE_OPTIONS_FLAGS.FORCE_SCHEDULE) <> 0 OrElse mTabRequest Is Nothing) Then
-                    g_lFullSyntaxParseRequests.Add(New STRUC_SYNTAX_PARSE_TAB_REQUEST(sTabIdentifier, iOptionFlags))
+                    g_lUpdateRequests.Add(New STRUC_SYNTAX_PARSE_TAB_REQUEST(sTabIdentifier, iOptionFlags))
                 End If
             End If
 
@@ -180,14 +198,13 @@ Public Class ClassSyntaxParser
         Next
     End Sub
 
-    Private Sub FullSyntaxParse_Thread(sTabIdentifier As String, iOptionFlags As ENUM_PARSE_OPTIONS_FLAGS)
+    Private Function FullSyntaxParse_Thread(sTabIdentifier As String, iOptionFlags As ENUM_PARSE_OPTIONS_FLAGS) As ENUM_PARSE_ERROR
         Try
             Dim sActiveTabIdentifier As String = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Identifier)
             Dim mTabs As ClassTabControl.SourceTabPage() = ClassThread.ExecEx(Of ClassTabControl.SourceTabPage())(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.GetAllTabs())
             Dim mRequestTab As ClassTabControl.SourceTabPage = ClassThread.ExecEx(Of ClassTabControl.SourceTabPage)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.GetTabByIdentifier(sTabIdentifier))
             If (mRequestTab Is Nothing) Then
-                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_WARNING, "Syntax parsing failed! Could not get tab!", False, False)
-                Return
+                Return ENUM_PARSE_ERROR.INVALID_TAB
             End If
 
             Dim sRequestedSourceFile As String = mRequestTab.m_File
@@ -196,8 +213,7 @@ Public Class ClassSyntaxParser
             Dim mRequestedConfig As ClassConfigs.STRUC_CONFIG_ITEM = ClassThread.ExecEx(Of ClassConfigs.STRUC_CONFIG_ITEM)(mRequestTab, Function() mRequestTab.m_ActiveConfig)
 
             If (String.IsNullOrEmpty(sRequestedSourceFile) OrElse Not IO.File.Exists(sRequestedSourceFile)) Then
-                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Syntax parsing failed! Could not get current source file!", False, False)
-                Return
+                Return ENUM_PARSE_ERROR.INVALID_FILE
             End If
 
             Dim mIncludeWatch As New Stopwatch
@@ -370,7 +386,7 @@ Public Class ClassSyntaxParser
             If ((iOptionFlags And ENUM_PARSE_OPTIONS_FLAGS.FORCE_UPDATE) = 0) Then
                 Dim sAutocompleteIdentifier As String = ""
                 If (mRequestTab.m_AutocompleteGroup.CheckAutocompleteIdentifier(ClassTabControl.SourceTabPage.STRUC_AUTOCOMPLETE_GROUP.ENUM_AUTOCOMPLETE_TYPE.FULL, sAutocompleteIdentifier)) Then
-                    Return
+                    Return ENUM_PARSE_ERROR.UNCHANGED
                 End If
 
                 mRequestTab.m_AutocompleteGroup.m_AutocompleteIdentifier(ClassTabControl.SourceTabPage.STRUC_AUTOCOMPLETE_GROUP.ENUM_AUTOCOMPLETE_TYPE.FULL) = sAutocompleteIdentifier
@@ -455,19 +471,23 @@ Public Class ClassSyntaxParser
             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & "Finalize: " & mFinalizeWatch.Elapsed.ToString)
             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & "Apply: " & mApplyWatch.Elapsed.ToString)
 #End If
+
+            Return ENUM_PARSE_ERROR.UPDATED
         Catch ex As Threading.ThreadAbortException
             Throw
         Catch ex As Exception
             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Syntax parsing failed! " & ex.Message, False, False)
             ClassExceptionLog.WriteToLog(ex)
         End Try
-    End Sub
 
-    Private Sub VarSyntaxParse_Thread(sTabIdentifier As String, iOptionFlags As ENUM_PARSE_OPTIONS_FLAGS)
+        Return ENUM_PARSE_ERROR.ERROR
+    End Function
+
+    Private Function VarSyntaxParse_Thread(sTabIdentifier As String, iOptionFlags As ENUM_PARSE_OPTIONS_FLAGS) As ENUM_PARSE_ERROR
         Try
             Dim mRequestTab As ClassTabControl.SourceTabPage = ClassThread.ExecEx(Of ClassTabControl.SourceTabPage)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.GetTabByIdentifier(sTabIdentifier))
             If (mRequestTab Is Nothing) Then
-                Return
+                Return ENUM_PARSE_ERROR.INVALID_TAB
             End If
 
             Dim sRequestedSourceFile As String = mRequestTab.m_File
@@ -475,7 +495,7 @@ Public Class ClassSyntaxParser
             Dim sRequestedSource As String = ClassThread.ExecEx(Of String)(mRequestTab, Function() mRequestTab.m_TextEditor.Document.TextContent)
 
             If (String.IsNullOrEmpty(sRequestedSourceFile) OrElse Not IO.File.Exists(sRequestedSourceFile)) Then
-                Return
+                Return ENUM_PARSE_ERROR.INVALID_FILE
             End If
 
             Dim lOldVarAutocompleteList As New ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
@@ -483,7 +503,7 @@ Public Class ClassSyntaxParser
 
             'No autocomplete entries?
             If (lOldVarAutocompleteList.Count < 1) Then
-                Return
+                Return ENUM_PARSE_ERROR.UNCHANGED
             End If
 
             Dim mPreWatch As New Stopwatch
@@ -497,7 +517,7 @@ Public Class ClassSyntaxParser
             If ((iOptionFlags And ENUM_PARSE_OPTIONS_FLAGS.FORCE_UPDATE) = 0) Then
                 Dim sAutocompleteIdentifier As String = ""
                 If (mRequestTab.m_AutocompleteGroup.CheckAutocompleteIdentifier(ClassTabControl.SourceTabPage.STRUC_AUTOCOMPLETE_GROUP.ENUM_AUTOCOMPLETE_TYPE.VARIABLE, sAutocompleteIdentifier)) Then
-                    Return
+                    Return ENUM_PARSE_ERROR.UNCHANGED
                 End If
 
                 mRequestTab.m_AutocompleteGroup.m_AutocompleteIdentifier(ClassTabControl.SourceTabPage.STRUC_AUTOCOMPLETE_GROUP.ENUM_AUTOCOMPLETE_TYPE.VARIABLE) = sAutocompleteIdentifier
@@ -582,13 +602,16 @@ Public Class ClassSyntaxParser
             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & "Apply: " & mApplyWatch.Elapsed.ToString)
 #End If
 
+            Return ENUM_PARSE_ERROR.UPDATED
         Catch ex As Threading.ThreadAbortException
             Throw
         Catch ex As Exception
             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Variable syntax parsing failed! " & ex.Message, False, False)
             ClassExceptionLog.WriteToLog(ex)
         End Try
-    End Sub
+
+        Return ENUM_PARSE_ERROR.ERROR
+    End Function
 
     ''' <summary>
     ''' Gets all include files from a file
@@ -603,8 +626,7 @@ Public Class ClassSyntaxParser
         If (bFindAll) Then
             While True
 #If SEARCH_EVERYWHERE Then
-                If (String.IsNullOrEmpty(sActiveSourceFile) OrElse Not IO.File.Exists(sActiveSourceFile)) Then
-                    g_mFormMain.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Could not read includes! Could not get current source file!")
+                If (String.IsNullOrEmpty(sActiveSourceFile) OrElse Not IO.File.Exists(sActiveSourceFile)) Then 
                     Exit While
                 End If
 #End If
@@ -613,7 +635,6 @@ Public Class ClassSyntaxParser
                 Dim sIncludePaths As String
                 If (mConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                     If (String.IsNullOrEmpty(sActiveSourceFile) OrElse Not IO.File.Exists(sActiveSourceFile)) Then
-                        g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Could not read includes! Could not get current source file!", False, False)
                         Exit While
                     End If
                     sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(sActiveSourceFile), "include")
@@ -625,8 +646,7 @@ Public Class ClassSyntaxParser
                 'Check compiler
                 Dim sCompilerPath As String
                 If (ClassSettings.g_iConfigCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
-                    If (String.IsNullOrEmpty(sActiveSourceFile) OrElse Not IO.File.Exists(sActiveSourceFile)) Then
-                        g_mFormMain.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Could not read includes! Could not get current source file!", False, False, 1)
+                    If (String.IsNullOrEmpty(sActiveSourceFile) OrElse Not IO.File.Exists(sActiveSourceFile)) Then 
                         Exit While
                     End If
                     sCompilerPath = IO.Path.GetDirectoryName(sActiveSourceFile)
@@ -683,7 +703,6 @@ Public Class ClassSyntaxParser
         Next
 
         If (iMaxDirectoryDepth < 1) Then
-            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Max recursive directory search depth reached!", False, False)
             Return
         End If
 
@@ -728,7 +747,6 @@ Public Class ClassSyntaxParser
             Dim sIncludePaths As String
             If (mConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                 If (String.IsNullOrEmpty(sActiveSourceFile) OrElse Not IO.File.Exists(sActiveSourceFile)) Then
-                    g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Could not read includes! Could not get current source file!", False, False)
                     Exit While
                 End If
                 sIncludePaths = IO.Path.Combine(IO.Path.GetDirectoryName(sActiveSourceFile), "include")
@@ -740,7 +758,6 @@ Public Class ClassSyntaxParser
             Dim sCompilerPath As String
             If (mConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                 If (String.IsNullOrEmpty(sActiveSourceFile) OrElse Not IO.File.Exists(sActiveSourceFile)) Then
-                    g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Could not read includes! Could not get current source file!", False, False)
                     Exit While
                 End If
                 sCompilerPath = IO.Path.GetDirectoryName(sActiveSourceFile)
@@ -1588,7 +1605,6 @@ Public Class ClassSyntaxParser
 
                         sEnumName = mMatch.Groups("Name").Value
                         If (String.IsNullOrEmpty(sEnumName.Trim)) Then
-                            'g_mFormMain.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_WARNING, String.Format("Failed to read name from enum because it has no name: Renamed to 'Enum' ({0})", IO.Path.GetFileName(sFile)), False, False)
                             sEnumName = "Enum"
                         End If
 
@@ -1724,7 +1740,6 @@ Public Class ClassSyntaxParser
 
                             mMatch2 = Regex.Match(sEnumFull, "^\s*(?<Tag>\b[a-zA-Z0-9_]+\b:)*(?<Name>\b[a-zA-Z0-9_]+\b)")
                             If (Not mMatch2.Groups("Name").Success) Then
-                                mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_WARNING, String.Format("Failed to resolve type 'Enum': enum {0} {1}", sEnumName, sEnumFull), False, False)
                                 Continue For
                             End If
 
@@ -2155,7 +2170,6 @@ Public Class ClassSyntaxParser
 
                             Dim regMatch As Match = Regex.Match(sEnumFull, "^\s*(?<Tag>\b[a-zA-Z0-9_]+\b:)*(?<Name>\b[a-zA-Z0-9_]+\b)")
                             If (Not regMatch.Groups("Name").Success) Then
-                                mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_WARNING, String.Format("Failed to resolve type 'Enum': enum {0} {1}", sEnumName, sEnumFull), False, False)
                                 Continue For
                             End If
 
@@ -2480,13 +2494,13 @@ Public Class ClassSyntaxParser
 
                 Dim sLines As String() = mRegexSource.ToString.Split(New String() {vbNewLine, vbLf}, 0)
 
-                If (mSourceAnalysis.m_MaxLength - 1 > 0) Then
-                    Dim iLeftBraceRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
-                    Dim iLastBraceLevel As Integer = mSourceAnalysis.GetBraceLevel(mSourceAnalysis.m_MaxLength - 1, iLeftBraceRange)
-                    If (iLastBraceLevel > 0 AndAlso iLeftBraceRange <> ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END) Then
-                        mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, String.Format("Uneven brace level! May lead to syntax parser failures! [LV:{0}] ({1})", iLastBraceLevel, IO.Path.GetFileName(mParseInfo.sFile)), False, False)
-                    End If
-                End If
+                'If (mSourceAnalysis.m_MaxLength - 1 > 0) Then
+                '    Dim iLeftBraceRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
+                '    Dim iLastBraceLevel As Integer = mSourceAnalysis.GetBraceLevel(mSourceAnalysis.m_MaxLength - 1, iLeftBraceRange)
+                '    If (iLastBraceLevel > 0 AndAlso iLeftBraceRange <> ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END) Then
+                '        mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, String.Format("Uneven brace level! May lead to syntax parser failures! [LV:{0}] ({1})", iLastBraceLevel, IO.Path.GetFileName(mParseInfo.sFile)), False, False)
+                '    End If
+                'End If
 
                 For i = 0 To sLines.Length - 1
                     If ((ClassTools.ClassStrings.WordCount(sLines(i), "("c) + ClassTools.ClassStrings.WordCount(sLines(i), ")"c)) Mod 2 <> 0) Then

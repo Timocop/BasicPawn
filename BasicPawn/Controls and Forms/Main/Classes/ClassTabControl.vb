@@ -790,8 +790,10 @@ Public Class ClassTabControl
         g_bIgnoreOnTabSelected = False
     End Sub
 
-    Private Sub OnTabSyntaxParseSuccess(iUpdateType As ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS, sTabIdentifier As String, iOptionFlags As ClassSyntaxParser.ENUM_PARSE_OPTIONS_FLAGS)
+    Private Sub OnTabSyntaxParseSuccess(iUpdateType As ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS, sTabIdentifier As String, iOptionFlags As ClassSyntaxParser.ENUM_PARSE_OPTIONS_FLAGS, iFullParseError As ClassSyntaxParser.ENUM_PARSE_ERROR, iVarParseError As ClassSyntaxParser.ENUM_PARSE_ERROR)
         Try
+            Static sLastTabIndentifier As String = ""
+
             If ((iUpdateType And ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS.FULL_PARSE) = 0) Then
                 Return
             End If
@@ -800,6 +802,22 @@ Public Class ClassTabControl
             If (sActiveTabIdentifier <> sTabIdentifier) Then
                 Return
             End If
+
+            Select Case (iFullParseError)
+                Case ClassSyntaxParser.ENUM_PARSE_ERROR.UNCHANGED
+                    'Do not update unchanged tabs more than once
+                    If (sActiveTabIdentifier = sLastTabIndentifier) Then
+                        Return
+                    End If
+
+                    sLastTabIndentifier = sActiveTabIdentifier
+
+                Case ClassSyntaxParser.ENUM_PARSE_ERROR.UPDATED
+                    sLastTabIndentifier = sActiveTabIdentifier
+
+                Case Else
+                    Return
+            End Select
 
             ClassThread.ExecAsync(g_mFormMain, Sub()
                                                    g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.UpdateSyntax(ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE.AUTOCOMPLETE)

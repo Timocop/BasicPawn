@@ -625,7 +625,7 @@ Public Class FormMain
 
             Dim iThreadCount = g_ClassSyntaxParser.GetAliveThreadCount()
             If (ToolStripMenuItem_ViewProgressAni.Checked AndAlso iThreadCount > 0) Then
-                ToolStripStatusLabel_AutocompleteProgress.ToolTipText = String.Format("Parsing syntax {0}/{1}", iThreadCount, iThreadCount + g_ClassSyntaxParser.g_lFullSyntaxParseRequests.Count)
+                ToolStripStatusLabel_AutocompleteProgress.ToolTipText = String.Format("Parsing syntax {0}/{1}", iThreadCount, iThreadCount + g_ClassSyntaxParser.m_UpdateRequests.Count)
                 ToolStripStatusLabel_AutocompleteProgress.Visible = True
             Else
                 If (ToolStripStatusLabel_AutocompleteProgress.Visible) Then

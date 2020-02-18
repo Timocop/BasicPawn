@@ -58,9 +58,10 @@ Public Class ClassSyntaxUpdater
     ''' The main thread to update all kinds of stuff.
     ''' </summary>
     Private Sub SourceSyntaxUpdater_Thread()
-        Static mRequestSyntaxParseDelay As New TimeSpan(0, 0, 0, 1, 0)
-        Static mFullSyntaxParseDelay As New TimeSpan(0, 0, 1, 0, 0)
-        Static mVarSyntaxParseDelay As New TimeSpan(0, 0, 0, 10, 0)
+        Static mRequestSyntaxParseDelay As New TimeSpan(0, 0, 1)
+        Static mFullSyntaxParseDelay As New TimeSpan(0, 0, 10)
+        Static mVarSyntaxParseDelay As New TimeSpan(0, 0, 5)
+        Static mObjectBrowserUpdateDelay As New TimeSpan(0, 0, 1)
         Static mFoldingUpdateDelay As New TimeSpan(0, 0, 5)
         Static mTextMinimapDelay As New TimeSpan(0, 0, 1)
         Static mTextMinimapRefreshDelay As New TimeSpan(0, 0, 10)
@@ -70,6 +71,7 @@ Public Class ClassSyntaxUpdater
             Dim dLastRequestSyntaxParseDelay As Date = (Now + mRequestSyntaxParseDelay)
             Dim dLastFullSyntaxParseDelay As Date = (Now + mFullSyntaxParseDelay)
             Dim dLastVarSyntaxParseDelay As Date = (Now + mVarSyntaxParseDelay)
+            Dim dObjectBrowserUpdateDelay As Date = (Now + mObjectBrowserUpdateDelay)
             Dim dLastFoldingUpdateDelay As Date = (Now + mFoldingUpdateDelay)
             Dim dLastTextMinimapDelay As Date = (Now + mTextMinimapDelay)
             Dim dLastTextMinimapRefreshDelay As Date = (Now + mTextMinimapRefreshDelay)
@@ -91,14 +93,14 @@ Public Class ClassSyntaxUpdater
                     Dim mCaretPos As Point = ClassThread.ExecEx(Of Point)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.ScreenPosition)
 
                     'Update Autocomplete
-                    If (dLastRequestSyntaxParseDelay < Now AndAlso bIsFormMainFocused AndAlso g_mFormMain.g_ClassSyntaxParser.g_lFullSyntaxParseRequests.Count > 0) Then
+                    If (dLastRequestSyntaxParseDelay < Now AndAlso bIsFormMainFocused AndAlso g_mFormMain.g_ClassSyntaxParser.m_UpdateRequests.Count > 0) Then
                         dLastRequestSyntaxParseDelay = (Now + mRequestSyntaxParseDelay)
 
                         Dim sActiveTabIdentifier As String = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Identifier)
-                        Dim sRequestedTabIdentifier As String = g_mFormMain.g_ClassSyntaxParser.g_lFullSyntaxParseRequests(0).sTabIdentifier
+                        Dim sRequestedTabIdentifier As String = g_mFormMain.g_ClassSyntaxParser.m_UpdateRequests(0).sTabIdentifier
 
                         'Active tabs have higher priority to update
-                        If (g_mFormMain.g_ClassSyntaxParser.g_lFullSyntaxParseRequests.Exists(Function(a As ClassSyntaxParser.STRUC_SYNTAX_PARSE_TAB_REQUEST) a.sTabIdentifier = sActiveTabIdentifier)) Then
+                        If (g_mFormMain.g_ClassSyntaxParser.m_UpdateRequests.Exists(Function(a As ClassSyntaxParser.STRUC_SYNTAX_PARSE_TAB_REQUEST) a.sTabIdentifier = sActiveTabIdentifier)) Then
                             sRequestedTabIdentifier = sActiveTabIdentifier
                         End If
 
@@ -111,6 +113,15 @@ Public Class ClassSyntaxUpdater
 
                         ClassThread.ExecAsync(g_mFormMain, Sub()
                                                                g_mFormMain.g_ClassSyntaxParser.StartUpdateSchedule(ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS.ALL)
+                                                           End Sub)
+                    End If
+
+                    'Update Object Browser
+                    If (dObjectBrowserUpdateDelay < Now AndAlso bIsFormMainFocused AndAlso g_mFormMain.g_mUCObjectBrowser.m_UpdateRequests) Then
+                        dObjectBrowserUpdateDelay = (Now + mObjectBrowserUpdateDelay)
+
+                        ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                               g_mFormMain.g_mUCObjectBrowser.StartUpdateSchedule()
                                                            End Sub)
                     End If
 

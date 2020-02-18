@@ -26,6 +26,8 @@ Public Class UCObjectBrowser
     Private g_mSelectedItemsQueue As New Queue(Of TreeNode)
     Private g_bLoaded As Boolean = False
 
+    Private g_bUpdateRequests As Boolean = False
+
     Public Shared g_bWndProcBug As Boolean = False
     Private Shared g_sSourceMainFileExt As String() = {".sp", ".sma", ".pwn", ".p", ".src"}
 
@@ -43,6 +45,12 @@ Public Class UCObjectBrowser
         ClassTools.ClassForms.SetDoubleBuffering(TreeView_ObjectBrowser, True)
     End Sub
 
+    ReadOnly Property m_UpdateRequests As Boolean
+        Get
+            Return g_bUpdateRequests
+        End Get
+    End Property
+
     Private Sub UCObjectBrowser_Load(sender As Object, e As EventArgs) Handles Me.Load
         g_bLoaded = True
     End Sub
@@ -58,13 +66,33 @@ Public Class UCObjectBrowser
             Return False
         End If
 
-        g_mUpdateThread = New Threading.Thread(AddressOf UpdateTreeViewThread) With {
-                .Priority = Threading.ThreadPriority.Lowest,
-                .IsBackground = True
-            }
+        g_mUpdateThread = New Threading.Thread(Sub()
+                                                   Try
+                                                       UpdateTreeViewThread()
+                                                   Catch ex As Threading.ThreadAbortException
+                                                       Throw
+                                                   Catch ex As Exception
+                                                       ClassExceptionLog.WriteToLog(ex)
+                                                   End Try
+                                               End Sub) With {
+            .Priority = Threading.ThreadPriority.Lowest,
+            .IsBackground = True
+        }
         g_mUpdateThread.Start()
 
         Return True
+    End Function
+
+    Public Function StartUpdateSchedule() As Boolean
+        If (StartUpdate()) Then
+            g_bUpdateRequests = False
+
+            Return True
+        Else
+            g_bUpdateRequests = True
+
+            Return False
+        End If
     End Function
 
     Public Sub StopUpdate()
@@ -96,10 +124,15 @@ Public Class UCObjectBrowser
                                                       End Sub)
                 End If
 
-                Dim mActiveTab As ClassTabControl.SourceTabPage = ClassThread.ExecEx(Of ClassTabControl.SourceTabPage)(Me, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab)
+                Dim mTab As ClassTabControl.SourceTabPage = ClassThread.ExecEx(Of ClassTabControl.SourceTabPage)(Me, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab)
+                If (mTab Is Nothing) Then
+                    Return
+                End If
 
-                Dim lAutocompleteList As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
-                lAutocompleteList.AddRange(mActiveTab.m_AutocompleteGroup.m_AutocompleteItems.ToArray)
+                Dim lAutocompleteList As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)(mTab.m_AutocompleteGroup.m_AutocompleteItems.ToArray)
+                If (lAutocompleteList.Count < 1) Then
+                    Return
+                End If
 
                 If (True) Then
                     Dim mFileNodes As TreeNodeCollection = ClassThread.ExecEx(Of TreeNodeCollection)(TreeView_ObjectBrowser, Function() TreeView_ObjectBrowser.Nodes)
@@ -241,8 +274,10 @@ Public Class UCObjectBrowser
         End Try
     End Sub
 
-    Private Sub OnSyntaxParseSuccess(iUpdateType As ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS, sTabIdentifier As String, iOptionFlags As ClassSyntaxParser.ENUM_PARSE_OPTIONS_FLAGS)
+    Private Sub OnSyntaxParseSuccess(iUpdateType As ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS, sTabIdentifier As String, iOptionFlags As ClassSyntaxParser.ENUM_PARSE_OPTIONS_FLAGS, iFullParseError As ClassSyntaxParser.ENUM_PARSE_ERROR, iVarParseError As ClassSyntaxParser.ENUM_PARSE_ERROR)
         Try
+            Static sLastTabIndentifier As String = ""
+
             If ((iUpdateType And ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS.FULL_PARSE) = 0) Then
                 Return
             End If
@@ -252,8 +287,24 @@ Public Class UCObjectBrowser
                 Return
             End If
 
+            Select Case (iFullParseError)
+                Case ClassSyntaxParser.ENUM_PARSE_ERROR.UNCHANGED
+                    'Do not update unchanged tabs more than once
+                    If (sActiveTabIdentifier = sLastTabIndentifier) Then
+                        Return
+                    End If
+
+                    sLastTabIndentifier = sActiveTabIdentifier
+
+                Case ClassSyntaxParser.ENUM_PARSE_ERROR.UPDATED
+                    sLastTabIndentifier = sActiveTabIdentifier
+
+                Case Else
+                    Return
+            End Select
+
             ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                   g_mFormMain.g_mUCObjectBrowser.StartUpdate()
+                                                   g_mFormMain.g_mUCObjectBrowser.StartUpdateSchedule()
                                                End Sub)
         Catch ex As Threading.ThreadAbortException
             Throw
