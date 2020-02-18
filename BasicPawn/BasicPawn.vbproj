@@ -251,7 +251,7 @@
     <Compile Include="Controls and Forms\Main\Classes\ClassSyntaxParser.vb" />
     <Compile Include="Controls and Forms\Debugger\Classes\ClassDebuggerTools.vb" />
     <Compile Include="Controls and Forms\Main\Classes\ClassSyntaxTools.vb" />
-    <Compile Include="Controls and Forms\Main\Classes\ClassSyntaxUpdater.vb" />
+    <Compile Include="Controls and Forms\Main\Classes\ClassBackgroundUpdater.vb" />
     <Compile Include="Controls and Forms\Main\Classes\ClassTabControl.vb" />
     <Compile Include="Controls and Forms\Main\Classes\ClassTextEditorTools.vb" />
     <Compile Include="Controls and Forms\Main\Classes\ClassPluginController.vb" />

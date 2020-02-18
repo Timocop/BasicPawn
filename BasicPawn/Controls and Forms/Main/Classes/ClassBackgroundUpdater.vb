@@ -17,9 +17,9 @@
 
 Imports System.Text.RegularExpressions
 
-Public Class ClassSyntaxUpdater
+Public Class ClassBackgroundUpdater
     Private g_mFormMain As FormMain
-    Private g_mSourceSyntaxUpdaterThread As Threading.Thread
+    Private g_mBackgroundThread As Threading.Thread
     Private g_bResetThreadDelays As Boolean = False
 
     Public Event OnSyntaxUpdate(bIsFormMainFocused As Boolean, iCaretOffset As Integer, mCaretPos As Point)
@@ -32,22 +32,22 @@ Public Class ClassSyntaxUpdater
     ''' Starts the updater thread
     ''' </summary>
     Public Sub StartThread()
-        If (ClassThread.IsValid(g_mSourceSyntaxUpdaterThread)) Then
+        If (ClassThread.IsValid(g_mBackgroundThread)) Then
             Return
         End If
 
-        g_mSourceSyntaxUpdaterThread = New Threading.Thread(AddressOf SourceSyntaxUpdater_Thread) With {
+        g_mBackgroundThread = New Threading.Thread(AddressOf BackgroundThread) With {
                .Priority = Threading.ThreadPriority.Lowest,
                .IsBackground = True
            }
-        g_mSourceSyntaxUpdaterThread.Start()
+        g_mBackgroundThread.Start()
     End Sub
 
     ''' <summary>
     ''' Stops the updater thread
     ''' </summary>
     Public Sub StopThread()
-        ClassThread.Abort(g_mSourceSyntaxUpdaterThread)
+        ClassThread.Abort(g_mBackgroundThread)
     End Sub
 
     Public Sub ResetDelays()
@@ -57,7 +57,7 @@ Public Class ClassSyntaxUpdater
     ''' <summary>
     ''' The main thread to update all kinds of stuff.
     ''' </summary>
-    Private Sub SourceSyntaxUpdater_Thread()
+    Private Sub BackgroundThread()
         Static mRequestSyntaxParseDelay As New TimeSpan(0, 0, 1)
         Static mFullSyntaxParseDelay As New TimeSpan(0, 0, 10)
         Static mVarSyntaxParseDelay As New TimeSpan(0, 0, 5)

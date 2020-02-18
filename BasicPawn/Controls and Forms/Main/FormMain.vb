@@ -19,7 +19,7 @@ Imports System.ComponentModel
 
 Public Class FormMain
     Public g_ClassTabControl As ClassTabControl
-    Public g_ClassSyntaxUpdater As ClassSyntaxUpdater
+    Public g_ClassSyntaxUpdater As ClassBackgroundUpdater
     Public g_ClassSyntaxParser As ClassSyntaxParser
     Public g_ClassTextEditorTools As ClassTextEditorTools
     Public g_ClassCustomHighlighting As ClassTextEditorTools.ClassCustomHighlighting
@@ -191,7 +191,7 @@ Public Class FormMain
         g_bIgnoreComboBoxEvent = False
 
         g_ClassTabControl = New ClassTabControl(Me)
-        g_ClassSyntaxUpdater = New ClassSyntaxUpdater(Me)
+        g_ClassSyntaxUpdater = New ClassBackgroundUpdater(Me)
         g_ClassSyntaxParser = New ClassSyntaxParser(Me)
         g_ClassTextEditorTools = New ClassTextEditorTools(Me)
         g_ClassCustomHighlighting = New ClassTextEditorTools.ClassCustomHighlighting(Me)
