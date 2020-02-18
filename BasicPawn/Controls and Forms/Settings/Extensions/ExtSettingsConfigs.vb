@@ -275,7 +275,7 @@ Partial Public Class FormSettings
 
             g_bConfigSettingsChanged = value
 
-            GroupBox_ConfigSettings.Text = GroupBox_ConfigSettings.Text.TrimEnd("*"c) & If(g_bConfigSettingsChanged, "*"c, "")
+            Button_SaveConfig.Text = Button_SaveConfig.Text.TrimEnd("*"c) & If(g_bConfigSettingsChanged, "*"c, "")
             Button_SaveConfig.Font = New Font(Button_SaveConfig.Font, If(g_bConfigSettingsChanged, FontStyle.Bold, FontStyle.Regular))
         End Set
     End Property
@@ -341,7 +341,7 @@ Partial Public Class FormSettings
             If (ListBox_Configs.SelectedItems.Count < 1) Then
                 g_mListBoxConfigSelectedItem = Nothing
 
-                GroupBox_ConfigSettings.Enabled = False
+                TabControl_ConfigOptions.Enabled = False
                 Return
             Else
                 g_mListBoxConfigSelectedItem = ListBox_Configs.SelectedItems(0)
@@ -353,8 +353,8 @@ Partial Public Class FormSettings
                 g_bIgnoreChange = True
 
                 Button_SaveConfig.Enabled = False
-                GroupBox_ConfigSettings.Enabled = False
-                GroupBox_ConfigSettings.Visible = False
+                TabControl_ConfigOptions.Enabled = False
+                TabControl_ConfigOptions.Visible = False
 
                 'Fill controls
                 If (True) Then
@@ -407,8 +407,8 @@ Partial Public Class FormSettings
 
             g_bIgnoreChange = True
             Button_SaveConfig.Enabled = True
-            GroupBox_ConfigSettings.Enabled = True
-            GroupBox_ConfigSettings.Visible = True
+            TabControl_ConfigOptions.Enabled = True
+            TabControl_ConfigOptions.Visible = True
 
             'Fill controls
             If (True) Then
