@@ -133,7 +133,7 @@ Partial Class FormSettings
         Me.Button_ConfigRemove = New System.Windows.Forms.Button()
         Me.Button_ConfigAdd = New System.Windows.Forms.Button()
         Me.Panel2 = New System.Windows.Forms.Panel()
-        Me.TabControl_ConfigOptions = New System.Windows.Forms.TabControl()
+        Me.TabControl_ConfigOptions = New ClassTabControlColor()
         Me.TabPage3 = New System.Windows.Forms.TabPage()
         Me.RadioButton_ConfigSettingAutomatic = New System.Windows.Forms.RadioButton()
         Me.Label7 = New System.Windows.Forms.Label()
@@ -2796,7 +2796,7 @@ Partial Class FormSettings
     Friend WithEvents LinkLabel_PreMacroHelp As LinkLabel
     Friend WithEvents NumericUpDown_MaxParseThreads As NumericUpDown
     Friend WithEvents Label11 As Label
-    Friend WithEvents TabControl_ConfigOptions As TabControl
+    Friend WithEvents TabControl_ConfigOptions As ClassTabControlColor
     Friend WithEvents TabPage3 As TabPage
     Friend WithEvents TabPage4 As TabPage
     Friend WithEvents TabPage5 As TabPage
