@@ -37,15 +37,15 @@ Public Class ClassUpdate
     End Class
 
     Public Shared g_mUpdateLocations As STRUC_UPDATE_LOCATIONS() = {
-        New STRUC_UPDATE_LOCATIONS("getbasicpawn.spdns.org",
-                                   "http://getbasicpawn.spdns.org/basicpawn_update/CurrentVersion.txt",
-                                   "http://getbasicpawn.spdns.org/basicpawn_update/DataHash.txt",
-                                   "http://getbasicpawn.spdns.org/basicpawn_update/BasicPawnUpdateSFX.dat",
-                                   String.Format("BasicPawn/{0} (compatible; Windows NT)", Application.ProductVersion)),
         New STRUC_UPDATE_LOCATIONS("github.com",
                                    "https://raw.githubusercontent.com/Timocop/BasicPawn/master/Update%20Depot/CurrentVersion.txt",
                                    "https://raw.githubusercontent.com/Timocop/BasicPawn/master/Update%20Depot/DataHash.txt",
                                    "https://raw.githubusercontent.com/Timocop/BasicPawn/master/Update%20Depot/BasicPawnUpdateSFX.dat",
+                                   String.Format("BasicPawn/{0} (compatible; Windows NT)", Application.ProductVersion)),
+        New STRUC_UPDATE_LOCATIONS("getbasicpawn.spdns.org",
+                                   "http://getbasicpawn.spdns.org/basicpawn_update/CurrentVersion.txt",
+                                   "http://getbasicpawn.spdns.org/basicpawn_update/DataHash.txt",
+                                   "http://getbasicpawn.spdns.org/basicpawn_update/BasicPawnUpdateSFX.dat",
                                    String.Format("BasicPawn/{0} (compatible; Windows NT)", Application.ProductVersion))
     }
 
@@ -180,6 +180,11 @@ Public Class ClassUpdate
     End Function
 
     Public Shared Function GetNextVersion(ByRef r_sLocationInfo As String) As String
+        r_sLocationInfo = Nothing
+
+        Dim sNextVersion As String = Nothing
+        Dim sLocationInfo As String = Nothing
+
         For Each mItem In g_mUpdateLocations
             Try
                 Using mWC As New ClassWebClientEx
@@ -188,15 +193,28 @@ Public Class ClassUpdate
                     End If
 
                     Dim sVersion = mWC.DownloadString(mItem.sVersionUrl)
+                    If (String.IsNullOrEmpty(sVersion)) Then
+                        Continue For
+                    End If
 
-                    r_sLocationInfo = mItem.sLocationInfo
+                    If (Not String.IsNullOrEmpty(sNextVersion)) Then
+                        If (New Version(sNextVersion) > New Version(sVersion)) Then
+                            Continue For
+                        End If
+                    End If
 
-                    Return sVersion
+                    sNextVersion = sVersion
+                    sLocationInfo = mItem.sLocationInfo
                 End Using
             Catch ex As Exception
             End Try
         Next
 
-        Throw New ArgumentException("Unable to find update files")
+        If (String.IsNullOrEmpty(sNextVersion)) Then
+            Throw New ArgumentException("Unable to find update files")
+        End If
+
+        r_sLocationInfo = sLocationInfo
+        Return sNextVersion
     End Function
 End Class
