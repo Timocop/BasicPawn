@@ -112,6 +112,8 @@ Partial Public Class FormSettings
         Dim i As Integer = ListBox_Configs.FindStringExact(mCurrentConfig.GetName)
         If (i > -1) Then
             ListBox_Configs.SetSelected(i, True)
+
+            LinkLabel_ActiveConfig.Text = mCurrentConfig.GetName
         End If
 
         If (Not mCurrentConfig.ConfigExist AndAlso Not mCurrentConfig.IsDefault) Then
@@ -312,6 +314,17 @@ Partial Public Class FormSettings
                 MarkChanged()
 
                 g_mFormMain.g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnConfigChanged())
+            End If
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
+    Private Sub LinkLabel_ActiveConfig_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_ActiveConfig.LinkClicked
+        Try
+            Dim i As Integer = ListBox_Configs.FindStringExact(LinkLabel_ActiveConfig.Text)
+            If (i > -1) Then
+                ListBox_Configs.SetSelected(i, True)
             End If
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
