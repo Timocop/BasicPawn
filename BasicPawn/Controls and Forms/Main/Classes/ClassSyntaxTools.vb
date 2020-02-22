@@ -329,6 +329,7 @@ Public Class ClassSyntaxTools
         Private g_iStateArray As Integer(,)
         Private g_iMaxLength As Integer = 0
         Private g_sCacheText As String = ""
+        Private g_mLineIndexes As New Dictionary(Of Integer, Integer)
 
         Public ReadOnly Property m_InRange(i As Integer) As Boolean
             Get
@@ -487,22 +488,16 @@ Public Class ClassSyntaxTools
                 Return 0
             End If
 
-            Dim iLineCount As Integer = 0
-            For i = 0 To g_sCacheText.Length - 1
-                Select Case (g_sCacheText(i))
-                    Case vbLf(0)
-                        iLineCount += 1
-
-                        If (iLineCount >= iLine) Then
-                            If (i + 1 > g_sCacheText.Length - 1) Then
-                                'Get the length even if its longer than the g_sCacheTest length.
-                                'g_iStateArray should have +1 more length.
-                                Return g_sCacheText.Length
-                            Else
-                                Return i + 1
-                            End If
-                        End If
-                End Select
+            For Each mItem In g_mLineIndexes
+                If (mItem.Key + 1 >= iLine) Then
+                    If (mItem.Value + 1 > g_sCacheText.Length - 1) Then
+                        'Get the length even if its longer than the g_sCacheTest length.
+                        'g_iStateArray should have +1 more length.
+                        Return g_sCacheText.Length
+                    Else
+                        Return mItem.Value + 1
+                    End If
+                End If
             Next
 
             Return -1
@@ -532,6 +527,8 @@ Public Class ClassSyntaxTools
             Dim bInString As Integer = 0
             Dim bInChar As Integer = 0
             Dim bInPreprocessor As Integer = 0
+
+            Dim iLine As Integer = 0
 
             For i = 0 To sText.Length - 1
                 g_iStateArray(i, ENUM_STATE_TYPES.PARENTHESIS_LEVEL) = iParenthesisLevel
@@ -753,6 +750,10 @@ Public Class ClassSyntaxTools
                             iBracketLevel = iBracketLevelPreSave
                             iBraceLevel = iBraceLevelPreSave
                         End If
+
+                        g_mLineIndexes(iLine) = i
+
+                        iLine += 1
 
                     Case Else
                         g_iStateArray(i, ENUM_STATE_TYPES.PARENTHESIS_LEVEL) = iParenthesisLevel
