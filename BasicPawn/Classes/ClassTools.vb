@@ -112,7 +112,20 @@ Public Class ClassTools
         ''' <param name="sSearch"></param>
         ''' <returns></returns>
         Public Shared Function WordCount(sText As String, sSearch As String) As Integer
-            Return Regex.Matches(sText, Regex.Escape(sSearch)).Count
+            Dim i As Integer = 0
+            Dim iCount As Integer = 0
+
+            While True
+                i = sText.IndexOf(sSearch, i)
+                If (i < 0) Then
+                    Exit While
+                End If
+
+                iCount += 1
+                i += sSearch.Length
+            End While
+
+            Return iCount
         End Function
 
 

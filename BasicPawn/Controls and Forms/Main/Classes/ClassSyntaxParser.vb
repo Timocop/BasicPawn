@@ -2166,7 +2166,7 @@ Public Class ClassSyntaxParser
                             Dim sEnumFull As String = lEnumSplitList(ii)
                             Dim sEnumComment As String = lEnumCommentArray(ii)
 
-                            sEnumComment = New Regex("^\s+", RegexOptions.Multiline).Replace(sEnumComment, "")
+                            sEnumComment = Regex.Replace(sEnumComment, "^\s+", "", RegexOptions.Multiline)
 
                             Dim regMatch As Match = Regex.Match(sEnumFull, "^\s*(?<Tag>\b[a-zA-Z0-9_]+\b:)*(?<Name>\b[a-zA-Z0-9_]+\b)")
                             If (Not regMatch.Groups("Name").Success) Then
@@ -2180,7 +2180,7 @@ Public Class ClassSyntaxParser
                                                                                         mParseInfo.sFile,
                                                                                         ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM,
                                                                                         sEnumName,
-                                                                                        "public " & (New Regex("\s*\b(public)\b\s*").Replace(sEnumFull, sEnumName, 1)),
+                                                                                        "public " & (Regex.Replace(sEnumFull, "\s*\b(public)\b\s*\(", sEnumName & "(")),
                                                                                         String.Format("funcenum {0} {1}", sEnumName, sEnumFull))
 
                             mAutocomplete.m_Data("FuncenumAnchorName") = "funcenum"
@@ -2612,7 +2612,7 @@ Public Class ClassSyntaxParser
                         End If
                     Next
 
-                    sComment = New Regex("^\s+", RegexOptions.Multiline).Replace(sComment, "")
+                    sComment = Regex.Replace(sComment, "^\s+", "", RegexOptions.Multiline)
 
                     If (bIsFunctag) Then
                         sAnchorName = "functag"
