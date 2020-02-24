@@ -330,7 +330,7 @@ Public Class ClassTabControl
         Return -1
     End Function
 
-    Public Function GetTabByFile(sFile As String) As ClassTabControl.SourceTabPage
+    Public Function GetTabByFile(sFile As String) As SourceTabPage
         If (String.IsNullOrEmpty(sFile)) Then
             Return Nothing
         End If
@@ -338,6 +338,22 @@ Public Class ClassTabControl
         For i = 0 To m_TabsCount - 1
             If (Not m_Tab(i).m_IsUnsaved AndAlso m_Tab(i).m_File.ToLower = sFile.ToLower) Then
                 Return m_Tab(i)
+            End If
+        Next
+
+        Return Nothing
+    End Function
+
+    Public Function GetTabByFileFirstPopulated(sFile As String) As SourceTabPage
+        If (String.IsNullOrEmpty(sFile)) Then
+            Return Nothing
+        End If
+
+        For i = 0 To m_TabsCount - 1
+            If (Not m_Tab(i).m_IsUnsaved AndAlso m_Tab(i).m_File.ToLower = sFile.ToLower) Then
+                If (m_Tab(i).m_AutocompleteGroup.m_AutocompleteItems.Count > 0) Then
+                    Return m_Tab(i)
+                End If
             End If
         Next
 
@@ -372,7 +388,7 @@ Public Class ClassTabControl
     ''' <param name="sFile"></param>
     ''' <param name="bIgnoreSavePrompt">If true, the new file will be opened without prompting to save the changed source</param>
     ''' <returns></returns>
-    Public Function OpenFileTab(iIndex As Integer, sFile As String, Optional bIgnoreSavePrompt As Boolean = False, Optional bKeepView As Boolean = True) As Boolean
+    Public Function OpenFileTab(iIndex As Integer, sFile As String, Optional bIgnoreSavePrompt As Boolean = False, Optional bKeepView As Boolean = True, Optional bKeepPopulated As Boolean = True) As Boolean
         If (Not bIgnoreSavePrompt AndAlso PromptSaveTab(iIndex)) Then
             Return False
         End If
@@ -455,6 +471,13 @@ Public Class ClassTabControl
             m_Tab(iIndex).m_TextEditor.ActiveTextAreaControl.Caret.UpdateCaretPosition()
 
             m_Tab(iIndex).m_TextEditor.ActiveTextAreaControl.CenterViewOn(mCaretPos.Line, 10)
+        End If
+
+        If (bKeepPopulated) Then
+            Dim mCopyTab = GetTabByFileFirstPopulated(sFile)
+            If (mCopyTab IsNot Nothing) Then
+                mCopyTab.m_AutocompleteGroup.CopyToTab(m_Tab(iIndex))
+            End If
         End If
 
         RaiseEvent OnTabOpen(m_Tab(iIndex), m_Tab(iIndex).m_File)
@@ -1223,6 +1246,8 @@ Public Class ClassTabControl
             Private g_mAutocompleteItems As New ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
             Private g_mAutocompleteIdentifier As New Dictionary(Of ENUM_AUTOCOMPLETE_TYPE, String)
 
+            Private _lock As New Object
+
             Enum ENUM_AUTOCOMPLETE_TYPE
                 FULL
                 VARIABLE
@@ -1234,15 +1259,29 @@ Public Class ClassTabControl
 
             ReadOnly Property m_AutocompleteItems As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
                 Get
-                    Return g_mAutocompleteItems
+                    SyncLock _lock
+                        Return g_mAutocompleteItems
+                    End SyncLock
                 End Get
             End Property
 
             ReadOnly Property m_AutocompleteIdentifier As Dictionary(Of ENUM_AUTOCOMPLETE_TYPE, String)
                 Get
-                    Return g_mAutocompleteIdentifier
+                    SyncLock _lock
+                        Return g_mAutocompleteIdentifier
+                    End SyncLock
                 End Get
             End Property
+
+            Public Sub CopyToTab(mTab As SourceTabPage)
+                mTab.m_AutocompleteGroup.m_AutocompleteItems.DoSync(
+                    Sub()
+                        mTab.m_AutocompleteGroup.m_AutocompleteItems.Clear()
+                        For Each mItem In m_AutocompleteItems.ToArray
+                            mTab.m_AutocompleteGroup.m_AutocompleteItems.Add(New ClassSyntaxTools.STRUC_AUTOCOMPLETE(mItem))
+                        Next
+                    End Sub)
+            End Sub
 
             Public Function CheckAutocompleteIdentifier(iType As ENUM_AUTOCOMPLETE_TYPE, ByRef sAutocompleteIdentifier As String) As Boolean
                 sAutocompleteIdentifier = ""

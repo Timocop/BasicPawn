@@ -85,9 +85,7 @@ Public Class ClassSyntaxTools
         Public Sub New(mAutocomplete As STRUC_AUTOCOMPLETE)
             Me.New(mAutocomplete.m_Info, mAutocomplete.m_Filename, mAutocomplete.m_Path, mAutocomplete.m_Type, mAutocomplete.m_FunctionName, mAutocomplete.m_FunctionString, mAutocomplete.m_FullFunctionString)
 
-            For Each mItem In mAutocomplete.g_mData
-                g_mData(mItem.Key) = mItem.Value
-            Next
+            g_mData = New Dictionary(Of String, Object)(mAutocomplete.g_mData)
         End Sub
 
         Public Sub New(sInfo As String, sFilename As String, sPath As String, iType As ENUM_TYPE_FLAGS, sFunctionName As String, sFunctionString As String, sFullFunctionString As String)
