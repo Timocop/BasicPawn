@@ -280,7 +280,13 @@ Partial Public Class FormMain
     End Sub
 
     Private Sub ToolStripMenuItem_ToolsAutocompleteUpdate_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsAutocompleteUpdate.Click
-        g_ClassSyntaxParser.StartUpdateSchedule(ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS.ALL, "", ClassSyntaxParser.ENUM_PARSE_OPTIONS_FLAGS.FORCE_UPDATE)
+        Dim mActiveTab = g_ClassTabControl.m_ActiveTab
+        If (mActiveTab.m_IsUnsaved OrElse mActiveTab.m_InvalidFile) Then
+            MessageBox.Show("Invalid source file. Please save your source first.", "Unable to update", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Return
+        End If
+
+        g_ClassSyntaxParser.StartUpdateSchedule(ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS.ALL, mActiveTab.m_Identifier, ClassSyntaxParser.ENUM_PARSE_OPTIONS_FLAGS.FORCE_UPDATE)
     End Sub
 
     Private Sub ToolStripMenuItem_ToolsAutocompleteUpdateAll_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsAutocompleteUpdateAll.Click
