@@ -154,7 +154,7 @@ Public Class FormDebugger
                                                                                                         iCompilerType)
 
                 If (String.IsNullOrEmpty(sPreSource)) Then
-                    Throw New ArgumentException("Invalid source")
+                    Throw New ArgumentException("Compiler failure")
                 End If
 
                 PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "Pre-Processing source output:", False, False)
@@ -228,7 +228,7 @@ Public Class FormDebugger
                                                                                                       iCompilerType)
 
                 If (String.IsNullOrEmpty(sAsmSource)) Then
-                    Throw New ArgumentException("Invalid source")
+                    Throw New ArgumentException("Compiler failure")
                 End If
 
                 If (iCompilerType <> ClassTextEditorTools.ENUM_COMPILER_TYPE.SOURCEPAWN) Then
