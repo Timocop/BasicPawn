@@ -344,22 +344,6 @@ Public Class ClassTabControl
         Return Nothing
     End Function
 
-    Public Function GetTabByFileFirstPopulated(sFile As String) As SourceTabPage
-        If (String.IsNullOrEmpty(sFile)) Then
-            Return Nothing
-        End If
-
-        For i = 0 To m_TabsCount - 1
-            If (Not m_Tab(i).m_IsUnsaved AndAlso m_Tab(i).m_File.ToLower = sFile.ToLower) Then
-                If (m_Tab(i).m_AutocompleteGroup.m_AutocompleteItems.Count > 0) Then
-                    Return m_Tab(i)
-                End If
-            End If
-        Next
-
-        Return Nothing
-    End Function
-
     Private Sub OnSwitchTabDelay(sender As Object, e As EventArgs) Handles g_mTimer.Tick
         g_mTimer.Stop()
 
@@ -388,7 +372,7 @@ Public Class ClassTabControl
     ''' <param name="sFile"></param>
     ''' <param name="bIgnoreSavePrompt">If true, the new file will be opened without prompting to save the changed source</param>
     ''' <returns></returns>
-    Public Function OpenFileTab(iIndex As Integer, sFile As String, Optional bIgnoreSavePrompt As Boolean = False, Optional bKeepView As Boolean = True, Optional bKeepPopulated As Boolean = True) As Boolean
+    Public Function OpenFileTab(iIndex As Integer, sFile As String, Optional bIgnoreSavePrompt As Boolean = False, Optional bKeepView As Boolean = True) As Boolean
         If (Not bIgnoreSavePrompt AndAlso PromptSaveTab(iIndex)) Then
             Return False
         End If
@@ -471,13 +455,6 @@ Public Class ClassTabControl
             m_Tab(iIndex).m_TextEditor.ActiveTextAreaControl.Caret.UpdateCaretPosition()
 
             m_Tab(iIndex).m_TextEditor.ActiveTextAreaControl.CenterViewOn(mCaretPos.Line, 10)
-        End If
-
-        If (bKeepPopulated) Then
-            Dim mCopyTab = GetTabByFileFirstPopulated(sFile)
-            If (mCopyTab IsNot Nothing) Then
-                mCopyTab.m_AutocompleteGroup.CopyToTab(m_Tab(iIndex))
-            End If
         End If
 
         RaiseEvent OnTabOpen(m_Tab(iIndex), m_Tab(iIndex).m_File)
@@ -827,7 +804,8 @@ Public Class ClassTabControl
             End If
 
             Select Case (iFullParseError)
-                Case ClassSyntaxParser.ENUM_PARSE_ERROR.UNCHANGED
+                Case ClassSyntaxParser.ENUM_PARSE_ERROR.UNCHANGED,
+                        ClassSyntaxParser.ENUM_PARSE_ERROR.CACHED
                     'Do not update unchanged tabs more than once
                     If (sActiveTabIdentifier = sLastTabIndentifier) Then
                         Return
@@ -1244,14 +1222,7 @@ Public Class ClassTabControl
             Private g_mSourceTabPage As ClassTabControl.SourceTabPage
 
             Private g_mAutocompleteItems As New ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
-            Private g_mAutocompleteIdentifier As New Dictionary(Of ENUM_AUTOCOMPLETE_TYPE, String)
-
-            Private _lock As New Object
-
-            Enum ENUM_AUTOCOMPLETE_TYPE
-                FULL
-                VARIABLE
-            End Enum
+            Private g_mAutocompleteIdentifier As New ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE_IDENTIFIER)
 
             Public Sub New(mTab As ClassTabControl.SourceTabPage)
                 g_mSourceTabPage = mTab
@@ -1259,18 +1230,35 @@ Public Class ClassTabControl
 
             ReadOnly Property m_AutocompleteItems As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
                 Get
-                    SyncLock _lock
-                        Return g_mAutocompleteItems
-                    End SyncLock
+                    Return g_mAutocompleteItems
                 End Get
             End Property
 
-            ReadOnly Property m_AutocompleteIdentifier As Dictionary(Of ENUM_AUTOCOMPLETE_TYPE, String)
+            ReadOnly Property m_AutocompleteIdentifier As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE_IDENTIFIER)
                 Get
-                    SyncLock _lock
-                        Return g_mAutocompleteIdentifier
-                    End SyncLock
+                    Return g_mAutocompleteIdentifier
                 End Get
+            End Property
+
+            Property m_AutocompleteIdentifierItem(iType As ClassSyntaxTools.STRUC_AUTOCOMPLETE_IDENTIFIER.ENUM_AUTOCOMPLETE_TYPE) As String
+                Get
+                    Dim mIdentifier = m_AutocompleteIdentifier.Find(Function(a As ClassSyntaxTools.STRUC_AUTOCOMPLETE_IDENTIFIER)
+                                                                        Return (a.m_Type = iType)
+                                                                    End Function)
+
+                    If (mIdentifier Is Nothing) Then
+                        Return Nothing
+                    End If
+
+                    Return mIdentifier.m_Identifier
+                End Get
+                Set(value As String)
+                    m_AutocompleteIdentifier.RemoveAll(Function(a As ClassSyntaxTools.STRUC_AUTOCOMPLETE_IDENTIFIER)
+                                                           Return (a.m_Type = iType)
+                                                       End Function)
+
+                    m_AutocompleteIdentifier.Add(New ClassSyntaxTools.STRUC_AUTOCOMPLETE_IDENTIFIER(iType, value))
+                End Set
             End Property
 
             Public Sub CopyToTab(mTab As SourceTabPage)
@@ -1283,9 +1271,7 @@ Public Class ClassTabControl
                     End Sub)
             End Sub
 
-            Public Function CheckAutocompleteIdentifier(iType As ENUM_AUTOCOMPLETE_TYPE, ByRef sAutocompleteIdentifier As String) As Boolean
-                sAutocompleteIdentifier = ""
-
+            Public Function GenerateAutocompleteIdentifier() As String
                 Dim lIdentifierBuilder As New List(Of String)
 
                 'Add tab information
@@ -1305,11 +1291,22 @@ Public Class ClassTabControl
                     lIdentifierBuilder.Add(IO.File.GetLastWriteTime(mInclude.Value).ToString)
                 Next
 
-                sAutocompleteIdentifier = String.Join("|", lIdentifierBuilder.ToArray)
-                sAutocompleteIdentifier = ClassTools.ClassCrypto.ClassHash.SHA256StringHash(sAutocompleteIdentifier)
+                Dim sIdentifier As String
+                sIdentifier = String.Join("|", lIdentifierBuilder.ToArray)
+                sIdentifier = ClassTools.ClassCrypto.ClassHash.SHA256StringHash(sIdentifier)
 
-                If (m_AutocompleteIdentifier.ContainsKey(iType)) Then
-                    Return (m_AutocompleteIdentifier(iType) = sAutocompleteIdentifier)
+                Return sIdentifier
+            End Function
+
+            Public Function CheckAutocompleteIdentifier(iType As ClassSyntaxTools.STRUC_AUTOCOMPLETE_IDENTIFIER.ENUM_AUTOCOMPLETE_TYPE, sAutocompleteIdentifier As String) As Boolean
+                If (String.IsNullOrEmpty(sAutocompleteIdentifier)) Then
+                    Return False
+                End If
+
+                If (m_AutocompleteIdentifier.Exists(Function(a As ClassSyntaxTools.STRUC_AUTOCOMPLETE_IDENTIFIER)
+                                                        Return (a.m_Type = iType AndAlso a.m_Identifier = sAutocompleteIdentifier)
+                                                    End Function)) Then
+                    Return True
                 End If
 
                 Return False

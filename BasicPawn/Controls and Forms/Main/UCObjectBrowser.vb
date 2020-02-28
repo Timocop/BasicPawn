@@ -288,7 +288,8 @@ Public Class UCObjectBrowser
             End If
 
             Select Case (iFullParseError)
-                Case ClassSyntaxParser.ENUM_PARSE_ERROR.UNCHANGED
+                Case ClassSyntaxParser.ENUM_PARSE_ERROR.UNCHANGED,
+                        ClassSyntaxParser.ENUM_PARSE_ERROR.CACHED
                     'Do not update unchanged tabs more than once
                     If (sActiveTabIdentifier = sLastTabIndentifier) Then
                         Return

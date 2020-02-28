@@ -34,6 +34,9 @@ Partial Class FormSettings
         Me.ToolStripMenuItem_PluginsEnable = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_PluginsDisable = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolTip_Info = New System.Windows.Forms.ToolTip(Me.components)
+        Me.LinkLabel_ThreadUpdateRateHelp = New System.Windows.Forms.LinkLabel()
+        Me.LinkLabel_FullAutocompleteReTaggingHelp = New System.Windows.Forms.LinkLabel()
+        Me.LinkLabel_DefaultConfigPathsHelp = New System.Windows.Forms.LinkLabel()
         Me.ImageList_Plugins = New System.Windows.Forms.ImageList(Me.components)
         Me.ToolTip_MacroInfo = New System.Windows.Forms.ToolTip(Me.components)
         Me.TabControl1 = New BasicPawn.ClassTabControlColor()
@@ -48,7 +51,6 @@ Partial Class FormSettings
         Me.Label8 = New System.Windows.Forms.Label()
         Me.NumericUpDown_ThreadUpdateRate = New System.Windows.Forms.NumericUpDown()
         Me.Label14 = New System.Windows.Forms.Label()
-        Me.LinkLabel_ThreadUpdateRateHelp = New System.Windows.Forms.LinkLabel()
         Me.GroupBox8 = New System.Windows.Forms.GroupBox()
         Me.Label19 = New System.Windows.Forms.Label()
         Me.CheckBox_AssociateBasicPawnProject = New System.Windows.Forms.CheckBox()
@@ -105,13 +107,14 @@ Partial Class FormSettings
         Me.GroupBox15 = New System.Windows.Forms.GroupBox()
         Me.CheckBox_FullAutcompleteMethods = New System.Windows.Forms.CheckBox()
         Me.CheckBox_FullAutocompleteReTagging = New System.Windows.Forms.CheckBox()
-        Me.LinkLabel_FullAutocompleteReTaggingHelp = New System.Windows.Forms.LinkLabel()
         Me.CheckBox_AutoIndentBrackets = New System.Windows.Forms.CheckBox()
         Me.CheckBox_CaseSensitive = New System.Windows.Forms.CheckBox()
         Me.CheckBox_AutoCloseStrings = New System.Windows.Forms.CheckBox()
         Me.CheckBox_SwitchTabToAutocomplete = New System.Windows.Forms.CheckBox()
         Me.CheckBox_AutoCloseBrackets = New System.Windows.Forms.CheckBox()
         Me.GroupBox14 = New System.Windows.Forms.GroupBox()
+        Me.NumericUpDown_MaxParseCache = New System.Windows.Forms.NumericUpDown()
+        Me.Label33 = New System.Windows.Forms.Label()
         Me.NumericUpDown_MaxParseThreads = New System.Windows.Forms.NumericUpDown()
         Me.Label11 = New System.Windows.Forms.Label()
         Me.CheckBox_AlwaysLoadDefaultIncludes = New System.Windows.Forms.CheckBox()
@@ -136,7 +139,6 @@ Partial Class FormSettings
         Me.Panel2 = New System.Windows.Forms.Panel()
         Me.TabControl_ConfigOptions = New BasicPawn.ClassTabControlColor()
         Me.TabPage3 = New System.Windows.Forms.TabPage()
-        Me.LinkLabel_DefaultConfigPathsHelp = New System.Windows.Forms.LinkLabel()
         Me.RadioButton_ConfigSettingAutomatic = New System.Windows.Forms.RadioButton()
         Me.Label7 = New System.Windows.Forms.Label()
         Me.RadioButton_ConfigSettingManual = New System.Windows.Forms.RadioButton()
@@ -250,6 +252,7 @@ Partial Class FormSettings
         Me.GroupBox18.SuspendLayout()
         Me.GroupBox15.SuspendLayout()
         Me.GroupBox14.SuspendLayout()
+        CType(Me.NumericUpDown_MaxParseCache, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.NumericUpDown_MaxParseThreads, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox4.SuspendLayout()
         Me.TabPage_Configs.SuspendLayout()
@@ -350,6 +353,45 @@ Partial Class FormSettings
         Me.ToolTip_Info.ReshowDelay = 100
         Me.ToolTip_Info.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info
         Me.ToolTip_Info.ToolTipTitle = "Information"
+        '
+        'LinkLabel_ThreadUpdateRateHelp
+        '
+        Me.LinkLabel_ThreadUpdateRateHelp.AutoSize = True
+        Me.LinkLabel_ThreadUpdateRateHelp.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LinkLabel_ThreadUpdateRateHelp.Location = New System.Drawing.Point(285, 24)
+        Me.LinkLabel_ThreadUpdateRateHelp.Name = "LinkLabel_ThreadUpdateRateHelp"
+        Me.LinkLabel_ThreadUpdateRateHelp.Padding = New System.Windows.Forms.Padding(0, 2, 0, 2)
+        Me.LinkLabel_ThreadUpdateRateHelp.Size = New System.Drawing.Size(12, 17)
+        Me.LinkLabel_ThreadUpdateRateHelp.TabIndex = 27
+        Me.LinkLabel_ThreadUpdateRateHelp.TabStop = True
+        Me.LinkLabel_ThreadUpdateRateHelp.Text = "?"
+        Me.ToolTip_Info.SetToolTip(Me.LinkLabel_ThreadUpdateRateHelp, resources.GetString("LinkLabel_ThreadUpdateRateHelp.ToolTip"))
+        '
+        'LinkLabel_FullAutocompleteReTaggingHelp
+        '
+        Me.LinkLabel_FullAutocompleteReTaggingHelp.AutoSize = True
+        Me.LinkLabel_FullAutocompleteReTaggingHelp.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LinkLabel_FullAutocompleteReTaggingHelp.Location = New System.Drawing.Point(296, 47)
+        Me.LinkLabel_FullAutocompleteReTaggingHelp.Name = "LinkLabel_FullAutocompleteReTaggingHelp"
+        Me.LinkLabel_FullAutocompleteReTaggingHelp.Size = New System.Drawing.Size(12, 13)
+        Me.LinkLabel_FullAutocompleteReTaggingHelp.TabIndex = 29
+        Me.LinkLabel_FullAutocompleteReTaggingHelp.TabStop = True
+        Me.LinkLabel_FullAutocompleteReTaggingHelp.Text = "?"
+        Me.ToolTip_Info.SetToolTip(Me.LinkLabel_FullAutocompleteReTaggingHelp, "Make enums look more ""strongly typed"" using re-tagging." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Eg. 'Enum:Name' instead " &
+        "of 'Name'." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "NOTE: This can not be used with SourcePawn transitional syntax.")
+        '
+        'LinkLabel_DefaultConfigPathsHelp
+        '
+        Me.LinkLabel_DefaultConfigPathsHelp.AutoSize = True
+        Me.LinkLabel_DefaultConfigPathsHelp.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LinkLabel_DefaultConfigPathsHelp.Location = New System.Drawing.Point(209, 266)
+        Me.LinkLabel_DefaultConfigPathsHelp.Name = "LinkLabel_DefaultConfigPathsHelp"
+        Me.LinkLabel_DefaultConfigPathsHelp.Size = New System.Drawing.Size(12, 13)
+        Me.LinkLabel_DefaultConfigPathsHelp.TabIndex = 44
+        Me.LinkLabel_DefaultConfigPathsHelp.TabStop = True
+        Me.LinkLabel_DefaultConfigPathsHelp.Text = "?"
+        Me.ToolTip_Info.SetToolTip(Me.LinkLabel_DefaultConfigPathsHelp, "Opening a file from those paths will automatically switch to this config." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Howeve" &
+        "r, files in 'Known files' overwrite this behaviour.")
         '
         'ImageList_Plugins
         '
@@ -487,13 +529,14 @@ Partial Class FormSettings
         Me.Label8.Location = New System.Drawing.Point(9, 24)
         Me.Label8.Margin = New System.Windows.Forms.Padding(6, 6, 3, 6)
         Me.Label8.Name = "Label8"
-        Me.Label8.Size = New System.Drawing.Size(172, 13)
+        Me.Label8.Padding = New System.Windows.Forms.Padding(0, 2, 0, 2)
+        Me.Label8.Size = New System.Drawing.Size(172, 17)
         Me.Label8.TabIndex = 24
         Me.Label8.Text = "Background thread update rate:"
         '
         'NumericUpDown_ThreadUpdateRate
         '
-        Me.NumericUpDown_ThreadUpdateRate.Location = New System.Drawing.Point(185, 19)
+        Me.NumericUpDown_ThreadUpdateRate.Location = New System.Drawing.Point(187, 22)
         Me.NumericUpDown_ThreadUpdateRate.Maximum = New Decimal(New Integer() {2500, 0, 0, 0})
         Me.NumericUpDown_ThreadUpdateRate.Minimum = New Decimal(New Integer() {100, 0, 0, 0})
         Me.NumericUpDown_ThreadUpdateRate.Name = "NumericUpDown_ThreadUpdateRate"
@@ -506,21 +549,10 @@ Partial Class FormSettings
         Me.Label14.AutoSize = True
         Me.Label14.Location = New System.Drawing.Point(258, 24)
         Me.Label14.Name = "Label14"
-        Me.Label14.Size = New System.Drawing.Size(21, 13)
+        Me.Label14.Padding = New System.Windows.Forms.Padding(0, 2, 0, 2)
+        Me.Label14.Size = New System.Drawing.Size(21, 17)
         Me.Label14.TabIndex = 26
         Me.Label14.Text = "ms"
-        '
-        'LinkLabel_ThreadUpdateRateHelp
-        '
-        Me.LinkLabel_ThreadUpdateRateHelp.AutoSize = True
-        Me.LinkLabel_ThreadUpdateRateHelp.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LinkLabel_ThreadUpdateRateHelp.Location = New System.Drawing.Point(285, 24)
-        Me.LinkLabel_ThreadUpdateRateHelp.Name = "LinkLabel_ThreadUpdateRateHelp"
-        Me.LinkLabel_ThreadUpdateRateHelp.Size = New System.Drawing.Size(12, 13)
-        Me.LinkLabel_ThreadUpdateRateHelp.TabIndex = 27
-        Me.LinkLabel_ThreadUpdateRateHelp.TabStop = True
-        Me.LinkLabel_ThreadUpdateRateHelp.Text = "?"
-        Me.ToolTip_Info.SetToolTip(Me.LinkLabel_ThreadUpdateRateHelp, resources.GetString("LinkLabel_ThreadUpdateRateHelp.ToolTip"))
         '
         'GroupBox8
         '
@@ -855,7 +887,7 @@ Partial Class FormSettings
         Me.NumericUpDown_TabsToSpaces.Location = New System.Drawing.Point(166, 50)
         Me.NumericUpDown_TabsToSpaces.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
         Me.NumericUpDown_TabsToSpaces.Name = "NumericUpDown_TabsToSpaces"
-        Me.NumericUpDown_TabsToSpaces.Size = New System.Drawing.Size(42, 22)
+        Me.NumericUpDown_TabsToSpaces.Size = New System.Drawing.Size(64, 22)
         Me.NumericUpDown_TabsToSpaces.TabIndex = 15
         Me.NumericUpDown_TabsToSpaces.Value = New Decimal(New Integer() {4, 0, 0, 0})
         '
@@ -1030,7 +1062,7 @@ Partial Class FormSettings
         '
         Me.GroupBox17.Controls.Add(Me.CheckBox_VarAutocompleteShowObjectBrowser)
         Me.GroupBox17.Dock = System.Windows.Forms.DockStyle.Top
-        Me.GroupBox17.Location = New System.Drawing.Point(6, 620)
+        Me.GroupBox17.Location = New System.Drawing.Point(6, 654)
         Me.GroupBox17.Name = "GroupBox17"
         Me.GroupBox17.Size = New System.Drawing.Size(740, 51)
         Me.GroupBox17.TabIndex = 33
@@ -1056,7 +1088,7 @@ Partial Class FormSettings
         Me.GroupBox16.Controls.Add(Me.CheckBox_CommentsMethodIntelliSense)
         Me.GroupBox16.Controls.Add(Me.CheckBox_CommentsAutocompleteIntelliSense)
         Me.GroupBox16.Dock = System.Windows.Forms.DockStyle.Top
-        Me.GroupBox16.Location = New System.Drawing.Point(6, 400)
+        Me.GroupBox16.Location = New System.Drawing.Point(6, 434)
         Me.GroupBox16.Name = "GroupBox16"
         Me.GroupBox16.Size = New System.Drawing.Size(740, 220)
         Me.GroupBox16.TabIndex = 32
@@ -1172,7 +1204,7 @@ Partial Class FormSettings
         Me.GroupBox15.Controls.Add(Me.CheckBox_SwitchTabToAutocomplete)
         Me.GroupBox15.Controls.Add(Me.CheckBox_AutoCloseBrackets)
         Me.GroupBox15.Dock = System.Windows.Forms.DockStyle.Top
-        Me.GroupBox15.Location = New System.Drawing.Point(6, 202)
+        Me.GroupBox15.Location = New System.Drawing.Point(6, 236)
         Me.GroupBox15.Name = "GroupBox15"
         Me.GroupBox15.Size = New System.Drawing.Size(740, 198)
         Me.GroupBox15.TabIndex = 31
@@ -1202,19 +1234,6 @@ Partial Class FormSettings
         Me.CheckBox_FullAutocompleteReTagging.TabIndex = 8
         Me.CheckBox_FullAutocompleteReTagging.Text = "Full autocompletion for enums using re-tagging"
         Me.CheckBox_FullAutocompleteReTagging.UseVisualStyleBackColor = True
-        '
-        'LinkLabel_FullAutocompleteReTaggingHelp
-        '
-        Me.LinkLabel_FullAutocompleteReTaggingHelp.AutoSize = True
-        Me.LinkLabel_FullAutocompleteReTaggingHelp.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LinkLabel_FullAutocompleteReTaggingHelp.Location = New System.Drawing.Point(296, 47)
-        Me.LinkLabel_FullAutocompleteReTaggingHelp.Name = "LinkLabel_FullAutocompleteReTaggingHelp"
-        Me.LinkLabel_FullAutocompleteReTaggingHelp.Size = New System.Drawing.Size(12, 13)
-        Me.LinkLabel_FullAutocompleteReTaggingHelp.TabIndex = 29
-        Me.LinkLabel_FullAutocompleteReTaggingHelp.TabStop = True
-        Me.LinkLabel_FullAutocompleteReTaggingHelp.Text = "?"
-        Me.ToolTip_Info.SetToolTip(Me.LinkLabel_FullAutocompleteReTaggingHelp, "Make enums look more ""strongly typed"" using re-tagging." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Eg. 'Enum:Name' instead " &
-        "of 'Name'." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "NOTE: This can not be used with SourcePawn transitional syntax.")
         '
         'CheckBox_AutoIndentBrackets
         '
@@ -1278,6 +1297,8 @@ Partial Class FormSettings
         '
         'GroupBox14
         '
+        Me.GroupBox14.Controls.Add(Me.NumericUpDown_MaxParseCache)
+        Me.GroupBox14.Controls.Add(Me.Label33)
         Me.GroupBox14.Controls.Add(Me.NumericUpDown_MaxParseThreads)
         Me.GroupBox14.Controls.Add(Me.Label11)
         Me.GroupBox14.Controls.Add(Me.CheckBox_AlwaysLoadDefaultIncludes)
@@ -1286,16 +1307,35 @@ Partial Class FormSettings
         Me.GroupBox14.Dock = System.Windows.Forms.DockStyle.Top
         Me.GroupBox14.Location = New System.Drawing.Point(6, 6)
         Me.GroupBox14.Name = "GroupBox14"
-        Me.GroupBox14.Size = New System.Drawing.Size(740, 196)
+        Me.GroupBox14.Size = New System.Drawing.Size(740, 230)
         Me.GroupBox14.TabIndex = 30
         Me.GroupBox14.TabStop = False
         Me.GroupBox14.Text = "Syntax Parsing"
+        '
+        'NumericUpDown_MaxParseCache
+        '
+        Me.NumericUpDown_MaxParseCache.Location = New System.Drawing.Point(158, 198)
+        Me.NumericUpDown_MaxParseCache.Maximum = New Decimal(New Integer() {2048, 0, 0, 0})
+        Me.NumericUpDown_MaxParseCache.Name = "NumericUpDown_MaxParseCache"
+        Me.NumericUpDown_MaxParseCache.Size = New System.Drawing.Size(64, 22)
+        Me.NumericUpDown_MaxParseCache.TabIndex = 31
+        '
+        'Label33
+        '
+        Me.Label33.AutoSize = True
+        Me.Label33.Location = New System.Drawing.Point(9, 198)
+        Me.Label33.Margin = New System.Windows.Forms.Padding(6, 6, 3, 6)
+        Me.Label33.Name = "Label33"
+        Me.Label33.Padding = New System.Windows.Forms.Padding(0, 2, 0, 2)
+        Me.Label33.Size = New System.Drawing.Size(113, 17)
+        Me.Label33.TabIndex = 30
+        Me.Label33.Text = "Maximum cache size:"
         '
         'NumericUpDown_MaxParseThreads
         '
         Me.NumericUpDown_MaxParseThreads.Location = New System.Drawing.Point(158, 167)
         Me.NumericUpDown_MaxParseThreads.Name = "NumericUpDown_MaxParseThreads"
-        Me.NumericUpDown_MaxParseThreads.Size = New System.Drawing.Size(46, 22)
+        Me.NumericUpDown_MaxParseThreads.Size = New System.Drawing.Size(64, 22)
         Me.NumericUpDown_MaxParseThreads.TabIndex = 29
         '
         'Label11
@@ -1579,19 +1619,6 @@ Partial Class FormSettings
         Me.TabPage3.TabIndex = 0
         Me.TabPage3.Text = "Paths"
         Me.TabPage3.UseVisualStyleBackColor = True
-        '
-        'LinkLabel_DefaultConfigPathsHelp
-        '
-        Me.LinkLabel_DefaultConfigPathsHelp.AutoSize = True
-        Me.LinkLabel_DefaultConfigPathsHelp.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LinkLabel_DefaultConfigPathsHelp.Location = New System.Drawing.Point(209, 266)
-        Me.LinkLabel_DefaultConfigPathsHelp.Name = "LinkLabel_DefaultConfigPathsHelp"
-        Me.LinkLabel_DefaultConfigPathsHelp.Size = New System.Drawing.Size(12, 13)
-        Me.LinkLabel_DefaultConfigPathsHelp.TabIndex = 44
-        Me.LinkLabel_DefaultConfigPathsHelp.TabStop = True
-        Me.LinkLabel_DefaultConfigPathsHelp.Text = "?"
-        Me.ToolTip_Info.SetToolTip(Me.LinkLabel_DefaultConfigPathsHelp, "Opening a file from those paths will automatically switch to this config." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Howeve" &
-        "r, files in 'Known files' overwrite this behaviour.")
         '
         'RadioButton_ConfigSettingAutomatic
         '
@@ -2591,6 +2618,7 @@ Partial Class FormSettings
         Me.GroupBox15.PerformLayout()
         Me.GroupBox14.ResumeLayout(False)
         Me.GroupBox14.PerformLayout()
+        CType(Me.NumericUpDown_MaxParseCache, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.NumericUpDown_MaxParseThreads, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupBox4.ResumeLayout(False)
         Me.GroupBox4.PerformLayout()
@@ -2828,4 +2856,6 @@ Partial Class FormSettings
     Friend WithEvents TabPage7 As TabPage
     Friend WithEvents LinkLabel_ActiveConfig As LinkLabel
     Friend WithEvents Label13 As Label
+    Friend WithEvents NumericUpDown_MaxParseCache As NumericUpDown
+    Friend WithEvents Label33 As Label
 End Class

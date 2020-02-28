@@ -72,6 +72,33 @@ Public Class ClassSyntaxTools
         End If
     End Sub
 
+    Public Class STRUC_AUTOCOMPLETE_IDENTIFIER
+        Private g_iType As ENUM_AUTOCOMPLETE_TYPE
+        Private g_sIdentifier As String
+
+        Enum ENUM_AUTOCOMPLETE_TYPE
+            FULL
+            VARIABLE
+        End Enum
+
+        Public Sub New(_Type As ENUM_AUTOCOMPLETE_TYPE, _Identifier As String)
+            g_iType = _Type
+            g_sIdentifier = _Identifier
+        End Sub
+
+        ReadOnly Property m_Type As ENUM_AUTOCOMPLETE_TYPE
+            Get
+                Return g_iType
+            End Get
+        End Property
+
+        ReadOnly Property m_Identifier As String
+            Get
+                Return g_sIdentifier
+            End Get
+        End Property
+    End Class
+
     Public Class STRUC_AUTOCOMPLETE
         Private g_sInfo As String
         Private g_sFilename As String

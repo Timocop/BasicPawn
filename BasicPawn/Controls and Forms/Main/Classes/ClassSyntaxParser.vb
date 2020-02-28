@@ -26,6 +26,7 @@ Public Class ClassSyntaxParser
     Private g_mSyntaxParsingThreads As New ClassSyncList(Of KeyValuePair(Of String, Threading.Thread))
 
     Private g_lUpdateRequests As New ClassSyncList(Of STRUC_SYNTAX_PARSE_TAB_REQUEST)
+    Private g_lAutocompleteCache As New ClassSyncList(Of STRUC_AUTOCOMPLETE_CACHE)
 
     Private _lock As New Object
 
@@ -37,6 +38,40 @@ Public Class ClassSyntaxParser
             sTabIdentifier = _TabIdentifier
             iOptionFlags = _OptionFlags
         End Sub
+    End Class
+
+    Class STRUC_AUTOCOMPLETE_CACHE
+        Private g_sIdentifier As String
+        Private g_iType As ClassSyntaxTools.STRUC_AUTOCOMPLETE_IDENTIFIER.ENUM_AUTOCOMPLETE_TYPE
+        Private g_lAutocompleteItems As New ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
+
+        Public Sub New(_Identifier As String, _Type As ClassSyntaxTools.STRUC_AUTOCOMPLETE_IDENTIFIER.ENUM_AUTOCOMPLETE_TYPE, _AutocompleteItems As ClassSyntaxTools.STRUC_AUTOCOMPLETE())
+            g_sIdentifier = _Identifier
+            g_iType = _Type
+
+            'Clone array
+            For Each mItem In _AutocompleteItems
+                g_lAutocompleteItems.Add(New ClassSyntaxTools.STRUC_AUTOCOMPLETE(mItem))
+            Next
+        End Sub
+
+        Public ReadOnly Property m_Identifier As String
+            Get
+                Return g_sIdentifier
+            End Get
+        End Property
+
+        Public ReadOnly Property m_Type As ClassSyntaxTools.STRUC_AUTOCOMPLETE_IDENTIFIER.ENUM_AUTOCOMPLETE_TYPE
+            Get
+                Return g_iType
+            End Get
+        End Property
+
+        Public ReadOnly Property m_AutocompleteItems As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
+            Get
+                Return g_lAutocompleteItems
+            End Get
+        End Property
     End Class
 
     Public Event OnSyntaxParseStarted(iUpdateType As ENUM_PARSE_TYPE_FLAGS, sTabIdentifier As String, iOptionFlags As ENUM_PARSE_OPTIONS_FLAGS)
@@ -53,6 +88,7 @@ Public Class ClassSyntaxParser
         INVALID_FILE
         [ERROR]
         UNCHANGED = 0
+        CACHED
         UPDATED
     End Enum
 
@@ -71,6 +107,12 @@ Public Class ClassSyntaxParser
     ReadOnly Property m_UpdateRequests As ClassSyncList(Of STRUC_SYNTAX_PARSE_TAB_REQUEST)
         Get
             Return g_lUpdateRequests
+        End Get
+    End Property
+
+    ReadOnly Property m_AutocompleteCache As ClassSyncList(Of STRUC_AUTOCOMPLETE_CACHE)
+        Get
+            Return g_lAutocompleteCache
         End Get
     End Property
 
@@ -382,14 +424,36 @@ Public Class ClassSyntaxParser
             'Set mod type
             mRequestTab.m_Language = iRequestedLangauge
 
-            'Only update syntax parse if files have changed.
+            Dim sAutocompleteIdentifier As String = mRequestTab.m_AutocompleteGroup.GenerateAutocompleteIdentifier()
+
             If ((iOptionFlags And ENUM_PARSE_OPTIONS_FLAGS.FORCE_UPDATE) = 0) Then
-                Dim sAutocompleteIdentifier As String = ""
-                If (mRequestTab.m_AutocompleteGroup.CheckAutocompleteIdentifier(ClassTabControl.SourceTabPage.STRUC_AUTOCOMPLETE_GROUP.ENUM_AUTOCOMPLETE_TYPE.FULL, sAutocompleteIdentifier)) Then
-                    Return ENUM_PARSE_ERROR.UNCHANGED
+                'Only update syntax parse if files have changed.
+                If (True) Then
+                    If (mRequestTab.m_AutocompleteGroup.CheckAutocompleteIdentifier(ClassSyntaxTools.STRUC_AUTOCOMPLETE_IDENTIFIER.ENUM_AUTOCOMPLETE_TYPE.FULL, sAutocompleteIdentifier)) Then
+                        Return ENUM_PARSE_ERROR.UNCHANGED
+                    End If
                 End If
 
-                mRequestTab.m_AutocompleteGroup.m_AutocompleteIdentifier(ClassTabControl.SourceTabPage.STRUC_AUTOCOMPLETE_GROUP.ENUM_AUTOCOMPLETE_TYPE.FULL) = sAutocompleteIdentifier
+                'Get autocomplete items from cache
+                If (ClassSettings.g_iSettingsMaxParsingCache > 0) Then
+                    Dim mCacheItem = m_AutocompleteCache.Find(Function(a As STRUC_AUTOCOMPLETE_CACHE)
+                                                                  Return (a.m_Identifier = sAutocompleteIdentifier AndAlso a.m_Type = ClassSyntaxTools.STRUC_AUTOCOMPLETE_IDENTIFIER.ENUM_AUTOCOMPLETE_TYPE.FULL)
+                                                              End Function)
+
+                    If (mCacheItem IsNot Nothing) Then
+                        mRequestTab.m_AutocompleteGroup.m_AutocompleteItems.DoSync(
+                            Sub()
+                                mRequestTab.m_AutocompleteGroup.m_AutocompleteItems.Clear()
+
+                                'Clone autocomplete items
+                                For Each mItem In mCacheItem.m_AutocompleteItems.ToArray
+                                    mRequestTab.m_AutocompleteGroup.m_AutocompleteItems.Add(New ClassSyntaxTools.STRUC_AUTOCOMPLETE(mItem))
+                                Next
+                            End Sub)
+
+                        Return ENUM_PARSE_ERROR.CACHED
+                    End If
+                End If
             End If
 
             'Add debugger placeholder variables and methods
@@ -434,6 +498,19 @@ Public Class ClassSyntaxParser
                     mRequestTab.m_AutocompleteGroup.m_AutocompleteItems.RemoveAll(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) = 0)
                     mRequestTab.m_AutocompleteGroup.m_AutocompleteItems.AddRange(lNewAutocompleteList.ToArray)
 
+                    mRequestTab.m_AutocompleteGroup.m_AutocompleteIdentifierItem(ClassSyntaxTools.STRUC_AUTOCOMPLETE_IDENTIFIER.ENUM_AUTOCOMPLETE_TYPE.FULL) = sAutocompleteIdentifier
+
+                    If (ClassSettings.g_iSettingsMaxParsingCache > 0) Then
+                        m_AutocompleteCache.DoSync(
+                            Sub()
+                                m_AutocompleteCache.RemoveAll(Function(a As STRUC_AUTOCOMPLETE_CACHE)
+                                                                  Return (a.m_Identifier = sAutocompleteIdentifier AndAlso a.m_Type = ClassSyntaxTools.STRUC_AUTOCOMPLETE_IDENTIFIER.ENUM_AUTOCOMPLETE_TYPE.FULL)
+                                                              End Function)
+
+                                m_AutocompleteCache.Add(New STRUC_AUTOCOMPLETE_CACHE(sAutocompleteIdentifier, ClassSyntaxTools.STRUC_AUTOCOMPLETE_IDENTIFIER.ENUM_AUTOCOMPLETE_TYPE.FULL, mRequestTab.m_AutocompleteGroup.m_AutocompleteItems.ToArray))
+                            End Sub)
+                    End If
+
 #If DUMP_TO_FILE Then
                     If (True) Then
                         Dim mSB As New StringBuilder
@@ -458,8 +535,10 @@ Public Class ClassSyntaxParser
                     End If
 #End If
                 End Sub)
-            mApplyWatch.Stop()
 
+            CleanAutocompleteCache(ClassSettings.g_iSettingsMaxParsingCache)
+
+            mApplyWatch.Stop()
 
 #If PROFILE_PARSING Then
             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_DEBUG, "Syntax parsing finished!")
@@ -513,14 +592,36 @@ Public Class ClassSyntaxParser
             Dim lNewVarAutocompleteList As New ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
             Dim mParser As New ClassParser
 
-            'Only update syntax if files have changed.
+            Dim sAutocompleteIdentifier As String = mRequestTab.m_AutocompleteGroup.GenerateAutocompleteIdentifier
+
             If ((iOptionFlags And ENUM_PARSE_OPTIONS_FLAGS.FORCE_UPDATE) = 0) Then
-                Dim sAutocompleteIdentifier As String = ""
-                If (mRequestTab.m_AutocompleteGroup.CheckAutocompleteIdentifier(ClassTabControl.SourceTabPage.STRUC_AUTOCOMPLETE_GROUP.ENUM_AUTOCOMPLETE_TYPE.VARIABLE, sAutocompleteIdentifier)) Then
-                    Return ENUM_PARSE_ERROR.UNCHANGED
+                'Only update syntax if files have changed.
+                If (True) Then
+                    If (mRequestTab.m_AutocompleteGroup.CheckAutocompleteIdentifier(ClassSyntaxTools.STRUC_AUTOCOMPLETE_IDENTIFIER.ENUM_AUTOCOMPLETE_TYPE.VARIABLE, sAutocompleteIdentifier)) Then
+                        Return ENUM_PARSE_ERROR.UNCHANGED
+                    End If
                 End If
 
-                mRequestTab.m_AutocompleteGroup.m_AutocompleteIdentifier(ClassTabControl.SourceTabPage.STRUC_AUTOCOMPLETE_GROUP.ENUM_AUTOCOMPLETE_TYPE.VARIABLE) = sAutocompleteIdentifier
+                'Get autocomplete items from cache
+                If (ClassSettings.g_iSettingsMaxParsingCache > 0) Then
+                    Dim mCacheItem = m_AutocompleteCache.Find(Function(a As STRUC_AUTOCOMPLETE_CACHE)
+                                                                  Return (a.m_Identifier = sAutocompleteIdentifier AndAlso a.m_Type = ClassSyntaxTools.STRUC_AUTOCOMPLETE_IDENTIFIER.ENUM_AUTOCOMPLETE_TYPE.VARIABLE)
+                                                              End Function)
+
+                    If (mCacheItem IsNot Nothing) Then
+                        mRequestTab.m_AutocompleteGroup.m_AutocompleteItems.DoSync(
+                            Sub()
+                                mRequestTab.m_AutocompleteGroup.m_AutocompleteItems.Clear()
+
+                                'Clone autocomplete items
+                                For Each mItem In mCacheItem.m_AutocompleteItems.ToArray
+                                    mRequestTab.m_AutocompleteGroup.m_AutocompleteItems.Add(New ClassSyntaxTools.STRUC_AUTOCOMPLETE(mItem))
+                                Next
+                            End Sub)
+
+                        Return ENUM_PARSE_ERROR.CACHED
+                    End If
+                End If
             End If
 
             'Parse variables and create methodmaps for variables
@@ -567,6 +668,19 @@ Public Class ClassSyntaxParser
                     mRequestTab.m_AutocompleteGroup.m_AutocompleteItems.RemoveAll(Function(x As ClassSyntaxTools.STRUC_AUTOCOMPLETE) (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> 0)
                     mRequestTab.m_AutocompleteGroup.m_AutocompleteItems.AddRange(lNewVarAutocompleteList.ToArray)
 
+                    mRequestTab.m_AutocompleteGroup.m_AutocompleteIdentifierItem(ClassSyntaxTools.STRUC_AUTOCOMPLETE_IDENTIFIER.ENUM_AUTOCOMPLETE_TYPE.VARIABLE) = sAutocompleteIdentifier
+
+                    If (ClassSettings.g_iSettingsMaxParsingCache > 0) Then
+                        m_AutocompleteCache.DoSync(
+                            Sub()
+                                m_AutocompleteCache.RemoveAll(Function(a As STRUC_AUTOCOMPLETE_CACHE)
+                                                                  Return (a.m_Identifier = sAutocompleteIdentifier AndAlso a.m_Type = ClassSyntaxTools.STRUC_AUTOCOMPLETE_IDENTIFIER.ENUM_AUTOCOMPLETE_TYPE.VARIABLE)
+                                                              End Function)
+
+                                m_AutocompleteCache.Add(New STRUC_AUTOCOMPLETE_CACHE(sAutocompleteIdentifier, ClassSyntaxTools.STRUC_AUTOCOMPLETE_IDENTIFIER.ENUM_AUTOCOMPLETE_TYPE.VARIABLE, mRequestTab.m_AutocompleteGroup.m_AutocompleteItems.ToArray))
+                            End Sub)
+                    End If
+
 #If DUMP_TO_FILE Then
                     If (True) Then
                         Dim mSB As New StringBuilder
@@ -591,8 +705,10 @@ Public Class ClassSyntaxParser
                     End If
 #End If
                 End Sub)
-            mApplyWatch.Stop()
 
+            CleanAutocompleteCache(ClassSettings.g_iSettingsMaxParsingCache)
+
+            mApplyWatch.Stop()
 
 #If PROFILE_PARSING Then
             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_DEBUG, "Variable syntax parsing finished!")
@@ -612,6 +728,15 @@ Public Class ClassSyntaxParser
 
         Return ENUM_PARSE_ERROR.ERROR
     End Function
+
+    Private Sub CleanAutocompleteCache(iMaxItems As Integer)
+        m_AutocompleteCache.DoSync(
+            Sub()
+                While m_AutocompleteCache.Count > iMaxItems
+                    m_AutocompleteCache.PopFirst()
+                End While
+            End Sub)
+    End Sub
 
     ''' <summary>
     ''' Gets all include files from a file
