@@ -151,7 +151,15 @@ Public Class ClassUpdate
 
         IO.File.WriteAllText(sBatchFile, sUpdateBatch.ToString)
 
-        ClassTools.ClassProcess.ExecuteProgram(sBatchFile, "", Nothing, Nothing)
+        Using i As New Process
+            i.StartInfo.FileName = sBatchFile
+            i.StartInfo.WorkingDirectory = IO.Path.GetDirectoryName(sBatchFile)
+
+            i.StartInfo.UseShellExecute = False
+            i.StartInfo.CreateNoWindow = True
+
+            i.Start()
+        End Using
 
 #If Not DEBUG Then
         Process.GetCurrentProcess.Kill()
