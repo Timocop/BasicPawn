@@ -1358,20 +1358,20 @@ Public Class ClassSyntaxTools
                 Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iLanguage)
                 Dim mSourceBuilder As New StringBuilder(sSource)
 
+                Dim iParentCount As Integer = 0
                 Dim iBraceCount As Integer = 0
-                Dim iBracedCount As Integer = 0
 
                 For i = mSourceBuilder.Length - 1 - 1 To 0 Step -1
                     Try
                         Select Case (mSourceBuilder(i))
                             Case "("c
                                 If (Not mSourceAnalysis.m_InNonCode(i)) Then
-                                    iBracedCount -= 1
+                                    iParentCount -= 1
                                 End If
 
                             Case ")"c
                                 If (Not mSourceAnalysis.m_InNonCode(i)) Then
-                                    iBracedCount += 1
+                                    iParentCount += 1
                                 End If
 
                             Case "{"c
@@ -1432,19 +1432,25 @@ Public Class ClassSyntaxTools
                                         Continue For
                                     End If
 
-                                    'Finish up
-                                    Dim iBraceRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
-                                    Dim iBraceLevel As Integer = mSourceAnalysis.GetBraceLevel(i + 1 + iBraceCount, iBraceRange)
-                                    Select Case (iBraceRange)
+                                    'Finish up 
+                                    Dim iRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
+                                    Dim iBraceLevel As Integer = mSourceAnalysis.GetBraceLevel(i + 1 + iBraceCount, iRange)
+                                    Select Case (iRange)
                                         Case ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.START, ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END
                                             iBraceLevel -= 1
+                                    End Select
+
+                                    Dim iParentLevel As Integer = mSourceAnalysis.GetParenthesisLevel(i + 1 + iParentCount, iRange)
+                                    Select Case (iRange)
+                                        Case ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.START, ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END
+                                            iParentLevel -= 1
                                     End Select
 
                                     'Add indentation 
                                     Dim iIndentLength As Integer = iBraceLevel
 
-                                    If (iBracedCount > 0) Then
-                                        iIndentLength += (iBracedCount + 1)
+                                    If (iParentLevel > 0) Then
+                                        iIndentLength += iParentLevel
                                     End If
 
                                     If (iPreprocessorLevel > 0) Then
@@ -1458,6 +1464,7 @@ Public Class ClassSyntaxTools
                                     mSourceBuilder = mSourceBuilder.Insert(i + 1, ClassSettings.BuildIndentation(iIndentLength, iIndentationType))
 
                                     iBraceCount = 0
+                                    iParentCount = 0
                                 End If
 
                         End Select
