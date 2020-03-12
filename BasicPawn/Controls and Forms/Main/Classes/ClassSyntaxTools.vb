@@ -39,7 +39,7 @@ Public Class ClassSyntaxTools
     Public Shared ReadOnly g_sSyntaxHighlightEnum2Marker As String = "<!-- [DO NOT EDIT | ENUM2 MARKER] -->"
     Public Shared ReadOnly g_sSyntaxSourcePawnMarker As String = "SourcePawn-04e3632f-5472-42c5-929a-c3e0c2b35324"
 
-    Public Shared ReadOnly g_mSyntaxRequiredVersion As New Version("1.3")
+    Public Shared ReadOnly g_mSyntaxRequiredVersion As New Version("1.2")
 
     Enum ENUM_LANGUAGE_TYPE
         SOURCEPAWN

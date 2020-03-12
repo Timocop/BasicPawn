@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- <SyntaxVersion>1.3</SyntaxVersion> -->
+<!-- <SyntaxVersion>1.2</SyntaxVersion> -->
 <SyntaxDefinition name="SourcePawn-04e3632f-5472-42c5-929a-c3e0c2b35324" extensions=".sp">
 	<Environment>
 		<Default color="#D9E8F7" bgcolor="#292929" />
@@ -218,6 +218,7 @@
 			</KeyWords>
 		</RuleSet>
 		<RuleSet name="CommentMarkerSet" ignorecase="false">
+			<Delimiters>&amp;&lt;&gt;~!%^*()-+=|\#/{}[]:;"' ,	.?</Delimiters>
 			<KeyWords name="ErrorWords" bold="true" italic="false" color="Red">
 				<Key word="TODO" />
 				<Key word="FIXME" />
