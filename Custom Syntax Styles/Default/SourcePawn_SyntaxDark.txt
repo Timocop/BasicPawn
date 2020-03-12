@@ -1,1 +1,0 @@
-SourcePawn_SyntaxDark.xml is the default dark BasicPawn syntax style.
