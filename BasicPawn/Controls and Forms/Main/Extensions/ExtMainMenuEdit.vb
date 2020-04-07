@@ -45,20 +45,10 @@ Partial Public Class FormMain
     End Sub
 
     Private Sub ToolStripMenuItem_EditDupLine_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_EditDupLine.Click
-        If (g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.HasSomethingSelected) Then
-            Dim sText As String = g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.SelectedText
-            Dim iCaretOffset As Integer = g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Offset
-
-            g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.Insert(iCaretOffset, sText)
-        Else
-            Dim iCaretOffset As Integer = g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Offset
-            Dim iLineOffset As Integer = g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.GetLineSegmentForOffset(iCaretOffset).Offset
-            Dim iLineLen As Integer = g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.GetLineSegmentForOffset(iCaretOffset).Length
-
-            g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.Insert(iLineOffset, g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.GetText(iLineOffset, iLineLen) & Environment.NewLine)
-        End If
-
-        g_ClassTabControl.m_ActiveTab.m_TextEditor.InvalidateTextArea()
+        With New TextEditorControlEx.DuplicateSelectedLine()
+            .m_Direction = TextEditorControlEx.DuplicateSelectedLine.ENUM_DIRECTION.DOWN
+            .Execute(g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea)
+        End With
     End Sub
 
     Private Sub ToolStripMenuItem_EditLineUp_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_EditLineUp.Click
@@ -71,6 +61,20 @@ Partial Public Class FormMain
     Private Sub ToolStripMenuItem_EditLineDown_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_EditLineDown.Click
         With New TextEditorControlEx.MoveSelectedLine()
             .m_Direction = TextEditorControlEx.MoveSelectedLine.ENUM_DIRECTION.DOWN
+            .Execute(g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea)
+        End With
+    End Sub
+
+    Private Sub ToolStripMenuItem_EditInsertLineUp_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_EditInsertLineUp.Click
+        With New TextEditorControlEx.InsertBlankSelectedLine()
+            .m_Direction = TextEditorControlEx.InsertBlankSelectedLine.ENUM_DIRECTION.UP
+            .Execute(g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea)
+        End With
+    End Sub
+
+    Private Sub ToolStripMenuItem_EditInsertLineDown_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_EditInsertLineDown.Click
+        With New TextEditorControlEx.InsertBlankSelectedLine()
+            .m_Direction = TextEditorControlEx.InsertBlankSelectedLine.ENUM_DIRECTION.DOWN
             .Execute(g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea)
         End With
     End Sub

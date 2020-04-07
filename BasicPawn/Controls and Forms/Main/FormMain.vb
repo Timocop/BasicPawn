@@ -185,7 +185,7 @@ Public Class FormMain
         TabPage_Information.ImageKey = "1"
         TabPage_Bookmarks.ImageKey = "2"
 
-        'Some control init
+        ' Some control init
         g_bIgnoreComboBoxEvent = True
         ToolStripComboBox_ToolsAutocompleteSyntax.SelectedIndex = 0
         g_bIgnoreComboBoxEvent = False
@@ -639,4 +639,19 @@ Public Class FormMain
             Timer_SyntaxAnimation.Start()
         End Try
     End Sub
+
+    Protected Overrides Function ProcessCmdKey(ByRef mMsg As Message, iKeyData As Keys) As Boolean
+        ' Workaround since 'Keys.Enter' does not work on 'ShortcutKeys' property.
+        If (iKeyData = (Keys.Control Or Keys.Alt Or Keys.Enter)) Then
+            ToolStripMenuItem_EditInsertLineUp.PerformClick()
+            Return False
+        End If
+
+        If (iKeyData = (Keys.Shift Or Keys.Control Or Keys.Alt Or Keys.Enter)) Then
+            ToolStripMenuItem_EditInsertLineDown.PerformClick()
+            Return False
+        End If
+
+        Return MyBase.ProcessCmdKey(mMsg, iKeyData)
+    End Function
 End Class

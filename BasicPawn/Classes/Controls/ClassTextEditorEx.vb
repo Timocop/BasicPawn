@@ -56,16 +56,14 @@ Public Class TextEditorControlEx
             DOWN = -1
         End Enum
 
-        Property m_Direction As ENUM_DIRECTION
+        Property m_Direction As ENUM_DIRECTION = ENUM_DIRECTION.DOWN
 
         Public Overrides Sub Execute(mTextArea As TextArea)
             If (mTextArea.Document.ReadOnly) Then
                 Return
             End If
 
-            If (m_Direction <> ENUM_DIRECTION.UP AndAlso m_Direction <> ENUM_DIRECTION.DOWN) Then
-                Return
-            End If
+            Dim iDirection As Integer = If(m_Direction = ENUM_DIRECTION.UP, 1, -1)
 
             Dim mSelection As ISelection
             Dim iSelectionDelimiterLength As Integer = 0
@@ -85,7 +83,7 @@ Public Class TextEditorControlEx
                 iSelectionDelimiterLength = mLineSegment.DelimiterLength
             End If
 
-            Dim iTargetLine As Integer = mSelection.StartPosition.Line - m_Direction
+            Dim iTargetLine As Integer = mSelection.StartPosition.Line - iDirection
             If (iTargetLine < 0 OrElse iTargetLine > mTextArea.Document.TotalNumberOfLines - 1) Then
                 Return
             End If
@@ -124,12 +122,105 @@ Public Class TextEditorControlEx
             End Try
 
             'TODO: Fix extended selection glitches e.g via ShiftCaretLeft(), ShiftCaretRight()
-            mTextArea.SelectionManager.SetSelection(New TextLocation(0, mSelection.StartPosition.Line - m_Direction),
-                                                        New TextLocation(mTextArea.Document.GetLineSegment(mSelection.EndPosition.Line - m_Direction).Length, mSelection.EndPosition.Line - m_Direction))
+            mTextArea.SelectionManager.SetSelection(New TextLocation(0, mSelection.StartPosition.Line - iDirection),
+                                                        New TextLocation(mTextArea.Document.GetLineSegment(mSelection.EndPosition.Line - iDirection).Length, mSelection.EndPosition.Line - iDirection))
             mTextArea.Caret.Position = mTextArea.Caret.ValidatePosition(mTextArea.SelectionManager.SelectionCollection(0).EndPosition)
             mTextArea.Caret.UpdateCaretPosition()
 
             mTextArea.AutoClearSelection = False
+
+            mTextArea.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.WholeTextArea))
+            mTextArea.Document.CommitUpdate()
+        End Sub
+    End Class
+
+    Public Class DuplicateSelectedLine
+        Inherits AbstractEditAction
+
+        Enum ENUM_DIRECTION
+            UP = 1
+            DOWN = -1
+        End Enum
+
+        Property m_Direction As ENUM_DIRECTION = ENUM_DIRECTION.DOWN
+
+        Public Overrides Sub Execute(mTextArea As TextArea)
+            If (mTextArea.Document.ReadOnly) Then
+                Return
+            End If
+
+            Try
+                mTextArea.BeginUpdate()
+
+                mTextArea.Document.UndoStack.StartUndoGroup()
+
+                If (mTextArea.SelectionManager.HasSomethingSelected) Then
+                    Dim sText As String = mTextArea.SelectionManager.SelectedText
+                    Dim iCaretOffset As Integer = mTextArea.Caret.Offset
+
+                    mTextArea.Document.Insert(iCaretOffset, sText)
+                Else
+                    Dim iCaretOffset As Integer = mTextArea.Caret.Offset
+                    Dim iLineOffset As Integer = mTextArea.Document.GetLineSegmentForOffset(iCaretOffset).Offset
+                    Dim iLineLen As Integer = mTextArea.Document.GetLineSegmentForOffset(iCaretOffset).Length
+
+                    Select Case m_Direction
+                        Case ENUM_DIRECTION.UP
+                            mTextArea.Document.Insert(iLineOffset, mTextArea.Document.GetText(iLineOffset, iLineLen) & Environment.NewLine)
+
+                            ' Move caret down because the inserted newline
+                            Call (New CaretDown).Execute(mTextArea)
+                        Case Else
+                            mTextArea.Document.Insert(iLineOffset + iLineLen, Environment.NewLine & mTextArea.Document.GetText(iLineOffset, iLineLen))
+                    End Select
+                End If
+
+                mTextArea.Document.UndoStack.EndUndoGroup()
+            Finally
+                mTextArea.EndUpdate()
+            End Try
+
+            mTextArea.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.WholeTextArea))
+            mTextArea.Document.CommitUpdate()
+        End Sub
+    End Class
+
+    Public Class InsertBlankSelectedLine
+        Inherits AbstractEditAction
+
+        Enum ENUM_DIRECTION
+            UP = 1
+            DOWN = -1
+        End Enum
+
+        Property m_Direction As ENUM_DIRECTION = ENUM_DIRECTION.DOWN
+
+        Public Overrides Sub Execute(mTextArea As TextArea)
+            If (mTextArea.Document.ReadOnly) Then
+                Return
+            End If
+
+            Try
+                mTextArea.BeginUpdate()
+
+                mTextArea.Document.UndoStack.StartUndoGroup()
+
+                mTextArea.SelectionManager.ClearSelection()
+
+                Select Case m_Direction
+                    Case ENUM_DIRECTION.UP
+                        Call (New CaretUp).Execute(mTextArea)
+                        Call (New [End]).Execute(mTextArea)
+                        Call (New [Return]).Execute(mTextArea)
+                    Case Else
+                        Call (New [End]).Execute(mTextArea)
+                        Call (New [Return]).Execute(mTextArea)
+                End Select
+
+                mTextArea.Document.UndoStack.EndUndoGroup()
+            Finally
+                mTextArea.EndUpdate()
+            End Try
 
             mTextArea.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.WholeTextArea))
             mTextArea.Document.CommitUpdate()
