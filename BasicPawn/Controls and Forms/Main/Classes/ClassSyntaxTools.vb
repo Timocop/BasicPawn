@@ -544,14 +544,18 @@ Public Class ClassSyntaxTools
             Dim iParenthesisLevel As Integer = 0 '() 
             Dim iBracketLevel As Integer = 0 '[] 
             Dim iBraceLevel As Integer = 0 '{} 
-            Dim iParenthesisLevelPreSave As Integer = 0 '() 'Save/load before/after preprocessor
-            Dim iBracketLevelPreSave As Integer = 0 '[] 'Save/load before/after preprocessor
-            Dim iBraceLevelPreSave As Integer = 0 '{} 'Save/load before/after preprocessor
             Dim bInSingleComment As Integer = 0
             Dim bInMultiComment As Integer = 0
             Dim bInString As Integer = 0
             Dim bInChar As Integer = 0
             Dim bInPreprocessor As Integer = 0
+            Dim iParenthesisLevelPreSave As Integer = 0 '() 'Save/load before/after preprocessor
+            Dim iBracketLevelPreSave As Integer = 0 '[] 'Save/load before/after preprocessor
+            Dim iBraceLevelPreSave As Integer = 0 '{} 'Save/load before/after preprocessor
+            Dim bInSingleCommentPreSave As Integer = 0
+            Dim bInMultiCommentPreSave As Integer = 0
+            Dim bInStringPreSave As Integer = 0
+            Dim bInCharPreSave As Integer = 0
 
             Dim iLine As Integer = 0
 
@@ -576,6 +580,10 @@ Public Class ClassSyntaxTools
                             iParenthesisLevelPreSave = iParenthesisLevel
                             iBracketLevelPreSave = iBracketLevel
                             iBraceLevelPreSave = iBraceLevel
+                            bInSingleCommentPreSave = bInSingleComment
+                            bInMultiCommentPreSave = bInMultiComment
+                            bInStringPreSave = bInString
+                            bInCharPreSave = bInChar
                         End If
 
                         bInPreprocessor = 1
@@ -770,10 +778,14 @@ Public Class ClassSyntaxTools
                             bInPreprocessor = 0
                             g_iStateArray(i, ENUM_STATE_TYPES.IN_PREPROCESSOR) = bInPreprocessor
 
-                            'Preprocessor directives can be malformed, reset level after we are done with it.
+                            'Preprocessor directives can be malformed, reset level after we are done with it. 
                             iParenthesisLevel = iParenthesisLevelPreSave
                             iBracketLevel = iBracketLevelPreSave
                             iBraceLevel = iBraceLevelPreSave
+                            bInSingleComment = bInSingleCommentPreSave
+                            bInMultiComment = bInMultiCommentPreSave
+                            bInString = bInStringPreSave
+                            bInChar = bInCharPreSave
                         End If
 
                         g_mLineIndexes(iLine) = i
