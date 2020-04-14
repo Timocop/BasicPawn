@@ -924,7 +924,8 @@ Public Class ClassTabControl
             AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_Source_SwitchToAutocompleteTab
             AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_MouseClick
 
-            AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_PeekDefinition
+            AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseDown, AddressOf TextEditorControl_PeekDefinition_Pre
+            AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_PeekDefinition_Post
 
             AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.SelectionManager.SelectionChanged, AddressOf TextEditorControl_Source_UpdateInfo
             AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.PositionChanged, AddressOf TextEditorControl_Source_UpdateInfo
@@ -958,7 +959,8 @@ Public Class ClassTabControl
             RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_Source_SwitchToAutocompleteTab
             RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_MouseClick
 
-            RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_PeekDefinition
+            RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseDown, AddressOf TextEditorControl_PeekDefinition_Pre
+            RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_PeekDefinition_Post
 
             RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.SelectionManager.SelectionChanged, AddressOf TextEditorControl_Source_UpdateInfo
             RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.PositionChanged, AddressOf TextEditorControl_Source_UpdateInfo
@@ -1761,8 +1763,35 @@ Public Class ClassTabControl
             End If
         End Sub
 
-        Private Sub TextEditorControl_PeekDefinition(sender As Object, e As MouseEventArgs)
+        Private g_mLastMouseLoc As Point = Nothing
+        Private g_mLastMouseTime As Date
+        Private Sub TextEditorControl_PeekDefinition_Pre(sender As Object, e As MouseEventArgs)
+            If (e.Button <> MouseButtons.Left) Then
+                Return
+            End If
+
+            g_mLastMouseLoc = New Point(e.X, e.Y)
+            g_mLastMouseTime = Now
+        End Sub
+
+        Private Sub TextEditorControl_PeekDefinition_Post(sender As Object, e As MouseEventArgs)
             If (Control.ModifierKeys <> Keys.Control OrElse e.Button <> MouseButtons.Left) Then
+                Return
+            End If
+
+            If (m_TextEditor.ActiveTextAreaControl.SelectionManager.HasSomethingSelected) Then
+                Return
+            End If
+
+            ' Validate if we actualy made a click, not a click-and-drag or something.
+            Dim mLastClickDistance = New Point(e.X - g_mLastMouseLoc.X, e.Y - g_mLastMouseLoc.Y)
+            If (Math.Abs(mLastClickDistance.X) > SystemInformation.DoubleClickSize.Width OrElse
+                    Math.Abs(mLastClickDistance.Y) > SystemInformation.DoubleClickSize.Height) Then
+                Return
+            End If
+
+            Dim iLastClickTime As Long = CLng((Now.Ticks - g_mLastMouseTime.Ticks) / 10000)
+            If (iLastClickTime > SystemInformation.DoubleClickTime) Then
                 Return
             End If
 
