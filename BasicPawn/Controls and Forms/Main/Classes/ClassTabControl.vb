@@ -1785,8 +1785,8 @@ Public Class ClassTabControl
 
             ' Validate if we actualy made a click, not a click-and-drag or something.
             Dim mLastClickDistance = New Point(e.X - g_mLastMouseLoc.X, e.Y - g_mLastMouseLoc.Y)
-            If (Math.Abs(mLastClickDistance.X) > SystemInformation.DoubleClickSize.Width OrElse
-                    Math.Abs(mLastClickDistance.Y) > SystemInformation.DoubleClickSize.Height) Then
+            If (Math.Abs(mLastClickDistance.X) > SystemInformation.DoubleClickSize.Width / 2 OrElse
+                    Math.Abs(mLastClickDistance.Y) > SystemInformation.DoubleClickSize.Height / 2) Then
                 Return
             End If
 
