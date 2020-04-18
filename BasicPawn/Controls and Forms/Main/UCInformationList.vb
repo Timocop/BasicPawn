@@ -66,7 +66,7 @@ Public Class UCInformationList
                                           End If
 
                                           If (g_mFormMain.TabControl_Details.SelectedTab IsNot g_mFormMain.TabPage_Information) Then
-                                              g_mFormMain.TabControl_Details.SelectTab(g_mFormMain.TabPage_Information)
+                                              g_mFormMain.TabControl_Details.SelectTabNoFocus(g_mFormMain.TabPage_Information)
                                           End If
                                       End If
 
