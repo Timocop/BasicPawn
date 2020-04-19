@@ -15,11 +15,15 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 
+Imports System
 Imports System.Drawing
+Imports System.Text.RegularExpressions
 Imports System.Windows.Forms
 Imports BasicPawn
 
 Public Class FormReportManager
+    Public Shared ReadOnly g_sAcceleratorServer As String = "https://crash.limetech.org/"
+
     Private g_mFtpSecureStorage As ClassSecureStorage
     Private g_mSettingsSecureStorage As ClassSecureStorage
 
@@ -142,23 +146,11 @@ Public Class FormReportManager
             Return
         End If
 
-        If (Not mReportItem.m_IsClickable) Then
+        If (mReportItem.m_IReport Is Nothing) Then
             Return
         End If
 
-        Dim iCount = 0
-        For Each mForm As Form In Application.OpenForms
-            If (TypeOf mForm Is FormReportDetails) Then
-                iCount += 1
-            End If
-        Next
-
-        If (iCount > 100) Then
-            MessageBox.Show("Too many 'Report' windows open!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-        Else
-            Dim mFormReportDetails As New FormReportDetails(Me, mReportItem.m_Exception)
-            mFormReportDetails.Show()
-        End If
+        mReportItem.m_IReport.OnClicked(Me)
     End Sub
 
     Private Sub ClassTreeViewColumns_DoubleClick(sender As Object, e As EventArgs)
@@ -227,7 +219,7 @@ Public Class FormReportManager
                                                                  Const C_REPORTITEMS_IMAGE = "Image"
 
                                                                  Dim lReportItems As New List(Of Dictionary(Of String, Object)) 'See keys: C_REPORTITEMS_*
-                                                                 Dim lReportExceptionItems As New List(Of ClassDebuggerTools.STRUC_SM_EXCEPTION)
+                                                                 Dim lReportExceptionItems As New List(Of ClassReportItems.IReportInterface)
                                                                  Dim lFtpEntries As New List(Of STRUC_FTP_ENTRY_ITEM)
 
                                                                  Dim iMaxFileBytes As Long = (100 * 1024 * 1024)
@@ -324,7 +316,9 @@ Public Class FormReportManager
                                                                                          Try
                                                                                              mClassFTP.DownloadFile(mItem.sFullName, sTmpFile)
 
-                                                                                             lReportExceptionItems.AddRange(ClassDebuggerTools.ClassDebuggerHelpers.ReadSourceModLogExceptions(IO.File.ReadAllLines(sTmpFile)))
+                                                                                             For Each mModule In ClassReportItems.GetModules
+                                                                                                 lReportExceptionItems.AddRange(mModule.ParseFromFile(sTmpFile))
+                                                                                             Next
                                                                                          Finally
                                                                                              IO.File.Delete(sTmpFile)
                                                                                          End Try
@@ -375,7 +369,9 @@ Public Class FormReportManager
                                                                                                  mClassSFTP.DownloadFile(mItem.FullName, mStream)
                                                                                              End Using
 
-                                                                                             lReportExceptionItems.AddRange(ClassDebuggerTools.ClassDebuggerHelpers.ReadSourceModLogExceptions(IO.File.ReadAllLines(sTmpFile)))
+                                                                                             For Each mModule In ClassReportItems.GetModules
+                                                                                                 lReportExceptionItems.AddRange(mModule.ParseFromFile(sTmpFile))
+                                                                                             Next
                                                                                          Finally
                                                                                              IO.File.Delete(sTmpFile)
                                                                                          End Try
@@ -414,106 +410,71 @@ Public Class FormReportManager
                                                                  End Try
 
                                                                  If (bFilesTooBig) Then
-                                                                         Dim mReportItemsDic As New Dictionary(Of String, Object)
-                                                                         mReportItemsDic(C_REPORTITEMS_TITLE) = "Unable to fetch some reports"
-                                                                         mReportItemsDic(C_REPORTITEMS_MESSAGE) = String.Format("Some reports are too big to fetch. (max. {0} MB)", iMaxFileBytes / 1024 / 1024)
-                                                                         mReportItemsDic(C_REPORTITEMS_IMAGE) = My.Resources.user32_101_16x16_32
+                                                                     Dim mReportItemsDic As New Dictionary(Of String, Object)
+                                                                     mReportItemsDic(C_REPORTITEMS_TITLE) = "Unable to fetch some reports"
+                                                                     mReportItemsDic(C_REPORTITEMS_MESSAGE) = String.Format("Some reports are too big to fetch. (max. {0} MB)", iMaxFileBytes / 1024 / 1024)
+                                                                     mReportItemsDic(C_REPORTITEMS_IMAGE) = My.Resources.user32_101_16x16_32
 
-                                                                         lReportItems.Add(mReportItemsDic)
+                                                                     lReportItems.Add(mReportItemsDic)
+                                                                 End If
+
+                                                                 If (lReportExceptionItems.Count < 1) Then
+                                                                     Dim mReportItemsDic As New Dictionary(Of String, Object)
+                                                                     mReportItemsDic(C_REPORTITEMS_TITLE) = "No error reports found"
+                                                                     mReportItemsDic(C_REPORTITEMS_MESSAGE) = "Congratulations! No error reports have been found!"
+                                                                     mReportItemsDic(C_REPORTITEMS_IMAGE) = My.Resources.ieframe_36866_16x16_32
+
+                                                                     lReportItems.Add(mReportItemsDic)
+                                                                 End If
+
+                                                                 'Remove duplicates
+                                                                 Dim lTmpList As New List(Of ClassReportItems.IReportInterface)
+                                                                 For Each mItem In lReportExceptionItems.ToArray
+                                                                     If (lTmpList.Exists(Function(x As ClassReportItems.IReportInterface)
+                                                                                             Return x.Equal(mItem)
+                                                                                         End Function)) Then
+                                                                         Continue For
                                                                      End If
 
-                                                                     If (lReportExceptionItems.Count < 1) Then
-                                                                         Dim mReportItemsDic As New Dictionary(Of String, Object)
-                                                                         mReportItemsDic(C_REPORTITEMS_TITLE) = "No error reports found"
-                                                                         mReportItemsDic(C_REPORTITEMS_MESSAGE) = "Congratulations! No error reports have been found!"
-                                                                         mReportItemsDic(C_REPORTITEMS_IMAGE) = My.Resources.ieframe_36866_16x16_32
+                                                                     lTmpList.Add(mItem)
+                                                                 Next
+                                                                 lReportExceptionItems.Clear()
+                                                                 lReportExceptionItems.AddRange(lTmpList)
 
-                                                                         lReportItems.Add(mReportItemsDic)
-                                                                     End If
+                                                                 'Sort all reports. Top = Newer.
+                                                                 lReportExceptionItems.Sort(Function(x As ClassReportItems.IReportInterface, y As ClassReportItems.IReportInterface)
+                                                                                                Return -(x.LogDate.CompareTo(y.LogDate))
+                                                                                            End Function)
 
-                                                                     'Remove duplicates
-                                                                     Dim lTmpList As New List(Of ClassDebuggerTools.STRUC_SM_EXCEPTION)
-                                                                     For Each mItem In lReportExceptionItems.ToArray
-                                                                         If (lTmpList.Exists(Function(x As ClassDebuggerTools.STRUC_SM_EXCEPTION)
-                                                                                                 If (x.sExceptionInfo <> mItem.sExceptionInfo) Then
-                                                                                                     Return False
-                                                                                                 End If
+                                                                 ClassThread.ExecAsync(g_mFormReportManager, Sub()
+                                                                                                                 Try
+                                                                                                                     g_mFormReportManager.ReportListBox_Reports.BeginUpdate()
+                                                                                                                     g_mFormReportManager.ReportListBox_Reports.Items.Clear()
 
-                                                                                                 If (x.sBlamingFile <> mItem.sBlamingFile) Then
-                                                                                                     Return False
-                                                                                                 End If
+                                                                                                                     For Each mItem In lReportExceptionItems
+                                                                                                                         g_mFormReportManager.ReportListBox_Reports.Items.Add(mItem.ToReport)
+                                                                                                                     Next
 
-                                                                                                 If (x.dLogDate <> mItem.dLogDate) Then
-                                                                                                     Return False
-                                                                                                 End If
+                                                                                                                     For Each mReportItemsDic In lReportItems
+                                                                                                                         Dim sTitle As String = CStr(mReportItemsDic(C_REPORTITEMS_TITLE))
+                                                                                                                         Dim sMessage As String = CStr(mReportItemsDic(C_REPORTITEMS_MESSAGE))
+                                                                                                                         Dim mImage As Image = CType(mReportItemsDic(C_REPORTITEMS_IMAGE), Image)
 
-                                                                                                 If (x.mStackTraces.Length <> mItem.mStackTraces.Length) Then
-                                                                                                     Return False
-                                                                                                 End If
+                                                                                                                         g_mFormReportManager.ReportListBox_Reports.Items.Add(New ClassReportListBox.ClassReportItem(sTitle, sMessage, "", mImage, Nothing))
+                                                                                                                     Next
+                                                                                                                 Finally
+                                                                                                                     g_mFormReportManager.ReportListBox_Reports.EndUpdate()
+                                                                                                                 End Try
+                                                                                                             End Sub)
 
-                                                                                                 For i = 0 To x.mStackTraces.Length - 1
-                                                                                                     If (x.mStackTraces(i).sFunctionName <> mItem.mStackTraces(i).sFunctionName) Then
-                                                                                                         Return False
-                                                                                                     End If
-
-                                                                                                     If (x.mStackTraces(i).iLine <> mItem.mStackTraces(i).iLine) Then
-                                                                                                         Return False
-                                                                                                     End If
-
-                                                                                                     If (x.mStackTraces(i).sFileName <> mItem.mStackTraces(i).sFileName) Then
-                                                                                                         Return False
-                                                                                                     End If
-
-                                                                                                     If (x.mStackTraces(i).bNativeFault <> mItem.mStackTraces(i).bNativeFault) Then
-                                                                                                         Return False
-                                                                                                     End If
-                                                                                                 Next
-
-                                                                                                 Return True
-                                                                                             End Function)) Then
-                                                                             Continue For
-                                                                         End If
-
-                                                                         lTmpList.Add(mItem)
-                                                                     Next
-                                                                     lReportExceptionItems.Clear()
-                                                                     lReportExceptionItems.AddRange(lTmpList)
-
-                                                                     'Sort all reports. Top = Newer.
-                                                                     lReportExceptionItems.Sort(Function(x As ClassDebuggerTools.STRUC_SM_EXCEPTION, y As ClassDebuggerTools.STRUC_SM_EXCEPTION)
-                                                                                                    Return -(x.dLogDate.CompareTo(y.dLogDate))
-                                                                                                End Function)
-
-                                                                     ClassThread.ExecAsync(g_mFormReportManager, Sub()
-                                                                                                                     Try
-                                                                                                                         g_mFormReportManager.ReportListBox_Reports.BeginUpdate()
-                                                                                                                         g_mFormReportManager.ReportListBox_Reports.Items.Clear()
-
-                                                                                                                         For Each mItem In lReportExceptionItems
-
-                                                                                                                             g_mFormReportManager.ReportListBox_Reports.Items.Add(New ClassReportListBox.ClassReportItem(mItem))
-                                                                                                                         Next
-
-                                                                                                                         For Each mReportItemsDic In lReportItems
-                                                                                                                             Dim sTitle As String = CStr(mReportItemsDic(C_REPORTITEMS_TITLE))
-                                                                                                                             Dim sMessage As String = CStr(mReportItemsDic(C_REPORTITEMS_MESSAGE))
-                                                                                                                             Dim mImage As Image = CType(mReportItemsDic(C_REPORTITEMS_IMAGE), Image)
-
-                                                                                                                             g_mFormReportManager.ReportListBox_Reports.Items.Add(New ClassReportListBox.ClassReportItem(sTitle, sMessage, "", mImage, False, Nothing))
-                                                                                                                         Next
-                                                                                                                     Finally
-                                                                                                                         g_mFormReportManager.ReportListBox_Reports.EndUpdate()
-                                                                                                                     End Try
-                                                                                                                 End Sub)
-
-                                                                     ClassThread.ExecAsync(g_mFormReportManager, Sub()
-                                                                                                                     g_mFormReportManager.ToolStripMenuItem_GetReports.Text = g_mFormReportManager.g_sGetReportsOrginalText
-                                                                                                                     g_mFormReportManager.ToolStripMenuItem_GetReports.Image = g_mFormReportManager.g_sGetReportsOrginalImage
-                                                                                                                 End Sub)
-                                                                 Catch ex As Threading.ThreadAbortException
-                                                                     Throw
-                                                                 Catch ex As Exception
-                                                                     ClassExceptionLog.WriteToLogMessageBox(ex)
+                                                                 ClassThread.ExecAsync(g_mFormReportManager, Sub()
+                                                                                                                 g_mFormReportManager.ToolStripMenuItem_GetReports.Text = g_mFormReportManager.g_sGetReportsOrginalText
+                                                                                                                 g_mFormReportManager.ToolStripMenuItem_GetReports.Image = g_mFormReportManager.g_sGetReportsOrginalImage
+                                                                                                             End Sub)
+                                                             Catch ex As Threading.ThreadAbortException
+                                                                 Throw
+                                                             Catch ex As Exception
+                                                                 ClassExceptionLog.WriteToLogMessageBox(ex)
 
                                                                  ClassThread.ExecAsync(g_mFormReportManager, Sub()
                                                                                                                  g_mFormReportManager.ToolStripMenuItem_GetReports.Text = g_mFormReportManager.g_sGetReportsOrginalText
@@ -550,6 +511,227 @@ Public Class FormReportManager
                 mForm.Close()
             Next
         End Sub
+
+        Class ClassReportItems
+            Interface IReaderInterface
+                Function ParseFromFile(sText As String) As IReportInterface()
+            End Interface
+
+            Interface IReportInterface
+                Function ToReport() As ClassReportListBox.ClassReportItem
+
+                Function Equal(other As IReportInterface) As Boolean
+
+                Function LogDate() As Date
+
+                Function ToString() As String
+
+                Sub OnClicked(mFormReportManager As Object)
+            End Interface
+
+            Public Shared Function GetModules() As IReaderInterface()
+                Return {
+                    New ClassExceptionReader,
+                    New ClassAcceleratorReader
+                }
+            End Function
+
+            Class ClassExceptionReader
+                Implements IReaderInterface
+
+                Public Function ParseFromFile(sFile As String) As IReportInterface() Implements IReaderInterface.ParseFromFile
+                    Dim mItems As New List(Of IReportInterface)
+
+                    For Each mItem In ClassDebuggerTools.ClassDebuggerHelpers.ReadSourceModLogExceptions(IO.File.ReadAllLines(sFile))
+                        mItems.Add(New ClassItem(mItem))
+                    Next
+
+                    Return mItems.ToArray
+                End Function
+
+                Class ClassItem
+                    Implements IReportInterface
+
+                    Private g_mException As ClassDebuggerTools.STRUC_SM_EXCEPTION
+
+                    Public Sub New(_Exception As ClassDebuggerTools.STRUC_SM_EXCEPTION)
+                        g_mException = _Exception
+                    End Sub
+
+                    Public Function ToReport() As ClassReportListBox.ClassReportItem Implements IReportInterface.ToReport
+                        Dim sTitle = g_mException.sExceptionInfo
+                        Dim sText = g_mException.sBlamingFile
+
+                        Dim sDate As String
+                        If (g_mException.dLogDate.ToShortDateString = Now.ToShortDateString) Then
+                            sDate = g_mException.dLogDate.ToShortTimeString
+                        Else
+                            sDate = g_mException.dLogDate.ToLongDateString
+                        End If
+
+                        Return New ClassReportListBox.ClassReportItem(sTitle, sText, sDate, My.Resources.ieframe_36883_16x16_32, Me)
+                    End Function
+
+                    Public Function Equal(other As IReportInterface) As Boolean Implements IReportInterface.Equal
+                        Return ToString.ToLower = other.ToString.ToLower
+                    End Function
+
+                    Public Function LogDate() As Date Implements IReportInterface.LogDate
+                        Return g_mException.dLogDate
+                    End Function
+
+                    Public Function IReportInterface_ToString() As String Implements IReportInterface.ToString
+                        Dim sException As New Text.StringBuilder
+
+                        sException.AppendFormat(String.Format("Exception Info: {0}", g_mException.sExceptionInfo)).AppendLine()
+                        sException.AppendFormat(String.Format("Blaming File: {0}", g_mException.sBlamingFile)).AppendLine()
+                        sException.AppendFormat(String.Format("Date: {0}", g_mException.dLogDate.ToString)).AppendLine()
+                        sException.AppendFormat(String.Format("Stack Traces: {0}", CStr(g_mException.mStackTraces.Length))).AppendLine()
+
+                        For i = 0 To g_mException.mStackTraces.Length - 1
+                            sException.AppendFormat("[{0}] Function Name: {1}", i, g_mException.mStackTraces(i).sFunctionName).AppendLine()
+                            sException.AppendFormat("[{0}] Line: {1}", i, CStr(g_mException.mStackTraces(i).iLine)).AppendLine()
+                            sException.AppendFormat("[{0}] Filename: {1}", i, g_mException.mStackTraces(i).sFileName).AppendLine()
+                            sException.AppendFormat("[{0}] Is Native: {1}", i, If(g_mException.mStackTraces(i).bNativeFault, "true", "false")).AppendLine()
+                        Next
+
+                        Return sException.ToString
+                    End Function
+
+                    Public Sub OnClicked(_FormReportManager As Object) Implements IReportInterface.OnClicked
+                        Dim mFormReportManager = TryCast(_FormReportManager, FormReportManager)
+                        If (mFormReportManager Is Nothing) Then
+                            Return
+                        End If
+
+                        Dim iCount = 0
+                        For Each mForm As Form In Application.OpenForms
+                            If (TypeOf mForm Is FormReportDetails) Then
+                                iCount += 1
+                            End If
+                        Next
+
+                        If (iCount > 100) Then
+                            MessageBox.Show("Too many 'Report' windows open!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                        Else
+                            Call (New FormReportDetails(mFormReportManager, g_mException)).Show()
+                        End If
+                    End Sub
+                End Class
+            End Class
+
+            Class ClassAcceleratorReader
+                Implements IReaderInterface
+
+                Public Structure STRUC_ACC_CRASH
+                    Public sCrashId As String
+                    Public dLogDate As Date
+                End Structure
+
+                Public Function ParseFromFile(sFile As String) As IReportInterface() Implements IReaderInterface.ParseFromFile
+                    Dim mItems As New List(Of IReportInterface)
+
+                    For Each mItem In ReadSourceModAcceleratorCrash(IO.File.ReadAllLines(sFile))
+                        mItems.Add(New ClassItem(mItem))
+                    Next
+
+                    Return mItems.ToArray
+                End Function
+
+                Private Function ReadSourceModAcceleratorCrash(sLogLines As String()) As STRUC_ACC_CRASH()
+                    Dim lAccCrashes As New List(Of STRUC_ACC_CRASH)
+
+                    For i = 0 To sLogLines.Length - 1
+                        'Ignore empty lines
+                        If (sLogLines(i).Trim.Length < 1) Then
+                            Continue For
+                        End If
+
+                        Dim mCrashInfo As Match = Regex.Match(sLogLines(i), "^L (?<Date>[0-9]+\/[0-9]+\/[0-9]+ \- [0-9]+\:[0-9]+\:[0-9]+)\: \[CRASH\] Accelerator uploaded crash dump\:\s+Crash ID\:\s+(?<CrashId>[-a-zA-Z0-9]+)$")
+                        If (mCrashInfo.Success) Then
+                            Dim sDate As String = mCrashInfo.Groups("Date").Value
+                            Dim sCrashId As String = mCrashInfo.Groups("CrashId").Value
+
+                            Dim dDate As Date
+                            If (Not Date.TryParseExact(sDate.Trim, "MM/dd/yyyy - HH:mm:ss", Globalization.CultureInfo.InvariantCulture, Globalization.DateTimeStyles.None, dDate)) Then
+                                Continue For
+                            End If
+
+                            lAccCrashes.Add(New STRUC_ACC_CRASH With {
+                                .sCrashId = sCrashId,
+                                .dLogDate = dDate
+                            })
+                            Continue For
+                        End If
+                    Next
+
+                    Return lAccCrashes.ToArray
+                End Function
+
+                Class ClassItem
+                    Implements IReportInterface
+
+                    Private g_mCrashId As STRUC_ACC_CRASH
+
+                    Public Sub New(_CrashId As STRUC_ACC_CRASH)
+                        g_mCrashId = _CrashId
+                    End Sub
+
+                    Public Function ToReport() As ClassReportListBox.ClassReportItem Implements IReportInterface.ToReport
+                        Dim sDate As String
+                        If (g_mCrashId.dLogDate.ToShortDateString = Now.ToShortDateString) Then
+                            sDate = g_mCrashId.dLogDate.ToShortTimeString
+                        Else
+                            sDate = g_mCrashId.dLogDate.ToLongDateString
+                        End If
+
+                        Return New ClassReportListBox.ClassReportItem("Server Crash", String.Format("Accelerator uploaded a crash dump: {0}", g_mCrashId.sCrashId.ToUpper), sDate, My.Resources.ieframe_36883_16x16_32, Me)
+                    End Function
+
+                    Public Function Equal(other As IReportInterface) As Boolean Implements IReportInterface.Equal
+                        Return ToString.ToLower = other.ToString.ToLower
+                    End Function
+
+                    Public Function LogDate() As Date Implements IReportInterface.LogDate
+                        Return g_mCrashId.dLogDate
+                    End Function
+
+                    Public Function IReportInterface_ToString() As String Implements IReportInterface.ToString
+                        Dim sException As New Text.StringBuilder
+
+                        sException.AppendFormat("Crash Id: {0}", g_mCrashId.sCrashId).AppendLine()
+                        sException.AppendFormat("Date: {0}", g_mCrashId.dLogDate.ToString).AppendLine()
+
+                        Return sException.ToString
+                    End Function
+
+                    Public Sub OnClicked(_FormReportManager As Object) Implements IReportInterface.OnClicked
+                        Dim mFormReportManager = TryCast(_FormReportManager, FormReportManager)
+                        If (mFormReportManager Is Nothing) Then
+                            Return
+                        End If
+
+                        Dim sMessage As New Text.StringBuilder
+                        sMessage.AppendLine("Oh noes! Seems your server crashed at some point!")
+                        sMessage.AppendFormat("Accelerator uploaded a crash dump: Crash Id: {0}", g_mCrashId.sCrashId.ToUpper).AppendLine.AppendLine()
+                        sMessage.AppendLine("Do you want to lookup the crash dump?")
+                        sMessage.AppendLine(" - Choose 'Yes' to open it in your browser.")
+                        sMessage.AppendLine(" - Choose 'No' to copy the crash id to your clipboard.")
+                        sMessage.AppendLine(" - Choose 'Cancel' to do nothing.")
+
+                        Select Case (MessageBox.Show(sMessage.ToString, "Server Crash Dump", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
+                            Case DialogResult.Yes
+                                Try
+                                    Process.Start(String.Format("{0}/{1}", g_sAcceleratorServer.TrimEnd("/"c), g_mCrashId.sCrashId.Replace("-", "").ToLower))
+                                Catch ex As Exception
+                                End Try
+                            Case DialogResult.No
+                                My.Computer.Clipboard.SetText(g_mCrashId.sCrashId, TextDataFormat.Text)
+                        End Select
+                    End Sub
+                End Class
+            End Class
+        End Class
 
 #Region "IDisposable Support"
         Private disposedValue As Boolean ' To detect redundant calls

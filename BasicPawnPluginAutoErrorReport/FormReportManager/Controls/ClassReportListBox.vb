@@ -82,31 +82,14 @@ Public Class ClassReportListBox
         Property m_Text As String
         Property m_Date As String
         Property m_Image As Image
-        Property m_IsClickable As Boolean
-        Property m_Exception As ClassDebuggerTools.STRUC_SM_EXCEPTION
+        Property m_IReport As FormReportManager.ClassReports.ClassReportItems.IReportInterface
 
-        Public Sub New(_Title As String, _Text As String, _Date As String, _Image As Image, _IsClickable As Boolean, _Exception As ClassDebuggerTools.STRUC_SM_EXCEPTION)
+        Public Sub New(_Title As String, _Text As String, _Date As String, _Image As Image, _IReport As FormReportManager.ClassReports.ClassReportItems.IReportInterface)
             m_Title = _Title
             m_Text = _Text
             m_Date = _Date
             m_Image = _Image
-            m_IsClickable = _IsClickable
-            m_Exception = _Exception
-        End Sub
-
-        Public Sub New(_Exception As ClassDebuggerTools.STRUC_SM_EXCEPTION)
-            m_Title = _Exception.sExceptionInfo
-            m_Text = _Exception.sBlamingFile
-
-            If (_Exception.dLogDate.ToShortDateString = Now.ToShortDateString) Then
-                m_Date = _Exception.dLogDate.ToShortTimeString
-            Else
-                m_Date = _Exception.dLogDate.ToLongDateString
-            End If
-
-            m_Image = My.Resources.ieframe_36883_16x16_32
-            m_IsClickable = True
-            m_Exception = _Exception
+            m_IReport = _IReport
         End Sub
     End Class
 End Class
