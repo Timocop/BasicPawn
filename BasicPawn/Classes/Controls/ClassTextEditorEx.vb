@@ -22,7 +22,24 @@ Imports ICSharpCode.TextEditor.Document
 Public Class TextEditorControlEx
     Inherits TextEditorControl
 
+    Private g_mIconBarMargin As ClassCustomIconBarMargin
+
     Public Event ProcessCmdKeyEvent(ByRef bBlock As Boolean, ByRef iMsg As Message, iKeys As Keys)
+
+    Public Sub New()
+        MyBase.New
+
+        UseCustomIconMargin()
+    End Sub
+
+    Property m_CustomIconBarVisible As Boolean
+        Get
+            Return g_mIconBarMargin.m_Visible
+        End Get
+        Set(value As Boolean)
+            g_mIconBarMargin.m_Visible = value
+        End Set
+    End Property
 
     Protected Overrides Function ProcessCmdKey(ByRef msg As Message, e As Keys) As Boolean
         Dim bBLock As Boolean = False
@@ -47,6 +64,58 @@ Public Class TextEditorControlEx
         Me.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.WholeTextArea))
         Me.Document.CommitUpdate()
     End Sub
+
+    Public Sub UseCustomIconMargin()
+        'Disable old IconBar
+        Me.IsIconBarVisible = False
+
+        g_mIconBarMargin = New ClassCustomIconBarMargin(Me.ActiveTextAreaControl.TextArea)
+
+        'Apply new IconBar
+        Me.ActiveTextAreaControl.TextArea.InsertLeftMargin(0, g_mIconBarMargin)
+    End Sub
+
+    Class ClassCustomIconBarMargin
+        Inherits IconBarMargin
+
+        Public Sub New(textArea As TextArea)
+            MyBase.New(textArea)
+        End Sub
+
+        Public Property m_Visible As Boolean
+
+        Public Overrides ReadOnly Property IsVisible As Boolean
+            Get
+                Return m_Visible
+            End Get
+        End Property
+
+        Public Overrides Sub Paint(g As Graphics, rect As Rectangle)
+            If rect.Width <= 0 OrElse rect.Height <= 0 Then
+                Return
+            End If
+
+            Using brush As New SolidBrush(TextArea.BackColor)
+                g.FillRectangle(brush, New Rectangle(Me.DrawingPosition.X, rect.Top, Me.DrawingPosition.Width, rect.Height))
+            End Using
+
+            For Each bookmark As Bookmark In Me.TextArea.Document.BookmarkManager.Marks
+                Dim visibleLine As Integer = Me.TextArea.Document.GetVisibleLine(bookmark.LineNumber)
+                Dim fontHeight As Integer = Me.TextArea.TextView.FontHeight
+                Dim num As Integer = visibleLine * fontHeight - Me.TextArea.VirtualTop.Y
+
+                If IsLineInsideRegion(num, num + fontHeight, rect.Y, rect.Bottom) AndAlso visibleLine <> Me.TextArea.Document.GetVisibleLine(bookmark.LineNumber - 1) Then
+                    bookmark.Draw(Me, g, New Point(0, num))
+                End If
+            Next
+
+            'MyBase.Paint(g, rect)
+        End Sub
+
+        Private Shared Function IsLineInsideRegion(top As Integer, bottom As Integer, regionTop As Integer, regionBottom As Integer) As Boolean
+            Return (top >= regionTop AndAlso top <= regionBottom) OrElse (regionTop > top AndAlso regionTop < bottom)
+        End Function
+    End Class
 
     Public Class MoveSelectedLine
         Inherits AbstractEditAction
