@@ -1147,8 +1147,8 @@ Public Class ClassTabControl
             Set(value As Boolean)
                 If (g_bHasReferenceIncludes <> value) Then
                     g_bHasReferenceIncludes = value
-                    Me.Text = g_sText
 
+                    Me.Text = g_sText
                     UpdateToolTip()
                 End If
             End Set
@@ -1173,8 +1173,8 @@ Public Class ClassTabControl
             Set(value As Boolean)
                 If (g_bTextChanged <> value) Then
                     g_bTextChanged = value
-                    Text = g_sText
 
+                    Me.Text = g_sText
                     UpdateToolTip()
                 End If
             End Set
@@ -1187,27 +1187,31 @@ Public Class ClassTabControl
             Set(value As String)
                 If (g_sText <> value) Then
                     g_sText = value
-                    Text = value
+
+                    Me.Text = value
                 End If
             End Set
         End Property
 
         Public Sub UpdateToolTip()
-            Dim lInfo As New List(Of String)
-            If (g_bTextChanged) Then
-                lInfo.Add("Unsaved")
-            End If
-            If (g_bHasReferenceIncludes) Then
-                lInfo.Add("Referenced in other tabs")
+            Dim sInfo As New Text.StringBuilder
+            sInfo.AppendLine(g_sFile)
+
+            If (m_Changed) Then
+                sInfo.AppendLine(" - Content changed but not saved.")
             End If
 
-            Me.ToolTipText = g_sFile & If(lInfo.Count < 1, "", Environment.NewLine & String.Format("({0})", String.Join(", ", lInfo.ToArray)))
+            If (m_HasReferenceIncludes) Then
+                sInfo.AppendLine(" - Has been referenced in other open tabs.")
+            End If
+
+            Me.ToolTipText = sInfo.ToString
         End Sub
 
 
         Public Overrides Property Text As String
             Get
-                Return If(g_bHasReferenceIncludes, "#", "") & g_sText & If(g_bTextChanged, "*"c, "")
+                Return If(m_HasReferenceIncludes, "#", "") & g_sText & If(m_Changed, "*"c, "")
             End Get
             Set(value As String)
                 MyBase.Text = value
