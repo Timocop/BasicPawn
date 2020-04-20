@@ -83,6 +83,12 @@ Public Class ClassTextEditorTools
             If (Regex.IsMatch(m_CurrentSelection.SelectedText, "^[a-zA-Z0-9_]+$")) Then
                 ClassSyntaxTools.g_sHighlightWord = m_CurrentSelection.SelectedText
             End If
+        Else
+            Dim sWord As String = GetCaretWord(False, False, False)
+
+            If (Not String.IsNullOrEmpty(sWord)) Then
+                ClassSyntaxTools.g_sHighlightWord = sWord
+            End If
         End If
 
         If (ClassSyntaxTools.g_sHighlightWord = sLastWord) Then
