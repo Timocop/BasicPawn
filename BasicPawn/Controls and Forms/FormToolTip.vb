@@ -58,6 +58,8 @@ Public Class FormToolTip
             TextEditorControl_ToolTip.Height += SystemInformation.HorizontalScrollBarHeight
         End If
 
+        Me.SetStyle(ControlStyles.Selectable, False)
+
         ClassTools.ClassForms.SetDoubleBuffering(Me, True)
         ClassTools.ClassForms.SetDoubleBufferingUnmanaged(Me, True)
 
