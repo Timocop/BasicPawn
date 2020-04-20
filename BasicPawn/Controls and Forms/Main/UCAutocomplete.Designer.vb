@@ -95,19 +95,19 @@ Partial Class UCAutocomplete
         Me.ContextMenuStrip_Autocomplete.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_FindDefinition, Me.ToolStripMenuItem_PeekDefinition})
         Me.ContextMenuStrip_Autocomplete.Name = "ContextMenuStrip_Autocomplete"
         Me.ContextMenuStrip_Autocomplete.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
-        Me.ContextMenuStrip_Autocomplete.Size = New System.Drawing.Size(181, 70)
+        Me.ContextMenuStrip_Autocomplete.Size = New System.Drawing.Size(154, 48)
         '
         'ToolStripMenuItem_FindDefinition
         '
         Me.ToolStripMenuItem_FindDefinition.Image = Global.BasicPawn.My.Resources.Resources.imageres_5357_16x16
         Me.ToolStripMenuItem_FindDefinition.Name = "ToolStripMenuItem_FindDefinition"
-        Me.ToolStripMenuItem_FindDefinition.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_FindDefinition.Size = New System.Drawing.Size(153, 22)
         Me.ToolStripMenuItem_FindDefinition.Text = "Find definition"
         '
         'ToolStripMenuItem_PeekDefinition
         '
         Me.ToolStripMenuItem_PeekDefinition.Name = "ToolStripMenuItem_PeekDefinition"
-        Me.ToolStripMenuItem_PeekDefinition.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_PeekDefinition.Size = New System.Drawing.Size(153, 22)
         Me.ToolStripMenuItem_PeekDefinition.Text = "Peek definition"
         '
         'SplitContainer2

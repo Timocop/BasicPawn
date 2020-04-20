@@ -337,18 +337,14 @@ Public Class UCAutocomplete
             If (Not String.IsNullOrEmpty(g_sIntelliSenseFunction)) Then
                 Dim sIntelliSenseFunction As String = g_sIntelliSenseFunction
 
-                Dim bIsMethodMapEnd As Boolean = sIntelliSenseFunction.StartsWith("."c)
-                If (bIsMethodMapEnd) Then
-                    sIntelliSenseFunction = sIntelliSenseFunction.Remove(0, 1)
-                End If
-
                 Dim sIntelliSenseFunctionNames As String() = sIntelliSenseFunction.Split("."c)
-                Dim bIsMethodMap As Boolean = sIntelliSenseFunction.Contains("."c)
+                Dim bHasAccessor As Boolean = (sIntelliSenseFunctionNames.Length > 1)
 
                 Dim sFile As String = g_AutocompleteUC.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File
 
                 Dim iCurrentScopeIndex As Integer = -1
 
+                ' TODO: Make this universal and outline it into a new function. Almost the same code can be found in FindDefinition().
                 'If 'this' keyword find out the type 
                 If (sIntelliSenseFunctionNames.Length = 2 AndAlso sIntelliSenseFunctionNames(0) = "this") Then
                     Dim sTextContent As String = g_AutocompleteUC.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
@@ -375,7 +371,7 @@ Public Class UCAutocomplete
                 Dim iMaxPrintedItems As Integer = 3
                 Dim mAutocompleteArray As ClassSyntaxTools.STRUC_AUTOCOMPLETE() = g_AutocompleteUC.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_AutocompleteGroup.m_AutocompleteItems.ToArray
                 For i = 0 To mAutocompleteArray.Length - 1
-                    If ((mAutocompleteArray(i).m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> 0 AndAlso Not bIsMethodMap) Then
+                    If ((mAutocompleteArray(i).m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> 0 AndAlso Not bHasAccessor) Then
                         Continue For
                     End If
 
@@ -415,17 +411,9 @@ Public Class UCAutocomplete
                         End If
                     End If
 
-                    If (bIsMethodMap) Then
-                        If (Not mAutocompleteArray(i).m_FunctionString.Equals(sIntelliSenseFunction)) Then
-                            Continue For
-                        End If
-                    Else
-                        If (Not mAutocompleteArray(i).m_FunctionString.Contains(sIntelliSenseFunction) OrElse
-                                    Not Regex.IsMatch(mAutocompleteArray(i).m_FunctionString, String.Format("{0}\b{1}\b", If(bIsMethodMapEnd, "(\.)", ""), Regex.Escape(sIntelliSenseFunction)))) Then
-                            Continue For
-                        End If
+                    If (Not mAutocompleteArray(i).m_FunctionString.Equals(sIntelliSenseFunction)) Then
+                        Continue For
                     End If
-
 
                     If (ClassSettings.g_iSettingsUseWindowsToolTip AndAlso Not bPrintedInfo) Then
                         bPrintedInfo = True
