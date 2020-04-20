@@ -977,9 +977,8 @@ Public Class ClassTabControl
 
             g_mSourceTextEditor.ContextMenuStrip = g_mFormMain.ContextMenuStrip_RightClick
             g_mSourceTextEditor.IsIconBarVisible = True
-            g_mSourceTextEditor.ShowTabs = True
+            'g_mSourceTextEditor.ShowTabs = True ' TODO: Solve performance issues rendering tab arrows.
             g_mSourceTextEditor.ShowVRuler = False
-            g_mSourceTextEditor.HideMouseCursor = True
             g_mSourceTextEditor.Margin = New Padding(0)
             g_mSourceTextEditor.Padding = New Padding(0)
 
