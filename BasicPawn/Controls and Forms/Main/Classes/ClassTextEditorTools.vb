@@ -2005,7 +2005,7 @@ Public Class ClassTextEditorTools
         End Sub
     End Class
 
-    Public Class LineStateMark
+    Class ClassLineStateMark
         Inherits Bookmark
 
         Enum ENUM_STATE
