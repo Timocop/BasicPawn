@@ -242,17 +242,17 @@ Public Class ClassSyntaxParser
 
     Private Function FullSyntaxParse_Thread(sTabIdentifier As String, iOptionFlags As ENUM_PARSE_OPTIONS_FLAGS) As ENUM_PARSE_ERROR
         Try
-            Dim sActiveTabIdentifier As String = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Identifier)
-            Dim mTabs As ClassTabControl.SourceTabPage() = ClassThread.ExecEx(Of ClassTabControl.SourceTabPage())(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.GetAllTabs())
             Dim mRequestTab As ClassTabControl.SourceTabPage = ClassThread.ExecEx(Of ClassTabControl.SourceTabPage)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.GetTabByIdentifier(sTabIdentifier))
             If (mRequestTab Is Nothing) Then
                 Return ENUM_PARSE_ERROR.INVALID_TAB
             End If
 
+            Dim sActiveTabIdentifier As String = mRequestTab.m_Identifier
             Dim sRequestedSourceFile As String = mRequestTab.m_File
             Dim iRequestedLangauge As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = mRequestTab.m_Language
             Dim sRequestedSource As String = ClassThread.ExecEx(Of String)(mRequestTab, Function() mRequestTab.m_TextEditor.Document.TextContent)
             Dim mRequestedConfig As ClassConfigs.STRUC_CONFIG_ITEM = ClassThread.ExecEx(Of ClassConfigs.STRUC_CONFIG_ITEM)(mRequestTab, Function() mRequestTab.m_ActiveConfig)
+            Dim mTabs As ClassTabControl.SourceTabPage() = ClassThread.ExecEx(Of ClassTabControl.SourceTabPage())(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.GetAllTabs())
 
             If (String.IsNullOrEmpty(sRequestedSourceFile) OrElse Not IO.File.Exists(sRequestedSourceFile)) Then
                 Return ENUM_PARSE_ERROR.INVALID_FILE
@@ -280,69 +280,7 @@ Public Class ClassSyntaxParser
             Next
 
             'Find main tab of include tabs
-            If (True) Then
-                Dim bRefIncludeAdded As Boolean = False
-
-                Dim i As Integer
-                For i = 0 To mTabs.Length - 1
-                    If (mTabs(i).m_IsUnsaved) Then
-                        Continue For
-                    End If
-
-                    If (mTabs(i).m_File.ToLower = sRequestedSourceFile.ToLower) Then
-                        Continue For
-                    End If
-
-                    If (mTabs(i).m_IncludesGroup.m_IncludeFiles.Count < 1) Then
-                        Continue For
-                    End If
-
-                    Dim sOtherTabIdentifier As String = mTabs(i).m_Identifier
-                    Dim mIncludes = mTabs(i).m_IncludesGroup.m_IncludeFiles.ToArray
-                    Dim bIsMain As Boolean = False
-
-                    Dim j As Integer
-                    For j = 0 To mIncludes.Length - 1
-                        'Only check orginal includes, skip other ones
-                        If (mIncludes(j).Key <> sOtherTabIdentifier) Then
-                            Continue For
-                        End If
-
-                        If (mIncludes(j).Value.ToLower <> sRequestedSourceFile.ToLower) Then
-                            Continue For
-                        End If
-
-                        bIsMain = True
-                        Exit For
-                    Next
-
-                    If (Not bIsMain) Then
-                        Continue For
-                    End If
-
-                    For j = 0 To mIncludes.Length - 1
-                        'Only check orginal includes, skip other ones
-                        If (mIncludes(j).Key <> sOtherTabIdentifier) Then
-                            Continue For
-                        End If
-
-                        If (Not lIncludeFiles.Exists(Function(x As KeyValuePair(Of String, String)) x.Value.ToLower = mIncludes(j).Value.ToLower)) Then
-                            lIncludeFiles.Add(New KeyValuePair(Of String, String)(sOtherTabIdentifier, mIncludes(j).Value))
-                            bRefIncludeAdded = True
-                        End If
-
-                        If (Not lIncludeFilesFull.Exists(Function(x As KeyValuePair(Of String, String)) x.Value.ToLower = mIncludes(j).Value.ToLower)) Then
-                            lIncludeFilesFull.Add(New KeyValuePair(Of String, String)(sOtherTabIdentifier, mIncludes(j).Value))
-                            bRefIncludeAdded = True
-                        End If
-                    Next
-                Next
-
-                ''mRequestTab.m_HasReferenceIncludes' Calls UI elements, invoke it.
-                ClassThread.ExecAsync(mRequestTab, Sub()
-                                                       mRequestTab.m_HasReferenceIncludes = bRefIncludeAdded
-                                                   End Sub)
-            End If
+            g_mFormMain.g_ClassTabControl.GetTabIncludesByReferences(mRequestTab, mTabs, lIncludeFiles, lIncludeFilesFull)
 
             'Save includes first, they wont be modified below this anyways
             mRequestTab.m_IncludesGroup.m_IncludeFiles.DoSync(

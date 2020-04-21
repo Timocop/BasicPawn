@@ -700,6 +700,73 @@ Public Class ClassTabControl
         Return Nothing
     End Function
 
+    Public Function GetTabIncludesByReferences(mTab As SourceTabPage, mTabs As SourceTabPage()) As Boolean
+        Return GetTabIncludesByReferences(mTab, mTabs, Nothing, Nothing)
+    End Function
+
+    Public Function GetTabIncludesByReferences(mTab As SourceTabPage, mTabs As SourceTabPage(), ByRef r_SharedIncludes As List(Of KeyValuePair(Of String, String)), ByRef r_SharedIncludesFull As List(Of KeyValuePair(Of String, String))) As Boolean
+        Dim sTabFile As String = mTab.m_File
+
+        Dim bRefIncludeAdded As Boolean = False
+
+        Dim i As Integer
+        For i = 0 To mTabs.Length - 1
+            If (mTabs(i).m_IsUnsaved) Then
+                Continue For
+            End If
+
+            If (mTabs(i).m_File.ToLower = sTabFile.ToLower) Then
+                Continue For
+            End If
+
+            If (mTabs(i).m_IncludesGroup.m_IncludeFiles.Count < 1) Then
+                Continue For
+            End If
+
+            Dim sOtherTabIdentifier As String = mTabs(i).m_Identifier
+            Dim mIncludes = mTabs(i).m_IncludesGroup.m_IncludeFiles.ToArray
+            Dim bIsMain As Boolean = False
+
+            Dim j As Integer
+            For j = 0 To mIncludes.Length - 1
+                'Only check orginal includes, skip other ones
+                If (mIncludes(j).Key <> sOtherTabIdentifier) Then
+                    Continue For
+                End If
+
+                If (mIncludes(j).Value.ToLower <> sTabFile.ToLower) Then
+                    Continue For
+                End If
+
+                bIsMain = True
+                Exit For
+            Next
+
+            If (Not bIsMain) Then
+                Continue For
+            End If
+
+            For j = 0 To mIncludes.Length - 1
+                'Only check orginal includes, skip other ones
+                If (mIncludes(j).Key <> sOtherTabIdentifier) Then
+                    Continue For
+                End If
+
+                If (r_SharedIncludes IsNot Nothing AndAlso Not r_SharedIncludes.Exists(Function(x As KeyValuePair(Of String, String)) x.Value.ToLower = mIncludes(j).Value.ToLower)) Then
+                    r_SharedIncludes.Add(New KeyValuePair(Of String, String)(sOtherTabIdentifier, mIncludes(j).Value))
+                End If
+
+                If (r_SharedIncludesFull IsNot Nothing AndAlso Not r_SharedIncludesFull.Exists(Function(x As KeyValuePair(Of String, String)) x.Value.ToLower = mIncludes(j).Value.ToLower)) Then
+                    r_SharedIncludesFull.Add(New KeyValuePair(Of String, String)(sOtherTabIdentifier, mIncludes(j).Value))
+                End If
+
+                bRefIncludeAdded = True
+            Next
+        Next
+
+        Return bRefIncludeAdded
+    End Function
+
     Public Sub BeginUpdate()
         g_iBeginUpdateCount += 1
         ClassTools.ClassForms.SuspendDrawing(g_iControlDrawCoutner, g_mFormMain.SplitContainer_ToolboxAndEditor)
@@ -791,6 +858,39 @@ Public Class ClassTabControl
     End Sub
 
     Private Sub OnTabSyntaxParseSuccess(iUpdateType As ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS, sTabIdentifier As String, iOptionFlags As ClassSyntaxParser.ENUM_PARSE_OPTIONS_FLAGS, iFullParseError As ClassSyntaxParser.ENUM_PARSE_ERROR, iVarParseError As ClassSyntaxParser.ENUM_PARSE_ERROR)
+        Try
+            ParseUpdateReference(iUpdateType, sTabIdentifier, iOptionFlags, iFullParseError, iVarParseError)
+            ParseUpdateSyntax(iUpdateType, sTabIdentifier, iOptionFlags, iFullParseError, iVarParseError)
+        Catch ex As Threading.ThreadAbortException
+            Throw
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLog(ex)
+        End Try
+    End Sub
+
+    Private Sub ParseUpdateReference(iUpdateType As ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS, sTabIdentifier As String, iOptionFlags As ClassSyntaxParser.ENUM_PARSE_OPTIONS_FLAGS, iFullParseError As ClassSyntaxParser.ENUM_PARSE_ERROR, iVarParseError As ClassSyntaxParser.ENUM_PARSE_ERROR)
+        Try
+            Dim mRequestTab As SourceTabPage = ClassThread.ExecEx(Of SourceTabPage)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.GetTabByIdentifier(sTabIdentifier))
+            If (mRequestTab Is Nothing) Then
+                Return
+            End If
+
+            Dim mTabs As SourceTabPage() = ClassThread.ExecEx(Of SourceTabPage())(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.GetAllTabs())
+
+            Dim bHasReferences As Boolean = GetTabIncludesByReferences(mRequestTab, mTabs)
+
+            ''mRequestTab.m_HasReferenceIncludes' Calls UI elements, invoke it.
+            ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                   mRequestTab.m_HasReferenceIncludes = bHasReferences
+                                               End Sub)
+        Catch ex As Threading.ThreadAbortException
+            Throw
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLog(ex)
+        End Try
+    End Sub
+
+    Private Sub ParseUpdateSyntax(iUpdateType As ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS, sTabIdentifier As String, iOptionFlags As ClassSyntaxParser.ENUM_PARSE_OPTIONS_FLAGS, iFullParseError As ClassSyntaxParser.ENUM_PARSE_ERROR, iVarParseError As ClassSyntaxParser.ENUM_PARSE_ERROR)
         Try
             Static sLastTabIndentifier As String = ""
 
