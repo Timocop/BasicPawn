@@ -470,7 +470,7 @@ Public Class ClassSyntaxParser
 
             'Parse everything. Methods etc.
             If (True) Then
-                Dim sSourceList As New ClassSyncList(Of String())
+                Dim sSourceList As New ClassSyncList(Of KeyValuePair(Of String, String)) '{sFile, sSource}
 
                 mPreWatch.Start()
                 Dim i As Integer
@@ -481,7 +481,7 @@ Public Class ClassSyntaxParser
 
                 mPostWatch.Start()
                 For i = 0 To sSourceList.Count - 1
-                    mParser.ProcessFullSyntaxPost(g_mFormMain, sRequestedSource, sRequestedSourceFile, sSourceList(i)(0), sSourceList(i)(1), lNewAutocompleteList, iRequestedLangauge)
+                    mParser.ProcessFullSyntaxPost(g_mFormMain, sRequestedSource, sRequestedSourceFile, sSourceList(i).Key, sSourceList(i).Value, lNewAutocompleteList, iRequestedLangauge)
                 Next
                 mPostWatch.Stop()
             End If
@@ -1054,7 +1054,7 @@ Public Class ClassSyntaxParser
             Public sActiveSource As String
             Public sActiveSourceFile As String
             Public sFile As String
-            Public lSourceList As ClassSyncList(Of String())
+            Public lSourceList As ClassSyncList(Of KeyValuePair(Of String, String))
             Public lNewAutocompleteList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
             Public iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE
 
@@ -1063,7 +1063,7 @@ Public Class ClassSyntaxParser
                     _ActiveSource As String,
                     _ActiveSourceFile As String,
                     _File As String,
-                    ByRef _SourceList As ClassSyncList(Of String()),
+                    ByRef _SourceList As ClassSyncList(Of KeyValuePair(Of String, String)),
                     ByRef _NewAutocompleteList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE),
                     _Language As ClassSyntaxTools.ENUM_LANGUAGE_TYPE)
 
@@ -1153,7 +1153,7 @@ Public Class ClassSyntaxParser
                                                 sActiveSource As String,
                                                 sActiveSourceFile As String,
                                                 sFile As String,
-                                                ByRef sSourceList As ClassSyncList(Of String()),
+                                                ByRef sSourceList As ClassSyncList(Of KeyValuePair(Of String, String)),
                                                 ByRef lNewAutocompleteList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE),
                                                 iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE)
             Dim sSource As String
@@ -1187,7 +1187,7 @@ Public Class ClassSyntaxParser
             mAutocompletePre.ParseFuncenumEnums(mParseInfo)
             mAutocompletePre.ParseEnums(mFormMain, mParseInfo)
 
-            sSourceList.Add(New String() {sFile, sSource})
+            sSourceList.Add(New KeyValuePair(Of String, String)(sFile, sSource))
         End Sub
 
         Public Sub ProcessFullSyntaxPost(mFormMain As FormMain,
