@@ -60,14 +60,14 @@ Public Class ClassTabControlColor
 
         If (e.Index = Me.SelectedIndex) Then
             mTabFont = e.Font 'New Font(e.Font, FontStyle.Bold)
-            mTabBack = New Drawing2D.LinearGradientBrush(e.Bounds, ClassControlStyle.g_cDarkControlColor.mDarkBackground, ClassControlStyle.g_cDarkControlColor.mDarkBackground, Drawing2D.LinearGradientMode.BackwardDiagonal)
+            mTabBack = New SolidBrush(ClassControlStyle.g_cDarkControlColor.mDarkBackground)
             mTabFore = Brushes.White
 
             mTabRec = e.Bounds
             e.Graphics.FillRectangle(mTabBack, mTabRec)
         Else
             mTabFont = e.Font
-            mTabBack = New Drawing2D.LinearGradientBrush(e.Bounds, ClassControlStyle.g_cDarkFormColor.mDarkBackground, ClassControlStyle.g_cDarkFormColor.mDarkBackground, Drawing2D.LinearGradientMode.BackwardDiagonal)
+            mTabBack = New SolidBrush(ClassControlStyle.g_cDarkFormColor.mDarkBackground)
             mTabFore = Brushes.White
 
             mTabRec = e.Bounds
