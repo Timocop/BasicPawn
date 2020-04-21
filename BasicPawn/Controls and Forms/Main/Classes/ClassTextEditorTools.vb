@@ -529,7 +529,7 @@ Public Class ClassTextEditorTools
             End While
         End Using
 
-        Dim sFormatedSource As String = ClassSyntaxTools.ClassSyntaxHelpers.FormatCodeIndentation(mTab.m_TextEditor.Document.TextContent, ClassSettings.ENUM_INDENTATION_TYPES.USE_SETTINGS, mTab.m_Language)
+        Dim sFormatedSource As String = ClassSyntaxTools.ClassSyntaxHelpers.FormatCodeIndentation(mTab.m_TextEditor.Document.TextContent, ClassSyntaxTools.ClassSyntaxHelpers.ENUM_INDENTATION_TYPES.USE_SETTINGS, mTab.m_Language)
         Dim lFormatedSourceLines As New List(Of String)
         Using mSR As New IO.StringReader(sFormatedSource)
             Dim sLine As String

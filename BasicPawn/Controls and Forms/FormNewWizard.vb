@@ -356,7 +356,7 @@ Public Class FormNewWizard
         End Sub
 
         Public Sub ResolveTabs(ByRef sSource As String)
-            sSource = sSource.Replace("%t%", ClassSettings.BuildIndentation(1, ClassSettings.ENUM_INDENTATION_TYPES.USE_SETTINGS))
+            sSource = sSource.Replace("%t%", ClassSyntaxTools.ClassSyntaxHelpers.BuildIndentation(1, ClassSyntaxTools.ClassSyntaxHelpers.ENUM_INDENTATION_TYPES.USE_SETTINGS))
         End Sub
 
         Public Sub ResolveTerminator(ByRef sSource As String)

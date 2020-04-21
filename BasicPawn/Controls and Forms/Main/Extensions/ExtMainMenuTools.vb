@@ -62,7 +62,7 @@ Partial Public Class FormMain
                 End While
             End Using
 
-            Dim sFormatedSource As String = ClassSyntaxTools.ClassSyntaxHelpers.FormatCodeConvert(g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent, ClassSettings.ENUM_INDENTATION_TYPES.USE_SETTINGS, -1)
+            Dim sFormatedSource As String = ClassSyntaxTools.ClassSyntaxHelpers.FormatCodeConvert(g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent, ClassSyntaxTools.ClassSyntaxHelpers.ENUM_INDENTATION_TYPES.USE_SETTINGS, -1)
             Dim lFormatedSourceLines As New List(Of String)
             Using mSR As New IO.StringReader(sFormatedSource)
                 Dim sLine As String
@@ -134,7 +134,7 @@ Partial Public Class FormMain
                 Throw New ArgumentException("Invalid space size")
             End If
 
-            Dim sFormatedSource As String = ClassSyntaxTools.ClassSyntaxHelpers.FormatCodeConvert(g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent, ClassSettings.ENUM_INDENTATION_TYPES.TABS, iSpaceLength)
+            Dim sFormatedSource As String = ClassSyntaxTools.ClassSyntaxHelpers.FormatCodeConvert(g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent, ClassSyntaxTools.ClassSyntaxHelpers.ENUM_INDENTATION_TYPES.TABS, iSpaceLength)
             Dim lFormatedSourceLines As New List(Of String)
             Using mSR As New IO.StringReader(sFormatedSource)
                 Dim sLine As String
@@ -206,7 +206,7 @@ Partial Public Class FormMain
                 Throw New ArgumentException("Invalid space size")
             End If
 
-            Dim sFormatedSource As String = ClassSyntaxTools.ClassSyntaxHelpers.FormatCodeConvert(g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent, ClassSettings.ENUM_INDENTATION_TYPES.SPACES, iSpaceLength)
+            Dim sFormatedSource As String = ClassSyntaxTools.ClassSyntaxHelpers.FormatCodeConvert(g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent, ClassSyntaxTools.ClassSyntaxHelpers.ENUM_INDENTATION_TYPES.SPACES, iSpaceLength)
             Dim lFormatedSourceLines As New List(Of String)
             Using mSR As New IO.StringReader(sFormatedSource)
                 Dim sLine As String

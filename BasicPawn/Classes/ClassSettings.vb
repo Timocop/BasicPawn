@@ -341,30 +341,4 @@ Public Class ClassSettings
         ClassTools.ClassRegistry.SetAssociation("BasicPawn.Project", UCProjectBrowser.ClassProjectControl.g_sProjectExtension, String.Format("""{0}"" ""%1""", Application.ExecutablePath), Application.ExecutablePath, Application.ExecutablePath, ClassTools.ClassRegistry.ENUM_SELECTION_MODEL.SINGLE)
     End Sub
 
-    Enum ENUM_INDENTATION_TYPES
-        USE_SETTINGS
-        TABS
-        SPACES
-    End Enum
-
-    Public Shared Function BuildIndentation(iLength As Integer, iIndentationType As ENUM_INDENTATION_TYPES) As String
-        Select Case (iIndentationType)
-            Case ENUM_INDENTATION_TYPES.USE_SETTINGS
-                If (g_iSettingsTabsToSpaces > 0) Then
-                    Return New Text.StringBuilder().Insert(0, New String(" "c, g_iSettingsTabsToSpaces), iLength).ToString
-                Else
-                    Return New Text.StringBuilder().Insert(0, vbTab, iLength).ToString
-                End If
-
-            Case ENUM_INDENTATION_TYPES.TABS
-                Return New Text.StringBuilder().Insert(0, vbTab, iLength).ToString
-
-            Case ENUM_INDENTATION_TYPES.SPACES
-                Return New Text.StringBuilder().Insert(0, New String(" "c, g_iSettingsTabsToSpaces), iLength).ToString
-
-            Case Else
-                Throw New ArgumentException("Invalid indentation type")
-
-        End Select
-    End Function
 End Class

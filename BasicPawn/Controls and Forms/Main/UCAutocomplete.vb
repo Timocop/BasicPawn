@@ -685,7 +685,7 @@ Public Class UCAutocomplete
 
                                     mTab.m_TextEditor.Document.Insert(iOffset, sCallbackName)
 
-                                    Dim sIndentation As String = ClassSettings.BuildIndentation(1, ClassSettings.ENUM_INDENTATION_TYPES.USE_SETTINGS)
+                                    Dim sIndentation As String = ClassSyntaxTools.ClassSyntaxHelpers.BuildIndentation(1, ClassSyntaxTools.ClassSyntaxHelpers.ENUM_INDENTATION_TYPES.USE_SETTINGS)
 
                                     Dim sPublicFunction As String
                                     sPublicFunction = mTab.m_AutocompleteGroup.m_AutocompleteItems(i).m_FunctionString.Trim
@@ -816,7 +816,7 @@ Public Class UCAutocomplete
                                 Dim iLineLenNum As Integer = mTab.m_TextEditor.Document.GetLineSegment(iLineNum).Length
                                 mTab.m_TextEditor.Document.Remove(iLineOffsetNum, iLineLenNum)
 
-                                Dim sIndentation As String = ClassSettings.BuildIndentation(1, ClassSettings.ENUM_INDENTATION_TYPES.USE_SETTINGS)
+                                Dim sIndentation As String = ClassSyntaxTools.ClassSyntaxHelpers.BuildIndentation(1, ClassSyntaxTools.ClassSyntaxHelpers.ENUM_INDENTATION_TYPES.USE_SETTINGS)
 
                                 Dim sNewInput As String = "public " & mAutocomplete.m_FullFunctionString.Remove(0, "forward".Length).Trim & If(bGenerateSingleBraceLoc = -1, " {", "")
 
@@ -830,7 +830,7 @@ Public Class UCAutocomplete
                                 Dim iLineLenNum As Integer = mTab.m_TextEditor.Document.GetLineSegment(iLineNum).Length
                                 mTab.m_TextEditor.Document.Remove(iLineOffsetNum, iLineLenNum)
 
-                                Dim sIndentation As String = ClassSettings.BuildIndentation(1, ClassSettings.ENUM_INDENTATION_TYPES.USE_SETTINGS)
+                                Dim sIndentation As String = ClassSyntaxTools.ClassSyntaxHelpers.BuildIndentation(1, ClassSyntaxTools.ClassSyntaxHelpers.ENUM_INDENTATION_TYPES.USE_SETTINGS)
 
                                 Dim sNewInput As String
                                 With New Text.StringBuilder
@@ -862,7 +862,7 @@ Public Class UCAutocomplete
                                 Dim iLineLenNum As Integer = mTab.m_TextEditor.Document.GetLineSegment(iLineNum).Length
                                 mTab.m_TextEditor.Document.Remove(iLineOffsetNum, iLineLenNum)
 
-                                Dim sIndentation As String = ClassSettings.BuildIndentation(1, ClassSettings.ENUM_INDENTATION_TYPES.USE_SETTINGS)
+                                Dim sIndentation As String = ClassSyntaxTools.ClassSyntaxHelpers.BuildIndentation(1, ClassSyntaxTools.ClassSyntaxHelpers.ENUM_INDENTATION_TYPES.USE_SETTINGS)
 
                                 Dim sNewInput As String = mAutocomplete.m_FunctionString.Trim & If(bGenerateSingleBraceLoc = -1, " {", "")
 
@@ -876,7 +876,7 @@ Public Class UCAutocomplete
                                 Dim iLineLenNum As Integer = mTab.m_TextEditor.Document.GetLineSegment(iLineNum).Length
                                 mTab.m_TextEditor.Document.Remove(iLineOffsetNum, iLineLenNum)
 
-                                Dim sIndentation As String = ClassSettings.BuildIndentation(1, ClassSettings.ENUM_INDENTATION_TYPES.USE_SETTINGS)
+                                Dim sIndentation As String = ClassSyntaxTools.ClassSyntaxHelpers.BuildIndentation(1, ClassSyntaxTools.ClassSyntaxHelpers.ENUM_INDENTATION_TYPES.USE_SETTINGS)
 
                                 Dim sNewInput As String
                                 With New Text.StringBuilder

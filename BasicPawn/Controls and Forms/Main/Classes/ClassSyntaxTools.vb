@@ -1268,6 +1268,12 @@ Public Class ClassSyntaxTools
     End Class
 
     Class ClassSyntaxHelpers
+        Enum ENUM_INDENTATION_TYPES
+            USE_SETTINGS
+            TABS
+            SPACES
+        End Enum
+
         ''' <summary>
         ''' Gets the expression between characters e.g if "()": MyFunc(MyArgs) => MyArgs
         ''' </summary>
@@ -1331,7 +1337,7 @@ Public Class ClassSyntaxTools
         ''' </summary>
         ''' <param name="sSource"></param>
         ''' <returns></returns>
-        Public Shared Function FormatCodeIndentation(sSource As String, iIndentationType As ClassSettings.ENUM_INDENTATION_TYPES, iLanguage As ENUM_LANGUAGE_TYPE) As String
+        Public Shared Function FormatCodeIndentation(sSource As String, iIndentationType As ENUM_INDENTATION_TYPES, iLanguage As ENUM_LANGUAGE_TYPE) As String
             If (True) Then
                 Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, iLanguage)
                 Dim mSourceBuilder As New StringBuilder(sSource)
@@ -1473,7 +1479,7 @@ Public Class ClassSyntaxTools
                                         iIndentLength = 0
                                     End If
 
-                                    mSourceBuilder = mSourceBuilder.Insert(i + 1, ClassSettings.BuildIndentation(iIndentLength, iIndentationType))
+                                    mSourceBuilder = mSourceBuilder.Insert(i + 1, BuildIndentation(iIndentLength, iIndentationType))
 
                                     iBraceCount = 0
                                     iParentCount = 0
@@ -1520,7 +1526,7 @@ Public Class ClassSyntaxTools
         ''' <param name="iIndentationType"></param>
         ''' <param name="iLength"></param>
         ''' <returns></returns>
-        Public Shared Function FormatCodeConvert(sSource As String, iIndentationType As ClassSettings.ENUM_INDENTATION_TYPES, iLength As Integer) As String
+        Public Shared Function FormatCodeConvert(sSource As String, iIndentationType As ENUM_INDENTATION_TYPES, iLength As Integer) As String
             Dim mSourceBuilder As New StringBuilder
 
             Using mSR As New IO.StringReader(sSource)
@@ -1535,17 +1541,17 @@ Public Class ClassSyntaxTools
                     End If
 
                     Select Case (iIndentationType)
-                        Case ClassSettings.ENUM_INDENTATION_TYPES.USE_SETTINGS
+                        Case ENUM_INDENTATION_TYPES.USE_SETTINGS
                             If (ClassSettings.g_iSettingsTabsToSpaces > 0) Then
                                 sLine = sLine.Replace(vbTab, New String(" "c, ClassSettings.g_iSettingsTabsToSpaces))
                             Else
                                 sLine = sLine.Replace(New String(" "c, 4), vbTab)
                             End If
 
-                        Case ClassSettings.ENUM_INDENTATION_TYPES.TABS
+                        Case ENUM_INDENTATION_TYPES.TABS
                             sLine = sLine.Replace(New String(" "c, iLength), vbTab)
 
-                        Case ClassSettings.ENUM_INDENTATION_TYPES.SPACES
+                        Case ENUM_INDENTATION_TYPES.SPACES
                             sLine = sLine.Replace(vbTab, New String(" "c, iLength))
 
                         Case Else
@@ -1560,6 +1566,26 @@ Public Class ClassSyntaxTools
             Return mSourceBuilder.ToString
         End Function
 
+        Public Shared Function BuildIndentation(iLength As Integer, iIndentationType As ENUM_INDENTATION_TYPES) As String
+            Select Case (iIndentationType)
+                Case ENUM_INDENTATION_TYPES.USE_SETTINGS
+                    If (ClassSettings.g_iSettingsTabsToSpaces > 0) Then
+                        Return New StringBuilder().Insert(0, New String(" "c, ClassSettings.g_iSettingsTabsToSpaces), iLength).ToString
+                    Else
+                        Return New StringBuilder().Insert(0, vbTab, iLength).ToString
+                    End If
+
+                Case ENUM_INDENTATION_TYPES.TABS
+                    Return New StringBuilder().Insert(0, vbTab, iLength).ToString
+
+                Case ENUM_INDENTATION_TYPES.SPACES
+                    Return New StringBuilder().Insert(0, New String(" "c, ClassSettings.g_iSettingsTabsToSpaces), iLength).ToString
+
+                Case Else
+                    Throw New ArgumentException("Invalid indentation type")
+
+            End Select
+        End Function
         ''' <summary>
         ''' Checks if the source requires new decls and returns the offset.
         ''' NOTE: High false positive rate.
