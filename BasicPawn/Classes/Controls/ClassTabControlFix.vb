@@ -56,7 +56,7 @@ Public Class ClassTabControlFix
     ''' </summary>
     ''' <param name="mTabPage"></param>
     Public Sub SelectTabNoFocus(mTabPage As TabPage)
-        Dim mParentForm = Me.FindForm
+        Dim mParentForm = Form.ActiveForm
 
         If (mParentForm IsNot Nothing) Then
             'See: https://stackoverflow.com/a/439606
