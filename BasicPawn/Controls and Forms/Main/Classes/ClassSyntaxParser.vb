@@ -265,7 +265,7 @@ Public Class ClassSyntaxParser
             Dim mFinalizeWatch As New Stopwatch
             Dim mApplyWatch As New Stopwatch
 
-            Dim lNewAutocompleteList As New ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
+            Dim lNewAutocompleteList As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
             Dim mParser As New ClassParser()
 
             Dim lIncludeFiles As New List(Of KeyValuePair(Of String, String))
@@ -408,7 +408,7 @@ Public Class ClassSyntaxParser
 
             'Parse everything. Methods etc.
             If (True) Then
-                Dim sSourceList As New ClassSyncList(Of KeyValuePair(Of String, String)) '{sFile, sSource}
+                Dim sSourceList As New List(Of KeyValuePair(Of String, String)) '{sFile, sSource}
 
                 mPreWatch.Start()
                 Dim i As Integer
@@ -515,8 +515,10 @@ Public Class ClassSyntaxParser
                 Return ENUM_PARSE_ERROR.INVALID_FILE
             End If
 
-            Dim lOldVarAutocompleteList As New ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
-            lOldVarAutocompleteList.AddRange(mRequestTab.m_AutocompleteGroup.m_AutocompleteItems.ToArray)
+            Dim lOldVarAutocompleteList As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
+            For Each mItem In mRequestTab.m_AutocompleteGroup.m_AutocompleteItems.ToArray
+                lOldVarAutocompleteList.Add(New ClassSyntaxTools.STRUC_AUTOCOMPLETE(mItem))
+            Next
 
             'No autocomplete entries?
             If (lOldVarAutocompleteList.Count < 1) Then
@@ -527,7 +529,7 @@ Public Class ClassSyntaxParser
             Dim mFinalizeWatch As New Stopwatch
             Dim mApplyWatch As New Stopwatch
 
-            Dim lNewVarAutocompleteList As New ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
+            Dim lNewVarAutocompleteList As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
             Dim mParser As New ClassParser
 
             Dim sAutocompleteIdentifier As String = mRequestTab.m_AutocompleteGroup.GenerateAutocompleteIdentifier
@@ -992,8 +994,8 @@ Public Class ClassSyntaxParser
             Public sActiveSource As String
             Public sActiveSourceFile As String
             Public sFile As String
-            Public lSourceList As ClassSyncList(Of KeyValuePair(Of String, String))
-            Public lNewAutocompleteList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
+            Public lSourceList As List(Of KeyValuePair(Of String, String))
+            Public lNewAutocompleteList As List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
             Public iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE
 
             Sub New(_Source As String,
@@ -1001,8 +1003,8 @@ Public Class ClassSyntaxParser
                     _ActiveSource As String,
                     _ActiveSourceFile As String,
                     _File As String,
-                    ByRef _SourceList As ClassSyncList(Of KeyValuePair(Of String, String)),
-                    ByRef _NewAutocompleteList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE),
+                    ByRef _SourceList As List(Of KeyValuePair(Of String, String)),
+                    ByRef _NewAutocompleteList As List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE),
                     _Language As ClassSyntaxTools.ENUM_LANGUAGE_TYPE)
 
                 sSource = _Source
@@ -1021,14 +1023,14 @@ Public Class ClassSyntaxParser
             Public sActiveSourceFile As String
             Public sFile As String
             Public sSource As String
-            Public lNewAutocompleteList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
+            Public lNewAutocompleteList As List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
             Public iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE
 
             Sub New(_ActiveSource As String,
                             _ActiveSourceFile As String,
                             ByRef _File As String,
                             ByRef _Source As String,
-                            ByRef _NewAutocompleteList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE),
+                            ByRef _NewAutocompleteList As List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE),
                             _Language As ClassSyntaxTools.ENUM_LANGUAGE_TYPE)
 
                 sActiveSource = _ActiveSource
@@ -1045,16 +1047,16 @@ Public Class ClassSyntaxParser
             Public sActiveSource As String
             Public sActiveSourceFile As String
             Public sFile As String
-            Public lNewVarAutocompleteList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
-            Public lOldVarAutocompleteList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
+            Public lNewVarAutocompleteList As List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
+            Public lOldVarAutocompleteList As List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
             Public iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE
 
             Sub New(_Source As String,
                         _ActiveSource As String,
                         _ActiveSourceFile As String,
                         ByRef _File As String,
-                        ByRef _NewVarAutocompleteList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE),
-                        ByRef _OldVarAutocompleteList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE),
+                        ByRef _NewVarAutocompleteList As List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE),
+                        ByRef _OldVarAutocompleteList As List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE),
                         _Language As ClassSyntaxTools.ENUM_LANGUAGE_TYPE)
 
                 sSource = _Source
@@ -1070,14 +1072,14 @@ Public Class ClassSyntaxParser
         Private Class STRUC_VARIABLE_PARSE_POST_INFO
             Public sActiveSource As String
             Public sActiveSourceFile As String
-            Public lNewVarAutocompleteList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
-            Public lOldVarAutocompleteList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
+            Public lNewVarAutocompleteList As List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
+            Public lOldVarAutocompleteList As List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
             Public iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE
 
             Sub New(_ActiveSource As String,
                             _ActiveSourceFile As String,
-                            ByRef _NewVarAutocompleteList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE),
-                            ByRef _OldVarAutocompleteList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE),
+                            ByRef _NewVarAutocompleteList As List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE),
+                            ByRef _OldVarAutocompleteList As List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE),
                             _Language As ClassSyntaxTools.ENUM_LANGUAGE_TYPE)
                 sActiveSource = _ActiveSource
                 sActiveSourceFile = _ActiveSourceFile
@@ -1091,8 +1093,8 @@ Public Class ClassSyntaxParser
                                                 sActiveSource As String,
                                                 sActiveSourceFile As String,
                                                 sFile As String,
-                                                ByRef sSourceList As ClassSyncList(Of KeyValuePair(Of String, String)),
-                                                ByRef lNewAutocompleteList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE),
+                                                ByRef sSourceList As List(Of KeyValuePair(Of String, String)),
+                                                ByRef lNewAutocompleteList As List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE),
                                                 iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE)
             Dim sSource As String
             If (sActiveSourceFile.ToLower = sFile.ToLower) Then
@@ -1133,7 +1135,7 @@ Public Class ClassSyntaxParser
                                                     sActiveSourceFile As String,
                                                     ByRef sFile As String,
                                                     ByRef sSource As String,
-                                                    ByRef lNewAutocompleteList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE),
+                                                    ByRef lNewAutocompleteList As List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE),
                                                     iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE)
 
             Dim mParseInfo As New STRUC_AUTOCOMPLETE_PARSE_POST_INFO(sActiveSource, sActiveSourceFile, sFile, sSource, lNewAutocompleteList, iLanguage)
@@ -1150,7 +1152,7 @@ Public Class ClassSyntaxParser
         End Sub
 
         Public Sub ProcessFullSyntaxFinalize(mFormMain As FormMain,
-                                                    lTmpAutoList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE))
+                                                    lTmpAutoList As List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE))
 
             Dim mAutocompleteFinalize As New ClassFullSyntaxFinalize(Me)
 
@@ -1165,8 +1167,8 @@ Public Class ClassSyntaxParser
                                                 sActiveSource As String,
                                                 sActiveSourceFile As String,
                                                 ByRef sFile As String,
-                                                ByRef lNewVarAutocompleteList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE),
-                                                ByRef lOldVarAutocompleteList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE),
+                                                ByRef lNewVarAutocompleteList As List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE),
+                                                ByRef lOldVarAutocompleteList As List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE),
                                                 iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE)
             Dim sSource As String
             If (sActiveSourceFile.ToLower = sFile.ToLower) Then
@@ -1186,8 +1188,8 @@ Public Class ClassSyntaxParser
         Public Sub ProcessVarSyntaxFinalize(mFormMain As FormMain,
                                             sActiveSource As String,
                                             sActiveSourceFile As String,
-                                            ByRef lNewVarAutocompleteList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE),
-                                            ByRef lOldVarAutocompleteList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE),
+                                            ByRef lNewVarAutocompleteList As List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE),
+                                            ByRef lOldVarAutocompleteList As List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE),
                                             iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE)
 
             Dim mParseInfo As New STRUC_VARIABLE_PARSE_POST_INFO(sActiveSource, sActiveSourceFile, lNewVarAutocompleteList, lOldVarAutocompleteList, iLanguage)
@@ -3480,7 +3482,7 @@ Public Class ClassSyntaxParser
             ''' </summary>
             ''' <param name="mFormMain"></param>
             ''' <param name="lTmpAutoList"></param>
-            Public Sub ProcessMethodmapParentMethods(mFormMain As FormMain, lTmpAutoList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE))
+            Public Sub ProcessMethodmapParentMethods(mFormMain As FormMain, lTmpAutoList As List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE))
                 'Merging:
                 '     methodmap Test1 : Handle {...}
                 '     methodmap Test2 : Test1 {...}     (All Test1 methods etc. will be added to Test2, because its a child of Test1)
@@ -3575,7 +3577,7 @@ Public Class ClassSyntaxParser
             ''' </summary>
             ''' <param name="mFormMain"></param>
             ''' <param name="lTmpAutoList"></param>
-            Public Sub ProcessMethodmapParentMethodmaps(mFormMain As FormMain, lTmpAutoList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE))
+            Public Sub ProcessMethodmapParentMethodmaps(mFormMain As FormMain, lTmpAutoList As List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE))
                 'Merging:
                 '       methodmap Test1 : Handle = Test2 Method() {...}
                 '   to
@@ -3667,7 +3669,7 @@ Public Class ClassSyntaxParser
             ''' </summary>
             ''' <param name="mFormMain"></param>
             ''' <param name="lTmpAutoList"></param>
-            Public Sub GenerateMethodmapThis(mFormMain As FormMain, lTmpAutoList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE))
+            Public Sub GenerateMethodmapThis(mFormMain As FormMain, lTmpAutoList As List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE))
                 'Merging:
                 '     methodmap Test1 : Handle {...}
                 '   to
@@ -3725,7 +3727,7 @@ Public Class ClassSyntaxParser
             ''' </summary>
             ''' <param name="mFormMain"></param>
             ''' <param name="lTmpAutoList"></param>
-            Public Sub GenerateEnumStructThis(mFormMain As FormMain, lTmpAutoList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE))
+            Public Sub GenerateEnumStructThis(mFormMain As FormMain, lTmpAutoList As List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE))
                 'Merging:
                 '     enum struct Test1 { int Value; }
                 '   to
@@ -5542,11 +5544,11 @@ Public Class ClassSyntaxParser
             End If
         End Sub
 
-        Public Function GetTypeNamesToPattern(lTmpAutoList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)) As String
+        Public Function GetTypeNamesToPattern(lTmpAutoList As List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)) As String
             Return String.Format("(\b{0}\b)", String.Join("\b|\b", GetTypeNames(lTmpAutoList)))
         End Function
 
-        Public Function GetTypeNames(lTmpAutoList As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)) As String()
+        Public Function GetTypeNames(lTmpAutoList As List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)) As String()
             Dim lNames As New List(Of String) From {
                 "void", 'For >1.7
                 "int",
