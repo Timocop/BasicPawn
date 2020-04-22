@@ -2423,7 +2423,7 @@ Public Class ClassTabControl
                 End If
 
                 Dim mOldTextMarker = g_mTextMarker
-                Dim mColor = g_mSourceTabPage.m_TextEditor.Document.HighlightingStrategy.GetColorFor("SpaceMarkers").Color
+                Dim mColor = g_mSourceTabPage.m_TextEditor.Document.HighlightingStrategy.GetColorFor("ScopeMarker").Color
 
                 If (g_mTextMarker Is Nothing) Then
                     g_mTextMarker = New TextMarker(mScopeLocation.X, mScopeLocation.Y, TextMarkerType.SolidBlock, mColor)
@@ -2618,35 +2618,12 @@ Public Class ClassTabControl
 
                 Select Case (iType)
                     Case ENUM_MARKER_TYPE.STATIC_MARKER
-                        While True
-                            For Each mItem In mStrategy.EnvironmentColors
-                                If (mItem.Key <> "StaticMarker") Then
-                                    Continue For
-                                End If
+                        mFrontColor = g_mSourceTabPage.m_TextEditor.Document.HighlightingStrategy.GetColorFor("StaticMarker").Color
+                        mBackColor = g_mSourceTabPage.m_TextEditor.Document.HighlightingStrategy.GetColorFor("StaticMarker").BackgroundColor
 
-                                mFrontColor = mItem.Value.Color
-                                mBackColor = mItem.Value.BackgroundColor
-                                Exit While
-                            Next
-
-                            RemoveHighlighting(iType)
-                            Return
-                        End While
                     Case Else
-                        While True
-                            For Each mItem In mStrategy.EnvironmentColors
-                                If (mItem.Key <> "CaretMarker") Then
-                                    Continue For
-                                End If
-
-                                mFrontColor = mItem.Value.Color
-                                mBackColor = mItem.Value.BackgroundColor
-                                Exit While
-                            Next
-
-                            RemoveHighlighting(iType)
-                            Return
-                        End While
+                        mFrontColor = g_mSourceTabPage.m_TextEditor.Document.HighlightingStrategy.GetColorFor("CaretMarker").Color
+                        mBackColor = g_mSourceTabPage.m_TextEditor.Document.HighlightingStrategy.GetColorFor("CaretMarker").BackgroundColor
                 End Select
 
                 Dim mMarkers As New List(Of IMarkers)

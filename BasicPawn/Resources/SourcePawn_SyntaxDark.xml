@@ -14,6 +14,7 @@
 		<EOLMarkers color="#333333" />
 		<SpaceMarkers color="#333333" />
 		<TabMarkers color="#333333" />
+    <Custom name="ScopeMarker" color="#333333" />
     <Custom name="CaretMarker" color="#adc0d3" bgcolor="#0e4583" />
     <Custom name="StaticMarker" color="#c0d3ad" bgcolor="#48830e" />
 	</Environment>
