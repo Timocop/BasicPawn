@@ -31,15 +31,13 @@ Public Class ClassSyntaxTools
     Public Shared ReadOnly g_sSyntaxXML As String = My.Resources.SourcePawn_Syntax
     Public Shared ReadOnly g_sSyntaxDarkXML As String = My.Resources.SourcePawn_SyntaxDark
 
-    Public Shared ReadOnly g_sSyntaxHighlightCaretMarker As String = "<!-- [DO NOT EDIT | HIGHLIGHT CARET MARKER] -->"
-    Public Shared ReadOnly g_sSyntaxHighlightWordMarker As String = "<!-- [DO NOT EDIT | HIGHLIGHT WORD MARKER] -->"
     Public Shared ReadOnly g_sSyntaxHighlightWordCustomMarker As String = "<!-- [DO NOT EDIT | HIGHLIGHT WORD CUSTOM MARKER] -->"
     Public Shared ReadOnly g_sSyntaxHighlightDefineMarker As String = "<!-- [DO NOT EDIT | DEFINE MARKER] -->"
     Public Shared ReadOnly g_sSyntaxHighlightEnumMarker As String = "<!-- [DO NOT EDIT | ENUM MARKER] -->"
     Public Shared ReadOnly g_sSyntaxHighlightEnum2Marker As String = "<!-- [DO NOT EDIT | ENUM2 MARKER] -->"
     Public Shared ReadOnly g_sSyntaxSourcePawnMarker As String = "SourcePawn-04e3632f-5472-42c5-929a-c3e0c2b35324"
 
-    Public Shared ReadOnly g_mSyntaxRequiredVersion As New Version("1.2")
+    Public Shared ReadOnly g_mSyntaxRequiredVersion As New Version("1.3")
 
     Enum ENUM_LANGUAGE_TYPE
         SOURCEPAWN
@@ -50,8 +48,6 @@ Public Class ClassSyntaxTools
 
     Public Enum ENUM_SYNTAX_UPDATE_TYPE
         NONE
-        CARET_WORD
-        HIGHLIGHT_WORD
         HIGHLIGHT_WORD_CUSTOM
         AUTOCOMPLETE
     End Enum
@@ -985,14 +981,6 @@ Public Class ClassSyntaxTools
                 SyncLock _lock
                     For i = 0 To g_mTextEditorSyntaxItems.Length - 1
                         Select Case (iType)
-                            Case ENUM_SYNTAX_UPDATE_TYPE.CARET_WORD
-                                If (i <> ENUM_SYNTAX_EDITORS.MAIN_TEXTEDITOR) Then
-                                    Continue For
-                                End If
-                            Case ENUM_SYNTAX_UPDATE_TYPE.HIGHLIGHT_WORD
-                                If (i <> ENUM_SYNTAX_EDITORS.MAIN_TEXTEDITOR) Then
-                                    Continue For
-                                End If
                             Case ENUM_SYNTAX_UPDATE_TYPE.HIGHLIGHT_WORD_CUSTOM
                                 If (i <> ENUM_SYNTAX_EDITORS.MAIN_TEXTEDITOR) Then
                                     Continue For
@@ -1025,30 +1013,6 @@ Public Class ClassSyntaxTools
                                 End If
 
                                 Select Case (iType)
-                                    Case ENUM_SYNTAX_UPDATE_TYPE.CARET_WORD
-                                        If (sLine.Contains(g_sSyntaxHighlightCaretMarker)) Then
-                                            mXmlBuilder.Append(g_sSyntaxHighlightCaretMarker)
-
-                                            If (Not String.IsNullOrEmpty(g_sCaretWord) AndAlso ClassSettings.g_iSettingsAutoMark) Then
-                                                mXmlBuilder.AppendFormat("<Key word=""{0}""/>", g_sCaretWord)
-                                            End If
-
-                                            mXmlBuilder.AppendLine()
-                                            Continue While
-                                        End If
-
-                                    Case ENUM_SYNTAX_UPDATE_TYPE.HIGHLIGHT_WORD
-                                        If (sLine.Contains(g_sSyntaxHighlightWordMarker)) Then
-                                            mXmlBuilder.Append(g_sSyntaxHighlightWordMarker)
-
-                                            If (Not String.IsNullOrEmpty(g_sHighlightWord)) Then
-                                                mXmlBuilder.AppendFormat("<Key word=""{0}""/>", g_sHighlightWord)
-                                            End If
-
-                                            mXmlBuilder.AppendLine()
-                                            Continue While
-                                        End If
-
                                     Case ENUM_SYNTAX_UPDATE_TYPE.HIGHLIGHT_WORD_CUSTOM
                                         If (sLine.Contains(g_sSyntaxHighlightWordCustomMarker)) Then
                                             mXmlBuilder.Append(g_sSyntaxHighlightWordCustomMarker)

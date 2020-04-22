@@ -199,9 +199,7 @@ Public Class ClassBackgroundUpdater
                         dLastMarkCaretWordDelay = (Now + mMarkCaretWordDelay)
 
                         If (ClassSettings.g_iSettingsAutoMark) Then
-                            ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                                   g_mFormMain.g_ClassTextEditorTools.MarkCaretWord()
-                                                               End Sub)
+                            UpdateMarkerHighlighting(mActiveTab)
                         End If
                     End If
 
@@ -225,15 +223,36 @@ Public Class ClassBackgroundUpdater
         End While
     End Sub
 
+    Private Sub UpdateMarkerHighlighting(mActiveTab As ClassTabControl.SourceTabPage)
+        Dim sTextContent As String = mActiveTab.m_TextEditor.Document.TextContent
+        Dim sWord As String = ""
+
+        If (Not ClassThread.ExecEx(Of Boolean)(g_mFormMain, Function() mActiveTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.HasSomethingSelected)) Then
+            sWord = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTextEditorTools.GetCaretWord(mActiveTab.m_TextEditor, False, False, False))
+        End If
+
+        Dim mWordLocations As New List(Of Point)
+        If (Not mActiveTab.g_ClassMarkerHighlighting.FindWordLocations(sWord, sTextContent, mWordLocations)) Then
+            ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                   mActiveTab.g_ClassMarkerHighlighting.RemoveHighlighting(ClassTabControl.SourceTabPage.ClassMarkerHighlighting.ENUM_MARKER_TYPE.CARET_MARKER)
+                                               End Sub)
+            Return
+        End If
+
+        ClassThread.ExecAsync(g_mFormMain, Sub()
+                                               mActiveTab.g_ClassMarkerHighlighting.UpdateHighlighting(mWordLocations, ClassTabControl.SourceTabPage.ClassMarkerHighlighting.ENUM_MARKER_TYPE.CARET_MARKER)
+                                           End Sub)
+    End Sub
+
     Private Sub UpdateScopeHighlighting(mActiveTab As ClassTabControl.SourceTabPage, iCaretOffset As Integer)
         Dim sTextContent As String = mActiveTab.m_TextEditor.Document.TextContent
         Dim iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = mActiveTab.m_Language
         Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sTextContent, iLanguage)
 
         Dim mScopeLocation As Point
-        If (Not mActiveTab.g_ClassScopeHighlighting.FindCaretScope(mSourceAnalysis, iCaretOffset, True, mScopeLocation)) Then
+        If (Not mActiveTab.g_ClassScopeHighlighting.FindScopeLocation(mSourceAnalysis, iCaretOffset, True, mScopeLocation)) Then
             ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                   mActiveTab.g_ClassScopeHighlighting.RemoveHightlighting()
+                                                   mActiveTab.g_ClassScopeHighlighting.RemoveHighlighting()
                                                End Sub)
             Return
         End If
@@ -270,10 +289,10 @@ Public Class ClassBackgroundUpdater
             Return
         End If
 
-        Dim sFunctionName As String = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True, True, True))
+        Dim sFunctionName As String = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTextEditorTools.GetCaretWord(mActiveTab.m_TextEditor, True, True, True))
 
         If (ClassThread.ExecEx(Of Integer)(g_mFormMain.g_mUCAutocomplete, Function() g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete(sFunctionName)) < 1) Then
-            sFunctionName = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTextEditorTools.GetCaretWord(False, False, False))
+            sFunctionName = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTextEditorTools.GetCaretWord(mActiveTab.m_TextEditor, False, False, False))
 
             ClassThread.ExecAsync(g_mFormMain.g_mUCAutocomplete, Sub()
                                                                      g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete(sFunctionName)

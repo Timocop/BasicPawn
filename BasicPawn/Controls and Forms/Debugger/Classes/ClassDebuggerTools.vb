@@ -724,7 +724,7 @@ Public Class ClassDebuggerTools
                     mActiveTextEditor.Document.Insert(iOffset, String.Format("{0}(", sPointName))
                     mActiveTextEditor.Document.UndoStack.EndUndoGroup()
                 Else
-                    Dim sCaretWord As String = mFormMain.g_ClassTextEditorTools.GetCaretWord(True, False, True)
+                    Dim sCaretWord As String = mFormMain.g_ClassTextEditorTools.GetCaretWord(mActiveTextEditor, True, False, True)
 
                     If (String.IsNullOrEmpty(sCaretWord)) Then
                         Dim iOffset As Integer = mActiveTextEditor.ActiveTextAreaControl.Caret.Offset
@@ -800,7 +800,7 @@ Public Class ClassDebuggerTools
             End Sub
 
             Public Shared Sub TextEditorRemoveAtCaret(mFormMain As FormMain, mActiveTextEditor As TextEditorControlEx, lPointList As List(Of STRUC_DEBUGGER_ITEM), sPointName As String, sMsgPointName As String)
-                Dim sCaretWord As String = mFormMain.g_ClassTextEditorTools.GetCaretWord(True, False, False)
+                Dim sCaretWord As String = mFormMain.g_ClassTextEditorTools.GetCaretWord(mActiveTextEditor, True, False, False)
 
                 If (sCaretWord <> sPointName) Then
                     mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, String.Format("This is not a valid {0}!", sMsgPointName))

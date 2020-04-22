@@ -16,10 +16,29 @@
 
 
 Imports ICSharpCode.TextEditor
+Imports ICSharpCode.TextEditor.Document
 
 Partial Public Class FormMain
     Private Sub ToolStripMenuItem_Mark_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Mark.Click
-        g_ClassTextEditorTools.MarkSelectedWord()
+        Dim mActiveTab = g_ClassTabControl.m_ActiveTab
+        Dim sTextContent As String = mActiveTab.m_TextEditor.Document.TextContent
+        Dim sWord As String = ""
+
+        If (mActiveTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.HasSomethingSelected) Then
+            Dim mSelection As ISelection = mActiveTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection(0)
+
+            sWord = mSelection.SelectedText
+        Else
+            sWord = g_ClassTextEditorTools.GetCaretWord(mActiveTab.m_TextEditor, False, False, False)
+        End If
+
+        Dim mWordLocations As New List(Of Point)
+        If (Not mActiveTab.g_ClassMarkerHighlighting.FindWordLocations(sWord, sTextContent, mWordLocations)) Then
+            mActiveTab.g_ClassMarkerHighlighting.RemoveHighlighting(ClassTabControl.SourceTabPage.ClassMarkerHighlighting.ENUM_MARKER_TYPE.STATIC_MARKER)
+            Return
+        End If
+
+        mActiveTab.g_ClassMarkerHighlighting.UpdateHighlighting(mWordLocations, ClassTabControl.SourceTabPage.ClassMarkerHighlighting.ENUM_MARKER_TYPE.STATIC_MARKER)
     End Sub
 
     Private Sub ToolStripMenuItem_ListReferences_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ListReferences.Click

@@ -145,8 +145,13 @@ Public Class FormSettings
         Next
 
         For j = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1
-            g_mFormMain.g_ClassTabControl.m_Tab(j).g_ClassScopeHighlighting.RemoveHightlighting()
+            g_mFormMain.g_ClassTabControl.m_Tab(j).g_ClassScopeHighlighting.RemoveHighlighting()
             g_mFormMain.g_ClassTabControl.m_Tab(j).g_ClassScopeHighlighting.UpdateHighlighting()
+        Next
+
+        For j = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1
+            g_mFormMain.g_ClassTabControl.m_Tab(j).g_ClassMarkerHighlighting.RemoveHighlighting(ClassTabControl.SourceTabPage.ClassMarkerHighlighting.ENUM_MARKER_TYPE.STATIC_MARKER)
+            g_mFormMain.g_ClassTabControl.m_Tab(j).g_ClassMarkerHighlighting.RemoveHighlighting(ClassTabControl.SourceTabPage.ClassMarkerHighlighting.ENUM_MARKER_TYPE.CARET_MARKER)
         Next
 
     End Sub

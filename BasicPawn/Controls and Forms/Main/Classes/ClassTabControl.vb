@@ -15,6 +15,7 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 
+Imports System.Text.RegularExpressions
 Imports ICSharpCode.TextEditor
 Imports ICSharpCode.TextEditor.Document
 
@@ -955,6 +956,7 @@ Public Class ClassTabControl
         Public g_ClassFoldings As ClassFoldings
         Public g_ClassLineState As ClassLineState
         Public g_ClassScopeHighlighting As ClassScopeHighlighting
+        Public g_ClassMarkerHighlighting As ClassMarkerHighlighting
 
         Public Sub New(f As FormMain)
             g_mFormMain = f
@@ -964,6 +966,7 @@ Public Class ClassTabControl
             g_ClassFoldings = New ClassFoldings(Me)
             g_ClassLineState = New ClassLineState(Me)
             g_ClassScopeHighlighting = New ClassScopeHighlighting(Me)
+            g_ClassMarkerHighlighting = New ClassMarkerHighlighting(Me)
 
             CreateTextEditor()
 
@@ -978,6 +981,7 @@ Public Class ClassTabControl
             g_ClassFoldings = New ClassFoldings(Me)
             g_ClassLineState = New ClassLineState(Me)
             g_ClassScopeHighlighting = New ClassScopeHighlighting(Me)
+            g_ClassMarkerHighlighting = New ClassMarkerHighlighting(Me)
 
             m_Title = sText
 
@@ -994,6 +998,7 @@ Public Class ClassTabControl
             g_ClassFoldings = New ClassFoldings(Me)
             g_ClassLineState = New ClassLineState(Me)
             g_ClassScopeHighlighting = New ClassScopeHighlighting(Me)
+            g_ClassMarkerHighlighting = New ClassMarkerHighlighting(Me)
 
             m_Title = sText
             m_Changed = bChanged
@@ -1836,7 +1841,25 @@ Public Class ClassTabControl
                     Return
                 End If
 
-                g_mFormMain.g_ClassTextEditorTools.MarkSelectedWord()
+                Dim mActiveTab = g_mFormMain.g_ClassTabControl.m_ActiveTab
+                Dim sTextContent As String = mActiveTab.m_TextEditor.Document.TextContent
+                Dim sWord As String = ""
+
+                If (mActiveTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.HasSomethingSelected) Then
+                    Dim mSelection As ISelection = mActiveTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection(0)
+
+                    sWord = mSelection.SelectedText
+                Else
+                    sWord = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(mActiveTab.m_TextEditor, False, False, False)
+                End If
+
+                Dim mWordLocations As New List(Of Point)
+                If (Not mActiveTab.g_ClassMarkerHighlighting.FindWordLocations(sWord, sTextContent, mWordLocations)) Then
+                    mActiveTab.g_ClassMarkerHighlighting.RemoveHighlighting(ClassTabControl.SourceTabPage.ClassMarkerHighlighting.ENUM_MARKER_TYPE.STATIC_MARKER)
+                    Return
+                End If
+
+                mActiveTab.g_ClassMarkerHighlighting.UpdateHighlighting(mWordLocations, ClassTabControl.SourceTabPage.ClassMarkerHighlighting.ENUM_MARKER_TYPE.STATIC_MARKER)
             Catch ex As Exception
                 ClassExceptionLog.WriteToLogMessageBox(ex)
             End Try
@@ -2373,7 +2396,7 @@ Public Class ClassTabControl
 
             Public Sub UpdateHighlighting()
                 If (Not ClassSettings.g_iSettingsHighlightCurrentScope) Then
-                    RemoveHightlighting()
+                    RemoveHighlighting()
                     Return
                 End If
 
@@ -2385,8 +2408,8 @@ Public Class ClassTabControl
                 Dim iCaretOffset = g_mSourceTabPage.m_TextEditor.ActiveTextAreaControl.Caret.Offset
 
                 Dim mScopeLocation As Point
-                If (Not FindCaretScope(mSourceAnalysis, iCaretOffset, True, mScopeLocation)) Then
-                    RemoveHightlighting()
+                If (Not FindScopeLocation(mSourceAnalysis, iCaretOffset, True, mScopeLocation)) Then
+                    RemoveHighlighting()
                     Return
                 End If
 
@@ -2395,7 +2418,7 @@ Public Class ClassTabControl
 
             Public Sub UpdateHighlighting(mScopeLocation As Point)
                 If (Not ClassSettings.g_iSettingsHighlightCurrentScope) Then
-                    RemoveHightlighting()
+                    RemoveHighlighting()
                     Return
                 End If
 
@@ -2423,7 +2446,7 @@ Public Class ClassTabControl
                 g_mSourceTabPage.m_TextEditor.Document.CommitUpdate()
             End Sub
 
-            Public Sub RemoveHightlighting()
+            Public Sub RemoveHighlighting()
                 If (g_mTextMarker Is Nothing) Then
                     Return
                 End If
@@ -2435,7 +2458,7 @@ Public Class ClassTabControl
                 g_mSourceTabPage.m_TextEditor.Document.CommitUpdate()
             End Sub
 
-            Public Function FindCaretScope(mSourceAnalysis As ClassSyntaxTools.ClassSyntaxSourceAnalysis, iCaretOffset As Integer, bCaretAfter As Boolean, ByRef r_ScopeLocation As Point) As Boolean
+            Public Function FindScopeLocation(mSourceAnalysis As ClassSyntaxTools.ClassSyntaxSourceAnalysis, iCaretOffset As Integer, bCaretAfter As Boolean, ByRef r_ScopeLocation As Point) As Boolean
                 r_ScopeLocation = Nothing
                 iCaretOffset = If(bCaretAfter, iCaretOffset - 1, iCaretOffset)
 
@@ -2554,6 +2577,173 @@ Public Class ClassTabControl
                     Return False
                 End If
             End Function
+        End Class
+
+        Class ClassMarkerHighlighting
+            Private g_mSourceTabPage As SourceTabPage
+
+            Private g_lTextMarkers As New List(Of IMarkers)
+
+            Enum ENUM_MARKER_TYPE
+                STATIC_MARKER
+                CARET_MARKER
+            End Enum
+
+            Public Sub New(mSourceTabPage As SourceTabPage)
+                g_mSourceTabPage = mSourceTabPage
+            End Sub
+
+            Public Sub UpdateHighlighting(sWord As String, iType As ENUM_MARKER_TYPE)
+                Dim sText As String = g_mSourceTabPage.m_TextEditor.Document.TextContent
+
+                Dim mWordLocations As New List(Of Point)
+                If (Not FindWordLocations(sWord, sText, mWordLocations)) Then
+                    RemoveHighlighting(iType)
+                    Return
+                End If
+
+                UpdateHighlighting(mWordLocations, iType)
+            End Sub
+
+            Public Sub UpdateHighlighting(mWordLocations As List(Of Point), iType As ENUM_MARKER_TYPE)
+                If (Not ClassSettings.g_iSettingsHighlightCurrentScope) Then
+                    RemoveHighlighting(iType)
+                    Return
+                End If
+
+                Dim mFrontColor As Color
+                Dim mBackColor As Color
+
+                Dim mStrategy = DirectCast(g_mSourceTabPage.m_TextEditor.Document.HighlightingStrategy, DefaultHighlightingStrategy)
+
+                Select Case (iType)
+                    Case ENUM_MARKER_TYPE.STATIC_MARKER
+                        While True
+                            For Each mItem In mStrategy.EnvironmentColors
+                                If (mItem.Key <> "StaticMarker") Then
+                                    Continue For
+                                End If
+
+                                mFrontColor = mItem.Value.Color
+                                mBackColor = mItem.Value.BackgroundColor
+                                Exit While
+                            Next
+
+                            RemoveHighlighting(iType)
+                            Return
+                        End While
+                    Case Else
+                        While True
+                            For Each mItem In mStrategy.EnvironmentColors
+                                If (mItem.Key <> "CaretMarker") Then
+                                    Continue For
+                                End If
+
+                                mFrontColor = mItem.Value.Color
+                                mBackColor = mItem.Value.BackgroundColor
+                                Exit While
+                            Next
+
+                            RemoveHighlighting(iType)
+                            Return
+                        End While
+                End Select
+
+                Dim mMarkers As New List(Of IMarkers)
+
+                For Each mPoint As Point In mWordLocations.ToArray
+                    Select Case (iType)
+                        Case ENUM_MARKER_TYPE.STATIC_MARKER
+                            mMarkers.Add(New IMarkers.ClassStaticMarker(mPoint.X, mPoint.Y, TextMarkerType.SolidBlock, mBackColor, mFrontColor))
+                        Case Else
+                            mMarkers.Add(New IMarkers.ClassCaretMarker(mPoint.X, mPoint.Y, TextMarkerType.SolidBlock, mBackColor, mFrontColor))
+                    End Select
+                Next
+
+                If (mMarkers.Count < 1) Then
+                    RemoveHighlighting(iType)
+                    Return
+                End If
+
+                Select Case (iType)
+                    Case ENUM_MARKER_TYPE.STATIC_MARKER
+                        g_mSourceTabPage.m_TextEditor.Document.MarkerStrategy.RemoveAll(Function(x As TextMarker) TypeOf x Is IMarkers.ClassStaticMarker)
+                        g_lTextMarkers.RemoveAll(Function(x As IMarkers) TypeOf x Is IMarkers.ClassStaticMarker)
+
+                    Case Else
+                        g_mSourceTabPage.m_TextEditor.Document.MarkerStrategy.RemoveAll(Function(x As TextMarker) TypeOf x Is IMarkers.ClassCaretMarker)
+                        g_lTextMarkers.RemoveAll(Function(x As IMarkers) TypeOf x Is IMarkers.ClassCaretMarker)
+                End Select
+
+                For Each mItem In mMarkers.ToArray
+                    g_mSourceTabPage.m_TextEditor.Document.MarkerStrategy.AddMarker(DirectCast(mItem, TextMarker))
+                    g_lTextMarkers.Add(mItem)
+                Next
+
+                g_mSourceTabPage.m_TextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.WholeTextArea))
+                g_mSourceTabPage.m_TextEditor.Document.CommitUpdate()
+            End Sub
+
+            Public Sub RemoveHighlighting(iType As ENUM_MARKER_TYPE)
+                If (g_lTextMarkers.Count < 1) Then
+                    Return
+                End If
+
+                Select Case (iType)
+                    Case ENUM_MARKER_TYPE.STATIC_MARKER
+                        g_mSourceTabPage.m_TextEditor.Document.MarkerStrategy.RemoveAll(Function(x As TextMarker) TypeOf x Is IMarkers.ClassStaticMarker)
+                        g_lTextMarkers.RemoveAll(Function(x As IMarkers) TypeOf x Is IMarkers.ClassStaticMarker)
+
+                    Case Else
+                        g_mSourceTabPage.m_TextEditor.Document.MarkerStrategy.RemoveAll(Function(x As TextMarker) TypeOf x Is IMarkers.ClassCaretMarker)
+                        g_lTextMarkers.RemoveAll(Function(x As IMarkers) TypeOf x Is IMarkers.ClassCaretMarker)
+                End Select
+
+                g_mSourceTabPage.m_TextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.WholeTextArea))
+                g_mSourceTabPage.m_TextEditor.Document.CommitUpdate()
+            End Sub
+
+            Public Function FindWordLocations(sWord As String, sText As String, ByRef r_WordLocations As List(Of Point)) As Boolean
+                r_WordLocations = New List(Of Point)
+
+                If (Not Regex.IsMatch(sWord, "^[a-zA-Z0-9_]+$")) Then
+                    Return False
+                End If
+
+                For Each mMatch As Match In Regex.Matches(sText, String.Format("\b{0}\b", Regex.Escape(sWord)), RegexOptions.Multiline)
+                    r_WordLocations.Add(New Point(mMatch.Index, mMatch.Length))
+                Next
+
+                Return (r_WordLocations.Count > 0)
+            End Function
+
+            Interface IMarkers
+                Class ClassStaticMarker
+                    Inherits TextMarker
+                    Implements IMarkers
+
+                    Public Sub New(offset As Integer, length As Integer, textMarkerType As TextMarkerType, color As Color)
+                        MyBase.New(offset, length, textMarkerType, color)
+                    End Sub
+
+                    Public Sub New(offset As Integer, length As Integer, textMarkerType As TextMarkerType, color As Color, foreColor As Color)
+                        MyBase.New(offset, length, textMarkerType, color, foreColor)
+                    End Sub
+                End Class
+
+                Class ClassCaretMarker
+                    Inherits TextMarker
+                    Implements IMarkers
+
+                    Public Sub New(offset As Integer, length As Integer, textMarkerType As TextMarkerType, color As Color)
+                        MyBase.New(offset, length, textMarkerType, color)
+                    End Sub
+
+                    Public Sub New(offset As Integer, length As Integer, textMarkerType As TextMarkerType, color As Color, foreColor As Color)
+                        MyBase.New(offset, length, textMarkerType, color, foreColor)
+                    End Sub
+                End Class
+            End Interface
         End Class
 
         Protected Overrides Sub Dispose(disposing As Boolean)

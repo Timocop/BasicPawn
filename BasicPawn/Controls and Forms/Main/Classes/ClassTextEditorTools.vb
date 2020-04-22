@@ -69,67 +69,6 @@ Public Class ClassTextEditorTools
     End Sub
 
     ''' <summary>
-    ''' Marks a selected word in the text editor
-    ''' </summary>
-    Public Sub MarkSelectedWord()
-        Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
-
-        Dim sLastWord As String = ClassSyntaxTools.g_sHighlightWord
-        ClassSyntaxTools.g_sHighlightWord = ""
-
-        If (mActiveTextEditor.ActiveTextAreaControl.SelectionManager.HasSomethingSelected) Then
-            Dim m_CurrentSelection As ISelection = mActiveTextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection(0)
-
-            If (Regex.IsMatch(m_CurrentSelection.SelectedText, "^[a-zA-Z0-9_]+$")) Then
-                ClassSyntaxTools.g_sHighlightWord = m_CurrentSelection.SelectedText
-            End If
-        Else
-            Dim sWord As String = GetCaretWord(False, False, False)
-
-            If (Not String.IsNullOrEmpty(sWord)) Then
-                ClassSyntaxTools.g_sHighlightWord = sWord
-            End If
-        End If
-
-        If (ClassSyntaxTools.g_sHighlightWord = sLastWord) Then
-            Return
-        End If
-
-        g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.UpdateSyntax(ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE.HIGHLIGHT_WORD)
-        g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.UpdateTextEditorSyntax()
-    End Sub
-
-    ''' <summary>
-    ''' Marks a selected word in the text editor
-    ''' </summary>
-    Public Sub MarkCaretWord()
-        Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
-
-        Dim sLastWord As String = ClassSyntaxTools.g_sCaretWord
-        ClassSyntaxTools.g_sCaretWord = ""
-
-        If (Not mActiveTextEditor.ActiveTextAreaControl.SelectionManager.HasSomethingSelected) Then
-            Dim sWord As String = GetCaretWord(False, False, False)
-
-            If (Not String.IsNullOrEmpty(sWord)) Then
-                ClassSyntaxTools.g_sCaretWord = sWord
-            End If
-        End If
-
-        If (ClassSyntaxTools.g_sCaretWord = sLastWord) Then
-            Return
-        End If
-
-        If (Not String.IsNullOrEmpty(ClassSyntaxTools.g_sCaretWord) AndAlso
-                    Regex.Matches(mActiveTextEditor.Document.TextContent, String.Format("\b{0}\b", Regex.Escape(ClassSyntaxTools.g_sCaretWord)), RegexOptions.Multiline).Count < 2) Then
-            Return
-        End If
-
-        g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.UpdateSyntax(ClassSyntaxTools.ENUM_SYNTAX_UPDATE_TYPE.CARET_WORD)
-        g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.UpdateTextEditorSyntax()
-    End Sub
-
-    ''' <summary>
     ''' Finds all references of a word from current opened source and all include files.
     ''' </summary>
     ''' <param name="sText">Word to search, otherwise if empty or |Nothing| it will get the word under the caret.</param>
@@ -142,7 +81,7 @@ Public Class ClassTextEditorTools
 
     Public Function FindReferences(mTab As ClassTabControl.SourceTabPage, ByRef sText As String, bIgnoreNonCode As Boolean, ByRef mReferences As STRUC_REFERENCE_ITEM()) As ENUM_REFERENCE_ERROR_CODE
         If (String.IsNullOrEmpty(sText)) Then
-            sText = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(False, False, False)
+            sText = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(mTab.m_TextEditor, False, False, False)
         End If
 
         If (String.IsNullOrEmpty(sText)) Then
@@ -219,7 +158,7 @@ Public Class ClassTextEditorTools
 
     Public Function FindDefinition(mTab As ClassTabControl.SourceTabPage, ByRef sText As String, ByRef mDefinitions As STRUC_DEFINITION_ITEM()) As ENUM_DEFINITION_ERROR_CODE
         If (String.IsNullOrEmpty(sText)) Then
-            sText = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(True, True, True)
+            sText = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(mTab.m_TextEditor, True, True, True)
         End If
 
         If (String.IsNullOrEmpty(sText)) Then
@@ -690,23 +629,21 @@ Public Class ClassTextEditorTools
     ''' <param name="bIncludeMethodmaps">If true, includes methodmaps (e.g Methodmap.Name)</param>
     ''' <param name="bIncludeMethodNames">If true, includes method names. Skips arguments. (e.g method().Name -> Method.Name)</param>
     ''' <returns></returns>
-    Public Function GetCaretWord(bIncludeMethodmaps As Boolean, bIncludeMethodNames As Boolean, bIncludeArrayNames As Boolean) As String
-        Dim mActiveTextEditor As TextEditorControlEx = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor
-
-        Dim iOffset As Integer = mActiveTextEditor.ActiveTextAreaControl.TextArea.Caret.Offset
-        Dim iPosition As Integer = mActiveTextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column
-        Dim iLineOffset As Integer = mActiveTextEditor.Document.GetLineSegmentForOffset(iOffset).Offset
-        Dim iLineLen As Integer = mActiveTextEditor.Document.GetLineSegmentForOffset(iOffset).Length
+    Public Function GetCaretWord(mTextEditor As TextEditorControlEx, bIncludeMethodmaps As Boolean, bIncludeMethodNames As Boolean, bIncludeArrayNames As Boolean) As String
+        Dim iOffset As Integer = mTextEditor.ActiveTextAreaControl.TextArea.Caret.Offset
+        Dim iPosition As Integer = mTextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column
+        Dim iLineOffset As Integer = mTextEditor.Document.GetLineSegmentForOffset(iOffset).Offset
+        Dim iLineLen As Integer = mTextEditor.Document.GetLineSegmentForOffset(iOffset).Length
 
         Dim sWordLeft As String = ""
         Dim sWordRight As String = ""
 
         If (bIncludeMethodmaps OrElse bIncludeMethodNames OrElse bIncludeArrayNames) Then
-            Dim bIsMethod As Boolean = Regex.Match(mActiveTextEditor.Document.GetText(iLineOffset, iPosition), "(\))(\.)(\b[a-zA-Z0-9_]+\b){0,1}$").Success
-            Dim bIsArray As Boolean = Regex.Match(mActiveTextEditor.Document.GetText(iLineOffset, iPosition), "(\])(\.)(\b[a-zA-Z0-9_]+\b){0,1}$").Success
+            Dim bIsMethod As Boolean = Regex.Match(mTextEditor.Document.GetText(iLineOffset, iPosition), "(\))(\.)(\b[a-zA-Z0-9_]+\b){0,1}$").Success
+            Dim bIsArray As Boolean = Regex.Match(mTextEditor.Document.GetText(iLineOffset, iPosition), "(\])(\.)(\b[a-zA-Z0-9_]+\b){0,1}$").Success
 
             If ((bIncludeMethodNames AndAlso bIsMethod) OrElse (bIncludeArrayNames AndAlso bIsArray)) Then
-                Dim sSource As String = mActiveTextEditor.Document.GetText(0, iOffset)
+                Dim sSource As String = mTextEditor.Document.GetText(0, iOffset)
                 If (sSource.Length > 0) Then
                     Dim mSourceBuilder As New Text.StringBuilder(sSource.Length)
                     Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
@@ -743,24 +680,24 @@ Public Class ClassTextEditorTools
                     sWordLeft = Regex.Match(sFilteredSource, "((\b[a-zA-Z0-9_]+\b)(\.){0,1}(\b[a-zA-Z0-9_]+\b){0,1})$").Value
                     If (sWordLeft.Contains("."c)) Then
                         'If the left contains already 2 parts of a methodmap, then only get the name on the right side.
-                        sWordRight = Regex.Match(mActiveTextEditor.Document.GetText(iLineOffset + iPosition, iLineLen - iPosition), "^(\b[a-zA-Z0-9_]+\b)").Value
+                        sWordRight = Regex.Match(mTextEditor.Document.GetText(iLineOffset + iPosition, iLineLen - iPosition), "^(\b[a-zA-Z0-9_]+\b)").Value
                     Else
-                        sWordRight = Regex.Match(mActiveTextEditor.Document.GetText(iLineOffset + iPosition, iLineLen - iPosition), "^((\b[a-zA-Z0-9_]+\b){0,1}(\.){0,1}(\b[a-zA-Z0-9_]+\b))").Value
+                        sWordRight = Regex.Match(mTextEditor.Document.GetText(iLineOffset + iPosition, iLineLen - iPosition), "^((\b[a-zA-Z0-9_]+\b){0,1}(\.){0,1}(\b[a-zA-Z0-9_]+\b))").Value
                     End If
                 End If
 
             Else
-                sWordLeft = Regex.Match(mActiveTextEditor.Document.GetText(iLineOffset, iPosition), "((\b[a-zA-Z0-9_]+\b)(\.){0,1}(\b[a-zA-Z0-9_]+\b){0,1})$").Value
+                sWordLeft = Regex.Match(mTextEditor.Document.GetText(iLineOffset, iPosition), "((\b[a-zA-Z0-9_]+\b)(\.){0,1}(\b[a-zA-Z0-9_]+\b){0,1})$").Value
                 If (sWordLeft.Contains("."c)) Then
                     'If the left contains already 2 parts of a methodmap, then only get the name on the right side.
-                    sWordRight = Regex.Match(mActiveTextEditor.Document.GetText(iLineOffset + iPosition, iLineLen - iPosition), "^(\b[a-zA-Z0-9_]+\b)").Value
+                    sWordRight = Regex.Match(mTextEditor.Document.GetText(iLineOffset + iPosition, iLineLen - iPosition), "^(\b[a-zA-Z0-9_]+\b)").Value
                 Else
-                    sWordRight = Regex.Match(mActiveTextEditor.Document.GetText(iLineOffset + iPosition, iLineLen - iPosition), "^((\b[a-zA-Z0-9_]+\b){0,1}(\.){0,1}(\b[a-zA-Z0-9_]+\b))").Value
+                    sWordRight = Regex.Match(mTextEditor.Document.GetText(iLineOffset + iPosition, iLineLen - iPosition), "^((\b[a-zA-Z0-9_]+\b){0,1}(\.){0,1}(\b[a-zA-Z0-9_]+\b))").Value
                 End If
             End If
         Else
-            sWordLeft = Regex.Match(mActiveTextEditor.Document.GetText(iLineOffset, iPosition), "(\b[a-zA-Z0-9_]+\b)$").Value
-            sWordRight = Regex.Match(mActiveTextEditor.Document.GetText(iLineOffset + iPosition, iLineLen - iPosition), "^(\b[a-zA-Z0-9_]+\b)").Value
+            sWordLeft = Regex.Match(mTextEditor.Document.GetText(iLineOffset, iPosition), "(\b[a-zA-Z0-9_]+\b)$").Value
+            sWordRight = Regex.Match(mTextEditor.Document.GetText(iLineOffset + iPosition, iLineLen - iPosition), "^(\b[a-zA-Z0-9_]+\b)").Value
         End If
 
         Return (sWordLeft & sWordRight)
@@ -1904,7 +1841,7 @@ Public Class ClassTextEditorTools
                         highlightItem.sWord = m_CurrentSelection.SelectedText
                     End If
                 Else
-                    Dim sWord As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(False, False, False)
+                    Dim sWord As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(mActiveTextEditor, False, False, False)
 
                     If (Not String.IsNullOrEmpty(sWord)) Then
                         highlightItem.sWord = sWord
