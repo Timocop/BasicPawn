@@ -228,7 +228,7 @@ Public Class ClassBackgroundUpdater
         Dim sWord As String = ""
 
         If (Not ClassThread.ExecEx(Of Boolean)(g_mFormMain, Function() mActiveTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.HasSomethingSelected)) Then
-            sWord = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTextEditorTools.GetCaretWord(mActiveTab.m_TextEditor, False, False, False))
+            sWord = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTextEditorTools.GetCaretWord(mActiveTab, False, False, False))
         End If
 
         Dim mWordLocations As New List(Of Point)
@@ -289,10 +289,10 @@ Public Class ClassBackgroundUpdater
             Return
         End If
 
-        Dim sFunctionName As String = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTextEditorTools.GetCaretWord(mActiveTab.m_TextEditor, True, True, True))
+        Dim sFunctionName As String = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTextEditorTools.GetCaretWord(mActiveTab, True, True, True))
 
         If (ClassThread.ExecEx(Of Integer)(g_mFormMain.g_mUCAutocomplete, Function() g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete(sFunctionName)) < 1) Then
-            sFunctionName = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTextEditorTools.GetCaretWord(mActiveTab.m_TextEditor, False, False, False))
+            sFunctionName = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTextEditorTools.GetCaretWord(mActiveTab, False, False, False))
 
             ClassThread.ExecAsync(g_mFormMain.g_mUCAutocomplete, Sub()
                                                                      g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete(sFunctionName)

@@ -29,7 +29,7 @@ Partial Public Class FormMain
 
             sWord = mSelection.SelectedText
         Else
-            sWord = g_ClassTextEditorTools.GetCaretWord(mActiveTab.m_TextEditor, False, False, False)
+            sWord = g_ClassTextEditorTools.GetCaretWord(mActiveTab, False, False, False)
         End If
 
         Dim mWordLocations As New List(Of Point)

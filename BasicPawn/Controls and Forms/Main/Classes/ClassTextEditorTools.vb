@@ -81,7 +81,7 @@ Public Class ClassTextEditorTools
 
     Public Function FindReferences(mTab As ClassTabControl.SourceTabPage, ByRef sText As String, bIgnoreNonCode As Boolean, ByRef mReferences As STRUC_REFERENCE_ITEM()) As ENUM_REFERENCE_ERROR_CODE
         If (String.IsNullOrEmpty(sText)) Then
-            sText = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(mTab.m_TextEditor, False, False, False)
+            sText = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(mTab, False, False, False)
         End If
 
         If (String.IsNullOrEmpty(sText)) Then
@@ -158,7 +158,7 @@ Public Class ClassTextEditorTools
 
     Public Function FindDefinition(mTab As ClassTabControl.SourceTabPage, ByRef sText As String, ByRef mDefinitions As STRUC_DEFINITION_ITEM()) As ENUM_DEFINITION_ERROR_CODE
         If (String.IsNullOrEmpty(sText)) Then
-            sText = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(mTab.m_TextEditor, True, True, True)
+            sText = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(mTab, True, True, True)
         End If
 
         If (String.IsNullOrEmpty(sText)) Then
@@ -450,9 +450,7 @@ Public Class ClassTextEditorTools
         Return ENUM_DEFINITION_ERROR_CODE.NO_ERROR
     End Function
 
-    Public Sub FormatCode()
-        Dim mTab = g_mFormMain.g_ClassTabControl.m_ActiveTab
-
+    Public Sub FormatCode(mTab As ClassTabControl.SourceTabPage)
         Dim iChangedLines As Integer = 0
 
         Dim lRealSourceLines As New List(Of String)
@@ -518,9 +516,7 @@ Public Class ClassTextEditorTools
         g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("{0} lines of code reindented!", iChangedLines), False, True, True)
     End Sub
 
-    Public Sub FormatCodeTrim()
-        Dim mTab = g_mFormMain.g_ClassTabControl.m_ActiveTab
-
+    Public Sub FormatCodeTrim(mTab As ClassTabControl.SourceTabPage)
         Dim iChangedLines As Integer = 0
 
         Dim lRealSourceLines As New List(Of String)
@@ -629,24 +625,24 @@ Public Class ClassTextEditorTools
     ''' <param name="bIncludeMethodmaps">If true, includes methodmaps (e.g Methodmap.Name)</param>
     ''' <param name="bIncludeMethodNames">If true, includes method names. Skips arguments. (e.g method().Name -> Method.Name)</param>
     ''' <returns></returns>
-    Public Function GetCaretWord(mTextEditor As TextEditorControlEx, bIncludeMethodmaps As Boolean, bIncludeMethodNames As Boolean, bIncludeArrayNames As Boolean) As String
-        Dim iOffset As Integer = mTextEditor.ActiveTextAreaControl.TextArea.Caret.Offset
-        Dim iPosition As Integer = mTextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column
-        Dim iLineOffset As Integer = mTextEditor.Document.GetLineSegmentForOffset(iOffset).Offset
-        Dim iLineLen As Integer = mTextEditor.Document.GetLineSegmentForOffset(iOffset).Length
+    Public Function GetCaretWord(mTab As ClassTabControl.SourceTabPage, bIncludeMethodmaps As Boolean, bIncludeMethodNames As Boolean, bIncludeArrayNames As Boolean) As String
+        Dim iOffset As Integer = mTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Offset
+        Dim iPosition As Integer = mTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column
+        Dim iLineOffset As Integer = mTab.m_TextEditor.Document.GetLineSegmentForOffset(iOffset).Offset
+        Dim iLineLen As Integer = mTab.m_TextEditor.Document.GetLineSegmentForOffset(iOffset).Length
 
         Dim sWordLeft As String = ""
         Dim sWordRight As String = ""
 
         If (bIncludeMethodmaps OrElse bIncludeMethodNames OrElse bIncludeArrayNames) Then
-            Dim bIsMethod As Boolean = Regex.Match(mTextEditor.Document.GetText(iLineOffset, iPosition), "(\))(\.)(\b[a-zA-Z0-9_]+\b){0,1}$").Success
-            Dim bIsArray As Boolean = Regex.Match(mTextEditor.Document.GetText(iLineOffset, iPosition), "(\])(\.)(\b[a-zA-Z0-9_]+\b){0,1}$").Success
+            Dim bIsMethod As Boolean = Regex.Match(mTab.m_TextEditor.Document.GetText(iLineOffset, iPosition), "(\))(\.)(\b[a-zA-Z0-9_]+\b){0,1}$").Success
+            Dim bIsArray As Boolean = Regex.Match(mTab.m_TextEditor.Document.GetText(iLineOffset, iPosition), "(\])(\.)(\b[a-zA-Z0-9_]+\b){0,1}$").Success
 
             If ((bIncludeMethodNames AndAlso bIsMethod) OrElse (bIncludeArrayNames AndAlso bIsArray)) Then
-                Dim sSource As String = mTextEditor.Document.GetText(0, iOffset)
+                Dim sSource As String = mTab.m_TextEditor.Document.GetText(0, iOffset)
                 If (sSource.Length > 0) Then
                     Dim mSourceBuilder As New Text.StringBuilder(sSource.Length)
-                    Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
+                    Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sSource, mTab.m_Language)
                     Dim iLastParenthesisLevel As Integer = mSourceAnalysis.GetParenthesisLevel(sSource.Length - 1, Nothing)
 
                     For i = sSource.Length - 1 To 0 Step -1
@@ -680,24 +676,24 @@ Public Class ClassTextEditorTools
                     sWordLeft = Regex.Match(sFilteredSource, "((\b[a-zA-Z0-9_]+\b)(\.){0,1}(\b[a-zA-Z0-9_]+\b){0,1})$").Value
                     If (sWordLeft.Contains("."c)) Then
                         'If the left contains already 2 parts of a methodmap, then only get the name on the right side.
-                        sWordRight = Regex.Match(mTextEditor.Document.GetText(iLineOffset + iPosition, iLineLen - iPosition), "^(\b[a-zA-Z0-9_]+\b)").Value
+                        sWordRight = Regex.Match(mTab.m_TextEditor.Document.GetText(iLineOffset + iPosition, iLineLen - iPosition), "^(\b[a-zA-Z0-9_]+\b)").Value
                     Else
-                        sWordRight = Regex.Match(mTextEditor.Document.GetText(iLineOffset + iPosition, iLineLen - iPosition), "^((\b[a-zA-Z0-9_]+\b){0,1}(\.){0,1}(\b[a-zA-Z0-9_]+\b))").Value
+                        sWordRight = Regex.Match(mTab.m_TextEditor.Document.GetText(iLineOffset + iPosition, iLineLen - iPosition), "^((\b[a-zA-Z0-9_]+\b){0,1}(\.){0,1}(\b[a-zA-Z0-9_]+\b))").Value
                     End If
                 End If
 
             Else
-                sWordLeft = Regex.Match(mTextEditor.Document.GetText(iLineOffset, iPosition), "((\b[a-zA-Z0-9_]+\b)(\.){0,1}(\b[a-zA-Z0-9_]+\b){0,1})$").Value
+                sWordLeft = Regex.Match(mTab.m_TextEditor.Document.GetText(iLineOffset, iPosition), "((\b[a-zA-Z0-9_]+\b)(\.){0,1}(\b[a-zA-Z0-9_]+\b){0,1})$").Value
                 If (sWordLeft.Contains("."c)) Then
                     'If the left contains already 2 parts of a methodmap, then only get the name on the right side.
-                    sWordRight = Regex.Match(mTextEditor.Document.GetText(iLineOffset + iPosition, iLineLen - iPosition), "^(\b[a-zA-Z0-9_]+\b)").Value
+                    sWordRight = Regex.Match(mTab.m_TextEditor.Document.GetText(iLineOffset + iPosition, iLineLen - iPosition), "^(\b[a-zA-Z0-9_]+\b)").Value
                 Else
-                    sWordRight = Regex.Match(mTextEditor.Document.GetText(iLineOffset + iPosition, iLineLen - iPosition), "^((\b[a-zA-Z0-9_]+\b){0,1}(\.){0,1}(\b[a-zA-Z0-9_]+\b))").Value
+                    sWordRight = Regex.Match(mTab.m_TextEditor.Document.GetText(iLineOffset + iPosition, iLineLen - iPosition), "^((\b[a-zA-Z0-9_]+\b){0,1}(\.){0,1}(\b[a-zA-Z0-9_]+\b))").Value
                 End If
             End If
         Else
-            sWordLeft = Regex.Match(mTextEditor.Document.GetText(iLineOffset, iPosition), "(\b[a-zA-Z0-9_]+\b)$").Value
-            sWordRight = Regex.Match(mTextEditor.Document.GetText(iLineOffset + iPosition, iLineLen - iPosition), "^(\b[a-zA-Z0-9_]+\b)").Value
+            sWordLeft = Regex.Match(mTab.m_TextEditor.Document.GetText(iLineOffset, iPosition), "(\b[a-zA-Z0-9_]+\b)$").Value
+            sWordRight = Regex.Match(mTab.m_TextEditor.Document.GetText(iLineOffset + iPosition, iLineLen - iPosition), "^(\b[a-zA-Z0-9_]+\b)").Value
         End If
 
         Return (sWordLeft & sWordRight)
@@ -1841,7 +1837,7 @@ Public Class ClassTextEditorTools
                         highlightItem.sWord = m_CurrentSelection.SelectedText
                     End If
                 Else
-                    Dim sWord As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(mActiveTextEditor, False, False, False)
+                    Dim sWord As String = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(g_mFormMain.g_ClassTabControl.m_ActiveTab, False, False, False)
 
                     If (Not String.IsNullOrEmpty(sWord)) Then
                         highlightItem.sWord = sWord

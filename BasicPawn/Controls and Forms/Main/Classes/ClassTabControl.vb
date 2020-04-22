@@ -1850,7 +1850,7 @@ Public Class ClassTabControl
 
                     sWord = mSelection.SelectedText
                 Else
-                    sWord = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(mActiveTab.m_TextEditor, False, False, False)
+                    sWord = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(mActiveTab, False, False, False)
                 End If
 
                 Dim mWordLocations As New List(Of Point)

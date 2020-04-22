@@ -28,7 +28,7 @@ Partial Public Class FormMain
 
     Private Sub ToolStripMenuItem_ToolsFormatCodeIndent_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsFormatCodeIndent.Click
         Try
-            g_ClassTextEditorTools.FormatCode()
+            g_ClassTextEditorTools.FormatCode(g_ClassTabControl.m_ActiveTab)
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
@@ -36,7 +36,7 @@ Partial Public Class FormMain
 
     Private Sub ToolStripMenuItem_ToolsFormatCodeTrim_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsFormatCodeTrim.Click
         Try
-            g_ClassTextEditorTools.FormatCodeTrim()
+            g_ClassTextEditorTools.FormatCodeTrim(g_ClassTabControl.m_ActiveTab)
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
