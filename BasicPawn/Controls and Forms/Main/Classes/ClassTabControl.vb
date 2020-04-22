@@ -954,6 +954,7 @@ Public Class ClassTabControl
 
         Public g_ClassFoldings As ClassFoldings
         Public g_ClassLineState As ClassLineState
+        Public g_ClassScopeHighlighting As ClassScopeHighlighting
 
         Public Sub New(f As FormMain)
             g_mFormMain = f
@@ -962,6 +963,7 @@ Public Class ClassTabControl
             g_mIncludesGroup = New STRUC_INCLUDES_GROUP(Me)
             g_ClassFoldings = New ClassFoldings(Me)
             g_ClassLineState = New ClassLineState(Me)
+            g_ClassScopeHighlighting = New ClassScopeHighlighting(Me)
 
             CreateTextEditor()
 
@@ -975,6 +977,7 @@ Public Class ClassTabControl
             g_mIncludesGroup = New STRUC_INCLUDES_GROUP(Me)
             g_ClassFoldings = New ClassFoldings(Me)
             g_ClassLineState = New ClassLineState(Me)
+            g_ClassScopeHighlighting = New ClassScopeHighlighting(Me)
 
             m_Title = sText
 
@@ -990,6 +993,7 @@ Public Class ClassTabControl
             g_mIncludesGroup = New STRUC_INCLUDES_GROUP(Me)
             g_ClassFoldings = New ClassFoldings(Me)
             g_ClassLineState = New ClassLineState(Me)
+            g_ClassScopeHighlighting = New ClassScopeHighlighting(Me)
 
             m_Title = sText
             m_Changed = bChanged
@@ -2150,7 +2154,6 @@ Public Class ClassTabControl
         End Sub
 #End Region
 
-#Region "TextEditor Line States"
         Class ClassLineState
             Private g_mSourceTabPage As SourceTabPage
 
@@ -2358,7 +2361,200 @@ Public Class ClassTabControl
                 g_mSourceTabPage.m_TextEditor.Document.CommitUpdate()
             End Sub
         End Class
-#End Region
+
+        Class ClassScopeHighlighting
+            Private g_mSourceTabPage As SourceTabPage
+
+            Private g_mTextMarker As TextMarker = Nothing
+
+            Public Sub New(mSourceTabPage As SourceTabPage)
+                g_mSourceTabPage = mSourceTabPage
+            End Sub
+
+            Public Sub UpdateHighlighting()
+                If (Not ClassSettings.g_iSettingsHighlightCurrentScope) Then
+                    RemoveHightlighting()
+                    Return
+                End If
+
+                Dim sText As String = g_mSourceTabPage.m_TextEditor.Document.TextContent
+                Dim iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = g_mSourceTabPage.m_Language
+                Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sText, iLanguage)
+
+                Dim mOldTextMarker = g_mTextMarker
+                Dim iCaretOffset = g_mSourceTabPage.m_TextEditor.ActiveTextAreaControl.Caret.Offset
+
+                Dim mScopeLocation As Point
+                If (Not FindCaretScope(mSourceAnalysis, iCaretOffset, True, mScopeLocation)) Then
+                    RemoveHightlighting()
+                    Return
+                End If
+
+                UpdateHighlighting(mScopeLocation)
+            End Sub
+
+            Public Sub UpdateHighlighting(mScopeLocation As Point)
+                If (Not ClassSettings.g_iSettingsHighlightCurrentScope) Then
+                    RemoveHightlighting()
+                    Return
+                End If
+
+                Dim mOldTextMarker = g_mTextMarker
+                Dim mColor = g_mSourceTabPage.m_TextEditor.Document.HighlightingStrategy.GetColorFor("SpaceMarkers").Color
+
+                If (g_mTextMarker Is Nothing) Then
+                    g_mTextMarker = New TextMarker(mScopeLocation.X, mScopeLocation.Y, TextMarkerType.SolidBlock, mColor)
+                Else
+                    Dim mOldLocation = New Point(g_mTextMarker.Offset, g_mTextMarker.Offset + g_mTextMarker.Length)
+
+                    If (mScopeLocation.X <> mOldLocation.X OrElse mScopeLocation.Y <> mOldLocation.Y OrElse g_mTextMarker.Color <> mColor) Then
+                        g_mTextMarker = New TextMarker(mScopeLocation.X, mScopeLocation.Y, TextMarkerType.SolidBlock, mColor)
+                    End If
+                End If
+
+                If (g_mTextMarker Is Nothing) Then
+                    Return
+                End If
+
+                g_mSourceTabPage.m_TextEditor.Document.MarkerStrategy.RemoveAll(Function(x As TextMarker) x Is mOldTextMarker)
+                g_mSourceTabPage.m_TextEditor.Document.MarkerStrategy.InsertMarker(0, g_mTextMarker) 'Make it super low priority so others can render ontop
+
+                g_mSourceTabPage.m_TextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.WholeTextArea))
+                g_mSourceTabPage.m_TextEditor.Document.CommitUpdate()
+            End Sub
+
+            Public Sub RemoveHightlighting()
+                If (g_mTextMarker Is Nothing) Then
+                    Return
+                End If
+
+                g_mSourceTabPage.m_TextEditor.Document.MarkerStrategy.RemoveAll(Function(x As TextMarker) x Is g_mTextMarker)
+                g_mTextMarker = Nothing
+
+                g_mSourceTabPage.m_TextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.WholeTextArea))
+                g_mSourceTabPage.m_TextEditor.Document.CommitUpdate()
+            End Sub
+
+            Public Function FindCaretScope(mSourceAnalysis As ClassSyntaxTools.ClassSyntaxSourceAnalysis, iCaretOffset As Integer, bCaretAfter As Boolean, ByRef r_ScopeLocation As Point) As Boolean
+                r_ScopeLocation = Nothing
+                iCaretOffset = If(bCaretAfter, iCaretOffset - 1, iCaretOffset)
+
+                Dim iSuccess As Integer = 0
+                Dim iStartScope As Integer = 0
+                Dim iEndScope As Integer = 0
+
+                Dim iType As Integer = -1
+
+                If (Not mSourceAnalysis.m_InRange(iCaretOffset) OrElse mSourceAnalysis.m_InNonCode(iCaretOffset)) Then
+                    Return False
+                End If
+
+                Select Case (mSourceAnalysis.GetChar(iCaretOffset))
+                    Case "{"c, "}"c
+                        iType = 0
+
+                    Case "("c, ")"c
+                        iType = 1
+
+                    Case "["c, "]"c
+                        iType = 2
+
+                    Case Else
+                        Return False
+                End Select
+
+                If (True) Then
+                    Dim iStartLevel As Integer
+                    Select Case (iType)
+                        Case 0
+                            iStartLevel = mSourceAnalysis.GetBraceLevel(iCaretOffset, Nothing)
+                        Case 1
+                            iStartLevel = mSourceAnalysis.GetParenthesisLevel(iCaretOffset, Nothing)
+                        Case 2
+                            iStartLevel = mSourceAnalysis.GetBracketLevel(iCaretOffset, Nothing)
+                        Case Else
+                            Return False
+                    End Select
+
+                    If (iStartLevel = 0) Then
+                        Return False
+                    End If
+
+                    For i = iCaretOffset To 0 Step -1
+                        If (mSourceAnalysis.m_InNonCode(i)) Then
+                            Continue For
+                        End If
+
+                        Dim iCurrentLevel As Integer
+                        Select Case (iType)
+                            Case 0
+                                iCurrentLevel = mSourceAnalysis.GetBraceLevel(i, Nothing)
+                            Case 1
+                                iCurrentLevel = mSourceAnalysis.GetParenthesisLevel(i, Nothing)
+                            Case 2
+                                iCurrentLevel = mSourceAnalysis.GetBracketLevel(i, Nothing)
+                            Case Else
+                                Return False
+                        End Select
+
+                        If (iCurrentLevel = iStartLevel - 1) Then
+                            iStartScope = (i + 1)
+                            iSuccess += 1
+                            Exit For
+                        End If
+                    Next
+                End If
+
+                If (True) Then
+                    Dim iEndLevel As Integer
+                    Select Case (iType)
+                        Case 0
+                            iEndLevel = mSourceAnalysis.GetBraceLevel(iCaretOffset, Nothing)
+                        Case 1
+                            iEndLevel = mSourceAnalysis.GetParenthesisLevel(iCaretOffset, Nothing)
+                        Case 2
+                            iEndLevel = mSourceAnalysis.GetBracketLevel(iCaretOffset, Nothing)
+                        Case Else
+                            Return False
+                    End Select
+
+                    If (iEndLevel = 0) Then
+                        Return False
+                    End If
+
+                    For i = iCaretOffset To mSourceAnalysis.m_MaxLength 'Go over max length by 1
+                        If (mSourceAnalysis.m_InNonCode(i)) Then
+                            Continue For
+                        End If
+
+                        Dim iCurrentLevel As Integer
+                        Select Case (iType)
+                            Case 0
+                                iCurrentLevel = mSourceAnalysis.GetBraceLevel(i, Nothing)
+                            Case 1
+                                iCurrentLevel = mSourceAnalysis.GetParenthesisLevel(i, Nothing)
+                            Case 2
+                                iCurrentLevel = mSourceAnalysis.GetBracketLevel(i, Nothing)
+                            Case Else
+                                Return False
+                        End Select
+
+                        If (iCurrentLevel = iEndLevel - 1) Then
+                            iEndScope = i
+                            iSuccess += 1
+                            Exit For
+                        End If
+                    Next
+                End If
+
+                If (iSuccess = 2) Then
+                    r_ScopeLocation = New Point(iStartScope, Math.Min(iEndScope - iStartScope, mSourceAnalysis.m_MaxLength - 1))
+                    Return True
+                Else
+                    Return False
+                End If
+            End Function
+        End Class
 
         Protected Overrides Sub Dispose(disposing As Boolean)
             Try

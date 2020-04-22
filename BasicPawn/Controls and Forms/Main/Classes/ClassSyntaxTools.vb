@@ -508,6 +508,10 @@ Public Class ClassSyntaxTools
             Return g_sCacheText
         End Function
 
+        Public Function GetChar(iIndex As Integer) As Char
+            Return g_sCacheText(iIndex)
+        End Function
+
         Public Function GetIndexFromLine(iLine As Integer) As Integer
             If (iLine = 0) Then
                 Return 0

@@ -20,11 +20,13 @@ Partial Public Class FormSettings
         CheckBox_DoubleClickMark.Checked = ClassSettings.g_iSettingsDoubleClickMark
         CheckBox_AutoMark.Checked = ClassSettings.g_iSettingsAutoMark
         CheckBox_PublicAsDefineColor.Checked = ClassSettings.g_iSettingsPublicAsDefineColor
+        CheckBox_HighlightScope.Checked = ClassSettings.g_iSettingsHighlightCurrentScope
     End Sub
 
     Private Sub Apply_SyntaxHighlighting()
         ClassSettings.g_iSettingsDoubleClickMark = CheckBox_DoubleClickMark.Checked
         ClassSettings.g_iSettingsAutoMark = CheckBox_AutoMark.Checked
         ClassSettings.g_iSettingsPublicAsDefineColor = CheckBox_PublicAsDefineColor.Checked
+        ClassSettings.g_iSettingsHighlightCurrentScope = CheckBox_HighlightScope.Checked
     End Sub
 End Class

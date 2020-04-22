@@ -225,6 +225,7 @@ Partial Class FormSettings
         Me.TableLayoutPanel3 = New System.Windows.Forms.TableLayoutPanel()
         Me.ClassPictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
         Me.Label17 = New System.Windows.Forms.Label()
+        Me.CheckBox_HighlightScope = New System.Windows.Forms.CheckBox()
         Me.ContextMenuStrip_Plugins.SuspendLayout()
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Settings.SuspendLayout()
@@ -986,14 +987,15 @@ Partial Class FormSettings
         '
         'GroupBox22
         '
+        Me.GroupBox22.Controls.Add(Me.CheckBox_HighlightScope)
         Me.GroupBox22.Controls.Add(Me.CheckBox_PublicAsDefineColor)
         Me.GroupBox22.Dock = System.Windows.Forms.DockStyle.Top
         Me.GroupBox22.Location = New System.Drawing.Point(6, 81)
         Me.GroupBox22.Name = "GroupBox22"
-        Me.GroupBox22.Size = New System.Drawing.Size(740, 56)
+        Me.GroupBox22.Size = New System.Drawing.Size(740, 81)
         Me.GroupBox22.TabIndex = 19
         Me.GroupBox22.TabStop = False
-        Me.GroupBox22.Text = "Highlighting"
+        Me.GroupBox22.Text = "General Highlighting"
         '
         'CheckBox_PublicAsDefineColor
         '
@@ -1002,9 +1004,9 @@ Partial Class FormSettings
         Me.CheckBox_PublicAsDefineColor.Location = New System.Drawing.Point(9, 21)
         Me.CheckBox_PublicAsDefineColor.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
         Me.CheckBox_PublicAsDefineColor.Name = "CheckBox_PublicAsDefineColor"
-        Me.CheckBox_PublicAsDefineColor.Size = New System.Drawing.Size(232, 18)
+        Me.CheckBox_PublicAsDefineColor.Size = New System.Drawing.Size(174, 18)
         Me.CheckBox_PublicAsDefineColor.TabIndex = 18
-        Me.CheckBox_PublicAsDefineColor.Text = "Additional public variable highlighting"
+        Me.CheckBox_PublicAsDefineColor.Text = "Public variable highlighting"
         Me.CheckBox_PublicAsDefineColor.UseVisualStyleBackColor = True
         '
         'GroupBox13
@@ -2558,6 +2560,18 @@ Partial Class FormSettings
         Me.Label17.Text = "Loaded BasicPawn plugins are able to read stored database entries. Make sure all " &
     "installed plugins are from a trustworthy publisher to prevent theft."
         '
+        'CheckBox_HighlightScope
+        '
+        Me.CheckBox_HighlightScope.AutoSize = True
+        Me.CheckBox_HighlightScope.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_HighlightScope.Location = New System.Drawing.Point(9, 45)
+        Me.CheckBox_HighlightScope.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_HighlightScope.Name = "CheckBox_HighlightScope"
+        Me.CheckBox_HighlightScope.Size = New System.Drawing.Size(172, 18)
+        Me.CheckBox_HighlightScope.TabIndex = 19
+        Me.CheckBox_HighlightScope.Text = "Current scope highlighting"
+        Me.CheckBox_HighlightScope.UseVisualStyleBackColor = True
+        '
         'FormSettings
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -2858,4 +2872,5 @@ Partial Class FormSettings
     Friend WithEvents Label13 As Label
     Friend WithEvents NumericUpDown_MaxParseCache As NumericUpDown
     Friend WithEvents Label33 As Label
+    Friend WithEvents CheckBox_HighlightScope As CheckBox
 End Class

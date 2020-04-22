@@ -123,6 +123,7 @@ Public Class FormSettings
 
     Public Sub ApplySettings()
         g_mFormMain.UpdateFormConfigText()
+        g_mFormMain.g_ClassSyntaxTools.UpdateFormColors()
 
         g_mFormMain.g_ClassSyntaxParser.StartUpdateSchedule(ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS.ALL, "", ClassSyntaxParser.ENUM_PARSE_OPTIONS_FLAGS.FORCE_UPDATE)
         For j = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1
@@ -143,6 +144,10 @@ Public Class FormSettings
             g_mFormMain.g_ClassTabControl.m_Tab(j).g_ClassLineState.LimitStates()
         Next
 
-        g_mFormMain.g_ClassSyntaxTools.UpdateFormColors()
+        For j = 0 To g_mFormMain.g_ClassTabControl.m_TabsCount - 1
+            g_mFormMain.g_ClassTabControl.m_Tab(j).g_ClassScopeHighlighting.RemoveHightlighting()
+            g_mFormMain.g_ClassTabControl.m_Tab(j).g_ClassScopeHighlighting.UpdateHighlighting()
+        Next
+
     End Sub
 End Class

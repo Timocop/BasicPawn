@@ -66,6 +66,7 @@ Public Class ClassBackgroundUpdater
         Static mTextMinimapDelay As New TimeSpan(0, 0, 1)
         Static mTextMinimapRefreshDelay As New TimeSpan(0, 0, 10)
         Static mMarkCaretWordDelay As New TimeSpan(0, 0, 1)
+        Static mScopeHighlightDelay As New TimeSpan(0, 0, 1)
 
         While True
             Dim dLastRequestSyntaxParseDelay As Date = (Now + mRequestSyntaxParseDelay)
@@ -76,6 +77,7 @@ Public Class ClassBackgroundUpdater
             Dim dLastTextMinimapDelay As Date = (Now + mTextMinimapDelay)
             Dim dLastTextMinimapRefreshDelay As Date = (Now + mTextMinimapRefreshDelay)
             Dim dLastMarkCaretWordDelay As Date = (Now + mMarkCaretWordDelay)
+            Dim dScopeHighlightDelay As Date = (Now + mScopeHighlightDelay)
 
             g_bResetThreadDelays = False
 
@@ -89,14 +91,15 @@ Public Class ClassBackgroundUpdater
                 Try
                     Dim bIsFormMainFocused As Boolean = (Not ClassSettings.g_iSettingsOnlyUpdateSyntaxWhenFocused OrElse ClassThread.ExecEx(Of Boolean)(g_mFormMain, Function() Form.ActiveForm IsNot Nothing))
 
-                    Dim iCaretOffset As Integer = ClassThread.ExecEx(Of Integer)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Offset)
-                    Dim mCaretPos As Point = ClassThread.ExecEx(Of Point)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.ScreenPosition)
+                    Dim mActiveTab As ClassTabControl.SourceTabPage = ClassThread.ExecEx(Of ClassTabControl.SourceTabPage)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab)
+                    Dim iCaretOffset As Integer = ClassThread.ExecEx(Of Integer)(g_mFormMain, Function() mActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Offset)
+                    Dim mCaretPos As Point = ClassThread.ExecEx(Of Point)(g_mFormMain, Function() mActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.ScreenPosition)
 
                     'Update Autocomplete
                     If (dLastRequestSyntaxParseDelay < Now AndAlso bIsFormMainFocused AndAlso g_mFormMain.g_ClassSyntaxParser.m_UpdateRequests.Count > 0) Then
                         dLastRequestSyntaxParseDelay = (Now + mRequestSyntaxParseDelay)
 
-                        Dim sActiveTabIdentifier As String = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Identifier)
+                        Dim sActiveTabIdentifier As String = ClassThread.ExecEx(Of String)(g_mFormMain, Function() mActiveTab.m_Identifier)
                         Dim sRequestedTabIdentifier As String = g_mFormMain.g_ClassSyntaxParser.m_UpdateRequests(0).sTabIdentifier
 
                         'Active tabs have higher priority to update
@@ -139,7 +142,7 @@ Public Class ClassBackgroundUpdater
                         dLastFoldingUpdateDelay = (Now + mFoldingUpdateDelay)
 
                         ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                               g_mFormMain.g_ClassTabControl.m_ActiveTab.UpdateFoldings()
+                                                               mActiveTab.UpdateFoldings()
                                                            End Sub)
                     End If
 
@@ -168,7 +171,7 @@ Public Class ClassBackgroundUpdater
                     If (iLastAutoupdateCaretOffset <> iCaretOffset) Then
                         iLastAutoupdateCaretOffset = iCaretOffset
 
-                        UpdateAutocomplete(iCaretOffset)
+                        UpdateAutocomplete(mActiveTab, iCaretOffset)
                     End If
 
                     'Update IntelliSense 
@@ -176,7 +179,7 @@ Public Class ClassBackgroundUpdater
                     If (iLastIntelliSenseCaretOffset <> iCaretOffset) Then
                         iLastIntelliSenseCaretOffset = iCaretOffset
 
-                        UpdateIntelliSense(iCaretOffset)
+                        UpdateIntelliSense(mActiveTab, iCaretOffset)
                     End If
 
                     'Hide Autocomplete & IntelliSense Tooltips when scrolling 
@@ -202,20 +205,47 @@ Public Class ClassBackgroundUpdater
                         End If
                     End If
 
+                    'Update scope highlighter
+                    Static iLastScopeHighlightCarretOffset As Integer = -1
+                    If (dScopeHighlightDelay < Now AndAlso iLastScopeHighlightCarretOffset <> iCaretOffset) Then
+                        iLastScopeHighlightCarretOffset = iCaretOffset
+                        dScopeHighlightDelay = (Now + mScopeHighlightDelay)
+
+                        UpdateScopeHighlighting(mActiveTab, iCaretOffset)
+                    End If
+
                     RaiseEvent OnSyntaxUpdate(bIsFormMainFocused, iCaretOffset, mCaretPos)
                 Catch ex As Threading.ThreadAbortException
                     Throw
                 Catch ex As Exception
-                    ClassExceptionLog.WriteToLogMessageBox(ex)
+                    ClassExceptionLog.WriteToLog(ex)
                     Threading.Thread.Sleep(5000)
                 End Try
             End While
         End While
     End Sub
 
-    Private Sub UpdateAutocomplete(iCaretOffset As Integer)
-        Dim sTextContent As String = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent)
-        Dim iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = ClassThread.ExecEx(Of ClassSyntaxTools.ENUM_LANGUAGE_TYPE)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
+    Private Sub UpdateScopeHighlighting(mActiveTab As ClassTabControl.SourceTabPage, iCaretOffset As Integer)
+        Dim sTextContent As String = mActiveTab.m_TextEditor.Document.TextContent
+        Dim iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = mActiveTab.m_Language
+        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sTextContent, iLanguage)
+
+        Dim mScopeLocation As Point
+        If (Not mActiveTab.g_ClassScopeHighlighting.FindCaretScope(mSourceAnalysis, iCaretOffset, True, mScopeLocation)) Then
+            ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                   mActiveTab.g_ClassScopeHighlighting.RemoveHightlighting()
+                                               End Sub)
+            Return
+        End If
+
+        ClassThread.ExecAsync(g_mFormMain, Sub()
+                                               mActiveTab.g_ClassScopeHighlighting.UpdateHighlighting(mScopeLocation)
+                                           End Sub)
+    End Sub
+
+    Private Sub UpdateAutocomplete(mActiveTab As ClassTabControl.SourceTabPage, iCaretOffset As Integer)
+        Dim sTextContent As String = mActiveTab.m_TextEditor.Document.TextContent
+        Dim iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = mActiveTab.m_Language
         Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sTextContent, iLanguage)
 
         iCaretOffset = Math.Min(iCaretOffset, sTextContent.Length - 1)
@@ -255,9 +285,9 @@ Public Class ClassBackgroundUpdater
                                                              End Sub)
     End Sub
 
-    Private Sub UpdateIntelliSense(iCaretOffset As Integer)
-        Dim sTextContent As String = ClassThread.ExecEx(Of String)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent)
-        Dim iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = ClassThread.ExecEx(Of ClassSyntaxTools.ENUM_LANGUAGE_TYPE)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
+    Private Sub UpdateIntelliSense(mActiveTab As ClassTabControl.SourceTabPage, iCaretOffset As Integer)
+        Dim sTextContent As String = mActiveTab.m_TextEditor.Document.TextContent
+        Dim iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = mActiveTab.m_Language
         Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sTextContent, iLanguage)
 
         iCaretOffset = Math.Min(iCaretOffset, sTextContent.Length - 1)
