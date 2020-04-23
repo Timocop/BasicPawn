@@ -16,6 +16,8 @@
 
 
 
+Imports ICSharpCode.TextEditor
+
 Public Class FormDebugger
     Public g_mFormMain As FormMain
 
@@ -244,12 +246,22 @@ Public Class FormDebugger
 
                 mFormProgress.m_Progress = 60
 
+                If (True) Then
+                    Dim iCaretLine = TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.Caret.Line
+                    Dim iCaretColumn = TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.Caret.Column
 
-                TextEditorControlEx_DebuggerSource.Document.TextContent = sPreSource
-                RichTextBox_DisasmSource.Text = sAsmSource
+                    TextEditorControlEx_DebuggerSource.Document.TextContent = sPreSource
+                    RichTextBox_DisasmSource.Text = sAsmSource
+
+                    'Restore old care position
+                    Dim mCaretPos = TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.Caret.ValidatePosition(New TextLocation(iCaretColumn, iCaretLine))
+                    TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.Caret.Position = mCaretPos
+                    TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.Caret.UpdateCaretPosition()
+
+                    TextEditorControlEx_DebuggerSource.ActiveTextAreaControl.CenterViewOn(mCaretPos.Line, 10)
+                End If
 
                 TextEditorControlEx_DebuggerSource.InvalidateTextArea()
-
                 RichTextBox_DisasmSource.Invalidate()
 
                 g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.UpdateTextEditorSyntax()
