@@ -155,7 +155,7 @@ Public Class FormReportDetails
                     Dim sTabPath As String = mFormMain.g_ClassTabControl.m_Tab(i).m_File.Replace("/"c, "\"c)
 
                     If (sTabPath.ToLower = sFile.ToLower OrElse (bGuessTab AndAlso sTabPath.ToLower.EndsWith(sFile.ToLower))) Then
-                        Dim iLineNum As Integer = ClassTools.ClassMath.ClampInt(0, mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.Document.TotalNumberOfLines - 1, CInt(sLine) - 1)
+                        Dim iLineNum As Integer = ClassTools.ClassMath.ClampInt(CInt(sLine) - 1, 0, mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.Document.TotalNumberOfLines - 1)
                         Dim iLineLen As Integer = mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.Document.GetLineSegment(iLineNum).Length
 
                         Dim mStartLoc As New TextLocation(0, iLineNum)
