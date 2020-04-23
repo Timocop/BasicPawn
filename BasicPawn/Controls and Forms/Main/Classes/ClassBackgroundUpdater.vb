@@ -187,9 +187,9 @@ Public Class ClassBackgroundUpdater
                     If (iLastToolTipCaretPos <> mCaretPos) Then
                         iLastToolTipCaretPos = mCaretPos
 
-                        ClassThread.ExecAsync(g_mFormMain.g_mUCAutocomplete, Sub()
-                                                                                 g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTipFormLocation()
-                                                                             End Sub)
+                        ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                               g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTipFormLocation()
+                                                           End Sub)
                     End If
 
                     'Update caret word maker
