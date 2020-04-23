@@ -24,11 +24,11 @@ Partial Class FormTipOfTheDay
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormTipOfTheDay))
         Me.Panel_FooterControl = New System.Windows.Forms.Panel()
-        Me.Button_PreviousTip = New System.Windows.Forms.Button()
-        Me.Button_NextTip = New System.Windows.Forms.Button()
         Me.CheckBox_DoNotShow = New System.Windows.Forms.CheckBox()
         Me.Panel_FooterDarkControl = New System.Windows.Forms.Panel()
         Me.TextBox_Tips = New System.Windows.Forms.TextBox()
+        Me.LinkLabel_PreviousTip = New System.Windows.Forms.LinkLabel()
+        Me.LinkLabel_NextTip = New System.Windows.Forms.LinkLabel()
         Me.ClassPictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
         Me.Panel_FooterControl.SuspendLayout()
         CType(Me.ClassPictureBoxQuality1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -37,8 +37,8 @@ Partial Class FormTipOfTheDay
         'Panel_FooterControl
         '
         Me.Panel_FooterControl.BackColor = System.Drawing.SystemColors.Control
-        Me.Panel_FooterControl.Controls.Add(Me.Button_PreviousTip)
-        Me.Panel_FooterControl.Controls.Add(Me.Button_NextTip)
+        Me.Panel_FooterControl.Controls.Add(Me.LinkLabel_PreviousTip)
+        Me.Panel_FooterControl.Controls.Add(Me.LinkLabel_NextTip)
         Me.Panel_FooterControl.Controls.Add(Me.CheckBox_DoNotShow)
         Me.Panel_FooterControl.Controls.Add(Me.Panel_FooterDarkControl)
         Me.Panel_FooterControl.Dock = System.Windows.Forms.DockStyle.Bottom
@@ -47,28 +47,6 @@ Partial Class FormTipOfTheDay
         Me.Panel_FooterControl.Name = "Panel_FooterControl"
         Me.Panel_FooterControl.Size = New System.Drawing.Size(404, 48)
         Me.Panel_FooterControl.TabIndex = 2
-        '
-        'Button_PreviousTip
-        '
-        Me.Button_PreviousTip.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button_PreviousTip.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_PreviousTip.Location = New System.Drawing.Point(214, 13)
-        Me.Button_PreviousTip.Name = "Button_PreviousTip"
-        Me.Button_PreviousTip.Size = New System.Drawing.Size(86, 23)
-        Me.Button_PreviousTip.TabIndex = 3
-        Me.Button_PreviousTip.Text = "Previous Tip"
-        Me.Button_PreviousTip.UseVisualStyleBackColor = True
-        '
-        'Button_NextTip
-        '
-        Me.Button_NextTip.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button_NextTip.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_NextTip.Location = New System.Drawing.Point(306, 13)
-        Me.Button_NextTip.Name = "Button_NextTip"
-        Me.Button_NextTip.Size = New System.Drawing.Size(86, 23)
-        Me.Button_NextTip.TabIndex = 2
-        Me.Button_NextTip.Text = "Next Tip"
-        Me.Button_NextTip.UseVisualStyleBackColor = True
         '
         'CheckBox_DoNotShow
         '
@@ -105,6 +83,31 @@ Partial Class FormTipOfTheDay
         Me.TextBox_Tips.ReadOnly = True
         Me.TextBox_Tips.Size = New System.Drawing.Size(310, 172)
         Me.TextBox_Tips.TabIndex = 3
+        '
+        'LinkLabel_PreviousTip
+        '
+        Me.LinkLabel_PreviousTip.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.LinkLabel_PreviousTip.AutoSize = True
+        Me.LinkLabel_PreviousTip.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
+        Me.LinkLabel_PreviousTip.Location = New System.Drawing.Point(325, 26)
+        Me.LinkLabel_PreviousTip.Name = "LinkLabel_PreviousTip"
+        Me.LinkLabel_PreviousTip.Size = New System.Drawing.Size(67, 13)
+        Me.LinkLabel_PreviousTip.TabIndex = 5
+        Me.LinkLabel_PreviousTip.TabStop = True
+        Me.LinkLabel_PreviousTip.Text = "Previous tip"
+        '
+        'LinkLabel_NextTip
+        '
+        Me.LinkLabel_NextTip.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.LinkLabel_NextTip.AutoSize = True
+        Me.LinkLabel_NextTip.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
+        Me.LinkLabel_NextTip.Location = New System.Drawing.Point(345, 9)
+        Me.LinkLabel_NextTip.Margin = New System.Windows.Forms.Padding(3, 9, 3, 0)
+        Me.LinkLabel_NextTip.Name = "LinkLabel_NextTip"
+        Me.LinkLabel_NextTip.Size = New System.Drawing.Size(47, 13)
+        Me.LinkLabel_NextTip.TabIndex = 6
+        Me.LinkLabel_NextTip.TabStop = True
+        Me.LinkLabel_NextTip.Text = "Next tip"
         '
         'ClassPictureBoxQuality1
         '
@@ -144,9 +147,9 @@ Partial Class FormTipOfTheDay
 
     Friend WithEvents Panel_FooterControl As Panel
     Friend WithEvents Panel_FooterDarkControl As Panel
-    Friend WithEvents Button_PreviousTip As Button
-    Friend WithEvents Button_NextTip As Button
     Friend WithEvents CheckBox_DoNotShow As CheckBox
     Friend WithEvents TextBox_Tips As TextBox
     Friend WithEvents ClassPictureBoxQuality1 As ClassPictureBoxQuality
+    Friend WithEvents LinkLabel_PreviousTip As LinkLabel
+    Friend WithEvents LinkLabel_NextTip As LinkLabel
 End Class

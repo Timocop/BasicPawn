@@ -117,12 +117,12 @@ Public Class FormTipOfTheDay
         TextBox_Tips.Text = g_lTipsList(g_iCurrentTipIndex)
     End Sub
 
-    Private Sub Button_NextTip_Click(sender As Object, e As EventArgs) Handles Button_NextTip.Click
+    Private Sub LinkLabel_PreviousTip_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_PreviousTip.LinkClicked
         If (g_lTipsList.Count < 1) Then
             Return
         End If
 
-        g_iCurrentTipIndex += 1
+        g_iCurrentTipIndex += g_lTipsList.Count - 1
 
         g_iCurrentTipIndex = (g_iCurrentTipIndex Mod g_lTipsList.Count)
         g_iCurrentTipIndex = Math.Max(0, g_iCurrentTipIndex)
@@ -131,12 +131,12 @@ Public Class FormTipOfTheDay
         TextBox_Tips.Text = g_lTipsList(g_iCurrentTipIndex)
     End Sub
 
-    Private Sub Button_PreviousTip_Click(sender As Object, e As EventArgs) Handles Button_PreviousTip.Click
+    Private Sub LinkLabel_NextTip_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_NextTip.LinkClicked
         If (g_lTipsList.Count < 1) Then
             Return
         End If
 
-        g_iCurrentTipIndex += g_lTipsList.Count - 1
+        g_iCurrentTipIndex += 1
 
         g_iCurrentTipIndex = (g_iCurrentTipIndex Mod g_lTipsList.Count)
         g_iCurrentTipIndex = Math.Max(0, g_iCurrentTipIndex)
