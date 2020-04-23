@@ -30,7 +30,7 @@ Public Class ClassPluginController
     Structure STRUC_PLUGIN_ITEM
         Dim sFile As String
         Dim mPluginInformation As IPluginInfoInterface.STRUC_PLUGIN_INFORMATION
-        Dim mPluginInterface As IPluginInterfaceV8
+        Dim mPluginInterface As IPluginInterfaceV9
     End Structure
     Private g_lPlugins As New List(Of STRUC_PLUGIN_ITEM)
 
@@ -53,7 +53,7 @@ Public Class ClassPluginController
         End Get
     End Property
 
-    Public Function GetPluginInfo(mPluginInterface As IPluginInterfaceV8) As IPluginInfoInterface.STRUC_PLUGIN_INFORMATION
+    Public Function GetPluginInfo(mPluginInterface As IPluginInterfaceV9) As IPluginInfoInterface.STRUC_PLUGIN_INFORMATION
         For Each mPlugin In m_Plugins
             If (mPluginInterface IsNot mPlugin.mPluginInterface) Then
                 Continue For
@@ -166,7 +166,7 @@ Public Class ClassPluginController
         Next
     End Sub
 
-    Private Function LoadPlugin(sFile As String) As IPluginInterfaceV8
+    Private Function LoadPlugin(sFile As String) As IPluginInterfaceV9
         Dim mAssembly = Assembly.LoadFile(sFile)
 
         If (mAssembly Is Nothing) Then
@@ -192,11 +192,11 @@ Public Class ClassPluginController
 
             'Find plugin stuff
             For Each mType In GetValidTypes(mAssembly)
-                If (Not GetType(IPluginInterfaceV8).IsAssignableFrom(mType)) Then
+                If (Not GetType(IPluginInterfaceV9).IsAssignableFrom(mType)) Then
                     Continue For
                 End If
 
-                Dim mPlugin = DirectCast(mAssembly.CreateInstance(mType.FullName), IPluginInterfaceV8)
+                Dim mPlugin = DirectCast(mAssembly.CreateInstance(mType.FullName), IPluginInterfaceV9)
 
                 g_lPlugins.Add(New STRUC_PLUGIN_ITEM With {
                     .mPluginInformation = mPluginInfo.m_PluginInformation,
