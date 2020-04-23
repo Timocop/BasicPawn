@@ -23,4 +23,6 @@
 
 11=BasicPawn can help you autocomplete funcenums, functags, typesets and typedefs for callbacks. Just write the funcenum, functag, typeset or typedef type in a global scope. Once you autocomplete, it will replace the type with the complete callback.\n\nFor funcenums and typesets you can choose which one you want to autocomplete in the 'Autocomplete & IntelliSense' window.\n\nThis will not work if you autocomplete them inside brackets.
 
-12=You can use BasicPawns customizable templates so you don't have to always start from scratch. Create new sources using templates at: 'File > New using templates...'
+12=You can use BasicPawns customizable templates so you don't have to always start from scratch. Create new sources using templates at: 'File > New using templates'
+
+13=Use the Object Browser for quick navigation between functions or to explore sources and includes for natives, methods, enums and more.
