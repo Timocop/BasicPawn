@@ -478,7 +478,7 @@ Public Class UCInformationList
             AddHandler g_mUCInformationList.g_mFormMain.g_ClassTabControl.OnTextEditorTabDetailsMove, AddressOf OnTextEditorTabDetailsMove
         End Sub
 
-        Public Sub OnTextEditorTabDetailsAction(mTab As ClassTabControl.SourceTabPage, iDetailsTabIndex As Integer, bIsSpecialAction As Boolean, iKeys As Keys)
+        Public Sub OnTextEditorTabDetailsAction(mTab As ClassTabControl.ClassTab, iDetailsTabIndex As Integer, bIsSpecialAction As Boolean, iKeys As Keys)
             If (iDetailsTabIndex <> g_mUCInformationList.g_mFormMain.TabPage_Information.TabIndex) Then
                 Return
             End If
@@ -490,7 +490,7 @@ Public Class UCInformationList
             End If
         End Sub
 
-        Public Sub OnTextEditorTabDetailsMove(mTab As ClassTabControl.SourceTabPage, iDetailsTabIndex As Integer, iDirection As Integer, iKeys As Keys)
+        Public Sub OnTextEditorTabDetailsMove(mTab As ClassTabControl.ClassTab, iDetailsTabIndex As Integer, iDirection As Integer, iKeys As Keys)
             If (iDetailsTabIndex <> g_mUCInformationList.g_mFormMain.TabPage_Information.TabIndex) Then
                 Return
             End If

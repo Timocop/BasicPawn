@@ -244,7 +244,7 @@ Public Class UCAutocomplete
             If (mDefinition IsNot Nothing) Then
                 'If not, check if file exist and search for tab
                 If (IO.File.Exists(mDefinition.sFile)) Then
-                    Dim mTab As ClassTabControl.SourceTabPage = Nothing
+                    Dim mTab As ClassTabControl.ClassTab = Nothing
 
                     If (Not bForceNewTab) Then
                         mTab = g_mFormMain.g_ClassTabControl.GetTabByFile(mDefinition.sFile)
@@ -624,7 +624,7 @@ Public Class UCAutocomplete
             AddHandler g_mUCAutocomplete.g_mFormMain.g_ClassTabControl.OnTextEditorTabDetailsMove, AddressOf OnTextEditorTabDetailsMove
         End Sub
 
-        Public Sub OnTextEditorTabDetailsAction(mTab As ClassTabControl.SourceTabPage, iDetailsTabIndex As Integer, bIsSpecialAction As Boolean, iKeys As Keys)
+        Public Sub OnTextEditorTabDetailsAction(mTab As ClassTabControl.ClassTab, iDetailsTabIndex As Integer, bIsSpecialAction As Boolean, iKeys As Keys)
             'Check if the tab is actualy selected, if not, return
             If (iDetailsTabIndex <> g_mUCAutocomplete.g_mFormMain.TabPage_Autocomplete.TabIndex) Then
                 Return
@@ -996,7 +996,7 @@ Public Class UCAutocomplete
             End Try
         End Sub
 
-        Public Sub OnTextEditorTabDetailsMove(mTab As ClassTabControl.SourceTabPage, iDetailsTabIndex As Integer, iDirection As Integer, iKeys As Keys)
+        Public Sub OnTextEditorTabDetailsMove(mTab As ClassTabControl.ClassTab, iDetailsTabIndex As Integer, iDirection As Integer, iKeys As Keys)
             'Check if the tab is actualy selected, if not, return
             If (iDetailsTabIndex <> g_mUCAutocomplete.g_mFormMain.TabPage_Autocomplete.TabIndex) Then
                 Return

@@ -62,7 +62,7 @@ Public Class FormMain
     Private g_bIgnoreComboBoxEvent As Boolean = False
     Private g_bIgnoreCheckedChangedEvent As Boolean = False
     Private g_sTabsClipboardIdentifier As String = ""
-    Private g_mTabControlDragTab As ClassTabControl.SourceTabPage = Nothing
+    Private g_mTabControlDragTab As ClassTabControl.ClassTab = Nothing
     Private g_mTabControlDragPoint As Point = Point.Empty
 
     Public Sub New()

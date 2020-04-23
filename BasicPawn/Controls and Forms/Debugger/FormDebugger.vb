@@ -33,7 +33,7 @@ Public Class FormDebugger
     Private g_bPostLoad As Boolean = False
     Private g_bIgnoreCheckedChangedEvent As Boolean = False
 
-    Public Sub New(f As FormMain, mDebugTab As ClassTabControl.SourceTabPage)
+    Public Sub New(f As FormMain, mDebugTab As ClassTabControl.ClassTab)
         Me.New(f, mDebugTab.m_Identifier)
     End Sub
 

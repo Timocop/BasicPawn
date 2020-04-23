@@ -34,11 +34,11 @@ Partial Public Class FormMain
 
         Dim mWordLocations As New List(Of Point)
         If (Not mActiveTab.g_ClassMarkerHighlighting.FindWordLocations(sWord, sTextContent, mWordLocations)) Then
-            mActiveTab.g_ClassMarkerHighlighting.RemoveHighlighting(ClassTabControl.SourceTabPage.ClassMarkerHighlighting.ENUM_MARKER_TYPE.STATIC_MARKER)
+            mActiveTab.g_ClassMarkerHighlighting.RemoveHighlighting(ClassTabControl.ClassTab.ClassMarkerHighlighting.ENUM_MARKER_TYPE.STATIC_MARKER)
             Return
         End If
 
-        mActiveTab.g_ClassMarkerHighlighting.UpdateHighlighting(mWordLocations, ClassTabControl.SourceTabPage.ClassMarkerHighlighting.ENUM_MARKER_TYPE.STATIC_MARKER)
+        mActiveTab.g_ClassMarkerHighlighting.UpdateHighlighting(mWordLocations, ClassTabControl.ClassTab.ClassMarkerHighlighting.ENUM_MARKER_TYPE.STATIC_MARKER)
     End Sub
 
     Private Sub ToolStripMenuItem_ListReferences_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ListReferences.Click

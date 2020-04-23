@@ -42,7 +42,7 @@ Partial Public Class FormMain
                 Return
             End If
 
-            Dim mDragTab = DirectCast(e.Data.GetData(GetType(ClassTabControl.SourceTabPage)), ClassTabControl.SourceTabPage)
+            Dim mDragTab = DirectCast(e.Data.GetData(GetType(ClassTabControl.ClassTab)), ClassTabControl.ClassTab)
             If (mDragTab Is Nothing) Then
                 Return
             End If

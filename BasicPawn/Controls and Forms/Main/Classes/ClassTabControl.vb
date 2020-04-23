@@ -34,25 +34,25 @@ Public Class ClassTabControl
     Private g_iBeginUpdateCount As Integer = 0
     Private g_bBeginRequestSyntaxUpdate As Boolean = False
     Private g_bBeginRequestFullUpdate As Boolean = False
-    Private g_lBeginRequestFullUpdateTabs As New List(Of SourceTabPage)
+    Private g_lBeginRequestFullUpdateTabs As New List(Of ClassTab)
 
     Private Shared g_sFoldingsConfig As String = IO.Path.Combine(Application.StartupPath, "foldings.ini")
 
     Public Const DEFAULT_SELECT_TAB_DELAY = 100
 
-    Public Event OnTabAdded(mTab As SourceTabPage)
-    Public Event OnTabRemoved(mTab As SourceTabPage)
-    Public Event OnTabOpen(mTab As SourceTabPage, sPath As String)
-    Public Event OnTabSaved(mTab As SourceTabPage, sOldPath As String, sNewPath As String)
-    Public Event OnTabFullUpdate(mTab As SourceTabPage())
+    Public Event OnTabAdded(mTab As ClassTab)
+    Public Event OnTabRemoved(mTab As ClassTab)
+    Public Event OnTabOpen(mTab As ClassTab, sPath As String)
+    Public Event OnTabSaved(mTab As ClassTab, sOldPath As String, sNewPath As String)
+    Public Event OnTabFullUpdate(mTab As ClassTab())
 
-    Public Event OnTextEditorTabDetailsAction(mTab As SourceTabPage, iDetailsTabIndex As Integer, bIsSpecialAction As Boolean, iKeys As Keys)
-    Public Sub __OnTextEditorTabDetailsAction(mTab As SourceTabPage, iDetailsTabIndex As Integer, bIsSpecialAction As Boolean, iKeys As Keys)
+    Public Event OnTextEditorTabDetailsAction(mTab As ClassTab, iDetailsTabIndex As Integer, bIsSpecialAction As Boolean, iKeys As Keys)
+    Public Sub __OnTextEditorTabDetailsAction(mTab As ClassTab, iDetailsTabIndex As Integer, bIsSpecialAction As Boolean, iKeys As Keys)
         RaiseEvent OnTextEditorTabDetailsAction(mTab, iDetailsTabIndex, bIsSpecialAction, iKeys)
     End Sub
 
-    Public Event OnTextEditorTabDetailsMove(mTab As SourceTabPage, iDetailsTabIndex As Integer, iDirection As Integer, iKeys As Keys)
-    Public Sub __OnTextEditorTabDetailsMove(mTab As SourceTabPage, iDetailsTabIndex As Integer, iDirection As Integer, iKeys As Keys)
+    Public Event OnTextEditorTabDetailsMove(mTab As ClassTab, iDetailsTabIndex As Integer, iDirection As Integer, iKeys As Keys)
+    Public Sub __OnTextEditorTabDetailsMove(mTab As ClassTab, iDetailsTabIndex As Integer, iDirection As Integer, iKeys As Keys)
         RaiseEvent OnTextEditorTabDetailsMove(mTab, iDetailsTabIndex, iDirection, iKeys)
     End Sub
 
@@ -77,9 +77,9 @@ Public Class ClassTabControl
         AddHandler g_mFormMain.g_ClassSyntaxParser.OnSyntaxParseSuccess, AddressOf OnTabSyntaxParseSuccess
     End Sub
 
-    ReadOnly Property m_ActiveTab As SourceTabPage
+    ReadOnly Property m_ActiveTab As ClassTab
         Get
-            Return TryCast(g_mFormMain.TabControl_SourceTabs.SelectedTab, SourceTabPage)
+            Return TryCast(g_mFormMain.TabControl_SourceTabs.SelectedTab, ClassTab)
         End Get
     End Property
 
@@ -89,9 +89,9 @@ Public Class ClassTabControl
         End Get
     End Property
 
-    ReadOnly Property m_Tab(iIndex As Integer) As SourceTabPage
+    ReadOnly Property m_Tab(iIndex As Integer) As ClassTab
         Get
-            Return TryCast(g_mFormMain.TabControl_SourceTabs.TabPages(iIndex), SourceTabPage)
+            Return TryCast(g_mFormMain.TabControl_SourceTabs.TabPages(iIndex), ClassTab)
         End Get
     End Property
 
@@ -107,8 +107,8 @@ Public Class ClassTabControl
         End Get
     End Property
 
-    Public Function GetAllTabs() As SourceTabPage()
-        Dim lTabs As New List(Of SourceTabPage)
+    Public Function GetAllTabs() As ClassTab()
+        Dim lTabs As New List(Of ClassTab)
 
         For i = 0 To m_TabsCount - 1
             lTabs.Add(m_Tab(i))
@@ -117,7 +117,7 @@ Public Class ClassTabControl
         Return lTabs.ToArray
     End Function
 
-    Public Function AddTab(Optional bSelect As Boolean = False, Optional bShowTemplateWizard As Boolean = False, Optional bChanged As Boolean = False, Optional bDontRecycleTabs As Boolean = False) As SourceTabPage
+    Public Function AddTab(Optional bSelect As Boolean = False, Optional bShowTemplateWizard As Boolean = False, Optional bChanged As Boolean = False, Optional bDontRecycleTabs As Boolean = False) As ClassTab
         Dim sTemplateSource As String = ""
 
         If (bShowTemplateWizard) Then
@@ -131,7 +131,7 @@ Public Class ClassTabControl
         Try
             BeginUpdate()
 
-            Dim mRecycleTab As SourceTabPage = Nothing
+            Dim mRecycleTab As ClassTab = Nothing
 
             'Recycle first unsaved tab
             If (Not bDontRecycleTabs AndAlso m_TabsCount = 1) Then
@@ -140,7 +140,7 @@ Public Class ClassTabControl
                 End If
             End If
 
-            Dim mTabPage As New SourceTabPage(g_mFormMain) With {
+            Dim mTabPage As New ClassTab(g_mFormMain) With {
                 .m_Changed = False
             }
 
@@ -237,7 +237,7 @@ Public Class ClassTabControl
 
             g_bIgnoreOnTabSelected = True
 
-            Dim mFrom As SourceTabPage = m_Tab(iFromIndex)
+            Dim mFrom As ClassTab = m_Tab(iFromIndex)
             g_mFormMain.TabControl_SourceTabs.TabPages.Remove(mFrom)
             g_mFormMain.TabControl_SourceTabs.TabPages.Insert(iToIndex, mFrom)
 
@@ -303,7 +303,7 @@ Public Class ClassTabControl
         g_mTimer.Start()
     End Sub
 
-    Public Function GetTabByIdentifier(sIdentifier As String) As SourceTabPage
+    Public Function GetTabByIdentifier(sIdentifier As String) As ClassTab
         If (String.IsNullOrEmpty(sIdentifier)) Then
             Return Nothing
         End If
@@ -331,7 +331,7 @@ Public Class ClassTabControl
         Return -1
     End Function
 
-    Public Function GetTabByFile(sFile As String) As SourceTabPage
+    Public Function GetTabByFile(sFile As String) As ClassTab
         If (String.IsNullOrEmpty(sFile)) Then
             Return Nothing
         End If
@@ -691,21 +691,21 @@ Public Class ClassTabControl
         End Try
     End Sub
 
-    Public Function GetTabByCursorPoint() As SourceTabPage
+    Public Function GetTabByCursorPoint() As ClassTab
         For i = 0 To g_mFormMain.TabControl_SourceTabs.TabPages.Count - 1
             If (g_mFormMain.TabControl_SourceTabs.GetTabRect(i).Contains(g_mFormMain.TabControl_SourceTabs.PointToClient(Cursor.Position))) Then
-                Return DirectCast(g_mFormMain.TabControl_SourceTabs.TabPages(i), SourceTabPage)
+                Return DirectCast(g_mFormMain.TabControl_SourceTabs.TabPages(i), ClassTab)
             End If
         Next
 
         Return Nothing
     End Function
 
-    Public Function GetTabIncludesByReferences(mTab As SourceTabPage, mTabs As SourceTabPage()) As Boolean
+    Public Function GetTabIncludesByReferences(mTab As ClassTab, mTabs As ClassTab()) As Boolean
         Return GetTabIncludesByReferences(mTab, mTabs, Nothing, Nothing)
     End Function
 
-    Public Function GetTabIncludesByReferences(mTab As SourceTabPage, mTabs As SourceTabPage(), ByRef r_SharedIncludes As List(Of KeyValuePair(Of String, String)), ByRef r_SharedIncludesFull As List(Of KeyValuePair(Of String, String))) As Boolean
+    Public Function GetTabIncludesByReferences(mTab As ClassTab, mTabs As ClassTab(), ByRef r_SharedIncludes As List(Of KeyValuePair(Of String, String)), ByRef r_SharedIncludesFull As List(Of KeyValuePair(Of String, String))) As Boolean
         Dim sTabFile As String = mTab.m_File
 
         Dim bRefIncludeAdded As Boolean = False
@@ -798,11 +798,11 @@ Public Class ClassTabControl
         End Try
     End Sub
 
-    Public Sub FullUpdate(mTab As SourceTabPage)
+    Public Sub FullUpdate(mTab As ClassTab)
         FullUpdate({mTab})
     End Sub
 
-    Public Sub FullUpdate(mTabs As SourceTabPage())
+    Public Sub FullUpdate(mTabs As ClassTab())
         g_mFormMain.g_mUCAutocomplete.UpdateAutocomplete("")
         g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip("")
 
@@ -871,12 +871,12 @@ Public Class ClassTabControl
 
     Private Sub ParseUpdateReference(iUpdateType As ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS, sTabIdentifier As String, iOptionFlags As ClassSyntaxParser.ENUM_PARSE_OPTIONS_FLAGS, iFullParseError As ClassSyntaxParser.ENUM_PARSE_ERROR, iVarParseError As ClassSyntaxParser.ENUM_PARSE_ERROR)
         Try
-            Dim mRequestTab As SourceTabPage = ClassThread.ExecEx(Of SourceTabPage)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.GetTabByIdentifier(sTabIdentifier))
+            Dim mRequestTab As ClassTab = ClassThread.ExecEx(Of ClassTab)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.GetTabByIdentifier(sTabIdentifier))
             If (mRequestTab Is Nothing) Then
                 Return
             End If
 
-            Dim mTabs As SourceTabPage() = ClassThread.ExecEx(Of SourceTabPage())(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.GetAllTabs())
+            Dim mTabs As ClassTab() = ClassThread.ExecEx(Of ClassTab())(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.GetAllTabs())
 
             Dim bHasReferences As Boolean = GetTabIncludesByReferences(mRequestTab, mTabs)
 
@@ -932,7 +932,7 @@ Public Class ClassTabControl
         End Try
     End Sub
 
-    Public Class SourceTabPage
+    Public Class ClassTab
         Inherits TabPage
 
         Private g_mFormMain As FormMain
@@ -1334,12 +1334,12 @@ Public Class ClassTabControl
         End Sub
 
         Public Class STRUC_AUTOCOMPLETE_GROUP
-            Private g_mSourceTabPage As ClassTabControl.SourceTabPage
+            Private g_mSourceTabPage As ClassTabControl.ClassTab
 
             Private g_mAutocompleteItems As New ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
             Private g_mAutocompleteIdentifier As New ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE_IDENTIFIER)
 
-            Public Sub New(mTab As ClassTabControl.SourceTabPage)
+            Public Sub New(mTab As ClassTabControl.ClassTab)
                 g_mSourceTabPage = mTab
             End Sub
 
@@ -1376,7 +1376,7 @@ Public Class ClassTabControl
                 End Set
             End Property
 
-            Public Sub CopyToTab(mTab As SourceTabPage)
+            Public Sub CopyToTab(mTab As ClassTab)
                 mTab.m_AutocompleteGroup.m_AutocompleteItems.DoSync(
                     Sub()
                         mTab.m_AutocompleteGroup.m_AutocompleteItems.Clear()
@@ -1429,12 +1429,12 @@ Public Class ClassTabControl
         End Class
 
         Public Class STRUC_INCLUDES_GROUP
-            Private g_mSourceTabPage As ClassTabControl.SourceTabPage
+            Private g_mSourceTabPage As ClassTabControl.ClassTab
 
             Private g_mIncludeFiles As New ClassSyncList(Of KeyValuePair(Of String, String)) '{sTabIdentifier-Ref, IncludeFile}
             Private g_mIncludeFilesFull As New ClassSyncList(Of KeyValuePair(Of String, String)) '{sTabIdentifier-Ref, IncludeFile}
 
-            Public Sub New(mTab As ClassTabControl.SourceTabPage)
+            Public Sub New(mTab As ClassTabControl.ClassTab)
                 g_mSourceTabPage = mTab
             End Sub
 
@@ -1856,11 +1856,11 @@ Public Class ClassTabControl
 
                 Dim mWordLocations As New List(Of Point)
                 If (Not mActiveTab.g_ClassMarkerHighlighting.FindWordLocations(sWord, sTextContent, mWordLocations)) Then
-                    mActiveTab.g_ClassMarkerHighlighting.RemoveHighlighting(ClassTabControl.SourceTabPage.ClassMarkerHighlighting.ENUM_MARKER_TYPE.STATIC_MARKER)
+                    mActiveTab.g_ClassMarkerHighlighting.RemoveHighlighting(ClassTabControl.ClassTab.ClassMarkerHighlighting.ENUM_MARKER_TYPE.STATIC_MARKER)
                     Return
                 End If
 
-                mActiveTab.g_ClassMarkerHighlighting.UpdateHighlighting(mWordLocations, ClassTabControl.SourceTabPage.ClassMarkerHighlighting.ENUM_MARKER_TYPE.STATIC_MARKER)
+                mActiveTab.g_ClassMarkerHighlighting.UpdateHighlighting(mWordLocations, ClassTabControl.ClassTab.ClassMarkerHighlighting.ENUM_MARKER_TYPE.STATIC_MARKER)
             Catch ex As Exception
                 ClassExceptionLog.WriteToLogMessageBox(ex)
             End Try
@@ -1946,12 +1946,12 @@ Public Class ClassTabControl
 
 #Region "TextEditor Folding"
         Class ClassFoldings
-            Private g_mSourceTabPage As SourceTabPage
+            Private g_mSourceTabPage As ClassTab
 
             Private g_mFoldingStates As New Dictionary(Of Integer, Boolean)
             Private g_bFoldingStatesLoaded As Boolean = False
 
-            Sub New(f As SourceTabPage)
+            Sub New(f As ClassTab)
                 g_mSourceTabPage = f
             End Sub
 
@@ -2179,12 +2179,12 @@ Public Class ClassTabControl
 #End Region
 
         Class ClassLineState
-            Private g_mSourceTabPage As SourceTabPage
+            Private g_mSourceTabPage As ClassTab
 
             Private g_iIgnoreCount As Integer = 0
             Private g_qLineStateHistory As New Queue(Of ClassTextEditorTools.ClassLineStateMark)
 
-            Public Sub New(f As SourceTabPage)
+            Public Sub New(f As ClassTab)
                 g_mSourceTabPage = f
             End Sub
 
@@ -2387,11 +2387,11 @@ Public Class ClassTabControl
         End Class
 
         Class ClassScopeHighlighting
-            Private g_mSourceTabPage As SourceTabPage
+            Private g_mSourceTabPage As ClassTab
 
             Private g_mTextMarker As TextMarker = Nothing
 
-            Public Sub New(mSourceTabPage As SourceTabPage)
+            Public Sub New(mSourceTabPage As ClassTab)
                 g_mSourceTabPage = mSourceTabPage
             End Sub
 
@@ -2581,7 +2581,7 @@ Public Class ClassTabControl
         End Class
 
         Class ClassMarkerHighlighting
-            Private g_mSourceTabPage As SourceTabPage
+            Private g_mSourceTabPage As ClassTab
 
             Private g_lTextMarkers As New List(Of IMarkers)
 
@@ -2590,7 +2590,7 @@ Public Class ClassTabControl
                 CARET_MARKER
             End Enum
 
-            Public Sub New(mSourceTabPage As SourceTabPage)
+            Public Sub New(mSourceTabPage As ClassTab)
                 g_mSourceTabPage = mSourceTabPage
             End Sub
 

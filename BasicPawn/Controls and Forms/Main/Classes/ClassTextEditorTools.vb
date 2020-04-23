@@ -79,7 +79,7 @@ Public Class ClassTextEditorTools
         Return FindReferences(mTab, sText, bIgnoreNonCode, mReferences)
     End Function
 
-    Public Function FindReferences(mTab As ClassTabControl.SourceTabPage, ByRef sText As String, bIgnoreNonCode As Boolean, ByRef mReferences As STRUC_REFERENCE_ITEM()) As ENUM_REFERENCE_ERROR_CODE
+    Public Function FindReferences(mTab As ClassTabControl.ClassTab, ByRef sText As String, bIgnoreNonCode As Boolean, ByRef mReferences As STRUC_REFERENCE_ITEM()) As ENUM_REFERENCE_ERROR_CODE
         If (String.IsNullOrEmpty(sText)) Then
             sText = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(mTab, False, False, False)
         End If
@@ -156,7 +156,7 @@ Public Class ClassTextEditorTools
         Return FindDefinition(mTab, sText, mDefinitions)
     End Function
 
-    Public Function FindDefinition(mTab As ClassTabControl.SourceTabPage, ByRef sText As String, ByRef mDefinitions As STRUC_DEFINITION_ITEM()) As ENUM_DEFINITION_ERROR_CODE
+    Public Function FindDefinition(mTab As ClassTabControl.ClassTab, ByRef sText As String, ByRef mDefinitions As STRUC_DEFINITION_ITEM()) As ENUM_DEFINITION_ERROR_CODE
         If (String.IsNullOrEmpty(sText)) Then
             sText = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(mTab, True, True, True)
         End If
@@ -277,7 +277,7 @@ Public Class ClassTextEditorTools
         Return FindDefinition(mTab, mAutocomplete, mDefinition)
     End Function
 
-    Public Function FindDefinition(mTab As ClassTabControl.SourceTabPage, mAutocomplete As ClassSyntaxTools.STRUC_AUTOCOMPLETE, ByRef mDefinition As STRUC_DEFINITION_ITEM) As ENUM_DEFINITION_ERROR_CODE
+    Public Function FindDefinition(mTab As ClassTabControl.ClassTab, mAutocomplete As ClassSyntaxTools.STRUC_AUTOCOMPLETE, ByRef mDefinition As STRUC_DEFINITION_ITEM) As ENUM_DEFINITION_ERROR_CODE
         If (mAutocomplete Is Nothing) Then
             Return ENUM_DEFINITION_ERROR_CODE.INVALID_INPUT
         End If
@@ -450,7 +450,7 @@ Public Class ClassTextEditorTools
         Return ENUM_DEFINITION_ERROR_CODE.NO_ERROR
     End Function
 
-    Public Sub FormatCode(mTab As ClassTabControl.SourceTabPage)
+    Public Sub FormatCode(mTab As ClassTabControl.ClassTab)
         Dim iChangedLines As Integer = 0
 
         Dim lRealSourceLines As New List(Of String)
@@ -516,7 +516,7 @@ Public Class ClassTextEditorTools
         g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("{0} lines of code reindented!", iChangedLines), False, True, True)
     End Sub
 
-    Public Sub FormatCodeTrim(mTab As ClassTabControl.SourceTabPage)
+    Public Sub FormatCodeTrim(mTab As ClassTabControl.ClassTab)
         Dim iChangedLines As Integer = 0
 
         Dim lRealSourceLines As New List(Of String)
@@ -625,7 +625,7 @@ Public Class ClassTextEditorTools
     ''' <param name="bIncludeMethodmaps">If true, includes methodmaps (e.g Methodmap.Name)</param>
     ''' <param name="bIncludeMethodNames">If true, includes method names. Skips arguments. (e.g method().Name -> Method.Name)</param>
     ''' <returns></returns>
-    Public Function GetCaretWord(mTab As ClassTabControl.SourceTabPage, bIncludeMethodmaps As Boolean, bIncludeMethodNames As Boolean, bIncludeArrayNames As Boolean) As String
+    Public Function GetCaretWord(mTab As ClassTabControl.ClassTab, bIncludeMethodmaps As Boolean, bIncludeMethodNames As Boolean, bIncludeArrayNames As Boolean) As String
         Dim iOffset As Integer = mTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Offset
         Dim iPosition As Integer = mTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column
         Dim iLineOffset As Integer = mTab.m_TextEditor.Document.GetLineSegmentForOffset(iOffset).Offset
@@ -720,7 +720,7 @@ Public Class ClassTextEditorTools
     ''' <param name="sCompilerOutput">The compiler output.</param>
     ''' <param name="iCompilerType"></param>
     ''' <returns>True on success, false otherwise.</returns>
-    Public Function CompileSource(mTab As ClassTabControl.SourceTabPage,
+    Public Function CompileSource(mTab As ClassTabControl.ClassTab,
                                   sFile As String,
                                   sSource As String,
                                   bTesting As Boolean,
@@ -1112,7 +1112,7 @@ Public Class ClassTextEditorTools
     ''' <param name="sCompilerOutput">The compiler output.</param>
     ''' <param name="iCompilerType"></param>
     ''' <returns>New source on success, |Nothing| in otherwise.</returns>
-    Public Function GetCompilerPreProcessCode(mTab As ClassTabControl.SourceTabPage,
+    Public Function GetCompilerPreProcessCode(mTab As ClassTabControl.ClassTab,
                                               sFile As String,
                                               sSource As String,
                                               bCleanUpSourcemodDuplicate As Boolean,
@@ -1447,7 +1447,7 @@ Public Class ClassTextEditorTools
     ''' <param name="sCompilerOutput">The compiler output.</param>
     ''' <param name="iCompilerType"></param>
     ''' <returns>New assembly on success, |Nothing| otherwise.</returns>
-    Public Function GetCompilerAssemblyCode(mTab As ClassTabControl.SourceTabPage,
+    Public Function GetCompilerAssemblyCode(mTab As ClassTabControl.ClassTab,
                                             sFile As String,
                                             sSource As String,
                                             bTesting As Boolean,

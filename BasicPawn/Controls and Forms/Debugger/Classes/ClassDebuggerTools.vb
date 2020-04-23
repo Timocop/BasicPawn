@@ -708,7 +708,7 @@ Public Class ClassDebuggerTools
                 Next
             End Sub
 
-            Public Shared Sub TextEditorInsertAtCaret(mFormMain As FormMain, mTab As ClassTabControl.SourceTabPage, sPointName As String, sMsgPointName As String)
+            Public Shared Sub TextEditorInsertAtCaret(mFormMain As FormMain, mTab As ClassTabControl.ClassTab, sPointName As String, sMsgPointName As String)
                 If (mTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.HasSomethingSelected AndAlso mTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection.Count > 0) Then
                     Dim iOffset As Integer = mTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection(0).Offset
                     Dim iLength As Integer = mTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection(0).Length
@@ -793,7 +793,7 @@ Public Class ClassDebuggerTools
                 mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("A {0} has been added!", sMsgPointName))
             End Sub
 
-            Public Shared Sub TextEditorRemoveAtCaret(mFormMain As FormMain, mTab As ClassTabControl.SourceTabPage, lPointList As List(Of STRUC_DEBUGGER_ITEM), sPointName As String, sMsgPointName As String)
+            Public Shared Sub TextEditorRemoveAtCaret(mFormMain As FormMain, mTab As ClassTabControl.ClassTab, lPointList As List(Of STRUC_DEBUGGER_ITEM), sPointName As String, sMsgPointName As String)
                 Dim sCaretWord As String = mFormMain.g_ClassTextEditorTools.GetCaretWord(mTab, True, False, False)
 
                 If (sCaretWord <> sPointName) Then

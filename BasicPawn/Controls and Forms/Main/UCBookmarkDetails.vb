@@ -271,7 +271,7 @@ Public Class UCBookmarkDetails
         RefreshBookmarkIconBar(g_mFormMain.g_ClassTabControl.m_ActiveTab)
     End Sub
 
-    Public Sub RefreshBookmarkIconBar(mTab As ClassTabControl.SourceTabPage)
+    Public Sub RefreshBookmarkIconBar(mTab As ClassTabControl.ClassTab)
         Dim lExistBookmarks As New List(Of ClassTextEditorTools.ClassBookmarkMark)
         Dim lNewBookmarks As New List(Of ClassBookmarks.STRUC_BOOKMARK)
         Dim lAddBookmarks As New List(Of ClassBookmarks.STRUC_BOOKMARK)
@@ -338,7 +338,7 @@ Public Class UCBookmarkDetails
             End If
         Next
 
-        Dim mTabs As ClassTabControl.SourceTabPage()
+        Dim mTabs As ClassTabControl.ClassTab()
 
         If (m_ShowLocalTabsOnly) Then
             mTabs = {g_mFormMain.g_ClassTabControl.m_ActiveTab}
@@ -420,7 +420,7 @@ Public Class UCBookmarkDetails
                                   End Sub)
     End Sub
 
-    Private Sub OnTabFullUpdate(mTab As ClassTabControl.SourceTabPage())
+    Private Sub OnTabFullUpdate(mTab As ClassTabControl.ClassTab())
         RefreshBookmarkList()
         RefreshBookmarkIconBar()
     End Sub
@@ -645,7 +645,7 @@ Public Class UCBookmarkDetails
             Return g_mBookmarkCache.FindAll(Function(x As STRUC_BOOKMARK) x.sFile.ToLower = sFile.ToLower).ToArray
         End Function
 
-        Public Function GetBookmarks(mTab As ClassTabControl.SourceTabPage) As STRUC_BOOKMARK()
+        Public Function GetBookmarks(mTab As ClassTabControl.ClassTab) As STRUC_BOOKMARK()
             Dim lBookmarks As New List(Of STRUC_BOOKMARK)
 
             For Each mItem In mTab.m_IncludesGroup.m_IncludeFiles.ToArray
@@ -765,7 +765,7 @@ Public Class UCBookmarkDetails
             AddHandler g_mUCBookmarkDetails.g_mFormMain.g_ClassTabControl.OnTextEditorTabDetailsMove, AddressOf OnTextEditorTabDetailsMove
         End Sub
 
-        Public Sub OnTextEditorTabDetailsAction(mTab As ClassTabControl.SourceTabPage, iDetailsTabIndex As Integer, bIsSpecialAction As Boolean, iKeys As Keys)
+        Public Sub OnTextEditorTabDetailsAction(mTab As ClassTabControl.ClassTab, iDetailsTabIndex As Integer, bIsSpecialAction As Boolean, iKeys As Keys)
             If (iDetailsTabIndex <> g_mUCBookmarkDetails.g_mFormMain.TabPage_Bookmarks.TabIndex) Then
                 Return
             End If
@@ -773,7 +773,7 @@ Public Class UCBookmarkDetails
             g_mUCBookmarkDetails.BookmarkGotoSelected()
         End Sub
 
-        Public Sub OnTextEditorTabDetailsMove(mTab As ClassTabControl.SourceTabPage, iDetailsTabIndex As Integer, iDirection As Integer, iKeys As Keys)
+        Public Sub OnTextEditorTabDetailsMove(mTab As ClassTabControl.ClassTab, iDetailsTabIndex As Integer, iDirection As Integer, iKeys As Keys)
             'Check if the tab is actualy selected, if not, return
             If (iDetailsTabIndex <> g_mUCBookmarkDetails.g_mFormMain.TabPage_Bookmarks.TabIndex) Then
                 Return

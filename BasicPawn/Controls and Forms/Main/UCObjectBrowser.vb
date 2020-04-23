@@ -124,7 +124,7 @@ Public Class UCObjectBrowser
                                                       End Sub)
                 End If
 
-                Dim mTab As ClassTabControl.SourceTabPage = ClassThread.ExecEx(Of ClassTabControl.SourceTabPage)(Me, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab)
+                Dim mTab As ClassTabControl.ClassTab = ClassThread.ExecEx(Of ClassTabControl.ClassTab)(Me, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab)
                 If (mTab Is Nothing) Then
                     Return
                 End If

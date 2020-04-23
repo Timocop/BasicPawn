@@ -124,7 +124,7 @@ Public Class ClassSyntaxParser
         Return StartUpdate(iUpdateType, "", ENUM_PARSE_OPTIONS_FLAGS.NOONE)
     End Function
 
-    Public Function StartUpdate(iUpdateType As ENUM_PARSE_TYPE_FLAGS, mTab As ClassTabControl.SourceTabPage, iOptionFlags As ENUM_PARSE_OPTIONS_FLAGS) As Boolean
+    Public Function StartUpdate(iUpdateType As ENUM_PARSE_TYPE_FLAGS, mTab As ClassTabControl.ClassTab, iOptionFlags As ENUM_PARSE_OPTIONS_FLAGS) As Boolean
         Return StartUpdate(iUpdateType, If(mTab IsNot Nothing, mTab.m_Identifier, ""), iOptionFlags)
     End Function
 
@@ -191,7 +191,7 @@ Public Class ClassSyntaxParser
         Return StartUpdateSchedule(iUpdateType, "", ENUM_PARSE_OPTIONS_FLAGS.NOONE)
     End Function
 
-    Public Function StartUpdateSchedule(iUpdateType As ENUM_PARSE_TYPE_FLAGS, mTab As ClassTabControl.SourceTabPage, iOptionFlags As ENUM_PARSE_OPTIONS_FLAGS) As Boolean
+    Public Function StartUpdateSchedule(iUpdateType As ENUM_PARSE_TYPE_FLAGS, mTab As ClassTabControl.ClassTab, iOptionFlags As ENUM_PARSE_OPTIONS_FLAGS) As Boolean
         Return StartUpdateSchedule(iUpdateType, If(mTab IsNot Nothing, mTab.m_Identifier, ""), iOptionFlags)
     End Function
 
@@ -242,7 +242,7 @@ Public Class ClassSyntaxParser
 
     Private Function FullSyntaxParse_Thread(sTabIdentifier As String, iOptionFlags As ENUM_PARSE_OPTIONS_FLAGS) As ENUM_PARSE_ERROR
         Try
-            Dim mRequestTab As ClassTabControl.SourceTabPage = ClassThread.ExecEx(Of ClassTabControl.SourceTabPage)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.GetTabByIdentifier(sTabIdentifier))
+            Dim mRequestTab As ClassTabControl.ClassTab = ClassThread.ExecEx(Of ClassTabControl.ClassTab)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.GetTabByIdentifier(sTabIdentifier))
             If (mRequestTab Is Nothing) Then
                 Return ENUM_PARSE_ERROR.INVALID_TAB
             End If
@@ -252,7 +252,7 @@ Public Class ClassSyntaxParser
             Dim iRequestedLangauge As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = mRequestTab.m_Language
             Dim sRequestedSource As String = ClassThread.ExecEx(Of String)(mRequestTab, Function() mRequestTab.m_TextEditor.Document.TextContent)
             Dim mRequestedConfig As ClassConfigs.STRUC_CONFIG_ITEM = ClassThread.ExecEx(Of ClassConfigs.STRUC_CONFIG_ITEM)(mRequestTab, Function() mRequestTab.m_ActiveConfig)
-            Dim mTabs As ClassTabControl.SourceTabPage() = ClassThread.ExecEx(Of ClassTabControl.SourceTabPage())(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.GetAllTabs())
+            Dim mTabs As ClassTabControl.ClassTab() = ClassThread.ExecEx(Of ClassTabControl.ClassTab())(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.GetAllTabs())
 
             If (String.IsNullOrEmpty(sRequestedSourceFile) OrElse Not IO.File.Exists(sRequestedSourceFile)) Then
                 Return ENUM_PARSE_ERROR.INVALID_FILE
@@ -502,7 +502,7 @@ Public Class ClassSyntaxParser
 
     Private Function VarSyntaxParse_Thread(sTabIdentifier As String, iOptionFlags As ENUM_PARSE_OPTIONS_FLAGS) As ENUM_PARSE_ERROR
         Try
-            Dim mRequestTab As ClassTabControl.SourceTabPage = ClassThread.ExecEx(Of ClassTabControl.SourceTabPage)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.GetTabByIdentifier(sTabIdentifier))
+            Dim mRequestTab As ClassTabControl.ClassTab = ClassThread.ExecEx(Of ClassTabControl.ClassTab)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.GetTabByIdentifier(sTabIdentifier))
             If (mRequestTab Is Nothing) Then
                 Return ENUM_PARSE_ERROR.INVALID_TAB
             End If

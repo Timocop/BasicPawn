@@ -91,7 +91,7 @@ Public Class ClassBackgroundUpdater
                 Try
                     Dim bIsFormMainFocused As Boolean = (Not ClassSettings.g_iSettingsOnlyUpdateSyntaxWhenFocused OrElse ClassThread.ExecEx(Of Boolean)(g_mFormMain, Function() Form.ActiveForm IsNot Nothing))
 
-                    Dim mActiveTab As ClassTabControl.SourceTabPage = ClassThread.ExecEx(Of ClassTabControl.SourceTabPage)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab)
+                    Dim mActiveTab As ClassTabControl.ClassTab = ClassThread.ExecEx(Of ClassTabControl.ClassTab)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab)
                     Dim iCaretOffset As Integer = ClassThread.ExecEx(Of Integer)(g_mFormMain, Function() mActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Offset)
                     Dim mCaretPos As Point = ClassThread.ExecEx(Of Point)(g_mFormMain, Function() mActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.ScreenPosition)
 
@@ -223,7 +223,7 @@ Public Class ClassBackgroundUpdater
         End While
     End Sub
 
-    Private Sub UpdateMarkerHighlighting(mActiveTab As ClassTabControl.SourceTabPage)
+    Private Sub UpdateMarkerHighlighting(mActiveTab As ClassTabControl.ClassTab)
         Dim sTextContent As String = mActiveTab.m_TextEditor.Document.TextContent
         Dim sWord As String = ""
 
@@ -234,17 +234,17 @@ Public Class ClassBackgroundUpdater
         Dim mWordLocations As New List(Of Point)
         If (Not mActiveTab.g_ClassMarkerHighlighting.FindWordLocations(sWord, sTextContent, mWordLocations)) Then
             ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                   mActiveTab.g_ClassMarkerHighlighting.RemoveHighlighting(ClassTabControl.SourceTabPage.ClassMarkerHighlighting.ENUM_MARKER_TYPE.CARET_MARKER)
+                                                   mActiveTab.g_ClassMarkerHighlighting.RemoveHighlighting(ClassTabControl.ClassTab.ClassMarkerHighlighting.ENUM_MARKER_TYPE.CARET_MARKER)
                                                End Sub)
             Return
         End If
 
         ClassThread.ExecAsync(g_mFormMain, Sub()
-                                               mActiveTab.g_ClassMarkerHighlighting.UpdateHighlighting(mWordLocations, ClassTabControl.SourceTabPage.ClassMarkerHighlighting.ENUM_MARKER_TYPE.CARET_MARKER)
+                                               mActiveTab.g_ClassMarkerHighlighting.UpdateHighlighting(mWordLocations, ClassTabControl.ClassTab.ClassMarkerHighlighting.ENUM_MARKER_TYPE.CARET_MARKER)
                                            End Sub)
     End Sub
 
-    Private Sub UpdateScopeHighlighting(mActiveTab As ClassTabControl.SourceTabPage, iCaretOffset As Integer)
+    Private Sub UpdateScopeHighlighting(mActiveTab As ClassTabControl.ClassTab, iCaretOffset As Integer)
         Dim sTextContent As String = mActiveTab.m_TextEditor.Document.TextContent
         Dim iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = mActiveTab.m_Language
         Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sTextContent, iLanguage)
@@ -262,7 +262,7 @@ Public Class ClassBackgroundUpdater
                                            End Sub)
     End Sub
 
-    Private Sub UpdateAutocomplete(mActiveTab As ClassTabControl.SourceTabPage, iCaretOffset As Integer)
+    Private Sub UpdateAutocomplete(mActiveTab As ClassTabControl.ClassTab, iCaretOffset As Integer)
         Dim sTextContent As String = mActiveTab.m_TextEditor.Document.TextContent
         Dim iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = mActiveTab.m_Language
         Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sTextContent, iLanguage)
@@ -304,7 +304,7 @@ Public Class ClassBackgroundUpdater
                                                              End Sub)
     End Sub
 
-    Private Sub UpdateIntelliSense(mActiveTab As ClassTabControl.SourceTabPage, iCaretOffset As Integer)
+    Private Sub UpdateIntelliSense(mActiveTab As ClassTabControl.ClassTab, iCaretOffset As Integer)
         Dim sTextContent As String = mActiveTab.m_TextEditor.Document.TextContent
         Dim iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = mActiveTab.m_Language
         Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sTextContent, iLanguage)

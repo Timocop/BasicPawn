@@ -516,7 +516,7 @@ Public Class FormSearch
         End If
     End Sub
 
-    Private Sub SetTextEditorSelection(mTab As ClassTabControl.SourceTabPage, iOffset As Integer, iLength As Integer, bCaretBeginPos As Boolean)
+    Private Sub SetTextEditorSelection(mTab As ClassTabControl.ClassTab, iOffset As Integer, iLength As Integer, bCaretBeginPos As Boolean)
         If (iOffset + iLength > mTab.m_TextEditor.Document.TextLength) Then
             Return
         End If

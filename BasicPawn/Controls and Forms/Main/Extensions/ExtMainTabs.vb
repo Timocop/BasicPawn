@@ -19,7 +19,7 @@ Imports System.ComponentModel
 
 Partial Public Class FormMain
     Private Sub ContextMenuStrip_Tabs_Opening(sender As Object, e As CancelEventArgs) Handles ContextMenuStrip_Tabs.Opening
-        Dim mTab As ClassTabControl.SourceTabPage = g_ClassTabControl.GetTabByIdentifier(g_sTabsClipboardIdentifier)
+        Dim mTab As ClassTabControl.ClassTab = g_ClassTabControl.GetTabByIdentifier(g_sTabsClipboardIdentifier)
 
         ToolStripMenuItem_Tabs_Insert.Enabled = (mTab IsNot Nothing)
         ToolStripMenuItem_Tabs_Insert.Text = If(mTab IsNot Nothing, String.Format("Insert '{0}'", mTab.m_Title), "Insert")

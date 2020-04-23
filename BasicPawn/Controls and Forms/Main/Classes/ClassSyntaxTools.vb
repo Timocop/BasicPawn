@@ -999,7 +999,7 @@ Public Class ClassSyntaxTools
 
                         Dim iHighlightCustomCount As Integer = 0
 
-                        Dim mActiveTab As ClassTabControl.SourceTabPage = g_ClassSyntaxTools.g_mFormMain.g_ClassTabControl.m_ActiveTab
+                        Dim mActiveTab As ClassTabControl.ClassTab = g_ClassSyntaxTools.g_mFormMain.g_ClassTabControl.m_ActiveTab
                         Dim mActiveAutocomplete As STRUC_AUTOCOMPLETE() = mActiveTab.m_AutocompleteGroup.m_AutocompleteItems.ToArray
                         Dim iLanguage As ENUM_LANGUAGE_TYPE = mActiveTab.m_Language
 
