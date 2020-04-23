@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- <SyntaxVersion>1.2</SyntaxVersion> -->
+<!-- <SyntaxVersion>1.3</SyntaxVersion> -->
 <SyntaxDefinition name="SourcePawn-04e3632f-5472-42c5-929a-c3e0c2b35324" extensions=".sp">
 	<Environment>
 		<Default color="#dcdcdc" bgcolor="#1e1e1e" />
@@ -14,6 +14,9 @@
 		<EOLMarkers color="#333333" />
 		<SpaceMarkers color="#333333" />
 		<TabMarkers color="#333333" />
+		<Custom name="ScopeMarker" color="#333333" />
+		<Custom name="CaretWordMarker" color="#adc0d3" bgcolor="#0e4583" />
+		<Custom name="StaticWordMarker" color="#c0d3ad" bgcolor="#48830e" />
 	</Environment>
 	<Properties>
 		<Property name="LineComment" value="//" />
@@ -39,9 +42,6 @@
 			</Span>
 			<MarkPrevious bold="true" italic="false" color="#dcdcdc">(</MarkPrevious>
 			<MarkFollowing markmarker="true" bold="true" italic="false" color="#9b9b9b">#</MarkFollowing>
-			<KeyWords name="CaretWords" color="#adc0d3" bgcolor="#0e4583">
-				<!-- [DO NOT EDIT | HIGHLIGHT CARET MARKER] -->
-			</KeyWords>
 			<KeyWords name="Punctuation" bold="false" italic="false" color="#b4b4b4">
 				<Key word="?" />
 				<Key word="," />
@@ -202,9 +202,6 @@
 			</KeyWords>
 			<KeyWords name="Enum2Words" bold="true" italic="false" color="#4ec9b0">
 				<!-- [DO NOT EDIT | ENUM2 MARKER] -->
-			</KeyWords>
-			<KeyWords name="HighlightWords" color="#c0d3ad" bgcolor="#48830e">
-				<!-- [DO NOT EDIT | HIGHLIGHT WORD MARKER] -->
 			</KeyWords>
 			<!-- Put as many as you want -->
 			<KeyWords name="HighlightWordsCustom_Green" color="#1e1e1e" bgcolor="#57a64a">
