@@ -24,11 +24,11 @@ Partial Class FormTipOfTheDay
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormTipOfTheDay))
         Me.Panel_FooterControl = New System.Windows.Forms.Panel()
-        Me.CheckBox_DoNotShow = New System.Windows.Forms.CheckBox()
-        Me.Panel_FooterDarkControl = New System.Windows.Forms.Panel()
-        Me.TextBox_Tips = New System.Windows.Forms.TextBox()
         Me.LinkLabel_PreviousTip = New System.Windows.Forms.LinkLabel()
         Me.LinkLabel_NextTip = New System.Windows.Forms.LinkLabel()
+        Me.CheckBox_DoNotShow = New System.Windows.Forms.CheckBox()
+        Me.Panel_FooterDarkControl = New System.Windows.Forms.Panel()
+        Me.RichTextBox_Tips = New System.Windows.Forms.RichTextBox()
         Me.ClassPictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
         Me.Panel_FooterControl.SuspendLayout()
         CType(Me.ClassPictureBoxQuality1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -47,42 +47,6 @@ Partial Class FormTipOfTheDay
         Me.Panel_FooterControl.Name = "Panel_FooterControl"
         Me.Panel_FooterControl.Size = New System.Drawing.Size(404, 48)
         Me.Panel_FooterControl.TabIndex = 2
-        '
-        'CheckBox_DoNotShow
-        '
-        Me.CheckBox_DoNotShow.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.CheckBox_DoNotShow.AutoSize = True
-        Me.CheckBox_DoNotShow.Location = New System.Drawing.Point(12, 17)
-        Me.CheckBox_DoNotShow.Name = "CheckBox_DoNotShow"
-        Me.CheckBox_DoNotShow.Size = New System.Drawing.Size(125, 17)
-        Me.CheckBox_DoNotShow.TabIndex = 1
-        Me.CheckBox_DoNotShow.Text = "Do not show again"
-        Me.CheckBox_DoNotShow.UseVisualStyleBackColor = True
-        '
-        'Panel_FooterDarkControl
-        '
-        Me.Panel_FooterDarkControl.BackColor = System.Drawing.SystemColors.ControlDark
-        Me.Panel_FooterDarkControl.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel_FooterDarkControl.Location = New System.Drawing.Point(0, 0)
-        Me.Panel_FooterDarkControl.Margin = New System.Windows.Forms.Padding(0)
-        Me.Panel_FooterDarkControl.Name = "Panel_FooterDarkControl"
-        Me.Panel_FooterDarkControl.Size = New System.Drawing.Size(404, 1)
-        Me.Panel_FooterDarkControl.TabIndex = 0
-        '
-        'TextBox_Tips
-        '
-        Me.TextBox_Tips.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TextBox_Tips.BackColor = System.Drawing.Color.White
-        Me.TextBox_Tips.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.TextBox_Tips.Location = New System.Drawing.Point(82, 12)
-        Me.TextBox_Tips.Margin = New System.Windows.Forms.Padding(3, 3, 3, 9)
-        Me.TextBox_Tips.Multiline = True
-        Me.TextBox_Tips.Name = "TextBox_Tips"
-        Me.TextBox_Tips.ReadOnly = True
-        Me.TextBox_Tips.Size = New System.Drawing.Size(310, 172)
-        Me.TextBox_Tips.TabIndex = 3
         '
         'LinkLabel_PreviousTip
         '
@@ -109,6 +73,44 @@ Partial Class FormTipOfTheDay
         Me.LinkLabel_NextTip.TabStop = True
         Me.LinkLabel_NextTip.Text = "Next tip"
         '
+        'CheckBox_DoNotShow
+        '
+        Me.CheckBox_DoNotShow.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.CheckBox_DoNotShow.AutoSize = True
+        Me.CheckBox_DoNotShow.Location = New System.Drawing.Point(12, 17)
+        Me.CheckBox_DoNotShow.Name = "CheckBox_DoNotShow"
+        Me.CheckBox_DoNotShow.Size = New System.Drawing.Size(125, 17)
+        Me.CheckBox_DoNotShow.TabIndex = 1
+        Me.CheckBox_DoNotShow.Text = "Do not show again"
+        Me.CheckBox_DoNotShow.UseVisualStyleBackColor = True
+        '
+        'Panel_FooterDarkControl
+        '
+        Me.Panel_FooterDarkControl.BackColor = System.Drawing.SystemColors.ControlDark
+        Me.Panel_FooterDarkControl.Dock = System.Windows.Forms.DockStyle.Top
+        Me.Panel_FooterDarkControl.Location = New System.Drawing.Point(0, 0)
+        Me.Panel_FooterDarkControl.Margin = New System.Windows.Forms.Padding(0)
+        Me.Panel_FooterDarkControl.Name = "Panel_FooterDarkControl"
+        Me.Panel_FooterDarkControl.Size = New System.Drawing.Size(404, 1)
+        Me.Panel_FooterDarkControl.TabIndex = 0
+        '
+        'RichTextBox_Tips
+        '
+        Me.RichTextBox_Tips.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.RichTextBox_Tips.BackColor = System.Drawing.Color.White
+        Me.RichTextBox_Tips.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.RichTextBox_Tips.Cursor = System.Windows.Forms.Cursors.Default
+        Me.RichTextBox_Tips.Location = New System.Drawing.Point(82, 12)
+        Me.RichTextBox_Tips.Margin = New System.Windows.Forms.Padding(3, 3, 3, 9)
+        Me.RichTextBox_Tips.Name = "RichTextBox_Tips"
+        Me.RichTextBox_Tips.ReadOnly = True
+        Me.RichTextBox_Tips.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None
+        Me.RichTextBox_Tips.Size = New System.Drawing.Size(310, 172)
+        Me.RichTextBox_Tips.TabIndex = 5
+        Me.RichTextBox_Tips.Text = ""
+        '
         'ClassPictureBoxQuality1
         '
         Me.ClassPictureBoxQuality1.Image = Global.BasicPawn.My.Resources.Resources.Bmp_Tip
@@ -126,8 +128,8 @@ Partial Class FormTipOfTheDay
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.BackColor = System.Drawing.Color.White
         Me.ClientSize = New System.Drawing.Size(404, 241)
+        Me.Controls.Add(Me.RichTextBox_Tips)
         Me.Controls.Add(Me.ClassPictureBoxQuality1)
-        Me.Controls.Add(Me.TextBox_Tips)
         Me.Controls.Add(Me.Panel_FooterControl)
         Me.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
@@ -141,15 +143,14 @@ Partial Class FormTipOfTheDay
         Me.Panel_FooterControl.PerformLayout()
         CType(Me.ClassPictureBoxQuality1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
-        Me.PerformLayout()
 
     End Sub
 
     Friend WithEvents Panel_FooterControl As Panel
     Friend WithEvents Panel_FooterDarkControl As Panel
     Friend WithEvents CheckBox_DoNotShow As CheckBox
-    Friend WithEvents TextBox_Tips As TextBox
     Friend WithEvents ClassPictureBoxQuality1 As ClassPictureBoxQuality
     Friend WithEvents LinkLabel_PreviousTip As LinkLabel
     Friend WithEvents LinkLabel_NextTip As LinkLabel
+    Friend WithEvents RichTextBox_Tips As RichTextBox
 End Class

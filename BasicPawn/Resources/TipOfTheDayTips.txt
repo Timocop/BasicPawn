@@ -13,7 +13,7 @@
 
 6=BasicPawn uses a plugin system which means you can make your own plugins for it! You can also download official plugins from BasicPawns GitHub page.\n\nDownload official plugins:\nhttps://github.com/Timocop/BasicPawn/tree/master/Plugin%20Releases
 
-7=You can customize BasicPawns syntax style by editing its syntax file. Download a default syntax template and modify it as you wish using XML. You can also download official syntax styles from BasicPawns GitHub page.\n\nDownload official syntax styles:\nhttps://github.com/Timocop/BasicPawn/tree/master/Custom%20Syntax%20Styles
+7=You can customize BasicPawns syntax style by downloading the default syntax template and modifying it as you wish using XML. You can also download official syntax styles from BasicPawns GitHub page.\n\nDownload official syntax styles:\nhttps://github.com/Timocop/BasicPawn/tree/master/Custom%20Syntax%20Styles
 
 8=You can enable the dark mode for all BasicPawn windows in the settings: 'Tools > Settings & Configs > Settings > General > High contrast mode'.
 

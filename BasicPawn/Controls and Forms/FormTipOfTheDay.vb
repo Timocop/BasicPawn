@@ -109,12 +109,13 @@ Public Class FormTipOfTheDay
         End Using
 
         If (g_lTipsList.Count < 1) Then
-            TextBox_Tips.Text = "I guess there are no tips."
+            RichTextBox_Tips.Text = "I guess there are no tips."
             Return
         End If
 
         g_iCurrentTipIndex = ClassTools.ClassRandom.RandomInt(0, g_lTipsList.Count - 1)
-        TextBox_Tips.Text = g_lTipsList(g_iCurrentTipIndex)
+
+        SetTip()
     End Sub
 
     Private Sub LinkLabel_PreviousTip_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_PreviousTip.LinkClicked
@@ -128,7 +129,7 @@ Public Class FormTipOfTheDay
         g_iCurrentTipIndex = Math.Max(0, g_iCurrentTipIndex)
         g_iCurrentTipIndex = Math.Min(g_lTipsList.Count - 1, g_iCurrentTipIndex)
 
-        TextBox_Tips.Text = g_lTipsList(g_iCurrentTipIndex)
+        SetTip()
     End Sub
 
     Private Sub LinkLabel_NextTip_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_NextTip.LinkClicked
@@ -142,6 +143,19 @@ Public Class FormTipOfTheDay
         g_iCurrentTipIndex = Math.Max(0, g_iCurrentTipIndex)
         g_iCurrentTipIndex = Math.Min(g_lTipsList.Count - 1, g_iCurrentTipIndex)
 
-        TextBox_Tips.Text = g_lTipsList(g_iCurrentTipIndex)
+        SetTip()
+    End Sub
+
+    Private Sub SetTip()
+        RichTextBox_Tips.SuspendLayout()
+        RichTextBox_Tips.Text = g_lTipsList(g_iCurrentTipIndex)
+        RichTextBox_Tips.ResumeLayout()
+    End Sub
+
+    Private Sub RichTextBox_Tips_LinkClicked(sender As Object, e As LinkClickedEventArgs) Handles RichTextBox_Tips.LinkClicked
+        Try
+            Process.Start(e.LinkText)
+        Catch ex As Exception
+        End Try
     End Sub
 End Class
