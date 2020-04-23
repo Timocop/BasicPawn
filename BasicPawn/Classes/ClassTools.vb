@@ -840,12 +840,12 @@ Public Class ClassTools
 
     Class ClassMath
         Public Shared Function ClampInt(i As Integer, iMin As Integer, iMax As Integer) As Integer
-            If (i < iMin) Then
-                i = iMin
-            End If
-
             If (i > iMax) Then
                 i = iMax
+            End If
+
+            If (i < iMin) Then
+                i = iMin
             End If
 
             Return i

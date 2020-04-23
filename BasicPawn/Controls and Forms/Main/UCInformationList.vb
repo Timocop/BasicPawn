@@ -272,7 +272,7 @@ Public Class UCInformationList
 
                             'Try to find using absolute and relative path
                             If (sFile.ToLower.EndsWith(mAction.m_Path.ToLower)) Then
-                                Dim iLineNum As Integer = ClassTools.ClassMath.ClampInt(0, g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.Document.TotalNumberOfLines - 1, mAction.m_Lines(0) - 1)
+                                Dim iLineNum As Integer = ClassTools.ClassMath.ClampInt(mAction.m_Lines(0) - 1, 0, g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.Document.TotalNumberOfLines - 1)
                                 Dim iLineLen As Integer = g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.Document.GetLineSegment(iLineNum).Length
 
                                 Dim mStartLoc As New TextLocation(0, iLineNum)

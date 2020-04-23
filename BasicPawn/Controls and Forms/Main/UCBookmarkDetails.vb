@@ -505,7 +505,7 @@ Public Class UCBookmarkDetails
 
                     'Try to find using absolute and relative path
                     If (sTabFile.ToLower.EndsWith(sFile.ToLower)) Then
-                        Dim iLineNum As Integer = ClassTools.ClassMath.ClampInt(0, g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.Document.TotalNumberOfLines - 1, iLine)
+                        Dim iLineNum As Integer = ClassTools.ClassMath.ClampInt(iLine, 0, g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.Document.TotalNumberOfLines - 1)
                         Dim iLineLen As Integer = g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.Document.GetLineSegment(iLineNum).Length
 
                         Dim mStartLoc As New TextLocation(0, iLineNum)

@@ -122,7 +122,7 @@ Partial Public Class FormMain
                         mTab.SelectTab()
                     End If
 
-                    Dim iLineNum As Integer = ClassTools.ClassMath.ClampInt(0, mTab.m_TextEditor.Document.TotalNumberOfLines - 1, mDefinition.iLine - 1)
+                    Dim iLineNum As Integer = ClassTools.ClassMath.ClampInt(mDefinition.iLine - 1, 0, mTab.m_TextEditor.Document.TotalNumberOfLines - 1)
                     Dim iLineLen As Integer = mTab.m_TextEditor.Document.GetLineSegment(iLineNum).Length
 
                     Dim mStartLoc As New TextLocation(0, iLineNum)
