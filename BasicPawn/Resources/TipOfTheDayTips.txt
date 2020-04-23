@@ -1,5 +1,5 @@
 [Tips]
-0=BasicPawn is open source and if you can encounter any problems, do not hassitate to report them on the BasicPawn GitHub page so they can be fixed as quickly as possible. Just open an issue and describe what happened or post the error log.\n\nYou can find all encountered errors in the 'application_error.log' inside the BasicPawn folder.\n\nBasicPawn GitHub issues:\nhttps://github.com/Timocop/BasicPawn/issues
+0=BasicPawn is open source and if you encounter any problems, do not hesitate to report them on the BasicPawn GitHub page so they can be fixed as quickly as possible. Just open an issue and describe what happened or post the error log.\n\nYou can find all encountered errors in the 'application_error.log' inside the BasicPawn folder.\n\nBasicPawn GitHub issues:\nhttps://github.com/Timocop/BasicPawn/issues
 
 1=Syntax parsing only works when the source you are working on is saved on disk.\n\nUse 'File > Save' or 'File > Save as temporary' to save your source.
 
@@ -17,9 +17,9 @@
 
 8=You can enable the dark mode for all BasicPawn windows in the settings: 'Tools > Settings & Configs > Settings > General > High contrast mode'.
 
-9=You can use the BasicPawn Debugger to debug your code. Use breakpoints, watch values, set values, caught exceptions and more. You can find the debugger in: 'Test > Debug'.\n\nHowever, before you use the BasicPawn Debugger you have to set it up first. You can do that in the configs: 'Tools > Settings & Configs > Configs'. This does not work for the default config because it's read-only so you have to create a new config for that.
+9=You can use the BasicPawn Debugger to debug your code. Use breakpoints, watch values, set values, caught exceptions and more. You can find the debugger in: 'Test > Debug'.\n\nHowever, before you use the BasicPawn Debugger you have to set it up. You can do that in the configs: 'Tools > Settings & Configs > Configs'. This does not work for the default config because it's read-only so you have to create a new config for that.
 
-10=BasicPawn can help you automatically autocomplete callback functions. First write the callback funcenum, functag, typeset or typedef type followed by a ':' then the function name you want to give (basicly like traditional pawn enums).\nOnce you autocomplete, it will append the complete callback including the name you gave it at the end of your source.\n\nThe complete syntax for this is:\n<funcenum/functag/typeset/typedef type>:<name>
+10=BasicPawn can help you automatically autocomplete callback functions. First write the callback funcenum, functag, typeset or typedef type followed by a ':' then the function name you want to give (basically like traditional pawn enums).\nOnce you autocomplete, it will append the complete callback including the name you gave it at the end of your source.\n\nThe complete syntax for this is:\n<funcenum/functag/typeset/typedef type>:<name>
 
 11=BasicPawn can help you autocomplete funcenums, functags, typesets and typedefs for callbacks. Just write the funcenum, functag, typeset or typedef type in a global scope. Once you autocomplete, it will replace the type with the complete callback.\n\nFor funcenums and typesets you can choose which one you want to autocomplete in the 'Autocomplete & IntelliSense' window.\n\nThis will not work if you autocomplete them inside brackets.
 
