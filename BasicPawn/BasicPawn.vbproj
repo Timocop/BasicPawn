@@ -203,6 +203,12 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Classes\Controls\ClassFileStreamWait.vb" />
+    <Compile Include="Controls and Forms\FormTipOfTheDay.Designer.vb">
+      <DependentUpon>FormTipOfTheDay.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controls and Forms\FormTipOfTheDay.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Controls and Forms\Main\Extensions\ExtHoverScroll.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -551,6 +557,9 @@
     <EmbeddedResource Include="Controls and Forms\FormFileDialogFTP.resx">
       <DependentUpon>FormFileDialogFTP.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls and Forms\FormTipOfTheDay.resx">
+      <DependentUpon>FormTipOfTheDay.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls and Forms\FormToolTip.resx">
       <DependentUpon>FormToolTip.vb</DependentUpon>
     </EmbeddedResource>
@@ -680,6 +689,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="BasicPawnIcon.ico" />
+    <None Include="Resources\050.png" />
+    <None Include="Resources\accessibilitycpl_340.ico" />
+    <None Include="Resources\TipOfTheDayTips.txt" />
     <None Include="Resources\Unpin_16x16-32.png" />
     <None Include="Resources\UAC_16x16-32.png" />
     <None Include="Resources\Search_16x16-32.png" />

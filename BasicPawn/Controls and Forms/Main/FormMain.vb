@@ -348,6 +348,27 @@ Public Class FormMain
 
         g_ClassPluginController.PluginsExecute(Sub(j As ClassPluginController.STRUC_PLUGIN_ITEM) j.mPluginInterface.OnPluginStart(Me, g_ClassPluginController.m_PluginEnabledByConfig(j)))
 
+        If (lOpenFileList.Count < 1) Then
+            Dim mFormTip As FormTipOfTheDay = Nothing
+            For Each mForm In Application.OpenForms
+                If (TypeOf mForm Is FormTipOfTheDay) Then
+                    mFormTip = DirectCast(mForm, FormTipOfTheDay)
+                    Exit For
+                End If
+            Next
+
+            If (mFormTip IsNot Nothing) Then
+                mFormTip.Activate()
+            Else
+                Dim mTipForm As New FormTipOfTheDay
+                If (mTipForm.m_DoNotShow) Then
+                    mTipForm.Dispose()
+                Else
+                    mTipForm.Show(Me)
+                End If
+            End If
+        End If
+
         Dim mCheckUpdasteThread As New Threading.Thread(Sub()
                                                             Try
                                                                 Dim bForceUpdate As Boolean = False

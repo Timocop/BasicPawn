@@ -173,6 +173,16 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
+        Public ReadOnly Property Bmp_Tip() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("Bmp_Tip", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Drawing.Bitmap.
+        '''</summary>
         Public ReadOnly Property Bmp_Warn() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("Bmp_Warn", resourceCulture)
@@ -1011,7 +1021,7 @@ Namespace My.Resources
         
         '''<summary>
         '''  Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-        '''&lt;!-- &lt;SyntaxVersion&gt;1.2&lt;/SyntaxVersion&gt; --&gt;
+        '''&lt;!-- &lt;SyntaxVersion&gt;1.3&lt;/SyntaxVersion&gt; --&gt;
         '''&lt;SyntaxDefinition name=&quot;SourcePawn-04e3632f-5472-42c5-929a-c3e0c2b35324&quot; extensions=&quot;.sp&quot;&gt;
         '''	&lt;Environment&gt;
         '''		&lt;Default color=&quot;Black&quot; bgcolor=&quot;White&quot; /&gt;
@@ -1031,7 +1041,7 @@ Namespace My.Resources
         
         '''<summary>
         '''  Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-        '''&lt;!-- &lt;SyntaxVersion&gt;1.2&lt;/SyntaxVersion&gt; --&gt;
+        '''&lt;!-- &lt;SyntaxVersion&gt;1.3&lt;/SyntaxVersion&gt; --&gt;
         '''&lt;SyntaxDefinition name=&quot;SourcePawn-04e3632f-5472-42c5-929a-c3e0c2b35324&quot; extensions=&quot;.sp&quot;&gt;
         '''	&lt;Environment&gt;
         '''		&lt;Default color=&quot;#dcdcdc&quot; bgcolor=&quot;#1e1e1e&quot; /&gt;
@@ -1255,6 +1265,16 @@ Namespace My.Resources
         Public ReadOnly Property Template_SourcePawnOldSharedPluginInclude() As String
             Get
                 Return ResourceManager.GetString("Template_SourcePawnOldSharedPluginInclude", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to [ReportProblems]
+        '''1=BasicPawn is open source and if you can encoutner any problems do not hassitate to report them on the offical BasicPawn GitHub page..
+        '''</summary>
+        Public ReadOnly Property TipOfTheDayTips() As String
+            Get
+                Return ResourceManager.GetString("TipOfTheDayTips", resourceCulture)
             End Get
         End Property
         

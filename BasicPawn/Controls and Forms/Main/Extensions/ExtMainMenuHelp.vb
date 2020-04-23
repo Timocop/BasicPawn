@@ -54,6 +54,23 @@ Partial Public Class FormMain
         End With
     End Sub
 
+    Private Sub ToolStripMenuItem_ShowTips_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ShowTips.Click
+        Dim mFormTip As FormTipOfTheDay = Nothing
+        For Each mForm In Application.OpenForms
+            If (TypeOf mForm Is FormTipOfTheDay) Then
+                mFormTip = DirectCast(mForm, FormTipOfTheDay)
+                Exit For
+            End If
+        Next
+
+        If (mFormTip IsNot Nothing) Then
+            mFormTip.Activate()
+        Else
+            Dim mTipForm As New FormTipOfTheDay
+            mTipForm.Show(Me)
+        End If
+    End Sub
+
     Private Sub ToolStripMenuItem_HelpGithub_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_HelpGithub.Click
         Try
             Process.Start("https://github.com/Timocop/BasicPawn")
