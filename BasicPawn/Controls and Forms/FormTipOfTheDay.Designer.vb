@@ -29,6 +29,7 @@ Partial Class FormTipOfTheDay
         Me.CheckBox_DoNotShow = New System.Windows.Forms.CheckBox()
         Me.Panel_FooterDarkControl = New System.Windows.Forms.Panel()
         Me.RichTextBox_Tips = New System.Windows.Forms.RichTextBox()
+        Me.Label_TipNumber = New System.Windows.Forms.Label()
         Me.ClassPictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
         Me.Panel_FooterControl.SuspendLayout()
         CType(Me.ClassPictureBoxQuality1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -102,14 +103,25 @@ Partial Class FormTipOfTheDay
         Me.RichTextBox_Tips.BackColor = System.Drawing.Color.White
         Me.RichTextBox_Tips.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.RichTextBox_Tips.Cursor = System.Windows.Forms.Cursors.Default
-        Me.RichTextBox_Tips.Location = New System.Drawing.Point(82, 12)
+        Me.RichTextBox_Tips.Location = New System.Drawing.Point(66, 12)
         Me.RichTextBox_Tips.Margin = New System.Windows.Forms.Padding(3, 3, 3, 9)
         Me.RichTextBox_Tips.Name = "RichTextBox_Tips"
         Me.RichTextBox_Tips.ReadOnly = True
         Me.RichTextBox_Tips.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None
-        Me.RichTextBox_Tips.Size = New System.Drawing.Size(310, 172)
+        Me.RichTextBox_Tips.Size = New System.Drawing.Size(326, 172)
         Me.RichTextBox_Tips.TabIndex = 5
         Me.RichTextBox_Tips.Text = ""
+        '
+        'Label_TipNumber
+        '
+        Me.Label_TipNumber.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label_TipNumber.Location = New System.Drawing.Point(12, 66)
+        Me.Label_TipNumber.Margin = New System.Windows.Forms.Padding(3)
+        Me.Label_TipNumber.Name = "Label_TipNumber"
+        Me.Label_TipNumber.Size = New System.Drawing.Size(48, 13)
+        Me.Label_TipNumber.TabIndex = 6
+        Me.Label_TipNumber.Text = "Tip #0"
+        Me.Label_TipNumber.TextAlign = System.Drawing.ContentAlignment.TopCenter
         '
         'ClassPictureBoxQuality1
         '
@@ -117,7 +129,7 @@ Partial Class FormTipOfTheDay
         Me.ClassPictureBoxQuality1.Location = New System.Drawing.Point(12, 12)
         Me.ClassPictureBoxQuality1.m_HighQuality = True
         Me.ClassPictureBoxQuality1.Name = "ClassPictureBoxQuality1"
-        Me.ClassPictureBoxQuality1.Size = New System.Drawing.Size(64, 64)
+        Me.ClassPictureBoxQuality1.Size = New System.Drawing.Size(48, 48)
         Me.ClassPictureBoxQuality1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
         Me.ClassPictureBoxQuality1.TabIndex = 4
         Me.ClassPictureBoxQuality1.TabStop = False
@@ -128,6 +140,7 @@ Partial Class FormTipOfTheDay
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.BackColor = System.Drawing.Color.White
         Me.ClientSize = New System.Drawing.Size(404, 241)
+        Me.Controls.Add(Me.Label_TipNumber)
         Me.Controls.Add(Me.RichTextBox_Tips)
         Me.Controls.Add(Me.ClassPictureBoxQuality1)
         Me.Controls.Add(Me.Panel_FooterControl)
@@ -153,4 +166,5 @@ Partial Class FormTipOfTheDay
     Friend WithEvents LinkLabel_PreviousTip As LinkLabel
     Friend WithEvents LinkLabel_NextTip As LinkLabel
     Friend WithEvents RichTextBox_Tips As RichTextBox
+    Friend WithEvents Label_TipNumber As Label
 End Class

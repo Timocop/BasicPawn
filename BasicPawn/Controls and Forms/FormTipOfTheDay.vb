@@ -16,7 +16,7 @@
 
 
 Public Class FormTipOfTheDay
-    Private g_lTipsList As New List(Of String)
+    Private g_lTipsList As New List(Of KeyValuePair(Of String, String))
 
     Private g_iCurrentTipIndex As Integer = 0
 
@@ -104,7 +104,7 @@ Public Class FormTipOfTheDay
                 End If
 
                 iTipCounter += 1
-                g_lTipsList.Add(String.Format("Tip #{0}:{1}{2}", iTipCounter, Environment.NewLine, sTip))
+                g_lTipsList.Add(New KeyValuePair(Of String, String)(String.Format("Tip: #{0}", iTipCounter), sTip))
             Next
         End Using
 
@@ -147,8 +147,10 @@ Public Class FormTipOfTheDay
     End Sub
 
     Private Sub SetTip()
+        Label_TipNumber.Text = g_lTipsList(g_iCurrentTipIndex).Key
+
         RichTextBox_Tips.SuspendLayout()
-        RichTextBox_Tips.Text = g_lTipsList(g_iCurrentTipIndex)
+        RichTextBox_Tips.Text = g_lTipsList(g_iCurrentTipIndex).Value
         RichTextBox_Tips.ResumeLayout()
     End Sub
 
