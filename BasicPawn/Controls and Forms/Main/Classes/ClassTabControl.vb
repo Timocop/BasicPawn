@@ -2440,7 +2440,7 @@ Public Class ClassTabControl
                 End If
 
                 g_mSourceTabPage.m_TextEditor.Document.MarkerStrategy.RemoveAll(Function(x As TextMarker) x Is mOldTextMarker)
-                g_mSourceTabPage.m_TextEditor.Document.MarkerStrategy.InsertMarker(0, g_mTextMarker) 'Make it super low priority so others can render ontop
+                g_mSourceTabPage.m_TextEditor.Document.MarkerStrategy.AddMarker(g_mTextMarker)
 
                 g_mSourceTabPage.m_TextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.WholeTextArea))
                 g_mSourceTabPage.m_TextEditor.Document.CommitUpdate()
@@ -2653,7 +2653,7 @@ Public Class ClassTabControl
                 End Select
 
                 For Each mItem In mMarkers.ToArray
-                    g_mSourceTabPage.m_TextEditor.Document.MarkerStrategy.AddMarker(DirectCast(mItem, TextMarker))
+                    g_mSourceTabPage.m_TextEditor.Document.MarkerStrategy.InsertMarker(0, DirectCast(mItem, TextMarker)) 'Make it highest rendering priority
                     g_lTextMarkers.Add(mItem)
                 Next
 
