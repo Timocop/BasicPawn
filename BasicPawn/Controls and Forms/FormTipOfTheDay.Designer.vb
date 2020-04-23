@@ -96,11 +96,13 @@ Partial Class FormTipOfTheDay
         Me.TextBox_Tips.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.TextBox_Tips.BackColor = System.Drawing.Color.White
         Me.TextBox_Tips.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.TextBox_Tips.Location = New System.Drawing.Point(82, 12)
         Me.TextBox_Tips.Margin = New System.Windows.Forms.Padding(3, 3, 3, 9)
         Me.TextBox_Tips.Multiline = True
         Me.TextBox_Tips.Name = "TextBox_Tips"
+        Me.TextBox_Tips.ReadOnly = True
         Me.TextBox_Tips.Size = New System.Drawing.Size(310, 172)
         Me.TextBox_Tips.TabIndex = 3
         '

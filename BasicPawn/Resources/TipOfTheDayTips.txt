@@ -1,9 +1,22 @@
 [Tips]
 0=BasicPawn is open source and if you can encounter any problems, do not hassitate to report them on the official BasicPawn GitHub page so they can be fixed as quickly as possible. Just open an issue and describe what happened or post the error log.\n\nYou can find all encountered errors in the 'application_error.log' inside the BasicPawn folder.\n\nBasicPawn GitHub issues:\nhttps://github.com/Timocop/BasicPawn/issues
+
 1=Syntax parsing only works when the content you are working on is saved on disk.\n\nGo 'File > Save' or 'File > Save as temporary' to save your content.
+
 2=BasicPawn does not come with SourceMod nor its files that are required to compile sources successfully. You need to download SourceMod yourself and place your source file into the SourceMod scripting folder or use configs if you work outside the SourceMod scripting folder.\n\nDownload SourceMod:\nhttps://sourcemod.net/downloads.php
+
 3=BasicPawn has special controls for it's editor. You can view them in 'Help > Special Controls'.
+
 4=If you have questions or need help go to the official BasicPawn GitHub.\n\nBasicPawn GitHub:\nhttps://github.com/Timocop/BasicPawn
-5=You don't have to setup BasicPawn to make it work. BasicPawn works out-of-the-box and will automatically search for the compiler and its includes that are located in the same directory as the source file. Just place your source file into the SourceMod scripting directory and start working.\n\n\n\n\n\n\n\n\n\nIt just works.
+
+5=You don't have to setup BasicPawn to make it work. BasicPawn works out-of-the-box and will automatically search for compiler and its includes that are located in the same directory as the source file. Just place your source file into the SourceMod scripting directory and start working.\n\n\n\n\n\n\n\n\n\nIt just works.
+
 6=BasicPawn uses a plugin system which means you can make your own plugins for it! You can also download official plugins from BasicPawns GitHub page.\n\nDownload official plugins:\nhttps://github.com/Timocop/BasicPawn/tree/master/Plugin%20Releases
+
 7=You can customize BasicPawns syntax style by editing its syntax file. Download a default syntax template and modify it as you wish using XML. You can also download official syntax styles from BasicPawns GitHub page.\n\nDownload official syntax styles:\nhttps://github.com/Timocop/BasicPawn/tree/master/Custom%20Syntax%20Styles
+
+8=You can enable the dark mode for all BasicPawn windows in the settings: 'Tools > Settings & Configs > Settings > General > High contrast mode'.
+
+9=You can use the BasicPawn Debugger to debug your code. Use breakpoints, watch values, set values, caught exceptions and more. You can find the debugger in: 'Test > Debug'.\n\nHowever, before you use the BasicPawn Debugger you have to set it up first. You can do that in the configs: 'Tools > Settings & Configs > Configs'. This does not work for the default config because it's read-only so you have to create a new config for that.
+
+10=BasicPawn can help you automatically autocomplete callback functions. First write the callback funcenum, functag, typeset or typedef type followed by a ':' then the function name you want to give. Once you autocomplete it, it will append the full callback including the name you gave it at the end of your source.\n\nThe complete syntax for this is:\n<funcenum/functag/typeset/typedef type>:<name>
