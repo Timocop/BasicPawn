@@ -340,8 +340,6 @@ Public Class ClassSyntaxParser
                         Case ClassSyntaxTools.ENUM_LANGUAGE_TYPE.PAWN
                             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("Auto-Detected language: Pawn ({0})", IO.Path.GetFileName(sRequestedSourceFile)))
 
-                        Case Else
-                            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_WARNING, String.Format("Auto-Detected language: Unknown ({0})", IO.Path.GetFileName(sRequestedSourceFile)))
                     End Select
                 End If
 
