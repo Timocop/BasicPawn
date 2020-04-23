@@ -1086,6 +1086,7 @@ Public Class ClassTabControl
 
             g_mSourceTextEditor.ContextMenuStrip = g_mFormMain.ContextMenuStrip_RightClick
             'g_mSourceTextEditor.ShowTabs = True ' TODO: Solve performance issues rendering tab arrows.
+            g_mSourceTextEditor.LineViewerStyle = LineViewerStyle.FullRow
             g_mSourceTextEditor.ShowVRuler = False
             g_mSourceTextEditor.ShowMatchingBracket = False
             g_mSourceTextEditor.Margin = New Padding(0)
@@ -2618,12 +2619,12 @@ Public Class ClassTabControl
 
                 Select Case (iType)
                     Case ENUM_MARKER_TYPE.STATIC_MARKER
-                        mFrontColor = g_mSourceTabPage.m_TextEditor.Document.HighlightingStrategy.GetColorFor("StaticMarker").Color
-                        mBackColor = g_mSourceTabPage.m_TextEditor.Document.HighlightingStrategy.GetColorFor("StaticMarker").BackgroundColor
+                        mFrontColor = g_mSourceTabPage.m_TextEditor.Document.HighlightingStrategy.GetColorFor("StaticWordMarker").Color
+                        mBackColor = g_mSourceTabPage.m_TextEditor.Document.HighlightingStrategy.GetColorFor("StaticWordMarker").BackgroundColor
 
                     Case Else
-                        mFrontColor = g_mSourceTabPage.m_TextEditor.Document.HighlightingStrategy.GetColorFor("CaretMarker").Color
-                        mBackColor = g_mSourceTabPage.m_TextEditor.Document.HighlightingStrategy.GetColorFor("CaretMarker").BackgroundColor
+                        mFrontColor = g_mSourceTabPage.m_TextEditor.Document.HighlightingStrategy.GetColorFor("CaretWordMarker").Color
+                        mBackColor = g_mSourceTabPage.m_TextEditor.Document.HighlightingStrategy.GetColorFor("CaretWordMarker").BackgroundColor
                 End Select
 
                 Dim mMarkers As New List(Of IMarkers)

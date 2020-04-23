@@ -132,7 +132,7 @@ Partial Class FormDebugger
         '
         Me.ToolStripStatusLabel_NoConnection.BackColor = System.Drawing.Color.Red
         Me.ToolStripStatusLabel_NoConnection.Name = "ToolStripStatusLabel_NoConnection"
-        Me.ToolStripStatusLabel_NoConnection.Size = New System.Drawing.Size(132, 17)
+        Me.ToolStripStatusLabel_NoConnection.Size = New System.Drawing.Size(131, 17)
         Me.ToolStripStatusLabel_NoConnection.Text = "(Target not responding)"
         Me.ToolStripStatusLabel_NoConnection.Visible = False
         '
@@ -183,7 +183,7 @@ Partial Class FormDebugger
         '
         Me.ToolStripMenuItemFile_Exit.Image = Global.BasicPawn.My.Resources.Resources.imageres_5337_16x16
         Me.ToolStripMenuItemFile_Exit.Name = "ToolStripMenuItemFile_Exit"
-        Me.ToolStripMenuItemFile_Exit.Size = New System.Drawing.Size(92, 22)
+        Me.ToolStripMenuItemFile_Exit.Size = New System.Drawing.Size(93, 22)
         Me.ToolStripMenuItemFile_Exit.Text = "&Exit"
         '
         'ToolStripMenuItem_Tools
@@ -191,7 +191,7 @@ Partial Class FormDebugger
         Me.ToolStripMenuItem_Tools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_ToolsSettings, Me.ToolStripMenuItem_ToolsCleanupTemp})
         Me.ToolStripMenuItem_Tools.Image = Global.BasicPawn.My.Resources.Resources.imageres_5364_16x16
         Me.ToolStripMenuItem_Tools.Name = "ToolStripMenuItem_Tools"
-        Me.ToolStripMenuItem_Tools.Size = New System.Drawing.Size(63, 20)
+        Me.ToolStripMenuItem_Tools.Size = New System.Drawing.Size(62, 20)
         Me.ToolStripMenuItem_Tools.Text = "Tools"
         '
         'ToolStripMenuItem_ToolsSettings
@@ -206,14 +206,14 @@ Partial Class FormDebugger
         '
         Me.ToolStripMenuItem_SettingsCatchExceptions.CheckOnClick = True
         Me.ToolStripMenuItem_SettingsCatchExceptions.Name = "ToolStripMenuItem_SettingsCatchExceptions"
-        Me.ToolStripMenuItem_SettingsCatchExceptions.Size = New System.Drawing.Size(164, 22)
+        Me.ToolStripMenuItem_SettingsCatchExceptions.Size = New System.Drawing.Size(165, 22)
         Me.ToolStripMenuItem_SettingsCatchExceptions.Text = "Catch exceptions"
         '
         'ToolStripMenuItem_SettingsEntities
         '
         Me.ToolStripMenuItem_SettingsEntities.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_EntitiesEnableColor, Me.ToolStripMenuItem_EntitiesEnableShowNewEnts})
         Me.ToolStripMenuItem_SettingsEntities.Name = "ToolStripMenuItem_SettingsEntities"
-        Me.ToolStripMenuItem_SettingsEntities.Size = New System.Drawing.Size(164, 22)
+        Me.ToolStripMenuItem_SettingsEntities.Size = New System.Drawing.Size(165, 22)
         Me.ToolStripMenuItem_SettingsEntities.Text = "Entities"
         '
         'ToolStripMenuItem_EntitiesEnableColor
@@ -336,9 +336,9 @@ Partial Class FormDebugger
         Me.TextEditorControlEx_DebuggerSource.IsReadOnly = False
         Me.TextEditorControlEx_DebuggerSource.LineViewerStyle = ICSharpCode.TextEditor.Document.LineViewerStyle.FullRow
         Me.TextEditorControlEx_DebuggerSource.Location = New System.Drawing.Point(0, 0)
+        Me.TextEditorControlEx_DebuggerSource.m_CustomIconBarVisible = False
         Me.TextEditorControlEx_DebuggerSource.Name = "TextEditorControlEx_DebuggerSource"
         Me.TextEditorControlEx_DebuggerSource.ShowMatchingBracket = False
-        Me.TextEditorControlEx_DebuggerSource.ShowTabs = True
         Me.TextEditorControlEx_DebuggerSource.ShowVRuler = False
         Me.TextEditorControlEx_DebuggerSource.Size = New System.Drawing.Size(711, 484)
         Me.TextEditorControlEx_DebuggerSource.TabIndex = 0
@@ -601,6 +601,7 @@ Partial Class FormDebugger
         Me.ListView_Entities.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader8, Me.ColumnHeader9, Me.ColumnHeader10})
         Me.ListView_Entities.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ListView_Entities.FullRowSelect = True
+        Me.ListView_Entities.HideSelection = False
         Me.ListView_Entities.Location = New System.Drawing.Point(0, 0)
         Me.ListView_Entities.MultiSelect = False
         Me.ListView_Entities.Name = "ListView_Entities"
