@@ -23,6 +23,8 @@ Partial Public Class FormSettings
         TextBox_CustomSyntax.Text = ClassSettings.g_sSettingsSyntaxHighlightingPath
         CheckBox_RememberFolds.Checked = ClassSettings.g_bSettingsRememberFoldings
         CheckBox_IconBar.Checked = ClassSettings.g_bSettingsIconBar
+        CheckBox_ShowTabSymbols.Checked = ClassSettings.g_bSettingsShowTabs
+        CheckBox_ShowVerticalRuler.Checked = ClassSettings.g_bSettingsShowVRuler
 
         Select Case (ClassSettings.g_iSettingsIconLineStateType)
             Case ClassSettings.ENUM_LINE_STATE_TYPE.NONE
@@ -42,6 +44,8 @@ Partial Public Class FormSettings
         ClassSettings.g_sSettingsSyntaxHighlightingPath = TextBox_CustomSyntax.Text
         ClassSettings.g_bSettingsRememberFoldings = CheckBox_RememberFolds.Checked
         ClassSettings.g_bSettingsIconBar = CheckBox_IconBar.Checked
+        ClassSettings.g_bSettingsShowTabs = CheckBox_ShowTabSymbols.Checked
+        ClassSettings.g_bSettingsShowVRuler = CheckBox_ShowVerticalRuler.Checked
 
         Select Case (True)
             Case RadioButton_LineStateNone.Checked

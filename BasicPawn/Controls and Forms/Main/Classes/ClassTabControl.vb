@@ -1085,8 +1085,6 @@ Public Class ClassTabControl
             g_mSourceTextEditor.SuspendLayout()
 
             g_mSourceTextEditor.ContextMenuStrip = g_mFormMain.ContextMenuStrip_RightClick
-            'g_mSourceTextEditor.ShowTabs = True ' TODO: Solve performance issues rendering tab arrows.
-            g_mSourceTextEditor.ShowVRuler = False
             g_mSourceTextEditor.ShowMatchingBracket = False
             g_mSourceTextEditor.Margin = New Padding(0)
             g_mSourceTextEditor.Padding = New Padding(0)
@@ -1094,6 +1092,8 @@ Public Class ClassTabControl
             g_mSourceTextEditor.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
             g_mSourceTextEditor.TextEditorProperties.IndentationSize = If(ClassSettings.g_iSettingsTabsToSpaces > 0, ClassSettings.g_iSettingsTabsToSpaces, 4)
             g_mSourceTextEditor.TextEditorProperties.ConvertTabsToSpaces = (ClassSettings.g_iSettingsTabsToSpaces > 0)
+            g_mSourceTextEditor.TextEditorProperties.ShowTabs = ClassSettings.g_bSettingsShowTabs ' TODO: Solve performance issues rendering tab arrows.
+            g_mSourceTextEditor.TextEditorProperties.ShowVerticalRuler = ClassSettings.g_bSettingsShowVRuler
             g_mSourceTextEditor.m_CustomIconBarVisible = ClassSettings.g_bSettingsIconBar
 
             g_mSourceTextEditor.Parent = Me

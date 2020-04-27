@@ -133,6 +133,8 @@ Public Class FormSettings
             g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.TextEditorProperties.Font = ClassSettings.g_iSettingsTextEditorFont
             g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.TextEditorProperties.IndentationSize = If(ClassSettings.g_iSettingsTabsToSpaces > 0, ClassSettings.g_iSettingsTabsToSpaces, 4)
             g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.TextEditorProperties.ConvertTabsToSpaces = (ClassSettings.g_iSettingsTabsToSpaces > 0)
+            g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.TextEditorProperties.ShowTabs = ClassSettings.g_bSettingsShowTabs ' TODO: Solve performance issues rendering tab arrows.
+            g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.TextEditorProperties.ShowVerticalRuler = ClassSettings.g_bSettingsShowVRuler
             g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.m_CustomIconBarVisible = ClassSettings.g_bSettingsIconBar
 
             g_mFormMain.g_ClassTabControl.m_Tab(j).m_TextEditor.InvalidateTextArea()

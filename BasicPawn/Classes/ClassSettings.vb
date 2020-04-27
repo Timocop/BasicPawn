@@ -61,6 +61,8 @@ Public Class ClassSettings
     Public Shared g_bSettingsIconBar As Boolean = True
     Public Shared g_iSettingsIconLineStateMax As Integer = 1000
     Public Shared g_iSettingsIconLineStateType As ENUM_LINE_STATE_TYPE = ENUM_LINE_STATE_TYPE.CHANGED
+    Public Shared g_bSettingsShowTabs As Boolean = False
+    Public Shared g_bSettingsShowVRuler As Boolean = False
     'Syntax Highligting
     Public Shared g_iSettingsDoubleClickMark As Boolean = True
     Public Shared g_iSettingsAutoMark As Boolean = True
@@ -117,6 +119,8 @@ Public Class ClassSettings
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorIconBar", If(g_bSettingsIconBar, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorIconBarLineStateMax", CStr(g_iSettingsIconLineStateMax)))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorIconBarLineStateType", CStr(g_iSettingsIconLineStateType)))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorShowTabs", If(g_bSettingsShowTabs, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorShowVRuler", If(g_bSettingsShowVRuler, "1", "0")))
                 'Syntax Highligting
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "DoubleClickMark", If(g_iSettingsDoubleClickMark, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutoMark", If(g_iSettingsAutoMark, "1", "0")))
@@ -195,6 +199,9 @@ Public Class ClassSettings
                     If (Integer.TryParse(mIni.ReadKeyValue("Editor", "TextEditorIconBarLineStateType", CStr(ENUM_LINE_STATE_TYPE.CHANGED)), tmpInt)) Then
                         g_iSettingsIconLineStateType = CType(ClassTools.ClassMath.ClampInt(tmpInt, 0, [Enum].GetNames(GetType(ENUM_LINE_STATE_TYPE)).Length - 1), ENUM_LINE_STATE_TYPE)
                     End If
+
+                    g_bSettingsShowTabs = (mIni.ReadKeyValue("Editor", "TextEditorShowTabs", "0") <> "0")
+                    g_bSettingsShowVRuler = (mIni.ReadKeyValue("Editor", "TextEditorShowVRuler", "0") <> "0")
 
                     'Syntax Highligting
                     g_iSettingsDoubleClickMark = (mIni.ReadKeyValue("Editor", "DoubleClickMark", "1") <> "0")

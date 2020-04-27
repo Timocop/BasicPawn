@@ -88,6 +88,7 @@ Partial Class FormSettings
         Me.CheckBox_RememberFolds = New System.Windows.Forms.CheckBox()
         Me.TabPage_Syntax = New System.Windows.Forms.TabPage()
         Me.GroupBox22 = New System.Windows.Forms.GroupBox()
+        Me.CheckBox_HighlightScope = New System.Windows.Forms.CheckBox()
         Me.CheckBox_PublicAsDefineColor = New System.Windows.Forms.CheckBox()
         Me.GroupBox13 = New System.Windows.Forms.GroupBox()
         Me.CheckBox_DoubleClickMark = New System.Windows.Forms.CheckBox()
@@ -225,7 +226,8 @@ Partial Class FormSettings
         Me.TableLayoutPanel3 = New System.Windows.Forms.TableLayoutPanel()
         Me.ClassPictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
         Me.Label17 = New System.Windows.Forms.Label()
-        Me.CheckBox_HighlightScope = New System.Windows.Forms.CheckBox()
+        Me.CheckBox_ShowTabSymbols = New System.Windows.Forms.CheckBox()
+        Me.CheckBox_ShowVerticalRuler = New System.Windows.Forms.CheckBox()
         Me.ContextMenuStrip_Plugins.SuspendLayout()
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Settings.SuspendLayout()
@@ -747,7 +749,7 @@ Partial Class FormSettings
         Me.GroupBox11.Controls.Add(Me.Label15)
         Me.GroupBox11.Controls.Add(Me.NumericUpDown_LineStateCount)
         Me.GroupBox11.Dock = System.Windows.Forms.DockStyle.Top
-        Me.GroupBox11.Location = New System.Drawing.Point(6, 182)
+        Me.GroupBox11.Location = New System.Drawing.Point(6, 221)
         Me.GroupBox11.Name = "GroupBox11"
         Me.GroupBox11.Size = New System.Drawing.Size(740, 180)
         Me.GroupBox11.TabIndex = 34
@@ -844,6 +846,8 @@ Partial Class FormSettings
         '
         'GroupBox10
         '
+        Me.GroupBox10.Controls.Add(Me.CheckBox_ShowVerticalRuler)
+        Me.GroupBox10.Controls.Add(Me.CheckBox_ShowTabSymbols)
         Me.GroupBox10.Controls.Add(Me.Button_Font)
         Me.GroupBox10.Controls.Add(Me.Label_Font)
         Me.GroupBox10.Controls.Add(Me.NumericUpDown_TabsToSpaces)
@@ -857,7 +861,7 @@ Partial Class FormSettings
         Me.GroupBox10.Dock = System.Windows.Forms.DockStyle.Top
         Me.GroupBox10.Location = New System.Drawing.Point(6, 6)
         Me.GroupBox10.Name = "GroupBox10"
-        Me.GroupBox10.Size = New System.Drawing.Size(740, 176)
+        Me.GroupBox10.Size = New System.Drawing.Size(740, 215)
         Me.GroupBox10.TabIndex = 33
         Me.GroupBox10.TabStop = False
         Me.GroupBox10.Text = "Editor"
@@ -996,6 +1000,18 @@ Partial Class FormSettings
         Me.GroupBox22.TabIndex = 19
         Me.GroupBox22.TabStop = False
         Me.GroupBox22.Text = "General Highlighting"
+        '
+        'CheckBox_HighlightScope
+        '
+        Me.CheckBox_HighlightScope.AutoSize = True
+        Me.CheckBox_HighlightScope.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_HighlightScope.Location = New System.Drawing.Point(9, 45)
+        Me.CheckBox_HighlightScope.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_HighlightScope.Name = "CheckBox_HighlightScope"
+        Me.CheckBox_HighlightScope.Size = New System.Drawing.Size(172, 18)
+        Me.CheckBox_HighlightScope.TabIndex = 19
+        Me.CheckBox_HighlightScope.Text = "Current scope highlighting"
+        Me.CheckBox_HighlightScope.UseVisualStyleBackColor = True
         '
         'CheckBox_PublicAsDefineColor
         '
@@ -2560,17 +2576,29 @@ Partial Class FormSettings
         Me.Label17.Text = "Loaded BasicPawn plugins are able to read stored database entries. Make sure all " &
     "installed plugins are from a trustworthy publisher to prevent theft."
         '
-        'CheckBox_HighlightScope
+        'CheckBox_ShowTabSymbols
         '
-        Me.CheckBox_HighlightScope.AutoSize = True
-        Me.CheckBox_HighlightScope.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_HighlightScope.Location = New System.Drawing.Point(9, 45)
-        Me.CheckBox_HighlightScope.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_HighlightScope.Name = "CheckBox_HighlightScope"
-        Me.CheckBox_HighlightScope.Size = New System.Drawing.Size(172, 18)
-        Me.CheckBox_HighlightScope.TabIndex = 19
-        Me.CheckBox_HighlightScope.Text = "Current scope highlighting"
-        Me.CheckBox_HighlightScope.UseVisualStyleBackColor = True
+        Me.CheckBox_ShowTabSymbols.AutoSize = True
+        Me.CheckBox_ShowTabSymbols.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_ShowTabSymbols.Location = New System.Drawing.Point(9, 164)
+        Me.CheckBox_ShowTabSymbols.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_ShowTabSymbols.Name = "CheckBox_ShowTabSymbols"
+        Me.CheckBox_ShowTabSymbols.Size = New System.Drawing.Size(156, 18)
+        Me.CheckBox_ShowTabSymbols.TabIndex = 24
+        Me.CheckBox_ShowTabSymbols.Text = "Show tabulator symbols"
+        Me.CheckBox_ShowTabSymbols.UseVisualStyleBackColor = True
+        '
+        'CheckBox_ShowVerticalRuler
+        '
+        Me.CheckBox_ShowVerticalRuler.AutoSize = True
+        Me.CheckBox_ShowVerticalRuler.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_ShowVerticalRuler.Location = New System.Drawing.Point(9, 188)
+        Me.CheckBox_ShowVerticalRuler.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_ShowVerticalRuler.Name = "CheckBox_ShowVerticalRuler"
+        Me.CheckBox_ShowVerticalRuler.Size = New System.Drawing.Size(127, 18)
+        Me.CheckBox_ShowVerticalRuler.TabIndex = 25
+        Me.CheckBox_ShowVerticalRuler.Text = "Show vertical ruler"
+        Me.CheckBox_ShowVerticalRuler.UseVisualStyleBackColor = True
         '
         'FormSettings
         '
@@ -2873,4 +2901,6 @@ Partial Class FormSettings
     Friend WithEvents NumericUpDown_MaxParseCache As NumericUpDown
     Friend WithEvents Label33 As Label
     Friend WithEvents CheckBox_HighlightScope As CheckBox
+    Friend WithEvents CheckBox_ShowVerticalRuler As CheckBox
+    Friend WithEvents CheckBox_ShowTabSymbols As CheckBox
 End Class
