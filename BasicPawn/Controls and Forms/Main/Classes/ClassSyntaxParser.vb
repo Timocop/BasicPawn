@@ -879,7 +879,7 @@ Public Class ClassSyntaxParser
                             Continue While
                         End If
 
-                        Dim mMatch As Match = Regex.Match(sLine, "^\s*#(include|tryinclude)\s+(?<PathInc>.*?)\s*$")
+                        Dim mMatch As Match = ClassRegexLock.Match(sLine, "^\s*#(include|tryinclude)\s+(?<PathInc>.*?)\s*$")
                         If (Not mMatch.Groups("PathInc").Success) Then
                             Continue While
                         End If
@@ -887,8 +887,8 @@ Public Class ClassSyntaxParser
                         'Remove comments
                         'TODO: Add better check for detecting comments. Cant use ClassSyntaxSourceAnalysis here since the language is not defined yet...
                         sMatchValue = mMatch.Groups("PathInc").Value
-                        sMatchValue = Regex.Replace(sMatchValue, "//(.*?)$", "")
-                        sMatchValue = Regex.Replace(sMatchValue, "\/\*(.*?)$", "")
+                        sMatchValue = ClassRegexLock.Replace(sMatchValue, "//(.*?)$", "")
+                        sMatchValue = ClassRegexLock.Replace(sMatchValue, "\/\*(.*?)$", "")
                         sMatchValue = sMatchValue.Replace("/"c, "\"c).Trim
 
                         Select Case (True)
@@ -1218,8 +1218,8 @@ Public Class ClassSyntaxParser
             ''' <param name="mParseInfo"></param>
             Public Sub ParseStructs(mParseInfo As STRUC_AUTOCOMPLETE_PARSE_PRE_INFO)
                 If (mParseInfo.sSource.Contains("struct")) Then
-                    Dim mPossibleStructMatches As MatchCollection = Regex.Matches(mParseInfo.sSourceCode, "^\s*\b(struct)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)", RegexOptions.Multiline)
-                    Dim mAnchorStructMatches As MatchCollection = Regex.Matches(mParseInfo.sSourceCode, "\b(struct)\b", RegexOptions.Multiline)
+                    Dim mPossibleStructMatches As MatchCollection = ClassRegexLock.Matches(mParseInfo.sSourceCode, "^\s*\b(struct)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)", RegexOptions.Multiline)
+                    Dim mAnchorStructMatches As MatchCollection = ClassRegexLock.Matches(mParseInfo.sSourceCode, "\b(struct)\b", RegexOptions.Multiline)
 
                     Dim mMatch As Match
                     Dim iAnchorIndex As Integer
@@ -1275,8 +1275,8 @@ Public Class ClassSyntaxParser
             ''' <param name="mParseInfo"></param>
             Public Sub ParseEnumStructs(mParseInfo As STRUC_AUTOCOMPLETE_PARSE_PRE_INFO)
                 If (mParseInfo.sSource.Contains("enum") AndAlso mParseInfo.sSource.Contains("struct")) Then
-                    Dim mPossibleEnumStructMatches As MatchCollection = Regex.Matches(mParseInfo.sSourceCode, "^\s*\b(enum)\b\s+\b(struct)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)", RegexOptions.Multiline)
-                    Dim mAnchorEnumStructMatches As MatchCollection = Regex.Matches(mParseInfo.sSourceCode, "\b(enum)\b", RegexOptions.Multiline)
+                    Dim mPossibleEnumStructMatches As MatchCollection = ClassRegexLock.Matches(mParseInfo.sSourceCode, "^\s*\b(enum)\b\s+\b(struct)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)", RegexOptions.Multiline)
+                    Dim mAnchorEnumStructMatches As MatchCollection = ClassRegexLock.Matches(mParseInfo.sSourceCode, "\b(enum)\b", RegexOptions.Multiline)
 
                     Dim mMatch As Match
                     Dim iAnchorIndex As Integer
@@ -1335,8 +1335,8 @@ Public Class ClassSyntaxParser
             Public Sub ParseMethodmapEnums(mParseInfo As STRUC_AUTOCOMPLETE_PARSE_PRE_INFO)
                 If ((ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_7 OrElse ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_MIX) AndAlso
                             mParseInfo.sSource.Contains("methodmap")) Then
-                    Dim mPossibleEnumMatches As MatchCollection = Regex.Matches(mParseInfo.sSourceCode, "^\s*\b(methodmap)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)", RegexOptions.Multiline)
-                    Dim mAnchorEnumMatches As MatchCollection = Regex.Matches(mParseInfo.sSourceCode, "\b(methodmap)\b", RegexOptions.Multiline)
+                    Dim mPossibleEnumMatches As MatchCollection = ClassRegexLock.Matches(mParseInfo.sSourceCode, "^\s*\b(methodmap)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)", RegexOptions.Multiline)
+                    Dim mAnchorEnumMatches As MatchCollection = ClassRegexLock.Matches(mParseInfo.sSourceCode, "\b(methodmap)\b", RegexOptions.Multiline)
 
                     Dim mMatch As Match
                     Dim iAnchorIndex As Integer
@@ -1395,8 +1395,8 @@ Public Class ClassSyntaxParser
             Public Sub ParseTypesetEnums(mParseInfo As STRUC_AUTOCOMPLETE_PARSE_PRE_INFO)
                 If ((ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_7 OrElse ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_MIX) AndAlso
                             mParseInfo.sSource.Contains("typeset")) Then
-                    Dim mPossibleEnumMatches As MatchCollection = Regex.Matches(mParseInfo.sSourceCode, "^\s*\b(typeset)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)", RegexOptions.Multiline)
-                    Dim mAnchorEnumMatches As MatchCollection = Regex.Matches(mParseInfo.sSourceCode, "\b(typeset)\b", RegexOptions.Multiline)
+                    Dim mPossibleEnumMatches As MatchCollection = ClassRegexLock.Matches(mParseInfo.sSourceCode, "^\s*\b(typeset)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)", RegexOptions.Multiline)
+                    Dim mAnchorEnumMatches As MatchCollection = ClassRegexLock.Matches(mParseInfo.sSourceCode, "\b(typeset)\b", RegexOptions.Multiline)
 
                     Dim mMatch As Match
                     Dim iAnchorIndex As Integer
@@ -1455,8 +1455,8 @@ Public Class ClassSyntaxParser
             Public Sub ParseTypedefEnums(mParseInfo As STRUC_AUTOCOMPLETE_PARSE_PRE_INFO)
                 If ((ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_7 OrElse ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_MIX) AndAlso
                             mParseInfo.sSource.Contains("typedef")) Then
-                    Dim mPossibleEnumMatches As MatchCollection = Regex.Matches(mParseInfo.sSourceCode, "^\s*\b(typedef)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)", RegexOptions.Multiline)
-                    Dim mAnchorEnumMatches As MatchCollection = Regex.Matches(mParseInfo.sSourceCode, "\b(typedef)\b", RegexOptions.Multiline)
+                    Dim mPossibleEnumMatches As MatchCollection = ClassRegexLock.Matches(mParseInfo.sSourceCode, "^\s*\b(typedef)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)", RegexOptions.Multiline)
+                    Dim mAnchorEnumMatches As MatchCollection = ClassRegexLock.Matches(mParseInfo.sSourceCode, "\b(typedef)\b", RegexOptions.Multiline)
 
                     Dim mMatch As Match
                     Dim iAnchorIndex As Integer
@@ -1515,8 +1515,8 @@ Public Class ClassSyntaxParser
             Public Sub ParseFunctagEnums(mParseInfo As STRUC_AUTOCOMPLETE_PARSE_PRE_INFO)
                 If ((ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_6 OrElse ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_MIX) AndAlso
                             mParseInfo.sSource.Contains("functag")) Then
-                    Dim mPossibleEnumMatches As MatchCollection = Regex.Matches(mParseInfo.sSourceCode, "^\s*\b(functag)\b\s+\b(public)\b\s+(?<Tag>\b[a-zA-Z0-9_]+\b\s+|\b[a-zA-Z0-9_]+\b\:\s*|)(?<Name>\b[a-zA-Z0-9_]+\b)\s*\(", RegexOptions.Multiline)
-                    Dim mAnchorEnumMatches As MatchCollection = Regex.Matches(mParseInfo.sSourceCode, "\b(functag)\b", RegexOptions.Multiline)
+                    Dim mPossibleEnumMatches As MatchCollection = ClassRegexLock.Matches(mParseInfo.sSourceCode, "^\s*\b(functag)\b\s+\b(public)\b\s+(?<Tag>\b[a-zA-Z0-9_]+\b\s+|\b[a-zA-Z0-9_]+\b\:\s*|)(?<Name>\b[a-zA-Z0-9_]+\b)\s*\(", RegexOptions.Multiline)
+                    Dim mAnchorEnumMatches As MatchCollection = ClassRegexLock.Matches(mParseInfo.sSourceCode, "\b(functag)\b", RegexOptions.Multiline)
 
                     Dim mMatch As Match
                     Dim iAnchorIndex As Integer
@@ -1575,8 +1575,8 @@ Public Class ClassSyntaxParser
             Public Sub ParseFuncenumEnums(mParseInfo As STRUC_AUTOCOMPLETE_PARSE_PRE_INFO)
                 If ((ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_6 OrElse ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_MIX) AndAlso
                             mParseInfo.sSource.Contains("funcenum")) Then
-                    Dim mPossibleEnumMatches As MatchCollection = Regex.Matches(mParseInfo.sSourceCode, "^\s*\b(funcenum)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)", RegexOptions.Multiline)
-                    Dim mAnchorEnumMatches As MatchCollection = Regex.Matches(mParseInfo.sSourceCode, "\b(funcenum)\b", RegexOptions.Multiline)
+                    Dim mPossibleEnumMatches As MatchCollection = ClassRegexLock.Matches(mParseInfo.sSourceCode, "^\s*\b(funcenum)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)", RegexOptions.Multiline)
+                    Dim mAnchorEnumMatches As MatchCollection = ClassRegexLock.Matches(mParseInfo.sSourceCode, "\b(funcenum)\b", RegexOptions.Multiline)
 
                     Dim mMatch As Match
                     Dim iAnchorIndex As Integer
@@ -1635,8 +1635,8 @@ Public Class ClassSyntaxParser
             Public Sub ParseEnums(mFormMain As FormMain, mParseInfo As STRUC_AUTOCOMPLETE_PARSE_PRE_INFO)
                 If (mParseInfo.sSource.Contains("enum")) Then
 
-                    Dim mPossibleEnumMatches As MatchCollection = Regex.Matches(mParseInfo.sSourceCode, "^\s*\b(enum)\b\s*((?<Tag>\b[a-zA-Z0-9_]+\b)(\:)(?<Name>\b[a-zA-Z0-9_]+\b)\s*(\(.*?\)){0,1}|(?<Name>\b[a-zA-Z0-9_]+\b)(\:){0,1}\s*(\(.*?\)){0,1}|\(.*?\)|)\s*(?<BraceStart>\{)", RegexOptions.Multiline)
-                    Dim mAnchorEnumMatches As MatchCollection = Regex.Matches(mParseInfo.sSourceCode, "\b(enum)\b", RegexOptions.Multiline)
+                    Dim mPossibleEnumMatches As MatchCollection = ClassRegexLock.Matches(mParseInfo.sSourceCode, "^\s*\b(enum)\b\s*((?<Tag>\b[a-zA-Z0-9_]+\b)(\:)(?<Name>\b[a-zA-Z0-9_]+\b)\s*(\(.*?\)){0,1}|(?<Name>\b[a-zA-Z0-9_]+\b)(\:){0,1}\s*(\(.*?\)){0,1}|\(.*?\)|)\s*(?<BraceStart>\{)", RegexOptions.Multiline)
+                    Dim mAnchorEnumMatches As MatchCollection = ClassRegexLock.Matches(mParseInfo.sSourceCode, "\b(enum)\b", RegexOptions.Multiline)
                     Dim iBraceList As Integer()() = ClassSyntaxTools.ClassSyntaxHelpers.GetExpressionBetweenCharacters(mParseInfo.sSourceCode, "{"c, "}"c, 1, mParseInfo.iLanguage, True)
 
 
@@ -1712,7 +1712,7 @@ Public Class ClassSyntaxParser
                                     End If
 
                                     sLine = mEnumBuilder.ToString
-                                    sLine = Regex.Replace(sLine.Trim, "\s+", " ")
+                                    sLine = ClassRegexLock.Replace(sLine.Trim, "\s+", " ")
 
                                     lEnumSplitList.Add(sLine)
                                     mEnumBuilder = New StringBuilder
@@ -1727,7 +1727,7 @@ Public Class ClassSyntaxParser
 
                         If (mEnumBuilder.Length > 0) Then
                             sLine = mEnumBuilder.ToString
-                            sLine = Regex.Replace(sLine.Trim, "\s+", " ")
+                            sLine = ClassRegexLock.Replace(sLine.Trim, "\s+", " ")
 
                             If (Not String.IsNullOrEmpty(sLine)) Then
                                 lEnumSplitList.Add(sLine)
@@ -1745,7 +1745,7 @@ Public Class ClassSyntaxParser
                         For ii = 0 To sEnumSourceLines.Length - 1
                             iTargetEnumSplitListIndex = -1
                             For iii = 0 To lEnumSplitList.Count - 1
-                                If (sEnumSourceLines(ii).Contains(lEnumSplitList(iii)) AndAlso Regex.IsMatch(sEnumSourceLines(ii), String.Format("\b{0}\b", Regex.Escape(lEnumSplitList(iii))))) Then
+                                If (sEnumSourceLines(ii).Contains(lEnumSplitList(iii)) AndAlso ClassRegexLock.IsMatch(sEnumSourceLines(ii), String.Format("\b{0}\b", Regex.Escape(lEnumSplitList(iii))))) Then
                                     iTargetEnumSplitListIndex = iii
                                     Exit For
                                 End If
@@ -1755,13 +1755,13 @@ Public Class ClassSyntaxParser
                             End If
 
                             While True
-                                mMatch2 = Regex.Match(sEnumSourceLines(ii), "/\*(.*?)\*/\s*$")
+                                mMatch2 = ClassRegexLock.Match(sEnumSourceLines(ii), "/\*(.*?)\*/\s*$")
                                 If (mMatch2.Success) Then
                                     lEnumCommentArray(iTargetEnumSplitListIndex) = mMatch2.Value
                                     Exit While
                                 End If
                                 If (ii > 1) Then
-                                    mMatch2 = Regex.Match(sEnumSourceLines(ii - 1), "^\s*(?<Comment>//(.*?)$)")
+                                    mMatch2 = ClassRegexLock.Match(sEnumSourceLines(ii - 1), "^\s*(?<Comment>//(.*?)$)")
                                     If (mMatch2.Success) Then
                                         lEnumCommentArray(iTargetEnumSplitListIndex) = mMatch2.Groups("Comment").Value
                                         Exit While
@@ -1801,7 +1801,7 @@ Public Class ClassSyntaxParser
                             Dim sEnumFull As String = lEnumSplitList(ii)
                             Dim sEnumComment As String = lEnumCommentArray(ii)
 
-                            mMatch2 = Regex.Match(sEnumFull, "^\s*(?<Tag>\b[a-zA-Z0-9_]+\b:)*(?<Name>\b[a-zA-Z0-9_]+\b)")
+                            mMatch2 = ClassRegexLock.Match(sEnumFull, "^\s*(?<Tag>\b[a-zA-Z0-9_]+\b:)*(?<Name>\b[a-zA-Z0-9_]+\b)")
                             If (Not mMatch2.Groups("Name").Success) Then
                                 Continue For
                             End If
@@ -1867,7 +1867,7 @@ Public Class ClassSyntaxParser
                             Continue For
                         End If
 
-                        mMatch = Regex.Match(sLines(i), "(?<FullDefine>^\s*#define\s+(?<Name>\b[a-zA-Z0-9_]+\b))")
+                        mMatch = ClassRegexLock.Match(sLines(i), "(?<FullDefine>^\s*#define\s+(?<Name>\b[a-zA-Z0-9_]+\b))")
                         If (Not mMatch.Success) Then
                             Continue For
                         End If
@@ -1881,7 +1881,7 @@ Public Class ClassSyntaxParser
                         sName = mMatch.Groups("Name").Value
                         sFullDefine = mMatch.Groups("FullDefine").Value
 
-                        sFullDefine = Regex.Match(sLines(i), String.Format("{0}(.*?)$", Regex.Escape(sFullDefine))).Value
+                        sFullDefine = ClassRegexLock.Match(sLines(i), String.Format("{0}(.*?)$", Regex.Escape(sFullDefine))).Value
                         sFullName = sFullDefine
 
                         sFullName = sFullName.Replace(vbTab, " ")
@@ -1889,7 +1889,7 @@ Public Class ClassSyntaxParser
                         sAnchorName = "define"
                         iAnchorIndex = 0
                         For ii = 0 To i - 1
-                            For Each mAnchorMatch As Match In Regex.Matches(sLines(ii), String.Format("\b({0})\b", sAnchorName))
+                            For Each mAnchorMatch As Match In ClassRegexLock.Matches(sLines(ii), String.Format("\b({0})\b", sAnchorName))
                                 Dim iAnchorOffset = mSourceAnalysis.GetIndexFromLine(ii) + mAnchorMatch.Index
 
                                 If (mSourceAnalysis.m_InNonCode(iAnchorOffset)) Then
@@ -1957,17 +1957,17 @@ Public Class ClassSyntaxParser
                         End If
 
                         'SP 1.7 +Tags
-                        mMatch = Regex.Match(sLines(i), String.Format("^\s*(?<Types>public(\b[a-zA-Z0-9_ ]+\b)*)\s+(?<Tag>\b{0}\b(\[\s*\])*\s)\s*(?<Name>\b[a-zA-Z0-9_]+\b)(?<Other>(.*?))$", sRegExTypePattern))
+                        mMatch = ClassRegexLock.Match(sLines(i), String.Format("^\s*(?<Types>public(\b[a-zA-Z0-9_ ]+\b)*)\s+(?<Tag>\b{0}\b(\[\s*\])*\s)\s*(?<Name>\b[a-zA-Z0-9_]+\b)(?<Other>(.*?))$", sRegExTypePattern))
                         If (Not mMatch.Success) Then
                             If (ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_7) Then
                                 Continue For
                             End If
 
                             'SP 1.6 +Tags
-                            mMatch = Regex.Match(sLines(i), String.Format("^\s*(?<Types>public(\b[a-zA-Z0-9_ ]+\b)*)\s+(?<Tag>\b{0}\b\:)(?<Name>\b[a-zA-Z0-9_]+\b)(?<Other>(.*?))$", sRegExTypePattern, "{0}"))
+                            mMatch = ClassRegexLock.Match(sLines(i), String.Format("^\s*(?<Types>public(\b[a-zA-Z0-9_ ]+\b)*)\s+(?<Tag>\b{0}\b\:)(?<Name>\b[a-zA-Z0-9_]+\b)(?<Other>(.*?))$", sRegExTypePattern, "{0}"))
                             If (Not mMatch.Success) Then
                                 'SP 1.6 -Tags
-                                mMatch = Regex.Match(sLines(i), String.Format("^\s*(?<Types>public(\b[a-zA-Z0-9_ ]+\b)*)\s+(?<!<Tag>\b{0}\b\:)(?<Name>\b[a-zA-Z0-9_]+\b)(?<Other>(.*?))$", sRegExTypePattern, "{0}"))
+                                mMatch = ClassRegexLock.Match(sLines(i), String.Format("^\s*(?<Types>public(\b[a-zA-Z0-9_ ]+\b)*)\s+(?<!<Tag>\b{0}\b\:)(?<Name>\b[a-zA-Z0-9_]+\b)(?<Other>(.*?))$", sRegExTypePattern, "{0}"))
                                 If (Not mMatch.Success) Then
                                     Continue For
                                 End If
@@ -1985,7 +1985,7 @@ Public Class ClassSyntaxParser
 
                         sFullName = ""
                         sName = mMatch.Groups("Name").Value
-                        sComment = Regex.Match(mMatch.Groups("Other").Value, "/\*(.*?)\*/\s*$").Value
+                        sComment = ClassRegexLock.Match(mMatch.Groups("Other").Value, "/\*(.*?)\*/\s*$").Value
                         sTypes = mMatch.Groups("Types").Value
                         sTag = mMatch.Groups("Tag").Value
                         sOther = mMatch.Groups("Other").Value.Trim
@@ -2011,7 +2011,7 @@ Public Class ClassSyntaxParser
                         sAnchorName = "public"
                         iAnchorIndex = 0
                         For ii = 0 To i - 1
-                            For Each mAnchorMatch As Match In Regex.Matches(sLines(ii), String.Format("\b({0})\b", sAnchorName))
+                            For Each mAnchorMatch As Match In ClassRegexLock.Matches(sLines(ii), String.Format("\b({0})\b", sAnchorName))
                                 Dim iAnchorOffset = mSourceAnalysis.GetIndexFromLine(ii) + mAnchorMatch.Index
 
                                 If (mSourceAnalysis.m_InNonCode(iAnchorOffset)) Then
@@ -2059,8 +2059,8 @@ Public Class ClassSyntaxParser
             Public Sub ParseFuncenums(mFormMain As FormMain, mParseInfo As STRUC_AUTOCOMPLETE_PARSE_POST_INFO)
                 If ((ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_6 OrElse ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_MIX) AndAlso
                             mParseInfo.sSource.Contains("funcenum")) Then
-                    Dim mPossibleEnumMatches As MatchCollection = Regex.Matches(mParseInfo.sSource, "^\s*\b(funcenum)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)\s*(?<BraceStart>\{)", RegexOptions.Multiline)
-                    Dim mAnchorEnumMatches As MatchCollection = Regex.Matches(mParseInfo.sSource, "\b(funcenum)\b", RegexOptions.Multiline)
+                    Dim mPossibleEnumMatches As MatchCollection = ClassRegexLock.Matches(mParseInfo.sSource, "^\s*\b(funcenum)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)\s*(?<BraceStart>\{)", RegexOptions.Multiline)
+                    Dim mAnchorEnumMatches As MatchCollection = ClassRegexLock.Matches(mParseInfo.sSource, "\b(funcenum)\b", RegexOptions.Multiline)
                     Dim iBraceList As Integer()() = ClassSyntaxTools.ClassSyntaxHelpers.GetExpressionBetweenCharacters(mParseInfo.sSource, "{"c, "}"c, 1, mParseInfo.iLanguage, True)
                     Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(mParseInfo.sSource, mParseInfo.iLanguage)
 
@@ -2141,9 +2141,9 @@ Public Class ClassSyntaxParser
                                     End If
 
                                     sLine = mEnumBuilder.ToString
-                                    sLine = Regex.Replace(sLine.Trim, "\s+", " ")
+                                    sLine = ClassRegexLock.Replace(sLine.Trim, "\s+", " ")
 
-                                    iInvalidLen = Regex.Match(sLine, "^(.*?)(?<End>\b[a-zA-Z0-9_]+\b)").Groups("End").Index
+                                    iInvalidLen = ClassRegexLock.Match(sLine, "^(.*?)(?<End>\b[a-zA-Z0-9_]+\b)").Groups("End").Index
                                     If (iInvalidLen > 0) Then
                                         sLine = sLine.Remove(0, iInvalidLen)
                                     End If
@@ -2159,9 +2159,9 @@ Public Class ClassSyntaxParser
 
                         If (mEnumBuilder.Length > 0) Then
                             sLine = mEnumBuilder.ToString
-                            sLine = Regex.Replace(sLine.Trim, "\s+", " ")
+                            sLine = ClassRegexLock.Replace(sLine.Trim, "\s+", " ")
 
-                            iInvalidLen = Regex.Match(sLine, "^(.*?)(?<End>\b[a-zA-Z0-9_]+\b)").Groups("End").Index
+                            iInvalidLen = ClassRegexLock.Match(sLine, "^(.*?)(?<End>\b[a-zA-Z0-9_]+\b)").Groups("End").Index
                             If (iInvalidLen > 0) Then
                                 sLine = sLine.Remove(0, iInvalidLen)
 
@@ -2192,13 +2192,13 @@ Public Class ClassSyntaxParser
                             bCommentStart = False
                             sComment = ""
                             For iii = iLine - 1 To 0 Step -1
-                                mRegMatch2 = Regex.Match(sEnumSourceLines(iii), "^\s*(?<Start>//(.*?))$")
+                                mRegMatch2 = ClassRegexLock.Match(sEnumSourceLines(iii), "^\s*(?<Start>//(.*?))$")
                                 If (Not bCommentStart AndAlso mRegMatch2.Success) Then
                                     sComment = mRegMatch2.Groups("Start").Value & Environment.NewLine & sComment
                                     Continue For
                                 End If
 
-                                mRegMatch2 = Regex.Match(sEnumSourceLines(iii), "(?<Start>(/\*+))|(?<End>\*+/|(?<Pragma>)^\s*#pragma)")
+                                mRegMatch2 = ClassRegexLock.Match(sEnumSourceLines(iii), "(?<Start>(/\*+))|(?<End>\*+/|(?<Pragma>)^\s*#pragma)")
 
                                 If (Not bCommentStart AndAlso Not mRegMatch2.Groups("End").Success) Then
                                     Exit For
@@ -2229,9 +2229,9 @@ Public Class ClassSyntaxParser
                             Dim sEnumFull As String = lEnumSplitList(ii)
                             Dim sEnumComment As String = lEnumCommentArray(ii)
 
-                            sEnumComment = Regex.Replace(sEnumComment, "^\s+", "", RegexOptions.Multiline)
+                            sEnumComment = ClassRegexLock.Replace(sEnumComment, "^\s+", "", RegexOptions.Multiline)
 
-                            Dim regMatch As Match = Regex.Match(sEnumFull, "^\s*(?<Tag>\b[a-zA-Z0-9_]+\b:)*(?<Name>\b[a-zA-Z0-9_]+\b)")
+                            Dim regMatch As Match = ClassRegexLock.Match(sEnumFull, "^\s*(?<Tag>\b[a-zA-Z0-9_]+\b:)*(?<Name>\b[a-zA-Z0-9_]+\b)")
                             If (Not regMatch.Groups("Name").Success) Then
                                 Continue For
                             End If
@@ -2243,7 +2243,7 @@ Public Class ClassSyntaxParser
                                                                                         mParseInfo.sFile,
                                                                                         ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCENUM,
                                                                                         sEnumName,
-                                                                                        "public " & (Regex.Replace(sEnumFull, "\s*\b(public)\b\s*\(", sEnumName & "(")),
+                                                                                        "public " & (ClassRegexLock.Replace(sEnumFull, "\s*\b(public)\b\s*\(", sEnumName & "(")),
                                                                                         String.Format("funcenum {0} {1}", sEnumName, sEnumFull))
 
                             mAutocomplete.m_Data("FuncenumAnchorName") = "funcenum"
@@ -2277,8 +2277,8 @@ Public Class ClassSyntaxParser
                             mParseInfo.sSource.Contains("typeset")) Then
                     Dim sRegExTypePattern As String = g_ClassParse.GetTypeNamesToPattern(mParseInfo.lNewAutocompleteList)
 
-                    Dim mPossibleTypesetMatches As MatchCollection = Regex.Matches(mParseInfo.sSource, "^\s*\b(typeset)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)\s*(?<BraceStart>\{)", RegexOptions.Multiline)
-                    Dim mAnchorTypesetMatches As MatchCollection = Regex.Matches(mParseInfo.sSource, "\b(typeset)\b", RegexOptions.Multiline)
+                    Dim mPossibleTypesetMatches As MatchCollection = ClassRegexLock.Matches(mParseInfo.sSource, "^\s*\b(typeset)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)\s*(?<BraceStart>\{)", RegexOptions.Multiline)
+                    Dim mAnchorTypesetMatches As MatchCollection = ClassRegexLock.Matches(mParseInfo.sSource, "\b(typeset)\b", RegexOptions.Multiline)
                     Dim iBraceList As Integer()() = ClassSyntaxTools.ClassSyntaxHelpers.GetExpressionBetweenCharacters(mParseInfo.sSource, "{"c, "}"c, 1, mParseInfo.iLanguage, True)
                     Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(mParseInfo.sSource, mParseInfo.iLanguage)
 
@@ -2329,7 +2329,7 @@ Public Class ClassSyntaxParser
                         Dim mTypesetSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sTypesetSource, mParseInfo.iLanguage)
                         Dim iTypesetBraceList As Integer()() = ClassSyntaxTools.ClassSyntaxHelpers.GetExpressionBetweenCharacters(sTypesetSource, "("c, ")"c, 1, mParseInfo.iLanguage, True)
 
-                        Dim mMethodMatches As MatchCollection = Regex.Matches(sTypesetSource, String.Format("^\s*(?<Type>\b(function)\b)\s+(?<Tag>\b({0})\b)\s*(?<BraceStart>\()", sRegExTypePattern), RegexOptions.Multiline)
+                        Dim mMethodMatches As MatchCollection = ClassRegexLock.Matches(sTypesetSource, String.Format("^\s*(?<Type>\b(function)\b)\s+(?<Tag>\b({0})\b)\s*(?<BraceStart>\()", sRegExTypePattern), RegexOptions.Multiline)
 
                         Dim SB As StringBuilder
 
@@ -2353,8 +2353,8 @@ Public Class ClassSyntaxParser
                             Next
 
                             Dim sComment As String = StrReverse(SB.ToString)
-                            sComment = Regex.Replace(sComment, "^\s+", "", RegexOptions.Multiline)
-                            sComment = Regex.Replace(sComment, "\s+$", "", RegexOptions.Multiline)
+                            sComment = ClassRegexLock.Replace(sComment, "^\s+", "", RegexOptions.Multiline)
+                            sComment = ClassRegexLock.Replace(sComment, "\s+$", "", RegexOptions.Multiline)
                             Dim sType As String = mMethodMatches(ii).Groups("Type").Value
                             Dim sTag As String = mMethodMatches(ii).Groups("Tag").Value.Trim
                             Dim iBraceStart As Integer = mMethodMatches(ii).Groups("BraceStart").Index
@@ -2411,8 +2411,8 @@ Public Class ClassSyntaxParser
                             mParseInfo.sSource.Contains("typedef")) Then
                     Dim sRegExTypePattern As String = g_ClassParse.GetTypeNamesToPattern(mParseInfo.lNewAutocompleteList)
 
-                    Dim mPossibleTypedefMatches As MatchCollection = Regex.Matches(mParseInfo.sSource, String.Format("^\s*\b(typedef)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)\s+=\s+\b(function)\b\s+(?<Tag>\b({0})\b)\s*(?<BraceStart>\()", sRegExTypePattern), RegexOptions.Multiline)
-                    Dim mAnchorTypedefMatches As MatchCollection = Regex.Matches(mParseInfo.sSource, "\b(typedef)\b", RegexOptions.Multiline)
+                    Dim mPossibleTypedefMatches As MatchCollection = ClassRegexLock.Matches(mParseInfo.sSource, String.Format("^\s*\b(typedef)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)\s+=\s+\b(function)\b\s+(?<Tag>\b({0})\b)\s*(?<BraceStart>\()", sRegExTypePattern), RegexOptions.Multiline)
+                    Dim mAnchorTypedefMatches As MatchCollection = ClassRegexLock.Matches(mParseInfo.sSource, "\b(typedef)\b", RegexOptions.Multiline)
                     Dim iBraceList As Integer()() = ClassSyntaxTools.ClassSyntaxHelpers.GetExpressionBetweenCharacters(mParseInfo.sSource, "("c, ")"c, 1, mParseInfo.iLanguage, True)
                     Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(mParseInfo.sSource, mParseInfo.iLanguage)
 
@@ -2484,8 +2484,8 @@ Public Class ClassSyntaxParser
 
                         If (True) Then
                             Dim sComment As String = StrReverse(SB.ToString)
-                            sComment = Regex.Replace(sComment, "^\s+", "", RegexOptions.Multiline)
-                            sComment = Regex.Replace(sComment, "\s+$", "", RegexOptions.Multiline)
+                            sComment = ClassRegexLock.Replace(sComment, "^\s+", "", RegexOptions.Multiline)
+                            sComment = ClassRegexLock.Replace(sComment, "\s+$", "", RegexOptions.Multiline)
 
                             Dim mAutocomplete As New ClassSyntaxTools.STRUC_AUTOCOMPLETE(sComment,
                                                                                         IO.Path.GetFileName(mParseInfo.sFile),
@@ -2578,17 +2578,17 @@ Public Class ClassSyntaxParser
                     sBraceText = sLines(i).Substring(iBraceList(0)(0), iBraceList(0)(1) - iBraceList(0)(0) + 1)
 
                     'SP 1.7 +Tags
-                    mMatch = Regex.Match(sLines(i), String.Format("^\s*(?<Types>[a-zA-Z0-9_ ]*)(?<Tag>\b{0}\b\s)\s*(?<Name>\b[a-zA-Z0-9_]+\b)\s*{1}(?<IsFunc>\s*;){2}", sRegExTypePattern, Regex.Escape(sBraceText), "{0,1}"))
+                    mMatch = ClassRegexLock.Match(sLines(i), String.Format("^\s*(?<Types>[a-zA-Z0-9_ ]*)(?<Tag>\b{0}\b\s)\s*(?<Name>\b[a-zA-Z0-9_]+\b)\s*{1}(?<IsFunc>\s*;){2}", sRegExTypePattern, Regex.Escape(sBraceText), "{0,1}"))
                     If (Not mMatch.Success) Then
                         If (ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_7) Then
                             Continue For
                         End If
 
                         'SP 1.6 +Tags
-                        mMatch = Regex.Match(sLines(i), String.Format("^\s*(?<Types>[a-zA-Z0-9_ ]*)(?<Tag>\b{0}\b\:)(?<Name>\b[a-zA-Z0-9_]+\b)\s*{1}(?<IsFunc>\s*;){2}", sRegExTypePattern, Regex.Escape(sBraceText), "{0,1}"))
+                        mMatch = ClassRegexLock.Match(sLines(i), String.Format("^\s*(?<Types>[a-zA-Z0-9_ ]*)(?<Tag>\b{0}\b\:)(?<Name>\b[a-zA-Z0-9_]+\b)\s*{1}(?<IsFunc>\s*;){2}", sRegExTypePattern, Regex.Escape(sBraceText), "{0,1}"))
                         If (Not mMatch.Success) Then
                             'SP 1.6 -Tags
-                            mMatch = Regex.Match(sLines(i), String.Format("^\s*(?<Types>[a-zA-Z0-9_ ]*)(?<!<Tag>\b{0}\b\:)(?<Name>\b[a-zA-Z0-9_]+\b)\s*{1}(?<IsFunc>\s*;){2}", sRegExTypePattern, Regex.Escape(sBraceText), "{0,1}"))
+                            mMatch = ClassRegexLock.Match(sLines(i), String.Format("^\s*(?<Types>[a-zA-Z0-9_ ]*)(?<!<Tag>\b{0}\b\:)(?<Name>\b[a-zA-Z0-9_]+\b)\s*{1}(?<IsFunc>\s*;){2}", sRegExTypePattern, Regex.Escape(sBraceText), "{0,1}"))
                             If (Not mMatch.Success) Then
                                 Continue For
                             End If
@@ -2623,7 +2623,7 @@ Public Class ClassSyntaxParser
 
                     If ((iTypes And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.FUNCTAG) <> 0) Then
                         While True
-                            mFuncTagMatch = Regex.Match(sFullname, "(?<Name>\b[a-zA-Z0-9_]+\b)\s+(?<Tag>\b[a-zA-Z0-9_]+\:\b)*\b(public)\b\s*\(")
+                            mFuncTagMatch = ClassRegexLock.Match(sFullname, "(?<Name>\b[a-zA-Z0-9_]+\b)\s+(?<Tag>\b[a-zA-Z0-9_]+\:\b)*\b(public)\b\s*\(")
                             If (mFuncTagMatch.Success) Then
                                 sTypes = New String() {"functag"}
                                 sTag = mFuncTagMatch.Groups("Tag").Value
@@ -2634,7 +2634,7 @@ Public Class ClassSyntaxParser
                                 Exit While
                             End If
 
-                            mFuncTagMatch = Regex.Match(sFullname, "\b(public)\b\s+(?<Tag>\b[a-zA-Z0-9_]+\:\b)*(?<Name>\b[a-zA-Z0-9_]+\b)\s*\(")
+                            mFuncTagMatch = ClassRegexLock.Match(sFullname, "\b(public)\b\s+(?<Tag>\b[a-zA-Z0-9_]+\:\b)*(?<Name>\b[a-zA-Z0-9_]+\b)\s*\(")
                             If (mFuncTagMatch.Success) Then
                                 sTypes = New String() {"functag"}
                                 sTag = mFuncTagMatch.Groups("Tag").Value
@@ -2651,7 +2651,7 @@ Public Class ClassSyntaxParser
 
                     bCommentStart = False
                     For ii = i - 1 To 0 Step -1
-                        mRegMatch2 = Regex.Match(sLines(ii), "(?<Start>(/\*+))|(?<End>\*+/|(?<Pragma>)^\s*#pragma)")
+                        mRegMatch2 = ClassRegexLock.Match(sLines(ii), "(?<Start>(/\*+))|(?<End>\*+/|(?<Pragma>)^\s*#pragma)")
 
                         If (Not bCommentStart AndAlso Not mRegMatch2.Groups("End").Success) Then
                             Exit For
@@ -2675,13 +2675,13 @@ Public Class ClassSyntaxParser
                         End If
                     Next
 
-                    sComment = Regex.Replace(sComment, "^\s+", "", RegexOptions.Multiline)
+                    sComment = ClassRegexLock.Replace(sComment, "^\s+", "", RegexOptions.Multiline)
 
                     If (bIsFunctag) Then
                         sAnchorName = "functag"
                         iAnchorIndex = 0
                         For ii = 0 To i - 1
-                            For Each mAnchorMatch As Match In Regex.Matches(sLines(ii), String.Format("\b({0})\b", sAnchorName))
+                            For Each mAnchorMatch As Match In ClassRegexLock.Matches(sLines(ii), String.Format("\b({0})\b", sAnchorName))
                                 Dim iAnchorOffset = mSourceAnalysis.GetIndexFromLine(ii) + mAnchorMatch.Index
 
                                 If (mSourceAnalysis.m_InNonCode(iAnchorOffset)) Then
@@ -2743,7 +2743,7 @@ Public Class ClassSyntaxParser
 
                         iAnchorIndex = 0
                         For ii = 0 To i - 1
-                            For Each mAnchorMatch As Match In Regex.Matches(sLines(ii), String.Format("\b({0})\b", Regex.Escape(sAnchorName)))
+                            For Each mAnchorMatch As Match In ClassRegexLock.Matches(sLines(ii), String.Format("\b({0})\b", Regex.Escape(sAnchorName)))
                                 Dim iAnchorOffset = mSourceAnalysis.GetIndexFromLine(ii) + mAnchorMatch.Index
 
                                 If (mSourceAnalysis.m_InNonCode(iAnchorOffset)) Then
@@ -2793,10 +2793,10 @@ Public Class ClassSyntaxParser
                             mParseInfo.sSource.Contains("methodmap")) Then
                     Dim sRegExTypePattern As String = g_ClassParse.GetTypeNamesToPattern(mParseInfo.lNewAutocompleteList)
 
-                    Dim mPossibleMethodmapMatches As MatchCollection = Regex.Matches(mParseInfo.sSource, "^\s*\b(methodmap)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)(?<ParentingName>\s+\b[a-zA-Z0-9_]+\b){0,1}(?<FullParent>\s*\<\s*(?<Parent>\b[a-zA-Z0-9_]+\b)){0,1}\s*(?<BraceStart>\{)", RegexOptions.Multiline)
-                    Dim mAnchorMethodmapMatches As MatchCollection = Regex.Matches(mParseInfo.sSource, "\b(methodmap)\b", RegexOptions.Multiline)
-                    Dim mAnchorPublicMatches As MatchCollection = Regex.Matches(mParseInfo.sSource, "\b(public)\b", RegexOptions.Multiline)
-                    Dim mAnchorPropertyMatches As MatchCollection = Regex.Matches(mParseInfo.sSource, "\b(property)\b", RegexOptions.Multiline)
+                    Dim mPossibleMethodmapMatches As MatchCollection = ClassRegexLock.Matches(mParseInfo.sSource, "^\s*\b(methodmap)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)(?<ParentingName>\s+\b[a-zA-Z0-9_]+\b){0,1}(?<FullParent>\s*\<\s*(?<Parent>\b[a-zA-Z0-9_]+\b)){0,1}\s*(?<BraceStart>\{)", RegexOptions.Multiline)
+                    Dim mAnchorMethodmapMatches As MatchCollection = ClassRegexLock.Matches(mParseInfo.sSource, "\b(methodmap)\b", RegexOptions.Multiline)
+                    Dim mAnchorPublicMatches As MatchCollection = ClassRegexLock.Matches(mParseInfo.sSource, "\b(public)\b", RegexOptions.Multiline)
+                    Dim mAnchorPropertyMatches As MatchCollection = ClassRegexLock.Matches(mParseInfo.sSource, "\b(property)\b", RegexOptions.Multiline)
                     Dim iBraceList As Integer()() = ClassSyntaxTools.ClassSyntaxHelpers.GetExpressionBetweenCharacters(mParseInfo.sSource, "{"c, "}"c, 1, mParseInfo.iLanguage, True)
                     Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(mParseInfo.sSource, mParseInfo.iLanguage)
 
@@ -2910,7 +2910,7 @@ Public Class ClassSyntaxParser
                             mRegexSource.Append(sMethodmapSource(j))
                         Next
 
-                        Dim mMethodMatches As MatchCollection = Regex.Matches(mRegexSource.ToString,
+                        Dim mMethodMatches As MatchCollection = ClassRegexLock.Matches(mRegexSource.ToString,
                                                                               String.Format("^\s*(?<Type>\b(property|public\s+(static\s*){2}(native\s*){4}|public)\b)\s+((?<Tag>\b({0})\b\s)\s*(?<Name>\b[a-zA-Z0-9_]+\b)|(?<Constructor>\b{1}\b)|(?<Name>\b[a-zA-Z0-9_]+\b))\s*(?<BraceStart>\(){3}", sRegExTypePattern, sMethodMapName, "{0,1}", "{0,1}", "{0,1}"),
                                                                               RegexOptions.Multiline)
 
@@ -2936,8 +2936,8 @@ Public Class ClassSyntaxParser
                             Next
 
                             Dim sComment As String = StrReverse(SB.ToString)
-                            sComment = Regex.Replace(sComment, "^\s+", "", RegexOptions.Multiline)
-                            sComment = Regex.Replace(sComment, "\s+$", "", RegexOptions.Multiline)
+                            sComment = ClassRegexLock.Replace(sComment, "^\s+", "", RegexOptions.Multiline)
+                            sComment = ClassRegexLock.Replace(sComment, "\s+$", "", RegexOptions.Multiline)
                             Dim sType As String = mMethodMatches(ii).Groups("Type").Value
                             Dim sTag As String = mMethodMatches(ii).Groups("Tag").Value.Trim
                             Dim sName As String = mMethodMatches(ii).Groups("Name").Value
@@ -2961,7 +2961,7 @@ Public Class ClassSyntaxParser
                                     iAnchorIndex += 1
                                 Next
 
-                                Dim mSubAnchorPropertyMatches As MatchCollection = Regex.Matches(mRegexSource.ToString, String.Format("\b({0})\b", sAnchorName), RegexOptions.Multiline)
+                                Dim mSubAnchorPropertyMatches As MatchCollection = ClassRegexLock.Matches(mRegexSource.ToString, String.Format("\b({0})\b", sAnchorName), RegexOptions.Multiline)
                                 For j = 0 To mSubAnchorPropertyMatches.Count - 1
                                     If (mMethodmapSourceAnalysis.m_InNonCode(mSubAnchorPropertyMatches(j).Index)) Then
                                         Continue For
@@ -3023,7 +3023,7 @@ Public Class ClassSyntaxParser
                                     iAnchorIndex += 1
                                 Next
 
-                                Dim mSubAnchorPublicMatches As MatchCollection = Regex.Matches(mRegexSource.ToString, String.Format("\b({0})\b", sAnchorName), RegexOptions.Multiline)
+                                Dim mSubAnchorPublicMatches As MatchCollection = ClassRegexLock.Matches(mRegexSource.ToString, String.Format("\b({0})\b", sAnchorName), RegexOptions.Multiline)
                                 For j = 0 To mSubAnchorPublicMatches.Count - 1
                                     If (mMethodmapSourceAnalysis.m_InNonCode(mSubAnchorPublicMatches(j).Index)) Then
                                         Continue For
@@ -3146,8 +3146,8 @@ Public Class ClassSyntaxParser
                             mParseInfo.sSource.Contains("enum") AndAlso mParseInfo.sSource.Contains("struct")) Then
                     Dim sRegExTypePattern As String = g_ClassParse.GetTypeNamesToPattern(mParseInfo.lNewAutocompleteList)
 
-                    Dim mPossibleEnumStructMatches As MatchCollection = Regex.Matches(mParseInfo.sSource, "^\s*\b(enum)\b\s+\b(struct)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)\s*(?<BraceStart>\{)", RegexOptions.Multiline)
-                    Dim mAnchorEnumStructMatches As MatchCollection = Regex.Matches(mParseInfo.sSource, "\b(enum)\b", RegexOptions.Multiline)
+                    Dim mPossibleEnumStructMatches As MatchCollection = ClassRegexLock.Matches(mParseInfo.sSource, "^\s*\b(enum)\b\s+\b(struct)\b\s+(?<Name>\b[a-zA-Z0-9_]+\b)\s*(?<BraceStart>\{)", RegexOptions.Multiline)
+                    Dim mAnchorEnumStructMatches As MatchCollection = ClassRegexLock.Matches(mParseInfo.sSource, "\b(enum)\b", RegexOptions.Multiline)
                     Dim iBraceList As Integer()() = ClassSyntaxTools.ClassSyntaxHelpers.GetExpressionBetweenCharacters(mParseInfo.sSource, "{"c, "}"c, 1, mParseInfo.iLanguage, True)
                     Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(mParseInfo.sSource, mParseInfo.iLanguage)
 
@@ -3259,7 +3259,7 @@ Public Class ClassSyntaxParser
                                 SB.Append(sEnumStructSource(j))
                             Next
 
-                            Dim mFieldMatches As MatchCollection = Regex.Matches(SB.ToString,
+                            Dim mFieldMatches As MatchCollection = ClassRegexLock.Matches(SB.ToString,
                                                                               String.Format("^\s*(?<Tag>\b({0})\b\s)\s*(?<Name>\b[a-zA-Z0-9_]+\b)\s*(?<IsMethod>\(){1}", sRegExTypePattern, "{0,1}"),
                                                                               RegexOptions.Multiline)
 
@@ -3275,7 +3275,7 @@ Public Class ClassSyntaxParser
                                 'Just go to the struct instead
                                 sAnchorName = sName
                                 iAnchorIndex = 0
-                                Dim mAnchorFieldMatches As MatchCollection = Regex.Matches(mParseInfo.sSource, String.Format("\b({0})\b", Regex.Escape(sAnchorName)), RegexOptions.Multiline)
+                                Dim mAnchorFieldMatches As MatchCollection = ClassRegexLock.Matches(mParseInfo.sSource, String.Format("\b({0})\b", Regex.Escape(sAnchorName)), RegexOptions.Multiline)
                                 For j = 0 To mAnchorFieldMatches.Count - 1
                                     If (mSourceAnalysis.m_InNonCode(mAnchorFieldMatches(j).Index)) Then
                                         Continue For
@@ -3288,7 +3288,7 @@ Public Class ClassSyntaxParser
                                     iAnchorIndex += 1
                                 Next
 
-                                Dim mSubAnchorFieldMatches As MatchCollection = Regex.Matches(sEnumStructSource, String.Format("\b({0})\b", Regex.Escape(sAnchorName)), RegexOptions.Multiline)
+                                Dim mSubAnchorFieldMatches As MatchCollection = ClassRegexLock.Matches(sEnumStructSource, String.Format("\b({0})\b", Regex.Escape(sAnchorName)), RegexOptions.Multiline)
                                 For j = 0 To mSubAnchorFieldMatches.Count - 1
                                     If (mEnumStructSourceAnalysis.m_InNonCode(mSubAnchorFieldMatches(j).Index)) Then
                                         Continue For
@@ -3350,7 +3350,7 @@ Public Class ClassSyntaxParser
                                 mRegexSource.Append(sEnumStructSource(j))
                             Next
 
-                            Dim mMethodMatches As MatchCollection = Regex.Matches(mRegexSource.ToString,
+                            Dim mMethodMatches As MatchCollection = ClassRegexLock.Matches(mRegexSource.ToString,
                                                                              String.Format("^\s*(?<Type>)(?<Tag>\b({0})\b)\s+(?<Name>\b[a-zA-Z0-9_]+\b)\s*(?<BraceStart>\()", sRegExTypePattern),
                                                                              RegexOptions.Multiline)
 
@@ -3376,8 +3376,8 @@ Public Class ClassSyntaxParser
                                 Next
 
                                 Dim sComment As String = StrReverse(SB.ToString)
-                                sComment = Regex.Replace(sComment, "^\s+", "", RegexOptions.Multiline)
-                                sComment = Regex.Replace(sComment, "\s+$", "", RegexOptions.Multiline)
+                                sComment = ClassRegexLock.Replace(sComment, "^\s+", "", RegexOptions.Multiline)
+                                sComment = ClassRegexLock.Replace(sComment, "\s+$", "", RegexOptions.Multiline)
                                 Dim sTag As String = mMethodMatches(ii).Groups("Tag").Value.Trim
                                 Dim sName As String = mMethodMatches(ii).Groups("Name").Value
 
@@ -3398,7 +3398,7 @@ Public Class ClassSyntaxParser
 
                                 sAnchorName = sName
                                 iAnchorIndex = 0
-                                Dim mAnchorMethodMatches As MatchCollection = Regex.Matches(mParseInfo.sSource, String.Format("\b({0})\b", Regex.Escape(sAnchorName)), RegexOptions.Multiline)
+                                Dim mAnchorMethodMatches As MatchCollection = ClassRegexLock.Matches(mParseInfo.sSource, String.Format("\b({0})\b", Regex.Escape(sAnchorName)), RegexOptions.Multiline)
                                 For j = 0 To mAnchorMethodMatches.Count - 1
                                     If (mSourceAnalysis.m_InNonCode(mAnchorMethodMatches(j).Index)) Then
                                         Continue For
@@ -3411,7 +3411,7 @@ Public Class ClassSyntaxParser
                                     iAnchorIndex += 1
                                 Next
 
-                                Dim mSubAnchorMethodMatches As MatchCollection = Regex.Matches(mRegexSource.ToString, String.Format("\b({0})\b", Regex.Escape(sAnchorName)), RegexOptions.Multiline)
+                                Dim mSubAnchorMethodMatches As MatchCollection = ClassRegexLock.Matches(mRegexSource.ToString, String.Format("\b({0})\b", Regex.Escape(sAnchorName)), RegexOptions.Multiline)
                                 For j = 0 To mSubAnchorMethodMatches.Count - 1
                                     If (mEnumStructSourceAnalysis.m_InNonCode(mSubAnchorMethodMatches(j).Index)) Then
                                         Continue For
@@ -3818,7 +3818,7 @@ Public Class ClassSyntaxParser
 
                     'Get variables from statements
                     If (True) Then
-                        Dim mStatementMatches = Regex.Matches(mParseInfo.sSource, String.Format("(?<Name>{0})\s*(?<Start>\()", sStatementsVar))
+                        Dim mStatementMatches = ClassRegexLock.Matches(mParseInfo.sSource, String.Format("(?<Name>{0})\s*(?<Start>\()", sStatementsVar))
                         Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(mParseInfo.sSource, mParseInfo.iLanguage)
                         Dim mSourceBuilder As StringBuilder
 
@@ -3937,7 +3937,7 @@ Public Class ClassSyntaxParser
                                     Exit Select
                                 End If
 
-                                Dim mMatch As Match = Regex.Match(sLine, String.Format("^((?<Tag>{0})\:\s*)*(?<Var>\b[a-zA-Z_][a-zA-Z0-9_]*\b)\s*((?<End>$)|(?<IsFunc>\()|(?<IsMethodmap>\.)|(?<IsTag>\:)|(?<More>\W))", sRegExTypePattern))
+                                Dim mMatch As Match = ClassRegexLock.Match(sLine, String.Format("^((?<Tag>{0})\:\s*)*(?<Var>\b[a-zA-Z_][a-zA-Z0-9_]*\b)\s*((?<End>$)|(?<IsFunc>\()|(?<IsMethodmap>\.)|(?<IsTag>\:)|(?<More>\W))", sRegExTypePattern))
                                 Dim sTag As String = mMatch.Groups("Tag").Value.Trim
                                 Dim sVar As String = mMatch.Groups("Var").Value.Trim
 
@@ -3949,7 +3949,7 @@ Public Class ClassSyntaxParser
                                     Exit Select
                                 End If
 
-                                If (Regex.IsMatch(sVar, sRegExTypePattern)) Then
+                                If (ClassRegexLock.IsMatch(sVar, sRegExTypePattern)) Then
                                     Exit Select
                                 End If
 
@@ -3967,7 +3967,7 @@ Public Class ClassSyntaxParser
                                                                                       Return False
                                                                                   End If
 
-                                                                                  Return Regex.IsMatch(x.m_FunctionString, String.Format("\b{0}\b", Regex.Escape(sVar)))
+                                                                                  Return ClassRegexLock.IsMatch(x.m_FunctionString, String.Format("\b{0}\b", Regex.Escape(sVar)))
                                                                               End Function)) Then
                                     Exit Select
                                 End If
@@ -3996,7 +3996,7 @@ Public Class ClassSyntaxParser
 
                                     mParseInfo.lNewVarAutocompleteList.Add(mAutocomplete)
                                 Else
-                                    If (Not Regex.IsMatch(mItem.m_FullFunctionString, String.Format("\b{0}\b", Regex.Escape(sTag)))) Then
+                                    If (Not ClassRegexLock.IsMatch(mItem.m_FullFunctionString, String.Format("\b{0}\b", Regex.Escape(sTag)))) Then
                                         mItem.m_FullFunctionString = String.Format("{0}|{1}", mItem.m_FullFunctionString, sTag)
                                     End If
 
@@ -4020,7 +4020,7 @@ Public Class ClassSyntaxParser
                                     Exit Select
                                 End If
 
-                                Dim mMatch As Match = Regex.Match(sLine, String.Format("^(?<Tag>{0}\s+)*(?<Var>\b[a-zA-Z_][a-zA-Z0-9_]*\b)\s*((?<End>$)|(?<IsFunc>\()|(?<IsMethodmap>\.)|(?<IsTag>\:)|(?<More>\W))", sRegExTypePattern))
+                                Dim mMatch As Match = ClassRegexLock.Match(sLine, String.Format("^(?<Tag>{0}\s+)*(?<Var>\b[a-zA-Z_][a-zA-Z0-9_]*\b)\s*((?<End>$)|(?<IsFunc>\()|(?<IsMethodmap>\.)|(?<IsTag>\:)|(?<More>\W))", sRegExTypePattern))
                                 Dim sTag As String = mMatch.Groups("Tag").Value.Trim
                                 Dim sVar As String = mMatch.Groups("Var").Value.Trim
 
@@ -4032,7 +4032,7 @@ Public Class ClassSyntaxParser
                                     Exit Select
                                 End If
 
-                                If (Regex.IsMatch(sVar, sRegExTypePattern)) Then
+                                If (ClassRegexLock.IsMatch(sVar, sRegExTypePattern)) Then
                                     Exit Select
                                 End If
 
@@ -4050,7 +4050,7 @@ Public Class ClassSyntaxParser
                                                                                       Return False
                                                                                   End If
 
-                                                                                  Return Regex.IsMatch(x.m_FunctionString, String.Format("\b{0}\b", Regex.Escape(sVar)))
+                                                                                  Return ClassRegexLock.IsMatch(x.m_FunctionString, String.Format("\b{0}\b", Regex.Escape(sVar)))
                                                                               End Function)) Then
                                     Exit Select
                                 End If
@@ -4083,7 +4083,7 @@ Public Class ClassSyntaxParser
 
                                     mParseInfo.lNewVarAutocompleteList.Add(mAutocomplete)
                                 Else
-                                    If (Not Regex.IsMatch(mItem.m_FullFunctionString, String.Format("\b{0}\b", Regex.Escape(sTag)))) Then
+                                    If (Not ClassRegexLock.IsMatch(mItem.m_FullFunctionString, String.Format("\b{0}\b", Regex.Escape(sTag)))) Then
                                         mItem.m_FullFunctionString = String.Format("{0}|{1}", mItem.m_FullFunctionString, sTag)
                                     End If
 
@@ -4111,7 +4111,7 @@ Public Class ClassSyntaxParser
 
 
                         If (ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_6) Then
-                            For Each mMatch As Match In Regex.Matches(sLine, sOldStyleVarPattern)
+                            For Each mMatch As Match In ClassRegexLock.Matches(sLine, sOldStyleVarPattern)
                                 Dim iIndex As Integer = mMatch.Groups("Var").Index
                                 Dim sInit As String = mMatch.Groups("Init").Value.Trim
                                 Dim sTag As String = mMatch.Groups("Tag").Value.Trim
@@ -4134,7 +4134,7 @@ Public Class ClassSyntaxParser
                                     Continue For
                                 End If
 
-                                If (Regex.IsMatch(sVar, sRegExTypePattern)) Then
+                                If (ClassRegexLock.IsMatch(sVar, sRegExTypePattern)) Then
                                     Continue For
                                 End If
 
@@ -4152,7 +4152,7 @@ Public Class ClassSyntaxParser
                                                                                       Return False
                                                                                   End If
 
-                                                                                  Return Regex.IsMatch(x.m_FunctionString, String.Format("\b{0}\b", Regex.Escape(sVar)))
+                                                                                  Return ClassRegexLock.IsMatch(x.m_FunctionString, String.Format("\b{0}\b", Regex.Escape(sVar)))
                                                                               End Function)) Then
                                     Continue For
                                 End If
@@ -4181,10 +4181,10 @@ Public Class ClassSyntaxParser
 
                                     mParseInfo.lNewVarAutocompleteList.Add(mAutocomplete)
                                 Else
-                                    If (Not Regex.IsMatch(mItem.m_FullFunctionString, String.Format("\b{0}\b", Regex.Escape(sTag)))) Then
+                                    If (Not ClassRegexLock.IsMatch(mItem.m_FullFunctionString, String.Format("\b{0}\b", Regex.Escape(sTag)))) Then
                                         mItem.m_FullFunctionString = String.Format("{0}|{1}", mItem.m_FullFunctionString, sTag)
                                     End If
-                                    'If (bIsConst AndAlso Not Regex.IsMatch(mItem.m_FullFunctionName, String.Format("\b{0}\b", "const"))) Then
+                                    'If (bIsConst AndAlso Not ClassRegexLock.IsMatch(mItem.m_FullFunctionName, String.Format("\b{0}\b", "const"))) Then
                                     '    mItem.m_FullFunctionName = String.Format("{0}:{1}", "const", mItem.m_FullFunctionName)
                                     'End If
 
@@ -4206,7 +4206,7 @@ Public Class ClassSyntaxParser
                         End If
 
                         If (ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_7) Then
-                            For Each mMatch As Match In Regex.Matches(sLine, sNewStyleVarPattern)
+                            For Each mMatch As Match In ClassRegexLock.Matches(sLine, sNewStyleVarPattern)
                                 Dim iIndex As Integer = mMatch.Groups("Var").Index
                                 Dim sInit As String = mMatch.Groups("Init").Value.Trim
                                 Dim sTag As String = mMatch.Groups("Tag").Value.Trim
@@ -4233,7 +4233,7 @@ Public Class ClassSyntaxParser
                                     Continue For
                                 End If
 
-                                If (Regex.IsMatch(sVar, sRegExTypePattern)) Then
+                                If (ClassRegexLock.IsMatch(sVar, sRegExTypePattern)) Then
                                     Continue For
                                 End If
 
@@ -4251,7 +4251,7 @@ Public Class ClassSyntaxParser
                                                                                       Return False
                                                                                   End If
 
-                                                                                  Return Regex.IsMatch(x.m_FunctionString, String.Format("\b{0}\b", Regex.Escape(sVar)))
+                                                                                  Return ClassRegexLock.IsMatch(x.m_FunctionString, String.Format("\b{0}\b", Regex.Escape(sVar)))
                                                                               End Function)) Then
                                     Continue For
                                 End If
@@ -4278,10 +4278,10 @@ Public Class ClassSyntaxParser
 
                                     mParseInfo.lNewVarAutocompleteList.Add(mAutocomplete)
                                 Else
-                                    If (Not Regex.IsMatch(mItem.m_FullFunctionString, String.Format("\b{0}\b", Regex.Escape(sTag)))) Then
+                                    If (Not ClassRegexLock.IsMatch(mItem.m_FullFunctionString, String.Format("\b{0}\b", Regex.Escape(sTag)))) Then
                                         mItem.m_FullFunctionString = String.Format("{0}|{1}", mItem.m_FullFunctionString, sTag)
                                     End If
-                                    'If (bIsConst AndAlso Not Regex.IsMatch(mItem.m_FullFunctionName, String.Format("\b{0}\b", "const"))) Then
+                                    'If (bIsConst AndAlso Not ClassRegexLock.IsMatch(mItem.m_FullFunctionName, String.Format("\b{0}\b", "const"))) Then
                                     '    mItem.m_FullFunctionName = String.Format("{0}:{1}", "const", mItem.m_FullFunctionName)
                                     'End If
 
@@ -4378,9 +4378,9 @@ Public Class ClassSyntaxParser
                             bNeedSave = False
 
                             Dim sLine As String = mCodeBuilder.ToString.Trim
-                            sLine = Regex.Replace(sLine, "(\=)+(.*$)", "")
-                            sLine = Regex.Replace(sLine, Regex.Escape("&"), "")
-                            sLine = Regex.Replace(sLine, Regex.Escape("@"), "")
+                            sLine = ClassRegexLock.Replace(sLine, "(\=)+(.*$)", "")
+                            sLine = ClassRegexLock.Replace(sLine, Regex.Escape("&"), "")
+                            sLine = ClassRegexLock.Replace(sLine, Regex.Escape("@"), "")
 
                             If (Not String.IsNullOrEmpty(sLine)) Then
                                 lArgList.Add(New STRUC_PARSE_ARGUMENT_ITEM With {.sArgument = sLine, .sFile = mItem.m_Filename})
@@ -4416,7 +4416,7 @@ Public Class ClassSyntaxParser
                 For Each mArg As STRUC_PARSE_ARGUMENT_ITEM In lArgList
                     'Old style
                     If (ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_6) Then
-                        Dim mMatch As Match = Regex.Match(mArg.sArgument, String.Format("(?<OneSevenTag>\b{0}\b\s+)*((?<Tag>\b{1}\b)\:\s*)*(?<Var>\b[a-zA-Z_][a-zA-Z0-9_]*\b)$", sRegExTypePattern, sRegExTypePattern))
+                        Dim mMatch As Match = ClassRegexLock.Match(mArg.sArgument, String.Format("(?<OneSevenTag>\b{0}\b\s+)*((?<Tag>\b{1}\b)\:\s*)*(?<Var>\b[a-zA-Z_][a-zA-Z0-9_]*\b)$", sRegExTypePattern, sRegExTypePattern))
                         Dim sTag As String = If(String.IsNullOrEmpty(mMatch.Groups("Tag").Value), "int", mMatch.Groups("Tag").Value).Trim
                         Dim sVar As String = mMatch.Groups("Var").Value.Trim
                         Dim bIsOneSeven As Boolean = mMatch.Groups("OneSevenTag").Success
@@ -4442,7 +4442,7 @@ Public Class ClassSyntaxParser
 
                                 mParseInfo.lNewVarAutocompleteList.Add(mAutocomplete)
                             Else
-                                If (Not Regex.IsMatch(mItem.m_FullFunctionString, String.Format("\b{0}\b", Regex.Escape(sTag)))) Then
+                                If (Not ClassRegexLock.IsMatch(mItem.m_FullFunctionString, String.Format("\b{0}\b", Regex.Escape(sTag)))) Then
                                     mItem.m_FullFunctionString = String.Format("{0}|{1}", mItem.m_FullFunctionString, sTag)
                                 End If
 
@@ -4465,7 +4465,7 @@ Public Class ClassSyntaxParser
 
                     'New style
                     If (ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_MIX OrElse ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_7) Then
-                        Dim mMatch As Match = Regex.Match(mArg.sArgument, String.Format("(?<Tag>\b{0}\b)\s+(?<Var>\b[a-zA-Z_][a-zA-Z0-9_]*\b)$", sRegExTypePattern))
+                        Dim mMatch As Match = ClassRegexLock.Match(mArg.sArgument, String.Format("(?<Tag>\b{0}\b)\s+(?<Var>\b[a-zA-Z_][a-zA-Z0-9_]*\b)$", sRegExTypePattern))
                         Dim sTag As String = If(String.IsNullOrEmpty(mMatch.Groups("Tag").Value), "int", mMatch.Groups("Tag").Value).Trim
                         Dim sVar As String = mMatch.Groups("Var").Value.Trim
 
@@ -4490,7 +4490,7 @@ Public Class ClassSyntaxParser
 
                                 mParseInfo.lNewVarAutocompleteList.Add(mAutocomplete)
                             Else
-                                If (Not Regex.IsMatch(mItem.m_FullFunctionString, String.Format("\b{0}\b", Regex.Escape(sTag)))) Then
+                                If (Not ClassRegexLock.IsMatch(mItem.m_FullFunctionString, String.Format("\b{0}\b", Regex.Escape(sTag)))) Then
                                     mItem.m_FullFunctionString = String.Format("{0}|{1}", mItem.m_FullFunctionString, sTag)
                                 End If
 
@@ -5443,7 +5443,7 @@ Public Class ClassSyntaxParser
                 iParentLen = lBraceLocList(i)(1)
 
                 Dim sBraceString As String = mSourceBuilder.ToString(iParentStart, iParentLen)
-                Dim mRegMatchCol As MatchCollection = Regex.Matches(sBraceString, "\s+")
+                Dim mRegMatchCol As MatchCollection = ClassRegexLock.Matches(sBraceString, "\s+")
 
                 For ii = mRegMatchCol.Count - 1 To 0 Step -1
                     Dim mMatch As Match = mRegMatchCol(ii)
@@ -5471,7 +5471,7 @@ Public Class ClassSyntaxParser
         Public Sub CleanUpNewLinesSource(ByRef sSource As String, iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE)
             'Remove new lines e.g: MyStuff \
             '                      MyStuff2
-            sSource = Regex.Replace(sSource, "\\\s*\n\s*", "")
+            sSource = ClassRegexLock.Replace(sSource, "\\\s*\n\s*", "")
 
             If (True) Then
                 'From:
@@ -5481,7 +5481,7 @@ Public Class ClassSyntaxParser
                 'To:
                 '   public static bla()
                 Dim sTypes As String() = {"enum", "struct", "funcenum", "functag", "stock", "static", "const", "public", "native", "forward", "typeset", "methodmap", "typedef"}
-                Dim mRegMatchCol As MatchCollection = Regex.Matches(sSource, String.Format("^\s*(\b{0}\b)(?<Space>\s*\n\s*)", String.Join("\b|\b", sTypes)), RegexOptions.Multiline)
+                Dim mRegMatchCol As MatchCollection = ClassRegexLock.Matches(sSource, String.Format("^\s*(\b{0}\b)(?<Space>\s*\n\s*)", String.Join("\b|\b", sTypes)), RegexOptions.Multiline)
                 Dim mSourceBuilder As New StringBuilder(sSource)
 
                 For i = mRegMatchCol.Count - 1 To 0 Step -1
@@ -5742,5 +5742,43 @@ Public Class ClassSyntaxParser
             Return lTmpAutoList.ToArray
         End Function
 
+    End Class
+
+    Class ClassRegexLock
+        ' Regex is thread-safe and we need to limit how many threads make thread-safe calls simultaneously. Multiple threads waiting for the main thread to finish can cause massive lag and stutter.
+        ' Instead of threads waiting for the main thread to finish - thus blocking the main thread - lets wait for each other thread instead and make only one thread wait for the main thread.
+        ' While this is slower than without locking, the ui thread will not lag during the process.
+
+        Private Shared ReadOnly _lock As New Object
+
+        Public Shared Function Matches(input As String, pattern As String, Optional options As RegexOptions = RegexOptions.None) As MatchCollection
+            SyncLock _lock
+                Return Regex.Matches(input, pattern, options)
+            End SyncLock
+        End Function
+
+        Public Shared Function Replace(input As String, pattern As String, replacement As String, Optional options As RegexOptions = RegexOptions.None) As String
+            SyncLock _lock
+                Return Regex.Replace(input, pattern, replacement, options)
+            End SyncLock
+        End Function
+
+        Public Shared Function Split(input As String, pattern As String, Optional options As RegexOptions = RegexOptions.None) As String()
+            SyncLock _lock
+                Return Regex.Split(input, pattern, options)
+            End SyncLock
+        End Function
+
+        Public Shared Function Match(input As String, pattern As String, Optional options As RegexOptions = RegexOptions.None) As Match
+            SyncLock _lock
+                Return Regex.Match(input, pattern, options)
+            End SyncLock
+        End Function
+
+        Public Shared Function IsMatch(input As String, pattern As String, Optional options As RegexOptions = RegexOptions.None) As Boolean
+            SyncLock _lock
+                Return Regex.IsMatch(input, pattern, options)
+            End SyncLock
+        End Function
     End Class
 End Class
