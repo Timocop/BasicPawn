@@ -2137,7 +2137,7 @@ Public Class ClassTabControl
                                     Continue For
                                 End If
 
-                                iLevels(iCurrentLevel - 1) = If(i > 0, i - 1, i)
+                                iLevels(iCurrentLevel - 1) = i
                             Case "}"c
                                 iCurrentLevel -= 1
                                 If (iCurrentLevel < 0) Then
