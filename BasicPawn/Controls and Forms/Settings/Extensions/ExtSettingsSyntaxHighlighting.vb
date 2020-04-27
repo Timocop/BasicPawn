@@ -29,4 +29,19 @@ Partial Public Class FormSettings
         ClassSettings.g_iSettingsPublicAsDefineColor = CheckBox_PublicAsDefineColor.Checked
         ClassSettings.g_iSettingsHighlightCurrentScope = CheckBox_HighlightScope.Checked
     End Sub
+
+    Private Sub FormClosing_SyntaxHighlighting()
+        'Check for outdated syntax highlight files 
+        If (True) Then
+            Dim mCurrentVersion As New Version
+            Dim mSyntaxVersion As New Version
+            If (g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.CheckSyntaxVersion(mCurrentVersion, mSyntaxVersion)) Then
+                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "The custom syntax highlighting file you are using seems to be out-of-date and probably unable to load!")
+                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & String.Format("Your version is v{0} but version v{1} is required.", mSyntaxVersion.ToString, mCurrentVersion.ToString))
+                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & "Click here to go to the GitHub syntax styles download page.",
+                                                                  New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN("https://github.com/Timocop/BasicPawn/tree/master/Custom%20Syntax%20Styles"),
+                                                                  False, True, True)
+            End If
+        End If
+    End Sub
 End Class

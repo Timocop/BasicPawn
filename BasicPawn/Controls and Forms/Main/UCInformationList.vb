@@ -56,8 +56,6 @@ Public Class UCInformationList
 
                                       Dim iIndex = ListBox_Information.Items.Add(mItem)
 
-                                      g_mFormMain.ToolStripStatusLabel_LastInformation.Text = sText
-
                                       If (bShowInformationTab AndAlso g_mFormMain.ToolStripMenuItem_ViewDetails.Checked) Then
                                           g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed = False
 
@@ -220,7 +218,7 @@ Public Class UCInformationList
                 Return
             End If
 
-            'Open path in explorer
+            'Open path in explorer or browser
             If (iAction = ENUM_ITEM_ACTION.AUTO OrElse iAction = ENUM_ITEM_ACTION.OPEN) Then
                 If (TypeOf mSelectedItem.m_Action Is ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN) Then
                     Dim mAction = DirectCast(mSelectedItem.m_Action, ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN)
@@ -231,6 +229,12 @@ Public Class UCInformationList
                     End If
 
                     Select Case (True)
+                        Case mAction.m_Path.ToLower.StartsWith("http://") OrElse mAction.m_Path.ToLower.StartsWith("https://")
+                            Try
+                                Process.Start(mAction.m_Path)
+                            Catch ex As Exception
+                            End Try
+
                         Case (IO.File.Exists(mAction.m_Path))
                             Dim sFile As String = IO.Path.GetFullPath(mAction.m_Path)
 

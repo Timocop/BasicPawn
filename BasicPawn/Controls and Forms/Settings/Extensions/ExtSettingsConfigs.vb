@@ -220,49 +220,14 @@ Partial Public Class FormSettings
                                 Continue For
                             End If
 
-                            If (sPath.ToLower.StartsWith(sCompPath.ToLower)) Then
-                                With New Text.StringBuilder()
-                                    .AppendLine("Some default config paths collide with other configs!")
-                                    .AppendLine()
-                                    .AppendLine()
-                                    .AppendFormat("Config '{0}' collides with '{1}'.", mConfig.GetName, mCompConfig.GetName).AppendLine()
-
-                                    MessageBox.Show(.ToString, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-                                End With
+                            If (sPath.ToLower = sCompPath.ToLower) Then
+                                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_WARNING, "Some configs use the same default config paths! This may cause unexpected behaviours.")
+                                g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, vbTab & String.Format("Config '{0}' collides with '{1}'s default paths.", mConfig.GetName, mCompConfig.GetName), False, True, True)
                             End If
                         Next
                     Next
                 Next
             Next
-        End If
-
-        'Check for outdated syntax highlight files 
-        If (Not bSuppressSyntaxVersionCheck) Then
-            Dim mCurrentVersion As New Version
-            Dim mSyntaxVersion As New Version
-            If (g_mFormMain.g_ClassSyntaxTools.g_ClassSyntaxHighlighting.CheckSyntaxVersion(mCurrentVersion, mSyntaxVersion)) Then
-                With New Text.StringBuilder()
-                    .AppendLine("Your custom syntax highlighting file seems to be out-of-date.")
-                    .AppendLine("Do you want to open the download page now?")
-                    .AppendLine()
-                    .AppendFormat("Your version is v{0}. Required version is v{1}.", mSyntaxVersion.ToString, mCurrentVersion.ToString).AppendLine()
-                    .AppendLine()
-                    .AppendLine("Click YES to go to the BasicPawn syntax download page.")
-                    .AppendLine("Click CANCEL to suppress this warning.")
-
-                    Select Case (MessageBox.Show(.ToString, "Syntax out-of-date", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning))
-                        Case DialogResult.Yes
-                            Try
-                                Process.Start("https://github.com/Timocop/BasicPawn/tree/master/Custom%20Syntax%20Styles")
-                            Catch ex As Exception
-                                ClassExceptionLog.WriteToLogMessageBox(ex)
-                            End Try
-
-                        Case DialogResult.Cancel
-                            bSuppressSyntaxVersionCheck = True
-                    End Select
-                End With
-            End If
         End If
     End Sub
 

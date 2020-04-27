@@ -160,6 +160,7 @@ Partial Class FormMain
         Me.ToolStripMenuItem_HelpCheckUpdates = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_HelpGithub = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator14 = New System.Windows.Forms.ToolStripSeparator()
+        Me.ToolStripMenuItem_ShowTips = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_HelpAbout = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_TabClose = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_TabMoveRight = New System.Windows.Forms.ToolStripMenuItem()
@@ -195,7 +196,6 @@ Partial Class FormMain
         Me.ToolStripStatusLabel_EditorSelectedCount = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ToolStripStatusLabel_CurrentConfig = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ToolStripStatusLabel_Project = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.ToolStripStatusLabel_LastInformation = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ToolStripStatusLabel_AutocompleteProgress = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ToolStripStatusLabel_AppVersion = New System.Windows.Forms.ToolStripStatusLabel()
         Me.Timer_PingFlash = New System.Windows.Forms.Timer(Me.components)
@@ -207,7 +207,7 @@ Partial Class FormMain
         Me.ToolStripMenuItem_FindOptimalConfigActiveTab = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_FindOptimalConfigAllTabs = New System.Windows.Forms.ToolStripMenuItem()
         Me.Timer_SyntaxAnimation = New System.Windows.Forms.Timer(Me.components)
-        Me.ToolStripMenuItem_ShowTips = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripStatusLabel_Spacer = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ContextMenuStrip_RightClick.SuspendLayout()
         Me.MenuStrip_BasicPawn.SuspendLayout()
         Me.SplitContainer_ToolboxSourceAndDetails.Panel1.SuspendLayout()
@@ -1109,7 +1109,7 @@ Partial Class FormMain
         Me.ToolStripMenuItem_HelpControls.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_HelpControlsTabNav, Me.ToolStripMenuItem_HelpControlsDetailsNav, Me.ToolStripMenuItem_HelpControlsDetailsPrimAction, Me.ToolStripMenuItem_HelpControlsDetailsSecAction, Me.ToolStripMenuItem_HelpControlsMoveSelected, Me.ToolStripMenuItem_HelpControlsCopySelected})
         Me.ToolStripMenuItem_HelpControls.Image = CType(resources.GetObject("ToolStripMenuItem_HelpControls.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_HelpControls.Name = "ToolStripMenuItem_HelpControls"
-        Me.ToolStripMenuItem_HelpControls.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_HelpControls.Size = New System.Drawing.Size(170, 22)
         Me.ToolStripMenuItem_HelpControls.Text = "Special Controls"
         '
         'ToolStripMenuItem_HelpControlsTabNav
@@ -1157,32 +1157,39 @@ Partial Class FormMain
         'ToolStripSeparator15
         '
         Me.ToolStripSeparator15.Name = "ToolStripSeparator15"
-        Me.ToolStripSeparator15.Size = New System.Drawing.Size(177, 6)
+        Me.ToolStripSeparator15.Size = New System.Drawing.Size(167, 6)
         '
         'ToolStripMenuItem_HelpCheckUpdates
         '
         Me.ToolStripMenuItem_HelpCheckUpdates.Image = Global.BasicPawn.My.Resources.Resources.imageres_5332_16x16
         Me.ToolStripMenuItem_HelpCheckUpdates.Name = "ToolStripMenuItem_HelpCheckUpdates"
-        Me.ToolStripMenuItem_HelpCheckUpdates.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_HelpCheckUpdates.Size = New System.Drawing.Size(170, 22)
         Me.ToolStripMenuItem_HelpCheckUpdates.Text = "Check for updates"
         '
         'ToolStripMenuItem_HelpGithub
         '
         Me.ToolStripMenuItem_HelpGithub.Image = Global.BasicPawn.My.Resources.Resources.imageres_5316_16x16
         Me.ToolStripMenuItem_HelpGithub.Name = "ToolStripMenuItem_HelpGithub"
-        Me.ToolStripMenuItem_HelpGithub.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_HelpGithub.Size = New System.Drawing.Size(170, 22)
         Me.ToolStripMenuItem_HelpGithub.Text = "View on Github"
         '
         'ToolStripSeparator14
         '
         Me.ToolStripSeparator14.Name = "ToolStripSeparator14"
-        Me.ToolStripSeparator14.Size = New System.Drawing.Size(177, 6)
+        Me.ToolStripSeparator14.Size = New System.Drawing.Size(167, 6)
+        '
+        'ToolStripMenuItem_ShowTips
+        '
+        Me.ToolStripMenuItem_ShowTips.Image = Global.BasicPawn.My.Resources.Resources.user32_102_16x16
+        Me.ToolStripMenuItem_ShowTips.Name = "ToolStripMenuItem_ShowTips"
+        Me.ToolStripMenuItem_ShowTips.Size = New System.Drawing.Size(170, 22)
+        Me.ToolStripMenuItem_ShowTips.Text = "Show Tips"
         '
         'ToolStripMenuItem_HelpAbout
         '
         Me.ToolStripMenuItem_HelpAbout.Image = CType(resources.GetObject("ToolStripMenuItem_HelpAbout.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_HelpAbout.Name = "ToolStripMenuItem_HelpAbout"
-        Me.ToolStripMenuItem_HelpAbout.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_HelpAbout.Size = New System.Drawing.Size(170, 22)
         Me.ToolStripMenuItem_HelpAbout.Text = "About"
         '
         'ToolStripMenuItem_TabClose
@@ -1467,7 +1474,7 @@ Partial Class FormMain
         '
         'StatusStrip_BasicPawn
         '
-        Me.StatusStrip_BasicPawn.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripStatusLabel_EditorLine, Me.ToolStripStatusLabel_EditorCollum, Me.ToolStripStatusLabel_EditorSelectedCount, Me.ToolStripStatusLabel_CurrentConfig, Me.ToolStripStatusLabel_Project, Me.ToolStripStatusLabel_LastInformation, Me.ToolStripStatusLabel_AutocompleteProgress, Me.ToolStripStatusLabel_AppVersion})
+        Me.StatusStrip_BasicPawn.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripStatusLabel_EditorLine, Me.ToolStripStatusLabel_EditorCollum, Me.ToolStripStatusLabel_EditorSelectedCount, Me.ToolStripStatusLabel_CurrentConfig, Me.ToolStripStatusLabel_Project, Me.ToolStripStatusLabel_Spacer, Me.ToolStripStatusLabel_AutocompleteProgress, Me.ToolStripStatusLabel_AppVersion})
         Me.StatusStrip_BasicPawn.Location = New System.Drawing.Point(0, 707)
         Me.StatusStrip_BasicPawn.Name = "StatusStrip_BasicPawn"
         Me.StatusStrip_BasicPawn.ShowItemToolTips = True
@@ -1511,13 +1518,6 @@ Partial Class FormMain
         Me.ToolStripStatusLabel_Project.Size = New System.Drawing.Size(79, 17)
         Me.ToolStripStatusLabel_Project.Text = "Project: None"
         Me.ToolStripStatusLabel_Project.Visible = False
-        '
-        'ToolStripStatusLabel_LastInformation
-        '
-        Me.ToolStripStatusLabel_LastInformation.Name = "ToolStripStatusLabel_LastInformation"
-        Me.ToolStripStatusLabel_LastInformation.Size = New System.Drawing.Size(798, 17)
-        Me.ToolStripStatusLabel_LastInformation.Spring = True
-        Me.ToolStripStatusLabel_LastInformation.Text = "Last Info: No information"
         '
         'ToolStripStatusLabel_AutocompleteProgress
         '
@@ -1581,12 +1581,12 @@ Partial Class FormMain
         Me.Timer_SyntaxAnimation.Enabled = True
         Me.Timer_SyntaxAnimation.Interval = 1000
         '
-        'ToolStripMenuItem_ShowTips
+        'ToolStripStatusLabel_Spacer
         '
-        Me.ToolStripMenuItem_ShowTips.Image = Global.BasicPawn.My.Resources.Resources.user32_102_16x16
-        Me.ToolStripMenuItem_ShowTips.Name = "ToolStripMenuItem_ShowTips"
-        Me.ToolStripMenuItem_ShowTips.Size = New System.Drawing.Size(180, 22)
-        Me.ToolStripMenuItem_ShowTips.Text = "Show Tips"
+        Me.ToolStripStatusLabel_Spacer.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.None
+        Me.ToolStripStatusLabel_Spacer.Name = "ToolStripStatusLabel_Spacer"
+        Me.ToolStripStatusLabel_Spacer.Size = New System.Drawing.Size(672, 17)
+        Me.ToolStripStatusLabel_Spacer.Spring = True
         '
         'FormMain
         '
@@ -1649,7 +1649,6 @@ Partial Class FormMain
     Friend WithEvents ToolStripMenuItem_HelpControlsCopySelected As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_HelpAbout As ToolStripMenuItem
     Friend WithEvents ToolStripComboBox_ToolsAutocompleteSyntax As ToolStripComboBox
-    Friend WithEvents ToolStripStatusLabel_LastInformation As ToolStripStatusLabel
     Friend WithEvents ToolStripStatusLabel_EditorSelectedCount As ToolStripStatusLabel
     Friend WithEvents ToolStripMenuItem_ToolsFormatCode As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_ToolsClearInformationLog As ToolStripMenuItem
@@ -1804,4 +1803,5 @@ Partial Class FormMain
     Friend WithEvents ToolStripMenuItem_EditInsertLineUp As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_EditInsertLineDown As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_ShowTips As ToolStripMenuItem
+    Friend WithEvents ToolStripStatusLabel_Spacer As ToolStripStatusLabel
 End Class

@@ -23,10 +23,11 @@ Public Class ClassFileStreamWait
     ''' <param name="sPath"></param>
     ''' <param name="iMode"></param>
     ''' <param name="iAccess"></param>
-    ''' <param name="iTimeoutTrys"></param>
+    ''' <param name="iTimeout"></param>
     ''' <returns></returns>
-    Public Shared Function Create(sPath As String, iMode As IO.FileMode, iAccess As IO.FileAccess, Optional iTimeoutTrys As Integer = -1) As IO.FileStream
-        Dim bInfinite As Boolean = (iTimeoutTrys < 0)
+    Public Shared Function Create(sPath As String, iMode As IO.FileMode, iAccess As IO.FileAccess, Optional iTimeout As Integer = -1) As IO.FileStream
+        Dim mTimeoutWatcher As New Stopwatch
+        mTimeoutWatcher.Start()
 
         While True
             Dim mSteam As IO.FileStream = Nothing
@@ -34,7 +35,13 @@ Public Class ClassFileStreamWait
             Try
                 mSteam = New IO.FileStream(sPath, iMode, iAccess)
                 Return mSteam
+            Catch ex As IO.DriveNotFoundException
+                Throw
             Catch ex As IO.FileNotFoundException
+                Throw
+            Catch ex As IO.DirectoryNotFoundException
+                Throw
+            Catch ex As IO.PathTooLongException
                 Throw
             Catch ex As Exception
                 If (mSteam IsNot Nothing) Then
@@ -42,16 +49,12 @@ Public Class ClassFileStreamWait
                     mSteam = Nothing
                 End If
 
+                If (iTimeout > -1 AndAlso mTimeoutWatcher.ElapsedMilliseconds > iTimeout) Then
+                    Throw
+                End If
+
                 Threading.Thread.Sleep(100)
             End Try
-
-            If (Not bInfinite) Then
-                iTimeoutTrys -= 1
-
-                If (iTimeoutTrys < 0) Then
-                    Throw New ArgumentException("File acccess timeout")
-                End If
-            End If
         End While
 
         'Should never reach

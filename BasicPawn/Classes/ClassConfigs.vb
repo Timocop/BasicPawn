@@ -608,16 +608,29 @@ Public Class ClassConfigs
     End Function
 
     Shared Function FindConfigUsingDefaultPaths(sFile As String) As STRUC_CONFIG_ITEM
-        For Each mConfig In GetConfigs()
-            For Each sAssignPath As String In mConfig.g_sDefaultPaths.Split(";"c)
-                If (String.IsNullOrEmpty(sAssignPath)) Then
-                    Continue For
-                End If
+        Dim mConfigDefPaths As New List(Of KeyValuePair(Of STRUC_CONFIG_ITEM, String))
 
-                If (sFile.ToLower.StartsWith(sAssignPath.ToLower)) Then
-                    Return mConfig
-                End If
+        For Each mConfig In GetConfigs()
+            Dim sPaths As String() = mConfig.g_sDefaultPaths.Split(";"c)
+
+            For Each sPath As String In sPaths
+                mConfigDefPaths.Add(New KeyValuePair(Of STRUC_CONFIG_ITEM, String)(mConfig, sPath))
             Next
+        Next
+
+        ' Sort but make deepest directory first
+        mConfigDefPaths.Sort(Function(x As KeyValuePair(Of STRUC_CONFIG_ITEM, String), y As KeyValuePair(Of STRUC_CONFIG_ITEM, String))
+                                 Return -(x.Value.ToLower.CompareTo(y.Value.ToLower))
+                             End Function)
+
+        For Each mItem In mConfigDefPaths
+            If (String.IsNullOrEmpty(mItem.Value)) Then
+                Continue For
+            End If
+
+            If (sFile.ToLower.StartsWith(mItem.Value.ToLower)) Then
+                Return mItem.Key
+            End If
         Next
 
         Return Nothing

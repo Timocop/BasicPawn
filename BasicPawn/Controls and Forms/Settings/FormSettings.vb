@@ -27,8 +27,6 @@ Public Class FormSettings
 
     Private g_mListBoxConfigSelectedItem As Object = Nothing
 
-    Private Shared bSuppressSyntaxVersionCheck As Boolean = False
-
     Enum ENUM_CONFIG_TYPE
         ALL
         ACTIVE
@@ -116,6 +114,7 @@ Public Class FormSettings
 
     Private Sub FormSettings_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
         FormClosing_Configs()
+        FormClosing_SyntaxHighlighting()
 
         'Save window info
         ClassSettings.SaveWindowInfo(Me)
