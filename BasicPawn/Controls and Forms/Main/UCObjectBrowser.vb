@@ -111,12 +111,120 @@ Public Class UCObjectBrowser
                     Return
                 End If
 
+                Dim bUnsavedFile As Boolean = mTab.m_IsUnsaved
                 Dim lAutocompleteList As New List(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)(mTab.m_AutocompleteGroup.m_AutocompleteItems.ToArray)
-                If (lAutocompleteList.Count < 1) Then
-                    Return
-                End If
 
-                If (True) Then
+                'Remove invalid nodes 
+                While True
+                    If (Not bUnsavedFile AndAlso lAutocompleteList.Count < 1) Then
+                        Exit While
+                    End If
+
+                    Dim mFileNodes As TreeNodeCollection = ClassThread.ExecEx(Of TreeNodeCollection)(Me, Function() TreeView_ObjectBrowser.Nodes)
+                    Dim mTypeNodes As TreeNodeCollection
+                    Dim mNameNodes As TreeNodeCollection
+
+                    Dim i As Integer
+                    For i = mFileNodes.Count - 1 To 0 Step -1
+                        mTypeNodes = mFileNodes(i).Nodes
+
+                        Dim j As Integer
+                        For j = mTypeNodes.Count - 1 To 0 Step -1
+                            mNameNodes = mTypeNodes(j).Nodes
+
+                            Dim l As Integer
+                            For l = mNameNodes.Count - 1 To 0 Step -1
+                                Dim mTreeNodeAutocomplete As ClassTreeNodeAutocomplete = TryCast(mNameNodes(l), ClassTreeNodeAutocomplete)
+                                If (mTreeNodeAutocomplete Is Nothing) Then
+                                    ClassThread.ExecEx(Of Object)(Me, Sub()
+                                                                          DisableObjectBrowserOnce(bWndProcBug, bIsDisabled)
+
+                                                                          mNameNodes(l).Remove()
+                                                                      End Sub)
+                                    Continue For
+                                End If
+
+                                Dim bOutdatedNode As Boolean = False
+                                Dim mAutocomplete = lAutocompleteList.Find(Function(m As ClassSyntaxTools.STRUC_AUTOCOMPLETE) m.m_Filename = mTreeNodeAutocomplete.m_Autocomplete.m_Filename AndAlso
+                                                                                                                                     m.m_Type = mTreeNodeAutocomplete.m_Autocomplete.m_Type AndAlso
+                                                                                                                                     m.m_FunctionString = mTreeNodeAutocomplete.m_Autocomplete.m_FunctionString)
+
+                                If (mAutocomplete IsNot Nothing) Then
+                                    'Validate if the data changed
+                                    If (mAutocomplete.m_Data.Count = mTreeNodeAutocomplete.m_Autocomplete.m_Data.Count) Then
+                                        Dim val As Object = Nothing
+
+                                        While True
+                                            For Each mItem In mAutocomplete.m_Data
+                                                If (mTreeNodeAutocomplete.m_Autocomplete.m_Data.TryGetValue(mItem.Key, val)) Then
+                                                    'Simplefied, most items are int, bool and strings anways
+                                                    If (mItem.Value.ToString <> val.ToString) Then
+                                                        bOutdatedNode = True
+                                                        Exit While
+                                                    End If
+                                                Else
+                                                    bOutdatedNode = True
+                                                    Exit While
+                                                End If
+                                            Next
+
+                                            For Each mItem In mTreeNodeAutocomplete.m_Autocomplete.m_Data
+                                                If (mAutocomplete.m_Data.TryGetValue(mItem.Key, val)) Then
+                                                    'Simplefied, most items are int, bool and strings anways
+                                                    If (mItem.Value.ToString <> val.ToString) Then
+                                                        bOutdatedNode = True
+                                                        Exit While
+                                                    End If
+                                                Else
+                                                    bOutdatedNode = True
+                                                    Exit While
+                                                End If
+                                            Next
+
+                                            Exit While
+                                        End While
+                                    Else
+                                        bOutdatedNode = True
+                                    End If
+                                Else
+                                    bOutdatedNode = True
+                                End If
+
+                                If (bOutdatedNode) Then
+                                    ClassThread.ExecEx(Of Object)(Me, Sub()
+                                                                          DisableObjectBrowserOnce(bWndProcBug, bIsDisabled)
+
+                                                                          mNameNodes(l).Remove()
+                                                                      End Sub)
+                                End If
+                            Next
+
+                            If (mTypeNodes(j).Nodes.Count < 1) Then
+                                ClassThread.ExecEx(Of Object)(Me, Sub()
+                                                                      DisableObjectBrowserOnce(bWndProcBug, bIsDisabled)
+
+                                                                      mTypeNodes(j).Remove()
+                                                                  End Sub)
+                            End If
+                        Next
+
+                        If (mFileNodes(i).Nodes.Count < 1) Then
+                            ClassThread.ExecEx(Of Object)(Me, Sub()
+                                                                  DisableObjectBrowserOnce(bWndProcBug, bIsDisabled)
+
+                                                                  mFileNodes(i).Remove()
+                                                              End Sub)
+                        End If
+                    Next
+
+                    Exit While
+                End While
+
+                While True
+                    If (lAutocompleteList.Count < 1) Then
+                        Exit While
+                    End If
+
                     Dim mFileNodes As TreeNodeCollection = ClassThread.ExecEx(Of TreeNodeCollection)(Me, Function() TreeView_ObjectBrowser.Nodes)
                     Dim mTypeNodes As TreeNodeCollection
                     Dim mNameNodes As TreeNodeCollection
@@ -150,10 +258,10 @@ Public Class UCObjectBrowser
                                                                   DisableObjectBrowserOnce(bWndProcBug, bIsDisabled)
 
                                                                   mFileNodes.Add(New TreeNode(sFilename) With {
-                                                                                          .Name = sFilename,
-                                                                                          .Tag = If(bIsMainFile, "*", "") & sFilename,
-                                                                                          .NodeFont = New Font(TreeView_ObjectBrowser.Font, If(bIsMainFile, FontStyle.Regular, FontStyle.Italic))
-                                                                                      })
+                                                                        .Name = sFilename,
+                                                                        .Tag = If(bIsMainFile, "*", "") & sFilename,
+                                                                        .NodeFont = New Font(TreeView_ObjectBrowser.Font, If(bIsMainFile, FontStyle.Regular, FontStyle.Italic))
+                                                                    })
                                                               End Sub)
                         End If
 
@@ -166,9 +274,9 @@ Public Class UCObjectBrowser
                                                                   DisableObjectBrowserOnce(bWndProcBug, bIsDisabled)
 
                                                                   mTypeNodes.Add(New TreeNode(sTypes) With {
-                                                                                          .Name = sTypes,
-                                                                                          .Tag = sTypes
-                                                                                      })
+                                                                        .Name = sTypes,
+                                                                        .Tag = sTypes
+                                                                    })
                                                               End Sub)
                         End If
 
@@ -180,67 +288,14 @@ Public Class UCObjectBrowser
                                                                   DisableObjectBrowserOnce(bWndProcBug, bIsDisabled)
 
                                                                   mNameNodes.Add(New ClassTreeNodeAutocomplete(sName, sName, mAutocomplete) With {
-                                                                                        .Tag = sName
-                                                                                    })
+                                                                        .Tag = sName
+                                                                    })
                                                               End Sub)
                         End If
                     Next
-                End If
 
-
-                'Remove invalid nodes 
-                If (True) Then
-                    Dim mFileNodes As TreeNodeCollection = ClassThread.ExecEx(Of TreeNodeCollection)(Me, Function() TreeView_ObjectBrowser.Nodes)
-                    Dim mTypeNodes As TreeNodeCollection
-                    Dim mNameNodes As TreeNodeCollection
-
-                    Dim i As Integer
-                    For i = mFileNodes.Count - 1 To 0 Step -1
-                        mTypeNodes = mFileNodes(i).Nodes
-
-                        Dim j As Integer
-                        For j = mTypeNodes.Count - 1 To 0 Step -1
-                            mNameNodes = mTypeNodes(j).Nodes
-
-                            Dim l As Integer
-                            For l = mNameNodes.Count - 1 To 0 Step -1
-                                Dim mTreeNodeAutocomplete As ClassTreeNodeAutocomplete = TryCast(mNameNodes(l), ClassTreeNodeAutocomplete)
-                                If (mTreeNodeAutocomplete Is Nothing) Then
-                                    ClassThread.ExecEx(Of Object)(Me, Sub()
-                                                                          DisableObjectBrowserOnce(bWndProcBug, bIsDisabled)
-
-                                                                          mNameNodes(l).Remove()
-                                                                      End Sub)
-                                    Continue For
-                                End If
-
-                                If (Not lAutocompleteList.Exists(Function(m As ClassSyntaxTools.STRUC_AUTOCOMPLETE) m.m_Filename = mTreeNodeAutocomplete.m_Autocomplete.m_Filename AndAlso m.m_Type = mTreeNodeAutocomplete.m_Autocomplete.m_Type AndAlso m.m_FunctionString = mTreeNodeAutocomplete.m_Autocomplete.m_FunctionString)) Then
-                                    ClassThread.ExecEx(Of Object)(Me, Sub()
-                                                                          DisableObjectBrowserOnce(bWndProcBug, bIsDisabled)
-
-                                                                          mNameNodes(l).Remove()
-                                                                      End Sub)
-                                End If
-                            Next
-
-                            If (mTypeNodes(j).Nodes.Count < 1) Then
-                                ClassThread.ExecEx(Of Object)(Me, Sub()
-                                                                      DisableObjectBrowserOnce(bWndProcBug, bIsDisabled)
-
-                                                                      mTypeNodes(j).Remove()
-                                                                  End Sub)
-                            End If
-                        Next
-
-                        If (mFileNodes(i).Nodes.Count < 1) Then
-                            ClassThread.ExecEx(Of Object)(Me, Sub()
-                                                                  DisableObjectBrowserOnce(bWndProcBug, bIsDisabled)
-
-                                                                  mFileNodes(i).Remove()
-                                                              End Sub)
-                        End If
-                    Next
-                End If
+                    Exit While
+                End While
 
                 lAutocompleteList = Nothing
 
