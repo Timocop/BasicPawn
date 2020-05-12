@@ -831,7 +831,7 @@ Public Class ClassSyntaxParser
             End If
 
             For Each sInclude As String In sIncludePaths.Split(";"c)
-                If (ClassSettings.g_iSettingsAlwaysLoadDefaultIncludes) Then
+                If (ClassSettings.g_bSettingsAlwaysLoadDefaultIncludes) Then
                     If (sActiveSourceFile.ToLower = sPath.ToLower) Then
                         For Each sDefaultInc As String In New String() {"sourcemod"}
                             Select Case (True)

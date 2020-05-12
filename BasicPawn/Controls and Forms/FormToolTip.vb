@@ -110,7 +110,7 @@ Public Class FormToolTip
     End Property
 
     Private Sub Timer_Move_Tick(sender As Object, e As EventArgs) Handles Timer_Move.Tick
-        If (Form.ActiveForm Is g_mFormMain AndAlso MoveWindow(Point.Empty, Not ClassSettings.g_iSettingsUseWindowsToolTipAnimations)) Then
+        If (Form.ActiveForm Is g_mFormMain AndAlso MoveWindow(Point.Empty, Not ClassSettings.g_bSettingsUseWindowsToolTipAnimations)) Then
             Timer_Move.Interval = g_iMoveSpeed
         Else
             Timer_Move.Interval = g_iIdleSpeed
@@ -136,7 +136,7 @@ Public Class FormToolTip
         End If
 
         While True
-            If (ClassSettings.g_iSettingsUseWindowsToolTipDisplayTop) Then
+            If (ClassSettings.g_bSettingsUseWindowsToolTipDisplayTop) Then
                 If (g_mMoveLocation.Y < MAX_MOVE AndAlso
                         (mCursorPoint.X + g_iSizeSpace > mLocation.X AndAlso mCursorPoint.Y + g_iSizeSpace > mLocation.Y AndAlso
                             mCursorPoint.X < mLocation.X + Me.Width + g_iSizeSpace AndAlso mCursorPoint.Y < mLocation.Y + Me.Height + g_iSizeSpace)) Then

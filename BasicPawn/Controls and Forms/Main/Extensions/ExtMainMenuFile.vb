@@ -44,7 +44,7 @@ Partial Public Class FormMain
 
                     For Each sProjectFile As String In i.FileNames
                         g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile = sProjectFile
-                        g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(bAppendFiles, ClassSettings.g_iSettingsAutoOpenProjectFiles)
+                        g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(bAppendFiles, ClassSettings.g_bSettingsAutoOpenProjectFiles)
                         bAppendFiles = True
                     Next
                 End If
@@ -112,7 +112,11 @@ Partial Public Class FormMain
 
     Private Sub ToolStripMenuItem_FileClose_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileClose.Click
         Try
-            g_ClassTabControl.RemoveTab(g_ClassTabControl.m_ActiveTabIndex, True)
+            If (ClassSettings.g_bSettingsTabCloseGotoPrevious) Then
+                g_ClassTabControl.m_ActiveTab.RemoveTabGotoLast(True)
+            Else
+                g_ClassTabControl.m_ActiveTab.RemoveTab(True)
+            End If
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try

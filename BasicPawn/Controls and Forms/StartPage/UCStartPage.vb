@@ -164,7 +164,7 @@ Public Class UCStartPage
 
                         If (mRecentItems(i).m_IsProjectFile) Then
                             g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile = mRecentItems(i).m_RecentFile
-                            g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(bAppendFiles, ClassSettings.g_iSettingsAutoOpenProjectFiles)
+                            g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(bAppendFiles, ClassSettings.g_bSettingsAutoOpenProjectFiles)
                             bAppendFiles = True
                         Else
                             Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
@@ -216,7 +216,7 @@ Public Class UCStartPage
 
                     If (mRecentItems(i).m_IsProjectFile) Then
                         g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile = mRecentItems(i).m_RecentFile
-                        g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(bAppendFiles, ClassSettings.g_iSettingsAutoOpenProjectFiles)
+                        g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(bAppendFiles, ClassSettings.g_bSettingsAutoOpenProjectFiles)
                         bAppendFiles = True
                     Else
                         Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
@@ -292,7 +292,7 @@ Public Class UCStartPage
             End If
 
             g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile = mItem.m_RecentFile
-            g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(False, ClassSettings.g_iSettingsAutoOpenProjectFiles)
+            g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(False, ClassSettings.g_bSettingsAutoOpenProjectFiles)
 
             g_mFormMain.g_ClassTabControl.RemoveUnsavedTabsLeft()
 

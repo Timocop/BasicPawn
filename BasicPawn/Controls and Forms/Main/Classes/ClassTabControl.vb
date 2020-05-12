@@ -231,6 +231,16 @@ Public Class ClassTabControl
         End Try
     End Function
 
+    Public Function RemoveTabGotoLast(iIndex As Integer, bPrompSave As Boolean) As Boolean
+        Dim mLastTab = GetNextTabByLastSelection(m_Tab(iIndex), -1)
+
+        If (mLastTab Is Nothing) Then
+            Return RemoveTab(iIndex, bPrompSave)
+        Else
+            Return RemoveTab(iIndex, bPrompSave, mLastTab.m_Index)
+        End If
+    End Function
+
     Public Sub SwapTabs(iFromIndex As Integer, iToIndex As Integer)
         Try
             BeginUpdate()
@@ -1180,6 +1190,10 @@ Public Class ClassTabControl
             Return g_mFormMain.g_ClassTabControl.RemoveTab(m_Index, bPrompSave, iSelectTabIndex)
         End Function
 
+        Public Function RemoveTabGotoLast(bPrompSave As Boolean) As Boolean
+            Return g_mFormMain.g_ClassTabControl.RemoveTabGotoLast(m_Index, bPrompSave)
+        End Function
+
         Public Sub UpdateFoldings()
             g_ClassFoldings.UpdateFoldings()
         End Sub
@@ -1612,7 +1626,7 @@ Public Class ClassTabControl
 
                     'Auto-Indent Brackets
                     Case Keys.Enter
-                        If (Not ClassSettings.g_iSettingsAutoIndentBrackets) Then
+                        If (Not ClassSettings.g_bSettingsAutoIndentBrackets) Then
                             Exit Select
                         End If
 
@@ -1678,7 +1692,7 @@ Public Class ClassTabControl
 
             Dim bLastAutoCloseKeySet As Boolean = False
 
-            If (ClassSettings.g_iSettingsAutoCloseStrings) Then
+            If (ClassSettings.g_bSettingsAutoCloseStrings) Then
                 Select Case True
                     Case (sLastAutoClosedKey = """" AndAlso e.KeyChar = """"c)
                         Dim iOffset As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Caret.Offset
@@ -1740,7 +1754,7 @@ Public Class ClassTabControl
                 End Select
             End If
 
-            If (ClassSettings.g_iSettingsAutoCloseBrackets) Then
+            If (ClassSettings.g_bSettingsAutoCloseBrackets) Then
                 Select Case True
                     Case (sLastAutoClosedKey = "[" AndAlso e.KeyChar = "]"c)
                         Dim iOffset As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Caret.Offset
@@ -1904,7 +1918,7 @@ Public Class ClassTabControl
 
         Private Sub TextEditorControl_Source_DoubleClickMarkWord(sender As Object, e As MouseEventArgs)
             Try
-                If (Not ClassSettings.g_iSettingsDoubleClickMark) Then
+                If (Not ClassSettings.g_bSettingsDoubleClickMark) Then
                     Return
                 End If
 
@@ -1997,7 +2011,7 @@ Public Class ClassTabControl
         End Sub
 
         Private Sub SwitchToAutocompleteTab()
-            If (Not ClassSettings.g_iSettingsSwitchTabToAutocomplete) Then
+            If (Not ClassSettings.g_bSettingsSwitchTabToAutocomplete) Then
                 Return
             End If
 
@@ -2462,7 +2476,7 @@ Public Class ClassTabControl
             End Sub
 
             Public Sub UpdateHighlighting()
-                If (Not ClassSettings.g_iSettingsHighlightCurrentScope) Then
+                If (Not ClassSettings.g_bSettingsHighlightCurrentScope) Then
                     RemoveHighlighting()
                     Return
                 End If
@@ -2484,7 +2498,7 @@ Public Class ClassTabControl
             End Sub
 
             Public Sub UpdateHighlighting(mScopeLocation As Point)
-                If (Not ClassSettings.g_iSettingsHighlightCurrentScope) Then
+                If (Not ClassSettings.g_bSettingsHighlightCurrentScope) Then
                     RemoveHighlighting()
                     Return
                 End If
@@ -2673,7 +2687,7 @@ Public Class ClassTabControl
             End Sub
 
             Public Sub UpdateHighlighting(mWordLocations As List(Of Point), iType As ENUM_MARKER_TYPE)
-                If (Not ClassSettings.g_iSettingsHighlightCurrentScope) Then
+                If (Not ClassSettings.g_bSettingsHighlightCurrentScope) Then
                     RemoveHighlighting(iType)
                     Return
                 End If

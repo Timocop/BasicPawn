@@ -19,7 +19,7 @@ Public Class ClassControlStyle
 
     Public Shared ReadOnly Property m_IsInvertedColors As Boolean
         Get
-            Return ClassSettings.g_iSettingsInvertColors
+            Return ClassSettings.g_bSettingsInvertColors
         End Get
     End Property
 

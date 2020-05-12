@@ -17,17 +17,17 @@
 
 Partial Public Class FormSettings
     Private Sub Load_AutocompleteIntelliSense()
-        CheckBox_AlwaysLoadDefaultIncludes.Checked = ClassSettings.g_iSettingsAlwaysLoadDefaultIncludes
-        CheckBox_OnScreenIntelliSense.Checked = ClassSettings.g_iSettingsEnableToolTip
-        CheckBox_CommentsMethodIntelliSense.Checked = ClassSettings.g_iSettingsToolTipMethodComments
-        CheckBox_CommentsAutocompleteIntelliSense.Checked = ClassSettings.g_iSettingsToolTipAutocompleteComments
-        CheckBox_WindowsToolTipPopup.Checked = ClassSettings.g_iSettingsUseWindowsToolTip
-        CheckBox_WindowsToolTipAnimations.Checked = ClassSettings.g_iSettingsUseWindowsToolTipAnimations
-        CheckBox_WindowsToolTipNewlineMethods.Checked = ClassSettings.g_iSettingsUseWindowsToolTipNewlineMethods
-        CheckBox_WindowsToolTipDisplayTop.Checked = ClassSettings.g_iSettingsUseWindowsToolTipDisplayTop
-        CheckBox_FullAutcompleteMethods.Checked = ClassSettings.g_iSettingsFullMethodAutocomplete
-        CheckBox_FullAutocompleteReTagging.Checked = ClassSettings.g_iSettingsFullEnumAutocomplete
-        CheckBox_CaseSensitive.Checked = ClassSettings.g_iSettingsAutocompleteCaseSensitive
+        CheckBox_AlwaysLoadDefaultIncludes.Checked = ClassSettings.g_bSettingsAlwaysLoadDefaultIncludes
+        CheckBox_OnScreenIntelliSense.Checked = ClassSettings.g_bSettingsEnableToolTip
+        CheckBox_CommentsMethodIntelliSense.Checked = ClassSettings.g_bSettingsToolTipMethodComments
+        CheckBox_CommentsAutocompleteIntelliSense.Checked = ClassSettings.g_bSettingsToolTipAutocompleteComments
+        CheckBox_WindowsToolTipPopup.Checked = ClassSettings.g_bSettingsUseWindowsToolTip
+        CheckBox_WindowsToolTipAnimations.Checked = ClassSettings.g_bSettingsUseWindowsToolTipAnimations
+        CheckBox_WindowsToolTipNewlineMethods.Checked = ClassSettings.g_bSettingsUseWindowsToolTipNewlineMethods
+        CheckBox_WindowsToolTipDisplayTop.Checked = ClassSettings.g_bSettingsUseWindowsToolTipDisplayTop
+        CheckBox_FullAutcompleteMethods.Checked = ClassSettings.g_bSettingsFullMethodAutocomplete
+        CheckBox_FullAutocompleteReTagging.Checked = ClassSettings.g_bSettingsFullEnumAutocomplete
+        CheckBox_CaseSensitive.Checked = ClassSettings.g_bSettingsAutocompleteCaseSensitive
 
         Select Case (ClassSettings.g_iSettingsAutocompleteVarParseType)
             Case ClassSettings.ENUM_VAR_PARSE_TYPE.ALL
@@ -38,28 +38,28 @@ Partial Public Class FormSettings
                 RadioButton_VarParseTab.Checked = True
         End Select
 
-        CheckBox_VarAutocompleteShowObjectBrowser.Checked = ClassSettings.g_iSettingsObjectBrowserShowVariables
-        CheckBox_SwitchTabToAutocomplete.Checked = ClassSettings.g_iSettingsSwitchTabToAutocomplete
-        CheckBox_OnlyUpdateSyntaxWhenFocused.Checked = ClassSettings.g_iSettingsOnlyUpdateSyntaxWhenFocused
-        CheckBox_AutoCloseBrackets.Checked = ClassSettings.g_iSettingsAutoCloseBrackets
-        CheckBox_AutoCloseStrings.Checked = ClassSettings.g_iSettingsAutoCloseStrings
-        CheckBox_AutoIndentBrackets.Checked = ClassSettings.g_iSettingsAutoIndentBrackets
+        CheckBox_VarAutocompleteShowObjectBrowser.Checked = ClassSettings.g_bSettingsObjectBrowserShowVariables
+        CheckBox_SwitchTabToAutocomplete.Checked = ClassSettings.g_bSettingsSwitchTabToAutocomplete
+        CheckBox_OnlyUpdateSyntaxWhenFocused.Checked = ClassSettings.g_bSettingsOnlyUpdateSyntaxWhenFocused
+        CheckBox_AutoCloseBrackets.Checked = ClassSettings.g_bSettingsAutoCloseBrackets
+        CheckBox_AutoCloseStrings.Checked = ClassSettings.g_bSettingsAutoCloseStrings
+        CheckBox_AutoIndentBrackets.Checked = ClassSettings.g_bSettingsAutoIndentBrackets
         NumericUpDown_MaxParseThreads.Value = ClassSettings.g_iSettingsMaxParsingThreads
         NumericUpDown_MaxParseCache.Value = ClassSettings.g_iSettingsMaxParsingCache
     End Sub
 
     Private Sub Apply_AutocompleteIntelliSense()
-        ClassSettings.g_iSettingsAlwaysLoadDefaultIncludes = CheckBox_AlwaysLoadDefaultIncludes.Checked
-        ClassSettings.g_iSettingsEnableToolTip = CheckBox_OnScreenIntelliSense.Checked
-        ClassSettings.g_iSettingsToolTipMethodComments = CheckBox_CommentsMethodIntelliSense.Checked
-        ClassSettings.g_iSettingsToolTipAutocompleteComments = CheckBox_CommentsAutocompleteIntelliSense.Checked
-        ClassSettings.g_iSettingsUseWindowsToolTip = CheckBox_WindowsToolTipPopup.Checked
-        ClassSettings.g_iSettingsUseWindowsToolTipAnimations = CheckBox_WindowsToolTipAnimations.Checked
-        ClassSettings.g_iSettingsUseWindowsToolTipNewlineMethods = CheckBox_WindowsToolTipNewlineMethods.Checked
-        ClassSettings.g_iSettingsUseWindowsToolTipDisplayTop = CheckBox_WindowsToolTipDisplayTop.Checked
-        ClassSettings.g_iSettingsFullMethodAutocomplete = CheckBox_FullAutcompleteMethods.Checked
-        ClassSettings.g_iSettingsFullEnumAutocomplete = CheckBox_FullAutocompleteReTagging.Checked
-        ClassSettings.g_iSettingsAutocompleteCaseSensitive = CheckBox_CaseSensitive.Checked
+        ClassSettings.g_bSettingsAlwaysLoadDefaultIncludes = CheckBox_AlwaysLoadDefaultIncludes.Checked
+        ClassSettings.g_bSettingsEnableToolTip = CheckBox_OnScreenIntelliSense.Checked
+        ClassSettings.g_bSettingsToolTipMethodComments = CheckBox_CommentsMethodIntelliSense.Checked
+        ClassSettings.g_bSettingsToolTipAutocompleteComments = CheckBox_CommentsAutocompleteIntelliSense.Checked
+        ClassSettings.g_bSettingsUseWindowsToolTip = CheckBox_WindowsToolTipPopup.Checked
+        ClassSettings.g_bSettingsUseWindowsToolTipAnimations = CheckBox_WindowsToolTipAnimations.Checked
+        ClassSettings.g_bSettingsUseWindowsToolTipNewlineMethods = CheckBox_WindowsToolTipNewlineMethods.Checked
+        ClassSettings.g_bSettingsUseWindowsToolTipDisplayTop = CheckBox_WindowsToolTipDisplayTop.Checked
+        ClassSettings.g_bSettingsFullMethodAutocomplete = CheckBox_FullAutcompleteMethods.Checked
+        ClassSettings.g_bSettingsFullEnumAutocomplete = CheckBox_FullAutocompleteReTagging.Checked
+        ClassSettings.g_bSettingsAutocompleteCaseSensitive = CheckBox_CaseSensitive.Checked
 
         Select Case (True)
             Case RadioButton_VarParseAll.Checked
@@ -70,12 +70,12 @@ Partial Public Class FormSettings
                 ClassSettings.g_iSettingsAutocompleteVarParseType = ClassSettings.ENUM_VAR_PARSE_TYPE.TAB
         End Select
 
-        ClassSettings.g_iSettingsObjectBrowserShowVariables = CheckBox_VarAutocompleteShowObjectBrowser.Checked
-        ClassSettings.g_iSettingsSwitchTabToAutocomplete = CheckBox_SwitchTabToAutocomplete.Checked
-        ClassSettings.g_iSettingsOnlyUpdateSyntaxWhenFocused = CheckBox_OnlyUpdateSyntaxWhenFocused.Checked
-        ClassSettings.g_iSettingsAutoCloseBrackets = CheckBox_AutoCloseBrackets.Checked
-        ClassSettings.g_iSettingsAutoCloseStrings = CheckBox_AutoCloseStrings.Checked
-        ClassSettings.g_iSettingsAutoIndentBrackets = CheckBox_AutoIndentBrackets.Checked
+        ClassSettings.g_bSettingsObjectBrowserShowVariables = CheckBox_VarAutocompleteShowObjectBrowser.Checked
+        ClassSettings.g_bSettingsSwitchTabToAutocomplete = CheckBox_SwitchTabToAutocomplete.Checked
+        ClassSettings.g_bSettingsOnlyUpdateSyntaxWhenFocused = CheckBox_OnlyUpdateSyntaxWhenFocused.Checked
+        ClassSettings.g_bSettingsAutoCloseBrackets = CheckBox_AutoCloseBrackets.Checked
+        ClassSettings.g_bSettingsAutoCloseStrings = CheckBox_AutoCloseStrings.Checked
+        ClassSettings.g_bSettingsAutoIndentBrackets = CheckBox_AutoIndentBrackets.Checked
         ClassSettings.g_iSettingsMaxParsingThreads = CInt(NumericUpDown_MaxParseThreads.Value)
         ClassSettings.g_iSettingsMaxParsingCache = CInt(NumericUpDown_MaxParseCache.Value)
     End Sub

@@ -17,27 +17,29 @@
 
 Partial Public Class FormSettings
     Private Sub Load_General()
-        CheckBox_InvertedColors.Checked = ClassSettings.g_iSettingsInvertColors
-        CheckBox_AlwaysNewInstance.Checked = ClassSettings.g_iSettingsAlwaysOpenNewInstance
-        CheckBox_AutoShowStartPage.Checked = ClassSettings.g_iSettingsAutoShowStartPage
-        CheckBox_AutoOpenProjectFiles.Checked = ClassSettings.g_iSettingsAutoOpenProjectFiles
-        CheckBox_AssociateSourcePawn.Checked = ClassSettings.g_iSettingsAssociateSourcePawn
-        CheckBox_AssociateAmxMod.Checked = ClassSettings.g_iSettingsAssociateAmxModX
-        CheckBox_AssociateIncludes.Checked = ClassSettings.g_iSettingsAssociateIncludes
-        CheckBox_AutoHoverScroll.Checked = ClassSettings.g_iSettingsAutoHoverScroll
+        CheckBox_InvertedColors.Checked = ClassSettings.g_bSettingsInvertColors
+        CheckBox_AlwaysNewInstance.Checked = ClassSettings.g_bSettingsAlwaysOpenNewInstance
+        CheckBox_AutoShowStartPage.Checked = ClassSettings.g_bSettingsAutoShowStartPage
+        CheckBox_AutoOpenProjectFiles.Checked = ClassSettings.g_bSettingsAutoOpenProjectFiles
+        CheckBox_AssociateSourcePawn.Checked = ClassSettings.g_bSettingsAssociateSourcePawn
+        CheckBox_AssociateAmxMod.Checked = ClassSettings.g_bSettingsAssociateAmxModX
+        CheckBox_AssociateIncludes.Checked = ClassSettings.g_bSettingsAssociateIncludes
+        CheckBox_AutoHoverScroll.Checked = ClassSettings.g_bSettingsAutoHoverScroll
         NumericUpDown_ThreadUpdateRate.Value = ClassSettings.g_iSettingsThreadUpdateRate
+        CheckBox_TabCloseGoToPrevious.Checked = ClassSettings.g_bSettingsTabCloseGotoPrevious
     End Sub
 
     Private Sub Apply_General()
-        ClassSettings.g_iSettingsInvertColors = CheckBox_InvertedColors.Checked
-        ClassSettings.g_iSettingsAlwaysOpenNewInstance = CheckBox_AlwaysNewInstance.Checked
-        ClassSettings.g_iSettingsAutoShowStartPage = CheckBox_AutoShowStartPage.Checked
-        ClassSettings.g_iSettingsAutoOpenProjectFiles = CheckBox_AutoOpenProjectFiles.Checked
-        ClassSettings.g_iSettingsAssociateSourcePawn = CheckBox_AssociateSourcePawn.Checked
-        ClassSettings.g_iSettingsAssociateAmxModX = CheckBox_AssociateAmxMod.Checked
-        ClassSettings.g_iSettingsAssociateIncludes = CheckBox_AssociateIncludes.Checked
-        ClassSettings.g_iSettingsAutoHoverScroll = CheckBox_AutoHoverScroll.Checked
+        ClassSettings.g_bSettingsInvertColors = CheckBox_InvertedColors.Checked
+        ClassSettings.g_bSettingsAlwaysOpenNewInstance = CheckBox_AlwaysNewInstance.Checked
+        ClassSettings.g_bSettingsAutoShowStartPage = CheckBox_AutoShowStartPage.Checked
+        ClassSettings.g_bSettingsAutoOpenProjectFiles = CheckBox_AutoOpenProjectFiles.Checked
+        ClassSettings.g_bSettingsAssociateSourcePawn = CheckBox_AssociateSourcePawn.Checked
+        ClassSettings.g_bSettingsAssociateAmxModX = CheckBox_AssociateAmxMod.Checked
+        ClassSettings.g_bSettingsAssociateIncludes = CheckBox_AssociateIncludes.Checked
+        ClassSettings.g_bSettingsAutoHoverScroll = CheckBox_AutoHoverScroll.Checked
         ClassSettings.g_iSettingsThreadUpdateRate = CInt(NumericUpDown_ThreadUpdateRate.Value)
+        ClassSettings.g_bSettingsTabCloseGotoPrevious = CheckBox_TabCloseGoToPrevious.Checked
     End Sub
 
     Private Sub Button_ClearErrorLog_Click(sender As Object, e As EventArgs) Handles Button_ClearErrorLog.Click

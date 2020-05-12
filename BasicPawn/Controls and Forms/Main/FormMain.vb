@@ -93,7 +93,7 @@ Public Class FormMain
 
             If (Not bOpenProject) Then
                 'Open all files in the oldest BasicPawn instance
-                If (Not ClassSettings.g_iSettingsAlwaysOpenNewInstance AndAlso Array.IndexOf(Environment.GetCommandLineArgs, "-newinstance") = -1) Then
+                If (Not ClassSettings.g_bSettingsAlwaysOpenNewInstance AndAlso Array.IndexOf(Environment.GetCommandLineArgs, "-newinstance") = -1) Then
                     Dim pBasicPawnProc As Process() = Process.GetProcessesByName(IO.Path.GetFileNameWithoutExtension(Application.ExecutablePath))
                     If (pBasicPawnProc.Length > 0) Then
                         Const C_INSTANCES_PID = "Pid"
@@ -276,7 +276,7 @@ Public Class FormMain
         g_ClassTabControl.Init()
 
         'Hide StartPage when disabled in settings
-        If (Not ClassSettings.g_iSettingsAutoShowStartPage AndAlso g_mUCStartPage.Visible) Then
+        If (Not ClassSettings.g_bSettingsAutoShowStartPage AndAlso g_mUCStartPage.Visible) Then
             g_mUCStartPage.Hide()
         End If
 
@@ -299,7 +299,7 @@ Public Class FormMain
             For i = 0 To lOpenFileList.Count - 1
                 If (IO.Path.GetExtension(lOpenFileList(i)).ToLower = UCProjectBrowser.ClassProjectControl.g_sProjectExtension) Then
                     g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile = lOpenFileList(i)
-                    g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(bAppendFiles, ClassSettings.g_iSettingsAutoOpenProjectFiles)
+                    g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(bAppendFiles, ClassSettings.g_bSettingsAutoOpenProjectFiles)
                     bAppendFiles = True
                 End If
             Next
@@ -450,7 +450,11 @@ Public Class FormMain
 
     Private Sub ToolStripMenuItem_TabClose_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_TabClose.Click
         Try
-            g_ClassTabControl.m_ActiveTab.RemoveTab(True)
+            If (ClassSettings.g_bSettingsTabCloseGotoPrevious) Then
+                g_ClassTabControl.m_ActiveTab.RemoveTabGotoLast(True)
+            Else
+                g_ClassTabControl.m_ActiveTab.RemoveTab(True)
+            End If
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try

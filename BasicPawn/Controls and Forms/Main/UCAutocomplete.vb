@@ -167,8 +167,8 @@ Public Class UCAutocomplete
                     mSortedAutocomplete.Add(sFunctionName, mAutocompleteArray(i))
                 End If
             Else
-                If (mAutocompleteArray(i).m_Filename.Equals(sFunctionName, If(ClassSettings.g_iSettingsAutocompleteCaseSensitive, StringComparison.Ordinal, StringComparison.OrdinalIgnoreCase)) OrElse
-                            mAutocompleteArray(i).m_FunctionString.IndexOf(sFunctionName, If(ClassSettings.g_iSettingsAutocompleteCaseSensitive, StringComparison.Ordinal, StringComparison.OrdinalIgnoreCase)) > -1) Then
+                If (mAutocompleteArray(i).m_Filename.Equals(sFunctionName, If(ClassSettings.g_bSettingsAutocompleteCaseSensitive, StringComparison.Ordinal, StringComparison.OrdinalIgnoreCase)) OrElse
+                            mAutocompleteArray(i).m_FunctionString.IndexOf(sFunctionName, If(ClassSettings.g_bSettingsAutocompleteCaseSensitive, StringComparison.Ordinal, StringComparison.OrdinalIgnoreCase)) > -1) Then
                     mSortedAutocomplete.Add(sFunctionName, mAutocompleteArray(i))
                 End If
             End If
@@ -316,7 +316,7 @@ Public Class UCAutocomplete
         End Property
 
         Public Sub UpdateToolTip(Optional sFunctionName As String = Nothing)
-            If (Not ClassSettings.g_iSettingsEnableToolTip) Then
+            If (Not ClassSettings.g_bSettingsEnableToolTip) Then
                 g_AutocompleteUC.SplitContainer1.Panel2Collapsed = True
                 Return
             End If
@@ -415,7 +415,7 @@ Public Class UCAutocomplete
                         Continue For
                     End If
 
-                    If (ClassSettings.g_iSettingsUseWindowsToolTip AndAlso Not bPrintedInfo) Then
+                    If (ClassSettings.g_bSettingsUseWindowsToolTip AndAlso Not bPrintedInfo) Then
                         bPrintedInfo = True
                         SB_TipText_IntelliSenseToolTip.AppendLine("IntelliSense:")
                     End If
@@ -429,7 +429,7 @@ Public Class UCAutocomplete
 
                     lAlreadyShownList.Add(sName)
 
-                    If (ClassSettings.g_iSettingsUseWindowsToolTip AndAlso ClassSettings.g_iSettingsUseWindowsToolTipNewlineMethods) Then
+                    If (ClassSettings.g_bSettingsUseWindowsToolTip AndAlso ClassSettings.g_bSettingsUseWindowsToolTipNewlineMethods) Then
                         Dim sNewlineDistance As Integer = sNameToolTip.IndexOf("("c)
 
                         If (sNewlineDistance > -1) Then
@@ -447,14 +447,14 @@ Public Class UCAutocomplete
                     Dim sComment As String = Regex.Replace(mAutocompleteArray(i).m_Info.Trim, String.Format("(^|{0})", vbTab), New String(" "c, iTabSize), RegexOptions.Multiline)
 
                     SB_TipText_IntelliSense.AppendLine(sName)
-                    If (ClassSettings.g_iSettingsToolTipMethodComments AndAlso Not String.IsNullOrEmpty(sComment.Trim)) Then
+                    If (ClassSettings.g_bSettingsToolTipMethodComments AndAlso Not String.IsNullOrEmpty(sComment.Trim)) Then
                         SB_TipText_IntelliSense.AppendLine(sComment)
                     End If
                     SB_TipText_IntelliSense.AppendLine()
 
                     If (iPrintedItems < iMaxPrintedItems) Then
                         SB_TipText_IntelliSenseToolTip.AppendLine(sNameToolTip)
-                        If (ClassSettings.g_iSettingsToolTipMethodComments AndAlso Not String.IsNullOrEmpty(sComment.Trim)) Then
+                        If (ClassSettings.g_bSettingsToolTipMethodComments AndAlso Not String.IsNullOrEmpty(sComment.Trim)) Then
                             SB_TipText_IntelliSenseToolTip.AppendLine(sComment)
                         End If
                         SB_TipText_IntelliSenseToolTip.AppendLine()
@@ -472,13 +472,13 @@ Public Class UCAutocomplete
                         TypeOf g_AutocompleteUC.ListBox_Autocomplete.SelectedItems(0) Is ClassAutocompleteListBox.ClassAutocompleteItem) Then
                 Dim mAutocompleteItem = DirectCast(g_AutocompleteUC.ListBox_Autocomplete.SelectedItems(0), ClassAutocompleteListBox.ClassAutocompleteItem)
 
-                If (ClassSettings.g_iSettingsUseWindowsToolTip) Then
+                If (ClassSettings.g_bSettingsUseWindowsToolTip) Then
                     SB_TipText_AutocompleteToolTip.AppendLine("Autocomplete:")
                 End If
 
                 Dim sName As String = Regex.Replace(mAutocompleteItem.m_Autocomplete.m_FullFunctionString.Trim, vbTab, New String(" "c, iTabSize))
                 Dim sNameToolTip As String = Regex.Replace(mAutocompleteItem.m_Autocomplete.m_FullFunctionString.Trim, vbTab, New String(" "c, iTabSize))
-                If (ClassSettings.g_iSettingsUseWindowsToolTip AndAlso ClassSettings.g_iSettingsUseWindowsToolTipNewlineMethods) Then
+                If (ClassSettings.g_bSettingsUseWindowsToolTip AndAlso ClassSettings.g_bSettingsUseWindowsToolTipNewlineMethods) Then
                     Dim sNewlineDistance As Integer = sNameToolTip.IndexOf("("c)
 
                     If (sNewlineDistance > -1) Then
@@ -498,7 +498,7 @@ Public Class UCAutocomplete
                 SB_TipText_Autocomplete.AppendLine(sName)
                 SB_TipText_AutocompleteToolTip.AppendLine(sNameToolTip)
 
-                If (ClassSettings.g_iSettingsToolTipAutocompleteComments AndAlso Not String.IsNullOrEmpty(sComment.Trim)) Then
+                If (ClassSettings.g_bSettingsToolTipAutocompleteComments AndAlso Not String.IsNullOrEmpty(sComment.Trim)) Then
                     SB_TipText_Autocomplete.AppendLine(sComment)
                     SB_TipText_AutocompleteToolTip.AppendLine(sComment)
                 End If
@@ -508,7 +508,7 @@ Public Class UCAutocomplete
             If (True) Then
                 'UpdateToolTipFormLocation()
 
-                If (ClassSettings.g_iSettingsUseWindowsToolTip) Then
+                If (ClassSettings.g_bSettingsUseWindowsToolTip) Then
                     g_AutocompleteUC.g_mFormMain.g_mFormToolTip.m_Text = SB_TipText_IntelliSenseToolTip.ToString & SB_TipText_AutocompleteToolTip.ToString
                 Else
                     If (g_AutocompleteUC.g_mFormMain.g_mFormToolTip.m_TextLength > 0) Then
@@ -553,7 +553,7 @@ Public Class UCAutocomplete
         End Sub
 
         Public Sub UpdateToolTipFormLocation()
-            If (ClassSettings.g_iSettingsUseWindowsToolTip) Then
+            If (ClassSettings.g_bSettingsUseWindowsToolTip) Then
                 Dim iEditorX As Integer = g_AutocompleteUC.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.PointToScreen(Point.Empty).X
                 Dim iEditorY As Integer = g_AutocompleteUC.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.PointToScreen(Point.Empty).Y
                 Dim iEditorW As Integer = g_AutocompleteUC.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Width
@@ -569,7 +569,7 @@ Public Class UCAutocomplete
                 Dim iNewLocation As Point
                 Dim bOutsideEditor As Boolean = False
 
-                If (ClassSettings.g_iSettingsUseWindowsToolTipDisplayTop) Then
+                If (ClassSettings.g_bSettingsUseWindowsToolTipDisplayTop) Then
                     Dim iHeight = g_AutocompleteUC.g_mFormMain.g_mFormToolTip.Height
 
                     iNewLocation = New Point(iX + iWTabSpace, iY - iHeight - iHTabSpace)
@@ -662,7 +662,7 @@ Public Class UCAutocomplete
 
                         'Reverse order so we get first funenum/typeset
                         For i = mTab.m_AutocompleteGroup.m_AutocompleteItems.Count - 1 To 0 Step -1
-                            If (Not mTab.m_AutocompleteGroup.m_AutocompleteItems(i).m_FunctionName.Equals(sCaretFunctionAccessor, If(ClassSettings.g_iSettingsAutocompleteCaseSensitive, StringComparison.Ordinal, StringComparison.OrdinalIgnoreCase))) Then
+                            If (Not mTab.m_AutocompleteGroup.m_AutocompleteItems(i).m_FunctionName.Equals(sCaretFunctionAccessor, If(ClassSettings.g_bSettingsAutocompleteCaseSensitive, StringComparison.Ordinal, StringComparison.OrdinalIgnoreCase))) Then
                                 Continue For
                             End If
 
@@ -909,7 +909,7 @@ Public Class UCAutocomplete
 
                         Case (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.ENUM) <> 0,
                                     (mAutocomplete.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.STRUCT) <> 0
-                            If ((ClassSettings.g_iSettingsFullEnumAutocomplete AndAlso Not bIsSpecialAction) OrElse mAutocomplete.m_FunctionString.IndexOf("."c) < 0) Then
+                            If ((ClassSettings.g_bSettingsFullEnumAutocomplete AndAlso Not bIsSpecialAction) OrElse mAutocomplete.m_FunctionString.IndexOf("."c) < 0) Then
                                 mTab.m_TextEditor.Document.Insert(iOffset, mAutocomplete.m_FunctionString.Replace("."c, ":"c))
 
                                 iPosition = mTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Column
@@ -973,7 +973,7 @@ Public Class UCAutocomplete
                             mTab.m_TextEditor.ActiveTextAreaControl.Caret.Column = iPosition + sCommand.Length
 
                         Case Else
-                            If (ClassSettings.g_iSettingsFullMethodAutocomplete AndAlso Not bIsSpecialAction) Then
+                            If (ClassSettings.g_bSettingsFullMethodAutocomplete AndAlso Not bIsSpecialAction) Then
                                 Dim sNewInput As String = mAutocomplete.m_FullFunctionString.Remove(0, Regex.Match(mAutocomplete.m_FullFunctionString, "^(?<Useless>.*?)(\b[a-zA-Z0-9_]+\b)\s*(\()").Groups("Useless").Length)
                                 mTab.m_TextEditor.Document.Insert(iOffset, sNewInput)
 

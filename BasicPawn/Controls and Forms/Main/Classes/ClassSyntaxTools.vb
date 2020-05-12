@@ -902,7 +902,7 @@ Public Class ClassSyntaxTools
                     If (Not String.IsNullOrEmpty(g_sCustomSyntaxText)) Then
                         sModSyntaxXML = g_sCustomSyntaxText.Replace(g_sSyntaxSourcePawnMarker, g_mTextEditorSyntaxItems(i).m_Name)
                     Else
-                        If (ClassSettings.g_iSettingsInvertColors) Then
+                        If (ClassSettings.g_bSettingsInvertColors) Then
                             sModSyntaxXML = g_sSyntaxDarkXML.Replace(g_sSyntaxSourcePawnMarker, g_mTextEditorSyntaxItems(i).m_Name)
                         Else
                             sModSyntaxXML = g_sSyntaxXML.Replace(g_sSyntaxSourcePawnMarker, g_mTextEditorSyntaxItems(i).m_Name)
@@ -1036,7 +1036,7 @@ Public Class ClassSyntaxTools
                                             For Each mAutocomplete In mActiveAutocomplete
                                                 Select Case (True)
                                                     Case (mAutocomplete.m_Type And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.DEFINE) <> 0,
-                                                                 (ClassSettings.g_iSettingsPublicAsDefineColor AndAlso (mAutocomplete.m_Type And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PUBLICVAR) <> 0)
+                                                                 (ClassSettings.g_bSettingsPublicAsDefineColor AndAlso (mAutocomplete.m_Type And STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PUBLICVAR) <> 0)
                                                         mXmlBuilder.AppendFormat("<Key word=""{0}""/>", mAutocomplete.m_FunctionString)
 
                                                 End Select

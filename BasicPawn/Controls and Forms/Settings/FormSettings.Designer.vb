@@ -76,6 +76,8 @@ Partial Class FormSettings
         Me.Label15 = New System.Windows.Forms.Label()
         Me.NumericUpDown_LineStateCount = New System.Windows.Forms.NumericUpDown()
         Me.GroupBox10 = New System.Windows.Forms.GroupBox()
+        Me.CheckBox_ShowVerticalRuler = New System.Windows.Forms.CheckBox()
+        Me.CheckBox_ShowTabSymbols = New System.Windows.Forms.CheckBox()
         Me.Button_Font = New System.Windows.Forms.Button()
         Me.Label_Font = New System.Windows.Forms.Label()
         Me.NumericUpDown_TabsToSpaces = New System.Windows.Forms.NumericUpDown()
@@ -226,8 +228,7 @@ Partial Class FormSettings
         Me.TableLayoutPanel3 = New System.Windows.Forms.TableLayoutPanel()
         Me.ClassPictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
         Me.Label17 = New System.Windows.Forms.Label()
-        Me.CheckBox_ShowTabSymbols = New System.Windows.Forms.CheckBox()
-        Me.CheckBox_ShowVerticalRuler = New System.Windows.Forms.CheckBox()
+        Me.CheckBox_TabCloseGoToPrevious = New System.Windows.Forms.CheckBox()
         Me.ContextMenuStrip_Plugins.SuspendLayout()
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Settings.SuspendLayout()
@@ -475,7 +476,7 @@ Partial Class FormSettings
         Me.GroupBox9.Controls.Add(Me.Button_ClearErrorLog)
         Me.GroupBox9.Controls.Add(Me.Button_ViewErrorLog)
         Me.GroupBox9.Dock = System.Windows.Forms.DockStyle.Top
-        Me.GroupBox9.Location = New System.Drawing.Point(6, 415)
+        Me.GroupBox9.Location = New System.Drawing.Point(6, 439)
         Me.GroupBox9.Name = "GroupBox9"
         Me.GroupBox9.Size = New System.Drawing.Size(740, 59)
         Me.GroupBox9.TabIndex = 34
@@ -519,7 +520,7 @@ Partial Class FormSettings
         Me.GroupBox12.Controls.Add(Me.Label14)
         Me.GroupBox12.Controls.Add(Me.LinkLabel_ThreadUpdateRateHelp)
         Me.GroupBox12.Dock = System.Windows.Forms.DockStyle.Top
-        Me.GroupBox12.Location = New System.Drawing.Point(6, 359)
+        Me.GroupBox12.Location = New System.Drawing.Point(6, 383)
         Me.GroupBox12.Name = "GroupBox12"
         Me.GroupBox12.Size = New System.Drawing.Size(740, 56)
         Me.GroupBox12.TabIndex = 36
@@ -565,7 +566,7 @@ Partial Class FormSettings
         Me.GroupBox8.Controls.Add(Me.CheckBox_AssociateAmxMod)
         Me.GroupBox8.Controls.Add(Me.CheckBox_AssociateSourcePawn)
         Me.GroupBox8.Dock = System.Windows.Forms.DockStyle.Top
-        Me.GroupBox8.Location = New System.Drawing.Point(6, 215)
+        Me.GroupBox8.Location = New System.Drawing.Point(6, 239)
         Me.GroupBox8.Name = "GroupBox8"
         Me.GroupBox8.Size = New System.Drawing.Size(740, 144)
         Me.GroupBox8.TabIndex = 33
@@ -637,7 +638,7 @@ Partial Class FormSettings
         '
         Me.GroupBox7.Controls.Add(Me.CheckBox_AutoOpenProjectFiles)
         Me.GroupBox7.Dock = System.Windows.Forms.DockStyle.Top
-        Me.GroupBox7.Location = New System.Drawing.Point(6, 162)
+        Me.GroupBox7.Location = New System.Drawing.Point(6, 186)
         Me.GroupBox7.Name = "GroupBox7"
         Me.GroupBox7.Size = New System.Drawing.Size(740, 53)
         Me.GroupBox7.TabIndex = 32
@@ -658,13 +659,14 @@ Partial Class FormSettings
         '
         'GroupBox6
         '
+        Me.GroupBox6.Controls.Add(Me.CheckBox_TabCloseGoToPrevious)
         Me.GroupBox6.Controls.Add(Me.CheckBox_AlwaysNewInstance)
         Me.GroupBox6.Controls.Add(Me.CheckBox_AutoHoverScroll)
         Me.GroupBox6.Controls.Add(Me.CheckBox_AutoShowStartPage)
         Me.GroupBox6.Dock = System.Windows.Forms.DockStyle.Top
         Me.GroupBox6.Location = New System.Drawing.Point(6, 60)
         Me.GroupBox6.Name = "GroupBox6"
-        Me.GroupBox6.Size = New System.Drawing.Size(740, 102)
+        Me.GroupBox6.Size = New System.Drawing.Size(740, 126)
         Me.GroupBox6.TabIndex = 31
         Me.GroupBox6.TabStop = False
         Me.GroupBox6.Text = "Behaviour"
@@ -865,6 +867,30 @@ Partial Class FormSettings
         Me.GroupBox10.TabIndex = 33
         Me.GroupBox10.TabStop = False
         Me.GroupBox10.Text = "Editor"
+        '
+        'CheckBox_ShowVerticalRuler
+        '
+        Me.CheckBox_ShowVerticalRuler.AutoSize = True
+        Me.CheckBox_ShowVerticalRuler.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_ShowVerticalRuler.Location = New System.Drawing.Point(9, 188)
+        Me.CheckBox_ShowVerticalRuler.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_ShowVerticalRuler.Name = "CheckBox_ShowVerticalRuler"
+        Me.CheckBox_ShowVerticalRuler.Size = New System.Drawing.Size(127, 18)
+        Me.CheckBox_ShowVerticalRuler.TabIndex = 25
+        Me.CheckBox_ShowVerticalRuler.Text = "Show vertical ruler"
+        Me.CheckBox_ShowVerticalRuler.UseVisualStyleBackColor = True
+        '
+        'CheckBox_ShowTabSymbols
+        '
+        Me.CheckBox_ShowTabSymbols.AutoSize = True
+        Me.CheckBox_ShowTabSymbols.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_ShowTabSymbols.Location = New System.Drawing.Point(9, 164)
+        Me.CheckBox_ShowTabSymbols.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_ShowTabSymbols.Name = "CheckBox_ShowTabSymbols"
+        Me.CheckBox_ShowTabSymbols.Size = New System.Drawing.Size(156, 18)
+        Me.CheckBox_ShowTabSymbols.TabIndex = 24
+        Me.CheckBox_ShowTabSymbols.Text = "Show tabulator symbols"
+        Me.CheckBox_ShowTabSymbols.UseVisualStyleBackColor = True
         '
         'Button_Font
         '
@@ -2576,29 +2602,17 @@ Partial Class FormSettings
         Me.Label17.Text = "Loaded BasicPawn plugins are able to read stored database entries. Make sure all " &
     "installed plugins are from a trustworthy publisher to prevent theft."
         '
-        'CheckBox_ShowTabSymbols
+        'CheckBox_TabCloseGoToPrevious
         '
-        Me.CheckBox_ShowTabSymbols.AutoSize = True
-        Me.CheckBox_ShowTabSymbols.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_ShowTabSymbols.Location = New System.Drawing.Point(9, 164)
-        Me.CheckBox_ShowTabSymbols.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_ShowTabSymbols.Name = "CheckBox_ShowTabSymbols"
-        Me.CheckBox_ShowTabSymbols.Size = New System.Drawing.Size(156, 18)
-        Me.CheckBox_ShowTabSymbols.TabIndex = 24
-        Me.CheckBox_ShowTabSymbols.Text = "Show tabulator symbols"
-        Me.CheckBox_ShowTabSymbols.UseVisualStyleBackColor = True
-        '
-        'CheckBox_ShowVerticalRuler
-        '
-        Me.CheckBox_ShowVerticalRuler.AutoSize = True
-        Me.CheckBox_ShowVerticalRuler.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_ShowVerticalRuler.Location = New System.Drawing.Point(9, 188)
-        Me.CheckBox_ShowVerticalRuler.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_ShowVerticalRuler.Name = "CheckBox_ShowVerticalRuler"
-        Me.CheckBox_ShowVerticalRuler.Size = New System.Drawing.Size(127, 18)
-        Me.CheckBox_ShowVerticalRuler.TabIndex = 25
-        Me.CheckBox_ShowVerticalRuler.Text = "Show vertical ruler"
-        Me.CheckBox_ShowVerticalRuler.UseVisualStyleBackColor = True
+        Me.CheckBox_TabCloseGoToPrevious.AutoSize = True
+        Me.CheckBox_TabCloseGoToPrevious.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_TabCloseGoToPrevious.Location = New System.Drawing.Point(9, 93)
+        Me.CheckBox_TabCloseGoToPrevious.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_TabCloseGoToPrevious.Name = "CheckBox_TabCloseGoToPrevious"
+        Me.CheckBox_TabCloseGoToPrevious.Size = New System.Drawing.Size(270, 18)
+        Me.CheckBox_TabCloseGoToPrevious.TabIndex = 31
+        Me.CheckBox_TabCloseGoToPrevious.Text = "Go to previous selected tab when closing tabs"
+        Me.CheckBox_TabCloseGoToPrevious.UseVisualStyleBackColor = True
         '
         'FormSettings
         '
@@ -2903,4 +2917,5 @@ Partial Class FormSettings
     Friend WithEvents CheckBox_HighlightScope As CheckBox
     Friend WithEvents CheckBox_ShowVerticalRuler As CheckBox
     Friend WithEvents CheckBox_ShowTabSymbols As CheckBox
+    Friend WithEvents CheckBox_TabCloseGoToPrevious As CheckBox
 End Class

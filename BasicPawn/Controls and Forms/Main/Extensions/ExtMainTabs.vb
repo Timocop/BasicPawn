@@ -39,7 +39,7 @@ Partial Public Class FormMain
 
     Private Sub ToolStripMenuItem_Tabs_Close_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_Tabs_Close.Click
         Try
-            g_ClassTabControl.RemoveTab(g_ClassTabControl.m_ActiveTabIndex, True)
+            g_ClassTabControl.RemoveTabGotoLast(g_ClassTabControl.m_ActiveTabIndex, True)
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
@@ -113,8 +113,15 @@ Partial Public Class FormMain
             End If
 
             Dim sFile As String = g_ClassTabControl.m_ActiveTab.m_File
+            Dim bSuccess As Boolean = False
 
-            If (g_ClassTabControl.m_ActiveTab.RemoveTab(True)) Then
+            If (ClassSettings.g_bSettingsTabCloseGotoPrevious) Then
+                bSuccess = g_ClassTabControl.m_ActiveTab.RemoveTabGotoLast(True)
+            Else
+                bSuccess = g_ClassTabControl.m_ActiveTab.RemoveTab(True)
+            End If
+
+            If (bSuccess) Then
                 Process.Start(Application.ExecutablePath, String.Join(" ", {"-newinstance", String.Format("""{0}""", sFile)}))
             End If
         Catch ex As Exception

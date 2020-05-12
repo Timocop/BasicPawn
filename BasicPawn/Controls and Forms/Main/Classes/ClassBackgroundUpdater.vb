@@ -89,7 +89,7 @@ Public Class ClassBackgroundUpdater
                 Threading.Thread.Sleep(ClassSettings.g_iSettingsThreadUpdateRate)
 
                 Try
-                    Dim bIsFormMainFocused As Boolean = (Not ClassSettings.g_iSettingsOnlyUpdateSyntaxWhenFocused OrElse ClassThread.ExecEx(Of Boolean)(g_mFormMain, Function() Form.ActiveForm IsNot Nothing))
+                    Dim bIsFormMainFocused As Boolean = (Not ClassSettings.g_bSettingsOnlyUpdateSyntaxWhenFocused OrElse ClassThread.ExecEx(Of Boolean)(g_mFormMain, Function() Form.ActiveForm IsNot Nothing))
 
                     Dim mActiveTab As ClassTabControl.ClassTab = ClassThread.ExecEx(Of ClassTabControl.ClassTab)(g_mFormMain, Function() g_mFormMain.g_ClassTabControl.m_ActiveTab)
                     Dim iCaretOffset As Integer = ClassThread.ExecEx(Of Integer)(g_mFormMain, Function() mActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Offset)
@@ -198,7 +198,7 @@ Public Class ClassBackgroundUpdater
                         iLastAutoupdateCaretOffset3 = iCaretOffset
                         dLastMarkCaretWordDelay = (Now + mMarkCaretWordDelay)
 
-                        If (ClassSettings.g_iSettingsAutoMark) Then
+                        If (ClassSettings.g_bSettingsAutoMark) Then
                             UpdateMarkerHighlighting(mActiveTab)
                         End If
                     End If

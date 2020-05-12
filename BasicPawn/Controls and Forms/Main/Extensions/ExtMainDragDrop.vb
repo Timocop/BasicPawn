@@ -86,7 +86,11 @@ Partial Public Class FormMain
                 Return
             End If
 
-            mTab.RemoveTab(True)
+            If (ClassSettings.g_bSettingsTabCloseGotoPrevious) Then
+                mTab.RemoveTabGotoLast(True)
+            Else
+                mTab.RemoveTab(True)
+            End If
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try

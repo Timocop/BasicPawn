@@ -17,17 +17,17 @@
 
 Partial Public Class FormSettings
     Private Sub Load_SyntaxHighlighting()
-        CheckBox_DoubleClickMark.Checked = ClassSettings.g_iSettingsDoubleClickMark
-        CheckBox_AutoMark.Checked = ClassSettings.g_iSettingsAutoMark
-        CheckBox_PublicAsDefineColor.Checked = ClassSettings.g_iSettingsPublicAsDefineColor
-        CheckBox_HighlightScope.Checked = ClassSettings.g_iSettingsHighlightCurrentScope
+        CheckBox_DoubleClickMark.Checked = ClassSettings.g_bSettingsDoubleClickMark
+        CheckBox_AutoMark.Checked = ClassSettings.g_bSettingsAutoMark
+        CheckBox_PublicAsDefineColor.Checked = ClassSettings.g_bSettingsPublicAsDefineColor
+        CheckBox_HighlightScope.Checked = ClassSettings.g_bSettingsHighlightCurrentScope
     End Sub
 
     Private Sub Apply_SyntaxHighlighting()
-        ClassSettings.g_iSettingsDoubleClickMark = CheckBox_DoubleClickMark.Checked
-        ClassSettings.g_iSettingsAutoMark = CheckBox_AutoMark.Checked
-        ClassSettings.g_iSettingsPublicAsDefineColor = CheckBox_PublicAsDefineColor.Checked
-        ClassSettings.g_iSettingsHighlightCurrentScope = CheckBox_HighlightScope.Checked
+        ClassSettings.g_bSettingsDoubleClickMark = CheckBox_DoubleClickMark.Checked
+        ClassSettings.g_bSettingsAutoMark = CheckBox_AutoMark.Checked
+        ClassSettings.g_bSettingsPublicAsDefineColor = CheckBox_PublicAsDefineColor.Checked
+        ClassSettings.g_bSettingsHighlightCurrentScope = CheckBox_HighlightScope.Checked
     End Sub
 
     Private Sub FormClosing_SyntaxHighlighting()

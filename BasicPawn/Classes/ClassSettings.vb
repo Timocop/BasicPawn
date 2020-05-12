@@ -44,15 +44,16 @@ Public Class ClassSettings
     Public Shared ReadOnly g_sSettingsFile As String = IO.Path.Combine(Application.StartupPath, "settings.ini")
     Public Shared ReadOnly g_sWindowInfoFile As String = IO.Path.Combine(Application.StartupPath, "windowinfo.ini")
     'General
-    Public Shared g_iSettingsInvertColors As Boolean = False
-    Public Shared g_iSettingsAlwaysOpenNewInstance As Boolean = False
-    Public Shared g_iSettingsAutoShowStartPage As Boolean = True
-    Public Shared g_iSettingsAutoOpenProjectFiles As Boolean = False
-    Public Shared g_iSettingsAssociateSourcePawn As Boolean = False
-    Public Shared g_iSettingsAssociateAmxModX As Boolean = False
-    Public Shared g_iSettingsAssociateIncludes As Boolean = False
-    Public Shared g_iSettingsAutoHoverScroll As Boolean = False
+    Public Shared g_bSettingsInvertColors As Boolean = False
+    Public Shared g_bSettingsAlwaysOpenNewInstance As Boolean = False
+    Public Shared g_bSettingsAutoShowStartPage As Boolean = True
+    Public Shared g_bSettingsAutoOpenProjectFiles As Boolean = False
+    Public Shared g_bSettingsAssociateSourcePawn As Boolean = False
+    Public Shared g_bSettingsAssociateAmxModX As Boolean = False
+    Public Shared g_bSettingsAssociateIncludes As Boolean = False
+    Public Shared g_bSettingsAutoHoverScroll As Boolean = False
     Public Shared g_iSettingsThreadUpdateRate As Integer = 500
+    Public Shared g_bSettingsTabCloseGotoPrevious As Boolean = True
     'Text Editor
     Public Shared g_iSettingsTextEditorFont As Font = g_iSettingsDefaultEditorFont
     Public Shared g_iSettingsTabsToSpaces As Integer = 0
@@ -64,29 +65,29 @@ Public Class ClassSettings
     Public Shared g_bSettingsShowTabs As Boolean = False
     Public Shared g_bSettingsShowVRuler As Boolean = False
     'Syntax Highligting
-    Public Shared g_iSettingsDoubleClickMark As Boolean = True
-    Public Shared g_iSettingsAutoMark As Boolean = True
-    Public Shared g_iSettingsPublicAsDefineColor As Boolean = True
-    Public Shared g_iSettingsHighlightCurrentScope As Boolean = True
+    Public Shared g_bSettingsDoubleClickMark As Boolean = True
+    Public Shared g_bSettingsAutoMark As Boolean = True
+    Public Shared g_bSettingsPublicAsDefineColor As Boolean = True
+    Public Shared g_bSettingsHighlightCurrentScope As Boolean = True
     'Autocomplete
-    Public Shared g_iSettingsAlwaysLoadDefaultIncludes As Boolean = True
-    Public Shared g_iSettingsEnableToolTip As Boolean = True
-    Public Shared g_iSettingsToolTipMethodComments As Boolean = False
-    Public Shared g_iSettingsToolTipAutocompleteComments As Boolean = True
-    Public Shared g_iSettingsUseWindowsToolTip As Boolean = False
-    Public Shared g_iSettingsUseWindowsToolTipAnimations As Boolean = True
-    Public Shared g_iSettingsUseWindowsToolTipNewlineMethods As Boolean = True
-    Public Shared g_iSettingsUseWindowsToolTipDisplayTop As Boolean = True
-    Public Shared g_iSettingsFullMethodAutocomplete As Boolean = False
-    Public Shared g_iSettingsFullEnumAutocomplete As Boolean = False
-    Public Shared g_iSettingsAutocompleteCaseSensitive As Boolean = False
+    Public Shared g_bSettingsAlwaysLoadDefaultIncludes As Boolean = True
+    Public Shared g_bSettingsEnableToolTip As Boolean = True
+    Public Shared g_bSettingsToolTipMethodComments As Boolean = False
+    Public Shared g_bSettingsToolTipAutocompleteComments As Boolean = True
+    Public Shared g_bSettingsUseWindowsToolTip As Boolean = False
+    Public Shared g_bSettingsUseWindowsToolTipAnimations As Boolean = True
+    Public Shared g_bSettingsUseWindowsToolTipNewlineMethods As Boolean = True
+    Public Shared g_bSettingsUseWindowsToolTipDisplayTop As Boolean = True
+    Public Shared g_bSettingsFullMethodAutocomplete As Boolean = False
+    Public Shared g_bSettingsFullEnumAutocomplete As Boolean = False
+    Public Shared g_bSettingsAutocompleteCaseSensitive As Boolean = False
     Public Shared g_iSettingsAutocompleteVarParseType As ENUM_VAR_PARSE_TYPE = ENUM_VAR_PARSE_TYPE.TAB_AND_INC
-    Public Shared g_iSettingsObjectBrowserShowVariables As Boolean = False
-    Public Shared g_iSettingsSwitchTabToAutocomplete As Boolean = True
-    Public Shared g_iSettingsOnlyUpdateSyntaxWhenFocused As Boolean = True
-    Public Shared g_iSettingsAutoCloseBrackets As Boolean = True
-    Public Shared g_iSettingsAutoCloseStrings As Boolean = True
-    Public Shared g_iSettingsAutoIndentBrackets As Boolean = True
+    Public Shared g_bSettingsObjectBrowserShowVariables As Boolean = False
+    Public Shared g_bSettingsSwitchTabToAutocomplete As Boolean = True
+    Public Shared g_bSettingsOnlyUpdateSyntaxWhenFocused As Boolean = True
+    Public Shared g_bSettingsAutoCloseBrackets As Boolean = True
+    Public Shared g_bSettingsAutoCloseStrings As Boolean = True
+    Public Shared g_bSettingsAutoIndentBrackets As Boolean = True
     Public Shared g_iSettingsMaxParsingThreads As Integer = Math.Max(1, CInt(Environment.ProcessorCount / 2))
     Public Shared g_iSettingsMaxParsingCache As Integer = 64
 #End Region
@@ -102,15 +103,16 @@ Public Class ClassSettings
                 Dim lContent As New List(Of ClassIni.STRUC_INI_CONTENT)
 
                 'Settings
-                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorInvertColors", If(g_iSettingsInvertColors, "1", "0")))
-                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AlwaysOpenNewInstance", If(g_iSettingsAlwaysOpenNewInstance, "1", "0")))
-                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutoShowStartPage", If(g_iSettingsAutoShowStartPage, "1", "0")))
-                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutoOpenProjectFiles", If(g_iSettingsAutoOpenProjectFiles, "1", "0")))
-                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AssociateSourcePawn", If(g_iSettingsAssociateSourcePawn, "1", "0")))
-                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AssociateAmxModX", If(g_iSettingsAssociateAmxModX, "1", "0")))
-                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AssociateIncludes", If(g_iSettingsAssociateIncludes, "1", "0")))
-                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutoHoverScroll", If(g_iSettingsAutoHoverScroll, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorInvertColors", If(g_bSettingsInvertColors, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AlwaysOpenNewInstance", If(g_bSettingsAlwaysOpenNewInstance, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutoShowStartPage", If(g_bSettingsAutoShowStartPage, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutoOpenProjectFiles", If(g_bSettingsAutoOpenProjectFiles, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AssociateSourcePawn", If(g_bSettingsAssociateSourcePawn, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AssociateAmxModX", If(g_bSettingsAssociateAmxModX, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AssociateIncludes", If(g_bSettingsAssociateIncludes, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutoHoverScroll", If(g_bSettingsAutoHoverScroll, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorThreadUpdateRate", CStr(g_iSettingsThreadUpdateRate)))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TabCloseGotoPrevious", If(g_bSettingsTabCloseGotoPrevious, "1", "0")))
                 'Text Editor
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorFont", New FontConverter().ConvertToInvariantString(g_iSettingsTextEditorFont)))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorTabsToSpaces", CStr(g_iSettingsTabsToSpaces)))
@@ -122,29 +124,29 @@ Public Class ClassSettings
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorShowTabs", If(g_bSettingsShowTabs, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorShowVRuler", If(g_bSettingsShowVRuler, "1", "0")))
                 'Syntax Highligting
-                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "DoubleClickMark", If(g_iSettingsDoubleClickMark, "1", "0")))
-                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutoMark", If(g_iSettingsAutoMark, "1", "0")))
-                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "PublicAsDefineColor", If(g_iSettingsPublicAsDefineColor, "1", "0")))
-                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "HighlightCurrentScope", If(g_iSettingsHighlightCurrentScope, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "DoubleClickMark", If(g_bSettingsDoubleClickMark, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutoMark", If(g_bSettingsAutoMark, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "PublicAsDefineColor", If(g_bSettingsPublicAsDefineColor, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "HighlightCurrentScope", If(g_bSettingsHighlightCurrentScope, "1", "0")))
                 'Autocomplete
-                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AlwaysLoadDefaultIncludes", If(g_iSettingsAlwaysLoadDefaultIncludes, "1", "0")))
-                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutocompleteToolTip", If(g_iSettingsEnableToolTip, "1", "0")))
-                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "ToolTipMethodComments", If(g_iSettingsToolTipMethodComments, "1", "0")))
-                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "ToolTipAutocompleteComments", If(g_iSettingsToolTipAutocompleteComments, "1", "0")))
-                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "UseWindowsToolTip", If(g_iSettingsUseWindowsToolTip, "1", "0")))
-                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "UseWindowsToolTipAnimations", If(g_iSettingsUseWindowsToolTipAnimations, "1", "0")))
-                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "UseWindowsToolTipNewlineMethods", If(g_iSettingsUseWindowsToolTipNewlineMethods, "1", "0")))
-                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "UseWindowsToolTipDisplayTop", If(g_iSettingsUseWindowsToolTipDisplayTop, "1", "0")))
-                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "FullMethodAutocomplete", If(g_iSettingsFullMethodAutocomplete, "1", "0")))
-                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "FullEnumAutocomplete", If(g_iSettingsFullEnumAutocomplete, "1", "0")))
-                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutocompleteCaseSensitive", If(g_iSettingsAutocompleteCaseSensitive, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AlwaysLoadDefaultIncludes", If(g_bSettingsAlwaysLoadDefaultIncludes, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutocompleteToolTip", If(g_bSettingsEnableToolTip, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "ToolTipMethodComments", If(g_bSettingsToolTipMethodComments, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "ToolTipAutocompleteComments", If(g_bSettingsToolTipAutocompleteComments, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "UseWindowsToolTip", If(g_bSettingsUseWindowsToolTip, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "UseWindowsToolTipAnimations", If(g_bSettingsUseWindowsToolTipAnimations, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "UseWindowsToolTipNewlineMethods", If(g_bSettingsUseWindowsToolTipNewlineMethods, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "UseWindowsToolTipDisplayTop", If(g_bSettingsUseWindowsToolTipDisplayTop, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "FullMethodAutocomplete", If(g_bSettingsFullMethodAutocomplete, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "FullEnumAutocomplete", If(g_bSettingsFullEnumAutocomplete, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutocompleteCaseSensitive", If(g_bSettingsAutocompleteCaseSensitive, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutocompleteVarParseType", CStr(g_iSettingsAutocompleteVarParseType)))
-                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "ObjectBrowserShowVariables", If(g_iSettingsObjectBrowserShowVariables, "1", "0")))
-                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "SwitchTabToAutocomplete", If(g_iSettingsSwitchTabToAutocomplete, "1", "0")))
-                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "OnlyUpdateSyntaxWhenFocused", If(g_iSettingsOnlyUpdateSyntaxWhenFocused, "1", "0")))
-                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutoCloseBrackets", If(g_iSettingsAutoCloseBrackets, "1", "0")))
-                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutoCloseStrings", If(g_iSettingsAutoCloseStrings, "1", "0")))
-                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutoIndentBrackets", If(g_iSettingsAutoIndentBrackets, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "ObjectBrowserShowVariables", If(g_bSettingsObjectBrowserShowVariables, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "SwitchTabToAutocomplete", If(g_bSettingsSwitchTabToAutocomplete, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "OnlyUpdateSyntaxWhenFocused", If(g_bSettingsOnlyUpdateSyntaxWhenFocused, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutoCloseBrackets", If(g_bSettingsAutoCloseBrackets, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutoCloseStrings", If(g_bSettingsAutoCloseStrings, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutoIndentBrackets", If(g_bSettingsAutoIndentBrackets, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "MaxParsingThreads", CStr(g_iSettingsMaxParsingThreads)))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "MaxParsingCache", CStr(g_iSettingsMaxParsingCache)))
 
@@ -162,18 +164,20 @@ Public Class ClassSettings
             Using mStream = ClassFileStreamWait.Create(g_sSettingsFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
                 Using mIni As New ClassIni(mStream)
                     'Settings 
-                    g_iSettingsInvertColors = (mIni.ReadKeyValue("Editor", "TextEditorInvertColors", "0") <> "0")
-                    g_iSettingsAlwaysOpenNewInstance = (mIni.ReadKeyValue("Editor", "AlwaysOpenNewInstance", "0") <> "0")
-                    g_iSettingsAutoShowStartPage = (mIni.ReadKeyValue("Editor", "AutoShowStartPage", "1") <> "0")
-                    g_iSettingsAutoOpenProjectFiles = (mIni.ReadKeyValue("Editor", "AutoOpenProjectFiles", "0") <> "0")
-                    g_iSettingsAssociateSourcePawn = (mIni.ReadKeyValue("Editor", "AssociateSourcePawn", "0") <> "0")
-                    g_iSettingsAssociateAmxModX = (mIni.ReadKeyValue("Editor", "AssociateAmxModX", "0") <> "0")
-                    g_iSettingsAssociateIncludes = (mIni.ReadKeyValue("Editor", "AssociateIncludes", "0") <> "0")
-                    g_iSettingsAutoHoverScroll = (mIni.ReadKeyValue("Editor", "AutoHoverScroll", "1") <> "0")
+                    g_bSettingsInvertColors = (mIni.ReadKeyValue("Editor", "TextEditorInvertColors", "0") <> "0")
+                    g_bSettingsAlwaysOpenNewInstance = (mIni.ReadKeyValue("Editor", "AlwaysOpenNewInstance", "0") <> "0")
+                    g_bSettingsAutoShowStartPage = (mIni.ReadKeyValue("Editor", "AutoShowStartPage", "1") <> "0")
+                    g_bSettingsAutoOpenProjectFiles = (mIni.ReadKeyValue("Editor", "AutoOpenProjectFiles", "0") <> "0")
+                    g_bSettingsAssociateSourcePawn = (mIni.ReadKeyValue("Editor", "AssociateSourcePawn", "0") <> "0")
+                    g_bSettingsAssociateAmxModX = (mIni.ReadKeyValue("Editor", "AssociateAmxModX", "0") <> "0")
+                    g_bSettingsAssociateIncludes = (mIni.ReadKeyValue("Editor", "AssociateIncludes", "0") <> "0")
+                    g_bSettingsAutoHoverScroll = (mIni.ReadKeyValue("Editor", "AutoHoverScroll", "1") <> "0")
 
                     If (Integer.TryParse(mIni.ReadKeyValue("Editor", "TextEditorThreadUpdateRate", "500"), tmpInt)) Then
                         g_iSettingsThreadUpdateRate = ClassTools.ClassMath.ClampInt(tmpInt, 100, 2500)
                     End If
+
+                    g_bSettingsTabCloseGotoPrevious = (mIni.ReadKeyValue("Editor", "TabCloseGotoPrevious", "1") <> "0")
 
                     'Text Editor
                     Dim mFont As Font = CType(New FontConverter().ConvertFromInvariantString(mIni.ReadKeyValue("Editor", "TextEditorFont", g_sSettingsDefaultEditorFont)), Font)
@@ -204,33 +208,33 @@ Public Class ClassSettings
                     g_bSettingsShowVRuler = (mIni.ReadKeyValue("Editor", "TextEditorShowVRuler", "0") <> "0")
 
                     'Syntax Highligting
-                    g_iSettingsDoubleClickMark = (mIni.ReadKeyValue("Editor", "DoubleClickMark", "1") <> "0")
-                    g_iSettingsAutoMark = (mIni.ReadKeyValue("Editor", "AutoMark", "1") <> "0")
-                    g_iSettingsPublicAsDefineColor = (mIni.ReadKeyValue("Editor", "PublicAsDefineColor", "1") <> "0")
-                    g_iSettingsHighlightCurrentScope = (mIni.ReadKeyValue("Editor", "HighlightCurrentScope", "1") <> "0")
+                    g_bSettingsDoubleClickMark = (mIni.ReadKeyValue("Editor", "DoubleClickMark", "1") <> "0")
+                    g_bSettingsAutoMark = (mIni.ReadKeyValue("Editor", "AutoMark", "1") <> "0")
+                    g_bSettingsPublicAsDefineColor = (mIni.ReadKeyValue("Editor", "PublicAsDefineColor", "1") <> "0")
+                    g_bSettingsHighlightCurrentScope = (mIni.ReadKeyValue("Editor", "HighlightCurrentScope", "1") <> "0")
                     'Autocomplete
-                    g_iSettingsAlwaysLoadDefaultIncludes = (mIni.ReadKeyValue("Editor", "AlwaysLoadDefaultIncludes", "1") <> "0")
-                    g_iSettingsEnableToolTip = (mIni.ReadKeyValue("Editor", "AutocompleteToolTip", "1") <> "0")
-                    g_iSettingsToolTipMethodComments = (mIni.ReadKeyValue("Editor", "ToolTipMethodComments", "0") <> "0")
-                    g_iSettingsToolTipAutocompleteComments = (mIni.ReadKeyValue("Editor", "ToolTipAutocompleteComments", "1") <> "0")
-                    g_iSettingsUseWindowsToolTip = (mIni.ReadKeyValue("Editor", "UseWindowsToolTip", "0") <> "0")
-                    g_iSettingsUseWindowsToolTipAnimations = (mIni.ReadKeyValue("Editor", "UseWindowsToolTipAnimations", "1") <> "0")
-                    g_iSettingsUseWindowsToolTipNewlineMethods = (mIni.ReadKeyValue("Editor", "UseWindowsToolTipNewlineMethods", "1") <> "0")
-                    g_iSettingsUseWindowsToolTipDisplayTop = (mIni.ReadKeyValue("Editor", "UseWindowsToolTipDisplayTop", "1") <> "0")
-                    g_iSettingsFullMethodAutocomplete = (mIni.ReadKeyValue("Editor", "FullMethodAutocomplete", "0") <> "0")
-                    g_iSettingsFullEnumAutocomplete = (mIni.ReadKeyValue("Editor", "FullEnumAutocomplete", "0") <> "0")
-                    g_iSettingsAutocompleteCaseSensitive = (mIni.ReadKeyValue("Editor", "AutocompleteCaseSensitive", "0") <> "0")
+                    g_bSettingsAlwaysLoadDefaultIncludes = (mIni.ReadKeyValue("Editor", "AlwaysLoadDefaultIncludes", "1") <> "0")
+                    g_bSettingsEnableToolTip = (mIni.ReadKeyValue("Editor", "AutocompleteToolTip", "1") <> "0")
+                    g_bSettingsToolTipMethodComments = (mIni.ReadKeyValue("Editor", "ToolTipMethodComments", "0") <> "0")
+                    g_bSettingsToolTipAutocompleteComments = (mIni.ReadKeyValue("Editor", "ToolTipAutocompleteComments", "1") <> "0")
+                    g_bSettingsUseWindowsToolTip = (mIni.ReadKeyValue("Editor", "UseWindowsToolTip", "0") <> "0")
+                    g_bSettingsUseWindowsToolTipAnimations = (mIni.ReadKeyValue("Editor", "UseWindowsToolTipAnimations", "1") <> "0")
+                    g_bSettingsUseWindowsToolTipNewlineMethods = (mIni.ReadKeyValue("Editor", "UseWindowsToolTipNewlineMethods", "1") <> "0")
+                    g_bSettingsUseWindowsToolTipDisplayTop = (mIni.ReadKeyValue("Editor", "UseWindowsToolTipDisplayTop", "1") <> "0")
+                    g_bSettingsFullMethodAutocomplete = (mIni.ReadKeyValue("Editor", "FullMethodAutocomplete", "0") <> "0")
+                    g_bSettingsFullEnumAutocomplete = (mIni.ReadKeyValue("Editor", "FullEnumAutocomplete", "0") <> "0")
+                    g_bSettingsAutocompleteCaseSensitive = (mIni.ReadKeyValue("Editor", "AutocompleteCaseSensitive", "0") <> "0")
 
                     If (Integer.TryParse(mIni.ReadKeyValue("Editor", "AutocompleteVarParseType", CStr(ENUM_VAR_PARSE_TYPE.TAB_AND_INC)), tmpInt)) Then
                         g_iSettingsAutocompleteVarParseType = CType(ClassTools.ClassMath.ClampInt(tmpInt, 0, [Enum].GetNames(GetType(ENUM_VAR_PARSE_TYPE)).Length - 1), ENUM_VAR_PARSE_TYPE)
                     End If
 
-                    g_iSettingsObjectBrowserShowVariables = (mIni.ReadKeyValue("Editor", "ObjectBrowserShowVariables", "0") <> "0")
-                    g_iSettingsSwitchTabToAutocomplete = (mIni.ReadKeyValue("Editor", "SwitchTabToAutocomplete", "1") <> "0")
-                    g_iSettingsOnlyUpdateSyntaxWhenFocused = (mIni.ReadKeyValue("Editor", "OnlyUpdateSyntaxWhenFocused", "1") <> "0")
-                    g_iSettingsAutoCloseBrackets = (mIni.ReadKeyValue("Editor", "AutoCloseBrackets", "1") <> "0")
-                    g_iSettingsAutoCloseStrings = (mIni.ReadKeyValue("Editor", "AutoCloseStrings", "1") <> "0")
-                    g_iSettingsAutoIndentBrackets = (mIni.ReadKeyValue("Editor", "AutoIndentBrackets", "1") <> "0")
+                    g_bSettingsObjectBrowserShowVariables = (mIni.ReadKeyValue("Editor", "ObjectBrowserShowVariables", "0") <> "0")
+                    g_bSettingsSwitchTabToAutocomplete = (mIni.ReadKeyValue("Editor", "SwitchTabToAutocomplete", "1") <> "0")
+                    g_bSettingsOnlyUpdateSyntaxWhenFocused = (mIni.ReadKeyValue("Editor", "OnlyUpdateSyntaxWhenFocused", "1") <> "0")
+                    g_bSettingsAutoCloseBrackets = (mIni.ReadKeyValue("Editor", "AutoCloseBrackets", "1") <> "0")
+                    g_bSettingsAutoCloseStrings = (mIni.ReadKeyValue("Editor", "AutoCloseStrings", "1") <> "0")
+                    g_bSettingsAutoIndentBrackets = (mIni.ReadKeyValue("Editor", "AutoIndentBrackets", "1") <> "0")
 
                     If (Integer.TryParse(mIni.ReadKeyValue("Editor", "MaxParsingThreads", CStr(CInt(Environment.ProcessorCount / 2))), tmpInt)) Then
                         g_iSettingsMaxParsingThreads = ClassTools.ClassMath.ClampInt(tmpInt, 1, Environment.ProcessorCount)
@@ -330,19 +334,19 @@ Public Class ClassSettings
     End Sub
 
     Private Shared Sub SetRegistryKeys()
-        If (g_iSettingsAssociateSourcePawn) Then
+        If (g_bSettingsAssociateSourcePawn) Then
             ClassTools.ClassRegistry.SetAssociation("BasicPawn.SourcePawn", ".sp", String.Format("""{0}"" ""%1""", Application.ExecutablePath), Application.ExecutablePath, Application.ExecutablePath, ClassTools.ClassRegistry.ENUM_SELECTION_MODEL.PLAYER)
         Else
             ClassTools.ClassRegistry.RemoveAssociation("BasicPawn.SourcePawn")
         End If
 
-        If (g_iSettingsAssociateAmxModX) Then
+        If (g_bSettingsAssociateAmxModX) Then
             ClassTools.ClassRegistry.SetAssociation("BasicPawn.AmxModX", ".sma", String.Format("""{0}"" ""%1""", Application.ExecutablePath), Application.ExecutablePath, Application.ExecutablePath, ClassTools.ClassRegistry.ENUM_SELECTION_MODEL.PLAYER)
         Else
             ClassTools.ClassRegistry.RemoveAssociation("BasicPawn.AmxModX")
         End If
 
-        If (g_iSettingsAssociateIncludes) Then
+        If (g_bSettingsAssociateIncludes) Then
             ClassTools.ClassRegistry.SetAssociation("BasicPawn.Includes", ".inc", String.Format("""{0}"" ""%1""", Application.ExecutablePath), Application.ExecutablePath, Application.ExecutablePath, ClassTools.ClassRegistry.ENUM_SELECTION_MODEL.PLAYER)
         Else
             ClassTools.ClassRegistry.RemoveAssociation("BasicPawn.Includes")

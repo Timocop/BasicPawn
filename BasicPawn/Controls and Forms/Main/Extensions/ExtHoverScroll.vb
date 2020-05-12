@@ -43,7 +43,7 @@ Partial Public Class FormMain
 
     Private Const WM_MOUSEWHEEL As Integer = &H20A
     Public Function PreFilterMessage(ByRef m As Message) As Boolean Implements IMessageFilter.PreFilterMessage
-        If (Not ClassSettings.g_iSettingsAutoHoverScroll) Then
+        If (Not ClassSettings.g_bSettingsAutoHoverScroll) Then
             Return False
         End If
 

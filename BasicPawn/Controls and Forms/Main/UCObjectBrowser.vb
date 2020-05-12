@@ -231,7 +231,7 @@ Public Class UCObjectBrowser
 
                     Dim i As Integer
                     For i = 0 To lAutocompleteList.Count - 1
-                        If (Not ClassSettings.g_iSettingsObjectBrowserShowVariables) Then
+                        If (Not ClassSettings.g_bSettingsObjectBrowserShowVariables) Then
                             If ((lAutocompleteList(i).m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.VARIABLE) <> 0) Then
                                 Continue For
                             End If

@@ -176,7 +176,7 @@ Public Class ClassAutocompleteListBox
         End Function
 
         Private Function ComputeSimple(x As String, y As String) As Integer
-            Dim i = x.IndexOf(y, If(ClassSettings.g_iSettingsAutocompleteCaseSensitive, StringComparison.Ordinal, StringComparison.OrdinalIgnoreCase))
+            Dim i = x.IndexOf(y, If(ClassSettings.g_bSettingsAutocompleteCaseSensitive, StringComparison.Ordinal, StringComparison.OrdinalIgnoreCase))
             If (i = -1) Then
                 Return Integer.MaxValue
             End If
