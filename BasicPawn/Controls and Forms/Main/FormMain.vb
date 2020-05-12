@@ -478,6 +478,30 @@ Public Class FormMain
         g_ClassTabControl.SwapTabs(iActiveIndex, iToIndex)
     End Sub
 
+    Private Sub ToolStripMenuItem_TabLastViewedRight_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_TabLastViewedRight.Click
+        Dim mNextTab = g_ClassTabControl.GetNextTabByLastSelection(g_ClassTabControl.m_ActiveTab, 1)
+        If (mNextTab Is Nothing) Then
+            Return
+        End If
+
+        'Keep original time
+        Dim mLastTime = mNextTab.m_LastViewTime
+        mNextTab.SelectTab()
+        mNextTab.m_LastViewTime = mLastTime
+    End Sub
+
+    Private Sub ToolStripMenuItem_TabLastViewedLeft_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_TabLastViewedLeft.Click
+        Dim mNextTab = g_ClassTabControl.GetNextTabByLastSelection(g_ClassTabControl.m_ActiveTab, -1)
+        If (mNextTab Is Nothing) Then
+            Return
+        End If
+
+        'Keep original time
+        Dim mLastTime = mNextTab.m_LastViewTime
+        mNextTab.SelectTab()
+        mNextTab.m_LastViewTime = mLastTime
+    End Sub
+
     Private Sub ToolStripMenuItem_TabOpenInstance_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_TabOpenInstance.Click
         If (g_mFormInstanceManager IsNot Nothing AndAlso Not g_mFormInstanceManager.IsDisposed) Then
             Return

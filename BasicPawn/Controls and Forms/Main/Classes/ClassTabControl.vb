@@ -284,6 +284,8 @@ Public Class ClassTabControl
                 Else
                     FullUpdate(m_Tab(iIndex))
                 End If
+
+                m_Tab(iIndex).UpdateLastViewTime()
             End If
         Finally
             EndUpdate()
@@ -691,6 +693,57 @@ Public Class ClassTabControl
         End Try
     End Sub
 
+    Public Function GetNextTabByLastSelection(mTab As ClassTab, iDirection As Integer) As ClassTab
+        Return GetNextTabByLastSelection(mTab.m_LastViewTime, iDirection)
+    End Function
+
+    Public Function GetNextTabByLastSelection(mTime As Date, iDirection As Integer) As ClassTab
+        Dim mSortedTabs As New List(Of KeyValuePair(Of Long, Object))
+        Dim mIdentifier As New Object
+
+        For Each mTab In GetAllTabs()
+            mSortedTabs.Add(New KeyValuePair(Of Long, Object)(mTab.m_LastViewTime.Ticks, mTab))
+        Next
+
+        mSortedTabs.Add(New KeyValuePair(Of Long, Object)(mTime.Ticks, mIdentifier))
+
+        mSortedTabs.Sort(Function(x As KeyValuePair(Of Long, Object), y As KeyValuePair(Of Long, Object))
+                             Return x.Key.CompareTo(y.Key)
+                         End Function)
+
+        For i = 0 To mSortedTabs.Count - 1
+            If (mSortedTabs(i).Value Is mIdentifier) Then
+                If (iDirection = 1) Then
+                    For j = i + 1 To mSortedTabs.Count - 1
+                        If (TypeOf mSortedTabs(j).Value IsNot ClassTab) Then
+                            Continue For
+                        End If
+
+                        If (mSortedTabs(j).Key = mSortedTabs(i).Key) Then
+                            Continue For
+                        End If
+
+                        Return DirectCast(mSortedTabs(j).Value, ClassTab)
+                    Next
+                Else
+                    For j = i - 1 To 0 Step -1
+                        If (TypeOf mSortedTabs(j).Value IsNot ClassTab) Then
+                            Continue For
+                        End If
+
+                        If (mSortedTabs(j).Key = mSortedTabs(i).Key) Then
+                            Continue For
+                        End If
+
+                        Return DirectCast(mSortedTabs(j).Value, ClassTab)
+                    Next
+                End If
+            End If
+        Next
+
+        Return Nothing
+    End Function
+
     Public Function GetTabByCursorPoint() As ClassTab
         For i = 0 To g_mFormMain.TabControl_SourceTabs.TabPages.Count - 1
             If (g_mFormMain.TabControl_SourceTabs.GetTabRect(i).Contains(g_mFormMain.TabControl_SourceTabs.PointToClient(Cursor.Position))) Then
@@ -952,6 +1005,7 @@ Public Class ClassTabControl
         Private g_bHasReferenceIncludes As Boolean = False
         Private g_bHandlersEnabled As Boolean = False
         Private g_mFileCachedWriteDate As Date
+        Private g_mLastViewTime As Date
 
         Public g_ClassFoldings As ClassFoldings
         Public g_ClassLineState As ClassLineState
@@ -1130,6 +1184,10 @@ Public Class ClassTabControl
             g_ClassFoldings.UpdateFoldings()
         End Sub
 
+        Public Sub UpdateLastViewTime()
+            g_mLastViewTime = Now
+        End Sub
+
         Public Property m_HandlersEnabled As Boolean
             Get
                 Return g_bHandlersEnabled
@@ -1172,6 +1230,15 @@ Public Class ClassTabControl
             End Get
             Set(value As Date)
                 g_mFileCachedWriteDate = value
+            End Set
+        End Property
+
+        Public Property m_LastViewTime As Date
+            Get
+                Return g_mLastViewTime
+            End Get
+            Set(value As Date)
+                g_mLastViewTime = value
             End Set
         End Property
 
