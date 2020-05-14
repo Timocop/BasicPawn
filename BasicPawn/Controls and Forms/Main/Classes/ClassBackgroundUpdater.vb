@@ -99,18 +99,44 @@ Public Class ClassBackgroundUpdater
                     If (dLastRequestSyntaxParseDelay < Now AndAlso bIsFormMainFocused AndAlso g_mFormMain.g_ClassSyntaxParser.m_UpdateRequests.Count > 0) Then
                         dLastRequestSyntaxParseDelay = (Now + mRequestSyntaxParseDelay)
 
-                        Dim sActiveTabIdentifier As String = ClassThread.ExecEx(Of String)(g_mFormMain, Function() mActiveTab.m_Identifier)
-                        Dim sRequestedTabIdentifier As String = g_mFormMain.g_ClassSyntaxParser.m_UpdateRequests(0).sTabIdentifier
+                        Dim iMaxUpdateCount As Integer = (ClassSettings.g_iSettingsMaxParsingThreads - g_mFormMain.g_ClassSyntaxParser.GetAliveThreadCount)
+                        If (iMaxUpdateCount > 0) Then
+                            Dim sActiveTabIdentifier As String = mActiveTab.m_Identifier
+                            Dim mActiveTabRequest As ClassSyntaxParser.STRUC_SYNTAX_PARSE_TAB_REQUEST = Nothing
 
-                        'Active tabs have higher priority to update
-                        If (g_mFormMain.g_ClassSyntaxParser.m_UpdateRequests.Exists(Function(a As ClassSyntaxParser.STRUC_SYNTAX_PARSE_TAB_REQUEST) a.sTabIdentifier = sActiveTabIdentifier)) Then
-                            sRequestedTabIdentifier = sActiveTabIdentifier
+                            Dim mUpdateRequests = g_mFormMain.g_ClassSyntaxParser.m_UpdateRequests.ToArray
+                            Dim iRequestsLeft As Integer = iMaxUpdateCount
+
+                            For Each mRequest In mUpdateRequests
+                                If (mRequest.sTabIdentifier <> sActiveTabIdentifier) Then
+                                    Continue For
+                                End If
+
+                                mActiveTabRequest = mRequest
+                                Exit For
+                            Next
+
+                            'Active tabs have higher priority to update
+                            If (mActiveTabRequest IsNot Nothing) Then
+                                ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                                       g_mFormMain.g_ClassSyntaxParser.StartUpdateSchedule(ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS.ALL, mActiveTabRequest.sTabIdentifier, mActiveTabRequest.iOptionFlags)
+                                                                   End Sub)
+
+                                iRequestsLeft -= 1
+                            End If
+
+                            For Each mRequest In mUpdateRequests
+                                If (iRequestsLeft < 1) Then
+                                    Exit For
+                                End If
+
+                                ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                                       g_mFormMain.g_ClassSyntaxParser.StartUpdateSchedule(ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS.ALL, mRequest.sTabIdentifier, mRequest.iOptionFlags)
+                                                                   End Sub)
+
+                                iRequestsLeft -= 1
+                            Next
                         End If
-
-                        ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                               g_mFormMain.g_ClassSyntaxParser.StartUpdateSchedule(ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS.ALL, sRequestedTabIdentifier, ClassSyntaxParser.ENUM_PARSE_OPTIONS_FLAGS.NOONE)
-                                                           End Sub)
-
                     ElseIf (dLastFullSyntaxParseDelay < Now AndAlso bIsFormMainFocused) Then
                         dLastFullSyntaxParseDelay = (Now + mFullSyntaxParseDelay)
 
