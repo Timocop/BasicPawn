@@ -1021,6 +1021,8 @@ Public Class ClassTabControl
         Public g_ClassLineState As ClassLineState
         Public g_ClassScopeHighlighting As ClassScopeHighlighting
         Public g_ClassMarkerHighlighting As ClassMarkerHighlighting
+        Public g_ClassDragDropManager As ClassDragDropManager
+        Public g_ClassTextEditorControlsManager As ClassTextEditorControlsManager
 
         Public Sub New(f As FormMain)
             g_mFormMain = f
@@ -1031,6 +1033,8 @@ Public Class ClassTabControl
             g_ClassLineState = New ClassLineState(Me)
             g_ClassScopeHighlighting = New ClassScopeHighlighting(Me)
             g_ClassMarkerHighlighting = New ClassMarkerHighlighting(Me)
+            g_ClassDragDropManager = New ClassDragDropManager(Me)
+            g_ClassTextEditorControlsManager = New ClassTextEditorControlsManager(Me)
 
             CreateTextEditor()
 
@@ -1046,6 +1050,8 @@ Public Class ClassTabControl
             g_ClassLineState = New ClassLineState(Me)
             g_ClassScopeHighlighting = New ClassScopeHighlighting(Me)
             g_ClassMarkerHighlighting = New ClassMarkerHighlighting(Me)
+            g_ClassDragDropManager = New ClassDragDropManager(Me)
+            g_ClassTextEditorControlsManager = New ClassTextEditorControlsManager(Me)
 
             m_Title = sText
 
@@ -1063,6 +1069,8 @@ Public Class ClassTabControl
             g_ClassLineState = New ClassLineState(Me)
             g_ClassScopeHighlighting = New ClassScopeHighlighting(Me)
             g_ClassMarkerHighlighting = New ClassMarkerHighlighting(Me)
+            g_ClassDragDropManager = New ClassDragDropManager(Me)
+            g_ClassTextEditorControlsManager = New ClassTextEditorControlsManager(Me)
 
             m_Title = sText
             m_Changed = bChanged
@@ -1075,72 +1083,18 @@ Public Class ClassTabControl
         Private Sub AddHandlers()
             RemoveHandlers()
 
-            AddHandler g_mSourceTextEditor.ProcessCmdKeyEvent, AddressOf TextEditorControl_Source_ProcessCmdKey
-            AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.KeyPress, AddressOf TextEditorControl_Source_AutoCloseChars
-
-            AddHandler g_mSourceTextEditor.TextChanged, AddressOf TextEditorControl_Source_TextChanged
+            g_ClassDragDropManager.AddHandlers()
+            g_ClassTextEditorControlsManager.AddHandlers()
 
             AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MotherTextAreaControl.VScrollBar.ValueChanged, AddressOf TextEditorControl_Source_Scroll
-
-            AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.DragEnter, AddressOf TextEditorControl_Source_DragEnter
-            AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.DragDrop, AddressOf TextEditorControl_Source_DragDrop
-            AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.DragOver, AddressOf TextEditorControl_Source_DragOver
-
-            AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseDoubleClick, AddressOf TextEditorControl_Source_DoubleClickMarkWord
-
-            AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
-            AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
-            AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseDoubleClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
-            AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.KeyUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
-
-            AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.KeyPress, AddressOf TextEditorControl_Source_SwitchToAutocompleteTabKeyPress
-            AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_Source_SwitchToAutocompleteTab
-            AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_MouseClick
-
-            AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseDown, AddressOf TextEditorControl_PeekDefinition_Pre
-            AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_PeekDefinition_Post
-
-            AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.SelectionManager.SelectionChanged, AddressOf TextEditorControl_Source_UpdateInfo
-            AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.PositionChanged, AddressOf TextEditorControl_Source_UpdateInfo
-
-            AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Document.LineLengthChanged, AddressOf TextEditorControl_DetectLineLengthChange
-            AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Document.LineCountChanged, AddressOf TextEditorControl_DetectLineCountChange
-
             AddHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Document.FoldingManager.FoldingsChanged, AddressOf TextEditorControl_FoldingsChanged
         End Sub
 
         Private Sub RemoveHandlers()
-            RemoveHandler g_mSourceTextEditor.ProcessCmdKeyEvent, AddressOf TextEditorControl_Source_ProcessCmdKey
-            RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.KeyPress, AddressOf TextEditorControl_Source_AutoCloseChars
-
-            RemoveHandler g_mSourceTextEditor.TextChanged, AddressOf TextEditorControl_Source_TextChanged
+            g_ClassDragDropManager.RemoveHandlers()
+            g_ClassTextEditorControlsManager.RemoveHandlers()
 
             RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MotherTextAreaControl.VScrollBar.ValueChanged, AddressOf TextEditorControl_Source_Scroll
-
-            RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.DragEnter, AddressOf TextEditorControl_Source_DragEnter
-            RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.DragDrop, AddressOf TextEditorControl_Source_DragDrop
-            RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.DragOver, AddressOf TextEditorControl_Source_DragOver
-
-            RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseDoubleClick, AddressOf TextEditorControl_Source_DoubleClickMarkWord
-
-            RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
-            RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
-            RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseDoubleClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
-            RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.KeyUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
-
-            RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.KeyPress, AddressOf TextEditorControl_Source_SwitchToAutocompleteTabKeyPress
-            RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_Source_SwitchToAutocompleteTab
-            RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_MouseClick
-
-            RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseDown, AddressOf TextEditorControl_PeekDefinition_Pre
-            RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_PeekDefinition_Post
-
-            RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.SelectionManager.SelectionChanged, AddressOf TextEditorControl_Source_UpdateInfo
-            RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.PositionChanged, AddressOf TextEditorControl_Source_UpdateInfo
-
-            RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Document.LineLengthChanged, AddressOf TextEditorControl_DetectLineLengthChange
-            RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Document.LineCountChanged, AddressOf TextEditorControl_DetectLineCountChange
-
             RemoveHandler g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Document.FoldingManager.FoldingsChanged, AddressOf TextEditorControl_FoldingsChanged
         End Sub
 
@@ -1413,14 +1367,22 @@ Public Class ClassTabControl
             g_mFormMain.g_mUCTextMinimap.UpdatePosition(False, True, True)
         End Sub
 
+        Private Sub TextEditorControl_FoldingsChanged(sender As Object, e As EventArgs)
+            g_mFormMain.g_mUCTextMinimap.UpdateText(True)
+
+            If (ClassSettings.g_bSettingsRememberFoldings) Then
+                g_ClassFoldings.SetSavedFoldStates()
+            End If
+        End Sub
+
         Public Class STRUC_AUTOCOMPLETE_GROUP
-            Private g_mSourceTabPage As ClassTabControl.ClassTab
+            Private g_ClassTab As ClassTab
 
             Private g_mAutocompleteItems As New ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
             Private g_mAutocompleteIdentifier As New ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE_IDENTIFIER)
 
-            Public Sub New(mTab As ClassTabControl.ClassTab)
-                g_mSourceTabPage = mTab
+            Public Sub New(c As ClassTab)
+                g_ClassTab = c
             End Sub
 
             ReadOnly Property m_AutocompleteItems As ClassSyncList(Of ClassSyntaxTools.STRUC_AUTOCOMPLETE)
@@ -1470,11 +1432,11 @@ Public Class ClassTabControl
                 Dim lIdentifierBuilder As New List(Of String)
 
                 'Add tab information
-                lIdentifierBuilder.Add(CStr(g_mSourceTabPage.m_Language))
-                lIdentifierBuilder.Add(g_mSourceTabPage.m_ActiveConfig.GetName)
-                lIdentifierBuilder.Add(g_mSourceTabPage.m_TextEditor.Document.TextContent)
+                lIdentifierBuilder.Add(CStr(g_ClassTab.m_Language))
+                lIdentifierBuilder.Add(g_ClassTab.m_ActiveConfig.GetName)
+                lIdentifierBuilder.Add(g_ClassTab.m_TextEditor.Document.TextContent)
 
-                For Each mInclude In g_mSourceTabPage.m_IncludesGroup.m_IncludeFiles.ToArray
+                For Each mInclude In g_ClassTab.m_IncludesGroup.m_IncludeFiles.ToArray
                     'Add file path
                     lIdentifierBuilder.Add(mInclude.Value)
 
@@ -1509,13 +1471,13 @@ Public Class ClassTabControl
         End Class
 
         Public Class STRUC_INCLUDES_GROUP
-            Private g_mSourceTabPage As ClassTabControl.ClassTab
+            Private g_ClassTab As ClassTab
 
             Private g_mIncludeFiles As New ClassSyncList(Of KeyValuePair(Of String, String)) '{sTabIdentifier-Ref, IncludeFile}
             Private g_mIncludeFilesFull As New ClassSyncList(Of KeyValuePair(Of String, String)) '{sTabIdentifier-Ref, IncludeFile}
 
-            Public Sub New(mTab As ClassTabControl.ClassTab)
-                g_mSourceTabPage = mTab
+            Public Sub New(c As ClassTab)
+                g_ClassTab = c
             End Sub
 
             ReadOnly Property m_IncludeFiles As ClassSyncList(Of KeyValuePair(Of String, String))
@@ -1531,508 +1493,585 @@ Public Class ClassTabControl
             End Property
         End Class
 
-#Region "Drag & Drop"
-        Private Sub TextEditorControl_Source_DragEnter(sender As Object, e As DragEventArgs)
-            Try
-                If (Not e.Data.GetDataPresent(DataFormats.FileDrop)) Then
-                    Return
-                End If
+        Public Class ClassDragDropManager
+            Private g_ClassTab As ClassTab
 
-                e.Effect = DragDropEffects.Copy
-            Catch ex As Exception
-                ClassExceptionLog.WriteToLogMessageBox(ex)
-            End Try
-        End Sub
+            Public Sub New(c As ClassTab)
+                g_ClassTab = c
+            End Sub
 
-        Private Sub TextEditorControl_Source_DragOver(sender As Object, e As DragEventArgs)
-            Try
-                If (Not e.Data.GetDataPresent(DataFormats.FileDrop)) Then
-                    Return
-                End If
+            Public Sub AddHandlers()
+                AddHandler g_ClassTab.m_TextEditor.ActiveTextAreaControl.TextArea.DragEnter, AddressOf TextEditorControl_Source_DragEnter
+                AddHandler g_ClassTab.m_TextEditor.ActiveTextAreaControl.TextArea.DragDrop, AddressOf TextEditorControl_Source_DragDrop
+                AddHandler g_ClassTab.m_TextEditor.ActiveTextAreaControl.TextArea.DragOver, AddressOf TextEditorControl_Source_DragOver
+            End Sub
 
-                e.Effect = DragDropEffects.Copy
-            Catch ex As Exception
-                ClassExceptionLog.WriteToLogMessageBox(ex)
-            End Try
-        End Sub
+            Public Sub RemoveHandlers()
+                RemoveHandler g_ClassTab.m_TextEditor.ActiveTextAreaControl.TextArea.DragEnter, AddressOf TextEditorControl_Source_DragEnter
+                RemoveHandler g_ClassTab.m_TextEditor.ActiveTextAreaControl.TextArea.DragDrop, AddressOf TextEditorControl_Source_DragDrop
+                RemoveHandler g_ClassTab.m_TextEditor.ActiveTextAreaControl.TextArea.DragOver, AddressOf TextEditorControl_Source_DragOver
+            End Sub
 
-        Private Sub TextEditorControl_Source_DragDrop(sender As Object, e As DragEventArgs)
-            Try
-                If (Not e.Data.GetDataPresent(DataFormats.FileDrop)) Then
-                    Return
-                End If
-
-                Dim sFiles As String() = CType(e.Data.GetData(DataFormats.FileDrop), String())
-
+            Private Sub TextEditorControl_Source_DragEnter(sender As Object, e As DragEventArgs)
                 Try
-                    g_mFormMain.g_ClassTabControl.BeginUpdate()
+                    If (Not e.Data.GetDataPresent(DataFormats.FileDrop)) Then
+                        Return
+                    End If
 
-                    For Each sFile As String In sFiles
-                        If (Not IO.File.Exists(sFile)) Then
-                            Continue For
-                        End If
-
-                        Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
-                        mTab.OpenFileTab(sFile)
-                        mTab.SelectTab(ClassTabControl.DEFAULT_SELECT_TAB_DELAY)
-                    Next
-                Finally
-                    g_mFormMain.g_ClassTabControl.EndUpdate()
+                    e.Effect = DragDropEffects.Copy
+                Catch ex As Exception
+                    ClassExceptionLog.WriteToLogMessageBox(ex)
                 End Try
-            Catch ex As Exception
-                ClassExceptionLog.WriteToLogMessageBox(ex)
-            End Try
-        End Sub
-#End Region
+            End Sub
 
-#Region "TextEditor Controls"
-        Private Sub TextEditorControl_Source_ProcessCmdKey(ByRef bBlock As Boolean, ByRef iMsg As Message, iKeys As Keys)
-            Try
-                Select Case (iKeys)
+            Private Sub TextEditorControl_Source_DragOver(sender As Object, e As DragEventArgs)
+                Try
+                    If (Not e.Data.GetDataPresent(DataFormats.FileDrop)) Then
+                        Return
+                    End If
+
+                    e.Effect = DragDropEffects.Copy
+                Catch ex As Exception
+                    ClassExceptionLog.WriteToLogMessageBox(ex)
+                End Try
+            End Sub
+
+            Private Sub TextEditorControl_Source_DragDrop(sender As Object, e As DragEventArgs)
+                Try
+                    If (Not e.Data.GetDataPresent(DataFormats.FileDrop)) Then
+                        Return
+                    End If
+
+                    Dim sFiles As String() = CType(e.Data.GetData(DataFormats.FileDrop), String())
+
+                    Try
+                        g_ClassTab.g_mFormMain.g_ClassTabControl.BeginUpdate()
+
+                        For Each sFile As String In sFiles
+                            If (Not IO.File.Exists(sFile)) Then
+                                Continue For
+                            End If
+
+                            Dim mTab = g_ClassTab.g_mFormMain.g_ClassTabControl.AddTab()
+                            mTab.OpenFileTab(sFile)
+                            mTab.SelectTab(ClassTabControl.DEFAULT_SELECT_TAB_DELAY)
+                        Next
+                    Finally
+                        g_ClassTab.g_mFormMain.g_ClassTabControl.EndUpdate()
+                    End Try
+                Catch ex As Exception
+                    ClassExceptionLog.WriteToLogMessageBox(ex)
+                End Try
+            End Sub
+        End Class
+
+        Public Class ClassTextEditorControlsManager
+            Private g_ClassTab As ClassTab
+
+            Public Sub New(c As ClassTab)
+                g_ClassTab = c
+            End Sub
+
+            Public Sub AddHandlers()
+                AddHandler g_ClassTab.m_TextEditor.ProcessCmdKeyEvent, AddressOf TextEditorControl_Source_ProcessCmdKey
+                AddHandler g_ClassTab.m_TextEditor.ActiveTextAreaControl.TextArea.KeyPress, AddressOf TextEditorControl_Source_AutoCloseChars
+
+                AddHandler g_ClassTab.m_TextEditor.TextChanged, AddressOf TextEditorControl_Source_TextChanged
+
+                AddHandler g_ClassTab.m_TextEditor.ActiveTextAreaControl.TextArea.MouseDoubleClick, AddressOf TextEditorControl_Source_DoubleClickMarkWord
+
+                AddHandler g_ClassTab.m_TextEditor.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
+                AddHandler g_ClassTab.m_TextEditor.ActiveTextAreaControl.TextArea.MouseUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
+                AddHandler g_ClassTab.m_TextEditor.ActiveTextAreaControl.TextArea.MouseDoubleClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
+                AddHandler g_ClassTab.m_TextEditor.ActiveTextAreaControl.TextArea.KeyUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
+
+                AddHandler g_ClassTab.m_TextEditor.ActiveTextAreaControl.TextArea.KeyPress, AddressOf TextEditorControl_Source_SwitchToAutocompleteTabKeyPress
+                AddHandler g_ClassTab.m_TextEditor.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_Source_SwitchToAutocompleteTab
+                AddHandler g_ClassTab.m_TextEditor.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_MouseClick
+
+                AddHandler g_ClassTab.m_TextEditor.ActiveTextAreaControl.TextArea.MouseDown, AddressOf TextEditorControl_PeekDefinition_Pre
+                AddHandler g_ClassTab.m_TextEditor.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_PeekDefinition_Post
+
+                AddHandler g_ClassTab.m_TextEditor.ActiveTextAreaControl.TextArea.SelectionManager.SelectionChanged, AddressOf TextEditorControl_Source_UpdateInfo
+                AddHandler g_ClassTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.PositionChanged, AddressOf TextEditorControl_Source_UpdateInfo
+
+                AddHandler g_ClassTab.m_TextEditor.ActiveTextAreaControl.TextArea.Document.LineLengthChanged, AddressOf TextEditorControl_DetectLineLengthChange
+                AddHandler g_ClassTab.m_TextEditor.ActiveTextAreaControl.TextArea.Document.LineCountChanged, AddressOf TextEditorControl_DetectLineCountChange
+            End Sub
+
+            Public Sub RemoveHandlers()
+                RemoveHandler g_ClassTab.m_TextEditor.ProcessCmdKeyEvent, AddressOf TextEditorControl_Source_ProcessCmdKey
+                RemoveHandler g_ClassTab.m_TextEditor.ActiveTextAreaControl.TextArea.KeyPress, AddressOf TextEditorControl_Source_AutoCloseChars
+
+                RemoveHandler g_ClassTab.m_TextEditor.TextChanged, AddressOf TextEditorControl_Source_TextChanged
+
+                RemoveHandler g_ClassTab.m_TextEditor.ActiveTextAreaControl.TextArea.MouseDoubleClick, AddressOf TextEditorControl_Source_DoubleClickMarkWord
+
+                RemoveHandler g_ClassTab.m_TextEditor.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
+                RemoveHandler g_ClassTab.m_TextEditor.ActiveTextAreaControl.TextArea.MouseUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
+                RemoveHandler g_ClassTab.m_TextEditor.ActiveTextAreaControl.TextArea.MouseDoubleClick, AddressOf TextEditorControl_Source_UpdateAutocomplete
+                RemoveHandler g_ClassTab.m_TextEditor.ActiveTextAreaControl.TextArea.KeyUp, AddressOf TextEditorControl_Source_UpdateAutocomplete
+
+                RemoveHandler g_ClassTab.m_TextEditor.ActiveTextAreaControl.TextArea.KeyPress, AddressOf TextEditorControl_Source_SwitchToAutocompleteTabKeyPress
+                RemoveHandler g_ClassTab.m_TextEditor.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_Source_SwitchToAutocompleteTab
+                RemoveHandler g_ClassTab.m_TextEditor.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_MouseClick
+
+                RemoveHandler g_ClassTab.m_TextEditor.ActiveTextAreaControl.TextArea.MouseDown, AddressOf TextEditorControl_PeekDefinition_Pre
+                RemoveHandler g_ClassTab.m_TextEditor.ActiveTextAreaControl.TextArea.MouseClick, AddressOf TextEditorControl_PeekDefinition_Post
+
+                RemoveHandler g_ClassTab.m_TextEditor.ActiveTextAreaControl.TextArea.SelectionManager.SelectionChanged, AddressOf TextEditorControl_Source_UpdateInfo
+                RemoveHandler g_ClassTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.PositionChanged, AddressOf TextEditorControl_Source_UpdateInfo
+
+                RemoveHandler g_ClassTab.m_TextEditor.ActiveTextAreaControl.TextArea.Document.LineLengthChanged, AddressOf TextEditorControl_DetectLineLengthChange
+                RemoveHandler g_ClassTab.m_TextEditor.ActiveTextAreaControl.TextArea.Document.LineCountChanged, AddressOf TextEditorControl_DetectLineCountChange
+            End Sub
+
+            Private Sub TextEditorControl_Source_ProcessCmdKey(ByRef bBlock As Boolean, ByRef iMsg As Message, iKeys As Keys)
+                Try
+                    Select Case (iKeys)
                     'Details primary/secondary action
-                    Case (Keys.Control Or Keys.Enter),
-                            (Keys.Shift Or Keys.Control Or Keys.Enter)
-                        bBlock = True
+                        Case (Keys.Control Or Keys.Enter),
+                                (Keys.Shift Or Keys.Control Or Keys.Enter)
+                            bBlock = True
 
-                        Dim bSpecialAction As Boolean = ((iKeys And Keys.Shift) <> 0)
+                            Dim bSpecialAction As Boolean = ((iKeys And Keys.Shift) <> 0)
 
-                        g_mFormMain.g_ClassTabControl.__OnTextEditorTabDetailsAction(Me, g_mFormMain.TabControl_Details.SelectedIndex, bSpecialAction, iKeys)
+                            g_ClassTab.g_mFormMain.g_ClassTabControl.__OnTextEditorTabDetailsAction(g_ClassTab, g_ClassTab.g_mFormMain.TabControl_Details.SelectedIndex, bSpecialAction, iKeys)
 
                     'Details navigation up
-                    Case (Keys.Control Or Keys.Up),
-                            (Keys.Control Or Keys.Down)
-                        bBlock = True
+                        Case (Keys.Control Or Keys.Up),
+                                (Keys.Control Or Keys.Down)
+                            bBlock = True
 
-                        Dim iDirection As Integer = If(iKeys = (Keys.Control Or Keys.Up), -1, 1)
-                        g_mFormMain.g_ClassTabControl.__OnTextEditorTabDetailsMove(Me, g_mFormMain.TabControl_Details.SelectedIndex, iDirection, iKeys)
+                            Dim iDirection As Integer = If(iKeys = (Keys.Control Or Keys.Up), -1, 1)
+                            g_ClassTab.g_mFormMain.g_ClassTabControl.__OnTextEditorTabDetailsMove(g_ClassTab, g_ClassTab.g_mFormMain.TabControl_Details.SelectedIndex, iDirection, iKeys)
 
                     'Details tab navigation
-                    Case (Keys.Alt Or Keys.Control Or Keys.Left),
-                           (Keys.Alt Or Keys.Control Or Keys.Right)
-                        bBlock = True
+                        Case (Keys.Alt Or Keys.Control Or Keys.Left),
+                               (Keys.Alt Or Keys.Control Or Keys.Right)
+                            bBlock = True
 
-                        Dim iNewIndex As Integer
+                            Dim iNewIndex As Integer
 
-                        If (iKeys = (Keys.Alt Or Keys.Control Or Keys.Left)) Then
-                            iNewIndex = ClassTools.ClassMath.ClampInt(g_mFormMain.TabControl_Details.SelectedIndex - 1, 0, g_mFormMain.TabControl_Details.TabCount - 1)
-                        Else
-                            iNewIndex = ClassTools.ClassMath.ClampInt(g_mFormMain.TabControl_Details.SelectedIndex + 1, 0, g_mFormMain.TabControl_Details.TabCount - 1)
-                        End If
+                            If (iKeys = (Keys.Alt Or Keys.Control Or Keys.Left)) Then
+                                iNewIndex = ClassTools.ClassMath.ClampInt(g_ClassTab.g_mFormMain.TabControl_Details.SelectedIndex - 1, 0, g_ClassTab.g_mFormMain.TabControl_Details.TabCount - 1)
+                            Else
+                                iNewIndex = ClassTools.ClassMath.ClampInt(g_ClassTab.g_mFormMain.TabControl_Details.SelectedIndex + 1, 0, g_ClassTab.g_mFormMain.TabControl_Details.TabCount - 1)
+                            End If
 
-                        If (g_mFormMain.TabControl_Details.SelectedIndex <> iNewIndex) Then
-                            'Make control not auto-selected 
-                            g_mFormMain.TabControl_Details.SelectTabNoFocus(iNewIndex)
-                        End If
+                            If (g_ClassTab.g_mFormMain.TabControl_Details.SelectedIndex <> iNewIndex) Then
+                                'Make control not auto-selected 
+                                g_ClassTab.g_mFormMain.TabControl_Details.SelectTabNoFocus(iNewIndex)
+                            End If
 
                     'Auto-Indent Brackets
-                    Case Keys.Enter
-                        If (Not ClassSettings.g_bSettingsAutoIndentBrackets) Then
-                            Exit Select
-                        End If
+                        Case Keys.Enter
+                            If (Not ClassSettings.g_bSettingsAutoIndentBrackets) Then
+                                Exit Select
+                            End If
 
-                        Dim iOffset As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Caret.Offset
-                        Dim iLenght As Integer = g_mSourceTextEditor.Document.TextLength
-                        If (iOffset - 1 < 0 OrElse iOffset > iLenght - 1) Then
-                            Exit Select
-                        End If
+                            Dim iOffset As Integer = g_ClassTab.m_TextEditor.ActiveTextAreaControl.Caret.Offset
+                            Dim iLenght As Integer = g_ClassTab.m_TextEditor.Document.TextLength
+                            If (iOffset - 1 < 0 OrElse iOffset > iLenght - 1) Then
+                                Exit Select
+                            End If
 
-                        If (g_mSourceTextEditor.Document.GetCharAt(iOffset - 1) <> "{"c) Then
-                            Exit Select
-                        End If
+                            If (g_ClassTab.m_TextEditor.Document.GetCharAt(iOffset - 1) <> "{"c) Then
+                                Exit Select
+                            End If
 
-                        bBlock = True
+                            bBlock = True
 
-                        Try
-                            g_mSourceTextEditor.Document.UndoStack.StartUndoGroup()
+                            Try
+                                g_ClassTab.m_TextEditor.Document.UndoStack.StartUndoGroup()
 
-                            Dim bPushNewline As Boolean = False
+                                Dim bPushNewline As Boolean = False
 
-                            If (g_mSourceTextEditor.Document.GetCharAt(iOffset) <> "}"c) Then
-                                Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(g_mSourceTextEditor.Document.TextContent, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
+                                If (g_ClassTab.m_TextEditor.Document.GetCharAt(iOffset) <> "}"c) Then
+                                    Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(g_ClassTab.m_TextEditor.Document.TextContent, g_ClassTab.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
 
-                                'Check if some end braces are missing. If so, add one.
-                                Dim iRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
-                                Dim iBraceLevel As Integer = mSourceAnalysis.GetBraceLevel(mSourceAnalysis.m_MaxLength - 1, iRange)
-                                If (iRange = ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END) Then
-                                    iBraceLevel -= 1
-                                End If
+                                    'Check if some end braces are missing. If so, add one.
+                                    Dim iRange As ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE
+                                    Dim iBraceLevel As Integer = mSourceAnalysis.GetBraceLevel(mSourceAnalysis.m_MaxLength - 1, iRange)
+                                    If (iRange = ClassSyntaxTools.ClassSyntaxSourceAnalysis.ENUM_STATE_RANGE.END) Then
+                                        iBraceLevel -= 1
+                                    End If
 
-                                If (iBraceLevel > 0) Then
-                                    g_mSourceTextEditor.Document.Insert(iOffset, "}")
+                                    If (iBraceLevel > 0) Then
+                                        g_ClassTab.m_TextEditor.Document.Insert(iOffset, "}")
+                                        bPushNewline = True
+                                    End If
+                                Else
                                     bPushNewline = True
                                 End If
-                            Else
-                                bPushNewline = True
+
+                                Call (New ICSharpCode.TextEditor.Actions.Return).Execute(g_ClassTab.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea)
+
+                                If (bPushNewline) Then
+                                    Dim mLastCaretLocation = g_ClassTab.m_TextEditor.ActiveTextAreaControl.Caret.Position
+
+                                    Call (New ICSharpCode.TextEditor.Actions.Return).Execute(g_ClassTab.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea)
+
+                                    g_ClassTab.m_TextEditor.ActiveTextAreaControl.Caret.Position = mLastCaretLocation
+                                End If
+
+                                Call (New ICSharpCode.TextEditor.Actions.Tab).Execute(g_ClassTab.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea)
+                            Finally
+                                g_ClassTab.m_TextEditor.Document.UndoStack.EndUndoGroup()
+
+                                g_ClassTab.m_TextEditor.InvalidateTextArea()
+                            End Try
+                    End Select
+                Catch ex As Exception
+                    ClassExceptionLog.WriteToLogMessageBox(ex)
+                End Try
+            End Sub
+
+            Private Sub TextEditorControl_Source_AutoCloseChars(sender As Object, e As KeyPressEventArgs)
+                Static sLastAutoClosedKey As String = ""
+
+                Dim bLastAutoCloseKeySet As Boolean = False
+
+                If (ClassSettings.g_bSettingsAutoCloseStrings) Then
+                    Select Case True
+                        Case (sLastAutoClosedKey = """" AndAlso e.KeyChar = """"c)
+                            Dim iOffset As Integer = g_ClassTab.m_TextEditor.ActiveTextAreaControl.Caret.Offset
+                            Dim iLenght As Integer = g_ClassTab.m_TextEditor.Document.TextLength
+                            If (iOffset > iLenght - 1) Then
+                                Exit Select
                             End If
 
-                            Call (New ICSharpCode.TextEditor.Actions.Return).Execute(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea)
-
-                            If (bPushNewline) Then
-                                Dim mLastCaretLocation = g_mSourceTextEditor.ActiveTextAreaControl.Caret.Position
-
-                                Call (New ICSharpCode.TextEditor.Actions.Return).Execute(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea)
-
-                                g_mSourceTextEditor.ActiveTextAreaControl.Caret.Position = mLastCaretLocation
+                            If (g_ClassTab.m_TextEditor.Document.GetCharAt(iOffset) <> """"c) Then
+                                Exit Select
                             End If
 
-                            Call (New ICSharpCode.TextEditor.Actions.Tab).Execute(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea)
-                        Finally
-                            g_mSourceTextEditor.Document.UndoStack.EndUndoGroup()
+                            g_ClassTab.m_TextEditor.Document.Remove(iOffset, 1)
 
-                            g_mSourceTextEditor.InvalidateTextArea()
-                        End Try
+                        Case (sLastAutoClosedKey = "'" AndAlso e.KeyChar = "'"c)
+                            Dim iOffset As Integer = g_ClassTab.m_TextEditor.ActiveTextAreaControl.Caret.Offset
+                            Dim iLenght As Integer = g_ClassTab.m_TextEditor.Document.TextLength
+                            If (iOffset > iLenght - 1) Then
+                                Exit Select
+                            End If
+
+                            If (g_ClassTab.m_TextEditor.Document.GetCharAt(iOffset) <> "'"c) Then
+                                Exit Select
+                            End If
+
+                            g_ClassTab.m_TextEditor.Document.Remove(iOffset, 1)
+
+                        Case (e.KeyChar = """"c)
+                            Dim iOffset As Integer = g_ClassTab.m_TextEditor.ActiveTextAreaControl.Caret.Offset
+                            If (iOffset > 0 AndAlso g_ClassTab.m_TextEditor.Document.GetText(iOffset - 1, 1) = ClassSyntaxTools.g_sEscapeCharacters(g_ClassTab.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)) Then
+                                Exit Select
+                            End If
+
+                            Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(g_ClassTab.m_TextEditor.Document.TextContent, g_ClassTab.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
+                            If (mSourceAnalysis.m_InString(iOffset) OrElse mSourceAnalysis.m_InChar(iOffset)) Then
+                                Exit Select
+                            End If
+
+                            g_ClassTab.m_TextEditor.Document.Insert(iOffset, """")
+
+                            sLastAutoClosedKey = """"c
+                            bLastAutoCloseKeySet = True
+
+                        Case (e.KeyChar = "'"c)
+                            Dim iOffset As Integer = g_ClassTab.m_TextEditor.ActiveTextAreaControl.Caret.Offset
+                            If (iOffset > 0 AndAlso g_ClassTab.m_TextEditor.Document.GetText(iOffset - 1, 1) = ClassSyntaxTools.g_sEscapeCharacters(g_ClassTab.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)) Then
+                                Exit Select
+                            End If
+
+                            Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(g_ClassTab.m_TextEditor.Document.TextContent, g_ClassTab.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
+                            If (mSourceAnalysis.m_InString(iOffset) OrElse mSourceAnalysis.m_InChar(iOffset)) Then
+                                Exit Select
+                            End If
+
+                            g_ClassTab.m_TextEditor.Document.Insert(iOffset, "'")
+
+                            sLastAutoClosedKey = "'"c
+                            bLastAutoCloseKeySet = True
+                    End Select
+                End If
+
+                If (ClassSettings.g_bSettingsAutoCloseBrackets) Then
+                    Select Case True
+                        Case (sLastAutoClosedKey = "[" AndAlso e.KeyChar = "]"c)
+                            Dim iOffset As Integer = g_ClassTab.m_TextEditor.ActiveTextAreaControl.Caret.Offset
+                            Dim iLenght As Integer = g_ClassTab.m_TextEditor.Document.TextLength
+                            If (iOffset > iLenght - 1) Then
+                                Exit Select
+                            End If
+
+                            If (g_ClassTab.m_TextEditor.Document.GetCharAt(iOffset) <> "]"c) Then
+                                Exit Select
+                            End If
+
+                            g_ClassTab.m_TextEditor.Document.Remove(iOffset, 1)
+
+                        Case (sLastAutoClosedKey = "(" AndAlso e.KeyChar = ")"c)
+                            Dim iOffset As Integer = g_ClassTab.m_TextEditor.ActiveTextAreaControl.Caret.Offset
+                            Dim iLenght As Integer = g_ClassTab.m_TextEditor.Document.TextLength
+                            If (iOffset > iLenght - 1) Then
+                                Exit Select
+                            End If
+
+                            If (g_ClassTab.m_TextEditor.Document.GetCharAt(iOffset) <> ")"c) Then
+                                Exit Select
+                            End If
+
+                            g_ClassTab.m_TextEditor.Document.Remove(iOffset, 1)
+
+                        Case (sLastAutoClosedKey = "{" AndAlso e.KeyChar = "}"c)
+                            Dim iOffset As Integer = g_ClassTab.m_TextEditor.ActiveTextAreaControl.Caret.Offset
+                            Dim iLenght As Integer = g_ClassTab.m_TextEditor.Document.TextLength
+                            If (iOffset > iLenght - 1) Then
+                                Exit Select
+                            End If
+
+                            If (g_ClassTab.m_TextEditor.Document.GetCharAt(iOffset) <> "}"c) Then
+                                Exit Select
+                            End If
+
+                            g_ClassTab.m_TextEditor.Document.Remove(iOffset, 1)
+
+                        Case (e.KeyChar = "["c)
+                            Dim iOffset As Integer = g_ClassTab.m_TextEditor.ActiveTextAreaControl.Caret.Offset
+                            g_ClassTab.m_TextEditor.Document.Insert(iOffset, "]")
+
+                            sLastAutoClosedKey = "["c
+                            bLastAutoCloseKeySet = True
+
+                        Case (e.KeyChar = "("c)
+                            Dim iOffset As Integer = g_ClassTab.m_TextEditor.ActiveTextAreaControl.Caret.Offset
+                            g_ClassTab.m_TextEditor.Document.Insert(iOffset, ")")
+
+                            sLastAutoClosedKey = "("c
+                            bLastAutoCloseKeySet = True
+
+                        Case (e.KeyChar = "{"c)
+                            Dim iOffset As Integer = g_ClassTab.m_TextEditor.ActiveTextAreaControl.Caret.Offset
+                            g_ClassTab.m_TextEditor.Document.Insert(iOffset, "}")
+
+                            sLastAutoClosedKey = "{"c
+                            bLastAutoCloseKeySet = True
+                    End Select
+                End If
+
+                If (Not bLastAutoCloseKeySet AndAlso sLastAutoClosedKey <> "") Then
+                    sLastAutoClosedKey = ""
+                End If
+            End Sub
+
+            Private Sub TextEditorControl_Source_UpdateInfo(sender As Object, e As EventArgs)
+                g_ClassTab.g_mFormMain.ToolStripStatusLabel_EditorLine.Text = "L: " & g_ClassTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Line + 1
+                g_ClassTab.g_mFormMain.ToolStripStatusLabel_EditorCollum.Text = "C: " & g_ClassTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Column
+                g_ClassTab.g_mFormMain.ToolStripStatusLabel_EditorSelectedCount.Text = "S: " & g_ClassTab.m_TextEditor.ActiveTextAreaControl.TextArea.SelectionManager.SelectedText.Length
+            End Sub
+
+            Private Sub TextEditorControl_DetectLineLengthChange(sender As Object, e As LineLengthChangeEventArgs)
+                Try
+                    Dim iTotalLines As Integer = g_ClassTab.m_TextEditor.Document.TotalNumberOfLines
+
+                    If (e.LineSegment.IsDeleted OrElse e.LineSegment.Length < 0) Then
+                        Return
+                    End If
+
+                    If (e.LineSegment.LineNumber > iTotalLines) Then
+                        Return
+                    End If
+
+                    g_ClassTab.g_ClassLineState.m_LineState(e.LineSegment.LineNumber) = ClassTextEditorTools.ClassLineStateMark.ENUM_STATE.CHANGED
+                Catch ex As Exception
+                    ClassExceptionLog.WriteToLogMessageBox(ex)
+                End Try
+            End Sub
+
+            Private Sub TextEditorControl_DetectLineCountChange(sender As Object, e As LineCountChangeEventArgs)
+                Try
+                    Dim iTotalLines As Integer = g_ClassTab.m_TextEditor.Document.TotalNumberOfLines
+
+                    If (e.LinesMoved > -1) Then
+                        For i = 0 To e.LinesMoved
+                            If (e.LineStart + i > iTotalLines) Then
+                                Return
+                            End If
+
+                            g_ClassTab.g_ClassLineState.m_LineState(e.LineStart + i) = ClassTextEditorTools.ClassLineStateMark.ENUM_STATE.CHANGED
+                        Next
+                    End If
+                Catch ex As Exception
+                    ClassExceptionLog.WriteToLogMessageBox(ex)
+                End Try
+            End Sub
+
+            Private Sub TextEditorControl_Source_SwitchToAutocompleteTabKeyPress(sender As Object, e As KeyPressEventArgs)
+                Try
+                    SwitchToAutocompleteTab()
+                Catch ex As Exception
+                    ClassExceptionLog.WriteToLogMessageBox(ex)
+                End Try
+            End Sub
+
+            Private Sub TextEditorControl_Source_UpdateAutocomplete(sender As Object, e As Object)
+                Try
+                    Static iOldCaretPos As Integer = 0
+
+                    Dim iOffset As Integer = g_ClassTab.m_TextEditor.ActiveTextAreaControl.TextArea.Caret.Offset
+
+                    If (iOldCaretPos = iOffset) Then
+                        Return
+                    End If
+
+                    iOldCaretPos = iOffset
+
+                    g_ClassTab.g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip()
+                Catch ex As Exception
+                    ClassExceptionLog.WriteToLogMessageBox(ex)
+                End Try
+            End Sub
+
+            Private Sub TextEditorControl_Source_SwitchToAutocompleteTab(sender As Object, e As MouseEventArgs)
+                Try
+                    If (e.Button <> MouseButtons.Left) Then
+                        Return
+                    End If
+
+                    'Are we inside the editor? Excludes iconbar.
+                    If (Not g_ClassTab.m_TextEditor.ActiveTextAreaControl.TextArea.TextView.DrawingPosition.Contains(e.Location)) Then
+                        Return
+                    End If
+
+                    SwitchToAutocompleteTab()
+                Catch ex As Exception
+                    ClassExceptionLog.WriteToLogMessageBox(ex)
+                End Try
+            End Sub
+
+            Private Sub TextEditorControl_Source_TextChanged(sender As Object, e As EventArgs)
+                Try
+                    g_ClassTab.g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Changed = True
+                Catch ex As Exception
+                    ClassExceptionLog.WriteToLogMessageBox(ex)
+                End Try
+            End Sub
+
+            Private Sub TextEditorControl_Source_DoubleClickMarkWord(sender As Object, e As MouseEventArgs)
+                Try
+                    If (Not ClassSettings.g_bSettingsDoubleClickMark) Then
+                        Return
+                    End If
+
+                    Dim mActiveTab = g_ClassTab.g_mFormMain.g_ClassTabControl.m_ActiveTab
+                    Dim sTextContent As String = mActiveTab.m_TextEditor.Document.TextContent
+                    Dim sWord As String = ""
+
+                    If (mActiveTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.HasSomethingSelected) Then
+                        Dim mSelection As ISelection = mActiveTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection(0)
+
+                        sWord = mSelection.SelectedText
+                    Else
+                        sWord = g_ClassTab.g_mFormMain.g_ClassTextEditorTools.GetCaretWord(mActiveTab, False, False, False)
+                    End If
+
+                    Dim mWordLocations As New List(Of Point)
+                    If (Not mActiveTab.g_ClassMarkerHighlighting.FindWordLocations(sWord, sTextContent, mWordLocations)) Then
+                        mActiveTab.g_ClassMarkerHighlighting.RemoveHighlighting(ClassTabControl.ClassTab.ClassMarkerHighlighting.ENUM_MARKER_TYPE.STATIC_MARKER)
+                        Return
+                    End If
+
+                    mActiveTab.g_ClassMarkerHighlighting.UpdateHighlighting(mWordLocations, ClassTabControl.ClassTab.ClassMarkerHighlighting.ENUM_MARKER_TYPE.STATIC_MARKER)
+                Catch ex As Exception
+                    ClassExceptionLog.WriteToLogMessageBox(ex)
+                End Try
+            End Sub
+
+            Private Sub TextEditorControl_MouseClick(sender As Object, e As MouseEventArgs)
+                Dim iOldIndex As Integer = g_ClassTab.m_Index
+                Dim iNewIndex As Integer = 0
+
+                Select Case (e.Button)
+                    Case MouseButtons.XButton1
+                        iNewIndex = iOldIndex - 1
+
+                        If (iNewIndex < 0) Then
+                            iNewIndex = g_ClassTab.g_mFormMain.g_ClassTabControl.m_TabsCount - 1
+                        End If
+
+                    Case MouseButtons.XButton2
+                        iNewIndex = iOldIndex + 1
+
+                        If (iNewIndex > g_ClassTab.g_mFormMain.g_ClassTabControl.m_TabsCount - 1) Then
+                            iNewIndex = 0
+                        End If
+
+                    Case Else
+                        Return
                 End Select
-            Catch ex As Exception
-                ClassExceptionLog.WriteToLogMessageBox(ex)
-            End Try
-        End Sub
 
-        Private Sub TextEditorControl_Source_AutoCloseChars(sender As Object, e As KeyPressEventArgs)
-            Static sLastAutoClosedKey As String = ""
-
-            Dim bLastAutoCloseKeySet As Boolean = False
-
-            If (ClassSettings.g_bSettingsAutoCloseStrings) Then
-                Select Case True
-                    Case (sLastAutoClosedKey = """" AndAlso e.KeyChar = """"c)
-                        Dim iOffset As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Caret.Offset
-                        Dim iLenght As Integer = g_mSourceTextEditor.Document.TextLength
-                        If (iOffset > iLenght - 1) Then
-                            Exit Select
-                        End If
-
-                        If (g_mSourceTextEditor.Document.GetCharAt(iOffset) <> """"c) Then
-                            Exit Select
-                        End If
-
-                        g_mSourceTextEditor.Document.Remove(iOffset, 1)
-
-                    Case (sLastAutoClosedKey = "'" AndAlso e.KeyChar = "'"c)
-                        Dim iOffset As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Caret.Offset
-                        Dim iLenght As Integer = g_mSourceTextEditor.Document.TextLength
-                        If (iOffset > iLenght - 1) Then
-                            Exit Select
-                        End If
-
-                        If (g_mSourceTextEditor.Document.GetCharAt(iOffset) <> "'"c) Then
-                            Exit Select
-                        End If
-
-                        g_mSourceTextEditor.Document.Remove(iOffset, 1)
-
-                    Case (e.KeyChar = """"c)
-                        Dim iOffset As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Caret.Offset
-                        If (iOffset > 0 AndAlso g_mSourceTextEditor.Document.GetText(iOffset - 1, 1) = ClassSyntaxTools.g_sEscapeCharacters(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)) Then
-                            Exit Select
-                        End If
-
-                        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(g_mSourceTextEditor.Document.TextContent, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
-                        If (mSourceAnalysis.m_InString(iOffset) OrElse mSourceAnalysis.m_InChar(iOffset)) Then
-                            Exit Select
-                        End If
-
-                        g_mSourceTextEditor.Document.Insert(iOffset, """")
-
-                        sLastAutoClosedKey = """"c
-                        bLastAutoCloseKeySet = True
-
-                    Case (e.KeyChar = "'"c)
-                        Dim iOffset As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Caret.Offset
-                        If (iOffset > 0 AndAlso g_mSourceTextEditor.Document.GetText(iOffset - 1, 1) = ClassSyntaxTools.g_sEscapeCharacters(g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)) Then
-                            Exit Select
-                        End If
-
-                        Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(g_mSourceTextEditor.Document.TextContent, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Language)
-                        If (mSourceAnalysis.m_InString(iOffset) OrElse mSourceAnalysis.m_InChar(iOffset)) Then
-                            Exit Select
-                        End If
-
-                        g_mSourceTextEditor.Document.Insert(iOffset, "'")
-
-                        sLastAutoClosedKey = "'"c
-                        bLastAutoCloseKeySet = True
-                End Select
-            End If
-
-            If (ClassSettings.g_bSettingsAutoCloseBrackets) Then
-                Select Case True
-                    Case (sLastAutoClosedKey = "[" AndAlso e.KeyChar = "]"c)
-                        Dim iOffset As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Caret.Offset
-                        Dim iLenght As Integer = g_mSourceTextEditor.Document.TextLength
-                        If (iOffset > iLenght - 1) Then
-                            Exit Select
-                        End If
-
-                        If (g_mSourceTextEditor.Document.GetCharAt(iOffset) <> "]"c) Then
-                            Exit Select
-                        End If
-
-                        g_mSourceTextEditor.Document.Remove(iOffset, 1)
-
-                    Case (sLastAutoClosedKey = "(" AndAlso e.KeyChar = ")"c)
-                        Dim iOffset As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Caret.Offset
-                        Dim iLenght As Integer = g_mSourceTextEditor.Document.TextLength
-                        If (iOffset > iLenght - 1) Then
-                            Exit Select
-                        End If
-
-                        If (g_mSourceTextEditor.Document.GetCharAt(iOffset) <> ")"c) Then
-                            Exit Select
-                        End If
-
-                        g_mSourceTextEditor.Document.Remove(iOffset, 1)
-
-                    Case (sLastAutoClosedKey = "{" AndAlso e.KeyChar = "}"c)
-                        Dim iOffset As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Caret.Offset
-                        Dim iLenght As Integer = g_mSourceTextEditor.Document.TextLength
-                        If (iOffset > iLenght - 1) Then
-                            Exit Select
-                        End If
-
-                        If (g_mSourceTextEditor.Document.GetCharAt(iOffset) <> "}"c) Then
-                            Exit Select
-                        End If
-
-                        g_mSourceTextEditor.Document.Remove(iOffset, 1)
-
-                    Case (e.KeyChar = "["c)
-                        Dim iOffset As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Caret.Offset
-                        g_mSourceTextEditor.Document.Insert(iOffset, "]")
-
-                        sLastAutoClosedKey = "["c
-                        bLastAutoCloseKeySet = True
-
-                    Case (e.KeyChar = "("c)
-                        Dim iOffset As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Caret.Offset
-                        g_mSourceTextEditor.Document.Insert(iOffset, ")")
-
-                        sLastAutoClosedKey = "("c
-                        bLastAutoCloseKeySet = True
-
-                    Case (e.KeyChar = "{"c)
-                        Dim iOffset As Integer = g_mSourceTextEditor.ActiveTextAreaControl.Caret.Offset
-                        g_mSourceTextEditor.Document.Insert(iOffset, "}")
-
-                        sLastAutoClosedKey = "{"c
-                        bLastAutoCloseKeySet = True
-                End Select
-            End If
-
-            If (Not bLastAutoCloseKeySet AndAlso sLastAutoClosedKey <> "") Then
-                sLastAutoClosedKey = ""
-            End If
-        End Sub
-
-        Private Sub TextEditorControl_Source_UpdateInfo(sender As Object, e As EventArgs)
-            g_mFormMain.ToolStripStatusLabel_EditorLine.Text = "L: " & g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.Position.Line + 1
-            g_mFormMain.ToolStripStatusLabel_EditorCollum.Text = "C: " & g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.Column
-            g_mFormMain.ToolStripStatusLabel_EditorSelectedCount.Text = "S: " & g_mSourceTextEditor.ActiveTextAreaControl.TextArea.SelectionManager.SelectedText.Length
-        End Sub
-
-        Private Sub TextEditorControl_DetectLineLengthChange(sender As Object, e As LineLengthChangeEventArgs)
-            Try
-                Dim iTotalLines As Integer = g_mSourceTextEditor.Document.TotalNumberOfLines
-
-                If (e.LineSegment.IsDeleted OrElse e.LineSegment.Length < 0) Then
-                    Return
+                If (iOldIndex <> iNewIndex) Then
+                    g_ClassTab.g_mFormMain.g_ClassTabControl.SelectTab(iNewIndex)
                 End If
+            End Sub
 
-                If (e.LineSegment.LineNumber > iTotalLines) Then
-                    Return
-                End If
-
-                g_ClassLineState.m_LineState(e.LineSegment.LineNumber) = ClassTextEditorTools.ClassLineStateMark.ENUM_STATE.CHANGED
-            Catch ex As Exception
-                ClassExceptionLog.WriteToLogMessageBox(ex)
-            End Try
-        End Sub
-
-        Private Sub TextEditorControl_DetectLineCountChange(sender As Object, e As LineCountChangeEventArgs)
-            Try
-                Dim iTotalLines As Integer = g_mSourceTextEditor.Document.TotalNumberOfLines
-
-                If (e.LinesMoved > -1) Then
-                    For i = 0 To e.LinesMoved
-                        If (e.LineStart + i > iTotalLines) Then
-                            Return
-                        End If
-
-                        g_ClassLineState.m_LineState(e.LineStart + i) = ClassTextEditorTools.ClassLineStateMark.ENUM_STATE.CHANGED
-                    Next
-                End If
-            Catch ex As Exception
-                ClassExceptionLog.WriteToLogMessageBox(ex)
-            End Try
-        End Sub
-
-        Private Sub TextEditorControl_Source_SwitchToAutocompleteTabKeyPress(sender As Object, e As KeyPressEventArgs)
-            Try
-                SwitchToAutocompleteTab()
-            Catch ex As Exception
-                ClassExceptionLog.WriteToLogMessageBox(ex)
-            End Try
-        End Sub
-
-        Private Sub TextEditorControl_Source_UpdateAutocomplete(sender As Object, e As Object)
-            Try
-                Static iOldCaretPos As Integer = 0
-
-                Dim iOffset As Integer = g_mSourceTextEditor.ActiveTextAreaControl.TextArea.Caret.Offset
-
-                If (iOldCaretPos = iOffset) Then
-                    Return
-                End If
-
-                iOldCaretPos = iOffset
-
-                g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip()
-            Catch ex As Exception
-                ClassExceptionLog.WriteToLogMessageBox(ex)
-            End Try
-        End Sub
-
-        Private Sub TextEditorControl_Source_SwitchToAutocompleteTab(sender As Object, e As MouseEventArgs)
-            Try
+            Private g_mLastMouseLoc As Point = Nothing
+            Private g_mLastMouseTime As Date
+            Private Sub TextEditorControl_PeekDefinition_Pre(sender As Object, e As MouseEventArgs)
                 If (e.Button <> MouseButtons.Left) Then
                     Return
                 End If
 
-                'Are we inside the editor? Excludes iconbar.
-                If (Not g_mSourceTextEditor.ActiveTextAreaControl.TextArea.TextView.DrawingPosition.Contains(e.Location)) Then
+                g_mLastMouseLoc = New Point(e.X, e.Y)
+                g_mLastMouseTime = Now
+            End Sub
+
+            Private Sub TextEditorControl_PeekDefinition_Post(sender As Object, e As MouseEventArgs)
+                If (Control.ModifierKeys <> Keys.Control OrElse e.Button <> MouseButtons.Left) Then
                     Return
                 End If
 
-                SwitchToAutocompleteTab()
-            Catch ex As Exception
-                ClassExceptionLog.WriteToLogMessageBox(ex)
-            End Try
-        End Sub
-
-        Private Sub TextEditorControl_Source_TextChanged(sender As Object, e As EventArgs)
-            Try
-                g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Changed = True
-            Catch ex As Exception
-                ClassExceptionLog.WriteToLogMessageBox(ex)
-            End Try
-        End Sub
-
-        Private Sub TextEditorControl_Source_DoubleClickMarkWord(sender As Object, e As MouseEventArgs)
-            Try
-                If (Not ClassSettings.g_bSettingsDoubleClickMark) Then
+                If (g_ClassTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.HasSomethingSelected) Then
                     Return
                 End If
 
-                Dim mActiveTab = g_mFormMain.g_ClassTabControl.m_ActiveTab
-                Dim sTextContent As String = mActiveTab.m_TextEditor.Document.TextContent
-                Dim sWord As String = ""
-
-                If (mActiveTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.HasSomethingSelected) Then
-                    Dim mSelection As ISelection = mActiveTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection(0)
-
-                    sWord = mSelection.SelectedText
-                Else
-                    sWord = g_mFormMain.g_ClassTextEditorTools.GetCaretWord(mActiveTab, False, False, False)
-                End If
-
-                Dim mWordLocations As New List(Of Point)
-                If (Not mActiveTab.g_ClassMarkerHighlighting.FindWordLocations(sWord, sTextContent, mWordLocations)) Then
-                    mActiveTab.g_ClassMarkerHighlighting.RemoveHighlighting(ClassTabControl.ClassTab.ClassMarkerHighlighting.ENUM_MARKER_TYPE.STATIC_MARKER)
+                ' Validate if we actualy made a click, not a click-and-drag or something.
+                Dim mLastClickDistance = New Point(e.X - g_mLastMouseLoc.X, e.Y - g_mLastMouseLoc.Y)
+                If (Math.Abs(mLastClickDistance.X) > SystemInformation.DoubleClickSize.Width / 2 OrElse
+                        Math.Abs(mLastClickDistance.Y) > SystemInformation.DoubleClickSize.Height / 2) Then
                     Return
                 End If
 
-                mActiveTab.g_ClassMarkerHighlighting.UpdateHighlighting(mWordLocations, ClassTabControl.ClassTab.ClassMarkerHighlighting.ENUM_MARKER_TYPE.STATIC_MARKER)
-            Catch ex As Exception
-                ClassExceptionLog.WriteToLogMessageBox(ex)
-            End Try
-        End Sub
-
-        Private Sub TextEditorControl_MouseClick(sender As Object, e As MouseEventArgs)
-            Dim iOldIndex As Integer = m_Index
-            Dim iNewIndex As Integer = 0
-
-            Select Case (e.Button)
-                Case MouseButtons.XButton1
-                    iNewIndex = iOldIndex - 1
-
-                    If (iNewIndex < 0) Then
-                        iNewIndex = g_mFormMain.g_ClassTabControl.m_TabsCount - 1
-                    End If
-
-                Case MouseButtons.XButton2
-                    iNewIndex = iOldIndex + 1
-
-                    If (iNewIndex > g_mFormMain.g_ClassTabControl.m_TabsCount - 1) Then
-                        iNewIndex = 0
-                    End If
-
-                Case Else
+                Dim iLastClickTime As Long = CLng((Now.Ticks - g_mLastMouseTime.Ticks) / 10000)
+                If (iLastClickTime > SystemInformation.DoubleClickTime) Then
                     Return
-            End Select
+                End If
 
-            If (iOldIndex <> iNewIndex) Then
-                g_mFormMain.g_ClassTabControl.SelectTab(iNewIndex)
-            End If
-        End Sub
+                'Assume we moved the caret after the click
+                g_ClassTab.g_mFormMain.ToolStripMenuItem_FindDefinition.PerformClick()
+            End Sub
 
-        Private g_mLastMouseLoc As Point = Nothing
-        Private g_mLastMouseTime As Date
-        Private Sub TextEditorControl_PeekDefinition_Pre(sender As Object, e As MouseEventArgs)
-            If (e.Button <> MouseButtons.Left) Then
-                Return
-            End If
+            Private Sub SwitchToAutocompleteTab()
+                If (Not ClassSettings.g_bSettingsSwitchTabToAutocomplete) Then
+                    Return
+                End If
 
-            g_mLastMouseLoc = New Point(e.X, e.Y)
-            g_mLastMouseTime = Now
-        End Sub
+                If (g_ClassTab.g_mFormMain.TabControl_Details.SelectedTab Is g_ClassTab.g_mFormMain.TabPage_Autocomplete) Then
+                    Return
+                End If
 
-        Private Sub TextEditorControl_PeekDefinition_Post(sender As Object, e As MouseEventArgs)
-            If (Control.ModifierKeys <> Keys.Control OrElse e.Button <> MouseButtons.Left) Then
-                Return
-            End If
+                'Make control not auto-selected 
+                g_ClassTab.g_mFormMain.TabControl_Details.SelectTabNoFocus(g_ClassTab.g_mFormMain.TabPage_Autocomplete)
+            End Sub
+        End Class
 
-            If (m_TextEditor.ActiveTextAreaControl.SelectionManager.HasSomethingSelected) Then
-                Return
-            End If
-
-            ' Validate if we actualy made a click, not a click-and-drag or something.
-            Dim mLastClickDistance = New Point(e.X - g_mLastMouseLoc.X, e.Y - g_mLastMouseLoc.Y)
-            If (Math.Abs(mLastClickDistance.X) > SystemInformation.DoubleClickSize.Width / 2 OrElse
-                    Math.Abs(mLastClickDistance.Y) > SystemInformation.DoubleClickSize.Height / 2) Then
-                Return
-            End If
-
-            Dim iLastClickTime As Long = CLng((Now.Ticks - g_mLastMouseTime.Ticks) / 10000)
-            If (iLastClickTime > SystemInformation.DoubleClickTime) Then
-                Return
-            End If
-
-            'Assume we moved the caret after the click
-            g_mFormMain.ToolStripMenuItem_FindDefinition.PerformClick()
-        End Sub
-
-        Private Sub SwitchToAutocompleteTab()
-            If (Not ClassSettings.g_bSettingsSwitchTabToAutocomplete) Then
-                Return
-            End If
-
-            If (g_mFormMain.TabControl_Details.SelectedTab Is g_mFormMain.TabPage_Autocomplete) Then
-                Return
-            End If
-
-            'Make control not auto-selected 
-            g_mFormMain.TabControl_Details.SelectTabNoFocus(g_mFormMain.TabPage_Autocomplete)
-        End Sub
-#End Region
-
-#Region "TextEditor Folding"
         Class ClassFoldings
-            Private g_mSourceTabPage As ClassTab
+            Private g_ClassTab As ClassTab
 
             Private g_mFoldingStates As New Dictionary(Of Integer, Boolean)
             Private g_bFoldingStatesLoaded As Boolean = False
 
-            Sub New(f As ClassTab)
-                g_mSourceTabPage = f
+            Sub New(c As ClassTab)
+                g_ClassTab = c
             End Sub
 
             ReadOnly Property m_FoldingStates As Dictionary(Of Integer, Boolean)
@@ -2055,11 +2094,11 @@ Public Class ClassTabControl
                     End If
                 End If
 
-                g_mSourceTabPage.g_mSourceTextEditor.Document.FoldingManager.UpdateFoldings(Nothing, m_FoldingStates)
+                g_ClassTab.g_mSourceTextEditor.Document.FoldingManager.UpdateFoldings(Nothing, m_FoldingStates)
             End Sub
 
             Public Sub SetSavedFoldStates()
-                If (String.IsNullOrEmpty(g_mSourceTabPage.m_File)) Then
+                If (String.IsNullOrEmpty(g_ClassTab.m_File)) Then
                     Return
                 End If
 
@@ -2072,7 +2111,7 @@ Public Class ClassTabControl
                     Using mIni As New ClassIni(mStream)
                         'Push what already exist into a list
                         For Each mItem In mIni.ReadEverything
-                            If (mItem.sSection.ToLower <> g_mSourceTabPage.m_File.ToLower) Then
+                            If (mItem.sSection.ToLower <> g_ClassTab.m_File.ToLower) Then
                                 Continue For
                             End If
 
@@ -2091,7 +2130,7 @@ Public Class ClassTabControl
                         Next
 
                         'Compare what changed
-                        For Each mFold As FoldMarker In g_mSourceTabPage.m_TextEditor.Document.FoldingManager.FoldMarker
+                        For Each mFold As FoldMarker In g_ClassTab.m_TextEditor.Document.FoldingManager.FoldMarker
                             Dim mObj(E_MAX) As Object
 
                             If (mSavedStates.ContainsKey(mFold.Offset)) Then
@@ -2128,14 +2167,14 @@ Public Class ClassTabControl
                                         Continue For
                                     End If
 
-                                    lChangedFolds.Add(New ClassIni.STRUC_INI_CONTENT(g_mSourceTabPage.m_File.ToLower, CStr(iOffset), If(bState, "1", "0")))
+                                    lChangedFolds.Add(New ClassIni.STRUC_INI_CONTENT(g_ClassTab.m_File.ToLower, CStr(iOffset), If(bState, "1", "0")))
 
                                 Case Else
                                     If (bState = bPreState) Then
                                         Continue For
                                     End If
 
-                                    lChangedFolds.Add(New ClassIni.STRUC_INI_CONTENT(g_mSourceTabPage.m_File.ToLower, CStr(iOffset), Nothing))
+                                    lChangedFolds.Add(New ClassIni.STRUC_INI_CONTENT(g_ClassTab.m_File.ToLower, CStr(iOffset), Nothing))
 
                             End Select
                         Next
@@ -2146,7 +2185,7 @@ Public Class ClassTabControl
             End Sub
 
             Public Sub GetSavedFoldStates()
-                If (String.IsNullOrEmpty(g_mSourceTabPage.m_File)) Then
+                If (String.IsNullOrEmpty(g_ClassTab.m_File)) Then
                     Return
                 End If
 
@@ -2155,7 +2194,7 @@ Public Class ClassTabControl
                 Using mStream = ClassFileStreamWait.Create(g_sFoldingsConfig, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
                     Using mIni As New ClassIni(mStream)
                         For Each mItem In mIni.ReadEverything
-                            If (mItem.sSection.ToLower <> g_mSourceTabPage.m_File.ToLower) Then
+                            If (mItem.sSection.ToLower <> g_ClassTab.m_File.ToLower) Then
                                 Continue For
                             End If
 
@@ -2249,23 +2288,14 @@ Public Class ClassTabControl
             End Class
         End Class
 
-        Private Sub TextEditorControl_FoldingsChanged(sender As Object, e As EventArgs)
-            g_mFormMain.g_mUCTextMinimap.UpdateText(True)
-
-            If (ClassSettings.g_bSettingsRememberFoldings) Then
-                g_ClassFoldings.SetSavedFoldStates()
-            End If
-        End Sub
-#End Region
-
         Class ClassLineState
-            Private g_mSourceTabPage As ClassTab
+            Private g_ClassTab As ClassTab
 
             Private g_iIgnoreCount As Integer = 0
             Private g_qLineStateHistory As New Queue(Of ClassTextEditorTools.ClassLineStateMark)
 
-            Public Sub New(f As ClassTab)
-                g_mSourceTabPage = f
+            Public Sub New(c As ClassTab)
+                g_ClassTab = c
             End Sub
 
             Public Sub BeginIgnore()
@@ -2284,12 +2314,12 @@ Public Class ClassTabControl
                 Get
                     Dim lMarks As New List(Of ClassTextEditorTools.ClassLineStateMark)
 
-                    For i = 0 To g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.Marks.Count - 1
-                        If (TypeOf g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.Marks(i) IsNot ClassTextEditorTools.ClassLineStateMark) Then
+                    For i = 0 To g_ClassTab.m_TextEditor.Document.BookmarkManager.Marks.Count - 1
+                        If (TypeOf g_ClassTab.m_TextEditor.Document.BookmarkManager.Marks(i) IsNot ClassTextEditorTools.ClassLineStateMark) Then
                             Continue For
                         End If
 
-                        lMarks.Add(DirectCast(g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.Marks(i), ClassTextEditorTools.ClassLineStateMark))
+                        lMarks.Add(DirectCast(g_ClassTab.m_TextEditor.Document.BookmarkManager.Marks(i), ClassTextEditorTools.ClassLineStateMark))
                     Next
 
                     Return lMarks.ToArray
@@ -2298,7 +2328,7 @@ Public Class ClassTabControl
 
             Property m_LineState(iIndex As Integer) As ClassTextEditorTools.ClassLineStateMark.ENUM_STATE
                 Get
-                    For Each mMark In g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.Marks
+                    For Each mMark In g_ClassTab.m_TextEditor.Document.BookmarkManager.Marks
                         Dim mLineStateMark = TryCast(mMark, ClassTextEditorTools.ClassLineStateMark)
                         If (mLineStateMark Is Nothing OrElse mLineStateMark.Anchor.IsDeleted) Then
                             Continue For
@@ -2318,8 +2348,8 @@ Public Class ClassTabControl
                         Return
                     End If
 
-                    For i = g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.Marks.Count - 1 To 0 Step -1
-                        Dim mLineStateMark = TryCast(g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.Marks(i), ClassTextEditorTools.ClassLineStateMark)
+                    For i = g_ClassTab.m_TextEditor.Document.BookmarkManager.Marks.Count - 1 To 0 Step -1
+                        Dim mLineStateMark = TryCast(g_ClassTab.m_TextEditor.Document.BookmarkManager.Marks(i), ClassTextEditorTools.ClassLineStateMark)
                         If (mLineStateMark Is Nothing OrElse mLineStateMark.Anchor.IsDeleted) Then
                             Continue For
                         End If
@@ -2335,17 +2365,17 @@ Public Class ClassTabControl
                             Case ClassSettings.ENUM_LINE_STATE_TYPE.CHANGED
                                 'Remove saved
                                 If (mLineStateMark.m_Type = ClassTextEditorTools.ClassLineStateMark.ENUM_STATE.SAVED) Then
-                                    g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.RemoveMark(mLineStateMark)
+                                    g_ClassTab.m_TextEditor.Document.BookmarkManager.RemoveMark(mLineStateMark)
                                 Else
                                     mLineStateMark.m_Type = value
                                 End If
 
                             Case ClassSettings.ENUM_LINE_STATE_TYPE.NONE
-                                g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.RemoveMark(mLineStateMark)
+                                g_ClassTab.m_TextEditor.Document.BookmarkManager.RemoveMark(mLineStateMark)
                         End Select
 
-                        g_mSourceTabPage.m_TextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, iIndex))
-                        g_mSourceTabPage.m_TextEditor.Document.CommitUpdate()
+                        g_ClassTab.m_TextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, iIndex))
+                        g_ClassTab.m_TextEditor.Document.CommitUpdate()
 
                         LimitStates()
                         Return
@@ -2355,12 +2385,12 @@ Public Class ClassTabControl
                         Return
                     End If
 
-                    Dim mNewMark As New ClassTextEditorTools.ClassLineStateMark(g_mSourceTabPage.m_TextEditor.Document, New TextLocation(0, iIndex), ClassTextEditorTools.ClassLineStateMark.ENUM_STATE.CHANGED)
-                    g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.AddMark(mNewMark)
+                    Dim mNewMark As New ClassTextEditorTools.ClassLineStateMark(g_ClassTab.m_TextEditor.Document, New TextLocation(0, iIndex), ClassTextEditorTools.ClassLineStateMark.ENUM_STATE.CHANGED)
+                    g_ClassTab.m_TextEditor.Document.BookmarkManager.AddMark(mNewMark)
                     g_qLineStateHistory.Enqueue(mNewMark)
 
-                    g_mSourceTabPage.m_TextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, iIndex))
-                    g_mSourceTabPage.m_TextEditor.Document.CommitUpdate()
+                    g_ClassTab.m_TextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, iIndex))
+                    g_ClassTab.m_TextEditor.Document.CommitUpdate()
 
                     LimitStates()
                 End Set
@@ -2370,72 +2400,72 @@ Public Class ClassTabControl
             ''' Change all 'changed' states to 'saved'.
             ''' </summary>
             Public Sub SaveStates()
-                For i = g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.Marks.Count - 1 To 0 Step -1
-                    Dim mLineStateMark As ClassTextEditorTools.ClassLineStateMark = TryCast(g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.Marks(i), ClassTextEditorTools.ClassLineStateMark)
+                For i = g_ClassTab.m_TextEditor.Document.BookmarkManager.Marks.Count - 1 To 0 Step -1
+                    Dim mLineStateMark As ClassTextEditorTools.ClassLineStateMark = TryCast(g_ClassTab.m_TextEditor.Document.BookmarkManager.Marks(i), ClassTextEditorTools.ClassLineStateMark)
                     If (mLineStateMark Is Nothing) Then
                         Continue For
                     End If
 
                     Select Case (ClassSettings.g_iSettingsIconLineStateType)
                         Case ClassSettings.ENUM_LINE_STATE_TYPE.NONE
-                            g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.RemoveMark(mLineStateMark)
-                            g_mSourceTabPage.m_TextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, mLineStateMark.LineNumber))
+                            g_ClassTab.m_TextEditor.Document.BookmarkManager.RemoveMark(mLineStateMark)
+                            g_ClassTab.m_TextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, mLineStateMark.LineNumber))
 
                         Case ClassSettings.ENUM_LINE_STATE_TYPE.CHANGED_AND_SAVED
                             If (mLineStateMark.m_Type = ClassTextEditorTools.ClassLineStateMark.ENUM_STATE.CHANGED) Then
                                 mLineStateMark.m_Type = ClassTextEditorTools.ClassLineStateMark.ENUM_STATE.SAVED
-                                g_mSourceTabPage.m_TextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, mLineStateMark.LineNumber))
+                                g_ClassTab.m_TextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, mLineStateMark.LineNumber))
                             End If
 
                         Case ClassSettings.ENUM_LINE_STATE_TYPE.CHANGED
                             If (mLineStateMark.m_Type = ClassTextEditorTools.ClassLineStateMark.ENUM_STATE.CHANGED) Then
-                                g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.RemoveMark(mLineStateMark)
-                                g_mSourceTabPage.m_TextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, mLineStateMark.LineNumber))
+                                g_ClassTab.m_TextEditor.Document.BookmarkManager.RemoveMark(mLineStateMark)
+                                g_ClassTab.m_TextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, mLineStateMark.LineNumber))
                             End If
                     End Select
                 Next
 
-                g_mSourceTabPage.m_TextEditor.Document.CommitUpdate()
+                g_ClassTab.m_TextEditor.Document.CommitUpdate()
             End Sub
 
             ''' <summary>
             ''' Updates all line states by settings.
             ''' </summary> 
             Public Sub UpdateStates()
-                For i = g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.Marks.Count - 1 To 0 Step -1
-                    Dim mLineStateMark = TryCast(g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.Marks(i), ClassTextEditorTools.ClassLineStateMark)
+                For i = g_ClassTab.m_TextEditor.Document.BookmarkManager.Marks.Count - 1 To 0 Step -1
+                    Dim mLineStateMark = TryCast(g_ClassTab.m_TextEditor.Document.BookmarkManager.Marks(i), ClassTextEditorTools.ClassLineStateMark)
                     If (mLineStateMark Is Nothing) Then
                         Continue For
                     End If
 
                     'Remove already invalid/removed marks
                     If (mLineStateMark.Anchor.IsDeleted) Then
-                        g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.RemoveMark(mLineStateMark)
+                        g_ClassTab.m_TextEditor.Document.BookmarkManager.RemoveMark(mLineStateMark)
                         Continue For
                     End If
 
                     Select Case (ClassSettings.g_iSettingsIconLineStateType)
                         Case ClassSettings.ENUM_LINE_STATE_TYPE.CHANGED
                             If (mLineStateMark.m_Type = ClassTextEditorTools.ClassLineStateMark.ENUM_STATE.SAVED) Then
-                                g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.RemoveMark(mLineStateMark)
-                                g_mSourceTabPage.m_TextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, mLineStateMark.LineNumber))
+                                g_ClassTab.m_TextEditor.Document.BookmarkManager.RemoveMark(mLineStateMark)
+                                g_ClassTab.m_TextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, mLineStateMark.LineNumber))
                             End If
 
                         Case ClassSettings.ENUM_LINE_STATE_TYPE.NONE
-                            g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.RemoveMark(mLineStateMark)
-                            g_mSourceTabPage.m_TextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, mLineStateMark.LineNumber))
+                            g_ClassTab.m_TextEditor.Document.BookmarkManager.RemoveMark(mLineStateMark)
+                            g_ClassTab.m_TextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, mLineStateMark.LineNumber))
 
                     End Select
                 Next
 
-                g_mSourceTabPage.m_TextEditor.Document.CommitUpdate()
+                g_ClassTab.m_TextEditor.Document.CommitUpdate()
             End Sub
 
             ''' <summary>
             ''' Clear all line states. Like on loading or new source.
             ''' </summary>
             Public Sub ClearStates()
-                g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.RemoveMarks(Function(mBookmark As Bookmark) TypeOf mBookmark Is ClassTextEditorTools.ClassLineStateMark)
+                g_ClassTab.m_TextEditor.Document.BookmarkManager.RemoveMarks(Function(mBookmark As Bookmark) TypeOf mBookmark Is ClassTextEditorTools.ClassLineStateMark)
             End Sub
 
             ''' <summary>
@@ -2454,25 +2484,25 @@ Public Class ClassTabControl
 
                     'Remove already invalid/removed marks
                     If (mLineStateMark.Anchor.IsDeleted) Then
-                        g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.RemoveMark(mLineStateMark)
+                        g_ClassTab.m_TextEditor.Document.BookmarkManager.RemoveMark(mLineStateMark)
                         Continue While
                     End If
 
-                    g_mSourceTabPage.m_TextEditor.Document.BookmarkManager.RemoveMark(mLineStateMark)
-                    g_mSourceTabPage.m_TextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, mLineStateMark.LineNumber))
+                    g_ClassTab.m_TextEditor.Document.BookmarkManager.RemoveMark(mLineStateMark)
+                    g_ClassTab.m_TextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.SingleLine, mLineStateMark.LineNumber))
                 End While
 
-                g_mSourceTabPage.m_TextEditor.Document.CommitUpdate()
+                g_ClassTab.m_TextEditor.Document.CommitUpdate()
             End Sub
         End Class
 
         Class ClassScopeHighlighting
-            Private g_mSourceTabPage As ClassTab
+            Private g_ClassTab As ClassTab
 
             Private g_mTextMarker As TextMarker = Nothing
 
-            Public Sub New(mSourceTabPage As ClassTab)
-                g_mSourceTabPage = mSourceTabPage
+            Public Sub New(c As ClassTab)
+                g_ClassTab = c
             End Sub
 
             Public Sub UpdateHighlighting()
@@ -2481,12 +2511,12 @@ Public Class ClassTabControl
                     Return
                 End If
 
-                Dim sText As String = g_mSourceTabPage.m_TextEditor.Document.TextContent
-                Dim iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = g_mSourceTabPage.m_Language
+                Dim sText As String = g_ClassTab.m_TextEditor.Document.TextContent
+                Dim iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = g_ClassTab.m_Language
                 Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sText, iLanguage)
 
                 Dim mOldTextMarker = g_mTextMarker
-                Dim iCaretOffset = g_mSourceTabPage.m_TextEditor.ActiveTextAreaControl.Caret.Offset
+                Dim iCaretOffset = g_ClassTab.m_TextEditor.ActiveTextAreaControl.Caret.Offset
 
                 Dim mScopeLocation As Point
                 If (Not FindScopeLocation(mSourceAnalysis, iCaretOffset, True, mScopeLocation)) Then
@@ -2504,7 +2534,7 @@ Public Class ClassTabControl
                 End If
 
                 Dim mOldTextMarker = g_mTextMarker
-                Dim mColor = g_mSourceTabPage.m_TextEditor.Document.HighlightingStrategy.GetColorFor("ScopeMarker").Color
+                Dim mColor = g_ClassTab.m_TextEditor.Document.HighlightingStrategy.GetColorFor("ScopeMarker").Color
 
                 If (g_mTextMarker Is Nothing) Then
                     g_mTextMarker = New TextMarker(mScopeLocation.X, mScopeLocation.Y, TextMarkerType.SolidBlock, mColor)
@@ -2520,11 +2550,11 @@ Public Class ClassTabControl
                     Return
                 End If
 
-                g_mSourceTabPage.m_TextEditor.Document.MarkerStrategy.RemoveAll(Function(x As TextMarker) x Is mOldTextMarker)
-                g_mSourceTabPage.m_TextEditor.Document.MarkerStrategy.AddMarker(g_mTextMarker)
+                g_ClassTab.m_TextEditor.Document.MarkerStrategy.RemoveAll(Function(x As TextMarker) x Is mOldTextMarker)
+                g_ClassTab.m_TextEditor.Document.MarkerStrategy.AddMarker(g_mTextMarker)
 
-                g_mSourceTabPage.m_TextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.WholeTextArea))
-                g_mSourceTabPage.m_TextEditor.Document.CommitUpdate()
+                g_ClassTab.m_TextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.WholeTextArea))
+                g_ClassTab.m_TextEditor.Document.CommitUpdate()
             End Sub
 
             Public Sub RemoveHighlighting()
@@ -2532,11 +2562,11 @@ Public Class ClassTabControl
                     Return
                 End If
 
-                g_mSourceTabPage.m_TextEditor.Document.MarkerStrategy.RemoveAll(Function(x As TextMarker) x Is g_mTextMarker)
+                g_ClassTab.m_TextEditor.Document.MarkerStrategy.RemoveAll(Function(x As TextMarker) x Is g_mTextMarker)
                 g_mTextMarker = Nothing
 
-                g_mSourceTabPage.m_TextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.WholeTextArea))
-                g_mSourceTabPage.m_TextEditor.Document.CommitUpdate()
+                g_ClassTab.m_TextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.WholeTextArea))
+                g_ClassTab.m_TextEditor.Document.CommitUpdate()
             End Sub
 
             Public Function FindScopeLocation(mSourceAnalysis As ClassSyntaxTools.ClassSyntaxSourceAnalysis, iCaretOffset As Integer, bCaretAfter As Boolean, ByRef r_ScopeLocation As Point) As Boolean
@@ -2661,7 +2691,7 @@ Public Class ClassTabControl
         End Class
 
         Class ClassMarkerHighlighting
-            Private g_mSourceTabPage As ClassTab
+            Private g_ClassTab As ClassTab
 
             Private g_lTextMarkers As New List(Of IMarkers)
 
@@ -2670,12 +2700,12 @@ Public Class ClassTabControl
                 CARET_MARKER
             End Enum
 
-            Public Sub New(mSourceTabPage As ClassTab)
-                g_mSourceTabPage = mSourceTabPage
+            Public Sub New(c As ClassTab)
+                g_ClassTab = c
             End Sub
 
             Public Sub UpdateHighlighting(sWord As String, iType As ENUM_MARKER_TYPE)
-                Dim sText As String = g_mSourceTabPage.m_TextEditor.Document.TextContent
+                Dim sText As String = g_ClassTab.m_TextEditor.Document.TextContent
 
                 Dim mWordLocations As New List(Of Point)
                 If (Not FindWordLocations(sWord, sText, mWordLocations)) Then
@@ -2695,16 +2725,16 @@ Public Class ClassTabControl
                 Dim mFrontColor As Color
                 Dim mBackColor As Color
 
-                Dim mStrategy = DirectCast(g_mSourceTabPage.m_TextEditor.Document.HighlightingStrategy, DefaultHighlightingStrategy)
+                Dim mStrategy = DirectCast(g_ClassTab.m_TextEditor.Document.HighlightingStrategy, DefaultHighlightingStrategy)
 
                 Select Case (iType)
                     Case ENUM_MARKER_TYPE.STATIC_MARKER
-                        mFrontColor = g_mSourceTabPage.m_TextEditor.Document.HighlightingStrategy.GetColorFor("StaticWordMarker").Color
-                        mBackColor = g_mSourceTabPage.m_TextEditor.Document.HighlightingStrategy.GetColorFor("StaticWordMarker").BackgroundColor
+                        mFrontColor = g_ClassTab.m_TextEditor.Document.HighlightingStrategy.GetColorFor("StaticWordMarker").Color
+                        mBackColor = g_ClassTab.m_TextEditor.Document.HighlightingStrategy.GetColorFor("StaticWordMarker").BackgroundColor
 
                     Case Else
-                        mFrontColor = g_mSourceTabPage.m_TextEditor.Document.HighlightingStrategy.GetColorFor("CaretWordMarker").Color
-                        mBackColor = g_mSourceTabPage.m_TextEditor.Document.HighlightingStrategy.GetColorFor("CaretWordMarker").BackgroundColor
+                        mFrontColor = g_ClassTab.m_TextEditor.Document.HighlightingStrategy.GetColorFor("CaretWordMarker").Color
+                        mBackColor = g_ClassTab.m_TextEditor.Document.HighlightingStrategy.GetColorFor("CaretWordMarker").BackgroundColor
                 End Select
 
                 Dim mMarkers As New List(Of IMarkers)
@@ -2725,21 +2755,21 @@ Public Class ClassTabControl
 
                 Select Case (iType)
                     Case ENUM_MARKER_TYPE.STATIC_MARKER
-                        g_mSourceTabPage.m_TextEditor.Document.MarkerStrategy.RemoveAll(Function(x As TextMarker) TypeOf x Is IMarkers.ClassStaticMarker)
+                        g_ClassTab.m_TextEditor.Document.MarkerStrategy.RemoveAll(Function(x As TextMarker) TypeOf x Is IMarkers.ClassStaticMarker)
                         g_lTextMarkers.RemoveAll(Function(x As IMarkers) TypeOf x Is IMarkers.ClassStaticMarker)
 
                     Case Else
-                        g_mSourceTabPage.m_TextEditor.Document.MarkerStrategy.RemoveAll(Function(x As TextMarker) TypeOf x Is IMarkers.ClassCaretMarker)
+                        g_ClassTab.m_TextEditor.Document.MarkerStrategy.RemoveAll(Function(x As TextMarker) TypeOf x Is IMarkers.ClassCaretMarker)
                         g_lTextMarkers.RemoveAll(Function(x As IMarkers) TypeOf x Is IMarkers.ClassCaretMarker)
                 End Select
 
                 For Each mItem In mMarkers.ToArray
-                    g_mSourceTabPage.m_TextEditor.Document.MarkerStrategy.InsertMarker(0, DirectCast(mItem, TextMarker)) 'Make it highest rendering priority
+                    g_ClassTab.m_TextEditor.Document.MarkerStrategy.InsertMarker(0, DirectCast(mItem, TextMarker)) 'Make it highest rendering priority
                     g_lTextMarkers.Add(mItem)
                 Next
 
-                g_mSourceTabPage.m_TextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.WholeTextArea))
-                g_mSourceTabPage.m_TextEditor.Document.CommitUpdate()
+                g_ClassTab.m_TextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.WholeTextArea))
+                g_ClassTab.m_TextEditor.Document.CommitUpdate()
             End Sub
 
             Public Sub RemoveHighlighting(iType As ENUM_MARKER_TYPE)
@@ -2749,16 +2779,16 @@ Public Class ClassTabControl
 
                 Select Case (iType)
                     Case ENUM_MARKER_TYPE.STATIC_MARKER
-                        g_mSourceTabPage.m_TextEditor.Document.MarkerStrategy.RemoveAll(Function(x As TextMarker) TypeOf x Is IMarkers.ClassStaticMarker)
+                        g_ClassTab.m_TextEditor.Document.MarkerStrategy.RemoveAll(Function(x As TextMarker) TypeOf x Is IMarkers.ClassStaticMarker)
                         g_lTextMarkers.RemoveAll(Function(x As IMarkers) TypeOf x Is IMarkers.ClassStaticMarker)
 
                     Case Else
-                        g_mSourceTabPage.m_TextEditor.Document.MarkerStrategy.RemoveAll(Function(x As TextMarker) TypeOf x Is IMarkers.ClassCaretMarker)
+                        g_ClassTab.m_TextEditor.Document.MarkerStrategy.RemoveAll(Function(x As TextMarker) TypeOf x Is IMarkers.ClassCaretMarker)
                         g_lTextMarkers.RemoveAll(Function(x As IMarkers) TypeOf x Is IMarkers.ClassCaretMarker)
                 End Select
 
-                g_mSourceTabPage.m_TextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.WholeTextArea))
-                g_mSourceTabPage.m_TextEditor.Document.CommitUpdate()
+                g_ClassTab.m_TextEditor.Document.RequestUpdate(New TextAreaUpdate(TextAreaUpdateType.WholeTextArea))
+                g_ClassTab.m_TextEditor.Document.CommitUpdate()
             End Sub
 
             Public Function FindWordLocations(sWord As String, sText As String, ByRef r_WordLocations As List(Of Point)) As Boolean
