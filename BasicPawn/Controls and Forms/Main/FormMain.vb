@@ -297,11 +297,14 @@ Public Class FormMain
             'Open all project files 
             Dim bAppendFiles As Boolean = False
             For i = 0 To lOpenFileList.Count - 1
-                If (IO.Path.GetExtension(lOpenFileList(i)).ToLower = UCProjectBrowser.ClassProjectControl.g_sProjectExtension) Then
-                    g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile = lOpenFileList(i)
-                    g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(bAppendFiles, ClassSettings.g_bSettingsAutoOpenProjectFiles)
-                    bAppendFiles = True
-                End If
+                Try
+                    If (IO.Path.GetExtension(lOpenFileList(i)).ToLower = UCProjectBrowser.ClassProjectControl.g_sProjectExtension) Then
+                        g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(lOpenFileList(i), bAppendFiles, ClassSettings.g_bSettingsAutoOpenProjectFiles)
+                        bAppendFiles = True
+                    End If
+                Catch ex As Exception
+                    ClassExceptionLog.WriteToLogMessageBox(ex)
+                End Try
             Next
 
             'Open all files here

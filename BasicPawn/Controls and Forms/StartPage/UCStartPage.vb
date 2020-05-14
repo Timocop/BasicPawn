@@ -163,8 +163,7 @@ Public Class UCStartPage
                         End If
 
                         If (mRecentItems(i).m_IsProjectFile) Then
-                            g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile = mRecentItems(i).m_RecentFile
-                            g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(bAppendFiles, ClassSettings.g_bSettingsAutoOpenProjectFiles)
+                            g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(mRecentItems(i).m_RecentFile, bAppendFiles, ClassSettings.g_bSettingsAutoOpenProjectFiles)
                             bAppendFiles = True
                         Else
                             Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
@@ -215,8 +214,7 @@ Public Class UCStartPage
                     End If
 
                     If (mRecentItems(i).m_IsProjectFile) Then
-                        g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile = mRecentItems(i).m_RecentFile
-                        g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(bAppendFiles, ClassSettings.g_bSettingsAutoOpenProjectFiles)
+                        g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(mRecentItems(i).m_RecentFile, bAppendFiles, ClassSettings.g_bSettingsAutoOpenProjectFiles)
                         bAppendFiles = True
                     Else
                         Dim mTab = g_mFormMain.g_ClassTabControl.AddTab()
@@ -291,8 +289,7 @@ Public Class UCStartPage
                 Return
             End If
 
-            g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile = mItem.m_RecentFile
-            g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(False, ClassSettings.g_bSettingsAutoOpenProjectFiles)
+            g_mFormMain.g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(mItem.m_RecentFile, False, ClassSettings.g_bSettingsAutoOpenProjectFiles)
 
             g_mFormMain.g_ClassTabControl.RemoveUnsavedTabsLeft()
 

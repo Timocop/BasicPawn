@@ -43,8 +43,7 @@ Partial Public Class FormMain
                     g_ClassTabControl.RemoveAllTabs()
 
                     For Each sProjectFile As String In i.FileNames
-                        g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile = sProjectFile
-                        g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(bAppendFiles, ClassSettings.g_bSettingsAutoOpenProjectFiles)
+                        g_mUCProjectBrowser.g_ClassProjectControl.LoadProject(sProjectFile, bAppendFiles, ClassSettings.g_bSettingsAutoOpenProjectFiles)
                         bAppendFiles = True
                     Next
                 End If
@@ -56,24 +55,26 @@ Partial Public Class FormMain
 
     Private Sub ToolStripMenuItem_FileProjectSave_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileProjectSave.Click
         Try
-            If (String.IsNullOrEmpty(g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile)) Then
+            Dim sProjectFile As String = g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile
+
+            If (String.IsNullOrEmpty(sProjectFile)) Then
                 Using i As New SaveFileDialog
                     i.Filter = String.Format("BasicPawn Project|*{0}", UCProjectBrowser.ClassProjectControl.g_sProjectExtension)
 
-                    i.InitialDirectory = If(String.IsNullOrEmpty(g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile), "", IO.Path.GetDirectoryName(g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile))
-                    i.FileName = IO.Path.GetFileName(g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile)
+                    i.InitialDirectory = If(String.IsNullOrEmpty(sProjectFile), "", IO.Path.GetDirectoryName(sProjectFile))
+                    i.FileName = IO.Path.GetFileName(sProjectFile)
 
                     If (i.ShowDialog = DialogResult.OK) Then
-                        g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile = i.FileName
+                        sProjectFile = i.FileName
                     Else
                         Return
                     End If
                 End Using
             End If
 
-            g_mUCProjectBrowser.g_ClassProjectControl.SaveProject()
+            g_mUCProjectBrowser.g_ClassProjectControl.SaveProject(sProjectFile)
 
-            g_mUCStartPage.g_mClassRecentItems.AddRecent(g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile)
+            g_mUCStartPage.g_mClassRecentItems.AddRecent(sProjectFile)
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
@@ -81,22 +82,24 @@ Partial Public Class FormMain
 
     Private Sub ToolStripMenuItem_FileProjectSaveAs_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileProjectSaveAs.Click
         Try
+            Dim sProjectFile As String = g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile
+
             Using i As New SaveFileDialog
                 i.Filter = String.Format("BasicPawn Project|*{0}", UCProjectBrowser.ClassProjectControl.g_sProjectExtension)
 
-                i.InitialDirectory = If(String.IsNullOrEmpty(g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile), "", IO.Path.GetDirectoryName(g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile))
-                i.FileName = IO.Path.GetFileName(g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile)
+                i.InitialDirectory = If(String.IsNullOrEmpty(sProjectFile), "", IO.Path.GetDirectoryName(sProjectFile))
+                i.FileName = IO.Path.GetFileName(sProjectFile)
 
                 If (i.ShowDialog = DialogResult.OK) Then
-                    g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile = i.FileName
+                    sProjectFile = i.FileName
                 Else
                     Return
                 End If
             End Using
 
-            g_mUCProjectBrowser.g_ClassProjectControl.SaveProject()
+            g_mUCProjectBrowser.g_ClassProjectControl.SaveProject(sProjectFile)
 
-            g_mUCStartPage.g_mClassRecentItems.AddRecent(g_mUCProjectBrowser.g_ClassProjectControl.m_ProjectFile)
+            g_mUCStartPage.g_mClassRecentItems.AddRecent(sProjectFile)
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
@@ -104,7 +107,7 @@ Partial Public Class FormMain
 
     Private Sub ToolStripMenuItem_FileProjectClose_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileProjectClose.Click
         Try
-            g_mUCProjectBrowser.g_ClassProjectControl.CloseProject()
+            g_mUCProjectBrowser.g_ClassProjectControl.CloseProject(False)
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try

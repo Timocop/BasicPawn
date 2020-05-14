@@ -60,20 +60,10 @@ Public Class UCProjectBrowser
             g_mUCProjectBrowser = f
         End Sub
 
-        Property m_ProjectFile As String
+        ReadOnly Property m_ProjectFile As String
             Get
                 Return g_sProjectFile
             End Get
-            Set(value As String)
-                If (g_sProjectFile.ToLower = value.ToLower) Then
-                    Return
-                End If
-
-                g_sProjectFile = value
-                m_ProjectChanged = False
-
-                UpdateStatusLabel()
-            End Set
         End Property
 
         ReadOnly Property m_ProjectOpened As Boolean
@@ -82,15 +72,10 @@ Public Class UCProjectBrowser
             End Get
         End Property
 
-        Property m_ProjectChanged As Boolean
+        ReadOnly Property m_ProjectChanged As Boolean
             Get
                 Return g_bProjectChanged
             End Get
-            Set(value As Boolean)
-                g_bProjectChanged = value
-
-                UpdateStatusLabel()
-            End Set
         End Property
 
         Public Property m_ProjectRelativeEnabled As Boolean
@@ -103,7 +88,7 @@ Public Class UCProjectBrowser
                 End If
 
                 g_bProjectRelativeEnabled = value
-                m_ProjectChanged = True
+                SetProjectChanged(True)
             End Set
         End Property
 
@@ -117,7 +102,7 @@ Public Class UCProjectBrowser
                 End If
 
                 g_ProjectRelativeNoInclude = value
-                m_ProjectChanged = True
+                SetProjectChanged(True)
             End Set
         End Property
 
@@ -127,12 +112,12 @@ Public Class UCProjectBrowser
                 g_mUCProjectBrowser.g_mFormMain.TabPage_ProjectBrowser.Text = sNewTabPageText
             End If
 
-            If (Not String.IsNullOrEmpty(g_sProjectFile)) Then
-                g_mUCProjectBrowser.g_mFormMain.ToolStripStatusLabel_Project.Text = String.Format("Project: {0}{1}", IO.Path.GetFileNameWithoutExtension(g_sProjectFile), If(m_ProjectChanged, "*", ""))
-                g_mUCProjectBrowser.g_mFormMain.ToolStripStatusLabel_Project.ToolTipText = g_sProjectFile
+            If (m_ProjectOpened) Then
+                g_mUCProjectBrowser.g_mFormMain.ToolStripStatusLabel_Project.Text = String.Format("Project: {0}{1}", IO.Path.GetFileNameWithoutExtension(m_ProjectFile), If(m_ProjectChanged, "*", ""))
+                g_mUCProjectBrowser.g_mFormMain.ToolStripStatusLabel_Project.ToolTipText = m_ProjectFile
                 g_mUCProjectBrowser.g_mFormMain.ToolStripStatusLabel_Project.Visible = True
 
-                g_mUCProjectBrowser.ToolStripTextBox_MenuProjectPath.Text = g_sProjectFile
+                g_mUCProjectBrowser.ToolStripTextBox_MenuProjectPath.Text = m_ProjectFile
             Else
                 If (g_mUCProjectBrowser.g_mFormMain.ToolStripStatusLabel_Project.Visible) Then
                     g_mUCProjectBrowser.g_mFormMain.ToolStripStatusLabel_Project.Visible = False
@@ -161,6 +146,12 @@ Public Class UCProjectBrowser
             Next
         End Sub
 
+        Public Sub SetProjectChanged(bChanged As Boolean)
+            g_bProjectChanged = bChanged
+
+            UpdateStatusLabel()
+        End Sub
+
         Public Sub BeginUpdate()
             g_mUCProjectBrowser.ListView_ProjectFiles.BeginUpdate()
         End Sub
@@ -187,7 +178,7 @@ Public Class UCProjectBrowser
             g_mUCProjectBrowser.ListView_ProjectFiles.Items.Add(mListViewItemData)
 
             If (Not mInfo.bIsRelative) Then
-                m_ProjectChanged = True
+                SetProjectChanged(True)
             End If
         End Sub
 
@@ -209,7 +200,7 @@ Public Class UCProjectBrowser
             g_mUCProjectBrowser.ListView_ProjectFiles.Items.Insert(iIndex, mListViewItemData)
 
             If (Not mInfo.bIsRelative) Then
-                m_ProjectChanged = True
+                SetProjectChanged(True)
             End If
         End Sub
 
@@ -222,7 +213,7 @@ Public Class UCProjectBrowser
 
             mInfo.sPackedData = sText
 
-            m_ProjectChanged = True
+            SetProjectChanged(True)
         End Sub
 
         Public Function ExtractFileDataDialog(mInfo As STRUC_PROJECT_FILE_INFO, ByRef r_sNewPath As String) As Boolean
@@ -267,7 +258,7 @@ Public Class UCProjectBrowser
                         g_mUCProjectBrowser.ListView_ProjectFiles.Items.RemoveAt(i)
 
                         If (Not mInfo.bIsRelative) Then
-                            m_ProjectChanged = True
+                            SetProjectChanged(True)
                         End If
                     End If
                 Next
@@ -279,7 +270,7 @@ Public Class UCProjectBrowser
         Public Sub RemoveFileAt(iIndex As Integer)
             g_mUCProjectBrowser.ListView_ProjectFiles.Items.RemoveAt(iIndex)
 
-            m_ProjectChanged = True
+            SetProjectChanged(True)
         End Sub
 
         Public Function GetFilesCount() As Integer
@@ -322,7 +313,7 @@ Public Class UCProjectBrowser
         Public Sub ClearFiles()
             g_mUCProjectBrowser.ListView_ProjectFiles.Items.Clear()
 
-            m_ProjectChanged = True
+            SetProjectChanged(True)
         End Sub
 
         Public Function PrompSaveProject(Optional bAlwaysPrompt As Boolean = False, Optional bAlwaysYes As Boolean = False) As Boolean
@@ -340,8 +331,7 @@ Public Class UCProjectBrowser
                             i.FileName = IO.Path.GetFileName(m_ProjectFile)
 
                             If (i.ShowDialog = DialogResult.OK) Then
-                                m_ProjectFile = i.FileName
-                                SaveProject()
+                                SaveProject(i.FileName)
 
                                 g_mUCProjectBrowser.g_mFormMain.g_mUCStartPage.g_mClassRecentItems.AddRecent(m_ProjectFile)
 
@@ -368,15 +358,19 @@ Public Class UCProjectBrowser
         End Function
 
         Public Sub SaveProject()
-            If (String.IsNullOrEmpty(g_sProjectFile)) Then
+            SaveProject(g_sProjectFile)
+        End Sub
+
+        Public Sub SaveProject(sProjectFile As String)
+            If (String.IsNullOrEmpty(sProjectFile)) Then
                 Throw New ArgumentException("Project file path empty")
             End If
 
-            g_mUCProjectBrowser.g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "User saved project file: " & g_sProjectFile, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(g_sProjectFile))
+            g_mUCProjectBrowser.g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "User saved project file: " & sProjectFile, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(sProjectFile))
 
-            IO.File.WriteAllText(g_sProjectFile, "")
+            IO.File.WriteAllText(sProjectFile, "")
 
-            Using mStream = ClassFileStreamWait.Create(g_sProjectFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
+            Using mStream = ClassFileStreamWait.Create(sProjectFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
                 Using mIni As New ClassIni(mStream)
                     Dim lContent As New List(Of ClassIni.STRUC_INI_CONTENT)
 
@@ -399,28 +393,30 @@ Public Class UCProjectBrowser
                 End Using
             End Using
 
+            g_sProjectFile = sProjectFile
             RefreshRelativeFiles()
             UpdateListViewInfo()
-            m_ProjectChanged = False
-
+            SetProjectChanged(False)
         End Sub
 
-        Public Sub LoadProject(bAppend As Boolean, bOpenProjectFiles As Boolean)
-            If (String.IsNullOrEmpty(g_sProjectFile) OrElse Not IO.File.Exists(g_sProjectFile)) Then
-                Throw New ArgumentException(String.Format("Project file '{0}' not found", g_sProjectFile))
+        Public Sub LoadProject(sProjectFile As String, bAppend As Boolean, bOpenProjectFiles As Boolean)
+            If (String.IsNullOrEmpty(sProjectFile) OrElse Not IO.File.Exists(sProjectFile)) Then
+                Throw New ArgumentException(String.Format("Project file '{0}' not found", sProjectFile))
             End If
-
-            g_mUCProjectBrowser.g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "User loaded project file: " & g_sProjectFile, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(g_sProjectFile))
 
             If (Not bAppend) Then
-                ClearFiles()
+                If (Not CloseProject(False)) Then
+                    Return
+                End If
             End If
+
+            g_mUCProjectBrowser.g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "User loaded project file: " & sProjectFile, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(sProjectFile))
 
             Dim lProjectFiles As New List(Of String)
             Dim bDidAppend As Boolean = (GetFilesCount() > 0)
 
             'Read absolute paths
-            Using mStream = ClassFileStreamWait.Create(g_sProjectFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
+            Using mStream = ClassFileStreamWait.Create(sProjectFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
                 Using mIni As New ClassIni(mStream)
                     Try
                         BeginUpdate()
@@ -454,9 +450,10 @@ Public Class UCProjectBrowser
                 End Using
             End Using
 
+            g_sProjectFile = sProjectFile
             RefreshRelativeFiles()
             UpdateListViewInfo()
-            m_ProjectChanged = bDidAppend
+            SetProjectChanged(bDidAppend)
 
             If (bOpenProjectFiles) Then
                 Try
@@ -507,8 +504,16 @@ Public Class UCProjectBrowser
         End Function
 
         Public Sub RefreshRelativeFiles()
+            If (Not m_ProjectOpened OrElse Not IO.File.Exists(m_ProjectFile)) Then
+                Throw New ArgumentException(String.Format("Project file '{0}' not found", m_ProjectFile))
+            End If
+
             Dim sRecursiveFiles As String() = GetRecursiveFilesFromProject()
             Dim mProjectFiles = GetFiles()
+
+            If (sRecursiveFiles Is Nothing) Then
+                Throw New ArgumentException("Unable to search for files")
+            End If
 
             Try
                 BeginUpdate()
@@ -565,15 +570,24 @@ Public Class UCProjectBrowser
             End Try
         End Sub
 
-        Public Sub CloseProject()
-            ClearFiles()
-            m_ProjectFile = ""
+        Public Function CloseProject(bForce As Boolean) As Boolean
+            If (Not bForce AndAlso m_ProjectChanged) Then
+                Select Case (MessageBox.Show("Project has unsaved changes! Do you want to continue and discard all changes?", "Unsaved Project changes", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+                    Case DialogResult.No
+                        Return False
+                End Select
+            End If
 
-            m_ProjectChanged = False
-        End Sub
+            ClearFiles()
+            g_sProjectFile = ""
+
+            SetProjectChanged(False)
+
+            Return True
+        End Function
 
         Private Function GetRecursiveFilesFromProject() As String()
-            If (String.IsNullOrEmpty(m_ProjectFile) OrElse Not IO.File.Exists(m_ProjectFile)) Then
+            If (Not m_ProjectOpened OrElse Not IO.File.Exists(m_ProjectFile)) Then
                 Return Nothing
             End If
 
@@ -1057,7 +1071,7 @@ Public Class UCProjectBrowser
 
                 mListViewItemData.g_mData("Info") = mInfo
 
-                g_ClassProjectControl.m_ProjectChanged = True
+                g_ClassProjectControl.SetProjectChanged(True)
             Next
 
             g_ClassProjectControl.UpdateListViewInfo()
@@ -1108,7 +1122,7 @@ Public Class UCProjectBrowser
 
                                 mListViewItemData.g_mData("Info") = mInfo
 
-                                g_ClassProjectControl.m_ProjectChanged = True
+                                g_ClassProjectControl.SetProjectChanged(True)
                         End Select
                     End With
                 End If
@@ -1143,7 +1157,7 @@ Public Class UCProjectBrowser
 
                 mListViewItemData.g_mData("Info") = mInfo
 
-                g_ClassProjectControl.m_ProjectChanged = True
+                g_ClassProjectControl.SetProjectChanged(True)
             Next
 
             g_ClassProjectControl.UpdateListViewInfo()
