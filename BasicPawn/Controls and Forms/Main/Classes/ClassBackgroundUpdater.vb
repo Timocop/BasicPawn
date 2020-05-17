@@ -117,17 +117,31 @@ Public Class ClassBackgroundUpdater
                             Next
 
                             'Active tabs have higher priority to update
-                            If (mActiveTabRequest IsNot Nothing) Then
+                            While (mActiveTabRequest IsNot Nothing)
+                                If (g_mFormMain.g_ClassSyntaxParser.IsThreadProcessing(mActiveTabRequest.sTabIdentifier)) Then
+                                    Exit While
+                                End If
+
                                 ClassThread.ExecAsync(g_mFormMain, Sub()
                                                                        g_mFormMain.g_ClassSyntaxParser.StartUpdateSchedule(ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS.ALL, mActiveTabRequest.sTabIdentifier, mActiveTabRequest.iOptionFlags)
                                                                    End Sub)
 
                                 iRequestsLeft -= 1
-                            End If
+
+                                Exit While
+                            End While
 
                             For Each mRequest In mUpdateRequests
                                 If (iRequestsLeft < 1) Then
                                     Exit For
+                                End If
+
+                                If (mRequest Is mActiveTabRequest) Then
+                                    Continue For
+                                End If
+
+                                If (g_mFormMain.g_ClassSyntaxParser.IsThreadProcessing(mRequest.sTabIdentifier)) Then
+                                    Continue For
                                 End If
 
                                 ClassThread.ExecAsync(g_mFormMain, Sub()

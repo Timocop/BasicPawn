@@ -121,26 +121,19 @@ Public Class ClassSyntaxParser
     ''' </summary> 
     ''' <returns></returns>
     Public Function StartUpdate(iUpdateType As ENUM_PARSE_TYPE_FLAGS) As Boolean
-        Return StartUpdate(iUpdateType, "", ENUM_PARSE_OPTIONS_FLAGS.NOONE)
+        Return StartUpdate(iUpdateType, g_mFormMain.g_ClassTabControl.m_ActiveTab, ENUM_PARSE_OPTIONS_FLAGS.NOONE)
     End Function
 
     Public Function StartUpdate(iUpdateType As ENUM_PARSE_TYPE_FLAGS, mTab As ClassTabControl.ClassTab, iOptionFlags As ENUM_PARSE_OPTIONS_FLAGS) As Boolean
-        Return StartUpdate(iUpdateType, If(mTab IsNot Nothing, mTab.m_Identifier, ""), iOptionFlags)
+        Return StartUpdate(iUpdateType, mTab.m_Identifier, iOptionFlags)
     End Function
 
     Public Function StartUpdate(iUpdateType As ENUM_PARSE_TYPE_FLAGS, sTabIdentifier As String, iOptionFlags As ENUM_PARSE_OPTIONS_FLAGS) As Boolean
         If (String.IsNullOrEmpty(sTabIdentifier)) Then
-            sTabIdentifier = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Identifier
-        End If
-
-        Dim iThreadCount = GetAliveThreadCount()
-        If (iThreadCount > ClassSettings.g_iSettingsMaxParsingThreads - 1) Then
             Return False
         End If
 
-        If (g_mSyntaxParsingThreads.Exists(Function(x As KeyValuePair(Of String, Threading.Thread))
-                                               Return x.Key = sTabIdentifier
-                                           End Function)) Then
+        If (IsThreadLimitReached() OrElse IsThreadProcessing(sTabIdentifier)) Then
             Return False
         End If
 
@@ -188,36 +181,40 @@ Public Class ClassSyntaxParser
     ''' </summary> 
     ''' <returns></returns>
     Public Function StartUpdateSchedule(iUpdateType As ENUM_PARSE_TYPE_FLAGS) As Boolean
-        Return StartUpdateSchedule(iUpdateType, "", ENUM_PARSE_OPTIONS_FLAGS.NOONE)
+        Return StartUpdateSchedule(iUpdateType, g_mFormMain.g_ClassTabControl.m_ActiveTab, ENUM_PARSE_OPTIONS_FLAGS.NOONE)
     End Function
 
     Public Function StartUpdateSchedule(iUpdateType As ENUM_PARSE_TYPE_FLAGS, mTab As ClassTabControl.ClassTab, iOptionFlags As ENUM_PARSE_OPTIONS_FLAGS) As Boolean
-        Return StartUpdateSchedule(iUpdateType, If(mTab IsNot Nothing, mTab.m_Identifier, ""), iOptionFlags)
+        Return StartUpdateSchedule(iUpdateType, mTab.m_Identifier, iOptionFlags)
     End Function
 
     Public Function StartUpdateSchedule(iUpdateType As ENUM_PARSE_TYPE_FLAGS, sTabIdentifier As String, iOptionFlags As ENUM_PARSE_OPTIONS_FLAGS) As Boolean
+        If (String.IsNullOrEmpty(sTabIdentifier)) Then
+            Return False
+        End If
+
         If (StartUpdate(iUpdateType, sTabIdentifier, iOptionFlags)) Then
             If ((iUpdateType And ENUM_PARSE_TYPE_FLAGS.FULL_PARSE) <> 0) Then
                 'Remove next tab request
-                Dim mTabRequest = g_lUpdateRequests.Find(Function(i As STRUC_SYNTAX_PARSE_TAB_REQUEST)
-                                                             Return (i.sTabIdentifier = sTabIdentifier)
-                                                         End Function)
+                Dim mTabRequest = m_UpdateRequests.Find(Function(i As STRUC_SYNTAX_PARSE_TAB_REQUEST)
+                                                            Return (i.sTabIdentifier = sTabIdentifier)
+                                                        End Function)
 
                 If (mTabRequest IsNot Nothing) Then
-                    g_lUpdateRequests.Remove(mTabRequest)
+                    m_UpdateRequests.Remove(mTabRequest)
                 End If
             End If
 
             Return True
         Else
             If ((iUpdateType And ENUM_PARSE_TYPE_FLAGS.FULL_PARSE) <> 0) Then
-                Dim mTabRequest = g_lUpdateRequests.Find(Function(i As STRUC_SYNTAX_PARSE_TAB_REQUEST)
-                                                             Return (i.sTabIdentifier = sTabIdentifier AndAlso i.iOptionFlags = iOptionFlags)
-                                                         End Function)
+                Dim mTabRequest = m_UpdateRequests.Find(Function(i As STRUC_SYNTAX_PARSE_TAB_REQUEST)
+                                                            Return (i.sTabIdentifier = sTabIdentifier AndAlso i.iOptionFlags = iOptionFlags)
+                                                        End Function)
 
                 'Add when no request has been found OR the option flags is enforcing it
                 If ((iOptionFlags And ENUM_PARSE_OPTIONS_FLAGS.FORCE_SCHEDULE) <> 0 OrElse mTabRequest Is Nothing) Then
-                    g_lUpdateRequests.Add(New STRUC_SYNTAX_PARSE_TAB_REQUEST(sTabIdentifier, iOptionFlags))
+                    m_UpdateRequests.Add(New STRUC_SYNTAX_PARSE_TAB_REQUEST(sTabIdentifier, iOptionFlags))
                 End If
             End If
 
@@ -227,6 +224,18 @@ Public Class ClassSyntaxParser
 
     Public Function GetAliveThreadCount() As Integer
         Return g_mSyntaxParsingThreads.Count
+    End Function
+
+    Public Function IsThreadLimitReached() As Boolean
+        Return (GetAliveThreadCount() > ClassSettings.g_iSettingsMaxParsingThreads - 1)
+    End Function
+
+    Public Function IsThreadProcessing(mTab As ClassTabControl.ClassTab) As Boolean
+        Return IsThreadProcessing(mTab.m_Identifier)
+    End Function
+
+    Public Function IsThreadProcessing(sTabIdentifier As String) As Boolean
+        Return g_mSyntaxParsingThreads.Exists(Function(x As KeyValuePair(Of String, Threading.Thread)) x.Key = sTabIdentifier)
     End Function
 
     ''' <summary>
