@@ -227,7 +227,7 @@ Public Class ClassSyntaxParser
     End Function
 
     Public Function IsThreadLimitReached() As Boolean
-        Return (GetAliveThreadCount() > ClassSettings.g_iSettingsMaxParsingThreads - 1)
+        Return (GetAliveThreadCount() > ClassSettings.GetMaxParsingThreads() - 1)
     End Function
 
     Public Function IsThreadProcessing(mTab As ClassTabControl.ClassTab) As Boolean

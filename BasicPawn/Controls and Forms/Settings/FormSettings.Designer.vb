@@ -60,6 +60,7 @@ Partial Class FormSettings
         Me.GroupBox7 = New System.Windows.Forms.GroupBox()
         Me.CheckBox_AutoOpenProjectFiles = New System.Windows.Forms.CheckBox()
         Me.GroupBox6 = New System.Windows.Forms.GroupBox()
+        Me.CheckBox_TabCloseGoToPrevious = New System.Windows.Forms.CheckBox()
         Me.CheckBox_AlwaysNewInstance = New System.Windows.Forms.CheckBox()
         Me.CheckBox_AutoHoverScroll = New System.Windows.Forms.CheckBox()
         Me.CheckBox_AutoShowStartPage = New System.Windows.Forms.CheckBox()
@@ -228,7 +229,7 @@ Partial Class FormSettings
         Me.TableLayoutPanel3 = New System.Windows.Forms.TableLayoutPanel()
         Me.ClassPictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
         Me.Label17 = New System.Windows.Forms.Label()
-        Me.CheckBox_TabCloseGoToPrevious = New System.Windows.Forms.CheckBox()
+        Me.Label34 = New System.Windows.Forms.Label()
         Me.ContextMenuStrip_Plugins.SuspendLayout()
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Settings.SuspendLayout()
@@ -670,6 +671,18 @@ Partial Class FormSettings
         Me.GroupBox6.TabIndex = 31
         Me.GroupBox6.TabStop = False
         Me.GroupBox6.Text = "Behaviour"
+        '
+        'CheckBox_TabCloseGoToPrevious
+        '
+        Me.CheckBox_TabCloseGoToPrevious.AutoSize = True
+        Me.CheckBox_TabCloseGoToPrevious.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_TabCloseGoToPrevious.Location = New System.Drawing.Point(9, 93)
+        Me.CheckBox_TabCloseGoToPrevious.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_TabCloseGoToPrevious.Name = "CheckBox_TabCloseGoToPrevious"
+        Me.CheckBox_TabCloseGoToPrevious.Size = New System.Drawing.Size(270, 18)
+        Me.CheckBox_TabCloseGoToPrevious.TabIndex = 31
+        Me.CheckBox_TabCloseGoToPrevious.Text = "Go to previous selected tab when closing tabs"
+        Me.CheckBox_TabCloseGoToPrevious.UseVisualStyleBackColor = True
         '
         'CheckBox_AlwaysNewInstance
         '
@@ -1341,6 +1354,7 @@ Partial Class FormSettings
         '
         'GroupBox14
         '
+        Me.GroupBox14.Controls.Add(Me.Label34)
         Me.GroupBox14.Controls.Add(Me.NumericUpDown_MaxParseCache)
         Me.GroupBox14.Controls.Add(Me.Label33)
         Me.GroupBox14.Controls.Add(Me.NumericUpDown_MaxParseThreads)
@@ -2602,17 +2616,16 @@ Partial Class FormSettings
         Me.Label17.Text = "Loaded BasicPawn plugins are able to read stored database entries. Make sure all " &
     "installed plugins are from a trustworthy publisher to prevent theft."
         '
-        'CheckBox_TabCloseGoToPrevious
+        'Label34
         '
-        Me.CheckBox_TabCloseGoToPrevious.AutoSize = True
-        Me.CheckBox_TabCloseGoToPrevious.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_TabCloseGoToPrevious.Location = New System.Drawing.Point(9, 93)
-        Me.CheckBox_TabCloseGoToPrevious.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_TabCloseGoToPrevious.Name = "CheckBox_TabCloseGoToPrevious"
-        Me.CheckBox_TabCloseGoToPrevious.Size = New System.Drawing.Size(270, 18)
-        Me.CheckBox_TabCloseGoToPrevious.TabIndex = 31
-        Me.CheckBox_TabCloseGoToPrevious.Text = "Go to previous selected tab when closing tabs"
-        Me.CheckBox_TabCloseGoToPrevious.UseVisualStyleBackColor = True
+        Me.Label34.AutoSize = True
+        Me.Label34.Location = New System.Drawing.Point(231, 170)
+        Me.Label34.Margin = New System.Windows.Forms.Padding(6, 6, 3, 6)
+        Me.Label34.Name = "Label34"
+        Me.Label34.Padding = New System.Windows.Forms.Padding(0, 2, 0, 2)
+        Me.Label34.Size = New System.Drawing.Size(85, 17)
+        Me.Label34.TabIndex = 32
+        Me.Label34.Text = "(0 = Automatic)"
         '
         'FormSettings
         '
@@ -2918,4 +2931,5 @@ Partial Class FormSettings
     Friend WithEvents CheckBox_ShowVerticalRuler As CheckBox
     Friend WithEvents CheckBox_ShowTabSymbols As CheckBox
     Friend WithEvents CheckBox_TabCloseGoToPrevious As CheckBox
+    Friend WithEvents Label34 As Label
 End Class

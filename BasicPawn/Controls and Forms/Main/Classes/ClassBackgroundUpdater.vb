@@ -99,7 +99,7 @@ Public Class ClassBackgroundUpdater
                     If (dLastRequestSyntaxParseDelay < Now AndAlso bIsFormMainFocused AndAlso g_mFormMain.g_ClassSyntaxParser.m_UpdateRequests.Count > 0) Then
                         dLastRequestSyntaxParseDelay = (Now + mRequestSyntaxParseDelay)
 
-                        Dim iMaxUpdateCount As Integer = (ClassSettings.g_iSettingsMaxParsingThreads - g_mFormMain.g_ClassSyntaxParser.GetAliveThreadCount)
+                        Dim iMaxUpdateCount As Integer = (ClassSettings.GetMaxParsingThreads() - g_mFormMain.g_ClassSyntaxParser.GetAliveThreadCount)
                         If (iMaxUpdateCount > 0) Then
                             Dim sActiveTabIdentifier As String = mActiveTab.m_Identifier
                             Dim mActiveTabRequest As ClassSyntaxParser.STRUC_SYNTAX_PARSE_TAB_REQUEST = Nothing

@@ -48,7 +48,7 @@ Public Class FormSettings
         ' Add any initialization after the InitializeComponent() call. 
         Me.Size = Me.MinimumSize
 
-        NumericUpDown_MaxParseThreads.Minimum = 1
+        NumericUpDown_MaxParseThreads.Minimum = 0
         NumericUpDown_MaxParseThreads.Maximum = Environment.ProcessorCount
 
         Init_Configs()
