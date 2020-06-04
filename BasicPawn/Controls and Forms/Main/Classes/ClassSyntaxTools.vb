@@ -750,6 +750,16 @@ Public Class ClassSyntaxTools
 
                     Case vbLf(0)
                         Dim bEscapeNewline As Boolean = False
+                        Dim bIsMulitLine As Boolean = False
+
+                        'Do not reset pre-save while in multi-comment or multi-string.
+                        If (bInMultiComment > 0) Then
+                            bIsMulitLine = True
+                        End If
+
+                        If (bInString > 0) Then
+                            bIsMulitLine = True
+                        End If
 
                         'Detect escape newline
                         For j = i - 1 To 0 Step -1
@@ -774,7 +784,7 @@ Public Class ClassSyntaxTools
                             g_iStateArray(i, ENUM_STATE_TYPES.IN_SINGLE_COMMENT) = bInSingleComment
                         End If
 
-                        If (bInPreprocessor > 0 AndAlso Not bEscapeNewline) Then
+                        If (bInPreprocessor > 0 AndAlso Not bIsMulitLine AndAlso Not bEscapeNewline) Then
                             bInPreprocessor = 0
                             g_iStateArray(i, ENUM_STATE_TYPES.IN_PREPROCESSOR) = bInPreprocessor
 
