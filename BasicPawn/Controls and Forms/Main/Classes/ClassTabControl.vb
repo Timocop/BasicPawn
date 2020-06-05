@@ -199,9 +199,16 @@ Public Class ClassTabControl
 
             RaiseEvent OnTabRemoved(m_Tab(iIndex))
 
-            Dim mTabPage = m_Tab(iIndex)
-            mTabPage.Dispose()
-            mTabPage = Nothing
+            Try
+                'We do not want to call SelectTab() when diposing tabs. We will do it afterwards aynways.
+                g_bIgnoreOnTabSelected = True
+
+                Dim mTabPage = m_Tab(iIndex)
+                mTabPage.Dispose()
+                mTabPage = Nothing
+            Finally
+                g_bIgnoreOnTabSelected = False
+            End Try
 
             If (m_TabsCount < 1) Then
                 AddTab()
@@ -245,13 +252,15 @@ Public Class ClassTabControl
         Try
             BeginUpdate()
 
-            g_bIgnoreOnTabSelected = True
+            Try
+                g_bIgnoreOnTabSelected = True
 
-            Dim mFrom As ClassTab = m_Tab(iFromIndex)
-            g_mFormMain.TabControl_SourceTabs.TabPages.Remove(mFrom)
-            g_mFormMain.TabControl_SourceTabs.TabPages.Insert(iToIndex, mFrom)
-
-            g_bIgnoreOnTabSelected = False
+                Dim mFrom As ClassTab = m_Tab(iFromIndex)
+                g_mFormMain.TabControl_SourceTabs.TabPages.Remove(mFrom)
+                g_mFormMain.TabControl_SourceTabs.TabPages.Insert(iToIndex, mFrom)
+            Finally
+                g_bIgnoreOnTabSelected = False
+            End Try
 
             SelectTab(iToIndex)
         Finally
@@ -280,7 +289,12 @@ Public Class ClassTabControl
                     m_Tab(iIndex).m_HandlersEnabled = True
                 End If
 
-                g_mFormMain.TabControl_SourceTabs.SelectTab(iIndex)
+                Try
+                    g_bIgnoreOnTabSelected = True
+                    g_mFormMain.TabControl_SourceTabs.SelectTab(iIndex)
+                Finally
+                    g_bIgnoreOnTabSelected = False
+                End Try
 
                 If (g_iBeginUpdateCount > 0) Then
                     g_bBeginRequestSyntaxUpdate = True
@@ -872,9 +886,12 @@ Public Class ClassTabControl
             Return
         End If
 
-        g_bIgnoreOnTabSelected = True
-        SelectTab(m_ActiveTabIndex)
-        g_bIgnoreOnTabSelected = False
+        Try
+            g_bIgnoreOnTabSelected = True
+            SelectTab(m_ActiveTabIndex)
+        Finally
+            g_bIgnoreOnTabSelected = False
+        End Try
     End Sub
 
     Private Sub OnTabSyntaxParseSuccess(iUpdateType As ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS, sTabIdentifier As String, iOptionFlags As ClassSyntaxParser.ENUM_PARSE_OPTIONS_FLAGS, iFullParseError As ClassSyntaxParser.ENUM_PARSE_ERROR, iVarParseError As ClassSyntaxParser.ENUM_PARSE_ERROR)
