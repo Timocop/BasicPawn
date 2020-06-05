@@ -481,7 +481,7 @@ Public Class ClassTabControl
     ''' </summary>
     ''' <param name="iIndex"></param>
     ''' <param name="bSaveAs">Force to use a new file using SaveFileDialog</param>
-    Public Sub SaveFileTab(iIndex As Integer, Optional bSaveAs As Boolean = False)
+    Public Function SaveFileTab(iIndex As Integer, Optional bSaveAs As Boolean = False) As Boolean
         If (bSaveAs OrElse m_Tab(iIndex).m_IsUnsaved OrElse m_Tab(iIndex).m_InvalidFile) Then
             Dim sOldFile As String = If(m_Tab(iIndex).m_IsUnsaved OrElse m_Tab(iIndex).m_InvalidFile, "", m_Tab(iIndex).m_File)
 
@@ -511,6 +511,10 @@ Public Class ClassTabControl
                     g_mFormMain.g_ClassSyntaxParser.StartUpdateSchedule(ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS.ALL)
 
                     RaiseEvent OnTabSaved(m_Tab(iIndex), sOldFile, i.FileName)
+
+                    Return True
+                Else
+                    Return False
                 End If
             End Using
         Else
@@ -529,8 +533,10 @@ Public Class ClassTabControl
             g_mFormMain.g_mUCStartPage.g_mClassRecentItems.AddRecent(m_Tab(iIndex).m_File)
 
             RaiseEvent OnTabSaved(m_Tab(iIndex), "", m_Tab(iIndex).m_File)
+
+            Return True
         End If
-    End Sub
+    End Function
 
     ''' <summary>
     ''' If the code has been changed it will prompt the user and saves the source. The user can abort the saving.
@@ -541,7 +547,6 @@ Public Class ClassTabControl
     ''' <returns>False if saved, otherwise canceled.</returns>
     Public Function PromptSaveTab(iIndex As Integer, Optional bAlwaysPrompt As Boolean = False, Optional bAlwaysYes As Boolean = False, Optional bAlwaysSaveUnsaved As Boolean = False) As Boolean
         Dim bIsUnsaved As Boolean = (m_Tab(iIndex).m_IsUnsaved OrElse m_Tab(iIndex).m_InvalidFile)
-        Dim sOldFile As String = If(m_Tab(iIndex).m_IsUnsaved OrElse m_Tab(iIndex).m_InvalidFile, "", m_Tab(iIndex).m_File)
 
         If (bAlwaysPrompt OrElse m_Tab(iIndex).m_Changed OrElse (bAlwaysSaveUnsaved AndAlso bIsUnsaved)) Then
             'Continue
@@ -549,58 +554,9 @@ Public Class ClassTabControl
             Return False
         End If
 
-        Select Case (If(bAlwaysYes, DialogResult.Yes, MessageBox.Show(String.Format("Do you want to save your work? '{0} ({1})'", m_Tab(iIndex).m_Title, iIndex), "Information", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question)))
+        Select Case (If(bAlwaysYes, DialogResult.Yes, MessageBox.Show(String.Format("Do you want to save your work? '{0}' ({1})", m_Tab(iIndex).m_Title, iIndex), "Information", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question)))
             Case DialogResult.Yes
-                If (bIsUnsaved) Then
-                    Using i As New SaveFileDialog
-                        i.Filter = "All supported files|*.sp;*.inc;*.sma|SourcePawn|*.sp|Include|*.inc|AMX Mod X|*.sma|Pawn (Not fully supported)|*.pwn;*.p|All files|*.*"
-
-                        i.InitialDirectory = If(String.IsNullOrEmpty(m_Tab(iIndex).m_File), "", IO.Path.GetDirectoryName(m_Tab(iIndex).m_File))
-                        i.FileName = IO.Path.GetFileName(m_Tab(iIndex).m_File)
-
-                        If (i.ShowDialog = DialogResult.OK) Then
-                            m_Tab(iIndex).m_FileCachedWriteDate = Date.MaxValue
-                            m_Tab(iIndex).m_File = i.FileName
-
-                            m_Tab(iIndex).m_Changed = False
-                            m_Tab(iIndex).g_ClassLineState.SaveStates()
-
-                            m_Tab(iIndex).m_TextEditor.InvalidateTextArea()
-
-                            g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "User saved file to: " & m_Tab(iIndex).m_File, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(m_Tab(iIndex).m_File))
-
-                            IO.File.WriteAllText(m_Tab(iIndex).m_File, m_Tab(iIndex).m_TextEditor.Document.TextContent)
-
-                            m_Tab(iIndex).m_FileCachedWriteDate = m_Tab(iIndex).m_FileRealWriteDate
-
-                            g_mFormMain.g_mUCStartPage.g_mClassRecentItems.AddRecent(m_Tab(iIndex).m_File)
-
-                            RaiseEvent OnTabSaved(m_Tab(iIndex), sOldFile, m_Tab(iIndex).m_File)
-
-                            Return False
-                        Else
-                            Return True
-                        End If
-                    End Using
-                Else
-                    m_Tab(iIndex).m_FileCachedWriteDate = Date.MaxValue
-                    m_Tab(iIndex).m_Changed = False
-                    m_Tab(iIndex).g_ClassLineState.SaveStates()
-
-                    m_Tab(iIndex).m_TextEditor.InvalidateTextArea()
-
-                    g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "User saved file to: " & m_Tab(iIndex).m_File, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(m_Tab(iIndex).m_File))
-
-                    IO.File.WriteAllText(m_Tab(iIndex).m_File, m_Tab(iIndex).m_TextEditor.Document.TextContent)
-
-                    m_Tab(iIndex).m_FileCachedWriteDate = m_Tab(iIndex).m_FileRealWriteDate
-
-                    g_mFormMain.g_mUCStartPage.g_mClassRecentItems.AddRecent(m_Tab(iIndex).m_File)
-
-                    RaiseEvent OnTabSaved(m_Tab(iIndex), sOldFile, m_Tab(iIndex).m_File)
-
-                    Return False
-                End If
+                Return SaveFileTab(iIndex, bIsUnsaved)
 
             Case DialogResult.No
                 Return False
