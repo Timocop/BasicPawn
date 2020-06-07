@@ -777,7 +777,7 @@ Public Class ClassTextEditorTools
                         End If
 
                         If (mTab.m_IsUnsaved AndAlso
-                                    g_mFormMain.g_ClassTabControl.PromptSaveTab(mTab.m_Index, False, True, True)) Then
+                                    Not g_mFormMain.g_ClassTabControl.PromptSaveTab(mTab.m_Index, False, True, True)) Then
                             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Compiling failed! Could not get current source file!", False, False, True)
                             Return False
                         End If
@@ -849,7 +849,7 @@ Public Class ClassTextEditorTools
                         End If
 
                         If (mTab.m_IsUnsaved AndAlso
-                                        g_mFormMain.g_ClassTabControl.PromptSaveTab(mTab.m_Index, False, True, True)) Then
+                                        Not g_mFormMain.g_ClassTabControl.PromptSaveTab(mTab.m_Index, False, True, True)) Then
                             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Compiling failed! Could not get current source file!", False, False, True)
                             Return False
                         End If
@@ -902,7 +902,7 @@ Public Class ClassTextEditorTools
                         End If
 
                         If (mTab.m_IsUnsaved AndAlso
-                                    g_mFormMain.g_ClassTabControl.PromptSaveTab(mTab.m_Index, False, True, True)) Then
+                                    Not g_mFormMain.g_ClassTabControl.PromptSaveTab(mTab.m_Index, False, True, True)) Then
                             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Compiling failed! Could not get current source file!", False, False, True)
                             Return False
                         End If
@@ -1174,7 +1174,7 @@ Public Class ClassTextEditorTools
                         End If
 
                         If (mTab.m_IsUnsaved AndAlso
-                                    g_mFormMain.g_ClassTabControl.PromptSaveTab(mTab.m_Index, False, True, True)) Then
+                                    Not g_mFormMain.g_ClassTabControl.PromptSaveTab(mTab.m_Index, False, True, True)) Then
                             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Pre-Processing failed! Could not get current source file!", False, False, True)
                             Return Nothing
                         End If
@@ -1246,7 +1246,7 @@ Public Class ClassTextEditorTools
                         End If
 
                         If (mTab.m_IsUnsaved AndAlso
-                                        g_mFormMain.g_ClassTabControl.PromptSaveTab(mTab.m_Index, False, True, True)) Then
+                                        Not g_mFormMain.g_ClassTabControl.PromptSaveTab(mTab.m_Index, False, True, True)) Then
                             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "Pre-Processing failed! Could not get current source file!", False, False, True)
                             Return Nothing
                         End If
@@ -1498,7 +1498,7 @@ Public Class ClassTextEditorTools
 
                     If (String.IsNullOrEmpty(sFilePath)) Then
                         If (mTab.m_IsUnsaved AndAlso
-                                    g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True, True)) Then
+                                    Not g_mFormMain.g_ClassTabControl.PromptSaveTab(g_mFormMain.g_ClassTabControl.m_ActiveTabIndex, False, True, True)) Then
                             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "DIASM failed! Could not get current source file!", False, False, True)
                             Return Nothing
                         End If
@@ -1570,7 +1570,7 @@ Public Class ClassTextEditorTools
                         End If
 
                         If (mTab.m_IsUnsaved AndAlso
-                                    g_mFormMain.g_ClassTabControl.PromptSaveTab(mTab.m_Index, False, True, True)) Then
+                                    Not g_mFormMain.g_ClassTabControl.PromptSaveTab(mTab.m_Index, False, True, True)) Then
                             g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, "DIASM failed! Could not get current source file!", False, False, True)
                             Return Nothing
                         End If

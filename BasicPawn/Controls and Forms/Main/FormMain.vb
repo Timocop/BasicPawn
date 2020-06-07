@@ -416,7 +416,7 @@ Public Class FormMain
         'Save tabs
         For i = 0 To g_ClassTabControl.m_TabsCount - 1
             Try
-                If (g_ClassTabControl.PromptSaveTab(i)) Then
+                If (Not g_ClassTabControl.PromptSaveTab(i)) Then
                     e.Cancel = True
                 End If
             Catch ex As Exception

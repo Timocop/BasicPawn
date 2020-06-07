@@ -193,7 +193,7 @@ Public Class ClassTabControl
         Try
             BeginUpdate()
 
-            If (bPrompSave AndAlso PromptSaveTab(iIndex)) Then
+            If (bPrompSave AndAlso Not PromptSaveTab(iIndex)) Then
                 Return False
             End If
 
@@ -400,7 +400,7 @@ Public Class ClassTabControl
     ''' <param name="bIgnoreSavePrompt">If true, the new file will be opened without prompting to save the changed source</param>
     ''' <returns></returns>
     Public Function OpenFileTab(iIndex As Integer, sFile As String, Optional bIgnoreSavePrompt As Boolean = False, Optional bKeepView As Boolean = True) As Boolean
-        If (Not bIgnoreSavePrompt AndAlso PromptSaveTab(iIndex)) Then
+        If (Not bIgnoreSavePrompt AndAlso Not PromptSaveTab(iIndex)) Then
             Return False
         End If
 
@@ -558,14 +558,14 @@ Public Class ClassTabControl
     ''' <param name="iIndex"></param>
     ''' <param name="bAlwaysPrompt">If true, always show MessageBox even if the code didnt change</param>
     ''' <param name="bAlwaysYes">If true, ignores MessageBox prompt</param>
-    ''' <returns>False if saved, otherwise canceled.</returns>
+    ''' <returns>True if saved or declined, otherwise canceled.</returns>
     Public Function PromptSaveTab(iIndex As Integer, Optional bAlwaysPrompt As Boolean = False, Optional bAlwaysYes As Boolean = False, Optional bAlwaysSaveUnsaved As Boolean = False) As Boolean
         Dim bIsUnsaved As Boolean = (m_Tab(iIndex).m_IsUnsaved OrElse m_Tab(iIndex).m_InvalidFile)
 
         If (bAlwaysPrompt OrElse m_Tab(iIndex).m_Changed OrElse (bAlwaysSaveUnsaved AndAlso bIsUnsaved)) Then
             'Continue
         Else
-            Return False
+            Return True
         End If
 
         Select Case (If(bAlwaysYes, DialogResult.Yes, MessageBox.Show(String.Format("Do you want to save your work? '{0}' ({1})", m_Tab(iIndex).m_Title, iIndex), "Information", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question)))
@@ -573,10 +573,10 @@ Public Class ClassTabControl
                 Return SaveFileTab(iIndex, bIsUnsaved)
 
             Case DialogResult.No
-                Return False
+                Return True
 
             Case Else
-                Return True
+                Return False
 
         End Select
     End Function
