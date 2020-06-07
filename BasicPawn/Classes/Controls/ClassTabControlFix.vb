@@ -69,7 +69,10 @@ Public Class ClassTabControlFix
             End While
 
             Me.SelectTab(mTabPage)
-            mFocusedControl.Focus()
+
+            If (mFocusedControl IsNot Nothing) Then
+                mFocusedControl.Focus()
+            End If
 
             Return
         End If
