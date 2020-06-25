@@ -196,6 +196,7 @@
     <Compile Include="Classes\ClassCrossAppComunication.vb" />
     <Compile Include="Classes\ClassDatabase.vb" />
     <Compile Include="Classes\ClassFTP.vb" />
+    <Compile Include="Classes\ClassKeyValues.vb" />
     <Compile Include="Classes\ClassSecureStorage.vb" />
     <Compile Include="Classes\ClassThread.vb" />
     <Compile Include="Classes\ClassUpdate.vb" />
