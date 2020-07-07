@@ -21,6 +21,9 @@ Public Class FormOverwriteMessageBox
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call.
+        Panel_FooterControl.Name &= "@FooterControl"
+        Panel_FooterDarkControl.Name &= "@FooterDarkControl"
+
         Try
             ListBox_Files.BeginUpdate()
             ListBox_Files.Items.Clear()
@@ -32,5 +35,9 @@ Public Class FormOverwriteMessageBox
             ListBox_Files.EndUpdate()
         End Try
 
+    End Sub
+
+    Private Sub FormOverwriteMessageBox_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ClassControlStyle.UpdateControls(Me)
     End Sub
 End Class

@@ -23,13 +23,13 @@ Partial Class FormOverwriteMessageBox
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.Label1 = New System.Windows.Forms.Label()
-        Me.Panel1 = New System.Windows.Forms.Panel()
-        Me.Panel2 = New System.Windows.Forms.Panel()
+        Me.Panel_FooterControl = New System.Windows.Forms.Panel()
+        Me.Button2 = New System.Windows.Forms.Button()
+        Me.Button1 = New System.Windows.Forms.Button()
+        Me.Panel_FooterDarkControl = New System.Windows.Forms.Panel()
         Me.ListBox_Files = New System.Windows.Forms.ListBox()
         Me.Label2 = New System.Windows.Forms.Label()
-        Me.Button1 = New System.Windows.Forms.Button()
-        Me.Button2 = New System.Windows.Forms.Button()
-        Me.Panel1.SuspendLayout()
+        Me.Panel_FooterControl.SuspendLayout()
         Me.SuspendLayout()
         '
         'Label1
@@ -42,26 +42,50 @@ Partial Class FormOverwriteMessageBox
         Me.Label1.TabIndex = 0
         Me.Label1.Text = "The following files already exist:"
         '
-        'Panel1
+        'Panel_FooterControl
         '
-        Me.Panel1.BackColor = System.Drawing.SystemColors.Control
-        Me.Panel1.Controls.Add(Me.Button2)
-        Me.Panel1.Controls.Add(Me.Button1)
-        Me.Panel1.Controls.Add(Me.Panel2)
-        Me.Panel1.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.Panel1.Location = New System.Drawing.Point(0, 232)
-        Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(471, 48)
-        Me.Panel1.TabIndex = 1
+        Me.Panel_FooterControl.BackColor = System.Drawing.SystemColors.Control
+        Me.Panel_FooterControl.Controls.Add(Me.Button2)
+        Me.Panel_FooterControl.Controls.Add(Me.Button1)
+        Me.Panel_FooterControl.Controls.Add(Me.Panel_FooterDarkControl)
+        Me.Panel_FooterControl.Dock = System.Windows.Forms.DockStyle.Bottom
+        Me.Panel_FooterControl.Location = New System.Drawing.Point(0, 232)
+        Me.Panel_FooterControl.Name = "Panel_FooterControl"
+        Me.Panel_FooterControl.Size = New System.Drawing.Size(471, 48)
+        Me.Panel_FooterControl.TabIndex = 1
         '
-        'Panel2
+        'Button2
         '
-        Me.Panel2.BackColor = System.Drawing.SystemColors.ControlDark
-        Me.Panel2.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel2.Location = New System.Drawing.Point(0, 0)
-        Me.Panel2.Name = "Panel2"
-        Me.Panel2.Size = New System.Drawing.Size(471, 1)
-        Me.Panel2.TabIndex = 0
+        Me.Button2.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Button2.DialogResult = System.Windows.Forms.DialogResult.OK
+        Me.Button2.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.Button2.Location = New System.Drawing.Point(303, 13)
+        Me.Button2.Name = "Button2"
+        Me.Button2.Size = New System.Drawing.Size(75, 23)
+        Me.Button2.TabIndex = 2
+        Me.Button2.Text = "Overwrite"
+        Me.Button2.UseVisualStyleBackColor = True
+        '
+        'Button1
+        '
+        Me.Button1.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Button1.DialogResult = System.Windows.Forms.DialogResult.Cancel
+        Me.Button1.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.Button1.Location = New System.Drawing.Point(384, 13)
+        Me.Button1.Name = "Button1"
+        Me.Button1.Size = New System.Drawing.Size(75, 23)
+        Me.Button1.TabIndex = 1
+        Me.Button1.Text = "Cancel"
+        Me.Button1.UseVisualStyleBackColor = True
+        '
+        'Panel_FooterDarkControl
+        '
+        Me.Panel_FooterDarkControl.BackColor = System.Drawing.SystemColors.ControlDark
+        Me.Panel_FooterDarkControl.Dock = System.Windows.Forms.DockStyle.Top
+        Me.Panel_FooterDarkControl.Location = New System.Drawing.Point(0, 0)
+        Me.Panel_FooterDarkControl.Name = "Panel_FooterDarkControl"
+        Me.Panel_FooterDarkControl.Size = New System.Drawing.Size(471, 1)
+        Me.Panel_FooterDarkControl.TabIndex = 0
         '
         'ListBox_Files
         '
@@ -87,30 +111,6 @@ Partial Class FormOverwriteMessageBox
         Me.Label2.TabIndex = 3
         Me.Label2.Text = "Do you want to overwrite existing files?"
         '
-        'Button1
-        '
-        Me.Button1.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button1.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.Button1.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button1.Location = New System.Drawing.Point(384, 13)
-        Me.Button1.Name = "Button1"
-        Me.Button1.Size = New System.Drawing.Size(75, 23)
-        Me.Button1.TabIndex = 1
-        Me.Button1.Text = "Cancel"
-        Me.Button1.UseVisualStyleBackColor = True
-        '
-        'Button2
-        '
-        Me.Button2.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button2.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.Button2.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button2.Location = New System.Drawing.Point(303, 13)
-        Me.Button2.Name = "Button2"
-        Me.Button2.Size = New System.Drawing.Size(75, 23)
-        Me.Button2.TabIndex = 2
-        Me.Button2.Text = "Overwrite"
-        Me.Button2.UseVisualStyleBackColor = True
-        '
         'FormOverwriteMessageBox
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -119,7 +119,7 @@ Partial Class FormOverwriteMessageBox
         Me.ClientSize = New System.Drawing.Size(471, 280)
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.ListBox_Files)
-        Me.Controls.Add(Me.Panel1)
+        Me.Controls.Add(Me.Panel_FooterControl)
         Me.Controls.Add(Me.Label1)
         Me.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
@@ -129,15 +129,15 @@ Partial Class FormOverwriteMessageBox
         Me.ShowIcon = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Overwrite files"
-        Me.Panel1.ResumeLayout(False)
+        Me.Panel_FooterControl.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
     End Sub
 
     Friend WithEvents Label1 As Label
-    Friend WithEvents Panel1 As Panel
-    Friend WithEvents Panel2 As Panel
+    Friend WithEvents Panel_FooterControl As Panel
+    Friend WithEvents Panel_FooterDarkControl As Panel
     Friend WithEvents ListBox_Files As ListBox
     Friend WithEvents Label2 As Label
     Friend WithEvents Button2 As Button
