@@ -117,6 +117,24 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <metadata name="ToolTip_Information.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <data name="LinkLabel1.ToolTip" xml:space="preserve">
+    <value>The format string is comprised of comma delimited sections, each section enclosed in brackets.
+Each section has an index and a format specifier, which are separated with a colon.
+For example:
+ - Format: {1:d},{2:f}
+ - Text: This number is {1} and the float is {2}!
+
+This following types are allowed:
+ - d/i: Digits/Integer.
+ - x: Hexadecimal.
+ - f: Floating point.
+ - s: String.
+ - c: Character (UTF-8 compatible).
+ - t: Include and translate another Phrases.</value>
+  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>

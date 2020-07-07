@@ -31,12 +31,14 @@ Partial Class FormTranslationEditor
         Me.MenuStrip_TranslationEditor = New System.Windows.Forms.MenuStrip()
         Me.ToolStripMenuItem_File = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_New = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripMenuItem_Open = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripMenuItem_Recent = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_Import = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_ImportRecent = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
-        Me.ToolStripMenuItem_Save = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_Export = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Edit = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_GroupAdd = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
+        Me.ToolStripMenuItem_ShowMissing = New System.Windows.Forms.ToolStripMenuItem()
         Me.ImageList_Translation = New System.Windows.Forms.ImageList(Me.components)
         Me.ContextMenuStrip_Translation = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.ToolStripMenuItem_TransAdd = New System.Windows.Forms.ToolStripMenuItem()
@@ -60,7 +62,7 @@ Partial Class FormTranslationEditor
         '
         'ToolStripMenuItem_File
         '
-        Me.ToolStripMenuItem_File.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_New, Me.ToolStripMenuItem_Open, Me.ToolStripMenuItem_Recent, Me.ToolStripSeparator1, Me.ToolStripMenuItem_Save})
+        Me.ToolStripMenuItem_File.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_New, Me.ToolStripMenuItem_Import, Me.ToolStripMenuItem_ImportRecent, Me.ToolStripSeparator1, Me.ToolStripMenuItem_Export})
         Me.ToolStripMenuItem_File.Image = Global.BasicPawnPluginTranslationEditor.My.Resources.Resources.imageres_5306_16x16_32
         Me.ToolStripMenuItem_File.Name = "ToolStripMenuItem_File"
         Me.ToolStripMenuItem_File.Size = New System.Drawing.Size(53, 20)
@@ -73,34 +75,34 @@ Partial Class FormTranslationEditor
         Me.ToolStripMenuItem_New.Size = New System.Drawing.Size(180, 22)
         Me.ToolStripMenuItem_New.Text = "New"
         '
-        'ToolStripMenuItem_Open
+        'ToolStripMenuItem_Import
         '
-        Me.ToolStripMenuItem_Open.Image = CType(resources.GetObject("ToolStripMenuItem_Open.Image"), System.Drawing.Image)
-        Me.ToolStripMenuItem_Open.Name = "ToolStripMenuItem_Open"
-        Me.ToolStripMenuItem_Open.Size = New System.Drawing.Size(180, 22)
-        Me.ToolStripMenuItem_Open.Text = "Open"
+        Me.ToolStripMenuItem_Import.Image = CType(resources.GetObject("ToolStripMenuItem_Import.Image"), System.Drawing.Image)
+        Me.ToolStripMenuItem_Import.Name = "ToolStripMenuItem_Import"
+        Me.ToolStripMenuItem_Import.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_Import.Text = "Import"
         '
-        'ToolStripMenuItem_Recent
+        'ToolStripMenuItem_ImportRecent
         '
-        Me.ToolStripMenuItem_Recent.Name = "ToolStripMenuItem_Recent"
-        Me.ToolStripMenuItem_Recent.Size = New System.Drawing.Size(180, 22)
-        Me.ToolStripMenuItem_Recent.Text = "Open Recent..."
+        Me.ToolStripMenuItem_ImportRecent.Name = "ToolStripMenuItem_ImportRecent"
+        Me.ToolStripMenuItem_ImportRecent.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_ImportRecent.Text = "Import Recent..."
         '
         'ToolStripSeparator1
         '
         Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
         Me.ToolStripSeparator1.Size = New System.Drawing.Size(177, 6)
         '
-        'ToolStripMenuItem_Save
+        'ToolStripMenuItem_Export
         '
-        Me.ToolStripMenuItem_Save.Image = Global.BasicPawnPluginTranslationEditor.My.Resources.Resources.shell32_16761_16x16_32
-        Me.ToolStripMenuItem_Save.Name = "ToolStripMenuItem_Save"
-        Me.ToolStripMenuItem_Save.Size = New System.Drawing.Size(180, 22)
-        Me.ToolStripMenuItem_Save.Text = "Save"
+        Me.ToolStripMenuItem_Export.Image = Global.BasicPawnPluginTranslationEditor.My.Resources.Resources.shell32_16761_16x16_32
+        Me.ToolStripMenuItem_Export.Name = "ToolStripMenuItem_Export"
+        Me.ToolStripMenuItem_Export.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_Export.Text = "Export"
         '
         'ToolStripMenuItem_Edit
         '
-        Me.ToolStripMenuItem_Edit.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_GroupAdd})
+        Me.ToolStripMenuItem_Edit.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_GroupAdd, Me.ToolStripSeparator3, Me.ToolStripMenuItem_ShowMissing})
         Me.ToolStripMenuItem_Edit.Image = CType(resources.GetObject("ToolStripMenuItem_Edit.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_Edit.Name = "ToolStripMenuItem_Edit"
         Me.ToolStripMenuItem_Edit.Size = New System.Drawing.Size(55, 20)
@@ -110,8 +112,22 @@ Partial Class FormTranslationEditor
         '
         Me.ToolStripMenuItem_GroupAdd.Image = CType(resources.GetObject("ToolStripMenuItem_GroupAdd.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_GroupAdd.Name = "ToolStripMenuItem_GroupAdd"
-        Me.ToolStripMenuItem_GroupAdd.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_GroupAdd.Size = New System.Drawing.Size(212, 22)
         Me.ToolStripMenuItem_GroupAdd.Text = "Add Group"
+        '
+        'ToolStripSeparator3
+        '
+        Me.ToolStripSeparator3.Name = "ToolStripSeparator3"
+        Me.ToolStripSeparator3.Size = New System.Drawing.Size(209, 6)
+        '
+        'ToolStripMenuItem_ShowMissing
+        '
+        Me.ToolStripMenuItem_ShowMissing.Checked = True
+        Me.ToolStripMenuItem_ShowMissing.CheckOnClick = True
+        Me.ToolStripMenuItem_ShowMissing.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.ToolStripMenuItem_ShowMissing.Name = "ToolStripMenuItem_ShowMissing"
+        Me.ToolStripMenuItem_ShowMissing.Size = New System.Drawing.Size(212, 22)
+        Me.ToolStripMenuItem_ShowMissing.Text = "Show Missing Translations"
         '
         'ImageList_Translation
         '
@@ -190,10 +206,10 @@ Partial Class FormTranslationEditor
 
     Friend WithEvents MenuStrip_TranslationEditor As Windows.Forms.MenuStrip
     Friend WithEvents ToolStripMenuItem_File As Windows.Forms.ToolStripMenuItem
-    Friend WithEvents ToolStripMenuItem_Open As Windows.Forms.ToolStripMenuItem
-    Friend WithEvents ToolStripMenuItem_Recent As Windows.Forms.ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_Import As Windows.Forms.ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_ImportRecent As Windows.Forms.ToolStripMenuItem
     Friend WithEvents ImageList_Translation As Windows.Forms.ImageList
-    Friend WithEvents ToolStripMenuItem_Save As Windows.Forms.ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_Export As Windows.Forms.ToolStripMenuItem
     Friend WithEvents ToolStripSeparator1 As Windows.Forms.ToolStripSeparator
     Friend WithEvents ToolStripMenuItem_New As Windows.Forms.ToolStripMenuItem
     Friend WithEvents ContextMenuStrip_Translation As Windows.Forms.ContextMenuStrip
@@ -205,4 +221,6 @@ Partial Class FormTranslationEditor
     Friend WithEvents ToolStripMenuItem_GroupRemove As Windows.Forms.ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_Edit As Windows.Forms.ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_GroupAdd As Windows.Forms.ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator3 As Windows.Forms.ToolStripSeparator
+    Friend WithEvents ToolStripMenuItem_ShowMissing As Windows.Forms.ToolStripMenuItem
 End Class

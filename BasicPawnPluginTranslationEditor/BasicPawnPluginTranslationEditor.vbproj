@@ -61,6 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Import Include="BasicPawn" />
     <Import Include="Microsoft.VisualBasic" />
     <Import Include="System" />
     <Import Include="System.Collections" />
@@ -68,21 +69,61 @@
     <Import Include="System.Data" />
     <Import Include="System.Diagnostics" />
     <Import Include="System.Linq" />
+    <Import Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="TranslationEditor\Classes\ExtTranslationEditorMenu.vb">
+    <Compile Include="Controls and Forms\ExportWizard\Classes\UCExportWizardMethod.Designer.vb">
+      <DependentUpon>UCExportWizardMethod.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controls and Forms\ExportWizard\Classes\UCExportWizardMethod.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls and Forms\ExportWizard\Classes\UCExportWizardFile.Designer.vb">
+      <DependentUpon>UCExportWizardFile.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controls and Forms\ExportWizard\Classes\UCExportWizardFile.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls and Forms\ExportWizard\Classes\UCExportWizardFinalize.Designer.vb">
+      <DependentUpon>UCExportWizardFinalize.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controls and Forms\ExportWizard\Classes\UCExportWizardFinalize.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls and Forms\ExportWizard\Classes\UCExportWizardWelcome.Designer.vb">
+      <DependentUpon>UCExportWizardWelcome.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controls and Forms\ExportWizard\Classes\UCExportWizardWelcome.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls and Forms\ExportWizard\FormOverwriteMessageBox.Designer.vb">
+      <DependentUpon>FormOverwriteMessageBox.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controls and Forms\ExportWizard\FormOverwriteMessageBox.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TranslationEditor\FormAddTranslation.Designer.vb">
+    <Compile Include="Controls and Forms\TranslationEditor\Classes\ExtTranslationEditorFile.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls and Forms\TranslationEditor\Classes\ExtTranslationEditorMenu.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls and Forms\ExportWizard\FormExportWizard.Designer.vb">
+      <DependentUpon>FormExportWizard.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controls and Forms\ExportWizard\FormExportWizard.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls and Forms\TranslationEditor\FormAddTranslation.Designer.vb">
       <DependentUpon>FormAddTranslation.vb</DependentUpon>
     </Compile>
-    <Compile Include="TranslationEditor\FormAddTranslation.vb">
+    <Compile Include="Controls and Forms\TranslationEditor\FormAddTranslation.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TranslationEditor\FormTranslationEditor.Designer.vb">
+    <Compile Include="Controls and Forms\TranslationEditor\FormTranslationEditor.Designer.vb">
       <DependentUpon>FormTranslationEditor.vb</DependentUpon>
     </Compile>
-    <Compile Include="TranslationEditor\FormTranslationEditor.vb">
+    <Compile Include="Controls and Forms\TranslationEditor\FormTranslationEditor.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="PluginInfo.vb" />
@@ -104,10 +145,28 @@
     <Compile Include="PluginTranslationEditor.vb" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="TranslationEditor\FormAddTranslation.resx">
+    <EmbeddedResource Include="Controls and Forms\ExportWizard\Classes\UCExportWizardMethod.resx">
+      <DependentUpon>UCExportWizardMethod.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls and Forms\ExportWizard\Classes\UCExportWizardFile.resx">
+      <DependentUpon>UCExportWizardFile.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls and Forms\ExportWizard\Classes\UCExportWizardFinalize.resx">
+      <DependentUpon>UCExportWizardFinalize.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls and Forms\ExportWizard\Classes\UCExportWizardWelcome.resx">
+      <DependentUpon>UCExportWizardWelcome.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls and Forms\ExportWizard\FormExportWizard.resx">
+      <DependentUpon>FormExportWizard.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls and Forms\ExportWizard\FormOverwriteMessageBox.resx">
+      <DependentUpon>FormOverwriteMessageBox.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls and Forms\TranslationEditor\FormAddTranslation.resx">
       <DependentUpon>FormAddTranslation.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TranslationEditor\FormTranslationEditor.resx">
+    <EmbeddedResource Include="Controls and Forms\TranslationEditor\FormTranslationEditor.resx">
       <DependentUpon>FormTranslationEditor.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
@@ -178,6 +237,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\imageres_5350_16x16-321.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\user32_102_16x16-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{94E38DFF-614B-4CBD-B67C-F211BB35CE8B}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>

@@ -16,6 +16,7 @@
 
 
 Imports System.Text
+Imports System.Text.RegularExpressions
 
 Public Class ClassKeyValues
     Implements IDisposable
@@ -23,6 +24,22 @@ Public Class ClassKeyValues
     Private g_mStream As IO.Stream
     Private g_mStreamWriter As IO.StreamWriter
     Private g_mStreamReader As IO.StreamReader
+
+    'https://en.wikipedia.org/wiki/Escape_sequences_in_C
+    Private Shared g_sEscapes()() As String = New String()() {
+        New String() {"\\", "\"},
+        New String() {"\a", Chr(&H7)},
+        New String() {"\b", Chr(&H8)},
+        New String() {"\e", Chr(&H1B)},
+        New String() {"\f", Chr(&HC)},
+        New String() {"\n", Chr(&HA)},
+        New String() {"\r", Chr(&HD)},
+        New String() {"\t", Chr(&H9)},
+        New String() {"\v", Chr(&HB)},
+        New String() {"\'", Chr(&H27)},
+        New String() {"\""", Chr(&H22)},
+        New String() {"\?", Chr(&H3F)}
+    }
 
     Class STRUC_KEYVALUES_SECTION
         Private g_sName As String
@@ -52,6 +69,22 @@ Public Class ClassKeyValues
         ReadOnly Property m_Sections As ClassKeyValueList
             Get
                 Return g_mSections
+            End Get
+        End Property
+
+        ReadOnly Property m_Root As STRUC_KEYVALUES_SECTION
+            Get
+                Dim mKeyValue = Me
+
+                While True
+                    If (mKeyValue.m_Parent Is Nothing) Then
+                        Exit While
+                    End If
+
+                    mKeyValue = mKeyValue.m_Parent
+                End While
+
+                Return mKeyValue
             End Get
         End Property
 
@@ -211,7 +244,7 @@ Public Class ClassKeyValues
         End If
     End Sub
 
-    Public Function Deserialize() As STRUC_KEYVALUES_SECTION
+    Public Function Deserialize(bUnescapeString As Boolean) As STRUC_KEYVALUES_SECTION
         g_mStreamReader.BaseStream.Seek(0, IO.SeekOrigin.Begin)
 
         Dim sContent As String = g_mStreamReader.ReadToEnd
@@ -241,29 +274,55 @@ Public Class ClassKeyValues
 
             If (iScopeLevel <> iLastBraceLevel) Then
                 If (sTotalStrings.Length > 0) Then
-                    Dim sStrings As String() = sTotalStrings.Replace("""" & """", """" & vbLf & """").ToString.Split(New String() {vbLf}, StringSplitOptions.None)
+                    Dim mStrings As New List(Of String)
+
+                    'Split found strings into array and also handle escapes.
+                    If (True) Then
+                        Dim mStringAnalysis As New ClassKeyValueAnalysis(sTotalStrings.ToString)
+
+                        Dim bReading As Boolean = False
+                        Dim sBuffer As String = ""
+                        For j = 0 To mStringAnalysis.m_MaxLength - 1
+                            If (mStringAnalysis.GetChar(j) = """"c) Then
+                                If (Not mStringAnalysis.IsEscaped(j)) Then
+                                    'Begin reading string
+                                    If (Not bReading) Then
+                                        bReading = True
+
+                                        sBuffer = ""
+                                        Continue For
+                                    End If
+
+                                    'End reading string
+                                    If (bReading) Then
+                                        bReading = False
+
+                                        mStrings.Add(sBuffer)
+                                        Continue For
+                                    End If
+                                End If
+                            End If
+
+                            If (bReading) Then
+                                sBuffer &= mStringAnalysis.GetChar(j)
+                            End If
+                        Next
+                    End If
+
 
                     Dim sKey As String = Nothing
                     Dim sValue As String = Nothing
 
                     Dim mSortedKeyValues As New List(Of KeyValuePair(Of String, String))
 
-                    For j = 0 To sStrings.Length - 1
-                        If (sStrings(j).StartsWith(""""c)) Then
-                            sStrings(j) = sStrings(j).Remove(0, 1)
-                        End If
-
-                        If (sStrings(j).EndsWith(""""c)) Then
-                            sStrings(j) = sStrings(j).Remove(sStrings(j).Length - 1, 1)
-                        End If
-
+                    For j = 0 To mStrings.Count - 1
                         Select Case (j Mod 2)
                             Case 0
-                                sKey = sStrings(j)
+                                sKey = If(bUnescapeString, UnescapeString(mStrings(j)), mStrings(j))
                                 sValue = Nothing
 
                             Case 1
-                                sValue = sStrings(j)
+                                sValue = If(bUnescapeString, UnescapeString(mStrings(j)), mStrings(j))
 
                                 mSortedKeyValues.Add(New KeyValuePair(Of String, String)(sKey, sValue))
                         End Select
@@ -317,37 +376,84 @@ Public Class ClassKeyValues
         Return mKeyValues
     End Function
 
-    Public Sub Serialize(mKeyValues As STRUC_KEYVALUES_SECTION)
+    Public Sub Serialize(mKeyValues As STRUC_KEYVALUES_SECTION, bEscapeStrings As Boolean)
         Dim mKeyValueBuilder As New StringBuilder
 
-        SerializeSectionRecursive(mKeyValueBuilder, mKeyValues, 0)
+        SerializeSectionRecursive(mKeyValueBuilder, mKeyValues, 0, bEscapeStrings)
 
         ParseFromString(mKeyValueBuilder.ToString)
     End Sub
 
-    Private Sub SerializeSectionRecursive(mKeyValueBuilder As StringBuilder, mKeyValues As STRUC_KEYVALUES_SECTION, iTabbing As Integer)
+    Private Sub SerializeSectionRecursive(mKeyValueBuilder As StringBuilder, mKeyValues As STRUC_KEYVALUES_SECTION, iTabbing As Integer, bEscapeStrings As Boolean)
         If (mKeyValues.m_Name Is Nothing) Then
             For Each mSection In mKeyValues.m_Sections
-                SerializeSectionRecursive(mKeyValueBuilder, mSection, iTabbing)
+                SerializeSectionRecursive(mKeyValueBuilder, mSection, iTabbing, bEscapeStrings)
             Next
         Else
             Dim sTabbing = New String(vbTab(0), iTabbing)
             Dim sKeyTabbing = New String(vbTab(0), iTabbing + 1)
 
-            mKeyValueBuilder.AppendFormat("{0}""{1}""", sTabbing, mKeyValues.m_Name).AppendLine()
+            mKeyValueBuilder.AppendFormat("{0}""{1}""", sTabbing, If(bEscapeStrings, EscapeString(mKeyValues.m_Name), mKeyValues.m_Name)).AppendLine()
             mKeyValueBuilder.AppendFormat("{0}{1}", sTabbing, "{").AppendLine()
 
             For Each mKeys In mKeyValues.m_Keys
-                mKeyValueBuilder.AppendFormat("{0}""{1}""{2}""{3}""", sKeyTabbing, mKeys.Key, vbTab(0), mKeys.Value).AppendLine()
+                mKeyValueBuilder.AppendFormat("{0}""{1}""{2}""{3}""", sKeyTabbing, If(bEscapeStrings, EscapeString(mKeys.Key), mKeys.Key), vbTab(0), If(bEscapeStrings, EscapeString(mKeys.Value), mKeys.Value)).AppendLine()
             Next
 
             For Each mSection In mKeyValues.m_Sections
-                SerializeSectionRecursive(mKeyValueBuilder, mSection, iTabbing + 1)
+                SerializeSectionRecursive(mKeyValueBuilder, mSection, iTabbing + 1, bEscapeStrings)
             Next
 
             mKeyValueBuilder.AppendFormat("{0}{1}", sTabbing, "}").AppendLine()
         End If
     End Sub
+
+    Public Shared Function UnescapeString(sText As String) As String
+        For i = sText.Length - 1 To 0 Step -1
+            If (sText(i) <> "\"c) Then
+                Continue For
+            End If
+
+            Dim iEscCount = 0
+            For j = i - 1 To 0 Step -1
+                If (sText(j) <> "\"c) Then
+                    Exit For
+                End If
+
+                iEscCount += 1
+            Next
+
+            'Has been escaped?
+            If ((iEscCount Mod 2) <> 0) Then
+                Continue For
+            End If
+
+            For j = g_sEscapes.Length - 1 To 0 Step -1
+                Dim iEscIndex = (i + g_sEscapes(j)(0).Length - 1)
+                If (iEscIndex > sText.Length - 1) Then
+                    Continue For
+                End If
+
+                Dim sTextEsc As String = sText.Substring(i, g_sEscapes(j)(0).Length)
+                If (g_sEscapes(j)(0) <> sTextEsc) Then
+                    Continue For
+                End If
+
+                sText = sText.Remove(i, sTextEsc.Length)
+                sText = sText.Insert(i, g_sEscapes(j)(1))
+            Next
+        Next
+
+        Return sText
+    End Function
+
+    Public Shared Function EscapeString(sText As String) As String
+        For i = 0 To g_sEscapes.Length - 1
+            sText = sText.Replace(g_sEscapes(i)(1), g_sEscapes(i)(0))
+        Next
+
+        Return sText
+    End Function
 
     ''' <summary>
     ''' Exports the IO.Stream content to file.
@@ -577,6 +683,23 @@ Public Class ClassKeyValues
             Next
 
             Return -1
+        End Function
+
+        Public Function IsEscaped(iIndex As Integer) As Boolean
+            Dim iEscapes As Integer = 0
+            For j = iIndex - 1 To 0 Step -1
+                If (g_sCacheText(j) <> g_sEscapeChar) Then
+                    Exit For
+                End If
+
+                iEscapes += 1
+            Next
+
+            If ((iEscapes Mod 2) = 0) Then
+                Return False
+            Else
+                Return True
+            End If
         End Function
 
         Public Sub New(sText As String)
