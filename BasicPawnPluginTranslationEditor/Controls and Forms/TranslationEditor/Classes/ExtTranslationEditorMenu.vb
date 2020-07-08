@@ -221,8 +221,6 @@ Partial Public Class FormTranslationEditor
 
     Private Sub ToolStripMenuItem_ShowMissing_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ShowMissing.Click
         g_ClassTranslationManager.TreeViewFillMissing(Not ToolStripMenuItem_ShowMissing.Checked)
-
-        g_ClassTranslationManager.m_Changed = True
     End Sub
 
     Private Sub ContextMenuStrip_Translation_Opening(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles ContextMenuStrip_Translation.Opening
