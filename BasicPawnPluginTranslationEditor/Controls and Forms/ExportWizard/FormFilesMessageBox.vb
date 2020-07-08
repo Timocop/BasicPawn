@@ -15,14 +15,21 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 
-Public Class FormOverwriteMessageBox
-    Public Sub New(sFiles As String())
+Public Class FormFilesMessageBox
+    Public Sub New(sMessage As String, sQuestion As String, sTitle As String, sButton As String, sFiles As String())
         ' This call is required by the designer.
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call. 
         ClassControlStyle.SetNameFlag(Panel_FooterControl, ClassControlStyle.ENUM_STYLE_FLAGS.CONTROL_FOOTER)
         ClassControlStyle.SetNameFlag(Panel_FooterDarkControl, ClassControlStyle.ENUM_STYLE_FLAGS.CONTROL_FOOTER_DARK)
+
+        Label_Message.Text = sMessage
+        Label_Question.Text = sQuestion
+
+        Me.Text = sTitle
+
+        Button_Apply.Text = sButton
 
         Try
             ListBox_Files.BeginUpdate()

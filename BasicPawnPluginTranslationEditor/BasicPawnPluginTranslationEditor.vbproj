@@ -96,10 +96,10 @@
     <Compile Include="Controls and Forms\ExportWizard\Classes\UCExportWizardWelcome.vb">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls and Forms\ExportWizard\FormOverwriteMessageBox.Designer.vb">
-      <DependentUpon>FormOverwriteMessageBox.vb</DependentUpon>
+    <Compile Include="Controls and Forms\ExportWizard\FormFilesMessageBox.Designer.vb">
+      <DependentUpon>FormFilesMessageBox.vb</DependentUpon>
     </Compile>
-    <Compile Include="Controls and Forms\ExportWizard\FormOverwriteMessageBox.vb">
+    <Compile Include="Controls and Forms\ExportWizard\FormFilesMessageBox.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Controls and Forms\TranslationEditor\Classes\ExtTranslationEditorFile.vb">
@@ -160,8 +160,8 @@
     <EmbeddedResource Include="Controls and Forms\ExportWizard\FormExportWizard.resx">
       <DependentUpon>FormExportWizard.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls and Forms\ExportWizard\FormOverwriteMessageBox.resx">
-      <DependentUpon>FormOverwriteMessageBox.vb</DependentUpon>
+    <EmbeddedResource Include="Controls and Forms\ExportWizard\FormFilesMessageBox.resx">
+      <DependentUpon>FormFilesMessageBox.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls and Forms\TranslationEditor\FormAddTranslation.resx">
       <DependentUpon>FormAddTranslation.vb</DependentUpon>

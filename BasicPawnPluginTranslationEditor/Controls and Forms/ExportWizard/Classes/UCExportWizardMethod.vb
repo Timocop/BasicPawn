@@ -92,6 +92,11 @@ Public Class UCExportWizardMethod
                 bHandeled = True
                 Return
             End If
+
+            If (Not CheckObsoleteFiles()) Then
+                bHandeled = True
+                Return
+            End If
         Else
             If (Not CheckFileOverwrites()) Then
                 bHandeled = True
@@ -133,7 +138,7 @@ Public Class UCExportWizardMethod
     Private Function CheckFileOverwrites() As Boolean
         Dim mOverwrittenFiles As New HashSet(Of String)
 
-        For Each sFile As String In ListBox_AdditionalFiles.Items
+        For Each sFile As String In g_mFormExportWizard.GetAdditionalTranslationFiles
             Try
                 If (Not IO.File.Exists(sFile)) Then
                     Continue For
@@ -146,8 +151,46 @@ Public Class UCExportWizardMethod
         Next
 
         If (mOverwrittenFiles.Count > 0) Then
-            Using mOverwriteMessageBox As New FormOverwriteMessageBox(mOverwrittenFiles.ToArray)
-                If (mOverwriteMessageBox.ShowDialog(Me) <> DialogResult.OK) Then
+            Using mOverwriteMessageBox As New FormFilesMessageBox("The following translation files already exist:", "Do you want to overwrite these existing translation files?", "Overwrite files", "Overwrite", mOverwrittenFiles.ToArray)
+                Return (mOverwriteMessageBox.ShowDialog(Me) = DialogResult.OK)
+            End Using
+        End If
+
+        Return True
+    End Function
+
+    Private Function CheckObsoleteFiles() As Boolean
+        Dim mUnusedFiles As New HashSet(Of String)
+
+        For Each sFile As String In g_mFormExportWizard.GetAdditionalTranslationFiles
+            Try
+                If (Not IO.File.Exists(sFile)) Then
+                    Continue For
+                End If
+
+                mUnusedFiles.Add(sFile)
+            Catch ex As Exception
+                ClassExceptionLog.WriteToLogMessageBox(ex)
+            End Try
+        Next
+
+        If (mUnusedFiles.Count > 0) Then
+            Using mOverwriteMessageBox As New FormFilesMessageBox("The following translation files are obsolete and should be removed:", "Do you want to remove these obsolete translation files?", "Obsolete files", "Remove", mUnusedFiles.ToArray)
+                If (mOverwriteMessageBox.ShowDialog(Me) = DialogResult.OK) Then
+                    Try
+                        For Each sFile In mUnusedFiles
+                            If (Not IO.File.Exists(sFile)) Then
+                                Continue For
+                            End If
+
+                            IO.File.Delete(sFile)
+                        Next
+                    Catch ex As Exception
+                        ClassExceptionLog.WriteToLogMessageBox(ex)
+                    End Try
+
+                    Return True
+                Else
                     Return False
                 End If
             End Using

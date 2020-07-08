@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class FormOverwriteMessageBox
+Partial Class FormFilesMessageBox
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
@@ -22,31 +22,31 @@ Partial Class FormOverwriteMessageBox
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.Label1 = New System.Windows.Forms.Label()
+        Me.Label_Message = New System.Windows.Forms.Label()
         Me.Panel_FooterControl = New System.Windows.Forms.Panel()
-        Me.Button2 = New System.Windows.Forms.Button()
-        Me.Button1 = New System.Windows.Forms.Button()
+        Me.Button_Apply = New System.Windows.Forms.Button()
+        Me.Button_Cancel = New System.Windows.Forms.Button()
         Me.Panel_FooterDarkControl = New System.Windows.Forms.Panel()
         Me.ListBox_Files = New System.Windows.Forms.ListBox()
-        Me.Label2 = New System.Windows.Forms.Label()
+        Me.Label_Question = New System.Windows.Forms.Label()
         Me.Panel_FooterControl.SuspendLayout()
         Me.SuspendLayout()
         '
-        'Label1
+        'Label_Message
         '
-        Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(25, 25)
-        Me.Label1.Margin = New System.Windows.Forms.Padding(16, 16, 3, 0)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(172, 13)
-        Me.Label1.TabIndex = 0
-        Me.Label1.Text = "The following files already exist:"
+        Me.Label_Message.AutoSize = True
+        Me.Label_Message.Location = New System.Drawing.Point(25, 25)
+        Me.Label_Message.Margin = New System.Windows.Forms.Padding(16, 16, 3, 0)
+        Me.Label_Message.Name = "Label_Message"
+        Me.Label_Message.Size = New System.Drawing.Size(52, 13)
+        Me.Label_Message.TabIndex = 0
+        Me.Label_Message.Text = "Message"
         '
         'Panel_FooterControl
         '
         Me.Panel_FooterControl.BackColor = System.Drawing.SystemColors.Control
-        Me.Panel_FooterControl.Controls.Add(Me.Button2)
-        Me.Panel_FooterControl.Controls.Add(Me.Button1)
+        Me.Panel_FooterControl.Controls.Add(Me.Button_Apply)
+        Me.Panel_FooterControl.Controls.Add(Me.Button_Cancel)
         Me.Panel_FooterControl.Controls.Add(Me.Panel_FooterDarkControl)
         Me.Panel_FooterControl.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.Panel_FooterControl.Location = New System.Drawing.Point(0, 232)
@@ -54,29 +54,29 @@ Partial Class FormOverwriteMessageBox
         Me.Panel_FooterControl.Size = New System.Drawing.Size(471, 48)
         Me.Panel_FooterControl.TabIndex = 1
         '
-        'Button2
+        'Button_Apply
         '
-        Me.Button2.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button2.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.Button2.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button2.Location = New System.Drawing.Point(303, 13)
-        Me.Button2.Name = "Button2"
-        Me.Button2.Size = New System.Drawing.Size(75, 23)
-        Me.Button2.TabIndex = 2
-        Me.Button2.Text = "Overwrite"
-        Me.Button2.UseVisualStyleBackColor = True
+        Me.Button_Apply.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Button_Apply.DialogResult = System.Windows.Forms.DialogResult.OK
+        Me.Button_Apply.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.Button_Apply.Location = New System.Drawing.Point(303, 13)
+        Me.Button_Apply.Name = "Button_Apply"
+        Me.Button_Apply.Size = New System.Drawing.Size(75, 23)
+        Me.Button_Apply.TabIndex = 2
+        Me.Button_Apply.Text = "OK"
+        Me.Button_Apply.UseVisualStyleBackColor = True
         '
-        'Button1
+        'Button_Cancel
         '
-        Me.Button1.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button1.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.Button1.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button1.Location = New System.Drawing.Point(384, 13)
-        Me.Button1.Name = "Button1"
-        Me.Button1.Size = New System.Drawing.Size(75, 23)
-        Me.Button1.TabIndex = 1
-        Me.Button1.Text = "Cancel"
-        Me.Button1.UseVisualStyleBackColor = True
+        Me.Button_Cancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Button_Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
+        Me.Button_Cancel.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.Button_Cancel.Location = New System.Drawing.Point(384, 13)
+        Me.Button_Cancel.Name = "Button_Cancel"
+        Me.Button_Cancel.Size = New System.Drawing.Size(75, 23)
+        Me.Button_Cancel.TabIndex = 1
+        Me.Button_Cancel.Text = "Cancel"
+        Me.Button_Cancel.UseVisualStyleBackColor = True
         '
         'Panel_FooterDarkControl
         '
@@ -100,46 +100,46 @@ Partial Class FormOverwriteMessageBox
         Me.ListBox_Files.Size = New System.Drawing.Size(421, 121)
         Me.ListBox_Files.TabIndex = 2
         '
-        'Label2
+        'Label_Question
         '
-        Me.Label2.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(25, 194)
-        Me.Label2.Margin = New System.Windows.Forms.Padding(16, 16, 3, 0)
-        Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(210, 13)
-        Me.Label2.TabIndex = 3
-        Me.Label2.Text = "Do you want to overwrite existing files?"
+        Me.Label_Question.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.Label_Question.AutoSize = True
+        Me.Label_Question.Location = New System.Drawing.Point(25, 194)
+        Me.Label_Question.Margin = New System.Windows.Forms.Padding(16, 16, 3, 0)
+        Me.Label_Question.Name = "Label_Question"
+        Me.Label_Question.Size = New System.Drawing.Size(59, 13)
+        Me.Label_Question.TabIndex = 3
+        Me.Label_Question.Text = "Question?"
         '
-        'FormOverwriteMessageBox
+        'FormFilesMessageBox
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.BackColor = System.Drawing.Color.White
         Me.ClientSize = New System.Drawing.Size(471, 280)
-        Me.Controls.Add(Me.Label2)
+        Me.Controls.Add(Me.Label_Question)
         Me.Controls.Add(Me.ListBox_Files)
         Me.Controls.Add(Me.Panel_FooterControl)
-        Me.Controls.Add(Me.Label1)
+        Me.Controls.Add(Me.Label_Message)
         Me.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
         Me.MaximizeBox = False
         Me.MinimizeBox = False
-        Me.Name = "FormOverwriteMessageBox"
+        Me.Name = "FormFilesMessageBox"
         Me.ShowIcon = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
-        Me.Text = "Overwrite files"
+        Me.Text = "Title"
         Me.Panel_FooterControl.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
     End Sub
 
-    Friend WithEvents Label1 As Label
+    Friend WithEvents Label_Message As Label
     Friend WithEvents Panel_FooterControl As Panel
     Friend WithEvents Panel_FooterDarkControl As Panel
     Friend WithEvents ListBox_Files As ListBox
-    Friend WithEvents Label2 As Label
-    Friend WithEvents Button2 As Button
-    Friend WithEvents Button1 As Button
+    Friend WithEvents Label_Question As Label
+    Friend WithEvents Button_Apply As Button
+    Friend WithEvents Button_Cancel As Button
 End Class
