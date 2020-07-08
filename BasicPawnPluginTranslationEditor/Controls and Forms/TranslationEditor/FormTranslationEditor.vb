@@ -20,8 +20,7 @@ Public Class FormTranslationEditor
     Private g_mPluginTranslationEditor As PluginTranslationEditor
     Private g_TreeViewColumns As ClassTreeViewColumns
 
-    Public g_mSettingsSecureStorage As ClassSecureStorage
-    Public g_mRecentSecureStorage As ClassSecureStorage
+    Public g_mPluginConfigRecent As ClassPluginController.ClassPluginConfig
 
     Public g_ClassTranslationManager As ClassTranslationManager
     Public g_ClassRecentTranslations As ClassRecentTranslations
@@ -59,8 +58,7 @@ Public Class FormTranslationEditor
 
         AddHandler g_TreeViewColumns.m_TreeView.MouseClick, AddressOf OnTreeViewClick
 
-        g_mSettingsSecureStorage = New ClassSecureStorage("PluginTranslationEditorSettings")
-        g_mRecentSecureStorage = New ClassSecureStorage("PluginTranslationEditorRecent")
+        g_mPluginConfigRecent = New ClassPluginController.ClassPluginConfig("PluginTranslationEditorRecent")
 
         g_ClassTranslationManager = New ClassTranslationManager(Me)
         g_ClassRecentTranslations = New ClassRecentTranslations(Me)
@@ -959,20 +957,18 @@ Public Class FormTranslationEditor
         Public Sub AddRecent(sFile As String)
             Dim mRecentSorted As New List(Of KeyValuePair(Of String, Date))
 
-            g_mFormTranslationEditor.g_mRecentSecureStorage.Open()
+            g_mFormTranslationEditor.g_mPluginConfigRecent.LoadConfig()
 
-            Using mIni As New ClassIni(g_mFormTranslationEditor.g_mRecentSecureStorage.m_String(System.Text.Encoding.Default))
-                For Each mItem In mIni.ReadEverything
-                    If (mItem.sSection <> "Recent Translations") Then
-                        Continue For
-                    End If
+            For Each mItem In g_mFormTranslationEditor.g_mPluginConfigRecent.ReadEverything
+                If (mItem.sSection <> "Recent Translations") Then
+                    Continue For
+                End If
 
-                    Dim tmpLng As Long
-                    If (Long.TryParse(mItem.sValue, tmpLng)) Then
-                        mRecentSorted.Add(New KeyValuePair(Of String, Date)(mItem.sKey, New Date(tmpLng)))
-                    End If
-                Next
-            End Using
+                Dim tmpLng As Long
+                If (Long.TryParse(mItem.sValue, tmpLng)) Then
+                    mRecentSorted.Add(New KeyValuePair(Of String, Date)(mItem.sKey, New Date(tmpLng)))
+                End If
+            Next
 
             mRecentSorted.RemoveAll(Function(x As KeyValuePair(Of String, Date))
                                         Return sFile.ToLower = x.Key.ToLower
@@ -984,42 +980,39 @@ Public Class FormTranslationEditor
                                    Return x.Value.Ticks.CompareTo(y.Value.Ticks)
                                End Function)
 
-            Using mIni As New ClassIni()
-                Dim mIniContent As New List(Of ClassIni.STRUC_INI_CONTENT)
+            'Clean Config
+            g_mFormTranslationEditor.g_mPluginConfigRecent.ParseFromString("")
 
-                For i = 0 To mRecentSorted.Count - 1
-                    If (i > g_iMaxRecentFiles) Then
-                        Exit For
-                    End If
+            Dim mIniContent As New List(Of ClassIni.STRUC_INI_CONTENT)
 
-                    mIniContent.Add(New ClassIni.STRUC_INI_CONTENT("Recent Translations", mRecentSorted(i).Key, CStr(mRecentSorted(i).Value.Ticks)))
-                Next
+            For i = 0 To mRecentSorted.Count - 1
+                If (i > g_iMaxRecentFiles) Then
+                    Exit For
+                End If
 
-                mIni.WriteKeyValue(mIniContent.ToArray)
+                mIniContent.Add(New ClassIni.STRUC_INI_CONTENT("Recent Translations", mRecentSorted(i).Key, CStr(mRecentSorted(i).Value.Ticks)))
+            Next
 
-                g_mFormTranslationEditor.g_mRecentSecureStorage.m_String(System.Text.Encoding.Default) = mIni.ExportToString()
-            End Using
+            g_mFormTranslationEditor.g_mPluginConfigRecent.WriteKeyValue(mIniContent.ToArray)
 
-            g_mFormTranslationEditor.g_mRecentSecureStorage.Close()
+            g_mFormTranslationEditor.g_mPluginConfigRecent.SaveConfig()
         End Sub
 
         Public Function GetRecent() As KeyValuePair(Of String, Date)()
             Dim mRecentSorted As New List(Of KeyValuePair(Of String, Date))
 
-            g_mFormTranslationEditor.g_mRecentSecureStorage.Open()
+            g_mFormTranslationEditor.g_mPluginConfigRecent.LoadConfig()
 
-            Using mIni As New ClassIni(g_mFormTranslationEditor.g_mRecentSecureStorage.m_String(System.Text.Encoding.Default))
-                For Each mItem In mIni.ReadEverything
-                    If (mItem.sSection <> "Recent Translations") Then
-                        Continue For
-                    End If
+            For Each mItem In g_mFormTranslationEditor.g_mPluginConfigRecent.ReadEverything
+                If (mItem.sSection <> "Recent Translations") Then
+                    Continue For
+                End If
 
-                    Dim tmpLng As Long
-                    If (Long.TryParse(mItem.sValue, tmpLng)) Then
-                        mRecentSorted.Add(New KeyValuePair(Of String, Date)(mItem.sKey, New Date(tmpLng)))
-                    End If
-                Next
-            End Using
+                Dim tmpLng As Long
+                If (Long.TryParse(mItem.sValue, tmpLng)) Then
+                    mRecentSorted.Add(New KeyValuePair(Of String, Date)(mItem.sKey, New Date(tmpLng)))
+                End If
+            Next
 
             mRecentSorted.Sort(Function(x As KeyValuePair(Of String, Date), y As KeyValuePair(Of String, Date))
                                    Return x.Value.Ticks.CompareTo(y.Value.Ticks)

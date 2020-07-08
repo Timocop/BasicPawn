@@ -21,7 +21,7 @@ Imports BasicPawn
 Public Class FormFTP
     Private g_mPluginFTP As PluginFTP
 
-    Private g_mSecureStorage As ClassSecureStorage
+    Private g_mPluginConfig As ClassPluginController.ClassPluginConfig
 
     Private g_mUploadThread As Threading.Thread
     Private g_mFormProgress As FormProgress
@@ -51,7 +51,7 @@ Public Class FormFTP
 
         Me.AutoSize = True
 
-        g_mSecureStorage = New ClassSecureStorage("PluginFtpEntries")
+        g_mPluginConfig = New ClassPluginController.ClassPluginConfig("PluginFtpEntries")
     End Sub
 
     Private Sub FormFTP_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -263,12 +263,10 @@ Public Class FormFTP
 
     Private Sub LoadSettings()
         Try
-            g_mSecureStorage.Open()
+            g_mPluginConfig.LoadConfig()
 
-            Using mIni As New ClassIni(g_mSecureStorage.m_String(System.Text.Encoding.Default))
-                g_mUCFtpDatabase.LoadSettings(mIni)
-                g_mUCFtpDatabase.RefreshListView()
-            End Using
+            g_mUCFtpDatabase.LoadSettings(g_mPluginConfig)
+            g_mUCFtpDatabase.RefreshListView()
 
             g_bDatabaseLoaded = True
         Catch ex As Exception
@@ -282,13 +280,10 @@ Public Class FormFTP
                 Return
             End If
 
-            Using mIni As New ClassIni
-                g_mUCFtpDatabase.SaveSettings(mIni)
+            g_mPluginConfig.ParseFromString("")
+            g_mUCFtpDatabase.SaveSettings(g_mPluginConfig)
 
-                g_mSecureStorage.m_String(System.Text.Encoding.Default) = mIni.ExportToString
-            End Using
-
-            g_mSecureStorage.Close()
+            g_mPluginConfig.SaveConfig()
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try

@@ -21,8 +21,9 @@ Imports BasicPawn
 Public Class FormSettings
     Private g_mPluginAutoErrorReport As PluginAutoErrorReport
 
-    Private g_mFtpSecureStorage As ClassSecureStorage
-    Private g_mSettingsSecureStorage As ClassSecureStorage
+    Private g_mPluginConfigFtp As ClassPluginController.ClassPluginConfig
+    Private g_mPluginConfigSettings As ClassPluginController.ClassPluginConfig
+
     Private g_mUCFtpDatabase As UCFtpPathDatabase
     Private g_bDatabaseLoaded As Boolean = False
 
@@ -43,8 +44,8 @@ Public Class FormSettings
 
         Me.AutoSize = True
 
-        g_mFtpSecureStorage = New ClassSecureStorage("PluginAutoErrorReportFtpEntries")
-        g_mSettingsSecureStorage = New ClassSecureStorage("PluginAutoErrorReportSettings")
+        g_mPluginConfigFtp = New ClassPluginController.ClassPluginConfig("PluginAutoErrorReportFtpEntries")
+        g_mPluginConfigSettings = New ClassPluginController.ClassPluginConfig("PluginAutoErrorReportSettings")
 
         LoadSettings()
     End Sub
@@ -169,22 +170,18 @@ Public Class FormSettings
 
     Private Sub LoadSettings()
         Try
-            g_mFtpSecureStorage.Open()
-            g_mSettingsSecureStorage.Open()
+            g_mPluginConfigFtp.LoadConfig()
+            g_mPluginConfigSettings.LoadConfig()
 
-            'Load Servers
-            Using mIni As New ClassIni(g_mFtpSecureStorage.m_String(System.Text.Encoding.Default))
-                g_mUCFtpDatabase.LoadSettings(mIni)
-                g_mUCFtpDatabase.RefreshListView()
-            End Using
+            'Load Servers 
+            g_mUCFtpDatabase.LoadSettings(g_mPluginConfigFtp)
+            g_mUCFtpDatabase.RefreshListView()
 
-            'Load Settings
-            Using mIni As New ClassIni(g_mSettingsSecureStorage.m_String(System.Text.Encoding.Default))
-                Dim iMaxFileSize As Integer = 0
-                If (Integer.TryParse(mIni.ReadKeyValue("Settings", "MaxFileSize", "100"), iMaxFileSize)) Then
-                    NumericUpDown_MaxFileSize.Value = ClassTools.ClassMath.ClampInt(iMaxFileSize, CInt(NumericUpDown_MaxFileSize.Minimum), CInt(NumericUpDown_MaxFileSize.Maximum))
-                End If
-            End Using
+            'Load Settings 
+            Dim iMaxFileSize As Integer = 0
+            If (Integer.TryParse(g_mPluginConfigSettings.ReadKeyValue("Settings", "MaxFileSize", "100"), iMaxFileSize)) Then
+                NumericUpDown_MaxFileSize.Value = ClassTools.ClassMath.ClampInt(iMaxFileSize, CInt(NumericUpDown_MaxFileSize.Minimum), CInt(NumericUpDown_MaxFileSize.Maximum))
+            End If
 
             g_bDatabaseLoaded = True
         Catch ex As Exception
@@ -198,22 +195,16 @@ Public Class FormSettings
                 Return
             End If
 
-            'Save Servers
-            Using mIni As New ClassIni
-                g_mUCFtpDatabase.SaveSettings(mIni)
-
-                g_mFtpSecureStorage.m_String(System.Text.Encoding.Default) = mIni.ExportToString
-            End Using
+            'Save Servers 
+            g_mPluginConfigFtp.ParseFromString("")
+            g_mUCFtpDatabase.SaveSettings(g_mPluginConfigFtp)
 
             'Save Settings
-            Using mIni As New ClassIni
-                mIni.WriteKeyValue("Settings", "MaxFileSize", CStr(NumericUpDown_MaxFileSize.Value))
+            g_mPluginConfigSettings.ParseFromString("")
+            g_mPluginConfigSettings.WriteKeyValue("Settings", "MaxFileSize", CStr(NumericUpDown_MaxFileSize.Value))
 
-                g_mSettingsSecureStorage.m_String(System.Text.Encoding.Default) = mIni.ExportToString
-            End Using
-
-            g_mFtpSecureStorage.Close()
-            g_mSettingsSecureStorage.Close()
+            g_mPluginConfigFtp.SaveConfig()
+            g_mPluginConfigSettings.SaveConfig()
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try

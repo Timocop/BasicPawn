@@ -24,8 +24,8 @@ Imports BasicPawn
 Public Class FormReportManager
     Public Shared ReadOnly g_sAcceleratorServer As String = "https://crash.limetech.org/"
 
-    Private g_mFtpSecureStorage As ClassSecureStorage
-    Private g_mSettingsSecureStorage As ClassSecureStorage
+    Private g_mPluginConfigFtp As ClassPluginController.ClassPluginConfig
+    Private g_mPluginConfigSettings As ClassPluginController.ClassPluginConfig
 
     Private g_mClassTreeViewColumns As ClassTreeViewColumns
 
@@ -97,8 +97,9 @@ Public Class FormReportManager
         g_sGetLogsOrginalText = ToolStripMenuItem_GetLogs.Text
         g_sGetLogsOrginalImage = ToolStripMenuItem_GetLogs.Image
 
-        g_mFtpSecureStorage = New ClassSecureStorage("PluginAutoErrorReportFtpEntries")
-        g_mSettingsSecureStorage = New ClassSecureStorage("PluginAutoErrorReportSettings")
+        'Does not write only read
+        g_mPluginConfigFtp = New ClassPluginController.ClassPluginConfig("PluginAutoErrorReportFtpEntries")
+        g_mPluginConfigSettings = New ClassPluginController.ClassPluginConfig("PluginAutoErrorReportSettings")
 
         g_mClassReports = New ClassReports(Me)
         g_mClassLogs = New ClassLogs(Me)
@@ -107,8 +108,12 @@ Public Class FormReportManager
     Private Sub FormReportManager_Load(sender As Object, e As EventArgs) Handles Me.Load
         ClassControlStyle.UpdateControls(Me)
 
-        g_mClassReports.FetchReports()
-        g_mClassLogs.FetchLogs()
+        Try
+            g_mClassReports.FetchReports()
+            g_mClassLogs.FetchLogs()
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
     End Sub
 
     Private Sub CloseToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CloseToolStripMenuItem.Click
@@ -116,20 +121,28 @@ Public Class FormReportManager
     End Sub
 
     Private Sub GetReportsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_GetReports.Click
-        If (g_mClassReports.IsFetchingReports) Then
-            g_mClassReports.AbortFetching()
-        Else
-            g_mClassReports.FetchReports()
-        End If
+        Try
+            If (g_mClassReports.IsFetchingReports) Then
+                g_mClassReports.AbortFetching()
+            Else
+                g_mClassReports.FetchReports()
+            End If
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
     End Sub
 
 
     Private Sub ToolStripMenuItem_GetLogs_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_GetLogs.Click
-        If (g_mClassLogs.IsFetchingLogs) Then
-            g_mClassLogs.AbortFetching()
-        Else
-            g_mClassLogs.FetchLogs()
-        End If
+        Try
+            If (g_mClassLogs.IsFetchingLogs) Then
+                g_mClassLogs.AbortFetching()
+            Else
+                g_mClassLogs.FetchLogs()
+            End If
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
     End Sub
 
     Private Sub CloseReportWindowsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_CloseReportWindows.Click
@@ -207,6 +220,13 @@ Public Class FormReportManager
                 Return
             End If
 
+            'Put here because file race condition
+            g_mFormReportManager.g_mPluginConfigFtp.LoadConfig()
+            g_mFormReportManager.g_mPluginConfigSettings.LoadConfig()
+
+            Dim sConfigFtpContent As String = g_mFormReportManager.g_mPluginConfigFtp.ExportToString
+            Dim sConfigSettingsContent As String = g_mFormReportManager.g_mPluginConfigSettings.ExportToString
+
             g_mFetchReportsThread = New Threading.Thread(Sub()
                                                              Try
                                                                  ClassThread.ExecAsync(g_mFormReportManager, Sub()
@@ -225,11 +245,8 @@ Public Class FormReportManager
                                                                  Dim iMaxFileBytes As Long = (100 * 1024 * 1024)
                                                                  Dim bFilesTooBig As Boolean = False
 
-                                                                 g_mFormReportManager.g_mFtpSecureStorage.Open()
-                                                                 g_mFormReportManager.g_mSettingsSecureStorage.Open()
-
-                                                                 'Load Servers
-                                                                 Using mIni As New ClassIni(g_mFormReportManager.g_mFtpSecureStorage.m_String(System.Text.Encoding.Default))
+                                                                 'Load Servers  
+                                                                 Using mIni As New ClassIni(sConfigFtpContent)
                                                                      For Each sSection As String In mIni.GetSectionNames
                                                                          Dim sHost As String = mIni.ReadKeyValue(sSection, "Host", Nothing)
                                                                          Dim sDatabaseEntry As String = mIni.ReadKeyValue(sSection, "DatabaseEntry", Nothing)
@@ -252,8 +269,8 @@ Public Class FormReportManager
                                                                      Next
                                                                  End Using
 
-                                                                 'Load Settings
-                                                                 Using mIni As New ClassIni(g_mFormReportManager.g_mSettingsSecureStorage.m_String(System.Text.Encoding.Default))
+                                                                 'Load Settings 
+                                                                 Using mIni As New ClassIni(sConfigSettingsContent)
                                                                      Dim iMaxFileSize As Integer = 0
                                                                      If (Integer.TryParse(mIni.ReadKeyValue("Settings", "MaxFileSize", "100"), iMaxFileSize)) Then
                                                                          iMaxFileBytes = (iMaxFileSize * 1024 * 1024)
@@ -790,6 +807,13 @@ Public Class FormReportManager
             Next
             g_lFilesCleanup.Clear()
 
+            'Put here because file race condition
+            g_mFormReportManager.g_mPluginConfigFtp.LoadConfig()
+            g_mFormReportManager.g_mPluginConfigSettings.LoadConfig()
+
+            Dim sConfigFtpContent As String = g_mFormReportManager.g_mPluginConfigFtp.ExportToString
+            Dim sConfigSettingsContent As String = g_mFormReportManager.g_mPluginConfigSettings.ExportToString
+
             'Start new thread
             g_mFetchLogsThread = New Threading.Thread(Sub()
                                                           Try
@@ -811,11 +835,8 @@ Public Class FormReportManager
                                                               Dim iMaxFileBytes As Long = (100 * 1024 * 1024)
                                                               Dim bFilesTooBig As Boolean = False
 
-                                                              g_mFormReportManager.g_mFtpSecureStorage.Open()
-                                                              g_mFormReportManager.g_mSettingsSecureStorage.Open()
-
-                                                              'Load Servers
-                                                              Using mIni As New ClassIni(g_mFormReportManager.g_mFtpSecureStorage.m_String(System.Text.Encoding.Default))
+                                                              'Load Servers 
+                                                              Using mIni As New ClassIni(sConfigFtpContent)
                                                                   For Each sSection As String In mIni.GetSectionNames
                                                                       Dim sHost As String = mIni.ReadKeyValue(sSection, "Host", Nothing)
                                                                       Dim sDatabaseEntry As String = mIni.ReadKeyValue(sSection, "DatabaseEntry", Nothing)
@@ -838,8 +859,8 @@ Public Class FormReportManager
                                                                   Next
                                                               End Using
 
-                                                              'Load Settings
-                                                              Using mIni As New ClassIni(g_mFormReportManager.g_mSettingsSecureStorage.m_String(System.Text.Encoding.Default))
+                                                              'Load Settings 
+                                                              Using mIni As New ClassIni(sConfigSettingsContent)
                                                                   Dim iMaxFileSize As Integer = 0
                                                                   If (Integer.TryParse(mIni.ReadKeyValue("Settings", "MaxFileSize", "100"), iMaxFileSize)) Then
                                                                       iMaxFileBytes = (iMaxFileSize * 1024 * 1024)

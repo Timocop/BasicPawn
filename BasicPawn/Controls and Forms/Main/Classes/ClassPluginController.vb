@@ -239,4 +239,47 @@ Public Class ClassPluginController
             Return lTypes.ToArray
         End Try
     End Function
+
+    Class ClassPluginConfig
+        Inherits ClassIni
+
+        Private g_sConfigDirectory As String = IO.Path.Combine(Application.StartupPath, "plugins\configs")
+        Private g_sConfigName As String = ""
+
+        Public Sub New(sConfigName As String)
+            MyBase.New(New IO.MemoryStream())
+
+            If (String.IsNullOrEmpty(sConfigName)) Then
+                Throw New ArgumentException("Config name can not be NULL")
+            End If
+
+            g_sConfigName = sConfigName
+        End Sub
+
+        ReadOnly Property m_ConfigFile As String
+            Get
+                Return IO.Path.Combine(g_sConfigDirectory, String.Format("{0}.{1}", g_sConfigName, "ini"))
+            End Get
+        End Property
+
+        Public Sub SaveConfig()
+            If (Not IO.Directory.Exists(g_sConfigDirectory)) Then
+                IO.Directory.CreateDirectory(g_sConfigDirectory)
+            End If
+
+            ExportToFile(m_ConfigFile)
+        End Sub
+
+        Public Sub LoadConfig()
+            If (Not IO.Directory.Exists(g_sConfigDirectory)) Then
+                IO.Directory.CreateDirectory(g_sConfigDirectory)
+            End If
+
+            If (Not IO.File.Exists(m_ConfigFile)) Then
+                IO.File.WriteAllText(m_ConfigFile, "")
+            End If
+
+            ParseFromFile(m_ConfigFile)
+        End Sub
+    End Class
 End Class
