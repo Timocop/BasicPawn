@@ -165,6 +165,10 @@ Public Class PluginFTP
 
                 RemoveHandler g_mFtpCompileItem.Click, AddressOf OnCompileItemClick
                 AddHandler g_mFtpCompileItem.Click, AddressOf OnCompileItemClick
+
+                'Update all FormMain controls, to change style for the newly created controls
+                ClassControlStyle.UpdateControls(g_mFtpMenuBuildSplit)
+                ClassControlStyle.UpdateControls(g_mFtpCompileItem)
             End If
 
             Dim iBuildAllIndex As Integer = g_mPluginFTP.g_mFormMain.g_mUCProjectBrowser.ContextMenuStrip_ProjectFiles.Items.IndexOf(g_mPluginFTP.g_mFormMain.g_mUCProjectBrowser.ToolStripMenuItem_CompileAll)
@@ -178,10 +182,14 @@ Public Class PluginFTP
 
                 RemoveHandler g_mPluginFTP.g_mFormMain.g_mUCProjectBrowser.ContextMenuStrip_ProjectFiles.Opening, AddressOf ContextMenuStripProjectFilesOpening
                 AddHandler g_mPluginFTP.g_mFormMain.g_mUCProjectBrowser.ContextMenuStrip_ProjectFiles.Opening, AddressOf ContextMenuStripProjectFilesOpening
+
+                'Update all FormMain controls, to change style for the newly created controls
+                ClassControlStyle.UpdateControls(g_mFtpCompileAllItem)
             End If
 
             'Update all FormMain controls, to change style for the newly created controls
-            ClassControlStyle.UpdateControls(g_mPluginFTP.g_mFormMain)
+            ClassControlStyle.UpdateControls(g_mFtpMenuSplit)
+            ClassControlStyle.UpdateControls(g_mFtpMenuItem)
         End Sub
 
         Private Sub OnMenuItemClick(sender As Object, e As EventArgs)

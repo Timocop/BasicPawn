@@ -154,8 +154,9 @@ Public Class PluginTranslationEditor
             RemoveHandler g_mFtpMenuItem.Click, AddressOf OnMenuItemClick
             AddHandler g_mFtpMenuItem.Click, AddressOf OnMenuItemClick
 
-            'Update all FormMain controls, to change style for the newly created controls
-            ClassControlStyle.UpdateControls(g_mPluginTranslationEditor.g_mFormMain)
+            'Update all FormMain controls, to change style for the newly created controls 
+            ClassControlStyle.UpdateControls(g_mFtpMenuSplit)
+            ClassControlStyle.UpdateControls(g_mFtpMenuItem)
         End Sub
 
         Private Sub OnMenuItemClick(sender As Object, e As EventArgs)

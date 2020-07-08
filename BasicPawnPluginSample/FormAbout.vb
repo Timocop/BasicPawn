@@ -28,7 +28,9 @@ Public Class FormAbout
         g_mPluginSample = c
 
         Label_About.Text = g_mPluginSample.g_mFormMain.g_ClassPluginController.GetPluginInfo(g_mPluginSample).ToString
+    End Sub
 
+    Private Sub FormAbout_Load(sender As Object, e As EventArgs) Handles Me.Load
         ClassControlStyle.UpdateControls(Me)
     End Sub
 

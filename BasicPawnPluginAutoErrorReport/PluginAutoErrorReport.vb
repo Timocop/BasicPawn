@@ -166,7 +166,12 @@ Public Class PluginAutoErrorReport
             AddHandler g_mReportMoreSettingsMenuItem.Click, AddressOf OnSettingsClick
 
             'Update all FormMain controls, to change style for the newly created controls
-            ClassControlStyle.UpdateControls(g_mPluginAutoErrorReport.g_mFormMain)
+            ClassControlStyle.UpdateControls(g_mReportMenuSplit)
+            ClassControlStyle.UpdateControls(g_mReportMenuItem)
+
+            ClassControlStyle.UpdateControls(g_mReportMoreManagerMenuItem)
+            ClassControlStyle.UpdateControls(g_mReportMoreSplit)
+            ClassControlStyle.UpdateControls(g_mReportMoreSettingsMenuItem)
         End Sub
 
         Private Sub OnSettingsClick(sender As Object, e As EventArgs)

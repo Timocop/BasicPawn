@@ -32,9 +32,9 @@ Public Class UCAutocomplete
         ' This call is required by the designer.
         InitializeComponent()
 
-        ' Add any initialization after the InitializeComponent() call. 
-        Label_IntelliSense.Name &= "@SetForeColorRoyalBlue"
-        Label_Autocomplete.Name &= "@SetForeColorRoyalBlue"
+        ' Add any initialization after the InitializeComponent() call.  
+        ClassControlStyle.SetNameFlag(Label_IntelliSense, ClassControlStyle.ENUM_STYLE_FLAGS.LABEL_ROYALBLUE)
+        ClassControlStyle.SetNameFlag(Label_Autocomplete, ClassControlStyle.ENUM_STYLE_FLAGS.LABEL_ROYALBLUE)
 
         TextEditorControlEx_IntelliSense.SuspendLayout()
         TextEditorControlEx_Autocomplete.SuspendLayout()

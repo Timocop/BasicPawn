@@ -226,6 +226,8 @@ Partial Public Class FormTranslationEditor
     End Sub
 
     Private Sub ContextMenuStrip_Translation_Opening(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles ContextMenuStrip_Translation.Opening
+        ClassControlStyle.UpdateControls(ContextMenuStrip_Translation)
+
         Dim mSelectedNode = TryCast(g_TreeViewColumns.m_TreeView.SelectedNode, ClassTranslationManager.ClassTranslationTreeNode)
         If (mSelectedNode Is Nothing) Then
             Return

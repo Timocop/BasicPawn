@@ -76,7 +76,7 @@ Partial Public Class FormTranslationEditor
                 AddHandler mToolItem.Click, AddressOf OnRecentToolStripItem_Click
             Next
 
-            ClassControlStyle.UpdateControls(Me)
+            ClassControlStyle.UpdateControls(ToolStripMenuItem_File)
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try

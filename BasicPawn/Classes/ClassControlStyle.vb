@@ -115,6 +115,10 @@ Public Class ClassControlStyle
         c.ResumeLayout()
     End Sub
 
+    Public Shared Sub UpdateControls(c As Object)
+        SetColor(c)
+    End Sub
+
     ''' <summary>
     ''' Invert the color
     ''' </summary>
@@ -126,11 +130,6 @@ Public Class ClassControlStyle
     End Function
 
     Private Shared Sub SetColor(o As Object)
-        If (TypeOf o Is Control) Then
-            Dim i As Control = DirectCast(o, Control)
-            SetColor(i.ContextMenuStrip)
-        End If
-
         Select Case True
             Case TypeOf o Is Form
                 Dim i As Form = DirectCast(o, Form)
@@ -159,10 +158,6 @@ Public Class ClassControlStyle
                         i.DrawMode = TabDrawMode.Normal
                     End If
                 End If
-
-                For Each j As Object In i.TabPages
-                    SetColor(j)
-                Next
 
             Case TypeOf o Is TabPage
                 Dim i As TabPage = DirectCast(o, TabPage)
@@ -297,7 +292,7 @@ Public Class ClassControlStyle
             Case TypeOf o Is Label
                 Dim i As Label = DirectCast(o, Label)
                 Select Case (True)
-                    Case HasNameFlag(i, ENUM_STYLE_FLAGS.LABEL_BLACK) ' i.Name.Contains("@TitleColors")
+                    Case HasNameFlag(i, ENUM_STYLE_FLAGS.LABEL_BLACK)
                         If (m_IsInvertedColors) Then
                             i.BackColor = Color.Transparent
                             i.ForeColor = Color.Black
@@ -306,7 +301,7 @@ Public Class ClassControlStyle
                             i.ForeColor = Color.Black
                         End If
 
-                    Case HasNameFlag(i, ENUM_STYLE_FLAGS.LABEL_ROYALBLUE) ' i.Name.Contains("@SetForeColorRoyalBlue")
+                    Case HasNameFlag(i, ENUM_STYLE_FLAGS.LABEL_ROYALBLUE)
                         If (m_IsInvertedColors) Then
                             i.BackColor = Color.Transparent
                             i.ForeColor = Color.DodgerBlue
@@ -405,28 +400,6 @@ Public Class ClassControlStyle
                         End If
                 End Select
 
-                For Each j As Object In i.Items
-                    SetColor(j)
-                Next
-
-            Case TypeOf o Is ContextMenu
-                Dim i As ContextMenu = DirectCast(o, ContextMenu)
-                For Each j As Object In i.MenuItems
-                    SetColor(j)
-                Next
-
-            Case TypeOf o Is MenuItem
-                Dim i As MenuItem = DirectCast(o, MenuItem)
-                For Each j As Object In i.MenuItems
-                    SetColor(j)
-                Next
-
-            Case TypeOf o Is Menu
-                Dim i As Menu = DirectCast(o, Menu)
-                For Each j As Object In i.MenuItems
-                    SetColor(j)
-                Next
-
             Case TypeOf o Is ContextMenuStrip
                 Dim i As ContextMenuStrip = DirectCast(o, ContextMenuStrip)
                 If (m_IsInvertedColors) Then
@@ -450,10 +423,6 @@ Public Class ClassControlStyle
                             i.Renderer = New ToolStripSystemRenderer()
                         End If
                 End Select
-
-                For Each j As Object In i.Items
-                    SetColor(j)
-                Next
 
             Case TypeOf o Is ToolStripDropDownMenu
                 Dim i As ToolStripDropDownMenu = DirectCast(o, ToolStripDropDownMenu)
@@ -479,10 +448,6 @@ Public Class ClassControlStyle
                         End If
                 End Select
 
-                For Each j As Object In i.Items
-                    SetColor(j)
-                Next
-
             Case TypeOf o Is ToolStripDropDown
                 Dim i As ToolStripDropDown = DirectCast(o, ToolStripDropDown)
                 If (m_IsInvertedColors) Then
@@ -507,10 +472,6 @@ Public Class ClassControlStyle
                         End If
                 End Select
 
-                For Each j As Object In i.Items
-                    SetColor(j)
-                Next
-
             Case TypeOf o Is ToolStripDropDownItem
                 Dim i As ToolStripDropDownItem = DirectCast(o, ToolStripDropDownItem)
                 If (m_IsInvertedColors) Then
@@ -521,10 +482,6 @@ Public Class ClassControlStyle
                     i.ForeColor = g_cDarkMenuColor.mLightForegound
                 End If
 
-                For Each j As Object In i.DropDownItems
-                    SetColor(j)
-                Next
-
             Case TypeOf o Is ToolStripMenuItem
                 Dim i As ToolStripMenuItem = DirectCast(o, ToolStripMenuItem)
                 If (m_IsInvertedColors) Then
@@ -534,10 +491,6 @@ Public Class ClassControlStyle
                     i.BackColor = g_cDarkMenuColor.mLightBackground
                     i.ForeColor = g_cDarkMenuColor.mLightForegound
                 End If
-
-                For Each j As Object In i.DropDownItems
-                    SetColor(j)
-                Next
 
             Case TypeOf o Is ToolStripItem
                 Dim i As ToolStripItem = DirectCast(o, ToolStripItem)
@@ -583,10 +536,6 @@ Public Class ClassControlStyle
                         End If
                 End Select
 
-                For Each j As Object In i.Items
-                    SetColor(j)
-                Next
-
             Case TypeOf o Is Control
                 Dim i As Control = DirectCast(o, Control)
                 If (m_IsInvertedColors) Then
@@ -599,6 +548,38 @@ Public Class ClassControlStyle
 
         End Select
 
+        If (TypeOf o Is Control) Then
+            Dim i As Control = DirectCast(o, Control)
+            SetColor(i.ContextMenuStrip)
+        End If
+
+        If (TypeOf o Is TabControl) Then
+            Dim i As TabControl = DirectCast(o, TabControl)
+            For Each j As Object In i.TabPages
+                SetColor(j)
+            Next
+        End If
+
+        If (TypeOf o Is ToolStrip) Then
+            Dim i As ToolStrip = DirectCast(o, ToolStrip)
+            For Each j As Object In i.Items
+                SetColor(j)
+            Next
+        End If
+
+        If (TypeOf o Is Menu) Then
+            Dim i As Menu = DirectCast(o, Menu)
+            For Each j As Object In i.MenuItems
+                SetColor(j)
+            Next
+        End If
+
+        If (TypeOf o Is ToolStripDropDownItem) Then
+            Dim i As ToolStripDropDownItem = DirectCast(o, ToolStripDropDownItem)
+            For Each j As Object In i.DropDownItems
+                SetColor(j)
+            Next
+        End If
     End Sub
 
     Private Class ClassToolStripCustomRenderer
