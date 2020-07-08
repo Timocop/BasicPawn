@@ -26,11 +26,11 @@ Public Class UCStartPage
         ' This call is required by the designer.
         InitializeComponent()
 
-        ' Add any initialization after the InitializeComponent() call.
-        TableLayoutPanel1.Name &= "@KeepForeBackColor"
-        Panel_FooterDarkControl.Name &= "@FooterDarkControl"
-        Panel_FooterDarkControl2.Name &= "@FooterDarkControl"
-        Panel_FooterDarkControl3.Name &= "@FooterDarkControl"
+        ' Add any initialization after the InitializeComponent() call. 
+        ClassControlStyle.SetNameFlag(TableLayoutPanel1, ClassControlStyle.ENUM_STYLE_FLAGS.CONTROL_KEEP_COLOR)
+        ClassControlStyle.SetNameFlag(Panel_FooterDarkControl, ClassControlStyle.ENUM_STYLE_FLAGS.CONTROL_FOOTER_DARK)
+        ClassControlStyle.SetNameFlag(Panel_FooterDarkControl2, ClassControlStyle.ENUM_STYLE_FLAGS.CONTROL_FOOTER_DARK)
+        ClassControlStyle.SetNameFlag(Panel_FooterDarkControl3, ClassControlStyle.ENUM_STYLE_FLAGS.CONTROL_FOOTER_DARK)
 
         ClassTools.ClassForms.SetDoubleBufferingAllChilds(Me, True)
         ClassTools.ClassForms.SetDoubleBufferingUnmanagedAllChilds(Me, True)

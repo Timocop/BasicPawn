@@ -16,6 +16,33 @@
 
 
 Public Class ClassControlStyle
+    Enum ENUM_STYLE_FLAGS
+        CONTROL_FOOTER
+        CONTROL_FOOTER_DARK
+        CONTROL_KEEP_BACKCOLOR
+        CONTROL_KEEP_COLOR
+        LABEL_BLACK
+        LABEL_ROYALBLUE
+        MENU_SYSTEMRENDER
+    End Enum
+
+    Private Shared ReadOnly g_mStyleFlagNames([Enum].GetNames(GetType(ENUM_STYLE_FLAGS)).Length - 1) As String
+
+    Shared Sub New()
+        g_mStyleFlagNames(ENUM_STYLE_FLAGS.CONTROL_FOOTER) = "{$ControlFooter}"
+        g_mStyleFlagNames(ENUM_STYLE_FLAGS.CONTROL_FOOTER_DARK) = "{$ControlFooterDark}"
+        g_mStyleFlagNames(ENUM_STYLE_FLAGS.CONTROL_KEEP_BACKCOLOR) = "{$ControlKeepBackColor}"
+        g_mStyleFlagNames(ENUM_STYLE_FLAGS.CONTROL_KEEP_COLOR) = "{$ControlKeepColor}"
+        g_mStyleFlagNames(ENUM_STYLE_FLAGS.LABEL_BLACK) = "{$LabelBlack}"
+        g_mStyleFlagNames(ENUM_STYLE_FLAGS.LABEL_ROYALBLUE) = "{$LabelRoyalBlue}"
+        g_mStyleFlagNames(ENUM_STYLE_FLAGS.MENU_SYSTEMRENDER) = "{$MenuSystemRender}"
+
+        For i = 0 To g_mStyleFlagNames.Length - 1
+            If (String.IsNullOrEmpty(g_mStyleFlagNames(i))) Then
+                Throw New ArgumentException("StyleFlagNames item is NULL")
+            End If
+        Next
+    End Sub
 
     Public Shared ReadOnly Property m_IsInvertedColors As Boolean
         Get
@@ -43,6 +70,34 @@ Public Class ClassControlStyle
     Public Shared ReadOnly g_cDarkPanelColor As New STRUC_CONTROL_COLORS(Color.Black, Color.White, Color.LightGray, Color.FromArgb(255, 34, 34, 34))
     Public Shared ReadOnly g_cDarkFormColor As New STRUC_CONTROL_COLORS(Color.Black, Color.White, Color.LightGray, Color.FromArgb(255, 38, 38, 38))
     Public Shared ReadOnly g_cDarkMenuColor As New STRUC_CONTROL_COLORS(Color.Black, Color.White, Color.LightGray, Color.FromArgb(255, 64, 64, 64))
+
+    Public Shared Sub SetNameFlag(c As Control, iFlag As ENUM_STYLE_FLAGS)
+        RemoveNameFlag(c, iFlag)
+
+        c.Name &= g_mStyleFlagNames(iFlag)
+    End Sub
+
+    Public Shared Sub SetNameFlag(c As ToolStripItem, iFlag As ENUM_STYLE_FLAGS)
+        RemoveNameFlag(c, iFlag)
+
+        c.Name &= g_mStyleFlagNames(iFlag)
+    End Sub
+
+    Public Shared Sub RemoveNameFlag(c As Control, iFlag As ENUM_STYLE_FLAGS)
+        c.Name = c.Name.Replace(g_mStyleFlagNames(iFlag), "")
+    End Sub
+
+    Public Shared Sub RemoveNameFlag(c As ToolStripItem, iFlag As ENUM_STYLE_FLAGS)
+        c.Name = c.Name.Replace(g_mStyleFlagNames(iFlag), "")
+    End Sub
+
+    Public Shared Function HasNameFlag(c As Control, iFlag As ENUM_STYLE_FLAGS) As Boolean
+        Return c.Name.Contains(g_mStyleFlagNames(iFlag))
+    End Function
+
+    Public Shared Function HasNameFlag(c As ToolStripItem, iFlag As ENUM_STYLE_FLAGS) As Boolean
+        Return c.Name.Contains(g_mStyleFlagNames(iFlag))
+    End Function
 
     ''' <summary>
     ''' Updates the controls colors
@@ -132,7 +187,7 @@ Public Class ClassControlStyle
             Case TypeOf o Is Panel
                 Dim i As Panel = DirectCast(o, Panel)
                 Select Case (True)
-                    Case i.Name.Contains("@FooterControl")
+                    Case HasNameFlag(i, ENUM_STYLE_FLAGS.CONTROL_FOOTER)
                         If (m_IsInvertedColors) Then
                             i.BackColor = g_cDarkPanelColor.mDarkBackground
                             i.ForeColor = g_cDarkPanelColor.mDarkForeground
@@ -141,7 +196,7 @@ Public Class ClassControlStyle
                             i.ForeColor = g_cDarkPanelColor.mLightForegound
                         End If
 
-                    Case i.Name.Contains("@FooterDarkControl")
+                    Case HasNameFlag(i, ENUM_STYLE_FLAGS.CONTROL_FOOTER_DARK)
                         If (m_IsInvertedColors) Then
                             i.BackColor = Color.Gray
                             i.ForeColor = g_cDarkPanelColor.mDarkForeground
@@ -150,7 +205,7 @@ Public Class ClassControlStyle
                             i.ForeColor = g_cDarkPanelColor.mLightForegound
                         End If
 
-                    Case i.Name.Contains("@KeepForeBackColor")
+                    Case HasNameFlag(i, ENUM_STYLE_FLAGS.CONTROL_KEEP_COLOR)
                         'Ignore
 
                     Case Else
@@ -242,7 +297,7 @@ Public Class ClassControlStyle
             Case TypeOf o Is Label
                 Dim i As Label = DirectCast(o, Label)
                 Select Case (True)
-                    Case i.Name.Contains("@TitleColors")
+                    Case HasNameFlag(i, ENUM_STYLE_FLAGS.LABEL_BLACK) ' i.Name.Contains("@TitleColors")
                         If (m_IsInvertedColors) Then
                             i.BackColor = Color.Transparent
                             i.ForeColor = Color.Black
@@ -251,7 +306,7 @@ Public Class ClassControlStyle
                             i.ForeColor = Color.Black
                         End If
 
-                    Case i.Name.Contains("@SetForeColorRoyalBlue")
+                    Case HasNameFlag(i, ENUM_STYLE_FLAGS.LABEL_ROYALBLUE) ' i.Name.Contains("@SetForeColorRoyalBlue")
                         If (m_IsInvertedColors) Then
                             i.BackColor = Color.Transparent
                             i.ForeColor = Color.DodgerBlue
@@ -297,7 +352,7 @@ Public Class ClassControlStyle
             Case TypeOf o Is ToolStripLabel
                 Dim i As ToolStripLabel = DirectCast(o, ToolStripLabel)
                 Select Case (True)
-                    Case i.Name.Contains("@KeepBackColor")
+                    Case HasNameFlag(i, ENUM_STYLE_FLAGS.CONTROL_KEEP_BACKCOLOR)
                         If (m_IsInvertedColors) Then
                             i.ForeColor = Color.Black
                         Else
@@ -339,7 +394,7 @@ Public Class ClassControlStyle
                 End If
 
                 Select Case (True)
-                    Case i.Name.Contains("@NoCustomRenderer")
+                    Case HasNameFlag(i, ENUM_STYLE_FLAGS.MENU_SYSTEMRENDER)
                         i.Renderer = New ToolStripSystemRenderer()
 
                     Case Else
@@ -385,7 +440,7 @@ Public Class ClassControlStyle
                 End If
 
                 Select Case (True)
-                    Case i.Name.Contains("@NoCustomRenderer")
+                    Case HasNameFlag(i, ENUM_STYLE_FLAGS.MENU_SYSTEMRENDER)
                         i.Renderer = New ToolStripSystemRenderer()
 
                     Case Else
@@ -413,7 +468,7 @@ Public Class ClassControlStyle
                 End If
 
                 Select Case (True)
-                    Case i.Name.Contains("@NoCustomRenderer")
+                    Case HasNameFlag(i, ENUM_STYLE_FLAGS.MENU_SYSTEMRENDER)
                         i.Renderer = New ToolStripSystemRenderer()
 
                     Case Else
@@ -441,7 +496,7 @@ Public Class ClassControlStyle
                 End If
 
                 Select Case (True)
-                    Case i.Name.Contains("@NoCustomRenderer")
+                    Case HasNameFlag(i, ENUM_STYLE_FLAGS.MENU_SYSTEMRENDER)
                         i.Renderer = New ToolStripSystemRenderer()
 
                     Case Else
@@ -487,7 +542,7 @@ Public Class ClassControlStyle
             Case TypeOf o Is ToolStripItem
                 Dim i As ToolStripItem = DirectCast(o, ToolStripItem)
                 Select Case (True)
-                    Case i.Name.Contains("@KeepBackColor")
+                    Case HasNameFlag(i, ENUM_STYLE_FLAGS.CONTROL_KEEP_BACKCOLOR)
                         If (m_IsInvertedColors) Then
                             i.ForeColor = Color.Black
                         Else
@@ -517,7 +572,7 @@ Public Class ClassControlStyle
                 End If
 
                 Select Case (True)
-                    Case i.Name.Contains("@NoCustomRenderer")
+                    Case HasNameFlag(i, ENUM_STYLE_FLAGS.MENU_SYSTEMRENDER)
                         i.Renderer = New ToolStripSystemRenderer()
 
                     Case Else

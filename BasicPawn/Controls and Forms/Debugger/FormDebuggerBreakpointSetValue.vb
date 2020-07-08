@@ -23,9 +23,9 @@ Public Class FormDebuggerBreakpointSetValue
 
         ' Add any initialization after the InitializeComponent() call.
 
-        'Set the maximum and minimum possible value that SourceMod supports.
-        Panel_FooterControl.Name &= "@FooterControl"
-        Panel_FooterDarkControl.Name &= "@FooterDarkControl"
+        'Set the maximum and minimum possible value that SourceMod supports. 
+        ClassControlStyle.SetNameFlag(Panel_FooterControl, ClassControlStyle.ENUM_STYLE_FLAGS.CONTROL_FOOTER)
+        ClassControlStyle.SetNameFlag(Panel_FooterDarkControl, ClassControlStyle.ENUM_STYLE_FLAGS.CONTROL_FOOTER_DARK)
 
         NumericUpDown_BreakpointValue.Maximum = Integer.MaxValue
         NumericUpDown_BreakpointValue.Minimum = Integer.MinValue

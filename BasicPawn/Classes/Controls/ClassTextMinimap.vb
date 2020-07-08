@@ -15,7 +15,6 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 
-Imports System.Text.RegularExpressions
 
 Public Class ClassTextMinimap
     Private g_mFormMain As FormMain
@@ -49,7 +48,6 @@ Public Class ClassTextMinimap
 
         ' Add any initialization after the InitializeComponent() call.   
         g_mPanel = New Panel With {
-            .Name = "@KeepForeBackColor",
             .Parent = RichTextBoxEx_Minimap,
             .BorderStyle = BorderStyle.None,
             .BackColor = Color.CornflowerBlue,
@@ -58,6 +56,8 @@ Public Class ClassTextMinimap
         }
         g_mPanel.Show()
         g_mPanel.BringToFront()
+
+        ClassControlStyle.SetNameFlag(g_mPanel, ClassControlStyle.ENUM_STYLE_FLAGS.CONTROL_KEEP_COLOR)
 
         AddHandler g_mPanel.MouseClick, AddressOf Panel_MouseClick
         AddHandler g_mPanel.MouseMove, AddressOf Panel_MouseMove

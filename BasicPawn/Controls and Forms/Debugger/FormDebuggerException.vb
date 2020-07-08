@@ -26,10 +26,10 @@ Public Class FormDebuggerException
         ' This call is required by the designer.
         InitializeComponent()
 
-        ' Add any initialization after the InitializeComponent() call.
-        Panel_FooterControl.Name &= "@FooterControl"
-        Panel_FooterDarkControl.Name &= "@FooterDarkControl"
-        Label_Title.Name &= "@TitleColors"
+        ' Add any initialization after the InitializeComponent() call. 
+        ClassControlStyle.SetNameFlag(Panel_FooterControl, ClassControlStyle.ENUM_STYLE_FLAGS.CONTROL_FOOTER)
+        ClassControlStyle.SetNameFlag(Panel_FooterDarkControl, ClassControlStyle.ENUM_STYLE_FLAGS.CONTROL_FOOTER_DARK)
+        ClassControlStyle.SetNameFlag(Label_Title, ClassControlStyle.ENUM_STYLE_FLAGS.LABEL_BLACK)
 
         g_mFormDebugger = mFormDebugger
         g_sLogFile = sLogFile

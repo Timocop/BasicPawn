@@ -36,9 +36,9 @@ Public Class FormInstanceManager
         ' This call is required by the designer.
         InitializeComponent()
 
-        ' Add any initialization after the InitializeComponent() call.
-        Panel_FooterControl.Name &= "@FooterControl"
-        Panel_FooterDarkControl.Name &= "@FooterDarkControl"
+        ' Add any initialization after the InitializeComponent() call. 
+        ClassControlStyle.SetNameFlag(Panel_FooterControl, ClassControlStyle.ENUM_STYLE_FLAGS.CONTROL_FOOTER)
+        ClassControlStyle.SetNameFlag(Panel_FooterDarkControl, ClassControlStyle.ENUM_STYLE_FLAGS.CONTROL_FOOTER_DARK)
 
         g_mFormMain = f
 

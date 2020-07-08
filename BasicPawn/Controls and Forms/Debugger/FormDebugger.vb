@@ -49,10 +49,10 @@ Public Class FormDebugger
         ' This call is required by the designer.
         InitializeComponent()
 
-        ' Add any initialization after the InitializeComponent() call.
-        ToolStripStatusLabel_DebugState.Name &= "@KeepBackColor"
-        ToolStripStatusLabel_NoConnection.Name &= "@KeepBackColor"
-        StatusStrip_BPDebugger.Name &= "@NoCustomRenderer"
+        ' Add any initialization after the InitializeComponent() call. 
+        ClassControlStyle.SetNameFlag(ToolStripStatusLabel_DebugState, ClassControlStyle.ENUM_STYLE_FLAGS.CONTROL_KEEP_BACKCOLOR)
+        ClassControlStyle.SetNameFlag(ToolStripStatusLabel_NoConnection, ClassControlStyle.ENUM_STYLE_FLAGS.CONTROL_KEEP_BACKCOLOR)
+        ClassControlStyle.SetNameFlag(StatusStrip_BPDebugger, ClassControlStyle.ENUM_STYLE_FLAGS.MENU_SYSTEMRENDER)
 
         g_ClassDebuggerParser = New ClassDebuggerTools(Me)
         g_ClassDebuggerEntries = New ClassDebuggerTools.ClassDebuggerEntries

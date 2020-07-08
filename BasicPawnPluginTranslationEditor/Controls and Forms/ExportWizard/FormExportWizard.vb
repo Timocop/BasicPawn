@@ -41,10 +41,10 @@ Public Class FormExportWizard
         ' This call is required by the designer.
         InitializeComponent()
 
-        ' Add any initialization after the InitializeComponent() call.
-        Panel_TopDarkControl.Name &= "@FooterDarkControl"
-        Panel_FooterControl.Name &= "@FooterControl"
-        Panel_FooterDarkControl.Name &= "@FooterDarkControl"
+        ' Add any initialization after the InitializeComponent() call. 
+        ClassControlStyle.SetNameFlag(Panel_FooterControl, ClassControlStyle.ENUM_STYLE_FLAGS.CONTROL_FOOTER)
+        ClassControlStyle.SetNameFlag(Panel_FooterDarkControl, ClassControlStyle.ENUM_STYLE_FLAGS.CONTROL_FOOTER_DARK)
+        ClassControlStyle.SetNameFlag(Panel_TopDarkControl, ClassControlStyle.ENUM_STYLE_FLAGS.CONTROL_FOOTER_DARK)
 
         g_iWizardPages(ENUM_PAGES.WELCOME) = New UCExportWizardWelcome(Me) With {
             .Parent = Panel_Pages,
