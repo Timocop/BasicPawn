@@ -32,6 +32,8 @@ Public Class FormExportWizard
     Private g_sExportFile As String = ""
     Private g_bExportIsPacked As Boolean = False
     Private g_mExportKeyValue As FormTranslationEditor.ClassTranslationManager.ClassTranslation()
+    Private g_mExportFilesRemoval As New HashSet(Of String)
+    Private g_mExportFilesAdditional As New HashSet(Of String)
 
     Public Sub New(sFile As String, bIsPacked As Boolean, mKeyValue As FormTranslationEditor.ClassTranslationManager.ClassTranslation())
         g_sExportFile = sFile
@@ -97,6 +99,18 @@ Public Class FormExportWizard
     ReadOnly Property m_ExportKeyValue As FormTranslationEditor.ClassTranslationManager.ClassTranslation()
         Get
             Return g_mExportKeyValue
+        End Get
+    End Property
+
+    ReadOnly Property m_ExportFilesRemoval As HashSet(Of String)
+        Get
+            Return g_mExportFilesRemoval
+        End Get
+    End Property
+
+    ReadOnly Property m_ExportFilesAdditional As HashSet(Of String)
+        Get
+            Return g_mExportFilesAdditional
         End Get
     End Property
 
@@ -193,37 +207,4 @@ Public Class FormExportWizard
         Button_WizBack.Enabled = (g_iWizardPage > 0)
     End Sub
 
-    ''' <summary>
-    ''' Get additional translation file if unpacked.
-    ''' </summary>
-    ''' <returns></returns>
-    Public Function GetAdditionalTranslationFiles() As String()
-        If (String.IsNullOrEmpty(m_ExportFile)) Then
-            Return New String() {}
-        End If
-
-        Dim sLangauges As New HashSet(Of String)
-        Dim sFiles As New List(Of String)
-
-        For Each mTranslation In m_ExportKeyValue
-            For Each mItem In mTranslation.m_TranslationItems
-                If (mItem.m_Language = "en") Then
-                    Continue For
-                End If
-
-                sLangauges.Add(mItem.m_Language)
-            Next
-        Next
-
-        Dim sFileDirectory As String = IO.Path.GetDirectoryName(m_ExportFile)
-        Dim sFileName As String = IO.Path.GetFileName(m_ExportFile)
-
-        For Each sLang As String In sLangauges
-            Dim sSubDirectory As String = IO.Path.Combine(sFileDirectory, sLang)
-
-            sFiles.Add(IO.Path.Combine(sSubDirectory, sFileName))
-        Next
-
-        Return sFiles.ToArray
-    End Function
 End Class

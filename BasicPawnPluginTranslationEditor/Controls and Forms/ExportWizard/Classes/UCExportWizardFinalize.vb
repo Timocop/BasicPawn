@@ -44,11 +44,13 @@ Public Class UCExportWizardFinalize
         }
 
         Try
-            If (Not g_mFormExportWizard.m_ExportIsPacked) Then
-                For Each sFile In g_mFormExportWizard.GetAdditionalTranslationFiles
-                    mConfigs.Add(New KeyValuePair(Of String, String)("Additional File:", sFile))
-                Next
-            End If
+            For Each sFile In g_mFormExportWizard.m_ExportFilesAdditional
+                mConfigs.Add(New KeyValuePair(Of String, String)("Additional File:", sFile))
+            Next
+
+            For Each sFile In g_mFormExportWizard.m_ExportFilesRemoval
+                mConfigs.Add(New KeyValuePair(Of String, String)("Remove File:", sFile))
+            Next
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try

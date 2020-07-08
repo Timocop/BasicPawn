@@ -121,6 +121,14 @@ Partial Public Class FormTranslationEditor
         Try
             Using i As New FormExportWizard(g_ClassTranslationManager.m_File, g_ClassTranslationManager.m_IsPacked, g_ClassTranslationManager.m_Translations.ToArray)
                 If (i.ShowDialog(Me) = DialogResult.OK) Then
+                    For Each sRemoveFile In i.m_ExportFilesRemoval
+                        Try
+                            IO.File.Delete(sRemoveFile)
+                        Catch ex As Exception
+                            ClassExceptionLog.WriteToLogMessageBox(ex)
+                        End Try
+                    Next
+
                     If (i.m_ExportIsPacked) Then
                         g_ClassTranslationManager.SaveTranslationSingle(i.m_ExportFile)
                     Else

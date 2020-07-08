@@ -34,17 +34,6 @@ Public Class UCExportWizardMethod
         g_bIgnoreEvent = False
     End Sub
 
-    Property m_ExportIsPacked As Boolean
-        Get
-            Return g_mFormExportWizard.m_ExportIsPacked
-        End Get
-        Set(value As Boolean)
-            g_mFormExportWizard.m_ExportIsPacked = value
-
-            UpdateControls()
-        End Set
-    End Property
-
     Private Sub RadioButton_StoreSingleFile_CheckedChanged(sender As Object, e As EventArgs) Handles RadioButton_StoreSingleFile.CheckedChanged
         If (g_bIgnoreEvent) Then
             Return
@@ -54,7 +43,8 @@ Public Class UCExportWizardMethod
             Return
         End If
 
-        m_ExportIsPacked = True
+        g_mFormExportWizard.m_ExportIsPacked = True
+        UpdateControls()
     End Sub
 
     Private Sub RadioButton_StoreMultiFiles_CheckedChanged(sender As Object, e As EventArgs) Handles RadioButton_StoreMultiFiles.CheckedChanged
@@ -66,7 +56,8 @@ Public Class UCExportWizardMethod
             Return
         End If
 
-        m_ExportIsPacked = False
+        g_mFormExportWizard.m_ExportIsPacked = False
+        UpdateControls()
     End Sub
 
     Private Sub UCExportWizardFileMode_VisibleChanged(sender As Object, e As EventArgs) Handles Me.VisibleChanged
@@ -87,18 +78,30 @@ Public Class UCExportWizardMethod
             Return
         End If
 
-        If (m_ExportIsPacked) Then
+        g_mFormExportWizard.m_ExportFilesRemoval.Clear()
+        g_mFormExportWizard.m_ExportFilesAdditional.Clear()
+
+        If (g_mFormExportWizard.m_ExportIsPacked) Then
             If (Not CheckFormatOverwrites()) Then
                 bHandeled = True
                 Return
             End If
 
-            If (Not CheckObsoleteFiles()) Then
+            If (Not CheckPackedObsoleteFiles()) Then
                 bHandeled = True
                 Return
             End If
         Else
+            For Each sAdditionFile In GetAdditionalTranslationFiles()
+                g_mFormExportWizard.m_ExportFilesAdditional.Add(sAdditionFile.ToLower)
+            Next
+
             If (Not CheckFileOverwrites()) Then
+                bHandeled = True
+                Return
+            End If
+
+            If (Not CheckUnpackedObsoleteFiles()) Then
                 bHandeled = True
                 Return
             End If
@@ -138,7 +141,7 @@ Public Class UCExportWizardMethod
     Private Function CheckFileOverwrites() As Boolean
         Dim mOverwrittenFiles As New HashSet(Of String)
 
-        For Each sFile As String In g_mFormExportWizard.GetAdditionalTranslationFiles
+        For Each sFile As String In GetAdditionalTranslationFiles()
             Try
                 If (Not IO.File.Exists(sFile)) Then
                     Continue For
@@ -151,7 +154,7 @@ Public Class UCExportWizardMethod
         Next
 
         If (mOverwrittenFiles.Count > 0) Then
-            Using mOverwriteMessageBox As New FormFilesMessageBox("The following translation files already exist:", "Do you want to overwrite these existing translation files?", "Overwrite files", "Overwrite", mOverwrittenFiles.ToArray)
+            Using mOverwriteMessageBox As New FormFilesMessageBox("The following translation files already exist:", "Do you want to overwrite these existing translation files?", "Overwrite files", "Continue", mOverwrittenFiles.ToArray)
                 Return (mOverwriteMessageBox.ShowDialog(Me) = DialogResult.OK)
             End Using
         End If
@@ -159,35 +162,59 @@ Public Class UCExportWizardMethod
         Return True
     End Function
 
-    Private Function CheckObsoleteFiles() As Boolean
+    Private Function CheckPackedObsoleteFiles() As Boolean
         Dim mUnusedFiles As New HashSet(Of String)
 
-        For Each sFile As String In g_mFormExportWizard.GetAdditionalTranslationFiles
+        For Each sFile As String In FindAdditionalTranslationFiles(g_mFormExportWizard.m_ExportFile)
             Try
                 If (Not IO.File.Exists(sFile)) Then
                     Continue For
                 End If
 
-                mUnusedFiles.Add(sFile)
+                mUnusedFiles.Add(sFile.ToLower)
             Catch ex As Exception
                 ClassExceptionLog.WriteToLogMessageBox(ex)
             End Try
         Next
 
         If (mUnusedFiles.Count > 0) Then
-            Using mOverwriteMessageBox As New FormFilesMessageBox("The following translation files are obsolete and should be removed:", "Do you want to remove these obsolete translation files?", "Obsolete files", "Remove", mUnusedFiles.ToArray)
+            Using mOverwriteMessageBox As New FormFilesMessageBox("The following translation files are obsolete and should be removed:", "Do you want to remove these obsolete translation files?", "Obsolete files", "Continue", mUnusedFiles.ToArray)
                 If (mOverwriteMessageBox.ShowDialog(Me) = DialogResult.OK) Then
-                    Try
-                        For Each sFile In mUnusedFiles
-                            If (Not IO.File.Exists(sFile)) Then
-                                Continue For
-                            End If
+                    For Each sRemoveFile In mUnusedFiles
+                        g_mFormExportWizard.m_ExportFilesRemoval.Add(sRemoveFile.ToLower)
+                    Next
 
-                            IO.File.Delete(sFile)
-                        Next
-                    Catch ex As Exception
-                        ClassExceptionLog.WriteToLogMessageBox(ex)
-                    End Try
+                    Return True
+                Else
+                    Return False
+                End If
+            End Using
+        End If
+
+        Return True
+    End Function
+
+    Private Function CheckUnpackedObsoleteFiles() As Boolean
+        Dim mUnusedFiles As New HashSet(Of String)
+
+        For Each sFile As String In FindUnusedAdditionalTranslationFiles(g_mFormExportWizard.m_ExportFile)
+            Try
+                If (Not IO.File.Exists(sFile)) Then
+                    Continue For
+                End If
+
+                mUnusedFiles.Add(sFile.ToLower)
+            Catch ex As Exception
+                ClassExceptionLog.WriteToLogMessageBox(ex)
+            End Try
+        Next
+
+        If (mUnusedFiles.Count > 0) Then
+            Using mOverwriteMessageBox As New FormFilesMessageBox("The following translation files are obsolete and should be removed:", "Do you want to remove these obsolete translation files?", "Obsolete files", "Continue", mUnusedFiles.ToArray)
+                If (mOverwriteMessageBox.ShowDialog(Me) = DialogResult.OK) Then
+                    For Each sRemoveFile In mUnusedFiles
+                        g_mFormExportWizard.m_ExportFilesRemoval.Add(sRemoveFile.ToLower)
+                    Next
 
                     Return True
                 Else
@@ -200,7 +227,7 @@ Public Class UCExportWizardMethod
     End Function
 
     Private Sub UpdateControls()
-        If (m_ExportIsPacked) Then
+        If (g_mFormExportWizard.m_ExportIsPacked) Then
             RadioButton_StoreSingleFile.Checked = True
             RadioButton_StoreMultiFiles.Checked = False
         Else
@@ -208,7 +235,7 @@ Public Class UCExportWizardMethod
             RadioButton_StoreMultiFiles.Checked = True
         End If
 
-        If (m_ExportIsPacked) Then
+        If (g_mFormExportWizard.m_ExportIsPacked) Then
             Label_AdditionalFiles.Visible = False
             ListBox_AdditionalFiles.Visible = False
         Else
@@ -220,7 +247,7 @@ Public Class UCExportWizardMethod
                 ListBox_AdditionalFiles.Items.Clear()
 
                 Try
-                    For Each sFile In g_mFormExportWizard.GetAdditionalTranslationFiles
+                    For Each sFile In GetAdditionalTranslationFiles()
                         ListBox_AdditionalFiles.Items.Add(sFile)
                     Next
                 Catch ex As Exception
@@ -231,6 +258,98 @@ Public Class UCExportWizardMethod
             End Try
         End If
     End Sub
+    ''' <summary>
+    ''' Find unused additional translation files.
+    ''' </summary>
+    ''' <param name="sFile"></param>
+    ''' <returns></returns>
+    Public Function FindUnusedAdditionalTranslationFiles(sFile As String) As String()
+        Dim mFilesFS As New List(Of String)
+        For Each sFileFS As String In FindAdditionalTranslationFiles(sFile)
+            mFilesFS.Add(sFileFS.ToLower)
+        Next
+
+        Dim mFilesLNG As New List(Of String)
+        For Each sFileLNG As String In GetAdditionalTranslationFiles()
+            mFilesLNG.Add(sFileLNG.ToLower)
+        Next
+
+        Dim mFiles As New HashSet(Of String)
+
+        For Each sFileFS As String In mFilesFS
+            If (mFilesLNG.Contains(sFileFS)) Then
+                Continue For
+            End If
+
+            mFiles.Add(sFileFS)
+        Next
+
+        Return mFiles.ToArray
+    End Function
+
+    ''' <summary>
+    ''' Get additional translation files by filesystem.
+    ''' </summary>
+    ''' <param name="sFile"></param>
+    ''' <returns></returns>
+    Public Function FindAdditionalTranslationFiles(sFile As String) As String()
+        If (String.IsNullOrEmpty(sFile)) Then
+            Return New String() {}
+        End If
+
+        Dim mFiles As New List(Of String)
+
+        'Has sub directories?
+        Dim sFileName As String = IO.Path.GetFileName(sFile)
+        Dim sFileDirectory As String = IO.Path.GetDirectoryName(sFile)
+
+        For Each sDirectory In IO.Directory.GetDirectories(sFileDirectory)
+            Dim sLang As String = New IO.DirectoryInfo(sDirectory).Name
+
+            Dim sAdditionalFile As String = IO.Path.Combine(sDirectory, sFileName)
+            If (Not IO.File.Exists(sAdditionalFile)) Then
+                Continue For
+            End If
+
+            mFiles.Add(sAdditionalFile)
+        Next
+
+        Return mFiles.ToArray
+    End Function
+
+    ''' <summary>
+    ''' Get additional translation files by language
+    ''' </summary>
+    ''' <returns></returns>
+    Public Function GetAdditionalTranslationFiles() As String()
+        If (String.IsNullOrEmpty(g_mFormExportWizard.m_ExportFile)) Then
+            Return New String() {}
+        End If
+
+        Dim sLangauges As New HashSet(Of String)
+        Dim sFiles As New List(Of String)
+
+        For Each mTranslation In g_mFormExportWizard.m_ExportKeyValue
+            For Each mItem In mTranslation.m_TranslationItems
+                If (mItem.m_Language = "en") Then
+                    Continue For
+                End If
+
+                sLangauges.Add(mItem.m_Language)
+            Next
+        Next
+
+        Dim sFileDirectory As String = IO.Path.GetDirectoryName(g_mFormExportWizard.m_ExportFile)
+        Dim sFileName As String = IO.Path.GetFileName(g_mFormExportWizard.m_ExportFile)
+
+        For Each sLang As String In sLangauges
+            Dim sSubDirectory As String = IO.Path.Combine(sFileDirectory, sLang)
+
+            sFiles.Add(IO.Path.Combine(sSubDirectory, sFileName))
+        Next
+
+        Return sFiles.ToArray
+    End Function
 
     Private Sub CleanUp()
         If (g_mFormExportWizard IsNot Nothing) Then
