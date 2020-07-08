@@ -207,11 +207,11 @@ Public Class FormTranslationEditor
             End If
         End Sub
 
-        Public Sub LoadTranslation(sFile As String, bCheckSubFolders As Boolean)
-            LoadTranslation(sFile, bCheckSubFolders, True)
+        Public Sub LoadTranslation(sFile As String, bLoadAdditionalFiles As Boolean)
+            LoadTranslation(sFile, bLoadAdditionalFiles, True)
         End Sub
 
-        Public Sub LoadTranslation(sFile As String, bCheckSubFolders As Boolean, bOptimizations As Boolean)
+        Public Sub LoadTranslation(sFile As String, bLoadAdditionalFiles As Boolean, bOptimizations As Boolean)
             Dim mTranslations As New List(Of ClassTranslation)
 
             Using mKeyValue As New ClassKeyValues(sFile, IO.FileMode.OpenOrCreate)
@@ -220,20 +220,12 @@ Public Class FormTranslationEditor
 
             Dim bIsPacked As Boolean = True
 
-            If (bCheckSubFolders) Then
-                'Has sub directories?
-                Dim sFileName As String = IO.Path.GetFileName(sFile)
-                Dim sFileDirectory As String = IO.Path.GetDirectoryName(sFile)
+            If (bLoadAdditionalFiles) Then
+                'Has additional files?
+                Dim sAdditionalFiles As String() = FindAdditionalFiles(sFile)
 
-                For Each sDirectory In IO.Directory.GetDirectories(sFileDirectory)
-                    Dim sLang As String = New IO.DirectoryInfo(sDirectory).Name
-
-                    Dim sSlaveFile As String = IO.Path.Combine(sDirectory, sFileName)
-                    If (Not IO.File.Exists(sSlaveFile)) Then
-                        Continue For
-                    End If
-
-                    Using mKeyValue As New ClassKeyValues(sSlaveFile, IO.FileMode.OpenOrCreate)
+                For Each sAdditionalFile In sAdditionalFiles
+                    Using mKeyValue As New ClassKeyValues(sAdditionalFile, IO.FileMode.OpenOrCreate)
                         mTranslations.AddRange(ParseFromKeyValues(mKeyValue.Deserialize(True)))
                     End Using
 
@@ -703,6 +695,31 @@ Public Class FormTranslationEditor
                 mTreeView.EndUpdate()
             End Try
         End Sub
+
+        Public Function FindAdditionalFiles(sFile As String) As String()
+            If (String.IsNullOrEmpty(sFile)) Then
+                Return New String() {}
+            End If
+
+            Dim mFiles As New List(Of String)
+
+            'Has sub directories?
+            Dim sFileName As String = IO.Path.GetFileName(sFile)
+            Dim sFileDirectory As String = IO.Path.GetDirectoryName(sFile)
+
+            For Each sDirectory In IO.Directory.GetDirectories(sFileDirectory)
+                Dim sLang As String = New IO.DirectoryInfo(sDirectory).Name
+
+                Dim sAdditionalFile As String = IO.Path.Combine(sDirectory, sFileName)
+                If (Not IO.File.Exists(sAdditionalFile)) Then
+                    Continue For
+                End If
+
+                mFiles.Add(sAdditionalFile)
+            Next
+
+            Return mFiles.ToArray
+        End Function
 
         Public Function GetKnownLangauges() As KeyValuePair(Of String, String)()
             'Static mLanguagesOS As List(Of KeyValuePair(Of String, String)) = Nothing

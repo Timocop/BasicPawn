@@ -32,8 +32,10 @@ Partial Class FormExportWizard
         Me.Panel_TopDarkControl = New System.Windows.Forms.Panel()
         Me.Label_WizDesc = New System.Windows.Forms.Label()
         Me.Label_WizTitle = New System.Windows.Forms.Label()
+        Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.Panel_FooterControl.SuspendLayout()
         Me.Panel3.SuspendLayout()
+        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'Panel_FooterControl
@@ -103,6 +105,7 @@ Partial Class FormExportWizard
         '
         'Panel3
         '
+        Me.Panel3.Controls.Add(Me.PictureBox1)
         Me.Panel3.Controls.Add(Me.Panel_TopDarkControl)
         Me.Panel3.Controls.Add(Me.Label_WizDesc)
         Me.Panel3.Controls.Add(Me.Label_WizTitle)
@@ -142,6 +145,17 @@ Partial Class FormExportWizard
         Me.Label_WizTitle.TabIndex = 0
         Me.Label_WizTitle.Text = "Wizard Title"
         '
+        'PictureBox1
+        '
+        Me.PictureBox1.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.PictureBox1.Image = Global.BasicPawnPluginTranslationEditor.My.Resources.Resources.accessibilitycpl_325_48x48_32
+        Me.PictureBox1.Location = New System.Drawing.Point(564, 9)
+        Me.PictureBox1.Name = "PictureBox1"
+        Me.PictureBox1.Size = New System.Drawing.Size(48, 48)
+        Me.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
+        Me.PictureBox1.TabIndex = 3
+        Me.PictureBox1.TabStop = False
+        '
         'FormExportWizard
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -162,6 +176,7 @@ Partial Class FormExportWizard
         Me.Panel_FooterControl.ResumeLayout(False)
         Me.Panel3.ResumeLayout(False)
         Me.Panel3.PerformLayout()
+        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
     End Sub
@@ -176,4 +191,5 @@ Partial Class FormExportWizard
     Friend WithEvents Label_WizDesc As Windows.Forms.Label
     Friend WithEvents Label_WizTitle As Windows.Forms.Label
     Friend WithEvents Panel_TopDarkControl As Windows.Forms.Panel
+    Friend WithEvents PictureBox1 As PictureBox
 End Class

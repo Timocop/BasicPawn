@@ -102,6 +102,12 @@
     <Compile Include="Controls and Forms\ExportWizard\FormFilesMessageBox.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Controls and Forms\ImportWizard\FormImportWizard.Designer.vb">
+      <DependentUpon>FormImportWizard.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controls and Forms\ImportWizard\FormImportWizard.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Controls and Forms\TranslationEditor\Classes\ExtTranslationEditorFile.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -162,6 +168,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls and Forms\ExportWizard\FormFilesMessageBox.resx">
       <DependentUpon>FormFilesMessageBox.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls and Forms\ImportWizard\FormImportWizard.resx">
+      <DependentUpon>FormImportWizard.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls and Forms\TranslationEditor\FormAddTranslation.resx">
       <DependentUpon>FormAddTranslation.vb</DependentUpon>
@@ -243,6 +252,12 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{94E38DFF-614B-4CBD-B67C-F211BB35CE8B}" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\user32_101_16x16-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\accessibilitycpl_325_48x48-32.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>

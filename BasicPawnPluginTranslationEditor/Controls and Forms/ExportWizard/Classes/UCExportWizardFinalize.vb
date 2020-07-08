@@ -40,7 +40,7 @@ Public Class UCExportWizardFinalize
     Private Sub UpdateControls()
         Dim mConfigs As New List(Of KeyValuePair(Of String, String)) From {
             New KeyValuePair(Of String, String)("File to Export:", g_mFormExportWizard.m_ExportFile),
-            New KeyValuePair(Of String, String)("Export Method:", If(g_mFormExportWizard.m_ExportIsPacked, "Export to single translation file.", "Export to multiple translation files."))
+            New KeyValuePair(Of String, String)("Export Method:", If(g_mFormExportWizard.m_ExportIsPacked, "Export phrases to single translation file.", "Export phrases to multiple translation files."))
         }
 
         Try

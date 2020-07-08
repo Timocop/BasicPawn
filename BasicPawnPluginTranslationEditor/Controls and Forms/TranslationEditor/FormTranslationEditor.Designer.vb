@@ -112,13 +112,13 @@ Partial Class FormTranslationEditor
         '
         Me.ToolStripMenuItem_GroupAdd.Image = CType(resources.GetObject("ToolStripMenuItem_GroupAdd.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_GroupAdd.Name = "ToolStripMenuItem_GroupAdd"
-        Me.ToolStripMenuItem_GroupAdd.Size = New System.Drawing.Size(212, 22)
-        Me.ToolStripMenuItem_GroupAdd.Text = "Add Group"
+        Me.ToolStripMenuItem_GroupAdd.Size = New System.Drawing.Size(190, 22)
+        Me.ToolStripMenuItem_GroupAdd.Text = "Add Phrase Group"
         '
         'ToolStripSeparator3
         '
         Me.ToolStripSeparator3.Name = "ToolStripSeparator3"
-        Me.ToolStripSeparator3.Size = New System.Drawing.Size(209, 6)
+        Me.ToolStripSeparator3.Size = New System.Drawing.Size(187, 6)
         '
         'ToolStripMenuItem_ShowMissing
         '
@@ -126,8 +126,8 @@ Partial Class FormTranslationEditor
         Me.ToolStripMenuItem_ShowMissing.CheckOnClick = True
         Me.ToolStripMenuItem_ShowMissing.CheckState = System.Windows.Forms.CheckState.Checked
         Me.ToolStripMenuItem_ShowMissing.Name = "ToolStripMenuItem_ShowMissing"
-        Me.ToolStripMenuItem_ShowMissing.Size = New System.Drawing.Size(212, 22)
-        Me.ToolStripMenuItem_ShowMissing.Text = "Show Missing Translations"
+        Me.ToolStripMenuItem_ShowMissing.Size = New System.Drawing.Size(190, 22)
+        Me.ToolStripMenuItem_ShowMissing.Text = "Show Missing Phrases"
         '
         'ImageList_Translation
         '
@@ -140,7 +140,7 @@ Partial Class FormTranslationEditor
         Me.ContextMenuStrip_Translation.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_TransAdd, Me.ToolStripMenuItem_TransEdit, Me.ToolStripMenuItem_TransRemove, Me.ToolStripSeparator2, Me.ToolStripMenuItem_GroupRename, Me.ToolStripMenuItem_GroupRemove})
         Me.ContextMenuStrip_Translation.Name = "ContextMenuStrip1"
         Me.ContextMenuStrip_Translation.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
-        Me.ContextMenuStrip_Translation.Size = New System.Drawing.Size(154, 120)
+        Me.ContextMenuStrip_Translation.Size = New System.Drawing.Size(192, 120)
         '
         'ToolStripMenuItem_TransAdd
         '
@@ -172,15 +172,15 @@ Partial Class FormTranslationEditor
         '
         Me.ToolStripMenuItem_GroupRename.Image = CType(resources.GetObject("ToolStripMenuItem_GroupRename.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_GroupRename.Name = "ToolStripMenuItem_GroupRename"
-        Me.ToolStripMenuItem_GroupRename.Size = New System.Drawing.Size(153, 22)
-        Me.ToolStripMenuItem_GroupRename.Text = "Rename Group"
+        Me.ToolStripMenuItem_GroupRename.Size = New System.Drawing.Size(191, 22)
+        Me.ToolStripMenuItem_GroupRename.Text = "Rename Phrase Group"
         '
         'ToolStripMenuItem_GroupRemove
         '
         Me.ToolStripMenuItem_GroupRemove.Image = Global.BasicPawnPluginTranslationEditor.My.Resources.Resources.imageres_5337_16x16_32
         Me.ToolStripMenuItem_GroupRemove.Name = "ToolStripMenuItem_GroupRemove"
-        Me.ToolStripMenuItem_GroupRemove.Size = New System.Drawing.Size(153, 22)
-        Me.ToolStripMenuItem_GroupRemove.Text = "Remove Group"
+        Me.ToolStripMenuItem_GroupRemove.Size = New System.Drawing.Size(191, 22)
+        Me.ToolStripMenuItem_GroupRemove.Text = "Remove Phrase Group"
         '
         'FormTranslationEditor
         '

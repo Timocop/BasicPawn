@@ -58,9 +58,9 @@ Partial Class UCExportWizardFinalize
         Me.Label3.Location = New System.Drawing.Point(65, 403)
         Me.Label3.Margin = New System.Windows.Forms.Padding(64, 16, 3, 64)
         Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(151, 13)
+        Me.Label3.Size = New System.Drawing.Size(142, 13)
         Me.Label3.TabIndex = 3
-        Me.Label3.Text = "Click Finish to begin export."
+        Me.Label3.Text = "Click Finish to export files."
         '
         'UCExportWizardFinalize
         '

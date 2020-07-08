@@ -39,10 +39,14 @@ Partial Public Class FormTranslationEditor
 
             Using i As New OpenFileDialog()
                 If (i.ShowDialog(Me) = DialogResult.OK) Then
-                    g_ClassTranslationManager.LoadTranslation(i.FileName, True)
-                    g_ClassRecentTranslations.AddRecent(i.FileName)
+                    Using j As New FormImportWizard(i.FileName, g_ClassTranslationManager.FindAdditionalFiles(i.FileName))
+                        If (j.ShowDialog(Me) = DialogResult.OK) Then
+                            g_ClassTranslationManager.LoadTranslation(i.FileName, (Not j.m_IsPacked))
+                            g_ClassRecentTranslations.AddRecent(i.FileName)
 
-                    g_ClassTranslationManager.TreeViewFillMissing(Not ToolStripMenuItem_ShowMissing.Checked)
+                            g_ClassTranslationManager.TreeViewFillMissing(Not ToolStripMenuItem_ShowMissing.Checked)
+                        End If
+                    End Using
                 End If
             End Using
         Catch ex As Exception
@@ -66,8 +70,8 @@ Partial Public Class FormTranslationEditor
 
             Dim mRecentFiles = g_ClassRecentTranslations.GetRecent
 
-            For Each mItem In mRecentFiles
-                Dim mToolItem As New ToolStripMenuItem(mItem.Key)
+            For i = mRecentFiles.Length - 1 To 0 Step -1
+                Dim mToolItem As New ToolStripMenuItem(mRecentFiles(i).Key)
 
                 g_mRecentToolMenus.Add(mToolItem)
                 ToolStripMenuItem_ImportRecent.DropDownItems.Add(mToolItem)
@@ -90,7 +94,7 @@ Partial Public Class FormTranslationEditor
             End If
 
             Dim sFile As String = mToolStripMenuItem.Text
-            If (Not IO.File.Exists(sFile)) Then
+            If (String.IsNullOrEmpty(sFile) OrElse Not IO.File.Exists(sFile)) Then
                 Throw New IO.FileNotFoundException("File not found")
             End If
 
@@ -100,8 +104,14 @@ Partial Public Class FormTranslationEditor
                 End If
             End If
 
-            g_ClassTranslationManager.LoadTranslation(sFile, True)
-            g_ClassTranslationManager.TreeViewFillMissing(Not ToolStripMenuItem_ShowMissing.Checked)
+            Using j As New FormImportWizard(sFile, g_ClassTranslationManager.FindAdditionalFiles(sFile))
+                If (j.ShowDialog(Me) = DialogResult.OK) Then
+                    g_ClassTranslationManager.LoadTranslation(sFile, (Not j.m_IsPacked))
+                    g_ClassRecentTranslations.AddRecent(sFile)
+
+                    g_ClassTranslationManager.TreeViewFillMissing(Not ToolStripMenuItem_ShowMissing.Checked)
+                End If
+            End Using
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try

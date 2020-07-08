@@ -133,7 +133,8 @@ This following types are allowed:
  - f: Floating point.
  - s: String.
  - c: Character (UTF-8 compatible).
- - t: Include and translate another Phrases.</value>
+ - t: Include and translate another Phrases.
+ - N: Player names.</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

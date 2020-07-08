@@ -74,7 +74,7 @@ Public Class UCExportWizardMethod
             Return
         End If
 
-        g_mFormExportWizard.SetPageTitle("Translations export method", "Specify the method how translations are exported")
+        g_mFormExportWizard.SetPageTitle("Phrases Export Method", "Specify the method how phrases are exported")
         UpdateControls()
     End Sub
 
@@ -119,8 +119,8 @@ Public Class UCExportWizardMethod
 
             If (iFormatCount > 1) Then
                 Dim sMessage As New Text.StringBuilder
-                sMessage.AppendFormat("Translation group '{0}' has multiple formating rules! Single file translation files only support one formating rule.", mTranslation.m_Name).AppendLine()
-                sMessage.AppendLine("If you need multiple formating rules, export your translations into multiple files.")
+                sMessage.AppendFormat("Phrase group '{0}' has multiple formating rules! Single file translation files only support one formating rule.", mTranslation.m_Name).AppendLine()
+                sMessage.AppendLine("If you need multiple formating rules, export your phrases into multiple files.")
                 sMessage.AppendLine()
                 sMessage.AppendLine("Click OK to ignore this warning and merge formating rules (will result in unexpected behaviours).")
                 sMessage.AppendLine("Click CANCEL to cancel.")
