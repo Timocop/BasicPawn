@@ -457,10 +457,8 @@ Public Class FormTranslationEditor
 
             Dim mTranslationsSplited As New Dictionary(Of String, List(Of ClassTranslation))
             For Each sLanguage In mKnownLanguages
-                Dim sSafeLanguage As String = ClassTools.ClassStrings.ToSafeKey(sLanguage)
-
-                If (Not mTranslationsSplited.ContainsKey(sSafeLanguage)) Then
-                    mTranslationsSplited(sSafeLanguage) = New List(Of ClassTranslation)
+                If (Not mTranslationsSplited.ContainsKey(sLanguage)) Then
+                    mTranslationsSplited(sLanguage) = New List(Of ClassTranslation)
                 End If
 
                 For Each mTranslation In mTranslationsAnon
@@ -471,7 +469,7 @@ Public Class FormTranslationEditor
 
                     Dim mNewTranslation As New ClassTranslation(mTranslation.m_Name)
                     mNewTranslation.m_TranslationItems.Add(mTransItem)
-                    mTranslationsSplited(sSafeLanguage).Add(mNewTranslation)
+                    mTranslationsSplited(sLanguage).Add(mNewTranslation)
                 Next
             Next
 
@@ -515,10 +513,12 @@ Public Class FormTranslationEditor
             Next
 
             Dim mTranslationsMerged As New List(Of ClassTranslation)
-            For Each sKey As String In mTranslationsSorted.Keys
+            For Each sSafeKey As String In mTranslationsSorted.Keys
+                Dim sKey As String = ClassTools.ClassStrings.ToUnsafeKey(sSafeKey)
+
                 Dim mTranslation As New ClassTranslation(sKey)
 
-                mTranslation.m_TranslationItems.AddRange(mTranslationsSorted(sKey))
+                mTranslation.m_TranslationItems.AddRange(mTranslationsSorted(sSafeKey))
 
                 mTranslationsMerged.Add(mTranslation)
             Next
