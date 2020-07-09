@@ -252,42 +252,47 @@ Public Class UCObjectBrowser
                         'Add missing nodes
                         Dim sFilename As String = mAutocomplete.m_Filename
                         Dim bIsMainFile As Boolean = Array.Exists(g_sSourceMainFileExt, Function(s As String) sFilename.ToLower.EndsWith(s.ToLower))
+                        Dim sSafeFilename As String = ClassTools.ClassStrings.ToSafeKey(sFilename)
 
-                        If (Not mFileNodes.ContainsKey(sFilename)) Then
+                        If (Not mFileNodes.ContainsKey(sSafeFilename)) Then
                             ClassThread.ExecEx(Of Object)(Me, Sub()
                                                                   DisableObjectBrowserOnce(bWndProcBug, bIsDisabled)
 
                                                                   mFileNodes.Add(New TreeNode(sFilename) With {
-                                                                        .Name = sFilename,
+                                                                        .Name = sSafeFilename,
                                                                         .Tag = If(bIsMainFile, "*", "") & sFilename,
                                                                         .NodeFont = New Font(TreeView_ObjectBrowser.Font, If(bIsMainFile, FontStyle.Regular, FontStyle.Italic))
                                                                     })
                                                               End Sub)
                         End If
 
-                        mTypeNodes = mFileNodes(sFilename).Nodes
+                        mTypeNodes = mFileNodes(sSafeFilename).Nodes
 
                         Dim iTypes As Integer = mAutocomplete.m_Type
                         Dim sTypes As String = If(String.IsNullOrEmpty(mAutocomplete.GetTypeFullNames), "private", mAutocomplete.GetTypeFullNames.ToLower)
-                        If (Not mTypeNodes.ContainsKey(sTypes)) Then
+                        Dim sSafeType As String = ClassTools.ClassStrings.ToSafeKey(sTypes)
+
+                        If (Not mTypeNodes.ContainsKey(sSafeType)) Then
                             ClassThread.ExecEx(Of Object)(Me, Sub()
                                                                   DisableObjectBrowserOnce(bWndProcBug, bIsDisabled)
 
                                                                   mTypeNodes.Add(New TreeNode(sTypes) With {
-                                                                        .Name = sTypes,
+                                                                        .Name = sSafeType,
                                                                         .Tag = sTypes
                                                                     })
                                                               End Sub)
                         End If
 
-                        mNameNodes = mTypeNodes(sTypes).Nodes
+                        mNameNodes = mTypeNodes(sSafeType).Nodes
 
                         Dim sName As String = mAutocomplete.m_FunctionString
-                        If (Not mNameNodes.ContainsKey(sName)) Then
+                        Dim sSafeName As String = ClassTools.ClassStrings.ToSafeKey(sName)
+
+                        If (Not mNameNodes.ContainsKey(sSafeName)) Then
                             ClassThread.ExecEx(Of Object)(Me, Sub()
                                                                   DisableObjectBrowserOnce(bWndProcBug, bIsDisabled)
 
-                                                                  mNameNodes.Add(New ClassTreeNodeAutocomplete(sName, sName, mAutocomplete) With {
+                                                                  mNameNodes.Add(New ClassTreeNodeAutocomplete(sName, sSafeName, mAutocomplete) With {
                                                                         .Tag = sName
                                                                     })
                                                               End Sub)

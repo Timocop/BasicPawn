@@ -292,15 +292,15 @@ Public Class FormReportManager
                                                                                  Throw New ArgumentException(String.Format("Unable to find database entry: {0}", mFtpItem.sDatabaseEntry))
                                                                              End If
 
-                                                                             Dim sFtpCacheDicKey As String = (mFtpItem.sHost & vbLf & mDatabaseItem.m_Username)
+                                                                             Dim sSafeFtpCacheDicKey As String = ClassTools.ClassStrings.ToSafeKey(mFtpItem.sHost & vbLf & mDatabaseItem.m_Username)
 
                                                                              Select Case (mFtpItem.iProtocolType)
                                                                                  Case ENUM_FTP_PROTOCOL_TYPE.FTP
-                                                                                     If (mFtpCacheDic.ContainsKey(sFtpCacheDicKey)) Then
-                                                                                         mClassFTP = DirectCast(mFtpCacheDic(sFtpCacheDicKey), ClassFTP)
+                                                                                     If (mFtpCacheDic.ContainsKey(sSafeFtpCacheDicKey)) Then
+                                                                                         mClassFTP = DirectCast(mFtpCacheDic(sSafeFtpCacheDicKey), ClassFTP)
                                                                                      Else
                                                                                          mClassFTP = New ClassFTP(mFtpItem.sHost, mDatabaseItem.m_Username, mDatabaseItem.m_Password)
-                                                                                         mFtpCacheDic(sFtpCacheDicKey) = mClassFTP
+                                                                                         mFtpCacheDic(sSafeFtpCacheDicKey) = mClassFTP
                                                                                      End If
 
                                                                                      If (Not mClassFTP.PathExist(sLogDirectory)) Then
@@ -343,11 +343,11 @@ Public Class FormReportManager
 
 
                                                                                  Case ENUM_FTP_PROTOCOL_TYPE.SFTP
-                                                                                     If (mFtpCacheDic.ContainsKey(sFtpCacheDicKey)) Then
-                                                                                         mClassSFTP = DirectCast(mFtpCacheDic(sFtpCacheDicKey), Renci.SshNet.SftpClient)
+                                                                                     If (mFtpCacheDic.ContainsKey(sSafeFtpCacheDicKey)) Then
+                                                                                         mClassSFTP = DirectCast(mFtpCacheDic(sSafeFtpCacheDicKey), Renci.SshNet.SftpClient)
                                                                                      Else
                                                                                          mClassSFTP = New Renci.SshNet.SftpClient(mFtpItem.sHost, mDatabaseItem.m_Username, mDatabaseItem.m_Password)
-                                                                                         mFtpCacheDic(sFtpCacheDicKey) = mClassSFTP
+                                                                                         mFtpCacheDic(sSafeFtpCacheDicKey) = mClassSFTP
                                                                                      End If
 
                                                                                      If (Not mClassSFTP.IsConnected) Then
@@ -881,15 +881,15 @@ Public Class FormReportManager
                                                                               Throw New ArgumentException(String.Format("Unable to find database entry: {0}", mFtpItem.sDatabaseEntry))
                                                                           End If
 
-                                                                          Dim sFtpCacheDicKey As String = (mFtpItem.sHost & vbLf & mDatabaseItem.m_Username)
+                                                                          Dim sSafeFtpCacheDicKey As String = ClassTools.ClassStrings.ToSafeKey(mFtpItem.sHost & vbLf & mDatabaseItem.m_Username)
 
                                                                           Select Case (mFtpItem.iProtocolType)
                                                                               Case ENUM_FTP_PROTOCOL_TYPE.FTP
-                                                                                  If (mFtpCacheDic.ContainsKey(sFtpCacheDicKey)) Then
-                                                                                      mClassFTP = DirectCast(mFtpCacheDic(sFtpCacheDicKey), ClassFTP)
+                                                                                  If (mFtpCacheDic.ContainsKey(sSafeFtpCacheDicKey)) Then
+                                                                                      mClassFTP = DirectCast(mFtpCacheDic(sSafeFtpCacheDicKey), ClassFTP)
                                                                                   Else
                                                                                       mClassFTP = New ClassFTP(mFtpItem.sHost, mDatabaseItem.m_Username, mDatabaseItem.m_Password)
-                                                                                      mFtpCacheDic(sFtpCacheDicKey) = mClassFTP
+                                                                                      mFtpCacheDic(sSafeFtpCacheDicKey) = mClassFTP
                                                                                   End If
 
                                                                                   If (Not mClassFTP.PathExist(sLogDirectory)) Then
@@ -948,11 +948,11 @@ Public Class FormReportManager
 
 
                                                                               Case ENUM_FTP_PROTOCOL_TYPE.SFTP
-                                                                                  If (mFtpCacheDic.ContainsKey(sFtpCacheDicKey)) Then
-                                                                                      mClassSFTP = DirectCast(mFtpCacheDic(sFtpCacheDicKey), Renci.SshNet.SftpClient)
+                                                                                  If (mFtpCacheDic.ContainsKey(sSafeFtpCacheDicKey)) Then
+                                                                                      mClassSFTP = DirectCast(mFtpCacheDic(sSafeFtpCacheDicKey), Renci.SshNet.SftpClient)
                                                                                   Else
                                                                                       mClassSFTP = New Renci.SshNet.SftpClient(mFtpItem.sHost, mDatabaseItem.m_Username, mDatabaseItem.m_Password)
-                                                                                      mFtpCacheDic(sFtpCacheDicKey) = mClassSFTP
+                                                                                      mFtpCacheDic(sSafeFtpCacheDicKey) = mClassSFTP
                                                                                   End If
 
                                                                                   If (Not mClassSFTP.IsConnected) Then
