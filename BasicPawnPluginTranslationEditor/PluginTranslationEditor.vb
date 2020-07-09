@@ -177,6 +177,19 @@ Public Class PluginTranslationEditor
             If Not disposedValue Then
                 If disposing Then
                     ' TODO: dispose managed state (managed objects).
+                    If (g_mFtpMenuItem IsNot Nothing) Then
+                        RemoveHandler g_mFtpMenuItem.Click, AddressOf OnMenuItemClick
+                    End If
+
+                    If (g_mFtpMenuSplit IsNot Nothing AndAlso Not g_mFtpMenuSplit.IsDisposed) Then
+                        g_mFtpMenuSplit.Dispose()
+                        g_mFtpMenuSplit = Nothing
+                    End If
+
+                    If (g_mFtpMenuItem IsNot Nothing AndAlso Not g_mFtpMenuItem.IsDisposed) Then
+                        g_mFtpMenuItem.Dispose()
+                        g_mFtpMenuItem = Nothing
+                    End If
                 End If
 
                 ' TODO: free unmanaged resources (unmanaged objects) and override Finalize() below.
