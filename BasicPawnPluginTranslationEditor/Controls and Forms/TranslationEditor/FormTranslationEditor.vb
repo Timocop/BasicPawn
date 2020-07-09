@@ -742,43 +742,42 @@ Public Class FormTranslationEditor
 
             'Return mLanguagesOS.ToArray
 
-            Static mLanguages As List(Of KeyValuePair(Of String, String)) = Nothing
+            Static mLanguages As Dictionary(Of String, String) = Nothing
 
             If (mLanguages Is Nothing) Then
-                mLanguages = New List(Of KeyValuePair(Of String, String)) From {
-                            New KeyValuePair(Of String, String)("en", "English"),
-                            New KeyValuePair(Of String, String)("ar", "Arabic"),
-                            New KeyValuePair(Of String, String)("pt", "Brazilian"),
-                            New KeyValuePair(Of String, String)("bg", "Bulgarian"),
-                            New KeyValuePair(Of String, String)("cze", "Czech"),
-                            New KeyValuePair(Of String, String)("da", "Danish"),
-                            New KeyValuePair(Of String, String)("nl", "Dutch"),
-                            New KeyValuePair(Of String, String)("fi", "Finnish"),
-                            New KeyValuePair(Of String, String)("fr", "French"),
-                            New KeyValuePair(Of String, String)("de", "German"),
-                            New KeyValuePair(Of String, String)("el", "Greek"),
-                            New KeyValuePair(Of String, String)("he", "Hebrew"),
-                            New KeyValuePair(Of String, String)("hu", "Hungarian"),
-                            New KeyValuePair(Of String, String)("it", "Italian"),
-                            New KeyValuePair(Of String, String)("jp", "Japanese"),
-                            New KeyValuePair(Of String, String)("ko", "KoreanA"),
-                            New KeyValuePair(Of String, String)("ko", "Korean"),
-                            New KeyValuePair(Of String, String)("lv", "Latvian"),
-                            New KeyValuePair(Of String, String)("lt", "Lithuanian"),
-                            New KeyValuePair(Of String, String)("no", "Norwegian"),
-                            New KeyValuePair(Of String, String)("pl", "Polish"),
-                            New KeyValuePair(Of String, String)("pt_p", "Portuguese"),
-                            New KeyValuePair(Of String, String)("ro", "Romanian"),
-                            New KeyValuePair(Of String, String)("ru", "Russian"),
-                            New KeyValuePair(Of String, String)("chi", "SChinese"),
-                            New KeyValuePair(Of String, String)("sk", "Slovak"),
-                            New KeyValuePair(Of String, String)("es", "Spanish"),
-                            New KeyValuePair(Of String, String)("sv", "Swedish"),
-                            New KeyValuePair(Of String, String)("zho", "TChinese"),
-                            New KeyValuePair(Of String, String)("th", "Thai"),
-                            New KeyValuePair(Of String, String)("tr", "Turkish"),
-                            New KeyValuePair(Of String, String)("ua", "Ukrainian")
-                        }
+                mLanguages = New Dictionary(Of String, String)
+                mLanguages("en") = "English"
+                mLanguages("ar") = "Arabic"
+                mLanguages("pt") = "Brazilian"
+                mLanguages("bg") = "Bulgarian"
+                mLanguages("cze") = "Czech"
+                mLanguages("da") = "Danish"
+                mLanguages("nl") = "Dutch"
+                mLanguages("fi") = "Finnish"
+                mLanguages("fr") = "French"
+                mLanguages("de") = "German"
+                mLanguages("el") = "Greek"
+                mLanguages("he") = "Hebrew"
+                mLanguages("hu") = "Hungarian"
+                mLanguages("it") = "Italian"
+                mLanguages("jp") = "Japanese"
+                mLanguages("ko") = "KoreanA"
+                mLanguages("ko") = "Korean"
+                mLanguages("lv") = "Latvian"
+                mLanguages("lt") = "Lithuanian"
+                mLanguages("no") = "Norwegian"
+                mLanguages("pl") = "Polish"
+                mLanguages("pt_p") = "Portuguese"
+                mLanguages("ro") = "Romanian"
+                mLanguages("ru") = "Russian"
+                mLanguages("chi") = "SChinese"
+                mLanguages("sk") = "Slovak"
+                mLanguages("es") = "Spanish"
+                mLanguages("sv") = "Swedish"
+                mLanguages("zho") = "TChinese"
+                mLanguages("th") = "Thai"
+                mLanguages("tr") = "Turkish"
+                mLanguages("ua") = "Ukrainian"
             End If
 
             Return mLanguages.ToArray
