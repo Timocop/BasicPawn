@@ -6,6 +6,7 @@ And finally the syntax style file, all files must have the same name!
 Should be like this:
  - Syntax Name (Folder)
    - MySyntax.png (Optional)
+     - *To make a good screenshot open 'adminhelp.sp' located in the SourceMod scripting directory and make sure atleast Line 28 to 58 is visible*
    - MySyntax.xml
    - README.md (e.g. Made by <name> / Preview Image etc.)
    
