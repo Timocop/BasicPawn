@@ -69,6 +69,8 @@ Partial Class FormSearch
         Me.GroupBox5 = New System.Windows.Forms.GroupBox()
         Me.CheckBox_ReplaceInSelection = New System.Windows.Forms.CheckBox()
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
+        Me.GroupBox7 = New System.Windows.Forms.GroupBox()
+        Me.CheckBox_ListMergeLines = New System.Windows.Forms.CheckBox()
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
@@ -79,6 +81,7 @@ Partial Class FormSearch
         Me.GroupBox4.SuspendLayout()
         CType(Me.TrackBar_Transparency, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox5.SuspendLayout()
+        Me.GroupBox7.SuspendLayout()
         Me.SuspendLayout()
         '
         'Label1
@@ -376,6 +379,7 @@ Partial Class FormSearch
         Me.Panel1.Controls.Add(Me.GroupBox2)
         Me.Panel1.Controls.Add(Me.GroupBox1)
         Me.Panel1.Controls.Add(Me.GroupBox5)
+        Me.Panel1.Controls.Add(Me.GroupBox7)
         Me.Panel1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Panel1.Location = New System.Drawing.Point(0, 0)
         Me.Panel1.Margin = New System.Windows.Forms.Padding(0)
@@ -436,9 +440,9 @@ Partial Class FormSearch
         Me.CheckBox_SingleInstance.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.CheckBox_SingleInstance.Location = New System.Drawing.Point(12, 287)
         Me.CheckBox_SingleInstance.Name = "CheckBox_SingleInstance"
-        Me.CheckBox_SingleInstance.Size = New System.Drawing.Size(110, 18)
+        Me.CheckBox_SingleInstance.Size = New System.Drawing.Size(155, 18)
         Me.CheckBox_SingleInstance.TabIndex = 21
-        Me.CheckBox_SingleInstance.Text = "Single instance"
+        Me.CheckBox_SingleInstance.Text = "Single window instance"
         Me.CheckBox_SingleInstance.UseVisualStyleBackColor = True
         '
         'Button_ReplaceNext
@@ -544,7 +548,7 @@ Partial Class FormSearch
         Me.CheckBox_Transparency.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.CheckBox_Transparency.Location = New System.Drawing.Point(6, 0)
         Me.CheckBox_Transparency.Name = "CheckBox_Transparency"
-        Me.CheckBox_Transparency.Size = New System.Drawing.Size(98, 18)
+        Me.CheckBox_Transparency.Size = New System.Drawing.Size(99, 18)
         Me.CheckBox_Transparency.TabIndex = 0
         Me.CheckBox_Transparency.Text = "Transparency"
         Me.CheckBox_Transparency.UseVisualStyleBackColor = True
@@ -575,6 +579,27 @@ Partial Class FormSearch
         Me.ToolTip1.AutoPopDelay = 25000
         Me.ToolTip1.InitialDelay = 500
         Me.ToolTip1.ReshowDelay = 100
+        '
+        'GroupBox7
+        '
+        Me.GroupBox7.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.GroupBox7.Controls.Add(Me.CheckBox_ListMergeLines)
+        Me.GroupBox7.Location = New System.Drawing.Point(276, 90)
+        Me.GroupBox7.Name = "GroupBox7"
+        Me.GroupBox7.Size = New System.Drawing.Size(234, 36)
+        Me.GroupBox7.TabIndex = 17
+        Me.GroupBox7.TabStop = False
+        '
+        'CheckBox_ListMergeLines
+        '
+        Me.CheckBox_ListMergeLines.AutoSize = True
+        Me.CheckBox_ListMergeLines.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_ListMergeLines.Location = New System.Drawing.Point(6, 13)
+        Me.CheckBox_ListMergeLines.Name = "CheckBox_ListMergeLines"
+        Me.CheckBox_ListMergeLines.Size = New System.Drawing.Size(92, 18)
+        Me.CheckBox_ListMergeLines.TabIndex = 0
+        Me.CheckBox_ListMergeLines.Text = "Merge lines"
+        Me.CheckBox_ListMergeLines.UseVisualStyleBackColor = True
         '
         'FormSearch
         '
@@ -608,6 +633,8 @@ Partial Class FormSearch
         CType(Me.TrackBar_Transparency, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupBox5.ResumeLayout(False)
         Me.GroupBox5.PerformLayout()
+        Me.GroupBox7.ResumeLayout(False)
+        Me.GroupBox7.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -658,4 +685,6 @@ Partial Class FormSearch
     Friend WithEvents RadioButton_ListTypeIncludes As RadioButton
     Friend WithEvents RadioButton_ListTypeTabs As RadioButton
     Friend WithEvents RadioButton_ListTypeCurrent As RadioButton
+    Friend WithEvents GroupBox7 As GroupBox
+    Friend WithEvents CheckBox_ListMergeLines As CheckBox
 End Class

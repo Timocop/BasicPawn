@@ -585,24 +585,62 @@ Public Class FormSearch
     End Function
 
     ''' <summary>
+    ''' Gets the line begin index from an index.
+    ''' </summary>
+    ''' <param name="sSource"></param>
+    ''' <param name="iIndex"></param>
+    ''' <returns></returns>
+    Private Function GetLineBeginIndexByIndex(sSource As String, iIndex As Integer) As Integer
+        For i = iIndex To 0 Step -1
+            If (sSource(i) = vbLf) Then
+                Return Math.Min(i + 1, sSource.Length - 1)
+            End If
+        Next
+
+        Return 0
+    End Function
+
+    ''' <summary>
+    ''' Gets the line end index from an index.
+    ''' </summary>
+    ''' <param name="sSource"></param>
+    ''' <param name="iIndex"></param>
+    ''' <returns></returns>
+    Private Function GetLineEndIndexByIndex(sSource As String, iIndex As Integer) As Integer
+        For i = iIndex To sSource.Length - 1
+            If (sSource(i) = vbLf) Then
+                Return i
+            End If
+        Next
+
+        Return sSource.Length - 1
+    End Function
+
+    ''' <summary>
     ''' Does the search and gets all results.
     ''' </summary>
     ''' <returns></returns>
     Private Function DoSearch(iSearchType As ENUM_SEARCH_TYPE) As STRUC_SEARCH_RESULTS()
-        If (String.IsNullOrEmpty(TextBox_Search.Text) OrElse TextBox_Search.Text.Trim.Length < 1) Then
+        Dim sSearchText As String = TextBox_Search.Text
+
+        If (String.IsNullOrEmpty(sSearchText) OrElse sSearchText.Trim.Length < 1) Then
             ToolStripStatusLabel_Status.Text = "Unable to search 'nothing'!"
             Return Nothing
         End If
 
         Dim mRegex As Regex
         Dim bNormalMode As Boolean = RadioButton_ModeNormal.Checked
+        Dim bWholeWord As Boolean = CheckBox_WholeWord.Checked
+        Dim bCastSensitive As Boolean = CheckBox_CaseSensitive.Checked
+        Dim bMultiLine As Boolean = CheckBox_Multiline.Checked
+        Dim bMergeLines As Boolean = CheckBox_ListMergeLines.Checked
 
         Try
             Select Case (bNormalMode)
                 Case True
-                    mRegex = New Regex(If(CheckBox_WholeWord.Checked, "\b", "") & Regex.Escape(TextBox_Search.Text) & If(CheckBox_WholeWord.Checked, "\b", ""), If(CheckBox_CaseSensitive.Checked, RegexOptions.None, RegexOptions.IgnoreCase))
+                    mRegex = New Regex(If(bWholeWord, "\b", "") & Regex.Escape(sSearchText) & If(bWholeWord, "\b", ""), If(bCastSensitive, RegexOptions.None, RegexOptions.IgnoreCase))
                 Case Else
-                    mRegex = New Regex(TextBox_Search.Text, If(CheckBox_CaseSensitive.Checked, RegexOptions.None, RegexOptions.IgnoreCase) Or If(CheckBox_Multiline.Checked, RegexOptions.Multiline, RegexOptions.None))
+                    mRegex = New Regex(sSearchText, If(bCastSensitive, RegexOptions.None, RegexOptions.IgnoreCase) Or If(bMultiLine, RegexOptions.Multiline, RegexOptions.None))
             End Select
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
@@ -617,7 +655,7 @@ Public Class FormSearch
                 Dim sSource As String = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
 
                 For Each mMatch As Match In mRegex.Matches(sSource)
-                    lResults.Add(New STRUC_SEARCH_RESULTS With {
+                    Dim mResult As New STRUC_SEARCH_RESULTS With {
                         .sText = GetFullLineByIndex(sSource, mMatch.Index),
                         .iLocation = mMatch.Index,
                         .iLength = mMatch.Length,
@@ -625,7 +663,20 @@ Public Class FormSearch
                         .sFile = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File,
                         .sTabIdentifier = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Identifier,
                         .mMatch = If(bNormalMode, Nothing, mMatch)
-                    })
+                    }
+
+                    If (bMergeLines) Then
+                        If (lResults.Exists(Function(x As STRUC_SEARCH_RESULTS)
+                                                Return (x.iLine = mResult.iLine AndAlso x.sFile = mResult.sFile AndAlso x.sTabIdentifier = mResult.sTabIdentifier)
+                                            End Function)) Then
+                            Continue For
+                        End If
+
+                        mResult.iLocation = GetLineBeginIndexByIndex(sSource, mMatch.Index)
+                        mResult.iLength = GetFullLineByIndex(sSource, mMatch.Index).Length
+                    End If
+
+                    lResults.Add(mResult)
                 Next
 
             Case ENUM_SEARCH_TYPE.ALL_TABS
@@ -633,7 +684,7 @@ Public Class FormSearch
                     Dim sSource As String = g_mFormMain.g_ClassTabControl.m_Tab(i).m_TextEditor.Document.TextContent
 
                     For Each mMatch As Match In mRegex.Matches(sSource)
-                        lResults.Add(New STRUC_SEARCH_RESULTS With {
+                        Dim mResult As New STRUC_SEARCH_RESULTS With {
                             .sText = GetFullLineByIndex(sSource, mMatch.Index),
                             .iLocation = mMatch.Index,
                             .iLength = mMatch.Length,
@@ -641,7 +692,20 @@ Public Class FormSearch
                             .sFile = g_mFormMain.g_ClassTabControl.m_Tab(i).m_File,
                             .sTabIdentifier = g_mFormMain.g_ClassTabControl.m_Tab(i).m_Identifier,
                             .mMatch = If(bNormalMode, Nothing, mMatch)
-                        })
+                        }
+
+                        If (bMergeLines) Then
+                            If (lResults.Exists(Function(x As STRUC_SEARCH_RESULTS)
+                                                    Return (x.iLine = mResult.iLine AndAlso x.sFile = mResult.sFile AndAlso x.sTabIdentifier = mResult.sTabIdentifier)
+                                                End Function)) Then
+                                Continue For
+                            End If
+
+                            mResult.iLocation = GetLineBeginIndexByIndex(sSource, mMatch.Index)
+                            mResult.iLength = GetFullLineByIndex(sSource, mMatch.Index).Length
+                        End If
+
+                        lResults.Add(mResult)
                     Next
                 Next
 
@@ -664,7 +728,7 @@ Public Class FormSearch
                     End If
 
                     For Each mMatch As Match In mRegex.Matches(sSource)
-                        lResults.Add(New STRUC_SEARCH_RESULTS With {
+                        Dim mResult As New STRUC_SEARCH_RESULTS With {
                             .sText = GetFullLineByIndex(sSource, mMatch.Index),
                             .iLocation = mMatch.Index,
                             .iLength = mMatch.Length,
@@ -672,7 +736,20 @@ Public Class FormSearch
                             .sFile = mInclude.Value,
                             .sTabIdentifier = sTabIdentifier,
                             .mMatch = If(bNormalMode, Nothing, mMatch)
-                        })
+                        }
+
+                        If (bMergeLines) Then
+                            If (lResults.Exists(Function(x As STRUC_SEARCH_RESULTS)
+                                                    Return (x.iLine = mResult.iLine AndAlso x.sFile = mResult.sFile AndAlso x.sTabIdentifier = mResult.sTabIdentifier)
+                                                End Function)) Then
+                                Continue For
+                            End If
+
+                            mResult.iLocation = GetLineBeginIndexByIndex(sSource, mMatch.Index)
+                            mResult.iLength = GetFullLineByIndex(sSource, mMatch.Index).Length
+                        End If
+
+                        lResults.Add(mResult)
                     Next
                 Next
         End Select
