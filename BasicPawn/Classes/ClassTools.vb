@@ -201,6 +201,22 @@ Public Class ClassTools
 
             Return iBytes.ToString("0.##") & " " & sNames(i)
         End Function
+
+        Public Shared Function ToSafeKey(sText As String) As String
+            If (sText Is Nothing) Then
+                Return Nothing
+            End If
+
+            Return ClassCrypto.ClassBase.ToBase64(sText, Encoding.UTF8)
+        End Function
+
+        Public Shared Function ToUnsafeKey(sText As String) As String
+            If (sText Is Nothing) Then
+                Return Nothing
+            End If
+
+            Return ClassCrypto.ClassBase.FromBase64(sText, Encoding.UTF8)
+        End Function
     End Class
 
     Class ClassControls

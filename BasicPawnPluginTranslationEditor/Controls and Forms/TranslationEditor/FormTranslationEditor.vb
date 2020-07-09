@@ -233,12 +233,14 @@ Public Class FormTranslationEditor
                 'Merge duplicated translations
                 Dim mMergedTranslations As New Dictionary(Of String, ClassTranslation)
                 For Each mTranslation In mTranslations
-                    If (Not mMergedTranslations.ContainsKey(mTranslation.m_Name)) Then
-                        mMergedTranslations(mTranslation.m_Name) = New ClassTranslation(mTranslation.m_Name)
+                    Dim sSafeTranslationName As String = ClassTools.ClassStrings.ToSafeKey(mTranslation.m_Name)
+
+                    If (Not mMergedTranslations.ContainsKey(sSafeTranslationName)) Then
+                        mMergedTranslations(sSafeTranslationName) = New ClassTranslation(mTranslation.m_Name)
                     End If
 
                     For Each mItem In mTranslation.m_TranslationItems
-                        Dim mTranslationItems = mMergedTranslations(mTranslation.m_Name).m_TranslationItems
+                        Dim mTranslationItems = mMergedTranslations(sSafeTranslationName).m_TranslationItems
 
                         If (mTranslationItems.Exists(Function(x As ClassTranslation.ClassTranslationItem)
                                                          Return (x.m_Language = mItem.m_Language)
@@ -455,8 +457,10 @@ Public Class FormTranslationEditor
 
             Dim mTranslationsSplited As New Dictionary(Of String, List(Of ClassTranslation))
             For Each sLanguage In mKnownLanguages
-                If (Not mTranslationsSplited.ContainsKey(sLanguage)) Then
-                    mTranslationsSplited(sLanguage) = New List(Of ClassTranslation)
+                Dim sSafeLanguage As String = ClassTools.ClassStrings.ToSafeKey(sLanguage)
+
+                If (Not mTranslationsSplited.ContainsKey(sSafeLanguage)) Then
+                    mTranslationsSplited(sSafeLanguage) = New List(Of ClassTranslation)
                 End If
 
                 For Each mTranslation In mTranslationsAnon
@@ -467,7 +471,7 @@ Public Class FormTranslationEditor
 
                     Dim mNewTranslation As New ClassTranslation(mTranslation.m_Name)
                     mNewTranslation.m_TranslationItems.Add(mTransItem)
-                    mTranslationsSplited(sLanguage).Add(mNewTranslation)
+                    mTranslationsSplited(sSafeLanguage).Add(mNewTranslation)
                 Next
             Next
 
@@ -495,8 +499,10 @@ Public Class FormTranslationEditor
 
             Dim mTranslationsSorted As New Dictionary(Of String, List(Of ClassTranslation.ClassTranslationItem))
             For Each sName In mKnownNames
-                If (Not mTranslationsSorted.ContainsKey(sName)) Then
-                    mTranslationsSorted(sName) = New List(Of ClassTranslation.ClassTranslationItem)
+                Dim sSafeName As String = ClassTools.ClassStrings.ToSafeKey(sName)
+
+                If (Not mTranslationsSorted.ContainsKey(sSafeName)) Then
+                    mTranslationsSorted(sSafeName) = New List(Of ClassTranslation.ClassTranslationItem)
                 End If
 
                 For Each mItem In mTranslationsAnon
@@ -504,7 +510,7 @@ Public Class FormTranslationEditor
                         Continue For
                     End If
 
-                    mTranslationsSorted(sName).Add(mItem.m_TranslationItems(0))
+                    mTranslationsSorted(sSafeName).Add(mItem.m_TranslationItems(0))
                 Next
             Next
 
@@ -904,7 +910,7 @@ Public Class FormTranslationEditor
                 End If
 
                 Me.Text = sLangauge
-                Me.Name = sLangauge
+                Me.Name = ClassTools.ClassStrings.ToSafeKey(sLangauge)
                 Me.Tag = New String() {sFormat, sDisplayText}
 
                 Select Case (iType)
@@ -914,7 +920,7 @@ Public Class FormTranslationEditor
                         g_sText = Nothing
 
                         Me.Text = sName
-                        Me.Name = sName
+                        Me.Name = ClassTools.ClassStrings.ToSafeKey(sName)
                         Me.Tag = Nothing
 
                         Me.ImageKey = CStr(ENUM_TRANSLATION_IMAGE_INDEX.MAIN)
