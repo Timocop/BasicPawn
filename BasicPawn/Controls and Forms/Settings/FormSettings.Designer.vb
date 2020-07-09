@@ -117,6 +117,7 @@ Partial Class FormSettings
         Me.CheckBox_SwitchTabToAutocomplete = New System.Windows.Forms.CheckBox()
         Me.CheckBox_AutoCloseBrackets = New System.Windows.Forms.CheckBox()
         Me.GroupBox14 = New System.Windows.Forms.GroupBox()
+        Me.Label34 = New System.Windows.Forms.Label()
         Me.NumericUpDown_MaxParseCache = New System.Windows.Forms.NumericUpDown()
         Me.Label33 = New System.Windows.Forms.Label()
         Me.NumericUpDown_MaxParseThreads = New System.Windows.Forms.NumericUpDown()
@@ -229,7 +230,8 @@ Partial Class FormSettings
         Me.TableLayoutPanel3 = New System.Windows.Forms.TableLayoutPanel()
         Me.ClassPictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
         Me.Label17 = New System.Windows.Forms.Label()
-        Me.Label34 = New System.Windows.Forms.Label()
+        Me.CheckBox_AutoSaveSource = New System.Windows.Forms.CheckBox()
+        Me.CheckBox_AutoSaveSourceTemp = New System.Windows.Forms.CheckBox()
         Me.ContextMenuStrip_Plugins.SuspendLayout()
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Settings.SuspendLayout()
@@ -363,25 +365,27 @@ Partial Class FormSettings
         '
         Me.LinkLabel_ThreadUpdateRateHelp.AutoSize = True
         Me.LinkLabel_ThreadUpdateRateHelp.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LinkLabel_ThreadUpdateRateHelp.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
         Me.LinkLabel_ThreadUpdateRateHelp.Location = New System.Drawing.Point(285, 24)
         Me.LinkLabel_ThreadUpdateRateHelp.Name = "LinkLabel_ThreadUpdateRateHelp"
         Me.LinkLabel_ThreadUpdateRateHelp.Padding = New System.Windows.Forms.Padding(0, 2, 0, 2)
-        Me.LinkLabel_ThreadUpdateRateHelp.Size = New System.Drawing.Size(12, 17)
+        Me.LinkLabel_ThreadUpdateRateHelp.Size = New System.Drawing.Size(26, 17)
         Me.LinkLabel_ThreadUpdateRateHelp.TabIndex = 27
         Me.LinkLabel_ThreadUpdateRateHelp.TabStop = True
-        Me.LinkLabel_ThreadUpdateRateHelp.Text = "?"
+        Me.LinkLabel_ThreadUpdateRateHelp.Text = "( ? )"
         Me.ToolTip_Info.SetToolTip(Me.LinkLabel_ThreadUpdateRateHelp, resources.GetString("LinkLabel_ThreadUpdateRateHelp.ToolTip"))
         '
         'LinkLabel_FullAutocompleteReTaggingHelp
         '
         Me.LinkLabel_FullAutocompleteReTaggingHelp.AutoSize = True
         Me.LinkLabel_FullAutocompleteReTaggingHelp.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LinkLabel_FullAutocompleteReTaggingHelp.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
         Me.LinkLabel_FullAutocompleteReTaggingHelp.Location = New System.Drawing.Point(296, 47)
         Me.LinkLabel_FullAutocompleteReTaggingHelp.Name = "LinkLabel_FullAutocompleteReTaggingHelp"
-        Me.LinkLabel_FullAutocompleteReTaggingHelp.Size = New System.Drawing.Size(12, 13)
+        Me.LinkLabel_FullAutocompleteReTaggingHelp.Size = New System.Drawing.Size(26, 13)
         Me.LinkLabel_FullAutocompleteReTaggingHelp.TabIndex = 29
         Me.LinkLabel_FullAutocompleteReTaggingHelp.TabStop = True
-        Me.LinkLabel_FullAutocompleteReTaggingHelp.Text = "?"
+        Me.LinkLabel_FullAutocompleteReTaggingHelp.Text = "( ? )"
         Me.ToolTip_Info.SetToolTip(Me.LinkLabel_FullAutocompleteReTaggingHelp, "Make enums look more ""strongly typed"" using re-tagging." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Eg. 'Enum:Name' instead " &
         "of 'Name'." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "NOTE: This can not be used with SourcePawn transitional syntax.")
         '
@@ -389,12 +393,13 @@ Partial Class FormSettings
         '
         Me.LinkLabel_DefaultConfigPathsHelp.AutoSize = True
         Me.LinkLabel_DefaultConfigPathsHelp.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LinkLabel_DefaultConfigPathsHelp.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
         Me.LinkLabel_DefaultConfigPathsHelp.Location = New System.Drawing.Point(209, 266)
         Me.LinkLabel_DefaultConfigPathsHelp.Name = "LinkLabel_DefaultConfigPathsHelp"
-        Me.LinkLabel_DefaultConfigPathsHelp.Size = New System.Drawing.Size(12, 13)
+        Me.LinkLabel_DefaultConfigPathsHelp.Size = New System.Drawing.Size(26, 13)
         Me.LinkLabel_DefaultConfigPathsHelp.TabIndex = 44
         Me.LinkLabel_DefaultConfigPathsHelp.TabStop = True
-        Me.LinkLabel_DefaultConfigPathsHelp.Text = "?"
+        Me.LinkLabel_DefaultConfigPathsHelp.Text = "( ? )"
         Me.ToolTip_Info.SetToolTip(Me.LinkLabel_DefaultConfigPathsHelp, "Opening a file from those paths will automatically switch to this config." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Howeve" &
         "r, files in 'Known files' overwrite this behaviour.")
         '
@@ -477,7 +482,7 @@ Partial Class FormSettings
         Me.GroupBox9.Controls.Add(Me.Button_ClearErrorLog)
         Me.GroupBox9.Controls.Add(Me.Button_ViewErrorLog)
         Me.GroupBox9.Dock = System.Windows.Forms.DockStyle.Top
-        Me.GroupBox9.Location = New System.Drawing.Point(6, 439)
+        Me.GroupBox9.Location = New System.Drawing.Point(6, 484)
         Me.GroupBox9.Name = "GroupBox9"
         Me.GroupBox9.Size = New System.Drawing.Size(740, 59)
         Me.GroupBox9.TabIndex = 34
@@ -521,7 +526,7 @@ Partial Class FormSettings
         Me.GroupBox12.Controls.Add(Me.Label14)
         Me.GroupBox12.Controls.Add(Me.LinkLabel_ThreadUpdateRateHelp)
         Me.GroupBox12.Dock = System.Windows.Forms.DockStyle.Top
-        Me.GroupBox12.Location = New System.Drawing.Point(6, 383)
+        Me.GroupBox12.Location = New System.Drawing.Point(6, 428)
         Me.GroupBox12.Name = "GroupBox12"
         Me.GroupBox12.Size = New System.Drawing.Size(740, 56)
         Me.GroupBox12.TabIndex = 36
@@ -567,7 +572,7 @@ Partial Class FormSettings
         Me.GroupBox8.Controls.Add(Me.CheckBox_AssociateAmxMod)
         Me.GroupBox8.Controls.Add(Me.CheckBox_AssociateSourcePawn)
         Me.GroupBox8.Dock = System.Windows.Forms.DockStyle.Top
-        Me.GroupBox8.Location = New System.Drawing.Point(6, 239)
+        Me.GroupBox8.Location = New System.Drawing.Point(6, 284)
         Me.GroupBox8.Name = "GroupBox8"
         Me.GroupBox8.Size = New System.Drawing.Size(740, 144)
         Me.GroupBox8.TabIndex = 33
@@ -639,7 +644,7 @@ Partial Class FormSettings
         '
         Me.GroupBox7.Controls.Add(Me.CheckBox_AutoOpenProjectFiles)
         Me.GroupBox7.Dock = System.Windows.Forms.DockStyle.Top
-        Me.GroupBox7.Location = New System.Drawing.Point(6, 186)
+        Me.GroupBox7.Location = New System.Drawing.Point(6, 231)
         Me.GroupBox7.Name = "GroupBox7"
         Me.GroupBox7.Size = New System.Drawing.Size(740, 53)
         Me.GroupBox7.TabIndex = 32
@@ -660,6 +665,8 @@ Partial Class FormSettings
         '
         'GroupBox6
         '
+        Me.GroupBox6.Controls.Add(Me.CheckBox_AutoSaveSourceTemp)
+        Me.GroupBox6.Controls.Add(Me.CheckBox_AutoSaveSource)
         Me.GroupBox6.Controls.Add(Me.CheckBox_TabCloseGoToPrevious)
         Me.GroupBox6.Controls.Add(Me.CheckBox_AlwaysNewInstance)
         Me.GroupBox6.Controls.Add(Me.CheckBox_AutoHoverScroll)
@@ -667,7 +674,7 @@ Partial Class FormSettings
         Me.GroupBox6.Dock = System.Windows.Forms.DockStyle.Top
         Me.GroupBox6.Location = New System.Drawing.Point(6, 60)
         Me.GroupBox6.Name = "GroupBox6"
-        Me.GroupBox6.Size = New System.Drawing.Size(740, 126)
+        Me.GroupBox6.Size = New System.Drawing.Size(740, 171)
         Me.GroupBox6.TabIndex = 31
         Me.GroupBox6.TabStop = False
         Me.GroupBox6.Text = "Behaviour"
@@ -1369,6 +1376,17 @@ Partial Class FormSettings
         Me.GroupBox14.TabIndex = 30
         Me.GroupBox14.TabStop = False
         Me.GroupBox14.Text = "Syntax Parsing"
+        '
+        'Label34
+        '
+        Me.Label34.AutoSize = True
+        Me.Label34.Location = New System.Drawing.Point(231, 170)
+        Me.Label34.Margin = New System.Windows.Forms.Padding(6, 6, 3, 6)
+        Me.Label34.Name = "Label34"
+        Me.Label34.Padding = New System.Windows.Forms.Padding(0, 2, 0, 2)
+        Me.Label34.Size = New System.Drawing.Size(85, 17)
+        Me.Label34.TabIndex = 32
+        Me.Label34.Text = "(0 = Automatic)"
         '
         'NumericUpDown_MaxParseCache
         '
@@ -2336,12 +2354,13 @@ Partial Class FormSettings
         '
         Me.LinkLabel_PostMacroHelp.AutoSize = True
         Me.LinkLabel_PostMacroHelp.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LinkLabel_PostMacroHelp.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
         Me.LinkLabel_PostMacroHelp.Location = New System.Drawing.Point(181, 178)
         Me.LinkLabel_PostMacroHelp.Name = "LinkLabel_PostMacroHelp"
-        Me.LinkLabel_PostMacroHelp.Size = New System.Drawing.Size(12, 13)
+        Me.LinkLabel_PostMacroHelp.Size = New System.Drawing.Size(26, 13)
         Me.LinkLabel_PostMacroHelp.TabIndex = 36
         Me.LinkLabel_PostMacroHelp.TabStop = True
-        Me.LinkLabel_PostMacroHelp.Text = "?"
+        Me.LinkLabel_PostMacroHelp.Text = "( ? )"
         '
         'Label9
         '
@@ -2380,12 +2399,13 @@ Partial Class FormSettings
         '
         Me.LinkLabel_PreMacroHelp.AutoSize = True
         Me.LinkLabel_PreMacroHelp.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LinkLabel_PreMacroHelp.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
         Me.LinkLabel_PreMacroHelp.Location = New System.Drawing.Point(175, 6)
         Me.LinkLabel_PreMacroHelp.Name = "LinkLabel_PreMacroHelp"
-        Me.LinkLabel_PreMacroHelp.Size = New System.Drawing.Size(12, 13)
+        Me.LinkLabel_PreMacroHelp.Size = New System.Drawing.Size(26, 13)
         Me.LinkLabel_PreMacroHelp.TabIndex = 35
         Me.LinkLabel_PreMacroHelp.TabStop = True
-        Me.LinkLabel_PreMacroHelp.Text = "?"
+        Me.LinkLabel_PreMacroHelp.Text = "( ? )"
         '
         'TextBox_PreBuildCmd
         '
@@ -2616,16 +2636,29 @@ Partial Class FormSettings
         Me.Label17.Text = "Loaded BasicPawn plugins are able to read stored database entries. Make sure all " &
     "installed plugins are from a trustworthy publisher to prevent theft."
         '
-        'Label34
+        'CheckBox_AutoSaveSource
         '
-        Me.Label34.AutoSize = True
-        Me.Label34.Location = New System.Drawing.Point(231, 170)
-        Me.Label34.Margin = New System.Windows.Forms.Padding(6, 6, 3, 6)
-        Me.Label34.Name = "Label34"
-        Me.Label34.Padding = New System.Windows.Forms.Padding(0, 2, 0, 2)
-        Me.Label34.Size = New System.Drawing.Size(85, 17)
-        Me.Label34.TabIndex = 32
-        Me.Label34.Text = "(0 = Automatic)"
+        Me.CheckBox_AutoSaveSource.AutoSize = True
+        Me.CheckBox_AutoSaveSource.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_AutoSaveSource.Location = New System.Drawing.Point(9, 117)
+        Me.CheckBox_AutoSaveSource.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_AutoSaveSource.Name = "CheckBox_AutoSaveSource"
+        Me.CheckBox_AutoSaveSource.Size = New System.Drawing.Size(243, 18)
+        Me.CheckBox_AutoSaveSource.TabIndex = 32
+        Me.CheckBox_AutoSaveSource.Text = "Automatically save source when changed"
+        Me.CheckBox_AutoSaveSource.UseVisualStyleBackColor = True
+        '
+        'CheckBox_AutoSaveSourceTemp
+        '
+        Me.CheckBox_AutoSaveSourceTemp.AutoSize = True
+        Me.CheckBox_AutoSaveSourceTemp.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_AutoSaveSourceTemp.Location = New System.Drawing.Point(9, 141)
+        Me.CheckBox_AutoSaveSourceTemp.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_AutoSaveSourceTemp.Name = "CheckBox_AutoSaveSourceTemp"
+        Me.CheckBox_AutoSaveSourceTemp.Size = New System.Drawing.Size(289, 18)
+        Me.CheckBox_AutoSaveSourceTemp.TabIndex = 33
+        Me.CheckBox_AutoSaveSourceTemp.Text = "Automatically save unnamed sources as temporary"
+        Me.CheckBox_AutoSaveSourceTemp.UseVisualStyleBackColor = True
         '
         'FormSettings
         '
@@ -2932,4 +2965,6 @@ Partial Class FormSettings
     Friend WithEvents CheckBox_ShowTabSymbols As CheckBox
     Friend WithEvents CheckBox_TabCloseGoToPrevious As CheckBox
     Friend WithEvents Label34 As Label
+    Friend WithEvents CheckBox_AutoSaveSource As CheckBox
+    Friend WithEvents CheckBox_AutoSaveSourceTemp As CheckBox
 End Class

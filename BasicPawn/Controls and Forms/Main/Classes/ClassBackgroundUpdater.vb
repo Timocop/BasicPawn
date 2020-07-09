@@ -99,58 +99,8 @@ Public Class ClassBackgroundUpdater
                     If (dLastRequestSyntaxParseDelay < Now AndAlso bIsFormMainFocused AndAlso g_mFormMain.g_ClassSyntaxParser.m_UpdateRequests.Count > 0) Then
                         dLastRequestSyntaxParseDelay = (Now + mRequestSyntaxParseDelay)
 
-                        Dim iMaxUpdateCount As Integer = (ClassSettings.GetMaxParsingThreads() - g_mFormMain.g_ClassSyntaxParser.GetAliveThreadCount)
-                        If (iMaxUpdateCount > 0) Then
-                            Dim sActiveTabIdentifier As String = mActiveTab.m_Identifier
-                            Dim mActiveTabRequest As ClassSyntaxParser.STRUC_SYNTAX_PARSE_TAB_REQUEST = Nothing
+                        UpdateSyntaxSchedule(mActiveTab)
 
-                            Dim mUpdateRequests = g_mFormMain.g_ClassSyntaxParser.m_UpdateRequests.ToArray
-                            Dim iRequestsLeft As Integer = iMaxUpdateCount
-
-                            For Each mRequest In mUpdateRequests
-                                If (mRequest.sTabIdentifier <> sActiveTabIdentifier) Then
-                                    Continue For
-                                End If
-
-                                mActiveTabRequest = mRequest
-                                Exit For
-                            Next
-
-                            'Active tabs have higher priority to update
-                            While (mActiveTabRequest IsNot Nothing)
-                                If (g_mFormMain.g_ClassSyntaxParser.IsThreadProcessing(mActiveTabRequest.sTabIdentifier)) Then
-                                    Exit While
-                                End If
-
-                                ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                                       g_mFormMain.g_ClassSyntaxParser.StartUpdateSchedule(ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS.ALL, mActiveTabRequest.sTabIdentifier, mActiveTabRequest.iOptionFlags)
-                                                                   End Sub)
-
-                                iRequestsLeft -= 1
-
-                                Exit While
-                            End While
-
-                            For Each mRequest In mUpdateRequests
-                                If (iRequestsLeft < 1) Then
-                                    Exit For
-                                End If
-
-                                If (mRequest Is mActiveTabRequest) Then
-                                    Continue For
-                                End If
-
-                                If (g_mFormMain.g_ClassSyntaxParser.IsThreadProcessing(mRequest.sTabIdentifier)) Then
-                                    Continue For
-                                End If
-
-                                ClassThread.ExecAsync(g_mFormMain, Sub()
-                                                                       g_mFormMain.g_ClassSyntaxParser.StartUpdateSchedule(ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS.ALL, mRequest.sTabIdentifier, mRequest.iOptionFlags)
-                                                                   End Sub)
-
-                                iRequestsLeft -= 1
-                            Next
-                        End If
                     ElseIf (dLastFullSyntaxParseDelay < Now AndAlso bIsFormMainFocused) Then
                         dLastFullSyntaxParseDelay = (Now + mFullSyntaxParseDelay)
 
@@ -261,6 +211,61 @@ Public Class ClassBackgroundUpdater
                 End Try
             End While
         End While
+    End Sub
+
+    Private Sub UpdateSyntaxSchedule(mActiveTab As ClassTabControl.ClassTab)
+        Dim iMaxUpdateCount As Integer = (ClassSettings.GetMaxParsingThreads() - g_mFormMain.g_ClassSyntaxParser.GetAliveThreadCount)
+        If (iMaxUpdateCount > 0) Then
+            Dim sActiveTabIdentifier As String = mActiveTab.m_Identifier
+            Dim mActiveTabRequest As ClassSyntaxParser.STRUC_SYNTAX_PARSE_TAB_REQUEST = Nothing
+
+            Dim mUpdateRequests = g_mFormMain.g_ClassSyntaxParser.m_UpdateRequests.ToArray
+            Dim iRequestsLeft As Integer = iMaxUpdateCount
+
+            For Each mRequest In mUpdateRequests
+                If (mRequest.sTabIdentifier <> sActiveTabIdentifier) Then
+                    Continue For
+                End If
+
+                mActiveTabRequest = mRequest
+                Exit For
+            Next
+
+            'Active tabs have higher priority to update
+            While (mActiveTabRequest IsNot Nothing)
+                If (g_mFormMain.g_ClassSyntaxParser.IsThreadProcessing(mActiveTabRequest.sTabIdentifier)) Then
+                    Exit While
+                End If
+
+                ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                       g_mFormMain.g_ClassSyntaxParser.StartUpdateSchedule(ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS.ALL, mActiveTabRequest.sTabIdentifier, mActiveTabRequest.iOptionFlags)
+                                                   End Sub)
+
+                iRequestsLeft -= 1
+
+                Exit While
+            End While
+
+            For Each mRequest In mUpdateRequests
+                If (iRequestsLeft < 1) Then
+                    Exit For
+                End If
+
+                If (mRequest Is mActiveTabRequest) Then
+                    Continue For
+                End If
+
+                If (g_mFormMain.g_ClassSyntaxParser.IsThreadProcessing(mRequest.sTabIdentifier)) Then
+                    Continue For
+                End If
+
+                ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                       g_mFormMain.g_ClassSyntaxParser.StartUpdateSchedule(ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS.ALL, mRequest.sTabIdentifier, mRequest.iOptionFlags)
+                                                   End Sub)
+
+                iRequestsLeft -= 1
+            Next
+        End If
     End Sub
 
     Private Sub UpdateMarkerHighlighting(mActiveTab As ClassTabControl.ClassTab)
@@ -401,5 +406,4 @@ Public Class ClassBackgroundUpdater
                                                g_mFormMain.g_mUCAutocomplete.g_ClassToolTip.UpdateToolTip(sMethodStart)
                                            End Sub)
     End Sub
-
 End Class

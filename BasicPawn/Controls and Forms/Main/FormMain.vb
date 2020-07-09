@@ -643,30 +643,51 @@ Public Class FormMain
         End Try
     End Sub
 
-    Private Sub FormMain_Move(sender As Object, e As EventArgs) Handles Me.Move
+    Private Sub Timer_AutoSave_Tick(sender As Object, e As EventArgs) Handles Timer_AutoSave.Tick
         Try
+            Timer_AutoSave.Stop()
+
             If (Not g_bFormPostLoad) Then
                 Return
             End If
 
-            g_mUCAutocomplete.g_ClassToolTip.UpdateToolTipFormLocation()
-        Catch ex As Exception
-            ClassExceptionLog.WriteToLogMessageBox(ex)
-        End Try
-    End Sub
-
-    Private Sub FormMain_SizeChanged(sender As Object, e As EventArgs) Handles Me.SizeChanged
-        Try
-            If (Not g_bFormPostLoad) Then
+            If (Not ClassSettings.g_bSettingsAutoSaveSource AndAlso Not ClassSettings.g_bSettingsAutoSaveSourceTemp) Then
                 Return
             End If
 
-            g_mUCAutocomplete.g_ClassToolTip.UpdateToolTipFormLocation()
+            Dim mActiveTab = g_ClassTabControl.m_ActiveTab
+
+            If (mActiveTab.m_Changed) Then
+                If (mActiveTab.m_IsUnsaved) Then
+                    If (Not ClassSettings.g_bSettingsAutoSaveSourceTemp) Then
+                        Return
+                    End If
+
+                    Dim sTempFile As String = String.Format("{0}.src", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
+                    IO.File.WriteAllText(sTempFile, "")
+
+                    mActiveTab.m_File = sTempFile
+                    mActiveTab.SaveFileTab(False)
+
+                    g_ClassSyntaxParser.StartUpdateSchedule(ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS.ALL)
+                Else
+                    If (Not ClassSettings.g_bSettingsAutoSaveSource) Then
+                        Return
+                    End If
+
+                    If (mActiveTab.m_InvalidFile) Then
+                        Return
+                    End If
+
+                    mActiveTab.SaveFileTab(False)
+                End If
+            End If
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
+        Finally
+            Timer_AutoSave.Start()
         End Try
     End Sub
-
     Private Sub Timer_SyntaxAnimation_Tick(sender As Object, e As EventArgs) Handles Timer_SyntaxAnimation.Tick
         Try
             Timer_SyntaxAnimation.Stop()
@@ -689,6 +710,31 @@ Public Class FormMain
             ClassExceptionLog.WriteToLogMessageBox(ex)
         Finally
             Timer_SyntaxAnimation.Start()
+        End Try
+    End Sub
+
+
+    Private Sub FormMain_Move(sender As Object, e As EventArgs) Handles Me.Move
+        Try
+            If (Not g_bFormPostLoad) Then
+                Return
+            End If
+
+            g_mUCAutocomplete.g_ClassToolTip.UpdateToolTipFormLocation()
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
+    Private Sub FormMain_SizeChanged(sender As Object, e As EventArgs) Handles Me.SizeChanged
+        Try
+            If (Not g_bFormPostLoad) Then
+                Return
+            End If
+
+            g_mUCAutocomplete.g_ClassToolTip.UpdateToolTipFormLocation()
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
     End Sub
 

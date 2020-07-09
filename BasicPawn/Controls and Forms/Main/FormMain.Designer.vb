@@ -163,9 +163,9 @@ Partial Class FormMain
         Me.ToolStripMenuItem_ShowTips = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_HelpAbout = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_TabClose = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripMenuItem_TabLastViewedRight = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_TabMoveRight = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_TabMoveLeft = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_TabLastViewedRight = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_TabLastViewedLeft = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_TabOpenInstance = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_NewUpdate = New System.Windows.Forms.ToolStripMenuItem()
@@ -210,6 +210,7 @@ Partial Class FormMain
         Me.TabPage_Autocomplete = New System.Windows.Forms.TabPage()
         Me.TabPage_Information = New System.Windows.Forms.TabPage()
         Me.TabPage_Bookmarks = New System.Windows.Forms.TabPage()
+        Me.Timer_AutoSave = New System.Windows.Forms.Timer(Me.components)
         Me.ContextMenuStrip_RightClick.SuspendLayout()
         Me.MenuStrip_BasicPawn.SuspendLayout()
         Me.SplitContainer_ToolboxSourceAndDetails.Panel1.SuspendLayout()
@@ -1208,18 +1209,6 @@ Partial Class FormMain
         Me.ToolStripMenuItem_TabClose.Text = "x"
         Me.ToolStripMenuItem_TabClose.ToolTipText = "Close current tab"
         '
-        'ToolStripMenuItem_TabLastViewedRight
-        '
-        Me.ToolStripMenuItem_TabLastViewedRight.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
-        Me.ToolStripMenuItem_TabLastViewedRight.AutoToolTip = True
-        Me.ToolStripMenuItem_TabLastViewedRight.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
-        Me.ToolStripMenuItem_TabLastViewedRight.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.ToolStripMenuItem_TabLastViewedRight.Name = "ToolStripMenuItem_TabLastViewedRight"
-        Me.ToolStripMenuItem_TabLastViewedRight.Padding = New System.Windows.Forms.Padding(0)
-        Me.ToolStripMenuItem_TabLastViewedRight.Size = New System.Drawing.Size(27, 20)
-        Me.ToolStripMenuItem_TabLastViewedRight.Text = ">>"
-        Me.ToolStripMenuItem_TabLastViewedRight.ToolTipText = "Navigate to next selected tab"
-        '
         'ToolStripMenuItem_TabMoveRight
         '
         Me.ToolStripMenuItem_TabMoveRight.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
@@ -1243,6 +1232,18 @@ Partial Class FormMain
         Me.ToolStripMenuItem_TabMoveLeft.Size = New System.Drawing.Size(19, 20)
         Me.ToolStripMenuItem_TabMoveLeft.Text = "<"
         Me.ToolStripMenuItem_TabMoveLeft.ToolTipText = "Move current tab left"
+        '
+        'ToolStripMenuItem_TabLastViewedRight
+        '
+        Me.ToolStripMenuItem_TabLastViewedRight.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
+        Me.ToolStripMenuItem_TabLastViewedRight.AutoToolTip = True
+        Me.ToolStripMenuItem_TabLastViewedRight.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
+        Me.ToolStripMenuItem_TabLastViewedRight.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.ToolStripMenuItem_TabLastViewedRight.Name = "ToolStripMenuItem_TabLastViewedRight"
+        Me.ToolStripMenuItem_TabLastViewedRight.Padding = New System.Windows.Forms.Padding(0)
+        Me.ToolStripMenuItem_TabLastViewedRight.Size = New System.Drawing.Size(27, 20)
+        Me.ToolStripMenuItem_TabLastViewedRight.Text = ">>"
+        Me.ToolStripMenuItem_TabLastViewedRight.ToolTipText = "Navigate to next selected tab"
         '
         'ToolStripMenuItem_TabLastViewedLeft
         '
@@ -1614,6 +1615,11 @@ Partial Class FormMain
         Me.TabPage_Bookmarks.Text = "Bookmarks"
         Me.TabPage_Bookmarks.UseVisualStyleBackColor = True
         '
+        'Timer_AutoSave
+        '
+        Me.Timer_AutoSave.Enabled = True
+        Me.Timer_AutoSave.Interval = 7500
+        '
         'FormMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -1832,4 +1838,5 @@ Partial Class FormMain
     Friend WithEvents ToolStripStatusLabel_Spacer As ToolStripStatusLabel
     Public WithEvents ToolStripMenuItem_TabLastViewedRight As ToolStripMenuItem
     Public WithEvents ToolStripMenuItem_TabLastViewedLeft As ToolStripMenuItem
+    Friend WithEvents Timer_AutoSave As Timer
 End Class

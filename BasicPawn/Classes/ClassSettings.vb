@@ -54,6 +54,8 @@ Public Class ClassSettings
     Public Shared g_bSettingsAutoHoverScroll As Boolean = False
     Public Shared g_iSettingsThreadUpdateRate As Integer = 500
     Public Shared g_bSettingsTabCloseGotoPrevious As Boolean = True
+    Public Shared g_bSettingsAutoSaveSource As Boolean = False
+    Public Shared g_bSettingsAutoSaveSourceTemp As Boolean = False
     'Text Editor
     Public Shared g_iSettingsTextEditorFont As Font = g_iSettingsDefaultEditorFont
     Public Shared g_iSettingsTabsToSpaces As Integer = 0
@@ -121,6 +123,8 @@ Public Class ClassSettings
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutoHoverScroll", If(g_bSettingsAutoHoverScroll, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorThreadUpdateRate", CStr(g_iSettingsThreadUpdateRate)))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TabCloseGotoPrevious", If(g_bSettingsTabCloseGotoPrevious, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutoSaveSource", If(g_bSettingsAutoSaveSource, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutoSaveSourceTemp", If(g_bSettingsAutoSaveSourceTemp, "1", "0")))
                 'Text Editor
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorFont", New FontConverter().ConvertToInvariantString(g_iSettingsTextEditorFont)))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "TextEditorTabsToSpaces", CStr(g_iSettingsTabsToSpaces)))
@@ -186,6 +190,8 @@ Public Class ClassSettings
                     End If
 
                     g_bSettingsTabCloseGotoPrevious = (mIni.ReadKeyValue("Editor", "TabCloseGotoPrevious", "1") <> "0")
+                    g_bSettingsAutoSaveSource = (mIni.ReadKeyValue("Editor", "AutoSaveSource", "0") <> "0")
+                    g_bSettingsAutoSaveSourceTemp = (mIni.ReadKeyValue("Editor", "AutoSaveSourceTemp", "0") <> "0")
 
                     'Text Editor
                     Dim mFont As Font = CType(New FontConverter().ConvertFromInvariantString(mIni.ReadKeyValue("Editor", "TextEditorFont", g_sSettingsDefaultEditorFont)), Font)

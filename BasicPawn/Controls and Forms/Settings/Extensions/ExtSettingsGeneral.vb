@@ -27,6 +27,8 @@ Partial Public Class FormSettings
         CheckBox_AutoHoverScroll.Checked = ClassSettings.g_bSettingsAutoHoverScroll
         NumericUpDown_ThreadUpdateRate.Value = ClassSettings.g_iSettingsThreadUpdateRate
         CheckBox_TabCloseGoToPrevious.Checked = ClassSettings.g_bSettingsTabCloseGotoPrevious
+        CheckBox_AutoSaveSource.Checked = ClassSettings.g_bSettingsAutoSaveSource
+        CheckBox_AutoSaveSourceTemp.Checked = ClassSettings.g_bSettingsAutoSaveSourceTemp
     End Sub
 
     Private Sub Apply_General()
@@ -40,6 +42,8 @@ Partial Public Class FormSettings
         ClassSettings.g_bSettingsAutoHoverScroll = CheckBox_AutoHoverScroll.Checked
         ClassSettings.g_iSettingsThreadUpdateRate = CInt(NumericUpDown_ThreadUpdateRate.Value)
         ClassSettings.g_bSettingsTabCloseGotoPrevious = CheckBox_TabCloseGoToPrevious.Checked
+        ClassSettings.g_bSettingsAutoSaveSource = CheckBox_AutoSaveSource.Checked
+        ClassSettings.g_bSettingsAutoSaveSourceTemp = CheckBox_AutoSaveSourceTemp.Checked
     End Sub
 
     Private Sub Button_ClearErrorLog_Click(sender As Object, e As EventArgs) Handles Button_ClearErrorLog.Click

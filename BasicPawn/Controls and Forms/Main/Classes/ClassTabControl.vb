@@ -1105,6 +1105,10 @@ Public Class ClassTabControl
             Return g_mFormMain.g_ClassTabControl.OpenFileTab(m_Index, sFile, bIgnoreSavePrompt)
         End Function
 
+        Public Function SaveFileTab(bSaveAs As Boolean) As Boolean
+            Return g_mFormMain.g_ClassTabControl.SaveFileTab(Me.m_Index, bSaveAs)
+        End Function
+
         Public Sub SelectTab()
             g_mFormMain.g_ClassTabControl.SelectTab(m_Index)
         End Sub
