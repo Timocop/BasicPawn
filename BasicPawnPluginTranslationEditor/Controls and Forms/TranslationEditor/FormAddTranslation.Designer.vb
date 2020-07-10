@@ -6,6 +6,10 @@ Partial Class FormAddTranslation
     <System.Diagnostics.DebuggerNonUserCode()> _
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
+            If (disposing) Then
+                CleanUp()
+            End If
+
             If disposing AndAlso components IsNot Nothing Then
                 components.Dispose()
             End If
@@ -70,6 +74,7 @@ Partial Class FormAddTranslation
         '
         'LinkLabel_OnlineTranslator
         '
+        Me.LinkLabel_OnlineTranslator.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.LinkLabel_OnlineTranslator.AutoSize = True
         Me.LinkLabel_OnlineTranslator.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
         Me.LinkLabel_OnlineTranslator.Location = New System.Drawing.Point(12, 18)

@@ -227,6 +227,10 @@ Public Class FormAddTranslation
         Return False
     End Function
 
+    Private Sub FormAddTranslation_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
+        CleanUp()
+    End Sub
+
     Private Sub CleanUp()
         If (g_mFormTranslator IsNot Nothing AndAlso Not g_mFormTranslator.IsDisposed) Then
             g_mFormTranslator.Dispose()
