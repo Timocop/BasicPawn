@@ -22,7 +22,7 @@ Public Class FormAddTranslation
     Private g_sLanguages As KeyValuePair(Of String, String)()
     Private g_mCustomLang As ClassLanguage = Nothing
 
-    Private g_mFormTranslator As FormTranslator = Nothing
+    Private g_mFormOnlineTranslator As FormOnlineTranslator = Nothing
 
     Enum ENUM_DIALOG_TYPE
         ADD
@@ -207,12 +207,12 @@ Public Class FormAddTranslation
     End Sub
 
     Private Sub LinkLabel_OnlineTranslator_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_OnlineTranslator.LinkClicked
-        If (g_mFormTranslator IsNot Nothing AndAlso Not g_mFormTranslator.IsDisposed) Then
+        If (g_mFormOnlineTranslator IsNot Nothing AndAlso Not g_mFormOnlineTranslator.IsDisposed) Then
             Return
         End If
 
-        g_mFormTranslator = New FormTranslator
-        g_mFormTranslator.Show(Me)
+        g_mFormOnlineTranslator = New FormOnlineTranslator
+        g_mFormOnlineTranslator.Show(Me)
     End Sub
 
     Private Function IsFormatValid() As Boolean
@@ -232,9 +232,9 @@ Public Class FormAddTranslation
     End Sub
 
     Private Sub CleanUp()
-        If (g_mFormTranslator IsNot Nothing AndAlso Not g_mFormTranslator.IsDisposed) Then
-            g_mFormTranslator.Dispose()
-            g_mFormTranslator = Nothing
+        If (g_mFormOnlineTranslator IsNot Nothing AndAlso Not g_mFormOnlineTranslator.IsDisposed) Then
+            g_mFormOnlineTranslator.Dispose()
+            g_mFormOnlineTranslator = Nothing
         End If
     End Sub
 End Class

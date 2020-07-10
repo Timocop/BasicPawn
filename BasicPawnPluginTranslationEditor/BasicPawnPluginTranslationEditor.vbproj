@@ -133,10 +133,10 @@
     <Compile Include="Controls and Forms\TranslationEditor\FormTranslationEditor.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Controls and Forms\TranslationEditor\FormTranslator.Designer.vb">
-      <DependentUpon>FormTranslator.vb</DependentUpon>
+    <Compile Include="Controls and Forms\TranslationEditor\FormOnlineTranslator.Designer.vb">
+      <DependentUpon>FormOnlineTranslator.vb</DependentUpon>
     </Compile>
-    <Compile Include="Controls and Forms\TranslationEditor\FormTranslator.vb">
+    <Compile Include="Controls and Forms\TranslationEditor\FormOnlineTranslator.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="PluginInfo.vb" />
@@ -185,8 +185,8 @@
     <EmbeddedResource Include="Controls and Forms\TranslationEditor\FormTranslationEditor.resx">
       <DependentUpon>FormTranslationEditor.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls and Forms\TranslationEditor\FormTranslator.resx">
-      <DependentUpon>FormTranslator.vb</DependentUpon>
+    <EmbeddedResource Include="Controls and Forms\TranslationEditor\FormOnlineTranslator.resx">
+      <DependentUpon>FormOnlineTranslator.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>

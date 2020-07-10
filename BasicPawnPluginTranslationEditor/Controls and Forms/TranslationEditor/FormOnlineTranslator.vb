@@ -15,14 +15,13 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 
-Imports System.Globalization
 Imports System.Text
 Imports System.Web.Script.Serialization
 
-Public Class FormTranslator
+Public Class FormOnlineTranslator
     Private g_ClassTranslator As ClassTranslator
 
-    Public Sub New()
+    Public Sub New(Optional sText As String = "", Optional sLang As String = "en")
         ' This call is required by the designer.
         InitializeComponent()
 
@@ -42,10 +41,14 @@ Public Class FormTranslator
             For Each mLang In ClassLanguage.GetSupportedLanguages
                 Dim iIndex As Integer = ComboBox_TranslateFrom.Items.Add(mLang)
 
-                If (mLang.m_Lang = "en") Then
+                If (mLang.m_Lang = sLang) Then
                     ComboBox_TranslateFrom.SelectedIndex = iIndex
                 End If
             Next
+
+            If (ComboBox_TranslateFrom.SelectedIndex = -1 AndAlso ComboBox_TranslateFrom.Items.Count > 0) Then
+                ComboBox_TranslateFrom.SelectedIndex = 0
+            End If
         Finally
             ComboBox_TranslateFrom.EndUpdate()
         End Try
@@ -61,9 +64,15 @@ Public Class FormTranslator
                     ComboBox_TranslateTo.SelectedIndex = iIndex
                 End If
             Next
+
+            If (ComboBox_TranslateTo.SelectedIndex = -1 AndAlso ComboBox_TranslateTo.Items.Count > 0) Then
+                ComboBox_TranslateTo.SelectedIndex = 0
+            End If
         Finally
             ComboBox_TranslateTo.EndUpdate()
         End Try
+
+        TextBox_TranslateFrom.Text = sText
     End Sub
 
     Private Sub FormTranslator_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -89,6 +98,10 @@ Public Class FormTranslator
         End If
 
         g_ClassTranslator.StartTranslate(sText, mLangFrom.m_Lang, mLangTo.m_Lang)
+    End Sub
+
+    Private Sub LinkLabel_Limits_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_Limits.LinkClicked
+        MessageBox.Show("With the Google Translator API you can only translate up to 100 times per hour. If you exceed the limit within an hour you'll be unable to translate text. Resulting in an '429 Too Many Requests' error.", "Service Limitations", MessageBoxButtons.OK, MessageBoxIcon.Information)
     End Sub
 
     Private Sub OnTranslationDone(sTranslatedText As String)
@@ -252,16 +265,44 @@ Public Class FormTranslator
     Class ClassTranslator
         Implements IDisposable
 
-        Private g_mFormTranslator As FormTranslator
+        Structure STRUC_TRANSLATION_CACHE
+            Public sText As String
+            Public sFromLang As String
+            Public sToLang As String
+
+            Public sTranslatedText As String
+
+            Public Sub New(_Text As String, _FromLang As String, _ToLang As String, _TranslatedText As String)
+                sText = _Text
+                sFromLang = _FromLang
+                sToLang = _ToLang
+
+                sTranslatedText = _TranslatedText
+            End Sub
+        End Structure
+
+        Shared ReadOnly g_mTranslationCache As New ClassSyncList(Of STRUC_TRANSLATION_CACHE)
+        Shared g_iMaxCacheSize As Integer = 1024
+
+        Private g_mFormTranslator As FormOnlineTranslator
         Private g_mFormProgress As FormProgress
 
         Event OnTranslationDone(sTranslatedText As String)
 
         Private g_mTranslateThread As Threading.Thread = Nothing
 
-        Public Sub New(mFormTranslator As FormTranslator)
+        Public Sub New(mFormTranslator As FormOnlineTranslator)
             g_mFormTranslator = mFormTranslator
         End Sub
+
+        Property m_CacheSize As Integer
+            Get
+                Return g_iMaxCacheSize
+            End Get
+            Set(value As Integer)
+                g_iMaxCacheSize = value
+            End Set
+        End Property
 
         Public Sub StartTranslate(sText As String, sLangFrom As String, sLangTo As String)
             If (ClassThread.IsValid(g_mTranslateThread)) Then
@@ -283,7 +324,7 @@ Public Class FormTranslator
                                                                                                                        g_mFormProgress.Show(g_mFormTranslator)
                                                                                                                    End Sub)
 
-                                                                  Dim sTranslatedText = TranslateText(sText, sLangFrom, sLangTo)
+                                                                  Dim sTranslatedText As String = TranslateText(sText, sLangFrom, sLangTo, True)
 
                                                                   RaiseEvent OnTranslationDone(sTranslatedText)
                                                               Finally
@@ -313,8 +354,53 @@ Public Class FormTranslator
             ClassThread.Abort(g_mTranslateThread)
         End Sub
 
-        Private Function TranslateText(sText As String, sLangFrom As String, sLangTo As String) As String
-            Dim sURL As String = "https://translate.googleapis.com/translate_a/single"
+        Private Sub AddToCache(sText As String, sFromLang As String, sToLang As String, sTranslatedText As String)
+            If (FindInCache(sText, sFromLang, sToLang) IsNot Nothing) Then
+                Return
+            End If
+
+            g_mTranslationCache.Add(New STRUC_TRANSLATION_CACHE(sText, sFromLang, sToLang, sTranslatedText))
+
+            While (g_mTranslationCache.Count > 0 AndAlso g_mTranslationCache.Count > g_iMaxCacheSize)
+                g_mTranslationCache.PopFirst()
+            End While
+        End Sub
+
+        Private Function FindInCache(sText As String, sFromLang As String, sToLang As String) As String
+            If (String.IsNullOrEmpty(sText)) Then
+                Return sText
+            End If
+
+            For Each mItem In g_mTranslationCache
+                If (mItem.sText <> sText) Then
+                    Continue For
+                End If
+
+                If (mItem.sFromLang <> sFromLang OrElse mItem.sToLang <> sToLang) Then
+                    Continue For
+                End If
+
+                Return mItem.sTranslatedText
+            Next
+
+            Return Nothing
+        End Function
+
+        Private Function TranslateText(sText As String, sLangFrom As String, sLangTo As String, bUseCache As Boolean) As String
+            If (String.IsNullOrEmpty(sText)) Then
+                Return sText
+            End If
+
+            Dim sTranslatedText As String = ""
+
+            If (bUseCache) Then
+                sTranslatedText = FindInCache(sText, sLangFrom, sLangTo)
+                If (sTranslatedText IsNot Nothing) Then
+                    Return sTranslatedText
+                End If
+            End If
+
+            Static sURL As String = "https://translate.googleapis.com/translate_a/single"
 
             Using mClient As New ClassWebClientEx()
                 mClient.Encoding = Encoding.UTF8
@@ -337,18 +423,29 @@ Public Class FormTranslator
                     Throw New ArgumentException("No results found")
                 End If
 
-                Dim mJson1 As Object() = TryCast(mJson(0), Object())
-                If (mJson1 Is Nothing OrElse mJson1.Length < 1) Then
+                Dim mJsonTranslationArray As Object() = TryCast(mJson(0), Object())
+                If (mJsonTranslationArray Is Nothing OrElse mJsonTranslationArray.Length < 1) Then
                     Throw New ArgumentException("Translation not found")
                 End If
 
-                Dim mJson2 As Object() = TryCast(mJson1(0), Object())
-                If (mJson2 Is Nothing OrElse mJson2.Length < 1) Then
-                    Throw New ArgumentException("Translation not found")
-                End If
+                Dim mTranslation As New StringBuilder
+                For Each mTranslationData In mJsonTranslationArray
+                    Dim mJsonTranslationData As Object() = TryCast(mTranslationData, Object())
+                    If (mJsonTranslationData Is Nothing OrElse mJsonTranslationData.Length < 1) Then
+                        Throw New ArgumentException("Translation data not found")
+                    End If
 
-                Return CStr(mJson2(0))
+                    mTranslation.Append(mJsonTranslationData(0))
+                Next
+
+                sTranslatedText = mTranslation.ToString
             End Using
+
+            If (bUseCache) Then
+                AddToCache(sText, sLangFrom, sLangTo, sTranslatedText)
+            End If
+
+            Return sTranslatedText
         End Function
 
 #Region "IDisposable Support"

@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class FormTranslator
+Partial Class FormOnlineTranslator
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
@@ -26,11 +26,12 @@ Partial Class FormTranslator
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormTranslator))
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormOnlineTranslator))
         Me.Panel_Footer = New System.Windows.Forms.Panel()
-        Me.Panel_FooterDark = New System.Windows.Forms.Panel()
-        Me.Button_Translate = New System.Windows.Forms.Button()
+        Me.LinkLabel_Limits = New System.Windows.Forms.LinkLabel()
         Me.Label1 = New System.Windows.Forms.Label()
+        Me.Button_Translate = New System.Windows.Forms.Button()
+        Me.Panel_FooterDark = New System.Windows.Forms.Panel()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.ComboBox_TranslateFrom = New System.Windows.Forms.ComboBox()
         Me.SplitContainer1 = New System.Windows.Forms.SplitContainer()
@@ -47,6 +48,7 @@ Partial Class FormTranslator
         'Panel_Footer
         '
         Me.Panel_Footer.BackColor = System.Drawing.SystemColors.Control
+        Me.Panel_Footer.Controls.Add(Me.LinkLabel_Limits)
         Me.Panel_Footer.Controls.Add(Me.Label1)
         Me.Panel_Footer.Controls.Add(Me.Button_Translate)
         Me.Panel_Footer.Controls.Add(Me.Panel_FooterDark)
@@ -56,14 +58,27 @@ Partial Class FormTranslator
         Me.Panel_Footer.Size = New System.Drawing.Size(624, 48)
         Me.Panel_Footer.TabIndex = 0
         '
-        'Panel_FooterDark
+        'LinkLabel_Limits
         '
-        Me.Panel_FooterDark.BackColor = System.Drawing.SystemColors.ControlDark
-        Me.Panel_FooterDark.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel_FooterDark.Location = New System.Drawing.Point(0, 0)
-        Me.Panel_FooterDark.Name = "Panel_FooterDark"
-        Me.Panel_FooterDark.Size = New System.Drawing.Size(624, 1)
-        Me.Panel_FooterDark.TabIndex = 0
+        Me.LinkLabel_Limits.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.LinkLabel_Limits.AutoSize = True
+        Me.LinkLabel_Limits.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
+        Me.LinkLabel_Limits.Location = New System.Drawing.Point(447, 18)
+        Me.LinkLabel_Limits.Name = "LinkLabel_Limits"
+        Me.LinkLabel_Limits.Size = New System.Drawing.Size(84, 13)
+        Me.LinkLabel_Limits.TabIndex = 2
+        Me.LinkLabel_Limits.TabStop = True
+        Me.LinkLabel_Limits.Text = "See Limitations"
+        '
+        'Label1
+        '
+        Me.Label1.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.Label1.AutoSize = True
+        Me.Label1.Location = New System.Drawing.Point(12, 18)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(162, 13)
+        Me.Label1.TabIndex = 1
+        Me.Label1.Text = "Powered by Google Translator"
         '
         'Button_Translate
         '
@@ -75,15 +90,14 @@ Partial Class FormTranslator
         Me.Button_Translate.Text = "Translate"
         Me.Button_Translate.UseVisualStyleBackColor = True
         '
-        'Label1
+        'Panel_FooterDark
         '
-        Me.Label1.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(12, 18)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(162, 13)
-        Me.Label1.TabIndex = 1
-        Me.Label1.Text = "Powered by Google Translator"
+        Me.Panel_FooterDark.BackColor = System.Drawing.SystemColors.ControlDark
+        Me.Panel_FooterDark.Dock = System.Windows.Forms.DockStyle.Top
+        Me.Panel_FooterDark.Location = New System.Drawing.Point(0, 0)
+        Me.Panel_FooterDark.Name = "Panel_FooterDark"
+        Me.Panel_FooterDark.Size = New System.Drawing.Size(624, 1)
+        Me.Panel_FooterDark.TabIndex = 0
         '
         'Label2
         '
@@ -138,6 +152,7 @@ Partial Class FormTranslator
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.TextBox_TranslateFrom.Location = New System.Drawing.Point(16, 46)
         Me.TextBox_TranslateFrom.Margin = New System.Windows.Forms.Padding(16, 9, 16, 16)
+        Me.TextBox_TranslateFrom.MaxLength = 1024
         Me.TextBox_TranslateFrom.Multiline = True
         Me.TextBox_TranslateFrom.Name = "TextBox_TranslateFrom"
         Me.TextBox_TranslateFrom.Size = New System.Drawing.Size(592, 128)
@@ -178,7 +193,7 @@ Partial Class FormTranslator
         Me.Label3.TabIndex = 4
         Me.Label3.Text = "Translate to"
         '
-        'FormTranslator
+        'FormOnlineTranslator
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
@@ -189,7 +204,7 @@ Partial Class FormTranslator
         Me.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MinimumSize = New System.Drawing.Size(640, 480)
-        Me.Name = "FormTranslator"
+        Me.Name = "FormOnlineTranslator"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Online Translator"
         Me.Panel_Footer.ResumeLayout(False)
@@ -214,4 +229,5 @@ Partial Class FormTranslator
     Friend WithEvents TextBox_TranslateTo As TextBox
     Friend WithEvents ComboBox_TranslateTo As ComboBox
     Friend WithEvents Label3 As Label
+    Friend WithEvents LinkLabel_Limits As LinkLabel
 End Class
