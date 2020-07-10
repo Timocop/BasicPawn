@@ -26,6 +26,7 @@ Partial Class FormAddTranslation
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormAddTranslation))
         Me.Button_Apply = New System.Windows.Forms.Button()
         Me.Panel_FooterControl = New System.Windows.Forms.Panel()
+        Me.LinkLabel_OnlineTranslator = New System.Windows.Forms.LinkLabel()
         Me.Button_Cancel = New System.Windows.Forms.Button()
         Me.Panel_FooterDarkControl = New System.Windows.Forms.Panel()
         Me.Label1 = New System.Windows.Forms.Label()
@@ -57,6 +58,7 @@ Partial Class FormAddTranslation
         'Panel_FooterControl
         '
         Me.Panel_FooterControl.BackColor = System.Drawing.SystemColors.Control
+        Me.Panel_FooterControl.Controls.Add(Me.LinkLabel_OnlineTranslator)
         Me.Panel_FooterControl.Controls.Add(Me.Button_Cancel)
         Me.Panel_FooterControl.Controls.Add(Me.Panel_FooterDarkControl)
         Me.Panel_FooterControl.Controls.Add(Me.Button_Apply)
@@ -65,6 +67,17 @@ Partial Class FormAddTranslation
         Me.Panel_FooterControl.Name = "Panel_FooterControl"
         Me.Panel_FooterControl.Size = New System.Drawing.Size(464, 48)
         Me.Panel_FooterControl.TabIndex = 1
+        '
+        'LinkLabel_OnlineTranslator
+        '
+        Me.LinkLabel_OnlineTranslator.AutoSize = True
+        Me.LinkLabel_OnlineTranslator.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
+        Me.LinkLabel_OnlineTranslator.Location = New System.Drawing.Point(12, 18)
+        Me.LinkLabel_OnlineTranslator.Name = "LinkLabel_OnlineTranslator"
+        Me.LinkLabel_OnlineTranslator.Size = New System.Drawing.Size(96, 13)
+        Me.LinkLabel_OnlineTranslator.TabIndex = 13
+        Me.LinkLabel_OnlineTranslator.TabStop = True
+        Me.LinkLabel_OnlineTranslator.Text = "Online Translator"
         '
         'Button_Cancel
         '
@@ -132,6 +145,7 @@ Partial Class FormAddTranslation
         'LinkLabel_LangCustom
         '
         Me.LinkLabel_LangCustom.AutoSize = True
+        Me.LinkLabel_LangCustom.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
         Me.LinkLabel_LangCustom.Location = New System.Drawing.Point(12, 99)
         Me.LinkLabel_LangCustom.Name = "LinkLabel_LangCustom"
         Me.LinkLabel_LangCustom.Size = New System.Drawing.Size(98, 13)
@@ -185,12 +199,13 @@ Partial Class FormAddTranslation
         'LinkLabel1
         '
         Me.LinkLabel1.AutoSize = True
+        Me.LinkLabel1.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
         Me.LinkLabel1.Location = New System.Drawing.Point(61, 121)
         Me.LinkLabel1.Name = "LinkLabel1"
-        Me.LinkLabel1.Size = New System.Drawing.Size(12, 13)
+        Me.LinkLabel1.Size = New System.Drawing.Size(24, 13)
         Me.LinkLabel1.TabIndex = 11
         Me.LinkLabel1.TabStop = True
-        Me.LinkLabel1.Text = "?"
+        Me.LinkLabel1.Text = "( ? )"
         Me.ToolTip_Information.SetToolTip(Me.LinkLabel1, resources.GetString("LinkLabel1.ToolTip"))
         '
         'ToolTip_Information
@@ -240,6 +255,7 @@ Partial Class FormAddTranslation
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Add Translation"
         Me.Panel_FooterControl.ResumeLayout(False)
+        Me.Panel_FooterControl.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -261,4 +277,5 @@ Partial Class FormAddTranslation
     Friend WithEvents LinkLabel1 As Windows.Forms.LinkLabel
     Friend WithEvents ToolTip_Information As Windows.Forms.ToolTip
     Friend WithEvents CheckBox_FormatInherit As Windows.Forms.CheckBox
+    Friend WithEvents LinkLabel_OnlineTranslator As LinkLabel
 End Class

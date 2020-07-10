@@ -726,22 +726,6 @@ Public Class FormTranslationEditor
         End Function
 
         Public Function GetKnownLangauges() As KeyValuePair(Of String, String)()
-            'Static mLanguagesOS As List(Of KeyValuePair(Of String, String)) = Nothing
-
-            'If (mLanguagesOS Is Nothing) Then
-            '    mLanguagesOS = New List(Of KeyValuePair(Of String, String))
-
-            '    For Each mInfo In CultureInfo.GetCultures(CultureTypes.AllCultures)
-            '        If (Not mInfo.IsNeutralCulture) Then
-            '            Continue For
-            '        End If
-
-            '        mLanguagesOS.Add(New KeyValuePair(Of String, String)(mInfo.Name, mInfo.DisplayName))
-            '    Next
-            'End If
-
-            'Return mLanguagesOS.ToArray
-
             Static mLanguages As Dictionary(Of String, String) = Nothing
 
             If (mLanguages Is Nothing) Then

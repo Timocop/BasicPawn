@@ -22,6 +22,8 @@ Public Class FormAddTranslation
     Private g_sLanguages As KeyValuePair(Of String, String)()
     Private g_mCustomLang As ClassLanguage = Nothing
 
+    Private g_mFormTranslator As FormTranslator = Nothing
+
     Enum ENUM_DIALOG_TYPE
         ADD
         EDIT
@@ -204,6 +206,15 @@ Public Class FormAddTranslation
         Me.DialogResult = DialogResult.OK
     End Sub
 
+    Private Sub LinkLabel_OnlineTranslator_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_OnlineTranslator.LinkClicked
+        If (g_mFormTranslator IsNot Nothing AndAlso Not g_mFormTranslator.IsDisposed) Then
+            Return
+        End If
+
+        g_mFormTranslator = New FormTranslator
+        g_mFormTranslator.Show(Me)
+    End Sub
+
     Private Function IsFormatValid() As Boolean
         If (String.IsNullOrEmpty(m_Format)) Then
             Return True
@@ -215,4 +226,11 @@ Public Class FormAddTranslation
 
         Return False
     End Function
+
+    Private Sub CleanUp()
+        If (g_mFormTranslator IsNot Nothing AndAlso Not g_mFormTranslator.IsDisposed) Then
+            g_mFormTranslator.Dispose()
+            g_mFormTranslator = Nothing
+        End If
+    End Sub
 End Class

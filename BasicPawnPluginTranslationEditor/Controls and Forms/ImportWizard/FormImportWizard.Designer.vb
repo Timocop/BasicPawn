@@ -165,6 +165,7 @@ Partial Class FormImportWizard
         '
         Me.LinkLabel_Help.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.LinkLabel_Help.AutoSize = True
+        Me.LinkLabel_Help.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
         Me.LinkLabel_Help.Location = New System.Drawing.Point(474, 128)
         Me.LinkLabel_Help.Name = "LinkLabel_Help"
         Me.LinkLabel_Help.Size = New System.Drawing.Size(125, 13)
