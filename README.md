@@ -33,6 +33,7 @@ Features:
 **Download: Click on 'Download'**
  - [FTP Plugin](Plugin%20Releases/BasicPawnPluginFTP)
  - [Automatic Error Reporting](Plugin%20Releases/BasicPawnPluginAutoErrorReport)
+ - [Translation Editor](Plugin%20Releases/BasicPawnPluginTranslationEditor)
  - [more...](Plugin%20Releases)
 
 ## Syntax Styles
