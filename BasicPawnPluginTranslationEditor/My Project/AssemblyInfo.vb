@@ -9,8 +9,8 @@ Imports System.Runtime.InteropServices
 ' Review the values of the assembly attributes
 
 <Assembly: AssemblyTitle("BasicPawnPluginTranslationEditor")>
-<Assembly: AssemblyDescription("")>
-<Assembly: AssemblyCompany("")>
+<Assembly: AssemblyDescription("Translation editor for SourceMod")>
+<Assembly: AssemblyCompany("TheTimocop")>
 <Assembly: AssemblyProduct("BasicPawnPluginTranslationEditor")>
 <Assembly: AssemblyCopyright("Copyright © TheTimocop 2020")>
 <Assembly: AssemblyTrademark("")>
