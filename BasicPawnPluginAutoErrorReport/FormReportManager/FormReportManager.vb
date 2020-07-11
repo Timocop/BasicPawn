@@ -16,6 +16,7 @@
 
 
 Imports System.Drawing
+Imports System.Text
 Imports System.Text.RegularExpressions
 
 Public Class FormReportManager
@@ -595,7 +596,7 @@ Public Class FormReportManager
                     End Function
 
                     Public Function IReportInterface_ToString() As String Implements IReportInterface.ToString
-                        Dim sException As New Text.StringBuilder
+                        Dim sException As New StringBuilder
 
                         sException.AppendFormat(String.Format("Exception Info: {0}", g_mException.sExceptionInfo)).AppendLine()
                         sException.AppendFormat(String.Format("Blaming File: {0}", g_mException.sBlamingFile)).AppendLine()
@@ -711,7 +712,7 @@ Public Class FormReportManager
                     End Function
 
                     Public Function IReportInterface_ToString() As String Implements IReportInterface.ToString
-                        Dim sException As New Text.StringBuilder
+                        Dim sException As New StringBuilder
 
                         sException.AppendFormat("Crash Id: {0}", g_mCrashId.sCrashId).AppendLine()
                         sException.AppendFormat("Date: {0}", g_mCrashId.dLogDate.ToString).AppendLine()
@@ -725,7 +726,7 @@ Public Class FormReportManager
                             Return
                         End If
 
-                        Dim sMessage As New Text.StringBuilder
+                        Dim sMessage As New StringBuilder
                         sMessage.AppendLine("Oh noes! Seems your server crashed at some point!")
                         sMessage.AppendFormat("Accelerator uploaded a crash dump: Crash Id: {0}", g_mCrashId.sCrashId.ToUpper).AppendLine.AppendLine()
                         sMessage.AppendLine("Do you want to lookup the crash dump?")
