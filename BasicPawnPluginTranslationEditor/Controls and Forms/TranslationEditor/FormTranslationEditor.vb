@@ -337,6 +337,15 @@ Public Class FormTranslationEditor
 
                         mKVName.m_Keys.Add(New KeyValuePair(Of String, String)(mItem.m_Language, mItem.m_Text))
                     Next
+
+                    'Sort languages and '#format' needs to be the first key!
+                    mKVName.m_Keys.Sort(Function(x As KeyValuePair(Of String, String), y As KeyValuePair(Of String, String))
+                                            If (y.Key = "#format") Then
+                                                Return 1
+                                            End If
+
+                                            Return (x.Key.CompareTo(y.Key))
+                                        End Function)
                 Next
 
                 mKeyValue.Serialize(mKVRoot, True)
@@ -383,6 +392,15 @@ Public Class FormTranslationEditor
 
                                 mKVName.m_Keys.Add(New KeyValuePair(Of String, String)(mItem.m_Language, mItem.m_Text))
                             Next
+
+                            'Sort languages and '#format' needs to be the first key!
+                            mKVName.m_Keys.Sort(Function(x As KeyValuePair(Of String, String), y As KeyValuePair(Of String, String))
+                                                    If (y.Key = "#format") Then
+                                                        Return 1
+                                                    End If
+
+                                                    Return (x.Key.CompareTo(y.Key))
+                                                End Function)
                         Next
 
                         mKeyValue.Serialize(mKVRoot, True)
@@ -418,6 +436,15 @@ Public Class FormTranslationEditor
 
                                 mKVName.m_Keys.Add(New KeyValuePair(Of String, String)(mItem.m_Language, mItem.m_Text))
                             Next
+
+                            'Sort languages and '#format' needs to be the first key!
+                            mKVName.m_Keys.Sort(Function(x As KeyValuePair(Of String, String), y As KeyValuePair(Of String, String))
+                                                    If (y.Key = "#format") Then
+                                                        Return 1
+                                                    End If
+
+                                                    Return (x.Key.CompareTo(y.Key))
+                                                End Function)
                         Next
 
                         mKeyValue.Serialize(mKVRoot, True)
