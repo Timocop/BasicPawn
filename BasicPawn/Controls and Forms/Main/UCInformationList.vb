@@ -59,8 +59,9 @@ Public Class UCInformationList
                                       If (bShowInformationTab AndAlso g_mFormMain.ToolStripMenuItem_ViewDetails.Checked) Then
                                           g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed = False
 
-                                          If (g_mFormMain.SplitContainer_ToolboxSourceAndDetails.SplitterDistance > (g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Height - g_mFormMain.g_iDefaultDetailsSplitterDistance)) Then
-                                              g_mFormMain.SplitContainer_ToolboxSourceAndDetails.SplitterDistance = (g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Height - g_mFormMain.g_iDefaultDetailsSplitterDistance)
+                                          Dim iSplitterHeight As Integer = g_mFormMain.SplitContainer_ToolboxSourceAndDetails.Height - g_mFormMain.g_iDefaultDetailsSplitterDistance
+                                          If (iSplitterHeight > 0 AndAlso g_mFormMain.SplitContainer_ToolboxSourceAndDetails.SplitterDistance > iSplitterHeight) Then
+                                              g_mFormMain.SplitContainer_ToolboxSourceAndDetails.SplitterDistance = iSplitterHeight
                                           End If
 
                                           If (g_mFormMain.TabControl_Details.SelectedTab IsNot g_mFormMain.TabPage_Information) Then
