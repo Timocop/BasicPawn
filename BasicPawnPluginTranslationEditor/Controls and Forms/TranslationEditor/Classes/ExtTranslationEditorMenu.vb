@@ -122,6 +122,10 @@ Partial Public Class FormTranslationEditor
                 Return
             End If
 
+            If (MessageBox.Show(String.Format("Remove language '{0}' from phrase group '{1}'?", mSelectedNode.m_Language, mSelectedNode.m_Name), "Remove phrase language", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.No) Then
+                Return
+            End If
+
             mSelectedNode.Remove()
 
             g_ClassTranslationManager.TreeViewFillMissing(Not ToolStripMenuItem_ShowMissing.Checked)
@@ -130,6 +134,48 @@ Partial Public Class FormTranslationEditor
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
+    End Sub
+
+    Private Sub ToolStripMenuItem_CopyLang_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_CopyLang.Click
+        Dim mSelectedNode = TryCast(g_TreeViewColumns.m_TreeView.SelectedNode, ClassTranslationManager.ClassTranslationTreeNode)
+        If (mSelectedNode Is Nothing) Then
+            Return
+        End If
+
+        If (mSelectedNode.m_NodeType <> ClassTranslationManager.ClassTranslationTreeNode.ENUM_NODE_TYPE.ITEM_MASTER AndAlso
+                mSelectedNode.m_NodeType <> ClassTranslationManager.ClassTranslationTreeNode.ENUM_NODE_TYPE.ITEM_SLAVE) Then
+            Return
+        End If
+
+        My.Computer.Clipboard.SetText(mSelectedNode.m_Language)
+    End Sub
+
+    Private Sub ToolStripMenuItem_CopyFormat_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_CopyFormat.Click
+        Dim mSelectedNode = TryCast(g_TreeViewColumns.m_TreeView.SelectedNode, ClassTranslationManager.ClassTranslationTreeNode)
+        If (mSelectedNode Is Nothing) Then
+            Return
+        End If
+
+        If (mSelectedNode.m_NodeType <> ClassTranslationManager.ClassTranslationTreeNode.ENUM_NODE_TYPE.ITEM_MASTER AndAlso
+                mSelectedNode.m_NodeType <> ClassTranslationManager.ClassTranslationTreeNode.ENUM_NODE_TYPE.ITEM_SLAVE) Then
+            Return
+        End If
+
+        My.Computer.Clipboard.SetText(mSelectedNode.m_Format)
+    End Sub
+
+    Private Sub ToolStripMenuItem_CopyText_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_CopyText.Click
+        Dim mSelectedNode = TryCast(g_TreeViewColumns.m_TreeView.SelectedNode, ClassTranslationManager.ClassTranslationTreeNode)
+        If (mSelectedNode Is Nothing) Then
+            Return
+        End If
+
+        If (mSelectedNode.m_NodeType <> ClassTranslationManager.ClassTranslationTreeNode.ENUM_NODE_TYPE.ITEM_MASTER AndAlso
+                mSelectedNode.m_NodeType <> ClassTranslationManager.ClassTranslationTreeNode.ENUM_NODE_TYPE.ITEM_SLAVE) Then
+            Return
+        End If
+
+        My.Computer.Clipboard.SetText(mSelectedNode.m_Text)
     End Sub
 
     Private Sub ToolStripMenuItem_GroupAdd_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_GroupAdd.Click
@@ -209,6 +255,10 @@ Partial Public Class FormTranslationEditor
                 Return
             End If
 
+            If (MessageBox.Show(String.Format("Remove phrase group '{0}'?", mSelectedNode.m_Name), "Remove phrase group", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.No) Then
+                Return
+            End If
+
             mSelectedNode.Remove()
 
             g_ClassTranslationManager.TreeViewFillMissing(Not ToolStripMenuItem_ShowMissing.Checked)
@@ -236,6 +286,13 @@ Partial Public Class FormTranslationEditor
         ToolStripMenuItem_TransEdit.Enabled = (mSelectedNode.m_NodeType = ClassTranslationManager.ClassTranslationTreeNode.ENUM_NODE_TYPE.ITEM_MASTER OrElse
                                                     mSelectedNode.m_NodeType = ClassTranslationManager.ClassTranslationTreeNode.ENUM_NODE_TYPE.ITEM_SLAVE)
         ToolStripMenuItem_TransRemove.Enabled = (mSelectedNode.m_NodeType = ClassTranslationManager.ClassTranslationTreeNode.ENUM_NODE_TYPE.ITEM_MASTER OrElse
+                                                    mSelectedNode.m_NodeType = ClassTranslationManager.ClassTranslationTreeNode.ENUM_NODE_TYPE.ITEM_SLAVE)
+
+        ToolStripMenuItem_CopyLang.Enabled = (mSelectedNode.m_NodeType = ClassTranslationManager.ClassTranslationTreeNode.ENUM_NODE_TYPE.ITEM_MASTER OrElse
+                                                    mSelectedNode.m_NodeType = ClassTranslationManager.ClassTranslationTreeNode.ENUM_NODE_TYPE.ITEM_SLAVE)
+        ToolStripMenuItem_CopyFormat.Enabled = (mSelectedNode.m_NodeType = ClassTranslationManager.ClassTranslationTreeNode.ENUM_NODE_TYPE.ITEM_MASTER OrElse
+                                                    mSelectedNode.m_NodeType = ClassTranslationManager.ClassTranslationTreeNode.ENUM_NODE_TYPE.ITEM_SLAVE)
+        ToolStripMenuItem_CopyText.Enabled = (mSelectedNode.m_NodeType = ClassTranslationManager.ClassTranslationTreeNode.ENUM_NODE_TYPE.ITEM_MASTER OrElse
                                                     mSelectedNode.m_NodeType = ClassTranslationManager.ClassTranslationTreeNode.ENUM_NODE_TYPE.ITEM_SLAVE)
 
         ToolStripMenuItem_GroupRename.Enabled = (mSelectedNode.m_NodeType = ClassTranslationManager.ClassTranslationTreeNode.ENUM_NODE_TYPE.NAME)
