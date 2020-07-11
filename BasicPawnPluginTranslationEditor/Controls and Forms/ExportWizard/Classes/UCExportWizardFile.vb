@@ -47,7 +47,7 @@ Public Class UCExportWizardFile
             Using i As New SaveFileDialog
                 i.InitialDirectory = If(String.IsNullOrEmpty(m_ExportFile), "", IO.Path.GetDirectoryName(m_ExportFile))
                 i.FileName = IO.Path.GetFileName(m_ExportFile)
-                i.Filter = "Translation file|*.txt|All files|*.*"
+                i.Filter = "Translation files|*.phrases.txt; *.txt|All files|*.*"
 
                 If (i.ShowDialog = DialogResult.OK) Then
                     m_ExportFile = i.FileName

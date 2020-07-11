@@ -38,6 +38,8 @@ Partial Public Class FormTranslationEditor
             End If
 
             Using i As New OpenFileDialog()
+                i.Filter = "Translation files|*.phrases.txt; *.txt|All files|*.*"
+
                 If (i.ShowDialog(Me) = DialogResult.OK) Then
                     Using j As New FormImportWizard(i.FileName, g_ClassTranslationManager.FindAdditionalFiles(i.FileName))
                         If (j.ShowDialog(Me) = DialogResult.OK) Then
