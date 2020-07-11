@@ -139,6 +139,8 @@ Public Class PluginTranslationEditor
         Private g_mFtpMenuSplit As ToolStripSeparator
         Private g_mFtpMenuItem As ToolStripMenuItem
 
+        Private g_mFormTranslationEditor As FormTranslationEditor
+
         Public Sub New(mPluginTranslationEditor As PluginTranslationEditor)
             g_mPluginTranslationEditor = mPluginTranslationEditor
 
@@ -161,9 +163,16 @@ Public Class PluginTranslationEditor
 
         Private Sub OnMenuItemClick(sender As Object, e As EventArgs)
             Try
-                Using i As New FormTranslationEditor(g_mPluginTranslationEditor)
-                    i.ShowDialog(g_mPluginTranslationEditor.g_mFormMain)
-                End Using
+                If (g_mFormTranslationEditor Is Nothing OrElse g_mFormTranslationEditor.IsDisposed) Then
+                    g_mFormTranslationEditor = New FormTranslationEditor(g_mPluginTranslationEditor)
+                    g_mFormTranslationEditor.Show()
+                Else
+                    If (g_mFormTranslationEditor.WindowState = FormWindowState.Minimized) Then
+                        ClassTools.ClassForms.FormWindowCommand(g_mFormTranslationEditor, ClassTools.ClassForms.NativeWinAPI.ShowWindowCommands.Restore)
+                    End If
+
+                    g_mFormTranslationEditor.Activate()
+                End If
             Catch ex As Exception
                 ClassExceptionLog.WriteToLogMessageBox(ex)
             End Try
@@ -189,6 +198,11 @@ Public Class PluginTranslationEditor
                     If (g_mFtpMenuItem IsNot Nothing AndAlso Not g_mFtpMenuItem.IsDisposed) Then
                         g_mFtpMenuItem.Dispose()
                         g_mFtpMenuItem = Nothing
+                    End If
+
+                    If (g_mFormTranslationEditor IsNot Nothing AndAlso Not g_mFormTranslationEditor.IsDisposed) Then
+                        g_mFormTranslationEditor.Dispose()
+                        g_mFormTranslationEditor = Nothing
                     End If
                 End If
 
