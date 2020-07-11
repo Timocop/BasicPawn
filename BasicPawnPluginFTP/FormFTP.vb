@@ -15,8 +15,6 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 
-Imports System.Windows.Forms
-Imports BasicPawn
 
 Public Class FormFTP
     Private g_mPluginFTP As PluginFTP

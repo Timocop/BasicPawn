@@ -15,11 +15,8 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 
-Imports System
 Imports System.Drawing
 Imports System.Text.RegularExpressions
-Imports System.Windows.Forms
-Imports BasicPawn
 
 Public Class FormReportManager
     Public Shared ReadOnly g_sAcceleratorServer As String = "https://crash.limetech.org/"

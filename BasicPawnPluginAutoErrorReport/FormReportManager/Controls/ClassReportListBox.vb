@@ -16,8 +16,6 @@
 
 
 Imports System.Drawing
-Imports System.Windows.Forms
-Imports BasicPawn
 
 Public Class ClassReportListBox
     Inherits ListBox

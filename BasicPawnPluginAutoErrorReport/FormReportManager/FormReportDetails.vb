@@ -15,8 +15,6 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 
-Imports System.Windows.Forms
-Imports BasicPawn
 Imports ICSharpCode.TextEditor
 
 Public Class FormReportDetails
