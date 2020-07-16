@@ -15,6 +15,8 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 
+Imports System.Net
+Imports System.Security.Authentication
 Imports System.Text.RegularExpressions
 
 Public Class ClassUpdate
@@ -190,6 +192,8 @@ Public Class ClassUpdate
     Public Shared Function GetNextVersion(ByRef r_sLocationInfo As String) As String
         r_sLocationInfo = Nothing
 
+        SetTLS12()
+
         Dim sNextVersion As String = Nothing
         Dim sLocationInfo As String = Nothing
 
@@ -225,4 +229,12 @@ Public Class ClassUpdate
         r_sLocationInfo = sLocationInfo
         Return sNextVersion
     End Function
+
+    Private Shared Sub SetTLS12()
+        'https://stackoverflow.com/questions/43240611/net-framework-3-5-and-tls-1-2
+        Const _Tls12 As SslProtocols = DirectCast(&HC00, SslProtocols)
+        Const Tls12 As SecurityProtocolType = DirectCast(_Tls12, SecurityProtocolType)
+
+        ServicePointManager.SecurityProtocol = Tls12
+    End Sub
 End Class
