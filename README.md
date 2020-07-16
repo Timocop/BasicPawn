@@ -2,6 +2,8 @@
 BasicPawn is a very lightweight and basic SourcePawn Editor that uses dynamic Autocompletion and IntelliSense like any other IDE or Advanced Editor. It supports SourcePawn, Transitional SourcePawn and even AMX Mod X.
 BasicPawn also has some special features like the simple debugger to debug your plugins and the plugin system to create your own BasicPawn plugins.
 
+[Offical BasicPawn Website](https://getbasicpawn.spdns.org/)
+
 Supported:
 - SourceMod (SourcePawn & Transitional SourcePawn)
 - AMX Mod X (Debugger not supported yet and some Pawn features are not supported)
@@ -33,6 +35,7 @@ Features:
 **Download: Click on 'Download'**
  - [FTP Plugin](Plugin%20Releases/BasicPawnPluginFTP)
  - [Automatic Error Reporting](Plugin%20Releases/BasicPawnPluginAutoErrorReport)
+ - [Translation Editor](Plugin%20Releases/BasicPawnPluginTranslationEditor)
  - [more...](Plugin%20Releases)
 
 ## Syntax Styles
