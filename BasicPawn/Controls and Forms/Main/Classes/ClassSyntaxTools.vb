@@ -354,7 +354,7 @@ Public Class ClassSyntaxTools
 
         Public ReadOnly Property m_InRange(i As Integer) As Boolean
             Get
-                Return (i > -1 AndAlso i < g_iStateArray.Length)
+                Return (i > -1 AndAlso i < g_iStateArray.GetUpperBound(0))
             End Get
         End Property
 
@@ -501,7 +501,15 @@ Public Class ClassSyntaxTools
         End Function
 
         Public Function GetCachedText() As String
-            Return g_sCacheText
+            Return GetCachedText(False)
+        End Function
+
+        Public Function GetCachedText(bNullTerminator As Boolean) As String
+            If (bNullTerminator) Then
+                Return g_sCacheText
+            Else
+                Return g_sCacheText.Substring(0, g_sCacheText.Length - 1)
+            End If
         End Function
 
         Public Function GetChar(iIndex As Integer) As Char
@@ -513,19 +521,17 @@ Public Class ClassSyntaxTools
                 Return 0
             End If
 
+            Dim iIndex As Integer = -1
+
             For Each mItem In g_mLineIndexes
                 If (mItem.Key + 1 >= iLine) Then
-                    If (mItem.Value + 1 > g_sCacheText.Length - 1) Then
-                        'Get the length even if its longer than the g_sCacheTest length.
-                        'g_iStateArray should have +1 more length.
-                        Return g_sCacheText.Length
-                    Else
-                        Return mItem.Value + 1
-                    End If
+                    iIndex = mItem.Value + 1
+                    Exit For
                 End If
             Next
 
-            Return -1
+            'The index might be on vbLf, so we just allow it +1 index to actualy move to the next line.
+            Return Math.Min(iIndex, g_sCacheText.Length - 1)
         End Function
 
         ''' <summary>
@@ -535,11 +541,11 @@ Public Class ClassSyntaxTools
         ''' <param name="iLanguage"></param>
         ''' <param name="bIgnorePreprocessor">Doesnt analize preprocessor directives if true, false otherwise.</param>
         Public Sub New(sText As String, iLanguage As ENUM_LANGUAGE_TYPE, Optional bIgnorePreprocessor As Boolean = False)
-            g_sCacheText = sText
-            g_iMaxLength = sText.Length
+            'Add character NULL because we need to have +1 index for g_iStateArray.
+            g_sCacheText = sText & Chr(0)
+            g_iMaxLength = g_sCacheText.Length - 1
 
-            'Init g_iStateArray with +1 index.
-            g_iStateArray = New Integer(sText.Length, [Enum].GetNames(GetType(ENUM_STATE_TYPES)).Length - 1) {}
+            g_iStateArray = New Integer(g_sCacheText.Length - 1, [Enum].GetNames(GetType(ENUM_STATE_TYPES)).Length - 1) {}
 
             Dim iParenthesisLevel As Integer = 0 '() 
             Dim iBracketLevel As Integer = 0 '[] 
@@ -549,9 +555,10 @@ Public Class ClassSyntaxTools
             Dim bInString As Integer = 0
             Dim bInChar As Integer = 0
             Dim bInPreprocessor As Integer = 0
-            Dim iParenthesisLevelPreSave As Integer = 0 '() 'Save/load before/after preprocessor
-            Dim iBracketLevelPreSave As Integer = 0 '[] 'Save/load before/after preprocessor
-            Dim iBraceLevelPreSave As Integer = 0 '{} 'Save/load before/after preprocessor
+
+            Dim iParenthesisLevelPreSave As Integer = 0 '() 
+            Dim iBracketLevelPreSave As Integer = 0 '[] 
+            Dim iBraceLevelPreSave As Integer = 0 '{} 
             Dim bInSingleCommentPreSave As Integer = 0
             Dim bInMultiCommentPreSave As Integer = 0
             Dim bInStringPreSave As Integer = 0
@@ -559,7 +566,7 @@ Public Class ClassSyntaxTools
 
             Dim iLine As Integer = 0
 
-            For i = 0 To sText.Length - 1
+            For i = 0 To g_sCacheText.Length - 2 'Ignore NULL character
                 g_iStateArray(i, ENUM_STATE_TYPES.PARENTHESIS_LEVEL) = iParenthesisLevel
                 g_iStateArray(i, ENUM_STATE_TYPES.BRACKET_LEVEL) = iBracketLevel
                 g_iStateArray(i, ENUM_STATE_TYPES.BRACE_LEVEL) = iBraceLevel
@@ -569,7 +576,7 @@ Public Class ClassSyntaxTools
                 g_iStateArray(i, ENUM_STATE_TYPES.IN_CHAR) = bInChar
                 g_iStateArray(i, ENUM_STATE_TYPES.IN_PREPROCESSOR) = bInPreprocessor
 
-                Select Case (sText(i))
+                Select Case (g_sCacheText(i))
                     Case "#"c
                         If (iParenthesisLevel > 0 OrElse iBracketLevel > 0 OrElse bInSingleComment > 0 OrElse bInMultiComment > 0 OrElse bInString > 0 OrElse bInChar > 0) Then
                             Continue For
@@ -596,7 +603,7 @@ Public Class ClassSyntaxTools
 
                         '/*
                         If (i > 0) Then
-                            If (sText(i - 1) = "/"c AndAlso bInMultiComment < 1) Then
+                            If (g_sCacheText(i - 1) = "/"c AndAlso bInMultiComment < 1) Then
                                 bInMultiComment = 1
                                 g_iStateArray(i, ENUM_STATE_TYPES.IN_MULTI_COMMENT) = 1
                                 g_iStateArray(i - 1, ENUM_STATE_TYPES.IN_MULTI_COMMENT) = 1
@@ -604,8 +611,8 @@ Public Class ClassSyntaxTools
                             End If
                         End If
 
-                        If (i + 1 < sText.Length - 1) Then
-                            If (sText(i + 1) = "/"c AndAlso bInMultiComment > 0) Then
+                        If (i + 1 < g_sCacheText.Length - 1) Then
+                            If (g_sCacheText(i + 1) = "/"c AndAlso bInMultiComment > 0) Then
                                 bInMultiComment = 0
                                 g_iStateArray(i, ENUM_STATE_TYPES.IN_MULTI_COMMENT) = 1
                                 g_iStateArray(i + 1, ENUM_STATE_TYPES.IN_MULTI_COMMENT) = 1
@@ -621,8 +628,8 @@ Public Class ClassSyntaxTools
                         End If
 
                         '//
-                        If (i + 1 < sText.Length - 1) Then
-                            If (sText(i + 1) = "/"c AndAlso bInSingleComment < 1) Then
+                        If (i + 1 < g_sCacheText.Length - 1) Then
+                            If (g_sCacheText(i + 1) = "/"c AndAlso bInSingleComment < 1) Then
                                 bInSingleComment = 1
                                 g_iStateArray(i, ENUM_STATE_TYPES.IN_SINGLE_COMMENT) = bInSingleComment
                             End If
@@ -712,7 +719,7 @@ Public Class ClassSyntaxTools
                         'ignore \'
                         Dim iEscapes As Integer = 0
                         For j = i - 1 To 0 Step -1
-                            If (sText(j) <> ClassSyntaxTools.g_sEscapeCharacters(iLanguage)) Then
+                            If (g_sCacheText(j) <> ClassSyntaxTools.g_sEscapeCharacters(iLanguage)) Then
                                 Exit For
                             End If
 
@@ -736,7 +743,7 @@ Public Class ClassSyntaxTools
                         'ignore \"
                         Dim iEscapes As Integer = 0
                         For j = i - 1 To 0 Step -1
-                            If (sText(j) <> ClassSyntaxTools.g_sEscapeCharacters(iLanguage)) Then
+                            If (g_sCacheText(j) <> ClassSyntaxTools.g_sEscapeCharacters(iLanguage)) Then
                                 Exit For
                             End If
 
@@ -763,15 +770,15 @@ Public Class ClassSyntaxTools
 
                         'Detect escape newline
                         For j = i - 1 To 0 Step -1
-                            If (sText(j) = vbLf(0)) Then
+                            If (g_sCacheText(j) = vbLf(0)) Then
                                 Exit For
                             End If
 
-                            If (Char.IsWhiteSpace(sText(j))) Then
+                            If (Char.IsWhiteSpace(g_sCacheText(j))) Then
                                 Continue For
                             End If
 
-                            If (sText(j) = "\"c) Then
+                            If (g_sCacheText(j) = "\"c) Then
                                 bEscapeNewline = True
                                 Exit For
                             End If
