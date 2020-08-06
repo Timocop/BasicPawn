@@ -74,25 +74,28 @@ Public Class ClassTextMinimap
             Return
         End If
 
+        Dim mActiveTab = g_mFormMain.g_ClassTabControl.m_ActiveTab
+        Dim mFoldingManager = mActiveTab.m_TextEditor.Document.FoldingManager
+
         Dim bChanged As Boolean = False
         While True
             'RichTextBox.Text != Document.TextContent?!
             'Workaround: Cache last TextConent in |g_sLastTexteditorText| instead.
-            If (g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent <> g_sLastText) Then
+            If (mActiveTab.m_TextEditor.Document.TextContent <> g_sLastText) Then
                 bChanged = True
                 Exit While
             End If
 
             If (True) Then
-                If (g_lLastFoldings.Count <> g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.FoldingManager.FoldMarker.Count) Then
+                If (g_lLastFoldings.Count <> mFoldingManager.FoldMarker.Count) Then
                     bChanged = True
                     Exit While
                 End If
 
                 For i = 0 To g_lLastFoldings.Count - 1
-                    If (g_lLastFoldings(i).iOffset = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.FoldingManager.FoldMarker(i).Offset AndAlso
-                            g_lLastFoldings(i).iLength = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.FoldingManager.FoldMarker(i).Length AndAlso
-                            g_lLastFoldings(i).bIsFolded = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.FoldingManager.FoldMarker(i).IsFolded) Then
+                    If (g_lLastFoldings(i).iOffset = mFoldingManager.FoldMarker(i).Offset AndAlso
+                            g_lLastFoldings(i).iLength = mFoldingManager.FoldMarker(i).Length AndAlso
+                            g_lLastFoldings(i).bIsFolded = mFoldingManager.FoldMarker(i).IsFolded) Then
                         Continue For
                     End If
 
@@ -106,21 +109,21 @@ Public Class ClassTextMinimap
 
         If (bRefresh OrElse g_bRequestUpdate OrElse bChanged) Then
             g_bRequestUpdate = False
-            g_sLastText = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
+            g_sLastText = mActiveTab.m_TextEditor.Document.TextContent
 
             g_lLastFoldings.Clear()
-            For Each mFold In g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.FoldingManager.FoldMarker
+            For Each mFold In mFoldingManager.FoldMarker
                 g_lLastFoldings.Add(New STRUC_FOLDMARKER_INFO(mFold.Offset, mFold.Length, mFold.IsFolded))
             Next
 
 
             Dim bFoldedIndexes As Boolean() = New Boolean(g_sLastText.Length - 1) {}
-            For Each mFold In g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.FoldingManager.FoldMarker
+            For Each mFold In mFoldingManager.FoldMarker
                 If (Not mFold.IsFolded) Then
                     Continue For
                 End If
 
-                For i = mFold.Offset To (mFold.Offset + mFold.Length - 1)
+                For i = mFold.Offset To Math.Min(mFold.Offset + mFold.Length - 1, bFoldedIndexes.Length - 1)
                     bFoldedIndexes(i) = True
                 Next
             Next
@@ -162,13 +165,15 @@ Public Class ClassTextMinimap
             Return
         End If
 
-        Dim iTotalLines = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TotalNumberOfLines
+        Dim mActiveTab = g_mFormMain.g_ClassTabControl.m_ActiveTab
+
+        Dim iTotalLines = mActiveTab.m_TextEditor.Document.TotalNumberOfLines
         If (iTotalLines < 1) Then
             Return
         End If
 
         Dim bFoldedLines As Boolean() = New Boolean(iTotalLines - 1) {}
-        For Each mFold In g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.FoldingManager.FoldMarker
+        For Each mFold In mActiveTab.m_TextEditor.Document.FoldingManager.FoldMarker
             If (Not mFold.IsFolded) Then
                 Continue For
             End If
@@ -214,14 +219,16 @@ Public Class ClassTextMinimap
                 iSelectedLine += 1
             Next
 
-            g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.CenterViewOn(iSelectedLine, 0)
+            mActiveTab.m_TextEditor.ActiveTextAreaControl.CenterViewOn(iSelectedLine, 0)
         End If
 
         If (bUpdateView) Then
+            Dim mTextView = mActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.TextView
+
             'Update Alpha View
             g_mPanel.SuspendLayout()
-            g_mPanel.Location = New Point(0, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.TextView.FirstPhysicalLine * iPointLabelLineSize)
-            g_mPanel.Size = New Size(VIEW_WIDTH_OFFSET, g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.TextArea.TextView.VisibleLineCount * iPointLabelLineSize)
+            g_mPanel.Location = New Point(0, mTextView.FirstPhysicalLine * iPointLabelLineSize)
+            g_mPanel.Size = New Size(VIEW_WIDTH_OFFSET, mTextView.VisibleLineCount * iPointLabelLineSize)
             g_mPanel.ResumeLayout()
 
             If (bAutoScrollToView) Then
