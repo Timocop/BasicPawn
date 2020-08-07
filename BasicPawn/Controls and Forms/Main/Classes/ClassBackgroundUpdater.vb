@@ -188,9 +188,7 @@ Public Class ClassBackgroundUpdater
                         iLastAutoupdateCaretOffset3 = iCaretOffset
                         dLastMarkCaretWordDelay = (Now + mMarkCaretWordDelay)
 
-                        If (ClassSettings.g_bSettingsAutoMark) Then
-                            UpdateMarkerHighlighting(mActiveTab)
-                        End If
+                        UpdateMarkerHighlighting(mActiveTab)
                     End If
 
                     'Update scope highlighter
@@ -269,6 +267,10 @@ Public Class ClassBackgroundUpdater
     End Sub
 
     Private Sub UpdateMarkerHighlighting(mActiveTab As ClassTabControl.ClassTab)
+        If (Not ClassSettings.g_bSettingsAutoMark) Then
+            Return
+        End If
+
         Dim sTextContent As String = mActiveTab.m_TextEditor.Document.TextContent
         Dim sWord As String = ""
 
@@ -290,6 +292,10 @@ Public Class ClassBackgroundUpdater
     End Sub
 
     Private Sub UpdateScopeHighlighting(mActiveTab As ClassTabControl.ClassTab, iCaretOffset As Integer)
+        If (Not ClassSettings.g_bSettingsHighlightCurrentScope) Then
+            Return
+        End If
+
         Dim sTextContent As String = mActiveTab.m_TextEditor.Document.TextContent
         Dim iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = mActiveTab.m_Language
         Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sTextContent, iLanguage)

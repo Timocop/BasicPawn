@@ -2483,11 +2483,6 @@ Public Class ClassTabControl
             End Sub
 
             Public Sub UpdateHighlighting()
-                If (Not ClassSettings.g_bSettingsHighlightCurrentScope) Then
-                    RemoveHighlighting()
-                    Return
-                End If
-
                 Dim sText As String = g_ClassTab.m_TextEditor.Document.TextContent
                 Dim iLanguage As ClassSyntaxTools.ENUM_LANGUAGE_TYPE = g_ClassTab.m_Language
                 Dim mSourceAnalysis As New ClassSyntaxTools.ClassSyntaxSourceAnalysis(sText, iLanguage)
@@ -2505,11 +2500,6 @@ Public Class ClassTabControl
             End Sub
 
             Public Sub UpdateHighlighting(mScopeLocation As Point)
-                If (Not ClassSettings.g_bSettingsHighlightCurrentScope) Then
-                    RemoveHighlighting()
-                    Return
-                End If
-
                 Dim mOldTextMarker = g_mTextMarker
                 Dim mColor = g_ClassTab.m_TextEditor.Document.HighlightingStrategy.GetColorFor("ScopeMarker").Color
 
@@ -2694,11 +2684,6 @@ Public Class ClassTabControl
             End Sub
 
             Public Sub UpdateHighlighting(mWordLocations As List(Of Point), iType As ENUM_MARKER_TYPE)
-                If (Not ClassSettings.g_bSettingsHighlightCurrentScope) Then
-                    RemoveHighlighting(iType)
-                    Return
-                End If
-
                 Dim mFrontColor As Color
                 Dim mBackColor As Color
 
