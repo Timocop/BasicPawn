@@ -147,7 +147,7 @@ Public Class ClassUpdate
 
         Dim sUpdateBatch As New Text.StringBuilder
         sUpdateBatch.AppendLine("@echo off")
-        sUpdateBatch.AppendFormat("start /w """" ""{0}""", sDataPath).AppendLine() 'Run 7zip SFX and wait
+        sUpdateBatch.AppendFormat("start /w """" ""{0}"" -y", sDataPath).AppendLine() 'Run 7zip SFX and wait
         sUpdateBatch.AppendFormat("start """" ""{0}""", Application.ExecutablePath).AppendLine() 'Run BasicPawn but do not wait
         sUpdateBatch.AppendFormat("del ""{0}""", sBatchFile).AppendLine() 'KMS 
 
