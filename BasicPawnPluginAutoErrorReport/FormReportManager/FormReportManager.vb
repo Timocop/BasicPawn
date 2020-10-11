@@ -446,7 +446,7 @@ Public Class FormReportManager
                                                                  Dim lTmpList As New List(Of ClassReportItems.IReportInterface)
                                                                  For Each mItem In lReportExceptionItems.ToArray
                                                                      If (lTmpList.Exists(Function(x As ClassReportItems.IReportInterface)
-                                                                                             Return x.Equal(mItem)
+                                                                                             Return x.EqualsTo(mItem)
                                                                                          End Function)) Then
                                                                          Continue For
                                                                      End If
@@ -466,9 +466,19 @@ Public Class FormReportManager
                                                                                                                      g_mFormReportManager.ReportListBox_Reports.BeginUpdate()
                                                                                                                      g_mFormReportManager.ReportListBox_Reports.Items.Clear()
 
+                                                                                                                     Dim mReportItems As New List(Of ClassReportListBox.ClassReportItem)
                                                                                                                      For Each mItem In lReportExceptionItems
-                                                                                                                         g_mFormReportManager.ReportListBox_Reports.Items.Add(mItem.ToReport)
+                                                                                                                         If (mReportItems.Exists(Function(x As ClassReportListBox.ClassReportItem)
+                                                                                                                                                     Return x.m_IReport.EqualsTo(mItem)
+                                                                                                                                                 End Function)) Then
+                                                                                                                             Continue For
+                                                                                                                         End If
+
+                                                                                                                         mReportItems.Add(mItem.ToReport)
+
+                                                                                                                         Debug.WriteLine(mItem.ToString)
                                                                                                                      Next
+                                                                                                                     g_mFormReportManager.ReportListBox_Reports.Items.AddRange(mReportItems.ToArray)
 
                                                                                                                      For Each mReportItemsDic In lReportItems
                                                                                                                          Dim sTitle As String = CStr(mReportItemsDic(C_REPORTITEMS_TITLE))
@@ -535,7 +545,7 @@ Public Class FormReportManager
             Interface IReportInterface
                 Function ToReport() As ClassReportListBox.ClassReportItem
 
-                Function Equal(other As IReportInterface) As Boolean
+                Function EqualsTo(other As IReportInterface) As Boolean
 
                 Function LogDate() As Date
 
@@ -587,8 +597,8 @@ Public Class FormReportManager
                         Return New ClassReportListBox.ClassReportItem(sTitle, sText, sDate, My.Resources.ieframe_36883_16x16_32, Me)
                     End Function
 
-                    Public Function Equal(other As IReportInterface) As Boolean Implements IReportInterface.Equal
-                        Return ToString.ToLower = other.ToString.ToLower
+                    Public Function EqualsTo(other As IReportInterface) As Boolean Implements IReportInterface.EqualsTo
+                        Return IReportInterface_ToString.ToLower = other.ToString.ToLower
                     End Function
 
                     Public Function LogDate() As Date Implements IReportInterface.LogDate
@@ -703,8 +713,8 @@ Public Class FormReportManager
                         Return New ClassReportListBox.ClassReportItem("Server Crash", String.Format("Accelerator uploaded a crash dump: {0}", g_mCrashId.sCrashId.ToUpper), sDate, My.Resources.ieframe_36883_16x16_32, Me)
                     End Function
 
-                    Public Function Equal(other As IReportInterface) As Boolean Implements IReportInterface.Equal
-                        Return ToString.ToLower = other.ToString.ToLower
+                    Public Function EqualsTo(other As IReportInterface) As Boolean Implements IReportInterface.EqualsTo
+                        Return IReportInterface_ToString.ToLower = other.ToString.ToLower
                     End Function
 
                     Public Function LogDate() As Date Implements IReportInterface.LogDate
