@@ -475,8 +475,6 @@ Public Class FormReportManager
                                                                                                                          End If
 
                                                                                                                          mReportItems.Add(mItem.ToReport)
-
-                                                                                                                         Debug.WriteLine(mItem.ToString)
                                                                                                                      Next
                                                                                                                      g_mFormReportManager.ReportListBox_Reports.Items.AddRange(mReportItems.ToArray)
 
