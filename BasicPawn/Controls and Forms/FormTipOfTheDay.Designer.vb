@@ -31,8 +31,10 @@ Partial Class FormTipOfTheDay
         Me.RichTextBox_Tips = New System.Windows.Forms.RichTextBox()
         Me.Label_TipNumber = New System.Windows.Forms.Label()
         Me.ClassPictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
+        Me.Panel1 = New System.Windows.Forms.Panel()
         Me.Panel_FooterControl.SuspendLayout()
         CType(Me.ClassPictureBoxQuality1, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.Panel1.SuspendLayout()
         Me.SuspendLayout()
         '
         'Panel_FooterControl
@@ -134,16 +136,25 @@ Partial Class FormTipOfTheDay
         Me.ClassPictureBoxQuality1.TabIndex = 4
         Me.ClassPictureBoxQuality1.TabStop = False
         '
+        'Panel1
+        '
+        Me.Panel1.Controls.Add(Me.Label_TipNumber)
+        Me.Panel1.Controls.Add(Me.ClassPictureBoxQuality1)
+        Me.Panel1.Controls.Add(Me.RichTextBox_Tips)
+        Me.Panel1.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Panel1.Location = New System.Drawing.Point(0, 0)
+        Me.Panel1.Name = "Panel1"
+        Me.Panel1.Size = New System.Drawing.Size(404, 241)
+        Me.Panel1.TabIndex = 7
+        '
         'FormTipOfTheDay
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.BackColor = System.Drawing.Color.White
         Me.ClientSize = New System.Drawing.Size(404, 241)
-        Me.Controls.Add(Me.Label_TipNumber)
-        Me.Controls.Add(Me.RichTextBox_Tips)
-        Me.Controls.Add(Me.ClassPictureBoxQuality1)
         Me.Controls.Add(Me.Panel_FooterControl)
+        Me.Controls.Add(Me.Panel1)
         Me.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MaximizeBox = False
@@ -155,6 +166,7 @@ Partial Class FormTipOfTheDay
         Me.Panel_FooterControl.ResumeLayout(False)
         Me.Panel_FooterControl.PerformLayout()
         CType(Me.ClassPictureBoxQuality1, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.Panel1.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub
@@ -167,4 +179,5 @@ Partial Class FormTipOfTheDay
     Friend WithEvents LinkLabel_NextTip As LinkLabel
     Friend WithEvents RichTextBox_Tips As RichTextBox
     Friend WithEvents Label_TipNumber As Label
+    Friend WithEvents Panel1 As Panel
 End Class
