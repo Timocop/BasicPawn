@@ -23,10 +23,17 @@ Public Class ClassReportListBox
     Public Sub New()
         MyBase.New()
 
-        Me.ItemHeight = 32
         Me.DrawMode = DrawMode.OwnerDrawVariable
+        Me.ItemHeight = 32
 
         Me.SetStyle(ControlStyles.ResizeRedraw, True)
+    End Sub
+
+    Protected Overrides Sub OnHandleCreated(e As EventArgs)
+        MyBase.OnHandleCreated(e)
+
+        'Only able to get DPI value when control handle is created
+        Me.ItemHeight = CInt(32 * ClassTools.ClassForms.ScaleDPI(Me))
     End Sub
 
     Protected Overrides Sub OnDrawItem(e As DrawItemEventArgs)

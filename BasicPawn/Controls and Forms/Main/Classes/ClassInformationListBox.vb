@@ -36,13 +36,20 @@ Public Class ClassInformationListBox
         g_mIcons(ENUM_ICONS.ICO_WARNING) = My.Resources.user32_101_16x16
         g_mIcons(ENUM_ICONS.ICO_ERROR) = My.Resources.user32_103_16x16
 
-        Me.ItemHeight = 16
         Me.DrawMode = DrawMode.OwnerDrawVariable
+        Me.ItemHeight = 16
 
         Me.HorizontalScrollbar = True
         Me.HorizontalExtent = 0
 
         Me.SetStyle(ControlStyles.ResizeRedraw, True)
+    End Sub
+
+    Protected Overrides Sub OnHandleCreated(e As EventArgs)
+        MyBase.OnHandleCreated(e)
+
+        'Only able to get DPI value when control handle is created
+        Me.ItemHeight = CInt(16 * ClassTools.ClassForms.ScaleDPI(Me))
     End Sub
 
     Protected Overrides Sub OnDrawItem(e As DrawItemEventArgs)
@@ -59,8 +66,8 @@ Public Class ClassInformationListBox
             Return
         End If
 
-        Const TEXT_MSG_OFFSET = 32
-        Const ICON_SIZE = 16
+        Dim TEXT_MSG_OFFSET As Integer = CInt(32 * ClassTools.ClassForms.ScaleDPI(Me))
+        Dim ICON_SIZE As Integer = CInt(16 * ClassTools.ClassForms.ScaleDPI(Me))
 
         'e.DrawBackground()
 

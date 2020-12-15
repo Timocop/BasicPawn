@@ -55,10 +55,17 @@ Public Class ClassAutocompleteListBox
         g_mIcons(ENUM_ICONS.ICO_STRING) = My.Resources.IntelliSenseString_32x
         g_mIcons(ENUM_ICONS.ICO_VARIABLE) = My.Resources.IntelliSenseVariable_32x
 
-        Me.ItemHeight = 16
         Me.DrawMode = DrawMode.OwnerDrawVariable
+        Me.ItemHeight = 16
 
         Me.SetStyle(ControlStyles.ResizeRedraw, True)
+    End Sub
+
+    Protected Overrides Sub OnHandleCreated(e As EventArgs)
+        MyBase.OnHandleCreated(e)
+
+        'Only able to get DPI value when control handle is created
+        Me.ItemHeight = CInt(16 * ClassTools.ClassForms.ScaleDPI(Me))
     End Sub
 
     Protected Overrides Sub OnDrawItem(e As DrawItemEventArgs)
@@ -75,9 +82,9 @@ Public Class ClassAutocompleteListBox
             Return
         End If
 
-        Const TEXT_FILE_OFFSET = 24
-        Const TEXT_FUNCTION_OFFSET = 164
-        Const ICON_SIZE = 16
+        Dim TEXT_FILE_OFFSET As Integer = CInt(24 * ClassTools.ClassForms.ScaleDPI(Me))
+        Dim TEXT_FUNCTION_OFFSET As Integer = CInt(164 * ClassTools.ClassForms.ScaleDPI(Me))
+        Dim ICON_SIZE As Integer = CInt(16 * ClassTools.ClassForms.ScaleDPI(Me))
 
         'e.DrawBackground()
 

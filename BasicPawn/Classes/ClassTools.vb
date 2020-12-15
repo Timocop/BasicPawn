@@ -471,7 +471,9 @@ Public Class ClassTools
         ''' <param name="cCtrl">The control to read the DPI from</param>
         ''' <returns></returns>
         Public Shared Function ScaleDPI(cCtrl As Control) As Single
-            Return (cCtrl.CreateGraphics().DpiX / 96.0F)
+            Using g As Graphics = Graphics.FromHwnd(IntPtr.Zero)
+                Return (g.DpiX / 96.0F)
+            End Using
         End Function
 
         Public Shared Sub FormWindowCommand(f As Form, i As NativeWinAPI.ShowWindowCommands)
