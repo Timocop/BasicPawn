@@ -120,7 +120,7 @@ Partial Class FormTipOfTheDay
         Me.Label_TipNumber.Location = New System.Drawing.Point(12, 66)
         Me.Label_TipNumber.Margin = New System.Windows.Forms.Padding(3)
         Me.Label_TipNumber.Name = "Label_TipNumber"
-        Me.Label_TipNumber.Size = New System.Drawing.Size(48, 13)
+        Me.Label_TipNumber.Size = New System.Drawing.Size(48, 118)
         Me.Label_TipNumber.TabIndex = 6
         Me.Label_TipNumber.Text = "Tip #0"
         Me.Label_TipNumber.TextAlign = System.Drawing.ContentAlignment.TopCenter
