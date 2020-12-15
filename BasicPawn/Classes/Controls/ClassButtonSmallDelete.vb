@@ -19,12 +19,15 @@ Public Class ClassButtonSmallDelete
     Inherits PictureBox
 
     Public Sub New()
+        Dim iSize As Integer = CType(16.0 * ClassTools.ClassForms.ScaleDPI(Me), Integer)
+
         Me.Image = My.Resources.Bmp_ButtonDeleteDefault
-        Me.Size = New Size(16, 16)
-        Me.MinimumSize = New Size(16, 16)
-        Me.MaximumSize = New Size(16, 16)
+        Me.Size = New Size(iSize, iSize)
+        Me.MinimumSize = New Size(iSize, iSize)
+        Me.MaximumSize = New Size(iSize, iSize)
 
         Me.BackColor = Color.Transparent
+        Me.SizeMode = PictureBoxSizeMode.Zoom
     End Sub
 
     Protected Overrides Sub OnMouseDown(mevent As MouseEventArgs)
