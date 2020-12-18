@@ -470,7 +470,7 @@ Public Class ClassTools
         ''' </summary>
         ''' <param name="cCtrl">The control to read the DPI from</param>
         ''' <returns></returns>
-        Public Shared Function ScaleDPI(cCtrl As Control) As Single
+        Public Shared Function ScaleDPI() As Single
             Using g As Graphics = Graphics.FromHwnd(IntPtr.Zero)
                 Return (g.DpiX / 96.0F)
             End Using

@@ -31,19 +31,19 @@ Partial Class UCExportWizardMethod
         Me.RadioButton_StoreMultiFiles = New System.Windows.Forms.RadioButton()
         Me.Label_AdditionalFiles = New System.Windows.Forms.Label()
         Me.Label1 = New System.Windows.Forms.Label()
+        Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.Panel1.SuspendLayout()
         Me.SuspendLayout()
         '
         'ListBox_AdditionalFiles
         '
-        Me.ListBox_AdditionalFiles.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ListBox_AdditionalFiles.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ListBox_AdditionalFiles.FormattingEnabled = True
         Me.ListBox_AdditionalFiles.HorizontalScrollbar = True
-        Me.ListBox_AdditionalFiles.Location = New System.Drawing.Point(64, 113)
+        Me.ListBox_AdditionalFiles.Location = New System.Drawing.Point(0, 0)
         Me.ListBox_AdditionalFiles.Margin = New System.Windows.Forms.Padding(64, 3, 64, 64)
         Me.ListBox_AdditionalFiles.Name = "ListBox_AdditionalFiles"
-        Me.ListBox_AdditionalFiles.Size = New System.Drawing.Size(512, 316)
+        Me.ListBox_AdditionalFiles.Size = New System.Drawing.Size(512, 303)
         Me.ListBox_AdditionalFiles.TabIndex = 0
         '
         'RadioButton_StoreSingleFile
@@ -90,19 +90,32 @@ Partial Class UCExportWizardMethod
         Me.Label1.TabIndex = 4
         Me.Label1.Text = "Phrases export method:"
         '
+        'Panel1
+        '
+        Me.Panel1.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Panel1.Controls.Add(Me.ListBox_AdditionalFiles)
+        Me.Panel1.Location = New System.Drawing.Point(64, 113)
+        Me.Panel1.Margin = New System.Windows.Forms.Padding(64, 3, 64, 64)
+        Me.Panel1.Name = "Panel1"
+        Me.Panel1.Size = New System.Drawing.Size(512, 303)
+        Me.Panel1.TabIndex = 5
+        '
         'UCExportWizardMethod
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.BackColor = System.Drawing.Color.White
+        Me.Controls.Add(Me.Panel1)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.Label_AdditionalFiles)
         Me.Controls.Add(Me.RadioButton_StoreMultiFiles)
         Me.Controls.Add(Me.RadioButton_StoreSingleFile)
-        Me.Controls.Add(Me.ListBox_AdditionalFiles)
         Me.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Name = "UCExportWizardMethod"
         Me.Size = New System.Drawing.Size(640, 480)
+        Me.Panel1.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -113,4 +126,5 @@ Partial Class UCExportWizardMethod
     Friend WithEvents RadioButton_StoreMultiFiles As Windows.Forms.RadioButton
     Friend WithEvents Label_AdditionalFiles As Windows.Forms.Label
     Friend WithEvents Label1 As Label
+    Friend WithEvents Panel1 As Panel
 End Class

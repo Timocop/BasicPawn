@@ -34,7 +34,9 @@ Partial Class FormImportWizard
         Me.Label_AdditionalFiles = New System.Windows.Forms.Label()
         Me.ListBox_AdditionalFiles = New System.Windows.Forms.ListBox()
         Me.LinkLabel_Help = New System.Windows.Forms.LinkLabel()
+        Me.Panel1 = New System.Windows.Forms.Panel()
         Me.Panel_Footer.SuspendLayout()
+        Me.Panel1.SuspendLayout()
         Me.SuspendLayout()
         '
         'Panel_Footer
@@ -150,15 +152,12 @@ Partial Class FormImportWizard
         '
         'ListBox_AdditionalFiles
         '
-        Me.ListBox_AdditionalFiles.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ListBox_AdditionalFiles.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ListBox_AdditionalFiles.FormattingEnabled = True
         Me.ListBox_AdditionalFiles.HorizontalScrollbar = True
-        Me.ListBox_AdditionalFiles.Location = New System.Drawing.Point(25, 176)
-        Me.ListBox_AdditionalFiles.Margin = New System.Windows.Forms.Padding(16, 3, 16, 16)
+        Me.ListBox_AdditionalFiles.Location = New System.Drawing.Point(0, 0)
         Me.ListBox_AdditionalFiles.Name = "ListBox_AdditionalFiles"
-        Me.ListBox_AdditionalFiles.Size = New System.Drawing.Size(574, 199)
+        Me.ListBox_AdditionalFiles.Size = New System.Drawing.Size(574, 198)
         Me.ListBox_AdditionalFiles.TabIndex = 7
         '
         'LinkLabel_Help
@@ -173,14 +172,26 @@ Partial Class FormImportWizard
         Me.LinkLabel_Help.TabStop = True
         Me.LinkLabel_Help.Text = "What should i choose?"
         '
+        'Panel1
+        '
+        Me.Panel1.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Panel1.Controls.Add(Me.ListBox_AdditionalFiles)
+        Me.Panel1.Location = New System.Drawing.Point(25, 176)
+        Me.Panel1.Margin = New System.Windows.Forms.Padding(16, 3, 16, 16)
+        Me.Panel1.Name = "Panel1"
+        Me.Panel1.Size = New System.Drawing.Size(574, 198)
+        Me.Panel1.TabIndex = 9
+        '
         'FormImportWizard
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.BackColor = System.Drawing.Color.White
         Me.ClientSize = New System.Drawing.Size(624, 441)
+        Me.Controls.Add(Me.Panel1)
         Me.Controls.Add(Me.LinkLabel_Help)
-        Me.Controls.Add(Me.ListBox_AdditionalFiles)
         Me.Controls.Add(Me.Label_AdditionalFiles)
         Me.Controls.Add(Me.RadioButton_FileMulti)
         Me.Controls.Add(Me.TextBox_File)
@@ -197,6 +208,7 @@ Partial Class FormImportWizard
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Import Wizard"
         Me.Panel_Footer.ResumeLayout(False)
+        Me.Panel1.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -214,4 +226,5 @@ Partial Class FormImportWizard
     Friend WithEvents Label_AdditionalFiles As Label
     Friend WithEvents ListBox_AdditionalFiles As ListBox
     Friend WithEvents LinkLabel_Help As LinkLabel
+    Friend WithEvents Panel1 As Panel
 End Class

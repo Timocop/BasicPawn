@@ -29,10 +29,10 @@ Partial Class FormExportWizard
         Me.Panel_FooterDarkControl = New System.Windows.Forms.Panel()
         Me.Panel_Pages = New System.Windows.Forms.Panel()
         Me.Panel3 = New System.Windows.Forms.Panel()
+        Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.Panel_TopDarkControl = New System.Windows.Forms.Panel()
         Me.Label_WizDesc = New System.Windows.Forms.Label()
         Me.Label_WizTitle = New System.Windows.Forms.Label()
-        Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.Panel_FooterControl.SuspendLayout()
         Me.Panel3.SuspendLayout()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -115,6 +115,17 @@ Partial Class FormExportWizard
         Me.Panel3.Size = New System.Drawing.Size(624, 64)
         Me.Panel3.TabIndex = 0
         '
+        'PictureBox1
+        '
+        Me.PictureBox1.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.PictureBox1.Image = Global.BasicPawnPluginTranslationEditor.My.Resources.Resources.accessibilitycpl_325_48x48_32
+        Me.PictureBox1.Location = New System.Drawing.Point(564, 9)
+        Me.PictureBox1.Name = "PictureBox1"
+        Me.PictureBox1.Size = New System.Drawing.Size(48, 48)
+        Me.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
+        Me.PictureBox1.TabIndex = 3
+        Me.PictureBox1.TabStop = False
+        '
         'Panel_TopDarkControl
         '
         Me.Panel_TopDarkControl.BackColor = System.Drawing.SystemColors.ControlDark
@@ -145,21 +156,10 @@ Partial Class FormExportWizard
         Me.Label_WizTitle.TabIndex = 0
         Me.Label_WizTitle.Text = "Wizard Title"
         '
-        'PictureBox1
-        '
-        Me.PictureBox1.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.PictureBox1.Image = Global.BasicPawnPluginTranslationEditor.My.Resources.Resources.accessibilitycpl_325_48x48_32
-        Me.PictureBox1.Location = New System.Drawing.Point(564, 9)
-        Me.PictureBox1.Name = "PictureBox1"
-        Me.PictureBox1.Size = New System.Drawing.Size(48, 48)
-        Me.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
-        Me.PictureBox1.TabIndex = 3
-        Me.PictureBox1.TabStop = False
-        '
         'FormExportWizard
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.BackColor = System.Drawing.Color.White
         Me.ClientSize = New System.Drawing.Size(624, 441)
         Me.Controls.Add(Me.Panel_Pages)

@@ -45,7 +45,9 @@ Partial Class FormAddTranslation
         Me.LinkLabel1 = New System.Windows.Forms.LinkLabel()
         Me.ToolTip_Information = New System.Windows.Forms.ToolTip(Me.components)
         Me.CheckBox_FormatInherit = New System.Windows.Forms.CheckBox()
+        Me.Panel1 = New System.Windows.Forms.Panel()
         Me.Panel_FooterControl.SuspendLayout()
+        Me.Panel1.SuspendLayout()
         Me.SuspendLayout()
         '
         'Button_Apply
@@ -190,15 +192,13 @@ Partial Class FormAddTranslation
         '
         'TextBox_Text
         '
-        Me.TextBox_Text.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.TextBox_Text.BackColor = System.Drawing.Color.White
-        Me.TextBox_Text.Location = New System.Drawing.Point(12, 193)
+        Me.TextBox_Text.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TextBox_Text.Location = New System.Drawing.Point(0, 0)
         Me.TextBox_Text.Margin = New System.Windows.Forms.Padding(3, 3, 3, 9)
         Me.TextBox_Text.Multiline = True
         Me.TextBox_Text.Name = "TextBox_Text"
-        Me.TextBox_Text.Size = New System.Drawing.Size(440, 68)
+        Me.TextBox_Text.Size = New System.Drawing.Size(440, 74)
         Me.TextBox_Text.TabIndex = 10
         '
         'LinkLabel1
@@ -233,15 +233,26 @@ Partial Class FormAddTranslation
         Me.CheckBox_FormatInherit.Text = "Inherit from english (en)"
         Me.CheckBox_FormatInherit.UseVisualStyleBackColor = True
         '
+        'Panel1
+        '
+        Me.Panel1.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Panel1.Controls.Add(Me.TextBox_Text)
+        Me.Panel1.Location = New System.Drawing.Point(12, 193)
+        Me.Panel1.Name = "Panel1"
+        Me.Panel1.Size = New System.Drawing.Size(440, 74)
+        Me.Panel1.TabIndex = 13
+        '
         'FormAddTranslation
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.BackColor = System.Drawing.Color.White
         Me.ClientSize = New System.Drawing.Size(464, 321)
+        Me.Controls.Add(Me.Panel1)
         Me.Controls.Add(Me.CheckBox_FormatInherit)
         Me.Controls.Add(Me.LinkLabel1)
-        Me.Controls.Add(Me.TextBox_Text)
         Me.Controls.Add(Me.Label4)
         Me.Controls.Add(Me.TextBox_Format)
         Me.Controls.Add(Me.Label3)
@@ -261,6 +272,8 @@ Partial Class FormAddTranslation
         Me.Text = "Add Translation"
         Me.Panel_FooterControl.ResumeLayout(False)
         Me.Panel_FooterControl.PerformLayout()
+        Me.Panel1.ResumeLayout(False)
+        Me.Panel1.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -283,4 +296,5 @@ Partial Class FormAddTranslation
     Friend WithEvents ToolTip_Information As Windows.Forms.ToolTip
     Friend WithEvents CheckBox_FormatInherit As Windows.Forms.CheckBox
     Friend WithEvents LinkLabel_OnlineTranslator As LinkLabel
+    Friend WithEvents Panel1 As Panel
 End Class

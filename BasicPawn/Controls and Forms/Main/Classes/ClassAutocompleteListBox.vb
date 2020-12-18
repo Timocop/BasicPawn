@@ -65,7 +65,7 @@ Public Class ClassAutocompleteListBox
         MyBase.OnHandleCreated(e)
 
         'Only able to get DPI value when control handle is created
-        Me.ItemHeight = CInt(16 * ClassTools.ClassForms.ScaleDPI(Me))
+        Me.ItemHeight = CInt(16 * ClassTools.ClassForms.ScaleDPI())
     End Sub
 
     Protected Overrides Sub OnDrawItem(e As DrawItemEventArgs)
@@ -82,9 +82,9 @@ Public Class ClassAutocompleteListBox
             Return
         End If
 
-        Dim TEXT_FILE_OFFSET As Integer = CInt(24 * ClassTools.ClassForms.ScaleDPI(Me))
-        Dim TEXT_FUNCTION_OFFSET As Integer = CInt(164 * ClassTools.ClassForms.ScaleDPI(Me))
-        Dim ICON_SIZE As Integer = CInt(16 * ClassTools.ClassForms.ScaleDPI(Me))
+        Dim TEXT_FILE_OFFSET As Integer = CInt(24 * ClassTools.ClassForms.ScaleDPI())
+        Dim TEXT_FUNCTION_OFFSET As Integer = CInt(164 * ClassTools.ClassForms.ScaleDPI())
+        Dim ICON_SIZE As Integer = CInt(16 * ClassTools.ClassForms.ScaleDPI())
 
         'e.DrawBackground()
 

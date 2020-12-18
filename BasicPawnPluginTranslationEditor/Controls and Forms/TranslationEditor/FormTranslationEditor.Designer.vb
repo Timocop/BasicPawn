@@ -29,12 +29,6 @@ Partial Class FormTranslationEditor
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormTranslationEditor))
         Me.MenuStrip_TranslationEditor = New System.Windows.Forms.MenuStrip()
-        Me.ImageList_Translation = New System.Windows.Forms.ImageList(Me.components)
-        Me.ContextMenuStrip_Translation = New System.Windows.Forms.ContextMenuStrip(Me.components)
-        Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
-        Me.ToolStripMenuItem_CopyText = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripSeparator4 = New System.Windows.Forms.ToolStripSeparator()
-        Me.ToolStripMenuItem_CopyFormat = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_File = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_New = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Import = New System.Windows.Forms.ToolStripMenuItem()
@@ -45,10 +39,16 @@ Partial Class FormTranslationEditor
         Me.ToolStripMenuItem_GroupAdd = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_ShowMissing = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ImageList_Translation = New System.Windows.Forms.ImageList(Me.components)
+        Me.ContextMenuStrip_Translation = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.ToolStripMenuItem_TransAdd = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_TransEdit = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_TransRemove = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator4 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_CopyLang = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_CopyFormat = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_CopyText = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_GroupRename = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_GroupRemove = New System.Windows.Forms.ToolStripMenuItem()
         Me.MenuStrip_TranslationEditor.SuspendLayout()
@@ -63,41 +63,6 @@ Partial Class FormTranslationEditor
         Me.MenuStrip_TranslationEditor.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
         Me.MenuStrip_TranslationEditor.Size = New System.Drawing.Size(624, 24)
         Me.MenuStrip_TranslationEditor.TabIndex = 0
-        '
-        'ImageList_Translation
-        '
-        Me.ImageList_Translation.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit
-        Me.ImageList_Translation.ImageSize = New System.Drawing.Size(16, 16)
-        Me.ImageList_Translation.TransparentColor = System.Drawing.Color.Transparent
-        '
-        'ContextMenuStrip_Translation
-        '
-        Me.ContextMenuStrip_Translation.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_TransAdd, Me.ToolStripMenuItem_TransEdit, Me.ToolStripMenuItem_TransRemove, Me.ToolStripSeparator4, Me.ToolStripMenuItem_CopyLang, Me.ToolStripMenuItem_CopyFormat, Me.ToolStripMenuItem_CopyText, Me.ToolStripSeparator2, Me.ToolStripMenuItem_GroupRename, Me.ToolStripMenuItem_GroupRemove})
-        Me.ContextMenuStrip_Translation.Name = "ContextMenuStrip1"
-        Me.ContextMenuStrip_Translation.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
-        Me.ContextMenuStrip_Translation.Size = New System.Drawing.Size(192, 214)
-        '
-        'ToolStripSeparator2
-        '
-        Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
-        Me.ToolStripSeparator2.Size = New System.Drawing.Size(188, 6)
-        '
-        'ToolStripMenuItem_CopyText
-        '
-        Me.ToolStripMenuItem_CopyText.Name = "ToolStripMenuItem_CopyText"
-        Me.ToolStripMenuItem_CopyText.Size = New System.Drawing.Size(191, 22)
-        Me.ToolStripMenuItem_CopyText.Text = "Copy Text"
-        '
-        'ToolStripSeparator4
-        '
-        Me.ToolStripSeparator4.Name = "ToolStripSeparator4"
-        Me.ToolStripSeparator4.Size = New System.Drawing.Size(188, 6)
-        '
-        'ToolStripMenuItem_CopyFormat
-        '
-        Me.ToolStripMenuItem_CopyFormat.Name = "ToolStripMenuItem_CopyFormat"
-        Me.ToolStripMenuItem_CopyFormat.Size = New System.Drawing.Size(191, 22)
-        Me.ToolStripMenuItem_CopyFormat.Text = "Copy Format"
         '
         'ToolStripMenuItem_File
         '
@@ -168,6 +133,19 @@ Partial Class FormTranslationEditor
         Me.ToolStripMenuItem_ShowMissing.Size = New System.Drawing.Size(190, 22)
         Me.ToolStripMenuItem_ShowMissing.Text = "Show Missing Phrases"
         '
+        'ImageList_Translation
+        '
+        Me.ImageList_Translation.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit
+        Me.ImageList_Translation.ImageSize = New System.Drawing.Size(16, 16)
+        Me.ImageList_Translation.TransparentColor = System.Drawing.Color.Transparent
+        '
+        'ContextMenuStrip_Translation
+        '
+        Me.ContextMenuStrip_Translation.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_TransAdd, Me.ToolStripMenuItem_TransEdit, Me.ToolStripMenuItem_TransRemove, Me.ToolStripSeparator4, Me.ToolStripMenuItem_CopyLang, Me.ToolStripMenuItem_CopyFormat, Me.ToolStripMenuItem_CopyText, Me.ToolStripSeparator2, Me.ToolStripMenuItem_GroupRename, Me.ToolStripMenuItem_GroupRemove})
+        Me.ContextMenuStrip_Translation.Name = "ContextMenuStrip1"
+        Me.ContextMenuStrip_Translation.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
+        Me.ContextMenuStrip_Translation.Size = New System.Drawing.Size(192, 192)
+        '
         'ToolStripMenuItem_TransAdd
         '
         Me.ToolStripMenuItem_TransAdd.Image = CType(resources.GetObject("ToolStripMenuItem_TransAdd.Image"), System.Drawing.Image)
@@ -189,12 +167,34 @@ Partial Class FormTranslationEditor
         Me.ToolStripMenuItem_TransRemove.Size = New System.Drawing.Size(191, 22)
         Me.ToolStripMenuItem_TransRemove.Text = "Remove"
         '
+        'ToolStripSeparator4
+        '
+        Me.ToolStripSeparator4.Name = "ToolStripSeparator4"
+        Me.ToolStripSeparator4.Size = New System.Drawing.Size(188, 6)
+        '
         'ToolStripMenuItem_CopyLang
         '
         Me.ToolStripMenuItem_CopyLang.Image = Global.BasicPawnPluginTranslationEditor.My.Resources.Resources.imageres_5306_16x16_32
         Me.ToolStripMenuItem_CopyLang.Name = "ToolStripMenuItem_CopyLang"
         Me.ToolStripMenuItem_CopyLang.Size = New System.Drawing.Size(191, 22)
         Me.ToolStripMenuItem_CopyLang.Text = "Copy Language"
+        '
+        'ToolStripMenuItem_CopyFormat
+        '
+        Me.ToolStripMenuItem_CopyFormat.Name = "ToolStripMenuItem_CopyFormat"
+        Me.ToolStripMenuItem_CopyFormat.Size = New System.Drawing.Size(191, 22)
+        Me.ToolStripMenuItem_CopyFormat.Text = "Copy Format"
+        '
+        'ToolStripMenuItem_CopyText
+        '
+        Me.ToolStripMenuItem_CopyText.Name = "ToolStripMenuItem_CopyText"
+        Me.ToolStripMenuItem_CopyText.Size = New System.Drawing.Size(191, 22)
+        Me.ToolStripMenuItem_CopyText.Text = "Copy Text"
+        '
+        'ToolStripSeparator2
+        '
+        Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
+        Me.ToolStripSeparator2.Size = New System.Drawing.Size(188, 6)
         '
         'ToolStripMenuItem_GroupRename
         '
@@ -212,8 +212,8 @@ Partial Class FormTranslationEditor
         '
         'FormTranslationEditor
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.BackColor = System.Drawing.Color.White
         Me.ClientSize = New System.Drawing.Size(624, 441)
         Me.Controls.Add(Me.MenuStrip_TranslationEditor)

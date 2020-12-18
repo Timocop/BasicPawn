@@ -30,7 +30,9 @@ Partial Class FormFilesMessageBox
         Me.Panel_FooterDarkControl = New System.Windows.Forms.Panel()
         Me.ListBox_Files = New System.Windows.Forms.ListBox()
         Me.Label_Question = New System.Windows.Forms.Label()
+        Me.Panel1 = New System.Windows.Forms.Panel()
         Me.Panel_FooterControl.SuspendLayout()
+        Me.Panel1.SuspendLayout()
         Me.SuspendLayout()
         '
         'Label_Message
@@ -90,12 +92,10 @@ Partial Class FormFilesMessageBox
         '
         'ListBox_Files
         '
-        Me.ListBox_Files.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ListBox_Files.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ListBox_Files.FormattingEnabled = True
         Me.ListBox_Files.HorizontalScrollbar = True
-        Me.ListBox_Files.Location = New System.Drawing.Point(25, 54)
+        Me.ListBox_Files.Location = New System.Drawing.Point(0, 0)
         Me.ListBox_Files.Margin = New System.Windows.Forms.Padding(16, 16, 16, 3)
         Me.ListBox_Files.Name = "ListBox_Files"
         Me.ListBox_Files.Size = New System.Drawing.Size(421, 121)
@@ -112,14 +112,26 @@ Partial Class FormFilesMessageBox
         Me.Label_Question.TabIndex = 3
         Me.Label_Question.Text = "Question?"
         '
+        'Panel1
+        '
+        Me.Panel1.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Panel1.Controls.Add(Me.ListBox_Files)
+        Me.Panel1.Location = New System.Drawing.Point(25, 54)
+        Me.Panel1.Margin = New System.Windows.Forms.Padding(16, 16, 16, 3)
+        Me.Panel1.Name = "Panel1"
+        Me.Panel1.Size = New System.Drawing.Size(421, 121)
+        Me.Panel1.TabIndex = 4
+        '
         'FormFilesMessageBox
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.BackColor = System.Drawing.Color.White
         Me.ClientSize = New System.Drawing.Size(471, 280)
+        Me.Controls.Add(Me.Panel1)
         Me.Controls.Add(Me.Label_Question)
-        Me.Controls.Add(Me.ListBox_Files)
         Me.Controls.Add(Me.Panel_FooterControl)
         Me.Controls.Add(Me.Label_Message)
         Me.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -131,6 +143,7 @@ Partial Class FormFilesMessageBox
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Title"
         Me.Panel_FooterControl.ResumeLayout(False)
+        Me.Panel1.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -143,4 +156,5 @@ Partial Class FormFilesMessageBox
     Friend WithEvents Label_Question As Label
     Friend WithEvents Button_Apply As Button
     Friend WithEvents Button_Cancel As Button
+    Friend WithEvents Panel1 As Panel
 End Class

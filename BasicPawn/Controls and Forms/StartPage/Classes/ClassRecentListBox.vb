@@ -36,7 +36,7 @@ Public Class ClassRecentListBox
         MyBase.OnHandleCreated(e)
 
         'Only able to get DPI value when control handle is created
-        Me.ItemHeight = CInt(32 * ClassTools.ClassForms.ScaleDPI(Me))
+        Me.ItemHeight = CInt(32 * ClassTools.ClassForms.ScaleDPI())
     End Sub
 
     Private Sub ClassRecentListBox_MouseMove(sender As Object, e As MouseEventArgs) Handles Me.MouseMove
@@ -147,8 +147,8 @@ Public Class ClassRecentListBox
                     Return
                 End If
 
-                Dim TEXT_X_OFFSET As Integer = CInt(28 * ClassTools.ClassForms.ScaleDPI(Me))
-                Dim TEXT_SPACE_OFFSET As Integer = CInt(2 * ClassTools.ClassForms.ScaleDPI(Me))
+                Dim TEXT_X_OFFSET As Integer = CInt(28 * ClassTools.ClassForms.ScaleDPI())
+                Dim TEXT_SPACE_OFFSET As Integer = CInt(2 * ClassTools.ClassForms.ScaleDPI())
 
                 e.Graphics.FillRectangle(New SolidBrush(Me.BackColor), e.Bounds)
 
@@ -179,7 +179,7 @@ Public Class ClassRecentListBox
                     Return
                 End If
 
-                Dim TEXT_NAME_OFFSET As Integer = CInt(2 * ClassTools.ClassForms.ScaleDPI(Me))
+                Dim TEXT_NAME_OFFSET As Integer = CInt(2 * ClassTools.ClassForms.ScaleDPI())
 
                 e.Graphics.FillRectangle(New SolidBrush(Me.BackColor), e.Bounds)
 
@@ -201,8 +201,8 @@ Public Class ClassRecentListBox
     End Function
 
     Private Function GetButtonRectangle(i As Rectangle) As Rectangle
-        Dim BUTTON_SIZE As Integer = CInt(16 * ClassTools.ClassForms.ScaleDPI(Me))
-        Dim BUTTON_OFFSET As Integer = CInt(24 * ClassTools.ClassForms.ScaleDPI(Me))
+        Dim BUTTON_SIZE As Integer = CInt(16 * ClassTools.ClassForms.ScaleDPI())
+        Dim BUTTON_OFFSET As Integer = CInt(24 * ClassTools.ClassForms.ScaleDPI())
 
         Return New Rectangle(i.X + i.Width - BUTTON_OFFSET, i.Y + i.Height - BUTTON_OFFSET, BUTTON_SIZE, BUTTON_SIZE)
     End Function
@@ -212,8 +212,8 @@ Public Class ClassRecentListBox
     End Function
 
     Private Function GetCheckBoxRectangle(i As Rectangle) As Rectangle
-        Dim CHECKBOX_SIZE As Integer = CInt(16 * ClassTools.ClassForms.ScaleDPI(Me))
-        Dim CHECKBOX_OFFSET As Integer = CInt(8 * ClassTools.ClassForms.ScaleDPI(Me))
+        Dim CHECKBOX_SIZE As Integer = CInt(16 * ClassTools.ClassForms.ScaleDPI())
+        Dim CHECKBOX_OFFSET As Integer = CInt(8 * ClassTools.ClassForms.ScaleDPI())
 
         Return New Rectangle(i.X + CHECKBOX_OFFSET, i.Y + CHECKBOX_OFFSET, CHECKBOX_SIZE, CHECKBOX_SIZE)
     End Function

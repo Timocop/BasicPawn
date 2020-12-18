@@ -19,7 +19,7 @@ Public Class ClassButtonSmallDelete
     Inherits PictureBox
 
     Public Sub New()
-        Dim iSize As Integer = CType(16.0 * ClassTools.ClassForms.ScaleDPI(Me), Integer)
+        Dim iSize As Integer = CType(16.0 * ClassTools.ClassForms.ScaleDPI(), Integer)
 
         Me.Image = My.Resources.Bmp_ButtonDeleteDefault
         Me.Size = New Size(iSize, iSize)

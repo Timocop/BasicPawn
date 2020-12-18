@@ -55,7 +55,7 @@ Public Class FormMain
     Public Const COMARG_CLOSE_APP As String = "BasicPawnComServer-CloseApp-04e3632f-5472-42c5-929a-c3e0c2b35324"
     Public Const COMARG_ACTIVATE_FORM_OR_TAB As String = "BasicPawnComServer-ActivateFormOrTab-04e3632f-5472-42c5-929a-c3e0c2b35324"
 
-    Public ReadOnly g_iDefaultDetailsSplitterDistance As Integer = 150
+    Public ReadOnly g_iDefaultDetailsSplitterDistance As Integer = CInt(150 * ClassTools.ClassForms.ScaleDPI())
 
     Private g_bFormPostCreate As Boolean = False
     Private g_bFormPostLoad As Boolean = False
@@ -256,6 +256,7 @@ Public Class FormMain
         g_mUCTextMinimap.Show()
 
         SplitContainer_ToolboxSourceAndDetails.SplitterDistance = (SplitContainer_ToolboxSourceAndDetails.Height - g_iDefaultDetailsSplitterDistance)
+        SplitContainer_ToolboxAndEditor.SplitterDistance = CInt(200 * ClassTools.ClassForms.ScaleDPI())
 
         g_bFormPostCreate = True
 

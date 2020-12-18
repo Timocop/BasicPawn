@@ -39,10 +39,14 @@ Partial Class FormOnlineTranslator
         Me.TextBox_TranslateTo = New System.Windows.Forms.TextBox()
         Me.ComboBox_TranslateTo = New System.Windows.Forms.ComboBox()
         Me.Label3 = New System.Windows.Forms.Label()
+        Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.Panel2 = New System.Windows.Forms.Panel()
         Me.Panel_Footer.SuspendLayout()
         Me.SplitContainer1.Panel1.SuspendLayout()
         Me.SplitContainer1.Panel2.SuspendLayout()
         Me.SplitContainer1.SuspendLayout()
+        Me.Panel1.SuspendLayout()
+        Me.Panel2.SuspendLayout()
         Me.SuspendLayout()
         '
         'Panel_Footer
@@ -132,13 +136,13 @@ Partial Class FormOnlineTranslator
         '
         'SplitContainer1.Panel1
         '
-        Me.SplitContainer1.Panel1.Controls.Add(Me.TextBox_TranslateFrom)
+        Me.SplitContainer1.Panel1.Controls.Add(Me.Panel1)
         Me.SplitContainer1.Panel1.Controls.Add(Me.ComboBox_TranslateFrom)
         Me.SplitContainer1.Panel1.Controls.Add(Me.Label2)
         '
         'SplitContainer1.Panel2
         '
-        Me.SplitContainer1.Panel2.Controls.Add(Me.TextBox_TranslateTo)
+        Me.SplitContainer1.Panel2.Controls.Add(Me.Panel2)
         Me.SplitContainer1.Panel2.Controls.Add(Me.ComboBox_TranslateTo)
         Me.SplitContainer1.Panel2.Controls.Add(Me.Label3)
         Me.SplitContainer1.Size = New System.Drawing.Size(624, 393)
@@ -147,27 +151,23 @@ Partial Class FormOnlineTranslator
         '
         'TextBox_TranslateFrom
         '
-        Me.TextBox_TranslateFrom.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TextBox_TranslateFrom.Location = New System.Drawing.Point(16, 46)
+        Me.TextBox_TranslateFrom.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TextBox_TranslateFrom.Location = New System.Drawing.Point(0, 0)
         Me.TextBox_TranslateFrom.Margin = New System.Windows.Forms.Padding(16, 9, 16, 16)
         Me.TextBox_TranslateFrom.MaxLength = 1024
         Me.TextBox_TranslateFrom.Multiline = True
         Me.TextBox_TranslateFrom.Name = "TextBox_TranslateFrom"
-        Me.TextBox_TranslateFrom.Size = New System.Drawing.Size(592, 128)
+        Me.TextBox_TranslateFrom.Size = New System.Drawing.Size(600, 134)
         Me.TextBox_TranslateFrom.TabIndex = 3
         '
         'TextBox_TranslateTo
         '
-        Me.TextBox_TranslateTo.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TextBox_TranslateTo.Location = New System.Drawing.Point(16, 46)
+        Me.TextBox_TranslateTo.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TextBox_TranslateTo.Location = New System.Drawing.Point(0, 0)
         Me.TextBox_TranslateTo.Margin = New System.Windows.Forms.Padding(16, 9, 16, 16)
         Me.TextBox_TranslateTo.Multiline = True
         Me.TextBox_TranslateTo.Name = "TextBox_TranslateTo"
-        Me.TextBox_TranslateTo.Size = New System.Drawing.Size(592, 135)
+        Me.TextBox_TranslateTo.Size = New System.Drawing.Size(600, 143)
         Me.TextBox_TranslateTo.TabIndex = 6
         '
         'ComboBox_TranslateTo
@@ -193,6 +193,30 @@ Partial Class FormOnlineTranslator
         Me.Label3.TabIndex = 4
         Me.Label3.Text = "Translate to"
         '
+        'Panel1
+        '
+        Me.Panel1.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Panel1.Controls.Add(Me.TextBox_TranslateFrom)
+        Me.Panel1.Location = New System.Drawing.Point(12, 40)
+        Me.Panel1.Margin = New System.Windows.Forms.Padding(3, 3, 3, 16)
+        Me.Panel1.Name = "Panel1"
+        Me.Panel1.Size = New System.Drawing.Size(600, 134)
+        Me.Panel1.TabIndex = 4
+        '
+        'Panel2
+        '
+        Me.Panel2.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Panel2.Controls.Add(Me.TextBox_TranslateTo)
+        Me.Panel2.Location = New System.Drawing.Point(12, 40)
+        Me.Panel2.Margin = New System.Windows.Forms.Padding(3, 3, 3, 16)
+        Me.Panel2.Name = "Panel2"
+        Me.Panel2.Size = New System.Drawing.Size(600, 143)
+        Me.Panel2.TabIndex = 7
+        '
         'FormOnlineTranslator
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -214,6 +238,10 @@ Partial Class FormOnlineTranslator
         Me.SplitContainer1.Panel2.ResumeLayout(False)
         Me.SplitContainer1.Panel2.PerformLayout()
         Me.SplitContainer1.ResumeLayout(False)
+        Me.Panel1.ResumeLayout(False)
+        Me.Panel1.PerformLayout()
+        Me.Panel2.ResumeLayout(False)
+        Me.Panel2.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
@@ -230,4 +258,6 @@ Partial Class FormOnlineTranslator
     Friend WithEvents ComboBox_TranslateTo As ComboBox
     Friend WithEvents Label3 As Label
     Friend WithEvents LinkLabel_Limits As LinkLabel
+    Friend WithEvents Panel1 As Panel
+    Friend WithEvents Panel2 As Panel
 End Class
