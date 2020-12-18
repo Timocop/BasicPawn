@@ -84,6 +84,7 @@ Public Class FormReportManager
 
         AddHandler g_mClassTreeViewColumns.m_TreeView.DoubleClick, AddressOf ClassTreeViewColumns_DoubleClick
 
+        ImageList_Logs.ImageSize = New Size(ClassTools.ClassForms.ScaleDPI(16), ClassTools.ClassForms.ScaleDPI(16))
         ImageList_Logs.Images.Clear()
         ImageList_Logs.Images.Add(CStr(ICON_FILE), My.Resources.imageres_5304_16x16_32)
         ImageList_Logs.Images.Add(CStr(ICON_WARN), My.Resources.user32_101_16x16_32)

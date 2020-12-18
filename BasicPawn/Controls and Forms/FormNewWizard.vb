@@ -45,6 +45,7 @@ Public Class FormNewWizard
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call.
+        ImageList_TreeView.ImageSize = New Size(ClassTools.ClassForms.ScaleDPI(16), ClassTools.ClassForms.ScaleDPI(16))
         ImageList_TreeView.Images.Clear()
         ImageList_TreeView.Images.Add(CStr(ENUM_TREEVIEW_ICONS.FILE), My.Resources.Ico_Rtf)
         ImageList_TreeView.Images.Add(CStr(ENUM_TREEVIEW_ICONS.FOLDER), My.Resources.Ico_Folder)

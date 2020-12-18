@@ -17,6 +17,7 @@
 
 Partial Public Class FormSettings
     Private Sub Init_Plugins()
+        ImageList_Plugins.ImageSize = New Size(ClassTools.ClassForms.ScaleDPI(16), ClassTools.ClassForms.ScaleDPI(16))
         ImageList_Plugins.Images.Clear()
         ImageList_Plugins.Images.Add(CStr(ENUM_PLUGIN_IMAGE_STATE.ENABLED), My.Resources.netshell_1610_16x16)
         ImageList_Plugins.Images.Add(CStr(ENUM_PLUGIN_IMAGE_STATE.DISABLED), My.Resources.netshell_1608_16x16)

@@ -43,6 +43,7 @@ Public Class FormFileDialogFTP
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call.
+        ImageList_FTP.ImageSize = New Size(ClassTools.ClassForms.ScaleDPI(16), ClassTools.ClassForms.ScaleDPI(16))
         ImageList_FTP.Images.Clear()
         ImageList_FTP.Images.Add("0", My.Resources.Ico_Folder)
         ImageList_FTP.Images.Add("1", My.Resources.Ico_Rtf)

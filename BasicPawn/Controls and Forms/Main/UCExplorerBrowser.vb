@@ -45,6 +45,7 @@ Public Class UCExplorerBrowser
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call.
+        ImageList_ExplorerBrowser.ImageSize = New Size(ClassTools.ClassForms.ScaleDPI(16), ClassTools.ClassForms.ScaleDPI(16))
         ImageList_ExplorerBrowser.Images.Clear()
         ImageList_ExplorerBrowser.Images.Add("0", My.Resources.Ico_Rtf)
         ImageList_ExplorerBrowser.Images.Add("1", My.Resources.Ico_Folder)

@@ -16,6 +16,8 @@
 
 
 
+Imports System.Drawing
+
 Public Class FormTranslationEditor
     Private g_mPluginTranslationEditor As PluginTranslationEditor
     Private g_TreeViewColumns As ClassTreeViewColumns
@@ -41,6 +43,7 @@ Public Class FormTranslationEditor
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call. 
+        ImageList_Translation.ImageSize = New Size(ClassTools.ClassForms.ScaleDPI(16), ClassTools.ClassForms.ScaleDPI(16))
         ImageList_Translation.Images.Clear()
         ImageList_Translation.Images.Add(CStr(ENUM_TRANSLATION_IMAGE_INDEX.MAIN), My.Resources.accessibilitycpl_325_16x16_32)
         ImageList_Translation.Images.Add(CStr(ENUM_TRANSLATION_IMAGE_INDEX.ENTRY_MASTER), My.Resources.netcenter_7_16x16_32)

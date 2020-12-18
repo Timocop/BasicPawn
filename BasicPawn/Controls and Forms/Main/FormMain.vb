@@ -55,7 +55,7 @@ Public Class FormMain
     Public Const COMARG_CLOSE_APP As String = "BasicPawnComServer-CloseApp-04e3632f-5472-42c5-929a-c3e0c2b35324"
     Public Const COMARG_ACTIVATE_FORM_OR_TAB As String = "BasicPawnComServer-ActivateFormOrTab-04e3632f-5472-42c5-929a-c3e0c2b35324"
 
-    Public ReadOnly g_iDefaultDetailsSplitterDistance As Integer = CInt(150 * ClassTools.ClassForms.ScaleDPI())
+    Public ReadOnly g_iDefaultDetailsSplitterDistance As Integer = ClassTools.ClassForms.ScaleDPI(150)
 
     Private g_bFormPostCreate As Boolean = False
     Private g_bFormPostLoad As Boolean = False
@@ -176,6 +176,7 @@ Public Class FormMain
         ' Add any initialization after the InitializeComponent() call. 
         InitializeFilter()
 
+        ImageList_Details.ImageSize = New Size(ClassTools.ClassForms.ScaleDPI(16), ClassTools.ClassForms.ScaleDPI(16))
         ImageList_Details.Images.Clear()
         ImageList_Details.Images.Add("0", My.Resources.imageres_5333_16x16)
         ImageList_Details.Images.Add("1", My.Resources.imageres_5332_16x16)
@@ -256,7 +257,7 @@ Public Class FormMain
         g_mUCTextMinimap.Show()
 
         SplitContainer_ToolboxSourceAndDetails.SplitterDistance = (SplitContainer_ToolboxSourceAndDetails.Height - g_iDefaultDetailsSplitterDistance)
-        SplitContainer_ToolboxAndEditor.SplitterDistance = CInt(200 * ClassTools.ClassForms.ScaleDPI())
+        SplitContainer_ToolboxAndEditor.SplitterDistance = ClassTools.ClassForms.ScaleDPI(200)
 
         g_bFormPostCreate = True
 

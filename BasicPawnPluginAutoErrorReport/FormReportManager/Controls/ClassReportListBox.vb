@@ -33,7 +33,7 @@ Public Class ClassReportListBox
         MyBase.OnHandleCreated(e)
 
         'Only able to get DPI value when control handle is created
-        Me.ItemHeight = CInt(32 * ClassTools.ClassForms.ScaleDPI())
+        Me.ItemHeight = ClassTools.ClassForms.ScaleDPI(32)
     End Sub
 
     Protected Overrides Sub OnDrawItem(e As DrawItemEventArgs)
@@ -50,10 +50,10 @@ Public Class ClassReportListBox
             Return
         End If
 
-        Const TEXT_X_OFFSET = 28
-        Const TEXT_SPACE_OFFSET = 2
-        Const ICON_LOC_OFFSET = 3
-        Const ICON_SIZE = 16
+        Dim TEXT_X_OFFSET As Integer = ClassTools.ClassForms.ScaleDPI(28)
+        Dim TEXT_SPACE_OFFSET As Integer = ClassTools.ClassForms.ScaleDPI(2)
+        Dim ICON_LOC_OFFSET As Integer = ClassTools.ClassForms.ScaleDPI(3)
+        Dim ICON_SIZE As Integer = ClassTools.ClassForms.ScaleDPI(16)
 
         'e.DrawBackground()
         e.Graphics.FillRectangle(New SolidBrush(Me.BackColor), e.Bounds)

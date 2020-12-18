@@ -42,12 +42,13 @@ Public Class FormInstanceManager
 
         g_mFormMain = f
 
+        ImageList_Instances.ImageSize = New Size(ClassTools.ClassForms.ScaleDPI(16), ClassTools.ClassForms.ScaleDPI(16))
         ImageList_Instances.Images.Clear()
         ImageList_Instances.Images.Add(CStr(ICON_INSTANCE), My.Resources.imageres_5364_16x16)
         ImageList_Instances.Images.Add(CStr(ICON_FILE), My.Resources.imageres_5306_16x16)
 
-        TreeViewColumns_Instances.m_Columns.Add("Tab", 100)
-        TreeViewColumns_Instances.m_Columns.Add("File", 400)
+        TreeViewColumns_Instances.m_Columns.Add("Tab", ClassTools.ClassForms.ScaleDPI(100))
+        TreeViewColumns_Instances.m_Columns.Add("File", ClassTools.ClassForms.ScaleDPI(400))
         TreeViewColumns_Instances.m_TreeView.ImageList = ImageList_Instances
         TreeViewColumns_Instances.m_TreeView.ShowNodeToolTips = True
         TreeViewColumns_Instances.m_TreeView.CheckBoxes = True

@@ -31,7 +31,7 @@ Public Class ClassDatabaseListBox
         MyBase.OnHandleCreated(e)
 
         'Only able to get DPI value when control handle is created
-        Me.ItemHeight = CInt(32 * ClassTools.ClassForms.ScaleDPI())
+        Me.ItemHeight = ClassTools.ClassForms.ScaleDPI(32)
     End Sub
 
     Private Sub ClassDatabaseListBox_MouseMove(sender As Object, e As MouseEventArgs) Handles Me.MouseMove
@@ -107,9 +107,9 @@ Public Class ClassDatabaseListBox
             Return
         End If
 
-        Dim TEXT_NAME_OFFSET As Integer = CInt(32 * ClassTools.ClassForms.ScaleDPI())
-        Dim ICON_LOC_OFFSET As Integer = CInt(8 * ClassTools.ClassForms.ScaleDPI())
-        Dim ICON_SIZE As Integer = CInt(16 * ClassTools.ClassForms.ScaleDPI())
+        Dim TEXT_NAME_OFFSET As Integer = ClassTools.ClassForms.ScaleDPI(32)
+        Dim ICON_LOC_OFFSET As Integer = ClassTools.ClassForms.ScaleDPI(8)
+        Dim ICON_SIZE As Integer = ClassTools.ClassForms.ScaleDPI(16)
 
         'e.DrawBackground()
         e.Graphics.FillRectangle(New SolidBrush(Me.BackColor), e.Bounds)
@@ -141,8 +141,8 @@ Public Class ClassDatabaseListBox
     End Function
 
     Private Function GetButtonRectangle(i As Rectangle) As Rectangle
-        Dim BUTTON_SIZE As Integer = CInt(16 * ClassTools.ClassForms.ScaleDPI())
-        Dim BUTTON_OFFSET As Integer = CInt(24 * ClassTools.ClassForms.ScaleDPI())
+        Dim BUTTON_SIZE As Integer = ClassTools.ClassForms.ScaleDPI(16)
+        Dim BUTTON_OFFSET As Integer = ClassTools.ClassForms.ScaleDPI(24)
 
         Return New Rectangle(i.X + i.Width - BUTTON_OFFSET, i.Y + i.Height - BUTTON_OFFSET, BUTTON_SIZE, BUTTON_SIZE)
     End Function

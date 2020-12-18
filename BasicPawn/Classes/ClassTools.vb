@@ -468,11 +468,14 @@ Public Class ClassTools
         ''' <summary>
         ''' Calculates a value with DPI
         ''' </summary>
-        ''' <param name="cCtrl">The control to read the DPI from</param>
         ''' <returns></returns>
-        Public Shared Function ScaleDPI() As Single
+        Public Shared Function ScaleDPI(i As Integer) As Integer
+            Return CInt(ScaleDPI(CSng(i)))
+        End Function
+
+        Public Shared Function ScaleDPI(i As Single) As Single
             Using g As Graphics = Graphics.FromHwnd(IntPtr.Zero)
-                Return (g.DpiX / 96.0F)
+                Return i * (g.DpiX / 96.0F)
             End Using
         End Function
 

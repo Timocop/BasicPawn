@@ -36,6 +36,7 @@ Public Class UCBookmarkDetails
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call.
+        ImageList_Bookmarks.ImageSize = New Size(ClassTools.ClassForms.ScaleDPI(16), ClassTools.ClassForms.ScaleDPI(16))
         ImageList_Bookmarks.Images.Clear()
         ImageList_Bookmarks.Images.Add("0", My.Resources.Pin_16x16_32)
         ImageList_Bookmarks.Images.Add("1", My.Resources.Unpin_16x16_32)
