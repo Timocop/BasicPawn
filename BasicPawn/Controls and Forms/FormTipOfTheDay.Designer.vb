@@ -30,11 +30,13 @@ Partial Class FormTipOfTheDay
         Me.Panel_FooterDarkControl = New System.Windows.Forms.Panel()
         Me.RichTextBox_Tips = New System.Windows.Forms.RichTextBox()
         Me.Label_TipNumber = New System.Windows.Forms.Label()
-        Me.ClassPictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
         Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.ClassPictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
+        Me.Panel2 = New System.Windows.Forms.Panel()
         Me.Panel_FooterControl.SuspendLayout()
-        CType(Me.ClassPictureBoxQuality1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel1.SuspendLayout()
+        CType(Me.ClassPictureBoxQuality1, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.Panel2.SuspendLayout()
         Me.SuspendLayout()
         '
         'Panel_FooterControl
@@ -99,31 +101,41 @@ Partial Class FormTipOfTheDay
         '
         'RichTextBox_Tips
         '
-        Me.RichTextBox_Tips.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.RichTextBox_Tips.BackColor = System.Drawing.Color.White
         Me.RichTextBox_Tips.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.RichTextBox_Tips.Cursor = System.Windows.Forms.Cursors.Default
-        Me.RichTextBox_Tips.Location = New System.Drawing.Point(66, 12)
+        Me.RichTextBox_Tips.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.RichTextBox_Tips.Location = New System.Drawing.Point(0, 0)
         Me.RichTextBox_Tips.Margin = New System.Windows.Forms.Padding(3, 3, 3, 9)
         Me.RichTextBox_Tips.Name = "RichTextBox_Tips"
         Me.RichTextBox_Tips.ReadOnly = True
         Me.RichTextBox_Tips.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None
-        Me.RichTextBox_Tips.Size = New System.Drawing.Size(326, 172)
+        Me.RichTextBox_Tips.Size = New System.Drawing.Size(326, 178)
         Me.RichTextBox_Tips.TabIndex = 5
         Me.RichTextBox_Tips.Text = ""
         '
         'Label_TipNumber
         '
+        Me.Label_TipNumber.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Label_TipNumber.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label_TipNumber.Location = New System.Drawing.Point(12, 66)
+        Me.Label_TipNumber.Location = New System.Drawing.Point(0, 0)
         Me.Label_TipNumber.Margin = New System.Windows.Forms.Padding(3)
         Me.Label_TipNumber.Name = "Label_TipNumber"
-        Me.Label_TipNumber.Size = New System.Drawing.Size(48, 118)
+        Me.Label_TipNumber.Size = New System.Drawing.Size(48, 124)
         Me.Label_TipNumber.TabIndex = 6
         Me.Label_TipNumber.Text = "Tip #0"
         Me.Label_TipNumber.TextAlign = System.Drawing.ContentAlignment.TopCenter
+        '
+        'Panel1
+        '
+        Me.Panel1.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Panel1.Controls.Add(Me.RichTextBox_Tips)
+        Me.Panel1.Location = New System.Drawing.Point(66, 12)
+        Me.Panel1.Name = "Panel1"
+        Me.Panel1.Size = New System.Drawing.Size(326, 178)
+        Me.Panel1.TabIndex = 7
         '
         'ClassPictureBoxQuality1
         '
@@ -136,16 +148,13 @@ Partial Class FormTipOfTheDay
         Me.ClassPictureBoxQuality1.TabIndex = 4
         Me.ClassPictureBoxQuality1.TabStop = False
         '
-        'Panel1
+        'Panel2
         '
-        Me.Panel1.Controls.Add(Me.Label_TipNumber)
-        Me.Panel1.Controls.Add(Me.ClassPictureBoxQuality1)
-        Me.Panel1.Controls.Add(Me.RichTextBox_Tips)
-        Me.Panel1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Panel1.Location = New System.Drawing.Point(0, 0)
-        Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(404, 241)
-        Me.Panel1.TabIndex = 7
+        Me.Panel2.Controls.Add(Me.Label_TipNumber)
+        Me.Panel2.Location = New System.Drawing.Point(12, 66)
+        Me.Panel2.Name = "Panel2"
+        Me.Panel2.Size = New System.Drawing.Size(48, 124)
+        Me.Panel2.TabIndex = 7
         '
         'FormTipOfTheDay
         '
@@ -153,7 +162,9 @@ Partial Class FormTipOfTheDay
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.BackColor = System.Drawing.Color.White
         Me.ClientSize = New System.Drawing.Size(404, 241)
+        Me.Controls.Add(Me.Panel2)
         Me.Controls.Add(Me.Panel_FooterControl)
+        Me.Controls.Add(Me.ClassPictureBoxQuality1)
         Me.Controls.Add(Me.Panel1)
         Me.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
@@ -165,8 +176,9 @@ Partial Class FormTipOfTheDay
         Me.Text = "Did you know..."
         Me.Panel_FooterControl.ResumeLayout(False)
         Me.Panel_FooterControl.PerformLayout()
-        CType(Me.ClassPictureBoxQuality1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.Panel1.ResumeLayout(False)
+        CType(Me.ClassPictureBoxQuality1, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.Panel2.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub
@@ -180,4 +192,5 @@ Partial Class FormTipOfTheDay
     Friend WithEvents RichTextBox_Tips As RichTextBox
     Friend WithEvents Label_TipNumber As Label
     Friend WithEvents Panel1 As Panel
+    Friend WithEvents Panel2 As Panel
 End Class
