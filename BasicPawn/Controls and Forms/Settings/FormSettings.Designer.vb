@@ -34,11 +34,9 @@ Partial Class FormSettings
         Me.ToolStripMenuItem_PluginsEnable = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_PluginsDisable = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolTip_Info = New System.Windows.Forms.ToolTip(Me.components)
-        Me.LinkLabel_ThreadUpdateRateHelp = New System.Windows.Forms.LinkLabel()
-        Me.LinkLabel_FullAutocompleteReTaggingHelp = New System.Windows.Forms.LinkLabel()
-        Me.LinkLabel_DefaultConfigPathsHelp = New System.Windows.Forms.LinkLabel()
         Me.ImageList_Plugins = New System.Windows.Forms.ImageList(Me.components)
         Me.ToolTip_MacroInfo = New System.Windows.Forms.ToolTip(Me.components)
+        Me.Panel4 = New System.Windows.Forms.Panel()
         Me.TabControl1 = New BasicPawn.ClassTabControlColor()
         Me.TabPage_Settings = New System.Windows.Forms.TabPage()
         Me.ClassTabControlColor1 = New BasicPawn.ClassTabControlColor()
@@ -51,6 +49,7 @@ Partial Class FormSettings
         Me.Label8 = New System.Windows.Forms.Label()
         Me.NumericUpDown_ThreadUpdateRate = New System.Windows.Forms.NumericUpDown()
         Me.Label14 = New System.Windows.Forms.Label()
+        Me.LinkLabel_ThreadUpdateRateHelp = New System.Windows.Forms.LinkLabel()
         Me.GroupBox8 = New System.Windows.Forms.GroupBox()
         Me.Label19 = New System.Windows.Forms.Label()
         Me.CheckBox_AssociateBasicPawnProject = New System.Windows.Forms.CheckBox()
@@ -60,6 +59,8 @@ Partial Class FormSettings
         Me.GroupBox7 = New System.Windows.Forms.GroupBox()
         Me.CheckBox_AutoOpenProjectFiles = New System.Windows.Forms.CheckBox()
         Me.GroupBox6 = New System.Windows.Forms.GroupBox()
+        Me.CheckBox_AutoSaveSourceTemp = New System.Windows.Forms.CheckBox()
+        Me.CheckBox_AutoSaveSource = New System.Windows.Forms.CheckBox()
         Me.CheckBox_TabCloseGoToPrevious = New System.Windows.Forms.CheckBox()
         Me.CheckBox_AlwaysNewInstance = New System.Windows.Forms.CheckBox()
         Me.CheckBox_AutoHoverScroll = New System.Windows.Forms.CheckBox()
@@ -111,6 +112,7 @@ Partial Class FormSettings
         Me.GroupBox15 = New System.Windows.Forms.GroupBox()
         Me.CheckBox_FullAutcompleteMethods = New System.Windows.Forms.CheckBox()
         Me.CheckBox_FullAutocompleteReTagging = New System.Windows.Forms.CheckBox()
+        Me.LinkLabel_FullAutocompleteReTaggingHelp = New System.Windows.Forms.LinkLabel()
         Me.CheckBox_AutoIndentBrackets = New System.Windows.Forms.CheckBox()
         Me.CheckBox_CaseSensitive = New System.Windows.Forms.CheckBox()
         Me.CheckBox_AutoCloseStrings = New System.Windows.Forms.CheckBox()
@@ -144,6 +146,7 @@ Partial Class FormSettings
         Me.Panel2 = New System.Windows.Forms.Panel()
         Me.TabControl_ConfigOptions = New BasicPawn.ClassTabControlColor()
         Me.TabPage3 = New System.Windows.Forms.TabPage()
+        Me.LinkLabel_DefaultConfigPathsHelp = New System.Windows.Forms.LinkLabel()
         Me.RadioButton_ConfigSettingAutomatic = New System.Windows.Forms.RadioButton()
         Me.Label7 = New System.Windows.Forms.Label()
         Me.RadioButton_ConfigSettingManual = New System.Windows.Forms.RadioButton()
@@ -203,12 +206,14 @@ Partial Class FormSettings
         Me.Button_ClientFolder = New System.Windows.Forms.Button()
         Me.Button_ServerFolder = New System.Windows.Forms.Button()
         Me.TabPage7 = New System.Windows.Forms.TabPage()
+        Me.Panel3 = New System.Windows.Forms.Panel()
+        Me.TextBox_PostBuildCmd = New System.Windows.Forms.TextBox()
+        Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.TextBox_PreBuildCmd = New System.Windows.Forms.TextBox()
         Me.LinkLabel_PostMacroHelp = New System.Windows.Forms.LinkLabel()
         Me.Label9 = New System.Windows.Forms.Label()
-        Me.TextBox_PostBuildCmd = New System.Windows.Forms.TextBox()
         Me.Label10 = New System.Windows.Forms.Label()
         Me.LinkLabel_PreMacroHelp = New System.Windows.Forms.LinkLabel()
-        Me.TextBox_PreBuildCmd = New System.Windows.Forms.TextBox()
         Me.ListBox_Configs = New System.Windows.Forms.ListBox()
         Me.TabPage_Plugins = New System.Windows.Forms.TabPage()
         Me.LinkLabel_MorePlugins = New System.Windows.Forms.LinkLabel()
@@ -230,9 +235,9 @@ Partial Class FormSettings
         Me.TableLayoutPanel3 = New System.Windows.Forms.TableLayoutPanel()
         Me.ClassPictureBoxQuality1 = New BasicPawn.ClassPictureBoxQuality()
         Me.Label17 = New System.Windows.Forms.Label()
-        Me.CheckBox_AutoSaveSource = New System.Windows.Forms.CheckBox()
-        Me.CheckBox_AutoSaveSourceTemp = New System.Windows.Forms.CheckBox()
+        Me.Panel5 = New System.Windows.Forms.Panel()
         Me.ContextMenuStrip_Plugins.SuspendLayout()
+        Me.Panel4.SuspendLayout()
         Me.TabControl1.SuspendLayout()
         Me.TabPage_Settings.SuspendLayout()
         Me.ClassTabControlColor1.SuspendLayout()
@@ -277,12 +282,15 @@ Partial Class FormSettings
         Me.TabPage5.SuspendLayout()
         Me.TabPage6.SuspendLayout()
         Me.TabPage7.SuspendLayout()
+        Me.Panel3.SuspendLayout()
+        Me.Panel1.SuspendLayout()
         Me.TabPage_Plugins.SuspendLayout()
         Me.TabPage_Database.SuspendLayout()
         Me.TableLayoutPanel4.SuspendLayout()
         CType(Me.ClassPictureBoxQuality2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TableLayoutPanel3.SuspendLayout()
         CType(Me.ClassPictureBoxQuality1, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.Panel5.SuspendLayout()
         Me.SuspendLayout()
         '
         'Button_Cancel
@@ -361,48 +369,6 @@ Partial Class FormSettings
         Me.ToolTip_Info.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info
         Me.ToolTip_Info.ToolTipTitle = "Information"
         '
-        'LinkLabel_ThreadUpdateRateHelp
-        '
-        Me.LinkLabel_ThreadUpdateRateHelp.AutoSize = True
-        Me.LinkLabel_ThreadUpdateRateHelp.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LinkLabel_ThreadUpdateRateHelp.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
-        Me.LinkLabel_ThreadUpdateRateHelp.Location = New System.Drawing.Point(285, 24)
-        Me.LinkLabel_ThreadUpdateRateHelp.Name = "LinkLabel_ThreadUpdateRateHelp"
-        Me.LinkLabel_ThreadUpdateRateHelp.Padding = New System.Windows.Forms.Padding(0, 2, 0, 2)
-        Me.LinkLabel_ThreadUpdateRateHelp.Size = New System.Drawing.Size(26, 17)
-        Me.LinkLabel_ThreadUpdateRateHelp.TabIndex = 27
-        Me.LinkLabel_ThreadUpdateRateHelp.TabStop = True
-        Me.LinkLabel_ThreadUpdateRateHelp.Text = "( ? )"
-        Me.ToolTip_Info.SetToolTip(Me.LinkLabel_ThreadUpdateRateHelp, resources.GetString("LinkLabel_ThreadUpdateRateHelp.ToolTip"))
-        '
-        'LinkLabel_FullAutocompleteReTaggingHelp
-        '
-        Me.LinkLabel_FullAutocompleteReTaggingHelp.AutoSize = True
-        Me.LinkLabel_FullAutocompleteReTaggingHelp.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LinkLabel_FullAutocompleteReTaggingHelp.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
-        Me.LinkLabel_FullAutocompleteReTaggingHelp.Location = New System.Drawing.Point(296, 47)
-        Me.LinkLabel_FullAutocompleteReTaggingHelp.Name = "LinkLabel_FullAutocompleteReTaggingHelp"
-        Me.LinkLabel_FullAutocompleteReTaggingHelp.Size = New System.Drawing.Size(26, 13)
-        Me.LinkLabel_FullAutocompleteReTaggingHelp.TabIndex = 29
-        Me.LinkLabel_FullAutocompleteReTaggingHelp.TabStop = True
-        Me.LinkLabel_FullAutocompleteReTaggingHelp.Text = "( ? )"
-        Me.ToolTip_Info.SetToolTip(Me.LinkLabel_FullAutocompleteReTaggingHelp, "Make enums look more ""strongly typed"" using re-tagging." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Eg. 'Enum:Name' instead " &
-        "of 'Name'." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "NOTE: This can not be used with SourcePawn transitional syntax.")
-        '
-        'LinkLabel_DefaultConfigPathsHelp
-        '
-        Me.LinkLabel_DefaultConfigPathsHelp.AutoSize = True
-        Me.LinkLabel_DefaultConfigPathsHelp.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LinkLabel_DefaultConfigPathsHelp.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
-        Me.LinkLabel_DefaultConfigPathsHelp.Location = New System.Drawing.Point(209, 266)
-        Me.LinkLabel_DefaultConfigPathsHelp.Name = "LinkLabel_DefaultConfigPathsHelp"
-        Me.LinkLabel_DefaultConfigPathsHelp.Size = New System.Drawing.Size(26, 13)
-        Me.LinkLabel_DefaultConfigPathsHelp.TabIndex = 44
-        Me.LinkLabel_DefaultConfigPathsHelp.TabStop = True
-        Me.LinkLabel_DefaultConfigPathsHelp.Text = "( ? )"
-        Me.ToolTip_Info.SetToolTip(Me.LinkLabel_DefaultConfigPathsHelp, "Opening a file from those paths will automatically switch to this config." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Howeve" &
-        "r, files in 'Known files' overwrite this behaviour.")
-        '
         'ImageList_Plugins
         '
         Me.ImageList_Plugins.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit
@@ -417,6 +383,17 @@ Partial Class FormSettings
         Me.ToolTip_MacroInfo.ReshowDelay = 100
         Me.ToolTip_MacroInfo.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info
         Me.ToolTip_MacroInfo.ToolTipTitle = "Macro Information"
+        '
+        'Panel4
+        '
+        Me.Panel4.Controls.Add(Me.TabControl1)
+        Me.Panel4.Controls.Add(Me.Button_Apply)
+        Me.Panel4.Controls.Add(Me.Button_Cancel)
+        Me.Panel4.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Panel4.Location = New System.Drawing.Point(0, 0)
+        Me.Panel4.Name = "Panel4"
+        Me.Panel4.Size = New System.Drawing.Size(784, 1061)
+        Me.Panel4.TabIndex = 3
         '
         'TabControl1
         '
@@ -564,6 +541,20 @@ Partial Class FormSettings
         Me.Label14.TabIndex = 26
         Me.Label14.Text = "ms"
         '
+        'LinkLabel_ThreadUpdateRateHelp
+        '
+        Me.LinkLabel_ThreadUpdateRateHelp.AutoSize = True
+        Me.LinkLabel_ThreadUpdateRateHelp.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LinkLabel_ThreadUpdateRateHelp.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
+        Me.LinkLabel_ThreadUpdateRateHelp.Location = New System.Drawing.Point(285, 24)
+        Me.LinkLabel_ThreadUpdateRateHelp.Name = "LinkLabel_ThreadUpdateRateHelp"
+        Me.LinkLabel_ThreadUpdateRateHelp.Padding = New System.Windows.Forms.Padding(0, 2, 0, 2)
+        Me.LinkLabel_ThreadUpdateRateHelp.Size = New System.Drawing.Size(26, 17)
+        Me.LinkLabel_ThreadUpdateRateHelp.TabIndex = 27
+        Me.LinkLabel_ThreadUpdateRateHelp.TabStop = True
+        Me.LinkLabel_ThreadUpdateRateHelp.Text = "( ? )"
+        Me.ToolTip_Info.SetToolTip(Me.LinkLabel_ThreadUpdateRateHelp, resources.GetString("LinkLabel_ThreadUpdateRateHelp.ToolTip"))
+        '
         'GroupBox8
         '
         Me.GroupBox8.Controls.Add(Me.Label19)
@@ -678,6 +669,30 @@ Partial Class FormSettings
         Me.GroupBox6.TabIndex = 31
         Me.GroupBox6.TabStop = False
         Me.GroupBox6.Text = "Behaviour"
+        '
+        'CheckBox_AutoSaveSourceTemp
+        '
+        Me.CheckBox_AutoSaveSourceTemp.AutoSize = True
+        Me.CheckBox_AutoSaveSourceTemp.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_AutoSaveSourceTemp.Location = New System.Drawing.Point(9, 141)
+        Me.CheckBox_AutoSaveSourceTemp.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_AutoSaveSourceTemp.Name = "CheckBox_AutoSaveSourceTemp"
+        Me.CheckBox_AutoSaveSourceTemp.Size = New System.Drawing.Size(289, 18)
+        Me.CheckBox_AutoSaveSourceTemp.TabIndex = 33
+        Me.CheckBox_AutoSaveSourceTemp.Text = "Automatically save unnamed sources as temporary"
+        Me.CheckBox_AutoSaveSourceTemp.UseVisualStyleBackColor = True
+        '
+        'CheckBox_AutoSaveSource
+        '
+        Me.CheckBox_AutoSaveSource.AutoSize = True
+        Me.CheckBox_AutoSaveSource.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBox_AutoSaveSource.Location = New System.Drawing.Point(9, 117)
+        Me.CheckBox_AutoSaveSource.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        Me.CheckBox_AutoSaveSource.Name = "CheckBox_AutoSaveSource"
+        Me.CheckBox_AutoSaveSource.Size = New System.Drawing.Size(243, 18)
+        Me.CheckBox_AutoSaveSource.TabIndex = 32
+        Me.CheckBox_AutoSaveSource.Text = "Automatically save source when changed"
+        Me.CheckBox_AutoSaveSource.UseVisualStyleBackColor = True
         '
         'CheckBox_TabCloseGoToPrevious
         '
@@ -1299,6 +1314,20 @@ Partial Class FormSettings
         Me.CheckBox_FullAutocompleteReTagging.Text = "Full autocompletion for enums using re-tagging"
         Me.CheckBox_FullAutocompleteReTagging.UseVisualStyleBackColor = True
         '
+        'LinkLabel_FullAutocompleteReTaggingHelp
+        '
+        Me.LinkLabel_FullAutocompleteReTaggingHelp.AutoSize = True
+        Me.LinkLabel_FullAutocompleteReTaggingHelp.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LinkLabel_FullAutocompleteReTaggingHelp.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
+        Me.LinkLabel_FullAutocompleteReTaggingHelp.Location = New System.Drawing.Point(296, 47)
+        Me.LinkLabel_FullAutocompleteReTaggingHelp.Name = "LinkLabel_FullAutocompleteReTaggingHelp"
+        Me.LinkLabel_FullAutocompleteReTaggingHelp.Size = New System.Drawing.Size(26, 13)
+        Me.LinkLabel_FullAutocompleteReTaggingHelp.TabIndex = 29
+        Me.LinkLabel_FullAutocompleteReTaggingHelp.TabStop = True
+        Me.LinkLabel_FullAutocompleteReTaggingHelp.Text = "( ? )"
+        Me.ToolTip_Info.SetToolTip(Me.LinkLabel_FullAutocompleteReTaggingHelp, "Make enums look more ""strongly typed"" using re-tagging." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Eg. 'Enum:Name' instead " &
+        "of 'Name'." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "NOTE: This can not be used with SourcePawn transitional syntax.")
+        '
         'CheckBox_AutoIndentBrackets
         '
         Me.CheckBox_AutoIndentBrackets.AutoSize = True
@@ -1696,6 +1725,20 @@ Partial Class FormSettings
         Me.TabPage3.Text = "Paths"
         Me.TabPage3.UseVisualStyleBackColor = True
         '
+        'LinkLabel_DefaultConfigPathsHelp
+        '
+        Me.LinkLabel_DefaultConfigPathsHelp.AutoSize = True
+        Me.LinkLabel_DefaultConfigPathsHelp.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LinkLabel_DefaultConfigPathsHelp.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
+        Me.LinkLabel_DefaultConfigPathsHelp.Location = New System.Drawing.Point(209, 266)
+        Me.LinkLabel_DefaultConfigPathsHelp.Name = "LinkLabel_DefaultConfigPathsHelp"
+        Me.LinkLabel_DefaultConfigPathsHelp.Size = New System.Drawing.Size(26, 13)
+        Me.LinkLabel_DefaultConfigPathsHelp.TabIndex = 44
+        Me.LinkLabel_DefaultConfigPathsHelp.TabStop = True
+        Me.LinkLabel_DefaultConfigPathsHelp.Text = "( ? )"
+        Me.ToolTip_Info.SetToolTip(Me.LinkLabel_DefaultConfigPathsHelp, "Opening a file from those paths will automatically switch to this config." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Howeve" &
+        "r, files in 'Known files' overwrite this behaviour.")
+        '
         'RadioButton_ConfigSettingAutomatic
         '
         Me.RadioButton_ConfigSettingAutomatic.AutoSize = True
@@ -2085,7 +2128,7 @@ Partial Class FormSettings
         Me.ComboBox_COSymbolicInformationAMXX.FormattingEnabled = True
         Me.ComboBox_COSymbolicInformationAMXX.Location = New System.Drawing.Point(198, 6)
         Me.ComboBox_COSymbolicInformationAMXX.Name = "ComboBox_COSymbolicInformationAMXX"
-        Me.ComboBox_COSymbolicInformationAMXX.Size = New System.Drawing.Size(384, 21)
+        Me.ComboBox_COSymbolicInformationAMXX.Size = New System.Drawing.Size(388, 21)
         Me.ComboBox_COSymbolicInformationAMXX.TabIndex = 20
         '
         'Label26
@@ -2104,7 +2147,7 @@ Partial Class FormSettings
         Me.TextBoxEx_CODefineConstantsAMXX.Location = New System.Drawing.Point(198, 115)
         Me.TextBoxEx_CODefineConstantsAMXX.m_WatermarkText = "sym=val;sym2=val..."
         Me.TextBoxEx_CODefineConstantsAMXX.Name = "TextBoxEx_CODefineConstantsAMXX"
-        Me.TextBoxEx_CODefineConstantsAMXX.Size = New System.Drawing.Size(384, 22)
+        Me.TextBoxEx_CODefineConstantsAMXX.Size = New System.Drawing.Size(388, 22)
         Me.TextBoxEx_CODefineConstantsAMXX.TabIndex = 18
         '
         'TextBoxEx_COIgnoredWarningsAMXX
@@ -2114,7 +2157,7 @@ Partial Class FormSettings
         Me.TextBoxEx_COIgnoredWarningsAMXX.Location = New System.Drawing.Point(198, 87)
         Me.TextBoxEx_COIgnoredWarningsAMXX.m_WatermarkText = "100;101..."
         Me.TextBoxEx_COIgnoredWarningsAMXX.Name = "TextBoxEx_COIgnoredWarningsAMXX"
-        Me.TextBoxEx_COIgnoredWarningsAMXX.Size = New System.Drawing.Size(384, 22)
+        Me.TextBoxEx_COIgnoredWarningsAMXX.Size = New System.Drawing.Size(388, 22)
         Me.TextBoxEx_COIgnoredWarningsAMXX.TabIndex = 17
         '
         'Label27
@@ -2143,7 +2186,7 @@ Partial Class FormSettings
         Me.ComboBox_COTreatWarningsAsErrorsAMXX.FormattingEnabled = True
         Me.ComboBox_COTreatWarningsAsErrorsAMXX.Location = New System.Drawing.Point(198, 60)
         Me.ComboBox_COTreatWarningsAsErrorsAMXX.Name = "ComboBox_COTreatWarningsAsErrorsAMXX"
-        Me.ComboBox_COTreatWarningsAsErrorsAMXX.Size = New System.Drawing.Size(384, 21)
+        Me.ComboBox_COTreatWarningsAsErrorsAMXX.Size = New System.Drawing.Size(388, 21)
         Me.ComboBox_COTreatWarningsAsErrorsAMXX.TabIndex = 14
         '
         'Label29
@@ -2163,7 +2206,7 @@ Partial Class FormSettings
         Me.ComboBox_COVerbosityLevelAMXX.FormattingEnabled = True
         Me.ComboBox_COVerbosityLevelAMXX.Location = New System.Drawing.Point(198, 33)
         Me.ComboBox_COVerbosityLevelAMXX.Name = "ComboBox_COVerbosityLevelAMXX"
-        Me.ComboBox_COVerbosityLevelAMXX.Size = New System.Drawing.Size(384, 21)
+        Me.ComboBox_COVerbosityLevelAMXX.Size = New System.Drawing.Size(388, 21)
         Me.ComboBox_COVerbosityLevelAMXX.TabIndex = 12
         '
         'TabPage5
@@ -2336,12 +2379,12 @@ Partial Class FormSettings
         'TabPage7
         '
         Me.TabPage7.AutoScroll = True
+        Me.TabPage7.Controls.Add(Me.Panel3)
+        Me.TabPage7.Controls.Add(Me.Panel1)
         Me.TabPage7.Controls.Add(Me.LinkLabel_PostMacroHelp)
         Me.TabPage7.Controls.Add(Me.Label9)
-        Me.TabPage7.Controls.Add(Me.TextBox_PostBuildCmd)
         Me.TabPage7.Controls.Add(Me.Label10)
         Me.TabPage7.Controls.Add(Me.LinkLabel_PreMacroHelp)
-        Me.TabPage7.Controls.Add(Me.TextBox_PreBuildCmd)
         Me.TabPage7.Location = New System.Drawing.Point(1, 21)
         Me.TabPage7.Name = "TabPage7"
         Me.TabPage7.Padding = New System.Windows.Forms.Padding(3)
@@ -2350,12 +2393,56 @@ Partial Class FormSettings
         Me.TabPage7.Text = "Build Options"
         Me.TabPage7.UseVisualStyleBackColor = True
         '
+        'Panel3
+        '
+        Me.Panel3.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Panel3.Controls.Add(Me.TextBox_PostBuildCmd)
+        Me.Panel3.Location = New System.Drawing.Point(3, 244)
+        Me.Panel3.Name = "Panel3"
+        Me.Panel3.Size = New System.Drawing.Size(596, 200)
+        Me.Panel3.TabIndex = 38
+        '
+        'TextBox_PostBuildCmd
+        '
+        Me.TextBox_PostBuildCmd.BackColor = System.Drawing.Color.White
+        Me.TextBox_PostBuildCmd.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TextBox_PostBuildCmd.Location = New System.Drawing.Point(0, 0)
+        Me.TextBox_PostBuildCmd.Multiline = True
+        Me.TextBox_PostBuildCmd.Name = "TextBox_PostBuildCmd"
+        Me.TextBox_PostBuildCmd.ScrollBars = System.Windows.Forms.ScrollBars.Both
+        Me.TextBox_PostBuildCmd.Size = New System.Drawing.Size(596, 200)
+        Me.TextBox_PostBuildCmd.TabIndex = 34
+        Me.TextBox_PostBuildCmd.WordWrap = False
+        '
+        'Panel1
+        '
+        Me.Panel1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Panel1.Controls.Add(Me.TextBox_PreBuildCmd)
+        Me.Panel1.Location = New System.Drawing.Point(3, 22)
+        Me.Panel1.Name = "Panel1"
+        Me.Panel1.Size = New System.Drawing.Size(596, 200)
+        Me.Panel1.TabIndex = 37
+        '
+        'TextBox_PreBuildCmd
+        '
+        Me.TextBox_PreBuildCmd.BackColor = System.Drawing.Color.White
+        Me.TextBox_PreBuildCmd.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TextBox_PreBuildCmd.Location = New System.Drawing.Point(0, 0)
+        Me.TextBox_PreBuildCmd.Multiline = True
+        Me.TextBox_PreBuildCmd.Name = "TextBox_PreBuildCmd"
+        Me.TextBox_PreBuildCmd.ScrollBars = System.Windows.Forms.ScrollBars.Both
+        Me.TextBox_PreBuildCmd.Size = New System.Drawing.Size(596, 200)
+        Me.TextBox_PreBuildCmd.TabIndex = 32
+        Me.TextBox_PreBuildCmd.WordWrap = False
+        '
         'LinkLabel_PostMacroHelp
         '
         Me.LinkLabel_PostMacroHelp.AutoSize = True
         Me.LinkLabel_PostMacroHelp.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.LinkLabel_PostMacroHelp.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
-        Me.LinkLabel_PostMacroHelp.Location = New System.Drawing.Point(181, 178)
+        Me.LinkLabel_PostMacroHelp.Location = New System.Drawing.Point(181, 228)
         Me.LinkLabel_PostMacroHelp.Name = "LinkLabel_PostMacroHelp"
         Me.LinkLabel_PostMacroHelp.Size = New System.Drawing.Size(26, 13)
         Me.LinkLabel_PostMacroHelp.TabIndex = 36
@@ -2372,23 +2459,10 @@ Partial Class FormSettings
         Me.Label9.TabIndex = 31
         Me.Label9.Text = "Pre-build event command line:"
         '
-        'TextBox_PostBuildCmd
-        '
-        Me.TextBox_PostBuildCmd.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TextBox_PostBuildCmd.BackColor = System.Drawing.Color.White
-        Me.TextBox_PostBuildCmd.Location = New System.Drawing.Point(6, 194)
-        Me.TextBox_PostBuildCmd.Multiline = True
-        Me.TextBox_PostBuildCmd.Name = "TextBox_PostBuildCmd"
-        Me.TextBox_PostBuildCmd.ScrollBars = System.Windows.Forms.ScrollBars.Both
-        Me.TextBox_PostBuildCmd.Size = New System.Drawing.Size(590, 150)
-        Me.TextBox_PostBuildCmd.TabIndex = 34
-        Me.TextBox_PostBuildCmd.WordWrap = False
-        '
         'Label10
         '
         Me.Label10.AutoSize = True
-        Me.Label10.Location = New System.Drawing.Point(6, 178)
+        Me.Label10.Location = New System.Drawing.Point(6, 228)
         Me.Label10.Margin = New System.Windows.Forms.Padding(3, 3, 3, 0)
         Me.Label10.Name = "Label10"
         Me.Label10.Size = New System.Drawing.Size(169, 13)
@@ -2406,19 +2480,6 @@ Partial Class FormSettings
         Me.LinkLabel_PreMacroHelp.TabIndex = 35
         Me.LinkLabel_PreMacroHelp.TabStop = True
         Me.LinkLabel_PreMacroHelp.Text = "( ? )"
-        '
-        'TextBox_PreBuildCmd
-        '
-        Me.TextBox_PreBuildCmd.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TextBox_PreBuildCmd.BackColor = System.Drawing.Color.White
-        Me.TextBox_PreBuildCmd.Location = New System.Drawing.Point(6, 22)
-        Me.TextBox_PreBuildCmd.Multiline = True
-        Me.TextBox_PreBuildCmd.Name = "TextBox_PreBuildCmd"
-        Me.TextBox_PreBuildCmd.ScrollBars = System.Windows.Forms.ScrollBars.Both
-        Me.TextBox_PreBuildCmd.Size = New System.Drawing.Size(590, 150)
-        Me.TextBox_PreBuildCmd.TabIndex = 32
-        Me.TextBox_PreBuildCmd.WordWrap = False
         '
         'ListBox_Configs
         '
@@ -2511,7 +2572,7 @@ Partial Class FormSettings
         '
         'TabPage_Database
         '
-        Me.TabPage_Database.Controls.Add(Me.DatabaseListBox_Database)
+        Me.TabPage_Database.Controls.Add(Me.Panel5)
         Me.TabPage_Database.Controls.Add(Me.Button_Refresh)
         Me.TabPage_Database.Controls.Add(Me.TableLayoutPanel4)
         Me.TabPage_Database.Controls.Add(Me.Button_AddDatabaseItem)
@@ -2526,23 +2587,21 @@ Partial Class FormSettings
         '
         'DatabaseListBox_Database
         '
-        Me.DatabaseListBox_Database.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.DatabaseListBox_Database.Dock = System.Windows.Forms.DockStyle.Fill
         Me.DatabaseListBox_Database.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable
         Me.DatabaseListBox_Database.FormattingEnabled = True
         Me.DatabaseListBox_Database.ItemHeight = 32
-        Me.DatabaseListBox_Database.Location = New System.Drawing.Point(6, 75)
+        Me.DatabaseListBox_Database.Location = New System.Drawing.Point(0, 0)
         Me.DatabaseListBox_Database.Name = "DatabaseListBox_Database"
         Me.DatabaseListBox_Database.SelectionMode = System.Windows.Forms.SelectionMode.None
-        Me.DatabaseListBox_Database.Size = New System.Drawing.Size(740, 788)
+        Me.DatabaseListBox_Database.Size = New System.Drawing.Size(744, 788)
         Me.DatabaseListBox_Database.TabIndex = 7
         '
         'Button_Refresh
         '
         Me.Button_Refresh.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_Refresh.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_Refresh.Location = New System.Drawing.Point(646, 869)
+        Me.Button_Refresh.Location = New System.Drawing.Point(650, 869)
         Me.Button_Refresh.Name = "Button_Refresh"
         Me.Button_Refresh.Size = New System.Drawing.Size(100, 23)
         Me.Button_Refresh.TabIndex = 6
@@ -2562,7 +2621,7 @@ Partial Class FormSettings
         Me.TableLayoutPanel4.Name = "TableLayoutPanel4"
         Me.TableLayoutPanel4.RowCount = 1
         Me.TableLayoutPanel4.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.TableLayoutPanel4.Size = New System.Drawing.Size(740, 63)
+        Me.TableLayoutPanel4.Size = New System.Drawing.Size(744, 63)
         Me.TableLayoutPanel4.TabIndex = 5
         '
         'ClassPictureBoxQuality2
@@ -2582,7 +2641,7 @@ Partial Class FormSettings
         Me.Label18.Location = New System.Drawing.Point(60, 6)
         Me.Label18.Margin = New System.Windows.Forms.Padding(6)
         Me.Label18.Name = "Label18"
-        Me.Label18.Size = New System.Drawing.Size(672, 26)
+        Me.Label18.Size = New System.Drawing.Size(675, 26)
         Me.Label18.TabIndex = 3
         Me.Label18.Text = resources.GetString("Label18.Text")
         '
@@ -2590,7 +2649,7 @@ Partial Class FormSettings
         '
         Me.Button_AddDatabaseItem.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Button_AddDatabaseItem.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.Button_AddDatabaseItem.Location = New System.Drawing.Point(540, 869)
+        Me.Button_AddDatabaseItem.Location = New System.Drawing.Point(544, 869)
         Me.Button_AddDatabaseItem.Name = "Button_AddDatabaseItem"
         Me.Button_AddDatabaseItem.Size = New System.Drawing.Size(100, 23)
         Me.Button_AddDatabaseItem.TabIndex = 4
@@ -2610,7 +2669,7 @@ Partial Class FormSettings
         Me.TableLayoutPanel3.Name = "TableLayoutPanel3"
         Me.TableLayoutPanel3.RowCount = 1
         Me.TableLayoutPanel3.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.TableLayoutPanel3.Size = New System.Drawing.Size(740, 54)
+        Me.TableLayoutPanel3.Size = New System.Drawing.Size(744, 54)
         Me.TableLayoutPanel3.TabIndex = 1
         '
         'ClassPictureBoxQuality1
@@ -2636,29 +2695,16 @@ Partial Class FormSettings
         Me.Label17.Text = "Loaded BasicPawn plugins are able to read stored database entries. Make sure all " &
     "installed plugins are from a trustworthy publisher to prevent theft."
         '
-        'CheckBox_AutoSaveSource
+        'Panel5
         '
-        Me.CheckBox_AutoSaveSource.AutoSize = True
-        Me.CheckBox_AutoSaveSource.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_AutoSaveSource.Location = New System.Drawing.Point(9, 117)
-        Me.CheckBox_AutoSaveSource.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_AutoSaveSource.Name = "CheckBox_AutoSaveSource"
-        Me.CheckBox_AutoSaveSource.Size = New System.Drawing.Size(243, 18)
-        Me.CheckBox_AutoSaveSource.TabIndex = 32
-        Me.CheckBox_AutoSaveSource.Text = "Automatically save source when changed"
-        Me.CheckBox_AutoSaveSource.UseVisualStyleBackColor = True
-        '
-        'CheckBox_AutoSaveSourceTemp
-        '
-        Me.CheckBox_AutoSaveSourceTemp.AutoSize = True
-        Me.CheckBox_AutoSaveSourceTemp.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBox_AutoSaveSourceTemp.Location = New System.Drawing.Point(9, 141)
-        Me.CheckBox_AutoSaveSourceTemp.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.CheckBox_AutoSaveSourceTemp.Name = "CheckBox_AutoSaveSourceTemp"
-        Me.CheckBox_AutoSaveSourceTemp.Size = New System.Drawing.Size(289, 18)
-        Me.CheckBox_AutoSaveSourceTemp.TabIndex = 33
-        Me.CheckBox_AutoSaveSourceTemp.Text = "Automatically save unnamed sources as temporary"
-        Me.CheckBox_AutoSaveSourceTemp.UseVisualStyleBackColor = True
+        Me.Panel5.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Panel5.Controls.Add(Me.DatabaseListBox_Database)
+        Me.Panel5.Location = New System.Drawing.Point(6, 75)
+        Me.Panel5.Name = "Panel5"
+        Me.Panel5.Size = New System.Drawing.Size(744, 788)
+        Me.Panel5.TabIndex = 8
         '
         'FormSettings
         '
@@ -2666,9 +2712,7 @@ Partial Class FormSettings
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.CancelButton = Me.Button_Cancel
         Me.ClientSize = New System.Drawing.Size(784, 1061)
-        Me.Controls.Add(Me.Button_Apply)
-        Me.Controls.Add(Me.Button_Cancel)
-        Me.Controls.Add(Me.TabControl1)
+        Me.Controls.Add(Me.Panel4)
         Me.DoubleBuffered = True
         Me.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
@@ -2678,6 +2722,7 @@ Partial Class FormSettings
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
         Me.Text = "Settings"
         Me.ContextMenuStrip_Plugins.ResumeLayout(False)
+        Me.Panel4.ResumeLayout(False)
         Me.TabControl1.ResumeLayout(False)
         Me.TabPage_Settings.ResumeLayout(False)
         Me.ClassTabControlColor1.ResumeLayout(False)
@@ -2746,6 +2791,10 @@ Partial Class FormSettings
         Me.TabPage6.PerformLayout()
         Me.TabPage7.ResumeLayout(False)
         Me.TabPage7.PerformLayout()
+        Me.Panel3.ResumeLayout(False)
+        Me.Panel3.PerformLayout()
+        Me.Panel1.ResumeLayout(False)
+        Me.Panel1.PerformLayout()
         Me.TabPage_Plugins.ResumeLayout(False)
         Me.TabPage_Plugins.PerformLayout()
         Me.TabPage_Database.ResumeLayout(False)
@@ -2755,6 +2804,7 @@ Partial Class FormSettings
         Me.TableLayoutPanel3.ResumeLayout(False)
         Me.TableLayoutPanel3.PerformLayout()
         CType(Me.ClassPictureBoxQuality1, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.Panel5.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub
@@ -2967,4 +3017,8 @@ Partial Class FormSettings
     Friend WithEvents Label34 As Label
     Friend WithEvents CheckBox_AutoSaveSource As CheckBox
     Friend WithEvents CheckBox_AutoSaveSourceTemp As CheckBox
+    Friend WithEvents Panel3 As Panel
+    Friend WithEvents Panel1 As Panel
+    Friend WithEvents Panel4 As Panel
+    Friend WithEvents Panel5 As Panel
 End Class
