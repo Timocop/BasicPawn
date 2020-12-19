@@ -66,10 +66,11 @@ Public Class ClassControlStyle
     End Class
 
     Public Shared ReadOnly g_cDarkTextEditorColor As New STRUC_CONTROL_COLORS(Color.Black, Color.White, Color.LightGray, Color.FromArgb(255, 32, 32, 32))
-    Public Shared ReadOnly g_cDarkControlColor As New STRUC_CONTROL_COLORS(Color.Black, Color.White, Color.LightGray, Color.FromArgb(255, 26, 26, 26))
-    Public Shared ReadOnly g_cDarkPanelColor As New STRUC_CONTROL_COLORS(Color.Black, Color.White, Color.LightGray, Color.FromArgb(255, 34, 34, 34))
-    Public Shared ReadOnly g_cDarkFormColor As New STRUC_CONTROL_COLORS(Color.Black, Color.White, Color.LightGray, Color.FromArgb(255, 38, 38, 38))
+    Public Shared ReadOnly g_cDarkControlColor As New STRUC_CONTROL_COLORS(Color.Black, Color.White, Color.LightGray, Color.FromArgb(255, 36, 36, 36))
+    Public Shared ReadOnly g_cDarkPanelColor As New STRUC_CONTROL_COLORS(Color.Black, Color.White, Color.LightGray, Color.FromArgb(255, 36, 36, 36))
+    Public Shared ReadOnly g_cDarkFormColor As New STRUC_CONTROL_COLORS(Color.Black, Color.White, Color.LightGray, Color.FromArgb(255, 36, 36, 36))
     Public Shared ReadOnly g_cDarkMenuColor As New STRUC_CONTROL_COLORS(Color.Black, Color.White, Color.LightGray, Color.FromArgb(255, 64, 64, 64))
+    Public Shared ReadOnly g_cDarkButtonColor As New STRUC_CONTROL_COLORS(Color.Black, Color.White, Color.LightGray, Color.FromArgb(255, 32, 32, 32))
 
     Public Shared Sub SetNameFlag(c As Control, iFlag As ENUM_STYLE_FLAGS)
         RemoveNameFlag(c, iFlag)
@@ -220,13 +221,13 @@ Public Class ClassControlStyle
                     i.FlatStyle = FlatStyle.Flat
                     i.FlatAppearance.BorderSize = 1
                     i.FlatAppearance.BorderColor = Color.Gray
-                    i.BackColor = g_cDarkControlColor.mDarkBackground
-                    i.ForeColor = g_cDarkControlColor.mDarkForeground
+                    i.BackColor = g_cDarkButtonColor.mDarkBackground
+                    i.ForeColor = g_cDarkButtonColor.mDarkForeground
                 Else
                     i.UseVisualStyleBackColor = True
                     i.FlatStyle = FlatStyle.System
-                    i.BackColor = g_cDarkControlColor.mLightBackground
-                    i.ForeColor = g_cDarkControlColor.mLightForegound
+                    i.BackColor = g_cDarkButtonColor.mLightBackground
+                    i.ForeColor = g_cDarkButtonColor.mLightForegound
                 End If
 
             Case TypeOf o Is CheckBox
@@ -268,13 +269,13 @@ Public Class ClassControlStyle
                     i.FlatStyle = FlatStyle.Flat
                     i.FlatAppearance.BorderSize = 0
                     i.BackColor = Color.Transparent
-                    i.ForeColor = g_cDarkControlColor.mDarkForeground
+                    i.ForeColor = g_cDarkButtonColor.mDarkForeground
                 Else
                     i.UseVisualStyleBackColor = True
                     i.FlatStyle = FlatStyle.System
                     i.FlatAppearance.BorderSize = 0
-                    i.BackColor = g_cDarkControlColor.mLightBackground
-                    i.ForeColor = g_cDarkControlColor.mLightForegound
+                    i.BackColor = g_cDarkButtonColor.mLightBackground
+                    i.ForeColor = g_cDarkButtonColor.mLightForegound
                 End If
 
             Case TypeOf o Is LinkLabel
