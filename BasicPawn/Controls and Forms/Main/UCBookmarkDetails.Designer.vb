@@ -52,6 +52,7 @@ Partial Class UCBookmarkDetails
         Me.ListView_Bookmarks.ContextMenuStrip = Me.ContextMenuStrip_Bookmarks
         Me.ListView_Bookmarks.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ListView_Bookmarks.FullRowSelect = True
+        Me.ListView_Bookmarks.HideSelection = False
         Me.ListView_Bookmarks.Location = New System.Drawing.Point(0, 0)
         Me.ListView_Bookmarks.Name = "ListView_Bookmarks"
         Me.ListView_Bookmarks.Size = New System.Drawing.Size(600, 200)
@@ -147,7 +148,7 @@ Partial Class UCBookmarkDetails
         '
         'UCBookmarkDetails
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.Controls.Add(Me.ListView_Bookmarks)
         Me.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
