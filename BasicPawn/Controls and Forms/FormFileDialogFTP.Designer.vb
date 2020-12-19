@@ -66,6 +66,7 @@ Partial Class FormFileDialogFTP
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ListView_FTP.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1, Me.ColumnHeader2, Me.ColumnHeader3, Me.ColumnHeader4, Me.ColumnHeader5})
         Me.ListView_FTP.FullRowSelect = True
+        Me.ListView_FTP.HideSelection = False
         Me.ListView_FTP.Location = New System.Drawing.Point(12, 40)
         Me.ListView_FTP.MultiSelect = False
         Me.ListView_FTP.Name = "ListView_FTP"
@@ -123,7 +124,7 @@ Partial Class FormFileDialogFTP
         '
         'FormFileDialogFTP
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.ClientSize = New System.Drawing.Size(624, 441)
         Me.Controls.Add(Me.Button_Refresh)
