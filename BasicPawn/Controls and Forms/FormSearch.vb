@@ -170,7 +170,7 @@ Public Class FormSearch
     End Sub
 
     Private Sub Button_Search_Click(sender As Object, e As EventArgs) Handles Button_Search.Click
-        Dim mResults As STRUC_SEARCH_RESULTS() = DoSearch(ENUM_SEARCH_TYPE.TAB)
+        Dim mResults As STRUC_SEARCH_RESULTS() = DoSearch(ENUM_SEARCH_TYPE.TAB, RadioButton_ModeNormal.Checked, CheckBox_WholeWord.Checked, CheckBox_CaseSensitive.Checked, CheckBox_Multiline.Checked, CheckBox_ListMergeLines.Checked)
         If (mResults Is Nothing) Then
             Return
         End If
@@ -224,7 +224,7 @@ Public Class FormSearch
     End Sub
 
     Private Sub Button_Replace_Click(sender As Object, e As EventArgs) Handles Button_Replace.Click
-        Dim mResults As STRUC_SEARCH_RESULTS() = DoSearch(ENUM_SEARCH_TYPE.TAB)
+        Dim mResults As STRUC_SEARCH_RESULTS() = DoSearch(ENUM_SEARCH_TYPE.TAB, RadioButton_ModeNormal.Checked, CheckBox_WholeWord.Checked, CheckBox_CaseSensitive.Checked, CheckBox_Multiline.Checked, False)
         If (mResults Is Nothing) Then
             Return
         End If
@@ -286,7 +286,7 @@ Public Class FormSearch
     End Sub
 
     Private Sub Button_ReplaceAll_Click(sender As Object, e As EventArgs) Handles Button_ReplaceAll.Click
-        Dim mResults As STRUC_SEARCH_RESULTS() = DoSearch(ENUM_SEARCH_TYPE.TAB)
+        Dim mResults As STRUC_SEARCH_RESULTS() = DoSearch(ENUM_SEARCH_TYPE.TAB, RadioButton_ModeNormal.Checked, CheckBox_WholeWord.Checked, CheckBox_CaseSensitive.Checked, CheckBox_Multiline.Checked, False)
         If (mResults Is Nothing) Then
             Return
         End If
@@ -362,13 +362,13 @@ Public Class FormSearch
 
         Select Case (True)
             Case RadioButton_ListTypeCurrent.Checked
-                mResults = DoSearch(ENUM_SEARCH_TYPE.TAB)
+                mResults = DoSearch(ENUM_SEARCH_TYPE.TAB, RadioButton_ModeNormal.Checked, CheckBox_WholeWord.Checked, CheckBox_CaseSensitive.Checked, CheckBox_Multiline.Checked, CheckBox_ListMergeLines.Checked)
 
             Case RadioButton_ListTypeTabs.Checked
-                mResults = DoSearch(ENUM_SEARCH_TYPE.ALL_TABS)
+                mResults = DoSearch(ENUM_SEARCH_TYPE.ALL_TABS, RadioButton_ModeNormal.Checked, CheckBox_WholeWord.Checked, CheckBox_CaseSensitive.Checked, CheckBox_Multiline.Checked, CheckBox_ListMergeLines.Checked)
 
             Case RadioButton_ListTypeIncludes.Checked
-                mResults = DoSearch(ENUM_SEARCH_TYPE.ALL_INCLUDES)
+                mResults = DoSearch(ENUM_SEARCH_TYPE.ALL_INCLUDES, RadioButton_ModeNormal.Checked, CheckBox_WholeWord.Checked, CheckBox_CaseSensitive.Checked, CheckBox_Multiline.Checked, CheckBox_ListMergeLines.Checked)
         End Select
 
         If (mResults Is Nothing) Then
@@ -620,7 +620,7 @@ Public Class FormSearch
     ''' Does the search and gets all results.
     ''' </summary>
     ''' <returns></returns>
-    Private Function DoSearch(iSearchType As ENUM_SEARCH_TYPE) As STRUC_SEARCH_RESULTS()
+    Private Function DoSearch(iSearchType As ENUM_SEARCH_TYPE, bNormalMode As Boolean, bWholeWord As Boolean, bCastSensitive As Boolean, bMultiLine As Boolean, bMergeLines As Boolean) As STRUC_SEARCH_RESULTS()
         Dim sSearchText As String = TextBox_Search.Text
 
         If (String.IsNullOrEmpty(sSearchText) OrElse sSearchText.Trim.Length < 1) Then
@@ -629,11 +629,6 @@ Public Class FormSearch
         End If
 
         Dim mRegex As Regex
-        Dim bNormalMode As Boolean = RadioButton_ModeNormal.Checked
-        Dim bWholeWord As Boolean = CheckBox_WholeWord.Checked
-        Dim bCastSensitive As Boolean = CheckBox_CaseSensitive.Checked
-        Dim bMultiLine As Boolean = CheckBox_Multiline.Checked
-        Dim bMergeLines As Boolean = CheckBox_ListMergeLines.Checked
 
         Try
             Select Case (bNormalMode)
