@@ -607,6 +607,20 @@ Public Class ClassConfigs
         Return lConfigList.ToArray
     End Function
 
+    Shared Function FindConfig(sName As String) As STRUC_CONFIG_ITEM
+        If (String.IsNullOrEmpty(sName)) Then
+            Return Nothing
+        End If
+
+        For Each mConfig In GetConfigs()
+            If (mConfig.GetName = sName) Then
+                Return mConfig
+            End If
+        Next
+
+        Return Nothing
+    End Function
+
     Shared Function FindConfigUsingDefaultPaths(sFile As String) As STRUC_CONFIG_ITEM
         Dim mConfigDefPaths As New List(Of KeyValuePair(Of STRUC_CONFIG_ITEM, String))
 

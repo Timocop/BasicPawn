@@ -140,4 +140,67 @@ Partial Public Class FormMain
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
     End Sub
+
+    Private Sub ToolStripMenuItem_BuildWith_DropDownOpening(sender As Object, e As EventArgs) Handles ToolStripMenuItem_BuildWith.DropDownOpening
+        For i = ToolStripMenuItem_BuildWith.DropDownItems.Count - 1 To 0 Step -1
+            ToolStripMenuItem_BuildWith.DropDownItems(i).Dispose()
+        Next
+
+        For Each mConfig In ClassConfigs.GetConfigs
+            If (mConfig.IsDefault) Then
+                Continue For
+            End If
+
+            ToolStripMenuItem_BuildWith.DropDownItems.Add(mConfig.GetName, Nothing, AddressOf ToolStripMenuItem_BuildWithSubs_Click)
+        Next
+
+        ClassControlStyle.UpdateControls(ToolStripMenuItem_BuildWith)
+    End Sub
+
+    Private Sub ToolStripMenuItem_BuildWithSubs_Click(sender As Object, e As EventArgs)
+        Dim mToolStripItem As ToolStripItem = DirectCast(sender, ToolStripItem)
+
+        Try
+            Using mProgress As New FormProgress
+                mProgress.Text = "Compiling..."
+                mProgress.Show(Me)
+                mProgress.m_Progress = 0
+
+                Dim mConfig = ClassConfigs.FindConfig(mToolStripItem.Text)
+                If (mConfig Is Nothing) Then
+                    Throw New ArgumentException("Unable to find config '" & mToolStripItem.Text & "'")
+                End If
+
+                Dim sSource As String = g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
+
+                If (ClassDebuggerTools.ClassDebuggerHelpers.HasDebugPlaceholder(sSource)) Then
+                    ClassDebuggerTools.ClassDebuggerHelpers.CleanupDebugPlaceholder(sSource, g_ClassTabControl.m_ActiveTab.m_Language)
+                End If
+
+                Dim sSourceFile As String = Nothing
+                If (Not g_ClassTabControl.m_ActiveTab.m_IsUnsaved AndAlso Not g_ClassTabControl.m_ActiveTab.m_InvalidFile) Then
+                    sSourceFile = g_ClassTabControl.m_ActiveTab.m_File
+                End If
+
+                Dim sOutputFile As String = ""
+                g_ClassTextEditorTools.CompileSource(Nothing,
+                                                     Nothing,
+                                                     sSource,
+                                                     False,
+                                                     True,
+                                                     sOutputFile,
+                                                     mConfig,
+                                                     If(sSourceFile Is Nothing, Nothing, IO.Path.GetDirectoryName(sSourceFile)),
+                                                     Nothing,
+                                                     Nothing,
+                                                     Nothing,
+                                                     Nothing,
+                                                     sSourceFile)
+
+                mProgress.m_Progress = 100
+            End Using
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
 End Class
