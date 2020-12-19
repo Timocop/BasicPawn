@@ -18,12 +18,52 @@
 Imports System.ComponentModel
 
 Partial Public Class FormMain
+    Private g_bComboBoxIgnoreEvent As Boolean = False
+
     Private Sub ToolStripStatusLabel_CurrentConfig_Click(sender As Object, e As EventArgs) Handles ToolStripStatusLabel_CurrentConfig.Click
         ContextMenuStrip_Config.Show(Cursor.Position)
     End Sub
 
     Private Sub ContextMenuStrip_Config_Opening(sender As Object, e As CancelEventArgs) Handles ContextMenuStrip_Config.Opening
+        Dim mTab = g_ClassTabControl.m_ActiveTab
+
+        Try
+            g_bComboBoxIgnoreEvent = True
+
+            ToolStripComboBox_EditConfigs.Items.Clear()
+
+            For Each mConfig In ClassConfigs.GetConfigs
+                ToolStripComboBox_EditConfigs.Items.Add(mConfig.GetName)
+            Next
+
+            ToolStripComboBox_EditConfigs.SelectedItem = mTab.m_ActiveConfig.GetName
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        Finally
+            g_bComboBoxIgnoreEvent = False
+        End Try
+
         ClassControlStyle.UpdateControls(ContextMenuStrip_Config)
+    End Sub
+
+    Private Sub ToolStripComboBox_EditConfigs_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ToolStripComboBox_EditConfigs.SelectedIndexChanged
+        If (g_bComboBoxIgnoreEvent) Then
+            Return
+        End If
+
+        Dim mTab = g_ClassTabControl.m_ActiveTab
+
+        Dim mConfig = ClassConfigs.FindConfig(CStr(ToolStripComboBox_EditConfigs.SelectedItem))
+
+        mTab.m_ActiveConfig = mConfig
+
+        g_ClassSyntaxParser.StartUpdateSchedule(ClassSyntaxParser.ENUM_PARSE_TYPE_FLAGS.ALL, g_ClassTabControl.m_ActiveTab, ClassSyntaxParser.ENUM_PARSE_OPTIONS_FLAGS.FORCE_UPDATE)
+
+        g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("Temporarily changed config for tab '{0} ({1})': {2}", mTab.m_Title, mTab.m_Index, mConfig.GetName), False, True, True)
+
+        UpdateFormConfigText()
+
+        ContextMenuStrip_Config.Close()
     End Sub
 
     Private Sub ToolStripMenuItem_EditConfigActiveTab_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_EditConfigActiveTab.Click
