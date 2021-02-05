@@ -2207,6 +2207,10 @@ Public Class ClassTabControl
 
                     Dim mFolds As New List(Of FoldMarker)()
 
+                    If (mDoc Is Nothing) Then
+                        Return mFolds
+                    End If
+
                     Dim iMaxLevels As Integer = 0
                     Dim i As Integer = 0
                     While True
