@@ -996,7 +996,7 @@ Public Class FormTranslationEditor
             mRecentSorted.Add(New KeyValuePair(Of String, Date)(sFile.ToLower, Now))
 
             mRecentSorted.Sort(Function(x As KeyValuePair(Of String, Date), y As KeyValuePair(Of String, Date))
-                                   Return x.Value.Ticks.CompareTo(y.Value.Ticks)
+                                   Return -x.Value.Ticks.CompareTo(y.Value.Ticks)
                                End Function)
 
             'Clean Config
