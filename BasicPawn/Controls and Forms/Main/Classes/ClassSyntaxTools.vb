@@ -350,7 +350,7 @@ Public Class ClassSyntaxTools
         Private g_iStateArray As Integer(,)
         Private g_iMaxLength As Integer = 0
         Private g_sCacheText As String = ""
-        Private g_mLineIndexes As New Dictionary(Of Integer, Integer)
+        Private g_iLineIndexes As Integer()
 
         Public ReadOnly Property m_InRange(i As Integer) As Boolean
             Get
@@ -517,18 +517,16 @@ Public Class ClassSyntaxTools
         End Function
 
         Public Function GetIndexFromLine(iLine As Integer) As Integer
-            If (iLine = 0) Then
+            Dim iRealLine As Integer = (iLine - 1)
+
+            If (iRealLine < 0) Then
                 Return 0
             End If
 
-            Dim iIndex As Integer = -1
-
-            For Each mItem In g_mLineIndexes
-                If (mItem.Key + 1 >= iLine) Then
-                    iIndex = mItem.Value + 1
-                    Exit For
-                End If
-            Next
+            Dim iIndex As Integer = 0
+            If (g_iLineIndexes.Length > 0 AndAlso iRealLine > -1 AndAlso iRealLine < g_iLineIndexes.Length) Then
+                iIndex = g_iLineIndexes(iRealLine)
+            End If
 
             'The index might be on vbLf, so we just allow it +1 index to actualy move to the next line.
             Return Math.Min(iIndex, g_sCacheText.Length - 1)
@@ -564,7 +562,7 @@ Public Class ClassSyntaxTools
             Dim bInStringPreSave As Integer = 0
             Dim bInCharPreSave As Integer = 0
 
-            Dim iLine As Integer = 0
+            Dim iLineIndexes As New List(Of Integer)
 
             For i = 0 To g_sCacheText.Length - 2 'Ignore NULL character
                 g_iStateArray(i, ENUM_STATE_TYPES.PARENTHESIS_LEVEL) = iParenthesisLevel
@@ -805,9 +803,7 @@ Public Class ClassSyntaxTools
                             bInChar = bInCharPreSave
                         End If
 
-                        g_mLineIndexes(iLine) = i
-
-                        iLine += 1
+                        iLineIndexes.Add(i)
 
                     Case Else
                         g_iStateArray(i, ENUM_STATE_TYPES.PARENTHESIS_LEVEL) = iParenthesisLevel
@@ -820,6 +816,8 @@ Public Class ClassSyntaxTools
                         g_iStateArray(i, ENUM_STATE_TYPES.IN_PREPROCESSOR) = bInPreprocessor
                 End Select
             Next
+
+            g_iLineIndexes = iLineIndexes.ToArray
         End Sub
     End Class
 

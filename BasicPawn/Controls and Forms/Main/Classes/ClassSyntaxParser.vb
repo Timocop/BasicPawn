@@ -1898,6 +1898,10 @@ Public Class ClassSyntaxParser
                         sAnchorName = "define"
                         iAnchorIndex = 0
                         For ii = 0 To i - 1
+                            If (Not sLines(ii).Contains(sAnchorName)) Then
+                                Continue For
+                            End If
+
                             For Each mAnchorMatch As Match In ClassRegexLock.Matches(sLines(ii), String.Format("\b({0})\b", sAnchorName))
                                 Dim iAnchorOffset = mSourceAnalysis.GetIndexFromLine(ii) + mAnchorMatch.Index
 
@@ -2020,6 +2024,10 @@ Public Class ClassSyntaxParser
                         sAnchorName = "public"
                         iAnchorIndex = 0
                         For ii = 0 To i - 1
+                            If (Not sLines(ii).Contains(sAnchorName)) Then
+                                Continue For
+                            End If
+
                             For Each mAnchorMatch As Match In ClassRegexLock.Matches(sLines(ii), String.Format("\b({0})\b", sAnchorName))
                                 Dim iAnchorOffset = mSourceAnalysis.GetIndexFromLine(ii) + mAnchorMatch.Index
 
@@ -2584,21 +2592,27 @@ Public Class ClassSyntaxParser
                         Continue For
                     End If
 
+                    Dim iIndex = mSourceAnalysis.GetIndexFromLine(i)
+                    If (iIndex < 0 OrElse mSourceAnalysis.GetBraceLevel(iBraceList(0)(0) + iIndex, Nothing) > 0 OrElse mSourceAnalysis.m_InNonCode(iBraceList(0)(0) + iIndex)) Then
+                        Continue For
+                    End If
+
                     sBraceText = sLines(i).Substring(iBraceList(0)(0), iBraceList(0)(1) - iBraceList(0)(0) + 1)
 
-                    'SP 1.7 +Tags
-                    mMatch = ClassRegexLock.Match(sLines(i), String.Format("^\s*(?<Types>[a-zA-Z0-9_ ]*)(?<Tag>\b{0}\b\s)\s*(?<Name>\b[a-zA-Z0-9_]+\b)\s*{1}(?<IsFunc>\s*;){2}", sRegExTypePattern, Regex.Escape(sBraceText), "{0,1}"))
-                    If (Not mMatch.Success) Then
+                    'TODO: Optimize further, this has a big impact on parsing performance
+                    Dim sFuncFilter As String = String.Format("({0}|{1}|{2})",
+                                                              String.Format("(?<SP17>^\s*(?<Types>[a-zA-Z0-9_ ]*)(?<Tag>\b{0}\b\s)\s*(?<Name>\b[a-zA-Z0-9_]+\b)\s*{1}(?<IsFunc>\s*;){2})", sRegExTypePattern, Regex.Escape(sBraceText), "{0,1}"),       'SP 1.7 +Tags
+                                                              String.Format("(?<SP16T>^\s*(?<Types>[a-zA-Z0-9_ ]*)(?<Tag>\b{0}\b\:)(?<Name>\b[a-zA-Z0-9_]+\b)\s*{1}(?<IsFunc>\s*;){2})", sRegExTypePattern, Regex.Escape(sBraceText), "{0,1}"),         'SP 1.6 +Tags
+                                                              String.Format("(?<SP16>^\s*(?<Types>[a-zA-Z0-9_ ]*)(?<!<Tag>\b{0}\b\:)(?<Name>\b[a-zA-Z0-9_]+\b)\s*{1}(?<IsFunc>\s*;){2})", sRegExTypePattern, Regex.Escape(sBraceText), "{0,1}"))        'SP 1.6 -Tags
+
+                    mMatch = ClassRegexLock.Match(sLines(i), sFuncFilter)
+                    If (Not mMatch.Groups("SP17").Success) Then
                         If (ClassSettings.g_iSettingsEnforceSyntax = ClassSettings.ENUM_ENFORCE_SYNTAX.SP_1_7) Then
                             Continue For
                         End If
 
-                        'SP 1.6 +Tags
-                        mMatch = ClassRegexLock.Match(sLines(i), String.Format("^\s*(?<Types>[a-zA-Z0-9_ ]*)(?<Tag>\b{0}\b\:)(?<Name>\b[a-zA-Z0-9_]+\b)\s*{1}(?<IsFunc>\s*;){2}", sRegExTypePattern, Regex.Escape(sBraceText), "{0,1}"))
-                        If (Not mMatch.Success) Then
-                            'SP 1.6 -Tags
-                            mMatch = ClassRegexLock.Match(sLines(i), String.Format("^\s*(?<Types>[a-zA-Z0-9_ ]*)(?<!<Tag>\b{0}\b\:)(?<Name>\b[a-zA-Z0-9_]+\b)\s*{1}(?<IsFunc>\s*;){2}", sRegExTypePattern, Regex.Escape(sBraceText), "{0,1}"))
-                            If (Not mMatch.Success) Then
+                        If (Not mMatch.Groups("SP16T").Success) Then
+                            If (Not mMatch.Groups("SP16").Success) Then
                                 Continue For
                             End If
                         End If
@@ -2608,7 +2622,7 @@ Public Class ClassSyntaxParser
                         End If
                     End If
 
-                    Dim iIndex = mSourceAnalysis.GetIndexFromLine(i)
+                    iIndex = mSourceAnalysis.GetIndexFromLine(i)
                     If (iIndex < 0 OrElse mSourceAnalysis.GetBraceLevel(mMatch.Index + iIndex, Nothing) > 0 OrElse mSourceAnalysis.m_InNonCode(mMatch.Index + iIndex)) Then
                         Continue For
                     End If
@@ -2690,6 +2704,10 @@ Public Class ClassSyntaxParser
                         sAnchorName = "functag"
                         iAnchorIndex = 0
                         For ii = 0 To i - 1
+                            If (Not sLines(ii).Contains(sAnchorName)) Then
+                                Continue For
+                            End If
+
                             For Each mAnchorMatch As Match In ClassRegexLock.Matches(sLines(ii), String.Format("\b({0})\b", sAnchorName))
                                 Dim iAnchorOffset = mSourceAnalysis.GetIndexFromLine(ii) + mAnchorMatch.Index
 
@@ -2752,6 +2770,10 @@ Public Class ClassSyntaxParser
 
                         iAnchorIndex = 0
                         For ii = 0 To i - 1
+                            If (Not sLines(ii).Contains(sAnchorName)) Then
+                                Continue For
+                            End If
+
                             For Each mAnchorMatch As Match In ClassRegexLock.Matches(sLines(ii), String.Format("\b({0})\b", Regex.Escape(sAnchorName)))
                                 Dim iAnchorOffset = mSourceAnalysis.GetIndexFromLine(ii) + mAnchorMatch.Index
 
@@ -3976,6 +3998,10 @@ Public Class ClassSyntaxParser
                                                                                       Return False
                                                                                   End If
 
+                                                                                  If (Not x.m_FunctionString.Contains(sVar)) Then
+                                                                                      Return False
+                                                                                  End If
+
                                                                                   Return ClassRegexLock.IsMatch(x.m_FunctionString, String.Format("\b{0}\b", Regex.Escape(sVar)))
                                                                               End Function)) Then
                                     Exit Select
@@ -4056,6 +4082,10 @@ Public Class ClassSyntaxParser
                                                                                             (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PREPROCESSOR) <> 0 OrElse
                                                                                             (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.OPERATOR) <> 0 OrElse
                                                                                             (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.COMMAND) <> 0) Then
+                                                                                      Return False
+                                                                                  End If
+
+                                                                                  If (Not x.m_FunctionString.Contains(sVar)) Then
                                                                                       Return False
                                                                                   End If
 
@@ -4161,6 +4191,10 @@ Public Class ClassSyntaxParser
                                                                                       Return False
                                                                                   End If
 
+                                                                                  If (Not x.m_FunctionString.Contains(sVar)) Then
+                                                                                      Return False
+                                                                                  End If
+
                                                                                   Return ClassRegexLock.IsMatch(x.m_FunctionString, String.Format("\b{0}\b", Regex.Escape(sVar)))
                                                                               End Function)) Then
                                     Continue For
@@ -4257,6 +4291,10 @@ Public Class ClassSyntaxParser
                                                                                             (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.PREPROCESSOR) <> 0 OrElse
                                                                                             (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.OPERATOR) <> 0 OrElse
                                                                                             (x.m_Type And ClassSyntaxTools.STRUC_AUTOCOMPLETE.ENUM_TYPE_FLAGS.COMMAND) <> 0) Then
+                                                                                      Return False
+                                                                                  End If
+
+                                                                                  If (Not x.m_FunctionString.Contains(sVar)) Then
                                                                                       Return False
                                                                                   End If
 
