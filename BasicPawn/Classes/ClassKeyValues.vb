@@ -25,22 +25,6 @@ Public Class ClassKeyValues
     Private g_mStreamWriter As IO.StreamWriter
     Private g_mStreamReader As IO.StreamReader
 
-    'https://en.wikipedia.org/wiki/Escape_sequences_in_C
-    Private Shared g_sEscapes()() As String = New String()() {
-        New String() {"\\", "\"},
-        New String() {"\a", Chr(&H7)},
-        New String() {"\b", Chr(&H8)},
-        New String() {"\e", Chr(&H1B)},
-        New String() {"\f", Chr(&HC)},
-        New String() {"\n", Chr(&HA)},
-        New String() {"\r", Chr(&HD)},
-        New String() {"\t", Chr(&H9)},
-        New String() {"\v", Chr(&HB)},
-        New String() {"\'", Chr(&H27)},
-        New String() {"\""", Chr(&H22)},
-        New String() {"\?", Chr(&H3F)}
-    }
-
     Class STRUC_KEYVALUES_SECTION
         Private g_sName As String
         Private g_mKeys As New List(Of KeyValuePair(Of String, String))
@@ -408,51 +392,122 @@ Public Class ClassKeyValues
         End If
     End Sub
 
-    Public Shared Function UnescapeString(sText As String) As String
-        For i = sText.Length - 1 To 0 Step -1
-            If (sText(i) <> "\"c) Then
-                Continue For
+    Public Shared Function EscapeString(sText As String, Optional bAllowUnprintable As Boolean = True) As String
+        If (String.IsNullOrEmpty(sText)) Then
+            Return ""
+        End If
+
+        Dim bNeedEncode As Boolean = False
+        Dim iChr As Integer
+
+        For i As Integer = 0 To sText.Length - 1
+            iChr = AscW(sText(i))
+
+            If (iChr >= 0 AndAlso iChr <= 31 OrElse iChr = 34 OrElse iChr = 39 OrElse iChr = 60 OrElse iChr = 62 OrElse iChr = 92) Then
+                bNeedEncode = True
+                Exit For
             End If
-
-            Dim iEscCount = 0
-            For j = i - 1 To 0 Step -1
-                If (sText(j) <> "\"c) Then
-                    Exit For
-                End If
-
-                iEscCount += 1
-            Next
-
-            'Has been escaped?
-            If ((iEscCount Mod 2) <> 0) Then
-                Continue For
-            End If
-
-            For j = g_sEscapes.Length - 1 To 0 Step -1
-                Dim iEscIndex = (i + g_sEscapes(j)(0).Length - 1)
-                If (iEscIndex > sText.Length - 1) Then
-                    Continue For
-                End If
-
-                Dim sTextEsc As String = sText.Substring(i, g_sEscapes(j)(0).Length)
-                If (g_sEscapes(j)(0) <> sTextEsc) Then
-                    Continue For
-                End If
-
-                sText = sText.Remove(i, sTextEsc.Length)
-                sText = sText.Insert(i, g_sEscapes(j)(1))
-            Next
         Next
 
-        Return sText
+        If (Not bNeedEncode) Then
+            Return sText
+        End If
+
+        Dim sb As New StringBuilder(sText.Length)
+
+        For i = 0 To sText.Length - 1
+            iChr = AscW(sText(i))
+
+            If (iChr >= 0 AndAlso iChr <= 7 OrElse iChr = 11 OrElse iChr >= 14 AndAlso iChr <= 31 OrElse iChr = 39 OrElse iChr = 60 OrElse iChr = 62) Then
+                If (bAllowUnprintable) Then
+                    sb.AppendFormat(ChrW(iChr))
+                Else
+                    sb.AppendFormat("\u{0:x4}", iChr)
+                End If
+            Else
+                Select Case (iChr)
+                    Case 8
+                        sb.Append("\b")
+                    Case 9
+                        sb.Append("\t")
+                    Case 10
+                        sb.Append("\n")
+                    Case 12
+                        sb.Append("\f")
+                    Case 13
+                        sb.Append("\r")
+                    Case 34
+                        sb.Append("\""")
+                    Case 92
+                        sb.Append("\\")
+                    Case Else
+                        sb.Append(ChrW(iChr))
+                End Select
+            End If
+        Next
+
+        Return sb.ToString()
     End Function
 
-    Public Shared Function EscapeString(sText As String) As String
-        For i = 0 To g_sEscapes.Length - 1
-            sText = sText.Replace(g_sEscapes(i)(1), g_sEscapes(i)(0))
+    Public Shared Function UnescapeString(sText As String, Optional bAllowUnprintable As Boolean = True) As String
+        If (Not sText.Contains("\")) Then
+            Return sText
+        End If
+
+        Dim sb As New StringBuilder(sText.Length)
+
+        For i = 0 To sText.Length - 1
+            If (sText(i) <> "\"c) Then
+                sb.Append(sText(i))
+                Continue For
+            End If
+
+            Dim sChar2 As String = Nothing
+            Dim sChar4 As String = Nothing
+
+            If (i + 1 < sText.Length) Then
+                sChar2 = sText.Substring(i, 2)
+            End If
+
+            If (i + 3 + 2 < sText.Length) Then
+                sChar4 = sText.Substring(i + 2, 4)
+            End If
+
+            Select Case (sChar2)
+                Case "\b"
+                    sb.Append(Chr(8))
+                    i += 1
+                Case "\t"
+                    sb.Append(Chr(9))
+                    i += 1
+                Case "\n"
+                    sb.Append(Chr(10))
+                    i += 1
+                Case "\f"
+                    sb.Append(Chr(12))
+                    i += 1
+                Case "\r"
+                    sb.Append(Chr(13))
+                    i += 1
+                Case "\"""
+                    sb.Append(Chr(34))
+                    i += 1
+                Case "\\"
+                    sb.Append(Chr(92))
+                    i += 1
+                Case "\u"
+                    If (bAllowUnprintable OrElse sChar4 Is Nothing) Then
+                        sb.Append(sText(i))
+                    Else
+                        sb.Append(Chr(Convert.ToInt32(sChar4, 16)))
+                        i += 3 + 2
+                    End If
+                Case Else
+                    sb.Append(sText(i))
+            End Select
         Next
 
-        Return sText
+        Return sb.ToString
     End Function
 
     ''' <summary>

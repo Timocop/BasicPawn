@@ -201,7 +201,11 @@ Public Class FormAddTranslation
 
         'Use Unix newline not windows
         m_Text = m_Text.Replace(vbCrLf, vbLf)
+
         m_Text = ClassKeyValues.UnescapeString(m_Text)
+
+        'Do not allow escapes at the end.
+        m_Text = m_Text.TrimEnd("\"c)
 
         Me.DialogResult = DialogResult.OK
     End Sub
