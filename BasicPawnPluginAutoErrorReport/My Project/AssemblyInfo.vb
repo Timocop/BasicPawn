@@ -10,9 +10,9 @@ Imports System.Runtime.InteropServices
 
 <Assembly: AssemblyTitle("PluginAutomaticErrorReport")>
 <Assembly: AssemblyDescription("Allows automatic error reporting over FTP")>
-<Assembly: AssemblyCompany("TheTimocop")>
+<Assembly: AssemblyCompany("Externet")>
 <Assembly: AssemblyProduct("PluginAutomaticErrorReport")>
-<Assembly: AssemblyCopyright("Copyright © TheTimocop 2020")>
+<Assembly: AssemblyCopyright("Copyright © Externet 2020")>
 <Assembly: AssemblyTrademark("")>
 
 <Assembly: ComVisible(False)>

@@ -10,9 +10,9 @@ Imports System.Runtime.InteropServices
 
 <Assembly: AssemblyTitle("BasicPawn")>
 <Assembly: AssemblyDescription("A lightweight SourcePawn Editor")>
-<Assembly: AssemblyCompany("TheTimocop")>
+<Assembly: AssemblyCompany("Externet")>
 <Assembly: AssemblyProduct("BasicPawn")>
-<Assembly: AssemblyCopyright("Copyright © TheTimocop 2020")>
+<Assembly: AssemblyCopyright("Copyright © Externet 2020")>
 <Assembly: AssemblyTrademark("BasicPawn")>
 
 <Assembly: ComVisible(False)>

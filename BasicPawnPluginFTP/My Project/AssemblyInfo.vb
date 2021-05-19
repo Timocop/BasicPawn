@@ -10,9 +10,9 @@ Imports System.Runtime.InteropServices
 
 <Assembly: AssemblyTitle("BasicPawnPluginFTP")>
 <Assembly: AssemblyDescription("Allows uploading files to servers over FTP")>
-<Assembly: AssemblyCompany("TheTimocop")>
+<Assembly: AssemblyCompany("Externet")>
 <Assembly: AssemblyProduct("BasicPawnPluginFTP")>
-<Assembly: AssemblyCopyright("Copyright © TheTimocop 2020")>
+<Assembly: AssemblyCopyright("Copyright © Externet 2020")>
 <Assembly: AssemblyTrademark("")>
 
 <Assembly: ComVisible(False)>
