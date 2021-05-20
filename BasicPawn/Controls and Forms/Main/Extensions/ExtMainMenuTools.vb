@@ -261,6 +261,37 @@ Partial Public Class FormMain
         End If
     End Sub
 
+    Private Sub ToolStripMenuItem_ToolsGoToLine_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsGoToLine.Click
+        Try
+            Dim sLine As String = InputBox("Enter line number:", "Go to line...", Nothing)
+            If (String.IsNullOrEmpty(sLine)) Then
+                Return
+            End If
+
+            If (Not Regex.IsMatch(sLine, "^[0-9]+$")) Then
+                Throw New ArgumentException("Invalid line number")
+            End If
+
+            Dim mActiveTab = g_ClassTabControl.m_ActiveTab
+            Dim mTextArea = mActiveTab.m_TextEditor.ActiveTextAreaControl
+
+            Dim iLineNum As Integer = ClassTools.ClassMath.ClampInt(CInt(sLine) - 1, 0, mActiveTab.m_TextEditor.Document.TotalNumberOfLines - 1)
+            Dim iLineLen = mActiveTab.m_TextEditor.Document.GetLineSegment(iLineNum).Length
+
+            Dim mStartLoc As New ICSharpCode.TextEditor.TextLocation(0, iLineNum)
+            Dim mEndLoc As New ICSharpCode.TextEditor.TextLocation(iLineLen, iLineNum)
+
+            mTextArea.Caret.Position = mStartLoc
+            mTextArea.Caret.UpdateCaretPosition()
+
+            mTextArea.SelectionManager.ClearSelection()
+            mTextArea.SelectionManager.SetSelection(mStartLoc, mEndLoc)
+            mTextArea.CenterViewOn(iLineNum, 10)
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
     Private Sub ToolStripMenuItem_ToolsShowInformation_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsShowInformation.Click
         If (ToolStripMenuItem_ViewDetails.Checked) Then
             SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed = False
