@@ -156,13 +156,10 @@ Public Class ClassDebuggerRunner
         End Get
     End Property
 
-    Public Property m_PluginIdentifier As String
+    Public ReadOnly Property m_PluginIdentifier As String
         Get
             Return g_sPluginIdentifier
         End Get
-        Set(value As String)
-            g_sPluginIdentifier = value
-        End Set
     End Property
 
     Public ReadOnly Property m_DebugTabIdentifier As String
@@ -171,13 +168,10 @@ Public Class ClassDebuggerRunner
         End Get
     End Property
 
-    Public Property m_DebuggingState As ENUM_DEBUGGING_STATE
+    Public ReadOnly Property m_DebuggingState As ENUM_DEBUGGING_STATE
         Get
             Return g_mDebuggingState
         End Get
-        Set(value As ENUM_DEBUGGING_STATE)
-            g_mDebuggingState = value
-        End Set
     End Property
 
     Public Property m_SuspendGame As Boolean
@@ -568,7 +562,7 @@ Public Class ClassDebuggerRunner
             SetDebuggerStatusConnection(False)
 
             'Set unique plugin identity
-            m_PluginIdentifier = Guid.NewGuid.ToString
+            g_sPluginIdentifier = Guid.NewGuid.ToString
 
             Dim mTab = g_mFormDebugger.g_mFormMain.g_ClassTabControl.GetTabByIdentifier(m_DebugTabIdentifier)
             If (mTab Is Nothing) Then
@@ -730,7 +724,7 @@ Public Class ClassDebuggerRunner
             SyncLock g_mFileSystemWatcherLock
                 g_mActiveBreakpointInfo.sGUID = ""
                 g_mActiveAssertInfo.sGUID = ""
-                m_DebuggingState = ENUM_DEBUGGING_STATE.STARTED
+                g_mDebuggingState = ENUM_DEBUGGING_STATE.STARTED
                 m_SuspendGame = False
             End SyncLock
 
@@ -877,7 +871,7 @@ Public Class ClassDebuggerRunner
             SyncLock g_mFileSystemWatcherLock
                 g_mActiveBreakpointInfo.sGUID = ""
                 g_mActiveAssertInfo.sGUID = ""
-                m_DebuggingState = ENUM_DEBUGGING_STATE.STOPPED
+                g_mDebuggingState = ENUM_DEBUGGING_STATE.STOPPED
                 m_SuspendGame = False
             End SyncLock
 
@@ -966,7 +960,7 @@ Public Class ClassDebuggerRunner
             SyncLock g_mFileSystemWatcherLock
                 g_mActiveBreakpointInfo.sGUID = ""
                 g_mActiveAssertInfo.sGUID = ""
-                m_DebuggingState = ENUM_DEBUGGING_STATE.STARTED
+                g_mDebuggingState = ENUM_DEBUGGING_STATE.STARTED
                 m_SuspendGame = False
             End SyncLock
 
@@ -1001,7 +995,7 @@ Public Class ClassDebuggerRunner
             'Make sure other async threads doenst fuckup everthing
             SyncLock g_mFileSystemWatcherLock
                 m_SuspendGame = True
-                m_DebuggingState = ENUM_DEBUGGING_STATE.PAUSED
+                g_mDebuggingState = ENUM_DEBUGGING_STATE.PAUSED
             End SyncLock
 
             UpdateListViewInfoItems()
@@ -1210,7 +1204,7 @@ Public Class ClassDebuggerRunner
             'Make sure other async threads doenst fuckup everthing
             SyncLock g_mFileSystemWatcherLock
                 m_SuspendGame = True
-                m_DebuggingState = ENUM_DEBUGGING_STATE.PAUSED
+                g_mDebuggingState = ENUM_DEBUGGING_STATE.PAUSED
 
                 g_mActiveBreakpointInfo = New STRUC_ACTIVE_BREAKPOINT_INFORMATION With {
                     .sGUID = sGUID,
@@ -1408,7 +1402,7 @@ Public Class ClassDebuggerRunner
             'Make sure other async threads doenst fuckup everthing
             SyncLock g_mFileSystemWatcherLock
                 m_SuspendGame = True
-                m_DebuggingState = ENUM_DEBUGGING_STATE.PAUSED
+                g_mDebuggingState = ENUM_DEBUGGING_STATE.PAUSED
 
                 g_mActiveBreakpointInfo = New STRUC_ACTIVE_BREAKPOINT_INFORMATION With {
                     .sGUID = "",
@@ -1778,7 +1772,7 @@ Public Class ClassDebuggerRunner
                         bFoundKnownExceptions = True
 
                         m_SuspendGame = True
-                        m_DebuggingState = ENUM_DEBUGGING_STATE.PAUSED
+                        g_mDebuggingState = ENUM_DEBUGGING_STATE.PAUSED
 
                         'INFO: Dont use 'Invoke' it deadlocks on FileSystemWatcher.Dispose, use async 'BeginInvoke' instead.
                         ClassThread.ExecAsync(g_mFormDebugger, Sub()
@@ -1820,7 +1814,7 @@ Public Class ClassDebuggerRunner
                     'Make sure other async threads doenst fuckup everthing 
                     SyncLock g_mFileSystemWatcherLock
                         m_SuspendGame = True
-                        m_DebuggingState = ENUM_DEBUGGING_STATE.PAUSED
+                        g_mDebuggingState = ENUM_DEBUGGING_STATE.PAUSED
 
                         'INFO: Dont use 'Invoke' it deadlocks on FileSystemWatcher.Dispose, use async 'BeginInvoke' instead.
                         ClassThread.ExecAsync(g_mFormDebugger, Sub()
@@ -1928,7 +1922,7 @@ Public Class ClassDebuggerRunner
                 'Make sure other async threads doenst fuckup everthing 
                 SyncLock g_mFileSystemWatcherLock
                     m_SuspendGame = True
-                    m_DebuggingState = ENUM_DEBUGGING_STATE.PAUSED
+                    g_mDebuggingState = ENUM_DEBUGGING_STATE.PAUSED
 
                     'INFO: Dont use 'Invoke' it deadlocks on FileSystemWatcher.Dispose, use async 'BeginInvoke' instead.
                     ClassThread.ExecAsync(g_mFormDebugger, Sub()
