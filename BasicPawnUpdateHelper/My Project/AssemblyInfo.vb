@@ -12,7 +12,7 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyDescription("")>
 <Assembly: AssemblyCompany("")>
 <Assembly: AssemblyProduct("BasicPawnUpdateHelper")>
-<Assembly: AssemblyCopyright("Copyright © Externet 2020")>
+<Assembly: AssemblyCopyright("Copyright © Externet 2021")>
 <Assembly: AssemblyTrademark("")>
 
 <Assembly: ComVisible(False)>
