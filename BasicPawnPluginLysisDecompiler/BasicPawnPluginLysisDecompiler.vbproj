@@ -47,6 +47,9 @@
   <PropertyGroup>
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="BasicPawn">
       <HintPath>..\Required Plugin References\BasicPawn.exe</HintPath>
@@ -121,17 +124,32 @@ copy /Y "$(TargetPath)" "$(SolutionDir)BasicPawn\bin\Debug\plugins\$(TargetFileN
 echo         Plugin '$(ProjectName)' copied to BasicPawn main plugin folder!
 )
 
-if "$(ConfigurationName)"=="Release" (
-mkdir "$(SolutionDir)Plugin Releases\$(ProjectName)"
-copy /Y "$(TargetPath)" "$(SolutionDir)Plugin Releases\$(ProjectName)\$(TargetFileName)"
-echo         Plugin '$(ProjectName)' copied to Plugin Releases folder!
-)
-
 if "$(ConfigurationName)"=="Debug" (
 mkdir "$(SolutionDir)BasicPawn\bin\Debug\plugins\$(ProjectName)"
 copy /Y "$(SolutionDir)BasicPawnJavaLysisConsole\bin\Debug\*.dll" "$(SolutionDir)BasicPawn\bin\Debug\plugins\$(ProjectName)"
 copy /Y "$(SolutionDir)BasicPawnJavaLysisConsole\bin\Debug\BasicPawnJavaLysisConsole.exe" "$(SolutionDir)BasicPawn\bin\Debug\plugins\$(ProjectName)\LysisDecompiler.exe"
 echo         Project 'BasicPawnJavaLysisConsole' debug binaries copied to BasicPawn plugin folder!
+)
+
+
+if "$(ConfigurationName)"=="Release" (
+mkdir "$(SolutionDir)Plugin Releases\$(ProjectName)_ZIP"
+copy /Y "$(TargetPath)" "$(SolutionDir)Plugin Releases\$(ProjectName)_ZIP\$(TargetFileName)"
+echo         Plugin '$(ProjectName)' copied to Plugin Releases folder!
+)
+
+if "$(ConfigurationName)"=="Release" (
+mkdir "$(SolutionDir)Plugin Releases\$(ProjectName)_ZIP\$(ProjectName)"
+copy /Y "$(SolutionDir)BasicPawnJavaLysisConsole\bin\Release\*.dll" "$(SolutionDir)Plugin Releases\$(ProjectName)_ZIP\$(ProjectName)"
+copy /Y "$(SolutionDir)BasicPawnJavaLysisConsole\bin\Release\BasicPawnJavaLysisConsole.exe" "$(SolutionDir)Plugin Releases\$(ProjectName)_ZIP\$(ProjectName)\LysisDecompiler.exe"
+echo         Project 'BasicPawnJavaLysisConsole' debug binaries copied to BasicPawn plugin folder!
+)
+
+if "$(ConfigurationName)"=="Release" (
+mkdir "$(SolutionDir)Plugin Releases\$(ProjectName)"
+del "$(SolutionDir)Plugin Releases\$(ProjectName)\$(ProjectName).zip"
+"$(SolutionDir)Third Party Binaries\7za.exe" a -tzip "$(SolutionDir)Plugin Releases\$(ProjectName)\$(ProjectName).zip" "$(SolutionDir)Plugin Releases\$(ProjectName)_ZIP\*.*" -r
+rd /S /Q "$(SolutionDir)Plugin Releases\$(ProjectName)_ZIP"
 )</PostBuildEvent>
   </PropertyGroup>
 </Project>
