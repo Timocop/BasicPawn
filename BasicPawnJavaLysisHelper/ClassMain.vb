@@ -30,21 +30,14 @@ Module ClassMain
             Dim sJavaCPath As String = ClassProcess.FindEnvironment("PATH", "javac.exe")
             Dim sGitPath As String = ClassProcess.FindEnvironment("PATH", "git.exe")
             Dim sCurlPath As String = ClassProcess.FindEnvironment("PATH", "curl.exe")
-            Dim sJavaHome As String = Environment.GetEnvironmentVariable("JAVA_HOME")
             Dim sWindowsKitX64 As String = Nothing
 
             Dim sRootName As String = "IKVM_LYSIS_BUILD"
             Dim sRootBuildDir As String = IO.Path.Combine(Environment.CurrentDirectory.Substring(0, 3), sRootName)
 
             Console.ForegroundColor = ConsoleColor.Cyan
-            Console.WriteLine("BasicPawn Java-Lysis Converter Helper")
+            Console.WriteLine("BasicPawn Lysis-Java (by Peace-Maker) Converter Helper")
             Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-            Console.WriteLine("Java available:              " & If(sJavaPath IsNot Nothing, "TRUE", "FALSE"))
-            Console.WriteLine("Java Compiler available:     " & If(sJavaCPath IsNot Nothing, "TRUE", "FALSE"))
-            Console.WriteLine("Git available:               " & If(sGitPath IsNot Nothing, "TRUE", "FALSE"))
-            Console.WriteLine("Curl available:              " & If(sCurlPath IsNot Nothing, "TRUE", "FALSE"))
-            Console.WriteLine("Java-Home avaiable:          " & If(sJavaHome IsNot Nothing, "TRUE", "FALSE"))
-
             'Check kWindows Kit 10
             If (True) Then
                 Dim RegKey = My.Computer.Registry.LocalMachine.OpenSubKey("SOFTWARE\WOW6432Node\Microsoft\Windows Kits\Installed Roots", False)
@@ -57,57 +50,69 @@ Module ClassMain
                 End If
             End If
 
-            Console.WriteLine("Windows Kit 10 available:    " & If(sWindowsKitX64 IsNot Nothing, "TRUE", "FALSE"))
-            Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
             'Check Requirements
             If (True) Then
                 Dim bAbort As Boolean = False
-                If (sJavaPath Is Nothing) Then
+                If (sJavaPath Is Nothing OrElse Not IO.File.Exists(sJavaPath)) Then
                     Console.ForegroundColor = ConsoleColor.Red
                     Console.WriteLine("Java 8 missing! Please install Java 8 (AdpotOpenJDK recommended)!")
                     Console.ForegroundColor = ConsoleColor.White
 
                     bAbort = True
+                Else
+                    Console.WriteLine("Java path:                   " & sJavaPath.ToUpper)
                 End If
 
-                If (sJavaCPath Is Nothing) Then
+                If (sJavaCPath Is Nothing OrElse Not IO.File.Exists(sJavaCPath)) Then
                     Console.ForegroundColor = ConsoleColor.Red
                     Console.WriteLine("Java Development Kit missing! Please install Java Development Kit (AdpotOpenJDK recommended)!")
                     Console.ForegroundColor = ConsoleColor.White
 
                     bAbort = True
+                Else
+                    Console.WriteLine("Java JDK path:               " & sJavaCPath.ToUpper)
                 End If
 
-                If (sGitPath Is Nothing) Then
+                If (sGitPath Is Nothing OrElse Not IO.File.Exists(sGitPath)) Then
                     Console.ForegroundColor = ConsoleColor.Red
                     Console.WriteLine("Git missing! Install Git (from git-scm)")
                     Console.ForegroundColor = ConsoleColor.White
 
                     bAbort = True
+                Else
+                    Console.WriteLine("Git path:                    " & sGitPath.ToUpper)
                 End If
 
-                If (sCurlPath Is Nothing) Then
+                If (sCurlPath Is Nothing OrElse Not IO.File.Exists(sCurlPath)) Then
                     Console.ForegroundColor = ConsoleColor.Red
-                    Console.WriteLine("Curl not found! Please update Windows! (Windows 10 required!)")
+                    Console.WriteLine("Curl not found! Please update Windows!")
                     Console.ForegroundColor = ConsoleColor.White
 
                     bAbort = True
+                Else
+                    Console.WriteLine("Curl path:                   " & sCurlPath.ToUpper)
                 End If
 
-                If (sJavaHome Is Nothing) Then
+                If (sWindowsKitX64 Is Nothing OrElse Not IO.Directory.Exists(sWindowsKitX64)) Then
                     Console.ForegroundColor = ConsoleColor.Red
-                    Console.WriteLine("Java-Home not found! Please setup JAVA_HOME environment variable!")
+                    Console.WriteLine("Windows Kit 10 not found!")
                     Console.ForegroundColor = ConsoleColor.White
 
                     bAbort = True
+                Else
+                    Console.WriteLine("Windows Kit 10 path:         " & sWindowsKitX64.ToUpper)
                 End If
+
+                Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
                 If (bAbort) Then
                     Console.ReadKey()
                     Return
                 End If
             End If
+
+            Dim sJavaHome As String = IO.Path.GetFullPath(IO.Path.Combine(IO.Path.GetDirectoryName(sJavaCPath), "..")) 'Environment.GetEnvironmentVariable("JAVA_HOME")
 
             Console.ForegroundColor = ConsoleColor.Green
             Console.WriteLine()
@@ -156,10 +161,14 @@ Module ClassMain
                     Console.ReadKey()
                     Return
                 End If
+
+                Console.WriteLine("Java version: " & mMatch.Value)
             End If
 
-            Console.WriteLine("Setting JAVA_HOME variable...")
+            Console.WriteLine("Setting JAVA_HOME variables...")
+            Environment.SetEnvironmentVariable("JAVA_HOME", sJavaHome)
             Environment.SetEnvironmentVariable("JAVA1.8_HOME", sJavaHome)
+            Environment.SetEnvironmentVariable("JDK1.8_HOME", sJavaHome)
 
             Console.WriteLine("Setting PATH variables...")
             Dim sPaths As New List(Of String)(Environment.GetEnvironmentVariable("PATH").Split(IO.Path.PathSeparator))
@@ -213,10 +222,12 @@ Module ClassMain
                 IO.File.Delete(sTmpFile)
 
                 Console.WriteLine("Done.")
+            Else
+                Console.WriteLine("NAnt already done.")
             End If
 
             If (Not IO.Directory.Exists(sIkvm8Dir)) Then
-                Console.WriteLine("Fetching windward IKVM8...")
+                Console.WriteLine("Fetching IKVM8...")
 
                 Dim iExitCode As Integer
                 ClassProcess.ExecuteProgram(sGitPath, String.Format("clone {0}", URL_IKVN8), sRootBuildDir, iExitCode, Nothing, Nothing)
@@ -229,10 +240,12 @@ Module ClassMain
                 End If
 
                 Console.WriteLine("Done.")
+            Else
+                Console.WriteLine("IKVM8 already done.")
             End If
 
             If (Not IO.Directory.Exists(sOpenJdkDir)) Then
-                Console.WriteLine("Fetching OpenJDK (This may take a while)...")
+                Console.WriteLine("Fetching OpenJDK...")
 
                 Dim sTmpFile As String = IO.Path.Combine(sRootBuildDir, "tmp.zip")
 
@@ -245,7 +258,7 @@ Module ClassMain
                     Return
                 End If
 
-                Console.WriteLine("Extracting OpenJDK...")
+                Console.WriteLine("Extracting OpenJDK (This may take a while)...")
 
                 iExitCode = ClassProcess.PowershellUnzip(sTmpFile, sRootBuildDir)
                 If (iExitCode <> 0) Then
@@ -259,6 +272,8 @@ Module ClassMain
                 IO.File.Delete(sTmpFile)
 
                 Console.WriteLine("Done.")
+            Else
+                Console.WriteLine("OpenJDK already done.")
             End If
 
             If (Not IO.Directory.Exists(sSZLDir)) Then
@@ -296,6 +311,8 @@ Module ClassMain
                 Next
 
                 Console.WriteLine("Done.")
+            Else
+                Console.WriteLine("SharpZipLib already done.")
             End If
 
             If (Not IO.File.Exists(IO.Path.Combine(sIkvm8Dir, "bin\ICSharpCode.SharpZipLib.dll"))) Then
@@ -308,6 +325,8 @@ Module ClassMain
                 Next
 
                 Console.WriteLine("Done.")
+            Else
+                Console.WriteLine("Moving SharpZipLib already done.")
             End If
 
 
@@ -326,6 +345,8 @@ Module ClassMain
                 End If
 
                 Console.WriteLine("Done.")
+            Else
+                Console.WriteLine("Building IKVM Runtime already done.")
             End If
 
             Dim bRebuildLysis As Boolean = False
