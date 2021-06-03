@@ -21,6 +21,8 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "BasicPawnJavaLysisHelper", 
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "BasicPawnJavaLysisConsole", "BasicPawnJavaLysisConsole\BasicPawnJavaLysisConsole.vbproj", "{7EAC20FB-7990-4746-96FC-0C01826B4279}"
 EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "BasicPawnPluginLysisDecompiler", "BasicPawnPluginLysisDecompiler\BasicPawnPluginLysisDecompiler.vbproj", "{03214861-7C0B-4212-8D51-BDDFED25BDA4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Commit_Release|Any CPU = Commit_Release|Any CPU
@@ -196,6 +198,24 @@ Global
 		{7EAC20FB-7990-4746-96FC-0C01826B4279}.Release|x64.Build.0 = Release|Any CPU
 		{7EAC20FB-7990-4746-96FC-0C01826B4279}.Release|x86.ActiveCfg = Release|Any CPU
 		{7EAC20FB-7990-4746-96FC-0C01826B4279}.Release|x86.Build.0 = Release|Any CPU
+		{03214861-7C0B-4212-8D51-BDDFED25BDA4}.Commit_Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03214861-7C0B-4212-8D51-BDDFED25BDA4}.Commit_Release|Any CPU.Build.0 = Release|Any CPU
+		{03214861-7C0B-4212-8D51-BDDFED25BDA4}.Commit_Release|x64.ActiveCfg = Release|Any CPU
+		{03214861-7C0B-4212-8D51-BDDFED25BDA4}.Commit_Release|x64.Build.0 = Release|Any CPU
+		{03214861-7C0B-4212-8D51-BDDFED25BDA4}.Commit_Release|x86.ActiveCfg = Release|Any CPU
+		{03214861-7C0B-4212-8D51-BDDFED25BDA4}.Commit_Release|x86.Build.0 = Release|Any CPU
+		{03214861-7C0B-4212-8D51-BDDFED25BDA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03214861-7C0B-4212-8D51-BDDFED25BDA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03214861-7C0B-4212-8D51-BDDFED25BDA4}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{03214861-7C0B-4212-8D51-BDDFED25BDA4}.Debug|x64.Build.0 = Debug|Any CPU
+		{03214861-7C0B-4212-8D51-BDDFED25BDA4}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{03214861-7C0B-4212-8D51-BDDFED25BDA4}.Debug|x86.Build.0 = Debug|Any CPU
+		{03214861-7C0B-4212-8D51-BDDFED25BDA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03214861-7C0B-4212-8D51-BDDFED25BDA4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03214861-7C0B-4212-8D51-BDDFED25BDA4}.Release|x64.ActiveCfg = Release|Any CPU
+		{03214861-7C0B-4212-8D51-BDDFED25BDA4}.Release|x64.Build.0 = Release|Any CPU
+		{03214861-7C0B-4212-8D51-BDDFED25BDA4}.Release|x86.ActiveCfg = Release|Any CPU
+		{03214861-7C0B-4212-8D51-BDDFED25BDA4}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

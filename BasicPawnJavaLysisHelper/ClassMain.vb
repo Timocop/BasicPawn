@@ -1,9 +1,31 @@
-﻿
+﻿'BasicPawn
+'Copyright(C) 2021 Externet
+
+'This program Is free software: you can redistribute it And/Or modify
+'it under the terms Of the GNU General Public License As published by
+'the Free Software Foundation, either version 3 Of the License, Or
+'(at your option) any later version.
+
+'This program Is distributed In the hope that it will be useful,
+'but WITHOUT ANY WARRANTY; without even the implied warranty Of
+'MERCHANTABILITY Or FITNESS FOR A PARTICULAR PURPOSE.  See the
+'GNU General Public License For more details.
+
+'You should have received a copy Of the GNU General Public License
+'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
+
+
 Imports System.Text.RegularExpressions
 
 Module ClassMain
     Sub Main()
         Try
+            Const URL_NANT As String = "https://deac-ams.dl.sourceforge.net/project/nant/nant/0.92/nant-0.92-bin.zip"
+            Const URL_IKVN8 As String = "https://github.com/windward-studios/ikvm8.git"
+            Const URL_OPENJDK As String = "http://www.frijters.net/openjdk-8u45-b14-stripped.zip"
+            Const URL_SZL As String = "https://github.com/icsharpcode/SharpZipLib/releases/download/v1.3.2/SharpZipLib.1.3.2.nupkg"
+            Const URL_LYSIS As String = "https://github.com/DosMike/lysis-java.git"
+
             Dim sJavaPath As String = ClassProcess.FindEnvironment("PATH", "java.exe")
             Dim sJavaCPath As String = ClassProcess.FindEnvironment("PATH", "javac.exe")
             Dim sGitPath As String = ClassProcess.FindEnvironment("PATH", "git.exe")
@@ -143,7 +165,7 @@ Module ClassMain
             Dim sPaths As New List(Of String)(Environment.GetEnvironmentVariable("PATH").Split(IO.Path.PathSeparator))
             sPaths.Add(sJavaHome)
             sPaths.Add(sWindowsKitX64)
-            Environment.SetEnvironmentVariable("PATH", String.Join(";"c, sPaths.ToArray))
+            Environment.SetEnvironmentVariable("PATH", String.Join(IO.Path.PathSeparator, sPaths.ToArray))
 
             Console.WriteLine("Validating Windows Kit 10...")
             If (Not IO.File.Exists(IO.Path.Combine(sWindowsKitX64, "rc.exe"))) Then
@@ -168,7 +190,7 @@ Module ClassMain
 
                 Dim sTmpFile As String = IO.Path.Combine(sRootBuildDir, "tmp.zip")
 
-                Dim iExitCode As Integer = ClassProcess.CurlDownloadFile("https://deac-ams.dl.sourceforge.net/project/nant/nant/0.92/nant-0.92-bin.zip", sTmpFile)
+                Dim iExitCode As Integer = ClassProcess.CurlDownloadFile(URL_NANT, sTmpFile)
                 If (iExitCode <> 0) Then
                     Console.ForegroundColor = ConsoleColor.Red
                     Console.WriteLine("Unable to download NAnt!")
@@ -197,7 +219,7 @@ Module ClassMain
                 Console.WriteLine("Fetching windward IKVM8...")
 
                 Dim iExitCode As Integer
-                ClassProcess.ExecuteProgram(sGitPath, "clone https://github.com/windward-studios/ikvm8.git", sRootBuildDir, iExitCode, Nothing, Nothing)
+                ClassProcess.ExecuteProgram(sGitPath, String.Format("clone {0}", URL_IKVN8), sRootBuildDir, iExitCode, Nothing, Nothing)
                 If (iExitCode <> 0) Then
                     Console.ForegroundColor = ConsoleColor.Red
                     Console.WriteLine("Unable to clone repository!")
@@ -214,7 +236,7 @@ Module ClassMain
 
                 Dim sTmpFile As String = IO.Path.Combine(sRootBuildDir, "tmp.zip")
 
-                Dim iExitCode As Integer = ClassProcess.CurlDownloadFile("http://www.frijters.net/openjdk-8u45-b14-stripped.zip", sTmpFile)
+                Dim iExitCode As Integer = ClassProcess.CurlDownloadFile(URL_OPENJDK, sTmpFile)
                 If (iExitCode <> 0) Then
                     Console.ForegroundColor = ConsoleColor.Red
                     Console.WriteLine("Unable to download OpenJDK!")
@@ -244,7 +266,7 @@ Module ClassMain
 
                 Dim sTmpFile As String = IO.Path.Combine(sRootBuildDir, "tmp.zip")
 
-                Dim iExitCode As Integer = ClassProcess.CurlDownloadFile("https://github.com/icsharpcode/SharpZipLib/releases/download/v1.3.2/SharpZipLib.1.3.2.nupkg", sTmpFile)
+                Dim iExitCode As Integer = ClassProcess.CurlDownloadFile(URL_SZL, sTmpFile)
                 If (iExitCode <> 0) Then
                     Console.ForegroundColor = ConsoleColor.Red
                     Console.WriteLine("Unable to download SharpZipLib!")
@@ -328,7 +350,7 @@ Module ClassMain
                 End If
 
                 Dim iExitCode As Integer
-                ClassProcess.ExecuteProgram(sGitPath, "clone https://github.com/DosMike/lysis-java.git", sRootBuildDir, iExitCode, Nothing, Nothing)
+                ClassProcess.ExecuteProgram(sGitPath, String.Format("clone {0}", URL_LYSIS), sRootBuildDir, iExitCode, Nothing, Nothing)
                 If (iExitCode <> 0) Then
                     Console.ForegroundColor = ConsoleColor.Red
                     Console.WriteLine("Unable to clone repository!")
