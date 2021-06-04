@@ -118,12 +118,12 @@
   <PropertyGroup>
     <PostBuildEvent>:: Copy plugin into BasicPawn plugin folder
 copy /Y "$(TargetPath)" "$(SolutionDir)BasicPawn\bin\$(ConfigurationName)\plugins\$(TargetFileName)"
-echo         Plugin '$(ProjectName)' copied to BasicPawn main plugin folder!
+echo         Plugin '$(ProjectName)' copied to BasicPawn plugin folder!
 
 :: Copy SmartPawn into BasicPawn plugin folder
 mkdir "$(SolutionDir)BasicPawn\bin\$(ConfigurationName)\plugins\$(ProjectName)"
 xcopy /S /I /Y "$(SolutionDir)Third Party Binaries\SmartPawn" "$(SolutionDir)BasicPawn\bin\$(ConfigurationName)\plugins\$(ProjectName)"
-echo         Project 'SmartPawn' binaries copied to BasicPawn plugin folder!
+echo         Project 'SmartPawn' copied to BasicPawn plugin folder!
 
 
 if "$(ConfigurationName)"=="Release" (

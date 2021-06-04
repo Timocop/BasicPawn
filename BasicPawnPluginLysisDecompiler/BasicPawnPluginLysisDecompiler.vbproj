@@ -121,13 +121,13 @@
   <PropertyGroup>
     <PostBuildEvent>:: Copy plugin into BasicPawn plugin folder
 copy /Y "$(TargetPath)" "$(SolutionDir)BasicPawn\bin\$(ConfigurationName)\plugins\$(TargetFileName)"
-echo         Plugin '$(ProjectName)' copied to BasicPawn main plugin folder!
+echo         Plugin '$(ProjectName)' copied to BasicPawn plugin folder!
 
 :: Copy BasicPawnJavaLysisConsole into BasicPawn plugin folder
 mkdir "$(SolutionDir)BasicPawn\bin\$(ConfigurationName)\plugins\$(ProjectName)"
 copy /Y "$(SolutionDir)BasicPawnJavaLysisConsole\bin\$(ConfigurationName)\*.dll" "$(SolutionDir)BasicPawn\bin\$(ConfigurationName)\plugins\$(ProjectName)"
 copy /Y "$(SolutionDir)BasicPawnJavaLysisConsole\bin\$(ConfigurationName)\BasicPawnJavaLysisConsole.exe" "$(SolutionDir)BasicPawn\bin\$(ConfigurationName)\plugins\$(ProjectName)\LysisDecompiler.exe"
-echo         Project 'BasicPawnJavaLysisConsole' debug binaries copied to BasicPawn plugin folder!
+echo         Project 'BasicPawnJavaLysisConsole' copied to BasicPawn plugin folder!
 
 
 if "$(ConfigurationName)"=="Release" (
@@ -140,7 +140,7 @@ echo         Plugin '$(ProjectName)' copied to plugin releases folder!
 mkdir "$(SolutionDir)Plugin Releases\$(ProjectName)_ZIP\$(ProjectName)"
 copy /Y "$(SolutionDir)BasicPawnJavaLysisConsole\bin\Release\*.dll" "$(SolutionDir)Plugin Releases\$(ProjectName)_ZIP\$(ProjectName)"
 copy /Y "$(SolutionDir)BasicPawnJavaLysisConsole\bin\Release\BasicPawnJavaLysisConsole.exe" "$(SolutionDir)Plugin Releases\$(ProjectName)_ZIP\$(ProjectName)\LysisDecompiler.exe"
-echo         Project 'BasicPawnJavaLysisConsole' debug binaries copied to BasicPawn plugin folder!
+echo         Project 'BasicPawnJavaLysisConsole' copied to plugin releases folder!
 
 :: Create zipped file of temp zip-folder
 mkdir "$(SolutionDir)Plugin Releases\$(ProjectName)"
