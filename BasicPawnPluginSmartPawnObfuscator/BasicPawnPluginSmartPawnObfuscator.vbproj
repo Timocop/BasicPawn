@@ -1,0 +1,151 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{00E7A1EF-90A0-409C-BCF3-5B255C8BC772}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>BasicPawnPluginSmartPawnObfuscator</RootNamespace>
+    <AssemblyName>BasicPawnPluginSmartPawnObfuscator</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <MyType>Windows</MyType>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DocumentationFile>BasicPawnPluginSmartPawnObfuscator.xml</DocumentationFile>
+    <NoWarn>
+    </NoWarn>
+    <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>BasicPawnPluginSmartPawnObfuscator.xml</DocumentationFile>
+    <NoWarn>
+    </NoWarn>
+    <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionExplicit>On</OptionExplicit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionCompare>Binary</OptionCompare>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionStrict>On</OptionStrict>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionInfer>On</OptionInfer>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="BasicPawn">
+      <HintPath>..\Required Plugin References\BasicPawn.exe</HintPath>
+    </Reference>
+    <Reference Include="BasicPawnPluginInterface">
+      <HintPath>..\Required Plugin References\BasicPawnPluginInterface.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="PluginInfo.vb" />
+    <Compile Include="PluginSmartPawnObfuscator.vb" />
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\certmgr_449_16x16-32.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>:: Copy plugin into BasicPawn plugin folder
+copy /Y "$(TargetPath)" "$(SolutionDir)BasicPawn\bin\$(ConfigurationName)\plugins\$(TargetFileName)"
+echo         Plugin '$(ProjectName)' copied to BasicPawn main plugin folder!
+
+:: Copy SmartPawn into BasicPawn plugin folder
+mkdir "$(SolutionDir)BasicPawn\bin\$(ConfigurationName)\plugins\$(ProjectName)"
+xcopy /S /I /Y "$(SolutionDir)Third Party Binaries\SmartPawn" "$(SolutionDir)BasicPawn\bin\$(ConfigurationName)\plugins\$(ProjectName)"
+echo         Project 'SmartPawn' binaries copied to BasicPawn plugin folder!
+
+:: Copy plugin into temp zip-folder
+if "$(ConfigurationName)"=="Release" (
+mkdir "$(SolutionDir)Plugin Releases\$(ProjectName)_ZIP"
+copy /Y "$(TargetPath)" "$(SolutionDir)Plugin Releases\$(ProjectName)_ZIP\$(TargetFileName)"
+echo         Plugin '$(ProjectName)' copied to plugin releases folder!
+)
+
+:: Copy SmartPawn into temp zip-folder
+if "$(ConfigurationName)"=="Release" (
+mkdir "$(SolutionDir)Plugin Releases\$(ProjectName)_ZIP"
+xcopy /S /I /Y "$(SolutionDir)Third Party Binaries\SmartPawn" "$(SolutionDir)Plugin Releases\$(ProjectName)_ZIP\$(ProjectName)"
+echo         Project 'SmartPawn' copied to plugin releases folder!
+)
+
+:: Create zipped file of temp zip-folder
+if "$(ConfigurationName)"=="Release" (
+mkdir "$(SolutionDir)Plugin Releases\$(ProjectName)"
+del "$(SolutionDir)Plugin Releases\$(ProjectName)\$(ProjectName).zip"
+"$(SolutionDir)Third Party Binaries\7za.exe" a -tzip "$(SolutionDir)Plugin Releases\$(ProjectName)\$(ProjectName).zip" "$(SolutionDir)Plugin Releases\$(ProjectName)_ZIP\*.*" -r
+rd /S /Q "$(SolutionDir)Plugin Releases\$(ProjectName)_ZIP"
+echo         Project '$(ProjectName)' has been zipped!
+)</PostBuildEvent>
+  </PropertyGroup>
+</Project>

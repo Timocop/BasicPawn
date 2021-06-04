@@ -243,3 +243,6 @@ ModelManifest.xml
 
 # Dont publish private key for update
 /Update Depot/RSA Update Private Key.txt
+
+# Ignore some thrid party binaries since they can be build
+/Third Party Binaries/SmartPawn

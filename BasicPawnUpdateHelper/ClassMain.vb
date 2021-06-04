@@ -25,6 +25,9 @@ Module ClassMain
         Try
             Console.ForegroundColor = ConsoleColor.Cyan
             Console.WriteLine("BasicPawn Update Release Helper")
+            Console.WriteLine()
+            Console.WriteLine("This helper will help you to generate new update packages for BasicPawn.")
+            Console.WriteLine("Generated releases will be moved into '..\Update Depot'.")
             Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             Console.ForegroundColor = ConsoleColor.Yellow
             Console.WriteLine("Hit any key to generate a new update release")
@@ -57,63 +60,63 @@ Module ClassMain
             'Check files
             If (Not IO.File.Exists(sSevenZipPath)) Then
                 Console.ForegroundColor = ConsoleColor.Red
-                Console.WriteLine("ERROR: '7za.exe' not found")
+                Console.WriteLine("'7za.exe' not found!")
                 Console.ReadKey()
                 Return
             End If
 
             If (Not IO.File.Exists(sSevenZipSfxPath)) Then
                 Console.ForegroundColor = ConsoleColor.Red
-                Console.WriteLine("ERROR: '7z_sfx' not found")
+                Console.WriteLine("'7z_sfx' not found!")
                 Console.ReadKey()
                 Return
             End If
 
             If (Not IO.File.Exists(sBasicPawnPath)) Then
                 Console.ForegroundColor = ConsoleColor.Red
-                Console.WriteLine("ERROR: 'BasicPawn.exe' not found")
+                Console.WriteLine("'BasicPawn.exe' not found!")
                 Console.ReadKey()
                 Return
             End If
 
             If (Not IO.File.Exists(sLicensePath)) Then
                 Console.ForegroundColor = ConsoleColor.Red
-                Console.WriteLine("ERROR: 'GPLv3.txt' not found")
+                Console.WriteLine("'GPLv3.txt' not found!")
                 Console.ReadKey()
                 Return
             End If
 
             If (Not IO.File.Exists(sThirdPartyLicensePath)) Then
                 Console.ForegroundColor = ConsoleColor.Red
-                Console.WriteLine("ERROR: 'Third Party Legal Notices.txt' not found")
+                Console.WriteLine("'Third Party Legal Notices.txt' not found!")
                 Console.ReadKey()
                 Return
             End If
 
             If (Not IO.File.Exists(sVersionPath)) Then
                 Console.ForegroundColor = ConsoleColor.Red
-                Console.WriteLine("ERROR: 'CurrentVersion.txt' not found")
+                Console.WriteLine("'CurrentVersion.txt' not found!")
                 Console.ReadKey()
                 Return
             End If
 
             If (Not IO.File.Exists(sHashPath)) Then
                 Console.ForegroundColor = ConsoleColor.Red
-                Console.WriteLine("ERROR: 'DataHash.txt' not found")
+                Console.WriteLine("'DataHash.txt' not found!")
                 Console.ReadKey()
                 Return
             End If
 
             If (Not IO.File.Exists(sPrivateKeyPath)) Then
                 Console.ForegroundColor = ConsoleColor.Red
-                Console.WriteLine("ERROR: 'RSA Update Private Key.txt' not found")
+                Console.WriteLine("'RSA Update Private Key.txt' not found!")
                 Console.ReadKey()
                 Return
             End If
 
             If (Not IO.File.Exists(sPublicKeyPath)) Then
                 Console.ForegroundColor = ConsoleColor.Red
-                Console.WriteLine("ERROR: 'RSA Update Public Key.txt' not found")
+                Console.WriteLine("'RSA Update Public Key.txt' not found!")
                 Console.ReadKey()
                 Return
             End If
@@ -121,21 +124,21 @@ Module ClassMain
             'Check directorys
             If (Not IO.Directory.Exists(sThirdPartyBinPath)) Then
                 Console.ForegroundColor = ConsoleColor.Red
-                Console.WriteLine("ERROR: 'Third Party Binaries' not found")
+                Console.WriteLine("'Third Party Binaries' not found!")
                 Console.ReadKey()
                 Return
             End If
 
             If (Not IO.Directory.Exists(sUpdateDepotPath)) Then
                 Console.ForegroundColor = ConsoleColor.Red
-                Console.WriteLine("ERROR: 'Update Depot' not found")
+                Console.WriteLine("'Update Depot' not found!")
                 Console.ReadKey()
                 Return
             End If
 
             If (Not IO.Directory.Exists(sReleasePath)) Then
                 Console.ForegroundColor = ConsoleColor.Red
-                Console.WriteLine("ERROR: 'BasicPawn\bin\Release' not found")
+                Console.WriteLine("'BasicPawn\bin\Release' not found!")
                 Console.ReadKey()
                 Return
             End If
@@ -146,9 +149,7 @@ Module ClassMain
 
             Console.WriteLine("New Version: " & sNewVersion)
             Console.WriteLine("Old Version: " & sOldVersion)
-            Console.ForegroundColor = ConsoleColor.Yellow
-            Console.WriteLine("Checking versions")
-            Console.ForegroundColor = ConsoleColor.White
+            Console.WriteLine("Checking versions...")
 
 #If CHECK_VERSION Then
             If (New Version(sOldVersion) >= New Version(sNewVersion)) Then
@@ -172,16 +173,14 @@ Module ClassMain
                 IO.Directory.Delete(sTmpDirectoryZipSub, True)
             End If
 
-            Console.WriteLine(String.Format("Create sfx temp folder '{0}'", sTmpDirectorySfx))
+            Console.WriteLine(String.Format("Create sfx temp folder '{0}'...", sTmpDirectorySfx))
             IO.Directory.CreateDirectory(sTmpDirectorySfx)
-            Console.WriteLine(String.Format("Create zip temp folder '{0}'", sTmpDirectoryZip))
+            Console.WriteLine(String.Format("Create zip temp folder '{0}'...", sTmpDirectoryZip))
             IO.Directory.CreateDirectory(sTmpDirectoryZip)
-            Console.WriteLine(String.Format("Create zip-sub temp folder '{0}'", sTmpDirectoryZipSub))
+            Console.WriteLine(String.Format("Create zip-sub temp folder '{0}'...", sTmpDirectoryZipSub))
             IO.Directory.CreateDirectory(sTmpDirectoryZipSub)
 
-            Console.ForegroundColor = ConsoleColor.Yellow
-            Console.WriteLine(String.Format("Copying files"))
-            Console.ForegroundColor = ConsoleColor.White
+            Console.WriteLine("Copying files...")
             If (True) Then
                 For Each sFile In IO.Directory.GetFiles(sReleasePath)
                     Select Case (IO.Path.GetExtension(sFile).ToLower)
@@ -223,9 +222,7 @@ Module ClassMain
             End If
 
             'Create SFX file
-            Console.ForegroundColor = ConsoleColor.Yellow
-            Console.WriteLine("Creating 7-Zip SFX")
-            Console.ForegroundColor = ConsoleColor.White
+            Console.WriteLine("Creating 7-Zip SFX...")
 
             IO.File.Delete(sUpdateSfxPath)
 
@@ -241,23 +238,21 @@ Module ClassMain
 
                 If (pProcess.ExitCode <> 0) Then
                     Console.ForegroundColor = ConsoleColor.Red
-                    Console.WriteLine("ERROR: Creating 7-Zip SFX failed")
+                    Console.WriteLine("Creating 7-Zip SFX failed")
                     Console.ReadKey()
                     Return
                 End If
 
                 If (Not IO.File.Exists(sUpdateSfxPath)) Then
                     Console.ForegroundColor = ConsoleColor.Red
-                    Console.WriteLine("ERROR: Update SFX not found")
+                    Console.WriteLine("Update SFX not found")
                     Console.ReadKey()
                     Return
                 End If
             End Using
 
             'Create ZIP file
-            Console.ForegroundColor = ConsoleColor.Yellow
-            Console.WriteLine("Creating 7-Zip ZIP")
-            Console.ForegroundColor = ConsoleColor.White
+            Console.WriteLine("Creating 7-Zip ZIP...")
 
             IO.File.Delete(sUpdateZipPath)
 
@@ -273,48 +268,43 @@ Module ClassMain
 
                 If (pProcess.ExitCode <> 0) Then
                     Console.ForegroundColor = ConsoleColor.Red
-                    Console.WriteLine("ERROR: Creating 7-Zip ZIP failed")
+                    Console.WriteLine("Creating 7-Zip ZIP failed")
                     Console.ReadKey()
                     Return
                 End If
 
                 If (Not IO.File.Exists(sUpdateZipPath)) Then
                     Console.ForegroundColor = ConsoleColor.Red
-                    Console.WriteLine("ERROR: ZIP not found")
+                    Console.WriteLine("ZIP not found")
                     Console.ReadKey()
                     Return
                 End If
             End Using
 
-            Console.WriteLine("Removing temp folder")
+            Console.WriteLine("Removing temp folders...")
             IO.Directory.Delete(sTmpDirectorySfx, True)
             IO.Directory.Delete(sTmpDirectoryZip, True)
 
-            'Setup SHA256 and RSA
-            Console.ForegroundColor = ConsoleColor.Yellow
-            Console.WriteLine("Creating SHA256 and RSA")
-            Console.ForegroundColor = ConsoleColor.White
+            'Setup SHA256 and RSA 
+            Console.WriteLine("Creating SHA256 and RSA...")
 
             Dim sPrivateKey As String = IO.File.ReadAllText(sPrivateKeyPath)
             Dim sPublicKey As String = IO.File.ReadAllText(sPublicKeyPath)
 
             Dim sSfxHash As String = ClassHash.HashSHA256File(sUpdateSfxPath).ToLower
-            Console.WriteLine("Update SFX Hash: " & sSfxHash)
+            Console.WriteLine(String.Format("Update SFX Hash: {0}" , sSfxHash))
 
             Dim sEnCryptSfxHash As String = ClassRSA.Encrypt(sSfxHash, sPrivateKey)
             Dim sDeCryptSfxHash As String = ClassRSA.Decrypt(sEnCryptSfxHash, sPublicKey)
             If (sSfxHash.ToLower <> sDeCryptSfxHash.ToLower) Then
                 Console.ForegroundColor = ConsoleColor.Red
-                Console.WriteLine("ERROR: Hashes do not match")
+                Console.WriteLine("Hashes do not match!")
                 Console.ReadKey()
                 Return
             End If
 
-            'Write version and encrypted hash to disk
-            Console.ForegroundColor = ConsoleColor.Yellow
-            Console.WriteLine("Writing to files")
-            Console.ForegroundColor = ConsoleColor.White
-
+            'Write version and encrypted hash to disk 
+            Console.WriteLine("Writing hash and version files...")
             IO.File.WriteAllText(sHashPath, sEnCryptSfxHash)
             IO.File.WriteAllText(sVersionPath, sNewVersion)
 

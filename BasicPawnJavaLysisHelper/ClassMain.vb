@@ -37,6 +37,9 @@ Module ClassMain
 
             Console.ForegroundColor = ConsoleColor.Cyan
             Console.WriteLine("BasicPawn Lysis-Java (by Peace-Maker) Converter Helper")
+            Console.WriteLine()
+            Console.WriteLine("This helper will help you convert Lysis-Java into a .NET binary.")
+            Console.WriteLine("It will also move all required binaries into the '..\Third Party Binaries\Lysis-Java IKVM' folder.")
             Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             'Check kWindows Kit 10
             If (True) Then
@@ -54,9 +57,10 @@ Module ClassMain
             'Check Requirements
             If (True) Then
                 Dim bAbort As Boolean = False
+
                 If (sJavaPath Is Nothing OrElse Not IO.File.Exists(sJavaPath)) Then
                     Console.ForegroundColor = ConsoleColor.Red
-                    Console.WriteLine("Java 8 missing! Please install Java 8 (AdpotOpenJDK recommended)!")
+                    Console.WriteLine("Java 8 not found! Please install Java 8 (AdpotOpenJDK recommended)!")
                     Console.ForegroundColor = ConsoleColor.White
 
                     bAbort = True
@@ -66,7 +70,7 @@ Module ClassMain
 
                 If (sJavaCPath Is Nothing OrElse Not IO.File.Exists(sJavaCPath)) Then
                     Console.ForegroundColor = ConsoleColor.Red
-                    Console.WriteLine("Java Development Kit missing! Please install Java Development Kit (AdpotOpenJDK recommended)!")
+                    Console.WriteLine("Java Development Kit not found! Please install Java Development Kit (AdpotOpenJDK recommended)!")
                     Console.ForegroundColor = ConsoleColor.White
 
                     bAbort = True
@@ -76,7 +80,7 @@ Module ClassMain
 
                 If (sGitPath Is Nothing OrElse Not IO.File.Exists(sGitPath)) Then
                     Console.ForegroundColor = ConsoleColor.Red
-                    Console.WriteLine("Git missing! Install Git (from git-scm)")
+                    Console.WriteLine("Git not found! Install Git (from git-scm)")
                     Console.ForegroundColor = ConsoleColor.White
 
                     bAbort = True
@@ -123,7 +127,7 @@ Module ClassMain
 
             Console.ForegroundColor = ConsoleColor.Yellow
             Console.WriteLine("Working directory is: '{0}'", sRootBuildDir)
-            Console.WriteLine("Hit any key to generate java-lysis for .NET")
+            Console.WriteLine("Hit any key to generate Java-Lysis for .NET")
             Console.ForegroundColor = ConsoleColor.White
             Console.ReadKey()
 
@@ -190,6 +194,19 @@ Module ClassMain
             Dim sOpenJdkDir As String = IO.Path.Combine(sRootBuildDir, "openjdk-8u45-b14")
             Dim sSZLDir As String = IO.Path.Combine(sRootBuildDir, "szl")
             Dim sLysisDir As String = IO.Path.Combine(sRootBuildDir, "lysis-java")
+
+
+            If (IO.Directory.Exists(sRootBuildDir)) Then
+                Console.ForegroundColor = ConsoleColor.Yellow
+                Console.WriteLine("Previous workspace already exist. Do you want to start from scratch? [y/n]")
+                Console.ForegroundColor = ConsoleColor.White
+
+                If (Console.ReadKey.KeyChar = "y"c) Then
+                    'Deleting file will complain about access denied? Huh?
+                    IO.Directory.Move(sRootBuildDir, IO.Path.Combine(IO.Path.GetTempPath, IO.Path.GetRandomFileName))
+                End If
+            End If
+
 
             Console.WriteLine("Creating build directory...")
             IO.Directory.CreateDirectory(sRootBuildDir)
@@ -422,6 +439,10 @@ Module ClassMain
 
                 Dim sLysisJavaDir As String = IO.Path.Combine(IO.Path.GetFullPath(IO.Path.Combine(Environment.CurrentDirectory, "..\..\..")), "Third Party Binaries\Lysis-Java IKVM")
 
+                If (IO.Directory.Exists(sLysisJavaDir)) Then
+                    'Deleting file will complain about access denied? Huh?
+                    IO.Directory.Move(sLysisJavaDir, IO.Path.Combine(IO.Path.GetTempPath, IO.Path.GetRandomFileName))
+                End If
                 IO.Directory.CreateDirectory(sLysisJavaDir)
 
                 For Each sFile As String In IO.Directory.GetFiles(IO.Path.Combine(sIkvm8Dir, "bin"), "*.dll")
