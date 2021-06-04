@@ -142,6 +142,9 @@ Public Class PluginSmartPawnObfuscator
         Private g_mObfuscatorPresetMenuItem As ToolStripComboBox
         Private g_mObfuscatorPoweredInfoMenuItem As ToolStripMenuItem
 
+        Private g_mObfuscatorLaunchMenuSplit As ToolStripSeparator
+        Private g_mObfuscatorLaunchAppMenuItem As ToolStripMenuItem
+
         Private g_mObfuscatorThread As Threading.Thread = Nothing
         Private g_mFormProgress As FormProgress = Nothing
         Private g_mObfuscatorProcess As Process = Nothing
@@ -178,6 +181,11 @@ Public Class PluginSmartPawnObfuscator
             g_mPluginSmartPawnObfuscator.g_mFormMain.ToolStripMenuItem_Build.DropDownItems.Add(g_mObfuscatorPresetMenuItem)
             g_mPluginSmartPawnObfuscator.g_mFormMain.ToolStripMenuItem_Build.DropDownItems.Add(g_mObfuscatorPoweredInfoMenuItem)
 
+            g_mObfuscatorLaunchMenuSplit = New ToolStripSeparator
+            g_mObfuscatorLaunchAppMenuItem = New ToolStripMenuItem("SmartPawn Obfuscator", My.Resources.certmgr_449_16x16_32)
+            g_mPluginSmartPawnObfuscator.g_mFormMain.ToolStripMenuItem_Tools.DropDownItems.Add(g_mObfuscatorLaunchMenuSplit)
+            g_mPluginSmartPawnObfuscator.g_mFormMain.ToolStripMenuItem_Tools.DropDownItems.Add(g_mObfuscatorLaunchAppMenuItem)
+
             g_mObfuscatorPresetInfoMenuItem.Enabled = False
             g_mObfuscatorPoweredInfoMenuItem.Enabled = False
             g_mObfuscatorPresetMenuItem.DropDownStyle = ComboBoxStyle.DropDownList
@@ -201,9 +209,11 @@ Public Class PluginSmartPawnObfuscator
             RemoveHandler g_mObfuscatorMenuItem.Click, AddressOf OnMenuItemClick
             RemoveHandler g_mObfuscatorAllMenuItem.Click, AddressOf OnAllMenuItemClick
             RemoveHandler g_mObfuscatorPresetMenuItem.SelectedIndexChanged, AddressOf OnPresetMenuItemClick
+            RemoveHandler g_mObfuscatorLaunchAppMenuItem.Click, AddressOf OnLaunchAppMenuItemClick
             AddHandler g_mObfuscatorMenuItem.Click, AddressOf OnMenuItemClick
             AddHandler g_mObfuscatorAllMenuItem.Click, AddressOf OnAllMenuItemClick
             AddHandler g_mObfuscatorPresetMenuItem.SelectedIndexChanged, AddressOf OnPresetMenuItemClick
+            AddHandler g_mObfuscatorLaunchAppMenuItem.Click, AddressOf OnLaunchAppMenuItemClick
 
             g_mObfuscatorPresetMenuItem.SelectedIndex = g_iProtectionPreset
 
@@ -214,6 +224,8 @@ Public Class PluginSmartPawnObfuscator
             ClassControlStyle.UpdateControls(g_mObfuscatorPresetInfoMenuItem)
             ClassControlStyle.UpdateControls(g_mObfuscatorPresetMenuItem)
             ClassControlStyle.UpdateControls(g_mObfuscatorPoweredInfoMenuItem)
+            ClassControlStyle.UpdateControls(g_mObfuscatorLaunchMenuSplit)
+            ClassControlStyle.UpdateControls(g_mObfuscatorLaunchAppMenuItem)
         End Sub
 
         Private Sub OnMenuItemClick(sender As Object, e As EventArgs)
@@ -257,6 +269,19 @@ Public Class PluginSmartPawnObfuscator
 
         Private Sub OnPresetMenuItemClick(sender As Object, e As EventArgs)
             g_iProtectionPreset = CType(g_mObfuscatorPresetMenuItem.SelectedIndex, PRESET_ENUM)
+        End Sub
+
+        Private Sub OnLaunchAppMenuItemClick(sender As Object, e As EventArgs)
+            Try
+                Dim sSmartPawnPath As String = IO.Path.Combine(Application.StartupPath, "plugins\BasicPawnPluginSmartPawnObfuscator\SmartPawn.exe")
+                If (Not IO.File.Exists(sSmartPawnPath)) Then
+                    Throw New ArgumentException("SmartPawn does not exist")
+                End If
+
+                Process.Start(sSmartPawnPath)
+            Catch ex As Exception
+                ClassExceptionLog.WriteToLogMessageBox(ex)
+            End Try
         End Sub
 
         Private Sub StartObfuscation(sFiles As String(), iPreset As PRESET_ENUM)
@@ -502,6 +527,10 @@ Public Class PluginSmartPawnObfuscator
                         RemoveHandler g_mObfuscatorPresetMenuItem.SelectedIndexChanged, AddressOf OnPresetMenuItemClick
                     End If
 
+                    If (g_mObfuscatorLaunchAppMenuItem IsNot Nothing) Then
+                        RemoveHandler g_mObfuscatorLaunchAppMenuItem.Click, AddressOf OnLaunchAppMenuItemClick
+                    End If
+
                     If (g_mObfuscatorMenuSplit IsNot Nothing AndAlso Not g_mObfuscatorMenuSplit.IsDisposed) Then
                         g_mObfuscatorMenuSplit.Dispose()
                         g_mObfuscatorMenuSplit = Nothing
@@ -530,6 +559,16 @@ Public Class PluginSmartPawnObfuscator
                     If (g_mObfuscatorPoweredInfoMenuItem IsNot Nothing AndAlso Not g_mObfuscatorPoweredInfoMenuItem.IsDisposed) Then
                         g_mObfuscatorPoweredInfoMenuItem.Dispose()
                         g_mObfuscatorPoweredInfoMenuItem = Nothing
+                    End If
+
+                    If (g_mObfuscatorLaunchMenuSplit IsNot Nothing AndAlso Not g_mObfuscatorLaunchMenuSplit.IsDisposed) Then
+                        g_mObfuscatorLaunchMenuSplit.Dispose()
+                        g_mObfuscatorLaunchMenuSplit = Nothing
+                    End If
+
+                    If (g_mObfuscatorLaunchAppMenuItem IsNot Nothing AndAlso Not g_mObfuscatorLaunchAppMenuItem.IsDisposed) Then
+                        g_mObfuscatorLaunchAppMenuItem.Dispose()
+                        g_mObfuscatorLaunchAppMenuItem = Nothing
                     End If
                 End If
 
