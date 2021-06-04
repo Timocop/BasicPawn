@@ -7,7 +7,7 @@ This is the Java version of Lysis developed by  [Peace-Maker](https://github.com
 #### Special thanks to [DosMike](https://github.com/DosMike) for the brilliant idea!
 
 # Requirements
- + .NET Framework 4.5 or higher
+ + [.NET Framework 4.5 or higher](https://dotnet.microsoft.com/download/dotnet-framework)
 
 # Images
 ![2021-06-03_15-38-16](https://user-images.githubusercontent.com/22834512/120654403-f4b10800-c481-11eb-8b34-371de18addea.png)
