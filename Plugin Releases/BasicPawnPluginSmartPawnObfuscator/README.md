@@ -5,9 +5,10 @@ A proof-of-concept Obfuscator for traditional SourcePawn language (aka SourceMod
 While SmartPawn has been developed for the traditional SourcePawn language (aka SourceMod 1.6), obfuscated binaries still run on newer versions of SourceMod.
 
 [Go here for the original SmartPawn Obfuscator repo.](https://github.com/Timocop/SmartPawn-Obfuscator)
+
 [Download SourceMod 1.6 syntax files here.](https://github.com/Timocop/SmartPawn-Obfuscator/raw/master/sourcemod/sourcemod-1.6.4-git4625-windows.zip)
  
-Features:
+**Features:**
  + Renaming
  + Constant Disintegration
  + String Encoding
@@ -34,4 +35,4 @@ Publishing obfuscated binaries or binaries without provided source code violates
 Use at your own risk!
 
 # Images
-![](https://user-images.githubusercontent.com/22834512/118812731-b1b23a80-b8ae-11eb-9eba-53d0c25a9be2
+![](https://user-images.githubusercontent.com/22834512/118812731-b1b23a80-b8ae-11eb-9eba-53d0c25a9be2.png)
