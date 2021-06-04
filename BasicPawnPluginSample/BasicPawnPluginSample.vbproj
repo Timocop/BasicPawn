@@ -167,15 +167,15 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if "$(ConfigurationName)"=="Debug" (
-copy /Y "$(TargetPath)" "$(SolutionDir)BasicPawn\bin\Debug\plugins\$(TargetFileName)"
+    <PostBuildEvent>:: Copy plugin into BasicPawn plugin folder
+copy /Y "$(TargetPath)" "$(SolutionDir)BasicPawn\bin\$(ConfigurationName)\plugins\$(TargetFileName)"
 echo         Plugin '$(ProjectName)' copied to BasicPawn main plugin folder!
-)
 
 if "$(ConfigurationName)"=="Release" (
+:: Copy plugin into BasicPawn plugin folder
 mkdir "$(SolutionDir)Plugin Releases\$(ProjectName)"
 copy /Y "$(TargetPath)" "$(SolutionDir)Plugin Releases\$(ProjectName)\$(TargetFileName)"
-echo         Plugin '$(ProjectName)' copied to Plugin Releases folder!
+echo         Plugin '$(ProjectName)' copied to plugin releases folder!
 )
 </PostBuildEvent>
   </PropertyGroup>

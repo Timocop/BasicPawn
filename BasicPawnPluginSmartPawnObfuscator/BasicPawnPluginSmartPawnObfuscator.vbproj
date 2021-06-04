@@ -125,22 +125,19 @@ mkdir "$(SolutionDir)BasicPawn\bin\$(ConfigurationName)\plugins\$(ProjectName)"
 xcopy /S /I /Y "$(SolutionDir)Third Party Binaries\SmartPawn" "$(SolutionDir)BasicPawn\bin\$(ConfigurationName)\plugins\$(ProjectName)"
 echo         Project 'SmartPawn' binaries copied to BasicPawn plugin folder!
 
-:: Copy plugin into temp zip-folder
+
 if "$(ConfigurationName)"=="Release" (
+:: Copy plugin into temp zip-folder
 mkdir "$(SolutionDir)Plugin Releases\$(ProjectName)_ZIP"
 copy /Y "$(TargetPath)" "$(SolutionDir)Plugin Releases\$(ProjectName)_ZIP\$(TargetFileName)"
 echo         Plugin '$(ProjectName)' copied to plugin releases folder!
-)
 
 :: Copy SmartPawn into temp zip-folder
-if "$(ConfigurationName)"=="Release" (
 mkdir "$(SolutionDir)Plugin Releases\$(ProjectName)_ZIP"
 xcopy /S /I /Y "$(SolutionDir)Third Party Binaries\SmartPawn" "$(SolutionDir)Plugin Releases\$(ProjectName)_ZIP\$(ProjectName)"
 echo         Project 'SmartPawn' copied to plugin releases folder!
-)
 
 :: Create zipped file of temp zip-folder
-if "$(ConfigurationName)"=="Release" (
 mkdir "$(SolutionDir)Plugin Releases\$(ProjectName)"
 del "$(SolutionDir)Plugin Releases\$(ProjectName)\$(ProjectName).zip"
 "$(SolutionDir)Third Party Binaries\7za.exe" a -tzip "$(SolutionDir)Plugin Releases\$(ProjectName)\$(ProjectName).zip" "$(SolutionDir)Plugin Releases\$(ProjectName)_ZIP\*.*" -r
