@@ -1,5 +1,5 @@
 # SmartPawn Obfuscator
-Version: 1.0.0.0
+Version: 1.1.0.0
 
 A proof-of-concept Obfuscator for traditional SourcePawn language (aka SourceMod 1.6).
 While SmartPawn has been developed for the traditional SourcePawn language (aka SourceMod 1.6), obfuscated binaries still run on newer versions of SourceMod.
