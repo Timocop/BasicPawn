@@ -246,3 +246,4 @@ ModelManifest.xml
 
 # Ignore some thrid party binaries since they can be build
 /Third Party Binaries/SmartPawn
+/Third Party Binaries/Lysis-Java IKVM
