@@ -211,6 +211,9 @@ Public Class PluginSmartPawnObfuscator
             ClassControlStyle.UpdateControls(g_mObfuscatorMenuSplit)
             ClassControlStyle.UpdateControls(g_mObfuscatorMenuItem)
             ClassControlStyle.UpdateControls(g_mObfuscatorAllMenuItem)
+            ClassControlStyle.UpdateControls(g_mObfuscatorPresetInfoMenuItem)
+            ClassControlStyle.UpdateControls(g_mObfuscatorPresetMenuItem)
+            ClassControlStyle.UpdateControls(g_mObfuscatorPoweredInfoMenuItem)
         End Sub
 
         Private Sub OnMenuItemClick(sender As Object, e As EventArgs)

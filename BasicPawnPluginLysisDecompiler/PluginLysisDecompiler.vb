@@ -136,6 +136,7 @@ Public Class PluginLysisDecompiler
 
         Private g_mDecompilerMenuSplit As ToolStripSeparator
         Private g_mDecompilerMenuItem As ToolStripMenuItem
+        Private g_mDecompilerPoweredMenuItem As ToolStripMenuItem
 
         Private g_mDecompileThread As Threading.Thread = Nothing
         Private g_mFormProgress As FormProgress = Nothing
@@ -149,9 +150,14 @@ Public Class PluginLysisDecompiler
 
         Private Sub BuildLysisDecompilerMenu()
             g_mDecompilerMenuSplit = New ToolStripSeparator
-            g_mDecompilerMenuItem = New ToolStripMenuItem("Decompiler (Powered by Lysis)", My.Resources.imageres_5330_16x16_32)
+            g_mDecompilerMenuItem = New ToolStripMenuItem("SMX/AMXX Decompiler", My.Resources.imageres_5330_16x16_32)
+            g_mDecompilerPoweredMenuItem = New ToolStripMenuItem("Powered by Lysis")
+
+            g_mDecompilerPoweredMenuItem.Enabled = False
+
             g_mPluginLysisDecompiler.g_mFormMain.ToolStripMenuItem_Tools.DropDownItems.Add(g_mDecompilerMenuSplit)
             g_mPluginLysisDecompiler.g_mFormMain.ToolStripMenuItem_Tools.DropDownItems.Add(g_mDecompilerMenuItem)
+            g_mPluginLysisDecompiler.g_mFormMain.ToolStripMenuItem_Tools.DropDownItems.Add(g_mDecompilerPoweredMenuItem)
 
             RemoveHandler g_mDecompilerMenuItem.Click, AddressOf OnMenuItemClick
             AddHandler g_mDecompilerMenuItem.Click, AddressOf OnMenuItemClick
@@ -159,6 +165,7 @@ Public Class PluginLysisDecompiler
             'Update all FormMain controls, to change style for the newly created controls 
             ClassControlStyle.UpdateControls(g_mDecompilerMenuSplit)
             ClassControlStyle.UpdateControls(g_mDecompilerMenuItem)
+            ClassControlStyle.UpdateControls(g_mDecompilerPoweredMenuItem)
         End Sub
 
         Private Sub OnMenuItemClick(sender As Object, e As EventArgs)
@@ -365,6 +372,10 @@ Public Class PluginLysisDecompiler
                     If (g_mDecompilerMenuItem IsNot Nothing AndAlso Not g_mDecompilerMenuItem.IsDisposed) Then
                         g_mDecompilerMenuItem.Dispose()
                         g_mDecompilerMenuItem = Nothing
+                    End If
+                    If (g_mDecompilerPoweredMenuItem IsNot Nothing AndAlso Not g_mDecompilerPoweredMenuItem.IsDisposed) Then
+                        g_mDecompilerPoweredMenuItem.Dispose()
+                        g_mDecompilerPoweredMenuItem = Nothing
                     End If
                 End If
 
