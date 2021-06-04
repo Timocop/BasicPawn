@@ -30,6 +30,8 @@ Features:
  - [**.NET Framework 3.5**](https://www.microsoft.com/net/download/dotnet-framework/net35-sp1)
  - [**.NET Framework 3.5 (Linux Wine)**](https://appdb.winehq.org/objectManager.php?sClass=version&iId=10166)
  - [**.NET Framework (Linux Wine)**](https://appdb.winehq.org/objectManager.php?sClass=application&iId=2586)
+ 
+ *Some of the BasicPawn plugins require a newer .NET Framework version.*
 
 ## Plugins
 **Download: Click on 'Download'**
@@ -37,12 +39,14 @@ Features:
  - [Automatic Error Reporting](Plugin%20Releases/BasicPawnPluginAutoErrorReport)
  - [Translation Editor](Plugin%20Releases/BasicPawnPluginTranslationEditor)
  - [Lysis Decompiler](Plugin%20Releases/BasicPawnPluginLysisDecompiler)
+ - [SmartPawn Obfuscator](Plugin%20Releases/BasicPawnPluginSmartPawnObfuscator)
  - [more...](Plugin%20Releases)
 
 ## Syntax Styles
 **Download: Right click on 'Raw' -> Save as...**
- - [Monokai](Custom%20Syntax%20Styles/Monokai.xml)
- - [Visual Studio 2017 Dark](Custom%20Syntax%20Styles/VisualStudio2017_Dark.xml)
+ - [Monokai](Custom%20Syntax%20Styles/Monokai)
+ - [Visual Studio 2017 Dark](Custom%20Syntax%20Styles/Visual%20Studio%202017%20Dark)
+ - [PlasticCodeWrap Dark](Custom%20Syntax%20Styles/PlasticCodeWrap%20Dark)
  - [more...](Custom%20Syntax%20Styles)
 
 ## Support us
