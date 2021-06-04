@@ -36,6 +36,7 @@ Features:
  - [FTP Plugin](Plugin%20Releases/BasicPawnPluginFTP)
  - [Automatic Error Reporting](Plugin%20Releases/BasicPawnPluginAutoErrorReport)
  - [Translation Editor](Plugin%20Releases/BasicPawnPluginTranslationEditor)
+ - [Lysis Decompiler](Plugin%20Releases/BasicPawnPluginLysisDecompiler)
  - [more...](Plugin%20Releases)
 
 ## Syntax Styles
