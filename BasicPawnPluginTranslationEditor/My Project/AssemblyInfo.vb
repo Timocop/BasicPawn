@@ -9,7 +9,7 @@ Imports System.Runtime.InteropServices
 ' Review the values of the assembly attributes
 
 <Assembly: AssemblyTitle("BasicPawnPluginTranslationEditor")>
-<Assembly: AssemblyDescription("Translation editor for SourceMod")>
+<Assembly: AssemblyDescription("An editor for SourceMod's translation files")>
 <Assembly: AssemblyCompany("Externet")>
 <Assembly: AssemblyProduct("BasicPawnPluginTranslationEditor")>
 <Assembly: AssemblyCopyright("Copyright © Externet 2021")>
@@ -31,5 +31,5 @@ Imports System.Runtime.InteropServices
 ' by using the '*' as shown below:
 ' <Assembly: AssemblyVersion("1.0.*")>
 
-<Assembly: AssemblyVersion("2.1.0.0")>
-<Assembly: AssemblyFileVersion("2.1.0.0")>
+<Assembly: AssemblyVersion("3.0")>
+<Assembly: AssemblyFileVersion("3.0")>

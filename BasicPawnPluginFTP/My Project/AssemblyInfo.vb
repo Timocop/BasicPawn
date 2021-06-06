@@ -9,7 +9,7 @@ Imports System.Runtime.InteropServices
 ' Review the values of the assembly attributes
 
 <Assembly: AssemblyTitle("BasicPawnPluginFTP")>
-<Assembly: AssemblyDescription("Allows uploading files to servers over FTP")>
+<Assembly: AssemblyDescription("Allows transferring files to servers over FTP")>
 <Assembly: AssemblyCompany("Externet")>
 <Assembly: AssemblyProduct("BasicPawnPluginFTP")>
 <Assembly: AssemblyCopyright("Copyright © Externet 2021")>
@@ -31,5 +31,5 @@ Imports System.Runtime.InteropServices
 ' by using the '*' as shown below:
 ' <Assembly: AssemblyVersion("1.0.*")>
 
-<Assembly: AssemblyVersion("10.0")>
-<Assembly: AssemblyFileVersion("10.0")>
+<Assembly: AssemblyVersion("11.0")>
+<Assembly: AssemblyFileVersion("11.0")>
