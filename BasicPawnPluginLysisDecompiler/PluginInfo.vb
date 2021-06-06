@@ -22,11 +22,11 @@ Public Class PluginInfo
 
     Public ReadOnly Property m_PluginInformation As IPluginInfoInterface.STRUC_PLUGIN_INFORMATION Implements IPluginInfoInterface.m_PluginInformation
         Get
-            Return New IPluginInfoInterface.STRUC_PLUGIN_INFORMATION("Lysis Decompiler",
-                                                                     "Timocop, Peace-Maker",
-                                                                     "A decompiler for SMX and AMXX binaries",
+            Return New IPluginInfoInterface.STRUC_PLUGIN_INFORMATION("Lysis Decompiler Plugin",
+                                                                     "Externet, Peace-Maker",
+                                                                     "A decompiler for SMX and AMXX binaries.",
                                                                      Reflection.Assembly.GetExecutingAssembly.GetName.Version.ToString,
-                                                                     "https://github.com/Timocop/BasicPawn")
+                                                                     "https://github.com/Timocop/BasicPawn/tree/master/Plugin%20Releases/BasicPawnPluginLysisDecompiler")
         End Get
     End Property
 End Class

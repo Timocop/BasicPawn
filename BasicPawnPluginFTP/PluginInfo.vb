@@ -23,10 +23,10 @@ Public Class PluginInfo
     Public ReadOnly Property m_PluginInformation As IPluginInfoInterface.STRUC_PLUGIN_INFORMATION Implements IPluginInfoInterface.m_PluginInformation
         Get
             Return New IPluginInfoInterface.STRUC_PLUGIN_INFORMATION("FTP Plugin",
-                                                                 "Timocop",
-                                                                 "Allows uploading files to servers over FTP",
-                                                                 Reflection.Assembly.GetExecutingAssembly.GetName.Version.ToString,
-                                                                 "https://github.com/Timocop/BasicPawn")
+                                                                     "Externet",
+                                                                     "Allows transferring files to servers over FTP.",
+                                                                     Reflection.Assembly.GetExecutingAssembly.GetName.Version.ToString,
+                                                                     "https://github.com/Timocop/BasicPawn/tree/master/Plugin%20Releases/BasicPawnPluginFTP")
         End Get
     End Property
 End Class

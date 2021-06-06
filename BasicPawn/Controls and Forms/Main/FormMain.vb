@@ -374,32 +374,49 @@ Public Class FormMain
             End If
         End If
 
-        Dim mCheckUpdasteThread As New Threading.Thread(Sub()
-                                                            Try
-                                                                Dim bForceUpdate As Boolean = False
+        Dim mCheckUpdateThread As New Threading.Thread(Sub()
+                                                           Try
+                                                               Dim bForceUpdate As Boolean = False
 
 #If DEBUG Then
-                                                                bForceUpdate = True
-                                                                Threading.Thread.Sleep(2500)
+                                                               bForceUpdate = True
+                                                               Threading.Thread.Sleep(2500)
 #Else
                                                                 Threading.Thread.Sleep(10000)
 #End If
 
+                                                               Dim sNewVersion As String = ""
+                                                               Dim sCurrentVersion As String = ""
+                                                               If (ClassUpdate.CheckUpdateAvailable(Nothing, sNewVersion, sCurrentVersion) OrElse bForceUpdate) Then
+                                                                   ClassThread.ExecAsync(Me, Sub()
+                                                                                                 'Make update button visible
+                                                                                                 ToolStripMenuItem_NewUpdate.Visible = True
 
-                                                                If (bForceUpdate OrElse ClassUpdate.CheckUpdateAvailable(Nothing)) Then
-                                                                    ClassThread.ExecAsync(Me, Sub()
-                                                                                                  'Make update button visible
-                                                                                                  ToolStripMenuItem_NewUpdate.Visible = True
-                                                                                              End Sub)
-                                                                End If
-                                                            Catch ex As Threading.ThreadAbortException
-                                                                Throw
-                                                            Catch ex As Exception
-                                                            End Try
-                                                        End Sub) With {
+                                                                                                 g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("BasicPawn update available! New version: {0}; Current version: {1}", sNewVersion, sCurrentVersion))
+                                                                                             End Sub)
+                                                               End If
+
+                                                               For Each mPlugin In g_ClassPluginController.m_Plugins
+                                                                   If (ClassPluginController.ClassPluginUpdate.CheckUpdateAvailable(mPlugin, sNewVersion, sCurrentVersion) OrElse bForceUpdate) Then
+                                                                       ClassThread.ExecAsync(Me, Sub()
+                                                                                                     g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("BasicPawn plugin update available! Plugin: {0}; New version: {1}; Current version: {2}", mPlugin.mPluginInformation.sName, sNewVersion, sCurrentVersion))
+
+                                                                                                     If (Not String.IsNullOrEmpty(mPlugin.mPluginInformation.sURL) AndAlso mPlugin.mPluginInformation.sURL.StartsWith("http")) Then
+                                                                                                         g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE,
+                                                                                                                                                   String.Format(vbTab & "Plugin URL: {0}", mPlugin.mPluginInformation.sURL),
+                                                                                                                                                   New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(mPlugin.mPluginInformation.sURL))
+                                                                                                     End If
+                                                                                                 End Sub)
+                                                                   End If
+                                                               Next
+                                                           Catch ex As Threading.ThreadAbortException
+                                                               Throw
+                                                           Catch ex As Exception
+                                                           End Try
+                                                       End Sub) With {
             .IsBackground = True
         }
-        mCheckUpdasteThread.Start()
+        mCheckUpdateThread.Start()
 
         'Load last window info
         ClassSettings.LoadWindowInfo(Me)

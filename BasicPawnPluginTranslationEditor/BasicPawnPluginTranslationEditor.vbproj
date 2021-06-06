@@ -156,6 +156,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="PluginTranslationEditor.vb" />
+    <Compile Include="PluginVersionInfo.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Controls and Forms\ExportWizard\Classes\UCExportWizardMethod.resx">

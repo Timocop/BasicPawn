@@ -212,4 +212,12 @@ Partial Public Class FormSettings
             ClassExceptionLog.WriteToLogMessageBox(ex)
         End Try
     End Sub
+
+    Private Sub LinkLabel_OpenPluginDir_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel_OpenPluginDir.LinkClicked
+        Try
+            Process.Start(IO.Path.Combine(Application.StartupPath, "plugins"))
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
 End Class

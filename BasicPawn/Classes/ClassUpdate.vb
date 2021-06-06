@@ -176,8 +176,15 @@ Public Class ClassUpdate
     End Function
 
     Public Shared Function CheckUpdateAvailable(ByRef r_sLocationInfo As String, ByRef r_sNextVersion As String, ByRef r_sCurrentVersion As String) As Boolean
-        Dim sNextVersion As String = Regex.Match(GetNextVersion(r_sLocationInfo), "[0-9\.]+").Value
-        Dim sCurrentVersion As String = Regex.Match(GetCurrentVerison(), "[0-9\.]+").Value
+        Dim sNextVersion As String = GetNextVersion(r_sLocationInfo)
+        Dim sCurrentVersion As String = GetCurrentVerison()
+
+        If (String.IsNullOrEmpty(sNextVersion) OrElse String.IsNullOrEmpty(sCurrentVersion)) Then
+            Return False
+        End If
+
+        sNextVersion = Regex.Match(GetNextVersion(r_sLocationInfo), "[0-9\.]+").Value
+        sCurrentVersion = Regex.Match(GetCurrentVerison(), "[0-9\.]+").Value
 
         r_sNextVersion = sNextVersion
         r_sCurrentVersion = sCurrentVersion

@@ -23,10 +23,10 @@ Public Class PluginInfo
     Public ReadOnly Property m_PluginInformation As IPluginInfoInterface.STRUC_PLUGIN_INFORMATION Implements IPluginInfoInterface.m_PluginInformation
         Get
             Return New IPluginInfoInterface.STRUC_PLUGIN_INFORMATION("SmartPawn Obfuscator Plugin",
-                                                                     "Timocop",
-                                                                     "A proof-of-concept obfuscator for the traditional SourcePawn language",
+                                                                     "Externet",
+                                                                     "A proof-of-concept obfuscator for the traditional SourcePawn language.",
                                                                      Reflection.Assembly.GetExecutingAssembly.GetName.Version.ToString,
-                                                                     "https://github.com/Timocop/BasicPawn")
+                                                                     "https://github.com/Timocop/BasicPawn/tree/master/Plugin%20Releases/BasicPawnPluginSmartPawnObfuscator")
         End Get
     End Property
 End Class

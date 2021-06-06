@@ -15,24 +15,16 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 
-Public Interface IPluginInfoInterface
-    Class STRUC_PLUGIN_INFORMATION
-        Public sName As String
-        Public sAuthor As String
-        Public sDescription As String
-        Public sVersion As String
-        Public sURL As String
+Public Interface IPluginVersionInterface
+    Class STRUC_PLUGIN_VERSION_INFORMATION
+        Public sVersionUrl As String
 
-        Public Sub New(_Name As String, _Author As String, _Description As String, _Version As String, _URL As String)
-            sName = _Name
-            sAuthor = _Author
-            sDescription = _Description
-            sVersion = _Version
-            sURL = _URL
+        Public Sub New(_VersionURL As String)
+            sVersionUrl = _VersionURL
         End Sub
 
         Public Overrides Function ToString() As String
-            Return String.Format("Name: {0}, Author: {1}, Description: {2}, Version: {3}, URL: {4}", If(sName, "-"), If(sAuthor, "-"), If(sDescription, "-"), If(sVersion, "-"), If(sURL, "-"))
+            Return String.Format("URL: {0}", If(sVersionUrl, "-"))
         End Function
     End Class
 
@@ -40,5 +32,5 @@ Public Interface IPluginInfoInterface
     ''' All available plugin information such as name, author etc.
     ''' </summary>
     ''' <returns></returns>
-    ReadOnly Property m_PluginInformation As STRUC_PLUGIN_INFORMATION
+    ReadOnly Property m_PluginVersionInformation As STRUC_PLUGIN_VERSION_INFORMATION
 End Interface

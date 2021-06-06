@@ -22,11 +22,11 @@ Public Class PluginInfo
 
     Public ReadOnly Property m_PluginInformation As IPluginInfoInterface.STRUC_PLUGIN_INFORMATION Implements IPluginInfoInterface.m_PluginInformation
         Get
-            Return New IPluginInfoInterface.STRUC_PLUGIN_INFORMATION("Translation Editor",
-                                                                     "Timocop",
-                                                                     "An editor for translation files.",
+            Return New IPluginInfoInterface.STRUC_PLUGIN_INFORMATION("Translation Editor Plugin",
+                                                                     "Externet",
+                                                                     "An editor for SourceMod's translation files.",
                                                                      Reflection.Assembly.GetExecutingAssembly.GetName.Version.ToString,
-                                                                     "https://github.com/Timocop/BasicPawn")
+                                                                     "https://github.com/Timocop/BasicPawn/tree/master/Plugin%20Releases/BasicPawnPluginTranslationEditor")
         End Get
     End Property
 End Class

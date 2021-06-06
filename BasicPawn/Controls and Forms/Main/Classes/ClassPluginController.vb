@@ -15,7 +15,10 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 
+Imports System.Net
 Imports System.Reflection
+Imports System.Security.Authentication
+Imports System.Text.RegularExpressions
 Imports BasicPawnPluginInterface
 
 Public Class ClassPluginController
@@ -27,18 +30,34 @@ Public Class ClassPluginController
         g_mFormMain = f
     End Sub
 
-    Structure STRUC_PLUGIN_ITEM
-        Dim sFile As String
-        Dim mPluginInformation As IPluginInfoInterface.STRUC_PLUGIN_INFORMATION
-        Dim mPluginInterface As IPluginInterfaceV10
-    End Structure
+    Class STRUC_PLUGIN_ITEM
+        Public sFile As String
+        Public mPluginInformation As IPluginInfoInterface.STRUC_PLUGIN_INFORMATION
+        Public mPluginVersionInformation As IPluginVersionInterface.STRUC_PLUGIN_VERSION_INFORMATION
+        Public mPluginInterface As IPluginInterfaceV10
+
+        Public Sub New(_File As String, _PluginInterface As IPluginInterfaceV10, _PluginInformation As IPluginInfoInterface.STRUC_PLUGIN_INFORMATION, _PluginUpdateInformation As IPluginVersionInterface.STRUC_PLUGIN_VERSION_INFORMATION)
+            sFile = _File
+            mPluginInterface = _PluginInterface
+            mPluginInformation = _PluginInformation
+            mPluginVersionInformation = _PluginUpdateInformation
+        End Sub
+    End Class
     Private g_lPlugins As New List(Of STRUC_PLUGIN_ITEM)
 
-    Structure STRUC_PLUGIN_FAIL_ITEM
-        Dim sFile As String
-        Dim mPluginInformation As IPluginInfoInterface.STRUC_PLUGIN_INFORMATION
-        Dim mException As Exception
-    End Structure
+    Class STRUC_PLUGIN_FAIL_ITEM
+        Public sFile As String
+        Public mPluginInformation As IPluginInfoInterface.STRUC_PLUGIN_INFORMATION
+        Public mPluginVersionInformation As IPluginVersionInterface.STRUC_PLUGIN_VERSION_INFORMATION
+        Public mException As Exception
+
+        Public Sub New(_File As String, _PluginInformation As IPluginInfoInterface.STRUC_PLUGIN_INFORMATION, _PluginUpdateInformation As IPluginVersionInterface.STRUC_PLUGIN_VERSION_INFORMATION, _Exception As Exception)
+            sFile = _File
+            mPluginInformation = _PluginInformation
+            mPluginVersionInformation = _PluginUpdateInformation
+            mException = _Exception
+        End Sub
+    End Class
     Private g_lFailPlugins As New List(Of STRUC_PLUGIN_FAIL_ITEM)
 
     ReadOnly Property m_Plugins As STRUC_PLUGIN_ITEM()
@@ -174,6 +193,7 @@ Public Class ClassPluginController
         End If
 
         Dim mPluginInfo As IPluginInfoInterface = Nothing
+        Dim mPluginVersion As IPluginVersionInterface = Nothing
 
         Try
             'Find info first
@@ -190,6 +210,16 @@ Public Class ClassPluginController
                 Throw New ArgumentException("Unable to load plugin. IPluginInfoInterface not found.")
             End If
 
+            'Find version info first
+            For Each mType In GetValidTypes(mAssembly)
+                If (Not GetType(IPluginVersionInterface).IsAssignableFrom(mType)) Then
+                    Continue For
+                End If
+
+                mPluginVersion = DirectCast(mAssembly.CreateInstance(mType.FullName), IPluginVersionInterface)
+                Exit For
+            Next
+
             'Find plugin stuff
             For Each mType In GetValidTypes(mAssembly)
                 If (Not GetType(IPluginInterfaceV10).IsAssignableFrom(mType)) Then
@@ -198,11 +228,10 @@ Public Class ClassPluginController
 
                 Dim mPlugin = DirectCast(mAssembly.CreateInstance(mType.FullName), IPluginInterfaceV10)
 
-                g_lPlugins.Add(New STRUC_PLUGIN_ITEM With {
-                    .mPluginInformation = mPluginInfo.m_PluginInformation,
-                    .mPluginInterface = mPlugin,
-                    .sFile = sFile
-                })
+                g_lPlugins.Add(New STRUC_PLUGIN_ITEM(sFile,
+                                                     mPlugin,
+                                                     mPluginInfo.m_PluginInformation,
+                                                     If(mPluginVersion IsNot Nothing, mPluginVersion.m_PluginVersionInformation, New IPluginVersionInterface.STRUC_PLUGIN_VERSION_INFORMATION(""))))
 
                 Return mPlugin
             Next
@@ -210,11 +239,10 @@ Public Class ClassPluginController
             Throw New ArgumentException("Unable to load plugin. IPluginInterface not found. Probably outdated plugin.")
 
         Catch ex As Exception
-            g_lFailPlugins.Add(New STRUC_PLUGIN_FAIL_ITEM() With {
-                .sFile = sFile,
-                .mPluginInformation = If(mPluginInfo IsNot Nothing, mPluginInfo.m_PluginInformation, New IPluginInfoInterface.STRUC_PLUGIN_INFORMATION("", "", "", "", "")),
-                .mException = ex
-            })
+            g_lFailPlugins.Add(New STRUC_PLUGIN_FAIL_ITEM(sFile,
+                                                          If(mPluginInfo IsNot Nothing, mPluginInfo.m_PluginInformation, New IPluginInfoInterface.STRUC_PLUGIN_INFORMATION("", "", "", "", "")),
+                                                          If(mPluginVersion IsNot Nothing, mPluginVersion.m_PluginVersionInformation, New IPluginVersionInterface.STRUC_PLUGIN_VERSION_INFORMATION("")),
+                                                          ex))
 
             Throw
         End Try
@@ -239,6 +267,91 @@ Public Class ClassPluginController
             Return lTypes.ToArray
         End Try
     End Function
+
+    Class ClassPluginUpdate
+        Public Shared Function CheckUpdateAvailable(mPlugin As STRUC_PLUGIN_ITEM) As Boolean
+            Dim sNextVersion = ""
+            Dim sCurrentVersion = ""
+            Return CheckUpdateAvailable(mPlugin, sNextVersion, sCurrentVersion)
+        End Function
+
+        Public Shared Function CheckUpdateAvailable(mPlugin As STRUC_PLUGIN_ITEM, ByRef r_sNextVersion As String, ByRef r_sCurrentVersion As String) As Boolean
+            Dim sNextVersion As String = GetNextVersion(mPlugin)
+            Dim sCurrentVersion As String = GetCurrentVerison(mPlugin)
+
+            If (String.IsNullOrEmpty(sNextVersion) OrElse String.IsNullOrEmpty(sCurrentVersion)) Then
+                Return False
+            End If
+
+            sNextVersion = Regex.Match(sNextVersion, "[0-9\.]+").Value
+            sCurrentVersion = Regex.Match(sCurrentVersion, "[0-9\.]+").Value
+
+            r_sNextVersion = sNextVersion
+            r_sCurrentVersion = sCurrentVersion
+
+            Return (New Version(sNextVersion) > New Version(sCurrentVersion))
+        End Function
+
+        Public Shared Function GetCurrentVerison(mPlguin As STRUC_PLUGIN_ITEM) As String
+            Try
+                Return mPlguin.mPluginInformation.sVersion
+            Catch ex As Exception
+                Return Nothing
+            End Try
+        End Function
+
+        Public Shared Function GetNextVersion(mPlguin As STRUC_PLUGIN_ITEM) As String
+            If (mPlguin.mPluginVersionInformation Is Nothing OrElse String.IsNullOrEmpty(mPlguin.mPluginVersionInformation.sVersionUrl)) Then
+                Return Nothing
+            End If
+
+            Dim sFileVersion = GetCurrentVerison(mPlguin)
+            If (String.IsNullOrEmpty(sFileVersion)) Then
+                Return Nothing
+            End If
+
+            SetTLS12()
+
+            Dim sNextVersion As String = Nothing
+            Dim sUserAgent As String = String.Format("BasicPawnPlugin/{0} (compatible; Windows NT)", sFileVersion)
+
+            Try
+                Using mWC As New ClassWebClientEx
+                    If (Not String.IsNullOrEmpty(sUserAgent)) Then
+                        mWC.Headers("User-Agent") = sUserAgent
+                    End If
+
+                    Dim sVersion = mWC.DownloadString(mPlguin.mPluginVersionInformation.sVersionUrl)
+                    If (String.IsNullOrEmpty(sVersion)) Then
+                        Return Nothing
+                    End If
+
+                    If (Not String.IsNullOrEmpty(sNextVersion)) Then
+                        If (New Version(sNextVersion) > New Version(sVersion)) Then
+                            Return Nothing
+                        End If
+                    End If
+
+                    sNextVersion = sVersion
+                End Using
+            Catch ex As Exception
+            End Try
+
+            If (String.IsNullOrEmpty(sNextVersion)) Then
+                Throw New ArgumentException("Unable to find update files")
+            End If
+
+            Return sNextVersion
+        End Function
+
+        Private Shared Sub SetTLS12()
+            'https://stackoverflow.com/questions/43240611/net-framework-3-5-and-tls-1-2
+            Const _Tls12 As SslProtocols = DirectCast(&HC00, SslProtocols)
+            Const Tls12 As SecurityProtocolType = DirectCast(_Tls12, SecurityProtocolType)
+
+            ServicePointManager.SecurityProtocol = Tls12
+        End Sub
+    End Class
 
     Class ClassPluginConfig
         Inherits ClassIni
