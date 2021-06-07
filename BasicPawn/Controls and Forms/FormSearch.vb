@@ -65,24 +65,24 @@ Public Class FormSearch
 
     Property m_SearchText As String
         Get
-            Return TextBox_Search.Text
+            Return ComboBox_Search.Text
         End Get
         Set(value As String)
-            TextBox_Search.Text = value
+            ComboBox_Search.Text = value
         End Set
     End Property
 
     Property m_ReplaceText As String
         Get
-            Return TextBox_Replace.Text
+            Return ComboBox_Replace.Text
         End Get
         Set(value As String)
-            TextBox_Replace.Text = value
+            ComboBox_Replace.Text = value
         End Set
     End Property
 
     Private Sub SearchForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        TextBox_Search.Text = g_sSearchText
+        ComboBox_Search.Text = g_sSearchText
 
         ClassControlStyle.UpdateControls(Me)
 
@@ -170,6 +170,8 @@ Public Class FormSearch
     End Sub
 
     Private Sub Button_Search_Click(sender As Object, e As EventArgs) Handles Button_Search.Click
+        SearchHistoryAddOrFirst(ComboBox_Search)
+
         Dim mResults As STRUC_SEARCH_RESULTS() = DoSearch(ENUM_SEARCH_TYPE.TAB, RadioButton_ModeNormal.Checked, CheckBox_WholeWord.Checked, CheckBox_CaseSensitive.Checked, CheckBox_Multiline.Checked, CheckBox_ListMergeLines.Checked)
         If (mResults Is Nothing) Then
             Return
@@ -224,6 +226,9 @@ Public Class FormSearch
     End Sub
 
     Private Sub Button_Replace_Click(sender As Object, e As EventArgs) Handles Button_Replace.Click
+        SearchHistoryAddOrFirst(ComboBox_Search)
+        SearchHistoryAddOrFirst(ComboBox_Replace)
+
         Dim mResults As STRUC_SEARCH_RESULTS() = DoSearch(ENUM_SEARCH_TYPE.TAB, RadioButton_ModeNormal.Checked, CheckBox_WholeWord.Checked, CheckBox_CaseSensitive.Checked, CheckBox_Multiline.Checked, False)
         If (mResults Is Nothing) Then
             Return
@@ -244,9 +249,9 @@ Public Class FormSearch
                         Dim sReplace As String
 
                         If (mResults(i).mMatch IsNot Nothing) Then
-                            sReplace = mResults(i).mMatch.Result(TextBox_Replace.Text)
+                            sReplace = mResults(i).mMatch.Result(ComboBox_Replace.Text)
                         Else
-                            sReplace = TextBox_Replace.Text
+                            sReplace = ComboBox_Replace.Text
                         End If
 
                         g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.Replace(mResults(i).iLocation, mResults(i).iLength, sReplace)
@@ -263,9 +268,9 @@ Public Class FormSearch
                         Dim sReplace As String
 
                         If (mResults(i).mMatch IsNot Nothing) Then
-                            sReplace = mResults(i).mMatch.Result(TextBox_Replace.Text)
+                            sReplace = mResults(i).mMatch.Result(ComboBox_Replace.Text)
                         Else
-                            sReplace = TextBox_Replace.Text
+                            sReplace = ComboBox_Replace.Text
                         End If
 
                         g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.Replace(mResults(i).iLocation, mResults(i).iLength, sReplace)
@@ -286,6 +291,9 @@ Public Class FormSearch
     End Sub
 
     Private Sub Button_ReplaceAll_Click(sender As Object, e As EventArgs) Handles Button_ReplaceAll.Click
+        SearchHistoryAddOrFirst(ComboBox_Search)
+        SearchHistoryAddOrFirst(ComboBox_Replace)
+
         Dim mResults As STRUC_SEARCH_RESULTS() = Nothing
 
         Select Case (True)
@@ -377,9 +385,9 @@ Public Class FormSearch
                         Dim sReplace As String
 
                         If (mResults(i).mMatch IsNot Nothing) Then
-                            sReplace = mResults(i).mMatch.Result(TextBox_Replace.Text)
+                            sReplace = mResults(i).mMatch.Result(ComboBox_Replace.Text)
                         Else
-                            sReplace = TextBox_Replace.Text
+                            sReplace = ComboBox_Replace.Text
                         End If
 
                         mTab.m_TextEditor.Document.Replace(mResults(i).iLocation, mResults(i).iLength, sReplace)
@@ -400,6 +408,7 @@ Public Class FormSearch
     End Sub
 
     Private Sub Button_ListAll_Click(sender As Object, e As EventArgs) Handles Button_ListAll.Click
+        SearchHistoryAddOrFirst(ComboBox_Search)
         ShowListOutput()
 
         Dim mResults As STRUC_SEARCH_RESULTS() = Nothing
@@ -459,7 +468,7 @@ Public Class FormSearch
         End Try
     End Sub
 
-    Private Sub TextBox_Search_KeyDown(sender As Object, e As KeyEventArgs) Handles TextBox_Search.KeyDown
+    Private Sub ComboBox_Search_KeyDown(sender As Object, e As KeyEventArgs) Handles ComboBox_Search.KeyDown
         Select Case (e.KeyCode)
             Case Keys.Enter
                 e.Handled = True
@@ -483,7 +492,7 @@ Public Class FormSearch
         End Select
     End Sub
 
-    Private Sub TextBox_Replace_KeyDown(sender As Object, e As KeyEventArgs) Handles TextBox_Replace.KeyDown
+    Private Sub ComboBox_Replace_KeyDown(sender As Object, e As KeyEventArgs) Handles ComboBox_Replace.KeyDown
         Select Case (e.KeyCode)
             Case Keys.Enter
                 e.Handled = True
@@ -665,7 +674,7 @@ Public Class FormSearch
     ''' </summary>
     ''' <returns></returns>
     Private Function DoSearch(iSearchType As ENUM_SEARCH_TYPE, bNormalMode As Boolean, bWholeWord As Boolean, bCastSensitive As Boolean, bMultiLine As Boolean, bMergeLines As Boolean) As STRUC_SEARCH_RESULTS()
-        Dim sSearchText As String = TextBox_Search.Text
+        Dim sSearchText As String = ComboBox_Search.Text
 
         If (String.IsNullOrEmpty(sSearchText) OrElse sSearchText.Trim.Length < 1) Then
             ToolStripStatusLabel_Status.Text = "Unable to search 'nothing'!"
@@ -797,6 +806,32 @@ Public Class FormSearch
         Return lResults.ToArray
     End Function
 
+    Private Sub SearchHistoryAddOrFirst(mComboBox As ComboBox, Optional sText As String = Nothing)
+        Const MAX_HISTORY = 10
+
+        If (sText Is Nothing) Then
+            sText = mComboBox.Text
+        End If
+
+        If (String.IsNullOrEmpty(sText)) Then
+            Return
+        End If
+
+        mComboBox.Items.Remove(sText)
+        If (mComboBox.Items.Count > 0) Then
+            mComboBox.Items.Insert(0, sText)
+        Else
+            mComboBox.Items.Add(sText)
+        End If
+
+        'In case we removed the search result
+        mComboBox.Text = sText
+
+        For i = mComboBox.Items.Count - 1 To MAX_HISTORY Step -1
+            mComboBox.Items.RemoveAt(i)
+        Next
+    End Sub
+
 #Region "WindowInfo"
     Public Sub SaveViews()
         If (String.IsNullOrEmpty(Me.Name)) Then
@@ -815,6 +850,19 @@ Public Class FormSearch
                     New ClassIni.STRUC_INI_CONTENT(Me.Name, "TransparencyValue", CStr(TrackBar_Transparency.Value)),
                     New ClassIni.STRUC_INI_CONTENT(Me.Name, "ModeNormal", If(RadioButton_ModeNormal.Checked, "1", "0"))
                 }
+
+                Dim sBaseSearchHistory As New List(Of String)
+                For Each sText As String In ComboBox_Search.Items
+                    sBaseSearchHistory.Add(ClassTools.ClassCrypto.ClassBase.ToBase64(sText, System.Text.Encoding.UTF8))
+                Next
+
+                Dim sBaseReplaceHistory As New List(Of String)
+                For Each sText As String In ComboBox_Replace.Items
+                    sBaseReplaceHistory.Add(ClassTools.ClassCrypto.ClassBase.ToBase64(sText, System.Text.Encoding.UTF8))
+                Next
+
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT(Me.Name, "SearchHistory", String.Join("|", sBaseSearchHistory.ToArray)))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT(Me.Name, "ReplaceHistory", String.Join("|", sBaseReplaceHistory.ToArray)))
 
                 mIni.WriteKeyValue(lContent.ToArray)
             End Using
@@ -856,6 +904,32 @@ Public Class FormSearch
                 Else
                     RadioButton_ModeRegEx.Checked = True
                 End If
+
+                For Each sText As String In mIni.ReadKeyValue(Me.Name, "SearchHistory", "").Split("|"c)
+                    Try
+                        sText = ClassTools.ClassCrypto.ClassBase.FromBase64(sText, System.Text.Encoding.UTF8)
+
+                        If (String.IsNullOrEmpty(sText)) Then
+                            Continue For
+                        End If
+
+                        ComboBox_Search.Items.Add(sText)
+                    Catch ex As Exception
+                    End Try
+                Next
+
+                For Each sText As String In mIni.ReadKeyValue(Me.Name, "ReplaceHistory", "").Split("|"c)
+                    Try
+                        sText = ClassTools.ClassCrypto.ClassBase.FromBase64(sText, System.Text.Encoding.UTF8)
+
+                        If (String.IsNullOrEmpty(sText)) Then
+                            Continue For
+                        End If
+
+                        ComboBox_Replace.Items.Add(sText)
+                    Catch ex As Exception
+                    End Try
+                Next
 
                 g_bIgnoreEvent = False
             End Using

@@ -25,8 +25,6 @@ Partial Class FormSearch
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormSearch))
         Me.Label1 = New System.Windows.Forms.Label()
-        Me.TextBox_Search = New System.Windows.Forms.TextBox()
-        Me.TextBox_Replace = New System.Windows.Forms.TextBox()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.Button_Search = New System.Windows.Forms.Button()
         Me.Button_Replace = New System.Windows.Forms.Button()
@@ -71,6 +69,8 @@ Partial Class FormSearch
         Me.GroupBox7 = New System.Windows.Forms.GroupBox()
         Me.CheckBox_ListMergeLines = New System.Windows.Forms.CheckBox()
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
+        Me.ComboBox_Search = New System.Windows.Forms.ComboBox()
+        Me.ComboBox_Replace = New System.Windows.Forms.ComboBox()
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
@@ -92,24 +92,6 @@ Partial Class FormSearch
         Me.Label1.Size = New System.Drawing.Size(44, 13)
         Me.Label1.TabIndex = 0
         Me.Label1.Text = "Search:"
-        '
-        'TextBox_Search
-        '
-        Me.TextBox_Search.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TextBox_Search.Location = New System.Drawing.Point(68, 12)
-        Me.TextBox_Search.Name = "TextBox_Search"
-        Me.TextBox_Search.Size = New System.Drawing.Size(305, 22)
-        Me.TextBox_Search.TabIndex = 1
-        '
-        'TextBox_Replace
-        '
-        Me.TextBox_Replace.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TextBox_Replace.Location = New System.Drawing.Point(68, 40)
-        Me.TextBox_Replace.Name = "TextBox_Replace"
-        Me.TextBox_Replace.Size = New System.Drawing.Size(305, 22)
-        Me.TextBox_Replace.TabIndex = 3
         '
         'Label2
         '
@@ -360,6 +342,8 @@ Partial Class FormSearch
         '
         'Panel1
         '
+        Me.Panel1.Controls.Add(Me.ComboBox_Replace)
+        Me.Panel1.Controls.Add(Me.ComboBox_Search)
         Me.Panel1.Controls.Add(Me.GroupBox6)
         Me.Panel1.Controls.Add(Me.CheckBox_SingleInstance)
         Me.Panel1.Controls.Add(Me.Button_ReplaceNext)
@@ -368,10 +352,8 @@ Partial Class FormSearch
         Me.Panel1.Controls.Add(Me.Button_SearchPre)
         Me.Panel1.Controls.Add(Me.GroupBox4)
         Me.Panel1.Controls.Add(Me.Label1)
-        Me.Panel1.Controls.Add(Me.TextBox_Search)
         Me.Panel1.Controls.Add(Me.Button_ListAll)
         Me.Panel1.Controls.Add(Me.Label2)
-        Me.Panel1.Controls.Add(Me.TextBox_Replace)
         Me.Panel1.Controls.Add(Me.GroupBox3)
         Me.Panel1.Controls.Add(Me.Button_Search)
         Me.Panel1.Controls.Add(Me.Button_ReplaceAll)
@@ -601,6 +583,22 @@ Partial Class FormSearch
         Me.ToolTip1.InitialDelay = 500
         Me.ToolTip1.ReshowDelay = 100
         '
+        'ComboBox_Search
+        '
+        Me.ComboBox_Search.FormattingEnabled = True
+        Me.ComboBox_Search.Location = New System.Drawing.Point(68, 13)
+        Me.ComboBox_Search.Name = "ComboBox_Search"
+        Me.ComboBox_Search.Size = New System.Drawing.Size(305, 21)
+        Me.ComboBox_Search.TabIndex = 24
+        '
+        'ComboBox_Replace
+        '
+        Me.ComboBox_Replace.FormattingEnabled = True
+        Me.ComboBox_Replace.Location = New System.Drawing.Point(68, 40)
+        Me.ComboBox_Replace.Name = "ComboBox_Replace"
+        Me.ComboBox_Replace.Size = New System.Drawing.Size(305, 21)
+        Me.ComboBox_Replace.TabIndex = 25
+        '
         'FormSearch
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -641,8 +639,6 @@ Partial Class FormSearch
     End Sub
 
     Friend WithEvents Label1 As Label
-    Friend WithEvents TextBox_Search As TextBox
-    Friend WithEvents TextBox_Replace As TextBox
     Friend WithEvents Label2 As Label
     Friend WithEvents Button_Search As Button
     Friend WithEvents Button_Replace As Button
@@ -687,4 +683,6 @@ Partial Class FormSearch
     Friend WithEvents RadioButton_ListTypeCurrent As RadioButton
     Friend WithEvents GroupBox7 As GroupBox
     Friend WithEvents CheckBox_ListMergeLines As CheckBox
+    Friend WithEvents ComboBox_Search As ComboBox
+    Friend WithEvents ComboBox_Replace As ComboBox
 End Class
