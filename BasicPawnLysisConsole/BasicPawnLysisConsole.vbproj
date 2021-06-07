@@ -7,8 +7,8 @@
     <ProjectGuid>{7EAC20FB-7990-4746-96FC-0C01826B4279}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <StartupObject>Sub Main</StartupObject>
-    <RootNamespace>BasicPawnJavaLysisConsole</RootNamespace>
-    <AssemblyName>BasicPawnJavaLysisConsole</AssemblyName>
+    <RootNamespace>BasicPawnLysisConsole</RootNamespace>
+    <AssemblyName>BasicPawnLysisConsole</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>Console</MyType>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
@@ -22,7 +22,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>BasicPawnJavaLysisConsole.xml</DocumentationFile>
+    <DocumentationFile>BasicPawnLysisConsole.xml</DocumentationFile>
     <NoWarn>
     </NoWarn>
     <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
@@ -35,7 +35,7 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>BasicPawnJavaLysisConsole.xml</DocumentationFile>
+    <DocumentationFile>BasicPawnLysisConsole.xml</DocumentationFile>
     <NoWarn>
     </NoWarn>
     <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>

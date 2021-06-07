@@ -64,9 +64,9 @@ Namespace My
     Friend Module MySettingsProperty
         
         <Global.System.ComponentModel.Design.HelpKeywordAttribute("My.Settings")>  _
-        Friend ReadOnly Property Settings() As Global.BasicPawnJavaLysisHelper.My.MySettings
+        Friend ReadOnly Property Settings() As Global.BasicPawnHelperUpdate.My.MySettings
             Get
-                Return Global.BasicPawnJavaLysisHelper.My.MySettings.Default
+                Return Global.BasicPawnHelperUpdate.My.MySettings.Default
             End Get
         End Property
     End Module

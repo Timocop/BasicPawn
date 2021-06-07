@@ -7,8 +7,8 @@
     <ProjectGuid>{EB848407-DBFA-4E30-87FA-F39AC812213D}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <StartupObject>Sub Main</StartupObject>
-    <RootNamespace>BasicPawnJavaLysisHelper</RootNamespace>
-    <AssemblyName>BasicPawnJavaLysisHelper</AssemblyName>
+    <RootNamespace>BasicPawnHelperLysis</RootNamespace>
+    <AssemblyName>BasicPawnHelperLysis</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>Console</MyType>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
@@ -21,7 +21,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>BasicPawnJavaLysisHelper.xml</DocumentationFile>
+    <DocumentationFile>BasicPawnHelperLysis.xml</DocumentationFile>
     <NoWarn>
     </NoWarn>
     <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
@@ -33,7 +33,7 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>BasicPawnJavaLysisHelper.xml</DocumentationFile>
+    <DocumentationFile>BasicPawnHelperLysis.xml</DocumentationFile>
     <NoWarn>
     </NoWarn>
     <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>

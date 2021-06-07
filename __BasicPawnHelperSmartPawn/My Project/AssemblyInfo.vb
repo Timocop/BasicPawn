@@ -8,17 +8,17 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("BasicPawnCompileJavaLysis")>
+<Assembly: AssemblyTitle("BasicPawnHelperSmartPawn")>
 <Assembly: AssemblyDescription("")>
 <Assembly: AssemblyCompany("")>
-<Assembly: AssemblyProduct("BasicPawnCompileJavaLysis")>
+<Assembly: AssemblyProduct("BasicPawnHelperSmartPawn")>
 <Assembly: AssemblyCopyright("Copyright ©  2021")>
 <Assembly: AssemblyTrademark("")>
 
 <Assembly: ComVisible(False)>
 
 'The following GUID is for the ID of the typelib if this project is exposed to COM
-<Assembly: Guid("6419a53f-a232-4d79-a94b-989f3a79c419")>
+<Assembly: Guid("bb9548b3-ddb1-4136-b7ac-b075775c99c4")>
 
 ' Version information for an assembly consists of the following four values:
 '

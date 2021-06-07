@@ -6,9 +6,9 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{F9D9701F-31BD-46BC-B3CB-94446177F3BE}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <StartupObject>BasicPawnUpdateHelper.ClassMain</StartupObject>
-    <RootNamespace>BasicPawnUpdateHelper</RootNamespace>
-    <AssemblyName>BasicPawnUpdateHelper</AssemblyName>
+    <StartupObject>Sub Main</StartupObject>
+    <RootNamespace>BasicPawnHelperUpdate</RootNamespace>
+    <AssemblyName>BasicPawnHelperUpdate</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>Console</MyType>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
@@ -20,7 +20,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>BasicPawnUpdateHelper.xml</DocumentationFile>
+    <DocumentationFile>BasicPawnHelperUpdate.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -30,7 +30,7 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>BasicPawnUpdateHelper.xml</DocumentationFile>
+    <DocumentationFile>BasicPawnHelperUpdate.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup>

@@ -6,9 +6,9 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{8EEEC85C-2616-4728-8914-086F622CEDF5}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <StartupObject>BasicPawnSmartPawnHelper.ClassMain</StartupObject>
-    <RootNamespace>BasicPawnSmartPawnHelper</RootNamespace>
-    <AssemblyName>BasicPawnSmartPawnHelper</AssemblyName>
+    <StartupObject>Sub Main</StartupObject>
+    <RootNamespace>BasicPawnHelperSmartPawn</RootNamespace>
+    <AssemblyName>BasicPawnHelperSmartPawn</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>Console</MyType>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
@@ -21,7 +21,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>BasicPawnSmartPawnHelper.xml</DocumentationFile>
+    <DocumentationFile>BasicPawnHelperSmartPawn.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -31,7 +31,7 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>BasicPawnSmartPawnHelper.xml</DocumentationFile>
+    <DocumentationFile>BasicPawnHelperSmartPawn.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup>

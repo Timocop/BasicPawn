@@ -8,17 +8,17 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("BasicPawnUpdateHelper")>
+<Assembly: AssemblyTitle("BasicPawnHelperLysis")>
 <Assembly: AssemblyDescription("")>
 <Assembly: AssemblyCompany("")>
-<Assembly: AssemblyProduct("BasicPawnUpdateHelper")>
-<Assembly: AssemblyCopyright("Copyright © Externet 2021")>
+<Assembly: AssemblyProduct("BasicPawnHelperLysis")>
+<Assembly: AssemblyCopyright("Copyright ©  2021")>
 <Assembly: AssemblyTrademark("")>
 
 <Assembly: ComVisible(False)>
 
 'The following GUID is for the ID of the typelib if this project is exposed to COM
-<Assembly: Guid("3d5ed112-75ef-4830-8bda-0d8e5c2ab992")>
+<Assembly: Guid("6419a53f-a232-4d79-a94b-989f3a79c419")>
 
 ' Version information for an assembly consists of the following four values:
 '
