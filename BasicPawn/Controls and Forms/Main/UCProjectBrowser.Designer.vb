@@ -109,7 +109,7 @@ Partial Class UCProjectBrowser
         Me.ContextMenuStrip_ProjectFiles.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_Open, Me.ToolStripSeparator7, Me.ToolStripMenuItem_ProjectLoad, Me.ToolStripMenuItem_ProjectSave, Me.ToolStripMenuItem_ProjectSaveAs, Me.ToolStripMenuItem_ProjectClose, Me.ToolStripSeparator1, Me.ToolStripMenuItem_Cut, Me.ToolStripMenuItem_Copy, Me.ToolStripMenuItem_Paste, Me.ToolStripSeparator4, Me.ToolStripMenuItem_CompileAll, Me.ToolStripMenuItem_TestAll, Me.ToolStripSeparator3, Me.ToolStripMenuItem_PackFile, Me.ToolStripMenuItem_ExtractFile, Me.ToolStripMenuItem_DeletePack, Me.ToolStripSeparator5, Me.ToolStripMenuItem_AddTab, Me.ToolStripMenuItem_AddAllTabs, Me.ToolStripMenuItem_AddFiles, Me.ToolStripSeparator2, Me.ToolStripMenuItem_RelativeRefresh, Me.ToolStripMenuItem_RelativeEnable, Me.ToolStripMenuItem_RelativeNoIncludes, Me.ToolStripSeparator6, Me.ToolStripMenuItem_Exlcude})
         Me.ContextMenuStrip_ProjectFiles.Name = "ContextMenuStrip_ProjectFiles"
         Me.ContextMenuStrip_ProjectFiles.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
-        Me.ContextMenuStrip_ProjectFiles.Size = New System.Drawing.Size(229, 486)
+        Me.ContextMenuStrip_ProjectFiles.Size = New System.Drawing.Size(229, 508)
         '
         'ToolStripMenuItem_Open
         '
@@ -186,7 +186,7 @@ Partial Class UCProjectBrowser
         Me.ToolStripMenuItem_CompileAll.Image = Global.BasicPawn.My.Resources.Resources.imageres_5341_16x16
         Me.ToolStripMenuItem_CompileAll.Name = "ToolStripMenuItem_CompileAll"
         Me.ToolStripMenuItem_CompileAll.Size = New System.Drawing.Size(228, 22)
-        Me.ToolStripMenuItem_CompileAll.Text = "Compile"
+        Me.ToolStripMenuItem_CompileAll.Text = "Build"
         '
         'ToolStripMenuItem_TestAll
         '
