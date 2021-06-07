@@ -11,7 +11,7 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyTitle("Lysis Decompiler")>
 <Assembly: AssemblyDescription("Decompiler for SMX and AMXX binaries")>
 <Assembly: AssemblyCompany("Externet, Peace-Maker")>
-<Assembly: AssemblyProduct("BasicPawnLysisConsole")>
+<Assembly: AssemblyProduct("Lysis Decompiler")>
 <Assembly: AssemblyCopyright("Copyright © Externet, Peace-Maker 2021")>
 <Assembly: AssemblyTrademark("")>
 
