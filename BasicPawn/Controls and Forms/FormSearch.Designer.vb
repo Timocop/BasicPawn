@@ -68,9 +68,9 @@ Partial Class FormSearch
         Me.CheckBox_Transparency = New System.Windows.Forms.CheckBox()
         Me.GroupBox5 = New System.Windows.Forms.GroupBox()
         Me.CheckBox_ReplaceInSelection = New System.Windows.Forms.CheckBox()
-        Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
         Me.GroupBox7 = New System.Windows.Forms.GroupBox()
         Me.CheckBox_ListMergeLines = New System.Windows.Forms.CheckBox()
+        Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
@@ -393,12 +393,12 @@ Partial Class FormSearch
         Me.GroupBox6.Controls.Add(Me.RadioButton_ListTypeIncludes)
         Me.GroupBox6.Controls.Add(Me.RadioButton_ListTypeTabs)
         Me.GroupBox6.Controls.Add(Me.RadioButton_ListTypeCurrent)
-        Me.GroupBox6.Location = New System.Drawing.Point(379, 128)
+        Me.GroupBox6.Location = New System.Drawing.Point(276, 128)
         Me.GroupBox6.Name = "GroupBox6"
-        Me.GroupBox6.Size = New System.Drawing.Size(128, 92)
+        Me.GroupBox6.Size = New System.Drawing.Size(231, 92)
         Me.GroupBox6.TabIndex = 23
         Me.GroupBox6.TabStop = False
-        Me.GroupBox6.Text = "List all type"
+        Me.GroupBox6.Text = "Replace all/List all scope"
         '
         'RadioButton_ListTypeIncludes
         '
@@ -574,12 +574,6 @@ Partial Class FormSearch
         Me.CheckBox_ReplaceInSelection.Text = "In selection"
         Me.CheckBox_ReplaceInSelection.UseVisualStyleBackColor = True
         '
-        'ToolTip1
-        '
-        Me.ToolTip1.AutoPopDelay = 25000
-        Me.ToolTip1.InitialDelay = 500
-        Me.ToolTip1.ReshowDelay = 100
-        '
         'GroupBox7
         '
         Me.GroupBox7.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
@@ -600,6 +594,12 @@ Partial Class FormSearch
         Me.CheckBox_ListMergeLines.TabIndex = 0
         Me.CheckBox_ListMergeLines.Text = "Merge lines"
         Me.CheckBox_ListMergeLines.UseVisualStyleBackColor = True
+        '
+        'ToolTip1
+        '
+        Me.ToolTip1.AutoPopDelay = 25000
+        Me.ToolTip1.InitialDelay = 500
+        Me.ToolTip1.ReshowDelay = 100
         '
         'FormSearch
         '

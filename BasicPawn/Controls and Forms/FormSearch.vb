@@ -286,7 +286,19 @@ Public Class FormSearch
     End Sub
 
     Private Sub Button_ReplaceAll_Click(sender As Object, e As EventArgs) Handles Button_ReplaceAll.Click
-        Dim mResults As STRUC_SEARCH_RESULTS() = DoSearch(ENUM_SEARCH_TYPE.TAB, RadioButton_ModeNormal.Checked, CheckBox_WholeWord.Checked, CheckBox_CaseSensitive.Checked, CheckBox_Multiline.Checked, False)
+        Dim mResults As STRUC_SEARCH_RESULTS() = Nothing
+
+        Select Case (True)
+            Case RadioButton_ListTypeCurrent.Checked
+                mResults = DoSearch(ENUM_SEARCH_TYPE.TAB, RadioButton_ModeNormal.Checked, CheckBox_WholeWord.Checked, CheckBox_CaseSensitive.Checked, CheckBox_Multiline.Checked, False)
+
+            Case RadioButton_ListTypeTabs.Checked
+                mResults = DoSearch(ENUM_SEARCH_TYPE.ALL_TABS, RadioButton_ModeNormal.Checked, CheckBox_WholeWord.Checked, CheckBox_CaseSensitive.Checked, CheckBox_Multiline.Checked, False)
+
+            Case RadioButton_ListTypeIncludes.Checked
+                mResults = DoSearch(ENUM_SEARCH_TYPE.ALL_INCLUDES, RadioButton_ModeNormal.Checked, CheckBox_WholeWord.Checked, CheckBox_CaseSensitive.Checked, CheckBox_Multiline.Checked, False)
+        End Select
+
         If (mResults Is Nothing) Then
             Return
         End If
@@ -297,59 +309,91 @@ Public Class FormSearch
         End If
 
         Dim iReplaceCount As Integer = 0
-        Dim bSomethingSelected As Boolean = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.HasSomethingSelected
-
-        If (CheckBox_ReplaceInSelection.Checked AndAlso Not bSomethingSelected) Then
-            MessageBox.Show("Nothing has been selected", "Unable to replace", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            ToolStripStatusLabel_Status.Text = String.Format("{0} Items replaced!", 0)
-            Return
-        End If
-
-        Dim iOffset As Integer = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.Caret.Offset
 
         Try
-            g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.UndoStack.StartUndoGroup()
+            Dim sTabIdentifiers As New HashSet(Of String)
+            For i = 0 To mResults.Length - 1
+                Dim mTab = g_mFormMain.g_ClassTabControl.GetTabByIdentifier(mResults(i).sTabIdentifier)
+                If (mTab Is Nothing) Then
+                    'If not, check if file exist and search for tab
+                    If (IO.File.Exists(mResults(i).sFile)) Then
+                        mTab = g_mFormMain.g_ClassTabControl.GetTabByFile(mResults(i).sFile)
 
-            For i = mResults.Length - 1 To 0 Step -1
-                If (CheckBox_ReplaceInSelection.Checked) Then
-                    If (Not bSomethingSelected) Then
-                        Exit For
-                    End If
-
-                    Dim iSelectOffset As Integer = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection(0).Offset
-                    Dim iSelectLength As Integer = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.ActiveTextAreaControl.SelectionManager.SelectionCollection(0).Length
-
-                    If (mResults(i).iLocation < iSelectOffset) Then
-                        Continue For
-                    End If
-
-                    If (mResults(i).iLocation > (iSelectOffset + iSelectLength)) Then
-                        Continue For
-                    End If
-
-                    If ((mResults(i).iLocation + mResults(i).iLength) > (iSelectOffset + iSelectLength)) Then
+                        'If that also fails, just open the file
+                        If (mTab Is Nothing) Then
+                            mTab = g_mFormMain.g_ClassTabControl.AddTab()
+                            mTab.OpenFileTab(mResults(i).sFile)
+                        End If
+                    Else
                         Continue For
                     End If
                 End If
 
-                Dim sReplace As String
+                mResults(i).sTabIdentifier = mTab.m_Identifier
+                sTabIdentifiers.Add(mTab.m_Identifier)
+            Next
 
-                If (mResults(i).mMatch IsNot Nothing) Then
-                    sReplace = mResults(i).mMatch.Result(TextBox_Replace.Text)
-                Else
-                    sReplace = TextBox_Replace.Text
+            For Each sTabIdentifier As String In sTabIdentifiers
+                Dim mTab = g_mFormMain.g_ClassTabControl.GetTabByIdentifier(sTabIdentifier)
+                If (mTab Is Nothing) Then
+                    Continue For
                 End If
 
-                g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.Replace(mResults(i).iLocation, mResults(i).iLength, sReplace)
+                If (Not mTab.m_IsActive) Then
+                    mTab.SelectTab()
+                End If
 
-                iReplaceCount += 1
+                Try
+                    mTab.m_TextEditor.Document.UndoStack.StartUndoGroup()
+
+                    For i = mResults.Length - 1 To 0 Step -1
+                        If (mResults(i).sTabIdentifier <> sTabIdentifier) Then
+                            Continue For
+                        End If
+
+                        If (CheckBox_ReplaceInSelection.Checked) Then
+                            Dim mSelectionManager = mTab.m_TextEditor.ActiveTextAreaControl.SelectionManager
+
+                            If (Not mSelectionManager.HasSomethingSelected) Then
+                                Exit For
+                            End If
+
+                            Dim iSelectOffset As Integer = mSelectionManager.SelectionCollection(0).Offset
+                            Dim iSelectLength As Integer = mSelectionManager.SelectionCollection(0).Length
+
+                            If (mResults(i).iLocation < iSelectOffset) Then
+                                Continue For
+                            End If
+
+                            If (mResults(i).iLocation > (iSelectOffset + iSelectLength)) Then
+                                Continue For
+                            End If
+
+                            If ((mResults(i).iLocation + mResults(i).iLength) > (iSelectOffset + iSelectLength)) Then
+                                Continue For
+                            End If
+                        End If
+
+                        Dim sReplace As String
+
+                        If (mResults(i).mMatch IsNot Nothing) Then
+                            sReplace = mResults(i).mMatch.Result(TextBox_Replace.Text)
+                        Else
+                            sReplace = TextBox_Replace.Text
+                        End If
+
+                        mTab.m_TextEditor.Document.Replace(mResults(i).iLocation, mResults(i).iLength, sReplace)
+
+                        iReplaceCount += 1
+                    Next
+                Finally
+                    mTab.m_TextEditor.Document.UndoStack.EndUndoGroup()
+
+                    mTab.m_TextEditor.InvalidateTextArea()
+                End Try
             Next
         Catch ex As Exception
             ClassExceptionLog.WriteToLogMessageBox(ex)
-        Finally
-            g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.UndoStack.EndUndoGroup()
-
-            g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.InvalidateTextArea()
         End Try
 
         ToolStripStatusLabel_Status.Text = String.Format("{0} Items replaced!", iReplaceCount)
@@ -714,10 +758,11 @@ Public Class FormSearch
 
                     Dim sSource As String
                     Dim sTabIdentifier As String = ""
+                    Dim mIncludeTab = g_mFormMain.g_ClassTabControl.GetTabByFile(mInclude.Value)
 
-                    If (mInclude.Value.ToLower = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_File.ToLower) Then
-                        sSource = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_TextEditor.Document.TextContent
-                        sTabIdentifier = g_mFormMain.g_ClassTabControl.m_ActiveTab.m_Identifier
+                    If (mIncludeTab IsNot Nothing) Then
+                        sSource = mIncludeTab.m_TextEditor.Document.TextContent
+                        sTabIdentifier = mIncludeTab.m_Identifier
                     Else
                         sSource = IO.File.ReadAllText(mInclude.Value)
                     End If
