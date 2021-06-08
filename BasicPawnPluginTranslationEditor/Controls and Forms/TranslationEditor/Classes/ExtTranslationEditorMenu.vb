@@ -147,7 +147,12 @@ Partial Public Class FormTranslationEditor
             Return
         End If
 
-        My.Computer.Clipboard.SetText(mSelectedNode.m_Language)
+
+        If (String.IsNullOrEmpty(mSelectedNode.m_Language)) Then
+            My.Computer.Clipboard.Clear()
+        Else
+            My.Computer.Clipboard.SetText(mSelectedNode.m_Language)
+        End If
     End Sub
 
     Private Sub ToolStripMenuItem_CopyFormat_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_CopyFormat.Click
@@ -161,7 +166,11 @@ Partial Public Class FormTranslationEditor
             Return
         End If
 
-        My.Computer.Clipboard.SetText(mSelectedNode.m_Format)
+        If (String.IsNullOrEmpty(mSelectedNode.m_Format)) Then
+            My.Computer.Clipboard.Clear()
+        Else
+            My.Computer.Clipboard.SetText(mSelectedNode.m_Format)
+        End If
     End Sub
 
     Private Sub ToolStripMenuItem_CopyText_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_CopyText.Click
@@ -175,7 +184,11 @@ Partial Public Class FormTranslationEditor
             Return
         End If
 
-        My.Computer.Clipboard.SetText(mSelectedNode.m_Text)
+        If (String.IsNullOrEmpty(mSelectedNode.m_Text)) Then
+            My.Computer.Clipboard.Clear()
+        Else
+            My.Computer.Clipboard.SetText(mSelectedNode.m_Text)
+        End If
     End Sub
 
     Private Sub ToolStripMenuItem_GroupAdd_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_GroupAdd.Click
