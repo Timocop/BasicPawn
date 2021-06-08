@@ -224,11 +224,7 @@ Public Class FormAddTranslation
             Return True
         End If
 
-        If (Regex.IsMatch(m_Format, "^({\d+\:\w}|,{\d+\:\w})+$")) Then
-            Return True
-        End If
-
-        Return False
+        Return Regex.IsMatch(m_Format, "^({\d+\:[.\w]+}(,{\d+\:[.\w]+})*)$")
     End Function
 
     Private Sub FormAddTranslation_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
