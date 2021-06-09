@@ -943,9 +943,9 @@ Public Class ClassTextEditorTools
                 End If
             End If
 
-            Dim sTmpOutputFile As String = IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString)
+            Dim sTmpOutputFile As String = IO.Path.Combine(IO.Path.GetTempPath, IO.Path.GetFileNameWithoutExtension(IO.Path.GetRandomFileName))
 
-            Dim TmpSourceFile As String = String.Format("{0}.src", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
+            Dim TmpSourceFile As String = IO.Path.ChangeExtension(IO.Path.Combine(IO.Path.GetTempPath, IO.Path.GetRandomFileName), ".src")
             IO.File.WriteAllText(TmpSourceFile, sSource)
 
             Dim lIncludeList As New List(Of String)
@@ -1302,7 +1302,7 @@ Public Class ClassTextEditorTools
 
 
             Dim sTmpSource As String = sSource
-            Dim sTmpSourcePath As String = String.Format("{0}.src", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
+            Dim sTmpSourcePath As String = IO.Path.ChangeExtension(IO.Path.Combine(IO.Path.GetTempPath, IO.Path.GetRandomFileName), ".src")
 
             sTempOutputFile = sTmpSourcePath
 
@@ -1320,7 +1320,7 @@ Public Class ClassTextEditorTools
 
             IO.File.WriteAllText(sTmpSourcePath, sTmpSource)
 
-            sOutputFile = String.Format("{0}.lst", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
+            sOutputFile = IO.Path.ChangeExtension(IO.Path.Combine(IO.Path.GetTempPath, IO.Path.GetRandomFileName), ".lst")
 
             Dim lIncludeList As New List(Of String)
             For Each sInclude As String In sIncludePaths.Split(";"c)
@@ -1632,14 +1632,14 @@ Public Class ClassTextEditorTools
 
             'Set output path
             If (bTesting) Then
-                sOutputFile = String.Format("{0}.asm", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
+                sOutputFile = IO.Path.ChangeExtension(IO.Path.Combine(IO.Path.GetTempPath, IO.Path.GetRandomFileName), ".asm")
             Else
                 If (String.IsNullOrEmpty(sOutputFile)) Then
                     Throw New ArgumentException("Invalid output file")
                 End If
             End If
 
-            Dim TmpSourceFile As String = String.Format("{0}.src", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
+            Dim TmpSourceFile As String = IO.Path.ChangeExtension(IO.Path.Combine(IO.Path.GetTempPath, IO.Path.GetRandomFileName), ".src")
             IO.File.WriteAllText(TmpSourceFile, sSource)
 
             Dim lIncludeList As New List(Of String)
@@ -2121,7 +2121,7 @@ Public Class ClassTextEditorTools
         End Sub
 
         Private Function BuildBatch(sCmd As String) As String
-            Dim sBatFile As String = IO.Path.Combine(IO.Path.GetTempPath(), Guid.NewGuid.ToString & ".bat")
+            Dim sBatFile As String = IO.Path.ChangeExtension(IO.Path.Combine(IO.Path.GetTempPath, IO.Path.GetRandomFileName), ".bat")
 
             'Make command line output cleaner by adding '@echo off'
             'The user can turn it back on with '@echo on'

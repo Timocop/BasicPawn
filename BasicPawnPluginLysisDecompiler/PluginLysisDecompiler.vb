@@ -302,7 +302,7 @@ Public Class PluginLysisDecompiler
                                                                               End If
                                                                           End If
 
-                                                                          Dim sTempFile As String = String.Format("{0}.src", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
+                                                                          Dim sTempFile As String = IO.Path.ChangeExtension(IO.Path.Combine(IO.Path.GetTempPath, IO.Path.GetRandomFileName), ".src")
                                                                           IO.File.WriteAllText(sTempFile, sOutput.ToString)
 
                                                                           ClassThread.ExecAsync(g_mPluginLysisDecompiler.g_mFormMain,

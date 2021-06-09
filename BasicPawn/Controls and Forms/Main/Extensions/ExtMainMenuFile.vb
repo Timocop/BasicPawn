@@ -193,7 +193,7 @@ Partial Public Class FormMain
 
     Private Sub ToolStripMenuItem_FileSaveAsTemp_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_FileSaveAsTemp.Click
         Try
-            Dim sTempFile As String = String.Format("{0}.src", IO.Path.Combine(IO.Path.GetTempPath, Guid.NewGuid.ToString))
+            Dim sTempFile As String = IO.Path.ChangeExtension(IO.Path.Combine(IO.Path.GetTempPath, IO.Path.GetRandomFileName), ".src")
             IO.File.WriteAllText(sTempFile, "")
 
             g_ClassTabControl.m_ActiveTab.m_File = sTempFile
