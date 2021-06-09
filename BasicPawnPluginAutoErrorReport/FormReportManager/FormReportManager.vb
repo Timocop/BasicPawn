@@ -189,7 +189,12 @@ Public Class FormReportManager
                         Throw New ArgumentException("Unable to open. Could not find local file.")
                     End If
 
-                    Process.Start("notepad.exe", sLocalFile)
+                    Dim sFileExt As String = IO.Path.GetExtension(sLocalFile)
+                    If (sFileExt.ToLower <> ".log" AndAlso sFileExt.ToLower <> ".txt") Then
+                        Process.Start("notepad.exe", sLocalFile)
+                    Else
+                        Process.Start(sLocalFile)
+                    End If
 
                 Case ERROR_MSGONLY
                     Return
@@ -328,7 +333,7 @@ Public Class FormReportManager
                                                                                              Continue For
                                                                                          End If
 
-                                                                                         Dim sTmpFile As String = IO.Path.GetTempFileName
+                                                                                         Dim sTmpFile As String = IO.Path.ChangeExtension(IO.Path.Combine(IO.Path.GetTempPath, IO.Path.GetRandomFileName), sFileExt.ToLower)
                                                                                          Try
                                                                                              mClassFTP.DownloadFile(mItem.sFullName, sTmpFile)
 
@@ -379,7 +384,7 @@ Public Class FormReportManager
                                                                                              Continue For
                                                                                          End If
 
-                                                                                         Dim sTmpFile As String = IO.Path.GetTempFileName
+                                                                                         Dim sTmpFile As String = IO.Path.ChangeExtension(IO.Path.Combine(IO.Path.GetTempPath, IO.Path.GetRandomFileName), sFileExt.ToLower)
                                                                                          Try
                                                                                              Using mStream As New IO.FileStream(sTmpFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
                                                                                                  mClassSFTP.DownloadFile(mItem.FullName, mStream)
@@ -935,7 +940,7 @@ Public Class FormReportManager
                                                                                           Continue For
                                                                                       End If
 
-                                                                                      Dim sTmpFile As String = IO.Path.GetTempFileName
+                                                                                      Dim sTmpFile As String = IO.Path.ChangeExtension(IO.Path.Combine(IO.Path.GetTempPath, IO.Path.GetRandomFileName), sFileExt.ToLower)
                                                                                       g_lFilesCleanup.Add(sTmpFile)
                                                                                       mClassFTP.DownloadFile(mItem.sFullName, sTmpFile)
                                                                                       ApplyNewlineFix(sTmpFile)
@@ -1002,7 +1007,7 @@ Public Class FormReportManager
                                                                                           Continue For
                                                                                       End If
 
-                                                                                      Dim sTmpFile As String = IO.Path.GetTempFileName
+                                                                                      Dim sTmpFile As String = IO.Path.ChangeExtension(IO.Path.Combine(IO.Path.GetTempPath, IO.Path.GetRandomFileName), sFileExt.ToLower)
                                                                                       g_lFilesCleanup.Add(sTmpFile)
                                                                                       Using mStream As New IO.FileStream(sTmpFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
                                                                                           mClassSFTP.DownloadFile(mItem.FullName, mStream)

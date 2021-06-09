@@ -393,10 +393,10 @@ Public Class UCInformationList
 
             Select Case (iAction)
                 Case ENUM_COPY_ACTION.NOTEPAD
-                    Dim sTempFile As String = IO.Path.GetTempFileName
+                    Dim sTempFile As String = IO.Path.ChangeExtension(IO.Path.Combine(IO.Path.GetTempPath, IO.Path.GetRandomFileName), ".txt")
                     IO.File.WriteAllText(sTempFile, mContent.ToString)
 
-                    Process.Start("notepad.exe", sTempFile)
+                    Process.Start(sTempFile)
 
                 Case ENUM_COPY_ACTION.COPY
                     My.Computer.Clipboard.SetText(mContent.ToString, TextDataFormat.Text)
