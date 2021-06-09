@@ -1153,8 +1153,8 @@ Public Class ClassTabControl
                 Return g_sFile
             End Get
             Set(value As String)
-                g_sFile = value
-                m_Title = IO.Path.GetFileName(value)
+                g_sFile = ClassTools.ClassFileSystem.GetRealPath(value)
+                m_Title = IO.Path.GetFileName(g_sFile)
 
                 UpdateToolTip()
             End Set

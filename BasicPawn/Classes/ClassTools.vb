@@ -733,6 +733,32 @@ Public Class ClassTools
         End Function
     End Class
 
+    Class ClassFileSystem
+        <DllImport("kernel32.dll")>
+        Private Shared Function GetLongPathName(ByVal path As String, ByVal pszPath As StringBuilder, ByVal cchPath As Integer) As Integer
+        End Function
+
+        Public Shared Function GetRealPath(sPath As String) As String
+            If (String.IsNullOrEmpty(sPath)) Then
+                Return sPath
+            End If
+
+            Dim sLongPath As New StringBuilder(260)
+            Dim iPathLen As Integer = GetLongPathName(sPath, sLongPath, sLongPath.Capacity)
+
+            If (iPathLen > sLongPath.Capacity) Then
+                sLongPath.Capacity = iPathLen
+                iPathLen = GetLongPathName(sPath, sLongPath, sLongPath.Capacity)
+            End If
+
+            If (iPathLen = 0) Then
+                Return sPath
+            End If
+
+            Return sLongPath.ToString()
+        End Function
+    End Class
+
     Class ClassRegistry
         Enum ENUM_SELECTION_MODEL
             [SINGLE]

@@ -790,6 +790,9 @@ Public Class ClassTextEditorTools
                         sFilePath = mTab.m_File
                     End If
 
+                    'Normalize path casing
+                    sFilePath = ClassTools.ClassFileSystem.GetRealPath(sFilePath)
+
                     Dim sFileDirectory As String = IO.Path.GetDirectoryName(sFilePath)
                     If (Not String.IsNullOrEmpty(sCompilerSearchPath)) Then
                         sFileDirectory = sCompilerSearchPath
@@ -862,6 +865,9 @@ Public Class ClassTextEditorTools
                         sFilePath = mTab.m_File
                     End If
 
+                    'Normalize path casing
+                    sFilePath = ClassTools.ClassFileSystem.GetRealPath(sFilePath)
+
                     Dim sFileDirectory As String = IO.Path.GetDirectoryName(sFilePath)
                     If (Not String.IsNullOrEmpty(sIncludeSearchPath)) Then
                         sFileDirectory = sIncludeSearchPath
@@ -914,6 +920,9 @@ Public Class ClassTextEditorTools
 
                         sFilePath = mTab.m_File
                     End If
+
+                    'Normalize path casing
+                    sFilePath = ClassTools.ClassFileSystem.GetRealPath(sFilePath)
 
                     If (mConfig.g_iCompilingType = ClassSettings.ENUM_COMPILING_TYPE.AUTOMATIC) Then
                         Dim sOutputDir As String = IO.Path.Combine(IO.Path.GetDirectoryName(sFilePath), "compiled")
@@ -1187,6 +1196,9 @@ Public Class ClassTextEditorTools
                         sFilePath = mTab.m_File
                     End If
 
+                    'Normalize path casing
+                    sFilePath = ClassTools.ClassFileSystem.GetRealPath(sFilePath)
+
                     Dim sFileDirectory As String = IO.Path.GetDirectoryName(sFilePath)
                     If (Not String.IsNullOrEmpty(sCompilerSearchPath)) Then
                         sFileDirectory = sCompilerSearchPath
@@ -1258,6 +1270,9 @@ Public Class ClassTextEditorTools
 
                         sFilePath = mTab.m_File
                     End If
+
+                    'Normalize path casing
+                    sFilePath = ClassTools.ClassFileSystem.GetRealPath(sFilePath)
 
                     Dim sFileDirectory As String = IO.Path.GetDirectoryName(sFilePath)
                     If (Not String.IsNullOrEmpty(sIncludeSearchPath)) Then
@@ -1511,6 +1526,9 @@ Public Class ClassTextEditorTools
                         sFilePath = mTab.m_File
                     End If
 
+                    'Normalize path casing
+                    sFilePath = ClassTools.ClassFileSystem.GetRealPath(sFilePath)
+
                     Dim sFileDirectory As String = IO.Path.GetDirectoryName(sFilePath)
                     If (Not String.IsNullOrEmpty(sCompilerSearchPath)) Then
                         sFileDirectory = sCompilerSearchPath
@@ -1582,6 +1600,9 @@ Public Class ClassTextEditorTools
 
                         sFilePath = mTab.m_File
                     End If
+
+                    'Normalize path casing
+                    sFilePath = ClassTools.ClassFileSystem.GetRealPath(sFilePath)
 
                     Dim sFileDirectory As String = IO.Path.GetDirectoryName(sFilePath)
                     If (Not String.IsNullOrEmpty(sIncludeSearchPath)) Then
