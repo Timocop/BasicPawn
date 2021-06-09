@@ -139,23 +139,28 @@ Public Class FormFTP
 
                                         Dim i As Integer
                                         For i = 0 To sFiles.Length - 1
-                                            If (Not IO.File.Exists(sFiles(i))) Then
-                                                g_mPluginFTP.g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, String.Format("Could not upload '{0}' because the file does not exist!", sFiles(i)))
+                                            Dim sFile As String = sFiles(i)
+
+                                            If (Not IO.File.Exists(sFile)) Then
+                                                g_mPluginFTP.g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_ERROR, String.Format("Could not upload '{0}' because the file does not exist!", sFile))
                                                 Continue For
                                             End If
 
+                                            'Normalize path
+                                            sFile = ClassTools.ClassFileSystem.GetRealPath(sFile)
+
                                             g_mPluginFTP.g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO,
                                                                                                            String.Format("Uploading file '{0}' ({1}/{2}) to '{3}/{4}' using {5}...",
-                                                                                                                         sFiles(i), i + 1,
+                                                                                                                         sFile, i + 1,
                                                                                                                          sFiles.Length,
                                                                                                                          sHost.TrimEnd("/"c),
                                                                                                                          sDestinationPath.TrimStart("/"c),
                                                                                                                          If(iProtocolType = UCFtpPathDatabase.ENUM_FTP_PROTOCOL_TYPE.FTP, "FTP", "SFTP")),
-                                                                                                           New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(sFiles(i)))
+                                                                                                           New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(sFile))
 
-                                            Dim sFilename As String = IO.Path.GetFileName(sFiles(i))
+                                            Dim sFilename As String = IO.Path.GetFileName(sFile)
                                             Dim sDestinationFile As String = (sDestinationPath.TrimEnd("/"c) & "/" & sFilename)
-                                            Dim iFileLength As ULong = CULng(New IO.FileInfo(sFiles(i)).Length)
+                                            Dim iFileLength As ULong = CULng(New IO.FileInfo(sFile).Length)
 
                                             ClassThread.ExecEx(Of Object)(Me, Sub()
                                                                                   If (g_mFormProgress IsNot Nothing AndAlso Not g_mFormProgress.IsDisposed) Then
@@ -193,7 +198,7 @@ Public Class FormFTP
                                                 Case (TypeOf mFtpClient Is ClassFTP)
                                                     Dim mClient = DirectCast(mFtpClient, ClassFTP)
 
-                                                    mClient.UploadFile(sFiles(i), sDestinationFile, mUploadAction)
+                                                    mClient.UploadFile(sFile, sDestinationFile, mUploadAction)
 
                                                 Case (TypeOf mFtpClient Is Renci.SshNet.SftpClient)
                                                     Dim mClient = DirectCast(mFtpClient, Renci.SshNet.SftpClient)
@@ -202,7 +207,7 @@ Public Class FormFTP
                                                         mClient.Connect()
                                                     End If
 
-                                                    Using mStream As New IO.FileStream(sFiles(i), IO.FileMode.Open, IO.FileAccess.Read)
+                                                    Using mStream As New IO.FileStream(sFile, IO.FileMode.Open, IO.FileAccess.Read)
                                                         mClient.UploadFile(mStream, sDestinationFile, mUploadAction)
                                                     End Using
                                                 Case Else
