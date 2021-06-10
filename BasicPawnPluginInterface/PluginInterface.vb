@@ -15,7 +15,7 @@
 'along with this program. If Not, see < http: //www.gnu.org/licenses/>.
 
 
-Public Interface IPluginInterfaceV10
+Public Interface IPluginInterfaceV11
 
 #Region "Main"
     ''' <summary>

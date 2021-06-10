@@ -21,78 +21,78 @@ Imports BasicPawn
 Imports BasicPawnPluginInterface
 
 Public Class PluginSmartPawnObfuscator
-    Implements IPluginInterfaceV10
+    Implements IPluginInterfaceV11
 
     Public g_mFormMain As FormMain
     Private g_ClassPlugin As ClassPlugin
 
 #Region "Unused"
-    Public Sub OnPluginLoad(sDLLPath As String) Implements IPluginInterfaceV10.OnPluginLoad
+    Public Sub OnPluginLoad(sDLLPath As String) Implements IPluginInterfaceV11.OnPluginLoad
         Throw New NotImplementedException()
     End Sub
 
-    Public Function OnPluginEnd() As Boolean Implements IPluginInterfaceV10.OnPluginEnd
+    Public Function OnPluginEnd() As Boolean Implements IPluginInterfaceV11.OnPluginEnd
         Throw New NotImplementedException()
     End Function
 
-    Public Sub OnSettingsChanged() Implements IPluginInterfaceV10.OnSettingsChanged
+    Public Sub OnSettingsChanged() Implements IPluginInterfaceV11.OnSettingsChanged
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnConfigChanged() Implements IPluginInterfaceV10.OnConfigChanged
+    Public Sub OnConfigChanged() Implements IPluginInterfaceV11.OnConfigChanged
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnEditorSyntaxUpdate() Implements IPluginInterfaceV10.OnEditorSyntaxUpdate
+    Public Sub OnEditorSyntaxUpdate() Implements IPluginInterfaceV11.OnEditorSyntaxUpdate
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnEditorSyntaxUpdateEnd() Implements IPluginInterfaceV10.OnEditorSyntaxUpdateEnd
+    Public Sub OnEditorSyntaxUpdateEnd() Implements IPluginInterfaceV11.OnEditorSyntaxUpdateEnd
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnSyntaxUpdate(iType As Integer, bForceFromMemory As Boolean) Implements IPluginInterfaceV10.OnSyntaxUpdate
+    Public Sub OnSyntaxUpdate(iType As Integer, bForceFromMemory As Boolean) Implements IPluginInterfaceV11.OnSyntaxUpdate
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnSyntaxUpdateEnd(iType As Integer, bForceFromMemory As Boolean) Implements IPluginInterfaceV10.OnSyntaxUpdateEnd
+    Public Sub OnSyntaxUpdateEnd(iType As Integer, bForceFromMemory As Boolean) Implements IPluginInterfaceV11.OnSyntaxUpdateEnd
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnFormColorUpdate() Implements IPluginInterfaceV10.OnFormColorUpdate
+    Public Sub OnFormColorUpdate() Implements IPluginInterfaceV11.OnFormColorUpdate
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnDebuggerStart(mFormDebugger As Object) Implements IPluginInterfaceV10.OnDebuggerStart
+    Public Sub OnDebuggerStart(mFormDebugger As Object) Implements IPluginInterfaceV11.OnDebuggerStart
         Throw New NotImplementedException()
     End Sub
 
-    Public Function OnDebuggerEnd(mFormDebugger As Object) As Boolean Implements IPluginInterfaceV10.OnDebuggerEnd
+    Public Function OnDebuggerEnd(mFormDebugger As Object) As Boolean Implements IPluginInterfaceV11.OnDebuggerEnd
         Throw New NotImplementedException()
     End Function
 
-    Public Sub OnDebuggerEndPost(mFormDebugger As Object) Implements IPluginInterfaceV10.OnDebuggerEndPost
+    Public Sub OnDebuggerEndPost(mFormDebugger As Object) Implements IPluginInterfaceV11.OnDebuggerEndPost
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnDebuggerDebugStart() Implements IPluginInterfaceV10.OnDebuggerDebugStart
+    Public Sub OnDebuggerDebugStart() Implements IPluginInterfaceV11.OnDebuggerDebugStart
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnDebuggerDebugPause() Implements IPluginInterfaceV10.OnDebuggerDebugPause
+    Public Sub OnDebuggerDebugPause() Implements IPluginInterfaceV11.OnDebuggerDebugPause
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnDebuggerDebugStop() Implements IPluginInterfaceV10.OnDebuggerDebugStop
+    Public Sub OnDebuggerDebugStop() Implements IPluginInterfaceV11.OnDebuggerDebugStop
         Throw New NotImplementedException()
     End Sub
 
-    Public Sub OnDebuggerRefresh(mFormDebugger As Object) Implements IPluginInterfaceV10.OnDebuggerRefresh
+    Public Sub OnDebuggerRefresh(mFormDebugger As Object) Implements IPluginInterfaceV11.OnDebuggerRefresh
         Throw New NotImplementedException()
     End Sub
 #End Region
 
-    Public Sub OnPluginStart(mFormMain As Object, bEnabled As Boolean) Implements IPluginInterfaceV10.OnPluginStart
+    Public Sub OnPluginStart(mFormMain As Object, bEnabled As Boolean) Implements IPluginInterfaceV11.OnPluginStart
         g_mFormMain = DirectCast(mFormMain, FormMain)
 
         If (bEnabled) Then
@@ -100,20 +100,20 @@ Public Class PluginSmartPawnObfuscator
         End If
     End Sub
 
-    Public Sub OnPluginEndPost() Implements IPluginInterfaceV10.OnPluginEndPost
+    Public Sub OnPluginEndPost() Implements IPluginInterfaceV11.OnPluginEndPost
         If (g_ClassPlugin IsNot Nothing) Then
             g_ClassPlugin.Dispose()
             g_ClassPlugin = Nothing
         End If
     End Sub
 
-    Public ReadOnly Property m_PluginEnabled As Boolean Implements IPluginInterfaceV10.m_PluginEnabled
+    Public ReadOnly Property m_PluginEnabled As Boolean Implements IPluginInterfaceV11.m_PluginEnabled
         Get
             Return (g_ClassPlugin IsNot Nothing)
         End Get
     End Property
 
-    Public Function OnPluginEnabled(ByRef sReason As String) As Boolean Implements IPluginInterfaceV10.OnPluginEnabled
+    Public Function OnPluginEnabled(ByRef sReason As String) As Boolean Implements IPluginInterfaceV11.OnPluginEnabled
         If (g_ClassPlugin Is Nothing) Then
             g_ClassPlugin = New ClassPlugin(Me)
         End If
@@ -121,7 +121,7 @@ Public Class PluginSmartPawnObfuscator
         Return True
     End Function
 
-    Public Function OnPluginDisabled(ByRef sReason As String) As Boolean Implements IPluginInterfaceV10.OnPluginDisabled
+    Public Function OnPluginDisabled(ByRef sReason As String) As Boolean Implements IPluginInterfaceV11.OnPluginDisabled
         If (g_ClassPlugin IsNot Nothing) Then
             g_ClassPlugin.Dispose()
             g_ClassPlugin = Nothing

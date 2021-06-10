@@ -34,9 +34,9 @@ Public Class ClassPluginController
         Public sFile As String
         Public mPluginInformation As IPluginInfoInterface.STRUC_PLUGIN_INFORMATION
         Public mPluginVersionInformation As IPluginVersionInterface.STRUC_PLUGIN_VERSION_INFORMATION
-        Public mPluginInterface As IPluginInterfaceV10
+        Public mPluginInterface As IPluginInterfaceV11
 
-        Public Sub New(_File As String, _PluginInterface As IPluginInterfaceV10, _PluginInformation As IPluginInfoInterface.STRUC_PLUGIN_INFORMATION, _PluginUpdateInformation As IPluginVersionInterface.STRUC_PLUGIN_VERSION_INFORMATION)
+        Public Sub New(_File As String, _PluginInterface As IPluginInterfaceV11, _PluginInformation As IPluginInfoInterface.STRUC_PLUGIN_INFORMATION, _PluginUpdateInformation As IPluginVersionInterface.STRUC_PLUGIN_VERSION_INFORMATION)
             sFile = _File
             mPluginInterface = _PluginInterface
             mPluginInformation = _PluginInformation
@@ -72,7 +72,7 @@ Public Class ClassPluginController
         End Get
     End Property
 
-    Public Function GetPluginInfo(mPluginInterface As IPluginInterfaceV10) As IPluginInfoInterface.STRUC_PLUGIN_INFORMATION
+    Public Function GetPluginInfo(mPluginInterface As IPluginInterfaceV11) As IPluginInfoInterface.STRUC_PLUGIN_INFORMATION
         For Each mPlugin In m_Plugins
             If (mPluginInterface IsNot mPlugin.mPluginInterface) Then
                 Continue For
@@ -185,7 +185,7 @@ Public Class ClassPluginController
         Next
     End Sub
 
-    Private Function LoadPlugin(sFile As String) As IPluginInterfaceV10
+    Private Function LoadPlugin(sFile As String) As IPluginInterfaceV11
         Dim mAssembly = Assembly.LoadFile(sFile)
 
         If (mAssembly Is Nothing) Then
@@ -222,11 +222,11 @@ Public Class ClassPluginController
 
             'Find plugin stuff
             For Each mType In GetValidTypes(mAssembly)
-                If (Not GetType(IPluginInterfaceV10).IsAssignableFrom(mType)) Then
+                If (Not GetType(IPluginInterfaceV11).IsAssignableFrom(mType)) Then
                     Continue For
                 End If
 
-                Dim mPlugin = DirectCast(mAssembly.CreateInstance(mType.FullName), IPluginInterfaceV10)
+                Dim mPlugin = DirectCast(mAssembly.CreateInstance(mType.FullName), IPluginInterfaceV11)
 
                 g_lPlugins.Add(New STRUC_PLUGIN_ITEM(sFile,
                                                      mPlugin,
