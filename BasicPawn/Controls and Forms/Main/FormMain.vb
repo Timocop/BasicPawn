@@ -392,14 +392,19 @@ Public Class FormMain
                                                                                                  'Make update button visible
                                                                                                  ToolStripMenuItem_NewUpdate.Visible = True
 
-                                                                                                 g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("BasicPawn update available! New version: {0}; Current version: {1}", sNewVersion, sCurrentVersion))
+                                                                                                 g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "BasicPawn update available!")
+                                                                                                 g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, String.Format(vbTab & "New version: {0}", sNewVersion))
+                                                                                                 g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, String.Format(vbTab & "Current version: {0}", sCurrentVersion))
                                                                                              End Sub)
                                                                End If
 
                                                                For Each mPlugin In g_ClassPluginController.m_Plugins
                                                                    If (ClassPluginController.ClassPluginUpdate.CheckUpdateAvailable(mPlugin, sNewVersion, sCurrentVersion) OrElse bForceUpdate) Then
                                                                        ClassThread.ExecAsync(Me, Sub()
-                                                                                                     g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, String.Format("BasicPawn plugin update available! Plugin: {0}; New version: {1}; Current version: {2}", mPlugin.mPluginInformation.sName, sNewVersion, sCurrentVersion))
+                                                                                                     g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "BasicPawn plugin update available!")
+                                                                                                     g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, String.Format(vbTab & "Plugin: {0}", mPlugin.mPluginInformation.sName))
+                                                                                                     g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, String.Format(vbTab & "New version: {0}", sNewVersion))
+                                                                                                     g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE, String.Format(vbTab & "Current version: {0}", sCurrentVersion))
 
                                                                                                      If (Not String.IsNullOrEmpty(mPlugin.mPluginInformation.sURL) AndAlso mPlugin.mPluginInformation.sURL.StartsWith("http")) Then
                                                                                                          g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_NONE,
