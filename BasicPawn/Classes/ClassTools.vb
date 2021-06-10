@@ -734,28 +734,29 @@ Public Class ClassTools
     End Class
 
     Class ClassFileSystem
-        <DllImport("kernel32.dll")>
-        Private Shared Function GetLongPathName(ByVal path As String, ByVal pszPath As StringBuilder, ByVal cchPath As Integer) As Integer
-        End Function
-
         Public Shared Function GetRealPath(sPath As String) As String
-            If (String.IsNullOrEmpty(sPath)) Then
-                Return sPath
+            If (IO.Path.IsPathRooted(sPath)) Then
+                sPath = sPath.TrimEnd(IO.Path.DirectorySeparatorChar)
+
+                Try
+                    Dim sFileName As String = IO.Path.GetFileName(sPath)
+                    If (String.IsNullOrEmpty(sFileName)) Then
+                        Return sPath.ToUpper() & IO.Path.DirectorySeparatorChar
+                    End If
+
+                    Dim sParentDir As String = IO.Path.GetDirectoryName(sPath)
+
+                    sParentDir = GetRealPath(sParentDir)
+
+                    Dim mParentDirInfo As New IO.DirectoryInfo(sParentDir)
+
+                    Return mParentDirInfo.GetFileSystemInfos(sFileName)(0).FullName
+                Catch ex As Exception
+                    Throw New ArgumentException("Invalid path")
+                End Try
+            Else
+                Throw New ArgumentException("Absolute path needed, not relative")
             End If
-
-            Dim sLongPath As New StringBuilder(260)
-            Dim iPathLen As Integer = GetLongPathName(sPath, sLongPath, sLongPath.Capacity)
-
-            If (iPathLen > sLongPath.Capacity) Then
-                sLongPath.Capacity = iPathLen
-                iPathLen = GetLongPathName(sPath, sLongPath, sLongPath.Capacity)
-            End If
-
-            If (iPathLen = 0) Then
-                Return sPath
-            End If
-
-            Return sLongPath.ToString()
         End Function
     End Class
 
