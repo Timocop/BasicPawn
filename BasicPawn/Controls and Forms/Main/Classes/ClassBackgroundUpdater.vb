@@ -308,6 +308,13 @@ Public Class ClassBackgroundUpdater
             Return
         End If
 
+        If (ClassSettings.g_bSettingsHighlightScopeMaxLen <> 0 AndAlso mScopeLocation.Y > ClassSettings.g_bSettingsHighlightScopeMaxLen) Then
+            ClassThread.ExecAsync(g_mFormMain, Sub()
+                                                   mActiveTab.g_ClassScopeHighlighting.RemoveHighlighting()
+                                               End Sub)
+            Return
+        End If
+
         ClassThread.ExecAsync(g_mFormMain, Sub()
                                                mActiveTab.g_ClassScopeHighlighting.UpdateHighlighting(mScopeLocation)
                                            End Sub)

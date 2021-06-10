@@ -71,6 +71,7 @@ Public Class ClassSettings
     Public Shared g_bSettingsAutoMark As Boolean = True
     Public Shared g_bSettingsPublicAsDefineColor As Boolean = True
     Public Shared g_bSettingsHighlightCurrentScope As Boolean = True
+    Public Shared g_bSettingsHighlightScopeMaxLen As Integer = 250
     'Autocomplete
     Public Shared g_bSettingsAlwaysLoadDefaultIncludes As Boolean = True
     Public Shared g_bSettingsEnableToolTip As Boolean = True
@@ -140,6 +141,7 @@ Public Class ClassSettings
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutoMark", If(g_bSettingsAutoMark, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "PublicAsDefineColor", If(g_bSettingsPublicAsDefineColor, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "HighlightCurrentScope", If(g_bSettingsHighlightCurrentScope, "1", "0")))
+                lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "HighlightScopeMaxLen", CStr(g_bSettingsHighlightScopeMaxLen)))
                 'Autocomplete
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AlwaysLoadDefaultIncludes", If(g_bSettingsAlwaysLoadDefaultIncludes, "1", "0")))
                 lContent.Add(New ClassIni.STRUC_INI_CONTENT("Editor", "AutocompleteToolTip", If(g_bSettingsEnableToolTip, "1", "0")))
@@ -207,7 +209,6 @@ Public Class ClassSettings
 
                     g_sSettingsSyntaxHighlightingPath = mIni.ReadKeyValue("Editor", "TextEditorSyntaxHighlightingPath", "")
                     g_bSettingsRememberFoldings = (mIni.ReadKeyValue("Editor", "TextEditorRememberFoldings", "1") <> "0")
-
                     g_bSettingsIconBar = (mIni.ReadKeyValue("Editor", "TextEditorIconBar", "1") <> "0")
 
                     If (Integer.TryParse(mIni.ReadKeyValue("Editor", "TextEditorIconBarLineStateMax", "1000"), tmpInt)) Then
@@ -226,6 +227,11 @@ Public Class ClassSettings
                     g_bSettingsAutoMark = (mIni.ReadKeyValue("Editor", "AutoMark", "1") <> "0")
                     g_bSettingsPublicAsDefineColor = (mIni.ReadKeyValue("Editor", "PublicAsDefineColor", "1") <> "0")
                     g_bSettingsHighlightCurrentScope = (mIni.ReadKeyValue("Editor", "HighlightCurrentScope", "1") <> "0")
+
+                    If (Integer.TryParse(mIni.ReadKeyValue("Editor", "HighlightScopeMaxLen", "250"), tmpInt)) Then
+                        g_bSettingsHighlightScopeMaxLen = ClassTools.ClassMath.ClampInt(tmpInt, 0, 999999)
+                    End If
+
                     'Autocomplete
                     g_bSettingsAlwaysLoadDefaultIncludes = (mIni.ReadKeyValue("Editor", "AlwaysLoadDefaultIncludes", "1") <> "0")
                     g_bSettingsEnableToolTip = (mIni.ReadKeyValue("Editor", "AutocompleteToolTip", "1") <> "0")

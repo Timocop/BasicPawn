@@ -21,6 +21,7 @@ Partial Public Class FormSettings
         CheckBox_AutoMark.Checked = ClassSettings.g_bSettingsAutoMark
         CheckBox_PublicAsDefineColor.Checked = ClassSettings.g_bSettingsPublicAsDefineColor
         CheckBox_HighlightScope.Checked = ClassSettings.g_bSettingsHighlightCurrentScope
+        NumericUpDown_HighlightScopeLen.Value = ClassTools.ClassMath.ClampInt(ClassSettings.g_bSettingsHighlightScopeMaxLen, CInt(NumericUpDown_HighlightScopeLen.Minimum), CInt(NumericUpDown_HighlightScopeLen.Maximum))
     End Sub
 
     Private Sub Apply_SyntaxHighlighting()
@@ -28,6 +29,7 @@ Partial Public Class FormSettings
         ClassSettings.g_bSettingsAutoMark = CheckBox_AutoMark.Checked
         ClassSettings.g_bSettingsPublicAsDefineColor = CheckBox_PublicAsDefineColor.Checked
         ClassSettings.g_bSettingsHighlightCurrentScope = CheckBox_HighlightScope.Checked
+        ClassSettings.g_bSettingsHighlightScopeMaxLen = CInt(NumericUpDown_HighlightScopeLen.Value)
     End Sub
 
     Private Sub FormClosing_SyntaxHighlighting()
