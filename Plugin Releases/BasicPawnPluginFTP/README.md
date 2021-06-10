@@ -1,5 +1,5 @@
 # FTP Uploader
-Version: 10.0.0.0
+Version: 11.0
 
 Upload files or binaries easy and quick to your servers using the FTP or SFTP protocol.
 

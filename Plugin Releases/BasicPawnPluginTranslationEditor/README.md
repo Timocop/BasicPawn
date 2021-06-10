@@ -1,5 +1,5 @@
 # Translation Editor
-Version: 2.1.0.0
+Version: 3.0
 
 With the Translation Editor plugin for BasicPawn you can edit and create SourceMod translation files for your plugins. The easiest way to manage your translation files!
 

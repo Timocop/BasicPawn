@@ -1,5 +1,5 @@
 # Lysis Decompiler
-Version: 1.1.0.0
+Version: 2.0
 
 A decompiler that can convert SourceMod *(\*.smx)* and AMX Mod X *(\*.amxx)* plugin binaries in to human readable code.
 This is the Java version of Lysis developed by  [Peace-Maker](https://github.com/peace-maker/lysis-java) and has been converted to .NET Framework using [IKVM8](https://github.com/windward-studios/ikvm8) so it can be used without Java being installed.
