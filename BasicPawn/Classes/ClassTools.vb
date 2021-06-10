@@ -752,10 +752,10 @@ Public Class ClassTools
 
                     Return mParentDirInfo.GetFileSystemInfos(sFileName)(0).FullName
                 Catch ex As Exception
-                    Throw New ArgumentException("Invalid path")
+                    Return sPath
                 End Try
             Else
-                Throw New ArgumentException("Absolute path needed, not relative")
+                Return sPath
             End If
         End Function
     End Class
