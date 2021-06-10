@@ -24,7 +24,7 @@ Module ClassMain
             Const URL_IKVN8 As String = "https://github.com/windward-studios/ikvm8.git"
             Const URL_OPENJDK As String = "http://www.frijters.net/openjdk-8u45-b14-stripped.zip"
             Const URL_SZL As String = "https://github.com/icsharpcode/SharpZipLib/releases/download/v1.3.2/SharpZipLib.1.3.2.nupkg"
-            Const URL_LYSIS As String = "https://github.com/DosMike/lysis-java.git"
+            Const URL_LYSIS As String = "https://github.com/peace-maker/lysis-java.git"
 
             Dim sJavaPath As String = ClassProcess.FindEnvironment("PATH", "java.exe")
             Dim sJavaCPath As String = ClassProcess.FindEnvironment("PATH", "javac.exe")
