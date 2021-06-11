@@ -123,6 +123,7 @@ Partial Class FormMain
         Me.ToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripTextBox_ToolsConvertSpaceSize = New System.Windows.Forms.ToolStripTextBox()
         Me.ToolStripMenuItem_ToolsSearchReplace = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_ToolsGoToLine = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_ToolsAutocomplete = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_ToolsAutocompleteUpdate = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_ToolsAutocompleteUpdateAll = New System.Windows.Forms.ToolStripMenuItem()
@@ -218,7 +219,6 @@ Partial Class FormMain
         Me.ToolStripMenuItem_FindOptimalConfigAllTabs = New System.Windows.Forms.ToolStripMenuItem()
         Me.Timer_SyntaxAnimation = New System.Windows.Forms.Timer(Me.components)
         Me.Timer_AutoSave = New System.Windows.Forms.Timer(Me.components)
-        Me.ToolStripMenuItem_ToolsGoToLine = New System.Windows.Forms.ToolStripMenuItem()
         Me.ContextMenuStrip_RightClick.SuspendLayout()
         Me.MenuStrip_BasicPawn.SuspendLayout()
         Me.SplitContainer_ToolboxSourceAndDetails.Panel1.SuspendLayout()
@@ -678,7 +678,7 @@ Partial Class FormMain
         Me.ToolStripMenuItem_EditUndo.Image = Global.BasicPawn.My.Resources.Resources.imageres_5315_16x16
         Me.ToolStripMenuItem_EditUndo.Name = "ToolStripMenuItem_EditUndo"
         Me.ToolStripMenuItem_EditUndo.ShortcutKeyDisplayString = "Ctrl+Z"
-        Me.ToolStripMenuItem_EditUndo.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_EditUndo.Size = New System.Drawing.Size(162, 22)
         Me.ToolStripMenuItem_EditUndo.Text = "Undo"
         '
         'ToolStripMenuItem_EditRedo
@@ -686,20 +686,20 @@ Partial Class FormMain
         Me.ToolStripMenuItem_EditRedo.Image = Global.BasicPawn.My.Resources.Resources.imageres_5311_16x16
         Me.ToolStripMenuItem_EditRedo.Name = "ToolStripMenuItem_EditRedo"
         Me.ToolStripMenuItem_EditRedo.ShortcutKeyDisplayString = "Ctrl+Y"
-        Me.ToolStripMenuItem_EditRedo.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_EditRedo.Size = New System.Drawing.Size(162, 22)
         Me.ToolStripMenuItem_EditRedo.Text = "Redo"
         '
         'ToolStripSeparator22
         '
         Me.ToolStripSeparator22.Name = "ToolStripSeparator22"
-        Me.ToolStripSeparator22.Size = New System.Drawing.Size(177, 6)
+        Me.ToolStripSeparator22.Size = New System.Drawing.Size(159, 6)
         '
         'ToolStripMenuItem_EditCut
         '
         Me.ToolStripMenuItem_EditCut.Image = Global.BasicPawn.My.Resources.Resources.shell32_16762_16x16
         Me.ToolStripMenuItem_EditCut.Name = "ToolStripMenuItem_EditCut"
         Me.ToolStripMenuItem_EditCut.ShortcutKeyDisplayString = "Ctrl+X"
-        Me.ToolStripMenuItem_EditCut.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_EditCut.Size = New System.Drawing.Size(162, 22)
         Me.ToolStripMenuItem_EditCut.Text = "Cut"
         '
         'ToolStripMenuItem_EditCopy
@@ -707,7 +707,7 @@ Partial Class FormMain
         Me.ToolStripMenuItem_EditCopy.Image = Global.BasicPawn.My.Resources.Resources.imageres_5306_16x16
         Me.ToolStripMenuItem_EditCopy.Name = "ToolStripMenuItem_EditCopy"
         Me.ToolStripMenuItem_EditCopy.ShortcutKeyDisplayString = "Ctrl+C"
-        Me.ToolStripMenuItem_EditCopy.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_EditCopy.Size = New System.Drawing.Size(162, 22)
         Me.ToolStripMenuItem_EditCopy.Text = "Copy"
         '
         'ToolStripMenuItem_EditPaste
@@ -715,7 +715,7 @@ Partial Class FormMain
         Me.ToolStripMenuItem_EditPaste.Image = Global.BasicPawn.My.Resources.Resources.shell32_16763_16x16
         Me.ToolStripMenuItem_EditPaste.Name = "ToolStripMenuItem_EditPaste"
         Me.ToolStripMenuItem_EditPaste.ShortcutKeyDisplayString = "Ctrl+V"
-        Me.ToolStripMenuItem_EditPaste.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_EditPaste.Size = New System.Drawing.Size(162, 22)
         Me.ToolStripMenuItem_EditPaste.Text = "Paste"
         '
         'ToolStripMenuItem_EditDelete
@@ -723,7 +723,7 @@ Partial Class FormMain
         Me.ToolStripMenuItem_EditDelete.Image = Global.BasicPawn.My.Resources.Resources.imageres_5337_16x16
         Me.ToolStripMenuItem_EditDelete.Name = "ToolStripMenuItem_EditDelete"
         Me.ToolStripMenuItem_EditDelete.ShortcutKeyDisplayString = "Del"
-        Me.ToolStripMenuItem_EditDelete.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_EditDelete.Size = New System.Drawing.Size(162, 22)
         Me.ToolStripMenuItem_EditDelete.Text = "Delete"
         '
         'ToolStripMenuItem_EditSelectAll
@@ -731,19 +731,19 @@ Partial Class FormMain
         Me.ToolStripMenuItem_EditSelectAll.Image = Global.BasicPawn.My.Resources.Resources.imageres_5312_16x16
         Me.ToolStripMenuItem_EditSelectAll.Name = "ToolStripMenuItem_EditSelectAll"
         Me.ToolStripMenuItem_EditSelectAll.ShortcutKeyDisplayString = "Ctrl+A"
-        Me.ToolStripMenuItem_EditSelectAll.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_EditSelectAll.Size = New System.Drawing.Size(162, 22)
         Me.ToolStripMenuItem_EditSelectAll.Text = "Select all"
         '
         'ToolStripSeparator23
         '
         Me.ToolStripSeparator23.Name = "ToolStripSeparator23"
-        Me.ToolStripSeparator23.Size = New System.Drawing.Size(177, 6)
+        Me.ToolStripSeparator23.Size = New System.Drawing.Size(159, 6)
         '
         'ToolStripMenuItem2
         '
         Me.ToolStripMenuItem2.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_EditDupLine, Me.ToolStripMenuItem_EditLineUp, Me.ToolStripMenuItem_EditLineDown, Me.ToolStripMenuItem_EditInsertLineUp, Me.ToolStripMenuItem_EditInsertLineDown})
         Me.ToolStripMenuItem2.Name = "ToolStripMenuItem2"
-        Me.ToolStripMenuItem2.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem2.Size = New System.Drawing.Size(162, 22)
         Me.ToolStripMenuItem2.Text = "Line Operations"
         '
         'ToolStripMenuItem_EditDupLine
@@ -924,6 +924,15 @@ Partial Class FormMain
         Me.ToolStripMenuItem_ToolsSearchReplace.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.F), System.Windows.Forms.Keys)
         Me.ToolStripMenuItem_ToolsSearchReplace.Size = New System.Drawing.Size(225, 22)
         Me.ToolStripMenuItem_ToolsSearchReplace.Text = "Search && Replace"
+        '
+        'ToolStripMenuItem_ToolsGoToLine
+        '
+        Me.ToolStripMenuItem_ToolsGoToLine.Image = Global.BasicPawn.My.Resources.Resources.imageres_5302_16x16
+        Me.ToolStripMenuItem_ToolsGoToLine.Name = "ToolStripMenuItem_ToolsGoToLine"
+        Me.ToolStripMenuItem_ToolsGoToLine.ShortcutKeyDisplayString = "Ctrl+G"
+        Me.ToolStripMenuItem_ToolsGoToLine.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.G), System.Windows.Forms.Keys)
+        Me.ToolStripMenuItem_ToolsGoToLine.Size = New System.Drawing.Size(225, 22)
+        Me.ToolStripMenuItem_ToolsGoToLine.Text = "Go to line..."
         '
         'ToolStripMenuItem_ToolsAutocomplete
         '
@@ -1669,15 +1678,6 @@ Partial Class FormMain
         '
         Me.Timer_AutoSave.Enabled = True
         Me.Timer_AutoSave.Interval = 7500
-        '
-        'ToolStripMenuItem_ToolsGoToLine
-        '
-        Me.ToolStripMenuItem_ToolsGoToLine.Image = Global.BasicPawn.My.Resources.Resources.imageres_5302_16x16
-        Me.ToolStripMenuItem_ToolsGoToLine.Name = "ToolStripMenuItem_ToolsGoToLine"
-        Me.ToolStripMenuItem_ToolsGoToLine.ShortcutKeyDisplayString = "Ctrl+G"
-        Me.ToolStripMenuItem_ToolsGoToLine.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.G), System.Windows.Forms.Keys)
-        Me.ToolStripMenuItem_ToolsGoToLine.Size = New System.Drawing.Size(225, 22)
-        Me.ToolStripMenuItem_ToolsGoToLine.Text = "Got to line..."
         '
         'FormMain
         '
