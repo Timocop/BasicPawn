@@ -50,6 +50,8 @@ Partial Class FormSearch
         Me.ColumnHeader4 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.ComboBox_Replace = New System.Windows.Forms.ComboBox()
+        Me.ComboBox_Search = New System.Windows.Forms.ComboBox()
         Me.GroupBox6 = New System.Windows.Forms.GroupBox()
         Me.RadioButton_ListTypeIncludes = New System.Windows.Forms.RadioButton()
         Me.RadioButton_ListTypeTabs = New System.Windows.Forms.RadioButton()
@@ -69,8 +71,6 @@ Partial Class FormSearch
         Me.GroupBox7 = New System.Windows.Forms.GroupBox()
         Me.CheckBox_ListMergeLines = New System.Windows.Forms.CheckBox()
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
-        Me.ComboBox_Search = New System.Windows.Forms.ComboBox()
-        Me.ComboBox_Replace = New System.Windows.Forms.ComboBox()
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
@@ -369,6 +369,26 @@ Partial Class FormSearch
         Me.Panel1.Size = New System.Drawing.Size(519, 308)
         Me.Panel1.TabIndex = 0
         '
+        'ComboBox_Replace
+        '
+        Me.ComboBox_Replace.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ComboBox_Replace.FormattingEnabled = True
+        Me.ComboBox_Replace.Location = New System.Drawing.Point(68, 40)
+        Me.ComboBox_Replace.Name = "ComboBox_Replace"
+        Me.ComboBox_Replace.Size = New System.Drawing.Size(305, 21)
+        Me.ComboBox_Replace.TabIndex = 25
+        '
+        'ComboBox_Search
+        '
+        Me.ComboBox_Search.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ComboBox_Search.FormattingEnabled = True
+        Me.ComboBox_Search.Location = New System.Drawing.Point(68, 13)
+        Me.ComboBox_Search.Name = "ComboBox_Search"
+        Me.ComboBox_Search.Size = New System.Drawing.Size(305, 21)
+        Me.ComboBox_Search.TabIndex = 24
+        '
         'GroupBox6
         '
         Me.GroupBox6.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
@@ -582,22 +602,6 @@ Partial Class FormSearch
         Me.ToolTip1.AutoPopDelay = 25000
         Me.ToolTip1.InitialDelay = 500
         Me.ToolTip1.ReshowDelay = 100
-        '
-        'ComboBox_Search
-        '
-        Me.ComboBox_Search.FormattingEnabled = True
-        Me.ComboBox_Search.Location = New System.Drawing.Point(68, 13)
-        Me.ComboBox_Search.Name = "ComboBox_Search"
-        Me.ComboBox_Search.Size = New System.Drawing.Size(305, 21)
-        Me.ComboBox_Search.TabIndex = 24
-        '
-        'ComboBox_Replace
-        '
-        Me.ComboBox_Replace.FormattingEnabled = True
-        Me.ComboBox_Replace.Location = New System.Drawing.Point(68, 40)
-        Me.ComboBox_Replace.Name = "ComboBox_Replace"
-        Me.ComboBox_Replace.Size = New System.Drawing.Size(305, 21)
-        Me.ComboBox_Replace.TabIndex = 25
         '
         'FormSearch
         '
