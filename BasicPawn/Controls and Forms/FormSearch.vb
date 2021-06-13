@@ -107,6 +107,8 @@ Public Class FormSearch
 
         'Keep size
         Me.Size = g_mCollapsedSize
+
+        ComboBox_Search.Select()
     End Sub
 
     Private Sub FormSearch_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
