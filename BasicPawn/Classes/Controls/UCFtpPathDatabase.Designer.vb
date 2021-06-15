@@ -108,7 +108,7 @@ Partial Class UCFtpPathDatabase
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ComboBox_Protocol.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.ComboBox_Protocol.FormattingEnabled = True
-        Me.ComboBox_Protocol.Items.AddRange(New Object() {"FTP (Not reommended - Unsecure)", "SFTP"})
+        Me.ComboBox_Protocol.Items.AddRange(New Object() {"FTP (Not recommended - Unsecure)", "SFTP"})
         Me.ComboBox_Protocol.Location = New System.Drawing.Point(125, 48)
         Me.ComboBox_Protocol.Name = "ComboBox_Protocol"
         Me.ComboBox_Protocol.Size = New System.Drawing.Size(426, 21)
