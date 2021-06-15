@@ -136,9 +136,6 @@ Partial Class FormMain
         Me.ToolStripMenuItem_BookmarksRemoveLines = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator21 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_BookmarksShow = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripSeparator4 = New System.Windows.Forms.ToolStripSeparator()
-        Me.ToolStripMenuItem_ToolsShowInformation = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripMenuItem_ToolsClearInformationLog = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Undo = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Redo = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Build = New System.Windows.Forms.ToolStripMenuItem()
@@ -176,11 +173,6 @@ Partial Class FormMain
         Me.ToolStripMenuItem_NewUpdate = New System.Windows.Forms.ToolStripMenuItem()
         Me.SplitContainer_ToolboxSourceAndDetails = New System.Windows.Forms.SplitContainer()
         Me.SplitContainer_ToolboxAndEditor = New System.Windows.Forms.SplitContainer()
-        Me.TabControl_Toolbox = New BasicPawn.ClassTabControlColor()
-        Me.TabPage_ObjectBrowser = New System.Windows.Forms.TabPage()
-        Me.TabPage_ProjectBrowser = New System.Windows.Forms.TabPage()
-        Me.TabPage_ExplorerBrowser = New System.Windows.Forms.TabPage()
-        Me.TabControl_SourceTabs = New BasicPawn.ClassTabControlColor()
         Me.ContextMenuStrip_Tabs = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.ToolStripMenuItem_Tabs_Close = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Tabs_CloseAllButThis = New System.Windows.Forms.ToolStripMenuItem()
@@ -191,11 +183,6 @@ Partial Class FormMain
         Me.ToolStripSeparator12 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripMenuItem_Tabs_OpenFolder = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Tabs_Popout = New System.Windows.Forms.ToolStripMenuItem()
-        Me.TabPage1 = New System.Windows.Forms.TabPage()
-        Me.TabControl_Details = New BasicPawn.ClassTabControlColor()
-        Me.TabPage_Autocomplete = New System.Windows.Forms.TabPage()
-        Me.TabPage_Information = New System.Windows.Forms.TabPage()
-        Me.TabPage_Bookmarks = New System.Windows.Forms.TabPage()
         Me.ImageList_Details = New System.Windows.Forms.ImageList(Me.components)
         Me.StatusStrip_BasicPawn = New System.Windows.Forms.StatusStrip()
         Me.ToolStripStatusLabel_EditorLine = New System.Windows.Forms.ToolStripStatusLabel()
@@ -219,6 +206,21 @@ Partial Class FormMain
         Me.ToolStripMenuItem_FindOptimalConfigAllTabs = New System.Windows.Forms.ToolStripMenuItem()
         Me.Timer_SyntaxAnimation = New System.Windows.Forms.Timer(Me.components)
         Me.Timer_AutoSave = New System.Windows.Forms.Timer(Me.components)
+        Me.ToolStripMenuItem_ToolsInformation = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_InformationShow = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_InformationCopy = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem_InformationClear = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator4 = New System.Windows.Forms.ToolStripSeparator()
+        Me.TabControl_Toolbox = New BasicPawn.ClassTabControlColor()
+        Me.TabPage_ObjectBrowser = New System.Windows.Forms.TabPage()
+        Me.TabPage_ProjectBrowser = New System.Windows.Forms.TabPage()
+        Me.TabPage_ExplorerBrowser = New System.Windows.Forms.TabPage()
+        Me.TabControl_SourceTabs = New BasicPawn.ClassTabControlColor()
+        Me.TabPage1 = New System.Windows.Forms.TabPage()
+        Me.TabControl_Details = New BasicPawn.ClassTabControlColor()
+        Me.TabPage_Autocomplete = New System.Windows.Forms.TabPage()
+        Me.TabPage_Information = New System.Windows.Forms.TabPage()
+        Me.TabPage_Bookmarks = New System.Windows.Forms.TabPage()
         Me.ContextMenuStrip_RightClick.SuspendLayout()
         Me.MenuStrip_BasicPawn.SuspendLayout()
         Me.SplitContainer_ToolboxSourceAndDetails.Panel1.SuspendLayout()
@@ -227,12 +229,12 @@ Partial Class FormMain
         Me.SplitContainer_ToolboxAndEditor.Panel1.SuspendLayout()
         Me.SplitContainer_ToolboxAndEditor.Panel2.SuspendLayout()
         Me.SplitContainer_ToolboxAndEditor.SuspendLayout()
-        Me.TabControl_Toolbox.SuspendLayout()
-        Me.TabControl_SourceTabs.SuspendLayout()
         Me.ContextMenuStrip_Tabs.SuspendLayout()
-        Me.TabControl_Details.SuspendLayout()
         Me.StatusStrip_BasicPawn.SuspendLayout()
         Me.ContextMenuStrip_Config.SuspendLayout()
+        Me.TabControl_Toolbox.SuspendLayout()
+        Me.TabControl_SourceTabs.SuspendLayout()
+        Me.TabControl_Details.SuspendLayout()
         Me.SuspendLayout()
         '
         'ContextMenuStrip_RightClick
@@ -678,7 +680,7 @@ Partial Class FormMain
         Me.ToolStripMenuItem_EditUndo.Image = Global.BasicPawn.My.Resources.Resources.imageres_5315_16x16
         Me.ToolStripMenuItem_EditUndo.Name = "ToolStripMenuItem_EditUndo"
         Me.ToolStripMenuItem_EditUndo.ShortcutKeyDisplayString = "Ctrl+Z"
-        Me.ToolStripMenuItem_EditUndo.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_EditUndo.Size = New System.Drawing.Size(162, 22)
         Me.ToolStripMenuItem_EditUndo.Text = "Undo"
         '
         'ToolStripMenuItem_EditRedo
@@ -686,20 +688,20 @@ Partial Class FormMain
         Me.ToolStripMenuItem_EditRedo.Image = Global.BasicPawn.My.Resources.Resources.imageres_5311_16x16
         Me.ToolStripMenuItem_EditRedo.Name = "ToolStripMenuItem_EditRedo"
         Me.ToolStripMenuItem_EditRedo.ShortcutKeyDisplayString = "Ctrl+Y"
-        Me.ToolStripMenuItem_EditRedo.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_EditRedo.Size = New System.Drawing.Size(162, 22)
         Me.ToolStripMenuItem_EditRedo.Text = "Redo"
         '
         'ToolStripSeparator22
         '
         Me.ToolStripSeparator22.Name = "ToolStripSeparator22"
-        Me.ToolStripSeparator22.Size = New System.Drawing.Size(177, 6)
+        Me.ToolStripSeparator22.Size = New System.Drawing.Size(159, 6)
         '
         'ToolStripMenuItem_EditCut
         '
         Me.ToolStripMenuItem_EditCut.Image = Global.BasicPawn.My.Resources.Resources.shell32_16762_16x16
         Me.ToolStripMenuItem_EditCut.Name = "ToolStripMenuItem_EditCut"
         Me.ToolStripMenuItem_EditCut.ShortcutKeyDisplayString = "Ctrl+X"
-        Me.ToolStripMenuItem_EditCut.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_EditCut.Size = New System.Drawing.Size(162, 22)
         Me.ToolStripMenuItem_EditCut.Text = "Cut"
         '
         'ToolStripMenuItem_EditCopy
@@ -707,7 +709,7 @@ Partial Class FormMain
         Me.ToolStripMenuItem_EditCopy.Image = Global.BasicPawn.My.Resources.Resources.imageres_5306_16x16
         Me.ToolStripMenuItem_EditCopy.Name = "ToolStripMenuItem_EditCopy"
         Me.ToolStripMenuItem_EditCopy.ShortcutKeyDisplayString = "Ctrl+C"
-        Me.ToolStripMenuItem_EditCopy.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_EditCopy.Size = New System.Drawing.Size(162, 22)
         Me.ToolStripMenuItem_EditCopy.Text = "Copy"
         '
         'ToolStripMenuItem_EditPaste
@@ -715,7 +717,7 @@ Partial Class FormMain
         Me.ToolStripMenuItem_EditPaste.Image = Global.BasicPawn.My.Resources.Resources.shell32_16763_16x16
         Me.ToolStripMenuItem_EditPaste.Name = "ToolStripMenuItem_EditPaste"
         Me.ToolStripMenuItem_EditPaste.ShortcutKeyDisplayString = "Ctrl+V"
-        Me.ToolStripMenuItem_EditPaste.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_EditPaste.Size = New System.Drawing.Size(162, 22)
         Me.ToolStripMenuItem_EditPaste.Text = "Paste"
         '
         'ToolStripMenuItem_EditDelete
@@ -723,7 +725,7 @@ Partial Class FormMain
         Me.ToolStripMenuItem_EditDelete.Image = Global.BasicPawn.My.Resources.Resources.imageres_5337_16x16
         Me.ToolStripMenuItem_EditDelete.Name = "ToolStripMenuItem_EditDelete"
         Me.ToolStripMenuItem_EditDelete.ShortcutKeyDisplayString = "Del"
-        Me.ToolStripMenuItem_EditDelete.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_EditDelete.Size = New System.Drawing.Size(162, 22)
         Me.ToolStripMenuItem_EditDelete.Text = "Delete"
         '
         'ToolStripMenuItem_EditSelectAll
@@ -731,19 +733,19 @@ Partial Class FormMain
         Me.ToolStripMenuItem_EditSelectAll.Image = Global.BasicPawn.My.Resources.Resources.imageres_5312_16x16
         Me.ToolStripMenuItem_EditSelectAll.Name = "ToolStripMenuItem_EditSelectAll"
         Me.ToolStripMenuItem_EditSelectAll.ShortcutKeyDisplayString = "Ctrl+A"
-        Me.ToolStripMenuItem_EditSelectAll.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_EditSelectAll.Size = New System.Drawing.Size(162, 22)
         Me.ToolStripMenuItem_EditSelectAll.Text = "Select all"
         '
         'ToolStripSeparator23
         '
         Me.ToolStripSeparator23.Name = "ToolStripSeparator23"
-        Me.ToolStripSeparator23.Size = New System.Drawing.Size(177, 6)
+        Me.ToolStripSeparator23.Size = New System.Drawing.Size(159, 6)
         '
         'ToolStripMenuItem2
         '
         Me.ToolStripMenuItem2.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_EditDupLine, Me.ToolStripMenuItem_EditLineUp, Me.ToolStripMenuItem_EditLineDown, Me.ToolStripMenuItem_EditInsertLineUp, Me.ToolStripMenuItem_EditInsertLineDown})
         Me.ToolStripMenuItem2.Name = "ToolStripMenuItem2"
-        Me.ToolStripMenuItem2.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem2.Size = New System.Drawing.Size(162, 22)
         Me.ToolStripMenuItem2.Text = "Line Operations"
         '
         'ToolStripMenuItem_EditDupLine
@@ -829,7 +831,7 @@ Partial Class FormMain
         '
         'ToolStripMenuItem_Tools
         '
-        Me.ToolStripMenuItem_Tools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_ToolsSettingsAndConfigs, Me.ToolStripSeparator3, Me.ToolStripMenuItem_ToolsFormatCode, Me.ToolStripMenuItem_ToolsConvertTabsSpaces, Me.ToolStripMenuItem_ToolsSearchReplace, Me.ToolStripMenuItem_ToolsGoToLine, Me.ToolStripMenuItem_ToolsAutocomplete, Me.ToolStripMenuItem_Bookmarks, Me.ToolStripSeparator4, Me.ToolStripMenuItem_ToolsShowInformation, Me.ToolStripMenuItem_ToolsClearInformationLog})
+        Me.ToolStripMenuItem_Tools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_ToolsSettingsAndConfigs, Me.ToolStripSeparator3, Me.ToolStripMenuItem_ToolsFormatCode, Me.ToolStripMenuItem_ToolsConvertTabsSpaces, Me.ToolStripMenuItem_ToolsSearchReplace, Me.ToolStripMenuItem_ToolsGoToLine, Me.ToolStripMenuItem_ToolsAutocomplete, Me.ToolStripMenuItem_ToolsInformation, Me.ToolStripMenuItem_Bookmarks})
         Me.ToolStripMenuItem_Tools.Image = CType(resources.GetObject("ToolStripMenuItem_Tools.Image"), System.Drawing.Image)
         Me.ToolStripMenuItem_Tools.Name = "ToolStripMenuItem_Tools"
         Me.ToolStripMenuItem_Tools.Size = New System.Drawing.Size(62, 20)
@@ -1024,25 +1026,6 @@ Partial Class FormMain
         Me.ToolStripMenuItem_BookmarksShow.Name = "ToolStripMenuItem_BookmarksShow"
         Me.ToolStripMenuItem_BookmarksShow.Size = New System.Drawing.Size(289, 22)
         Me.ToolStripMenuItem_BookmarksShow.Text = "Show Bookmarks"
-        '
-        'ToolStripSeparator4
-        '
-        Me.ToolStripSeparator4.Name = "ToolStripSeparator4"
-        Me.ToolStripSeparator4.Size = New System.Drawing.Size(222, 6)
-        '
-        'ToolStripMenuItem_ToolsShowInformation
-        '
-        Me.ToolStripMenuItem_ToolsShowInformation.Image = CType(resources.GetObject("ToolStripMenuItem_ToolsShowInformation.Image"), System.Drawing.Image)
-        Me.ToolStripMenuItem_ToolsShowInformation.Name = "ToolStripMenuItem_ToolsShowInformation"
-        Me.ToolStripMenuItem_ToolsShowInformation.Size = New System.Drawing.Size(225, 22)
-        Me.ToolStripMenuItem_ToolsShowInformation.Text = "Show Information"
-        '
-        'ToolStripMenuItem_ToolsClearInformationLog
-        '
-        Me.ToolStripMenuItem_ToolsClearInformationLog.Image = CType(resources.GetObject("ToolStripMenuItem_ToolsClearInformationLog.Image"), System.Drawing.Image)
-        Me.ToolStripMenuItem_ToolsClearInformationLog.Name = "ToolStripMenuItem_ToolsClearInformationLog"
-        Me.ToolStripMenuItem_ToolsClearInformationLog.Size = New System.Drawing.Size(225, 22)
-        Me.ToolStripMenuItem_ToolsClearInformationLog.Text = "Clear Information"
         '
         'ToolStripMenuItem_Undo
         '
@@ -1356,66 +1339,6 @@ Partial Class FormMain
         Me.SplitContainer_ToolboxAndEditor.SplitterDistance = 200
         Me.SplitContainer_ToolboxAndEditor.TabIndex = 1
         '
-        'TabControl_Toolbox
-        '
-        Me.TabControl_Toolbox.Controls.Add(Me.TabPage_ObjectBrowser)
-        Me.TabControl_Toolbox.Controls.Add(Me.TabPage_ProjectBrowser)
-        Me.TabControl_Toolbox.Controls.Add(Me.TabPage_ExplorerBrowser)
-        Me.TabControl_Toolbox.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TabControl_Toolbox.Location = New System.Drawing.Point(0, 0)
-        Me.TabControl_Toolbox.m_TabPageAdjustEnabled = True
-        Me.TabControl_Toolbox.Margin = New System.Windows.Forms.Padding(0)
-        Me.TabControl_Toolbox.Multiline = True
-        Me.TabControl_Toolbox.Name = "TabControl_Toolbox"
-        Me.TabControl_Toolbox.Padding = New System.Drawing.Point(0, 0)
-        Me.TabControl_Toolbox.SelectedIndex = 0
-        Me.TabControl_Toolbox.Size = New System.Drawing.Size(200, 500)
-        Me.TabControl_Toolbox.TabIndex = 0
-        '
-        'TabPage_ObjectBrowser
-        '
-        Me.TabPage_ObjectBrowser.Location = New System.Drawing.Point(1, 21)
-        Me.TabPage_ObjectBrowser.Margin = New System.Windows.Forms.Padding(0)
-        Me.TabPage_ObjectBrowser.Name = "TabPage_ObjectBrowser"
-        Me.TabPage_ObjectBrowser.Size = New System.Drawing.Size(196, 476)
-        Me.TabPage_ObjectBrowser.TabIndex = 0
-        Me.TabPage_ObjectBrowser.Text = "Object Browser"
-        Me.TabPage_ObjectBrowser.UseVisualStyleBackColor = True
-        '
-        'TabPage_ProjectBrowser
-        '
-        Me.TabPage_ProjectBrowser.Location = New System.Drawing.Point(1, 21)
-        Me.TabPage_ProjectBrowser.Name = "TabPage_ProjectBrowser"
-        Me.TabPage_ProjectBrowser.Size = New System.Drawing.Size(196, 476)
-        Me.TabPage_ProjectBrowser.TabIndex = 1
-        Me.TabPage_ProjectBrowser.Text = "Project"
-        Me.TabPage_ProjectBrowser.UseVisualStyleBackColor = True
-        '
-        'TabPage_ExplorerBrowser
-        '
-        Me.TabPage_ExplorerBrowser.Location = New System.Drawing.Point(1, 21)
-        Me.TabPage_ExplorerBrowser.Name = "TabPage_ExplorerBrowser"
-        Me.TabPage_ExplorerBrowser.Size = New System.Drawing.Size(196, 476)
-        Me.TabPage_ExplorerBrowser.TabIndex = 2
-        Me.TabPage_ExplorerBrowser.Text = "Explorer"
-        Me.TabPage_ExplorerBrowser.UseVisualStyleBackColor = True
-        '
-        'TabControl_SourceTabs
-        '
-        Me.TabControl_SourceTabs.AllowDrop = True
-        Me.TabControl_SourceTabs.ContextMenuStrip = Me.ContextMenuStrip_Tabs
-        Me.TabControl_SourceTabs.Controls.Add(Me.TabPage1)
-        Me.TabControl_SourceTabs.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TabControl_SourceTabs.Location = New System.Drawing.Point(0, 0)
-        Me.TabControl_SourceTabs.m_TabPageAdjustEnabled = True
-        Me.TabControl_SourceTabs.Margin = New System.Windows.Forms.Padding(0)
-        Me.TabControl_SourceTabs.Name = "TabControl_SourceTabs"
-        Me.TabControl_SourceTabs.Padding = New System.Drawing.Point(0, 0)
-        Me.TabControl_SourceTabs.SelectedIndex = 0
-        Me.TabControl_SourceTabs.ShowToolTips = True
-        Me.TabControl_SourceTabs.Size = New System.Drawing.Size(804, 500)
-        Me.TabControl_SourceTabs.TabIndex = 1
-        '
         'ContextMenuStrip_Tabs
         '
         Me.ContextMenuStrip_Tabs.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_Tabs_Close, Me.ToolStripMenuItem_Tabs_CloseAllButThis, Me.ToolStripMenuItem_Tabs_CloseAll, Me.ToolStripSeparator16, Me.ToolStripMenuItem_Tabs_Cut, Me.ToolStripMenuItem_Tabs_Insert, Me.ToolStripSeparator12, Me.ToolStripMenuItem_Tabs_OpenFolder, Me.ToolStripMenuItem_Tabs_Popout})
@@ -1429,109 +1352,58 @@ Partial Class FormMain
         Me.ToolStripMenuItem_Tabs_Close.Name = "ToolStripMenuItem_Tabs_Close"
         Me.ToolStripMenuItem_Tabs_Close.ShortcutKeyDisplayString = "Ctrl+W"
         Me.ToolStripMenuItem_Tabs_Close.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.W), System.Windows.Forms.Keys)
-        Me.ToolStripMenuItem_Tabs_Close.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_Tabs_Close.Size = New System.Drawing.Size(178, 22)
         Me.ToolStripMenuItem_Tabs_Close.Text = "Close"
         '
         'ToolStripMenuItem_Tabs_CloseAllButThis
         '
         Me.ToolStripMenuItem_Tabs_CloseAllButThis.Name = "ToolStripMenuItem_Tabs_CloseAllButThis"
-        Me.ToolStripMenuItem_Tabs_CloseAllButThis.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_Tabs_CloseAllButThis.Size = New System.Drawing.Size(178, 22)
         Me.ToolStripMenuItem_Tabs_CloseAllButThis.Text = "Close all but this"
         '
         'ToolStripMenuItem_Tabs_CloseAll
         '
         Me.ToolStripMenuItem_Tabs_CloseAll.Name = "ToolStripMenuItem_Tabs_CloseAll"
-        Me.ToolStripMenuItem_Tabs_CloseAll.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_Tabs_CloseAll.Size = New System.Drawing.Size(178, 22)
         Me.ToolStripMenuItem_Tabs_CloseAll.Text = "Close all"
         '
         'ToolStripSeparator16
         '
         Me.ToolStripSeparator16.Name = "ToolStripSeparator16"
-        Me.ToolStripSeparator16.Size = New System.Drawing.Size(177, 6)
+        Me.ToolStripSeparator16.Size = New System.Drawing.Size(175, 6)
         '
         'ToolStripMenuItem_Tabs_Cut
         '
         Me.ToolStripMenuItem_Tabs_Cut.Image = Global.BasicPawn.My.Resources.Resources.shell32_16762_16x16
         Me.ToolStripMenuItem_Tabs_Cut.Name = "ToolStripMenuItem_Tabs_Cut"
-        Me.ToolStripMenuItem_Tabs_Cut.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_Tabs_Cut.Size = New System.Drawing.Size(178, 22)
         Me.ToolStripMenuItem_Tabs_Cut.Text = "Cut"
         '
         'ToolStripMenuItem_Tabs_Insert
         '
         Me.ToolStripMenuItem_Tabs_Insert.Image = Global.BasicPawn.My.Resources.Resources.shell32_16763_16x16
         Me.ToolStripMenuItem_Tabs_Insert.Name = "ToolStripMenuItem_Tabs_Insert"
-        Me.ToolStripMenuItem_Tabs_Insert.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_Tabs_Insert.Size = New System.Drawing.Size(178, 22)
         Me.ToolStripMenuItem_Tabs_Insert.Text = "Insert"
         '
         'ToolStripSeparator12
         '
         Me.ToolStripSeparator12.Name = "ToolStripSeparator12"
-        Me.ToolStripSeparator12.Size = New System.Drawing.Size(177, 6)
+        Me.ToolStripSeparator12.Size = New System.Drawing.Size(175, 6)
         '
         'ToolStripMenuItem_Tabs_OpenFolder
         '
         Me.ToolStripMenuItem_Tabs_OpenFolder.Image = Global.BasicPawn.My.Resources.Resources.imageres_5304_16x16
         Me.ToolStripMenuItem_Tabs_OpenFolder.Name = "ToolStripMenuItem_Tabs_OpenFolder"
-        Me.ToolStripMenuItem_Tabs_OpenFolder.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_Tabs_OpenFolder.Size = New System.Drawing.Size(178, 22)
         Me.ToolStripMenuItem_Tabs_OpenFolder.Text = "Open current folder"
         '
         'ToolStripMenuItem_Tabs_Popout
         '
         Me.ToolStripMenuItem_Tabs_Popout.Image = Global.BasicPawn.My.Resources.Resources.imageres_5333_16x16
         Me.ToolStripMenuItem_Tabs_Popout.Name = "ToolStripMenuItem_Tabs_Popout"
-        Me.ToolStripMenuItem_Tabs_Popout.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_Tabs_Popout.Size = New System.Drawing.Size(178, 22)
         Me.ToolStripMenuItem_Tabs_Popout.Text = "Popout"
-        '
-        'TabPage1
-        '
-        Me.TabPage1.Location = New System.Drawing.Point(1, 21)
-        Me.TabPage1.Margin = New System.Windows.Forms.Padding(0)
-        Me.TabPage1.Name = "TabPage1"
-        Me.TabPage1.Size = New System.Drawing.Size(800, 476)
-        Me.TabPage1.TabIndex = 0
-        Me.TabPage1.Text = "New*"
-        Me.TabPage1.UseVisualStyleBackColor = True
-        '
-        'TabControl_Details
-        '
-        Me.TabControl_Details.Controls.Add(Me.TabPage_Autocomplete)
-        Me.TabControl_Details.Controls.Add(Me.TabPage_Information)
-        Me.TabControl_Details.Controls.Add(Me.TabPage_Bookmarks)
-        Me.TabControl_Details.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TabControl_Details.ImageList = Me.ImageList_Details
-        Me.TabControl_Details.Location = New System.Drawing.Point(0, 0)
-        Me.TabControl_Details.m_TabPageAdjustEnabled = True
-        Me.TabControl_Details.Name = "TabControl_Details"
-        Me.TabControl_Details.SelectedIndex = 0
-        Me.TabControl_Details.Size = New System.Drawing.Size(1008, 179)
-        Me.TabControl_Details.TabIndex = 0
-        '
-        'TabPage_Autocomplete
-        '
-        Me.TabPage_Autocomplete.Location = New System.Drawing.Point(1, 22)
-        Me.TabPage_Autocomplete.Name = "TabPage_Autocomplete"
-        Me.TabPage_Autocomplete.Size = New System.Drawing.Size(1004, 154)
-        Me.TabPage_Autocomplete.TabIndex = 0
-        Me.TabPage_Autocomplete.Text = "Autocomplete & IntelliSense"
-        Me.TabPage_Autocomplete.UseVisualStyleBackColor = True
-        '
-        'TabPage_Information
-        '
-        Me.TabPage_Information.Location = New System.Drawing.Point(1, 22)
-        Me.TabPage_Information.Name = "TabPage_Information"
-        Me.TabPage_Information.Size = New System.Drawing.Size(1004, 154)
-        Me.TabPage_Information.TabIndex = 1
-        Me.TabPage_Information.Text = "Information"
-        Me.TabPage_Information.UseVisualStyleBackColor = True
-        '
-        'TabPage_Bookmarks
-        '
-        Me.TabPage_Bookmarks.Location = New System.Drawing.Point(1, 22)
-        Me.TabPage_Bookmarks.Name = "TabPage_Bookmarks"
-        Me.TabPage_Bookmarks.Size = New System.Drawing.Size(1004, 154)
-        Me.TabPage_Bookmarks.TabIndex = 2
-        Me.TabPage_Bookmarks.Text = "Bookmarks"
-        Me.TabPage_Bookmarks.UseVisualStyleBackColor = True
         '
         'ImageList_Details
         '
@@ -1680,6 +1552,151 @@ Partial Class FormMain
         Me.Timer_AutoSave.Enabled = True
         Me.Timer_AutoSave.Interval = 7500
         '
+        'ToolStripMenuItem_ToolsInformation
+        '
+        Me.ToolStripMenuItem_ToolsInformation.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_InformationCopy, Me.ToolStripMenuItem_InformationClear, Me.ToolStripSeparator4, Me.ToolStripMenuItem_InformationShow})
+        Me.ToolStripMenuItem_ToolsInformation.Image = Global.BasicPawn.My.Resources.Resources.imageres_5350_16x16
+        Me.ToolStripMenuItem_ToolsInformation.Name = "ToolStripMenuItem_ToolsInformation"
+        Me.ToolStripMenuItem_ToolsInformation.Size = New System.Drawing.Size(225, 22)
+        Me.ToolStripMenuItem_ToolsInformation.Text = "Information"
+        '
+        'ToolStripMenuItem_InformationShow
+        '
+        Me.ToolStripMenuItem_InformationShow.Image = Global.BasicPawn.My.Resources.Resources.imageres_5350_16x16
+        Me.ToolStripMenuItem_InformationShow.Name = "ToolStripMenuItem_InformationShow"
+        Me.ToolStripMenuItem_InformationShow.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_InformationShow.Text = "Show Information"
+        '
+        'ToolStripMenuItem_InformationCopy
+        '
+        Me.ToolStripMenuItem_InformationCopy.Image = Global.BasicPawn.My.Resources.Resources.imageres_5306_16x16
+        Me.ToolStripMenuItem_InformationCopy.Name = "ToolStripMenuItem_InformationCopy"
+        Me.ToolStripMenuItem_InformationCopy.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_InformationCopy.Text = "Copy (Full)"
+        '
+        'ToolStripMenuItem_InformationClear
+        '
+        Me.ToolStripMenuItem_InformationClear.Image = Global.BasicPawn.My.Resources.Resources.imageres_5318_16x16
+        Me.ToolStripMenuItem_InformationClear.Name = "ToolStripMenuItem_InformationClear"
+        Me.ToolStripMenuItem_InformationClear.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem_InformationClear.Text = "Clear"
+        '
+        'ToolStripSeparator4
+        '
+        Me.ToolStripSeparator4.Name = "ToolStripSeparator4"
+        Me.ToolStripSeparator4.Size = New System.Drawing.Size(177, 6)
+        '
+        'TabControl_Toolbox
+        '
+        Me.TabControl_Toolbox.Controls.Add(Me.TabPage_ObjectBrowser)
+        Me.TabControl_Toolbox.Controls.Add(Me.TabPage_ProjectBrowser)
+        Me.TabControl_Toolbox.Controls.Add(Me.TabPage_ExplorerBrowser)
+        Me.TabControl_Toolbox.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TabControl_Toolbox.Location = New System.Drawing.Point(0, 0)
+        Me.TabControl_Toolbox.m_TabPageAdjustEnabled = True
+        Me.TabControl_Toolbox.Margin = New System.Windows.Forms.Padding(0)
+        Me.TabControl_Toolbox.Multiline = True
+        Me.TabControl_Toolbox.Name = "TabControl_Toolbox"
+        Me.TabControl_Toolbox.Padding = New System.Drawing.Point(0, 0)
+        Me.TabControl_Toolbox.SelectedIndex = 0
+        Me.TabControl_Toolbox.Size = New System.Drawing.Size(200, 500)
+        Me.TabControl_Toolbox.TabIndex = 0
+        '
+        'TabPage_ObjectBrowser
+        '
+        Me.TabPage_ObjectBrowser.Location = New System.Drawing.Point(1, 21)
+        Me.TabPage_ObjectBrowser.Margin = New System.Windows.Forms.Padding(0)
+        Me.TabPage_ObjectBrowser.Name = "TabPage_ObjectBrowser"
+        Me.TabPage_ObjectBrowser.Size = New System.Drawing.Size(196, 476)
+        Me.TabPage_ObjectBrowser.TabIndex = 0
+        Me.TabPage_ObjectBrowser.Text = "Object Browser"
+        Me.TabPage_ObjectBrowser.UseVisualStyleBackColor = True
+        '
+        'TabPage_ProjectBrowser
+        '
+        Me.TabPage_ProjectBrowser.Location = New System.Drawing.Point(1, 21)
+        Me.TabPage_ProjectBrowser.Name = "TabPage_ProjectBrowser"
+        Me.TabPage_ProjectBrowser.Size = New System.Drawing.Size(196, 476)
+        Me.TabPage_ProjectBrowser.TabIndex = 1
+        Me.TabPage_ProjectBrowser.Text = "Project"
+        Me.TabPage_ProjectBrowser.UseVisualStyleBackColor = True
+        '
+        'TabPage_ExplorerBrowser
+        '
+        Me.TabPage_ExplorerBrowser.Location = New System.Drawing.Point(1, 21)
+        Me.TabPage_ExplorerBrowser.Name = "TabPage_ExplorerBrowser"
+        Me.TabPage_ExplorerBrowser.Size = New System.Drawing.Size(196, 476)
+        Me.TabPage_ExplorerBrowser.TabIndex = 2
+        Me.TabPage_ExplorerBrowser.Text = "Explorer"
+        Me.TabPage_ExplorerBrowser.UseVisualStyleBackColor = True
+        '
+        'TabControl_SourceTabs
+        '
+        Me.TabControl_SourceTabs.AllowDrop = True
+        Me.TabControl_SourceTabs.ContextMenuStrip = Me.ContextMenuStrip_Tabs
+        Me.TabControl_SourceTabs.Controls.Add(Me.TabPage1)
+        Me.TabControl_SourceTabs.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TabControl_SourceTabs.Location = New System.Drawing.Point(0, 0)
+        Me.TabControl_SourceTabs.m_TabPageAdjustEnabled = True
+        Me.TabControl_SourceTabs.Margin = New System.Windows.Forms.Padding(0)
+        Me.TabControl_SourceTabs.Name = "TabControl_SourceTabs"
+        Me.TabControl_SourceTabs.Padding = New System.Drawing.Point(0, 0)
+        Me.TabControl_SourceTabs.SelectedIndex = 0
+        Me.TabControl_SourceTabs.ShowToolTips = True
+        Me.TabControl_SourceTabs.Size = New System.Drawing.Size(804, 500)
+        Me.TabControl_SourceTabs.TabIndex = 1
+        '
+        'TabPage1
+        '
+        Me.TabPage1.Location = New System.Drawing.Point(1, 21)
+        Me.TabPage1.Margin = New System.Windows.Forms.Padding(0)
+        Me.TabPage1.Name = "TabPage1"
+        Me.TabPage1.Size = New System.Drawing.Size(800, 476)
+        Me.TabPage1.TabIndex = 0
+        Me.TabPage1.Text = "New*"
+        Me.TabPage1.UseVisualStyleBackColor = True
+        '
+        'TabControl_Details
+        '
+        Me.TabControl_Details.Controls.Add(Me.TabPage_Autocomplete)
+        Me.TabControl_Details.Controls.Add(Me.TabPage_Information)
+        Me.TabControl_Details.Controls.Add(Me.TabPage_Bookmarks)
+        Me.TabControl_Details.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TabControl_Details.ImageList = Me.ImageList_Details
+        Me.TabControl_Details.Location = New System.Drawing.Point(0, 0)
+        Me.TabControl_Details.m_TabPageAdjustEnabled = True
+        Me.TabControl_Details.Name = "TabControl_Details"
+        Me.TabControl_Details.SelectedIndex = 0
+        Me.TabControl_Details.Size = New System.Drawing.Size(1008, 179)
+        Me.TabControl_Details.TabIndex = 0
+        '
+        'TabPage_Autocomplete
+        '
+        Me.TabPage_Autocomplete.Location = New System.Drawing.Point(1, 22)
+        Me.TabPage_Autocomplete.Name = "TabPage_Autocomplete"
+        Me.TabPage_Autocomplete.Size = New System.Drawing.Size(1004, 154)
+        Me.TabPage_Autocomplete.TabIndex = 0
+        Me.TabPage_Autocomplete.Text = "Autocomplete & IntelliSense"
+        Me.TabPage_Autocomplete.UseVisualStyleBackColor = True
+        '
+        'TabPage_Information
+        '
+        Me.TabPage_Information.Location = New System.Drawing.Point(1, 22)
+        Me.TabPage_Information.Name = "TabPage_Information"
+        Me.TabPage_Information.Size = New System.Drawing.Size(1004, 154)
+        Me.TabPage_Information.TabIndex = 1
+        Me.TabPage_Information.Text = "Information"
+        Me.TabPage_Information.UseVisualStyleBackColor = True
+        '
+        'TabPage_Bookmarks
+        '
+        Me.TabPage_Bookmarks.Location = New System.Drawing.Point(1, 22)
+        Me.TabPage_Bookmarks.Name = "TabPage_Bookmarks"
+        Me.TabPage_Bookmarks.Size = New System.Drawing.Size(1004, 154)
+        Me.TabPage_Bookmarks.TabIndex = 2
+        Me.TabPage_Bookmarks.Text = "Bookmarks"
+        Me.TabPage_Bookmarks.UseVisualStyleBackColor = True
+        '
         'FormMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -1704,13 +1721,13 @@ Partial Class FormMain
         Me.SplitContainer_ToolboxAndEditor.Panel1.ResumeLayout(False)
         Me.SplitContainer_ToolboxAndEditor.Panel2.ResumeLayout(False)
         Me.SplitContainer_ToolboxAndEditor.ResumeLayout(False)
-        Me.TabControl_Toolbox.ResumeLayout(False)
-        Me.TabControl_SourceTabs.ResumeLayout(False)
         Me.ContextMenuStrip_Tabs.ResumeLayout(False)
-        Me.TabControl_Details.ResumeLayout(False)
         Me.StatusStrip_BasicPawn.ResumeLayout(False)
         Me.StatusStrip_BasicPawn.PerformLayout()
         Me.ContextMenuStrip_Config.ResumeLayout(False)
+        Me.TabControl_Toolbox.ResumeLayout(False)
+        Me.TabControl_SourceTabs.ResumeLayout(False)
+        Me.TabControl_Details.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -1726,7 +1743,6 @@ Partial Class FormMain
     Friend WithEvents SplitContainer_ToolboxSourceAndDetails As SplitContainer
     Friend WithEvents TabPage_Autocomplete As TabPage
     Friend WithEvents TabPage_Information As TabPage
-    Friend WithEvents ToolStripMenuItem_ToolsShowInformation As ToolStripMenuItem
     Friend WithEvents ToolStripStatusLabel_EditorLine As ToolStripStatusLabel
     Friend WithEvents ToolStripStatusLabel_EditorCollum As ToolStripStatusLabel
     Friend WithEvents ImageList_Details As ImageList
@@ -1743,12 +1759,10 @@ Partial Class FormMain
     Friend WithEvents ToolStripComboBox_ToolsAutocompleteSyntax As ToolStripComboBox
     Friend WithEvents ToolStripStatusLabel_EditorSelectedCount As ToolStripStatusLabel
     Friend WithEvents ToolStripMenuItem_ToolsFormatCode As ToolStripMenuItem
-    Friend WithEvents ToolStripMenuItem_ToolsClearInformationLog As ToolStripMenuItem
     Friend WithEvents SplitContainer_ToolboxAndEditor As SplitContainer
     Friend WithEvents TabPage_ObjectBrowser As TabPage
     Friend WithEvents ToolStripMenuItem_ToolsSearchReplace As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator5 As ToolStripSeparator
-    Friend WithEvents ToolStripSeparator4 As ToolStripSeparator
     Friend WithEvents ToolStripStatusLabel_AppVersion As ToolStripStatusLabel
     Friend WithEvents ToolStripMenuItem_DebuggerBreakpoints As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_DebuggerBreakpointInsert As ToolStripMenuItem
@@ -1907,4 +1921,9 @@ Partial Class FormMain
     Friend WithEvents ToolStripSeparator27 As ToolStripSeparator
     Friend WithEvents ToolStripMenuItem3 As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_ToolsGoToLine As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_ToolsInformation As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_InformationCopy As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem_InformationClear As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator4 As ToolStripSeparator
+    Friend WithEvents ToolStripMenuItem_InformationShow As ToolStripMenuItem
 End Class

@@ -250,9 +250,12 @@ Public Class PluginFTP
                         Continue For
                     End If
 
-                    Dim mInfo = DirectCast(mListViewItemData.g_mData("Info"), UCProjectBrowser.ClassProjectControl.STRUC_PROJECT_FILE_INFO)
+                    Dim mInfo = DirectCast(mListViewItemData.g_mData("Info"), UCProjectBrowser.ClassProjectControl.STRUC_PROJECT_PATH_INFO)
+                    If (mInfo.m_PathType <> UCProjectBrowser.ClassProjectControl.STRUC_PROJECT_PATH_INFO.ENUM_PATH_TYPE.FILE) Then
+                        Continue For
+                    End If
 
-                    lFiles.Add(mInfo.sFile)
+                    lFiles.Add(mInfo.m_Path)
                 Next
 
                 Dim lCompiledFiles As New List(Of String)

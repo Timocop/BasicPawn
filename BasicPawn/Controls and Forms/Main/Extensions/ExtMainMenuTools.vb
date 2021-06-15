@@ -292,7 +292,7 @@ Partial Public Class FormMain
         End Try
     End Sub
 
-    Private Sub ToolStripMenuItem_ToolsShowInformation_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsShowInformation.Click
+    Private Sub ToolStripMenuItem_InformationShow_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_InformationShow.Click
         If (ToolStripMenuItem_ViewDetails.Checked) Then
             SplitContainer_ToolboxSourceAndDetails.Panel2Collapsed = False
 
@@ -306,8 +306,31 @@ Partial Public Class FormMain
         End If
     End Sub
 
-    Private Sub ToolStripMenuItem_ToolsClearInformationLog_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsClearInformationLog.Click
+    Private Sub ToolStripMenuItem_InformationClear_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_InformationClear.Click
         g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "Information log cleaned!", True, True)
+    End Sub
+
+    Private Sub ToolStripMenuItem_InformationCopy_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_InformationCopy.Click
+        Try
+            Dim mContent As New Text.StringBuilder
+
+            For Each mItem As Object In g_mUCInformationList.ListBox_Information.Items
+                Dim mListBoxItem As UCInformationList.ClassListBoxItemAction = TryCast(mItem, UCInformationList.ClassListBoxItemAction)
+                If (mListBoxItem Is Nothing) Then
+                    Continue For
+                End If
+
+                mContent.AppendLine(mListBoxItem.ToStringFull)
+            Next
+
+            If (mContent.Length > 0) Then
+                My.Computer.Clipboard.SetText(mContent.ToString, TextDataFormat.Text)
+            Else
+                My.Computer.Clipboard.Clear()
+            End If
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
     End Sub
 
     Private Sub ToolStripMenuItem_ToolsAutocompleteUpdate_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_ToolsAutocompleteUpdate.Click
