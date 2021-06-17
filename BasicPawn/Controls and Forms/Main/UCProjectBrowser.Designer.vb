@@ -51,6 +51,8 @@ Partial Class UCProjectBrowser
         Me.ToolStripMenuItem_MenuProjectRefresh = New System.Windows.Forms.ToolStripMenuItem()
         Me.TextboxWatermark_Search = New BasicPawn.ClassTextboxWatermark()
         Me.TextBox_ProjectPath = New System.Windows.Forms.TextBox()
+        Me.ToolStripMenuItem_SetHome = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
         Me.ContextMenuStrip_ProjectFiles.SuspendLayout()
         Me.MenuStrip1.SuspendLayout()
         Me.SuspendLayout()
@@ -81,105 +83,105 @@ Partial Class UCProjectBrowser
         '
         'ContextMenuStrip_ProjectFiles
         '
-        Me.ContextMenuStrip_ProjectFiles.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_Open, Me.ToolStripSeparator7, Me.ToolStripMenuItem_ProjectLoad, Me.ToolStripMenuItem_ProjectSave, Me.ToolStripMenuItem_ProjectSaveAs, Me.ToolStripMenuItem_ProjectClose, Me.ToolStripSeparator1, Me.ToolStripMenuItem_Cut, Me.ToolStripMenuItem_Copy, Me.ToolStripMenuItem_Paste, Me.ToolStripSeparator4, Me.ToolStripMenuItem_CompileAll, Me.ToolStripMenuItem_TestAll, Me.ToolStripSeparator2, Me.ToolStripMenuItem_Settings})
+        Me.ContextMenuStrip_ProjectFiles.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_Open, Me.ToolStripSeparator7, Me.ToolStripMenuItem_ProjectLoad, Me.ToolStripMenuItem_ProjectSave, Me.ToolStripMenuItem_ProjectSaveAs, Me.ToolStripMenuItem_ProjectClose, Me.ToolStripSeparator1, Me.ToolStripMenuItem_SetHome, Me.ToolStripSeparator3, Me.ToolStripMenuItem_Cut, Me.ToolStripMenuItem_Copy, Me.ToolStripMenuItem_Paste, Me.ToolStripSeparator4, Me.ToolStripMenuItem_CompileAll, Me.ToolStripMenuItem_TestAll, Me.ToolStripSeparator2, Me.ToolStripMenuItem_Settings})
         Me.ContextMenuStrip_ProjectFiles.Name = "ContextMenuStrip_ProjectFiles"
         Me.ContextMenuStrip_ProjectFiles.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
-        Me.ContextMenuStrip_ProjectFiles.Size = New System.Drawing.Size(162, 270)
+        Me.ContextMenuStrip_ProjectFiles.Size = New System.Drawing.Size(189, 320)
         '
         'ToolStripMenuItem_Open
         '
         Me.ToolStripMenuItem_Open.Image = Global.BasicPawn.My.Resources.Resources.imageres_5338_16x16
         Me.ToolStripMenuItem_Open.Name = "ToolStripMenuItem_Open"
-        Me.ToolStripMenuItem_Open.Size = New System.Drawing.Size(161, 22)
+        Me.ToolStripMenuItem_Open.Size = New System.Drawing.Size(188, 22)
         Me.ToolStripMenuItem_Open.Text = "Open"
         '
         'ToolStripSeparator7
         '
         Me.ToolStripSeparator7.Name = "ToolStripSeparator7"
-        Me.ToolStripSeparator7.Size = New System.Drawing.Size(158, 6)
+        Me.ToolStripSeparator7.Size = New System.Drawing.Size(185, 6)
         '
         'ToolStripMenuItem_ProjectLoad
         '
         Me.ToolStripMenuItem_ProjectLoad.Image = Global.BasicPawn.My.Resources.Resources.imageres_5339_16x16
         Me.ToolStripMenuItem_ProjectLoad.Name = "ToolStripMenuItem_ProjectLoad"
-        Me.ToolStripMenuItem_ProjectLoad.Size = New System.Drawing.Size(161, 22)
+        Me.ToolStripMenuItem_ProjectLoad.Size = New System.Drawing.Size(188, 22)
         Me.ToolStripMenuItem_ProjectLoad.Text = "Load Project"
         '
         'ToolStripMenuItem_ProjectSave
         '
         Me.ToolStripMenuItem_ProjectSave.Image = Global.BasicPawn.My.Resources.Resources.imageres_5304_16x16
         Me.ToolStripMenuItem_ProjectSave.Name = "ToolStripMenuItem_ProjectSave"
-        Me.ToolStripMenuItem_ProjectSave.Size = New System.Drawing.Size(161, 22)
+        Me.ToolStripMenuItem_ProjectSave.Size = New System.Drawing.Size(188, 22)
         Me.ToolStripMenuItem_ProjectSave.Text = "Save Project"
         '
         'ToolStripMenuItem_ProjectSaveAs
         '
         Me.ToolStripMenuItem_ProjectSaveAs.Name = "ToolStripMenuItem_ProjectSaveAs"
-        Me.ToolStripMenuItem_ProjectSaveAs.Size = New System.Drawing.Size(161, 22)
+        Me.ToolStripMenuItem_ProjectSaveAs.Size = New System.Drawing.Size(188, 22)
         Me.ToolStripMenuItem_ProjectSaveAs.Text = "Save Project as..."
         '
         'ToolStripMenuItem_ProjectClose
         '
         Me.ToolStripMenuItem_ProjectClose.Image = Global.BasicPawn.My.Resources.Resources.imageres_5320_16x16
         Me.ToolStripMenuItem_ProjectClose.Name = "ToolStripMenuItem_ProjectClose"
-        Me.ToolStripMenuItem_ProjectClose.Size = New System.Drawing.Size(161, 22)
+        Me.ToolStripMenuItem_ProjectClose.Size = New System.Drawing.Size(188, 22)
         Me.ToolStripMenuItem_ProjectClose.Text = "Close Project"
         '
         'ToolStripSeparator1
         '
         Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
-        Me.ToolStripSeparator1.Size = New System.Drawing.Size(158, 6)
+        Me.ToolStripSeparator1.Size = New System.Drawing.Size(185, 6)
         '
         'ToolStripMenuItem_Cut
         '
         Me.ToolStripMenuItem_Cut.Image = Global.BasicPawn.My.Resources.Resources.shell32_16762_16x16
         Me.ToolStripMenuItem_Cut.Name = "ToolStripMenuItem_Cut"
-        Me.ToolStripMenuItem_Cut.Size = New System.Drawing.Size(161, 22)
+        Me.ToolStripMenuItem_Cut.Size = New System.Drawing.Size(188, 22)
         Me.ToolStripMenuItem_Cut.Text = "Cut"
         '
         'ToolStripMenuItem_Copy
         '
         Me.ToolStripMenuItem_Copy.Image = Global.BasicPawn.My.Resources.Resources.imageres_5350_16x16
         Me.ToolStripMenuItem_Copy.Name = "ToolStripMenuItem_Copy"
-        Me.ToolStripMenuItem_Copy.Size = New System.Drawing.Size(161, 22)
+        Me.ToolStripMenuItem_Copy.Size = New System.Drawing.Size(188, 22)
         Me.ToolStripMenuItem_Copy.Text = "Copy"
         '
         'ToolStripMenuItem_Paste
         '
         Me.ToolStripMenuItem_Paste.Image = Global.BasicPawn.My.Resources.Resources.shell32_16763_16x16
         Me.ToolStripMenuItem_Paste.Name = "ToolStripMenuItem_Paste"
-        Me.ToolStripMenuItem_Paste.Size = New System.Drawing.Size(161, 22)
+        Me.ToolStripMenuItem_Paste.Size = New System.Drawing.Size(188, 22)
         Me.ToolStripMenuItem_Paste.Text = "Paste"
         '
         'ToolStripSeparator4
         '
         Me.ToolStripSeparator4.Name = "ToolStripSeparator4"
-        Me.ToolStripSeparator4.Size = New System.Drawing.Size(158, 6)
+        Me.ToolStripSeparator4.Size = New System.Drawing.Size(185, 6)
         '
         'ToolStripMenuItem_CompileAll
         '
         Me.ToolStripMenuItem_CompileAll.Image = Global.BasicPawn.My.Resources.Resources.imageres_5341_16x16
         Me.ToolStripMenuItem_CompileAll.Name = "ToolStripMenuItem_CompileAll"
-        Me.ToolStripMenuItem_CompileAll.Size = New System.Drawing.Size(161, 22)
+        Me.ToolStripMenuItem_CompileAll.Size = New System.Drawing.Size(188, 22)
         Me.ToolStripMenuItem_CompileAll.Text = "Build"
         '
         'ToolStripMenuItem_TestAll
         '
         Me.ToolStripMenuItem_TestAll.Image = Global.BasicPawn.My.Resources.Resources.imageres_5342_16x16
         Me.ToolStripMenuItem_TestAll.Name = "ToolStripMenuItem_TestAll"
-        Me.ToolStripMenuItem_TestAll.Size = New System.Drawing.Size(161, 22)
+        Me.ToolStripMenuItem_TestAll.Size = New System.Drawing.Size(188, 22)
         Me.ToolStripMenuItem_TestAll.Text = "Test"
         '
         'ToolStripSeparator2
         '
         Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
-        Me.ToolStripSeparator2.Size = New System.Drawing.Size(158, 6)
+        Me.ToolStripSeparator2.Size = New System.Drawing.Size(185, 6)
         '
         'ToolStripMenuItem_Settings
         '
         Me.ToolStripMenuItem_Settings.Image = Global.BasicPawn.My.Resources.Resources.imageres_5364_16x16
         Me.ToolStripMenuItem_Settings.Name = "ToolStripMenuItem_Settings"
-        Me.ToolStripMenuItem_Settings.Size = New System.Drawing.Size(161, 22)
+        Me.ToolStripMenuItem_Settings.Size = New System.Drawing.Size(188, 22)
         Me.ToolStripMenuItem_Settings.Text = "Project Settings"
         '
         'ImageList_ProjectBrowser
@@ -235,7 +237,7 @@ Partial Class UCProjectBrowser
         Me.ToolStripMenuItem_MenuProjectHome.Name = "ToolStripMenuItem_MenuProjectHome"
         Me.ToolStripMenuItem_MenuProjectHome.Size = New System.Drawing.Size(28, 24)
         Me.ToolStripMenuItem_MenuProjectHome.Text = "Explorer Home"
-        Me.ToolStripMenuItem_MenuProjectHome.ToolTipText = "Explorer Home"
+        Me.ToolStripMenuItem_MenuProjectHome.ToolTipText = "Home"
         '
         'ToolStripMenuItem_MenuProjectDirUp
         '
@@ -244,7 +246,7 @@ Partial Class UCProjectBrowser
         Me.ToolStripMenuItem_MenuProjectDirUp.Name = "ToolStripMenuItem_MenuProjectDirUp"
         Me.ToolStripMenuItem_MenuProjectDirUp.Size = New System.Drawing.Size(28, 24)
         Me.ToolStripMenuItem_MenuProjectDirUp.Text = "Explorer Directory Up"
-        Me.ToolStripMenuItem_MenuProjectDirUp.ToolTipText = "Explorer Directory Up"
+        Me.ToolStripMenuItem_MenuProjectDirUp.ToolTipText = "Directory Up"
         '
         'ToolStripMenuItem_MenuProjectRefresh
         '
@@ -253,7 +255,7 @@ Partial Class UCProjectBrowser
         Me.ToolStripMenuItem_MenuProjectRefresh.Name = "ToolStripMenuItem_MenuProjectRefresh"
         Me.ToolStripMenuItem_MenuProjectRefresh.Size = New System.Drawing.Size(28, 24)
         Me.ToolStripMenuItem_MenuProjectRefresh.Text = "Explorer Refresh"
-        Me.ToolStripMenuItem_MenuProjectRefresh.ToolTipText = "Explorer Refresh"
+        Me.ToolStripMenuItem_MenuProjectRefresh.ToolTipText = "Refresh"
         '
         'TextboxWatermark_Search
         '
@@ -274,6 +276,18 @@ Partial Class UCProjectBrowser
         Me.TextBox_ProjectPath.ReadOnly = True
         Me.TextBox_ProjectPath.Size = New System.Drawing.Size(276, 22)
         Me.TextBox_ProjectPath.TabIndex = 3
+        '
+        'ToolStripMenuItem_SetHome
+        '
+        Me.ToolStripMenuItem_SetHome.Image = Global.BasicPawn.My.Resources.Resources.imageres_5303_16x16
+        Me.ToolStripMenuItem_SetHome.Name = "ToolStripMenuItem_SetHome"
+        Me.ToolStripMenuItem_SetHome.Size = New System.Drawing.Size(188, 22)
+        Me.ToolStripMenuItem_SetHome.Text = "Set as home directory"
+        '
+        'ToolStripSeparator3
+        '
+        Me.ToolStripSeparator3.Name = "ToolStripSeparator3"
+        Me.ToolStripSeparator3.Size = New System.Drawing.Size(185, 6)
         '
         'UCProjectBrowser
         '
@@ -321,4 +335,6 @@ Partial Class UCProjectBrowser
     Friend WithEvents ToolStripMenuItem_MenuProjectDirUp As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem_MenuProjectRefresh As ToolStripMenuItem
     Friend WithEvents TextBox_ProjectPath As TextBox
+    Friend WithEvents ToolStripMenuItem_SetHome As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator3 As ToolStripSeparator
 End Class

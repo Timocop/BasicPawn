@@ -51,6 +51,8 @@ Public Class UCProjectBrowser
         Private g_sExplorerPath As String = ""
         Private g_bProjectChanged As Boolean = False
 
+        Private g_sProjectHome As String = ""
+
         Public Shared ReadOnly g_sProjectExtension As String = ".bpproj"
 
         Class STRUC_PROJECT_PATH_INFO
@@ -120,25 +122,76 @@ Public Class UCProjectBrowser
                 Return g_sExplorerPath
             End Get
             Set(value As String)
-                Dim sPath As String = value
-
-                If (String.IsNullOrEmpty(sPath)) Then
-                    sPath = m_ProjectDirectory
+                If (String.IsNullOrEmpty(value)) Then
+                    value = m_ProjectDirectory
                 End If
 
-                If (IO.Path.IsPathRooted(sPath)) Then
-                    If (Not sPath.ToLower.StartsWith(m_ProjectDirectory.ToLower)) Then
-                        sPath = m_ProjectDirectory
+                If (IO.Path.IsPathRooted(value)) Then
+                    If (Not value.ToLower.StartsWith(m_ProjectDirectory.ToLower)) Then
+                        value = m_ProjectDirectory
                     End If
                 Else
-                    sPath = IO.Path.Combine(m_ProjectDirectory, sPath)
+                    value = IO.Path.Combine(m_ProjectDirectory, value)
                 End If
 
-                g_sExplorerPath = sPath
+                If (Not IO.Directory.Exists(value)) Then
+                    value = m_ProjectDirectory
+                End If
 
-                g_mUCProjectBrowser.TextBox_ProjectPath.Text = g_sExplorerPath
+                g_sExplorerPath = value.Remove(0, m_ProjectDirectory.Length).TrimStart("\"c)
+
+                g_mUCProjectBrowser.TextBox_ProjectPath.Text = m_ExplorerPathAbsolute
                 g_mUCProjectBrowser.TextBox_ProjectPath.Select(g_mUCProjectBrowser.TextBox_ProjectPath.Text.Length - 1, 0)
             End Set
+        End Property
+
+        ReadOnly Property m_ExplorerPathAbsolute As String
+            Get
+                If (String.IsNullOrEmpty(g_sExplorerPath)) Then
+                    Return m_ProjectDirectory
+                End If
+
+                Return IO.Path.Combine(m_ProjectDirectory, g_sExplorerPath)
+            End Get
+        End Property
+
+        Property m_ProjectHome As String
+            Get
+                If (String.IsNullOrEmpty(g_sProjectHome)) Then
+                    Return m_ProjectDirectory
+                End If
+
+                Return g_sProjectHome
+            End Get
+            Set(value As String)
+                If (String.IsNullOrEmpty(value)) Then
+                    value = m_ProjectDirectory
+                End If
+
+                If (IO.Path.IsPathRooted(value)) Then
+                    If (Not value.ToLower.StartsWith(m_ProjectDirectory.ToLower)) Then
+                        value = m_ProjectDirectory
+                    End If
+                Else
+                    value = IO.Path.Combine(m_ProjectDirectory, value)
+                End If
+
+                If (Not IO.Directory.Exists(value)) Then
+                    value = m_ProjectDirectory
+                End If
+
+                g_sProjectHome = value.Remove(0, m_ProjectDirectory.Length).TrimStart("\"c)
+            End Set
+        End Property
+
+        ReadOnly Property m_ProjectHomeAbsolute As String
+            Get
+                If (String.IsNullOrEmpty(g_sProjectHome)) Then
+                    Return m_ProjectDirectory
+                End If
+
+                Return IO.Path.Combine(m_ProjectDirectory, g_sProjectHome)
+            End Get
         End Property
 
         Public Sub GoToExplorer(sPath As String)
@@ -163,14 +216,14 @@ Public Class UCProjectBrowser
         Public Sub RefreshExplorer()
             g_mUCProjectBrowser.ListView_ProjectFiles.Items.Clear()
 
-            If (String.IsNullOrEmpty(m_ExplorerPath) OrElse Not IO.Directory.Exists(m_ExplorerPath)) Then
+            If (String.IsNullOrEmpty(m_ExplorerPathAbsolute) OrElse Not IO.Directory.Exists(m_ExplorerPathAbsolute)) Then
                 Throw New IO.DirectoryNotFoundException("Directory not found")
             End If
 
             Try
                 g_mUCProjectBrowser.ListView_ProjectFiles.BeginUpdate()
 
-                For Each sDirectory As String In IO.Directory.GetDirectories(m_ExplorerPath)
+                For Each sDirectory As String In IO.Directory.GetDirectories(m_ExplorerPathAbsolute)
                     If (Not IO.Directory.Exists(sDirectory)) Then
                         Continue For
                     End If
@@ -184,7 +237,7 @@ Public Class UCProjectBrowser
                     g_mUCProjectBrowser.ListView_ProjectFiles.Items.Add(mItem)
                 Next
 
-                For Each sFile As String In IO.Directory.GetFiles(m_ExplorerPath)
+                For Each sFile As String In IO.Directory.GetFiles(m_ExplorerPathAbsolute)
                     If (Not IO.File.Exists(sFile)) Then
                         Continue For
                     End If
@@ -211,15 +264,15 @@ Public Class UCProjectBrowser
         End Sub
 
         Public Sub HomeExplorer()
-            GoToExplorer(m_ProjectDirectory)
+            GoToExplorer(m_ProjectHomeAbsolute)
         End Sub
 
         Public Sub GoUpExplorer()
-            If (String.IsNullOrEmpty(m_ExplorerPath) OrElse Not IO.Directory.Exists(m_ExplorerPath)) Then
+            If (String.IsNullOrEmpty(m_ExplorerPathAbsolute) OrElse Not IO.Directory.Exists(m_ExplorerPathAbsolute)) Then
                 Throw New IO.DirectoryNotFoundException("Directory not found")
             End If
 
-            GoToExplorer(IO.Path.GetFullPath(IO.Path.Combine(m_ExplorerPath, "..")))
+            GoToExplorer(IO.Path.GetFullPath(IO.Path.Combine(m_ExplorerPathAbsolute, "..")))
         End Sub
 
         Public Sub UpdateStatusLabel()
@@ -346,15 +399,19 @@ Public Class UCProjectBrowser
                     Dim lContent As New List(Of ClassIni.STRUC_INI_CONTENT)
 
                     'TODO: Add settings
+                    lContent.Add(New ClassIni.STRUC_INI_CONTENT("Settings", "HomeDir", m_ProjectHome))
 
                     mIni.WriteKeyValue(lContent.ToArray)
                 End Using
             End Using
 
             g_sProjectFile = sProjectFile
-            m_ExplorerPath = ""
-            RefreshExplorer()
+            m_ExplorerPath = m_ExplorerPath
+            m_ProjectHome = m_ProjectHome
             SetProjectChanged(False)
+
+            GoToExplorer(m_ProjectHomeAbsolute)
+            RefreshExplorer()
         End Sub
 
         Public Sub LoadProject(sProjectFile As String, bAppend As Boolean, bOpenProjectFiles As Boolean)
@@ -371,7 +428,8 @@ Public Class UCProjectBrowser
             g_mUCProjectBrowser.g_mFormMain.g_mUCInformationList.PrintInformation(ClassInformationListBox.ENUM_ICONS.ICO_INFO, "User loaded project file: " & sProjectFile, New UCInformationList.ClassListBoxItemAction.ClassActions.STRUC_ACTION_OPEN(sProjectFile))
 
             Dim lProjectFiles As New List(Of String)
-            Dim bDidAppend As Boolean = (GetPathsCount() > 0)
+
+            Dim sProjectHome As String = ""
 
             'Read absolute paths
             Using mStream = ClassFileStreamWait.Create(sProjectFile, IO.FileMode.OpenOrCreate, IO.FileAccess.ReadWrite)
@@ -380,6 +438,7 @@ Public Class UCProjectBrowser
                         BeginUpdate()
 
                         'TODO: Load project settings
+                        sProjectHome = mIni.ReadKeyValue("Settings", "HomeDir", "")
 
                     Finally
                         EndUpdate()
@@ -388,9 +447,12 @@ Public Class UCProjectBrowser
             End Using
 
             g_sProjectFile = sProjectFile
-            m_ExplorerPath = ""
+            m_ExplorerPath = m_ExplorerPath
+            m_ProjectHome = sProjectHome
+            SetProjectChanged(False)
+
+            GoToExplorer(m_ProjectHomeAbsolute)
             RefreshExplorer()
-            SetProjectChanged(bDidAppend)
 
             If (bOpenProjectFiles) Then
                 Try
@@ -430,6 +492,7 @@ Public Class UCProjectBrowser
 
             g_sProjectFile = ""
             g_mUCProjectBrowser.ListView_ProjectFiles.Items.Clear()
+            g_mUCProjectBrowser.TextBox_ProjectPath.Text = ""
 
             SetProjectChanged(False)
 
@@ -638,6 +701,19 @@ Public Class UCProjectBrowser
         'End Try
     End Sub
 
+    Private Sub ToolStripMenuItem_SetHome_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem_SetHome.Click
+        Try
+            If (Not g_ClassProjectControl.m_ProjectOpened) Then
+                Return
+            End If
+
+            g_ClassProjectControl.m_ProjectHome = g_ClassProjectControl.m_ExplorerPath
+            g_ClassProjectControl.SetProjectChanged(True)
+        Catch ex As Exception
+            ClassExceptionLog.WriteToLogMessageBox(ex)
+        End Try
+    End Sub
+
     Private Sub ListView_ProjectFiles_DoubleClick(sender As Object, e As EventArgs) Handles ListView_ProjectFiles.DoubleClick
         Try
             Dim mFileInfos = g_ClassProjectControl.GetPathsInfo(True)
@@ -674,14 +750,16 @@ Public Class UCProjectBrowser
     End Sub
 
     Private Sub ContextMenuStrip_ProjectFiles_Opening(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles ContextMenuStrip_ProjectFiles.Opening
-        ToolStripMenuItem_Open.Enabled = (ListView_ProjectFiles.SelectedItems.Count > 0)
+        ToolStripMenuItem_Open.Enabled = (g_ClassProjectControl.m_ProjectOpened AndAlso ListView_ProjectFiles.SelectedItems.Count > 0)
 
-        ToolStripMenuItem_CompileAll.Enabled = (ListView_ProjectFiles.SelectedItems.Count > 0)
-        ToolStripMenuItem_TestAll.Enabled = (ListView_ProjectFiles.SelectedItems.Count > 0)
+        ToolStripMenuItem_CompileAll.Enabled = (g_ClassProjectControl.m_ProjectOpened AndAlso ListView_ProjectFiles.SelectedItems.Count > 0)
+        ToolStripMenuItem_TestAll.Enabled = (g_ClassProjectControl.m_ProjectOpened AndAlso ListView_ProjectFiles.SelectedItems.Count > 0)
 
-        ToolStripMenuItem_Cut.Enabled = (ListView_ProjectFiles.SelectedItems.Count > 0)
-        ToolStripMenuItem_Copy.Enabled = (ListView_ProjectFiles.SelectedItems.Count > 0)
-        ToolStripMenuItem_Paste.Enabled = (g_lClipboardFiles.Count > 0)
+        ToolStripMenuItem_Cut.Enabled = (g_ClassProjectControl.m_ProjectOpened AndAlso ListView_ProjectFiles.SelectedItems.Count > 0)
+        ToolStripMenuItem_Copy.Enabled = (g_ClassProjectControl.m_ProjectOpened AndAlso ListView_ProjectFiles.SelectedItems.Count > 0)
+        ToolStripMenuItem_Paste.Enabled = (g_ClassProjectControl.m_ProjectOpened AndAlso g_lClipboardFiles.Count > 0)
+
+        ToolStripMenuItem_SetHome.Enabled = g_ClassProjectControl.m_ProjectOpened
     End Sub
 
     Private Sub TextboxWatermark_Search_KeyDown(sender As Object, e As KeyEventArgs) Handles TextboxWatermark_Search.KeyDown
@@ -918,4 +996,6 @@ Public Class UCProjectBrowser
         'End Try
     End Sub
 #End Region
+
+
 End Class
