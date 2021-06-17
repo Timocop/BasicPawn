@@ -34,8 +34,8 @@ Partial Class UCExplorerBrowser
         Me.ToolStripMenuItem_Home = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_DirectoryUp = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem_Refresh = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripTextBox_Path = New System.Windows.Forms.ToolStripTextBox()
         Me.TextboxWatermark_Search = New BasicPawn.ClassTextboxWatermark()
+        Me.TextBox_Path = New System.Windows.Forms.TextBox()
         Me.ContextMenuStrip_ExplorerBrowser.SuspendLayout()
         Me.MenuStrip_ExplorerBrowser.SuspendLayout()
         Me.SuspendLayout()
@@ -47,9 +47,10 @@ Partial Class UCExplorerBrowser
         Me.ListView_ExplorerFiles.ContextMenuStrip = Me.ContextMenuStrip_ExplorerBrowser
         Me.ListView_ExplorerFiles.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ListView_ExplorerFiles.FullRowSelect = True
-        Me.ListView_ExplorerFiles.Location = New System.Drawing.Point(0, 46)
+        Me.ListView_ExplorerFiles.HideSelection = False
+        Me.ListView_ExplorerFiles.Location = New System.Drawing.Point(0, 68)
         Me.ListView_ExplorerFiles.Name = "ListView_ExplorerFiles"
-        Me.ListView_ExplorerFiles.Size = New System.Drawing.Size(269, 610)
+        Me.ListView_ExplorerFiles.Size = New System.Drawing.Size(269, 588)
         Me.ListView_ExplorerFiles.SmallImageList = Me.ImageList_ExplorerBrowser
         Me.ListView_ExplorerFiles.TabIndex = 1
         Me.ListView_ExplorerFiles.UseCompatibleStateImageBehavior = False
@@ -94,8 +95,8 @@ Partial Class UCExplorerBrowser
         '
         'MenuStrip_ExplorerBrowser
         '
-        Me.MenuStrip_ExplorerBrowser.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_Home, Me.ToolStripMenuItem_DirectoryUp, Me.ToolStripMenuItem_Refresh, Me.ToolStripTextBox_Path})
-        Me.MenuStrip_ExplorerBrowser.Location = New System.Drawing.Point(0, 22)
+        Me.MenuStrip_ExplorerBrowser.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem_Home, Me.ToolStripMenuItem_DirectoryUp, Me.ToolStripMenuItem_Refresh})
+        Me.MenuStrip_ExplorerBrowser.Location = New System.Drawing.Point(0, 44)
         Me.MenuStrip_ExplorerBrowser.Name = "MenuStrip_ExplorerBrowser"
         Me.MenuStrip_ExplorerBrowser.Padding = New System.Windows.Forms.Padding(0)
         Me.MenuStrip_ExplorerBrowser.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
@@ -131,13 +132,6 @@ Partial Class UCExplorerBrowser
         Me.ToolStripMenuItem_Refresh.Text = "Refresh"
         Me.ToolStripMenuItem_Refresh.ToolTipText = "Refresh"
         '
-        'ToolStripTextBox_Path
-        '
-        Me.ToolStripTextBox_Path.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
-        Me.ToolStripTextBox_Path.Name = "ToolStripTextBox_Path"
-        Me.ToolStripTextBox_Path.ReadOnly = True
-        Me.ToolStripTextBox_Path.Size = New System.Drawing.Size(100, 24)
-        '
         'TextboxWatermark_Search
         '
         Me.TextboxWatermark_Search.Dock = System.Windows.Forms.DockStyle.Top
@@ -148,6 +142,16 @@ Partial Class UCExplorerBrowser
         Me.TextboxWatermark_Search.Size = New System.Drawing.Size(269, 22)
         Me.TextboxWatermark_Search.TabIndex = 0
         '
+        'TextBox_Path
+        '
+        Me.TextBox_Path.BackColor = System.Drawing.Color.White
+        Me.TextBox_Path.Dock = System.Windows.Forms.DockStyle.Top
+        Me.TextBox_Path.Location = New System.Drawing.Point(0, 22)
+        Me.TextBox_Path.Name = "TextBox_Path"
+        Me.TextBox_Path.ReadOnly = True
+        Me.TextBox_Path.Size = New System.Drawing.Size(269, 22)
+        Me.TextBox_Path.TabIndex = 3
+        '
         'UCExplorerBrowser
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -155,6 +159,7 @@ Partial Class UCExplorerBrowser
         Me.BackColor = System.Drawing.Color.White
         Me.Controls.Add(Me.ListView_ExplorerFiles)
         Me.Controls.Add(Me.MenuStrip_ExplorerBrowser)
+        Me.Controls.Add(Me.TextBox_Path)
         Me.Controls.Add(Me.TextboxWatermark_Search)
         Me.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Name = "UCExplorerBrowser"
@@ -174,10 +179,10 @@ Partial Class UCExplorerBrowser
     Friend WithEvents ImageList_ExplorerBrowser As ImageList
     Friend WithEvents ColumnHeader1 As ColumnHeader
     Friend WithEvents ToolStripMenuItem_Refresh As ToolStripMenuItem
-    Friend WithEvents ToolStripTextBox_Path As ToolStripTextBox
     Friend WithEvents ContextMenuStrip_ExplorerBrowser As ContextMenuStrip
     Friend WithEvents ToolStripMenuItem_OpenFile As ToolStripMenuItem
     Public WithEvents ListView_ExplorerFiles As ListView
     Friend WithEvents ToolStripSeparator1 As ToolStripSeparator
     Friend WithEvents ToolStripMenuItem_Filter As ToolStripMenuItem
+    Friend WithEvents TextBox_Path As TextBox
 End Class

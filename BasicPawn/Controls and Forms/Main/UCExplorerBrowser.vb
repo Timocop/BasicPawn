@@ -31,10 +31,8 @@ Public Class UCExplorerBrowser
         Set(value As String)
             g_sExplorerPath = value
 
-            ToolStripTextBox_Path.Text = g_sExplorerPath
-            ToolStripTextBox_Path.Select(ToolStripTextBox_Path.Text.Length - 1, 0)
-
-            ToolStripTextBox_Path.ToolTipText = g_sExplorerPath
+            TextBox_Path.Text = g_sExplorerPath
+            TextBox_Path.Select(TextBox_Path.Text.Length - 1, 0)
         End Set
     End Property
 

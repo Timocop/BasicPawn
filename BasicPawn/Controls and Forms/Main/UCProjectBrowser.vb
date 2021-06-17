@@ -136,10 +136,8 @@ Public Class UCProjectBrowser
 
                 g_sExplorerPath = sPath
 
-                g_mUCProjectBrowser.ToolStripTextBox_MenuProjectPath.Text = g_sExplorerPath
-                g_mUCProjectBrowser.ToolStripTextBox_MenuProjectPath.Select(g_mUCProjectBrowser.ToolStripTextBox_MenuProjectPath.Text.Length - 1, 0)
-
-                g_mUCProjectBrowser.ToolStripTextBox_MenuProjectPath.ToolTipText = g_sExplorerPath
+                g_mUCProjectBrowser.TextBox_ProjectPath.Text = g_sExplorerPath
+                g_mUCProjectBrowser.TextBox_ProjectPath.Select(g_mUCProjectBrowser.TextBox_ProjectPath.Text.Length - 1, 0)
             End Set
         End Property
 
