@@ -587,7 +587,7 @@ Partial Public Class FormSettings
                 If (String.IsNullOrEmpty(TextBox_IncludeFolder.Text)) Then
                     TextBox_IncludeFolder.Text = i.SelectedPath
                 Else
-                    Select Case MessageBox.Show("Replace already existing paths with this one? Otherwise the selected path will be addded to other already existing paths.", "Replace or add paths", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                    Select Case MessageBox.Show("Replace already existing paths with this one? Otherwise the selected path will be added to other already existing paths.", "Replace or add paths", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
                         Case DialogResult.Yes
                             TextBox_IncludeFolder.Text = i.SelectedPath
                         Case Else
@@ -610,7 +610,7 @@ Partial Public Class FormSettings
                 If (String.IsNullOrEmpty(TextBox_AutoAssignPaths.Text)) Then
                     TextBox_AutoAssignPaths.Text = i.SelectedPath
                 Else
-                    Select Case MessageBox.Show("Replace already existing paths with this one? Otherwise the selected path will be addded to other already existing paths.", "Replace or add paths", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                    Select Case MessageBox.Show("Replace already existing paths with this one? Otherwise the selected path will be added to other already existing paths.", "Replace or add paths", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
                         Case DialogResult.Yes
                             TextBox_AutoAssignPaths.Text = i.SelectedPath
                         Case Else
