@@ -684,7 +684,7 @@ Public Class FormSearch
     Private Function DoSearch(iSearchType As ENUM_SEARCH_TYPE, bNormalMode As Boolean, bWholeWord As Boolean, bCastSensitive As Boolean, bMultiLine As Boolean, bMergeLines As Boolean) As STRUC_SEARCH_RESULTS()
         Dim sSearchText As String = ComboBox_Search.Text
 
-        If (String.IsNullOrEmpty(sSearchText) OrElse sSearchText.Trim.Length < 1) Then
+        If (String.IsNullOrEmpty(sSearchText)) Then
             ToolStripStatusLabel_Status.Text = "Unable to search 'nothing'!"
             Return Nothing
         End If
