@@ -32,6 +32,12 @@ Features:
  - [**.NET Framework (Linux Wine)**](https://appdb.winehq.org/objectManager.php?sClass=application&iId=2586)
  
  *Some of the BasicPawn plugins require a newer .NET Framework version.*
+ 
+## Last Supported SourcePawn Compiler
+Due to major compiler changes, BasicPawn became incompatible with newer versions of the SourcePawn compiler.
+Any version above ``1.11-git6724`` will not work with BasicPawn until i fix the issue.
+Download the last supported compiler here:
+[SourceMod 1.11-git6724](https://sm.alliedmods.net/smdrop/1.11/sourcemod-1.11.0-git6742-windows.zip)
 
 ## Plugins
 **Download: Click on 'Download'**
