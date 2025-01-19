@@ -1,5 +1,5 @@
 # Automatic Error Reporting
-Version: 12.0
+Version: 13.0
 
 Automatic Error Reporting allows you to automatically review all plugin exceptions that have occurred on your servers.
 Which makes error tracking more comfortable.
