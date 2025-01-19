@@ -60,7 +60,7 @@ Module ClassMain
 
                 If (sJavaPath Is Nothing OrElse Not IO.File.Exists(sJavaPath)) Then
                     Console.ForegroundColor = ConsoleColor.Red
-                    Console.WriteLine("Java 8 not found! Please install Java 8 (AdpotOpenJDK recommended)!")
+                    Console.WriteLine("Java 8 not found! Please install Java 8 (AdoptOpenJDK recommended)!")
                     Console.ForegroundColor = ConsoleColor.White
 
                     bAbort = True
@@ -70,7 +70,7 @@ Module ClassMain
 
                 If (sJavaCPath Is Nothing OrElse Not IO.File.Exists(sJavaCPath)) Then
                     Console.ForegroundColor = ConsoleColor.Red
-                    Console.WriteLine("Java Development Kit not found! Please install Java Development Kit (AdpotOpenJDK recommended)!")
+                    Console.WriteLine("Java Development Kit not found! Please install Java Development Kit (AdoptOpenJDK recommended)!")
                     Console.ForegroundColor = ConsoleColor.White
 
                     bAbort = True
